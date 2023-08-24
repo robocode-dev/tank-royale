@@ -85,8 +85,8 @@ tasks {
         )
         doLast {
             Files.copy(
-                Paths.get("$projectDir/src/main/javadoc/prism.js"),
-                Paths.get("$buildDir/docs/javadoc/prism.js")
+                Paths.get("${layout.projectDirectory}/src/main/javadoc/prism.js"),
+                Paths.get("${layout.buildDirectory.get()}/docs/javadoc/prism.js")
             )
         }
     }

@@ -9,7 +9,7 @@ version = libs.versions.tankroyale.get()
 val jarManifestMainClass = "dev.robocode.tankroyale.server.ServerKt"
 
 val artifactBaseName = "robocode-tankroyale-server"
-val artifactBaseFilename = "${buildDir}/libs/${artifactBaseName}-${project.version}"
+val artifactBaseFilename = "${layout.buildDirectory.get()}/libs/${artifactBaseName}-${project.version}"
 
 buildscript {
     dependencies {

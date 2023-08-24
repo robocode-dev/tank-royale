@@ -10,7 +10,7 @@ version = libs.versions.tankroyale.get()
 val jarManifestMainClass = "dev.robocode.tankroyale.gui.GuiAppKt"
 
 val archiveBaseName = "robocode-tankroyale-gui"
-val archiveFileName = "$buildDir/libs/$archiveBaseName-$version.jar"
+val archiveFileName = "${layout.buildDirectory.get()}/libs/$archiveBaseName-$version.jar"
 
 buildscript {
     dependencies {
@@ -72,7 +72,7 @@ tasks {
     val proguard by registering(ProGuardTask::class) {
         dependsOn(fatJar)
 
-        injars("$buildDir/libs/${project.name}-$version.jar")
+        injars("${layout.buildDirectory.get()}/libs/${project.name}-$version.jar")
         outjars(archiveFileName)
         configuration("proguard-rules.pro")
     }

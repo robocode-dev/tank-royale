@@ -16,7 +16,8 @@ plugins {
 
 
 tasks {
-    val archiveDir = project.buildDir.resolve("archive").toPath()
+    val archiveDir = layout.buildDirectory.dir("archive")
+    val archiveDirPath = archiveDir.get().asFile.toPath()
 
     fun Path.botName() = fileName.toString()
 
@@ -68,7 +69,7 @@ dotnet run --no-build >nul
         list(project.projectDir.toPath()).forEach { botDir ->
             if (isDirectory(botDir) && isBotProjectDir(botDir)) {
                 val botName = botDir.botName()
-                val botArchivePath: Path = archiveDir.resolve(botName)
+                val botArchivePath: Path = archiveDirPath.resolve(botName)
 
                 mkdir(botArchivePath)
                 copyBotFiles(botDir, botArchivePath)
@@ -91,7 +92,7 @@ dotnet run --no-build >nul
     val build = named("build") {
         doFirst {
             prepareBotFiles()
-            copyReadMeFile(project.projectDir, archiveDir)
+            copyReadMeFile(project.projectDir, archiveDirPath)
         }
     }
 
@@ -99,9 +100,9 @@ dotnet run --no-build >nul
         dependsOn(build)
 
         archiveFileName.set(archiveFilename)
-        destinationDirectory.set(buildDir)
+        destinationDirectory.set(layout.buildDirectory)
         fileMode = "101101101".toInt(2) // 0555 - read & execute for everybody
 
-        from(File(buildDir, "archive"))
+        from(archiveDir)
     }
 }

@@ -10,7 +10,7 @@ group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
 val artifactBaseName = "robocode-tankroyale-schema"
-val archiveFileName = "$buildDir/libs/$artifactBaseName-$version.jar"
+val archiveFileName = "${layout.buildDirectory.get()}/libs/$artifactBaseName-$version.jar"
 
 val schemaPackage = "dev.robocode.tankroyale.schema"
 

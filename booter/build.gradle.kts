@@ -1,5 +1,4 @@
 import proguard.gradle.ProGuardTask
-import java.util.*
 
 description = "Robocode Tank Royale Booter"
 
@@ -10,7 +9,7 @@ version = libs.versions.tankroyale.get()
 val jarManifestMainClass = "dev.robocode.tankroyale.booter.BooterKt"
 
 val artifactBaseName = "robocode-tankroyale-booter"
-val artifactBaseFilename = "${buildDir}/libs/${artifactBaseName}-${project.version}"
+val artifactBaseFilename = "${layout.buildDirectory.get()}/libs/${artifactBaseName}-${project.version}"
 
 buildscript {
     dependencies {

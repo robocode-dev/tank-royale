@@ -15,8 +15,9 @@ plugins {
 }
 
 tasks {
-    val archiveDir = project.buildDir.resolve("archive").toPath()
-    val libDir = archiveDir.resolve("lib")
+    val archiveDir = layout.buildDirectory.dir("archive")
+    val archiveDirPath = archiveDir.get().asFile.toPath()
+    val libDir = archiveDirPath.resolve("lib")
 
     val copyBotApiJar by registering(Copy::class) {
         mkdir(libDir)
@@ -64,7 +65,7 @@ tasks {
     fun prepareBotFiles() {
         list(project.projectDir.toPath()).forEach { botDir ->
             if (isDirectory(botDir) && isBotProjectDir(botDir)) {
-                val botArchivePath: Path = archiveDir.resolve(botDir.botName())
+                val botArchivePath: Path = archiveDirPath.resolve(botDir.botName())
 
                 mkdir(botArchivePath)
                 copyBotFiles(botDir, botArchivePath)
@@ -89,7 +90,7 @@ tasks {
 
         doLast {
             prepareBotFiles()
-            copyReadMeFile(project.projectDir, archiveDir)
+            copyReadMeFile(project.projectDir, archiveDirPath)
         }
     }
 
@@ -97,9 +98,9 @@ tasks {
         dependsOn(build)
 
         archiveFileName.set(archiveFilename)
-        destinationDirectory.set(buildDir)
+        destinationDirectory.set(layout.buildDirectory)
         fileMode = "101101101".toInt(2) // 0555 - read & execute for everybody
 
-        from(File(buildDir, "archive"))
+        from(archiveDir)
     }
 }
