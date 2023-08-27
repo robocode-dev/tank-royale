@@ -40,7 +40,6 @@ dependencyResolutionManagement {
             library("gson-extras", "org.danilopianini:gson-extras:1.2.0")
             library("jansi", "org.fusesource.jansi:jansi:2.4.0")
             library("java-websocket", "org.java-websocket:Java-WebSocket:1.5.4")
-            library("jsonschema2pojo", "org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.2.1")
             library("picocli", "info.picocli:picocli:4.7.4")
             library("proguard-gradle", "com.guardsquare:proguard-gradle:7.3.2")
             library("miglayout-swing", "com.miglayout:miglayout-swing:11.1")
@@ -66,6 +65,7 @@ dependencyResolutionManagement {
             plugin("shadow-jar","com.github.johnrengelman.shadow").version("8.1.1")
             plugin("itiviti-dotnet", "com.itiviti.dotnet").version("1.9.5")
             plugin("node-gradle", "com.github.node-gradle.node").version("7.0.0")
+            plugin("jsonschema2pojo", "org.jsonschema2pojo").version("1.2.1")
 
             // Dependencies versions
             plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.47.0")

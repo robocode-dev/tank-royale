@@ -14,17 +14,10 @@ val archiveFileName = "${layout.buildDirectory.get()}/libs/$artifactBaseName-$ve
 
 val schemaPackage = "dev.robocode.tankroyale.schema"
 
-buildscript {
-    dependencies {
-        classpath(libs.jsonschema2pojo)
-    }
-}
-
 plugins {
     java
+    alias(libs.plugins.jsonschema2pojo)
 }
-
-apply(plugin = "jsonschema2pojo")
 
 dependencies {
     implementation(libs.gson)
@@ -35,8 +28,8 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(11))
 }
 
-// https://github.com/joelittlejohn/jsonschema2pojo/blob/master/jsonschema2pojo-gradle-plugin/src/main/groovy/org/jsonschema2pojo/gradle/JsonSchemaExtension.groovy
-configure<JsonSchemaExtension> {
+// https://github.com/joelittlejohn/jsonschema2pojo/tree/master/jsonschema2pojo-gradle-plugin
+jsonSchema2Pojo {
     setSourceType(SourceType.YAMLSCHEMA.toString())
     setSource(singletonList(File("$projectDir/../schemas")))
     setAnnotationStyle(AnnotationStyle.GSON.toString())
