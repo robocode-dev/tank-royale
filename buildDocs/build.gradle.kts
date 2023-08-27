@@ -12,6 +12,14 @@ node {
 }
 
 tasks {
+    clean {
+        doLast {
+            delete(fileTree("../docs").matching {
+                exclude("api/**")
+            })
+        }
+    }
+
     val npmBuild by registering(NpmTask::class) {
         dependsOn(npmInstall)
 
@@ -19,17 +27,12 @@ tasks {
     }
 
     register<Copy>("uploadDocs") {
+        dependsOn(clean)
         dependsOn(npmBuild)
-
-        val dotnetApiDir = "../docs"
-
-        delete(fileTree(dotnetApiDir).matching {
-            exclude("api/**")
-        })
 
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
         from("build/docs")
-        into(dotnetApiDir)
+        into("../docs")
     }
 }
