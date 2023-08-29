@@ -13,10 +13,15 @@ node {
 
 tasks {
     clean {
-        doLast {
+        doFirst {
             delete(fileTree("../docs").matching {
                 exclude("api/**")
             })
+            delete(
+                "docs/.vuepress/.cache",
+                "docs/.vuepress/.temp",
+                "docs/.vuepress/dist"
+            )
         }
     }
 
@@ -26,8 +31,11 @@ tasks {
         args.set(listOf("run", "build"))
     }
 
+    build {
+        dependsOn(npmBuild)
+    }
+
     register<Copy>("uploadDocs") {
-        dependsOn(clean)
         dependsOn(npmBuild)
 
         duplicatesStrategy = DuplicatesStrategy.INCLUDE

@@ -36,26 +36,27 @@ dotnet {
 }
 
 tasks {
-    val prepareNugetDocs by registering(Copy::class) {
-        doFirst {
-            delete("docs")
-        }
-        from("nuget_docs") {
-            filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
-        }
-        into("docs")
-    }
 
     clean {
         doFirst {
             delete(
                 "build",
+                "docfx_project/_site",
+                "docfx_project/api",
+                "docfx_project/obj",
                 "Robocode.TankRoyale.BotApi/obj",
                 "Robocode.TankRoyale.BotApi/bin",
                 "Robocode.TankRoyale.BotApi.Tests/obj",
                 "Robocode.TankRoyale.BotApi.Tests/bin",
             )
         }
+    }
+
+    val prepareNugetDocs by registering(Copy::class) {
+        from("nuget_docs") {
+            filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
+        }
+        into("docs")
     }
 
     dotnetBuild {
