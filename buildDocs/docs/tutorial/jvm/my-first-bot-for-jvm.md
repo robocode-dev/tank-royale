@@ -304,7 +304,7 @@ inside the Robocode booter."
 
 [onScannedBot]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/IBaseBot.html#onScannedBot(dev.robocode.tankroyale.botapi.events.ScannedBotEvent) "IBaseBot.onScannedBot(ScannedBotEvent) event handler"
 
-[onHitByBullet]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/IBaseBot.html#onHitByBullet(dev.robocode.tankroyale.botapi.events.BulletHitBotEvent) "IBaseBot.onHitByBullet(BulletHitBotEvent) event handler"
+[onHitByBullet]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/IBaseBot.html#onHitByBullet(dev.robocode.tankroyale.botapi.events.BulletHitBotEvent) "IBaseBot.onHitByBullet(HitByBulletEvent) event handler"
 
 [calcBearing]: https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/IBaseBot.html#calcBearing(double) "IBaseBot.calcBearing(double) method"
 

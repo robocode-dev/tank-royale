@@ -126,7 +126,7 @@ the bot perpendicular to the bullet direction:
     ...
 
     // We were hit by a bullet -> turn perpendicular to the bullet
-    public override void OnHitByBullet(BulletHitBotEvent evt)
+    public override void OnHitByBullet(HitByBulletEvent evt)
     {
         // Calculate the bearing to the direction of the bullet
         double bearing = CalcBearing(evt.Bullet.Direction);
@@ -177,7 +177,7 @@ public class MyFirstBot : Bot
     }
 
     // We were hit by a bullet -> turn perpendicular to the bullet
-    public override void OnHitByBullet(BulletHitBotEvent evt)
+    public override void OnHitByBullet(HitByBulletEvent evt)
     {
         // Calculate the bearing to the direction of the bullet
         double bearing = CalcBearing(evt.Bullet.Direction);
@@ -336,7 +336,7 @@ inside the Robocode booter."
 
 [OnScannedBot]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnScannedBot_Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_ "BaseBot.OnScannedBot(ScannedBotEvent) event handler"
 
-[OnHitByBullet]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnHitByBullet_Robocode_TankRoyale_BotApi_Events_BulletHitBotEvent_ "BaseBot.OnHitByBullet(BulletHitBotEvent) event handler"
+[OnHitByBullet]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnHitByBullet_Robocode_TankRoyale_BotApi_Events_BulletHitBotEvent_ "BaseBot.OnHitByBullet(HitByBulletEvent) event handler"
 
 [CalcBearing]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_CalcBearing_System_Double_ "Bot.CalcBearing(Double) method"
 
