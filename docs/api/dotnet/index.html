@@ -115,7 +115,7 @@ public class MyFirstBot : Bot
     }
 
     // We were hit by a bullet -&gt; turn perpendicular to the bullet
-    public override void OnHitByBullet(BulletHitBotEvent evt)
+    public override void OnHitByBullet(HitByBulletEvent evt)
     {
         // Calculate the bearing to the direction of the bullet
         double bearing = CalcBearing(evt.Bullet.Direction);
@@ -167,7 +167,7 @@ file <a href="https://robocode-dev.github.io/tank-royale/articles/booter.html#js
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/robocode-dev/tank-royale/blob/vuepress-v2-migration/bot-api/dotnet/docfx_project/index.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/docfx_project/index.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>
