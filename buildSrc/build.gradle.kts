@@ -26,6 +26,11 @@ dependencies {
     implementation("org.json:json:20230618")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 tasks {
     withType<KotlinCompile> {
         kotlinOptions {

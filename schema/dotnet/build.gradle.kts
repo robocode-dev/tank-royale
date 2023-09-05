@@ -17,7 +17,7 @@ tasks {
         }
 
         commandLine(
-            "$projectDir/bin/Release/net6.0/CodeGeneratorApp",
+            "$projectDir/bin/Release/net6.0/CodeGeneratorApp.exe",
             "${project(":schema").file("schemas")}",
             "${project(":bot-api:dotnet").file("Robocode.TankRoyale.BotApi/src/generated")}"
         )

@@ -31,6 +31,14 @@ dependencies {
     implementation(libs.miglayout.swing)
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+
+    withJavadocJar()
+    withSourcesJar()
+}
+
 tasks {
     val copyBooterJar by registering(Copy::class) {
         dependsOn(":booter:proguard")
@@ -75,11 +83,6 @@ tasks {
         injars("${layout.buildDirectory.get()}/libs/${project.name}-$version.jar")
         outjars(archiveFileName)
         configuration("proguard-rules.pro")
-    }
-
-    java {
-        withJavadocJar()
-        withSourcesJar()
     }
 
     jar {

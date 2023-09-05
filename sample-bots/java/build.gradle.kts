@@ -7,8 +7,7 @@ description = "Robocode Tank Royale sample bots for Java"
 
 version = libs.versions.tankroyale.get()
 
-val archiveFilename = "sample-bots-java-" +
-        "${project.version}.zip"
+val archiveFilename = "sample-bots-java-${version}.zip"
 
 plugins {
     base // for the clean and build task
@@ -26,7 +25,7 @@ tasks {
 
         dependsOn(":bot-api:java:jar")
 
-        from(project(":bot-api:java").file("build/libs/robocode-tankroyale-bot-api-${project.version}.jar"))
+        from(project(":bot-api:java").file("build/libs/robocode-tankroyale-bot-api-${version}.jar"))
         into(libDir)
     }
 
@@ -63,14 +62,12 @@ tasks {
     }
 
     fun prepareBotFiles() {
-        list(project.projectDir.toPath()).forEach { botDir ->
+        list(projectDir.toPath()).forEach { botDir ->
             if (isDirectory(botDir) && isBotProjectDir(botDir)) {
                 val botArchivePath: Path = archiveDirPath.resolve(botDir.botName())
 
                 mkdir(botArchivePath)
                 copyBotFiles(botDir, botArchivePath)
-
-                println(botDir)
 
                 if (!botDir.toString().endsWith("Team")) {
                     createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
@@ -88,13 +85,13 @@ tasks {
     val build = named("build") {
         dependsOn(copyBotApiJar)
 
-        doLast {
+        doFirst {
             prepareBotFiles()
-            copyReadMeFile(project.projectDir, archiveDirPath)
+            copyReadMeFile(projectDir, archiveDirPath)
         }
     }
 
-    register("zip", Zip::class) {
+    register<Zip>("zip") {
         dependsOn(build)
 
         archiveFileName.set(archiveFilename)

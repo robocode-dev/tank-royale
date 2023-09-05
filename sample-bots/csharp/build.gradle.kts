@@ -8,12 +8,11 @@ description = "Robocode Tank Royale sample bots for C#"
 
 version = libs.versions.tankroyale.get()
 
-val archiveFilename = "sample-bots-csharp-${project.version}.zip"
+val archiveFilename = "sample-bots-csharp-${version}.zip"
 
 plugins {
-    base // for clean and build tasks
+    base // for the clean and build task
 }
-
 
 tasks {
     val archiveDir = layout.buildDirectory.dir("archive")
@@ -92,11 +91,11 @@ dotnet run --no-build >nul
     val build = named("build") {
         doFirst {
             prepareBotFiles()
-            copyReadMeFile(project.projectDir, archiveDirPath)
+            copyReadMeFile(projectDir, archiveDirPath)
         }
     }
 
-    register("zip", Zip::class) {
+    register<Zip>("zip") {
         dependsOn(build)
 
         archiveFileName.set(archiveFilename)
