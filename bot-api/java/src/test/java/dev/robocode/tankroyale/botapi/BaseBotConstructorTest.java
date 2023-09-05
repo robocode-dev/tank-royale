@@ -1,11 +1,13 @@
 package dev.robocode.tankroyale.botapi;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.junitpioneer.jupiter.ClearEnvironmentVariable;
-import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import test_utils.MockedServer;
+import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
+import uk.org.webcompere.systemstubs.jupiter.SystemStub;
+import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,16 +19,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static test_utils.EnvironmentVariables.*;
 
-@SetEnvironmentVariable(key = SERVER_URL, value = "ws://localhost:" + MockedServer.PORT)
-@SetEnvironmentVariable(key = BOT_NAME, value = "TestBot")
-@SetEnvironmentVariable(key = BOT_VERSION, value = "1.0")
-@SetEnvironmentVariable(key = BOT_AUTHORS, value = "Author 1, Author 2")
-@SetEnvironmentVariable(key = BOT_GAME_TYPES, value = "classic, 1v1, melee")
-@SetEnvironmentVariable(key = BOT_DESCRIPTION, value = "Short description")
-@SetEnvironmentVariable(key = BOT_HOMEPAGE, value = "https://testbot.robocode.dev")
-@SetEnvironmentVariable(key = BOT_COUNTRY_CODES, value = "gb, US")
-@SetEnvironmentVariable(key = BOT_PLATFORM, value = "JVM 19")
-@SetEnvironmentVariable(key = BOT_PROG_LANG, value = "Java 19")
+@ExtendWith(SystemStubsExtension.class)
 class BaseBotConstructorTest extends AbstractBotTest {
 
     static class TestBot extends BaseBot {
@@ -48,6 +41,20 @@ class BaseBotConstructorTest extends AbstractBotTest {
         }
     }
 
+    @SystemStub
+    final static EnvironmentVariables envVars = new EnvironmentVariables(
+            SERVER_URL, "ws://localhost:" + MockedServer.PORT,
+            BOT_NAME, "TestBot",
+            BOT_VERSION, "1.0",
+            BOT_AUTHORS, "Author 1, Author 2",
+            BOT_GAME_TYPES, "classic, 1v1, melee",
+            BOT_DESCRIPTION, "Short description",
+            BOT_HOMEPAGE, "https://testbot.robocode.dev",
+            BOT_COUNTRY_CODES, "gb, US",
+            BOT_PLATFORM, "JVM 19",
+            BOT_PROG_LANG, "Java 19"
+    );
+
     @Test
     void givenAllRequiredEnvVarsSet_whenCallingDefaultConstructor_thenBotIsCreated() {
         new TestBot();
@@ -55,31 +62,36 @@ class BaseBotConstructorTest extends AbstractBotTest {
     }
 
     @Test
-    @ClearEnvironmentVariable(key = SERVER_URL)
-    void givenMissingServerUrlEnvVar_whenCallingDefaultConstructor_thenBotIsCreated() {
-        new TestBot();
-        // passed when this point is reached
-    }
-
-    @Test
-    @ClearEnvironmentVariable(key = BOT_NAME)
     void givenMissingBotNameEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo() {
+        var botName = envVars.getVariables().get(BOT_NAME);
+
+        envVars.set(BOT_NAME, null);
         var botException = assertThrows(BotException.class, TestBot::new);
         assertThat(exceptionContainsEnvVarName(botException, BOT_NAME)).isTrue();
+
+        envVars.set(BOT_NAME, botName); // restore
     }
 
     @Test
-    @ClearEnvironmentVariable(key = BOT_VERSION)
     void givenMissingBotVersionEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo() {
+        var version = envVars.getVariables().get(BOT_VERSION);
+
+        envVars.set(BOT_VERSION, null);
         var botException = assertThrows(BotException.class, TestBot::new);
         assertThat(exceptionContainsEnvVarName(botException, BOT_VERSION)).isTrue();
+
+        envVars.set(BOT_VERSION, version); // restore
     }
 
     @Test
-    @ClearEnvironmentVariable(key = BOT_AUTHORS)
     void givenMissingBotAuthorsEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo() {
+        var authors = envVars.getVariables().get(BOT_AUTHORS);
+
+        envVars.set(BOT_AUTHORS, null);
         var botException = assertThrows(BotException.class, TestBot::new);
         assertThat(exceptionContainsEnvVarName(botException, BOT_AUTHORS)).isTrue();
+
+        envVars.set(BOT_AUTHORS, authors); // restore
     }
 
     @Test
@@ -88,8 +100,8 @@ class BaseBotConstructorTest extends AbstractBotTest {
     }
 
     @Test
-    @ClearEnvironmentVariable(key = SERVER_URL)
     void givenMissingServerUrlEnvVar_callingDefaultConstructorFromThread_thenBotIsCreatedButNotConnectingToServer() {
+        envVars.set(SERVER_URL, null);
         var bot = new TestBot();
         startAsync(bot);
         assertThat(server.awaitConnection(1000)).isFalse();
@@ -115,16 +127,6 @@ class BaseBotConstructorTest extends AbstractBotTest {
     }
 
     @Test
-    @ClearEnvironmentVariable(key = SERVER_URL)
-    @ClearEnvironmentVariable(key = BOT_NAME)
-    @ClearEnvironmentVariable(key = BOT_VERSION)
-    @ClearEnvironmentVariable(key = BOT_AUTHORS)
-    @ClearEnvironmentVariable(key = BOT_GAME_TYPES)
-    @ClearEnvironmentVariable(key = BOT_DESCRIPTION)
-    @ClearEnvironmentVariable(key = BOT_HOMEPAGE)
-    @ClearEnvironmentVariable(key = BOT_COUNTRY_CODES)
-    @ClearEnvironmentVariable(key = BOT_PLATFORM)
-    @ClearEnvironmentVariable(key = BOT_PROG_LANG)
     void givenNoEnvVarsSet_callingDefaultConstructorWithBotInfoFromThread_thenBotHandshakeMustBeCorrect() {
         new TestBot(botInfo);
         // passed when this point is reached
@@ -155,8 +157,8 @@ class BaseBotConstructorTest extends AbstractBotTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "file", "dict", "ftp", "gopher" })
-    void givenUnknownScheme_whenCallingConstructor_thenThrowException(String scheme) throws URISyntaxException {
+    @ValueSource(strings = {"file", "dict", "ftp", "gopher"})
+    void givenUnknownScheme_whenCallingConstructor_thenThrowException(String scheme) throws Exception {
         var bot = new TestBot(null, new URI(scheme + "://localhost:" + MockedServer.PORT));
         try {
             startAsync(bot).join();

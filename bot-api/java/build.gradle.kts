@@ -20,7 +20,8 @@ plugins {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 
     withJavadocJar()
     withSourcesJar()
@@ -35,9 +36,9 @@ dependencies {
     testImplementation(libs.junit.api)
     testImplementation(libs.junit.params)
     testImplementation(libs.junit.engine)
-    testImplementation(libs.junit.pioneer)
     testImplementation(libs.assertj)
     testImplementation(libs.java.websocket)
+    testImplementation(libs.system.stubs)
 }
 
 tasks {
