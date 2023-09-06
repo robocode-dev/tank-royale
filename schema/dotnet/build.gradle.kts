@@ -16,8 +16,13 @@ tasks {
             mkdir("${project(":bot-api:dotnet").file("Robocode.TankRoyale.BotApi/src/generated")}")
         }
 
+        var codeGeneratorPath = "$projectDir/bin/Release/net6.0/CodeGeneratorApp"
+        if (System.getProperty("os.name").lowercase().contains("windows")) {
+            codeGeneratorPath += ".exe"
+        }
+
         commandLine(
-            "$projectDir/bin/Release/net6.0/CodeGeneratorApp.exe",
+            codeGeneratorPath,
             "${project(":schema").file("schemas")}",
             "${project(":bot-api:dotnet").file("Robocode.TankRoyale.BotApi/src/generated")}"
         )
