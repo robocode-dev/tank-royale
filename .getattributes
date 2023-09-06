@@ -1,0 +1,83 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Java sources
+*.java          text diff=java
+*.kt            text diff=kotlin
+*.groovy        text diff=java
+*.scala         text diff=java
+*.gradle        text diff=java
+*.gradle.kts    text diff=kotlin
+
+# C#
+*.cs            text diff=csharp
+*.cshtml        text diff=html
+*.csx           text diff=csharp
+*.sln           text eol=crlf
+*.csproj        text eol=crlf
+
+# These files are text and should be normalized (Convert crlf => lf)
+*.txt           text
+*.css           text diff=css
+*.scss          text diff=css
+*.sass          text
+*.df            text
+*.htm           text diff=html
+*.html          text diff=html
+*.js            text
+*.ts            text
+*.jsp           text
+*.jspf          text
+*.jspx          text
+*.properties    text
+*.tld           text
+*.tag           text
+*.tagx          text
+*.xml           text
+*.svg           text
+*.yml           text
+*.yaml          text
+*.json          text
+
+# Markdown
+*.md            text
+
+# ProGuard
+*.pro           text
+
+# These files are binary and should be left untouched
+# (binary is a macro for -text -diff)
+*.class         binary
+*.dll           binary
+*.ear           binary
+*.jar           binary
+*.so            binary
+*.war           binary
+*.jks           binary
+
+# Common build-tool wrapper scripts ('.cmd' versions are handled by 'Common.gitattributes')
+mvnw            text eol=lf
+gradlew         text eol=lf
+
+# Windows
+*.cmd           text eol=crlf
+*.bat           text eol=crlf
+
+# Linux / macOS
+*.sh            text eol=lf
+
+# Binary files
+*.ico           binary
+*.wav           binary
+*.png           binary
+*.gif           binary
+*.zip           binary
+
+# GitHub
+CODEOWNERS      text eol=lf
+LICENSE         text eol=lf
+
+# Exclude files from exporting
+.gitattributes  export-ignore
+.gitignore      export-ignore
+.gitkeep        export-ignore
