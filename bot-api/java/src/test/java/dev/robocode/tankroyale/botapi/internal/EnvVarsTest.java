@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.botapi.internal;
 
-import com.neovisionaries.i18n.CountryCode;
 import dev.robocode.tankroyale.botapi.BotException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,8 +9,8 @@ import uk.org.webcompere.systemstubs.jupiter.SystemStub;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 import java.util.List;
-import java.util.Locale;
 
+import static dev.robocode.tankroyale.botapi.util.CountryCodeUtil.getLocalCountryCode;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static test_utils.EnvironmentVariables.*;
@@ -22,7 +21,7 @@ class EnvVarsTest {
     final static String MISSING_ENV_VAR_TEXT = "Missing environment variable: ";
 
     static EnvironmentVariables createEnvVars() {
-         return new EnvironmentVariables(
+        return new EnvironmentVariables(
                 BOT_NAME, "dummy",
                 BOT_VERSION, "dummy",
                 BOT_AUTHORS, "dummy"
@@ -211,22 +210,19 @@ class EnvVarsTest {
                 @Test
                 void givenInvalidEnvVar_whenCallingGetCountryCodes_thenReturnDefaultLocaleCountryCode() {
                     envVars.set(BOT_COUNTRY_CODES, "xyz");
-                    String localCountryCode = CountryCode.getByLocale(Locale.getDefault()).getAlpha2();
-                    assertThat(EnvVars.getBotInfo().getCountryCodes()).containsAll(List.of(localCountryCode));
+                    assertThat(EnvVars.getBotInfo().getCountryCodes()).containsAll(getLocalCountryCodeAsList());
                 }
 
                 @Test
                 void givenMissingEnvVar_whenCallingGetCountryCodes_thenReturnDefaultLocaleCountryCode() {
                     envVars.set(BOT_COUNTRY_CODES, null);
-                    String localCountryCode = CountryCode.getByLocale(Locale.getDefault()).getAlpha2();
-                    assertThat(EnvVars.getBotInfo().getCountryCodes()).containsAll(List.of(localCountryCode));
+                    assertThat(EnvVars.getBotInfo().getCountryCodes()).containsAll(getLocalCountryCodeAsList());
                 }
 
                 @Test
                 void givenBlankEnvVar_whenCallingGetCountryCodes_thenReturnDefaultLocaleCountryCode() {
                     envVars.set(BOT_COUNTRY_CODES, "  \t");
-                    String localCountryCode = CountryCode.getByLocale(Locale.getDefault()).getAlpha2();
-                    assertThat(EnvVars.getBotInfo().getCountryCodes()).containsAll(List.of(localCountryCode));
+                    assertThat(EnvVars.getBotInfo().getCountryCodes()).containsAll(getLocalCountryCodeAsList());
                 }
             }
 
@@ -373,5 +369,10 @@ class EnvVarsTest {
                 }
             }
         }
+    }
+
+    private static List<String> getLocalCountryCodeAsList() {
+        var localCountryCode = getLocalCountryCode();
+        return (localCountryCode != null) ? List.of(localCountryCode) : List.of();
     }
 }
