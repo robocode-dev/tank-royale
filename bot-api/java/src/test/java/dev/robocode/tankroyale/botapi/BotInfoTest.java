@@ -217,7 +217,7 @@ class BotInfoTest {
         @MethodSource("dev.robocode.tankroyale.botapi.BotInfoTest#listOfEmptyOrBlanks")
         void givenEmptyOrBlankCountryCodes_whenConstructingBotInfo_thenListOfDefaultLocalCountryCodeReturned(List<String> countryCodes) {
             var botInfo = prefilledBuilder().setCountryCodes(countryCodes).build();
-            assertThat(botInfo.getCountryCodes()).isEqualTo(List.of(getLocalCountryCode()));
+            assertThat(botInfo.getCountryCodes()).hasSameElementsAs(getLocalCountryCodeAsList());
         }
 
         @Test
@@ -230,7 +230,7 @@ class BotInfoTest {
         @ValueSource(strings = {"d", "dnk", "xx"})
         void givenListOfInvalidCountryCodes_whenCallingSetCountryCodes_thenListOfDefaultLocalCountryCodeReturned(String countryCode) {
             var botInfo = prefilledBuilder().setCountryCodes(List.of(countryCode)).build();
-            assertThat(botInfo.getCountryCodes()).isEqualTo(List.of(getLocalCountryCode()));
+            assertThat(botInfo.getCountryCodes()).hasSameElementsAs(getLocalCountryCodeAsList());
         }
 
         @Test
@@ -406,5 +406,10 @@ class BotInfoTest {
             return new String(array);
         }
         return "";
+    }
+
+    private static List<String> getLocalCountryCodeAsList() {
+        var localCountryCode = getLocalCountryCode();
+        return (localCountryCode != null) ? List.of(localCountryCode) : List.of();
     }
 }

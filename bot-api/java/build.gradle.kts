@@ -44,8 +44,8 @@ dependencies {
 tasks {
     withType<Test> {
         useJUnitPlatform()
-
         failFast = true
+//        testLogging.showStandardStreams = true
     }
 
     jar {

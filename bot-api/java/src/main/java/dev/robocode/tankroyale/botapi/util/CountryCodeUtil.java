@@ -14,7 +14,11 @@ public final class CountryCodeUtil {
     }
 
     public static String getLocalCountryCode() {
-        return CountryCode.getByLocale(Locale.getDefault()).getAlpha2();
+        var countryCode = CountryCode.getByLocale(Locale.getDefault()).getAlpha2();
+        if ("UNDEFINED".equalsIgnoreCase(countryCode)) {
+            return null;
+        }
+        return countryCode;
     }
 
     public static CountryCode toCountryCode(String code) {
