@@ -52,7 +52,7 @@ dependencyResolutionManagement {
             library("junit-api", "org.junit.jupiter:junit-jupiter-api:$junitVersion")
             library("junit-engine", "org.junit.jupiter:junit-jupiter-engine:$junitVersion")
             library("junit-params", "org.junit.jupiter:junit-jupiter-params:$junitVersion")
-            library("system-stubs", "uk.org.webcompere:system-stubs-jupiter:2.0.2")
+            library("system-stubs", "uk.org.webcompere:system-stubs-jupiter:2.1.0")
 
             // Kotlin testing
             library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.6.2")
