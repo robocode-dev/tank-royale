@@ -1,9 +1,10 @@
 {
+  "name": "robocode-tank-royale-devcontainer",
   "image":"mcr.microsoft.com/devcontainers/universal:2.5.2-linux",
-  "build":{},
   "features": {
     "ghcr.io/devcontainers/features/dotnet:1": {
       "version": "6"
     }
-  }
+  },
+  "postCreateCommand": "sh .devcontainer/post-create.sh"
 }
