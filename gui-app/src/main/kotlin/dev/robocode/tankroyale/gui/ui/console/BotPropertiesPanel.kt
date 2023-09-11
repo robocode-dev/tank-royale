@@ -6,8 +6,12 @@ import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.model.TickEvent
 import dev.robocode.tankroyale.gui.ui.Strings
 import java.awt.BorderLayout
+import java.awt.Component
+import java.awt.Font
 import javax.swing.JPanel
 import javax.swing.JTable
+import javax.swing.plaf.FontUIResource
+import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
 
 class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
@@ -69,6 +73,10 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
             setDefaultEditor(Any::class.java, null) // make it read-only
             clearSelection()
             cellSelectionEnabled = false
+
+            columnModel.columns.iterator().forEach { column ->
+                column.cellRenderer = CustomCellRenderer()
+            }
         }
 
         layout = BorderLayout()
@@ -154,6 +162,25 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
             setValueAt(botState.radarTurnRate, 10, 4)
             setValueAt(botState.stdOut, 11, 4)
             setValueAt(botState.stdErr, 12, 4)
+        }
+    }
+
+    private class CustomCellRenderer : DefaultTableCellRenderer() {
+        private val monospacedFont: Font = FontUIResource(Font.MONOSPACED, Font.BOLD, 12)
+
+        override fun getTableCellRendererComponent(
+            table: JTable?,
+            value: Any?,
+            isSelected: Boolean,
+            hasFocus: Boolean,
+            row: Int,
+            column: Int
+        ): Component {
+            val component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column)
+            when (column) {
+                1, 4 -> component.font = monospacedFont
+            }
+            return component
         }
     }
 }

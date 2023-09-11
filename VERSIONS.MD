@@ -1,5 +1,11 @@
 # Versions
 
+## 📦
+
+#### 🚀 Improvements
+
+- Bot property column values on bot consoles are now written in bold and with a monospace font.
+
 ## 📦 0.20.0 - Added support for teams and droids - 23-Aug-2023
 
 #### 🚀 Improvements
