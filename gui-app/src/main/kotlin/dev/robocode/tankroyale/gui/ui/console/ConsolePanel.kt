@@ -65,7 +65,23 @@ open class ConsolePanel : JPanel() {
         editorPane.text = "<div>" // to avoid 2nd line break
     }
 
-    fun append(text: String) {
+    fun append(text: String?, cssClass: String? = null, turnNumber: Int? = null) {
+        var html = text
+        if (html != null) {
+            html = html
+                .replace("\\n", "<br>")
+                .replace("\\t", "&#9;")
+            if (cssClass != null) {
+                html = "<span class=\"$cssClass\">$html</span>"
+            }
+            if (turnNumber != null) {
+                html = "<span class=\"linenumber\">$turnNumber:</span> $html"
+            }
+            append(html)
+        }
+    }
+
+    private fun append(text: String) {
         var html = text
             .replace(" ", "&nbsp;") // in lack of the css style `white-space: pre`
             .replace("\n", "<br>")

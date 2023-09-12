@@ -36,15 +36,15 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
         }
         ClientEvents.onTickEvent.subscribe(this) { tickEvent ->
             if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
-                appendText("> ${Strings.get("bot_console.bot_died")}", "info", tickEvent.turnNumber)
+                append("> ${Strings.get("bot_console.bot_died")}", "info", tickEvent.turnNumber)
             }
         }
         ClientEvents.onGameEnded.subscribe(this) {
-            appendText("> ${Strings.get("bot_console.game_has_ended")}", "info")
+            append("> ${Strings.get("bot_console.game_has_ended")}", "info")
             unsubscribeEvents()
         }
         ClientEvents.onGameAborted.subscribe(this) {
-            appendText("> ${Strings.get("bot_console.game_was_aborted")}", "info")
+            append("> ${Strings.get("bot_console.game_was_aborted")}", "info")
             unsubscribeEvents()
         }
         ClientEvents.onStdOutputUpdated.subscribe(this) { tickEvent ->
@@ -63,22 +63,22 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
         Client.getStandardOutput(bot.id)?.entries?.forEach { (round, map) ->
             updateRoundInfo(round)
             map.entries.toSet().forEach { (turn, output) ->
-                appendText(output, null, turn)
+                append(output, null, turn)
             }
         }
         Client.getStandardError(bot.id)?.values?.forEach { turns ->
             turns.forEach { (turn, error) ->
-                appendText(error, "error", turn)
+                append(error, "error", turn)
             }
         }
     }
 
     private fun updateBotState(roundNumber: Int, turnNumber: Int) {
         Client.getStandardOutput(bot.id)?.get(roundNumber)?.get(turnNumber)?.let { output ->
-            appendText(output, null, turnNumber)
+            append(output, null, turnNumber)
         }
         Client.getStandardError(bot.id)?.get(roundNumber)?.get(turnNumber)?.let { error ->
-            appendText(error, "error", turnNumber)
+            append(error, "error", turnNumber)
         }
     }
 
@@ -88,27 +88,11 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
             roundInfo += "/$numberOfRounds"
         }
 
-        appendText("""
+        append("""
             --------------------
             $roundInfo
             --------------------
         """.trimIndent(), "info"
         )
-    }
-
-    private fun appendText(text: String?, cssClass: String? = null, turnNumber: Int? = null) {
-        var html = text
-        if (html != null) {
-            html = html
-                .replace("\\n", "<br>")
-                .replace("\\t", "&#9;")
-            if (cssClass != null) {
-                html = "<span class=\"$cssClass\">$html</span>"
-            }
-            if (turnNumber != null) {
-                html = "<span class=\"linenumber\">$turnNumber:</span> $html"
-            }
-            super.append(html)
-        }
     }
 }
