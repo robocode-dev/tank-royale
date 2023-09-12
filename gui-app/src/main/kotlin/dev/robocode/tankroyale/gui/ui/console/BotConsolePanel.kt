@@ -29,15 +29,15 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
             }
             onTickEvent.subscribe(this@BotConsolePanel) { tickEvent ->
                 if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
-                    append("> ${Strings.get("bot_console.bot_died")}", "info", tickEvent.turnNumber)
+                    append("> ${Strings.get("bot_console.bot_died")}", tickEvent.turnNumber, CssClass.INFO)
                 }
             }
             onGameEnded.subscribe(this@BotConsolePanel) {
-                append("> ${Strings.get("bot_console.game_has_ended")}", "info")
+                append("> ${Strings.get("bot_console.game_has_ended")}", cssClass = CssClass.INFO)
                 unsubscribeEvents()
             }
             onGameAborted.subscribe(this@BotConsolePanel) {
-                append("> ${Strings.get("bot_console.game_was_aborted")}", "info")
+                append("> ${Strings.get("bot_console.game_was_aborted")}", cssClass = CssClass.INFO)
                 unsubscribeEvents()
             }
             onStdOutputUpdated.subscribe(this@BotConsolePanel) { tickEvent ->
@@ -59,22 +59,22 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
         Client.getStandardOutput(bot.id)?.entries?.forEach { (round, map) ->
             updateRoundInfo(round)
             map.entries.toSet().forEach { (turn, output) ->
-                append(output, null, turn)
+                append(output, turn)
             }
         }
         Client.getStandardError(bot.id)?.values?.forEach { turns ->
             turns.forEach { (turn, error) ->
-                append(error, "error", turn)
+                append(error, turn, CssClass.ERROR)
             }
         }
     }
 
     private fun updateBotState(roundNumber: Int, turnNumber: Int) {
         Client.getStandardOutput(bot.id)?.get(roundNumber)?.get(turnNumber)?.let { output ->
-            append(output, null, turnNumber)
+            append(output, turnNumber)
         }
         Client.getStandardError(bot.id)?.get(roundNumber)?.get(turnNumber)?.let { error ->
-            append(error, "error", turnNumber)
+            append(error, turnNumber, CssClass.ERROR)
         }
     }
 
@@ -88,7 +88,7 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
             --------------------
             $roundInfo
             --------------------
-        """.trimIndent(), "info"
+        """.trimIndent(), cssClass = CssClass.INFO
         )
     }
 }

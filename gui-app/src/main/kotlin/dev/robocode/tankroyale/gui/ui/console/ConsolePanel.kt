@@ -65,14 +65,14 @@ open class ConsolePanel : JPanel() {
         editorPane.text = "<div>" // to avoid 2nd line break
     }
 
-    fun append(text: String?, cssClass: String? = null, turnNumber: Int? = null) {
+    fun append(text: String?, turnNumber: Int? = null, cssClass: CssClass? = CssClass.NONE) {
         var html = text
         if (html != null) {
             html = html
                 .replace("\\n", "<br>")
                 .replace("\\t", "&#9;")
-            if (cssClass != null) {
-                html = "<span class=\"$cssClass\">$html</span>"
+            if (cssClass != null && cssClass != CssClass.NONE) {
+                html = "<span class=\"${cssClass.className}\">$html</span>"
             }
             if (turnNumber != null) {
                 html = "<span class=\"linenumber\">$turnNumber:</span> $html"
