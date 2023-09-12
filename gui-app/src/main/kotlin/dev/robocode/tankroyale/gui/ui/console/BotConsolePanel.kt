@@ -16,39 +16,43 @@ class BotConsolePanel(val bot: Participant) : ConsolePanel() {
     }
 
     private fun subscribeToEvents() {
-        ClientEvents.onGameStarted.subscribe(this) { gameStartedEvent ->
-            numberOfRounds = gameStartedEvent.gameSetup.numberOfRounds
+        ClientEvents.apply {
+            onGameStarted.subscribe(this@BotConsolePanel) { gameStartedEvent ->
+                numberOfRounds = gameStartedEvent.gameSetup.numberOfRounds
 
-            if (gameStartedEvent.participants.any { it.displayName == bot.displayName }) {
-                subscribeToEvents()
+                if (gameStartedEvent.participants.any { it.displayName == bot.displayName }) {
+                    subscribeToEvents()
+                }
             }
-        }
-        ClientEvents.onRoundStarted.subscribe(this) {
-            updateRoundInfo(it.roundNumber)
-        }
-        ClientEvents.onTickEvent.subscribe(this) { tickEvent ->
-            if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
-                append("> ${Strings.get("bot_console.bot_died")}", "info", tickEvent.turnNumber)
+            onRoundStarted.subscribe(this@BotConsolePanel) {
+                updateRoundInfo(it.roundNumber)
             }
-        }
-        ClientEvents.onGameEnded.subscribe(this) {
-            append("> ${Strings.get("bot_console.game_has_ended")}", "info")
-            unsubscribeEvents()
-        }
-        ClientEvents.onGameAborted.subscribe(this) {
-            append("> ${Strings.get("bot_console.game_was_aborted")}", "info")
-            unsubscribeEvents()
-        }
-        ClientEvents.onStdOutputUpdated.subscribe(this) { tickEvent ->
-            updateBotState(tickEvent.roundNumber, tickEvent.turnNumber)
+            onTickEvent.subscribe(this@BotConsolePanel) { tickEvent ->
+                if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
+                    append("> ${Strings.get("bot_console.bot_died")}", "info", tickEvent.turnNumber)
+                }
+            }
+            onGameEnded.subscribe(this@BotConsolePanel) {
+                append("> ${Strings.get("bot_console.game_has_ended")}", "info")
+                unsubscribeEvents()
+            }
+            onGameAborted.subscribe(this@BotConsolePanel) {
+                append("> ${Strings.get("bot_console.game_was_aborted")}", "info")
+                unsubscribeEvents()
+            }
+            onStdOutputUpdated.subscribe(this@BotConsolePanel) { tickEvent ->
+                updateBotState(tickEvent.roundNumber, tickEvent.turnNumber)
+            }
         }
     }
 
     private fun unsubscribeEvents() {
-        ClientEvents.onRoundStarted.unsubscribe(this)
-        ClientEvents.onTickEvent.unsubscribe(this)
-        ClientEvents.onGameAborted.unsubscribe(this)
-        ClientEvents.onGameEnded.unsubscribe(this)
+        ClientEvents.apply {
+            onRoundStarted.unsubscribe(this@BotConsolePanel)
+            onTickEvent.unsubscribe(this@BotConsolePanel)
+            onGameAborted.unsubscribe(this@BotConsolePanel)
+            onGameEnded.unsubscribe(this@BotConsolePanel)
+        }
     }
 
     private fun printInitialStdOutput() {
