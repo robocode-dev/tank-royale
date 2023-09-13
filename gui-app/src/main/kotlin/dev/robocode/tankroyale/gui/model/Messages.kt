@@ -86,15 +86,6 @@ data class BulletHitWallEvent(
 ) : Event()
 
 @Serializable
-@SerialName("HitByBulletEvent")
-data class HitByBulletEvent(
-    override val turnNumber: Int,
-    val bullet: BulletState,
-    val damage: Double,
-    val energy: Double
-) : Event()
-
-@Serializable
 @SerialName("ScannedBotEvent")
 data class ScannedBotEvent(
     override val turnNumber: Int,
@@ -236,7 +227,6 @@ val messageModule = SerializersModule {
         subclass(GamePausedEvent::class)
         subclass(GameResumedEvent::class)
         subclass(GameStartedEvent::class)
-        subclass(HitByBulletEvent::class)
         subclass(PauseGame::class)
         subclass(ResumeGame::class)
         subclass(NextTurn::class)
