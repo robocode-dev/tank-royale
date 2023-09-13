@@ -58,10 +58,10 @@ class BotEventsPanel(val bot: Participant) : ConsolePanel() {
     }
 
     private fun createEventAndTurnNumberStringBuilder(event: Event) =
-        createEventNameStringBuilder(event).append(':').append(" turnNumber:").append(event.turnNumber)
+        createEventNameStringBuilder(event).append(':').append("\n\t\tturnNumber:").append(event.turnNumber)
 
     private fun createEventNameStringBuilder(event: Event) =
-        StringBuilder(
+        StringBuilder("\n\t" +
             when (event) {
                 is BotDeathEvent -> if (bot.id == event.victimId) "DeathEvent" else "BotDeathEvent"
                 is BulletHitBotEvent -> if (bot.id == event.victimId) "HitByBulletEvent" else "BulletHitBotEvent"
@@ -72,7 +72,7 @@ class BotEventsPanel(val bot: Participant) : ConsolePanel() {
     private fun createVictimIDStringBuilder(event: Event, victimId: Int): StringBuilder {
         val sb = createEventAndTurnNumberStringBuilder(event)
         if (bot.id != victimId) {
-            sb.append(",victimId:").append(victimId)
+            sb.append("\n\t\tvictimId:").append(victimId)
         }
         return sb
     }
@@ -98,10 +98,10 @@ class BotEventsPanel(val bot: Participant) : ConsolePanel() {
     private fun dumpBotHitBotEvent(botHitBotEvent: BotHitBotEvent) {
         if (botHitBotEvent.botId == bot.id) {
             val sb = createVictimIDStringBuilder(botHitBotEvent, botHitBotEvent.victimId)
-                .append(",energy:").append(botHitBotEvent.energy)
-                .append(",x:").append(botHitBotEvent.x)
-                .append(",y:").append(botHitBotEvent.y)
-                .append(",rammed:").append(botHitBotEvent.rammed)
+                .append("\n\t\tenergy:").append(botHitBotEvent.energy)
+                .append("\n\t\tx:").append(botHitBotEvent.x)
+                .append("\n\t\ty:").append(botHitBotEvent.y)
+                .append("\n\t\trammed:").append(botHitBotEvent.rammed)
             append(sb.toString(), botHitBotEvent.turnNumber)
         }
     }
@@ -113,25 +113,23 @@ class BotEventsPanel(val bot: Participant) : ConsolePanel() {
     private fun dumpBulletHitBotEvent(bulletHitBotEvent: BulletHitBotEvent) {
         if (bulletHitBotEvent.bullet.ownerId == bot.id || bulletHitBotEvent.victimId == bot.id) {
             val sb = createVictimIDStringBuilder(bulletHitBotEvent, bulletHitBotEvent.victimId)
-                .append(",bullet:").appendBullet(bulletHitBotEvent.bullet)
-                .append(",damage:").append(bulletHitBotEvent.damage)
-                .append(",energy:").append(bulletHitBotEvent.energy)
+                .append("\n\t\tbullet:").appendBullet(bulletHitBotEvent.bullet)
+                .append("\n\t\tdamage:").append(bulletHitBotEvent.damage)
+                .append("\n\t\tenergy:").append(bulletHitBotEvent.energy)
             append(sb.toString(), bulletHitBotEvent.turnNumber)
         }
     }
 
     private fun StringBuilder.appendBullet(bullet: BulletState): StringBuilder {
-        append("{")
-            .append("bulletId:").append(bullet.bulletId)
+        append("\n\t\t\tbulletId:").append(bullet.bulletId)
         if (bot.id != bullet.ownerId) {
-            append(",ownerId:").append(bullet.ownerId)
+            append("\n\t\t\townerId:").append(bullet.ownerId)
         }
-        append(",power:").append(bullet.power)
-            .append(",x:").append(bullet.x)
-            .append(",y:").append(bullet.y)
-            .append(",direction:").append(bullet.direction)
-            .append(",color:").append(bullet.color)
-            .append("}")
+        append("\n\t\t\tpower:").append(bullet.power)
+            .append("\n\t\t\tx:").append(bullet.x)
+            .append("\n\t\t\ty:").append(bullet.y)
+            .append("\n\t\t\tdirection:").append(bullet.direction)
+            .append("\n\t\t\tcolor:").append(bullet.color)
         return this
     }
 
@@ -141,8 +139,8 @@ class BotEventsPanel(val bot: Participant) : ConsolePanel() {
 
         if (bullet.ownerId == bot.id || hitBullet.ownerId == bot.id) {
             val sb = createEventAndTurnNumberStringBuilder(bulletHitBulletEvent)
-                .append(",bullet:").appendBullet(bullet)
-                .append(",hitBullet:").appendBullet(hitBullet)
+                .append("\n\t\tbullet:").appendBullet(bullet)
+                .append("\n\t\thitBullet:").appendBullet(hitBullet)
             append(sb.toString(), bulletHitBulletEvent.turnNumber)
         }
     }
@@ -154,7 +152,7 @@ class BotEventsPanel(val bot: Participant) : ConsolePanel() {
     private fun dumpBulletOnly(event: Event, bullet: BulletState) {
         if (bullet.ownerId == bot.id) {
             val sb = createEventAndTurnNumberStringBuilder(event)
-                .append(",bullet:").appendBullet(bullet)
+                .append("\n\t\tbullet:").appendBullet(bullet)
             append(sb.toString(), event.turnNumber)
         }
     }
@@ -162,12 +160,16 @@ class BotEventsPanel(val bot: Participant) : ConsolePanel() {
     private fun dumpScannedBotEvent(scannedBotEvent: ScannedBotEvent) {
         if (scannedBotEvent.scannedByBotId == bot.id) {
             val sb = createEventAndTurnNumberStringBuilder(scannedBotEvent)
-                .append(",scannedBotId:").append(scannedBotEvent.scannedBotId)
-                .append(",energy:").append(scannedBotEvent.energy)
-                .append(",x:").append(scannedBotEvent.x)
-                .append(",y:").append(scannedBotEvent.y)
-                .append(",direction:").append(scannedBotEvent.direction)
-                .append(",speed:").append(scannedBotEvent.speed)
+                .append("\n\t\tscannedBotId:").append(scannedBotEvent.scannedBotId)
+                .append("\n\t\tenergy:").append(scannedBotEvent.energy)
+                .append("\n\t\tx:").append(scannedBotEvent.x)
+                .append("\n\t\ty:").append(scannedBotEvent.y)
+                .append("\n\t\tdirection:").append(scannedBotEvent.direction)
+                .append("\n\t\tspeed:").append(scannedBotEvent.speed)
         }
+    }
+
+    private fun append(text: String, turnNumber: Int) {
+        append(text.replace("\t", "  "), turnNumber, CssClass.NONE)
     }
 }
