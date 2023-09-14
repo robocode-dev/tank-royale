@@ -1,0 +1,673 @@
+{
+  "homepages": [],
+  "source_base_path": "C:/Code/tank-royale/bot-api/dotnet/docfx_project",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.BaseBot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.BaseBot.html",
+          "hash": "ZbfGNKsrTuTzYsYtZ1t8oeC17vboAIoevmpF6EMoNQU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Bot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Bot.html",
+          "hash": "GsfT1dfTVpD+k1LP8VifV+zjxoqRvwhvHghZG5CudKM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.BotException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.BotException.html",
+          "hash": "z58bPqYNh1AZrGkdg+i3M4RH2GCbg4HHcntUK9VuGCg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html",
+          "hash": "JX9WSGhen+Px2LHrKUFH+GIpNAlwtYpNvJWwZ0//9XU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.BotInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.BotInfo.html",
+          "hash": "/WAXVo/nMPu/zN3Z/rhEXHr16ZpPnQ0Xnkel1f0OezE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.BotResults.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.BotResults.html",
+          "hash": "TV5ZcxL6+obutSYF5uLsrlR4Lzvp2Obo4iu7fdoqjaI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.BotState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.BotState.html",
+          "hash": "mdaEWiLTfUZrLONn9zgWZOeFnZAi3FcrTxZDbKLZoUs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.BulletState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.BulletState.html",
+          "hash": "sWMveQt3mKflx4QkxO6Bp5Lk7NXty/SFqrKJBS2iUM0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Color.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Color.html",
+          "hash": "whPD6Pa81Av9zf2OhBCHehuzElt19ghIqONoDupdsMU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Constants.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Constants.html",
+          "hash": "MbFWjmwN/CYYJpyuYFdXjE+cDQmvwrIofVe/kLLkADA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Droid.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Droid.html",
+          "hash": "+ZyX5bW6rav/tdpUMsrKu4G2iF+KMIQbLyPQSSsOJTk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.BotDeathEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.BotDeathEvent.html",
+          "hash": "iJsphcSfmuboq2qNwoBfys5cDdqt3qFtEF2ITqGv3qQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.BotEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.BotEvent.html",
+          "hash": "bjPZEqiDzBRll1RlFyuXT2BjM+cXYMhkSeSSzg5RlbQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.BulletFiredEvent.html",
+          "hash": "4IJgG4AVLcKGXvajEgalUzkLwK+UYT5VfsggGmccGdk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.BulletHitBotEvent.html",
+          "hash": "mZLrVNPgwOO7M1tMExrZboGqKhdFj5Zhw26EDcUjmCg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.BulletHitBulletEvent.html",
+          "hash": "xunkoS5QTBPVFlWqNwUnOL2nGGauWFKtO74H6MOhFt8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent.html",
+          "hash": "6JpR8pcdPyu9OjTABgO5TjPZUXNGVrJcyKjtJza4ykg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.Condition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.Condition.html",
+          "hash": "BIJjGh6Y/kRw06q+3kueEoi4GVdXJ72S09aY92OGccQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.ConnectedEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.ConnectedEvent.html",
+          "hash": "1H72nwybH9xVgmhFI6zMHP2jRnzbO5gIBOyJEXjkgcQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.ConnectionErrorEvent.html",
+          "hash": "mBOyW9UjEBqavp8Ntq5VQQhtLT3AClInB0mokHqrPcE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.ConnectionEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.ConnectionEvent.html",
+          "hash": "T2lvtv0lWgK9Lj7jaYKND8S38k1zbFpP37DefZiBTyo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.CustomEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.CustomEvent.html",
+          "hash": "zAUUj79SwWEBzc7bOq6q/CICpth6EA2+nK42U3WHK90="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.DeathEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.DeathEvent.html",
+          "hash": "qogbZEHvftT9zxVsZ2OCbmg2i6Q0HqI73hUWeTpAxps="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.DefaultEventPriority.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.DefaultEventPriority.html",
+          "hash": "EvGGG2vMzqON+IeRMvaXJvfUTKZYez8b8oIEGd7HLH0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.DisconnectedEvent.html",
+          "hash": "iq/Z0dAn8bRe3eiDBveZJAiKwz++ChTzFXSz5OTRuu4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.GameEndedEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.GameEndedEvent.html",
+          "hash": "r18oDLPJFQYhdV9Hr9CV1z8CW7+zvyfjOS9fUyhGt2g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.GameStartedEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.GameStartedEvent.html",
+          "hash": "/rLRfdhcOtL6VK97WvpM0esmWUgIMusLGwSpHZFZirs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.HitBotEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.HitBotEvent.html",
+          "hash": "Zs/eKF2DDQPIUXOgxIjWQq0qRQaJBwFRLyjCiTcn6AE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.HitByBulletEvent.html",
+          "hash": "PBniqHZgByHtJV/XQ+BT/bN7YuRGeQ5tJad3lgiCxZE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.HitWallEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.HitWallEvent.html",
+          "hash": "KzrDGKDe+ISkTJVwziN1VNkWZCJ41ar0RCCXLpWhGao="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.IEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.IEvent.html",
+          "hash": "aYIDMcBx3q7PI+SkNo00lJrVK+yV8wzNf8MA7kYCjlI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.NextTurnCondition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.NextTurnCondition.html",
+          "hash": "J2qBwzsKoIgr2WNGa9Rf3CXFIxnHaOQyrxLYxjGxrmY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.RoundEndedEvent.html",
+          "hash": "5ktPh8SWwIXJISuOnZKiSG6cKJTuWGK5tOPhS6nuKN0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.RoundStartedEvent.html",
+          "hash": "iReo2Hl1W08TrCdlX3poQw/deLRPvz+eOkjwcObAzkc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.html",
+          "hash": "TezhxDWXBnboF6JSo/gwhlPpXxmyWMeAmNX4Fdr2Ivk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent.html",
+          "hash": "I9soAHI0vsyILnvE2rqLZmEA81Wbs7JbuttIx6cKqMw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.TeamMessageEvent.html",
+          "hash": "7Kmg1FGt3u60Vi/kfrgnajrlze6gopPVyEQWw1VlHv8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.TickEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.TickEvent.html",
+          "hash": "L9kvny6hHCUGXb8u6NoI4DRu/vnNAEJk/+MksWHHhBM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.WonRoundEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.WonRoundEvent.html",
+          "hash": "tCnsGc8apiH8hm/VyOLp3xG1hb1uionndERjid0b45I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Events.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Events.html",
+          "hash": "Rj4jOVClnZSE360IlEKWWfoUcfqb9COIC0Uk1ByrPkA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.GameSetup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.GameSetup.html",
+          "hash": "JlQ69yuecKZ1pq8JVtENorCljZYWn/DOQUsFKHvvIcs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.GameType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.GameType.html",
+          "hash": "47MkVOMGzy+tJb3sDV1DHq2+ATtP3PXLiv71ZB0kLyI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.IBaseBot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.IBaseBot.html",
+          "hash": "Be4jCNmf6ZCnIFr+yLQ+k/AG6pl6gTHzwnhyVFljOW0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.IBot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.IBot.html",
+          "hash": "J8rYcVnGTbBfg/ZtZKeiYC9uErAH/IrbOIA2bXdYWoM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.InitialPosition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.InitialPosition.html",
+          "hash": "aSFNMKBSDtdlqzJVOnH6DMH+nDk+7bpBwZX0eNpqvV4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.html",
+          "hash": "3YordiUdISPz4pI4kcUUEnJP0RnQbl5O/qkhmYBv9kw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "eg5bSZ3b2CAkz5dXGZ0WxlK6lC9ZvOY2fPWkahoQ33c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "favicon.ico",
+      "output": {
+        "resource": {
+          "relative_path": "favicon.ico"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "FZ6a+RTxA8CL68tjEfYtm2t5dTZFW4eAdz44PE3VIOk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "logo.svg",
+      "output": {
+        "resource": {
+          "relative_path": "logo.svg"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "u3JtDAVF6+xIXH73lcEdzLMP8tqqwILzXF8LihVYROE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot build incrementally because last build info is missing.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "NoAvailableBuildCache"
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 1,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 46,
+          "skipped_file_count": 0
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: last post processor info is null.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
