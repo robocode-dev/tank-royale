@@ -5,7 +5,7 @@
 #### 🚀 Improvements
 
 - Bot Console (in GUI):
-    - Added a new tab on the Bot Console that continuously dumps the bot events as they occur.
+    - Added an [Events tab] on the Bot Console that continuously dumps the bot events as they occur.
     - Bot property column values on bot consoles are now written in bold and with a monospace font.
 
 ## 📦 0.20.0 - Added support for teams and droids - 23-Aug-2023
@@ -646,3 +646,5 @@ Bot info:
 [GitHub Pages]: https://robocode-dev.github.io/tank-royale/
 
 [ANSI escape code]: https://en.wikipedia.org/w/index.php?title=ANSI_escape_code
+
+[Events tab]: https://robocode-dev.github.io/tank-royale/articles/gui.html#viewing-the-bot-events "Events tab in Bot Console"
