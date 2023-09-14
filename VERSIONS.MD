@@ -1,6 +1,6 @@
 # Versions
 
-## 📦 0.20.1 - Added Events to bot console - 14-Sep-2023
+## 📦 0.20.1 - Added Events to bot console - 15-Sep-2023
 
 #### 🚀 Improvements
 

@@ -6,9 +6,9 @@ import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.*
 
-class BotEventsPanel(val bot: Participant) : ConsolePanel() {
+class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
 
-    val INDENT_CHARS = 2
+    private val numberOfIndentionSpaces = 2
 
     init {
         subscribeToEvents()
@@ -19,26 +19,6 @@ class BotEventsPanel(val bot: Participant) : ConsolePanel() {
             onTickEvent.subscribe(this@BotEventsPanel) {
                 dump(it.events)
             }
-            onGameStarted.subscribe(this@BotEventsPanel) { gameStartedEvent ->
-                if (gameStartedEvent.participants.any { it.displayName == bot.displayName }) {
-                    subscribeToEvents()
-                }
-            }
-            onGameEnded.subscribe(this@BotEventsPanel) {
-                unsubscribeEvents()
-            }
-            onGameAborted.subscribe(this@BotEventsPanel) {
-                unsubscribeEvents()
-            }
-        }
-    }
-
-    private fun unsubscribeEvents() {
-        ClientEvents.apply {
-            onRoundStarted.unsubscribe(this@BotEventsPanel)
-            onTickEvent.unsubscribe(this@BotEventsPanel)
-            onGameAborted.unsubscribe(this@BotEventsPanel)
-            onGameEnded.unsubscribe(this@BotEventsPanel)
         }
     }
 
@@ -67,7 +47,7 @@ class BotEventsPanel(val bot: Participant) : ConsolePanel() {
             .fieldValue("turnNumber", event.turnNumber)
 
     private fun createEventNameBuilder(event: Event) =
-        AnsiTextBuilder().newline().space(INDENT_CHARS).esc(AnsiEscapeCode.CYAN).text(
+        AnsiTextBuilder().newline().space(numberOfIndentionSpaces).esc(AnsiEscapeCode.CYAN).text(
             when (event) {
                 is BotDeathEvent -> if (bot.id == event.victimId) "DeathEvent" else "BotDeathEvent"
                 is BulletHitBotEvent -> if (bot.id == event.victimId) "HitByBulletEvent" else "BulletHitBotEvent"
@@ -84,7 +64,7 @@ class BotEventsPanel(val bot: Participant) : ConsolePanel() {
     }
 
     private fun AnsiTextBuilder.fieldValue(fieldName: String, value: Any?, indention: Int = 2): AnsiTextBuilder {
-        newline().space(indention * INDENT_CHARS).green().text(fieldName).text(": ").default().bold().text(value).reset()
+        newline().space(indention * numberOfIndentionSpaces).green().text(fieldName).text(": ").default().bold().text(value).reset()
         return this
     }
 
