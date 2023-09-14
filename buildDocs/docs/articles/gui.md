@@ -157,6 +157,16 @@ to read the current states of the bot and useful debugging your bot.
 
 ![Bot Console](../images/gui/bot-properties.png)
 
+### Viewing the bot events
+
+The **Events** tab of the bot console shows all events occurring for the bot, which used for, e.g., debugging your bot.
+
+![Bot Console](../images/gui/bot-events.png)
+
+Each event gets printed out on the turn (number) they were received by the GUI client. But your bot might receive it
+with a delay, depending on how busy the bot is due to CPU and RAM usage. But networking latency and threading issues
+could also play in (bots run over WebSockets).
+
 ## Setup Rules
 
 Setup Rules makes it is possible to modify the rules for a specific [game type]:
@@ -213,7 +223,8 @@ The **Sound Options** let you enable and disable sounds, but also toggle the ind
 
 The about-box provides information about the version of the GUI application and built in booter and server.
 
-In addition, the Java version and vendor is also provided, which is useful information when e.g. filing a bug report.
+In addition, the Java version and vendor is also provided, which is useful information when e.g. filing a
+new [new issue].
 
 ![About box](../images/gui/about-box.png)
 
@@ -224,3 +235,5 @@ using the speed and turn rates from the last commands successfully sent to the s
 [game type]: game_types.md
 
 [booter]: booter.md
+
+[new issue]: https://github.com/robocode-dev/tank-royale/issues/new/choose "Create new issue"

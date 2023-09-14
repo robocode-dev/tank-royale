@@ -9,9 +9,9 @@ open class ConsoleHtmlEditorKit : HTMLEditorKit() {
             addRule("span { color: white; font-family: monospace; font-size: 12;}")
 
             // Bot console
-            addRule(".info { color: \"#377B37\"; }") // olive green
-            addRule(".error { color: \"#FF5733\"; }") // dark pink
-            addRule(".linenumber { color: gray; }")
+            addRule(".${CssClass.INFO.className} { color: \"#377B37\"; }") // olive green
+            addRule(".${CssClass.ERROR.className} { color: \"#FF5733\"; }") // dark pink
+            addRule(".${CssClass.LINE_NUMBER.className} { color: gray; }")
 
             // ANSI colors
             addRule(".esc.black { color: Black }")

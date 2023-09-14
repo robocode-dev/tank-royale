@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.gui.ansi.AnsiColorToHtmlController
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.util.Clipboard
@@ -65,7 +66,23 @@ open class ConsolePanel : JPanel() {
         editorPane.text = "<div>" // to avoid 2nd line break
     }
 
-    fun append(text: String) {
+    fun append(text: String?, turnNumber: Int? = null, cssClass: CssClass? = CssClass.NONE) {
+        var html = text
+        if (html != null) {
+            html = html
+                .replace("\\n", "<br>")
+                .replace("\\t", "&#9;")
+            if (cssClass != null && cssClass != CssClass.NONE) {
+                html = "<span class=\"${cssClass.className}\">$html</span>"
+            }
+            if (turnNumber != null) {
+                html = "<span class=\"linenumber\">$turnNumber:</span> $html"
+            }
+            append(html)
+        }
+    }
+
+    private fun append(text: String) {
         var html = text
             .replace(" ", "&nbsp;") // in lack of the css style `white-space: pre`
             .replace("\n", "<br>")
