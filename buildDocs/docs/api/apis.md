@@ -2,7 +2,7 @@
 
 ## Java (JVM)
 
-- [API overview](https://robocode-dev.github.io/tank-royale/api/java/)
+- [API overview](https://robocode-dev.github.io/tank-royale/api/java/index.html)
 - [Bot API](https://robocode-dev.github.io/tank-royale/api/java/dev/robocode/tankroyale/botapi/package-summary.html)
 
 ## .Net
