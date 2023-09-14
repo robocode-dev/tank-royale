@@ -57,7 +57,7 @@ private fun prepareRelease(projectDir: File, version: String, token: String): St
 
     val body = """{
         "tag_name": "v$version",
-        "target_commitish": "master",
+        "target_commitish": "main",
         "name": "$version",
         "body": $quotedReleaseNotes,
         "draft": true,
