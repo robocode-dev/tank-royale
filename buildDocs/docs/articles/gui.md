@@ -157,6 +157,16 @@ to read the current states of the bot and useful debugging your bot.
 
 ![Bot Console](../images/gui/bot-properties.png)
 
+### Viewing the bot events
+
+The **Events** tab of the bot console shows all events occurring for the bot, which used for, e.g., debugging your bot.
+
+![Bot Console](../images/gui/bot-events.png)
+
+Each event gets printed out on the turn (number) they were received by the GUI client. But your bot might receive it
+with a delay, depending on how busy the bot is due to CPU and RAM usage. But networking latency and threading issues
+could also play in (bots run over WebSockets).
+
 ## Setup Rules
 
 Setup Rules makes it is possible to modify the rules for a specific [game type]:
