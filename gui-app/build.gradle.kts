@@ -64,7 +64,7 @@ tasks {
         dependsOn(copyBooterJar, copyServerJar)
     }
 
-    build {
+    named("build") {
         dependsOn(copyJars)
     }
 
