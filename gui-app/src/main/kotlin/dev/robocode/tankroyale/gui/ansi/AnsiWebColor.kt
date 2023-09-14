@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.ui.console
+package dev.robocode.tankroyale.gui.ansi
 
 enum class AnsiColor(val offset: Int, val cssColor: String?) {
     BLACK(0, "#000000"),
@@ -13,8 +13,8 @@ enum class AnsiColor(val offset: Int, val cssColor: String?) {
     DEFAULT(9, null);
 
     companion object {
-        infix fun cssColorFrom(offset: Int): String? =
-            AnsiColor.values().firstOrNull { it.offset == offset }?.cssColor
+        infix fun webColorFrom(offset: Int): String? =
+            entries.firstOrNull { it.offset == offset }?.cssColor
     }
 }
 
@@ -29,7 +29,7 @@ enum class BrightAnsiColor(val offset: Int, val cssColor: String?) {
     BRIGHT_WHITE(7, "#FFFFFF");
 
     companion object {
-        infix fun cssColorFrom(offset: Int): String? =
-            BrightAnsiColor.values().firstOrNull { it.offset == offset }?.cssColor
+        infix fun webColorFrom(offset: Int): String? =
+            entries.firstOrNull { it.offset == offset }?.cssColor
     }
 }

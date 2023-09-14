@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.gui.ansi.AnsiColorToHtmlController
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.util.Clipboard

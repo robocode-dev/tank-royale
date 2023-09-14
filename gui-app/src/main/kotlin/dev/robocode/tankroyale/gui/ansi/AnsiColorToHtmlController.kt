@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.ui.console
+package dev.robocode.tankroyale.gui.ansi
 
 class AnsiColorToHtmlController {
 
@@ -46,10 +46,10 @@ class AnsiColorToHtmlController {
                 22 -> state.weight = null // neither bold nor faint
                 23 -> state.italic = false
                 24 -> state.underline = null // neither singly nor doubly underlined
-                in 30..39 -> state.fgColor = AnsiColor.cssColorFrom(firstCode - 30)
-                in 40..49 -> state.bgColor = AnsiColor.cssColorFrom(firstCode - 40)
-                in 90..97 -> state.fgColor = BrightAnsiColor.cssColorFrom(firstCode - 90)
-                in 100..107 -> state.bgColor = BrightAnsiColor.cssColorFrom(firstCode - 100)
+                in 30..39 -> state.fgColor = AnsiColor.webColorFrom(firstCode - 30)
+                in 40..49 -> state.bgColor = AnsiColor.webColorFrom(firstCode - 40)
+                in 90..97 -> state.fgColor = BrightAnsiColor.webColorFrom(firstCode - 90)
+                in 100..107 -> state.bgColor = BrightAnsiColor.webColorFrom(firstCode - 100)
             }
         } while (iterator.hasNext())
 

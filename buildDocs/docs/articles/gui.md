@@ -223,7 +223,8 @@ The **Sound Options** let you enable and disable sounds, but also toggle the ind
 
 The about-box provides information about the version of the GUI application and built in booter and server.
 
-In addition, the Java version and vendor is also provided, which is useful information when e.g. filing a bug report.
+In addition, the Java version and vendor is also provided, which is useful information when e.g. filing a
+new [new issue].
 
 ![About box](../images/gui/about-box.png)
 
@@ -234,3 +235,5 @@ using the speed and turn rates from the last commands successfully sent to the s
 [game type]: game_types.md
 
 [booter]: booter.md
+
+[new issue]: https://github.com/robocode-dev/tank-royale/issues/new/choose "Create new issue"
