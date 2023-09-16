@@ -125,7 +125,6 @@ public final class BotInternals implements IStopResumeListener {
         thread.start();
     }
 
-    @SuppressWarnings("removal") // avoid waring in gradle build
     private void stopThread() {
         if (!isRunning())
             return;
@@ -135,9 +134,10 @@ public final class BotInternals implements IStopResumeListener {
         if (thread != null) {
             thread.interrupt();
             try {
-                thread.join(100);
+                thread.join(1000);
                 if (thread.isAlive()) {
-                    thread.stop();
+                    System.err.println("The thread of the bot could not be interrupted causing the bot to hang.\nSo the bot was stopped by force.");
+                    System.exit(-1); // last resort without Thread.stop()
                 }
             } catch (InterruptedException ignore) {
             } finally {

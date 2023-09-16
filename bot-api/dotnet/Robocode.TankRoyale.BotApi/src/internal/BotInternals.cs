@@ -148,12 +148,11 @@ internal sealed class BotInternals : IStopResumeListener
         thread.Interrupt();
         try
         {
-            thread.Join(100);
+            thread.Join(1000);
             if (thread.IsAlive)
             {
-#pragma warning disable SYSLIB0006
-                thread.Abort();
-#pragma warning restore SYSLIB0006
+                Console.Error.WriteLine("The thread of the bot could not be interrupted causing the bot to hang.\nSo the bot was stopped by force.");
+                Environment.Exit(-1);
             }
         }
         catch (ThreadInterruptedException)
