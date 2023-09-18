@@ -254,7 +254,15 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void stop() {
-        __botInternals.stop();
+        __botInternals.stop(false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void stop(boolean overwrite) {
+        __botInternals.stop(overwrite);
     }
 
     /**

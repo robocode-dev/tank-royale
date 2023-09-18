@@ -535,38 +535,38 @@ public final class BaseBotInternals {
         return conditions.remove(condition);
     }
 
-    public void setStop() {
-        if (isStopped) return;
+    public void setStop(boolean overwrite) {
+        if (!isStopped || overwrite) {
+            isStopped = true;
 
-        isStopped = true;
+            savedTargetSpeed = botIntent.getTargetSpeed();
+            savedTurnRate = botIntent.getTurnRate();
+            savedGunTurnRate = botIntent.getGunTurnRate();
+            savedRadarTurnRate = botIntent.getRadarTurnRate();
 
-        savedTargetSpeed = botIntent.getTargetSpeed();
-        savedTurnRate = botIntent.getTurnRate();
-        savedGunTurnRate = botIntent.getGunTurnRate();
-        savedRadarTurnRate = botIntent.getRadarTurnRate();
+            botIntent.setTargetSpeed(0d);
+            botIntent.setTurnRate(0d);
+            botIntent.setGunTurnRate(0d);
+            botIntent.setRadarTurnRate(0d);
 
-        botIntent.setTargetSpeed(0d);
-        botIntent.setTurnRate(0d);
-        botIntent.setGunTurnRate(0d);
-        botIntent.setRadarTurnRate(0d);
-
-        if (stopResumeListener != null) {
-            stopResumeListener.onStop();
+            if (stopResumeListener != null) {
+                stopResumeListener.onStop();
+            }
         }
     }
 
     public void setResume() {
-        if (!isStopped) return;
+        if (isStopped) {
+            botIntent.setTargetSpeed(savedTargetSpeed);
+            botIntent.setTurnRate(savedTurnRate);
+            botIntent.setGunTurnRate(savedGunTurnRate);
+            botIntent.setRadarTurnRate(savedRadarTurnRate);
 
-        botIntent.setTargetSpeed(savedTargetSpeed);
-        botIntent.setTurnRate(savedTurnRate);
-        botIntent.setGunTurnRate(savedGunTurnRate);
-        botIntent.setRadarTurnRate(savedRadarTurnRate);
-
-        if (stopResumeListener != null) {
-            stopResumeListener.onResume();
+            if (stopResumeListener != null) {
+                stopResumeListener.onResume();
+            }
+            isStopped = false; // must be last step
         }
-        isStopped = false; // must be last step
     }
 
     public boolean isStopped() {

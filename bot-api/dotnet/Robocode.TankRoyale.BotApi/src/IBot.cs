@@ -630,6 +630,24 @@ public interface IBot : IBaseBot
     void Stop();
 
     /// <summary>
+    /// Stop all movement including turning the gun and radar. The remaining movement is saved for a
+    /// call to <see cref="IBaseBot.SetResume"/> or <see cref="Resume"/>.
+    /// 
+    /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
+    /// method will block until it has been completed, which can take one to several turns. New
+    /// commands will first take place after this method is completed. If you need to execute
+    /// multiple commands in parallel, use <em>setter</em> methods instead of this blocking
+    /// method.
+    /// </summary>
+    /// <param name="overwrite">overwrite is set to <c>true</c> if the movement saved by a previous call
+    /// to this method or <see cref="SetStop()"/> must be overridden with the current movement.
+    /// When set to <c>false</c> this method is identical to <see cref="SetStop()"/>.</param>
+    /// <seealso cref="Stop"/>
+    /// <seealso cref="IBaseBot.SetResume"/>
+    /// <seealso cref="Resume"/>
+    void Stop(bool overwrite);
+
+    /// <summary>
     /// Resume the movement prior to calling the <see cref="IBaseBot.SetStop"/> or <see cref="Stop"/> method. This
     /// method has no effect, if it has already been called.
     /// 

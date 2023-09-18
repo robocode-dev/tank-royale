@@ -309,8 +309,8 @@ public final class BotInternals implements IStopResumeListener {
         } while (isRunning() && !condition.test());
     }
 
-    public void stop() {
-        baseBotInternals.setStop();
+    public void stop(boolean overwrite) {
+        baseBotInternals.setStop(overwrite);
         bot.go();
     }
 

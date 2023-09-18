@@ -343,9 +343,9 @@ internal sealed class BotInternals : IStopResumeListener
         } while (IsRunning && !condition.Test());
     }
 
-    internal void Stop()
+    internal void Stop(bool overwrite)
     {
-        baseBotInternals.SetStop();
+        baseBotInternals.SetStop(overwrite);
         bot.Go();
     }
 

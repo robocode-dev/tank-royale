@@ -790,6 +790,23 @@ public interface IBaseBot {
     void setStop();
 
     /**
+     * Set the bot to stop all movement including turning the gun and radar. The remaining movement is
+     * saved for a call to {@link #setResume}.
+     *
+     * <p>This method will first be executed when {@link #go} is called making it possible to call
+     * other set methods before execution. This makes it possible to set the bot to move, turn the
+     * body, radar, gun, and also fire the gun in parallel in a single turn when calling {@link #go}.
+     * But notice that this is only possible to execute multiple methods in parallel by using
+     * <strong>setter</strong> methods only prior to calling {@link #go}.
+     *
+     * @param overwrite is set to <code>true</code> if the movement saved by a previous call to this
+     *                  method or {@link #setStop()} must be overridden with the current movement.
+     *                  When set to <code>false</code> this method is identical to {@link #setStop()}.
+     * @see #setResume
+     */
+    void setStop(boolean overwrite);
+
+    /**
      * Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
      * turning and thereby will not be able to automatically scan bots. This method is useful when the
      * bot movement has stopped, e.g. when {@link #setStop} has been called. The last radar

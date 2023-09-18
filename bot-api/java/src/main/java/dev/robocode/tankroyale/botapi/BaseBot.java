@@ -575,7 +575,15 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final void setStop() {
-        __baseBotInternals.setStop();
+        __baseBotInternals.setStop(false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void setStop(boolean overwrite) {
+        __baseBotInternals.setStop(overwrite);
     }
 
     /**

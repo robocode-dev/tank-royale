@@ -3,6 +3,9 @@
 ## 📦
 
 - Bot API:
+    - Added `stop(boolean overwrite)` and `setStop(boolean overwrite)` to overwrite the saved movement from a previous
+      call to `setStop()` with current movement values. These methods provide backwards compatibility with the original
+      Robocode with the [Robocode API Bridge] (in progress).
     - Due to the removal of Java's `Thread.kill()` and .Net's `Thread.Abort()`, the main thread of the bot is no longer
       being killed by those methods is those threads could not be interrupted. Instead, the bot process it shut down
       with an error message:
@@ -656,3 +659,5 @@ Bot info:
 [ANSI escape code]: https://en.wikipedia.org/w/index.php?title=ANSI_escape_code
 
 [Events tab]: https://robocode-dev.github.io/tank-royale/articles/gui.html#viewing-the-bot-events "Events tab in Bot Console"
+
+[Robocode API Bridge]: https://github.com/robocode-dev/robocode-api-bridge "Robocode API bridge for Tank Royale"

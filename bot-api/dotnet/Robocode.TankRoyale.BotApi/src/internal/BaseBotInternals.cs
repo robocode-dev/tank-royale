@@ -549,36 +549,38 @@ public sealed class BaseBotInternals
 
     internal bool RemoveCondition(Events.Condition condition) => Conditions.Remove(condition);
 
-    internal void SetStop()
+    internal void SetStop(bool overwrite)
     {
-        if (IsStopped) return;
+        if (!IsStopped || overwrite)
+        {
+            IsStopped = true;
 
-        IsStopped = true;
+            savedTargetSpeed = BotIntent.TargetSpeed;
+            savedTurnRate = BotIntent.TurnRate;
+            savedGunTurnRate = BotIntent.GunTurnRate;
+            savedRadarTurnRate = BotIntent.RadarTurnRate;
 
-        savedTargetSpeed = BotIntent.TargetSpeed;
-        savedTurnRate = BotIntent.TurnRate;
-        savedGunTurnRate = BotIntent.GunTurnRate;
-        savedRadarTurnRate = BotIntent.RadarTurnRate;
+            BotIntent.TargetSpeed = 0;
+            BotIntent.TurnRate = 0;
+            BotIntent.GunTurnRate = 0;
+            BotIntent.RadarTurnRate = 0;
 
-        BotIntent.TargetSpeed = 0;
-        BotIntent.TurnRate = 0;
-        BotIntent.GunTurnRate = 0;
-        BotIntent.RadarTurnRate = 0;
-
-        stopResumeListener?.OnStop();
+            stopResumeListener?.OnStop();
+        }
     }
 
     internal void SetResume()
     {
-        if (!IsStopped) return;
+        if (IsStopped)
+        {
+            BotIntent.TargetSpeed = savedTargetSpeed;
+            BotIntent.TurnRate = savedTurnRate;
+            BotIntent.GunTurnRate = savedGunTurnRate;
+            BotIntent.RadarTurnRate = savedRadarTurnRate;
 
-        BotIntent.TargetSpeed = savedTargetSpeed;
-        BotIntent.TurnRate = savedTurnRate;
-        BotIntent.GunTurnRate = savedGunTurnRate;
-        BotIntent.RadarTurnRate = savedRadarTurnRate;
-
-        stopResumeListener?.OnResume();
-        IsStopped = false; // must be last step
+            stopResumeListener?.OnResume();
+            IsStopped = false; // must be last step
+        }
     }
 
     internal bool IsStopped { get; private set; }

@@ -280,7 +280,10 @@ public abstract class BaseBot : IBaseBot
     public bool RemoveCustomEvent(Condition condition) => __baseBotInternals.RemoveCondition(condition);
 
     /// <inheritdoc/>
-    public void SetStop() => __baseBotInternals.SetStop();
+    public void SetStop() => __baseBotInternals.SetStop(false);
+
+    /// <inheritdoc/>
+    public void SetStop(bool overwrite) => __baseBotInternals.SetStop(overwrite);
 
     /// <inheritdoc/>
     public void SetResume() => __baseBotInternals.SetResume();

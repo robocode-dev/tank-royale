@@ -509,7 +509,7 @@ public interface IBaseBot
     /// <param name="enable">Enables fire assistance when set to <c>true</c>, and disable fire assistance
     /// otherwise.</param>
     void SetFireAssist(bool enable);
-    
+
     /// <summary>
     /// Set this property during an event handler to control continuing or restarting the event handler,
     /// when a new event occurs again for the same event handler while processing an earlier event.
@@ -645,6 +645,24 @@ public interface IBaseBot
     /// <seealso cref="SetResume"/>
     /// <seealso cref="IBot.Resume"/>
     void SetStop();
+
+    /// <summary>
+    /// Set the bot to stop all movement including turning the gun and radar. The remaining movement is
+    /// saved for a call to {@link #resume()}.
+    ///
+    /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
+    /// call other set methods before execution. This makes it possible to set the bot to move,
+    /// turn the body, radar, gun, and also fire the gun in parallel in a single turn when calling
+    /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
+    /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
+    /// </summary>
+    /// <param name="overwrite">overwrite is set to <c>true</c> if the movement saved by a previous call
+    /// to this method or <see cref="SetStop()"/> must be overridden with the current movement.
+    /// When set to <c>false</c> this method is identical to <see cref="SetStop()"/>.</param>
+    /// <seealso cref="IBot.Stop"/>
+    /// <seealso cref="SetResume"/>
+    /// <seealso cref="IBot.Resume"/>
+    void SetStop(bool overwrite);
 
     /// <summary>
     /// Sets the bot to scan (again) with the radar. This method is useful if the radar has not been

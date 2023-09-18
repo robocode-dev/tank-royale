@@ -186,9 +186,15 @@ public abstract class Bot : BaseBot, IBot
     /// <inheritdoc/>
     public void Stop()
     {
-        __botInternals.Stop();
+        __botInternals.Stop(false);
     }
 
+    /// <inheritdoc/>
+    public void Stop(bool overwrite)
+    {
+        __botInternals.Stop(overwrite);
+    }
+    
     /// <inheritdoc/>
     public void Resume()
     {

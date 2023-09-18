@@ -623,6 +623,24 @@ public interface IBot extends IBaseBot {
     void stop();
 
     /**
+     * Stop all movement including turning the gun and radar. The remaining movement is saved for a
+     * call to {@link #setResume} or {@link #resume}.
+     *
+     * <p>This call is executed immediately by calling {@link #go} in the code behind. This method
+     * will block until it has been completed, which can take one to several turns. New commands will
+     * first take place after this method is completed. If you need to execute multiple commands in
+     * parallel, use <strong>setter</strong> methods instead of this blocking method.
+     *
+     * @param overwrite is set to <code>true</code> if the movement saved by a previous call to this
+     *                  method or {@link #setStop()} must be overridden with the current movement.
+     *                  When set to <code>false</code> this method is identical to {@link #setStop()}.
+     * @see #resume
+     * @see #setResume
+     * @see #setStop
+     */
+    void stop(boolean overwrite);
+
+    /**
      * Resume the movement prior to calling the {@link #setStop} or {@link #stop} method. This
      * method has no effect, if it has already been called.
      *
