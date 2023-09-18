@@ -97,7 +97,7 @@ public class Color
 
     /// <summary>
     /// Creates a color from a string. Currently, only numeric RGB values are supported.
-    /// This method works the same was as {@link #fromHex} except that is required as hash sign before the hex value.
+    /// This method works the same was as <see cref="FromHex"/> except that is required as hash sign before the hex value.
     ///
     /// An example of a numeric RGB value is "#09C" or "#0099CC", which both represents the same color.
     /// </summary>

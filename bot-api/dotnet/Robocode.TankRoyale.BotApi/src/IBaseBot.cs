@@ -632,7 +632,7 @@ public interface IBaseBot
 
     /// <summary>
     /// Set the bot to stop all movement including turning the gun and radar. The remaining movement is
-    /// saved for a call to {@link #resume()}. This method has no effect, if it has already been
+    /// saved for a call to <see cref="SetResume"/>. This method has no effect, if it has already been
     /// called.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
@@ -641,14 +641,14 @@ public interface IBaseBot
     /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
     /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
     /// </summary>
-    /// <seealso cref="IBot.Stop"/>
+    /// <seealso cref="IBot.Stop()"/>
     /// <seealso cref="SetResume"/>
     /// <seealso cref="IBot.Resume"/>
     void SetStop();
 
     /// <summary>
     /// Set the bot to stop all movement including turning the gun and radar. The remaining movement is
-    /// saved for a call to {@link #resume()}.
+    /// saved for a call to <see cref="SetResume"/>.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
     /// call other set methods before execution. This makes it possible to set the bot to move,
@@ -659,7 +659,7 @@ public interface IBaseBot
     /// <param name="overwrite">overwrite is set to <c>true</c> if the movement saved by a previous call
     /// to this method or <see cref="SetStop()"/> must be overridden with the current movement.
     /// When set to <c>false</c> this method is identical to <see cref="SetStop()"/>.</param>
-    /// <seealso cref="IBot.Stop"/>
+    /// <seealso cref="IBot.Stop()"/>
     /// <seealso cref="SetResume"/>
     /// <seealso cref="IBot.Resume"/>
     void SetStop(bool overwrite);
