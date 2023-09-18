@@ -16,15 +16,35 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
 
     private fun subscribeToEvents() {
         ClientEvents.apply {
-            onTickEvent.subscribe(this@BotEventsPanel) {
-                dump(it.events)
+            onTickEvent.subscribe(this@BotEventsPanel) { dumpTickEvent(it) }
+
+            onGameAborted.unsubscribe {
+                onTickEvent.unsubscribe(this@BotEventsPanel)
+            }
+            onGameEnded.unsubscribe {
+                onTickEvent.unsubscribe(this@BotEventsPanel)
             }
         }
     }
 
-    private fun dump(events: Set<Event>) {
+    private fun dumpTickEvent(tickEvent: TickEvent) {
+        val ansi = createEventAndTurnNumberBuilder(tickEvent)
+            .fieldValue("roundNumber", tickEvent.roundNumber)
+//            .fieldValue("enemyCount", // TODO
+            .botValues("botState", tickEvent.botStates.first { bot.id == it.id })
+
+        val bullets = tickEvent.bulletStates.filter { bot.id == it.ownerId }.toList()
+        ansi.fieldValue("bulletStates", "")
+        bullets.forEach { bullet ->
+            ansi.bulletValues(null, bullet)
+        }
+        append(ansi.toString(), tickEvent.turnNumber)
+    }
+
+    private fun dumpEvents(events: Set<Event>) {
         events.forEach { event ->
             when (event) {
+                is TickEvent -> dumpTickEvent(event)
                 is BotDeathEvent -> dumpBotDeathEvent(event)
                 is BotHitWallEvent -> dumpBotHitWallEvent(event)
                 is BotHitBotEvent -> dumpBotHitBotEvent(event)
@@ -40,50 +60,6 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
 
     private fun dumpUnknownEvent(event: Event) {
         append("Unknown event: ${event.javaClass.simpleName}", event.turnNumber, CssClass.ERROR)
-    }
-
-    private fun createEventAndTurnNumberBuilder(event: Event) =
-        createEventNameBuilder(event).text(':')
-            .fieldValue("turnNumber", event.turnNumber)
-
-    private fun createEventNameBuilder(event: Event) =
-        AnsiTextBuilder().newline().space(numberOfIndentionSpaces).esc(AnsiEscapeCode.CYAN).text(
-            when (event) {
-                is BotDeathEvent -> if (bot.id == event.victimId) "DeathEvent" else "BotDeathEvent"
-                is BulletHitBotEvent -> if (bot.id == event.victimId) "HitByBulletEvent" else "BulletHitBotEvent"
-                else -> event.javaClass.simpleName
-            }
-        )
-
-    private fun createVictimIdBuilder(event: Event, victimId: Int): AnsiTextBuilder {
-        val ansi = createEventAndTurnNumberBuilder(event)
-        if (bot.id != victimId) {
-            ansi.fieldValue("victimId", botIdAndName(victimId))
-        }
-        return ansi
-    }
-
-    private fun AnsiTextBuilder.fieldValue(fieldName: String, value: Any?, indention: Int = 2): AnsiTextBuilder {
-        newline().space(indention * numberOfIndentionSpaces).green().text(fieldName).text(": ").default().bold().text(value).reset()
-        return this
-    }
-
-    private fun AnsiTextBuilder.bulletValues(fieldName: String, bullet: BulletState, indention: Int = 2): AnsiTextBuilder {
-        val indent = indention + 1
-
-        val bulletAnsi = AnsiTextBuilder()
-            .fieldValue("bulletId", bullet.bulletId, indent)
-            if (bot.id != bullet.ownerId) {
-                fieldValue("ownerId", botIdAndName(bullet.ownerId), indent)
-            }
-            fieldValue("power", bullet.power, indent)
-                .fieldValue("x", bullet.x, indent)
-                .fieldValue("y", bullet.y, indent)
-                .fieldValue("direction", bullet.direction, indent)
-                .fieldValue("color", bullet.color, indent)
-
-        fieldValue(fieldName, bulletAnsi.toString(), indention)
-        return this
     }
 
     private fun dumpBotDeathEvent(botDeathEvent: BotDeathEvent) {
@@ -164,6 +140,99 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
                 .fieldValue("speed", scannedBotEvent.speed)
             append(ansi.toString(), scannedBotEvent.turnNumber)
         }
+    }
+
+    private fun createEventAndTurnNumberBuilder(event: Event) =
+        createEventNameBuilder(event).text(':')
+            .fieldValue("turnNumber", event.turnNumber)
+
+    private fun createEventNameBuilder(event: Event) =
+        AnsiTextBuilder().newline().space(numberOfIndentionSpaces).esc(AnsiEscapeCode.CYAN).text(
+            when (event) {
+                is BotDeathEvent -> if (bot.id == event.victimId) "DeathEvent" else "BotDeathEvent"
+                is BulletHitBotEvent -> if (bot.id == event.victimId) "HitByBulletEvent" else "BulletHitBotEvent"
+                else -> event.javaClass.simpleName
+            }
+        )
+
+    private fun createVictimIdBuilder(event: Event, victimId: Int): AnsiTextBuilder {
+        val ansi = createEventAndTurnNumberBuilder(event)
+        if (bot.id != victimId) {
+            ansi.fieldValue("victimId", botIdAndName(victimId))
+        }
+        return ansi
+    }
+
+    private fun AnsiTextBuilder.indent(text: Any, indention: Int = 3): AnsiTextBuilder {
+        newline().space(indention * numberOfIndentionSpaces).green().text(text).text(": ")
+        return this
+    }
+
+    private fun AnsiTextBuilder.fieldValue(fieldName: String?, value: Any?, indention: Int = 2): AnsiTextBuilder {
+        if (fieldName != null) {
+            indent(fieldName, indention).default().bold().text(value).reset()
+        }
+        return this
+    }
+
+    private fun AnsiTextBuilder.botValues(fieldName: String, botState: BotState, indention: Int = 2): AnsiTextBuilder {
+        val indent = indention + 1
+        val botAnsi = AnsiTextBuilder()
+        if (bot.id != botState.id) {
+            fieldValue("id", botIdAndName(botState.id))
+        }
+        botAnsi
+            .fieldValue("energy", botState.energy, indent)
+            .fieldValue("x", botState.x, indent)
+            .fieldValue("y", botState.y, indent)
+            .fieldValue("direction", botState.direction, indent)
+            .fieldValue("gunDirection", botState.gunDirection, indent)
+            .fieldValue("radarDirection", botState.radarDirection, indent)
+            .fieldValue("radarSweep", botState.radarSweep, indent)
+            .fieldValue("speed", botState.speed, indent)
+            .fieldValue("turnRate", botState.turnRate, indent)
+            .fieldValue("gunTurnRate", botState.gunTurnRate, indent)
+            .fieldValue("radarTurnRate", botState.radarTurnRate, indent)
+            .fieldValue("gunHeat", botState.gunHeat, indent)
+            .fieldValue("bodyColor", botState.bodyColor, indent)
+            .fieldValue("turretColor", botState.turretColor, indent)
+            .fieldValue("radarColor", botState.radarColor, indent)
+            .fieldValue("bulletColor", botState.bulletColor, indent)
+            .fieldValue("scanColor", botState.scanColor, indent)
+            .fieldValue("tracksColor", botState.tracksColor, indent)
+            .fieldValue("gunColor", botState.gunColor, indent)
+//            .fieldValue("stdOut", botState.stdOut, indent) // TODO: must be escaped \t \r \n
+//            .fieldValue("stdErr", botState.stdErr, indent)  // TODO: must be escaped \t \r \n
+
+        fieldValue(fieldName, botAnsi.toString(), indention)
+        return this
+    }
+
+    private fun AnsiTextBuilder.bulletValues(fieldName: String?, bullet: BulletState, indention: Int = 2): AnsiTextBuilder {
+        val indent = indention + 1
+        val bulletAnsi = AnsiTextBuilder()
+
+        if (fieldName != null) {
+            bulletAnsi.fieldValue("bulletId", bullet.bulletId, indent)
+        } else {
+            bulletAnsi.fieldValue("- bulletId", bullet.bulletId, indent - 1)
+        }
+        if (bot.id != bullet.ownerId) {
+            bulletAnsi.fieldValue("ownerId", botIdAndName(bullet.ownerId), indent)
+        }
+        bulletAnsi
+            .fieldValue("power", bullet.power, indent)
+            .fieldValue("x", bullet.x, indent)
+            .fieldValue("y", bullet.y, indent)
+            .fieldValue("direction", bullet.direction, indent)
+            .fieldValue("color", bullet.color, indent)
+
+        if (fieldName != null) {
+            fieldValue(fieldName, bulletAnsi.toString(), indention)
+        } else {
+            append(bulletAnsi.toString())
+        }
+        return this
     }
 
     private fun botIdAndName(botId: Int): String {
