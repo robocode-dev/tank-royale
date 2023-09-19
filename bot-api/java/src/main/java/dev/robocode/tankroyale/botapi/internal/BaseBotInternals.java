@@ -23,11 +23,8 @@ import dev.robocode.tankroyale.botapi.events.WonRoundEvent;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
-import dev.robocode.tankroyale.botapi.util.JsonUtil;
 import dev.robocode.tankroyale.schema.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -46,7 +43,6 @@ import static dev.robocode.tankroyale.botapi.util.MathUtil.clamp;
 import static java.lang.Math.*;
 import static java.net.http.WebSocket.Builder;
 import static java.net.http.WebSocket.Listener;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class BaseBotInternals {
     private static final String DEFAULT_SERVER_URL = "ws://localhost:7654";
@@ -108,7 +104,8 @@ public final class BaseBotInternals {
 
     private boolean eventHandlingDisabled;
 
-    private ByteArrayOutputStream stdOut, stdErr;
+    private RecordingPrintStream recordedStdOut;
+    private RecordingPrintStream recordedStdErr;
 
     private final Map<Class<? extends BotEvent>, Integer> eventPriorities = new HashMap<>();
 
@@ -169,11 +166,11 @@ public final class BaseBotInternals {
 
     private void redirectStdOutAndStdErr() {
         if (EnvVars.isBotBooted()) {
-            stdOut = new ByteArrayOutputStream();
-            stdErr = new ByteArrayOutputStream();
+            recordedStdOut = new RecordingPrintStream(System.out);
+            recordedStdErr = new RecordingPrintStream(System.err);
 
-            System.setOut(new PrintStream(stdOut, true, UTF_8));
-            System.setErr(new PrintStream(stdErr, true, UTF_8));
+            System.setOut(recordedStdOut);
+            System.setErr(recordedStdErr);
         }
     }
 
@@ -301,15 +298,11 @@ public final class BaseBotInternals {
     }
 
     private void transferStdOutToBotIntent() {
-        if (stdOut != null) {
-            var out = stdOut.toString(UTF_8).replaceAll("\r", "");
-            botIntent.setStdOut(JsonUtil.escaped(out));
-            stdOut.reset();
+        if (recordedStdOut != null) {
+            botIntent.setStdOut(recordedStdOut.readNext());
         }
-        if (stdErr != null) {
-            var err = stdErr.toString(UTF_8).replaceAll("\r", "");
-            botIntent.setStdErr(JsonUtil.escaped(err));
-            stdErr.reset();
+        if (recordedStdErr != null) {
+            botIntent.setStdErr(recordedStdErr.readNext());
         }
     }
 
