@@ -31,6 +31,7 @@ import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -79,7 +80,7 @@ public final class BaseBotInternals {
     private final EventQueue eventQueue;
 
     private final BotEventHandlers botEventHandlers;
-    private final Set<Condition> conditions = new HashSet<>();
+    private final Set<Condition> conditions = new CopyOnWriteArraySet<>();
 
     private final Object nextTurnMonitor = new Object();
 

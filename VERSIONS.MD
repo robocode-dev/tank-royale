@@ -10,6 +10,7 @@
       being killed by those methods is those threads could not be interrupted. Instead, the bot process it shut down
       with an error message:
       `The thread of the bot could not be interrupted causing the bot to hang. So the bot was stopped by force.`
+    - Fixed raise condition when adding custom events.
 
 ## 📦 0.20.1 - Added Events to bot console - 15-Sep-2023
 

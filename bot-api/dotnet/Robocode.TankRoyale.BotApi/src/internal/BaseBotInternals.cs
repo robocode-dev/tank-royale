@@ -189,7 +189,7 @@ public sealed class BaseBotInternals
     internal void SetScannedBotEventInterruptible() =>
         eventQueue.SetInterruptible(typeof(E.ScannedBotEvent), true);
 
-    internal ISet<Events.Condition> Conditions { get; } = new HashSet<Events.Condition>();
+    internal ImmutableHashSet<Events.Condition> Conditions = ImmutableHashSet<Events.Condition>.Empty;
 
     private void OnRoundStarted(E.RoundStartedEvent e)
     {
@@ -545,9 +545,19 @@ public sealed class BaseBotInternals
         return distance;
     }
 
-    internal bool AddCondition(Events.Condition condition) => Conditions.Add(condition);
+    internal bool AddCondition(Events.Condition condition)
+    {
+        var hadCondition = Conditions.Contains(condition);
+        Conditions = Conditions.Add(condition);
+        return !hadCondition;
+    }
 
-    internal bool RemoveCondition(Events.Condition condition) => Conditions.Remove(condition);
+    internal bool RemoveCondition(Events.Condition condition)
+    {
+        var hadCondition = Conditions.Contains(condition);
+        Conditions = Conditions.Remove(condition);
+        return hadCondition;
+    }
 
     internal void SetStop(bool overwrite)
     {
