@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.botapi.internal;
+package dev.robocode.tankroyale.botapi.util;
 
 /**
  * Utility class for JSON.

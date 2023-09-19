@@ -1,8 +1,8 @@
-package dev.robocode.tankroyale.botapi.internal;
+package dev.robocode.tankroyale.botapi.util;
 
 import org.junit.jupiter.api.Test;
 
-import static dev.robocode.tankroyale.botapi.internal.JsonUtil.escaped;
+import static dev.robocode.tankroyale.botapi.util.JsonUtil.escaped;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class JsonUtilTest {

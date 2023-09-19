@@ -23,6 +23,7 @@ import dev.robocode.tankroyale.botapi.events.WonRoundEvent;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
+import dev.robocode.tankroyale.botapi.util.JsonUtil;
 import dev.robocode.tankroyale.schema.*;
 
 import java.io.ByteArrayOutputStream;
