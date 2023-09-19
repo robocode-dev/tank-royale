@@ -34,8 +34,8 @@ open class ConsolePanel : JPanel() {
     }
 
     protected val okButton = JPanel().addOkButton(onOk)
-    protected val clearButton = JPanel().addButton("clear", onClear)
-    protected val copyToClipboardButton = JPanel().addButton("copy_to_clipboard", onCopyToClipboard)
+    private val clearButton = JPanel().addButton("clear", onClear)
+    private val copyToClipboardButton = JPanel().addButton("copy_to_clipboard", onCopyToClipboard)
 
     protected open val buttonPanel get() = JPanel().apply {
         add(okButton)
