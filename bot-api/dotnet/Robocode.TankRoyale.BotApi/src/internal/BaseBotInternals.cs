@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Web;
 using Newtonsoft.Json;
 using S = Robocode.TankRoyale.Schema;
 using E = Robocode.TankRoyale.BotApi.Events;
@@ -64,8 +62,8 @@ public sealed class BaseBotInternals
 
     private bool eventHandlingDisabled;
 
-    private readonly StringWriter stdOutStringWriter = new();
-    private readonly StringWriter stdErrStringWriter = new();
+    private RecordingTextWriter recordingStdOut;
+    private RecordingTextWriter recordingStdErr;
 
     private readonly IDictionary<Type, int> eventPriorities = new Dictionary<Type, int>();
 
@@ -101,9 +99,14 @@ public sealed class BaseBotInternals
 
     private void RedirectStdOutAndStdErr()
     {
-        if (!EnvVars.IsBotBooted()) return;
-        Console.SetOut(stdOutStringWriter);
-        Console.SetError(stdErrStringWriter);
+//        if (EnvVars.IsBotBooted())
+//        {
+            recordingStdOut = new RecordingTextWriter(Console.Out);
+            recordingStdErr = new RecordingTextWriter(Console.Error);
+            
+            Console.SetOut(recordingStdOut);
+            Console.SetError(recordingStdErr);
+//        }
     }
 
     private void InitializeWebSocketClient(Uri serverUrl)
@@ -262,17 +265,14 @@ public sealed class BaseBotInternals
 
     private void TransferStdOutToBotIntent()
     {
-        var stdOutText = stdOutStringWriter.ToString();
-        BotIntent.StdOut = stdOutText.Length > 0
-            ? HttpUtility.JavaScriptStringEncode(stdOutText.Replace("\r", ""))
-            : null;
-        stdOutStringWriter.GetStringBuilder().Clear();
-
-        var stdErrText = stdErrStringWriter.ToString();
-        BotIntent.StdErr = stdErrText.Length > 0
-            ? HttpUtility.JavaScriptStringEncode(stdErrText.Replace("\r", ""))
-            : null;
-        stdErrStringWriter.GetStringBuilder().Clear();
+        if (recordingStdOut != null)
+        {
+            BotIntent.StdOut = recordingStdOut.ReadNext();
+        }
+        if (recordingStdErr != null)
+        {
+            BotIntent.StdErr = recordingStdErr.ReadNext();
+        }
     }
 
     private void WaitForNextTurn(int turnNumber)

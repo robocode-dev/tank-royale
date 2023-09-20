@@ -166,13 +166,11 @@ public final class BaseBotInternals {
     }
 
     private void redirectStdOutAndStdErr() {
-        if (EnvVars.isBotBooted()) {
-            recordedStdOut = new RecordingPrintStream(System.out);
-            recordedStdErr = new RecordingPrintStream(System.err);
+        recordedStdOut = new RecordingPrintStream(System.out);
+        recordedStdErr = new RecordingPrintStream(System.err);
 
-            System.setOut(recordedStdOut);
-            System.setErr(recordedStdErr);
-        }
+        System.setOut(recordedStdOut);
+        System.setErr(recordedStdErr);
     }
 
     private void subscribeToEvents() {

@@ -32,6 +32,6 @@ public final class RecordingPrintStream extends PrintStream {
     public String readNext() {
         String output = JsonUtil.escaped(byteArrayOutputStream.toString(UTF_8).replaceAll("\r", ""));
         byteArrayOutputStream.reset();
-        return output;
+        return !output.isEmpty() ? output : null;
     }
 }

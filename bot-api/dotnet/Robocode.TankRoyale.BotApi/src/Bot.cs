@@ -194,7 +194,7 @@ public abstract class Bot : BaseBot, IBot
     {
         __botInternals.Stop(overwrite);
     }
-    
+
     /// <inheritdoc/>
     public void Resume()
     {
