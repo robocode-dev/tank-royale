@@ -16,10 +16,17 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
 
     private fun subscribeToEvents() {
         ClientEvents.apply {
-            onTickEvent.subscribe(this@BotEventsPanel) {
-                dump(it.events)
+            onTickEvent.subscribe(this@BotEventsPanel) { tickEvent ->
+                if (isAlive(tickEvent)) {
+                    dump(tickEvent.events)
+                }
             }
         }
+    }
+
+    private fun isAlive(tickEvent: TickEvent): Boolean {
+        val botStates = tickEvent.botStates.filter { botState -> bot.id == botState.id }.toList()
+        return botStates.isNotEmpty() && botStates.first().energy >= 0
     }
 
     private fun dump(events: Set<Event>) {

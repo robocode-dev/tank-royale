@@ -2,6 +2,8 @@
 
 ## 📦
 
+#### 🚀 Improvements
+
 - Bot API:
     - Added `stop(boolean overwrite)` and `setStop(boolean overwrite)` to overwrite the saved movement from a previous
       call to `setStop()` with current movement values. These methods provide backwards compatibility with the original
@@ -10,7 +12,13 @@
       being killed by those methods is those threads could not be interrupted. Instead, the bot process it shut down
       with an error message:
       `The thread of the bot could not be interrupted causing the bot to hang. So the bot was stopped by force.`
-    - Fixed raise condition when adding custom events.
+
+#### 🪲 Bug Fixes
+
+- Bot API:
+    - Fixed race condition when adding custom events.
+- Bot Console:
+    - Events are only printed out while the bot is alive. 
 
 ## 📦 0.20.1 - Added Events to bot console - 15-Sep-2023
 
