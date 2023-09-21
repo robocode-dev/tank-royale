@@ -17,7 +17,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
     private fun subscribeToEvents() {
         ClientEvents.apply {
             onTickEvent.subscribe(this@BotEventsPanel) { tickEvent ->
-                if (isAlive(tickEvent)) {
+                if (isAlive(tickEvent) || hasJustDied(tickEvent)) {
                     dump(tickEvent.events)
                 }
             }
@@ -28,6 +28,9 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
         val botStates = tickEvent.botStates.filter { botState -> bot.id == botState.id }.toList()
         return botStates.isNotEmpty() && botStates.first().energy >= 0
     }
+
+    private fun hasJustDied(tickEvent: TickEvent): Boolean =
+        tickEvent.events.any { event -> event is BotDeathEvent && bot.id == event.victimId }
 
     private fun dump(events: Set<Event>) {
         events.forEach { event ->
@@ -105,10 +108,8 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
     }
 
     private fun dumpVictimIdOnly(event: Event, victimId: Int) {
-        if (bot.id != victimId) {
-            val ansi = createVictimIdBuilder(event, victimId)
-            append(ansi.toString(), event.turnNumber)
-        }
+        val ansi = createVictimIdBuilder(event, victimId)
+        append(ansi.toString(), event.turnNumber)
     }
 
     private fun dumpBotHitBotEvent(botHitBotEvent: BotHitBotEvent) {
