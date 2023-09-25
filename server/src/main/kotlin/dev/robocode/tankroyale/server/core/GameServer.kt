@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.ConnectionHandler
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.GameServerConnectionListener
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.TeamOrBotId
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.BotOrTeamId
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.ResultsView
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.*
@@ -242,17 +242,17 @@ class GameServer(
         modelUpdater = ModelUpdater(gameSetup, participantsAndTeamIds, initialPositions, droidFlags)
     }
 
-    private fun createTeamOrBotIds(): List<TeamOrBotId> {
+    private fun createTeamOrBotIds(): List<BotOrTeamId> {
 
-        val teamOrBotIds = mutableListOf<TeamOrBotId>()
+        val botOrTeamIds = mutableListOf<BotOrTeamId>()
 
         connectionHandler.getBotHandshakes().forEach { (conn, botHandshake) ->
             participantIds[conn]?.let { botId ->
                 val teamId = botHandshake.teamId?.let { TeamId(it) }
-                teamOrBotIds += TeamOrBotId(teamId, botId)
+                botOrTeamIds += BotOrTeamId(botId, teamId)
             }
         }
-        return teamOrBotIds
+        return botOrTeamIds
     }
 
     /** Last reset turn timeout period */
@@ -291,7 +291,7 @@ class GameServer(
     private fun getResultsForBot(botId: BotId): ResultsForBot {
         val results = modelUpdater!!.getResults().sortedByDescending { it.totalScore }
 
-        val index = results.indexOfFirst { it.teamOrBotId.botId == botId }
+        val index = results.indexOfFirst { it.botOrTeamId.botId == botId }
         if (index == -1)
             throw IllegalStateException("botId was not found in results: $botId")
 
@@ -322,7 +322,7 @@ class GameServer(
 
         scores.forEach { score ->
             run {
-                participantMap[score.teamOrBotId.botId]?.let { participant ->
+                participantMap[score.botOrTeamId.botId]?.let { participant ->
 
                     val (id, name, version) =
                         if (participant.teamId == null)

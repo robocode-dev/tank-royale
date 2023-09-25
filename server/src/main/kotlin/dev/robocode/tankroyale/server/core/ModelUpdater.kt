@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.server.core
 
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.TeamOrBotId
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.BotOrTeamId
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.Color.Companion.fromString
@@ -30,7 +30,7 @@ class ModelUpdater(
     /** Game setup */
     private val setup: GameSetup,
     /** Participant ids */
-    private val participantsAndTeamIds: List<TeamOrBotId>,
+    private val participantsAndTeamIds: List<BotOrTeamId>,
     /** Initial positions */
     private val initialPositions: Map<BotId, InitialPosition>,
     /** Droid flags */
@@ -876,7 +876,7 @@ class ModelUpdater(
                 // Otherwise, the bot with the highest score wins
                 val scores = scoreTracker.getBotScores().sortedByDescending { it.totalScore }
                 if (winnerId == null && scores.isNotEmpty()) {
-                    winnerId = scores[0].teamOrBotId.botId
+                    winnerId = scores[0].botOrTeamId.botId
                     turn.addPrivateBotEvent(winnerId, WonRoundEvent(turn.turnNumber))
                 }
             }
@@ -887,7 +887,7 @@ class ModelUpdater(
         // distinctBy(id) is necessary to take account for both bots and teams
         getBotsOrTeams(MutableBot::isAlive).distinctBy { it.id }.count() <= 1
 
-    private fun getBotsOrTeams(filter: (MutableBot) -> Boolean): Collection<TeamOrBotId> {
+    private fun getBotsOrTeams(filter: (MutableBot) -> Boolean): Collection<BotOrTeamId> {
         val botIds = botsMap.values.filter { filter.invoke(it) }.map { it.id }
 
         return participantsAndTeamIds.filter { botIds.contains(it.botId) }.distinct()
