@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.ConnectionHandler
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.GameServerConnectionListener
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.BotOrTeamId
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.ResultsView
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.*
@@ -231,7 +231,7 @@ class GameServer(
 
     /** Prepares model-updater */
     private fun prepareModelUpdater() {
-        val participantsAndTeamIds = createTeamOrBotIds()
+        val participantIds = createParticipantIds()
 
         val initialPositions = participantMap.filter { it.value.initialPosition != null }.mapValues {
             val p = it.value.initialPosition
@@ -239,20 +239,20 @@ class GameServer(
         }
         val droidFlags = participantMap.mapValues { it.value.isDroid == true }
 
-        modelUpdater = ModelUpdater(gameSetup, participantsAndTeamIds, initialPositions, droidFlags)
+        modelUpdater = ModelUpdater(gameSetup, participantIds, initialPositions, droidFlags)
     }
 
-    private fun createTeamOrBotIds(): List<BotOrTeamId> {
+    private fun createParticipantIds(): Set<ParticipantId> {
 
-        val botOrTeamIds = mutableListOf<BotOrTeamId>()
+        val participantIds = mutableSetOf<ParticipantId>()
 
         connectionHandler.getBotHandshakes().forEach { (conn, botHandshake) ->
-            participantIds[conn]?.let { botId ->
+            this.participantIds[conn]?.let { botId ->
                 val teamId = botHandshake.teamId?.let { TeamId(it) }
-                botOrTeamIds += BotOrTeamId(botId, teamId)
+                participantIds += ParticipantId(botId, teamId)
             }
         }
-        return botOrTeamIds
+        return participantIds
     }
 
     /** Last reset turn timeout period */
@@ -291,7 +291,7 @@ class GameServer(
     private fun getResultsForBot(botId: BotId): ResultsForBot {
         val results = modelUpdater!!.getResults().sortedByDescending { it.totalScore }
 
-        val index = results.indexOfFirst { it.botOrTeamId.botId == botId }
+        val index = results.indexOfFirst { it.participantId.botId == botId }
         if (index == -1)
             throw IllegalStateException("botId was not found in results: $botId")
 
@@ -322,7 +322,7 @@ class GameServer(
 
         scores.forEach { score ->
             run {
-                participantMap[score.botOrTeamId.botId]?.let { participant ->
+                participantMap[score.participantId.botId]?.let { participant ->
 
                     val (id, name, version) =
                         if (participant.teamId == null)

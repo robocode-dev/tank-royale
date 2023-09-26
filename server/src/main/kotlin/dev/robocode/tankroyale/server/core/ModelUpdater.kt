@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.server.core
 
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.BotOrTeamId
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.Color.Companion.fromString
@@ -30,14 +30,14 @@ class ModelUpdater(
     /** Game setup */
     private val setup: GameSetup,
     /** Participant ids */
-    private val participantsAndTeamIds: List<BotOrTeamId>,
+    private val participantIds: Set<ParticipantId>,
     /** Initial positions */
     private val initialPositions: Map<BotId, InitialPosition>,
     /** Droid flags */
     private val droidFlags: Map<BotId, Boolean /* isDroid */>,
 ) {
     /** Score keeper */
-    private val scoreTracker: ScoreTracker = ScoreTracker(participantsAndTeamIds)
+    private val scoreTracker: ScoreTracker = ScoreTracker(participantIds)
 
     /** Map over all bots */
     private val botsMap = mutableMapOf<BotId, MutableBot>()
@@ -67,7 +67,7 @@ class ModelUpdater(
     private var inactivityCounter = 0
 
     /** The current results ordered with higher total scores first */
-    fun getResults() = scoreTracker.getBotScores()
+    fun getResults() = scoreTracker.getScores()
 
     /** The number of rounds played so far */
     val numberOfRounds: Int get() = gameState.rounds.size
@@ -111,7 +111,7 @@ class ModelUpdater(
         botIntentsMap.clear()
         bullets.clear()
         botsMap.clear()
-        scoreTracker.prepareRound()
+        scoreTracker.clear()
         inactivityCounter = 0
 
         initializeBotStates()
@@ -184,7 +184,7 @@ class ModelUpdater(
     /** Initializes bot states. */
     private fun initializeBotStates() {
         val occupiedCells = mutableSetOf<Int>()
-        for (teamOrBotId in participantsAndTeamIds) {
+        for (teamOrBotId in participantIds) {
             val botId = teamOrBotId.botId
 
             val isDroid = droidFlags[botId] ?: false
@@ -198,7 +198,7 @@ class ModelUpdater(
 
             val teammateIds: Set<BotId> =
                 teamOrBotId.teamId?.let {
-                    participantsAndTeamIds.filter { it.teamId == teamOrBotId.teamId }.map { it.botId }.toSet()
+                    participantIds.filter { it.teamId == teamOrBotId.teamId }.map { it.botId }.toSet()
                         .minus(botId)
                 } ?: emptySet()
 
@@ -256,7 +256,7 @@ class ModelUpdater(
         val gridWidth = setup.arenaWidth / 50
         val gridHeight = setup.arenaHeight / 50
         val cellCount = gridWidth * gridHeight
-        val numBots = participantsAndTeamIds.size
+        val numBots = participantIds.size
         if (cellCount < numBots) {
             throw IllegalArgumentException(
                 "Area size (${setup.arenaWidth},${setup.arenaHeight}) is too small to contain $numBots bots"
@@ -376,9 +376,9 @@ class ModelUpdater(
      */
     private fun handleBulletHittingBot(bullet: IBullet, bot: MutableBot) {
         val botId = bullet.botId
-        val teamOrBotId = participantsAndTeamIds.first { it.botId == botId }
+        val teamOrBotId = participantIds.first { it.botId == botId }
         val victimId = bot.id
-        val victimTeamOrBotId = participantsAndTeamIds.first { it.botId == victimId }
+        val victimTeamOrBotId = participantIds.first { it.botId == victimId }
 
         inactivityCounter = 0 // reset collective inactivity counter due to bot taking bullet damage
 
@@ -546,15 +546,15 @@ class ModelUpdater(
         val bot2Killed = bot2.addDamage(RAM_DAMAGE)
         if (isBot1RammingBot2) {
             scoreTracker.registerRamHit(
-                participantsAndTeamIds.first { it.botId == bot1.id },
-                participantsAndTeamIds.first { it.botId == bot2.id },
+                participantIds.first { it.botId == bot1.id },
+                participantIds.first { it.botId == bot2.id },
                 bot2Killed
             )
         }
         if (isBot2RammingBot1) {
             scoreTracker.registerRamHit(
-                participantsAndTeamIds.first { it.botId == bot2.id },
-                participantsAndTeamIds.first { it.botId == bot1.id },
+                participantIds.first { it.botId == bot2.id },
+                participantIds.first { it.botId == bot1.id },
                 bot1Killed
             )
         }
@@ -661,7 +661,7 @@ class ModelUpdater(
                 val botDeathEvent = BotDeathEvent(turn.turnNumber, bot.id)
                 turn.addPublicBotEvent(botDeathEvent)
                 turn.addObserverEvent(botDeathEvent)
-                scoreTracker.registerBotDeath(participantsAndTeamIds.first { it.botId == bot.id })
+                scoreTracker.registerDeath(participantIds.first { it.botId == bot.id })
             }
         }
     }
@@ -670,7 +670,7 @@ class ModelUpdater(
         // distinctBy(id) is necessary to take account for both bots and teams
         val teamsAlive = getBotsOrTeams(MutableBot::isAlive).distinctBy { it.id }
         if (teamsAlive.size == 1) {
-            scoreTracker.increment1stPlaces(teamsAlive.first())
+            scoreTracker.increment1stPlaces(teamsAlive.first()) // FIXME: Only score defines the winner(s)
         }
     }
 
@@ -874,9 +874,9 @@ class ModelUpdater(
                 var winnerId = botsMap.entries.firstOrNull { (_, bot) -> bot.isAlive }?.key
 
                 // Otherwise, the bot with the highest score wins
-                val scores = scoreTracker.getBotScores().sortedByDescending { it.totalScore }
+                val scores = scoreTracker.getScores().sortedByDescending { it.totalScore }
                 if (winnerId == null && scores.isNotEmpty()) {
-                    winnerId = scores[0].botOrTeamId.botId
+                    winnerId = scores[0].participantId.botId
                     turn.addPrivateBotEvent(winnerId, WonRoundEvent(turn.turnNumber))
                 }
             }
@@ -887,10 +887,10 @@ class ModelUpdater(
         // distinctBy(id) is necessary to take account for both bots and teams
         getBotsOrTeams(MutableBot::isAlive).distinctBy { it.id }.count() <= 1
 
-    private fun getBotsOrTeams(filter: (MutableBot) -> Boolean): Collection<BotOrTeamId> {
+    private fun getBotsOrTeams(filter: (MutableBot) -> Boolean): Collection<ParticipantId> {
         val botIds = botsMap.values.filter { filter.invoke(it) }.map { it.id }
 
-        return participantsAndTeamIds.filter { botIds.contains(it.botId) }.distinct()
+        return participantIds.filter { botIds.contains(it.botId) }.distinct()
     }
 
     private fun processTeamMessages(bot: MutableBot, intent: BotIntent) {

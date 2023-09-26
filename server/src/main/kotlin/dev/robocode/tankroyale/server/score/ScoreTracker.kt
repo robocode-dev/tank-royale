@@ -1,124 +1,132 @@
 package dev.robocode.tankroyale.server.score
 
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.BotOrTeamId
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
 import dev.robocode.tankroyale.server.model.Score
-import dev.robocode.tankroyale.server.rules.*
+import dev.robocode.tankroyale.server.rules.BONUS_PER_BULLET_KILL
+import dev.robocode.tankroyale.server.rules.BONUS_PER_LAST_SURVIVOR
+import dev.robocode.tankroyale.server.rules.BONUS_PER_RAM_KILL
+import dev.robocode.tankroyale.server.rules.SCORE_PER_SURVIVAL
 
-/** Score utility class used for keeping track of the score for an individual bot in a game. */
-class ScoreTracker(private val botOrTeamIds: List<BotOrTeamId>) {
+/**
+ * Utility class used for keeping track of the score for an individual bot and/or team in a game.
+ * @param participantIds is the ids of all participant bots and teams.
+ */
+class ScoreTracker(private val participantIds: Set<ParticipantId>) {
 
-    /** Map from bot identifier to a bot record  */
-    private val scoreAndDamages = mutableMapOf<BotOrTeamId, ScoreAndDamage>()
+    // Map over the score and damage records per participant
+    private val scoreAndDamages = mutableMapOf<ParticipantId, ScoreAndDamage>()
 
-    /** Set of identifiers of bots alive */
-    private val teamsAlive = mutableSetOf<BotOrTeamId>()
+    // Map over alive participants
+    private val aliveParticipants = mutableSetOf<ParticipantId>()
 
-    /** 1st places */
-    private val firstPlaces = mutableMapOf<BotOrTeamId, Int>()
+    // Map over number of 1st places
+    private val firstPlaces = mutableMapOf<ParticipantId, Int>()
 
-    /** 2nd places  */
-    private val secondPlaces = mutableMapOf<BotOrTeamId, Int>()
+    // Map over number of 2nd places
+    private val secondPlaces = mutableMapOf<ParticipantId, Int>()
 
-    /** 3rd places  */
-    private val thirdPlaces = mutableMapOf<BotOrTeamId, Int>()
+    // Map over number of 3rd places
+    private val thirdPlaces = mutableMapOf<ParticipantId, Int>()
 
     init {
-        botOrTeamIds.forEach { scoreAndDamages[it] = ScoreAndDamage() }
+        participantIds.forEach { scoreAndDamages[it] = ScoreAndDamage() }
+
+        aliveParticipants.addAll(participantIds)
     }
 
-    /** Current bot scores ordered with higher total scores first. */
-    fun getBotScores(): Collection<Score> = botOrTeamIds.map { getScore(it) }
+    /**
+     * Returns an ordered list containing the current scores for all participants.
+     * The higher _total_ scores are listed before lower _total_ scores.
+     */
+    fun getScores(): Collection<Score> = participantIds.map { calculateScore(it) }.sortedByDescending { it.totalScore }
 
-    /** Prepare for new round. */
-    fun prepareRound() {
-        teamsAlive.apply {
+    /**
+     * Clears all scores used when a new round is started.
+     */
+    fun clear() {
+        aliveParticipants.apply {
             clear()
-            addAll(botOrTeamIds)
+            addAll(participantIds)
         }
     }
 
     /**
-     * Returns the score for a specific bot.
-     * @param botOrTeamId is the identifier of the team or bot.
-     * @return a score record.
+     * Calculates and returns the score for a specific participant.
+     * @param participantId is the identifier of the participant.
+     * @return a [Score] record.
      */
-    private fun getScore(botOrTeamId: BotOrTeamId): Score {
-        getScoreAndDamage(botOrTeamId).apply {
-            val score = Score(
-                botOrTeamId = botOrTeamId,
-                survival = survivalCount * SCORE_PER_SURVIVAL,
-                lastSurvivorBonus = lastSurvivorCount * BONUS_PER_LAST_SURVIVOR,
-                bulletDamage = getTotalBulletDamage() * SCORE_PER_BULLET_DAMAGE,
-                ramDamage = getTotalRamDamage() * SCORE_PER_RAM_DAMAGE,
+    private fun calculateScore(participantId: ParticipantId): Score {
+        getScoreAndDamage(participantId).apply {
+            return Score(
+                participantId = participantId,
+                bulletDamage = getTotalBulletDamage(),
+                bulletKillBonus = BONUS_PER_BULLET_KILL * getBulletKillEnemyIds().sumOf { getTotalDamage(it) },
+                ramDamage = getTotalRamDamage(),
+                ramKillBonus = BONUS_PER_RAM_KILL * getRamKillEnemyIds().sumOf { getTotalDamage(it) },
+                survival = SCORE_PER_SURVIVAL * survivalCount,
+                lastSurvivorBonus = BONUS_PER_LAST_SURVIVOR * lastSurvivorCount,
+                firstPlaces = firstPlaces[participantId] ?: 0,
+                secondPlaces = secondPlaces[participantId] ?: 0,
+                thirdPlaces = thirdPlaces[participantId] ?: 0,
             )
-            val totalDamage = getBulletKillEnemyIds().sumOf { getBulletDamage(it) + getRamDamage(it) }
-
-            score.bulletKillBonus += totalDamage * BONUS_PER_BULLET_KILL
-            score.ramKillBonus += totalDamage * BONUS_PER_RAM_KILL
-
-            score.firstPlaces = firstPlaces[botOrTeamId] ?: 0
-            score.secondPlaces = secondPlaces[botOrTeamId] ?: 0
-            score.thirdPlaces = thirdPlaces[botOrTeamId] ?: 0
-
-            return score
         }
     }
 
     /**
      * Registers a bullet hit.
-     * @param botOrTeamId is the identifier of the bot that hit another bot.
-     * @param victimBotId is the identifier of the victim bot that got hit by the bullet.
-     * @param damage is the damage that the victim bot receives.
-     * @param kill is a flag specifying, if the bot got killed by this bullet.
+     * @param offenderId is the id of the bot hitting a victim by a bullet.
+     * @param victimId is the id of the victim bot that got hit by the bullet.
+     * @param damage is the damage dealt.
+     * @param kill is `true` if the bot got killed by the bullet; `false` otherwise.
      */
-    fun registerBulletHit(botOrTeamId: BotOrTeamId, victimBotId: BotOrTeamId, damage: Double, kill: Boolean) {
-        getScoreAndDamage(botOrTeamId).apply {
-            addBulletDamage(victimBotId, damage)
+    fun registerBulletHit(offenderId: ParticipantId, victimId: ParticipantId, damage: Double, kill: Boolean) {
+        getScoreAndDamage(offenderId).apply {
+            addBulletDamage(victimId, damage)
             if (kill) {
-                addBulletKillEnemyId(victimBotId)
+                addBulletKillEnemyId(victimId)
             }
         }
     }
 
     /**
      * Registers a ram hit.
-     * @param botOrTeamId is the identifier of the bot that rammed another bot.
-     * @param victimBotId is the identifier of the victim bot that got rammed.
-     * @param kill is a flag specifying, if the bot got killed by the ramming.
+     * @param offenderId is the id of the bot ramming a victim.
+     * @param victimId is the id of the victim bot that got rammed.
+     * @param kill is `true` if the bot got killed by the ramming; `false` otherwise.
      */
-    fun registerRamHit(botOrTeamId: BotOrTeamId, victimBotId: BotOrTeamId, kill: Boolean) {
-        getScoreAndDamage(botOrTeamId).apply {
-            addRamDamage(victimBotId)
+    fun registerRamHit(offenderId: ParticipantId, victimId: ParticipantId, kill: Boolean) {
+        getScoreAndDamage(offenderId).apply {
+            incrementRamHit(victimId)
             if (kill) {
-                addRamKillEnemyId(victimBotId)
+                addRamKillEnemyId(victimId)
             }
         }
     }
 
     /**
-     * Register a bot death.
-     * @param botOrTeamId is the identifier of the bot (and team)
+     * Registers a death of a bot.
+     * @param victimId is the id of the bot that died.
      */
-    fun registerBotDeath(botOrTeamId: BotOrTeamId) {
-        teamsAlive.remove(botOrTeamId) // remove dead bot before counting the score!
+    fun registerDeath(victimId: ParticipantId) {
+        aliveParticipants.remove(victimId) // remove dead bot before counting the score!
 
-        teamsAlive.distinctBy { it.id }.apply {
+        aliveParticipants.distinctBy { it.id }.apply {
 
             forEach { scoreAndDamages[it]?.incrementSurvivalCount() }
 
             when (size) {
-                0 -> increment1stPlaces(botOrTeamId)
+                0 -> increment1stPlaces(victimId)
 
                 1 -> {
-                    increment2ndPlaces(botOrTeamId)
+                    increment2ndPlaces(victimId)
 
                     val deadCount = scoreAndDamages.size - 1
                     scoreAndDamages[first()]?.addLastSurvivorCount(deadCount) // first() is the only one left
                 }
 
                 2 -> {
-                    if (!teamsAlive.distinctBy { it.id }.map { it.id }.contains(botOrTeamId.id)) {
-                        increment3rdPlaces(botOrTeamId)
+                    if (!aliveParticipants.distinctBy { it.id }.map { it.id }.contains(victimId.id)) {
+                        increment3rdPlaces(victimId)
                     }
                 }
             }
@@ -126,32 +134,33 @@ class ScoreTracker(private val botOrTeamIds: List<BotOrTeamId>) {
     }
 
     /**
-     * Increment the number of 1st places for a bot.
-     * @param botOrTeamId is the identifier of the team or bot that earned a 1st place.
+     * Increment the number of 1st places for a participant.
+     * @param participantId is the id of a participant that earned a 1st place.
      */
-    fun increment1stPlaces(botOrTeamId: BotOrTeamId) {
-        val count = firstPlaces[botOrTeamId] ?: 0
-        firstPlaces[botOrTeamId] = count + 1
+    fun increment1stPlaces(participantId: ParticipantId) {
+        val count = firstPlaces[participantId] ?: 0
+        firstPlaces[participantId] = count + 1
     }
 
     /**
-     * Increment the number of 2nd places for a bot.
-     * @param botOrTeamId is the identifier of the team or bot that earned a 2nd place.
+     * Increment the number of 2nd places for a participant.
+     * @param participantId is the id of a participant that earned a 2nd place.
      */
-    fun increment2ndPlaces(botOrTeamId: BotOrTeamId) {
-        val count = secondPlaces[botOrTeamId] ?: 0
-        secondPlaces[botOrTeamId] = count + 1
+    private fun increment2ndPlaces(participantId: ParticipantId) {
+        val count = secondPlaces[participantId] ?: 0
+        secondPlaces[participantId] = count + 1
     }
 
     /**
-     * Increment the number of 3rd places for a bot.
-     * @param botOrTeamId is the identifier of the team or bot that earned a 3rd place.
+     * Increment the number of 3rd places for a participant.
+     * @param participantId is the id of a participant that earned a 3rd place.
      */
-    fun increment3rdPlaces(botOrTeamId: BotOrTeamId) {
-        val count = thirdPlaces[botOrTeamId] ?: 0
-        thirdPlaces[botOrTeamId] = count + 1
+    private fun increment3rdPlaces(participantId: ParticipantId) {
+        val count = thirdPlaces[participantId] ?: 0
+        thirdPlaces[participantId] = count + 1
     }
 
-    private fun getScoreAndDamage(botOrTeamId: BotOrTeamId): ScoreAndDamage =
-        (scoreAndDamages[botOrTeamId] ?: throw IllegalStateException("No score record for teamOrBotId: $botOrTeamId)"))
+    private fun getScoreAndDamage(participantId: ParticipantId): ScoreAndDamage =
+        (scoreAndDamages[participantId]
+            ?: throw IllegalStateException("No score record for teamOrBotId: $participantId)"))
 }
