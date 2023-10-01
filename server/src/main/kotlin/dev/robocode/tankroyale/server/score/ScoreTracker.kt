@@ -17,6 +17,8 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
     // Map over alive participants
     private val aliveParticipants = mutableSetOf<ParticipantId>()
 
+    private var lastSurvivors: Set<ParticipantId>? = null
+
     init {
         participantIds.forEach { scoreAndDamages[it] = ScoreAndDamage() }
 
@@ -38,10 +40,8 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
      * Clears all scores used when a new round is started.
      */
     fun clear() {
-        aliveParticipants.apply {
-            clear()
-            addAll(participantIds)
-        }
+        aliveParticipants.apply { clear(); addAll(participantIds) }
+        lastSurvivors = null
     }
 
     /**
@@ -101,17 +101,19 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
     fun registerDeaths(victimIds: Set<ParticipantId>) {
         if (victimIds.isNotEmpty()) {
             aliveParticipants.apply {
-                val lastSurvivors = ArrayList(this)
+                val recentSurvivors = HashSet(this)
 
                 removeAll(victimIds)
-
                 forEach { scoreAndDamages[it]?.incrementSurvivalCount() }
 
-                when (size) {
-                    0, 1 -> {
-                        val deadCount = participantIds.size - size
-                        lastSurvivors.forEach { scoreAndDamages[it]?.addLastSurvivorCount(deadCount) }
+                if (lastSurvivors == null) {
+                    val deadCount = participantIds.size - size
+                    lastSurvivors = when (size) {
+                        0 -> recentSurvivors
+                        1 -> aliveParticipants
+                        else -> null
                     }
+                    lastSurvivors?.forEach { scoreAndDamages[it]?.addLastSurvivorCount(deadCount) }
                 }
             }
         }

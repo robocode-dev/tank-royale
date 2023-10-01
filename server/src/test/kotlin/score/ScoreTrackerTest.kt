@@ -167,7 +167,6 @@ class ScoreTrackerTest : StringSpec({
             registerDeaths(setOf(ParticipantId(BotId(4))))
             registerDeaths(setOf(ParticipantId(BotId(2))))
             registerDeaths(setOf(ParticipantId(BotId(1))))
-            registerDeaths(setOf(ParticipantId(BotId(3))))
 
             getScores().first { it.participantId.botId.id == 4 }.apply {
                 survivalScore shouldBe 0
@@ -183,6 +182,15 @@ class ScoreTrackerTest : StringSpec({
                 survivalScore shouldBe 2 * SCORE_PER_SURVIVAL
                 lastSurvivorBonus shouldBe 0
             }
+
+            getScores().first { it.participantId.botId.id == 3 }.apply {
+                survivalScore shouldBe 3 * SCORE_PER_SURVIVAL
+                lastSurvivorBonus shouldBe (teamsOrBotIds.size - 1) * BONUS_PER_LAST_SURVIVOR
+            }
+
+            // Additional check when a last survivor dies. It was still a last survivor
+
+            registerDeaths(setOf(ParticipantId(BotId(3))))
 
             getScores().first { it.participantId.botId.id == 3 }.apply {
                 survivalScore shouldBe 3 * SCORE_PER_SURVIVAL
