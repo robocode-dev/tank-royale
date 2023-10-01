@@ -1,6 +1,6 @@
 # Versions
 
-## 📦
+## 📦 0.20.2
 
 #### 🚀 Improvements
 
