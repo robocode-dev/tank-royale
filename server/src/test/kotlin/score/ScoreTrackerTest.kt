@@ -37,13 +37,13 @@ class ScoreTrackerTest : StringSpec({
                     participantId.botId.id shouldBeIn listOf(1, 2, 3, 4)
 
                     totalScore shouldBe 0
-                    bulletDamage shouldBe 0
+                    bulletDamageScore shouldBe 0
                     bulletKillBonus shouldBe 0
-                    ramDamage shouldBe 0
+                    ramDamageScore shouldBe 0
                     ramKillBonus shouldBe 0
-                    survival shouldBe 0
+                    survivalScore shouldBe 0
                     lastSurvivorBonus shouldBe 0
-                    firstPlaces shouldBe 0
+                    firstPlaces shouldBe 1
                     secondPlaces shouldBe 0
                     thirdPlaces shouldBe 0
                 }
@@ -59,15 +59,15 @@ class ScoreTrackerTest : StringSpec({
             registerBulletHit(ParticipantId(BotId(1)), ParticipantId(BotId(2)), bullet1Damage, false)
 
             getScores().first { it.participantId.botId.id == 1 }.apply {
-                bulletDamage shouldBe bullet1Damage
-                totalScore shouldBe SCORE_PER_BULLET_DAMAGE * bulletDamage
+                bulletDamageScore shouldBe bullet1Damage
+                totalScore shouldBe SCORE_PER_BULLET_DAMAGE * bulletDamageScore
 
                 bulletKillBonus shouldBe 0
-                ramDamage shouldBe 0
+                ramDamageScore shouldBe 0
                 ramKillBonus shouldBe 0
-                survival shouldBe 0
+                survivalScore shouldBe 0
                 lastSurvivorBonus shouldBe 0
-                firstPlaces shouldBe 0
+                firstPlaces shouldBe 1
                 secondPlaces shouldBe 0
                 thirdPlaces shouldBe 0
             }
@@ -77,15 +77,15 @@ class ScoreTrackerTest : StringSpec({
             registerBulletHit(ParticipantId(BotId(1)), ParticipantId(BotId(3)), bullet2Damage, false)
 
             getScores().first { it.participantId.botId.id == 1 }.apply {
-                bulletDamage shouldBe bullet1Damage + bullet2Damage
-                totalScore shouldBe SCORE_PER_BULLET_DAMAGE * bulletDamage
+                bulletDamageScore shouldBe bullet1Damage + bullet2Damage
+                totalScore shouldBe SCORE_PER_BULLET_DAMAGE * bulletDamageScore
 
                 bulletKillBonus shouldBe 0
-                ramDamage shouldBe 0
+                ramDamageScore shouldBe 0
                 ramKillBonus shouldBe 0
-                survival shouldBe 0
+                survivalScore shouldBe 0
                 lastSurvivorBonus shouldBe 0
-                firstPlaces shouldBe 0
+                firstPlaces shouldBe 1
                 secondPlaces shouldBe 0
                 thirdPlaces shouldBe 0
             }
@@ -110,15 +110,15 @@ class ScoreTrackerTest : StringSpec({
             registerBulletHit(ParticipantId(BotId(2)), ParticipantId(BotId(4)), bullet5Damage, false)
 
             getScores().first { it.participantId.botId.id == 2 }.apply {
-                bulletDamage shouldBe (bullet1Damage + bullet2Damage + bullet3Damage) + (bullet4Damage + bullet5Damage)
+                bulletDamageScore shouldBe (bullet1Damage + bullet2Damage + bullet3Damage) + (bullet4Damage + bullet5Damage)
                 bulletKillBonus shouldBe (bullet1Damage + bullet2Damage + bullet3Damage) * BONUS_PER_BULLET_KILL
-                totalScore shouldBe SCORE_PER_BULLET_DAMAGE * bulletDamage + bulletKillBonus
+                totalScore shouldBe SCORE_PER_BULLET_DAMAGE * bulletDamageScore + bulletKillBonus
 
-                ramDamage shouldBe 0
+                ramDamageScore shouldBe 0
                 ramKillBonus shouldBe 0
-                survival shouldBe 0
+                survivalScore shouldBe 0
                 lastSurvivorBonus shouldBe 0
-                firstPlaces shouldBe 0
+                firstPlaces shouldBe 1
                 secondPlaces shouldBe 0
                 thirdPlaces shouldBe 0
             }
@@ -140,23 +140,23 @@ class ScoreTrackerTest : StringSpec({
             registerRamHit(ParticipantId(BotId(2)), ParticipantId(BotId(4)), false)
 
             getScores().first { it.participantId.botId.id == 2 }.apply {
-                ramDamage shouldBe (3 + 2) * RAM_DAMAGE
-                ramKillBonus shouldBe (3 * RAM_DAMAGE) * BONUS_PER_RAM_KILL
-                totalScore shouldBe SCORE_PER_RAM_DAMAGE * ramDamage + ramKillBonus
+                ramDamageScore shouldBe (3 + 2) * RAM_DAMAGE * SCORE_PER_RAM_DAMAGE
+                ramKillBonus shouldBe 3 * RAM_DAMAGE * BONUS_PER_RAM_KILL
+                totalScore shouldBe ramDamageScore + ramKillBonus
 
-                bulletDamage shouldBe 0
+                bulletDamageScore shouldBe 0
                 bulletKillBonus shouldBe 0
-                survival shouldBe 0
+                survivalScore shouldBe 0
                 lastSurvivorBonus shouldBe 0
-                firstPlaces shouldBe 0
+                firstPlaces shouldBe 1
                 secondPlaces shouldBe 0
                 thirdPlaces shouldBe 0
             }
 
             getScores().first { it.participantId.botId.id == 3 }.apply {
-                ramDamage shouldBe 3 * RAM_DAMAGE
+                ramDamageScore shouldBe 3 * RAM_DAMAGE * SCORE_PER_RAM_DAMAGE
                 ramKillBonus shouldBe 0
-                totalScore shouldBe SCORE_PER_RAM_DAMAGE * ramDamage + ramKillBonus
+                totalScore shouldBe ramDamageScore + ramKillBonus
             }
         }
     }
@@ -164,28 +164,28 @@ class ScoreTrackerTest : StringSpec({
     "survival and last survivor bonus" {
         scoreTracker.apply {
 
-            registerDeath(ParticipantId(BotId(4)))
-            registerDeath(ParticipantId(BotId(2)))
-            registerDeath(ParticipantId(BotId(1)))
-            registerDeath(ParticipantId(BotId(3)))
+            registerDeaths(setOf(ParticipantId(BotId(4))))
+            registerDeaths(setOf(ParticipantId(BotId(2))))
+            registerDeaths(setOf(ParticipantId(BotId(1))))
+            registerDeaths(setOf(ParticipantId(BotId(3))))
 
             getScores().first { it.participantId.botId.id == 4 }.apply {
-                survival shouldBe 0
+                survivalScore shouldBe 0
                 lastSurvivorBonus shouldBe 0
             }
 
             getScores().first { it.participantId.botId.id == 2 }.apply {
-                survival shouldBe 1 * SCORE_PER_SURVIVAL
+                survivalScore shouldBe 1 * SCORE_PER_SURVIVAL
                 lastSurvivorBonus shouldBe 0
             }
 
             getScores().first { it.participantId.botId.id == 1 }.apply {
-                survival shouldBe 2 * SCORE_PER_SURVIVAL
+                survivalScore shouldBe 2 * SCORE_PER_SURVIVAL
                 lastSurvivorBonus shouldBe 0
             }
 
             getScores().first { it.participantId.botId.id == 3 }.apply {
-                survival shouldBe 3 * SCORE_PER_SURVIVAL
+                survivalScore shouldBe 3 * SCORE_PER_SURVIVAL
                 lastSurvivorBonus shouldBe (teamsOrBotIds.size - 1) * BONUS_PER_LAST_SURVIVOR
             }
         }

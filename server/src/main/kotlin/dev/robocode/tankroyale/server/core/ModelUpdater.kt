@@ -142,7 +142,6 @@ class ModelUpdater(
         checkAndHandleInactivity()
         checkForAndHandleDisabledBots()
         checkAndHandleDefeatedBots()
-        checkFor1stPlace()
 
         checkAndHandleRoundOrGameOver()
 
@@ -654,24 +653,16 @@ class ModelUpdater(
 
     /** Checks and handles if any bots have been defeated. */
     private fun checkAndHandleDefeatedBots() {
-        // Note the list is shuffled here, the index order of the bots has no influence on bots ending on the same place.
-        // Otherwise, the same bots might get all the 1st, 2nd, or 3rd places, when more bots gets the same placement.
-        botsMap.values.shuffled().forEach { bot ->
-            if (bot.isDead) {
-                val botDeathEvent = BotDeathEvent(turn.turnNumber, bot.id)
-                turn.addPublicBotEvent(botDeathEvent)
-                turn.addObserverEvent(botDeathEvent)
-                scoreTracker.registerDeath(participantIds.first { it.botId == bot.id })
-            }
-        }
-    }
+        val deadBotIds =
+            botsMap.values.filter { it.isDead }.map { bot -> participantIds.first { it.botId == bot.id } }.toSet()
 
-    private fun checkFor1stPlace() {
-        // distinctBy(id) is necessary to take account for both bots and teams
-        val teamsAlive = getBotsOrTeams(MutableBot::isAlive).distinctBy { it.id }
-        if (teamsAlive.size == 1) {
-            scoreTracker.increment1stPlaces(teamsAlive.first()) // FIXME: Only score defines the winner(s)
+        deadBotIds.forEach {
+            val botDeathEvent = BotDeathEvent(turn.turnNumber, it.botId)
+            turn.addPublicBotEvent(botDeathEvent)
+            turn.addObserverEvent(botDeathEvent)
         }
+
+        scoreTracker.registerDeaths(deadBotIds)
     }
 
     /** Cool down and fire guns. */

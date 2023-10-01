@@ -1,11 +1,9 @@
 package dev.robocode.tankroyale.server.score
 
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.ScoresDecorator
 import dev.robocode.tankroyale.server.model.Score
-import dev.robocode.tankroyale.server.rules.BONUS_PER_BULLET_KILL
-import dev.robocode.tankroyale.server.rules.BONUS_PER_LAST_SURVIVOR
-import dev.robocode.tankroyale.server.rules.BONUS_PER_RAM_KILL
-import dev.robocode.tankroyale.server.rules.SCORE_PER_SURVIVAL
+import dev.robocode.tankroyale.server.rules.*
 
 /**
  * Utility class used for keeping track of the score for an individual bot and/or team in a game.
@@ -19,15 +17,6 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
     // Map over alive participants
     private val aliveParticipants = mutableSetOf<ParticipantId>()
 
-    // Map over number of 1st places
-    private val firstPlaces = mutableMapOf<ParticipantId, Int>()
-
-    // Map over number of 2nd places
-    private val secondPlaces = mutableMapOf<ParticipantId, Int>()
-
-    // Map over number of 3rd places
-    private val thirdPlaces = mutableMapOf<ParticipantId, Int>()
-
     init {
         participantIds.forEach { scoreAndDamages[it] = ScoreAndDamage() }
 
@@ -35,10 +24,15 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
     }
 
     /**
-     * Returns an ordered list containing the current scores for all participants.
+     * Returns an ordered list containing the current scores, ranks, and placements for all participants.
      * The higher _total_ scores are listed before lower _total_ scores.
      */
-    fun getScores(): Collection<Score> = participantIds.map { calculateScore(it) }.sortedByDescending { it.totalScore }
+    fun getScores(): Collection<Score> {
+        val scores = participantIds.map { calculateScore(it) }.sortedByDescending { it.totalScore }
+        ScoresDecorator.updateRanks(scores)
+        ScoresDecorator.increment1st2ndAnd3rdPlaces(scores)
+        return scores
+    }
 
     /**
      * Clears all scores used when a new round is started.
@@ -59,15 +53,12 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
         getScoreAndDamage(participantId).apply {
             return Score(
                 participantId = participantId,
-                bulletDamage = getTotalBulletDamage(),
+                bulletDamageScore = SCORE_PER_BULLET_DAMAGE * getTotalBulletDamage(),
                 bulletKillBonus = BONUS_PER_BULLET_KILL * getBulletKillEnemyIds().sumOf { getTotalDamage(it) },
-                ramDamage = getTotalRamDamage(),
+                ramDamageScore = SCORE_PER_RAM_DAMAGE * getTotalRamDamage(),
                 ramKillBonus = BONUS_PER_RAM_KILL * getRamKillEnemyIds().sumOf { getTotalDamage(it) },
-                survival = SCORE_PER_SURVIVAL * survivalCount,
+                survivalScore = SCORE_PER_SURVIVAL * survivalCount,
                 lastSurvivorBonus = BONUS_PER_LAST_SURVIVOR * lastSurvivorCount,
-                firstPlaces = firstPlaces[participantId] ?: 0,
-                secondPlaces = secondPlaces[participantId] ?: 0,
-                thirdPlaces = thirdPlaces[participantId] ?: 0,
             )
         }
     }
@@ -104,60 +95,26 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
     }
 
     /**
-     * Registers a death of a bot.
-     * @param victimId is the id of the bot that died.
+     * Registers the deaths of bots.
+     * @param victimIds is the ids of all the victims.
      */
-    fun registerDeath(victimId: ParticipantId) {
-        aliveParticipants.remove(victimId) // remove dead bot before counting the score!
+    fun registerDeaths(victimIds: Set<ParticipantId>) {
+        if (victimIds.isNotEmpty()) {
+            aliveParticipants.apply {
+                val lastSurvivors = ArrayList(this)
 
-        aliveParticipants.distinctBy { it.id }.apply {
+                removeAll(victimIds)
 
-            forEach { scoreAndDamages[it]?.incrementSurvivalCount() }
+                forEach { scoreAndDamages[it]?.incrementSurvivalCount() }
 
-            when (size) {
-                0 -> increment1stPlaces(victimId)
-
-                1 -> {
-                    increment2ndPlaces(victimId)
-
-                    val deadCount = scoreAndDamages.size - 1
-                    scoreAndDamages[first()]?.addLastSurvivorCount(deadCount) // first() is the only one left
-                }
-
-                2 -> {
-                    if (!aliveParticipants.distinctBy { it.id }.map { it.id }.contains(victimId.id)) {
-                        increment3rdPlaces(victimId)
+                when (size) {
+                    0, 1 -> {
+                        val deadCount = participantIds.size - size
+                        lastSurvivors.forEach { scoreAndDamages[it]?.addLastSurvivorCount(deadCount) }
                     }
                 }
             }
         }
-    }
-
-    /**
-     * Increment the number of 1st places for a participant.
-     * @param participantId is the id of a participant that earned a 1st place.
-     */
-    fun increment1stPlaces(participantId: ParticipantId) {
-        val count = firstPlaces[participantId] ?: 0
-        firstPlaces[participantId] = count + 1
-    }
-
-    /**
-     * Increment the number of 2nd places for a participant.
-     * @param participantId is the id of a participant that earned a 2nd place.
-     */
-    private fun increment2ndPlaces(participantId: ParticipantId) {
-        val count = secondPlaces[participantId] ?: 0
-        secondPlaces[participantId] = count + 1
-    }
-
-    /**
-     * Increment the number of 3rd places for a participant.
-     * @param participantId is the id of a participant that earned a 3rd place.
-     */
-    private fun increment3rdPlaces(participantId: ParticipantId) {
-        val count = thirdPlaces[participantId] ?: 0
-        thirdPlaces[participantId] = count + 1
     }
 
     private fun getScoreAndDamage(participantId: ParticipantId): ScoreAndDamage =

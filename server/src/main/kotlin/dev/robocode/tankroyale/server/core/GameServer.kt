@@ -298,11 +298,11 @@ class GameServer(
         val score = results[index]
         return ResultsForBot().apply {
             this.rank = index + 1
-            survival = score.survival.roundToInt()
+            survival = score.survivalScore.roundToInt()
             lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
-            bulletDamage = score.bulletDamage.roundToInt()
+            bulletDamage = score.bulletDamageScore.roundToInt()
             bulletKillBonus = score.bulletKillBonus.toInt()
-            ramDamage = score.ramDamage.roundToInt()
+            ramDamage = score.ramDamageScore.roundToInt()
             ramKillBonus = score.ramKillBonus.roundToInt()
             totalScore = score.totalScore.roundToInt()
             firstPlaces = score.firstPlaces
@@ -318,7 +318,6 @@ class GameServer(
             .sortedByDescending { it.totalScore }
 
         val results = mutableListOf<ResultsForObserver>()
-        var rank = 1
 
         scores.forEach { score ->
             run {
@@ -331,15 +330,15 @@ class GameServer(
                             Triple(participant.teamId, participant.teamName, participant.teamVersion)
 
                     ResultsForObserver().apply {
-                        this.rank = rank++
                         this.id = id
                         this.name = name
                         this.version = version
-                        survival = score.survival.roundToInt()
+                        this.rank = score.rank
+                        survival = score.survivalScore.roundToInt()
                         lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
-                        bulletDamage = score.bulletDamage.roundToInt()
+                        bulletDamage = score.bulletDamageScore.roundToInt()
                         bulletKillBonus = score.bulletKillBonus.toInt()
-                        ramDamage = score.ramDamage.roundToInt()
+                        ramDamage = score.ramDamageScore.roundToInt()
                         ramKillBonus = score.ramKillBonus.roundToInt()
                         totalScore = score.totalScore.roundToInt()
                         firstPlaces = score.firstPlaces
