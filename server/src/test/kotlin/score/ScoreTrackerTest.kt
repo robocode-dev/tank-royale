@@ -3,7 +3,6 @@ package score
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.rules.*
-import dev.robocode.tankroyale.server.rules.RAM_DAMAGE
 import dev.robocode.tankroyale.server.score.ScoreTracker
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeIn
@@ -12,7 +11,7 @@ import io.kotest.matchers.shouldBe
 
 class ScoreTrackerTest : StringSpec({
 
-    val teamsOrBotIds: Set<ParticipantId> = setOf(
+    var teamsOrBotIds: Set<ParticipantId> = setOf(
         ParticipantId(BotId(1)),
         ParticipantId(BotId(2)),
         ParticipantId(BotId(3)),
@@ -195,6 +194,158 @@ class ScoreTrackerTest : StringSpec({
             getScores().first { it.participantId.botId.id == 3 }.apply {
                 survivalScore shouldBe 3 * SCORE_PER_SURVIVAL
                 lastSurvivorBonus shouldBe (teamsOrBotIds.size - 1) * BONUS_PER_LAST_SURVIVOR
+            }
+        }
+    }
+
+    "ordinary placement" {
+        scoreTracker.apply {
+
+            registerDeaths(setOf(ParticipantId(BotId(4))))
+            registerDeaths(setOf(ParticipantId(BotId(2))))
+            registerDeaths(setOf(ParticipantId(BotId(1))))
+
+            getScores().first { it.participantId.botId.id == 3 }.apply {
+                firstPlaces shouldBe 1
+                secondPlaces shouldBe 0
+                thirdPlaces shouldBe 0
+            }
+
+            getScores().first { it.participantId.botId.id == 1 }.apply {
+                firstPlaces shouldBe 0
+                secondPlaces shouldBe 1
+                thirdPlaces shouldBe 0
+            }
+
+            getScores().first { it.participantId.botId.id == 2 }.apply {
+                firstPlaces shouldBe 0
+                secondPlaces shouldBe 0
+                thirdPlaces shouldBe 1
+            }
+
+            getScores().first { it.participantId.botId.id == 4 }.apply {
+                firstPlaces shouldBe 0
+                secondPlaces shouldBe 0
+                thirdPlaces shouldBe 0
+            }
+        }
+    }
+
+    "two 1st places" {
+        teamsOrBotIds = setOf(
+            ParticipantId(BotId(1)),
+            ParticipantId(BotId(2)),
+            ParticipantId(BotId(3)),
+            ParticipantId(BotId(4)),
+            ParticipantId(BotId(5)),
+        )
+
+        scoreTracker.apply {
+            registerDeaths(setOf(ParticipantId(BotId(4)), ParticipantId(BotId(5))))
+            registerDeaths(setOf(ParticipantId(BotId(3))))
+            registerDeaths(setOf(ParticipantId(BotId(1)), ParticipantId(BotId(2))))
+
+            // Two 1st places
+            getScores().filter { it.participantId.botId.id in setOf(1, 2) }.onEach {
+                it.firstPlaces shouldBe 1
+                it.secondPlaces shouldBe 0
+                it.thirdPlaces shouldBe 0
+            }
+
+            // 3rd place, as the 1st and 2nd places are preserved
+            getScores().filter { it.participantId.botId.id in setOf(3) }.onEach {
+                it.firstPlaces shouldBe 0
+                it.secondPlaces shouldBe 0
+                it.thirdPlaces shouldBe 1
+            }
+
+            // No 1st, 2nd or 3rd placements left
+            getScores().filter { it.participantId.botId.id in setOf(4, 5) }.onEach {
+                it.firstPlaces shouldBe 0
+                it.secondPlaces shouldBe 0
+                it.thirdPlaces shouldBe 0
+            }
+        }
+    }
+
+    "two 2nd places" {
+        teamsOrBotIds = setOf(
+            ParticipantId(BotId(1)),
+            ParticipantId(BotId(2)),
+            ParticipantId(BotId(3)),
+            ParticipantId(BotId(4)),
+            ParticipantId(BotId(5)),
+        )
+
+        scoreTracker.apply {
+            registerDeaths(setOf(ParticipantId(BotId(4)), ParticipantId(BotId(5))))
+            registerDeaths(setOf(ParticipantId(BotId(2)), ParticipantId(BotId(3))))
+            registerDeaths(setOf(ParticipantId(BotId(1))))
+
+            // One 1st place
+            getScores().filter { it.participantId.botId.id in setOf(1) }.onEach {
+                it.firstPlaces shouldBe 1
+                it.secondPlaces shouldBe 0
+                it.thirdPlaces shouldBe 0
+            }
+
+            // Two 2nd places
+            getScores().filter { it.participantId.botId.id in setOf(2, 3) }.onEach {
+                it.firstPlaces shouldBe 0
+                it.secondPlaces shouldBe 1
+                it.thirdPlaces shouldBe 0
+            }
+
+            // No 1st, 2nd or 3rd placements left (3rd places are preserved by the two 2nd places)
+            getScores().filter { it.participantId.botId.id in setOf(4, 5) }.onEach {
+                it.firstPlaces shouldBe 0
+                it.secondPlaces shouldBe 0
+                it.thirdPlaces shouldBe 0
+            }
+        }
+    }
+
+    "two 3rd places" {
+        teamsOrBotIds = setOf(
+            ParticipantId(BotId(1)),
+            ParticipantId(BotId(2)),
+            ParticipantId(BotId(3)),
+            ParticipantId(BotId(4)),
+            ParticipantId(BotId(5)),
+        )
+
+        scoreTracker.apply {
+            registerDeaths(setOf(ParticipantId(BotId(5))))
+            registerDeaths(setOf(ParticipantId(BotId(3)), ParticipantId(BotId(4))))
+            registerDeaths(setOf(ParticipantId(BotId(2))))
+            registerDeaths(setOf(ParticipantId(BotId(1))))
+
+            // One 1st place
+            getScores().filter { it.participantId.botId.id in setOf(1) }.onEach {
+                it.firstPlaces shouldBe 1
+                it.secondPlaces shouldBe 0
+                it.thirdPlaces shouldBe 0
+            }
+
+            // One 2nd places
+            getScores().filter { it.participantId.botId.id in setOf(2) }.onEach {
+                it.firstPlaces shouldBe 0
+                it.secondPlaces shouldBe 1
+                it.thirdPlaces shouldBe 0
+            }
+
+            // Two 3rd places
+            getScores().filter { it.participantId.botId.id in setOf(3, 4) }.onEach {
+                it.firstPlaces shouldBe 0
+                it.secondPlaces shouldBe 0
+                it.thirdPlaces shouldBe 1
+            }
+
+            // No 1st, 2nd or 3rd placements left
+            getScores().filter { it.participantId.botId.id in setOf(6) }.onEach {
+                it.firstPlaces shouldBe 0
+                it.secondPlaces shouldBe 0
+                it.thirdPlaces shouldBe 0
             }
         }
     }
