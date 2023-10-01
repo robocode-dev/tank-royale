@@ -15,6 +15,8 @@
 
 #### 🪲 Bug Fixes
 
+- Scoring:
+    - Fixed various scoring issues when comparing to original Robocode. 
 - Bot API:
     - Fixed race condition when adding custom events.
 - Bot Console:
