@@ -3,7 +3,6 @@ import proguard.gradle.ProGuardTask
 description = "Robocode Tank Royale Server"
 
 val title = "Robocode Tank Royale Server"
-group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
 val jarManifestMainClass = "dev.robocode.tankroyale.server.ServerKt"

@@ -3,7 +3,6 @@ import build.release.createRelease
 
 description = "Robocode: Build the best - destroy the rest!"
 
-group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
 val ossrhUsername: String? by project
