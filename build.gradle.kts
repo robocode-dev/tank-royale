@@ -20,7 +20,6 @@ plugins {
 subprojects {
 
     repositories {
-        mavenLocal()
         mavenCentral()
     }
 
