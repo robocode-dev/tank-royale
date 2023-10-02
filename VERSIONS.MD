@@ -1,5 +1,12 @@
 # Versions
 
+## 📦 0.21.1 
+
+#### 🚀 Improvements
+
+- Bot API:
+    - When running a bot from the command line, `stdout` and `stderr` will also be printed out in the bot console.
+
 ## 📦 0.21.0 - Improved scoring - 02-Oct-2023
 
 #### 🚀 Improvements
