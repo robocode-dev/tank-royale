@@ -4,6 +4,7 @@ import java.nio.file.Paths
 description = "Robocode Tank Royale Bot API for Java"
 
 val javadocTitle = "Robocode Tank Royale Bot API"
+group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
 val artifactBaseName = "robocode-tankroyale-bot-api"

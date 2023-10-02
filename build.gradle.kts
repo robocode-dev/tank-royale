@@ -3,6 +3,7 @@ import build.release.createRelease
 
 description = "Robocode: Build the best - destroy the rest!"
 
+group = "dev.robocode.tankroyale"
 val version = libs.versions.tankroyale.get()
 
 val ossrhUsername: String? by project
@@ -20,6 +21,7 @@ plugins {
 subprojects {
 
     repositories {
+        mavenLocal()
         mavenCentral()
     }
 
@@ -52,6 +54,7 @@ tasks {
         dependsOn("build-release")
 
         doLast {
+            val version = libs.versions.tankroyale.get()
             createRelease(projectDir, version, tankRoyaleGitHubToken!!)
         }
     }
