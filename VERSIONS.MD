@@ -1,6 +1,6 @@
 # Versions
 
-## 📦 0.20.2
+## 📦 0.21.0 - Improved scoring - 02-Oct-2023
 
 #### 🚀 Improvements
 
