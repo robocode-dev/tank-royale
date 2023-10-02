@@ -40,35 +40,35 @@ dependencyResolutionManagement {
             library("gson-extras", "org.danilopianini:gson-extras:1.2.0")
             library("jansi", "org.fusesource.jansi:jansi:2.4.0")
             library("java-websocket", "org.java-websocket:Java-WebSocket:1.5.4")
-            library("picocli", "info.picocli:picocli:4.7.4")
+            library("picocli", "info.picocli:picocli:4.7.5")
             library("proguard-gradle", "com.guardsquare:proguard-gradle:7.3.2")
             library("miglayout-swing", "com.miglayout:miglayout-swing:11.1")
             library("nv-i18n", "com.neovisionaries:nv-i18n:1.29")
             library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-            library("slf4j-simple", "org.slf4j:slf4j-simple:2.0.7")
+            library("slf4j-simple", "org.slf4j:slf4j-simple:2.0.9")
 
             // Java testing
             library("assertj", "org.assertj:assertj-core:3.24.2")
             library("junit-api", "org.junit.jupiter:junit-jupiter-api:$junitVersion")
             library("junit-engine", "org.junit.jupiter:junit-jupiter-engine:$junitVersion")
             library("junit-params", "org.junit.jupiter:junit-jupiter-params:$junitVersion")
-            library("system-stubs", "uk.org.webcompere:system-stubs-jupiter:2.1.0")
+            library("system-stubs", "uk.org.webcompere:system-stubs-jupiter:2.1.3")
 
             // Kotlin testing
-            library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.6.2")
-            library("mockk", "io.mockk:mockk:1.13.7")
+            library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.7.2")
+            library("mockk", "io.mockk:mockk:1.13.8")
 
             // plugins
             plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version(kotlinVersion)
             plugin("kotlin-serialization", "org.jetbrains.kotlin.plugin.serialization").version(kotlinVersion)
             plugin("nexus-publish", "io.github.gradle-nexus.publish-plugin").version("2.0.0-rc-1")
             plugin("shadow-jar","com.github.johnrengelman.shadow").version("8.1.1")
-            plugin("itiviti-dotnet", "com.itiviti.dotnet").version("1.9.5")
+            plugin("itiviti-dotnet", "com.itiviti.dotnet").version("2.0.1")
             plugin("node-gradle", "com.github.node-gradle.node").version("7.0.0")
             plugin("jsonschema2pojo", "org.jsonschema2pojo").version("1.2.1")
 
             // Dependencies versions
-            plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.47.0")
+            plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.48.0")
         }
     }
 }
