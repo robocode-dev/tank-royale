@@ -36,7 +36,6 @@ dotnet {
 }
 
 tasks {
-
     clean {
         doFirst {
             delete(
@@ -53,6 +52,9 @@ tasks {
     }
 
     val prepareNugetDocs by registering(Copy::class) {
+        doFirst {
+            delete("docs")
+        }
         from("nuget_docs") {
             filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
         }

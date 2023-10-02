@@ -226,6 +226,9 @@ and firing the gun.</p>
       <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetStop">IBaseBot.SetStop()</a>
     </div>
     <div>
+      <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetStop_System_Boolean_">IBaseBot.SetStop(bool)</a>
+    </div>
+    <div>
       <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetResume">IBaseBot.SetResume()</a>
     </div>
     <div>
@@ -783,7 +786,7 @@ If <span class="xref">System.Double.NegativeInfinity</span> the bot will move ba
     <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Rescan.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Rescan%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L654">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L672">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_Rescan_" data-uid="Robocode.TankRoyale.BotApi.IBot.Rescan*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_Rescan" data-uid="Robocode.TankRoyale.BotApi.IBot.Rescan">Rescan()</h4>
@@ -806,7 +809,7 @@ sweep angle will be used for rescanning for bots.</p>
     <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Resume.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Resume%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L645">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L663">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_Resume_" data-uid="Robocode.TankRoyale.BotApi.IBot.Resume*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_Resume" data-uid="Robocode.TankRoyale.BotApi.IBot.Resume">Resume()</h4>
@@ -1342,6 +1345,54 @@ method.</p>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_Stop_System_Boolean_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.Stop(System.Boolean)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L648">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_IBot_Stop_" data-uid="Robocode.TankRoyale.BotApi.IBot.Stop*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_IBot_Stop_System_Boolean_" data-uid="Robocode.TankRoyale.BotApi.IBot.Stop(System.Boolean)">Stop(bool)</h4>
+  <div class="markdown level1 summary"><p>Stop all movement including turning the gun and radar. The remaining movement is saved for a
+call to <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetResume">SetResume()</a> or <a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Resume">Resume()</a>.</p>
+<p>This call is executed immediately by calling <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> in the code behind. This
+method will block until it has been completed, which can take one to several turns. New
+commands will first take place after this method is completed. If you need to execute
+multiple commands in parallel, use <em>setter</em> methods instead of this blocking
+method.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Stop(bool overwrite)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">bool</span></td>
+        <td><span class="parametername">overwrite</span></td>
+        <td><p>overwrite is set to <code>true</code> if the movement saved by a previous call
+to this method or <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetStop">SetStop()</a> must be overridden with the current movement.
+When set to <code>false</code> this method is identical to <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetStop">SetStop()</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Robocode_TankRoyale_BotApi_IBot_Stop_System_Boolean__seealso">See Also</h5>
+  <div class="seealso">
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Stop">Stop()</a></div>
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetResume">SetResume</a>()</div>
+      <div><a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Resume">Resume()</a></div>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_TurnGunLeft_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.TurnGunLeft(System.Double)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
@@ -1663,7 +1714,7 @@ If <span class="xref">System.Double.NegativeInfinity</span> the bot will turn le
     <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_IBot_WaitFor_Robocode_TankRoyale_BotApi_Events_Condition_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.IBot.WaitFor(Robocode.TankRoyale.BotApi.Events.Condition)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L661">View Source</a>
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/IBot.cs/#L679">View Source</a>
   </span>
   <a id="Robocode_TankRoyale_BotApi_IBot_WaitFor_" data-uid="Robocode.TankRoyale.BotApi.IBot.WaitFor*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_IBot_WaitFor_Robocode_TankRoyale_BotApi_Events_Condition_" data-uid="Robocode.TankRoyale.BotApi.IBot.WaitFor(Robocode.TankRoyale.BotApi.Events.Condition)">WaitFor(Condition)</h4>

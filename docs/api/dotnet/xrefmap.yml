@@ -1204,6 +1204,15 @@ references:
   commentId: M:Robocode.TankRoyale.BotApi.BaseBot.SetStop
   fullName: Robocode.TankRoyale.BotApi.BaseBot.SetStop()
   nameWithType: BaseBot.SetStop()
+- uid: Robocode.TankRoyale.BotApi.BaseBot.SetStop(System.Boolean)
+  name: SetStop(bool)
+  href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SetStop_System_Boolean_
+  commentId: M:Robocode.TankRoyale.BotApi.BaseBot.SetStop(System.Boolean)
+  name.vb: SetStop(Boolean)
+  fullName: Robocode.TankRoyale.BotApi.BaseBot.SetStop(bool)
+  fullName.vb: Robocode.TankRoyale.BotApi.BaseBot.SetStop(Boolean)
+  nameWithType: BaseBot.SetStop(bool)
+  nameWithType.vb: BaseBot.SetStop(Boolean)
 - uid: Robocode.TankRoyale.BotApi.BaseBot.SetStop*
   name: SetStop
   href: api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_SetStop_
@@ -1744,6 +1753,15 @@ references:
   commentId: M:Robocode.TankRoyale.BotApi.Bot.Stop
   fullName: Robocode.TankRoyale.BotApi.Bot.Stop()
   nameWithType: Bot.Stop()
+- uid: Robocode.TankRoyale.BotApi.Bot.Stop(System.Boolean)
+  name: Stop(bool)
+  href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_Stop_System_Boolean_
+  commentId: M:Robocode.TankRoyale.BotApi.Bot.Stop(System.Boolean)
+  name.vb: Stop(Boolean)
+  fullName: Robocode.TankRoyale.BotApi.Bot.Stop(bool)
+  fullName.vb: Robocode.TankRoyale.BotApi.Bot.Stop(Boolean)
+  nameWithType: Bot.Stop(bool)
+  nameWithType.vb: Bot.Stop(Boolean)
 - uid: Robocode.TankRoyale.BotApi.Bot.Stop*
   name: Stop
   href: api/Robocode.TankRoyale.BotApi.Bot.html#Robocode_TankRoyale_BotApi_Bot_Stop_
@@ -6135,6 +6153,15 @@ references:
   commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.SetStop
   fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetStop()
   nameWithType: IBaseBot.SetStop()
+- uid: Robocode.TankRoyale.BotApi.IBaseBot.SetStop(System.Boolean)
+  name: SetStop(bool)
+  href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetStop_System_Boolean_
+  commentId: M:Robocode.TankRoyale.BotApi.IBaseBot.SetStop(System.Boolean)
+  name.vb: SetStop(Boolean)
+  fullName: Robocode.TankRoyale.BotApi.IBaseBot.SetStop(bool)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBaseBot.SetStop(Boolean)
+  nameWithType: IBaseBot.SetStop(bool)
+  nameWithType.vb: IBaseBot.SetStop(Boolean)
 - uid: Robocode.TankRoyale.BotApi.IBaseBot.SetStop*
   name: SetStop
   href: api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetStop_
@@ -6609,6 +6636,15 @@ references:
   commentId: M:Robocode.TankRoyale.BotApi.IBot.Stop
   fullName: Robocode.TankRoyale.BotApi.IBot.Stop()
   nameWithType: IBot.Stop()
+- uid: Robocode.TankRoyale.BotApi.IBot.Stop(System.Boolean)
+  name: Stop(bool)
+  href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Stop_System_Boolean_
+  commentId: M:Robocode.TankRoyale.BotApi.IBot.Stop(System.Boolean)
+  name.vb: Stop(Boolean)
+  fullName: Robocode.TankRoyale.BotApi.IBot.Stop(bool)
+  fullName.vb: Robocode.TankRoyale.BotApi.IBot.Stop(Boolean)
+  nameWithType: IBot.Stop(bool)
+  nameWithType.vb: IBot.Stop(Boolean)
 - uid: Robocode.TankRoyale.BotApi.IBot.Stop*
   name: Stop
   href: api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Stop_

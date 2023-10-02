@@ -2,23 +2,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 description = "Robocode Tank Royale build sources"
 
-buildscript {
-    val kotlinVersion = "1.8.20"
-
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath(kotlin("gradle-plugin", kotlinVersion))
-    }
-}
-
 plugins {
-    kotlin("jvm").version("1.8.20")
+    kotlin("jvm").version("1.9.0")
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 

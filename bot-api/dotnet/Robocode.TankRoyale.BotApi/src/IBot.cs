@@ -640,8 +640,8 @@ public interface IBot : IBaseBot
     /// method.
     /// </summary>
     /// <param name="overwrite">overwrite is set to <c>true</c> if the movement saved by a previous call
-    /// to this method or <see cref="SetStop()"/> must be overridden with the current movement.
-    /// When set to <c>false</c> this method is identical to <see cref="SetStop()"/>.</param>
+    /// to this method or <see cref="IBaseBot.SetStop()"/> must be overridden with the current movement.
+    /// When set to <c>false</c> this method is identical to <see cref="IBaseBot.SetStop()"/>.</param>
     /// <seealso cref="Stop"/>
     /// <seealso cref="IBaseBot.SetResume"/>
     /// <seealso cref="Resume"/>

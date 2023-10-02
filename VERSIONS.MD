@@ -1,6 +1,6 @@
 # Versions
 
-## 📦
+## 📦 0.21.0 - Improved scoring - 02-Oct-2023
 
 #### 🚀 Improvements
 
@@ -15,10 +15,13 @@
 
 #### 🪲 Bug Fixes
 
+- Scoring:
+    - Fixed various scoring issues when comparing to original Robocode. 
 - Bot API:
     - Fixed race condition when adding custom events.
 - Bot Console:
-    - Events are only printed out while the bot is alive. 
+    - Events are only printed out while the bot is alive or has just died.
+    - The DeathEvent was missing.
 
 ## 📦 0.20.1 - Added Events to bot console - 15-Sep-2023
 

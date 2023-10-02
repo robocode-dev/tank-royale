@@ -1,53 +1,61 @@
 package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.TeamOrBotId
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
 
-/** Defines a score record to keep track of a bot´s score. */
+/**
+ * Score record for keeping track of the scores for a specific participant.
+ */
 data class Score(
     /** Participant id */
-    var teamOrBotId: TeamOrBotId,
+    val participantId: ParticipantId,
 
-    /** Survival score gained whenever another bot is defeated */
-    var survival: Double = 0.0,
+    /** Bullet damage score */
+    val bulletDamageScore: Double = 0.0,
 
-    /** Last survivor score as last survivor in a round */
-    var lastSurvivorBonus: Double = 0.0,
+    /** Bullet kill bonus (accumulated from killed opponents) */
+    val bulletKillBonus: Double = 0.0,
 
-    /** Bullet damage given */
-    var bulletDamage: Double = 0.0,
+    /** Ram damage score */
+    val ramDamageScore: Double = 0.0,
 
-    /** Bullet kill bonus */
-    var bulletKillBonus: Double = 0.0,
+    /** Ram kill bonus (accumulated from killed opponents) */
+    val ramKillBonus: Double = 0.0,
 
-    /** Ram damage given */
-    var ramDamage: Double = 0.0,
+    /** Survival score (whenever another participant is defeated) */
+    val survivalScore: Double = 0.0,
 
-    /** Ram kill bonus */
-    var ramKillBonus: Double = 0.0,
+    /** Last survivor bonus (the last survivor) */
+    val lastSurvivorBonus: Double = 0.0,
 
-    /** Number of 1st places  */
+    /** Number of 1st places */
     var firstPlaces: Int = 0,
 
-    /** Number of 2nd places  */
+    /** Number of 2nd places */
     var secondPlaces: Int = 0,
 
-    /** Number of 3rd places  */
+    /** Number of 3rd places */
     var thirdPlaces: Int = 0,
-) {
-    /** Total score */
-    val totalScore: Double
-        get() = survival + lastSurvivorBonus + bulletDamage + bulletKillBonus + ramDamage + ramKillBonus
 
+    /** Rank */
+    var rank: Int = 0,
+) {
+    /** The total score */
+    val totalScore: Double
+        get() = bulletDamageScore + bulletKillBonus +
+                ramDamageScore + ramKillBonus +
+                survivalScore + lastSurvivorBonus
+
+    /** Adds another score record to this record */
     operator fun plus(score: Score) = Score(
-        teamOrBotId,
-        survival + score.survival,
-        lastSurvivorBonus + score.lastSurvivorBonus,
-        bulletDamage + score.bulletDamage,
+        participantId,
+        bulletDamageScore + score.bulletDamageScore,
         bulletKillBonus + score.bulletKillBonus,
-        ramDamage + score.ramDamage,
+        ramDamageScore + score.ramDamageScore,
         ramKillBonus + score.ramKillBonus,
+        survivalScore + score.survivalScore,
+        lastSurvivorBonus + score.lastSurvivorBonus,
         firstPlaces + score.firstPlaces,
         secondPlaces + score.secondPlaces,
-        thirdPlaces + score.thirdPlaces
+        thirdPlaces + score.thirdPlaces,
     )
 }

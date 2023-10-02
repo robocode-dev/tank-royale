@@ -31,7 +31,7 @@ private fun extractVersion(versionsFilename: String): String {
             return "\\d+\\.\\d+\\.\\d+".toRegex().find(line)?.value ?: throw IllegalStateException("Version was not found")
         }
     }
-    throw IllegalStateException("Line cotaining version could not be located")
+    throw IllegalStateException("Line containing version could not be located")
 }
 
 private fun extractReleaseNotes(versionsFilename: String): String {

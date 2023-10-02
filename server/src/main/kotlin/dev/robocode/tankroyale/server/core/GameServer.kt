@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.ConnectionHandler
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.GameServerConnectionListener
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.TeamOrBotId
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.ResultsView
 import dev.robocode.tankroyale.server.mapper.*
 import dev.robocode.tankroyale.server.model.*
@@ -231,7 +231,7 @@ class GameServer(
 
     /** Prepares model-updater */
     private fun prepareModelUpdater() {
-        val participantsAndTeamIds = createTeamOrBotIds()
+        val participantIds = createParticipantIds()
 
         val initialPositions = participantMap.filter { it.value.initialPosition != null }.mapValues {
             val p = it.value.initialPosition
@@ -239,20 +239,20 @@ class GameServer(
         }
         val droidFlags = participantMap.mapValues { it.value.isDroid == true }
 
-        modelUpdater = ModelUpdater(gameSetup, participantsAndTeamIds, initialPositions, droidFlags)
+        modelUpdater = ModelUpdater(gameSetup, participantIds, initialPositions, droidFlags)
     }
 
-    private fun createTeamOrBotIds(): List<TeamOrBotId> {
+    private fun createParticipantIds(): Set<ParticipantId> {
 
-        val teamOrBotIds = mutableListOf<TeamOrBotId>()
+        val participantIds = mutableSetOf<ParticipantId>()
 
         connectionHandler.getBotHandshakes().forEach { (conn, botHandshake) ->
-            participantIds[conn]?.let { botId ->
+            this.participantIds[conn]?.let { botId ->
                 val teamId = botHandshake.teamId?.let { TeamId(it) }
-                teamOrBotIds += TeamOrBotId(teamId, botId)
+                participantIds += ParticipantId(botId, teamId)
             }
         }
-        return teamOrBotIds
+        return participantIds
     }
 
     /** Last reset turn timeout period */
@@ -291,18 +291,18 @@ class GameServer(
     private fun getResultsForBot(botId: BotId): ResultsForBot {
         val results = modelUpdater!!.getResults().sortedByDescending { it.totalScore }
 
-        val index = results.indexOfFirst { it.teamOrBotId.botId == botId }
+        val index = results.indexOfFirst { it.participantId.botId == botId }
         if (index == -1)
             throw IllegalStateException("botId was not found in results: $botId")
 
         val score = results[index]
         return ResultsForBot().apply {
             this.rank = index + 1
-            survival = score.survival.roundToInt()
+            survival = score.survivalScore.roundToInt()
             lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
-            bulletDamage = score.bulletDamage.roundToInt()
+            bulletDamage = score.bulletDamageScore.roundToInt()
             bulletKillBonus = score.bulletKillBonus.toInt()
-            ramDamage = score.ramDamage.roundToInt()
+            ramDamage = score.ramDamageScore.roundToInt()
             ramKillBonus = score.ramKillBonus.roundToInt()
             totalScore = score.totalScore.roundToInt()
             firstPlaces = score.firstPlaces
@@ -318,11 +318,10 @@ class GameServer(
             .sortedByDescending { it.totalScore }
 
         val results = mutableListOf<ResultsForObserver>()
-        var rank = 1
 
         scores.forEach { score ->
             run {
-                participantMap[score.teamOrBotId.botId]?.let { participant ->
+                participantMap[score.participantId.botId]?.let { participant ->
 
                     val (id, name, version) =
                         if (participant.teamId == null)
@@ -331,15 +330,15 @@ class GameServer(
                             Triple(participant.teamId, participant.teamName, participant.teamVersion)
 
                     ResultsForObserver().apply {
-                        this.rank = rank++
                         this.id = id
                         this.name = name
                         this.version = version
-                        survival = score.survival.roundToInt()
+                        this.rank = score.rank
+                        survival = score.survivalScore.roundToInt()
                         lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
-                        bulletDamage = score.bulletDamage.roundToInt()
+                        bulletDamage = score.bulletDamageScore.roundToInt()
                         bulletKillBonus = score.bulletKillBonus.toInt()
-                        ramDamage = score.ramDamage.roundToInt()
+                        ramDamage = score.ramDamageScore.roundToInt()
                         ramKillBonus = score.ramKillBonus.roundToInt()
                         totalScore = score.totalScore.roundToInt()
                         firstPlaces = score.firstPlaces
