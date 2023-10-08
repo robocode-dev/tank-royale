@@ -14,6 +14,7 @@ import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCancelButton
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
+import java.awt.Dimension
 import java.awt.event.ItemEvent
 import javax.swing.*
 
@@ -23,7 +24,7 @@ object NewBattleDialog : RcDialog(MainFrame, "select_bots_dialog") {
 
     init {
         contentPane.add(selectBotsAndStartPanel)
-        pack()
+        size = Dimension(950, 750)
         setLocationRelativeTo(MainFrame) // center on main window
     }
 }
