@@ -33,26 +33,19 @@ data class MutableTurn(
     }
 
     /**
-     * Adds a private bot event.
+     * Adds a private bot event to for a specific bot.
      * @param botId is the bot id.
      * @param event is the bot event, only given to the specified bot.
      */
     fun addPrivateBotEvent(botId: BotId, event: Event) {
-        // Only a specific bot retrieves the event, not any other bot
-        var botEvents: MutableSet<Event>? = botEvents[botId]
-        if (botEvents == null) {
-            botEvents = HashSet()
-            this.botEvents[botId] = botEvents
-        }
-        botEvents.add(event)
+        botEvents.getOrPut(botId) { HashSet() }.add(event)
     }
 
     /**
-     * Adds a public bot event.
+     * Adds a public bot event to every bot.
      * @param event is the bot event.
      */
     fun addPublicBotEvent(event: Event) {
-        // Every bot get notified about the bot event
         bots.forEach { addPrivateBotEvent(it.id, event) }
     }
 
@@ -64,25 +57,17 @@ data class MutableTurn(
 
     /** Returns a deep copy of the bots */
     private fun copyBots(): Set<IBot> {
-        val botsCopy = mutableSetOf<IBot>()
-        bots.forEach { bot -> botsCopy += copyBot(bot) }
-        return botsCopy.toSet()
+        return bots.map { copyBot(it) }.toSet()
     }
 
     /** Returns a deep copy of the bullets */
     private fun copyBullets(): Set<IBullet> {
-        val bulletsCopy = mutableSetOf<IBullet>()
-        bullets.forEach { bullet -> bulletsCopy += copyBullet(bullet) }
-        return bulletsCopy.toSet()
+        return bullets.map { copyBullet(it) }.toSet()
     }
 
     /** Returns a deep copy of the bot events */
     private fun copyBotEvents(): Map<BotId, Set<Event>> {
-        val botEventsCopy = mutableMapOf<BotId, Set<Event>>()
-        botEvents.forEach { (botId, events) ->
-            botEventsCopy[botId] = events.toSet()
-        }
-        return botEventsCopy.toMap()
+        return botEvents.mapValues { (_, events) -> events.toSet() }
     }
 
     /**
