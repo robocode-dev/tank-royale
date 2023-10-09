@@ -29,7 +29,7 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
      * Returns an ordered list containing the current scores, ranks, and placements for all participants.
      * The higher _total_ scores are listed before lower _total_ scores.
      */
-    fun getScores(): Collection<Score> {
+    fun getScores(): List<Score> {
         val scores = participantIds.map { calculateScore(it) }.sortedByDescending { it.totalScore }
         ScoresDecorator.updateRanks(scores)
         ScoresDecorator.increment1st2ndAnd3rdPlaces(scores)
