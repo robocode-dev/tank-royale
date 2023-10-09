@@ -1,3 +1,3 @@
-Version 0.21.0
+Version 0.21.1
 -----------------
 This is an initial alpha version. Expect changes to the API before the real release.
