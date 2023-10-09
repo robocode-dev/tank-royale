@@ -19,7 +19,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onMultiClickedAtIndex
 import dev.robocode.tankroyale.gui.ui.extensions.JListExt.onSelection
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.util.Event
-import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
+import dev.robocode.tankroyale.gui.util.EDT.enqueue
 import net.miginfocom.swing.MigLayout
 import java.awt.EventQueue
 import java.awt.event.FocusEvent
@@ -431,8 +431,6 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                     addElement(botInfo)
                 }
             }
-        }
-        enqueue {
             // Remove selected bots, if the bots are not on the joined bots from the client
             selectedBotListModel.apply {
                 ArrayList(list()).forEach { botInfo -> // ArrayList is used for preventing ConcurrentModificationException

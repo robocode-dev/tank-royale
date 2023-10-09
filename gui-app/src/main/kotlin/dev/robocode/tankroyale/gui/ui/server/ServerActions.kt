@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.UiTitles
-import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
+import dev.robocode.tankroyale.gui.util.EDT.enqueue
 import javax.swing.JOptionPane
 
 object ServerActions {

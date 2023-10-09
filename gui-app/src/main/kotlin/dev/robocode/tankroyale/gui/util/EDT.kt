@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.gui.util
 
 import java.awt.EventQueue
 
-object GuiTask {
+object EDT {
 
     fun enqueue(callable: () -> Unit) {
         EventQueue.invokeLater {

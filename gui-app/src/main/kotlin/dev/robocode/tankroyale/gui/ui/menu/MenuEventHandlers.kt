@@ -11,7 +11,7 @@ import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
 import dev.robocode.tankroyale.gui.ui.server.ServerLogFrame
 import dev.robocode.tankroyale.gui.util.Browser
-import dev.robocode.tankroyale.gui.util.GuiTask.enqueue
+import dev.robocode.tankroyale.gui.util.EDT.enqueue
 
 object MenuEventHandlers {
 

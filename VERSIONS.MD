@@ -1,6 +1,11 @@
 # Versions
 
-## 📦 0.21.1 
+## 📦 0.21.1
+
+#### 🪲 Bug Fixes
+
+- GUI:
+    - #75: The GUI could get stuck and become unresponsive when displaying the busy pointer on Ubuntu.
 
 #### 🚀 Improvements
 

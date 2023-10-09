@@ -71,7 +71,7 @@ open class Event<T> {
      * @param callable is used for providing the event handler function.
      */
     fun enqueue(owner: Any, callable: () -> Unit) {
-        subscribe(owner) { GuiTask.enqueue { callable.invoke() } }
+        subscribe(owner) { EDT.enqueue { callable.invoke() } }
     }
 
     class Handler<T>(
