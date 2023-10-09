@@ -101,7 +101,7 @@ final class EventQueue {
             currentTopEvent = event;
 
             try {
-                if (isNotOldOrCriticalEvent(event, currentTurn)) {
+                if (isNotOldOrIsCriticalEvent(event, currentTurn)) {
                     botEventHandlers.fire(event);
                 }
                 setInterruptible(event.getClass(), false);
@@ -143,7 +143,7 @@ final class EventQueue {
         return baseBotInternals.getPriority(eventClass);
     }
 
-    private static boolean isNotOldOrCriticalEvent(BotEvent event, int currentTurn) {
+    private static boolean isNotOldOrIsCriticalEvent(BotEvent event, int currentTurn) {
         var isNotOld = event.getTurnNumber() + MAX_EVENT_AGE >= currentTurn;
         var isCritical = event.isCritical();
         return isNotOld || isCritical;

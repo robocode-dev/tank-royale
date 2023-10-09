@@ -99,7 +99,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
             try
             {
-                if (IsNotOldOrCriticalEvent(botEvent, currentTurn))
+                if (IsNotOldOrIsCriticalEvent(botEvent, currentTurn))
                     botEventHandlers.Fire(botEvent);
 
                 SetInterruptible(botEvent.GetType(), false);
@@ -151,7 +151,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
         return GetPriority(e2) - GetPriority(e1);
     }
 
-    private static bool IsNotOldOrCriticalEvent(BotEvent botEvent, int currentTurn)
+    private static bool IsNotOldOrIsCriticalEvent(BotEvent botEvent, int currentTurn)
     {
         var isNotOld = botEvent.TurnNumber + MaxEventAge >= currentTurn;
         var isCritical = botEvent.IsCritical;
