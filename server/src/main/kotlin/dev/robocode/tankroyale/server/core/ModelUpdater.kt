@@ -861,15 +861,12 @@ class ModelUpdater(
                     gameState.isGameEnded = true // Game over
                 }
 
-                // The winner is the last bot remaining, if any bots are left
-                var winnerId = botsMap.entries.firstOrNull { (_, bot) -> bot.isAlive }?.key
-
-                // Otherwise, the bot with the highest score wins
-                winnerId?.let {
-                    val scores = scoreTracker.getScores()
-                    if (scores.isNotEmpty()) {
-                        winnerId = scores[0].participantId.botId
-                        turn.addPrivateBotEvent(winnerId!!, WonRoundEvent(turn.turnNumber))
+                val scores = scoreTracker.getScores()
+                if (scores.isNotEmpty()) {
+                    val winners = scores.filter { it.rank == 1}
+                    winners.forEach {
+                        val botId = it.participantId.botId
+                        turn.addPrivateBotEvent(botId, WonRoundEvent(turn.turnNumber))
                     }
                 }
             }
