@@ -289,7 +289,7 @@ class GameServer(
 
     /** Returns a list of bot results (for bots) ordered on the score ranks */
     private fun getResultsForBot(botId: BotId): ResultsForBot {
-        val results = modelUpdater!!.getResults().sortedByDescending { it.totalScore }
+        val results = modelUpdater!!.getResults()
 
         val index = results.indexOfFirst { it.participantId.botId == botId }
         if (index == -1)
@@ -314,11 +314,9 @@ class GameServer(
     /** Returns a list of bot results (for observers and controllers) ordered on the score ranks */
     private fun getResultsForObservers(): List<ResultsForObserver> {
 
-        val scores = ResultsView.getResults(modelUpdater!!.getResults(), participantMap.values)
-            .sortedByDescending { it.totalScore }
-
         val results = mutableListOf<ResultsForObserver>()
 
+        val scores = ResultsView.getResults(modelUpdater!!.getResults(), participantMap.values)
         scores.forEach { score ->
             run {
                 participantMap[score.participantId.botId]?.let { participant ->
