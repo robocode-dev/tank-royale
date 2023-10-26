@@ -9,6 +9,7 @@ import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.Strings
+import dev.robocode.tankroyale.gui.ui.UiTitles
 import dev.robocode.tankroyale.gui.ui.components.SortedListModel
 import dev.robocode.tankroyale.gui.ui.config.BotRootDirectoriesConfigDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
@@ -373,6 +374,16 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
             filterBotsOnlyString -> Pair(true, false)
             filterTeamsOnlyString -> Pair(false, true)
             else -> Pair(false, false)
+        }
+
+        if (BootProcess.botDirs.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                null,
+                Messages.get("no_bot_directories_found"),
+                UiTitles.get("error"),
+                JOptionPane.ERROR_MESSAGE
+            )
+            return
         }
 
         BootProcess.info(botsOnly, teamsOnly).forEach { botEntry ->

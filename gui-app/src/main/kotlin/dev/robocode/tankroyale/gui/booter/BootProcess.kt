@@ -3,18 +3,17 @@ package dev.robocode.tankroyale.gui.booter
 import dev.robocode.tankroyale.gui.model.MessageConstants
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.Messages
-import dev.robocode.tankroyale.gui.ui.UiTitles
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.ResourceUtil
-import kotlinx.serialization.decodeFromString
-import java.io.*
+import java.io.BufferedReader
+import java.io.FileNotFoundException
+import java.io.InputStreamReader
+import java.io.PrintStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
-import javax.swing.JOptionPane
 
 object BootProcess {
 
@@ -47,23 +46,13 @@ object BootProcess {
         if (teamsOnly == true) {
             args += "--teams-only"
         }
-        getBotDirs().ifEmpty { emptyList() }.forEach { args += it }
+        botDirs.forEach { args += it }
 
         val process = ProcessBuilder(args).start()
         startThread(process, false)
         try {
             val jsonStr = String(process.inputStream.readAllBytes(), StandardCharsets.UTF_8)
-            if (jsonStr.isBlank()) {
-                JOptionPane.showMessageDialog(
-                    null,
-                    Messages.get("no_bot_directories_found"),
-                    UiTitles.get("error"),
-                    JOptionPane.ERROR_MESSAGE
-                )
-                return emptyList()
-            }
             return json.decodeFromString(jsonStr)
-
         } finally {
             stopThread()
         }
@@ -84,6 +73,11 @@ object BootProcess {
     val bootedBots: List<DirAndPid>
         get() {
             return bootedBotsList
+        }
+
+    val botDirs: List<String>
+        get() {
+            return ConfigSettings.botDirectories
         }
 
     private fun bootBotProcess(botDirNames: List<String>) {
@@ -169,10 +163,6 @@ object BootProcess {
             System.err.println(ex.message)
             ""
         }
-    }
-
-    private fun getBotDirs(): List<String> {
-        return ConfigSettings.botDirectories
     }
 
     private fun readInputToPids(process: Process) {
