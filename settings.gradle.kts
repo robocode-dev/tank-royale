@@ -38,11 +38,11 @@ dependencyResolutionManagement {
 
             library("gson", "com.google.code.gson:gson:2.10.1")
             library("gson-extras", "org.danilopianini:gson-extras:1.2.0")
-            library("jansi", "org.fusesource.jansi:jansi:2.4.0")
+            library("jansi", "org.fusesource.jansi:jansi:2.4.1")
             library("java-websocket", "org.java-websocket:Java-WebSocket:1.5.4")
             library("picocli", "info.picocli:picocli:4.7.5")
-            library("proguard-gradle", "com.guardsquare:proguard-gradle:7.3.2")
-            library("miglayout-swing", "com.miglayout:miglayout-swing:11.1")
+            library("proguard-gradle", "com.guardsquare:proguard-gradle:7.4.0")
+            library("miglayout-swing", "com.miglayout:miglayout-swing:11.2")
             library("nv-i18n", "com.neovisionaries:nv-i18n:1.29")
             library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
             library("slf4j-simple", "org.slf4j:slf4j-simple:2.0.9")
@@ -64,11 +64,11 @@ dependencyResolutionManagement {
             plugin("nexus-publish", "io.github.gradle-nexus.publish-plugin").version("2.0.0-rc-1")
             plugin("shadow-jar","com.github.johnrengelman.shadow").version("8.1.1")
             plugin("itiviti-dotnet", "com.itiviti.dotnet").version("2.0.1")
-            plugin("node-gradle", "com.github.node-gradle.node").version("7.0.0")
+            plugin("node-gradle", "com.github.node-gradle.node").version("7.0.1")
             plugin("jsonschema2pojo", "org.jsonschema2pojo").version("1.2.1")
 
             // Dependencies versions
-            plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.48.0")
+            plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.49.0")
         }
     }
 }
