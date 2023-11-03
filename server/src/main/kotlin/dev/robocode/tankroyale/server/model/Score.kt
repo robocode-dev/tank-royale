@@ -7,25 +7,25 @@ import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.Parti
  */
 data class Score(
     /** Participant id */
-    val participantId: ParticipantId,
+    var participantId: ParticipantId,
 
     /** Bullet damage score */
-    val bulletDamageScore: Double = 0.0,
+    var bulletDamageScore: Double = 0.0,
 
     /** Bullet kill bonus (accumulated from killed opponents) */
-    val bulletKillBonus: Double = 0.0,
+    var bulletKillBonus: Double = 0.0,
 
     /** Ram damage score */
-    val ramDamageScore: Double = 0.0,
+    var ramDamageScore: Double = 0.0,
 
     /** Ram kill bonus (accumulated from killed opponents) */
-    val ramKillBonus: Double = 0.0,
+    var ramKillBonus: Double = 0.0,
 
     /** Survival score (whenever another participant is defeated) */
-    val survivalScore: Double = 0.0,
+    var survivalScore: Double = 0.0,
 
     /** Last survivor bonus (the last survivor) */
-    val lastSurvivorBonus: Double = 0.0,
+    var lastSurvivorBonus: Double = 0.0,
 
     /** Number of 1st places */
     var firstPlaces: Int = 0,
@@ -58,4 +58,16 @@ data class Score(
         secondPlaces + score.secondPlaces,
         thirdPlaces + score.thirdPlaces,
     )
+
+    operator fun plusAssign(score: Score) {
+        bulletDamageScore += score.bulletDamageScore
+        bulletKillBonus += score.bulletKillBonus
+        ramDamageScore += score.ramDamageScore
+        ramKillBonus += score.ramKillBonus
+        survivalScore += score.survivalScore
+        lastSurvivorBonus += score.lastSurvivorBonus
+        firstPlaces += score.firstPlaces
+        secondPlaces += score.secondPlaces
+        thirdPlaces += score.thirdPlaces
+    }
 }
