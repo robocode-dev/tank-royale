@@ -3,6 +3,8 @@ package dev.robocode.tankroyale.server.core
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.AccumulatedScoreCalculator
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.ScoreCalculator
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.Color.Companion.fromString
@@ -36,8 +38,10 @@ class ModelUpdater(
     /** Droid flags */
     private val droidFlags: Map<BotId, Boolean /* isDroid */>,
 ) {
-    /** Score keeper */
-    private val scoreTracker: ScoreTracker = ScoreTracker(participantIds)
+    /** Score tracking */
+    private val scoreTracker = ScoreTracker(participantIds)
+    private val scoreCalculator = ScoreCalculator(participantIds, scoreTracker)
+    private val accumulatedScoreCalculator = AccumulatedScoreCalculator()
 
     /** Map over all bots */
     private val botsMap = mutableMapOf<BotId, MutableBot>()
@@ -66,8 +70,8 @@ class ModelUpdater(
     /** Inactivity counter */
     private var inactivityCounter = 0
 
-    /** The current results ordered with higher total scores first */
-    fun getResults() = scoreTracker.getScores()
+    /** The accumulated results ordered with higher total scores first */
+    fun getResults() = accumulatedScoreCalculator.getScores()
 
     /** The number of rounds played so far */
     val numberOfRounds: Int get() = gameState.rounds.size
@@ -861,7 +865,7 @@ class ModelUpdater(
                     gameState.isGameEnded = true // Game over
                 }
 
-                val scores = scoreTracker.getScores()
+                val scores = scoreCalculator.getScores()
                 if (scores.isNotEmpty()) {
                     val winners = scores.filter { it.rank == 1}
                     winners.forEach {
@@ -869,6 +873,7 @@ class ModelUpdater(
                         turn.addPrivateBotEvent(botId, WonRoundEvent(turn.turnNumber))
                     }
                 }
+                accumulatedScoreCalculator.addScores(scores)
             }
         }
     }

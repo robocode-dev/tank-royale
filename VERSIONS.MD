@@ -1,5 +1,12 @@
 # Versions
 
+## 📦 0.21.2
+
+#### 🪲 Bug Fixes
+
+- GUI:
+    - The scores presented after the battle has ended was not accumulated for all rounds, and hence incorrect. 
+
 ## 📦 0.21.1
 
 #### 🪲 Bug Fixes
