@@ -36,7 +36,7 @@ dotnet {
 }
 
 tasks {
-    clean {
+    val cleanDocs by registering {
         doFirst {
             delete(
                 "build",
@@ -66,8 +66,6 @@ tasks {
     }
 
     val docfx by registering {
-        dependsOn(assemble)
-
         doLast {
             exec {
                 workingDir("docfx_project")
@@ -82,7 +80,7 @@ tasks {
     }
 
     register<Copy>("uploadDocs") {
-        dependsOn(docfx)
+        dependsOn(cleanDocs, docfx)
 
         val dotnetApiDir = "../../docs/api/dotnet"
 
