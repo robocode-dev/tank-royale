@@ -113,7 +113,7 @@ class ConnectionHandler(
     }
 
     fun send(conn: WebSocket, message: String) {
-        log.debug("Sending to: ${conn.remoteSocketAddress}, message: $message")
+        log.debug("Sending to: {}, message: {}", conn.remoteSocketAddress, message)
         try {
             conn.send(message)
         } catch (e: WebsocketNotConnectedException) {
@@ -167,7 +167,7 @@ class ConnectionHandler(
         override fun onStart() {}
 
         override fun onOpen(conn: WebSocket, handshake: ClientHandshake) {
-            log.debug("onOpen(): ${conn.remoteSocketAddress}")
+            log.debug("onOpen(): {}", conn.remoteSocketAddress)
 
             executorService.submit {
                 allConnections += conn
@@ -185,7 +185,7 @@ class ConnectionHandler(
         }
 
         override fun onClose(conn: WebSocket, code: Int, reason: String, remote: Boolean) {
-            log.debug("onClose: ${conn.remoteSocketAddress}, code: $code, reason: $reason, remote: $remote")
+            log.debug("onClose: {}, code: {}, reason: {}, remote: {}", conn.remoteSocketAddress, code, reason, remote)
 
             executorService.submit {
                 closeConnection(conn)
@@ -193,7 +193,7 @@ class ConnectionHandler(
         }
 
         override fun onMessage(conn: WebSocket, message: String) {
-            log.debug("onMessage: ${conn.remoteSocketAddress}, message: $message")
+            log.debug("onMessage: {}, message: {}", conn.remoteSocketAddress, message)
 
             executorService.submit {
                 try {
@@ -201,7 +201,7 @@ class ConnectionHandler(
                         try {
                             val type = Message.Type.fromValue(jsonType.asString)
 
-                            log.debug("Handling message: $type")
+                            log.debug("Handling message: {}", type)
                             when (type) {
                                 Message.Type.BOT_INTENT -> handleIntent(conn, message)
                                 Message.Type.BOT_HANDSHAKE -> handleBotHandshake(conn, message)
