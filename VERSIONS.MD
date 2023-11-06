@@ -2,6 +2,11 @@
 
 ## 📦 0.21.2
 
+#### ⚠️ Disabled functionality
+
+- Bot Console:
+    - The Events tab has been disabled as dumping and rendering the event log consumes too much CPU power.
+
 #### 🪲 Bug Fixes
 
 - GUI:

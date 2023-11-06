@@ -6,6 +6,10 @@ import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.*
 
+// TODO: Optimize: 1) Only log for current turn
+// TODO: Optimize: 2) Replace html rendering with ANSI to attributes
+// TODO: Missing listing bullet values for the tick event
+
 class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
 
     private val numberOfIndentionSpaces = 2

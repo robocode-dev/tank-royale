@@ -17,7 +17,7 @@ class BotConsoleFrame(val bot: Participant, frameCounter: Int = 0) :
         add(JTabbedPane().apply {
             addTab(Strings.get("bot_console.console"), consolePanel)
             addTab(Strings.get("bot_console.properties"), propertiesPanel)
-            addTab(Strings.get("bot_console.events"), eventsPanel)
+//            addTab(Strings.get("bot_console.events"), eventsPanel) // The rendering is currently too slow!
         })
     }
 }
