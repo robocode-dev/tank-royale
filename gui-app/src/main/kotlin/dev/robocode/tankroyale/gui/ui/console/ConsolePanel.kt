@@ -12,7 +12,9 @@ import javax.swing.text.html.HTMLDocument
 open class ConsolePanel : JPanel() {
 
     private val editorPane = JEditorPane()
-    private val scrollPane = JScrollPane(editorPane)
+    private val scrollPane = JScrollPane(editorPane).apply {
+        border = null
+    }
 
     private val editorKit = ConsoleHtmlEditorKit()
     private val document = editorKit.createDefaultDocument() as HTMLDocument
