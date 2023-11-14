@@ -6,6 +6,7 @@ open class ConsoleHtmlEditorKit : HTMLEditorKit() {
 
     init {
         styleSheet.apply {
+            addRule("body { background-color: #282828; padding: 4px; }")
             addRule("span { color: white; font-family: monospace; font-size: 12;}")
 
             // Bot console

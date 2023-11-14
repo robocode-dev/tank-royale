@@ -6,7 +6,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.util.Clipboard
 import dev.robocode.tankroyale.gui.util.Event
 import java.awt.BorderLayout
-import java.awt.Color
 import javax.swing.*
 import javax.swing.text.html.HTMLDocument
 
@@ -50,7 +49,6 @@ open class ConsolePanel : JPanel() {
         editorPane.apply {
             contentType = "text/html"
             isEditable = false
-            background = Color(0x282828)
         }
 
         clear() // to avoid 2nd line break
