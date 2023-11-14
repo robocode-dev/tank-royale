@@ -16,8 +16,8 @@ open class ConsolePanel : JPanel() {
         border = null
     }
 
-    private val editorKit = ConsoleHtmlEditorKit()
-    private val document = editorKit.createDefaultDocument() as HTMLDocument
+    private val htmlKit = ConsoleHtmlEditorKit()
+    private val document = htmlKit.createDefaultDocument() as HTMLDocument
 
     private val ansiToHtml = AnsiColorToHtmlController()
 
@@ -45,7 +45,7 @@ open class ConsolePanel : JPanel() {
     }
 
     init {
-        editorPane.editorKit = editorKit
+        editorPane.editorKit = htmlKit
         editorPane.document = document
 
         editorPane.apply {
@@ -91,7 +91,7 @@ open class ConsolePanel : JPanel() {
 
         html = "<span>${ansiToHtml.process(html)}</span>"
 
-        editorKit.insertHTML(document, document.length, html, 0, 0, null)
+        htmlKit.insertHTML(document, document.length, html, 0, 0, null)
 
         // Scroll to bottom
         editorPane.caretPosition = document.length

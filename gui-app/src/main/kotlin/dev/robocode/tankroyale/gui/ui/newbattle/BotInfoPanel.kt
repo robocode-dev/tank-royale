@@ -1,17 +1,12 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.model.BotInfo
-import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.web
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import net.miginfocom.swing.MigLayout
-import java.awt.Color
-import java.awt.Dimension
 import java.awt.Insets
 import java.util.*
 import javax.swing.*
-import javax.swing.border.Border
 import javax.swing.text.html.HTMLEditorKit
-import javax.swing.text.html.StyleSheet
 
 object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
 
@@ -125,36 +120,18 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
 
     private class JNonEditableHtmlPane : JTextPane() {
 
-        companion object {
-            val textFieldBorder: Border = UIManager.getBorder("TextField.border")
-            val backgroundWebColor: Color = UIManager.getColor("Label.background") ?: Color.red
-
-            val textFieldMinimumSize: Dimension = JTextField().minimumSize
-
-            val css = StyleSheet().apply {
-                addRule(
-                    """body {
-                    background-color: ${backgroundWebColor.web};
-                    color: ${foreground.web};
-                    font-family: sans-serif;
-                    font-size: ${font.size};
-                    padding: 2px;
-                }
-                """
-                )
-            }
-        }
-
         init {
             isEditable = false
             contentType = "text/html"
 
-            border = textFieldBorder
+            border = UIManager.getBorder("TextField.border")
             margin = Insets(0, 0, 0, 0)
 
-            minimumSize = textFieldMinimumSize
+            minimumSize = JTextField().minimumSize
 
-            (editorKit as HTMLEditorKit).styleSheet = css
+            editorKit = HTMLEditorKit().apply {
+                styleSheet = BotInfoStyleSheet()
+            }
         }
     }
 }
