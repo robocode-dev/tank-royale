@@ -4,10 +4,14 @@ import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.web
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import net.miginfocom.swing.MigLayout
+import java.awt.Color
 import java.awt.Dimension
+import java.awt.Insets
 import java.util.*
 import javax.swing.*
+import javax.swing.border.Border
 import javax.swing.text.html.HTMLEditorKit
+import javax.swing.text.html.StyleSheet
 
 object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
 
@@ -35,7 +39,6 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
 
         addLabel("bot_info.homepage", "cell 0 3")
         add(homepageTextPane, "cell 1 3, growx")
-        homepageTextPane.minimumSize = nameTextField.minimumSize
 
         addLabel("bot_info.description", "cell 0 4")
         add(descriptionTextField, "growx, span 4")
@@ -54,7 +57,6 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
 
         addLabel("bot_info.country_codes", "cell 3 3")
         add(countryCodesTextPane, "cell 4 3, growx")
-        countryCodesTextPane.minimumSize = Dimension(100, 24)
 
         updateBotInfo(null)
 
@@ -92,7 +94,7 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
     }
 
     private fun generateUrlHtml(url: String): String =
-        "<html><body style=\"font-family: sans-serif; font-size:${font.size}\"><a href=\"${url}\">${url}</a></body></html>"
+        "<a href=\"${url}\">${url}</a>"
 
     private fun generateCountryHtml(countryCodes: List<String>): String {
         var html = """
@@ -102,7 +104,7 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         html += """
                 </tr>
               </table>
-            </html>""".trimIndent()
+              """.trimIndent()
         return html
     }
 
@@ -122,15 +124,37 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
     }
 
     private class JNonEditableHtmlPane : JTextPane() {
+
+        companion object {
+            val textFieldBorder: Border = UIManager.getBorder("TextField.border")
+            val backgroundWebColor: Color = UIManager.getColor("Label.background") ?: Color.red
+
+            val textFieldMinimumSize: Dimension = JTextField().minimumSize
+
+            val css = StyleSheet().apply {
+                addRule(
+                    """body {
+                    background-color: ${backgroundWebColor.web};
+                    color: ${foreground.web};
+                    font-family: sans-serif;
+                    font-size: ${font.size};
+                    padding: 2px;
+                }
+                """
+                )
+            }
+        }
+
         init {
             isEditable = false
             contentType = "text/html"
-            border = JTextField().border
-            background = parent?.background
 
-            (editorKit as HTMLEditorKit).styleSheet.apply {
-                addRule("body { color: ${foreground.web}; font-family: sans-serif; font-size: ${font.size} }")
-            }
+            border = textFieldBorder
+            margin = Insets(0, 0, 0, 0)
+
+            minimumSize = textFieldMinimumSize
+
+            (editorKit as HTMLEditorKit).styleSheet = css
         }
     }
 }
