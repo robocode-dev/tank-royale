@@ -3,9 +3,11 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import net.miginfocom.swing.MigLayout
+import java.awt.Desktop
 import java.awt.Insets
 import java.util.*
 import javax.swing.*
+import javax.swing.event.HyperlinkEvent
 import javax.swing.text.html.HTMLEditorKit
 
 object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
@@ -131,6 +133,14 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
 
             editorKit = HTMLEditorKit().apply {
                 styleSheet = BotInfoStyleSheet()
+            }
+
+            addHyperlinkListener {
+                if (it.eventType == HyperlinkEvent.EventType.ACTIVATED) {
+                    if (Desktop.isDesktopSupported()) {
+                        Desktop.getDesktop().browse(it.url.toURI())
+                    }
+                }
             }
         }
     }
