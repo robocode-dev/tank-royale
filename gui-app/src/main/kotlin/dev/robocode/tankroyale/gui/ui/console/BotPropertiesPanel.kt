@@ -109,10 +109,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
 
     private fun subscribeToEvents() {
         ClientEvents.onTickEvent.subscribe(this) { tickEvent ->
-            val botStates = tickEvent.botStates.filter { it.id == bot.id }
-            if (botStates.isNotEmpty()) {
-                updateBotState(botStates[0], tickEvent)
-            }
+            updateBotState(tickEvent)
         }
         ClientEvents.onGameStarted.subscribe(this) {
             subscribeToEvents()
@@ -129,7 +126,9 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
         ClientEvents.onTickEvent.unsubscribe(this)
     }
 
-    private fun updateBotState(botState: BotState, tickEvent: TickEvent) {
+    private fun updateBotState(tickEvent: TickEvent) {
+        val botState = tickEvent.botStates.first { it.id == bot.id }
+
         model.apply {
             // Column 1
 

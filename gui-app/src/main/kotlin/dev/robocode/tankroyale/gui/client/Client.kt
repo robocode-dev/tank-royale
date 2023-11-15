@@ -267,25 +267,26 @@ object Client {
     private fun handleTickEvent(tickEvent: TickEvent) {
         onTickEvent.fire(tickEvent)
 
-        updatedSavedStdOutput(tickEvent)
+        updateSavedStdOutput(tickEvent)
     }
 
-    private fun updatedSavedStdOutput(tickEvent: TickEvent) {
+    private fun updateSavedStdOutput(tickEvent: TickEvent) {
         tickEvent.apply {
             botStates.forEach { botState ->
                 val id = botState.id
-                botState.stdOut?.let { output ->
-                    savedStdOutput
-                        .getOrPut(id) { LinkedHashMap() }
-                        .getOrPut(roundNumber) { LinkedHashMap() }[turnNumber] = output
-                }
-                botState.stdErr?.let { error ->
-                    savedStdError
-                        .getOrPut(id) { LinkedHashMap() }
-                        .getOrPut(roundNumber) { LinkedHashMap() }[turnNumber] = error
-                }
+                botState.stdOut?.let { updateOutput(savedStdOutput, id, roundNumber, turnNumber, it) }
+                botState.stdErr?.let { updateOutput(savedStdError, id, roundNumber, turnNumber, it) }
             }
             ClientEvents.onStdOutputUpdated.fire(tickEvent)
         }
+    }
+
+    private fun updateOutput(
+        stdOutputMaps: MutableMap<Int /* BotId */, MutableMap<Int /* round */, MutableMap<Int /* turn */, String>>>,
+        id: Int, round: Int, turn: Int, output: String
+    ) {
+        stdOutputMaps
+            .getOrPut(id) { LinkedHashMap() }
+            .getOrPut(round) { LinkedHashMap() }[turn] = output
     }
 }
