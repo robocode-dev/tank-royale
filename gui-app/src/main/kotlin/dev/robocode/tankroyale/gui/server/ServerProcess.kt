@@ -41,6 +41,7 @@ object ServerProcess {
         ServerSettings.apply {
             command = mutableListOf(
                 "java",
+                "-Dpicocli.ansi=true", // to show server logo in ANSI colors
                 "-jar",
                 getServerJar(),
                 "--port=$port",

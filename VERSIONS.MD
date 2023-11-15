@@ -2,6 +2,11 @@
 
 ## 📦 0.21.2
 
+#### 🚀 Improvements
+
+- GUI:
+    - The logo in the server log in now shown with ANSI colors per default. 
+
 #### ⚠️ Disabled functionality
 
 - Bot Console:
