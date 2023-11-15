@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.BotState
 import dev.robocode.tankroyale.gui.model.Participant
@@ -66,6 +67,10 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     init {
         setupTable()
         subscribeToEvents()
+
+        Client.currentTick?.let {
+            updateBotState(it)
+        }
     }
 
     private fun setupTable() {

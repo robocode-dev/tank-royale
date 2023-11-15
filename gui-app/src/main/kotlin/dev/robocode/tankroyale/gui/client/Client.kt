@@ -25,6 +25,8 @@ object Client {
 
     var currentGameSetup: GameSetup? = null
 
+    var currentTick: TickEvent? = null
+
     private val isRunning = AtomicBoolean(false)
     private val isPaused = AtomicBoolean(false)
 
@@ -265,6 +267,8 @@ object Client {
     }
 
     private fun handleTickEvent(tickEvent: TickEvent) {
+        currentTick = tickEvent
+
         onTickEvent.fire(tickEvent)
 
         updateSavedStdOutput(tickEvent)

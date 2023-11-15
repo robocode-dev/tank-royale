@@ -5,7 +5,7 @@
 #### 🚀 Improvements
 
 - GUI:
-    - The logo in the server log in now shown with ANSI colors per default. 
+    - The logo in the server log in now shown with ANSI colors per default.
 
 #### ⚠️ Disabled functionality
 
@@ -15,7 +15,8 @@
 #### 🪲 Bug Fixes
 
 - GUI:
-    - The scores presented after the battle has ended was not accumulated for all rounds, and hence incorrect. 
+    - The scores presented after the battle has ended was not accumulated for all rounds, and hence incorrect.
+    - The Properties tab of the Bot Console did not show any values when initialized, e.g. when game is paused.
 
 ## 📦 0.21.1
 
