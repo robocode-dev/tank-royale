@@ -6,6 +6,7 @@
 
 - GUI:
     - The logo in the server log in now shown with ANSI colors per default.
+    - The bot console now writes out the turn numbers from the previous turn, when output from the bot is written out.
 
 #### ⚠️ Disabled functionality
 

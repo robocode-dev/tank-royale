@@ -38,11 +38,12 @@ open class ConsolePanel : JPanel() {
     private val clearButton = JPanel().addButton("clear", onClear)
     private val copyToClipboardButton = JPanel().addButton("copy_to_clipboard", onCopyToClipboard)
 
-    protected open val buttonPanel get() = JPanel().apply {
-        add(okButton)
-        add(clearButton)
-        add(copyToClipboardButton)
-    }
+    protected open val buttonPanel
+        get() = JPanel().apply {
+            add(okButton)
+            add(clearButton)
+            add(copyToClipboardButton)
+        }
 
     init {
         editorPane.editorKit = htmlKit
@@ -76,7 +77,7 @@ open class ConsolePanel : JPanel() {
                 html = "<span class=\"${cssClass.className}\">$html</span>"
             }
             if (turnNumber != null) {
-                html = "<span class=\"linenumber\">$turnNumber:</span> $html"
+                html = "<span class=\"linenumber\">${turnNumber - 1}:</span> $html" // turn number is aligned with last turn
             }
             append(html)
         }
