@@ -50,11 +50,14 @@ tasks {
                 write(newLine)
             }
         }
+        // Important: It seems that we need to add the `>nul` redirection to avoid the cmd processes to halt!?
+        val redirect = if (fileExt == "cmd") ">nul" else ""
+
         printWriter.use {
             if (fileExt == "sh") {
                 it.println("#!/bin/sh")
             }
-            it.println("java -cp ../lib/* $botName.java")
+            it.println("java -cp ../lib/* $botName.java $redirect")
         }
     }
 
