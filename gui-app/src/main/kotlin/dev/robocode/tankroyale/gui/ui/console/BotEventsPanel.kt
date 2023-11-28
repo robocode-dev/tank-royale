@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.console
 
-import dev.robocode.tankroyale.gui.ansi.AnsiEscapeCode
-import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
+import dev.robocode.tankroyale.gui.ansi2.AnsiEscCode
+import dev.robocode.tankroyale.gui.ansi2.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.*
@@ -61,7 +61,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
             .fieldValue("turnNumber", event.turnNumber)
 
     private fun createEventNameBuilder(event: Event) =
-        AnsiTextBuilder().newline().space(numberOfIndentionSpaces).esc(AnsiEscapeCode.CYAN).text(
+        AnsiTextBuilder().newline().space(numberOfIndentionSpaces).esc(AnsiEscCode.CYAN).text(
             when (event) {
                 is BotDeathEvent -> if (bot.id == event.victimId) "DeathEvent" else "BotDeathEvent"
                 is BulletHitBotEvent -> if (bot.id == event.victimId) "HitByBulletEvent" else "BulletHitBotEvent"
@@ -96,7 +96,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
                 .fieldValue("direction", bullet.direction, indent)
                 .fieldValue("color", bullet.color, indent)
 
-        fieldValue(fieldName, bulletAnsi.toString(), indention)
+        fieldValue(fieldName, bulletAnsi.build(), indention)
         return this
     }
 
@@ -107,13 +107,13 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
     private fun dumpBotHitWallEvent(botHitWallEvent: BotHitWallEvent) {
         if (bot.id == botHitWallEvent.victimId) { // -> no need to dump victimId
             val ansi = createEventAndTurnNumberBuilder(botHitWallEvent)
-            append(ansi.toString(), botHitWallEvent.turnNumber)
+            append(ansi.build(), botHitWallEvent.turnNumber)
         }
     }
 
     private fun dumpVictimIdOnly(event: Event, victimId: Int) {
         val ansi = createVictimIdBuilder(event, victimId)
-        append(ansi.toString(), event.turnNumber)
+        append(ansi.build(), event.turnNumber)
     }
 
     private fun dumpBotHitBotEvent(botHitBotEvent: BotHitBotEvent) {
@@ -123,7 +123,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
                 .fieldValue("x", botHitBotEvent.x)
                 .fieldValue("y", botHitBotEvent.y)
                 .fieldValue("rammed", botHitBotEvent.rammed)
-            append(ansi.toString(), botHitBotEvent.turnNumber)
+            append(ansi.build(), botHitBotEvent.turnNumber)
         }
     }
 
@@ -137,7 +137,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
                 .bulletValues("bullet", bulletHitBotEvent.bullet)
                 .fieldValue("damage", bulletHitBotEvent.damage)
                 .fieldValue("energy", bulletHitBotEvent.energy)
-            append(ansi.toString(), bulletHitBotEvent.turnNumber)
+            append(ansi.build(), bulletHitBotEvent.turnNumber)
         }
     }
 
@@ -149,7 +149,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
             val ansi = createEventAndTurnNumberBuilder(bulletHitBulletEvent)
                 .bulletValues("bullet", bullet)
                 .bulletValues("hitBullet", hitBullet)
-            append(ansi.toString(), bulletHitBulletEvent.turnNumber)
+            append(ansi.build(), bulletHitBulletEvent.turnNumber)
         }
     }
 
@@ -161,7 +161,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
         if (bullet.ownerId == bot.id) {
             val ansi = createEventAndTurnNumberBuilder(event)
                 .bulletValues("bullet", bullet)
-            append(ansi.toString(), event.turnNumber)
+            append(ansi.build(), event.turnNumber)
         }
     }
 
@@ -174,7 +174,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
                 .fieldValue("y", scannedBotEvent.y)
                 .fieldValue("direction", scannedBotEvent.direction)
                 .fieldValue("speed", scannedBotEvent.speed)
-            append(ansi.toString(), scannedBotEvent.turnNumber)
+            append(ansi.build(), scannedBotEvent.turnNumber)
         }
     }
 

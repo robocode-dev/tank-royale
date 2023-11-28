@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ansi
 
-enum class AnsiColor(val offset: Int, val cssColor: String?) {
+enum class AnsiColorOld(val offset: Int, val cssColor: String?) {
     BLACK(0, "#000000"),
     RED(1, "#AA0000"),
     GREEN(2, "#00AA00"),
@@ -18,7 +18,7 @@ enum class AnsiColor(val offset: Int, val cssColor: String?) {
     }
 }
 
-enum class BrightAnsiColor(val offset: Int, val cssColor: String?) {
+enum class BrightAnsiColorOld(val offset: Int, val cssColor: String?) {
     BRIGHT_BLACK(0, "#555555"),
     BRIGHT_RED(1, "#FF5555"),
     BRIGHT_GREEN(2, "#55FF55"),

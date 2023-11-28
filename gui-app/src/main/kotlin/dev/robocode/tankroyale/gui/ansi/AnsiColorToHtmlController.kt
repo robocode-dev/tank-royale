@@ -39,17 +39,17 @@ class AnsiColorToHtmlController {
             when (val firstCode = iterator.next()) {
                 0 -> state.reset() // all attributes off
                 1 -> state.weight = 700 // bold
-                2 -> state.weight = 300 // fault
+                2 -> state.weight = 300 // dim/faint
                 3 -> state.italic = true
                 4 -> state.underline = 1 // singly underline
                 21 -> state.underline = 2 // doubly underline
                 22 -> state.weight = null // neither bold nor faint
                 23 -> state.italic = false
                 24 -> state.underline = null // neither singly nor doubly underlined
-                in 30..39 -> state.fgColor = AnsiColor.webColorFrom(firstCode - 30)
-                in 40..49 -> state.bgColor = AnsiColor.webColorFrom(firstCode - 40)
-                in 90..97 -> state.fgColor = BrightAnsiColor.webColorFrom(firstCode - 90)
-                in 100..107 -> state.bgColor = BrightAnsiColor.webColorFrom(firstCode - 100)
+                in 30..39 -> state.fgColor = AnsiColorOld.webColorFrom(firstCode - 30)
+                in 40..49 -> state.bgColor = AnsiColorOld.webColorFrom(firstCode - 40)
+                in 90..97 -> state.fgColor = BrightAnsiColorOld.webColorFrom(firstCode - 90)
+                in 100..107 -> state.bgColor = BrightAnsiColorOld.webColorFrom(firstCode - 100)
             }
         } while (iterator.hasNext())
 
