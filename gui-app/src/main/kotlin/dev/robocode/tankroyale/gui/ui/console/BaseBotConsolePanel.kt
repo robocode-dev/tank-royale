@@ -30,11 +30,11 @@ abstract class BaseBotConsolePanel(val bot: Participant) : ConsolePanel() {
             roundInfo += "/$numberOfRounds"
         }
 
-        append("""
+        appendBanner("""
             --------------------
             $roundInfo
             --------------------
-        """.trimIndent(), cssClass = CssClass.INFO
+        """.trimIndent()
         )
     }
 }

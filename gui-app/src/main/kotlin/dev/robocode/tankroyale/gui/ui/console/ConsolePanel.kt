@@ -1,13 +1,16 @@
 package dev.robocode.tankroyale.gui.ui.console
 
-import dev.robocode.tankroyale.gui.ansi.AnsiColorToHtmlController
+import dev.robocode.tankroyale.gui.ansi.AnsiEditorKit
+import dev.robocode.tankroyale.gui.ansi.AnsiEscCode
+import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.util.Clipboard
 import dev.robocode.tankroyale.gui.util.Event
 import java.awt.BorderLayout
+import java.awt.Color
 import javax.swing.*
-import javax.swing.text.html.HTMLDocument
+import javax.swing.text.StyledDocument
 
 open class ConsolePanel : JPanel() {
 
@@ -16,10 +19,8 @@ open class ConsolePanel : JPanel() {
         border = null
     }
 
-    private val htmlKit = ConsoleHtmlEditorKit()
-    private val document = htmlKit.createDefaultDocument() as HTMLDocument
-
-    private val ansiToHtml = AnsiColorToHtmlController()
+    private val ansiKit = AnsiEditorKit()
+    private val document = ansiKit.createDefaultDocument() as StyledDocument
 
     private val onOk = Event<JButton>().apply {
         subscribe(this) {
@@ -46,12 +47,13 @@ open class ConsolePanel : JPanel() {
         }
 
     init {
-        editorPane.editorKit = htmlKit
+        editorPane.editorKit = ansiKit
         editorPane.document = document
 
         editorPane.apply {
-            contentType = "text/html"
+            contentType = ansiKit.contentType
             isEditable = false
+            background = Color(0x28, 0x28, 0x28)
         }
 
         clear() // to avoid 2nd line break
@@ -64,38 +66,38 @@ open class ConsolePanel : JPanel() {
     }
 
     fun clear() {
-        editorPane.text = "<div>" // to avoid 2nd line break
+        editorPane.text = ""
     }
 
-    fun append(text: String?, turnNumber: Int? = null, cssClass: CssClass? = CssClass.NONE) {
-        var html = text
-        if (html != null) {
-            html = html
-                .replace("\\n", "<br>")
-                .replace("\\t", "&#9;")
-            if (cssClass != null && cssClass != CssClass.NONE) {
-                html = "<span class=\"${cssClass.className}\">$html</span>"
-            }
-            if (turnNumber != null) {
-                html = "<span class=\"linenumber\">${turnNumber - 1}:</span> $html" // turn number is aligned with last turn
-            }
-            append(html)
+    fun append(text: String?, turnNumber: Int? = null) {
+        val ansi = AnsiTextBuilder()
+
+        turnNumber?.let {
+            ansi.cyan().text(turnNumber - 1).default().text(' ')
         }
-    }
+        text?.let {
+            ansi.text(text
+                .replace("\\n", "\n")
+                .replace("\\t", "\t")
+            )
+        }
 
-    private fun append(text: String) {
-        var html = text
-            .replace(" ", "&nbsp;") // in lack of the css style `white-space: pre`
-            .replace("\n", "<br>")
-            .replace("\r", "")
-            .replace("\t", "&#9;")
-
-        html = "<span>${ansiToHtml.process(html)}</span>"
-
-        htmlKit.insertHTML(document, document.length, html, 0, 0, null)
+        ansiKit.insertAnsi(document, ansi.build())
 
         // Scroll to bottom
         editorPane.caretPosition = document.length
+    }
+
+    fun appendBanner(banner: String) {
+        append("${AnsiEscCode.BRIGHT_GREEN}$banner${AnsiEscCode.DEFAULT}\n")
+    }
+
+    fun appendInfo(info: String, turnNumber: Int? = null) {
+        append("${AnsiEscCode.BRIGHT_GREEN}> $info${AnsiEscCode.DEFAULT}\n", turnNumber)
+    }
+
+    fun appendError(error: String, turnNumber: Int? = null) {
+        append("${AnsiEscCode.BRIGHT_RED}> $error${AnsiEscCode.DEFAULT}\n", turnNumber)
     }
 
     fun scrollToBottom() {

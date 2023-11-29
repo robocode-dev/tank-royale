@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.ansi2
+package dev.robocode.tankroyale.gui.ansi
 
 import java.lang.IllegalArgumentException
 
@@ -29,9 +29,7 @@ class AnsiTextBuilder {
     }
 
     private fun repeat(fragment: Any, count: Int) {
-        if (count < 1) {
-            throw IllegalArgumentException("count must be > 0");
-        }
+        require(count >= 0) { "count must be >= 0" }
         for (i in 1..count) {
             builder.append(fragment)
         }
@@ -48,7 +46,7 @@ class AnsiTextBuilder {
     }
 
     fun bold(enabled: Boolean = true): AnsiTextBuilder {
-        builder.append(if (enabled) AnsiEscCode.BOLD else AnsiEscCode.NOT_BOLD_OR_FAINT)
+        builder.append(if (enabled) AnsiEscCode.BOLD else AnsiEscCode.NORMAL)
         return this
     }
 

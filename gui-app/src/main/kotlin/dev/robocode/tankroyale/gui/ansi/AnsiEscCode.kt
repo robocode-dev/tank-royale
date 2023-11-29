@@ -1,5 +1,8 @@
-package dev.robocode.tankroyale.gui.ansi2
+package dev.robocode.tankroyale.gui.ansi
 
+import java.lang.IllegalStateException
+
+/** [ANSI Escape Code](https://en.wikipedia.org/wiki/ANSI_escape_code) */
 enum class AnsiEscCode(private val code: String) {
     RESET("\u001b[0m"),
 
@@ -8,7 +11,10 @@ enum class AnsiEscCode(private val code: String) {
     ITALIC("\u001b[3m"),
     UNDERLINE("\u001b[4m"),
 
-    NOT_BOLD_OR_FAINT("\u001b[22m"),
+    NOT_BOLD("\u001b[21m"),    // Double underlined on some systems
+    NORMAL("\u001b[22m"),     // Neither bold nor fains
+    NOT_ITALIC("\u001b[23m"), // Neither italic, nor black letter
+    NOT_UNDERLINED("\u001b[24m"),
 
     BLACK("\u001b[30m"),
     RED("\u001b[31m"),
@@ -35,6 +41,7 @@ enum class AnsiEscCode(private val code: String) {
     override fun toString() = code
 
     companion object {
-        fun fromCode(code: String): AnsiEscCode = entries.first { it.code == code }
+        fun fromCode(code: String): AnsiEscCode = entries.firstOrNull { it.code == code }
+            ?: throw IllegalStateException("No enum entry is defined for escape code '${code.replace("\u001b", "")}'")
     }
 }

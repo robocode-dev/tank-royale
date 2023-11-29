@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.ansi2;
+package dev.robocode.tankroyale.gui.ansi;
 
 import java.awt.Color
 import javax.swing.JEditorPane
@@ -21,11 +21,13 @@ object TestFrame : JFrame() {
             document = ansiDoc
 
             val ansi = AnsiTextBuilder()
-            ansi.red().text("foo").white().bold().text("bar").blue().italic().text("hest")
+//            ansi.red().text("foo").white().bold().text("bar").blue().italic().text("hest")
+
+            ansi.text("line 1\nline2")
 
             val text = ansi.build()
 
-            ansiKit.insertANSI(ansiDoc, 0, text)
+            ansiKit.insertAnsi(ansiDoc, text, 0)
         }
 
         val scrollPane = JScrollPane(editorPane)

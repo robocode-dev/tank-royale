@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.ansi2
+package dev.robocode.tankroyale.gui.ansi
 
 import java.io.*
 import javax.swing.text.*
@@ -10,30 +10,31 @@ class AnsiEditorKit : StyledEditorKit() {
 
     override fun getContentType() = "text/x-ansi"
 
-    override fun read(inputStream: InputStream?, doc: Document?, pos: Int) {
-        read(inputStream?.let { InputStreamReader(it) }, doc, pos)
+    override fun read(inputStream: InputStream, doc: Document, pos: Int) {
+        read(BufferedReader(InputStreamReader(inputStream)), doc, pos)
     }
 
-    override fun read(reader: Reader?, doc: Document?, pos: Int) {
-        TODO("Not yet implemented")
+    override fun read(reader: Reader, doc: Document, pos: Int) {
+        require(doc is StyledDocument) { "The document must be a StyledDocument for this kit" }
+        insertAnsi(doc, reader.readText(), pos)
     }
 
-    override fun write(outputStream: OutputStream?, doc: Document?, pos: Int, len: Int) {
-        write(outputStream?.let { OutputStreamWriter(it) }, doc, pos, len)
+    override fun write(outputStream: OutputStream, doc: Document, pos: Int, len: Int) {
+        write(BufferedWriter(OutputStreamWriter(outputStream)), doc, pos, len)
     }
 
-    override fun write(writer: Writer?, doc: Document?, pos: Int, len: Int) {
-        TODO("Not yet implemented")
+    override fun write(writer: Writer, doc: Document, pos: Int, len: Int) {
+        writer.write(doc.getText(pos, len))
     }
 
-    fun insertANSI(doc: StyledDocument, offset: Int, ansiText: String) {
+    fun insertAnsi(doc: StyledDocument, ansiText: String, offset: Int = doc.length) {
         require(offset >= 0) { "Offset cannot be negative. Was: $offset" }
 
         var attributes: MutableAttributeSet = SimpleAttributeSet(doc.getCharacterElement(offset).attributes)
 
         val match = escCodeRegex.find(ansiText, 0)
         if (match == null) {
-            doc.insertString(offset, ansiText, null); // no ansi codes found
+            doc.insertString(offset, ansiText, null) // no ansi codes found
             return
         }
 
@@ -41,7 +42,7 @@ class AnsiEditorKit : StyledEditorKit() {
 
         var text = ansiText.substring(0, codeStart)
         if (text.isNotEmpty()) {
-            doc.insertString(0, text, null); // no ansi codes found
+            doc.insertString(0, text, null) // no ansi codes found
         }
 
         escCodeRegex.findAll(ansiText, codeStart).forEach { m ->

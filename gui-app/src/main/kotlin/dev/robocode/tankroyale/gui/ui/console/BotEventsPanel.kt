@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.console
 
-import dev.robocode.tankroyale.gui.ansi2.AnsiEscCode
-import dev.robocode.tankroyale.gui.ansi2.AnsiTextBuilder
+import dev.robocode.tankroyale.gui.ansi.AnsiEscCode
+import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.*
@@ -53,7 +53,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
     }
 
     private fun dumpUnknownEvent(event: Event) {
-        append("Unknown event: ${event.javaClass.simpleName}", event.turnNumber, CssClass.ERROR)
+        appendError("Unknown event: ${event.javaClass.simpleName}", event.turnNumber)
     }
 
     private fun createEventAndTurnNumberBuilder(event: Event) =

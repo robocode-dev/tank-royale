@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.ansi2
+package dev.robocode.tankroyale.gui.ansi
 
 import java.awt.Color
 
@@ -21,5 +21,5 @@ enum class AnsiColor(val color: Color) {
     BRIGHT_CYAN(Color(0x55, 0xFF, 0xFF)),
     BRIGHT_WHITE(Color(0xFF, 0xFF, 0xFF)),
 
-    DEFAULT(WHITE.color),
+    DEFAULT(BRIGHT_WHITE.color),
 }

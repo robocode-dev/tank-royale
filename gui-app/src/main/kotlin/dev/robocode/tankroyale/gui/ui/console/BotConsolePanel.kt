@@ -20,37 +20,32 @@ class BotConsolePanel(bot: Participant) : BaseBotConsolePanel(bot) {
             }
             onTickEvent.subscribe(this@BotConsolePanel) { tickEvent ->
                 if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
-                    append("> ${Strings.get("bot_console.bot_died")}", tickEvent.turnNumber, CssClass.INFO)
+                    appendInfo(Strings.get("bot_console.bot_died"), tickEvent.turnNumber)
                 }
             }
             onGameEnded.subscribe(this@BotConsolePanel) {
-                append("> ${Strings.get("bot_console.game_has_ended")}", cssClass = CssClass.INFO)
+                appendInfo(Strings.get("bot_console.game_has_ended"))
             }
             onGameAborted.subscribe(this@BotConsolePanel) {
-                append("> ${Strings.get("bot_console.game_was_aborted")}", cssClass = CssClass.INFO)
+                appendInfo(Strings.get("bot_console.game_was_aborted"))
             }
         }
     }
 
     private fun printInitialStdOutput() {
         Client.getStandardOutput(bot.id)?.entries?.forEach { (_, map) ->
-            map.entries.toSet().forEach { (turn, output) ->
-                append(output, turn)
-            }
+            map.entries.toSet().forEach { (turn, output) -> append(output, turn) }
         }
         Client.getStandardError(bot.id)?.values?.forEach { turns ->
-            turns.forEach { (turn, error) ->
-                append(error, turn, CssClass.ERROR)
-            }
+            turns.forEach { (turn, error) -> appendError(error, turn) }
         }
     }
 
     private fun updateBotState(roundNumber: Int, turnNumber: Int) {
-        Client.getStandardOutput(bot.id)?.get(roundNumber)?.get(turnNumber)?.let { output ->
-            append(output, turnNumber)
-        }
-        Client.getStandardError(bot.id)?.get(roundNumber)?.get(turnNumber)?.let { error ->
-            append(error, turnNumber, CssClass.ERROR)
-        }
+        Client.getStandardOutput(bot.id)?.get(roundNumber)?.get(turnNumber)
+            ?.let { output -> append(output, turnNumber) }
+
+        Client.getStandardError(bot.id)?.get(roundNumber)?.get(turnNumber)
+            ?.let { error -> appendError(error, turnNumber) }
     }
 }

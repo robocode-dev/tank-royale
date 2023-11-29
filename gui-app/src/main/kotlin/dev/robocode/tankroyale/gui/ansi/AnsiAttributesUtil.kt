@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.ansi2
+package dev.robocode.tankroyale.gui.ansi
 
 import javax.swing.text.MutableAttributeSet
 import javax.swing.text.SimpleAttributeSet
@@ -31,8 +31,20 @@ object AnsiAttributesUtil {
                 StyleConstants.setUnderline(attrSet, true)
             }
 
-            AnsiEscCode.NOT_BOLD_OR_FAINT -> {
+            AnsiEscCode.NORMAL -> {
                 StyleConstants.setBold(attrSet, false)
+            }
+
+            AnsiEscCode.NOT_BOLD -> {
+                StyleConstants.setBold(attrSet, false)
+            }
+
+            AnsiEscCode.NOT_ITALIC -> {
+                StyleConstants.setItalic(attrSet, false)
+            }
+
+            AnsiEscCode.NOT_UNDERLINED -> {
+                StyleConstants.setUnderline(attrSet, false)
             }
 
             AnsiEscCode.BLACK -> {
@@ -67,10 +79,6 @@ object AnsiAttributesUtil {
                 StyleConstants.setForeground(attrSet, AnsiColor.WHITE.color)
             }
 
-            AnsiEscCode.DEFAULT -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.DEFAULT.color)
-            }
-
             AnsiEscCode.BRIGHT_BLACK -> {
                 StyleConstants.setForeground(attrSet, AnsiColor.BRIGHT_BLACK.color)
             }
@@ -101,6 +109,10 @@ object AnsiAttributesUtil {
 
             AnsiEscCode.BRIGHT_WHITE -> {
                 StyleConstants.setForeground(attrSet, AnsiColor.BRIGHT_WHITE.color)
+            }
+
+            AnsiEscCode.DEFAULT -> {
+                StyleConstants.setForeground(attrSet, AnsiColor.DEFAULT.color)
             }
         }
         return attrSet
