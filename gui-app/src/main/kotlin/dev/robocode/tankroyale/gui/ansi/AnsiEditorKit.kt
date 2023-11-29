@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.gui.ansi
 import java.io.*
 import javax.swing.text.*
 
-
 class AnsiEditorKit : StyledEditorKit() {
 
     private val escCodeRegex = Regex("\u001b\\[(\\d+;?)+m")
