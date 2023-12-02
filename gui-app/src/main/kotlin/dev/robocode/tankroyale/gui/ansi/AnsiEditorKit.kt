@@ -33,7 +33,7 @@ class AnsiEditorKit : StyledEditorKit() {
 
         val match = escCodeRegex.find(ansiText, 0)
         if (match == null) {
-            doc.insertString(offset, ansiText, null) // no ansi codes found
+            doc.insertString(offset, ansiText, attributes) // no ansi codes found
             return
         }
 
@@ -41,7 +41,7 @@ class AnsiEditorKit : StyledEditorKit() {
 
         var text = ansiText.substring(0, codeStart)
         if (text.isNotEmpty()) {
-            doc.insertString(0, text, null) // no ansi codes found
+            doc.insertString(0, text, attributes) // no ansi codes found
         }
 
         escCodeRegex.findAll(ansiText, codeStart).forEach { m ->
