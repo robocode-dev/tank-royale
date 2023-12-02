@@ -6,9 +6,9 @@ import javax.swing.text.StyleConstants
 
 object AnsiAttributesUtil {
 
-    fun updateAttributeSet(ansiCode: String, attributeSet: MutableAttributeSet): MutableAttributeSet {
+    fun updateAttributes(ansiCode: String, attributes: MutableAttributeSet): MutableAttributeSet {
 
-        var attrSet: MutableAttributeSet = SimpleAttributeSet(attributeSet)
+        var attrSet: MutableAttributeSet = SimpleAttributeSet(attributes)
 
         when (AnsiEscCode.fromCode(ansiCode)) {
             AnsiEscCode.RESET -> {

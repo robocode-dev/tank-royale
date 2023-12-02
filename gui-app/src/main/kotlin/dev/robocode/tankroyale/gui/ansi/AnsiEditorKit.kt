@@ -29,7 +29,7 @@ class AnsiEditorKit : StyledEditorKit() {
     fun insertAnsi(doc: StyledDocument, ansiText: String, offset: Int = doc.length) {
         require(offset >= 0) { "Offset cannot be negative. Was: $offset" }
 
-        var attributes: MutableAttributeSet = SimpleAttributeSet(doc.getCharacterElement(offset).attributes)
+        var attributes: MutableAttributeSet = SimpleAttributeSet(doc.getCharacterElement(offset).attributes.copyAttributes())
 
         val match = escCodeRegex.find(ansiText, 0)
         if (match == null) {
@@ -49,7 +49,7 @@ class AnsiEditorKit : StyledEditorKit() {
             codeStart = m.range.first
             val codeEnd = m.range.last + 1
 
-            attributes = AnsiAttributesUtil.updateAttributeSet(ansiCode, attributes)
+            attributes = AnsiAttributesUtil.updateAttributes(ansiCode, attributes)
 
             val endMatch = escCodeRegex.find(ansiText, codeEnd)
 
