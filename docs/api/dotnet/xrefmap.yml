@@ -2028,11 +2028,11 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BotInfo.Description
   nameWithType: BotInfo.Description
-- uid: Robocode.TankRoyale.BotApi.BotInfo.FromConfiguration(Microsoft.Extensions.Configuration.IConfiguration)
+- uid: Robocode.TankRoyale.BotApi.BotInfo.FromConfiguration(IConfiguration)
   name: FromConfiguration(IConfiguration)
-  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
-  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.FromConfiguration(Microsoft.Extensions.Configuration.IConfiguration)
-  fullName: Robocode.TankRoyale.BotApi.BotInfo.FromConfiguration(Microsoft.Extensions.Configuration.IConfiguration)
+  href: api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_IConfiguration_
+  commentId: M:Robocode.TankRoyale.BotApi.BotInfo.FromConfiguration(IConfiguration)
+  fullName: Robocode.TankRoyale.BotApi.BotInfo.FromConfiguration(IConfiguration)
   nameWithType: BotInfo.FromConfiguration(IConfiguration)
 - uid: Robocode.TankRoyale.BotApi.BotInfo.FromConfiguration*
   name: FromConfiguration
