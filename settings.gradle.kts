@@ -25,8 +25,8 @@ include("buildDocs")
 
 val tankroyaleVersion: String = providers.gradleProperty("version").get()
 
-val kotlinVersion = "1.9.0"
-val junitVersion = "5.10.0"
+val kotlinVersion = "1.9.21"
+val junitVersion = "5.10.1"
 
 // Check dependencies with this command:  gradle dependencyUpdates
 
@@ -41,10 +41,10 @@ dependencyResolutionManagement {
             library("jansi", "org.fusesource.jansi:jansi:2.4.1")
             library("java-websocket", "org.java-websocket:Java-WebSocket:1.5.4")
             library("picocli", "info.picocli:picocli:4.7.5")
-            library("proguard-gradle", "com.guardsquare:proguard-gradle:7.4.0")
+            library("proguard-gradle", "com.guardsquare:proguard-gradle:7.4.1")
             library("miglayout-swing", "com.miglayout:miglayout-swing:11.2")
             library("nv-i18n", "com.neovisionaries:nv-i18n:1.29")
-            library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+            library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
             library("slf4j-simple", "org.slf4j:slf4j-simple:2.0.9")
 
             // Java testing
@@ -52,10 +52,10 @@ dependencyResolutionManagement {
             library("junit-api", "org.junit.jupiter:junit-jupiter-api:$junitVersion")
             library("junit-engine", "org.junit.jupiter:junit-jupiter-engine:$junitVersion")
             library("junit-params", "org.junit.jupiter:junit-jupiter-params:$junitVersion")
-            library("system-stubs", "uk.org.webcompere:system-stubs-jupiter:2.1.3")
+            library("system-stubs", "uk.org.webcompere:system-stubs-jupiter:2.1.5")
 
             // Kotlin testing
-            library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.7.2")
+            library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.8.0")
             library("mockk", "io.mockk:mockk:1.13.8")
 
             // plugins
@@ -68,7 +68,7 @@ dependencyResolutionManagement {
             plugin("jsonschema2pojo", "org.jsonschema2pojo").version("1.2.1")
 
             // Dependencies versions
-            plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.49.0")
+            plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.50.0")
         }
     }
 }
