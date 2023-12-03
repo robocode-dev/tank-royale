@@ -131,7 +131,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     }
 
     private fun updateBotState(tickEvent: TickEvent) {
-        val botState = tickEvent.botStates.first { it.id == bot.id }
+        val botState = tickEvent.botStates.firstOrNull() { it.id == bot.id } ?: return
 
         model.apply {
             // Column 1
