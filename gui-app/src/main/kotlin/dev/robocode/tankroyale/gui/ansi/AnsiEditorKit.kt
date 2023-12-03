@@ -31,6 +31,7 @@ class AnsiEditorKit : StyledEditorKit() {
         require(offset >= 0) { "Offset cannot be negative. Was: $offset" }
 
         var attributes: MutableAttributeSet = SimpleAttributeSet(doc.getCharacterElement(offset).attributes)
+        StyleConstants.setFontFamily(attributes, "Monospaced")
 
         // Set the foreground color to the default ANSI color if no foreground color has been set previously
         if (StyleConstants.getForeground(attributes) == Color.black) { // if no foreground color is set, black is returned?!
