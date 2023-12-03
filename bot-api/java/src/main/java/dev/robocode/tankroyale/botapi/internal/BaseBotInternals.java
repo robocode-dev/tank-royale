@@ -713,7 +713,7 @@ public final class BaseBotInternals {
 
     private final class WebSocketListener implements Listener {
 
-        StringBuffer payload = new StringBuffer();
+        final StringBuffer payload = new StringBuffer();
 
         @Override
         public void onOpen(WebSocket websocket) {

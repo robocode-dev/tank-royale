@@ -22,34 +22,34 @@ public final class MockedServer {
     public static final int PORT = 7913;
     public static final String SERVER_URL = "ws://localhost:" + PORT;
 
-    public static String SESSION_ID = "123abc";
-    public static String NAME = MockedServer.class.getSimpleName();
-    public static String VERSION = "1.0.0";
-    public static String VARIANT = "Tank Royale";
-    public static Set<String> GAME_TYPES = Set.of("melee", "classic", "1v1");
-    public static int MY_ID = 1;
-    public static String GAME_TYPE = "classic";
-    public static int ARENA_WIDTH = 800;
-    public static int ARENA_HEIGHT = 600;
-    public static int NUMBER_OF_ROUNDS = 10;
-    public static double GUN_COOLING_RATE = 0.1;
-    public static int MAX_INACTIVITY_TURNS = 450;
-    public static int TURN_TIMEOUT = 30_000;
-    public static int READY_TIMEOUT = 1_000_000;
+    public static final String SESSION_ID = "123abc";
+    public static final String NAME = MockedServer.class.getSimpleName();
+    public static final String VERSION = "1.0.0";
+    public static final String VARIANT = "Tank Royale";
+    public static final Set<String> GAME_TYPES = Set.of("melee", "classic", "1v1");
+    public static final int MY_ID = 1;
+    public static final String GAME_TYPE = "classic";
+    public static final int ARENA_WIDTH = 800;
+    public static final int ARENA_HEIGHT = 600;
+    public static final int NUMBER_OF_ROUNDS = 10;
+    public static final double GUN_COOLING_RATE = 0.1;
+    public static final int MAX_INACTIVITY_TURNS = 450;
+    public static final int TURN_TIMEOUT = 30_000;
+    public static final int READY_TIMEOUT = 1_000_000;
 
-    public static int BOT_ENEMY_COUNT = 7;
-    public static double BOT_ENERGY = 99.7;
-    public static double BOT_X = 44.5;
-    public static double BOT_Y = 721.34;
-    public static double BOT_DIRECTION = 120.1;
-    public static double BOT_GUN_DIRECTION = 103.45;
-    public static double BOT_RADAR_DIRECTION = 253.3;
-    public static double BOT_RADAR_SWEEP = 13.5;
-    public static double BOT_SPEED = 8.0;
-    public static double BOT_TURN_RATE = 5.1;
-    public static double BOT_GUN_TURN_RATE = 18.9;
-    public static double BOT_RADAR_TURN_RATE = 34.1;
-    public static double BOT_GUN_HEAT = 7.6;
+    public static final int BOT_ENEMY_COUNT = 7;
+    public static final double BOT_ENERGY = 99.7;
+    public static final double BOT_X = 44.5;
+    public static final double BOT_Y = 721.34;
+    public static final double BOT_DIRECTION = 120.1;
+    public static final double BOT_GUN_DIRECTION = 103.45;
+    public static final double BOT_RADAR_DIRECTION = 253.3;
+    public static final double BOT_RADAR_SWEEP = 13.5;
+    public static final double BOT_SPEED = 8.0;
+    public static final double BOT_TURN_RATE = 5.1;
+    public static final double BOT_GUN_TURN_RATE = 18.9;
+    public static final double BOT_RADAR_TURN_RATE = 34.1;
+    public static final double BOT_GUN_HEAT = 7.6;
 
     private int turnNumber = 1;
     private double energy = BOT_ENERGY;
@@ -298,10 +298,6 @@ public final class MockedServer {
                     radarDirection += radarTurnIncrement;
                     break;
             }
-        }
-
-        @Override
-        public void onMessage(WebSocket conn, ByteBuffer message) {
         }
 
         @Override

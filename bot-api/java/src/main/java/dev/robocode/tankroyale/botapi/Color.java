@@ -97,7 +97,7 @@ public class Color {
     }
 
     private static String toHex(int value) {
-        return "" + Integer.toHexString(value >> 4) + Integer.toHexString(value & 0xF);
+        return Integer.toHexString(value >> 4) + Integer.toHexString(value & 0xF);
     }
 
     /**

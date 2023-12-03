@@ -123,7 +123,7 @@ object Client {
     fun stopGame() {
         resumeGame()
         if (isRunning.get()) {
-            send(StopGame())
+            send(StopGame)
         }
     }
 
@@ -145,19 +145,19 @@ object Client {
 
     fun pauseGame() {
         if (isRunning.get() && !isPaused.get()) {
-            send(PauseGame())
+            send(PauseGame)
         }
     }
 
     fun resumeGame() {
         if (isRunning.get() && isPaused.get()) {
-            send(ResumeGame())
+            send(ResumeGame)
         }
     }
 
     internal fun doNextTurn() {
         if (isRunning.get() && isPaused.get()) {
-            send(NextTurn())
+            send(NextTurn)
         }
     }
 

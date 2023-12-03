@@ -123,7 +123,7 @@ data class GameStartedEvent(
 
 @Serializable
 @SerialName("GameAbortedEvent")
-class GameAbortedEvent : Message()
+data object GameAbortedEvent : Message()
 
 @Serializable
 @SerialName("GameEndedEventForObserver")
@@ -134,11 +134,11 @@ data class GameEndedEvent(
 
 @Serializable
 @SerialName("GamePausedEventForObserver")
-class GamePausedEvent : Message()
+data object GamePausedEvent : Message()
 
 @Serializable
 @SerialName("GameResumedEventForObserver")
-class GameResumedEvent : Message()
+data object GameResumedEvent : Message()
 
 @Serializable
 @SerialName("RoundStartedEvent")
@@ -189,19 +189,19 @@ data class StartGame(
 
 @Serializable
 @SerialName("StopGame")
-class StopGame : Message()
+data object StopGame : Message()
 
 @Serializable
 @SerialName("PauseGame")
-class PauseGame : Message()
+data object PauseGame : Message()
 
 @Serializable
 @SerialName("ResumeGame")
-class ResumeGame : Message()
+data object ResumeGame : Message()
 
 @Serializable
 @SerialName("NextTurn")
-class NextTurn : Message()
+data object NextTurn : Message()
 
 @Serializable
 @SerialName("ChangeTps")

@@ -5,14 +5,15 @@ import java.awt.*
 import javax.swing.JPanel
 
 object LogoPanel : JPanel() {
+    private fun readResolve(): Any = LogoPanel
 
-    private const val robocodeText = "Robocode Tank Royale"
-    private const val robocodeTextSize = 40
+    private const val ROBOCODE_TEXT = "Robocode Tank Royale"
+    private const val ROBOCODE_TEXT_SIZE = 40
 
-    private const val mottoText = "Build the best - destroy the rest!"
-    private const val mottoTextSize = 20
+    private const val MOTTO_TEXT = "Build the best - destroy the rest!"
+    private const val MOTTO_TEXT_SIZE = 20
 
-    private const val textSpacing = 10
+    private const val TEXT_SPACING = 10
 
     private val textColor = Color(0x377B37)
 
@@ -28,7 +29,7 @@ object LogoPanel : JPanel() {
         val logoWidth = logo.getWidth(null) / 2
         val logoHeight = logo.getHeight(null) / 2
 
-        val logoHeight2 = logoHeight + robocodeTextSize + mottoTextSize + 2 * textSpacing
+        val logoHeight2 = logoHeight + ROBOCODE_TEXT_SIZE + MOTTO_TEXT_SIZE + 2 * TEXT_SPACING
 
         val logoX = (width - logoWidth) / 2
         val logoY = (height - logoHeight2) / 2
@@ -45,18 +46,18 @@ object LogoPanel : JPanel() {
         g2.drawImage(logo, logoX, logoY, logoWidth, logoHeight, background, null)
 
         g2.color = textColor
-        g2.font = Font(Font.SANS_SERIF, Font.PLAIN, robocodeTextSize)
+        g2.font = Font(Font.SANS_SERIF, Font.PLAIN, ROBOCODE_TEXT_SIZE)
 
-        val robocodeTextX = (width - g2.fontMetrics.stringWidth(robocodeText)) / 2
-        val robocodeTextY = logoY + logoHeight + robocodeTextSize + textSpacing
+        val robocodeTextX = (width - g2.fontMetrics.stringWidth(ROBOCODE_TEXT)) / 2
+        val robocodeTextY = logoY + logoHeight + ROBOCODE_TEXT_SIZE + TEXT_SPACING
 
-        g2.drawString(robocodeText, robocodeTextX, robocodeTextY)
+        g2.drawString(ROBOCODE_TEXT, robocodeTextX, robocodeTextY)
 
-        g2.font = Font(Font.SANS_SERIF, Font.PLAIN, mottoTextSize)
+        g2.font = Font(Font.SANS_SERIF, Font.PLAIN, MOTTO_TEXT_SIZE)
 
-        val mottoTextX = (width - g2.fontMetrics.stringWidth(mottoText)) / 2
-        val mottoTextY = robocodeTextY + mottoTextSize + textSpacing
+        val mottoTextX = (width - g2.fontMetrics.stringWidth(MOTTO_TEXT)) / 2
+        val mottoTextY = robocodeTextY + MOTTO_TEXT_SIZE + TEXT_SPACING
 
-        g2.drawString(mottoText, mottoTextX, mottoTextY)
+        g2.drawString(MOTTO_TEXT, mottoTextX, mottoTextY)
     }
 }

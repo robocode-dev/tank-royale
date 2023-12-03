@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.botapi.events.Condition;
 /**
  * Interface for a bot that extends the core API with convenient methods for movement, turning, and
  * firing the gun.
- *
  * <script src="../../../../prism.js"></script>
  */
 @SuppressWarnings({"UnusedDeclaration"})

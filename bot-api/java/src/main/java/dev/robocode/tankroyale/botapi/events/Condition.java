@@ -13,7 +13,6 @@ import java.util.concurrent.Callable;
  * {@link IBaseBot#onCustomEvent} when the condition is fulfilled.
  *
  * <p>Here is an example of how to use the condition:
- *
  * <script src="../../../../../prism.js"></script>
  * <pre><code class="language-java">
  *  public class MyBot extends Bot {

@@ -231,7 +231,7 @@ final class EnvVars {
 
     private static List<String> propertyAsList(String propertyName) {
         String value = System.getenv(propertyName);
-        if (value == null || value.trim().length() == 0) {
+        if (value == null || value.trim().isEmpty()) {
             return Collections.emptyList();
         }
         return Arrays.asList(value.split("\\s*,\\s*"));

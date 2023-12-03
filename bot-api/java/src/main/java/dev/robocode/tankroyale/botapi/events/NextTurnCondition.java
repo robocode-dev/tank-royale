@@ -8,7 +8,6 @@ import dev.robocode.tankroyale.botapi.IBot;
  * See {@link Condition} and {@link IBot#waitFor} for more information.
  *
  * <p>Here is an example of how to use this condition:
- *
  * <script src="../../../../../prism.js"></script>
  * <pre><code class="language-java">
  *  public class MyBot extends Bot {

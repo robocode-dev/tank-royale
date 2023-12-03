@@ -467,7 +467,7 @@ public final class BotInfo {
     }
 
     private static String processPlatform(String platform) {
-        if (platform == null || platform.trim().length() == 0) {
+        if (platform == null || platform.trim().isEmpty()) {
             return "Java Runtime Environment (JRE) " + System.getProperty("java.version");
         }
         if (platform.trim().length() > MAX_PLATFORM_LENGTH) {

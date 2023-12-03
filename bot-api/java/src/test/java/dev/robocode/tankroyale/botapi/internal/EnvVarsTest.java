@@ -32,7 +32,7 @@ class EnvVarsTest {
     class GetBotInfo {
 
         @SystemStub
-        EnvironmentVariables envVars = createEnvVars();
+        final EnvironmentVariables envVars = createEnvVars();
 
         @Nested
         class GetName {
@@ -70,7 +70,7 @@ class EnvVarsTest {
         class GetVersion {
 
             @SystemStub
-            EnvironmentVariables envVars = createEnvVars();
+            final EnvironmentVariables envVars = createEnvVars();
 
             @Test
             void givenValidEnvVar_whenCallingGetVersion_thenReturnedVersionIsTheSame() {
@@ -105,7 +105,7 @@ class EnvVarsTest {
         class GetAuthors {
 
             @SystemStub
-            EnvironmentVariables envVars = createEnvVars();
+            final EnvironmentVariables envVars = createEnvVars();
 
             @Test
             void givenValidEnvVar_whenCallingGetAuthors_thenReturnedListContainsSameAuthors() {
@@ -140,7 +140,7 @@ class EnvVarsTest {
         class GetGameTypes {
 
             @SystemStub
-            EnvironmentVariables envVars = createEnvVars();
+            final EnvironmentVariables envVars = createEnvVars();
 
             @Test
             void givenValidEnvVar_whenCallingGetGameTypes_thenReturnedListContainsSameGameTypes() {
@@ -174,7 +174,7 @@ class EnvVarsTest {
             class GetHomepage {
 
                 @SystemStub
-                EnvironmentVariables envVars = createEnvVars();
+                final EnvironmentVariables envVars = createEnvVars();
 
                 @Test
                 void givenValidEnvVar_whenCallingGetHomepage_thenReturnedHomepageIsTheSame() {
@@ -199,7 +199,7 @@ class EnvVarsTest {
             class GetCountryCodes {
 
                 @SystemStub
-                EnvironmentVariables envVars = createEnvVars();
+                final EnvironmentVariables envVars = createEnvVars();
 
                 @Test
                 void givenValidEnvVar_whenCallingGetCountryCodes_thenReturnedListContainsSameCountryCodesInUpperCase() {
@@ -230,7 +230,7 @@ class EnvVarsTest {
             class GetPlatform {
 
                 @SystemStub
-                EnvironmentVariables envVars = createEnvVars();
+                final EnvironmentVariables envVars = createEnvVars();
 
                 @Test
                 void givenValidEnvVar_whenCallingGetPlatform_thenReturnedPlatformIsTheSame() {
@@ -255,7 +255,7 @@ class EnvVarsTest {
             class GetProgrammingLang {
 
                 @SystemStub
-                EnvironmentVariables envVars = createEnvVars();
+                final EnvironmentVariables envVars = createEnvVars();
 
                 @Test
                 void givenValidEnvVar_whenCallingGetProgrammingLang_thenReturnedProgrammingLangIsTheSame() {
@@ -280,7 +280,7 @@ class EnvVarsTest {
             class GetInitialPosition {
 
                 @SystemStub
-                EnvironmentVariables envVars = createEnvVars();
+                final EnvironmentVariables envVars = createEnvVars();
 
                 @Test
                 void givenValidPositionEnvVar_whenCallingGetInitialPosition_thenReturnedCoordinatesAreTheSame() {
