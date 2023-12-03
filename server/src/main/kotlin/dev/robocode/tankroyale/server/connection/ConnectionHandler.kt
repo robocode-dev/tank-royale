@@ -235,8 +235,8 @@ class ConnectionHandler(
 
     private fun generateAndStoreSessionId(conn: WebSocket): String {
         val sessionId = generateSessionId()
-        if (sessionIds.values.contains(sessionId)) {
-            throw IllegalStateException("Generated session id has been generated before. It must be unique")
+        check(!sessionIds.values.contains(sessionId)) {
+            "Generated session id has been generated before. It must be unique"
         }
         sessionIds[conn] = sessionId
         return sessionId

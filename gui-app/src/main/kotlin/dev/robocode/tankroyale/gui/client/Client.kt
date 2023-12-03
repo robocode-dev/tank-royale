@@ -62,9 +62,7 @@ object Client {
     private fun isConnected(): Boolean = websocket?.isOpen() ?: false
 
     fun connect() {
-        if (isConnected()) {
-            throw IllegalStateException("Websocket is already connected")
-        }
+        check (!isConnected()) { "Websocket is already connected" }
         websocket = WebSocketClient(URI(ServerSettings.currentServerUrl))
 
         WebSocketClientEvents.apply {
@@ -179,7 +177,7 @@ object Client {
     }
 
     private fun send(message: Message) {
-        if (!isConnected()) throw IllegalStateException("Websocket is not connected")
+        check(isConnected()) { "Websocket is not connected" }
         websocket?.send(message)
     }
 

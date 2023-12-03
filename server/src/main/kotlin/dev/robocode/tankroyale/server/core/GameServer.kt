@@ -292,8 +292,7 @@ class GameServer(
         val results = modelUpdater!!.getResults()
 
         val index = results.indexOfFirst { it.participantId.botId == botId }
-        if (index == -1)
-            throw IllegalStateException("botId was not found in results: $botId")
+        check(index > 0) { "botId was not found in results: $botId" }
 
         val score = results[index]
         return ResultsForBot().apply {

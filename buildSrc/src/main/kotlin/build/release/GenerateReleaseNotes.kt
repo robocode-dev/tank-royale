@@ -6,16 +6,15 @@ import java.io.FileReader
 import java.lang.IllegalStateException
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
-import java.util.regex.Pattern
 
 fun generateReleaseNotes(projectDir: File, version: String): String {
 
     val versionsFilename = File(projectDir, "VERSIONS.MD").absolutePath
 
     val extractedVersion = extractVersion(versionsFilename)
-    if (extractedVersion != version) throw IllegalStateException("Version in $versionsFilename is $extractedVersion, which does not match version $version")
+    check(extractedVersion == version) {
+        "Version in $versionsFilename is $extractedVersion, which does not match version $version"
+    }
 
     val releaseNotes = extractReleaseNotes(versionsFilename)
     val releaseDoc = getReleaseDocumentation(projectDir, version)

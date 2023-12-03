@@ -80,9 +80,7 @@ private fun prepareRelease(projectDir: File, version: String, token: String): St
 
     println("statusCode: ${response.statusCode()}, body: ${response.body()}")
 
-    if (response.statusCode() != 201) {
-        throw IllegalStateException("Could not create release")
-    }
+    check(response.statusCode() == 201) { "Could not create release" }
     return response.body()
 }
 
@@ -111,9 +109,7 @@ private fun uploadAsset(projectDir: File, releaseId: Int, token: String, filepat
 
     println("statusCode: ${response.statusCode()}, body: ${response.body()}")
 
-    if (response.statusCode() != 201) {
-        throw IllegalStateException("Could not upload release asset")
-    }
+    check(response.statusCode() == 201) { "Could not upload release asset" }
 }
 
 private fun pathParam(label: String, value: String?) = if (value == null) "" else "$label=${urlEncode(value)}"
