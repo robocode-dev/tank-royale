@@ -1,7 +1,5 @@
 package dev.robocode.tankroyale.gui.ansi
 
-import java.lang.IllegalArgumentException
-
 class AnsiTextBuilder {
 
     private val builder = StringBuilder()
