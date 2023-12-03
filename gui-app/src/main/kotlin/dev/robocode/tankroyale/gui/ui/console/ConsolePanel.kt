@@ -52,8 +52,8 @@ open class ConsolePanel : JPanel() {
 
         editorPane.apply {
             contentType = ansiKit.contentType
-            isOpaque = true
             isEditable = false
+            isOpaque = true // required for setting the background color on some systems
             background = Color(0x28, 0x28, 0x28)
         }
 
