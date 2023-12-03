@@ -8,7 +8,7 @@ object Version {
 
     val version: String? by lazy { fetchVersion() }
 
-    private fun fetchVersion(): String? {
+    private fun fetchVersion(): String {
         Version::class.java.classLoader.getResourceAsStream("version.txt").use { inputStream ->
             try {
                 BufferedReader(InputStreamReader(inputStream)).use { reader ->
