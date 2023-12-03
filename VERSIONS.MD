@@ -1,8 +1,11 @@
 # Versions
 
-## 📦 0.21.2
+## 📦 0.22.0 - Improved ANSI support - 03-Dec-2023
 
 #### 🚀 Improvements
+
+- Bot API:
+    - When running a bot from the command line, `stdout` and `stderr` will also be printed out in the bot console.
 
 - GUI:
     - The Bot Console and Server Log have been totally rewritten to improve performance (is not used HTML rendering
@@ -13,21 +16,10 @@
 #### 🪲 Bug Fixes
 
 - GUI:
+    - #75: The GUI could get stuck and become unresponsive when displaying the busy pointer on Ubuntu.
     - The scores presented after the battle has ended was not accumulated for all rounds, and hence incorrect.
     - The Properties tab of the Bot Console did not show any values when initialized, e.g. when game is paused.
     - Some stdout text from the bot were sometimes missing in the Bot Console. Solved by using the EDT.
-
-## 📦 0.21.1
-
-#### 🪲 Bug Fixes
-
-- GUI:
-    - #75: The GUI could get stuck and become unresponsive when displaying the busy pointer on Ubuntu.
-
-#### 🚀 Improvements
-
-- Bot API:
-    - When running a bot from the command line, `stdout` and `stderr` will also be printed out in the bot console.
 
 ## 📦 0.21.0 - Improved scoring - 02-Oct-2023
 
