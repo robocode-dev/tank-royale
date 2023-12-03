@@ -51,6 +51,7 @@ object AboutBox : RcDialog(MainFrame, "about_dialog") {
     private fun htmlPane(): Container =
         JEditorPane("text/html; charset=UTF8", html()).apply {
             isEditable = false
+            isOpaque = true
         }
 
     private fun html(): String = """
