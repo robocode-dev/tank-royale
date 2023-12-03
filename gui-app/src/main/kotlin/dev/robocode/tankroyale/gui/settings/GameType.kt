@@ -8,7 +8,7 @@ enum class GameType(val displayName: String) {
 
     companion object {
         fun from(displayName: String): GameType {
-            values().forEach { if (it.displayName == displayName) return it }
+            entries.forEach { if (it.displayName == displayName) return it }
 
             throw IllegalArgumentException("displayName was not found")
         }
