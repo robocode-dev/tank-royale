@@ -260,10 +260,8 @@ class ModelUpdater(
         val gridHeight = setup.arenaHeight / 50
         val cellCount = gridWidth * gridHeight
         val numBots = participantIds.size
-        if (cellCount < numBots) {
-            throw IllegalArgumentException(
-                "Area size (${setup.arenaWidth},${setup.arenaHeight}) is too small to contain $numBots bots"
-            )
+        require(cellCount >= numBots) {
+            "Area size (${setup.arenaWidth},${setup.arenaHeight}) is too small to contain $numBots bots"
         }
         val cellWidth = setup.arenaWidth / gridWidth
         val cellHeight = setup.arenaHeight / gridHeight

@@ -56,9 +56,7 @@ object TpsSlider : JSlider() {
     }
 
     private fun setTps(tps: Int) {
-        if (tps !in -1..999) {
-            throw IllegalArgumentException("tps must be in the range -1..999")
-        }
+        require(tps in -1..999) { "tps must be in the range -1..999" }
         value = when {
             tps < 0 -> maximum
             tps <= 15 -> tps // 0 - 15

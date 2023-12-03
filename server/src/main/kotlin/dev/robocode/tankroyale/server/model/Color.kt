@@ -7,8 +7,7 @@ private val NUMERIC_RGB: Pattern = Pattern.compile("^#[0-9A-F]{3,6}$", Pattern.C
 @JvmInline
 value class Color(val value: String) {
     init {
-        if (!NUMERIC_RGB.matcher(value).matches())
-            throw IllegalArgumentException("The color value is invalid")
+        require(NUMERIC_RGB.matcher(value).matches()) { "The color value is invalid" }
     }
 
     companion object {
