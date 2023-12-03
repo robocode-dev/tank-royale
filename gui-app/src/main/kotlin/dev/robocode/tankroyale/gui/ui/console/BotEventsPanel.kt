@@ -107,13 +107,13 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
     private fun dumpBotHitWallEvent(botHitWallEvent: BotHitWallEvent) {
         if (bot.id == botHitWallEvent.victimId) { // -> no need to dump victimId
             val ansi = createEventAndTurnNumberBuilder(botHitWallEvent)
-            append(ansi.build(), botHitWallEvent.turnNumber)
+            appendNewLine(ansi, botHitWallEvent.turnNumber)
         }
     }
 
     private fun dumpVictimIdOnly(event: Event, victimId: Int) {
         val ansi = createVictimIdBuilder(event, victimId)
-        append(ansi.build(), event.turnNumber)
+        appendNewLine(ansi, event.turnNumber)
     }
 
     private fun dumpBotHitBotEvent(botHitBotEvent: BotHitBotEvent) {
@@ -123,7 +123,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
                 .fieldValue("x", botHitBotEvent.x)
                 .fieldValue("y", botHitBotEvent.y)
                 .fieldValue("rammed", botHitBotEvent.rammed)
-            append(ansi.build(), botHitBotEvent.turnNumber)
+            appendNewLine(ansi, botHitBotEvent.turnNumber)
         }
     }
 
@@ -137,7 +137,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
                 .bulletValues("bullet", bulletHitBotEvent.bullet)
                 .fieldValue("damage", bulletHitBotEvent.damage)
                 .fieldValue("energy", bulletHitBotEvent.energy)
-            append(ansi.build(), bulletHitBotEvent.turnNumber)
+            appendNewLine(ansi, bulletHitBotEvent.turnNumber)
         }
     }
 
@@ -149,7 +149,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
             val ansi = createEventAndTurnNumberBuilder(bulletHitBulletEvent)
                 .bulletValues("bullet", bullet)
                 .bulletValues("hitBullet", hitBullet)
-            append(ansi.build(), bulletHitBulletEvent.turnNumber)
+            appendNewLine(ansi, bulletHitBulletEvent.turnNumber)
         }
     }
 
@@ -161,7 +161,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
         if (bullet.ownerId == bot.id) {
             val ansi = createEventAndTurnNumberBuilder(event)
                 .bulletValues("bullet", bullet)
-            append(ansi.build(), event.turnNumber)
+            appendNewLine(ansi, event.turnNumber)
         }
     }
 
@@ -174,12 +174,17 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
                 .fieldValue("y", scannedBotEvent.y)
                 .fieldValue("direction", scannedBotEvent.direction)
                 .fieldValue("speed", scannedBotEvent.speed)
-            append(ansi.build(), scannedBotEvent.turnNumber)
+            appendNewLine(ansi, scannedBotEvent.turnNumber)
         }
     }
 
     private fun botIdAndName(botId: Int): String {
         val bot = Client.getParticipant(botId)
         return "$botId (${bot.name} ${bot.version})"
+    }
+
+
+    private fun appendNewLine(ansiTextBuilder: AnsiTextBuilder, turnNumber: Int? = null) {
+        append(ansiTextBuilder.newline().build(), turnNumber)
     }
 }
