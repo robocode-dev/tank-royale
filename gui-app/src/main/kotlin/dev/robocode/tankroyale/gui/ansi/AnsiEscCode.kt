@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.gui.ansi
 import java.lang.IllegalStateException
 
 /** [ANSI Escape Code](https://en.wikipedia.org/wiki/ANSI_escape_code) */
-enum class AnsiEscCode(private val code: String) {
+enum class AnsiEscCode(/* public */ val code: String) {
     RESET("\u001b[0m"),
 
     BOLD("\u001b[1m"),

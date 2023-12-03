@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ansi
 
+import java.awt.Color
 import java.io.*
 import javax.swing.text.*
 
@@ -29,7 +30,12 @@ class AnsiEditorKit : StyledEditorKit() {
     fun insertAnsi(doc: StyledDocument, ansiText: String, offset: Int = doc.length) {
         require(offset >= 0) { "Offset cannot be negative. Was: $offset" }
 
-        var attributes: MutableAttributeSet = SimpleAttributeSet(doc.getCharacterElement(offset).attributes.copyAttributes())
+        var attributes: MutableAttributeSet = SimpleAttributeSet(doc.getCharacterElement(offset).attributes)
+
+        // Set the foreground color to the default ANSI color if no foreground color has been set previously
+        if (StyleConstants.getForeground(attributes) == Color.black) { // if no foreground color is set, black is returned?!
+            attributes = AnsiAttributesUtil.updateAttributes(AnsiEscCode.DEFAULT.code, attributes)
+        }
 
         val match = escCodeRegex.find(ansiText, 0)
         if (match == null) {
