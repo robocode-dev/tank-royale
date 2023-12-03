@@ -17,6 +17,7 @@
 
 - GUI:
     - #75: The GUI could get stuck and become unresponsive when displaying the busy pointer on Ubuntu.
+    - #77: Unreadable Server Log on NixOS.
     - The scores presented after the battle has ended was not accumulated for all rounds, and hence incorrect.
     - The Properties tab of the Bot Console did not show any values when initialized, e.g. when game is paused.
     - Some stdout text from the bot were sometimes missing in the Bot Console. Solved by using the EDT.
