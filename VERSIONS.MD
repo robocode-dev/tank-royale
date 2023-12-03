@@ -5,19 +5,22 @@
 #### 🚀 Improvements
 
 - GUI:
-    - The logo in the server log in now shown with ANSI colors per default.
+    - The Bot Console and Server Log have been totally rewritten to improve performance (is not used HTML rendering
+      anymore)
+    - The logo in the server log in now shown with ANSI colors per default (might not work on all systems?)
     - The bot console now writes out the turn numbers from the previous turn, when output from the bot is written out.
 
 #### ⚠️ Disabled functionality
 
 - Bot Console:
-    - The Events tab has been disabled as dumping and rendering the event log consumes too much CPU power.
+    - The Events tab has been disabled (for now) as dumping and rendering the event log consumed too much CPU power.
 
 #### 🪲 Bug Fixes
 
 - GUI:
     - The scores presented after the battle has ended was not accumulated for all rounds, and hence incorrect.
     - The Properties tab of the Bot Console did not show any values when initialized, e.g. when game is paused.
+    - Some stdout text from the bot were sometimes missing in the Bot Console. Solved by using the EDT.
 
 ## 📦 0.21.1
 
@@ -47,7 +50,7 @@
 #### 🪲 Bug Fixes
 
 - Scoring:
-    - Fixed various scoring issues when comparing to original Robocode. 
+    - Fixed various scoring issues when comparing to original Robocode.
 - Bot API:
     - Fixed race condition when adding custom events.
 - Bot Console:
