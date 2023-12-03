@@ -10,11 +10,6 @@
     - The logo in the server log in now shown with ANSI colors per default (might not work on all systems?)
     - The bot console now writes out the turn numbers from the previous turn, when output from the bot is written out.
 
-#### ⚠️ Disabled functionality
-
-- Bot Console:
-    - The Events tab has been disabled (for now) as dumping and rendering the event log consumed too much CPU power.
-
 #### 🪲 Bug Fixes
 
 - GUI:
