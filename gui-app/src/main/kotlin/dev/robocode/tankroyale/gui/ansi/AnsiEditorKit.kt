@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ansi
 
+import dev.robocode.tankroyale.gui.ansi.AnsiAttributesExt.updateAnsi
 import java.awt.Color
 import java.io.*
 import javax.swing.text.*
@@ -35,7 +36,7 @@ class AnsiEditorKit : StyledEditorKit() {
 
         // Set the foreground color to the default ANSI color if no foreground color has been set previously
         if (StyleConstants.getForeground(attributes) == Color.black) { // if no foreground color is set, black is returned?!
-            attributes = AnsiAttributesUtil.updateAttributes(AnsiEscCode.DEFAULT.code, attributes)
+            attributes = attributes.updateAnsi(AnsiEscCode.DEFAULT.code)
         }
 
         val match = escCodeRegex.find(ansiText, 0)
@@ -56,7 +57,7 @@ class AnsiEditorKit : StyledEditorKit() {
             codeStart = m.range.first
             val codeEnd = m.range.last + 1
 
-            attributes = AnsiAttributesUtil.updateAttributes(ansiCode, attributes)
+            attributes = attributes.updateAnsi(ansiCode)
 
             val endMatch = escCodeRegex.find(ansiText, codeEnd)
 

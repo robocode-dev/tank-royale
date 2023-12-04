@@ -4,11 +4,11 @@ import javax.swing.text.MutableAttributeSet
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
 
-object AnsiAttributesUtil {
+object AnsiAttributesExt {
 
-    fun updateAttributes(ansiCode: String, attributes: MutableAttributeSet): MutableAttributeSet {
+    fun MutableAttributeSet.updateAnsi(ansiCode: String): MutableAttributeSet {
 
-        var attrSet: MutableAttributeSet = SimpleAttributeSet(attributes)
+        var attrSet: MutableAttributeSet = SimpleAttributeSet(this)
 
         when (AnsiEscCode.fromCode(ansiCode)) {
             AnsiEscCode.RESET -> {
