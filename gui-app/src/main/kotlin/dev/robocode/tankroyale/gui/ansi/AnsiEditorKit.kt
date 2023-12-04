@@ -7,7 +7,7 @@ import javax.swing.text.*
 
 class AnsiEditorKit(val ansiColors: IAnsiColors = DefaultAnsiColors) : StyledEditorKit() {
 
-    private val escCodeRegex = Regex("\u001b\\[(\\d+;?)+m")
+    private val ansiEscCodeRegex = Regex("\u001b\\[(\\d+;?)+m")
 
     override fun getContentType() = "text/x-ansi"
 
@@ -39,7 +39,7 @@ class AnsiEditorKit(val ansiColors: IAnsiColors = DefaultAnsiColors) : StyledEdi
             attributes = attributes.updateAnsi(AnsiEscCode.DEFAULT, ansiColors)
         }
 
-        val match = escCodeRegex.find(ansiText, 0)
+        val match = ansiEscCodeRegex.find(ansiText, 0)
         if (match == null) {
             doc.insertString(offset, ansiText, attributes) // no ansi codes found
             return
@@ -52,14 +52,14 @@ class AnsiEditorKit(val ansiColors: IAnsiColors = DefaultAnsiColors) : StyledEdi
             doc.insertString(0, text, attributes) // no ansi codes found
         }
 
-        escCodeRegex.findAll(ansiText, codeStart).forEach { m ->
+        ansiEscCodeRegex.findAll(ansiText, codeStart).forEach { m ->
             val ansiCode = m.value
             codeStart = m.range.first
             val codeEnd = m.range.last + 1
 
             attributes = attributes.updateAnsi(AnsiEscCode.fromCode(ansiCode), ansiColors)
 
-            val endMatch = escCodeRegex.find(ansiText, codeEnd)
+            val endMatch = ansiEscCodeRegex.find(ansiText, codeEnd)
 
             text = if (endMatch == null) {
                 ansiText.substring(codeEnd)
