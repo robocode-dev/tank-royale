@@ -9,7 +9,6 @@ import org.java_websocket.server.WebSocketServer;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
