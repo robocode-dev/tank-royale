@@ -36,7 +36,7 @@ class AnsiEditorKit : StyledEditorKit() {
 
         // Set the foreground color to the default ANSI color if no foreground color has been set previously
         if (StyleConstants.getForeground(attributes) == Color.black) { // if no foreground color is set, black is returned?!
-            attributes = attributes.updateAnsi(AnsiEscCode.DEFAULT.code)
+            attributes = attributes.updateAnsi(AnsiEscCode.DEFAULT, DefaultAnsiColors)
         }
 
         val match = escCodeRegex.find(ansiText, 0)
@@ -57,7 +57,7 @@ class AnsiEditorKit : StyledEditorKit() {
             codeStart = m.range.first
             val codeEnd = m.range.last + 1
 
-            attributes = attributes.updateAnsi(ansiCode)
+            attributes = attributes.updateAnsi(AnsiEscCode.fromCode(ansiCode), DefaultAnsiColors)
 
             val endMatch = escCodeRegex.find(ansiText, codeEnd)
 

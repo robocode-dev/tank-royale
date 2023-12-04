@@ -6,11 +6,11 @@ import javax.swing.text.StyleConstants
 
 object AnsiAttributesExt {
 
-    fun MutableAttributeSet.updateAnsi(ansiCode: String): MutableAttributeSet {
+    fun MutableAttributeSet.updateAnsi(ansiEscCode: AnsiEscCode, ansiColors: IAnsiColors): MutableAttributeSet {
 
         var attrSet: MutableAttributeSet = SimpleAttributeSet(this)
 
-        when (AnsiEscCode.fromCode(ansiCode)) {
+        when (ansiEscCode) {
             AnsiEscCode.RESET -> {
                 attrSet = SimpleAttributeSet()
             }
@@ -48,71 +48,71 @@ object AnsiAttributesExt {
             }
 
             AnsiEscCode.BLACK -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.BLACK.color)
+                StyleConstants.setForeground(attrSet, ansiColors.black)
             }
 
             AnsiEscCode.RED -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.RED.color)
+                StyleConstants.setForeground(attrSet, ansiColors.red)
             }
 
             AnsiEscCode.GREEN -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.GREEN.color)
+                StyleConstants.setForeground(attrSet, ansiColors.green)
             }
 
             AnsiEscCode.YELLOW -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.YELLOW.color)
+                StyleConstants.setForeground(attrSet, ansiColors.yellow)
             }
 
             AnsiEscCode.BLUE -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.BLUE.color)
+                StyleConstants.setForeground(attrSet, ansiColors.blue)
             }
 
             AnsiEscCode.MAGENTA -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.MAGENTA.color)
+                StyleConstants.setForeground(attrSet, ansiColors.magenta)
             }
 
             AnsiEscCode.CYAN -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.CYAN.color)
+                StyleConstants.setForeground(attrSet, ansiColors.cyan)
             }
 
             AnsiEscCode.WHITE -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.WHITE.color)
+                StyleConstants.setForeground(attrSet, ansiColors.white)
             }
 
             AnsiEscCode.BRIGHT_BLACK -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.BRIGHT_BLACK.color)
+                StyleConstants.setForeground(attrSet, ansiColors.brightBlack)
             }
 
             AnsiEscCode.BRIGHT_RED -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.BRIGHT_RED.color)
+                StyleConstants.setForeground(attrSet, ansiColors.brightRed)
             }
 
             AnsiEscCode.BRIGHT_GREEN -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.BRIGHT_GREEN.color)
+                StyleConstants.setForeground(attrSet, ansiColors.brightGreen)
             }
 
             AnsiEscCode.BRIGHT_YELLOW -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.BRIGHT_YELLOW.color)
+                StyleConstants.setForeground(attrSet, ansiColors.brightYellow)
             }
 
             AnsiEscCode.BRIGHT_BLUE -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.BRIGHT_BLUE.color)
+                StyleConstants.setForeground(attrSet, ansiColors.brightBlue)
             }
 
             AnsiEscCode.BRIGHT_MAGENTA -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.BRIGHT_MAGENTA.color)
+                StyleConstants.setForeground(attrSet, ansiColors.brightMagenta)
             }
 
             AnsiEscCode.BRIGHT_CYAN -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.BRIGHT_CYAN.color)
+                StyleConstants.setForeground(attrSet, ansiColors.brightCyan)
             }
 
             AnsiEscCode.BRIGHT_WHITE -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.BRIGHT_WHITE.color)
+                StyleConstants.setForeground(attrSet, ansiColors.brightWhite)
             }
 
             AnsiEscCode.DEFAULT -> {
-                StyleConstants.setForeground(attrSet, AnsiColor.DEFAULT.color)
+                StyleConstants.setForeground(attrSet, ansiColors.default)
             }
         }
         return attrSet
