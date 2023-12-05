@@ -1,5 +1,10 @@
 # Versions
 
+#### 🚀 Improvements
+
+- GUI:
+    - Improved the Bot Console and Server Console to use anti-aliased text.
+
 ## 📦 0.22.0 - Improved ANSI support - 03-Dec-2023
 
 #### 🚀 Improvements

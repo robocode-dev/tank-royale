@@ -1,30 +1,25 @@
 package dev.robocode.tankroyale.gui.ui.console
 
-import dev.robocode.tankroyale.gui.ansi.AnsiEditorKit
 import dev.robocode.tankroyale.gui.ansi.AnsiEscCode
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.util.Clipboard
+import dev.robocode.tankroyale.gui.util.EDT
 import dev.robocode.tankroyale.gui.util.Event
 import java.awt.BorderLayout
-import java.awt.Color
 import javax.swing.*
-import javax.swing.text.StyledDocument
 
 open class ConsolePanel : JPanel() {
 
-    private val editorPane = JEditorPane()
-    private val scrollPane = JScrollPane(editorPane).apply {
+    private val ansiEditorPane = AnsiEditorPane()
+    private val scrollPane = JScrollPane(ansiEditorPane).apply {
         border = null
     }
 
-    private val ansiKit = AnsiEditorKit()
-    private val document = ansiKit.createDefaultDocument() as StyledDocument
-
     private val onOk = Event<JButton>().apply {
         subscribe(this) {
-            val parentFrame = SwingUtilities.getAncestorOfClass(JFrame::class.java, editorPane) as JFrame
+            val parentFrame = SwingUtilities.getAncestorOfClass(JFrame::class.java, ansiEditorPane) as JFrame
             parentFrame.dispose()
         }
     }
@@ -47,18 +42,6 @@ open class ConsolePanel : JPanel() {
         }
 
     init {
-        editorPane.editorKit = ansiKit
-        editorPane.document = document
-
-        editorPane.apply {
-            contentType = ansiKit.contentType
-            isEditable = false
-            isOpaque = true // required for setting the background color on some systems
-            background = Color(0x28, 0x28, 0x28)
-        }
-
-        clear() // to avoid 2nd line break
-
         layout = BorderLayout()
         apply {
             add(scrollPane)
@@ -67,7 +50,7 @@ open class ConsolePanel : JPanel() {
     }
 
     fun clear() {
-        editorPane.text = ""
+        ansiEditorPane.text = ""
     }
 
     fun append(text: String?, turnNumber: Int? = null) {
@@ -83,10 +66,14 @@ open class ConsolePanel : JPanel() {
             )
         }
 
-        ansiKit.insertAnsi(document, ansi.build())
+        ansiEditorPane.apply {
+            ansiKit.insertAnsi(ansiDocument, ansi.build())
 
-        // Scroll to bottom
-        editorPane.caretPosition = document.length
+            // Scroll to bottom
+            EDT.enqueue {
+                caretPosition = ansiDocument.length
+            }
+        }
     }
 
     fun appendBanner(banner: String) {
@@ -107,10 +94,10 @@ open class ConsolePanel : JPanel() {
 
     private fun copyToClipboard() {
         // trick to get the text only without HTML tags
-        editorPane.select(0, editorPane.text.length)
+        ansiEditorPane.select(0, ansiEditorPane.text.length)
 
         // Replace no-break spaces with ordinary spaces
-        val text = editorPane.selectedText.replace("\u00a0", " ")
+        val text = ansiEditorPane.selectedText.replace("\u00a0", " ")
 
         // copy the text to the clipboard
         Clipboard.set(text)
