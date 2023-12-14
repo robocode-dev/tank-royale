@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.gui.ansi.AnsiEditorPane
 import dev.robocode.tankroyale.gui.ansi.AnsiEscCode
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
@@ -57,7 +58,7 @@ open class ConsolePanel : JPanel() {
         val ansi = AnsiTextBuilder()
 
         turnNumber?.let {
-            ansi.cyan().text(turnNumber - 1).default().text(' ')
+            ansi.cyan().text(turnNumber - 1).defaultColor().text(' ')
         }
         text?.let {
             ansi.text(text

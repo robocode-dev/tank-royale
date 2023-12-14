@@ -78,7 +78,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
     }
 
     private fun AnsiTextBuilder.fieldValue(fieldName: String, value: Any?, indention: Int = 2): AnsiTextBuilder {
-        newline().space(indention * numberOfIndentionSpaces).green().text(fieldName).text(": ").default().bold().text(value).reset()
+        newline().space(indention * numberOfIndentionSpaces).green().text(fieldName).text(": ").defaultColor().bold().text(value).reset()
         return this
     }
 

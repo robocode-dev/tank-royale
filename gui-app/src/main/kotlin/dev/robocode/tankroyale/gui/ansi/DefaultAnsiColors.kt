@@ -2,6 +2,9 @@ package dev.robocode.tankroyale.gui.ansi
 
 import java.awt.Color
 
+/**
+ * Default ANSI colors.
+ */
 object DefaultAnsiColors : IAnsiColors {
     override val black = Color(0x00, 0x00, 0x00)
     override val red = Color(0xaa, 0x00, 0x00)
