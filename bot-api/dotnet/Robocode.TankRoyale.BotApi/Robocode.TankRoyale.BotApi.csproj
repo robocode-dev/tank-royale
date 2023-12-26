@@ -32,15 +32,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- for Bot API -->
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-
     <!-- for com.itiviti.dotnet plugin -->
-    <PackageReference Include="Microsoft.Build" Version="17.3.2" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.Build.Locator" Version="1.5.5" />
+    <PackageReference Include="Microsoft.Build.Locator" Version="1.6.10" />
+
+    <!-- for Bot API -->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
     <!-- Icon -->
     <None Include="icon.png" Pack="true" PackagePath="\" />

@@ -13,21 +13,26 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj" />
+        <ProjectReference Include="../Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj"  />
 
         <!-- for Bot API -->
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+        <!--
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+        -->
+        <PackageReference Include="System.Reflection.Metadata" Version="8.0.0" />
+
+        <!-- for testing -->
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+
+        <!-- Allow NUnit 3 to work with 'dotnet test' -->
+        <PackageReference Include="NUnit" Version="4.0.1" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
 
         <!-- WebSocket -->
         <PackageReference Include="Fleck" Version="1.2.0" />
 
-        <!-- for testing -->
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
-        <PackageReference Include="NUnit" Version="3.13.3" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
-        <PackageReference Include="coverlet.collector" Version="3.2.0" />
     </ItemGroup>
 
 </Project>
