@@ -4,7 +4,7 @@ import java.awt.Image
 import javax.imageio.ImageIO
 import javax.swing.ImageIcon
 
-object Images {
+object RcImages {
 
     val tankImage: Image = readImage("/gfx/Tank.png")
     val logoImage: Image = readImage("/gfx/Robocode-logo.png")

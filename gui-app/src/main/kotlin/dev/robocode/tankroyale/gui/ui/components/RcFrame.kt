@@ -7,6 +7,6 @@ open class RcFrame(title: String, isTitlePropertyName: Boolean = true) :
     JFrame(if (isTitlePropertyName) UiTitles.get(title) else title) {
 
     init {
-        iconImage = Images.tankImage
+        iconImage = RcImages.tankImage
     }
 }

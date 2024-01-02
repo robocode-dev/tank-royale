@@ -1,6 +1,6 @@
 // Schema Generator
 include("schema:jvm")
-include("schema:dotnet")
+//include("schema:dotnet")
 
 // Booter
 include("booter")
@@ -13,11 +13,11 @@ include("gui-app")
 
 // Bot API
 include("bot-api:java")
-include("bot-api:dotnet")
+//include("bot-api:dotnet")
 
 // Sample Bots archives
 include("sample-bots:java")
-include("sample-bots:csharp")
+//include("sample-bots:csharp")
 
 // Docs
 include("buildDocs")

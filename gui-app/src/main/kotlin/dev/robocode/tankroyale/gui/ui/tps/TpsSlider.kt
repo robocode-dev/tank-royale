@@ -2,14 +2,14 @@ package dev.robocode.tankroyale.gui.ui.tps
 
 import dev.robocode.tankroyale.gui.model.TpsChangedEvent
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
+import dev.robocode.tankroyale.gui.ui.components.RcSlider
 import java.awt.Dimension
 import java.util.*
 import javax.swing.JLabel
-import javax.swing.JSlider
 import javax.swing.event.ChangeEvent
 import javax.swing.event.ChangeListener
 
-object TpsSlider : JSlider() {
+object TpsSlider : RcSlider() {
 
     init {
         minimum = 0

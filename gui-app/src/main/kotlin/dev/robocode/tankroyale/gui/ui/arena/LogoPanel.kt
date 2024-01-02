@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
-import dev.robocode.tankroyale.gui.ui.components.Images
+import dev.robocode.tankroyale.gui.ui.components.RcImages
 import java.awt.*
 import javax.swing.JPanel
 
@@ -24,7 +24,7 @@ object LogoPanel : JPanel() {
     override fun paintComponent(g: Graphics) {
         val g2 = g as Graphics2D
 
-        val logo = Images.logoImage
+        val logo = RcImages.logoImage
 
         val logoWidth = logo.getWidth(null) / 2
         val logoHeight = logo.getHeight(null) / 2

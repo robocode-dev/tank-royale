@@ -3,13 +3,13 @@ package dev.robocode.tankroyale.gui.ui.tps
 import dev.robocode.tankroyale.gui.model.TpsChangedEvent
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.Messages
-import dev.robocode.tankroyale.gui.ui.components.JLimitedTextField
+import dev.robocode.tankroyale.gui.ui.components.RcLimitedTextField
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.onChange
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.setInputVerifier
 import java.awt.EventQueue
 
-object TpsField : JLimitedTextField(3) {
+object TpsField : RcLimitedTextField(3) {
 
     var tps: Int = ConfigSettings.tps
 

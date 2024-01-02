@@ -1,13 +1,13 @@
 package dev.robocode.tankroyale.gui
 
 import dev.robocode.tankroyale.gui.ui.MainFrame
-import dev.robocode.tankroyale.gui.ui.components.Images
+import dev.robocode.tankroyale.gui.ui.components.RcImages
 import java.awt.Taskbar
 import javax.swing.UIManager
 
 fun main() {
     try {
-        Taskbar.getTaskbar().iconImage = Images.tankImage // for macOS
+        Taskbar.getTaskbar().iconImage = RcImages.tankImage // for macOS
     } catch (ignore: UnsupportedOperationException) {}
 
     fixRenderingIssues() // set before Look and Feel

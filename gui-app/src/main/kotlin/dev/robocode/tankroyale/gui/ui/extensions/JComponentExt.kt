@@ -1,25 +1,31 @@
 package dev.robocode.tankroyale.gui.ui.extensions
 
 import dev.robocode.tankroyale.gui.ui.Strings
+import dev.robocode.tankroyale.gui.ui.components.RcToolTip
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.MessageDialog
 import java.awt.EventQueue
-import javax.swing.JButton
-import javax.swing.JCheckBox
-import javax.swing.JComponent
-import javax.swing.JLabel
+import javax.swing.*
 
 
 object JComponentExt {
 
     fun JComponent.addLabel(stringResourceName: String, layoutConstraints: String? = null): JLabel {
-        val label = JLabel(Strings.get(stringResourceName) + ':')
+        val label = object : JLabel(Strings.get(stringResourceName) + ':') {
+            override fun createToolTip() = RcToolTip()
+        }
         add(label, layoutConstraints)
         return label
     }
 
-    fun JComponent.addButton(stringResourceName: String, event: Event<JButton>, layoutConstraints: String? = null): JButton {
-        val button = JButton(Strings.get(stringResourceName))
+    fun JComponent.addButton(
+        stringResourceName: String,
+        event: Event<JButton>,
+        layoutConstraints: String? = null
+    ): JButton {
+        val button = object : JButton(Strings.get(stringResourceName)) {
+            override fun createToolTip() = RcToolTip()
+        }
         button.addActionListener { event.fire(button) }
         add(button, layoutConstraints)
         return button
@@ -36,7 +42,9 @@ object JComponentExt {
     fun JComponent.addCheckBox(
         stringResourceName: String, event: Event<JCheckBox>, layoutConstraints: String? = null
     ): JCheckBox {
-        val checkbox = JCheckBox(Strings.get(stringResourceName))
+        val checkbox = object: JCheckBox(Strings.get(stringResourceName)) {
+            override fun createToolTip() = RcToolTip()
+        }
         checkbox.addActionListener { event.fire(checkbox) }
         add(checkbox, layoutConstraints)
         return checkbox

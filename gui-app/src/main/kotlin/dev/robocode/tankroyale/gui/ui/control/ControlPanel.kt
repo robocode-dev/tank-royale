@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.gui.settings.ConfigSettings.DEFAULT_TPS
 import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsField
@@ -41,10 +42,8 @@ object ControlPanel : JPanel() {
 
         RegisterWsProtocol
 
-        val tpsLabel = JLabel("TPS:")
-
         add(TpsSlider)
-        add(tpsLabel)
+        val tpsLabel = addLabel("tps_label")
         add(TpsField)
         addButton("default_tps", onDefaultTps).apply {
             toolTipText = Hints.get("control.default_tps").format(DEFAULT_TPS)

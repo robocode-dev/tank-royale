@@ -1,13 +1,12 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.gui.ui.components.RcToolTip
+import dev.robocode.tankroyale.gui.ui.components.RcList
 import dev.robocode.tankroyale.gui.ui.components.SortedListModel
 import dev.robocode.tankroyale.gui.util.Event
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
-import javax.swing.JList
 
-class BotList<T : Comparable<T>>(sortedListModel: SortedListModel<T>, readOnly: Boolean = true) : JList<T>(sortedListModel) {
+class BotList<T : Comparable<T>>(sortedListModel: SortedListModel<T>, readOnly: Boolean = true) : RcList<T>(sortedListModel) {
 
     val onDeleteKeyTyped = Event<List<T>>() // List of all selected elements
 
@@ -33,6 +32,4 @@ class BotList<T : Comparable<T>>(sortedListModel: SortedListModel<T>, readOnly: 
             }
         })
     }
-
-    override fun createToolTip() = RcToolTip()
 }
