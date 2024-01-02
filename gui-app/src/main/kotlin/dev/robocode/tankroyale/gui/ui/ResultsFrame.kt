@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.gui.ui
 
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.Results
+import dev.robocode.tankroyale.gui.ui.components.RCToolTip
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import java.awt.Component
 import java.awt.Dimension
@@ -13,7 +14,9 @@ import javax.swing.table.DefaultTableCellRenderer
 class ResultsFrame(results: List<Results>) : RcFrame(getWindowTitle(), isTitlePropertyName = false) {
 
     init {
-        val table = JTable(getData(results), getColumns())
+        val table = object : JTable(getData(results), getColumns()) {
+            override fun createToolTip() = RCToolTip()
+        }
         val tableSize = Dimension(800, table.model.rowCount * table.rowHeight)
 
         table.apply {
@@ -31,7 +34,7 @@ class ResultsFrame(results: List<Results>) : RcFrame(getWindowTitle(), isTitlePr
             val column = columnModel.getColumn(columnIndex)
             val title = "" + column.headerValue
             column.minWidth = headerFontMetrics.stringWidth(title)
-            column.cellRenderer = ToolTipCellRenderer
+            column.cellRenderer = CellRendererWithToolTip
 
             if (columnIndex == 1) {
                 column.minWidth = 120 // Name needs more width
@@ -94,7 +97,7 @@ private fun getWindowTitle(): String {
     return UiTitles.get("results_window").replace("$1", "$numberOfRounds")
 }
 
-internal object ToolTipCellRenderer : DefaultTableCellRenderer() {
+internal object CellRendererWithToolTip : DefaultTableCellRenderer() {
     override fun getTableCellRendererComponent(
         table: JTable,
         value: Any?,
@@ -102,10 +105,8 @@ internal object ToolTipCellRenderer : DefaultTableCellRenderer() {
         hasFocus: Boolean,
         row: Int,
         column: Int
-    ): Component {
-        return (super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) as JLabel).apply {
-            horizontalAlignment = JLabel.CENTER
-            toolTipText = value?.toString()
-        }
+    ): Component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column).apply {
+        horizontalAlignment = JLabel.CENTER
+        toolTipText = value?.toString()
     }
 }
