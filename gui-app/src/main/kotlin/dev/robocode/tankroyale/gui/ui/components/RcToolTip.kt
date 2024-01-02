@@ -7,9 +7,10 @@ import javax.swing.border.LineBorder
 class RCToolTip : JToolTip() {
 
     init {
-        isOpaque = true
-        background = Color(0xff, 0xff, 0x80)
-        foreground = Color.black
         border = LineBorder(Color.black)
+    }
+
+    override fun setTipText(tipText: String) {
+        super.setTipText("""<html><body style="color: black; background-color: #FFFFCC;">$tipText</body></html>""")
     }
 }
