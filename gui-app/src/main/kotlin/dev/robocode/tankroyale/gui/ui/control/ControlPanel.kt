@@ -16,7 +16,6 @@ import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import java.awt.EventQueue
 import javax.swing.JButton
-import javax.swing.JLabel
 import javax.swing.JPanel
 
 object ControlPanel : JPanel() {
