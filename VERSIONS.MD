@@ -1,5 +1,10 @@
 # Versions
 
+#### 🪲 Bug Fixes
+
+- GUI:
+    - [#81]: Fixed tooltips they are consistent on the entire UI, and works on NixOS (Linux) as well.
+
 #### 🚀 Improvements
 
 - GUI:
@@ -357,7 +362,7 @@ Fire assistance:
 
 GUI:
 
-- Updated various hover help texts for the dialog used for starting battles.
+- Updated various tooltip texts for the dialog used for starting battles.
 
 Bot info:
 
@@ -686,6 +691,8 @@ Bot info:
 [#66]: https://github.com/robocode-dev/tank-royale/issues/66
 
 [#69]: https://github.com/robocode-dev/tank-royale/issues/69
+
+[#81]: https://github.com/robocode-dev/tank-royale/issues/81
 
 [BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 
