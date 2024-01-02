@@ -4,7 +4,7 @@ import java.awt.Color
 import javax.swing.JToolTip
 import javax.swing.border.LineBorder
 
-class RCToolTip : JToolTip() {
+class RcToolTip : JToolTip() {
 
     init {
         border = LineBorder(Color.black)

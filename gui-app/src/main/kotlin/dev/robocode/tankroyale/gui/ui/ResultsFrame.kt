@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.gui.ui
 
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.model.Results
-import dev.robocode.tankroyale.gui.ui.components.RCToolTip
+import dev.robocode.tankroyale.gui.ui.components.RcToolTip
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import java.awt.Component
 import java.awt.Dimension
@@ -15,7 +15,7 @@ class ResultsFrame(results: List<Results>) : RcFrame(getWindowTitle(), isTitlePr
 
     init {
         val table = object : JTable(getData(results), getColumns()) {
-            override fun createToolTip() = RCToolTip()
+            override fun createToolTip() = RcToolTip()
         }
         val tableSize = Dimension(800, table.model.rowCount * table.rowHeight)
 

@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.gui.ui.components.RCToolTip
+import dev.robocode.tankroyale.gui.ui.components.RcToolTip
 import dev.robocode.tankroyale.gui.ui.components.SortedListModel
 import dev.robocode.tankroyale.gui.util.Event
 import java.awt.event.KeyAdapter
@@ -34,5 +34,5 @@ class BotList<T : Comparable<T>>(sortedListModel: SortedListModel<T>, readOnly: 
         })
     }
 
-    override fun createToolTip() = RCToolTip()
+    override fun createToolTip() = RcToolTip()
 }
