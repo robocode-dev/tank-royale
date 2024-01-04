@@ -32,7 +32,8 @@ object TpsSlider : RcSlider() {
             this[45] = JLabel("max")
         }
 
-        preferredSize = Dimension(300, 50)
+        val size = preferredSize
+        preferredSize = Dimension(size.width.coerceAtLeast(350), size.height) // width gets too small on Linux
 
         addChangeListener(TpsChangeListener())
 
