@@ -19,6 +19,7 @@ class AnsiEditorPane : JEditorPane() {
     val ansiDocument = ansiKit.createDefaultDocument() as StyledDocument
 
     init {
+        isOpaque = true
         background = Color(0x28, 0x28, 0x28)
 
         editorKit = ansiKit
