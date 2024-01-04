@@ -9,34 +9,8 @@ version = libs.versions.tankroyale.get()
 val `nuget-api-key`: String? by project
 
 
-plugins {
-    alias(libs.plugins.itiviti.dotnet)
-}
-
-// https://github.com/Itiviti/gradle-dotnet-plugin
-dotnet {
-    solution = "Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj"
-
-    projectName = artifactName
-
-    build {
-        version = libs.versions.tankroyale.get()
-        packageVersion = version
-    }
-
-    test {
-        solution = "Robocode.TankRoyale.BotApi.Tests/Robocode.TankRoyale.BotApi.Tests.csproj"
-    }
-
-    nugetPush {
-        solution = "Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj"
-        source = "nuget.org"
-        apiKey = `nuget-api-key`
-    }
-}
-
 tasks {
-    val cleanDocs by registering {
+    val clean by registering {
         doFirst {
             delete(
                 "build",
@@ -61,8 +35,24 @@ tasks {
         into("docs")
     }
 
-    dotnetBuild {
+    val build = register("build") {
         dependsOn(":schema:dotnet:build", prepareNugetDocs)
+
+        doLast {
+            exec {
+                workingDir("Robocode.TankRoyale.BotApi")
+                commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
+            }
+        }
+    }
+
+    val test = register("test") {
+        doLast {
+            exec {
+                workingDir("Robocode.TankRoyale.BotApi.Tests")
+                commandLine("dotnet", "test")
+            }
+        }
     }
 
     val docfx by registering {
@@ -80,7 +70,7 @@ tasks {
     }
 
     register<Copy>("uploadDocs") {
-        dependsOn(cleanDocs, docfx)
+        dependsOn(clean, docfx)
 
         val dotnetApiDir = "../../docs/api/dotnet"
 

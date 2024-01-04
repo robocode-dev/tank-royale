@@ -1,6 +1,6 @@
 // Schema Generator
 include("schema:jvm")
-//include("schema:dotnet")
+include("schema:dotnet")
 
 // Booter
 include("booter")
@@ -13,11 +13,11 @@ include("gui-app")
 
 // Bot API
 include("bot-api:java")
-//include("bot-api:dotnet")
+include("bot-api:dotnet")
 
 // Sample Bots archives
 include("sample-bots:java")
-//include("sample-bots:csharp")
+include("sample-bots:csharp")
 
 // Docs
 include("buildDocs")
@@ -63,7 +63,6 @@ dependencyResolutionManagement {
             plugin("kotlin-serialization", "org.jetbrains.kotlin.plugin.serialization").version(kotlinVersion)
             plugin("nexus-publish", "io.github.gradle-nexus.publish-plugin").version("2.0.0-rc-1")
             plugin("shadow-jar","com.github.johnrengelman.shadow").version("8.1.1")
-            plugin("itiviti-dotnet", "com.itiviti.dotnet").version("2.0.1")
             plugin("node-gradle", "com.github.node-gradle.node").version("7.0.1")
             plugin("jsonschema2pojo", "org.jsonschema2pojo").version("1.2.1")
 
