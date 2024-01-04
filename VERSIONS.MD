@@ -5,6 +5,7 @@
 - GUI:
     - [#81]: Fixed tooltips they are consistent on the entire UI, and works on NixOS (Linux) as well.
     - Fixed the TPS slider, which was not displayed correctly - especially with the height.
+    - Added border to the Bot Root Directories Config dialog.
 
 #### 🚀 Improvements
 
