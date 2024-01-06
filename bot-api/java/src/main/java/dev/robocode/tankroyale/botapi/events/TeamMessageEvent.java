@@ -21,7 +21,7 @@ public final class TeamMessageEvent extends BotEvent {
     public TeamMessageEvent(int turnNumber, Object message, int senderId) {
         super(turnNumber);
         if (message == null) {
-            throw new IllegalArgumentException("message cannot be null");
+            throw new IllegalArgumentException("'message' cannot be null");
         }
         this.message = message;
         this.senderId = senderId;

@@ -46,7 +46,7 @@ class BotInfoTest {
         void givenNameIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(String name) {
             var builder = prefilledBuilder().setName(name);
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("name cannot be null, empty or blank");
+            assertThat(exception.getMessage()).containsIgnoringCase("'name' cannot be null, empty or blank");
         }
 
         @Test
@@ -60,7 +60,7 @@ class BotInfoTest {
         void givenNameOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = prefilledBuilder().setName(stringOfLength(MAX_NAME_LENGTH + 1));
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("name length exceeds");
+            assertThat(exception.getMessage()).containsIgnoringCase("'name' length exceeds");
         }
     }
 
@@ -77,7 +77,7 @@ class BotInfoTest {
         void givenVersionIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(String version) {
             var builder = prefilledBuilder().setVersion(version);
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("version cannot be null, empty or blank");
+            assertThat(exception.getMessage()).containsIgnoringCase("'version' cannot be null, empty or blank");
         }
 
         @Test
@@ -91,7 +91,7 @@ class BotInfoTest {
         void givenVersionOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = prefilledBuilder().setVersion(stringOfLength(MAX_VERSION_LENGTH + 1));
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("version length exceeds");
+            assertThat(exception.getMessage()).containsIgnoringCase("'version' length exceeds");
         }
     }
 
@@ -108,7 +108,7 @@ class BotInfoTest {
         void givenEmptyOrBlankAuthors_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(List<String> authors) {
             var builder = prefilledBuilder().setAuthors(authors);
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("authors cannot be null or empty or contain blanks");
+            assertThat(exception.getMessage()).containsIgnoringCase("'authors' cannot be null or empty or contain blanks");
         }
 
         @Test
@@ -122,7 +122,7 @@ class BotInfoTest {
         void givenSingleAuthorOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = prefilledBuilder().addAuthor(stringOfLength(MAX_AUTHOR_LENGTH + 1));
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("author length exceeds");
+            assertThat(exception.getMessage()).containsIgnoringCase("'author' length exceeds");
         }
 
         @Test
@@ -141,7 +141,7 @@ class BotInfoTest {
                 builder.addAuthor(AUTHORS.get(0));
             }
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("number of authors exceeds");
+            assertThat(exception.getMessage()).containsIgnoringCase("Size of 'authors' exceeds");
         }
     }
 
@@ -171,7 +171,7 @@ class BotInfoTest {
         void givenDescriptionOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = prefilledBuilder().setDescription(stringOfLength(MAX_DESCRIPTION_LENGTH + 1));
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("description length exceeds");
+            assertThat(exception.getMessage()).containsIgnoringCase("'description' length exceeds");
         }
     }
 
@@ -201,7 +201,7 @@ class BotInfoTest {
         void givenHomepageOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = prefilledBuilder().setHomepage(stringOfLength(MAX_HOMEPAGE_LENGTH + 1));
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("homepage length exceeds");
+            assertThat(exception.getMessage()).containsIgnoringCase("'homepage' length exceeds");
         }
     }
 
@@ -249,7 +249,7 @@ class BotInfoTest {
                 builder.addCountryCode(COUNTRY_CODES.get(0));
             }
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("number of country codes exceeds the maximum");
+            assertThat(exception.getMessage()).containsIgnoringCase("Size of 'countryCodes' exceeds the maximum");
         }
     }
 
@@ -281,7 +281,7 @@ class BotInfoTest {
         void givenGameTypeOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = prefilledBuilder().addGameType(stringOfLength(MAX_GAME_TYPE_LENGTH + 1));
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("game type length exceeds");
+            assertThat(exception.getMessage()).containsIgnoringCase("'gameTypes' length exceeds");
         }
 
         @Test
@@ -300,7 +300,7 @@ class BotInfoTest {
                 builder.addGameType(GAME_TYPES.get(0) + i);
             }
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("number of game types exceeds the maximum");
+            assertThat(exception.getMessage()).containsIgnoringCase("Size of 'gameTypes' exceeds the maximum");
         }
     }
 
@@ -331,7 +331,7 @@ class BotInfoTest {
         void givenPlatformOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = prefilledBuilder().setPlatform(stringOfLength(MAX_PLATFORM_LENGTH + 1));
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("platform length exceeds");
+            assertThat(exception.getMessage()).containsIgnoringCase("'platform' length exceeds");
         }
     }
 
@@ -362,7 +362,7 @@ class BotInfoTest {
         void givenProgrammingLangOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = prefilledBuilder().setProgrammingLang(stringOfLength(MAX_PROGRAMMING_LANG_LENGTH + 1));
             var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("programmingLang length exceeds");
+            assertThat(exception.getMessage()).containsIgnoringCase("'programmingLang' length exceeds");
         }
     }
 

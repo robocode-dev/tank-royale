@@ -45,7 +45,7 @@ public class BotInfoTest
         {
             var builder = PrefilledBuilder().SetName(name);
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower(), Is.EqualTo("name cannot be null, empty or blank"));
+            Assert.That(exception?.Message.ToLower(), Is.EqualTo("'name' cannot be null, empty or blank"));
         }
 
         [Test]
@@ -60,7 +60,7 @@ public class BotInfoTest
         public void GivenNameOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = PrefilledBuilder().SetName(StringOfLength(MaxNameLength + 1));
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower().Contains("name length exceeds"), Is.True);
+            Assert.That(exception?.Message.ToLower().Contains("'name' length exceeds"), Is.True);
         }
     }
 
@@ -82,7 +82,7 @@ public class BotInfoTest
         {
             var builder = PrefilledBuilder().SetVersion(version);
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower(), Is.EqualTo("version cannot be null, empty or blank"));
+            Assert.That(exception?.Message.ToLower(), Is.EqualTo("'version' cannot be null, empty or blank"));
         }
     
         [Test]
@@ -97,7 +97,7 @@ public class BotInfoTest
         public void GivenVersionOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = PrefilledBuilder().SetVersion(StringOfLength(MaxVersionLength + 1));
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower().Contains("version length exceeds"), Is.True);
+            Assert.That(exception?.Message.ToLower().Contains("'version' length exceeds"), Is.True);
         }
     }
 
@@ -115,7 +115,7 @@ public class BotInfoTest
         {
             var builder = PrefilledBuilder().SetAuthors(authors);
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower(), Is.EqualTo("authors cannot be null or empty or contain blanks"));
+            Assert.That(exception?.Message.ToLower(), Is.EqualTo("'authors' cannot be null or empty or contain blanks"));
         }
 
         [Test]
@@ -130,7 +130,7 @@ public class BotInfoTest
         public void GivenSingleAuthorOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = PrefilledBuilder().AddAuthor(StringOfLength(MaxAuthorLength + 1));
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower().Contains("author length exceeds"), Is.True);
+            Assert.That(exception?.Message.ToLower().Contains("'authors' length exceeds"), Is.True);
         }
     
         [Test]
@@ -150,7 +150,7 @@ public class BotInfoTest
                 builder.AddAuthor(Authors[0]);
             }
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower().Contains("number of authors exceeds the maximum"), Is.True);
+            Assert.That(exception?.Message.ToLower().Contains("size of 'authors' exceeds the maximum"), Is.True);
         }
     }
 
@@ -187,7 +187,7 @@ public class BotInfoTest
         public void GivenDescriptionOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = PrefilledBuilder().SetDescription(StringOfLength(MaxDescriptionLength + 1));
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower().Contains("description length exceeds"), Is.True);
+            Assert.That(exception?.Message.ToLower().Contains("'description' length exceeds"), Is.True);
         }
     }
 
@@ -224,7 +224,7 @@ public class BotInfoTest
         public void GivenHomepageOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = PrefilledBuilder().SetHomepage(StringOfLength(MaxHomepageLength + 1));
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower().Contains("homepage length exceeds"), Is.True);
+            Assert.That(exception?.Message.ToLower().Contains("'homepage' length exceeds"), Is.True);
         }
     }
 
@@ -280,7 +280,7 @@ public class BotInfoTest
                 builder.AddCountryCode(CountryCodes[0]);
             }
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower().Contains("number of country codes exceeds the maximum"), Is.True);
+            Assert.That(exception?.Message.ToLower().Contains("size of 'countrycodes' exceeds the maximum"), Is.True);
         }
     }
 
@@ -312,7 +312,7 @@ public class BotInfoTest
         public void GivenGameTypeOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = PrefilledBuilder().AddGameType(StringOfLength(MaxGameTypeLength + 1));
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower().Contains("game type length exceeds"), Is.True);
+            Assert.That(exception?.Message.ToLower().Contains("'gametypes' length exceeds"), Is.True);
         }
     
         [Test]
@@ -332,7 +332,7 @@ public class BotInfoTest
                 builder.AddCountryCode(CountryCodes[0]);
             }
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower().Contains("number of country codes exceeds the maximum"), Is.True);
+            Assert.That(exception?.Message.ToLower().Contains("size of 'countrycodes' exceeds the maximum"), Is.True);
         }
     }
 
@@ -367,7 +367,7 @@ public class BotInfoTest
         public void GivenPlatformOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = PrefilledBuilder().SetPlatform(StringOfLength(MaxPlatformLength + 1));
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower().Contains("platform length exceeds"), Is.True);
+            Assert.That(exception?.Message.ToLower().Contains("'platform' length exceeds"), Is.True);
         }
     }
     
@@ -403,7 +403,7 @@ public class BotInfoTest
         public void GivenProgrammingLangOneCharMoreThanMaxLength_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo() {
             var builder = PrefilledBuilder().SetProgrammingLang(StringOfLength(MaxProgrammingLangLength + 1));
             var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower().Contains("programminglang length exceeds"), Is.True);
+            Assert.That(exception?.Message.ToLower().Contains("'programminglang' length exceeds"), Is.True);
         }
     }
 

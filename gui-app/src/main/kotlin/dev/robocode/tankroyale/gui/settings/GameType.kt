@@ -10,7 +10,7 @@ enum class GameType(val displayName: String) {
         fun from(displayName: String): GameType {
             entries.forEach { if (it.displayName == displayName) return it }
 
-            throw IllegalArgumentException("displayName was not found")
+            throw IllegalArgumentException("'displayName' was not found")
         }
     }
 }

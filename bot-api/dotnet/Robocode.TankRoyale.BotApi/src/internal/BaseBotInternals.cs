@@ -341,7 +341,7 @@ public sealed class BaseBotInternals
 
     internal bool SetFire(double firepower)
     {
-        if (IsNaN(firepower)) throw new ArgumentException("firepower cannot be NaN");
+        if (IsNaN(firepower)) throw new ArgumentException("'firepower' cannot be NaN");
 
         if (baseBot.Energy < firepower || CurrentTick.BotState.GunHeat > 0)
             return false; // cannot fire yet
@@ -369,7 +369,7 @@ public sealed class BaseBotInternals
         {
             if (IsNaN(value))
             {
-                throw new ArgumentException("TurnRate cannot be NaN");
+                throw new ArgumentException("'TurnRate' cannot be NaN");
             }
 
             BotIntent.TurnRate = Math.Clamp(value, -maxTurnRate, maxTurnRate);
@@ -392,7 +392,7 @@ public sealed class BaseBotInternals
         {
             if (IsNaN(value))
             {
-                throw new ArgumentException("GunTurnRate cannot be NaN");
+                throw new ArgumentException("'GunTurnRate' cannot be NaN");
             }
 
             BotIntent.GunTurnRate = Math.Clamp(value, -maxGunTurnRate, maxGunTurnRate);
@@ -415,7 +415,7 @@ public sealed class BaseBotInternals
         {
             if (IsNaN(value))
             {
-                throw new ArgumentException("RadarTurnRate cannot be NaN");
+                throw new ArgumentException("'RadarTurnRate' cannot be NaN");
             }
 
             BotIntent.RadarTurnRate = Math.Clamp(value, -maxRadarTurnRate, maxRadarTurnRate);
@@ -429,7 +429,7 @@ public sealed class BaseBotInternals
         {
             if (IsNaN(value))
             {
-                throw new ArgumentException("TargetSpeed cannot be NaN");
+                throw new ArgumentException("'TargetSpeed' cannot be NaN");
             }
 
             BotIntent.TargetSpeed = Math.Clamp(value, -maxSpeed, maxSpeed);
@@ -443,7 +443,7 @@ public sealed class BaseBotInternals
         {
             if (IsNaN(value))
             {
-                throw new ArgumentException("MaxTurnRate cannot be NaN");
+                throw new ArgumentException("'MaxTurnRate' cannot be NaN");
             }
 
             maxTurnRate = Math.Clamp(value, 0, Constants.MaxTurnRate);
@@ -457,7 +457,7 @@ public sealed class BaseBotInternals
         {
             if (IsNaN(value))
             {
-                throw new ArgumentException("MaxGunTurnRate cannot be NaN");
+                throw new ArgumentException("'MaxGunTurnRate' cannot be NaN");
             }
 
             maxGunTurnRate = Math.Clamp(value, 0, Constants.MaxGunTurnRate);
@@ -471,7 +471,7 @@ public sealed class BaseBotInternals
         {
             if (IsNaN(value))
             {
-                throw new ArgumentException("MaxRadarTurnRate cannot be NaN");
+                throw new ArgumentException("'MaxRadarTurnRate' cannot be NaN");
             }
 
             maxRadarTurnRate = Math.Clamp(value, 0, Constants.MaxRadarTurnRate);
@@ -485,7 +485,7 @@ public sealed class BaseBotInternals
         {
             if (IsNaN(value))
             {
-                throw new ArgumentException("MaxSpeed cannot be NaN");
+                throw new ArgumentException("'MaxSpeed' cannot be NaN");
             }
 
             maxSpeed = Math.Clamp(value, 0, Constants.MaxSpeed);

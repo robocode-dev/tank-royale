@@ -374,7 +374,7 @@ public final class BaseBotInternals {
 
     public boolean setFire(double firepower) {
         if (Double.isNaN(firepower)) {
-            throw new IllegalArgumentException("firepower cannot be NaN");
+            throw new IllegalArgumentException("'firepower' cannot be NaN");
         }
         if (baseBot.getEnergy() < firepower || baseBot.getGunHeat() > 0) {
             return false; // cannot fire yet
@@ -393,28 +393,28 @@ public final class BaseBotInternals {
 
     public void setTurnRate(double turnRate) {
         if (Double.isNaN(turnRate)) {
-            throw new IllegalArgumentException("turnRate cannot be NaN");
+            throw new IllegalArgumentException("'turnRate' cannot be NaN");
         }
         botIntent.setTurnRate(clamp(turnRate, -maxTurnRate, maxTurnRate));
     }
 
     public void setGunTurnRate(double gunTurnRate) {
         if (Double.isNaN(gunTurnRate)) {
-            throw new IllegalArgumentException("gunTurnRate cannot be NaN");
+            throw new IllegalArgumentException("'gunTurnRate' cannot be NaN");
         }
         botIntent.setGunTurnRate(clamp(gunTurnRate, -maxGunTurnRate, maxGunTurnRate));
     }
 
     public void setRadarTurnRate(double radarTurnRate) {
         if (Double.isNaN(radarTurnRate)) {
-            throw new IllegalArgumentException("radarTurnRate cannot be NaN");
+            throw new IllegalArgumentException("'radarTurnRate' cannot be NaN");
         }
         botIntent.setRadarTurnRate(clamp(radarTurnRate, -maxRadarTurnRate, maxRadarTurnRate));
     }
 
     public void setTargetSpeed(double targetSpeed) {
         if (Double.isNaN(targetSpeed)) {
-            throw new IllegalArgumentException("targetSpeed cannot be NaN");
+            throw new IllegalArgumentException("'targetSpeed' cannot be NaN");
         }
         botIntent.setTargetSpeed(clamp(targetSpeed, -maxSpeed, maxSpeed));
     }

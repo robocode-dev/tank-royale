@@ -366,38 +366,38 @@ public final class BotInfo {
 
     private static String processName(String name) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Name cannot be null, empty or blank");
+            throw new IllegalArgumentException("'name' cannot be null, empty or blank");
         }
         name = name.trim();
         if (name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("Name length exceeds the maximum of " + MAX_NAME_LENGTH + " characters");
+            throw new IllegalArgumentException("'name' length exceeds the maximum of " + MAX_NAME_LENGTH + " characters");
         }
         return name;
     }
 
     private static String processVersion(String version) {
         if (version == null || version.isBlank()) {
-            throw new IllegalArgumentException("Version cannot be null, empty or blank");
+            throw new IllegalArgumentException("'version' cannot be null, empty or blank");
         }
         version = version.trim();
         if (version.length() > MAX_VERSION_LENGTH) {
-            throw new IllegalArgumentException("Version length exceeds the maximum of " + MAX_VERSION_LENGTH + " characters");
+            throw new IllegalArgumentException("'version' length exceeds the maximum of " + MAX_VERSION_LENGTH + " characters");
         }
         return version;
     }
 
     private static List<String> processAuthors(List<String> authors) {
         if (isNullOrEmptyOrContainsOnlyBlanks(authors)) {
-            throw new IllegalArgumentException("Authors cannot be null or empty or contain blanks");
+            throw new IllegalArgumentException("'authors' cannot be null or empty or contain blanks");
         }
         if (authors.size() > MAX_NUMBER_OF_AUTHORS) {
-            throw new IllegalArgumentException("Number of authors exceeds the maximum of " + MAX_NUMBER_OF_AUTHORS);
+            throw new IllegalArgumentException("Size of 'authors' exceeds the maximum of " + MAX_NUMBER_OF_AUTHORS);
         }
         List<String> authorsCopy = new ArrayList<>();
         authors.stream().filter(Objects::nonNull).forEach(author -> {
             author = author.trim();
             if (author.length() > MAX_AUTHOR_LENGTH) {
-                throw new IllegalArgumentException("Author length exceeds the maximum of " + MAX_AUTHOR_LENGTH + " characters");
+                throw new IllegalArgumentException("'author' length exceeds the maximum of " + MAX_AUTHOR_LENGTH + " characters");
             }
             authorsCopy.add(author);
         });
@@ -408,14 +408,14 @@ public final class BotInfo {
 
     private static String processDescription(String description) {
         if (description != null && description.trim().length() > MAX_DESCRIPTION_LENGTH) {
-            throw new IllegalArgumentException("Description length exceeds the maximum of " + MAX_DESCRIPTION_LENGTH + " characters");
+            throw new IllegalArgumentException("'description' length exceeds the maximum of " + MAX_DESCRIPTION_LENGTH + " characters");
         }
         return toNullIfBlankElseTrim(description);
     }
 
     private static String processHomepage(String homepage) {
         if (homepage != null && homepage.trim().length() > MAX_HOMEPAGE_LENGTH) {
-            throw new IllegalArgumentException("Homepage length exceeds the maximum of " + MAX_HOMEPAGE_LENGTH + " characters");
+            throw new IllegalArgumentException("'homepage' length exceeds the maximum of " + MAX_HOMEPAGE_LENGTH + " characters");
         }
         return toNullIfBlankElseTrim(homepage);
     }
@@ -437,7 +437,7 @@ public final class BotInfo {
             }
         }
         if (countryCodes.size() > MAX_NUMBER_OF_COUNTRY_CODES) {
-            throw new IllegalArgumentException("Number of country codes exceeds the maximum of " + MAX_NUMBER_OF_COUNTRY_CODES);
+            throw new IllegalArgumentException("Size of 'countryCodes' exceeds the maximum of " + MAX_NUMBER_OF_COUNTRY_CODES);
         }
 
         List<String> countryCodesAlpha2 = new ArrayList<>();
@@ -451,13 +451,13 @@ public final class BotInfo {
             return Collections.emptySet();
         }
         if (gameTypes.size() > MAX_NUMBER_OF_GAME_TYPES) {
-            throw new IllegalArgumentException("Number of game types exceeds the maximum of " + MAX_NUMBER_OF_GAME_TYPES);
+            throw new IllegalArgumentException("Size of 'gameTypes' exceeds the maximum of " + MAX_NUMBER_OF_GAME_TYPES);
         }
         Set<String> gameTypesCopy = new HashSet<>();
         gameTypes.stream().filter(Objects::nonNull).forEach(gameType -> {
             gameType = gameType.trim();
             if (gameType.length() > MAX_GAME_TYPE_LENGTH) {
-                throw new IllegalArgumentException("Game type length exceeds the maximum of " + MAX_GAME_TYPE_LENGTH + " characters");
+                throw new IllegalArgumentException("'gameTypes' length exceeds the maximum of " + MAX_GAME_TYPE_LENGTH + " characters");
             }
             gameTypesCopy.add(gameType);
         });
@@ -471,14 +471,14 @@ public final class BotInfo {
             return "Java Runtime Environment (JRE) " + System.getProperty("java.version");
         }
         if (platform.trim().length() > MAX_PLATFORM_LENGTH) {
-            throw new IllegalArgumentException("Platform length exceeds the maximum of " + MAX_PLATFORM_LENGTH + " characters");
+            throw new IllegalArgumentException("'platform' length exceeds the maximum of " + MAX_PLATFORM_LENGTH + " characters");
         }
         return toNullIfBlankElseTrim(platform);
     }
 
     private static String processProgrammingLang(String programmingLang) {
         if (programmingLang != null && programmingLang.trim().length() > MAX_PROGRAMMING_LANG_LENGTH) {
-            throw new IllegalArgumentException("ProgrammingLang length exceeds the maximum of " + MAX_PROGRAMMING_LANG_LENGTH + " characters");
+            throw new IllegalArgumentException("'programmingLang' length exceeds the maximum of " + MAX_PROGRAMMING_LANG_LENGTH + " characters");
         }
         return toNullIfBlankElseTrim(programmingLang);
     }

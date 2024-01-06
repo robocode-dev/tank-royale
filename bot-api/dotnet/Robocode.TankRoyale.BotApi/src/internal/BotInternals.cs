@@ -227,7 +227,7 @@ internal sealed class BotInternals : IStopResumeListener
         overrideTargetSpeed = false;
         DistanceRemaining = targetSpeed switch
         {
-            NaN => throw new ArgumentException("targetSpeed cannot be NaN"),
+            NaN => throw new ArgumentException("'targetSpeed' cannot be NaN"),
             > 0 => PositiveInfinity,
             < 0 => NegativeInfinity,
             _ => 0
@@ -240,7 +240,7 @@ internal sealed class BotInternals : IStopResumeListener
     {
         overrideTargetSpeed = true;
         if (IsNaN(distance))
-            throw new ArgumentException("distance cannot be NaN");
+            throw new ArgumentException("'distance' cannot be NaN");
         GetAndSetNewTargetSpeed(distance);
         DistanceRemaining = distance;
     }

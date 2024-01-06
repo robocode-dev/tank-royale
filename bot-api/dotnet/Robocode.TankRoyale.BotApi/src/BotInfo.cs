@@ -150,9 +150,9 @@ public sealed class BotInfo
         private init
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException("Name cannot be null, empty or blank");
+                throw new ArgumentException("'Name' cannot be null, empty or blank");
             if (value.Length > MaxNameLength)
-                throw new ArgumentException("Name length exceeds the maximum of " + MaxNameLength + " characters");
+                throw new ArgumentException("'Name' length exceeds the maximum of " + MaxNameLength + " characters");
             name = value.Trim();
         }
     }
@@ -169,9 +169,9 @@ public sealed class BotInfo
         private init
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException("Version cannot be null, empty or blank");
+                throw new ArgumentException("'Version' cannot be null, empty or blank");
             if (value.Length > MaxVersionLength)
-                throw new ArgumentException("Version length exceeds the maximum of " + MaxVersionLength + " characters");
+                throw new ArgumentException("'Version' length exceeds the maximum of " + MaxVersionLength + " characters");
             version = value.Trim();
         }
     }
@@ -191,14 +191,14 @@ public sealed class BotInfo
         private init
         {
             if (value.IsNullOrEmptyOrContainsOnlyBlanks())
-                throw new ArgumentException("Authors cannot be null or empty or contain blanks");
+                throw new ArgumentException("'Authors' cannot be null or empty or contain blanks");
             if (value.Count > MaxNumberOfAuthors)
-                throw new ArgumentException("Number of authors exceeds the maximum of " + MaxNumberOfAuthors);
+                throw new ArgumentException("Size of 'Authors' exceeds the maximum of " + MaxNumberOfAuthors);
 
             authors = value.ToListWithNoBlanks();
 
             if (authors.Any(author => author.Length > MaxAuthorLength))
-                throw new ArgumentException("Author length exceeds the maximum of " + MaxAuthorLength +
+                throw new ArgumentException("'Authors' length exceeds the maximum of " + MaxAuthorLength +
                                             " characters");
         }
     }
@@ -215,7 +215,7 @@ public sealed class BotInfo
         private init
         {
             if (value is { Length: > MaxDescriptionLength })
-                throw new ArgumentException("Description length exceeds the maximum of " + MaxDescriptionLength + " characters");
+                throw new ArgumentException("'Description' length exceeds the maximum of " + MaxDescriptionLength + " characters");
             description = ToNullIfBlankElseTrim(value);
         }
     }
@@ -232,7 +232,7 @@ public sealed class BotInfo
         private init
         {
             if (value is { Length: > MaxHomepageLength })
-                throw new ArgumentException("Homepage length exceeds the maximum of " + MaxHomepageLength + " characters");
+                throw new ArgumentException("'Homepage' length exceeds the maximum of " + MaxHomepageLength + " characters");
             homepage = ToNullIfBlankElseTrim(value);
         }
     }
@@ -251,7 +251,7 @@ public sealed class BotInfo
         private init
         {
             if (value.Count > MaxNumberOfCountryCodes)
-                throw new ArgumentException("Number of country codes exceeds the maximum of " + MaxNumberOfCountryCodes);
+                throw new ArgumentException("Size of 'CountryCodes' exceeds the maximum of " + MaxNumberOfCountryCodes);
 
             countryCodes = value.ToListWithNoBlanks().ConvertAll(cc => cc.ToUpper());
 
@@ -291,10 +291,10 @@ public sealed class BotInfo
             else
             {
                 if (value.Count > MaxNumberOfGameTypes)
-                    throw new ArgumentException("Number of game types exceeds the maximum of " + MaxNumberOfGameTypes);
+                    throw new ArgumentException("Size of 'GameTypes' exceeds the maximum of " + MaxNumberOfGameTypes);
 
                 if (value.Any(gameType => gameType.Length > MaxGameTypeLength))
-                    throw new ArgumentException("Game type length exceeds the maximum of " + MaxGameTypeLength +
+                    throw new ArgumentException("'GameTypes' length exceeds the maximum of " + MaxGameTypeLength +
                                                 " characters");
 
                 gameTypes = value.ToListWithNoBlanks().ToHashSet();
@@ -316,7 +316,7 @@ public sealed class BotInfo
             if (string.IsNullOrWhiteSpace(value))
                 value = PlatformUtil.GetPlatformName();
             else if (value.Length > MaxPlatformLength)
-                throw new ArgumentException("Platform length exceeds the maximum of " + MaxPlatformLength + " characters");
+                throw new ArgumentException("'Platform' length exceeds the maximum of " + MaxPlatformLength + " characters");
             platform = ToNullIfBlankElseTrim(value);
         }
     }
@@ -333,7 +333,7 @@ public sealed class BotInfo
         private init
         {
             if (value is { Length: > MaxProgrammingLangLength })
-                throw new ArgumentException("ProgrammingLang length exceeds the maximum of " + MaxProgrammingLangLength + " characters");
+                throw new ArgumentException("'ProgrammingLang' length exceeds the maximum of " + MaxProgrammingLangLength + " characters");
             programmingLang = ToNullIfBlankElseTrim(value);
         }
     }
