@@ -4,7 +4,7 @@ import build.release.createRelease
 description = "Robocode: Build the best - destroy the rest!"
 
 group = "dev.robocode.tankroyale"
-val version: String? = libs.versions.tankroyale.get()
+val version: String = libs.versions.tankroyale.get()
 
 val ossrhUsername: String? by project
 val ossrhPassword: String? by project
@@ -55,6 +55,9 @@ tasks {
 
         doLast {
             val version = libs.versions.tankroyale.get()
+            if (tankRoyaleGitHubToken.isNullOrBlank()) {
+                throw IllegalStateException("'token' is null or blank meaning that it is missing")
+            }
             createRelease(projectDir, version, tankRoyaleGitHubToken!!)
         }
     }
