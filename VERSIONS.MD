@@ -1,4 +1,4 @@
-# Versions
+## 📦 0.22.1 - GUI improvements for Linux - 07-Jan-2024
 
 #### 🪲 Bug Fixes
 
