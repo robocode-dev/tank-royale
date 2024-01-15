@@ -49,66 +49,26 @@ data class BotIntent(
      * that the corresponding fields on this intent are left unchanged.
      */
     fun update(update: IBotIntent) {
-        if (update.targetSpeed != null) {
-            targetSpeed = update.targetSpeed
-        }
-        if (update.turnRate != null) {
-            turnRate = update.turnRate
-        }
-        if (update.gunTurnRate != null) {
-            gunTurnRate = update.gunTurnRate
-        }
-        if (update.radarTurnRate != null) {
-            radarTurnRate = update.radarTurnRate
-        }
-        if (update.firepower != null) {
-            firepower = update.firepower
-        }
-        if (update.adjustGunForBodyTurn != null) {
-            adjustGunForBodyTurn = update.adjustGunForBodyTurn
-        }
-        if (update.adjustRadarForBodyTurn != null) {
-            adjustRadarForBodyTurn = update.adjustRadarForBodyTurn
-        }
-        if (update.adjustRadarForGunTurn != null) {
-            adjustRadarForGunTurn = update.adjustRadarForGunTurn
-        }
-        if (update.rescan != null) {
-            rescan = update.rescan
-        }
-        if (update.fireAssist != null) {
-            fireAssist = update.fireAssist
-        }
-        if (update.bodyColor != null) {
-            bodyColor = if (update.bodyColor!!.isBlank()) null else update.bodyColor
-        }
-        if (update.turretColor != null) {
-            turretColor = if (update.turretColor!!.isBlank()) null else update.turretColor
-        }
-        if (update.radarColor != null) {
-            radarColor = if (update.radarColor!!.isBlank()) null else update.radarColor
-        }
-        if (update.bulletColor != null) {
-            bulletColor = if (update.bulletColor!!.isBlank()) null else update.bulletColor
-        }
-        if (update.scanColor != null) {
-            scanColor = if (update.scanColor!!.isBlank()) null else update.scanColor
-        }
-        if (update.tracksColor != null) {
-            tracksColor = if (update.tracksColor!!.isBlank()) null else update.tracksColor
-        }
-        if (update.gunColor != null) {
-            gunColor = if (update.gunColor!!.isBlank()) null else update.gunColor
-        }
-        if (update.stdOut != null) {
-            stdOut = if (update.stdOut!!.isBlank()) null else update.stdOut
-        }
-        if (update.stdErr != null) {
-            stdErr = if (update.stdErr!!.isBlank()) null else update.stdErr
-        }
-        if (update.teamMessages != null) {
-            teamMessages = update.teamMessages
-        }
+        update.targetSpeed?.let { targetSpeed = it }
+        update.turnRate?.let { turnRate = it }
+        update.gunTurnRate?.let { gunTurnRate = it }
+        update.radarTurnRate?.let { radarTurnRate = it }
+        update.firepower?.let { firepower = it }
+        update.adjustGunForBodyTurn?.let { adjustGunForBodyTurn = it }
+        update.adjustRadarForBodyTurn?.let { adjustRadarForBodyTurn = it }
+        update.adjustRadarForGunTurn?.let { adjustRadarForGunTurn = it }
+        update.rescan?.let { rescan = it }
+        update.fireAssist?.let { fireAssist = it }
+        update.bodyColor?.let { bodyColor = it.ifBlank { null } }
+        update.turretColor?.let { turretColor = it.ifBlank { null } }
+        update.radarColor?.let { radarColor = it.ifBlank { null } }
+        update.bulletColor?.let { bulletColor = it.ifBlank { null } }
+        update.scanColor?.let { scanColor = it.ifBlank { null } }
+        update.tracksColor?.let { tracksColor = it.ifBlank { null } }
+        update.gunColor?.let { gunColor = it.ifBlank { null } }
+        update.stdOut?.let { stdOut = it.ifBlank { null } }
+        update.stdErr?.let { stdErr = it.ifBlank { null } }
+        update.teamMessages?.let { teamMessages = it }
     }
 
     /**
