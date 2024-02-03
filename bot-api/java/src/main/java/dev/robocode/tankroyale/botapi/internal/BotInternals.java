@@ -433,6 +433,6 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private boolean isNearZero(double value) {
-        return (abs(value) < .00001);
+        return abs(value) < .00001;
     }
 }
