@@ -54,24 +54,22 @@ open class ConsolePanel : JPanel() {
         ansiEditorPane.text = ""
     }
 
-    fun append(text: String?, turnNumber: Int? = null) {
+    fun append(text: String, turnNumber: Int? = null) {
         val ansi = AnsiTextBuilder()
 
         turnNumber?.let {
             ansi.cyan().text(turnNumber - 1).defaultColor().text(' ')
         }
-        text?.let {
-            ansi.text(text
-                .replace("\\n", "\n")
+        ansi.text(
+            text.replace("\\n", "\n")
                 .replace("\\t", "\t")
-            )
-        }
+        )
 
-        ansiEditorPane.apply {
-            ansiKit.insertAnsi(ansiDocument, ansi.build())
+        EDT.enqueue {
+            ansiEditorPane.apply {
+                ansiKit.insertAnsi(ansiDocument, ansi.build())
 
-            // Scroll to bottom
-            EDT.enqueue {
+                // Scroll to bottom
                 caretPosition = ansiDocument.length
             }
         }

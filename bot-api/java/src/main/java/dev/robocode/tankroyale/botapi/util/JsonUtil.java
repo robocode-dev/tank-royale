@@ -10,7 +10,7 @@ public class JsonUtil {
         return s.replaceAll("\b", "\\\\b") // backspace -> \b
                 .replaceAll("\f", "\\\\f") // form feed -> \f
                 .replaceAll("\n", "\\\\n") // newline -> \n
-                .replaceAll("\r", "\\\\r") // carriage return -> \r
+                .replaceAll("\r", "") // carriage return -> remove character
                 .replaceAll("\t", "\\\\t") // tab -> \t
                 .replaceAll("\"", "\\\\\"") // double-quotes -> \"
                 .replaceAll("\\\\", "\\\\") // backslash -> \\
