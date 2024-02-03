@@ -1446,7 +1446,7 @@ public interface IBaseBot {
     }
 
     /**
-     * Normalizes an angle to an relative angle into the range [-180,180[
+     * Normalizes an angle to a relative angle into the range [-180,180[
      *
      * @param angle is the angle to normalize.
      * @return The normalized relative angle.
