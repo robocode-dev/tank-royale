@@ -183,7 +183,6 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
         return "$botId (${bot.name} ${bot.version})"
     }
 
-
     private fun appendNewLine(ansiTextBuilder: AnsiTextBuilder, turnNumber: Int? = null) {
         append(ansiTextBuilder.newline().build(), turnNumber)
     }
