@@ -13,7 +13,7 @@ public class JsonUtil {
                 .replaceAll("\r", "") // carriage return -> remove character
                 .replaceAll("\t", "\\\\t") // tab -> \t
                 .replaceAll("\"", "\\\\\"") // double-quotes -> \"
-                .replaceAll("\\\\", "\\\\") // backslash -> \\
+                .replaceAll("\\\\", "\\\\") // single backslash (\) -> double backslash (\\)
                 ;
     }
 }

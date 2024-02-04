@@ -298,10 +298,12 @@ public final class BaseBotInternals {
 
     private void transferStdOutToBotIntent() {
         if (recordedStdOut != null) {
-            botIntent.setStdOut(recordedStdOut.readNext());
+            String output = recordedStdOut.readNext();
+            botIntent.setStdOut(output.isEmpty() ? null : output);
         }
         if (recordedStdErr != null) {
-            botIntent.setStdErr(recordedStdErr.readNext());
+            String error = recordedStdErr.readNext();
+            botIntent.setStdErr(error.isEmpty() ? null : error);
         }
     }
 

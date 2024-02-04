@@ -25,7 +25,7 @@ public class RecordingTextWriter : TextWriter
     public string ReadNext()
     {
         var output = stringWriter.ToString();
-        output = output.Length > 0 ? HttpUtility.JavaScriptStringEncode(output.Replace("\r", "")) : null;
+        output = HttpUtility.JavaScriptStringEncode(output);
 
         stringWriter.GetStringBuilder().Clear();
 

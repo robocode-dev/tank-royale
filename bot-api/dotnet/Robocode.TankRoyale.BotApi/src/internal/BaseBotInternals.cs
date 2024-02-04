@@ -267,11 +267,13 @@ public sealed class BaseBotInternals
     {
         if (recordingStdOut != null)
         {
-            BotIntent.StdOut = recordingStdOut.ReadNext();
+            var output = recordingStdOut.ReadNext();
+            BotIntent.StdOut = output.Length > 0 ? output : null;
         }
         if (recordingStdErr != null)
         {
-            BotIntent.StdErr = recordingStdErr.ReadNext();
+            var error = recordingStdErr.ReadNext();
+            BotIntent.StdErr = error.Length > 0 ? error : null;
         }
     }
 
