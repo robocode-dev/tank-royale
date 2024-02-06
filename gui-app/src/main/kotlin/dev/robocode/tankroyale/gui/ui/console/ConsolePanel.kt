@@ -58,11 +58,12 @@ open class ConsolePanel : JPanel() {
         val ansi = AnsiTextBuilder()
 
         turnNumber?.let {
-            ansi.cyan().text(turnNumber - 1).defaultColor().text(' ')
+            ansi.newline().cyan().text(turnNumber - 1).defaultColor().text(' ')
         }
         ansi.text(
             text.replace("\\n", "\n")
                 .replace("\\t", "\t")
+                .trim() // avoid turn numbers to be written in the middle of the output text (annoying)
         )
 
         EDT.enqueue {

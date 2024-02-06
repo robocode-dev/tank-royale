@@ -1,3 +1,11 @@
+## 📦 0.22.2
+
+#### 🪲 Bug Fixes
+
+- GUI:
+    - Bot Console: Turn numbers was sometimes written in the middle of the output, and newlines could occur in the wrong
+      places.
+
 ## 📦 0.22.1 - GUI improvements for Linux - 07-Jan-2024
 
 #### 🪲 Bug Fixes
