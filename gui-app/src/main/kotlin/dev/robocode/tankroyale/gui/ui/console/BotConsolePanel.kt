@@ -16,7 +16,7 @@ class BotConsolePanel(bot: Participant) : BaseBotConsolePanel(bot) {
     private fun subscribeToEvents() {
         ClientEvents.apply {
             onStdOutputUpdated.subscribe(this@BotConsolePanel) { tickEvent ->
-                updateBotState(tickEvent.roundNumber, tickEvent.turnNumber)
+                updateStandardOutput(tickEvent.roundNumber, tickEvent.turnNumber)
             }
             onTickEvent.subscribe(this@BotConsolePanel) { tickEvent ->
                 if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
@@ -41,7 +41,7 @@ class BotConsolePanel(bot: Participant) : BaseBotConsolePanel(bot) {
         }
     }
 
-    private fun updateBotState(roundNumber: Int, turnNumber: Int) {
+    private fun updateStandardOutput(roundNumber: Int, turnNumber: Int) {
         Client.getStandardOutput(bot.id)?.get(roundNumber)?.get(turnNumber)
             ?.let { output -> append(output, turnNumber) }
 
