@@ -276,14 +276,14 @@ object Client {
         tickEvent.apply {
             botStates.forEach { botState ->
                 val id = botState.id
-                botState.stdOut?.let { updateOutput(savedStdOutput, id, roundNumber, turnNumber, it) }
-                botState.stdErr?.let { updateOutput(savedStdError, id, roundNumber, turnNumber, it) }
+                botState.stdOut?.let { updateStandardOutput(savedStdOutput, id, roundNumber, turnNumber, it) }
+                botState.stdErr?.let { updateStandardOutput(savedStdError, id, roundNumber, turnNumber, it) }
             }
             ClientEvents.onStdOutputUpdated.fire(tickEvent)
         }
     }
 
-    private fun updateOutput(
+    private fun updateStandardOutput(
         stdOutputMaps: MutableMap<Int /* BotId */, MutableMap<Int /* round */, MutableMap<Int /* turn */, String>>>,
         id: Int, round: Int, turn: Int, output: String
     ) {
