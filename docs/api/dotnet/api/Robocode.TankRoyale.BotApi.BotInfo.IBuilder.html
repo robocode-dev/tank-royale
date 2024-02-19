@@ -12,7 +12,7 @@
  ">
     
       <link rel="shortcut icon" href="../favicon.ico">
-      <link rel="stylesheet" href="../styles/docfx.vendor.css">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
       <link rel="stylesheet" href="../styles/docfx.css">
       <link rel="stylesheet" href="../styles/main.css">
       <meta property="docfx:navrel" content="../toc.html">
@@ -70,13 +70,14 @@
             <article class="content wrap" id="_content" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder">
 
 
+
   <h1 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder" class="text-break">Interface BotInfo.IBuilder
 </h1>
   <div class="markdown level0 summary"><p>Builder interface for providing a builder for building <a class="xref" href="Robocode.TankRoyale.BotApi.BotInfo.html">BotInfo</a> objects, and which supports method
 chaining.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
-  <h6><strong>Namespace</strong>: <span class="xref">Robocode</span>.<span class="xref">TankRoyale</span>.<a class="xref" href="Robocode.TankRoyale.BotApi.html">BotApi</a></h6>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Robocode.html">Robocode</a>.<a class="xref" href="Robocode.TankRoyale.html">TankRoyale</a>.<a class="xref" href="Robocode.TankRoyale.BotApi.html">BotApi</a></h6>
   <h6><strong>Assembly</strong>: Robocode.TankRoyale.BotApi.dll</h6>
   <h5 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_syntax">Syntax</h5>
   <div class="codewrapper">
@@ -86,7 +87,7 @@ chaining.</p>
 </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddAuthor_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddAuthor_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L517">View Source</a>
@@ -94,8 +95,8 @@ chaining.</p>
   <a id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddAuthor_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddAuthor_System_String_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddAuthor(System.String)">AddAuthor(string)</h4>
   <div class="markdown level1 summary"><p>Adds an author of the bot (required).</p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxAuthorLength"></inheritdoc></p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfAuthors"></inheritdoc></p>
+<p>The maximum number of characters accepted for an author name is 20.</p>
+<p>The maximum number of authors accepted is 5.</p>
 <p>See <a class="xref" href="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetAuthors_System_Collections_Generic_IEnumerable_System_String__">SetAuthors(IEnumerable&lt;string&gt;)</a> for more details.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -104,7 +105,7 @@ chaining.</p>
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder AddAuthor(string author)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -114,7 +115,7 @@ chaining.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">string</span></td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td><span class="parametername">author</span></td>
         <td><p>The name of an author to add.</p>
 </td>
@@ -122,7 +123,7 @@ chaining.</p>
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -143,7 +144,7 @@ chaining.</p>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddCountryCode_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddCountryCode_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L575">View Source</a>
@@ -151,7 +152,7 @@ chaining.</p>
   <a id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddCountryCode_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddCountryCode_System_String_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddCountryCode(System.String)">AddCountryCode(string)</h4>
   <div class="markdown level1 summary"><p>Adds a country code for the bot (optional). See <a class="xref" href="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetCountryCodes_System_Collections_Generic_IEnumerable_System_String__">SetCountryCodes(IEnumerable&lt;string&gt;)</a> for more details.</p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfCountryCodes"></inheritdoc></p>
+<p>The maximum number of country codes accepted is 5.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -159,7 +160,7 @@ chaining.</p>
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder AddCountryCode(string countryCode)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -169,7 +170,7 @@ chaining.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">string</span></td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td><span class="parametername">countryCode</span></td>
         <td><p>The country code to add.</p>
 </td>
@@ -177,7 +178,7 @@ chaining.</p>
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -198,7 +199,7 @@ chaining.</p>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddGameType_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddGameType_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L626">View Source</a>
@@ -207,8 +208,8 @@ chaining.</p>
   <h4 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddGameType_System_String_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.AddGameType(System.String)">AddGameType(string)</h4>
   <div class="markdown level1 summary"><p>Adds a game type that this bot is capable of participating in (required).
 See <a class="xref" href="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetGameTypes_System_Collections_Generic_ISet_System_String__">SetGameTypes(ISet&lt;string&gt;)</a> for more details.</p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfGameTypes"></inheritdoc></p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxGameTypeLength"></inheritdoc></p>
+<p>The maximum number of game types accepted is 10.</p>
+<p>The maximum number of characters accepted for a game type is 20.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -216,7 +217,7 @@ See <a class="xref" href="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Roboc
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder AddGameType(string gameType)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -226,7 +227,7 @@ See <a class="xref" href="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Roboc
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">string</span></td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td><span class="parametername">gameType</span></td>
         <td><p>A game type that the bot is capable of participating in.</p>
 </td>
@@ -234,7 +235,7 @@ See <a class="xref" href="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Roboc
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -250,7 +251,7 @@ See <a class="xref" href="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Roboc
     </tbody>
   </table>
   <h5 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_AddGameType_System_String__examples">Examples</h5>
-  <pre><code>BotInfo.Builder()
+  <pre><code class="lang-csharp">BotInfo.Builder()
     .AddGameType(GameType.Classic)
     .AddGameType(GameType.Melee)
     ...</code></pre>
@@ -261,7 +262,7 @@ See <a class="xref" href="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.html#Roboc
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_Build.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Build%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_Build.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Build%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L462">View Source</a>
@@ -277,7 +278,7 @@ This method is typically the last method to call on the builder in order to extr
     <pre><code class="lang-csharp hljs">BotInfo Build()</code></pre>
   </div>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -294,7 +295,7 @@ This method is typically the last method to call on the builder in order to extr
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_Copy_Robocode_TankRoyale_BotApi_BotInfo_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Copy(Robocode.TankRoyale.BotApi.BotInfo)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_Copy_Robocode_TankRoyale_BotApi_BotInfo_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.Copy(Robocode.TankRoyale.BotApi.BotInfo)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L469">View Source</a>
@@ -309,7 +310,7 @@ This method is typically the last method to call on the builder in order to extr
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder Copy(BotInfo botInfo)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -327,7 +328,7 @@ This method is typically the last method to call on the builder in order to extr
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -344,7 +345,7 @@ This method is typically the last method to call on the builder in order to extr
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetAuthors_System_Collections_Generic_IEnumerable_System_String__.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable%7BSystem.String%7D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetAuthors_System_Collections_Generic_IEnumerable_System_String__.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable%7BSystem.String%7D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L503">View Source</a>
@@ -352,8 +353,8 @@ This method is typically the last method to call on the builder in order to extr
   <a id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetAuthors_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetAuthors_System_Collections_Generic_IEnumerable_System_String__" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetAuthors(System.Collections.Generic.IEnumerable{System.String})">SetAuthors(IEnumerable&lt;string&gt;)</h4>
   <div class="markdown level1 summary"><p>Sets the names(s) of the author(s) of the bot (required).</p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxAuthorLength"></inheritdoc></p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfAuthors"></inheritdoc></p>
+<p>The maximum number of characters accepted for an author name is 20.</p>
+<p>The maximum number of authors accepted is 5.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -361,7 +362,7 @@ This method is typically the last method to call on the builder in order to extr
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder SetAuthors(IEnumerable&lt;string&gt; authors)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -371,7 +372,7 @@ This method is typically the last method to call on the builder in order to extr
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.IEnumerable&lt;T&gt;</span>&lt;<span class="xref">string</span>&gt;</td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
         <td><span class="parametername">authors</span></td>
         <td><p>A list containing the names(s) of the author(s). A <code>null</code> removes all authors.</p>
 </td>
@@ -379,7 +380,7 @@ This method is typically the last method to call on the builder in order to extr
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -403,7 +404,7 @@ This method is typically the last method to call on the builder in order to extr
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetCountryCodes_System_Collections_Generic_IEnumerable_System_String__.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable%7BSystem.String%7D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetCountryCodes_System_Collections_Generic_IEnumerable_System_String__.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable%7BSystem.String%7D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L565">View Source</a>
@@ -412,7 +413,7 @@ This method is typically the last method to call on the builder in order to extr
   <h4 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetCountryCodes_System_Collections_Generic_IEnumerable_System_String__" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetCountryCodes(System.Collections.Generic.IEnumerable{System.String})">SetCountryCodes(IEnumerable&lt;string&gt;)</h4>
   <div class="markdown level1 summary"><p>Sets the country codes for the bot (optional).</p>
 <p>The maximum length of each country code is 2 (alpha-2) from the ISO 3166 international standard.</p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfCountryCodes"></inheritdoc></p>
+<p>The maximum number of country codes accepted is 5.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -420,7 +421,7 @@ This method is typically the last method to call on the builder in order to extr
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder SetCountryCodes(IEnumerable&lt;string&gt; countryCodes)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -430,7 +431,7 @@ This method is typically the last method to call on the builder in order to extr
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.IEnumerable&lt;T&gt;</span>&lt;<span class="xref">string</span>&gt;</td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
         <td><span class="parametername">countryCodes</span></td>
         <td><p>A list containing the country codes. A <code>null</code> removes all country codes.</p>
 </td>
@@ -438,7 +439,7 @@ This method is typically the last method to call on the builder in order to extr
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -462,7 +463,7 @@ This method is typically the last method to call on the builder in order to extr
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetDescription_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetDescription_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetDescription(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L535">View Source</a>
@@ -472,7 +473,7 @@ This method is typically the last method to call on the builder in order to extr
   <div class="markdown level1 summary"><p>Sets a short description of the bot (optional).</p>
 <p>Line-breaks (line-feed / new-line character) are supported, but only expect up to 3 lines to be displayed on
 a UI.</p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxDescriptionLength"></inheritdoc></p>
+<p>The maximum number of characters accepted for the description is 250.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -480,7 +481,7 @@ a UI.</p>
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder SetDescription(string description)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -490,7 +491,7 @@ a UI.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">string</span></td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td><span class="parametername">description</span></td>
         <td><p>A short description of the bot.</p>
 </td>
@@ -498,7 +499,7 @@ a UI.</p>
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -514,12 +515,12 @@ a UI.</p>
     </tbody>
   </table>
   <h5 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetDescription_System_String__examples">Examples</h5>
-  <pre><code>&quot;The rampage bot will try to ram bots that are very close.\n
-Sneaks around the corners and shoot at the bots that come too near.&quot;</code></pre>
+  <pre><code class="lang-csharp">"The rampage bot will try to ram bots that are very close.\n
+Sneaks around the corners and shoot at the bots that come too near."</code></pre>
 
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetGameTypes_System_Collections_Generic_ISet_System_String__.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ISet%7BSystem.String%7D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetGameTypes_System_Collections_Generic_ISet_System_String__.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetGameTypes(System.Collections.Generic.ISet%7BSystem.String%7D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L605">View Source</a>
@@ -532,8 +533,8 @@ are listed here</a></p>
 <p>Note that more game types might be added in the future.</p>
 <p>The <a class="xref" href="Robocode.TankRoyale.BotApi.GameType.html">GameType</a> class contains the string for the current predefined game types, which can be used
 when setting the game types of this method.</p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxNumberOfGameTypes"></inheritdoc></p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxGameTypeLength"></inheritdoc></p>
+<p>The maximum number of game types accepted is 10.</p>
+<p>The maximum number of characters accepted for a game type is 20.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -541,7 +542,7 @@ when setting the game types of this method.</p>
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder SetGameTypes(ISet&lt;string&gt; gameTypes)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -551,7 +552,7 @@ when setting the game types of this method.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Collections.Generic.ISet&lt;T&gt;</span>&lt;<span class="xref">string</span>&gt;</td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.iset-1">ISet</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
         <td><span class="parametername">gameTypes</span></td>
         <td><p>A list of game types that the bot is capable of participating in. A <code>null</code>
 removes all game types.</p>
@@ -560,7 +561,7 @@ removes all game types.</p>
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -579,8 +580,8 @@ removes all game types.</p>
   <p>Example of game type: &quot;classic&quot;</p>
 
   <p>Example of usage:</p>
-<pre><code>BotInfo.Builder()
-    .SetGameTypes(new List { GameType.Classic, GameType.Melee, &quot;future-type&quot; })
+<pre><code class="lang-csharp">BotInfo.Builder()
+    .SetGameTypes(new List { GameType.Classic, GameType.Melee, "future-type" })
     ...</code></pre>
 
   <h5 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetGameTypes_System_Collections_Generic_ISet_System_String___seealso">See Also</h5>
@@ -589,7 +590,7 @@ removes all game types.</p>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetHomepage_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetHomepage_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L545">View Source</a>
@@ -597,7 +598,7 @@ removes all game types.</p>
   <a id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetHomepage_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetHomepage_System_String_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetHomepage(System.String)">SetHomepage(string)</h4>
   <div class="markdown level1 summary"><p>Sets a link to the homepage for the bot (optional).</p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxHomepageLength"></inheritdoc></p>
+<p>The maximum number of characters accepted for the link to the homepage is 150.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -605,7 +606,7 @@ removes all game types.</p>
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder SetHomepage(string homepage)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -615,7 +616,7 @@ removes all game types.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">string</span></td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td><span class="parametername">homepage</span></td>
         <td><p>A link to a homepage for the bot.</p>
 </td>
@@ -623,7 +624,7 @@ removes all game types.</p>
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -643,7 +644,7 @@ removes all game types.</p>
 
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetInitialPosition_Robocode_TankRoyale_BotApi_InitialPosition_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetInitialPosition(Robocode.TankRoyale.BotApi.InitialPosition)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetInitialPosition_Robocode_TankRoyale_BotApi_InitialPosition_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetInitialPosition(Robocode.TankRoyale.BotApi.InitialPosition)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L656">View Source</a>
@@ -659,7 +660,7 @@ removes all game types.</p>
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder SetInitialPosition(InitialPosition initialPosition)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -677,7 +678,7 @@ removes all game types.</p>
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -694,7 +695,7 @@ removes all game types.</p>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetName_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetName_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L479">View Source</a>
@@ -702,7 +703,7 @@ removes all game types.</p>
   <a id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetName_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetName_System_String_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetName(System.String)">SetName(string)</h4>
   <div class="markdown level1 summary"><p>Sets the bot name (required).</p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxNameLength"></inheritdoc></p>
+<p>The maximum number of characters accepted for the name is 30.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -710,7 +711,7 @@ removes all game types.</p>
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder SetName(string name)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -720,7 +721,7 @@ removes all game types.</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">string</span></td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td><span class="parametername">name</span></td>
         <td><p>The name of the bot.</p>
 </td>
@@ -728,7 +729,7 @@ removes all game types.</p>
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -748,7 +749,7 @@ removes all game types.</p>
 
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetPlatform_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetPlatform_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetPlatform(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L638">View Source</a>
@@ -758,7 +759,7 @@ removes all game types.</p>
   <div class="markdown level1 summary"><p>Sets the name of the platform that this bot is build for (optional).</p>
 <p>If the platform is set to <code>null</code> or a blank string, then this default string will be used based on this
 code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAttribute&gt;()?.FrameworkName</code>.</p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxPlatformLength"></inheritdoc></p>
+<p>The maximum number of characters accepted for a game type is 20.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -766,7 +767,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder SetPlatform(string platform)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -776,7 +777,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">string</span></td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td><span class="parametername">platform</span></td>
         <td><p>The name of the platform that this bot is build for.</p>
 </td>
@@ -784,7 +785,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -801,7 +802,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetProgrammingLang_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetProgrammingLang_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L647">View Source</a>
@@ -809,7 +810,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
   <a id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetProgrammingLang_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetProgrammingLang_System_String_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetProgrammingLang(System.String)">SetProgrammingLang(string)</h4>
   <div class="markdown level1 summary"><p>Sets the name of the programming language used for developing this bot (optional)</p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxProgrammingLangLength"></inheritdoc></p>
+<p>The maximum number of characters accepted for the programming language name is 30.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -817,7 +818,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder SetProgrammingLang(string programmingLang)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -827,7 +828,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">string</span></td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td><span class="parametername">programmingLang</span></td>
         <td><p>The name of the programming language used for developing this bot.</p>
 </td>
@@ -835,7 +836,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -852,7 +853,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetVersion_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetVersion_System_String_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion(System.String)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
   </span>
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L489">View Source</a>
@@ -860,7 +861,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
   <a id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetVersion_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetVersion_System_String_" data-uid="Robocode.TankRoyale.BotApi.BotInfo.IBuilder.SetVersion(System.String)">SetVersion(string)</h4>
   <div class="markdown level1 summary"><p>Sets the bot version (required).</p>
-<p><inheritdoc cref="F:Robocode.TankRoyale.BotApi.BotInfo.MaxVersionLength"></inheritdoc></p>
+<p>The maximum number of characters accepted for the version is 20.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -868,7 +869,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
     <pre><code class="lang-csharp hljs">BotInfo.IBuilder SetVersion(string version)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -878,7 +879,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">string</span></td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td><span class="parametername">version</span></td>
         <td><p>The version of the bot.</p>
 </td>
@@ -886,7 +887,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
+  <table class="table table-bordered table-condensed">
     <thead>
       <tr>
         <th>Type</th>
@@ -904,6 +905,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
   <h5 id="Robocode_TankRoyale_BotApi_BotInfo_IBuilder_SetVersion_System_String__examples">Examples</h5>
   <p>&quot;1.0&quot;</p>
 
+
 </article>
           </div>
 
@@ -912,7 +914,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_BotInfo_IBuilder.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.BotInfo.IBuilder%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Edit this page</a>
                   </li>
                   <li>
                     <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/Robocode.TankRoyale.BotApi/src/BotInfo.cs/#L455" class="contribution-link">View Source</a>
@@ -920,7 +922,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
                 </ul>
               </div>
               <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-                <h5>In This Article</h5>
+                <h5>In this article</h5>
                 <div></div>
               </nav>
             </div>
@@ -942,7 +944,7 @@ code: <code>Assembly.GetEntryAssembly()?.GetCustomAttribute&lt;TargetFrameworkAt
       </footer>
     </div>
 
-    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
   </body>

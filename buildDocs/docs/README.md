@@ -21,7 +21,7 @@ for [Open Source development], including Robocode Tank Royale. :heart:
 </a>
 
 
-This project make use of these products for Java, Kotlin, C#, and web development:
+This project make use of these products from JetBrains for Java, Kotlin, C#, and web development:
 
 <a href="https://www.jetbrains.com/idea/">
 <img style="background: white; border: 1px solid black; vertical-align: middle" height="60" src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png" alt="IntelliJ IDEA logo.">
@@ -30,6 +30,5 @@ This project make use of these products for Java, Kotlin, C#, and web developmen
 <a href="https://www.jetbrains.com/rider/">
 <img style="background: white; border: 1px solid black; vertical-align: middle" height="60" src="https://resources.jetbrains.com/storage/products/company/brand/logos/Rider.png" alt="Rider logo.">
 </a> used for C# development
-
 
 [Open Source development]: https://www.jetbrains.com/community/opensource/?utm_campaign=opensource&utm_content=approved&utm_medium=email&utm_source=newsletter&utm_term=jblogo#support
