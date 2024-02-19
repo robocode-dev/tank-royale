@@ -55,7 +55,9 @@ open class ConsolePanel : JPanel() {
     }
 
     fun append(text: String, turnNumber: Int? = null) {
-        val trimmedDecodedText = text.replace("\\n", "\n")
+        val trimmedDecodedText = text
+            .replace("\\n", "\n")
+            .replace("\\r", "")
             .replace("\\t", "\t")
             .trim() // avoid turn numbers to be written in the middle of the output text (annoying)
 
