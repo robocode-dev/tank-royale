@@ -11,7 +11,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public final class RecordingPrintStream extends PrintStream {
 
     private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    private final PrintStream printStream = new PrintStream(byteArrayOutputStream, true, UTF_8);
+    private final PrintStream printStream = new PrintStream(byteArrayOutputStream);
 
     public RecordingPrintStream(OutputStream out) {
         super(out);
@@ -19,19 +19,33 @@ public final class RecordingPrintStream extends PrintStream {
 
     @Override
     public void write(int b) {
-        super.write(b);
-        printStream.write(b);
+        synchronized (this) {
+            super.write(b);
+            printStream.write(b);
+        }
     }
 
     @Override
     public void write(byte[] buf, int off, int len) {
-        super.write(buf, off, len);
-        printStream.write(buf, off, len);
+        synchronized (this) {
+            super.write(buf, off, len);
+            printStream.write(buf, off, len);
+        }
+    }
+
+    @Override
+    public void flush() {
+        synchronized (this) {
+            super.flush();
+            printStream.flush();
+        }
     }
 
     public String readNext() {
-        String output = JsonUtil.escaped(byteArrayOutputStream.toString(UTF_8));
-        byteArrayOutputStream.reset();
-        return output;
+        synchronized (this) {
+            String output = JsonUtil.escaped(byteArrayOutputStream.toString(UTF_8));
+            byteArrayOutputStream.reset();
+            return output;
+        }
     }
 }
