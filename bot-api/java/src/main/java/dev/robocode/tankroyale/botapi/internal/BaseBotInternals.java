@@ -169,8 +169,8 @@ public final class BaseBotInternals {
         recordedStdOut = new RecordingPrintStream(System.out);
         recordedStdErr = new RecordingPrintStream(System.err);
 
-        System.setOut(recordedStdOut.getOutput());
-        System.setErr(recordedStdErr.getOutput());
+        System.setOut(recordedStdOut);
+        System.setErr(recordedStdErr);
     }
 
     private void subscribeToEvents() {
@@ -291,18 +291,20 @@ public final class BaseBotInternals {
     }
 
     private void sendIntent() {
-        transferStdOutToBotIntent();
-        socket.sendText(gson.toJson(botIntent), true);
-        botIntent.getTeamMessages().clear();
+        synchronized (this) {
+            transferStdOutToBotIntent();
+            socket.sendText(gson.toJson(botIntent), true);
+            botIntent.getTeamMessages().clear();
+        }
     }
 
     private void transferStdOutToBotIntent() {
         if (recordedStdOut != null) {
-            String output = recordedStdOut.flushAndReturnLastString();
+            String output = recordedStdOut.readNext();
             botIntent.setStdOut(output);
         }
         if (recordedStdErr != null) {
-            String error = recordedStdErr.flushAndReturnLastString();
+            String error = recordedStdErr.readNext();
             botIntent.setStdErr(error);
         }
     }

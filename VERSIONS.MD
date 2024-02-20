@@ -2,8 +2,6 @@
 
 #### 🪲 Bug Fixes
 
-- Bot API:
-    - Entire lines output to `System.out` and `System.err` were sometimes missing in the bot console.
 - GUI:
     - Bot Console: Turn numbers was sometimes written in the middle of the output, and newlines could occur in the wrong
       places.
