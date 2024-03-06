@@ -44,7 +44,7 @@ class ModelUpdater(
     private val accumulatedScoreCalculator = AccumulatedScoreCalculator()
 
     /** Map over all bots */
-    private val botsMap = mutableMapOf<BotId, MutableBot>()
+    internal val botsMap = mutableMapOf<BotId, MutableBot>()
 
     /** Map over copied bots from previous turn */
     private val botsCopies = mutableMapOf<BotId, MutableBot>()
@@ -62,7 +62,7 @@ class ModelUpdater(
     private var round = MutableRound(0)
 
     /** Turn record */
-    val turn = MutableTurn(0)
+    internal val turn = MutableTurn(0)
 
     /** The id for the next bullet that comes into existence */
     private var nextBulletId = 0
@@ -71,10 +71,10 @@ class ModelUpdater(
     private var inactivityCounter = 0
 
     /** The accumulated results ordered with higher total scores first */
-    fun getResults() = accumulatedScoreCalculator.getScores()
+    internal fun getResults() = accumulatedScoreCalculator.getScores()
 
     /** The number of rounds played so far */
-    val numberOfRounds: Int get() = gameState.rounds.size
+    internal val numberOfRounds: Int get() = gameState.rounds.size
 
     /**
      * Updates game state.

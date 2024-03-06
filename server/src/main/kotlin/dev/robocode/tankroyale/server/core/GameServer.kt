@@ -166,6 +166,13 @@ class GameServer(
             myId = botId.id
             this.teammateIds = teammateIds.map { it.id }
             this.gameSetup = gameSetup
+
+            val botsMap: MutableMap<BotId, MutableBot> = modelUpdater?.botsMap!!
+            botsMap[botId]?.let {
+                startX = it.x
+                startY = it.y
+                startDirection = it.direction
+            }
         }
     }
 
