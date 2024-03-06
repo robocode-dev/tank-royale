@@ -29,7 +29,9 @@ class GameServer(
     botSecrets: Set<String>
 ) {
     /** Connection handler for observers and bots */
-    private val connectionHandler: ConnectionHandler
+    /** Initializes connection handler */
+    private val connectionHandler: ConnectionHandler =
+        ConnectionHandler(ServerSetup(gameTypes), GameServerConnectionListener(this), controllerSecrets, botSecrets)
 
     /** Current server state */
     private var serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
@@ -76,12 +78,6 @@ class GameServer(
     private var botListUpdateMessage = BotListUpdate().apply {
         this.type = Message.Type.BOT_LIST_UPDATE
         this.bots = listOf<BotInfo>()
-    }
-
-    init {
-        /** Initializes connection handler */
-        connectionHandler =
-            ConnectionHandler(ServerSetup(gameTypes), GameServerConnectionListener(this), controllerSecrets, botSecrets)
     }
 
     /** Starts this server */
@@ -435,7 +431,7 @@ class GameServer(
                     broadcastRoundStartedToAll(roundNumber)
                 } else { // not turn 1
                     // Send SkippedTurn, except in turn 1
-                    sendSkippedTurnToParticipants(turnNumber)
+                    checkForSkippedTurns(turnNumber)
 
                     // Clear bot intents after skipped turns have been handled, but BEFORE broadcasting tick event
                     botIntents.clear()
@@ -520,7 +516,7 @@ class GameServer(
         broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(roundNumber, turn, participantMap))
     }
 
-    private fun sendSkippedTurnToParticipants(currentTurnNumber: Int) {
+    private fun checkForSkippedTurns(currentTurnNumber: Int) {
         val botsSkippingTurn = getParticipantsThatSkippedTurn()
 
         if (botsSkippingTurn.isNotEmpty()) {
