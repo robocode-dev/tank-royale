@@ -7,6 +7,15 @@ properties:
   myId:
     description: My id is an unique id of this bot
     type: integer
+  startX:
+    description: Start x coordinate
+    type: number
+  startY:
+    description: Start x coordinate
+    type: number
+  startDirection:
+    description: Direction of the body, gun, and radar in degrees
+    type: number
   teammateIds:
     description: The IDs of the teammates in the team that this bot is a member of
     type: array
