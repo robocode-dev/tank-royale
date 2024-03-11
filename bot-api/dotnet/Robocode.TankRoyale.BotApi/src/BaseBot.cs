@@ -131,34 +131,34 @@ public abstract class BaseBot : IBaseBot
     public int TimeLeft => __baseBotInternals.TimeLeft;
 
     /// <inheritdoc/>
-    public int RoundNumber => __baseBotInternals.CurrentTick.RoundNumber;
+    public int RoundNumber => __baseBotInternals.CurrentTickOrThrow.RoundNumber;
 
     /// <inheritdoc/>
-    public int TurnNumber => __baseBotInternals.CurrentTick.TurnNumber;
+    public int TurnNumber => __baseBotInternals.CurrentTickOrThrow.TurnNumber;
 
     /// <inheritdoc/>
-    public int EnemyCount => __baseBotInternals.CurrentTick.EnemyCount;
+    public int EnemyCount => __baseBotInternals.CurrentTickOrThrow.EnemyCount;
 
     /// <inheritdoc/>
-    public double Energy => __baseBotInternals.CurrentTick.BotState.Energy;
+    public double Energy => __baseBotInternals.CurrentTickOrThrow.BotState.Energy;
 
     /// <inheritdoc/>
     public bool IsDisabled => Energy == 0;
 
     /// <inheritdoc/>
-    public double X => __baseBotInternals.CurrentTick.BotState.X;
+    public double X => __baseBotInternals.CurrentTickOrThrow.BotState.X;
 
     /// <inheritdoc/>
-    public double Y => __baseBotInternals.CurrentTick.BotState.Y;
+    public double Y => __baseBotInternals.CurrentTickOrThrow.BotState.Y;
 
     /// <inheritdoc/>
-    public double Direction => __baseBotInternals.CurrentTick.BotState.Direction;
+    public double Direction => __baseBotInternals.CurrentTickOrThrow.BotState.Direction;
 
     /// <inheritdoc/>
-    public double GunDirection => __baseBotInternals.CurrentTick.BotState.GunDirection;
+    public double GunDirection => __baseBotInternals.CurrentTickOrThrow.BotState.GunDirection;
 
     /// <inheritdoc/>
-    public double RadarDirection => __baseBotInternals.CurrentTick.BotState.RadarDirection;
+    public double RadarDirection => __baseBotInternals.CurrentTickOrThrow.BotState.RadarDirection;
 
     /// <inheritdoc/>
     public double Speed => __baseBotInternals.Speed;

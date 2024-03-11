@@ -181,7 +181,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
     {
         foreach (var condition in baseBotInternals.Conditions.Where(condition => condition.Test()))
         {
-            AddEvent(new CustomEvent(baseBotInternals.CurrentTick.TurnNumber, condition));
+            AddEvent(new CustomEvent(baseBotInternals.CurrentTickOrThrow.TurnNumber, condition));
         }
     }
 }

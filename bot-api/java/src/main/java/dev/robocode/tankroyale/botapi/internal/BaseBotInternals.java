@@ -836,12 +836,12 @@ public final class BaseBotInternals {
             teammateIds = gameStartedEventForBot.getTeammateIds() == null ?
                     Set.of() : new HashSet<>(gameStartedEventForBot.getTeammateIds());
 
+            gameSetup = GameSetupMapper.map(gameStartedEventForBot.getGameSetup());
+
             initialPosition = new InitialPosition(
                     gameStartedEventForBot.getStartX(),
                     gameStartedEventForBot.getStartY(),
                     gameStartedEventForBot.getStartDirection());
-
-            gameSetup = GameSetupMapper.map(gameStartedEventForBot.getGameSetup());
 
             // Send ready signal
             var ready = new BotReady();

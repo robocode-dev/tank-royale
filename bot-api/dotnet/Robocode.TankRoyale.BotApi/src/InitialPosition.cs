@@ -23,7 +23,7 @@ public sealed class InitialPosition
     /// <param name="x">The x coordinate, where <c>null</c> means it is random.</param>
     /// <param name="y">The x coordinate, where <c>null</c> means it is random.</param>
     /// <param name="direction">The shared direction of the body, gun, and radar, where <c>null</c> means it is random.</param>
-    private InitialPosition(double? x, double? y, double? direction)
+    public InitialPosition(double? x, double? y, double? direction)
     {
         X = x;
         Y = y;

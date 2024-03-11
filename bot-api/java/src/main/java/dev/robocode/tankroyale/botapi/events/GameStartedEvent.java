@@ -12,7 +12,7 @@ public final class GameStartedEvent implements IEvent {
     // The id used for identifying your bot in the current battle.
     private final int myId;
 
-    // The initial position of the bot
+    // The initial position of the bot.
     private final InitialPosition initialPosition;
 
     // The game setup for the battle just started.
@@ -45,7 +45,7 @@ public final class GameStartedEvent implements IEvent {
      *
      * @return The start position of the bot.
      */
-    private InitialPosition getInitialPosition() {
+    public InitialPosition getInitialPosition() {
         return initialPosition;
     }
 
@@ -54,7 +54,7 @@ public final class GameStartedEvent implements IEvent {
      *
      * @return The game setup for the battle just started.
      */
-    private GameSetup getGameSetup() {
+    public GameSetup getGameSetup() {
         return gameSetup;
     }
 }

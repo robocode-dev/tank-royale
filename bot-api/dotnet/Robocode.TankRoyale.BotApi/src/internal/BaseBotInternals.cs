@@ -36,6 +36,8 @@ public sealed class BaseBotInternals
 
     private GameSetup gameSetup;
 
+    private InitialPosition initialPosition;
+    
     private E.TickEvent tickEvent;
     private long? ticksStart;
 
@@ -249,7 +251,7 @@ public sealed class BaseBotInternals
         if (!IsRunning)
             return;
 
-        var turnNumber = CurrentTick.TurnNumber;
+        var turnNumber = CurrentTickOrThrow.TurnNumber;
 
         DispatchEvents(turnNumber);
         SendIntent();
@@ -281,7 +283,7 @@ public sealed class BaseBotInternals
     {
         lock (nextTurnMonitor)
         {
-            while (IsRunning && turnNumber >= CurrentTick.TurnNumber)
+            while (IsRunning && turnNumber >= CurrentTickOrThrow.TurnNumber)
             {
                 try
                 {
@@ -321,7 +323,9 @@ public sealed class BaseBotInternals
 
     internal S.BotIntent BotIntent { get; } = NewBotIntent();
 
-    internal E.TickEvent CurrentTick => tickEvent ?? throw new BotException(TickNotAvailableMsg);
+    internal E.TickEvent CurrentTickOrThrow => tickEvent ?? throw new BotException(TickNotAvailableMsg);
+
+    internal E.TickEvent CurrentTickOrNull => tickEvent;
 
     private long TicksStart
     {
@@ -345,7 +349,7 @@ public sealed class BaseBotInternals
     {
         if (IsNaN(firepower)) throw new ArgumentException("'firepower' cannot be NaN");
 
-        if (baseBot.Energy < firepower || CurrentTick.BotState.GunHeat > 0)
+        if (baseBot.Energy < firepower || CurrentTickOrThrow.BotState.GunHeat > 0)
             return false; // cannot fire yet
         BotIntent.Firepower = firepower;
         return true;
@@ -824,6 +828,11 @@ public sealed class BaseBotInternals
         teammateIds = gameStartedEventForBot.TeammateIds;
         gameSetup = GameSetupMapper.Map(gameStartedEventForBot.GameSetup);
 
+        initialPosition = new InitialPosition(
+            gameStartedEventForBot.StartX,
+            gameStartedEventForBot.StartY,
+            gameStartedEventForBot.StartDirection);
+
         // Send ready signal
         var ready = new S.BotReady
         {
@@ -832,7 +841,7 @@ public sealed class BaseBotInternals
         var msg = JsonConvert.SerializeObject(ready);
         socket.SendTextMessage(msg);
 
-        BotEventHandlers.FireGameStartedEvent(new E.GameStartedEvent(MyId, gameSetup));
+        BotEventHandlers.FireGameStartedEvent(new E.GameStartedEvent(MyId, initialPosition, gameSetup));
     }
 
     private void HandleGameEnded(string json)
