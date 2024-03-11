@@ -167,7 +167,7 @@ final class EventQueue {
 
     private void addCustomEvents() {
         baseBotInternals.getConditions().stream().filter(Condition::test).forEach(condition ->
-                addEvent(new CustomEvent(baseBotInternals.getCurrentTick().getTurnNumber(), condition))
+                addEvent(new CustomEvent(baseBotInternals.getCurrentTickOrThrow().getTurnNumber(), condition))
         );
     }
 }

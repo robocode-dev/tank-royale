@@ -13,7 +13,7 @@ public final class InitialPositionMapper {
         var initialPosition = new dev.robocode.tankroyale.schema.InitialPosition();
         initialPosition.setX(source.getX());
         initialPosition.setY(source.getY());
-        initialPosition.setAngle(source.getAngle());
+        initialPosition.setDirection(source.getDirection());
         return initialPosition;
     }
 }

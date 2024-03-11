@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.botapi;
 import java.util.Objects;
 
 /**
- * Initial starting position containing a start coordinate (x,y) and angle.
+ * Initial starting position containing a start coordinate (x,y) and the shared direction of the body, gun, and radar.
  * <p>
  * The initial position is only used when debugging to request the server to let a bot start at a specific position.
  * Note that initial starting positions must be enabled at the server-side; otherwise the initial starting position
@@ -11,19 +11,19 @@ import java.util.Objects;
  */
 public final class InitialPosition {
 
-    private final Double x, y, angle;
+    private final Double x, y, direction;
 
     /**
      * Initializes a new instance of the InitialPosition class.
      *
-     * @param x     is the x coordinate, where {@code null} means it is random.
-     * @param y     is the y coordinate, where {@code null} means it is random.
-     * @param angle is the angle, where {@code null} means it is random.
+     * @param x         is the x coordinate, where {@code null} means it is random.
+     * @param y         is the y coordinate, where {@code null} means it is random.
+     * @param direction is the shared direction of the body, gun, and radar, where {@code null} means it is random.
      */
-    private InitialPosition(Double x, Double y, Double angle) {
+    public InitialPosition(Double x, Double y, Double direction) {
         this.x = x;
         this.y = y;
-        this.angle = angle;
+        this.direction = direction;
     }
 
     /**
@@ -34,7 +34,7 @@ public final class InitialPosition {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         InitialPosition that = (InitialPosition) o;
-        return Objects.equals(x, that.x) && Objects.equals(y, that.y) && Objects.equals(angle, that.angle);
+        return Objects.equals(x, that.x) && Objects.equals(y, that.y) && Objects.equals(direction, that.direction);
     }
 
     /**
@@ -42,7 +42,7 @@ public final class InitialPosition {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(x, y, angle);
+        return Objects.hash(x, y, direction);
     }
 
     /**
@@ -64,12 +64,12 @@ public final class InitialPosition {
     }
 
     /**
-     * Returns the angle;
+     * Returns the shared direction of the body, gun, and radar;
      *
-     * @return The angle or {@code null} if no angle is specified and a random value must be used.
+     * @return The direction or {@code null} if no direction is specified and a random value must be used.
      */
-    public Double getAngle() {
-        return angle;
+    public Double getDirection() {
+        return direction;
     }
 
     /**
@@ -77,11 +77,11 @@ public final class InitialPosition {
      */
     @Override
     public String toString() {
-        if (x == null && y == null && angle == null) return "";
+        if (x == null && y == null && direction == null) return "";
         var x = this.x == null ? "" : this.x;
         var y = this.y == null ? "" : this.y;
-        var angle = this.angle == null ? "" : this.angle;
-        return x + "," + y + "," + angle;
+        var direction = this.direction == null ? "" : this.direction;
+        return x + "," + y + "," + direction;
     }
 
     /**
@@ -104,11 +104,11 @@ public final class InitialPosition {
             return new InitialPosition(x, null, null);
         }
         var y = parseDouble(values[1]);
-        Double angle = null;
+        Double direction = null;
         if (values.length >= 3) {
-            angle = parseDouble(values[2]);
+            direction = parseDouble(values[2]);
         }
-        return new InitialPosition(x, y, angle);
+        return new InitialPosition(x, y, direction);
     }
 
     private static Double parseDouble(String str) {

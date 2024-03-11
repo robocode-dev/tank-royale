@@ -238,7 +238,7 @@ class GameServer(
 
         val initialPositions = participantMap.filter { it.value.initialPosition != null }.mapValues {
             val p = it.value.initialPosition
-            InitialPosition(p.x, p.y, p.angle)
+            InitialPosition(p.x, p.y, p.direction)
         }
         val droidFlags = participantMap.mapValues { it.value.isDroid == true }
 

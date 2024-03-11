@@ -18,7 +18,7 @@ class InitialPositionTest {
         var pos = InitialPosition.fromString(str);
         assertThat(pos.getX()).isEqualTo(x);
         assertThat(pos.getY()).isEqualTo(y);
-        assertThat(pos.getAngle()).isEqualTo(angle);
+        assertThat(pos.getDirection()).isEqualTo(angle);
     }
 
     @ParameterizedTest

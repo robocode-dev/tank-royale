@@ -288,7 +288,7 @@ class EnvVarsTest {
                     var pos = EnvVars.getBotInfo().getInitialPosition();
                     assertThat(pos.getX()).isEqualTo(50);
                     assertThat(pos.getY()).isEqualTo(100);
-                    assertThat(pos.getAngle()).isEqualTo(45);
+                    assertThat(pos.getDirection()).isEqualTo(45);
                 }
 
                 @Test
@@ -297,7 +297,7 @@ class EnvVarsTest {
                     var pos = EnvVars.getBotInfo().getInitialPosition();
                     assertThat(pos.getX()).isEqualTo(50);
                     assertThat(pos.getY()).isNull();
-                    assertThat(pos.getAngle()).isNull();
+                    assertThat(pos.getDirection()).isNull();
                 }
 
                 @Test
@@ -306,7 +306,7 @@ class EnvVarsTest {
                     var pos = EnvVars.getBotInfo().getInitialPosition();
                     assertThat(pos.getX()).isEqualTo(50);
                     assertThat(pos.getY()).isNull();
-                    assertThat(pos.getAngle()).isNull();
+                    assertThat(pos.getDirection()).isNull();
                 }
 
                 @Test
@@ -315,7 +315,7 @@ class EnvVarsTest {
                     var pos = EnvVars.getBotInfo().getInitialPosition();
                     assertThat(pos.getX()).isEqualTo(50);
                     assertThat(pos.getY()).isEqualTo(70);
-                    assertThat(pos.getAngle()).isNull();
+                    assertThat(pos.getDirection()).isNull();
                 }
 
                 @Test
@@ -324,7 +324,7 @@ class EnvVarsTest {
                     var pos = EnvVars.getBotInfo().getInitialPosition();
                     assertThat(pos.getX()).isEqualTo(50);
                     assertThat(pos.getY()).isEqualTo(70);
-                    assertThat(pos.getAngle()).isNull();
+                    assertThat(pos.getDirection()).isNull();
                 }
 
                 @Test
@@ -333,7 +333,7 @@ class EnvVarsTest {
                     var pos = EnvVars.getBotInfo().getInitialPosition();
                     assertThat(pos.getX()).isEqualTo(50);
                     assertThat(pos.getY()).isEqualTo(70);
-                    assertThat(pos.getAngle()).isNull();
+                    assertThat(pos.getDirection()).isNull();
                 }
 
                 @Test
@@ -342,7 +342,7 @@ class EnvVarsTest {
                     var pos = EnvVars.getBotInfo().getInitialPosition();
                     assertThat(pos.getX()).isEqualTo(50);
                     assertThat(pos.getY()).isEqualTo(70);
-                    assertThat(pos.getAngle()).isEqualTo(100);
+                    assertThat(pos.getDirection()).isEqualTo(100);
                 }
 
                 @Test
@@ -351,7 +351,7 @@ class EnvVarsTest {
                     var pos = EnvVars.getBotInfo().getInitialPosition();
                     assertThat(pos.getX()).isEqualTo(50);
                     assertThat(pos.getY()).isEqualTo(70);
-                    assertThat(pos.getAngle()).isEqualTo(100);
+                    assertThat(pos.getDirection()).isEqualTo(100);
                 }
 
                 @Test

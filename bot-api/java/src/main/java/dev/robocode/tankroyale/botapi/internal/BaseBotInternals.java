@@ -9,6 +9,7 @@ import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.BulletState;
 import dev.robocode.tankroyale.botapi.GameSetup;
 import dev.robocode.tankroyale.botapi.*;
+import dev.robocode.tankroyale.botapi.InitialPosition;
 import dev.robocode.tankroyale.botapi.events.BotDeathEvent;
 import dev.robocode.tankroyale.botapi.events.BulletFiredEvent;
 import dev.robocode.tankroyale.botapi.events.BulletHitBotEvent;
@@ -73,6 +74,8 @@ public final class BaseBotInternals {
     private Integer myId;
     private Set<Integer> teammateIds;
     private dev.robocode.tankroyale.botapi.GameSetup gameSetup;
+
+    private InitialPosition initialPosition;
 
     private TickEvent tickEvent;
     private Long tickStartNanoTime;
@@ -283,7 +286,7 @@ public final class BaseBotInternals {
         if (!isRunning())
             return;
 
-        final var turnNumber = getCurrentTick().getTurnNumber();
+        final var turnNumber = getCurrentTickOrThrow().getTurnNumber();
 
         dispatchEvents(turnNumber);
         sendIntent();
@@ -311,7 +314,7 @@ public final class BaseBotInternals {
 
     private void waitForNextTurn(int turnNumber) {
         synchronized (nextTurnMonitor) {
-            while (isRunning() && turnNumber == getCurrentTick().getTurnNumber()) {
+            while (isRunning() && turnNumber == getCurrentTickOrThrow().getTurnNumber()) {
                 try {
                     nextTurnMonitor.wait(); // Wait for next turn
                 } catch (InterruptedException ex) {
@@ -353,14 +356,22 @@ public final class BaseBotInternals {
         return gameSetup;
     }
 
+    public InitialPosition getInitialPosition() {
+        return initialPosition;
+    }
+
     public BotIntent getBotIntent() {
         return botIntent;
     }
 
-    public TickEvent getCurrentTick() {
+    public TickEvent getCurrentTickOrThrow() {
         if (tickEvent == null) {
             throw new BotException(TICK_NOT_AVAILABLE_MSG);
         }
+        return tickEvent;
+    }
+
+    public TickEvent getCurrentTickOrNull() {
         return tickEvent;
     }
 
@@ -825,6 +836,11 @@ public final class BaseBotInternals {
             teammateIds = gameStartedEventForBot.getTeammateIds() == null ?
                     Set.of() : new HashSet<>(gameStartedEventForBot.getTeammateIds());
 
+            initialPosition = new InitialPosition(
+                    gameStartedEventForBot.getStartX(),
+                    gameStartedEventForBot.getStartY(),
+                    gameStartedEventForBot.getStartDirection());
+
             gameSetup = GameSetupMapper.map(gameStartedEventForBot.getGameSetup());
 
             // Send ready signal
@@ -835,7 +851,7 @@ public final class BaseBotInternals {
             socket.sendText(msg, true);
 
             botEventHandlers.onGameStarted.publish(
-                    new GameStartedEvent(gameStartedEventForBot.getMyId(), gameSetup));
+                    new GameStartedEvent(gameStartedEventForBot.getMyId(), initialPosition, gameSetup));
         }
 
         private void handleGameEnded(JsonObject jsonMsg) {

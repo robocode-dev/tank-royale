@@ -216,7 +216,7 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final int getRoundNumber() {
-        return __baseBotInternals.getCurrentTick().getRoundNumber();
+        return __baseBotInternals.getCurrentTickOrThrow().getRoundNumber();
     }
 
     /**
@@ -224,7 +224,7 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final int getTurnNumber() {
-        return __baseBotInternals.getCurrentTick().getTurnNumber();
+        return __baseBotInternals.getCurrentTickOrThrow().getTurnNumber();
     }
 
     /**
@@ -232,7 +232,7 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final int getEnemyCount() {
-        return __baseBotInternals.getCurrentTick().getEnemyCount();
+        return __baseBotInternals.getCurrentTickOrThrow().getEnemyCount();
     }
 
     /**
@@ -240,7 +240,7 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final double getEnergy() {
-        return __baseBotInternals.getCurrentTick().getBotState().getEnergy();
+        return __baseBotInternals.getCurrentTickOrThrow().getBotState().getEnergy();
     }
 
     /**
@@ -256,7 +256,11 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final double getX() {
-        return __baseBotInternals.getCurrentTick().getBotState().getX();
+        var tick = __baseBotInternals.getCurrentTickOrNull();
+        if (tick != null) {
+            return tick.getBotState().getX();
+        }
+        return __baseBotInternals.getInitialPosition().getX();
     }
 
     /**
@@ -264,7 +268,11 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final double getY() {
-        return __baseBotInternals.getCurrentTick().getBotState().getY();
+        var tick = __baseBotInternals.getCurrentTickOrNull();
+        if (tick != null) {
+            return tick.getBotState().getY();
+        }
+        return __baseBotInternals.getInitialPosition().getY();
     }
 
     /**
@@ -272,7 +280,11 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final double getDirection() {
-        return __baseBotInternals.getCurrentTick().getBotState().getDirection();
+        var tick = __baseBotInternals.getCurrentTickOrNull();
+        if (tick != null) {
+            return tick.getBotState().getDirection();
+        }
+        return __baseBotInternals.getInitialPosition().getDirection();
     }
 
     /**
@@ -280,7 +292,11 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final double getGunDirection() {
-        return __baseBotInternals.getCurrentTick().getBotState().getGunDirection();
+        var tick = __baseBotInternals.getCurrentTickOrNull();
+        if (tick != null) {
+            return tick.getBotState().getGunDirection();
+        }
+        return __baseBotInternals.getInitialPosition().getDirection();
     }
 
     /**
@@ -288,7 +304,11 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final double getRadarDirection() {
-        return __baseBotInternals.getCurrentTick().getBotState().getRadarDirection();
+        var tick = __baseBotInternals.getCurrentTickOrNull();
+        if (tick != null) {
+            return tick.getBotState().getRadarDirection();
+        }
+        return __baseBotInternals.getInitialPosition().getDirection();
     }
 
     /**

@@ -246,7 +246,7 @@ class ModelUpdater(
         return if (initialPosition == null) {
             direction
         } else {
-            initialPosition.angle ?: direction
+            initialPosition.direction ?: direction
         }
     }
 

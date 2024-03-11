@@ -10,7 +10,7 @@ public static class InitialPositionMapper
         {
             X = source.X,
             Y = source.Y,
-            Angle = source.Angle
+            Direction = source.Direction
         };
     }
 }

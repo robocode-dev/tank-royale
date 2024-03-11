@@ -22,17 +22,17 @@ public sealed class InitialPosition
     /// </summary>
     /// <param name="x">The x coordinate, where <c>null</c> means it is random.</param>
     /// <param name="y">The x coordinate, where <c>null</c> means it is random.</param>
-    /// <param name="angle">The angle, where <c>null</c> means it is random.</param>
-    private InitialPosition(double? x, double? y, double? angle)
+    /// <param name="direction">The shared direction of the body, gun, and radar, where <c>null</c> means it is random.</param>
+    private InitialPosition(double? x, double? y, double? direction)
     {
         X = x;
         Y = y;
-        Angle = angle;
+        Direction = direction;
     }
 
     private bool Equals(InitialPosition other)
     {
-        return Nullable.Equals(X, other.X) && Nullable.Equals(Y, other.Y) && Nullable.Equals(Angle, other.Angle);
+        return Nullable.Equals(X, other.X) && Nullable.Equals(Y, other.Y) && Nullable.Equals(Direction, other.Direction);
     }
 
     public override bool Equals(object obj)
@@ -42,7 +42,7 @@ public sealed class InitialPosition
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(X, Y, Angle);
+        return HashCode.Combine(X, Y, Direction);
     }
 
     /// <summary>
@@ -56,13 +56,13 @@ public sealed class InitialPosition
     public double? Y { get; }
 
     /// <summary>
-    /// The Angle coordinate.
+    /// The shared direction of the body, gun, and radar.
     /// </summary>
-    public double? Angle { get; }
+    public double? Direction { get; }
 
     public override string ToString()
     {
-        return string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", X, Y, Angle);
+        return string.Format(CultureInfo.InvariantCulture, "{0},{1},{2}", X, Y, Direction);
     }
 
     public static InitialPosition FromString(string initialPosition)
