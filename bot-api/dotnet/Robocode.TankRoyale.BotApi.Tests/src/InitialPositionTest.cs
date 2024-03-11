@@ -22,7 +22,7 @@ public class InitialPositionTest
         var pos = InitialPosition.FromString(str);
         Assert.That(pos.X, Is.EqualTo(x).Within(Tolerance));
         Assert.That(pos.Y, Is.EqualTo(y).Within(Tolerance));
-        Assert.That(pos.Angle, Is.EqualTo(angle).Within(Tolerance));
+        Assert.That(pos.Direction, Is.EqualTo(angle).Within(Tolerance));
     }
 
     [Test]

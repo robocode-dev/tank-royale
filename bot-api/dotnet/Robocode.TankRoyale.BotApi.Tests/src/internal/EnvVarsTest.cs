@@ -258,7 +258,7 @@ class EnvVarsTest
                 var pos = EnvVars.GetBotInfo().InitialPosition;
                 Assert.That(pos.X, Is.EqualTo(50));
                 Assert.That(pos.Y, Is.EqualTo(100));
-                Assert.That(pos.Angle, Is.EqualTo(45));
+                Assert.That(pos.Direction, Is.EqualTo(45));
             }
 
             [Test]
@@ -269,7 +269,7 @@ class EnvVarsTest
                 var pos = EnvVars.GetBotInfo().InitialPosition;
                 Assert.That(pos.X, Is.EqualTo(50));
                 Assert.That(pos.Y, Is.Null);
-                Assert.That(pos.Angle, Is.Null);
+                Assert.That(pos.Direction, Is.Null);
             }
 
             [Test]
@@ -280,7 +280,7 @@ class EnvVarsTest
                 var pos = EnvVars.GetBotInfo().InitialPosition;
                 Assert.That(pos.X, Is.EqualTo(50));
                 Assert.That(pos.Y, Is.Null);
-                Assert.That(pos.Angle, Is.Null);
+                Assert.That(pos.Direction, Is.Null);
             }
 
             [Test]
@@ -291,7 +291,7 @@ class EnvVarsTest
                 var pos = EnvVars.GetBotInfo().InitialPosition;
                 Assert.That(pos.X, Is.EqualTo(50));
                 Assert.That(pos.Y, Is.EqualTo(70));
-                Assert.That(pos.Angle, Is.Null);
+                Assert.That(pos.Direction, Is.Null);
             }
 
             [Test]
@@ -302,7 +302,7 @@ class EnvVarsTest
                 var pos = EnvVars.GetBotInfo().InitialPosition;
                 Assert.That(pos.X, Is.EqualTo(50));
                 Assert.That(pos.Y, Is.EqualTo(70));
-                Assert.That(pos.Angle, Is.Null);
+                Assert.That(pos.Direction, Is.Null);
             }
 
             [Test]
@@ -313,7 +313,7 @@ class EnvVarsTest
                 var pos = EnvVars.GetBotInfo().InitialPosition;
                 Assert.That(pos.X, Is.EqualTo(50));
                 Assert.That(pos.Y, Is.EqualTo(70));
-                Assert.That(pos.Angle, Is.Null);
+                Assert.That(pos.Direction, Is.Null);
             }
 
             [Test]
@@ -324,7 +324,7 @@ class EnvVarsTest
                 var pos = EnvVars.GetBotInfo().InitialPosition;
                 Assert.That(pos.X, Is.EqualTo(50));
                 Assert.That(pos.Y, Is.EqualTo(70));
-                Assert.That(pos.Angle, Is.EqualTo(100));
+                Assert.That(pos.Direction, Is.EqualTo(100));
             }
             
             [Test]
