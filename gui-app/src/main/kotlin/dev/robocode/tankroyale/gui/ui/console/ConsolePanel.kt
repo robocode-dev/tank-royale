@@ -62,6 +62,7 @@ open class ConsolePanel : JPanel() {
         ansi.text(
             text.replace("\\n", "\n")
                 .replace("\\t", "\t")
+                .replace("\\r", "")
         )
 
         EDT.enqueue {
