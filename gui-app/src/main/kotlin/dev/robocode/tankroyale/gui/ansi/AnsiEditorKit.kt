@@ -21,7 +21,7 @@ class AnsiEditorKit(
     private val ansiColors: IAnsiColors = DefaultAnsiColors
 ) : StyledEditorKit() {
 
-    private val ansiEscCodeRegex = Regex("\u001b\\[(\\d+;?)+m")
+    private val ansiEscCodeRegex = Regex("\u001b\\[\\d+(;\\d+)*m")
 
     override fun getContentType() = "text/x-ansi"
 
