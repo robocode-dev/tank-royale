@@ -55,21 +55,15 @@ open class ConsolePanel : JPanel() {
     }
 
     fun append(text: String, turnNumber: Int? = null) {
-        val trimmedDecodedText = text
-            .replace("\\n", "\n")
-            .replace("\\r", "")
-            .replace("\\t", "\t")
-            .trim() // avoid turn numbers to be written in the middle of the output text (annoying)
-
-        if (trimmedDecodedText.isEmpty()) {
-            return
-        }
         val ansi = AnsiTextBuilder()
 
         turnNumber?.let {
-            ansi.newline().cyan().text(turnNumber - 1).defaultColor().text(' ')
+            ansi.cyan().text(turnNumber - 1).defaultColor().text(' ')
         }
-        ansi.text(trimmedDecodedText)
+        ansi.text(
+            text.replace("\\n", "\n")
+                .replace("\\t", "\t")
+        )
 
         EDT.enqueue {
             ansiEditorPane.apply {
