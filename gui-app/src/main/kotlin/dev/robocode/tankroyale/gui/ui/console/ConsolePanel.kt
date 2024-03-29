@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.gui.ansi.AnsiEditorPane
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
-import dev.robocode.tankroyale.gui.ansi.esc_code.CommandCode
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.util.Clipboard
@@ -76,15 +75,15 @@ open class ConsolePanel : JPanel() {
     }
 
     fun appendBanner(banner: String) {
-        append("${CommandCode.BRIGHT_GREEN}$banner${CommandCode.DEFAULT}\n")
+        append(AnsiTextBuilder().brightGreen().text(banner).defaultColor().newline().build())
     }
 
     fun appendInfo(info: String, turnNumber: Int? = null) {
-        append("${CommandCode.BRIGHT_GREEN}> $info${CommandCode.DEFAULT}\n", turnNumber)
+        append(AnsiTextBuilder().brightGreen().text(info).defaultColor().newline().build(), turnNumber)
     }
 
     fun appendError(error: String, turnNumber: Int? = null) {
-        append("${CommandCode.BRIGHT_RED}> $error${CommandCode.DEFAULT}\n", turnNumber)
+        append(AnsiTextBuilder().brightRed().text(error).defaultColor().newline().build(), turnNumber)
     }
 
     fun scrollToBottom() {
