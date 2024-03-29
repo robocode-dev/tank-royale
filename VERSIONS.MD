@@ -1,5 +1,10 @@
 ## 📦 0.22.2
 
+#### 🚀 Improvements
+
+- GUI:
+    - Console windows: Added support for 8-bit and 24-bit ANSI colors.
+
 #### 🪲 Bug Fixes
 
 - Bot API:
