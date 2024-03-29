@@ -1,4 +1,4 @@
-## 📦 0.22.2
+## 📦 0.22.2 - Fixing issues with Bot Console - 29-Mar-2023
 
 #### 🚀 Improvements
 
