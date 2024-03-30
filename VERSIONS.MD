@@ -1,12 +1,23 @@
 ## 📦 0.23.0
 
+#### 🚀 Improvements
+
+- Bot API:
+    - Extended the GameStartedEvent with the InitialPosition property containing the starting position and shard
+      direction of the body, gun, and radar.
+    - Renamed the Angle property of InitialPosition to Direction.
+
+## 📦 0.22.2 - Fixing issues with Bot Console - 29-Mar-2023
+
+#### 🚀 Improvements
+
+- GUI:
+    - Console windows: Added support for 8-bit and 24-bit ANSI colors.
+
 #### 🪲 Bug Fixes
 
 - Bot API:
     - Entire lines output to `System.out` and `System.err` were sometimes missing in the bot console.
-    - Extended the GameStartedEvent with the InitialPosition property containing the starting position and shard
-      direction of the body, gun, and radar.
-    - Renamed the Angle property of InitialPosition to Direction.
 - GUI:
     - Bot Console: Turn numbers was sometimes written in the middle of the output, and newlines could occur in the wrong
       places.

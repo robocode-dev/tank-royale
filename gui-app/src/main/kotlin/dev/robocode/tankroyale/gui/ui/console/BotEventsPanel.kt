@@ -1,7 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.console
 
-import dev.robocode.tankroyale.gui.ansi.AnsiEscCode
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
+import dev.robocode.tankroyale.gui.ansi.esc_code.CommandCode
+import dev.robocode.tankroyale.gui.ansi.esc_code.EscapeSequence
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.*
@@ -61,7 +62,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
             .fieldValue("turnNumber", event.turnNumber)
 
     private fun createEventNameBuilder(event: Event) =
-        AnsiTextBuilder().newline().space(numberOfIndentionSpaces).esc(AnsiEscCode.CYAN).text(
+        AnsiTextBuilder().newline().space(numberOfIndentionSpaces).esc(EscapeSequence(CommandCode.CYAN)).text(
             when (event) {
                 is BotDeathEvent -> if (bot.id == event.victimId) "DeathEvent" else "BotDeathEvent"
                 is BulletHitBotEvent -> if (bot.id == event.victimId) "HitByBulletEvent" else "BulletHitBotEvent"

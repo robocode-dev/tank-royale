@@ -1,5 +1,8 @@
 package dev.robocode.tankroyale.gui.ansi
 
+import dev.robocode.tankroyale.gui.ansi.esc_code.CommandCode
+import dev.robocode.tankroyale.gui.ansi.esc_code.EscapeSequence
+import java.awt.Color
 import javax.swing.text.MutableAttributeSet
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
@@ -10,145 +13,218 @@ import javax.swing.text.StyleConstants
 object AnsiAttributesExt {
 
     /**
-     * Updates the styling on a [MutableAttributeSet] based on an ANSI Escape Code.
+     * Updates the styling on a [MutableAttributeSet] based on an ANSI Escape Sequence.
      *
-     * @param escCode is the [AnsiEscCode] defining the style to set, e.g. [AnsiEscCode.BOLD].
-     * @param ansiColors is the [IAnsiColors] that defines the foreground and background colors to use for the styling.
+     * @param escapeSequence is the [EscapeSequence] defining the updated text style.
+     * @param ansiColors is the [IAnsiColors] that defines the color scheme for the foreground and background colors
+     * used for the styling.
      */
-    fun MutableAttributeSet.updateAnsi(escCode: AnsiEscCode, ansiColors: IAnsiColors): MutableAttributeSet {
+    fun MutableAttributeSet.updateAnsi(escapeSequence: EscapeSequence, ansiColors: IAnsiColors): MutableAttributeSet {
 
         var attributes: MutableAttributeSet = SimpleAttributeSet(this)
 
-        when (escCode) {
-            AnsiEscCode.RESET ->
+        when (escapeSequence.commandCode()) {
+            CommandCode.RESET ->
                 attributes = SimpleAttributeSet()
 
-            AnsiEscCode.BOLD ->
+            CommandCode.BOLD ->
                 StyleConstants.setBold(attributes, true)
 
-            AnsiEscCode.FAINT ->
+            CommandCode.FAINT ->
                 StyleConstants.setBold(attributes, false)
 
-            AnsiEscCode.ITALIC ->
+            CommandCode.ITALIC ->
                 StyleConstants.setItalic(attributes, true)
 
-            AnsiEscCode.UNDERLINE ->
+            CommandCode.UNDERLINE ->
                 StyleConstants.setUnderline(attributes, true)
 
-            AnsiEscCode.NORMAL ->
+            CommandCode.NORMAL ->
                 StyleConstants.setBold(attributes, false)
 
-            AnsiEscCode.NOT_BOLD ->
+            CommandCode.NOT_BOLD ->
                 StyleConstants.setBold(attributes, false)
 
-            AnsiEscCode.NOT_ITALIC ->
+            CommandCode.NOT_ITALIC ->
                 StyleConstants.setItalic(attributes, false)
 
-            AnsiEscCode.NOT_UNDERLINED ->
+            CommandCode.NOT_UNDERLINED ->
                 StyleConstants.setUnderline(attributes, false)
 
-            AnsiEscCode.BLACK ->
+            CommandCode.BLACK ->
                 StyleConstants.setForeground(attributes, ansiColors.black)
 
-            AnsiEscCode.RED ->
+            CommandCode.RED ->
                 StyleConstants.setForeground(attributes, ansiColors.red)
 
-            AnsiEscCode.GREEN ->
+            CommandCode.GREEN ->
                 StyleConstants.setForeground(attributes, ansiColors.green)
 
-            AnsiEscCode.YELLOW ->
+            CommandCode.YELLOW ->
                 StyleConstants.setForeground(attributes, ansiColors.yellow)
 
-            AnsiEscCode.BLUE ->
+            CommandCode.BLUE ->
                 StyleConstants.setForeground(attributes, ansiColors.blue)
 
-            AnsiEscCode.MAGENTA ->
+            CommandCode.MAGENTA ->
                 StyleConstants.setForeground(attributes, ansiColors.magenta)
 
-            AnsiEscCode.CYAN ->
+            CommandCode.CYAN ->
                 StyleConstants.setForeground(attributes, ansiColors.cyan)
 
-            AnsiEscCode.WHITE ->
+            CommandCode.WHITE ->
                 StyleConstants.setForeground(attributes, ansiColors.white)
 
-            AnsiEscCode.BRIGHT_BLACK ->
+            CommandCode.BRIGHT_BLACK ->
                 StyleConstants.setForeground(attributes, ansiColors.brightBlack)
 
-            AnsiEscCode.BRIGHT_RED ->
+            CommandCode.BRIGHT_RED ->
                 StyleConstants.setForeground(attributes, ansiColors.brightRed)
 
-            AnsiEscCode.BRIGHT_GREEN ->
+            CommandCode.BRIGHT_GREEN ->
                 StyleConstants.setForeground(attributes, ansiColors.brightGreen)
 
-            AnsiEscCode.BRIGHT_YELLOW ->
+            CommandCode.BRIGHT_YELLOW ->
                 StyleConstants.setForeground(attributes, ansiColors.brightYellow)
 
-            AnsiEscCode.BRIGHT_BLUE ->
+            CommandCode.BRIGHT_BLUE ->
                 StyleConstants.setForeground(attributes, ansiColors.brightBlue)
 
-            AnsiEscCode.BRIGHT_MAGENTA ->
+            CommandCode.BRIGHT_MAGENTA ->
                 StyleConstants.setForeground(attributes, ansiColors.brightMagenta)
 
-            AnsiEscCode.BRIGHT_CYAN ->
+            CommandCode.BRIGHT_CYAN ->
                 StyleConstants.setForeground(attributes, ansiColors.brightCyan)
 
-            AnsiEscCode.BRIGHT_WHITE ->
+            CommandCode.BRIGHT_WHITE ->
                 StyleConstants.setForeground(attributes, ansiColors.brightWhite)
 
-            AnsiEscCode.DEFAULT ->
+            CommandCode.DEFAULT ->
                 StyleConstants.setForeground(attributes, ansiColors.default)
 
-            AnsiEscCode.BLACK_BACKGROUND ->
+            CommandCode.BLACK_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.black)
 
-            AnsiEscCode.RED_BACKGROUND ->
+            CommandCode.RED_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.red)
 
-            AnsiEscCode.GREEN_BACKGROUND ->
+            CommandCode.GREEN_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.green)
 
-            AnsiEscCode.YELLOW_BACKGROUND ->
+            CommandCode.YELLOW_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.yellow)
 
-            AnsiEscCode.BLUE_BACKGROUND ->
+            CommandCode.BLUE_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.blue)
 
-            AnsiEscCode.MAGENTA_BACKGROUND ->
+            CommandCode.MAGENTA_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.magenta)
 
-            AnsiEscCode.CYAN_BACKGROUND ->
+            CommandCode.CYAN_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.cyan)
 
-            AnsiEscCode.WHITE_BACKGROUND ->
+            CommandCode.WHITE_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.white)
 
-            AnsiEscCode.BRIGHT_BLACK_BACKGROUND ->
+            CommandCode.BRIGHT_BLACK_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.brightBlack)
 
-            AnsiEscCode.BRIGHT_RED_BACKGROUND ->
+            CommandCode.BRIGHT_RED_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.brightRed)
 
-            AnsiEscCode.BRIGHT_GREEN_BACKGROUND ->
+            CommandCode.BRIGHT_GREEN_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.brightGreen)
 
-            AnsiEscCode.BRIGHT_YELLOW_BACKGROUND ->
+            CommandCode.BRIGHT_YELLOW_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.brightYellow)
 
-            AnsiEscCode.BRIGHT_BLUE_BACKGROUND ->
+            CommandCode.BRIGHT_BLUE_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.brightBlue)
 
-            AnsiEscCode.BRIGHT_MAGENTA_BACKGROUND ->
+            CommandCode.BRIGHT_MAGENTA_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.brightMagenta)
 
-            AnsiEscCode.BRIGHT_CYAN_BACKGROUND ->
+            CommandCode.BRIGHT_CYAN_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.brightCyan)
 
-            AnsiEscCode.BRIGHT_WHITE_BACKGROUND ->
+            CommandCode.BRIGHT_WHITE_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.brightWhite)
 
-            AnsiEscCode.DEFAULT_BACKGROUND ->
+            CommandCode.DEFAULT_BACKGROUND ->
                 StyleConstants.setBackground(attributes, ansiColors.default)
+
+            CommandCode.SET_FOREGROUND_COLOR -> {
+                setForegroundColor(attributes, escapeSequence.parameters(), ansiColors)
+            }
+
+            CommandCode.SET_BACKGROUND_COLOR -> {
+                setBackgroundColor(attributes, escapeSequence.parameters(), ansiColors)
+            }
         }
         return attributes
+    }
+
+    private fun setForegroundColor(attributes: MutableAttributeSet, parameters: List<Int>, ansiColors: IAnsiColors) {
+        if (parameters.isNotEmpty()) {
+            val mode = parameters[0]
+            if (mode == 5 && parameters.size == 2) { // set 8-bit color
+                StyleConstants.setForeground(attributes, get8BitColor(parameters[1], ansiColors))
+            } else if (mode == 2) {
+                StyleConstants.setForeground(attributes, get24BitColor(parameters))
+            }
+        }
+    }
+
+    private fun setBackgroundColor(attributes: MutableAttributeSet, parameters: List<Int>, ansiColors: IAnsiColors) {
+        if (parameters.isNotEmpty()) {
+            val mode = parameters[0]
+            if (mode == 5 && parameters.size == 2) { // set 8-bit color
+               StyleConstants.setBackground(attributes, get8BitColor(parameters[1], ansiColors))
+            } else if (mode == 2) {
+                StyleConstants.setBackground(attributes, get24BitColor(parameters))
+            }
+        }
+    }
+
+    private fun get8BitColor(colorCode: Int, ansiColors: IAnsiColors): Color {
+        if (colorCode >= 232) {
+            return getGrayScaleColor(colorCode)
+        } else if (colorCode >= 16) {
+            return get8BitColorFromColorCode(colorCode)
+        }
+        return AnsiColorIndex(ansiColors).colors[colorCode]
+    }
+
+    private fun get8BitColorFromColorCode(colorCode: Int): Color {
+        var color = colorCode - 16
+
+        val r = color / 36
+        color -= r * 36
+        val g = color / 6
+        color -= g * 6
+        val b = color
+
+        return Color(r * 0x33, g * 0x33, b * 0x33)
+    }
+
+    private fun getGrayScaleColor(colorCode: Int): Color {
+        val c = (colorCode - 232) * 10 + 13
+        return Color(c, c, c)
+    }
+
+    private fun get24BitColor(parameters: List<Int>): Color {
+        var r = 0
+        var g = 0
+        var b = 0
+        if (parameters.size >= 2) {
+            r = parameters[1]
+        }
+        if (parameters.size >= 3) {
+            g = parameters[2]
+        }
+        if (parameters.size >= 4) {
+            b = parameters[3]
+        }
+        return Color(r, g, b)
     }
 }

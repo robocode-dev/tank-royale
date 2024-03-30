@@ -1,25 +1,27 @@
 package dev.robocode.tankroyale.gui.ansi
 
 import dev.robocode.tankroyale.gui.ansi.AnsiAttributesExt.updateAnsi
+import dev.robocode.tankroyale.gui.ansi.esc_code.CommandCode
+import dev.robocode.tankroyale.gui.ansi.esc_code.EscapeSequence
 import java.awt.Color
 import java.io.*
 import javax.swing.text.*
 
 /**
- * The AnsiEditorKit is a specialized [StyledEditorKit] that is able to created [StyledDocument]s based on text
- * containing ANSI escape codes for styling the text.
+ * The AnsiEditorKit is a specialized [StyledEditorKit] that is able to create [StyledDocument]s based on text
+ * containing ANSI escape sequences for styling the text.
  * The documents are created with the Monospaced font to simulate an old-fashioned text console for displaying ANSI
  * graphics.
- *
  * @param fontSize is the monospaced font size to use across an entire document. Default is 14.
- * @param ansiColors is the [IAnsiColors] to use for the ANSI Colors. Default is the [DefaultAnsiColors].
+ * @param ansiColors is the [IAnsiColors] to use for the ANSI color schema. Default is the [DefaultAnsiColors] color
+ * scheme.
  */
 class AnsiEditorKit(
     private val fontSize: Int = 14,
     private val ansiColors: IAnsiColors = DefaultAnsiColors
 ) : StyledEditorKit() {
 
-    private val ansiEscCodeRegex = Regex("\u001b\\[(\\d+;?)+m")
+    private val ansiEscCodeRegex = Regex("\u001b\\[\\d+(;\\d+)*m")
 
     override fun getContentType() = "text/x-ansi"
 
@@ -47,7 +49,6 @@ class AnsiEditorKit(
     /**
      * Inserts an ANSI text into a specific text position of the document.
      * ANSI escape codes are converted into [AttributeSet]s to style the inserted text.
-     *
      * @param doc is a [StyledDocument] the ANSI text is inserted into.
      * @param ansiText is the ANSI text to insert into the document.
      * @param offset is the offset into the document where the text will be inserted.
@@ -61,7 +62,7 @@ class AnsiEditorKit(
 
         // Set the foreground color to the default ANSI color if no foreground color has been set previously
         if (StyleConstants.getForeground(attributes) == Color.black) { // if no foreground color is set, black is returned?!
-            attributes = attributes.updateAnsi(AnsiEscCode.DEFAULT, ansiColors)
+            attributes = attributes.updateAnsi(EscapeSequence(CommandCode.DEFAULT), ansiColors)
         }
 
         val match = ansiEscCodeRegex.find(ansiText, 0)
@@ -74,7 +75,7 @@ class AnsiEditorKit(
 
         var text = ansiText.substring(0, codeStart)
         if (text.isNotEmpty()) {
-            doc.insertString(offset, text, attributes) // no ansi codes found
+            doc.insertString(0, text, attributes) // no ansi codes found
         }
 
         ansiEscCodeRegex.findAll(ansiText, codeStart).forEach { m ->
@@ -82,7 +83,7 @@ class AnsiEditorKit(
             codeStart = m.range.first
             val codeEnd = m.range.last + 1
 
-            attributes = attributes.updateAnsi(AnsiEscCode.fromEscCode(ansiCode), ansiColors)
+            attributes = attributes.updateAnsi(EscapeSequence.parse(ansiCode), ansiColors)
 
             val endMatch = ansiEscCodeRegex.find(ansiText, codeEnd)
 

@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.gui.ansi.AnsiEditorPane
-import dev.robocode.tankroyale.gui.ansi.AnsiEscCode
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
@@ -55,21 +54,16 @@ open class ConsolePanel : JPanel() {
     }
 
     fun append(text: String, turnNumber: Int? = null) {
-        val trimmedDecodedText = text
-            .replace("\\n", "\n")
-            .replace("\\r", "")
-            .replace("\\t", "\t")
-            .trim() // avoid turn numbers to be written in the middle of the output text (annoying)
-
-        if (trimmedDecodedText.isEmpty()) {
-            return
-        }
         val ansi = AnsiTextBuilder()
 
         turnNumber?.let {
-            ansi.newline().cyan().text(turnNumber - 1).defaultColor().text(' ')
+            ansi.cyan().text(turnNumber - 1).defaultColor().text(' ')
         }
-        ansi.text(trimmedDecodedText)
+        ansi.text(
+            text.replace("\\n", "\n")
+                .replace("\\t", "\t")
+                .replace("\\r", "")
+        )
 
         EDT.enqueue {
             ansiEditorPane.apply {
@@ -82,15 +76,15 @@ open class ConsolePanel : JPanel() {
     }
 
     fun appendBanner(banner: String) {
-        append("${AnsiEscCode.BRIGHT_GREEN}$banner${AnsiEscCode.DEFAULT}\n")
+        append(AnsiTextBuilder().brightGreen().text(banner).defaultColor().newline().build())
     }
 
     fun appendInfo(info: String, turnNumber: Int? = null) {
-        append("${AnsiEscCode.BRIGHT_GREEN}> $info${AnsiEscCode.DEFAULT}\n", turnNumber)
+        append(AnsiTextBuilder().brightGreen().text(info).defaultColor().newline().build(), turnNumber)
     }
 
     fun appendError(error: String, turnNumber: Int? = null) {
-        append("${AnsiEscCode.BRIGHT_RED}> $error${AnsiEscCode.DEFAULT}\n", turnNumber)
+        append(AnsiTextBuilder().brightRed().text(error).defaultColor().newline().build(), turnNumber)
     }
 
     fun scrollToBottom() {

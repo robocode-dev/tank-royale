@@ -7,7 +7,6 @@ import java.awt.RenderingHints
 import javax.swing.JEditorPane
 import javax.swing.text.StyledDocument
 
-
 /**
  * The AnsiEditorPane is a specialized [JEditorPane] which will automatically set up an [AnsiEditorKit] and
  * [StyledDocument] for the pane.
