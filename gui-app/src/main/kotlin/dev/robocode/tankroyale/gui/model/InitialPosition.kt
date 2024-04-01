@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class InitialPosition(
-    val x: Double?, val y: Double?, val angle: Double?) {
+    val x: Double?, val y: Double?, val direction: Double?) {
 
     companion object {
         fun fromString(initialPosition: String?): InitialPosition? {
