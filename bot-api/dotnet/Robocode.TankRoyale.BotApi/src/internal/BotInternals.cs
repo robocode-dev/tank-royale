@@ -252,10 +252,7 @@ internal sealed class BotInternals : IStopResumeListener
         else
         {
             SetForward(distance);
-            do
-            {
-                bot.Go();
-            } while (IsRunning && (DistanceRemaining != 0 || bot.Speed != 0));
+            WaitFor(() => DistanceRemaining == 0 && bot.Speed == 0);
         }
     }
 
@@ -273,10 +270,7 @@ internal sealed class BotInternals : IStopResumeListener
         else
         {
             SetTurnLeft(degrees);
-            do
-            {
-                bot.Go();
-            } while (IsRunning && TurnRemaining != 0);
+            WaitFor(() => TurnRemaining == 0);
         }
     }
 
@@ -294,10 +288,7 @@ internal sealed class BotInternals : IStopResumeListener
         else
         {
             SetTurnGunLeft(degrees);
-            do
-            {
-                bot.Go();
-            } while (IsRunning && GunTurnRemaining != 0);
+            WaitFor(() => GunTurnRemaining == 0);
         }
     }
 
@@ -315,10 +306,7 @@ internal sealed class BotInternals : IStopResumeListener
         else
         {
             SetTurnRadarLeft(degrees);
-            do
-            {
-                bot.Go();
-            } while (IsRunning && RadarTurnRemaining != 0);
+            WaitFor(() => RadarTurnRemaining == 0);
         }
     }
 
@@ -335,12 +323,14 @@ internal sealed class BotInternals : IStopResumeListener
         bot.Go();
     }
 
-    internal void WaitFor(Condition condition)
+    internal delegate bool ConditionDelegate();
+    
+    internal void WaitFor(ConditionDelegate condition)
     {
         do
         {
             bot.Go();
-        } while (IsRunning && !condition.Test());
+        } while (IsRunning && !condition());
     }
 
     internal void Stop(bool overwrite)

@@ -210,6 +210,6 @@ public abstract class Bot : BaseBot, IBot
     /// <inheritdoc/>
     public void WaitFor(Condition condition)
     {
-        __botInternals.WaitFor(condition);
+        __botInternals.WaitFor(condition.Test);
     }
 }

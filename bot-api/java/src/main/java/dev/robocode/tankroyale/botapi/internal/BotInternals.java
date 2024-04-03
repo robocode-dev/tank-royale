@@ -3,6 +3,8 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.Bot;
 import dev.robocode.tankroyale.botapi.events.*;
 
+import java.util.concurrent.Callable;
+
 import static dev.robocode.tankroyale.botapi.Constants.MAX_SPEED;
 import static java.lang.Math.abs;
 
@@ -234,9 +236,7 @@ public final class BotInternals implements IStopResumeListener {
             bot.go(); // skip turn by doing nothing in the turn
         } else {
             setForward(distance);
-            do {
-                bot.go();
-            } while (isRunning() && (distanceRemaining != 0 || bot.getSpeed() != 0));
+            waitFor(() -> distanceRemaining == 0 && bot.getSpeed() == 0);
         }
     }
 
@@ -251,9 +251,7 @@ public final class BotInternals implements IStopResumeListener {
             bot.go(); // skip turn by doing nothing in the turn
         } else {
             setTurnLeft(degrees);
-            do {
-                bot.go();
-            } while (isRunning() && turnRemaining != 0);
+            waitFor(() -> turnRemaining == 0);
         }
     }
 
@@ -268,9 +266,7 @@ public final class BotInternals implements IStopResumeListener {
             bot.go(); // skip turn by doing nothing in the turn
         } else {
             setTurnGunLeft(degrees);
-            do {
-                bot.go();
-            } while (isRunning() && gunTurnRemaining != 0);
+            waitFor(() -> gunTurnRemaining == 0);
         }
     }
 
@@ -285,9 +281,7 @@ public final class BotInternals implements IStopResumeListener {
             bot.go(); // skip turn by doing nothing in the turn
         } else {
             setTurnRadarLeft(degrees);
-            do {
-                bot.go();
-            } while (isRunning() && radarTurnRemaining != 0);
+            waitFor(() -> radarTurnRemaining == 0);
         }
     }
 
@@ -303,10 +297,18 @@ public final class BotInternals implements IStopResumeListener {
         bot.go();
     }
 
-    public void waitFor(Condition condition) {
+    public void waitFor(Callable<Boolean> condition) {
         do {
             bot.go();
-        } while (isRunning() && !condition.test());
+        } while (isRunning() && !call(condition));
+    }
+
+    private boolean call(Callable<Boolean> condition) {
+        try {
+            return condition.call();
+        } catch (Exception ex) {
+            throw new RuntimeException("Condition could not be computed", ex);
+        }
     }
 
     public void stop(boolean overwrite) {
