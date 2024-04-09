@@ -19,7 +19,7 @@ import dev.robocode.tankroyale.server.model.TeamId
  * @param teamId is the team id of the participant bot, or `null` if the bot is not a member of a team.
  */
 data class ParticipantId(val botId: BotId, val teamId: TeamId? = null) {
-    val id: Int = teamId?.id ?: -botId.id
+    val id: Int = teamId?.id ?: -botId.value
 
     override fun toString() = "id:$id, BotId.id:$botId, TeamId.id:$teamId"
 }

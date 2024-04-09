@@ -163,8 +163,8 @@ class GameServer(
     ): GameStartedEventForBot {
         return GameStartedEventForBot().apply {
             type = Message.Type.GAME_STARTED_EVENT_FOR_BOT
-            myId = botId.id
-            this.teammateIds = teammateIds.map { it.id }
+            myId = botId.value
+            this.teammateIds = teammateIds.map { it.value }
             this.gameSetup = gameSetup
 
             val botsMap: MutableMap<BotId, MutableBot> = modelUpdater?.botsMap!!
@@ -210,7 +210,7 @@ class GameServer(
             val handshake = connectionHandler.getBotHandshakes()[conn]
             val botId = participantIds[conn] ?: continue
             val participant = Participant().apply {
-                id = botId.id
+                id = botId.value
                 sessionId = handshake!!.sessionId
                 name = handshake.name
                 version = handshake.version

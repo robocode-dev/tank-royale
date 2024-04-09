@@ -9,7 +9,7 @@ object BotToBotStateWithIdMapper {
         val botState = BotStateWithId()
         bot.apply {
             botState.isDroid = isDroid
-            botState.id = id.id
+            botState.id = id.value
             botState.sessionId = sessionId
             botState.energy = energy
             botState.x = x
