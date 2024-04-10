@@ -371,11 +371,11 @@ internal sealed class BotInternals : IStopResumeListener
 
     private void UpdateTurnRemaining()
     {
-        if (!overrideTurnRate)
-            return;
-
         var delta = bot.CalcDeltaAngle(bot.Direction, previousDirection);
         previousDirection = bot.Direction;
+
+        if (!overrideTurnRate)
+            return; // called after previous direction has been calculated and stored!
 
         if (Math.Abs(TurnRemaining) <= Math.Abs(delta))
             TurnRemaining = 0;
@@ -391,11 +391,11 @@ internal sealed class BotInternals : IStopResumeListener
 
     private void UpdateGunTurnRemaining()
     {
-        if (!overrideGunTurnRate)
-            return;
-
         var delta = bot.CalcDeltaAngle(bot.GunDirection, previousGunDirection);
         previousGunDirection = bot.GunDirection;
+
+        if (!overrideGunTurnRate)
+            return; // called after previous direction has been calculated and stored!
 
         if (Math.Abs(GunTurnRemaining) <= Math.Abs(delta))
             GunTurnRemaining = 0;
@@ -411,11 +411,11 @@ internal sealed class BotInternals : IStopResumeListener
 
     private void UpdateRadarTurnRemaining()
     {
-        if (!overrideRadarTurnRate)
-            return;
-
         var delta = bot.CalcDeltaAngle(bot.RadarDirection, previousRadarDirection);
         previousRadarDirection = bot.RadarDirection;
+
+        if (!overrideRadarTurnRate)
+            return; // called after previous direction has been calculated and stored!
 
         if (Math.Abs(RadarTurnRemaining) <= Math.Abs(delta))
             RadarTurnRemaining = 0;

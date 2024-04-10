@@ -1,11 +1,17 @@
 ## 📦 0.23.0
 
+#### 🪲 Bug Fixes
+
+- Bot API:
+    - #80: Fixed a major bug causing the body, gun, and radar to move in a wrong angle, which could be seen with
+      the Walls sample bot.
+
 #### 🚀 Improvements
 
 - Bot API:
     - Extended the GameStartedEvent with the InitialPosition property containing the starting position and shard
       direction of the body, gun, and radar.
-    - Renamed the Angle property of InitialPosition to Direction.
+    - Renamed the "Angle" property of InitialPosition to "Direction".
 
 ## 📦 0.22.2 - Fixing issues with Bot Console - 29-Mar-2023
 

@@ -344,11 +344,12 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private void updateTurnRemaining() {
-        if (!overrideTurnRate) {
-            return;
-        }
         double delta = bot.calcDeltaAngle(bot.getDirection(), previousDirection);
         previousDirection = bot.getDirection();
+
+        if (!overrideTurnRate) {
+            return; // called after previous direction has been calculated and stored!
+        }
 
         if (abs(turnRemaining) <= abs(delta)) {
             turnRemaining = 0;
@@ -362,11 +363,12 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private void updateGunTurnRemaining() {
-        if (!overrideGunTurnRate) {
-            return;
-        }
         double delta = bot.calcDeltaAngle(bot.getGunDirection(), previousGunDirection);
         previousGunDirection = bot.getGunDirection();
+
+        if (!overrideGunTurnRate) {
+            return; // called after previous direction has been calculated and stored!
+        }
 
         if (abs(gunTurnRemaining) <= abs(delta)) {
             gunTurnRemaining = 0;
@@ -380,11 +382,12 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private void updateRadarTurnRemaining() {
-        if (!overrideRadarTurnRate) {
-            return;
-        }
         double delta = bot.calcDeltaAngle(bot.getRadarDirection(), previousRadarDirection);
         previousRadarDirection = bot.getRadarDirection();
+
+        if (!overrideRadarTurnRate) {
+            return; // called after previous direction has been calculated and stored!
+        }
 
         if (abs(radarTurnRemaining) <= abs(delta)) {
             radarTurnRemaining = 0;
