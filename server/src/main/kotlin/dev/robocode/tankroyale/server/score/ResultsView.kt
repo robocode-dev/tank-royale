@@ -12,19 +12,17 @@ object ResultsView {
         val rows = mutableMapOf<Participant, Score>()
 
         participants.forEach { participant ->
-            run {
-                botScores.find { s -> s.participantId.botId.value == participant.id }?.let { botScore ->
-                    if (participant.teamId != null) {
-                        val team = Participant(participant.teamId, participant.teamName)
-                        val accumulatedTeamScore = rows[team]
-                        rows[team] = if (accumulatedTeamScore == null) {
-                            botScore
-                        } else {
-                            accumulatedTeamScore + botScore
-                        }
+            botScores.find { s -> s.participantId.botId.value == participant.id }?.let { botScore ->
+                if (participant.teamId != null) {
+                    val team = Participant(participant.teamId, participant.teamName)
+                    val accumulatedTeamScore = rows[team]
+                    rows[team] = if (accumulatedTeamScore == null) {
+                        botScore
                     } else {
-                        rows[Participant(participant.id, participant.name)] = botScore
+                        accumulatedTeamScore + botScore
                     }
+                } else {
+                    rows[Participant(participant.id, participant.name)] = botScore
                 }
             }
         }

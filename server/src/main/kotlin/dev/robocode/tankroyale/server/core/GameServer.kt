@@ -26,7 +26,7 @@ class GameServer(
     /** Optional controller secrets */
     controllerSecrets: Set<String>,
     /** Optional bot secrets */
-    botSecrets: Set<String>
+    botSecrets: Set<String>,
 ) {
     /** Connection handler for observers and bots */
     /** Initializes connection handler */
@@ -159,7 +159,7 @@ class GameServer(
     private fun createGameStartedEventForBot(
         botId: BotId,
         teammateIds: Set<BotId>,
-        gameSetup: GameSetup
+        gameSetup: GameSetup,
     ): GameStartedEventForBot {
         return GameStartedEventForBot().apply {
             type = Message.Type.GAME_STARTED_EVENT_FOR_BOT
@@ -320,33 +320,31 @@ class GameServer(
 
         val scores = ResultsView.getResults(modelUpdater!!.getResults(), participantMap.values)
         scores.forEach { score ->
-            run {
-                participantMap[score.participantId.botId]?.let { participant ->
+            participantMap[score.participantId.botId]?.let { participant ->
 
-                    val (id, name, version) =
-                        if (participant.teamId == null)
-                            Triple(participant.id, participant.name, participant.version)
-                        else
-                            Triple(participant.teamId, participant.teamName, participant.teamVersion)
+                val (id, name, version) =
+                    if (participant.teamId == null)
+                        Triple(participant.id, participant.name, participant.version)
+                    else
+                        Triple(participant.teamId, participant.teamName, participant.teamVersion)
 
-                    ResultsForObserver().apply {
-                        this.id = id
-                        this.name = name
-                        this.version = version
-                        this.rank = score.rank
-                        survival = score.survivalScore.roundToInt()
-                        lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
-                        bulletDamage = score.bulletDamageScore.roundToInt()
-                        bulletKillBonus = score.bulletKillBonus.toInt()
-                        ramDamage = score.ramDamageScore.roundToInt()
-                        ramKillBonus = score.ramKillBonus.roundToInt()
-                        totalScore = score.totalScore.roundToInt()
-                        firstPlaces = score.firstPlaces
-                        secondPlaces = score.secondPlaces
-                        thirdPlaces = score.thirdPlaces
+                ResultsForObserver().apply {
+                    this.id = id
+                    this.name = name
+                    this.version = version
+                    this.rank = score.rank
+                    survival = score.survivalScore.roundToInt()
+                    lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
+                    bulletDamage = score.bulletDamageScore.roundToInt()
+                    bulletKillBonus = score.bulletKillBonus.toInt()
+                    ramDamage = score.ramDamageScore.roundToInt()
+                    ramKillBonus = score.ramKillBonus.roundToInt()
+                    totalScore = score.totalScore.roundToInt()
+                    firstPlaces = score.firstPlaces
+                    secondPlaces = score.secondPlaces
+                    thirdPlaces = score.thirdPlaces
 
-                        results += this
-                    }
+                    results += this
                 }
             }
         }
