@@ -538,8 +538,12 @@ class GameServer(
     private fun getParticipantsThatSkippedTurn(): Collection<WebSocket> =
         mutableListOf<WebSocket>().apply {
             participants.forEach { participant ->
-                // Check if no intent was received from the participant during the turn
-                if (botIntents[participant] == null) this += participant
+                participantIds[participant]?.let {
+                    // Check if no intent was received from the (alive) participant during the turn
+                    if (modelUpdater?.isAlive(it) == true && botIntents[participant] == null) {
+                        this += participant
+                    }
+                }
             }
         }
 

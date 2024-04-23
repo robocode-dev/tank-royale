@@ -5,6 +5,8 @@
 - Bot API:
     - #80: Fixed a major bug causing the body, gun, and radar to move in a wrong angle, which could be seen with
       the Walls sample bot.
+- Server:
+    - #83: Bots receives skipped-turn-event events while dead.
 
 #### 🚀 Improvements
 

@@ -76,6 +76,8 @@ class ModelUpdater(
     /** The number of rounds played so far */
     internal val numberOfRounds: Int get() = gameState.rounds.size
 
+    internal fun isAlive(botId: BotId) = botsMap[botId]?.isAlive ?: false
+
     /**
      * Updates game state.
      * @param botIntents is the bot intents, which gives instructions to the game from the individual bots.
