@@ -27,6 +27,7 @@ val tankroyaleVersion: String = providers.gradleProperty("version").get()
 
 val kotlinVersion = "1.9.21"
 val junitVersion = "5.10.2"
+val kotestVersion = "5.8.1"
 
 // Check dependencies with this command:  gradle dependencyUpdates
 
@@ -55,7 +56,8 @@ dependencyResolutionManagement {
             library("system-stubs", "uk.org.webcompere:system-stubs-jupiter:2.1.6")
 
             // Kotlin testing
-            library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:5.8.1")
+            library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
+            library("kotest-datatest", "io.kotest:kotest-framework-datatest:$kotestVersion")
             library("mockk", "io.mockk:mockk:1.13.10")
 
             // plugins

@@ -34,6 +34,7 @@ dependencies {
     implementation(libs.gson)
 
     testImplementation(libs.kotest.junit5)
+    testImplementation(libs.kotest.datatest)
     testImplementation(libs.mockk)
 }
 
