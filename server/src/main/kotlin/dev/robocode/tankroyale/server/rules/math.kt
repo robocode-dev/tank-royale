@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.server.rules
 
 import kotlin.math.abs
+import kotlin.math.sign
 
 /**
  * Returns value clamped to the inclusive range of min and max.
@@ -30,20 +31,28 @@ fun calcNewBotSpeed(currentSpeed: Double, targetSpeed: Double): Double {
             (currentSpeed - step).coerceAtLeast(MAX_BACKWARD_SPEED)
         }
     } else if (currentSpeed > 0) {
-        if (delta >= 0) {
-            val step = delta.coerceAtMost(ACCELERATION)
-            (currentSpeed + step).coerceAtMost(MAX_FORWARD_SPEED)
-        } else {
-            val step = delta.coerceAtLeast(DECELERATION)
-            (currentSpeed + step).coerceAtLeast(MAX_BACKWARD_SPEED)
+        if (currentSpeed.sign == targetSpeed.sign) {
+            if (delta >= 0) {
+                val step = delta.coerceAtMost(ACCELERATION)
+                (currentSpeed + step).coerceAtMost(MAX_FORWARD_SPEED)
+            } else {
+                val step = delta.coerceAtLeast(DECELERATION)
+                (currentSpeed + step).coerceAtLeast(MAX_BACKWARD_SPEED)
+            }
+        } else { // crossing the speed of 0
+            currentSpeed + (currentSpeed * ACCELERATION / DECELERATION) - ACCELERATION
         }
     } else { // currentSpeed < 0
-        if (delta >= 0) {
-            val step = (-delta).coerceAtLeast(DECELERATION)
-            (currentSpeed - step).coerceAtMost(-MAX_BACKWARD_SPEED)
-        } else {
-            val step = (-delta).coerceAtMost(ACCELERATION)
-            (currentSpeed - step).coerceAtLeast(-MAX_FORWARD_SPEED)
+        if (currentSpeed.sign == targetSpeed.sign) {
+            if (delta >= 0) {
+                val step = (-delta).coerceAtLeast(DECELERATION)
+                (currentSpeed - step).coerceAtMost(-MAX_BACKWARD_SPEED)
+            } else {
+                val step = (-delta).coerceAtMost(ACCELERATION)
+                (currentSpeed - step).coerceAtLeast(-MAX_FORWARD_SPEED)
+            }
+        } else { // crossing the speed of 0
+            currentSpeed + (currentSpeed * ACCELERATION / DECELERATION) + ACCELERATION
         }
     }
 }
@@ -71,7 +80,8 @@ fun limitGunTurnRate(gunTurnRate: Double): Double = clamp(gunTurnRate, -MAX_GUN_
  * @param radarTurnRate is the radar turn rate to limit
  * @return limited radar turn rate.
  */
-fun limitRadarTurnRate(radarTurnRate: Double): Double = clamp(radarTurnRate, -MAX_RADAR_TURN_RATE, MAX_RADAR_TURN_RATE)
+fun limitRadarTurnRate(radarTurnRate: Double): Double =
+    clamp(radarTurnRate, -MAX_RADAR_TURN_RATE, MAX_RADAR_TURN_RATE)
 
 /**
  * Calculates the maximum driving turn rate for a specific speed.
