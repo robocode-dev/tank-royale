@@ -22,15 +22,15 @@ fun clamp(value: Double, min: Double, max: Double): Double {
  */
 fun calcNewBotSpeed(currentSpeed: Double, targetSpeed: Double): Double {
     val delta = targetSpeed - currentSpeed
-    return if(currentSpeed==0.0){
-        if(targetSpeed>=0){
+    return if (currentSpeed == 0.0) {
+        if (targetSpeed >= 0) {
             val step = delta.coerceAtMost(ACCELERATION)
             (currentSpeed + step).coerceAtMost(MAX_FORWARD_SPEED)
-        }else{
+        } else {
             val step = (-delta).coerceAtMost(ACCELERATION)
             (currentSpeed - step).coerceAtLeast(MAX_BACKWARD_SPEED)
         }
-    }else if (currentSpeed > 0) {
+    } else if (currentSpeed > 0) {
         if (delta >= 0) {
             val step = delta.coerceAtMost(ACCELERATION)
             (currentSpeed + step).coerceAtMost(MAX_FORWARD_SPEED)

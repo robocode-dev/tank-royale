@@ -5,6 +5,7 @@
 - Bot API:
     - #80: Fixed a major bug causing the body, gun, and radar to move in a wrong angle, which could be seen with
       the Walls sample bot.
+    - #85: Fixed a major bug in server.rules.math::calcNewBotSpeed. Thanks goes to Mark (mnbrandl) for fixing this! 😊
 - Server:
     - #83: Bots receives skipped-turn-event events while dead.
 
