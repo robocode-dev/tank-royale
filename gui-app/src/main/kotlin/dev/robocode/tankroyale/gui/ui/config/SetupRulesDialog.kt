@@ -213,8 +213,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             null
         }
         val valid = width != null && width in GameConstants.MIN_ARENA_SIZE..GameConstants.MAX_ARENA_SIZE
-        if (valid && width != null) {
-            gameSetup.arenaWidth = width
+        if (valid) {
+            gameSetup.arenaWidth = width!!
         } else {
             showMessage(
                 String.format(
@@ -236,8 +236,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             null
         }
         val valid = height != null && height in GameConstants.MIN_ARENA_SIZE..GameConstants.MAX_ARENA_SIZE
-        if (valid && height != null) {
-            gameSetup.arenaHeight = height
+        if (valid) {
+            gameSetup.arenaHeight = height!!
         } else {
             showMessage(
                 String.format(
@@ -259,8 +259,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             null
         }
         val valid = minNum != null && minNum in GameConstants.MIN_NUM_PARTICIPANTS..GameConstants.MAX_NUM_PARTICIPANTS
-        if (valid && minNum != null) {
-            gameSetup.minNumberOfParticipants = minNum
+        if (valid) {
+            gameSetup.minNumberOfParticipants = minNum!!
         } else {
             showMessage(
                 String.format(
@@ -291,8 +291,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         }
         val valid = minNum != null && maxNum != null &&
                 (minNum in GameConstants.MIN_NUM_PARTICIPANTS..GameConstants.MAX_NUM_PARTICIPANTS) && (maxNum in minNum..GameConstants.MAX_NUM_PARTICIPANTS)
-        if (valid && maxNum != null) {
-            gameSetup.maxNumberOfParticipants = maxNum
+        if (valid) {
+            gameSetup.maxNumberOfParticipants = maxNum!!
         } else {
             if (maxNum == null || maxNum > GameConstants.MAX_NUM_PARTICIPANTS) {
                 showMessage(
@@ -317,8 +317,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             null
         }
         val valid = numRounds != null && numRounds in 1..GameConstants.MAX_NUM_ROUNDS
-        if (valid && numRounds != null) {
-            gameSetup.numberOfRounds = numRounds
+        if (valid) {
+            gameSetup.numberOfRounds = numRounds!!
         } else {
             showMessage(String.format(Messages.get("num_rounds_range"), GameConstants.MAX_NUM_ROUNDS))
 
@@ -334,8 +334,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             null
         }
         val valid = rate != null && rate > 0 && rate <= GameConstants.MAX_GUN_COOLING
-        if (valid && rate != null) {
-            gameSetup.gunCoolingRate = rate
+        if (valid) {
+            gameSetup.gunCoolingRate = rate!!
         } else {
             showMessage(
                 String.format(
@@ -356,8 +356,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             null
         }
         val valid = turns != null && turns in 0..GameConstants.MAX_INACTIVITY_TURNS
-        if (valid && turns != null) {
-            gameSetup.maxInactivityTurns = turns
+        if (valid) {
+            gameSetup.maxInactivityTurns = turns!!
         } else {
             showMessage(
                 String.format(
@@ -400,8 +400,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             null
         }
         val valid = timeout != null && timeout >= 0
-        if (valid && timeout != null) {
-            gameSetup.turnTimeout = timeout
+        if (valid) {
+            gameSetup.turnTimeout = timeout!!
         } else {
             showMessage(
                 String.format(
