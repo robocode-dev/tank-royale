@@ -1,4 +1,4 @@
-## 📦 0.23.0
+## 📦 0.23.0 - Fixing movement bugs in bot APIs - 29-Apr-2023
 
 #### 🪲 Bug Fixes
 
@@ -12,8 +12,8 @@
 #### 🚀 Improvements
 
 - Bot API:
-    - Extended the GameStartedEvent with the InitialPosition property containing the starting position and shard
-      direction of the body, gun, and radar.
+    - Extended the GameStartedEvent with the InitialPosition property containing the starting position and shared
+      direction of the body, gun, and radar. This helped on fixing #80
     - Renamed the "Angle" property of InitialPosition to "Direction".
 
 ## 📦 0.22.2 - Fixing issues with Bot Console - 29-Mar-2023
