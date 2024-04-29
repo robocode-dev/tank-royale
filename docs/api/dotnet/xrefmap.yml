@@ -4140,15 +4140,15 @@ references:
   commentId: T:Robocode.TankRoyale.BotApi.Events.GameStartedEvent
   fullName: Robocode.TankRoyale.BotApi.Events.GameStartedEvent
   nameWithType: GameStartedEvent
-- uid: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.GameSetup)
-  name: GameStartedEvent(int, GameSetup)
-  href: api/Robocode.TankRoyale.BotApi.Events.GameStartedEvent.html#Robocode_TankRoyale_BotApi_Events_GameStartedEvent__ctor_System_Int32_Robocode_TankRoyale_BotApi_GameSetup_
-  commentId: M:Robocode.TankRoyale.BotApi.Events.GameStartedEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.GameSetup)
-  name.vb: New(Integer, GameSetup)
-  fullName: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.GameStartedEvent(int, Robocode.TankRoyale.BotApi.GameSetup)
-  fullName.vb: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.New(Integer, Robocode.TankRoyale.BotApi.GameSetup)
-  nameWithType: GameStartedEvent.GameStartedEvent(int, GameSetup)
-  nameWithType.vb: GameStartedEvent.New(Integer, GameSetup)
+- uid: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.InitialPosition,Robocode.TankRoyale.BotApi.GameSetup)
+  name: GameStartedEvent(int, InitialPosition, GameSetup)
+  href: api/Robocode.TankRoyale.BotApi.Events.GameStartedEvent.html#Robocode_TankRoyale_BotApi_Events_GameStartedEvent__ctor_System_Int32_Robocode_TankRoyale_BotApi_InitialPosition_Robocode_TankRoyale_BotApi_GameSetup_
+  commentId: M:Robocode.TankRoyale.BotApi.Events.GameStartedEvent.#ctor(System.Int32,Robocode.TankRoyale.BotApi.InitialPosition,Robocode.TankRoyale.BotApi.GameSetup)
+  name.vb: New(Integer, InitialPosition, GameSetup)
+  fullName: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.GameStartedEvent(int, Robocode.TankRoyale.BotApi.InitialPosition, Robocode.TankRoyale.BotApi.GameSetup)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.New(Integer, Robocode.TankRoyale.BotApi.InitialPosition, Robocode.TankRoyale.BotApi.GameSetup)
+  nameWithType: GameStartedEvent.GameStartedEvent(int, InitialPosition, GameSetup)
+  nameWithType.vb: GameStartedEvent.New(Integer, InitialPosition, GameSetup)
 - uid: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.#ctor*
   name: GameStartedEvent
   href: api/Robocode.TankRoyale.BotApi.Events.GameStartedEvent.html#Robocode_TankRoyale_BotApi_Events_GameStartedEvent__ctor_
@@ -4172,6 +4172,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.GameSetup
   nameWithType: GameStartedEvent.GameSetup
+- uid: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.InitialPosition
+  name: InitialPosition
+  href: api/Robocode.TankRoyale.BotApi.Events.GameStartedEvent.html#Robocode_TankRoyale_BotApi_Events_GameStartedEvent_InitialPosition
+  commentId: P:Robocode.TankRoyale.BotApi.Events.GameStartedEvent.InitialPosition
+  fullName: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.InitialPosition
+  nameWithType: GameStartedEvent.InitialPosition
+- uid: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.InitialPosition*
+  name: InitialPosition
+  href: api/Robocode.TankRoyale.BotApi.Events.GameStartedEvent.html#Robocode_TankRoyale_BotApi_Events_GameStartedEvent_InitialPosition_
+  commentId: Overload:Robocode.TankRoyale.BotApi.Events.GameStartedEvent.InitialPosition
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.InitialPosition
+  nameWithType: GameStartedEvent.InitialPosition
 - uid: Robocode.TankRoyale.BotApi.Events.GameStartedEvent.MyId
   name: MyId
   href: api/Robocode.TankRoyale.BotApi.Events.GameStartedEvent.html#Robocode_TankRoyale_BotApi_Events_GameStartedEvent_MyId
@@ -6780,19 +6793,38 @@ references:
   commentId: T:Robocode.TankRoyale.BotApi.InitialPosition
   fullName: Robocode.TankRoyale.BotApi.InitialPosition
   nameWithType: InitialPosition
-- uid: Robocode.TankRoyale.BotApi.InitialPosition.Angle
-  name: Angle
-  href: api/Robocode.TankRoyale.BotApi.InitialPosition.html#Robocode_TankRoyale_BotApi_InitialPosition_Angle
-  commentId: P:Robocode.TankRoyale.BotApi.InitialPosition.Angle
-  fullName: Robocode.TankRoyale.BotApi.InitialPosition.Angle
-  nameWithType: InitialPosition.Angle
-- uid: Robocode.TankRoyale.BotApi.InitialPosition.Angle*
-  name: Angle
-  href: api/Robocode.TankRoyale.BotApi.InitialPosition.html#Robocode_TankRoyale_BotApi_InitialPosition_Angle_
-  commentId: Overload:Robocode.TankRoyale.BotApi.InitialPosition.Angle
+- uid: Robocode.TankRoyale.BotApi.InitialPosition.#ctor(System.Nullable{System.Double},System.Nullable{System.Double},System.Nullable{System.Double})
+  name: InitialPosition(double?, double?, double?)
+  href: api/Robocode.TankRoyale.BotApi.InitialPosition.html#Robocode_TankRoyale_BotApi_InitialPosition__ctor_System_Nullable_System_Double__System_Nullable_System_Double__System_Nullable_System_Double__
+  commentId: M:Robocode.TankRoyale.BotApi.InitialPosition.#ctor(System.Nullable{System.Double},System.Nullable{System.Double},System.Nullable{System.Double})
+  name.vb: New(Double?, Double?, Double?)
+  fullName: Robocode.TankRoyale.BotApi.InitialPosition.InitialPosition(double?, double?, double?)
+  fullName.vb: Robocode.TankRoyale.BotApi.InitialPosition.New(Double?, Double?, Double?)
+  nameWithType: InitialPosition.InitialPosition(double?, double?, double?)
+  nameWithType.vb: InitialPosition.New(Double?, Double?, Double?)
+- uid: Robocode.TankRoyale.BotApi.InitialPosition.#ctor*
+  name: InitialPosition
+  href: api/Robocode.TankRoyale.BotApi.InitialPosition.html#Robocode_TankRoyale_BotApi_InitialPosition__ctor_
+  commentId: Overload:Robocode.TankRoyale.BotApi.InitialPosition.#ctor
   isSpec: "True"
-  fullName: Robocode.TankRoyale.BotApi.InitialPosition.Angle
-  nameWithType: InitialPosition.Angle
+  name.vb: New
+  fullName: Robocode.TankRoyale.BotApi.InitialPosition.InitialPosition
+  fullName.vb: Robocode.TankRoyale.BotApi.InitialPosition.New
+  nameWithType: InitialPosition.InitialPosition
+  nameWithType.vb: InitialPosition.New
+- uid: Robocode.TankRoyale.BotApi.InitialPosition.Direction
+  name: Direction
+  href: api/Robocode.TankRoyale.BotApi.InitialPosition.html#Robocode_TankRoyale_BotApi_InitialPosition_Direction
+  commentId: P:Robocode.TankRoyale.BotApi.InitialPosition.Direction
+  fullName: Robocode.TankRoyale.BotApi.InitialPosition.Direction
+  nameWithType: InitialPosition.Direction
+- uid: Robocode.TankRoyale.BotApi.InitialPosition.Direction*
+  name: Direction
+  href: api/Robocode.TankRoyale.BotApi.InitialPosition.html#Robocode_TankRoyale_BotApi_InitialPosition_Direction_
+  commentId: Overload:Robocode.TankRoyale.BotApi.InitialPosition.Direction
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.InitialPosition.Direction
+  nameWithType: InitialPosition.Direction
 - uid: Robocode.TankRoyale.BotApi.InitialPosition.Equals(System.Object)
   name: Equals(object)
   href: api/Robocode.TankRoyale.BotApi.InitialPosition.html#Robocode_TankRoyale_BotApi_InitialPosition_Equals_System_Object_
