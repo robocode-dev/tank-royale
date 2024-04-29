@@ -203,7 +203,7 @@ So we need to create a `MyFirstBot.csproj` file with the following content:
     <PropertyGroup>
         <RootNamespace>MyFirstBot</RootNamespace>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <LangVersion>8.0</LangVersion>
     </PropertyGroup>
     <ItemGroup>

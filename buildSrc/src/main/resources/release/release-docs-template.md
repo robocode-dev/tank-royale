@@ -31,7 +31,7 @@ These sample bots are currently available:
 
 | Platform | Archive                            | Requirements                      |
 |----------|------------------------------------|-----------------------------------|
-| C#       | [sample-bots-csharp-{VERSION}.zip] | Microsoft [.Net SDK] 5.0 or newer |
+| C#       | [sample-bots-csharp-{VERSION}.zip] | Microsoft [.Net SDK] 6.0 or newer |
 | Java     | [sample-bots-java-{VERSION}.zip]   | Any [Java SDK] 11 or newer        |
 
 All bots are put in zip archives, which should be installed in independent directories.
