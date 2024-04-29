@@ -25,7 +25,7 @@ include("buildDocs")
 
 val tankroyaleVersion: String = providers.gradleProperty("version").get()
 
-val kotlinVersion = "1.9.21"
+val kotlinVersion = "2.0.0-RC2"
 val junitVersion = "5.10.2"
 val kotestVersion = "5.8.1"
 
@@ -63,12 +63,12 @@ dependencyResolutionManagement {
             // plugins
             plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version(kotlinVersion)
             plugin("kotlin-serialization", "org.jetbrains.kotlin.plugin.serialization").version(kotlinVersion)
-            plugin("nexus-publish", "io.github.gradle-nexus.publish-plugin").version("2.0.0-rc-2")
+            plugin("nexus-publish", "io.github.gradle-nexus.publish-plugin").version("2.0.0")
             plugin("shadow-jar","com.github.johnrengelman.shadow").version("8.1.1")
             plugin("node-gradle", "com.github.node-gradle.node").version("7.0.2")
             plugin("jsonschema2pojo", "org.jsonschema2pojo").version("1.2.1")
 
-            // Dependencies versions
+            // Dependencies versions with `gradle dependencyUpdates -Drevision=release`
             plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.51.0")
         }
     }
