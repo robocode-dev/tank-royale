@@ -55,7 +55,7 @@ object AboutBox : RcDialog(MainFrame, "about_dialog") {
         }
 
     private fun html(): String = """
-        <table style="border-spacing: 10px">
+        <table style="border-spacing: 10px; font-size: 10px">
             <tr>
                 <td valign="top"><image width="64" height="64" src="$url"></td>
                 <td><span style="font-family: Arial, Helvetica, sans-serif;">
