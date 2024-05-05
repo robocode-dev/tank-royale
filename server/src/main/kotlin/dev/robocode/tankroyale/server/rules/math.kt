@@ -40,7 +40,8 @@ fun calcNewBotSpeed(currentSpeed: Double, targetSpeed: Double): Double {
                 (currentSpeed + step).coerceAtLeast(MAX_BACKWARD_SPEED)
             }
         } else { // crossing the speed of 0
-            currentSpeed + (currentSpeed * ACCELERATION / DECELERATION) - ACCELERATION
+            val speed = currentSpeed + (currentSpeed * ACCELERATION / DECELERATION) - ACCELERATION
+            if (speed < 0.0001) 0.0 else speed
         }
     } else { // currentSpeed < 0
         if (currentSpeed.sign == targetSpeed.sign) {
@@ -52,7 +53,8 @@ fun calcNewBotSpeed(currentSpeed: Double, targetSpeed: Double): Double {
                 (currentSpeed - step).coerceAtLeast(-MAX_FORWARD_SPEED)
             }
         } else { // crossing the speed of 0
-            currentSpeed + (currentSpeed * ACCELERATION / DECELERATION) + ACCELERATION
+            val speed = currentSpeed + (currentSpeed * ACCELERATION / DECELERATION) + ACCELERATION
+            if (speed > 0.0001) 0.0 else speed
         }
     }
 }

@@ -1,3 +1,10 @@
+#85: Fixed shaking when bots are standing still with the recent fix in server.rules.math::calcNewBotSpeed.## 📦 0.23.1
+
+#### 🪲 Bug Fixes
+
+- Bot API:
+    - #85: Fixed shaking when bots are standing still with the recent fix in server.rules.math::calcNewBotSpeed.
+
 ## 📦 0.23.0 - Fixing movement bugs in bot APIs - 29-Apr-2023
 
 #### 🪲 Bug Fixes
