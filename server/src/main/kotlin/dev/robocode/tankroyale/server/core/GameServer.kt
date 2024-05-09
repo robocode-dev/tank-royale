@@ -136,35 +136,29 @@ class GameServer(
     /** Send game-started event to all participant bots to get them started */
     private fun sendGameStartedToParticipants() {
         val gameSetup = GameSetupMapper.map(gameSetup)
-        val participantsAndTeamIds = getParticipantsAndTeamIds()
         val botHandshakes = connectionHandler.getBotHandshakes()
 
         participantIds.forEach { (conn, botId) ->
             val teamId = botHandshakes[conn]?.teamId
-
-            val teammateIds =
-                teamId?.let { participantsAndTeamIds.filterValues { it == teamId }.keys.toSet().minus(botId) }
-                    ?: emptySet()
-
-            val gameStartedForBot = createGameStartedEventForBot(botId, teammateIds, gameSetup)
+            val gameStartedForBot = createGameStartedEventForBot(botId, teamId, gameSetup)
             send(conn, gameStartedForBot)
         }
     }
+
+    private fun getTeammateIds(botId: BotId, teamId: Int?): Set<BotId> =
+        teamId?.let { getParticipantsAndTeamIds().filterValues { it == teamId }.keys.toSet().minus(botId) }
+            ?: emptySet()
 
     private fun getParticipantsAndTeamIds(): Map<BotId, Int?> = participantIds
         .mapNotNull { (conn, botId) -> connectionHandler.getBotHandshakes()[conn]?.teamId?.let { botId to it } }
         .associateBy({ it.first }, { it.second })
 
     /** Creates a GameStartedEventForBot with current game setup */
-    private fun createGameStartedEventForBot(
-        botId: BotId,
-        teammateIds: Set<BotId>,
-        gameSetup: GameSetup,
-    ): GameStartedEventForBot {
-        return GameStartedEventForBot().apply {
+    private fun createGameStartedEventForBot(botId: BotId, teamId: Int?, gameSetup: GameSetup) =
+        GameStartedEventForBot().apply {
             type = Message.Type.GAME_STARTED_EVENT_FOR_BOT
             myId = botId.value
-            this.teammateIds = teammateIds.map { it.value }
+            teammateIds = getTeammateIds(botId, teamId).map { it.value }
             this.gameSetup = gameSetup
 
             val botsMap: MutableMap<BotId, MutableBot> = modelUpdater?.botsMap!!
@@ -174,7 +168,6 @@ class GameServer(
                 startDirection = it.direction
             }
         }
-    }
 
     /** Starts the 'ready' timer */
     private fun startReadyTimer() {
