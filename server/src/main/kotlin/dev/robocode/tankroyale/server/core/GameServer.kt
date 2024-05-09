@@ -112,10 +112,8 @@ class GameServer(
     private fun startGameIfParticipantsReady() {
         synchronized(startGameLock) {
             if (readyParticipants.size == participants.size) {
-                participantMap.apply {
-                    clear()
-                    putAll(createParticipantMap())
-                }
+                participantMap.clear()
+                participantMap.putAll(createParticipantMap())
 
                 readyTimeoutTimer?.stop()
 
@@ -377,10 +375,8 @@ class GameServer(
         log.debug("Ready timeout")
         if (readyParticipants.size >= gameSetup.minNumberOfParticipants) {
             // Start the game with the participants that are ready
-            participants.apply {
-                clear()
-                addAll(readyParticipants)
-            }
+            participants.clear()
+            participants.addAll(readyParticipants)
             startGame()
         } else {
             // Not enough participants -> prepare another game
