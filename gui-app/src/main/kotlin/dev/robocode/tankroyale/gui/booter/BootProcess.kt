@@ -91,23 +91,21 @@ object BootProcess {
         )
         botDirNames.forEach { args += it }
 
-        booterProcess = ProcessBuilder(args).start()
-
-        isBooted.set(true)
-        startThread(booterProcess!!, true)
+        booterProcess = ProcessBuilder(args).start()?.also {
+            startThread(it, true)
+            isBooted.set(true)
+        }
     }
 
     private fun bootBotsWithAlreadyBootedProcess(botDirNames: List<String>) {
         PrintStream(booterProcess?.outputStream!!).also { printStream ->
             botDirNames.forEach { printStream.println("boot $it") }
-            printStream.flush()
         }
     }
 
     private fun stopBotsWithBootedProcess(pids: List<Long>) {
         PrintStream(booterProcess?.outputStream!!).also { printStream ->
             pids.forEach { printStream.println("stop $it") }
-            printStream.flush()
         }
     }
 
