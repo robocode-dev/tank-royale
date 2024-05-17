@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.botapi.internal;
 import dev.robocode.tankroyale.botapi.util.JsonUtil;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -23,6 +24,11 @@ public final class RecordingPrintStream extends PrintStream {
             super.write(b);
             printStream.write(b);
         }
+    }
+
+    @Override
+    public void write(byte buf[]) {
+        write(buf, 0, buf.length);
     }
 
     @Override

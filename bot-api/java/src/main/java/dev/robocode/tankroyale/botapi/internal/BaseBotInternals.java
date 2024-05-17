@@ -762,6 +762,8 @@ public final class BaseBotInternals {
                 if (jsonType != null) {
                     String type = jsonType.getAsString();
 
+//                    System.out.println("onText: " + type);
+
                     switch (dev.robocode.tankroyale.schema.Message.Type.fromValue(type)) {
                         case TICK_EVENT_FOR_BOT:
                             handleTick(jsonMsg);
