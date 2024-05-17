@@ -3,7 +3,7 @@
 #### 🪲 Bug Fixes
 
 - Bot API:
-    - #85: Fixed shaking when bots are standing still with the recent fix in server.rules.math::calcNewBotSpeed.
+    - #87: Fixed shaking when bots are standing still with the recent fix in server.rules.math::calcNewBotSpeed (#85)
     - Fixed issue with the Java API, where some messages sent to stdout and stderr were not written out to the bot
       console.
 
