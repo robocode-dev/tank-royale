@@ -25,9 +25,9 @@ include("buildDocs")
 
 val tankroyaleVersion: String = providers.gradleProperty("version").get()
 
-val kotlinVersion = "2.0.0-RC2"
-val junitVersion = "5.10.2"
-val kotestVersion = "5.8.1"
+val kotlinVersion = "2.0.0-RC3"
+val junitVersion = "5.11.0-M2"
+val kotestVersion = "5.9.0"
 
 // Check dependencies with this command:  gradle dependencyUpdates
 
@@ -41,12 +41,12 @@ dependencyResolutionManagement {
             library("gson-extras", "org.danilopianini:gson-extras:1.2.0")
             library("jansi", "org.fusesource.jansi:jansi:2.4.1")
             library("java-websocket", "org.java-websocket:Java-WebSocket:1.5.6")
-            library("picocli", "info.picocli:picocli:4.7.5")
+            library("picocli", "info.picocli:picocli:4.7.6")
             library("proguard-gradle", "com.guardsquare:proguard-gradle:7.4.2")
             library("miglayout-swing", "com.miglayout:miglayout-swing:11.3")
             library("nv-i18n", "com.neovisionaries:nv-i18n:1.29")
-            library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-            library("slf4j-simple", "org.slf4j:slf4j-simple:2.0.9")
+            library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0-RC")
+            library("slf4j-simple", "org.slf4j:slf4j-simple:2.1.0-alpha1")
 
             // Java testing
             library("assertj", "org.assertj:assertj-core:3.25.3")
@@ -58,7 +58,7 @@ dependencyResolutionManagement {
             // Kotlin testing
             library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
             library("kotest-datatest", "io.kotest:kotest-framework-datatest:$kotestVersion")
-            library("mockk", "io.mockk:mockk:1.13.10")
+            library("mockk", "io.mockk:mockk:1.13.11")
 
             // plugins
             plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version(kotlinVersion)
@@ -68,7 +68,7 @@ dependencyResolutionManagement {
             plugin("node-gradle", "com.github.node-gradle.node").version("7.0.2")
             plugin("jsonschema2pojo", "org.jsonschema2pojo").version("1.2.1")
 
-            // Dependencies versions with `gradle dependencyUpdates -Drevision=release`
+            // Dependencies versions with `gradlew dependencyUpdates -Drevision=release`
             plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.51.0")
         }
     }
