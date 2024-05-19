@@ -28,7 +28,8 @@ object BotRootDirectoriesConfigDialog : RcDialog(MainFrame, "bot_root_directorie
         setLocationRelativeTo(MainFrame) // center on main window
 
         onClosing {
-            ConfigSettings.botDirectories = listModel.elements().toList().map { BotDirectoryConfig(it.label, it.isActive) }
+            ConfigSettings.botDirectories =
+                listModel.elements().toList().map { BotDirectoryConfig(it.label, it.isActive) }
         }
     }
 }
@@ -45,7 +46,7 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
 
     init {
         list.cellRenderer = CheckListRenderer()
-        list.selectionMode = ListSelectionModel.SINGLE_SELECTION
+        list.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
 
         add(scrollPane, "span, grow, wrap")
 
@@ -89,16 +90,37 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     }
 
     private fun addDirectory() {
-        val directoryChooser  = JFileChooser()
-        directoryChooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
-        val result = directoryChooser .showOpenDialog(this)
+        val directoryChooser = JFileChooser().apply {
+            fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
+            isMultiSelectionEnabled = true
+        }
+        val result = directoryChooser.showOpenDialog(this)
         if (result == JFileChooser.APPROVE_OPTION) {
-            val selectedPath  = directoryChooser.selectedFile.toPath()
-            val existingEntries = listModel.elements().toList().map { it.label }
-            if (!existingEntries.contains(selectedPath.toString())) {
-                listModel.addElement(CheckListEntity(selectedPath.toString(), true))
-                updateSettings()
+            val selectedFiles = directoryChooser.selectedFiles
+            if (selectedFiles.isEmpty()) {
+                return
             }
+            selectedFiles.forEach { file ->
+                val selectedPath = file.toPath()
+
+                // If the directory has already been added, make sure to enable it
+                var found = false
+                listModel.elements().iterator().forEach {
+                    if (it.label == selectedPath.toString()) {
+                        it.isActive = true
+                        found = true
+                    }
+                }
+                // Else, we just add the directory
+                if (!found) {
+                    val existingEntries = listModel.elements().toList().map { it.label }
+                    if (!existingEntries.contains(selectedPath.toString())) {
+                        listModel.addElement(CheckListEntity(selectedPath.toString(), true))
+                    }
+                }
+            }
+            EDT.enqueue { list.repaint() }
+            updateSettings()
         }
     }
 
