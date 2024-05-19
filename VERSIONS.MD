@@ -1,4 +1,9 @@
-## 📦 0.23.1 - Fixing missing stdout and stderr messages - 18-May-2023 
+## 📦 0.23.2
+
+- GUI:
+    - Bot directories can now be enabled and disabled on the Bot Root Directories Config dialog.
+
+## 📦 0.23.1 - Fixing missing stdout and stderr messages - 18-May-2023
 
 #### 🪲 Bug Fixes
 

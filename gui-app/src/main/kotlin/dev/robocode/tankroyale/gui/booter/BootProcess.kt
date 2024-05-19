@@ -77,7 +77,7 @@ object BootProcess {
 
     val botDirs: List<String>
         get() {
-            return ConfigSettings.botDirectories
+            return ConfigSettings.botDirectories.filter { it.enabled }.map { it.path }
         }
 
     private fun bootBotProcess(botDirNames: List<String>) {

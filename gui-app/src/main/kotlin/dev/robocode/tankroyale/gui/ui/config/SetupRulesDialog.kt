@@ -378,8 +378,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             null
         }
         val valid = timeout != null && timeout >= 0
-        if (valid && timeout != null) {
-            gameSetup.readyTimeout = timeout
+        if (valid) {
+            gameSetup.readyTimeout = timeout!!
         } else {
             showMessage(
                 String.format(

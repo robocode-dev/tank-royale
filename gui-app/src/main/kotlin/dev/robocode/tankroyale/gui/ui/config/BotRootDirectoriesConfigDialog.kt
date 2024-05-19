@@ -1,17 +1,21 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.gui.ui.MainFrame
+import dev.robocode.tankroyale.gui.settings.BotDirectoryConfig
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
+import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
+import dev.robocode.tankroyale.gui.ui.config.BotDirectoryConfigPanel.listModel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
+import dev.robocode.tankroyale.gui.util.EDT
 import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
+import java.awt.event.*
 import javax.swing.*
 
 object BotRootDirectoriesConfigDialog : RcDialog(MainFrame, "bot_root_directories_config_dialog") {
@@ -24,7 +28,7 @@ object BotRootDirectoriesConfigDialog : RcDialog(MainFrame, "bot_root_directorie
         setLocationRelativeTo(MainFrame) // center on main window
 
         onClosing {
-            ConfigSettings.botDirectories = BotDirectoryConfigPanel.listModel.elements().toList()
+            ConfigSettings.botDirectories = listModel.elements().toList().map { BotDirectoryConfig(it.label, it.isActive) }
         }
     }
 }
@@ -35,11 +39,14 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
     private val onRemove = Event<JButton>()
     private val onOk = Event<JButton>()
 
-    val listModel = DefaultListModel<String>()
+    val listModel = DefaultListModel<CheckListEntity>()
     val list = JList(listModel)
     val scrollPane = JScrollPane(list)
 
     init {
+        list.cellRenderer = CheckListRenderer()
+        list.selectionMode = ListSelectionModel.SINGLE_SELECTION
+
         add(scrollPane, "span, grow, wrap")
 
         scrollPane.border = BorderFactory.createTitledBorder(Strings.get("bot_root_dirs"))
@@ -54,34 +61,63 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
             setDefaultButton(this)
         }
 
-        ConfigSettings.botDirectories.forEach { listModel.addElement(it) }
+        ConfigSettings.botDirectories.forEach { listModel.addElement(CheckListEntity(it.path, it.enabled)) }
 
-        onAdd.subscribe(BotRootDirectoriesConfigDialog) {
-            val chooser = JFileChooser()
-            chooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
-            val returnVal = chooser.showOpenDialog(this)
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                val path = chooser.selectedFile.toPath()
-                listModel.addElement(path.toString())
-                updateSettings()
-            }
-        }
-
-        onRemove.subscribe(BotRootDirectoriesConfigDialog) {
-            list.selectedValuesList.forEach { listModel.removeElement(it) }
-            updateSettings()
-        }
-
-        onOk.subscribe(BotRootDirectoriesConfigDialog) {
-            BotRootDirectoriesConfigDialog.dispose()
-        }
+        onAdd.subscribe(BotRootDirectoriesConfigDialog) { addDirectory() }
+        onRemove.subscribe(BotRootDirectoriesConfigDialog) { removeDirectory() }
+        onOk.subscribe(BotRootDirectoriesConfigDialog) { BotRootDirectoriesConfigDialog.dispose() }
 
         BotRootDirectoriesConfigDialog.onActivated {
             okButton.requestFocus()
         }
+
+        list.addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(event: MouseEvent) {
+                if (MouseEvent.BUTTON1 == event.button) {
+                    toggle(list.locationToIndex(event.getPoint()))
+                }
+            }
+        })
+
+        list.addKeyListener(object : KeyAdapter() {
+            override fun keyPressed(event: KeyEvent) {
+                if (event.keyCode == KeyEvent.VK_SPACE) {
+                    toggle(list.leadSelectionIndex)
+                }
+            }
+        })
+    }
+
+    private fun addDirectory() {
+        val directoryChooser  = JFileChooser()
+        directoryChooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
+        val result = directoryChooser .showOpenDialog(this)
+        if (result == JFileChooser.APPROVE_OPTION) {
+            val selectedPath  = directoryChooser.selectedFile.toPath()
+            val existingEntries = listModel.elements().toList().map { it.label }
+            if (!existingEntries.contains(selectedPath.toString())) {
+                listModel.addElement(CheckListEntity(selectedPath.toString(), true))
+                updateSettings()
+            }
+        }
+    }
+
+    private fun removeDirectory() {
+        list.selectedValuesList.forEach { listModel.removeElement(it) }
+        updateSettings()
+    }
+
+    private fun toggle(index: Int) {
+        if (index >= 0) {
+            val entity = list.model.getElementAt(index)
+            entity.isActive = !entity.isActive
+            updateSettings()
+
+            EDT.enqueue { list.repaint(list.getCellBounds(index, index)) }
+        }
     }
 
     fun updateSettings() {
-        ConfigSettings.botDirectories = listModel.elements().toList()
+        ConfigSettings.botDirectories = listModel.elements().toList().map { BotDirectoryConfig(it.label, it.isActive) }
     }
 }

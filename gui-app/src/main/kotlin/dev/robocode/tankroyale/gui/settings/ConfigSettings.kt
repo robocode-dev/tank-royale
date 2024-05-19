@@ -19,19 +19,15 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.proper
     private const val ENABLE_BULLET_COLLISION_SOUND = "enable-bullet-collision-sound"
     private const val ENABLE_DEATH_EXPLOSION_SOUND = "enable-death-explosion-sound"
 
-    private const val BOT_DIRS_SEPARATOR = ","
+    private const val BOT_DIRS_SEPARATOR = ','
 
-    var botDirectories: List<String>
+    var botDirectories: List<BotDirectoryConfig>
         get() {
             load()
-            return properties.getProperty(BOT_DIRECTORIES, "")
-                .split(BOT_DIRS_SEPARATOR)
-                .filter { it.isNotBlank() }
+            return getBotDirectoryConfigs()
         }
         set(value) {
-            properties.setProperty(BOT_DIRECTORIES, value
-                .filter { it.isNotBlank() }
-                .joinToString(separator = BOT_DIRS_SEPARATOR))
+            setBotDirectoryConfigs(value)
             save()
         }
 
@@ -133,4 +129,33 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.proper
             properties.setProperty(ENABLE_DEATH_EXPLOSION_SOUND, if (value) "true" else "false")
             save()
         }
+
+    private fun getBotDirectoryConfigs(): List<BotDirectoryConfig> {
+        val botDirectoryConfigs = mutableListOf<BotDirectoryConfig>()
+
+        var lastPath: String? = null
+        properties.getProperty(BOT_DIRECTORIES, "")
+            .split(BOT_DIRS_SEPARATOR)
+            .filter { it.isNotBlank() }
+            .forEach { path ->
+                if ("true".equals(path, ignoreCase = true)) {
+                    botDirectoryConfigs.add(BotDirectoryConfig(lastPath!!, true))
+                } else if ("false".equals(path, ignoreCase = true)) {
+                    botDirectoryConfigs.add(BotDirectoryConfig(lastPath!!, false))
+                } else {
+                    lastPath = path
+                }
+            }
+        return botDirectoryConfigs
+    }
+
+    private fun setBotDirectoryConfigs(botDirectoryConfigs: List<BotDirectoryConfig>) {
+        val stringBuffer = StringBuilder()
+        botDirectoryConfigs.filter { it.path.isNotBlank() }.forEach() { botDirectoryConfig ->
+            stringBuffer
+                .append(botDirectoryConfig.path).append(BOT_DIRS_SEPARATOR)
+                .append(if (botDirectoryConfig.enabled) "true" else "false").append(BOT_DIRS_SEPARATOR)
+        }
+        properties.setProperty(BOT_DIRECTORIES, stringBuffer.toString().trimEnd(BOT_DIRS_SEPARATOR))
+    }
 }
