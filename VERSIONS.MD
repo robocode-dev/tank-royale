@@ -1,4 +1,11 @@
-## 📦 0.23.2
+## 📦 0.23.2 - Bug fixed booting + enabling/disabling bot directories - 21-May-2023
+
+#### 🪲 Bug Fixes
+
+- Booter:
+    - #89: Major bug fix: Booting and unbooting multiple bots did not work anymore.
+
+#### 🚀 Improvements
 
 - GUI:
     - Bot directories can now be enabled and disabled on the Bot Root Directories Config dialog. In addition, multiple

@@ -100,12 +100,14 @@ object BootProcess {
     private fun bootBotsWithAlreadyBootedProcess(botDirNames: List<String>) {
         PrintStream(booterProcess?.outputStream!!).also { printStream ->
             botDirNames.forEach { printStream.println("boot $it") }
+            printStream.flush()
         }
     }
 
     private fun stopBotsWithBootedProcess(pids: List<Long>) {
         PrintStream(booterProcess?.outputStream!!).also { printStream ->
             pids.forEach { printStream.println("stop $it") }
+            printStream.flush()
         }
     }
 
