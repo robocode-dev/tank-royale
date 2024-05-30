@@ -25,7 +25,7 @@ properties:
       is fixed for this game type
     type: boolean
   maxNumberOfParticipants:
-    description: Maximum number of bots participating in battle
+    description: Maximum number of bots participating in battle (is optional)
     type: integer
   isMaxNumberOfParticipantsLocked:
     description: Flag specifying if the maximum number of bots participating in battle
@@ -81,8 +81,8 @@ required:
   - isNumberOfRoundsLocked
   - gunCoolingRate
   - isGunCoolingRateLocked
-  - inactivityTurns
-  - isInactivityTurnsLocked
+  - maxInactivityTurns
+  - isMaxInactivityTurnsLocked
   - turnTimeout
   - isTurnTimeoutLocked
   - readyTimeout
