@@ -11,7 +11,7 @@ properties:
     description: Start x coordinate
     type: number
   startY:
-    description: Start x coordinate
+    description: Start y coordinate
     type: number
   startDirection:
     description: Direction of the body, gun, and radar in degrees
