@@ -179,19 +179,6 @@ object ArenaPanel : JPanel() {
         }
     }
 
-    private fun onMouseWheel(e: MouseWheelEvent) {
-        var newScale = scale
-        if (e.unitsToScroll > 0) {
-            newScale *= 1.2
-        } else if (e.unitsToScroll < 0) {
-            newScale /= 1.2
-        }
-        if (newScale != scale && newScale >= 0.10 && newScale <= 10) {
-            scale = newScale
-            repaint()
-        }
-    }
-
     private var deltaX = 0
     private var deltaY = 0
 
@@ -207,6 +194,19 @@ object ArenaPanel : JPanel() {
         deltaX = e.x - pressedMouseX
         deltaY = e.y - pressedMouseY
         repaint()
+    }
+
+    private fun onMouseWheel(e: MouseWheelEvent) {
+        var newScale = scale
+        if (e.unitsToScroll > 0) {
+            newScale *= 1.2
+        } else if (e.unitsToScroll < 0) {
+            newScale /= 1.2
+        }
+        if (newScale != scale && newScale >= 0.10 && newScale <= 10) {
+            scale = newScale
+            repaint()
+        }
     }
 
     override fun paintComponent(g: Graphics) {
