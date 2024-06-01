@@ -1,3 +1,10 @@
+## 📦 0.23.3
+
+#### 🪲 Bug Fixes
+- 
+- Server:
+    - Scores in the results table are now sorted, so bots with the highest total score is put in the top of the results.
+    
 ## 📦 0.23.2 - Bug fixed booting + enabling/disabling bot directories - 21-May-2023
 
 #### 🪲 Bug Fixes

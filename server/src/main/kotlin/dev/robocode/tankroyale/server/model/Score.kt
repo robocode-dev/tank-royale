@@ -38,12 +38,16 @@ data class Score(
 
     /** Rank */
     var rank: Int = 0,
-) {
+
+) : Comparable<Score> {
+
     /** The total score */
     val totalScore: Double
         get() = bulletDamageScore + bulletKillBonus +
                 ramDamageScore + ramKillBonus +
                 survivalScore + lastSurvivorBonus
+
+    override fun compareTo(other: Score): Int = totalScore.compareTo(other.totalScore)
 
     /** Adds another score record to this record */
     operator fun plus(score: Score) = Score(

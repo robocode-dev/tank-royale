@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score
 
 import dev.robocode.tankroyale.schema.Participant
 import dev.robocode.tankroyale.server.model.Score
+import java.util.*
 
 object ResultsView {
 
@@ -26,6 +27,8 @@ object ResultsView {
                 }
             }
         }
-        return rows.values
+        val sortedRows = TreeMap<Participant, Score>(kotlin.Comparator() { p1, p2 -> rows[p2]!!.totalScore.compareTo(rows[p1]!!.totalScore) })
+        sortedRows.putAll(rows)
+        return sortedRows.values
     }
 }
