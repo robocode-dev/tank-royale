@@ -221,14 +221,14 @@ object ArenaPanel : JPanel() {
     private fun drawArena(g: Graphics2D) {
         clearCanvas(g)
 
-        // Move the offset of the arena
-        val marginX = (size.width - scale * arenaWidth) / 2
-        val marginY = (size.height - scale * arenaHeight) / 2
+        val marginX = (size.width - arenaWidth * scale) / 2
+        val marginY = (size.height - arenaHeight * scale) / 2
 
+        // Move the offset of the arena
         g.translate(marginX + deltaX, marginY + deltaY)
 
         g.scale(scale, -scale)
-        g.translate(0, -arenaHeight)
+        g.translate(0, -arenaHeight) // y-axis on screen is translated into y-axis of cartesian coordinate system
 
         drawGround(g)
         drawBots(g)
