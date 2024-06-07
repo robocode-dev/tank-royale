@@ -25,9 +25,9 @@ include("buildDocs")
 
 val tankroyaleVersion: String = providers.gradleProperty("version").get()
 
-val kotlinVersion = "2.0.0-RC3"
+val kotlinVersion = "2.0.0"
 val junitVersion = "5.11.0-M2"
-val kotestVersion = "5.9.0"
+val kotestVersion = "5.9.1"
 
 // Check dependencies with this command:  gradle dependencyUpdates
 
@@ -38,18 +38,18 @@ dependencyResolutionManagement {
             version("node", "15.5.1")
 
             library("gson", "com.google.code.gson:gson:2.10.1")
-            library("gson-extras", "org.danilopianini:gson-extras:1.2.0")
+            library("gson-extras", "org.danilopianini:gson-extras:1.3.0")
             library("jansi", "org.fusesource.jansi:jansi:2.4.1")
             library("java-websocket", "org.java-websocket:Java-WebSocket:1.5.6")
             library("picocli", "info.picocli:picocli:4.7.6")
-            library("proguard-gradle", "com.guardsquare:proguard-gradle:7.4.2")
+            library("proguard-gradle", "com.guardsquare:proguard-gradle:7.5.0")
             library("miglayout-swing", "com.miglayout:miglayout-swing:11.3")
             library("nv-i18n", "com.neovisionaries:nv-i18n:1.29")
-            library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0-RC")
+            library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
             library("slf4j-simple", "org.slf4j:slf4j-simple:2.1.0-alpha1")
 
             // Java testing
-            library("assertj", "org.assertj:assertj-core:3.25.3")
+            library("assertj", "org.assertj:assertj-core:3.26.0")
             library("junit-api", "org.junit.jupiter:junit-jupiter-api:$junitVersion")
             library("junit-engine", "org.junit.jupiter:junit-jupiter-engine:$junitVersion")
             library("junit-params", "org.junit.jupiter:junit-jupiter-params:$junitVersion")
