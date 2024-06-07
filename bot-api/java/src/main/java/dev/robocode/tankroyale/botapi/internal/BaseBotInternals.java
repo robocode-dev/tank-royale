@@ -106,7 +106,7 @@ public final class BaseBotInternals {
 
     private final Gson gson;
 
-    private boolean eventHandlingDisabled;
+    private int eventHandlingDisabledTurn;
 
     private RecordingPrintStream recordedStdOut;
     private RecordingPrintStream recordedStdErr;
@@ -191,7 +191,12 @@ public final class BaseBotInternals {
     }
 
     public void enableEventHandling(boolean enable) {
-        eventHandlingDisabled = !enable;
+        eventHandlingDisabledTurn = enable ? 0 : getCurrentTickOrThrow().getTurnNumber();
+    }
+
+    public boolean getEventHandlingDisabledTurn() {
+        // Important! Allow an additional turn so events like RoundStarted can be handled
+        return eventHandlingDisabledTurn != 0 && eventHandlingDisabledTurn < (getCurrentTickOrThrow().getTurnNumber() - 1);
     }
 
     public void setStopResumeHandler(IStopResumeListener listener) {
@@ -240,7 +245,7 @@ public final class BaseBotInternals {
         resetMovement();
         eventQueue.clear();
         isStopped = false;
-        eventHandlingDisabled = false;
+        eventHandlingDisabledTurn = 0;
     }
 
     private void onNextTurn(TickEvent e) {
@@ -798,7 +803,7 @@ public final class BaseBotInternals {
         }
 
         private void handleTick(JsonObject jsonMsg) {
-            if (eventHandlingDisabled) return;
+            if (getEventHandlingDisabledTurn()) return;
 
             tickStartNanoTime = System.nanoTime();
 
@@ -872,7 +877,7 @@ public final class BaseBotInternals {
         }
 
         private void handleSkippedTurn(JsonObject jsonMsg) {
-            if (eventHandlingDisabled) return;
+            if (getEventHandlingDisabledTurn()) return;
 
             var skippedTurnEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
 

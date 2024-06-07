@@ -1,7 +1,8 @@
 ## 📦 0.23.3
 
 #### 🪲 Bug Fixes
-- 
+- Bot API:
+    - Sometimes the RoundEnded event was not received by a bot.
 - Server:
     - Scores in the results table are now sorted, so bots with the highest total score is put in the top of the results.
     

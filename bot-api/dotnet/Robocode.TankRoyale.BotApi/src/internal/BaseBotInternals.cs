@@ -62,7 +62,7 @@ public sealed class BaseBotInternals
 
     private readonly double absDeceleration;
 
-    private bool eventHandlingDisabled;
+    private int eventHandlingDisabledTurn;
 
     private RecordingTextWriter recordingStdOut;
     private RecordingTextWriter recordingStdErr;
@@ -164,8 +164,17 @@ public sealed class BaseBotInternals
         }
     }
 
-    public void EnableEventHandling(bool enable) => eventHandlingDisabled = !enable;
+    public void EnableEventHandling(bool enable)
+    {
+        eventHandlingDisabledTurn = enable ? 0 : CurrentTickOrThrow.TurnNumber;
+    }
 
+    public bool IsEventHandlingDisabled()
+    {
+        // Important! Allow an additional turn so events like RoundStarted can be handled
+        return eventHandlingDisabledTurn != 0 && eventHandlingDisabledTurn < (CurrentTickOrThrow.TurnNumber - 1);
+    }
+    
     public void SetStopResumeHandler(IStopResumeListener listener) => stopResumeListener = listener;
 
     private static S.BotIntent NewBotIntent() => new()
@@ -201,7 +210,7 @@ public sealed class BaseBotInternals
         ResetMovement();
         eventQueue.Clear();
         IsStopped = false;
-        eventHandlingDisabled = false;
+        eventHandlingDisabledTurn = 0;
     }
 
     private void OnNextTurn(E.TickEvent e)
@@ -782,7 +791,7 @@ public sealed class BaseBotInternals
 
     private void HandleTick(string json)
     {
-        if (eventHandlingDisabled) return;
+        if (IsEventHandlingDisabled()) return;
 
         ticksStart = DateTime.Now.Ticks;
 
@@ -872,7 +881,7 @@ public sealed class BaseBotInternals
 
     private void HandleSkippedTurn(string json)
     {
-        if (eventHandlingDisabled) return;
+        if (IsEventHandlingDisabled()) return;
 
         var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.SkippedTurnEvent>(json);
         BotEventHandlers.FireSkippedTurnEvent(EventMapper.Map(skippedTurnEvent));
