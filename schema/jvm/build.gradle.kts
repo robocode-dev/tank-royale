@@ -1,6 +1,5 @@
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.SourceType
-import org.jsonschema2pojo.gradle.JsonSchemaExtension
 import java.util.Collections.singletonList
 
 description = "Robocode Tank Royale schema for Java"
