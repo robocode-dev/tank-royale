@@ -1,9 +1,9 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 description = "Robocode Tank Royale build sources"
 
 plugins {
-    kotlin("jvm").version("1.9.0")
+    kotlin("jvm").version("2.0.0")
 }
 
 repositories {
@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.json:json:20230618")
+    implementation("org.json:json:20240303")
 }
 
 java {
@@ -19,10 +19,8 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-tasks {
-    withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_11.toString()
-        }
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
