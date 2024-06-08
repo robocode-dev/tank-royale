@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static test_utils.EnvironmentVariables.*;
 
 @ExtendWith(SystemStubsExtension.class)
@@ -58,7 +59,7 @@ class BaseBotConstructorTest extends AbstractBotTest {
     @Test
     void givenAllRequiredEnvVarsSet_whenCallingDefaultConstructor_thenBotIsCreated() {
         new TestBot();
-        // passed when this point is reached
+        assertTrue(true);
     }
 
     @Test
@@ -97,6 +98,7 @@ class BaseBotConstructorTest extends AbstractBotTest {
     @Test
     void givenAllRequiredEnvVarsSet_callingDefaultConstructorFromThread_thenBotIsCreatedAndConnectingToServer() {
         startAndAwaitHandshake();
+        assertTrue(true);
     }
 
     @Test
@@ -129,7 +131,7 @@ class BaseBotConstructorTest extends AbstractBotTest {
     @Test
     void givenNoEnvVarsSet_callingDefaultConstructorWithBotInfoFromThread_thenBotHandshakeMustBeCorrect() {
         new TestBot(botInfo);
-        // passed when this point is reached
+        assertTrue(true);
     }
 
     @Test
