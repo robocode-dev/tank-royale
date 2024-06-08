@@ -30,20 +30,7 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
                         return@forEach
                     }
                     bootEntry.apply {
-                        bootEntries += DirBootEntry(
-                            dirPath.toAbsolutePath().toString(),
-                            name,
-                            version,
-                            authors,
-                            description,
-                            homepage,
-                            countryCodes,
-                            gameTypes,
-                            platform,
-                            programmingLang,
-                            initialPosition,
-                            teamMembers,
-                        )
+                        bootEntries += dirBootEntry(dirPath, gameTypes)
                     }
                 }
             } catch (ex: Exception) {
@@ -52,6 +39,22 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
         }
         return bootEntries.toList()
     }
+
+    private fun BootEntry.dirBootEntry(dirPath: Path, gameTypes: List<String>) =
+        DirBootEntry(
+            dirPath.toAbsolutePath().toString(),
+            name,
+            version,
+            authors,
+            description,
+            homepage,
+            countryCodes,
+            gameTypes,
+            platform,
+            programmingLang,
+            initialPosition,
+            teamMembers,
+        )
 
     fun listBotDirectories(gameTypesCSV: String?, botsOnly: Boolean, teamsOnly: Boolean): List<Path> =
         listBootEntries(gameTypesCSV, botsOnly, teamsOnly)
