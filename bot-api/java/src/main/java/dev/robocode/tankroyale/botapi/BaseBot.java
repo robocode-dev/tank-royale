@@ -71,7 +71,7 @@ public abstract class BaseBot implements IBaseBot {
      * <p>
      * If the {@code SERVER_URL} is not set, then this default URL is used: ws://localhost:7654
      */
-    public BaseBot() {
+    protected BaseBot() {
         __baseBotInternals = new BaseBotInternals(this, null, null, null);
     }
 
@@ -82,7 +82,7 @@ public abstract class BaseBot implements IBaseBot {
      *
      * @param botInfo is the bot info containing information about your bot.
      */
-    public BaseBot(final BotInfo botInfo) {
+    protected BaseBot(final BotInfo botInfo) {
         __baseBotInternals = new BaseBotInternals(this, botInfo, null, null);
     }
 
@@ -92,7 +92,7 @@ public abstract class BaseBot implements IBaseBot {
      * @param botInfo   is the bot info containing information about your bot.
      * @param serverUrl is the server URL
      */
-    public BaseBot(final BotInfo botInfo, URI serverUrl) {
+    protected BaseBot(final BotInfo botInfo, URI serverUrl) {
         __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, null);
     }
 
@@ -103,7 +103,7 @@ public abstract class BaseBot implements IBaseBot {
      * @param serverUrl    is the server URL
      * @param serverSecret is the server secret for bots
      */
-    public BaseBot(final BotInfo botInfo, URI serverUrl, String serverSecret) {
+    protected BaseBot(final BotInfo botInfo, URI serverUrl, String serverSecret) {
         __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, serverSecret);
     }
 

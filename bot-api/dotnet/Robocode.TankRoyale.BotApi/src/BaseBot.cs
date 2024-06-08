@@ -63,7 +63,7 @@ public abstract class BaseBot : IBaseBot
     ///
     /// If the SERVER_URL is not set, then this default URL is used: ws://localhost:7654
     /// </example>
-    public BaseBot() => __baseBotInternals = new BaseBotInternals(this, null, null, null);
+    protected BaseBot() => __baseBotInternals = new BaseBotInternals(this, null, null, null);
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
@@ -71,7 +71,7 @@ public abstract class BaseBot : IBaseBot
     /// variables SERVER_URL and SERVER_SECRET.
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
-    public BaseBot(BotInfo botInfo) =>
+    protected BaseBot(BotInfo botInfo) =>
         __baseBotInternals = new BaseBotInternals(this, botInfo, null, null);
 
     /// <summary>
@@ -79,7 +79,7 @@ public abstract class BaseBot : IBaseBot
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     /// <param name="serverUrl">Is the server URL</param>
-    public BaseBot(BotInfo botInfo, Uri serverUrl) =>
+    protected BaseBot(BotInfo botInfo, Uri serverUrl) =>
         __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, null);
 
     /// <summary>
@@ -88,7 +88,7 @@ public abstract class BaseBot : IBaseBot
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     /// <param name="serverUrl">Is the server URL</param>
     /// <param name="serverSecret">Is the server secret for bots</param>
-    public BaseBot(BotInfo botInfo, Uri serverUrl, string serverSecret) =>
+    protected BaseBot(BotInfo botInfo, Uri serverUrl, string serverSecret) =>
         __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, serverSecret);
 
     /// <inheritdoc/>
