@@ -2,9 +2,9 @@ package dev.robocode.tankroyale.booter.commands
 
 import dev.robocode.tankroyale.booter.model.BootEntry
 import dev.robocode.tankroyale.booter.util.Env
-import dev.robocode.tankroyale.booter.util.OSCheck
-import dev.robocode.tankroyale.booter.util.OSCheck.OSType.MacOS
-import dev.robocode.tankroyale.booter.util.OSCheck.OSType.Windows
+import dev.robocode.tankroyale.booter.util.OperatingSystemCheck
+import dev.robocode.tankroyale.booter.util.OperatingSystemCheck.OperatingSystemType.Mac
+import dev.robocode.tankroyale.booter.util.OperatingSystemCheck.OperatingSystemType.Windows
 import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
@@ -164,9 +164,9 @@ class RunCommand : Command() {
         }
     }
 
-    private fun findOsScript(botDir: Path): Path? = when (OSCheck.getOsType()) {
+    private fun findOsScript(botDir: Path): Path? = when (OperatingSystemCheck.getOperatingSystemType()) {
         Windows -> findWindowsScript(botDir)
-        MacOS -> findMacOsScript(botDir)
+        Mac -> findMacOsScript(botDir)
         else -> findFirstUnixScript(botDir)
     }
 
