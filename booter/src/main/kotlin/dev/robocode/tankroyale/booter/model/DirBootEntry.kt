@@ -23,4 +23,4 @@ data class DirBootEntry(
 
     // Team fields only
     override val teamMembers: List<String>? = null,
-) : AbstractBootEntry()
+) : IBootEntry

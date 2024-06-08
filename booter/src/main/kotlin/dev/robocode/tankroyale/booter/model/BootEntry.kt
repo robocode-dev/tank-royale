@@ -20,4 +20,4 @@ data class BootEntry(
 
     // Team fields only
     override val teamMembers: List<String>? = null,
-) : AbstractBootEntry()
+) : IBootEntry
