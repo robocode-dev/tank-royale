@@ -11,7 +11,9 @@ import java.util.Objects;
  */
 public final class InitialPosition {
 
-    private final Double x, y, direction;
+    private final Double x;
+    private final Double y;
+    private final Double direction;
 
     /**
      * Initializes a new instance of the InitialPosition class.
@@ -78,10 +80,10 @@ public final class InitialPosition {
     @Override
     public String toString() {
         if (x == null && y == null && direction == null) return "";
-        var x = this.x == null ? "" : this.x;
-        var y = this.y == null ? "" : this.y;
-        var direction = this.direction == null ? "" : this.direction;
-        return x + "," + y + "," + direction;
+        var strX = x == null ? "" : x;
+        var strY = y == null ? "" : y;
+        var strDirection = direction == null ? "" : direction;
+        return strX + "," + strY + "," + strDirection;
     }
 
     /**
