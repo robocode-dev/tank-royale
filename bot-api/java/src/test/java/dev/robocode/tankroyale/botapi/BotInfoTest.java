@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Nested;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,13 +31,11 @@ class BotInfoTest {
     static final String PROGRAMMING_LANGUAGE = " Java 19 ";
     static final InitialPosition INITIAL_POSITION = InitialPosition.fromString("  10, 20, 30  ");
 
-    static final BotInfo botInfo = prefilledBuilder().build();
-
-
     @Nested
     class NameTest {
         @Test
         void givenPrefilledBotInfoWithNameSet_whenGettingNameFromBotInfo_thenTrimmedNameIsReturned() {
+            var botInfo = prefilledBuilder().build();
             assertThat(botInfo.getName()).isEqualTo(NAME.trim());
         }
 
@@ -68,6 +67,7 @@ class BotInfoTest {
     class VersionTest {
         @Test
         void givenPrefilledBotInfoWithVersionSet_whenGettingVersionFromBotInfo_thenTrimmedVersionIsReturned() {
+            var botInfo = prefilledBuilder().build();
             assertThat(botInfo.getVersion()).isEqualTo(VERSION.trim());
         }
 
@@ -99,6 +99,7 @@ class BotInfoTest {
     class AuthorsTest {
         @Test
         void givenPrefilledBotInfoWithAuthorsSet_whenGettingAuthorsFromBotInfo_thenTrimmedAuthorsCollectionIsReturned() {
+            var botInfo = prefilledBuilder().build();
             assertThat(botInfo.getAuthors()).isEqualTo(AUTHORS.stream().map(String::trim).collect(Collectors.toList()));
         }
 
@@ -131,7 +132,7 @@ class BotInfoTest {
             for (int i = 0; i < MAX_NUMBER_OF_AUTHORS; i++) {
                 builder.addAuthor(AUTHORS.get(0));
             }
-            assertThat(builder.build().getAuthors().size()).isEqualTo(MAX_NUMBER_OF_AUTHORS);
+            assertThat(builder.build().getAuthors()).hasSize(MAX_NUMBER_OF_AUTHORS);
         }
 
         @Test
@@ -149,6 +150,7 @@ class BotInfoTest {
     class DescriptionTest {
         @Test
         void givenPrefilledBotInfoWithDescriptionSet_whenGettingDescriptionFromBotInfo_thenTrimmedDescriptionIsReturned() {
+            var botInfo = prefilledBuilder().build();
             assertThat(botInfo.getDescription()).isEqualTo(DESCRIPTION.trim());
         }
 
@@ -179,6 +181,7 @@ class BotInfoTest {
     class HomepageTest {
         @Test
         void givenPrefilledBotInfoWithHomepageSet_whenGettingHomepageFromBotInfo_thenTrimmedHomepageIsReturned() {
+            var botInfo = prefilledBuilder().build();
             assertThat(botInfo.getHomepage()).isEqualTo(HOME_PAGE.trim());
         }
 
@@ -209,6 +212,7 @@ class BotInfoTest {
     class CountryCodesTest {
         @Test
         void givenPrefilledBotInfoWithCountryCodesSet_whenGettingCountryCodesFromBotInfo_thenTrimmedContryCodesCollectionIsReturned() {
+            var botInfo = prefilledBuilder().build();
             assertThat(botInfo.getCountryCodes()).isEqualTo(COUNTRY_CODES.stream().map(String::trim).map(String::toUpperCase).collect(Collectors.toList()));
         }
 
@@ -239,7 +243,7 @@ class BotInfoTest {
             for (int i = 0; i < MAX_NUMBER_OF_COUNTRY_CODES; i++) {
                 builder.addCountryCode(COUNTRY_CODES.get(0));
             }
-            assertThat(builder.build().getCountryCodes().size()).isEqualTo(MAX_NUMBER_OF_COUNTRY_CODES);
+            assertThat(builder.build().getCountryCodes()).hasSize(MAX_NUMBER_OF_COUNTRY_CODES);
         }
 
         @Test
@@ -257,13 +261,14 @@ class BotInfoTest {
     class GameTypesTest {
         @Test
         void givenPrefilledBotInfoWithGameTypesSet_whenGettingGameTypesFromBotInfo_thenTrimmedGameTypesCollectionIsReturned() {
+            var botInfo = prefilledBuilder().build();
             assertThat(botInfo.getGameTypes()).isEqualTo(GAME_TYPES.stream().map(String::trim).collect(Collectors.toSet()));
         }
 
         @ParameterizedTest
         @NullAndEmptySource
-        @MethodSource("dev.robocode.tankroyale.botapi.BotInfoTest#listOfEmptyOrBlanks")
-        void givenEmptyOrBlankGameTypes_whenConstructingBotInfo_thenEmptyListIsReturned(List<String> gameTypes) {
+        @MethodSource("dev.robocode.tankroyale.botapi.BotInfoTest#setOfEmptyOrBlanks")
+        void givenEmptyOrBlankGameTypes_whenConstructingBotInfo_thenEmptyListIsReturned(Set<String> gameTypes) {
             var botInfo = prefilledBuilder().setGameTypes(gameTypes).build();
             assertThat(botInfo.getGameTypes()).isEmpty();
         }
@@ -271,10 +276,9 @@ class BotInfoTest {
         @Test
         void givenGameTypeOfMaxLength_whenConstructingBotInfo_thenReturnTheSameGameType() {
             var gameType = stringOfLength(MAX_GAME_TYPE_LENGTH);
-            var botInfo = prefilledBuilder().setGameTypes(List.of(gameType)).build();
+            var botInfo = prefilledBuilder().setGameTypes(Set.of(gameType)).build();
             var optGameType = botInfo.getGameTypes().stream().findFirst();
-            assertThat(optGameType).isPresent();
-            assertThat(optGameType.get()).isEqualTo(gameType);
+            assertThat(optGameType).contains(gameType);
         }
 
         @Test
@@ -290,7 +294,7 @@ class BotInfoTest {
             for (int i = 0; i < MAX_NUMBER_OF_GAME_TYPES; i++) {
                 builder.addGameType(GAME_TYPES.get(0) + i);
             }
-            assertThat(builder.build().getGameTypes().size()).isEqualTo(MAX_NUMBER_OF_GAME_TYPES);
+            assertThat(builder.build().getGameTypes()).hasSize(MAX_NUMBER_OF_GAME_TYPES);
         }
 
         @Test
@@ -308,6 +312,7 @@ class BotInfoTest {
     class PlatformTest {
         @Test
         void givenPrefilledBotInfoWithPlatformSet_whenGettingPlatformFromBotInfo_thenTrimmedPlatformIsReturned() {
+            var botInfo = prefilledBuilder().build();
             assertThat(botInfo.getPlatform()).isEqualTo(PLATFORM.trim());
         }
 
@@ -339,6 +344,7 @@ class BotInfoTest {
     class ProgrammingLangTest {
         @Test
         void givenPrefilledBotInfoWithProgrammingLangSet_whenGettingProgrammingLangFromBotInfo_thenTrimmedProgrammingLangIsReturned() {
+            var botInfo = prefilledBuilder().build();
             assertThat(botInfo.getProgrammingLang()).isEqualTo(PROGRAMMING_LANGUAGE.trim());
         }
 
@@ -370,6 +376,7 @@ class BotInfoTest {
     class InitialPositionTest {
         @Test
         void givenPrefilledBotInfoWithInitialPositionSet_whenGettingInitialPositionFromBotInfo_thenInitialPositionObjectIsReturned() {
+            var botInfo = prefilledBuilder().build();
             assertThat(botInfo.getInitialPosition()).isEqualTo(INITIAL_POSITION);
         }
 
@@ -383,7 +390,7 @@ class BotInfoTest {
         }
     }
 
-
+    @SuppressWarnings("java:S1144") // used from @MethodSource
     private static Stream<List<String>> listOfEmptyOrBlanks() {
         return Stream.of(
                 List.of(),
@@ -391,6 +398,17 @@ class BotInfoTest {
                 List.of("\t"),
                 List.of(" \n"),
                 List.of(" ", "")
+        );
+    }
+
+    @SuppressWarnings("java:S1144") // used from @MethodSource
+    private static Stream<Set<String>> setOfEmptyOrBlanks() {
+        return Stream.of(
+                Set.of(),
+                Set.of(""),
+                Set.of("\t"),
+                Set.of(" \n"),
+                Set.of(" ", "")
         );
     }
 

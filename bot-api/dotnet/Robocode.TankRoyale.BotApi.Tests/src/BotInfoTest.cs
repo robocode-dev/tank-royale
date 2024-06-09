@@ -24,15 +24,14 @@ public class BotInfoTest
     static readonly string ProgrammingLang = " C# 11 ";
     static readonly InitialPosition InitialPosition = InitialPosition.FromString("  10, 20, 30  ");
 
-    static readonly BotInfo BotInfo = CreateBotInfo();
-
-
     [TestFixture]
     public class NameTest : BotInfoTest
     {
         [Test]
-        public void GivenPrefilledBotInfoWithNameSet_whenGettingNameFromBotInfo_thenTrimmedNameIsReturned() {
-            Assert.That(BotInfo.Name, Is.EqualTo(Name.Trim()));
+        public void GivenPrefilledBotInfoWithNameSet_whenGettingNameFromBotInfo_thenTrimmedNameIsReturned()
+        {
+            var botInfo = CreateBotInfo();
+            Assert.That(botInfo.Name, Is.EqualTo(Name.Trim()));
         }
         
         [Test]
@@ -69,7 +68,8 @@ public class BotInfoTest
     {
         [Test]
         public void GivenPrefilledBotInfoWithVersionSet_whenGettingVersionFromBotInfo_thenTrimmedVersionIsReturned() {
-            Assert.That(BotInfo.Version, Is.EqualTo(Version.Trim()));
+            var botInfo = CreateBotInfo();
+            Assert.That(botInfo.Version, Is.EqualTo(Version.Trim()));
         }
         
         [Test]
@@ -106,7 +106,8 @@ public class BotInfoTest
     {
         [Test]
         public void GivenPrefilledBotInfoWithAuthorsSet_whenGettingAuthorsFromBotInfo_thenTrimmedAuthorsCollectionIsReturned() {
-            Assert.That(BotInfo.Authors, Is.EqualTo(Authors.ConvertAll(str => str.Trim())));
+            var botInfo = CreateBotInfo();
+            Assert.That(botInfo.Authors, Is.EqualTo(Authors.ConvertAll(str => str.Trim())));
         }
         
         [Test]
@@ -159,7 +160,8 @@ public class BotInfoTest
     {
         [Test]
         public void GivenPrefilledBotInfoWithDescriptionSet_whenGettingDescriptionFromBotInfo_thenTrimmedDescriptionIsReturned() {
-            Assert.That(BotInfo.Description, Is.EqualTo(Description.Trim()));
+            var botInfo = CreateBotInfo();
+            Assert.That(botInfo.Description, Is.EqualTo(Description.Trim()));
         }
         
         [Test]
@@ -196,7 +198,8 @@ public class BotInfoTest
     {
         [Test]
         public void GivenPrefilledBotInfoWithHomepageSet_whenGettingHomepageFromBotInfo_thenTrimmedHomepageIsReturned() {
-            Assert.That(BotInfo.Homepage, Is.EqualTo(Homepage.Trim()));
+            var botInfo = CreateBotInfo();
+            Assert.That(botInfo.Homepage, Is.EqualTo(Homepage.Trim()));
         }
         
         [Test]
@@ -232,8 +235,10 @@ public class BotInfoTest
     private class CountryCodesTest : BotInfoTest
     {
         [Test]
-        public void GivenPrefilledBotInfoWithCountryCodesSet_whenGettingCountryCodesFromBotInfo_thenTrimmedContryCodesCollectionIsReturned() {
-            Assert.That(BotInfo.CountryCodes.ToList().ConvertAll(str => str.ToUpper()),
+        public void GivenPrefilledBotInfoWithCountryCodesSet_whenGettingCountryCodesFromBotInfo_thenTrimmedCountryCodesCollectionIsReturned()
+        {
+            var botInfo = CreateBotInfo();
+            Assert.That(botInfo.CountryCodes.ToList().ConvertAll(str => str.ToUpper()),
                 Is.EqualTo(CountryCodes.ConvertAll(str => str.ToUpper()).ConvertAll(str => str.Trim())));
         }
         
@@ -289,7 +294,8 @@ public class BotInfoTest
     {
         [Test]
         public void GivenPrefilledBotInfoWithGameTypesSet_whenGettingGameTypesFromBotInfo_thenTrimmedGameTypesCollectionIsReturned() {
-            Assert.That(BotInfo.GameTypes, Is.EqualTo(GameTypes.ToList().ConvertAll(str => str.Trim())));
+            var botInfo = CreateBotInfo();
+            Assert.That(botInfo.GameTypes, Is.EqualTo(GameTypes.ToList().ConvertAll(str => str.Trim())));
         }
         
         [Test]
@@ -341,7 +347,8 @@ public class BotInfoTest
     {
         [Test]
         public void GivenPrefilledBotInfoWithPlatformSet_whenGettingPlatformFromBotInfo_thenTrimmedPlatformIsReturned() {
-            Assert.That(BotInfo.Platform, Is.EqualTo(Platform.Trim()));
+            var botInfo = CreateBotInfo();
+            Assert.That(botInfo.Platform, Is.EqualTo(Platform.Trim()));
         }
         
         [Test]
@@ -376,7 +383,8 @@ public class BotInfoTest
     {
         [Test]
         public void GivenPrefilledBotInfoWithProgrammingLangSet_whenGettingProgrammingLangFromBotInfo_thenTrimmedProgrammingLangIsReturned() {
-            Assert.That(BotInfo.ProgrammingLang, Is.EqualTo(ProgrammingLang.Trim()));
+            var botInfo = CreateBotInfo();
+            Assert.That(botInfo.ProgrammingLang, Is.EqualTo(ProgrammingLang.Trim()));
         }
         
         [Test]
@@ -412,7 +420,8 @@ public class BotInfoTest
     {
         [Test]
         public void GivenPrefilledBotInfoWithProgrammingLangSet_whenGettingProgrammingLangFromBotInfo_thenTrimmedProgrammingLangIsReturned() {
-            Assert.That(BotInfo.InitialPosition, Is.EqualTo(InitialPosition));
+            var botInfo = CreateBotInfo();
+            Assert.That(botInfo.InitialPosition, Is.EqualTo(InitialPosition));
         }
         
         [Test]

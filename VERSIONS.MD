@@ -3,6 +3,7 @@
 #### 🪲 Bug Fixes
 - Bot API:
     - Sometimes the RoundEnded event was not received by a bot.
+    - Java API only: `BotInfo.setGameTypes()` is now taken a Set instead of a List as input parameter
 - Server:
     - Scores in the results table are now sorted, so bots with the highest total score is put in the top of the results.
     

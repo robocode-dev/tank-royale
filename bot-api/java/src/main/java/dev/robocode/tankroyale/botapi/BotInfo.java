@@ -666,16 +666,16 @@ public final class BotInfo {
          * Example of usage:
          * <pre><code class="language-java">
          * BotInfo.builder()
-         *     .setGameTypes(List.of(GameType.CLASSIC, GameType.MELEE, "future-type"))
+         *     .setGameTypes(Set.of(GameType.CLASSIC, GameType.MELEE, "future-type"))
          *     ...
          * </code></pre>
          *
-         * @param gameTypes is a list of game types that the bot is capable of participating in.
+         * @param gameTypes is a set of game types that the bot is capable of participating in.
          *                  A {@code null} removes all game types.
          * @return this {@link IBuilder} instance provided for method chaining.
          * @see #addGameType 
          */
-        IBuilder setGameTypes(List<String> gameTypes);
+        IBuilder setGameTypes(Set<String> gameTypes);
 
         /**
          * Adds a game type that this bot is capable of participating in. (required)<br>
@@ -815,7 +815,7 @@ public final class BotInfo {
         }
 
         @Override
-        public IBuilder setGameTypes(List<String> gameTypes) {
+        public IBuilder setGameTypes(Set<String> gameTypes) {
             this.gameTypes = toMutableSet(gameTypes);
             return this;
         }
