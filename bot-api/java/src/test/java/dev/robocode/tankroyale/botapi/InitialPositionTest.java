@@ -41,7 +41,7 @@ class InitialPositionTest {
         if (pos == null) {
             assertThat(expected).isEmpty();
         } else {
-            assertThat(pos.toString()).isEqualTo(expected);
+            assertThat(pos).hasToString(expected);
         }
     }
 
