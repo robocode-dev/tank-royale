@@ -69,55 +69,36 @@ internal sealed class EventQueue : IComparer<BotEvent>
         AddCustomEvents();
     }
 
-    internal void DispatchEvents(int currentTurn)
+    internal void DispatchEvents(int turnNumber)
     {
-        RemoveOldEvents(currentTurn);
-
+        RemoveOldEvents(turnNumber);
         SortEvents();
 
-        while (baseBotInternals.IsRunning && !events.IsEmpty)
+        while (IsBotRunning)
         {
-            var botEvent = events[0];
+            var botEvent = GetNextEvent();
+            if (botEvent == null || IsSameEvent(botEvent))
+                break;
+
             var priority = GetPriority(botEvent);
+            var originalTopEventPriority = currentTopEventPriority;
 
-            // Same event?
-            if (priority == currentTopEventPriority)
-            {
-                if (currentTopEventPriority > MinValue && IsInterruptible)
-                {
-                    SetInterruptible(botEvent.GetType(), false);
-                    // The current event handler must be interrupted (by throwing an InterruptEventHandlerException)
-                    throw new InterruptEventHandlerException();
-                }
-                break; // Ignore same event occurring again
-            }
-
-            var oldTopEventPriority = currentTopEventPriority;
             currentTopEventPriority = priority;
             currentTopEvent = botEvent;
-            events = events.Remove(botEvent);
 
-            try
-            {
-                if (IsNotOldOrIsCriticalEvent(botEvent, currentTurn))
-                    botEventHandlers.Fire(botEvent);
-
-                SetInterruptible(botEvent.GetType(), false);
-            }
-            catch (InterruptEventHandlerException)
-            {
+            try {
+                HandleEvent(botEvent, turnNumber);
+            } catch (InterruptEventHandlerException) {
                 // Expected when event handler is being interrupted
-            }
-            finally
-            {
-                currentTopEventPriority = oldTopEventPriority;
+            } finally {
+                currentTopEventPriority = originalTopEventPriority;
             }
         }
     }
 
-    private void RemoveOldEvents(int currentTurn)
+    private void RemoveOldEvents(int turnNumber)
     {
-        foreach (var botEvent in events.Where(botEvent => IsOldAndNonCriticalEvent(botEvent, currentTurn)))
+        foreach (var botEvent in events.Where(botEvent => IsOldAndNonCriticalEvent(botEvent, turnNumber)))
         {
             events = events.Remove(botEvent);
         }
@@ -128,39 +109,61 @@ internal sealed class EventQueue : IComparer<BotEvent>
         events = events.Sort(this);
     }
 
+    private bool IsBotRunning => baseBotInternals.IsRunning;
+
+    private BotEvent GetNextEvent()
+    {
+        if (events.IsEmpty) return null;
+        var botEvent = events[0];
+        events = events.Remove(botEvent);
+        return botEvent;
+    }
+
+    private bool IsSameEvent(BotEvent botEvent) =>
+        GetPriority(botEvent) == currentTopEventPriority && (currentTopEventPriority > MinValue && IsInterruptible);
+
     private int GetPriority(BotEvent botEvent)
     {
         return baseBotInternals.GetPriority(botEvent.GetType());
     }
 
-    public int Compare(BotEvent e1, BotEvent e2)
-    {
-        // Critical must be placed before non-critical
-        var diff = (e2!.IsCritical ? 1 : 0) - (e1!.IsCritical ? 1 : 0);
-        if (diff != 0)
-        {
-            return diff;
+    private void HandleEvent(BotEvent botEvent, int turnNumber) {
+        if (IsNotOldOrIsCriticalEvent(botEvent, turnNumber)) {
+            botEventHandlers.Fire(botEvent);
         }
-        // Lower (older) turn number must be placed before higher (newer) turn number
-        diff = e1!.TurnNumber - e2!.TurnNumber;
-        if (diff != 0)
-        {
-            return diff;
-        }
-        // Higher priority value must be placed before lower priority value
-        return GetPriority(e2) - GetPriority(e1);
+        SetInterruptible(botEvent.GetType(), false);
     }
 
-    private static bool IsNotOldOrIsCriticalEvent(BotEvent botEvent, int currentTurn)
+    public int Compare(BotEvent botEvent1, BotEvent botEvent2)
     {
-        var isNotOld = botEvent.TurnNumber + MaxEventAge >= currentTurn;
+        // Critical must be placed before non-critical
+        var diff = (botEvent2!.IsCritical ? 1 : 0) - (botEvent1!.IsCritical ? 1 : 0);
+        if (diff != 0)
+        {
+            return diff;
+        }
+
+        // Lower (older) turn number must be placed before higher (newer) turn number
+        diff = botEvent1!.TurnNumber - botEvent2!.TurnNumber;
+        if (diff != 0)
+        {
+            return diff;
+        }
+
+        // Higher priority value must be placed before lower priority value
+        return GetPriority(botEvent2) - GetPriority(botEvent1);
+    }
+
+    private static bool IsNotOldOrIsCriticalEvent(BotEvent botEvent, int turnNumber)
+    {
+        var isNotOld = botEvent.TurnNumber + MaxEventAge >= turnNumber;
         var isCritical = botEvent.IsCritical;
         return isNotOld || isCritical;
     }
 
-    private static bool IsOldAndNonCriticalEvent(BotEvent botEvent, int currentTurn)
+    private static bool IsOldAndNonCriticalEvent(BotEvent botEvent, int turnNumber)
     {
-        var isOld = botEvent.TurnNumber + MaxEventAge < currentTurn;
+        var isOld = botEvent.TurnNumber + MaxEventAge < turnNumber;
         var isNonCritical = !botEvent.IsCritical;
         return isOld && isNonCritical;
     }
