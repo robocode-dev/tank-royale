@@ -101,14 +101,11 @@ public sealed class BaseBotInternals
 
     private void RedirectStdOutAndStdErr()
     {
-//        if (EnvVars.IsBotBooted())
-//        {
-            recordingStdOut = new RecordingTextWriter(Console.Out);
-            recordingStdErr = new RecordingTextWriter(Console.Error);
-            
-            Console.SetOut(recordingStdOut);
-            Console.SetError(recordingStdErr);
-//        }
+        recordingStdOut = new RecordingTextWriter(Console.Out);
+        recordingStdErr = new RecordingTextWriter(Console.Error);
+        
+        Console.SetOut(recordingStdOut);
+        Console.SetError(recordingStdErr);
     }
 
     private void InitializeWebSocketClient(Uri serverUrl)
