@@ -82,8 +82,6 @@ final class EventQueue {
                 event = events.get(0);
                 priority = getPriority(event);
 
-//              System.out.println(event.getTurnNumber() + ": " + events.stream().map(e -> e.getClass().getSimpleName()).collect(Collectors.joining(", ")));
-
                 // Same event?
                 if (priority == currentTopEventPriority) {
                     if (currentTopEventPriority > MIN_VALUE && isInterruptible()) {
