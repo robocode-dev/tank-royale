@@ -428,7 +428,7 @@ public sealed class BotInfo
 
     private static string ToNullIfBlankElseTrim(string value)
     {
-        return value == null ? null : string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+        return value == null || string.IsNullOrWhiteSpace(value) ? null : value.Trim();
     }
 
     private static void ThrowExceptionIfFieldIsBlank(string fieldName, string value)

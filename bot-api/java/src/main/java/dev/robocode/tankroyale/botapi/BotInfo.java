@@ -500,7 +500,7 @@ public final class BotInfo {
     }
 
     private static String toNullIfBlankElseTrim(String value) {
-        return value == null ? null : value.isBlank() ? null : value.trim();
+        return value == null || value.isBlank() ? null : value.trim();
     }
 
     private static class JsonProperties {
