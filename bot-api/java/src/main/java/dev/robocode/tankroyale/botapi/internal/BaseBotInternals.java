@@ -270,7 +270,8 @@ public final class BaseBotInternals {
         connect();
         try {
             closedLatch.await();
-        } catch (InterruptedException ignore) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -329,6 +330,7 @@ public final class BaseBotInternals {
                 try {
                     nextTurnMonitor.wait(); // Wait for next turn
                 } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                     return; // stop waiting, thread has been interrupted (stopped)
                 }
             }

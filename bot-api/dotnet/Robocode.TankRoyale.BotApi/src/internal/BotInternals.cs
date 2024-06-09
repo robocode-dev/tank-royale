@@ -157,7 +157,7 @@ internal sealed class BotInternals : IStopResumeListener
         }
         catch (ThreadInterruptedException)
         {
-            // ignore
+            thread.Interrupt();
         }
         finally
         {

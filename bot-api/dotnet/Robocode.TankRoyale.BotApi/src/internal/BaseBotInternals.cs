@@ -297,6 +297,7 @@ public sealed class BaseBotInternals
                 }
                 catch (ThreadInterruptedException)
                 {
+                    Thread.CurrentThread.Interrupt();
                     return; // stop waiting, thread has been interrupted (stopped)
                 }
             }

@@ -142,7 +142,8 @@ public final class BotInternals implements IStopResumeListener {
                     System.err.println("The thread of the bot could not be interrupted causing the bot to hang.\nSo the bot was stopped by force.");
                     System.exit(-1); // last resort without Thread.stop()
                 }
-            } catch (InterruptedException ignore) {
+            } catch (InterruptedException e) {
+                thread.interrupt();
             } finally {
                 thread = null;
             }
