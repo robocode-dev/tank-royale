@@ -102,7 +102,7 @@ public final class BaseBotInternals {
     private Double savedGunTurnRate;
     private Double savedRadarTurnRate;
 
-    private final double ABS_DECELERATION = abs(DECELERATION);
+    private final double absDeceleration = abs(DECELERATION);
 
     private final Gson gson;
 
@@ -168,6 +168,7 @@ public final class BaseBotInternals {
         subscribeToEvents();
     }
 
+    @SuppressWarnings("java:S106") // Standard outputs should not be used directly to log anything
     private void redirectStdOutAndStdErr() {
         recordedStdOut = new RecordingPrintStream(System.out);
         recordedStdErr = new RecordingPrintStream(System.err);
@@ -510,25 +511,25 @@ public final class BaseBotInternals {
                 maxSpeed : min(maxSpeed, getMaxSpeed(distance));
 
         return (speed >= 0) ?
-                clamp(targetSpeed, speed - ABS_DECELERATION, speed + ACCELERATION) :
+                clamp(targetSpeed, speed - absDeceleration, speed + ACCELERATION) :
                 clamp(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
     }
 
     private double getMaxSpeed(double distance) {
         double decelerationTime =
-                max(1, Math.ceil((Math.sqrt((4 * 2 / ABS_DECELERATION) * distance + 1) - 1) / 2));
+                max(1, Math.ceil((Math.sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
         if (decelerationTime == Double.POSITIVE_INFINITY) {
             return MAX_SPEED;
         }
-        double decelerationDistance = (decelerationTime / 2) * (decelerationTime - 1) * ABS_DECELERATION;
-        return ((decelerationTime - 1) * ABS_DECELERATION) + ((distance - decelerationDistance) / decelerationTime);
+        double decelerationDistance = (decelerationTime / 2) * (decelerationTime - 1) * absDeceleration;
+        return ((decelerationTime - 1) * absDeceleration) + ((distance - decelerationDistance) / decelerationTime);
     }
 
     private double getMaxDeceleration(double speed) {
-        double decelerationTime = speed / ABS_DECELERATION;
+        double decelerationTime = speed / absDeceleration;
         double accelerationTime = 1 - decelerationTime;
 
-        return min(1, decelerationTime) * ABS_DECELERATION + max(0, accelerationTime) * ACCELERATION;
+        return min(1, decelerationTime) * absDeceleration + max(0, accelerationTime) * ACCELERATION;
     }
 
     double getDistanceTraveledUntilStop(double speed) {
@@ -733,7 +734,7 @@ public final class BaseBotInternals {
 
     private final class WebSocketListener implements Listener {
 
-        final StringBuffer payload = new StringBuffer();
+        final StringBuilder payload = new StringBuilder();
 
         @Override
         public void onOpen(WebSocket websocket) {
@@ -766,8 +767,6 @@ public final class BaseBotInternals {
                 JsonElement jsonType = jsonMsg.get("type");
                 if (jsonType != null) {
                     String type = jsonType.getAsString();
-
-//                    System.out.println("onText: " + type);
 
                     switch (dev.robocode.tankroyale.schema.Message.Type.fromValue(type)) {
                         case TICK_EVENT_FOR_BOT:
@@ -852,7 +851,7 @@ public final class BaseBotInternals {
 
             // Send ready signal
             var ready = new BotReady();
-            ready.setType(BotReady.Type.BOT_READY);
+            ready.setType(Message.Type.BOT_READY);
 
             String msg = gson.toJson(ready);
             socket.sendText(msg, true);
