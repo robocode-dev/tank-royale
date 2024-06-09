@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.botapi.internal;
 
 import dev.robocode.tankroyale.botapi.Bot;
+import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.events.*;
 
 import java.util.concurrent.Callable;
@@ -307,7 +308,7 @@ public final class BotInternals implements IStopResumeListener {
         try {
             return condition.call();
         } catch (Exception ex) {
-            throw new RuntimeException("Condition could not be computed", ex);
+            throw new BotException("Condition could not be computed", ex);
         }
     }
 
