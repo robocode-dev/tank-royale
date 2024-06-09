@@ -33,9 +33,9 @@ public class Color {
     public static final Color PURPLE = fromHex("800080");
     public static final Color ORANGE = fromHex("FF8000");
 
-    private final int red; // [0-255];
-    private final int green; // [0-255];
-    private final int blue; // [0-255];
+    private final int redValue; // [0-255]
+    private final int greenValue; // [0-255]
+    private final int blueValue; // [0-255]
 
     /**
      * Creates a Color from RGB values.
@@ -55,9 +55,9 @@ public class Color {
         if (blue < 0 || blue > 255) {
             throw new IllegalArgumentException("The 'blue' color component must be in the range 0 - 255");
         }
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
+        this.redValue = red;
+        this.greenValue = green;
+        this.blueValue = blue;
     }
 
     /**
@@ -66,7 +66,7 @@ public class Color {
      * @return the red color component of the RGB color in the range [0 - 255]
      */
     public int getRed() {
-        return red;
+        return redValue;
     }
 
     /**
@@ -75,7 +75,7 @@ public class Color {
      * @return the green color component of the RGB color in the range [0 - 255]
      */
     public int getGreen() {
-        return green;
+        return greenValue;
     }
 
     /**
@@ -84,7 +84,7 @@ public class Color {
      * @return the blue color component of the RGB color in the range [0 - 255]
      */
     public int getBlue() {
-        return blue;
+        return blueValue;
     }
 
     /**
@@ -93,7 +93,7 @@ public class Color {
      * @return the color as a hex triplet of six hexadecimal digits representing an RGB color, e.g. "0099CC".
      */
     public String toHex() {
-        return toHex(red) + toHex(green) + toHex(blue);
+        return toHex(redValue) + toHex(greenValue) + toHex(blueValue);
     }
 
     private static String toHex(int value) {
@@ -158,7 +158,7 @@ public class Color {
     }
 
     protected boolean equals(Color other) {
-        return red == other.red && green == other.green && blue == other.blue;
+        return redValue == other.redValue && greenValue == other.greenValue && blueValue == other.blueValue;
     }
 
     @Override
@@ -170,7 +170,7 @@ public class Color {
 
     @Override
     public int hashCode() {
-        return Objects.hash(red, green, blue);
+        return Objects.hash(redValue, greenValue, blueValue);
     }
 
     @Override
