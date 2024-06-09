@@ -24,7 +24,7 @@ class JsonUtilTest {
 
     @Test
     void testEscapedCarriageReturn() {
-        assertThat(escaped("\r")).isEqualTo("");
+        assertThat(escaped("\r")).isEmpty();
     }
 
     @Test
