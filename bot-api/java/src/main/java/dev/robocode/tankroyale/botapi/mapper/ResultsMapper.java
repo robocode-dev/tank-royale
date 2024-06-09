@@ -7,6 +7,10 @@ import dev.robocode.tankroyale.botapi.BotResults;
  */
 public class ResultsMapper {
 
+    // Hide constructor to prevent instantiation
+    private ResultsMapper() {
+    }
+
     public static BotResults map(final dev.robocode.tankroyale.schema.ResultsForBot source) {
         return new BotResults(
                 source.getRank(),

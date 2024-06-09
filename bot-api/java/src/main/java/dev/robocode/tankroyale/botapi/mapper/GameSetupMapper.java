@@ -7,6 +7,10 @@ import dev.robocode.tankroyale.botapi.GameSetup;
  */
 public final class GameSetupMapper {
 
+    // Hide constructor to prevent instantiation
+    private GameSetupMapper() {
+    }
+
     public static GameSetup map(final dev.robocode.tankroyale.schema.GameSetup source) {
         return new GameSetup(
                 source.getGameType(),

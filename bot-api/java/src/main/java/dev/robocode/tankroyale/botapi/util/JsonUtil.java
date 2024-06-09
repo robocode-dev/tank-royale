@@ -5,6 +5,10 @@ package dev.robocode.tankroyale.botapi.util;
  */
 public class JsonUtil {
 
+    // Hide constructor to prevent instantiation
+    private JsonUtil() {
+    }
+
     public static String escaped(String s) {
 
         return s.replaceAll("\b", "\\\\b") // backspace -> \b

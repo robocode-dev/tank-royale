@@ -5,6 +5,11 @@ package dev.robocode.tankroyale.botapi.events;
  * highest priority ({@value WON_ROUND}), and {@link DeathEvent} has the lowest priority ({@value DEATH}).
  */
 public final class DefaultEventPriority {
+
+    // Hide constructor to prevent instantiation
+    private DefaultEventPriority() {
+    }
+
     /**
      * Event priority for the {@link WonRoundEvent}
      */

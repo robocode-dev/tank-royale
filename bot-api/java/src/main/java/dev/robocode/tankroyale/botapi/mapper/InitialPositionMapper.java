@@ -7,6 +7,10 @@ import dev.robocode.tankroyale.botapi.InitialPosition;
  */
 public final class InitialPositionMapper {
 
+    // Hide constructor to prevent instantiation
+    private InitialPositionMapper() {
+    }
+
     public static dev.robocode.tankroyale.schema.InitialPosition map(final InitialPosition source) {
         if (source == null) return null;
 

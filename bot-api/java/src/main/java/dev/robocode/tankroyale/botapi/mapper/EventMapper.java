@@ -15,6 +15,10 @@ import java.util.Set;
  */
 public final class EventMapper {
 
+    // Hide constructor to prevent instantiation
+    private EventMapper() {
+    }
+
     public static TickEvent map(final dev.robocode.tankroyale.schema.TickEventForBot event, IBaseBot baseBot) {
         return new TickEvent(
                 event.getTurnNumber(),
