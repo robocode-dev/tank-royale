@@ -16,28 +16,28 @@ public abstract class Bot extends BaseBot implements IBot {
     /**
      * @see BaseBot#BaseBot()
      */
-    public Bot() {
+    protected Bot() {
         super();
     }
 
     /**
      * @see BaseBot#BaseBot(BotInfo)
      */
-    public Bot(final BotInfo botInfo) {
+    protected Bot(final BotInfo botInfo) {
         super(botInfo);
     }
 
     /**
      * @see BaseBot#BaseBot(BotInfo, URI)
      */
-    public Bot(final BotInfo botInfo, URI serverUrl) {
+    protected Bot(final BotInfo botInfo, URI serverUrl) {
         super(botInfo, serverUrl);
     }
 
     /**
      * @see BaseBot#BaseBot(BotInfo, URI, String)
      */
-    public Bot(final BotInfo botInfo, URI serverUrl, String serverSecret) {
+    protected Bot(final BotInfo botInfo, URI serverUrl, String serverSecret) {
         super(botInfo, serverUrl, serverSecret);
     }
 

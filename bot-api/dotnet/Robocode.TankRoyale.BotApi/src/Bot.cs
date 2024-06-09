@@ -13,25 +13,25 @@ public abstract class Bot : BaseBot, IBot
     private readonly BotInternals __botInternals;
 
     /// <see cref="BaseBot()"/>
-    public Bot()
+    protected Bot()
     {
         __botInternals = new BotInternals(this, __baseBotInternals);
     }
 
     /// <see cref="BaseBot(BotInfo)"/>
-    public Bot(BotInfo botInfo) : base(botInfo)
+    protected Bot(BotInfo botInfo) : base(botInfo)
     {
         __botInternals = new BotInternals(this, __baseBotInternals);
     }
 
     /// <see cref="BaseBot(BotInfo, Uri)"/>
-    public Bot(BotInfo botInfo, Uri serverUrl) : base(botInfo, serverUrl)
+    protected Bot(BotInfo botInfo, Uri serverUrl) : base(botInfo, serverUrl)
     {
         __botInternals = new BotInternals(this, __baseBotInternals);
     }
 
     /// <see cref="BaseBot(BotInfo, Uri, string)"/>
-    public Bot(BotInfo botInfo, Uri serverUrl, string serverSecret) : base(botInfo, serverUrl, serverSecret)
+    protected Bot(BotInfo botInfo, Uri serverUrl, string serverSecret) : base(botInfo, serverUrl, serverSecret)
     {
         __botInternals = new BotInternals(this, __baseBotInternals);
     }
