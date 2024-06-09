@@ -6,7 +6,7 @@ package dev.robocode.tankroyale.botapi;
 @SuppressWarnings("unused")
 public final class Constants {
 
-    // Hide constructor
+    // Hide constructor to prevent instantiation
     private Constants() {
     }
 

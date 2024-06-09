@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 final class BotHandshakeFactory {
 
-    // Hide constructor as this class is a utility class used for static access only
+    // Hide constructor to prevent instantiation
     private BotHandshakeFactory() {
     }
 

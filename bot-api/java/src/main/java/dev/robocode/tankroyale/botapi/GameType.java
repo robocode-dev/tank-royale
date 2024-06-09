@@ -6,7 +6,7 @@ package dev.robocode.tankroyale.botapi;
  */
 public final class GameType {
 
-    // Hide constructor
+    // Hide constructor to prevent instantiation
     private GameType() {
     }
 

@@ -12,6 +12,10 @@ import java.util.Set;
  */
 public final class BulletStateMapper {
 
+    // Hide constructor to prevent instantiation
+    private BulletStateMapper() {
+    }
+
     public static BulletState map(final dev.robocode.tankroyale.schema.BulletState source) {
         return new BulletState(
                 source.getBulletId(),
