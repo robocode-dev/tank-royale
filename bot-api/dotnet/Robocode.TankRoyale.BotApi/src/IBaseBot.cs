@@ -667,7 +667,7 @@ public interface IBaseBot
     /// <summary>
     /// Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
     /// turning and thereby will not be able to automatically scan bots. This method is useful when the
-    /// bot movement has stopped, e.g. when <see cref="IBot.Stop"/> has been called. The last radar direction
+    /// bot movement has stopped, e.g. when <see cref="IBot.Stop()"/> has been called. The last radar direction
     /// and sweep angle will be used for rescanning for bots.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
@@ -676,18 +676,22 @@ public interface IBaseBot
     /// <see cref="IBaseBot.Go"/>. But notice that this is only possible to execute multiple methods in
     /// parallel by using <em>setter</em> methods only prior to calling <see cref="IBaseBot.Go"/>.
     /// </summary>
-    /// <seealso cref="SetStop"/>
-    /// <seealso cref="IBot.Stop"/>
+    /// <seealso cref="SetStop()"/>
+    /// <seealso cref="SetStop(bool)"/>
+    /// <seealso cref="IBot.Stop()"/>
+    /// <seealso cref="IBot.Stop(bool)"/>
     /// <seealso cref="IBot.Resume"/>
     void SetResume();
 
     /// <summary>
     /// Checks if the movement has been stopped.
     /// </summary>
-    /// <value><c>true</c> if the movement has been stopped by by <see cref="IBot.Stop"/> or <see cref="SetStop"/>;
+    /// <value><c>true</c> if the movement has been stopped by by <see cref="IBot.Stop()"/> or <see cref="SetStop()"/>;
     /// <c>false</c> otherwise.</value>
-    /// <seealso cref="IBot.Stop"/>
-    /// <seealso cref="SetStop"/>
+    /// <seealso cref="IBot.Stop()"/>
+    /// <seealso cref="IBot.Stop(bool)"/>
+    /// <seealso cref="SetStop()"/>
+    /// <seealso cref="SetStop(bool)"/>
     bool IsStopped { get; }
 
     /// <summary>

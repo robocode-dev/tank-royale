@@ -809,7 +809,7 @@ public interface IBaseBot {
     /**
      * Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
      * turning and thereby will not be able to automatically scan bots. This method is useful when the
-     * bot movement has stopped, e.g. when {@link #setStop} has been called. The last radar
+     * bot movement has stopped, e.g. when {@link #setStop()} has been called. The last radar
      * direction and sweep angle will be used for rescanning for bots.
      *
      * <p>This method will first be executed when {@link #go} is called making it possible to call
@@ -818,7 +818,8 @@ public interface IBaseBot {
      * But notice that this is only possible to execute multiple methods in parallel by using
      * <strong>setter</strong> methods only prior to calling {@link #go}.
      *
-     * @see #setStop
+     * @see #setStop()
+     * @see #setStop(boolean)
      */
     void setResume();
 
@@ -847,7 +848,7 @@ public interface IBaseBot {
      * </code></pre>
      *
      * @param botId is the id of the bot to check for.
-     * @return <code>true</code> if the provided is id an id of a teammate; <code>false</code> otherwise.
+     * @return {@code true} if the provided is id an id of a teammate; {@code false} otherwise.
      * @see #getTeammateIds
      * @see #sendTeamMessage
      */
@@ -897,9 +898,10 @@ public interface IBaseBot {
     /**
      * Checks if the movement has been stopped.
      *
-     * @return true if the movement has been stopped by {@link #setStop}; false otherwise.
+     * @return true if the movement has been stopped by {@link #setStop()}; false otherwise.
      * @see #setResume
-     * @see #setStop
+     * @see #setStop()
+     * @see #setStop(boolean)
      */
     boolean isStopped();
 
