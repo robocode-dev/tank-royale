@@ -1085,12 +1085,9 @@ public interface IBaseBot {
      */
     default void onDisconnected(DisconnectedEvent disconnectedEvent) {
         StringBuilder msg = new StringBuilder("Disconnected from: " + disconnectedEvent.getServerUri());
-        if (disconnectedEvent.getStatusCode().isPresent()) {
-            msg.append(", status code: ").append(disconnectedEvent.getStatusCode().get());
-        }
-        if (disconnectedEvent.getReason().isPresent()) {
-            msg.append(", reason: ").append(disconnectedEvent.getReason().get());
-        }
+        disconnectedEvent.getStatusCode().ifPresent(statusCode -> msg.append(", status code: ").append(statusCode));
+        disconnectedEvent.getReason().ifPresent(reason -> msg.append(", reason: ").append(reason));
+
         System.out.println(msg);
     }
 
