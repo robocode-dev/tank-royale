@@ -122,6 +122,7 @@ public class Condition {
             try {
                 return callable.call();
             } catch (Exception ignore) {
+                return false;
             }
         }
         return false;
