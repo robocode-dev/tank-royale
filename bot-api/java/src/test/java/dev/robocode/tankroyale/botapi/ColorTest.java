@@ -152,8 +152,8 @@ class ColorTest {
     class HashTests {
         @Test
         void givenTwoEqualColorsCreatedDifferently_whenCallingHashCodeOnEachColor_thenTheHashCodesMustBeEqual() {
-            assertThat(Color.fromHex("102030").hashCode()).isEqualTo(new Color(0x10, 0x20, 0x30).hashCode());
-            assertThat(Color.fromHex("112233").hashCode()).isEqualTo(new Color(0x11, 0x22, 0x33).hashCode());
+            assertThat(Color.fromHex("102030")).hasSameHashCodeAs(new Color(0x10, 0x20, 0x30).hashCode());
+            assertThat(Color.fromHex("112233")).hasSameHashCodeAs(new Color(0x11, 0x22, 0x33).hashCode());
         }
 
         @Test
