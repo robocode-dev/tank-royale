@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Internal;
-using static System.Double;
 
 namespace Robocode.TankRoyale.BotApi;
 
@@ -13,7 +12,7 @@ namespace Robocode.TankRoyale.BotApi;
 /// </summary>
 public abstract class BaseBot : IBaseBot
 {
-    internal readonly BaseBotInternals __baseBotInternals;
+    internal readonly BaseBotInternals BaseBotInternals;
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
@@ -63,7 +62,7 @@ public abstract class BaseBot : IBaseBot
     ///
     /// If the SERVER_URL is not set, then this default URL is used: ws://localhost:7654
     /// </example>
-    protected BaseBot() => __baseBotInternals = new BaseBotInternals(this, null, null, null);
+    protected BaseBot() => BaseBotInternals = new BaseBotInternals(this, null, null, null);
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
@@ -72,7 +71,7 @@ public abstract class BaseBot : IBaseBot
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     protected BaseBot(BotInfo botInfo) =>
-        __baseBotInternals = new BaseBotInternals(this, botInfo, null, null);
+        BaseBotInternals = new BaseBotInternals(this, botInfo, null, null);
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
@@ -80,7 +79,7 @@ public abstract class BaseBot : IBaseBot
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     /// <param name="serverUrl">Is the server URL</param>
     protected BaseBot(BotInfo botInfo, Uri serverUrl) =>
-        __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, null);
+        BaseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, null);
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
@@ -89,176 +88,176 @@ public abstract class BaseBot : IBaseBot
     /// <param name="serverUrl">Is the server URL</param>
     /// <param name="serverSecret">Is the server secret for bots</param>
     protected BaseBot(BotInfo botInfo, Uri serverUrl, string serverSecret) =>
-        __baseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, serverSecret);
+        BaseBotInternals = new BaseBotInternals(this, botInfo, serverUrl, serverSecret);
 
     /// <inheritdoc/>
-    public void Start() => __baseBotInternals.Start();
+    public void Start() => BaseBotInternals.Start();
 
     /// <inheritdoc/>
-    public void Go() => __baseBotInternals.Execute();
+    public void Go() => BaseBotInternals.Execute();
 
     /// <inheritdoc/>
-    public string Variant => __baseBotInternals.Variant;
+    public string Variant => BaseBotInternals.Variant;
 
     /// <inheritdoc/>
-    public string Version => __baseBotInternals.Version;
+    public string Version => BaseBotInternals.Version;
 
     /// <inheritdoc/>
-    public int MyId => __baseBotInternals.MyId;
+    public int MyId => BaseBotInternals.MyId;
 
     /// <inheritdoc/>
-    public string GameType => __baseBotInternals.GameSetup.GameType;
+    public string GameType => BaseBotInternals.GameSetup.GameType;
 
     /// <inheritdoc/>
-    public int ArenaWidth => __baseBotInternals.GameSetup.ArenaWidth;
+    public int ArenaWidth => BaseBotInternals.GameSetup.ArenaWidth;
 
     /// <inheritdoc/>
-    public int ArenaHeight => __baseBotInternals.GameSetup.ArenaHeight;
+    public int ArenaHeight => BaseBotInternals.GameSetup.ArenaHeight;
 
     /// <inheritdoc/>
-    public int NumberOfRounds => __baseBotInternals.GameSetup.NumberOfRounds;
+    public int NumberOfRounds => BaseBotInternals.GameSetup.NumberOfRounds;
 
     /// <inheritdoc/>
-    public double GunCoolingRate => __baseBotInternals.GameSetup.GunCoolingRate;
+    public double GunCoolingRate => BaseBotInternals.GameSetup.GunCoolingRate;
 
     /// <inheritdoc/>
-    public int? MaxInactivityTurns => __baseBotInternals.GameSetup.MaxInactivityTurns;
+    public int? MaxInactivityTurns => BaseBotInternals.GameSetup.MaxInactivityTurns;
 
     /// <inheritdoc/>
-    public int TurnTimeout => __baseBotInternals.GameSetup.TurnTimeout;
+    public int TurnTimeout => BaseBotInternals.GameSetup.TurnTimeout;
 
     /// <inheritdoc/>
-    public int TimeLeft => __baseBotInternals.TimeLeft;
+    public int TimeLeft => BaseBotInternals.TimeLeft;
 
     /// <inheritdoc/>
-    public int RoundNumber => __baseBotInternals.CurrentTickOrThrow.RoundNumber;
+    public int RoundNumber => BaseBotInternals.CurrentTickOrThrow.RoundNumber;
 
     /// <inheritdoc/>
-    public int TurnNumber => __baseBotInternals.CurrentTickOrThrow.TurnNumber;
+    public int TurnNumber => BaseBotInternals.CurrentTickOrThrow.TurnNumber;
 
     /// <inheritdoc/>
-    public int EnemyCount => __baseBotInternals.CurrentTickOrThrow.EnemyCount;
+    public int EnemyCount => BaseBotInternals.CurrentTickOrThrow.EnemyCount;
 
     /// <inheritdoc/>
-    public double Energy => __baseBotInternals.CurrentTickOrThrow.BotState.Energy;
+    public double Energy => BaseBotInternals.CurrentTickOrThrow.BotState.Energy;
 
     /// <inheritdoc/>
     public bool IsDisabled => Energy == 0;
 
     /// <inheritdoc/>
-    public double X => __baseBotInternals.CurrentTickOrThrow.BotState.X;
+    public double X => BaseBotInternals.CurrentTickOrThrow.BotState.X;
 
     /// <inheritdoc/>
-    public double Y => __baseBotInternals.CurrentTickOrThrow.BotState.Y;
+    public double Y => BaseBotInternals.CurrentTickOrThrow.BotState.Y;
 
     /// <inheritdoc/>
-    public double Direction => __baseBotInternals.CurrentTickOrThrow.BotState.Direction;
+    public double Direction => BaseBotInternals.CurrentTickOrThrow.BotState.Direction;
 
     /// <inheritdoc/>
-    public double GunDirection => __baseBotInternals.CurrentTickOrThrow.BotState.GunDirection;
+    public double GunDirection => BaseBotInternals.CurrentTickOrThrow.BotState.GunDirection;
 
     /// <inheritdoc/>
-    public double RadarDirection => __baseBotInternals.CurrentTickOrThrow.BotState.RadarDirection;
+    public double RadarDirection => BaseBotInternals.CurrentTickOrThrow.BotState.RadarDirection;
 
     /// <inheritdoc/>
-    public double Speed => __baseBotInternals.Speed;
+    public double Speed => BaseBotInternals.Speed;
 
     /// <inheritdoc/>
-    public double GunHeat => __baseBotInternals.GunHeat;
+    public double GunHeat => BaseBotInternals.GunHeat;
 
     /// <inheritdoc/>
-    public IEnumerable<BulletState> BulletStates => __baseBotInternals.BulletStates;
+    public IEnumerable<BulletState> BulletStates => BaseBotInternals.BulletStates;
 
     /// <inheritdoc/>
-    public IList<BotEvent> Events => __baseBotInternals.Events;
+    public IList<BotEvent> Events => BaseBotInternals.Events;
 
     /// <inheritdoc/>
-    public void ClearEvents() => __baseBotInternals.ClearEvents();
+    public void ClearEvents() => BaseBotInternals.ClearEvents();
 
     /// <inheritdoc/>
     public virtual double TurnRate
     {
-        set => __baseBotInternals.TurnRate = value;
-        get => __baseBotInternals.TurnRate;
+        set => BaseBotInternals.TurnRate = value;
+        get => BaseBotInternals.TurnRate;
     }
 
     /// <inheritdoc/>
     public double MaxTurnRate
     {
-        set => __baseBotInternals.MaxTurnRate = value;
-        get => __baseBotInternals.MaxTurnRate;
+        set => BaseBotInternals.MaxTurnRate = value;
+        get => BaseBotInternals.MaxTurnRate;
     }
 
     /// <inheritdoc/>
     public virtual double GunTurnRate
     {
-        set => __baseBotInternals.GunTurnRate = value;
-        get => __baseBotInternals.GunTurnRate;
+        set => BaseBotInternals.GunTurnRate = value;
+        get => BaseBotInternals.GunTurnRate;
     }
 
     /// <inheritdoc/>
     public double MaxGunTurnRate
     {
-        set => __baseBotInternals.MaxGunTurnRate = value;
-        get => __baseBotInternals.MaxGunTurnRate;
+        set => BaseBotInternals.MaxGunTurnRate = value;
+        get => BaseBotInternals.MaxGunTurnRate;
     }
 
     /// <inheritdoc/>
     public virtual double RadarTurnRate
     {
-        set => __baseBotInternals.RadarTurnRate = value;
-        get => __baseBotInternals.RadarTurnRate;
+        set => BaseBotInternals.RadarTurnRate = value;
+        get => BaseBotInternals.RadarTurnRate;
     }
 
     /// <inheritdoc/>
     public double MaxRadarTurnRate
     {
-        set => __baseBotInternals.MaxRadarTurnRate = value;
-        get => __baseBotInternals.MaxRadarTurnRate;
+        set => BaseBotInternals.MaxRadarTurnRate = value;
+        get => BaseBotInternals.MaxRadarTurnRate;
     }
 
     /// <inheritdoc/>
     public double TargetSpeed
     {
-        set => __baseBotInternals.TargetSpeed = value;
-        get => __baseBotInternals.TargetSpeed;
+        set => BaseBotInternals.TargetSpeed = value;
+        get => BaseBotInternals.TargetSpeed;
     }
 
     /// <inheritdoc/>
     public double MaxSpeed
     {
-        set => __baseBotInternals.MaxSpeed = value;
-        get => __baseBotInternals.MaxSpeed;
+        set => BaseBotInternals.MaxSpeed = value;
+        get => BaseBotInternals.MaxSpeed;
     }
 
     /// <inheritdoc/>
-    public bool SetFire(double firepower) => __baseBotInternals.SetFire(firepower);
+    public bool SetFire(double firepower) => BaseBotInternals.SetFire(firepower);
 
     /// <inheritdoc/>
-    public void SetRescan() => __baseBotInternals.BotIntent.Rescan = true;
+    public void SetRescan() => BaseBotInternals.BotIntent.Rescan = true;
 
-    public void SetFireAssist(bool enable) => __baseBotInternals.BotIntent.FireAssist = enable;
+    public void SetFireAssist(bool enable) => BaseBotInternals.BotIntent.FireAssist = enable;
     
     /// <inheritdoc/>
     public bool Interruptible {
-        set => __baseBotInternals.SetInterruptible(value);
+        set => BaseBotInternals.SetInterruptible(value);
     }
 
     /// <inheritdoc/>
-    public double Firepower => __baseBotInternals.BotIntent.Firepower ?? 0;
+    public double Firepower => BaseBotInternals.BotIntent.Firepower ?? 0;
 
     /// <inheritdoc/>
     public bool AdjustGunForBodyTurn
     {
-        set => __baseBotInternals.BotIntent.AdjustGunForBodyTurn = value;
-        get => __baseBotInternals.BotIntent.AdjustGunForBodyTurn ?? false;
+        set => BaseBotInternals.BotIntent.AdjustGunForBodyTurn = value;
+        get => BaseBotInternals.BotIntent.AdjustGunForBodyTurn ?? false;
     }
 
     /// <inheritdoc/>
     public bool AdjustRadarForBodyTurn
     {
-        set => __baseBotInternals.BotIntent.AdjustRadarForBodyTurn = value;
-        get => __baseBotInternals.BotIntent.AdjustRadarForBodyTurn ?? false;
+        set => BaseBotInternals.BotIntent.AdjustRadarForBodyTurn = value;
+        get => BaseBotInternals.BotIntent.AdjustRadarForBodyTurn ?? false;
     }
 
     /// <inheritdoc/>
@@ -266,91 +265,91 @@ public abstract class BaseBot : IBaseBot
     {
         set
         {
-            var botIntent = __baseBotInternals.BotIntent;
+            var botIntent = BaseBotInternals.BotIntent;
             botIntent.AdjustRadarForGunTurn = value;
             botIntent.FireAssist = !value;
         }
-        get => __baseBotInternals.BotIntent.AdjustRadarForGunTurn ?? false;
+        get => BaseBotInternals.BotIntent.AdjustRadarForGunTurn ?? false;
     }
 
     /// <inheritdoc/>
-    public bool AddCustomEvent(Condition condition) => __baseBotInternals.AddCondition(condition);
+    public bool AddCustomEvent(Condition condition) => BaseBotInternals.AddCondition(condition);
 
     /// <inheritdoc/>
-    public bool RemoveCustomEvent(Condition condition) => __baseBotInternals.RemoveCondition(condition);
+    public bool RemoveCustomEvent(Condition condition) => BaseBotInternals.RemoveCondition(condition);
 
     /// <inheritdoc/>
-    public void SetStop() => __baseBotInternals.SetStop(false);
+    public void SetStop() => BaseBotInternals.SetStop(false);
 
     /// <inheritdoc/>
-    public void SetStop(bool overwrite) => __baseBotInternals.SetStop(overwrite);
+    public void SetStop(bool overwrite) => BaseBotInternals.SetStop(overwrite);
 
     /// <inheritdoc/>
-    public void SetResume() => __baseBotInternals.SetResume();
+    public void SetResume() => BaseBotInternals.SetResume();
 
     /// <inheritdoc/>
-    public bool IsStopped => __baseBotInternals.IsStopped;
+    public bool IsStopped => BaseBotInternals.IsStopped;
 
     /// <inheritdoc/>
-    public ICollection<int> TeammateIds => __baseBotInternals.TeammateIds;
+    public ICollection<int> TeammateIds => BaseBotInternals.TeammateIds;
 
     /// <inheritdoc/>
-    public bool IsTeammate(int botId) => __baseBotInternals.IsTeammate(botId);
+    public bool IsTeammate(int botId) => BaseBotInternals.IsTeammate(botId);
 
     /// <inheritdoc/>
-    public void BroadcastTeamMessage(object message) => __baseBotInternals.BroadcastTeamMessage(message);
+    public void BroadcastTeamMessage(object message) => BaseBotInternals.BroadcastTeamMessage(message);
 
     /// <inheritdoc/>
     public void SendTeamMessage(int teammateId, object message) =>
-        __baseBotInternals.SendTeamMessage(teammateId, message);
+        BaseBotInternals.SendTeamMessage(teammateId, message);
 
     /// <inheritdoc/>
     public Color BodyColor
     {
-        get => __baseBotInternals.BodyColor;
-        set => __baseBotInternals.BodyColor = value;
+        get => BaseBotInternals.BodyColor;
+        set => BaseBotInternals.BodyColor = value;
     }
 
     /// <inheritdoc/>
     public Color TurretColor
     {
-        get => __baseBotInternals.TurretColor;
-        set => __baseBotInternals.TurretColor = value;
+        get => BaseBotInternals.TurretColor;
+        set => BaseBotInternals.TurretColor = value;
     }
 
     /// <inheritdoc/>
     public Color RadarColor
     {
-        get => __baseBotInternals.RadarColor;
-        set => __baseBotInternals.RadarColor = value;
+        get => BaseBotInternals.RadarColor;
+        set => BaseBotInternals.RadarColor = value;
     }
 
     /// <inheritdoc/>
     public Color BulletColor
     {
-        get => __baseBotInternals.BulletColor;
-        set => __baseBotInternals.BulletColor = value;
+        get => BaseBotInternals.BulletColor;
+        set => BaseBotInternals.BulletColor = value;
     }
 
     /// <inheritdoc/>
     public Color ScanColor
     {
-        get => __baseBotInternals.ScanColor;
-        set => __baseBotInternals.ScanColor = value;
+        get => BaseBotInternals.ScanColor;
+        set => BaseBotInternals.ScanColor = value;
     }
 
     /// <inheritdoc/>
     public Color TracksColor
     {
-        get => __baseBotInternals.TracksColor;
-        set => __baseBotInternals.TracksColor = value;
+        get => BaseBotInternals.TracksColor;
+        set => BaseBotInternals.TracksColor = value;
     }
 
     /// <inheritdoc/>
     public Color GunColor
     {
-        get => __baseBotInternals.GunColor;
-        set => __baseBotInternals.GunColor = value;
+        get => BaseBotInternals.GunColor;
+        set => BaseBotInternals.GunColor = value;
     }
 
     /// <inheritdoc/>
@@ -414,11 +413,11 @@ public abstract class BaseBot : IBaseBot
     }
 
     /// <inheritdoc/>
-    public virtual int GetEventPriority(Type eventType) => __baseBotInternals.GetPriority(eventType);
+    public virtual int GetEventPriority(Type eventType) => BaseBotInternals.GetPriority(eventType);
 
     /// <inheritdoc/>
     public virtual void SetEventPriority(Type eventType, int priority) =>
-        __baseBotInternals.SetPriority(eventType, priority);
+        BaseBotInternals.SetPriority(eventType, priority);
 
     /// <inheritdoc/>
     public virtual void OnConnected(ConnectedEvent connectedEvent) =>

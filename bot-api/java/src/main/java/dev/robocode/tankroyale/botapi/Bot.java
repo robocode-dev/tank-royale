@@ -11,7 +11,7 @@ import java.net.URI;
  */
 public abstract class Bot extends BaseBot implements IBot {
 
-    private final BotInternals __botInternals = new BotInternals(this, super.__baseBotInternals);
+    private final BotInternals botInternals = new BotInternals(this, super.baseBotInternals);
 
     /**
      * @see BaseBot#BaseBot()
@@ -46,7 +46,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void setTurnRate(double turnRate) {
-        __botInternals.setTurnRate(turnRate);
+        botInternals.setTurnRate(turnRate);
     }
 
     /**
@@ -54,7 +54,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void setGunTurnRate(double turnRate) {
-        __botInternals.setGunTurnRate(turnRate);
+        botInternals.setGunTurnRate(turnRate);
     }
 
     /**
@@ -62,7 +62,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void setRadarTurnRate(double turnRate) {
-        __botInternals.setRadarTurnRate(turnRate);
+        botInternals.setRadarTurnRate(turnRate);
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final boolean isRunning() {
-        return __botInternals.isRunning();
+        return botInternals.isRunning();
     }
 
     /**
@@ -78,7 +78,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void setTargetSpeed(double targetSpeed) {
-        __botInternals.setTargetSpeed(targetSpeed);
+        botInternals.setTargetSpeed(targetSpeed);
     }
 
     /**
@@ -86,7 +86,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void setForward(double distance) {
-        __botInternals.setForward(distance);
+        botInternals.setForward(distance);
     }
 
     /**
@@ -94,7 +94,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void forward(double distance) {
-        __botInternals.forward(distance);
+        botInternals.forward(distance);
     }
 
     /**
@@ -118,7 +118,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final double getDistanceRemaining() {
-        return __botInternals.getDistanceRemaining();
+        return botInternals.getDistanceRemaining();
     }
 
     /**
@@ -126,7 +126,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void setTurnLeft(double degrees) {
-        __botInternals.setTurnLeft(degrees);
+        botInternals.setTurnLeft(degrees);
     }
 
     /**
@@ -134,7 +134,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void turnLeft(double degrees) {
-        __botInternals.turnLeft(degrees);
+        botInternals.turnLeft(degrees);
     }
 
     /**
@@ -158,7 +158,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final double getTurnRemaining() {
-        return __botInternals.getTurnRemaining();
+        return botInternals.getTurnRemaining();
     }
 
     /**
@@ -166,7 +166,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void setTurnGunLeft(double degrees) {
-        __botInternals.setTurnGunLeft(degrees);
+        botInternals.setTurnGunLeft(degrees);
     }
 
     /**
@@ -174,7 +174,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void turnGunLeft(double degrees) {
-        __botInternals.turnGunLeft(degrees);
+        botInternals.turnGunLeft(degrees);
     }
 
     /**
@@ -198,7 +198,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final double getGunTurnRemaining() {
-        return __botInternals.getGunTurnRemaining();
+        return botInternals.getGunTurnRemaining();
     }
 
     /**
@@ -206,7 +206,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void setTurnRadarLeft(double degrees) {
-        __botInternals.setTurnRadarLeft(degrees);
+        botInternals.setTurnRadarLeft(degrees);
     }
 
     /**
@@ -214,7 +214,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void turnRadarLeft(double degrees) {
-        __botInternals.turnRadarLeft(degrees);
+        botInternals.turnRadarLeft(degrees);
     }
 
     /**
@@ -238,7 +238,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final double getRadarTurnRemaining() {
-        return __botInternals.getRadarTurnRemaining();
+        return botInternals.getRadarTurnRemaining();
     }
 
     /**
@@ -246,7 +246,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void fire(double firepower) {
-        __botInternals.fire(firepower);
+        botInternals.fire(firepower);
     }
 
     /**
@@ -254,7 +254,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void stop() {
-        __botInternals.stop(false);
+        botInternals.stop(false);
     }
 
     /**
@@ -262,7 +262,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void stop(boolean overwrite) {
-        __botInternals.stop(overwrite);
+        botInternals.stop(overwrite);
     }
 
     /**
@@ -270,7 +270,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void resume() {
-        __botInternals.resume();
+        botInternals.resume();
     }
 
     /**
@@ -278,7 +278,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void rescan() {
-        __botInternals.rescan();
+        botInternals.rescan();
     }
 
     /**
@@ -286,6 +286,6 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final void waitFor(Condition condition) {
-        __botInternals.waitFor(condition::test);
+        botInternals.waitFor(condition::test);
     }
 }
