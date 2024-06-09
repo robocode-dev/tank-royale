@@ -9,6 +9,10 @@ import static dev.robocode.tankroyale.botapi.Color.fromString;
  */
 public final class BotStateMapper {
 
+    // Hide constructor to prevent instantiation
+    private BotStateMapper() {
+    }
+
     public static BotState map(final dev.robocode.tankroyale.schema.BotState source) {
         return new BotState(
                 source.getIsDroid(),
