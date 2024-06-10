@@ -12,6 +12,7 @@ import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import org.slf4j.LoggerFactory
+import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.util.*
@@ -82,7 +83,7 @@ class ConnectionHandler(
     ) {
         conn.remoteSocketAddress?.let { address ->
             botAddresses.forEach { botAddress ->
-                if (toIpAddress(address) == toIpAddress(address) && botAddress.port == address.port) {
+                if (toIpAddress(address) == toIpAddress(botAddress) && botAddress.port == address.port) {
                     foundConnections += conn
                     return@forEach
                 }
@@ -90,10 +91,14 @@ class ConnectionHandler(
         }
     }
 
-    private fun toIpAddress(address: InetSocketAddress): String {
-        val ip = address.toString().split("/")[1]
-        return if (ip.equals("localhost", true)) "127.0.0.1" else ip
-    }
+    private fun toIpAddress(address: InetSocketAddress) =
+        localhostToIpAddress(address.hostName)
+
+    private fun toIpAddress(botAddress: BotAddress) =
+        localhostToIpAddress(InetAddress.getByName(botAddress.host).hostAddress)
+
+    private fun localhostToIpAddress(hostname: String) =
+        if (hostname.equals("localhost", true)) "127.0.0.1" else hostname
 
     private fun shutdownAndAwaitTermination(pool: ExecutorService) {
         pool.apply {
@@ -164,7 +169,9 @@ class ConnectionHandler(
 
     private inner class WebSocketObserver(address: InetSocketAddress) : WebSocketServer(address) {
 
-        override fun onStart() {}
+        override fun onStart() {
+            // Do nothing
+        }
 
         override fun onOpen(conn: WebSocket, handshake: ClientHandshake) {
             log.debug("onOpen(): {}", conn.remoteSocketAddress)
