@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.util
 
-import java.io.IOException
 import java.net.URL
 import java.net.URLConnection
 import java.net.URLStreamHandler
@@ -13,24 +12,23 @@ import java.net.URLStreamHandler
 object RegisterWsProtocol {
 
     init {
-        registerProtocol()
+        registerWebSocketProtocol()
     }
 
-    private fun registerProtocol() {
+    private fun registerWebSocketProtocol() {
         URL.setURLStreamHandlerFactory { protocol ->
-            if ("ws" == protocol || "wss" == protocol)
-                object : URLStreamHandler() {
-                    @Throws(IOException::class)
-                    override fun openConnection(url: URL): URLConnection {
-                        return object : URLConnection(url) {
-                            @Throws(IOException::class)
+            when (protocol) {
+                "ws", "wss" ->
+                    object : URLStreamHandler() {
+                        override fun openConnection(url: URL) = object : URLConnection(url) {
                             override fun connect() {
+                                // Do nothing
                             }
                         }
                     }
-                }
-            else
-                null
+
+                else -> null
+            }
         }
     }
 }
