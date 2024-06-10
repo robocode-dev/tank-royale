@@ -27,7 +27,9 @@ import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
 import javax.swing.*
 
+@SuppressWarnings("kotlin:S1192") // allow duplicated string literals
 object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,grow]", "[grow][grow]")), FocusListener {
+    private fun readResolve(): Any = BotSelectionPanel
 
     private val onFilterDropdown = Event<JComboBox<String>>()
 
@@ -354,7 +356,9 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         update()
     }
 
-    override fun focusLost(e: FocusEvent?) {}
+    override fun focusLost(e: FocusEvent?) {
+        // Do nothing
+    }
 
     fun update() {
         enqueue {
