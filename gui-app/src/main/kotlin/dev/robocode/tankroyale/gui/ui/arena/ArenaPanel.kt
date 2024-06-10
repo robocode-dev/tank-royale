@@ -354,6 +354,7 @@ object ArenaPanel : JPanel() {
             }
 
         } catch (ignore: NoSuchElementException) {
+            // Do nothing
         }
 
         oldState.restore(g)
