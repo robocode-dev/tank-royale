@@ -123,14 +123,12 @@ object GamesSettings : PropertiesStore("Robocode Games Settings", "games.propert
                 "boolean" -> theField.setBoolean(gameType, value.toBoolean())
                 "int" -> theField.setInt(gameType, value.toInt())
                 "double" -> theField.setDouble(gameType, value.toDouble())
-                "java.lang.Integer" -> theField.set(
-                    gameType, try {
-                        Integer.parseInt(value)
-                    } catch (e: NumberFormatException) {
-                        null
-                    }
-                )
-                "java.lang.String" -> theField.set(gameType, value)
+                "java.lang.Integer" -> theField[gameType] = try {
+                    Integer.parseInt(value)
+                } catch (e: NumberFormatException) {
+                    null
+                }
+                "java.lang.String" -> theField[gameType] = value
                 else -> throw RuntimeException("Type is missing implementation: ${theField.type.name}")
             }
         }
@@ -157,7 +155,7 @@ object GamesSettings : PropertiesStore("Robocode Games Settings", "games.propert
 
             val field = javaClass.getDeclaredField(prop.name)
             field.isAccessible = true
-            var value = field.get(gameSetup)?.toString()
+            var value = field[gameSetup]?.toString()
             if (value == null) {
                 value = ""
             }
