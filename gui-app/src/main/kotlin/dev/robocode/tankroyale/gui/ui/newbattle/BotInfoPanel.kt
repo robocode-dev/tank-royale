@@ -136,10 +136,8 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
             }
 
             addHyperlinkListener {
-                if (it.eventType == HyperlinkEvent.EventType.ACTIVATED) {
-                    if (Desktop.isDesktopSupported()) {
-                        Desktop.getDesktop().browse(it.url.toURI())
-                    }
+                if (it.eventType == HyperlinkEvent.EventType.ACTIVATED && Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().browse(it.url.toURI())
                 }
             }
         }
