@@ -8,7 +8,9 @@ import javax.swing.UIManager
 fun main() {
     try {
         Taskbar.getTaskbar().iconImage = RcImages.tankImage // for macOS
-    } catch (ignore: UnsupportedOperationException) {}
+    } catch (ignore: UnsupportedOperationException) {
+        // No nothing if the taskbar is unsupported
+    }
 
     fixRenderingIssues() // set before Look and Feel
 

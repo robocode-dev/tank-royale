@@ -28,7 +28,9 @@ object SoundActions {
                     is BotHitBotEvent -> playBotsCollision()
                     is BulletHitBulletEvent -> playBulletsCollision()
                     is BotDeathEvent -> playDeathExplosion()
-                    else -> {}
+                    else -> {
+                        // Do nothing
+                    }
                 }
             }
         }

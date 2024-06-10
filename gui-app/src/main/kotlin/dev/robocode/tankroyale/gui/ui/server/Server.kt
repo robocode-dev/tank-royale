@@ -47,6 +47,7 @@ object Server {
             try {
                 Client.connect()
             } catch (ignore: Exception) {
+                // Do nothing, we try again within a loop
             }
             connected.await(500, TimeUnit.MILLISECONDS)
         }

@@ -200,7 +200,9 @@ object Client {
             is GameResumedEvent -> handleGameResumed(type)
             is RoundStartedEvent -> handleRoundStarted(type)
             is RoundEndedEvent -> handleRoundEnded(type)
-            is TpsChangedEvent -> {} // do nothing to prevent TPS change loop between server and client
+            is TpsChangedEvent -> {
+                // do nothing to prevent TPS change loop between server and client
+            }
             else -> throw IllegalArgumentException("Unknown content type: $type")
         }
     }
