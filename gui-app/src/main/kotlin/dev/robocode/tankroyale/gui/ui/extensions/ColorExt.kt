@@ -32,22 +32,27 @@ object ColorExt {
         val r = red / 255f
         val g = green / 255f
         val b = blue / 255f
-        val max = if (r > g && r > b) r else if (g > b) g else b
-        val min = if (r < g && r < b) r else if (g < b) g else b
-        var h: Float
-        val s: Float
-        val l: Float
-        l = (max + min) / 2
-        if (max == min) {
-            s = 0f
-            h = s
-        } else {
-            val d = max - min
-            s = if (l > 0.5f) d / (2 - max - min) else d / (max + min)
-            h = if (r > g && r > b) (g - b) / d + (if (g < b) 6 else 0)
-            else if (g > b) (b - r) / d + 2
-            else (r - g) / d + 4
-            h /= 6
+
+        val max = maxOf(r, g, b)
+        val min = minOf(r, g, b)
+
+        val l = (max + min) / 2
+
+        val s = if (max == min) 0f else if (l > 0.5f) (max - min) / (2 - max - min) else (max - min) / (max + min)
+
+        val h = when (max) {
+            r -> when (min) {
+                g -> (g - b) / (max - min) + (if (g < b) 6 else 0)
+                else -> (b - r) / (max - min) + 2
+            }
+
+            g -> {
+                (b - r) / (max - min) + 4
+            }
+
+            else -> {
+                (r - g) / (max - min) + 6
+            }
         }
         return HslColor(h, s, l)
     }
