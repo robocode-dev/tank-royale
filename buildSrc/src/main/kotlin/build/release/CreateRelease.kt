@@ -11,17 +11,17 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 
+const val JAR_MIME_TYPE = "application/java-archive"
+const val ZIP_MIME_TYPE = "application/zip"
 
 fun createRelease(projectDir: File, version: String, token: String) {
 
     val release = prepareRelease(projectDir, version, token)
-    val releaseId = JSONObject(release).get("id").toString().toInt()
-
-//    println("releaseId: $releaseId");
+    val releaseId = JSONObject(release)["id"].toString().toInt()
 
     // GUI Application
     uploadAsset(projectDir, releaseId, token, "gui-app/build/libs/robocode-tankroyale-gui-$version.jar",
-        "application/java-archive", "GUI Application (jar)")
+        JAR_MIME_TYPE, "GUI Application (jar)")
 
     // Server
     Files.delete(Path.of("$projectDir/server/build/libs/robocode-tankroyale-server-$version.jar"))
@@ -30,7 +30,7 @@ fun createRelease(projectDir: File, version: String, token: String) {
         Path.of("$projectDir/server/build/libs/robocode-tankroyale-server-$version.jar")
     )
     uploadAsset(projectDir, releaseId, token, "server/build/libs/robocode-tankroyale-server-$version.jar",
-        "application/java-archive", "Server (jar)")
+        JAR_MIME_TYPE, "Server (jar)")
 
     // Booter
     Files.delete(Path.of("$projectDir/booter/build/libs/robocode-tankroyale-booter-$version.jar"))
@@ -39,15 +39,15 @@ fun createRelease(projectDir: File, version: String, token: String) {
         Path.of("$projectDir/booter/build/libs/robocode-tankroyale-booter-$version.jar")
     )
     uploadAsset(projectDir, releaseId, token, "booter/build/libs/robocode-tankroyale-booter-$version.jar",
-        "application/java-archive", "Booter (jar)")
+        JAR_MIME_TYPE, "Booter (jar)")
 
     // Sample Bots for C#
     uploadAsset(projectDir, releaseId, token, "sample-bots/csharp/build/sample-bots-csharp-$version.zip",
-        "application/zip", "Sample bots for C# (zip)")
+        ZIP_MIME_TYPE, "Sample bots for C# (zip)")
 
     // Sample Bots for Java
     uploadAsset(projectDir, releaseId, token, "sample-bots/java/build/sample-bots-java-$version.zip",
-        "application/zip", "Sample bots for Java (zip)")
+        ZIP_MIME_TYPE, "Sample bots for Java (zip)")
 }
 
 private fun prepareRelease(projectDir: File, version: String, token: String): String /* JSON result */ {
