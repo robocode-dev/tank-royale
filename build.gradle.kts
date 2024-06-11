@@ -15,7 +15,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.nexus.publish)
 
-    alias(libs.plugins.benmanes.versioning) // dependency management only
+    alias(libs.plugins.benmanes.versions) // dependency management only
 }
 
 subprojects {

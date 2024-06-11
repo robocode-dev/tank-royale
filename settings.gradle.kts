@@ -1,5 +1,7 @@
 rootProject.name = "robocode-tank-royale"
 
+val version: String = providers.gradleProperty("version").get()
+
 // Schema Generator
 include("schema:jvm")
 include("schema:dotnet")
@@ -24,54 +26,14 @@ include("sample-bots:csharp")
 // Docs
 include("buildDocs")
 
-
-val tankroyaleVersion: String = providers.gradleProperty("version").get()
-
-val kotlinVersion = "2.0.0"
-val junitVersion = "5.11.0-M2"
-val kotestVersion = "5.9.1"
-
-// Check dependencies with this command:  gradle dependencyUpdates
-
+// Check dependencies with this command:  gradlew dependencyUpdates -Drevision=release
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("tankroyale", tankroyaleVersion)
-            version("node", "15.5.1")
-
-            library("gson", "com.google.code.gson:gson:2.10.1")
-            library("gson-extras", "org.danilopianini:gson-extras:1.3.0")
-            library("jansi", "org.fusesource.jansi:jansi:2.4.1")
-            library("java-websocket", "org.java-websocket:Java-WebSocket:1.5.6")
-            library("picocli", "info.picocli:picocli:4.7.6")
-            library("proguard-gradle", "com.guardsquare:proguard-gradle:7.5.0")
-            library("miglayout-swing", "com.miglayout:miglayout-swing:11.3")
-            library("nv-i18n", "com.neovisionaries:nv-i18n:1.29")
-            library("serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
-            library("slf4j-simple", "org.slf4j:slf4j-simple:2.1.0-alpha1")
-
-            // Java testing
-            library("assertj", "org.assertj:assertj-core:3.26.0")
-            library("junit-api", "org.junit.jupiter:junit-jupiter-api:$junitVersion")
-            library("junit-engine", "org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-            library("junit-params", "org.junit.jupiter:junit-jupiter-params:$junitVersion")
-            library("system-stubs", "uk.org.webcompere:system-stubs-jupiter:2.1.6")
-
-            // Kotlin testing
-            library("kotest-junit5", "io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
-            library("kotest-datatest", "io.kotest:kotest-framework-datatest:$kotestVersion")
-            library("mockk", "io.mockk:mockk:1.13.11")
-
-            // plugins
-            plugin("kotlin-jvm", "org.jetbrains.kotlin.jvm").version(kotlinVersion)
-            plugin("kotlin-serialization", "org.jetbrains.kotlin.plugin.serialization").version(kotlinVersion)
-            plugin("nexus-publish", "io.github.gradle-nexus.publish-plugin").version("2.0.0")
-            plugin("shadow-jar","com.github.johnrengelman.shadow").version("8.1.1")
-            plugin("node-gradle", "com.github.node-gradle.node").version("7.0.2")
-            plugin("jsonschema2pojo", "org.jsonschema2pojo").version("1.2.1")
-
-            // Dependencies versions with `gradlew dependencyUpdates -Drevision=release`
-            plugin("benmanes-versioning", "com.github.ben-manes.versions").version("0.51.0")
+            version("tankroyale", version)
+        }
+        create("testLibs") {
+            from(files("gradle/test-libs.versions.toml"))
         }
     }
 }

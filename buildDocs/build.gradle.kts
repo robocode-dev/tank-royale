@@ -7,7 +7,7 @@ plugins {
 }
 
 node {
-    version.set(libs.versions.node)
+    version.set(libs.versions.node.toString())
 }
 
 tasks {

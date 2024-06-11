@@ -1,0 +1,25 @@
+[versions]
+
+assertj = "3.26.0"
+junit = "5.11.0-M2"
+system-stubs = "2.1.6"
+kotest = "5.9.1"
+mockk = "1.13.11"
+
+[libraries]
+
+# Java testing
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
+system-stubs = { module = "uk.org.webcompere:system-stubs-jupiter", version.ref = "system-stubs" }
+
+# Kotlin testing
+kotest-junit5 = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
+kotest-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+
+[bundles]
+
+[plugins]

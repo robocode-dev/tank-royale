@@ -33,9 +33,9 @@ dependencies {
     implementation(libs.jansi)
     implementation(libs.gson)
 
-    testImplementation(libs.kotest.junit5)
-    testImplementation(libs.kotest.datatest)
-    testImplementation(libs.mockk)
+    testImplementation(testLibs.kotest.junit5)
+    testImplementation(testLibs.kotest.datatest)
+    testImplementation(testLibs.mockk)
 }
 
 java {

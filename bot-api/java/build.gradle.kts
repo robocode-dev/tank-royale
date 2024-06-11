@@ -33,12 +33,12 @@ dependencies {
     implementation(libs.gson.extras)
     implementation(libs.nv.i18n)
 
-    testImplementation(libs.junit.api)
-    testImplementation(libs.junit.params)
-    testImplementation(libs.junit.engine)
-    testImplementation(libs.assertj)
-    testImplementation(libs.java.websocket)
-    testImplementation(libs.system.stubs)
+    testImplementation(testLibs.junit.api)
+    testImplementation(testLibs.junit.params)
+    testImplementation(testLibs.junit.engine)
+    testImplementation(testLibs.assertj)
+    testImplementation(testLibs.system.stubs)
+    testImplementation(libs.java.websocket) // for mocked server
 }
 
 tasks {
