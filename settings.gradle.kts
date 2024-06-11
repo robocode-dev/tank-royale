@@ -1,3 +1,5 @@
+rootProject.name = "robocode-tank-royale"
+
 // Schema Generator
 include("schema:jvm")
 include("schema:dotnet")
