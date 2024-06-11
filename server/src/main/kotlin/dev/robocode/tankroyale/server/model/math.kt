@@ -169,7 +169,7 @@ fun isPointOnLine(point: Point, line: Line): Boolean {
  * http://www.java-gaming.org/index.php?topic=22590.0 <br></br>
  * http://gigglingcorpse.com/2015/06/25/line-segment-intersection/
  *
- * His algorithm is based on based on Franklin Antonio's "Faster Line Segment Intersection" topic "in Graphics Gems
+ * This algorithm is based on Franklin Antonio's "Faster Line Segment Intersection" topic "in Graphics Gems
  * III". Keith Woodward added new code to optimize Franklin's original code.
  *
  * @param line1 is the 1st line segment,
@@ -192,24 +192,16 @@ fun isLineIntersectingLine(line1: Line, line2: Line): Boolean {
     val cy = a1.y - b1.y
     val alphaNumerator = by * cx - bx * cy
     val commonDenominator = ay * bx - ax * by
-    if (commonDenominator > 0) {
-        if (alphaNumerator < 0 || alphaNumerator > commonDenominator) {
-            return false
-        }
-    } else if (commonDenominator < 0) {
-        if (alphaNumerator > 0 || alphaNumerator < commonDenominator) {
-            return false
-        }
+    if (commonDenominator > 0 && (alphaNumerator < 0 || alphaNumerator > commonDenominator)) {
+        return false
+    } else if (commonDenominator < 0 && (alphaNumerator > 0 || alphaNumerator < commonDenominator)) {
+        return false
     }
     val betaNumerator = ax * cy - ay * cx
-    if (commonDenominator > 0) {
-        if (betaNumerator < 0 || betaNumerator > commonDenominator) {
-            return false
-        }
-    } else if (commonDenominator < 0) {
-        if (betaNumerator > 0 || betaNumerator < commonDenominator) {
-            return false
-        }
+    if (commonDenominator > 0 && (betaNumerator < 0 || betaNumerator > commonDenominator)) {
+        return false
+    } else if (commonDenominator < 0 && (betaNumerator > 0 || betaNumerator < commonDenominator)) {
+        return false
     }
     if (commonDenominator == 0.0) {
         // This code wasn't in Franklin Antonio's method. It was added by Keith Woodward.
