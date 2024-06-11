@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.booter.commands
 
 import dev.robocode.tankroyale.booter.model.DirBootEntry
 import dev.robocode.tankroyale.booter.model.BootEntry
+import dev.robocode.tankroyale.booter.util.Log
 import java.nio.file.Files.exists
 import java.nio.file.Files.list
 import java.nio.file.Path
@@ -11,33 +12,42 @@ import kotlin.io.path.isDirectory
 
 class DirCommand(private val botRootPaths: List<Path>) : Command() {
 
-    fun listBootEntries(gameTypesCSV: String?, botsOnly: Boolean, teamsOnly: Boolean): List<DirBootEntry> {
-        val gameTypes: List<String> = gameTypesCSV?.split(",")?.map {
-            it.trim().lowercase(Locale.getDefault())
-        }?.filter { it.isNotBlank() } ?: emptyList()
+    fun listBootEntries(
+        gameTypesCsv: String?,
+        botsOnly: Boolean,
+        teamsOnly: Boolean
+    ): List<DirBootEntry> {
+        val gameTypes = gameTypesCsv
+            ?.split(",")
+            ?.map { it.trim().lowercase(Locale.getDefault()) }
+            ?.filter { it.isNotBlank() }
+            ?: emptyList()
 
-        val bootEntries = HashSet<DirBootEntry>()
+        val bootEntries = mutableSetOf<DirBootEntry>()
 
-        listBotDirectories().forEach { dirPath ->
+        listBotDirectories().forEach { directoryPath ->
             try {
-                getBootEntry(dirPath)?.let { bootEntry ->
-                    if (botsOnly || teamsOnly) {
-                        val isTeam = bootEntry.teamMembers?.isNotEmpty() == true
-                        if (botsOnly && isTeam) return@forEach
-                        if (teamsOnly && !isTeam) return@forEach
-                    }
-                    if (!isBootEntryContainingGameTypes(bootEntry, gameTypes)) {
-                        return@forEach
-                    }
-                    bootEntry.apply {
-                        bootEntries += dirBootEntry(dirPath, gameTypes)
+                val bootEntry = getBootEntry(directoryPath)
+                if (bootEntry != null) {
+                    if (shouldSkipBootEntry(bootEntry, botsOnly, teamsOnly)) return@forEach
+                    if (isBootEntryContainingGameTypes(bootEntry, gameTypes)) {
+                        bootEntries.add(bootEntry.dirBootEntry(directoryPath, gameTypes))
                     }
                 }
             } catch (ex: Exception) {
-                System.err.println("ERROR: ${ex.message}")
+                Log.error(ex)
             }
         }
         return bootEntries.toList()
+    }
+
+    private fun shouldSkipBootEntry(
+        bootEntry: BootEntry,
+        botsOnly: Boolean,
+        teamsOnly: Boolean
+    ): Boolean {
+        val isTeam = bootEntry.teamMembers?.isNotEmpty() == true
+        return if (botsOnly) isTeam else if (teamsOnly) !isTeam else false
     }
 
     private fun BootEntry.dirBootEntry(dirPath: Path, gameTypes: List<String>) =
@@ -79,7 +89,10 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
         return dirs
     }
 
-    private fun isBootEntryContainingGameTypes(bootEntry: BootEntry, gameTypes: List<String>): Boolean {
+    private fun isBootEntryContainingGameTypes(
+        bootEntry: BootEntry,
+        gameTypes: List<String>
+    ): Boolean {
         return if (gameTypes.isEmpty() || gameTypes.contains("custom")) {
             true
         } else {
