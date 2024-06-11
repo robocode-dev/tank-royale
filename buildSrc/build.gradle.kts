@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 description = "Robocode Tank Royale build sources"
 
 plugins {
-    kotlin("jvm").version("2.0.0")
+    alias(libs.plugins.kotlin.jvm)
 }
 
 repositories {
@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.json:json:20240303")
+    implementation(libs.json)
 }
 
 java {
