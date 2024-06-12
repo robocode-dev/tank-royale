@@ -89,8 +89,8 @@ Example:
 java -jar .\robocode-tankroyale-booter-x.y.z.jar dir c:/bots-java c:/bots-csharp --game-types=melee,classic
 ```
 
-Note that if a bot does not specify which game types it supports (leaves out the `gameTypes` field in its JSON file, the
-booter automatically include the bot it in the listing as the filtering will not apply to that bot.
+Note that if a bot does not specify which game types it supports by leaving out the `gameTypes` field in its JSON file,
+the  booter automatically include the bot it in the listing as the filtering will not apply to that bot.
 
 ## The `info` command
 
