@@ -53,6 +53,12 @@ tasks {
         dependsOn(
             shadowJar
         )
+        archiveBaseName.set(artifactBaseName)
+
+        doLast {
+            rename("java-${project.version}-javadoc.jar", "$artifactBaseName-${project.version}-javadoc.jar")
+            rename("java-${project.version}-sources.jar", "$artifactBaseName-${project.version}-sources.jar")
+        }
     }
 
     shadowJar {
