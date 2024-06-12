@@ -11,16 +11,16 @@ typealias TeamId = Long
 abstract class Command {
 
     companion object {
-        val json = Json() {
+        val json = Json {
             ignoreUnknownKeys = true
         }
     }
 
     protected fun getBootEntry(botDirPath: Path): BootEntry? {
-        val jsonPath = botDirPath.resolve("${botDirPath.fileName}.json")
-        return if (jsonPath.exists()) {
-            val content = jsonPath.toFile().readText(Charsets.UTF_8)
-            json.decodeFromString(content)
-        } else null
+        val bootEntryJsonPath = botDirPath.resolve("${botDirPath.fileName}.json")
+        if (!bootEntryJsonPath.exists()) return null
+
+        val bootEntryJsonContent = bootEntryJsonPath.toFile().readText(Charsets.UTF_8)
+        return json.decodeFromString(bootEntryJsonContent)
     }
 }
