@@ -8,8 +8,9 @@ version = libs.versions.tankroyale.get()
 
 val jarManifestMainClass = "dev.robocode.tankroyale.booter.BooterKt"
 
-val artifactBaseName = "robocode-tankroyale-booter"
-val artifactBaseFilename = "${layout.buildDirectory.get()}/libs/${artifactBaseName}-${project.version}"
+base {
+    archivesName = "robocode-tankroyale-booter" // renames _all_ archive names
+}
 
 buildscript {
     dependencies {
@@ -35,7 +36,6 @@ java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
-    withJavadocJar()
     withSourcesJar()
 }
 
@@ -52,18 +52,16 @@ tasks {
 
     shadowJar.configure {
         dependsOn(jar)
-        archiveBaseName.set(artifactBaseName)
-        archiveClassifier.set(null as String?) // get rid of "-all" classifier
+        archiveClassifier.set("all")
     }
 
     val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking
         dependsOn(shadowJar)
-        injars("${artifactBaseFilename}.jar")
-        outjars("${artifactBaseFilename}-proguard.jar")
+        injars("${base.libsDirectory.get()}/${base.archivesName}-${project.version}-all.jar")
+        outjars("${base.libsDirectory.get()}/${base.archivesName}-${project.version}.jar")
         configuration("proguard-rules.pro")
     }
 
-    val  javadocJar = named("javadocJar")
     val  sourcesJar = named("sourcesJar")
 
     publishing {
@@ -72,11 +70,10 @@ tasks {
                 artifact(proguard.get().outJarFiles[0]) {
                     builtBy(proguard)
                 }
-                artifact(javadocJar)
                 artifact(sourcesJar)
 
                 groupId = group as String?
-                artifactId = artifactBaseName
+                artifactId = base.archivesName.get()
                 version
                 pom {
                     name.set(title)

@@ -8,7 +8,7 @@ group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
 base {
-    archivesName = "robocode-tankroyale-bot-api"
+    archivesName = "robocode-tankroyale-bot-api" // renames _all_ archive names
 }
 
 val ossrhUsername: String? by project
@@ -25,12 +25,12 @@ java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
-    withJavadocJar()
     withSourcesJar()
 }
 
 dependencies {
     implementation(project(":schema:jvm"))
+
     implementation(libs.gson)
     implementation(libs.gson.extras)
     implementation(libs.nv.i18n)
@@ -56,7 +56,6 @@ tasks {
             shadowJar
         )
         doLast {
-            rename("java-${project.version}-javadoc.jar", "$base.artifactBaseName-${project.version}-javadoc.jar")
             rename("java-${project.version}-sources.jar", "$base.artifactBaseName-${project.version}-sources.jar")
         }
     }
@@ -111,14 +110,12 @@ tasks {
         into(javadocDir)
     }
 
-    val javadocJar = named("javadocJar")
     val sourcesJar = named("sourcesJar")
 
     publishing {
         publications {
             create<MavenPublication>("bot-api") {
                 artifact(shadowJar)
-                artifact(javadocJar)
                 artifact(sourcesJar)
 
                 groupId = group as String?

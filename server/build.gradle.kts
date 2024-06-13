@@ -27,6 +27,7 @@ plugins {
 
 dependencies {
     implementation(project(":schema:jvm"))
+
     implementation(libs.java.websocket)
     implementation(libs.slf4j.simple)
     implementation(libs.picocli)
@@ -63,8 +64,8 @@ tasks {
 
     val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking
         dependsOn(jar)
-        injars("${base.libsDirectory.get()}/${base.archivesName}-${project.version}-all.jar")
-        outjars("${base.libsDirectory.get()}/${base.archivesName}-${project.version}.jar")
+        injars("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}-all.jar")
+        outjars("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}.jar")
         configuration("proguard-rules.pro")
     }
 
