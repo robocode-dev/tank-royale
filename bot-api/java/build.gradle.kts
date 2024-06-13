@@ -7,7 +7,9 @@ val javadocTitle = "Robocode Tank Royale Bot API"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
-val artifactBaseName = "robocode-tankroyale-bot-api"
+base {
+    archivesName = "robocode-tankroyale-bot-api"
+}
 
 val ossrhUsername: String? by project
 val ossrhPassword: String? by project
@@ -53,11 +55,9 @@ tasks {
         dependsOn(
             shadowJar
         )
-        archiveBaseName.set(artifactBaseName)
-
         doLast {
-            rename("java-${project.version}-javadoc.jar", "$artifactBaseName-${project.version}-javadoc.jar")
-            rename("java-${project.version}-sources.jar", "$artifactBaseName-${project.version}-sources.jar")
+            rename("java-${project.version}-javadoc.jar", "$base.artifactBaseName-${project.version}-javadoc.jar")
+            rename("java-${project.version}-sources.jar", "$base.artifactBaseName-${project.version}-sources.jar")
         }
     }
 
@@ -69,7 +69,6 @@ tasks {
             attributes["Package"] = project.group
         }
         minimize()
-        archiveBaseName.set(artifactBaseName)
         archiveClassifier.set("")
     }
 
@@ -123,7 +122,7 @@ tasks {
                 artifact(sourcesJar)
 
                 groupId = group as String?
-                artifactId = artifactBaseName
+                artifactId = base.archivesName.get()
                 version
 
                 pom {
