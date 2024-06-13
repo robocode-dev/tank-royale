@@ -3,15 +3,16 @@ import com.github.gradle.node.npm.task.NpmTask
 description = "Robocode Tank Royale build documentation sources"
 
 plugins {
+    base
     alias(libs.plugins.node.gradle)
 }
 
 node {
-    version.set(libs.versions.node.toString())
+    version = "18.16.0"
 }
 
 tasks {
-    val cleanDocs by registering  {
+    clean {
         doFirst {
             delete(fileTree("../docs").matching {
                 exclude("api/**")
@@ -27,13 +28,13 @@ tasks {
     val npmBuild by registering(NpmTask::class) {
         dependsOn(npmInstall)
 
-        args.set(listOf("run", "build"))
+        args = listOf("run", "build")
     }
 
     register<Copy>("uploadDocs") {
-        dependsOn(cleanDocs, npmBuild)
+        dependsOn(clean, npmBuild)
 
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         from("build/docs")
         into("../docs")
