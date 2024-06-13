@@ -46,7 +46,8 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":booter").file("./build/libs"))
         into(file("./build/classes/kotlin/main"))
-        include("robocode-tankroyale-booter-*-proguard.jar")
+        include("robocode-tankroyale-booter-*.jar")
+        exclude("*-sources.jar", "*-all.jar")
         rename(".*", "robocode-tankroyale-booter.jar")
     }
 
@@ -56,7 +57,8 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":server").file("./build/libs"))
         into(file("./build/classes/kotlin/main"))
-        include("robocode-tankroyale-server-*-proguard.jar")
+        include("robocode-tankroyale-server-*.jar")
+        exclude("*-sources.jar", "*-all.jar")
         rename(".*", "robocode-tankroyale-server.jar")
     }
 
