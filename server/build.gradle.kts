@@ -1,7 +1,5 @@
 import proguard.gradle.ProGuardTask
 
-val archiveName = "robocode-tankroyale-server"
-
 description = "Robocode Tank Royale Server"
 
 val title = "Robocode Tank Royale Server"
@@ -9,6 +7,10 @@ group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
 val jarManifestMainClass = "dev.robocode.tankroyale.server.ServerKt"
+
+base {
+    archivesName = "robocode-tankroyale-server" // renames _all_ archive names
+}
 
 buildscript {
     dependencies {
@@ -36,15 +38,10 @@ dependencies {
     testImplementation(testLibs.mockk)
 }
 
-base {
-    archivesName = archiveName // renames _all_ archive names
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
-    withJavadocJar()
     withSourcesJar()
 }
 
@@ -59,19 +56,18 @@ tasks {
             attributes["Implementation-Vendor"] = "robocode.dev"
             attributes["Package"] = project.group
         }
-        archiveClassifier.set("plain") // the final archive will not have this classifier
+        archiveClassifier.set("all") // the final archive will not have this classifier
 
         from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     }
 
     val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking
         dependsOn(jar)
-        injars("${base.libsDirectory.get()}/${archiveName}-${project.version}-plain.jar")
-        outjars("${base.libsDirectory.get()}/${archiveName}-${project.version}.jar")
+        injars("${base.libsDirectory.get()}/${base.archivesName}-${project.version}-all.jar")
+        outjars("${base.libsDirectory.get()}/${base.archivesName}-${project.version}.jar")
         configuration("proguard-rules.pro")
     }
 
-    val javadocJar = named("javadocJar")
     val sourcesJar = named("sourcesJar")
 
     publishing {
@@ -80,11 +76,10 @@ tasks {
                 artifact(proguard.get().outJarFiles[0]) {
                     builtBy(proguard)
                 }
-                artifact(javadocJar)
                 artifact(sourcesJar)
 
                 groupId = group as String?
-                artifactId = archiveName
+                artifactId = base.archivesName.get()
                 version
 
                 pom {
