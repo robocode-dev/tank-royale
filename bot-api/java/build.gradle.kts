@@ -11,21 +11,11 @@ base {
     archivesName = "robocode-tankroyale-bot-api" // renames _all_ archive names
 }
 
-val ossrhUsername: String? by project
-val ossrhPassword: String? by project
-
 plugins {
     `java-library`
     alias(libs.plugins.shadow.jar)
     `maven-publish`
     signing
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-
-    withSourcesJar()
 }
 
 dependencies {
@@ -43,21 +33,20 @@ dependencies {
     testImplementation(libs.java.websocket) // for mocked server
 }
 
-tasks {
-    withType<Test> {
-        useJUnitPlatform()
-        failFast = true
-//        testLogging.showStandardStreams = true
-    }
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 
+    withJavadocJar()
+    withSourcesJar()
+}
+
+tasks {
     jar {
         enabled = false
         dependsOn(
             shadowJar
         )
-        doLast {
-            rename("java-${project.version}-sources.jar", "$base.artifactBaseName-${project.version}-sources.jar")
-        }
     }
 
     shadowJar {
@@ -71,7 +60,7 @@ tasks {
         archiveClassifier.set("")
     }
 
-    val javadoc = withType<Javadoc> {
+    javadoc {
         title = "$javadocTitle $version"
         source(sourceSets.main.get().allJava)
 
@@ -96,6 +85,12 @@ tasks {
         }
     }
 
+    test {
+        useJUnitPlatform()
+        failFast = true
+//        testLogging.showStandardStreams = true
+    }
+
     register<Copy>("uploadDocs") {
         dependsOn(javadoc)
 
@@ -110,12 +105,14 @@ tasks {
         into(javadocDir)
     }
 
+    val javadocJar = named("javadocJar")
     val sourcesJar = named("sourcesJar")
 
     publishing {
         publications {
             create<MavenPublication>("bot-api") {
                 artifact(shadowJar)
+                artifact(javadocJar)
                 artifact(sourcesJar)
 
                 groupId = group as String?
@@ -126,19 +123,6 @@ tasks {
                     name.set(javadocTitle)
                     description.set(project.description)
                     url.set("https://github.com/robocode-dev/tank-royale")
-
-                    repositories {
-                        maven {
-                            setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
-                            mavenContent {
-                                releasesOnly()
-                            }
-                            credentials {
-                                username = ossrhUsername
-                                password = ossrhPassword
-                            }
-                        }
-                    }
 
                     licenses {
                         license {
