@@ -21,7 +21,6 @@ buildscript {
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
-    alias(libs.plugins.shadow.jar)
     `maven-publish`
     signing
 }
@@ -41,6 +40,8 @@ java {
 
 tasks {
     jar {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
         manifest {
             attributes["Main-Class"] = jarManifestMainClass
             attributes["Implementation-Title"] = title
@@ -48,21 +49,19 @@ tasks {
             attributes["Implementation-Vendor"] = "robocode.dev"
             attributes["Package"] = project.group
         }
-    }
+        archiveClassifier.set("all") // the final archive will not have this classifier
 
-    shadowJar.configure {
-        dependsOn(jar)
-        archiveClassifier.set("all")
+        from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     }
 
     val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking
-        dependsOn(shadowJar)
-        injars("${base.libsDirectory.get()}/${base.archivesName}-${project.version}-all.jar")
-        outjars("${base.libsDirectory.get()}/${base.archivesName}-${project.version}.jar")
+        dependsOn(jar)
+        injars("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}-all.jar")
+        outjars("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}.jar")
         configuration("proguard-rules.pro")
     }
 
-    val  sourcesJar = named("sourcesJar")
+    val sourcesJar = named("sourcesJar")
 
     publishing {
         publications {
@@ -75,6 +74,7 @@ tasks {
                 groupId = group as String?
                 artifactId = base.archivesName.get()
                 version
+
                 pom {
                     name.set(title)
                     description.set(project.description)
