@@ -6,11 +6,12 @@ description = "Robocode Tank Royale Bot API for .Net"
 val artifactName = "Robocode.TankRoyale.BotApi"
 version = libs.versions.tankroyale.get()
 
-val `nuget-api-key`: String? by project
-
+plugins {
+    base
+}
 
 tasks {
-    val clean by registering {
+    clean {
         doFirst {
             delete(
                 "build",
@@ -35,10 +36,10 @@ tasks {
         into("docs")
     }
 
-    val build = register("build") {
+    build {
         dependsOn(":schema:dotnet:build", prepareNugetDocs)
 
-        doLast {
+        doFirst {
             exec {
                 workingDir("Robocode.TankRoyale.BotApi")
                 commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
@@ -46,8 +47,8 @@ tasks {
         }
     }
 
-    val test = register("test") {
-        doLast {
+    register("test") {
+        doFirst {
             exec {
                 workingDir("Robocode.TankRoyale.BotApi.Tests")
                 commandLine("dotnet", "test")
@@ -56,7 +57,7 @@ tasks {
     }
 
     val docfx by registering {
-        doLast {
+        doFirst {
             exec {
                 workingDir("docfx_project")
                 commandLine("docfx", "metadata") // build /api before building the _site

@@ -9,6 +9,7 @@ val version: String = libs.versions.tankroyale.get()
 val ossrhUsername: String? by project
 val ossrhPassword: String? by project
 val tankRoyaleGitHubToken: String? by project
+val `nuget-api-key`: String? by project
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
