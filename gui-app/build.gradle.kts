@@ -9,8 +9,9 @@ version = libs.versions.tankroyale.get()
 
 val jarManifestMainClass = "dev.robocode.tankroyale.gui.GuiAppKt"
 
-val archiveBaseName = "robocode-tankroyale-gui"
-val archiveFileName = "${layout.buildDirectory.get()}/libs/$archiveBaseName-$version.jar"
+base {
+    archivesName = "robocode-tankroyale-gui" // renames _all_ archive names
+}
 
 buildscript {
     dependencies {
@@ -35,7 +36,6 @@ java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
-    withJavadocJar()
     withSourcesJar()
 }
 
@@ -64,7 +64,7 @@ tasks {
         dependsOn(copyBooterJar, copyServerJar)
     }
 
-    named("build") {
+    assemble {
         dependsOn(copyJars)
     }
 
@@ -74,14 +74,13 @@ tasks {
         title.set(archiveTitle)
         mainClass.set(jarManifestMainClass)
 
-        outputFilename.set(archiveFileName)
+        outputFilename.set("${base.archivesName.get()}-${project.version}-all.jar")
     }
 
     val proguard by registering(ProGuardTask::class) {
         dependsOn(fatJar)
-
-        injars("${layout.buildDirectory.get()}/libs/${project.name}-$version.jar")
-        outjars(archiveFileName)
+        injars("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}-all.jar")
+        outjars("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}.jar")
         configuration("proguard-rules.pro")
     }
 
@@ -92,11 +91,10 @@ tasks {
         )
     }
 
-    withType<AbstractPublishToMaven>() {
+    withType<AbstractPublishToMaven> {
         dependsOn(jar)
     }
 
-    val javadocJar = named("javadocJar")
     val sourcesJar = named("sourcesJar")
 
     publishing {
@@ -105,11 +103,10 @@ tasks {
                 artifact(proguard.get().outJarFiles[0]) {
                     builtBy(proguard)
                 }
-                artifact(javadocJar)
                 artifact(sourcesJar)
 
                 groupId = group as String?
-                artifactId = archiveBaseName
+                artifactId = base.archivesName.get()
                 version
 
                 pom {
