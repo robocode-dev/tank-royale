@@ -1,12 +1,23 @@
-## 📦 0.23.3
+## 📦 0.24.0 - Minor bugfixes and code improvements - 14-Jun-2023 
+
+#### 🚀 Improvements
+
+- Code:
+    - Lots of code smells have been fixed in this version, and lots of code has been refactored to make it easier to
+      understand and maintain.
 
 #### 🪲 Bug Fixes
+
 - Bot API:
     - Sometimes the RoundEnded event was not received by a bot.
-    - Java API only: `BotInfo.setGameTypes()` is now taken a Set instead of a List as input parameter
+    - Java API only: `BotInfo.setGameTypes()` is now taken a Set instead of a List as input parameter.
+    - Some public methods on abstract classes were changed to protected methods.
 - Server:
     - Scores in the results table are now sorted, so bots with the highest total score is put in the top of the results.
-    
+- Java archive (jar) files:
+    - The jar files containing javadoc documentation and source files was not given the correct name when they were
+      built and published to the repositories.
+
 ## 📦 0.23.2 - Bug fixed booting + enabling/disabling bot directories - 21-May-2023
 
 #### 🪲 Bug Fixes
