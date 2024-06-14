@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-3a0d1694","path":"/articles/game_types.html","title":"Game types","lang":"en-US","frontmatter":{},"headers":[],"git":{"updatedTime":1692309917000},"filePathRelative":"articles/game_types.md"}');export{e as data};
