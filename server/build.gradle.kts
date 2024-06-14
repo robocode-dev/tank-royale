@@ -43,6 +43,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
+    withJavadocJar() // required for uploading to Sonatype
     withSourcesJar()
 }
 
@@ -76,6 +77,7 @@ tasks {
         }
     }
 
+    val javadocJar = named("javadocJar")
     val sourcesJar = named("sourcesJar")
 
     publishing {
@@ -84,6 +86,7 @@ tasks {
                 artifact(proguard.get().outJarFiles[0]) {
                     builtBy(proguard)
                 }
+                artifact(javadocJar)
                 artifact(sourcesJar)
 
                 groupId = group as String?

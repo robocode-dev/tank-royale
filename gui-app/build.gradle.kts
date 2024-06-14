@@ -36,6 +36,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
+    withJavadocJar() // required for uploading to Sonatype
     withSourcesJar()
 }
 
@@ -47,7 +48,7 @@ tasks {
         from(project(":booter").file("./build/libs"))
         into(file("./build/classes/kotlin/main"))
         include("robocode-tankroyale-booter-*.jar")
-        exclude("*-sources.jar", "*-all.jar")
+        exclude("*-javadoc.jar", "*-sources.jar", "*-all.jar")
         rename(".*", "robocode-tankroyale-booter.jar")
     }
 
@@ -58,7 +59,7 @@ tasks {
         from(project(":server").file("./build/libs"))
         into(file("./build/classes/kotlin/main"))
         include("robocode-tankroyale-server-*.jar")
-        exclude("*-sources.jar", "*-all.jar")
+        exclude("*-javadoc.jar", "*-sources.jar", "*-all.jar")
         rename(".*", "robocode-tankroyale-server.jar")
     }
 
@@ -104,6 +105,7 @@ tasks {
         }
     }
 
+    val javadocJar = named("javadocJar")
     val sourcesJar = named("sourcesJar")
 
     publishing {
@@ -112,6 +114,7 @@ tasks {
                 artifact(proguard.get().outJarFiles[0]) {
                     builtBy(proguard)
                 }
+                artifact(javadocJar)
                 artifact(sourcesJar)
 
                 groupId = group as String?
