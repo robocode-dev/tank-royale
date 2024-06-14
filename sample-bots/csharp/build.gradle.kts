@@ -100,7 +100,15 @@ dotnet run --no-build >nul
 
         archiveFileName.set(archiveFilename)
         destinationDirectory.set(layout.buildDirectory)
-        fileMode = "101101101".toInt(2) // 0555 - read & execute for everybody
+        filePermissions {
+            user {
+                read = true
+                execute = true
+            }
+            other {
+                execute = true
+            }
+        }
 
         from(archiveDir)
     }

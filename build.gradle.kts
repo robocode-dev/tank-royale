@@ -1,5 +1,6 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import build.release.createRelease
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 description = "Robocode: Build the best - destroy the rest!"
 
@@ -27,9 +28,9 @@ subprojects {
     }
 
     tasks {
-        withType<KotlinCompile>().configureEach {
-            kotlinOptions {
-                jvmTarget = JavaVersion.VERSION_11.toString()
+        withType<KotlinJvmCompile>().configureEach {
+            compilerOptions {
+                jvmTarget = JvmTarget.JVM_11
             }
         }
 
@@ -45,7 +46,8 @@ subprojects {
 tasks {
     register("build-release") {
         dependsOn(
-            "build",
+            "bot-api:java:assemble", "bot-api:dotnet:assemble",
+            "booter:assemble", "server:assemble", "gui-app:assemble",
             "sample-bots:java:zip", "sample-bots:csharp:zip",
             "buildDocs:uploadDocs", "bot-api:dotnet:uploadDocs", "bot-api:java:uploadDocs"
         )

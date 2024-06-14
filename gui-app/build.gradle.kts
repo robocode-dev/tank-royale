@@ -97,6 +97,13 @@ tasks {
         dependsOn(jar)
     }
 
+    assemble {
+        dependsOn(proguard)
+        doLast {
+            delete("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}-all.jar")
+        }
+    }
+
     val sourcesJar = named("sourcesJar")
 
     publishing {
