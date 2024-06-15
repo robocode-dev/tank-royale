@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "@vuepress/bundler-vite": "^2.0.0-rc.13",
+    "@vuepress/theme-default": "^2.0.0-rc.35",
+    "vuepress": "^2.0.0-rc.13"
+  }
+}

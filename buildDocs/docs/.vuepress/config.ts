@@ -1,7 +1,9 @@
-import { defaultTheme, type UserConfig } from 'vuepress';
+import { viteBundler } from '@vuepress/bundler-vite'
+import { defaultTheme } from '@vuepress/theme-default'
+import { defineUserConfig } from 'vuepress'
 import { mdEnhancePlugin } from 'vuepress-plugin-md-enhance'
 
-const config: UserConfig = {
+export default defineUserConfig({
   lang: 'en-US',
   title: 'Robocode Tank Royale Docs',
   description: 'Documentation for the programming game Robocode Tank Royale.',
@@ -9,6 +11,8 @@ const config: UserConfig = {
   base: '/tank-royale/',
   port: 8080,
   dest: 'build/docs',
+
+  bundler: viteBundler(),
 
   theme: defaultTheme({
 
@@ -49,6 +53,4 @@ const config: UserConfig = {
        lineNumbers: false,
     },
   },
-};
-
-export default config;
+});
