@@ -12,14 +12,16 @@ export default defineUserConfig({
   port: 8080,
   dest: 'build/docs',
 
+  head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
+
   bundler: viteBundler(),
 
   theme: defaultTheme({
 
+    logo: '/Tank-logo.svg',
+
     colorMode: 'dark',
     colorModeSwitch: false,
-
-    logo: '/Tank-logo.svg',
 
     sidebar: [
       '/articles/intro',
@@ -47,10 +49,4 @@ export default defineUserConfig({
       footnote: true,
     })
   ],
-
-  markdown: {
-    code: {
-       lineNumbers: false,
-    },
-  },
 });
