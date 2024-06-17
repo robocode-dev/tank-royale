@@ -91,13 +91,13 @@ loadScripts(document, 'script');</script>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -166,6 +166,47 @@ implements <a href="IBot.html" title="interface in dev.robocode.tankroyale.botap
 <h3>Fields inherited from interface&nbsp;dev.robocode.tankroyale.botapi.<a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.botapi">IBaseBot</a></h3>
 <code><a href="IBaseBot.html#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN">MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN</a>, <a href="IBaseBot.html#TEAM_MESSAGE_MAX_SIZE">TEAM_MESSAGE_MAX_SIZE</a></code></li>
 </ul>
+</li>
+</ul>
+</section>
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="constructor.summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="memberSummary">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier</th>
+<th class="colSecond" scope="col">Constructor</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected </code></td>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">Bot</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected </code></td>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(dev.robocode.tankroyale.botapi.BotInfo)">Bot</a></span>&#8203;(<a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi">BotInfo</a>&nbsp;botInfo)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected </code></td>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(dev.robocode.tankroyale.botapi.BotInfo,java.net.URI)">Bot</a></span>&#8203;(<a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi">BotInfo</a>&nbsp;botInfo,
+   java.net.URI&nbsp;serverUrl)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected </code></td>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(dev.robocode.tankroyale.botapi.BotInfo,java.net.URI,java.lang.String)">Bot</a></span>&#8203;(<a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi">BotInfo</a>&nbsp;botInfo,
+   java.net.URI&nbsp;serverUrl,
+   java.lang.String&nbsp;serverSecret)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
 </li>
 </ul>
 </section>
@@ -444,7 +485,7 @@ implements <a href="IBot.html" title="interface in dev.robocode.tankroyale.botap
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>equals, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.dev.robocode.tankroyale.botapi.IBaseBot">
@@ -469,6 +510,71 @@ implements <a href="IBot.html" title="interface in dev.robocode.tankroyale.botap
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="constructor.detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a id="&lt;init&gt;()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>Bot</h4>
+<pre>protected&nbsp;Bot()</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="BaseBot.html#%3Cinit%3E()"><code>BaseBot()</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(dev.robocode.tankroyale.botapi.BotInfo)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>Bot</h4>
+<pre>protected&nbsp;Bot&#8203;(<a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi">BotInfo</a>&nbsp;botInfo)</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="BaseBot.html#%3Cinit%3E(dev.robocode.tankroyale.botapi.BotInfo)"><code>BaseBot(BotInfo)</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(dev.robocode.tankroyale.botapi.BotInfo,java.net.URI)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>Bot</h4>
+<pre>protected&nbsp;Bot&#8203;(<a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi">BotInfo</a>&nbsp;botInfo,
+              java.net.URI&nbsp;serverUrl)</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="BaseBot.html#%3Cinit%3E(dev.robocode.tankroyale.botapi.BotInfo,java.net.URI)"><code>BaseBot(BotInfo, URI)</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(dev.robocode.tankroyale.botapi.BotInfo,java.net.URI,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>Bot</h4>
+<pre>protected&nbsp;Bot&#8203;(<a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi">BotInfo</a>&nbsp;botInfo,
+              java.net.URI&nbsp;serverUrl,
+              java.lang.String&nbsp;serverSecret)</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="BaseBot.html#%3Cinit%3E(dev.robocode.tankroyale.botapi.BotInfo,java.net.URI,java.lang.String)"><code>BaseBot(BotInfo, URI, String)</code></a></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- ============ METHOD DETAIL ========== -->
 <section>
 <ul class="blockList">
@@ -1543,13 +1649,13 @@ implements <a href="IBot.html" title="interface in dev.robocode.tankroyale.botap
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

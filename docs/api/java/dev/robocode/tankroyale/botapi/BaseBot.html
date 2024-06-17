@@ -91,13 +91,13 @@ loadScripts(document, 'script');</script>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -166,6 +166,55 @@ implements <a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.b
 <h3>Fields inherited from interface&nbsp;dev.robocode.tankroyale.botapi.<a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.botapi">IBaseBot</a></h3>
 <code><a href="IBaseBot.html#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN">MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN</a>, <a href="IBaseBot.html#TEAM_MESSAGE_MAX_SIZE">TEAM_MESSAGE_MAX_SIZE</a></code></li>
 </ul>
+</li>
+</ul>
+</section>
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="constructor.summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="memberSummary">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier</th>
+<th class="colSecond" scope="col">Constructor</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected </code></td>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">BaseBot</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Constructor for initializing a new instance of the BaseBot class.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected </code></td>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(dev.robocode.tankroyale.botapi.BotInfo)">BaseBot</a></span>&#8203;(<a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi">BotInfo</a>&nbsp;botInfo)</code></th>
+<td class="colLast">
+<div class="block">Constructor for initializing a new instance of the BaseBot class.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected </code></td>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(dev.robocode.tankroyale.botapi.BotInfo,java.net.URI)">BaseBot</a></span>&#8203;(<a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi">BotInfo</a>&nbsp;botInfo,
+       java.net.URI&nbsp;serverUrl)</code></th>
+<td class="colLast">
+<div class="block">Constructor for initializing a new instance of the BaseBot class.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected </code></td>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(dev.robocode.tankroyale.botapi.BotInfo,java.net.URI,java.lang.String)">BaseBot</a></span>&#8203;(<a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi">BotInfo</a>&nbsp;botInfo,
+       java.net.URI&nbsp;serverUrl,
+       java.lang.String&nbsp;serverSecret)</code></th>
+<td class="colLast">
+<div class="block">Constructor for initializing a new instance of the BaseBot class.</div>
+</td>
+</tr>
+</table>
 </li>
 </ul>
 </section>
@@ -797,7 +846,7 @@ implements <a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.b
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>equals, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.dev.robocode.tankroyale.botapi.IBaseBot">
@@ -815,6 +864,122 @@ implements <a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.b
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="constructor.detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a id="&lt;init&gt;()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>BaseBot</h4>
+<pre>protected&nbsp;BaseBot()</pre>
+<div class="block">Constructor for initializing a new instance of the BaseBot class.
+ This constructor should be used when both <a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi"><code>BotInfo</code></a> and server URL is provided through
+ environment variables, i.e., when starting up the bot using a booter. These environment
+ variables must be set to provide the server URL and bot information, and are automatically
+ set by the booter tool for Robocode.
+ <p><br>
+ Example of how to set the predefined environment variables used for connecting to the server:
+ <ul>
+ <li><code>SERVER_URL=ws://localhost:7654</code></li>
+ <li><code>SERVER_SECRET=xzoEeVbnBe5TGjCny0R1yQ</code></li>
+ </ul>
+ <p>
+ Example of how to set the environment variables that covers the <a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi"><code>BotInfo</code></a>:
+ <ul>
+ <li><code>BOT_NAME=MyBot</code></li>
+ <li><code>BOT_VERSION=1.0</code></li>
+ <li><code>BOT_AUTHORS=John Doe</code></li>
+ <li><code>BOT_DESCRIPTION=Short description</code></li>
+ <li><code>BOT_HOMEPAGE=https://somewhere.net/MyBot</code></li>
+ <li><code>BOT_COUNTRY_CODES=us</code></li>
+ <li><code>BOT_GAME_TYPES=classic, melee, 1v1</code></li>
+ <li><code>BOT_PLATFORM=JVM</code></li>
+ <li><code>BOT_PROG_LANG=Java 11</code></li>
+ <li><code>BOT_INITIAL_POS=50,70, 270</code></li>
+ </ul>
+ <p>
+ These environment variables <em>must</em> be set prior to using this constructor:
+ <ul>
+ <li><code>BOT_NAME</code></li>
+ <li><code>BOT_VERSION</code></li>
+ <li><code>BOT_AUTHORS</code></li>
+ </ul>
+ <p>
+ These value can take multiple values separated by a comma:
+ <ul>
+ <li><code>BOT_AUTHORS, e.g. "John Doe, Jane Doe"</code></li>
+ <li><code>BOT_COUNTRY_CODES, e.g. "se, no, dk"</code></li>
+ <li><code>BOT_GAME_TYPES, e.g. "classic, melee, 1v1"</code></li>
+ </ul>
+ <p>
+ The <code>BOT_INITIAL_POS</code> variable is optional and should <em>only</em> be used for debugging.
+ <p>
+ The <code>SERVER_SECRET</code> must be set if the server requires a server secret for the bots trying
+ to connect. Otherwise, the bot will be disconnected as soon as it attempts to connect to
+ the server.
+ <p>
+ If the <code>SERVER_URL</code> is not set, then this default URL is used: ws://localhost:7654</div>
+</li>
+</ul>
+<a id="&lt;init&gt;(dev.robocode.tankroyale.botapi.BotInfo)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>BaseBot</h4>
+<pre>protected&nbsp;BaseBot&#8203;(<a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi">BotInfo</a>&nbsp;botInfo)</pre>
+<div class="block">Constructor for initializing a new instance of the BaseBot class.
+ This constructor assumes the server URL and secret is provided by the environment
+ variables SERVER_URL and SERVER_SECRET.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>botInfo</code> - is the bot info containing information about your bot.</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(dev.robocode.tankroyale.botapi.BotInfo,java.net.URI)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>BaseBot</h4>
+<pre>protected&nbsp;BaseBot&#8203;(<a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi">BotInfo</a>&nbsp;botInfo,
+                  java.net.URI&nbsp;serverUrl)</pre>
+<div class="block">Constructor for initializing a new instance of the BaseBot class.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>botInfo</code> - is the bot info containing information about your bot.</dd>
+<dd><code>serverUrl</code> - is the server URL</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(dev.robocode.tankroyale.botapi.BotInfo,java.net.URI,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>BaseBot</h4>
+<pre>protected&nbsp;BaseBot&#8203;(<a href="BotInfo.html" title="class in dev.robocode.tankroyale.botapi">BotInfo</a>&nbsp;botInfo,
+                  java.net.URI&nbsp;serverUrl,
+                  java.lang.String&nbsp;serverSecret)</pre>
+<div class="block">Constructor for initializing a new instance of the BaseBot class.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>botInfo</code> - is the bot info containing information about your bot.</dd>
+<dd><code>serverUrl</code> - is the server URL</dd>
+<dd><code>serverSecret</code> - is the server secret for bots</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
 <!-- ============ METHOD DETAIL ========== -->
 <section>
 <ul class="blockList">
@@ -2764,13 +2929,13 @@ implements <a href="IBaseBot.html" title="interface in dev.robocode.tankroyale.b
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
