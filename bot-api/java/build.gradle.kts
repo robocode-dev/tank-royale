@@ -65,7 +65,7 @@ tasks {
         source(sourceSets.main.get().allJava)
 
         (options as StandardJavadocDocletOptions).apply {
-            memberLevel = JavadocMemberLevel.PUBLIC
+            memberLevel = JavadocMemberLevel.PROTECTED
             overview = "src/main/javadoc/overview.html"
 
             addFileOption("-add-stylesheet", File(projectDir, "src/main/javadoc/themes/prism.css"))
