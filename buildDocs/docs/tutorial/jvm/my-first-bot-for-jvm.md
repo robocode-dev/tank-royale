@@ -261,6 +261,48 @@ should contain:
 
 And then you might want to provide a [README] file to provide some information for other people about your bot. :)
 
+You can download the `sample-bots-java-x.y.z.zip` file from any [release], which provides a good example of how to
+package one to multiple bots into a zip archive.
+
+## Bot Secrets
+
+When you want to run your bot outside the GUI application from a terminal/shell, you will have to supply `bot secrets`
+to the bot. The `bot secrets` is one to several keys that is used by the server to allow the bot to access the server.
+
+A server will automatically create a `server.properties` file when it is running. This file will contain generated keys
+that must be used by "external" bots and controller for accessing the server. Inside the properties file, you will find
+the field `bot-secrets` like this example:
+
+```
+bots-secrets=zDuQrkCLQU5VQgytofkNrQ
+```
+
+Here the key of `bot-secrets` is `zDuQrkCLQU5VQgytofkNrQ`.
+
+A simple way to set the bot secret for the Java and .Net bot APIs is to set the environment variable `BOT_SECRETS` in
+the shell before running the bot:
+
+Mac/Linux bash/shell:
+
+```bash
+export VARIABLE_NAME=value
+```
+
+Windows command line
+
+```cmd
+set BOT_SECRETS=zDuQrkCLQU5VQgytofkNrQ
+```
+
+Windows PowerShell:
+
+```powershell
+$Env:BOT_SECRETS = zDuQrkCLQU5VQgytofkNrQ
+```
+
+Note that it is also possible to provide the server secret and URL programmatically with the Bot APIs with the `Bot`
+and `BaseBot` constructors.
+
 
 [^cmd-quirk]: ? "Note that the unresponsiveness of a Windows process running a bot is not observed when running the
 bot directly from the command line with or without the script; only when using a Java process for running the script
@@ -319,3 +361,5 @@ inside the Robocode booter."
 [README]: https://fileinfo.com/extension/readme "Readme File"
 
 [classpath]: https://howtodoinjava.com/java/basics/java-classpath/ "Java classpath"
+
+[release]: https://github.com/robocode-dev/tank-royale/releases "Releases"
