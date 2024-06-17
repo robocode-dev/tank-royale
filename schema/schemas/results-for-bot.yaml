@@ -1,4 +1,4 @@
-$id: bot-results-for-bot.yaml
+$id: results-for-bot.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Individual participants results visible for a bot, where name and version is hidden.
 properties:
