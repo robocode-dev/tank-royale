@@ -131,9 +131,9 @@ class ConnectionHandler(
         webSocketObserver.broadcast(message, clients)
     }
 
-    private fun notifyException(exception: Exception) {
+    private fun notifyException(clientConnection: WebSocket, exception: Exception) {
         log.error("Exception occurred: $exception")
-        listener.onException(exception)
+        listener.onException(clientConnection, exception)
     }
 
     private fun closeConnection(conn: WebSocket) {
@@ -221,10 +221,10 @@ class ConnectionHandler(
                                 Message.Type.RESUME_GAME -> handleResumeGame()
                                 Message.Type.NEXT_TURN -> handleNextTurn()
                                 Message.Type.CHANGE_TPS -> handleChangeTps(message)
-                                else -> notifyException(IllegalStateException("Unhandled message type: $type"))
+                                else -> notifyException(conn, IllegalStateException("Unhandled message type: $type"))
                             }
                         } catch (ex: IllegalArgumentException) {
-                            notifyException(IllegalStateException("Unhandled message type: ${jsonType.asString}"))
+                            notifyException(conn, IllegalStateException("Unhandled message type: ${jsonType.asString}"))
                         }
                     }
                 } catch (ex: JsonSyntaxException) {
@@ -334,7 +334,7 @@ class ConnectionHandler(
 
     private fun handleStartGame(message: String) {
         gson.fromJson(message, StartGame::class.java).apply {
-            listener.onStartGame(gameSetup, botAddresses)
+            listener.onStartGame(gameSetup, botAddresses.toSet())
         }
     }
 
