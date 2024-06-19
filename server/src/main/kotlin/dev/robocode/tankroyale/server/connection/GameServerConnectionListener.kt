@@ -7,48 +7,49 @@ import org.slf4j.LoggerFactory
 
 class GameServerConnectionListener(private val gameServer: GameServer) : IConnectionListener {
 
-    private val log = LoggerFactory.getLogger(GameServerConnectionListener::class.java)
+    private val log = LoggerFactory.getLogger(this::class.java)
 
-    override fun onException(exception: Exception) {
+    override fun onException(clientConnection: WebSocket, exception: Exception) {
+        log.error("Bot error: client: {}, message: {}", clientConnection.remoteSocketAddress, exception.message)
         exception.printStackTrace()
     }
 
-    override fun onBotJoined(conn: WebSocket, handshake: BotHandshake) {
-        log.info("Bot joined: ${getDisplayName(handshake)}")
+    override fun onBotJoined(clientConnection: WebSocket, handshake: BotHandshake) {
+        log.info("Bot joined: {}", getDisplayName(handshake))
         gameServer.handleBotJoined()
     }
 
-    override fun onBotLeft(conn: WebSocket, handshake: BotHandshake) {
-        log.info("Bot left: ${getDisplayName(handshake)}")
-        gameServer.handleBotLeft(conn)
+    override fun onBotLeft(clientConnection: WebSocket, handshake: BotHandshake) {
+        log.info("Bot left: {}", getDisplayName(handshake))
+        gameServer.handleBotLeft(clientConnection)
     }
 
-    override fun onBotReady(conn: WebSocket, handshake: BotHandshake) {
-        log.debug("Bot ready: ${getDisplayName(handshake)}")
-        gameServer.handleBotReady(conn)
+    override fun onBotReady(clientConnection: WebSocket, handshake: BotHandshake) {
+        log.info("Bot ready: {}", getDisplayName(handshake))
+        gameServer.handleBotReady(clientConnection)
     }
 
-    override fun onBotIntent(conn: WebSocket, handshake: BotHandshake, intent: BotIntent) {
-        log.debug("Bot intent: ${getDisplayName(handshake)}: $intent")
-        gameServer.handleBotIntent(conn, intent)
+    override fun onBotIntent(clientConnection: WebSocket, handshake: BotHandshake, intent: BotIntent) {
+        log.info("Bot ready: {}, intent: {}", getDisplayName(handshake), intent)
+        gameServer.handleBotIntent(clientConnection, intent)
     }
 
-    override fun onObserverJoined(conn: WebSocket, handshake: ObserverHandshake) {
-        log.info("Observer joined: ${getDisplayName(handshake)}")
-        gameServer.sendBotListUpdate(conn)
+    override fun onObserverJoined(clientConnection: WebSocket, handshake: ObserverHandshake) {
+        log.info("Observer joined: {}", getDisplayName(handshake))
+        gameServer.sendBotListUpdate(clientConnection)
     }
 
-    override fun onObserverLeft(conn: WebSocket, handshake: ObserverHandshake) {
-        log.info("Observer left: ${getDisplayName(handshake)}")
+    override fun onObserverLeft(clientConnection: WebSocket, handshake: ObserverHandshake) {
+        log.info("Observer left: {}", getDisplayName(handshake))
     }
 
-    override fun onControllerJoined(conn: WebSocket, handshake: ControllerHandshake) {
-        log.info("Controller joined: ${getDisplayName(handshake)}")
-        gameServer.sendBotListUpdate(conn)
+    override fun onControllerJoined(clientConnection: WebSocket, handshake: ControllerHandshake) {
+        log.info("Controller joined: {}", getDisplayName(handshake))
+        gameServer.sendBotListUpdate(clientConnection)
     }
 
-    override fun onControllerLeft(conn: WebSocket, handshake: ControllerHandshake) {
-        log.info("Controller left: ${getDisplayName(handshake)}")
+    override fun onControllerLeft(clientConnection: WebSocket, handshake: ControllerHandshake) {
+        log.info("Controller left: {}", getDisplayName(handshake))
     }
 
     override fun onStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
@@ -77,7 +78,7 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
     }
 
     override fun onChangeTps(tps: Int) {
-        log.info("TPS is requested to change to $tps")
+        log.info("TPS is requested to change to {}", tps)
         gameServer.handleChangeTps(tps)
     }
 

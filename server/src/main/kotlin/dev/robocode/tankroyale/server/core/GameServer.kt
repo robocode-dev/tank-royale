@@ -185,13 +185,11 @@ class GameServer(
 
     /** Send GameStarted to all participant observers to get them started */
     private fun sendGameStartedToObservers() {
-        if (connectionHandler.observerAndControllerConnections.isNotEmpty()) {
-            broadcastToObserverAndControllers(GameStartedEventForObserver().apply {
-                type = Message.Type.GAME_STARTED_EVENT_FOR_OBSERVER
-                gameSetup = GameSetupMapper.map(this@GameServer.gameSetup)
-                participants = participantMap.values.toList()
-            })
-        }
+        broadcastToObserverAndControllers(GameStartedEventForObserver().apply {
+            type = Message.Type.GAME_STARTED_EVENT_FOR_OBSERVER
+            gameSetup = GameSetupMapper.map(this@GameServer.gameSetup)
+            participants = participantMap.values.toList()
+        })
     }
 
     /** Creates a map over participants from the bot connection handshakes */
@@ -572,8 +570,9 @@ class GameServer(
 
     private fun broadcastToAll(msg: Message) {
         requireNotNull(msg.type) { "'type' is required on the message" }
-        connectionHandler.broadcastToObserverAndControllers(gson.toJson(msg))
-        connectionHandler.broadcast(participants, gson.toJson(msg))
+        val json = gson.toJson(msg)
+        connectionHandler.broadcastToObserverAndControllers(json)
+        connectionHandler.broadcast(participants, json) // note: it is only participants, not all bots
     }
 
     private fun sendBotListUpdateToObservers() {
