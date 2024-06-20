@@ -541,7 +541,7 @@ class GameServer(
             botListUpdateMessage.bots = bots
 
             connectionHandler.apply {
-                getBotConnections().forEach { conn ->
+                mapToBotSockets().forEach { conn ->
                     getBotHandshakes()[conn]?.let { botHandshake ->
                         conn.remoteSocketAddress.apply {
                             bots += BotHandshakeToBotInfoMapper.map(botHandshake, hostString, port)
@@ -631,7 +631,7 @@ class GameServer(
 
         participants.apply {
             clear()
-            this += connectionHandler.getBotConnections(botAddresses)
+            this += connectionHandler.mapToBotSockets(botAddresses)
 
             if (isNotEmpty()) {
                 prepareGame()
