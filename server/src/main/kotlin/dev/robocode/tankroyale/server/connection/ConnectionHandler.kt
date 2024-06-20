@@ -131,9 +131,9 @@ class ConnectionHandler(
         webSocketObserver.broadcast(message, clients)
     }
 
-    private fun notifyException(clientConnection: WebSocket, exception: Exception) {
+    private fun notifyException(clientSocket: WebSocket, exception: Exception) {
         log.error("Exception occurred: $exception")
-        listener.onException(clientConnection, exception)
+        listener.onException(clientSocket, exception)
     }
 
     private fun closeConnection(conn: WebSocket) {
