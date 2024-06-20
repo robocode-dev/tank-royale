@@ -42,27 +42,28 @@ class ConnectionHandler(
 
     fun getBotHandshakes(): Map<WebSocket, BotHandshake> = clientHandler.getBotHandshakes()
 
-    fun mapToBotSockets(botAddresses: Collection<BotAddress>): Set<WebSocket> =
-        mutableSetOf<WebSocket>().apply {
-            getBotHandshakes().keys.forEach { clientSocket ->
-                addToFoundSocket(clientSocket, botAddresses, this)
-            }
+    fun mapToBotSockets(botAddresses: Collection<BotAddress>): Set<WebSocket> {
+        val botSockets = mutableSetOf<WebSocket>()
+        for (clientSocket in getBotHandshakes().keys) {
+            addBotSocketIfMatching(clientSocket, botAddresses, botSockets)
         }
+        return botSockets
+    }
 
-    private fun addToFoundSocket(
+    private fun addBotSocketIfMatching(
         clientSocket: WebSocket,
         botAddresses: Collection<BotAddress>,
-        foundConnections: MutableSet<WebSocket>,
+        botSockets: MutableSet<WebSocket>
     ) {
         clientSocket.remoteSocketAddress?.let { address ->
-            botAddresses.forEach { botAddress ->
-                if (toIpAddress(address) == toIpAddress(botAddress) && botAddress.port == address.port) {
-                    foundConnections += clientSocket
-                    return@forEach
-                }
-            }
+            botAddresses
+                .firstOrNull { isAddressMatching(address, it) }
+                ?.let { botSockets.add(clientSocket) }
         }
     }
+
+    private fun isAddressMatching(address: InetSocketAddress, botAddress: BotAddress) =
+        toIpAddress(address) == toIpAddress(botAddress) && botAddress.port == address.port
 
     private fun toIpAddress(address: InetSocketAddress) =
         localhostToIpAddress(address.hostName)
