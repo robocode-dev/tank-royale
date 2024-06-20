@@ -67,7 +67,7 @@ class GameServer(
     private var tps = Server.tps
 
     /** Logger */
-    private val log = LoggerFactory.getLogger(GameServer::class.java)
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     /** JSON handler */
     private val gson = Gson()
