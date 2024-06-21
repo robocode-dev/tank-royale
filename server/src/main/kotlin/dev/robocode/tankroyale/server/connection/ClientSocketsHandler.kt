@@ -57,27 +57,22 @@ class ClientSocketsHandler(
     }
 
     fun addSocketAndSendServerHandshake(clientSocket: WebSocket) {
-        executorService.submit {
-            allSockets += clientSocket
+        allSockets += clientSocket
 
-            ServerHandshake().apply {
-                type = Message.Type.SERVER_HANDSHAKE
-                name = "Robocode Tank Royale server"
-                sessionId = generateAndStoreSessionId(clientSocket)
-                variant = "Tank Royale"
-                version = dev.robocode.tankroyale.server.version.getVersion() ?: "?"
-                gameTypes = setup.gameTypes
-            }.also {
-                send(clientSocket, Gson().toJson(it))
-            }
+        ServerHandshake().apply {
+            type = Message.Type.SERVER_HANDSHAKE
+            name = "Robocode Tank Royale server"
+            sessionId = generateAndStoreSessionId(clientSocket)
+            variant = "Tank Royale"
+            version = dev.robocode.tankroyale.server.version.getVersion() ?: "?"
+            gameTypes = setup.gameTypes
+        }.also {
+            send(clientSocket, Gson().toJson(it))
         }
     }
 
     fun removeSocket(clientSocket: WebSocket) {
-
-        executorService.submit {
-            closeSocket(clientSocket)
-        }
+        closeSocket(clientSocket)
     }
 
     fun processMessage(clientSocket: WebSocket, message: String) {
@@ -145,10 +140,13 @@ class ClientSocketsHandler(
 
     fun send(clientSocket: WebSocket, message: String) {
         log.debug("Send to: client: {}, message: {}", clientSocket.remoteSocketAddress, message)
-        try {
-            clientSocket.send(message)
-        } catch (e: WebsocketNotConnectedException) {
-            closeSocket(clientSocket)
+
+        executorService.submit {
+            try {
+                clientSocket.send(message)
+            } catch (e: WebsocketNotConnectedException) {
+                closeSocket(clientSocket)
+            }
         }
     }
 
@@ -299,8 +297,6 @@ class ClientSocketsHandler(
 
     private fun handleException(clientSocket: WebSocket, exception: Exception) {
         log.error("Error: client: {}, message: {}", clientSocket.remoteSocketAddress, exception.message)
-        executorService.submit {
-            listener.onException(clientSocket, exception)
-        }
+        listener.onException(clientSocket, exception)
     }
 }
