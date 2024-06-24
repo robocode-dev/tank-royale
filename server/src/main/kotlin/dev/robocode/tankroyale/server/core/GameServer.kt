@@ -28,6 +28,10 @@ class GameServer(
     /** Optional bot secrets */
     botSecrets: Set<String>,
 ) {
+    companion object {
+        const val TYPE_IS_REQUIRED_ON_MESSAGE = "'type' is required on the message"
+    }
+
     /** Connection handler for observers and bots */
     /** Initializes connection handler */
     private val connectionHandler: ConnectionHandler =
@@ -67,7 +71,7 @@ class GameServer(
     private var tps = Server.tps
 
     /** Logger */
-    private val log = LoggerFactory.getLogger(GameServer::class.java)
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     /** JSON handler */
     private val gson = Gson()
@@ -541,7 +545,7 @@ class GameServer(
             botListUpdateMessage.bots = bots
 
             connectionHandler.apply {
-                getBotConnections().forEach { conn ->
+                mapToBotSockets().forEach { conn ->
                     getBotHandshakes()[conn]?.let { botHandshake ->
                         conn.remoteSocketAddress.apply {
                             bots += BotHandshakeToBotInfoMapper.map(botHandshake, hostString, port)
@@ -553,7 +557,7 @@ class GameServer(
     }
 
     private fun send(conn: WebSocket, msg: Message) {
-        requireNotNull(msg.type) { "'type' is required on the message" }
+        requireNotNull(msg.type) { TYPE_IS_REQUIRED_ON_MESSAGE }
         gson.toJson(msg).also {
             try {
                 conn.send(it)
@@ -564,12 +568,12 @@ class GameServer(
     }
 
     private fun broadcastToObserverAndControllers(msg: Message) {
-        requireNotNull(msg.type) { "'type' is required on the message" }
+        requireNotNull(msg.type) { TYPE_IS_REQUIRED_ON_MESSAGE }
         connectionHandler.broadcastToObserverAndControllers(gson.toJson(msg))
     }
 
     private fun broadcastToAll(msg: Message) {
-        requireNotNull(msg.type) { "'type' is required on the message" }
+        requireNotNull(msg.type) { TYPE_IS_REQUIRED_ON_MESSAGE }
         val json = gson.toJson(msg)
         connectionHandler.broadcastToObserverAndControllers(json)
         connectionHandler.broadcast(participants, json) // note: it is only participants, not all bots
@@ -631,7 +635,7 @@ class GameServer(
 
         participants.apply {
             clear()
-            this += connectionHandler.getBotConnections(botAddresses)
+            this += connectionHandler.mapToBotSockets(botAddresses)
 
             if (isNotEmpty()) {
                 prepareGame()
