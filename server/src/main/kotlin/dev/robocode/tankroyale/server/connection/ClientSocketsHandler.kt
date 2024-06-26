@@ -9,8 +9,8 @@ import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.StatusCode
 import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
-import org.java_websocket.server.WebSocketServer
 import org.slf4j.LoggerFactory
+import java.io.Closeable
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -19,12 +19,11 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class ClientSocketsHandler(
-    private val webSocketServer: WebSocketServer,
     private val setup: ServerSetup,
     private val listener: IConnectionListener,
     private val controllerSecrets: Set<String>,
     private val botSecrets: Set<String>,
-) {
+) : Closeable{
     companion object {
         private const val MISSING_SESSION_ID = "Missing session id"
         private const val INVALID_SECRET = "Invalid secret"
@@ -48,11 +47,7 @@ class ClientSocketsHandler(
 
     private val gson = Gson()
 
-    fun start() {
-        webSocketServer.run()
-    }
-
-    fun stop() {
+    override fun close() {
         shutdownAndAwaitTermination(executorService)
     }
 

@@ -5,8 +5,6 @@ import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.connection.ClientSocketsHandler
 import dev.robocode.tankroyale.server.core.ServerSetup
 import org.java_websocket.WebSocket
-import org.java_websocket.handshake.ClientHandshake
-import org.java_websocket.server.WebSocketServer
 import org.slf4j.LoggerFactory
 import java.net.InetAddress
 import java.net.InetSocketAddress
@@ -20,18 +18,19 @@ class ConnectionHandler(
     private val log = LoggerFactory.getLogger(this::class.java)
 
     private val address = InetSocketAddress(Server.port)
-    private val serverSocketObserver = ServerSocketObserver(address).apply {
+
+    private val clientHandler = ClientSocketsHandler(setup, listener, controllerSecrets, botSecrets)
+
+    private val serverSocketObserver = ServerSocketObserver(address, clientHandler).apply {
         isTcpNoDelay = true
     }
-
-    private val clientHandler = ClientSocketsHandler(serverSocketObserver, setup, listener, controllerSecrets, botSecrets)
 
     fun start() {
         serverSocketObserver.run()
     }
 
     fun stop() {
-        clientHandler.stop()
+        clientHandler.close()
     }
 
     fun broadcastToObserverAndControllers(message: String) {
@@ -81,31 +80,5 @@ class ConnectionHandler(
     fun broadcast(clientSockets: Collection<WebSocket>, message: String) {
         log.debug("Broadcast message: $message")
         serverSocketObserver.broadcast(message, clientSockets)
-    }
-
-    private inner class ServerSocketObserver(address: InetSocketAddress) : WebSocketServer(address) {
-
-        override fun onStart() {
-            log.debug("onStart()")
-        }
-
-        override fun onOpen(clientSocket: WebSocket, handshake: ClientHandshake) {
-            log.debug("onOpen(): client: {}", clientSocket.remoteSocketAddress)
-            clientHandler.addSocketAndSendServerHandshake(clientSocket)
-        }
-
-        override fun onClose(clientSocket: WebSocket, code: Int, reason: String, remote: Boolean) {
-            log.debug("onClose: client:{}, code: {}, reason: {}, remote: {}", clientSocket.remoteSocketAddress, code, reason, remote)
-            clientHandler.removeSocket(clientSocket)
-        }
-
-        override fun onMessage(clientSocket: WebSocket, message: String) {
-            log.debug("onMessage: client: {}, message: {}", clientSocket.remoteSocketAddress, message)
-            clientHandler.processMessage(clientSocket, message)
-        }
-
-        override fun onError(clientSocket: WebSocket, ex: Exception) {
-            log.error("onError: client: ${clientSocket.remoteSocketAddress}, message: ${ex.message}")
-        }
     }
 }
