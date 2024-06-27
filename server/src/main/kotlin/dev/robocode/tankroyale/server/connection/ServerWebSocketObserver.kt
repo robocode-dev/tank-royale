@@ -1,15 +1,14 @@
 package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection
 
-import dev.robocode.tankroyale.server.connection.ClientSocketsHandler
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
 
-class ServerSocketObserver(
+class ServerWebSocketObserver(
     address: InetSocketAddress,
-    private val clientHandler: ClientSocketsHandler
+    private val observer: IClientWebSocketObserver
 ) : WebSocketServer(address) {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -20,20 +19,21 @@ class ServerSocketObserver(
 
     override fun onOpen(clientSocket: WebSocket, handshake: ClientHandshake) {
         log.debug("onOpen(): client: {}", clientSocket.remoteSocketAddress)
-        clientHandler.addSocketAndSendServerHandshake(clientSocket)
+        observer.onOpen(clientSocket, handshake)
     }
 
     override fun onClose(clientSocket: WebSocket, code: Int, reason: String, remote: Boolean) {
         log.debug("onClose: client:{}, code: {}, reason: {}, remote: {}", clientSocket.remoteSocketAddress, code, reason, remote)
-        clientHandler.removeSocket(clientSocket)
+        observer.onClose(clientSocket, code, reason, remote)
     }
 
     override fun onMessage(clientSocket: WebSocket, message: String) {
         log.debug("onMessage: client: {}, message: {}", clientSocket.remoteSocketAddress, message)
-        clientHandler.processMessage(clientSocket, message)
+        observer.onMessage(clientSocket, message)
     }
 
-    override fun onError(clientSocket: WebSocket, ex: Exception) {
-        log.error("onError: client: ${clientSocket.remoteSocketAddress}, message: ${ex.message}")
+    override fun onError(clientSocket: WebSocket, exception: Exception) {
+        log.error("onError: client: ${clientSocket.remoteSocketAddress}, message: ${exception.message}")
+        onError(clientSocket, exception)
     }
 }

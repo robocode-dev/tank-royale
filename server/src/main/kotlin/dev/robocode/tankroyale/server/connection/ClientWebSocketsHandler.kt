@@ -5,10 +5,12 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import dev.robocode.tankroyale.schema.*
 import dev.robocode.tankroyale.server.core.ServerSetup
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.IClientWebSocketObserver
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.IConnectionListener
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.StatusCode
 import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
+import org.java_websocket.handshake.ClientHandshake
 import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.nio.ByteBuffer
@@ -18,12 +20,13 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-class ClientSocketsHandler(
+class ClientWebSocketsHandler(
     private val setup: ServerSetup,
     private val listener: IConnectionListener,
     private val controllerSecrets: Set<String>,
     private val botSecrets: Set<String>,
-) : Closeable{
+) : IClientWebSocketObserver, Closeable {
+
     companion object {
         private const val MISSING_SESSION_ID = "Missing session id"
         private const val INVALID_SECRET = "Invalid secret"
@@ -51,7 +54,23 @@ class ClientSocketsHandler(
         shutdownAndAwaitTermination(executorService)
     }
 
-    fun addSocketAndSendServerHandshake(clientSocket: WebSocket) {
+    override fun onOpen(clientSocket: WebSocket, handshake: ClientHandshake) {
+        addSocketAndSendServerHandshake(clientSocket)
+    }
+
+    override fun onClose(clientSocket: WebSocket, code: Int, reason: String, remote: Boolean) {
+        removeSocket(clientSocket)
+    }
+
+    override fun onMessage(clientSocket: WebSocket, message: String) {
+        processMessage(clientSocket, message)
+    }
+
+    override fun onError(clientSocket: WebSocket, ex: Exception) {
+        handleException(clientSocket, ex)
+    }
+
+    private fun addSocketAndSendServerHandshake(clientSocket: WebSocket) {
         allSockets += clientSocket
 
         ServerHandshake().apply {
@@ -66,11 +85,11 @@ class ClientSocketsHandler(
         }
     }
 
-    fun removeSocket(clientSocket: WebSocket) {
+    private fun removeSocket(clientSocket: WebSocket) {
         closeSocket(clientSocket)
     }
 
-    fun processMessage(clientSocket: WebSocket, message: String) {
+    private fun processMessage(clientSocket: WebSocket, message: String) {
         executorService.submit {
             try {
                 gson.fromJson(message, JsonObject::class.java)["type"]?.let { jsonType ->
@@ -220,7 +239,7 @@ class ClientSocketsHandler(
 
     private fun handleObserverHandshake(clientSocket: WebSocket, message: String) {
         gson.fromJson(message, ObserverHandshake::class.java).apply {
-            if (sessionId.isNullOrBlank() ||!sessionIds.values.contains(sessionId)) {
+            if (sessionId.isNullOrBlank() || !sessionIds.values.contains(sessionId)) {
                 log.info("Ignoring observer missing session id: $name, version: $version")
                 clientSocket.close(StatusCode.POLICY_VIOLATION.value, MISSING_SESSION_ID)
 
@@ -238,7 +257,7 @@ class ClientSocketsHandler(
 
     private fun handleControllerHandshake(clientSocket: WebSocket, message: String) {
         gson.fromJson(message, ControllerHandshake::class.java).apply {
-            if (sessionId.isNullOrBlank() ||!sessionIds.values.contains(sessionId)) {
+            if (sessionId.isNullOrBlank() || !sessionIds.values.contains(sessionId)) {
                 log.info("Ignoring controller missing session id: $name, version: $version")
                 clientSocket.close(StatusCode.POLICY_VIOLATION.value, MISSING_SESSION_ID)
 
