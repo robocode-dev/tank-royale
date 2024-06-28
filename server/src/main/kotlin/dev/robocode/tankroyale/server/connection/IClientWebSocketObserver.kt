@@ -11,4 +11,8 @@ interface IClientWebSocketObserver {
     fun onMessage(clientSocket: WebSocket, message: String)
 
     fun onError(clientSocket: WebSocket, exception: Exception)
+
+    fun send(clientSocket: WebSocket, message: String)
+
+    fun broadcast(clientSockets: Collection<WebSocket>, message: String)
 }

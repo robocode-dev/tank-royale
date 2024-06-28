@@ -19,7 +19,7 @@ class ConnectionHandler(
 
     private val address = InetSocketAddress(Server.port)
 
-    private val clientHandler = ClientWebSocketsHandler(setup, listener, controllerSecrets, botSecrets)
+    private val clientHandler = ClientWebSocketsHandler(setup, listener, controllerSecrets, botSecrets, ::broadcast)
 
     private val serverWebSocketObserver = ServerWebSocketObserver(address, clientHandler).apply {
         isTcpNoDelay = true

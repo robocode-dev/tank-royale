@@ -25,6 +25,7 @@ class ClientWebSocketsHandler(
     private val listener: IConnectionListener,
     private val controllerSecrets: Set<String>,
     private val botSecrets: Set<String>,
+    private val broadcastFunction: (clientSockets: Collection<WebSocket>, message: String) -> Unit
 ) : IClientWebSocketObserver, Closeable {
 
     companion object {
@@ -152,7 +153,7 @@ class ClientWebSocketsHandler(
         }
     }
 
-    fun send(clientSocket: WebSocket, message: String) {
+    override fun send(clientSocket: WebSocket, message: String) {
         log.debug("Send to: client: {}, message: {}", clientSocket.remoteSocketAddress, message)
 
         executorService.submit {
@@ -161,6 +162,14 @@ class ClientWebSocketsHandler(
             } catch (e: WebsocketNotConnectedException) {
                 closeSocket(clientSocket)
             }
+        }
+    }
+
+    override fun broadcast(clientSockets: Collection<WebSocket>, message: String) {
+        log.debug("Broadcast to clients: message: {}", message)
+
+        executorService.submit {
+            broadcastFunction(clientSockets, message)
         }
     }
 
