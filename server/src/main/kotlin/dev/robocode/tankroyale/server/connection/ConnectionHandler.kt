@@ -21,9 +21,7 @@ class ConnectionHandler(
 
     private val clientHandler = ClientWebSocketsHandler(setup, listener, controllerSecrets, botSecrets, ::broadcast)
 
-    private val serverWebSocketObserver = ServerWebSocketObserver(address, clientHandler).apply {
-        isTcpNoDelay = true
-    }
+    private val serverWebSocketObserver = ServerWebSocketObserver(address, clientHandler)
 
     fun start() {
         serverWebSocketObserver.run()

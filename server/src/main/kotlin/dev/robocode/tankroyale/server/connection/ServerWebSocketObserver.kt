@@ -13,6 +13,11 @@ class ServerWebSocketObserver(
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
+    init {
+        // Disable Nagle's algorithm
+        isTcpNoDelay = true
+    }
+
     override fun onStart() {
         log.debug("onStart()")
     }
