@@ -66,8 +66,8 @@ class ClientWebSocketsHandler(
         processMessage(clientSocket, message)
     }
 
-    override fun onError(clientSocket: WebSocket, ex: Exception) {
-        handleException(clientSocket, ex)
+    override fun onError(clientSocket: WebSocket, exception: Exception) {
+        handleException(clientSocket, exception)
     }
 
     private fun addSocketAndSendServerHandshake(clientSocket: WebSocket) {
@@ -121,10 +121,10 @@ class ClientWebSocketsHandler(
                         )
                     }
                 }
-            } catch (ex: JsonSyntaxException) {
-                log.error("Invalid message: $message", ex)
-            } catch (ex: Exception) {
-                log.error("Error when passing message: $message", ex)
+            } catch (exception: JsonSyntaxException) {
+                log.error("Invalid message: $message", exception)
+            } catch (exception: Exception) {
+                log.error("Error when passing message: $message", exception)
             }
         }
     }
