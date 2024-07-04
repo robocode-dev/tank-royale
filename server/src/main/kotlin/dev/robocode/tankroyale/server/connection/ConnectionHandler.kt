@@ -72,6 +72,7 @@ class ConnectionHandler(
         if (hostname.equals("localhost", true)) "127.0.0.1" else hostname
 
     fun send(clientSocket: WebSocket, message: String) {
+        log.debug("Send message: $message")
         clientHandler.send(clientSocket, message)
     }
 
