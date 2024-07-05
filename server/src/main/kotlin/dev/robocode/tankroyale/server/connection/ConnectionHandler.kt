@@ -17,14 +17,12 @@ class ConnectionHandler(
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    private val address = InetSocketAddress(Server.port)
-
     private val clientHandler = ClientWebSocketsHandler(setup, listener, controllerSecrets, botSecrets, ::broadcast)
 
-    private val serverWebSocketObserver = ServerWebSocketObserver(address, clientHandler)
+    private val multiServerWebSocketObserver = MultiServerWebSocketObserver(clientHandler)
 
     fun start() {
-        serverWebSocketObserver.run()
+        multiServerWebSocketObserver.start()
     }
 
     fun stop() {
@@ -78,6 +76,6 @@ class ConnectionHandler(
 
     fun broadcast(clientSockets: Collection<WebSocket>, message: String) {
         log.debug("Broadcast message: $message")
-        serverWebSocketObserver.broadcast(message, clientSockets)
+        multiServerWebSocketObserver.broadcast(clientSockets, message)
     }
 }
