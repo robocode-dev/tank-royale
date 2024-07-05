@@ -3,8 +3,10 @@
 #### 🚀 Improvements
 
 - Server:
-    - It is now possible to connect to the local server with local IP addresses like the wildcard IP address 0.0.0.0, or
+    - #96: It is now possible to connect to the local server with local IP addresses like the wildcard IP address 0.0.0.0, or
       a local IP address like e.g. 10.0.0.106 or 192.168.56.1.
+- GUI:
+    - Improved validation of URL when attempting to add new server URL. 
 
 ## 📦 0.24.0 - Minor bugfixes and code improvements - 14-Jun-2023 
 

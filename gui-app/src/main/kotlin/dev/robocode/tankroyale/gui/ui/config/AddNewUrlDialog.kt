@@ -30,7 +30,7 @@ object AddNewUrlDialog : RcDialog(SelectServerDialog, "add_new_url_dialog") {
 
         onActivated {
             AddNewUrlPanel.apply {
-                urlTextField.text = ""
+                urlTextField.text = "ws://"
                 urlTextField.background = urlTextFieldDefaultBackground
             }
         }
