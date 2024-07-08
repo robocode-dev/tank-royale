@@ -102,8 +102,8 @@ developing a bot. With the original Robocode, Java was the primary programming l
 
 ### Run bots directly from the source code
 
-Note that the sample bots that comes with Robocode Tank Royale for Java and .Net contains no binary files—only the
-source files. However, the both the `java` and `dotnet` commands used for running the bots can compile and run the bots
+Note that the sample bots that come with Robocode Tank Royale for Java and .Net contain no binary files—only the
+source files. However, both the `java` and `dotnet` commands used for running the bots can compile and run the bots
 directly from the source code. And hence, a compiler is not needed as long as a Java Runtime Environment (JRE) (version
 11 or newer) or .Net Core 6.0 or newer is installed.
 
