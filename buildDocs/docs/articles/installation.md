@@ -67,7 +67,7 @@ this purpose, the sample bots provided for Robocode come in handy. So you could 
 So download and extract the `sample-bots-java-x.y.z.zip` archive to a directory somewhere, and note the file path of the
 directory where all the sample bot directories are located.
 
-## Configuration of bot directories
+## Set up bot directories
 
 Next, you should start up the Robocode application and select Config -> Bot Root Directories from the menu, and then add
 the directory to where you installed the sample bots.
