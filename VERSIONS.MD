@@ -1,4 +1,4 @@
-## 📦 0.24.1
+## 📦 0.24.1 - Support for local IP addresses - 13-Jul-2024
 
 #### 🚀 Improvements
 
@@ -8,7 +8,7 @@
 - GUI:
     - Improved validation of URL when attempting to add new server URL.
 
-## 📦 0.24.0 - Minor bugfixes and code improvements - 14-Jun-2023
+## 📦 0.24.0 - Minor bugfixes and code improvements - 14-Jun-2024
 
 #### 🚀 Improvements
 
@@ -28,7 +28,7 @@
     - The jar files containing javadoc documentation and source files was not given the correct name when they were
       built and published to the repositories.
 
-## 📦 0.23.2 - Bug fixed booting + enabling/disabling bot directories - 21-May-2023
+## 📦 0.23.2 - Bug fixed booting + enabling/disabling bot directories - 21-May-2024
 
 #### 🪲 Bug Fixes
 
@@ -42,7 +42,7 @@
       directories can be selected with the file dialog, and multiple files can be removed from the Bot Root Directories
       list.
 
-## 📦 0.23.1 - Fixing missing stdout and stderr messages - 18-May-2023
+## 📦 0.23.1 - Fixing missing stdout and stderr messages - 18-May-2024
 
 #### 🪲 Bug Fixes
 
@@ -51,7 +51,7 @@
     - Fixed issue with the Java API, where some messages sent to stdout and stderr were not written out to the bot
       console.
 
-## 📦 0.23.0 - Fixing movement bugs in bot APIs - 29-Apr-2023
+## 📦 0.23.0 - Fixing movement bugs in bot APIs - 29-Apr-2024
 
 #### 🪲 Bug Fixes
 
@@ -69,7 +69,7 @@
       direction of the body, gun, and radar. This helped on fixing #80
     - Renamed the "Angle" property of InitialPosition to "Direction".
 
-## 📦 0.22.2 - Fixing issues with Bot Console - 29-Mar-2023
+## 📦 0.22.2 - Fixing issues with Bot Console - 29-Mar-2024
 
 #### 🚀 Improvements
 
