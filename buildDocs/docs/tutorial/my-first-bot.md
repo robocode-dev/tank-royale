@@ -4,11 +4,12 @@
 
 This tutorial provides an introduction to creating your first bot for Robocode Tank Royale.
 
-You might also have a look at the provided sample bots for Robocode for inspiration. You might also use the sample bots
-to provide a template containing all the necessary files to create a bot for a specific programming language and
-platform.
+You might also have a look at the provided [sample bots] for Robocode for inspiration. You might also use the sample
+bots to provide a starting template containing all the necessary files to create a bot for a specific programming
+language and platform.
 
-Note that this tutorial is aimed towards the [APIs](../api/apis.md) available for Robocode Tank Royale.
+Note that this tutorial is aimed towards the official [APIs](../api/apis.md) available for Robocode Tank Royale provided on this
+site.
 
 ## Initial setup
 
@@ -71,3 +72,5 @@ The rest of the tutorial is split up based on the available APIs for different p
 
 - [.Net](dotnet/my-first-bot-for-dotnet.md)
 - [Java / JVM](jvm/my-first-bot-for-jvm.md)
+
+[sample bots]: ../articles/installation#sample-bots "Sample bots"
