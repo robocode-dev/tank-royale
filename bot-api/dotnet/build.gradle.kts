@@ -34,7 +34,7 @@ tasks {
         into("docs")
     }
 
-    build {
+    assemble {
         dependsOn(":schema:dotnet:build", prepareNugetDocs)
 
         doFirst {
