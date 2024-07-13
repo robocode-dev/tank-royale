@@ -8,7 +8,8 @@ plugins {
 }
 
 node {
-    version = "18.16.0"
+    download = true
+    version = "20.14.0"
 }
 
 tasks {
