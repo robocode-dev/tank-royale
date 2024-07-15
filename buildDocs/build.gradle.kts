@@ -14,7 +14,7 @@ node {
 
 tasks {
     clean {
-        doFirst {
+        doLast {
             delete(fileTree("../docs").matching {
                 exclude("api/**")
             })
