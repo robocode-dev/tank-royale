@@ -1,9 +1,9 @@
 # Getting Started
 
-## Introduction
+## The Basics
 
-This tutorial introduces you to Robocoding. That is, how to get started coding bots for Robocode, and get some basic
-understanding of the game.
+This tutorial introduces you to the basics of Robocoding. That is, getting a basic understanding of what Robocode is all
+about before getting started coding your first bot.
 
 ## Run some battles first
 
@@ -25,10 +25,9 @@ You can read more about how to use the GUI [here](../articles/gui).
 ## What is Robocode about?
 
 As written in the [Introduction](../articles/intro), Robocode is about creating a program for a tank. This program is
-run when it is selected and booted from the [GUI](../articles/gui). The goal is to keep the bot (tank) alive as long as
+run when selected and booted from the [GUI](../articles/gui). The goal is to keep the bot (tank) alive as long as
 possible and defeat all other enemy bots in a battle. The more damage you deal to enemy bots, and the better the bot is
-to survive enemy tanks, the better [score](../articles/scoring) your bot will receive. The higher the score, the
-better.
+to survive enemy tanks, the better [score](../articles/scoring) your bot will receive. The higher the score, the better.
 
 ## Rounds and Turns
 
@@ -45,7 +44,7 @@ With each turn, a bot should:
 
 Commands for moving, turning, scanning, firing, etc. are sent to the server as an _intent_ for each turn.
 
-> Note that the official bot API sends the _bot intent_ to the sever behind the scenes, so you do not need to worry
+> Note that the official bot API sends the _bot intent_ to the server behind the scenes, so you do not need to worry
 > about this yourself, unless you are creating your own Bot API.
 
 With each turn, the bot automatically receives updated information about its new and current state, e.g. new position
@@ -135,7 +134,7 @@ A bot in Robocode is a tank that consists of 3 parts:
 
 The _body_ is the main and the bottom part of the tank is used for moving the tank around on the battlefield.
 
-The _turret_ is mounted on top of the main body and can turn either _with_ or _independently of_ the body.
+The _turret_ is mounted on the main body and can turn either _with_ or _independently of_ the body.
 The cannon is mounted on the turret and is used for firing bullets (obviously).
 
 The _radar_ is mounted on the top of the turret and can turn either with or independently of both the body and the
@@ -187,9 +186,7 @@ Whenever and _only_ when a bot scans an enemy, the bot receives a `ScannedBotEve
 e.g. its coordinates and current energy. This means that a bot never receives updated information about enemies'
 whereabouts, when they are not being scanned by the bot.
 
-Hence, it is important to keep the direction of radar in the direction of the enemies. This is easy, if there is only
-one bot on the battlefield, but much harder when there are multiple enemies to keep track of, as the radar is only able
-to cover a scan arc up to 45 degrees.
+Hence, it is important to keep the direction of radar in the direction of the enemies. This is easy, if there is only one bot on the battlefield, but much harder when there are multiple enemies to keep track of, as the radar is only able to cover a scan arc up to 45 degrees.
 
 It is highly recommended to keep track of the latest scanned data for each enemy to get an idea of where they might be
 positioned and heading when the radar is not pointing towards those enemies.
