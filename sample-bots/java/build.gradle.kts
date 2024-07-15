@@ -85,7 +85,7 @@ tasks {
     val build = named("build") {
         dependsOn(copyBotApiJar)
 
-        doFirst {
+        doLast {
             prepareBotFiles()
             copyReadMeFile(projectDir, archiveDirPath)
         }
