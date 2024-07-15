@@ -1,0 +1,105 @@
+<svg version="1.1" width="188" height="125" viewBox="0 0 1200 800"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <style>
+    .text { font: 100px sans-serif; }
+  </style>
+
+  <g>
+    <use xlink:href="#tank" />
+
+    <use xlink:href="#arrow-head" transform="translate(700,230)"/>
+    <rect x="740" y="250" width="100" height="20" fill="yellow" />
+    <text x="870" y="290" class="text" fill="white">Gun</text>
+
+    <use xlink:href="#arrow-head" transform="translate(400,370)"/>
+    <rect x="430" y="390" width="410" height="20" fill="yellow" />
+    <text x="870" y="430" class="text" fill="white">Radar</text>
+
+    <use xlink:href="#arrow-head" transform="translate(420,540)"/>
+    <rect x="450" y="560" width="390" height="20" fill="yellow" />
+    <text x="870" y="600" class="text" fill="white">Body</text>
+  </g>
+
+  <defs>
+    <symbol id="arrow-head">
+      <path d="M 0,30 70,0 50,30 70,60 z" fill="yellow" />
+    </symbol>
+
+    <symbol id="link0">
+      <rect x="5" y="55" width="125" height="25" fill="#aaaaaa" />
+      <rect x="10" y="70" width="116" height="35" fill="#666666" rx="10" ry="10" />
+      <rect x="5" y="55" width="125" height="50" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
+    </symbol>
+
+    <symbol id="link30">
+      <rect x="5" y="55" width="125" height="25" fill="#939393" />
+      <rect x="10" y="70" width="116" height="30" fill="#585858" rx="10" ry="10" />
+      <rect x="5" y="55" width="125" height="42" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
+    </symbol>
+
+    <symbol id="link60">
+      <rect x="5" y="55" width="125" height="20" fill="#555555" />
+      <rect x="5" y="55" width="125" height="20" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
+    </symbol>
+
+    <symbol id="main-track">
+      <rect x="20" y="75" width="95" height="450" fill="#333333" stroke="black" stroke-width="10" />
+    </symbol>
+
+    <symbol id="track2">
+      <use xlink:href="#main-track" x="0" y="0" />
+      <use xlink:href="#link60" x="0" y="0" />
+      <use xlink:href="#link0" x="0" y="33" />
+      <use xlink:href="#link0" x="0" y="113" />
+      <use xlink:href="#link0" x="0" y="193" />
+      <use xlink:href="#link0" x="0" y="273" />
+      <use xlink:href="#link0" x="0" y="353" />
+      <use xlink:href="#link0" x="0" y="433" />
+    </symbol>
+
+    <symbol id="track3">
+      <use xlink:href="#main-track" x="0" y="0" />
+      <use xlink:href="#link0" x="0" y="7" />
+      <use xlink:href="#link0" x="0" y="87" />
+      <use xlink:href="#link0" x="0" y="167" />
+      <use xlink:href="#link0" x="0" y="247" />
+      <use xlink:href="#link0" x="0" y="327" />
+      <use xlink:href="#link0" x="0" y="407" />
+      <use xlink:href="#link60" x="0" y="470" />
+    </symbol>
+
+    <symbol id="body">
+      <use xlink:href="#track2" x="150" y="100" />
+      <use xlink:href="#track3" x="515" y="100" />
+
+      <rect x="240" y="190" width="320" height="420" fill="#019" stroke="black" stroke-width="20" rx="10" ry="10" />
+      <rect x="250" y="520" width="300" height="80" fill="black" opacity="0.5" />
+    </symbol>
+
+    <symbol id="turret">
+      <rect x="300" y="320" width="200" height="200" fill="#06C" stroke="black" stroke-width="20" rx="10" ry="10" />
+      <rect x="310" y="460" width="180" height="50" fill="black" opacity="0.5" />
+
+      <rect x="360" y="240" width="80" height="80" fill="url(#cannon-grad)" stroke="black" stroke-width="20" />
+      <rect x="375" y="70" width="50" height="170" fill="url(#cannon-grad)" stroke="black" stroke-width="20" />
+
+      <linearGradient id="cannon-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#333" />
+        <stop offset="50%" stop-color="#CCC" />
+        <stop offset="100%" stop-color="#333" />
+      </linearGradient>
+    </symbol>
+
+    <symbol id="radar">
+      <circle cx="400" cy="400" r="30" fill="#AAF" stroke="black" stroke-width="20" />
+      <path d="M 290 420 q 110 100 220 0 z" fill="#AAF" stroke="black" stroke-width="20" />
+    </symbol>
+
+    <symbol id="tank">
+      <use xlink:href="#body" transform="rotate(45,400,400)" />
+      <use xlink:href="#turret" transform="rotate(65,400,400)" />
+      <use xlink:href="#radar" transform="rotate(75,400,400)" />
+    </symbol>
+  </defs>
+</svg>
