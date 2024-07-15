@@ -1,4 +1,4 @@
-# GUI application
+# The GUI application
 
 ## Introduction
 

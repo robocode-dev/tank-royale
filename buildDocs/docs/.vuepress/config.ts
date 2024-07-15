@@ -27,6 +27,7 @@ export default defineUserConfig({
       '/articles/intro',
       '/articles/installation',
       '/articles/gui',
+      '/tutorial/getting-started',
       '/tutorial/my-first-bot',
       '/api/apis',
       '/articles/debug',
