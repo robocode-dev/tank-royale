@@ -39,12 +39,13 @@ Main page:
 ### Try it out
 
 Please head over to [Getting Started](https://robocode-dev.github.io/tank-royale/tutorial/getting-started) if you are
-to Robocode or need a brush-up. Or continue to
-[My First Bot tutorial](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html) to learn how to set up
-your first bot for Robocode Tank Royale.
+new to Robocode or just need a brush-up.
+Or continue to [My First Bot tutorial](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html) to learn
+how to set up your first bot for Robocode Tank Royale.
 
 An [Installation](https://robocode-dev.github.io/tank-royale/articles/installation.html) guide for installing the
-[GUI application](https://robocode-dev.github.io/tank-royale/articles/gui.html) as well as sample bots for demoing some
+[GUI application](https://robocode-dev.github.io/tank-royale/articles/gui.html) as well as
+[sample bots](https://robocode-dev.github.io/tank-royale/articles/installation.html#sample-bots) for demoing some
 battles in Robocode.
 
 ## Supported platforms
