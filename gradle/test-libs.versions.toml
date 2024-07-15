@@ -1,6 +1,6 @@
 [versions]
 
-assertj = "3.26.0"
+assertj = "3.26.3"
 junit = "5.11.0-M2"
 system-stubs = "2.1.6"
 kotest = "5.9.1"
