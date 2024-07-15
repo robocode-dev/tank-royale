@@ -89,7 +89,7 @@ dotnet run --no-build >nul
     }
 
     val build = named("build") {
-        doFirst {
+        doLast {
             prepareBotFiles()
             copyReadMeFile(projectDir, archiveDirPath)
         }

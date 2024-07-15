@@ -12,7 +12,7 @@ plugins {
 
 tasks {
     clean {
-        doFirst {
+        doLast {
             delete(
                 "build",
                 "docfx_project/_site",
@@ -37,7 +37,7 @@ tasks {
     assemble {
         dependsOn(":schema:dotnet:build", prepareNugetDocs)
 
-        doFirst {
+        doLast {
             exec {
                 workingDir("Robocode.TankRoyale.BotApi")
                 commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
@@ -46,7 +46,7 @@ tasks {
     }
 
     register("test") {
-        doFirst {
+        doLast {
             exec {
                 workingDir("Robocode.TankRoyale.BotApi.Tests")
                 commandLine("dotnet", "test")
@@ -55,7 +55,7 @@ tasks {
     }
 
     val docfx by registering {
-        doFirst {
+        doLast {
             exec {
                 workingDir("docfx_project")
                 commandLine("docfx", "metadata") // build /api before building the _site
