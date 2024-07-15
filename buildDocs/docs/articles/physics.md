@@ -30,6 +30,8 @@ $v = a × t$
 
 Hence speed = acceleration × time, or deceleration × time.
 
+#### Maximum speed
+
 The speed can never exceed 8 units per turn. Note that technically, velocity is a vector, but in Robocode we simply
 assume the direction of the vector to be the bot´s heading.
 
@@ -82,9 +84,9 @@ If firepower > 1, it does additional damage:
 
 $2 × (firepower - 1)$
 
-### Bullet speed (v)
+### Bullet speed
 
-The bullet speed is constant and depends on the firepower used for firing the gun:
+The bullet speed (v) is constant and depends on the firepower used for firing the gun:
 
 $20 - 3 × firepower$
 
@@ -99,7 +101,7 @@ $\frac{1 + firepower}{5}$
 
 Bots cannot fire if gun heat > 0. All guns start hot at the start of each round and start at 3.
 
-### Energy returned on hit
+### Energy gain
 
 Bots get awarded by receiving energy when one of their bullets hits another bot. The amount of energy received is:
 
@@ -110,9 +112,9 @@ $3 × firepower$
 When a bot collides with another bot or a wall, it is stopped. The exception is a bot being hit by another bot, which it
 is moving away from. In this case, the bot is not stopped.
 
-### Collision between bots
+### Bot collisions
 
-Each bot takes 0.6 damage when colliding.
+Each bot takes 0.6 damage when colliding with each other.
 
 ### Ramming
 
@@ -120,7 +122,7 @@ If a bot is hitting another bot by moving forward, this counts as _ramming_, mea
 to hit the other bot. Both bots take damage, but a ramming bot will get a ramming kill bonus. (see more under
 [Scoring](scoring.md)).
 
-### Collision with a wall
+### Wall damage
 
 When a bot hits a wall it will take damage depending on its speed (v):
 

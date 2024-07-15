@@ -16,8 +16,8 @@
     <rect x="430" y="390" width="410" height="20" fill="yellow" />
     <text x="870" y="430" class="text" fill="white">Radar</text>
 
-    <use xlink:href="#arrow-head" transform="translate(400,540)"/>
-    <rect x="430" y="560" width="410" height="20" fill="yellow" />
+    <use xlink:href="#arrow-head" transform="translate(420,540)"/>
+    <rect x="450" y="560" width="390" height="20" fill="yellow" />
     <text x="870" y="600" class="text" fill="white">Body</text>
   </g>
 

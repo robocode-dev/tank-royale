@@ -12,7 +12,7 @@ You need Java 11 as a minimum or newer, e.g. the newest version of Java availabl
 
 You can read the [installation guide] to get more details about installing both Java and Robocode.
 
-The main application is the [GUI Application], which is a Java application.
+The main application is the [GUI Application] which is a Java application.
 You can read more about how to use the GUI Application [here](https://robocode-dev.github.io/tank-royale/articles/gui.html#gui-application).
 
 The Robocode [GUI application] is run from the command line (shell or command prompt) in order to start and view
