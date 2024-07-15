@@ -27,9 +27,11 @@ Sometimes people lack something to get started with when learning how to code, o
 against. Robocode gives a clear purpose and goal to the programming. To develop a tank that can survive on the
 battlefield, and defeat other enemy tanks.
 
+Head over to [Getting Started](../tutorial/getting-started) to get started with Robocoding!
+
 ## The name "Robocode"
 
-The name _Robocode_ originates from the [initial version of the game](https://robocode.sourceforge.io/) and is a short
+The name _Robocode_ originates from the [original version](https://robocode.sourceforge.io/) of the game and is a short
 for "Robot code". With this new version, the world "bot" is used instead of "robot".
 
 ## The name "Tank Royale"
