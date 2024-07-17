@@ -30,6 +30,7 @@ export default defineUserConfig({
       '/tutorial/getting-started',
       '/tutorial/my-first-bot',
       '/api/apis',
+      '/tutorial/beyond-the-basics',
       '/articles/debug',
       '/articles/anatomy',
       '/articles/coordinates-and-angles',
