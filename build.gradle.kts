@@ -36,7 +36,7 @@ subprojects {
 
         // Make sure to replace $version token in version.txt when processing the resources
         withType<ProcessResources> {
-            filesMatching("version.txt") {
+            filesMatching("version.properties") {
                 expand(mapOf("version" to version))
             }
         }

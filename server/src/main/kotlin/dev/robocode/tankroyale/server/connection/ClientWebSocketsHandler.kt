@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.server.core.ServerSetup
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.IClientWebSocketObserver
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.IConnectionListener
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.StatusCode
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.util.VersionFileProvider
 import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.java_websocket.handshake.ClientHandshake
@@ -79,7 +80,7 @@ class ClientWebSocketsHandler(
             name = "Robocode Tank Royale server"
             sessionId = generateAndStoreSessionId(clientSocket)
             variant = "Tank Royale"
-            version = dev.robocode.tankroyale.server.version.getVersion() ?: "?"
+            version = VersionFileProvider.version
             gameTypes = setup.gameTypes
         }.also {
             send(clientSocket, Gson().toJson(it))

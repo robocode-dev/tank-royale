@@ -1,15 +1,13 @@
 package dev.robocode.tankroyale.server
 
-import dev.robocode.tankroyale.server.Server.VersionFileProvider
 import dev.robocode.tankroyale.server.core.GameServer
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.util.VersionFileProvider
 import dev.robocode.tankroyale.server.rules.DEFAULT_GAME_TYPE
 import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
 import org.fusesource.jansi.AnsiConsole
 import picocli.CommandLine
 import picocli.CommandLine.*
 import picocli.CommandLine.Model.CommandSpec
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -162,17 +160,5 @@ class Server : Runnable {
 
     private fun printAnsiLine(line: String?) {
         println(Help.Ansi.AUTO.string(line))
-    }
-
-    internal class VersionFileProvider : IVersionProvider {
-        @Throws(Exception::class)
-        override fun getVersion(): Array<String> {
-            val inputStream = this.javaClass.classLoader.getResourceAsStream("version.txt")
-            var version = "?"
-            if (inputStream != null) {
-                BufferedReader(InputStreamReader(inputStream)).use { br -> version = br.readLine() }
-            }
-            return arrayOf("Robocode Tank Royale Server $version")
-        }
     }
 }
