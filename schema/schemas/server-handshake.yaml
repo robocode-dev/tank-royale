@@ -23,6 +23,9 @@ properties:
       type: string
     minItems: 1
     uniqueItems: true
+  gameSetup:
+    description: Current game setup, if a game has been started and is running on the server.
+    $ref: game-setup.yaml
 required:
   - sessionId
   - variant

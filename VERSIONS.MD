@@ -1,3 +1,10 @@
+## 📦 0.24.2 
+
+#### 🚀 Improvements
+
+- Server:
+    - #101: The `ServerHandshake` now includes the `GameSetup` containing information about the current game setup.
+
 ## 📦 0.24.1 - Support for local IP addresses - 13-Jul-2024
 
 #### 🚀 Improvements
@@ -27,7 +34,7 @@
 - Java archive (jar) files:
     - The jar files containing javadoc documentation and source files was not given the correct name when they were
       built and published to the repositories.
-
+      
 ## 📦 0.23.2 - Bug fixed booting + enabling/disabling bot directories - 21-May-2024
 
 #### 🪲 Bug Fixes

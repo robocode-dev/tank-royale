@@ -82,6 +82,7 @@ class ClientWebSocketsHandler(
             variant = "Tank Royale"
             version = VersionFileProvider.version
             gameTypes = setup.gameTypes
+            gameSetup = gameSetup
         }.also {
             send(clientSocket, Gson().toJson(it))
         }
