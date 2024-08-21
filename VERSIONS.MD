@@ -3,14 +3,15 @@
 #### 🚀 Improvements
 
 - Server:
-    - #101: The `ServerHandshake` now includes the `GameSetup` containing information about the current game setup.
+    - [#101]: The `ServerHandshake` now includes the `GameSetup` containing information about the current game setup.
+    - [#102]: Double events were sent to observers and controllers from the server.
 
 ## 📦 0.24.1 - Support for local IP addresses - 13-Jul-2024
 
 #### 🚀 Improvements
 
 - Server:
-    - #96: It is now possible to connect to the local server with local IP addresses like the wildcard IP address
+    - [#96]: It is now possible to connect to the local server with local IP addresses like the wildcard IP address
       0.0.0.0, or a local IP address like e.g. 10.0.0.106 or 192.168.56.1.
 - GUI:
     - Improved validation of URL when attempting to add new server URL.
@@ -40,7 +41,7 @@
 #### 🪲 Bug Fixes
 
 - Booter:
-    - #89: Major bug fix: Booting and unbooting multiple bots did not work anymore.
+    - [#89]: Major bug fix: Booting and unbooting multiple bots did not work anymore.
 
 #### 🚀 Improvements
 
@@ -54,7 +55,7 @@
 #### 🪲 Bug Fixes
 
 - Bot API:
-    - #87: Fixed shaking when bots are standing still with the recent fix in server.rules.math::calcNewBotSpeed (#85)
+    - [#87]: Fixed shaking when bots are standing still with the recent fix in server.rules.math::calcNewBotSpeed (#85)
     - Fixed issue with the Java API, where some messages sent to stdout and stderr were not written out to the bot
       console.
 
@@ -63,11 +64,11 @@
 #### 🪲 Bug Fixes
 
 - Bot API:
-    - #80: Fixed a major bug causing the body, gun, and radar to move in a wrong angle, which could be seen with
+    - [#80]: Fixed a major bug causing the body, gun, and radar to move in a wrong angle, which could be seen with
       the Walls sample bot.
-    - #85: Fixed a major bug in server.rules.math::calcNewBotSpeed. Thanks goes to Mark (mnbrandl) for fixing this! 😊
+    - [#85]: Fixed a major bug in server.rules.math::calcNewBotSpeed. Thanks goes to Mark (mnbrandl) for fixing this! 😊
 - Server:
-    - #83: Bots receives skipped-turn-event events while dead.
+    - [#83]: Bots receives skipped-turn-event events while dead.
 
 #### 🚀 Improvements
 
@@ -787,7 +788,23 @@ Bot info:
 
 [#69]: https://github.com/robocode-dev/tank-royale/issues/69
 
+[#80]: https://github.com/robocode-dev/tank-royale/issues/80
+
 [#81]: https://github.com/robocode-dev/tank-royale/issues/81
+
+[#83]: https://github.com/robocode-dev/tank-royale/issues/83
+
+[#85]: https://github.com/robocode-dev/tank-royale/issues/85
+
+[#87]: https://github.com/robocode-dev/tank-royale/issues/87
+
+[#89]: https://github.com/robocode-dev/tank-royale/issues/89
+
+[#96]: https://github.com/robocode-dev/tank-royale/issues/96
+
+[#101]: https://github.com/robocode-dev/tank-royale/issues/101
+
+[#102]: https://github.com/robocode-dev/tank-royale/issues/102
 
 [BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 

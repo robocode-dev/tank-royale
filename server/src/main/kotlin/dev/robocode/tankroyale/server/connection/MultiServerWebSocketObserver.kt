@@ -16,7 +16,6 @@ class MultiServerWebSocketObserver(observer: IClientWebSocketObserver) {
     }
 
     fun broadcast(clientSockets: Collection<WebSocket>, message: String) {
-        loopbackServerWebSocketObserver.broadcast(message, clientSockets)
         localhostServerWebSocketObserver.broadcast(message, clientSockets)
     }
 }

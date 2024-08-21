@@ -189,6 +189,7 @@ object Client {
     }
 
     private fun onMessage(msg: String) {
+//        println("msg: $msg")
         when (val type = json.decodeFromString(PolymorphicSerializer(Message::class), msg)) {
             is TickEvent -> handleTickEvent(type)
             is ServerHandshake -> handleServerHandshake(type)
