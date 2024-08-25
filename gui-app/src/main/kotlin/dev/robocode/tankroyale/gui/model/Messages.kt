@@ -178,7 +178,7 @@ data class ServerHandshake(
     val version: String,
     val variant: String,
     val gameTypes: Set<String>,
-    val gameSetup: GameSetup?
+    val gameSetup: GameSetup? = null
 ) : Message()
 
 @Serializable

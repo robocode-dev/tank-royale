@@ -19,7 +19,7 @@ This installs the newest available version of the Bot API for Robocode Tank Roya
 by adding the `--version` option with the specific version:
 
 ```shell
-dotnet add package Robocode.TankRoyale.BotApi --version 0.24.2
+dotnet add package Robocode.TankRoyale.BotApi --version 0.24.3
 ```
 
 The [My First Bot](https://robocode-dev.github.io/tank-royale/tutorial/dotnet/my-first-bot-for-dotnet.html) tutorial

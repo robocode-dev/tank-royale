@@ -272,7 +272,8 @@ public class MockedServer
             Name = Name,
             Version = Version,
             Variant = Variant,
-            GameTypes = GameTypes
+            GameTypes = GameTypes,
+            GameSetup = null
         };
         Send(conn, serverHandshake);
     }

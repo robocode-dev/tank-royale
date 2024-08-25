@@ -52,6 +52,8 @@ class ClientWebSocketsHandler(
 
     private val gson = Gson()
 
+    private var currentGameSetup: GameSetup? = null
+
     override fun close() {
         shutdownAndAwaitTermination(executorService)
     }
@@ -82,7 +84,7 @@ class ClientWebSocketsHandler(
             variant = "Tank Royale"
             version = VersionFileProvider.version
             gameTypes = setup.gameTypes
-            gameSetup = gameSetup
+            gameSetup = currentGameSetup
         }.also {
             send(clientSocket, Gson().toJson(it))
         }
@@ -292,6 +294,7 @@ class ClientWebSocketsHandler(
 
     private fun handleStartGame(message: String) {
         gson.fromJson(message, StartGame::class.java).apply {
+            currentGameSetup = gameSetup
             listener.onStartGame(gameSetup, botAddresses.toSet())
         }
     }

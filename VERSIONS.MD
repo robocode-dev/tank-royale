@@ -1,9 +1,16 @@
-## 📦 0.24.2 - Bugfixes - 22-Aug-2024
+## 📦 0.24.3
 
 #### 🚀 Improvements
 
 - Server:
     - [#101]: The `ServerHandshake` now includes the `GameSetup` containing information about the current game setup.
+
+## 📦 0.24.2 - Bugfixes - 22-Aug-2024
+
+#### 🚀 Improvements
+
+- Server:
+    - ~~[#101]: The `ServerHandshake` now includes the `GameSetup` containing information about the current game setup.~~
     - [#102]: Double events were sent to observers and controllers from the server.
 
 ## 📦 0.24.1 - Support for local IP addresses - 13-Jul-2024
