@@ -12,7 +12,7 @@ tasks {
     register<Exec>("build") {
         dependsOn(dotnetBuild)
 
-        doLast {
+        doFirst {
             mkdir("${project(":bot-api:dotnet").file("Robocode.TankRoyale.BotApi/src/generated")}")
         }
 
