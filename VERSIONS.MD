@@ -4,13 +4,16 @@
 
 - Server:
     - [#101]: The `ServerHandshake` now includes the `GameSetup` containing information about the current game setup.
+    - [#104]: `ServerHandshake.version` was returning a string with the name of the server + version instead of just the
+      version.
 
 ## 📦 0.24.2 - Bugfixes - 22-Aug-2024
 
 #### 🚀 Improvements
 
 - Server:
-    - ~~[#101]: The `ServerHandshake` now includes the `GameSetup` containing information about the current game setup.~~
+    - ~~[#101]: The `ServerHandshake` now includes the `GameSetup` containing information about the current game
+      setup.~~
     - [#102]: Double events were sent to observers and controllers from the server.
 
 ## 📦 0.24.1 - Support for local IP addresses - 13-Jul-2024
@@ -42,7 +45,7 @@
 - Java archive (jar) files:
     - The jar files containing javadoc documentation and source files was not given the correct name when they were
       built and published to the repositories.
-      
+
 ## 📦 0.23.2 - Bug fixed booting + enabling/disabling bot directories - 21-May-2024
 
 #### 🪲 Bug Fixes
@@ -812,6 +815,8 @@ Bot info:
 [#101]: https://github.com/robocode-dev/tank-royale/issues/101
 
 [#102]: https://github.com/robocode-dev/tank-royale/issues/102
+
+[#104]: https://github.com/robocode-dev/tank-royale/issues/104
 
 [BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 

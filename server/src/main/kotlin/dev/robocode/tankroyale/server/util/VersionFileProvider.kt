@@ -9,11 +9,15 @@ internal object VersionFileProvider : CommandLine.IVersionProvider {
 
     private const val VERSION_PROPERTIES = "version.properties"
 
-    val version get() = getVersion()[0]
-
-    override fun getVersion(): Array<String> {
+    // Use this property to get the version only
+    val version get(): String {
         val properties = readVersionProperties()
         val version = properties.getProperty("version")
+        return version
+    }
+
+    // This method is used for the Server application
+    override fun getVersion(): Array<String> {
         return arrayOf("Robocode Tank Royale Server $version")
     }
 
