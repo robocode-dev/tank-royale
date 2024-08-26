@@ -3,8 +3,8 @@
 #### 🐞 Bug Fixes
 
 - Server
-    - [#101]: The `ServerHandshake` now includes the `GameSetup` containing information about the current game setup.
-    - [#104]: `ServerHandshake.version` was returning a string with the name of the server + version instead of just the
+    - #101: The `ServerHandshake` now includes the `GameSetup` containing information about the current game setup.
+    - #104: `ServerHandshake.version` was returning a string with the name of the server + version instead of just the
       version.
 
 ## 📦 0.24.2 - Bugfixes - 22-Aug-2024
@@ -12,20 +12,20 @@
 #### 🚀 Improvements
 
 - Server:
-    - ~~[#101]: The `ServerHandshake` now includes the `GameSetup` containing information about the current game
+    - ~~#101: The `ServerHandshake` now includes the `GameSetup` containing information about the current game
       setup.~~
 
 #### 🐞 Bug Fixes
 
 - Server
-    - [#102]: Double events were sent to observers and controllers from the server.
+    - #102: Double events were sent to observers and controllers from the server.
 
 ## 📦 0.24.1 - Support for local IP addresses - 13-Jul-2024
 
 #### 🚀 Improvements
 
 - Server:
-    - [#96]: It is now possible to connect to the local server with local IP addresses like the wildcard IP address
+    - #96: It is now possible to connect to the local server with local IP addresses like the wildcard IP address
       0.0.0.0, or a local IP address like e.g. 10.0.0.106 or 192.168.56.1.
 - GUI:
     - Improved validation of URL when attempting to add new server URL.
@@ -55,7 +55,7 @@
 #### 🐞 Bug Fixes
 
 - Booter:
-    - [#89]: Major bug fix: Booting and unbooting multiple bots did not work anymore.
+    - #89: Major bug fix: Booting and unbooting multiple bots did not work anymore.
 
 #### 🚀 Improvements
 
@@ -69,7 +69,7 @@
 #### 🐞 Bug Fixes
 
 - Bot API:
-    - [#87]: Fixed shaking when bots are standing still with the recent fix in server.rules.math::calcNewBotSpeed (#85)
+    - #87: Fixed shaking when bots are standing still with the recent fix in server.rules.math::calcNewBotSpeed (#85)
     - Fixed issue with the Java API, where some messages sent to stdout and stderr were not written out to the bot
       console.
 
@@ -78,11 +78,11 @@
 #### 🐞 Bug Fixes
 
 - Bot API:
-    - [#80]: Fixed a major bug causing the body, gun, and radar to move in a wrong angle, which could be seen with
+    - #80: Fixed a major bug causing the body, gun, and radar to move in a wrong angle, which could be seen with
       the Walls sample bot.
-    - [#85]: Fixed a major bug in server.rules.math::calcNewBotSpeed. Thanks goes to Mark (mnbrandl) for fixing this! 😊
+    - #85: Fixed a major bug in server.rules.math::calcNewBotSpeed. Thanks goes to Mark (mnbrandl) for fixing this! 😊
 - Server:
-    - [#83]: Bots receives skipped-turn-event events while dead.
+    - #83: Bots receives skipped-turn-event events while dead.
 
 #### 🚀 Improvements
 
@@ -111,7 +111,7 @@
 #### 🐞 Bug Fixes
 
 - GUI:
-    - [#81]: Fixed tooltips they are consistent on the entire UI, and works on NixOS (Linux) as well.
+    - #81: Fixed tooltips they are consistent on the entire UI, and works on NixOS (Linux) as well.
     - Fixed the TPS slider, which was not displayed correctly - especially with the height.
     - Added border to the Bot Root Directories Config dialog.
 
@@ -256,7 +256,7 @@
     - When changing the game type for a battle, the arena did not change visually to accommodate to a new size of the
       battle arena.
 - Server:
-    - [#66]: The server is not accepting the full range of ports.
+    - #66: The server is not accepting the full range of ports.
 
 ## 📦 0.19.1 - Maintenance - 26-Feb-2023
 
@@ -273,7 +273,7 @@
 #### 🐞 Bug Fixes
 
 - Server:
-    - [#60]: The round-ended event was not sent, in the round when the game ended.
+    - #60: The round-ended event was not sent, in the round when the game ended.
 - GUI:
     - Joined Bots list was not updated (removing bots) when the game is aborted.
     - The properties `sun.java2d.d3d`, `sun.java2d.noddraw`, and `sun.java2d.opengl` is now omitted under macOS.
@@ -296,10 +296,10 @@
     - When a bot is booted, its standard output (stdout) and standard error (stderr) streams are redirected to the bot
       intent sent to the server, which forwards the data to the observers, making it possible to show stdout and stderr
       in the bot console windows.
-    - [#46]: The `RoundEndedEvent` now contains a `results` field containing the accumulated results by the end of a
+    - #46: The `RoundEndedEvent` now contains a `results` field containing the accumulated results by the end of a
       round.
 - Schema:
-    - [#46]: The `round-ended-event` has been split up into `round-ended-event-for-bot` that provides only results for a
+    - #46: The `round-ended-event` has been split up into `round-ended-event-for-bot` that provides only results for a
       bot,
       and `round-ended-event-for-observer` that provides the results for all bots for observers.
 
@@ -315,10 +315,10 @@
 #### 🐞 Bug Fixes
 
 - Bot API:
-    - [#52]: The Bot API used comma-separated strings for `authors`, `countryCodes`, and `gameTypes` when parsing
+    - #52: The Bot API used comma-separated strings for `authors`, `countryCodes`, and `gameTypes` when parsing
       the `BotInfo` schema even though the [BotInfo/BotHandshake] uses string arrays. This was fixed to keep Bot APIs
       consistent with the schemas.
-    - [#53]: Major bug where each bot received the bullet states of _all_ bullets on the battle arena, including bullets
+    - #53: Major bug where each bot received the bullet states of _all_ bullets on the battle arena, including bullets
       fired by other bots, and not just the bullets fired by the bot itself.
     - ~~Fixed issues with moving and turning, which could override the set target speed and turn rates, when these had
       been set explicitly on the API.~~
@@ -371,7 +371,7 @@
 
 #### ⚡ Changes
 
-- [#43]: Possibility to identify bot from Process to Tick:
+- #43: Possibility to identify bot from Process to Tick:
     - Went back to boot process `pid` instead of using the `boot id`.
 
 #### 🚀 Improvements
@@ -382,7 +382,7 @@
 
 - Server:
     - The fire assistant was not always activated.
-    - [#45]: Server is kidnapping CPU cycles
+    - #45: Server is kidnapping CPU cycles
         - Game is now aborted, when the last bot participating in a battle is leaving (disconnecting).
         - Timer used for turn timeout was not stopped, when a battle had ended/aborted.
         - Freeing heap memory used for storing game state when game is ended/aborted.
@@ -391,7 +391,7 @@
 
 #### 🚀 Improvements
 
-- GUI/Sounds: [#4]: Fire and Explosion Sounds:
+- GUI/Sounds: [#4: Fire and Explosion Sounds:
     - Added feature to play sounds to the GUI application.
     - Added Sound Options to configure sounds.
     - Note that sound files are distributed independently besides the gui application from the [sounds releases].
@@ -406,7 +406,7 @@
 
 #### 🚀 Improvements
 
-- [#43]: Possibility to identify bot from Process to Tick:
+- #43: Possibility to identify bot from Process to Tick:
     - Added `sessionId` and `bootId` to these schemas: `bot-handshake`, `bot-state-with-id`, and `participants`
 
 #### 🐞 Bug Fixes
@@ -764,74 +764,16 @@ Bot info:
 
 - First alpha version was released! 🚀😀
 
-[#4]: https://github.com/robocode-dev/tank-royale/issues/4
+[BotInfo/BotHandshake: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 
-[#8]: https://github.com/robocode-dev/tank-royale/discussions/8
+[BotInfo.FromConfiguration(IConfiguration): https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
 
-[#12]: https://github.com/robocode-dev/tank-royale/issues/12
+[sounds releases: https://github.com/robocode-dev/sounds/releases
 
-[#17]: https://github.com/robocode-dev/tank-royale/discussions/17
+[GitHub Pages: https://robocode-dev.github.io/tank-royale/
 
-[#20]: https://github.com/robocode-dev/tank-royale/discussions/20
+[ANSI escape code: https://en.wikipedia.org/w/index.php?title=ANSI_escape_code
 
-[#22]: https://github.com/robocode-dev/tank-royale/issues/22
+[Events tab: https://robocode-dev.github.io/tank-royale/articles/gui.html#viewing-the-bot-events "Events tab in Bot Console"
 
-[#23]: https://github.com/robocode-dev/tank-royale/issues/23
-
-[#26]: https://github.com/robocode-dev/tank-royale/discussions/26
-
-[#28]: https://github.com/robocode-dev/tank-royale/issues/28
-
-[#31]: https://github.com/robocode-dev/tank-royale/issues/31
-
-[#38]: https://github.com/robocode-dev/tank-royale/issues/38
-
-[#43]: https://github.com/robocode-dev/tank-royale/issues/43
-
-[#45]: https://github.com/robocode-dev/tank-royale/issues/45
-
-[#46]: https://github.com/robocode-dev/tank-royale/issues/46
-
-[#52]: https://github.com/robocode-dev/tank-royale/discussions/52#discussioncomment-4332072
-
-[#53]: https://github.com/robocode-dev/tank-royale/issues/53
-
-[#60]: https://github.com/robocode-dev/tank-royale/issues/60
-
-[#66]: https://github.com/robocode-dev/tank-royale/issues/66
-
-[#69]: https://github.com/robocode-dev/tank-royale/issues/69
-
-[#80]: https://github.com/robocode-dev/tank-royale/issues/80
-
-[#81]: https://github.com/robocode-dev/tank-royale/issues/81
-
-[#83]: https://github.com/robocode-dev/tank-royale/issues/83
-
-[#85]: https://github.com/robocode-dev/tank-royale/issues/85
-
-[#87]: https://github.com/robocode-dev/tank-royale/issues/87
-
-[#89]: https://github.com/robocode-dev/tank-royale/issues/89
-
-[#96]: https://github.com/robocode-dev/tank-royale/issues/96
-
-[#101]: https://github.com/robocode-dev/tank-royale/issues/101
-
-[#102]: https://github.com/robocode-dev/tank-royale/issues/102
-
-[#104]: https://github.com/robocode-dev/tank-royale/issues/104
-
-[BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
-
-[BotInfo.FromConfiguration(IConfiguration)]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
-
-[sounds releases]: https://github.com/robocode-dev/sounds/releases
-
-[GitHub Pages]: https://robocode-dev.github.io/tank-royale/
-
-[ANSI escape code]: https://en.wikipedia.org/w/index.php?title=ANSI_escape_code
-
-[Events tab]: https://robocode-dev.github.io/tank-royale/articles/gui.html#viewing-the-bot-events "Events tab in Bot Console"
-
-[Robocode API Bridge]: https://github.com/robocode-dev/robocode-api-bridge "Robocode API bridge for Tank Royale"
+[Robocode API Bridge: https://github.com/robocode-dev/robocode-api-bridge "Robocode API bridge for Tank Royale"
