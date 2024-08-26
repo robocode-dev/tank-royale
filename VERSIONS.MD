@@ -1,8 +1,8 @@
-## 📦 0.24.3
+## 📦 0.24.3 - Bugfixes - 26-Aug-2024
 
-#### 🚀 Improvements
+#### 🐞 Bug Fixes
 
-- Server:
+- Server
     - [#101]: The `ServerHandshake` now includes the `GameSetup` containing information about the current game setup.
     - [#104]: `ServerHandshake.version` was returning a string with the name of the server + version instead of just the
       version.
@@ -14,6 +14,10 @@
 - Server:
     - ~~[#101]: The `ServerHandshake` now includes the `GameSetup` containing information about the current game
       setup.~~
+
+#### 🐞 Bug Fixes
+
+- Server
     - [#102]: Double events were sent to observers and controllers from the server.
 
 ## 📦 0.24.1 - Support for local IP addresses - 13-Jul-2024
@@ -34,7 +38,7 @@
     - Lots of code smells have been fixed in this version, and lots of code has been refactored to make it easier to
       understand and maintain.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API:
     - Sometimes the RoundEnded event was not received by a bot.
@@ -48,7 +52,7 @@
 
 ## 📦 0.23.2 - Bug fixed booting + enabling/disabling bot directories - 21-May-2024
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Booter:
     - [#89]: Major bug fix: Booting and unbooting multiple bots did not work anymore.
@@ -62,7 +66,7 @@
 
 ## 📦 0.23.1 - Fixing missing stdout and stderr messages - 18-May-2024
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API:
     - [#87]: Fixed shaking when bots are standing still with the recent fix in server.rules.math::calcNewBotSpeed (#85)
@@ -71,7 +75,7 @@
 
 ## 📦 0.23.0 - Fixing movement bugs in bot APIs - 29-Apr-2024
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API:
     - [#80]: Fixed a major bug causing the body, gun, and radar to move in a wrong angle, which could be seen with
@@ -94,7 +98,7 @@
 - GUI:
     - Console windows: Added support for 8-bit and 24-bit ANSI colors.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API:
     - Entire lines output to `System.out` and `System.err` were sometimes missing in the bot console.
@@ -104,7 +108,7 @@
 
 ## 📦 0.22.1 - GUI improvements for Linux - 07-Jan-2024
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - GUI:
     - [#81]: Fixed tooltips they are consistent on the entire UI, and works on NixOS (Linux) as well.
@@ -129,7 +133,7 @@
     - The logo in the server log in now shown with ANSI colors per default (might not work on all systems?)
     - The bot console now writes out the turn numbers from the previous turn, when output from the bot is written out.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - GUI:
     - #75: The GUI could get stuck and become unresponsive when displaying the busy pointer on Ubuntu.
@@ -151,7 +155,7 @@
       with an error message:
       `The thread of the bot could not be interrupted causing the bot to hang. So the bot was stopped by force.`
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Scoring:
     - Fixed various scoring issues when comparing to original Robocode.
@@ -209,7 +213,7 @@
     - Renamed `bot-results-for-bot` and `bot-results-for-observer` into `results-for-bot` and `results-for-observer` as
       participants now include teams and not just bots.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - GUI:
     - The GUI could get stuck and become unresponsive when displaying the busy pointer.
@@ -226,7 +230,7 @@
       individual bots, so the history of the round is available when opening the bot consoles.
     - Changed the display name of the bot on the bot buttons and bot console title.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Server:
     - Allow bots to connect to non-localhost addresses (PR [#69]).
@@ -246,7 +250,7 @@
     - When displaying an arena bigger than the window showing the battle, the window is now zooming into the battle
       arena automatically so that the visual field fits into the window.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - GUI:
     - When changing the game type for a battle, the arena did not change visually to accommodate to a new size of the
@@ -266,7 +270,7 @@
       the GUI using the `java` command. Read more about it
       [here](https://docs.oracle.com/javase/7/docs/technotes/guides/2d/flags.html).
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Server:
     - [#60]: The round-ended event was not sent, in the round when the game ended.
@@ -299,7 +303,7 @@
       bot,
       and `round-ended-event-for-observer` that provides the results for all bots for observers.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API:
     - `setAdjustRadarForGunTurn()` was made compatible with orig. Robocode.
@@ -308,7 +312,7 @@
 
 ## 📦 0.18.0 - Improvements to the Bot APIs - 18-Dec-2022
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API:
     - [#52]: The Bot API used comma-separated strings for `authors`, `countryCodes`, and `gameTypes` when parsing
@@ -359,7 +363,7 @@
     - Optimized ProGuard rules for compressing the Booter and Server jar archives even more, making the jar archive for
       the GUI smaller as well.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API and GUI App: Fixed various concurrency issues.
 
@@ -374,7 +378,7 @@
 
 - Sample bots: Improved the Fire sample bot by removing unnecessary code.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Server:
     - The fire assistant was not always activated.
@@ -394,7 +398,7 @@
 - GUI: Moved the ~~Dismiss~~OK button on the Bot Root Directories configuration down under the Add and Remove buttons,
   and adjusted the size of the dialog.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - GUI: When the Bot Directories on the Select Bots for Battle window is updated, all selections are now being cleared.
 
@@ -405,7 +409,7 @@
 - [#43]: Possibility to identify bot from Process to Tick:
     - Added `sessionId` and `bootId` to these schemas: `bot-handshake`, `bot-state-with-id`, and `participants`
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API:
     - The `onWonRound(WonRoundEvent)` was not triggered as soon as the round has ended.
@@ -430,14 +434,14 @@ only be unique locally, but across multiple systems. With the _session id_, all 
 - GUI:
     - Improved sorting of the bot directories list to be case-insensitive.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Server:
     - The `server-handshake` was missing the name and version.
 
 ## 📦 0.16.0 - Introduction of boot id - 31-Aug-2022
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API:
     - Fixed `waitFor(Condition)` so it executes before checking the condition the first time.
@@ -478,7 +482,7 @@ Bot info:
 - The `gameTypes` field has been removed from the sample bots, as all sample bots can participate in any game type.
   At least for now.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - GUI & Booter:
     - Fixed major bug as the GUI and booter did not filter out bots based on their selected game types.
@@ -492,7 +496,7 @@ Bot info:
 
 ## 📦 0.14.3 - Fixed setting adjustment turns - 07-Aug-2022
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - GUI:
     - NullPointerException when running robocode-tankroyale-gui-0.14.2.jar ([#38])
@@ -514,7 +518,7 @@ Bot info:
 - Sample bots
     - Added _VelocityBot_ that demonstrates use of turn rates.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API:
     - Setting the turn rates with the `Bot` class did not work properly (bot, gun, and radar did not turn at all).
@@ -558,7 +562,7 @@ Bot info:
 
 ## 📦 0.13.4 - GUI improvements + bugfix - 06-Jun-2022
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API for Java:
     - Major bugfix with `getTurnRemaining()` ([#28]), which returned the wrong value. This could be seen with the sample
@@ -577,7 +581,7 @@ Bot info:
 
 ## 📦 0.13.3 - Stabilization of Bot APIs - 01-Jun-2022
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API:
     - Fix for running bots under macOS/bash when bot directory contains whitespaces ([#20]).
@@ -598,7 +602,7 @@ Bot info:
 
 ## 📦 0.13.2 - Fixing issue #23 - 19-May-2022
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API for .Net:
     - Setting Bot.TargetSpeed did not set the distance to travel.
@@ -609,7 +613,7 @@ Bot info:
 
 ## 📦 0.13.1 - Fixing event queue + country codes - 18-May-2022
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot APIs:
     - Fixed issue with rescanning and interrupting current event handler. Redesigned the event queue.
@@ -648,7 +652,7 @@ Bot info:
     - Moved id from `bot-results-for-bot` to `bot-results-for-observer`.
     - The `scan` field on `bot-intent` was renamed to `rescan`.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API:
     - Blocking bot functions do not stop bot after finishing ([#17]).
@@ -671,7 +675,7 @@ Bot info:
 - Bot API:
     - The `Color.fromRgb()` has been replaced by `Color.fromString()`.
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Bot API:
     - Make sure the bot terminates (system exit) upon a connection error to prevent dangling bot processes, which
@@ -681,7 +685,7 @@ Bot info:
 
 ## 📦 0.11.2 - Fix restart issue - 12-Apr-2022
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Battle does not restart ([#10]).
 - Bot API did not stop thread when GameAbortedEvent occurred (when restarting).
@@ -689,7 +693,7 @@ Bot info:
 
 ## 📦 0.11.1 - Patch for the GUI - 07-Apr-2022
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - ConcurrentModificationException could occur for `BotSelectionPanel.updateJoinedBots()`. Could not create a new battle.
 - Fixed issue with starting a new battle from the menu with Battle → 'Start Battle' a second time.
@@ -705,7 +709,7 @@ Bot info:
 
 ## 📦 0.11.0 - Initial position feature - 02-Apr-2022
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Fixes for building Java artifacts to deploy to Maven artifactory.
 - Bot API:
@@ -730,7 +734,7 @@ Bot info:
 
 ## 📦 0.10.0 - Bot API improvements - 24-Mar-2022
 
-#### 🪲 Bug Fixes
+#### 🐞 Bug Fixes
 
 - Fixed MyFirstBot.java (sample bot) not running.
 - Various bug fixes were found in the Bot APIs, and missing get/set methods were added.
