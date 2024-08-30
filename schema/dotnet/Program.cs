@@ -18,14 +18,14 @@ public class Program
     {
         // The program needs 2 arguments: the source path for the location of the JSON Schema files, and the
         // destination path for storing the generated source files.
-        if (args.Length < 2)
+        if (args.Length < 3)
         {
             var appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
 
             Console.WriteLine($@"
                     Generates C# source files from the Robocode Tank Royale JSON schema files.
 
-                    {appName} [src path] [dest path])"
+                    {appName} [src path] [dest path] [namespace])"
             );
 
             Environment.Exit(1);
@@ -33,6 +33,7 @@ public class Program
 
         var srcDir = args[0]; // source path for the location of the JSON Schema files
         var destDir = args[1]; // destination path for storing the generated source files
+        var _namespace = args[2]; // namespace, e.g. "Robocode.TankRoyale.Schema.Game"
 
         // Loop through all JSON Schema files in YAML format
         foreach (var filename in Directory.GetFiles(srcDir))
@@ -58,7 +59,7 @@ public class Program
             var typeResolver = new CustomizedCSharpTypeResolver(settings);
 
             var generator = new CSharpGenerator(schema, settings, typeResolver);
-            settings.Namespace = "Robocode.TankRoyale.Schema";
+            settings.Namespace = _namespace;
 
             // Generate and output source file
             var text = generator.GenerateFile();

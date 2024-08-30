@@ -1,7 +1,7 @@
 package test_utils;
 
 import com.google.gson.Gson;
-import dev.robocode.tankroyale.schema.*;
+import dev.robocode.tankroyale.schema.game.*;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static dev.robocode.tankroyale.schema.Message.Type.*;
+import static dev.robocode.tankroyale.schema.game.Message.Type.*;
 
 public final class MockedServer {
 

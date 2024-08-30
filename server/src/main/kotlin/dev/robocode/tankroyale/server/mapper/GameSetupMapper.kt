@@ -3,9 +3,9 @@ package dev.robocode.tankroyale.server.mapper
 import dev.robocode.tankroyale.server.model.GameSetup
 
 object GameSetupMapper {
-    fun map(gameSetup: GameSetup): dev.robocode.tankroyale.schema.GameSetup {
+    fun map(gameSetup: GameSetup): dev.robocode.tankroyale.schema.game.GameSetup {
         gameSetup.apply {
-            val setup = dev.robocode.tankroyale.schema.GameSetup()
+            val setup = dev.robocode.tankroyale.schema.game.GameSetup()
             setup.gameType = gameType
             setup.arenaWidth = arenaWidth
             setup.arenaHeight = arenaHeight
@@ -30,7 +30,7 @@ object GameSetupMapper {
         }
     }
 
-    fun map(gameSetup: dev.robocode.tankroyale.schema.GameSetup): GameSetup {
+    fun map(gameSetup: dev.robocode.tankroyale.schema.game.GameSetup): GameSetup {
         gameSetup.apply {
             return GameSetup(
                 gameType = gameType,
@@ -57,8 +57,8 @@ object GameSetupMapper {
         }
     }
 
-    fun map(games: Set<GameSetup>): Set<dev.robocode.tankroyale.schema.GameSetup> {
-        val mappedGames = mutableSetOf<dev.robocode.tankroyale.schema.GameSetup>()
+    fun map(games: Set<GameSetup>): Set<dev.robocode.tankroyale.schema.game.GameSetup> {
+        val mappedGames = mutableSetOf<dev.robocode.tankroyale.schema.game.GameSetup>()
         games.forEach { mappedGames += map(it) }
         return mappedGames
     }

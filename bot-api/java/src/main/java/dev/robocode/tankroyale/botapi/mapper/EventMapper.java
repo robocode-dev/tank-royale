@@ -19,7 +19,7 @@ public final class EventMapper {
     private EventMapper() {
     }
 
-    public static TickEvent map(final dev.robocode.tankroyale.schema.TickEventForBot event, IBaseBot baseBot) {
+    public static TickEvent map(final dev.robocode.tankroyale.schema.game.TickEventForBot event, IBaseBot baseBot) {
         return new TickEvent(
                 event.getTurnNumber(),
                 event.getRoundNumber(),
@@ -29,58 +29,58 @@ public final class EventMapper {
                 map(event.getEvents(), baseBot));
     }
 
-    private static Set<BotEvent> map(final Collection<dev.robocode.tankroyale.schema.Event> events, IBaseBot baseBot) {
+    private static Set<BotEvent> map(final Collection<dev.robocode.tankroyale.schema.game.Event> events, IBaseBot baseBot) {
         Set<BotEvent> gameBotEvents = new HashSet<>();
         events.forEach(event -> gameBotEvents.add(map(event, baseBot)));
         return gameBotEvents;
     }
 
-    public static BotEvent map(final dev.robocode.tankroyale.schema.Event event, IBaseBot baseBot) {
-        if (event instanceof dev.robocode.tankroyale.schema.BotDeathEvent) {
-            return map((dev.robocode.tankroyale.schema.BotDeathEvent) event, baseBot.getMyId());
+    public static BotEvent map(final dev.robocode.tankroyale.schema.game.Event event, IBaseBot baseBot) {
+        if (event instanceof dev.robocode.tankroyale.schema.game.BotDeathEvent) {
+            return map((dev.robocode.tankroyale.schema.game.BotDeathEvent) event, baseBot.getMyId());
         }
-        if (event instanceof dev.robocode.tankroyale.schema.BotHitBotEvent) {
-            return map((dev.robocode.tankroyale.schema.BotHitBotEvent) event);
+        if (event instanceof dev.robocode.tankroyale.schema.game.BotHitBotEvent) {
+            return map((dev.robocode.tankroyale.schema.game.BotHitBotEvent) event);
         }
-        if (event instanceof dev.robocode.tankroyale.schema.BotHitWallEvent) {
-            return map((dev.robocode.tankroyale.schema.BotHitWallEvent) event);
+        if (event instanceof dev.robocode.tankroyale.schema.game.BotHitWallEvent) {
+            return map((dev.robocode.tankroyale.schema.game.BotHitWallEvent) event);
         }
-        if (event instanceof dev.robocode.tankroyale.schema.BulletFiredEvent) {
-            return map((dev.robocode.tankroyale.schema.BulletFiredEvent) event);
+        if (event instanceof dev.robocode.tankroyale.schema.game.BulletFiredEvent) {
+            return map((dev.robocode.tankroyale.schema.game.BulletFiredEvent) event);
         }
-        if (event instanceof dev.robocode.tankroyale.schema.BulletHitBotEvent) {
-            return map((dev.robocode.tankroyale.schema.BulletHitBotEvent) event, baseBot.getMyId());
+        if (event instanceof dev.robocode.tankroyale.schema.game.BulletHitBotEvent) {
+            return map((dev.robocode.tankroyale.schema.game.BulletHitBotEvent) event, baseBot.getMyId());
         }
-        if (event instanceof dev.robocode.tankroyale.schema.BulletHitBulletEvent) {
-            return map((dev.robocode.tankroyale.schema.BulletHitBulletEvent) event);
+        if (event instanceof dev.robocode.tankroyale.schema.game.BulletHitBulletEvent) {
+            return map((dev.robocode.tankroyale.schema.game.BulletHitBulletEvent) event);
         }
-        if (event instanceof dev.robocode.tankroyale.schema.BulletHitWallEvent) {
-            return map((dev.robocode.tankroyale.schema.BulletHitWallEvent) event);
+        if (event instanceof dev.robocode.tankroyale.schema.game.BulletHitWallEvent) {
+            return map((dev.robocode.tankroyale.schema.game.BulletHitWallEvent) event);
         }
-        if (event instanceof dev.robocode.tankroyale.schema.ScannedBotEvent) {
-            return map((dev.robocode.tankroyale.schema.ScannedBotEvent) event);
+        if (event instanceof dev.robocode.tankroyale.schema.game.ScannedBotEvent) {
+            return map((dev.robocode.tankroyale.schema.game.ScannedBotEvent) event);
         }
-        if (event instanceof dev.robocode.tankroyale.schema.SkippedTurnEvent) {
-            return map((dev.robocode.tankroyale.schema.SkippedTurnEvent) event);
+        if (event instanceof dev.robocode.tankroyale.schema.game.SkippedTurnEvent) {
+            return map((dev.robocode.tankroyale.schema.game.SkippedTurnEvent) event);
         }
-        if (event instanceof dev.robocode.tankroyale.schema.WonRoundEvent) {
-            return map((dev.robocode.tankroyale.schema.WonRoundEvent) event);
+        if (event instanceof dev.robocode.tankroyale.schema.game.WonRoundEvent) {
+            return map((dev.robocode.tankroyale.schema.game.WonRoundEvent) event);
         }
-        if (event instanceof dev.robocode.tankroyale.schema.TeamMessageEvent) {
-            return map((dev.robocode.tankroyale.schema.TeamMessageEvent) event, baseBot);
+        if (event instanceof dev.robocode.tankroyale.schema.game.TeamMessageEvent) {
+            return map((dev.robocode.tankroyale.schema.game.TeamMessageEvent) event, baseBot);
         }
         throw new BotException(
                 "No mapping exists for event type: " + event.getClass().getSimpleName());
     }
 
-    private static BotEvent map(final dev.robocode.tankroyale.schema.BotDeathEvent source, int myBotId) {
+    private static BotEvent map(final dev.robocode.tankroyale.schema.game.BotDeathEvent source, int myBotId) {
         if (source.getVictimId() == myBotId) {
             return new DeathEvent(source.getTurnNumber());
         }
         return new BotDeathEvent(source.getTurnNumber(), source.getVictimId());
     }
 
-    private static HitBotEvent map(final dev.robocode.tankroyale.schema.BotHitBotEvent source) {
+    private static HitBotEvent map(final dev.robocode.tankroyale.schema.game.BotHitBotEvent source) {
         return new HitBotEvent(
                 source.getTurnNumber(),
                 source.getVictimId(),
@@ -90,17 +90,17 @@ public final class EventMapper {
                 source.getRammed());
     }
 
-    private static HitWallEvent map(final dev.robocode.tankroyale.schema.BotHitWallEvent source) {
+    private static HitWallEvent map(final dev.robocode.tankroyale.schema.game.BotHitWallEvent source) {
         return new HitWallEvent(source.getTurnNumber());
     }
 
-    private static BulletFiredEvent map(final dev.robocode.tankroyale.schema.BulletFiredEvent source) {
+    private static BulletFiredEvent map(final dev.robocode.tankroyale.schema.game.BulletFiredEvent source) {
         return new BulletFiredEvent(
                 source.getTurnNumber(),
                 BulletStateMapper.map(source.getBullet()));
     }
 
-    private static BotEvent map(final dev.robocode.tankroyale.schema.BulletHitBotEvent source, int myBotId) {
+    private static BotEvent map(final dev.robocode.tankroyale.schema.game.BulletHitBotEvent source, int myBotId) {
         BulletState bullet = BulletStateMapper.map(source.getBullet());
         if (source.getVictimId() == myBotId) {
             return new HitByBulletEvent(
@@ -117,20 +117,20 @@ public final class EventMapper {
                 source.getEnergy());
     }
 
-    private static BulletHitBulletEvent map(final dev.robocode.tankroyale.schema.BulletHitBulletEvent source) {
+    private static BulletHitBulletEvent map(final dev.robocode.tankroyale.schema.game.BulletHitBulletEvent source) {
         return new BulletHitBulletEvent(
                 source.getTurnNumber(),
                 BulletStateMapper.map(source.getBullet()),
                 BulletStateMapper.map(source.getHitBullet()));
     }
 
-    private static BulletHitWallEvent map(final dev.robocode.tankroyale.schema.BulletHitWallEvent source) {
+    private static BulletHitWallEvent map(final dev.robocode.tankroyale.schema.game.BulletHitWallEvent source) {
         return new BulletHitWallEvent(
                 source.getTurnNumber(),
                 BulletStateMapper.map(source.getBullet()));
     }
 
-    private static ScannedBotEvent map(final dev.robocode.tankroyale.schema.ScannedBotEvent source) {
+    private static ScannedBotEvent map(final dev.robocode.tankroyale.schema.game.ScannedBotEvent source) {
         return new ScannedBotEvent(
                 source.getTurnNumber(),
                 source.getScannedByBotId(),
@@ -142,15 +142,15 @@ public final class EventMapper {
                 source.getSpeed());
     }
 
-    private static SkippedTurnEvent map(final dev.robocode.tankroyale.schema.SkippedTurnEvent source) {
+    private static SkippedTurnEvent map(final dev.robocode.tankroyale.schema.game.SkippedTurnEvent source) {
         return new SkippedTurnEvent(source.getTurnNumber());
     }
 
-    private static WonRoundEvent map(final dev.robocode.tankroyale.schema.WonRoundEvent source) {
+    private static WonRoundEvent map(final dev.robocode.tankroyale.schema.game.WonRoundEvent source) {
         return new WonRoundEvent(source.getTurnNumber());
     }
 
-    private static TeamMessageEvent map(final dev.robocode.tankroyale.schema.TeamMessageEvent source, final IBaseBot baseBot) {
+    private static TeamMessageEvent map(final dev.robocode.tankroyale.schema.game.TeamMessageEvent source, final IBaseBot baseBot) {
         var message = source.getMessage();
         if (message == null) {
             throw new BotException("message in TeamMessageEvent is null");

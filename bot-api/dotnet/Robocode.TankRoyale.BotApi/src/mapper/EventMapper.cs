@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Robocode.TankRoyale.BotApi.Events;
@@ -11,7 +10,7 @@ public static class EventMapper
 {
     public static TickEvent Map(string json, IBaseBot baseBot)
     {
-        var tickEvent = JsonConvert.DeserializeObject<Schema.TickEventForBot>(json);
+        var tickEvent = JsonConvert.DeserializeObject<Schema.Game.TickEventForBot>(json);
         if (tickEvent == null)
             throw new BotException("TickEventForBot is missing in JSON message from server");
 
@@ -50,26 +49,26 @@ public static class EventMapper
 
         return type switch
         {
-            "BotDeathEvent" => Map(evt.ToObject<Schema.BotDeathEvent>(), baseBot.MyId),
-            "BotHitBotEvent" => Map(evt.ToObject<Schema.BotHitBotEvent>()),
-            "BotHitWallEvent" => Map(evt.ToObject<Schema.BotHitWallEvent>()),
-            "BulletFiredEvent" => Map(evt.ToObject<Schema.BulletFiredEvent>()),
-            "BulletHitBotEvent" => Map(evt.ToObject<Schema.BulletHitBotEvent>(), baseBot.MyId),
-            "BulletHitBulletEvent" => Map(evt.ToObject<Schema.BulletHitBulletEvent>()),
-            "BulletHitWallEvent" => Map(evt.ToObject<Schema.BulletHitWallEvent>()),
-            "ScannedBotEvent" => Map(evt.ToObject<Schema.ScannedBotEvent>()),
-            "SkippedTurnEvent" => Map(evt.ToObject<Schema.SkippedTurnEvent>()),
-            "WonRoundEvent" => Map(evt.ToObject<Schema.WonRoundEvent>()),
-            "TeamMessageEvent" => Map(evt.ToObject<Schema.TeamMessageEvent>(), baseBot),
+            "BotDeathEvent" => Map(evt.ToObject<Schema.Game.BotDeathEvent>(), baseBot.MyId),
+            "BotHitBotEvent" => Map(evt.ToObject<Schema.Game.BotHitBotEvent>()),
+            "BotHitWallEvent" => Map(evt.ToObject<Schema.Game.BotHitWallEvent>()),
+            "BulletFiredEvent" => Map(evt.ToObject<Schema.Game.BulletFiredEvent>()),
+            "BulletHitBotEvent" => Map(evt.ToObject<Schema.Game.BulletHitBotEvent>(), baseBot.MyId),
+            "BulletHitBulletEvent" => Map(evt.ToObject<Schema.Game.BulletHitBulletEvent>()),
+            "BulletHitWallEvent" => Map(evt.ToObject<Schema.Game.BulletHitWallEvent>()),
+            "ScannedBotEvent" => Map(evt.ToObject<Schema.Game.ScannedBotEvent>()),
+            "SkippedTurnEvent" => Map(evt.ToObject<Schema.Game.SkippedTurnEvent>()),
+            "WonRoundEvent" => Map(evt.ToObject<Schema.Game.WonRoundEvent>()),
+            "TeamMessageEvent" => Map(evt.ToObject<Schema.Game.TeamMessageEvent>(), baseBot),
             _ => throw new BotException("No mapping exists for event type: " + type)
         };
     }
 
-    private static BotEvent Map(Schema.BotDeathEvent source, int myBotId) => source.VictimId == myBotId
+    private static BotEvent Map(Schema.Game.BotDeathEvent source, int myBotId) => source.VictimId == myBotId
         ? new DeathEvent(source.TurnNumber)
         : new BotDeathEvent(source.TurnNumber, source.VictimId);
 
-    private static HitBotEvent Map(Schema.BotHitBotEvent source) => new
+    private static HitBotEvent Map(Schema.Game.BotHitBotEvent source) => new
     (
         source.TurnNumber,
         source.VictimId,
@@ -79,15 +78,15 @@ public static class EventMapper
         source.Rammed
     );
 
-    private static HitWallEvent Map(Schema.BotHitWallEvent source) => new(source.TurnNumber);
+    private static HitWallEvent Map(Schema.Game.BotHitWallEvent source) => new(source.TurnNumber);
 
-    private static BulletFiredEvent Map(Schema.BulletFiredEvent source) => new
+    private static BulletFiredEvent Map(Schema.Game.BulletFiredEvent source) => new
     (
         source.TurnNumber,
         BulletStateMapper.Map(source.Bullet)
     );
 
-    private static BotEvent Map(Schema.BulletHitBotEvent source, int myBotId)
+    private static BotEvent Map(Schema.Game.BulletHitBotEvent source, int myBotId)
     {
         var bullet = BulletStateMapper.Map(source.Bullet);
         if (source.VictimId == myBotId)
@@ -107,7 +106,7 @@ public static class EventMapper
             source.Energy);
     }
 
-    private static BulletHitBulletEvent Map(Schema.BulletHitBulletEvent source) => new
+    private static BulletHitBulletEvent Map(Schema.Game.BulletHitBulletEvent source) => new
     (
         source.TurnNumber,
         BulletStateMapper.Map(source.Bullet),
@@ -115,13 +114,13 @@ public static class EventMapper
     );
 
 
-    private static BulletHitWallEvent Map(Schema.BulletHitWallEvent source) => new
+    private static BulletHitWallEvent Map(Schema.Game.BulletHitWallEvent source) => new
     (
         source.TurnNumber,
         BulletStateMapper.Map(source.Bullet)
     );
 
-    private static ScannedBotEvent Map(Schema.ScannedBotEvent source) => new
+    private static ScannedBotEvent Map(Schema.Game.ScannedBotEvent source) => new
     (
         source.TurnNumber,
         source.ScannedByBotId,
@@ -133,11 +132,11 @@ public static class EventMapper
         source.Speed
     );
 
-    public static SkippedTurnEvent Map(Schema.SkippedTurnEvent source) => new(source.TurnNumber);
+    public static SkippedTurnEvent Map(Schema.Game.SkippedTurnEvent source) => new(source.TurnNumber);
 
-    private static WonRoundEvent Map(Schema.WonRoundEvent source) => new(source.TurnNumber);
+    private static WonRoundEvent Map(Schema.Game.WonRoundEvent source) => new(source.TurnNumber);
 
-    private static TeamMessageEvent Map(Schema.TeamMessageEvent source, IBaseBot baseBot)
+    private static TeamMessageEvent Map(Schema.Game.TeamMessageEvent source, IBaseBot baseBot)
     {
         try
         {

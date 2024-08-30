@@ -24,7 +24,7 @@ import dev.robocode.tankroyale.botapi.events.WonRoundEvent;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
-import dev.robocode.tankroyale.schema.*;
+import dev.robocode.tankroyale.schema.game.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -168,18 +168,18 @@ public final class BaseBotInternals {
                 .create();
     }
 
-    private static RuntimeTypeAdapterFactory<dev.robocode.tankroyale.schema.Event> getEventTypeFactory() {
-        return RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "type")
-                .registerSubtype(dev.robocode.tankroyale.schema.BotDeathEvent.class, "BotDeathEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.BulletFiredEvent.class, "BulletFiredEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.WonRoundEvent.class, "WonRoundEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.TeamMessageEvent.class, "TeamMessageEvent");
+    private static RuntimeTypeAdapterFactory<dev.robocode.tankroyale.schema.game.Event> getEventTypeFactory() {
+        return RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.game.Event.class, "type")
+                .registerSubtype(dev.robocode.tankroyale.schema.game.BotDeathEvent.class, "BotDeathEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.game.BotHitBotEvent.class, "BotHitBotEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.game.BotHitWallEvent.class, "BotHitWallEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.game.BulletFiredEvent.class, "BulletFiredEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.game.BulletHitBotEvent.class, "BulletHitBotEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.game.BulletHitBulletEvent.class, "BulletHitBulletEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.game.BulletHitWallEvent.class, "BulletHitWallEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.game.ScannedBotEvent.class, "ScannedBotEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.game.WonRoundEvent.class, "WonRoundEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.game.TeamMessageEvent.class, "TeamMessageEvent");
     }
 
     private void subscribeToEvents() {
@@ -775,7 +775,7 @@ public final class BaseBotInternals {
                 if (jsonType != null) {
                     String type = jsonType.getAsString();
 
-                    switch (dev.robocode.tankroyale.schema.Message.Type.fromValue(type)) {
+                    switch (dev.robocode.tankroyale.schema.game.Message.Type.fromValue(type)) {
                         case TICK_EVENT_FOR_BOT:
                             handleTick(jsonMsg);
                             break;
@@ -885,7 +885,7 @@ public final class BaseBotInternals {
         private void handleSkippedTurn(JsonObject jsonMsg) {
             if (getEventHandlingDisabledTurn()) return;
 
-            var skippedTurnEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
+            var skippedTurnEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.game.SkippedTurnEvent.class);
 
             botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent, baseBot));
         }

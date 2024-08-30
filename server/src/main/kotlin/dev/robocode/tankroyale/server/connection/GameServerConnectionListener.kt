@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection
 
-import dev.robocode.tankroyale.schema.*
+import dev.robocode.tankroyale.schema.game.*
 import dev.robocode.tankroyale.server.core.GameServer
 import org.java_websocket.WebSocket
 import org.slf4j.LoggerFactory

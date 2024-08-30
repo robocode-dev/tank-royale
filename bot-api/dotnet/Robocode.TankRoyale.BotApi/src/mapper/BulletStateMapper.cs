@@ -4,7 +4,7 @@ namespace Robocode.TankRoyale.BotApi.Mapper;
 
 internal static class BulletStateMapper
 {
-    public static BulletState Map(Schema.BulletState source)
+    public static BulletState Map(Schema.Game.BulletState source)
     {
         return new BulletState(
             source.BulletId,
@@ -17,7 +17,7 @@ internal static class BulletStateMapper
         );
     }
 
-    public static IEnumerable<BulletState> Map(IEnumerable<Schema.BulletState> source)
+    public static IEnumerable<BulletState> Map(IEnumerable<Schema.Game.BulletState> source)
     {
         var bulletStates = new HashSet<BulletState>();
         foreach (var bulletState in source)

@@ -7,7 +7,7 @@ This module contains the schema of the protocol used by Robocode Tank Royale for
 - observers
 - controllers
 
-The and sequence diagrams the communication is provided [here](./schemas/README.md)
+The and sequence diagrams the game communication is provided [here](schemas/game/README.md)
 
 ## Intention and purpose of the protocol
 

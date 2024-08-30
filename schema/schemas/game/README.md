@@ -1,6 +1,6 @@
 # Schemas
 
-This directory contains the schema of the protocol used by Robocode Tank Royale for network communication.
+This directory contains the schema of the game protocol used by Robocode Tank Royale for network communication.
 
 ## Joining and leaving the server
 
@@ -311,7 +311,7 @@ Here are the events that a bot receives during a game:
 | [won-round-event]          | When our bot won the round                                                                           |
 | [team-message-event]       | When our bot receives a message from a teammate                                                      |
 
-[TPS]: ../../docs/articles/tps.html "TPS (Turns Per Second)"
+[TPS]: ../../../docs/articles/tps.html "TPS (Turns Per Second)"
 
 [server-handshake]: server-handshake.yaml
 

@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.server.mapper
 
-import dev.robocode.tankroyale.schema.BotStateWithId
+import dev.robocode.tankroyale.schema.game.BotStateWithId
 import dev.robocode.tankroyale.server.model.normalizeAbsoluteDegrees
 import dev.robocode.tankroyale.server.model.IBot
 

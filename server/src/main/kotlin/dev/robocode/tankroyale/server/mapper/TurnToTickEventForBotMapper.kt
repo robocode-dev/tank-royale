@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server.mapper
 
-import dev.robocode.tankroyale.schema.Message
-import dev.robocode.tankroyale.schema.TickEventForBot
+import dev.robocode.tankroyale.schema.game.Message
+import dev.robocode.tankroyale.schema.game.TickEventForBot
 import dev.robocode.tankroyale.server.mapper.BotToBotStateMapper.map
 import dev.robocode.tankroyale.server.mapper.BulletsToBulletStatesMapper.map
 import dev.robocode.tankroyale.server.model.BotId

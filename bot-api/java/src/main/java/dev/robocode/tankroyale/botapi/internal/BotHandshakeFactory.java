@@ -2,8 +2,8 @@ package dev.robocode.tankroyale.botapi.internal;
 
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.mapper.InitialPositionMapper;
-import dev.robocode.tankroyale.schema.BotHandshake;
-import dev.robocode.tankroyale.schema.Message.Type;
+import dev.robocode.tankroyale.schema.game.BotHandshake;
+import dev.robocode.tankroyale.schema.game.Message.Type;
 
 import java.util.ArrayList;
 

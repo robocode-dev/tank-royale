@@ -16,7 +16,7 @@ public final class BulletStateMapper {
     private BulletStateMapper() {
     }
 
-    public static BulletState map(final dev.robocode.tankroyale.schema.BulletState source) {
+    public static BulletState map(final dev.robocode.tankroyale.schema.game.BulletState source) {
         return new BulletState(
                 source.getBulletId(),
                 source.getOwnerId(),
@@ -27,7 +27,7 @@ public final class BulletStateMapper {
                 Color.fromString(source.getColor()));
     }
 
-    public static Set<BulletState> map(final Collection<dev.robocode.tankroyale.schema.BulletState> source) {
+    public static Set<BulletState> map(final Collection<dev.robocode.tankroyale.schema.game.BulletState> source) {
         Set<BulletState> bulletStates = new HashSet<>();
         source.forEach(bulletState -> bulletStates.add(map(bulletState)));
         return bulletStates;

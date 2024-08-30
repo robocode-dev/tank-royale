@@ -13,7 +13,7 @@ public final class BotStateMapper {
     private BotStateMapper() {
     }
 
-    public static BotState map(final dev.robocode.tankroyale.schema.BotState source) {
+    public static BotState map(final dev.robocode.tankroyale.schema.game.BotState source) {
         return new BotState(
                 source.getIsDroid(),
                 source.getEnergy(),

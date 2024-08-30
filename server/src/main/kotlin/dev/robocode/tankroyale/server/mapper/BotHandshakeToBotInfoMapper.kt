@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server.mapper
 
-import dev.robocode.tankroyale.schema.BotHandshake
-import dev.robocode.tankroyale.schema.BotInfo
+import dev.robocode.tankroyale.schema.game.BotHandshake
+import dev.robocode.tankroyale.schema.game.BotInfo
 
 object BotHandshakeToBotInfoMapper {
     fun map(botHandshake: BotHandshake, hostName: String, port: Int): BotInfo {

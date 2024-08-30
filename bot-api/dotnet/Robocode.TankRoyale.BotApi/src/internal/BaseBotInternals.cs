@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
-using S = Robocode.TankRoyale.Schema;
+using S = Robocode.TankRoyale.Schema.Game;
 using E = Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Mapper;
 using Robocode.TankRoyale.BotApi.Util;
@@ -881,7 +881,7 @@ public sealed class BaseBotInternals
     {
         if (IsEventHandlingDisabled()) return;
 
-        var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.SkippedTurnEvent>(json);
+        var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.Game.SkippedTurnEvent>(json);
         BotEventHandlers.FireSkippedTurnEvent(EventMapper.Map(skippedTurnEvent));
     }
 }

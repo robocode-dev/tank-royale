@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.server.connection
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
-import dev.robocode.tankroyale.schema.*
+import dev.robocode.tankroyale.schema.game.*
 import dev.robocode.tankroyale.server.core.ServerSetup
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.IClientWebSocketObserver
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.IConnectionListener
