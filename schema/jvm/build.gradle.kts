@@ -4,12 +4,8 @@ import java.util.Collections.singletonList
 
 description = "Robocode Tank Royale schema for Java"
 
-val title = "Robocode Tank Royale schema for Java"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
-
-val artifactBaseName = "robocode-tankroyale-schema"
-val archiveFileName = "${layout.buildDirectory.get()}/libs/$artifactBaseName-$version.jar"
 
 val schemaPackage = "dev.robocode.tankroyale.schema"
 
