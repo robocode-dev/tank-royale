@@ -1,0 +1,50 @@
+$id: results-for-bot.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Individual participants results visible for a bot, where name and version is hidden.
+properties:
+  rank:
+    description: Rank/placement, where 1 is 1st place, 4 is 4th place etc.
+    type: integer
+    minimum: 1
+  survival:
+    description: Survival score gained whenever another opponent is defeated
+    type: integer
+  lastSurvivorBonus:
+    description: Last survivor score as last survivor in a round
+    type: integer
+  bulletDamage:
+    description: Bullet damage given
+    type: integer
+  bulletKillBonus:
+    description: Bullet kill bonus
+    type: integer
+  ramDamage:
+    description: Ram damage given
+    type: integer
+  ramKillBonus:
+    description: Ram kill bonus
+    type: integer
+  totalScore:
+    description: Total score
+    type: integer
+  firstPlaces:
+    description: Number of 1st places
+    type: integer
+  secondPlaces:
+    description: Number of 2nd places
+    type: integer
+  thirdPlaces:
+    description: Number of 3rd places
+    type: integer
+required:
+  - rank
+  - survival
+  - lastSurvivorBonus
+  - bulletDamage
+  - bulletKillBonus
+  - ramDamage
+  - ramKillBonus
+  - totalScore
+  - firstPlaces
+  - secondPlaces
+  - thirdPlaces

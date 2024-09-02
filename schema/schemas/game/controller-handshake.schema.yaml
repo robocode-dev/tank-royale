@@ -1,0 +1,25 @@
+$id: controller-handshake.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Controller handshake
+extends:
+  $ref: message.schema.yaml
+properties:
+  sessionId:
+    description: Unique session id that must match the session id received from the server handshake.
+    type: string
+  name:
+    description: Name of controller, e.g. Fancy Robocode Controller
+    type: string
+  version:
+    description: Controller version, e.g. 1.0
+    type: string
+  author:
+    description: Author name, e.g. John Doe (john_doe@somewhere.net)
+    type: string
+  secret:
+    description: Secret used for access control with the server
+    type: string
+required:
+  - sessionId
+  - name
+  - version

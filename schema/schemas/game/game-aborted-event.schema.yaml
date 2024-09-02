@@ -1,0 +1,6 @@
+$id: game-aborted-event.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Event occurring when game has been aborted. No score is available.
+type: object # needed here when there is no properties defined (for code generation)
+extends:
+  $ref: message.schema.yaml

@@ -1,0 +1,15 @@
+$id: bullet-hit-bullet-event.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Event occurring when a bullet has hit another bullet
+extends:
+  $ref: event.schema.yaml
+properties:
+  bullet:
+    description: Bullet that hit another bullet
+    $ref: bullet-state.schema.yaml
+  hitBullet:
+    description: The other bullet that was hit by the bullet
+    $ref: bullet-state.schema.yaml
+required:
+  - bullet
+  - hitBullet

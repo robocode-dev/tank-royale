@@ -1,0 +1,20 @@
+$id: team-message-event.schema.yaml
+$schema: https://json-schema.org/2020-12/schema#
+description: Event occurring when a message has been received from a teammate
+extends:
+  $ref: event.schema.yaml
+properties:
+  message:
+    description: The message to send, e.g. in JSON format
+    type: string
+    maxLength: 32768
+  messageType:
+    description: The message type, e.g. a class name
+    type: string
+  senderId:
+    description: The id of the sender teammate
+    type: integer
+required:
+  - message
+  - messageType
+  - senderId

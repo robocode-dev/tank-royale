@@ -1,0 +1,13 @@
+$id: bot-address.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Bot address
+properties:
+  host:
+    description: Host name or IP address
+    type: string
+  port:
+    description: Port number
+    type: integer
+required:
+  - host
+  - port

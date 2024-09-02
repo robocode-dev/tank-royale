@@ -1,0 +1,11 @@
+$id: bullet-fired-event.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Event occurring when a bullet has been fired from a bot
+extends:
+  $ref: event.schema.yaml
+properties:
+  bullet:
+    description: Bullet that was fired
+    $ref: bullet-state.schema.yaml
+required:
+  - bullet

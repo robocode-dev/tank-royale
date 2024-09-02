@@ -1,0 +1,19 @@
+$id: round-ended-event-for-bot.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Event occurring when a round has ended. Gives all game results visible for a bot.
+extends:
+  $ref: message.schema.yaml
+properties:
+  roundNumber:
+    description: The current round number in the battle when event occurred
+    type: integer
+  turnNumber:
+    description: The current turn number in the round when event occurred
+    type: integer
+  results:
+    description: The accumulated bot results by the end of the round.
+    $ref: results-for-bot.schema.yaml
+required:
+  - roundNumber
+  - turnNumber
+  - results

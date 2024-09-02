@@ -313,80 +313,80 @@ Here are the events that a bot receives during a game:
 
 [TPS]: ../../../docs/articles/tps.html "TPS (Turns Per Second)"
 
-[server-handshake]: server-handshake.yaml
+[server-handshake]: server-handshake.schema.yaml
 
-[bot-handshake]: bot-handshake.yaml
+[bot-handshake]: bot-handshake.schema.yaml
 
-[observer-handshake]: observer-handshake.yaml
+[observer-handshake]: observer-handshake.schema.yaml
 
-[controller-handshake]: controller-handshake.yaml
+[controller-handshake]: controller-handshake.schema.yaml
 
-[bot-list-update]: bot-list-update.yaml
+[bot-list-update]: bot-list-update.schema.yaml
 
-[start-game]: start-game.yaml
+[start-game]: start-game.schema.yaml
 
-[game-started-event-for-bot]: game-started-event-for-bot.yaml
+[game-started-event-for-bot]: game-started-event-for-bot.schema.yaml
 
-[bot-ready]: bot-ready.yaml
+[bot-ready]: bot-ready.schema.yaml
 
-[round-started-event]: round-started-event.yaml
+[round-started-event]: round-started-event.schema.yaml
 
-[round-ended-event-for-bot]: round-ended-event-for-bot.yaml
+[round-ended-event-for-bot]: round-ended-event-for-bot.schema.yaml
 
-[tick-event-for-bot]: tick-event-for-bot.yaml
+[tick-event-for-bot]: tick-event-for-bot.schema.yaml
 
-[tick-event-for-observer]: tick-event-for-observer.yaml
+[tick-event-for-observer]: tick-event-for-observer.schema.yaml
 
-[bot-intent]: bot-intent.yaml
+[bot-intent]: bot-intent.schema.yaml
 
-[skipped-turn-event]: skipped-turn-event.yaml
+[skipped-turn-event]: skipped-turn-event.schema.yaml
 
-[game-ended-event-for-bot]: game-ended-event-for-bot.yaml
+[game-ended-event-for-bot]: game-ended-event-for-bot.schema.yaml
 
-[game-ended-event-for-observer]: game-ended-event-for-observer.yaml
+[game-ended-event-for-observer]: game-ended-event-for-observer.schema.yaml
 
-[won-round-event]: won-round-event.yaml
+[won-round-event]: won-round-event.schema.yaml
 
-[stop-game]: stop-game.yaml
+[stop-game]: stop-game.schema.yaml
 
-[game-aborted-event]: game-aborted-event.yaml
+[game-aborted-event]: game-aborted-event.schema.yaml
 
-[pause-game]: pause-game.yaml
+[pause-game]: pause-game.schema.yaml
 
-[next-turn]: next-turn.yaml
+[next-turn]: next-turn.schema.yaml
 
-[game-paused-event-for-observer]: game-paused-event-for-observer.yaml
+[game-paused-event-for-observer]: game-paused-event-for-observer.schema.yaml
 
-[resume-game]: resume-game.yaml
+[resume-game]: resume-game.schema.yaml
 
-[game-resumed-event-for-observer]: game-resumed-event-for-observer.yaml
+[game-resumed-event-for-observer]: game-resumed-event-for-observer.schema.yaml
 
-[change-tps]: change-tps.yaml
+[change-tps]: change-tps.schema.yaml
 
-[tps-changed-event]: tps-changed-event.yaml
+[tps-changed-event]: tps-changed-event.schema.yaml
 
-[bot-death-event]: bot-death-event.yaml
+[bot-death-event]: bot-death-event.schema.yaml
 
-[bot-hit-bot-event]: bot-hit-bot-event.yaml
+[bot-hit-bot-event]: bot-hit-bot-event.schema.yaml
 
-[bot-hit-wall-event]: bot-hit-wall-event.yaml
+[bot-hit-wall-event]: bot-hit-wall-event.schema.yaml
 
-[bullet-fired-event]: bullet-fired-event.yaml
+[bullet-fired-event]: bullet-fired-event.schema.yaml
 
-[bullet-hit-bot-event]: bullet-hit-bot-event.yaml
+[bullet-hit-bot-event]: bullet-hit-bot-event.schema.yaml
 
-[bullet-hit-bullet-event]: bullet-hit-bullet-event.yaml
+[bullet-hit-bullet-event]: bullet-hit-bullet-event.schema.yaml
 
-[bullet-hit-wall-event]: bullet-hit-wall-event.yaml
+[bullet-hit-wall-event]: bullet-hit-wall-event.schema.yaml
 
-[hit-by-bullet-event]: hit-by-bullet-event.yaml
+[hit-by-bullet-event]: hit-by-bullet-event.schema.yaml
 
-[scanned-bot-event]: scanned-bot-event.yaml
+[scanned-bot-event]: scanned-bot-event.schema.yaml
 
-[skipped-turn-event]: skipped-turn-event.yaml
+[skipped-turn-event]: skipped-turn-event.schema.yaml
 
-[tick-event-for-bot]: tick-event-for-bot.yaml
+[tick-event-for-bot]: tick-event-for-bot.schema.yaml
 
-[won-round-event]: won-round-event.yaml
+[won-round-event]: won-round-event.schema.yaml
 
-[team-message-event]: team-message-event.yaml
+[team-message-event]: team-message-event.schema.yaml

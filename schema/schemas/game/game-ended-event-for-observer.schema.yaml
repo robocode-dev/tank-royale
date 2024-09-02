@@ -1,0 +1,17 @@
+$id: game-ended-event-for-observer.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Event occurring when game has ended. Gives all game results visible for an observer.
+extends:
+  $ref: message.schema.yaml
+properties:
+  numberOfRounds:
+    description: Number of rounds played
+    type: integer
+  results:
+    description: Results of the battle for all bots
+    type: array
+    items:
+      $ref: results-for-observer.schema.yaml
+required:
+  - numberOfRounds
+  - results

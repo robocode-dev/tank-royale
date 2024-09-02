@@ -1,0 +1,33 @@
+$id: server-handshake.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Server handshake
+extends:
+  $ref: message.schema.yaml
+properties:
+  sessionId:
+    description: Unique session id used for identifying the caller client (bot, controller, observer) connection.
+    type: string
+  name:
+    description: Name of server, e.g. John Doe's RoboRumble Server
+    type: string
+  variant:
+    type: string
+    description: Game variant, e.g. 'Tank Royale' for Robocode Tank Royale
+  version:
+    type: string
+    description: Game version, e.g. '1.0.0' using Semantic Versioning (https://semver.org/)
+  gameTypes:
+    description: Game types running at this server, e.g. "melee" and "1v1"
+    type: array
+    items:
+      type: string
+    minItems: 1
+    uniqueItems: true
+  gameSetup:
+    description: Current game setup, if a game has been started and is running on the server.
+    $ref: game-setup.schema.yaml
+required:
+  - sessionId
+  - variant
+  - version
+  - gameTypes

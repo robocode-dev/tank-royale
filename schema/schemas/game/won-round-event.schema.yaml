@@ -1,0 +1,6 @@
+$id: won-round-event.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Event occurring when a bot has won the round
+type: object # needed here when there is no properties defined (for code generation)
+extends:
+  $ref: event.schema.yaml

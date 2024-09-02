@@ -1,0 +1,75 @@
+$id: bot-intent.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: |
+  The intent (request) sent from a bot each turn for controlling the bot and provide the server with data.
+  A field only needs to be set, if the value must be changed. Otherwise the server will use the field value from the
+  last time the field was set.
+extends:
+  $ref: message.schema.yaml
+properties:
+  turnRate:
+    description: Turn rate of the body in degrees per turn (can be positive and negative)
+    type: number
+  gunTurnRate:
+    description: Turn rate of the gun in degrees per turn (can be positive and negative)
+    type: number
+  radarTurnRate:
+    description: Turn rate of the radar in degrees per turn (can be positive and negative)
+    type: number
+  targetSpeed:
+    description: New target speed in units per turn (can be positive and negative)
+    type: number
+  firepower:
+    description: Attempt to fire gun with the specified firepower
+    type: number
+    minimum: 0.0
+    maximum: 3.0
+    exclusiveMinimum: true
+  adjustGunForBodyTurn:
+    description: Flag indicating if the gun must be adjusted to compensate for the body turn. Default is false.
+    type: boolean
+  adjustRadarForBodyTurn:
+    description: Flag indicating if the radar must be adjusted to compensate for the body turn. Default is false.
+    type: boolean
+  adjustRadarForGunTurn:
+    description: Flag indicating if the radar must be adjusted to compensate for the gun turn. Default is false.
+    type: boolean
+  rescan:
+    description: Flag indicating if the bot should rescan with previous radar direction and scan sweep angle.
+    type: boolean
+  fireAssist:
+    description: Flag indication if fire assistance is enabled.
+    type: boolean
+  bodyColor:
+    description: New color of the body
+    $ref: color.schema.yaml
+  turretColor:
+    description: New color of the cannon turret
+    $ref: color.schema.yaml
+  radarColor:
+    description: New color of the radar
+    $ref: color.schema.yaml
+  bulletColor:
+    description: New color of the bullet. Note. This will be the color of a bullet when it is fired
+    $ref: color.schema.yaml
+  scanColor:
+    description: New color of the scan arc
+    $ref: color.schema.yaml
+  tracksColor:
+    description: New color of the tracks
+    $ref: color.schema.yaml
+  gunColor:
+    description: New color of the gun
+    $ref: color.schema.yaml
+  stdOut:
+    description: New text received from standard output (stdout)
+    type: string
+  stdErr:
+    description: New text received from standard error (stderr)
+    type: string
+  teamMessages:
+    description: Messages to send to one or more individual teammates or broadcast to the entire team
+    type: array
+    maxItems: 4
+    items:
+      $ref: team-message.schema.yaml

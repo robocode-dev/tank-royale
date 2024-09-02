@@ -1,0 +1,19 @@
+$id: results-for-observer.schema.yaml
+$schema: https://json-schema.org/2020-12/schema#
+description: Individual participant results visible for an observer, where id, name, and version is available as well.
+extends:
+  $ref: results-for-bot.schema.yaml
+properties:
+  id:
+    description: Id of the participant
+    type: integer
+  name:
+    description: Name of participant, e.g. Killer Bee (bot) or Killer Bees (team)
+    type: string
+  version:
+    description: version, e.g. 1.0
+    type: string
+required:
+  - id
+  - name
+  - version

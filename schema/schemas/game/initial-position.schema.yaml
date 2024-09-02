@@ -1,0 +1,16 @@
+$id: initial-position.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: |
+  description: |
+    Initial start position of the bot used for debugging as a comma-separated format taking the x and y coordinates
+    and shared starting direction of the body, gun, and radar.
+properties:
+  x:
+    description: The x coordinate. When it is not set, a random value will be used.
+    type: number
+  y:
+    description: The y coordinate. When it is not set, a random value will be used.
+    type: number
+  direction:
+    description: The shared direction of the body, gun, and radar. When it is not set, a random value will be used.
+    type: number

@@ -1,0 +1,14 @@
+$id: bot-list-update.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Bot list update
+extends:
+  $ref: message.schema.yaml
+properties:
+  bots:
+    description: List of bots
+    type: array
+    items:
+      description: Bot info
+      $ref: bot-info.schema.yaml
+required:
+  - bots

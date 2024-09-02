@@ -1,0 +1,11 @@
+$id: bot-death-event.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Event occurring when a bot has died
+extends:
+  $ref: event.schema.yaml
+properties:
+  victimId:
+    description: id of the bot that has died
+    type: integer
+required:
+  - victimId

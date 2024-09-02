@@ -1,0 +1,25 @@
+$id: observer-handshake.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Observer handshake
+extends:
+  $ref: message.schema.yaml
+properties:
+  sessionId:
+    description: Unique session id that must match the session id received from the server handshake.
+    type: string
+  name:
+    description: Name of observer, e.g. Tron Neon 3D Window
+    type: string
+  version:
+    description: Observer version, e.g. 1.0
+    type: string
+  author:
+    description: Author name, e.g. John Doe (john_doe@somewhere.net)
+    type: string
+  secret:
+    description: Secret used for access control with the server
+    type: string
+required:
+  - sessionId
+  - name
+  - version

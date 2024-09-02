@@ -1,0 +1,11 @@
+$id: round-started-event.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Event occurring when a new round has started.
+extends:
+  $ref: message.schema.yaml
+properties:
+  roundNumber:
+    description: The current round number in the battle when event occurred
+    type: integer
+required:
+  - roundNumber

@@ -1,0 +1,82 @@
+$id: participant.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Bot participating in a battle
+properties:
+  id:
+    description: Id of the bot participating in a battle
+    type: integer
+  sessionId:
+    description: Unique session id that must match the session id received from the server handshake
+    type: string
+  name:
+    description: Name of bot, e.g. Killer Bee
+    type: string
+    minLength: 1
+    maxLength: 30
+  version:
+    description: Bot version, e.g. 1.0
+    type: string
+    minLength: 1
+    maxLength: 20
+  authors:
+    description: Name of authors, e.g. John Doe <john_doe@somewhere.net>
+    type: array
+    maxItems: 5
+    items:
+      type: string
+      minLength: 1
+      maxLength: 50
+  description:
+    description: Short description of the bot, preferable a one-liner
+    type: string
+    maxLength: 250
+  homepage:
+    description: URL to a home page for the bot
+    type: string
+    maxLength: 150
+  countryCodes:
+    description: 2-letter country code(s) defined by ISO 3166-1, e.g. "GB"
+    type: array
+    items:
+      type: string
+      pattern: /^[a-z]{2}$/ig
+  gameTypes:
+    description: Game types supported by this bot (defined elsewhere), e.g. "classic", "melee" and "1v1"
+    type: array
+    maxItems: 10
+    items:
+      type: string
+      maxLength: 20
+  platform:
+    description: Platform used for running the bot, e.g. JVM 17 or .NET 5
+    type: string
+    maxLength: 30
+  programmingLang:
+    description: Language used for programming the bot, e.g. Java 17 or C# 10
+    type: string
+    maxLength: 30
+  initialPosition:
+    description: Initial start position of the bot used for debugging
+    $ref: initial-position.schema.yaml
+  teamId:
+    description: Id of the team that this bot is a member of
+    type: integer
+  teamName:
+    description: Name of the team that this bot is a member of, e.g. Killer Bees
+    type: string
+    minLength: 1
+    maxLength: 30
+  teamVersion:
+    description: Team version, e.g. 1.0
+    type: string
+    minLength: 1
+    maxLength: 20
+  isDroid:
+    description: Flag specifying if the bot is a Droid (team bot with 120 energy, but no scanner)
+    type: boolean
+required:
+  - id
+  - sessionId
+  - name
+  - version
+  - authors

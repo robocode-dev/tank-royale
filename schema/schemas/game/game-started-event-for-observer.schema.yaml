@@ -1,0 +1,17 @@
+$id: game-started-event-for-observer.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Event occurring when a new game has started. Gives game info for an observer.
+extends:
+  $ref: message.schema.yaml
+properties:
+  gameSetup:
+    description: Game setup
+    $ref: game-setup.schema.yaml
+  participants:
+    description: List of bots participating in this battle
+    type: array
+    items:
+      $ref: participant.schema.yaml
+required:
+  - gameSetup
+  - participants

@@ -1,0 +1,11 @@
+$id: bot-hit-wall-event.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Event occurring when a bot has hit a wall
+extends:
+  $ref: event.schema.yaml
+properties:
+  victimId:
+    description: id of the victim bot that hit the wall
+    type: integer
+required:
+  - victimId

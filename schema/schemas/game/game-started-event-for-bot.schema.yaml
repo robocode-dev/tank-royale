@@ -1,0 +1,29 @@
+$id: game-started-event-for-bot.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Event occurring when a new game has started. Gives game info for a bot.
+extends:
+  $ref: message.schema.yaml
+properties:
+  myId:
+    description: My id is an unique id of this bot
+    type: integer
+  startX:
+    description: Start x coordinate
+    type: number
+  startY:
+    description: Start y coordinate
+    type: number
+  startDirection:
+    description: Direction of the body, gun, and radar in degrees
+    type: number
+  teammateIds:
+    description: The IDs of the teammates in the team that this bot is a member of
+    type: array
+    items:
+      type: integer
+  gameSetup:
+    description: Game setup
+    $ref: game-setup.schema.yaml
+required:
+  - myId
+  - gameSetup

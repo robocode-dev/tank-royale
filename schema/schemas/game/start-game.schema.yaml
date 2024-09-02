@@ -1,0 +1,17 @@
+$id: start-game.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Command to start a new game
+extends:
+  $ref: message.schema.yaml
+properties:
+  gameSetup:
+    description: Game setup
+    $ref: game-setup.schema.yaml
+  botAddresses:
+    description: List of bot addresses
+    type: array
+    items:
+      description: Bot address
+      $ref: bot-address.schema.yaml
+required:
+  - botAddresses

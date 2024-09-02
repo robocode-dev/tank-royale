@@ -1,5 +1,0 @@
-$id: next-turn.yaml
-$schema: https://json-schema.org/draft/2020-12/schema
-description: Command to make the next turn when the game is paused used for single stepping when debugging.
-extends:
-  $ref: message.yaml

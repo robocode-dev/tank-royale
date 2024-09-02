@@ -34,4 +34,6 @@ jsonSchema2Pojo {
     setSource(singletonList(File("$projectDir/../schemas")))
     setAnnotationStyle(AnnotationStyle.GSON.toString())
     targetPackage = schemaPackage
+
+    setFileExtensions("schema.yaml", "schema.json")
 }

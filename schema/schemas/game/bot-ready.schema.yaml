@@ -1,0 +1,6 @@
+$id: bot-ready.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Message from a bot that is ready to play a game
+type: object # needed here when there is no properties defined (for code generation)
+extends:
+  $ref: message.schema.yaml

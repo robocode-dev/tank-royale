@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using NJsonSchema;
 using NJsonSchema.CodeGeneration.CSharp;
 using NJsonSchema.Yaml;
@@ -33,7 +34,7 @@ public class Program
 
         var srcDir = args[0]; // source path for the location of the JSON Schema files
         var destDir = args[1]; // destination path for storing the generated source files
-        var _namespace = args[2]; // namespace, e.g. "Robocode.TankRoyale.Schema.Game"
+        var namespaceName = args[2]; // namespace, e.g. "Robocode.TankRoyale.Schema.Game"
 
         // Loop through all JSON Schema files in YAML format
         foreach (var filename in Directory.GetFiles(srcDir))
@@ -59,7 +60,7 @@ public class Program
             var typeResolver = new CustomizedCSharpTypeResolver(settings);
 
             var generator = new CSharpGenerator(schema, settings, typeResolver);
-            settings.Namespace = _namespace;
+            settings.Namespace = namespaceName;
 
             // Generate and output source file
             var text = generator.GenerateFile();
@@ -87,16 +88,19 @@ public class Program
             // Add extension class to the class replacement string, if the schema contains an "extends" attribute
             try
             {
-                var extends = (IDictionary<string, object>)schema.ExtensionData["extends"];
-                var refPath = (string)extends["$ref"];
-                replacement += " : " + ToClassName(refPath);
+                if (schema.ExtensionData != null)
+                {
+                    var extends = (IDictionary<string, object>)schema.ExtensionData["extends"];
+                    var refPath = (string)extends["$ref"];
+                    replacement += " : " + ToClassName(refPath);
+                }
             }
             catch (KeyNotFoundException)
             {
             }
 
             // Replace the "public partial class Yaml" with our replacement string
-            // (correct class name + extension, if is was missing)
+            // (correct class name + extension, if it was missing)
             text = text.Replace("public partial class Yaml", replacement);
 
             // Replace the "YamlType" with <class mame>Type
@@ -116,14 +120,18 @@ public class Program
 
     /// <summary>
     /// Method using for converting a file name for a schema file into a C# class name.
-    /// E.g. converts the file name D:\..\robocode-tankroyale-schema\bot-death-event.yaml into BotDeathEvent
+    /// E.g. converts the file name D:\..\robocode-tankroyale-schema\bot-death-event.schema.yaml into BotDeathEvent
     /// </summary>
-    /// <param name="filename">Is the filename of the JSON Schema to convert into a C# class name</param>
+    /// <param name="filePath">Is the filename of the JSON Schema to convert into a C# class name</param>
     /// <returns>A string containing a C# class name</returns>
-    private static string ToClassName(string filename)
+    private static string ToClassName(string filePath)
     {
         // Split the name based on dashes
-        var strList = Path.GetFileNameWithoutExtension(filename).Split('-');
+
+        var filename = Path.GetFileName(filePath);
+        var fileNameWithoutExtensions = Regex.Replace(filename, "(\\.[^.]+)+$", "");
+
+        var strList = fileNameWithoutExtensions.Split('-');
 
         // The starting letter and letters after a dash must be converted to upper case, and the dashes must be removed
         var sb = new StringBuilder();
