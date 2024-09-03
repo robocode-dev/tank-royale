@@ -7,7 +7,7 @@ import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.Accum
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.ScoreCalculator
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.model.*
-import dev.robocode.tankroyale.server.model.Color.Companion.fromString
+import dev.robocode.tankroyale.server.model.Color.Companion.from
 import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
 import java.lang.Math.toDegrees
@@ -1048,15 +1048,17 @@ class ModelUpdater(
          */
         private fun updateBotColors(bot: MutableBot, intent: BotIntent) {
             bot.apply {
-                bodyColor = fromString(intent.bodyColor)
-                turretColor = fromString(intent.turretColor)
-                radarColor = fromString(intent.radarColor)
-                bulletColor = fromString(intent.bulletColor)
-                scanColor = fromString(intent.scanColor)
-                tracksColor = fromString(intent.tracksColor)
-                gunColor = fromString(intent.gunColor)
+                bodyColor = fromColor(intent.bodyColor)
+                turretColor = fromColor(intent.turretColor)
+                radarColor = fromColor(intent.radarColor)
+                bulletColor = fromColor(intent.bulletColor)
+                scanColor = fromColor(intent.scanColor)
+                tracksColor = fromColor(intent.tracksColor)
+                gunColor = fromColor(intent.gunColor)
             }
         }
+
+        private fun fromColor(color: String?) = color?.let { from(it) }
 
         /**
          * Updates last received data from standard output and standard error.

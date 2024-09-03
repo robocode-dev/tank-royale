@@ -10,7 +10,7 @@ class BulletFactory {
             botId: BotId = BotId(2),
             power: Double = 1.3,
             direction: Double = 123.456,
-            color: Color? = Color("#112233"),
+            color: Color? = Color.from("#112233"),
             startPosition: Point = Point(221.34, 643.23),
             tick: Int = 27
         ) = Bullet(

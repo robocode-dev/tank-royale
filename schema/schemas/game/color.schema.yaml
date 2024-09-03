@@ -1,10 +1,11 @@
 $id: color.schema.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: |
-  Represents a color using hexadecimal format for web colors. Note that colors must have a leading number sign (#).
-  See https://en.wikipedia.org/wiki/Web_colors
+  Represents a RGB color using hexadecimal format for web colors. Note that colors must have a leading number sign (#).
+  See https://en.wikipedia.org/wiki/Web_colors.
+  Note that this type does not support RGBA colors with an alpha channel on purpose, as bots should be painted opaque.
 type: string
-pattern: /^#[0-9A-F]{3,6}$/ig
+pattern: /(?i)^#([0-9A-F]{3}|[0-9A-F]{6})$/ig
 examples: [
     "#000",    // black
     "#FFF",    // white
@@ -12,6 +13,6 @@ examples: [
     "#000000", // black
     "#FFFFFF", // white
     "#00FF00", // lime
-    "#FFA07A", // light salmon
-    "#9932CC"  // dark orchid
+    "#ffa07a", // light salmon
+    "#9932cc"  // dark orchid
 ]

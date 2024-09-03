@@ -4,7 +4,6 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import model.factory.BulletFactory
 
-
 class BulletTest : StringSpec({
 
     "toMutableBullet() should return a MutableBullet that is a copy of the Bullet instance" {
