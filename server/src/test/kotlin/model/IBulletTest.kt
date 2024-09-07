@@ -23,38 +23,38 @@ class IBulletTest : StringSpec({
 
     "position() must be based on startPosition, direction, power and tick" {
         forAll(
-            row(
-                Point(0.0, 0.0), 0.0, speedToFirepower(0.0), 0,
-                Point(0.0, 0.0)
+             row(
+                Point(0.0, 0.0), 0.0, speedToFirepower(20.0 - 2), 0,
+                Point(0.0 + 0 * cos(toRadians(0.0)) * (20.0 - 2), 0.0 + 0 * sin(toRadians(0.0)) * (20.0 - 2))
             ),
             row(
-                Point(1.2, 3.4), 45.0, speedToFirepower(1.0), 1,
-                Point(1.2 + cos(toRadians(45.0)) * 1 * 1, 3.4 + sin(toRadians(45.0)) * 1 * 1)
+                Point(1.2, 3.4), 45.0, speedToFirepower(20.0 - 4), 1,
+                Point(1.2 + 1 * cos(toRadians(45.0)) * (20.0 - 4), 3.4 + 1 * sin(toRadians(45.0)) * (20.0 - 4))
             ),
             row(
-                Point(300.0, 400.0), 321.45, speedToFirepower(8.0), 23,
-                Point(300.0 + cos(toRadians(321.45)) * 8 * 23, 400.0 + sin(toRadians(321.45)) * 8 * 23)
+                Point(300.0, 400.0), 321.45, speedToFirepower(20.0 - 8), 23,
+                Point(300.0 + 23 * cos(toRadians(321.45)) * (20.0 - 8), 400.0 + 23 * sin(toRadians(321.45)) * (20.0 - 8))
             )
-        ) { startPosition, direction, power, tick, position ->
+        ) { startPosition, direction, power, tick, expectedPosition ->
             BulletFactory.createBullet(
                 startPosition = startPosition, direction = direction, power = power, tick = tick
-            ).position() shouldBe position
+            ).position() shouldBe expectedPosition
         }
     }
 
     "nextPosition() must be based on startPosition, direction, power and tick + 1" {
         forAll(
             row(
-                Point(0.0, 0.0), 0.0, speedToFirepower(0.0), 0,
-                Point(0.0, 0.0)
+                Point(0.0, 0.0), 0.0, speedToFirepower(20.0 - 2), 0,
+                Point(0.0 + (0 + 1) * cos(toRadians(0.0)) * (20.0 - 2), 0.0 + (0 + 1) * sin(toRadians(0.0)) * (20.0 - 2))
             ),
             row(
-                Point(1.2, 3.4), 45.0, speedToFirepower(1.0), 1,
-                Point(1.2 + cos(toRadians(45.0)) * 1 * (1 + 1), 3.4 + sin(toRadians(45.0)) * 1 * (1 + 1))
+                Point(1.2, 3.4), 45.0, speedToFirepower(20.0 - 4), 1,
+                Point(1.2 + (1 + 1) * cos(toRadians(45.0)) * (20.0 - 4), 3.4 + (1 + 1) * sin(toRadians(45.0)) * (20.0 - 4))
             ),
             row(
-                Point(300.0, 400.0), 321.45, speedToFirepower(8.0), 23,
-                Point(300.0 + cos(toRadians(321.45)) * 8 * (23 + 1), 400.0 + sin(toRadians(321.45)) * 8 * (23 + 1))
+                Point(300.0, 400.0), 321.45, speedToFirepower(20.0 - 8), 23,
+                Point(300.0 + (23 + 1) * cos(toRadians(321.45)) * (20.0 - 8), 400.0 + (23 + 1) * sin(toRadians(321.45)) * (20.0 - 8))
             )
         ) { startPosition, direction, power, tick, nextPosition ->
             BulletFactory.createBullet(
