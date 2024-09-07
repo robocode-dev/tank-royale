@@ -1,3 +1,10 @@
+## 📦 0.24.4
+
+#### 🐞 Bug Fixes
+
+- Server
+    - #85: Fixed edge case when crossing the speed of 0, when target speed is 0.
+
 ## 📦 0.24.3 - Bugfixes - 26-Aug-2024
 
 #### 🐞 Bug Fixes
