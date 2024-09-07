@@ -22,39 +22,39 @@ fun clamp(value: Double, min: Double, max: Double): Double {
  * @return is the calculated new speed of the bot.
  */
 fun calcNewBotSpeed(currentSpeed: Double, targetSpeed: Double): Double {
-    val delta = targetSpeed - currentSpeed
+    val diff = targetSpeed - currentSpeed
     return if (currentSpeed == 0.0) {
-        val step = abs(delta).coerceAtMost(ACCELERATION)
-        if (delta >= 0) {
-            (currentSpeed + step).coerceAtMost(MAX_FORWARD_SPEED)
+        val acceleration = abs(diff).coerceAtMost(ACCELERATION)
+        if (diff >= 0) {
+            (currentSpeed + acceleration).coerceAtMost(MAX_FORWARD_SPEED)
         } else {
-            (currentSpeed - step).coerceAtLeast(MAX_BACKWARD_SPEED)
+            (currentSpeed - acceleration).coerceAtLeast(MAX_BACKWARD_SPEED)
         }
     } else if (currentSpeed > 0) {
         if (currentSpeed.sign == targetSpeed.sign) {
-            if (delta >= 0) {
-                val step = delta.coerceAtMost(ACCELERATION)
-                (currentSpeed + step).coerceAtMost(MAX_FORWARD_SPEED)
+            if (diff >= 0) {
+                val acceleration = diff.coerceAtMost(ACCELERATION)
+                (currentSpeed + acceleration).coerceAtMost(MAX_FORWARD_SPEED)
             } else {
-                val step = delta.coerceAtLeast(DECELERATION)
-                (currentSpeed + step).coerceAtLeast(MAX_BACKWARD_SPEED)
+                val acceleration = diff.coerceAtLeast(DECELERATION)
+                (currentSpeed + acceleration).coerceAtLeast(MAX_BACKWARD_SPEED)
             }
         } else { // crossing the speed of 0
-            val speed = currentSpeed + (currentSpeed * ACCELERATION / DECELERATION) - ACCELERATION
-            if (speed < 0.0001) 0.0 else speed
+            val newSpeed = currentSpeed + (currentSpeed * ACCELERATION / DECELERATION) - ACCELERATION
+            if (newSpeed < 0.0001) 0.0 else newSpeed
         }
     } else { // currentSpeed < 0
         if (currentSpeed.sign == targetSpeed.sign) {
-            if (delta >= 0) {
-                val step = (-delta).coerceAtLeast(DECELERATION)
-                (currentSpeed - step).coerceAtMost(-MAX_BACKWARD_SPEED)
+            if (diff >= 0) {
+                val acceleration = (-diff).coerceAtLeast(DECELERATION)
+                (currentSpeed - acceleration).coerceAtMost(-MAX_BACKWARD_SPEED)
             } else {
-                val step = (-delta).coerceAtMost(ACCELERATION)
-                (currentSpeed - step).coerceAtLeast(-MAX_FORWARD_SPEED)
+                val acceleration = (-diff).coerceAtMost(ACCELERATION)
+                (currentSpeed - acceleration).coerceAtLeast(-MAX_FORWARD_SPEED)
             }
         } else { // crossing the speed of 0
-            val speed = currentSpeed + (currentSpeed * ACCELERATION / DECELERATION) + ACCELERATION
-            if (speed > 0.0001) 0.0 else speed
+            val newSpeed = currentSpeed + (currentSpeed * ACCELERATION / DECELERATION) + ACCELERATION
+            if (newSpeed > 0.0001) 0.0 else newSpeed
         }
     }
 }
