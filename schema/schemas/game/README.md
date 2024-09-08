@@ -1,6 +1,7 @@
-# Schemas
+# Schemas for the core game
 
-This directory contains the schema of the game protocol used by Robocode Tank Royale for network communication.
+This directory contains the schemas of the game protocol used by Robocode Tank Royale within the network communication
+layer.
 
 ## Joining and leaving the server
 
@@ -22,15 +23,15 @@ The bot handshake must be sent by a bot to join the server.
 ```mermaid
 sequenceDiagram
     Note over Bot: WebSocket connection is opened
-    Bot->>+Server: <<event>> connection established
-    Server->>-Bot: server-handshake (session-id)
-    Bot->>Server: bot-handshake (session-id, secret, boot-id)
+    Bot ->>+ Server: <<event>> connection established
+    Server ->>- Bot: server-handshake (session-id)
+    Bot ->> Server: bot-handshake (session-id, secret, boot-id)
     alt if session-id or secret is invalid
-        Server->>Bot: disconnect
+        Server ->> Bot: disconnect
     else else
         Note over Server: Produces: <<event>> Bot joined
-        Server->>Observer: bot-list-update
-        Server->>Controller: bot-list-update
+        Server ->> Observer: bot-list-update
+        Server ->> Controller: bot-list-update
     end
 ```
 
@@ -46,10 +47,10 @@ A bot will be leaving a server when it closes its connection to the server.
 
 ```mermaid
 sequenceDiagram
-    Bot->>Server: <<event>> disconnected
+    Bot ->> Server: <<event>> disconnected
     Note over Server: Produces: <<event>> Bot left
-    Server->>Observer: bot-list-update
-    Server->>Controller: bot-list-update
+    Server ->> Observer: bot-list-update
+    Server ->> Controller: bot-list-update
 ```
 
 ### Observer joining
@@ -62,11 +63,11 @@ The observer handshake must be sent by an observer to join the server.
 ```mermaid
 sequenceDiagram
     Note over Observer: WebSocket connection is opened
-    Observer->>+Server: <<event>> connection established
-    Server->>-Observer: server-handshake (session-id)
-    Observer->>Server: observer-handshake (session-id, secret)
+    Observer ->>+ Server: <<event>> connection established
+    Server ->>- Observer: server-handshake (session-id)
+    Observer ->> Server: observer-handshake (session-id, secret)
     alt if session-id or secret is invalid
-        Server->>Observer: disconnect
+        Server ->> Observer: disconnect
     else else
         Note over Server: Produces: <<event>> Observer joined
     end
@@ -83,13 +84,13 @@ The controller handshake must be sent by a controller to join the server.
 - [controller-handshake]
 
 ```mermaid
-sequenceDiagram   
+sequenceDiagram
     Note over Controller: WebSocket connection is opened
-    Controller->>+Server: <<event>> connection established
-    Server->>-Controller: server-handshake (session-id)
-    Controller->>Server: controller-handshake (session-id, secret)
+    Controller ->>+ Server: <<event>> connection established
+    Server ->>- Controller: server-handshake (session-id)
+    Controller ->> Server: controller-handshake (session-id, secret)
     alt if session-id or secret is invalid
-        Server->>Controller: disconnect
+        Server ->> Controller: disconnect
     else else
         Note over Server: Produces: <<event>> Conntroller joined
     end
@@ -122,28 +123,28 @@ state where it waits for more bots to join the battle, and a controller will nee
 ```mermaid
 sequenceDiagram
     Note over Server: Server state = WAIT_FOR_PARTICIPANTS_TO_JOIN
-    Controller->>Server: start-game
+    Controller ->> Server: start-game
     Note over Server: Server state = WAIT_FOR_READY_PARTICIPANTS
-    Server->>Bot: game-started-event-for-bot
+    Server ->> Bot: game-started-event-for-bot
     alt if bot is ready
-        Bot->>Server: bot-ready
+        Bot ->> Server: bot-ready
         Note over Server: Bot is a participant
         alt if number of ready participant >= min. required participants
             Note over Server: Server state = GAME_RUNNING
-            Server->>Observer: game-started-event-for-observer
-            Server->>Controller: game-started-event-for-observer
+            Server ->> Observer: game-started-event-for-observer
+            Server ->> Controller: game-started-event-for-observer
         end
         Note over Server: Start turn timeout timer
     else else Ready timer time-out
-        Server->>Server: <<event>> Ready timer time-out
+        Server ->> Server: <<event>> Ready timer time-out
         Note over Server: Bot will not participate
         alt if number of ready participant >= min. required participants
             Note over Server: Server state = GAME_RUNNING
-            Server->>Observer: game-started-event-for-observer
-            Server->>Controller: game-started-event-for-observer
+            Server ->> Observer: game-started-event-for-observer
+            Server ->> Controller: game-started-event-for-observer
             Note over Server: Start turn timeout timer
         else else the game is not started
-            Note over Server: Server state = WAIT_FOR_PARTICIPANTS_TO_JOIN            
+            Note over Server: Server state = WAIT_FOR_PARTICIPANTS_TO_JOIN
         end
     end
 ```
@@ -165,25 +166,25 @@ This is the crucial part for the bots, and these need to sent their _bot intent_
 ```mermaid
 sequenceDiagram
     Note over Server: Server state = GAME_RUNNING
-    Server->>Server: <<event>> next turn
+    Server ->> Server: <<event>> next turn
     Note over Server: Reset turn timer
     alt if first round
-        Server->>Bot: round-started-event
-        Server->>Observer: round-started-event
-        Server->>Controller: round-started-event
+        Server ->> Bot: round-started-event
+        Server ->> Observer: round-started-event
+        Server ->> Controller: round-started-event
     else if previous round has ended
-        Server->>Bot: round-ended-event
-        Server->>Observer: round-ended-event
-        Server->>Controller: round-ended-event
+        Server ->> Bot: round-ended-event
+        Server ->> Observer: round-ended-event
+        Server ->> Controller: round-ended-event
     end
-    Server->>Bot: tick-event-for-bot
-    Server->>Observer: tick-event-for-observer
-    Server->>Controller: tick-event-for-observer
-    Bot->>Server: bot-intent
+    Server ->> Bot: tick-event-for-bot
+    Server ->> Observer: tick-event-for-observer
+    Server ->> Controller: tick-event-for-observer
+    Bot ->> Server: bot-intent
     Note over Server: Bot will not skip this turn
-    Server->>Server: Turn timeout
+    Server ->> Server: Turn timeout
     opt if bot did not send intent before turn timeout
-        Server->>Bot: skipped-turn-event
+        Server ->> Bot: skipped-turn-event
     end
 ```
 
@@ -199,13 +200,13 @@ results of the game.
 ```mermaid
 sequenceDiagram
     Note over Server: Server state = GAME_RUNNING
-    Server->>Server: <<event>> game ended
+    Server ->> Server: <<event>> game ended
     opt if bot won round
-        Server->>Bot: won-round-event
+        Server ->> Bot: won-round-event
     end
-    Server->>Bot: game-ended-event-for-bot
-    Server->>Observer: game-ended-event-for-observer
-    Server->>Controller: game-ended-event-for-observer
+    Server ->> Bot: game-ended-event-for-bot
+    Server ->> Observer: game-ended-event-for-observer
+    Server ->> Controller: game-ended-event-for-observer
     Note over Server: Server state = GAME_STOPPED
 ```
 
@@ -221,10 +222,10 @@ A controller can stop the game while it is running. No results will be available
 ```mermaid
 sequenceDiagram
     Note over Server: Server state = GAME_RUNNING
-    Controller->>Server: stop-game
-    Server->>Bot: game-aborted-event
-    Server->>Observer: game-aborted-event
-    Server->>Controller: game-aborted-event
+    Controller ->> Server: stop-game
+    Server ->> Bot: game-aborted-event
+    Server ->> Observer: game-aborted-event
+    Server ->> Controller: game-aborted-event
     Note over Server: Server state = GAME_STOPPED
 ```
 
@@ -239,9 +240,9 @@ are not being notified that the game is paused, but should see the game as runni
 ```mermaid
 sequenceDiagram
     Note over Server: Server state = GAME_RUNNING
-    Controller->>Server: pause-game
-    Server->>Observer: game-paused-event-for-observers
-    Server->>Controller: game-paused-event-for-observers
+    Controller ->> Server: pause-game
+    Server ->> Observer: game-paused-event-for-observers
+    Server ->> Controller: game-paused-event-for-observers
     Note over Server: Server state = GAME_PAUSED
 ```
 
@@ -256,9 +257,9 @@ debugging a bot, or just observe the game one turn/step at a time.
 ```mermaid
 sequenceDiagram
     Note over Server: Server state = GAME_RUNNING
-    Controller->>Server: pause-game
-    Server->>Observer: game-paused-event-for-observers
-    Server->>Controller: game-paused-event-for-observers
+    Controller ->> Server: pause-game
+    Server ->> Observer: game-paused-event-for-observers
+    Server ->> Controller: game-paused-event-for-observers
     Note over Server: Server state = GAME_PAUSED
 ```
 
@@ -272,9 +273,9 @@ A controller is can resume the game from being paused.
 ```mermaid
 sequenceDiagram
     Note over Server: Server state = GAME_PAUSED
-    Controller->>Server: resume-game
-    Server->>Observer: game-resumed-event-for-observers
-    Server->>Controller: game-resumed-event-for-observers
+    Controller ->> Server: resume-game
+    Server ->> Observer: game-resumed-event-for-observers
+    Server ->> Controller: game-resumed-event-for-observers
     Note over Server: Server state = GAME_RUNNING
 ```
 
@@ -287,29 +288,29 @@ A controller can change the [TPS] (Turns Per Second) for a battle.
 
 ```mermaid
 sequenceDiagram
-    Controller->>Server: change-tps
-    Server->>Observer: tps-changed-event
-    Server->>Controller: tps-changed-event
+    Controller ->> Server: change-tps
+    Server ->> Observer: tps-changed-event
+    Server ->> Controller: tps-changed-event
 ```
 
 ### In-game events
 
 Here are the events that a bot receives during a game:
 
-| Event                      | Description                                                                                          |
-|----------------------------|------------------------------------------------------------------------------------------------------|
-| [bot-death-event]          | When a bot dies                                                                                      |
-| [bot-hit-bot-event]        | When our bot collides with another bot                                                               |
-| [bot-hit-wall-event]       | When our bot collides with a wall                                                                    |
-| [bullet-fired-event]       | When our bot fires a bullet                                                                          |
-| [bullet-hit-bullet-event]  | When our bullet collided with another bullet                                                         |
-| [bullet-hit-wall-event]    | When our bullet has hit the wall                                                                     |
-| [hit-by-bullet-event]      | When our bot has been hit by a bullet                                                                |
-| [scanned-bot-event]        | When our bot has scanned another bot                                                                 |
-| [skipped-turn-event]       | When our bot skipped a turn meaning that the bot intent was not received at the server-side in time  |
-| [tick-event-for-bot]       | When a new turn is about to begin                                                                    |
-| [won-round-event]          | When our bot won the round                                                                           |
-| [team-message-event]       | When our bot receives a message from a teammate                                                      |
+| Event                     | Description                                                                                         |
+|---------------------------|-----------------------------------------------------------------------------------------------------|
+| [bot-death-event]         | When a bot dies                                                                                     |
+| [bot-hit-bot-event]       | When our bot collides with another bot                                                              |
+| [bot-hit-wall-event]      | When our bot collides with a wall                                                                   |
+| [bullet-fired-event]      | When our bot fires a bullet                                                                         |
+| [bullet-hit-bullet-event] | When our bullet collided with another bullet                                                        |
+| [bullet-hit-wall-event]   | When our bullet has hit the wall                                                                    |
+| [hit-by-bullet-event]     | When our bot has been hit by a bullet                                                               |
+| [scanned-bot-event]       | When our bot has scanned another bot                                                                |
+| [skipped-turn-event]      | When our bot skipped a turn meaning that the bot intent was not received at the server-side in time |
+| [tick-event-for-bot]      | When a new turn is about to begin                                                                   |
+| [won-round-event]         | When our bot won the round                                                                          |
+| [team-message-event]      | When our bot receives a message from a teammate                                                     |
 
 [TPS]: ../../../docs/articles/tps.html "TPS (Turns Per Second)"
 
