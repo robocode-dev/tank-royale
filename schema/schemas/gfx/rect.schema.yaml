@@ -1,0 +1,23 @@
+$id: square.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: A rectangle centered at at point (x, y) relative to the bot´s center
+extends:
+  $ref: shape.schema.yaml
+properties:
+  x:
+    description: X coordinate that is the center of the rectangle relative to the bot´s center
+    type: number
+  y:
+    description: Y coordinate that is the center of the rectangle relative to the bot´s center
+    type: number
+  width:
+    description: With of the rectangle
+    type: number
+  height:
+    description: Height of the rectangle
+    type: number
+required:
+  - x
+  - y
+  - width
+  - height

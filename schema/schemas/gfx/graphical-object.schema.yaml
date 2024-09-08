@@ -1,0 +1,13 @@
+$id: graphical-object.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Abstract graphical object
+properties:
+  type:
+    enum:
+      - Line
+      - Text
+      - Circle
+      - Square
+      - Rectangle
+required:
+  - type

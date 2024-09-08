@@ -1,0 +1,19 @@
+$id: square.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: A square centered at at point (x, y) relative to the bot´s center
+extends:
+  $ref: shape.schema.yaml
+properties:
+  x:
+    description: X coordinate that is the center of the square relative to the bot´s center
+    type: number
+  y:
+    description: Y coordinate that is the center of the square relative to the bot´s center
+    type: number
+  size:
+    description: Size of the square, which defines both the width and height of the square, which is the same
+    type: number
+required:
+  - x
+  - y
+  - size

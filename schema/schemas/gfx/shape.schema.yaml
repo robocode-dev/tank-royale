@@ -1,0 +1,12 @@
+$id: shape.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Abstract 2D shape
+extends:
+  $ref: graphical-object.shape.yaml
+properties:
+  outline:
+    description: Optional outline of the shape
+    $ref: outline.schema.yaml
+  fillColor:
+    description: Optional fill color
+    $ref: color.schema.yaml

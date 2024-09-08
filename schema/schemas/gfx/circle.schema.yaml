@@ -1,0 +1,19 @@
+$id: circle.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: A circle centered at at point (x, y) relative to the bot´s center
+extends:
+  $ref: shape.schema.yaml
+properties:
+  x:
+    description: X coordinate that is the center of the circle relative to the bot´s center
+    type: number
+  y:
+    description: Y coordinate that is the center of the circle relative to the bot´s center
+    type: number
+  radius:
+    description: Radius of the circle.
+    type: number
+required:
+  - x
+  - y
+  - radius

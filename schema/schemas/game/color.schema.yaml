@@ -4,6 +4,8 @@ description: |
   Represents a RGB color using hexadecimal format for web colors. Note that colors must have a leading number sign (#).
   See https://en.wikipedia.org/wiki/Web_colors.
   Note that this type does not support RGBA colors with an alpha channel on purpose, as bots should be painted opaque.
+  A RGB value is represented in this format #RGB or #RRGGBB, where the R, G, and B is the color values for Red, Green,
+  and Blue.
 type: string
 pattern: /(?i)^#([0-9A-F]{3}|[0-9A-F]{6})$/ig
 examples: [

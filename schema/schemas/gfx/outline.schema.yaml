@@ -1,0 +1,14 @@
+$id: outline.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Outline of a 2D shape which is the line at the shape borders
+type: object
+properties:
+  width:
+    description: Width of the outline
+    type: number
+  color:
+    description: Color of the outline
+    $ref: color.schema.yaml
+required:
+  - width
+  - color

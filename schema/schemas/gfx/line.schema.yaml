@@ -1,0 +1,31 @@
+$id: line.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: A line going from a point (x1, y1) to another point (x2, y2) relative to the bot´s center
+extends:
+  $ref: graphical-object.schema.yaml
+properties:
+  x1:
+    description: X coordinate of the first line ending relative to the bot´s center
+    type: number
+  y1:
+    description: Y coordinate of the first line ending relative to the bot´s center
+    type: number
+  x2:
+    description: X coordinate of the second line ending relative to the bot´s center
+    type: number
+  y2:
+    description: Y coordinate of the second line ending relative to the bot´s center
+    type: number
+  width:
+    description: Width of the outline
+    type: number
+  color:
+    description: Color of the outline
+    $ref: color.schema.yaml
+required:
+  - x1
+  - y1
+  - x2
+  - y2
+  - width
+  - color

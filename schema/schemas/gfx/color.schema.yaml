@@ -1,17 +1,26 @@
 $id: color.schema.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: |
-  Represents a color using hexadecimal format for web colors. Note that colors must have a leading number sign (#).
-  See https://en.wikipedia.org/wiki/Web_colors
+  Represents a RGB or RGBA color using hexadecimal format for web colors. Note that colors must have a leading number
+  sign (#). See https://en.wikipedia.org/wiki/Web_colors.
+  Note that this type supports the alpha channel, and hence supports RGBA colors with an alpha channel.
+  A RGB value is represented in this format #RGB or #RRGGBB, where the R, G, and B is the color values for Red, Green,
+  and Blue, and a RGBA value is represented in this format #RGBA or ##RRGGBBAA, where A is the value for the alpha
+  channel indicating how transparent a color is.
 type: string
-pattern: /^#[0-9A-F]{3,6}$/ig
+pattern: /^#([0-9A-F]{3,4}|[0-9A-F]{6}|[0-9A-F]{8})$/i
 examples: [
-    "#000",    // black
-    "#FFF",    // white
-    "#0F0",    // lime
-    "#000000", // black
-    "#FFFFFF", // white
-    "#00FF00", // lime
-    "#FFA07A", // light salmon
-    "#9932CC"  // dark orchid
+  "#000",      // black, opaque
+  "#0000",     // black, alpha is 0% = opaque
+  "#0007",     // black, alpha is 46%
+  "#FFF",      // white, opaque
+  "#FFFC",     // white, alpha is 87%
+  "#0F0",      // lime, opaque
+  "#000000",   // black, opaque
+  "#0000007F", // black, alpha is 50%
+  "#FFFFFF",   // white, opaque
+  "#FFFFFF80", // white, alpha is 50%
+  "#00FF00",   // lime, opaque
+  "#ffa07acc", // light salmon, alpha is 80%
+  "#9932cc"    // dark orchid, opaque
 ]
