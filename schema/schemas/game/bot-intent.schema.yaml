@@ -22,9 +22,8 @@ properties:
   firepower:
     description: Attempt to fire gun with the specified firepower
     type: number
-    minimum: 0.0
+    exclusiveMinimum: 0.0
     maximum: 3.0
-    exclusiveMinimum: true
   adjustGunForBodyTurn:
     description: Flag indicating if the gun must be adjusted to compensate for the body turn. Default is false.
     type: boolean
@@ -73,3 +72,8 @@ properties:
     maxItems: 4
     items:
       $ref: team-message.schema.yaml
+  graphics:
+    description: Graphical objects used for e.g. graphical debugging
+    type: array
+    items:
+      $ref: ../gfx/graphical-object.schema.yaml
