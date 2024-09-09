@@ -2,7 +2,7 @@ $id: shape.schema.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Abstract 2D shape
 extends:
-  $ref: graphical-object.shape.yaml
+  $ref: graphical-object.schema.yaml
 properties:
   outline:
     description: Optional outline of the shape
