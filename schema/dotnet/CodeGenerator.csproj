@@ -19,6 +19,8 @@
 
     <PackageReference Include="NJsonSchema.CodeGeneration.CSharp" Version="11.0.2" />
     <PackageReference Include="NJsonSchema.Yaml" Version="11.0.2" />
+
+    <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
