@@ -3,10 +3,10 @@ package dev.robocode.tankroyale.gui.ui.menu
 import dev.robocode.tankroyale.gui.ui.about.AboutBox
 import dev.robocode.tankroyale.gui.ui.config.BotRootDirectoriesConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.DebugConfigDialog
+import dev.robocode.tankroyale.gui.ui.config.ServerConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.config.SoundConfigDialog
 import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
-import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
 import dev.robocode.tankroyale.gui.ui.server.ServerLogFrame
@@ -31,9 +31,6 @@ object MenuEventHandlers {
             onShowServerLog.subscribe(this) {
                 ServerLogFrame.isVisible = true
             }
-            onServerConfig.subscribe(this) {
-                SelectServerDialog.isVisible = true
-            }
             onBotDirConfig.subscribe(this) {
                 BotRootDirectoriesConfigDialog.isVisible = true
             }
@@ -47,6 +44,9 @@ object MenuEventHandlers {
             }
             onRebootServer.subscribe(this) {
                 ServerEventTriggers.onRebootServer.fire(false /* user initiated */)
+            }
+            onServerConfig.subscribe(this) {
+                ServerConfigDialog.isVisible = true
             }
             onDebugConfig.subscribe(this) {
                 DebugConfigDialog.isVisible = true

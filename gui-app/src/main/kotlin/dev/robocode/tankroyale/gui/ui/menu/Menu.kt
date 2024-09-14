@@ -72,10 +72,6 @@ object Menu : JMenuBar() {
                 accelerator = ctrlDown(mnemonic)
             }
             addSeparator()
-            addNewMenuItem("item.select_server", onServerConfig).apply {
-                mnemonic = KeyEvent.VK_E
-            }
-            addSeparator()
 
             add(startServerMenuItem).apply {
                 mnemonic = KeyEvent.VK_S
@@ -100,6 +96,10 @@ object Menu : JMenuBar() {
             addNewMenuItem("item.bot_root_dirs_config", onBotDirConfig).apply {
                 mnemonic = KeyEvent.VK_D
                 accelerator = ctrlDown(mnemonic)
+            }
+
+            addNewMenuItem("item.server_config", onServerConfig).apply {
+                mnemonic = KeyEvent.VK_C
             }
 
             addNewMenuItem("item.debug_config", onDebugConfig).apply {
