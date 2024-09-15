@@ -116,12 +116,10 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     private val selectedItem get() = urlComboBox.selectedItem as String
 
     private fun testServerConnection() {
-        Messages.apply {
-            if (RemoteServer.isRunning(selectedUri)) {
-                showMessage(String.format(get("server_is_running"), selectedUri))
-            } else {
-                showMessage(String.format(get("server_not_found"), selectedUri))
-            }
+        if (RemoteServer.isRunning(selectedUri)) {
+            showMessage(String.format(Messages.get("server_is_running"), selectedUri))
+        } else {
+            showMessage(String.format(Messages.get("server_not_found"), selectedUri))
         }
     }
 
@@ -157,9 +155,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         for (i in 0 until size) {
             userUrls.add(urlComboBox.getItemAt(i))
         }
-        ServerSettings.apply {
-            this.serverUrls = userUrls
-            save()
-        }
+        ServerSettings.serverUrls = userUrls
+        ServerSettings.save()
     }
 }
