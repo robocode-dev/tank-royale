@@ -123,7 +123,7 @@ object ServerProcess {
                                 ServerLogFrame.append(line + "\n")
                             }
                         }
-                    } catch (e: InterruptedException) {
+                    } catch (_: InterruptedException) {
                         logThreadRunning.set(false)
                     }
                 }
