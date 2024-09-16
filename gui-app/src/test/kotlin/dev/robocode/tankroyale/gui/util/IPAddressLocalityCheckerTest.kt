@@ -7,27 +7,32 @@ class IPAddressLocalityCheckerTest : StringSpec({
     "isLocalAddress should return true for local addresses" {
         val localAddresses = listOf(
             "127.0.0.1",
+            "127.0.0.1:12345",
             "10.0.0.1",
             "192.168.1.1",
             "172.16.0.1",
             "::1",
+            "[::1]:1",
             "fe80::1234:5678:9abc",
             "fc00::1",
             "fd00::1",
             "fe80:0:0:0:d4da:d362:c269:663f%ethernet_32769",
+            "[fe80:0:0:0:d4da:d362:c269:663f%ethernet_32769]:7654",
         )
         localAddresses.forEach {
-            isLocalAddress(it) shouldBe true
+            isLocalEndpoint(it) shouldBe true
         }
     }
 
     "isLocalAddress should return false for non-local valid addresses" {
         val nonLocalAddresses = listOf(
             "8.8.8.8",
+            "8.8.8.8:8",
             "2001:db8::1",
+            "[2001:db8::1]:7913",
         )
         nonLocalAddresses.forEach {
-            isLocalAddress(it) shouldBe false
+            isLocalEndpoint(it) shouldBe false
         }
     }
 
@@ -42,7 +47,7 @@ class IPAddressLocalityCheckerTest : StringSpec({
             "::2",
         )
         nonLocalAddresses.forEach {
-            isLocalAddress(it) shouldBe false
+            isLocalEndpoint(it) shouldBe false
         }
     }
 })
