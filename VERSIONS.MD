@@ -1,7 +1,15 @@
 ## 📦 0.24.4
 
+#### Improvements
+
+- GUI:
+    - Improved the support for IPv6 endpoints.
+
 #### 🐞 Bug Fixes
 
+- GUI:
+    - #96: When starting a battle when a remote server was selected, no window was opened when starting a battle. Now an
+      error message will show up plus the dialog for selecting a (local) server.
 - Server
     - #85: Fixed edge case when crossing the speed of 0, when target speed is 0.
 
@@ -771,16 +779,16 @@ Bot info:
 
 - First alpha version was released! 🚀😀
 
-[BotInfo/BotHandshake: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
+[BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 
-[BotInfo.FromConfiguration(IConfiguration): https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
+[BotInfo.FromConfiguration(IConfiguration)]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
 
-[sounds releases: https://github.com/robocode-dev/sounds/releases
+[sounds releases]: https://github.com/robocode-dev/sounds/releases
 
-[GitHub Pages: https://robocode-dev.github.io/tank-royale/
+[GitHub Pages]: https://robocode-dev.github.io/tank-royale/
 
-[ANSI escape code: https://en.wikipedia.org/w/index.php?title=ANSI_escape_code
+[ANSI escape code]: https://en.wikipedia.org/w/index.php?title=ANSI_escape_code
 
-[Events tab: https://robocode-dev.github.io/tank-royale/articles/gui.html#viewing-the-bot-events "Events tab in Bot Console"
+[Events tab]: https://robocode-dev.github.io/tank-royale/articles/gui.html#viewing-the-bot-events "Events tab in Bot Console"
 
-[Robocode API Bridge: https://github.com/robocode-dev/robocode-api-bridge "Robocode API bridge for Tank Royale"
+[Robocode API Bridge]: https://github.com/robocode-dev/robocode-api-bridge "Robocode API bridge for Tank Royale"

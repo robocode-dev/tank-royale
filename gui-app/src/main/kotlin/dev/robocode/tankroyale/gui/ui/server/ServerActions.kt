@@ -2,10 +2,12 @@ package dev.robocode.tankroyale.gui.ui.server
 
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.server.ServerProcess
+import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.UiTitles
 import dev.robocode.tankroyale.gui.util.EDT.enqueue
+import dev.robocode.tankroyale.gui.util.isRemoteEndpoint
 import javax.swing.JOptionPane
 
 object ServerActions {
@@ -29,7 +31,7 @@ object ServerActions {
     }
 
     private fun handleReboot(dueToSetting: Boolean) {
-        if (!ServerProcess.isRunning()) return
+        if (!ServerProcess.isRunning() || isRemoteEndpoint(ServerSettings.currentServerUrl)) return
 
         val title = UiTitles.get("question")
         val resource =

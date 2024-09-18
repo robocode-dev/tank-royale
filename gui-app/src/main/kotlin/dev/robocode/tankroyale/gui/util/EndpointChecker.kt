@@ -5,6 +5,8 @@ import java.net.Inet6Address
 import java.net.URI
 import java.net.UnknownHostException
 
+fun isRemoteEndpoint(endpoint: String) = !isLocalEndpoint(endpoint)
+
 fun isLocalEndpoint(endpoint: String): Boolean {
     val cleanEndpoint = endpoint.lowercase().trim()
 
