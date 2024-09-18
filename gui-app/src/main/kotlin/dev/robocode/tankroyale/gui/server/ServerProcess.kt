@@ -24,19 +24,14 @@ object ServerProcess {
     private var logThread: Thread? = null
     private val logThreadRunning = AtomicBoolean(false)
 
-    var port: Int = ServerSettings.serverPort
-        private set
-
     init {
         ServerActions
     }
 
     fun isRunning(): Boolean = isRunning.get()
 
-    fun start(port: Int = ServerSettings.serverPort) {
+    fun start() {
         if (isRunning.get()) return
-
-        this.port = port
 
         var command: MutableList<String>
         ServerSettings.apply {
@@ -45,7 +40,7 @@ object ServerProcess {
                 "-Dpicocli.ansi=true", // to show server logo in ANSI colors
                 "-jar",
                 getServerJar(),
-                "--port=$port",
+                "--port=${serverPort}",
                 "--games=classic,melee,1v1",
                 "--tps=${ConfigSettings.tps}",
                 "--controller-secrets=${controllerSecrets.joinToString(",")}",
