@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.gui.ui.server
 
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.Strings
+import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.config.AddNewUrlDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
@@ -116,12 +116,10 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     private val selectedItem get() = urlComboBox.selectedItem as String
 
     private fun testServerConnection() {
-        Strings.apply {
-            if (RemoteServer.isRunning(selectedUri)) {
-                showMessage(get("server_is_running"))
-            } else {
-                showMessage(get("server_not_found"))
-            }
+        if (RemoteServer.isRunning(selectedUri)) {
+            showMessage(String.format(Messages.get("server_is_running"), selectedUri))
+        } else {
+            showMessage(String.format(Messages.get("server_not_found"), selectedUri))
         }
     }
 
@@ -157,9 +155,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         for (i in 0 until size) {
             userUrls.add(urlComboBox.getItemAt(i))
         }
-        ServerSettings.apply {
-            this.serverUrls = userUrls
-            save()
-        }
+        ServerSettings.serverUrls = userUrls
+        ServerSettings.save()
     }
 }
