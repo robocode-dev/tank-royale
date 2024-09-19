@@ -24,3 +24,5 @@ generated/
 /games.properties
 /server.properties
 /config.properties
+
+/.codiumai/
