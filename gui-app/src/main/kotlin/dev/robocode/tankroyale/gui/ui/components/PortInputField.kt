@@ -62,7 +62,7 @@ class PortInputField(defaultValue: Int = 7654) : JTextField(5) {
 
     private fun validatePort() {
         if (!inputVerifier.verify(this)) {
-            MessageDialog.showError(String.format(Messages.get("invalid_port_number"), 1000, 65535))
+            MessageDialog.showError(String.format(Messages.get("valid_port_number_range"), 1000, 65535))
         }
     }
 
