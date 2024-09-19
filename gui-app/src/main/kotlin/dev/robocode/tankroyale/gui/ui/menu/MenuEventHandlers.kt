@@ -9,6 +9,7 @@ import dev.robocode.tankroyale.gui.ui.config.ServerConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.config.SoundConfigDialog
 import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
+import dev.robocode.tankroyale.gui.ui.server.RemoteServer
 import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
