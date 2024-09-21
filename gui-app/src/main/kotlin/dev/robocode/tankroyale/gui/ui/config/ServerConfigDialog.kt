@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.PortInputField
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
+import dev.robocode.tankroyale.gui.ui.components.SwitchButton
 import net.miginfocom.swing.MigLayout
 import java.awt.Color
 import java.awt.Dimension
@@ -15,34 +16,40 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCancelButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.enableAll
 import dev.robocode.tankroyale.gui.util.Event
 
 
 object ServerConfigDialog : RcDialog(MainFrame, "server_config_dialog") {
 
     init {
-        contentPane.add(ServerConfigPanel())
+        contentPane.add(ServerConfigPanel)
         pack()
         setLocationRelativeTo(MainFrame) // center on main window
     }
 }
 
-class ServerConfigPanel : JPanel() {
+object ServerConfigPanel : JPanel() {
+
+    val onToggle = Event<Boolean>()
+    val onOk = Event<JButton>()
+    val onCancel = Event<JButton>()
+    val onTest = Event<JButton>()
+    val onAdd = Event<JButton>()
+    val onRemove = Event<JButton>()
 
     val selectedServerLabel = JLabel(ServerSettings.currentServerUrl).apply {
         font = Font(font.family, Font.BOLD, font.size)
         foreground = Color(0x00, 0x7f, 0x00)
     }
 
-    val remoteServerComboBox = JComboBox(arrayOf("ws://localhost:7656")).apply {
+    val remoteServerComboBox = JComboBox(getServerUrls()).apply {
         preferredSize = Dimension(150, preferredSize.height)
     }
 
-    val onOk = Event<JButton>()
-    val onCancel = Event<JButton>()
-    val onTest = Event<JButton>()
-    val onAdd = Event<JButton>()
-    val onRemove = Event<JButton>()
+    val serverSwitchButton = SwitchButton().apply {
+        addEventSelected { isSelected -> onToggle.fire(isSelected) }
+    }
 
     init {
         setLayout(MigLayout("insets 10, fillx", "[grow]", "[]10[]10[]10[]"))
@@ -50,6 +57,9 @@ class ServerConfigPanel : JPanel() {
         // Selected server
         addLabel("selected_server", "split 2")
         add(selectedServerLabel, "growx, wrap")
+
+        addLabel("use_remote_server", "split 2")
+        add(serverSwitchButton, "wrap")
 
         // Local server group
         val localServerPanel = JPanel(MigLayout("insets 10, fillx", "[right][grow]", "[][]")).apply {
@@ -78,6 +88,15 @@ class ServerConfigPanel : JPanel() {
             addCancelButton(onCancel)
         }
         add(buttonPanel, "growx")
+
+        onToggle.subscribe(this) { isSelected ->
+            remoteServerPanel.enableAll(isSelected)
+            localServerPanel.enableAll(!isSelected)
+        }
+    }
+
+    private fun getServerUrls(): Array<String> {
+        return ServerSettings.serverUrls.toTypedArray()
     }
 }
 

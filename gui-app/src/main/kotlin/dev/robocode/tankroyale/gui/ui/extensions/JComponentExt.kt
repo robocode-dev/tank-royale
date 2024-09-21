@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcToolTip
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.MessageDialog
+import java.awt.Container
 import java.awt.EventQueue
 import javax.swing.*
 
@@ -65,5 +66,19 @@ object JComponentExt {
 
     fun JComponent.showError(msg: String) {
         MessageDialog.showError(msg, this)
+    }
+
+    fun JComponent.enableAll(enable: Boolean = true) {
+        enableAll(this, enable)
+    }
+
+    private fun enableAll(container: Container, enable: Boolean) {
+        val components = container.components
+        for (component in components) {
+            component.isEnabled = enable
+            if (component is Container) {
+                enableAll(component, enable)
+            }
+        }
     }
 }
