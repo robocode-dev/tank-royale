@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Overview </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Overview ">
+    
+    
+      <link rel="shortcut icon" href="favicon.ico">
+      <link rel="stylesheet" href="styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="styles/docfx.css">
+      <link rel="stylesheet" href="styles/main.css">
+      <meta property="docfx:navrel" content="toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="index.html">
+                <img id="logo" class="svg" src="logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="overview">Overview</h1>
+
+<p>This API is used when creating bots for the Robocode Tank Royale programming game. The API handles communication with a
+game server behind the scene, so you can focus on the fun part of controlling the bot.</p>
+<p>The Bot API is available here:</p>
+<ul>
+<li><a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.html">Bot API for .Net</a></li>
+</ul>
+<p>A good way to get started with Robocode Tank Royale is to head over to the general documentation for Tank Royale to
+learn about the basics first:</p>
+<ul>
+<li><a href="https://robocode-dev.github.io/tank-royale/">Robocode Tank Royale Docs</a></li>
+</ul>
+<p>Another good way to get started is to look at the source files for the sample bots.</p>
+<h2 id="the-bot-classes">The bot classes</h2>
+<p>The first primary class that you know about first is the <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html">Bot</a> class and perhaps the <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html">BaseBot</a>. The <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html">BaseBot</a> class
+provides all the base and minimum functionality of a bot and deals with the communication with the server. The <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Bot.html">Bot</a>
+class is based on BaseBot, but provides more convenient methods like e.g. blocking methods for moving and turning the
+bot, and firing the gun.</p>
+<h2 id="code-example">Code example</h2>
+<p>Here is an example of a simple bot using the Bot API written in C# and should run as a regular application.</p>
+<p>MyFirstBot.cs:</p>
+<pre><code class="lang-csharp">using Robocode.TankRoyale.BotApi;
+using Robocode.TankRoyale.BotApi.Events;
+
+public class MyFirstBot : Bot
+{
+    // The main method starts our bot
+    static void Main(string[] args)
+    {
+        new MyFirstBot().Start();
+    }
+
+    // Constructor, which loads the bot config file
+    MyFirstBot() : base(BotInfo.FromFile(&quot;MyFirstBot.json&quot;)) { }
+
+    // Called when a new round is started -&gt; initialize and do some movement
+    public override void Run()
+    {
+        // Repeat while the bot is running
+        while (IsRunning)
+        {
+            Forward(100);
+            TurnGunRight(360);
+            Back(100);
+            TurnGunRight(360);
+        }
+    }
+
+    // We saw another bot -&gt; fire!
+    public override void OnScannedBot(ScannedBotEvent evt)
+    {
+        Fire(1);
+    }
+
+    // We were hit by a bullet -&gt; turn perpendicular to the bullet
+    public override void OnHitByBullet(HitByBulletEvent evt)
+    {
+        // Calculate the bearing to the direction of the bullet
+        double bearing = CalcBearing(evt.Bullet.Direction);
+
+        // Turn 90 degrees to the bullet direction based on the bearing
+        TurnLeft(90 - bearing);
+    }
+}
+</code></pre>
+<p>The above code describes the behavior of the bot. The Main() is the main entry point for all C# applications to start
+running the program. Using the bot API, we need to start the bot by calling the
+<a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Start">IBaseBot.Start()</a> method of the bot API, which will tell the server that this bot wants to join the battle and also
+provide the server with the required bot info.</p>
+<p>With the bot´s constructor (<em>MyFirstBot()</em>) we call the <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromFile_System_String_">BotInfo.fromFile(string)</a> method provides the bot info for the
+server, like e.g. the name of the bot, and its author, etc.</p>
+<p>The <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Run">Run()</a> method is called when the bot need to start its real execution to send instructions to the server.</p>
+<p>The on-methods (for example, <em>onScannedBot</em> and <em>onHitByBullet</em>) are event handlers with code that triggers when a
+specific type of event occurs. For example, the event handler <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BaseBot.html#Robocode_TankRoyale_BotApi_BaseBot_OnScannedBot_Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_">BaseBot.OnScannedBot(ScannedBotEvent)</a>
+triggers whenever an opponent bot is scanned by the radar. The <a href="https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.Events.ScannedBotEvent.html">ScannedBotEvent</a> contains the event data for the scanned
+bot.</p>
+<h2 id="json-config-file">JSON config file</h2>
+<p>The code in this example is accompanied by a <em>MyFirstBot.json</em>, which is a <a href="https://fileinfo.com/extension/json">JSON</a> file containing the config file for
+the bot, and is used by the <strong>booter</strong> to start up the bot on a local machine.</p>
+<p>MyFirstBot.json:</p>
+<pre><code class="lang-json">{
+  &quot;name&quot;: &quot;My First Bot&quot;,
+  &quot;version&quot;: &quot;1.0&quot;,
+  &quot;authors&quot;: [
+    &quot;Mathew Nelson&quot;,
+    &quot;Flemming N. Larsen&quot;
+  ],
+  &quot;description&quot;: &quot;A sample bot that is probably the first bot you will learn about.&quot;,
+  &quot;homepage&quot;: &quot;&quot;,
+  &quot;countryCodes&quot;: [
+    &quot;us&quot;,
+    &quot;dk&quot;
+  ],
+  &quot;platform&quot;: &quot;.Net 6.0&quot;,
+  &quot;programmingLang&quot;: &quot;C# 10.0&quot;
+}
+</code></pre>
+<p>You can read more details about the format of this JSON
+file <a href="https://robocode-dev.github.io/tank-royale/articles/booter.html#json-config-file.html">here</a>.</p>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/docfx_project/index.md/#L1" class="contribution-link">Edit this page</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="styles/docfx.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
+  </body>
+</html>
