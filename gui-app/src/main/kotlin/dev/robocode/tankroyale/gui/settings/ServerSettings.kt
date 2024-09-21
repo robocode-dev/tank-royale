@@ -14,7 +14,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
     const val DEFAULT_URL = "$DEFAULT_SCHEME://localhost"
 
     private const val CURRENT_SERVER_URL = "current-server-url"
-    private const val SERVER_URLS = "server-urls"
+    private const val REMOTE_SERVER_URLS = "remote-server-urls"
     private const val CONTROLLER_SECRETS = "controller-secrets"
     private const val BOT_SECRETS = "bots-secrets"
     private const val INITIAL_POSITION_ENABLED = "initial-position-enabled"
@@ -37,9 +37,9 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
 
     val serverPort: Int get() = URI(currentServerUrl).port
 
-    var serverUrls: List<String>
+    var remoteServerUrls: List<String>
         get() {
-            val urls = properties.getProperty(SERVER_URLS, "")
+            val urls = properties.getProperty(REMOTE_SERVER_URLS, "")
             return if (urls.isBlank()) {
                 listOf(currentServerUrl)
             } else {
@@ -49,7 +49,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         set(value) {
             val list = ArrayList(value)
             list.remove(DEFAULT_URL)
-            properties.setProperty(SERVER_URLS, list.joinToString(","))
+            properties.setProperty(REMOTE_SERVER_URLS, list.joinToString(","))
         }
 
     var controllerSecrets: Set<String>

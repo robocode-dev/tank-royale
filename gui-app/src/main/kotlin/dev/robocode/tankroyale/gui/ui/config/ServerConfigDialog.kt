@@ -43,7 +43,7 @@ object ServerConfigPanel : JPanel() {
         foreground = Color(0x00, 0x7f, 0x00)
     }
 
-    val remoteServerComboBox = JComboBox(getServerUrls()).apply {
+    val remoteServerComboBox = JComboBox(getRemoteServerUrls()).apply {
         preferredSize = Dimension(150, preferredSize.height)
     }
 
@@ -95,8 +95,8 @@ object ServerConfigPanel : JPanel() {
         }
     }
 
-    private fun getServerUrls(): Array<String> {
-        return ServerSettings.serverUrls.toTypedArray()
+    private fun getRemoteServerUrls(): Array<String> {
+        return ServerSettings.remoteServerUrls.toTypedArray()
     }
 }
 

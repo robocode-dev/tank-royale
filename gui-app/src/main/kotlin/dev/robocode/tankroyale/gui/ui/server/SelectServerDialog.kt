@@ -127,8 +127,8 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         urlComboBox.removeAllItems()
 
         ServerSettings.apply {
-            if (serverUrls.isNotEmpty()) {
-                serverUrls.forEach { urlComboBox.addItem(it) }
+            if (remoteServerUrls.isNotEmpty()) {
+                remoteServerUrls.forEach { urlComboBox.addItem(it) }
             } else {
                 urlComboBox.addItem(currentServerUrl)
             }
@@ -155,7 +155,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         for (i in 0 until size) {
             userUrls.add(urlComboBox.getItemAt(i))
         }
-        ServerSettings.serverUrls = userUrls
+        ServerSettings.remoteServerUrls = userUrls
         ServerSettings.save()
     }
 }
