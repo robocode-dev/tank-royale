@@ -16,14 +16,16 @@ class SwitchButton : JComponent() {
         set(value) {
             field = value
             timer.start()
-            runEvent()
+
+            fireSwitchEvent()
         }
 
     private val timer: Timer
     private var location: Float = 2f
     private var mouseOver: Boolean = false
     private var speed: Float = 0.1f
-    private val events: MutableList<EventSwitchSelected> = ArrayList()
+
+    private val events: MutableList<SwitchEvent> = mutableListOf()
 
     init {
         background = Color(0x3f, 0x3f, 0xff)
@@ -108,13 +110,13 @@ class SwitchButton : JComponent() {
             return alpha
         }
 
-    private fun runEvent() {
+    private fun fireSwitchEvent() {
         events.forEach { it(isSelected) }
     }
 
-    fun addEventSelected(event: EventSwitchSelected) {
+    fun addSwitchHandler(event: SwitchEvent) {
         events.add(event)
     }
 }
 
-typealias EventSwitchSelected = (Boolean) -> Unit
+typealias SwitchEvent = (Boolean) -> Unit
