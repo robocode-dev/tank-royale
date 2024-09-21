@@ -13,8 +13,16 @@ import javax.swing.text.DocumentFilter
 
 class PortInputField(defaultValue: Int = 7654) : JTextField(5) {
 
+    var port: Int = defaultValue
+        private set
+
+    private val events: MutableList<PortUpdatedEvent> = mutableListOf()
+
     init {
         text = defaultValue.toString()
+
+        setCaretPosition(getText().length)
+
         inputVerifier = object : InputVerifier() {
             override fun verify(input: JComponent): Boolean {
                 val textField = input as JTextField
@@ -47,31 +55,35 @@ class PortInputField(defaultValue: Int = 7654) : JTextField(5) {
 
         document.addDocumentListener(object : DocumentListener {
             override fun insertUpdate(e: DocumentEvent) {
-                validatePort()
+                validateAndSetPort()
             }
 
             override fun removeUpdate(e: DocumentEvent) {
-                validatePort()
+                validateAndSetPort()
             }
 
             override fun changedUpdate(e: DocumentEvent) {
-                validatePort()
+                validateAndSetPort()
             }
         })
     }
 
-    private fun validatePort() {
-        if (!inputVerifier.verify(this)) {
+    private fun firePortUpdateEvent() {
+        events.forEach { it(port) }
+    }
+
+    private fun validateAndSetPort() {
+        if (inputVerifier.verify(this)) {
+            port = Integer.parseInt(text)
+            firePortUpdateEvent()
+        } else {
             MessageDialog.showError(String.format(Messages.get("valid_port_number_range"), 1000, 65535))
         }
     }
 
-    fun getPort(): Int? {
-        return try {
-            val value = text.toInt()
-            if (value in 1000..65535) value else null
-        } catch (_: NumberFormatException) {
-            null
-        }
+    fun addPortUpdatedHandler(event: PortUpdatedEvent) {
+        events.add(event)
     }
 }
+
+typealias PortUpdatedEvent = (Int) -> Unit
