@@ -31,7 +31,9 @@ object ServerConfigDialog : RcDialog(MainFrame, "server_config_dialog") {
 
 object ServerConfigPanel : JPanel() {
 
-    val onToggle = Event<Boolean>()
+    val onToggleServer = Event<Boolean>()
+    val onPortUpdated = Event<Int>()
+
     val onOk = Event<JButton>()
     val onCancel = Event<JButton>()
     val onTest = Event<JButton>()
@@ -48,10 +50,16 @@ object ServerConfigPanel : JPanel() {
     }
 
     val serverSwitchButton = SwitchButton().apply {
-        addEventSelected { isSelected -> onToggle.fire(isSelected) }
+        addSwitchHandler { isSelected -> onToggleServer.fire(isSelected) }
+    }
+
+    val localPortInputField = PortInputField().apply {
+        addPortUpdatedHandler { port -> onPortUpdated.fire(port) }
     }
 
     init {
+        var okButton: JButton? = null
+
         setLayout(MigLayout("insets 10, fillx", "[grow]", "[]10[]10[]10[]"))
 
         // Selected server
@@ -65,7 +73,7 @@ object ServerConfigPanel : JPanel() {
         val localServerPanel = JPanel(MigLayout("insets 10, fillx", "[right][grow]", "[][]")).apply {
             setBorder(BorderFactory.createTitledBorder(Strings.get("local_server")))
             addLabel("port")
-            add(PortInputField(), "wrap")
+            add(localPortInputField, "wrap")
 //            add(JCheckBox("Secure server (WSS)"), "span 2")
         }
         add(localServerPanel, "growx, wrap")
@@ -84,14 +92,17 @@ object ServerConfigPanel : JPanel() {
 
         // OK and Cancel buttons
         val buttonPanel = JPanel(MigLayout("insets 0, center")).apply {
-            addOkButton(onOk, "split 2")
+            okButton = addOkButton(onOk, "split 2")
             addCancelButton(onCancel)
         }
         add(buttonPanel, "growx")
 
-        onToggle.subscribe(this) { isSelected ->
+        onToggleServer.subscribe(this) { isSelected ->
             remoteServerPanel.enableAll(isSelected)
             localServerPanel.enableAll(!isSelected)
+        }
+
+        onPortUpdated.subscribe(this) { port ->
         }
     }
 
