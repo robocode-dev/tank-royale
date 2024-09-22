@@ -2,8 +2,8 @@ package dev.robocode.tankroyale.gui.ui.components
 
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.util.MessageDialog
-import javax.swing.InputVerifier
-import javax.swing.JComponent
+import java.awt.event.FocusAdapter
+import java.awt.event.FocusEvent
 import javax.swing.JTextField
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -23,17 +23,14 @@ class PortInputField(defaultValue: Int = 7654) : JTextField(5) {
 
         setCaretPosition(getText().length)
 
-        inputVerifier = object : InputVerifier() {
-            override fun verify(input: JComponent): Boolean {
-                val textField = input as JTextField
-                return try {
-                    val value = textField.text.toInt()
-                    value in 1000..65535
-                } catch (_: NumberFormatException) {
-                    false
+        addFocusListener(object : FocusAdapter() {
+            override fun focusLost(e: FocusEvent) {
+                if (!verify()) {
+                    MessageDialog.showError(String.format(Messages.get("valid_port_number_range"), 1000, 65535))
                 }
             }
-        }
+        })
+
         (document as AbstractDocument).documentFilter = object : DocumentFilter() {
 
             override fun insertString(fb: FilterBypass, offset: Int, string: String, attr: AttributeSet?) {
@@ -55,29 +52,36 @@ class PortInputField(defaultValue: Int = 7654) : JTextField(5) {
 
         document.addDocumentListener(object : DocumentListener {
             override fun insertUpdate(e: DocumentEvent) {
-                validateAndSetPort()
+                setPort()
             }
 
             override fun removeUpdate(e: DocumentEvent) {
-                validateAndSetPort()
+                setPort()
             }
 
             override fun changedUpdate(e: DocumentEvent) {
-                validateAndSetPort()
+                setPort()
             }
         })
+    }
+
+    private fun verify(): Boolean {
+        return try {
+            val value = text.toInt()
+            value in 1000..65535
+        } catch (_: NumberFormatException) {
+            false
+        }
     }
 
     private fun firePortUpdateEvent() {
         events.forEach { it(port) }
     }
 
-    private fun validateAndSetPort() {
-        if (inputVerifier.verify(this)) {
+    private fun setPort() {
+        if (verify()) {
             port = Integer.parseInt(text)
             firePortUpdateEvent()
-        } else {
-            MessageDialog.showError(String.format(Messages.get("valid_port_number_range"), 1000, 65535))
         }
     }
 
