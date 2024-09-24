@@ -63,7 +63,7 @@ object Client {
 
     fun connect() {
         check (!isConnected()) { "Websocket is already connected" }
-        websocket = WebSocketClient(URI(ServerSettings.currentServerUrl))
+        websocket = WebSocketClient(URI(ServerSettings.useRemoteServerUrl))
 
         WebSocketClientEvents.apply {
             websocket?.let { ws ->

@@ -67,7 +67,7 @@ object MenuEventHandlers {
     }
 
     private fun startBattle() {
-        val serverUrl = ServerSettings.currentServerUrl
+        val serverUrl = ServerSettings.useRemoteServerUrl
         if (isRemoteEndpoint(serverUrl) && !RemoteServer.isRunning(serverUrl)) {
             MessageDialog.showError(String.format(Messages.get("cannot_connect_to_remote_server"), serverUrl))
 

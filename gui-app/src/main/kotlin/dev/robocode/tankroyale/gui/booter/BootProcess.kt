@@ -83,7 +83,7 @@ object BootProcess {
     private fun bootBotProcess(botDirNames: List<String>) {
         val args = mutableListOf(
             "java",
-            "-Dserver.url=${ServerSettings.currentServerUrl}",
+            "-Dserver.url=${ServerSettings.useRemoteServerUrl}",
             "-Dserver.secret=${ServerSettings.botSecrets.first()}",
             "-jar",
             getBooterJar(),
@@ -199,7 +199,7 @@ object BootProcess {
                     if (doReadInputToProcessIds)
                         readInputToPids(process)
                     readErrorToStdError(process)
-                } catch (e: InterruptedException) {
+                } catch (_: InterruptedException) {
                     break
                 }
             }

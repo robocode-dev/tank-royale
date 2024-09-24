@@ -130,9 +130,9 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
             if (remoteServerUrls.isNotEmpty()) {
                 remoteServerUrls.forEach { urlComboBox.addItem(it) }
             } else {
-                urlComboBox.addItem(currentServerUrl)
+                urlComboBox.addItem(useRemoteServerUrl)
             }
-            selectedUri = currentServerUrl
+            selectedUri = useRemoteServerUrl
         }
     }
 
@@ -148,7 +148,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     }
 
     private fun saveServerConfig() {
-        ServerSettings.currentServerUrl = selectedUri
+        ServerSettings.useRemoteServerUrl = selectedUri
 
         val userUrls = ArrayList<String>()
         val size = urlComboBox.itemCount

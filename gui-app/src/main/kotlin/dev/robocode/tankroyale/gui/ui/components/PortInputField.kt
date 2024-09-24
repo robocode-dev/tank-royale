@@ -11,9 +11,9 @@ import javax.swing.text.AbstractDocument
 import javax.swing.text.AttributeSet
 import javax.swing.text.DocumentFilter
 
-class PortInputField(defaultValue: Int = 7654) : JTextField(5) {
+class PortInputField(defaultValue: Short = 7654) : JTextField(5) {
 
-    var port: Int = defaultValue
+    var port: Short = defaultValue
         private set
 
     private val events: MutableList<PortUpdatedEvent> = mutableListOf()
@@ -80,7 +80,7 @@ class PortInputField(defaultValue: Int = 7654) : JTextField(5) {
 
     private fun setPort() {
         if (verify()) {
-            port = Integer.parseInt(text)
+            port = text.toShort()
             firePortUpdateEvent()
         }
     }
@@ -90,4 +90,4 @@ class PortInputField(defaultValue: Int = 7654) : JTextField(5) {
     }
 }
 
-typealias PortUpdatedEvent = (Int) -> Unit
+typealias PortUpdatedEvent = (Short) -> Unit

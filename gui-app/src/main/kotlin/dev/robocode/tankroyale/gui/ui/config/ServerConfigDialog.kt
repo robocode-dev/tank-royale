@@ -31,8 +31,8 @@ object ServerConfigDialog : RcDialog(MainFrame, "server_config_dialog") {
 
 object ServerConfigPanel : JPanel() {
 
-    val onToggleServer = Event<Boolean>()
-    val onPortUpdated = Event<Int>()
+    val onToggleRemoteServer = Event<Boolean>()
+    val onPortUpdated = Event<Short>()
 
     val onOk = Event<JButton>()
     val onCancel = Event<JButton>()
@@ -40,7 +40,7 @@ object ServerConfigPanel : JPanel() {
     val onAdd = Event<JButton>()
     val onRemove = Event<JButton>()
 
-    val selectedServerLabel = JLabel(ServerSettings.currentServerUrl).apply {
+    val selectedServerLabel = JLabel(ServerSettings.useRemoteServerUrl).apply {
         font = Font(font.family, Font.BOLD, font.size)
         foreground = Color(0x00, 0x7f, 0x00)
     }
@@ -49,13 +49,20 @@ object ServerConfigPanel : JPanel() {
         preferredSize = Dimension(150, preferredSize.height)
     }
 
-    val serverSwitchButton = SwitchButton().apply {
-        addSwitchHandler { isSelected -> onToggleServer.fire(isSelected) }
+    val serverSwitchButton = SwitchButton(true).apply {
+        addSwitchHandler { isSelected -> onToggleRemoteServer.fire(isSelected) }
+    }
+
+    val useRemoveOrLocalServerLabel = JLabel().apply {
+        text = getUseRemoveOrLocalServerText(serverSwitchButton.isSelected)
     }
 
     val localPortInputField = PortInputField().apply {
         addPortUpdatedHandler { port -> onPortUpdated.fire(port) }
     }
+
+    val localServerPanel: JPanel
+    var remoteServerPanel: JPanel
 
     init {
         var okButton: JButton? = null
@@ -66,11 +73,13 @@ object ServerConfigPanel : JPanel() {
         addLabel("selected_server", "split 2")
         add(selectedServerLabel, "growx, wrap")
 
-        addLabel("use_remote_server", "split 2")
-        add(serverSwitchButton, "wrap")
+        addLabel("use_remote_server", "split 3")
+
+        add(serverSwitchButton)
+        add(useRemoveOrLocalServerLabel, "left, wrap")
 
         // Local server group
-        val localServerPanel = JPanel(MigLayout("insets 10, fillx", "[right][grow]", "[][]")).apply {
+        localServerPanel = JPanel(MigLayout("insets 10, fillx", "[right][grow]", "[][]")).apply {
             setBorder(BorderFactory.createTitledBorder(Strings.get("local_server")))
             addLabel("port")
             add(localPortInputField, "wrap")
@@ -79,7 +88,7 @@ object ServerConfigPanel : JPanel() {
         add(localServerPanel, "growx, wrap")
 
         // Remote server group
-        val remoteServerPanel = JPanel(MigLayout("insets 10, fillx", "[right][grow][]", "[][]")).apply {
+        remoteServerPanel = JPanel(MigLayout("insets 10, fillx", "[right][grow][]", "[][]")).apply {
             setBorder(BorderFactory.createTitledBorder(Strings.get("remote_server")))
             addLabel("server")
             add(remoteServerComboBox, "growx")
@@ -97,18 +106,31 @@ object ServerConfigPanel : JPanel() {
         }
         add(buttonPanel, "growx")
 
-        onToggleServer.subscribe(this) { isSelected ->
-            remoteServerPanel.enableAll(isSelected)
-            localServerPanel.enableAll(!isSelected)
+        onToggleRemoteServer.subscribe(this) { isSelected ->
+            toggleRemoteServer(isSelected)
         }
 
         onPortUpdated.subscribe(this) { port ->
+            ServerSettings.localPort = port
         }
+
+        val useRemoteServer = !ServerSettings.useRemoteServerUrl.isBlank()
+        toggleRemoteServer(useRemoteServer)
     }
 
     private fun getRemoteServerUrls(): Array<String> {
         return ServerSettings.remoteServerUrls.toTypedArray()
     }
+
+    private fun toggleRemoteServer(useRemoteServer: Boolean) {
+        remoteServerPanel.enableAll(useRemoteServer)
+        localServerPanel.enableAll(!useRemoteServer)
+
+        useRemoveOrLocalServerLabel.text = getUseRemoveOrLocalServerText(useRemoteServer)
+    }
+
+    private fun getUseRemoveOrLocalServerText(useRemoteServer: Boolean) =
+        Strings.get(if (useRemoteServer) "remove_server_is_used" else "local_server_is_used")
 }
 
 
