@@ -6,7 +6,6 @@ import java.awt.event.ComponentEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JComponent
-import javax.swing.SwingUtilities
 import javax.swing.Timer
 
 // Improved version of the java-swing-switch-button from DJ-Raven:
@@ -15,16 +14,15 @@ import javax.swing.Timer
 // This version takes an initial selection state, and has been ported for Kotlin as well
 class SwitchButton(initialSelected: Boolean) : JComponent() {
 
-    private val timer: Timer
-    private var location: Float = 2f
-    private var mouseOver: Boolean = false
-    private var speed: Float = 0.125f
+    private var knobLocation: Float = 2f
+    private val animationTimer: Timer
+    private val animationSpeed: Float = 0.05f
 
     var isSelected = initialSelected
         set(value) {
             field = value
 
-            timer.start()
+            animationTimer.start()
             fireSwitchEvent()
         }
 
@@ -38,46 +36,36 @@ class SwitchButton(initialSelected: Boolean) : JComponent() {
 
         addComponentListener(object : ComponentAdapter() {
             override fun componentResized(e: ComponentEvent) {
-                location = if (isSelected) width - height + 2f else 2f
+                knobLocation = if (isSelected) width - height + 2f else 2f
+
+                repaint() // paint for the first time!
             }
         })
 
-        timer = Timer(0) { _ ->
+        animationTimer = Timer(0) { _ ->
             if (isSelected) {
                 val endLocation = width - height + 2f
-                if (location < endLocation) {
-                    location += speed
+                if (knobLocation < endLocation) {
+                    knobLocation += animationSpeed
                 } else {
-                    timer.stop()
-                    location = endLocation
+                    animationTimer.stop()
+                    knobLocation = endLocation
                 }
             } else {
                 val endLocation = 2f
-                if (location > endLocation) {
-                    location -= speed
+                if (knobLocation > endLocation) {
+                    knobLocation -= animationSpeed
                 } else {
-                    timer.stop()
-                    location = endLocation
+                    animationTimer.stop()
+                    knobLocation = endLocation
                 }
             }
             repaint()
         }
 
         addMouseListener(object : MouseAdapter() {
-            override fun mouseEntered(me: MouseEvent) {
-                mouseOver = true
-            }
-
-            override fun mouseExited(me: MouseEvent) {
-                mouseOver = false
-            }
-
-            override fun mouseReleased(me: MouseEvent) {
-                if (SwingUtilities.isLeftMouseButton(me)) {
-                    if (mouseOver) {
-                        isSelected = !isSelected
-                    }
-                }
+            override fun mouseClicked(me: MouseEvent) {
+                isSelected = !isSelected
             }
         })
     }
@@ -97,13 +85,13 @@ class SwitchButton(initialSelected: Boolean) : JComponent() {
 
         g2.color = foreground
         g2.composite = AlphaComposite.SrcOver
-        g2.fillOval(location.toInt(), 2, height - 4, height - 4)
+        g2.fillOval(knobLocation.toInt(), 2, height - 4, height - 4)
     }
 
     private val alpha: Float
         get() {
             val width = width - height
-            var alpha = (location - 2) / width
+            var alpha = (knobLocation - 2) / width
             if (alpha < 0) {
                 alpha = 0f
             }

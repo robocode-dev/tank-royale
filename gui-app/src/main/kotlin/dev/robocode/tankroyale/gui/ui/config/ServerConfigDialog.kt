@@ -18,6 +18,8 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.enableAll
 import dev.robocode.tankroyale.gui.util.Event
+import java.awt.event.ItemEvent
+import java.awt.event.ItemListener
 
 
 object ServerConfigDialog : RcDialog(MainFrame, "server_config_dialog") {
@@ -40,16 +42,12 @@ object ServerConfigPanel : JPanel() {
     val onAdd = Event<JButton>()
     val onRemove = Event<JButton>()
 
-    val selectedServerLabel = JLabel(ServerSettings.useRemoteServerUrl).apply {
+    val selectedServerLabel = JLabel(ServerSettings.serverUrl()).apply {
         font = Font(font.family, Font.BOLD, font.size)
         foreground = Color(0x00, 0x7f, 0x00)
     }
 
-    val remoteServerComboBox = JComboBox(getRemoteServerUrls()).apply {
-        preferredSize = Dimension(150, preferredSize.height)
-    }
-
-    val serverSwitchButton = SwitchButton(true).apply {
+    val serverSwitchButton = SwitchButton(ServerSettings.useRemoteServer).apply {
         addSwitchHandler { isSelected -> onToggleRemoteServer.fire(isSelected) }
     }
 
@@ -57,8 +55,22 @@ object ServerConfigPanel : JPanel() {
         text = getUseRemoveOrLocalServerText(serverSwitchButton.isSelected)
     }
 
-    val localPortInputField = PortInputField().apply {
+    val localPortInputField = PortInputField(ServerSettings.localPort).apply {
         addPortUpdatedHandler { port -> onPortUpdated.fire(port) }
+    }
+
+    val remoteServerComboBox = JComboBox(getRemoteServerUrls()).apply {
+        preferredSize = Dimension(150, preferredSize.height)
+        selectedItem = ServerSettings.useRemoteServerUrl
+
+        addItemListener(ItemListener { itemEvent ->
+            if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
+                val serverUrl = itemEvent.item as String
+                ServerSettings.useRemoteServerUrl = serverUrl
+
+                updateSelectedServerLabel()
+            }
+        })
     }
 
     val localServerPanel: JPanel
@@ -114,8 +126,7 @@ object ServerConfigPanel : JPanel() {
             ServerSettings.localPort = port
         }
 
-        val useRemoteServer = !ServerSettings.useRemoteServerUrl.isBlank()
-        toggleRemoteServer(useRemoteServer)
+        toggleRemoteServer(ServerSettings.useRemoteServer)
     }
 
     private fun getRemoteServerUrls(): Array<String> {
@@ -123,14 +134,22 @@ object ServerConfigPanel : JPanel() {
     }
 
     private fun toggleRemoteServer(useRemoteServer: Boolean) {
-        remoteServerPanel.enableAll(useRemoteServer)
-        localServerPanel.enableAll(!useRemoteServer)
+        ServerSettings.useRemoteServer = useRemoteServer
+
+        updateSelectedServerLabel()
 
         useRemoveOrLocalServerLabel.text = getUseRemoveOrLocalServerText(useRemoteServer)
+
+        remoteServerPanel.enableAll(useRemoteServer)
+        localServerPanel.enableAll(!useRemoteServer)
     }
 
     private fun getUseRemoveOrLocalServerText(useRemoteServer: Boolean) =
         Strings.get(if (useRemoteServer) "remove_server_is_used" else "local_server_is_used")
+
+    private fun updateSelectedServerLabel() {
+        selectedServerLabel.text = ServerSettings.serverUrl()
+    }
 }
 
 

@@ -11,9 +11,10 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
 
     const val DEFAULT_SCHEME = "ws"
     const val DEFAULT_PORT = 7654
-    const val DEFAULT_URL = "$DEFAULT_SCHEME://localhost"
+    const val LOCALHOST_URL = "$DEFAULT_SCHEME://localhost"
 
     private const val LOCAL_PORT = "local-port"
+    private const val USE_REMOTE_SERVER = "use-remote-server"
     private const val USE_REMOTE_SERVER_URL = "use-remote-server-url"
     private const val REMOTE_SERVER_URLS = "remote-server-urls"
     private const val CONTROLLER_SECRETS = "controller-secrets"
@@ -27,6 +28,10 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         onSaved.subscribe(this) { ServerEventTriggers.onRebootServer.fire(true /* setting changed */) }
     }
 
+    fun serverUrl(): String = if (useRemoteServer) useRemoteServerUrl else localhostUrl()
+
+    fun localhostUrl(): String = "$LOCALHOST_URL:$localPort"
+
     var localPort: Short
         get() {
             load()
@@ -37,19 +42,32 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
             save()
         }
 
+    var useRemoteServer: Boolean
+        get() {
+            load()
+            return properties.getProperty(USE_REMOTE_SERVER, "false").toBoolean()
+        }
+        set(value) {
+            properties.setProperty(USE_REMOTE_SERVER, value.toString())
+            save()
+        }
+
     var useRemoteServerUrl: String
         get() {
-            val url = properties.getProperty(USE_REMOTE_SERVER_URL, DEFAULT_URL)
+            load()
+            val url = properties.getProperty(USE_REMOTE_SERVER_URL, localhostUrl())
             return WsUrl(url).origin
         }
         set(value) {
             properties.setProperty(USE_REMOTE_SERVER_URL, value)
+            save()
         }
 
     val serverPort: Int get() = URI(useRemoteServerUrl).port
 
     var remoteServerUrls: List<String>
         get() {
+            load()
             val urls = properties.getProperty(REMOTE_SERVER_URLS, "")
             return if (urls.isBlank()) {
                 listOf(useRemoteServerUrl)
@@ -59,8 +77,8 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         }
         set(value) {
             val list = ArrayList(value)
-            list.remove(DEFAULT_URL)
             properties.setProperty(REMOTE_SERVER_URLS, list.joinToString(","))
+            save()
         }
 
     var controllerSecrets: Set<String>

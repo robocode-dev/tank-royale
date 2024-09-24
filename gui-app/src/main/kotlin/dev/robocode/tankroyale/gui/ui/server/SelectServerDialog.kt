@@ -36,7 +36,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     private val onOk = Event<JButton>()
     private val onCancel = Event<JButton>()
 
-    private val urlComboBox = JComboBox(arrayOf(ServerSettings.DEFAULT_URL))
+    private val urlComboBox = JComboBox(arrayOf(ServerSettings.localhostUrl()))
     private val addButton = addButton("add", onAdd)
     private val removeButton = addButton("remove", onRemove)
     private val testButton = addButton("server_test", onTest)
