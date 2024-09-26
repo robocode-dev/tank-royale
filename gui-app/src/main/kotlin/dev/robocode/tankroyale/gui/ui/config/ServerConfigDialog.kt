@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
+import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.PortInputField
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
@@ -17,6 +18,8 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCancelButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.enableAll
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
+import dev.robocode.tankroyale.gui.ui.server.RemoteServer
 import dev.robocode.tankroyale.gui.util.Event
 import java.awt.event.ItemEvent
 import java.awt.event.ItemListener
@@ -127,6 +130,8 @@ object ServerConfigPanel : JPanel() {
         }
 
         toggleRemoteServer(ServerSettings.useRemoteServer)
+
+        onTest.subscribe(this) { testServerConnection() }
     }
 
     private fun getRemoteServerUrls(): Array<String> {
@@ -149,6 +154,15 @@ object ServerConfigPanel : JPanel() {
 
     private fun updateSelectedServerLabel() {
         selectedServerLabel.text = ServerSettings.serverUrl()
+    }
+
+    private fun testServerConnection() {
+        var serverUrl = remoteServerComboBox.selectedItem as String
+        if (RemoteServer.isRunning(serverUrl)) {
+            showMessage(String.format(Messages.get("server_is_running"), serverUrl))
+        } else {
+            showMessage(String.format(Messages.get("server_not_found"), serverUrl))
+        }
     }
 }
 
