@@ -82,23 +82,34 @@ object ServerConfigPanel : JPanel() {
     init {
         var okButton: JButton? = null
 
-        setLayout(MigLayout("insets 10, fillx", "[grow]", "[]10[]10[]10[]"))
+        layout = MigLayout("insets 10, fillx", "[grow]", "[]10[]10[]20[]")
 
-        // Selected server
-        addLabel("selected_server", "split 2")
-        add(selectedServerLabel, "growx, wrap")
+        // Upper panel
+        val upperPanel = JPanel(MigLayout("fillx", "[right][grow]", "[][]")).apply {
+            addLabel("selected_server")
+            add(selectedServerLabel, "growx, wrap")
 
-        addLabel("use_remote_server", "split 3")
+            addLabel("use_remote_server")
 
-        add(serverSwitchButton)
-        add(useRemoveOrLocalServerLabel, "left, wrap")
+            val switchPanel = JPanel(MigLayout("", "[right][grow]")).apply {
+                add(serverSwitchButton)
+                add(useRemoveOrLocalServerLabel)
+            }
+            add(switchPanel, "wrap")
+        }
+        add(upperPanel, "wrap")
 
         // Local server group
-        localServerPanel = JPanel(MigLayout("insets 10, fillx", "[right][grow]", "[][]")).apply {
+        localServerPanel = JPanel(MigLayout("insets 10, fillx", "", "[][]")).apply {
             setBorder(BorderFactory.createTitledBorder(Strings.get("local_server")))
-            addLabel("port")
-            add(localPortInputField, "wrap")
-//            add(JCheckBox("Secure server (WSS)"), "span 2")
+
+            val portPanel = JPanel().apply {
+                addLabel("port")
+                add(localPortInputField, "wrap")
+            }
+            add(portPanel, "wrap")
+
+//            add(JCheckBox("Secure server (WSS)"), "wrap")
         }
         add(localServerPanel, "growx, wrap")
 
