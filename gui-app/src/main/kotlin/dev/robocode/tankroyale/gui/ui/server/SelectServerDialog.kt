@@ -116,11 +116,8 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
     private val selectedItem get() = urlComboBox.selectedItem as String
 
     private fun testServerConnection() {
-        if (RemoteServer.isRunning(selectedUri)) {
-            showMessage(String.format(Messages.get("server_is_running"), selectedUri))
-        } else {
-            showMessage(String.format(Messages.get("server_not_found"), selectedUri))
-        }
+        var msgProperty: String = if (RemoteServer.isRunning(selectedUri)) "server_is_running" else "server_not_found"
+        showMessage(String.format(Messages.get(msgProperty), selectedUri))
     }
 
     private fun setFieldsToServerConfig() {
