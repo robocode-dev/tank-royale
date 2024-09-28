@@ -29,7 +29,7 @@ object ServerConfigDialog : RcDialog(MainFrame, "server_config_dialog") {
     }
 }
 
-class ServerConfigPanel : JPanel() {
+private class ServerConfigPanel : JPanel() {
 
     val onToggleRemoteServer = Event<Boolean>()
     val onPortUpdated = Event<Short>()

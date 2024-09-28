@@ -16,32 +16,48 @@ import javax.swing.JPanel
 object DebugConfigDialog : RcDialog(MainFrame, "debug_config_dialog") {
 
     init {
-        contentPane.add(Panel)
+        contentPane.add(DebugConfigPanel())
         pack()
         setLocationRelativeTo(MainFrame) // center on main window
     }
 }
 
-object Panel : JPanel(MigLayout("fill, insets 20", "", "[]20[]")) {
+private class DebugConfigPanel : JPanel(MigLayout("fill, insets 20", "", "[]20[]")) {
 
-    private val onOk = Event<JButton>().apply { subscribe(this) { DebugConfigDialog.dispose() } }
-
-    private var selected = ServerSettings.initialPositionsEnabled
+    val onOkButton = Event<JButton>()
 
     init {
-        val checkbox = JCheckBox(Strings.get("option.enable_initial_position.text"), selected).apply {
-            toolTipText = Hints.get("option.enable_initial_position")
-            addChangeListener {
-                if (isSelected != selected) {
-                    selected = isSelected
-                    ServerSettings.initialPositionsEnabled = selected
-                }
-            }
-        }
+        addInitialPositionCheckbox()
+        addOkButton()
+    }
 
-        add(checkbox, "cell 0 0")
-        addOkButton(onOk, "cell 0 1, center").apply {
+    private fun addInitialPositionCheckbox() {
+        add(createInitialPositionCheckbox(), "cell 0 0")
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun addOkButton() {
+        onOkButton.subscribe(this) { closeDialog() }
+        addOkButton(onOkButton, "cell 0 1, center").apply {
             setDefaultButton(this)
         }
+    }
+
+    private fun createInitialPositionCheckbox() =
+        JCheckBox(getInitialPositionText(), ServerSettings.initialPositionsEnabled).apply {
+            toolTipText = getInitialPositionHint()
+            addChangeListener { updateInitialPositionSetting(isSelected) }
+        }
+
+    private fun getInitialPositionText() = Strings.get("option.enable_initial_position.text")
+
+    private fun getInitialPositionHint() = Hints.get("option.enable_initial_position")
+
+    private fun updateInitialPositionSetting(isEnabled: Boolean) {
+        ServerSettings.initialPositionsEnabled = isEnabled
+    }
+
+    private fun closeDialog() {
+        DebugConfigDialog.dispose()
     }
 }
