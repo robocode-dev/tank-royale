@@ -46,10 +46,16 @@ subprojects {
 tasks {
     register("build-release") {
         dependsOn(
-            "bot-api:java:assemble", "bot-api:dotnet:assemble",
-            "booter:assemble", "server:assemble", "gui-app:assemble",
-            "sample-bots:java:zip", "sample-bots:csharp:zip",
-            "buildDocs:uploadDocs", "bot-api:dotnet:uploadDocs", "bot-api:java:uploadDocs"
+            "bot-api:java:assemble",     // Bot API for Java VM
+            "bot-api:dotnet:assemble",   // Bot API for .Net
+            "booter:assemble",           // Booter (for booting up bots locally)
+            "server:assemble",           // Server
+            "gui-app:assemble",          // GUI
+            "sample-bots:java:zip",      // Sample bots for Java
+            "sample-bots:csharp:zip",    // Sample bots for C#
+            "buildDocs:uploadDocs",      // Documentation
+            "bot-api:dotnet:uploadDocs", // Docfx documentation for .NET Bot API
+            "bot-api:java:uploadDocs"    // Javadocs for Java Bot API
         )
     }
 
