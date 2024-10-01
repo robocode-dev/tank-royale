@@ -92,3 +92,7 @@ private object AddNewUrlPanel : JPanel(MigLayout("fill")) {
 
     private val isValidWsUrl get() = WsUrl.isValidWsUrl(urlTextField.text)
 }
+
+fun main() {
+    AddNewUrlDialog.isVisible = true
+}

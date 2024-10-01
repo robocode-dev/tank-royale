@@ -67,7 +67,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
         }
 
         lowerPanel.add(buttonPanel, "center")
-
+/*
         AddNewUrlDialog.apply {
             onOk.enqueue(this) {
                 urlComboBox.addItem(newUrl)
@@ -78,7 +78,7 @@ private object SelectServerPanel : JPanel(MigLayout("fill")) {
                 testButton.isEnabled = true
             }
         }
-
+*/
         onAdd.subscribe(SelectServerDialog) {
             AddNewUrlDialog.isVisible = true
         }

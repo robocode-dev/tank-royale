@@ -17,6 +17,8 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
     private const val USE_REMOTE_SERVER = "use-remote-server"
     private const val USE_REMOTE_SERVER_URL = "use-remote-server-url"
     private const val REMOTE_SERVER_URLS = "remote-server-urls"
+    private const val REMOTE_SERVER_BOT_SECRETS = "remote-server-bot-secrets"
+    private const val REMOTE_SERVER_OBSERVER_SECRETS = "remote-server-observer-secrets"
     private const val CONTROLLER_SECRETS = "controller-secrets"
     private const val BOT_SECRETS = "bots-secrets"
     private const val INITIAL_POSITION_ENABLED = "initial-position-enabled"
@@ -66,20 +68,8 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
     val serverPort: Int get() = URI(useRemoteServerUrl).port
 
     var remoteServerUrls: List<String>
-        get() {
-            load()
-            val urls = properties.getProperty(REMOTE_SERVER_URLS, "")
-            return if (urls.isBlank()) {
-                listOf(useRemoteServerUrl)
-            } else {
-                urls.split(",")
-            }
-        }
-        set(value) {
-            val list = ArrayList(value)
-            properties.setProperty(REMOTE_SERVER_URLS, list.joinToString(","))
-            save()
-        }
+        get() = loadIndexedProperties(REMOTE_SERVER_URLS)
+        set(value) { saveIndexedProperties(REMOTE_SERVER_URLS, value) }
 
     var controllerSecrets: Set<String>
         get() = getPropertyAsSet(CONTROLLER_SECRETS).ifEmpty {
@@ -101,13 +91,6 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
             save()
         }
 
-    private fun generateSecret(): String {
-        val secretKey = KeyGenerator.getInstance("AES").generateKey()
-        val encodedKey = Base64.getEncoder().encodeToString(secretKey.encoded)
-        // Remove trailing '=='
-        return encodedKey.substring(0, encodedKey.length - 2)
-    }
-
     var initialPositionsEnabled: Boolean
         get() {
             load()
@@ -117,4 +100,32 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
             properties.setProperty(INITIAL_POSITION_ENABLED, value.toString())
             save()
         }
+
+    private fun loadIndexedProperties(propertyName: String): List<String> {
+        load()
+
+        val props = mutableListOf<String>()
+        var index = 0
+        while (true) {
+            val value = properties["$propertyName.$index"] as String?
+            if (value == null) break
+            props.add(value)
+            index++
+        }
+        return props
+    }
+
+    private fun saveIndexedProperties(propertyName: String, props: List<String>) {
+        props.withIndex().forEach { (index, prop) ->
+            properties["$REMOTE_SERVER_URLS.$index"] = prop
+        }
+        save()
+    }
+
+    private fun generateSecret(): String {
+        val secretKey = KeyGenerator.getInstance("AES").generateKey()
+        val encodedKey = Base64.getEncoder().encodeToString(secretKey.encoded)
+        // Remove trailing '=='
+        return encodedKey.substring(0, encodedKey.length - 2)
+    }
 }
