@@ -105,9 +105,9 @@ private class ServerConfigPanel : JPanel() {
     }
 
     private fun createUpperPanel() = JPanel(MigLayout("fillx", "[right][grow]", "[][]")).apply {
-        addLabel("selected_server")
+        addLabel("option.server.selected_server")
         add(selectedServerLabel, "growx, wrap")
-        addLabel("use_remote_server")
+        addLabel("option.server.use_remote_server")
         add(createSwitchPanel(), "wrap")
     }
 
@@ -117,7 +117,7 @@ private class ServerConfigPanel : JPanel() {
     }
 
     private fun createLocalServerPanel() = JPanel(MigLayout("insets 10, fillx", "", "[][]")).apply {
-        border = BorderFactory.createTitledBorder(Strings.get("local_server"))
+        border = BorderFactory.createTitledBorder(Strings.get("option.server.local_server"))
         add(createPortPanel(), "wrap")
     }
 
@@ -127,7 +127,7 @@ private class ServerConfigPanel : JPanel() {
     }
 
     private fun createRemoteServerPanel() = JPanel(MigLayout("insets 10, fillx", "[right][grow][]", "[][]")).apply {
-        border = BorderFactory.createTitledBorder(Strings.get("remote_server"))
+        border = BorderFactory.createTitledBorder(Strings.get("option.server.remote_server"))
         addLabel("server")
         add(remoteServerComboBox, "growx")
         addButton("test", onTest, "wrap")
@@ -151,7 +151,7 @@ private class ServerConfigPanel : JPanel() {
     }
 
     private fun getUseRemoteOrLocalServerText(useRemoteServer: Boolean): String =
-        Strings.get(if (useRemoteServer) "remove_server_is_used" else "local_server_is_used")
+        Strings.get(if (useRemoteServer) "option.server.remove_server_is_used" else "option.server.local_server_is_used")
 
     private fun updateSelectedServerLabel() {
         selectedServerLabel.text = ServerSettings.serverUrl()

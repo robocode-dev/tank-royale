@@ -2,11 +2,12 @@ package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import javax.swing.*
 import net.miginfocom.swing.MigLayout
 
-object AddRemoteServerDialog : RcDialog(SelectServerDialog, "add_new_url_dialog") {
+object AddRemoteServerDialog : RcDialog(SelectServerDialog, "add_remote_server_dialog") {
     init {
         contentPane.add(AddRemoteServerPanel())
         pack()
@@ -18,6 +19,7 @@ class AddRemoteServerPanel : JPanel() {
     private val serverUrlField = JTextField(20)
     private val controllerSecretField = JTextField(20)
     private val botSecretField = JTextField(20)
+
     private val okButton = JButton(Strings.get("ok"))
     private val cancelButton = JButton(Strings.get("cancel"))
 
@@ -29,13 +31,13 @@ class AddRemoteServerPanel : JPanel() {
     private fun layoutComponents() {
         layout = MigLayout("insets 10, fillx", "[right][grow]", "[]10[]10[]20[]")
 
-        add(JLabel("Server URL:"))
+        addLabel("option.server.remote_server_url")
         add(serverUrlField, "growx, wrap")
 
-        add(JLabel("Controller Secret:"))
+        addLabel("option.server.controller_secret")
         add(controllerSecretField, "growx, wrap")
 
-        add(JLabel("Bot Secret:"))
+        addLabel("option.server.bot_secret")
         add(botSecretField, "growx, wrap")
 
         val buttonPanel = JPanel(MigLayout("insets 0, center"))
