@@ -39,14 +39,14 @@ class WsUrl(partialUrl: String) {
     companion object {
         fun isValidWsUrl(url: String): Boolean {
             val trimmedUrl = url.trim()
-            if (trimmedUrl.isEmpty() || !trimmedUrl.startsWith("ws://")) {
+            if (trimmedUrl.isEmpty() || !trimmedUrl.startsWith("ws://") || trimmedUrl.endsWith(".")) {
                 return false
             }
             return try {
                 // https://docs.oracle.com/javase/8/docs/api/java/net/URI.html#parseServerAuthority--
                 URI(trimmedUrl).parseServerAuthority()
                 true
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 false
             }
         }
