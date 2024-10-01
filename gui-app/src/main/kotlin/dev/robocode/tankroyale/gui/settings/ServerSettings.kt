@@ -13,14 +13,14 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
     const val DEFAULT_PORT = 7654
     const val LOCALHOST_URL = "$DEFAULT_SCHEME://localhost"
 
+    private const val CONTROLLER_SECRETS = "controller-secrets"
+    private const val BOT_SECRETS = "bots-secrets"
     private const val LOCAL_PORT = "local-port"
     private const val USE_REMOTE_SERVER = "use-remote-server"
     private const val USE_REMOTE_SERVER_URL = "use-remote-server-url"
     private const val REMOTE_SERVER_URLS = "remote-server-urls"
+    private const val REMOTE_SERVER_CONTROLLER_SECRETS = "remote-server-controller-secrets"
     private const val REMOTE_SERVER_BOT_SECRETS = "remote-server-bot-secrets"
-    private const val REMOTE_SERVER_OBSERVER_SECRETS = "remote-server-observer-secrets"
-    private const val CONTROLLER_SECRETS = "controller-secrets"
-    private const val BOT_SECRETS = "bots-secrets"
     private const val INITIAL_POSITION_ENABLED = "initial-position-enabled"
 
     init {
@@ -71,6 +71,14 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         get() = loadIndexedProperties(REMOTE_SERVER_URLS)
         set(value) { saveIndexedProperties(REMOTE_SERVER_URLS, value) }
 
+    var remoteServerControllerSecrets: List<String>
+        get() = loadIndexedProperties(REMOTE_SERVER_CONTROLLER_SECRETS)
+        set(value) { saveIndexedProperties(REMOTE_SERVER_CONTROLLER_SECRETS, value) }
+
+    var remoteServerBotSecrets: List<String>
+        get() = loadIndexedProperties(REMOTE_SERVER_BOT_SECRETS)
+        set(value) { saveIndexedProperties(REMOTE_SERVER_BOT_SECRETS, value) }
+
     var controllerSecrets: Set<String>
         get() = getPropertyAsSet(CONTROLLER_SECRETS).ifEmpty {
             controllerSecrets = setOf(generateSecret())
@@ -117,7 +125,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
 
     private fun saveIndexedProperties(propertyName: String, props: List<String>) {
         props.withIndex().forEach { (index, prop) ->
-            properties["$REMOTE_SERVER_URLS.$index"] = prop
+            properties["$propertyName.$index"] = prop
         }
         save()
     }

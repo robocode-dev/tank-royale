@@ -1,9 +1,12 @@
 package dev.robocode.tankroyale.gui.ui.config
 
+import dev.robocode.tankroyale.gui.settings.ServerSettings
+import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
+import dev.robocode.tankroyale.gui.util.MessageDialog
 import dev.robocode.tankroyale.gui.util.WsUrl
 import javax.swing.*
 import net.miginfocom.swing.MigLayout
@@ -26,7 +29,7 @@ private class RemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[right][
     private val controllerSecretField = JTextField(20)
     private val botSecretField = JTextField(20)
 
-    private val okButton = JButton(Strings.get("ok"))
+    private val okButton = JButton(Strings.get("ok")).apply { isEnabled = false }
     private val cancelButton = JButton(Strings.get("cancel"))
 
     init {
@@ -76,9 +79,20 @@ private class RemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[right][
     }
 
     private fun addListeners() {
-        okButton.addActionListener { closeDialog() }
+        okButton.addActionListener {
+            saveServerSettings()
+            closeDialog()
+        }
         cancelButton.addActionListener { closeDialog() }
         addServerUrlDocumentListener()
+    }
+
+    private fun saveServerSettings() {
+        ServerSettings.apply {
+            remoteServerUrls += trimmedServerUrlText()
+            remoteServerControllerSecrets += trimmedControllerSecretText()
+            remoteServerBotSecrets += trimmedBotSecretText()
+        }
     }
 
     private fun addServerUrlDocumentListener() {
@@ -100,9 +114,13 @@ private class RemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[right][
             }
 
             fun validate() {
-                val valid = isValidServerUrl
+                val valid = isValidServerUrl() && !isServerUrlPresent()
                 serverUrlField.background = if (valid) lightGreen else lightRed
                 okButton.isEnabled = valid
+
+                if (isServerUrlPresent()) {
+                    MessageDialog.showMessage(String.format(Messages.get("server_url_present"), trimmedServerUrlText()))
+                }
             }
         })
     }
@@ -111,7 +129,15 @@ private class RemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[right][
         AddRemoteServerDialog.dispose()
     }
 
-    private val isValidServerUrl get() = WsUrl.isValidWsUrl(serverUrlField.text)
+    private fun trimmedServerUrlText() = serverUrlField.text?.trim() ?: ""
+
+    private fun trimmedControllerSecretText() = controllerSecretField.text?.trim() ?: ""
+
+    private fun trimmedBotSecretText() = botSecretField.text?.trim() ?: ""
+
+    private fun isValidServerUrl() = WsUrl.isValidWsUrl(trimmedServerUrlText())
+
+    private fun isServerUrlPresent() = ServerSettings.remoteServerUrls.contains(trimmedServerUrlText())
 }
 
 fun main() {
