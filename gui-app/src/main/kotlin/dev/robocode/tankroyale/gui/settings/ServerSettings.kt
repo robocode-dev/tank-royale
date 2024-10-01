@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.gui.settings
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import dev.robocode.tankroyale.gui.util.WsUrl
-import jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle.index
 import java.net.URI
 import java.util.*
 import javax.crypto.KeyGenerator

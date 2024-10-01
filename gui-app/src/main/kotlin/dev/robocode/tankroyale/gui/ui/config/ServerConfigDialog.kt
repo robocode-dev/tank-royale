@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.gui.model.Message
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
