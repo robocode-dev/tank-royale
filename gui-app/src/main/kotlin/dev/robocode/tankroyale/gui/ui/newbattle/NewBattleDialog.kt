@@ -25,7 +25,7 @@ object NewBattleDialog : RcDialog(MainFrame, "select_bots_dialog") {
     init {
         contentPane.add(selectBotsAndStartPanel)
         size = Dimension(950, 750)
-        setLocationRelativeTo(MainFrame) // center on main window
+        setLocationRelativeTo(owner) // center on owner window
     }
 }
 

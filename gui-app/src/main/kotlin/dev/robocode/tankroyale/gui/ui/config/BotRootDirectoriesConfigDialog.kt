@@ -25,7 +25,7 @@ object BotRootDirectoriesConfigDialog : RcDialog(MainFrame, "bot_root_directorie
 
         contentPane.add(BotDirectoryConfigPanel)
         pack()
-        setLocationRelativeTo(MainFrame) // center on main window
+        setLocationRelativeTo(owner) // center on owner window
 
         onClosing {
             ConfigSettings.botDirectories =

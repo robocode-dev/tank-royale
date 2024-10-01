@@ -18,7 +18,7 @@ object DebugConfigDialog : RcDialog(MainFrame, "debug_config_dialog") {
     init {
         contentPane.add(DebugConfigPanel())
         pack()
-        setLocationRelativeTo(MainFrame) // center on main window
+        setLocationRelativeTo(owner) // center on owner window
     }
 }
 

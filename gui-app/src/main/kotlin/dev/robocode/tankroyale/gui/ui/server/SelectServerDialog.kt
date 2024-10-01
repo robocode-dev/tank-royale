@@ -22,7 +22,7 @@ object SelectServerDialog : RcDialog(MainFrame, "select_server_dialog") {
     init {
         contentPane.add(SelectServerPanel)
         pack()
-        setLocationRelativeTo(MainFrame) // center on main window
+        setLocationRelativeTo(owner) // center on owner window
     }
 }
 

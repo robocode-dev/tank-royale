@@ -25,7 +25,7 @@ object ServerConfigDialog : RcDialog(MainFrame, "server_config_dialog") {
     init {
         contentPane.add(ServerConfigPanel())
         pack()
-        setLocationRelativeTo(MainFrame)
+        setLocationRelativeTo(owner) // center on owner window
     }
 }
 

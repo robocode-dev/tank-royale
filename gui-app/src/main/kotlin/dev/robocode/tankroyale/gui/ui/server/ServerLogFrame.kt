@@ -10,7 +10,7 @@ object ServerLogFrame : ConsoleFrame("server_log_frame") {
         setSize(700, 550)
 
         onOpened {
-            setLocationRelativeTo(MainFrame) // center on main window
+            setLocationRelativeTo(owner) // center on owner window
         }
     }
 }

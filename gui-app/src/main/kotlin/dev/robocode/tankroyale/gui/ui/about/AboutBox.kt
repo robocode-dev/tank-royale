@@ -35,7 +35,7 @@ object AboutBox : RcDialog(MainFrame, "about_dialog") {
             setDefaultButton(this)
         }
         pack()
-        setLocationRelativeTo(MainFrame) // center on main window
+        setLocationRelativeTo(owner) // center on owner window
 
         isResizable = false
 

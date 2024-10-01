@@ -26,7 +26,7 @@ object AddNewUrlDialog : RcDialog(SelectServerDialog, "add_new_url_dialog") {
     init {
         contentPane.add(AddNewUrlPanel)
         pack()
-        setLocationRelativeTo(MainFrame) // center on main window
+        setLocationRelativeTo(owner) // center on owner window
 
         onActivated {
             AddNewUrlPanel.apply {

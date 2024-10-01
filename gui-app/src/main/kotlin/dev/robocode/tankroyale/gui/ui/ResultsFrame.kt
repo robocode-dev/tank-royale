@@ -45,7 +45,7 @@ class ResultsFrame(results: List<Results>) : RcFrame(getWindowTitle(), isTitlePr
 
         contentPane.add(scrollPane)
         pack()
-        setLocationRelativeTo(MainFrame) // center on main window
+        setLocationRelativeTo(owner) // center on owner window
     }
 
     private fun getData(results: List<Results>): Array<Array<String>> {
