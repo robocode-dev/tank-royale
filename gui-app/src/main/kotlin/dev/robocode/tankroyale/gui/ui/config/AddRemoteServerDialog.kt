@@ -4,8 +4,12 @@ import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
+import dev.robocode.tankroyale.gui.util.WsUrl
 import javax.swing.*
 import net.miginfocom.swing.MigLayout
+import java.awt.Color
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
 
 object AddRemoteServerDialog : RcDialog(SelectServerDialog, "add_remote_server_dialog") {
 
@@ -32,7 +36,14 @@ private class RemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[right][
     }
 
     private fun setupComponents() {
-        serverUrlField.text = "ws://"
+        setupServerUrlField()
+    }
+
+    private fun setupServerUrlField() {
+        serverUrlField.apply {
+            text = "ws://"
+            setCaretPosition(text.length)
+        }
     }
 
     private fun layoutComponents() {
@@ -67,9 +78,42 @@ private class RemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[right][
     private fun addListeners() {
         okButton.addActionListener { closeDialog() }
         cancelButton.addActionListener { closeDialog() }
+        addServerUrlDocumentListener()
+    }
+
+    private fun addServerUrlDocumentListener() {
+        serverUrlField.document.addDocumentListener(object : DocumentListener {
+
+            val lightRed = Color(0xFF, 0xAA, 0xAA)
+            val lightGreen = Color(0xAA, 0xFF, 0xAA)
+
+            override fun insertUpdate(e: DocumentEvent?) {
+                validate()
+            }
+
+            override fun removeUpdate(e: DocumentEvent?) {
+                validate()
+            }
+
+            override fun changedUpdate(e: DocumentEvent?) {
+                validate()
+            }
+
+            fun validate() {
+                val valid = isValidServerUrl
+                serverUrlField.background = if (valid) lightGreen else lightRed
+                okButton.isEnabled = valid
+            }
+        })
     }
 
     private fun closeDialog() {
         AddRemoteServerDialog.dispose()
     }
+
+    private val isValidServerUrl get() = WsUrl.isValidWsUrl(serverUrlField.text)
+}
+
+fun main() {
+    AddRemoteServerDialog.isVisible = true
 }
