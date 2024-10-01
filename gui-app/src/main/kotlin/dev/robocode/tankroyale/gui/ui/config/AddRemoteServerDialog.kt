@@ -1,23 +1,29 @@
 package dev.robocode.tankroyale.gui.ui.config
 
+import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import javax.swing.*
 import net.miginfocom.swing.MigLayout
 
 object AddRemoteServerDialog : RcDialog(SelectServerDialog, "add_new_url_dialog") {
+    init {
+        contentPane.add(AddRemoteServerPanel())
+        pack()
+        setLocationRelativeTo(owner) // center on owner window
+    }
+}
 
+class AddRemoteServerPanel : JPanel() {
     private val serverUrlField = JTextField(20)
     private val controllerSecretField = JTextField(20)
     private val botSecretField = JTextField(20)
-    private val okButton = JButton("OK")
-    private val cancelButton = JButton("Cancel")
+    private val okButton = JButton(Strings.get("ok"))
+    private val cancelButton = JButton(Strings.get("cancel"))
 
     init {
         layoutComponents()
         addListeners()
-        pack()
-        setLocationRelativeTo(owner)
     }
 
     private fun layoutComponents() {
@@ -46,6 +52,10 @@ object AddRemoteServerDialog : RcDialog(SelectServerDialog, "add_new_url_dialog"
         }
 
         cancelButton.addActionListener { dispose() }
+    }
+
+    private fun dispose() {
+        AddRemoteServerDialog.dispose()
     }
 }
 
