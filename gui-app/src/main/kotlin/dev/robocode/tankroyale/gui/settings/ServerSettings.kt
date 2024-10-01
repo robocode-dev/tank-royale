@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.settings
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import dev.robocode.tankroyale.gui.util.WsUrl
+import jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle.index
 import java.net.URI
 import java.util.*
 import javax.crypto.KeyGenerator
@@ -67,15 +68,15 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
 
     val serverPort: Int get() = URI(useRemoteServerUrl).port
 
-    var remoteServerUrls: List<String>
+    var remoteServerUrls: ArrayList<String>
         get() = loadIndexedProperties(REMOTE_SERVER_URLS)
         set(value) { saveIndexedProperties(REMOTE_SERVER_URLS, value) }
 
-    var remoteServerControllerSecrets: List<String>
+    var remoteServerControllerSecrets: ArrayList<String>
         get() = loadIndexedProperties(REMOTE_SERVER_CONTROLLER_SECRETS)
         set(value) { saveIndexedProperties(REMOTE_SERVER_CONTROLLER_SECRETS, value) }
 
-    var remoteServerBotSecrets: List<String>
+    var remoteServerBotSecrets: ArrayList<String>
         get() = loadIndexedProperties(REMOTE_SERVER_BOT_SECRETS)
         set(value) { saveIndexedProperties(REMOTE_SERVER_BOT_SECRETS, value) }
 
@@ -109,10 +110,28 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
             save()
         }
 
-    private fun loadIndexedProperties(propertyName: String): List<String> {
+    fun removeRemoteServer(serverUrl: String) {
+        val index = remoteServerUrls.indexOf(serverUrl.trim())
+
+        val updatedRemoteServerUrls = ArrayList<String>(remoteServerUrls)
+        val updatedRemoteServerControllerSecrets = ArrayList<String>(remoteServerControllerSecrets)
+        val updatedRemoteServerBotSecrets = ArrayList<String>(remoteServerBotSecrets)
+
+        try {
+            updatedRemoteServerUrls.removeAt(index)
+            updatedRemoteServerControllerSecrets.removeAt(index)
+            updatedRemoteServerBotSecrets.removeAt(index)
+        } catch (_: IndexOutOfBoundsException) {}
+
+        saveIndexedProperties(REMOTE_SERVER_URLS, updatedRemoteServerUrls)
+        saveIndexedProperties(REMOTE_SERVER_CONTROLLER_SECRETS, updatedRemoteServerControllerSecrets)
+        saveIndexedProperties(REMOTE_SERVER_BOT_SECRETS, updatedRemoteServerBotSecrets)
+    }
+
+    private fun loadIndexedProperties(propertyName: String): ArrayList<String> {
         load()
 
-        val props = mutableListOf<String>()
+        val props = ArrayList<String>()
         var index = 0
         while (true) {
             val value = properties["$propertyName.$index"] as String?
@@ -124,10 +143,19 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
     }
 
     private fun saveIndexedProperties(propertyName: String, props: List<String>) {
+        removeIndexedProperties(propertyName)
+
         props.withIndex().forEach { (index, prop) ->
             properties["$propertyName.$index"] = prop
         }
         save()
+    }
+
+    private fun removeIndexedProperties(propertyName: String) {
+        var index = 0
+        while (properties.remove("$propertyName.$index") != null) {
+            index++
+        }
     }
 
     private fun generateSecret(): String {

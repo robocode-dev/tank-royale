@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
-import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.util.MessageDialog
 import dev.robocode.tankroyale.gui.util.WsUrl
 import javax.swing.*
@@ -14,7 +13,7 @@ import java.awt.Color
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
-object AddRemoteServerDialog : RcDialog(SelectServerDialog, "add_remote_server_dialog") {
+object AddRemoteServerDialog : RcDialog(ServerConfigDialog, "add_remote_server_dialog") {
 
     init {
         contentPane.add(RemoteServerPanel())

@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.config
 
+import dev.robocode.tankroyale.gui.model.Message
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
@@ -13,6 +14,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.enableAll
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.server.RemoteServer
 import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.gui.util.MessageDialog
 import net.miginfocom.swing.MigLayout
 import java.awt.Color
 import java.awt.Dimension
@@ -37,6 +39,7 @@ private class ServerConfigPanel : JPanel() {
     val onCancel = Event<JButton>()
     val onTest = Event<JButton>()
     val onAdd = Event<JButton>()
+    val onEdit = Event<JButton>()
     val onRemove = Event<JButton>()
 
     private val selectedServerLabel = createSelectedServerLabel()
@@ -46,6 +49,13 @@ private class ServerConfigPanel : JPanel() {
     private val remoteServerComboBox = createRemoteServerComboBox()
     private val localServerPanel = createLocalServerPanel()
     private val remoteServerPanel = createRemoteServerPanel()
+
+    private lateinit var okButton: JButton
+    private lateinit var cancelButton: JButton
+    private lateinit var addButton: JButton
+    private lateinit var editButton: JButton
+    private lateinit var removeButton: JButton
+    private lateinit var testButton: JButton
 
     init {
         setupLayout()
@@ -70,6 +80,10 @@ private class ServerConfigPanel : JPanel() {
             ServerSettings.localPort = port
         }
 
+        onAdd.subscribe(this) { addRemoteServer() }
+
+        onRemove.subscribe(this) { removeRemoteServer() }
+
         onTest.subscribe(this) { testServerConnection() }
     }
 
@@ -91,7 +105,7 @@ private class ServerConfigPanel : JPanel() {
     }
 
     private fun createRemoteServerComboBox() = JComboBox(getRemoteServerUrls()).apply {
-        preferredSize = Dimension(150, preferredSize.height)
+        preferredSize = Dimension(200, preferredSize.height)
         selectedItem = ServerSettings.useRemoteServerUrl
         addItemListener(createRemoteServerComboBoxItemListener())
     }
@@ -111,7 +125,7 @@ private class ServerConfigPanel : JPanel() {
         add(createSwitchPanel(), "wrap")
     }
 
-    private fun createSwitchPanel() = JPanel(MigLayout("", "[right][grow]")).apply {
+    private fun createSwitchPanel() = JPanel().apply {
         add(serverSwitchButton)
         add(useRemoteOrLocalServerLabel)
     }
@@ -130,14 +144,19 @@ private class ServerConfigPanel : JPanel() {
         border = BorderFactory.createTitledBorder(Strings.get("option.server.remote_server"))
         addLabel("server")
         add(remoteServerComboBox, "growx")
-        addButton("test", onTest, "wrap")
-        addButton("add", onAdd, "skip 1, split 2")
-        addButton("remove", onRemove)
+        testButton = addButton("test", onTest, "wrap")
+
+        val buttonPanel = JPanel(MigLayout("insets 0, left")).apply {
+            addButton = addButton("add", onAdd)
+            editButton = addButton("edit", onEdit)
+            removeButton = addButton("remove", onRemove)
+        }
+        add(buttonPanel, "skip 1, split 2")
     }
 
     private fun createButtonPanel() = JPanel(MigLayout("insets 0, center")).apply {
-        addButton("ok", onOk, "split 2")
-        addButton("cancel", onCancel)
+        okButton = addButton("ok", onOk, "split 2")
+        cancelButton = addButton("cancel", onCancel)
     }
 
     private fun getRemoteServerUrls(): Array<String> = ServerSettings.remoteServerUrls.toTypedArray()
@@ -155,6 +174,26 @@ private class ServerConfigPanel : JPanel() {
 
     private fun updateSelectedServerLabel() {
         selectedServerLabel.text = ServerSettings.serverUrl()
+    }
+
+    private fun addRemoteServer() {
+        AddRemoteServerDialog.isVisible = true
+    }
+
+    private fun removeRemoteServer() {
+        val selectedServerUrl: String = remoteServerComboBox.selectedItem as String
+
+        if (!MessageDialog.showConfirm(String.format(Messages.get("confirm_remove"), selectedServerUrl))) return
+
+        remoteServerComboBox.removeItem(selectedServerUrl)
+
+        ServerSettings.removeRemoteServer(selectedServerUrl)
+
+        if (remoteServerComboBox.itemCount == 0) {
+            removeButton.isEnabled = false
+            okButton.isEnabled = false
+            testButton.isEnabled = false
+        }
     }
 
     private fun testServerConnection() {

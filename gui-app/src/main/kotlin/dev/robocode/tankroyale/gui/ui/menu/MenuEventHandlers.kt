@@ -10,7 +10,6 @@ import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.config.SoundConfigDialog
 import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
 import dev.robocode.tankroyale.gui.ui.server.RemoteServer
-import dev.robocode.tankroyale.gui.ui.server.SelectServerDialog
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
 import dev.robocode.tankroyale.gui.ui.server.ServerLogFrame
@@ -71,7 +70,7 @@ object MenuEventHandlers {
         if (isRemoteEndpoint(serverUrl) && !RemoteServer.isRunning(serverUrl)) {
             MessageDialog.showError(String.format(Messages.get("cannot_connect_to_remote_server"), serverUrl))
 
-            SelectServerDialog.isVisible = true
+            ServerConfigDialog.isVisible = true
         } else {
             enqueue {
                 NewBattleDialog.isVisible = true
