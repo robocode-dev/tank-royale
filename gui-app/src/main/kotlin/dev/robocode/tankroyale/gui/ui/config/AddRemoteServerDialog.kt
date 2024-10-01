@@ -87,11 +87,7 @@ private class RemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[right][
     }
 
     private fun saveServerSettings() {
-        ServerSettings.apply {
-            remoteServerUrls += trimmedServerUrlText()
-            remoteServerControllerSecrets += trimmedControllerSecretText()
-            remoteServerBotSecrets += trimmedBotSecretText()
-        }
+        ServerSettings.addRemoteServer(serverUrlField.text, controllerSecretField.text, botSecretField.text)
     }
 
     private fun addServerUrlDocumentListener() {
@@ -129,10 +125,6 @@ private class RemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[right][
     }
 
     private fun trimmedServerUrlText() = serverUrlField.text?.trim() ?: ""
-
-    private fun trimmedControllerSecretText() = controllerSecretField.text?.trim() ?: ""
-
-    private fun trimmedBotSecretText() = botSecretField.text?.trim() ?: ""
 
     private fun isValidServerUrl() = WsUrl.isValidWsUrl(trimmedServerUrlText())
 

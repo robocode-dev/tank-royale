@@ -109,6 +109,20 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
             save()
         }
 
+    fun addRemoteServer(serverUrl: String, controllerSecret: String, botSecret: String) {
+        val updatedRemoteServerUrls = ArrayList<String>(remoteServerUrls)
+        val updatedRemoteServerControllerSecrets = ArrayList<String>(remoteServerControllerSecrets)
+        val updatedRemoteServerBotSecrets = ArrayList<String>(remoteServerBotSecrets)
+
+        updatedRemoteServerUrls += serverUrl.trim()
+        updatedRemoteServerControllerSecrets += controllerSecret.trim()
+        updatedRemoteServerBotSecrets += botSecret.trim()
+
+        saveIndexedProperties(REMOTE_SERVER_URLS, updatedRemoteServerUrls)
+        saveIndexedProperties(REMOTE_SERVER_CONTROLLER_SECRETS, updatedRemoteServerControllerSecrets)
+        saveIndexedProperties(REMOTE_SERVER_BOT_SECRETS, updatedRemoteServerBotSecrets)
+    }
+
     fun removeRemoteServer(serverUrl: String) {
         val index = remoteServerUrls.indexOf(serverUrl.trim())
 
