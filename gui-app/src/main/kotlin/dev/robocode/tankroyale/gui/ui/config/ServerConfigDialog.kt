@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.gui.client.WebSocketClientEvents.onOpen
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
@@ -12,9 +11,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.enableAll
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
-import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosed
-import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onOpened
 import dev.robocode.tankroyale.gui.ui.server.RemoteServer
 import dev.robocode.tankroyale.gui.util.Event
@@ -26,8 +23,6 @@ import java.awt.Font
 import javax.swing.*
 import java.awt.event.ItemEvent
 import java.awt.event.ItemListener
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 
 class ServerConfigDialog : RcDialog(MainFrame, "server_config_dialog") {
     init {
@@ -104,8 +99,6 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
 
         onCancel.subscribe(this) {
             dispose()
-
-
             ServerSettings.restore()
         }
     }
@@ -244,6 +237,7 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
 
     private fun updateRemoteServerComboBox() {
         val selectedServerUrl = selectedServerUrl() // store selected item
+        val selectedIndex = remoteServerComboBox.selectedIndex // store selected index as fallback
 
         remoteServerComboBox.removeAllItems()
 
@@ -251,7 +245,8 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
             remoteServerComboBox.addItem(removeServerUrl)
         }
 
-        remoteServerComboBox.selectedItem = selectedServerUrl // restore selected item
+        remoteServerComboBox.selectedIndex = selectedIndex // restore selected index
+        remoteServerComboBox.selectedItem = selectedServerUrl // restore selected item (overrides index, if item found)
     }
 }
 
