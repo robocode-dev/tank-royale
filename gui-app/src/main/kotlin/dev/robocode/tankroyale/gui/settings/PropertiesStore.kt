@@ -13,6 +13,7 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
     val onSaved = Event<Unit>()
 
     protected val properties = Properties()
+    protected val backedUpProperties = Properties()
 
     fun load(): Boolean {
         val file = File(fileName)
@@ -41,6 +42,22 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
             sortedProperties.store(output, title)
         }
         onSaved.fire(Unit)
+    }
+
+    fun backup() {
+        load()
+        backedUpProperties.apply {
+            clear()
+            putAll(properties)
+        }
+    }
+
+    fun restore() {
+        properties.apply {
+            clear()
+            putAll(backedUpProperties)
+        }
+        save()
     }
 
     protected fun getPropertyAsSet(propertyName: String): Set<String> =

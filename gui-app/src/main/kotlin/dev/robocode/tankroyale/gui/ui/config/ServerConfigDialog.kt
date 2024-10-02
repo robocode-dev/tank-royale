@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.config
 
+import dev.robocode.tankroyale.gui.client.WebSocketClientEvents.onOpen
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
@@ -11,6 +12,10 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.enableAll
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosed
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
+import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onOpened
 import dev.robocode.tankroyale.gui.ui.server.RemoteServer
 import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.MessageDialog
@@ -24,15 +29,19 @@ import java.awt.event.ItemListener
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 
-object ServerConfigDialog : RcDialog(MainFrame, "server_config_dialog") {
+class ServerConfigDialog : RcDialog(MainFrame, "server_config_dialog") {
     init {
-        contentPane.add(ServerConfigPanel())
+        contentPane.add(ServerConfigPanel(this))
         pack()
         setLocationRelativeTo(owner) // center on owner window
+
+        onOpened {
+            ServerSettings.backup()
+        }
     }
 }
 
-private class ServerConfigPanel : JPanel() {
+private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
 
     val onToggleRemoteServer = Event<Boolean>()
     val onPortUpdated = Event<Short>()
@@ -88,6 +97,21 @@ private class ServerConfigPanel : JPanel() {
         onRemove.subscribe(this) { removeRemoteServer() }
 
         onTest.subscribe(this) { testServerConnection() }
+
+        onOk.subscribe(this) {
+            dispose()
+        }
+
+        onCancel.subscribe(this) {
+            dispose()
+
+
+            ServerSettings.restore()
+        }
+    }
+
+    private fun dispose() {
+        owner.dispose()
     }
 
     private fun createSelectedServerLabel() = JLabel(ServerSettings.serverUrl()).apply {
@@ -180,18 +204,17 @@ private class ServerConfigPanel : JPanel() {
     }
 
     private fun addRemoteServer() {
-        AddRemoteServerDialog.isVisible = true
+        AddRemoteServerDialog(owner).apply {
+            onClosed { updateRemoteServerComboBox() }
+            isVisible = true
+        }
     }
 
     private fun editRemoteServer() {
-        var dialog = EditRemoteServerDialog(selectedServerUrl()).apply {
-            addWindowListener(object : WindowAdapter() {
-                override fun windowClosing(e: WindowEvent) {
-                    updateRemoteServerComboBox()
-                }
-            })
+        EditRemoteServerDialog(selectedServerUrl(), owner).apply {
+            onClosed { updateRemoteServerComboBox() }
+            isVisible = true
         }
-        dialog.isVisible = true
     }
 
     private fun removeRemoteServer() {
@@ -220,14 +243,18 @@ private class ServerConfigPanel : JPanel() {
     private fun selectedServerUrl() = (remoteServerComboBox.selectedItem as String).trim()
 
     private fun updateRemoteServerComboBox() {
+        val selectedServerUrl = selectedServerUrl() // store selected item
+
         remoteServerComboBox.removeAllItems()
 
         ServerSettings.remoteServerUrls.forEach { removeServerUrl ->
             remoteServerComboBox.addItem(removeServerUrl)
         }
+
+        remoteServerComboBox.selectedItem = selectedServerUrl // restore selected item
     }
 }
 
 fun main() {
-    ServerConfigDialog.isVisible = true
+    ServerConfigDialog().isVisible = true
 }

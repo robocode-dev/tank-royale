@@ -8,10 +8,11 @@ import dev.robocode.tankroyale.gui.util.WsUrl
 import javax.swing.*
 import net.miginfocom.swing.MigLayout
 import java.awt.Color
+import java.awt.Window
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
-class EditRemoteServerDialog(serverUrl: String) : RcDialog(ServerConfigDialog, "edit_remote_server_dialog") {
+class EditRemoteServerDialog(serverUrl: String, owner: Window?) : RcDialog(owner, "edit_remote_server_dialog") {
 
     init {
         contentPane.add(EditRemoteServerPanel(this, serverUrl))

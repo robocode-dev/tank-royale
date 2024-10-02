@@ -48,7 +48,7 @@ object MenuEventHandlers {
                 ServerEventTriggers.onRebootServer.fire(false /* user initiated */)
             }
             onServerConfig.subscribe(this) {
-                ServerConfigDialog.isVisible = true
+                ServerConfigDialog().isVisible = true
             }
             onDebugConfig.subscribe(this) {
                 DebugConfigDialog.isVisible = true
@@ -70,7 +70,7 @@ object MenuEventHandlers {
         if (isRemoteEndpoint(serverUrl) && !RemoteServer.isRunning(serverUrl)) {
             MessageDialog.showError(String.format(Messages.get("cannot_connect_to_remote_server"), serverUrl))
 
-            ServerConfigDialog.isVisible = true
+            ServerConfigDialog().isVisible = true
         } else {
             enqueue {
                 NewBattleDialog.isVisible = true

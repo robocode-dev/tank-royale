@@ -10,19 +10,20 @@ import dev.robocode.tankroyale.gui.util.WsUrl
 import javax.swing.*
 import net.miginfocom.swing.MigLayout
 import java.awt.Color
+import java.awt.Window
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
-object AddRemoteServerDialog : RcDialog(ServerConfigDialog, "add_remote_server_dialog") {
+class AddRemoteServerDialog(owner: Window? = null) : RcDialog(owner, "add_remote_server_dialog") {
 
     init {
-        contentPane.add(AddRemoteServerPanel())
+        contentPane.add(AddRemoteServerPanel(this))
         pack()
         setLocationRelativeTo(owner)
     }
 }
 
-private class AddRemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[right][grow]", "[]10[]10[]20[]")) {
+private class AddRemoteServerPanel(val owner: Window) : JPanel(MigLayout("insets 10, fillx", "[right][grow]", "[]10[]10[]20[]")) {
 
     private val serverUrlField = JTextField(20)
     private val controllerSecretField = JTextField(20)
@@ -121,7 +122,7 @@ private class AddRemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[righ
     }
 
     private fun closeDialog() {
-        AddRemoteServerDialog.dispose()
+        owner.dispose()
     }
 
     private fun trimmedServerUrlText() = serverUrlField.text?.trim() ?: ""
@@ -132,5 +133,5 @@ private class AddRemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[righ
 }
 
 fun main() {
-    AddRemoteServerDialog.isVisible = true
+    AddRemoteServerDialog().isVisible = true
 }
