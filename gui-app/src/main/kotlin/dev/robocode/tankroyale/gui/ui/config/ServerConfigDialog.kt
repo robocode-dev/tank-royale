@@ -21,6 +21,8 @@ import java.awt.Font
 import javax.swing.*
 import java.awt.event.ItemEvent
 import java.awt.event.ItemListener
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 
 object ServerConfigDialog : RcDialog(MainFrame, "server_config_dialog") {
     init {
@@ -80,6 +82,8 @@ private class ServerConfigPanel : JPanel() {
         }
 
         onAdd.subscribe(this) { addRemoteServer() }
+
+        onEdit.subscribe(this) { editRemoteServer() }
 
         onRemove.subscribe(this) { removeRemoteServer() }
 
@@ -179,8 +183,19 @@ private class ServerConfigPanel : JPanel() {
         AddRemoteServerDialog.isVisible = true
     }
 
+    private fun editRemoteServer() {
+        var dialog = EditRemoteServerDialog(selectedServerUrl()).apply {
+            addWindowListener(object : WindowAdapter() {
+                override fun windowClosing(e: WindowEvent) {
+                    updateRemoteServerComboBox()
+                }
+            })
+        }
+        dialog.isVisible = true
+    }
+
     private fun removeRemoteServer() {
-        val selectedServerUrl: String = remoteServerComboBox.selectedItem as String
+        val selectedServerUrl: String = selectedServerUrl()
 
         if (!MessageDialog.showConfirm(String.format(Messages.get("confirm_remove"), selectedServerUrl))) return
 
@@ -196,10 +211,20 @@ private class ServerConfigPanel : JPanel() {
     }
 
     private fun testServerConnection() {
-        val serverUrl = remoteServerComboBox.selectedItem as String
+        val serverUrl = selectedServerUrl()
         val messageKey = if (RemoteServer.isRunning(serverUrl)) "server_is_running" else "server_not_found"
         val message = String.format(Messages.get(messageKey), serverUrl)
         showMessage(message)
+    }
+
+    private fun selectedServerUrl() = (remoteServerComboBox.selectedItem as String).trim()
+
+    private fun updateRemoteServerComboBox() {
+        remoteServerComboBox.removeAllItems()
+
+        ServerSettings.remoteServerUrls.forEach { removeServerUrl ->
+            remoteServerComboBox.addItem(removeServerUrl)
+        }
     }
 }
 

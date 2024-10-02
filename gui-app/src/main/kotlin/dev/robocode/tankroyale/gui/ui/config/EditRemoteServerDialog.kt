@@ -1,11 +1,9 @@
 package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
-import dev.robocode.tankroyale.gui.util.MessageDialog
 import dev.robocode.tankroyale.gui.util.WsUrl
 import javax.swing.*
 import net.miginfocom.swing.MigLayout
@@ -13,23 +11,25 @@ import java.awt.Color
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
-object AddRemoteServerDialog : RcDialog(ServerConfigDialog, "add_remote_server_dialog") {
+class EditRemoteServerDialog(serverUrl: String) : RcDialog(ServerConfigDialog, "edit_remote_server_dialog") {
 
     init {
-        contentPane.add(AddRemoteServerPanel())
+        contentPane.add(EditRemoteServerPanel(this, serverUrl))
         pack()
         setLocationRelativeTo(owner)
     }
 }
 
-private class AddRemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[right][grow]", "[]10[]10[]20[]")) {
+private class EditRemoteServerPanel(val dialog: EditRemoteServerDialog, var serverUrl: String) : JPanel(MigLayout("insets 10, fillx", "[right][grow]", "[]10[]10[]20[]")) {
 
     private val serverUrlField = JTextField(20)
     private val controllerSecretField = JTextField(20)
     private val botSecretField = JTextField(20)
 
-    private val okButton = JButton(Strings.get("ok")).apply { isEnabled = false }
+    private val okButton = JButton(Strings.get("ok"))
     private val cancelButton = JButton(Strings.get("cancel"))
+
+    private val backedUpServerData = ServerSettings.getRemoteServerData(serverUrl)
 
     init {
         setupComponents()
@@ -38,15 +38,14 @@ private class AddRemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[righ
     }
 
     private fun setupComponents() {
-        setupServerUrlField()
-    }
-
-    private fun setupServerUrlField() {
         serverUrlField.apply {
-            text = "ws://"
+            text = backedUpServerData.serverUrl
             setCaretPosition(text.length)
         }
+        controllerSecretField.text = backedUpServerData.controllerSecret
+        botSecretField.text = backedUpServerData.botSecret
     }
+
 
     private fun layoutComponents() {
         addServerUrlField()
@@ -87,7 +86,9 @@ private class AddRemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[righ
     }
 
     private fun saveServerSettings() {
-        ServerSettings.addRemoteServer(serverUrlField.text, controllerSecretField.text, botSecretField.text)
+        ServerSettings.updateRemoteServer(serverUrl, serverUrlField.text, controllerSecretField.text, botSecretField.text)
+
+        serverUrl = serverUrlField.text // replace, as OK button might be hit again
     }
 
     private fun addServerUrlDocumentListener() {
@@ -109,28 +110,18 @@ private class AddRemoteServerPanel : JPanel(MigLayout("insets 10, fillx", "[righ
             }
 
             fun validate() {
-                val valid = isValidServerUrl() && !isServerUrlPresent()
+                val valid = isValidServerUrl()
                 serverUrlField.background = if (valid) lightGreen else lightRed
                 okButton.isEnabled = valid
-
-                if (isServerUrlPresent()) {
-                    MessageDialog.showMessage(String.format(Messages.get("server_url_present"), trimmedServerUrlText()))
-                }
             }
         })
     }
 
     private fun closeDialog() {
-        AddRemoteServerDialog.dispose()
+        dialog.dispose()
     }
 
     private fun trimmedServerUrlText() = serverUrlField.text?.trim() ?: ""
 
     private fun isValidServerUrl() = WsUrl.isValidWsUrl(trimmedServerUrlText())
-
-    private fun isServerUrlPresent() = ServerSettings.remoteServerUrls.contains(trimmedServerUrlText())
-}
-
-fun main() {
-    AddRemoteServerDialog.isVisible = true
 }

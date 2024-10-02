@@ -125,6 +125,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
 
     fun removeRemoteServer(serverUrl: String) {
         val index = remoteServerUrls.indexOf(serverUrl.trim())
+        if (index < 0) throw IllegalStateException("Remote server url not found: $serverUrl")
 
         val updatedRemoteServerUrls = ArrayList<String>(remoteServerUrls)
         val updatedRemoteServerControllerSecrets = ArrayList<String>(remoteServerControllerSecrets)
@@ -139,6 +140,20 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         saveIndexedProperties(REMOTE_SERVER_URLS, updatedRemoteServerUrls)
         saveIndexedProperties(REMOTE_SERVER_CONTROLLER_SECRETS, updatedRemoteServerControllerSecrets)
         saveIndexedProperties(REMOTE_SERVER_BOT_SECRETS, updatedRemoteServerBotSecrets)
+    }
+
+    fun updateRemoteServer(oldServerUrl: String, newServerUrl: String, controllerSecret: String, botSecret: String) {
+        removeRemoteServer(oldServerUrl)
+        addRemoteServer(newServerUrl, controllerSecret, botSecret)
+    }
+
+    fun getRemoteServerData(serverUrl: String): RemoteServerData {
+        val index = remoteServerUrls.indexOf(serverUrl.trim())
+        if (index < 0) throw IllegalStateException("Remote server url '$serverUrl' not found")
+
+        val controllerSecret = remoteServerControllerSecrets[index]
+        val botSecret = remoteServerBotSecrets[index]
+        return RemoteServerData(serverUrl, controllerSecret, botSecret)
     }
 
     private fun loadIndexedProperties(propertyName: String): ArrayList<String> {
@@ -177,4 +192,10 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         // Remove trailing '=='
         return encodedKey.substring(0, encodedKey.length - 2)
     }
+
+    class RemoteServerData(
+        val serverUrl: String,
+        val controllerSecret: String,
+        val botSecret: String
+    )
 }
