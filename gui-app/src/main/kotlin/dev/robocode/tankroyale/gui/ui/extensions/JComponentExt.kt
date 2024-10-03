@@ -38,7 +38,7 @@ object JComponentExt {
         return button
     }
 
-    fun createOkButton(event: Event<JButton>) = createButton("ok", event)
+    fun JComponent.createOkButton(event: Event<JButton>) = createButton("ok", event)
 
     fun JComponent.addOkButton(event: Event<JButton>, layoutConstraints: String? = null): JButton {
         val okButton = createOkButton(event)
@@ -46,7 +46,7 @@ object JComponentExt {
         return okButton
     }
 
-    fun createCancelButton(event: Event<JButton>) = createButton("cancel", event)
+    fun JComponent.createCancelButton(event: Event<JButton>) = createButton("cancel", event)
 
     fun JComponent.addCancelButton(event: Event<JButton>, layoutConstraints: String? = null): JButton {
         val cancelButton = createCancelButton(event)
@@ -54,7 +54,7 @@ object JComponentExt {
         return cancelButton
     }
 
-    fun createAddButton(event: Event<JButton>) = createButton("add", event)
+    fun JComponent.createAddButton(event: Event<JButton>) = createButton("add", event)
 
     fun JComponent.addAddButton(event: Event<JButton>, layoutConstraints: String? = null): JButton {
         val addButton = createAddButton(event)
@@ -62,7 +62,7 @@ object JComponentExt {
         return addButton
     }
 
-    fun createRemoveButton(event: Event<JButton>) = createButton("remove", event)
+    fun JComponent.createRemoveButton(event: Event<JButton>) = createButton("remove", event)
 
     fun JComponent.addRemoveButton(event: Event<JButton>, layoutConstraints: String? = null): JButton {
         val removeButton = createRemoveButton(event)
@@ -70,7 +70,7 @@ object JComponentExt {
         return removeButton
     }
 
-    fun createEditButton(event: Event<JButton>) = createButton("edit", event)
+    fun JComponent.createEditButton(event: Event<JButton>) = createButton("edit", event)
 
     fun JComponent.addEditButton(event: Event<JButton>, layoutConstraints: String? = null): JButton {
         val editButton = createEditButton(event)

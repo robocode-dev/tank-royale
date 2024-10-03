@@ -6,9 +6,16 @@ import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.PortInputField
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
+import dev.robocode.tankroyale.gui.ui.components.RcToolTip
 import dev.robocode.tankroyale.gui.ui.components.SwitchButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.createAddButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.createButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.createCancelButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.createEditButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.createOkButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.createRemoveButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.enableAll
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosed
@@ -47,6 +54,13 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
     val onEdit = Event<JButton>()
     val onRemove = Event<JButton>()
 
+    private val okButton = createOkButton(onOk)
+    private val cancelButton = createCancelButton(onCancel)
+    private val addButton = createAddButton(onAdd)
+    private val editButton = createEditButton(onEdit)
+    private val removeButton = createRemoveButton(onRemove)
+    private val testButton = createButton("test", onTest)
+
     private val selectedServerLabel = createSelectedServerLabel()
     private val serverSwitchButton = createServerSwitchButton()
     private val useRemoteOrLocalServerLabel = createUseRemoteOrLocalServerLabel()
@@ -55,17 +69,11 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
     private val localServerPanel = createLocalServerPanel()
     private val remoteServerPanel = createRemoteServerPanel()
 
-    private lateinit var okButton: JButton
-    private lateinit var cancelButton: JButton
-    private lateinit var addButton: JButton
-    private lateinit var editButton: JButton
-    private lateinit var removeButton: JButton
-    private lateinit var testButton: JButton
-
     init {
         setupLayout()
         setupEventHandlers()
         toggleRemoteServer(ServerSettings.useRemoteServer)
+        addToolTipTextOnButtons()
     }
 
     private fun setupLayout() {
@@ -107,13 +115,20 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
         owner.dispose()
     }
 
-    private fun createSelectedServerLabel() = JLabel(ServerSettings.serverUrl()).apply {
-        font = Font(font.family, Font.BOLD, font.size)
-        foreground = Color(0x00, 0x7f, 0x00)
-    }
+    private fun createSelectedServerLabel() =
+        object: JLabel(ServerSettings.serverUrl()) {
+            override fun createToolTip() = RcToolTip()
+        }.apply {
+            font = Font(font.family, Font.BOLD, font.size)
+            foreground = Color(0x00, 0x7f, 0x00)
+
+            toolTipText = Messages.get("selected_server_is_used")
+        }
 
     private fun createServerSwitchButton() = SwitchButton(ServerSettings.useRemoteServer).apply {
         addSwitchHandler { isSelected -> onToggleRemoteServer.fire(isSelected) }
+
+        toolTipText = Messages.get("switch_between_local_and_remote_server")
     }
 
     private fun createUseRemoteOrLocalServerLabel() = JLabel().apply {
@@ -122,12 +137,16 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
 
     private fun createLocalPortInputField() = PortInputField(ServerSettings.localPort).apply {
         addPortUpdatedHandler { port -> onPortUpdated.fire(port) }
+
+        toolTipText = Messages.get("port_used_for_local_server")
     }
 
     private fun createRemoteServerComboBox() = JComboBox(getRemoteServerUrls()).apply {
         preferredSize = Dimension(200, preferredSize.height)
         selectedItem = ServerSettings.useRemoteServerUrl
         addItemListener(createRemoteServerComboBoxItemListener())
+
+        toolTipText = Messages.get("selected_server_is_used")
     }
 
     private fun createRemoteServerComboBoxItemListener() = ItemListener { itemEvent ->
@@ -164,19 +183,19 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
         border = BorderFactory.createTitledBorder(Strings.get("option.server.remote_server"))
         addLabel("server")
         add(remoteServerComboBox, "growx")
-        testButton = addButton("test", onTest, "wrap")
+        add(testButton, "wrap")
 
         val buttonPanel = JPanel(MigLayout("insets 0, left")).apply {
-            addButton = addButton("add", onAdd)
-            editButton = addButton("edit", onEdit)
-            removeButton = addButton("remove", onRemove)
+            add(addButton)
+            add(editButton)
+            add(removeButton)
         }
         add(buttonPanel, "skip 1, split 2")
     }
 
     private fun createButtonPanel() = JPanel(MigLayout("insets 0, center")).apply {
-        okButton = addButton("ok", onOk, "split 2")
-        cancelButton = addButton("cancel", onCancel)
+        add(okButton, "split 2")
+        add(cancelButton)
     }
 
     private fun getRemoteServerUrls(): Array<String> = ServerSettings.remoteServerUrls.toTypedArray()
@@ -187,6 +206,13 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
         useRemoteOrLocalServerLabel.text = getUseRemoteOrLocalServerText(useRemoteServer)
         remoteServerPanel.enableAll(useRemoteServer)
         localServerPanel.enableAll(!useRemoteServer)
+    }
+
+    private fun addToolTipTextOnButtons() {
+        addButton.toolTipText = Messages.get("add_remote_server")
+        editButton.toolTipText = Messages.get("edit_remote_server")
+        removeButton.toolTipText = Messages.get("remove_remote_server")
+        testButton.toolTipText = Messages.get("test_remote_server")
     }
 
     private fun getUseRemoteOrLocalServerText(useRemoteServer: Boolean): String =
