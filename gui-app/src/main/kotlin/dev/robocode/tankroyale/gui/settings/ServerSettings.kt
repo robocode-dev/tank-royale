@@ -32,7 +32,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
 
     fun serverUrl(): String = if (useRemoteServer) useRemoteServerUrl else localhostUrl()
 
-    fun localhostUrl(): String = "$LOCALHOST_URL:$localPort"
+    private fun localhostUrl(): String = "$LOCALHOST_URL:$localPort"
 
     var localPort: Short
         get() {
@@ -110,9 +110,9 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         }
 
     fun addRemoteServer(serverUrl: String, controllerSecret: String, botSecret: String) {
-        val updatedRemoteServerUrls = ArrayList<String>(remoteServerUrls)
-        val updatedRemoteServerControllerSecrets = ArrayList<String>(remoteServerControllerSecrets)
-        val updatedRemoteServerBotSecrets = ArrayList<String>(remoteServerBotSecrets)
+        val updatedRemoteServerUrls = ArrayList(remoteServerUrls)
+        val updatedRemoteServerControllerSecrets = ArrayList(remoteServerControllerSecrets)
+        val updatedRemoteServerBotSecrets = ArrayList(remoteServerBotSecrets)
 
         updatedRemoteServerUrls += serverUrl.trim()
         updatedRemoteServerControllerSecrets += controllerSecret.trim()
@@ -127,9 +127,9 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         val index = remoteServerUrls.indexOf(serverUrl.trim())
         if (index < 0) throw IllegalStateException("Remote server url not found: $serverUrl")
 
-        val updatedRemoteServerUrls = ArrayList<String>(remoteServerUrls)
-        val updatedRemoteServerControllerSecrets = ArrayList<String>(remoteServerControllerSecrets)
-        val updatedRemoteServerBotSecrets = ArrayList<String>(remoteServerBotSecrets)
+        val updatedRemoteServerUrls = ArrayList(remoteServerUrls)
+        val updatedRemoteServerControllerSecrets = ArrayList(remoteServerControllerSecrets)
+        val updatedRemoteServerBotSecrets = ArrayList(remoteServerBotSecrets)
 
         try {
             updatedRemoteServerUrls.removeAt(index)
