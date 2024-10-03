@@ -8,7 +8,6 @@ import dev.robocode.tankroyale.gui.ui.components.PortInputField
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.components.RcToolTip
 import dev.robocode.tankroyale.gui.ui.components.SwitchButton
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.createAddButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.createButton
@@ -27,6 +26,7 @@ import net.miginfocom.swing.MigLayout
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Font
+import java.awt.event.ActionListener
 import javax.swing.*
 import java.awt.event.ItemEvent
 import java.awt.event.ItemListener
@@ -145,6 +145,7 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
         preferredSize = Dimension(200, preferredSize.height)
         selectedItem = ServerSettings.useRemoteServerUrl
         addItemListener(createRemoteServerComboBoxItemListener())
+        addActionListener(createRemoteServerComboBoxActionListener())
 
         toolTipText = Messages.get("selected_server_is_used")
     }
@@ -155,6 +156,15 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
             ServerSettings.useRemoteServerUrl = serverUrl
             updateSelectedServerLabel()
         }
+    }
+
+    private fun createRemoteServerComboBoxActionListener() = ActionListener { actionEvent ->
+        val comboBox = (actionEvent.source as JComboBox<*>)
+        val hasItem = comboBox.itemCount > 0
+
+        okButton.isEnabled = hasItem
+
+        setRemoteServerButtonStates(comboBox)
     }
 
     private fun createUpperPanel() = JPanel(MigLayout("fillx", "[right][grow]", "[][]")).apply {
@@ -202,10 +212,26 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
 
     private fun toggleRemoteServer(useRemoteServer: Boolean) {
         ServerSettings.useRemoteServer = useRemoteServer
+
         updateSelectedServerLabel()
+        updateRemoteServerComboBox()
+
         useRemoteOrLocalServerLabel.text = getUseRemoteOrLocalServerText(useRemoteServer)
-        remoteServerPanel.enableAll(useRemoteServer)
+
+        val hasItems = remoteServerComboBox.itemCount > 0
+
+        okButton.isEnabled = !useRemoteServer || hasItems
+
+        setRemoteServerButtonStates(remoteServerComboBox)
+
         localServerPanel.enableAll(!useRemoteServer)
+        enableRemoteServerPanel(useRemoteServer)
+    }
+
+    private fun enableRemoteServerPanel(enable: Boolean) {
+        remoteServerPanel.enableAll(enable)
+
+        setRemoteServerButtonStates(remoteServerComboBox)
     }
 
     private fun addToolTipTextOnButtons() {
@@ -230,49 +256,68 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
     }
 
     private fun editRemoteServer() {
-        EditRemoteServerDialog(selectedServerUrl(), owner).apply {
-            onClosed { updateRemoteServerComboBox() }
-            isVisible = true
+        val serverUrl = selectedServerUrl()
+        if (serverUrl == null) {
+            addRemoteServer()
+        } else {
+            EditRemoteServerDialog(serverUrl, owner).apply {
+                onClosed { updateRemoteServerComboBox() }
+                isVisible = true
+            }
         }
     }
 
     private fun removeRemoteServer() {
-        val selectedServerUrl: String = selectedServerUrl()
+        val selectedServerUrl: String? = selectedServerUrl()
 
         if (!MessageDialog.showConfirm(String.format(Messages.get("confirm_remove"), selectedServerUrl))) return
 
         remoteServerComboBox.removeItem(selectedServerUrl)
 
-        ServerSettings.removeRemoteServer(selectedServerUrl)
+        selectedServerUrl?.let {
+            ServerSettings.removeRemoteServer(selectedServerUrl)
+            ServerSettings.useRemoteServerUrl = ""
 
-        if (remoteServerComboBox.itemCount == 0) {
-            removeButton.isEnabled = false
-            okButton.isEnabled = false
-            testButton.isEnabled = false
+            if (remoteServerComboBox.itemCount > 0) {
+                remoteServerComboBox.selectedIndex = 0
+                ServerSettings.useRemoteServerUrl = selectedServerUrl() ?: ""
+            }
         }
     }
 
     private fun testServerConnection() {
         val serverUrl = selectedServerUrl()
-        val messageKey = if (RemoteServer.isRunning(serverUrl)) "server_is_running" else "server_not_found"
+        val messageKey = if (serverUrl != null && RemoteServer.isRunning(serverUrl)) "server_is_running" else "server_not_found"
         val message = String.format(Messages.get(messageKey), serverUrl)
         showMessage(message)
     }
 
-    private fun selectedServerUrl() = (remoteServerComboBox.selectedItem as String).trim()
+    private fun selectedServerUrl() = (remoteServerComboBox.selectedItem as String?)?.trim()
 
     private fun updateRemoteServerComboBox() {
         val selectedServerUrl = selectedServerUrl() // store selected item
+
         val selectedIndex = remoteServerComboBox.selectedIndex // store selected index as fallback
 
         remoteServerComboBox.removeAllItems()
-
         ServerSettings.remoteServerUrls.forEach { removeServerUrl ->
             remoteServerComboBox.addItem(removeServerUrl)
         }
 
-        remoteServerComboBox.selectedIndex = selectedIndex // restore selected index
-        remoteServerComboBox.selectedItem = selectedServerUrl // restore selected item (overrides index, if item found)
+        if (selectedServerUrl == null && ServerSettings.remoteServerUrls.size > 0) {
+            remoteServerComboBox.selectedIndex = 0
+        } else {
+            remoteServerComboBox.selectedIndex = selectedIndex // restore selected index
+            remoteServerComboBox.selectedItem = selectedServerUrl // restore selected item (overrides index, if item found)
+        }
+        setRemoteServerButtonStates(remoteServerComboBox)
+    }
+
+    fun setRemoteServerButtonStates(comboBox: JComboBox<*>) {
+        val hasItem = comboBox.itemCount > 0
+        removeButton.isEnabled = hasItem
+        editButton.isEnabled = hasItem
+        testButton.isEnabled = hasItem
     }
 }
 
