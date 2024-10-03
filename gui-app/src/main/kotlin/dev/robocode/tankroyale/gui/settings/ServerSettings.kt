@@ -65,8 +65,6 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
             save()
         }
 
-    val serverPort: Int get() = URI(useRemoteServerUrl).port
-
     var remoteServerUrls: ArrayList<String>
         get() = loadIndexedProperties(REMOTE_SERVER_URLS)
         set(value) { saveIndexedProperties(REMOTE_SERVER_URLS, value) }

@@ -83,7 +83,7 @@ object BootProcess {
     private fun bootBotProcess(botDirNames: List<String>) {
         val args = mutableListOf(
             "java",
-            "-Dserver.url=${ServerSettings.useRemoteServerUrl}",
+            "-Dserver.url=${ServerSettings.serverUrl()}",
             "-Dserver.secret=${ServerSettings.botSecrets.first()}",
             "-jar",
             getBooterJar(),

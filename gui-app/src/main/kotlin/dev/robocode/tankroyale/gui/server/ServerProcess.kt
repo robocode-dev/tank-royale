@@ -40,7 +40,7 @@ object ServerProcess {
                 "-Dpicocli.ansi=true", // to show server logo in ANSI colors
                 "-jar",
                 getServerJar(),
-                "--port=${serverPort}",
+                "--port=${localPort}",
                 "--games=classic,melee,1v1",
                 "--tps=${ConfigSettings.tps}",
                 "--controller-secrets=${controllerSecrets.joinToString(",")}",

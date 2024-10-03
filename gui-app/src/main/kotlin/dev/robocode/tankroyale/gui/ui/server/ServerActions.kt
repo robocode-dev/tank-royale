@@ -31,7 +31,7 @@ object ServerActions {
     }
 
     private fun handleReboot(dueToSetting: Boolean) {
-        if (!ServerProcess.isRunning() || isRemoteEndpoint(ServerSettings.useRemoteServerUrl)) return
+        if (!ServerProcess.isRunning() || isRemoteEndpoint(ServerSettings.serverUrl())) return
 
         val title = UiTitles.get("question")
         val resource =

@@ -276,11 +276,12 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
 
         selectedServerUrl?.let {
             ServerSettings.removeRemoteServer(selectedServerUrl)
-            ServerSettings.useRemoteServerUrl = ""
 
             if (remoteServerComboBox.itemCount > 0) {
                 remoteServerComboBox.selectedIndex = 0
                 ServerSettings.useRemoteServerUrl = selectedServerUrl() ?: ""
+            } else {
+                ServerSettings.useRemoteServerUrl = ""
             }
         }
     }
