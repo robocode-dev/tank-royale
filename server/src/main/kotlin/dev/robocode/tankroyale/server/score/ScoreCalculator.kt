@@ -35,8 +35,12 @@ class ScoreCalculator(private val participantIds: Set<ParticipantId>, private va
     }
 
     private fun increment1st2ndAnd3rdPlaces(scores: Collection<Score>) {
-        scores.filter { it.rank == 1 }.toList().forEach { it.firstPlaces += 1 }
-        scores.filter { it.rank == 2 }.toList().forEach { it.secondPlaces += 1 }
-        scores.filter { it.rank == 3 }.toList().forEach { it.thirdPlaces += 1 }
+        scores.forEach { score ->
+            when (score.rank) {
+                1 -> score.firstPlaces++
+                2 -> score.secondPlaces++
+                3 -> score.thirdPlaces++
+            }
+        }
     }
 }
