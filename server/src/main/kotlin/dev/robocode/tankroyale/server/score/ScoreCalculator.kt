@@ -12,26 +12,9 @@ class ScoreCalculator(private val participantIds: Set<ParticipantId>, private va
      */
     fun getScores(): List<Score> {
         val scores = participantIds.map { scoreTracker.calculateScore(it) }.sortedByDescending { it.totalScore }
-        updateRanks(scores)
+        RankDecorator.updateRanks(scores)
         increment1st2ndAnd3rdPlaces(scores)
         return scores
-    }
-
-    private fun updateRanks(orderedScores: List<Score>) {
-        var lastTotalScore = 0.0
-        var rank = 1
-
-        // Update ranks
-
-        for (row in orderedScores.indices) {
-            val score = orderedScores[row]
-            val totalScore = score.totalScore
-            if (totalScore != lastTotalScore) {
-                rank = row + 1
-                lastTotalScore = totalScore
-            }
-            score.rank = rank
-        }
     }
 
     private fun increment1st2ndAnd3rdPlaces(scores: Collection<Score>) {
