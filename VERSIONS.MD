@@ -1,3 +1,8 @@
+#### 🐞 Bug Fixes
+
+- Bot API:
+    - An interruptible event was not interrupted when `setInterruptible(true)` was called. 
+
 ## 📦 0.24.4
 
 #### Improvements

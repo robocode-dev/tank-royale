@@ -141,7 +141,13 @@ final class EventQueue {
         if (isNotOldOrIsCriticalEvent(botEvent, turnNumber)) {
             botEventHandlers.fire(botEvent);
         }
-        setInterruptible(botEvent.getClass(), false);
+        var isInterruptible = isInterruptible();
+
+        setInterruptible(botEvent.getClass(), false); // clear interruptible flag
+
+        if (isInterruptible) {
+            throw new InterruptEventHandlerException();
+        }
     }
 
     private static boolean isNotOldOrIsCriticalEvent(BotEvent botEvent, int turnNumber) {

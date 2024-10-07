@@ -131,7 +131,12 @@ internal sealed class EventQueue : IComparer<BotEvent>
         if (IsNotOldOrIsCriticalEvent(botEvent, turnNumber)) {
             botEventHandlers.Fire(botEvent);
         }
-        SetInterruptible(botEvent.GetType(), false);
+        var isInterruptible = IsInterruptible;
+
+        SetInterruptible(botEvent.GetType(), false); // clear interruptible flag
+
+        if (isInterruptible)
+            throw new InterruptEventHandlerException();
     }
 
     public int Compare(BotEvent botEvent1, BotEvent botEvent2)
