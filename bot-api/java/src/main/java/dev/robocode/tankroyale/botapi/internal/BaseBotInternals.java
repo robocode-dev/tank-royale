@@ -340,8 +340,6 @@ public final class BaseBotInternals {
     private void dispatchEvents(int turnNumber) {
         try {
             eventQueue.dispatchEvents(turnNumber);
-        } catch (InterruptEventHandlerException e) {
-            // Do nothing (event handler was stopped by this exception)
         } catch (Exception e) {
             e.printStackTrace();
         }
