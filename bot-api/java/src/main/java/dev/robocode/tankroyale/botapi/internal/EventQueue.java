@@ -30,7 +30,6 @@ final class EventQueue {
     void clear() {
         clearEvents();
         baseBotInternals.getConditions().clear(); // conditions might be added in the bots run() method each round
-        currentTopEvent = null;
         currentTopEventPriority = MIN_VALUE;
     }
 
@@ -68,6 +67,10 @@ final class EventQueue {
     }
 
     void dispatchEvents(int turnNumber) {
+        // FIXME: Lacking tick events!!!
+
+        dumpEvents(); // for debugging purposes
+
         removeOldEvents(turnNumber);
         sortEvents();
 
@@ -77,7 +80,7 @@ final class EventQueue {
                 break;
             }
             if (isSameEvent(currentEvent)) {
-                if (currentTopEventPriority > MIN_VALUE && isInterruptible()) {
+                if (isInterruptible()) {
                     setInterruptible(currentEvent.getClass(), false); // clear interruptible flag
 
                     // We are already in an event handler, took action, and a new event was generated.
@@ -94,11 +97,8 @@ final class EventQueue {
 
             try {
                 handleEvent(currentEvent, turnNumber);
-            } catch (InterruptEventHandlerException e) {
-                currentTopEvent = null;
-            } catch (RuntimeException | Error e) {
-                currentTopEvent = null;
-                throw e;
+            } catch (InterruptEventHandlerException ignore) {
+                // Expected when event handler is interrupted on purpose
             } finally {
                 currentTopEventPriority = oldTopEventPriority;
             }
@@ -149,19 +149,22 @@ final class EventQueue {
     }
 
     private void handleEvent(BotEvent botEvent, int turnNumber) {
-        if (isNotOldOrIsCriticalEvent(botEvent, turnNumber)) {
-            botEventHandlers.fire(botEvent);
+        try {
+            if (isNotOldOrIsCriticalEvent(botEvent, turnNumber)) {
+                botEventHandlers.fire(botEvent);
+            }
+        } finally {
+            setInterruptible(botEvent.getClass(), false);
         }
-        setInterruptible(botEvent.getClass(), false);
     }
 
     private static boolean isNotOldOrIsCriticalEvent(BotEvent botEvent, int turnNumber) {
-        var isNotOld = botEvent.getTurnNumber() + MAX_EVENT_AGE >= turnNumber;
+        var isNotOld = botEvent.getTurnNumber() >= turnNumber - MAX_EVENT_AGE;
         return isNotOld || botEvent.isCritical();
     }
 
     private static boolean isOldAndNonCriticalEvent(BotEvent botEvent, int turnNumber) {
-        var isOld = botEvent.getTurnNumber() + MAX_EVENT_AGE < turnNumber;
+        var isOld = botEvent.getTurnNumber() < turnNumber - MAX_EVENT_AGE;
         return isOld && !botEvent.isCritical();
     }
 
@@ -179,5 +182,13 @@ final class EventQueue {
         baseBotInternals.getConditions().stream().filter(Condition::test).forEach(condition ->
                 addEvent(new CustomEvent(baseBotInternals.getCurrentTickOrThrow().getTurnNumber(), condition))
         );
+    }
+
+    private void dumpEvents() {
+        StringJoiner stringJoiner = new StringJoiner(", ");
+        events.forEach(event -> {
+            stringJoiner.add(event.getClass().getSimpleName() + "(" + event.getTurnNumber() + ")");
+        });
+        System.out.println("events: " + stringJoiner);
     }
 }
