@@ -1,4 +1,11 @@
-## 📦 0.24.4
+## 📦 0.24.5
+
+#### 🐞 Bug Fixes
+
+- Server:
+    - #108: The ranks were wrong as they did not reflect the total score and placements 
+
+## 📦 0.24.4 - Support for IPv6 endpoints
 
 #### Improvements
 
