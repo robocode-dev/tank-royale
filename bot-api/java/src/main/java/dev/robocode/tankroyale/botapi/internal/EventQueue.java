@@ -92,8 +92,6 @@ final class EventQueue {
             currentTopEventPriority = getPriority(currentEvent);
             currentTopEvent = currentEvent;
 
-            events.remove(currentEvent);
-
             try {
                 handleEvent(currentEvent, turnNumber);
             } catch (InterruptEventHandlerException e) {
@@ -136,7 +134,7 @@ final class EventQueue {
 
     private BotEvent getNextEvent() {
         synchronized (events) {
-            return events.isEmpty() ? null : events.get(0);
+            return events.isEmpty() ? null : events.remove(0);
         }
     }
 
