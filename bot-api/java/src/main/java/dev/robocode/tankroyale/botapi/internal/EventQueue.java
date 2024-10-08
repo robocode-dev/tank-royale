@@ -92,6 +92,8 @@ final class EventQueue {
             currentTopEventPriority = getPriority(currentEvent);
             currentTopEvent = currentEvent;
 
+            events.remove(currentEvent);
+
             try {
                 handleEvent(currentEvent, turnNumber);
             } catch (InterruptEventHandlerException e) {
@@ -134,7 +136,7 @@ final class EventQueue {
 
     private BotEvent getNextEvent() {
         synchronized (events) {
-            return events.isEmpty() ? null : events.remove(0);
+            return events.isEmpty() ? null : events.get(0);
         }
     }
 
@@ -157,14 +159,12 @@ final class EventQueue {
 
     private static boolean isNotOldOrIsCriticalEvent(BotEvent botEvent, int turnNumber) {
         var isNotOld = botEvent.getTurnNumber() + MAX_EVENT_AGE >= turnNumber;
-        var isCritical = botEvent.isCritical();
-        return isNotOld || isCritical;
+        return isNotOld || botEvent.isCritical();
     }
 
     private static boolean isOldAndNonCriticalEvent(BotEvent botEvent, int turnNumber) {
         var isOld = botEvent.getTurnNumber() + MAX_EVENT_AGE < turnNumber;
-        var isNonCritical = !botEvent.isCritical();
-        return isOld && isNonCritical;
+        return isOld && !botEvent.isCritical();
     }
 
     private void addEvent(BotEvent botEvent) {
