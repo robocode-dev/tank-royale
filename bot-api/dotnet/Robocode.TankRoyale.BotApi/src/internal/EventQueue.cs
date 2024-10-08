@@ -77,7 +77,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
         while (IsBotRunning)
         {
             var botEvent = GetNextEvent();
-            if (botEvent == null || IsSameEvent(botEvent))
+            if (botEvent == null || IsSameEventAndInterruptible(botEvent))
                 break;
 
             var priority = GetPriority(botEvent);
@@ -88,8 +88,6 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
             try {
                 HandleEvent(botEvent, turnNumber);
-            } catch (InterruptEventHandlerException) {
-                // Expected when event handler is being interrupted
             } finally {
                 currentTopEventPriority = originalTopEventPriority;
             }
@@ -119,7 +117,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
         return botEvent;
     }
 
-    private bool IsSameEvent(BotEvent botEvent) =>
+    private bool IsSameEventAndInterruptible(BotEvent botEvent) =>
         GetPriority(botEvent) == currentTopEventPriority && (currentTopEventPriority > MinValue && IsInterruptible);
 
     private int GetPriority(BotEvent botEvent)

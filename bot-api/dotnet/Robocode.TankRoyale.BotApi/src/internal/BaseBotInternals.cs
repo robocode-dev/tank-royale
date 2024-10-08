@@ -310,10 +310,6 @@ public sealed class BaseBotInternals
         {
             eventQueue.DispatchEvents(turnNumber);
         }
-        catch (InterruptEventHandlerException)
-        {
-            // Do nothing (event handler was stopped by this exception)
-        }
         catch (Exception e)
         {
             Console.Error.WriteLine(e);

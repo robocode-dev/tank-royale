@@ -73,7 +73,7 @@ final class EventQueue {
 
         while (isBotRunning()) {
             BotEvent botEvent = getNextEvent();
-            if (botEvent == null || isSameEvent(botEvent)) {
+            if (botEvent == null || isSameEventOrInterruptible(botEvent)) {
                 break;
             }
 
@@ -85,8 +85,6 @@ final class EventQueue {
 
             try {
                 handleEvent(botEvent, turnNumber);
-            } catch (InterruptEventHandlerException ignore) {
-                // Expected when event handler is being interrupted
             } finally {
                 currentTopEventPriority = originalTopEventPriority;
             }
@@ -126,7 +124,7 @@ final class EventQueue {
         }
     }
 
-    private boolean isSameEvent(BotEvent botEvent) {
+    private boolean isSameEventOrInterruptible(BotEvent botEvent) {
         return getPriority(botEvent) == currentTopEventPriority &&
                 (currentTopEventPriority > MIN_VALUE && isInterruptible());
     }

@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"dev.robocode.tankroyale.botapi"},{"l":"dev.robocode.tankroyale.botapi.events"}];updateSearchResults();
