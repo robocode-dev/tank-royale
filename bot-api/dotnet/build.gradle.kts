@@ -91,7 +91,7 @@ tasks {
             delete("$userhome/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
             exec {
                 workingDir("Robocode.TankRoyale.BotApi/bin/Release")
-                commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "-s", "local")
+                commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "--source", "$userhome/.nuget/packages")
             }
         }
     }

@@ -67,9 +67,7 @@ final class EventQueue {
     }
 
     void dispatchEvents(int turnNumber) {
-        // FIXME: Lacking tick events!!!
-
-        dumpEvents(); // for debugging purposes
+//        dumpEvents(); // for debugging purposes
 
         removeOldEvents(turnNumber);
         sortEvents();

@@ -71,6 +71,8 @@ public sealed class BaseBotInternals
 
     private ICollection<int> teammateIds;
 
+    private int lastExecuteTurnNumber;
+
     internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, string serverSecret)
     {
         this.baseBot = baseBot;
@@ -208,6 +210,7 @@ public sealed class BaseBotInternals
         eventQueue.Clear();
         IsStopped = false;
         eventHandlingDisabledTurn = 0;
+        lastExecuteTurnNumber = -1;
     }
 
     private void OnNextTurn(E.TickEvent e)
@@ -258,6 +261,11 @@ public sealed class BaseBotInternals
             return;
 
         var turnNumber = CurrentTickOrThrow.TurnNumber;
+        if (turnNumber == lastExecuteTurnNumber)
+        {
+            return; // skip this execute, as we have already run this method within the same turn
+        }
+        lastExecuteTurnNumber = turnNumber;
 
         DispatchEvents(turnNumber);
         SendIntent();
