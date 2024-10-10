@@ -83,7 +83,7 @@ tasks {
     }
 
     register("pushLocal") {
-        dependsOn(build)
+        dependsOn(build, prepareNugetDocs)
 
         doLast {
             val userhome = System.getenv("USERPROFILE") ?: System.getenv("HOME")
