@@ -19,6 +19,9 @@ bin/
 obj/
 generated/
 
+/bot-api/dotnet/docs/ReadMe.md
+/bot-api/dotnet/docs/Release-notes.txt
+
 *.iml
 
 /games.properties
