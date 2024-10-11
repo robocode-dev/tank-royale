@@ -214,7 +214,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
     private void DumpEvents()
     {
-        string events = string.Join(", ", this.events.Select(e => $"{e.GetType().Name}({e.TurnNumber}) adlasdasd"));
-        Console.WriteLine($"events: {events}");
+        string eventsString = string.Join(", ", events.Select(e => $"{e.GetType().Name}({e.TurnNumber})"));
+        Console.WriteLine($"events: {eventsString}");
     }
 }

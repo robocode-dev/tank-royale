@@ -37,7 +37,7 @@ public sealed class BaseBotInternals
     private GameSetup gameSetup;
 
     private InitialPosition initialPosition;
-    
+
     private E.TickEvent tickEvent;
     private long? ticksStart;
 
@@ -105,7 +105,7 @@ public sealed class BaseBotInternals
     {
         recordingStdOut = new RecordingTextWriter(Console.Out);
         recordingStdErr = new RecordingTextWriter(Console.Error);
-        
+
         Console.SetOut(recordingStdOut);
         Console.SetError(recordingStdErr);
     }
@@ -168,12 +168,12 @@ public sealed class BaseBotInternals
         eventHandlingDisabledTurn = enable ? 0 : CurrentTickOrThrow.TurnNumber;
     }
 
-    public bool IsEventHandlingDisabled()
+    private bool IsEventHandlingDisabled()
     {
         // Important! Allow an additional turn so events like RoundStarted can be handled
         return eventHandlingDisabledTurn != 0 && eventHandlingDisabledTurn < (CurrentTickOrThrow.TurnNumber - 1);
     }
-    
+
     public void SetStopResumeHandler(IStopResumeListener listener) => stopResumeListener = listener;
 
     private static S.BotIntent NewBotIntent() => new()
@@ -265,6 +265,7 @@ public sealed class BaseBotInternals
         {
             return; // skip this execute, as we have already run this method within the same turn
         }
+
         lastExecuteTurnNumber = turnNumber;
 
         DispatchEvents(turnNumber);
@@ -286,6 +287,7 @@ public sealed class BaseBotInternals
             var output = recordingStdOut.ReadNext();
             BotIntent.StdOut = output.Length > 0 ? output : null;
         }
+
         if (recordingStdErr != null)
         {
             var error = recordingStdErr.ReadNext();
@@ -320,6 +322,11 @@ public sealed class BaseBotInternals
         }
         catch (Exception e)
         {
+            if (e is InterruptEventHandlerException)
+            {
+                return;
+            }
+
             Console.Error.WriteLine(e);
         }
     }
@@ -335,8 +342,6 @@ public sealed class BaseBotInternals
     internal S.BotIntent BotIntent { get; } = NewBotIntent();
 
     internal E.TickEvent CurrentTickOrThrow => tickEvent ?? throw new BotException(TickNotAvailableMsg);
-
-    internal E.TickEvent CurrentTickOrNull => tickEvent;
 
     private long TicksStart
     {
@@ -646,12 +651,12 @@ public sealed class BaseBotInternals
 
     internal int GetPriority(Type eventType)
     {
-        if (!eventPriorities.ContainsKey(eventType))
+        if (!eventPriorities.TryGetValue(eventType, out var priority))
         {
             throw new InvalidOperationException($"Could not get event priority for the type: {eventType.Name}");
         }
 
-        return eventPriorities[eventType];
+        return priority;
     }
 
     internal void SetPriority(Type eventType, int priority) => eventPriorities[eventType] = priority;
