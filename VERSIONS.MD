@@ -1,11 +1,15 @@
-## 📦 0.24.5
+## 📦 0.25.0 - Fix for Ranks and Event Queue improvements - 11-Oct-2024
 
 #### 🐞 Bug Fixes
 
 - Server:
     - #108: The ranks were wrong as they did not reflect the total score and placements 
+- Bot API:
+    - An interruptible event was not interrupted when `setInterruptible(true)` was called. The event queue contained
+      more bot events than it should, due to this bug.
+    - The event queue and dispatcher was improved so it is closer to the implementation for the original Robocode. 
 
-## 📦 0.24.4 - Support for IPv6 endpoints
+## 📦 0.24.4 - Support for IPv6 endpoints - 19-Sep-2024
 
 #### Improvements
 

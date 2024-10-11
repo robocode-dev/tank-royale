@@ -30,7 +30,6 @@ final class EventQueue {
     void clear() {
         clearEvents();
         baseBotInternals.getConditions().clear(); // conditions might be added in the bots run() method each round
-        currentTopEvent = null;
         currentTopEventPriority = MIN_VALUE;
     }
 
@@ -68,25 +67,38 @@ final class EventQueue {
     }
 
     void dispatchEvents(int turnNumber) {
+//        dumpEvents(); // for debugging purposes
+
         removeOldEvents(turnNumber);
         sortEvents();
 
         while (isBotRunning()) {
-            BotEvent botEvent = getNextEvent();
-            if (botEvent == null || isSameEventOrInterruptible(botEvent)) {
+            BotEvent currentEvent = getNextEvent();
+            if (currentEvent == null) {
+                break;
+            }
+            if (isSameEvent(currentEvent)) {
+                if (isInterruptible()) {
+                    setInterruptible(currentEvent.getClass(), false); // clear interruptible flag
+
+                    // We are already in an event handler, took action, and a new event was generated.
+                    // So we want to break out of the old handler to process the new event here.
+                    throw new InterruptEventHandlerException();
+                }
                 break;
             }
 
-            int priority = getPriority(botEvent);
-            int originalTopEventPriority = currentTopEventPriority;
+            int oldTopEventPriority = currentTopEventPriority;
 
-            currentTopEventPriority = priority;
-            currentTopEvent = botEvent;
+            currentTopEventPriority = getPriority(currentEvent);
+            currentTopEvent = currentEvent;
 
             try {
-                handleEvent(botEvent, turnNumber);
+                handleEvent(currentEvent, turnNumber);
+            } catch (InterruptEventHandlerException ignore) {
+                // Expected when event handler is interrupted on purpose
             } finally {
-                currentTopEventPriority = originalTopEventPriority;
+                currentTopEventPriority = oldTopEventPriority;
             }
         }
     }
@@ -124,9 +136,8 @@ final class EventQueue {
         }
     }
 
-    private boolean isSameEventOrInterruptible(BotEvent botEvent) {
-        return getPriority(botEvent) == currentTopEventPriority &&
-                (currentTopEventPriority > MIN_VALUE && isInterruptible());
+    private boolean isSameEvent(BotEvent botEvent) {
+        return getPriority(botEvent) == currentTopEventPriority;
     }
 
     private int getPriority(BotEvent botEvent) {
@@ -136,30 +147,31 @@ final class EventQueue {
     }
 
     private void handleEvent(BotEvent botEvent, int turnNumber) {
-        if (isNotOldOrIsCriticalEvent(botEvent, turnNumber)) {
-            botEventHandlers.fire(botEvent);
+        try {
+            if (isNotOldOrIsCriticalEvent(botEvent, turnNumber)) {
+                botEventHandlers.fire(botEvent);
+            }
+        } finally {
+            setInterruptible(botEvent.getClass(), false);
         }
-        setInterruptible(botEvent.getClass(), false);
     }
 
     private static boolean isNotOldOrIsCriticalEvent(BotEvent botEvent, int turnNumber) {
-        var isNotOld = botEvent.getTurnNumber() + MAX_EVENT_AGE >= turnNumber;
-        var isCritical = botEvent.isCritical();
-        return isNotOld || isCritical;
+        var isNotOld = botEvent.getTurnNumber() >= turnNumber - MAX_EVENT_AGE;
+        return isNotOld || botEvent.isCritical();
     }
 
     private static boolean isOldAndNonCriticalEvent(BotEvent botEvent, int turnNumber) {
-        var isOld = botEvent.getTurnNumber() + MAX_EVENT_AGE < turnNumber;
-        var isNonCritical = !botEvent.isCritical();
-        return isOld && isNonCritical;
+        var isOld = botEvent.getTurnNumber() < turnNumber - MAX_EVENT_AGE;
+        return isOld && !botEvent.isCritical();
     }
 
     private void addEvent(BotEvent botEvent) {
         synchronized (events) {
-            if (events.size() > MAX_QUEUE_SIZE) {
-                System.err.println("Maximum event queue size has been reached: " + MAX_QUEUE_SIZE);
-            } else {
+            if (events.size() <= MAX_QUEUE_SIZE) {
                 events.add(botEvent);
+            } else {
+                System.err.println("Maximum event queue size has been reached: " + MAX_QUEUE_SIZE);
             }
         }
     }
@@ -168,5 +180,13 @@ final class EventQueue {
         baseBotInternals.getConditions().stream().filter(Condition::test).forEach(condition ->
                 addEvent(new CustomEvent(baseBotInternals.getCurrentTickOrThrow().getTurnNumber(), condition))
         );
+    }
+
+    private void dumpEvents() {
+        StringJoiner stringJoiner = new StringJoiner(", ");
+        events.forEach(event -> {
+            stringJoiner.add(event.getClass().getSimpleName() + "(" + event.getTurnNumber() + ")");
+        });
+        System.out.println("events: " + stringJoiner);
     }
 }
