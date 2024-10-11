@@ -1,4 +1,4 @@
-## 📦 0.25.0 - Fix for Ranks and Event Queue improvements - 10-Oct-2024
+## 📦 0.25.0 - Fix for Ranks and Event Queue improvements - 11-Oct-2024
 
 #### 🐞 Bug Fixes
 
