@@ -1,10 +1,10 @@
 [versions]
 
 assertj = "3.26.3"
-junit = "5.11.0"
-system-stubs = "2.1.6"
+junit = "5.11.2"
+system-stubs = "2.1.7"
 kotest = "5.9.1"
-mockk = "1.13.12"
+mockk = "1.13.13"
 
 [libraries]
 

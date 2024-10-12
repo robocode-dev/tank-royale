@@ -113,6 +113,8 @@ public final class BaseBotInternals {
 
     private final Map<Class<? extends BotEvent>, Integer> eventPriorities = initializeEventPriorities();
 
+    private int lastExecuteTurnNumber;
+
     public BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl, String serverSecret) {
         this.baseBot = baseBot;
         this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
@@ -252,6 +254,7 @@ public final class BaseBotInternals {
         eventQueue.clear();
         isStopped = false;
         eventHandlingDisabledTurn = 0;
+        lastExecuteTurnNumber = -1;
     }
 
     private void onNextTurn(TickEvent e) {
@@ -299,6 +302,10 @@ public final class BaseBotInternals {
             return;
 
         final var turnNumber = getCurrentTickOrThrow().getTurnNumber();
+        if (turnNumber == lastExecuteTurnNumber) {
+            return; // skip this execute, as we have already run this method within the same turn
+        }
+        lastExecuteTurnNumber = turnNumber;
 
         dispatchEvents(turnNumber);
         sendIntent();
@@ -340,8 +347,6 @@ public final class BaseBotInternals {
     private void dispatchEvents(int turnNumber) {
         try {
             eventQueue.dispatchEvents(turnNumber);
-        } catch (InterruptEventHandlerException e) {
-            // Do nothing (event handler was stopped by this exception)
         } catch (Exception e) {
             e.printStackTrace();
         }
