@@ -106,12 +106,12 @@ object GamesSettings : PropertiesStore("Robocode Games Settings", "games.propert
     private val gameSetups = HashMap<String, MutableGameSetup?>()
 
     init {
-        for (propName in properties.stringPropertyNames()) {
+        for (propName in propertyNames()) {
             val strings = propName.split(".", limit = 2)
             val gameName = strings[0]
             val fieldName = strings[1]
 
-            val value = properties.getValue(propName) as String
+            val value = load(propName) as String
 
             if (gameSetups[gameName] == null) {
                 gameSetups[gameName] = defaultGameSetup[GameType.CUSTOM.displayName]?.toMutableGameSetup()
@@ -159,7 +159,7 @@ object GamesSettings : PropertiesStore("Robocode Games Settings", "games.propert
             if (value == null) {
                 value = ""
             }
-            properties.setProperty("$name.${prop.name}", value)
+            set("$name.${prop.name}", value)
         }
     }
 

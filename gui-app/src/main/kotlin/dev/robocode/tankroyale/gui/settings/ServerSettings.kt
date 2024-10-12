@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.gui.settings
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import dev.robocode.tankroyale.gui.util.WsUrl
-import java.net.URI
 import java.util.*
 import javax.crypto.KeyGenerator
 
@@ -11,7 +10,8 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
 
     const val DEFAULT_SCHEME = "ws"
     const val DEFAULT_PORT = 7654
-    const val LOCALHOST_URL = "$DEFAULT_SCHEME://localhost"
+
+    private const val LOCALHOST_URL = "$DEFAULT_SCHEME://localhost"
 
     private const val CONTROLLER_SECRETS = "controller-secrets"
     private const val BOT_SECRETS = "bots-secrets"
@@ -25,7 +25,6 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
 
     init {
         RegisterWsProtocol // work-around for ws:// with URI class
-        load()
 
         onSaved.subscribe(this) { ServerEventTriggers.onRebootServer.fire(true /* setting changed */) }
     }
@@ -35,34 +34,24 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
     private fun localhostUrl(): String = "$LOCALHOST_URL:$localPort"
 
     var localPort: Short
-        get() {
-            load()
-            return properties.getProperty(LOCAL_PORT, "$DEFAULT_PORT").toShort()
-        }
+        get() = load(LOCAL_PORT, "$DEFAULT_PORT").toShort()
         set(value) {
-            properties.setProperty(LOCAL_PORT, value.toString())
-            save()
+            save(LOCAL_PORT, value.toString())
         }
 
     var useRemoteServer: Boolean
-        get() {
-            load()
-            return properties.getProperty(USE_REMOTE_SERVER, "false").toBoolean()
-        }
+        get() = load(USE_REMOTE_SERVER, "false").toBoolean()
         set(value) {
-            properties.setProperty(USE_REMOTE_SERVER, value.toString())
-            save()
+            save(USE_REMOTE_SERVER, value.toString())
         }
 
     var useRemoteServerUrl: String
         get() {
-            load()
-            val url = properties.getProperty(USE_REMOTE_SERVER_URL, localhostUrl())
+            val url = load(USE_REMOTE_SERVER_URL, localhostUrl())
             return WsUrl(url).origin
         }
         set(value) {
-            properties.setProperty(USE_REMOTE_SERVER_URL, value)
-            save()
+            save(USE_REMOTE_SERVER_URL, value)
         }
 
     var remoteServerUrls: ArrayList<String>
@@ -98,13 +87,9 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         }
 
     var initialPositionsEnabled: Boolean
-        get() {
-            load()
-            return properties.getProperty(INITIAL_POSITION_ENABLED, "false").toBoolean()
-        }
+        get() = load(INITIAL_POSITION_ENABLED, "false").toBoolean()
         set(value) {
-            properties.setProperty(INITIAL_POSITION_ENABLED, value.toString())
-            save()
+            save(INITIAL_POSITION_ENABLED, value.toString())
         }
 
     fun addRemoteServer(serverUrl: String, controllerSecret: String, botSecret: String) {
@@ -152,36 +137,6 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         val controllerSecret = remoteServerControllerSecrets[index]
         val botSecret = remoteServerBotSecrets[index]
         return RemoteServerData(serverUrl, controllerSecret, botSecret)
-    }
-
-    private fun loadIndexedProperties(propertyName: String): ArrayList<String> {
-        load()
-
-        val props = ArrayList<String>()
-        var index = 0
-        while (true) {
-            val value = properties["$propertyName.$index"] as String?
-            if (value == null) break
-            props.add(value)
-            index++
-        }
-        return props
-    }
-
-    private fun saveIndexedProperties(propertyName: String, props: List<String>) {
-        removeIndexedProperties(propertyName)
-
-        props.withIndex().forEach { (index, prop) ->
-            properties["$propertyName.$index"] = prop
-        }
-        save()
-    }
-
-    private fun removeIndexedProperties(propertyName: String) {
-        var index = 0
-        while (properties.remove("$propertyName.$index") != null) {
-            index++
-        }
     }
 
     private fun generateSecret(): String {
