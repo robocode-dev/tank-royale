@@ -1,3 +1,8 @@
+#### 🐞 Bug Fixes
+
+- GUI
+    - Control Panel was shown when server was stopped or rebooted. 
+
 ## 📦 0.25.0 - Fix for Ranks and Event Queue improvements - 11-Oct-2024
 
 #### 🐞 Bug Fixes
