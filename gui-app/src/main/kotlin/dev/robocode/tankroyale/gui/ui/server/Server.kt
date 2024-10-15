@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.UiTitles
-import java.lang.Thread.sleep
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import javax.swing.JOptionPane.*
@@ -69,7 +68,7 @@ object Server {
 
     fun reboot() {
         stop()
-        connectToServer()
+        start()
     }
 
     private fun showStopGameDialog(): Int = showConfirmDialog(
