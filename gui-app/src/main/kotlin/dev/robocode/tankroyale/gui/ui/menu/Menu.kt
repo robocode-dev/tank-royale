@@ -63,11 +63,11 @@ object Menu : JMenuBar() {
         val serverMenu = JMenu(MenuTitles.get("menu.server")).apply {
             mnemonic = KeyEvent.VK_S
 
-            startServerMenuItem = addNewMenuItem("item.start_server", onStartServer)
-            stopServerMenuItem = addNewMenuItem("item.stop_server", onStopServer)
-            rebootServerMenuItem = addNewMenuItem("item.reboot_server", onRebootServer)
+            startServerMenuItem = addNewMenuItem("item.start_local_server", onStartServer)
+            stopServerMenuItem = addNewMenuItem("item.stop_local_server", onStopServer)
+            rebootServerMenuItem = addNewMenuItem("item.reboot_local_server", onRebootServer)
 
-            addNewMenuItem("item.show_server_log", onShowServerLog).apply {
+            addNewMenuItem("item.show_local_server_log", onShowServerLog).apply {
                 mnemonic = KeyEvent.VK_L
                 accelerator = ctrlDown(mnemonic)
             }

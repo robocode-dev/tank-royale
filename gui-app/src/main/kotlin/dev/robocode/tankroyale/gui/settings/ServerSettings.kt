@@ -26,7 +26,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
     init {
         RegisterWsProtocol // work-around for ws:// with URI class
 
-        onSaved.subscribe(this) { ServerEventTriggers.onRebootServer.fire(true /* setting changed */) }
+        onSaved.subscribe(this) { ServerEventTriggers.onRebootLocalServer.fire(true /* setting changed */) }
     }
 
     fun serverUrl(): String = if (useRemoteServer) useRemoteServerUrl else localhostUrl()

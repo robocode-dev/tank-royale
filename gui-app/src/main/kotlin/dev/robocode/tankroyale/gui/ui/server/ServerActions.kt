@@ -3,25 +3,23 @@ package dev.robocode.tankroyale.gui.ui.server
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
-import dev.robocode.tankroyale.gui.ui.UiTitles
 import dev.robocode.tankroyale.gui.util.EDT.enqueue
+import dev.robocode.tankroyale.gui.util.MessageDialog
 import dev.robocode.tankroyale.gui.util.isRemoteEndpoint
-import javax.swing.JOptionPane
 
 object ServerActions {
     init {
         ServerEventTriggers.apply {
-            onStartServer.subscribe(this) {
-                Server.start()
+            onStartLocalServer.subscribe(this) {
+                Server.startLocal()
             }
-            onStopServer.subscribe(this) {
-                Server.stop()
+            onStopLocalServer.subscribe(this) {
+                Server.stopLocal()
                 BootProcess.stop()
             }
-            onRebootServer.subscribe(this) {
-                handleReboot(it)
+            onRebootLocalServer.subscribe(this) {
+                handleRebootLocal(it)
             }
         }
 
@@ -30,26 +28,19 @@ object ServerActions {
         }
     }
 
-    private fun handleReboot(dueToSetting: Boolean) {
+    private fun handleRebootLocal(dueToSetting: Boolean) {
         if (!ServerProcess.isRunning() || isRemoteEndpoint(ServerSettings.serverUrl())) return
 
-        val title = UiTitles.get("question")
-        val resource =
+        val resourceKey =
             if (dueToSetting)
                 "reboot_server_confirmation_settings"
             else
                 "reboot_server_confirmation"
 
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(
-                MainFrame,
-                Messages.get(resource),
-                title,
-                JOptionPane.YES_NO_OPTION
-            )
-        ) {
+        if (MessageDialog.showConfirm(Messages.get(resourceKey))) {
             enqueue {
                 BootProcess.stop()
-                Server.reboot()
+                Server.rebootLocal()
             }
         }
     }

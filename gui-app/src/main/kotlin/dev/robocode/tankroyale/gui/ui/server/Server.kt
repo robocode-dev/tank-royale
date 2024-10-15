@@ -39,7 +39,7 @@ object Server {
                     Client.stopGame()
                 }
                 if (!isRunning()) {
-                    start()
+                    startLocal()
                 }
                 connectToServer()
                 return true // connected
@@ -70,7 +70,7 @@ object Server {
         }
     }
 
-    fun start() {
+    fun startLocal() {
         val latch = CountDownLatch(1)
         ServerEvents.onStarted.subscribe(this) {
             latch.countDown()
@@ -79,13 +79,13 @@ object Server {
         latch.await(1, TimeUnit.SECONDS) // wait till server has started
     }
 
-    fun stop() {
+    fun stopLocal() {
         Client.close()
         ServerProcess.stop()
     }
 
-    fun reboot() {
-        stop()
-        connectToServer()
+    fun rebootLocal() {
+        stopLocal()
+        startLocal()
     }
 }

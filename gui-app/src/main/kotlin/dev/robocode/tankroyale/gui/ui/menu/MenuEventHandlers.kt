@@ -36,15 +36,15 @@ object MenuEventHandlers {
                 BotRootDirectoriesConfigDialog.isVisible = true
             }
             onStartServer.subscribe(this) {
-                ServerEventTriggers.onStartServer.fire(Unit)
+                ServerEventTriggers.onStartLocalServer.fire(Unit)
                 ServerLogFrame.isVisible = true
             }
             onStopServer.subscribe(this) {
-                ServerEventTriggers.onStopServer.fire(Unit)
+                ServerEventTriggers.onStopLocalServer.fire(Unit)
                 ServerLogFrame.isVisible = false
             }
             onRebootServer.subscribe(this) {
-                ServerEventTriggers.onRebootServer.fire(false /* user initiated */)
+                ServerEventTriggers.onRebootLocalServer.fire(false /* user initiated */)
             }
             onServerConfig.subscribe(this) {
                 ServerConfigDialog().isVisible = true
