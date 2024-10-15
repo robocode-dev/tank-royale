@@ -42,7 +42,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
     <!-- Transative dependency that needs an update from version 8.0.0 -->
-    <PackageReference Include="System.Text.Json" Version="8.0.4" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
 
     <!-- Icon -->
     <None Include="icon.png" Pack="true" PackagePath="\" />
