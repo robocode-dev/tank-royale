@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.util.MessageDialog
 import dev.robocode.tankroyale.gui.util.WsUrl
+import dev.robocode.tankroyale.gui.util.isLocalEndpoint
 import javax.swing.*
 import net.miginfocom.swing.MigLayout
 import java.awt.Color
@@ -80,8 +81,12 @@ private class AddRemoteServerPanel(val owner: Window) : JPanel(MigLayout("insets
 
     private fun addListeners() {
         okButton.addActionListener {
-            saveServerSettings()
-            closeDialog()
+            if (isLocalEndpoint(trimmedServerUrlText())) {
+                MessageDialog.showError(Messages.get("remote_server_url_cannot_be_local"))
+            } else {
+                saveServerSettings()
+                closeDialog()
+            }
         }
         cancelButton.addActionListener { closeDialog() }
         addServerUrlDocumentListener()
