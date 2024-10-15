@@ -315,10 +315,16 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
     }
 
     fun setRemoteServerButtonStates(comboBox: JComboBox<*>) {
-        val hasItem = comboBox.itemCount > 0
-        removeButton.isEnabled = hasItem
-        editButton.isEnabled = hasItem
-        testButton.isEnabled = hasItem
+        if (!remoteServerPanel.isEnabled) {
+            editButton.isEnabled = false
+            removeButton.isEnabled = false
+            testButton.isEnabled = false
+        } else {
+            val hasItem = comboBox.itemCount > 0
+            editButton.isEnabled = hasItem
+            removeButton.isEnabled = hasItem
+            testButton.isEnabled = hasItem
+        }
     }
 }
 
