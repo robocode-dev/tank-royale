@@ -56,20 +56,18 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
 
     var remoteServerUrls: ArrayList<String>
         get() = loadIndexedProperties(REMOTE_SERVER_URLS)
-        set(value) { saveIndexedProperties(REMOTE_SERVER_URLS, value) }
-
-    var remoteServerControllerSecrets: ArrayList<String>
-        get() = loadIndexedProperties(REMOTE_SERVER_CONTROLLER_SECRETS)
-        set(value) { saveIndexedProperties(REMOTE_SERVER_CONTROLLER_SECRETS, value) }
-
-    var remoteServerBotSecrets: ArrayList<String>
-        get() = loadIndexedProperties(REMOTE_SERVER_BOT_SECRETS)
-        set(value) { saveIndexedProperties(REMOTE_SERVER_BOT_SECRETS, value) }
+        set(value) {
+            saveIndexedProperties(REMOTE_SERVER_URLS, value)
+        }
 
     var controllerSecrets: Set<String>
-        get() = getPropertyAsSet(CONTROLLER_SECRETS).ifEmpty {
-            controllerSecrets = setOf(generateSecret())
-            controllerSecrets
+        get() = if (useRemoteServer) {
+            setOf(remoteServerControllerSecret())
+        } else {
+            getPropertyAsSet(CONTROLLER_SECRETS).ifEmpty {
+                controllerSecrets = setOf(generateSecret())
+                controllerSecrets
+            }
         }
         set(value) {
             setPropertyBySet(CONTROLLER_SECRETS, value)
@@ -77,14 +75,29 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         }
 
     var botSecrets: Set<String>
-        get() = getPropertyAsSet(BOT_SECRETS).ifEmpty {
-            botSecrets = setOf(generateSecret())
-            botSecrets
-        }
+        get() =
+            if (useRemoteServer) {
+                setOf(remoteServerBotSecret())
+            } else { // local server
+                getPropertyAsSet(BOT_SECRETS).ifEmpty {
+                    botSecrets = setOf(generateSecret())
+                    botSecrets
+                }
+            }
         set(value) {
             setPropertyBySet(BOT_SECRETS, value)
             save()
         }
+
+    private fun remoteServerControllerSecret(): String {
+        val index = remoteServerUrls.indexOf(useRemoteServerUrl)
+        return remoteServerControllerSecrets[index]
+    }
+
+    private fun remoteServerBotSecret(): String {
+        val index = remoteServerUrls.indexOf(useRemoteServerUrl)
+        return remoteServerBotSecrets[index]
+    }
 
     var initialPositionsEnabled: Boolean
         get() = load(INITIAL_POSITION_ENABLED, "false").toBoolean()
@@ -118,7 +131,8 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
             updatedRemoteServerUrls.removeAt(index)
             updatedRemoteServerControllerSecrets.removeAt(index)
             updatedRemoteServerBotSecrets.removeAt(index)
-        } catch (_: IndexOutOfBoundsException) {}
+        } catch (_: IndexOutOfBoundsException) {
+        }
 
         saveIndexedProperties(REMOTE_SERVER_URLS, updatedRemoteServerUrls)
         saveIndexedProperties(REMOTE_SERVER_CONTROLLER_SECRETS, updatedRemoteServerControllerSecrets)
@@ -145,6 +159,18 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         // Remove trailing '=='
         return encodedKey.substring(0, encodedKey.length - 2)
     }
+
+    private var remoteServerControllerSecrets: ArrayList<String>
+        get() = loadIndexedProperties(REMOTE_SERVER_CONTROLLER_SECRETS)
+        set(value) {
+            saveIndexedProperties(REMOTE_SERVER_CONTROLLER_SECRETS, value)
+        }
+
+    private var remoteServerBotSecrets: ArrayList<String>
+        get() = loadIndexedProperties(REMOTE_SERVER_BOT_SECRETS)
+        set(value) {
+            saveIndexedProperties(REMOTE_SERVER_BOT_SECRETS, value)
+        }
 
     class RemoteServerData(
         val serverUrl: String,
