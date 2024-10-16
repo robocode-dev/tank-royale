@@ -1,3 +1,15 @@
+## 📦 0.26.0 - Support for remote servers
+
+#### 🚀 Improvements
+
+- GUI:
+    - Replaced the `Server` -> `Select Server` with `Config` -> `Server Config` which makes it possible choose between
+      using a local or remote server. In addition, it is possible to add, edit, and remove remote servers, and it is
+      possible to specify a controller and a bot secret to allow the GUI and bots to access the remote server.
+- Booter:
+    - The `boot` command now supports a new `ping` sub-command, which can be used to check if a bot is still running or
+      has stopped with an exit code. 
+
 #### 🐞 Bug Fixes
 
 - GUI
@@ -16,7 +28,7 @@
 
 ## 📦 0.24.4 - Support for IPv6 endpoints - 19-Sep-2024
 
-#### Improvements
+#### 🚀 Improvements
 
 - GUI:
     - Improved the support for IPv6 endpoints.
