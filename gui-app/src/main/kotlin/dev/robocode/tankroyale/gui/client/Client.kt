@@ -71,7 +71,7 @@ object Client {
                 onMessage.subscribe(ws) { onMessage(it) }
                 onError.subscribe(ws) {
                     System.err.println("WebSocket error: " + it.message)
-                    it.printStackTrace()
+                    ServerEvents.onStopped.fire(Unit)
                 }
                 try {
                     ws.open() // must be called AFTER onOpen.subscribe()
