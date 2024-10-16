@@ -98,16 +98,20 @@ object BootProcess {
     }
 
     private fun bootBotsWithAlreadyBootedProcess(botDirNames: List<String>) {
-        PrintStream(booterProcess?.outputStream!!).also { printStream ->
-            botDirNames.forEach { printStream.println("boot $it") }
-            printStream.flush()
+        booterProcess?.outputStream?.let {
+            PrintStream(it).also { printStream ->
+                botDirNames.forEach { pid -> printStream.println("boot $pid") }
+                printStream.flush()
+            }
         }
     }
 
     private fun stopBotsWithBootedProcess(pids: List<Long>) {
-        PrintStream(booterProcess?.outputStream!!).also { printStream ->
-            pids.forEach { printStream.println("stop $it") }
-            printStream.flush()
+        booterProcess?.outputStream?.let {
+            PrintStream(it).also {  printStream ->
+                pids.forEach { pid -> printStream.println("stop $pid") }
+                printStream.flush()
+            }
         }
     }
 
