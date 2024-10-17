@@ -70,12 +70,24 @@ object BootProcess {
         startPinging()
     }
 
-    fun stop(pids: Collection<Long>) {
-        stopBotsWithBootedProcess(pids)
+    fun stop() {
+        if (!isBooted.get())
+            return
+
+        stopThread()
+        stopPinging()
+
+        isBooted.set(false)
+
+        stopProcess()
+
+        notifyUnbootBotProcesses()
+
+        bootedBotsList.clear()
     }
 
-    fun ping(pids: Collection<Long>) {
-        pingBotsWithBootedProcess(pids)
+    fun stop(pids: Collection<Long>) {
+        stopBotsWithBootedProcess(pids)
     }
 
     val bootedBots: List<DirAndPid>
@@ -113,7 +125,7 @@ object BootProcess {
         sendCommandToBootedProcess("stop", pids)
     }
 
-    private fun pingBotsWithBootedProcess(pids: Collection<Long>) {
+    private fun ping(pids: Collection<Long>) {
         pids.forEach { pid ->
 
             val optProcessHandle = ProcessHandle.of(pid)
@@ -140,22 +152,6 @@ object BootProcess {
                 printStream.flush()
             }
         }
-    }
-
-    fun stop() {
-        if (!isBooted.get())
-            return
-
-        stopThread()
-        stopPinging()
-
-        isBooted.set(false)
-
-        stopProcess()
-
-        notifyUnbootBotProcesses()
-
-        bootedBotsList.clear()
     }
 
     private fun stopProcess() {
