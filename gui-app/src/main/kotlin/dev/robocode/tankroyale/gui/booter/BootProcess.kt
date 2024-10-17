@@ -12,6 +12,7 @@ import java.io.PrintStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -28,9 +29,11 @@ object BootProcess {
 
     private val json = MessageConstants.json
 
+    private val bootedBotsList = mutableListOf<DirAndPid>()
+
     private val pidAndDirs = ConcurrentHashMap<Long, String>() // pid, dir
 
-    private val bootedBotsList = mutableListOf<DirAndPid>()
+    private var pingTimer: Timer? = null
 
     fun info(botsOnly: Boolean? = false, teamsOnly: Boolean? = false): List<BootEntry> {
         val args = mutableListOf(
@@ -58,16 +61,21 @@ object BootProcess {
         }
     }
 
-    fun boot(botDirNames: List<String>) {
+    fun boot(botDirNames: Collection<String>) {
         if (isBooted.get()) {
             bootBotsWithAlreadyBootedProcess(botDirNames)
         } else {
             bootBotProcess(botDirNames)
         }
+        startPinging()
     }
 
-    fun stop(pids: List<Long>) {
+    fun stop(pids: Collection<Long>) {
         stopBotsWithBootedProcess(pids)
+    }
+
+    fun ping(pids: Collection<Long>) {
+        pingBotsWithBootedProcess(pids)
     }
 
     val bootedBots: List<DirAndPid>
@@ -80,7 +88,7 @@ object BootProcess {
             return ConfigSettings.botDirectories.filter { it.enabled }.map { it.path }
         }
 
-    private fun bootBotProcess(botDirNames: List<String>) {
+    private fun bootBotProcess(botDirNames: Collection<String>) {
         val args = mutableListOf(
             "java",
             "-Dserver.url=${ServerSettings.serverUrl()}",
@@ -97,19 +105,38 @@ object BootProcess {
         }
     }
 
-    private fun bootBotsWithAlreadyBootedProcess(botDirNames: List<String>) {
-        booterProcess?.outputStream?.let {
-            PrintStream(it).also { printStream ->
-                botDirNames.forEach { pid -> printStream.println("boot $pid") }
-                printStream.flush()
+    private fun bootBotsWithAlreadyBootedProcess(pathsOfBots: Collection<String>) {
+        sendCommandToBootedProcess("boot", pathsOfBots)
+    }
+
+    private fun stopBotsWithBootedProcess(pids: Collection<Long>) {
+        sendCommandToBootedProcess("stop", pids)
+    }
+
+    private fun pingBotsWithBootedProcess(pids: Collection<Long>) {
+        pids.forEach { pid ->
+
+            val optProcessHandle = ProcessHandle.of(pid)
+
+            if (optProcessHandle.isEmpty || !optProcessHandle.get().isAlive) {
+                val dir = pidAndDirs[pid]
+                dir?.let {
+                    val dirAndPid = DirAndPid(dir, pid)
+
+                    if (bootedBotsList.contains(dirAndPid)) {
+                        bootedBotsList.remove(dirAndPid)
+
+                        onUnbootBot.fire(dirAndPid)
+                    }
+                }
             }
         }
     }
 
-    private fun stopBotsWithBootedProcess(pids: List<Long>) {
+    private fun sendCommandToBootedProcess(command: String, arguments: Collection<Any>) {
         booterProcess?.outputStream?.let {
             PrintStream(it).also {  printStream ->
-                pids.forEach { pid -> printStream.println("stop $pid") }
+                arguments.forEach { pid -> printStream.println("$command $pid") }
                 printStream.flush()
             }
         }
@@ -120,6 +147,8 @@ object BootProcess {
             return
 
         stopThread()
+        stopPinging()
+
         isBooted.set(false)
 
         stopProcess()
@@ -212,6 +241,21 @@ object BootProcess {
 
     private fun stopThread() {
         thread?.interrupt()
+    }
+
+    private fun startPinging() {
+        val pingTask = object : TimerTask() {
+            override fun run() {
+                ping(pidAndDirs.keys)
+            }
+        }
+        pingTimer = Timer().apply {
+            scheduleAtFixedRate(pingTask, Date(), 1000L)
+        }
+    }
+
+    private fun stopPinging() {
+        pingTimer?.cancel()
     }
 
     private fun addPid(line: String) {
