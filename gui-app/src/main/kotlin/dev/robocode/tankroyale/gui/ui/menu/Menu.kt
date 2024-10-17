@@ -25,6 +25,7 @@ import javax.swing.KeyStroke
 
 object Menu : JMenuBar() {
 
+    private lateinit var showServerLogMenuItem: JMenuItem
     private lateinit var startServerMenuItem: JMenuItem
     private lateinit var rebootServerMenuItem: JMenuItem
     private lateinit var stopServerMenuItem: JMenuItem
@@ -67,7 +68,7 @@ object Menu : JMenuBar() {
             stopServerMenuItem = addNewMenuItem("item.stop_local_server", onStopServer)
             rebootServerMenuItem = addNewMenuItem("item.reboot_local_server", onRebootServer)
 
-            addNewMenuItem("item.show_local_server_log", onShowServerLog).apply {
+            showServerLogMenuItem = addNewMenuItem("item.show_local_server_log", onShowServerLog).apply {
                 mnemonic = KeyEvent.VK_L
                 accelerator = ctrlDown(mnemonic)
             }
@@ -126,9 +127,12 @@ object Menu : JMenuBar() {
     }
 
     private fun updateServerState() {
-        startServerMenuItem.isEnabled = !Server.isRunning()
-        rebootServerMenuItem.isEnabled = ServerProcess.isRunning()
-        stopServerMenuItem.isEnabled = ServerProcess.isRunning()
+        val localServerIsRunning = ServerProcess.isRunning()
+
+        showServerLogMenuItem.isEnabled = localServerIsRunning
+        startServerMenuItem.isEnabled = !localServerIsRunning
+        rebootServerMenuItem.isEnabled = localServerIsRunning
+        stopServerMenuItem.isEnabled = localServerIsRunning
     }
 
     private fun ctrlDown(keyEvent: Int) = KeyStroke.getKeyStroke(keyEvent, KeyEvent.CTRL_DOWN_MASK)
