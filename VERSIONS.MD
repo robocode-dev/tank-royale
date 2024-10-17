@@ -7,8 +7,8 @@
       using a local or remote server. In addition, it is possible to add, edit, and remove remote servers, and it is
       possible to specify a controller and a bot secret to allow the GUI and bots to access the remote server.
 - Booter:
-    - The `boot` command now supports a new `ping` sub-command, which can be used to check if a bot is still running or
-      has stopped with an exit code. 
+    - When a pid of a bot process cannot be found, the Booter writes out a `load {pid}` to indicate that a process could
+      not be found with the provided pid.
 
 #### 🐞 Bug Fixes
 

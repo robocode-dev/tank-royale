@@ -127,7 +127,9 @@ class Booter : Callable<Int> {
             "The following commands can be given via standard in:",
             "  quit        Terminates this command, and stops all running processes.",
             "  boot {dir}  Boots the bot from the specified bot directory.",
-            "  stop {pid}  Stops the bot running with the specific process id.",
+            "  stop {pid}  Stops the bot running with the specific process id.\n" +
+            "              'stopped {pid}' is written out when the bot was stopped.\n" +
+            "              'lost {pid}' is written out if the process id could not be found.",
         ]
     )
     @Suppress("unused")

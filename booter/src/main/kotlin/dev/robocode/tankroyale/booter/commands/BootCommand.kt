@@ -12,7 +12,6 @@ import java.util.*
 import java.util.concurrent.ConcurrentSkipListMap
 import java.util.function.Predicate
 import java.util.stream.Collectors.toList
-import kotlin.collections.HashSet
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
@@ -49,7 +48,6 @@ class RunCommand : Command() {
                             val dir = Path(arg)
                             createBotProcess(dir)
                         }
-
                         "stop" -> {
                             val pid = arg.toLong()
                             stopBotProcess(pid)
@@ -67,7 +65,12 @@ class RunCommand : Command() {
     }
 
     private fun stopBotProcess(pid: Pid) {
-        processes[pid]?.let { stopProcess(it) }
+        val process = processes[pid]
+        if (process == null) {
+            println("lost: $pid")
+        } else {
+            stopProcess(process)
+        }
     }
 
     private fun boot(bootDir: Path): Set<Process> {
