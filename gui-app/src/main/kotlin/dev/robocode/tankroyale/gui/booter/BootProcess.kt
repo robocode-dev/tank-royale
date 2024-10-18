@@ -109,7 +109,7 @@ object BootProcess {
             getBooterJar(),
             "boot"
         )
-        botDirNames.forEach { args += it }
+        botDirNames.forEach { args += "\"" + it + "\"" }
 
         booterProcess = ProcessBuilder(args).start()?.also {
             startThread(it, true)
