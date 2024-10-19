@@ -6,13 +6,16 @@ import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.ui.Hints
+import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCancelButton
+import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.gui.util.MessageDialog
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.event.ItemEvent
@@ -26,6 +29,11 @@ object NewBattleDialog : RcDialog(MainFrame, "select_bots_dialog") {
         contentPane.add(selectBotsAndStartPanel)
         size = Dimension(950, 750)
         setLocationRelativeTo(owner) // center on owner window
+
+        ServerEvents.onStopped.subscribe(this) {
+            MessageDialog.showError(Messages.get("server_connection_lost"))
+            dispose()
+        }
     }
 }
 
