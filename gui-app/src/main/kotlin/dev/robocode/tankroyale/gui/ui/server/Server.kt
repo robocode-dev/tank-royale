@@ -60,13 +60,17 @@ object Server {
         // An exception can occur when trying to connect to the server.
         // Hence, we retry connecting, when it fails.
         var attempts = 5
+        var exception: Exception? = null
         while (connected.count > 0 && attempts-- > 0) {
             try {
                 Client.connect()
-            } catch (ignore: Exception) {
-                // Do nothing, we try again within a loop
+            } catch (ex: Exception) {
+                exception = ex
             }
             connected.await(500, TimeUnit.MILLISECONDS)
+        }
+        if (attempts < 0 && exception != null) {
+            throw exception
         }
     }
 
