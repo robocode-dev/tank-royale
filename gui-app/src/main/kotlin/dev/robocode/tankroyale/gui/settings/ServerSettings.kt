@@ -60,9 +60,15 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
             saveIndexedProperties(REMOTE_SERVER_URLS, value)
         }
 
-    var controllerSecret: String = controllerSecrets.first()
+    fun controllerSecret(): String {
+        load()
+        return controllerSecrets.first()
+    }
 
-    var botSecret: String = botSecrets.first()
+    fun botSecret(): String {
+        load()
+        return botSecrets.first()
+    }
 
     var controllerSecrets: Set<String>
         get() = if (useRemoteServer) {

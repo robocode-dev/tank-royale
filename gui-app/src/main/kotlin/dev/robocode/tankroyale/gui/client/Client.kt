@@ -223,7 +223,7 @@ object Client {
             name = "Robocode Tank Royale UI",
             version = "${Version.version}",
             author = "Flemming N. Larsen",
-            secret = ServerSettings.controllerSecret
+            secret = ServerSettings.controllerSecret()
         )
         send(handshake)
     }
