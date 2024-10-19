@@ -56,6 +56,13 @@ object Client {
             isPaused.set(false)
 
             bots.clear()
+
+            websocket?.let {
+                if (it.isOpen()) {
+                    it.close()
+                }
+                websocket = null
+            }
         }
     }
 
