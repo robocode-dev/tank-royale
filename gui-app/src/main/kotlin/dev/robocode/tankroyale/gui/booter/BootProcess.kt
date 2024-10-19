@@ -15,7 +15,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 
 object BootProcess {
 
@@ -24,9 +24,8 @@ object BootProcess {
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-booter"
 
-    private val isBooted = AtomicBoolean(false)
     private var booterProcess: Process? = null
-    private var thread: Thread? = null
+    private var threadRef = AtomicReference<Thread>()
 
     private val json = MessageConstants.json
 
@@ -63,22 +62,22 @@ object BootProcess {
     }
 
     fun boot(botDirNames: Collection<String>) {
-        if (isBooted.get()) {
+        if (isRunning) {
+            println("bootBotsWithAlreadyBootedProcess #2")
             bootBotsWithAlreadyBootedProcess(botDirNames)
         } else {
+            println("bootBotProcess #1")
             bootBotProcess(botDirNames)
         }
         startPinging()
     }
 
     fun stop() {
-        if (!isBooted.get())
+        if (!isRunning)
             return
 
         stopThread()
         stopPinging()
-
-        isBooted.set(false)
 
         stopProcess()
 
@@ -114,7 +113,6 @@ object BootProcess {
 
         booterProcess = ProcessBuilder(args).start()?.also {
             startThread(it, true)
-            isBooted.set(true)
         }
     }
 
@@ -194,7 +192,7 @@ object BootProcess {
     private fun readInputToPids(process: Process) {
         process.inputStream?.let {
             val reader = BufferedReader(InputStreamReader(process.inputStream))
-            while (thread?.isInterrupted == false) {
+            while (threadRef.get()?.isInterrupted == false) {
                 val line = reader.readLine()
                 if (line != null && line.isNotBlank()) {
                     if (line.startsWith("stopped ")) {
@@ -219,8 +217,11 @@ object BootProcess {
     }
 
     private fun startThread(process: Process, doReadInputToProcessIds: Boolean) {
-        thread = Thread {
-            while (thread?.isInterrupted == false) {
+        if (isRunning) {
+            return
+        }
+        threadRef.set(Thread {
+            while (threadRef.get()?.isInterrupted == false) {
                 try {
                     if (doReadInputToProcessIds)
                         readInputToPids(process)
@@ -229,12 +230,14 @@ object BootProcess {
                     break
                 }
             }
-        }.apply { start() }
+        }.apply { start() })
     }
 
     private fun stopThread() {
-        thread?.interrupt()
+        threadRef.get()?.interrupt()
     }
+
+    private var isRunning: Boolean = threadRef.get()?.run { isAlive && !isInterrupted } ?: false
 
     private fun startPinging() {
         val pingTask = object : TimerTask() {
