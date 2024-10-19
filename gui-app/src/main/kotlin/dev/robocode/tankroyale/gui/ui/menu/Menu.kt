@@ -127,7 +127,7 @@ object Menu : JMenuBar() {
     }
 
     private fun updateServerState() {
-        val localServerIsRunning = ServerProcess.isRunning()
+        val localServerIsRunning = ServerProcess.isRunning
 
         showServerLogMenuItem.isEnabled = localServerIsRunning
         startServerMenuItem.isEnabled = !localServerIsRunning

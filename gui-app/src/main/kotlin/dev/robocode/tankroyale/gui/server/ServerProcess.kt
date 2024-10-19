@@ -15,13 +15,13 @@ import java.io.PrintStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 
 object ServerProcess {
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-server"
 
-    private val isRunning = AtomicBoolean(false)
-    private var process: Process? = null
+    private var processRef = AtomicReference<Process?>()
     private var logThread: Thread? = null
     private val logThreadRunning = AtomicBoolean(false)
 
@@ -29,10 +29,10 @@ object ServerProcess {
         ServerActions
     }
 
-    fun isRunning(): Boolean = isRunning.get()
+    var isRunning: Boolean = processRef.get() != null
 
     fun start() {
-        if (isRunning.get()) return
+        if (isRunning) return
 
         var command: MutableList<String>
         ServerSettings.apply {
@@ -53,9 +53,9 @@ object ServerProcess {
         }
         ProcessBuilder(command).apply {
             redirectErrorStream(true)
-            process = start()
+            val process = start()
+            processRef.set(process)
         }
-        isRunning.set(true)
 
         startLogThread()
 
@@ -63,10 +63,11 @@ object ServerProcess {
     }
 
     fun stop() {
-        if (!isRunning.get()) return
+        if (!isRunning) return
 
         stopLogThread()
 
+        val process = processRef.get()
         process?.apply {
             if (isAlive) {
                 PrintStream(outputStream).apply {
@@ -75,9 +76,8 @@ object ServerProcess {
                 }
             }
             waitFor()
-            isRunning.set(false)
         }
-        process = null
+        processRef.set(null)
         logThread = null
 
         ServerEvents.onStopped.fire(Unit)
@@ -107,6 +107,7 @@ object ServerProcess {
         logThread = Thread {
             logThreadRunning.set(true)
 
+            val process = processRef.get()
             BufferedReader(InputStreamReader(process?.inputStream!!)).use {
                 while (logThreadRunning.get()) {
                     try {
