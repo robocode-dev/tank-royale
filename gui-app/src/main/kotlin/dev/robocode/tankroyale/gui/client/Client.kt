@@ -66,7 +66,7 @@ object Client {
         }
     }
 
-    private fun isConnected(): Boolean = websocket?.isOpen() ?: false
+    fun isConnected(): Boolean = websocket?.isOpen() ?: false
 
     fun connect() {
         check (!isConnected()) { "Websocket is already connected" }

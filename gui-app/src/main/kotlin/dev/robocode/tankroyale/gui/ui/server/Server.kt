@@ -51,6 +51,10 @@ object Server {
     }
 
     private fun connectToServer() {
+        if (Client.isConnected()) {
+            return
+        }
+
         val connected = CountDownLatch(1)
 
         ClientEvents.onConnected.subscribe(this) {
