@@ -63,10 +63,8 @@ object BootProcess {
 
     fun boot(botDirNames: Collection<String>) {
         if (isRunning) {
-            println("bootBotsWithAlreadyBootedProcess #2")
             bootBotsWithAlreadyBootedProcess(botDirNames)
         } else {
-            println("bootBotProcess #1")
             bootBotProcess(botDirNames)
         }
         startPinging()
