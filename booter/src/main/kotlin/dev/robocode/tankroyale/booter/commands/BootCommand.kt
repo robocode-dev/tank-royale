@@ -22,12 +22,12 @@ class RunCommand : Command() {
 
     private var teamId: TeamId = 1
 
-    fun boot(bootPaths: Array<String>) {
+    fun boot(bootPaths: Array<String>?) {
         // Kill all running processes before terminating
         Runtime.getRuntime().addShutdownHook(Thread { killAllProcesses() })
 
         // Start up the bots provided with the input list
-        bootPaths.forEach { createBotProcess(Path(it)) }
+        bootPaths?.forEach { createBotProcess(Path(it)) }
 
         processCommandLineInput()
     }

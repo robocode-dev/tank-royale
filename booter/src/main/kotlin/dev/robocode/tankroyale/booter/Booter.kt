@@ -139,7 +139,7 @@ class Booter : Callable<Int> {
             paramLabel = "BOT_DIRS",
             description = ["Absolute file paths, where each path is a bot directory containing a bot or team that must be run"]
         )
-        botDirectories: Array<String>
+        botDirectories: Array<String>?
     ) {
         RunCommand().boot(botDirectories)
     }
