@@ -240,18 +240,15 @@ public interface IBaseBot
     IEnumerable<BulletState> BulletStates { get; }
 
     /// <summary>
-    /// Events that remain to be processed in event handlers, which is useful to see the events that remain from event
-    /// handlers being called before other event handlers. But also to access events have not been handled yet due to
-    /// the bot skipping turns.
+    /// an ordered list containing all events currently in the bot's event queue. You might, for example, call
+    /// this while processing another event.
     /// </summary>
-    /// <value>An ordered list of all the events remaining to be handled for the current and previous (skipped) turns.
-    /// The events are being sorted so that older events get listed first, and secondly sorted on event priority.
-    /// </value>
+    /// <value>an ordered list containing all events currently in the bot's event queue.</value>
     /// <see cref="ClearEvents"/>
     IList<BotEvent> Events { get; }
 
     /// <summary>
-    /// Clears the remaining events that have not been processed yet.
+    /// Clears out any pending events in the bot's event queue immediately.
     /// </summary>
     /// <see cref="Events"/>
     void ClearEvents();
