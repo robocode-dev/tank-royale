@@ -15,8 +15,8 @@ import javax.swing.Timer
 class SwitchButton(initialSelected: Boolean) : JComponent() {
 
     private var knobLocation: Float = 2f
-    private val animationTimer: Timer
     private val animationSpeed: Float = 0.05f
+    private val animationTimer = createAnimationTimer()
 
     var isSelected = initialSelected
         set(value) {
@@ -42,32 +42,32 @@ class SwitchButton(initialSelected: Boolean) : JComponent() {
             }
         })
 
-        animationTimer = Timer(0) { _ ->
-            if (isSelected) {
-                val endLocation = width - height + 2f
-                if (knobLocation < endLocation) {
-                    knobLocation += animationSpeed
-                } else {
-                    animationTimer.stop()
-                    knobLocation = endLocation
-                }
-            } else {
-                val endLocation = 2f
-                if (knobLocation > endLocation) {
-                    knobLocation -= animationSpeed
-                } else {
-                    animationTimer.stop()
-                    knobLocation = endLocation
-                }
-            }
-            repaint()
-        }
-
         addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(me: MouseEvent) {
                 isSelected = !isSelected
             }
         })
+    }
+
+    private fun createAnimationTimer(): Timer = Timer(0) { _ ->
+        if (isSelected) {
+            val endLocation = width - height + 2f
+            if (knobLocation < endLocation) {
+                knobLocation += animationSpeed
+            } else {
+                animationTimer.stop()
+                knobLocation = endLocation
+            }
+        } else {
+            val endLocation = 2f
+            if (knobLocation > endLocation) {
+                knobLocation -= animationSpeed
+            } else {
+                animationTimer.stop()
+                knobLocation = endLocation
+            }
+        }
+        repaint()
     }
 
     override fun paint(g: Graphics) {
