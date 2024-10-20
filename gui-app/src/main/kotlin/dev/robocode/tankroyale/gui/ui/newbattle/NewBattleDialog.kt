@@ -31,7 +31,7 @@ object NewBattleDialog : RcDialog(MainFrame, "select_bots_dialog") {
         setLocationRelativeTo(owner) // center on owner window
 
         ServerEvents.onStopped.subscribe(this) {
-            MessageDialog.showError(Messages.get("server_connection_lost"))
+            MessageDialog.showError(Messages.get("battle_lost_server_connection"))
             dispose()
         }
     }
