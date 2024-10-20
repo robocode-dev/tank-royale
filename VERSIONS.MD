@@ -6,6 +6,7 @@
     - Replaced the `Server` -> `Select Server` with `Config` -> `Server Config` which makes it possible choose between
       using a local or remote server. In addition, it is possible to add, edit, and remove remote servers, and it is
       possible to specify a controller and a bot secret to allow the GUI and bots to access the remote server.
+    - If a booted bot process exits, it is now removed from the active New Battle window.
 - Booter:
     - When a pid of a bot process cannot be found, the Booter writes out a `load {pid}` to indicate that a process could
       not be found with the provided pid.
