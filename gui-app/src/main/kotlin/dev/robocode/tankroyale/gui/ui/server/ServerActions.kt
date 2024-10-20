@@ -29,7 +29,7 @@ object ServerActions {
     }
 
     private fun handleRebootLocal(dueToSetting: Boolean) {
-        if (!ServerProcess.isRunning || isRemoteEndpoint(ServerSettings.serverUrl())) return
+        if (!ServerProcess.isRunning() || isRemoteEndpoint(ServerSettings.serverUrl())) return
 
         val resourceKey =
             if (dueToSetting)

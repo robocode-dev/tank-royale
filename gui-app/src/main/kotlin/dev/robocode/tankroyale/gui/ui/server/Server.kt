@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 object Server {
 
-    private fun isRunning() = ServerProcess.isRunning || RemoteServer.isRunning()
+    private fun isRunning() = ServerProcess.isRunning() || RemoteServer.isRunning()
 
     fun connectOrStart(): Boolean /* connected and started */ {
         try {

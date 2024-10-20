@@ -29,10 +29,13 @@ object ServerProcess {
         ServerActions
     }
 
-    var isRunning: Boolean = processRef.get() != null
+    fun isRunning(): Boolean {
+        val process = processRef.get()
+        return process != null && process.isAlive
+    }
 
     fun start() {
-        if (isRunning) return
+        if (isRunning()) return
 
         var command: MutableList<String>
         ServerSettings.apply {
@@ -63,7 +66,7 @@ object ServerProcess {
     }
 
     fun stop() {
-        if (!isRunning) return
+        if (!isRunning()) return
 
         stopLogThread()
 

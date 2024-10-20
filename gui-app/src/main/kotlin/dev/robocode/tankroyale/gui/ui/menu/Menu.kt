@@ -15,7 +15,6 @@ import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRebootServer
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onSoundConfig
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStartServer
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStopServer
-import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import java.awt.event.KeyEvent
 import javax.swing.JMenu
@@ -127,7 +126,7 @@ object Menu : JMenuBar() {
     }
 
     private fun updateServerState() {
-        val localServerIsRunning = ServerProcess.isRunning
+        val localServerIsRunning = ServerProcess.isRunning()
 
         showServerLogMenuItem.isEnabled = localServerIsRunning
         startServerMenuItem.isEnabled = !localServerIsRunning
