@@ -62,7 +62,7 @@ object BootProcess {
     }
 
     fun boot(botDirNames: Collection<String>) {
-        if (isRunning) {
+        if (isRunning()) {
             bootBotsWithAlreadyBootedProcess(botDirNames)
         } else {
             bootBotProcess(botDirNames)
@@ -71,7 +71,7 @@ object BootProcess {
     }
 
     fun stop() {
-        if (!isRunning)
+        if (!isRunning())
             return
 
         stopThread()
@@ -215,7 +215,7 @@ object BootProcess {
     }
 
     private fun startThread(process: Process, doReadInputToProcessIds: Boolean) {
-        if (isRunning) {
+        if (isRunning()) {
             return
         }
         threadRef.set(Thread {
@@ -235,7 +235,7 @@ object BootProcess {
         threadRef.get()?.interrupt()
     }
 
-    private var isRunning: Boolean = threadRef.get()?.run { isAlive && !isInterrupted } ?: false
+    private fun isRunning(): Boolean = threadRef.get()?.run { isAlive && !isInterrupted } ?: false
 
     private fun startPinging() {
         val pingTask = object : TimerTask() {
