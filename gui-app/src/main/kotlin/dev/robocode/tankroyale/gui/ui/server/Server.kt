@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Messages
+import dev.robocode.tankroyale.gui.ui.config.ServerConfigDialog
 import dev.robocode.tankroyale.gui.util.MessageDialog
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -27,6 +28,9 @@ object Server {
                         ServerSettings.useRemoteServerUrl
                     )
                     MessageDialog.showError(message)
+
+                    ServerConfigDialog().isVisible = true
+
                     return false
                 }
             } else {

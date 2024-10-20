@@ -28,6 +28,8 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
     }
 
     open fun save() {
+        if (properties == backedUpProperties) return
+
         val output = FileWriter(fileName)
         output.use {
             val sortedProperties = object : Properties() {

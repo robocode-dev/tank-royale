@@ -42,6 +42,8 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
     var useRemoteServer: Boolean
         get() = load(USE_REMOTE_SERVER, "false").toBoolean()
         set(value) {
+            if (load(USE_REMOTE_SERVER) == null && !value) return
+
             save(USE_REMOTE_SERVER, value.toString())
         }
 
@@ -101,12 +103,12 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
 
     private fun remoteServerControllerSecret(): String {
         val index = remoteServerUrls.indexOf(useRemoteServerUrl)
-        return remoteServerControllerSecrets[index]
+        return if (index >= 0) remoteServerControllerSecrets[index] else ""
     }
 
     private fun remoteServerBotSecret(): String {
         val index = remoteServerUrls.indexOf(useRemoteServerUrl)
-        return remoteServerBotSecrets[index]
+        return if (index >= 0) remoteServerBotSecrets[index] else ""
     }
 
     var initialPositionsEnabled: Boolean

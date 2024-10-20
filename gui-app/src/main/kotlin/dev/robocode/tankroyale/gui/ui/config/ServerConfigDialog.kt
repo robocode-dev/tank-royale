@@ -327,7 +327,3 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
         }
     }
 }
-
-fun main() {
-    ServerConfigDialog().isVisible = true
-}
