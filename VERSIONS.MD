@@ -1,7 +1,44 @@
-## 📦 0.24.4
+## 📦 0.26.0 - Support for remote servers
+
+#### 🚀 Improvements
+
+- GUI:
+    - Replaced the `Server` -> `Select Server` with `Config` -> `Server Config` which makes it possible choose between
+      using a local or remote server. In addition, it is possible to add, edit, and remove remote servers, and it is
+      possible to specify a controller and a bot secret to allow the GUI and bots to access the remote server.
+    - If a booted bot process exits, it is now removed from the active New Battle window.
+- Booter:
+    - When a pid of a bot process cannot be found, the Booter writes out a `load {pid}` to indicate that a process could
+      not be found with the provided pid.
 
 #### 🐞 Bug Fixes
 
+- GUI
+    - Control Panel was shown when server was stopped or rebooted. 
+
+## 📦 0.25.0 - Fix for Ranks and Event Queue improvements - 11-Oct-2024
+
+#### 🐞 Bug Fixes
+
+- Server:
+    - #108: The ranks were wrong as they did not reflect the total score and placements 
+- Bot API:
+    - An interruptible event was not interrupted when `setInterruptible(true)` was called. The event queue contained
+      more bot events than it should, due to this bug.
+    - The event queue and dispatcher was improved so it is closer to the implementation for the original Robocode. 
+
+## 📦 0.24.4 - Support for IPv6 endpoints - 19-Sep-2024
+
+#### 🚀 Improvements
+
+- GUI:
+    - Improved the support for IPv6 endpoints.
+
+#### 🐞 Bug Fixes
+
+- GUI:
+    - #96: When starting a battle when a remote server was selected, no window was opened when starting a battle. Now an
+      error message will show up plus the dialog for selecting a (local) server.
 - Server
     - #85: Fixed edge case when crossing the speed of 0, when target speed is 0.
 
@@ -771,16 +808,16 @@ Bot info:
 
 - First alpha version was released! 🚀😀
 
-[BotInfo/BotHandshake: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
+[BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 
-[BotInfo.FromConfiguration(IConfiguration): https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
+[BotInfo.FromConfiguration(IConfiguration)]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
 
-[sounds releases: https://github.com/robocode-dev/sounds/releases
+[sounds releases]: https://github.com/robocode-dev/sounds/releases
 
-[GitHub Pages: https://robocode-dev.github.io/tank-royale/
+[GitHub Pages]: https://robocode-dev.github.io/tank-royale/
 
-[ANSI escape code: https://en.wikipedia.org/w/index.php?title=ANSI_escape_code
+[ANSI escape code]: https://en.wikipedia.org/w/index.php?title=ANSI_escape_code
 
-[Events tab: https://robocode-dev.github.io/tank-royale/articles/gui.html#viewing-the-bot-events "Events tab in Bot Console"
+[Events tab]: https://robocode-dev.github.io/tank-royale/articles/gui.html#viewing-the-bot-events "Events tab in Bot Console"
 
-[Robocode API Bridge: https://github.com/robocode-dev/robocode-api-bridge "Robocode API bridge for Tank Royale"
+[Robocode API Bridge]: https://github.com/robocode-dev/robocode-api-bridge "Robocode API bridge for Tank Royale"

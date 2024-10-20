@@ -15,7 +15,6 @@ import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRebootServer
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onSoundConfig
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStartServer
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStopServer
-import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import java.awt.event.KeyEvent
 import javax.swing.JMenu
@@ -25,6 +24,7 @@ import javax.swing.KeyStroke
 
 object Menu : JMenuBar() {
 
+    private lateinit var showServerLogMenuItem: JMenuItem
     private lateinit var startServerMenuItem: JMenuItem
     private lateinit var rebootServerMenuItem: JMenuItem
     private lateinit var stopServerMenuItem: JMenuItem
@@ -63,17 +63,13 @@ object Menu : JMenuBar() {
         val serverMenu = JMenu(MenuTitles.get("menu.server")).apply {
             mnemonic = KeyEvent.VK_S
 
-            startServerMenuItem = addNewMenuItem("item.start_server", onStartServer)
-            stopServerMenuItem = addNewMenuItem("item.stop_server", onStopServer)
-            rebootServerMenuItem = addNewMenuItem("item.reboot_server", onRebootServer)
+            startServerMenuItem = addNewMenuItem("item.start_local_server", onStartServer)
+            stopServerMenuItem = addNewMenuItem("item.stop_local_server", onStopServer)
+            rebootServerMenuItem = addNewMenuItem("item.reboot_local_server", onRebootServer)
 
-            addNewMenuItem("item.show_server_log", onShowServerLog).apply {
+            showServerLogMenuItem = addNewMenuItem("item.show_local_server_log", onShowServerLog).apply {
                 mnemonic = KeyEvent.VK_L
                 accelerator = ctrlDown(mnemonic)
-            }
-            addSeparator()
-            addNewMenuItem("item.select_server", onServerConfig).apply {
-                mnemonic = KeyEvent.VK_E
             }
             addSeparator()
 
@@ -102,6 +98,10 @@ object Menu : JMenuBar() {
                 accelerator = ctrlDown(mnemonic)
             }
 
+            addNewMenuItem("item.server_config", onServerConfig).apply {
+                mnemonic = KeyEvent.VK_C
+            }
+
             addNewMenuItem("item.debug_config", onDebugConfig).apply {
                 mnemonic = KeyEvent.VK_C
             }
@@ -126,9 +126,12 @@ object Menu : JMenuBar() {
     }
 
     private fun updateServerState() {
-        startServerMenuItem.isEnabled = !Server.isRunning()
-        rebootServerMenuItem.isEnabled = ServerProcess.isRunning()
-        stopServerMenuItem.isEnabled = ServerProcess.isRunning()
+        val localServerIsRunning = ServerProcess.isRunning()
+
+        showServerLogMenuItem.isEnabled = localServerIsRunning
+        startServerMenuItem.isEnabled = !localServerIsRunning
+        rebootServerMenuItem.isEnabled = localServerIsRunning
+        stopServerMenuItem.isEnabled = localServerIsRunning
     }
 
     private fun ctrlDown(keyEvent: Int) = KeyStroke.getKeyStroke(keyEvent, KeyEvent.CTRL_DOWN_MASK)

@@ -140,6 +140,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
     private fun reset() {
         selectedBotListModel.clear()
+        joinedBotListModel.clear()
         update()
     }
 

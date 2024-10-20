@@ -8,7 +8,6 @@ documentation under the `/docs` directory in the root directory.
 ## Prerequisites
 
 * node.js 10+
-* gradle 8+
 * Java JDK 11+
 
 Check out the official prerequisite for

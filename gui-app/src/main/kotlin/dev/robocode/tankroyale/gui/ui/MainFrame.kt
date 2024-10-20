@@ -70,11 +70,11 @@ object MainFrame : RcFrame("main_frame") {
             remove(LogoPanel)
             add(BattlePanel, BorderLayout.CENTER)
 
+            ControlPanel.isVisible = true
             refresh()
         }
 
         private fun refresh() {
-            ControlPanel.isVisible = true
             validate()
             repaint()
         }

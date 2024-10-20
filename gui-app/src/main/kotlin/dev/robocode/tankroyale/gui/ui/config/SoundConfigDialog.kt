@@ -23,7 +23,7 @@ object SoundConfigDialog : RcDialog(MainFrame, "sound_config_dialog") {
     init {
         contentPane.add(SoundConfigPanel)
         pack()
-        setLocationRelativeTo(MainFrame) // center on main window
+        setLocationRelativeTo(owner) // center on owner window
     }
 }
 

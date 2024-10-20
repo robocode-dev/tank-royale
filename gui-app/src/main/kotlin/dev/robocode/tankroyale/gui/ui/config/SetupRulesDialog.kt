@@ -27,7 +27,7 @@ object SetupRulesDialog : RcDialog(MainFrame, "setup_rules_dialog") {
     init {
         contentPane.add(setupRulesPanel)
         pack()
-        setLocationRelativeTo(MainFrame) // center on main window
+        setLocationRelativeTo(owner) // center on owner window
     }
 }
 

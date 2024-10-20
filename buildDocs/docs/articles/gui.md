@@ -188,20 +188,32 @@ Rule settings:
 | Ready timeout               | The maximum number of microseconds a bot is allowed before the server must have received a 'Bot Ready' message from the bot. Otherwise, the bot is automatically kicked from the battle. |
 | Turn timeout                | The maximum number of microseconds a bot is allowed before the server must have received a 'Bot Intent' message from the bot. Otherwise, the bot will skip the turn. [^skip-turn]        |
 
-## Server Log
+## Local Server Log
 
-When the GUI is used for starting a server it is possible to view the server log from the menu.
+When the GUI is used for starting a local server it is possible to view the server log from the menu. Note that viewing
+the log of a remote server is not supported.
 
-![Server Log](../images/gui/server-log.png)
+![Local Server Log](../images/gui/local-server-log.png)
 
-## Select Server
+## Server Options
 
-It is possible to change which server the GUI is connecting to from the menu:
+It is possible to configure and select which server to use when starting a battle. In the top of the Server Options
+dialog the URL of the current selected server is output.
 
-![Select Server](../images/gui/select-server.png)
+### Local Server
 
-You can add URLs to multiple Robocode servers. The current selected URL will be the server that the GUI will use. And
-you can test if the server is running with the Test button.
+The default is to use a local server, which will automatically be started and running on localhost. It is possible to
+change the port number.
+
+![Local Server Options](../images/gui/server-options-local.png)
+
+### Remote Server
+
+It is also possible to use a remote server. This server is expected to run externally, and hence will not be started
+automatically, when starting a battle. Also note that you need to specify the controller and bot secrets for the remote
+server. Otherwise, the GUI and bots will not be able to access the remote server.
+
+![Remote Server Options](../images/gui/server-options-remote.png)
 
 ## Debug Options
 

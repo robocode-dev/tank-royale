@@ -22,30 +22,25 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.proper
     private const val BOT_DIRS_SEPARATOR = ','
 
     var botDirectories: List<BotDirectoryConfig>
-        get() {
-            load()
-            return getBotDirectoryConfigs()
-        }
+        get() = getBotDirectoryConfigs()
         set(value) {
             setBotDirectoryConfigs(value)
-            save()
         }
-
 
     var gameType: GameType
         get() {
-            val displayName = properties.getProperty(GAME_TYPE, GameType.CLASSIC.displayName)
+            val displayName = load(GAME_TYPE, GameType.CLASSIC.displayName)
             return GameType.from(displayName)
         }
         set(value) {
-            properties.setProperty(GAME_TYPE, value.displayName)
+            save(GAME_TYPE, value.displayName)
         }
 
     var tps: Int
         get() {
             load()
 
-            val tpsStr = properties.getProperty(TPS)?.lowercase(Locale.getDefault())
+            val tpsStr = load(TPS)?.lowercase(Locale.getDefault())
             if (tpsStr in listOf("m", "ma", "max")) {
                 return -1 // infinite tps
             }
@@ -56,85 +51,56 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.proper
             }
         }
         set(value) {
-            properties.setProperty(TPS, value.toString())
-            save()
+            save(TPS, value.toString())
         }
 
     var enableSounds: Boolean
-        get() {
-            load()
-            return properties.getProperty(ENABLE_SOUNDS)?.lowercase() != "false"
-        }
+        get() = load(ENABLE_SOUNDS)?.lowercase() != "false"
         set(value) {
-            properties.setProperty(ENABLE_SOUNDS, if (value) "true" else "false")
-            save()
+            save(ENABLE_SOUNDS, if (value) "true" else "false")
         }
 
     var enableGunshotSound: Boolean
-        get() {
-            load()
-            return properties.getProperty(ENABLE_GUNSHOT_SOUND)?.lowercase() != "false"
-        }
+        get() = load(ENABLE_GUNSHOT_SOUND)?.lowercase() != "false"
         set(value) {
-            properties.setProperty(ENABLE_GUNSHOT_SOUND, if (value) "true" else "false")
-            save()
+            save(ENABLE_GUNSHOT_SOUND, if (value) "true" else "false")
         }
 
     var enableBulletHitSound: Boolean
-        get() {
-            load()
-            return properties.getProperty(ENABLE_BULLET_HIT_SOUND)?.lowercase() != "false"
-        }
+        get() = load(ENABLE_BULLET_HIT_SOUND)?.lowercase() != "false"
         set(value) {
-            properties.setProperty(ENABLE_BULLET_HIT_SOUND, if (value) "true" else "false")
-            save()
+            save(ENABLE_BULLET_HIT_SOUND, if (value) "true" else "false")
         }
 
     var enableWallCollisionSound: Boolean
-        get() {
-            load()
-            return properties.getProperty(ENABLE_WALL_COLLISION_SOUND)?.lowercase() != "false"
-        }
+        get() = load(ENABLE_WALL_COLLISION_SOUND)?.lowercase() != "false"
         set(value) {
-            properties.setProperty(ENABLE_WALL_COLLISION_SOUND, if (value) "true" else "false")
-            save()
+            save(ENABLE_WALL_COLLISION_SOUND, if (value) "true" else "false")
         }
 
     var enableBotCollisionSound: Boolean
-        get() {
-            load()
-            return properties.getProperty(ENABLE_BOT_COLLISION_SOUND)?.lowercase() != "false"
-        }
+        get() = load(ENABLE_BOT_COLLISION_SOUND)?.lowercase() != "false"
         set(value) {
-            properties.setProperty(ENABLE_BOT_COLLISION_SOUND, if (value) "true" else "false")
-            save()
+            save(ENABLE_BOT_COLLISION_SOUND, if (value) "true" else "false")
         }
 
     var enableBulletCollisionSound: Boolean
-        get() {
-            load()
-            return properties.getProperty(ENABLE_BULLET_COLLISION_SOUND)?.lowercase() != "false"
-        }
+        get() = load(ENABLE_BULLET_COLLISION_SOUND)?.lowercase() != "false"
         set(value) {
-            properties.setProperty(ENABLE_BULLET_COLLISION_SOUND, if (value) "true" else "false")
-            save()
+            save(ENABLE_BULLET_COLLISION_SOUND, if (value) "true" else "false")
         }
 
     var enableDeathExplosionSound: Boolean
-        get() {
-            load()
-            return properties.getProperty(ENABLE_DEATH_EXPLOSION_SOUND)?.lowercase() != "false"
-        }
+        get() = load(ENABLE_DEATH_EXPLOSION_SOUND)?.lowercase() != "false"
         set(value) {
-            properties.setProperty(ENABLE_DEATH_EXPLOSION_SOUND, if (value) "true" else "false")
-            save()
+            save(ENABLE_DEATH_EXPLOSION_SOUND, if (value) "true" else "false")
         }
 
     private fun getBotDirectoryConfigs(): List<BotDirectoryConfig> {
         val botDirectoryConfigs = mutableListOf<BotDirectoryConfig>()
 
         var lastPath: String? = null
-        properties.getProperty(BOT_DIRECTORIES, "")
+        load(BOT_DIRECTORIES, "")
             .split(BOT_DIRS_SEPARATOR)
             .filter { it.isNotBlank() }
             .forEach { path ->
@@ -151,11 +117,11 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.proper
 
     private fun setBotDirectoryConfigs(botDirectoryConfigs: List<BotDirectoryConfig>) {
         val stringBuffer = StringBuilder()
-        botDirectoryConfigs.filter { it.path.isNotBlank() }.forEach() { botDirectoryConfig ->
+        botDirectoryConfigs.filter { it.path.isNotBlank() }.forEach { botDirectoryConfig ->
             stringBuffer
                 .append(botDirectoryConfig.path).append(BOT_DIRS_SEPARATOR)
                 .append(if (botDirectoryConfig.enabled) "true" else "false").append(BOT_DIRS_SEPARATOR)
         }
-        properties.setProperty(BOT_DIRECTORIES, stringBuffer.toString().trimEnd(BOT_DIRS_SEPARATOR))
+        save(BOT_DIRECTORIES, stringBuffer.toString().trimEnd(BOT_DIRS_SEPARATOR))
     }
 }

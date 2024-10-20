@@ -15,6 +15,9 @@ class AccumulatedScoreCalculator {
                 val accScore = scoreMap[score.participantId]
                 accScore?.let { it += score }
             }
+
+            // Rank needs to be recalculated
+            RankDecorator.updateRanks(accumulatedScores)
         }
     }
 

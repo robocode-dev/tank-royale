@@ -30,7 +30,7 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
     }
 
     override fun onBotIntent(clientSocket: WebSocket, handshake: BotHandshake, intent: BotIntent) {
-        log.info("Bot intent: {}: {}", getDisplayName(handshake), intent)
+//        log.info("Bot intent: {}: {}", getDisplayName(handshake), intent)
         gameServer.handleBotIntent(clientSocket, intent)
     }
 

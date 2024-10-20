@@ -32,7 +32,6 @@ internal sealed class EventQueue : IComparer<BotEvent>
     {
         events = events.Clear();
         baseBotInternals.Conditions.Clear(); // conditions might be added in the bots Run() method each round
-        currentTopEvent = null;
         currentTopEventPriority = MinValue;
     }
 
@@ -71,27 +70,46 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
     internal void DispatchEvents(int turnNumber)
     {
+//        DumpEvents(); // for debugging purposes
+
         RemoveOldEvents(turnNumber);
         SortEvents();
 
         while (IsBotRunning)
         {
-            var botEvent = GetNextEvent();
-            if (botEvent == null || IsSameEvent(botEvent))
+            BotEvent currentEvent = GetNextEvent();
+            if (currentEvent == null) {
                 break;
+            }
+            if (IsSameEvent(currentEvent))
+            {
+                if (IsInterruptible)
+                {
+                    SetInterruptible(currentEvent.GetType(), false); // clear interruptible flag
 
-            var priority = GetPriority(botEvent);
-            var originalTopEventPriority = currentTopEventPriority;
+                    // We are already in an event handler, took action, and a new event was generated.
+                    // So we want to break out of the old handler to process the new event here.
+                    throw new InterruptEventHandlerException();
+                }
+                break;
+            }
 
-            currentTopEventPriority = priority;
-            currentTopEvent = botEvent;
+            int oldTopEventPriority = currentTopEventPriority;
 
-            try {
-                HandleEvent(botEvent, turnNumber);
-            } catch (InterruptEventHandlerException) {
-                // Expected when event handler is being interrupted
-            } finally {
-                currentTopEventPriority = originalTopEventPriority;
+            currentTopEventPriority = GetPriority(currentEvent);
+            currentTopEvent = currentEvent;
+
+            try
+            {
+                HandleEvent(currentEvent, turnNumber);
+            }
+            catch (InterruptEventHandlerException)
+            {
+                // Expected when event handler is interrupted on purpose
+            }
+            finally
+            {
+                currentTopEventPriority = oldTopEventPriority;
             }
         }
     }
@@ -120,18 +138,26 @@ internal sealed class EventQueue : IComparer<BotEvent>
     }
 
     private bool IsSameEvent(BotEvent botEvent) =>
-        GetPriority(botEvent) == currentTopEventPriority && (currentTopEventPriority > MinValue && IsInterruptible);
+        GetPriority(botEvent) == currentTopEventPriority;
 
     private int GetPriority(BotEvent botEvent)
     {
         return baseBotInternals.GetPriority(botEvent.GetType());
     }
 
-    private void HandleEvent(BotEvent botEvent, int turnNumber) {
-        if (IsNotOldOrIsCriticalEvent(botEvent, turnNumber)) {
-            botEventHandlers.Fire(botEvent);
+    private void HandleEvent(BotEvent botEvent, int turnNumber)
+    {
+        try
+        {
+            if (IsNotOldOrIsCriticalEvent(botEvent, turnNumber))
+            {
+                botEventHandlers.Fire(botEvent);
+            }
         }
-        SetInterruptible(botEvent.GetType(), false);
+        finally
+        {
+            SetInterruptible(botEvent.GetType(), false); // clear interruptible flag
+        }
     }
 
     public int Compare(BotEvent botEvent1, BotEvent botEvent2)
@@ -156,27 +182,25 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
     private static bool IsNotOldOrIsCriticalEvent(BotEvent botEvent, int turnNumber)
     {
-        var isNotOld = botEvent.TurnNumber + MaxEventAge >= turnNumber;
-        var isCritical = botEvent.IsCritical;
-        return isNotOld || isCritical;
+        var isNotOld = botEvent.TurnNumber >= turnNumber - MaxEventAge;
+        return isNotOld || botEvent.IsCritical;
     }
 
     private static bool IsOldAndNonCriticalEvent(BotEvent botEvent, int turnNumber)
     {
-        var isOld = botEvent.TurnNumber + MaxEventAge < turnNumber;
-        var isNonCritical = !botEvent.IsCritical;
-        return isOld && isNonCritical;
+        var isOld = botEvent.TurnNumber < turnNumber - MaxEventAge;
+        return isOld && !botEvent.IsCritical;
     }
 
     private void AddEvent(BotEvent botEvent)
     {
-        if (events.Count > MaxQueueSize)
+        if (events.Count <= MaxQueueSize)
         {
-            Console.Error.WriteLine("Maximum event queue size has been reached: " + MaxQueueSize);
+            events = events.Add(botEvent);
         }
         else
         {
-            events = events.Add(botEvent);
+            Console.Error.WriteLine("Maximum event queue size has been reached: " + MaxQueueSize);
         }
     }
 
@@ -186,5 +210,11 @@ internal sealed class EventQueue : IComparer<BotEvent>
         {
             AddEvent(new CustomEvent(baseBotInternals.CurrentTickOrThrow.TurnNumber, condition));
         }
+    }
+
+    private void DumpEvents()
+    {
+        string eventsString = string.Join(", ", events.Select(e => $"{e.GetType().Name}({e.TurnNumber})"));
+        Console.WriteLine($"events: {eventsString}");
     }
 }

@@ -56,14 +56,21 @@ object Client {
             isPaused.set(false)
 
             bots.clear()
+
+            websocket?.let {
+                if (it.isOpen()) {
+                    it.close()
+                }
+                websocket = null
+            }
         }
     }
 
-    private fun isConnected(): Boolean = websocket?.isOpen() ?: false
+    fun isConnected(): Boolean = websocket?.isOpen() ?: false
 
     fun connect() {
         check (!isConnected()) { "Websocket is already connected" }
-        websocket = WebSocketClient(URI(ServerSettings.currentServerUrl))
+        websocket = WebSocketClient(URI(ServerSettings.serverUrl()))
 
         WebSocketClientEvents.apply {
             websocket?.let { ws ->
@@ -71,7 +78,7 @@ object Client {
                 onMessage.subscribe(ws) { onMessage(it) }
                 onError.subscribe(ws) {
                     System.err.println("WebSocket error: " + it.message)
-                    it.printStackTrace()
+                    ServerEvents.onStopped.fire(Unit)
                 }
                 try {
                     ws.open() // must be called AFTER onOpen.subscribe()
@@ -216,7 +223,7 @@ object Client {
             name = "Robocode Tank Royale UI",
             version = "${Version.version}",
             author = "Flemming N. Larsen",
-            secret = ServerSettings.controllerSecrets.first()
+            secret = ServerSettings.controllerSecret()
         )
         send(handshake)
     }

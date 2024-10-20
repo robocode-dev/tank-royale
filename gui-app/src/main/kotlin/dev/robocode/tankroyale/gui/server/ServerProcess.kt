@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.gui.ui.server.ServerActions
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.server.ServerLogFrame
 import dev.robocode.tankroyale.gui.util.EDT
+import dev.robocode.tankroyale.gui.util.FileUtil
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import java.io.BufferedReader
 import java.io.FileNotFoundException
@@ -14,29 +15,27 @@ import java.io.PrintStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 
 object ServerProcess {
 
     private const val JAR_FILE_NAME = "robocode-tankroyale-server"
 
-    private val isRunning = AtomicBoolean(false)
-    private var process: Process? = null
+    private var processRef = AtomicReference<Process?>()
     private var logThread: Thread? = null
     private val logThreadRunning = AtomicBoolean(false)
-
-    var port: Int = ServerSettings.serverPort
-        private set
 
     init {
         ServerActions
     }
 
-    fun isRunning(): Boolean = isRunning.get()
+    fun isRunning(): Boolean {
+        val process = processRef.get()
+        return process != null && process.isAlive
+    }
 
-    fun start(port: Int = ServerSettings.serverPort) {
-        if (isRunning.get()) return
-
-        this.port = port
+    fun start() {
+        if (isRunning()) return
 
         var command: MutableList<String>
         ServerSettings.apply {
@@ -45,7 +44,7 @@ object ServerProcess {
                 "-Dpicocli.ansi=true", // to show server logo in ANSI colors
                 "-jar",
                 getServerJar(),
-                "--port=$port",
+                "--port=${localPort}",
                 "--games=classic,melee,1v1",
                 "--tps=${ConfigSettings.tps}",
                 "--controller-secrets=${controllerSecrets.joinToString(",")}",
@@ -57,9 +56,9 @@ object ServerProcess {
         }
         ProcessBuilder(command).apply {
             redirectErrorStream(true)
-            process = start()
+            val process = start()
+            processRef.set(process)
         }
-        isRunning.set(true)
 
         startLogThread()
 
@@ -67,10 +66,11 @@ object ServerProcess {
     }
 
     fun stop() {
-        if (!isRunning.get()) return
+        if (!isRunning()) return
 
         stopLogThread()
 
+        val process = processRef.get()
         process?.apply {
             if (isAlive) {
                 PrintStream(outputStream).apply {
@@ -79,9 +79,8 @@ object ServerProcess {
                 }
             }
             waitFor()
-            isRunning.set(false)
         }
-        process = null
+        processRef.set(null)
         logThread = null
 
         ServerEvents.onStopped.fire(Unit)
@@ -96,13 +95,9 @@ object ServerProcess {
                 return toString()
             }
         }
-        Paths.get("").apply {
-            Files.list(this).filter { it.startsWith(JAR_FILE_NAME) && it.endsWith(".jar") }.findFirst().apply {
-                if (isPresent) {
-                    return get().toString()
-                }
-            }
-        }
+
+        FileUtil.findFirstInCurrentDirectory(JAR_FILE_NAME, ".jar")?.let { return it }
+
         return try {
             ResourceUtil.getResourceFile("${JAR_FILE_NAME}.jar")?.absolutePath ?: ""
         } catch (ex: Exception) {
@@ -115,6 +110,7 @@ object ServerProcess {
         logThread = Thread {
             logThreadRunning.set(true)
 
+            val process = processRef.get()
             BufferedReader(InputStreamReader(process?.inputStream!!)).use {
                 while (logThreadRunning.get()) {
                     try {
@@ -123,7 +119,7 @@ object ServerProcess {
                                 ServerLogFrame.append(line + "\n")
                             }
                         }
-                    } catch (e: InterruptedException) {
+                    } catch (_: InterruptedException) {
                         logThreadRunning.set(false)
                     }
                 }

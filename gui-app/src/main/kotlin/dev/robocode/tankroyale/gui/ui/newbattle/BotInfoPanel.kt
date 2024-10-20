@@ -106,7 +106,7 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
     }
 
     private fun generateCountryHtml(countryCode: String): String {
-        val name = Locale("", countryCode).displayCountry
+        val name = Locale.Builder().setRegion(countryCode).build().displayCountry
         val cc = countryCode.trim().lowercase()
         return """
             <td>${name} (${cc})&nbsp;</td>
