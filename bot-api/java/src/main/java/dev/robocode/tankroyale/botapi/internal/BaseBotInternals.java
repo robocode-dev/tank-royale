@@ -351,11 +351,9 @@ public final class BaseBotInternals {
     }
 
     private void waitForNextTurn(int turnNumber) {
-        System.out.println("waitForNextTurn: " + turnNumber + ", thread: " + Thread.currentThread());
-
-        if (Thread.currentThread() != thread) {
-            throw new InterruptEventHandlerException();
-        }
+        // Most bot methods will call waitForNextTurn(), and hence this is a central place to stop a rogue thread that
+        // cannot be killed any other way.
+        stopRogueThread();
 
         synchronized (nextTurnMonitor) {
             while (!Thread.currentThread().isInterrupted() && isRunning() && turnNumber == getCurrentTickOrThrow().getTurnNumber()) {
@@ -367,7 +365,12 @@ public final class BaseBotInternals {
                 }
             }
         }
-        System.out.println("waitForNextTurn, end: " + turnNumber + ", thread: " + Thread.currentThread());
+    }
+
+    private void stopRogueThread() {
+        if (Thread.currentThread() != thread) {
+            throw new InterruptEventHandlerException();
+        }
     }
 
     private void dispatchEvents(int turnNumber) {
