@@ -213,19 +213,7 @@ public final class BaseBotInternals {
 
         if (thread != null) {
             thread.interrupt();
-            try {
-                thread.join(50);
-                if (thread.isAlive()) {
-                    throw new InterruptEventHandlerException();
-
-//                    System.err.println("The thread of the bot could not be interrupted causing the bot to hang.\nSo the bot was stopped by force.");
-//                    System.exit(-1); // last resort without Thread.stop()
-                }
-            } catch (InterruptedException e) {
-                throw new InterruptEventHandlerException();
-            } finally {
-                thread = null;
-            }
+            thread = null;
         }
     }
 
