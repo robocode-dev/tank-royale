@@ -87,6 +87,8 @@ public final class BaseBotInternals {
 
     private final Object nextTurnMonitor = new Object();
 
+    private Thread thread;
+
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private boolean isStopped;
 
@@ -196,6 +198,35 @@ public final class BaseBotInternals {
 
     public boolean isRunning() {
         return isRunning.get();
+    }
+
+    public void startThread(Runnable runnable) {
+        thread = new Thread(runnable);
+        thread.start();
+    }
+
+    public void stopThread() {
+        if (!isRunning())
+            return;
+
+        setRunning(false);
+
+        if (thread != null) {
+            thread.interrupt();
+            try {
+                thread.join(50);
+                if (thread.isAlive()) {
+                    throw new InterruptEventHandlerException();
+
+//                    System.err.println("The thread of the bot could not be interrupted causing the bot to hang.\nSo the bot was stopped by force.");
+//                    System.exit(-1); // last resort without Thread.stop()
+                }
+            } catch (InterruptedException e) {
+                throw new InterruptEventHandlerException();
+            } finally {
+                thread = null;
+            }
+        }
     }
 
     public void enableEventHandling(boolean enable) {
@@ -332,8 +363,14 @@ public final class BaseBotInternals {
     }
 
     private void waitForNextTurn(int turnNumber) {
+        System.out.println("waitForNextTurn: " + turnNumber + ", thread: " + Thread.currentThread());
+
+        if (Thread.currentThread() != thread) {
+            throw new InterruptEventHandlerException();
+        }
+
         synchronized (nextTurnMonitor) {
-            while (isRunning() && turnNumber == getCurrentTickOrThrow().getTurnNumber()) {
+            while (!Thread.currentThread().isInterrupted() && isRunning() && turnNumber == getCurrentTickOrThrow().getTurnNumber()) {
                 try {
                     nextTurnMonitor.wait(); // Wait for next turn
                 } catch (InterruptedException ex) {
@@ -342,6 +379,7 @@ public final class BaseBotInternals {
                 }
             }
         }
+        System.out.println("waitForNextTurn, end: " + turnNumber + ", thread: " + Thread.currentThread());
     }
 
     private void dispatchEvents(int turnNumber) {
