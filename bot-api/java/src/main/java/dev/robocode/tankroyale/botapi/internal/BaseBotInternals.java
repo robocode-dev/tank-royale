@@ -360,14 +360,14 @@ public final class BaseBotInternals {
                 try {
                     nextTurnMonitor.wait(); // Wait for next turn
                 } catch (InterruptedException ex) {
-                    throw new InterruptEventHandlerException();                }
+                    throw new ThreadInterruptedException();                }
             }
         }
     }
 
     private void stopRogueThread() {
         if (Thread.currentThread() != thread) {
-            throw new InterruptEventHandlerException();
+            throw new ThreadInterruptedException();
         }
     }
 

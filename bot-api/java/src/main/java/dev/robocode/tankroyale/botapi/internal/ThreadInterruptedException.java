@@ -3,5 +3,5 @@ package dev.robocode.tankroyale.botapi.internal;
 /**
  * Exception used for interrupting event handlers.
  */
-public class InterruptEventHandlerException extends Error {
+public class ThreadInterruptedException extends Error {
 }

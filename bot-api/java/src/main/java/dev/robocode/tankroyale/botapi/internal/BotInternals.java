@@ -78,7 +78,7 @@ public final class BotInternals implements IStopResumeListener {
                 while (baseBotInternals.isRunning()) {
                     try {
                         bot.run();
-                    } catch (InterruptEventHandlerException ignore) {
+                    } catch (ThreadInterruptedException ignore) {
                         // Expected, as this exception is used for stop the thread execution
                     }
                 }
