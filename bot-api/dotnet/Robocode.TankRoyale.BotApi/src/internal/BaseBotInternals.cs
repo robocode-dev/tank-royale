@@ -324,9 +324,6 @@ public sealed class BaseBotInternals
         // cannot be killed any other way.
         StopRogueThread();
 
-        Console.WriteLine("WaitForNextTurn: " + turnNumber + ", thread: " +
-                          Thread.CurrentThread.ManagedThreadId); // FIXME
-
         lock (nextTurnMonitor)
         {
             while (
