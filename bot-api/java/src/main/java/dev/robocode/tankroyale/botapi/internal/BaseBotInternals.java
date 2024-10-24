@@ -360,9 +360,7 @@ public final class BaseBotInternals {
                 try {
                     nextTurnMonitor.wait(); // Wait for next turn
                 } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    return; // stop waiting, thread has been interrupted (stopped)
-                }
+                    throw new InterruptEventHandlerException();                }
             }
         }
     }
