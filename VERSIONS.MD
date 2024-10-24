@@ -1,13 +1,18 @@
 ## 📦 0.27.0 - Bugfixes for the Robocode Bridge
 
-This version is fixing issues found when running legacy bots with the
+This version fixes issues found when running legacy bots with the
 [Robocode API Bridge](https://github.com/robocode-dev/robocode-api-bridge) caused by the Tank Royale Bot APIs.
+
+#### 🚀 Improvements
+
+- Server:
+    - When no bullets or functioning bots remain, the round ends immediately as a draw to speed things up.
 
 #### 🐞 Bug Fixes
 
 - Bot API:
-  - Bridged bots run multiple threads after round 2 due to old thread(s) hanging that could not be stopped.
-  - Bridged bots could not be restarted as they got a connection error with the WebSocket when restarting.
+    - Bridged bots run multiple threads after round 2 due to old thread(s) hanging that could not be stopped.
+    - Bridged bots could not be restarted as they got a connection error with the WebSocket when restarting.
 
 ## 📦 0.26.0 - Support for remote servers
 
