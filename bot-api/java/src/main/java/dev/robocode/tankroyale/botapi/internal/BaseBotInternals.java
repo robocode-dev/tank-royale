@@ -356,11 +356,16 @@ public final class BaseBotInternals {
         stopRogueThread();
 
         synchronized (nextTurnMonitor) {
-            while (!Thread.currentThread().isInterrupted() && isRunning() && turnNumber == getCurrentTickOrThrow().getTurnNumber()) {
+            while (isRunning() &&
+                    turnNumber == getCurrentTickOrThrow().getTurnNumber() &&
+                    Thread.currentThread() == thread &&
+                    !Thread.currentThread().isInterrupted()
+            ) {
                 try {
                     nextTurnMonitor.wait(); // Wait for next turn
                 } catch (InterruptedException ex) {
-                    throw new ThreadInterruptedException();                }
+                    throw new ThreadInterruptedException();
+                }
             }
         }
     }
