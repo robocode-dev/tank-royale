@@ -13,6 +13,7 @@ This version fixes issues found when running legacy bots with the
 - Bot API:
     - Bridged bots run multiple threads after round 2 due to old thread(s) hanging that could not be stopped.
     - Bridged bots could not be restarted as they got a connection error with the WebSocket when restarting.
+    - .Net bots sometimes exited when running at max speed without any exceptions occurring.
 
 ## 📦 0.26.0 - Support for remote servers
 
