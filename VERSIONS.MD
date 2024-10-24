@@ -1,3 +1,14 @@
+## 📦 0.27.0 - Bugfixes for the Robocode Bridge
+
+This version is fixing issues found when running legacy bots with the
+[Robocode API Bridge](https://github.com/robocode-dev/robocode-api-bridge) caused by the Tank Royale Bot APIs.
+
+#### 🐞 Bug Fixes
+
+- Bot API:
+  - Bridged bots run multiple threads after round 2 due to old thread(s) hanging that could not be stopped.
+  - Bridged bots could not be restarted as they got a connection error with the WebSocket when restarting.
+
 ## 📦 0.26.0 - Support for remote servers
 
 #### 🚀 Improvements
@@ -14,18 +25,18 @@
 #### 🐞 Bug Fixes
 
 - GUI
-    - Control Panel was shown when server was stopped or rebooted. 
+    - Control Panel was shown when server was stopped or rebooted.
 
 ## 📦 0.25.0 - Fix for Ranks and Event Queue improvements - 11-Oct-2024
 
 #### 🐞 Bug Fixes
 
 - Server:
-    - #108: The ranks were wrong as they did not reflect the total score and placements 
+    - #108: The ranks were wrong as they did not reflect the total score and placements
 - Bot API:
     - An interruptible event was not interrupted when `setInterruptible(true)` was called. The event queue contained
       more bot events than it should, due to this bug.
-    - The event queue and dispatcher was improved so it is closer to the implementation for the original Robocode. 
+    - The event queue and dispatcher was improved so it is closer to the implementation for the original Robocode.
 
 ## 📦 0.24.4 - Support for IPv6 endpoints - 19-Sep-2024
 
