@@ -320,6 +320,8 @@ public sealed class BaseBotInternals
 
     private void WaitForNextTurn(int turnNumber)
     {
+        Console.WriteLine("WaitForNextTurn: " + turnNumber + ", thread: " + Thread.CurrentThread.ManagedThreadId);
+        
         // Most bot methods will call waitForNextTurn(), and hence this is a central place to stop a rogue thread that
         // cannot be killed any other way.
         StopRogueThread();
@@ -328,14 +330,7 @@ public sealed class BaseBotInternals
         {
             while (IsRunning && turnNumber == CurrentTickOrThrow.TurnNumber)
             {
-                try
-                {
-                    Monitor.Wait(nextTurnMonitor);
-                }
-                catch (ThreadInterruptedException)
-                {
-                    throw new InterruptEventHandlerException();
-                }
+                Monitor.Wait(nextTurnMonitor);
             }
         }
     }
@@ -343,7 +338,7 @@ public sealed class BaseBotInternals
     private void StopRogueThread() {
         if (Thread.CurrentThread != thread)
         {
-            throw new InterruptEventHandlerException();
+            Thread.CurrentThread.Interrupt();
         }
     }
 
@@ -355,7 +350,7 @@ public sealed class BaseBotInternals
         }
         catch (Exception e)
         {
-            if (e is InterruptEventHandlerException)
+            if (e is ThreadInterruptedException)
             {
                 return;
             }

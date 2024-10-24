@@ -76,7 +76,7 @@ internal sealed class BotInternals : IStopResumeListener
                 {
                     bot.Run();
                 }
-                catch (InterruptEventHandlerException)
+                catch (ThreadInterruptedException)
                 {
                     // Expected, as this exception is used for stop the thread execution
                 }
