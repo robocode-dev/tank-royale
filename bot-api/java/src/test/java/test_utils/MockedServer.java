@@ -347,7 +347,6 @@ public final class MockedServer {
             tickEvent.setType(TICK_EVENT_FOR_BOT);
             tickEvent.setRoundNumber(1);
             tickEvent.setTurnNumber(turnNumber);
-            tickEvent.setEnemyCount(BOT_ENEMY_COUNT);
 
             var state = new BotState();
             state.setEnergy(energy);
@@ -362,6 +361,7 @@ public final class MockedServer {
             state.setGunTurnRate(BOT_GUN_TURN_RATE);
             state.setRadarTurnRate(BOT_RADAR_TURN_RATE);
             state.setGunHeat(gunHeat);
+            state.setEnemyCount(BOT_ENEMY_COUNT);
             tickEvent.setBotState(state);
 
             if (botIntent != null) {

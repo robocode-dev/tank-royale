@@ -13,9 +13,6 @@ public final class TickEvent extends BotEvent {
     // Current round number.
     private final int roundNumber;
 
-    // Enemy count.
-    private final int enemyCount;
-
     // Current state of this bot.
     private final BotState botState;
 
@@ -30,7 +27,6 @@ public final class TickEvent extends BotEvent {
      *
      * @param turnNumber   is the current turn number in the battle.
      * @param roundNumber  is the current round number in the battle.
-     * @param enemyCount   is the number of enemies left in the round.
      * @param botState     is the current state of this bot.
      * @param bulletStates is the current state of the bullets fired by this bot.
      * @param events       is the events occurring in the turn relevant for this bot.
@@ -38,13 +34,11 @@ public final class TickEvent extends BotEvent {
     public TickEvent(
             int turnNumber,
             int roundNumber,
-            int enemyCount,
             BotState botState,
             Collection<BulletState> bulletStates,
             Collection<BotEvent> events) {
         super(turnNumber);
         this.roundNumber = roundNumber;
-        this.enemyCount = enemyCount;
         this.botState = botState;
         this.bulletStates = bulletStates;
         this.events = events;
@@ -57,15 +51,6 @@ public final class TickEvent extends BotEvent {
      */
     public int getRoundNumber() {
         return roundNumber;
-    }
-
-    /**
-     * Returns the enemy count.
-     *
-     * @return The enemy count.
-     */
-    public int getEnemyCount() {
-        return enemyCount;
     }
 
     /**

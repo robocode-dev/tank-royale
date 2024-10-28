@@ -131,7 +131,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     }
 
     private fun updateBotState(tickEvent: TickEvent) {
-        val botState = tickEvent.botStates.firstOrNull() { it.id == bot.id } ?: return
+        val botState = tickEvent.botStates.firstOrNull { it.id == bot.id } ?: return
 
         model.apply {
             // Column 1
@@ -152,7 +152,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
 
             // Column 2
 
-            setValueAt(tickEvent.botStates.count(), 0, 4)
+            setValueAt(botState.enemyCount, 0, 4)
             setValueAt(botState.bodyColor, 1, 4)
             setValueAt(botState.turretColor, 2, 4)
             setValueAt(botState.radarColor, 3, 4)

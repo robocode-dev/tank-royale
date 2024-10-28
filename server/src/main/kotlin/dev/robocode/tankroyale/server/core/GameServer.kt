@@ -499,7 +499,6 @@ class GameServer(
     }
 
     private fun sendGameTickToParticipants(roundNumber: Int, turn: ITurn) {
-
         val aliveBotTeamIds = aliveBotToTeamIdMap()
 
         for (conn in participants) {
@@ -520,7 +519,16 @@ class GameServer(
         }
 
     private fun broadcastGameTickToObservers(roundNumber: Int, turn: ITurn) {
-        broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(roundNumber, turn, participantMap))
+        val enemyCountMap = HashMap<BotId, Int /* enemyCount */>()
+
+        val aliveBotTeamIds = aliveBotToTeamIdMap()
+
+        participantMap.keys.forEach { botId ->
+            val teamId = aliveBotTeamIds[botId]
+            enemyCountMap[botId] = aliveBotTeamIds.filterValues { it != teamId }.count()
+        }
+
+        broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(roundNumber, turn, participantMap, enemyCountMap))
     }
 
     private fun checkForSkippedTurns(currentTurnNumber: Int) {

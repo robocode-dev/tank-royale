@@ -19,6 +19,7 @@ data class BotState(
     val gunTurnRate: Double,
     val radarTurnRate: Double,
     val gunHeat: Double,
+    val enemyCount: Int,
     val bodyColor: String? = null,
     val turretColor: String? = null,
     val radarColor: String? = null,

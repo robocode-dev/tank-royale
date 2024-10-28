@@ -60,6 +60,10 @@ public sealed class BotState
     /// <value>The gun heat.</value>
     public double GunHeat { get; }
 
+    /// <summary>Number of enemy bots left in the current round.</summary>
+    /// <value>The enemy count.</value>
+    public int EnemyCount { get; }
+
     /// <summary>
     /// Body color.
     /// </summary>
@@ -118,6 +122,7 @@ public sealed class BotState
     /// <param name="gunTurnRate">Turn rate of the gun in degrees per turn.</param>
     /// <param name="radarTurnRate">Turn rate of the radar in degrees per turn.</param>
     /// <param name="gunHeat">Gun heat.</param>
+    /// <param name="enemyCount">Number of enemies left.</param>
     /// <param name="bodyColor">Body color.</param>
     /// <param name="turretColor">Gun turret color.</param>
     /// <param name="radarColor">Radar color.</param>
@@ -128,7 +133,7 @@ public sealed class BotState
     [JsonConstructor]
     public BotState(bool isDroid, double energy, double x, double y, double direction, double gunDirection,
         double radarDirection, double radarSweep,
-        double speed, double turnRate, double gunTurnRate, double radarTurnRate, double gunHeat,
+        double speed, double turnRate, double gunTurnRate, double radarTurnRate, double gunHeat, int enemyCount,
         Color bodyColor, Color turretColor, Color radarColor, Color bulletColor, Color scanColor, Color tracksColor,
         Color gunColor)
     {
@@ -145,6 +150,7 @@ public sealed class BotState
         GunTurnRate = gunTurnRate;
         RadarTurnRate = radarTurnRate;
         GunHeat = gunHeat;
+        EnemyCount = enemyCount;
         BodyColor = bodyColor;
         TurretColor = turretColor;
         RadarColor = radarColor;

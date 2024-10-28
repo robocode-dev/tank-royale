@@ -20,6 +20,7 @@ internal static class BotStateMapper
             source.GunTurnRate,
             source.RadarTurnRate,
             source.GunHeat,
+            source.EnemyCount,
             FromString(source.BodyColor),
             FromString(source.TurretColor),
             FromString(source.RadarColor),

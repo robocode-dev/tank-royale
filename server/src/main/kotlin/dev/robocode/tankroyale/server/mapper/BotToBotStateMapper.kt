@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.server.model.normalizeAbsoluteDegrees
 import dev.robocode.tankroyale.server.model.IBot
 
 object BotToBotStateMapper {
-    fun map(bot: IBot): BotState {
+    fun map(bot: IBot, enemyCount: Int): BotState {
         val botState = BotState()
         bot.apply {
             botState.isDroid = isDroid
@@ -21,6 +21,7 @@ object BotToBotStateMapper {
             botState.radarDirection = normalizeAbsoluteDegrees(radarDirection)
             botState.radarSweep = radarSpreadAngle
             botState.gunHeat = gunHeat
+            botState.enemyCount = enemyCount
             botState.bodyColor = bodyColor?.value
             botState.turretColor = turretColor?.value
             botState.radarColor = radarColor?.value

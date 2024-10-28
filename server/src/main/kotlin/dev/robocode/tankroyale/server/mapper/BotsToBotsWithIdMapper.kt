@@ -6,11 +6,15 @@ import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.IBot
 
 object BotsToBotsWithIdMapper {
-    fun map(bots: Set<IBot>, participantsMap: Map<BotId, Participant>): List<BotStateWithId> {
+    fun map(
+        bots: Set<IBot>,
+        participantsMap: Map<BotId, Participant>,
+        enemyCountMap: Map<BotId, Int /* enemyCount */>
+    ): List<BotStateWithId> {
         val botStates = mutableListOf<BotStateWithId>()
         bots.forEach { bot ->
             participantsMap[bot.id]?.let { participant ->
-                botStates += BotToBotStateWithIdMapper.map(bot, participant.sessionId)
+                botStates += BotToBotStateWithIdMapper.map(bot, participant.sessionId, enemyCountMap[bot.id]!!)
             }
         }
         return botStates

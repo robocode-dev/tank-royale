@@ -1,8 +1,18 @@
 ## 📦 0.27.0
 
+#### 🚀 Improvements
+
+- Bot API and schema:
+    - The `enemyCount` field was moved from TickEvent for the bot (`tick-event-for-bot`) into `BotState` instead. This
+      provides an observer with the enemy count for each bot which useful for the UI showing the current enemy count for
+      a specific bot. This benefits the Properties in the Bot Console. 
+
 #### 🐞 Bug Fixes
+
 - Server:
-    - The `enemy count` in `TickEvent` was not calculated correct for individual bots as well as for team bots.
+    - The `enemy count` in `TickEvent` was not calculated correctly for individual bots as well as for team bots.
+- GUI:
+    - The Properties of the Bot Console did not show the correct enemy count for a bot. 
 
 ## 📦 0.26.0 - Support for remote servers
 

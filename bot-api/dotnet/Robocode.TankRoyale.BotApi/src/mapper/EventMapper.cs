@@ -24,7 +24,6 @@ public static class EventMapper
         (
             tickEvent.TurnNumber,
             tickEvent.RoundNumber,
-            tickEvent.EnemyCount,
             BotStateMapper.Map(tickEvent.BotState),
             BulletStateMapper.Map(tickEvent.BulletStates),
             Map(events, baseBot)

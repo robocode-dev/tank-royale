@@ -28,6 +28,7 @@ public final class BotStateMapper {
                 source.getGunTurnRate(),
                 source.getRadarTurnRate(),
                 source.getGunHeat(),
+                source.getEnemyCount(),
                 fromString(source.getBodyColor()),
                 fromString(source.getTurretColor()),
                 fromString(source.getRadarColor()),

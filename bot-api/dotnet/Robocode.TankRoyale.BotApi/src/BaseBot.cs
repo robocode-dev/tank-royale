@@ -136,7 +136,7 @@ public abstract class BaseBot : IBaseBot
     public int TurnNumber => BaseBotInternals.CurrentTickOrThrow.TurnNumber;
 
     /// <inheritdoc/>
-    public int EnemyCount => BaseBotInternals.CurrentTickOrThrow.EnemyCount;
+    public int EnemyCount => BaseBotInternals.CurrentTickOrThrow.BotState.EnemyCount;
 
     /// <inheritdoc/>
     public double Energy => BaseBotInternals.CurrentTickOrThrow.BotState.Energy;

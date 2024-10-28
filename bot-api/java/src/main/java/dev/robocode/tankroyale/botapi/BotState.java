@@ -72,6 +72,11 @@ public final class BotState {
     private final double gunHeat;
 
     /**
+     *
+     */
+    private final int enemyCount;
+
+    /**
      * Body color
      */
     private final Color bodyColor;
@@ -122,6 +127,7 @@ public final class BotState {
      * @param gunTurnRate    is the turn rate of the gun in degrees per turn.
      * @param radarTurnRate  is the turn rate of the radar in degrees per turn.
      * @param gunHeat        is the gun heat.
+     * @param enemyCount     is tbe number of enemies left
      * @param bodyColor      is the body color.
      * @param turretColor    is the gun turret color.
      * @param radarColor     is the radar color.
@@ -144,6 +150,7 @@ public final class BotState {
             double gunTurnRate,
             double radarTurnRate,
             double gunHeat,
+            int enemyCount,
             Color bodyColor,
             Color turretColor,
             Color radarColor,
@@ -164,6 +171,7 @@ public final class BotState {
         this.gunTurnRate = gunTurnRate;
         this.radarTurnRate = radarTurnRate;
         this.gunHeat = gunHeat;
+        this.enemyCount = enemyCount;
         this.bodyColor = bodyColor;
         this.turretColor = turretColor;
         this.radarColor = radarColor;
@@ -295,6 +303,15 @@ public final class BotState {
      */
     public double getGunHeat() {
         return gunHeat;
+    }
+
+    /**
+     * Returns the number of enemy bots left on the battlefield.
+     *
+     * @return the number of enemy bots left on the battlefield.
+     */
+    public int getEnemyCount() {
+        return enemyCount;
     }
 
     /**

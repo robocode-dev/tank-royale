@@ -23,7 +23,6 @@ public final class EventMapper {
         return new TickEvent(
                 event.getTurnNumber(),
                 event.getRoundNumber(),
-                event.getEnemyCount(),
                 BotStateMapper.map(event.getBotState()),
                 BulletStateMapper.map(event.getBulletStates()),
                 map(event.getEvents(), baseBot));

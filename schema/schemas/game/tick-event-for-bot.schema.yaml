@@ -7,9 +7,6 @@ properties:
   roundNumber:
     description: The current round number in the battle when event occurred
     type: integer
-  enemyCount:
-    description: Number of enemies left in the current round
-    type: integer
   botState:
     description: Current state of this bot
     $ref: bot-state.schema.yaml
@@ -25,7 +22,6 @@ properties:
       $ref: event.schema.yaml
 required:
   - roundNumber
-  - enemyCount
   - botState
   - bulletStates
   - events

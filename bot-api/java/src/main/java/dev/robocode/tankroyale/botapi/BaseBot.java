@@ -232,7 +232,7 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final int getEnemyCount() {
-        return baseBotInternals.getCurrentTickOrThrow().getEnemyCount();
+        return baseBotInternals.getCurrentTickOrThrow().getBotState().getEnemyCount();
     }
 
     /**
