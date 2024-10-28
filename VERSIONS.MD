@@ -1,20 +1,20 @@
-## 📦 0.27.0
+## 📦 0.27.0 - Fixed enemy count
 
 #### 🚀 Improvements
 
 - Bot API and schema:
-    - The `enemyCount` field was moved from TickEvent for the bot (`tick-event-for-bot`) into `BotState` instead. This
-      provides an observer with the enemy count for each bot which useful for the UI showing the current enemy count for
-      a specific bot. This benefits the Properties in the Bot Console. 
+    - The `enemyCount` field was moved from `TickEvent` for the bot (`tick-event-for-bot`) into `BotState`. This change
+      provides an observer with the enemy count for each bot, which is useful for the UI to display the current enemy
+      count for a specific bot. This also benefits the properties in the Bot Console.
 
 #### 🐞 Bug Fixes
 
+- GUI:
+    - The Properties of the Bot Console did not show the correct enemy count for a bot.
 - Server:
     - The `enemy count` in `TickEvent` was not calculated correctly for individual bots as well as for team bots.
-- GUI:
-    - The Properties of the Bot Console did not show the correct enemy count for a bot. 
 
-## 📦 0.26.0 - Support for remote servers
+## 📦 0.26.0 - Support for remote servers - 20-Oct-2024
 
 #### 🚀 Improvements
 
@@ -30,18 +30,18 @@
 #### 🐞 Bug Fixes
 
 - GUI
-    - Control Panel was shown when server was stopped or rebooted. 
+    - Control Panel was shown when server was stopped or rebooted.
 
 ## 📦 0.25.0 - Fix for Ranks and Event Queue improvements - 11-Oct-2024
 
 #### 🐞 Bug Fixes
 
 - Server:
-    - #108: The ranks were wrong as they did not reflect the total score and placements 
+    - #108: The ranks were wrong as they did not reflect the total score and placements
 - Bot API:
     - An interruptible event was not interrupted when `setInterruptible(true)` was called. The event queue contained
       more bot events than it should, due to this bug.
-    - The event queue and dispatcher was improved so it is closer to the implementation for the original Robocode. 
+    - The event queue and dispatcher was improved so it is closer to the implementation for the original Robocode.
 
 ## 📦 0.24.4 - Support for IPv6 endpoints - 19-Sep-2024
 
