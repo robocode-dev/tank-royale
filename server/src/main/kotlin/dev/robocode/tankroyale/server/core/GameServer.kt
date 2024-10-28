@@ -148,10 +148,10 @@ class GameServer(
     }
 
     private fun getTeammateIds(botId: BotId, teamId: Int?): Set<BotId> =
-        teamId?.let { getParticipantsAndTeamIds().filterValues { it == teamId }.keys.toSet().minus(botId) }
+        teamId?.let { getParticipantTeamIds().filterValues { it == teamId }.keys.toSet().minus(botId) }
             ?: emptySet()
 
-    private fun getParticipantsAndTeamIds(): Map<BotId, Int?> = participantIds
+    private fun getParticipantTeamIds(): Map<BotId, Int?> = participantIds
         .mapNotNull { (conn, botId) -> connectionHandler.getBotHandshakes()[conn]?.teamId?.let { botId to it } }
         .associateBy({ it.first }, { it.second })
 
@@ -499,14 +499,25 @@ class GameServer(
     }
 
     private fun sendGameTickToParticipants(roundNumber: Int, turn: ITurn) {
-        participants.forEach { conn ->
-            participantIds[conn]?.apply {
-                TurnToTickEventForBotMapper.map(roundNumber, turn, this)?.apply {
-                    send(conn, this)
-                }
-            }
+
+        val aliveBotTeamIds = aliveBotToTeamIdMap()
+
+        for (conn in participants) {
+            val participantId = participantIds[conn] ?: continue
+            if (modelUpdater?.isAlive(participantId) == false) continue
+
+            val teamId = aliveBotTeamIds[participantId]
+            val enemyCount = aliveBotTeamIds.filterValues { it != teamId }.count()
+
+            val event = TurnToTickEventForBotMapper.map(roundNumber, turn, participantId, enemyCount) ?: continue
+            send(conn, event)
         }
     }
+
+    private fun aliveBotToTeamIdMap(): Map<BotId, Int> =
+        participantMap.filterKeys { botId -> modelUpdater?.isAlive(botId) == true }.mapValues { (botId, participant) ->
+            participant.teamId ?: -botId.value
+        }
 
     private fun broadcastGameTickToObservers(roundNumber: Int, turn: ITurn) {
         broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(roundNumber, turn, participantMap))

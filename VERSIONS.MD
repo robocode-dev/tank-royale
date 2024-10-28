@@ -1,3 +1,9 @@
+## 📦 0.27.0
+
+#### 🐞 Bug Fixes
+- Server:
+    - The `enemy count` in `TickEvent` was not calculated correct for individual bots as well as for team bots.
+
 ## 📦 0.26.0 - Support for remote servers
 
 #### 🚀 Improvements
