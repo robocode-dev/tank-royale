@@ -82,7 +82,7 @@ final class EventQueue {
 
                     // We are already in an event handler, took action, and a new event was generated.
                     // So we want to break out of the old handler to process the new event here.
-                    throw new InterruptEventHandlerException();
+                    throw new ThreadInterruptedException();
                 }
                 break;
             }
@@ -96,7 +96,7 @@ final class EventQueue {
 
             try {
                 handleEvent(currentEvent, turnNumber);
-            } catch (InterruptEventHandlerException ignore) {
+            } catch (ThreadInterruptedException ignore) {
                 // Expected when event handler is interrupted on purpose
             } finally {
                 currentTopEventPriority = oldTopEventPriority;
