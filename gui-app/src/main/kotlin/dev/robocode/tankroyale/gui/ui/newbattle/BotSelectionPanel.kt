@@ -421,7 +421,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
             EventQueue.invokeLater {
                 with(BotRootDirectoriesConfigDialog) {
                     if (!isVisible) {
-                        showError(Messages.get("no_bot_dir"))
+                        showError(Messages.get("no_bot_directories_found"))
                         isVisible = true
                     }
                 }
