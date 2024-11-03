@@ -1,7 +1,9 @@
-## 📦 0.27.0 - Fixed enemy count
+## 📦 0.26.1 - Various bug fixes
 
 #### 🚀 Improvements
 
+- Server:
+    - When no bullets or functioning bots remain, the round ends immediately as a draw to speed things up.
 - Bot API and schema:
     - The `enemyCount` field was moved from `TickEvent` for the bot (`tick-event-for-bot`) into `BotState`. This change
       provides an observer with the enemy count for each bot, which is useful for the UI to display the current enemy
@@ -9,6 +11,8 @@
 
 #### 🐞 Bug Fixes
 
+- Bot API:
+    - Old events was not removed, causing `Maximum event queue size has been reached`.
 - GUI:
     - The Properties of the Bot Console did not show the correct enemy count for a bot.
 - Server:
