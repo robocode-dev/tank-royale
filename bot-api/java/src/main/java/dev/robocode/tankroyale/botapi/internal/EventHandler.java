@@ -1,16 +1,16 @@
 package dev.robocode.tankroyale.botapi.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 /**
  * Event handler which processes events in the order they have been added to the handler.
  */
 final class EventHandler<T> {
-    private final List<EntryWithPriority> subscriberEntries = new CopyOnWriteArrayList<>();
+    private final List<EntryWithPriority> subscriberEntries = Collections.synchronizedList(new ArrayList<>());
 
     void subscribe(Consumer<T> subscriber, int priority) {
         subscriberEntries.add(new EntryWithPriority(subscriber, priority));

@@ -3,7 +3,11 @@
 #### 🚀 Improvements
 
 - Bot API for .Net:
-    - Improved performance by replacing ImmutableList and ImmutableHashSet with List and HashSet protected with `lock`.
+    - Improved performance of event handling by replacing `ImmutableList` and `ImmutableHashSet` with `List` and
+      `HashSet` protected with `lock` blocks.
+- Bot API for Java:
+    - Improved performance of event handling by replacing `CopyOnWriteArrayList` with
+      `synchronizedList(new ArrayList<>)`.
 
 ## 📦 0.26.1 - Various bug fixes - 03-Nov-2024
 
