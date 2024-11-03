@@ -878,9 +878,21 @@ class ModelUpdater(
         }
     }
 
-    private fun isRoundOver() =
+    private fun isRoundOver() = run {
         // distinctBy(id) is necessary to take account for both bots and teams
-        getBotsOrTeams(MutableBot::isAlive).distinctBy { it.id }.count() <= 1
+        val aliveCount = getBotsOrTeams(MutableBot::isAlive).distinctBy { it.id }.count()
+        if (aliveCount <= 1) {
+            true
+        } else {
+            if (bullets.size > 0) {
+                false
+            } else {
+                // When no bullets or functioning bots remain, the round ends immediately as a draw to speed things up
+                val disabledCount = getBotsOrTeams(MutableBot::isDisabled).distinctBy { it.id }.count()
+                disabledCount == aliveCount
+            }
+        }
+    }
 
     private fun getBotsOrTeams(filter: (MutableBot) -> Boolean): Collection<ParticipantId> {
         val botIds = botsMap.values.filter { filter.invoke(it) }.map { it.id }
