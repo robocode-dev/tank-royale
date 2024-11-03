@@ -93,6 +93,8 @@ final class EventQueue {
             currentTopEventPriority = getPriority(currentEvent);
             currentTopEvent = currentEvent;
 
+            events.remove(currentEvent);
+
             try {
                 handleEvent(currentEvent, turnNumber);
             } catch (InterruptEventHandlerException ignore) {
@@ -184,9 +186,7 @@ final class EventQueue {
 
     private void dumpEvents() {
         StringJoiner stringJoiner = new StringJoiner(", ");
-        events.forEach(event -> {
-            stringJoiner.add(event.getClass().getSimpleName() + "(" + event.getTurnNumber() + ")");
-        });
+        events.forEach(event -> stringJoiner.add(event.getClass().getSimpleName() + "(" + event.getTurnNumber() + ")"));
         System.out.println("events: " + stringJoiner);
     }
 }

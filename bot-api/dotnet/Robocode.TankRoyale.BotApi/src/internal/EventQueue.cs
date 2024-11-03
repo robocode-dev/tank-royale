@@ -99,6 +99,8 @@ internal sealed class EventQueue : IComparer<BotEvent>
             currentTopEventPriority = GetPriority(currentEvent);
             currentTopEvent = currentEvent;
 
+            events.Remove(currentEvent);
+
             try
             {
                 HandleEvent(currentEvent, turnNumber);
