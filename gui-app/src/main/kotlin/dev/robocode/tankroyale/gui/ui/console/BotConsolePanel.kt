@@ -33,11 +33,18 @@ class BotConsolePanel(bot: Participant) : BaseBotConsolePanel(bot) {
     }
 
     private fun printInitialStdOutput() {
-        Client.getStandardOutput(bot.id)?.entries?.forEach { (_, map) ->
-            map.entries.toSet().forEach { (turn, output) -> append(output, turn) }
+        // Create a thread-safe copy of entries before iteration
+        Client.getStandardOutput(bot.id)?.entries?.toList()?.forEach { (_, map) ->
+            // Create a snapshot of the inner map entries as well
+            map.entries.toList().forEach { (turn, output) ->
+                append(output, turn)
+            }
         }
-        Client.getStandardError(bot.id)?.values?.forEach { turns ->
-            turns.forEach { (turn, error) -> appendError(error, turn) }
+
+        Client.getStandardError(bot.id)?.values?.toList()?.forEach { turns ->
+            turns.toList().forEach { (turn, error) ->
+                appendError(error, turn)
+            }
         }
     }
 
