@@ -3,7 +3,7 @@
 assertj = "3.26.3"
 junit = "5.11.3"
 system-stubs = "2.1.7"
-kotest = "6.0.0.M1"
+kotest = "5.9.1"
 mockk = "1.13.13"
 
 [libraries]
