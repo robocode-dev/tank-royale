@@ -1,4 +1,11 @@
-## 📦 0.26.1 - Various bug fixes
+## 📦 0.26.2
+
+#### 🚀 Improvements
+
+- Bot API for .Net:
+    - Improved performance by replacing ImmutableList and ImmutableHashSet with List and HashSet protected with `lock`.
+
+## 📦 0.26.1 - Various bug fixes - 03-Nov-2024
 
 #### 🚀 Improvements
 
