@@ -70,7 +70,7 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     @Override
     public final boolean isRunning() {
-        return botInternals.isRunning();
+        return baseBotInternals.isRunning();
     }
 
     /**

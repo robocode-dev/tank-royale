@@ -133,7 +133,7 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private void stopThread() {
-        if (!isRunning())
+        if (!baseBotInternals.isRunning())
             return;
 
         baseBotInternals.setRunning(false);
@@ -166,10 +166,6 @@ public final class BotInternals implements IStopResumeListener {
 
     private void onDeath(DeathEvent e) {
         stopThread();
-    }
-
-    public boolean isRunning() {
-        return baseBotInternals.isRunning();
     }
 
     public void setTurnRate(double turnRate) {
@@ -306,7 +302,7 @@ public final class BotInternals implements IStopResumeListener {
     public void waitFor(Callable<Boolean> condition) {
         do {
             bot.go();
-        } while (isRunning() && !call(condition));
+        } while (baseBotInternals.isRunning() && !call(condition));
     }
 
     private boolean call(Callable<Boolean> condition) {
