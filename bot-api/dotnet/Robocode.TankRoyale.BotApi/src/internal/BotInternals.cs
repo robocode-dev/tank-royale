@@ -60,38 +60,7 @@ internal sealed class BotInternals : IStopResumeListener
     {
         baseBotInternals.StopThread(); // sanity before starting a new thread (later)
         ClearRemaining();
-        baseBotInternals.StartThread(CreateRunnable);
-    }
-
-    private void CreateRunnable()
-    {
-        baseBotInternals.IsRunning = true;
-        try
-        {
-            baseBotInternals.EnableEventHandling(true); // prevent event queue max limit to be reached
-
-            while (baseBotInternals.IsRunning)
-            {
-                try
-                {
-                    bot.Run();
-                }
-                catch (ThreadInterruptedException)
-                {
-                    // Expected, as this exception is used for stop the thread execution
-                }
-            }
-
-            // Skip every turn after the run method has exited
-            while (baseBotInternals.IsRunning)
-            {
-                bot.Go();
-            }
-        }
-        finally
-        {
-            baseBotInternals.EnableEventHandling(false); // prevent event queue max limit to be reached
-        }
+        baseBotInternals.StartThread(bot);
     }
 
     private void ClearRemaining()

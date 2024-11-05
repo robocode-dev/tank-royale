@@ -165,13 +165,41 @@ public sealed class BaseBotInternals
         }
     }
 
-    public void StartThread(ThreadStart threadStart)
+    internal void StartThread(IBot bot)
     {
-        thread = new Thread(threadStart);
+        thread = new Thread(() => CreateRunnable(bot));;
         thread.Start();
     }
 
-    public void StopThread()
+    private void CreateRunnable(IBot bot)
+    {
+        IsRunning = true;
+        try
+        {
+            EnableEventHandling(true); // prevent event queue max limit to be reached
+
+            try
+            {
+                bot.Run();
+            }
+            catch (ThreadInterruptedException)
+            {
+                return;
+            }
+
+            // Skip every turn after the run method has exited
+            while (IsRunning)
+            {
+                bot.Go();
+            }
+        }
+        finally
+        {
+            EnableEventHandling(false); // prevent event queue max limit to be reached
+        }
+    }
+
+    internal void StopThread()
     {
         if (!IsRunning)
             return;

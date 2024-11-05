@@ -66,31 +66,7 @@ public final class BotInternals implements IStopResumeListener {
     private void onFirstTurn() {
         baseBotInternals.stopThread(); // sanity before starting a new thread (later)
         clearRemaining();
-        baseBotInternals.startThread(createRunnable());
-    }
-
-    private Runnable createRunnable() {
-        return () -> {
-            baseBotInternals.setRunning(true);
-            try {
-                baseBotInternals.enableEventHandling(true);
-
-                while (baseBotInternals.isRunning()) {
-                    try {
-                        bot.run();
-                    } catch (ThreadInterruptedException ignore) {
-                        // Expected, as this exception is used for stop the thread execution
-                    }
-                }
-
-                // Skip every turn after the run method has exited
-                while (baseBotInternals.isRunning()) {
-                    bot.go();
-                }
-            } finally {
-                baseBotInternals.enableEventHandling(false); // prevent event queue max limit to be reached
-            }
-        };
+        baseBotInternals.startThread(bot);
     }
 
     private void clearRemaining() {

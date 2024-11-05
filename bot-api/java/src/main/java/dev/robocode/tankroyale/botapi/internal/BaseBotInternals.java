@@ -200,12 +200,34 @@ public final class BaseBotInternals {
         return isRunning.get();
     }
 
-    public void startThread(Runnable runnable) {
-        thread = new Thread(runnable);
+    void startThread(IBot bot) {
+        thread = new Thread(createRunnable(bot));
         thread.start();
     }
 
-    public void stopThread() {
+    private Runnable createRunnable(IBot bot) {
+        return () -> {
+            setRunning(true);
+            try {
+                enableEventHandling(true);
+
+                try {
+                    bot.run();
+                } catch (ThreadInterruptedException e) {
+                    return;
+                }
+
+                // Skip every turn after the run method has exited
+                while (isRunning()) {
+                    bot.go();
+                }
+            } finally {
+                enableEventHandling(false); // prevent event queue max limit to be reached
+            }
+        };
+    }
+
+    void stopThread() {
         if (!isRunning())
             return;
 
