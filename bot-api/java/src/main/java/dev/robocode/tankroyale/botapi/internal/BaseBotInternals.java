@@ -219,7 +219,11 @@ public final class BaseBotInternals {
 
                 // Skip every turn after the run method has exited
                 while (isRunning()) {
-                    bot.go();
+                    try {
+                        bot.go();
+                    } catch (ThreadInterruptedException e) {
+                        return;
+                    }
                 }
             } finally {
                 enableEventHandling(false); // prevent event queue max limit to be reached

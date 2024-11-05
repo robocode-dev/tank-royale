@@ -190,7 +190,14 @@ public sealed class BaseBotInternals
             // Skip every turn after the run method has exited
             while (IsRunning)
             {
-                bot.Go();
+                try
+                {
+                    bot.Go();
+                }
+                catch (ThreadInterruptedException)
+                {
+                    return;
+                }
             }
         }
         finally
