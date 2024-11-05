@@ -87,6 +87,8 @@ public final class BaseBotInternals {
 
     private final Object nextTurnMonitor = new Object();
 
+    private Thread thread;
+
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private boolean isStopped;
 
@@ -196,6 +198,23 @@ public final class BaseBotInternals {
 
     public boolean isRunning() {
         return isRunning.get();
+    }
+
+    public void startThread(Runnable runnable) {
+        thread = new Thread(runnable);
+        thread.start();
+    }
+
+    public void stopThread() {
+        if (!isRunning())
+            return;
+
+        setRunning(false);
+
+        if (thread != null) {
+            thread.interrupt();
+            thread = null;
+        }
     }
 
     public void enableEventHandling(boolean enable) {
@@ -332,15 +351,28 @@ public final class BaseBotInternals {
     }
 
     private void waitForNextTurn(int turnNumber) {
+        // Most bot methods will call waitForNextTurn(), and hence this is a central place to stop a rogue thread that
+        // cannot be killed any other way.
+        stopRogueThread();
+
         synchronized (nextTurnMonitor) {
-            while (isRunning() && turnNumber == getCurrentTickOrThrow().getTurnNumber()) {
+            while (isRunning() &&
+                    turnNumber == getCurrentTickOrThrow().getTurnNumber() &&
+                    Thread.currentThread() == thread &&
+                    !Thread.currentThread().isInterrupted()
+            ) {
                 try {
                     nextTurnMonitor.wait(); // Wait for next turn
                 } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    return; // stop waiting, thread has been interrupted (stopped)
+                    throw new ThreadInterruptedException();
                 }
             }
+        }
+    }
+
+    private void stopRogueThread() {
+        if (Thread.currentThread() != thread) {
+            throw new ThreadInterruptedException();
         }
     }
 

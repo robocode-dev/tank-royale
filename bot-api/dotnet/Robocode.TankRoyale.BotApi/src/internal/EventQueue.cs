@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Robocode.TankRoyale.BotApi.Events;
 using static System.Int32;
 
@@ -105,7 +106,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
                     // We are already in an event handler, took action, and a new event was generated.
                     // So we want to break out of the old handler to process the new event here.
-                    throw new InterruptEventHandlerException();
+                    throw new ThreadInterruptedException();
                 }
 
                 break;
@@ -125,7 +126,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
             {
                 HandleEvent(currentEvent, turnNumber);
             }
-            catch (InterruptEventHandlerException)
+            catch (ThreadInterruptedException)
             {
                 // Expected when event handler is interrupted on purpose
             }

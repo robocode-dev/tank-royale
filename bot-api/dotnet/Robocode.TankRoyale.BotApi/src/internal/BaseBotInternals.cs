@@ -45,6 +45,8 @@ public sealed class BaseBotInternals
 
     private readonly object nextTurnMonitor = new();
 
+    private Thread thread;
+
     private bool isRunning;
     private readonly object isRunningLock = new();
 
@@ -162,6 +164,27 @@ public sealed class BaseBotInternals
             }
         }
     }
+
+    public void StartThread(ThreadStart threadStart)
+    {
+        thread = new Thread(threadStart);
+        thread.Start();
+    }
+
+    public void StopThread()
+    {
+        if (!IsRunning)
+            return;
+
+        IsRunning = false;
+
+        if (thread != null)
+        {
+            thread.Interrupt();
+            thread = null;
+        }
+    }
+
 
     public void EnableEventHandling(bool enable)
     {
@@ -297,20 +320,28 @@ public sealed class BaseBotInternals
 
     private void WaitForNextTurn(int turnNumber)
     {
+        // Most bot methods will call waitForNextTurn(), and hence this is a central place to stop a rogue thread that
+        // cannot be killed any other way.
+        StopRogueThread();
+
         lock (nextTurnMonitor)
         {
-            while (IsRunning && turnNumber >= CurrentTickOrThrow.TurnNumber)
+            while (
+                IsRunning &&
+                turnNumber == CurrentTickOrThrow.TurnNumber &&
+                Thread.CurrentThread == thread
+            )
             {
-                try
-                {
-                    Monitor.Wait(nextTurnMonitor);
-                }
-                catch (ThreadInterruptedException)
-                {
-                    Thread.CurrentThread.Interrupt();
-                    return; // stop waiting, thread has been interrupted (stopped)
-                }
+                Monitor.Wait(nextTurnMonitor);
             }
+        }
+    }
+
+    private void StopRogueThread()
+    {
+        if (Thread.CurrentThread != thread)
+        {
+            Thread.CurrentThread.Interrupt();
         }
     }
 
@@ -322,7 +353,7 @@ public sealed class BaseBotInternals
         }
         catch (Exception e)
         {
-            if (e is InterruptEventHandlerException)
+            if (e is ThreadInterruptedException)
             {
                 return;
             }

@@ -14,8 +14,6 @@ public final class BotInternals implements IStopResumeListener {
     private final Bot bot;
     private final BaseBotInternals baseBotInternals;
 
-    private Thread thread;
-
     private boolean overrideTurnRate;
     private boolean overrideGunTurnRate;
     private boolean overrideRadarTurnRate;
@@ -66,9 +64,33 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private void onFirstTurn() {
-        stopThread(); // sanity before starting a new thread (later)
+        baseBotInternals.stopThread(); // sanity before starting a new thread (later)
         clearRemaining();
-        startThread();
+        baseBotInternals.startThread(createRunnable());
+    }
+
+    private Runnable createRunnable() {
+        return () -> {
+            baseBotInternals.setRunning(true);
+            try {
+                baseBotInternals.enableEventHandling(true);
+
+                while (baseBotInternals.isRunning()) {
+                    try {
+                        bot.run();
+                    } catch (ThreadInterruptedException ignore) {
+                        // Expected, as this exception is used for stop the thread execution
+                    }
+                }
+
+                // Skip every turn after the run method has exited
+                while (baseBotInternals.isRunning()) {
+                    bot.go();
+                }
+            } finally {
+                baseBotInternals.enableEventHandling(false); // prevent event queue max limit to be reached
+            }
+        };
     }
 
     private void clearRemaining() {
@@ -83,19 +105,19 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private void onGameAborted() {
-        stopThread();
+        baseBotInternals.stopThread();
     }
 
     private void onRoundEnded() {
-        stopThread();
+        baseBotInternals.stopThread();
     }
 
     private void onGameEnded(GameEndedEvent e) {
-        stopThread();
+        baseBotInternals.stopThread();
     }
 
     private void onDisconnected(DisconnectedEvent e) {
-        stopThread();
+        baseBotInternals.stopThread();
     }
 
     private void processTurn() {
@@ -110,50 +132,6 @@ public final class BotInternals implements IStopResumeListener {
         }
     }
 
-    private void startThread() {
-        thread = new Thread(createCallable());
-        thread.start();
-    }
-
-    private Runnable createCallable() {
-        return () -> {
-            baseBotInternals.setRunning(true);
-            try {
-                baseBotInternals.enableEventHandling(true);
-                bot.run();
-
-                // Skip every turn after the run method has exited
-                while (baseBotInternals.isRunning()) {
-                    bot.go();
-                }
-            } finally {
-                baseBotInternals.enableEventHandling(false); // prevent event queue max limit to be reached
-            }
-        };
-    }
-
-    private void stopThread() {
-        if (!baseBotInternals.isRunning())
-            return;
-
-        baseBotInternals.setRunning(false);
-
-        if (thread != null) {
-            thread.interrupt();
-            try {
-                thread.join(1000);
-                if (thread.isAlive()) {
-                    System.err.println("The thread of the bot could not be interrupted causing the bot to hang.\nSo the bot was stopped by force.");
-                    System.exit(-1); // last resort without Thread.stop()
-                }
-            } catch (InterruptedException e) {
-                thread.interrupt();
-            } finally {
-                thread = null;
-            }
-        }
-    }
-
     private void onHitWall() {
         distanceRemaining = 0;
     }
@@ -165,7 +143,7 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private void onDeath(DeathEvent e) {
-        stopThread();
+        baseBotInternals.stopThread();
     }
 
     public void setTurnRate(double turnRate) {

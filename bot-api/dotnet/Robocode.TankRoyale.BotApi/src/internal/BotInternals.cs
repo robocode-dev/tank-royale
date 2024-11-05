@@ -10,8 +10,6 @@ internal sealed class BotInternals : IStopResumeListener
     private readonly IBot bot;
     private readonly BaseBotInternals baseBotInternals;
 
-    private Thread thread;
-
     private bool overrideTurnRate;
     private bool overrideGunTurnRate;
     private bool overrideRadarTurnRate;
@@ -60,9 +58,40 @@ internal sealed class BotInternals : IStopResumeListener
 
     private void OnFirstTurn()
     {
-        StopThread(); // sanity before starting a new thread (later)
+        baseBotInternals.StopThread(); // sanity before starting a new thread (later)
         ClearRemaining();
-        StartThread();
+        baseBotInternals.StartThread(CreateRunnable);
+    }
+
+    private void CreateRunnable()
+    {
+        baseBotInternals.IsRunning = true;
+        try
+        {
+            baseBotInternals.EnableEventHandling(true); // prevent event queue max limit to be reached
+
+            while (baseBotInternals.IsRunning)
+            {
+                try
+                {
+                    bot.Run();
+                }
+                catch (ThreadInterruptedException)
+                {
+                    // Expected, as this exception is used for stop the thread execution
+                }
+            }
+
+            // Skip every turn after the run method has exited
+            while (baseBotInternals.IsRunning)
+            {
+                bot.Go();
+            }
+        }
+        finally
+        {
+            baseBotInternals.EnableEventHandling(false); // prevent event queue max limit to be reached
+        }
     }
 
     private void ClearRemaining()
@@ -79,22 +108,22 @@ internal sealed class BotInternals : IStopResumeListener
 
     private void OnGameAborted(object dummy)
     {
-        StopThread();
+        baseBotInternals.StopThread();
     }
 
     private void OnRoundEnded(RoundEndedEvent evt)
     {
-        StopThread();
+        baseBotInternals.StopThread();
     }
 
     private void OnGameEnded(GameEndedEvent evt)
     {
-        StopThread();
+        baseBotInternals.StopThread();
     }
 
     private void OnDisconnected(DisconnectedEvent evt)
     {
-        StopThread();
+        baseBotInternals.StopThread();
     }
 
     private void ProcessTurn()
@@ -113,58 +142,6 @@ internal sealed class BotInternals : IStopResumeListener
         }
     }
 
-    private void StartThread()
-    {
-        thread = new Thread(() =>
-        {
-            baseBotInternals.IsRunning = true;
-            try
-            {
-                baseBotInternals.EnableEventHandling(true); // prevent event queue max limit to be reached
-                bot.Run();
-
-                // Skip every turn after the run method has exited
-                while (baseBotInternals.IsRunning)
-                {
-                    bot.Go();
-                }
-            }
-            finally
-            {
-                baseBotInternals.EnableEventHandling(false); // prevent event queue max limit to be reached
-            }
-        });
-        thread.Start();
-    }
-
-    private void StopThread()
-    {
-        if (!IsRunning) return;
-
-        baseBotInternals.IsRunning = false;
-
-        if (thread == null) return;
-
-        thread.Interrupt();
-        try
-        {
-            thread.Join(1000);
-            if (thread.IsAlive)
-            {
-                Console.Error.WriteLine("The thread of the bot could not be interrupted causing the bot to hang.\nSo the bot was stopped by force.");
-                Environment.Exit(-1);
-            }
-        }
-        catch (ThreadInterruptedException)
-        {
-            thread.Interrupt();
-        }
-        finally
-        {
-            thread = null;
-        }
-    }
-
     private void OnHitWall(HitWallEvent evt)
     {
         DistanceRemaining = 0;
@@ -178,10 +155,8 @@ internal sealed class BotInternals : IStopResumeListener
 
     private void OnDeath(DeathEvent evt)
     {
-        StopThread();
+        baseBotInternals.StopThread();
     }
-
-    internal bool IsRunning => baseBotInternals.IsRunning;
 
     public void SetTurnRate(double turnRate)
     {
@@ -324,13 +299,13 @@ internal sealed class BotInternals : IStopResumeListener
     }
 
     internal delegate bool ConditionDelegate();
-    
+
     internal void WaitFor(ConditionDelegate condition)
     {
         do
         {
             bot.Go();
-        } while (IsRunning && !condition());
+        } while (baseBotInternals.IsRunning && !condition());
     }
 
     internal void Stop(bool overwrite)

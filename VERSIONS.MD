@@ -1,3 +1,15 @@
+## 📦 0.27.0 - Bugfixes for the Robocode Bridge
+
+This version fixes issues found when running legacy bots with the
+[Robocode API Bridge](https://github.com/robocode-dev/robocode-api-bridge) caused by the Tank Royale Bot APIs.
+
+#### 🐞 Bug Fixes
+
+- Bot API:
+    - Bridged bots run multiple threads after round 2 due to old thread(s) hanging that could not be stopped.
+    - Bridged bots could not be restarted as they got a connection error with the WebSocket when restarting.
+    - .Net bots sometimes exited when running at max speed without any exceptions occurring.
+
 ## 📦 0.26.2
 
 #### 🚀 Improvements
@@ -19,15 +31,6 @@
     - The `enemyCount` field was moved from `TickEvent` for the bot (`tick-event-for-bot`) into `BotState`. This change
       provides an observer with the enemy count for each bot, which is useful for the UI to display the current enemy
       count for a specific bot. This also benefits the properties in the Bot Console.
-
-#### 🐞 Bug Fixes
-
-- Bot API:
-    - Old events was not removed, causing `Maximum event queue size has been reached`.
-- GUI:
-    - The Properties of the Bot Console did not show the correct enemy count for a bot.
-- Server:
-    - The `enemy count` in `TickEvent` was not calculated correctly for individual bots as well as for team bots.
 
 ## 📦 0.26.0 - Support for remote servers - 20-Oct-2024
 
