@@ -32,7 +32,8 @@ final class EventQueue {
         currentTopEventPriority = MIN_VALUE;
     }
 
-    List<BotEvent> getEvents() {
+    List<BotEvent> getEvents(int turnNumber) {
+        removeOldEvents(turnNumber);
         return new ArrayList<>(events);
     }
 

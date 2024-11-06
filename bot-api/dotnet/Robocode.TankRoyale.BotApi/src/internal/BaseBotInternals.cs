@@ -251,7 +251,7 @@ public sealed class BaseBotInternals
 
     internal BotEventHandlers BotEventHandlers { get; }
 
-    internal IList<E.BotEvent> Events => eventQueue.Events;
+    internal IList<E.BotEvent> Events => eventQueue.Events(CurrentTickOrThrow.TurnNumber);
 
     internal void ClearEvents() => eventQueue.ClearEvents();
 

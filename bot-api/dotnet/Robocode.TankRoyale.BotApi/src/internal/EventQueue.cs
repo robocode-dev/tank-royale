@@ -38,14 +38,12 @@ internal sealed class EventQueue : IComparer<BotEvent>
         currentTopEventPriority = MinValue;
     }
 
-    internal IList<BotEvent> Events
+    internal IList<BotEvent> Events(int turnNumber)
     {
-        get
+        lock (events)
         {
-            lock (events)
-            {
-                return new List<BotEvent>(events);
-            }
+            RemoveOldEvents(turnNumber);
+            return new List<BotEvent>(events);
         }
     }
 
