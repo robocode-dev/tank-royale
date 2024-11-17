@@ -16,7 +16,7 @@ plugins {
 
 dependencies {
     implementation(libs.gson)
-    implementation(libs.java.websocket)
+    implementation(files("${rootProject.projectDir}/vendor/Java-WebSocket-1.6.0-SNAPSHOT.jar"))
 }
 
 java {
