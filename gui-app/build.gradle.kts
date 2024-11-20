@@ -30,6 +30,7 @@ plugins {
 dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.miglayout.swing)
+    implementation(libs.jsvg)
 
     testImplementation(testLibs.kotest.junit5)
 }

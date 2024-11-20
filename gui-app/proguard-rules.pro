@@ -7,3 +7,12 @@
 -dontoptimize
 
 -keep class dev.robocode.** { *; }
+-keep class com.github.weisj.jsvg.** { *; }
+-keepattributes *Annotation*
+-keepattributes RuntimeVisibleAnnotations
+-keepattributes RuntimeInvisibleAnnotations
+-keepclassmembers class * extends java.lang.Enum {
+    <fields>;
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
