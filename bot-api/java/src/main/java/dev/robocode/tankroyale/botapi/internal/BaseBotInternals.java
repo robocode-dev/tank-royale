@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.BulletState;
+import dev.robocode.tankroyale.botapi.Color;
 import dev.robocode.tankroyale.botapi.GameSetup;
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.InitialPosition;
@@ -26,11 +27,13 @@ import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.schema.game.*;
 
+import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
@@ -66,6 +69,8 @@ public final class BaseBotInternals {
     private WebSocket socket;
     private ServerHandshake serverHandshake;
     private final CountDownLatch closedLatch = new CountDownLatch(1);
+
+    private final GraphicsState graphicsState = new GraphicsState();
 
     private final IBaseBot baseBot;
     private final BotInfo botInfo;
@@ -361,6 +366,7 @@ public final class BaseBotInternals {
     private void sendIntent() {
         synchronized (this) {
             transferStdOutToBotIntent();
+            renderGraphicsToBotIntent();
             socket.sendText(gson.toJson(botIntent), true);
             botIntent.getTeamMessages().clear();
         }
@@ -375,6 +381,11 @@ public final class BaseBotInternals {
             String error = recordedStdErr.readNext();
             botIntent.setStdErr(error);
         }
+    }
+
+    private void renderGraphicsToBotIntent() {
+        botIntent.setDebugGraphics(graphicsState.getSVGOutput());
+        graphicsState.clear();
     }
 
     private void waitForNextTurn(int turnNumber) {
@@ -610,6 +621,10 @@ public final class BaseBotInternals {
             distance += (speed = getNewTargetSpeed(speed, 0));
         }
         return distance;
+    }
+
+    public Graphics2D getGraphics() {
+        return graphicsState.getGraphics();
     }
 
     public boolean addCondition(Condition condition) {

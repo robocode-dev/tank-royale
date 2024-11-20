@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.*;
 
+import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -1066,6 +1067,13 @@ public interface IBaseBot {
      * @param color is the color of the gun or {@code null} if the bot must use the default color instead.
      */
     void setGunColor(Color color);
+
+    /**
+     * Gets a graphics object that the bot can paint debug information to.
+     *
+     * @return A graphics area to use for debugging
+     */
+    Graphics2D getGraphics();
 
     /**
      * The event handler triggered when connected to the server.
