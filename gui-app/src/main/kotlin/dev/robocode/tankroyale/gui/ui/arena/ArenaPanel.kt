@@ -1,5 +1,9 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
+import com.github.weisj.jsvg.parser.SVGLoader
+import com.github.weisj.jsvg.parser.DefaultParserProvider
+import com.github.weisj.jsvg.parser.LoaderContext
+import com.github.weisj.jsvg.parser.MutableLoaderContext
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.*
@@ -44,6 +48,8 @@ object ArenaPanel : JPanel() {
     private val tick = AtomicBoolean(false)
 
     private var scale = 1.0
+
+    private val svgLoader = SVGLoader()
 
     init {
         addMouseWheelListener { e -> if (e != null) onMouseWheel(e) }
@@ -243,6 +249,7 @@ object ArenaPanel : JPanel() {
             drawScanArc(g, bot)
             drawEnergy(g, bot)
             drawNameAndVersion(g, bot)
+            drawDebugGraphics(g, bot)
         }
     }
 
@@ -379,6 +386,24 @@ object ArenaPanel : JPanel() {
             return HslColor(hsl.hue, hsl.saturation, 0.2f).toColor()
         }
         return color
+    }
+
+    private fun drawDebugGraphics(g: Graphics2D, bot: BotState) {
+        if (bot.debugGraphics == null) return
+
+        val oldState = Graphics2DState(g)
+        try {
+            val svg = svgLoader.load(bot.debugGraphics.byteInputStream(), null, LoaderContext.builder().parserProvider(DefaultParserProvider()).build())
+            // Origin is already at bottom-left due to previous transforms in drawArena()
+            
+            // Render SVG scaled to arena dimensions
+            svg?.render(null, g)
+
+        } catch (e: Exception) {
+            // Silently ignore SVG parsing/rendering errors
+        } finally {
+            oldState.restore(g)
+        }
     }
 
     class BotHitExplosion(

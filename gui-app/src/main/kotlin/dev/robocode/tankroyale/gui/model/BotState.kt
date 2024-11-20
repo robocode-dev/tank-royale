@@ -29,4 +29,5 @@ data class BotState(
     val gunColor: String? = null,
     val stdOut: String? = null,
     val stdErr: String? = null,
+    val debugGraphics: String? = null
 )
