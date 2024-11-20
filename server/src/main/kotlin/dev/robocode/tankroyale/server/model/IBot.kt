@@ -80,6 +80,9 @@ interface IBot {
     /** Standard error (last data) */
     val stdErr: String?
 
+    /** Debug graphics as SVG */
+    val debugGraphics: String?
+
     /** Check if bot is alive */
     val isAlive: Boolean get() = energy >= 0
 

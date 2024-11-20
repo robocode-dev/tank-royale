@@ -289,6 +289,7 @@ class ModelUpdater(
 
             updateBotTurnRatesAndDirections(bot, this)
             updateBotColors(bot, this)
+            updateDebugGraphics(bot, this)
             processStdErrAndStdOut(bot, this)
             processTeamMessages(bot, this)
         }
@@ -1068,6 +1069,11 @@ class ModelUpdater(
                 tracksColor = fromColor(intent.tracksColor)
                 gunColor = fromColor(intent.gunColor)
             }
+        }
+
+        private fun updateDebugGraphics(bot: MutableBot, intent: BotIntent) {
+            if (intent.debugGraphics != null)
+                bot.debugGraphics = intent.debugGraphics
         }
 
         private fun fromColor(color: String?) = color?.let { from(it) }

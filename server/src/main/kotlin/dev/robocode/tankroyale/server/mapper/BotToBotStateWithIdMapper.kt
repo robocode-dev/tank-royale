@@ -33,6 +33,7 @@ object BotToBotStateWithIdMapper {
             botState.gunColor = gunColor?.value
             botState.stdOut = stdOut
             botState.stdErr = stdErr
+            botState.debugGraphics = debugGraphics
             return botState
         }
     }

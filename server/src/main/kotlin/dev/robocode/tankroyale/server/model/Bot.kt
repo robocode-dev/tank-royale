@@ -49,7 +49,8 @@ data class Bot(
     override val gunColor: Color? = null,
     override val stdOut: String? = null,
     override val stdErr: String? = null,
-    override val teammateIds: Set<BotId> = HashSet()
+    override val teammateIds: Set<BotId> = HashSet(),
+    override val debugGraphics: String? = null,
 ) : IBot {
 
     /** X coordinate which is a shortcut for `position.x`. */

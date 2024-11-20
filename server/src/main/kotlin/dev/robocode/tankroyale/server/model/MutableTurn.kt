@@ -115,7 +115,9 @@ data class MutableTurn(
                 bot.tracksColor,
                 bot.gunColor,
                 bot.stdOut,
-                bot.stdErr
+                bot.stdErr,
+                HashSet(),
+                bot.debugGraphics
             )
 
         /** Deep copies a bullet */
