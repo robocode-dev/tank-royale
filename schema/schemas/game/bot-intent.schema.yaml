@@ -73,3 +73,6 @@ properties:
     maxItems: 4
     items:
       $ref: team-message.schema.yaml
+  debugGraphics:
+    description: Debug graphics to draw on the screen
+    type: string
