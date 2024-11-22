@@ -1071,7 +1071,7 @@ public interface IBaseBot {
     /**
      * Gets a graphics object that the bot can paint debug information to.
      *
-     * @return A graphics area to use for debugging
+     * @return A graphics canvas to use for painting graphical objects making debugging easier.
      */
     Graphics2D getGraphics();
 
