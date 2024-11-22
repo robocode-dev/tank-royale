@@ -28,7 +28,6 @@ public class MockedServer
     public static int TurnTimeout = 30_000;
     public static int ReadyTimeout = 1_000_000;
 
-    public static int BotEnemyCount = 7;
     public static double BotEnergy = 99.7;
     public static double BotX = 44.5;
     public static double BotY = 721.34;
@@ -317,7 +316,6 @@ public class MockedServer
             Type = EnumUtil.GetEnumMemberAttrValue(MessageType.TickEventForBot),
             RoundNumber = 1,
             TurnNumber = turnNumber,
-            EnemyCount = BotEnemyCount
         };
 
         var turnRate = BotTurnRate;
