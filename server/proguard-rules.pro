@@ -4,7 +4,7 @@
 
 -dontoptimize
 -dontobfuscate
--dontwarn
+-dontwarn # remove when debugging
 
 -keepattributes AnnotationDefault,*Annotation*
 
