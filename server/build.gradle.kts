@@ -29,7 +29,7 @@ dependencies {
     implementation(project(":schema:jvm"))
 
     implementation(libs.java.websocket)
-    implementation(libs.slf4j.simple)
+    implementation(libs.logback.classic)
     implementation(libs.picocli)
     implementation(libs.jansi)
     implementation(libs.gson)

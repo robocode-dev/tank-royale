@@ -11,6 +11,9 @@ This version fixes issues found when running legacy bots with the
 - Bot API for Java:
     - Improved performance of event handling by replacing `CopyOnWriteArrayList` with
       `synchronizedList(new ArrayList<>)`.
+- Server:
+    - Improved logging so errors are written out to standard out, and stack traces are omitted.
+    - SimpleLogger was replaces with Logback.
 
 #### 🐞 Bug Fixes
 

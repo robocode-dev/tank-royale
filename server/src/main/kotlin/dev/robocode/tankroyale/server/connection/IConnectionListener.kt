@@ -5,7 +5,7 @@ import org.java_websocket.WebSocket
 
 /** Connection listener interface. */
 interface IConnectionListener {
-    fun onException(clientSocket: WebSocket, exception: Exception)
+    fun onException(clientSocket: WebSocket?, exception: Exception)
     fun onBotJoined(clientSocket: WebSocket, handshake: BotHandshake)
     fun onBotLeft(clientSocket: WebSocket, handshake: BotHandshake)
     fun onBotReady(clientSocket: WebSocket, handshake: BotHandshake)

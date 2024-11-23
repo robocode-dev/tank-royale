@@ -9,9 +9,12 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    override fun onException(clientSocket: WebSocket, exception: Exception) {
-        log.error("Bot error: client: {}, message: {}", clientSocket.remoteSocketAddress, exception.message)
-        exception.printStackTrace()
+    override fun onException(clientSocket: WebSocket?, exception: Exception) {
+        if (clientSocket != null) {
+            log.error("Bot error: client: {}, message: {}", clientSocket.remoteSocketAddress, exception.message)
+        } else {
+            log.error("Bot error: message: {}", exception.message)
+        }
     }
 
     override fun onBotJoined(clientSocket: WebSocket, handshake: BotHandshake) {

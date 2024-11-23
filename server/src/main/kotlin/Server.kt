@@ -129,7 +129,7 @@ class Server : Runnable {
                     Default port is $DEFAULT_PORT used for http.
                 """.trimIndent()
             )
-            exitProcess(-1)
+            exitProcess(1) // general error
         }
 
         // Run thread that checks standard input (stdin) for an exit signal ("q")
@@ -139,7 +139,7 @@ class Server : Runnable {
                     nextLine().apply {
                         if (trim().equals("q", ignoreCase = true)) {
                             gameServer.stop()
-                            exitProcess(1)
+                            exitProcess(1) // general error
                         }
                     }
                 }

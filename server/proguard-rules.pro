@@ -4,6 +4,7 @@
 
 -dontoptimize
 -dontobfuscate
+-dontwarn
 
 -keepattributes AnnotationDefault,*Annotation*
 
@@ -11,5 +12,5 @@
 -keep class dev.robocode.tankroyale.server.** { *; }
 -keep class picocli.** { *; }
 -keep class org.fusesource.jansi.** { *; }
--keep class org.slf4j.** { *; }
+-keep class ch.qos.logback.classic.** { *; }
 -keep class org.java_websocket.** { *; }
