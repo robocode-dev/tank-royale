@@ -66,9 +66,9 @@ properties:
   gunColor:
     description: New color of gun, if changed
     $ref: color.schema.yaml
-  debugGraphics:
-    description: Debug graphics to be drawn over the battlefield if enabled
-    type: string
+  isDebuggingEnabled:
+    description: Flag specifying if the bot is allowed to use debugging features
+    type: boolean
 required:
   - energy
   - x

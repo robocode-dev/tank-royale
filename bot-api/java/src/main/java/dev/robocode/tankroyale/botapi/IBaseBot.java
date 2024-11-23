@@ -1069,6 +1069,13 @@ public interface IBaseBot {
     void setGunColor(Color color);
 
     /**
+     * Indicates whether the bot is permitted to paint debug information to the canvas obtained from {@link #getGraphics}.
+     * 
+     * @return {@code true} if the bot is permitted to paint debug information; {@code false} otherwise.
+     */
+    boolean isDebuggingEnabled();
+
+    /**
      * Gets a graphics object that the bot can paint debug information to.
      *
      * @return A graphics canvas to use for painting graphical objects making debugging easier.

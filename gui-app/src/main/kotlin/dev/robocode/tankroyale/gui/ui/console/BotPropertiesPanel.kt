@@ -3,8 +3,11 @@ package dev.robocode.tankroyale.gui.ui.console
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.Participant
+import dev.robocode.tankroyale.gui.model.SetDebuggingEnabledForBot
 import dev.robocode.tankroyale.gui.model.TickEvent
 import dev.robocode.tankroyale.gui.ui.Strings
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
+import dev.robocode.tankroyale.gui.util.Event
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.Font
@@ -13,12 +16,30 @@ import javax.swing.JTable
 import javax.swing.plaf.FontUIResource
 import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
+import javax.swing.JButton
 
 class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
+    private lateinit var onToggleDebug: Event<JButton>
+    private lateinit var toggleDebugButton: JButton
+    private var debugButtonInitialized = false
+    private var isDebuggingEnabled = false
 
-    override val buttonPanel
-        get() = JPanel().apply {
-            add(okButton)
+    override val buttonPanel: JPanel
+        get() {
+            if (!debugButtonInitialized) {
+                // Init needs to be done here due to initialization order
+                onToggleDebug = Event<JButton>().apply {
+                    subscribe(this) { toggleGraphicalDebugging() }
+                }
+                toggleDebugButton = JPanel().addButton("toggle_graphical_debugging", onToggleDebug)
+
+                debugButtonInitialized = true
+            }
+
+            return JPanel().apply {
+                add(okButton)
+                add(toggleDebugButton)
+            }
         }
 
     private val columns = arrayOf(
@@ -59,6 +80,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
         "radar turn rate",
         "standard output",
         "standard error",
+        "graph. debugging"
     )
 
     private val model = DefaultTableModel(columns, properties1.count().coerceAtLeast(properties2.count()))
@@ -133,6 +155,8 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     private fun updateBotState(tickEvent: TickEvent) {
         val botState = tickEvent.botStates.firstOrNull { it.id == bot.id } ?: return
 
+        isDebuggingEnabled = botState.isDebuggingEnabled
+
         model.apply {
             // Column 1
 
@@ -165,7 +189,15 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
             setValueAt(botState.radarTurnRate, 10, 4)
             setValueAt(botState.stdOut, 11, 4)
             setValueAt(botState.stdErr, 12, 4)
+            setValueAt(botState.isDebuggingEnabled, 13, 4)
         }
+    }
+
+    private fun toggleGraphicalDebugging() {
+        isDebuggingEnabled = !isDebuggingEnabled
+
+        DebuggingEnabledEvents.onDebuggingEnabledChanged.fire(SetDebuggingEnabledForBot(bot.id, isDebuggingEnabled))
+        model.setValueAt(isDebuggingEnabled, 13, 4)
     }
 
     private class CustomCellRenderer : DefaultTableCellRenderer() {

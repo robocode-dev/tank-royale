@@ -82,6 +82,11 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
         gameServer.handleChangeTps(tps)
     }
 
+    override fun onSetDebuggingEnabled(botId: Int, enabled: Boolean) {
+        log.info("Graphical debugging is {} for bot {}", if (enabled) "enabled" else "disabled", botId)
+        gameServer.handleSetDebuggingEnabled(botId, enabled)
+    }
+
     private fun getDisplayName(handshake: BotHandshake): String =
         getDisplayName(handshake.name, handshake.version)
 

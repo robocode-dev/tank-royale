@@ -384,7 +384,7 @@ public final class BaseBotInternals {
     }
 
     private void renderGraphicsToBotIntent() {
-        botIntent.setDebugGraphics(graphicsState.getSVGOutput());
+        botIntent.setDebugGraphics(getCurrentTickOrThrow().getBotState().isDebuggingEnabled() ? graphicsState.getSVGOutput() : null);
         graphicsState.clear();
     }
 

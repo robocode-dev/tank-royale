@@ -29,7 +29,7 @@ object BotToBotStateMapper {
             botState.scanColor = scanColor?.value
             botState.tracksColor = tracksColor?.value
             botState.gunColor = gunColor?.value
-            botState.debugGraphics = debugGraphics
+            botState.isDebuggingEnabled = isDebuggingEnabled
         }
         return botState
     }
