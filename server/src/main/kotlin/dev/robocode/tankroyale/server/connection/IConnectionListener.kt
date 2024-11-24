@@ -20,5 +20,5 @@ interface IConnectionListener {
     fun onResumeGame()
     fun onNextTurn()
     fun onChangeTps(tps: Int)
-    fun onSetDebuggingEnabled(botId: Int, enabled: Boolean)
+    fun onBotPolicyUpdated(botPolicyUpdate: BotPolicyUpdate)
 }

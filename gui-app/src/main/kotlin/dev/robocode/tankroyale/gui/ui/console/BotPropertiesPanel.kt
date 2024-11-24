@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.gui.ui.console
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.Participant
-import dev.robocode.tankroyale.gui.model.SetDebuggingEnabledForBot
+import dev.robocode.tankroyale.gui.model.BotPolicyUpdate
 import dev.robocode.tankroyale.gui.model.TickEvent
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
@@ -196,7 +196,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     private fun toggleGraphicalDebugging() {
         isDebuggingEnabled = !isDebuggingEnabled
 
-        DebuggingEnabledEvents.onDebuggingEnabledChanged.fire(SetDebuggingEnabledForBot(bot.id, isDebuggingEnabled))
+        ClientEvents.onBotPolicyChanged.fire(BotPolicyUpdate(bot.id, isDebuggingEnabled))
         model.setValueAt(isDebuggingEnabled, 13, 4)
     }
 

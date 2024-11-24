@@ -115,7 +115,7 @@ class ClientWebSocketsHandler(
                             Message.Type.RESUME_GAME -> handleResumeGame()
                             Message.Type.NEXT_TURN -> handleNextTurn()
                             Message.Type.CHANGE_TPS -> handleChangeTps(message)
-                            Message.Type.SET_DEBUGGING_ENABLED_FOR_BOT -> handleDebuggingEnabled(message)
+                            Message.Type.BOT_POLICY_UPDATE -> handleBotPolicyUpdated(message)
                             else -> handleException(
                                 clientSocket,
                                 IllegalStateException("Unhandled message type: $type")
@@ -325,10 +325,10 @@ class ClientWebSocketsHandler(
         }
     }
 
-    private fun handleDebuggingEnabled(message: String) {
+    private fun handleBotPolicyUpdated(message: String) {
         executorService.submit {
-            gson.fromJson(message, SetDebuggingEnabledForBot::class.java).apply {
-                listener.onSetDebuggingEnabled(botId, debuggingEnabled)
+            gson.fromJson(message, BotPolicyUpdate::class.java).apply {
+                listener.onBotPolicyUpdated(this)
             }
         }
     }

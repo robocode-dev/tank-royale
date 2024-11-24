@@ -14,7 +14,6 @@ import dev.robocode.tankroyale.gui.model.*
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.console.DebuggingEnabledEvents
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 import dev.robocode.tankroyale.gui.util.Version
@@ -51,7 +50,7 @@ object Client {
 
     init {
         TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
-        DebuggingEnabledEvents.onDebuggingEnabledChanged.subscribe(Client) { setDebuggingEnabled(it.botId, it.debuggingEnabled) }
+        ClientEvents.onBotPolicyChanged.subscribe(Client) { changeBotPolicy(it) }
 
         ServerEvents.onStopped.subscribe(Client) {
             isRunning.set(false)
@@ -197,8 +196,8 @@ object Client {
         }
     }
 
-    private fun setDebuggingEnabled(botId: Int, enabled: Boolean) {
-        send(SetDebuggingEnabledForBot(botId, enabled))
+    private fun changeBotPolicy(botPolicyUpdate: BotPolicyUpdate) {
+        send(botPolicyUpdate)
     }
 
     private fun onMessage(msg: String) {

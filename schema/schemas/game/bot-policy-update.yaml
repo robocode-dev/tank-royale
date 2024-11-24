@@ -1,6 +1,6 @@
-$id: set-debugging-enabled-for-bot.schema.yaml
+$id: bot-policy-update.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
-description: Allow or disallow graphical debugging for a bot
+description: One or more bot policies have been updated
 extends:
   $ref: message.schema.yaml
 properties:
