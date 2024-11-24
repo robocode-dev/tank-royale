@@ -29,6 +29,8 @@ properties:
       - ChangeTps
       - TpsChangedEvent
 
+      - SetDebuggingEnabledForBot
+
       - BotDeathEvent
       - BotHitBotEvent
       - BotHitWallEvent

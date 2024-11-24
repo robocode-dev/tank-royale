@@ -807,6 +807,17 @@ public abstract class BaseBot implements IBaseBot {
         baseBotInternals.setPriority(eventClass, priority);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final boolean isDebuggingEnabled() {
+        return baseBotInternals.getCurrentTickOrThrow().getBotState().isDebuggingEnabled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public final Graphics2D getGraphics() {
         return baseBotInternals.getGraphics();
