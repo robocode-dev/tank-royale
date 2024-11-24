@@ -37,8 +37,7 @@ class ServerWebSocketObserver(
         observer.onMessage(clientSocket, message)
     }
 
-    override fun onError(clientSocket: WebSocket, exception: Exception) {
-        log.error("onError: client: ${clientSocket.remoteSocketAddress}, message: ${exception.message}")
+    override fun onError(clientSocket: WebSocket?, exception: Exception) {
         observer.onError(clientSocket, exception)
     }
 }

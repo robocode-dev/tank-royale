@@ -285,7 +285,6 @@ public sealed class BaseBotInternals
 
     internal void Start()
     {
-        IsRunning = true;
         Connect();
         closedEvent.WaitOne();
     }

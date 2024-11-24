@@ -3,15 +3,6 @@
 This version fixes issues found when running legacy bots with the
 [Robocode API Bridge](https://github.com/robocode-dev/robocode-api-bridge) caused by the Tank Royale Bot APIs.
 
-#### 🐞 Bug Fixes
-
-- Bot API:
-    - Bridged bots run multiple threads after round 2 due to old thread(s) hanging that could not be stopped.
-    - Bridged bots could not be restarted as they got a connection error with the WebSocket when restarting.
-    - .Net bots sometimes exited when running at max speed without any exceptions occurring.
-
-## 📦 0.26.2
-
 #### 🚀 Improvements
 
 - Bot API for .Net:
@@ -20,6 +11,16 @@ This version fixes issues found when running legacy bots with the
 - Bot API for Java:
     - Improved performance of event handling by replacing `CopyOnWriteArrayList` with
       `synchronizedList(new ArrayList<>)`.
+- Server:
+    - Improved logging so errors are written out to standard out, and stack traces are omitted.
+    - SimpleLogger was replaces with Logback.
+
+#### 🐞 Bug Fixes
+
+- Bot API:
+    - Bridged bots run multiple threads after round 2 due to old thread(s) hanging that could not be stopped.
+    - Bridged bots could not be restarted as they got a connection error with the WebSocket when restarting.
+    - .Net bots sometimes exited when running at max speed without any exceptions occurring.
 
 ## 📦 0.26.1 - Various bug fixes - 03-Nov-2024
 

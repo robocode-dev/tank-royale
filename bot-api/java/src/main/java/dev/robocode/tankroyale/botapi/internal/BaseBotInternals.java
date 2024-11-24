@@ -320,7 +320,6 @@ public final class BaseBotInternals {
     }
 
     public void start() {
-        setRunning(true);
         connect();
         try {
             closedLatch.await();

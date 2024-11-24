@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 
 class ClientWebSocketsHandler(
     private val setup: ServerSetup,
@@ -70,7 +71,7 @@ class ClientWebSocketsHandler(
         processMessage(clientSocket, message)
     }
 
-    override fun onError(clientSocket: WebSocket, exception: Exception) {
+    override fun onError(clientSocket: WebSocket?, exception: Exception) {
         handleException(clientSocket, exception)
     }
 
@@ -323,8 +324,8 @@ class ClientWebSocketsHandler(
         }
     }
 
-    private fun handleException(clientSocket: WebSocket, exception: Exception) {
-        log.error("Error: client: {}, message: {}", clientSocket.remoteSocketAddress, exception.message)
+    private fun handleException(clientSocket: WebSocket?, exception: Exception) {
         listener.onException(clientSocket, exception)
+        exitProcess(1) // general error
     }
 }
