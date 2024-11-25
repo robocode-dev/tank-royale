@@ -121,14 +121,13 @@ class Server : Runnable {
         when {
             isUsageHelpRequested -> {
                 printUsageHelp(cmdLine)
-                exitProcess(0)
             }
             isVersionInfoRequested -> {
                 printVersionHelp(cmdLine)
-                exitProcess(0)
             }
             else -> {
                 displayBanner(cmdLine)
+                printUsageHelp(cmdLine)
             }
         }
     }
@@ -146,7 +145,6 @@ class Server : Runnable {
         banner.forEach { line ->
             printAnsiLine(line)
         }
-        printVersionHelp(cmdLine)
     }
 
     private fun validatePort() {
@@ -185,9 +183,6 @@ class Server : Runnable {
             }
         }
     }
-
-    private fun String?.toSetOfTrimmedStrings(): Set<String> =
-        HashSet(this?.replace("\\s".toRegex(), "")?.split(",")?.filter { it.isNotBlank() }.orEmpty())
 
     private fun printAnsiLine(line: String?) {
         println(Help.Ansi.AUTO.string(line))
