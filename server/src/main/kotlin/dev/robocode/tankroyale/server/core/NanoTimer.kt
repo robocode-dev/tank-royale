@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.server.core
 
+import java.time.Duration
 import java.util.concurrent.atomic.AtomicBoolean
 
 /** NanoTimer is a high-resolution timer with a high precision. */
@@ -46,11 +47,14 @@ class NanoTimer(
     private fun run() {
         while (isRunning.get() && !thread!!.isInterrupted) {
             val now = System.nanoTime()
-            if (now - lastTime >= periodInNanos) {
+            val diff = periodInNanos - (now - lastTime)
+            if (diff <= 0) {
                 lastTime = now
                 if (!isPaused.get()) {
                     job.run()
                 }
+            } else {
+                Thread.sleep(Duration.ofNanos(diff))
             }
         }
         thread = null
