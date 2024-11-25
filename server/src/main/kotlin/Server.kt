@@ -47,6 +47,10 @@ class Server : Runnable {
 
     companion object {
 
+        private const val EXIT_COMMAND = "q"
+        private const val MIN_PORT = 1000
+        private const val MAX_PORT = 65535
+
         @Option(names = ["-v", "--version"], description = ["Display version info"])
         private var isVersionInfoRequested = false
 
@@ -102,57 +106,80 @@ class Server : Runnable {
     private lateinit var gameServer: GameServer
 
     override fun run() {
-        val cmdLine = CommandLine(Server())
+        handleCommandLineOptions()
+        validatePort()
+        startExitInputMonitorThread()
+    }
+
+    private fun handleCommandLineOptions() {
+        val cmdLine = CommandLine(this)
+
         when {
             isUsageHelpRequested -> {
-                cmdLine.usage(System.out)
+                printUsageHelp(cmdLine)
                 exitProcess(0)
             }
             isVersionInfoRequested -> {
-                cmdLine.printVersionHelp(System.out)
+                printVersionHelp(cmdLine)
                 exitProcess(0)
             }
             else -> {
-                val banner = spec!!.usageMessage().header()
-                for (line in banner) {
-                    printAnsiLine(line)
-                }
-                cmdLine.printVersionHelp(System.out)
+                displayBanner(cmdLine)
             }
         }
+    }
 
-        // Handle port
-        if (port !in 1..65535) {
-            System.err.println(
-                """
-                    Port must not be lower than 1 or bigger than 65535.
-                    Default port is $DEFAULT_PORT used for http.
-                """.trimIndent()
-            )
-            exitProcess(1) // general error
+    private fun printUsageHelp(cmdLine: CommandLine) {
+        cmdLine.usage(System.out)
+    }
+
+    private fun printVersionHelp(cmdLine: CommandLine) {
+        cmdLine.printVersionHelp(System.out)
+    }
+
+    private fun displayBanner(cmdLine: CommandLine) {
+        val banner = spec?.usageMessage()?.header() ?: return
+        banner.forEach { line ->
+            printAnsiLine(line)
         }
+        printVersionHelp(cmdLine)
+    }
 
-        // Run thread that checks standard input (stdin) for an exit signal ("q")
-        Thread {
-            Scanner(System.`in`).apply {
-                while (hasNextLine()) {
-                    nextLine().apply {
-                        if (trim().equals("q", ignoreCase = true)) {
-                            gameServer.stop()
-                            exitProcess(1) // general error
-                        }
-                    }
-                }
-            }
-        }.start()
+    private fun validatePort() {
+        if (port !in MIN_PORT..MAX_PORT) {
+            reportInvalidPort()
+            exitProcess(1)
+        }
+    }
 
-        // Start game server on main thread
-        gameServer = GameServer(
-            gameTypes.toSetOfTrimmedStrings(),
-            controllerSecrets.toSetOfTrimmedStrings(),
-            botSecrets.toSetOfTrimmedStrings()
+    private fun reportInvalidPort() {
+        System.err.println(
+            """
+            Port must be between $MIN_PORT and $MAX_PORT.
+            Default port $DEFAULT_PORT will be used for HTTP.
+            """.trimIndent()
         )
-        gameServer.start()
+    }
+
+    private fun startExitInputMonitorThread() {
+        Thread {
+            monitorStandardInputForExit()
+        }.apply {
+            isDaemon = true
+            start()
+        }
+    }
+
+    private fun monitorStandardInputForExit() {
+        Scanner(System.`in`).use { scanner ->
+            while (scanner.hasNextLine()) {
+                val input = scanner.nextLine().trim()
+                if (input.equals(EXIT_COMMAND, ignoreCase = true)) {
+                    gameServer.stop()
+                    exitProcess(1)
+                }
+            }
+        }
     }
 
     private fun String?.toSetOfTrimmedStrings(): Set<String> =
