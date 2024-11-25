@@ -17,6 +17,10 @@ fun main(args: Array<String>) {
     System.setProperty("jansi.force", "true")
     AnsiConsole.systemInstall()
 
+    // Disable Logback logging configuration watcher to prevent warning in log causing annoying Logback INFO messages
+    // when starting up.
+    System.setProperty("logging.config.watch", "false")
+
     Server.cmdLine.apply {
         isSubcommandsCaseInsensitive = true
         isOptionsCaseInsensitive = true
