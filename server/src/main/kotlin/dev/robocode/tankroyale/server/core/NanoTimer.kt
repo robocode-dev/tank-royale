@@ -2,61 +2,100 @@ package dev.robocode.tankroyale.server.core
 
 import java.time.Duration
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
 
 /** NanoTimer is a high-resolution timer with a high precision. */
 class NanoTimer(
-    /** Time in nanoseconds between successive job executions */
-    private val periodInNanos: Long,
+    /** Minimum time in nanoseconds before job can be executed */
+    private val minPeriodInNanos: Long,
+
+    /** Maximum time in nanoseconds before job is definitely executed */
+    private val maxPeriodInNanos: Long,
 
     /** Job to execute when timer is triggered */
     private val job: Runnable
-) {
+) : Runnable {
     private var thread: Thread? = null
-    private val isRunning = AtomicBoolean()
-    private val isPaused = AtomicBoolean()
-    private var lastTime = System.nanoTime()
+    private val jobExecuted = AtomicBoolean(false)
+    private var ready = AtomicBoolean(false)
+    private var pauseStartTime = AtomicLong(0L)
+    private var totalPauseDuration = AtomicLong(0L)
 
     /** Starts the timer. */
     fun start() {
-        thread = Thread { run() }
-        isRunning.set(true)
+        thread = Thread(this)
         thread?.start()
     }
 
     /** Stops the timer. */
-    fun stop() {
-        isRunning.set(false)
+    fun stop(): Boolean {
+        // This will prevent any other threads from executing the job, even if we haven't
+        val success = !jobExecuted.getAndSet(true)
         thread?.interrupt()
+        return success
     }
 
     /** Pauses the timer. */
     fun pause() {
-        isPaused.set(true)
+        pauseStartTime.compareAndSet(0L, System.nanoTime())
     }
 
     /** Resumes the timer after having been paused. */
     fun resume() {
-        isPaused.set(false)
+        val pauseStart = pauseStartTime.getAndSet(0L)
+        if (pauseStart == 0L) return
+
+        val diff = System.nanoTime() - pauseStart
+        totalPauseDuration.addAndGet(diff)
+
+        thread?.interrupt()
     }
 
-    /** Resets timer. */
-    fun reset() {
-        lastTime = System.nanoTime()
+    /** Notifies that the task is ready to be executed. */
+    fun notifyReady() {
+        ready.set(true)
+        thread?.interrupt()
     }
 
-    private fun run() {
-        while (isRunning.get() && !thread!!.isInterrupted) {
-            val now = System.nanoTime()
-            val diff = periodInNanos - (now - lastTime)
-            if (diff <= 0) {
-                lastTime = now
-                if (!isPaused.get()) {
-                    job.run()
+    override fun run() {
+        var lastTime = System.nanoTime()
+        if (minPeriodInNanos > 0) {
+            while (true) {
+                val now = System.nanoTime()
+                val diff = lastTime + minPeriodInNanos + totalPauseDuration.get() - now
+                val isPaused = pauseStartTime.get() != 0L
+                if (diff <= 0 && !isPaused) break
+                try {
+                    Thread.sleep(if (isPaused) Duration.ofSeconds(1) else Duration.ofNanos(diff))
+                } catch (e: InterruptedException) {
+                    if (jobExecuted.get()) return
                 }
-            } else {
-                Thread.sleep(Duration.ofNanos(diff))
             }
         }
+
+        while (true) {
+            if (jobExecuted.get()) break
+
+            val now = System.nanoTime()
+            val diff = lastTime + maxPeriodInNanos + totalPauseDuration.get() - now
+            val isPaused = pauseStartTime.get() != 0L
+            if (ready.get() || diff <= 0 && !isPaused) {
+                executeJob()
+                break
+            } else {
+                try {
+                    Thread.sleep(if (isPaused) Duration.ofSeconds(1) else Duration.ofNanos(diff))
+                } catch (e: InterruptedException) {
+                    continue
+                }
+            }
+        }
+
         thread = null
+    }
+
+    private fun executeJob() {
+        if (jobExecuted.getAndSet(true)) return
+        job.run()
     }
 }
