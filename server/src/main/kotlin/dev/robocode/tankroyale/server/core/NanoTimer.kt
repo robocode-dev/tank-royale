@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.server.core
 
-import java.time.Duration
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 
@@ -58,7 +58,7 @@ class NanoTimer(
     }
 
     override fun run() {
-        var lastTime = System.nanoTime()
+        val lastTime = System.nanoTime()
         if (minPeriodInNanos > 0) {
             while (true) {
                 val now = System.nanoTime()
@@ -66,7 +66,11 @@ class NanoTimer(
                 val isPaused = pauseStartTime.get() != 0L
                 if (diff <= 0 && !isPaused) break
                 try {
-                    Thread.sleep(if (isPaused) Duration.ofSeconds(1) else Duration.ofNanos(diff))
+                    if (isPaused) {
+                        TimeUnit.SECONDS.sleep(1)
+                    } else {
+                        TimeUnit.NANOSECONDS.sleep(diff)
+                    }
                 } catch (e: InterruptedException) {
                     if (jobExecuted.get()) return
                 }
@@ -84,7 +88,11 @@ class NanoTimer(
                 break
             } else {
                 try {
-                    Thread.sleep(if (isPaused) Duration.ofSeconds(1) else Duration.ofNanos(diff))
+                    if (isPaused) {
+                        TimeUnit.SECONDS.sleep(1)
+                    } else {
+                        TimeUnit.NANOSECONDS.sleep(diff)
+                    }
                 } catch (e: InterruptedException) {
                     continue
                 }
