@@ -392,18 +392,28 @@ object ArenaPanel : JPanel() {
         return color
     }
 
+    private const val MIRROR_TEXT_CSS = "<style>text {transform-box: fill-box; transform-origin: 50% 50%; transform: scaleY(-1);}</style>"
+
     private fun drawDebugGraphics(g: Graphics2D, bot: BotState) {
         if (bot.debugGraphics == null) return
 
         val oldState = Graphics2DState(g)
         try {
-            val svg = bot.debugGraphics.byteInputStream().buffered().use { inputStream ->
+            val optOut = bot.debugGraphics.contains("<!-- auto-transform: off -->")
+
+            val svg = (if (optOut) bot.debugGraphics else bot.debugGraphics.replace(Regex("<\\s*/\\s*svg\\s*>"), "${MIRROR_TEXT_CSS}</svg>")).byteInputStream().buffered().use { inputStream ->
                 svgLoader.load(inputStream, null, svgLoaderContext)
             }
-            // Origin is already at bottom-left due to previous transforms in drawArena()
+            // By default, origin is already at bottom-left due to previous transforms in drawArena()
+            // If the bot opts out of the automatic transformation, we need to get rid of the mirroring transform
+
+            val oldTransform = g.transform
+            if (optOut) g.transform = g.deviceConfiguration.defaultTransform
 
             // Render SVG scaled to arena dimensions
             svg?.render(null, g)
+
+            if (optOut) g.transform = oldTransform
         } catch (ignore: Exception) {
             // Silently ignore SVG parsing/rendering errors
         } finally {
