@@ -109,6 +109,7 @@ class Server : Runnable {
         handleCommandLineOptions()
         validatePort()
         startExitInputMonitorThread()
+        startGameServer()
     }
 
     private fun handleCommandLineOptions() {
@@ -117,14 +118,13 @@ class Server : Runnable {
         when {
             isUsageHelpRequested -> {
                 printUsageHelp(cmdLine)
-                exitProcess(0)
             }
             isVersionInfoRequested -> {
                 printVersionHelp(cmdLine)
-                exitProcess(0)
             }
             else -> {
-                displayBanner(cmdLine)
+                displayBanner()
+                printVersionHelp(cmdLine)
             }
         }
     }
@@ -137,18 +137,17 @@ class Server : Runnable {
         cmdLine.printVersionHelp(System.out)
     }
 
-    private fun displayBanner(cmdLine: CommandLine) {
+    private fun displayBanner() {
         val banner = spec?.usageMessage()?.header() ?: return
         banner.forEach { line ->
             printAnsiLine(line)
         }
-        printVersionHelp(cmdLine)
     }
 
     private fun validatePort() {
         if (port !in MIN_PORT..MAX_PORT) {
             reportInvalidPort()
-            exitProcess(1)
+            exitProcess(1) // general error
         }
     }
 
@@ -180,6 +179,15 @@ class Server : Runnable {
                 }
             }
         }
+    }
+
+    private fun startGameServer() {
+        gameServer = GameServer(
+            gameTypes.toSetOfTrimmedStrings(),
+            controllerSecrets.toSetOfTrimmedStrings(),
+            botSecrets.toSetOfTrimmedStrings()
+        )
+        gameServer.start()
     }
 
     private fun String?.toSetOfTrimmedStrings(): Set<String> =

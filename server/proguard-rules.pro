@@ -12,5 +12,5 @@
 -keep class dev.robocode.tankroyale.server.** { *; }
 -keep class picocli.** { *; }
 -keep class org.fusesource.jansi.** { *; }
--keep class ch.qos.logback.classic.** { *; }
+-keep class org.slf4j.** { *; }
 -keep class org.java_websocket.** { *; }
