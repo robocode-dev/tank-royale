@@ -12,6 +12,7 @@ This version fixes issues found when running legacy bots with the
     - Improved performance of event handling by replacing `CopyOnWriteArrayList` with
       `synchronizedList(new ArrayList<>)`.
     - #1: Wrapped bot throws exception. Fixes in both the Bot API and [Robocode API Bridge].
+    - #119: Battle was not starting on Windows 11 and 10 after installing docker linux subsystem.
 - Server:
     - Improved logging so errors are written out to standard out, and stack traces are omitted.
     - SimpleLogger was replaces with Logback.

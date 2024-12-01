@@ -61,7 +61,7 @@ class ConnectionHandler(
         toIpAddress(address) == toIpAddress(botAddress) && botAddress.port == address.port
 
     private fun toIpAddress(address: InetSocketAddress) =
-        localhostToIpAddress(address.hostName)
+        address.address.hostAddress
 
     private fun toIpAddress(botAddress: BotAddress) =
         localhostToIpAddress(InetAddress.getByName(botAddress.host).hostAddress)
