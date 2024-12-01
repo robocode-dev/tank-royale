@@ -1,7 +1,6 @@
-## 📦 0.27.0 - Bugfixes for the Robocode Bridge
+## 📦 0.27.0 - Lots of bug fixes - 02-Dec-2024
 
-This version fixes issues found when running legacy bots with the
-[Robocode API Bridge](https://github.com/robocode-dev/robocode-api-bridge) caused by the Tank Royale Bot APIs.
+This version fixes various issues, some found when running legacy bots with the [Robocode API Bridge].
 
 #### 🚀 Improvements
 
@@ -10,16 +9,18 @@ This version fixes issues found when running legacy bots with the
       `HashSet` protected with `lock` blocks.
 - Bot API for Java:
     - Improved performance of event handling by replacing `CopyOnWriteArrayList` with
-      `synchronizedList(new ArrayList<>)`.
-    - #1: Wrapped bot throws exception. Fixes in both the Bot API and [Robocode API Bridge].
-    - #119: Battle was not starting on Windows 11 and 10 after installing docker linux subsystem.
-- Server:
-    - Improved logging so errors are written out to standard out, and stack traces are omitted.
-    - SimpleLogger was replaces with Logback.
+      `synchronizedList(new ArrayList<>())`.
 
 #### 🐞 Bug Fixes
 
+- Server:
+    - #117: Server process consumed 100% of a CPU core even when the game is paused (due to nano timing).
+        - Thank you, Tobias Zimmermann, for spotting and fixing this nasty issue! ❤️
 - Bot API:
+    - [#1](https://github.com/robocode-dev/robocode-api-bridge/issues/1): Wrapped bot throws an exception. Fixes in both
+      the Bot API and [Robocode API Bridge](https://github.com/robocode-dev/robocode-api-bridge) caused by the Tank
+      Royale Bot APIs.
+    - #119: Battle was not starting on Windows 11 and 10 after installing Docker Linux subsystem.
     - Bridged bots run multiple threads after round 2 due to old thread(s) hanging that could not be stopped.
     - Bridged bots could not be restarted as they got a connection error with the WebSocket when restarting.
     - .Net bots sometimes exited when running at max speed without any exceptions occurring.
