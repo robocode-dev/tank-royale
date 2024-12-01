@@ -20,6 +20,7 @@ class NanoTimer(
     private var ready = AtomicBoolean(false)
     private var pauseStartTime = AtomicLong(0L)
     private var totalPauseDuration = AtomicLong(0L)
+    private var startTime = 0L
 
     /** Starts the timer. */
     fun start() {
@@ -58,49 +59,42 @@ class NanoTimer(
     }
 
     override fun run() {
-        val lastTime = System.nanoTime()
-        if (minPeriodInNanos > 0) {
-            while (true) {
-                val now = System.nanoTime()
-                val diff = lastTime + minPeriodInNanos + totalPauseDuration.get() - now
-                val isPaused = pauseStartTime.get() != 0L
-                if (diff <= 0 && !isPaused) break
-                try {
-                    if (isPaused) {
-                        TimeUnit.SECONDS.sleep(1)
-                    } else {
-                        TimeUnit.NANOSECONDS.sleep(diff)
-                    }
-                } catch (e: InterruptedException) {
-                    if (jobExecuted.get()) return
-                }
-            }
-        }
+        startTime = System.nanoTime()
 
-        while (true) {
-            if (jobExecuted.get()) break
-
-            val now = System.nanoTime()
-            val diff = lastTime + maxPeriodInNanos + totalPauseDuration.get() - now
-            val isPaused = pauseStartTime.get() != 0L
-            if (ready.get() || diff <= 0 && !isPaused) {
-                executeJob()
-                break
-            } else {
-                try {
-                    if (isPaused) {
-                        TimeUnit.SECONDS.sleep(1)
-                    } else {
-                        TimeUnit.NANOSECONDS.sleep(diff)
-                    }
-                } catch (e: InterruptedException) {
-                    continue
-                }
-            }
-        }
+        waitForMinimumPeriod()
+        waitUntilReadyOrMaxPeriod()
+        executeJob()
 
         thread = null
     }
+
+    private fun waitForMinimumPeriod() {
+        while (!jobExecuted.get() && !waitToProceed(minPeriodInNanos));
+    }
+
+    private fun waitUntilReadyOrMaxPeriod() {
+        while (!jobExecuted.get() && !ready.get() && !waitToProceed(maxPeriodInNanos));
+    }
+
+    private fun waitToProceed(period: Long): Boolean {
+        try {
+            if (isPaused()) {
+                // Sleep some arbitrary amount of time until interrupt
+                TimeUnit.MINUTES.sleep(1)
+            } else {
+                val now = System.nanoTime()
+                val timeDiff = startTime + period + totalPauseDuration.get() - now
+
+                TimeUnit.NANOSECONDS.sleep(timeDiff)
+                return timeDiff <= 0
+            }
+        } catch (e: InterruptedException) {
+        }
+
+        return false
+    }
+
+    private fun isPaused() = pauseStartTime.get() != 0L
 
     private fun executeJob() {
         if (jobExecuted.getAndSet(true)) return
