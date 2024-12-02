@@ -1,7 +1,7 @@
 description = "Robocode Tank Royale schema for .Net"
 
 tasks {
-    register<Exec>("clean") {
+    val clean by registering(Exec::class) {
         commandLine("dotnet", "clean")
     }
 
@@ -9,7 +9,7 @@ tasks {
         commandLine("dotnet", "build", "--configuration", "Release")
     }
 
-    register<Exec>("build") {
+    val build by registering(Exec::class) {
         dependsOn(dotnetBuild)
 
         doFirst {
@@ -21,7 +21,7 @@ tasks {
             codeGeneratorPath += ".exe"
         }
 
-        println("codeGeneratorPath: " + codeGeneratorPath)
+        println("codeGeneratorPath: $codeGeneratorPath")
         println("${project(":schema").file("schemas")}")
         println("${project(":bot-api:dotnet").file("Robocode.TankRoyale.BotApi/src/generated/Game")}")
 

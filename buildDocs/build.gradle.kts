@@ -27,7 +27,7 @@ tasks {
     }
 
     // Install or update to `docfx`
-    val installDocfx = register<Exec>("updateDocfx") {
+    val updateDocfx by registering(Exec::class) {
         commandLine("dotnet", "tool", "update", "-g", "docfx", "--version", "2.77.0")
     }
 
@@ -37,9 +37,9 @@ tasks {
         args = listOf("run", "build")
     }
 
-    register<Copy>("uploadDocs") {
+    val uploadDocs by registering(Copy::class) {
         dependsOn(clean, npmBuild)
-        dependsOn(installDocfx)
+        dependsOn(updateDocfx)
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
