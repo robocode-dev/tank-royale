@@ -111,7 +111,6 @@ class EventTest : FunSpec({
             // Remove strong reference to subscriber and force garbage collection
             subscriber = null
             System.gc()
-            System.runFinalization()
             Thread.sleep(100)
 
             // Fire the event again
