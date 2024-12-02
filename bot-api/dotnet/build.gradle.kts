@@ -1,5 +1,5 @@
 import org.apache.tools.ant.filters.ReplaceTokens
-import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
+import kotlin.text.lowercase
 
 description = "Robocode Tank Royale Bot API for .Net"
 
@@ -87,8 +87,8 @@ tasks {
 
         doLast {
             val userhome = System.getenv("USERPROFILE") ?: System.getenv("HOME")
-            println("$userhome/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
-            delete("$userhome/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
+            println("$userhome/.nuget/packages/${artifactName.lowercase()}/$version")
+            delete("$userhome/.nuget/packages/${artifactName.lowercase()}/$version")
             exec {
                 workingDir("Robocode.TankRoyale.BotApi/bin/Release")
                 commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "--source", "$userhome/.nuget/packages")
