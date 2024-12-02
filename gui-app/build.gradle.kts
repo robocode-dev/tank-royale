@@ -107,7 +107,7 @@ tasks {
         }
     }
 
-    val javadocJar = named("javadocJar")
+    val javadocJar = named("javadocJar") // required at Sonatype
     val sourcesJar = named("sourcesJar")
 
     publishing {
@@ -116,7 +116,7 @@ tasks {
                 artifact(proguard.get().outJarFiles[0]) {
                     builtBy(proguard)
                 }
-                artifact(javadocJar)
+                artifact(javadocJar) // required at Sonatype
                 artifact(sourcesJar)
 
                 groupId = group as String?
