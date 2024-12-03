@@ -9,7 +9,7 @@ plugins {
 
 node {
     download = true
-    version = "20.14.0"
+    version = "22.11.0"
 }
 
 tasks {
@@ -28,13 +28,19 @@ tasks {
 
     // Install or update to `docfx`
     val updateDocfx by registering(Exec::class) {
-        commandLine("dotnet", "tool", "update", "-g", "docfx", "--version", "2.77.0")
+        commandLine("dotnet", "tool", "update", "-g", "docfx", "--version", "2.78.2")
     }
 
     val npmBuild by registering(NpmTask::class) {
         dependsOn(npmInstall)
 
         args = listOf("run", "build")
+    }
+
+    val run by registering(NpmTask::class) {
+        dependsOn(npmInstall)
+
+        args = listOf("run", "dev")
     }
 
     val uploadDocs by registering(Copy::class) {
