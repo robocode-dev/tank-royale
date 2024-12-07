@@ -45,6 +45,7 @@ public final class BotInternals implements IStopResumeListener {
 
         baseBotInternals.setStopResumeHandler(this);
 
+        // Bot events have higher priorities than BaseBot events, meaning that these event will be executed first
         BotEventHandlers botEventHandlers = baseBotInternals.getBotEventHandlers();
         botEventHandlers.onGameAborted.subscribe(e -> onGameAborted(), 100);
         botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 90);
