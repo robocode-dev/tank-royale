@@ -99,7 +99,7 @@ final class BotEventHandlers {
     }
 
     @SuppressWarnings("unchecked")
-    void fire(IEvent event) {
+    void fire(BotEvent event) {
         var handler = (EventHandler<IEvent>) eventHandlerMap.get(event.getClass());
         if (handler != null) {
             handler.publish(event);
