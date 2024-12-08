@@ -7,15 +7,20 @@ import java.net.InetSocketAddress
 
 class MultiServerWebSocketObserver(observer: IClientWebSocketObserver) {
 
-    private val loopbackServerWebSocketObserver = ServerWebSocketObserver(InetSocketAddress(Server.port), observer)
-    private val localhostServerWebSocketObserver = ServerWebSocketObserver(InetSocketAddress(InetAddress.getLocalHost(), Server.port), observer)
+    private val webSocketServer = if (Server.useInheritedChannel) {
+        arrayOf(ServerWebSocketObserver(observer))
+    } else {
+        arrayOf(
+            ServerWebSocketObserver(InetSocketAddress(Server.port), observer),
+            ServerWebSocketObserver(InetSocketAddress(InetAddress.getLocalHost(), Server.port), observer)
+        )
+    }
 
     fun start() {
-        loopbackServerWebSocketObserver.run()
-        localhostServerWebSocketObserver.run()
+        webSocketServer.forEach { it.run() }
     }
 
     fun broadcast(clientSockets: Collection<WebSocket>, message: String) {
-        localhostServerWebSocketObserver.broadcast(message, clientSockets)
+        webSocketServer.forEach { it.broadcast(message, clientSockets) }
     }
 }
