@@ -6,6 +6,9 @@ import dev.robocode.tankroyale.botapi.events.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class similar to APIEventHandlers, but used for bot event handlers on the public API and the bot event queue.
+ */
 final class BotEventHandlers {
 
     final EventHandler<ConnectedEvent> onConnected = new EventHandler<>();
@@ -17,6 +20,7 @@ final class BotEventHandlers {
     final EventHandler<GameAbortedEvent> onGameAborted = new EventHandler<>();
     final EventHandler<RoundStartedEvent> onRoundStarted = new EventHandler<>();
     final EventHandler<RoundEndedEvent> onRoundEnded = new EventHandler<>();
+
     final EventHandler<TickEvent> onTick = new EventHandler<>();
     final EventHandler<SkippedTurnEvent> onSkippedTurn = new EventHandler<>();
     final EventHandler<DeathEvent> onDeath = new EventHandler<>();
@@ -32,9 +36,6 @@ final class BotEventHandlers {
     final EventHandler<WonRoundEvent> onWonRound = new EventHandler<>();
     final EventHandler<CustomEvent> onCustomEvent = new EventHandler<>();
     final EventHandler<TeamMessageEvent> onTeamMessage = new EventHandler<>();
-
-    // Virtual (fake) event handler
-    final EventHandler<TickEvent> onNextTurn = new EventHandler<>();
 
     private final Map<Class<? extends IEvent>, EventHandler<? extends IEvent>> eventHandlerMap = new HashMap<>();
 
@@ -54,6 +55,7 @@ final class BotEventHandlers {
         eventHandlerMap.put(GameAbortedEvent.class, onGameAborted);
         eventHandlerMap.put(RoundStartedEvent.class, onRoundStarted);
         eventHandlerMap.put(RoundEndedEvent.class, onRoundEnded);
+
         eventHandlerMap.put(TickEvent.class, onTick);
         eventHandlerMap.put(SkippedTurnEvent.class, onSkippedTurn);
         eventHandlerMap.put(DeathEvent.class, onDeath);
@@ -69,18 +71,18 @@ final class BotEventHandlers {
         eventHandlerMap.put(WonRoundEvent.class, onWonRound);
         eventHandlerMap.put(CustomEvent.class, onCustomEvent);
         eventHandlerMap.put(TeamMessageEvent.class, onTeamMessage);
-
-        eventHandlerMap.put(NextTurnEvent.class, onNextTurn);
     }
 
     private void subscribeToEventHandlers(IBaseBot baseBot) {
         onConnected.subscribe(baseBot::onConnected);
         onDisconnected.subscribe(baseBot::onDisconnected);
         onConnectionError.subscribe(baseBot::onConnectionError);
+
         onGameStarted.subscribe(baseBot::onGameStarted);
         onGameEnded.subscribe(baseBot::onGameEnded);
         onRoundStarted.subscribe(baseBot::onRoundStarted);
         onRoundEnded.subscribe(baseBot::onRoundEnded);
+
         onTick.subscribe(baseBot::onTick);
         onSkippedTurn.subscribe(baseBot::onSkippedTurn);
         onDeath.subscribe(baseBot::onDeath);
@@ -99,7 +101,7 @@ final class BotEventHandlers {
     }
 
     @SuppressWarnings("unchecked")
-    void fire(BotEvent event) {
+    void fireEvent(BotEvent event) {
         var handler = (EventHandler<IEvent>) eventHandlerMap.get(event.getClass());
         if (handler != null) {
             handler.publish(event);
@@ -108,11 +110,7 @@ final class BotEventHandlers {
         }
     }
 
-    // Virtual (fake) events:
-
-    public static final class GameAbortedEvent implements IEvent {
-    }
-
-    private static final class NextTurnEvent implements IEvent {
+    // Virtual (fake) event:
+    private static final class GameAbortedEvent implements IEvent {
     }
 }

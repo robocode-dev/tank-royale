@@ -181,7 +181,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
         {
             if (IsNotOldOrIsCriticalEvent(botEvent, turnNumber))
             {
-                botEventHandlers.Fire(botEvent);
+                botEventHandlers.FireEvent(botEvent);
             }
         }
         finally

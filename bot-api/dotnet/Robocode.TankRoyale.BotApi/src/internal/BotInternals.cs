@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using Robocode.TankRoyale.BotApi.Events;
 using static System.Double;
 
@@ -37,15 +36,15 @@ internal sealed class BotInternals : IStopResumeListener
 
         baseBotInternals.SetStopResumeHandler(this);
 
-        var botEventHandlers = baseBotInternals.BotEventHandlers;
-        botEventHandlers.OnGameAborted.Subscribe(OnGameAborted, 100);
-        botEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 90);
-        botEventHandlers.OnRoundEnded.Subscribe(OnRoundEnded, 90);
-        botEventHandlers.OnGameEnded.Subscribe(OnGameEnded, 90);
-        botEventHandlers.OnDisconnected.Subscribe(OnDisconnected, 90);
-        botEventHandlers.OnHitWall.Subscribe(OnHitWall, 90);
-        botEventHandlers.OnHitBot.Subscribe(OnHitBot, 90);
-        botEventHandlers.OnDeath.Subscribe(OnDeath, 90);
+        var apiEventHandlers = baseBotInternals.APIEventHandlers;
+        apiEventHandlers.OnGameAborted.Subscribe(OnGameAborted, 100);
+        apiEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 90);
+        apiEventHandlers.OnRoundEnded.Subscribe(OnRoundEnded, 90);
+        apiEventHandlers.OnGameEnded.Subscribe(OnGameEnded, 90);
+        apiEventHandlers.OnDisconnected.Subscribe(OnDisconnected, 90);
+        apiEventHandlers.OnHitWall.Subscribe(OnHitWall, 90);
+        apiEventHandlers.OnHitBot.Subscribe(OnHitBot, 90);
+        apiEventHandlers.OnDeath.Subscribe(OnDeath, 90);
     }
 
     private void OnNextTurn(TickEvent evt)

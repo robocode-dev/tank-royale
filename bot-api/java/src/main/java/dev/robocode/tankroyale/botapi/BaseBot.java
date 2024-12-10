@@ -119,7 +119,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final void go() {
+    public void go() {
         baseBotInternals.execute();
     }
 
