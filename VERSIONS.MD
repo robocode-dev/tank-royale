@@ -1,3 +1,12 @@
+## 📦 0.28.0 - Bug fixed internal Bot API event handling
+
+#### 🐞 Bug Fixes
+
+- Bot API:
+    - The internal event handling for state updates in the Bot API is now separated from bot event queue handling.
+      Internal events are processed immediately, while bot events are eventually processed through the event queue,
+      if at all.
+
 ## 📦 0.27.0 - Lots of bug fixes - 02-Dec-2024
 
 This version fixes various issues, some found when running legacy bots with the [Robocode API Bridge].
