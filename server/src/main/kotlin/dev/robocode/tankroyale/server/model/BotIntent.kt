@@ -19,6 +19,7 @@ package dev.robocode.tankroyale.server.model
  * @param scanColor Scan color string. If set to `null` the default body color will be used.
  * @param tracksColor Tracks color string. If set to `null` the default body color will be used.
  * @param gunColor Gun color string. If set to `null` the default body color will be used.
+ * @param debugGraphics Debug graphics as an SVG string. If set to `null`, no debug graphics will be displayed.
  */
 data class BotIntent(
     override var targetSpeed: Double? = 0.0,
@@ -41,6 +42,7 @@ data class BotIntent(
     override var stdOut: String? = null,
     override var stdErr: String? = null,
     override var teamMessages: List<TeamMessage>? = null,
+    override var debugGraphics: String? = null,
 
     ) : IBotIntent {
     /**
@@ -69,6 +71,7 @@ data class BotIntent(
         update.stdOut?.let { stdOut = it.ifBlank { null } }
         update.stdErr?.let { stdErr = it.ifBlank { null } }
         update.teamMessages?.let { teamMessages = it }
+        update.debugGraphics?.let { debugGraphics = it.ifBlank { null } }
     }
 
     /**

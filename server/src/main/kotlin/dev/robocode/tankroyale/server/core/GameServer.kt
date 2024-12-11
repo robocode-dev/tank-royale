@@ -715,6 +715,11 @@ class GameServer(
         }
     }
 
+    internal fun handleBotPolicyUpdate(botPolicyUpdate: BotPolicyUpdate) {
+        val botId = BotId(botPolicyUpdate.botId)
+        modelUpdater?.botsMap?.get(botId)?.isDebuggingEnabled = botPolicyUpdate.debuggingEnabled
+    }
+
     private fun cleanupAfterGameStopped() {
         turnTimeoutTimer?.stop()
 

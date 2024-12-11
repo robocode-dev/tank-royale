@@ -24,6 +24,8 @@ import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
  * @param scanColor Scan arc color.
  * @param tracksColor Tracks color.
  * @param gunColor Gun color.
+ * @param isDebuggingEnabled Whether this bot is permitted to render debug graphics.
+ * @param debugGraphics Graphics to render if debugging is permitted.
  */
 data class Bot(
     override val id: BotId,
@@ -49,7 +51,9 @@ data class Bot(
     override val gunColor: Color? = null,
     override val stdOut: String? = null,
     override val stdErr: String? = null,
-    override val teammateIds: Set<BotId> = HashSet()
+    override val isDebuggingEnabled: Boolean = false,
+    override val debugGraphics: String? = null,
+    override val teammateIds: Set<BotId> = HashSet(),
 ) : IBot {
 
     /** X coordinate which is a shortcut for `position.x`. */
