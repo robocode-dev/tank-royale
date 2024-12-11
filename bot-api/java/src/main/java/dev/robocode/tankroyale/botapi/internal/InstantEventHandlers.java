@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Class similar to BotEventHandlers, but used for internal API event handling only.
+ * Class used for instant event handling only used for updating the state of the API internals.
  */
-final class APIEventHandlers {
+final class InstantEventHandlers {
 
     final EventHandler<DisconnectedEvent> onDisconnected = new EventHandler<>();
 
@@ -27,7 +27,7 @@ final class APIEventHandlers {
 
     private final Map<Class<? extends IEvent>, EventHandler<? extends IEvent>> eventHandlerMap = new HashMap<>();
 
-    APIEventHandlers() {
+    InstantEventHandlers() {
         initializeEventHandlers();
     }
 

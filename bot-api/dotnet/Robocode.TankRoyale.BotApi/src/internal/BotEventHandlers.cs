@@ -5,7 +5,8 @@ using Robocode.TankRoyale.BotApi.Events;
 namespace Robocode.TankRoyale.BotApi.Internal;
 
 /// <summary>
-/// Class similar to APIEventHandlers, but used for bot event handlers on the public API and the bot event queue.
+/// Class used for bot event handlers on the public API that are may or may not be triggered bot event queue, and might
+/// not be handled immediately by the bot logic.
 /// </summary>
 sealed class BotEventHandlers
 {

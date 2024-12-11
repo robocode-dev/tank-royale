@@ -5,9 +5,9 @@ using Robocode.TankRoyale.BotApi.Events;
 namespace Robocode.TankRoyale.BotApi.Internal;
 
 /// <summary>
-/// Class similar to BotEventHandlers, but used for internal API event handling only.
+/// Class used for instant event handling only used for updating the state of the API internals.
 /// </summary>
-internal sealed class APIEventHandlers
+internal sealed class InstantEventHandlers
 {
     internal readonly EventHandler<DisconnectedEvent> OnDisconnected = new();
 
@@ -26,7 +26,7 @@ internal sealed class APIEventHandlers
 
     private readonly Dictionary<Type, Action<IEvent>> _eventHandlers = new();
 
-    internal APIEventHandlers()
+    internal InstantEventHandlers()
     {
         InitializeEventHandlers();
     }

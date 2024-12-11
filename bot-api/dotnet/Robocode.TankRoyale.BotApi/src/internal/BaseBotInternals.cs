@@ -81,7 +81,7 @@ public sealed class BaseBotInternals
         this.botInfo = botInfo ?? EnvVars.GetBotInfo();
 
         BotEventHandlers = new BotEventHandlers(baseBot);
-        APIEventHandlers = new APIEventHandlers();
+        InstantEventHandlers = new InstantEventHandlers();
         eventQueue = new EventQueue(this, BotEventHandlers);
 
         absDeceleration = Math.Abs(Constants.Deceleration);
@@ -143,9 +143,9 @@ public sealed class BaseBotInternals
 
     private void SubscribeToEvents()
     {
-        APIEventHandlers.OnRoundStarted.Subscribe(OnRoundStarted, 100);
-        APIEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 100);
-        APIEventHandlers.OnBulletFired.Subscribe(OnBulletFired, 100);
+        InstantEventHandlers.OnRoundStarted.Subscribe(OnRoundStarted, 100);
+        InstantEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 100);
+        InstantEventHandlers.OnBulletFired.Subscribe(OnBulletFired, 100);
     }
 
     public bool IsRunning
@@ -252,7 +252,7 @@ public sealed class BaseBotInternals
 
     internal BotEventHandlers BotEventHandlers { get; }
 
-    internal APIEventHandlers APIEventHandlers { get; }
+    internal InstantEventHandlers InstantEventHandlers { get; }
 
     internal IList<E.BotEvent> Events => eventQueue.Events(CurrentTickOrThrow.TurnNumber);
 
@@ -819,7 +819,7 @@ public sealed class BaseBotInternals
         var disconnectedEvent = new E.DisconnectedEvent(socket.ServerUri, remote, statusCode, reason);
         
         BotEventHandlers.OnDisconnected.Publish(disconnectedEvent);
-        APIEventHandlers.OnDisconnected.Publish(disconnectedEvent);
+        InstantEventHandlers.OnDisconnected.Publish(disconnectedEvent);
 
         closedEvent.Set();
     }
@@ -895,11 +895,11 @@ public sealed class BaseBotInternals
         
         foreach (var botEvent in tickEvent.Events)
         {
-            APIEventHandlers.FireEvent(botEvent);
+            InstantEventHandlers.FireEvent(botEvent);
         }
 
         // Trigger next turn (not tick-event!)
-        APIEventHandlers.OnNextTurn.Publish(tickEvent);
+        InstantEventHandlers.OnNextTurn.Publish(tickEvent);
     }
 
     private void HandleRoundStarted(string json)
@@ -910,7 +910,7 @@ public sealed class BaseBotInternals
         var mappedRoundStartedEvent = new E.RoundStartedEvent(roundStartedEvent.RoundNumber);
         
         BotEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
-        APIEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
+        InstantEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
     }
 
     private void HandleRoundEnded(string json)
@@ -924,7 +924,7 @@ public sealed class BaseBotInternals
             roundEndedEventForBot.TurnNumber, botResults);
         
         BotEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
-        APIEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
+        InstantEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
     }
 
     private void HandleGameStarted(string json)
@@ -963,13 +963,13 @@ public sealed class BaseBotInternals
         var mappedGameEnded = new E.GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results);
         
         BotEventHandlers.OnGameEnded.Publish(mappedGameEnded);
-        APIEventHandlers.OnGameEnded.Publish(mappedGameEnded);
+        InstantEventHandlers.OnGameEnded.Publish(mappedGameEnded);
     }
 
     private void HandleGameAborted()
     {
         BotEventHandlers.OnGameAborted.Publish(null);
-        APIEventHandlers.OnGameAborted.Publish(null);
+        InstantEventHandlers.OnGameAborted.Publish(null);
     }
 
     private void HandleSkippedTurn(string json)
