@@ -5,21 +5,35 @@ import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
+import java.nio.channels.ServerSocketChannel
 
-class ServerWebSocketObserver(
-    address: InetSocketAddress,
-    private val observer: IClientWebSocketObserver
-) : WebSocketServer(address) {
-
+class ServerWebSocketObserver : WebSocketServer {
     private val log = LoggerFactory.getLogger(this::class.java)
+    private val observer: IClientWebSocketObserver
+    private val useInheritedChannel: Boolean
 
-    init {
-        // Disable Nagle's algorithm
+    constructor(
+        address: InetSocketAddress,
+        observer: IClientWebSocketObserver
+    ) : super(address) {
+        this.observer = observer
+        this.useInheritedChannel = false
+        isTcpNoDelay = true
+    }
+
+    constructor(
+        observer: IClientWebSocketObserver
+    ) : super(
+        (System.inheritedChannel() as? ServerSocketChannel)
+            ?: throw IllegalStateException("No inherited server socket channel available")
+    ) {
+        this.observer = observer
+        this.useInheritedChannel = true
         isTcpNoDelay = true
     }
 
     override fun onStart() {
-        log.debug("onStart()")
+        log.debug("onStart(){}", if (useInheritedChannel) " with inherited channel" else "")
     }
 
     override fun onOpen(clientSocket: WebSocket, handshake: ClientHandshake) {
