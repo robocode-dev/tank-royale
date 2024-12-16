@@ -51,6 +51,8 @@ class Server : Runnable {
         private const val MIN_PORT = 1000
         private const val MAX_PORT = 65535
 
+        const val INHERIT = "inherit"
+
         @Option(names = ["-v", "--version"], description = ["Display version info"])
         private var isVersionInfoRequested = false
 
@@ -60,12 +62,12 @@ class Server : Runnable {
         @Option(
             names = ["-p", "--port"],
             type = [String::class],
-            description = ["Port number (default: $DEFAULT_PORT) or 'inherit' to use socket activation"]
+            description = ["Port number (default: $DEFAULT_PORT) or '$INHERIT' to use socket activation (if supported by the system)"]
         )
         private var port: String = DEFAULT_PORT.toString()
 
         val useInheritedChannel: Boolean
-            get() = port.equals("inherit", ignoreCase = true)
+            get() = port.equals(INHERIT, ignoreCase = true)
 
         val portNumber: Int
             get() = if (useInheritedChannel) -1 else port.toIntOrNull() ?: DEFAULT_PORT
