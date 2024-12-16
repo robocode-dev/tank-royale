@@ -28,7 +28,7 @@ plugins {
 dependencies {
     implementation(project(":schema:jvm"))
 
-    implementation(files("${rootProject.projectDir}/vendor/Java-WebSocket-1.6.0-SNAPSHOT.jar"))
+    implementation(libs.java.websocket)
     implementation(libs.slf4j.simple)
     implementation(libs.picocli)
     implementation(libs.jansi)
