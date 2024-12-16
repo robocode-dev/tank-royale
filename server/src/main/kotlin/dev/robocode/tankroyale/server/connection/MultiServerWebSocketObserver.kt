@@ -11,8 +11,8 @@ class MultiServerWebSocketObserver(observer: IClientWebSocketObserver) {
         arrayOf(ServerWebSocketObserver(observer))
     } else {
         arrayOf(
-            ServerWebSocketObserver(InetSocketAddress(Server.port), observer),
-            ServerWebSocketObserver(InetSocketAddress(InetAddress.getLocalHost(), Server.port), observer)
+            ServerWebSocketObserver(InetSocketAddress(Server.portNumber), observer),
+            ServerWebSocketObserver(InetSocketAddress(InetAddress.getLocalHost(), Server.portNumber), observer)
         )
     }
 

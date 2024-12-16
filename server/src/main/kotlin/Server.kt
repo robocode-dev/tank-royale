@@ -62,13 +62,13 @@ class Server : Runnable {
             type = [String::class],
             description = ["Port number (default: $DEFAULT_PORT) or 'inherit' to use socket activation"]
         )
-        private var portStr: String = DEFAULT_PORT.toString()
+        private var port: String = DEFAULT_PORT.toString()
 
         val useInheritedChannel: Boolean
-            get() = portStr.equals("inherit", ignoreCase = true)
+            get() = port.equals("inherit", ignoreCase = true)
 
-        val port: Int
-            get() = if (useInheritedChannel) -1 else portStr.toIntOrNull() ?: DEFAULT_PORT
+        val portNumber: Int
+            get() = if (useInheritedChannel) -1 else port.toIntOrNull() ?: DEFAULT_PORT
 
         @Option(
             names = ["-g", "--games"],
@@ -151,7 +151,7 @@ class Server : Runnable {
     }
 
     private fun validatePort() {
-        if (!useInheritedChannel && port !in MIN_PORT..MAX_PORT) {
+        if (!useInheritedChannel && portNumber !in MIN_PORT..MAX_PORT) {
             reportInvalidPort()
             exitProcess(1) // general error
         }
