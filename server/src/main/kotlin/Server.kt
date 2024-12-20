@@ -8,6 +8,7 @@ import org.fusesource.jansi.AnsiConsole
 import picocli.CommandLine
 import picocli.CommandLine.*
 import picocli.CommandLine.Model.CommandSpec
+import java.nio.channels.ServerSocketChannel
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -70,7 +71,7 @@ class Server : Runnable {
             get() = port.equals(INHERIT, ignoreCase = true)
 
         val portNumber: Int
-            get() = if (useInheritedChannel) -1 else port.toIntOrNull() ?: DEFAULT_PORT
+            get() = if (useInheritedChannel) getInheritedPort() else port.toIntOrNull() ?: DEFAULT_PORT
 
         @Option(
             names = ["-g", "--games"],
@@ -107,6 +108,11 @@ class Server : Runnable {
         var tps: Int = DEFAULT_TURNS_PER_SECOND
 
         val cmdLine = CommandLine(Server())
+
+        private fun getInheritedPort(): Int {
+            val channel = System.inheritedChannel() as? ServerSocketChannel
+            return channel?.socket()?.localPort ?: -1
+        }
     }
 
     @Spec
