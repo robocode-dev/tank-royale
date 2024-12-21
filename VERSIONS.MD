@@ -1,16 +1,20 @@
-## 📦 0.28.0 - Added support for inherited socket - 21-Dec-2024
+## 📦 0.28.0 - Inherited Socket Support - 21-Dec-2024
 
 #### 🚀 Improvements
 
 - Server:
-    - #115: You can now start the server with an inherited socket from another process by setting `--port=inherit` or
-      `-p=inherit`.
-    - This enables the use of [Socket Activation], such as with `systemd` or `xinetd` on Linux.
-    - With socket activation, the server will only start when a client accesses the port for the first time.
-    - Thank you, [Tobias Zimmermann](https://github.com/Cu3PO42), for bringing this feature to Robocode! ❤️
-    - And thank you, [Marcel Prestel](https://github.com/marci4), for providing and maintaining the great
-      [Java WebSocket](https://tootallnate.github.io/Java-WebSocket/) library making WebSockets easy and available
-      for small stand-alone Java applications without the need of a "real" server. 🏆
+    - **#115: Inherited Socket Support**: You can now start the server with an inherited socket from another process by
+      setting `--port=inherit` or `-p=inherit`.
+    - **Socket Activation**: This enables the use of [Socket Activation], such as with `systemd` or `xinetd` on Linux.
+    - **Lazy Loading**: With socket activation, the server will only start when a client accesses the port for the first
+      time.
+    - **Setup Guide**: A detailed guide for setting up socket activation for the Robocode server is
+      provided [here](https://github.com/robocode-dev/tank-royale/blob/main/server/docs/systemd-socket-activation.md).
+    - **Acknowledgements**: Special thanks to [Tobias Zimmermann](https://github.com/Cu3PO42) for bringing this feature
+      to Robocode! ❤️
+    - **Java WebSocket**: Gratitude to [Marcel Prestel](https://github.com/marci4) for providing and maintaining the
+      excellent [Java WebSocket](https://tootallnate.github.io/Java-WebSocket/) library, making WebSockets accessible
+      for small stand-alone Java applications without the need for a traditional server. 🏆
 
 #### 🐞 Bug Fixes
 
