@@ -10,13 +10,13 @@ Create a socket unit file at `/etc/systemd/system/robocode.socket`:
 
 ```toml
 [Unit]
-Description = Robocode Tank Royale Socket
+Description = "Robocode Tank Royale Socket"
 
 [Socket]
 ListenStream = 7654
 
 [Install]
-WantedBy = sockets.target
+WantedBy = "sockets.target"
 ```
 
 > [!IMPORTANT]  
@@ -28,21 +28,21 @@ Create a service unit file at `/etc/systemd/system/robocode.service`:
 
 ```toml
 [Unit]
-Description = Robocode Tank Royale Service
-Requires = robocode.socket
-After = network-online.target
-Wants = network-online.target
+Description = "Robocode Tank Royale Service"
+Requires = "robocode.socket"
+After = "network-online.target"
+Wants = "network-online.target"
 
 [Service]
-ExecStart = /usr/bin/java -jar /opt/robocode/robocode-tankroyale-server-0.28.0.jar --port = inherit
-WorkingDirectory = /opt/robocode/
+ExecStart = "/usr/bin/java -jar /opt/robocode/robocode-tankroyale-server-0.28.0.jar --port=inherit"
+WorkingDirectory = "/opt/robocode/"
 TimeoutStartSec = 30
-StandardInput = socket
-StandardOutput = journal
-StandardError = journal
+StandardInput = "socket"
+StandardOutput = "journal"
+StandardError = "journal"
 
 [Install]
-WantedBy = multi-user.target
+WantedBy = "multi-user.target"
 ```
 
 > [!IMPORTANT]  
