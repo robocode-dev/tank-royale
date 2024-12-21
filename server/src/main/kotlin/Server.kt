@@ -8,6 +8,7 @@ import org.fusesource.jansi.AnsiConsole
 import picocli.CommandLine
 import picocli.CommandLine.*
 import picocli.CommandLine.Model.CommandSpec
+import java.nio.channels.ServerSocketChannel
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -51,6 +52,8 @@ class Server : Runnable {
         private const val MIN_PORT = 1000
         private const val MAX_PORT = 65535
 
+        const val INHERIT = "inherit"
+
         @Option(names = ["-v", "--version"], description = ["Display version info"])
         private var isVersionInfoRequested = false
 
@@ -59,10 +62,16 @@ class Server : Runnable {
 
         @Option(
             names = ["-p", "--port"],
-            type = [Int::class],
-            description = ["Port number (default: $DEFAULT_PORT)"]
+            type = [String::class],
+            description = ["Port number (default: $DEFAULT_PORT) or '$INHERIT' to use socket activation (if supported by the system)"]
         )
-        var port: Int = DEFAULT_PORT
+        private var port: String = DEFAULT_PORT.toString()
+
+        val useInheritedChannel: Boolean
+            get() = port.equals(INHERIT, ignoreCase = true)
+
+        val portNumber: Int
+            get() = if (useInheritedChannel) getInheritedPort() else port.toIntOrNull() ?: DEFAULT_PORT
 
         @Option(
             names = ["-g", "--games"],
@@ -99,6 +108,11 @@ class Server : Runnable {
         var tps: Int = DEFAULT_TURNS_PER_SECOND
 
         val cmdLine = CommandLine(Server())
+
+        private fun getInheritedPort(): Int {
+            val channel = System.inheritedChannel() as? ServerSocketChannel
+            return channel?.socket()?.localPort ?: -1
+        }
     }
 
     @Spec
@@ -145,7 +159,7 @@ class Server : Runnable {
     }
 
     private fun validatePort() {
-        if (port !in MIN_PORT..MAX_PORT) {
+        if (!useInheritedChannel && portNumber !in MIN_PORT..MAX_PORT) {
             reportInvalidPort()
             exitProcess(1) // general error
         }
@@ -154,13 +168,17 @@ class Server : Runnable {
     private fun reportInvalidPort() {
         System.err.println(
             """
-            Port must be between $MIN_PORT and $MAX_PORT.
-            Default port $DEFAULT_PORT will be used for HTTP.
+                Port must be either 'inherit' or a number between $MIN_PORT and $MAX_PORT.
+                Default port is $DEFAULT_PORT used for http.
             """.trimIndent()
         )
     }
 
     private fun startExitInputMonitorThread() {
+        // When inheriting a channel, it is passed as FD3, i.e. stdin. In this case, it does not
+        // make sense to monitor for an exit command.
+        if (useInheritedChannel) return
+
         Thread {
             monitorStandardInputForExit()
         }.apply {
