@@ -20,7 +20,7 @@ The server has these options:
 
 - `-h` or `--help` to show the help message.
 - `-v` or `--version` to show the version information.
-- `-p` or `--port=<port>` to specify the port number of the server.
+- `-p` or `--port=<port>` to specify the port number of the server or `inherit` to use an inherited socket.
 - `-g` or `--games=<gameTypes>` to provide a comma-separated list of game types.
 - `-c` or `--controller-secrets=<secrets>` to provide a comma-separated list of observer/controller secrets for simple.
   access control.
@@ -31,7 +31,7 @@ The server has these options:
 The options and commands are provided after the `java -jar robocode-tankroyale-server-x.y.z.jar` part like this:
 
 ```
-java -jar robocode-tankroyale-server-x.y.z.jar --version
+java -jar robocode-tankroyale-server-x.y.z.jar --help
 ```
 
 ## Game types
@@ -56,10 +56,15 @@ The `--port=<port>` is used for defining which port number the server must use w
 Example:
 
 ```
-java -jar robocode-tankroyale-server-x.y.z.jar --port=7913
+java -jar robocode-tankroyale-server-x.y.z.jar --port=1234
 ```
 
-If no port number is specified, the server will run on port number 80 per default.
+If no port number is specified, the server will run on port number 7654 per default.
+
+You can also inherit the socket, and hence the port, from another application, e.g. when using Socket Activation by
+setting the port like this: `--port=inherit`.
+
+You can read more about how to set to socket activation with [this guide](docs/systemd-socket-activation.md).
 
 ## Secrets
 
