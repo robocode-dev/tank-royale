@@ -1,5 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
+import com.github.weisj.jsvg.parser.SVGLoader
+import com.github.weisj.jsvg.parser.DefaultParserProvider
+import com.github.weisj.jsvg.parser.LoaderContext
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.*
@@ -44,6 +47,13 @@ object ArenaPanel : JPanel() {
     private val tick = AtomicBoolean(false)
 
     private var scale = 1.0
+
+    private val svgLoader = SVGLoader()
+    private val svgLoaderContext = LoaderContext
+        .builder()
+        .parserProvider(DefaultParserProvider())
+        .build()
+
 
     init {
         addMouseWheelListener { e -> if (e != null) onMouseWheel(e) }
@@ -243,6 +253,7 @@ object ArenaPanel : JPanel() {
             drawScanArc(g, bot)
             drawEnergy(g, bot)
             drawNameAndVersion(g, bot)
+            drawDebugGraphics(g, bot)
         }
     }
 
@@ -379,6 +390,35 @@ object ArenaPanel : JPanel() {
             return HslColor(hsl.hue, hsl.saturation, 0.2f).toColor()
         }
         return color
+    }
+
+    private const val MIRROR_TEXT_CSS = "<style>text {transform-box: fill-box; transform-origin: 50% 50%; transform: scaleY(-1);}</style>"
+
+    private fun drawDebugGraphics(g: Graphics2D, bot: BotState) {
+        if (bot.debugGraphics == null) return
+
+        val oldState = Graphics2DState(g)
+        try {
+            val optOut = bot.debugGraphics.contains("<!-- auto-transform: off -->")
+
+            val svg = (if (optOut) bot.debugGraphics else bot.debugGraphics.replace(Regex("<\\s*/\\s*svg\\s*>"), "${MIRROR_TEXT_CSS}</svg>")).byteInputStream().buffered().use { inputStream ->
+                svgLoader.load(inputStream, null, svgLoaderContext)
+            }
+            // By default, origin is already at bottom-left due to previous transforms in drawArena()
+            // If the bot opts out of the automatic transformation, we need to get rid of the mirroring transform
+
+            val oldTransform = g.transform
+            if (optOut) g.transform = g.deviceConfiguration.defaultTransform
+
+            // Render SVG scaled to arena dimensions
+            svg?.render(null, g)
+
+            if (optOut) g.transform = oldTransform
+        } catch (ignore: Exception) {
+            // Silently ignore SVG parsing/rendering errors
+        } finally {
+            oldState.restore(g)
+        }
     }
 
     class BotHitExplosion(

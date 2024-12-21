@@ -85,6 +85,12 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
         gameServer.handleChangeTps(tps)
     }
 
+    override fun onBotPolicyUpdated(botPolicyUpdate: BotPolicyUpdate) {
+        log.info("Bot policy updated for botId {}: debugGraphics is {}", botPolicyUpdate.botId,
+            if (botPolicyUpdate.debuggingEnabled) "enabled" else "disabled")
+        gameServer.handleBotPolicyUpdate(botPolicyUpdate)
+    }
+
     private fun getDisplayName(handshake: BotHandshake): String =
         getDisplayName(handshake.name, handshake.version)
 
