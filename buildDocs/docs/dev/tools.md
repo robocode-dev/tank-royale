@@ -16,11 +16,11 @@ all the tools for macOS and Linux as well.
 
 ### Version control
 
-- [git](https://git-scm.com/)
+- [git](https://git-scm.com/) to access [GitHub](https://github.com/robocode-dev/tank-royale)
 
 ### Build tool
 
-- [Gradle](https://gradle.org/) 8.0
+- [Gradle](https://gradle.org/) (using Kotlin DSL)
 
 ### Java / JVM platform
 
@@ -31,9 +31,9 @@ all the tools for macOS and Linux as well.
 ### .Net platform
 
 - [.Net 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
-- [DocFX](https://dotnet.github.io/docfx/) 2.61.0
+- [DocFX](https://dotnet.github.io/docfx/)
 
 ### Documentation
 
-- [Node.js](https://nodejs.org/en/) v18 (LTS)
-    - [VuePress](https://vuepress.vuejs.org/) is used for generating a static web page with documentation
+- [Node.js](https://nodejs.org/en/) v22 (LTS)
+    - [VuePress](https://vuepress.vuejs.org/) v2 is used for generating a static web page with documentation
