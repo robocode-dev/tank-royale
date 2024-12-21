@@ -1,4 +1,16 @@
-## 📦 0.28.0 - Bug fixed internal Bot API event handling
+## 📦 0.28.0 - Added support for inherited socket - 21-Dec-2024
+
+#### 🚀 Improvements
+
+- Server:
+    - #115: You can now start the server with an inherited socket from another process by setting `--port=inherit` or
+      `-p=inherit`.
+    - This enables the use of [Socket Activation], such as with `systemd` or `xinetd` on Linux.
+    - With socket activation, the server will only start when a client accesses the port for the first time.
+    - Thank you, [Tobias Zimmermann](https://github.com/Cu3PO42), for bringing this feature to Robocode! ❤️
+    - And thank you, [Marcel Prestel](https://github.com/marci4), for providing and maintaining the great
+      [Java WebSocket](https://tootallnate.github.io/Java-WebSocket/) library making WebSockets easy and available
+      for small stand-alone Java applications without the need of a "real" server. 🏆
 
 #### 🐞 Bug Fixes
 
@@ -24,7 +36,7 @@ This version fixes various issues, some found when running legacy bots with the 
 
 - Server:
     - #117: Server process consumed 100% of a CPU core even when the game is paused (due to nano timing).
-        - Thank you, Tobias Zimmermann, for spotting and fixing this nasty issue! ❤️
+        - Thank you, [Tobias Zimmermann](https://github.com/Cu3PO42), for spotting and fixing this nasty issue! ❤️
 - Bot API:
     - [#1](https://github.com/robocode-dev/robocode-api-bridge/issues/1): Wrapped bot throws an exception. Fixes in both
       the Bot API and [Robocode API Bridge](https://github.com/robocode-dev/robocode-api-bridge) caused by the Tank
@@ -868,3 +880,5 @@ Bot info:
 [Events tab]: https://robocode-dev.github.io/tank-royale/articles/gui.html#viewing-the-bot-events "Events tab in Bot Console"
 
 [Robocode API Bridge]: https://github.com/robocode-dev/robocode-api-bridge "Robocode API bridge for Tank Royale"
+
+[Socket Activation]: https://insanity.industries/post/socket-activation-all-the-things/ "Socket Activation"
