@@ -56,6 +56,10 @@ Available as:
  - Artifact at [Nuget repository](https://www.nuget.org/packages/Robocode.TankRoyale.BotApi/{VERSION})
 
 
+[installation guide]: https://robocode-dev.github.io/tank-royale/articles/installation.html "Installing and running Robocode"
+
+[GUI Application]: https://robocode-dev.github.io/tank-royale/articles/gui.html "The GUI application"
+
 [BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 
 [BotInfo.FromConfiguration(IConfiguration)]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
