@@ -13,6 +13,8 @@ base {
     archivesName = "robocode-tankroyale-gui" // renames _all_ archive names
 }
 
+val baseArchiveName = "${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}"
+
 buildscript {
     dependencies {
         classpath(libs.proguard.gradle)
@@ -69,24 +71,22 @@ tasks {
         dependsOn(copyBooterJar, copyServerJar)
     }
 
-    assemble {
-        dependsOn(copyJars)
-    }
-
     val fatJar by registering(FatJar::class) {
         dependsOn(classes, copyJars)
 
         title.set(archiveTitle)
         mainClass.set(jarManifestMainClass)
 
-        outputFilename.set("${base.archivesName.get()}-${project.version}-all.jar")
+        outputFilename.set("$baseArchiveName-all.jar")
     }
 
     val proguard by registering(ProGuardTask::class) {
         dependsOn(fatJar)
-        injars("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}-all.jar")
-        outjars("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}.jar")
+
         configuration("proguard-rules.pro")
+
+        injars("$baseArchiveName-all.jar")
+        outjars("$baseArchiveName.jar")
     }
 
     jar {
@@ -101,9 +101,9 @@ tasks {
     }
 
     assemble {
-        dependsOn(proguard)
+        dependsOn(copyJars, proguard)
         doLast {
-            delete("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}-all.jar")
+            delete("$baseArchiveName-all.jar")
         }
     }
 
