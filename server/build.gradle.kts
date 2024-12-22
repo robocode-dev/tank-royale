@@ -48,6 +48,10 @@ java {
 }
 
 tasks {
+    test {
+        useJUnitPlatform()
+    }
+
     jar {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
