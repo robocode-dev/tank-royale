@@ -113,6 +113,8 @@ class ModelUpdater(
         }
         turn.turnNumber = 0
 
+        val debugFlags = botsMap.mapValues { it.value.isDebuggingEnabled }
+        
         nextBulletId = 0
         botIntentsMap.clear()
         bullets.clear()
@@ -121,6 +123,10 @@ class ModelUpdater(
         inactivityCounter = 0
 
         initializeBotStates()
+
+        debugFlags.forEach { (botId, isEnabled) ->
+            botsMap[botId]?.isDebuggingEnabled = isEnabled 
+        }
     }
 
     /** Proceed with the next turn. */
@@ -289,6 +295,7 @@ class ModelUpdater(
 
             updateBotTurnRatesAndDirections(bot, this)
             updateBotColors(bot, this)
+            updateDebugGraphics(bot, this)
             processStdErrAndStdOut(bot, this)
             processTeamMessages(bot, this)
         }
@@ -1068,6 +1075,11 @@ class ModelUpdater(
                 tracksColor = fromColor(intent.tracksColor)
                 gunColor = fromColor(intent.gunColor)
             }
+        }
+
+        private fun updateDebugGraphics(bot: MutableBot, intent: BotIntent) {
+            if (intent.debugGraphics != null)
+                bot.debugGraphics = intent.debugGraphics
         }
 
         private fun fromColor(color: String?) = color?.let { from(it) }

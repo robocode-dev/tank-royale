@@ -24,6 +24,8 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.gson.extras)
     implementation(libs.nv.i18n)
+    implementation(libs.batik.svggen)
+    implementation(libs.batik.dom)
 
     testImplementation(testLibs.junit.api)
     testImplementation(testLibs.junit.params)

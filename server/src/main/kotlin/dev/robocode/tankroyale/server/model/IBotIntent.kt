@@ -64,4 +64,7 @@ interface IBotIntent {
 
     /** Team messages. */
     val teamMessages: List<TeamMessage>?
+
+    /** Debug graphics as an SVG string. */
+    val debugGraphics: String?
 }
