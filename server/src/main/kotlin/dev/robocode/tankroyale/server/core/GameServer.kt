@@ -261,7 +261,7 @@ class GameServer(
         turnTimeoutTimer = NanoTimer(
             minPeriodInNanos = calculateTurnTimeoutMinPeriod(),
             maxPeriodInNanos = calculateTurnTimeoutMaxPeriod(),
-            job = Runnable { onNextTurn() }
+            job = { onNextTurn() }
         ).apply { start() }
     }
 
