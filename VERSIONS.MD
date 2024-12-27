@@ -3,6 +3,7 @@
 #### 🐞 Bug Fixes
 
 - Server:
+    - #122: Fixed scoring issue with Survival Score and Last Survivor Bonus, which was got to big after multiple rounds. 
     - The server only listens to the wildcard IP address (0.0.0.0), which address means that it will listen on all
       available network interfaces for the specified port (IPv4 and IPv6) on the system.
 

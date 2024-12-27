@@ -39,14 +39,17 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
      */
     fun calculateScore(participantId: ParticipantId): Score {
         getScoreAndDamage(participantId).apply {
+            val isAlive = aliveParticipants.any { it == participantId }
+            val isLastSurvivor = lastSurvivors?.any { it == participantId } ?: false
+
             return Score(
                 participantId = participantId,
                 bulletDamageScore = SCORE_PER_BULLET_DAMAGE * getTotalBulletDamage(),
                 bulletKillBonus = BONUS_PER_BULLET_KILL * getBulletKillEnemyIds().sumOf { getTotalDamage(it) },
                 ramDamageScore = SCORE_PER_RAM_DAMAGE * getTotalRamDamage(),
                 ramKillBonus = BONUS_PER_RAM_KILL * getRamKillEnemyIds().sumOf { getTotalDamage(it) },
-                survivalScore = SCORE_PER_SURVIVAL * survivalCount,
-                lastSurvivorBonus = BONUS_PER_LAST_SURVIVOR * lastSurvivorCount,
+                survivalScore = SCORE_PER_SURVIVAL * if (isAlive) 1 else 0,
+                lastSurvivorBonus = BONUS_PER_LAST_SURVIVOR * if (isLastSurvivor) 1 else 0,
             )
         }
     }
