@@ -3,12 +3,11 @@ package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection
 import dev.robocode.tankroyale.server.Server
 import org.java_websocket.WebSocket
 import org.slf4j.LoggerFactory
-import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.nio.channels.ServerSocketChannel
 import kotlin.system.exitProcess
 
-class MultiServerWebSocketObserver(observer: IClientWebSocketObserver) {
+class WebSocketObserver(observer: IClientWebSocketObserver) {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
