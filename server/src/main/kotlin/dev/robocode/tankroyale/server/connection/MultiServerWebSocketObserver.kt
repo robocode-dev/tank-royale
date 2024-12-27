@@ -12,22 +12,20 @@ class MultiServerWebSocketObserver(observer: IClientWebSocketObserver) {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    private val webSocketServer = if (Server.useInheritedChannel) {
-        validateInheritedChannel()
-        arrayOf(ServerWebSocketObserver(observer))
-    } else {
-        arrayOf(
-            ServerWebSocketObserver(InetSocketAddress(Server.portNumber), observer),
-            ServerWebSocketObserver(InetSocketAddress(InetAddress.getLocalHost(), Server.portNumber), observer)
-        )
-    }
+    private val webSocketServer: ServerWebSocketObserver =
+        if (Server.useInheritedChannel) {
+            validateInheritedChannel()
+            ServerWebSocketObserver(observer)
+        } else {
+            ServerWebSocketObserver(InetSocketAddress(Server.portNumber), observer)
+        }
 
     fun start() {
-        webSocketServer.forEach { it.run() }
+        webSocketServer.run()
     }
 
     fun broadcast(clientSockets: Collection<WebSocket>, message: String) {
-        webSocketServer.forEach { it.broadcast(message, clientSockets) }
+        webSocketServer.broadcast(message, clientSockets)
     }
 
     private fun validateInheritedChannel() {

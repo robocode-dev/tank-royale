@@ -1,3 +1,11 @@
+## 📦 0.28.1 - Bug fixes
+
+#### 🐞 Bug Fixes
+
+- Server:
+    - The server only listens to the wildcard IP address (0.0.0.0), which address means that it will listen on all
+      available network interfaces for the specified port (IPv4 and IPv6) on the system.
+
 ## 📦 0.28.0 - Inherited Socket Support - 21-Dec-2024
 
 #### 🚀 Improvements
@@ -105,7 +113,7 @@ This version fixes various issues, some found when running legacy bots with the 
 - Server
     - #85: Fixed edge case when crossing the speed of 0, when target speed is 0.
 
-## 📦 0.24.3 - Bugfixes - 26-Aug-2024
+## 📦 0.24.3 - bug fixes - 26-Aug-2024
 
 #### 🐞 Bug Fixes
 
@@ -114,7 +122,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - #104: `ServerHandshake.version` was returning a string with the name of the server + version instead of just the
       version.
 
-## 📦 0.24.2 - Bugfixes - 22-Aug-2024
+## 📦 0.24.2 - bug fixes - 22-Aug-2024
 
 #### 🚀 Improvements
 
@@ -137,7 +145,7 @@ This version fixes various issues, some found when running legacy bots with the 
 - GUI:
     - Improved validation of URL when attempting to add new server URL.
 
-## 📦 0.24.0 - Minor bugfixes and code improvements - 14-Jun-2024
+## 📦 0.24.0 - Minor bug fixes and code improvements - 14-Jun-2024
 
 #### 🚀 Improvements
 
@@ -647,7 +655,7 @@ Bot info:
     - BotInfo:
         - A builder has been provided for creating `BotInfo` instances.
         - Size constraints have been added for the individual `BotInfo` fields/methods.
-        - Various bugfixes for BotInfo.
+        - Various bug fixes for BotInfo.
     - GameTypes:
         - Added missing game type for "classic" game + updated documentation.
 
@@ -667,12 +675,12 @@ Bot info:
 - Schema:
     - Replaced `$type` with `type` to make it possible to use more code generators ([#31]).
 
-## 📦 0.13.4 - GUI improvements + bugfix - 06-Jun-2022
+## 📦 0.13.4 - GUI improvements + bug fix - 06-Jun-2022
 
 #### 🐞 Bug Fixes
 
 - Bot API for Java:
-    - Major bugfix with `getTurnRemaining()` ([#28]), which returned the wrong value. This could be seen with the sample
+    - Major bug fix with `getTurnRemaining()` ([#28]), which returned the wrong value. This could be seen with the sample
       bot, Crazy, which did not turn correctly.
 
 #### Changes
