@@ -33,3 +33,7 @@ jsonSchema2Pojo {
 
     setFileExtensions("schema.yaml", "schema.json")
 }
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions.suppressWarnings = true
+}
