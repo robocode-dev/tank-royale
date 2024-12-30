@@ -48,9 +48,6 @@ abstract class FatJar : Jar() {
             compileClasspath.filter { it.name.endsWith(".jar") }.map { project.zipTree(it) },
             runtimeClasspath.filter { it.name.endsWith(".jar") }.map { project.zipTree(it) }
         )
-        into(
-            File("build/libs"),
-        )
         exclude("*.kotlin_metadata")
 
         super.copy() // important to call the original action
