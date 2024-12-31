@@ -30,6 +30,7 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
     fun clear() {
         aliveParticipants.apply { clear(); addAll(participantIds) }
         lastSurvivors = null
+        scoreAndDamages.values.forEach { it.clear() }
     }
 
     /**
@@ -39,8 +40,10 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
      */
     fun calculateScore(participantId: ParticipantId): Score {
         getScoreAndDamage(participantId).apply {
-            val isAlive = aliveParticipants.any { it == participantId }
-            val isLastSurvivor = lastSurvivors?.any { it == participantId } ?: false
+            val scoreAndDamage = scoreAndDamages[participantId]
+
+            val survivalCount = scoreAndDamage?.survivalCount ?: 0
+            val lastSurvivorCount = scoreAndDamage?.lastSurvivorCount ?: 0
 
             return Score(
                 participantId = participantId,
@@ -48,8 +51,8 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
                 bulletKillBonus = BONUS_PER_BULLET_KILL * getBulletKillEnemyIds().sumOf { getTotalDamage(it) },
                 ramDamageScore = SCORE_PER_RAM_DAMAGE * getTotalRamDamage(),
                 ramKillBonus = BONUS_PER_RAM_KILL * getRamKillEnemyIds().sumOf { getTotalDamage(it) },
-                survivalScore = SCORE_PER_SURVIVAL * if (isAlive) 1 else 0,
-                lastSurvivorBonus = BONUS_PER_LAST_SURVIVOR * if (isLastSurvivor) 1 else 0,
+                survivalScore = SCORE_PER_SURVIVAL * survivalCount,
+                lastSurvivorBonus = BONUS_PER_LAST_SURVIVOR * lastSurvivorCount,
             )
         }
     }
