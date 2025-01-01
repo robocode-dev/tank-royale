@@ -1,10 +1,10 @@
 ## 📄 Documentation
 
-You find the Robocode Tank Royale [documentation here](https://robocode-dev.github.io/tank-royale/index.html). You should start out by reading [Getting Started](https://robocode-dev.github.io/tank-royale/tutorial/getting-started.html) first.
+You find the Robocode Tank Royale [documentation here](https://robocode-dev.github.io/tank-royale/index.html). You should start out by reading [Getting Started] first.
 
 ### 🔨 Try it out
 
-Please head over to [My First Bot tutorial](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html) to learn how to set up your first bot for Robocode Tank Royale.
+Please head over to [My First Bot tutorial] to learn how to set up your first bot for Robocode Tank Royale.
 
 ## 🛠 Installing Robocode
 
@@ -56,22 +56,20 @@ Available as:
  - Artifact at [Nuget repository](https://www.nuget.org/packages/Robocode.TankRoyale.BotApi/{VERSION})
 
 
+[sample-bots-csharp-{VERSION}.zip]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-csharp-{VERSION}.zip
+
+[sample-bots-java-{VERSION}.zip]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-java-{VERSION}.zip
+
+[robocode-tankroyale-bot-api-{VERSION}.jar]: https://s01.oss.sonatype.org/service/local/repositories/releases/content/dev/robocode/tankroyale/robocode-tankroyale-bot-api/{VERSION}/robocode-tankroyale-bot-api-{VERSION}.jar
+
+[.Net SDK]: https://dotnet.microsoft.com/en-us/download/dotnet
+
+[Java SDK]: https://robocode-dev.github.io/tank-royale/articles/installation.html#java-11-or-newer
+
+[My First Bot tutorial]: https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html "My First Bot Tutorial"
+
+[Getting Started]: https://robocode-dev.github.io/tank-royale/tutorial/getting-started.html "Getting Started"
+
 [installation guide]: https://robocode-dev.github.io/tank-royale/articles/installation.html "Installing and running Robocode"
 
 [GUI Application]: https://robocode-dev.github.io/tank-royale/articles/gui.html "The GUI application"
-
-[BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
-
-[BotInfo.FromConfiguration(IConfiguration)]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
-
-[sounds releases]: https://github.com/robocode-dev/sounds/releases
-
-[GitHub Pages]: https://robocode-dev.github.io/tank-royale/
-
-[ANSI escape code]: https://en.wikipedia.org/w/index.php?title=ANSI_escape_code
-
-[Events tab]: https://robocode-dev.github.io/tank-royale/articles/gui.html#viewing-the-bot-events "Events tab in Bot Console"
-
-[Robocode API Bridge]: https://github.com/robocode-dev/robocode-api-bridge "Robocode API bridge for Tank Royale"
-
-[Socket Activation]: https://insanity.industries/post/socket-activation-all-the-things/ "Socket Activation"
