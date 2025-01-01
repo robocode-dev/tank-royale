@@ -45,15 +45,16 @@ public final class BotInternals implements IStopResumeListener {
 
         baseBotInternals.setStopResumeHandler(this);
 
-        BotEventHandlers botEventHandlers = baseBotInternals.getBotEventHandlers();
-        botEventHandlers.onGameAborted.subscribe(e -> onGameAborted(), 100);
-        botEventHandlers.onNextTurn.subscribe(this::onNextTurn, 90);
-        botEventHandlers.onRoundEnded.subscribe(e -> onRoundEnded(), 90);
-        botEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
-        botEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
-        botEventHandlers.onHitWall.subscribe(e -> onHitWall(), 90);
-        botEventHandlers.onHitBot.subscribe(this::onHitBot, 90);
-        botEventHandlers.onDeath.subscribe(this::onDeath, 90);
+        // Bot events have higher priorities than BaseBot events, meaning that these event will be executed first
+        var instantEventHandlers = baseBotInternals.getInstantEventHandlers();
+        instantEventHandlers.onGameAborted.subscribe(e -> onGameAborted(), 100);
+        instantEventHandlers.onNextTurn.subscribe(this::onNextTurn, 90);
+        instantEventHandlers.onRoundEnded.subscribe(e -> onRoundEnded(), 90);
+        instantEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
+        instantEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
+        instantEventHandlers.onHitWall.subscribe(e -> onHitWall(), 90);
+        instantEventHandlers.onHitBot.subscribe(this::onHitBot, 90);
+        instantEventHandlers.onDeath.subscribe(this::onDeath, 90);
     }
 
     private void onNextTurn(TickEvent e) {

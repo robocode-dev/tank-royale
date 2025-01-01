@@ -709,9 +709,8 @@ will not be able to move or take any action. If negative, the bot has been defea
   </span>
   <a id="Robocode_TankRoyale_BotApi_BaseBot_Events_" data-uid="Robocode.TankRoyale.BotApi.BaseBot.Events*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_BaseBot_Events" data-uid="Robocode.TankRoyale.BotApi.BaseBot.Events">Events</h4>
-  <div class="markdown level1 summary"><p>Events that remain to be processed in event handlers, which is useful to see the events that remain from event
-handlers being called before other event handlers. But also to access events have not been handled yet due to
-the bot skipping turns.</p>
+  <div class="markdown level1 summary"><p>an ordered list containing all events currently in the bot's event queue. You might, for example, call
+this while processing another event.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -729,8 +728,7 @@ the bot skipping turns.</p>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ilist-1">IList</a>&lt;<a class="xref" href="Robocode.TankRoyale.BotApi.Events.BotEvent.html">BotEvent</a>&gt;</td>
-        <td><p>An ordered list of all the events remaining to be handled for the current and previous (skipped) turns.
-The events are being sorted so that older events get listed first, and secondly sorted on event priority.</p>
+        <td><p>an ordered list containing all events currently in the bot's event queue.</p>
 </td>
       </tr>
     </tbody>
@@ -2623,7 +2621,7 @@ The bearing is a normalized angle in the range [-180,180[</p>
   </span>
   <a id="Robocode_TankRoyale_BotApi_BaseBot_ClearEvents_" data-uid="Robocode.TankRoyale.BotApi.BaseBot.ClearEvents*"></a>
   <h4 id="Robocode_TankRoyale_BotApi_BaseBot_ClearEvents" data-uid="Robocode.TankRoyale.BotApi.BaseBot.ClearEvents">ClearEvents()</h4>
-  <div class="markdown level1 summary"><p>Clears the remaining events that have not been processed yet.</p>
+  <div class="markdown level1 summary"><p>Clears out any pending events in the bot's event queue immediately.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>

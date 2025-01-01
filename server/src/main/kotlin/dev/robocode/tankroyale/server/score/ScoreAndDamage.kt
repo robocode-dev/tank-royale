@@ -19,6 +19,16 @@ class ScoreAndDamage {
     var lastSurvivorCount: Int = 0
         private set
 
+    /** Clears all registered scores and damages when a new round is started. */
+    fun clear() {
+        bulletDamage.clear()
+        ramHits.clear()
+        bulletKillEnemyIds.clear()
+        ramKillEnemyIds.clear()
+        survivalCount = 0
+        lastSurvivorCount = 0
+    }
+
     /** The total bullet damage dealt by this bot to other bots. */
     fun getTotalBulletDamage() = bulletDamage.keys.sumOf { getBulletDamage(it) }
 
@@ -33,23 +43,28 @@ class ScoreAndDamage {
 
     /**
      * Returns the bullet damage dealt by this bot to specific bot.
-     * @param enemyId is the enemy bot to retrieve the damage for.
+     * @param enemyId is the identifier of the specific enemy bot
      * @return the bullet damage dealt to a specific bot.
      */
     private fun getBulletDamage(enemyId: ParticipantId): Double = bulletDamage[enemyId] ?: 0.0
 
     /**
      * Returns the number of times ram damage has been dealt by this bot to specific bot.
-     * @param enemyId is the enemy bot to retrieve the ram count for.
+     * @param enemyId is the identifier of the specific enemy bot
      * @return the ram count for a specific bot.
      */
     private fun getRamHits(enemyId: ParticipantId): Int = ramHits[enemyId] ?: 0
 
+    /**
+     * Returns the total damage dealt to a specific bot.
+     * @param enemyId is the identifier of the specific enemy bot
+     * @return the total damage dealt to the bot.
+     */
     fun getTotalDamage(enemyId: ParticipantId): Double = getBulletDamage(enemyId) + getRamHits(enemyId) * RAM_DAMAGE
 
     /**
      * Adds bullet damage to a specific enemy bot.
-     * @param enemyId is the identifier of the enemy bot
+     * @param enemyId is the identifier of the specific enemy bot
      * @param damage is the amount of damage that the enemy bot has received
      */
     fun addBulletDamage(enemyId: ParticipantId, damage: Double) {

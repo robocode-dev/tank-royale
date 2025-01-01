@@ -2625,15 +2625,15 @@ references:
   commentId: T:Robocode.TankRoyale.BotApi.BotState
   fullName: Robocode.TankRoyale.BotApi.BotState
   nameWithType: BotState
-- uid: Robocode.TankRoyale.BotApi.BotState.#ctor(System.Boolean,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color)
-  name: BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, Color, Color, Color, Color, Color, Color, Color)
-  href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState__ctor_System_Boolean_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_
-  commentId: M:Robocode.TankRoyale.BotApi.BotState.#ctor(System.Boolean,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color)
-  name.vb: New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Color, Color, Color, Color, Color, Color, Color)
-  fullName: Robocode.TankRoyale.BotApi.BotState.BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
-  fullName.vb: Robocode.TankRoyale.BotApi.BotState.New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
-  nameWithType: BotState.BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, Color, Color, Color, Color, Color, Color, Color)
-  nameWithType.vb: BotState.New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Color, Color, Color, Color, Color, Color, Color)
+- uid: Robocode.TankRoyale.BotApi.BotState.#ctor(System.Boolean,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Int32,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color)
+  name: BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, int, Color, Color, Color, Color, Color, Color, Color)
+  href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState__ctor_System_Boolean_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Int32_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_
+  commentId: M:Robocode.TankRoyale.BotApi.BotState.#ctor(System.Boolean,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Int32,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color)
+  name.vb: New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Integer, Color, Color, Color, Color, Color, Color, Color)
+  fullName: Robocode.TankRoyale.BotApi.BotState.BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, int, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotState.New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Integer, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
+  nameWithType: BotState.BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, int, Color, Color, Color, Color, Color, Color, Color)
+  nameWithType.vb: BotState.New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Integer, Color, Color, Color, Color, Color, Color, Color)
 - uid: Robocode.TankRoyale.BotApi.BotState.#ctor*
   name: BotState
   href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState__ctor_
@@ -2683,6 +2683,19 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.BotState.Direction
   nameWithType: BotState.Direction
+- uid: Robocode.TankRoyale.BotApi.BotState.EnemyCount
+  name: EnemyCount
+  href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState_EnemyCount
+  commentId: P:Robocode.TankRoyale.BotApi.BotState.EnemyCount
+  fullName: Robocode.TankRoyale.BotApi.BotState.EnemyCount
+  nameWithType: BotState.EnemyCount
+- uid: Robocode.TankRoyale.BotApi.BotState.EnemyCount*
+  name: EnemyCount
+  href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState_EnemyCount_
+  commentId: Overload:Robocode.TankRoyale.BotApi.BotState.EnemyCount
+  isSpec: "True"
+  fullName: Robocode.TankRoyale.BotApi.BotState.EnemyCount
+  nameWithType: BotState.EnemyCount
 - uid: Robocode.TankRoyale.BotApi.BotState.Energy
   name: Energy
   href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState_Energy
@@ -4734,15 +4747,15 @@ references:
   commentId: T:Robocode.TankRoyale.BotApi.Events.TickEvent
   fullName: Robocode.TankRoyale.BotApi.Events.TickEvent
   nameWithType: TickEvent
-- uid: Robocode.TankRoyale.BotApi.Events.TickEvent.#ctor(System.Int32,System.Int32,System.Int32,Robocode.TankRoyale.BotApi.BotState,System.Collections.Generic.IEnumerable{Robocode.TankRoyale.BotApi.BulletState},System.Collections.Generic.IEnumerable{Robocode.TankRoyale.BotApi.Events.BotEvent})
-  name: TickEvent(int, int, int, BotState, IEnumerable<BulletState>, IEnumerable<BotEvent>)
-  href: api/Robocode.TankRoyale.BotApi.Events.TickEvent.html#Robocode_TankRoyale_BotApi_Events_TickEvent__ctor_System_Int32_System_Int32_System_Int32_Robocode_TankRoyale_BotApi_BotState_System_Collections_Generic_IEnumerable_Robocode_TankRoyale_BotApi_BulletState__System_Collections_Generic_IEnumerable_Robocode_TankRoyale_BotApi_Events_BotEvent__
-  commentId: M:Robocode.TankRoyale.BotApi.Events.TickEvent.#ctor(System.Int32,System.Int32,System.Int32,Robocode.TankRoyale.BotApi.BotState,System.Collections.Generic.IEnumerable{Robocode.TankRoyale.BotApi.BulletState},System.Collections.Generic.IEnumerable{Robocode.TankRoyale.BotApi.Events.BotEvent})
-  name.vb: New(Integer, Integer, Integer, BotState, IEnumerable(Of BulletState), IEnumerable(Of BotEvent))
-  fullName: Robocode.TankRoyale.BotApi.Events.TickEvent.TickEvent(int, int, int, Robocode.TankRoyale.BotApi.BotState, System.Collections.Generic.IEnumerable<Robocode.TankRoyale.BotApi.BulletState>, System.Collections.Generic.IEnumerable<Robocode.TankRoyale.BotApi.Events.BotEvent>)
-  fullName.vb: Robocode.TankRoyale.BotApi.Events.TickEvent.New(Integer, Integer, Integer, Robocode.TankRoyale.BotApi.BotState, System.Collections.Generic.IEnumerable(Of Robocode.TankRoyale.BotApi.BulletState), System.Collections.Generic.IEnumerable(Of Robocode.TankRoyale.BotApi.Events.BotEvent))
-  nameWithType: TickEvent.TickEvent(int, int, int, BotState, IEnumerable<BulletState>, IEnumerable<BotEvent>)
-  nameWithType.vb: TickEvent.New(Integer, Integer, Integer, BotState, IEnumerable(Of BulletState), IEnumerable(Of BotEvent))
+- uid: Robocode.TankRoyale.BotApi.Events.TickEvent.#ctor(System.Int32,System.Int32,Robocode.TankRoyale.BotApi.BotState,System.Collections.Generic.IEnumerable{Robocode.TankRoyale.BotApi.BulletState},System.Collections.Generic.IEnumerable{Robocode.TankRoyale.BotApi.Events.BotEvent})
+  name: TickEvent(int, int, BotState, IEnumerable<BulletState>, IEnumerable<BotEvent>)
+  href: api/Robocode.TankRoyale.BotApi.Events.TickEvent.html#Robocode_TankRoyale_BotApi_Events_TickEvent__ctor_System_Int32_System_Int32_Robocode_TankRoyale_BotApi_BotState_System_Collections_Generic_IEnumerable_Robocode_TankRoyale_BotApi_BulletState__System_Collections_Generic_IEnumerable_Robocode_TankRoyale_BotApi_Events_BotEvent__
+  commentId: M:Robocode.TankRoyale.BotApi.Events.TickEvent.#ctor(System.Int32,System.Int32,Robocode.TankRoyale.BotApi.BotState,System.Collections.Generic.IEnumerable{Robocode.TankRoyale.BotApi.BulletState},System.Collections.Generic.IEnumerable{Robocode.TankRoyale.BotApi.Events.BotEvent})
+  name.vb: New(Integer, Integer, BotState, IEnumerable(Of BulletState), IEnumerable(Of BotEvent))
+  fullName: Robocode.TankRoyale.BotApi.Events.TickEvent.TickEvent(int, int, Robocode.TankRoyale.BotApi.BotState, System.Collections.Generic.IEnumerable<Robocode.TankRoyale.BotApi.BulletState>, System.Collections.Generic.IEnumerable<Robocode.TankRoyale.BotApi.Events.BotEvent>)
+  fullName.vb: Robocode.TankRoyale.BotApi.Events.TickEvent.New(Integer, Integer, Robocode.TankRoyale.BotApi.BotState, System.Collections.Generic.IEnumerable(Of Robocode.TankRoyale.BotApi.BulletState), System.Collections.Generic.IEnumerable(Of Robocode.TankRoyale.BotApi.Events.BotEvent))
+  nameWithType: TickEvent.TickEvent(int, int, BotState, IEnumerable<BulletState>, IEnumerable<BotEvent>)
+  nameWithType.vb: TickEvent.New(Integer, Integer, BotState, IEnumerable(Of BulletState), IEnumerable(Of BotEvent))
 - uid: Robocode.TankRoyale.BotApi.Events.TickEvent.#ctor*
   name: TickEvent
   href: api/Robocode.TankRoyale.BotApi.Events.TickEvent.html#Robocode_TankRoyale_BotApi_Events_TickEvent__ctor_
@@ -4779,19 +4792,6 @@ references:
   isSpec: "True"
   fullName: Robocode.TankRoyale.BotApi.Events.TickEvent.BulletStates
   nameWithType: TickEvent.BulletStates
-- uid: Robocode.TankRoyale.BotApi.Events.TickEvent.EnemyCount
-  name: EnemyCount
-  href: api/Robocode.TankRoyale.BotApi.Events.TickEvent.html#Robocode_TankRoyale_BotApi_Events_TickEvent_EnemyCount
-  commentId: P:Robocode.TankRoyale.BotApi.Events.TickEvent.EnemyCount
-  fullName: Robocode.TankRoyale.BotApi.Events.TickEvent.EnemyCount
-  nameWithType: TickEvent.EnemyCount
-- uid: Robocode.TankRoyale.BotApi.Events.TickEvent.EnemyCount*
-  name: EnemyCount
-  href: api/Robocode.TankRoyale.BotApi.Events.TickEvent.html#Robocode_TankRoyale_BotApi_Events_TickEvent_EnemyCount_
-  commentId: Overload:Robocode.TankRoyale.BotApi.Events.TickEvent.EnemyCount
-  isSpec: "True"
-  fullName: Robocode.TankRoyale.BotApi.Events.TickEvent.EnemyCount
-  nameWithType: TickEvent.EnemyCount
 - uid: Robocode.TankRoyale.BotApi.Events.TickEvent.Events
   name: Events
   href: api/Robocode.TankRoyale.BotApi.Events.TickEvent.html#Robocode_TankRoyale_BotApi_Events_TickEvent_Events

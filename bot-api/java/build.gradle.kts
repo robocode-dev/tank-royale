@@ -93,7 +93,7 @@ tasks {
 //        testLogging.showStandardStreams = true
     }
 
-    register<Copy>("uploadDocs") {
+    val uploadDocs by registering(Copy::class) {
         dependsOn(javadoc)
 
         val javadocDir = "../../docs/api/java"

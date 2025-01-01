@@ -13,6 +13,8 @@ base {
     archivesName = "robocode-tankroyale-gui" // renames _all_ archive names
 }
 
+val baseArchiveName = "${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}"
+
 buildscript {
     dependencies {
         classpath(libs.proguard.gradle)
@@ -39,6 +41,7 @@ java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
+    withJavadocJar() // required for uploading to Sonatype
     withSourcesJar()
 }
 
@@ -69,24 +72,22 @@ tasks {
         dependsOn(copyBooterJar, copyServerJar)
     }
 
-    assemble {
-        dependsOn(copyJars)
-    }
-
     val fatJar by registering(FatJar::class) {
         dependsOn(classes, copyJars)
 
         title.set(archiveTitle)
         mainClass.set(jarManifestMainClass)
 
-        outputFilename.set("${base.archivesName.get()}-${project.version}-all.jar")
+        outputFilename.set("$baseArchiveName-all.jar")
     }
 
     val proguard by registering(ProGuardTask::class) {
         dependsOn(fatJar)
-        injars("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}-all.jar")
-        outjars("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}.jar")
+
         configuration("proguard-rules.pro")
+
+        injars("$baseArchiveName-all.jar")
+        outjars("$baseArchiveName.jar")
     }
 
     jar {
@@ -101,12 +102,13 @@ tasks {
     }
 
     assemble {
-        dependsOn(proguard)
+        dependsOn(copyJars, proguard)
         doLast {
-            delete("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}-all.jar")
+            delete("$baseArchiveName-all.jar")
         }
     }
 
+    val javadocJar = named("javadocJar") // required at Sonatype
     val sourcesJar = named("sourcesJar")
 
     publishing {
@@ -115,6 +117,7 @@ tasks {
                 artifact(proguard.get().outJarFiles[0]) {
                     builtBy(proguard)
                 }
+                artifact(javadocJar) // required at Sonatype
                 artifact(sourcesJar)
 
                 groupId = group as String?

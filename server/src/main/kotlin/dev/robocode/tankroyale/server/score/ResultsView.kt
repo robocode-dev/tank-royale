@@ -27,7 +27,7 @@ object ResultsView {
                 }
             }
         }
-        val sortedRows = TreeMap<Participant, Score>(kotlin.Comparator() { p1, p2 -> rows[p2]!!.totalScore.compareTo(rows[p1]!!.totalScore) })
+        val sortedRows = TreeMap<Participant, Score> { p1, p2 -> rows[p2]!!.totalScore.compareTo(rows[p1]!!.totalScore) }
         sortedRows.putAll(rows)
         return sortedRows.values
     }

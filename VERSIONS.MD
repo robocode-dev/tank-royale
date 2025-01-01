@@ -1,7 +1,41 @@
-## 📦 0.27.0 - Bugfixes for the Robocode Bridge
+## 📦 0.28.1 - Fixed Survival Scores
 
-This version fixes issues found when running legacy bots with the
-[Robocode API Bridge](https://github.com/robocode-dev/robocode-api-bridge) caused by the Tank Royale Bot APIs.
+#### 🐞 Bug Fixes
+
+- Server:
+    - #122: Fixed the scoring issue with Survival Score and Last Survivor Bonus, which became too large after multiple
+      rounds.
+    - The server now only listens to the wildcard IP address (0.0.0.0), meaning it will listen on all available network
+      interfaces for the specified port (IPv4 and IPv6) on the system.
+
+## 📦 0.28.0 - Inherited Socket Support - 21-Dec-2024
+
+#### 🚀 Improvements
+
+- Server:
+    - **#115: Inherited Socket Support**: You can now start the server with an inherited socket from another process by
+      setting `--port=inherit` or `-p=inherit`.
+    - **Socket Activation**: This enables the use of [Socket Activation], such as with `systemd` or `xinetd` on Linux.
+    - **Lazy Loading**: With socket activation, the server will only start when a client accesses the port for the first
+      time.
+    - **Setup Guide**: A detailed guide for setting up socket activation for the Robocode server is
+      provided [here](https://github.com/robocode-dev/tank-royale/blob/main/server/docs/systemd-socket-activation.md).
+    - **Acknowledgements**: Special thanks to [Tobias Zimmermann](https://github.com/Cu3PO42) for bringing this feature
+      to Robocode! ❤️
+    - **Java WebSocket**: Gratitude to [Marcel Prestel](https://github.com/marci4) for providing and maintaining the
+      excellent [Java WebSocket](https://tootallnate.github.io/Java-WebSocket/) library, making WebSockets accessible
+      for small stand-alone Java applications without the need for a traditional server. 🏆
+
+#### 🐞 Bug Fixes
+
+- Bot API:
+    - The internal event handling for state updates in the Bot API is now separated from bot event queue handling.
+      Internal events are processed immediately, while bot events are eventually processed through the event queue,
+      if at all.
+
+## 📦 0.27.0 - Lots of bug fixes - 02-Dec-2024
+
+This version fixes various issues, some found when running legacy bots with the [Robocode API Bridge].
 
 #### 🚀 Improvements
 
@@ -10,15 +44,18 @@ This version fixes issues found when running legacy bots with the
       `HashSet` protected with `lock` blocks.
 - Bot API for Java:
     - Improved performance of event handling by replacing `CopyOnWriteArrayList` with
-      `synchronizedList(new ArrayList<>)`.
-    - #1: Wrapped bot throws exception. Fixes in both the Bot API and [Robocode API Bridge].
-- Server:
-    - Improved logging so errors are written out to standard out, and stack traces are omitted.
-    - SimpleLogger was replaces with Logback.
+      `synchronizedList(new ArrayList<>())`.
 
 #### 🐞 Bug Fixes
 
+- Server:
+    - #117: Server process consumed 100% of a CPU core even when the game is paused (due to nano timing).
+        - Thank you, [Tobias Zimmermann](https://github.com/Cu3PO42), for spotting and fixing this nasty issue! ❤️
 - Bot API:
+    - [#1](https://github.com/robocode-dev/robocode-api-bridge/issues/1): Wrapped bot throws an exception. Fixes in both
+      the Bot API and [Robocode API Bridge](https://github.com/robocode-dev/robocode-api-bridge) caused by the Tank
+      Royale Bot APIs.
+    - #119: Battle was not starting on Windows 11 and 10 after installing Docker Linux subsystem.
     - Bridged bots run multiple threads after round 2 due to old thread(s) hanging that could not be stopped.
     - Bridged bots could not be restarted as they got a connection error with the WebSocket when restarting.
     - .Net bots sometimes exited when running at max speed without any exceptions occurring.
@@ -78,7 +115,7 @@ This version fixes issues found when running legacy bots with the
 - Server
     - #85: Fixed edge case when crossing the speed of 0, when target speed is 0.
 
-## 📦 0.24.3 - Bugfixes - 26-Aug-2024
+## 📦 0.24.3 - bug fixes - 26-Aug-2024
 
 #### 🐞 Bug Fixes
 
@@ -87,7 +124,7 @@ This version fixes issues found when running legacy bots with the
     - #104: `ServerHandshake.version` was returning a string with the name of the server + version instead of just the
       version.
 
-## 📦 0.24.2 - Bugfixes - 22-Aug-2024
+## 📦 0.24.2 - bug fixes - 22-Aug-2024
 
 #### 🚀 Improvements
 
@@ -110,7 +147,7 @@ This version fixes issues found when running legacy bots with the
 - GUI:
     - Improved validation of URL when attempting to add new server URL.
 
-## 📦 0.24.0 - Minor bugfixes and code improvements - 14-Jun-2024
+## 📦 0.24.0 - Minor bug fixes and code improvements - 14-Jun-2024
 
 #### 🚀 Improvements
 
@@ -620,7 +657,7 @@ Bot info:
     - BotInfo:
         - A builder has been provided for creating `BotInfo` instances.
         - Size constraints have been added for the individual `BotInfo` fields/methods.
-        - Various bugfixes for BotInfo.
+        - Various bug fixes for BotInfo.
     - GameTypes:
         - Added missing game type for "classic" game + updated documentation.
 
@@ -640,12 +677,13 @@ Bot info:
 - Schema:
     - Replaced `$type` with `type` to make it possible to use more code generators ([#31]).
 
-## 📦 0.13.4 - GUI improvements + bugfix - 06-Jun-2022
+## 📦 0.13.4 - GUI improvements + bug fix - 06-Jun-2022
 
 #### 🐞 Bug Fixes
 
 - Bot API for Java:
-    - Major bugfix with `getTurnRemaining()` ([#28]), which returned the wrong value. This could be seen with the sample
+    - Major bug fix with `getTurnRemaining()` ([#28]), which returned the wrong value. This could be seen with the
+      sample
       bot, Crazy, which did not turn correctly.
 
 #### Changes
@@ -844,6 +882,10 @@ Bot info:
 
 - First alpha version was released! 🚀😀
 
+[installation guide]: https://robocode-dev.github.io/tank-royale/articles/installation.html "Installing and running Robocode"
+
+[GUI Application]: https://robocode-dev.github.io/tank-royale/articles/gui.html "The GUI application"
+
 [BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 
 [BotInfo.FromConfiguration(IConfiguration)]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.BotInfo.html#Robocode_TankRoyale_BotApi_BotInfo_FromConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
@@ -857,3 +899,5 @@ Bot info:
 [Events tab]: https://robocode-dev.github.io/tank-royale/articles/gui.html#viewing-the-bot-events "Events tab in Bot Console"
 
 [Robocode API Bridge]: https://github.com/robocode-dev/robocode-api-bridge "Robocode API bridge for Tank Royale"
+
+[Socket Activation]: https://insanity.industries/post/socket-activation-all-the-things/ "Socket Activation"

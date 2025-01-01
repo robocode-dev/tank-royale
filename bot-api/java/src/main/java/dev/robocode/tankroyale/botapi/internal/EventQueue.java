@@ -151,7 +151,7 @@ final class EventQueue {
     private void handleEvent(BotEvent botEvent, int turnNumber) {
         try {
             if (isNotOldOrIsCriticalEvent(botEvent, turnNumber)) {
-                botEventHandlers.fire(botEvent);
+                botEventHandlers.fireEvent(botEvent);
             }
         } finally {
             setInterruptible(botEvent.getClass(), false);

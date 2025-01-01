@@ -119,8 +119,9 @@ public abstract class BaseBot implements IBaseBot {
     /**
      * {@inheritDoc}
      */
+    // We allow override of go() here to let the Robocode Bridge hook into this method
     @Override
-    public final void go() {
+    public void go() {
         baseBotInternals.execute();
     }
 

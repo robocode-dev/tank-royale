@@ -30,6 +30,7 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
     fun clear() {
         aliveParticipants.apply { clear(); addAll(participantIds) }
         lastSurvivors = null
+        scoreAndDamages.values.forEach { it.clear() }
     }
 
     /**
@@ -39,6 +40,11 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
      */
     fun calculateScore(participantId: ParticipantId): Score {
         getScoreAndDamage(participantId).apply {
+            val scoreAndDamage = scoreAndDamages[participantId]
+
+            val survivalCount = scoreAndDamage?.survivalCount ?: 0
+            val lastSurvivorCount = scoreAndDamage?.lastSurvivorCount ?: 0
+
             return Score(
                 participantId = participantId,
                 bulletDamageScore = SCORE_PER_BULLET_DAMAGE * getTotalBulletDamage(),

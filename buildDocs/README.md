@@ -22,11 +22,10 @@ The docs are build by this command:
 ./gradlew :buildDocs:clean :buildDocs:build
 ```
 
-In order to view the generated documentation, you write:
+In order to run and view the generated documentation, you write:
 
 ```shell
-cd docs
-npm run dev
+./gradlew :buildDocs:run
 ```
 
 Now you can view the documentation with a browser from the link provided by VuePress as a result of generating the

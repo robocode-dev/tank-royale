@@ -43,7 +43,7 @@ class ScoreCalculatorTest : FunSpec({
                         ramKillBonus shouldBe 0
                         survivalScore shouldBe 0
                         lastSurvivorBonus shouldBe 0
-                        firstPlaces shouldBe 1
+                        firstPlaces shouldBe 0
                         secondPlaces shouldBe 0
                         thirdPlaces shouldBe 0
                     }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
 
@@ -6,7 +7,7 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 /// Event handler that is able to invoke events in the sequence, which they were added to the handler.
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class EventHandler<T>
+public class EventHandler<T> where T : IEvent
 {
     /// <summary>
     /// Delegate method used for declaring events.

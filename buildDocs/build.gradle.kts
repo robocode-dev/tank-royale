@@ -9,7 +9,7 @@ plugins {
 
 node {
     download = true
-    version = "20.14.0"
+    version = "22.11.0"
 }
 
 tasks {
@@ -27,7 +27,7 @@ tasks {
     }
 
     // Install or update to `docfx`
-    val installDocfx = register<Exec>("updateDocfx") {
+    val updateDocfx by registering(Exec::class) {
         commandLine("dotnet", "tool", "update", "-g", "docfx", "--version", "2.77.0")
     }
 
@@ -37,9 +37,15 @@ tasks {
         args = listOf("run", "build")
     }
 
-    register<Copy>("uploadDocs") {
+    val run by registering(NpmTask::class) {
+        dependsOn(npmInstall)
+
+        args = listOf("run", "dev")
+    }
+
+    val uploadDocs by registering(Copy::class) {
         dependsOn(clean, npmBuild)
-        dependsOn(installDocfx)
+        dependsOn(updateDocfx)
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 

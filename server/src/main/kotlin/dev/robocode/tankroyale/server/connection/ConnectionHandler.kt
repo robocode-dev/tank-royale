@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection
 
 import dev.robocode.tankroyale.schema.game.*
-import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.connection.ClientWebSocketsHandler
 import dev.robocode.tankroyale.server.core.ServerSetup
 import org.java_websocket.WebSocket
@@ -19,10 +18,10 @@ class ConnectionHandler(
 
     private val clientHandler = ClientWebSocketsHandler(setup, listener, controllerSecrets, botSecrets, ::broadcast)
 
-    private val multiServerWebSocketObserver = MultiServerWebSocketObserver(clientHandler)
+    private val webSocketObserver = WebSocketObserver(clientHandler)
 
     fun start() {
-        multiServerWebSocketObserver.start()
+        webSocketObserver.start()
     }
 
     fun stop() {
@@ -61,7 +60,7 @@ class ConnectionHandler(
         toIpAddress(address) == toIpAddress(botAddress) && botAddress.port == address.port
 
     private fun toIpAddress(address: InetSocketAddress) =
-        localhostToIpAddress(address.hostName)
+        address.address.hostAddress
 
     private fun toIpAddress(botAddress: BotAddress) =
         localhostToIpAddress(InetAddress.getByName(botAddress.host).hostAddress)
@@ -76,6 +75,6 @@ class ConnectionHandler(
 
     fun broadcast(clientSockets: Collection<WebSocket>, message: String) {
         log.debug("Broadcast message: $message")
-        multiServerWebSocketObserver.broadcast(clientSockets, message)
+        webSocketObserver.broadcast(clientSockets, message)
     }
 }

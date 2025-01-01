@@ -1,5 +1,5 @@
 import org.apache.tools.ant.filters.ReplaceTokens
-import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
+import kotlin.text.lowercase
 
 description = "Robocode Tank Royale Bot API for .Net"
 
@@ -34,41 +34,38 @@ tasks {
         into("docs")
     }
 
-    assemble {
-        dependsOn(":schema:dotnet:build", prepareNugetDocs)
+    val buildDotnetBotApi by registering(Exec::class) {
+        dependsOn(prepareNugetDocs)
 
-        doLast {
-            exec {
-                workingDir("Robocode.TankRoyale.BotApi")
-                commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
-            }
-        }
+        workingDir("Robocode.TankRoyale.BotApi")
+        commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
     }
 
-    register("test") {
-        doLast {
-            exec {
-                workingDir("Robocode.TankRoyale.BotApi.Tests")
-                commandLine("dotnet", "test")
-            }
-        }
+    val test by registering(Exec::class) {
+        workingDir("Robocode.TankRoyale.BotApi.Tests")
+        commandLine("dotnet", "test")
+    }
+
+    build {
+        dependsOn(":schema:dotnet:build", buildDotnetBotApi)
+    }
+
+    val docfxMetadata by registering(Exec::class) {
+        workingDir("docfx_project")
+        commandLine("docfx", "metadata")
+    }
+
+    val docfxBuild by registering(Exec::class) {
+        workingDir("docfx_project")
+        delete("_site", "api", "obj")
+        commandLine("docfx", "build")
     }
 
     val docfx by registering {
-        doLast {
-            exec {
-                workingDir("docfx_project")
-                commandLine("docfx", "metadata") // build /api before building the _site
-            }
-            exec {
-                workingDir("docfx_project")
-                delete("_site", "api", "obj")
-                commandLine("docfx", "build")    // build /_site
-            }
-        }
+        dependsOn(docfxMetadata, docfxBuild)
     }
 
-    register<Copy>("uploadDocs") {
+    val uploadDocs by registering(Copy::class) {
         dependsOn(clean, docfx)
 
         val dotnetApiDir = "../../docs/api/dotnet"
@@ -82,17 +79,17 @@ tasks {
         into(dotnetApiDir)
     }
 
-    register("pushLocal") {
-        dependsOn(build, prepareNugetDocs)
+    val pushLocal by registering(Exec::class) {
+        dependsOn(prepareNugetDocs)
 
-        doLast {
-            val userhome = System.getenv("USERPROFILE") ?: System.getenv("HOME")
-            println("$userhome/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
-            delete("$userhome/.nuget/packages/${artifactName.toLowerCaseAsciiOnly()}/$version")
-            exec {
-                workingDir("Robocode.TankRoyale.BotApi/bin/Release")
-                commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "--source", "$userhome/.nuget/packages")
-            }
+        val userHome = System.getenv("USERPROFILE") ?: System.getenv("HOME")
+
+        doFirst {
+            println("$userHome/.nuget/packages/${artifactName.lowercase()}/$version")
+            delete("$userHome/.nuget/packages/${artifactName.lowercase()}/$version")
         }
+
+        workingDir("Robocode.TankRoyale.BotApi/bin/Release")
+        commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "--source", "$userHome/.nuget/packages")
     }
 }

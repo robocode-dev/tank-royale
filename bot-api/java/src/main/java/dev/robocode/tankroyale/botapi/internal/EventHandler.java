@@ -38,6 +38,8 @@ final class EventHandler<T> {
     }
 
     class EntryWithPriorityComparator implements Comparator<EntryWithPriority> {
+
+        // The higher priority values means higher priority, and hence must be listed before lower priorities
         @Override
         public int compare(EntryWithPriority e1, EntryWithPriority e2) {
             return e2.priority - e1.priority;

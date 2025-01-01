@@ -12,6 +12,8 @@ base {
     archivesName = "robocode-tankroyale-server" // renames _all_ archive names
 }
 
+val baseArchiveName = "${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}"
+
 buildscript {
     dependencies {
         classpath(libs.proguard.gradle)
@@ -48,6 +50,10 @@ java {
 }
 
 tasks {
+    test {
+        useJUnitPlatform()
+    }
+
     jar {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
@@ -65,15 +71,17 @@ tasks {
 
     val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking
         dependsOn(jar)
-        injars("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}-all.jar")
-        outjars("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}.jar")
+
         configuration("proguard-rules.pro")
+
+        injars("$baseArchiveName-all.jar")
+        outjars("$baseArchiveName.jar")
     }
 
     assemble {
         dependsOn(proguard)
         doLast {
-            delete("${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}-all.jar")
+            delete("baseArchiveName-all.jar")
         }
     }
 

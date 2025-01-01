@@ -81,6 +81,7 @@ public sealed class BaseBotInternals
         this.botInfo = botInfo ?? EnvVars.GetBotInfo();
 
         BotEventHandlers = new BotEventHandlers(baseBot);
+        InstantEventHandlers = new InstantEventHandlers();
         eventQueue = new EventQueue(this, BotEventHandlers);
 
         absDeceleration = Math.Abs(Constants.Deceleration);
@@ -142,9 +143,9 @@ public sealed class BaseBotInternals
 
     private void SubscribeToEvents()
     {
-        BotEventHandlers.OnRoundStarted.Subscribe(OnRoundStarted, 100);
-        BotEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 100);
-        BotEventHandlers.OnBulletFired.Subscribe(OnBulletFired, 100);
+        InstantEventHandlers.OnRoundStarted.Subscribe(OnRoundStarted, 100);
+        InstantEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 100);
+        InstantEventHandlers.OnBulletFired.Subscribe(OnBulletFired, 100);
     }
 
     public bool IsRunning
@@ -250,6 +251,8 @@ public sealed class BaseBotInternals
     }
 
     internal BotEventHandlers BotEventHandlers { get; }
+
+    internal InstantEventHandlers InstantEventHandlers { get; }
 
     internal IList<E.BotEvent> Events => eventQueue.Events(CurrentTickOrThrow.TurnNumber);
 
@@ -809,19 +812,25 @@ public sealed class BaseBotInternals
     private static string ServerSecretFromSetting => EnvVars.GetServerSecret();
 
     private void HandleConnected() =>
-        BotEventHandlers.FireConnectedEvent(new E.ConnectedEvent(socket.ServerUri));
+        BotEventHandlers.OnConnected.Publish(new E.ConnectedEvent(socket.ServerUri));
 
     private void HandleDisconnected(bool remote, int? statusCode, string reason)
     {
-        BotEventHandlers.FireDisconnectedEvent(
-            new E.DisconnectedEvent(socket.ServerUri, remote, statusCode, reason));
+        var disconnectedEvent = new E.DisconnectedEvent(socket.ServerUri, remote, statusCode, reason);
+        
+        BotEventHandlers.OnDisconnected.Publish(disconnectedEvent);
+        InstantEventHandlers.OnDisconnected.Publish(disconnectedEvent);
 
         closedEvent.Set();
     }
 
-    private void HandleConnectionError(Exception cause) =>
-        BotEventHandlers.FireConnectionErrorEvent(new E.ConnectionErrorEvent(socket.ServerUri,
+    private void HandleConnectionError(Exception cause)
+    {
+        BotEventHandlers.OnConnectionError.Publish(new E.ConnectionErrorEvent(socket.ServerUri,
             new Exception(cause.Message)));
+
+        closedEvent.Set();
+    }
 
     private void HandleTextMessage(string json)
     {
@@ -876,43 +885,52 @@ public sealed class BaseBotInternals
 
         ticksStart = DateTime.Now.Ticks;
 
+        var mappedTickEvent = EventMapper.Map(json, baseBot);
+        eventQueue.AddEventsFromTick(mappedTickEvent);
+
         if (BotIntent.Rescan == true)
             BotIntent.Rescan = false;
 
-        var newTickEvent = EventMapper.Map(json, baseBot);
-        eventQueue.AddEventsFromTick(newTickEvent);
-
-        tickEvent = newTickEvent;
+        tickEvent = mappedTickEvent;
+        
+        foreach (var botEvent in tickEvent.Events)
+        {
+            InstantEventHandlers.FireEvent(botEvent);
+        }
 
         // Trigger next turn (not tick-event!)
-        BotEventHandlers.FireNextTurn(tickEvent);
+        InstantEventHandlers.OnNextTurn.Publish(tickEvent);
     }
 
     private void HandleRoundStarted(string json)
     {
         var roundStartedEvent = JsonConvert.DeserializeObject<S.RoundStartedEvent>(json);
-        if (roundStartedEvent == null)
-            throw new BotException("RoundStartedEvent is missing in JSON message from server");
+        VerifyNotNull(roundStartedEvent, typeof(S.RoundStartedEvent));
 
-        BotEventHandlers.FireRoundStartedEvent(new E.RoundStartedEvent(roundStartedEvent.RoundNumber));
+        var mappedRoundStartedEvent = new E.RoundStartedEvent(roundStartedEvent.RoundNumber);
+        
+        BotEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
+        InstantEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
     }
 
     private void HandleRoundEnded(string json)
     {
         var roundEndedEventForBot = JsonConvert.DeserializeObject<S.RoundEndedEventForBot>(json);
-        if (roundEndedEventForBot == null)
-            throw new BotException("RoundEndedEventForBot is missing in JSON message from server");
+        VerifyNotNull(roundEndedEventForBot, typeof(S.RoundEndedEventForBot));
 
         var botResults = ResultsMapper.Map(roundEndedEventForBot.Results);
-        BotEventHandlers.FireRoundEndedEvent(new E.RoundEndedEvent(roundEndedEventForBot.RoundNumber,
-            roundEndedEventForBot.TurnNumber, botResults));
+
+        var mappedRoundEndedEvent = new E.RoundEndedEvent(roundEndedEventForBot.RoundNumber,
+            roundEndedEventForBot.TurnNumber, botResults);
+        
+        BotEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
+        InstantEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
     }
 
     private void HandleGameStarted(string json)
     {
         var gameStartedEventForBot = JsonConvert.DeserializeObject<S.GameStartedEventForBot>(json);
-        if (gameStartedEventForBot == null)
-            throw new BotException("GameStartedEventForBot is missing in JSON message from server");
+        VerifyNotNull(gameStartedEventForBot, typeof(S.GameStartedEventForBot));
 
         MyId = gameStartedEventForBot.MyId;
         teammateIds = gameStartedEventForBot.TeammateIds;
@@ -928,24 +946,40 @@ public sealed class BaseBotInternals
         {
             Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotReady)
         };
+
         var msg = JsonConvert.SerializeObject(ready);
         socket.SendTextMessage(msg);
 
-        BotEventHandlers.FireGameStartedEvent(new E.GameStartedEvent(MyId, initialPosition, gameSetup));
+        BotEventHandlers.OnGameStarted.Publish(new E.GameStartedEvent(MyId, initialPosition, gameSetup));
     }
 
     private void HandleGameEnded(string json)
     {
         // Send the game ended event
         var gameEndedEventForBot = JsonConvert.DeserializeObject<S.GameEndedEventForBot>(json);
-        if (gameEndedEventForBot == null)
-            throw new BotException("GameEndedEventForBot is missing in JSON message from server");
+        VerifyNotNull(gameEndedEventForBot, typeof(S.GameEndedEventForBot));
 
         var results = ResultsMapper.Map(gameEndedEventForBot.Results);
-        BotEventHandlers.FireGameEndedEvent(new E.GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results));
+        var mappedGameEnded = new E.GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results);
+        
+        BotEventHandlers.OnGameEnded.Publish(mappedGameEnded);
+        InstantEventHandlers.OnGameEnded.Publish(mappedGameEnded);
     }
 
-    private void HandleGameAborted() => BotEventHandlers.FireGameAbortedEvent();
+    private void HandleGameAborted()
+    {
+        BotEventHandlers.OnGameAborted.Publish(null);
+        InstantEventHandlers.OnGameAborted.Publish(null);
+    }
+
+    private void HandleSkippedTurn(string json)
+    {
+        if (IsEventHandlingDisabled()) return;
+
+        var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.Game.SkippedTurnEvent>(json);
+
+        BotEventHandlers.OnSkippedTurn.Publish(EventMapper.Map(skippedTurnEvent));
+    }
 
     private void HandleServerHandshake(string json)
     {
@@ -960,11 +994,9 @@ public sealed class BaseBotInternals
         socket.SendTextMessage(text);
     }
 
-    private void HandleSkippedTurn(string json)
+    private static void VerifyNotNull(Object iEvent, Type eventType)
     {
-        if (IsEventHandlingDisabled()) return;
-
-        var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.Game.SkippedTurnEvent>(json);
-        BotEventHandlers.FireSkippedTurnEvent(EventMapper.Map(skippedTurnEvent));
+        if (iEvent == null)
+            throw new BotException(nameof(eventType) + " is missing in JSON message from server");
     }
 }

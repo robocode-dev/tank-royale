@@ -19,7 +19,7 @@ import dev.robocode.tankroyale.gui.util.isRemoteEndpoint
 
 object MenuEventHandlers {
 
-    private const val HELP_URL = "https://robocode-dev.github.io/tank-royale/articles/gui.html"
+    private const val HELP_URL = "https://robocode-dev.github.io/tank-royale/tutorial/getting-started.html"
 
     init {
         MenuEventTriggers.apply {

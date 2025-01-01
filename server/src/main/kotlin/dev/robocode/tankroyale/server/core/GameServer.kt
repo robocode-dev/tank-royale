@@ -62,7 +62,7 @@ class GameServer(
     private var modelUpdater: ModelUpdater? = null
 
     /** Timer for 'ready' timeout */
-    private var readyTimeoutTimer: NanoTimer? = null
+    private lateinit var readyTimeoutTimer: NanoTimer
 
     /** Timer for 'turn' timeout */
     private var turnTimeoutTimer: NanoTimer? = null
@@ -86,7 +86,7 @@ class GameServer(
 
     /** Starts this server */
     fun start() {
-        log.info("Starting server on port ${Server.port} with supporting game type(s): ${gameTypes.joinToString()}")
+        log.info("Starting server on port ${Server.portNumber} with supporting game type(s): ${gameTypes.joinToString()}")
         connectionHandler.start()
     }
 
@@ -116,10 +116,10 @@ class GameServer(
     private fun startGameIfParticipantsReady() {
         synchronized(startGameLock) {
             if (readyParticipants.size == participants.size) {
+                if (!readyTimeoutTimer.stop()) return
+
                 participantMap.clear()
                 participantMap.putAll(createParticipantMap())
-
-                readyTimeoutTimer?.stop()
 
                 readyParticipants.clear()
                 botIntents.clear()
@@ -173,7 +173,11 @@ class GameServer(
 
     /** Starts the 'ready' timer */
     private fun startReadyTimer() {
-        readyTimeoutTimer = NanoTimer(gameSetup.readyTimeout * 1_000_000L) { onReadyTimeout() }.apply { start() }
+        readyTimeoutTimer = NanoTimer(
+            minPeriodInNanos = 0,
+            maxPeriodInNanos = gameSetup.readyTimeout * 1_000L,
+            job = { onReadyTimeout() }
+        ).apply { start() }
     }
 
     /** Starts a new game */
@@ -251,29 +255,22 @@ class GameServer(
         return participantIds
     }
 
-    /** Last reset turn timeout period */
-    @Volatile
-    var lastResetTurnTimeoutPeriod: Long = 0
-
-    /** Resets turn timeout timer */
+    /** Resets turn timeout timer with min and max bounds */
     private fun resetTurnTimeout() {
-        val period = calculateTurnTimeoutPeriod()
-
-        // New timer is only set, if the period is different from the last reset time
-        if (period != lastResetTurnTimeoutPeriod) {
-            lastResetTurnTimeoutPeriod = period
-
-            // Start new turn timeout timer to invoke onNextTurn()
-            turnTimeoutTimer?.stop()
-            turnTimeoutTimer = NanoTimer(period) { onNextTurn() }.apply { start() }
-        }
+        turnTimeoutTimer?.stop()
+        turnTimeoutTimer = NanoTimer(
+            minPeriodInNanos = calculateTurnTimeoutMinPeriod(),
+            maxPeriodInNanos = calculateTurnTimeoutMaxPeriod(),
+            job = { onNextTurn() }
+        ).apply { start() }
     }
 
-    /** Calculates and returns a timeout turn period measured in nanoseconds based on current TPS */
-    private fun calculateTurnTimeoutPeriod(): Long {
-        val period = if (tps <= 0) 0 else 1_000_000_000L / tps
-        val turnTimeout = gameSetup.turnTimeout * 1000L
-        return if (turnTimeout > period) turnTimeout else period
+    private fun calculateTurnTimeoutMinPeriod(): Long {
+        return if (tps <= 0) 0 else 1_000_000_000L / tps
+    }
+
+    private fun calculateTurnTimeoutMaxPeriod(): Long {
+        return gameSetup.turnTimeout * 1_000L
     }
 
     /** Broadcast game-aborted event to all observers and controllers */
@@ -400,7 +397,11 @@ class GameServer(
                     onGameEnded()
                 }
             }
+
+            botsThatSentIntent.clear()
         }
+
+        resetTurnTimeout()
     }
 
     private fun onGameEnded() {
@@ -640,12 +641,13 @@ class GameServer(
             botIntents[conn] = this
         }
 
-        // If all bot intents have been received, we can start next turn
-        botsThatSentIntent += conn
-        if (botIntents.size == botsThatSentIntent.size) {
-            botsThatSentIntent.clear()
-            turnTimeoutTimer?.reset()
-            resetTurnTimeout()
+        // Required because the timer also updates botsThatSentIntent
+        synchronized(tickLock) {
+            // If all bot intents have been received, we can start next turn
+            botsThatSentIntent += conn
+            if (botIntents.size == botsThatSentIntent.size) {
+                turnTimeoutTimer?.notifyReady()
+            }
         }
     }
 
@@ -720,7 +722,6 @@ class GameServer(
 
     private fun cleanupAfterGameStopped() {
         turnTimeoutTimer?.stop()
-        lastResetTurnTimeoutPeriod = 0
 
         modelUpdater = null
         System.gc()

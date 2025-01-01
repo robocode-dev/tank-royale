@@ -95,7 +95,7 @@ dotnet run --no-build >nul
         }
     }
 
-    register<Zip>("zip") {
+    val zip by registering(Zip::class) {
         dependsOn(build)
 
         archiveFileName.set(archiveFilename)
