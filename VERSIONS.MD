@@ -1,11 +1,12 @@
-## 📦 0.28.1 - Bug fixes
+## 📦 0.28.1 - Fixed Survival Scores
 
 #### 🐞 Bug Fixes
 
 - Server:
-    - #122: Fixed scoring issue with Survival Score and Last Survivor Bonus, which was got to big after multiple rounds. 
-    - The server only listens to the wildcard IP address (0.0.0.0), which address means that it will listen on all
-      available network interfaces for the specified port (IPv4 and IPv6) on the system.
+    - #122: Fixed the scoring issue with Survival Score and Last Survivor Bonus, which became too large after multiple
+      rounds.
+    - The server now only listens to the wildcard IP address (0.0.0.0), meaning it will listen on all available network
+      interfaces for the specified port (IPv4 and IPv6) on the system.
 
 ## 📦 0.28.0 - Inherited Socket Support - 21-Dec-2024
 
@@ -681,7 +682,8 @@ Bot info:
 #### 🐞 Bug Fixes
 
 - Bot API for Java:
-    - Major bug fix with `getTurnRemaining()` ([#28]), which returned the wrong value. This could be seen with the sample
+    - Major bug fix with `getTurnRemaining()` ([#28]), which returned the wrong value. This could be seen with the
+      sample
       bot, Crazy, which did not turn correctly.
 
 #### Changes
@@ -879,7 +881,6 @@ Bot info:
 ## 📦 0.9.12 - 23-Jan-2022
 
 - First alpha version was released! 🚀😀
-
 
 [installation guide]: https://robocode-dev.github.io/tank-royale/articles/installation.html "Installing and running Robocode"
 
