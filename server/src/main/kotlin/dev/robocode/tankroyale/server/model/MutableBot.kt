@@ -77,7 +77,13 @@ data class MutableBot(
     override var stdOut: String? = null,
 
     /** Standard error (last data) */
-    override var stdErr: String? = null
+    override var stdErr: String? = null,
+
+    /** Indicates if debugging is permitted */
+    override var isDebuggingEnabled: Boolean =  false,
+
+    /** Debug graphics as an SVG */
+    override var debugGraphics: String? = null,
 
 ) : IBot {
 

@@ -115,6 +115,7 @@ class ClientWebSocketsHandler(
                             Message.Type.RESUME_GAME -> handleResumeGame()
                             Message.Type.NEXT_TURN -> handleNextTurn()
                             Message.Type.CHANGE_TPS -> handleChangeTps(message)
+                            Message.Type.BOT_POLICY_UPDATE -> handleBotPolicyUpdated(message)
                             else -> handleException(
                                 clientSocket,
                                 IllegalStateException("Unhandled message type: $type")
@@ -320,6 +321,14 @@ class ClientWebSocketsHandler(
         executorService.submit {
             gson.fromJson(message, ChangeTps::class.java).apply {
                 listener.onChangeTps(tps)
+            }
+        }
+    }
+
+    private fun handleBotPolicyUpdated(message: String) {
+        executorService.submit {
+            gson.fromJson(message, BotPolicyUpdate::class.java).apply {
+                listener.onBotPolicyUpdated(this)
             }
         }
     }

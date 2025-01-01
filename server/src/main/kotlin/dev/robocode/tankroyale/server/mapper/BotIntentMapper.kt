@@ -26,7 +26,8 @@ object BotIntentMapper {
                 gunColor = gunColor,
                 stdOut = stdOut,
                 stdErr = stdErr,
-                teamMessages = TeamMessageMapper.map(teamMessages)
+                teamMessages = TeamMessageMapper.map(teamMessages),
+                debugGraphics = debugGraphics,
             )
         }
     }
