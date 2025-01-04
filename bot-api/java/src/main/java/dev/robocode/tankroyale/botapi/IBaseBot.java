@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.*;
 
-import java.awt.*;
+import java.awt.Graphics2D;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
