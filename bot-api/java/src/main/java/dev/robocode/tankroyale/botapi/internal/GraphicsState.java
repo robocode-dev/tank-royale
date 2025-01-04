@@ -12,7 +12,6 @@ import java.io.Writer;
 
 public class GraphicsState {
     private SVGGraphics2D graphics;
-    private Document document;
 
     public GraphicsState() {
         init();
@@ -20,7 +19,7 @@ public class GraphicsState {
 
     void init() {
         DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
-        document = domImpl.createDocument("http://www.w3.org/2000/svg", "svg", null);
+        Document document = domImpl.createDocument("http://www.w3.org/2000/svg", "svg", null);
         graphics = new SVGGraphics2D(document);
         graphics.setSVGCanvasSize(new Dimension(800, 600)); // Default size
         graphics.setBackground(new Color(0, 0, 0, 0));
