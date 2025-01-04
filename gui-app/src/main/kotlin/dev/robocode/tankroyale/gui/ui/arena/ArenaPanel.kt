@@ -399,21 +399,31 @@ object ArenaPanel : JPanel() {
 
         val oldState = Graphics2DState(g)
         try {
-            val optOut = bot.debugGraphics.contains("<!-- auto-transform: off -->")
+            val isAutoTransformOff = bot.debugGraphics.contains("<!-- auto-transform: off -->")
 
-            val svg = (if (optOut) bot.debugGraphics else bot.debugGraphics.replace(Regex("<\\s*/\\s*svg\\s*>"), "${MIRROR_TEXT_CSS}</svg>")).byteInputStream().buffered().use { inputStream ->
-                svgLoader.load(inputStream, null, svgLoaderContext)
-            }
-            // By default, origin is already at bottom-left due to previous transforms in drawArena()
+            val svg = bot.debugGraphics.let { graphics ->
+                val svgContent = if (!isAutoTransformOff)
+                    graphics.replace(Regex("<\\s*/\\s*svg\\s*>"), "${MIRROR_TEXT_CSS}</svg>")
+                else
+                    graphics
+
+                svgContent.byteInputStream().buffered().use { inputStream ->
+                    svgLoader.load(inputStream, null, svgLoaderContext)
+                }
+            }            // By default, origin is already at bottom-left due to previous transforms in drawArena()
             // If the bot opts out of the automatic transformation, we need to get rid of the mirroring transform
 
             val oldTransform = g.transform
-            if (optOut) g.transform = g.deviceConfiguration.defaultTransform
+            if (isAutoTransformOff) {
+                g.transform = g.deviceConfiguration.defaultTransform
+            }
 
             // Render SVG scaled to arena dimensions
             svg?.render(null, g)
 
-            if (optOut) g.transform = oldTransform
+            if (isAutoTransformOff) {
+                g.transform = oldTransform
+            }
         } catch (ignore: Exception) {
             // Silently ignore SVG parsing/rendering errors
         } finally {
