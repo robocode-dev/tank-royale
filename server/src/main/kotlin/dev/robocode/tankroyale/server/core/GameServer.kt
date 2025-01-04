@@ -433,7 +433,7 @@ class GameServer(
                     // Clear bot intents after skipped turns have been handled, but BEFORE broadcasting tick event
                     botIntents.clear()
                 }
-                sendGameTickToParticipants(roundNumber, this)
+                sendTickToParticipants(roundNumber, this)
                 broadcastGameTickToObservers(roundNumber, this)
 
                 // Send round ended _after_ tick has been sent
@@ -499,7 +499,7 @@ class GameServer(
         })
     }
 
-    private fun sendGameTickToParticipants(roundNumber: Int, turn: ITurn) {
+    private fun sendTickToParticipants(roundNumber: Int, turn: ITurn) {
         val aliveBotTeamIds = aliveBotToTeamIdMap()
 
         for (conn in participants) {
