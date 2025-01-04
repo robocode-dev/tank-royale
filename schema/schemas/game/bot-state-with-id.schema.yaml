@@ -16,9 +16,6 @@ properties:
   stdErr:
     description: Last data received for standard err (stderr)
     type: string
-  debugGraphics:
-    description: Debug graphics to be drawn over the battlefield if debugging is permitted
-    type: string
 required:
   - id
   - sessionId

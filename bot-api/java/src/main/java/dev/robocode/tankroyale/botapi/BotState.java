@@ -391,6 +391,6 @@ public final class BotState {
      * @return Whether the bot is permitted to send graphical debugging information.
      */
     public boolean isDebuggingEnabled() {
-        return false;
+        return isDebuggingEnabled;
     }
 }
