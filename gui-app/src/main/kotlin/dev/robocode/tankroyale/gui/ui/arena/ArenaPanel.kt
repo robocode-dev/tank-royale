@@ -410,9 +410,10 @@ object ArenaPanel : JPanel() {
                 svgContent.byteInputStream().buffered().use { inputStream ->
                     svgLoader.load(inputStream, null, svgLoaderContext)
                 }
-            }            // By default, origin is already at bottom-left due to previous transforms in drawArena()
-            // If the bot opts out of the automatic transformation, we need to get rid of the mirroring transform
+            }
 
+            // By default, origin is already at bottom-left due to previous transforms in drawArena()
+            // If the bot opts out of the automatic transformation, we need to get rid of the mirroring transform
             val oldTransform = g.transform
             if (isAutoTransformOff) {
                 g.transform = g.deviceConfiguration.defaultTransform
