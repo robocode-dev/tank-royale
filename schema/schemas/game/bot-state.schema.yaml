@@ -69,9 +69,6 @@ properties:
   isDebuggingEnabled:
     description: Flag specifying if the bot is allowed to use debugging features
     type: boolean
-  debugGraphics:
-    description: Debug graphics to be drawn over the battlefield if debugging is permitted
-    type: string
 required:
   - energy
   - x
