@@ -81,7 +81,7 @@ tasks {
     assemble {
         dependsOn(proguard)
         doLast {
-            delete("baseArchiveName-all.jar")
+            delete("$baseArchiveName-all.jar")
         }
     }
 
