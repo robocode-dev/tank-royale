@@ -16,6 +16,8 @@ private const val DEFAULT_PORT: Int = 7654
 
 fun main(args: Array<String>) {
     System.setProperty("jansi.force", "true")
+    System.setProperty("log4j.skipJansi", "false")
+
     AnsiConsole.systemInstall()
 
     Server.cmdLine.apply {

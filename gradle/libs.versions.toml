@@ -16,7 +16,7 @@ nexus-publish = "2.0.0"
 node-gradle = "7.1.0"
 nv-i18n = "1.29"
 shadow-jar = "8.1.1"
-slf4j-simple = "2.1.0-alpha1"
+log4j = "2.24.3"
 
 benmanes-versions = "0.51.0"
 
@@ -32,9 +32,12 @@ picocli = { module = "info.picocli:picocli", version.ref = "picocli" }
 proguard-gradle = { module = "com.guardsquare:proguard-gradle", version.ref = "proguard-gradle" }
 miglayout-swing = { module = "com.miglayout:miglayout-swing", version.ref = "miglayout-swing" }
 nv-i18n = { module = "com.neovisionaries:nv-i18n", version.ref = "nv-i18n" }
-slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j-simple" }
+log4j-slf4j2-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 
 [bundles]
+log4j = ["log4j-slf4j2-impl", "log4j-core", "log4j-api"]
 
 [plugins]
 
