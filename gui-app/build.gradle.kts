@@ -80,6 +80,11 @@ tasks {
         outputFilename.set("$baseArchiveName-all.jar")
     }
 
+    val runJar by registering(JavaExec::class) {
+        dependsOn(fatJar)
+        classpath = files(fatJar)
+    }
+
     val proguard by registering(ProGuardTask::class) {
         dependsOn(fatJar)
 

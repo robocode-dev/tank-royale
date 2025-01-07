@@ -69,6 +69,11 @@ tasks {
         from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     }
 
+    val runJar by registering(JavaExec::class) {
+        dependsOn(jar)
+        classpath = files(jar)
+    }
+
     val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking
         dependsOn(jar)
 
