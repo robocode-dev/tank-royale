@@ -31,10 +31,10 @@ dependencies {
     implementation(project(":schema:jvm"))
 
     implementation(libs.java.websocket)
+    implementation(libs.slf4j.simple)
     implementation(libs.picocli)
     implementation(libs.jansi)
     implementation(libs.gson)
-    implementation(libs.bundles.log4j)
 
     testImplementation(testLibs.kotest.junit5)
     testImplementation(testLibs.kotest.datatest)

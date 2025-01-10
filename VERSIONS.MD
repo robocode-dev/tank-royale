@@ -1,11 +1,4 @@
-## 📦 0.28.2
-
-#### 🚀 Improvements
-
-- Server:
-    - Replaced Simple Provider for SLF4J with Log4J 2 logger.
-
-## 📦 0.28.1 - Fixed Survival Scores - 1-Jan-2025
+## 📦 0.28.1 - Fixed Survival Scores
 
 #### 🐞 Bug Fixes
 
