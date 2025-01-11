@@ -29,24 +29,42 @@ class SimpleLogger(private val loggerName: String) : Logger {
     // The method that performs logging of messages
     private fun log(level: String, message: String, throwable: Throwable? = null) {
 
+        if (level == ERROR.name) {
+            logError(message, throwable)
+            return
+        }
+
         val ansiColor = when (level) {
             TRACE.name -> ansi().fgCyan()
             DEBUG.name -> ansi().fgBlue()
             INFO.name -> ansi().fgGreen()
             WARN.name -> ansi().fgYellow()
-            ERROR.name -> ansi().fgRed()
             else -> ansi().fgDefault()
         }
 
-        val coloredLevel = " ${ansiColor}[$level]${ansi().reset()} "
+        val levelInfo = " ${ansiColor}[$level]${ansi().fgDefault()} "
 
         buildString {
             append(dateFormat.format(Date()))
-            append(coloredLevel)
+            append(levelInfo)
             append(message)
         }.also {
             println(it)
             throwable?.printStackTrace(System.out)
+        }
+    }
+
+    private fun logError(message: String, throwable: Throwable? = null) {
+        val levelInfo = " [${ERROR.name}] "
+        buildString {
+            append(ansi().fgBrightRed())
+            append(dateFormat.format(Date()))
+            append(levelInfo)
+            append(message)
+        }.also {
+            System.err.println(it)
+            throwable?.printStackTrace(System.err)
+            System.err.println(ansi().fgDefault().toString())
         }
     }
 
