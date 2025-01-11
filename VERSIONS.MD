@@ -1,4 +1,11 @@
-## 📦 0.28.1 - Fixed Survival Scores
+## 📦 0.28.2
+
+#### 🚀 Improvements
+
+- Server:
+    - Replaced SLF4J's SimpleLogger with own implementation based on the SLF4J API to provide ANSI colors on log levels.
+
+## 📦 0.28.1 - Fixed Survival Scores - 01-Jan-2025
 
 #### 🐞 Bug Fixes
 
