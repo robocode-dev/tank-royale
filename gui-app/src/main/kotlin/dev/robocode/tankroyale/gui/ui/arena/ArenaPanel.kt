@@ -416,7 +416,7 @@ object ArenaPanel : JPanel() {
     private fun loadSvg(graphics: String): SVGDocument? {
         val svgContent = when (shouldDisableAutoTransform(graphics)) {
             true -> graphics
-            false -> graphics.replace(Regex("<\\s*/\\s*svg\\s*>"), "${MIRROR_TEXT_CSS}</svg>")
+            false -> graphics.replace(Regex("<\\s*/\\s*svg\\s*>"), "$MIRROR_TEXT_CSS</svg>")
         }
 
         return svgContent.byteInputStream().buffered().use { inputStream ->
@@ -434,10 +434,9 @@ object ArenaPanel : JPanel() {
 
             // Render SVG scaled to arena dimensions
             svg?.render(null, g)
+
         } finally {
-            if (isAutoTransformOff) {
-                g.transform = oldTransform
-            }
+            g.transform = oldTransform
         }
     }
 
