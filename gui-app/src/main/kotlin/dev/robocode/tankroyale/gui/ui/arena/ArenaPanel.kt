@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
+import com.github.weisj.jsvg.SVGDocument
 import com.github.weisj.jsvg.parser.SVGLoader
 import com.github.weisj.jsvg.parser.DefaultParserProvider
 import com.github.weisj.jsvg.parser.LoaderContext
@@ -392,43 +393,51 @@ object ArenaPanel : JPanel() {
         return color
     }
 
-    private const val MIRROR_TEXT_CSS = "<style>text {transform-box: fill-box; transform-origin: 50% 50%; transform: scaleY(-1);}</style>"
-
     private fun drawDebugGraphics(g: Graphics2D, bot: BotState) {
-        if (bot.debugGraphics == null) return
+        // Early return if no debug graphics
+        val debugGraphics = bot.debugGraphics ?: return
 
         val oldState = Graphics2DState(g)
         try {
-            val isAutoTransformOff = bot.debugGraphics.contains("<!-- auto-transform: off -->")
+            val svg = loadSvg(debugGraphics)
+            renderSvgWithTransform(g, svg, shouldDisableAutoTransform(debugGraphics))
+        } catch (ignore: Exception) {
+            // Silently ignore SVG parsing/rendering errors
+        } finally {
+            oldState.restore(g)
+        }
+    }
 
-            val svg = bot.debugGraphics.let { graphics ->
-                val svgContent = if (!isAutoTransformOff)
-                    graphics.replace(Regex("<\\s*/\\s*svg\\s*>"), "${MIRROR_TEXT_CSS}</svg>")
-                else
-                    graphics
+    private fun shouldDisableAutoTransform(debugGraphics: String): Boolean =
+        debugGraphics.contains("<!-- auto-transform: off -->")
 
-                svgContent.byteInputStream().buffered().use { inputStream ->
-                    svgLoader.load(inputStream, null, svgLoaderContext)
-                }
-            }
+    private const val MIRROR_TEXT_CSS = "<style>text {transform-box: fill-box; transform-origin: 50% 50%; transform: scaleY(-1);}</style>"
 
-            // By default, origin is already at bottom-left due to previous transforms in drawArena()
-            // If the bot opts out of the automatic transformation, we need to get rid of the mirroring transform
-            val oldTransform = g.transform
+    private fun loadSvg(graphics: String): SVGDocument? {
+        val svgContent = when (shouldDisableAutoTransform(graphics)) {
+            true -> graphics
+            false -> graphics.replace(Regex("<\\s*/\\s*svg\\s*>"), "${MIRROR_TEXT_CSS}</svg>")
+        }
+
+        return svgContent.byteInputStream().buffered().use { inputStream ->
+            svgLoader.load(inputStream, null, svgLoaderContext)
+        }
+    }
+
+    private fun renderSvgWithTransform(g: Graphics2D, svg: SVGDocument?, isAutoTransformOff: Boolean) {
+        // By default, origin is already at bottom-left due to previous transforms in drawArena()
+        val oldTransform = g.transform
+        try {
             if (isAutoTransformOff) {
                 g.transform = g.deviceConfiguration.defaultTransform
             }
 
             // Render SVG scaled to arena dimensions
             svg?.render(null, g)
-
+        } finally {
             if (isAutoTransformOff) {
                 g.transform = oldTransform
             }
-        } catch (ignore: Exception) {
-            // Silently ignore SVG parsing/rendering errors
-        } finally {
-            oldState.restore(g)
         }
     }
 
