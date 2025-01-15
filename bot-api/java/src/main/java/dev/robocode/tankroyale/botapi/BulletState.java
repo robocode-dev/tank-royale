@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.botapi;
 
+import java.awt.Color;
+
 /**
  * Represents the state of a bullet that has been fired by a bot.
  */
@@ -52,8 +54,7 @@ public final class BulletState {
      * @param direction is the direction in degrees.
      * @param color     is the color of the bullet.
      */
-    public BulletState(
-            int bulletId, int ownerId, double power, double x, double y, double direction, Color color) {
+    public BulletState(int bulletId, int ownerId, double power, double x, double y, double direction, Color color) {
         this.bulletId = bulletId;
         this.ownerId = ownerId;
         this.power = power;

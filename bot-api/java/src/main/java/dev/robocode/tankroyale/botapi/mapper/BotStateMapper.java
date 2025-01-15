@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.botapi.mapper;
 
 import dev.robocode.tankroyale.botapi.BotState;
 
-import static dev.robocode.tankroyale.botapi.Color.fromString;
+import static dev.robocode.tankroyale.botapi.util.ColorUtil.fromString;
 
 /**
  * Utility class for mapping a bot state.

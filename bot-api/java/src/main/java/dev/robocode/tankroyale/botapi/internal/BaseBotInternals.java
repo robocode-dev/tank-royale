@@ -24,13 +24,16 @@ import dev.robocode.tankroyale.botapi.events.WonRoundEvent;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
+import dev.robocode.tankroyale.botapi.util.ColorUtil;
 import dev.robocode.tankroyale.schema.game.*;
 
+import java.awt.Color;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
@@ -766,7 +769,7 @@ public final class BaseBotInternals {
     }
 
     private static String toIntentColor(Color color) {
-        return color == null ? null : "#" + color.toHex();
+        return color == null ? null : "#" + ColorUtil.toHex(color);
     }
 
     public Collection<BulletState> getBulletStates() {
