@@ -95,8 +95,6 @@ class AnsiEditorKit(
             if (text.isNotEmpty()) {
                 doc.insertString(doc.length, text, attributes)
             }
-
-            println("${doc.length} $text")
         }
     }
 }
