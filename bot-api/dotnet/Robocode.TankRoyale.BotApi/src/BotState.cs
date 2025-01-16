@@ -1,3 +1,4 @@
+using System.Drawing;
 using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi;
@@ -68,43 +69,43 @@ public sealed class BotState
     /// Body color.
     /// </summary>
     /// <value>The body color.</value>
-    public Color BodyColor { get; }
+    public Color? BodyColor { get; }
 
     /// <summary>
     /// Gun turret color.
     /// </summary>
     /// <value>The gun turret color.</value>
-    public Color TurretColor { get; }
+    public Color? TurretColor { get; }
 
     /// <summary>
     /// Radar color.
     /// </summary>
     /// <value>The radar color.</value>
-    public Color RadarColor { get; }
+    public Color? RadarColor { get; }
 
     /// <summary>
     /// Bullet color.
     /// </summary>
     /// <value>The bullet color.</value>
-    public Color BulletColor { get; }
+    public Color? BulletColor { get; }
 
     /// <summary>
     /// Scan arc color.
     /// </summary>
     /// <value>The scan arc color.</value>
-    public Color ScanColor { get; }
+    public Color? ScanColor { get; }
 
     /// <summary>
     /// Tracks color.
     /// </summary>
     /// <value>The tracks color.</value>
-    public Color TracksColor { get; }
+    public Color? TracksColor { get; }
 
     /// <summary>
     /// Gun color.
     /// </summary>
     /// <value>The gun color.</value>
-    public Color GunColor { get; }
+    public Color? GunColor { get; }
 
     /// <summary>
     /// Initializes a new instance of the BotState class.
@@ -134,8 +135,7 @@ public sealed class BotState
     public BotState(bool isDroid, double energy, double x, double y, double direction, double gunDirection,
         double radarDirection, double radarSweep,
         double speed, double turnRate, double gunTurnRate, double radarTurnRate, double gunHeat, int enemyCount,
-        Color bodyColor, Color turretColor, Color radarColor, Color bulletColor, Color scanColor, Color tracksColor,
-        Color gunColor)
+        Color? bodyColor, Color? turretColor, Color? radarColor, Color? bulletColor, Color? scanColor, Color? tracksColor, Color? gunColor)
     {
         IsDroid = isDroid;
         Energy = energy;

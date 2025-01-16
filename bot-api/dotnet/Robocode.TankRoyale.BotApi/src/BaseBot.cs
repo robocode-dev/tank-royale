@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Internal;
 
@@ -304,49 +305,49 @@ public abstract class BaseBot : IBaseBot
         BaseBotInternals.SendTeamMessage(teammateId, message);
 
     /// <inheritdoc/>
-    public Color BodyColor
+    public Color? BodyColor
     {
         get => BaseBotInternals.BodyColor;
         set => BaseBotInternals.BodyColor = value;
     }
 
     /// <inheritdoc/>
-    public Color TurretColor
+    public Color? TurretColor
     {
         get => BaseBotInternals.TurretColor;
         set => BaseBotInternals.TurretColor = value;
     }
 
     /// <inheritdoc/>
-    public Color RadarColor
+    public Color? RadarColor
     {
         get => BaseBotInternals.RadarColor;
         set => BaseBotInternals.RadarColor = value;
     }
 
     /// <inheritdoc/>
-    public Color BulletColor
+    public Color? BulletColor
     {
         get => BaseBotInternals.BulletColor;
         set => BaseBotInternals.BulletColor = value;
     }
 
     /// <inheritdoc/>
-    public Color ScanColor
+    public Color? ScanColor
     {
         get => BaseBotInternals.ScanColor;
         set => BaseBotInternals.ScanColor = value;
     }
 
     /// <inheritdoc/>
-    public Color TracksColor
+    public Color? TracksColor
     {
         get => BaseBotInternals.TracksColor;
         set => BaseBotInternals.TracksColor = value;
     }
 
     /// <inheritdoc/>
-    public Color GunColor
+    public Color? GunColor
     {
         get => BaseBotInternals.GunColor;
         set => BaseBotInternals.GunColor = value;

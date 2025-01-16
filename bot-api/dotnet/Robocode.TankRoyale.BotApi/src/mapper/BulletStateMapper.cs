@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Robocode.TankRoyale.BotApi.Util;
 
 namespace Robocode.TankRoyale.BotApi.Mapper;
 
@@ -13,7 +14,7 @@ internal static class BulletStateMapper
             source.X,
             source.Y,
             source.Direction,
-            Color.FromString(source.Color)
+            ColorUtil.FromString(source.Color)
         );
     }
 
