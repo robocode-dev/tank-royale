@@ -13,7 +13,7 @@ base {
     archivesName = "robocode-tankroyale-gui" // renames _all_ archive names
 }
 
-val baseArchiveName = "${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}"
+val baseArchiveName = "${base.archivesName.get()}-${project.version}"
 
 buildscript {
     dependencies {
@@ -69,15 +69,23 @@ tasks {
 
     val copyJars = register("copyJars") {
         dependsOn(copyBooterJar, copyServerJar)
+
+        // Make copyJars properly declare its outputs
+        outputs.dir(file("./build/classes/kotlin/main"))
     }
 
     val fatJar by registering(FatJar::class) {
         dependsOn(classes, copyJars)
 
+        inputs.files(copyJars)
+        inputs.files(configurations.runtimeClasspath)
+
+        // Ensure the fat jar goes to the libs directory
+        destinationDirectory.set(layout.buildDirectory.dir("libs"))
+        archiveFileName.set("$baseArchiveName-all.jar")
+
         title.set(archiveTitle)
         mainClass.set(jarManifestMainClass)
-
-        outputFilename.set("$baseArchiveName-all.jar")
     }
 
     val runJar by registering(JavaExec::class) {
@@ -88,27 +96,44 @@ tasks {
     val proguard by registering(ProGuardTask::class) {
         dependsOn(fatJar)
 
+        val libsDir = layout.buildDirectory.dir("libs").get().asFile
+        val inputJar = libsDir.resolve("$baseArchiveName-all.jar")
+        val outputJar = libsDir.resolve("$baseArchiveName.jar")
+
+        inputs.file(inputJar)
+        outputs.file(outputJar)
+
         configuration("proguard-rules.pro")
 
-        injars("$baseArchiveName-all.jar")
-        outjars("$baseArchiveName.jar")
+        injars(inputJar.absolutePath)
+        outjars(outputJar.absolutePath)
+
+        // Add this to ensure the input jar exists
+        doFirst {
+            if (!inputJar.exists()) {
+                throw GradleException("Input jar file not found: ${inputJar.absolutePath}")
+            }
+        }
     }
 
     jar {
         enabled = false
-        dependsOn(
-            proguard
-        )
+        dependsOn(proguard)
     }
+
 
     withType<AbstractPublishToMaven> {
         dependsOn(jar)
     }
 
     assemble {
-        dependsOn(copyJars, proguard)
+        dependsOn(proguard)
         doLast {
-            delete("$baseArchiveName-all.jar")
+            val libsDir = layout.buildDirectory.dir("libs").get().asFile
+            val archive = libsDir.resolve("$baseArchiveName-all.jar")
+            if (archive.exists()) {
+                archive.delete()
+            }
         }
     }
 
