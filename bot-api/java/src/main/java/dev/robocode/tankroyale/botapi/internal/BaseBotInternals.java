@@ -171,6 +171,7 @@ public final class BaseBotInternals {
     private static Gson inializeGson() {
         return new GsonBuilder()
                 .registerTypeAdapterFactory(getEventTypeFactory())
+                .registerTypeAdapter(Color.class, new GsonColorTypeAdapter()) // support for Color
                 // to avoid IllegalArgumentException: -Infinity is not a valid double value as per JSON specification
                 .serializeSpecialFloatingPointValues()
                 .create();
