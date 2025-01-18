@@ -1,3 +1,4 @@
+using System.Drawing;
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
@@ -26,9 +27,9 @@ public class RamFire : Bot
     public override void Run()
     {
         // Set colors
-        BodyColor = Color.FromHex("999");   // lighter gray
-        TurretColor = Color.FromHex("888"); // gray
-        RadarColor = Color.FromHex("666");  // dark gray
+        BodyColor = Color.FromArgb(0x99, 0x99, 0x99);   // lighter gray
+        TurretColor = Color.FromArgb(0x88, 0x88, 0x88); // gray
+        RadarColor = Color.FromArgb(0x66, 0x66, 0x66);  // dark gray
 
         // Spin the gun around slowly... forever
         while (IsRunning)

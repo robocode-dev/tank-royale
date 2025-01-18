@@ -1,5 +1,6 @@
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
+import java.awt.Color;
 
 // ------------------------------------------------------------------
 // Fire
@@ -27,12 +28,12 @@ public class Fire extends Bot {
     @Override
     public void run() {
         // Set colors
-        setBodyColor(Color.fromHex("FA0"));   // orange
-        setGunColor(Color.fromHex("F70"));    // dark orange
-        setTurretColor(Color.fromHex("F70")); // dark orange
-        setRadarColor(Color.fromHex("F00"));  // red
-        setScanColor(Color.fromHex("F00"));   // red
-        setBulletColor(Color.fromHex("08F")); // light blue
+        setBodyColor(new Color(0xFF, 0xAA, 0x00));   // orange
+        setGunColor(new Color(0xFF, 0x77, 0x00));    // dark orange
+        setTurretColor(new Color(0xFF, 0x77, 0x00)); // dark orange
+        setRadarColor(new Color(0xFF, 0x00, 0x00));  // red
+        setScanColor(new Color(0xFF, 0x00, 0x00));   // red
+        setBulletColor(new Color(0x00, 0x88, 0xFF)); // light blue
 
         // Spin the gun around slowly... forever
         while (isRunning()) {
