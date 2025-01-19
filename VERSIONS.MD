@@ -1,4 +1,4 @@
-## 📦 0.29.0 - All about colors
+## 📦 0.29.0 - All about colors -19-Jan-2024,
 
 This version causes a breaking change for the Color class. The Color class was removed and replaced with the Color
 class used with the used platform (Java or C#).
