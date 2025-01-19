@@ -126,17 +126,6 @@ tasks {
         dependsOn(jar)
     }
 
-    assemble {
-        dependsOn(proguard)
-        doLast {
-            val libsDir = layout.buildDirectory.dir("libs").get().asFile
-            val archive = libsDir.resolve("$baseArchiveName-all.jar")
-            if (archive.exists()) {
-                archive.delete()
-            }
-        }
-    }
-
     val javadocJar = named("javadocJar") // required at Sonatype
     val sourcesJar = named("sourcesJar")
 
