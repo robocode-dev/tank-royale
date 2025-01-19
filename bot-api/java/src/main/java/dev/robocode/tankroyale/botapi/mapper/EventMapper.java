@@ -1,10 +1,10 @@
 package dev.robocode.tankroyale.botapi.mapper;
 
-import com.google.gson.Gson;
 import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BulletState;
 import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.*;
+import dev.robocode.tankroyale.botapi.internal.GsonFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -156,7 +156,8 @@ public final class EventMapper {
         }
         try {
             var type = baseBot.getClass().getClassLoader().loadClass(source.getMessageType());
-            var messageObject = new Gson().fromJson(message, type);
+            var gson = GsonFactory.createGson();
+            var messageObject = gson.fromJson(message, type);
             return new TeamMessageEvent(source.getTurnNumber(), messageObject, source.getSenderId());
 
         } catch (ClassNotFoundException e) {

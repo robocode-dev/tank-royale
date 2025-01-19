@@ -110,7 +110,7 @@ public final class BaseBotInternals {
 
     private final double absDeceleration = abs(DECELERATION);
 
-    private final Gson gson = inializeGson();
+    private final Gson gson = GsonFactory.createGson();
 
     private int eventHandlingDisabledTurn;
 
@@ -166,29 +166,6 @@ public final class BaseBotInternals {
         priorities.put(ScannedBotEvent.class, SCANNED_BOT);
         priorities.put(DeathEvent.class, DEATH);
         return priorities;
-    }
-
-    private static Gson inializeGson() {
-        return new GsonBuilder()
-                .registerTypeAdapterFactory(getEventTypeFactory())
-                .registerTypeAdapter(Color.class, new GsonColorTypeAdapter()) // support for Color
-                // to avoid IllegalArgumentException: -Infinity is not a valid double value as per JSON specification
-                .serializeSpecialFloatingPointValues()
-                .create();
-    }
-
-    private static RuntimeTypeAdapterFactory<dev.robocode.tankroyale.schema.game.Event> getEventTypeFactory() {
-        return RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.game.Event.class, "type")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BotDeathEvent.class, "BotDeathEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BotHitBotEvent.class, "BotHitBotEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BotHitWallEvent.class, "BotHitWallEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BulletFiredEvent.class, "BulletFiredEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BulletHitBotEvent.class, "BulletHitBotEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BulletHitBulletEvent.class, "BulletHitBulletEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BulletHitWallEvent.class, "BulletHitWallEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.ScannedBotEvent.class, "ScannedBotEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.WonRoundEvent.class, "WonRoundEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.TeamMessageEvent.class, "TeamMessageEvent");
     }
 
     private void subscribeToEvents() {
