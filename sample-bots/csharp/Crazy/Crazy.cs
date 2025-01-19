@@ -1,3 +1,4 @@
+using System.Drawing;
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
@@ -25,11 +26,11 @@ public class Crazy : Bot
     // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
-        BodyColor = Color.FromString("#00C800");   // lime
-        TurretColor = Color.FromString("#009632");    // green
-        RadarColor = Color.FromString("#006464");  // dark cyan
-        BulletColor = Color.FromString("#FFFF64"); // yellow
-        ScanColor = Color.FromString("#FFC8C8");   // light red
+        BodyColor = Color.FromArgb(0x00, 0xC8, 0x00);   // lime
+        TurretColor = Color.FromArgb(0x00, 0x96, 0x32); // green
+        RadarColor = Color.FromArgb(0x00, 0x64, 0x64);  // dark cyan
+        BulletColor = Color.FromArgb(0xFF, 0xFF, 0x64); // yellow
+        ScanColor = Color.FromArgb(0xFF, 0xC8, 0xC8);   // light red
 
         movingForward = true;
 

@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.botapi.events.Condition;
 import dev.robocode.tankroyale.botapi.internal.BaseBotInternals;
 import dev.robocode.tankroyale.schema.game.BotIntent;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.net.URI;
 import java.util.Collection;

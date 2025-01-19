@@ -1,4 +1,4 @@
-using static Robocode.TankRoyale.BotApi.Color;
+using static Robocode.TankRoyale.BotApi.Util.ColorUtil;
 
 namespace Robocode.TankRoyale.BotApi.Mapper;
 

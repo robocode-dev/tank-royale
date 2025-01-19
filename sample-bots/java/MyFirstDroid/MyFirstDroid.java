@@ -1,5 +1,6 @@
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
+import java.awt.Color;
 
 // ------------------------------------------------------------------
 // MyFirstDroid

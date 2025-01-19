@@ -75,7 +75,7 @@ class AnsiEditorKit(
 
         var text = ansiText.substring(0, codeStart)
         if (text.isNotEmpty()) {
-            doc.insertString(0, text, attributes) // no ansi codes found
+            doc.insertString(doc.length, text, attributes) // no ansi codes found
         }
 
         ansiEscCodeRegex.findAll(ansiText, codeStart).forEach { m ->

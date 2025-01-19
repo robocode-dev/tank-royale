@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.botapi.util;
 /**
  * Utility class for JSON.
  */
-public class JsonUtil {
+public final class JsonUtil {
 
     // Hide constructor to prevent instantiation
     private JsonUtil() {

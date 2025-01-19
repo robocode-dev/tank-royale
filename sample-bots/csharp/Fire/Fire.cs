@@ -1,3 +1,4 @@
+using System.Drawing;
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
@@ -26,12 +27,12 @@ public class Fire : Bot
     public override void Run()
     {
         // Set colors
-        BodyColor = Color.FromHex("FA0");   // orange
-        GunColor = Color.FromHex("F70");    // dark orange
-        TurretColor = Color.FromHex("F70"); // dark orange
-        RadarColor = Color.FromHex("F00");  // red
-        ScanColor = Color.FromHex("F00");   // red
-        BulletColor = Color.FromHex("08F"); // light blue
+        BodyColor = Color.FromArgb(0xFF, 0xAA, 0x00);   // orange
+        GunColor = Color.FromArgb(0xFF, 0x77, 0x00);    // dark orange
+        TurretColor = Color.FromArgb(0xFF, 0x77, 0x00); // dark orange
+        RadarColor = Color.FromArgb(0xFF, 0x00, 0x00);  // red
+        ScanColor = Color.FromArgb(0xFF, 0x00, 0x00);   // red
+        BulletColor = Color.FromArgb(0x00, 0x88, 0xFF); // light blue
 
         // Spin the gun around slowly... forever
         while (IsRunning)

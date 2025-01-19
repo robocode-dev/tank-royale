@@ -8,7 +8,7 @@ import java.io.PrintStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public final class RecordingPrintStream extends PrintStream {
+final class RecordingPrintStream extends PrintStream {
 
     private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     private final PrintStream printStream = new PrintStream(byteArrayOutputStream);

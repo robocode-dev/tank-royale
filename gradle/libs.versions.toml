@@ -9,7 +9,7 @@ java-websocket = "1.6.0"
 json = "20240303"
 jsonschema2pojo = "1.2.2"
 jsvg = "1.6.1"
-kotlinx-serialization-json = "1.8.0-RC"
+kotlinx-serialization-json = "1.8.0"
 picocli = "4.7.6"
 proguard-gradle = "7.6.1"
 miglayout-swing = "11.4.2"
@@ -17,7 +17,7 @@ nexus-publish = "2.0.0"
 node-gradle = "7.1.0"
 nv-i18n = "1.29"
 shadow-jar = "8.1.1"
-slf4j-simple = "2.1.0-alpha1"
+slf4j-api = "2.0.12"
 batik = "1.18"
 
 benmanes-versions = "0.51.0"
@@ -37,7 +37,7 @@ miglayout-swing = { module = "com.miglayout:miglayout-swing", version.ref = "mig
 nv-i18n = { module = "com.neovisionaries:nv-i18n", version.ref = "nv-i18n" }
 batik-svggen = { module = "org.apache.xmlgraphics:batik-svggen", version.ref = "batik" }
 batik-dom = { module = "org.apache.xmlgraphics:batik-dom", version.ref = "batik" }
-slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j-simple" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
 
 [bundles]
 

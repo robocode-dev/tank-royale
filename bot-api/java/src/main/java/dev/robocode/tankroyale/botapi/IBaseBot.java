@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.botapi;
 import dev.robocode.tankroyale.botapi.events.*;
 
 import java.awt.Graphics2D;
+import java.awt.Color;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -876,14 +877,14 @@ public interface IBaseBot {
     /**
      * Sends a message to a specific teammate.<br>
      * <br>
-     * When the message is send, it is serialized into a JSON representation, meaning that all public fields, and only
+     * When the message is sent, it is serialized into a JSON representation, meaning that all public fields, and only
      * public fields, are being serialized into a JSON representation as a DTO (data transfer object).<br>
      * <br>
      * The maximum team message size limit is defined by {@link #TEAM_MESSAGE_MAX_SIZE}, which is set to
      * {@value #TEAM_MESSAGE_MAX_SIZE} bytes. This size is the size of the message when it is serialized into a
      * JSON representation.<br>
      * <br>
-     * The maximum number of messages that can be send/broadcast per turn is limited to
+     * The maximum number of messages that can be sent/broadcast per turn is limited to
      * {@value #MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}.
      *
      * @param teammateId is the id of the teammate to send the message to.
@@ -920,7 +921,6 @@ public interface IBaseBot {
      * <pre><code class="language-java">
      *     setBodyColor(Color.RED); // the red color
      *     setBodyColor(new Color(255, 0, 0)); // also the red color
-     *     setBodyColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
      * @param color is the color of the body or {@code null} if the bot must use the default color instead.
@@ -943,7 +943,6 @@ public interface IBaseBot {
      * <pre><code class="language-java">
      *     setTurretColor(Color.RED); // the red color
      *     setTurretColor(new Color(255, 0, 0)); // also the red color
-     *     setTurretColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
      * @param color is the color of the gun turret or {@code null} if the bot must use the default color instead.
@@ -966,7 +965,6 @@ public interface IBaseBot {
      * <pre><code class="language-java">
      *     setRadarColor(Color.RED); // the red color
      *     setRadarColor(new Color(255, 0, 0)); // also the red color
-     *     setRadarColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
      * @param color is the color of the radar or {@code null} if the bot must use the default color instead.
@@ -992,7 +990,6 @@ public interface IBaseBot {
      * <pre><code class="language-java">
      *     setBulletColor(Color.RED); // the red color
      *     setBulletColor(new Color(255, 0, 0)); // also the red color
-     *     setBulletColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
      * @param color is the color of the fired bullets or {@code null} if the bot must use the default color instead.
@@ -1015,7 +1012,6 @@ public interface IBaseBot {
      * <pre><code class="language-java">
      *     setScanColor(Color.RED); // the red color
      *     setScanColor(new Color(255, 0, 0)); // also the red color
-     *     setScanColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
      * @param color is the color of the scan arc or {@code null} if the bot must use the default color instead.
@@ -1038,7 +1034,6 @@ public interface IBaseBot {
      * <pre><code class="language-java">
      *     setTracksColor(Color.RED); // the red color
      *     setTracksColor(new Color(255, 0, 0)); // also the red color
-     *     setTracksColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
      * @param color is the color of the tracks or {@code null} if the bot must use the default color instead.
@@ -1061,7 +1056,6 @@ public interface IBaseBot {
      * <pre><code class="language-java">
      *     setGunColor(Color.RED); // the red color
      *     setGunColor(new Color(255, 0, 0)); // also the red color
-     *     setGunColor(Color.fromHexTriplet("F00"); // and also the red color
      * </code></pre>
      *
      * @param color is the color of the gun or {@code null} if the bot must use the default color instead.
@@ -1070,7 +1064,7 @@ public interface IBaseBot {
 
     /**
      * Indicates whether the bot is permitted to paint debug information to the canvas obtained from {@link #getGraphics}.
-     * 
+     *
      * @return {@code true} if the bot is permitted to paint debug information; {@code false} otherwise.
      */
     boolean isDebuggingEnabled();

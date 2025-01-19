@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi;
@@ -765,10 +766,9 @@ public interface IBaseBot
     /// <example>
     /// BodyColor = Color.RED; // the red color
     /// BodyColor = new Color(255, 0, 0); // also the red color
-    /// BodyColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
     /// <value>Is the color of the body or <c>null</c> if the bot must use the default color.</value>
-    Color BodyColor { get; set; }
+    Color? BodyColor { get; set; }
 
     /// <summary>
     /// The color of the gun turret. Colors can (only) be changed each turn.
@@ -776,10 +776,9 @@ public interface IBaseBot
     /// <example>
     /// TurretColor = Color.RED; // the red color
     /// TurretColor = new Color(255, 0, 0); // also the red color
-    /// TurretColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
     /// <value>Is the color of the gun turret or <c>null</c> if the bot must use the default color.</value>
-    Color TurretColor { get; set; }
+    Color? TurretColor { get; set; }
 
     /// <summary>
     /// The color of the radar. Colors can (only) be changed each turn.
@@ -787,10 +786,9 @@ public interface IBaseBot
     /// <example>
     /// RadarColor = Color.RED; // the red color
     /// RadarColor = new Color(255, 0, 0); // also the red color
-    /// RadarColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
     /// <value>Is the color of the radar or <c>null</c> if the bot must use the default color.</value>
-    Color RadarColor { get; set; }
+    Color? RadarColor { get; set; }
 
     /// <summary>
     /// The color of the fired bullets. Colors can (only) be changed each turn.
@@ -801,10 +799,9 @@ public interface IBaseBot
     /// <example>
     /// BulletColor = Color.RED; // the red color
     /// BulletColor = new Color(255, 0, 0); // also the red color
-    /// BulletColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
     /// <value>Is the color of the fired bullets or <c>null</c> if the bot must use the default color.</value>
-    Color BulletColor { get; set; }
+    Color? BulletColor { get; set; }
 
     /// <summary>
     /// The color of the scan arc. Colors can (only) be changed each turn.
@@ -812,10 +809,9 @@ public interface IBaseBot
     /// <example>
     /// ScanColor = Color.RED; // the red color
     /// ScanColor = new Color(255, 0, 0); // also the red color
-    /// ScanColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
     /// <value>Is the color of the scan arc or <c>null</c> if the bot must use the default color.</value>
-    Color ScanColor { get; set; }
+    Color? ScanColor { get; set; }
 
     /// <summary>
     /// The color of the tracks. Colors can (only) be changed each turn.
@@ -823,10 +819,9 @@ public interface IBaseBot
     /// <example>
     /// TracksColor = Color.RED; // the red color
     /// TracksColor = new Color(255, 0, 0); // also the red color
-    /// TracksColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
     /// <value>Is the color of the tracks or <c>null</c> if the bot must use the default color.</value>
-    Color TracksColor { get; set; }
+    Color? TracksColor { get; set; }
 
     /// <summary>
     /// The color of the gun. Colors can (only) be changed each turn.
@@ -834,10 +829,9 @@ public interface IBaseBot
     /// <example>
     /// GunColor = Color.RED; // the red color
     /// GunColor = new Color(255, 0, 0); // also the red color
-    /// GunColor = Color.fromHexTriplet("F00"); // and also the red color
     /// </example>
     /// <value>Is the color of the gun or <c>null</c> if the bot must use the default color.</value>
-    Color GunColor { get; set; }
+    Color? GunColor { get; set; }
 
     /// <summary>
     /// The event handler triggered when connected to the server.

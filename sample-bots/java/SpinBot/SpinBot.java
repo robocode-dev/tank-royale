@@ -1,5 +1,6 @@
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
+import java.awt.Color;
 
 // ------------------------------------------------------------------
 // SpinBot
@@ -24,10 +25,10 @@ public class SpinBot extends Bot {
     // Called when a new round is started -> initialize and do some movement
     @Override
     public void run() {
-        setBodyColor(Color.BLUE);
-        setTurretColor(Color.BLUE);
-        setRadarColor(Color.BLACK);
-        setScanColor(Color.YELLOW);
+        setBodyColor(Color.blue);
+        setTurretColor(Color.blue);
+        setRadarColor(Color.black);
+        setScanColor(Color.yellow);
 
         // Repeat while the bot is running
         while (isRunning()) {

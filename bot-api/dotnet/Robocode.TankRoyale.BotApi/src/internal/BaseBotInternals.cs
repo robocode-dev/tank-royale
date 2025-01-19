@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using Newtonsoft.Json;
@@ -738,49 +739,49 @@ public sealed class BaseBotInternals
 
     internal void SetPriority(Type eventType, int priority) => eventPriorities[eventType] = priority;
 
-    internal Color BodyColor
+    internal Color? BodyColor
     {
         get => tickEvent?.BotState.BodyColor;
         set => BotIntent.BodyColor = ToIntentColor(value);
     }
 
-    internal Color TurretColor
+    internal Color? TurretColor
     {
         get => tickEvent?.BotState.TurretColor;
         set => BotIntent.TurretColor = ToIntentColor(value);
     }
 
-    internal Color RadarColor
+    internal Color? RadarColor
     {
         get => tickEvent?.BotState.RadarColor;
         set => BotIntent.RadarColor = ToIntentColor(value);
     }
 
-    internal Color BulletColor
+    internal Color? BulletColor
     {
         get => tickEvent?.BotState.BulletColor;
         set => BotIntent.BulletColor = ToIntentColor(value);
     }
 
-    internal Color ScanColor
+    internal Color? ScanColor
     {
         get => tickEvent?.BotState.ScanColor;
         set => BotIntent.ScanColor = ToIntentColor(value);
     }
 
-    internal Color TracksColor
+    internal Color? TracksColor
     {
         get => tickEvent?.BotState.TracksColor;
         set => BotIntent.TracksColor = ToIntentColor(value);
     }
 
-    internal Color GunColor
+    internal Color? GunColor
     {
         get => tickEvent?.BotState.GunColor;
         set => BotIntent.GunColor = ToIntentColor(value);
     }
 
-    private static string ToIntentColor(Color color) => color == null ? null : "#" + color.ToHex();
+    private static string ToIntentColor(Color? color) => color == null ? null : "#" + ColorUtil.ToHex(color);
 
     internal IEnumerable<BulletState> BulletStates => tickEvent?.BulletStates ?? ImmutableHashSet<BulletState>.Empty;
 

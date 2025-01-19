@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.botapi.mapper;
 
 import dev.robocode.tankroyale.botapi.BulletState;
-import dev.robocode.tankroyale.botapi.Color;
+import dev.robocode.tankroyale.botapi.util.ColorUtil;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,7 +24,7 @@ public final class BulletStateMapper {
                 source.getX(),
                 source.getY(),
                 source.getDirection(),
-                Color.fromString(source.getColor()));
+                ColorUtil.fromString(source.getColor()));
     }
 
     public static Set<BulletState> map(final Collection<dev.robocode.tankroyale.schema.game.BulletState> source) {

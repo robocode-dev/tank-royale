@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace Robocode.TankRoyale.BotApi;
 
 /// <summary>
@@ -39,7 +41,7 @@ public sealed class BulletState
     /// color of the bullet.
     /// </summary>
     /// <value>The color of the bullet.</value>
-    public Color Color { get; }
+    public Color? Color { get; }
 
     /// <summary>
     /// Initializes a new instance of the BulletState class.
@@ -51,7 +53,7 @@ public sealed class BulletState
     /// <param name="y">Y coordinate of the bullet.</param>
     /// <param name="direction">Direction in degrees.</param>
     /// <param name="color">color of the bullet.</param>
-    public BulletState(int bulletId, int ownerId, double power, double x, double y, double direction, Color color)
+    public BulletState(int bulletId, int ownerId, double power, double x, double y, double direction, Color? color)
     {
         BulletId = bulletId;
         OwnerId = ownerId;

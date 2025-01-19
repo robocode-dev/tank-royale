@@ -31,10 +31,10 @@ dependencies {
     implementation(project(":schema:jvm"))
 
     implementation(libs.java.websocket)
-    implementation(libs.slf4j.simple)
     implementation(libs.picocli)
     implementation(libs.jansi)
     implementation(libs.gson)
+    implementation(libs.slf4j.api)
 
     testImplementation(testLibs.kotest.junit5)
     testImplementation(testLibs.kotest.datatest)
@@ -69,6 +69,11 @@ tasks {
         from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     }
 
+    val runJar by registering(JavaExec::class) {
+        dependsOn(jar)
+        classpath = files(jar)
+    }
+
     val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking
         dependsOn(jar)
 
@@ -81,7 +86,7 @@ tasks {
     assemble {
         dependsOn(proguard)
         doLast {
-            delete("baseArchiveName-all.jar")
+            delete("$baseArchiveName-all.jar")
         }
     }
 

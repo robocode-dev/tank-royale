@@ -1,4 +1,18 @@
-## 📦 0.28.1 - Fixed Survival Scores
+## 📦 0.29.0 - All about colors - 19-Jan-2024
+
+This version causes a breaking change for the Color class. The Color class was removed and replaced with the Color class
+used with the used platform (Java or C#).
+
+#### 🚀 Improvements
+
+- Server:
+    - Replaced SLF4J's SimpleLogger with own implementation based on the SLF4J API to provide ANSI colors on log levels.
+- Bot API:
+    - Replaced using Robocode's Color class with `java.awt.Color` for Java and `System.Drawing.Color` for C#.
+- Sample Bots:
+    - Updated to use the Color class from the used platform (Java or C#).
+
+## 📦 0.28.1 - Fixed Survival Scores - 01-Jan-2025
 
 #### 🐞 Bug Fixes
 
