@@ -2625,15 +2625,15 @@ references:
   commentId: T:Robocode.TankRoyale.BotApi.BotState
   fullName: Robocode.TankRoyale.BotApi.BotState
   nameWithType: BotState
-- uid: Robocode.TankRoyale.BotApi.BotState.#ctor(System.Boolean,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Int32,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color)
-  name: BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, int, Color, Color, Color, Color, Color, Color, Color)
-  href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState__ctor_System_Boolean_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Int32_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_Robocode_TankRoyale_BotApi_Color_
-  commentId: M:Robocode.TankRoyale.BotApi.BotState.#ctor(System.Boolean,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Int32,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color,Robocode.TankRoyale.BotApi.Color)
-  name.vb: New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Integer, Color, Color, Color, Color, Color, Color, Color)
-  fullName: Robocode.TankRoyale.BotApi.BotState.BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, int, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
-  fullName.vb: Robocode.TankRoyale.BotApi.BotState.New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Integer, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color, Robocode.TankRoyale.BotApi.Color)
-  nameWithType: BotState.BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, int, Color, Color, Color, Color, Color, Color, Color)
-  nameWithType.vb: BotState.New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Integer, Color, Color, Color, Color, Color, Color, Color)
+- uid: Robocode.TankRoyale.BotApi.BotState.#ctor(System.Boolean,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Int32,System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color})
+  name: BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, int, Color?, Color?, Color?, Color?, Color?, Color?, Color?)
+  href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState__ctor_System_Boolean_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Double_System_Int32_System_Nullable_System_Drawing_Color__System_Nullable_System_Drawing_Color__System_Nullable_System_Drawing_Color__System_Nullable_System_Drawing_Color__System_Nullable_System_Drawing_Color__System_Nullable_System_Drawing_Color__System_Nullable_System_Drawing_Color__
+  commentId: M:Robocode.TankRoyale.BotApi.BotState.#ctor(System.Boolean,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Int32,System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color})
+  name.vb: New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Integer, Color?, Color?, Color?, Color?, Color?, Color?, Color?)
+  fullName: Robocode.TankRoyale.BotApi.BotState.BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, int, System.Drawing.Color?, System.Drawing.Color?, System.Drawing.Color?, System.Drawing.Color?, System.Drawing.Color?, System.Drawing.Color?, System.Drawing.Color?)
+  fullName.vb: Robocode.TankRoyale.BotApi.BotState.New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Integer, System.Drawing.Color?, System.Drawing.Color?, System.Drawing.Color?, System.Drawing.Color?, System.Drawing.Color?, System.Drawing.Color?, System.Drawing.Color?)
+  nameWithType: BotState.BotState(bool, double, double, double, double, double, double, double, double, double, double, double, double, int, Color?, Color?, Color?, Color?, Color?, Color?, Color?)
+  nameWithType.vb: BotState.New(Boolean, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Integer, Color?, Color?, Color?, Color?, Color?, Color?, Color?)
 - uid: Robocode.TankRoyale.BotApi.BotState.#ctor*
   name: BotState
   href: api/Robocode.TankRoyale.BotApi.BotState.html#Robocode_TankRoyale_BotApi_BotState__ctor_
@@ -2910,15 +2910,15 @@ references:
   commentId: T:Robocode.TankRoyale.BotApi.BulletState
   fullName: Robocode.TankRoyale.BotApi.BulletState
   nameWithType: BulletState
-- uid: Robocode.TankRoyale.BotApi.BulletState.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Double,Robocode.TankRoyale.BotApi.Color)
-  name: BulletState(int, int, double, double, double, double, Color)
-  href: api/Robocode.TankRoyale.BotApi.BulletState.html#Robocode_TankRoyale_BotApi_BulletState__ctor_System_Int32_System_Int32_System_Double_System_Double_System_Double_System_Double_Robocode_TankRoyale_BotApi_Color_
-  commentId: M:Robocode.TankRoyale.BotApi.BulletState.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Double,Robocode.TankRoyale.BotApi.Color)
-  name.vb: New(Integer, Integer, Double, Double, Double, Double, Color)
-  fullName: Robocode.TankRoyale.BotApi.BulletState.BulletState(int, int, double, double, double, double, Robocode.TankRoyale.BotApi.Color)
-  fullName.vb: Robocode.TankRoyale.BotApi.BulletState.New(Integer, Integer, Double, Double, Double, Double, Robocode.TankRoyale.BotApi.Color)
-  nameWithType: BulletState.BulletState(int, int, double, double, double, double, Color)
-  nameWithType.vb: BulletState.New(Integer, Integer, Double, Double, Double, Double, Color)
+- uid: Robocode.TankRoyale.BotApi.BulletState.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Double,System.Nullable{System.Drawing.Color})
+  name: BulletState(int, int, double, double, double, double, Color?)
+  href: api/Robocode.TankRoyale.BotApi.BulletState.html#Robocode_TankRoyale_BotApi_BulletState__ctor_System_Int32_System_Int32_System_Double_System_Double_System_Double_System_Double_System_Nullable_System_Drawing_Color__
+  commentId: M:Robocode.TankRoyale.BotApi.BulletState.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Double,System.Nullable{System.Drawing.Color})
+  name.vb: New(Integer, Integer, Double, Double, Double, Double, Color?)
+  fullName: Robocode.TankRoyale.BotApi.BulletState.BulletState(int, int, double, double, double, double, System.Drawing.Color?)
+  fullName.vb: Robocode.TankRoyale.BotApi.BulletState.New(Integer, Integer, Double, Double, Double, Double, System.Drawing.Color?)
+  nameWithType: BulletState.BulletState(int, int, double, double, double, double, Color?)
+  nameWithType.vb: BulletState.New(Integer, Integer, Double, Double, Double, Double, Color?)
 - uid: Robocode.TankRoyale.BotApi.BulletState.#ctor*
   name: BulletState
   href: api/Robocode.TankRoyale.BotApi.BulletState.html#Robocode_TankRoyale_BotApi_BulletState__ctor_
