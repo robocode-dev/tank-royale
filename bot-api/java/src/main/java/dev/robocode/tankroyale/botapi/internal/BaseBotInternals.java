@@ -1,13 +1,10 @@
 package dev.robocode.tankroyale.botapi.internal;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.BulletState;
-import dev.robocode.tankroyale.botapi.Color;
 import dev.robocode.tankroyale.botapi.GameSetup;
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.InitialPosition;
@@ -28,6 +25,7 @@ import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.botapi.util.ColorUtil;
 import dev.robocode.tankroyale.schema.game.*;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.net.URI;
 import java.net.URISyntaxException;
