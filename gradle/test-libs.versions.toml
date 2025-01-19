@@ -1,11 +1,11 @@
 [versions]
 
-assertj = "3.27.0"
+assertj = "3.27.3"
 junit = "5.11.4"
 system-stubs = "2.1.7"
 kotest = "6.0.0.M1"
 kotest-datatest = "5.9.1"
-mockk = "1.13.14"
+mockk = "1.13.16"
 
 [libraries]
 
