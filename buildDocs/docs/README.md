@@ -19,7 +19,13 @@ If you are new to Robocode you should start with:
 - read the [Getting Started](tutorial/getting-started), and then
 - continue to [My First Bot](tutorial/my-first-bot) to create your first bot.
 
-## Thanks goes to
+## Support Robocode
+
+If you are a fan of Robocode, you can support the project and me by buying some coffee 😊
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/flemming.n.larsen)
+
+## Thanks to Open Source support
 
 Thank you, JetBrains, for supporting non-commercial Open Source projects by providing licenses
 for [Open Source development], including Robocode Tank Royale. :heart:
