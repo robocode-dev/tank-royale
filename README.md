@@ -50,13 +50,13 @@ battles in Robocode without any need to code anything yourself (yet).
 
 ## Supported platforms
 
-The Robocode game itself needs Java 11 or newer and can run on these operating systems:
+The Robocode game itself runs on Java 11 or newer and can run on these operating systems:
 
 - Windows
 - macOS
 - Linux
 
-These platforms are currently supported out of the box:
+These platforms are currently supported out of the box with the Bot APIs:
 
 - Java
 - .Net
@@ -89,6 +89,8 @@ the current Bot APIs:
 ## Maintainer
 
 [@flemming-n-larsen](https://github.com/flemming-n-larsen)
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/flemming.n.larsen)
 
 ## License
 
