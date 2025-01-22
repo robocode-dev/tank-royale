@@ -32,7 +32,7 @@ plugins {
 dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.miglayout.swing)
-    implementation(files("../libs/jsvg-1.6.2-transform-box-SNAPSHOT.jar"))
+    implementation(libs.jsvg)
 
     testImplementation(testLibs.kotest.junit5)
 }
