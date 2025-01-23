@@ -24,8 +24,8 @@ import dev.robocode.tankroyale.server.rules.INITIAL_GUN_HEAT
  * @param scanColor Scan arc color.
  * @param tracksColor Tracks color.
  * @param gunColor Gun color.
- * @param isDebuggingEnabled Whether this bot is permitted to render debug graphics.
- * @param debugGraphics Graphics to render if debugging is permitted.
+ * @param isDebuggingEnabled Flag indicating if graphical debugging is enabled.
+ * @param debugGraphics Graphics used for rendering debugging graphics, if enabled
  */
 data class Bot(
     override val id: BotId,
