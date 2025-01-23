@@ -1072,6 +1072,14 @@ public interface IBaseBot {
     /**
      * Gets a graphics object that the bot can paint debug information to.
      *
+     * <p>Example:
+     *
+     * <pre><code class="language-java">
+     *     var g = getGraphics();
+     *     g.setColor(Color.blue);
+     *     g.fillRect(50, 50, 100, 100);
+     * </code></pre>
+     *
      * @return A graphics canvas to use for painting graphical objects making debugging easier.
      */
     Graphics2D getGraphics();
