@@ -17,11 +17,11 @@ public class GraphicsState {
         init();
     }
 
-    void init() {
+    private void init() {
         DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
         Document document = domImpl.createDocument("http://www.w3.org/2000/svg", "svg", null);
         graphics = new SVGGraphics2D(document);
-        graphics.setSVGCanvasSize(new Dimension(800, 600)); // Default size
+        graphics.setSVGCanvasSize(new Dimension(5000, 5000)); // Maximum arena size
         graphics.setBackground(new Color(0, 0, 0, 0));
     }
 
