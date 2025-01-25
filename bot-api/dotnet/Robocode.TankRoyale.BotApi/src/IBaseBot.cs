@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using Robocode.TankRoyale.BotApi.Events;
+using SvgNet.Interfaces;
 
 namespace Robocode.TankRoyale.BotApi;
 
@@ -832,6 +833,25 @@ public interface IBaseBot
     /// </example>
     /// <value>Is the color of the gun or <c>null</c> if the bot must use the default color.</value>
     Color? GunColor { get; set; }
+
+    /// <summary>
+    /// Flag indicating if graphical debugging is enabled and hence if <see cref="Graphics"/> can be used for debug
+    /// painting.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the graphics debugging is enabled; <c>false</c> otherwise.
+    /// </returns>
+    bool IsDebuggingEnabled { get; }
+
+    /// <summary>
+    /// Graphics object that the bot can paint debug information to.
+    /// </summary>
+    /// <example>
+    /// var g = Graphics;
+    /// g.FillRectangle(Brushes.Blue, 50, 50, 100, 100);
+    /// </example>
+    /// <value>A graphics canvas to use for painting graphical objects making debugging easier.</value>
+    IGraphics Graphics { get; }
 
     /// <summary>
     /// The event handler triggered when connected to the server.

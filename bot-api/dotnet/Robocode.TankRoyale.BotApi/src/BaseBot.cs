@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Internal;
+using SvgNet;
+using SvgNet.Interfaces;
 
 namespace Robocode.TankRoyale.BotApi;
 
@@ -420,6 +422,12 @@ public abstract class BaseBot : IBaseBot
     public virtual void SetEventPriority(Type eventType, int priority) =>
         BaseBotInternals.SetPriority(eventType, priority);
 
+    /// <inheritdoc/>
+    public virtual bool IsDebuggingEnabled => BaseBotInternals.CurrentTickOrThrow.BotState.IsDebuggingEnabled;
+
+    /// <inheritdoc/>
+    public virtual IGraphics Graphics => BaseBotInternals.Graphics;
+    
     /// <inheritdoc/>
     public virtual void OnConnected(ConnectedEvent connectedEvent) =>
         Console.WriteLine($"Connected to {connectedEvent.ServerUri}");

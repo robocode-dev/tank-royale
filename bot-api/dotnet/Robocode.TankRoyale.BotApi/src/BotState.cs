@@ -11,8 +11,9 @@ public sealed class BotState
     /// <summary>
     /// Flag specifying if the bot is a droid.
     /// </summary>
+    /// <value><c>true</c> if the bot is a droid; <c>false</c> otherwise.</value>
     private bool IsDroid { get; }
-    
+
     /// <summary>Energy level.</summary>
     /// <value>The energy level.</value>
     public double Energy { get; }
@@ -108,6 +109,12 @@ public sealed class BotState
     public Color? GunColor { get; }
 
     /// <summary>
+    /// Flag indicating if graphical debugging is enabled.
+    /// </summary>
+    /// <value><c>true</c> if the graphics debugging is enabled; <c>false</c> otherwise.</value>
+    public bool IsDebuggingEnabled { get; }
+
+    /// <summary>
     /// Initializes a new instance of the BotState class.
     /// </summary>
     /// <param name="isDroid">Flag specifying if the bot is a droid.</param>
@@ -131,11 +138,32 @@ public sealed class BotState
     /// <param name="scanColor">Scan arc color.</param>
     /// <param name="tracksColor">Tracks color.</param>
     /// <param name="gunColor">Gun color.</param>
+    /// <param name="isDebuggingEnabled">Flag specifying if graphical debugging is enabled.</param>
     [JsonConstructor]
-    public BotState(bool isDroid, double energy, double x, double y, double direction, double gunDirection,
-        double radarDirection, double radarSweep,
-        double speed, double turnRate, double gunTurnRate, double radarTurnRate, double gunHeat, int enemyCount,
-        Color? bodyColor, Color? turretColor, Color? radarColor, Color? bulletColor, Color? scanColor, Color? tracksColor, Color? gunColor)
+    public BotState(
+        bool isDroid,
+        double energy,
+        double x,
+        double y,
+        double direction,
+        double gunDirection,
+        double radarDirection,
+        double radarSweep,
+        double speed,
+        double turnRate,
+        double gunTurnRate,
+        double radarTurnRate,
+        double gunHeat,
+        int enemyCount,
+        Color? bodyColor,
+        Color? turretColor,
+        Color? radarColor,
+        Color? bulletColor,
+        Color? scanColor,
+        Color? tracksColor,
+        Color? gunColor,
+        bool isDebuggingEnabled
+    )
     {
         IsDroid = isDroid;
         Energy = energy;
@@ -158,5 +186,6 @@ public sealed class BotState
         ScanColor = scanColor;
         TracksColor = tracksColor;
         GunColor = gunColor;
+        IsDebuggingEnabled = isDebuggingEnabled;
     }
 }
