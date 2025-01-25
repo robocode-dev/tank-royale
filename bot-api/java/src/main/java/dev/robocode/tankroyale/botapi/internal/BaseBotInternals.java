@@ -1,10 +1,8 @@
 package dev.robocode.tankroyale.botapi.internal;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.BulletState;
 import dev.robocode.tankroyale.botapi.GameSetup;
@@ -28,6 +26,7 @@ import dev.robocode.tankroyale.botapi.util.ColorUtil;
 import dev.robocode.tankroyale.schema.game.*;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -69,6 +68,8 @@ public final class BaseBotInternals {
     private WebSocket socket;
     private ServerHandshake serverHandshake;
     private final CountDownLatch closedLatch = new CountDownLatch(1);
+
+    private final GraphicsState graphicsState = new GraphicsState();
 
     private final IBaseBot baseBot;
     private final BotInfo botInfo;
@@ -342,6 +343,7 @@ public final class BaseBotInternals {
     private void sendIntent() {
         synchronized (this) {
             transferStdOutToBotIntent();
+            renderGraphicsToBotIntent();
             socket.sendText(gson.toJson(botIntent), true);
             botIntent.getTeamMessages().clear();
         }
@@ -356,6 +358,11 @@ public final class BaseBotInternals {
             String error = recordedStdErr.readNext();
             botIntent.setStdErr(error);
         }
+    }
+
+    private void renderGraphicsToBotIntent() {
+        botIntent.setDebugGraphics(getCurrentTickOrThrow().getBotState().isDebuggingEnabled() ? graphicsState.getSVGOutput() : null);
+        graphicsState.clear();
     }
 
     private void waitForNextTurn(int turnNumber) {
@@ -591,6 +598,10 @@ public final class BaseBotInternals {
             distance += (speed = getNewTargetSpeed(speed, 0));
         }
         return distance;
+    }
+
+    public Graphics2D getGraphics() {
+        return graphicsState.getGraphics();
     }
 
     public boolean addCondition(Condition condition) {

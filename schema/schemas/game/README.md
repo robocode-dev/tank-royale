@@ -292,6 +292,21 @@ sequenceDiagram
     Server->>Controller: tps-changed-event
 ```
 
+### Enable or disable graphical debugging
+
+A controller can permit or forbid any bot from sending graphical debugging information that will be drawn by the GUI.
+By default, no bots are permitted to show debugging information.
+
+No event is emitted in response to thing configuration, but the information which bots are permitted to show debug
+information is included in the bot states. 
+
+The server will silently drop any debugging graphics it receives from bots that are not permitted to show them.
+
+```mermaid
+sequenceDiagram
+    Controller->>Server: set-debugging-enabled-for-bot
+```
+
 ### In-game events
 
 Here are the events that a bot receives during a game:

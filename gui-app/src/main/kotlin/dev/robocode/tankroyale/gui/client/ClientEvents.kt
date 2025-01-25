@@ -16,4 +16,5 @@ object ClientEvents {
     val onTickEvent = Event<TickEvent>()
 
     val onStdOutputUpdated = Event<TickEvent>()
+    val onBotPolicyChanged = Event<BotPolicyUpdate>()
 }

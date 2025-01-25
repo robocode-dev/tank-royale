@@ -35,7 +35,8 @@ public final class BotStateMapper {
                 fromString(source.getBulletColor()),
                 fromString(source.getScanColor()),
                 fromString(source.getTracksColor()),
-                fromString(source.getGunColor())
+                fromString(source.getGunColor()),
+                source.getIsDebuggingEnabled()
         );
     }
 }

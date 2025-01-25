@@ -8,6 +8,7 @@ jansi = "2.4.1"
 java-websocket = "1.6.0"
 json = "20240303"
 jsonschema2pojo = "1.2.2"
+jsvg = "1.7.0"
 kotlinx-serialization-json = "1.8.0"
 picocli = "4.7.6"
 proguard-gradle = "7.6.1"
@@ -17,6 +18,7 @@ node-gradle = "7.1.0"
 nv-i18n = "1.29"
 shadow-jar = "8.1.1"
 slf4j-api = "2.0.12"
+batik = "1.18"
 
 benmanes-versions = "0.51.0"
 
@@ -27,11 +29,14 @@ gson-extras = { module = "org.danilopianini:gson-extras", version.ref = "gson-ex
 jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
 java-websocket = { module = "org.java-websocket:Java-WebSocket", version.ref = "java-websocket" }
 json = { module = "org.json:json", version.ref = "json" }
+jsvg = { module = "com.github.weisj:jsvg", version.ref = "jsvg" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 picocli = { module = "info.picocli:picocli", version.ref = "picocli" }
 proguard-gradle = { module = "com.guardsquare:proguard-gradle", version.ref = "proguard-gradle" }
 miglayout-swing = { module = "com.miglayout:miglayout-swing", version.ref = "miglayout-swing" }
 nv-i18n = { module = "com.neovisionaries:nv-i18n", version.ref = "nv-i18n" }
+batik-svggen = { module = "org.apache.xmlgraphics:batik-svggen", version.ref = "batik" }
+batik-dom = { module = "org.apache.xmlgraphics:batik-dom", version.ref = "batik" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
 
 [bundles]

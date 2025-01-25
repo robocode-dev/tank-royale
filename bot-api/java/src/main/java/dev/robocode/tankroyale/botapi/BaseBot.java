@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.botapi.internal.BaseBotInternals;
 import dev.robocode.tankroyale.schema.game.BotIntent;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
@@ -806,5 +807,21 @@ public abstract class BaseBot implements IBaseBot {
     @Override
     public final void setEventPriority(Class<BotEvent> eventClass, int priority) {
         baseBotInternals.setPriority(eventClass, priority);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final boolean isDebuggingEnabled() {
+        return baseBotInternals.getCurrentTickOrThrow().getBotState().isDebuggingEnabled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final Graphics2D getGraphics() {
+        return baseBotInternals.getGraphics();
     }
 }

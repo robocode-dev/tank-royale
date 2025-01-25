@@ -210,6 +210,13 @@ data class ChangeTps(
     val tps: Int
 ) : Message()
 
+@Serializable
+@SerialName("BotPolicyUpdate")
+data class BotPolicyUpdate(
+    val botId: Int,
+    val debuggingEnabled: Boolean
+) : Message()
+
 val messageModule = SerializersModule {
 
     polymorphic(Message::class) {
@@ -222,6 +229,7 @@ val messageModule = SerializersModule {
         subclass(BulletHitBulletEvent::class)
         subclass(BulletHitWallEvent::class)
         subclass(ChangeTps::class)
+        subclass(BotPolicyUpdate::class)
         subclass(ControllerHandshake::class)
         subclass(GameAbortedEvent::class)
         subclass(GameEndedEvent::class)

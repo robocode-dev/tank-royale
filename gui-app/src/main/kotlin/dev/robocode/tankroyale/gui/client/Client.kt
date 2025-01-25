@@ -50,6 +50,7 @@ object Client {
 
     init {
         TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
+        ClientEvents.onBotPolicyChanged.subscribe(Client) { changeBotPolicy(it) }
 
         ServerEvents.onStopped.subscribe(Client) {
             isRunning.set(false)
@@ -193,6 +194,10 @@ object Client {
             lastTps = tps
             send(ChangeTps(tps))
         }
+    }
+
+    private fun changeBotPolicy(botPolicyUpdate: BotPolicyUpdate) {
+        send(botPolicyUpdate)
     }
 
     private fun onMessage(msg: String) {

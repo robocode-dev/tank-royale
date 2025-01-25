@@ -114,29 +114,35 @@ public final class BotState {
     private final Color gunColor;
 
     /**
+     * Whether the bot is permitted to send graphical debugging information.
+     */
+    private final boolean isDebuggingEnabled;
+
+    /**
      * Initializes a new instance of the BotState class.
      *
-     * @param isDroid        is the flag specifying if the bot is a droid.
-     * @param energy         is the energy level.
-     * @param x              is the X coordinate.
-     * @param y              is the Y coordinate.
-     * @param direction      is the driving direction in degrees.
-     * @param gunDirection   is the gun direction in degrees.
-     * @param radarDirection is the radar direction in degrees.
-     * @param radarSweep     is the radar sweep angle in degrees.
-     * @param speed          is the speed measured in units per turn.
-     * @param turnRate       is the turn rate of the body in degrees per turn.
-     * @param gunTurnRate    is the turn rate of the gun in degrees per turn.
-     * @param radarTurnRate  is the turn rate of the radar in degrees per turn.
-     * @param gunHeat        is the gun heat.
-     * @param enemyCount     is tbe number of enemies left
-     * @param bodyColor      is the body color.
-     * @param turretColor    is the gun turret color.
-     * @param radarColor     is the radar color.
-     * @param bulletColor    is the bullet color.
-     * @param scanColor      is the scan arc color.
-     * @param tracksColor    is the tracks color.
-     * @param gunColor       is the gun color.
+     * @param isDroid            is the flag specifying if the bot is a droid.
+     * @param energy             is the energy level.
+     * @param x                  is the X coordinate.
+     * @param y                  is the Y coordinate.
+     * @param direction          is the driving direction in degrees.
+     * @param gunDirection       is the gun direction in degrees.
+     * @param radarDirection     is the radar direction in degrees.
+     * @param radarSweep         is the radar sweep angle in degrees.
+     * @param speed              is the speed measured in units per turn.
+     * @param turnRate           is the turn rate of the body in degrees per turn.
+     * @param gunTurnRate        is the turn rate of the gun in degrees per turn.
+     * @param radarTurnRate      is the turn rate of the radar in degrees per turn.
+     * @param gunHeat            is the gun heat.
+     * @param enemyCount         is tbe number of enemies left
+     * @param bodyColor          is the body color.
+     * @param turretColor        is the gun turret color.
+     * @param radarColor         is the radar color.
+     * @param bulletColor        is the bullet color.
+     * @param scanColor          is the scan arc color.
+     * @param tracksColor        is the tracks color.
+     * @param gunColor           is the gun color.
+     * @param isDebuggingEnabled is the flag specifying if the bot is permitted to send graphical debugging information
      */
     public BotState(
             boolean isDroid,
@@ -159,7 +165,8 @@ public final class BotState {
             Color bulletColor,
             Color scanColor,
             Color tracksColor,
-            Color gunColor) {
+            Color gunColor,
+            boolean isDebuggingEnabled) {
         this.isDroid = isDroid;
         this.energy = energy;
         this.x = x;
@@ -181,6 +188,7 @@ public final class BotState {
         this.scanColor = scanColor;
         this.tracksColor = tracksColor;
         this.gunColor = gunColor;
+        this.isDebuggingEnabled = isDebuggingEnabled;
     }
 
     /**
@@ -377,5 +385,14 @@ public final class BotState {
      */
     public Color getGunColor() {
         return gunColor;
+    }
+
+    /**
+     * Returns whether the bot is permitted to send graphical debugging information.
+     * 
+     * @return Whether the bot is permitted to send graphical debugging information.
+     */
+    public boolean isDebuggingEnabled() {
+        return isDebuggingEnabled;
     }
 }
