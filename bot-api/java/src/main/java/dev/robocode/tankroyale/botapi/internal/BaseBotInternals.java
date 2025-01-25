@@ -342,8 +342,8 @@ public final class BaseBotInternals {
 
     private void sendIntent() {
         synchronized (this) {
-            transferStdOutToBotIntent();
             renderGraphicsToBotIntent();
+            transferStdOutToBotIntent();
             socket.sendText(gson.toJson(botIntent), true);
             botIntent.getTeamMessages().clear();
         }

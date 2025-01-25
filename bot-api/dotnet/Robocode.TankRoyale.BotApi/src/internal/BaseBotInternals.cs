@@ -339,8 +339,8 @@ public sealed class BaseBotInternals
 
     private void SendIntent()
     {
-        TransferStdOutToBotIntent();
         RenderGraphicsToBotIntent();
+        TransferStdOutToBotIntent();
         socket.SendTextMessage(JsonConvert.SerializeObject(BotIntent));
         BotIntent.TeamMessages.Clear();
     }
