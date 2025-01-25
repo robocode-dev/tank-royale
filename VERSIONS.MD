@@ -1,3 +1,43 @@
+## 📦 0.30.0 - Added Graphics Debugging
+
+### 🚀 #116: Graphical Debugging Implemented Using SVG
+
+Graphical debugging, known from the original game, has been implemented using SVG with
+the [JSVG] library. This allows you to paint graphics objects on the battlefield while
+the game is running, making it easier to visualize elements such as estimated target positions. This feature is
+available for both the Java API and .Net API.
+
+### Java API
+
+- Use the new `getGraphics()` method to return a `java.awt.Graphics2D` object for painting objects.
+- Thanks to [Tobias Zimmermann](https://github.com/Cu3PO42) for bringing this feature to the Bot Java API, for
+  suggesting the use of SVG and [JSVG], and also adding `transform-box` to JSVG to mirror texts. ❤️
+- Thanks also to [Jannis Weis](https://github.com/weisJ) for providing [JSVG] and helping fix an issue with using the
+  correct libraries for JSVG. Make sure to [buy him a coffee](https://buymeacoffee.com/weisj). 😊
+
+### .Net API
+
+- Get a `SvnNet.SvgGraphics` instance for painting by using the `Graphics` getter.
+- The .Net API uses the [SVG.NET](https://github.com/svg-net/SVG) library. `SvgGraphics` is used similarly
+  to [System.Drawing.Graphics](https://learn.microsoft.com/en-us/dotnet/api/system.drawing.graphics?view=windowsdesktop-6.0).
+
+> ⚠️ **Graphical Debugging must be enabled before anything is rendered to the battlefield.**
+
+### Enabling Graphical Debugging
+
+Graphical debugging can be enabled from the Properties pane of the bot console by toggling the
+`Toggle Graphical Debugging` button.
+
+### Schema changes
+
+- A new `debugGraphics` (string) field has been added to the `bot-intent` schema. This field allows you to provide SVG
+  content as a string, which will be rendered if debugging graphics is enabled. Note that not all SVG functionality is
+  supported by [JSVG](https://github.com/weisJ/jsvg) used for rendering SVG onm the battlefield.
+
+- A new `isDebuggingEnabled` (boolean) field has been added to the `bot-state` schema. This field specifies whether the
+  debugging graphics feature is enabled for the bot. The `debugGraphics` field will only be used if `isDebuggingEnabled`
+  is set to `true`.
+
 ## 📦 0.29.0 - All about colors - 19-Jan-2024
 
 This version causes a breaking change for the Color class. The Color class was removed and replaced with the Color class
@@ -915,3 +955,5 @@ Bot info:
 [Robocode API Bridge]: https://github.com/robocode-dev/robocode-api-bridge "Robocode API bridge for Tank Royale"
 
 [Socket Activation]: https://insanity.industries/post/socket-activation-all-the-things/ "Socket Activation"
+
+[JSVG]: https://github.com/weisJ/jsvg "JSVG library on GitHub" 
