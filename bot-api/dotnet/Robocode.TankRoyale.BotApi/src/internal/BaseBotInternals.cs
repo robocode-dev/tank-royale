@@ -9,6 +9,7 @@ using S = Robocode.TankRoyale.Schema.Game;
 using E = Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Mapper;
 using Robocode.TankRoyale.BotApi.Util;
+using SvgNet.Interfaces;
 using static Robocode.TankRoyale.BotApi.Events.DefaultEventPriority;
 using static System.Double;
 
@@ -76,6 +77,8 @@ public sealed class BaseBotInternals
 
     private int lastExecuteTurnNumber;
 
+    private readonly GraphicsState graphicsState = new();
+    
     internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, string serverSecret)
     {
         this.baseBot = baseBot;
@@ -336,6 +339,7 @@ public sealed class BaseBotInternals
 
     private void SendIntent()
     {
+        RenderGraphicsToBotIntent();
         TransferStdOutToBotIntent();
         socket.SendTextMessage(JsonConvert.SerializeObject(BotIntent));
         BotIntent.TeamMessages.Clear();
@@ -356,6 +360,12 @@ public sealed class BaseBotInternals
         }
     }
 
+    private void RenderGraphicsToBotIntent()
+    {
+        BotIntent.DebugGraphics = CurrentTickOrThrow.BotState.IsDebuggingEnabled ? graphicsState.GetSvgOutput() : null;
+        graphicsState.Clear();
+    }
+    
     private void WaitForNextTurn(int turnNumber)
     {
         // Most bot methods will call waitForNextTurn(), and hence this is a central place to stop a rogue thread that
@@ -781,6 +791,8 @@ public sealed class BaseBotInternals
         set => BotIntent.GunColor = ToIntentColor(value);
     }
 
+    internal IGraphics Graphics => graphicsState.Graphics;
+    
     private static string ToIntentColor(Color? color) => color == null ? null : "#" + ColorUtil.ToHex(color);
 
     internal IEnumerable<BulletState> BulletStates => tickEvent?.BulletStates ?? ImmutableHashSet<BulletState>.Empty;

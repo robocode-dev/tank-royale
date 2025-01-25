@@ -7,7 +7,7 @@ internal static class BotStateMapper
     public static BotState Map(Schema.Game.BotState source)
     {
         return new BotState(
-            source.IsDroid == true,
+            source.IsDroid == false,
             source.Energy,
             source.X,
             source.Y,
@@ -27,7 +27,8 @@ internal static class BotStateMapper
             FromString(source.BulletColor),
             FromString(source.ScanColor),
             FromString(source.TracksColor),
-            FromString(source.GunColor)
+            FromString(source.GunColor),
+            source.IsDebuggingEnabled == false
         );
     }
 }

@@ -114,7 +114,7 @@ public final class BotState {
     private final Color gunColor;
 
     /**
-     * Whether the bot is permitted to send graphical debugging information.
+     * Flag indicating if graphical debugging is enabled.
      */
     private final boolean isDebuggingEnabled;
 
@@ -142,7 +142,7 @@ public final class BotState {
      * @param scanColor          is the scan arc color.
      * @param tracksColor        is the tracks color.
      * @param gunColor           is the gun color.
-     * @param isDebuggingEnabled is the flag specifying if the bot is permitted to send graphical debugging information
+     * @param isDebuggingEnabled is a flag indicating if graphical debugging is enabled.
      */
     public BotState(
             boolean isDroid,
@@ -192,7 +192,7 @@ public final class BotState {
     }
 
     /**
-     * Returns the flag specifying if the bot is a droid or not.
+     * Checks if the bot is a droid or not.
      *
      * @return {@code true} if the bot is a droid; {@code false} otherwise.
      */
@@ -388,9 +388,9 @@ public final class BotState {
     }
 
     /**
-     * Returns whether the bot is permitted to send graphical debugging information.
-     * 
-     * @return Whether the bot is permitted to send graphical debugging information.
+     * Checks if graphical debugging is enabled.
+     *
+     * @return {@code true} if graphical debugging is enabled; {@code false} otherwise.
      */
     public boolean isDebuggingEnabled() {
         return isDebuggingEnabled;

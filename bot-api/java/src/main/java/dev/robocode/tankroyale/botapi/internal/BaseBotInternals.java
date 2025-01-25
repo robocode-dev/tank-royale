@@ -69,8 +69,6 @@ public final class BaseBotInternals {
     private ServerHandshake serverHandshake;
     private final CountDownLatch closedLatch = new CountDownLatch(1);
 
-    private final GraphicsState graphicsState = new GraphicsState();
-
     private final IBaseBot baseBot;
     private final BotInfo botInfo;
     private final BotIntent botIntent = newBotIntent();
@@ -121,6 +119,8 @@ public final class BaseBotInternals {
     private final Map<Class<? extends BotEvent>, Integer> eventPriorities = initializeEventPriorities();
 
     private int lastExecuteTurnNumber;
+
+    private final GraphicsState graphicsState = new GraphicsState();
 
     public BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl, String serverSecret) {
         this.baseBot = baseBot;
@@ -342,8 +342,8 @@ public final class BaseBotInternals {
 
     private void sendIntent() {
         synchronized (this) {
-            transferStdOutToBotIntent();
             renderGraphicsToBotIntent();
+            transferStdOutToBotIntent();
             socket.sendText(gson.toJson(botIntent), true);
             botIntent.getTeamMessages().clear();
         }
@@ -600,10 +600,6 @@ public final class BaseBotInternals {
         return distance;
     }
 
-    public Graphics2D getGraphics() {
-        return graphicsState.getGraphics();
-    }
-
     public boolean addCondition(Condition condition) {
         return conditions.add(condition);
     }
@@ -755,6 +751,10 @@ public final class BaseBotInternals {
 
     public void setGunColor(Color color) {
         botIntent.setGunColor(toIntentColor(color));
+    }
+
+    public Graphics2D getGraphics() {
+        return graphicsState.getGraphics();
     }
 
     private static String toIntentColor(Color color) {
