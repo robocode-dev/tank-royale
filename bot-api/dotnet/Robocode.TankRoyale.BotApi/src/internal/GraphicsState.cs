@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Text.RegularExpressions;
 using SvgNet;
 using SvgNet.Interfaces;
 
@@ -15,12 +16,16 @@ public class GraphicsState
 
     private void Init()
     {
-        _svgGraphics = new SvgGraphics(Color.Transparent);
+        _svgGraphics = new SvgGraphics();
     }
-    
+
     public IGraphics Graphics => _svgGraphics;
 
-    public string GetSvgOutput() => _svgGraphics.WriteSVGString();
+    public string GetSvgOutput() {
+        var str = _svgGraphics.WriteSVGString();
+        str = Regex.Replace(str, @"<rect[^>]*id=""background""[^>]*>", ""); // Remove background rectangle
+        return str;
+    }
 
     public void Clear()
     {
