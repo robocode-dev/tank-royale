@@ -2,10 +2,9 @@
 
 ### 🚀 #116: Graphical Debugging Implemented Using SVG
 
-Graphical debugging, known from the original game, has been implemented using SVG with
-the [JSVG] library. This allows you to paint graphics objects on the battlefield while
-the game is running, making it easier to visualize elements such as estimated target positions. This feature is
-available for both the Java API and .Net API.
+**Graphical debugging**, known from the original game, has been implemented using SVG with the [JSVG] library. This
+allows you to paint graphics objects on the battlefield while the game is running, making it easier to visualize
+elements such as estimated target positions. This feature is available for both the Java API and .Net API.
 
 ### Java API
 
@@ -26,7 +25,8 @@ available for both the Java API and .Net API.
 ### Enabling Graphical Debugging
 
 Graphical debugging can be enabled from the Properties pane of the bot console by toggling the
-`Toggle Graphical Debugging` button.
+`Toggle Graphical Debugging` button. Graphical debugging _is not_ enabled per default, and must be applied to individual
+bots.
 
 ### Schema changes
 
