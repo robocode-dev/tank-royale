@@ -236,6 +236,7 @@ object ArenaPanel : JPanel() {
         drawExplosions(g)
         drawBullets(g)
         drawRoundInfo(g)
+        drawDebugGraphics(g)
     }
 
     private fun drawBots(g: Graphics2D) {
@@ -244,7 +245,6 @@ object ArenaPanel : JPanel() {
             drawScanArc(g, bot)
             drawEnergy(g, bot)
             drawNameAndVersion(g, bot)
-            drawDebugGraphics(g, bot)
         }
     }
 
@@ -381,6 +381,10 @@ object ArenaPanel : JPanel() {
             return HslColor(hsl.hue, hsl.saturation, 0.2f).toColor()
         }
         return color
+    }
+
+    private fun drawDebugGraphics(g: Graphics2D) {
+        bots.forEach { bot -> drawDebugGraphics(g, bot) }
     }
 
     private fun drawDebugGraphics(g: Graphics2D, bot: BotState) {
