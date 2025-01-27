@@ -1,0 +1,16 @@
+{
+  "name": "Painting Bot",
+  "version": "1.0",
+  "authors": [
+    "Pavel Savara",
+    "Flemming N. Larsen"
+  ],
+  "description": "A sample bot that demonstrate how to paint stuff on the battlefield.\nRemember to enable Graphical Debugging for the bot when running a battle.",
+  "homepage": "",
+  "countryCodes": [
+    "cz",
+    "dk"
+  ],
+  "platform": "JVM",
+  "programmingLang": "Java 11"
+}

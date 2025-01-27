@@ -28,6 +28,10 @@ Graphical debugging can be enabled from the Properties pane of the bot console b
 `Toggle Graphical Debugging` button. Graphical debugging _is not_ enabled per default, and must be applied to individual
 bots.
 
+### Sample Bots
+
+A new sample bot, PaintingBot, has been introduced to showcase the use of debug painting in both Java and C#.
+
 ### Schema changes
 
 - A new `debugGraphics` (string) field has been added to the `bot-intent` schema. This field allows you to provide SVG
