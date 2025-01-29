@@ -16,9 +16,10 @@ elements such as estimated target positions. This feature is available for both 
 
 ### .Net API
 
-- Get a `SvnNet.SvgGraphics` instance for painting by using the `Graphics` getter.
-- The .Net API uses the [SVG.NET](https://github.com/svg-net/SVG) library. `SvgGraphics` is used similarly
-  to [System.Drawing.Graphics](https://learn.microsoft.com/en-us/dotnet/api/system.drawing.graphics?view=windowsdesktop-6.0).
+- Get a `SvnNet.SvgGraphics` context for painting by using the `Graphics` getter.
+- The .Net API uses the [SvgNet](https://github.com/managed-commons/SvgNet) library. The `SvgGraphics` is context used
+  similarly to
+  [System.Drawing.Graphics](https://learn.microsoft.com/en-us/dotnet/api/system.drawing.graphics?view=windowsdesktop-6.0).
 
 > ⚠️ **Graphical Debugging must be enabled before anything is rendered to the battlefield.**
 
