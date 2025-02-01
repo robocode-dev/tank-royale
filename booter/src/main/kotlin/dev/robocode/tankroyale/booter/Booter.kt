@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.booter
 import dev.robocode.tankroyale.booter.commands.DirCommand
 import dev.robocode.tankroyale.booter.commands.RunCommand
 import dev.robocode.tankroyale.booter.util.VersionFileProvider
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.fusesource.jansi.AnsiConsole
 import picocli.CommandLine
