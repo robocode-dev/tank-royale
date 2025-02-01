@@ -127,7 +127,14 @@ tasks {
         dependsOn(jar)
     }
 
-    val javadocJar = named("javadocJar") // required at Sonatype
+    javadoc {
+        dependsOn("copyJars")
+    }
+
+    val javadocJar = named<Jar>("javadocJar") {
+        dependsOn("copyJars")
+    }
+
     val sourcesJar = named("sourcesJar")
 
     publishing {
