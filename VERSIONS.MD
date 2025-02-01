@@ -6,7 +6,7 @@
 allows you to paint graphics objects on the battlefield while the game is running, making it easier to visualize
 elements such as estimated target positions. This feature is available for both the Java API and .Net API.
 
-### Java API
+#### Java API
 
 - Use the new `getGraphics()` method to return a `java.awt.Graphics2D` object for painting objects.
 - Thanks to [Tobias Zimmermann](https://github.com/Cu3PO42) for bringing this feature to the Bot Java API, for
@@ -14,7 +14,7 @@ elements such as estimated target positions. This feature is available for both 
 - Thanks also to [Jannis Weis](https://github.com/weisJ) for providing [JSVG] and helping fix an issue with using the
   correct libraries for JSVG. Make sure to [buy him a coffee](https://buymeacoffee.com/weisj). 😊
 
-### .Net API
+#### .Net API
 
 - Get a `SvnNet.SvgGraphics` context for painting by using the `Graphics` getter.
 - The .Net API uses the [SvgNet](https://github.com/managed-commons/SvgNet) library. The `SvgGraphics` is context used
@@ -23,17 +23,17 @@ elements such as estimated target positions. This feature is available for both 
 
 > ⚠️ **Graphical Debugging must be enabled before anything is rendered to the battlefield.**
 
-### Enabling Graphical Debugging
+#### Enabling Graphical Debugging
 
 Graphical debugging can be enabled from the Properties pane of the bot console by toggling the
 `Toggle Graphical Debugging` button. Graphical debugging _is not_ enabled per default, and must be applied to individual
 bots.
 
-### Sample Bots
+#### Sample Bots
 
 A new sample bot, PaintingBot, has been introduced to showcase the use of debug painting in both Java and C#.
 
-### Schema changes
+#### Schema changes
 
 - A new `debugGraphics` (string) field has been added to the `bot-intent` schema. This field allows you to provide SVG
   content as a string, which will be rendered if debugging graphics is enabled. Note that not all SVG functionality is
@@ -42,6 +42,11 @@ A new sample bot, PaintingBot, has been introduced to showcase the use of debug 
 - A new `isDebuggingEnabled` (boolean) field has been added to the `bot-state` schema. This field specifies whether the
   debugging graphics feature is enabled for the bot. The `debugGraphics` field will only be used if `isDebuggingEnabled`
   is set to `true`.
+
+### 🐞 Bug Fixes
+
+- Server:
+    - Log messages printed out `{}` instead of content.
 
 ## 📦 0.29.0 - All about colors - 19-Jan-2024
 

@@ -111,23 +111,23 @@ class SimpleLogger(private val loggerName: String) : Logger {
     override fun error(marker: Marker?, msg: String, t: Throwable) = error(msg, t)
 
     // Format-based logging
-    override fun trace(format: String, arg: Any?) = trace(format.format(arg))
-    override fun debug(format: String, arg: Any?) = debug(format.format(arg))
-    override fun info(format: String, arg: Any?) = info(format.format(arg))
-    override fun warn(format: String, arg: Any?) = warn(format.format(arg))
-    override fun error(format: String, arg: Any?) = error(format.format(arg))
+    override fun trace(format: String, arg: Any?) = trace(format(format, arg))
+    override fun debug(format: String, arg: Any?) = debug(format(format, arg))
+    override fun info(format: String, arg: Any?) = info(format(format, arg))
+    override fun warn(format: String, arg: Any?) = warn(format(format, arg))
+    override fun error(format: String, arg: Any?) = error(format(format, arg))
 
-    override fun trace(format: String, arg1: Any?, arg2: Any?) = trace(format.format(arg1, arg2))
-    override fun debug(format: String, arg1: Any?, arg2: Any?) = debug(format.format(arg1, arg2))
-    override fun info(format: String, arg1: Any?, arg2: Any?) = info(format.format(arg1, arg2))
-    override fun warn(format: String, arg1: Any?, arg2: Any?) = warn(format.format(arg1, arg2))
-    override fun error(format: String, arg1: Any?, arg2: Any?) = error(format.format(arg1, arg2))
+    override fun trace(format: String, arg1: Any?, arg2: Any?) = trace(format(format, arg1, arg2))
+    override fun debug(format: String, arg1: Any?, arg2: Any?) = debug(format(format, arg1, arg2))
+    override fun info(format: String, arg1: Any?, arg2: Any?) = info(format(format, arg1, arg2))
+    override fun warn(format: String, arg1: Any?, arg2: Any?) = warn(format(format, arg1, arg2))
+    override fun error(format: String, arg1: Any?, arg2: Any?) = error(format(format, arg1, arg2))
 
-    override fun trace(format: String, vararg arguments: Any?) = trace(format.format(*arguments))
-    override fun debug(format: String, vararg arguments: Any?) = debug(format.format(*arguments))
-    override fun info(format: String, vararg arguments: Any?) = info(format.format(*arguments))
-    override fun warn(format: String, vararg arguments: Any?) = warn(format.format(*arguments))
-    override fun error(format: String, vararg arguments: Any?) = error(format.format(*arguments))
+    override fun trace(format: String, vararg arguments: Any?) = trace(format(format, *arguments))
+    override fun debug(format: String, vararg arguments: Any?) = debug(format(format, *arguments))
+    override fun info(format: String, vararg arguments: Any?) = info(format(format, *arguments))
+    override fun warn(format: String, vararg arguments: Any?) = warn(format(format, *arguments))
+    override fun error(format: String, vararg arguments: Any?) = error(format(format, *arguments))
 
     // Marker-based format logging
     override fun trace(marker: Marker?, format: String, arg: Any?) = trace(format, arg)
@@ -147,6 +147,20 @@ class SimpleLogger(private val loggerName: String) : Logger {
     override fun info(marker: Marker?, format: String, vararg arguments: Any?) = info(format, *arguments)
     override fun warn(marker: Marker?, format: String, vararg arguments: Any?) = warn(format, *arguments)
     override fun error(marker: Marker?, format: String, vararg arguments: Any?) = error(format, *arguments)
+
+    private fun format(format: String, vararg arguments: Any?): String {
+        val regex = Regex("\\{}") // Matches "{}"
+        var argumentIndex = 0
+
+        // Replace each "{}" with the next argument
+        return regex.replace(format) {
+            if (argumentIndex < arguments.size) {
+                arguments[argumentIndex++].toString()
+            } else {
+                "{}" // If no more arguments are left, keep "{}" as is
+            }
+        }
+    }
 }
 
 class SimpleLoggerFactory : ILoggerFactory {
