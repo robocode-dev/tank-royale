@@ -362,8 +362,10 @@ public sealed class BaseBotInternals
 
     private void RenderGraphicsToBotIntent()
     {
-        BotIntent.DebugGraphics = CurrentTickOrThrow.BotState.IsDebuggingEnabled ? graphicsState.GetSvgOutput() : null;
-        graphicsState.Clear();
+        if (CurrentTickOrThrow.BotState.IsDebuggingEnabled) {
+            BotIntent.DebugGraphics = graphicsState.GetSvgOutput();
+            graphicsState.Clear();
+        }
     }
     
     private void WaitForNextTurn(int turnNumber)
