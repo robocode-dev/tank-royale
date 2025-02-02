@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using SvgNet;
@@ -7,22 +8,13 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 
 public class GraphicsState
 {
-    private SvgGraphics _svgGraphics;
-
-    public GraphicsState()
-    {
-        Init();
-    }
-
-    private void Init()
-    {
-        _svgGraphics = new SvgGraphics();
-    }
+    private SvgGraphics _svgGraphics = new();
 
     public IGraphics Graphics => _svgGraphics;
 
-    public string GetSvgOutput() {
-        var str = _svgGraphics.WriteSVGString();
+    public string GetSvgOutput()
+    {
+        var str = _svgGraphics.WriteSVGString(5000, 5000); // 5000x5000 is the maximum battlefield size
         str = Regex.Replace(str, @"<rect[^>]*id=""background""[^>]*>", ""); // Remove background rectangle
         return str;
     }
@@ -30,6 +22,6 @@ public class GraphicsState
     public void Clear()
     {
         _svgGraphics.Dispose();
-        Init();
+        _svgGraphics = new();
     }
 }
