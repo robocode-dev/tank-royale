@@ -235,7 +235,7 @@ public final class BaseBotInternals {
         return eventHandlingDisabledTurn != 0 && eventHandlingDisabledTurn < (getCurrentTickOrThrow().getTurnNumber() - 1);
     }
 
-    public void setStopResumeHandler(IStopResumeListener listener) {
+    void setStopResumeHandler(IStopResumeListener listener) {
         stopResumeListener = listener;
     }
 
@@ -361,8 +361,10 @@ public final class BaseBotInternals {
     }
 
     private void renderGraphicsToBotIntent() {
-        botIntent.setDebugGraphics(getCurrentTickOrThrow().getBotState().isDebuggingEnabled() ? graphicsState.getSVGOutput() : null);
-        graphicsState.clear();
+        if (getCurrentTickOrThrow().getBotState().isDebuggingEnabled()) {
+            botIntent.setDebugGraphics(graphicsState.getSVGOutput());
+            graphicsState.clear();
+        }
     }
 
     private void waitForNextTurn(int turnNumber) {
