@@ -11,6 +11,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 public class GraphicsState {
+
     private SVGGraphics2D graphics;
 
     public GraphicsState() {
