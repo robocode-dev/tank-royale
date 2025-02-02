@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Internal;
-using SvgNet;
 using SvgNet.Interfaces;
 
 namespace Robocode.TankRoyale.BotApi;
