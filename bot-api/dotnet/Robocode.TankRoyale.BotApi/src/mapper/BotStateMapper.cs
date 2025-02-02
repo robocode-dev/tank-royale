@@ -28,7 +28,7 @@ internal static class BotStateMapper
             FromString(source.ScanColor),
             FromString(source.TracksColor),
             FromString(source.GunColor),
-            source.IsDebuggingEnabled == false
+            source.IsDebuggingEnabled == true
         );
     }
 }
