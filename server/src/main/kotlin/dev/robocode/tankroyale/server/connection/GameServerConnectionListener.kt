@@ -33,7 +33,7 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
     }
 
     override fun onBotIntent(clientSocket: WebSocket, handshake: BotHandshake, intent: BotIntent) {
-//        log.info("Bot intent: {}: {}", getDisplayName(handshake), intent)
+        log.debug("Bot intent: {}: {}", getDisplayName(handshake), intent)
         gameServer.handleBotIntent(clientSocket, intent)
     }
 
@@ -86,7 +86,7 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
     }
 
     override fun onBotPolicyUpdated(botPolicyUpdate: BotPolicyUpdate) {
-        log.info("Bot policy updated for botId {}: debugGraphics is {}", botPolicyUpdate.botId,
+        log.debug("Bot policy updated for botId {}: debugGraphics is {}", botPolicyUpdate.botId,
             if (botPolicyUpdate.debuggingEnabled) "enabled" else "disabled")
         gameServer.handleBotPolicyUpdate(botPolicyUpdate)
     }
