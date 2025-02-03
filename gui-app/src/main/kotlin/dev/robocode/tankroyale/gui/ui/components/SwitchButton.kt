@@ -19,13 +19,15 @@ class SwitchButton(initialSelected: Boolean) : JComponent() {
 
     var isSelected = initialSelected
         set(value) {
+            if (field == value) {
+                return // no change -> leave
+            }
             field = value
-
             animationTimer.start()
             fireSwitchEvent()
         }
 
-    private val events: MutableList<SwitchEvent> = mutableListOf()
+    private val eventHandlers: MutableList<SwitchEvent> = mutableListOf()
 
     init {
         background = Color(0x3f, 0x3f, 0xff)
@@ -101,11 +103,11 @@ class SwitchButton(initialSelected: Boolean) : JComponent() {
         }
 
     private fun fireSwitchEvent() {
-        events.forEach { it(isSelected) }
+        eventHandlers.forEach { it(isSelected) }
     }
 
     fun addSwitchHandler(event: SwitchEvent) {
-        events.add(event)
+        eventHandlers.add(event)
     }
 }
 
