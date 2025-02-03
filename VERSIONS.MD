@@ -47,6 +47,8 @@ A new sample bot, PaintingBot, has been introduced to showcase the use of debug 
 
 - Server:
     - Log messages printed out `{}` instead of content.
+- UI:
+    - Fixed issue with the switch button in the Server Options for switching between using a local and remote server.
 
 ## 📦 0.29.0 - All about colors - 19-Jan-2024
 

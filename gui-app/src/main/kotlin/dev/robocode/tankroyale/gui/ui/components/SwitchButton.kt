@@ -15,7 +15,6 @@ import javax.swing.Timer
 class SwitchButton(initialSelected: Boolean) : JComponent() {
 
     private var knobLocation: Float = 2f
-    private val animationSpeed: Float = 0.05f
     private val animationTimer = createAnimationTimer()
 
     var isSelected = initialSelected
@@ -49,11 +48,11 @@ class SwitchButton(initialSelected: Boolean) : JComponent() {
         })
     }
 
-    private fun createAnimationTimer(): Timer = Timer(0) { _ ->
+    private fun createAnimationTimer(): Timer = Timer(1000 / 60) { _ ->
         if (isSelected) {
             val endLocation = width - height + 2f
             if (knobLocation < endLocation) {
-                knobLocation += animationSpeed
+                knobLocation += 4f
             } else {
                 animationTimer.stop()
                 knobLocation = endLocation
@@ -61,7 +60,7 @@ class SwitchButton(initialSelected: Boolean) : JComponent() {
         } else {
             val endLocation = 2f
             if (knobLocation > endLocation) {
-                knobLocation -= animationSpeed
+                knobLocation -= 4f
             } else {
                 animationTimer.stop()
                 knobLocation = endLocation
