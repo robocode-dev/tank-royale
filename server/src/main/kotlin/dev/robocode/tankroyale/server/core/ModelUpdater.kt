@@ -1078,8 +1078,7 @@ class ModelUpdater(
         }
 
         private fun updateDebugGraphics(bot: MutableBot, intent: BotIntent) {
-            if (intent.debugGraphics != null)
-                bot.debugGraphics = intent.debugGraphics
+            bot.debugGraphics = intent.debugGraphics
         }
 
         private fun fromColor(color: String?) = color?.let { from(it) }

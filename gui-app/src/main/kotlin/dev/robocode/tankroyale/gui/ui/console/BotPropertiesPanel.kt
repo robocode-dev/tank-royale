@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.model.BotPolicyUpdate
 import dev.robocode.tankroyale.gui.model.TickEvent
-import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.SwitchButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
@@ -36,7 +35,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
             }
 
     private fun createDebugGraphicsToggleButton(): SwitchButton {
-        onToggleDebugGraphicsButton = SwitchButton(ServerSettings.useRemoteServer).apply {
+        onToggleDebugGraphicsButton = SwitchButton(false).apply {
             addSwitchHandler { isSelected -> ClientEvents.onBotPolicyChanged.fire(BotPolicyUpdate(bot.id, isSelected)) }
         }
         return onToggleDebugGraphicsButton;
