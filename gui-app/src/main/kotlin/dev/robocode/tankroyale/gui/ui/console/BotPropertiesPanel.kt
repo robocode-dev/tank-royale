@@ -5,42 +5,42 @@ import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.model.BotPolicyUpdate
 import dev.robocode.tankroyale.gui.model.TickEvent
+import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Strings
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.gui.ui.components.SwitchButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import java.awt.BorderLayout
 import java.awt.Component
+import java.awt.Dimension
 import java.awt.Font
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTable
 import javax.swing.plaf.FontUIResource
 import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
-import javax.swing.JButton
 
 class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
-    private lateinit var onToggleDebug: Event<JButton>
-    private lateinit var toggleDebugButton: JButton
-    private var debugButtonInitialized = false
-    private var isDebuggingEnabled = false
+    private lateinit var onToggleDebugGraphicsButton: SwitchButton
 
     override val buttonPanel: JPanel
-        get() {
-            if (!debugButtonInitialized) {
-                // Init needs to be done here due to initialization order
-                onToggleDebug = Event<JButton>().apply {
-                    subscribe(this) { toggleGraphicalDebugging() }
+        get() =
+            JPanel().apply {
+                val spacer = JLabel().apply {
+                    preferredSize = Dimension(20, 1)
                 }
-                toggleDebugButton = JPanel().addButton("toggle_graphical_debugging", onToggleDebug)
-
-                debugButtonInitialized = true
-            }
-
-            return JPanel().apply {
                 add(okButton)
-                add(toggleDebugButton)
+                add(spacer)
+                addLabel("toggle_graphical_debugging")
+                add(createDebugGraphicsToggleButton())
             }
+
+    private fun createDebugGraphicsToggleButton(): SwitchButton {
+        onToggleDebugGraphicsButton = SwitchButton(ServerSettings.useRemoteServer).apply {
+            addSwitchHandler { isSelected -> ClientEvents.onBotPolicyChanged.fire(BotPolicyUpdate(bot.id, isSelected)) }
         }
+        return onToggleDebugGraphicsButton;
+    }
 
     private val columns = arrayOf(
         Strings.get("bot_console.properties.property"),
@@ -155,7 +155,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     private fun updateBotState(tickEvent: TickEvent) {
         val botState = tickEvent.botStates.firstOrNull { it.id == bot.id } ?: return
 
-        isDebuggingEnabled = botState.isDebuggingEnabled
+        onToggleDebugGraphicsButton.isSelected = botState.isDebuggingEnabled
 
         model.apply {
             // Column 1
@@ -191,13 +191,6 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
             setValueAt(botState.stdErr, 12, 4)
             setValueAt(botState.isDebuggingEnabled, 13, 4)
         }
-    }
-
-    private fun toggleGraphicalDebugging() {
-        isDebuggingEnabled = !isDebuggingEnabled
-
-        ClientEvents.onBotPolicyChanged.fire(BotPolicyUpdate(bot.id, isDebuggingEnabled))
-        model.setValueAt(isDebuggingEnabled, 13, 4)
     }
 
     private class CustomCellRenderer : DefaultTableCellRenderer() {
