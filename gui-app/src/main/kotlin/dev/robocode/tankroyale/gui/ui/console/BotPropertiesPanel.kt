@@ -20,7 +20,7 @@ import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
 
 class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
-    private lateinit var onToggleDebugGraphicsButton: SwitchButton
+    private lateinit var toggleDebugGraphicsButton: SwitchButton
 
     override val buttonPanel: JPanel
         get() =
@@ -35,10 +35,10 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
             }
 
     private fun createDebugGraphicsToggleButton(): SwitchButton {
-        onToggleDebugGraphicsButton = SwitchButton(false).apply {
+        toggleDebugGraphicsButton = SwitchButton(false).apply {
             addSwitchHandler { isSelected -> ClientEvents.onBotPolicyChanged.fire(BotPolicyUpdate(bot.id, isSelected)) }
         }
-        return onToggleDebugGraphicsButton;
+        return toggleDebugGraphicsButton;
     }
 
     private val columns = arrayOf(
@@ -154,7 +154,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     private fun updateBotState(tickEvent: TickEvent) {
         val botState = tickEvent.botStates.firstOrNull { it.id == bot.id } ?: return
 
-        onToggleDebugGraphicsButton.isSelected = botState.isDebuggingEnabled
+        toggleDebugGraphicsButton.isSelected = botState.isDebuggingEnabled
 
         model.apply {
             // Column 1
