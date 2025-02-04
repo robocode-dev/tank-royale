@@ -193,7 +193,7 @@ Rule settings:
 When the GUI is used for starting a local server it is possible to view the server log from the menu. Note that viewing
 the log of a remote server is not supported.
 
-![Local Server Log](../images/gui/local-server-log.png)
+![Local Server Log](../images/gui/server-log.png)
 
 ## Server Options
 
