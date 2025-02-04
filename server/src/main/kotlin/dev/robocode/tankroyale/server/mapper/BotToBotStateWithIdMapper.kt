@@ -34,7 +34,7 @@ object BotToBotStateWithIdMapper {
             botState.stdOut = stdOut
             botState.stdErr = stdErr
             botState.isDebuggingEnabled = isDebuggingEnabled
-            botState.debugGraphics = if (isDebuggingEnabled) debugGraphics else null
+            botState.debugGraphics = debugGraphics
             return botState
         }
     }

@@ -13,9 +13,8 @@ object TurnToTickEventForObserverMapper {
         turn: ITurn,
         participantsMap: Map<BotId, Participant>,
         enemyCountMap: Map<BotId, Int /* enemyCount */>
-    ): TickEventForObserver {
-        val tick = TickEventForObserver()
-        tick.apply {
+    ): TickEventForObserver =
+        TickEventForObserver().apply {
             type = Message.Type.TICK_EVENT_FOR_OBSERVER
             this.roundNumber = roundNumber
             turnNumber = turn.turnNumber
@@ -23,6 +22,4 @@ object TurnToTickEventForObserverMapper {
             bulletStates = unmodifiableList(BulletsToBulletStatesMapper.map(turn.bullets))
             events = unmodifiableList(EventsMapper.map(turn.observerEvents))
         }
-        return tick
-    }
 }
