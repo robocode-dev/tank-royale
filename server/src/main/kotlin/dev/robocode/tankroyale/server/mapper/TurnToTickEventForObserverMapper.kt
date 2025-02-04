@@ -12,13 +12,14 @@ object TurnToTickEventForObserverMapper {
         roundNumber: Int,
         turn: ITurn,
         participantsMap: Map<BotId, Participant>,
-        enemyCountMap: Map<BotId, Int /* enemyCount */>
+        enemyCountMap: Map<BotId, Int /* enemyCount */>,
+        debugGraphicsEnableMap: Map<BotId, Boolean /* isDebugGraphicsEnabled */>
     ): TickEventForObserver =
         TickEventForObserver().apply {
             type = Message.Type.TICK_EVENT_FOR_OBSERVER
             this.roundNumber = roundNumber
             turnNumber = turn.turnNumber
-            botStates = unmodifiableList(BotsToBotsWithIdMapper.map(turn.bots, participantsMap, enemyCountMap))
+            botStates = unmodifiableList(BotsToBotsWithIdMapper.map(turn.bots, participantsMap, enemyCountMap, debugGraphicsEnableMap))
             bulletStates = unmodifiableList(BulletsToBulletStatesMapper.map(turn.bullets))
             events = unmodifiableList(EventsMapper.map(turn.observerEvents))
         }

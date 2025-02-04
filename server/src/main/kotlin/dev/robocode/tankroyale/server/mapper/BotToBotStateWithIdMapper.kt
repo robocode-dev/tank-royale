@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.server.model.normalizeAbsoluteDegrees
 import dev.robocode.tankroyale.server.model.IBot
 
 object BotToBotStateWithIdMapper {
-    fun map(bot: IBot, sessionId: String, enemyCount: Int): BotStateWithId {
+    fun map(bot: IBot, sessionId: String, enemyCount: Int, isDebugGraphicsEnabled: Boolean): BotStateWithId {
         val botState = BotStateWithId()
         bot.apply {
             botState.isDroid = isDroid
@@ -33,8 +33,9 @@ object BotToBotStateWithIdMapper {
             botState.gunColor = gunColor?.value
             botState.stdOut = stdOut
             botState.stdErr = stdErr
-            botState.isDebuggingEnabled = isDebuggingEnabled
-            botState.debugGraphics = debugGraphics
+            botState.isDebuggingEnabled = isDebugGraphicsEnabled
+            // avoid sending SVG string if debug graphics is disabled (waste of network traffic)
+            botState.debugGraphics = if (isDebugGraphicsEnabled) debugGraphics else null
             return botState
         }
     }

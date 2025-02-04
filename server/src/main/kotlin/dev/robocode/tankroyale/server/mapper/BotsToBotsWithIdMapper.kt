@@ -9,12 +9,18 @@ object BotsToBotsWithIdMapper {
     fun map(
         bots: Set<IBot>,
         participantsMap: Map<BotId, Participant>,
-        enemyCountMap: Map<BotId, Int /* enemyCount */>
+        enemyCountMap: Map<BotId, Int /* enemyCount */>,
+        debugGraphicsEnableMap: Map<BotId, Boolean /* isDebugGraphicsEnabled */>
     ): List<BotStateWithId> {
         val botStates = mutableListOf<BotStateWithId>()
         bots.forEach { bot ->
             participantsMap[bot.id]?.let { participant ->
-                botStates += BotToBotStateWithIdMapper.map(bot, participant.sessionId, enemyCountMap[bot.id]!!)
+                botStates += BotToBotStateWithIdMapper.map(
+                    bot,
+                    participant.sessionId,
+                    enemyCountMap[bot.id] ?: 0,
+                    debugGraphicsEnableMap[bot.id] ?: false
+                )
             }
         }
         return botStates

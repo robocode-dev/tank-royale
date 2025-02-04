@@ -56,7 +56,7 @@ class GameServer(
     private val botIntents = ConcurrentHashMap<WebSocket, dev.robocode.tankroyale.server.model.BotIntent>()
 
     /** Map over participants sent to clients */
-    private val participantMap = mutableMapOf<BotId, Participant>()
+    private val participantMap = ConcurrentHashMap<BotId, Participant>()
 
     /** Model updater that keeps track of the game state/model */
     private var modelUpdater: ModelUpdater? = null
@@ -78,6 +78,10 @@ class GameServer(
 
     /** Tick lock for onNextTurn() */
     private val tickLock = Any()
+
+    /** Map over debug graphics enable flags */
+    private val debugGraphicsEnableMap = ConcurrentHashMap<BotId, Boolean /* isDebugEnabled */>()
+
 
     private var botListUpdateMessage = BotListUpdate().apply {
         this.type = Message.Type.BOT_LIST_UPDATE
@@ -108,6 +112,8 @@ class GameServer(
         prepareModelUpdater()
         sendGameStartedToParticipants()
         startReadyTimer()
+
+        debugGraphicsEnableMap.clear()
     }
 
     private val startGameLock = Any()
@@ -425,7 +431,10 @@ class GameServer(
                     // Clear in first turn (left over from other round?), but BEFORE broadcasting round started event
                     botIntents.clear()
 
+                    transferDebugGraphicsFlagToModel()
+
                     broadcastRoundStartedToAll(roundNumber)
+
                 } else { // not turn 1
                     // Send SkippedTurn, except in turn 1
                     checkForSkippedTurns(turnNumber)
@@ -529,7 +538,8 @@ class GameServer(
             enemyCountMap[botId] = aliveBotTeamIds.filterValues { it != teamId }.count()
         }
 
-        broadcastToObserverAndControllers(TurnToTickEventForObserverMapper.map(roundNumber, turn, participantMap, enemyCountMap))
+        broadcastToObserverAndControllers(TurnToTickEventForObserverMapper
+            .map(roundNumber, turn, participantMap, enemyCountMap, debugGraphicsEnableMap))
     }
 
     private fun checkForSkippedTurns(currentTurnNumber: Int) {
@@ -717,6 +727,9 @@ class GameServer(
 
     internal fun handleBotPolicyUpdate(botPolicyUpdate: BotPolicyUpdate) {
         val botId = BotId(botPolicyUpdate.botId)
+        debugGraphicsEnableMap[botId] = botPolicyUpdate.debuggingEnabled
+
+        // Update the current flag as well
         modelUpdater?.botsMap?.get(botId)?.isDebuggingEnabled = botPolicyUpdate.debuggingEnabled
     }
 
@@ -725,5 +738,9 @@ class GameServer(
 
         modelUpdater = null
         System.gc()
+    }
+
+    private fun transferDebugGraphicsFlagToModel() {
+        modelUpdater?.botsMap?.forEach { (botId, bot) -> bot.isDebuggingEnabled = debugGraphicsEnableMap[botId] ?: false }
     }
 }

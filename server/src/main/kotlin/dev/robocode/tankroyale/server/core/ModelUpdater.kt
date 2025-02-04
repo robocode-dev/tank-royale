@@ -113,8 +113,6 @@ class ModelUpdater(
         }
         turn.turnNumber = 0
 
-        val debugFlags = botsMap.mapValues { it.value.isDebuggingEnabled }
-        
         nextBulletId = 0
         botIntentsMap.clear()
         bullets.clear()
@@ -123,10 +121,6 @@ class ModelUpdater(
         inactivityCounter = 0
 
         initializeBotStates()
-
-        debugFlags.forEach { (botId, isEnabled) ->
-            botsMap[botId]?.isDebuggingEnabled = isEnabled 
-        }
     }
 
     /** Proceed with the next turn. */
