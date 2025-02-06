@@ -32,9 +32,6 @@ public class PaintingBot : Bot
     // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
-        // Set radar to turn forever to scan some enemies we can paint
-        SetTurnRadarLeft(Double.PositiveInfinity);
-
         // Continuous forward and backward movement repeating forever
         while (IsRunning)
         {

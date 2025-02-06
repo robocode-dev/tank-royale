@@ -31,9 +31,6 @@ public class PaintingBot extends Bot {
     // Called when a new round is started -> initialize and do some movement
     @Override
     public void run() {
-        // Set radar to turn forever to scan some enemies we can paint
-        setTurnRadarLeft(Double.POSITIVE_INFINITY);
-
         // Continuous forward and backward movement repeating forever
         while (isRunning()) {
             forward(100);
@@ -60,7 +57,6 @@ public class PaintingBot extends Bot {
     // updated location.
     @Override
     public void onTick(TickEvent e) {
-
         // Check if we scanned a bot by checking if the scanned time is not 0
         if (scannedTime != 0) {
 
