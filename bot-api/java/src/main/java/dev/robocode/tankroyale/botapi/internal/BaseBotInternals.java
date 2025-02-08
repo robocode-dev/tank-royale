@@ -270,8 +270,16 @@ public final class BaseBotInternals {
         eventQueue.setInterruptible(interruptible);
     }
 
-    void setScannedBotEventInterruptible() {
-        eventQueue.setInterruptible(ScannedBotEvent.class, true);
+    public boolean isInterruptible() {
+        return eventQueue.isInterruptible();
+    }
+
+    void setScannedBotEventInterruptible(boolean interruptible) {
+        eventQueue.setInterruptible(ScannedBotEvent.class, interruptible);
+    }
+
+    boolean isTopEventScannedBotEvent() {
+        return eventQueue.isTopEventScannedBotEvent();
     }
 
     Set<Condition> getConditions() {
@@ -688,7 +696,7 @@ public final class BaseBotInternals {
         botIntent.getTeamMessages().add(teamMessage);
     }
 
-    public int getPriority(Class<BotEvent> eventClass) {
+    public int getPriority(Class<? extends BotEvent> eventClass) {
         if (!eventPriorities.containsKey(eventClass)) {
             throw new IllegalStateException("Could not get event priority for the class: " + eventClass.getSimpleName());
         }

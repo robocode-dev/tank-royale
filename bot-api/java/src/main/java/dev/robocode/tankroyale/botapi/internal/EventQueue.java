@@ -55,7 +55,7 @@ final class EventQueue {
         }
     }
 
-    private boolean isInterruptible() {
+    boolean isInterruptible() {
         return interruptibles.contains(currentTopEvent.getClass());
     }
 
@@ -182,6 +182,10 @@ final class EventQueue {
         baseBotInternals.getConditions().stream().filter(Condition::test).forEach(condition ->
                 addEvent(new CustomEvent(baseBotInternals.getCurrentTickOrThrow().getTurnNumber(), condition))
         );
+    }
+
+    boolean isTopEventScannedBotEvent() {
+        return currentTopEvent.getClass().equals(ScannedBotEvent.class);
     }
 
     private void dumpEvents() {
