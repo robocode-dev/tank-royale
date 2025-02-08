@@ -790,32 +790,14 @@ class ModelUpdater(
             )
 
     /**
-     * Checks if a bot is scanning, meaning that it is either rescanning or moving.
+     * Checks if a bot is scanning, meaning that the radar must have turned.
      * @param botId is the id of the bot.
      * @return `true` if the bot is scanning; `false` otherwise.
      */
     private fun isScanning(botId: BotId): Boolean {
-        var isScanning = botIntentsMap[botId]?.rescan ?: false
-        if (!isScanning) {
-            isScanning = isMoving(botId)
-        }
-        return isScanning
-    }
-
-    /**
-     * Checks if a bot is moving, meaning that the x,y position or a direction has changed.
-     * @param botId is the id of the bot.
-     * @return `true` if the bot is moving; `false` otherwise.
-     */
-    private fun isMoving(botId: BotId): Boolean {
         val currentState = botsMap[botId]!!
         val previousState = botsCopies[botId]!!
-
-        return currentState.x != previousState.x
-                || currentState.y != previousState.y
-                || currentState.direction != previousState.direction
-                || currentState.gunDirection != previousState.gunDirection
-                || currentState.radarDirection != previousState.radarDirection
+        return currentState.radarDirection != previousState.radarDirection
     }
 
     /**
