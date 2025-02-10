@@ -13,7 +13,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../Robocode.TankRoyale.BotApi/Robocode.TankRoyale.BotApi.csproj"  />
+        <ProjectReference Include="../api/api.csproj"  />
 
         <!-- for Bot API -->
         <!--

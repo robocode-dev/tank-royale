@@ -15,13 +15,13 @@ tasks {
         doLast {
             delete(
                 "build",
+                "api/obj",
+                "api/bin",
+                "test/obj",
+                "test/bin",
                 "docfx_project/_site",
                 "docfx_project/api",
                 "docfx_project/obj",
-                "Robocode.TankRoyale.BotApi/obj",
-                "Robocode.TankRoyale.BotApi/bin",
-                "Robocode.TankRoyale.BotApi.Tests/obj",
-                "Robocode.TankRoyale.BotApi.Tests/bin",
             )
         }
     }
@@ -37,12 +37,12 @@ tasks {
     val buildDotnetBotApi by registering(Exec::class) {
         dependsOn(prepareNugetDocs)
 
-        workingDir("Robocode.TankRoyale.BotApi")
+        workingDir("api")
         commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
     }
 
     val test by registering(Exec::class) {
-        workingDir("Robocode.TankRoyale.BotApi.Tests")
+        workingDir("test")
         commandLine("dotnet", "test")
     }
 
@@ -89,7 +89,7 @@ tasks {
             delete("$userHome/.nuget/packages/${artifactName.lowercase()}/$version")
         }
 
-        workingDir("Robocode.TankRoyale.BotApi/bin/Release")
+        workingDir("api/bin/Release")
         commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "--source", "$userHome/.nuget/packages")
     }
 }
