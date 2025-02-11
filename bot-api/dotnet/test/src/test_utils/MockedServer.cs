@@ -4,7 +4,7 @@ using System.Threading;
 using Fleck;
 using Newtonsoft.Json;
 using Robocode.TankRoyale.BotApi.Util;
-using Robocode.TankRoyale.Schema.Game;
+using Robocode.TankRoyale.Schema;
 
 namespace Robocode.TankRoyale.BotApi.Tests.Test_utils;
 
@@ -284,7 +284,7 @@ public class MockedServer
             Type = EnumUtil.GetEnumMemberAttrValue(MessageType.GameStartedEventForBot),
             MyId = MyId
         };
-        var gameSetup = new Schema.Game.GameSetup
+        var gameSetup = new Schema.GameSetup
         {
             GameType = GameType,
             ArenaWidth = ArenaWidth,
@@ -329,7 +329,7 @@ public class MockedServer
             radarTurnRate = _botIntent.RadarTurnRate ?? BotRadarTurnRate;
         }
 
-        var state = new Schema.Game.BotState
+        var state = new Schema.BotState
         {
             Energy = _energy,
             X = BotX,
@@ -348,7 +348,7 @@ public class MockedServer
 
         var bulletState1 = CreateBulletState(1);
         var bulletState2 = CreateBulletState(2);
-        tickEvent.BulletStates = new HashSet<Schema.Game.BulletState>
+        tickEvent.BulletStates = new HashSet<Schema.BulletState>
         {
             bulletState1, bulletState2
         };
@@ -375,9 +375,9 @@ public class MockedServer
         conn.Send(JsonConvert.SerializeObject(obj));
     }
 
-    private static Schema.Game.BulletState CreateBulletState(int id)
+    private static Schema.BulletState CreateBulletState(int id)
     {
-        var bulletState = new Schema.Game.BulletState()
+        var bulletState = new Schema.BulletState()
         {
             BulletId = id,
             X = 0,

@@ -2,11 +2,11 @@
 
 public static class InitialPositionMapper
 {
-    public static Schema.Game.InitialPosition Map(InitialPosition source)
+    public static Schema.InitialPosition Map(InitialPosition source)
     {
         if (source == null) return null;
 
-        return new Schema.Game.InitialPosition
+        return new Schema.InitialPosition
         {
             X = source.X,
             Y = source.Y,

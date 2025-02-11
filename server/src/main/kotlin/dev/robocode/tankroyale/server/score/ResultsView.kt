@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score
 
-import dev.robocode.tankroyale.schema.game.Participant
+import dev.robocode.tankroyale.schema.Participant
 import dev.robocode.tankroyale.server.model.Score
 import java.util.*
 

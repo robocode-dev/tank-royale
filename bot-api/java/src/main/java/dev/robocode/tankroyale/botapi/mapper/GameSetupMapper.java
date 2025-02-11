@@ -11,7 +11,7 @@ public final class GameSetupMapper {
     private GameSetupMapper() {
     }
 
-    public static GameSetup map(final dev.robocode.tankroyale.schema.game.GameSetup source) {
+    public static GameSetup map(final dev.robocode.tankroyale.schema.GameSetup source) {
         return new GameSetup(
                 source.getGameType(),
                 source.getArenaWidth(),

@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.server.mapper
 
-import dev.robocode.tankroyale.schema.game.*
+import dev.robocode.tankroyale.schema.*
 
 object EventsMapper {
     fun map(events: Set<dev.robocode.tankroyale.server.event.Event>): List<Event> {

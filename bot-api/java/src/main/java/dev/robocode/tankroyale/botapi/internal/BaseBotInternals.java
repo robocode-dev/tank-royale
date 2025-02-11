@@ -23,7 +23,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.botapi.util.ColorUtil;
-import dev.robocode.tankroyale.schema.game.*;
+import dev.robocode.tankroyale.schema.*;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -838,7 +838,7 @@ public final class BaseBotInternals {
                 if (jsonType != null) {
                     String type = jsonType.getAsString();
 
-                    switch (dev.robocode.tankroyale.schema.game.Message.Type.fromValue(type)) {
+                    switch (dev.robocode.tankroyale.schema.Message.Type.fromValue(type)) {
                         case TICK_EVENT_FOR_BOT:
                             handleTick(jsonMsg);
                             break;
@@ -958,7 +958,7 @@ public final class BaseBotInternals {
         private void handleSkippedTurn(JsonObject jsonMsg) {
             if (getEventHandlingDisabledTurn()) return;
 
-            var skippedTurnEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.game.SkippedTurnEvent.class);
+            var skippedTurnEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
 
             botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent, baseBot));
         }

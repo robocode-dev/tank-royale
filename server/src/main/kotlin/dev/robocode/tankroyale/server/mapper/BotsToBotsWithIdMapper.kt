@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.server.mapper
 
-import dev.robocode.tankroyale.schema.game.BotStateWithId
-import dev.robocode.tankroyale.schema.game.Participant
+import dev.robocode.tankroyale.schema.BotStateWithId
+import dev.robocode.tankroyale.schema.Participant
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.IBot
 

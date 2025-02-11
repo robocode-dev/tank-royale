@@ -6,7 +6,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
-import dev.robocode.tankroyale.schema.game.Event;
+import dev.robocode.tankroyale.schema.Event;
 
 import java.awt.*;
 import java.io.IOException;
@@ -28,17 +28,17 @@ public final class GsonFactory {
     }
 
     private static RuntimeTypeAdapterFactory<Event> getEventTypeFactory() {
-        return RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.game.Event.class, "type")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BotDeathEvent.class, "BotDeathEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BotHitBotEvent.class, "BotHitBotEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BotHitWallEvent.class, "BotHitWallEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BulletFiredEvent.class, "BulletFiredEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BulletHitBotEvent.class, "BulletHitBotEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BulletHitBulletEvent.class, "BulletHitBulletEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.BulletHitWallEvent.class, "BulletHitWallEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.ScannedBotEvent.class, "ScannedBotEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.WonRoundEvent.class, "WonRoundEvent")
-                .registerSubtype(dev.robocode.tankroyale.schema.game.TeamMessageEvent.class, "TeamMessageEvent");
+        return RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "type")
+                .registerSubtype(dev.robocode.tankroyale.schema.BotDeathEvent.class, "BotDeathEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.BulletFiredEvent.class, "BulletFiredEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBotEvent.class, "BulletHitBotEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.BulletHitBulletEvent.class, "BulletHitBulletEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.BulletHitWallEvent.class, "BulletHitWallEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.ScannedBotEvent.class, "ScannedBotEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.WonRoundEvent.class, "WonRoundEvent")
+                .registerSubtype(dev.robocode.tankroyale.schema.TeamMessageEvent.class, "TeamMessageEvent");
     }
 
     private static final class ColorTypeAdapter extends TypeAdapter<Color> {

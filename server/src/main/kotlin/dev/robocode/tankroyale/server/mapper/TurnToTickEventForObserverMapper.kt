@@ -1,8 +1,8 @@
 package dev.robocode.tankroyale.server.mapper
 
-import dev.robocode.tankroyale.schema.game.Message
-import dev.robocode.tankroyale.schema.game.Participant
-import dev.robocode.tankroyale.schema.game.TickEventForObserver
+import dev.robocode.tankroyale.schema.Message
+import dev.robocode.tankroyale.schema.Participant
+import dev.robocode.tankroyale.schema.TickEventForObserver
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.ITurn
 import java.util.Collections.unmodifiableList

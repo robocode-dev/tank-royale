@@ -4,7 +4,7 @@ namespace Robocode.TankRoyale.BotApi.Mapper;
 
 internal static class BotStateMapper
 {
-    public static BotState Map(Schema.Game.BotState source)
+    public static BotState Map(Schema.BotState source)
     {
         return new BotState(
             source.IsDroid == false,

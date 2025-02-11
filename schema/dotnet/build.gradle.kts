@@ -13,7 +13,7 @@ tasks {
         dependsOn(dotnetBuild)
 
         doFirst {
-            mkdir("${project(":bot-api:dotnet").file("api/src/generated/Game")}")
+            mkdir("${project(":bot-api:dotnet").file("api/src/generated")}")
         }
 
         var codeGeneratorPath = "$projectDir/bin/Release/net6.0/CodeGeneratorApp"
@@ -23,13 +23,13 @@ tasks {
 
         println("codeGeneratorPath: $codeGeneratorPath")
         println("${project(":schema").file("schemas")}")
-        println("${project(":bot-api:dotnet").file("api/src/generated/Game")}")
+        println("${project(":bot-api:dotnet").file("api/src/generated")}")
 
         commandLine(
             codeGeneratorPath,
-            "${project(":schema").file("schemas/game")}",
-            "${project(":bot-api:dotnet").file("api/src/generated/Game")}",
-            "Robocode.TankRoyale.Schema.Game"
+            "${project(":schema").file("schemas")}",
+            "${project(":bot-api:dotnet").file("api/src/generated")}",
+            "Robocode.TankRoyale.Schema"
         )
     }
 }
