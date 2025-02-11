@@ -36,6 +36,7 @@ tasks {
 
     val buildDotnetBotApi by registering(Exec::class) {
         dependsOn(prepareNugetDocs)
+        dependsOn(":schema:dotnet:build")
 
         workingDir("api")
         commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
