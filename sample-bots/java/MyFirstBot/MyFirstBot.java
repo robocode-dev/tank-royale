@@ -28,9 +28,9 @@ public class MyFirstBot extends Bot {
         // Repeat while the bot is running
         while (isRunning()) {
             forward(100);
-            turnGunRight(360);
+            turnGunLeft(360);
             back(100);
-            turnGunRight(360);
+            turnGunLeft(360);
         }
     }
 
@@ -47,6 +47,6 @@ public class MyFirstBot extends Bot {
         var bearing = calcBearing(e.getBullet().getDirection());
 
         // Turn 90 degrees to the bullet direction based on the bearing
-        turnLeft(90 - bearing);
+        turnRight(90 - bearing);
     }
 }

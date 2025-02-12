@@ -33,7 +33,7 @@ public class RamFire extends Bot {
         setRadarColor(new Color(0x66, 0x66, 0x66));  // dark gray
 
         while (isRunning()) {
-            turnLeft(5 * turnDirection);
+            turnRight(5 * turnDirection);
         }
     }
 
@@ -78,6 +78,6 @@ public class RamFire extends Bot {
         } else {
             turnDirection = -1;
         }
-        turnLeft(bearing);
+        turnRight(bearing);
     }
 }

@@ -56,7 +56,7 @@ public class Target extends Bot {
             System.out.println("Ouch, down to " + (int) (getEnergy() + .5) + " energy.");
 
             // Move around a bit
-            turnLeft(65);
+            turnRight(65);
             forward(100);
         }
     }

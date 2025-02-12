@@ -38,7 +38,7 @@ public class Fire extends Bot {
         // Spin the gun around slowly... forever
         while (isRunning()) {
             // Turn the gun a bit if the bot if the target speed is 0
-            turnGunLeft(5);
+            turnGunRight(5);
         }
     }
 
@@ -61,7 +61,7 @@ public class Fire extends Bot {
     @Override
     public void onHitByBullet(HitByBulletEvent e) {
         // Turn perpendicular to the bullet direction
-        turnLeft(normalizeRelativeAngle(90 - (getDirection() - e.getBullet().getDirection())));
+        turnRight(normalizeRelativeAngle(90 - (getDirection() - e.getBullet().getDirection())));
 
         // Move forward or backward depending if the distance is positive or negative
         forward(dist);
@@ -77,7 +77,7 @@ public class Fire extends Bot {
         // Turn gun to the bullet direction
         var direction = directionTo(e.getX(), e.getY());
         var gunBearing = normalizeRelativeAngle(direction - getGunDirection());
-        turnGunLeft(gunBearing);
+        turnGunRight(gunBearing);
 
         // Fire hard
         fire(3);

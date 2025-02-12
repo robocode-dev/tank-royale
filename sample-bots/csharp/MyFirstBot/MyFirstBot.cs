@@ -28,9 +28,9 @@ public class MyFirstBot : Bot
         while (IsRunning)
         {
             Forward(100);
-            TurnGunRight(360);
+            TurnGunLeft(360);
             Back(100);
-            TurnGunRight(360);
+            TurnGunLeft(360);
         }
     }
 
@@ -47,6 +47,6 @@ public class MyFirstBot : Bot
         var bearing = CalcBearing(evt.Bullet.Direction);
 
         // Turn 90 degrees to the bullet direction based on the bearing
-        TurnLeft(90 - bearing);
+        TurnRight(90 - bearing);
     }
 }

@@ -42,13 +42,13 @@ public class Walls : Bot
 
         // turn to face a wall.
         // `Direction % 90` means the remainder of Direction divided by 90.
-        TurnRight(Direction % 90);
+        TurnLeft(Direction % 90);
         Forward(moveAmount);
 
         // Turn the gun to turn right 90 degrees.
         peek = true;
-        TurnGunRight(90);
-        TurnRight(90);
+        TurnGunLeft(90);
+        TurnLeft(90);
 
         // Main loop
         while (IsRunning)
@@ -60,7 +60,7 @@ public class Walls : Bot
             // Don't peek now
             peek = false;
             // Turn to the next wall
-            TurnRight(90);
+            TurnLeft(90);
         }
     }
 

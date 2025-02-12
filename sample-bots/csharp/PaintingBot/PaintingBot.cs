@@ -36,9 +36,9 @@ public class PaintingBot : Bot
         while (IsRunning)
         {
             Forward(100);
-            TurnGunRight(360);
+            TurnGunLeft(360);
             Back(100);
-            TurnGunRight(360);
+            TurnGunLeft(360);
         }
     }
 

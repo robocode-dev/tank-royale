@@ -35,7 +35,7 @@ public class TrackFire extends Bot {
 
         // Loop while running
         while (isRunning()) {
-            turnGunLeft(10); // Scans automatically as radar is mounted on gun
+            turnGunRight(10); // Scans automatically as radar is mounted on gun
         }
     }
 
@@ -46,7 +46,7 @@ public class TrackFire extends Bot {
         var bearingFromGun = gunBearingTo(e.getX(), e.getY());
 
         // Turn the gun toward the scanned bot
-        turnGunLeft(bearingFromGun);
+        turnGunRight(bearingFromGun);
 
         // If it is close enough, fire!
         if (Math.abs(bearingFromGun) <= 3 && getGunHeat() == 0) {
@@ -65,6 +65,6 @@ public class TrackFire extends Bot {
     @Override
     public void onWonRound(WonRoundEvent e) {
         // Victory dance turning right 360 degrees 100 times
-        turnLeft(36_000);
+        turnRight(36_000);
     }
 }

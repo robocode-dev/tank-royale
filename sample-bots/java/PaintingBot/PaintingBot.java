@@ -34,9 +34,9 @@ public class PaintingBot extends Bot {
         // Continuous forward and backward movement repeating forever
         while (isRunning()) {
             forward(100);
-            turnGunRight(360);
+            turnGunLeft(360);
             back(100);
-            turnGunRight(360);
+            turnGunLeft(360);
         }
     }
 

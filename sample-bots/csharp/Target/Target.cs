@@ -53,7 +53,7 @@ public class Target : Bot
             Console.WriteLine("Ouch, down to " + (int)(Energy + .5) + " energy.");
 
             // Move around a bit
-            TurnRight(65);
+            TurnLeft(65);
             Forward(100);
         }
     }

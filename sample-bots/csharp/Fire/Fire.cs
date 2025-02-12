@@ -38,7 +38,7 @@ public class Fire : Bot
         while (IsRunning)
         {
             // Turn the gun a bit if the bot if the target speed is 0
-            TurnGunLeft(5);
+            TurnGunRight(5);
         }
     }
 
@@ -64,7 +64,7 @@ public class Fire : Bot
     public override void OnHitByBullet(HitByBulletEvent e)
     {
         // Turn perpendicular to the bullet direction
-        TurnLeft(NormalizeRelativeAngle(90 - (Direction - e.Bullet.Direction)));
+        TurnRight(NormalizeRelativeAngle(90 - (Direction - e.Bullet.Direction)));
 
         // Move forward or backward depending if the distance is positive or negative
         Forward(dist);
@@ -80,7 +80,7 @@ public class Fire : Bot
         // Turn gun to the bullet direction
         var direction = DirectionTo(e.X, e.Y);
         var gunBearing = NormalizeRelativeAngle(direction - GunDirection);
-        TurnGunLeft(gunBearing);
+        TurnGunRight(gunBearing);
 
         // Fire hard
         Fire(3);

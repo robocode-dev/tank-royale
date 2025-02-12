@@ -50,7 +50,7 @@ public class Corners extends Bot {
         // Spin gun back and forth
         while (isRunning()) {
             for (int i = 0; i < 30; i++) {
-                turnGunRight(gunIncrement);
+                turnGunLeft(gunIncrement);
             }
             gunIncrement *= -1;
         }
@@ -67,17 +67,17 @@ public class Corners extends Bot {
         // We don't want to stop when we're just turning...
         stopWhenSeeEnemy = false;
         // Turn to face the wall towards our desired corner
-        turnLeft(calcBearing(corner));
+        turnRight(calcBearing(corner));
         // Ok, now we don't want to crash into any bot in our way...
         stopWhenSeeEnemy = true;
         // Move to that wall
         forward(5000);
         // Turn to face the corner
-        turnRight(90);
+        turnLeft(90);
         // Move to the corner
         forward(5000);
         // Turn gun to starting point
-        turnGunRight(90);
+        turnGunLeft(90);
     }
 
     // We saw another bot -> stop and fire!
