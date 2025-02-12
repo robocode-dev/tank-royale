@@ -19,9 +19,6 @@ tasks {
                 "api/bin",
                 "test/obj",
                 "test/bin",
-                "docfx_project/_site",
-                "docfx_project/api",
-                "docfx_project/obj",
             )
         }
     }
@@ -68,6 +65,14 @@ tasks {
 
     val uploadDocs by registering(Copy::class) {
         dependsOn(clean, docfx)
+
+        doFirst {
+            delete(
+                "docfx_project/_site",
+                "docfx_project/api",
+                "docfx_project/obj",
+            )
+        }
 
         val dotnetApiDir = "../../docs/api/dotnet"
 
