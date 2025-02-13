@@ -67,12 +67,12 @@ class SchemaConverter:
             'array': 'list',
             'object': 'dict'
         }
-        return type_mapping.get(prop_schema.get('type'), 'Any')
+        return type_mapping.get(prop_schema.get('type'), 'object')
 
     def generate_class(self, class_name: str, schema: Dict[str, Any], file_path: str) -> str:
         description = schema.get('description', '')
 
-        if 'type' in schema and isinstance(schema['type'], str) and 'properties' not in schema:
+        if not 'extends' in schema and 'type' in schema and isinstance(schema['type'], str) and 'properties' not in schema:
             python_type = self.get_python_type({'type': schema['type']}, file_path)
             class_lines = [f"class {class_name}:"]
 
@@ -147,16 +147,13 @@ class SchemaConverter:
         return self.generate_class(class_name, schema_data, file_path)
 
     def generate_import_statements(self, file_path: str) -> List[str]:
-        imports = [
-            'from typing import Any, List, Dict, Optional',
-            'from datetime import datetime, date, time'
-        ]
+        imports = []
 
         if file_path in self.class_dependencies:
             for dep_file in self.class_dependencies[file_path]:
                 module_name = sanitize_file_name(dep_file)
                 class_name = sanitize_class_name(dep_file)
-                imports.append(f'from .{module_name} import {class_name}')
+                imports.append(f'from {module_name} import {class_name}')
 
         return imports
 
