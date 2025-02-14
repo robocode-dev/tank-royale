@@ -1,5 +1,5 @@
 import yaml
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Set, Tuple
 from pathlib import Path
 import re
 
@@ -8,6 +8,7 @@ def camel_to_snake(name: str):
     snake_case = re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()
     return snake_case
 
+
 def convert_strings_to_snake(properties: dict[str, Any]):
     new_properties = {}
     for key, value in properties.items():
@@ -15,11 +16,13 @@ def convert_strings_to_snake(properties: dict[str, Any]):
         new_properties[new_key] = value
     return new_properties
 
+
 def convert_strings_to_snake2(items: list[str]):
     new_properties = []
     for item in items:
         new_properties.append(camel_to_snake(item))
     return new_properties
+
 
 def load_yaml(file_path: str) -> Dict[str, Any]:
     with open(file_path, 'r') as f:
@@ -51,6 +54,7 @@ class SchemaConverter:
         self.processed_schemas = {}
         self.class_dependencies = {}
         self.output_dir = None
+        self.schema_properties_cache = {}
 
     def get_python_type(self, prop_schema: Dict[str, Any], file_path: str) -> str:
         if '$ref' in prop_schema:
@@ -69,10 +73,47 @@ class SchemaConverter:
         }
         return type_mapping.get(prop_schema.get('type'), 'object')
 
+    def get_parent_schema_info(self, schema: Dict[str, Any], current_file_path: str) -> Tuple[
+        Set[str], Set[str], Dict[str, Any]]:
+        """Get the properties and requirements defined in the parent class."""
+        if 'extends' not in schema or '$ref' not in schema['extends']:
+            return set(), set(), {}
+
+        base_class_ref = schema['extends']['$ref']
+        base_file = resolve_reference(base_class_ref)[1]
+
+        cache_key = f"{current_file_path}:{base_file}"
+        if cache_key in self.schema_properties_cache:
+            return self.schema_properties_cache[cache_key]
+
+        # Use the directory of the current file to resolve the parent file path
+        current_dir = Path(current_file_path).parent
+        parent_file_path = str(current_dir / base_file)
+
+        try:
+            parent_schema = load_yaml(parent_file_path)
+            parent_properties = convert_strings_to_snake(parent_schema.get('properties', {}))
+            parent_required = set(convert_strings_to_snake2(parent_schema.get('required', [])))
+
+            # If the parent also has a parent, include those properties too
+            if 'extends' in parent_schema and '$ref' in parent_schema['extends']:
+                grandparent_props, grandparent_required, grandparent_schema = self.get_parent_schema_info(parent_schema,
+                                                                                                          parent_file_path)
+                parent_properties.update(grandparent_schema)
+                parent_required.update(grandparent_required)
+
+            result = (set(parent_properties.keys()), parent_required, parent_properties)
+            self.schema_properties_cache[cache_key] = result
+            return result
+        except FileNotFoundError:
+            print(f"Warning: Could not find parent schema file: {parent_file_path}")
+            return set(), set(), {}
+
     def generate_class(self, class_name: str, schema: Dict[str, Any], file_path: str) -> str:
         description = schema.get('description', '')
 
-        if not 'extends' in schema and 'type' in schema and isinstance(schema['type'], str) and 'properties' not in schema:
+        if not 'extends' in schema and 'type' in schema and isinstance(schema['type'],
+                                                                       str) and 'properties' not in schema:
             python_type = self.get_python_type({'type': schema['type']}, file_path)
             class_lines = [f"class {class_name}:"]
 
@@ -105,15 +146,23 @@ class SchemaConverter:
         if description:
             class_lines.extend([f'    """{description}"""', ''])
 
+        # Get parent properties and requirements
+        parent_properties, parent_required, parent_schema = self.get_parent_schema_info(schema, file_path)
+
         # Separate required and optional parameters
         required_params = []
         optional_params = []
 
-        for prop_name, prop_schema in properties.items():
+        # Add all parameters, including those from parent
+        all_properties = properties.copy()
+        if parent_schema:
+            all_properties.update(parent_schema)
+
+        for prop_name, prop_schema in all_properties.items():
             python_name = prop_name
             prop_type = self.get_python_type(prop_schema, file_path)
 
-            if prop_name in required:
+            if prop_name in required or prop_name in parent_required:
                 required_params.append(f'{python_name}: {prop_type}')
             else:
                 optional_params.append(f'{python_name}: {prop_type} = None')
@@ -125,15 +174,24 @@ class SchemaConverter:
         init_body = [f'    def __init__(self{", " + params_str if params_str else ""}):']
 
         # Add validation for required parameters
-        for prop_name in required:
+        all_required = set(required).union(parent_required)
+        for prop_name in all_required:
             init_body.append(f'        if {prop_name} is None:')
             init_body.append(f'            raise ValueError("The \'{prop_name}\' parameter must be provided.")')
 
+        # Pass parent properties to super().__init__
         if base_classes:
-            super_params = [prop_name.split(':')[0] for prop_name in init_params]
-            super_call = f"        super().__init__({', '.join(super_params)})"
-            init_body.append(super_call)
+            super_params = []
+            for param in init_params:
+                param_name = param.split(':')[0]
+                if param_name in parent_properties:
+                    super_params.append(param_name)
 
+            if super_params:
+                super_call = f"        super().__init__({', '.join(super_params)})"
+                init_body.append(super_call)
+
+        # Only set properties defined in this class (not parent)
         for prop_name in properties:
             init_body.append(f'        self.{prop_name} = {prop_name}')
 
