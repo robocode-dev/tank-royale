@@ -1,8 +1,0 @@
-README.md
-setup.py
-src/tank_royale/__init__.py
-src/tank_royale.egg-info/PKG-INFO
-src/tank_royale.egg-info/SOURCES.txt
-src/tank_royale.egg-info/dependency_links.txt
-src/tank_royale.egg-info/requires.txt
-src/tank_royale.egg-info/top_level.txt
