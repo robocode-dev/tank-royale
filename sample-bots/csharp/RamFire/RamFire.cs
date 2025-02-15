@@ -34,7 +34,7 @@ public class RamFire : Bot
         // Spin the gun around slowly... forever
         while (IsRunning)
         {
-            TurnLeft(5 * turnDirection);
+            TurnRight(5 * turnDirection);
         }
     }
 
@@ -79,6 +79,6 @@ public class RamFire : Bot
         else
             turnDirection = -1;
 
-        TurnLeft(bearing);
+        TurnRight(bearing);
     }
 }

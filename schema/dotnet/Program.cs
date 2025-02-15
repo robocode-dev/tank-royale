@@ -34,7 +34,7 @@ public class Program
 
         var srcDir = args[0]; // source path for the location of the JSON Schema files
         var destDir = args[1]; // destination path for storing the generated source files
-        var namespaceName = args[2]; // namespace, e.g. "Robocode.TankRoyale.Schema.Game"
+        var namespaceName = args[2]; // namespace, e.g. "Robocode.TankRoyale.Schema"
 
         // Loop through all JSON Schema files in YAML format
         foreach (var filename in Directory.GetFiles(srcDir))

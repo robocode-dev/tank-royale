@@ -50,7 +50,7 @@ public class MyFirstDroid : Bot, Droid
             var target = (Point) message;
 
             // Turn gun to target
-            TurnLeft(BearingTo(target.X, target.Y));
+            TurnRight(BearingTo(target.X, target.Y));
 
             // Fire hard!
             Fire(3);

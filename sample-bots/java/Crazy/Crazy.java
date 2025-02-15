@@ -39,7 +39,7 @@ public class Crazy extends Bot {
             setForward(40000);
             movingForward = true;
             // Tell the game we will want to turn right 90
-            setTurnRight(90);
+            setTurnLeft(90);
             // At this point, we have indicated to the game that *when we do something*,
             // we will want to move ahead and turn right. That's what "set" means.
             // It is important to realize we have not done anything yet!
@@ -50,11 +50,11 @@ public class Crazy extends Bot {
             waitFor(new TurnCompleteCondition(this));
             // Note: We are still moving ahead now, but the turn is complete.
             // Now we'll turn the other way...
-            setTurnLeft(180);
+            setTurnRight(180);
             // ... and wait for the turn to finish ...
             waitFor(new TurnCompleteCondition(this));
             // ... then the other way ...
-            setTurnRight(180);
+            setTurnLeft(180);
             // ... and wait for that turn to finish.
             waitFor(new TurnCompleteCondition(this));
             // then back to the top to do it all again.

@@ -15,13 +15,10 @@ tasks {
         doLast {
             delete(
                 "build",
-                "docfx_project/_site",
-                "docfx_project/api",
-                "docfx_project/obj",
-                "Robocode.TankRoyale.BotApi/obj",
-                "Robocode.TankRoyale.BotApi/bin",
-                "Robocode.TankRoyale.BotApi.Tests/obj",
-                "Robocode.TankRoyale.BotApi.Tests/bin",
+                "api/obj",
+                "api/bin",
+                "test/obj",
+                "test/bin",
             )
         }
     }
@@ -36,13 +33,14 @@ tasks {
 
     val buildDotnetBotApi by registering(Exec::class) {
         dependsOn(prepareNugetDocs)
+        dependsOn(":schema:dotnet:build")
 
-        workingDir("Robocode.TankRoyale.BotApi")
+        workingDir("api")
         commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
     }
 
     val test by registering(Exec::class) {
-        workingDir("Robocode.TankRoyale.BotApi.Tests")
+        workingDir("test")
         commandLine("dotnet", "test")
     }
 
@@ -68,6 +66,14 @@ tasks {
     val uploadDocs by registering(Copy::class) {
         dependsOn(clean, docfx)
 
+        doFirst {
+            delete(
+                "docfx_project/_site",
+                "docfx_project/api",
+                "docfx_project/obj",
+            )
+        }
+
         val dotnetApiDir = "../../docs/api/dotnet"
 
         delete(dotnetApiDir)
@@ -89,7 +95,7 @@ tasks {
             delete("$userHome/.nuget/packages/${artifactName.lowercase()}/$version")
         }
 
-        workingDir("Robocode.TankRoyale.BotApi/bin/Release")
+        workingDir("api/bin/Release")
         commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "--source", "$userHome/.nuget/packages")
     }
 }

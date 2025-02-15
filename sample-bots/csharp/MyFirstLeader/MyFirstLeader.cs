@@ -50,15 +50,15 @@ public class MyFirstLeader : Bot
         BroadcastTeamMessage(colors);
 
         // Set the radar to turn right forever
-        SetTurnRadarRight(Double.PositiveInfinity);
+        SetTurnRadarLeft(Double.PositiveInfinity);
 
         // Repeat while the bot is running
         while (IsRunning)
         {
             Forward(100);
-            TurnGunRight(360);
+            TurnGunLeft(360);
             Back(100);
-            TurnGunRight(360);
+            TurnGunLeft(360);
         }
     }
 
@@ -83,7 +83,7 @@ public class MyFirstLeader : Bot
         double bulletBearing = CalcBearing(evt.Bullet.Direction);
 
         // Turn perpendicular to the bullet direction
-        TurnLeft(90 - bulletBearing);
+        TurnRight(90 - bulletBearing);
     }
 }
 

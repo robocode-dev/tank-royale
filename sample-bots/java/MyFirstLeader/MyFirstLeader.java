@@ -50,7 +50,7 @@ public class MyFirstLeader extends Bot {
         broadcastTeamMessage(colors);
 
         // Set the radar to turn right forever
-        setTurnRadarRight(Double.POSITIVE_INFINITY);
+        setTurnRadarLeft(Double.POSITIVE_INFINITY);
 
         // Repeat while the bot is running
         while (isRunning()) {
@@ -80,7 +80,7 @@ public class MyFirstLeader extends Bot {
         double bulletBearing = calcBearing(e.getBullet().getDirection());
 
         // Turn perpendicular to the bullet direction
-        turnLeft(90 - bulletBearing);
+        turnRight(90 - bulletBearing);
     }
 }
 

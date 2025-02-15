@@ -42,13 +42,13 @@ public class Walls extends Bot {
 
         // turn to face a wall.
         // `getDirection() % 90` means the remainder of getDirection() divided by 90.
-        turnRight(getDirection() % 90);
+        turnLeft(getDirection() % 90);
         forward(moveAmount);
 
         // Turn the gun to turn right 90 degrees.
         peek = true;
-        turnGunRight(90);
-        turnRight(90);
+        turnGunLeft(90);
+        turnLeft(90);
 
         // Main loop
         while (isRunning()) {
@@ -59,7 +59,7 @@ public class Walls extends Bot {
             // Don't peek now
             peek = false;
             // Turn to the next wall
-            turnRight(90);
+            turnLeft(90);
         }
     }
 

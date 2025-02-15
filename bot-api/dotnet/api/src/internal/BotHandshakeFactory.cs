@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Robocode.TankRoyale.BotApi.Mapper;
 using Robocode.TankRoyale.BotApi.Util;
-using Robocode.TankRoyale.Schema.Game;
+using Robocode.TankRoyale.Schema;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
 

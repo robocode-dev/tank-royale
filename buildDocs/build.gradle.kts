@@ -13,19 +13,6 @@ node {
 }
 
 tasks {
-    clean {
-        doLast {
-            delete(fileTree("../docs").matching {
-                exclude("api/**")
-            })
-            delete(
-                "docs/.vuepress/.cache",
-                "docs/.vuepress/.temp",
-                "docs/.vuepress/dist"
-            )
-        }
-    }
-
     // Install or update to `docfx`
     val updateDocfx by registering(Exec::class) {
         commandLine("dotnet", "tool", "update", "-g", "docfx", "--version", "2.77.0")
@@ -44,8 +31,19 @@ tasks {
     }
 
     val uploadDocs by registering(Copy::class) {
-        dependsOn(clean, npmBuild)
+        dependsOn(npmBuild)
         dependsOn(updateDocfx)
+
+        doFirst {
+            delete(fileTree("../docs").matching {
+                exclude("api/**")
+            })
+            delete(
+                "docs/.vuepress/.cache",
+                "docs/.vuepress/.temp",
+                "docs/.vuepress/dist"
+            )
+        }
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 

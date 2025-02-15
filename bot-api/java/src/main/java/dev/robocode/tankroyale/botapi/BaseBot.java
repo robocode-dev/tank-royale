@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.botapi;
 import dev.robocode.tankroyale.botapi.events.BotEvent;
 import dev.robocode.tankroyale.botapi.events.Condition;
 import dev.robocode.tankroyale.botapi.internal.BaseBotInternals;
-import dev.robocode.tankroyale.schema.game.BotIntent;
+import dev.robocode.tankroyale.schema.BotIntent;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

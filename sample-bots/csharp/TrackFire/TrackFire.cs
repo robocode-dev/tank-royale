@@ -36,7 +36,7 @@ public class TrackFire : Bot
         // Loop while running
         while (IsRunning)
         {
-            TurnGunLeft(10); // Scans automatically as radar is mounted on gun
+            TurnGunRight(10); // Scans automatically as radar is mounted on gun
         }
     }
 
@@ -47,7 +47,7 @@ public class TrackFire : Bot
         var bearingFromGun = GunBearingTo(e.X, e.Y);
 
         // Turn the gun toward the scanned bot
-        TurnGunLeft(bearingFromGun);
+        TurnGunRight(bearingFromGun);
 
         // If it is close enough, fire!
         if (Math.Abs(bearingFromGun) <= 3 && GunHeat == 0)
@@ -64,6 +64,6 @@ public class TrackFire : Bot
     public override void OnWonRound(WonRoundEvent e)
     {
         // Victory dance turning right 360 degrees 100 times
-        TurnLeft(36_000);
+        TurnRight(36_000);
     }
 }

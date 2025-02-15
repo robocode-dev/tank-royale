@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.server.mapper
 
-import dev.robocode.tankroyale.schema.game.BotIntent
+import dev.robocode.tankroyale.schema.BotIntent
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.mapper.TeamMessageMapper
 
 object BotIntentMapper {

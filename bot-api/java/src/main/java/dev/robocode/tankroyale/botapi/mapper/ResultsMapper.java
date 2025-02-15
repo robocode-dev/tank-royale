@@ -11,7 +11,7 @@ public class ResultsMapper {
     private ResultsMapper() {
     }
 
-    public static BotResults map(final dev.robocode.tankroyale.schema.game.ResultsForBot source) {
+    public static BotResults map(final dev.robocode.tankroyale.schema.ResultsForBot source) {
         return new BotResults(
                 source.getRank(),
                 source.getSurvival(),

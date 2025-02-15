@@ -60,24 +60,46 @@ You can put this into a script used for running your bot.
 
 ## How to join a new battle
 
-#### Step 1: Start server or new battle
+**Step 1: Start server or new battle**
 
 First, you need to start a server as your bot needs to join a server. You can do this from the GUI menu by starting a
 server or a battle. When starting a new battle from the GUI, a server will automatically be started as well.
 
-#### Step 2: Start your bot from the command line
+**Step 2: Start your bot from the command line**
 
 Now you need to start your bot from the command line as described earlier.
 
-#### Step 3: Wait for your bot to show up in 'Joined Bots'
+**Step 3: Wait for your bot to show up in 'Joined Bots'**
 
 On the dialog for selecting bots for the battle, you should see your bot show up under the 'Joined Bots' list. Add it to
 the battle and add some other opponent bot(s) as well to start the battle.
 
-#### Step 4: Observe output in the command line
+**Step 4: Observe output in the command line**
 
 Your print or logging information should be written out to the command line. If not, make sure to put the logging
 information in the constructor or main method to make sure something is written out.
+
+## Graphical Debugging
+
+Robocode features a Graphical Debugging tool that allows bots to draw objects on the battlefield. This is particularly
+useful for visualizing scanned bot positions, enemy movement patterns, and virtual bullets. For instance, you can
+determine if a virtual bullet would have hit an enemy if it were real, which helps in refining your targeting strategy.
+
+For drawing objects in Robocode, the methods differ depending on the Bot API variant you're using:
+
+- Java: Use the `getGraphics()` method, which returns a `java.awt.Graphics2D` instance for painting objects.
+- .Net: Use the `Graphics` property, which provides a `System.Drawing.Graphics` compatible instance for drawing.
+
+The sample bot, **PaintingBot**, showcases how to effectively use debugging graphics. Every tick, it paints a red circle
+at the most recent location where it scanned another bot.
+
+![PaintingBot screenshot](../images/gui/paint-bot.png)
+
+**Note:** Graphics are not painted immediately, but rather in the next turn. This delay occurs because:
+
+1. The graphics must first be serialized as SVG and sent to the server.
+2. The server then forwards the graphics to all observers (like the UI).
+3. Finally, the UI paints the graphics on the battlefield.
 
 
 [print debugging]: https://en.wikipedia.org/wiki/Debugging "Print debugging"

@@ -33,7 +33,7 @@ public class SpinBot extends Bot {
         // Repeat while the bot is running
         while (isRunning()) {
             // Tell the game that when we take move, we'll also want to turn right... a lot
-            setTurnLeft(10_000);
+            setTurnRight(10_000);
             // Limit our speed to 5
             setMaxSpeed(5);
             // Start moving (and turning)
@@ -57,7 +57,7 @@ public class SpinBot extends Bot {
             fire(3);
         }
         if (e.isRammed()) {
-            turnLeft(10);
+            turnRight(10);
         }
     }
 }

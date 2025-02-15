@@ -47,7 +47,7 @@ public class SpinBot : Bot
         while (IsRunning)
         {
             // Tell the game that when we take move, we'll also want to turn right... a lot
-            SetTurnLeft(10_000);
+            SetTurnRight(10_000);
             // Limit our speed to 5
             MaxSpeed = 5;
             // Start moving (and turning)
@@ -72,7 +72,7 @@ public class SpinBot : Bot
         }
         if (e.IsRammed)
         {
-            TurnLeft(10);
+            TurnRight(10);
         }
     }
 }

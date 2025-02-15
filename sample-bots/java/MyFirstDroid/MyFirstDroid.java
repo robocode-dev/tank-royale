@@ -48,7 +48,7 @@ public class MyFirstDroid extends Bot implements Droid {
             var target = (Point) message;
 
             // Turn gun to target
-            turnLeft(bearingTo(target.x, target.y));
+            turnRight(bearingTo(target.x, target.y));
 
             // Fire hard!
             fire(3);
