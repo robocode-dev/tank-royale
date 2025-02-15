@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: tank-royale
+Version: 0.1.0
+Summary: A python bot API for Robocode Tank Royale.
+Home-page: https://robocode-dev.github.io/tank-royale
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+
+# Python Bot API for Robocode Tank Royale
