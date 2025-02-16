@@ -4,6 +4,9 @@ plugins {
     base
 }
 
+val inputSchemaDir = "${project(":schema").file("schemas")}"
+val generatedOutputDir = "${project(":bot-api:dotnet").file("schema/generated")}"
+
 tasks {
     val dotnetClean by registering(Exec::class) {
         commandLine("dotnet", "clean")
@@ -17,7 +20,7 @@ tasks {
         dependsOn(dotnetBuild)
 
         doFirst {
-            mkdir("${project(":bot-api:dotnet").file("api/src/generated")}")
+            mkdir(generatedOutputDir)
         }
 
         var codeGeneratorPath = "$projectDir/bin/Release/net6.0/CodeGeneratorApp"
@@ -26,13 +29,13 @@ tasks {
         }
 
         println("codeGeneratorPath: $codeGeneratorPath")
-        println("${project(":schema").file("schemas")}")
-        println("${project(":bot-api:dotnet").file("api/src/generated")}")
+        println(inputSchemaDir)
+        println(generatedOutputDir)
 
         commandLine(
             codeGeneratorPath,
-            "${project(":schema").file("schemas")}",
-            "${project(":bot-api:dotnet").file("api/src/generated")}",
+            inputSchemaDir,
+            generatedOutputDir,
             "Robocode.TankRoyale.Schema"
         )
     }
