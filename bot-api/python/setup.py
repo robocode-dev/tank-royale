@@ -1,11 +1,18 @@
 from setuptools import setup, find_packages
+from setuptools.errors import InternalError
 import subprocess
+import os
 
+# Run the schema generation script
 result = subprocess.run(['python', '../../schema/python/schema_to_python.py', '-d', '../../schema/schemas/', '-o', 'generated/tank_royale/schema'])
 if result.returncode != 0:
     raise InternalError(f'Schema generation return code {result.returncode}: {result.stderr}')
 
-subprocess.run(['touch', 'generated/tank_royale/__init__.py'])
+# Create an empty __init__.py file in the generated/tank_royale directory
+init_file_path = 'generated/tank_royale/__init__.py'
+open(init_file_path, 'a').close()
+if not os.path.exists(init_file_path):
+    raise InternalError(f'Failed to create file: {init_file_path}')
 
 setup(
     name='tank_royale',
