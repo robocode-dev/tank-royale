@@ -11,7 +11,7 @@ plugins {
 }
 
 tasks {
-    clean {
+    named("clean") {
         doLast {
             delete(
                 "build",
@@ -44,7 +44,7 @@ tasks {
         commandLine("dotnet", "test")
     }
 
-    build {
+    named("build") {
         dependsOn(":schema:dotnet:build", buildDotnetBotApi)
     }
 

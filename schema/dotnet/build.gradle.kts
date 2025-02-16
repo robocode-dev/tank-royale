@@ -1,7 +1,11 @@
 description = "Robocode Tank Royale schema for .Net"
 
+plugins {
+    base
+}
+
 tasks {
-    val clean by registering(Exec::class) {
+    val dotnetClean by registering(Exec::class) {
         commandLine("dotnet", "clean")
     }
 
@@ -9,7 +13,7 @@ tasks {
         commandLine("dotnet", "build", "--configuration", "Release")
     }
 
-    val build by registering(Exec::class) {
+    val generateSchema by registering(Exec::class) {
         dependsOn(dotnetBuild)
 
         doFirst {
@@ -31,5 +35,14 @@ tasks {
             "${project(":bot-api:dotnet").file("api/src/generated")}",
             "Robocode.TankRoyale.Schema"
         )
+    }
+
+    named("clean") {
+        dependsOn(dotnetClean)
+    }
+
+    named("build") {
+        dependsOn(generateSchema)
+        dependsOn(dotnetBuild)
     }
 }
