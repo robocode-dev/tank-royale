@@ -1,10 +1,17 @@
 from setuptools import setup, find_packages
+import subprocess
+
+result = subprocess.run(['python', '../../schema/python/schema_to_python.py', '-d', '../../schema/schemas/', '-o', 'generated/tank_royale/schema'])
+if result.returncode != 0:
+    raise InternalError(f'Schema generation return code {result.returncode}: {result.stderr}')
+
+subprocess.run(['touch', 'generated/tank_royale/__init__.py'])
 
 setup(
     name='tank_royale',
     version='0.1.0',
-    package_dir={'': 'src'},
-    packages=find_packages(where='src'),
+    package_dir={"": "src", "": "generated"},
+    packages=find_packages(where='src') + find_packages(where='generated'),
     python_requires='>=3.10',
     install_requires=[
         'pillow',

@@ -1,3 +1,4 @@
+import argparse
 import yaml
 from typing import Dict, Any, List, Set, Tuple
 from pathlib import Path
@@ -211,22 +212,32 @@ class SchemaConverter:
             for dep_file in self.class_dependencies[file_path]:
                 module_name = sanitize_file_name(dep_file)
                 class_name = sanitize_class_name(dep_file)
-                imports.append(f'from {module_name} import {class_name}')
+                imports.append(f'from .{module_name} import {class_name}')
 
         return imports
 
-    def process_directory(self, directory_path: str, output_dir: str):
+    def generate_dunder_init_py(self, output_dir: str, sub_modules: list[str]) -> None:
+        dunder_init_py_path = Path(output_dir) / "__init__.py"
+        file_content = '\n'.join(f"from .{m} import *" for m in sub_modules)
+        with open(dunder_init_py_path, 'w') as f:
+            f.write(file_content)
+
+    def process_directory(self, directory_path: str, output_dir: str) -> None:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
         yaml_files = list(Path(directory_path).glob('**/*.yaml'))
         yaml_files.extend(Path(directory_path).glob('**/*.yml'))
 
+        sub_modules = []
         for file_path in yaml_files:
             class_code = self.process_schema_file(str(file_path))
 
             if class_code:
-                output_file = self.output_dir / f"{sanitize_file_name(file_path)}.py"
+                module_name = f"{sanitize_file_name(file_path)}"
+                sub_modules.append(module_name)
+
+                output_file = self.output_dir / f"{module_name}.py"
 
                 content = ['"""', f'Generated Python class from {file_path.name}',
                            'This file is auto-generated. Do not edit manually.', '"""', '']
@@ -237,11 +248,18 @@ class SchemaConverter:
 
                 with open(output_file, 'w') as f:
                     f.write('\n'.join(content))
+        
+        self.generate_dunder_init_py(output_dir=output_dir, sub_modules=sub_modules)
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Flags for `schema_to_python.py`.")
+    parser.add_argument("-d", "--schema_dir", action="store", default='../schemas/', help="Directory where the yaml schema files are stored.")
+    parser.add_argument("-o", "--output_dir", action="store", default='generated/', help="Directory where the python schema files are written.")
+    args = parser.parse_args()
+
     converter = SchemaConverter()
-    converter.process_directory('../schemas/', 'generated/')
+    converter.process_directory(args.schema_dir, args.output_dir)
 
 
 if __name__ == '__main__':
