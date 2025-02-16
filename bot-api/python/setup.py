@@ -4,7 +4,7 @@ import subprocess
 import os
 
 # Run the schema generation script
-result = subprocess.run(['python', '../../schema/python/schema_to_python.py', '-d', '../../schema/schemas/', '-o', 'generated/tank_royale/schema'])
+result = subprocess.run(['python', 'schema_to_python.py', '-d', '../../schema/schemas/', '-o', 'generated/tank_royale/schema'])
 if result.returncode != 0:
     raise InternalError(f'Schema generation return code {result.returncode}: {result.stderr}')
 
