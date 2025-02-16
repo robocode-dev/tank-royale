@@ -2,6 +2,7 @@ from setuptools import setup, find_packages
 from setuptools.errors import InternalError
 import subprocess
 import os
+import configparser
 
 # Run the schema generation script
 result = subprocess.run(['python', 'schema_to_python.py', '-d', '../../schema/schemas/', '-o', 'generated/tank_royale/schema'])
@@ -14,9 +15,15 @@ open(init_file_path, 'a').close()
 if not os.path.exists(init_file_path):
     raise InternalError(f'Failed to create file: {init_file_path}')
 
+# Read version from gradle.properties file
+config = configparser.ConfigParser()
+with open('../../gradle.properties') as f:
+    config.read_string(f"[default]\n{f.read()}")
+version = config.get('default', 'version')
+
 setup(
     name='tank_royale',
-    version='0.1.0',
+    version=version,
     package_dir={"": "src", "": "generated"},
     packages=find_packages(where='src') + find_packages(where='generated'),
     python_requires='>=3.10',
