@@ -24,7 +24,9 @@ tasks {
     }
 
     val prepareNugetDocs by registering(Copy::class) {
-        delete("docs")
+        doFirst {
+            delete("docs")
+        }
         from("nuget_docs") {
             filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
         }
@@ -32,7 +34,6 @@ tasks {
     }
 
     val buildDotnetBotApi by registering(Exec::class) {
-        dependsOn(prepareNugetDocs)
         dependsOn(":schema:dotnet:build")
 
         workingDir("api")
@@ -45,17 +46,30 @@ tasks {
     }
 
     named("build") {
-        dependsOn(":schema:dotnet:build", buildDotnetBotApi)
+        dependsOn(buildDotnetBotApi)
     }
 
     val docfxMetadata by registering(Exec::class) {
+        dependsOn(":schema:dotnet:build")
+
         workingDir("docfx_project")
         commandLine("docfx", "metadata")
     }
 
+    val docfxClean by register("docfxClean") {
+        doLast {
+            delete(
+                "docfx_project/_site",
+                "docfx_project/api",
+                "docfx_project/obj",
+            )
+        }
+    }
+
     val docfxBuild by registering(Exec::class) {
+        dependsOn(docfxClean, prepareNugetDocs)
+
         workingDir("docfx_project")
-        delete("_site", "api", "obj")
         commandLine("docfx", "build")
     }
 
@@ -64,15 +78,7 @@ tasks {
     }
 
     val uploadDocs by registering(Copy::class) {
-        dependsOn(clean, docfx)
-
-        doFirst {
-            delete(
-                "docfx_project/_site",
-                "docfx_project/api",
-                "docfx_project/obj",
-            )
-        }
+        dependsOn(docfx)
 
         val dotnetApiDir = "../../docs/api/dotnet"
 

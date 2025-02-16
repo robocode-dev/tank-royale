@@ -5,7 +5,7 @@
         {
           "src": "..",
           "files": [
-            "**/Robocode.TankRoyale.BotApi.csproj"
+            "**/api.csproj"
           ],
           "exclude": [
             "**/obj/**",

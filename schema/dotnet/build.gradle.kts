@@ -43,6 +43,5 @@ tasks {
 
     named("build") {
         dependsOn(generateSchema)
-        dependsOn(dotnetBuild)
     }
 }
