@@ -4,7 +4,7 @@ plugins {
     base
 }
 
-val inputSchemaDir = "${project(":schema").file("schemas")}"
+val inputSchemaDir = layout.projectDirectory.dir("../../schema/schemas")
 val generatedOutputDir = "${project(":bot-api:dotnet:schema").file("generated")}"
 
 tasks {

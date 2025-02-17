@@ -85,6 +85,7 @@ tasks {
             addStringOption("Xdoclint:none", "-quiet")
         }
         exclude(
+            "**/dev/robocode/tankroyale/schema/**",
             "**/dev/robocode/tankroyale/botapi/internal/**",
             "**/dev/robocode/tankroyale/botapi/mapper/**",
             "**/dev/robocode/tankroyale/botapi/util/**",

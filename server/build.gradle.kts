@@ -1,4 +1,7 @@
 import proguard.gradle.ProGuardTask
+import java.util.Collections.singletonList
+import org.jsonschema2pojo.AnnotationStyle
+import org.jsonschema2pojo.SourceType
 
 description = "Robocode Tank Royale Server"
 
@@ -7,6 +10,8 @@ group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
 val jarManifestMainClass = "dev.robocode.tankroyale.server.ServerKt"
+
+val schemaPackage = "$group.schema"
 
 base {
     archivesName = "robocode-tankroyale-server" // renames _all_ archive names
@@ -23,13 +28,12 @@ buildscript {
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
+    alias(libs.plugins.jsonschema2pojo)
     `maven-publish`
     signing
 }
 
 dependencies {
-    implementation(project(":schema:jvm"))
-
     implementation(libs.java.websocket)
     implementation(libs.picocli)
     implementation(libs.jansi)
@@ -49,7 +53,20 @@ java {
     withSourcesJar()
 }
 
+jsonSchema2Pojo {
+    setSourceType(SourceType.YAMLSCHEMA.toString())
+    setSource(singletonList(layout.projectDirectory.dir("../schema/schemas").asFile))
+    setAnnotationStyle(AnnotationStyle.GSON.toString())
+    targetPackage = schemaPackage
+    targetDirectory = layout.buildDirectory.dir("classes/java/main").get().asFile
+    setFileExtensions("schema.yaml", "schema.json")
+}
+
 tasks {
+    compileKotlin {
+        dependsOn(generateJsonSchema2Pojo)
+    }
+
     test {
         useJUnitPlatform()
     }
@@ -91,7 +108,16 @@ tasks {
     }
 
     val javadocJar = named("javadocJar")
-    val sourcesJar = named("sourcesJar")
+    val sourcesJar = named("sourcesJar") {
+        dependsOn(compileJava)
+        dependsOn(generateJsonSchema2Pojo)
+    }
+
+    javadoc {
+        (options as StandardJavadocDocletOptions).apply {
+            exclude("dev/robocode/tankroyale/schema/**")
+        }
+    }
 
     publishing {
         publications {
