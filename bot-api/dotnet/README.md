@@ -7,7 +7,7 @@ The Bot API is provided as a [Nuget] package and build for [.Net 6.0].
 ## Directory structure
 
 - `src` contains all the source files for the API.
-- `docfx_project` contains the [DocFX] files for providing the [API documentation].
+- `docfx-project` contains the [DocFX] files for providing the [API documentation].
 - `docs` contains the document files used for the Nuget package.
     - ***Remember to update*** the `/docs/Releases-notes.txt` before pushing NuGet package to nuget.org
 
@@ -33,15 +33,15 @@ Artifact is output to the `/bin/Release/` directory named `Robocode.TankRoyale.B
 ./gradlew :bot-api:dotnet:build
 ```
 
-[DocFX] documentation will be generated to the /docfx_project/_site directory.
+[DocFX] documentation will be generated to the /docfx-project/_site directory.
 
 #### Viewing the API documentation
 
 You run and view the documentation by running the [docfx] command (must be pre-installed) standing in
-the `docfx_project` directory:
+the `docfx-project` directory:
 
 ```shell
-cd docfx_project
+cd docfx-project
 docfx serve _site
 ```
 

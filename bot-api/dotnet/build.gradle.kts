@@ -11,7 +11,9 @@ plugins {
 }
 
 tasks {
-    clean {
+    named("clean") {
+        dependsOn(":bot-api:dotnet:schema:clean")
+
         doLast {
             delete(
                 "build",
@@ -24,16 +26,17 @@ tasks {
     }
 
     val prepareNugetDocs by registering(Copy::class) {
-        delete("docs")
-        from("nuget_docs") {
+        doFirst {
+            delete("docs")
+        }
+        from("nuget-docs-template") {
             filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
         }
         into("docs")
     }
 
     val buildDotnetBotApi by registering(Exec::class) {
-        dependsOn(prepareNugetDocs)
-        dependsOn(":schema:dotnet:build")
+        dependsOn(":bot-api:dotnet:schema:build")
 
         workingDir("api")
         commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
@@ -44,18 +47,31 @@ tasks {
         commandLine("dotnet", "test")
     }
 
-    build {
-        dependsOn(":schema:dotnet:build", buildDotnetBotApi)
+    named("build") {
+        dependsOn(buildDotnetBotApi)
     }
 
     val docfxMetadata by registering(Exec::class) {
-        workingDir("docfx_project")
+        dependsOn(":bot-api:dotnet:schema:build")
+
+        workingDir("docfx-project")
         commandLine("docfx", "metadata")
     }
 
+    val docfxClean by register("docfxClean") {
+        doLast {
+            delete(
+                "docfx-project/_site",
+                "docfx-project/api",
+                "docfx-project/obj",
+            )
+        }
+    }
+
     val docfxBuild by registering(Exec::class) {
-        workingDir("docfx_project")
-        delete("_site", "api", "obj")
+        dependsOn(docfxClean, prepareNugetDocs)
+
+        workingDir("docfx-project")
         commandLine("docfx", "build")
     }
 
@@ -64,15 +80,7 @@ tasks {
     }
 
     val uploadDocs by registering(Copy::class) {
-        dependsOn(clean, docfx)
-
-        doFirst {
-            delete(
-                "docfx_project/_site",
-                "docfx_project/api",
-                "docfx_project/obj",
-            )
-        }
+        dependsOn(docfx)
 
         val dotnetApiDir = "../../docs/api/dotnet"
 
@@ -81,7 +89,7 @@ tasks {
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
 
-        from("docfx_project/_site")
+        from("docfx-project/_site")
         into(dotnetApiDir)
     }
 
