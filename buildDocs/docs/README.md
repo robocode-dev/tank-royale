@@ -35,14 +35,18 @@ for [Open Source development], including Robocode Tank Royale. :heart:
 </a>
 
 
-This project make use of these great products from JetBrains for Java, Kotlin, C#, and web development:
+This project make use of these great products from JetBrains for Java, Kotlin, C#, Python, and web development:
 
 <a href="https://www.jetbrains.com/idea/">
-<img style="background: white; border: 1px solid black; vertical-align: middle" height="60" src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png" alt="IntelliJ IDEA logo.">
-</a> used for Java, Kotlin, and web development
+<img style="background: white; border: 5px solid white; vertical-align: middle" height="60" src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA.png" alt="IntelliJ IDEA logo.">
+</a><span style="margin-left: 20px;">used for Java API, Kotlin (game), and web development</span>
 <br><br>
 <a href="https://www.jetbrains.com/rider/">
-<img style="background: white; border: 1px solid black; vertical-align: middle" height="60" src="https://resources.jetbrains.com/storage/products/company/brand/logos/Rider.png" alt="Rider logo.">
-</a> used for C# development
+<img style="background: white; border: 5px solid white; vertical-align: middle" height="60" src="https://resources.jetbrains.com/storage/products/company/brand/logos/Rider.png" alt="Rider logo.">
+</a><span style="margin-left: 20px;">used for C# API development</span>
+<br><br>
+<a href="https://www.jetbrains.com/pycharm/">
+<img style="background: white; border: 5px solid white; vertical-align: middle" height="60" src="https://resources.jetbrains.com/storage/products/company/brand/logos/PyCharm.png" alt="PyCharm logo.">
+</a><span style="margin-left: 20px;">used for Python API development</span>
 
 [Open Source development]: https://www.jetbrains.com/community/opensource/?utm_campaign=opensource&utm_content=approved&utm_medium=email&utm_source=newsletter&utm_term=jblogo#support
