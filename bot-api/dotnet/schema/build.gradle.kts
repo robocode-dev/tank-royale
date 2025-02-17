@@ -4,8 +4,8 @@ plugins {
     base
 }
 
-val inputSchemaDir = "${project(":schema").file("schemas")}"
-val generatedOutputDir = "${project(":bot-api:dotnet:schema").file("generated")}"
+val inputSchemaDir = "${layout.projectDirectory}/../../../schema/schemas"
+val generatedOutputDir = "${layout.projectDirectory}/generated"
 
 tasks {
     val dotnetClean by registering(Exec::class) {
@@ -23,7 +23,7 @@ tasks {
             mkdir(generatedOutputDir)
         }
 
-        var codeGeneratorPath = "$projectDir/bin/Release/net6.0/CodeGeneratorApp"
+        var codeGeneratorPath = "${layout.projectDirectory}/bin/Release/net6.0/CodeGeneratorApp"
         if (System.getProperty("os.name").lowercase().contains("windows")) {
             codeGeneratorPath += ".exe"
         }
