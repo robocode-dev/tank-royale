@@ -1,5 +1,4 @@
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.Collections.singletonList
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.SourceType
@@ -49,21 +48,17 @@ java {
 
 jsonSchema2Pojo {
     setSourceType(SourceType.YAMLSCHEMA.toString())
-    setSource(singletonList(File("$projectDir/../../schema/schemas")))
+    setSource(singletonList(layout.projectDirectory.dir("../../schema/schemas").asFile))
     setAnnotationStyle(AnnotationStyle.GSON.toString())
     targetPackage = schemaPackage
-
-    targetDirectory = file("$projectDir/build/classes/java/main")
-
+    targetDirectory = layout.buildDirectory.dir("classes/java/main").get().asFile
     setFileExtensions("schema.yaml", "schema.json")
 }
 
 tasks {
     jar {
         enabled = false
-        dependsOn(
-            shadowJar
-        )
+        dependsOn(shadowJar)
     }
 
     shadowJar {
@@ -83,9 +78,9 @@ tasks {
 
         (options as StandardJavadocDocletOptions).apply {
             memberLevel = JavadocMemberLevel.PROTECTED
-            overview = "src/main/javadoc/overview.html"
+            overview = layout.projectDirectory.file("src/main/javadoc/overview.html").asFile.path
 
-            addFileOption("-add-stylesheet", File(projectDir, "src/main/javadoc/themes/prism.css"))
+            addFileOption("-add-stylesheet", layout.projectDirectory.file("src/main/javadoc/themes/prism.css").asFile)
             addBooleanOption("-allow-script-in-comments", true)
             addStringOption("Xdoclint:none", "-quiet")
         }
@@ -95,10 +90,9 @@ tasks {
             "**/dev/robocode/tankroyale/botapi/util/**",
         )
         doLast {
-            Files.copy(
-                Paths.get("${layout.projectDirectory}/src/main/javadoc/prism.js"),
-                Paths.get("${layout.buildDirectory.get()}/docs/javadoc/prism.js")
-            )
+            val sourceFile = layout.projectDirectory.file("src/main/javadoc/prism.js").asFile.toPath()
+            val targetFile = layout.buildDirectory.file("docs/javadoc/prism.js").get().asFile.toPath()
+            Files.copy(sourceFile, targetFile)
         }
     }
 
@@ -111,14 +105,14 @@ tasks {
     val uploadDocs by registering(Copy::class) {
         dependsOn(javadoc)
 
-        val javadocDir = "../../docs/api/java"
+        val javadocDir = layout.projectDirectory.dir("../../docs/api/java")
 
         delete(javadocDir)
         mkdir(javadocDir)
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
 
-        from("build/docs/javadoc")
+        from(layout.buildDirectory.dir("docs/javadoc"))
         into(javadocDir)
     }
 
