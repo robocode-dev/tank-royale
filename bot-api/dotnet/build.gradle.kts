@@ -54,16 +54,16 @@ tasks {
     val docfxMetadata by registering(Exec::class) {
         dependsOn(":bot-api:dotnet:schema:build")
 
-        workingDir("docfx_project")
+        workingDir("docfx-project")
         commandLine("docfx", "metadata")
     }
 
     val docfxClean by register("docfxClean") {
         doLast {
             delete(
-                "docfx_project/_site",
-                "docfx_project/api",
-                "docfx_project/obj",
+                "docfx-project/_site",
+                "docfx-project/api",
+                "docfx-project/obj",
             )
         }
     }
@@ -71,7 +71,7 @@ tasks {
     val docfxBuild by registering(Exec::class) {
         dependsOn(docfxClean, prepareNugetDocs)
 
-        workingDir("docfx_project")
+        workingDir("docfx-project")
         commandLine("docfx", "build")
     }
 
@@ -89,7 +89,7 @@ tasks {
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
 
-        from("docfx_project/_site")
+        from("docfx-project/_site")
         into(dotnetApiDir)
     }
 
