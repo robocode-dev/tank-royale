@@ -29,7 +29,7 @@ tasks {
         doFirst {
             delete("docs")
         }
-        from("nuget_docs") {
+        from("nuget-docs-template") {
             filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
         }
         into("docs")
