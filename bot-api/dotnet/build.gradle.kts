@@ -12,6 +12,8 @@ plugins {
 
 tasks {
     named("clean") {
+        dependsOn(":bot-api:dotnet:schema:clean")
+
         doLast {
             delete(
                 "build",
@@ -34,7 +36,7 @@ tasks {
     }
 
     val buildDotnetBotApi by registering(Exec::class) {
-        dependsOn(":schema:dotnet:build")
+        dependsOn(":bot-api:dotnet:schema:build")
 
         workingDir("api")
         commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
@@ -50,7 +52,7 @@ tasks {
     }
 
     val docfxMetadata by registering(Exec::class) {
-        dependsOn(":schema:dotnet:build")
+        dependsOn(":bot-api:dotnet:schema:build")
 
         workingDir("docfx_project")
         commandLine("docfx", "metadata")

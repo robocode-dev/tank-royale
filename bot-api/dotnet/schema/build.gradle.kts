@@ -5,7 +5,7 @@ plugins {
 }
 
 val inputSchemaDir = "${project(":schema").file("schemas")}"
-val generatedOutputDir = "${project(":bot-api:dotnet").file("schema/generated")}"
+val generatedOutputDir = "${project(":bot-api:dotnet:schema").file("generated")}"
 
 tasks {
     val dotnetClean by registering(Exec::class) {
@@ -42,6 +42,12 @@ tasks {
 
     named("clean") {
         dependsOn(dotnetClean)
+
+        doLast {
+            delete("bin")
+            delete("obj")
+            delete("generated")
+        }
     }
 
     named("build") {

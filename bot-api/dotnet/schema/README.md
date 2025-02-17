@@ -15,13 +15,13 @@ containing: `"«filepath of schemas directory» «filepath to output directory»
 #### Clean build directory:
 
 ```shell
-./gradlew :schema:dotnet:clean
+./gradlew :bot-api:dotnet:schema:clean
 ```
 
 #### Create archive
 
 ```shell
-./gradlew :schema:dotnet:build
+./gradlew :bot-api:dotnet:schema:build
 ```
 
 ## Generating the files with dotnet
@@ -35,5 +35,5 @@ dotnet run «filepath of schemas directory» «filepath to output directory»
 For example:
 
 ```
-dotnet run C:/Code/tank-royale/schema/schemas C:/Code/tank-royale/bot-api/dotnet/src/generated
+dotnet run C:/Code/tank-royale/schema/schemas C:/Code/robocode-tank-royale/bot-api/dotnet/schema/generated
 ```

@@ -32,7 +32,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="../schema-to-dotnet/generated/*.cs" />
+    <Compile Include="../schema/generated/*.cs" />
 
     <!-- for com.itiviti.dotnet plugin -->
     <PackageReference Include="Microsoft.Build.Locator" Version="1.7.8" />
