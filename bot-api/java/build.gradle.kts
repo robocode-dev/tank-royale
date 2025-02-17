@@ -1,5 +1,8 @@
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.Collections.singletonList
+import org.jsonschema2pojo.AnnotationStyle
+import org.jsonschema2pojo.SourceType
 
 description = "Robocode Tank Royale Bot API for Java"
 
@@ -7,20 +10,21 @@ val javadocTitle = "Robocode Tank Royale Bot API"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
+val schemaPackage = "$group.schema"
+
 base {
     archivesName = "robocode-tankroyale-bot-api" // renames _all_ archive names
 }
 
 plugins {
     `java-library`
+    alias(libs.plugins.jsonschema2pojo)
     alias(libs.plugins.shadow.jar)
     `maven-publish`
     signing
 }
 
 dependencies {
-    implementation(project(":schema:jvm"))
-
     implementation(libs.gson)
     implementation(libs.gson.extras)
     implementation(libs.nv.i18n)
@@ -41,6 +45,17 @@ java {
 
     withJavadocJar()
     withSourcesJar()
+}
+
+jsonSchema2Pojo {
+    setSourceType(SourceType.YAMLSCHEMA.toString())
+    setSource(singletonList(File("$projectDir/../../schema/schemas")))
+    setAnnotationStyle(AnnotationStyle.GSON.toString())
+    targetPackage = schemaPackage
+
+    targetDirectory = file("$projectDir/build/classes/java/main")
+
+    setFileExtensions("schema.yaml", "schema.json")
 }
 
 tasks {
@@ -108,7 +123,9 @@ tasks {
     }
 
     val javadocJar = named("javadocJar")
-    val sourcesJar = named("sourcesJar")
+    val sourcesJar = named("sourcesJar") {
+        dependsOn(compileJava)
+    }
 
     publishing {
         publications {
