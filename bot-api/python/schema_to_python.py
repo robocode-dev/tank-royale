@@ -45,7 +45,7 @@ def sanitize_class_name(name: str) -> str:
 
 def resolve_reference(ref: str) -> tuple[str, str]:
     if not ref:
-        return None, None
+        return "", ""
     ref_path = Path(ref)
     return sanitize_class_name(ref_path.stem), ref_path.name
 
