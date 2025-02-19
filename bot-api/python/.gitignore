@@ -1,0 +1,11 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Distributions / packaging
+dist/
+build/
+*.egg-info/
+
+# Generated files
+generated/

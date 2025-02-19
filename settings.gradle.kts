@@ -2,10 +2,6 @@ rootProject.name = "robocode-tank-royale"
 
 val version: String = providers.gradleProperty("version").get()
 
-// Schema Generator
-include("schema:jvm")
-include("schema:dotnet")
-
 // Booter
 include("booter")
 
