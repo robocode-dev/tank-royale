@@ -22,15 +22,16 @@ with open('../../gradle.properties') as f:
 version = config.get('default', 'version')
 
 setup(
-    name='tank_royale',
+    name='robocode-tank-royale',
     version=version,
-    package_dir={"": "src", "": "generated"},
+    package_dir={"src": "src", "generated": "generated"},
     packages=find_packages(where='src') + find_packages(where='generated'),
     python_requires='>=3.10',
     install_requires=[
         'pillow',
+        "PyYAML"
     ],
-    description='A python bot API for Robocode Tank Royale.',
+    description='The Python bot API for Robocode Tank Royale',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     url='https://robocode-dev.github.io/tank-royale',
