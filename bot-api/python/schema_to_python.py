@@ -45,9 +45,16 @@ def sanitize_class_name(name: str) -> str:
 
 def resolve_reference(ref: str) -> tuple[str, str]:
     if not ref:
-        return None, None
+        return "", ""
     ref_path = Path(ref)
     return sanitize_class_name(ref_path.stem), ref_path.name
+
+
+def generate_dunder_init_py(output_dir: str, sub_modules: list[str]) -> None:
+    dunder_init_py_path = Path(output_dir) / "__init__.py"
+    file_content = '\n'.join(f"from .{m} import *" for m in sub_modules)
+    with open(dunder_init_py_path, 'w') as f:
+        f.write(file_content)
 
 
 class SchemaConverter:
@@ -216,12 +223,6 @@ class SchemaConverter:
 
         return imports
 
-    def generate_dunder_init_py(self, output_dir: str, sub_modules: list[str]) -> None:
-        dunder_init_py_path = Path(output_dir) / "__init__.py"
-        file_content = '\n'.join(f"from .{m} import *" for m in sub_modules)
-        with open(dunder_init_py_path, 'w') as f:
-            f.write(file_content)
-
     def process_directory(self, directory_path: str, output_dir: str) -> None:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -249,7 +250,7 @@ class SchemaConverter:
                 with open(output_file, 'w') as f:
                     f.write('\n'.join(content))
         
-        self.generate_dunder_init_py(output_dir=output_dir, sub_modules=sub_modules)
+        generate_dunder_init_py(output_dir=output_dir, sub_modules=sub_modules)
 
 
 def main():
