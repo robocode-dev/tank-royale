@@ -8,7 +8,7 @@ The Bot API is provided via a pip package.
 
 ### From the current directory:
 
-```sh
+```shell
 pip install -e .
 ```
 

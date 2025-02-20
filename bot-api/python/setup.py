@@ -28,8 +28,8 @@ setup(
     packages=find_packages(where='src') + find_packages(where='generated'),
     python_requires='>=3.10',
     install_requires=[
-        'pillow>11.0',
-        'PyYAML>6.0'
+        'pillow>11',
+        'PyYAML>6'
     ],
     description='The Python bot API for Robocode Tank Royale',
     long_description=open('README.md').read(),
