@@ -6,9 +6,24 @@ The Bot API is provided via a pip package.
 
 ## Build Commands (Local Build)
 
-From the current directory:
+### From the current directory:
+
 ```sh
 pip install -e .
+```
+
+### From the root folder using Gradle:
+
+#### Clean:
+
+```shell
+./gradlew :bot-api:python:clean
+```
+
+#### Build:
+
+```shell
+./gradlew :bot-api:python:build
 ```
 
 ## Usage
