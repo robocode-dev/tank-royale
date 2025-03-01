@@ -261,7 +261,7 @@ internal sealed class BotInternals : IStopResumeListener
 
     internal void Rescan()
     {
-        baseBotInternals.SetScannedBotEventInterruptible();
+        EventInterruption.SetInterruptible(typeof(ScannedBotEvent), true);
         bot.SetRescan();
         bot.Go();
     }

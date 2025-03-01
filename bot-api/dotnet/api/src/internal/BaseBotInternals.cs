@@ -254,7 +254,7 @@ public sealed class BaseBotInternals
         BotIntent.Firepower = null;
     }
 
-    internal BotEventHandlers BotEventHandlers { get; }
+    private BotEventHandlers BotEventHandlers { get; }
 
     internal InstantEventHandlers InstantEventHandlers { get; }
 
@@ -262,10 +262,7 @@ public sealed class BaseBotInternals
 
     internal void ClearEvents() => eventQueue.ClearEvents();
 
-    internal void SetInterruptible(bool interruptible) => eventQueue.SetInterruptible(interruptible);
-
-    internal void SetScannedBotEventInterruptible() =>
-        eventQueue.SetInterruptible(typeof(E.ScannedBotEvent), true);
+    internal void SetInterruptible(bool interruptible) => eventQueue.SetCurrentEventInterruptible(interruptible);
 
     private HashSet<Events.Condition> conditions = new();
 

@@ -19,8 +19,6 @@ final class EventQueue {
     private BotEvent currentTopEvent;
     private int currentTopEventPriority;
 
-    private final Set<Class<? extends BotEvent>> interruptibles = new HashSet<>();
-
     public EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers) {
         this.baseBotInternals = baseBotInternals;
         this.botEventHandlers = botEventHandlers;
@@ -43,20 +41,12 @@ final class EventQueue {
         }
     }
 
-    void setInterruptible(boolean interruptible) {
-        setInterruptible(currentTopEvent.getClass(), interruptible);
+    void setCurrentEventInterruptible(boolean interruptible) {
+        EventInterruption.setInterruptible(currentTopEvent.getClass(), interruptible);
     }
 
-    void setInterruptible(Class<? extends BotEvent> eventClass, boolean interruptible) {
-        if (interruptible) {
-            interruptibles.add(eventClass);
-        } else {
-            interruptibles.remove(eventClass);
-        }
-    }
-
-    private boolean isInterruptible() {
-        return interruptibles.contains(currentTopEvent.getClass());
+    private boolean isCurrentEventInterruptible() {
+        return EventInterruption.isInterruptible(currentTopEvent.getClass());
     }
 
     void addEventsFromTick(TickEvent event) {
@@ -78,8 +68,8 @@ final class EventQueue {
                 break;
             }
             if (isSameEvent(currentEvent)) {
-                if (isInterruptible()) {
-                    setInterruptible(currentEvent.getClass(), false); // clear interruptible flag
+                if (isCurrentEventInterruptible()) {
+                    EventInterruption.setInterruptible(currentEvent.getClass(), false); // clear interruptible flag
 
                     // We are already in an event handler, took action, and a new event was generated.
                     // So we want to break out of the old handler to process the new event here.
@@ -154,7 +144,7 @@ final class EventQueue {
                 botEventHandlers.fireEvent(botEvent);
             }
         } finally {
-            setInterruptible(botEvent.getClass(), false);
+            EventInterruption.setInterruptible(botEvent.getClass(), false);
         }
     }
 

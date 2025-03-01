@@ -267,11 +267,7 @@ public final class BaseBotInternals {
     }
 
     public void setInterruptible(boolean interruptible) {
-        eventQueue.setInterruptible(interruptible);
-    }
-
-    void setScannedBotEventInterruptible() {
-        eventQueue.setInterruptible(ScannedBotEvent.class, true);
+        eventQueue.setCurrentEventInterruptible(interruptible);
     }
 
     Set<Condition> getConditions() {

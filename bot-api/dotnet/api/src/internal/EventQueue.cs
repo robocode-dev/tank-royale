@@ -12,63 +12,50 @@ internal sealed class EventQueue : IComparer<BotEvent>
     private const int MaxQueueSize = 256;
     private const int MaxEventAge = 2;
 
-    private readonly BaseBotInternals baseBotInternals;
-    private readonly BotEventHandlers botEventHandlers;
+    private readonly BaseBotInternals _baseBotInternals;
+    private readonly BotEventHandlers _botEventHandlers;
 
-    private readonly List<BotEvent> events = new();
+    private readonly List<BotEvent> _events = new();
 
-    private BotEvent currentTopEvent;
-    private int currentTopEventPriority;
-
-    private readonly ISet<Type> interruptibles = new HashSet<Type>();
+    private BotEvent _currentTopEvent;
+    private int _currentTopEventPriority;
 
     internal EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers)
     {
-        this.baseBotInternals = baseBotInternals;
-        this.botEventHandlers = botEventHandlers;
+        _baseBotInternals = baseBotInternals;
+        _botEventHandlers = botEventHandlers;
     }
 
     internal void Clear()
     {
-        lock (events)
-        {
-            events.Clear();
-        }
-        baseBotInternals.ClearConditions(); // conditions might be added in the bots Run() method each round
-        currentTopEventPriority = MinValue;
+        ClearEvents();
+        _baseBotInternals.ClearConditions(); // conditions might be added in the bots Run() method each round
+        _currentTopEventPriority = MinValue;
     }
 
     internal IList<BotEvent> Events(int turnNumber)
     {
-        lock (events)
+        lock (_events)
         {
             RemoveOldEvents(turnNumber);
-            return new List<BotEvent>(events);
+            return new List<BotEvent>(_events);
         }
     }
 
     internal void ClearEvents()
     {
-        lock (events)
+        lock (_events)
         {
-            events.Clear();
+            _events.Clear();
         }
     }
 
-    internal void SetInterruptible(bool interruptible)
+    internal void SetCurrentEventInterruptible(bool interruptible)
     {
-        SetInterruptible(currentTopEvent.GetType(), interruptible);
+        EventInterruption.SetInterruptible(_currentTopEvent.GetType(), interruptible);
     }
 
-    internal void SetInterruptible(Type eventType, bool interruptible)
-    {
-        if (interruptible)
-            interruptibles.Add(eventType);
-        else
-            interruptibles.Remove(eventType);
-    }
-
-    private bool IsInterruptible => interruptibles.Contains(currentTopEvent.GetType());
+    private bool IsCurrentEventInterruptible => EventInterruption.IsInterruptible(_currentTopEvent.GetType());
 
     internal void AddEventsFromTick(TickEvent tickEvent)
     {
@@ -98,9 +85,9 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
             if (IsSameEvent(currentEvent))
             {
-                if (IsInterruptible)
+                if (IsCurrentEventInterruptible)
                 {
-                    SetInterruptible(currentEvent.GetType(), false); // clear interruptible flag
+                    EventInterruption.SetInterruptible(_currentTopEvent.GetType(), false); // clear interruptible flag
 
                     // We are already in an event handler, took action, and a new event was generated.
                     // So we want to break out of the old handler to process the new event here.
@@ -110,14 +97,14 @@ internal sealed class EventQueue : IComparer<BotEvent>
                 break;
             }
 
-            int oldTopEventPriority = currentTopEventPriority;
+            int oldTopEventPriority = _currentTopEventPriority;
 
-            currentTopEventPriority = GetPriority(currentEvent);
-            currentTopEvent = currentEvent;
+            _currentTopEventPriority = GetPriority(currentEvent);
+            _currentTopEvent = currentEvent;
 
-            lock (events)
+            lock (_events)
             {
-                events.Remove(currentEvent);
+                _events.Remove(currentEvent);
             }
 
             try
@@ -130,49 +117,49 @@ internal sealed class EventQueue : IComparer<BotEvent>
             }
             finally
             {
-                currentTopEventPriority = oldTopEventPriority;
+                _currentTopEventPriority = oldTopEventPriority;
             }
         }
     }
 
     private void RemoveOldEvents(int turnNumber)
     {
-        lock (events)
+        lock (_events)
         {
-            foreach (var botEvent in events.Where(botEvent => IsOldAndNonCriticalEvent(botEvent, turnNumber)).ToList())
+            foreach (var botEvent in _events.Where(botEvent => IsOldAndNonCriticalEvent(botEvent, turnNumber)).ToList())
             {
-                events.Remove(botEvent);
+                _events.Remove(botEvent);
             }
         }
     }
 
     private void SortEvents()
     {
-        lock (events)
+        lock (_events)
         {
-            events.Sort(this);
+            _events.Sort(this);
         }
     }
 
-    private bool IsBotRunning => baseBotInternals.IsRunning;
+    private bool IsBotRunning => _baseBotInternals.IsRunning;
 
     private BotEvent GetNextEvent()
     {
-        lock (events)
+        lock (_events)
         {
-            if (events.Count == 0) return null;
-            var botEvent = events[0];
-            events.Remove(botEvent);
+            if (_events.Count == 0) return null;
+            var botEvent = _events[0];
+            _events.Remove(botEvent);
             return botEvent;
         }
     }
 
     private bool IsSameEvent(BotEvent botEvent) =>
-        GetPriority(botEvent) == currentTopEventPriority;
+        GetPriority(botEvent) == _currentTopEventPriority;
 
     private int GetPriority(BotEvent botEvent)
     {
-        return baseBotInternals.GetPriority(botEvent.GetType());
+        return _baseBotInternals.GetPriority(botEvent.GetType());
     }
 
     private void HandleEvent(BotEvent botEvent, int turnNumber)
@@ -181,12 +168,12 @@ internal sealed class EventQueue : IComparer<BotEvent>
         {
             if (IsNotOldOrIsCriticalEvent(botEvent, turnNumber))
             {
-                botEventHandlers.FireEvent(botEvent);
+                _botEventHandlers.FireEvent(botEvent);
             }
         }
         finally
         {
-            SetInterruptible(botEvent.GetType(), false); // clear interruptible flag
+            EventInterruption.SetInterruptible(botEvent.GetType(), false);
         }
     }
 
@@ -224,11 +211,11 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
     private void AddEvent(BotEvent botEvent)
     {
-        lock (events)
+        lock (_events)
         {
-            if (events.Count <= MaxQueueSize)
+            if (_events.Count <= MaxQueueSize)
             {
-                events.Add(botEvent);
+                _events.Add(botEvent);
             }
             else
             {
@@ -239,17 +226,17 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
     private void AddCustomEvents()
     {
-        foreach (var condition in baseBotInternals.Conditions.Where(condition => condition.Test()))
+        foreach (var condition in _baseBotInternals.Conditions.Where(condition => condition.Test()))
         {
-            AddEvent(new CustomEvent(baseBotInternals.CurrentTickOrThrow.TurnNumber, condition));
+            AddEvent(new CustomEvent(_baseBotInternals.CurrentTickOrThrow.TurnNumber, condition));
         }
     }
 
     private void DumpEvents()
     {
-        lock (events)
+        lock (_events)
         {
-            string eventsString = string.Join(", ", events.Select(e => $"{e.GetType().Name}({e.TurnNumber})"));
+            var eventsString = string.Join(", ", _events.Select(e => $"{e.GetType().Name}({e.TurnNumber})"));
             Console.WriteLine($"events: {eventsString}");
         }
     }
