@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static dev.robocode.tankroyale.botapi.Constants.*;
 import static dev.robocode.tankroyale.botapi.IBaseBot.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN;
 import static dev.robocode.tankroyale.botapi.IBaseBot.TEAM_MESSAGE_MAX_SIZE;
-import static dev.robocode.tankroyale.botapi.events.DefaultEventPriority.*;
+import static dev.robocode.tankroyale.botapi.internal.DefaultEventPriority.*;
 import static dev.robocode.tankroyale.botapi.mapper.ResultsMapper.map;
 import static dev.robocode.tankroyale.botapi.util.MathUtil.clamp;
 import static java.lang.Math.*;

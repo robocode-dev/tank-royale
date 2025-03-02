@@ -1,4 +1,6 @@
-package dev.robocode.tankroyale.botapi.events;
+package dev.robocode.tankroyale.botapi.internal;
+
+import dev.robocode.tankroyale.botapi.events.*;
 
 /**
  * Default event priorities values. The higher value, the higher event priority. So the {@link WonRoundEvent} has the
