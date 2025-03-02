@@ -51,8 +51,16 @@ jsonSchema2Pojo {
     setSource(singletonList(layout.projectDirectory.dir("../../schema/schemas").asFile))
     setAnnotationStyle(AnnotationStyle.GSON.toString())
     targetPackage = schemaPackage
-    targetDirectory = layout.buildDirectory.dir("classes/java/main").get().asFile
+    targetDirectory = layout.buildDirectory.dir("generated-sources/schema").get().asFile
     setFileExtensions("schema.yaml", "schema.json")
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir(layout.buildDirectory.dir("generated-sources/schema"))
+        }
+    }
 }
 
 tasks {
