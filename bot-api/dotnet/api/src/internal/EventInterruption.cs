@@ -8,7 +8,7 @@ namespace Robocode.TankRoyale.BotApi.Internal
     /// This class is responsible for tracking which bot event types are marked as interruptible.
     /// Events that are marked as interruptible can interrupt the normal execution event flow of the bot.
     /// </summary>
-    public class EventInterruption
+    public sealed class EventInterruption
     {
         /// <summary>
         /// Set containing all event classes that are currently marked as interruptible.
