@@ -415,11 +415,11 @@ public abstract class BaseBot : IBaseBot
     }
 
     /// <inheritdoc/>
-    public virtual int GetEventPriority(Type eventType) => BaseBotInternals.GetPriority(eventType);
+    public virtual int GetEventPriority(Type eventType) => EventPriorities.GetPriority(eventType);
 
     /// <inheritdoc/>
     public virtual void SetEventPriority(Type eventType, int priority) =>
-        BaseBotInternals.SetPriority(eventType, priority);
+        EventPriorities.SetPriority(eventType, priority);
 
     /// <inheritdoc/>
     public virtual bool IsDebuggingEnabled => BaseBotInternals.CurrentTickOrThrow.BotState.IsDebuggingEnabled;

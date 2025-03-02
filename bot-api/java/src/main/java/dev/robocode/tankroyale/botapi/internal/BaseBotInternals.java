@@ -116,8 +116,6 @@ public final class BaseBotInternals {
     private RecordingPrintStream recordedStdOut;
     private RecordingPrintStream recordedStdErr;
 
-    private final Map<Class<? extends BotEvent>, Integer> eventPriorities = initializeEventPriorities();
-
     private int lastExecuteTurnNumber;
 
     private final GraphicsState graphicsState = new GraphicsState();
@@ -147,26 +145,6 @@ public final class BaseBotInternals {
 
         System.setOut(recordedStdOut);
         System.setErr(recordedStdErr);
-    }
-
-    private static Map<Class<? extends BotEvent>, Integer> initializeEventPriorities() {
-        Map<Class<? extends BotEvent>, Integer> priorities = new HashMap<>();
-        priorities.put(WonRoundEvent.class, WON_ROUND);
-        priorities.put(SkippedTurnEvent.class, SKIPPED_TURN);
-        priorities.put(TickEvent.class, TICK);
-        priorities.put(CustomEvent.class, CUSTOM);
-        priorities.put(TeamMessageEvent.class, TEAM_MESSAGE);
-        priorities.put(BotDeathEvent.class, BOT_DEATH);
-        priorities.put(BulletHitWallEvent.class, BULLET_HIT_WALL);
-        priorities.put(BulletHitBulletEvent.class, BULLET_HIT_BULLET);
-        priorities.put(BulletHitBotEvent.class, BULLET_HIT_BOT);
-        priorities.put(BulletFiredEvent.class, BULLET_FIRED);
-        priorities.put(HitByBulletEvent.class, HIT_BY_BULLET);
-        priorities.put(HitWallEvent.class, HIT_WALL);
-        priorities.put(HitBotEvent.class, HIT_BOT);
-        priorities.put(ScannedBotEvent.class, SCANNED_BOT);
-        priorities.put(DeathEvent.class, DEATH);
-        return priorities;
     }
 
     private void subscribeToEvents() {
@@ -682,17 +660,6 @@ public final class BaseBotInternals {
         teamMessage.setMessage(json);
 
         botIntent.getTeamMessages().add(teamMessage);
-    }
-
-    public int getPriority(Class<BotEvent> eventClass) {
-        if (!eventPriorities.containsKey(eventClass)) {
-            throw new IllegalStateException("Could not get event priority for the class: " + eventClass.getSimpleName());
-        }
-        return eventPriorities.get(eventClass);
-    }
-
-    public void setPriority(Class<BotEvent> eventClass, int priority) {
-        eventPriorities.put(eventClass, priority);
     }
 
     public Color getBodyColor() {

@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.botapi;
 import dev.robocode.tankroyale.botapi.events.BotEvent;
 import dev.robocode.tankroyale.botapi.events.Condition;
 import dev.robocode.tankroyale.botapi.internal.BaseBotInternals;
+import dev.robocode.tankroyale.botapi.internal.EventPriorities;
 import dev.robocode.tankroyale.schema.BotIntent;
 
 import java.awt.Color;
@@ -798,7 +799,7 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final int getEventPriority(Class<BotEvent> eventClass) {
-        return baseBotInternals.getPriority(eventClass);
+        return EventPriorities.getPriority(eventClass);
     }
 
     /**
@@ -806,7 +807,7 @@ public abstract class BaseBot implements IBaseBot {
      */
     @Override
     public final void setEventPriority(Class<BotEvent> eventClass, int priority) {
-        baseBotInternals.setPriority(eventClass, priority);
+        EventPriorities.setPriority(eventClass, priority);
     }
 
     /**

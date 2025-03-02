@@ -10,7 +10,6 @@ using E = Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Mapper;
 using Robocode.TankRoyale.BotApi.Util;
 using SvgNet.Interfaces;
-using static Robocode.TankRoyale.BotApi.Events.DefaultEventPriority;
 using static System.Double;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
@@ -71,8 +70,6 @@ public sealed class BaseBotInternals
     private RecordingTextWriter recordingStdOut;
     private RecordingTextWriter recordingStdErr;
 
-    private readonly IDictionary<Type, int> eventPriorities = new Dictionary<Type, int>();
-
     private ICollection<int> teammateIds;
 
     private int lastExecuteTurnNumber;
@@ -104,7 +101,6 @@ public sealed class BaseBotInternals
     {
         RedirectStdOutAndStdErr();
         InitializeWebSocketClient(serverUrl);
-        InitializeEventPriorities();
         SubscribeToEvents();
     }
 
@@ -126,25 +122,6 @@ public sealed class BaseBotInternals
         socket.OnTextMessage += HandleTextMessage;
     }
 
-    private void InitializeEventPriorities()
-    {
-        eventPriorities[typeof(E.WonRoundEvent)] = WonRound;
-        eventPriorities[typeof(E.SkippedTurnEvent)] = SkippedTurn;
-        eventPriorities[typeof(E.TickEvent)] = Tick;
-        eventPriorities[typeof(E.CustomEvent)] = Custom;
-        eventPriorities[typeof(E.TeamMessageEvent)] = TeamMessage;
-        eventPriorities[typeof(E.BotDeathEvent)] = BotDeath;
-        eventPriorities[typeof(E.BulletHitWallEvent)] = BulletHitWall;
-        eventPriorities[typeof(E.BulletHitBulletEvent)] = BulletHitBullet;
-        eventPriorities[typeof(E.BulletHitBotEvent)] = BulletHitBot;
-        eventPriorities[typeof(E.BulletFiredEvent)] = BulletFired;
-        eventPriorities[typeof(E.HitByBulletEvent)] = HitByBullet;
-        eventPriorities[typeof(E.HitWallEvent)] = HitWall;
-        eventPriorities[typeof(E.HitBotEvent)] = HitBot;
-        eventPriorities[typeof(E.ScannedBotEvent)] = ScannedBot;
-        eventPriorities[typeof(E.DeathEvent)] = Death;
-    }
-
     private void SubscribeToEvents()
     {
         InstantEventHandlers.OnRoundStarted.Subscribe(OnRoundStarted, 100);
@@ -161,7 +138,7 @@ public sealed class BaseBotInternals
                 return isRunning;
             }
         }
-        set
+        private set
         {
             lock (isRunningLock)
             {
@@ -735,18 +712,6 @@ public sealed class BaseBotInternals
             ReceiverId = teammateId,
         });
     }
-
-    internal int GetPriority(Type eventType)
-    {
-        if (!eventPriorities.TryGetValue(eventType, out var priority))
-        {
-            throw new InvalidOperationException($"Could not get event priority for the type: {eventType.Name}");
-        }
-
-        return priority;
-    }
-
-    internal void SetPriority(Type eventType, int priority) => eventPriorities[eventType] = priority;
 
     internal Color? BodyColor
     {

@@ -159,7 +159,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
     private int GetPriority(BotEvent botEvent)
     {
-        return _baseBotInternals.GetPriority(botEvent.GetType());
+        return EventPriorities.GetPriority(botEvent.GetType());
     }
 
     private void HandleEvent(BotEvent botEvent, int turnNumber)

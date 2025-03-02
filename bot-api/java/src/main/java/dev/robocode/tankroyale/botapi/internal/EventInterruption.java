@@ -14,8 +14,12 @@ import java.util.Set;
  */
 public final class EventInterruption {
 
+    private EventInterruption() {
+        // Private constructor to prevent instantiation
+    }
+
     /** Set containing all event classes that are currently marked as interruptible. */
-    private static final Set<Class<? extends BotEvent>> interruptibles = new HashSet<>();
+    private static final Set<Class<? extends BotEvent>> INTERRUPTIBLES = new HashSet<>();
 
     /**
      * Sets whether a specific event class should be interruptible or not.
@@ -25,9 +29,9 @@ public final class EventInterruption {
      */
     public static void setInterruptible(Class<? extends BotEvent> eventClass, boolean interruptible) {
         if (interruptible) {
-            interruptibles.add(eventClass);
+            INTERRUPTIBLES.add(eventClass);
         } else {
-            interruptibles.remove(eventClass);
+            INTERRUPTIBLES.remove(eventClass);
         }
     }
 
@@ -38,6 +42,6 @@ public final class EventInterruption {
      * @return {@code true} if the event is interruptible; {@code false} otherwise
      */
     public static boolean isInterruptible(Class<? extends BotEvent> eventClass) {
-        return interruptibles.contains(eventClass);
+        return INTERRUPTIBLES.contains(eventClass);
     }
 }

@@ -135,7 +135,7 @@ final class EventQueue {
     private int getPriority(BotEvent botEvent) {
         @SuppressWarnings("unchecked")
         var eventClass = (Class<BotEvent>) botEvent.getClass();
-        return baseBotInternals.getPriority(eventClass);
+        return EventPriorities.getPriority(eventClass);
     }
 
     private void handleEvent(BotEvent botEvent, int turnNumber) {
