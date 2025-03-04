@@ -58,7 +58,7 @@ open class ConsolePanel : JPanel() {
         val ansi = AnsiTextBuilder()
 
         turnNumber?.let {
-            ansi.cyan().text(turnNumber - 1).defaultColor().text(' ')
+            ansi.cyan().text(turnNumber).defaultColor().text(' ')
         }
 
         val unescapedText = EscapedTextDecoder.unescape(text)
