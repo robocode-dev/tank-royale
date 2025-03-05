@@ -109,7 +109,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
             try
             {
-                HandleEvent(currentEvent, turnNumber);
+                Dispatch(currentEvent, turnNumber);
             }
             catch (ThreadInterruptedException)
             {
@@ -162,7 +162,7 @@ internal sealed class EventQueue : IComparer<BotEvent>
         return EventPriorities.GetPriority(botEvent.GetType());
     }
 
-    private void HandleEvent(BotEvent botEvent, int turnNumber)
+    private void Dispatch(BotEvent botEvent, int turnNumber)
     {
         try
         {
@@ -232,12 +232,12 @@ internal sealed class EventQueue : IComparer<BotEvent>
         }
     }
 
-    private void DumpEvents()
+    private void DumpEvents(int turnNumber)
     {
         lock (_events)
         {
             var eventsString = string.Join(", ", _events.Select(e => $"{e.GetType().Name}({e.TurnNumber})"));
-            Console.WriteLine($"events: {eventsString}");
+            Console.WriteLine($"{turnNumber} events: {eventsString}");
         }
     }
 }
