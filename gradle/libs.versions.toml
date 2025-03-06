@@ -1,6 +1,6 @@
 [versions]
 
-kotlin = "2.1.0"
+kotlin = "2.1.10"
 
 gson = "2.12.1"
 gson-extras = "3.1.0"
@@ -20,7 +20,7 @@ shadow-jar = "8.1.1"
 slf4j-api = "2.0.12"
 batik = "1.18"
 
-benmanes-versions = "0.51.0"
+benmanes-versions = "0.52.0"
 
 [libraries]
 
