@@ -782,7 +782,7 @@ class ModelUpdater(
         scanStartAngle: Double,
         scanEndAngle: Double
 
-    ) = isScanning(scanningBot.id) &&
+    ) = isScanningOrMoving(scanningBot.id) &&
             isCircleIntersectingCircleSector(
                 scannedBot.position, BOT_BOUNDING_CIRCLE_RADIUS,
                 scanningBot.position, RADAR_RADIUS,
@@ -790,16 +790,21 @@ class ModelUpdater(
             )
 
     /**
-     * Checks if a bot is scanning, meaning that it is either rescanning or moving.
+     * Checks if a bot is scanning, meaning that it must be either rescanning or moving.
      * @param botId is the id of the bot.
      * @return `true` if the bot is scanning; `false` otherwise.
      */
-    private fun isScanning(botId: BotId): Boolean {
-        var isScanning = botIntentsMap[botId]?.rescan ?: false
-        if (!isScanning) {
-            isScanning = isMoving(botId)
-        }
-        return isScanning
+    private fun isScanningOrMoving(botId: BotId): Boolean {
+        return isRescanning(botId) || isMoving(botId)
+    }
+
+    /**
+     * Checks if a bot is rescanning.
+     * @param botId is the id of the bot.
+     * @return `true` if the bot is scanning; `false` otherwise.
+     */
+    private fun isRescanning(botId: BotId): Boolean {
+        return botIntentsMap[botId]?.rescan ?: false
     }
 
     /**
