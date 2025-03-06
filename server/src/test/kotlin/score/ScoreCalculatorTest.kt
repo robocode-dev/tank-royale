@@ -5,10 +5,12 @@ import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.Score
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
+import io.kotest.common.KotestInternal
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.shouldBe
 
+@KotestInternal
 class ScoreCalculatorTest : FunSpec({
 
     context("Score calculation") {
