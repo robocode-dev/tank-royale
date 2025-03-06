@@ -86,7 +86,7 @@ final class EventQueue {
             events.remove(currentEvent);
 
             try {
-                handleEvent(currentEvent, turnNumber);
+                dispatch(currentEvent, turnNumber);
             } catch (ThreadInterruptedException ignore) {
                 // Expected when event handler is interrupted on purpose
             } finally {
@@ -138,7 +138,7 @@ final class EventQueue {
         return EventPriorities.getPriority(eventClass);
     }
 
-    private void handleEvent(BotEvent botEvent, int turnNumber) {
+    private void dispatch(BotEvent botEvent, int turnNumber) {
         try {
             if (isNotOldOrIsCriticalEvent(botEvent, turnNumber)) {
                 botEventHandlers.fireEvent(botEvent);
@@ -174,9 +174,9 @@ final class EventQueue {
         );
     }
 
-    private void dumpEvents() {
+    private void dumpEvents(int turnNumber) {
         StringJoiner stringJoiner = new StringJoiner(", ");
         events.forEach(event -> stringJoiner.add(event.getClass().getSimpleName() + "(" + event.getTurnNumber() + ")"));
-        System.out.println("events: " + stringJoiner);
+        System.out.println(turnNumber + " events: " + stringJoiner);
     }
 }
