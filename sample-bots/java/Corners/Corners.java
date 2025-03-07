@@ -67,7 +67,7 @@ public class Corners extends Bot {
         // We don't want to stop when we're just turning...
         stopWhenSeeEnemy = false;
         // Turn to face the wall towards our desired corner
-        turnRight(calcBearing(corner));
+        turnLeft(calcBearing(corner));
         // Ok, now we don't want to crash into any bot in our way...
         stopWhenSeeEnemy = true;
         // Move to that wall

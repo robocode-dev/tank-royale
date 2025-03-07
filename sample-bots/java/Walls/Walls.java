@@ -42,7 +42,7 @@ public class Walls extends Bot {
 
         // turn to face a wall.
         // `getDirection() % 90` means the remainder of getDirection() divided by 90.
-        turnLeft(getDirection() % 90);
+        turnRight(getDirection() % 90);
         forward(moveAmount);
 
         // Turn the gun to turn right 90 degrees.

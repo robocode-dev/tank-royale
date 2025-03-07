@@ -83,7 +83,7 @@ public class MyFirstLeader : Bot
         double bulletBearing = CalcBearing(evt.Bullet.Direction);
 
         // Turn perpendicular to the bullet direction
-        TurnRight(90 - bulletBearing);
+        TurnLeft(90 - bulletBearing);
     }
 }
 

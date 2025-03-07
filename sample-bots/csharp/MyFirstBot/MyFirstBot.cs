@@ -47,6 +47,6 @@ public class MyFirstBot : Bot
         var bearing = CalcBearing(evt.Bullet.Direction);
 
         // Turn 90 degrees to the bullet direction based on the bearing
-        TurnRight(90 - bearing);
+        TurnLeft(90 - bearing);
     }
 }

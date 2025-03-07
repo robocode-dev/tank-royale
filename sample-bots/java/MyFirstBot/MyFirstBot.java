@@ -47,6 +47,6 @@ public class MyFirstBot extends Bot {
         var bearing = calcBearing(e.getBullet().getDirection());
 
         // Turn 90 degrees to the bullet direction based on the bearing
-        turnRight(90 - bearing);
+        turnLeft(90 - bearing);
     }
 }

@@ -42,7 +42,7 @@ public class Walls : Bot
 
         // turn to face a wall.
         // `Direction % 90` means the remainder of Direction divided by 90.
-        TurnLeft(Direction % 90);
+        TurnRight(Direction % 90);
         Forward(moveAmount);
 
         // Turn the gun to turn right 90 degrees.

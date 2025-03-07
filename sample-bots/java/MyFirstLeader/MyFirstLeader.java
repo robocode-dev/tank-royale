@@ -80,7 +80,7 @@ public class MyFirstLeader extends Bot {
         double bulletBearing = calcBearing(e.getBullet().getDirection());
 
         // Turn perpendicular to the bullet direction
-        turnRight(90 - bulletBearing);
+        turnLeft(90 - bulletBearing);
     }
 }
 

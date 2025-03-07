@@ -1,3 +1,9 @@
+## 📦 0.30.1 - Minor bugfixes
+
+### 🐞 Bug Fixes
+
+- Sample Bots: Corners and Walls did not turn correctly towards the wall.
+
 ## 📦 0.30.0 - Added Graphics Debugging
 
 ### 🚀 #116: Graphical Debugging Implemented Using SVG
