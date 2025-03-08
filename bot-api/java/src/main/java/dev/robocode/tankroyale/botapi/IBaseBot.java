@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.*;
-import dev.robocode.tankroyale.botapi.internal.DefaultEventPriority;
 
 import java.awt.Graphics2D;
 import java.awt.Color;

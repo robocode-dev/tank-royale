@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static dev.robocode.tankroyale.botapi.internal.DefaultEventPriority.*;
+import static dev.robocode.tankroyale.botapi.DefaultEventPriority.*;
 
 /**
  * Manages priorities for bot events in the game.

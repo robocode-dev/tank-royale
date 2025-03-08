@@ -1,4 +1,4 @@
-namespace Robocode.TankRoyale.BotApi.Internal;
+namespace Robocode.TankRoyale.BotApi;
 
 /// <summary>
 /// Default event priorities values. The lower value, the higher event priority. So the <see cref="Events.DeathEvent"/>
