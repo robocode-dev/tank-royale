@@ -1,10 +1,12 @@
-## 📦 0.30.1 - Minor bugfixes
+## 📦 0.30.1 - Fixes to sample bots - 08-Mar-2025
+
+This version provides bug fixes to the sample bots only.
 
 ### 🐞 Bug Fixes
 
 - Sample Bots: Corners and Walls did not turn correctly towards the wall.
 
-## 📦 0.30.0 - Added Graphics Debugging
+## 📦 0.30.0 - Added Graphics Debugging - 07-Feb-2025
 
 ### 🚀 #116: Graphical Debugging Implemented Using SVG
 
