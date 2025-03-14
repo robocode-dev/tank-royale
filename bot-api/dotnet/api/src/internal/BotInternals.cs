@@ -255,8 +255,8 @@ internal sealed class BotInternals : IStopResumeListener
 
     internal void Fire(double firepower)
     {
-        if (bot.SetFire(firepower))
-            bot.Go();
+        bot.SetFire(firepower);
+        bot.Go();
     }
 
     internal void Rescan()
