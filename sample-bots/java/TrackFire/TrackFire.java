@@ -46,7 +46,7 @@ public class TrackFire extends Bot {
         var bearingFromGun = gunBearingTo(e.getX(), e.getY());
 
         // Turn the gun toward the scanned bot
-        turnGunRight(bearingFromGun);
+        turnGunLeft(bearingFromGun);
 
         // If it is close enough, fire!
         if (Math.abs(bearingFromGun) <= 3 && getGunHeat() == 0) {
