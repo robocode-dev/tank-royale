@@ -64,7 +64,7 @@ public class Fire : Bot
     public override void OnHitByBullet(HitByBulletEvent e)
     {
         // Turn perpendicular to the bullet direction
-        TurnRight(NormalizeRelativeAngle(90 - (Direction - e.Bullet.Direction)));
+        TurnLeft(NormalizeRelativeAngle(90 - (Direction - e.Bullet.Direction)));
 
         // Move forward or backward depending if the distance is positive or negative
         Forward(dist);
