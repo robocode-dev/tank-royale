@@ -1,3 +1,10 @@
+## 📦 0.30.2
+
+### 🐞 Bug Fixes
+
+- BotAPI / Sample Bots:
+    - Fixed issue where the Fire sample bot did not lock the radar on its target.
+
 ## 📦 0.30.1 - Fixes to sample bots - 08-Mar-2025
 
 This version provides bug fixes to the sample bots only.

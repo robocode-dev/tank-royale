@@ -761,9 +761,28 @@ class ModelUpdater(
                 if (i != j) {
                     val botBeingScanned = bots[j]
                     if (isBotScanned(scanningBot, botBeingScanned, startAngle, endAngle)) {
-                        createAndAddScannedBotEventToTurn(scanningBot.id, botBeingScanned)
+                        handleScannedBot(scanningBot, botBeingScanned)
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Handle scanned bot.
+     * @param scanningBot the bot scanning an opponent bot.
+     * @param botBeingScanned the bot being scanned.
+     */
+    private fun handleScannedBot(scanningBot: MutableBot, botBeingScanned: IBot) {
+        createAndAddScannedBotEventToTurn(scanningBot.id, botBeingScanned)
+
+        if (isRescanning(scanningBot.id)) {
+            botsCopies[scanningBot.id]?.let {
+                scanningBot.x = it.x
+                scanningBot.y = it.y
+                scanningBot.direction = it.direction
+                scanningBot.gunDirection = it.gunDirection
+                scanningBot.radarDirection = it.radarDirection
             }
         }
     }
@@ -873,7 +892,7 @@ class ModelUpdater(
 
                 val scores = scoreCalculator.getScores()
                 if (scores.isNotEmpty()) {
-                    val winners = scores.filter { it.rank == 1}
+                    val winners = scores.filter { it.rank == 1 }
                     winners.forEach {
                         val botId = it.participantId.botId
                         turn.addPrivateBotEvent(botId, WonRoundEvent(turn.turnNumber))
