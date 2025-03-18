@@ -299,15 +299,11 @@ public sealed class BaseBotInternals
             return;
 
         var turnNumber = CurrentTickOrThrow.TurnNumber;
-        if (turnNumber == lastExecuteTurnNumber)
+        if (turnNumber != lastExecuteTurnNumber)
         {
-            return; // skip this execute, as we have already run this method within the same turn
+            DispatchEvents(turnNumber);
+            SendIntent();
         }
-
-        lastExecuteTurnNumber = turnNumber;
-
-        DispatchEvents(turnNumber);
-        SendIntent();
         WaitForNextTurn(turnNumber);
     }
 

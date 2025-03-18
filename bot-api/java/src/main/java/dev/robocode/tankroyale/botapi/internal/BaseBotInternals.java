@@ -295,13 +295,12 @@ public final class BaseBotInternals {
             return;
 
         final var turnNumber = getCurrentTickOrThrow().getTurnNumber();
-        if (turnNumber == lastExecuteTurnNumber) {
-            return; // skip this execute, as we have already run this method within the same turn
-        }
-        lastExecuteTurnNumber = turnNumber;
+        if (turnNumber != lastExecuteTurnNumber) {
+            lastExecuteTurnNumber = turnNumber;
 
-        dispatchEvents(turnNumber);
-        sendIntent();
+            dispatchEvents(turnNumber);
+            sendIntent();
+        }
         waitForNextTurn(turnNumber);
     }
 
