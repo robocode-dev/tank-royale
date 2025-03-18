@@ -14,12 +14,12 @@ import java.util.Set;
  */
 public final class EventInterruption {
 
+    /** Set containing all event classes that are currently marked as interruptible. */
+    private static final Set<Class<? extends BotEvent>> INTERRUPTIBLES = new HashSet<>();
+
     private EventInterruption() {
         // Private constructor to prevent instantiation
     }
-
-    /** Set containing all event classes that are currently marked as interruptible. */
-    private static final Set<Class<? extends BotEvent>> INTERRUPTIBLES = new HashSet<>();
 
     /**
      * Sets whether a specific event class should be interruptible or not.
