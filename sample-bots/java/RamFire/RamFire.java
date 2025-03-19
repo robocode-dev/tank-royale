@@ -78,6 +78,6 @@ public class RamFire extends Bot {
         } else {
             turnDirection = -1;
         }
-        turnRight(bearing);
+        turnLeft(bearing);
     }
 }

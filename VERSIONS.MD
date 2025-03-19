@@ -5,7 +5,8 @@
 - BotAPI / Sample Bots:
     - Fixed issue where the Fire sample bot did not lock the radar on its target.
 - Sample Bots:
-    - The Fire and MyFirstBot sample bot did not turn perpendicular to the bullet direction anymore.
+    - The Fire andMyFirstBot sample bot did not turn perpendicular to the bullet direction anymore,
+      and the RamFire did not drive directly towards its target.
 
 ## 📦 0.30.1 - Fixes to sample bots - 08-Mar-2025
 

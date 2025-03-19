@@ -79,6 +79,6 @@ public class RamFire : Bot
         else
             turnDirection = -1;
 
-        TurnRight(bearing);
+        TurnLeft(bearing);
     }
 }
