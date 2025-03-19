@@ -73,7 +73,7 @@ tasks {
         dependsOn(docfxClean, prepareNugetDocs)
 
         workingDir("docfx-project")
-        commandLine("docfx", "build")
+        commandLine("docfx")
     }
 
     val docfx by registering {
