@@ -31,6 +31,15 @@ MyFirstBot.cs:
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
+// ------------------------------------------------------------------
+// MyFirstBot
+// ------------------------------------------------------------------
+// A sample bot original made for Robocode by Mathew Nelson.
+// Ported to Robocode Tank Royale by Flemming N. Larsen.
+//
+// Probably the first bot you will learn about.
+// Moves in a seesaw motion, and spins the gun around at each end.
+// ------------------------------------------------------------------
 public class MyFirstBot : Bot
 {
     // The main method starts our bot
@@ -49,9 +58,9 @@ public class MyFirstBot : Bot
         while (IsRunning)
         {
             Forward(100);
-            TurnGunRight(360);
+            TurnGunLeft(360);
             Back(100);
-            TurnGunRight(360);
+            TurnGunLeft(360);
         }
     }
 
@@ -65,10 +74,10 @@ public class MyFirstBot : Bot
     public override void OnHitByBullet(HitByBulletEvent evt)
     {
         // Calculate the bearing to the direction of the bullet
-        double bearing = CalcBearing(evt.Bullet.Direction);
+        var bearing = CalcBearing(evt.Bullet.Direction);
 
         // Turn 90 degrees to the bullet direction based on the bearing
-        TurnLeft(90 - bearing);
+        TurnRight(90 - bearing);
     }
 }
 ```
