@@ -8,6 +8,15 @@ The Bot API is provided via a pip package.
 
 ### From the current directory:
 
+First generate schemas into a tank_royale.schema package:
+
+```shell
+python schema_to_python.py -d ../../schema/schemas -o generated/tank_royale/schema
+```
+
+Then install a local package using in "editable" mode setup.py, linking the installed package to the source directory
+for live updates:
+
 ```shell
 pip install -e .
 ```
