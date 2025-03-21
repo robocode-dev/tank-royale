@@ -6,24 +6,29 @@ tasks {
     named("clean") {
         doLast {
             delete(
-                "python/build",
-                "python/dist",
-                "python/generated",
+                "generated",
+                "robocode_tank_royale.egg-info",
             )
         }
     }
 
-    val pipInstallRequirements by registering(Exec::class) {
+    val `install-requirements` by registering(Exec::class) {
         commandLine("pip", "install", "-r", "requirements.txt")
     }
 
-    val pipInstall by registering(Exec::class) {
-        dependsOn(pipInstallRequirements)
+    val `generate-schema` by registering(Exec::class) {
+        dependsOn(`install-requirements`)
 
-        commandLine("pip", "install", "e", ".")
+        commandLine("python", "schema_to_python.py", "-d", "../../schema/schemas", "-o", "generated/robocode/tank_royale/schema");
+    }
+
+    val `pip-install` by registering(Exec::class) {
+        dependsOn(`generate-schema`)
+
+        commandLine("pip", "install", "-e", ".")
     }
 
     named("build") {
-        dependsOn(pipInstall)
+        dependsOn(`pip-install`)
     }
 }

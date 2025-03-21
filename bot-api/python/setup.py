@@ -1,13 +1,5 @@
 from setuptools import setup, find_packages
-from setuptools.errors import InternalError
-import os
 import configparser
-
-# Create an empty __init__.py file in the generated/tank_royale directory
-init_file_path = 'generated/tank_royale/__init__.py'
-open(init_file_path, 'a').close()
-if not os.path.exists(init_file_path):
-    raise InternalError(f'Failed to create file: {init_file_path}')
 
 # Read version from gradle.properties file
 config = configparser.ConfigParser()
@@ -23,8 +15,8 @@ setup(
     long_description_content_type='text/markdown',
     url='https://robocode-dev.github.io/tank-royale',
     package_dir={
-        "tank_royale.schema": "generated/tank_royale/schema",
-        "tank_royale.bot_api": "generated/tank_royale/bot_api",
+        "robocode.tank_royale.schema": "generated/robocode/tank_royale/schema",
+        "robocode.tank_royale.bot_api": "generated/robocode/tank_royale/bot_api",
     },
     packages=find_packages(where='src') + find_packages(where='generated'),
     python_requires='>=3.10',
