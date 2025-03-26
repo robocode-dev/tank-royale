@@ -1,5 +1,4 @@
 import proguard.gradle.ProGuardTask
-import java.util.Collections.singletonList
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.SourceType
 
@@ -55,11 +54,19 @@ java {
 
 jsonSchema2Pojo {
     setSourceType(SourceType.YAMLSCHEMA.toString())
-    setSource(singletonList(layout.projectDirectory.dir("../schema/schemas").asFile))
+    setSource(listOf(layout.projectDirectory.dir("../schema/schemas").asFile))
     setAnnotationStyle(AnnotationStyle.GSON.toString())
     targetPackage = schemaPackage
-    targetDirectory = layout.buildDirectory.dir("classes/java/main").get().asFile
+    targetDirectory = layout.buildDirectory.dir("generated-sources").get().asFile
     setFileExtensions("schema.yaml", "schema.json")
+}
+
+sourceSets {
+    main {
+        kotlin {
+            srcDir(layout.buildDirectory.dir("generated-sources"))
+        }
+    }
 }
 
 tasks {
