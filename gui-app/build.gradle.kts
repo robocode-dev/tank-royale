@@ -22,8 +22,9 @@ buildscript {
 }
 
 plugins {
-    kotlin("jvm")
-    kotlin("plugin.serialization")
+    java
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.shadow.jar)
     `maven-publish`
     signing
@@ -38,8 +39,9 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
 
     withJavadocJar() // required for uploading to Sonatype
     withSourcesJar()
