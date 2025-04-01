@@ -30,9 +30,7 @@ dependencies {
     implementation(libs.batik.svggen)
     implementation(libs.batik.dom)
 
-    testImplementation(testLibs.junit.api)
-    testImplementation(testLibs.junit.params)
-    testImplementation(testLibs.junit.engine)
+    testImplementation(testLibs.bundles.junit)
     testImplementation(testLibs.assertj)
     testImplementation(testLibs.system.stubs)
     testImplementation(libs.java.websocket) // for mocked server

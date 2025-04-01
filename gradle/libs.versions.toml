@@ -1,6 +1,6 @@
 [versions]
 
-kotlin = "2.1.10"
+kotlin = "2.1.20"
 
 gson = "2.12.1"
 gson-extras = "3.1.0"
@@ -8,10 +8,10 @@ jansi = "2.4.1"
 java-websocket = "1.6.0"
 json = "20240303"
 jsonschema2pojo = "1.2.2"
-jsvg = "1.7.0"
-kotlinx-serialization-json = "1.8.0"
+jsvg = "1.7.1"
+kotlinx-serialization-json = "1.8.1"
 picocli = "4.7.6"
-proguard-gradle = "7.6.1"
+proguard-gradle = "7.7.0"
 miglayout-swing = "11.4.2"
 nexus-publish = "2.0.0"
 node-gradle = "7.1.0"
