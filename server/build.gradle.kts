@@ -16,7 +16,10 @@ base {
     archivesName = "robocode-tankroyale-server" // renames _all_ archive names
 }
 
-val baseArchiveName = "${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}"
+val artifactBasePath = "${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}"
+val finalJar = "$artifactBasePath.jar" // Final artifact path
+val intermediateJar = "$artifactBasePath-all.jar"
+
 
 buildscript {
     dependencies {
@@ -55,18 +58,24 @@ java {
 }
 
 jsonSchema2Pojo {
-    setSourceType(SourceType.YAMLSCHEMA.toString())
-    setSource(listOf(layout.projectDirectory.dir("../schema/schemas").asFile))
-    setAnnotationStyle(AnnotationStyle.GSON.toString())
-    targetPackage = schemaPackage
-    targetDirectory = layout.buildDirectory.dir("generated-sources").get().asFile
+    val schemaDir = layout.projectDirectory.dir("../schema/schemas").asFile
+    if (!schemaDir.exists() || !schemaDir.isDirectory) {
+        throw GradleException("Schema directory '${schemaDir.absolutePath}' does not exist or is not a directory.")
+    }
+
+    setSource(listOf(schemaDir))
+    setSourceType(SourceType.YAMLSCHEMA.name)
+    setAnnotationStyle(AnnotationStyle.GSON.name)
     setFileExtensions("schema.yaml", "schema.json")
+
+    targetPackage = schemaPackage
+    targetDirectory = layout.buildDirectory.dir("generated-sources/schema").get().asFile
 }
 
 sourceSets {
     main {
         kotlin {
-            srcDir(layout.buildDirectory.dir("generated-sources"))
+            srcDir(layout.buildDirectory.dir("generated-sources/schema"))
         }
     }
 }
@@ -81,38 +90,55 @@ tasks {
     }
 
     jar {
+        archiveClassifier.set("all") // the final archive will not have this classifier
+
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         manifest {
             attributes["Main-Class"] = jarManifestMainClass
             attributes["Implementation-Title"] = title
-            attributes["Implementation-Version"] = archiveVersion
+            attributes["Implementation-Version"] = project.version
             attributes["Implementation-Vendor"] = "robocode.dev"
             attributes["Package"] = project.group
         }
-        archiveClassifier.set("all") // the final archive will not have this classifier
 
         from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     }
 
-    val runJar by registering(JavaExec::class) {
+    val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking,
         dependsOn(jar)
-        classpath = files(jar)
+
+        doFirst {
+            if (!file(intermediateJar).exists()) {
+                logger.error("Intermediate JAR not found at expected location: $intermediateJar")
+                throw GradleException("Cannot proceed with ProGuard. Ensure the 'jar' task successfully creates $intermediateJar.")
+            }
+            logger.lifecycle("Found intermediate JAR: $intermediateJar. Proceeding with ProGuard.")
+        }
+
+        configuration(file("proguard-rules.pro")) // Path to your ProGuard rules file
+
+        injars(intermediateJar) // Input JAR to process
+        outjars(finalJar)       // Output JAR after ProGuard processing
+
+        doLast {
+            if (!file(finalJar).exists()) {
+                logger.error("ProGuard task completed, but final JAR is missing: $finalJar")
+                throw GradleException("ProGuard did not produce the expected output.")
+            }
+            logger.lifecycle("ProGuard task completed successfully. Final JAR available at: $finalJar")
+        }
     }
 
-    val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking
-        dependsOn(jar)
-
-        configuration("proguard-rules.pro")
-
-        injars("$baseArchiveName-all.jar")
-        outjars("$baseArchiveName.jar")
+    val runJar by registering(JavaExec::class) {
+        dependsOn(proguard)
+        classpath = files(proguard.get().outJarFiles)
     }
 
     assemble {
         dependsOn(proguard)
         doLast {
-            delete("$baseArchiveName-all.jar")
+            delete(intermediateJar) // Ensure intermediate JAR is cleaned
         }
     }
 
@@ -131,6 +157,11 @@ tasks {
     publishing {
         publications {
             create<MavenPublication>("server") {
+                val outJars = proguard.get().outJarFiles
+                if (outJars.isEmpty()) {
+                    throw GradleException("Proguard did not produce output artifacts")
+                }
+
                 artifact(proguard.get().outJarFiles[0]) {
                     builtBy(proguard)
                 }

@@ -13,7 +13,10 @@ base {
     archivesName = "robocode-tankroyale-gui" // renames _all_ archive names
 }
 
-val baseArchiveName = "${base.archivesName.get()}-${project.version}"
+val artifactBasePath = "${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}"
+val finalJar = "$artifactBasePath.jar" // Final artifact path
+val intermediateJar = "$artifactBasePath-all.jar"
+
 
 buildscript {
     dependencies {
@@ -85,45 +88,46 @@ tasks {
 
         // Ensure the fat jar goes to the libs directory
         destinationDirectory.set(layout.buildDirectory.dir("libs"))
-        archiveFileName.set("$baseArchiveName-all.jar")
+        archiveFileName.set("$artifactBasePath-all.jar")
 
         title.set(archiveTitle)
         mainClass.set(jarManifestMainClass)
     }
 
-    val runJar by registering(JavaExec::class) {
+    val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking,
         dependsOn(fatJar)
-        classpath = files(fatJar)
+
+        doFirst {
+            if (!file(intermediateJar).exists()) {
+                logger.error("Intermediate JAR not found at expected location: $intermediateJar")
+                throw GradleException("Cannot proceed with ProGuard. Ensure the 'jar' task successfully creates $intermediateJar.")
+            }
+            logger.lifecycle("Found intermediate JAR: $intermediateJar. Proceeding with ProGuard.")
+        }
+
+        configuration(file("proguard-rules.pro")) // Path to your ProGuard rules file
+
+        injars(intermediateJar) // Input JAR to process
+        outjars(finalJar)       // Output JAR after ProGuard processing
+
+        doLast {
+            if (!file(finalJar).exists()) {
+                logger.error("ProGuard task completed, but final JAR is missing: $finalJar")
+                throw GradleException("ProGuard did not produce the expected output.")
+            }
+            logger.lifecycle("ProGuard task completed successfully. Final JAR available at: $finalJar")
+        }
     }
 
-    val proguard by registering(ProGuardTask::class) {
-        dependsOn(fatJar)
-
-        val libsDir = layout.buildDirectory.dir("libs").get().asFile
-        val inputJar = libsDir.resolve("$baseArchiveName-all.jar")
-        val outputJar = libsDir.resolve("$baseArchiveName.jar")
-
-        inputs.file(inputJar)
-        outputs.file(outputJar)
-
-        configuration("proguard-rules.pro")
-
-        injars(inputJar.absolutePath)
-        outjars(outputJar.absolutePath)
-
-        // Add this to ensure the input jar exists
-        doFirst {
-            if (!inputJar.exists()) {
-                throw GradleException("Input jar file not found: ${inputJar.absolutePath}")
-            }
-        }
+    val runJar by registering(JavaExec::class) {
+        dependsOn(proguard)
+        classpath = files(proguard.get().outJarFiles)
     }
 
     jar {
         enabled = false
         dependsOn(proguard)
     }
-
 
     withType<AbstractPublishToMaven> {
         dependsOn(jar)
@@ -136,12 +140,16 @@ tasks {
     val javadocJar = named<Jar>("javadocJar") {
         dependsOn("copyJars")
     }
-
     val sourcesJar = named("sourcesJar")
 
     publishing {
         publications {
             create<MavenPublication>("gui-app") {
+                val outJars = proguard.get().outJarFiles
+                if (outJars.isEmpty()) {
+                    throw GradleException("Proguard did not produce output artifacts")
+                }
+
                 artifact(proguard.get().outJarFiles[0]) {
                     builtBy(proguard)
                 }

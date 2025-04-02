@@ -1,5 +1,4 @@
 import java.nio.file.Files
-import java.util.Collections.singletonList
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.SourceType
 
@@ -46,12 +45,18 @@ java {
 }
 
 jsonSchema2Pojo {
-    setSourceType(SourceType.YAMLSCHEMA.toString())
-    setSource(singletonList(layout.projectDirectory.dir("../../schema/schemas").asFile))
-    setAnnotationStyle(AnnotationStyle.GSON.toString())
+    val schemaDir = layout.projectDirectory.dir("../../schema/schemas").asFile
+    if (!schemaDir.exists() || !schemaDir.isDirectory) {
+        throw GradleException("Schema directory '${schemaDir.absolutePath}' does not exist or is not a directory.")
+    }
+
+    setSource(listOf(schemaDir))
+    setSourceType(SourceType.YAMLSCHEMA.name)
+    setAnnotationStyle(AnnotationStyle.GSON.name)
+    setFileExtensions("schema.yaml", "schema.json")
+
     targetPackage = schemaPackage
     targetDirectory = layout.buildDirectory.dir("generated-sources/schema").get().asFile
-    setFileExtensions("schema.yaml", "schema.json")
 }
 
 sourceSets {
@@ -63,6 +68,12 @@ sourceSets {
 }
 
 tasks {
+    test {
+        useJUnitPlatform()
+        failFast = true
+//        testLogging.showStandardStreams = true
+    }
+
     jar {
         enabled = false
         dependsOn(shadowJar)
@@ -104,12 +115,6 @@ tasks {
         }
     }
 
-    test {
-        useJUnitPlatform()
-        failFast = true
-//        testLogging.showStandardStreams = true
-    }
-
     val uploadDocs by registering(Copy::class) {
         dependsOn(javadoc)
 
@@ -132,6 +137,11 @@ tasks {
     publishing {
         publications {
             create<MavenPublication>("bot-api") {
+                val outJars = shadowJar.get().outputs.files
+                if (outJars.isEmpty) {
+                    throw GradleException("Proguard did not produce output artifacts")
+                }
+
                 artifact(shadowJar)
                 artifact(javadocJar)
                 artifact(sourcesJar)
