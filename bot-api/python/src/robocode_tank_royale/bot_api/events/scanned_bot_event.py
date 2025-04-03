@@ -1,10 +1,11 @@
-from robocode_tank_royale.bot_api.events.bot_event import BotEvent
+from robocode_tank_royale.bot_api.events import BotEvent
 
 
 class ScannedBotEvent(BotEvent):
     """Event occurring when a bot has scanned another bot."""
 
-    def __init__(self, turn_number: int, scanned_by_bot_id: int, scanned_bot_id: int, energy: float, x: float, y: float, direction: float, speed: float):
+    def __init__(self, turn_number: int, scanned_by_bot_id: int, scanned_bot_id: int, energy: float, x: float, y: float,
+                 direction: float, speed: float):
         """Initializes a new instance of the ScannedBotEvent class.
 
         Args:

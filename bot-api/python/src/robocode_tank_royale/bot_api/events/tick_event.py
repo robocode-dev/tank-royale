@@ -1,6 +1,5 @@
-from robocode_tank_royale.bot_api.bot_state import BotState
-from robocode_tank_royale.bot_api.bullet_state import BulletState
-from robocode_tank_royale.bot_api.events.bot_event import BotEvent
+from robocode_tank_royale.bot_api import BotState, BulletState
+from robocode_tank_royale.bot_api.events import BotEvent
 
 
 class TickEvent(BotEvent):

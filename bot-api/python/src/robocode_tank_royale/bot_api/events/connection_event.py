@@ -1,6 +1,7 @@
-from robocode_tank_royale.bot_api.events.abstract_event import IEvent
+from robocode_tank_royale.bot_api.events import EventABC
 
-class ConnectionEvent(IEvent):
+
+class ConnectionEvent(EventABC):
     """Base class of all connection events."""
 
     def __init__(self, server_uri: str):

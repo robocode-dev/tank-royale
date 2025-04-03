@@ -1,7 +1,7 @@
-from robocode_tank_royale.bot_api.events.abstract_event import IEvent
+from robocode_tank_royale.bot_api.events import EventABC
 
 
-class RoundStartedEvent(IEvent):
+class RoundStartedEvent(EventABC):
     """Event occurring when a new round has just started."""
 
     def __init__(self, round_number: int):

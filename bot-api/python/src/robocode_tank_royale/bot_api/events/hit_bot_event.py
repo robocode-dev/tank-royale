@@ -1,4 +1,4 @@
-from robocode_tank_royale.bot_api.events.bot_event import BotEvent
+from robocode_tank_royale.bot_api.events import BotEvent
 
 
 class HitBotEvent(BotEvent):

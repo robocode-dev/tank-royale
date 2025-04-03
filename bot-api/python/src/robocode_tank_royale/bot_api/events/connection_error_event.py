@@ -1,4 +1,5 @@
-from robocode_tank_royale.bot_api.events.connection_event import ConnectionEvent
+from robocode_tank_royale.bot_api.events import ConnectionEvent
+
 
 class ConnectionErrorEvent(ConnectionEvent):
     """Event occurring when a connection error occurs."""

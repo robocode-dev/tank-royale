@@ -1,4 +1,5 @@
-from robocode_tank_royale.bot_api.events.bot_event import BotEvent
+from robocode_tank_royale.bot_api.events import BotEvent
+
 
 class DeathEvent(BotEvent):
     """Event occurring when your bot has died."""

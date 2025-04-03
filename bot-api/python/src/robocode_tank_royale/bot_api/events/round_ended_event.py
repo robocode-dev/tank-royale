@@ -1,8 +1,8 @@
-from robocode_tank_royale.bot_api.bot_results import BotResults
-from robocode_tank_royale.bot_api.events.abstract_event import IEvent
+from robocode_tank_royale.bot_api import BotResults
+from robocode_tank_royale.bot_api.events import EventABC
 
 
-class RoundEndedEvent(IEvent):
+class RoundEndedEvent(EventABC):
     """Event occurring when a round has just ended."""
 
     def __init__(self, round_number: int, turn_number: int, results: BotResults):

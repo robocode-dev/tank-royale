@@ -1,9 +1,8 @@
-from robocode_tank_royale.bot_api.initial_position import InitialPosition
-from robocode_tank_royale.bot_api.game_setup import GameSetup
-from robocode_tank_royale.bot_api.events.abstract_event import IEvent
+from robocode_tank_royale.bot_api import GameSetup, InitialPosition
+from robocode_tank_royale.bot_api.events import EventABC
 
 
-class GameStartedEvent(IEvent):
+class GameStartedEvent(EventABC):
     """Event occurring when game has just started."""
 
     def __init__(self, my_id: int, initial_position: InitialPosition, game_setup: GameSetup):

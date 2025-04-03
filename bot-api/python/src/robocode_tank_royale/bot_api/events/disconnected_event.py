@@ -1,6 +1,7 @@
 from typing import Optional
 
-from robocode_tank_royale.bot_api.events.connection_event import ConnectionEvent
+from robocode_tank_royale.bot_api.events import ConnectionEvent
+
 
 class DisconnectedEvent(ConnectionEvent):
     """Event occurring when bot gets disconnected from server."""
