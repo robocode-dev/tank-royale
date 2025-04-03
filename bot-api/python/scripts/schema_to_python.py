@@ -1,99 +1,23 @@
 import argparse
-import yaml
-from typing import Dict, Any, List, Set, Tuple
-from pathlib import Path
 import re
-
-
-def camel_to_snake(name: str):
-    snake_case = re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()
-    return snake_case
-
-
-def convert_strings_to_snake(properties: dict[str, Any]):
-    new_properties = {}
-    for key, value in properties.items():
-        new_key = camel_to_snake(key)
-        new_properties[new_key] = value
-    return new_properties
-
-
-def convert_strings_to_snake2(items: list[str]):
-    new_properties = []
-    for item in items:
-        new_properties.append(camel_to_snake(item))
-    return new_properties
-
-
-def load_yaml(file_path: str) -> Dict[str, Any]:
-    with open(file_path, 'r') as f:
-        return yaml.safe_load(f)
-
-
-def sanitize_file_name(name: str) -> str:
-    name = str(Path(name).stem).lower()
-    name = name.replace('.schema', '')
-    return name.replace('-', '_')
-
-
-def sanitize_class_name(name: str) -> str:
-    name = Path(name).stem
-    name = name.replace('.schema', '')
-    words = name.replace('-', '_').split('_')
-    return ''.join(word.title() for word in words)
-
-
-def resolve_reference(ref: str) -> tuple[str, str]:
-    if not ref:
-        return "", ""
-    ref_path = Path(ref)
-    return sanitize_class_name(ref_path.stem), ref_path.name
-
-
-def generate_dunder_init_py(output_dir: str, sub_modules: list[str]) -> None:
-    """
-    Generates an __init__.py file with proper imports and __all__ declarations.
-
-    Args:
-        output_dir: Directory where the __init__.py will be created
-        sub_modules: List of module names (without .py extension)
-    """
-    output_path = Path(output_dir)
-    dunder_init_py_path = output_path / "__init__.py"
-
-    # Generate import statements and collect class names
-    import_statements = []
-    class_names = []
-
-    for module in sub_modules:
-        # Get the class name based on the module name
-        class_name = ''.join(part.capitalize() for part in module.split('_'))
-
-        # Add import statement
-        import_statements.append(f"from .{module} import {class_name}")
-
-        # Add class name to list for __all__
-        class_names.append(class_name)
-
-    # Create file content with an empty line before __all__
-    file_content = '\n'.join(import_statements)
-    file_content += f"\n\n__all__ = [\n    " + ",\n    ".join(class_names) + "\n]"
-
-    # Write to file
-    with open(dunder_init_py_path, 'w') as f:
-        f.write(file_content)
+import yaml
+from pathlib import Path
+from typing import Dict, Any, List, Set, Tuple, Optional
 
 
 class SchemaConverter:
+    """Converts JSON schema definitions to Python classes."""
+
     def __init__(self):
-        self.processed_schemas = {}
-        self.class_dependencies = {}
-        self.output_dir = None
-        self.schema_properties_cache = {}
+        self.processed_schemas: Dict[str, Any] = {}
+        self.class_dependencies: Dict[str, Set[str]] = {}
+        self.output_dir: Optional[Path] = None
+        self.schema_properties_cache: Dict[str, Tuple[Set[str], Set[str], Dict[str, Any]]] = {}
 
     def get_python_type(self, prop_schema: Dict[str, Any], file_path: str) -> str:
+        """Determine the Python type for a schema property."""
         if '$ref' in prop_schema:
-            class_name, ref_file = resolve_reference(prop_schema['$ref'])
+            class_name, ref_file = SchemaUtils.resolve_reference(prop_schema['$ref'])
             if ref_file:
                 self.class_dependencies.setdefault(file_path, set()).add(ref_file)
             return class_name
@@ -115,9 +39,9 @@ class SchemaConverter:
             return set(), set(), {}
 
         base_class_ref = schema['extends']['$ref']
-        base_file = resolve_reference(base_class_ref)[1]
-
+        base_file = SchemaUtils.resolve_reference(base_class_ref)[1]
         cache_key = f"{current_file_path}:{base_file}"
+
         if cache_key in self.schema_properties_cache:
             return self.schema_properties_cache[cache_key]
 
@@ -126,27 +50,31 @@ class SchemaConverter:
         parent_file_path = str(current_dir / base_file)
 
         try:
-            parent_schema = load_yaml(parent_file_path)
-            parent_properties = convert_strings_to_snake(parent_schema.get('properties', {}))
-            parent_required = set(convert_strings_to_snake2(parent_schema.get('required', [])))
+            parent_schema = SchemaUtils.load_yaml(parent_file_path)
+            parent_properties = SchemaUtils.convert_dict_keys_to_snake(parent_schema.get('properties', {}))
+            parent_required = set(SchemaUtils.convert_list_to_snake(parent_schema.get('required', [])))
 
             # If the parent also has a parent, include those properties too
             if 'extends' in parent_schema and '$ref' in parent_schema['extends']:
-                grandparent_props, grandparent_required, grandparent_schema = self.get_parent_schema_info(parent_schema,
-                                                                                                          parent_file_path)
+                grandparent_props, grandparent_required, grandparent_schema = self.get_parent_schema_info(
+                    parent_schema, parent_file_path
+                )
                 parent_properties.update(grandparent_schema)
                 parent_required.update(grandparent_required)
 
             result = (set(parent_properties.keys()), parent_required, parent_properties)
             self.schema_properties_cache[cache_key] = result
             return result
+
         except FileNotFoundError:
             print(f"Warning: Could not find parent schema file: {parent_file_path}")
             return set(), set(), {}
 
     def generate_class(self, class_name: str, schema: Dict[str, Any], file_path: str) -> str:
+        """Generate a Python class definition from a JSON schema."""
         description = schema.get('description', '')
 
+        # Handle simple type schemas
         if not 'extends' in schema and 'type' in schema and isinstance(schema['type'],
                                                                        str) and 'properties' not in schema:
             python_type = self.get_python_type({'type': schema['type']}, file_path)
@@ -164,12 +92,14 @@ class SchemaConverter:
             ])
             return '\n'.join(class_lines)
 
-        properties = convert_strings_to_snake(schema.get('properties', {}))
-        required = convert_strings_to_snake2(schema.get('required', []))
+        # Process complex object schemas
+        properties = SchemaUtils.convert_dict_keys_to_snake(schema.get('properties', {}))
+        required = SchemaUtils.convert_list_to_snake(schema.get('required', []))
 
+        # Handle inheritance
         base_classes = []
         if 'extends' in schema and '$ref' in schema['extends']:
-            base_class, base_file = resolve_reference(schema['extends']['$ref'])
+            base_class, base_file = SchemaUtils.resolve_reference(schema['extends']['$ref'])
             if base_class:
                 base_classes.append(base_class)
                 if base_file:
@@ -235,22 +165,25 @@ class SchemaConverter:
         return '\n'.join(class_lines)
 
     def process_schema_file(self, file_path: str) -> str:
-        schema_data = load_yaml(file_path)
-        class_name = sanitize_class_name(Path(file_path).name)
+        """Process a single schema file and return the generated class code."""
+        schema_data = SchemaUtils.load_yaml(file_path)
+        class_name = SchemaUtils.sanitize_class_name(Path(file_path).name)
         return self.generate_class(class_name, schema_data, file_path)
 
     def generate_import_statements(self, file_path: str) -> List[str]:
+        """Generate import statements for a given schema file."""
         imports = []
 
         if file_path in self.class_dependencies:
             for dep_file in self.class_dependencies[file_path]:
-                module_name = sanitize_file_name(dep_file)
-                class_name = sanitize_class_name(dep_file)
+                module_name = SchemaUtils.sanitize_file_name(dep_file)
+                class_name = SchemaUtils.sanitize_class_name(dep_file)
                 imports.append(f'from .{module_name} import {class_name}')
 
         return imports
 
     def process_directory(self, directory_path: str, output_dir: str) -> None:
+        """Process all schema files in a directory and generate Python classes."""
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -262,7 +195,7 @@ class SchemaConverter:
             class_code = self.process_schema_file(str(file_path))
 
             if class_code:
-                module_name = f"{sanitize_file_name(file_path)}"
+                module_name = f"{SchemaUtils.sanitize_file_name(file_path)}"
                 sub_modules.append(module_name)
 
                 output_file = self.output_dir / f"{module_name}.py"
@@ -276,14 +209,94 @@ class SchemaConverter:
 
                 with open(output_file, 'w') as f:
                     f.write('\n'.join(content))
-        
-        generate_dunder_init_py(output_dir=output_dir, sub_modules=sub_modules)
+
+        SchemaUtils.generate_dunder_init_py(output_dir=output_dir, sub_modules=sub_modules)
+
+
+class SchemaUtils:
+    """Utilities for schema conversion and naming conventions."""
+
+    @staticmethod
+    def camel_to_snake(name: str) -> str:
+        """Convert a camelCase string to snake_case."""
+        return re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()
+
+    @staticmethod
+    def convert_dict_keys_to_snake(properties: Dict[str, Any]) -> Dict[str, Any]:
+        """Convert all dictionary keys from camelCase to snake_case."""
+        return {SchemaUtils.camel_to_snake(key): value for key, value in properties.items()}
+
+    @staticmethod
+    def convert_list_to_snake(items: List[str]) -> List[str]:
+        """Convert a list of camelCase strings to snake_case."""
+        return [SchemaUtils.camel_to_snake(item) for item in items]
+
+    @staticmethod
+    def load_yaml(file_path: str) -> Dict[str, Any]:
+        """Load and parse a YAML file."""
+        with open(file_path, 'r') as f:
+            return yaml.safe_load(f)
+
+    @staticmethod
+    def sanitize_file_name(name: str) -> str:
+        """Convert a schema filename to a valid Python module name."""
+        name = str(Path(name).stem).lower()
+        name = name.replace('.schema', '')
+        return name.replace('-', '_')
+
+    @staticmethod
+    def sanitize_class_name(name: str) -> str:
+        """Convert a schema filename to a valid Python class name."""
+        name = Path(name).stem
+        name = name.replace('.schema', '')
+        words = name.replace('-', '_').split('_')
+        return ''.join(word.title() for word in words)
+
+    @staticmethod
+    def resolve_reference(ref: str) -> Tuple[str, str]:
+        """Resolve a schema reference to a class name and file path."""
+        if not ref:
+            return "", ""
+        ref_path = Path(ref)
+        return SchemaUtils.sanitize_class_name(ref_path.stem), ref_path.name
+
+    @staticmethod
+    def generate_dunder_init_py(output_dir: str, sub_modules: List[str]) -> None:
+        """
+        Generate an __init__.py file with proper imports and __all__ declarations.
+
+        Args:
+            output_dir: Directory where the __init__.py will be created
+            sub_modules: List of module names (without .py extension)
+        """
+        output_path = Path(output_dir)
+        init_file_path = output_path / "__init__.py"
+
+        # Generate import statements and collect class names
+        import_statements = []
+        class_names = []
+
+        for module in sub_modules:
+            class_name = ''.join(part.capitalize() for part in module.split('_'))
+            import_statements.append(f"from .{module} import {class_name}")
+            class_names.append(class_name)
+
+        # Create file content with proper formatting
+        file_content = '\n'.join(import_statements)
+        file_content += f"\n\n__all__ = [\n    " + ",\n    ".join(class_names) + "\n]"
+
+        # Write to file
+        with open(init_file_path, 'w') as f:
+            f.write(file_content)
 
 
 def main():
+    """Parse command line arguments and run the schema converter."""
     parser = argparse.ArgumentParser(description="Flags for `schema_to_python.py`.")
-    parser.add_argument("-d", "--schema_dir", action="store", default='../schemas/', help="Directory where the yaml schema files are stored.")
-    parser.add_argument("-o", "--output_dir", action="store", default='generated/', help="Directory where the python schema files are written.")
+    parser.add_argument("-d", "--schema_dir", action="store", default='../schemas/',
+                        help="Directory where the yaml schema files are stored.")
+    parser.add_argument("-o", "--output_dir", action="store", default='generated/',
+                        help="Directory where the python schema files are written.")
     args = parser.parse_args()
 
     converter = SchemaConverter()
