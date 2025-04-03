@@ -51,8 +51,35 @@ def resolve_reference(ref: str) -> tuple[str, str]:
 
 
 def generate_dunder_init_py(output_dir: str, sub_modules: list[str]) -> None:
-    dunder_init_py_path = Path(output_dir) / "__init__.py"
-    file_content = '\n'.join(f"from .{m} import *" for m in sub_modules)
+    """
+    Generates an __init__.py file with proper imports and __all__ declarations.
+
+    Args:
+        output_dir: Directory where the __init__.py will be created
+        sub_modules: List of module names (without .py extension)
+    """
+    output_path = Path(output_dir)
+    dunder_init_py_path = output_path / "__init__.py"
+
+    # Generate import statements and collect class names
+    import_statements = []
+    class_names = []
+
+    for module in sub_modules:
+        # Get the class name based on the module name
+        class_name = ''.join(part.capitalize() for part in module.split('_'))
+
+        # Add import statement
+        import_statements.append(f"from .{module} import {class_name}")
+
+        # Add class name to list for __all__
+        class_names.append(class_name)
+
+    # Create file content with an empty line before __all__
+    file_content = '\n'.join(import_statements)
+    file_content += f"\n\n__all__ = [\n    " + ",\n    ".join(class_names) + "\n]"
+
+    # Write to file
     with open(dunder_init_py_path, 'w') as f:
         f.write(file_content)
 
