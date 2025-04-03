@@ -7,33 +7,33 @@ from typing import Any
 
 from PIL import Image
 
-from tank_royale.bot_api.color import Color
-from tank_royale.bot_api.bullet_state import BulletState
-from tank_royale.bot_api.events.condition import Condition
+from robocode_tank_royale.bot_api.color import Color
+from robocode_tank_royale.bot_api.bullet_state import BulletState
+from robocode_tank_royale.bot_api.events.condition import Condition
 
-from tank_royale.bot_api.events.bot_event import BotEvent
-from tank_royale.bot_api.events.bot_death_event import BotDeathEvent
-from tank_royale.bot_api.events.bullet_fired_event import BulletFiredEvent
-from tank_royale.bot_api.events.bullet_hit_bot_event import BulletHitBotEvent
-from tank_royale.bot_api.events.bullet_hit_bullet_event import BulletHitBulletEvent
-from tank_royale.bot_api.events.bullet_hit_wall_event import BulletHitWallEvent
-from tank_royale.bot_api.events.connection_error_event import ConnectionErrorEvent
-from tank_royale.bot_api.events.connected_event import ConnectedEvent
-from tank_royale.bot_api.events.custom_event import CustomEvent
-from tank_royale.bot_api.events.disconnected_event import DisconnectedEvent
-from tank_royale.bot_api.events.death_event import DeathEvent
-from tank_royale.bot_api.events.game_started_event import GameStartedEvent
-from tank_royale.bot_api.events.game_ended_event import GameEndedEvent
-from tank_royale.bot_api.events.hit_bot_event import HitBotEvent
-from tank_royale.bot_api.events.hit_by_bullet_event import HitByBulletEvent
-from tank_royale.bot_api.events.hit_wall_event import HitWallEvent
-from tank_royale.bot_api.events.round_started_event import RoundStartedEvent
-from tank_royale.bot_api.events.round_ended_event import RoundEndedEvent
-from tank_royale.bot_api.events.scanned_bot_event import ScannedBotEvent
-from tank_royale.bot_api.events.skipped_turn_event import SkippedTurnEvent
-from tank_royale.bot_api.events.team_message_event import TeamMessageEvent
-from tank_royale.bot_api.events.tick_event import TickEvent
-from tank_royale.bot_api.events.won_round_event import WonRoundEvent
+from robocode_tank_royale.bot_api.events.bot_event import BotEvent
+from robocode_tank_royale.bot_api.events.bot_death_event import BotDeathEvent
+from robocode_tank_royale.bot_api.events.bullet_fired_event import BulletFiredEvent
+from robocode_tank_royale.bot_api.events.bullet_hit_bot_event import BulletHitBotEvent
+from robocode_tank_royale.bot_api.events.bullet_hit_bullet_event import BulletHitBulletEvent
+from robocode_tank_royale.bot_api.events.bullet_hit_wall_event import BulletHitWallEvent
+from robocode_tank_royale.bot_api.events.connection_error_event import ConnectionErrorEvent
+from robocode_tank_royale.bot_api.events.connected_event import ConnectedEvent
+from robocode_tank_royale.bot_api.events.custom_event import CustomEvent
+from robocode_tank_royale.bot_api.events.disconnected_event import DisconnectedEvent
+from robocode_tank_royale.bot_api.events.death_event import DeathEvent
+from robocode_tank_royale.bot_api.events.game_started_event import GameStartedEvent
+from robocode_tank_royale.bot_api.events.game_ended_event import GameEndedEvent
+from robocode_tank_royale.bot_api.events.hit_bot_event import HitBotEvent
+from robocode_tank_royale.bot_api.events.hit_by_bullet_event import HitByBulletEvent
+from robocode_tank_royale.bot_api.events.hit_wall_event import HitWallEvent
+from robocode_tank_royale.bot_api.events.round_started_event import RoundStartedEvent
+from robocode_tank_royale.bot_api.events.round_ended_event import RoundEndedEvent
+from robocode_tank_royale.bot_api.events.scanned_bot_event import ScannedBotEvent
+from robocode_tank_royale.bot_api.events.skipped_turn_event import SkippedTurnEvent
+from robocode_tank_royale.bot_api.events.team_message_event import TeamMessageEvent
+from robocode_tank_royale.bot_api.events.tick_event import TickEvent
+from robocode_tank_royale.bot_api.events.won_round_event import WonRoundEvent
 
 
 class IBaseBot(abc.ABC):

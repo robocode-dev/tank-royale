@@ -1,5 +1,6 @@
-from tank_royale.bot_api.events.bot_event import BotEvent
-from tank_royale.bot_api.bullet_state import BulletState
+from robocode_tank_royale.bot_api.bullet_state import BulletState
+from robocode_tank_royale.bot_api.events.bot_event import BotEvent
+
 
 class BulletFiredEvent(BotEvent):
     """Event occurring when a bullet has been fired from a bot."""

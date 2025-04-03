@@ -1,5 +1,5 @@
-from tank_royale.bot_api.events.bot_event import BotEvent
-from tank_royale.bot_api.events.condition import Condition
+from robocode_tank_royale.bot_api.events.bot_event import BotEvent
+from robocode_tank_royale.bot_api.events.condition import Condition
 
 
 class CustomEvent(BotEvent):

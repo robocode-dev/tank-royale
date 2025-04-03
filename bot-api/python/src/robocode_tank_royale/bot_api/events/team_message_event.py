@@ -1,6 +1,6 @@
 from typing import Any
 
-from tank_royale.bot_api.events.bot_event import BotEvent
+from robocode_tank_royale.bot_api.events.bot_event import BotEvent
 
 
 class TeamMessageEvent(BotEvent):

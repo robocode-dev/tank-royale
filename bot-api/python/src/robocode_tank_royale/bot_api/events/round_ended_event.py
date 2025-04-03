@@ -1,5 +1,5 @@
-from tank_royale.bot_api.bot_results import BotResults
-from tank_royale.bot_api.events.abstract_event import IEvent
+from robocode_tank_royale.bot_api.bot_results import BotResults
+from robocode_tank_royale.bot_api.events.abstract_event import IEvent
 
 
 class RoundEndedEvent(IEvent):

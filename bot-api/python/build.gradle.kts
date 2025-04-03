@@ -19,7 +19,7 @@ tasks {
     val `generate-schema` by registering(Exec::class) {
         dependsOn(`install-requirements`)
 
-        commandLine("python", "schema_to_python.py", "-d", "../../schema/schemas", "-o", "generated/robocode/tank_royale/schema");
+        commandLine("python", "schema_to_python.py", "-d", "../../schema/schemas", "-o", "generated/robocode_tank_royale/schema");
     }
 
     val `pip-install` by registering(Exec::class) {

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from tank_royale.bot_api.color import Color
+from robocode_tank_royale.bot_api.color import Color
 
 @dataclass
 class BotState:

@@ -1,6 +1,6 @@
-from tank_royale.bot_api.initial_position import InitialPosition
-from tank_royale.bot_api.game_setup import GameSetup
-from tank_royale.bot_api.events.abstract_event import IEvent
+from robocode_tank_royale.bot_api.initial_position import InitialPosition
+from robocode_tank_royale.bot_api.game_setup import GameSetup
+from robocode_tank_royale.bot_api.events.abstract_event import IEvent
 
 
 class GameStartedEvent(IEvent):

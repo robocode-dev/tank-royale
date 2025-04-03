@@ -15,8 +15,8 @@ setup(
     long_description_content_type='text/markdown',
     url='https://robocode-dev.github.io/tank-royale',
     package_dir={
-        "robocode.tank_royale.schema": "generated/robocode/tank_royale/schema",
-        "robocode.tank_royale.bot_api": "generated/robocode/tank_royale/bot_api",
+        "robocode_tank_royale.schema": "generated/robocode_tank_royale/schema",
+        "robocode_tank_royale.bot_api": "generated/robocode_tank_royale/bot_api",
     },
     packages=find_packages(where='src') + find_packages(where='generated'),
     python_requires='>=3.10',

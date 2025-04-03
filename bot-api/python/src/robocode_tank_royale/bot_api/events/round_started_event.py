@@ -1,4 +1,4 @@
-from tank_royale.bot_api.events.abstract_event import IEvent
+from robocode_tank_royale.bot_api.events.abstract_event import IEvent
 
 
 class RoundStartedEvent(IEvent):

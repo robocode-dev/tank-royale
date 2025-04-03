@@ -1,6 +1,7 @@
-from tank_royale.bot_api.events.abstract_event import IEvent
+from robocode_tank_royale.bot_api.events.event_abc import EventABC
 
-class BotEvent(IEvent):
+
+class BotEvent(EventABC):
     """Bot event occurring during a battle."""
 
     def __init__(self, turn_number: int):
