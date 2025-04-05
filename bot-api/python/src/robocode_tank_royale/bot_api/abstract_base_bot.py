@@ -42,11 +42,11 @@ class IBaseBot(abc.ABC):
     TEAM_MESSAGE_MAX_SIZE: int = 32768  # in bytes
     # The maximum number of team messages that can be sent per turn, which is 10 messages.
     MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: int = 10
-    
+
     @abc.abstractmethod
     def start(self) -> None:
-        """
-        The method used to start running the bot. You should call this method from the main method or similar.
+        """The method used to start running the bot. You should call this method from the main method or similar.
+
         Example:
         def main(argv):
             # Create my_bot
@@ -54,11 +54,10 @@ class IBaseBot(abc.ABC):
             my_bot.start()
         """
         pass
-    
+
     @abc.abstractmethod
     def go(self) -> None:
-        """
-        Commits the current commands (actions), which finalizes the current turn for the bot.
+        """Commits the current commands (actions), which finalizes the current turn for the bot.
         
         This method must be called once per turn to send the bot actions to the server and must be
         called before the turn timeout occurs. A turn timer is started when the GameStartedEvent
@@ -73,7 +72,7 @@ class IBaseBot(abc.ABC):
         see getTurnTimeout.
         """
         pass
-    
+
     @abc.abstractmethod
     def get_my_id(self) -> int:
         """Unique id of this bot, which is available when the game has started.
@@ -82,7 +81,7 @@ class IBaseBot(abc.ABC):
             The unique id of this bot.
         """
         pass
-    
+
     @abc.abstractmethod
     def get_variant(self) -> str:
         """The game variant, which is "Tank Royale".
@@ -100,7 +99,7 @@ class IBaseBot(abc.ABC):
             The game version.
         """
         pass
-    
+
     @abc.abstractmethod
     def get_game_type(self) -> str:
         """Game type, e.g. "melee" or "1v1".
@@ -409,7 +408,7 @@ class IBaseBot(abc.ABC):
             max_turn_rate: The new maximum turn rate.
         """
         pass
-    
+
     @abc.abstractmethod
     def get_gun_turn_rate(self) -> float:
         """Returns the gun turn rate in degrees per turn.
@@ -1228,7 +1227,7 @@ class IBaseBot(abc.ABC):
         Args:
             disconnected_event: The event details from the game.
         """
-        msg = f"Disconnected from: {disconnected_event.server_uri}" # Use f-string
+        msg = f"Disconnected from: {disconnected_event.server_uri}"  # Use f-string
         if disconnected_event.status_code is not None:
             msg += f", status code: {disconnected_event.status_code}"
         if disconnected_event.reason is not None:
@@ -1247,7 +1246,7 @@ class IBaseBot(abc.ABC):
         print(f"Connection error with {connection_error_event.server_uri}")
 
         if connection_error_event.error is not None:
-            traceback.print_exc(connection_error_event.error) # Print the exception
+            traceback.print_exc(connection_error_event.error)  # Print the exception
 
     def on_game_started(self, game_started_event: GameStartedEvent) -> None:
         """Handles the game started event.
@@ -1319,7 +1318,7 @@ class IBaseBot(abc.ABC):
             death_event: The event details from the game.
         """
         pass
-    
+
     def on_hit_bot(self, bot_hit_bot_event: HitBotEvent) -> None:
         """Handles the bot hit bot event.
 
@@ -1484,7 +1483,7 @@ class IBaseBot(abc.ABC):
             firepower.
         """
         pass
-    
+
     @abc.abstractmethod
     def get_event_priority(self, event_class: type) -> int:
         """Returns the event priority for a specific event class.
@@ -1543,7 +1542,7 @@ class IBaseBot(abc.ABC):
             A bearing (delta angle) in the range [-180, 180).
         """
         return self.normalize_relative_angle(direction - self.get_gun_direction())
-    
+
     def calc_radar_bearing(self, direction: float) -> float:
         """Calculates the bearing (delta angle) relative to the radar's direction.
 

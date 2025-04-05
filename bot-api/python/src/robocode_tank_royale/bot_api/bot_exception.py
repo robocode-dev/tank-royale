@@ -5,11 +5,11 @@ class BotException(Exception):
 
     def __init__(self, message, cause=None):
         """
-        Initializes a new instance of the BotException class with a specified error message
-        and an optional cause.
+        Initializes a new instance of the BotException class.
 
-        :param message: The error message that describes the error.
-        :param cause: The exception that is the cause of this exception (optional).
+        Args:
+            message: The error message that describes the error.
+            cause: The exception that is the cause of this exception. Defaults to None.
         """
         super().__init__(message)
         self.cause = cause

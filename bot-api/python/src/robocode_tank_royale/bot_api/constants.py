@@ -2,49 +2,73 @@
 Constants for the Tank Royale Bot API.
 """
 
-# Radius of the bounding circle of the bot
-# A bot gets hit by a bullet when the bullet gets inside this bounding circle
 BOUNDING_CIRCLE_RADIUS = 18
+"""
+Radius of the bounding circle of the bot.
+A bot gets hit by a bullet when the bullet gets inside this bounding circle.
+"""
 
-# Radius of the radar's scan beam
-# Bots within this radius are detectable by the radar
 SCAN_RADIUS = 1200
+"""
+Radius of the radar's scan beam.
+Bots within this radius are detectable by the radar.
+"""
 
-# Maximum possible driving turn rate (degrees per turn)
-# The speed of the bot affects the turn rate
-# Formula: MaxTurnRate - 0.75 x abs(speed)
 MAX_TURN_RATE = 10
+"""
+Maximum possible driving turn rate in degrees per turn.
+The speed of the bot affects the turn rate.
+Formula: MaxTurnRate - 0.75 x abs(speed)
+"""
 
-# Maximum gun turn rate (degrees per turn)
 MAX_GUN_TURN_RATE = 20
+"""
+Maximum gun turn rate in degrees per turn.
+"""
 
-# Maximum radar turn rate (degrees per turn)
 MAX_RADAR_TURN_RATE = 45
+"""
+Maximum radar turn rate in degrees per turn.
+"""
 
-# Maximum absolute speed (units per turn)
 MAX_SPEED = 8
+"""
+Maximum absolute speed in units per turn.
+"""
 
-# Minimum firepower for the bot's gun
-# The gun cannot fire with power less than this
 MIN_FIREPOWER = 0.1
+"""
+Minimum firepower for the bot's gun.
+The gun cannot fire with power less than this.
+"""
 
-# Maximum firepower for the bot's gun
-# The gun cannot fire with power greater than this
 MAX_FIREPOWER = 3
+"""
+Maximum firepower for the bot's gun.
+The gun cannot fire with power greater than this.
+"""
 
-# Minimum bullet speed (units per turn)
-# Minimum bullet speed = 20 - 3 * MAX_FIREPOWER
 MIN_BULLET_SPEED = 20 - 3 * MAX_FIREPOWER
+"""
+Minimum bullet speed in units per turn.
+Derived using the formula: 20 - 3 x MAX_FIREPOWER.
+"""
 
-# Maximum bullet speed (units per turn)
-# Maximum bullet speed = 20 - 3 * MIN_FIREPOWER
 MAX_BULLET_SPEED = 20 - 3 * MIN_FIREPOWER
+"""
+Maximum bullet speed in units per turn.
+Derived using the formula: 20 - 3 x MIN_FIREPOWER.
+"""
 
-# Acceleration (units per turn)
-# Incremental increase in speed when moving forward
 ACCELERATION = 1
+"""
+Acceleration in units per turn.
+Incremental increase in speed when moving forward.
+"""
 
-# Deceleration (units per turn)
-# Incremental decrease in speed when moving backward
-# The bot brakes faster than it accelerates forward
 DECELERATION = -2
+"""
+Deceleration in units per turn.
+Incremental decrease in speed when moving backward.
+The bot brakes faster than it accelerates forward.
+"""
