@@ -1,5 +1,5 @@
 # Bot API classes
-from .abstract_base_bot import IBaseBot
+from .base_bot_abs import BaseBotABC
 from .bot_results import BotResults
 from .bot_state import BotState
 from .bullet_state import BulletState
@@ -8,7 +8,7 @@ from .game_setup import GameSetup
 from .initial_position import InitialPosition
 
 __all__ = [
-    'IBaseBot',
+    'BaseBotABC',
     'BotResults',
     'BotState',
     'BulletState',
