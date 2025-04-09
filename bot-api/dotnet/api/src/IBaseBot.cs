@@ -256,7 +256,7 @@ public interface IBaseBot
     void ClearEvents();
 
     /// <summary>
-    /// Set or get the turn rate of the bot, which can be positive and negative. The turn rate is
+    /// Sets or get the turn rate of the bot, which can be positive and negative. The turn rate is
     /// measured in degrees per turn. The turn rate is added to the current direction of the bot.
     /// But it is also added to the current direction of the gun and radar. This is because the gun
     /// is mounted on the body, and hence turns with the body. The radar is mounted on the gun and
@@ -298,7 +298,7 @@ public interface IBaseBot
     double MaxTurnRate { get; set; }
 
     /// <summary>
-    /// Set or get the turn rate of the gun, which can be positive and negative. The gun turn rate
+    /// Sets or get the turn rate of the gun, which can be positive and negative. The gun turn rate
     /// is measured in degrees per turn. The turn rate is added to the current turn direction of
     /// the gun. But it is also added to the current direction of the radar. This is because the
     /// radar is mounted on the gun, and hence moves with the gun. You can compensate for the turn
@@ -339,7 +339,7 @@ public interface IBaseBot
     double MaxGunTurnRate { get; set; }
 
     /// <summary>
-    /// Set or get the turn rate of the radar, which can be positive and negative. The radar turn
+    /// Sets or get the turn rate of the radar, which can be positive and negative. The radar turn
     /// rate is measured in degrees per turn. The turn rate is added to the current direction of
     /// the radar. Note that besides the turn rate of the radar, the turn rates of the bot and gun
     /// are also added to the radar direction, as the radar moves with the gun, which is mounted on
@@ -380,7 +380,7 @@ public interface IBaseBot
     double MaxRadarTurnRate { get; set; }
 
     /// <summary>
-    /// Set or get the target speed for the bot in units per turn. The target speed is the speed
+    /// Sets or get the target speed for the bot in units per turn. The target speed is the speed
     /// you want to achieve eventually, which could take one to several turns depending on the
     /// current speed. For example, if the bot is moving forward with max speed, and then must
     /// change to move backward at full speed, the bot will have to first decelerate/brake its
@@ -510,7 +510,7 @@ public interface IBaseBot
     void SetFireAssist(bool enable);
 
     /// <summary>
-    /// Set this property during an event handler to control continuing or restarting the event handler,
+    /// Sets this property during an event handler to control continuing or restarting the event handler,
     /// when a new event occurs again for the same event handler while processing an earlier event.
     /// </summary>
     /// <example>
@@ -630,7 +630,7 @@ public interface IBaseBot
     bool RemoveCustomEvent(Condition condition);
 
     /// <summary>
-    /// Set the bot to stop all movement including turning the gun and radar. The remaining movement is
+    /// Sets the bot to stop all movement including turning the gun and radar. The remaining movement is
     /// saved for a call to <see cref="SetResume"/>. This method has no effect, if it has already been
     /// called.
     ///
@@ -646,7 +646,7 @@ public interface IBaseBot
     void SetStop();
 
     /// <summary>
-    /// Set the bot to stop all movement including turning the gun and radar. The remaining movement is
+    /// Sets the bot to stop all movement including turning the gun and radar. The remaining movement is
     /// saved for a call to <see cref="SetResume"/>.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
@@ -664,10 +664,8 @@ public interface IBaseBot
     void SetStop(bool overwrite);
 
     /// <summary>
-    /// Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
-    /// turning and thereby will not be able to automatically scan bots. This method is useful when the
-    /// bot movement has stopped, e.g. when <see cref="IBot.Stop()"/> has been called. The last radar direction
-    /// and sweep angle will be used for rescanning for bots.
+    /// Sets the bot to resume movement after having been stopped, e.g. when <see cref="IBot.Stop()"/> has been
+    /// called. The last radar direction and sweep angle will be used for rescanning for bots.
     ///
     /// This method will first be executed when <see cref="IBaseBot.Go"/> is called making it possible to
     /// call other set methods before execution. This makes it possible to set the bot to move,

@@ -1,0 +1,1721 @@
+from abc import ABC, abstractmethod
+import math
+import traceback
+from typing import Any
+
+from PIL import Image
+
+from robocode_tank_royale.bot_api.color import Color
+from robocode_tank_royale.bot_api.bullet_state import BulletState
+from robocode_tank_royale.bot_api.events.condition import Condition
+
+from robocode_tank_royale.bot_api.events.bot_event import BotEvent
+from robocode_tank_royale.bot_api.events.bot_death_event import BotDeathEvent
+from robocode_tank_royale.bot_api.events.bullet_fired_event import BulletFiredEvent
+from robocode_tank_royale.bot_api.events.bullet_hit_bot_event import BulletHitBotEvent
+from robocode_tank_royale.bot_api.events.bullet_hit_bullet_event import BulletHitBulletEvent
+from robocode_tank_royale.bot_api.events.bullet_hit_wall_event import BulletHitWallEvent
+from robocode_tank_royale.bot_api.events.connection_error_event import ConnectionErrorEvent
+from robocode_tank_royale.bot_api.events.connected_event import ConnectedEvent
+from robocode_tank_royale.bot_api.events.custom_event import CustomEvent
+from robocode_tank_royale.bot_api.events.disconnected_event import DisconnectedEvent
+from robocode_tank_royale.bot_api.events.death_event import DeathEvent
+from robocode_tank_royale.bot_api.events.game_started_event import GameStartedEvent
+from robocode_tank_royale.bot_api.events.game_ended_event import GameEndedEvent
+from robocode_tank_royale.bot_api.events.hit_bot_event import HitBotEvent
+from robocode_tank_royale.bot_api.events.hit_by_bullet_event import HitByBulletEvent
+from robocode_tank_royale.bot_api.events.hit_wall_event import HitWallEvent
+from robocode_tank_royale.bot_api.events.round_started_event import RoundStartedEvent
+from robocode_tank_royale.bot_api.events.round_ended_event import RoundEndedEvent
+from robocode_tank_royale.bot_api.events.scanned_bot_event import ScannedBotEvent
+from robocode_tank_royale.bot_api.events.skipped_turn_event import SkippedTurnEvent
+from robocode_tank_royale.bot_api.events.team_message_event import TeamMessageEvent
+from robocode_tank_royale.bot_api.events.tick_event import TickEvent
+from robocode_tank_royale.bot_api.events.won_round_event import WonRoundEvent
+
+
+class BaseBotABC(ABC):
+    """Interface containing the core API for a bot."""
+
+    TEAM_MESSAGE_MAX_SIZE: int = 32768  # bytes
+    """Maximum size of a team message, which is 32 KB."""
+
+    MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: int = 10
+    """The maximum number of team messages that can be sent per turn, which is 10 messages."""
+
+    @abstractmethod
+    def start(self) -> None:
+        """The method used to start running the bot. You should call this method from the main function
+        or a similar entry point.
+
+        Example:
+            ```python
+            def main():
+                # create my_bot
+                ...
+                my_bot.start()
+            ```
+        """
+        pass
+
+    @abstractmethod
+    def go(self) -> None:
+        """Commits the current commands (actions), which finalizes the current turn for the bot.
+
+        This method must be called once per turn to send the bot's actions to the server and must
+        be called before the turn timeout occurs. A turn timer starts when the `GameStartedEvent`
+        and `TickEvent` occur. If the `go()` method is called too late, a turn timeout will occur,
+        and the `SkippedTurnEvent` will be triggered, meaning the bot has skipped all actions for
+        the previous turn. In such a case, the server will continue executing the last actions
+        received. This could be fatal for the bot due to the loss of control over it. Ensure that
+        `go()` is called before the turn ends.
+
+        The commands executed when `go()` is called are set via the appropriate setter methods
+        prior to calling `go()`: `setTurnRate`, `setGunTurnRate`, `setRadarTurnRate`,
+        `setTargetSpeed`, and `setFire`.
+
+        See:
+            `getTurnTimeout`: For additional information on the turn timeout.
+        """
+        pass
+
+    @abstractmethod
+    def get_my_id(self) -> int:
+        """Unique id of this bot, which is available when the game has started.
+        
+        Returns:
+            int: The unique id of this bot.
+        """
+        pass
+
+    @abstractmethod
+    def get_variant(self) -> str:
+        """The game variant, which is "Tank Royale".
+        
+        Returns:
+            str: The game variant of Robocode.
+        """
+        pass
+
+    @abstractmethod
+    def get_version(self) -> str:
+        """Game version, e.g. "1.0.0".
+        
+        Returns:
+            str: The game version.
+        """
+        pass
+
+    @abstractmethod
+    def get_game_type(self) -> str:
+        """Game type, e.g. "melee" or "1v1".
+        
+        First available when the game has started.
+
+        Returns:
+            str: The game type.
+        """
+        pass
+
+    @abstractmethod
+    def get_arena_width(self) -> int:
+        """Width of the arena measured in units.
+        
+        First available when the game has started.
+
+        Returns:
+            int: The arena width measured in units
+        """
+        pass
+
+    @abstractmethod
+    def get_arena_height(self) -> int:
+        """Height of the arena measured in units.
+        
+        First available when the game has started.
+
+        Returns:
+            int: The arena height measured in units
+        """
+        pass
+
+    @abstractmethod
+    def get_number_of_rounds(self) -> int:
+        """The number of rounds in a battle.
+        
+        First available when the game has started.
+
+        Returns:
+            int: The number of rounds in a battle.
+        """
+        pass
+
+    @abstractmethod
+    def get_gun_cooling_rate(self) -> float:
+        """Gun cooling rate.
+        
+        The gun needs to cool down to a gun heat of zero before the gun can fire.
+        The gun cooling rate determines how fast the gun cools down. That is, the gun cooling rate is
+        subtracted from the gun heat each turn until the gun heat reaches zero.
+
+        First available when the game has started.
+
+        Returns:
+            float: The gun cooling rate.
+        """
+        pass
+
+    @abstractmethod
+    def get_max_inactivity_turns(self) -> int:
+        """The maximum number of inactive turns allowed.
+        
+        The bot will become zapped by the game for being inactive. Inactive means
+        that the bot has taken no action in several turns in a row.
+        
+        First available when the game has started.
+
+        Returns:
+            int: The maximum number of allowed inactive turns.
+        """
+        pass
+
+    @abstractmethod
+    def get_turn_timeout(self) -> int:
+        """The turn timeout in microseconds.
+        
+        The turn timeout is important as the bot needs to take action by calling go() before
+        the turn timeout occurs. As soon as the TickEvent() is triggered, i.e. when onTick() is called,
+        you need to call go() to take action before the turn timeout occurs.
+        Otherwise, your bot will skip a turn and receive a onSkippedTurn for each turn where
+        go() is called too late.
+        
+        First available when the game has started.
+
+        Returns:
+            int: The turn timeout in microseconds.
+        """
+        pass
+
+    @abstractmethod
+    def get_time_left(self) -> int:
+        """The number of microseconds left of this turn before the bot will skip the turn.
+        
+        Make sure to call go() before the time runs out.
+
+        Returns:
+            int: The amount of time left in microseconds.
+        """
+        pass
+
+    @abstractmethod
+    def get_round_number(self) -> int:
+        """Current round number.
+
+        Returns:
+            int: The current round number.
+        """
+        pass
+
+    @abstractmethod
+    def get_turn_number(self) -> int:
+        """Current turn number.
+
+        Returns:
+            int: The current turn number.
+        """
+        pass
+
+    @abstractmethod
+    def get_enemy_count(self) -> int:
+        """Number of enemies left in the round.
+
+        Returns:
+            int: The number of enemies left in the round.
+        """
+        pass
+
+    @abstractmethod
+    def get_energy(self) -> float:
+        """Current energy level.
+        
+        When the energy level is positive, the bot is alive and active. When the
+        energy level is 0, the bot is still alive but disabled. If the bot becomes disabled it will not
+        be able to move or take any action. If negative, the bot has been defeated.
+
+        Returns:
+            float: The current energy level.
+        """
+        pass
+
+    @abstractmethod
+    def is_disabled(self) -> bool:
+        """Specifies if the bot is disabled, i.e., when the energy is zero.
+        
+        When the bot is disabled, it is not able to take any action like movement, turning, and firing.
+
+        Returns:
+            bool: True if the bot is disabled; False otherwise.
+        """
+        pass
+
+    @abstractmethod
+    def get_x(self) -> float:
+        """Current X coordinate of the center of the bot.
+
+        Returns:
+            float: The current X coordinate of the bot.
+        """
+        pass
+
+    @abstractmethod
+    def get_y(self) -> float:
+        """Current Y coordinate of the center of the bot.
+
+        Returns:
+            float: The current Y coordinate of the bot.
+        """
+        pass
+
+    @abstractmethod
+    def get_direction(self) -> float:
+        """Current driving direction of the bot in degrees.
+
+        Returns:
+            float: The current driving direction of the bot.
+        """
+        pass
+
+    @abstractmethod
+    def get_gun_direction(self) -> float:
+        """Current direction of the gun in degrees.
+
+        Returns:
+            float: The current gun direction of the bot.
+        """
+        pass
+
+    @abstractmethod
+    def get_radar_direction(self) -> float:
+        """Current direction of the radar in degrees.
+
+        Returns:
+            float: The current radar direction of the bot.
+        """
+        pass
+
+    @abstractmethod
+    def get_speed(self) -> float:
+        """The current speed measured in units per turn.
+        
+        If the speed is positive, the bot moves forward. If negative, the bot moves backward.
+        Zero speed means that the bot is not moving from its current position.
+
+        Returns:
+            float: The current speed.
+        """
+        pass
+
+    @abstractmethod
+    def get_gun_heat(self) -> float:
+        """Current gun heat.
+        
+        When the gun is fired it gets heated and will not be able to fire before it has
+        been cooled down. The gun is cooled down when the gun heat is zero.
+        When the gun has fired the gun heat is set to 1 + (firepower / 5) and will be cooled down by
+        the gun cooling rate.
+
+        Returns:
+            float: The current gun heat.
+        """
+        pass
+
+    @abstractmethod
+    def get_bullet_states(self) -> list[BulletState]:
+        """Current bullet states.
+        
+        Keeps track of all the bullets fired by the bot, which are still active on the arena.
+
+        Returns:
+            list[BulletState]: The current bullet states.
+        """
+        pass
+
+    @abstractmethod
+    def get_events(self) -> list[BotEvent]:
+        """Returns an ordered list containing all events currently in the bot's event queue.
+        
+        You might, for example, call this while processing another event.
+
+        Returns:
+            list[BotEvent]: An ordered list containing all events currently in the bot's event queue.
+        """
+        pass
+
+    @abstractmethod
+    def clear_events(self) -> None:
+        """Clears out any pending events in the bot's event queue immediately."""
+        pass
+
+    @abstractmethod
+    def get_turn_rate(self) -> float:
+        """Returns the turn rate of the bot in degrees per turn.
+
+        Returns:
+            float: The turn rate of the bot.
+        """
+        pass
+
+    @abstractmethod
+    def set_turn_rate(self, turn_rate: float) -> None:
+        """Sets the turn rate of the bot, which can be positive or negative. The turn rate is measured in
+        degrees per turn. The turn rate is added to the current direction of the bot, as well as the
+        current directions of the gun and radar. This is because the gun is mounted on the bot's body
+        and turns with it, and the radar is mounted on the gun and moves with it.
+
+        You can compensate for the bot's turn rate by subtracting the bot's turn rate from the turn
+        rates of the gun and radar. However, be aware that the turn limits defined for the gun and
+        radar cannot be exceeded.
+
+        The turn rate is truncated to `MAX_TURN_RATE` if the turn rate exceeds this value.
+
+        If this property is set multiple times, the last value set before `go()` is called will be used.
+
+        Args:
+            turn_rate (float): The new turn rate of the bot in degrees per turn.
+        """
+        pass
+
+    @abstractmethod
+    def get_max_turn_rate(self) -> float:
+        """Returns the maximum turn rate of the bot in degrees per turn.
+
+        Returns:
+            float: The maximum turn rate of the bot.
+        """
+        pass
+
+    @abstractmethod
+    def set_max_turn_rate(self, max_turn_rate: float) -> None:
+        """Sets the maximum turn rate, which applies to turning the bot to the left or right.
+
+        The maximum turn rate must be an absolute value between 0 and `Constants.MAX_TURN_RATE`, inclusive.
+        If the input turn rate is negative, the maximum turn rate will be set to zero. If the input turn
+        rate exceeds `Constants.MAX_TURN_RATE`, the maximum turn rate will be set to `Constants.MAX_TURN_RATE`.
+
+        For example, if the maximum turn rate is set to 5, the bot will be able to:
+        - Turn right with a rate down to -5 degrees per turn.
+        - Turn left with a rate up to 5 degrees per turn.
+
+        This method will take effect only when the `go()` method is called, allowing other setter methods
+        to be invoked beforehand. This makes it possible to set multiple actions (e.g., move, turn the body,
+        radar, gun, and fire) in parallel within a single turn when calling `go()`.
+
+        Note that calling this method multiple times will result in the last call before `go()` taking precedence.
+
+        Args:
+            max_turn_rate (float): The new maximum turn rate.
+
+        See Also:
+            set_turn_rate: For setting the turn rate directly.
+        """
+        pass
+
+    @abstractmethod
+    def get_gun_turn_rate(self) -> float:
+        """Returns the gun turn rate in degrees per turn.
+
+        Returns:
+            float: The turn rate of the gun.
+        """
+        pass
+
+    @abstractmethod
+    def set_gun_turn_rate(self, gun_turn_rate: float) -> None:
+        """Sets the turn rate of the gun, which can be positive or negative. The gun turn rate is
+        measured in degrees per turn. The turn rate is added to the current turn direction of the gun.
+        However, the turn rate also influences the radar direction, as the radar is mounted on the gun
+        and moves with it.
+
+        To compensate for the gun's turn rate, you can subtract the gun turn rate from the radar turn
+        rate, but note that the radar turn limits cannot be exceeded.
+
+        The gun turn rate is truncated to the maximum allowed turn rate if it exceeds that value.
+
+        If this property is set multiple times, only the last value set prior to calling `go()` is used.
+
+        Args:
+            gun_turn_rate (float): The new turn rate of the gun, in degrees per turn.
+        """
+        pass
+
+    @abstractmethod
+    def get_max_gun_turn_rate(self) -> float:
+        """Returns the maximum gun turn rate in degrees per turn.
+
+        Returns:
+            float: The maximum turn rate of the gun.
+        """
+        pass
+
+    @abstractmethod
+    def set_max_gun_turn_rate(self, max_gun_turn_rate: float) -> None:
+        """Sets the maximum turn rate for rotating the gun to the left or right. The maximum turn rate
+        must be an absolute value between 0 and `Constants.MAX_GUN_TURN_RATE`, inclusive. If the input
+        turn rate is negative, it will be set to 0. If the input turn rate exceeds
+        `Constants.MAX_GUN_TURN_RATE`, it will be set to `Constants.MAX_GUN_TURN_RATE`.
+
+        For example, if the maximum gun turn rate is set to 5, the gun will be able to turn left
+        or right with a turn rate ranging from -5 degrees per turn (when turning right) to
+        5 degrees per turn (when turning left).
+
+        This method will take effect when the `go()` method is called, making it possible to set
+        multiple attributes such as movement, body rotation, radar rotation, gun rotation, and firing
+        actions in parallel within a single turn. Note that this is only achievable by calling
+        setter methods before invoking `go()`.
+
+        If this method is called multiple times before `go()` is executed, only the last call will
+        take effect.
+
+        Args:
+            max_gun_turn_rate (float): The new maximum gun turn rate.
+
+        See Also:
+            set_gun_turn_rate: To adjust the current gun turn rate.
+        """
+        pass
+
+    @abstractmethod
+    def get_radar_turn_rate(self) -> float:
+        """Returns the radar turn rate in degrees per turn.
+
+        Returns:
+            float: The turn rate of the radar.
+        """
+        pass
+
+    @abstractmethod
+    def set_radar_turn_rate(self, gun_radar_turn_rate: float) -> None:
+        """Sets the turn rate of the radar, which can be positive or negative. The radar turn rate is
+        measured in degrees per turn. The turn rate is added to the current direction of the radar.
+
+        Note:
+            - Besides the turn rate of the radar, the turn rates of the bot and gun are also added
+              to the radar direction because the radar moves with the gun, which is mounted on the gun
+              that moves with the body.
+            - You can compensate for the turn rate of the gun by subtracting the turn rates of the bot
+              and gun from the radar turn rate. However, be aware that the turn limits defined for the
+              radar cannot be exceeded.
+            - The radar turn rate is truncated to `Constants.MAX_RADAR_TURN_RATE` if it exceeds this value.
+            - If this method is called multiple times, the last value set before the `go()` method is called
+              will take effect.
+
+        Args:
+            gun_radar_turn_rate (float): The new turn rate of the radar in degrees per turn.
+        """
+        pass
+
+    @abstractmethod
+    def get_max_radar_turn_rate(self) -> float:
+        """Returns the maximum radar turn rate in degrees per turn.
+
+        Returns:
+            The maximum turn rate of the radar.
+        """
+        pass
+
+    @abstractmethod
+    def set_max_radar_turn_rate(self, max_radar_turn_rate: float) -> None:
+        """Sets the maximum turn rate for turning the radar to the left or right. The maximum turn rate must
+        be an absolute value between 0 and `Constants.MAX_RADAR_TURN_RATE`, inclusive. If the input turn
+        rate is negative, the maximum turn rate will be set to zero. If the input turn rate exceeds
+        `Constants.MAX_RADAR_TURN_RATE`, it will be capped at `Constants.MAX_RADAR_TURN_RATE`.
+
+        For example, if the maximum radar turn rate is set to 5, the radar can turn up to 5 degrees to
+        the left or down to -5 degrees to the right per turn.
+
+        This method will only take effect when the `go()` method is called. This allows the bot to
+        configure multiple settings for movement, body turns, radar turns, gun turns, and firing actions
+        in a single turn before executing them with `go()`. Note that executing multiple methods in
+        parallel is only achievable by calling setter methods prior to invoking `go()`.
+
+        If this method is called multiple times, the last invocation before `go()` will determine the
+        effective radar turn rate.
+
+        Args:
+            max_radar_turn_rate (float): The new maximum radar turn rate.
+
+        See Also:
+            set_radar_turn_rate()
+        """
+        pass
+
+    @abstractmethod
+    def get_target_speed(self) -> float:
+        """Returns the target speed in units per turn.
+
+        Returns:
+            The target speed.
+        """
+        pass
+
+    @abstractmethod
+    def set_target_speed(self, target_speed: float) -> None:
+        """Sets the new target speed for the bot in units per turn. The target speed is the speed you want
+        to achieve eventually, which could take one to several turns depending on the current speed.
+        For example, if the bot is moving forward with max speed, and then must change to move backward
+        at full speed, the bot will have to first decelerate/brake its positive speed (moving forward).
+        After passing a speed of zero, it will then need to accelerate to achieve max negative speed.
+
+        Note:
+            - Acceleration is 1 unit per turn.
+            - Deceleration/braking is faster than acceleration, as it is -2 units per turn.
+            - Deceleration is applied as a negative value since it is added to the speed, reducing it
+              when slowing down.
+
+        The target speed is truncated to the maximum allowable speed if it exceeds the defined limit.
+
+        If this property is set multiple times before execution (e.g., in a single turn), only the
+        last set value will be applied once the method `go()` is invoked.
+
+        Args:
+            target_speed (float): The new target speed in units per turn.
+        """
+        pass
+
+    @abstractmethod
+    def get_max_speed(self) -> float:
+        """Returns the maximum speed in units per turn.
+
+        Returns:
+            float: The maximum speed.
+        """
+        pass
+
+    @abstractmethod
+    def set_max_speed(self, max_speed: float) -> None:
+        """Sets the maximum speed for moving forward and backward.
+
+        The maximum speed must be an absolute value between 0 and Constants.MAX_SPEED (inclusive). If the provided
+        `max_speed` is negative, it will be treated as 0. If it exceeds Constants.MAX_SPEED, it will be capped
+        at Constants.MAX_SPEED.
+
+        For example:
+            - If the maximum speed is set to 5, the bot can move forward at a maximum speed of 5 units per turn
+              and backward at a maximum speed of -5 units per turn.
+
+        Note:
+            - This method takes effect only when `go()` is called. This allows other setter methods related to
+              movement, turning, or firing to be called beforehand so that they execute in parallel in the same
+              turn when `go()` is invoked.
+            - If this method is called multiple times before `go()`, only the last call takes effect.
+
+        Args:
+            max_speed (float): The new maximum speed.
+        """
+        pass
+
+    @abstractmethod
+    def set_fire(self, firepower: float) -> bool:
+        """Sets the gun to fire in the direction that the gun is pointing with the specified firepower.
+
+        Firepower is the amount of energy your bot will spend on firing the gun. This means that the
+        bot will lose power on firing the gun, where the energy loss is equal to the firepower. You
+        cannot spend more energy than is available from your bot.
+
+        The bullet power must be greater than the minimum firepower and gun heat must be zero
+        before the gun can fire.
+
+        If the bullet hits an opponent bot, you will gain energy from the bullet hit.
+        When hitting another bot, your bot will be rewarded and retrieve an energy boost of 3x
+        the firepower.
+
+        The gun will only fire when the firepower is at or above the minimum firepower. If the firepower
+        is greater than the maximum firepower, the power will be truncated to the maximum firepower.
+
+        Whenever the gun is fired, the gun becomes heated and needs to cool down before it can fire
+        again. The gun heat must be zero before the gun can fire again. The gun heat generated by firing
+        the gun is calculated as 1 + (firepower / 5). Hence, the more firepower used, the longer it
+        takes to cool down the gun. The gun cooling rate can be retrieved using the `get_gun_cooling_rate()` function.
+
+        The amount of energy used for firing the gun is subtracted from the bot's total energy. The
+        amount of damage dealt by a bullet hitting another bot is 4x firepower. If the firepower is
+        greater than 1, it will deal an additional 2 x (firepower - 1) damage.
+
+        Note that the gun will automatically keep firing each turn as soon as the gun heat reaches
+        zero. It is possible to disable the gun firing by setting the firepower to zero.
+
+        The firepower is truncated between 0 and the maximum firepower if the provided value exceeds
+        this range.
+
+        If this property is set multiple times, the last value set before calling `go()` is used.
+
+        Args:
+            firepower (float): The new firepower.
+
+        Returns:
+            bool: True if the cannon can fire (i.e., if there is no gun heat), False otherwise.
+
+        See Also:
+            - `on_bullet_fired()`
+            - `get_firepower()`
+            - `get_gun_heat()`
+            - `get_gun_cooling_rate()`
+        """
+        pass
+
+    @abstractmethod
+    def get_firepower(self) -> float:
+        """Returns the firepower.
+
+        Returns:
+            float: The firepower.
+        """
+        pass
+
+    @abstractmethod
+    def set_rescan(self) -> None:
+        """Sets the bot to rescan with the radar.
+        
+        This method is useful if the radar has not turned, and hence will not automatically scan bots.
+        The last radar direction and sweep angle will be used for scanning for bots.
+        """
+        pass
+
+    @abstractmethod
+    def set_fire_assist(self, enable: bool) -> None:
+        """Enables or disables fire assistance explicitly. Fire assistance is useful for bots with
+        limited aiming capabilities as it helps the bot by firing directly at a scanned bot
+        when the gun is fired, which is a very simple aiming strategy.
+
+        When fire assistance is enabled, the gun will fire towards the center of the scanned bot
+        when all these conditions are met:
+
+        1. The gun is fired (via `set_fire` or `fire()`).
+        2. The radar is scanning a bot *when* firing the gun (e.g., in the `on_scanned_bot()` event,
+           after calling `set_rescan()` or `rescan()`).
+        3. The gun and radar are pointing in the exact same direction. You can disable radar
+           and gun movement alignment using `set_adjust_radar_for_gun_turn(False)` to ensure
+           the gun and radar stay aligned while avoiding radar turning independently of the gun.
+
+        The fire assistance feature is provided for backwards compatibility with the original Robocode,
+        where bots that were not considered `AdvancedRobot` had fire assistance enabled by default,
+        as their gun and radar could not move independently of each other. In contrast, `AdvancedRobot`
+        allows the body, gun, and radar to move independently.
+
+        Args:
+            enable (bool): Enables fire assistance when set to `True`, and disables it otherwise.
+        """
+        pass
+
+    @abstractmethod
+    def set_interruptible(self, interruptible: bool) -> None:
+        """Call this method during an event handler to control whether the handler continues
+        or restarts when a new event of the same type occurs while processing an earlier event.
+
+        Example:
+            def on_scanned_bot(event):
+                fire(1)
+                set_interruptible(True)
+                forward(100)  # When a new bot is scanned while moving forward, this handler will restart
+                              # from the top as it has been set to be interruptible after firing.
+                              # Without `set_interruptible(True)`, new scan events would not be triggered
+                              # while moving forward.
+                # This line is only reached if no bot is scanned during the move.
+                print("No bots were scanned")
+
+        Args:
+            interruptible (bool): True if the event handler should be interrupted and restart when a
+                                  new event of the same type occurs again; False otherwise, where the
+                                  event handler continues processing.
+        """
+        pass
+
+    @abstractmethod
+    def set_adjust_gun_for_body_turn(self, adjust: bool) -> None:
+        """Sets the gun to adjust for the bot's turn when setting the gun turn rate. This makes the gun behave
+        as if it is turning independently of the bot's turn.
+
+        Explanation:
+        The gun is mounted on the bot's body. Normally, if the bot turns 90 degrees to the right, the gun
+        also turns with it since it is mounted on top of the bot's body. To compensate for this behavior,
+        you can set the gun to adjust for the bot's turn. When this adjustment is enabled, the gun will
+        turn independently of the bot's turn.
+
+        Notes:
+        - This property is additive until you reach the maximum turn rate of the gun. The "adjust" value is
+          added to the turn rate and then capped by the game's physical constraints.
+        - Turning the gun in this way is still considered as "turning the gun" by the game.
+
+        Args:
+            adjust (bool): Set to `True` if the gun must adjust/compensate for the body's turning.
+                           Set to `False` if the gun should turn with the body (default).
+
+        Related Methods:
+            - `set_adjust_radar_for_body_turn()`
+            - `set_adjust_radar_for_gun_turn()`
+            - `is_adjust_gun_for_body_turn()`
+            - `is_adjust_radar_for_body_turn()`
+            - `is_adjust_radar_for_gun_turn()`
+        """
+        pass
+
+    @abstractmethod
+    def is_adjust_gun_for_body_turn(self) -> bool:
+        """Checks if the gun is set to adjust for the bot turning, i.e., to turn independently of the bot's
+        body turn.
+
+        Returns:
+            bool: True if the gun is set to turn independently of the body turning. False if the gun is
+            set to turn with the body turning (default).
+
+        See Also:
+            - `setAdjustGunForBodyTurn`
+            - `setAdjustRadarForBodyTurn`
+            - `setAdjustRadarForGunTurn`
+            - `isAdjustRadarForBodyTurn`
+            - `isAdjustRadarForGunTurn`
+        """
+        pass
+
+    @abstractmethod
+    def set_adjust_radar_for_body_turn(self, adjust: bool) -> None:
+        """Sets the radar to adjust for the body's turn when setting the radar turn rate.
+        This allows the radar to behave as if it is turning independently of the body's turn.
+
+        Ok, so this needs some explanation: The radar is mounted on the gun, and the gun is mounted on
+        the robot's body. Normally, if the robot turns 90 degrees to the right, the gun will turn along
+        with it, and so will the radar. Since the radar is mounted on top of the gun, it also follows
+        the body's movement. To compensate for this, you can adjust the radar for the body turn. When this
+        setting is enabled, the radar will turn independently of the body's turn.
+
+        Notes:
+            - This property is additive until you reach the maximum the radar can turn
+              (`Constants.MAX_RADAR_TURN_RATE`). The "adjust" value is added to the body's turn rate, and
+              the total is capped by the game's physics.
+            - The radar compensating in this way still counts as "turning the radar".
+
+        Args:
+            adjust (bool): Set to `True` if the radar should adjust/compensate for the body's turn. Set
+                           to `False` if the radar should turn with the body (default).
+
+        See Also:
+            - set_adjust_gun_for_body_turn()
+            - set_adjust_radar_for_gun_turn()
+            - is_adjust_gun_for_body_turn()
+            - is_adjust_radar_for_body_turn()
+            - is_adjust_radar_for_gun_turn()
+        """
+        pass
+
+    @abstractmethod
+    def is_adjust_radar_for_body_turn(self) -> bool:
+        """Checks if the radar is set to adjust for the body turning, i.e., to turn independently
+        of the body's turn.
+
+        This call returns `True` if the radar is set to turn independently of the turn of the
+        body. Otherwise, it returns `False`, meaning that the radar is set to turn with the body
+        turning.
+
+        Returns:
+            bool: `True` if the radar is set to turn independently of the body turning;
+                  `False` if the radar is set to turn with the body turning (default).
+
+        See Also:
+            - set_adjust_gun_for_body_turn
+            - set_adjust_radar_for_body_turn
+            - set_adjust_radar_for_gun_turn
+            - is_adjust_gun_for_body_turn
+            - is_adjust_radar_for_gun_turn
+        """
+        pass
+
+    @abstractmethod
+    def set_adjust_radar_for_gun_turn(self, adjust: bool) -> None:
+        """Sets the radar to adjust for the gun's turn when setting the radar turn rate.
+        This makes the radar behave as if it is turning independently of the gun's turn.
+
+        Explanation:
+        The radar is mounted on the gun. By default, if the gun turns 90 degrees to the
+        right, the radar turns along with it because it is mounted on top of the gun.
+        To counteract this behavior, this method allows you to adjust the radar to turn
+        independently of the gun’s directional changes. When this setting is enabled
+        (`adjust=True`), the radar behaves as though it is not mounted on the gun.
+
+        Additional Details:
+        - This property is additive until the radar turn rate reaches its maximum value
+          (determined by `Constants.MAX_RADAR_TURN_RATE`). The adjustment amount will
+          be capped by the game’s physical constraints after being combined with the
+          gun's turn rate.
+        - If the radar compensates in this way, it still counts as "turning the radar,"
+          even when the radar is not explicitly commanded to turn.
+
+        Notes:
+        - Enabling this setting (`adjust=True`) automatically disables fire assistance.
+        - Disabling this setting (`adjust=False`) automatically enables fire assistance.
+        - This behavior differs from `setAdjustGunForBodyTurn` and `setAdjustRadarForBodyTurn`,
+          which do not toggle fire assistance.
+        - For more information on fire assistance, refer to the `setFireAssist` method.
+
+        Args:
+            adjust (bool):
+                - `True` to enable radar adjustment/compensation for gun turning.
+                - `False` to make the radar turn with the gun (default).
+
+        See Also:
+            - `setAdjustGunForBodyTurn`
+            - `setAdjustRadarForBodyTurn`
+            - `isAdjustGunForBodyTurn`
+            - `isAdjustRadarForBodyTurn`
+            - `isAdjustRadarForGunTurn`
+        """
+        pass
+
+    @abstractmethod
+    def is_adjust_radar_for_gun_turn(self) -> bool:
+        """Checks if the radar is set to adjust independently of the gun's turning.
+
+        This method returns `True` if the radar is configured to turn independent
+        of the gun's turn. Otherwise, it returns `False`, indicating that the radar
+        turns together with the gun (default behavior).
+
+        Returns:
+            bool: `True` if the radar is set to turn independent of the gun's turning;
+            `False` if the radar is set to turn with the gun turning (default).
+
+        See Also:
+            set_adjust_gun_for_body_turn: Adjusts the gun to turn independently of the body.
+            set_adjust_radar_for_body_turn: Adjusts the radar to turn independently of the body.
+            set_adjust_radar_for_gun_turn: Adjusts the radar to turn independently of the gun.
+            is_adjust_gun_for_body_turn: Checks if the gun is set to turn independently of the body.
+            is_adjust_radar_for_body_turn: Checks if the radar is set to turn independently of the body.
+        """
+        pass
+
+    @abstractmethod
+    def add_custom_event(self, condition: Condition) -> bool:
+        """Adds an event handler that will automatically trigger `on_custom_event` when the condition's `test` method
+        returns `True`.
+
+        Args:
+            condition: The condition that must be met to trigger the custom event.
+
+        Returns:
+            bool: `True` if the condition was not added already; `False` if the condition was already added.
+
+        See Also:
+            remove_custom_event: A method that removes the custom event.
+        """
+        pass
+
+    @abstractmethod
+    def remove_custom_event(self, condition: Condition) -> bool:
+        """Removes triggering a custom event handler for a specific condition that was previously added
+        with `add_custom_event`.
+
+        Args:
+            condition: The condition that was previously added with `add_custom_event`.
+
+        Returns:
+            bool: True if the condition was found; False if the condition was not found.
+
+        See Also:
+            add_custom_event
+        """
+        pass
+
+    @abstractmethod
+    def set_stop(self, overwrite: bool = False) -> None:
+        """Sets the bot to stop all movement, including turning the gun and radar. The remaining movement
+        is saved for a subsequent call to `set_resume`.
+
+        This method will be executed when the `go()` method is called, allowing other setter methods
+        to be called before execution. This enables the bot to perform movements, turn the body,
+        radar, gun, and fire in parallel during a single turn, as long as these actions are set
+        using the relevant setter methods prior to calling `go()`. Note that parallel execution of
+        multiple methods is only possible with setter methods before invoking `go()`.
+
+        Args:
+            overwrite (bool): If set to `True`, any movement saved by a previous call to this method
+                              or `set_stop()` will be overridden with the current movement.
+                              When set to `False`, this method is identical to `set_stop()`.
+
+        See Also:
+            set_resume: Resumes any previously saved movement.
+        """
+        pass
+
+    @abstractmethod
+    def set_resume(self) -> None:
+        """Sets the bot to resume movement after it has been stopped, for example, when the `set_stop()`
+        method has been called. The last radar direction and sweep angle will be used for rescanning
+        for bots.
+
+        This method will be executed when `go()` is called, allowing other setter methods to be called
+        before execution. This enables the bot to perform multiple actions, such as moving, turning the
+        body, radar, and gun, as well as firing the gun simultaneously within a single turn when `go()`
+        is invoked. However, note that executing multiple actions in parallel is only possible when using
+        setter methods prior to calling `go()`.
+
+        See Also:
+            set_stop(): Stops the bot's movement.
+            set_stop(stop: bool): Provides conditional control over the stop behavior.
+        """
+        pass
+
+    @abstractmethod
+    def get_teammate_ids(self) -> set[int]:
+        """Returns the IDs of all teammates.
+
+        Returns:
+            Set[int]: A set of IDs of all teammates if the bot is participating in a team,
+            or an empty set if the bot is not in a team.
+
+        See Also:
+            is_teammate: Checks if a bot is a teammate.
+            send_team_message: Sends a message to the team.
+        """
+        pass
+
+    @abstractmethod
+    def is_teammate(self, bot_id: int) -> bool:
+        """Checks if the provided bot ID is a teammate or not.
+
+        Example:
+            ```python
+            def on_scanned_bot(event):
+                if is_teammate(event.scanned_bot_id):
+                    return  # don't do anything by leaving
+                fire(1)
+        ```
+
+        Args:
+            bot_id: The ID of the bot to check.
+
+        Returns:
+            bool: True if the provided ID is an ID of a teammate; False otherwise.
+
+        See Also:
+            - get_teammate_ids
+            - send_team_message
+        """
+        pass
+
+    @abstractmethod
+    def broadcast_team_message(self, message: Any) -> None:
+        """Broadcasts a message to all teammates.
+
+        When the message is sent, it is serialized into a JSON representation. This means that all public
+        fields, and only public fields, are serialized into a JSON representation as a data transfer object (DTO).
+
+        The maximum team message size limit is defined by `TEAM_MESSAGE_MAX_SIZE`, which is set to 32,768 bytes.
+        This size is calculated after serializing the message into a JSON representation.
+
+        The maximum number of messages that can be broadcast per turn is limited to `MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN`,
+        which is set to 10.
+
+        Args:
+            message: The message to broadcast.
+
+        Raises:
+            ValueError: If the size of the message exceeds the size limit.
+
+        See Also:
+            send_team_message: Method to send a message to teammates.
+            get_teammate_ids: Method to retrieve IDs of all teammates.
+        """
+        pass
+
+    @abstractmethod
+    def send_team_message(self, teammate_id: int, message: Any) -> None:
+        """Sends a message to a specific teammate.
+
+        When the message is sent, it is serialized into a JSON representation,
+        meaning that all public fields, and only public fields, are being
+        serialized into a JSON representation as a DTO (data transfer object).
+
+        The maximum team message size limit is defined by
+        `TEAM_MESSAGE_MAX_SIZE`, which is set to
+        `TEAM_MESSAGE_MAX_SIZE` bytes. This size is the size of the message
+        when it is serialized into a JSON representation.
+
+        The maximum number of messages that can be sent/broadcast per turn is
+        limited to `MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN`.
+
+        Args:
+            teammate_id: The id of the teammate to send the message to.
+            message: The message to send.
+
+        Raises:
+            ValueError: If the size of the message exceeds the size limit.
+        """
+        pass
+
+    @abstractmethod
+    def is_stopped(self) -> bool:
+        """Checks if the movement has been stopped.
+
+        Returns:
+            bool: True if the movement has been stopped by `set_stop()`, False otherwise.
+
+        See Also:
+            set_resume: Resumes the movement.
+            set_stop(): Stops the movement.
+            set_stop(flag: bool): Stops the movement, with a flag to specify additional behavior.
+        """
+        pass
+
+    @abstractmethod
+    def get_body_color(self) -> Color:
+        """Returns the color of the body.
+
+        Returns:
+            Color: The color of the body, or `None` if no color has been set yet.
+                   In that case, the default color will be used.
+        """
+        pass
+
+    @abstractmethod
+    def set_body_color(self, color: Color) -> None:
+        """Sets the color of the body. Colors can (only) be changed each turn.
+
+        Example:
+            ```python
+            set_body_color(Color.RED)  # the red color
+            set_body_color(Color(255, 0, 0))  # also the red color
+            ```
+
+        Args:
+            color: The color of the body or `None` if the bot must use the default color instead.
+        """
+        pass
+
+    @abstractmethod
+    def get_turret_color(self) -> Color:
+        """Returns the color of the gun turret.
+
+        Returns:
+            The color of the turret or `None` if no color has been set yet,
+            meaning that the default color will be used.
+        """
+        pass
+
+    @abstractmethod
+    def set_turret_color(self, color: Color) -> None:
+        """Sets the color of the gun turret.
+
+        Colors can (only) be changed each turn.
+
+        Example:
+        ```python
+        set_turret_color(Color.RED)       # the red color
+        set_turret_color(Color(255, 0, 0))  # also the red color
+        ```
+
+        Args:
+            color: The color of the gun turret or `None` if the bot must use the
+                default color instead.
+        """
+        pass
+
+    @abstractmethod
+    def get_radar_color(self) -> Color:
+        """Returns the color of the radar.
+
+        Returns:
+            Color: The color of the radar. If no color has been set yet, returns `None`,
+            which indicates that the default radar color will be used.
+        """
+        pass
+
+    @abstractmethod
+    def set_radar_color(self, color: Color) -> None:
+        """Sets the color of the radar.
+
+        Colors can (only) be changed each turn.
+
+        Example:
+        ```python
+        set_radar_color(Color.RED)       # the red color
+        set_radar_color(Color(255, 0, 0))  # also the red color
+        ```
+
+        Args:
+            color: The color of the radar or `None` if the bot must use the
+                default color instead.
+        """
+        pass
+
+    @abstractmethod
+    def get_bullet_color(self) -> Color:
+        """Returns the color of the fired bullets.
+
+        Returns:
+            Color: The color of the bullets, or `None` if no color has been set yet,
+            meaning that the default color will be used.
+        """
+        pass
+
+    @abstractmethod
+    def set_bullet_color(self, color: Color) -> None:
+        """Sets the color of the fired bullets. Colors can only be changed each turn.
+
+        Note:
+            A fired bullet will not change its color once it has been fired. However, new bullets fired
+            after setting the bullet color will use the new color.
+
+        Example:
+            set_bullet_color(Color.RED)  # The red color
+            set_bullet_color(Color(255, 0, 0))  # Also the red color
+
+        Args:
+            color (Color or None):
+                The color of the fired bullets. Pass `None` to use the default color instead.
+        """
+        pass
+
+    @abstractmethod
+    def get_scan_color(self) -> Color:
+        """Returns the color of the scan arc.
+
+        Returns:
+            Color: The color of the scan arc, or `None` if no color has been set, meaning the default color will be used.
+        """
+        pass
+
+    @abstractmethod
+    def set_scan_color(self, color: Color) -> None:
+        """
+        Sets the color of the scan arc. Colors can (only) be changed each turn.
+
+        Example:
+            ```python
+            set_scan_color(Color.RED)  # the red color
+            set_scan_color(Color(255, 0, 0))  # also the red color
+            ```
+
+        Args:
+            color: The color of the scan arc. Pass `None` if the bot should use the default color instead.
+        """
+        pass
+
+    @abstractmethod
+    def get_tracks_color(self) -> Color:
+        """Returns the color of the tracks.
+
+        Returns:
+            The color of the tracks or `None` if no color has been set yet,
+            meaning that the default color will be used.
+        """
+        pass
+
+    @abstractmethod
+    def set_tracks_color(self, color: Color) -> None:
+        """Sets the color of the tracks. Colors can only be changed once per turn.
+
+        Example:
+            ```python
+            set_tracks_color(Color.RED)  # The red color
+            set_tracks_color(Color(255, 0, 0))  # Also the red color
+            ```
+
+        Args:
+            color (Color or None): The color of the tracks. Use `None` to reset to the default color.
+        """
+        pass
+
+    @abstractmethod
+    def get_gun_color(self) -> Color:
+        """Returns the color of the gun.
+
+        Returns:
+            Color: The color of the gun, or `None` if no color has been set yet. If `None`, the default color
+            will be used.
+        """
+        pass
+
+    @abstractmethod
+    def set_gun_color(self, color: Color) -> None:
+        """Sets the color of the gun.
+
+        Colors can (only) be changed each turn.
+
+        Example:
+        ```python
+        set_gun_color(Color.RED)       # the red color
+        set_gun_color(Color(255, 0, 0))  # also the red color
+        ```
+
+        Args:
+            color: The color of the gun or `None` if the bot must use the
+                default color instead.
+        """
+        pass
+
+    @abstractmethod
+    def is_debugging_enabled(self) -> bool:
+        """Indicates whether graphical debugging is enabled. If enabled, the `get_graphics`
+        method can be used for debug painting.
+
+        Returns:
+            bool: True if graphical debugging is enabled, False otherwise.
+        """
+        pass
+
+    @abstractmethod
+    def get_graphics(self) -> Image.Image:
+        """Gets a graphics object for debug painting.
+
+        Example:
+        ```python
+        g = get_graphics()
+        draw = PIL.ImageDraw(g)
+        g.rectangle(50, 50, 100, 100, fill=(0, 0, 255))  # A blue filled rect
+        ```
+
+        Returns:
+            A graphics canvas to use for painting graphical objects, making
+            debugging easier.
+        """
+        pass
+
+    def on_connected(self, connected_event: ConnectedEvent) -> None:
+        """The event handler triggered when connected to the server.
+
+        Args:
+            connected_event: The event details from the game.
+        """
+        print(f"Connected to: {connected_event.server_uri}")  # Use f-string
+
+    def on_disconnected(self, disconnected_event: DisconnectedEvent) -> None:
+        """The event handler triggered when disconnected from the server.
+
+        Args:
+            disconnected_event: The event details from the game.
+        """
+        msg = f"Disconnected from: {disconnected_event.server_uri}"  # Use f-string
+        if disconnected_event.status_code is not None:
+            msg += f", status code: {disconnected_event.status_code}"
+        if disconnected_event.reason is not None:
+            msg += f", reason: {disconnected_event.reason}"
+
+        print(msg)
+
+    def on_connection_error(self, connection_error_event: ConnectionErrorEvent) -> None:
+        """The event handler triggered when a connection error occurs.
+
+        Parameters:
+            connection_error_event: Object containing details about the connection error from the game.
+        """
+        print(f"Connection error with {connection_error_event.server_uri}")
+
+        if connection_error_event.error is not None:
+            traceback.print_exc(connection_error_event.error)  # Print the exception
+
+    def on_game_started(self, game_started_event: GameStartedEvent) -> None:
+        """The event handler triggered when a game has started.
+
+        Args:
+            gameStatedEvent: The event details from the game.
+        """
+        pass
+
+    def on_game_ended(self, game_ended_event: GameEndedEvent) -> None:
+        """The event handler triggered when a game has ended.
+
+        Args:
+            game_ended_event: The event details from the game.
+        """
+        pass
+
+    def on_round_started(self, round_started_event: RoundStartedEvent) -> None:
+        """The event handler triggered when a new round has started.
+
+        Args:
+            round_started_event: The event details from the game.
+        """
+        pass
+
+    def on_round_ended(self, round_ended_event: RoundEndedEvent) -> None:
+        """The event handler triggered when a round has ended.
+
+        Args:
+            round_ended_event: The event details from the game.
+        """
+        pass
+
+    def on_tick(self, tick_event: TickEvent) -> None:
+        """The event handler triggered when a game tick event occurs, i.e., when a new turn in a round has started.
+
+        Args:
+            tick_event: The event details from the game.
+        """
+        pass
+
+    def on_bot_death(self, bot_death_event: BotDeathEvent) -> None:
+        """The event handler triggered when another bot has died.
+
+        Args:
+            bot_death_event: The event details from the game.
+        """
+        pass
+
+    def on_death(self, death_event: DeathEvent) -> None:
+        """The event handler triggered when this bot has died.
+
+        Args:
+            death_event: The event details from the game.
+        """
+        pass
+
+    def on_hit_bot(self, bot_hit_bot_event: HitBotEvent) -> None:
+        """The event handler triggered when the bot has collided with another bot.
+
+        Args:
+            bot_hit_bot_event: The event details from the game.
+        """
+        pass
+
+    def on_hit_wall(self, bot_hit_wall_event: HitWallEvent) -> None:
+        """The event handler triggered when the bot has hit a wall.
+
+        Args:
+            bot_hit_wall_event: The event details from the game.
+        """
+        pass
+
+    def on_bullet_fired(self, bullet_fired_event: BulletFiredEvent) -> None:
+        """The event handler triggered when the bot has fired a bullet.
+
+        Args:
+            bullet_fired_event: The event details from the game.
+        """
+        pass
+
+    def on_hit_by_bullet(self, hit_by_bullet_event: HitByBulletEvent) -> None:
+        """The event handler triggered when the bot has been hit by a bullet.
+
+        Args:
+            hit_by_bullet_event: The event details from the game.
+        """
+        pass
+
+    def on_bullet_hit(self, bullet_hit_bot_event: BulletHitBotEvent) -> None:
+        """The event handler triggered when the bot has hit another bot with a bullet.
+
+        Args:
+            bullet_hit_bot_event: The event details from the game.
+        """
+        pass
+
+    def on_bullet_hit_bullet(self, bullet_hit_bullet_event: BulletHitBulletEvent) -> None:
+        """The event handler triggered when a bullet fired from the bot has collided with another bullet.
+
+        Args:
+            bullet_hit_bullet_event: The event details from the game.
+        """
+        pass
+
+    def on_bullet_hit_wall(self, bullet_hit_wall_event: BulletHitWallEvent) -> None:
+        """The event handler triggered when a bullet has hit a wall.
+
+        Args:
+            bullet_hit_wall_event: The event details from the game.
+        """
+        pass
+
+    def on_scanned_bot(self, scanned_bot_event: ScannedBotEvent) -> None:
+        """Event handler triggered when the bot has skipped a turn.
+
+        This event occurs if the bot did not take any action in a specific turn. Specifically, the `go()`
+        method was not called before the turn timeout occurred for the turn. If the bot does not take
+        action for multiple turns in a row, it will receive a `SkippedTurnEvent` for each turn where
+        no action was taken.
+
+        When the bot skips a turn, the server does not receive any message from the bot. In this case,
+        the server will continue using the most recently received instructions for target speed, turn rates,
+        firing, etc.
+
+        Args:
+            scanned_bot_event: The event details from the game.
+        """
+        pass
+
+    def on_skipped_turn(self, skipped_turn_event: SkippedTurnEvent) -> None:
+        """The event handler triggered when the bot has skipped a turn.
+
+        This event occurs if the bot did not take any action in a specific turn. This could happen if
+        the `go()` function is not called before the turn timeout occurs. For each missed turn,
+        a `SkippedTurnEvent` is triggered. In skipped turns, the server relies on the last set of
+        instructions received for actions like speed, turn rates, firing, etc.
+
+        Args:
+            skipped_turn_event: The event details from the game.
+        """
+        pass
+
+    def on_won_round(self, won_round_event: WonRoundEvent) -> None:
+        """The event handler triggered when the bot has won a round.
+
+        This event indicates that the bot successfully won a single round in the match.
+
+        Args:
+            won_round_event: The event details from the game.
+        """
+        pass
+
+    def on_custom_event(self, custom_event: CustomEvent) -> None:
+        """The event handler triggered when some specific custom condition has been met.
+
+        You can differentiate between various types of conditions by using the `getName()` method
+        of the condition object associated with the event.
+
+        Args:
+            custom_event: The event details from the game.
+        """
+        pass
+
+    def on_team_message(self, team_message_event: TeamMessageEvent) -> None:
+        """The event handler triggered when the bot has received a message from a teammate.
+
+        This event provides the message and its associated details when a teammate sends communication
+        during the game.
+
+        Args:
+            team_message_event: The event details from the game.
+        """
+        pass
+
+    @abstractmethod
+    def calc_max_turn_rate(self, speed: float) -> float:
+        """Calculates the maximum turn rate for a specific speed.
+
+        Args:
+            speed (float): The speed.
+
+        Returns:
+            float: The maximum turn rate determined by the given speed.
+        """
+        pass
+
+    @abstractmethod
+    def calc_bullet_speed(self, firepower: float) -> float:
+        """Calculates the bullet speed given a firepower.
+
+        Args:
+            firepower (float): The firepower.
+
+        Returns:
+            float: The bullet speed determined by the given firepower.
+        """
+        pass
+
+    @abstractmethod
+    def calc_gun_heat(self, firepower: float) -> float:
+        """Calculates gun heat after having fired the gun.
+
+        Args:
+            firepower (float): The firepower used when firing the gun.
+
+        Returns:
+            float: The gun heat produced when firing the gun with the given firepower.
+        """
+        pass
+
+    @abstractmethod
+    def get_event_priority(self, event_class: type) -> int:
+        """Returns the event priority for a specific event class.
+
+        Example:
+            scanned_bot_event_priority = get_priority(ScannedBotEvent)
+
+        Args:
+            event_class: The event class to get the event priority for.
+
+        Returns:
+            int: The event priority for a specific event class.
+
+        See Also:
+            DefaultEventPriority
+            set_event_priority
+        """
+        pass
+
+    @abstractmethod
+    def set_event_priority(self, event_class: type, priority: int) -> None:
+        """Changes the event priority for an event class. The event priority determines
+        which event types (classes) must be fired and handled before others. Events
+        with higher priorities will be handled before events with lower priorities.
+
+        Note:
+            You should normally not need to change the event priority.
+
+        Args:
+            event_class (Type[BotEvent]): The event class to change the priority for.
+            priority (int): The new priority, typically a positive number from 1 to 150.
+                The higher the value, the higher the priority.
+
+        See Also:
+            DefaultEventPriority, get_event_priority.
+        """
+        pass
+
+    def calc_bearing(self, direction: float) -> float:
+        """Calculates the bearing (delta angle) between the input direction and the bot's direction.
+
+        Example:
+            bearing = calc_bearing(direction) = normalize_relative_degrees(direction - get_direction())
+
+        Args:
+            direction (float): The input direction to calculate the bearing from.
+
+        Returns:
+            float: A normalized bearing (delta angle) in the range [-180, 180).
+
+        See Also:
+            get_direction, normalize_relative_angle.
+        """
+        return self.normalize_relative_angle(direction - self.get_direction())
+
+    def calc_gun_bearing(self, direction: float) -> float:
+        """Calculates the bearing (delta angle) between the input direction and the gun's direction.
+
+        Example:
+            bearing = calc_gun_bearing(direction) =
+                      normalize_relative_degrees(direction - get_gun_direction())
+
+        Args:
+            direction (float): The input direction to calculate the bearing from.
+
+        Returns:
+            float: A normalized bearing (delta angle) in the range [-180, 180).
+
+        See Also:
+            get_gun_direction, normalize_relative_angle.
+        """
+        return self.normalize_relative_angle(direction - self.get_gun_direction())
+
+    def calc_radar_bearing(self, direction: float) -> float:
+        """Calculates the bearing (delta angle) between the input direction and the radar's direction.
+
+        Example:
+            bearing = calc_radar_bearing(direction) =
+                      normalize_relative_degrees(direction - get_radar_direction())
+
+        Args:
+            direction (float): The input direction to calculate the bearing from.
+
+        Returns:
+            float: A normalized bearing (delta angle) in the range [-180, 180).
+
+        See Also:
+            get_radar_direction, normalize_relative_angle.
+        """
+        return self.normalize_relative_angle(direction - self.get_radar_direction())
+
+    def direction_to(self, x: float, y: float) -> float:
+        """Calculates the direction (angle) from the bot's coordinates to a point (x, y).
+
+        Args:
+            x (float): The x-coordinate of the point.
+            y (float): The y-coordinate of the point.
+
+        Returns:
+            float: The direction to the point (x, y) in the range [0, 360).
+        """
+        return self.normalize_absolute_angle(math.degrees(math.atan2(y - self.get_y(), x - self.get_x())))
+
+    def bearing_to(self, x: float, y: float) -> float:
+        """Calculates the bearing (delta angle) between the bot's current direction and
+        the direction to a point (x, y).
+
+        Args:
+            x (float): The x-coordinate of the point.
+            y (float): The y-coordinate of the point.
+
+        Returns:
+            float: A bearing to the point (x, y) in the range [-180, 180).
+        """
+        return self.normalize_relative_angle(self.direction_to(x, y) - self.get_direction())
+
+    def gun_bearing_to(self, x: float, y: float) -> float:
+        """Calculates the bearing (delta angle) between the gun's current direction and
+        the direction to a point (x, y).
+
+        Args:
+            x (float): The x-coordinate of the point.
+            y (float): The y-coordinate of the point.
+
+        Returns:
+            float: A bearing to the point (x, y) in the range [-180, 180).
+        """
+        return self.normalize_relative_angle(self.direction_to(x, y) - self.get_gun_direction())
+
+    def radar_bearing_to(self, x: float, y: float) -> float:
+        """Calculates the bearing (delta angle) between the radar's current direction and
+        the direction to a point (x, y).
+
+        Args:
+            x (float): The x-coordinate of the point.
+            y (float): The y-coordinate of the point.
+
+        Returns:
+            float: A bearing to the point (x, y) in the range [-180, 180).
+        """
+        return self.normalize_relative_angle(self.direction_to(x, y) - self.get_radar_direction())
+
+    def distance_to(self, x: float, y: float) -> float:
+        """Calculates the distance from the bot's coordinates to a point (x, y).
+
+        Args:
+            x (float): The x-coordinate of the point.
+            y (float): The y-coordinate of the point.
+
+        Returns:
+            float: The distance to the point (x, y).
+        """
+        return math.hypot(x - self.get_x(), y - self.get_y())
+
+    def normalize_absolute_angle(self, angle: float) -> float:
+        """Normalizes an angle to an absolute angle in the range [0, 360).
+
+        Args:
+            angle (float): The angle to normalize.
+
+        Returns:
+            float: The normalized absolute angle.
+        """
+        angle %= 360
+        return angle if angle >= 0 else angle + 360
+
+    def normalize_relative_angle(self, angle: float) -> float:
+        """Normalizes an angle to a relative angle in the range [-180, 180).
+
+        Args:
+            angle (float): The angle to normalize.
+
+        Returns:
+            float: The normalized relative angle.
+        """
+        angle %= 360
+        if angle >= 0:
+            return angle if angle < 180 else angle - 360
+        else:
+            return angle if angle >= -180 else angle + 360
+
+    def calc_delta_angle(self, target_angle: float, source_angle: float) -> float:
+        """Calculates the difference between two angles, i.e., the number of degrees
+        from a source angle to a target angle.
+
+        Args:
+            target_angle (float): The target angle.
+            source_angle (float): The source angle.
+
+        Returns:
+            float: The delta angle in the range [-180, 180].
+        """
+        angle = target_angle - source_angle
+        if angle > 180:
+            angle -= 360
+        elif angle < -180:
+            angle += 360
+        return angle

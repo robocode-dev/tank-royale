@@ -775,7 +775,7 @@ public interface IBaseBot {
     boolean removeCustomEvent(Condition condition);
 
     /**
-     * Set the bot to stop all movement including turning the gun and radar. The remaining movement is
+     * Sets the bot to stop all movement including turning the gun and radar. The remaining movement is
      * saved for a call to {@link #setResume}. This method has no effect, if it has already been
      * called.
      *
@@ -790,7 +790,7 @@ public interface IBaseBot {
     void setStop();
 
     /**
-     * Set the bot to stop all movement including turning the gun and radar. The remaining movement is
+     * Sets the bot to stop all movement including turning the gun and radar. The remaining movement is
      * saved for a call to {@link #setResume}.
      *
      * <p>This method will first be executed when {@link #go} is called making it possible to call
@@ -807,10 +807,8 @@ public interface IBaseBot {
     void setStop(boolean overwrite);
 
     /**
-     * Sets the bot to scan (again) with the radar. This method is useful if the radar has not been
-     * turning and thereby will not be able to automatically scan bots. This method is useful when the
-     * bot movement has stopped, e.g. when {@link #setStop()} has been called. The last radar
-     * direction and sweep angle will be used for rescanning for bots.
+     * Sets the bot to resume movement after having been stopped, e.g. when {@link #setStop()} has been
+     * called. The last radar direction and sweep angle will be used for rescanning for bots.
      *
      * <p>This method will first be executed when {@link #go} is called making it possible to call
      * other set methods before execution. This makes it possible to set the bot to move, turn the
