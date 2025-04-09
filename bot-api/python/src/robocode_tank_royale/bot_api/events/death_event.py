@@ -2,13 +2,15 @@ from robocode_tank_royale.bot_api.events import BotEvent
 
 
 class DeathEvent(BotEvent):
-    """Event occurring when your bot has died."""
+    """
+    Represents an event triggered when your bot has died.
+    """
 
     def is_critical(self) -> bool:
         """
-        Returns:
-            True
+        Indicates whether this event is critical.
 
-        This event is critical.
+        Returns:
+            bool: Always returns True, as this event is critical.
         """
         return True

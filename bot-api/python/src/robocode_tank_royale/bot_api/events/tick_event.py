@@ -3,18 +3,21 @@ from robocode_tank_royale.bot_api.events import BotEvent
 
 
 class TickEvent(BotEvent):
-    """Event occurring whenever a new turn in a round has started."""
+    """
+    Represents an event that occurs at the start of a new turn within a round.
+    """
 
     def __init__(self, turn_number: int, round_number: int, bot_state: BotState,
                  bullet_states: list[BulletState], events: list[BotEvent]):
-        """Initializes a new instance of the TickEvent class.
+        """
+        Initializes a TickEvent representing the current game state at the start of a turn.
 
         Args:
-            turn_number: The current turn number in the battle.
-            round_number: The current round number in the battle.
-            bot_state: The current state of this bot.
-            bullet_states: The current state of the bullets fired by this bot.
-            events: The events occurring in the turn relevant for this bot.
+            turn_number (int): The current turn number in the battle.
+            round_number (int): The current round number in the battle.
+            bot_state (BotState): The current state of the bot.
+            bullet_states (list[BulletState]): A list containing the states of bullets fired by the bot.
+            events (list[BotEvent]): A list of events that occurred in this turn.
         """
         super().__init__(turn_number)
         self.round_number = round_number
@@ -23,33 +26,37 @@ class TickEvent(BotEvent):
         self.events = events
 
     def get_round_number(self) -> int:
-        """Returns the current round number.
+        """
+        Gets the current round number.
 
         Returns:
-            The current round number.
+            int: The current round number.
         """
         return self.round_number
 
     def get_bot_state(self) -> BotState:
-        """Returns the current state of this bot.
+        """
+        Gets the current state of the bot.
 
         Returns:
-            The current state of this bot.
+            BotState: The current state of the bot.
         """
         return self.bot_state
 
     def get_bullet_states(self) -> list[BulletState]:
-        """Returns the current state of the bullets fired by this bot.
+        """
+        Gets the states of the bullets fired by the bot.
 
         Returns:
-            The current state of the bullets fired by this bot.
+            list[BulletState]: A list of bullet states.
         """
         return self.bullet_states
 
     def get_events(self) -> list[BotEvent]:
-        """Returns the events that occurred for the bot within the turn.
+        """
+        Gets the events that occurred for the bot within the turn.
 
         Returns:
-            The events that occurred for the bot within the turn.
+            list[BotEvent]: A list of events relevant to the bot in this turn.
         """
         return self.events

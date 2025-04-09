@@ -3,22 +3,26 @@ from robocode_tank_royale.bot_api.events import BotEvent
 
 
 class BulletFiredEvent(BotEvent):
-    """Event occurring when a bullet has been fired from a bot."""
+    """
+    Represents an event that occurs when a bullet is fired from a bot.
+    """
 
     def __init__(self, turn_number: int, bullet: BulletState):
-        """Initializes a new instance of the BulletFiredEvent class.
+        """
+        Initializes a new instance of the BulletFiredEvent class.
 
         Args:
-            turn_number: The turn number when the bullet was fired.
-            bullet: The bullet that was fired.
+            turn_number (int): The turn number during which the bullet was fired.
+            bullet (BulletState): The state of the bullet that was fired.
         """
         super().__init__(turn_number)
         self.bullet = bullet
 
     def get_bullet(self) -> BulletState:
-        """Returns the bullet that was fired.
+        """
+        Retrieves the bullet associated with this event.
 
         Returns:
-            The bullet that was fired.
+            BulletState: The state of the bullet that was fired.
         """
         return self.bullet

@@ -2,22 +2,24 @@ from robocode_tank_royale.bot_api.events import BotEvent, Condition
 
 
 class CustomEvent(BotEvent):
-    """A custom event occurring when a condition has been met."""
+    """Represents a custom event triggered when a specific condition is satisfied."""
 
     def __init__(self, turn_number: int, condition: Condition):
-        """Initializes a new instance of the CustomEvent class.
+        """
+        Initializes a new instance of the CustomEvent class.
 
         Args:
-            turn_number: The turn number when the condition was met.
-            condition: The condition that has been met.
+            turn_number (int): The number of the turn when the condition was met.
+            condition (Condition): The condition that triggered this event.
         """
         super().__init__(turn_number)
         self.condition = condition
 
     def get_condition(self) -> Condition:
-        """Returns the condition that was met to trigger this custom event.
+        """
+        Retrieves the condition that triggered this event.
 
         Returns:
-            The condition that was met to trigger this custom event.
+            Condition: The condition that was satisfied to trigger this event.
         """
         return self.condition

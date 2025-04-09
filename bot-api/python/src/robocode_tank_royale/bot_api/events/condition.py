@@ -1,17 +1,18 @@
 from typing import Callable, Optional
 
+
 class Condition:
     """
-    The Condition class is used for testing if a specific condition is met.
+    A class used to test whether a specific condition is met.
 
-    For example, program execution can be blocked by using the
-    `IBot.wait_for` method, which will wait until a condition is met. A
-    condition can also be used to trigger a custom event by adding a custom
-    event handler using the method `IBaseBot.add_custom_event` that will
-    trigger `IBaseBot.on_custom_event` when the condition is fulfilled.
+    This class can be utilized in multiple ways:
+    1. To block program execution by using methods like `IBot.wait_for`, which halts
+       until a condition is satisfied.
+    2. To trigger a custom event by adding a handler using `IBaseBot.add_custom_event`.
+       When the condition is fulfilled, the `IBaseBot.on_custom_event` method is triggered.
 
-    Here is an example of how to use the condition:
-
+    ### Example 1: Using a Condition subclass
+    Here's an implementation where a condition is defined as a reusable subclass:
     ```python
     class MyBot(Bot):
         def run(self):
@@ -29,9 +30,9 @@ class Condition:
             return self.bot.get_turn_remaining() == 0
     ```
 
-    Here is another example using the same condition using a lambda expression
-    instead of a (reusable) class:
-
+    ### Example 2: Using a lambda expression
+    The same behavior can also be achieved using a lambda expression instead
+    of a reusable class:
     ```python
     class MyBot(Bot):
         def run(self):
@@ -45,42 +46,46 @@ class Condition:
 
     def __init__(self, name: Optional[str] = None, callable: Optional[Callable[[], bool]] = None):
         """
-        Constructor for initializing a new instance of the Condition class.
+        Initializes a new instance of the Condition class.
 
         Args:
-            name: The name of the condition (optional). Used for identifying
-                a specific condition between multiple conditions with the
-                `IBaseBot.on_custom_event` event handler.
-            callable: A callable (e.g., a lambda function or a function)
-                that returns `True` if the condition is met, and `False`
-                otherwise.
+            name (Optional[str]): The name of the condition (optional). This is useful
+                for identifying the condition in custom events handled by
+                `IBaseBot.on_custom_event`.
+            callable (Optional[Callable[[], bool]]): A callable (e.g., lambda or function)
+                that returns `True` if the condition is met, and `False` otherwise.
         """
-        self._name = name  # Use _name to avoid name collision with getName()
-        self._callable = callable  # Use _callable to avoid name collision with test()
+        self._name = name  # Stores the condition name; private to avoid collisions.
+        self._callable = callable  # Stores the callable for evaluating the condition.
 
     def get_name(self) -> Optional[str]:
         """
-        Returns the name of this condition, if a name has been provided.
+        Retrieves the name of the condition, if one has been provided.
 
         Returns:
-            The name of this condition or `None` if no name has been provided.
+            Optional[str]: The name of the condition, or `None` if no name was set.
         """
         return self._name
 
     def test(self) -> bool:
         """
-        Tests if the condition is met.
+        Evaluates whether the condition is met.
 
-        You can override this method to let the game use it for testing your
-        condition each turn. Alternatively, you can use one of the
-        constructors that take a `Callable` instead.
+        This method should be overridden in subclasses to implement custom
+        condition logic. Alternatively, a callable can be provided during
+        initialization to evaluate the condition.
 
         Returns:
-            `True` if the condition is met; `False` otherwise.
+            bool: `True` if the condition is met; `False` otherwise.
+
+        Note:
+            If a callable is provided and raises an exception during execution,
+            the method will return `False`.
         """
         if self._callable:
             try:
                 return self._callable()
-            except Exception: # Catch exceptions during callable execution
+            except Exception:
+                # Gracefully handle errors in the callable's execution.
                 return False
         return False

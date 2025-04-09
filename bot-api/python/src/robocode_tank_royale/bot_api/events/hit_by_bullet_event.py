@@ -3,16 +3,23 @@ from robocode_tank_royale.bot_api.events import BotEvent
 
 
 class HitByBulletEvent(BotEvent):
-    """Event occurring when a bullet has hit your bot."""
+    """
+    Represents an event when a bot is hit by a bullet.
+
+    This event is triggered when a bullet hits the bot during a turn in the game.
+    It provides information about the bullet, the damage caused, and the bot's
+    remaining energy after the hit.
+    """
 
     def __init__(self, turn_number: int, bullet: BulletState, damage: float, energy: float):
-        """Initializes a new instance of the HitByBulletEvent class.
+        """
+        Initializes the HitByBulletEvent.
 
         Args:
-            turn_number: The turn number when the bullet has hit a bot.
-            bullet: The bullet that hit the bot.
-            damage: The damage inflicted by the bullet.
-            energy: The remaining energy level of the bot that got hit.
+            turn_number (int): The turn number when the bullet hit the bot.
+            bullet (BulletState): The bullet that hit the bot.
+            damage (float): The damage inflicted on the bot by the bullet.
+            energy (float): The bot's remaining energy after being hit.
         """
         super().__init__(turn_number)
         self.bullet = bullet
@@ -20,25 +27,28 @@ class HitByBulletEvent(BotEvent):
         self.energy = energy
 
     def get_bullet(self) -> BulletState:
-        """Returns the bullet that hit your bot.
+        """
+        Retrieves the bullet that hit the bot.
 
         Returns:
-            The bullet that hit your bot.
+            BulletState: The bullet that caused the hit.
         """
         return self.bullet
 
     def get_damage(self) -> float:
-        """Returns the damage inflicted by the bullet.
+        """
+        Gets the amount of damage inflicted on the bot by the bullet.
 
         Returns:
-            The damage inflicted by the bullet.
+            float: The damage amount.
         """
         return self.damage
 
     def get_energy(self) -> float:
-        """Returns the remaining energy level after the bullet hit.
+        """
+        Retrieves the bot's remaining energy after the bullet hit.
 
         Returns:
-            The remaining energy level after the bullet hit.
+            float: The remaining energy level of the bot.
         """
         return self.energy

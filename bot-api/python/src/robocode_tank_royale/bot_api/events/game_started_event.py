@@ -3,40 +3,44 @@ from robocode_tank_royale.bot_api.events import EventABC
 
 
 class GameStartedEvent(EventABC):
-    """Event occurring when game has just started."""
+    """Represents an event triggered when the game starts."""
 
     def __init__(self, my_id: int, initial_position: InitialPosition, game_setup: GameSetup):
-        """Initializes a new instance of the GameStartedEvent class.
+        """
+        Initializes a new instance of the GameStartedEvent class.
 
         Args:
-            my_id: The id used for identifying your bot in the current battle.
-            initial_position: The initial position of the bot.
-            game_setup: The game setup for the battle just started.
+            my_id (int): The unique identifier for your bot in the current battle.
+            initial_position (InitialPosition): The starting position of the bot.
+            game_setup (GameSetup): The configuration details for the game that has just started.
         """
         self.my_id = my_id
         self.initial_position = initial_position
         self.game_setup = game_setup
 
     def get_my_id(self) -> int:
-        """Returns the id used for identifying your bot in the current battle.
+        """
+        Retrieves the unique identifier for the bot.
 
         Returns:
-            The id used for identifying your bot.
+            int: The unique identifier assigned to the bot for the current battle.
         """
         return self.my_id
 
     def get_initial_position(self) -> InitialPosition:
-        """Returns the start position of the bot.
+        """
+        Retrieves the initial position of the bot.
 
         Returns:
-            The start position of the bot.
+            InitialPosition: The starting position of the bot in the arena.
         """
         return self.initial_position
 
     def get_game_setup(self) -> GameSetup:
-        """Returns the game setup for the battle just started.
+        """
+        Retrieves the details of the game's configuration.
 
         Returns:
-            The game setup for the battle just started.
+            GameSetup: The setup/configuration of the game that has just started.
         """
         return self.game_setup

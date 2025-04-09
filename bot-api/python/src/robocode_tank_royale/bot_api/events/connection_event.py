@@ -2,20 +2,22 @@ from robocode_tank_royale.bot_api.events import EventABC
 
 
 class ConnectionEvent(EventABC):
-    """Base class of all connection events."""
+    """Represents the base class for connection-related events."""
 
     def __init__(self, server_uri: str):
-        """Initializes a new instance of the ConnectionEvent class.
+        """
+        Initialize a new instance of the ConnectionEvent class.
 
         Args:
-            server_uri: The URI of the server.
+            server_uri (str): The URI of the server associated with the connection event.
         """
         self.server_uri = server_uri
 
     def get_server_uri(self) -> str:
-        """Return the URI of the server.
+        """
+        Get the URI of the server.
 
         Returns:
-            The URI of the server.
+            str: The URI of the server associated with the connection event.
         """
         return self.server_uri
