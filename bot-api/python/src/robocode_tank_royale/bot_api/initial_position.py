@@ -1,28 +1,34 @@
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class InitialPosition:
-    """Initial starting position containing a start coordinate (x,y) and the shared direction of the body, gun, and radar.
+    """
+    Represents the initial position of a bot during debugging, with optional specific coordinates (x, y)
+    and a shared direction for the body, gun, and radar. If not specified, the values are assigned randomly.
 
-    The initial position is only used when debugging to request the server to let a bot start at a specific position.
-    Note that initial starting positions must be enabled at the server-side; otherwise the initial starting position
-    is ignored.
+    Note:
+        The initial position is only applied when debugging and if enabled on the server-side.
+        Otherwise, it will be ignored.
     """
 
     x: Optional[float]
-    """The x coordinate, where None means it is random."""
+    """Optional x-coordinate for the starting position. If None, it will be randomly assigned."""
 
     y: Optional[float]
-    """The y coordinate, where None means it is random."""
+    """Optional y-coordinate for the starting position. If None, it will be randomly assigned."""
 
     direction: Optional[float]
-    """The shared direction of the body, gun, and radar, where None means it is random."""
+    """Optional shared direction for the body, gun, and radar. If None, it will be randomly assigned."""
 
     def __str__(self) -> str:
         """
+        Converts the `InitialPosition` object into a string format.
+
         Returns:
-            A string representation of the initial position.
+            A comma-separated string representation of the coordinates and direction.
+            Empty values are represented as empty strings.
         """
         if self.x is None and self.y is None and self.direction is None:
             return ""
@@ -33,13 +39,16 @@ class InitialPosition:
 
     @staticmethod
     def from_string(initial_position: str) -> Optional["InitialPosition"]:
-        """Creates new instance of the InitialPosition class from a string.
+        """
+        Creates an `InitialPosition` instance from a string.
 
         Args:
-            initial_position: Comma and/or white-space separated string.
+            initial_position (str): A string containing coordinates and direction,
+            separated by commas and/or whitespace.
 
         Returns:
-            An InitialPosition instance or None if the input string is invalid.
+            InitialPosition: An instance of the class if parsing is successful.
+            None: If the input string is invalid or empty.
         """
         if initial_position is None or initial_position.isspace():
             return None
@@ -48,6 +57,16 @@ class InitialPosition:
 
     @staticmethod
     def _parse_initial_position(values: list[str]) -> Optional["InitialPosition"]:
+        """
+        Parses a list of values to create an `InitialPosition` instance.
+
+        Args:
+            values (list[str]): A list containing string representations of coordinates and direction.
+
+        Returns:
+            InitialPosition: An instance parsed from the values.
+            None: If parsing fails or the list is empty.
+        """
         if len(values) < 1:
             return None
 
@@ -62,6 +81,16 @@ class InitialPosition:
 
     @staticmethod
     def _parse_double(s: str) -> Optional[float]:
+        """
+        Converts a string to a float, if possible.
+
+        Args:
+            s (str): The input string.
+
+        Returns:
+            float: Converted float value if successful.
+            None: If the string is None or cannot be converted.
+        """
         if s is None:
             return None
         try:
