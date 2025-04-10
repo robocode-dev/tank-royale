@@ -1,59 +1,36 @@
+from dataclasses import dataclass
 from robocode_tank_royale.bot_api import BulletState
 from robocode_tank_royale.bot_api.events import BotEvent
 
 
+@dataclass(frozen=True)
 class BulletHitBotEvent(BotEvent):
-    """Represents an event triggered when a bullet hits a bot."""
+    """
+    Represents an event triggered when a bullet hits a bot.
 
-    def __init__(self, turn_number: int, victim_id: int, bullet: BulletState, damage: float, energy: float):
-        """
-        Initializes a BulletHitBotEvent instance.
+    Attributes:
+        victim_id (int): The ID of the bot that was hit.
+        bullet (BulletState): The bullet that hit the bot.
+        damage (float): The damage caused by the bullet.
+        energy (float): The remaining energy of the bot that was hit.
+            Starts at 100.0 (fully operational) and decreases with damage.
+            Energy 0.0 represents a disabled bot. Negative energy
+            indicates the bot is dead (e.g., -1 for a dead bot).
+    """
 
-        Args:
-            turn_number (int): The turn number when the bullet hit the bot.
-            victim_id (int): The ID of the bot that was hit.
-            bullet (BulletState): The bullet that hit the bot.
-            damage (float): The damage caused by the bullet.
-            energy (float): The remaining energy of the bot that was hit.
-        """
-        super().__init__(turn_number)
-        self.victim_id = victim_id
-        self.bullet = bullet
-        self.damage = damage
-        self.energy = energy
+    victim_id: int
+    bullet: BulletState
+    damage: float
+    energy: float
 
-    def get_victim_id(self) -> int:
+    def __post_init__(self):
         """
-        Gets the ID of the bot that was hit.
-
-        Returns:
-            int: The ID of the bot that was hit.
+        Validates the types of attributes after initialization.
         """
-        return self.victim_id
-
-    def get_bullet(self) -> BulletState:
-        """
-        Gets the bullet that hit the bot.
-
-        Returns:
-            BulletState: The bullet that hit the bot.
-        """
-        return self.bullet
-
-    def get_damage(self) -> float:
-        """
-        Gets the damage caused by the bullet.
-
-        Returns:
-            float: The damage caused by the bullet.
-        """
-        return self.damage
-
-    def get_energy(self) -> float:
-        """
-        Gets the remaining energy of the bot that was hit.
-
-        Returns:
-            float: The remaining energy of the bot that was hit.
-        """
-        return self.energy
+        super().__post_init__()
+        if not isinstance(self.victim_id, int):
+            raise TypeError(f"victim_id must be an int, got {type(self.victim_id).__name__}")
+        if not isinstance(self.bullet, BulletState):
+            raise TypeError(f"bullet must be a BulletState, got {type(self.bullet).__name__}")
+        if self.damage < 0:
+            raise ValueError(f"Damage must be non-negative, got {self.damage}")

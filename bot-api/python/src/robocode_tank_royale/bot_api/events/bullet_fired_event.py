@@ -1,28 +1,23 @@
+from dataclasses import dataclass
 from robocode_tank_royale.bot_api import BulletState
 from robocode_tank_royale.bot_api.events import BotEvent
 
 
+@dataclass(frozen=True)
 class BulletFiredEvent(BotEvent):
     """
     Represents an event that occurs when a bullet is fired from a bot.
+
+    This event contains information about the bullet that was fired and
+    the turn number during which the event occurred.
+
+    Attributes:
+        bullet (BulletState): The state of the bullet that was fired.
     """
 
-    def __init__(self, turn_number: int, bullet: BulletState):
-        """
-        Initializes a new instance of the BulletFiredEvent class.
+    bullet: BulletState
 
-        Args:
-            turn_number (int): The turn number during which the bullet was fired.
-            bullet (BulletState): The state of the bullet that was fired.
-        """
-        super().__init__(turn_number)
-        self.bullet = bullet
-
-    def get_bullet(self) -> BulletState:
-        """
-        Retrieves the bullet associated with this event.
-
-        Returns:
-            BulletState: The state of the bullet that was fired.
-        """
-        return self.bullet
+    def __post_init__(self) -> None:
+        super().__post_init__()  # Ensures turn_number validation in BotEvent
+        if not isinstance(self.bullet, BulletState):
+            raise TypeError(f"bullet must be an instance of BulletState, got {type(self.bullet).__name__}")

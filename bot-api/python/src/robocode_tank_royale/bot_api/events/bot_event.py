@@ -1,34 +1,34 @@
+from dataclasses import dataclass
 from robocode_tank_royale.bot_api.events import EventABC
 
 
+@dataclass(frozen=True)
 class BotEvent(EventABC):
-    """Represents an event that occurs during a battle in the Bot API."""
+    """
+    Represents any event related to a bot during a battle.
+    This class serves as the parent for all bot-related events and provides
+    default implementations for common bot event methods.
 
-    def __init__(self, turn_number: int):
-        """
-        Initializes a new instance of the BotEvent class.
+    Attributes:
+        turn_number (int): The turn number when this event occurred.
+    """
+    turn_number: int
 
-        Args:
-            turn_number (int): The turn number when the event occurred.
+    def __post_init__(self) -> None:
         """
-        self.turn_number = turn_number
-
-    def get_turn_number(self) -> int:
+        Validates the types and values of attributes after initialization.
         """
-        Retrieves the turn number when the event occurred.
-
-        Returns:
-            int: The turn number associated with the event.
-        """
-        return self.turn_number
+        if not isinstance(self.turn_number, int):
+            raise TypeError(f"Turn number must be an integer, got {type(self.turn_number).__name__}")
+        if self.turn_number < 0:
+            raise ValueError(f"Turn number must be a non-negative integer, got {self.turn_number}")
 
     def is_critical(self) -> bool:
         """
-        Checks if the event is critical.
-
-        Critical events should not be removed from the event queue when they become old.
-
-        Returns:
-            bool: True if the event is critical; otherwise, False. Defaults to False.
-        """
+           Determines whether the event is critical.
+           By default, events are not critical, but subclasses can override this
+           to provide event-specific criticality logic.
+           Returns:
+               bool: False by default.
+           """
         return False

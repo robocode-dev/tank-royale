@@ -1,25 +1,23 @@
+from dataclasses import dataclass
 from robocode_tank_royale.bot_api.events import BotEvent
 
 
+@dataclass(frozen=True)
 class BotDeathEvent(BotEvent):
-    """Event occurring when another bot has died."""
+    """
+    Event occurring when another bot has died.
 
-    def __init__(self, turn_number: int, victim_id: int):
-        """
-        Initialize a new instance of the BotDeathEvent class.
+    Attributes:
+        victim_id (int): The ID of the bot that has died.
+    """
 
-        Args:
-            turn_number (int): The turn number when the bot died.
-            victim_id (int): The ID of the bot that has died.
-        """
-        super().__init__(turn_number)
-        self.victim_id = victim_id
+    victim_id: int
 
-    def get_victim_id(self) -> int:
+    def __post_init__(self) -> None:
         """
-        Get the ID of the bot that has died.
-
-        Returns:
-            int: The ID of the bot that has died.
+        Validates the types and values of attributes after initialization.
         """
-        return self.victim_id
+        if not isinstance(self.victim_id, int):
+            raise TypeError(f"victim_id must be an int, got {type(self.victim_id).__name__}.")
+        if self.victim_id < 0:
+            raise ValueError(f"victim_id must be a non-negative integer, got {self.victim_id}.")
