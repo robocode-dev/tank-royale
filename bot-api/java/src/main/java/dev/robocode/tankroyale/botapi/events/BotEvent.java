@@ -5,22 +5,22 @@ package dev.robocode.tankroyale.botapi.events;
  */
 public abstract class BotEvent implements IEvent {
 
-    // Turn number when the event occurred.
+    // Turn number when this event occurred.
     private final int turnNumber;
 
     /**
      * Initializes a new instance of the Event class.
      *
-     * @param turnNumber is the turn number when the event occurred.
+     * @param turnNumber is the turn number when this event occurred.
      */
     protected BotEvent(int turnNumber) {
         this.turnNumber = turnNumber;
     }
 
     /**
-     * Returns the turn number when the event occurred.
+     * Returns the turn number when this event occurred.
      *
-     * @return The turn number when the event occurred.
+     * @return The turn number when this event occurred.
      */
     public int getTurnNumber() {
         return turnNumber;
