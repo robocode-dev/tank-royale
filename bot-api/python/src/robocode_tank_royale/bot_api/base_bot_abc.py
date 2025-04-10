@@ -1357,7 +1357,8 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_connected(self, connected_event: ConnectedEvent) -> None:
+    @staticmethod
+    def on_connected(connected_event: ConnectedEvent) -> None:
         """
         The event handler triggered when connected to the server.
 
@@ -1366,7 +1367,8 @@ class BaseBotABC(ABC):
         """
         print(f"Connected to: {connected_event.server_uri}")  # Use f-string
 
-    def on_disconnected(self, disconnected_event: DisconnectedEvent) -> None:
+    @staticmethod
+    def on_disconnected(disconnected_event: DisconnectedEvent) -> None:
         """
         The event handler triggered when disconnected from the server.
 
@@ -1381,7 +1383,8 @@ class BaseBotABC(ABC):
 
         print(msg)
 
-    def on_connection_error(self, connection_error_event: ConnectionErrorEvent) -> None:
+    @staticmethod
+    def on_connection_error(connection_error_event: ConnectionErrorEvent) -> None:
         """
         The event handler triggered when a connection error occurs.
 
