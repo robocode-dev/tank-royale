@@ -1,8 +1,9 @@
 from dataclasses import dataclass
-from robocode_tank_royale.bot_api.events import EventABC
+
+from .event_abc import EventABC
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, repr=True)
 class BotEvent(EventABC):
     """
     Represents any event related to a bot during a battle.
@@ -13,15 +14,6 @@ class BotEvent(EventABC):
         turn_number (int): The turn number when this event occurred.
     """
     turn_number: int
-
-    def __post_init__(self) -> None:
-        """
-        Validates the types and values of attributes after initialization.
-        """
-        if not isinstance(self.turn_number, int):
-            raise TypeError(f"Turn number must be an integer, got {type(self.turn_number).__name__}")
-        if self.turn_number < 0:
-            raise ValueError(f"Turn number must be a non-negative integer, got {self.turn_number}")
 
     def is_critical(self) -> bool:
         """

@@ -18,7 +18,7 @@ class Color:
     blue: int
     alpha: int = 255  # Defaults to fully opaque
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """
         Validates the color component values after the object is initialized.
 
@@ -33,7 +33,7 @@ class Color:
                     raise ValueError(f"{name} component must be between 0 and 255, got {component}")
 
     @classmethod
-    def from_rgb(cls, red: int, green: int, blue: int):
+    def from_rgb(cls, red: int, green: int, blue: int) -> "Color":
         """
         Creates a Color instance using RGB values.
 
@@ -48,7 +48,7 @@ class Color:
         return cls(red, green, blue)
 
     @classmethod
-    def from_rgba(cls, red: int, green: int, blue: int, alpha: int):
+    def from_rgba(cls, red: int, green: int, blue: int, alpha: int) -> "Color":
         """
         Creates a Color instance using RGBA values.
 
@@ -63,7 +63,7 @@ class Color:
         """
         return cls(red, green, blue, alpha)
 
-    def to_tuple(self):
+    def to_tuple(self) -> tuple:
         """
         Converts the color into a tuple representation.
 
@@ -72,7 +72,7 @@ class Color:
         """
         return self.red, self.green, self.blue, self.alpha
 
-    def to_rgb_tuple(self):
+    def to_rgb_tuple(self) -> tuple:
         """
         Converts the color into an RGB tuple representation, excluding the alpha value.
 

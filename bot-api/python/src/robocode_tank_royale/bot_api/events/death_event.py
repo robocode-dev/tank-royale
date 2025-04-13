@@ -1,16 +1,18 @@
-from robocode_tank_royale.bot_api.events import BotEvent
+from dataclasses import dataclass
+
+from .bot_event import BotEvent
 
 
+@dataclass(frozen=True, repr=True)
 class DeathEvent(BotEvent):
     """
-    Represents an event triggered when your bot has died.
+    Represents an event triggered when the bot has died.
     """
 
     def is_critical(self) -> bool:
         """
-        Indicates whether this event is critical.
-
+        Overrides the default implementation to mark this event as critical.
         Returns:
-            bool: Always returns True, as this event is critical.
+            bool: Always returns True since a death event is critical.
         """
         return True

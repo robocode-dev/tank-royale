@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from robocode_tank_royale.bot_api.color import Color
-
 @dataclass
 class BotState:
+    from .color import Color
+
     """Represents the current bot state."""
 
     is_droid: bool

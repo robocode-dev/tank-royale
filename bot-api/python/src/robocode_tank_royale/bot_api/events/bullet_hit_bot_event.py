@@ -1,9 +1,10 @@
 from dataclasses import dataclass
+
 from robocode_tank_royale.bot_api import BulletState
-from robocode_tank_royale.bot_api.events import BotEvent
+from .bot_event import BotEvent
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, repr=True)
 class BulletHitBotEvent(BotEvent):
     """
     Represents an event triggered when a bullet hits a bot.
@@ -22,15 +23,3 @@ class BulletHitBotEvent(BotEvent):
     bullet: BulletState
     damage: float
     energy: float
-
-    def __post_init__(self):
-        """
-        Validates the types of attributes after initialization.
-        """
-        super().__post_init__()
-        if not isinstance(self.victim_id, int):
-            raise TypeError(f"victim_id must be an int, got {type(self.victim_id).__name__}")
-        if not isinstance(self.bullet, BulletState):
-            raise TypeError(f"bullet must be a BulletState, got {type(self.bullet).__name__}")
-        if self.damage < 0:
-            raise ValueError(f"Damage must be non-negative, got {self.damage}")

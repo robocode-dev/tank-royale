@@ -5,10 +5,9 @@ from typing import Any
 
 from PIL import Image
 
-from robocode_tank_royale.bot_api.color import Color
-from robocode_tank_royale.bot_api.bullet_state import BulletState
+from .color import Color
+from .bullet_state import BulletState
 from robocode_tank_royale.bot_api.events.condition import Condition
-
 from robocode_tank_royale.bot_api.events.bot_event import BotEvent
 from robocode_tank_royale.bot_api.events.bot_death_event import BotDeathEvent
 from robocode_tank_royale.bot_api.events.bullet_fired_event import BulletFiredEvent

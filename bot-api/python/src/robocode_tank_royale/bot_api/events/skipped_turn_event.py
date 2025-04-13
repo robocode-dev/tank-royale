@@ -1,6 +1,9 @@
+from dataclasses import dataclass
+
 from robocode_tank_royale.bot_api.events import BotEvent
 
 
+@dataclass(frozen=True, repr=True)
 class SkippedTurnEvent(BotEvent):
     """
     Represents an event triggered when the bot has skipped a turn.

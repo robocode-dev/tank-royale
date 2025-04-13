@@ -8,7 +8,7 @@ from typing import Dict, Any, List, Set, Tuple, Optional
 class SchemaConverter:
     """Converts JSON schema definitions to Python classes."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.processed_schemas: Dict[str, Any] = {}
         self.class_dependencies: Dict[str, Set[str]] = {}
         self.output_dir: Optional[Path] = None

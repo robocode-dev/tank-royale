@@ -1,6 +1,9 @@
-from robocode_tank_royale.bot_api.events import BotEvent
+from dataclasses import dataclass
+
+from .bot_event import BotEvent
 
 
+@dataclass(frozen=True, repr=True)
 class WonRoundEvent(BotEvent):
     """
     Represents an event triggered when a bot has won the round.

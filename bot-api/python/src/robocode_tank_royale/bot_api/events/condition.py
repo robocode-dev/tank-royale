@@ -1,6 +1,8 @@
+from dataclasses import dataclass
 from typing import Callable, Optional
 
 
+@dataclass(frozen=True, repr=True)
 class Condition:
     """
     A class used to test whether a specific condition is met.
@@ -42,30 +44,16 @@ class Condition:
                 self.wait_for(Condition(lambda: self.get_turn_remaining() == 0))
                 # ...
     ```
+    Attributes:
+        name (Optional[str]): The name of the condition (optional). This is useful
+            for identifying the condition in custom events handled by
+            `IBaseBot.on_custom_event`.
+        callable (Optional[Callable[[], bool]]): A callable (e.g., lambda or function)
+            that returns `True` if the condition is met, and `False` otherwise.
     """
 
-    def __init__(self, name: Optional[str] = None, callable: Optional[Callable[[], bool]] = None):
-        """
-        Initializes a new instance of the Condition class.
-
-        Args:
-            name (Optional[str]): The name of the condition (optional). This is useful
-                for identifying the condition in custom events handled by
-                `IBaseBot.on_custom_event`.
-            callable (Optional[Callable[[], bool]]): A callable (e.g., lambda or function)
-                that returns `True` if the condition is met, and `False` otherwise.
-        """
-        self._name = name  # Stores the condition name; private to avoid collisions.
-        self._callable = callable  # Stores the callable for evaluating the condition.
-
-    def get_name(self) -> Optional[str]:
-        """
-        Retrieves the name of the condition, if one has been provided.
-
-        Returns:
-            Optional[str]: The name of the condition, or `None` if no name was set.
-        """
-        return self._name
+    name: Optional[str] = None
+    callable: Optional[Callable[[], bool]] = None
 
     def test(self) -> bool:
         """
@@ -82,9 +70,9 @@ class Condition:
             If a callable is provided and raises an exception during execution,
             the method will return `False`.
         """
-        if self._callable:
+        if self.callable:
             try:
-                return self._callable()
+                return self.callable()
             except Exception:
                 # Gracefully handle errors in the callable's execution.
                 return False
