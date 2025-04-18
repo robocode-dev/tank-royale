@@ -1,36 +1,13 @@
-from abc import ABC, abstractmethod
 import math
 import traceback
+from abc import ABC, abstractmethod
 from typing import Any
 
 from PIL import Image
 
-from .color import Color
+from robocode_tank_royale.bot_api.events import *
 from .bullet_state import BulletState
-from robocode_tank_royale.bot_api.events.condition import Condition
-from robocode_tank_royale.bot_api.events.bot_event import BotEvent
-from robocode_tank_royale.bot_api.events.bot_death_event import BotDeathEvent
-from robocode_tank_royale.bot_api.events.bullet_fired_event import BulletFiredEvent
-from robocode_tank_royale.bot_api.events.bullet_hit_bot_event import BulletHitBotEvent
-from robocode_tank_royale.bot_api.events.bullet_hit_bullet_event import BulletHitBulletEvent
-from robocode_tank_royale.bot_api.events.bullet_hit_wall_event import BulletHitWallEvent
-from robocode_tank_royale.bot_api.events.connection_error_event import ConnectionErrorEvent
-from robocode_tank_royale.bot_api.events.connected_event import ConnectedEvent
-from robocode_tank_royale.bot_api.events.custom_event import CustomEvent
-from robocode_tank_royale.bot_api.events.disconnected_event import DisconnectedEvent
-from robocode_tank_royale.bot_api.events.death_event import DeathEvent
-from robocode_tank_royale.bot_api.events.game_started_event import GameStartedEvent
-from robocode_tank_royale.bot_api.events.game_ended_event import GameEndedEvent
-from robocode_tank_royale.bot_api.events.hit_bot_event import HitBotEvent
-from robocode_tank_royale.bot_api.events.hit_by_bullet_event import HitByBulletEvent
-from robocode_tank_royale.bot_api.events.hit_wall_event import HitWallEvent
-from robocode_tank_royale.bot_api.events.round_started_event import RoundStartedEvent
-from robocode_tank_royale.bot_api.events.round_ended_event import RoundEndedEvent
-from robocode_tank_royale.bot_api.events.scanned_bot_event import ScannedBotEvent
-from robocode_tank_royale.bot_api.events.skipped_turn_event import SkippedTurnEvent
-from robocode_tank_royale.bot_api.events.team_message_event import TeamMessageEvent
-from robocode_tank_royale.bot_api.events.tick_event import TickEvent
-from robocode_tank_royale.bot_api.events.won_round_event import WonRoundEvent
+from .color import Color
 
 
 class BaseBotABC(ABC):
@@ -1393,7 +1370,7 @@ class BaseBotABC(ABC):
         print(f"Connection error with {connection_error_event.server_uri}")
 
         if connection_error_event.error is not None:
-            traceback.print_exc(connection_error_event.error)  # Print the exception
+            traceback.print_exception(connection_error_event.error)  # Print the exception
 
     def on_game_started(self, game_started_event: GameStartedEvent) -> None:
         """
