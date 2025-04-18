@@ -37,8 +37,8 @@ The radar sweep is a pie shape that starts from the center of the bot and has a 
 
 Two angles define the sides of the pie shape of the radar:
 
-- **Start angle**: The current angle of the radar.
-- **End angle**: The angle of the radar from the previous turn.
+- **Start angle**: The (old) angle of the radar from the previous turn.
+- **End angle**: The current angle of the radar.
 
 So the radar sweep is the delta angle going from the angle of the radar from the previous turn to the current turn.
 Hence, if the current angle of the radar and the angle from the last turn is the same, then there is no radar sweep
