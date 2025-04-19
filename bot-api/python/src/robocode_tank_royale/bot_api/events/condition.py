@@ -48,7 +48,7 @@ class Condition:
             for identifying the condition in custom events handled by
             `IBaseBot.on_custom_event`.
         callable (Optional[Callable[[], bool]]): A callable (e.g., lambda or function)
-            that returns `True` if the condition is met, and `False` otherwise.
+            that returns True if the condition is met, and False otherwise.
     """
 
     name: Optional[str] = None
@@ -63,11 +63,11 @@ class Condition:
         initialization to evaluate the condition.
 
         Returns:
-            bool: `True` if the condition is met; `False` otherwise.
+            bool: True if the condition is met; False otherwise.
 
         Note:
             If a callable is provided and raises an exception during execution,
-            the method will return `False`.
+            the method will return False.
         """
         if self.callable:
             try:

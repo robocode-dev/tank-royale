@@ -718,7 +718,7 @@ class BaseBotABC(ABC):
         allows the body, gun, and radar to move independently.
 
         Args:
-            enable (bool): Enables fire assistance when set to `True`, and disables it otherwise.
+            enable (bool): Enables fire assistance when set to True, and disables it otherwise.
         """
         pass
 
@@ -764,8 +764,8 @@ class BaseBotABC(ABC):
         - Turning the gun in this way is still considered as "turning the gun" by the game.
 
         Args:
-            adjust (bool): Set to `True` if the gun must adjust/compensate for the body's turning.
-                           Set to `False` if the gun should turn with the body (default).
+            adjust (bool): Set to True if the gun must adjust/compensate for the body's turning.
+                           Set to False if the gun should turn with the body (default).
 
         Related Methods:
             - `set_adjust_radar_for_body_turn()`
@@ -814,8 +814,8 @@ class BaseBotABC(ABC):
             - The radar compensating in this way still counts as "turning the radar".
 
         Args:
-            adjust (bool): Set to `True` if the radar should adjust/compensate for the body's turn. Set
-                           to `False` if the radar should turn with the body (default).
+            adjust (bool): Set to True if the radar should adjust/compensate for the body's turn. Set
+                           to False if the radar should turn with the body (default).
 
         See Also:
             - set_adjust_gun_for_body_turn()
@@ -832,13 +832,13 @@ class BaseBotABC(ABC):
         Checks if the radar is set to adjust for the body turning, i.e., to turn independently
         of the body's turn.
 
-        This call returns `True` if the radar is set to turn independently of the turn of the
-        body. Otherwise, it returns `False`, meaning that the radar is set to turn with the body
+        This call returns True if the radar is set to turn independently of the turn of the
+        body. Otherwise, it returns False, meaning that the radar is set to turn with the body
         turning.
 
         Returns:
-            bool: `True` if the radar is set to turn independently of the body turning;
-                  `False` if the radar is set to turn with the body turning (default).
+            bool: True if the radar is set to turn independently of the body turning;
+                  False if the radar is set to turn with the body turning (default).
 
         See Also:
             - set_adjust_gun_for_body_turn
@@ -879,8 +879,8 @@ class BaseBotABC(ABC):
 
         Args:
             adjust (bool):
-                - `True` to enable radar adjustment/compensation for gun turning.
-                - `False` to make the radar turn with the gun (default).
+                - True to enable radar adjustment/compensation for gun turning.
+                - False to make the radar turn with the gun (default).
 
         See Also:
             - `setAdjustGunForBodyTurn`
@@ -896,13 +896,13 @@ class BaseBotABC(ABC):
         """
         Checks if the radar is set to adjust independently of the gun's turning.
 
-        This method returns `True` if the radar is configured to turn independent
-        of the gun's turn. Otherwise, it returns `False`, indicating that the radar
+        This method returns True if the radar is configured to turn independent
+        of the gun's turn. Otherwise, it returns False, indicating that the radar
         turns together with the gun (default behavior).
 
         Returns:
-            bool: `True` if the radar is set to turn independent of the gun's turning;
-            `False` if the radar is set to turn with the gun turning (default).
+            bool: True if the radar is set to turn independent of the gun's turning;
+            False if the radar is set to turn with the gun turning (default).
 
         See Also:
             set_adjust_gun_for_body_turn: Adjusts the gun to turn independently of the body.
@@ -917,13 +917,13 @@ class BaseBotABC(ABC):
     def add_custom_event(self, condition: Condition) -> bool:
         """
         Adds an event handler that will automatically trigger `on_custom_event` when the condition's `test` method
-        returns `True`.
+        returns True.
 
         Args:
             condition: The condition that must be met to trigger the custom event.
 
         Returns:
-            bool: `True` if the condition was not added already; `False` if the condition was already added.
+            bool: True if the condition was not added already; False if the condition was already added.
 
         See Also:
             remove_custom_event: A method that removes the custom event.
@@ -960,9 +960,9 @@ class BaseBotABC(ABC):
         multiple methods is only possible with setter methods before invoking `go()`.
 
         Args:
-            overwrite (bool): If set to `True`, any movement saved by a previous call to this method
+            overwrite (bool): If set to True, any movement saved by a previous call to this method
                               or `set_stop()` will be overridden with the current movement.
-                              When set to `False`, this method is identical to `set_stop()`.
+                              When set to False, this method is identical to `set_stop()`.
 
         See Also:
             set_resume: Resumes any previously saved movement.
