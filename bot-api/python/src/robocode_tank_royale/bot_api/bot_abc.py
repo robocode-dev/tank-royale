@@ -221,24 +221,24 @@ class BotABC(ABC):
         """
         Turn the bot to the left (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it has turned
-        the specified amount of degrees. That is, when ``get_turn_remaining()`` is 0.
-        The amount of degrees to turn each turn is limited by ``set_max_turn_rate()``.
+        the specified amount of degrees. That is, when `get_turn_remaining()` is 0.
+        The amount of degrees to turn each turn is limited by `set_max_turn_rate()`.
 
-        This call is executed immediately by invoking ``go()`` in the code behind.
+        This call is executed immediately by invoking `go()` in the code behind.
         This method will block until it has been completed, which can take one to several turns.
         New commands will first take place after this method is completed.
 
         If you need to execute multiple commands in parallel, use *setter* methods
         instead of this blocking method.
 
-        This method will cancel the effect of prior calls to ``set_turn_left()``
-        and ``set_turn_right()``.
+        This method will cancel the effect of prior calls to `set_turn_left()`
+        and `set_turn_right()`.
 
         Args:
             degrees (float): The amount of degrees to turn left.
                 - If negative, the bot will turn right.
-                - If ``float('inf')``, the bot will turn left infinitely.
-                - If ``float('-inf')``, the bot will turn right infinitely.
+                - If `float('inf')`, the bot will turn left infinitely.
+                - If `float('-inf')`, the bot will turn right infinitely.
 
         See Also:
             - `Unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_
@@ -254,23 +254,23 @@ class BotABC(ABC):
         """
         Set the bot to turn to the right (following the decreasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it turned the specified
-        amount of degrees. That is, when ``get_turn_remaining()`` returns 0. The amount of degrees to
-        turn each turn is limited by ``set_max_turn_rate()``.
+        amount of degrees. That is, when `get_turn_remaining()` returns 0. The amount of degrees to
+        turn each turn is limited by `set_max_turn_rate()`.
 
-        This method will first be executed when ``go()`` is called, making it possible to call
+        This method will first be executed when `go()` is called, making it possible to call
         other set methods after execution. This makes it possible to set the bot to move, turn the
-        body, radar, gun, and fire the gun in parallel in a single turn when calling ``go()``.
+        body, radar, gun, and fire the gun in parallel in a single turn when calling `go()`.
         But notice that this is only possible to execute multiple methods in parallel by using
-        setter methods only prior to calling ``go()``.
+        setter methods only prior to calling `go()`.
 
-        If this method is called multiple times, the last call before ``go()`` is executed counts.
+        If this method is called multiple times, the last call before `go()` is executed counts.
 
-        This method will cancel the effect of prior calls to ``set_turn_left()``.
+        This method will cancel the effect of prior calls to `set_turn_left()`.
 
         Args:
             degrees (float): The amount of degrees to turn right. If negative, the bot will turn left.
-                If ``float('inf')``, the bot will turn right infinitely.
-                If ``float('-inf')``, the bot will turn left infinitely.
+                If `float('inf')`, the bot will turn right infinitely.
+                If `float('-inf')`, the bot will turn left infinitely.
 
         See Also:
             set_turn_left
@@ -285,20 +285,20 @@ class BotABC(ABC):
         """
         Turn the bot to the right (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it turned the specified
-        amount of degrees. That is, when ``get_turn_remaining()`` returns 0. The amount of degrees to
-        turn each turn is limited by ``set_max_turn_rate()``.
+        amount of degrees. That is, when `get_turn_remaining()` returns 0. The amount of degrees to
+        turn each turn is limited by `set_max_turn_rate()`.
 
         This call is executed immediately, and it will block until it has been completed, which can
         take one to several turns. New commands will first take place after this method is completed.
         If you need to execute multiple commands in parallel, use setter methods instead of this
         blocking method.
 
-        This method will cancel the effect of prior calls to ``set_turn_left()`` and ``set_turn_right()``.
+        This method will cancel the effect of prior calls to `set_turn_left()` and `set_turn_right()`.
 
         Args:
             degrees (float): The amount of degrees to turn right. If negative, the bot will turn left.
-                If ``float('inf')``, the bot will turn right infinitely.
-                If ``float('-inf')``, the bot will turn left infinitely.
+                If `float('inf')`, the bot will turn right infinitely.
+                If `float('-inf')`, the bot will turn left infinitely.
 
         See Also:
             `Unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_
@@ -313,7 +313,7 @@ class BotABC(ABC):
     def get_turn_remaining(self) -> float:
         """
         Returns the remaining turn in degrees until the bot has finished turning after having called
-        ``set_turn_left()``, ``set_turn_right()``, ``turn_left()``, or ``turn_right()``.
+        `set_turn_left()`, `set_turn_right()`, `turn_left()`, or `turn_right()`.
         When the turn remaining has reached 0, the bot has finished turning.
 
         When the turn remaining is positive, the bot is turning to the left (along the unit circle).
@@ -321,8 +321,8 @@ class BotABC(ABC):
 
         Returns:
             float: The remaining degrees to turn before its current turning is completed.
-            If ``float('inf')``, the bot will turn left infinitely.
-            If ``float('-inf')``, the bot will turn right infinitely.
+            If `float('inf')`, the bot will turn left infinitely.
+            If `float('-inf')`, the bot will turn right infinitely.
 
         See Also:
             set_turn_left
@@ -336,23 +336,23 @@ class BotABC(ABC):
         """
         Set the gun to turn to the left (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it turned the specified
-        amount of degrees. That is, when ``get_gun_turn_remaining()`` returns 0. The amount of degrees
-        to turn each turn is limited by ``set_max_gun_turn_rate()``.
+        amount of degrees. That is, when `get_gun_turn_remaining()` returns 0. The amount of degrees
+        to turn each turn is limited by `set_max_gun_turn_rate()`.
 
-        This method will first be executed when ``go()`` is called, making it possible to call
+        This method will first be executed when `go()` is called, making it possible to call
         other set methods after execution. This makes it possible to set the bot to move, turn the
-        body, radar, gun, and fire the gun in parallel in a single turn when calling ``go()``.
+        body, radar, gun, and fire the gun in parallel in a single turn when calling `go()`.
         But notice that this is only possible to execute multiple methods in parallel by using
-        setter methods only prior to calling ``go()``.
+        setter methods only prior to calling `go()`.
 
-        If this method is called multiple times, the last call before ``go()`` is executed counts.
+        If this method is called multiple times, the last call before `go()` is executed counts.
 
-        This method will cancel the effect of prior calls to ``set_turn_gun_right()``.
+        This method will cancel the effect of prior calls to `set_turn_gun_right()`.
 
         Args:
             degrees (float): The amount of degrees to turn left. If negative, the gun will turn right.
-                If ``float('inf')``, the gun will turn left infinitely.
-                If ``float('-inf')``, the gun will turn right infinitely.
+                If `float('inf')`, the gun will turn left infinitely.
+                If `float('-inf')`, the gun will turn right infinitely.
 
         See Also:
             `Unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_
