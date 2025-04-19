@@ -26,12 +26,10 @@ class BaseBotABC(ABC):
         or a similar entry point.
 
         Example:
-            ```python
             def main():
                 # create my_bot
                 ...
                 my_bot.start()
-            ```
         """
         pass
 
@@ -357,7 +355,8 @@ class BaseBotABC(ABC):
     @abstractmethod
     def clear_events(self) -> None:
         """
-        Clears out any pending events in the bot's event queue immediately."""
+        Clears out any pending events in the bot's event queue immediately.
+        """
         pass
 
     @abstractmethod
@@ -534,7 +533,7 @@ class BaseBotABC(ABC):
         Returns the maximum radar turn rate in degrees per turn.
 
         Returns:
-            The maximum turn rate of the radar.
+            float: The maximum turn rate of the radar.
         """
         pass
 
@@ -571,7 +570,7 @@ class BaseBotABC(ABC):
         Returns the target speed in units per turn.
 
         Returns:
-            The target speed.
+            float: The target speed.
         """
         pass
 
@@ -1018,12 +1017,10 @@ class BaseBotABC(ABC):
         Checks if the provided bot ID is a teammate or not.
 
         Example:
-            ```python
             def on_scanned_bot(event):
                 if is_teammate(event.scanned_bot_id):
                     return  # don't do anything by leaving
                 fire(1)
-            ```
 
         Args:
             bot_id: The ID of the bot to check.
@@ -1121,10 +1118,8 @@ class BaseBotABC(ABC):
         Sets the color of the body. Colors can (only) be changed each turn.
 
         Example:
-            ```python
-            set_body_color(Color.RED)  # the red color
+            set_body_color(Color.RED)         # the red color
             set_body_color(Color(255, 0, 0))  # also the red color
-            ```
 
         Args:
             color: The color of the body or `None` if the bot must use the default color instead.
@@ -1150,10 +1145,8 @@ class BaseBotABC(ABC):
         Colors can (only) be changed each turn.
 
         Example:
-        ```python
-        set_turret_color(Color.RED)       # the red color
-        set_turret_color(Color(255, 0, 0))  # also the red color
-        ```
+            set_turret_color(Color.RED)         # the red color
+            set_turret_color(Color(255, 0, 0))  # also the red color
 
         Args:
             color: The color of the gun turret or `None` if the bot must use the
@@ -1180,10 +1173,8 @@ class BaseBotABC(ABC):
         Colors can (only) be changed each turn.
 
         Example:
-        ```python
-        set_radar_color(Color.RED)       # the red color
-        set_radar_color(Color(255, 0, 0))  # also the red color
-        ```
+            set_radar_color(Color.RED)         # the red color
+            set_radar_color(Color(255, 0, 0))  # also the red color
 
         Args:
             color: The color of the radar or `None` if the bot must use the
@@ -1212,7 +1203,7 @@ class BaseBotABC(ABC):
             after setting the bullet color will use the new color.
 
         Example:
-            set_bullet_color(Color.RED)  # The red color
+            set_bullet_color(Color.RED)         # The red color
             set_bullet_color(Color(255, 0, 0))  # Also the red color
 
         Args:
@@ -1237,10 +1228,8 @@ class BaseBotABC(ABC):
         Sets the color of the scan arc. Colors can (only) be changed each turn.
 
         Example:
-            ```python
-            set_scan_color(Color.RED)  # the red color
+            set_scan_color(Color.RED)         # the red color
             set_scan_color(Color(255, 0, 0))  # also the red color
-            ```
 
         Args:
             color: The color of the scan arc. Pass `None` if the bot should use the default color instead.
@@ -1264,10 +1253,8 @@ class BaseBotABC(ABC):
         Sets the color of the tracks. Colors can only be changed once per turn.
 
         Example:
-            ```python
-            set_tracks_color(Color.RED)  # The red color
+            set_tracks_color(Color.RED)         # The red color
             set_tracks_color(Color(255, 0, 0))  # Also the red color
-            ```
 
         Args:
             color (Color or None): The color of the tracks. Use `None` to reset to the default color.
@@ -1293,10 +1280,8 @@ class BaseBotABC(ABC):
         Colors can (only) be changed each turn.
 
         Example:
-        ```python
-        set_gun_color(Color.RED)       # the red color
-        set_gun_color(Color(255, 0, 0))  # also the red color
-        ```
+            set_gun_color(Color.RED)         # the red color
+            set_gun_color(Color(255, 0, 0))  # also the red color
 
         Args:
             color: The color of the gun or `None` if the bot must use the
@@ -1321,11 +1306,9 @@ class BaseBotABC(ABC):
         Gets a graphics object for debug painting.
 
         Example:
-        ```python
-        g = get_graphics()
-        draw = PIL.ImageDraw(g)
-        g.rectangle(50, 50, 100, 100, fill=(0, 0, 255))  # A blue filled rect
-        ```
+            g = get_graphics()
+            draw = PIL.ImageDraw(g)
+            g.rectangle(50, 50, 100, 100, fill=(0, 0, 255))  # A blue filled rect
 
         Returns:
             A graphics canvas to use for painting graphical objects, making

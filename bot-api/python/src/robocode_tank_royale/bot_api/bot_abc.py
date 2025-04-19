@@ -14,14 +14,12 @@ class BotABC(ABC):
         Used for running a program for the bot.
 
         Example:
-            ```python
             def run(self):
                 while self.is_running():
                     self.forward(100)
                     self.turn_gun_left(360)
                     self.back(100)
                     self.turn_gun_right(360)
-            ```
 
         Notes:
             - In this example, the program runs in a loop (as long as the bot is running),
