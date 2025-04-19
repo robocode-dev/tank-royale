@@ -239,7 +239,7 @@ internal static class EnvVars
     /// Checks if bot is being booted.
     /// </summary>
     /// <returns><c>true</c> if the bot is being booted; <c>false</c> otherwise.</returns>
-    internal static bool IsBotBooted()
+    internal static bool IsBotBooted() // Set by Booter. Currently, not being used
     {
         return Environment.GetEnvironmentVariable(BotBooted) != null;
     }

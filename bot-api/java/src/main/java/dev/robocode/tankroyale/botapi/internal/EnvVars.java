@@ -218,7 +218,7 @@ final class EnvVars {
      * Checks if bot is being booted.
      */
     public static boolean isBotBooted() {
-        return System.getenv(BOT_BOOTED) != null;
+        return System.getenv(BOT_BOOTED) != null; // Set by Booter. Currently, not being used
     }
 
     private static boolean isBlank(String s) {
