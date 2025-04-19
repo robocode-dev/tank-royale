@@ -9,7 +9,7 @@ class BotABC(ABC):
 
     from events import Condition
 
-    def run(self):
+    def run(self) -> None:
         """
         Used for running a program for the bot.
 
@@ -44,7 +44,7 @@ class BotABC(ABC):
         pass
 
     @abstractmethod
-    def set_forward(self, distance: float):
+    def set_forward(self, distance: float) -> None:
         """
         Sets the bot to move forward until it has traveled a specific distance from its
         current position or reached an obstacle.
@@ -75,7 +75,7 @@ class BotABC(ABC):
         pass
 
     @abstractmethod
-    def forward(self, distance: float):
+    def forward(self, distance: float) -> None:
         """
         Moves the bot forward until it has traveled a specific distance or reached an obstacle.
 
@@ -104,7 +104,7 @@ class BotABC(ABC):
         pass
 
     @abstractmethod
-    def set_back(self, distance: float):
+    def set_back(self, distance: float) -> None:
         """
         Sets the bot to move backward until it has traveled a specific distance from its
         current position or reached an obstacle.
@@ -135,7 +135,7 @@ class BotABC(ABC):
         pass
 
     @abstractmethod
-    def back(self, distance: float):
+    def back(self, distance: float) -> None:
         """
         Moves the bot backward until it has traveled a specific distance from its current position,
         or it is moving into an obstacle. The speed is limited by `setMaxSpeed`.
@@ -186,7 +186,7 @@ class BotABC(ABC):
         """
         pass
 
-    def set_turn_left(self, degrees: float):
+    def set_turn_left(self, degrees: float) -> None:
         """
         Set the bot to turn to the left (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it has turned the specified
@@ -217,7 +217,7 @@ class BotABC(ABC):
         """
         pass
 
-    def turn_left(self, degrees: float):
+    def turn_left(self, degrees: float) -> None:
         """
         Turn the bot to the left (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it has turned
@@ -250,7 +250,7 @@ class BotABC(ABC):
         """
         pass
 
-    def set_turn_right(self, degrees: float):
+    def set_turn_right(self, degrees: float) -> None:
         """
         Set the bot to turn to the right (following the decreasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it turned the specified
@@ -281,7 +281,7 @@ class BotABC(ABC):
         """
         pass
 
-    def turn_right(self, degrees: float):
+    def turn_right(self, degrees: float) -> None:
         """
         Turn the bot to the right (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it turned the specified
@@ -332,7 +332,7 @@ class BotABC(ABC):
         """
         pass
 
-    def set_turn_gun_left(self, degrees: float):
+    def set_turn_gun_left(self, degrees: float) -> None:
         """
         Set the gun to turn to the left (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it turned the specified
@@ -364,7 +364,7 @@ class BotABC(ABC):
         """
         pass
 
-    def turn_gun_left(self, degrees: float):
+    def turn_gun_left(self, degrees: float) -> None:
         """
         Rotates the gun to the left (increasing degrees of the unit circle) until
         it has turned the specified number of degrees.
@@ -387,7 +387,7 @@ class BotABC(ABC):
         """
         pass
 
-    def set_turn_gun_right(self, degrees: float):
+    def set_turn_gun_right(self, degrees: float) -> None:
         """
         Schedules the gun to turn to the right (decreasing degrees of the unit
         circle) until it has turned the specified number of degrees.
@@ -409,7 +409,7 @@ class BotABC(ABC):
         """
         pass
 
-    def turn_gun_right(self, degrees: float):
+    def turn_gun_right(self, degrees: float) -> None:
         """
         Rotates the gun to the right (decreasing degrees of the unit circle) until
         it has turned the specified number of degrees.
@@ -448,7 +448,7 @@ class BotABC(ABC):
         """
         pass
 
-    def set_turn_radar_left(self, degrees: float):
+    def set_turn_radar_left(self, degrees: float) -> None:
         """
         Schedules the radar to turn to the left (increasing degrees of the unit
         circle) until it has turned the specified number of degrees.
@@ -470,7 +470,7 @@ class BotABC(ABC):
         """
         pass
 
-    def turn_radar_left(self, degrees: Union[float, int]):
+    def turn_radar_left(self, degrees: Union[float, int]) -> None:
         """Turn the radar to the left (following the increasing degrees of the
         unit circle) until it has turned the specified amount of degrees. This
         method will block until completed.
@@ -489,7 +489,7 @@ class BotABC(ABC):
         """
         pass
 
-    def set_turn_radar_right(self, degrees: Union[float, int]):
+    def set_turn_radar_right(self, degrees: Union[float, int]) -> None:
         """Set the radar to turn right (following the decreasing degrees of the
         unit circle) until it has turned the specified amount of degrees. This
         method does not block but will execute when `go()` is called.
@@ -509,7 +509,7 @@ class BotABC(ABC):
         """
         pass
 
-    def turn_radar_right(self, degrees: Union[float, int]):
+    def turn_radar_right(self, degrees: Union[float, int]) -> None:
         """Turn the radar to the right (following the increasing degrees of the
         unit circle) until it has turned the specified amount of degrees. This
         method will block until completed.
@@ -545,7 +545,7 @@ class BotABC(ABC):
         """
         pass
 
-    def fire(self, firepower: float):
+    def fire(self, firepower: float) -> None:
         """
         Fires the gun in the direction the gun is pointing.
 
@@ -590,7 +590,7 @@ class BotABC(ABC):
         pass
 
     @abstractmethod
-    def stop(self, overwrite: bool = False):
+    def stop(self, overwrite: bool = False) -> None:
         """
         Immediately stops all motion, including the robot's movement, gun rotation,
         and radar movement. Any remaining movement is preserved for future execution
@@ -608,7 +608,7 @@ class BotABC(ABC):
         pass
 
     @abstractmethod
-    def resume(self):
+    def resume(self) -> None:
         """
         Resume the movement prior to calling the `set_stop` or `stop` method.
         This method has no effect if it has already been called.
@@ -620,7 +620,7 @@ class BotABC(ABC):
         pass
 
     @abstractmethod
-    def rescan(self):
+    def rescan(self) -> None:
         """
         Scan again with the radar. This method is useful if the radar has
         not been turning and is unable to scan bots automatically.
@@ -630,7 +630,7 @@ class BotABC(ABC):
         pass
 
     @abstractmethod
-    def wait_for(self, condition: Condition):
+    def wait_for(self, condition: Condition) -> None:
         """
         Blocks until a condition is met, i.e., when `Condition.test()` returns True.
 
