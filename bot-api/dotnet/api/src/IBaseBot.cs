@@ -962,15 +962,24 @@ public interface IBaseBot
     void OnScannedBot(ScannedBotEvent scannedBotEvent);
 
     /// <summary>
-    /// The event handler triggered when the bot has skipped a turn. This event occurs if the bot
-    /// did not take any action in a specific turn. That is, <see cref="Go"/> was not called before
-    /// the turn timeout occurred for the turn. If the bot does not take action for multiple turns
-    /// in a row, it will receive a <see cref="SkippedTurnEvent"/> for each turn where it did not
-    /// take action. When the bot is skipping a turn, the server did not receive the message from
-    /// the bot, and the server will use the newest received instructions for target speed, turn
-    /// rates, firing, etc.
+    /// Handles the event triggered when the bot skips a turn.
+    ///
+    /// A turn is skipped if the bot does not send any instructions to the server (via the <see cref="Go()" /> method)
+    /// before the turn timeout occurs. When this happens, the server continues using the last received
+    /// set of actions, such as movement, turning rates, or firing commands.
     /// </summary>
-    /// <param name="skippedTurnEvent">Event details from the game.</param>
+    /// <remarks>
+    /// Reasons for skipped turns may include:
+    /// <list type="bullet">
+    ///   <item><description>Excessive processing or delays in the bot's logic, leading to a timeout.</description></item>
+    ///   <item><description>Failure to invoke the <see cref="Go()" /> method in the current turn.</description></item>
+    ///   <item><description>Misaligned or unintended logic in the bot's turn-handling code.</description></item>
+    /// </list>
+    ///
+    /// This method can be overridden to define custom behavior for handling skipped turns, such as
+    /// logging the event, debugging performance issues, or modifying the bot's logic to avoid future skips.
+    /// </remarks>
+    /// <param name="skippedTurnEvent">An event containing details about the skipped turn.</param>
     void OnSkippedTurn(SkippedTurnEvent skippedTurnEvent);
 
     /// <summary>
@@ -1104,10 +1113,30 @@ public interface IBaseBot
     double NormalizeAbsoluteAngle(double angle);
 
     /// <summary>
-    /// Normalizes an angle to an relative angle into the range [-180,180[
+    /// Normalizes an angle to a relative angle in the range [-180, 180).
+    /// <br/><br/>
+    /// A <b>relative angle</b> represents the shortest angular distance between two directions.
+    /// For example:
+    /// <list type="bullet">
+    ///   <item>
+    ///     <description>
+    ///     An angle of 190° is equivalent to -170° in relative terms, as turning -170° is
+    ///     shorter than turning 190° to reach the same direction.
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///     Similarly, -190° is normalized to 170°, as turning 170° is the shorter path.
+    ///     </description>
+    ///   </item>
+    /// </list>
+    ///
+    /// This method ensures that any input angle is adjusted to this range, making it easier
+    /// to work with directional calculations where relative angles are more intuitive
+    /// (e.g., determining how much to turn to face a specific direction).
     /// </summary>
-    /// <param name="angle">Is the angle to normalize.</param>
-    /// <returns>The normalized relative angle.</returns>
+    /// <param name="angle">The angle to normalize, in degrees.</param>
+    /// <returns>A normalized relative angle in the range [-180, 180).</returns>
     double NormalizeRelativeAngle(double angle);
 
     /// <summary>

@@ -612,24 +612,16 @@ class BaseBotABC(ABC):
     @abstractmethod
     def set_max_speed(self, max_speed: float) -> None:
         """
-        Sets the maximum speed for moving forward and backward.
+        Sets the maximum speed for the bot.
 
-        The maximum speed must be an absolute value between 0 and Constants.MAX_SPEED (inclusive). If the provided
-        `max_speed` is negative, it will be treated as 0. If it exceeds Constants.MAX_SPEED, it will be capped
-        at Constants.MAX_SPEED.
+        The value must be between 0 and Constants.MAX_SPEED. Negative values
+        default to 0, and values above Constants.MAX_SPEED are truncated.
 
-        For example:
-            - If the maximum speed is set to 5, the bot can move forward at a maximum speed of 5 units per turn
-              and backward at a maximum speed of -5 units per turn.
-
-        Note:
-            - This method takes effect only when `go()` is called. This allows other setter methods related to
-              movement, turning, or firing to be called beforehand so that they execute in parallel in the same
-              turn when `go()` is invoked.
-            - If this method is called multiple times before `go()`, only the last call takes effect.
+        Example:
+            set_max_speed(5)  # Sets max speed to 5 units per turn.
 
         Args:
-            max_speed (float): The new maximum speed.
+            max_speed (float): The desired maximum speed.
         """
         pass
 
@@ -1307,12 +1299,10 @@ class BaseBotABC(ABC):
 
         Example:
             g = get_graphics()
-            draw = PIL.ImageDraw(g)
             g.rectangle(50, 50, 100, 100, fill=(0, 0, 255))  # A blue filled rect
 
         Returns:
-            A graphics canvas to use for painting graphical objects, making
-            debugging easier.
+            A graphics canvas to use for painting graphical objects, making debugging easier.
         """
         pass
 
@@ -1501,15 +1491,22 @@ class BaseBotABC(ABC):
 
     def on_skipped_turn(self, skipped_turn_event: SkippedTurnEvent) -> None:
         """
-        The event handler triggered when the bot has skipped a turn.
+        Handles the event when the bot skips a turn.
 
-        This event occurs if the bot did not take any action in a specific turn. This could happen if
-        the `go()` function is not called before the turn timeout occurs. For each missed turn,
-        a `SkippedTurnEvent` is triggered. In skipped turns, the server relies on the last set of
-        instructions received for actions like speed, turn rates, firing, etc.
+        A turn is skipped if the bot does not send any instructions to the server (via the `go()` method)
+        before the turn timeout occurs. When this happens, the server continues using the last received
+        set of actions, such as movement, turning rates, or firing commands.
+
+        Reasons for skipped turns may include:
+        - Excessive processing or delays in the bot's logic, leading to timeout.
+        - Failure to invoke the `go()` method in the current turn.
+        - Misaligned or unintended logic in the bot's turn-handling code.
+
+        This method can be overridden to define custom behavior for handling skipped turns, such as
+        logging the event, debugging performance issues, or modifying the bot's logic to avoid future skips.
 
         Args:
-            skipped_turn_event: The event details from the game.
+            skipped_turn_event (SkippedTurnEvent): An event containing details about the skipped turn.
         """
         pass
 
@@ -1768,12 +1765,23 @@ class BaseBotABC(ABC):
         """
         Normalizes an angle to a relative angle in the range [-180, 180).
 
+        A **relative angle** represents the shortest angular distance between two directions.
+        For example:
+        - An angle of 190° is equivalent to -170° in relative terms, as turning -170° is
+          shorter than turning 190° to reach the same direction.
+        - Similarly, -190° is normalized to 170°, as turning 170° is the shorter path.
+
+        This method ensures that any input angle is adjusted to this range, making it easier
+        to work with directional calculations where relative angles are more intuitive
+        (e.g., determining how much to turn to face a specific direction).
+
         Args:
-            angle (float): The angle to normalize.
+            angle (float): The angle to normalize, in degrees.
 
         Returns:
-            float: The normalized relative angle.
+            float: A normalized relative angle in the range [-180, 180).
         """
+
         angle %= 360
         if angle >= 0:
             return angle if angle < 180 else angle - 360

@@ -1246,14 +1246,23 @@ public interface IBaseBot {
     }
 
     /**
-     * The event handler triggered when the bot has skipped a turn. This event occurs if the bot did
-     * not take any action in a specific turn. That is, Go() was not called before the turn timeout
-     * occurred for the turn. If the bot does not take action for multiple turns in a row, it will
-     * receive a SkippedTurnEvent for each turn where it did not take action. When the bot is skipping
-     * a turn, the server did not receive the message from the bot, and the server will use the newest
-     * received instructions for target speed, turn rates, firing, etc.
+     * Handles the event triggered when the bot skips a turn.
+     * <p>
+     * A turn is skipped if the bot does not send any instructions to the server (via the {@link #go()} method)
+     * before the turn timeout occurs. When this happens, the server continues using the last received
+     * set of actions, such as movement, turning rates, or firing commands.
+     * <p>
+     * Reasons for skipped turns may include:
+     * <ul>
+     *   <li>Excessive processing or delays in the bot's logic, leading to a timeout.</li>
+     *   <li>Failure to invoke the {@link #go()} method in the current turn.</li>
+     *   <li>Misaligned or unintended logic in the bot's turn-handling code.</li>
+     * </ul>
+     * <p>
+     * This method can be overridden to define custom behavior for handling skipped turns, such as
+     * logging the event, debugging performance issues, or modifying the bot's logic to avoid future skips.
      *
-     * @param skippedTurnEvent is the event details from the game.
+     * @param skippedTurnEvent An event containing details about the skipped turn.
      */
     default void onSkippedTurn(SkippedTurnEvent skippedTurnEvent) {
     }
@@ -1459,10 +1468,22 @@ public interface IBaseBot {
     }
 
     /**
-     * Normalizes an angle to a relative angle into the range [-180,180[
+     * Normalizes an angle to a relative angle in the range [-180, 180).
+     * <p>
+     * A <b>relative angle</b> represents the shortest angular distance between two directions.
+     * For example:
+     * <ul>
+     *   <li>An angle of 190° is equivalent to -170° in relative terms, as turning -170° is
+     *       shorter than turning 190° to reach the same direction.</li>
+     *   <li>Similarly, -190° is normalized to 170°, as turning 170° is the shorter path.</li>
+     * </ul>
      *
-     * @param angle is the angle to normalize.
-     * @return The normalized relative angle.
+     * This method ensures that any input angle is adjusted to this range, making it easier
+     * to work with directional calculations where relative angles are more intuitive
+     * (e.g., determining how much to turn to face a specific direction).
+     *
+     * @param angle The angle to normalize, in degrees.
+     * @return A normalized relative angle in the range [-180, 180).
      */
     default double normalizeRelativeAngle(double angle) {
         return (angle %= 360) >= 0
