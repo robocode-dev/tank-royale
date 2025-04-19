@@ -1,6 +1,8 @@
 import json
 from typing import List, Set, Optional
 
+from robocode_tank_royale.bot_api import InitialPosition
+
 
 class BotInfo:
     """
@@ -52,7 +54,7 @@ class BotInfo:
             game_types: Optional[Set[str]] = None,
             platform: Optional[str] = None,
             programming_lang: Optional[str] = None,
-            initial_position: Optional[str] = None,
+            initial_position: Optional[InitialPosition] = None,
     ):
         """
         Initializes a new instance of the BotInfo class.
@@ -74,18 +76,18 @@ class BotInfo:
             initial_position (InitialPosition): The initial position with starting coordinate and angle (optional).
         """
 
-        # required fields:
+        # Required fields:
         self.name = self._process_name(name)
         self.version = self._process_version(version)
         self.authors = self._process_authors(authors)
-        # optional fields:
+        # Optional fields:
         self.description = self._process_description(description)
         self.homepage = self._process_homepage(homepage)
         self.country_codes = self._process_country_codes(country_codes or [])
         self.game_types = self._process_game_types(game_types or set())
         self.platform = self._process_platform(platform)
         self.programming_lang = self._process_programming_lang(programming_lang)
-        # optional special field:
+        # Optional special field:
         self.initial_position = initial_position
 
     # Validation and processing methods
