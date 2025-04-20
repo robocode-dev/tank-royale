@@ -68,11 +68,11 @@ public sealed class BotInfo
     /// </summary>
     public const int MaxNumberOfGameTypes = 10;
 
-    // required fields:
+    // Required fields:
     private readonly string name;
     private readonly string version;
     private readonly IList<string> authors;
-    // optional fields:
+    // Optional fields:
     private readonly string description;
     private readonly string homepage;
     private readonly IList<string> countryCodes;

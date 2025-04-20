@@ -118,15 +118,18 @@ public final class BotInfo {
             final String programmingLang,
             final InitialPosition initialPosition) {
 
+        // Required fields:
         this.name = processName(name);
         this.version = processVersion(version);
         this.authors = processAuthors(authors);
+        // Optional fields:
         this.description = processDescription(description);
         this.homepage = processHomepage(homepage);
         this.countryCodes = processCountryCodes(countryCodes);
         this.gameTypes = processGameTypes(gameTypes);
         this.platform = processPlatform(platform);
         this.programmingLang = processProgrammingLang(programmingLang);
+        // Optional special field:
         this.initialPosition = initialPosition;
     }
 

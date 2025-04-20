@@ -506,7 +506,7 @@ class BaseBotABC(ABC):
         pass
 
     @abstractmethod
-    def set_radar_turn_rate(self, gun_radar_turn_rate: float) -> None:
+    def set_radar_turn_rate(self, radar_turn_rate: float) -> None:
         """
         Sets the turn rate of the radar, which can be positive or negative. The radar turn rate is
         measured in degrees per turn. The turn rate is added to the current direction of the radar.
@@ -523,7 +523,7 @@ class BaseBotABC(ABC):
               will take effect.
 
         Args:
-            gun_radar_turn_rate (float): The new turn rate of the radar in degrees per turn.
+            radar_turn_rate (float): The new turn rate of the radar in degrees per turn.
         """
         pass
 
@@ -1231,10 +1231,10 @@ class BaseBotABC(ABC):
     @abstractmethod
     def get_tracks_color(self) -> Color:
         """
-        Returns the color of the tracks.
+        Returns the color of the tank tracks.
 
         Returns:
-            The color of the tracks or `None` if no color has been set yet,
+            Color: The color of the tank tracks, or `None` if no color has been set yet,
             meaning that the default color will be used.
         """
         pass
@@ -1473,19 +1473,17 @@ class BaseBotABC(ABC):
 
     def on_scanned_bot(self, scanned_bot_event: ScannedBotEvent) -> None:
         """
-        Event handler triggered when the bot has skipped a turn.
+        Event handler triggered when the bot's radar scans another bot.
 
-        This event occurs if the bot did not take any action in a specific turn. Specifically, the `go()`
-        method was not called before the turn timeout occurred for the turn. If the bot does not take
-        action for multiple turns in a row, it will receive a `SkippedTurnEvent` for each turn where
-        no action was taken.
+        This event occurs when the bot's radar detects another bot within its scanning range.
+        The event provides information about the scanned bot such as its position, energy level,
+        and velocity.
 
-        When the bot skips a turn, the server does not receive any message from the bot. In this case,
-        the server will continue using the most recently received instructions for target speed, turn rates,
-        firing, etc.
+        The information provided by this event is essential for targeting, tracking, and making
+        strategic decisions based on the positions and states of other bots on the battlefield.
 
         Args:
-            scanned_bot_event: The event details from the game.
+            scanned_bot_event: The event details about the scanned bot from the game.
         """
         pass
 
