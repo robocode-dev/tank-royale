@@ -33,7 +33,7 @@ final class EventHandler<T> {
      * to be added, sorted by priority, and invoked in the correct order based on priority.
      */
     private final List<EntryWithPriority<T>> subscriberEntries = new ArrayList<>();
-    
+
     /**
      * A set to quickly check for duplicate subscribers with O(1) lookup.
      */
@@ -61,7 +61,7 @@ final class EventHandler<T> {
             if (!subscriberSet.add(subscriber)) {
                 throw new IllegalArgumentException("Subscriber is already registered");
             }
-            
+
             subscriberEntries.add(new EntryWithPriority<>(subscriber, priority));
             // Use Comparator.comparingInt for more efficient sorting
             subscriberEntries.sort(Comparator.comparingInt((EntryWithPriority<T> e) -> e.priority).reversed());
@@ -117,7 +117,7 @@ final class EventHandler<T> {
      * Subscribers with higher priority are invoked before those with lower priority.
      * If a subscriber throws an exception, it is caught, allowing other
      * subscribers to continue processing the event.
-     * 
+     *
      * Note: Changes to the subscriber list during event publication will not affect
      * the current event being processed, but only future events.
      *
@@ -158,7 +158,7 @@ final class EventHandler<T> {
          * Gets the priority of the subscriber. Higher values indicate higher priority.
          */
         private final int priority;
-        
+
         /**
          * Gets the subscriber delegate.
          */
@@ -174,7 +174,7 @@ final class EventHandler<T> {
             this.subscriber = subscriber;
             this.priority = priority;
         }
-    
+
         /**
          * Determines whether the specified object is equal to the current object.
          *
@@ -188,7 +188,7 @@ final class EventHandler<T> {
             EntryWithPriority<?> that = (EntryWithPriority<?>) o;
             return priority == that.priority && Objects.equals(subscriber, that.subscriber);
         }
-    
+
         /**
          * Returns the hash code for this instance.
          *

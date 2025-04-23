@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
@@ -7,7 +8,7 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 /// <summary>
 /// Generic event handler for handling and dispatching events of type <typeparamref name="T"/>.
 /// Events can be published to all subscribed listeners, which will be invoked in order of their priority.
-/// Subscribers with higher priority are invoked before lower priority ones. This handler provides 
+/// Subscribers with higher priority are invoked before lower priority ones. This handler provides
 /// thread-safety through synchronization and exception handling during event publication.
 /// </summary>
 /// <typeparam name="T">The type of event that this handler processes. Must implement the <see cref="IEvent"/> interface.</typeparam>
@@ -29,7 +30,7 @@ public class EventHandler<T> where T : IEvent
     /// to be added, sorted by priority, and invoked in the correct order based on priority.
     /// </summary>
     private readonly List<EntryWithPriority> _subscriberEntries = new();
-    
+
     /// <summary>
     /// A set to quickly check for duplicate subscribers.
     /// </summary>
@@ -62,14 +63,14 @@ public class EventHandler<T> where T : IEvent
             {
                 throw new ArgumentException("Subscriber is already registered", nameof(subscriber));
             }
-            
+
             // Add the new entry
             var newEntry = new EntryWithPriority(subscriber, priority);
-            
+
             // Use binary search to find insertion point to maintain sorted order
-            int index = _subscriberEntries.BinarySearch(newEntry, Comparer<EntryWithPriority>.Create((e1, e2) => 
+            int index = _subscriberEntries.BinarySearch(newEntry, Comparer<EntryWithPriority>.Create((e1, e2) =>
                 e2.Priority.CompareTo(e1.Priority)));
-                
+
             if (index < 0)
             {
                 _subscriberEntries.Insert(~index, newEntry); // Insert at the correct position
@@ -119,7 +120,7 @@ public class EventHandler<T> where T : IEvent
     /// Subscribers with higher priority are invoked before those with lower priority.
     /// If a subscriber throws an exception, it is caught, allowing other
     /// subscribers to continue processing the event.
-    /// 
+    ///
     /// Note: Changes to the subscriber list during event publication will not affect
     /// the current event being processed, but only future events.
     /// </summary>
@@ -127,12 +128,12 @@ public class EventHandler<T> where T : IEvent
     public void Publish(T eventData)
     {
         List<EntryWithPriority> entriesCopy;
-        
+
         lock (_lock)
         {
             entriesCopy = new List<EntryWithPriority>(_subscriberEntries);
         }
-    
+
         foreach (var entry in entriesCopy)
         {
             try
@@ -168,12 +169,12 @@ public class EventHandler<T> where T : IEvent
         /// Gets the priority of the subscriber. Higher values indicate higher priority.
         /// </summary>
         public int Priority { get; }
-    
+
         /// <summary>
         /// Gets the subscriber delegate.
         /// </summary>
         public Subscriber Subscriber { get; }
-    
+
         /// <summary>
         /// Constructs a new entry with the specified subscriber and priority.
         /// </summary>
@@ -184,7 +185,7 @@ public class EventHandler<T> where T : IEvent
             Priority = priority;
             Subscriber = subscriber;
         }
-        
+
         /// <summary>
         /// Compares this instance with another EntryWithPriority instance.
         /// </summary>
@@ -195,7 +196,7 @@ public class EventHandler<T> where T : IEvent
             // Note: We invert the comparison because higher priority should come first
             return other.Priority.CompareTo(Priority);
         }
-        
+
         /// <summary>
         /// Returns the hash code for this instance.
         /// </summary>
@@ -204,7 +205,7 @@ public class EventHandler<T> where T : IEvent
         {
             return HashCode.Combine(Priority, Subscriber);
         }
-        
+
         /// <summary>
         /// Determines whether the specified object is equal to the current object.
         /// </summary>
