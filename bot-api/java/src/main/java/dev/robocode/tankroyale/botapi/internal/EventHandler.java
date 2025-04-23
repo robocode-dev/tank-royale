@@ -117,7 +117,7 @@ final class EventHandler<T> {
      * Subscribers with higher priority are invoked before those with lower priority.
      * If a subscriber throws an exception, it is caught, allowing other
      * subscribers to continue processing the event.
-     *
+     * <p>
      * Note: Changes to the subscriber list during event publication will not affect
      * the current event being processed, but only future events.
      *
