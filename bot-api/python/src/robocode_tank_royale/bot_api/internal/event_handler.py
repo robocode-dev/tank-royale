@@ -117,9 +117,6 @@ class EventHandler(Generic[T]):
         Returns:
             int: The count of subscribers
         """
-        if not isinstance(event_data, EventABC):
-            raise TypeError("Event data must implement the EventABC interface")
-
         # Get a copy of subscriber entries under lock to allow concurrent modifications
         with self._lock:
             return len(self._subscriber_entries)
