@@ -7,6 +7,24 @@ using static System.Int32;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
 
+/// <summary>
+/// A queue for managing and dispatching bot events in the Tank Royale game.
+/// </summary>
+/// <remarks>
+/// This class is responsible for:
+/// <list type="bullet">
+///     <item><description>Maintaining a prioritized queue of bot events</description></item>
+///     <item><description>Managing event lifecycle and dispatching</description></item>
+///     <item><description>Handling event interruptions and priorities</description></item>
+///     <item><description>Processing custom events</description></item>
+///     <item><description>Cleaning up old events</description></item>
+/// </list>
+/// <para>
+/// The queue has a maximum size of <see cref="MaxQueueSize"/> events and maintains
+/// events for up to <see cref="MaxEventAge"/> turns before they are considered old
+/// and removed (unless they are critical events).
+/// </para>
+/// </remarks>
 internal sealed class EventQueue : IComparer<BotEvent>
 {
     private const int MaxQueueSize = 256;
@@ -20,12 +38,20 @@ internal sealed class EventQueue : IComparer<BotEvent>
     private BotEvent _currentTopEvent;
     private int _currentTopEventPriority;
 
+    /// <summary>
+    /// Constructs an EventQueue with the specified bot internals and event handlers.
+    /// </summary>
+    /// <param name="baseBotInternals">The base bot internals instance</param>
+    /// <param name="botEventHandlers">The bot event handlers instance</param>
     internal EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers)
     {
         _baseBotInternals = baseBotInternals;
         _botEventHandlers = botEventHandlers;
     }
 
+    /// <summary>
+    /// Clears all events from the queue and resets the event priority.
+    /// </summary>
     internal void Clear()
     {
         ClearEvents();
@@ -33,6 +59,11 @@ internal sealed class EventQueue : IComparer<BotEvent>
         _currentTopEventPriority = MinValue;
     }
 
+    /// <summary>
+    /// Returns a copy of all events for the specified turn number after removing old events.
+    /// </summary>
+    /// <param name="turnNumber">The current turn number</param>
+    /// <returns>A list of bot events</returns>
     internal IList<BotEvent> Events(int turnNumber)
     {
         lock (_events)
@@ -42,6 +73,9 @@ internal sealed class EventQueue : IComparer<BotEvent>
         }
     }
 
+    /// <summary>
+    /// Removes all events from the queue.
+    /// </summary>
     internal void ClearEvents()
     {
         lock (_events)
@@ -50,6 +84,10 @@ internal sealed class EventQueue : IComparer<BotEvent>
         }
     }
 
+    /// <summary>
+    /// Sets whether the current event can be interrupted.
+    /// </summary>
+    /// <param name="interruptible">True if the event can be interrupted, false otherwise</param>
     internal void SetCurrentEventInterruptible(bool interruptible)
     {
         EventInterruption.SetInterruptible(_currentTopEvent.GetType(), interruptible);
@@ -57,6 +95,10 @@ internal sealed class EventQueue : IComparer<BotEvent>
 
     private bool IsCurrentEventInterruptible => EventInterruption.IsInterruptible(_currentTopEvent.GetType());
 
+    /// <summary>
+    /// Adds events from a tick event to the queue, including custom events.
+    /// </summary>
+    /// <param name="tickEvent">The tick event containing events to add</param>
     internal void AddEventsFromTick(TickEvent tickEvent)
     {
         AddEvent(tickEvent);
@@ -68,6 +110,10 @@ internal sealed class EventQueue : IComparer<BotEvent>
         AddCustomEvents();
     }
 
+    /// <summary>
+    /// Dispatches events for the specified turn number, processing them according to their priorities.
+    /// </summary>
+    /// <param name="turnNumber">The current turn number</param>
     internal void DispatchEvents(int turnNumber)
     {
 //        DumpEvents(); // for debugging purposes
@@ -177,6 +223,24 @@ internal sealed class EventQueue : IComparer<BotEvent>
         }
     }
 
+    /// <summary>
+    /// Compares two BotEvent objects to determine their order in the event queue.
+    /// </summary>
+    /// <remarks>
+    /// The comparison is based on three factors (in order of precedence):
+    /// <list type="number">
+    ///     <item><description>Critical events come before non-critical events</description></item>
+    ///     <item><description>Older turn number (lower value) comes before newer turn number (higher value)</description></item>
+    ///     <item><description>Higher priority value comes before lower priority value</description></item>
+    /// </list>
+    /// </remarks>
+    /// <param name="botEvent1">The first BotEvent to compare</param>
+    /// <param name="botEvent2">The second BotEvent to compare</param>
+    /// <returns>
+    /// A negative value if botEvent1 should come before botEvent2,
+    /// a positive value if botEvent2 should come before botEvent1,
+    /// or zero if they are equivalent in priority
+    /// </returns>
     public int Compare(BotEvent botEvent1, BotEvent botEvent2)
     {
         // Critical must be placed before non-critical

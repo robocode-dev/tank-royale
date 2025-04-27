@@ -6,6 +6,22 @@ import java.util.*;
 
 import static java.lang.Integer.MIN_VALUE;
 
+/**
+ * A queue for managing and dispatching bot events in the Tank Royale game.
+ * <p>
+ * This class is responsible for:
+ * <ul>
+ *     <li>Maintaining a prioritized queue of bot events</li>
+ *     <li>Managing event lifecycle and dispatching</li>
+ *     <li>Handling event interruptions and priorities</li>
+ *     <li>Processing custom events</li>
+ *     <li>Cleaning up old events</li>
+ * </ul>
+ * <p>
+ * The queue has a maximum size of {@value #MAX_QUEUE_SIZE} events and maintains
+ * events for up to {@value #MAX_EVENT_AGE} turns before they are considered old
+ * and removed (unless they are critical events).
+ */
 final class EventQueue {
 
     private static final int MAX_QUEUE_SIZE = 256;
@@ -19,28 +35,51 @@ final class EventQueue {
     private BotEvent currentTopEvent;
     private int currentTopEventPriority;
 
+    /**
+     * Constructs an EventQueue with the specified bot internals and event handlers.
+     *
+     * @param baseBotInternals the base bot internals instance
+     * @param botEventHandlers the bot event handlers instance
+     */
     public EventQueue(BaseBotInternals baseBotInternals, BotEventHandlers botEventHandlers) {
         this.baseBotInternals = baseBotInternals;
         this.botEventHandlers = botEventHandlers;
     }
 
+    /**
+     * Clears all events from the queue and resets the event priority.
+     */
     void clear() {
         clearEvents();
         baseBotInternals.getConditions().clear(); // conditions might be added in the bots run() method each round
         currentTopEventPriority = MIN_VALUE;
     }
 
+    /**
+     * Returns a copy of all events for the specified turn number after removing old events.
+     *
+     * @param turnNumber the current turn number
+     * @return a list of bot events
+     */
     List<BotEvent> getEvents(int turnNumber) {
         removeOldEvents(turnNumber);
         return new ArrayList<>(events);
     }
 
+    /**
+     * Removes all events from the queue.
+     */
     void clearEvents() {
         synchronized (events) {
             events.clear();
         }
     }
 
+    /**
+     * Sets whether the current event can be interrupted.
+     *
+     * @param interruptible true if the event can be interrupted, false otherwise
+     */
     void setCurrentEventInterruptible(boolean interruptible) {
         EventInterruption.setInterruptible(currentTopEvent.getClass(), interruptible);
     }
@@ -49,6 +88,11 @@ final class EventQueue {
         return EventInterruption.isInterruptible(currentTopEvent.getClass());
     }
 
+    /**
+     * Adds events from a tick event to the queue, including custom events.
+     *
+     * @param event the tick event containing events to add
+     */
     void addEventsFromTick(TickEvent event) {
         addEvent(event);
         event.getEvents().forEach(this::addEvent);
@@ -56,6 +100,11 @@ final class EventQueue {
         addCustomEvents();
     }
 
+    /**
+     * Dispatches events for the specified turn number, processing them according to their priorities.
+     *
+     * @param turnNumber the current turn number
+     */
     void dispatchEvents(int turnNumber) {
 //        dumpEvents(turnNumber); // for debugging purposes
 
