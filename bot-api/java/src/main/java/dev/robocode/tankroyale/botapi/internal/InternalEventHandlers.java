@@ -53,7 +53,7 @@ final class InternalEventHandlers {
         if (handler != null) {
             handler.publish(event);
         }
-        // ignore, if there is no registered event handler
+        // ignore if there is no registered event handler
     }
 
     // Virtual (fake) events:
