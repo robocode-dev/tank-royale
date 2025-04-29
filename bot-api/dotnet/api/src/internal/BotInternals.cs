@@ -36,7 +36,7 @@ internal sealed class BotInternals : IStopResumeListener
 
         baseBotInternals.SetStopResumeHandler(this);
 
-        var internalEventHandlers = baseBotInternals.InstantEventHandlers;
+        var internalEventHandlers = baseBotInternals.InternalEventHandlers;
         internalEventHandlers.OnGameAborted.Subscribe(OnGameAborted, 100);
         internalEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 90);
         internalEventHandlers.OnRoundEnded.Subscribe(OnRoundEnded, 90);

@@ -76,7 +76,7 @@ public final class BaseBotInternals {
     private final EventQueue eventQueue;
 
     private final BotEventHandlers botEventHandlers;
-    private final InstantEventHandlers instantEventHandlers = new InstantEventHandlers();
+    private final InternalEventHandlers internalEventHandlers = new InternalEventHandlers();
     private final Set<Condition> conditions = new CopyOnWriteArraySet<>();
 
     private final Object nextTurnMonitor = new Object();
@@ -139,9 +139,9 @@ public final class BaseBotInternals {
     }
 
     private void subscribeToEvents() {
-        instantEventHandlers.onRoundStarted.subscribe(this::onRoundStarted, 100);
-        instantEventHandlers.onNextTurn.subscribe(this::onNextTurn, 100);
-        instantEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
+        internalEventHandlers.onRoundStarted.subscribe(this::onRoundStarted, 100);
+        internalEventHandlers.onNextTurn.subscribe(this::onNextTurn, 100);
+        internalEventHandlers.onBulletFired.subscribe(this::onBulletFired, 100);
     }
 
     public void setRunning(boolean isRunning) {
@@ -222,8 +222,8 @@ public final class BaseBotInternals {
         botIntent.setFirepower(null);
     }
 
-    InstantEventHandlers getInstantEventHandlers() {
-        return instantEventHandlers;
+    InternalEventHandlers getInstantEventHandlers() {
+        return internalEventHandlers;
     }
 
     public List<BotEvent> getEvents() {
@@ -767,7 +767,7 @@ public final class BaseBotInternals {
             var disconnectedEvent = new DisconnectedEvent(serverUrl, true, statusCode, reason);
 
             botEventHandlers.onDisconnected.publish(disconnectedEvent);
-            instantEventHandlers.onDisconnected.publish(disconnectedEvent);
+            internalEventHandlers.onDisconnected.publish(disconnectedEvent);
 
             closedLatch.countDown();
             return null;
@@ -840,10 +840,10 @@ public final class BaseBotInternals {
 
             tickEvent = mappedTickEvent;
 
-            tickEvent.getEvents().forEach(instantEventHandlers::fireEvent);
+            tickEvent.getEvents().forEach(internalEventHandlers::fireEvent);
 
             // Trigger next turn (not tick-event!)
-            instantEventHandlers.onNextTurn.publish(tickEvent);
+            internalEventHandlers.onNextTurn.publish(tickEvent);
         }
 
         private void handleRoundStarted(JsonObject jsonMsg) {
@@ -852,7 +852,7 @@ public final class BaseBotInternals {
             var mappedRoundStartedEvent = new RoundStartedEvent(roundStartedEvent.getRoundNumber());
 
             botEventHandlers.onRoundStarted.publish(mappedRoundStartedEvent);
-            instantEventHandlers.onRoundStarted.publish(mappedRoundStartedEvent);
+            internalEventHandlers.onRoundStarted.publish(mappedRoundStartedEvent);
         }
 
         private void handleRoundEnded(JsonObject jsonMsg) {
@@ -862,7 +862,7 @@ public final class BaseBotInternals {
                     roundEndedEvent.getRoundNumber(), roundEndedEvent.getTurnNumber(), roundEndedEvent.getResults());
 
             botEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
-            instantEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
+            internalEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
         }
 
         private void handleGameStarted(JsonObject jsonMsg) {
@@ -900,12 +900,12 @@ public final class BaseBotInternals {
                     map(gameEndedEventForBot.getResults()));
 
             botEventHandlers.onGameEnded.publish(mappedGameEnded);
-            instantEventHandlers.onGameEnded.publish(mappedGameEnded);
+            internalEventHandlers.onGameEnded.publish(mappedGameEnded);
         }
 
         private void handleGameAborted() {
             botEventHandlers.onGameAborted.publish(null);
-            instantEventHandlers.onGameAborted.publish(null);
+            internalEventHandlers.onGameAborted.publish(null);
         }
 
         private void handleSkippedTurn(JsonObject jsonMsg) {

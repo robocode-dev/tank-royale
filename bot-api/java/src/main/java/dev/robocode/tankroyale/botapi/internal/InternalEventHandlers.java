@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Class used for instant event handling only used for updating the state of the API internals.
  */
-final class InstantEventHandlers {
+final class InternalEventHandlers {
 
     final EventHandler<DisconnectedEvent> onDisconnected = new EventHandler<>();
 
@@ -27,7 +27,7 @@ final class InstantEventHandlers {
 
     private final Map<Class<? extends IEvent>, EventHandler<? extends IEvent>> eventHandlerMap = new HashMap<>();
 
-    InstantEventHandlers() {
+    InternalEventHandlers() {
         initializeEventHandlers();
     }
 
