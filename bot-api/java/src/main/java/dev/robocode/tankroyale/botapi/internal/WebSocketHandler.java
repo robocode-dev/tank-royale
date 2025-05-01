@@ -232,6 +232,7 @@ final class WebSocketHandler implements WebSocket.Listener {
 
     private void handleServerHandshake(JsonObject jsonMsg) {
         var serverHandshake = gson.fromJson(jsonMsg, ServerHandshake.class);
+        baseBotInternals.setServerHandshake(serverHandshake);
 
         // Reply by sending bot handshake
         var isDroid = baseBot instanceof Droid;

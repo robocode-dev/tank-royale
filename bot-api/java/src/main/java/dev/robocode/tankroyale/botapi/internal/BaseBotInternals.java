@@ -756,6 +756,10 @@ public final class BaseBotInternals {
         return serverHandshake;
     }
 
+    void setServerHandshake(ServerHandshake serverHandshake) {
+        this.serverHandshake = serverHandshake;
+    }
+
     private URI getServerUrlFromSetting() {
         String url = System.getProperty(SERVER_URL_PROPERTY_KEY);
         if (url == null) {
