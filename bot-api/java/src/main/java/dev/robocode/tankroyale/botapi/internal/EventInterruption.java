@@ -12,7 +12,7 @@ import java.util.Set;
  * Events that are marked as interruptible can interrupt the normal execution event flow of the bot.
  * </p>
  */
-public final class EventInterruption {
+final class EventInterruption {
 
     /** Set containing all event classes that are currently marked as interruptible. */
     private static final Set<Class<? extends BotEvent>> INTERRUPTIBLES = new HashSet<>();

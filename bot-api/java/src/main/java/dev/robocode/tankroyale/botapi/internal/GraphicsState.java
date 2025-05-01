@@ -10,7 +10,7 @@ import java.awt.*;
 import java.io.StringWriter;
 import java.io.Writer;
 
-public class GraphicsState {
+class GraphicsState {
 
     private SVGGraphics2D graphics;
 
