@@ -45,7 +45,7 @@ public final class BotInternals implements IStopResumeListener {
 
         baseBotInternals.setStopResumeHandler(this);
 
-        // Bot events have higher priorities than BaseBot events, meaning that these event will be executed first
+        // Bot events have higher priorities than BaseBot events, meaning that these events will be executed first
         var instantEventHandlers = baseBotInternals.getInstantEventHandlers();
         instantEventHandlers.onGameAborted.subscribe(e -> onGameAborted(), 100);
         instantEventHandlers.onNextTurn.subscribe(this::onNextTurn, 90);
@@ -98,7 +98,7 @@ public final class BotInternals implements IStopResumeListener {
     }
 
     private void processTurn() {
-        // No movement is possible, when the bot has become disabled
+        // No movement is possible when the bot has become disabled
         if (bot.isDisabled()) {
             clearRemaining();
         } else {
@@ -304,7 +304,7 @@ public final class BotInternals implements IStopResumeListener {
         previousDirection = bot.getDirection();
 
         if (!overrideTurnRate) {
-            return; // called after previous direction has been calculated and stored!
+            return; // called after a previous direction has been calculated and stored!
         }
 
         if (abs(turnRemaining) <= abs(delta)) {
@@ -323,7 +323,7 @@ public final class BotInternals implements IStopResumeListener {
         previousGunDirection = bot.getGunDirection();
 
         if (!overrideGunTurnRate) {
-            return; // called after previous direction has been calculated and stored!
+            return; // called after a previous direction has been calculated and stored!
         }
 
         if (abs(gunTurnRemaining) <= abs(delta)) {
@@ -342,7 +342,7 @@ public final class BotInternals implements IStopResumeListener {
         previousRadarDirection = bot.getRadarDirection();
 
         if (!overrideRadarTurnRate) {
-            return; // called after previous direction has been calculated and stored!
+            return; // called after a previous direction has been calculated and stored!
         }
 
         if (abs(radarTurnRemaining) <= abs(delta)) {
@@ -372,7 +372,7 @@ public final class BotInternals implements IStopResumeListener {
             // https://robowiki.net/wiki/User:Positive/Optimal_Velocity#Nat.27s_updateMovement
             double newSpeed = getAndSetNewTargetSpeed(distance);
 
-            // If we are over-driving our distance, and we are now at speed=0 then we stopped
+            // If we are over-driving our distance, and we are now at speed=0, then we stopped
             if (isNearZero(newSpeed) && isOverDriving) {
                 distance = 0;
                 isOverDriving = false;

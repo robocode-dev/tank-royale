@@ -39,13 +39,12 @@ public final class GameSetup {
     private final int maxInactivityTurns;
 
     /**
-     * Timeout in milliseconds for sending intent after having received 'tick' message.
+     * Timeout in milliseconds for sending intent after having received a 'tick' message.
      */
     private final int turnTimeout;
 
     /**
-     * Time limit in milliseconds for sending ready message after having received 'new battle'
-     * message.
+     * Time limit in milliseconds for sending a ready message after having received a 'new battle' message.
      */
     private final int readyTimeout;
 

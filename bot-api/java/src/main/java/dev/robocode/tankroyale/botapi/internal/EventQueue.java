@@ -223,6 +223,7 @@ final class EventQueue {
         );
     }
 
+    // Used for debugging purposes
     private void dumpEvents(int turnNumber) {
         StringJoiner stringJoiner = new StringJoiner(", ");
         events.forEach(event -> stringJoiner.add(event.getClass().getSimpleName() + "(" + event.getTurnNumber() + ")"));

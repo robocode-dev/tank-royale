@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Class used for bot event handlers on the public API that are may or may not be triggered bot event queue, and might
+ * Class used for bot event handlers on the public API that are may or may not be triggered bot event queue and might
  * not be handled immediately by the bot logic.
  */
 final class BotEventHandlers {

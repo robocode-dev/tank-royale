@@ -72,11 +72,11 @@ final class EnvVars {
      */
     private static final String TEAM_NAME = "TEAM_NAME";
     /**
-     * Name of environment variable that is set if bot team version is provided.
+     * Name of the environment variable that is set if a bot team version is provided.
      */
     private static final String TEAM_VERSION = "TEAM_VERSION";
     /**
-     * Name of environment variable that is set if bot is being booted.
+     * Name of the environment variable that is set if the bot is being booted.
      */
     private static final String BOT_BOOTED = "BOT_BOOTED";
 
@@ -215,7 +215,7 @@ final class EnvVars {
     }
 
     /**
-     * Checks if bot is being booted.
+     * Checks if the bot is being booted.
      */
     public static boolean isBotBooted() {
         return System.getenv(BOT_BOOTED) != null; // Set by Booter. Currently, not being used

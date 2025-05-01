@@ -17,7 +17,7 @@ import static dev.robocode.tankroyale.botapi.Constants.*;
 import static dev.robocode.tankroyale.botapi.util.MathUtil.clamp;
 
 /**
- * Abstract bot class that takes care of communication between the bot and the server, and sends
+ * Abstract bot class that takes care of communication between the bot and the server and sends
  * notifications through the event handlers. Most bots can inherit from this class to get access to
  * basic methods.
  */
@@ -29,7 +29,7 @@ public abstract class BaseBot implements IBaseBot {
      * Constructor for initializing a new instance of the BaseBot class.
      * This constructor should be used when both {@link BotInfo} and server URL is provided through
      * environment variables, i.e., when starting up the bot using a booter. These environment
-     * variables must be set to provide the server URL and bot information, and are automatically
+     * variables must be set to provide the server URL and bot information and are automatically
      * set by the booter tool for Robocode.
      * <p><br>
      * Example of how to set the predefined environment variables used for connecting to the server:
@@ -59,7 +59,7 @@ public abstract class BaseBot implements IBaseBot {
      * <li>{@code BOT_AUTHORS}</li>
      * </ul>
      * <p>
-     * These value can take multiple values separated by a comma:
+     * These values can take multiple values separated by a comma:
      * <ul>
      * <li>{@code BOT_AUTHORS, e.g. "John Doe, Jane Doe"}</li>
      * <li>{@code BOT_COUNTRY_CODES, e.g. "se, no, dk"}</li>
@@ -80,7 +80,7 @@ public abstract class BaseBot implements IBaseBot {
 
     /**
      * Constructor for initializing a new instance of the BaseBot class.
-     * This constructor assumes the server URL and secret is provided by the environment
+     * This constructor assumes the server URL and secret are provided by the environment
      * variables SERVER_URL and SERVER_SECRET.
      *
      * @param botInfo is the bot info containing information about your bot.

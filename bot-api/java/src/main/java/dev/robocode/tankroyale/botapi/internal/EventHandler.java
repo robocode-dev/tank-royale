@@ -72,7 +72,7 @@ final class EventHandler<T> {
      * Subscribes a consumer to the event handler with the default priority.
      *
      * @param subscriber The consumer function to be invoked when an event is published must not be null.
-     * @throws NullPointerException if subscriber is null.
+     * @throws NullPointerException if the subscriber is null.
      * @throws IllegalArgumentException if the subscriber is already registered.
      */
     void subscribe(Consumer<T> subscriber) {

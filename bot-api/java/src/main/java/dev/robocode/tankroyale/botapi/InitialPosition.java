@@ -87,7 +87,7 @@ public final class InitialPosition {
     }
 
     /**
-     * Creates new instance of the InitialPosition class from a string.
+     * Creates a new instance of the InitialPosition class from a string.
      *
      * @param initialPosition is comma and/or white-space separated string.
      * @return An InitialPosition instance.

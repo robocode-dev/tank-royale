@@ -344,7 +344,7 @@ public final class BaseBotInternals {
                     !Thread.currentThread().isInterrupted()
             ) {
                 try {
-                    nextTurnMonitor.wait(); // Wait for next turn
+                    nextTurnMonitor.wait(); // Wait for the next turn
                 } catch (InterruptedException ex) {
                     throw new ThreadInterruptedException();
                 }
@@ -547,10 +547,10 @@ public final class BaseBotInternals {
      * Returns the new speed based on the current speed and distance to move.
      *
      * @param speed    is the current speed
-     * @param distance is the distance to move
+     * @param distance is the move distance
      * @return The new speed
      */
-    // Credits for this algorithm goes to Patrick Cupka (aka Voidious),
+    // Credits for this algorithm go to Patrick Cupka (aka Voidious),
     // Julian Kent (aka Skilgannon), and Positive for the original version:
     // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
     double getNewTargetSpeed(double speed, double distance) {

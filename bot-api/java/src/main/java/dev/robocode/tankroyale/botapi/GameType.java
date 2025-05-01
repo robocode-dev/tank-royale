@@ -4,6 +4,7 @@ package dev.robocode.tankroyale.botapi;
  * Predefined game types.<p>
  * These game types are described <a href="https://robocode-dev.github.io/tank-royale/articles/game_types.html">here</a>.
  */
+@SuppressWarnings("unused")
 public final class GameType {
 
     // Hide constructor to prevent instantiation

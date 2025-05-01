@@ -13,7 +13,6 @@ import java.util.Set;
  * <br>
  * <script src="../../../../prism.js"></script>
  */
-@SuppressWarnings({"UnusedDeclaration", "EmptyMethod"})
 public interface IBaseBot {
 
     /**

@@ -22,7 +22,7 @@ public final class CollectionUtil {
     }
 
     /**
-     * Creates a mutable set that copies all items from a collection, but is removing duplicates.
+     * Creates a mutable set that copies all items from a collection but is removing duplicates.
      *
      * @param collection is the collection to copy, where {@code null} results in returning an empty mutable set.
      * @return a mutable set that is a copy of the input collection.

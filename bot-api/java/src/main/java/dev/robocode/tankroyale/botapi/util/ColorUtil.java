@@ -32,9 +32,9 @@ public class ColorUtil {
     /**
      * Creates a color from a string. Currently, only numeric RGB values are supported.
      * This method works the same was as {@link #fromHex} except that is required as hash sign before the hex value.
-     * An example of a numeric RGB value is "#09C" or "#0099CC", which both represents the same color.
+     * An example of a numeric RGB value is "#09C" or "#0099CC", which both represent the same color.
      *
-     * @param str is a string containing either a three or six hexadecimal RGB values like "#09C" or "#0099CC".
+     * @param str is a string containing either three or six hexadecimal RGB values like "#09C" or "#0099CC".
      * @return the created Color; {@code null} if the input parameter is {@code null}.
      * @see <a href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</a>
      * @see <a href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</a>
@@ -49,11 +49,11 @@ public class ColorUtil {
     }
 
     /**
-     * Creates a color from a hex triplet. A hex triplet is either three or six hexadecimal digits that represents an
+     * Creates a color from a hex triplet. A hex triplet is either three or six hexadecimal digits that represent an
      * RGB Color.<br>
-     * An example of a hex triplet is "09C" or "0099CC", which both represents the same color.
+     * An example of a hex triplet is "09C" or "0099CC", which both represent the same color.
      *
-     * @param hexTriplet is a string containing either a three or six hexadecimal numbers like "09C" or "0099CC".
+     * @param hexTriplet is a string containing either three or six hexadecimal numbers like "09C" or "0099CC".
      * @return the created Color.
      * @see <a href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</a>
      * @see <a href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</a>
