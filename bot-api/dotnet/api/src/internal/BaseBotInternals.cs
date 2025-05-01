@@ -14,7 +14,7 @@ using static System.Double;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
 
-public sealed class BaseBotInternals
+sealed class BaseBotInternals
 {
     private const string DefaultServerUrl = "ws://localhost:7654";
 

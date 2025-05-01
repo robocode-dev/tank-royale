@@ -11,7 +11,7 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 /// thread-safety through synchronization and exception handling during event publication.
 /// </summary>
 /// <typeparam name="T">The type of event that this handler processes. Must implement the <see cref="IEvent"/> interface.</typeparam>
-public class EventHandler<T> where T : IEvent
+sealed class EventHandler<T> where T : IEvent
 {
     /// <summary>
     /// Default priority value for subscribers.

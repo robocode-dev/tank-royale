@@ -1,12 +1,10 @@
-using System;
-using System.Drawing;
 using System.Text.RegularExpressions;
 using SvgNet;
 using SvgNet.Interfaces;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
 
-public class GraphicsState
+sealed class GraphicsState
 {
     private SvgGraphics _svgGraphics = new();
 

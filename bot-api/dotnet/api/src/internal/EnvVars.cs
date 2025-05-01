@@ -12,7 +12,7 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 /// <summary>
 /// Utility class for reading environment variables.
 /// </summary>
-internal static class EnvVars
+static class EnvVars
 {
     /// <summary>Name of environment variable for server URL.</summary>
     private const string ServerUrl = "SERVER_URL";

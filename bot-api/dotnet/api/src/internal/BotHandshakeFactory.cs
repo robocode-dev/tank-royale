@@ -5,7 +5,7 @@ using Robocode.TankRoyale.Schema;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
 
-internal static class BotHandshakeFactory
+static class BotHandshakeFactory
 {
     internal static BotHandshake Create(string sessionId, BotInfo botInfo, bool isDroid, string serverSecret)
     {

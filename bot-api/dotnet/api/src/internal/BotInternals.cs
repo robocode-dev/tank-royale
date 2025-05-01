@@ -4,7 +4,7 @@ using static System.Double;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
 
-internal sealed class BotInternals : IStopResumeListener
+sealed class BotInternals : IStopResumeListener
 {
     private readonly IBot bot;
     private readonly BaseBotInternals baseBotInternals;

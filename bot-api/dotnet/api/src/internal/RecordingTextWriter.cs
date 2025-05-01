@@ -4,7 +4,7 @@ using System.Web;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
 
-public class RecordingTextWriter : TextWriter
+class RecordingTextWriter : TextWriter
 {
     private readonly TextWriter textWriter;
     private readonly StringWriter stringWriter = new();

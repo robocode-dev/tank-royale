@@ -25,7 +25,7 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 /// and removed (unless they are critical events).
 /// </para>
 /// </remarks>
-internal sealed class EventQueue : IComparer<BotEvent>
+sealed class EventQueue : IComparer<BotEvent>
 {
     private const int MaxQueueSize = 256;
     private const int MaxEventAge = 2;
