@@ -1,10 +1,12 @@
 using System;
+using JetBrains.Annotations;
 
 namespace Robocode.TankRoyale.BotApi.Events;
 
 /// <summary>
 /// Base class of all connection events.
 /// </summary>
+[PublicAPI]
 public abstract class ConnectionEvent : IEvent
 {
     /// <summary>URI of the server.</summary>

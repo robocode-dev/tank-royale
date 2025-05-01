@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using JetBrains.Annotations;
 using Robocode.TankRoyale.BotApi.Events;
 using SvgNet.Interfaces;
 
@@ -9,6 +10,7 @@ namespace Robocode.TankRoyale.BotApi;
 /// <summary>
 /// Interface containing the core API for a bot.
 /// </summary>
+[PublicAPI]
 public interface IBaseBot
 {
     /// <summary>

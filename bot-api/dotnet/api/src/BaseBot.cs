@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using JetBrains.Annotations;
 using Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Internal;
 using SvgNet.Interfaces;
@@ -12,6 +13,7 @@ namespace Robocode.TankRoyale.BotApi;
 /// notifications through the event handlers. Most bots can inherit from this class to get access
 /// to basic methods.
 /// </summary>
+[PublicAPI]
 public abstract class BaseBot : IBaseBot
 {
     internal readonly BaseBotInternals BaseBotInternals;

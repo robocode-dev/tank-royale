@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 
 namespace Robocode.TankRoyale.BotApi.Events;
 
@@ -60,6 +61,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// }
 /// </code>
 /// </example>
+[PublicAPI]
 public class Condition
 {
     /// <summary>

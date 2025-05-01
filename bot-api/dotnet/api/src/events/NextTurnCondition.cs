@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+
 namespace Robocode.TankRoyale.BotApi.Events;
 
 /// <summary>
@@ -21,6 +23,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// }
 /// </code>
 /// </example>
+[PublicAPI]
 public sealed class NextTurnCondition : Condition
 {
     private readonly IBaseBot baseBot;

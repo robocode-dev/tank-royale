@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi.Events;
@@ -5,6 +6,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// <summary>
 /// Event occurring when a bot has received a message from a teammate.
 /// </summary>
+[PublicAPI]
 public sealed class TeamMessageEvent : BotEvent
 {
     /// <summary>

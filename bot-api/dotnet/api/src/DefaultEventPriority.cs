@@ -1,9 +1,12 @@
+using JetBrains.Annotations;
+
 namespace Robocode.TankRoyale.BotApi;
 
 /// <summary>
 /// Default event priorities values. The lower value, the higher event priority. So the <see cref="Events.DeathEvent"/>
 /// has the highest priority (10), and <see cref="Events.WonRoundEvent"/> has the lowest priority (150).
 /// </summary>
+[PublicAPI]
 public static class DefaultEventPriority
 {
     /// <summary>

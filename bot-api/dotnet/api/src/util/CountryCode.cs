@@ -5,20 +5,20 @@ using System.Threading;
 
 namespace Robocode.TankRoyale.BotApi.Util;
 
-public static class CountryCode
+static class CountryCode
 {
-    public static string GetLocalCountryCode()
+    internal static string GetLocalCountryCode()
     {
         var cultureInfo = Thread.CurrentThread.CurrentCulture;
         var regionInfo = new RegionInfo(cultureInfo.LCID);
         return regionInfo.TwoLetterISORegionName;
     }
 
-    public static bool IsCountryCodeValid(string countryCode)
+    internal static bool IsCountryCodeValid(string countryCode)
     {
         if (string.IsNullOrWhiteSpace(countryCode)) return false;
         return countryCode is { Length: 2 } &&
-               TwoLetterCountryCodes.Select(_ => _).Any(cc => cc == countryCode.ToUpper());
+               TwoLetterCountryCodes.Select(tlcc => tlcc).Any(cc => cc == countryCode.ToUpper());
     }
 
     private static readonly List<string> TwoLetterCountryCodes = new()

@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi.Events;
@@ -5,6 +6,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// <summary>
 /// Event occurring when a bot has collided with another bot.
 /// </summary>
+[PublicAPI]
 public sealed class HitBotEvent : BotEvent
 {
     /// <summary>The id of the other bot that your bot has collided with.</summary>

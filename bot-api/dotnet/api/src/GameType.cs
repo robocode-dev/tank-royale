@@ -1,9 +1,12 @@
+using JetBrains.Annotations;
+
 namespace Robocode.TankRoyale.BotApi;
 
 /// <summary>
 /// Predefined game types.
 /// These game types are described <a href="https://robocode-dev.github.io/tank-royale/articles/game_types.html">here</a>.
 /// </summary>
+[PublicAPI]
 public static class GameType
 {
     /// <summary>

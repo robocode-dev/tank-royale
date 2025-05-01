@@ -1,11 +1,13 @@
 using System;
+using JetBrains.Annotations;
 
 namespace Robocode.TankRoyale.BotApi;
 
 /// <summary>
 /// Represents errors that occur with bot execution.
 /// </summary>
-public class BotException : Exception
+[PublicAPI]
+public sealed class BotException : Exception
 {
     /// <summary>
     /// Initializes a new instance of the BotException class with a specified error message.

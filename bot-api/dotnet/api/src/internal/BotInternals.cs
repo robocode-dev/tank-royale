@@ -6,33 +6,33 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 
 sealed class BotInternals : IStopResumeListener
 {
-    private readonly IBot bot;
-    private readonly BaseBotInternals baseBotInternals;
+    private readonly IBot _bot;
+    private readonly BaseBotInternals _baseBotInternals;
 
-    private bool overrideTurnRate;
-    private bool overrideGunTurnRate;
-    private bool overrideRadarTurnRate;
-    private bool overrideTargetSpeed;
+    private bool _overrideTurnRate;
+    private bool _overrideGunTurnRate;
+    private bool _overrideRadarTurnRate;
+    private bool _overrideTargetSpeed;
 
-    private double previousDirection;
-    private double previousGunDirection;
-    private double previousRadarDirection;
+    private double _previousDirection;
+    private double _previousGunDirection;
+    private double _previousRadarDirection;
 
-    private bool isOverDriving;
+    private bool _isOverDriving;
 
-    private double savedPreviousDirection;
-    private double savedPreviousGunDirection;
-    private double savedPreviousRadarDirection;
+    private double _savedPreviousDirection;
+    private double _savedPreviousGunDirection;
+    private double _savedPreviousRadarDirection;
 
-    private double savedDistanceRemaining;
-    private double savedTurnRemaining;
-    private double savedGunTurnRemaining;
-    private double savedRadarTurnRemaining;
+    private double _savedDistanceRemaining;
+    private double _savedTurnRemaining;
+    private double _savedGunTurnRemaining;
+    private double _savedRadarTurnRemaining;
 
     public BotInternals(IBot bot, BaseBotInternals baseBotInternals)
     {
-        this.bot = bot;
-        this.baseBotInternals = baseBotInternals;
+        _bot = bot;
+        _baseBotInternals = baseBotInternals;
 
         baseBotInternals.SetStopResumeHandler(this);
 
@@ -57,9 +57,9 @@ sealed class BotInternals : IStopResumeListener
 
     private void OnFirstTurn()
     {
-        baseBotInternals.StopThread(); // sanity before starting a new thread (later)
+        _baseBotInternals.StopThread(); // sanity before starting a new thread (later)
         ClearRemaining();
-        baseBotInternals.StartThread(bot);
+        _baseBotInternals.StartThread(_bot);
     }
 
     private void ClearRemaining()
@@ -69,35 +69,35 @@ sealed class BotInternals : IStopResumeListener
         GunTurnRemaining = 0;
         RadarTurnRemaining = 0;
 
-        previousDirection = bot.Direction;
-        previousGunDirection = bot.GunDirection;
-        previousRadarDirection = bot.RadarDirection;
+        _previousDirection = _bot.Direction;
+        _previousGunDirection = _bot.GunDirection;
+        _previousRadarDirection = _bot.RadarDirection;
     }
 
     private void OnGameAborted(object dummy)
     {
-        baseBotInternals.StopThread();
+        _baseBotInternals.StopThread();
     }
 
     private void OnRoundEnded(RoundEndedEvent evt)
     {
-        baseBotInternals.StopThread();
+        _baseBotInternals.StopThread();
     }
 
     private void OnGameEnded(GameEndedEvent evt)
     {
-        baseBotInternals.StopThread();
+        _baseBotInternals.StopThread();
     }
 
     private void OnDisconnected(DisconnectedEvent evt)
     {
-        baseBotInternals.StopThread();
+        _baseBotInternals.StopThread();
     }
 
     private void ProcessTurn()
     {
         // No movement is possible, when the bot has become disabled
-        if (bot.IsDisabled)
+        if (_bot.IsDisabled)
         {
             ClearRemaining();
         }
@@ -123,28 +123,28 @@ sealed class BotInternals : IStopResumeListener
 
     private void OnDeath(DeathEvent evt)
     {
-        baseBotInternals.StopThread();
+        _baseBotInternals.StopThread();
     }
 
     public void SetTurnRate(double turnRate)
     {
-        overrideTurnRate = false;
+        _overrideTurnRate = false;
         TurnRemaining = ToInfiniteValue(turnRate);
-        baseBotInternals.TurnRate = turnRate;
+        _baseBotInternals.TurnRate = turnRate;
     }
 
     public void SetGunTurnRate(double gunTurnRate)
     {
-        overrideGunTurnRate = false;
+        _overrideGunTurnRate = false;
         GunTurnRemaining = ToInfiniteValue(gunTurnRate);
-        baseBotInternals.GunTurnRate = gunTurnRate;
+        _baseBotInternals.GunTurnRate = gunTurnRate;
     }
 
     public void SetRadarTurnRate(double radarTurnRate)
     {
-        overrideRadarTurnRate = false;
+        _overrideRadarTurnRate = false;
         RadarTurnRemaining = ToInfiniteValue(radarTurnRate);
-        baseBotInternals.RadarTurnRate = radarTurnRate;
+        _baseBotInternals.RadarTurnRate = radarTurnRate;
     }
 
     private static double ToInfiniteValue(double turnRate)
@@ -167,7 +167,7 @@ sealed class BotInternals : IStopResumeListener
 
     internal void SetTargetSpeed(double targetSpeed)
     {
-        overrideTargetSpeed = false;
+        _overrideTargetSpeed = false;
         DistanceRemaining = targetSpeed switch
         {
             NaN => throw new ArgumentException("'targetSpeed' cannot be NaN"),
@@ -176,12 +176,12 @@ sealed class BotInternals : IStopResumeListener
             _ => 0
         };
 
-        baseBotInternals.TargetSpeed = targetSpeed;
+        _baseBotInternals.TargetSpeed = targetSpeed;
     }
 
     internal void SetForward(double distance)
     {
-        overrideTargetSpeed = true;
+        _overrideTargetSpeed = true;
         if (IsNaN(distance))
             throw new ArgumentException("'distance' cannot be NaN");
         GetAndSetNewTargetSpeed(distance);
@@ -190,26 +190,26 @@ sealed class BotInternals : IStopResumeListener
 
     internal void Forward(double distance)
     {
-        if (bot.IsStopped)
-            bot.Go(); // skip turn by doing nothing in the turn
+        if (_bot.IsStopped)
+            _bot.Go(); // skip turn by doing nothing in the turn
         else
         {
             SetForward(distance);
-            WaitFor(() => DistanceRemaining == 0 && bot.Speed == 0);
+            WaitFor(() => DistanceRemaining == 0 && _bot.Speed == 0);
         }
     }
 
     internal void SetTurnLeft(double degrees)
     {
-        overrideTurnRate = true;
+        _overrideTurnRate = true;
         TurnRemaining = degrees;
-        baseBotInternals.TurnRate = degrees;
+        _baseBotInternals.TurnRate = degrees;
     }
 
     internal void TurnLeft(double degrees)
     {
-        if (bot.IsStopped)
-            bot.Go(); // skip turn by doing nothing in the turn
+        if (_bot.IsStopped)
+            _bot.Go(); // skip turn by doing nothing in the turn
         else
         {
             SetTurnLeft(degrees);
@@ -219,15 +219,15 @@ sealed class BotInternals : IStopResumeListener
 
     internal void SetTurnGunLeft(double degrees)
     {
-        overrideGunTurnRate = true;
+        _overrideGunTurnRate = true;
         GunTurnRemaining = degrees;
-        baseBotInternals.GunTurnRate = degrees;
+        _baseBotInternals.GunTurnRate = degrees;
     }
 
     internal void TurnGunLeft(double degrees)
     {
-        if (bot.IsStopped)
-            bot.Go(); // skip turn by doing nothing in the turn
+        if (_bot.IsStopped)
+            _bot.Go(); // skip turn by doing nothing in the turn
         else
         {
             SetTurnGunLeft(degrees);
@@ -237,15 +237,15 @@ sealed class BotInternals : IStopResumeListener
 
     internal void SetTurnRadarLeft(double degrees)
     {
-        overrideRadarTurnRate = true;
+        _overrideRadarTurnRate = true;
         RadarTurnRemaining = degrees;
-        baseBotInternals.RadarTurnRate = degrees;
+        _baseBotInternals.RadarTurnRate = degrees;
     }
 
     internal void TurnRadarLeft(double degrees)
     {
-        if (bot.IsStopped)
-            bot.Go(); // skip turn by doing nothing in the turn
+        if (_bot.IsStopped)
+            _bot.Go(); // skip turn by doing nothing in the turn
         else
         {
             SetTurnRadarLeft(degrees);
@@ -255,15 +255,15 @@ sealed class BotInternals : IStopResumeListener
 
     internal void Fire(double firepower)
     {
-        bot.SetFire(firepower);
-        bot.Go();
+        _bot.SetFire(firepower);
+        _bot.Go();
     }
 
     internal void Rescan()
     {
         EventInterruption.SetInterruptible(typeof(ScannedBotEvent), true);
-        bot.SetRescan();
-        bot.Go();
+        _bot.SetRescan();
+        _bot.Go();
     }
 
     internal delegate bool ConditionDelegate();
@@ -272,52 +272,52 @@ sealed class BotInternals : IStopResumeListener
     {
         do
         {
-            bot.Go();
-        } while (baseBotInternals.IsRunning && !condition());
+            _bot.Go();
+        } while (_baseBotInternals.IsRunning && !condition());
     }
 
     internal void Stop(bool overwrite)
     {
-        baseBotInternals.SetStop(overwrite);
-        bot.Go();
+        _baseBotInternals.SetStop(overwrite);
+        _bot.Go();
     }
 
     internal void Resume()
     {
-        baseBotInternals.SetResume();
-        bot.Go();
+        _baseBotInternals.SetResume();
+        _bot.Go();
     }
 
     public void OnStop()
     {
-        savedPreviousDirection = previousDirection;
-        savedPreviousGunDirection = previousGunDirection;
-        savedPreviousRadarDirection = previousRadarDirection;
+        _savedPreviousDirection = _previousDirection;
+        _savedPreviousGunDirection = _previousGunDirection;
+        _savedPreviousRadarDirection = _previousRadarDirection;
 
-        savedDistanceRemaining = DistanceRemaining;
-        savedTurnRemaining = TurnRemaining;
-        savedGunTurnRemaining = GunTurnRemaining;
-        savedRadarTurnRemaining = RadarTurnRemaining;
+        _savedDistanceRemaining = DistanceRemaining;
+        _savedTurnRemaining = TurnRemaining;
+        _savedGunTurnRemaining = GunTurnRemaining;
+        _savedRadarTurnRemaining = RadarTurnRemaining;
     }
 
     public void OnResume()
     {
-        previousDirection = savedPreviousDirection;
-        previousGunDirection = savedPreviousGunDirection;
-        previousRadarDirection = savedPreviousRadarDirection;
+        _previousDirection = _savedPreviousDirection;
+        _previousGunDirection = _savedPreviousGunDirection;
+        _previousRadarDirection = _savedPreviousRadarDirection;
 
-        DistanceRemaining = savedDistanceRemaining;
-        TurnRemaining = savedTurnRemaining;
-        GunTurnRemaining = savedGunTurnRemaining;
-        RadarTurnRemaining = savedRadarTurnRemaining;
+        DistanceRemaining = _savedDistanceRemaining;
+        TurnRemaining = _savedTurnRemaining;
+        GunTurnRemaining = _savedGunTurnRemaining;
+        RadarTurnRemaining = _savedRadarTurnRemaining;
     }
 
     private void UpdateTurnRemaining()
     {
-        var delta = bot.CalcDeltaAngle(bot.Direction, previousDirection);
-        previousDirection = bot.Direction;
+        var delta = _bot.CalcDeltaAngle(_bot.Direction, _previousDirection);
+        _previousDirection = _bot.Direction;
 
-        if (!overrideTurnRate)
+        if (!_overrideTurnRate)
             return; // called after previous direction has been calculated and stored!
 
         if (Math.Abs(TurnRemaining) <= Math.Abs(delta))
@@ -329,15 +329,15 @@ sealed class BotInternals : IStopResumeListener
                 TurnRemaining = 0;
         }
 
-        baseBotInternals.TurnRate = TurnRemaining;
+        _baseBotInternals.TurnRate = TurnRemaining;
     }
 
     private void UpdateGunTurnRemaining()
     {
-        var delta = bot.CalcDeltaAngle(bot.GunDirection, previousGunDirection);
-        previousGunDirection = bot.GunDirection;
+        var delta = _bot.CalcDeltaAngle(_bot.GunDirection, _previousGunDirection);
+        _previousGunDirection = _bot.GunDirection;
 
-        if (!overrideGunTurnRate)
+        if (!_overrideGunTurnRate)
             return; // called after previous direction has been calculated and stored!
 
         if (Math.Abs(GunTurnRemaining) <= Math.Abs(delta))
@@ -349,15 +349,15 @@ sealed class BotInternals : IStopResumeListener
                 GunTurnRemaining = 0;
         }
 
-        baseBotInternals.GunTurnRate = GunTurnRemaining;
+        _baseBotInternals.GunTurnRate = GunTurnRemaining;
     }
 
     private void UpdateRadarTurnRemaining()
     {
-        var delta = bot.CalcDeltaAngle(bot.RadarDirection, previousRadarDirection);
-        previousRadarDirection = bot.RadarDirection;
+        var delta = _bot.CalcDeltaAngle(_bot.RadarDirection, _previousRadarDirection);
+        _previousRadarDirection = _bot.RadarDirection;
 
-        if (!overrideRadarTurnRate)
+        if (!_overrideRadarTurnRate)
             return; // called after previous direction has been calculated and stored!
 
         if (Math.Abs(RadarTurnRemaining) <= Math.Abs(delta))
@@ -369,25 +369,25 @@ sealed class BotInternals : IStopResumeListener
                 RadarTurnRemaining = 0;
         }
 
-        baseBotInternals.RadarTurnRate = RadarTurnRemaining;
+        _baseBotInternals.RadarTurnRate = RadarTurnRemaining;
     }
 
     private void UpdateMovement()
     {
-        if (!overrideTargetSpeed)
+        if (!_overrideTargetSpeed)
         {
-            if (Math.Abs(DistanceRemaining) < Math.Abs(bot.Speed))
+            if (Math.Abs(DistanceRemaining) < Math.Abs(_bot.Speed))
             {
                 DistanceRemaining = 0;
             }
             else
             {
-                DistanceRemaining -= bot.Speed;
+                DistanceRemaining -= _bot.Speed;
             }
         }
         else if (IsInfinity(DistanceRemaining))
         {
-            baseBotInternals.TargetSpeed =
+            _baseBotInternals.TargetSpeed =
                 IsPositiveInfinity(DistanceRemaining) ? Constants.MaxSpeed : -Constants.MaxSpeed;
         }
         else
@@ -399,16 +399,16 @@ sealed class BotInternals : IStopResumeListener
             var newSpeed = GetAndSetNewTargetSpeed(distance);
 
             // If we are over-driving our distance and we are now at velocity=0 then we stopped
-            if (IsNearZero(newSpeed) && isOverDriving)
+            if (IsNearZero(newSpeed) && _isOverDriving)
             {
                 DistanceRemaining = 0;
                 distance = 0;
-                isOverDriving = false;
+                _isOverDriving = false;
             }
 
             // the overdrive flag
             if (Math.Sign(distance * newSpeed) != -1)
-                isOverDriving = baseBotInternals.GetDistanceTraveledUntilStop(newSpeed) > Math.Abs(distance);
+                _isOverDriving = _baseBotInternals.GetDistanceTraveledUntilStop(newSpeed) > Math.Abs(distance);
 
             DistanceRemaining = distance - newSpeed;
         }
@@ -416,8 +416,8 @@ sealed class BotInternals : IStopResumeListener
 
     private double GetAndSetNewTargetSpeed(double distance)
     {
-        var speed = baseBotInternals.GetNewTargetSpeed(bot.Speed, distance);
-        baseBotInternals.TargetSpeed = speed;
+        var speed = _baseBotInternals.GetNewTargetSpeed(_bot.Speed, distance);
+        _baseBotInternals.TargetSpeed = speed;
         return speed;
     }
 

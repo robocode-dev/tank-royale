@@ -1,10 +1,12 @@
 using System.Drawing;
+using JetBrains.Annotations;
 
 namespace Robocode.TankRoyale.BotApi;
 
 /// <summary>
 /// Represents the state of a bullet that has been fired by a bot.
 /// </summary>
+[PublicAPI]
 public sealed class BulletState
 {
     /// <summary>

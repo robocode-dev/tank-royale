@@ -1,4 +1,5 @@
 using System.Drawing;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi;
@@ -6,6 +7,7 @@ namespace Robocode.TankRoyale.BotApi;
 /// <summary>
 /// Represents the current bot state. 
 /// </summary>
+[PublicAPI]
 public sealed class BotState
 {
     /// <summary>

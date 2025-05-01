@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi.Events;
@@ -5,6 +6,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// <summary>
 /// Event occurring when another bot has died.
 /// </summary>
+[PublicAPI]
 public sealed class BotDeathEvent : BotEvent
 {
     /// <summary>The id of the bot that has died.</summary>

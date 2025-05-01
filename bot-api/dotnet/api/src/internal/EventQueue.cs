@@ -296,6 +296,7 @@ sealed class EventQueue : IComparer<BotEvent>
         }
     }
 
+    // Used for debugging purposes
     private void DumpEvents(int turnNumber)
     {
         lock (_events)

@@ -6,12 +6,12 @@ namespace Robocode.TankRoyale.BotApi.Util;
 /// <summary>
 /// Collection utility class.
 /// </summary>
-public static class PlatformUtil
+static class PlatformUtil
 {
     /// <summary>
     /// Returns the name of the platform (framework).
     /// </summary>
     /// <returns>A string containing the platform name.</returns>
-    public static string GetPlatformName() =>
+    internal static string GetPlatformName() =>
         Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
 }

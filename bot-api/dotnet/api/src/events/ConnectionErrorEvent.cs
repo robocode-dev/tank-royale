@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi.Events;
@@ -6,6 +7,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// <summary>
 /// Event occurring when a connection error occurs.
 /// </summary>
+[PublicAPI]
 public sealed class ConnectionErrorEvent : ConnectionEvent
 {
     /// <summary>The exception causing the error.</summary>

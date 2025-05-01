@@ -1,8 +1,11 @@
+using JetBrains.Annotations;
+
 namespace Robocode.TankRoyale.BotApi;
 
 /// <summary>
 /// Game setup retrieved when game is started.
 /// </summary>
+[PublicAPI]
 public sealed class GameSetup
 {
     /// <summary>

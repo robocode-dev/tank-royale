@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi.Events;
@@ -5,6 +6,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// <summary>
 /// Event occurring when bot gets disconnected from server.
 /// </summary>
+[PublicAPI]
 public sealed class DisconnectedEvent : ConnectionEvent
 {
     /// <summary>Indication if closing of the connection was initiated by the remote host.</summary>

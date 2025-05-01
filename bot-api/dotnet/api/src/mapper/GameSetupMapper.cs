@@ -1,8 +1,8 @@
 namespace Robocode.TankRoyale.BotApi.Mapper;
 
-public static class GameSetupMapper
+static class GameSetupMapper
 {
-    public static GameSetup Map(Schema.GameSetup source)
+    internal static GameSetup Map(Schema.GameSetup source)
     {
         return new GameSetup(
             source.GameType,

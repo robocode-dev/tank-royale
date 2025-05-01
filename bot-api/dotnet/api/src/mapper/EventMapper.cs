@@ -6,9 +6,9 @@ using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi.Mapper;
 
-public static class EventMapper
+static class EventMapper
 {
-    public static TickEvent Map(string json, IBaseBot baseBot)
+    internal static TickEvent Map(string json, IBaseBot baseBot)
     {
         var tickEvent = JsonConvert.DeserializeObject<Schema.TickEventForBot>(json);
         if (tickEvent == null)

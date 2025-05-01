@@ -1,4 +1,5 @@
-﻿using Robocode.TankRoyale.BotApi.Events;
+﻿using JetBrains.Annotations;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi;
 
@@ -6,6 +7,7 @@ namespace Robocode.TankRoyale.BotApi;
 /// Interface for a bot that extends the core API with convenient methods for movement, turning,
 /// and firing the gun.
 /// </summary>
+[PublicAPI]
 public interface IBot : IBaseBot
 {
     /// <summary>
@@ -624,7 +626,7 @@ public interface IBot : IBaseBot
     /// multiple commands in parallel, use <em>setter</em> methods instead of this blocking
     /// method.
     /// </summary>
-    /// <seealso cref="Stop"/>
+    /// <seealso cref="Stop()"/>
     /// <seealso cref="IBaseBot.SetResume"/>
     /// <seealso cref="Resume"/>
     void Stop();
@@ -642,13 +644,13 @@ public interface IBot : IBaseBot
     /// <param name="overwrite">overwrite is set to <c>true</c> if the movement saved by a previous call
     /// to this method or <see cref="IBaseBot.SetStop()"/> must be overridden with the current movement.
     /// When set to <c>false</c> this method is identical to <see cref="IBaseBot.SetStop()"/>.</param>
-    /// <seealso cref="Stop"/>
+    /// <seealso cref="Stop()"/>
     /// <seealso cref="IBaseBot.SetResume"/>
     /// <seealso cref="Resume"/>
     void Stop(bool overwrite);
 
     /// <summary>
-    /// Resume the movement prior to calling the <see cref="IBaseBot.SetStop"/> or <see cref="Stop"/> method. This
+    /// Resume the movement prior to calling the <see cref="IBaseBot.SetStop()"/> or <see cref="Stop()"/> method. This
     /// method has no effect, if it has already been called.
     /// 
     /// This call is executed immediately by calling <see cref="IBaseBot.Go"/> in the code behind. This
@@ -657,18 +659,18 @@ public interface IBot : IBaseBot
     /// multiple commands in parallel, use <em>setter</em> methods instead of this blocking
     /// method.
     /// </summary>
-    /// <seealso cref="IBaseBot.SetStop"/>
+    /// <seealso cref="IBaseBot.SetStop()"/>
     /// <seealso cref="IBaseBot.SetResume"/>
-    /// <seealso cref="Stop"/>
+    /// <seealso cref="Stop()"/>
     void Resume();
 
     /// <summary>
     /// Scan (again) with the radar. This method is useful if the radar has not been turning and
     /// thereby will not be able to automatically scan bots. This method is useful when the bot
-    /// movement has stopped, e.g. when <see cref="Stop"/> has been called. The last radar direction and
+    /// movement has stopped, e.g. when <see cref="Stop()"/> has been called. The last radar direction and
     /// sweep angle will be used for rescanning for bots.
     /// </summary>
-    /// <seealso cref="Stop"/>
+    /// <seealso cref="Stop()"/>
     void Rescan();
 
     /// <summary>

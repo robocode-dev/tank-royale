@@ -1,8 +1,11 @@
+using JetBrains.Annotations;
+
 namespace Robocode.TankRoyale.BotApi;
 
 /// <summary>
 /// Represents individual bot results.
 /// </summary>
+[PublicAPI]
 public sealed class BotResults
 {
     /// <summary>

@@ -1,8 +1,11 @@
-﻿namespace Robocode.TankRoyale.BotApi;
+﻿using JetBrains.Annotations;
+
+namespace Robocode.TankRoyale.BotApi;
 
 /// <summary>
 /// Constants.
 /// </summary>
+[PublicAPI]
 public static class Constants
 {
     /// <summary>

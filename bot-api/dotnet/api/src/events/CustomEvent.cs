@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi.Events;
@@ -5,6 +6,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// <summary>
 /// A custom event occurring when a condition has been met.
 /// </summary>
+[PublicAPI]
 public sealed class CustomEvent : BotEvent
 {
     ///<summary>Condition that was met to trigger this custom event.</summary>

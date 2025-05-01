@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi.Events;
@@ -5,6 +6,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// <summary>
 /// Event occurring when game has just ended.
 /// </summary>
+[PublicAPI]
 public sealed class GameEndedEvent : IEvent
 {
     /// <summary>Number of rounds played.</summary>

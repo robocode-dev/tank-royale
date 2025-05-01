@@ -2,9 +2,9 @@ using static Robocode.TankRoyale.BotApi.Util.ColorUtil;
 
 namespace Robocode.TankRoyale.BotApi.Mapper;
 
-internal static class BotStateMapper
+static class BotStateMapper
 {
-    public static BotState Map(Schema.BotState source)
+    internal static BotState Map(Schema.BotState source)
     {
         return new BotState(
             source.IsDroid == false,

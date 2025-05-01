@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace Robocode.TankRoyale.BotApi.Events;
@@ -6,6 +7,7 @@ namespace Robocode.TankRoyale.BotApi.Events;
 /// <summary>
 /// Event occurring whenever a new turn in a round has started.
 /// </summary>
+[PublicAPI]
 public sealed class TickEvent : BotEvent
 {
     /// <summary>Current round number.</summary>

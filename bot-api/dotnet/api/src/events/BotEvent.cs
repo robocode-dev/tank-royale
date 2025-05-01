@@ -1,8 +1,11 @@
-﻿namespace Robocode.TankRoyale.BotApi.Events;
+﻿using JetBrains.Annotations;
+
+namespace Robocode.TankRoyale.BotApi.Events;
 
 /// <summary>
 /// Bot event occurring during a battle.
 /// </summary>
+[PublicAPI]
 public abstract class BotEvent : IEvent
 {
     /// <summary>The turn number when this event occurred.</summary>

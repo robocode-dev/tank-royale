@@ -8,7 +8,7 @@ namespace Robocode.TankRoyale.BotApi.Util;
 /// Color represented in RGB format.
 /// </summary>
 /// <see href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</see>
-public static class ColorUtil
+static class ColorUtil
 {
     private const string NumericRgb = "^#[0-9a-fA-F]{3,6}$";
 
@@ -20,7 +20,7 @@ public static class ColorUtil
     /// </summary>
     /// <param name="color">The <c>Color</c> object to convert to a hex triplet</param>
     /// <returns>A string representing the color as a hex triplet of six hexadecimal digits</returns>
-    public static string ToHex(Color? color)
+    internal static string ToHex(Color? color)
     {
         return color == null ? null : ToHex(color.Value.R) + ToHex(color.Value.G) + ToHex(color.Value.B);
     }
@@ -42,7 +42,7 @@ public static class ColorUtil
     /// <exception cref="ArgumentException"/>
     /// <see href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</see>
     /// <see href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</see>
-    public static Color? FromString(string str)
+    internal static Color? FromString(string str)
     {
         if (str == null) return null;
         str = str.Trim();
@@ -62,7 +62,7 @@ public static class ColorUtil
     /// <param name="hexTriplet">A string containing either three or six hexadecimal numbers like "09C" or "0099CC".</param>
     /// <returns>The created <see cref="Color"/>.</returns>
     /// <exception cref="ArgumentException">Thrown when the input string does not match the required hex triplet format.</exception>
-    public static Color FromHex(string hexTriplet)
+    internal static Color FromHex(string hexTriplet)
     {
         hexTriplet = hexTriplet.Trim();
         if (!Regex.IsMatch(hexTriplet, HexDigits))

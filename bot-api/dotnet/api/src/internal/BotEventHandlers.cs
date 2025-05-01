@@ -20,21 +20,21 @@ sealed class BotEventHandlers
     internal readonly EventHandler<RoundStartedEvent> OnRoundStarted = new();
     internal readonly EventHandler<RoundEndedEvent> OnRoundEnded = new();
 
-    private readonly EventHandler<TickEvent> OnTick = new();
+    private readonly EventHandler<TickEvent> _onTick = new();
     internal readonly EventHandler<SkippedTurnEvent> OnSkippedTurn = new();
-    private readonly EventHandler<DeathEvent> OnDeath = new();
-    private readonly EventHandler<BotDeathEvent> OnBotDeath = new();
-    private readonly EventHandler<HitBotEvent> OnHitBot = new();
-    private readonly EventHandler<HitWallEvent> OnHitWall = new();
-    private readonly EventHandler<BulletFiredEvent> OnBulletFired = new();
-    private readonly EventHandler<HitByBulletEvent> OnHitByBullet = new();
-    private readonly EventHandler<BulletHitBotEvent> OnBulletHit = new();
-    private readonly EventHandler<BulletHitBulletEvent> OnBulletHitBullet = new();
-    private readonly EventHandler<BulletHitWallEvent> OnBulletHitWall = new();
-    private readonly EventHandler<ScannedBotEvent> OnScannedBot = new();
-    private readonly EventHandler<WonRoundEvent> OnWonRound = new();
-    private readonly EventHandler<CustomEvent> OnCustomEvent = new();
-    private readonly EventHandler<TeamMessageEvent> OnTeamMessage = new();
+    private readonly EventHandler<DeathEvent> _onDeath = new();
+    private readonly EventHandler<BotDeathEvent> _onBotDeath = new();
+    private readonly EventHandler<HitBotEvent> _onHitBot = new();
+    private readonly EventHandler<HitWallEvent> _onHitWall = new();
+    private readonly EventHandler<BulletFiredEvent> _onBulletFired = new();
+    private readonly EventHandler<HitByBulletEvent> _onHitByBullet = new();
+    private readonly EventHandler<BulletHitBotEvent> _onBulletHit = new();
+    private readonly EventHandler<BulletHitBulletEvent> _onBulletHitBullet = new();
+    private readonly EventHandler<BulletHitWallEvent> _onBulletHitWall = new();
+    private readonly EventHandler<ScannedBotEvent> _onScannedBot = new();
+    private readonly EventHandler<WonRoundEvent> _onWonRound = new();
+    private readonly EventHandler<CustomEvent> _onCustomEvent = new();
+    private readonly EventHandler<TeamMessageEvent> _onTeamMessage = new();
 
     private readonly Dictionary<Type, Action<IEvent>> _eventHandlers = new();
 
@@ -57,21 +57,21 @@ sealed class BotEventHandlers
         _eventHandlers[typeof(RoundStartedEvent)] = e => OnRoundStarted.Publish((RoundStartedEvent)e);
         _eventHandlers[typeof(RoundEndedEvent)] = e => OnRoundEnded.Publish((RoundEndedEvent)e);
 
-        _eventHandlers[typeof(TickEvent)] = e => OnTick.Publish((TickEvent)e);
+        _eventHandlers[typeof(TickEvent)] = e => _onTick.Publish((TickEvent)e);
         _eventHandlers[typeof(SkippedTurnEvent)] = e => OnSkippedTurn.Publish((SkippedTurnEvent)e);
-        _eventHandlers[typeof(DeathEvent)] = e => OnDeath.Publish((DeathEvent)e);
-        _eventHandlers[typeof(BotDeathEvent)] = e => OnBotDeath.Publish((BotDeathEvent)e);
-        _eventHandlers[typeof(HitBotEvent)] = e => OnHitBot.Publish((HitBotEvent)e);
-        _eventHandlers[typeof(HitWallEvent)] = e => OnHitWall.Publish((HitWallEvent)e);
-        _eventHandlers[typeof(BulletFiredEvent)] = e => OnBulletFired.Publish((BulletFiredEvent)e);
-        _eventHandlers[typeof(HitByBulletEvent)] = e => OnHitByBullet.Publish((HitByBulletEvent)e);
-        _eventHandlers[typeof(BulletHitBotEvent)] = e => OnBulletHit.Publish((BulletHitBotEvent)e);
-        _eventHandlers[typeof(BulletHitBulletEvent)] = e => OnBulletHitBullet.Publish((BulletHitBulletEvent)e);
-        _eventHandlers[typeof(BulletHitWallEvent)] = e => OnBulletHitWall.Publish((BulletHitWallEvent)e);
-        _eventHandlers[typeof(ScannedBotEvent)] = e => OnScannedBot.Publish((ScannedBotEvent)e);
-        _eventHandlers[typeof(WonRoundEvent)] = e => OnWonRound.Publish((WonRoundEvent)e);
-        _eventHandlers[typeof(CustomEvent)] = e => OnCustomEvent.Publish((CustomEvent)e);
-        _eventHandlers[typeof(TeamMessageEvent)] = e => OnTeamMessage.Publish((TeamMessageEvent)e);
+        _eventHandlers[typeof(DeathEvent)] = e => _onDeath.Publish((DeathEvent)e);
+        _eventHandlers[typeof(BotDeathEvent)] = e => _onBotDeath.Publish((BotDeathEvent)e);
+        _eventHandlers[typeof(HitBotEvent)] = e => _onHitBot.Publish((HitBotEvent)e);
+        _eventHandlers[typeof(HitWallEvent)] = e => _onHitWall.Publish((HitWallEvent)e);
+        _eventHandlers[typeof(BulletFiredEvent)] = e => _onBulletFired.Publish((BulletFiredEvent)e);
+        _eventHandlers[typeof(HitByBulletEvent)] = e => _onHitByBullet.Publish((HitByBulletEvent)e);
+        _eventHandlers[typeof(BulletHitBotEvent)] = e => _onBulletHit.Publish((BulletHitBotEvent)e);
+        _eventHandlers[typeof(BulletHitBulletEvent)] = e => _onBulletHitBullet.Publish((BulletHitBulletEvent)e);
+        _eventHandlers[typeof(BulletHitWallEvent)] = e => _onBulletHitWall.Publish((BulletHitWallEvent)e);
+        _eventHandlers[typeof(ScannedBotEvent)] = e => _onScannedBot.Publish((ScannedBotEvent)e);
+        _eventHandlers[typeof(WonRoundEvent)] = e => _onWonRound.Publish((WonRoundEvent)e);
+        _eventHandlers[typeof(CustomEvent)] = e => _onCustomEvent.Publish((CustomEvent)e);
+        _eventHandlers[typeof(TeamMessageEvent)] = e => _onTeamMessage.Publish((TeamMessageEvent)e);
     }
 
     private void SubscribeToEventHandlers(IBaseBot baseBot)
@@ -85,21 +85,21 @@ sealed class BotEventHandlers
         OnRoundStarted.Subscribe(baseBot.OnRoundStarted);
         OnRoundEnded.Subscribe(baseBot.OnRoundEnded);
 
-        OnTick.Subscribe(baseBot.OnTick);
+        _onTick.Subscribe(baseBot.OnTick);
         OnSkippedTurn.Subscribe(baseBot.OnSkippedTurn);
-        OnDeath.Subscribe(baseBot.OnDeath);
-        OnBotDeath.Subscribe(baseBot.OnBotDeath);
-        OnHitBot.Subscribe(baseBot.OnHitBot);
-        OnHitWall.Subscribe(baseBot.OnHitWall);
-        OnBulletFired.Subscribe(baseBot.OnBulletFired);
-        OnHitByBullet.Subscribe(baseBot.OnHitByBullet);
-        OnBulletHit.Subscribe(baseBot.OnBulletHit);
-        OnBulletHitBullet.Subscribe(baseBot.OnBulletHitBullet);
-        OnBulletHitWall.Subscribe(baseBot.OnBulletHitWall);
-        OnScannedBot.Subscribe(baseBot.OnScannedBot);
-        OnWonRound.Subscribe(baseBot.OnWonRound);
-        OnCustomEvent.Subscribe(baseBot.OnCustomEvent);
-        OnTeamMessage.Subscribe(baseBot.OnTeamMessage);
+        _onDeath.Subscribe(baseBot.OnDeath);
+        _onBotDeath.Subscribe(baseBot.OnBotDeath);
+        _onHitBot.Subscribe(baseBot.OnHitBot);
+        _onHitWall.Subscribe(baseBot.OnHitWall);
+        _onBulletFired.Subscribe(baseBot.OnBulletFired);
+        _onHitByBullet.Subscribe(baseBot.OnHitByBullet);
+        _onBulletHit.Subscribe(baseBot.OnBulletHit);
+        _onBulletHitBullet.Subscribe(baseBot.OnBulletHitBullet);
+        _onBulletHitWall.Subscribe(baseBot.OnBulletHitWall);
+        _onScannedBot.Subscribe(baseBot.OnScannedBot);
+        _onWonRound.Subscribe(baseBot.OnWonRound);
+        _onCustomEvent.Subscribe(baseBot.OnCustomEvent);
+        _onTeamMessage.Subscribe(baseBot.OnTeamMessage);
     }
 
     internal void FireEvent(BotEvent botEvent)

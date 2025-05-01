@@ -1,4 +1,6 @@
-﻿namespace Robocode.TankRoyale.BotApi;
+﻿using JetBrains.Annotations;
+
+namespace Robocode.TankRoyale.BotApi;
 
 /// <summary>
 /// Droid interface to turn your bot into a droid bot, which is used as a specialized team bot.
@@ -10,6 +12,7 @@
 /// A team of droids plus at least one non-droid team robot can have an edge over another team without droids (and the
 /// same number of robots) due to the additional 20 energy points.
 /// </summary>
+[PublicAPI]
 public interface Droid
 {
 }

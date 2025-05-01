@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 
 [assembly: InternalsVisibleTo("Robocode.TankRoyale.BotApi.Tests")]
 
@@ -15,6 +16,7 @@ namespace Robocode.TankRoyale.BotApi;
 /// Note that initial starting positions must be enabled at the server-side; otherwise the initial starting position
 /// is ignored.
 /// </summary>
+[PublicAPI]
 public sealed class InitialPosition
 {
     /// <summary>

@@ -27,72 +27,74 @@ sealed class BaseBotInternals
     private const string TickNotAvailableMsg =
         "Game is not running or tick has not occurred yet. Make sure OnTick() event handler has been called first";
 
-    private readonly string serverSecret;
-    private WebSocketClient socket;
-    private S.ServerHandshake serverHandshake;
-    private readonly EventWaitHandle closedEvent = new ManualResetEvent(false);
+    private readonly string _serverSecret;
+    private WebSocketClient _socket;
+    private S.ServerHandshake _serverHandshake;
+    private readonly EventWaitHandle _closedEvent = new ManualResetEvent(false);
 
-    private readonly IBaseBot baseBot;
-    private readonly BotInfo botInfo;
+    private readonly IBaseBot _baseBot;
+    private readonly BotInfo _botInfo;
 
-    private GameSetup gameSetup;
+    private GameSetup _gameSetup;
 
-    private InitialPosition initialPosition;
+    private InitialPosition _initialPosition;
 
-    private E.TickEvent tickEvent;
-    private long? ticksStart;
+    private E.TickEvent _tickEvent;
+    private long? _ticksStart;
 
-    private readonly EventQueue eventQueue;
+    private readonly EventQueue _eventQueue;
 
-    private readonly object nextTurnMonitor = new();
+    private readonly object _nextTurnMonitor = new();
 
-    private Thread thread;
+    private Thread _thread;
 
-    private bool isRunning;
-    private readonly object isRunningLock = new();
+    private bool _isRunning;
+    private readonly object _isRunningLock = new();
 
-    private IStopResumeListener stopResumeListener;
-
-    private double maxSpeed;
-    private double maxTurnRate;
-    private double maxGunTurnRate;
-    private double maxRadarTurnRate;
-
-    private double? savedTargetSpeed;
-    private double? savedTurnRate;
-    private double? savedGunTurnRate;
-    private double? savedRadarTurnRate;
-
-    private readonly double absDeceleration;
-
-    private int eventHandlingDisabledTurn;
-
-    private RecordingTextWriter recordingStdOut;
-    private RecordingTextWriter recordingStdErr;
-
-    private ICollection<int> teammateIds;
-
-    private int lastExecuteTurnNumber;
-
-    private readonly GraphicsState graphicsState = new();
+    private IStopResumeListener _stopResumeListener;
     
+    private double _maxSpeed;
+    private double _maxTurnRate;
+    private double _maxGunTurnRate;
+    private double _maxRadarTurnRate;
+
+    private double? _savedTargetSpeed;
+    private double? _savedTurnRate;
+    private double? _savedGunTurnRate;
+    private double? _savedRadarTurnRate;
+
+    private readonly double _absDeceleration;
+
+    private readonly HashSet<Events.Condition> _conditions = new();
+
+    private int _eventHandlingDisabledTurn;
+
+    private RecordingTextWriter _recordingStdOut;
+    private RecordingTextWriter _recordingStdErr;
+
+    private ICollection<int> _teammateIds;
+
+    private int _lastExecuteTurnNumber;
+
+    private readonly GraphicsState _graphicsState = new();
+
     internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, string serverSecret)
     {
-        this.baseBot = baseBot;
-        this.botInfo = botInfo ?? EnvVars.GetBotInfo();
+        _baseBot = baseBot;
+        _botInfo = botInfo ?? EnvVars.GetBotInfo();
 
         BotEventHandlers = new BotEventHandlers(baseBot);
         InternalEventHandlers = new InternalEventHandlers();
-        eventQueue = new EventQueue(this, BotEventHandlers);
+        _eventQueue = new EventQueue(this, BotEventHandlers);
 
-        absDeceleration = Math.Abs(Constants.Deceleration);
+        _absDeceleration = Math.Abs(Constants.Deceleration);
 
-        maxSpeed = Constants.MaxSpeed;
-        maxTurnRate = Constants.MaxTurnRate;
-        maxGunTurnRate = Constants.MaxGunTurnRate;
-        maxRadarTurnRate = Constants.MaxRadarTurnRate;
+        _maxSpeed = Constants.MaxSpeed;
+        _maxTurnRate = Constants.MaxTurnRate;
+        _maxGunTurnRate = Constants.MaxGunTurnRate;
+        _maxRadarTurnRate = Constants.MaxRadarTurnRate;
 
-        this.serverSecret = serverSecret ?? ServerSecretFromSetting;
+        _serverSecret = serverSecret ?? ServerSecretFromSetting;
 
         Init(serverUrl ?? ServerUrlFromSetting);
     }
@@ -106,20 +108,20 @@ sealed class BaseBotInternals
 
     private void RedirectStdOutAndStdErr()
     {
-        recordingStdOut = new RecordingTextWriter(Console.Out);
-        recordingStdErr = new RecordingTextWriter(Console.Error);
+        _recordingStdOut = new RecordingTextWriter(Console.Out);
+        _recordingStdErr = new RecordingTextWriter(Console.Error);
 
-        Console.SetOut(recordingStdOut);
-        Console.SetError(recordingStdErr);
+        Console.SetOut(_recordingStdOut);
+        Console.SetError(_recordingStdErr);
     }
 
     private void InitializeWebSocketClient(Uri serverUrl)
     {
-        socket = new WebSocketClient(serverUrl);
-        socket.OnConnected += HandleConnected;
-        socket.OnDisconnected += HandleDisconnected;
-        socket.OnError += HandleConnectionError;
-        socket.OnTextMessage += HandleTextMessage;
+        _socket = new WebSocketClient(serverUrl);
+        _socket.OnConnected += HandleConnected;
+        _socket.OnDisconnected += HandleDisconnected;
+        _socket.OnError += HandleConnectionError;
+        _socket.OnTextMessage += HandleTextMessage;
     }
 
     private void SubscribeToEvents()
@@ -133,24 +135,24 @@ sealed class BaseBotInternals
     {
         get
         {
-            lock (isRunningLock)
+            lock (_isRunningLock)
             {
-                return isRunning;
+                return _isRunning;
             }
         }
         private set
         {
-            lock (isRunningLock)
+            lock (_isRunningLock)
             {
-                isRunning = value;
+                _isRunning = value;
             }
         }
     }
 
     internal void StartThread(IBot bot)
     {
-        thread = new Thread(() => CreateRunnable(bot));;
-        thread.Start();
+        _thread = new Thread(() => CreateRunnable(bot));;
+        _thread.Start();
     }
 
     private void CreateRunnable(IBot bot)
@@ -195,26 +197,26 @@ sealed class BaseBotInternals
 
         IsRunning = false;
 
-        if (thread != null)
+        if (_thread != null)
         {
-            thread.Interrupt();
-            thread = null;
+            _thread.Interrupt();
+            _thread = null;
         }
     }
 
 
     public void EnableEventHandling(bool enable)
     {
-        eventHandlingDisabledTurn = enable ? 0 : CurrentTickOrThrow.TurnNumber;
+        _eventHandlingDisabledTurn = enable ? 0 : CurrentTickOrThrow.TurnNumber;
     }
 
     private bool IsEventHandlingDisabled()
     {
         // Important! Allow an additional turn so events like RoundStarted can be handled
-        return eventHandlingDisabledTurn != 0 && eventHandlingDisabledTurn < (CurrentTickOrThrow.TurnNumber - 1);
+        return _eventHandlingDisabledTurn != 0 && _eventHandlingDisabledTurn < (CurrentTickOrThrow.TurnNumber - 1);
     }
 
-    public void SetStopResumeHandler(IStopResumeListener listener) => stopResumeListener = listener;
+    public void SetStopResumeHandler(IStopResumeListener listener) => _stopResumeListener = listener;
 
     private static S.BotIntent NewBotIntent() => new()
     {
@@ -235,29 +237,27 @@ sealed class BaseBotInternals
 
     internal InternalEventHandlers InternalEventHandlers { get; }
 
-    internal IList<E.BotEvent> Events => eventQueue.Events(CurrentTickOrThrow.TurnNumber);
+    internal IList<E.BotEvent> Events => _eventQueue.Events(CurrentTickOrThrow.TurnNumber);
 
-    internal void ClearEvents() => eventQueue.ClearEvents();
+    internal void ClearEvents() => _eventQueue.ClearEvents();
 
-    internal void SetInterruptible(bool interruptible) => eventQueue.SetCurrentEventInterruptible(interruptible);
-
-    private HashSet<Events.Condition> conditions = new();
+    internal void SetInterruptible(bool interruptible) => _eventQueue.SetCurrentEventInterruptible(interruptible);
 
     private void OnRoundStarted(E.RoundStartedEvent e)
     {
         ResetMovement();
-        eventQueue.Clear();
+        _eventQueue.Clear();
         IsStopped = false;
-        eventHandlingDisabledTurn = 0;
-        lastExecuteTurnNumber = -1;
+        _eventHandlingDisabledTurn = 0;
+        _lastExecuteTurnNumber = -1;
     }
 
     private void OnNextTurn(E.TickEvent e)
     {
-        lock (nextTurnMonitor)
+        lock (_nextTurnMonitor)
         {
             // Unblock methods waiting for the next turn
-            Monitor.PulseAll(nextTurnMonitor);
+            Monitor.PulseAll(_nextTurnMonitor);
         }
     }
 
@@ -267,16 +267,16 @@ sealed class BaseBotInternals
     internal void Start()
     {
         Connect();
-        closedEvent.WaitOne();
+        _closedEvent.WaitOne();
     }
 
     private void Connect()
     {
-        var serverUri = socket.ServerUri;
+        var serverUri = _socket.ServerUri;
         SanitizeUrl(serverUri);
         try
         {
-            socket.Connect();
+            _socket.Connect();
         }
         catch (Exception)
         {
@@ -299,7 +299,7 @@ sealed class BaseBotInternals
             return;
 
         var turnNumber = CurrentTickOrThrow.TurnNumber;
-        if (turnNumber != lastExecuteTurnNumber)
+        if (turnNumber != _lastExecuteTurnNumber)
         {
             DispatchEvents(turnNumber);
             SendIntent();
@@ -311,21 +311,21 @@ sealed class BaseBotInternals
     {
         RenderGraphicsToBotIntent();
         TransferStdOutToBotIntent();
-        socket.SendTextMessage(JsonConvert.SerializeObject(BotIntent));
+        _socket.SendTextMessage(JsonConvert.SerializeObject(BotIntent));
         BotIntent.TeamMessages.Clear();
     }
 
     private void TransferStdOutToBotIntent()
     {
-        if (recordingStdOut != null)
+        if (_recordingStdOut != null)
         {
-            var output = recordingStdOut.ReadNext();
+            var output = _recordingStdOut.ReadNext();
             BotIntent.StdOut = output.Length > 0 ? output : null;
         }
 
-        if (recordingStdErr != null)
+        if (_recordingStdErr != null)
         {
-            var error = recordingStdErr.ReadNext();
+            var error = _recordingStdErr.ReadNext();
             BotIntent.StdErr = error.Length > 0 ? error : null;
         }
     }
@@ -333,8 +333,8 @@ sealed class BaseBotInternals
     private void RenderGraphicsToBotIntent()
     {
         if (CurrentTickOrThrow.BotState.IsDebuggingEnabled) {
-            BotIntent.DebugGraphics = graphicsState.GetSvgOutput();
-            graphicsState.Clear();
+            BotIntent.DebugGraphics = _graphicsState.GetSvgOutput();
+            _graphicsState.Clear();
         }
     }
     
@@ -344,22 +344,22 @@ sealed class BaseBotInternals
         // cannot be killed any other way.
         StopRogueThread();
 
-        lock (nextTurnMonitor)
+        lock (_nextTurnMonitor)
         {
             while (
                 IsRunning &&
                 turnNumber == CurrentTickOrThrow.TurnNumber &&
-                Thread.CurrentThread == thread
+                Thread.CurrentThread == _thread
             )
             {
-                Monitor.Wait(nextTurnMonitor);
+                Monitor.Wait(_nextTurnMonitor);
             }
         }
     }
 
     private void StopRogueThread()
     {
-        if (Thread.CurrentThread != thread)
+        if (Thread.CurrentThread != _thread)
         {
             Thread.CurrentThread.Interrupt();
         }
@@ -369,7 +369,7 @@ sealed class BaseBotInternals
     {
         try
         {
-            eventQueue.DispatchEvents(turnNumber);
+            _eventQueue.DispatchEvents(turnNumber);
         }
         catch (Exception e)
         {
@@ -388,18 +388,18 @@ sealed class BaseBotInternals
 
     internal int MyId { get; private set; }
 
-    internal GameSetup GameSetup => gameSetup ?? throw new BotException(GameNotRunningMsg);
+    internal GameSetup GameSetup => _gameSetup ?? throw new BotException(GameNotRunningMsg);
 
     internal S.BotIntent BotIntent { get; } = NewBotIntent();
 
-    internal E.TickEvent CurrentTickOrThrow => tickEvent ?? throw new BotException(TickNotAvailableMsg);
+    internal E.TickEvent CurrentTickOrThrow => _tickEvent ?? throw new BotException(TickNotAvailableMsg);
 
     private long TicksStart
     {
         get
         {
-            if (ticksStart == null) throw new BotException(TickNotAvailableMsg);
-            return (long)ticksStart;
+            if (_ticksStart == null) throw new BotException(TickNotAvailableMsg);
+            return (long)_ticksStart;
         }
     }
 
@@ -408,7 +408,7 @@ sealed class BaseBotInternals
         get
         {
             var passesMicroSeconds = (DateTime.Now.Ticks - TicksStart) / 10;
-            return (int)(gameSetup.TurnTimeout - passesMicroSeconds);
+            return (int)(_gameSetup.TurnTimeout - passesMicroSeconds);
         }
     }
 
@@ -416,15 +416,15 @@ sealed class BaseBotInternals
     {
         if (IsNaN(firepower)) throw new ArgumentException("'firepower' cannot be NaN");
 
-        if (baseBot.Energy < firepower || CurrentTickOrThrow.BotState.GunHeat > 0)
+        if (_baseBot.Energy < firepower || CurrentTickOrThrow.BotState.GunHeat > 0)
             return false; // cannot fire yet
         BotIntent.Firepower = firepower;
         return true;
     }
 
-    internal double GunHeat => tickEvent == null ? 0 : tickEvent.BotState.GunHeat;
+    internal double GunHeat => _tickEvent == null ? 0 : _tickEvent.BotState.GunHeat;
 
-    internal double Speed => tickEvent == null ? 0 : tickEvent.BotState.Speed;
+    internal double Speed => _tickEvent == null ? 0 : _tickEvent.BotState.Speed;
 
     internal double TurnRate
     {
@@ -436,7 +436,7 @@ sealed class BaseBotInternals
                 return (double)BotIntent.TurnRate;
             }
 
-            return tickEvent == null ? 0 : tickEvent.BotState.TurnRate;
+            return _tickEvent == null ? 0 : _tickEvent.BotState.TurnRate;
         }
         set
         {
@@ -445,7 +445,7 @@ sealed class BaseBotInternals
                 throw new ArgumentException("'TurnRate' cannot be NaN");
             }
 
-            BotIntent.TurnRate = Math.Clamp(value, -maxTurnRate, maxTurnRate);
+            BotIntent.TurnRate = Math.Clamp(value, -_maxTurnRate, _maxTurnRate);
         }
     }
 
@@ -459,7 +459,7 @@ sealed class BaseBotInternals
                 return (double)BotIntent.GunTurnRate;
             }
 
-            return tickEvent == null ? 0 : tickEvent.BotState.GunTurnRate;
+            return _tickEvent == null ? 0 : _tickEvent.BotState.GunTurnRate;
         }
         set
         {
@@ -468,7 +468,7 @@ sealed class BaseBotInternals
                 throw new ArgumentException("'GunTurnRate' cannot be NaN");
             }
 
-            BotIntent.GunTurnRate = Math.Clamp(value, -maxGunTurnRate, maxGunTurnRate);
+            BotIntent.GunTurnRate = Math.Clamp(value, -_maxGunTurnRate, _maxGunTurnRate);
         }
     }
 
@@ -482,7 +482,7 @@ sealed class BaseBotInternals
                 return (double)BotIntent.RadarTurnRate;
             }
 
-            return tickEvent == null ? 0 : tickEvent.BotState.RadarTurnRate;
+            return _tickEvent == null ? 0 : _tickEvent.BotState.RadarTurnRate;
         }
         set
         {
@@ -491,7 +491,7 @@ sealed class BaseBotInternals
                 throw new ArgumentException("'RadarTurnRate' cannot be NaN");
             }
 
-            BotIntent.RadarTurnRate = Math.Clamp(value, -maxRadarTurnRate, maxRadarTurnRate);
+            BotIntent.RadarTurnRate = Math.Clamp(value, -_maxRadarTurnRate, _maxRadarTurnRate);
         }
     }
 
@@ -505,13 +505,13 @@ sealed class BaseBotInternals
                 throw new ArgumentException("'TargetSpeed' cannot be NaN");
             }
 
-            BotIntent.TargetSpeed = Math.Clamp(value, -maxSpeed, maxSpeed);
+            BotIntent.TargetSpeed = Math.Clamp(value, -_maxSpeed, _maxSpeed);
         }
     }
 
     internal double MaxTurnRate
     {
-        get => maxTurnRate;
+        get => _maxTurnRate;
         set
         {
             if (IsNaN(value))
@@ -519,13 +519,13 @@ sealed class BaseBotInternals
                 throw new ArgumentException("'MaxTurnRate' cannot be NaN");
             }
 
-            maxTurnRate = Math.Clamp(value, 0, Constants.MaxTurnRate);
+            _maxTurnRate = Math.Clamp(value, 0, Constants.MaxTurnRate);
         }
     }
 
     internal double MaxGunTurnRate
     {
-        get => maxGunTurnRate;
+        get => _maxGunTurnRate;
         set
         {
             if (IsNaN(value))
@@ -533,13 +533,13 @@ sealed class BaseBotInternals
                 throw new ArgumentException("'MaxGunTurnRate' cannot be NaN");
             }
 
-            maxGunTurnRate = Math.Clamp(value, 0, Constants.MaxGunTurnRate);
+            _maxGunTurnRate = Math.Clamp(value, 0, Constants.MaxGunTurnRate);
         }
     }
 
     internal double MaxRadarTurnRate
     {
-        get => maxRadarTurnRate;
+        get => _maxRadarTurnRate;
         set
         {
             if (IsNaN(value))
@@ -547,13 +547,13 @@ sealed class BaseBotInternals
                 throw new ArgumentException("'MaxRadarTurnRate' cannot be NaN");
             }
 
-            maxRadarTurnRate = Math.Clamp(value, 0, Constants.MaxRadarTurnRate);
+            _maxRadarTurnRate = Math.Clamp(value, 0, Constants.MaxRadarTurnRate);
         }
     }
 
     internal double MaxSpeed
     {
-        get => maxSpeed;
+        get => _maxSpeed;
         set
         {
             if (IsNaN(value))
@@ -561,7 +561,7 @@ sealed class BaseBotInternals
                 throw new ArgumentException("'MaxSpeed' cannot be NaN");
             }
 
-            maxSpeed = Math.Clamp(value, 0, Constants.MaxSpeed);
+            _maxSpeed = Math.Clamp(value, 0, Constants.MaxSpeed);
         }
     }
 
@@ -581,30 +581,30 @@ sealed class BaseBotInternals
         if (distance < 0)
             return -GetNewTargetSpeed(-speed, -distance);
 
-        var targetSpeed = IsPositiveInfinity(distance) ? maxSpeed : Math.Min(GetMaxSpeed(distance), maxSpeed);
+        var targetSpeed = IsPositiveInfinity(distance) ? _maxSpeed : Math.Min(GetMaxSpeed(distance), _maxSpeed);
 
         return speed >= 0
-            ? Math.Clamp(targetSpeed, speed - absDeceleration, speed + Constants.Acceleration)
+            ? Math.Clamp(targetSpeed, speed - _absDeceleration, speed + Constants.Acceleration)
             : Math.Clamp(targetSpeed, speed - Constants.Acceleration, speed + GetMaxDeceleration(-speed));
     }
 
     private double GetMaxSpeed(double distance)
     {
         var decelerationTime =
-            Math.Max(1, Math.Ceiling((Math.Sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
+            Math.Max(1, Math.Ceiling((Math.Sqrt((4 * 2 / _absDeceleration) * distance + 1) - 1) / 2));
         if (IsPositiveInfinity(decelerationTime))
             return Constants.MaxSpeed;
 
-        var decelerationDistance = (decelerationTime / 2) * (decelerationTime - 1) * absDeceleration;
-        return ((decelerationTime - 1) * absDeceleration) + ((distance - decelerationDistance) / decelerationTime);
+        var decelerationDistance = (decelerationTime / 2) * (decelerationTime - 1) * _absDeceleration;
+        return ((decelerationTime - 1) * _absDeceleration) + ((distance - decelerationDistance) / decelerationTime);
     }
 
     private double GetMaxDeceleration(double speed)
     {
-        var decelerationTime = speed / absDeceleration;
+        var decelerationTime = speed / _absDeceleration;
         var accelerationTime = 1 - decelerationTime;
 
-        return Math.Min(1, decelerationTime) * absDeceleration +
+        return Math.Min(1, decelerationTime) * _absDeceleration +
                Math.Max(0, accelerationTime) * Constants.Acceleration;
     }
 
@@ -620,26 +620,26 @@ sealed class BaseBotInternals
 
     internal void ClearConditions()
     {
-        lock (conditions)
+        lock (_conditions)
         {
-            conditions.Clear();
+            _conditions.Clear();
         }
     }
 
     internal bool AddCondition(Events.Condition condition)
     {
-        lock (conditions)
+        lock (_conditions)
         {
-            return conditions.Add(condition);
+            return _conditions.Add(condition);
         }
     }
 
     internal bool RemoveCondition(Events.Condition condition)
     {
-        return conditions.Remove(condition);
+        return _conditions.Remove(condition);
     }
 
-    internal ImmutableHashSet<Events.Condition> Conditions => conditions.ToImmutableHashSet();
+    internal ImmutableHashSet<Events.Condition> Conditions => _conditions.ToImmutableHashSet();
 
     internal void SetStop(bool overwrite)
     {
@@ -647,17 +647,17 @@ sealed class BaseBotInternals
         {
             IsStopped = true;
 
-            savedTargetSpeed = BotIntent.TargetSpeed;
-            savedTurnRate = BotIntent.TurnRate;
-            savedGunTurnRate = BotIntent.GunTurnRate;
-            savedRadarTurnRate = BotIntent.RadarTurnRate;
+            _savedTargetSpeed = BotIntent.TargetSpeed;
+            _savedTurnRate = BotIntent.TurnRate;
+            _savedGunTurnRate = BotIntent.GunTurnRate;
+            _savedRadarTurnRate = BotIntent.RadarTurnRate;
 
             BotIntent.TargetSpeed = 0;
             BotIntent.TurnRate = 0;
             BotIntent.GunTurnRate = 0;
             BotIntent.RadarTurnRate = 0;
 
-            stopResumeListener?.OnStop();
+            _stopResumeListener?.OnStop();
         }
     }
 
@@ -665,19 +665,19 @@ sealed class BaseBotInternals
     {
         if (IsStopped)
         {
-            BotIntent.TargetSpeed = savedTargetSpeed;
-            BotIntent.TurnRate = savedTurnRate;
-            BotIntent.GunTurnRate = savedGunTurnRate;
-            BotIntent.RadarTurnRate = savedRadarTurnRate;
+            BotIntent.TargetSpeed = _savedTargetSpeed;
+            BotIntent.TurnRate = _savedTurnRate;
+            BotIntent.GunTurnRate = _savedGunTurnRate;
+            BotIntent.RadarTurnRate = _savedRadarTurnRate;
 
-            stopResumeListener?.OnResume();
+            _stopResumeListener?.OnResume();
             IsStopped = false; // must be last step
         }
     }
 
     internal bool IsStopped { get; private set; }
 
-    internal ICollection<int> TeammateIds => teammateIds ?? throw new BotException(GameNotRunningMsg);
+    internal ICollection<int> TeammateIds => _teammateIds ?? throw new BotException(GameNotRunningMsg);
 
     internal bool IsTeammate(int botId) => TeammateIds.Contains(botId);
 
@@ -711,62 +711,62 @@ sealed class BaseBotInternals
 
     internal Color? BodyColor
     {
-        get => tickEvent?.BotState.BodyColor;
+        get => _tickEvent?.BotState.BodyColor;
         set => BotIntent.BodyColor = ToIntentColor(value);
     }
 
     internal Color? TurretColor
     {
-        get => tickEvent?.BotState.TurretColor;
+        get => _tickEvent?.BotState.TurretColor;
         set => BotIntent.TurretColor = ToIntentColor(value);
     }
 
     internal Color? RadarColor
     {
-        get => tickEvent?.BotState.RadarColor;
+        get => _tickEvent?.BotState.RadarColor;
         set => BotIntent.RadarColor = ToIntentColor(value);
     }
 
     internal Color? BulletColor
     {
-        get => tickEvent?.BotState.BulletColor;
+        get => _tickEvent?.BotState.BulletColor;
         set => BotIntent.BulletColor = ToIntentColor(value);
     }
 
     internal Color? ScanColor
     {
-        get => tickEvent?.BotState.ScanColor;
+        get => _tickEvent?.BotState.ScanColor;
         set => BotIntent.ScanColor = ToIntentColor(value);
     }
 
     internal Color? TracksColor
     {
-        get => tickEvent?.BotState.TracksColor;
+        get => _tickEvent?.BotState.TracksColor;
         set => BotIntent.TracksColor = ToIntentColor(value);
     }
 
     internal Color? GunColor
     {
-        get => tickEvent?.BotState.GunColor;
+        get => _tickEvent?.BotState.GunColor;
         set => BotIntent.GunColor = ToIntentColor(value);
     }
 
-    internal IGraphics Graphics => graphicsState.Graphics;
+    internal IGraphics Graphics => _graphicsState.Graphics;
     
     private static string ToIntentColor(Color? color) => color == null ? null : "#" + ColorUtil.ToHex(color);
 
-    internal IEnumerable<BulletState> BulletStates => tickEvent?.BulletStates ?? ImmutableHashSet<BulletState>.Empty;
+    internal IEnumerable<BulletState> BulletStates => _tickEvent?.BulletStates ?? ImmutableHashSet<BulletState>.Empty;
 
     private S.ServerHandshake ServerHandshake
     {
         get
         {
-            if (serverHandshake == null)
+            if (_serverHandshake == null)
             {
                 throw new BotException(NotConnectedToServerMsg);
             }
 
-            return serverHandshake;
+            return _serverHandshake;
         }
     }
 
@@ -785,24 +785,24 @@ sealed class BaseBotInternals
     private static string ServerSecretFromSetting => EnvVars.GetServerSecret();
 
     private void HandleConnected() =>
-        BotEventHandlers.OnConnected.Publish(new E.ConnectedEvent(socket.ServerUri));
+        BotEventHandlers.OnConnected.Publish(new E.ConnectedEvent(_socket.ServerUri));
 
     private void HandleDisconnected(bool remote, int? statusCode, string reason)
     {
-        var disconnectedEvent = new E.DisconnectedEvent(socket.ServerUri, remote, statusCode, reason);
+        var disconnectedEvent = new E.DisconnectedEvent(_socket.ServerUri, remote, statusCode, reason);
         
         BotEventHandlers.OnDisconnected.Publish(disconnectedEvent);
         InternalEventHandlers.OnDisconnected.Publish(disconnectedEvent);
 
-        closedEvent.Set();
+        _closedEvent.Set();
     }
 
     private void HandleConnectionError(Exception cause)
     {
-        BotEventHandlers.OnConnectionError.Publish(new E.ConnectionErrorEvent(socket.ServerUri,
+        BotEventHandlers.OnConnectionError.Publish(new E.ConnectionErrorEvent(_socket.ServerUri,
             new Exception(cause.Message)));
 
-        closedEvent.Set();
+        _closedEvent.Set();
     }
 
     private void HandleTextMessage(string json)
@@ -856,23 +856,23 @@ sealed class BaseBotInternals
     {
         if (IsEventHandlingDisabled()) return;
 
-        ticksStart = DateTime.Now.Ticks;
+        _ticksStart = DateTime.Now.Ticks;
 
-        var mappedTickEvent = EventMapper.Map(json, baseBot);
-        eventQueue.AddEventsFromTick(mappedTickEvent);
+        var mappedTickEvent = EventMapper.Map(json, _baseBot);
+        _eventQueue.AddEventsFromTick(mappedTickEvent);
 
         if (BotIntent.Rescan == true)
             BotIntent.Rescan = false;
 
-        tickEvent = mappedTickEvent;
+        _tickEvent = mappedTickEvent;
         
-        foreach (var botEvent in tickEvent.Events)
+        foreach (var botEvent in _tickEvent.Events)
         {
             InternalEventHandlers.FireEvent(botEvent);
         }
 
         // Trigger next turn (not tick-event!)
-        InternalEventHandlers.OnNextTurn.Publish(tickEvent);
+        InternalEventHandlers.OnNextTurn.Publish(_tickEvent);
     }
 
     private void HandleRoundStarted(string json)
@@ -906,10 +906,10 @@ sealed class BaseBotInternals
         VerifyNotNull(gameStartedEventForBot, typeof(S.GameStartedEventForBot));
 
         MyId = gameStartedEventForBot.MyId;
-        teammateIds = gameStartedEventForBot.TeammateIds;
-        gameSetup = GameSetupMapper.Map(gameStartedEventForBot.GameSetup);
+        _teammateIds = gameStartedEventForBot.TeammateIds;
+        _gameSetup = GameSetupMapper.Map(gameStartedEventForBot.GameSetup);
 
-        initialPosition = new InitialPosition(
+        _initialPosition = new InitialPosition(
             gameStartedEventForBot.StartX,
             gameStartedEventForBot.StartY,
             gameStartedEventForBot.StartDirection);
@@ -921,9 +921,9 @@ sealed class BaseBotInternals
         };
 
         var msg = JsonConvert.SerializeObject(ready);
-        socket.SendTextMessage(msg);
+        _socket.SendTextMessage(msg);
 
-        BotEventHandlers.OnGameStarted.Publish(new E.GameStartedEvent(MyId, initialPosition, gameSetup));
+        BotEventHandlers.OnGameStarted.Publish(new E.GameStartedEvent(MyId, _initialPosition, _gameSetup));
     }
 
     private void HandleGameEnded(string json)
@@ -956,15 +956,15 @@ sealed class BaseBotInternals
 
     private void HandleServerHandshake(string json)
     {
-        serverHandshake = JsonConvert.DeserializeObject<S.ServerHandshake>(json);
+        _serverHandshake = JsonConvert.DeserializeObject<S.ServerHandshake>(json);
 
         // Reply by sending bot handshake
-        var isDroid = baseBot is Droid;
-        var botHandshake = BotHandshakeFactory.Create(serverHandshake?.SessionId, botInfo, isDroid, serverSecret);
+        var isDroid = _baseBot is Droid;
+        var botHandshake = BotHandshakeFactory.Create(_serverHandshake?.SessionId, _botInfo, isDroid, _serverSecret);
         botHandshake.Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotHandshake);
         var text = JsonConvert.SerializeObject(botHandshake);
 
-        socket.SendTextMessage(text);
+        _socket.SendTextMessage(text);
     }
 
     private static void VerifyNotNull(Object iEvent, Type eventType)

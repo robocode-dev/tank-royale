@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Internal;
 
@@ -8,50 +9,51 @@ namespace Robocode.TankRoyale.BotApi;
 /// Abstract bot class provides convenient methods for movement, turning, and firing the gun.
 /// Most bots should inherit from this class.
 /// </summary>
+[PublicAPI]
 public abstract class Bot : BaseBot, IBot
 {
-    private readonly BotInternals botInternals;
+    private readonly BotInternals _botInternals;
 
     /// <see cref="BaseBot()"/>
     protected Bot()
     {
-        botInternals = new BotInternals(this, BaseBotInternals);
+        _botInternals = new BotInternals(this, BaseBotInternals);
     }
 
     /// <see cref="BaseBot(BotInfo)"/>
     protected Bot(BotInfo botInfo) : base(botInfo)
     {
-        botInternals = new BotInternals(this, BaseBotInternals);
+        _botInternals = new BotInternals(this, BaseBotInternals);
     }
 
     /// <see cref="BaseBot(BotInfo, Uri)"/>
     protected Bot(BotInfo botInfo, Uri serverUrl) : base(botInfo, serverUrl)
     {
-        botInternals = new BotInternals(this, BaseBotInternals);
+        _botInternals = new BotInternals(this, BaseBotInternals);
     }
 
     /// <see cref="BaseBot(BotInfo, Uri, string)"/>
     protected Bot(BotInfo botInfo, Uri serverUrl, string serverSecret) : base(botInfo, serverUrl, serverSecret)
     {
-        botInternals = new BotInternals(this, BaseBotInternals);
+        _botInternals = new BotInternals(this, BaseBotInternals);
     }
 
     /// <inheritdoc/>
     public override double TurnRate
     {
-        set => botInternals.SetTurnRate(value);
+        set => _botInternals.SetTurnRate(value);
     }
 
     /// <inheritdoc/>
     public override double GunTurnRate
     {
-        set => botInternals.SetGunTurnRate(value);
+        set => _botInternals.SetGunTurnRate(value);
     }
 
     /// <inheritdoc/>
     public override double RadarTurnRate
     {
-        set => botInternals.SetRadarTurnRate(value);
+        set => _botInternals.SetRadarTurnRate(value);
     }
 
     /// <inheritdoc/>
@@ -62,7 +64,7 @@ public abstract class Bot : BaseBot, IBot
     /// <inheritdoc/>
     public new double TargetSpeed
     {
-        set => botInternals.SetTargetSpeed(value);
+        set => _botInternals.SetTargetSpeed(value);
         get => BaseBotInternals.BotIntent.TargetSpeed ?? 0d;
     }
 
@@ -72,13 +74,13 @@ public abstract class Bot : BaseBot, IBot
     /// <inheritdoc/>
     public void SetForward(double distance)
     {
-        botInternals.SetForward(distance);
+        _botInternals.SetForward(distance);
     }
 
     /// <inheritdoc/>
     public void Forward(double distance)
     {
-        botInternals.Forward(distance);
+        _botInternals.Forward(distance);
     }
 
     /// <inheritdoc/>
@@ -94,18 +96,18 @@ public abstract class Bot : BaseBot, IBot
     }
 
     /// <inheritdoc/>
-    public double DistanceRemaining => botInternals.DistanceRemaining;
+    public double DistanceRemaining => _botInternals.DistanceRemaining;
 
     /// <inheritdoc/>
     public void SetTurnLeft(double degrees)
     {
-        botInternals.SetTurnLeft(degrees);
+        _botInternals.SetTurnLeft(degrees);
     }
 
     /// <inheritdoc/>
     public void TurnLeft(double degrees)
     {
-        botInternals.TurnLeft(degrees);
+        _botInternals.TurnLeft(degrees);
     }
 
     /// <inheritdoc/>
@@ -121,18 +123,18 @@ public abstract class Bot : BaseBot, IBot
     }
 
     /// <inheritdoc/>
-    public double TurnRemaining => botInternals.TurnRemaining;
+    public double TurnRemaining => _botInternals.TurnRemaining;
 
     /// <inheritdoc/>
     public void SetTurnGunLeft(double degrees)
     {
-        botInternals.SetTurnGunLeft(degrees);
+        _botInternals.SetTurnGunLeft(degrees);
     }
 
     /// <inheritdoc/>
     public void TurnGunLeft(double degrees)
     {
-        botInternals.TurnGunLeft(degrees);
+        _botInternals.TurnGunLeft(degrees);
     }
 
     /// <inheritdoc/>
@@ -148,18 +150,18 @@ public abstract class Bot : BaseBot, IBot
     }
 
     /// <inheritdoc/>
-    public double GunTurnRemaining => botInternals.GunTurnRemaining;
+    public double GunTurnRemaining => _botInternals.GunTurnRemaining;
 
     /// <inheritdoc/>
     public void SetTurnRadarLeft(double degrees)
     {
-        botInternals.SetTurnRadarLeft(degrees);
+        _botInternals.SetTurnRadarLeft(degrees);
     }
 
     /// <inheritdoc/>
     public void TurnRadarLeft(double degrees)
     {
-        botInternals.TurnRadarLeft(degrees);
+        _botInternals.TurnRadarLeft(degrees);
     }
 
     /// <inheritdoc/>
@@ -171,45 +173,45 @@ public abstract class Bot : BaseBot, IBot
     /// <inheritdoc/>
     public void TurnRadarRight(double degrees)
     {
-        botInternals.TurnRadarLeft(-degrees);
+        _botInternals.TurnRadarLeft(-degrees);
     }
 
     /// <inheritdoc/>
-    public double RadarTurnRemaining => botInternals.RadarTurnRemaining;
+    public double RadarTurnRemaining => _botInternals.RadarTurnRemaining;
 
     /// <inheritdoc/>
     public void Fire(double firepower)
     {
-        botInternals.Fire(firepower);
+        _botInternals.Fire(firepower);
     }
 
     /// <inheritdoc/>
     public void Stop()
     {
-        botInternals.Stop(false);
+        _botInternals.Stop(false);
     }
 
     /// <inheritdoc/>
     public void Stop(bool overwrite)
     {
-        botInternals.Stop(overwrite);
+        _botInternals.Stop(overwrite);
     }
 
     /// <inheritdoc/>
     public void Resume()
     {
-        botInternals.Resume();
+        _botInternals.Resume();
     }
 
     /// <inheritdoc/>
     public void Rescan()
     {
-        botInternals.Rescan();
+        _botInternals.Rescan();
     }
 
     /// <inheritdoc/>
     public void WaitFor(Condition condition)
     {
-        botInternals.WaitFor(condition.Test);
+        _botInternals.WaitFor(condition.Test);
     }
 }

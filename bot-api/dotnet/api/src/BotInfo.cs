@@ -8,9 +8,12 @@ using static Robocode.TankRoyale.BotApi.Util.CollectionUtil;
 
 namespace Robocode.TankRoyale.BotApi;
 
+using JetBrains.Annotations;
+
 /// <summary>
 /// Bot info contains the properties of a bot.
 /// </summary>
+[PublicAPI]
 public sealed class BotInfo
 {
     /// <summary>
@@ -69,16 +72,16 @@ public sealed class BotInfo
     public const int MaxNumberOfGameTypes = 10;
 
     // Required fields:
-    private readonly string name;
-    private readonly string version;
-    private readonly IList<string> authors;
+    private readonly string _name;
+    private readonly string _version;
+    private readonly IList<string> _authors;
     // Optional fields:
-    private readonly string description;
-    private readonly string homepage;
-    private readonly IList<string> countryCodes;
-    private readonly ISet<string> gameTypes;
-    private readonly string platform;
-    private readonly string programmingLang;
+    private readonly string _description;
+    private readonly string _homepage;
+    private readonly IList<string> _countryCodes;
+    private readonly ISet<string> _gameTypes;
+    private readonly string _platform;
+    private readonly string _programmingLang;
 
     /// <summary>
     /// Initializes a new instance of the BotInfo class.
@@ -146,14 +149,14 @@ public sealed class BotInfo
     /// <value>The name of the bot.</value>
     public string Name
     {
-        get => name;
+        get => _name;
         private init
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("'Name' cannot be null, empty or blank");
             if (value.Length > MaxNameLength)
                 throw new ArgumentException("'Name' length exceeds the maximum of " + MaxNameLength + " characters");
-            name = value.Trim();
+            _name = value.Trim();
         }
     }
 
@@ -165,14 +168,14 @@ public sealed class BotInfo
     /// <value>The version of the bot.</value>
     public string Version
     {
-        get => version;
+        get => _version;
         private init
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("'Version' cannot be null, empty or blank");
             if (value.Length > MaxVersionLength)
                 throw new ArgumentException("'Version' length exceeds the maximum of " + MaxVersionLength + " characters");
-            version = value.Trim();
+            _version = value.Trim();
         }
     }
 
@@ -187,7 +190,7 @@ public sealed class BotInfo
     /// <value>The author(s) of the bot.</value>
     public IList<string> Authors
     {
-        get => authors;
+        get => _authors;
         private init
         {
             if (value.IsNullOrEmptyOrContainsOnlyBlanks())
@@ -195,9 +198,9 @@ public sealed class BotInfo
             if (value.Count > MaxNumberOfAuthors)
                 throw new ArgumentException("Size of 'Authors' exceeds the maximum of " + MaxNumberOfAuthors);
 
-            authors = value.ToListWithNoBlanks();
+            _authors = value.ToListWithNoBlanks();
 
-            if (authors.Any(author => author.Length > MaxAuthorLength))
+            if (_authors.Any(author => author.Length > MaxAuthorLength))
                 throw new ArgumentException("'Authors' length exceeds the maximum of " + MaxAuthorLength +
                                             " characters");
         }
@@ -211,12 +214,12 @@ public sealed class BotInfo
     /// <value>A short description of the bot.</value>
     public string Description
     {
-        get => description;
+        get => _description;
         private init
         {
             if (value is { Length: > MaxDescriptionLength })
                 throw new ArgumentException("'Description' length exceeds the maximum of " + MaxDescriptionLength + " characters");
-            description = ToNullIfBlankElseTrim(value);
+            _description = ToNullIfBlankElseTrim(value);
         }
     }
 
@@ -228,12 +231,12 @@ public sealed class BotInfo
     /// <value>The URL of a web page for the bot.</value>
     public string Homepage
     {
-        get => homepage;
+        get => _homepage;
         private init
         {
             if (value is { Length: > MaxHomepageLength })
                 throw new ArgumentException("'Homepage' length exceeds the maximum of " + MaxHomepageLength + " characters");
-            homepage = ToNullIfBlankElseTrim(value);
+            _homepage = ToNullIfBlankElseTrim(value);
         }
     }
 
@@ -247,17 +250,17 @@ public sealed class BotInfo
     /// <value>The country code(s) for the bot.</value>
     public IList<string> CountryCodes
     {
-        get => countryCodes;
+        get => _countryCodes;
         private init
         {
             if (value.Count > MaxNumberOfCountryCodes)
                 throw new ArgumentException("Size of 'CountryCodes' exceeds the maximum of " + MaxNumberOfCountryCodes);
 
-            countryCodes = value.ToListWithNoBlanks().ConvertAll(cc => cc.ToUpper());
+            _countryCodes = value.ToListWithNoBlanks().ConvertAll(cc => cc.ToUpper());
 
-            foreach (var countryCode in countryCodes)
+            foreach (var countryCode in _countryCodes)
                 if (!CountryCode.IsCountryCodeValid(countryCode))
-                    countryCodes = new List<string> { CountryCode.GetLocalCountryCode() };
+                    _countryCodes = new List<string> { CountryCode.GetLocalCountryCode() };
 
             if (CountryCodes.Any()) return;
             var list = new List<string>
@@ -265,7 +268,7 @@ public sealed class BotInfo
                 // Get local country code
                 CountryCode.GetLocalCountryCode()
             };
-            countryCodes = list;
+            _countryCodes = list;
         }
     }
 
@@ -281,12 +284,12 @@ public sealed class BotInfo
     /// <value>The game type(s) that this bot can handle.</value>
     public ISet<string> GameTypes
     {
-        get => gameTypes;
+        get => _gameTypes;
         private init
         {
             if (value.IsNullOrEmptyOrContainsOnlyBlanks())
             {
-                gameTypes = new HashSet<string>();
+                _gameTypes = new HashSet<string>();
             }
             else
             {
@@ -297,7 +300,7 @@ public sealed class BotInfo
                     throw new ArgumentException("'GameTypes' length exceeds the maximum of " + MaxGameTypeLength +
                                                 " characters");
 
-                gameTypes = value.ToListWithNoBlanks().ToHashSet();
+                _gameTypes = value.ToListWithNoBlanks().ToHashSet();
             }
         }
     }
@@ -310,14 +313,14 @@ public sealed class BotInfo
     /// <value>The platform used for running the bot.</value>
     public string Platform
     {
-        get => platform;
+        get => _platform;
         private init
         {
             if (string.IsNullOrWhiteSpace(value))
                 value = PlatformUtil.GetPlatformName();
             else if (value.Length > MaxPlatformLength)
                 throw new ArgumentException("'Platform' length exceeds the maximum of " + MaxPlatformLength + " characters");
-            platform = ToNullIfBlankElseTrim(value);
+            _platform = ToNullIfBlankElseTrim(value);
         }
     }
 
@@ -329,12 +332,12 @@ public sealed class BotInfo
     /// <value>The programming language used for developing the bot.</value>
     public string ProgrammingLang
     {
-        get => programmingLang;
+        get => _programmingLang;
         private init
         {
             if (value is { Length: > MaxProgrammingLangLength })
                 throw new ArgumentException("'ProgrammingLang' length exceeds the maximum of " + MaxProgrammingLangLength + " characters");
-            programmingLang = ToNullIfBlankElseTrim(value);
+            _programmingLang = ToNullIfBlankElseTrim(value);
         }
     }
 
@@ -658,113 +661,113 @@ public sealed class BotInfo
 
     private sealed class BuilderImpl : IBuilder
     {
-        private string name;
-        private string version;
-        private IList<string> authors = new List<string>();
-        private string description;
-        private string homepage;
-        private IList<string> countryCodes = new List<string>();
-        private ISet<string> gameTypes = new HashSet<string>();
-        private string platform;
-        private string programmingLang;
-        private InitialPosition initialPosition;
+        private string _name;
+        private string _version;
+        private IList<string> _authors = new List<string>();
+        private string _description;
+        private string _homepage;
+        private IList<string> _countryCodes = new List<string>();
+        private ISet<string> _gameTypes = new HashSet<string>();
+        private string _platform;
+        private string _programmingLang;
+        private InitialPosition _initialPosition;
 
         public BotInfo Build()
         {
-            return new BotInfo(name, version, authors, description, homepage, countryCodes, gameTypes, platform,
-                programmingLang, initialPosition);
+            return new BotInfo(_name, _version, _authors, _description, _homepage, _countryCodes, _gameTypes, _platform,
+                _programmingLang, _initialPosition);
         }
 
         public IBuilder Copy(BotInfo botInfo)
         {
-            name = botInfo.Name;
-            version = botInfo.Version;
-            authors = botInfo.Authors.ToList();
-            description = botInfo.Description;
-            homepage = botInfo.Homepage;
-            countryCodes = botInfo.CountryCodes.ToList();
-            gameTypes = botInfo.GameTypes;
-            platform = botInfo.Platform;
-            programmingLang = botInfo.ProgrammingLang;
-            initialPosition = botInfo.InitialPosition;
+            _name = botInfo.Name;
+            _version = botInfo.Version;
+            _authors = botInfo.Authors.ToList();
+            _description = botInfo.Description;
+            _homepage = botInfo.Homepage;
+            _countryCodes = botInfo.CountryCodes.ToList();
+            _gameTypes = botInfo.GameTypes;
+            _platform = botInfo.Platform;
+            _programmingLang = botInfo.ProgrammingLang;
+            _initialPosition = botInfo.InitialPosition;
             return this;
         }
 
         public IBuilder SetName(string newName)
         {
-            name = newName;
+            _name = newName;
             return this;
         }
 
         public IBuilder SetVersion(string newVersion)
         {
-            version = newVersion;
+            _version = newVersion;
             return this;
         }
 
         public IBuilder SetAuthors(IEnumerable<string> newAuthors)
         {
-            authors = ToMutableList(newAuthors);
+            _authors = ToMutableList(newAuthors);
             return this;
         }
 
         public IBuilder AddAuthor(string newAuthor)
         {
-            authors.Add(newAuthor);
+            _authors.Add(newAuthor);
             return this;
         }
 
         public IBuilder SetDescription(string newDescription)
         {
-            description = newDescription;
+            _description = newDescription;
             return this;
         }
 
         public IBuilder SetHomepage(string newHomepage)
         {
-            homepage = newHomepage;
+            _homepage = newHomepage;
             return this;
         }
 
         public IBuilder SetCountryCodes(IEnumerable<string> newCountryCodes)
         {
-            countryCodes = ToMutableList(newCountryCodes);
+            _countryCodes = ToMutableList(newCountryCodes);
             return this;
         }
 
         public IBuilder AddCountryCode(string newCountryCode)
         {
-            countryCodes.Add(newCountryCode);
+            _countryCodes.Add(newCountryCode);
             return this;
         }
 
         public IBuilder SetGameTypes(ISet<string> newGameTypes)
         {
-            gameTypes = ToMutableSet(newGameTypes);
+            _gameTypes = ToMutableSet(newGameTypes);
             return this;
         }
 
         public IBuilder AddGameType(string newGameType)
         {
-            gameTypes.Add(newGameType);
+            _gameTypes.Add(newGameType);
             return this;
         }
 
         public IBuilder SetPlatform(string newPlatform)
         {
-            platform = newPlatform;
+            _platform = newPlatform;
             return this;
         }
 
         public IBuilder SetProgrammingLang(string newProgrammingLang)
         {
-            programmingLang = newProgrammingLang;
+            _programmingLang = newProgrammingLang;
             return this;
         }
 
         public IBuilder SetInitialPosition(InitialPosition newInitialPosition)
         {
-            initialPosition = newInitialPosition;
+            _initialPosition = newInitialPosition;
             return this;
         }
     }

@@ -3,9 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Robocode.TankRoyale.BotApi.Util;
 
-public static class EnumUtil
+static class EnumUtil
 {
-    public static string GetEnumMemberAttrValue<T>(T enumVal)
+    internal static string GetEnumMemberAttrValue<T>(T enumVal)
     {
         var enumType = typeof(T);
         var memInfo = enumType.GetMember(enumVal.ToString() ?? string.Empty);

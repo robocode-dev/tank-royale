@@ -33,13 +33,14 @@ sealed class EventHandler<T> where T : IEvent
     /// <summary>
     /// A set to quickly check for duplicate subscribers.
     /// </summary>
-    private readonly HashSet<Subscriber> _subscriberSet = new();
+    private readonly HashSet<Subscriber<T>> _subscriberSet = new();
 
     /// <summary>
-    /// Delegate type representing a method that handles an event.
+    /// Delegate that represents a method for handling events of a specific type.
     /// </summary>
-    /// <param name="eventData">The event data of type <typeparamref name="T"/>.</param>
-    public delegate void Subscriber(T eventData);
+    /// <typeparam name="TE">The type of the event data.</typeparam>
+    /// <param name="eventData">The event data of type <typeparamref name="TE"/>.</param>
+    public delegate void Subscriber<in TE>(TE eventData);
 
     /// <summary>
     /// Subscribes a new event handler to this EventHandler with a given priority.
@@ -50,7 +51,7 @@ sealed class EventHandler<T> where T : IEvent
     /// <param name="priority">The priority of the subscriber; higher values indicate higher priority. Must be a non-negative value.</param>
     /// <exception cref="ArgumentNullException">Thrown if subscriber is null.</exception>
     /// <exception cref="ArgumentException">Thrown if priority is negative or if subscriber is already registered.</exception>
-    public void Subscribe(Subscriber subscriber, int priority = DefaultPriority)
+    public void Subscribe(Subscriber<T> subscriber, int priority = DefaultPriority)
     {
         if (subscriber == null) throw new ArgumentNullException(nameof(subscriber), "Subscriber cannot be null");
         if (priority < 0) throw new ArgumentException("Priority must be a non-negative value", nameof(priority));
@@ -87,7 +88,7 @@ sealed class EventHandler<T> where T : IEvent
     /// </summary>
     /// <param name="subscriber">The subscriber to be removed from subscriptions.</param>
     /// <returns>true if the subscriber was found and removed, false otherwise.</returns>
-    public bool Unsubscribe(Subscriber subscriber)
+    public bool Unsubscribe(Subscriber<T> subscriber)
     {
         if (subscriber == null) return false;
 
@@ -172,14 +173,14 @@ sealed class EventHandler<T> where T : IEvent
         /// <summary>
         /// Gets the subscriber delegate.
         /// </summary>
-        public Subscriber Subscriber { get; }
+        public Subscriber<T> Subscriber { get; }
 
         /// <summary>
         /// Constructs a new entry with the specified subscriber and priority.
         /// </summary>
         /// <param name="subscriber">The subscriber delegate.</param>
         /// <param name="priority">The priority of the subscriber.</param>
-        public EntryWithPriority(Subscriber subscriber, int priority)
+        public EntryWithPriority(Subscriber<T> subscriber, int priority)
         {
             Priority = priority;
             Subscriber = subscriber;

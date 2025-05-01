@@ -45,10 +45,10 @@ static class EventPriorities
     /// <summary>
     /// Sets the priority for a specific event type.
     /// </summary>
-    /// <typeparam name="T">Type extending BotEvent</typeparam>
     /// <param name="eventType">The event type to set priority for</param>
     /// <param name="priority">The priority value to assign</param>
-    /// <exception cref="ArgumentNullException">Thrown when eventType is null</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventType"/> is null</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="eventType"/> does not inherit from <see cref="BotEvent"/></exception>
     public static void SetPriority(Type eventType, int priority)
     {
         if (eventType == null)
@@ -67,10 +67,10 @@ static class EventPriorities
     /// <summary>
     /// Gets the priority for a specific event type.
     /// </summary>
-    /// <typeparam name="T">Type extending BotEvent</typeparam>
     /// <param name="eventType">The event type to get priority for</param>
     /// <returns>The priority value for the specified event type</returns>
-    /// <exception cref="ArgumentNullException">Thrown when eventType is null</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="eventType"/> is null</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="eventType"/> does not inherit from <see cref="BotEvent"/></exception>
     /// <exception cref="InvalidOperationException">Thrown when no priority is defined for the event type</exception>
     public static int GetPriority(Type eventType)
     {
