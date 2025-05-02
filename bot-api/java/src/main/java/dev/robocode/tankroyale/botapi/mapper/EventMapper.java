@@ -156,7 +156,7 @@ public final class EventMapper {
         }
         try {
             var type = baseBot.getClass().getClassLoader().loadClass(source.getMessageType());
-            var gson = GsonFactory.createGson();
+            var gson = GsonFactory.getGson();
             var messageObject = gson.fromJson(message, type);
             return new TeamMessageEvent(source.getTurnNumber(), messageObject, source.getSenderId());
 

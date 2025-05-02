@@ -40,7 +40,7 @@ final class WebSocketHandler implements WebSocket.Listener {
     private final BotEventHandlers botEventHandlers;
     private final InternalEventHandlers internalEventHandlers;
     private final CountDownLatch closedLatch;
-    private final Gson gson;
+    private final Gson gson = GsonFactory.getGson();
 
     private WebSocket socket;
     private final StringBuilder payload = new StringBuilder();
@@ -53,8 +53,7 @@ final class WebSocketHandler implements WebSocket.Listener {
             BotInfo botInfo,
             BotEventHandlers botEventHandlers,
             InternalEventHandlers internalEventHandlers,
-            CountDownLatch closedLatch,
-            Gson gson) {
+            CountDownLatch closedLatch) {
         this.baseBotInternals = baseBotInternals;
         this.serverUrl = serverUrl;
         this.serverSecret = serverSecret;
@@ -63,7 +62,6 @@ final class WebSocketHandler implements WebSocket.Listener {
         this.botEventHandlers = botEventHandlers;
         this.internalEventHandlers = internalEventHandlers;
         this.closedLatch = closedLatch;
-        this.gson = gson;
     }
 
     @Override

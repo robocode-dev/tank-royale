@@ -11,11 +11,26 @@ import dev.robocode.tankroyale.schema.Event;
 import java.awt.*;
 import java.io.IOException;
 
+/**
+ * The GsonFactory class provides a singleton instance of the Gson object configured for
+ * specific serialization and deserialization needs, including custom type adapters and
+ * runtime type adapter factories.
+ * <p>
+ * This class ensures a single Gson instance is shared across the application, preventing
+ * redundant creation and supporting custom JSON handling for various data types.
+ */
 public final class GsonFactory {
 
     private static Gson gson;
 
-    public static Gson createGson() {
+    public static Gson getGson() {
+        if (gson == null) {
+            gson = createGson();
+        }
+        return gson;
+    }
+
+    private static Gson createGson() {
         if (gson == null) {
             gson = new GsonBuilder()
                     .registerTypeAdapterFactory(getEventTypeFactory())

@@ -1,6 +1,7 @@
 package test_utils;
 
 import com.google.gson.Gson;
+import dev.robocode.tankroyale.botapi.internal.GsonFactory;
 import dev.robocode.tankroyale.schema.*;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -82,7 +83,7 @@ public final class MockedServer {
 
     private CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
 
-    private final Gson gson = new Gson();
+    private final Gson gson = GsonFactory.getGson();
 
     private BotHandshake botHandshake;
     private BotIntent botIntent;

@@ -90,7 +90,7 @@ public final class BaseBotInternals {
 
     private final double absDeceleration = abs(DECELERATION);
 
-    private final Gson gson = GsonFactory.createGson();
+    private final Gson gson = GsonFactory.getGson();
 
     private int eventHandlingDisabledTurn;
 
@@ -274,8 +274,7 @@ public final class BaseBotInternals {
                     botInfo,
                     botEventHandlers,
                     internalEventHandlers,
-                    closedLatch,
-                    gson
+                    closedLatch
             );
             socket = webSocketBuilder.buildAsync(serverUrl, webSocketHandler).join();
         } catch (Exception ex) {
