@@ -1,3 +1,4 @@
 pillow>=11
 PyYAML>=6
 setuptools>=77
+pycountry>=24
