@@ -5,7 +5,7 @@ class GameSetupMapper:
     """Utility class for mapping game setups."""
 
     @staticmethod
-    def map(source):
+    def map(source) -> GameSetup:
         """Map a schema GameSetup to a bot-api GameSetup."""
 
         return GameSetup(

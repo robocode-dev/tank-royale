@@ -174,7 +174,7 @@ class EventMapper:
         )
 
     @staticmethod
-    def _map_skipped_turn_event(source: SchemaSkippedTurnEvent) -> SkippedTurnEvent:
+    def map_skipped_turn_event(source: SchemaSkippedTurnEvent) -> SkippedTurnEvent:
         """Map a schema SkippedTurnEvent to a bot-api SkippedTurnEvent."""
         return SkippedTurnEvent(source.turn_number)
 

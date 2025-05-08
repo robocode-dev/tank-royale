@@ -6,7 +6,7 @@ class ResultsMapper:
     """Utility class for mapping results."""
 
     @staticmethod
-    def map(source: ResultsForBot):
+    def map(source: ResultsForBot) -> BotResults:
         """Map schema ResultsForBot to a bot-api ResultsForBot."""
         return BotResults(
             source.rank,
