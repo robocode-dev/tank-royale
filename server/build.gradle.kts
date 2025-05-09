@@ -130,7 +130,7 @@ tasks {
         }
     }
 
-    val runJar by registering(JavaExec::class) {
+    register("runJar", JavaExec::class) {
         dependsOn(proguard)
         classpath = files(proguard.get().outJarFiles)
     }

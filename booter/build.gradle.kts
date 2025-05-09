@@ -88,7 +88,7 @@ tasks {
         }
     }
 
-    val runJar by registering(JavaExec::class) {
+    register("runJar", JavaExec::class) {
         dependsOn(jar)
         classpath = files(jar)
     }
