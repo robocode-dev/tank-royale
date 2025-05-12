@@ -13,7 +13,7 @@ val tankRoyaleGitHubToken: String? by project
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.nexus.publish)
+    alias(libs.plugins.jreleaser)
 
     alias(libs.plugins.benmanes.versions) // dependency management only
 }
@@ -68,23 +68,89 @@ tasks {
             createRelease(projectDir, version, tankRoyaleGitHubToken!!)
         }
     }
+
+
+    // Make root project's jreleaserPublish task depend on all Sign tasks from subprojects
+    named("jreleaserPublish") {
+        val signTasks = subprojects
+            .filter { it.plugins.hasPlugin("maven-publish") }
+            .flatMap { it.tasks.withType<Sign>() }
+
+        dependsOn(signTasks)
+    }
 }
 
-nexusPublishing {
-    repositories.apply {
-        sonatype { // only for users registered in Sonatype after 24 Feb 202
-            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+val isSnapshot = version.toString().endsWith("-SNAPSHOT")
 
-            username.set(ossrhUsername)
-            password.set(ossrhPassword)
+jreleaser {
+    project {
+        description.set("Robocode Tank Royale")
+        authors.set(listOf("Flemming N. Larsen"))
+        license.set("Apache License, Version 2.0")
+        links {
+            homepage.set("https://robocode-dev.github.io/tank-royale/")
+            documentation.set("https://robocode-dev.github.io/tank-royale/articles/")
+            license.set("https://github.com/robocode-dev/tank-royale/blob/master/LICENSE")
+        }
+
+        // Set project version with snapshot detection
+        version.set(version.toString())
+
+        // Set snapshot flag based on version string
+        snapshot {
+            enabled.set(isSnapshot)
+        }
+    }
+
+    signing {
+        armored.set(true)
+    }
+
+    // Required configuration properties
+    dryrun.set(true)        // Set to true for testing without actual publishing
+    gitRootSearch.set(true) // Automatically find Git repository root
+    strict.set(true)        // Fail on warnings
+
+    deploy {
+        maven {
+            nexus2 {
+                create("maven-central") {
+                    active.set(org.jreleaser.model.Active.ALWAYS)
+
+                    // Base repository URLs
+                    url.set("https://s01.oss.sonatype.org/service/local")
+                    snapshotUrl.set("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+
+                    // Credentials
+                    username.set(ossrhUsername)
+                    password.set(ossrhPassword)
+
+                    // Only close and release if not a snapshot
+//                    closeRepository.set(!isSnapshot)
+//                    releaseRepository.set(!isSnapshot)
+
+                    closeRepository.set(false)
+                    releaseRepository.set(false)
+                }
+            }
         }
     }
 }
 
-val initializeSonatypeStagingRepository by tasks.existing
+// Log during configuration
+logger.lifecycle("Project version: $version (${if (isSnapshot) "SNAPSHOT" else "RELEASE"} version)")
+
+// Configure signing for subprojects
 subprojects {
-    initializeSonatypeStagingRepository {
-        shouldRunAfter(tasks.withType<Sign>())
+    afterEvaluate {
+        if (plugins.hasPlugin("maven-publish")) {
+            plugins.apply("signing")
+            
+            // Configure signing for all publications
+            configure<SigningExtension> {
+                useGpgCmd()
+                sign(extensions.getByType<PublishingExtension>().publications)
+            }
+        }
     }
 }
