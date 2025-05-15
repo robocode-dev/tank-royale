@@ -591,7 +591,7 @@ class GameServer(
         gson.toJson(msg).also {
             try {
                 conn.send(it)
-            } catch (ignore: WebsocketNotConnectedException) {
+            } catch (_: WebsocketNotConnectedException) {
                 // Bot cannot receive events and send new intents.
             }
         }
@@ -741,6 +741,8 @@ class GameServer(
     }
 
     private fun transferDebugGraphicsFlagToModel() {
-        modelUpdater?.botsMap?.forEach { (botId, bot) -> bot.isDebuggingEnabled = debugGraphicsEnableMap[botId] ?: false }
+        modelUpdater?.botsMap?.forEach { (botId, bot) ->
+            bot.isDebuggingEnabled = debugGraphicsEnableMap[botId] ?: false
+        }
     }
 }
