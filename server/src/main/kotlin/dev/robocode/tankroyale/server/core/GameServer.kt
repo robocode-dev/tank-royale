@@ -538,8 +538,10 @@ class GameServer(
             enemyCountMap[botId] = aliveBotTeamIds.filterValues { it != teamId }.count()
         }
 
-        broadcastToObserverAndControllers(TurnToTickEventForObserverMapper
-            .map(roundNumber, turn, participantMap, enemyCountMap, debugGraphicsEnableMap))
+        broadcastToObserverAndControllers(
+            TurnToTickEventForObserverMapper
+                .map(roundNumber, turn, participantMap, enemyCountMap, debugGraphicsEnableMap)
+        )
     }
 
     private fun checkForSkippedTurns(currentTurnNumber: Int) {
@@ -571,19 +573,20 @@ class GameServer(
     private val botsThatSentIntent = mutableSetOf<WebSocket>()
 
     private fun updateBotListUpdateMessage() {
-        mutableListOf<BotInfo>().also { bots ->
-            botListUpdateMessage.bots = bots
+        val newBotsList = mutableListOf<BotInfo>()
 
-            connectionHandler.apply {
-                mapToBotSockets().forEach { conn ->
-                    getBotHandshakes()[conn]?.let { botHandshake ->
-                        conn.remoteSocketAddress.apply {
-                            bots += BotHandshakeToBotInfoMapper.map(botHandshake, hostString, port)
-                        }
+        connectionHandler.apply {
+            mapToBotSockets().forEach { conn ->
+                getBotHandshakes()[conn]?.let { botHandshake ->
+                    conn.remoteSocketAddress.apply {
+                        newBotsList.add(BotHandshakeToBotInfoMapper.map(botHandshake, hostString, port))
                     }
                 }
             }
         }
+
+        // Set the new list after it's fully populated to avoid race condition
+        botListUpdateMessage.bots = newBotsList
     }
 
     private fun send(conn: WebSocket, msg: Message) {
@@ -610,11 +613,20 @@ class GameServer(
     }
 
     private fun sendBotListUpdateToObservers() {
-        broadcastToObserverAndControllers(botListUpdateMessage)
+        // Send a clone of the message to prevent race conditions if the message is updated during broadcast
+        broadcastToObserverAndControllers(cloneBotListUpdate(botListUpdateMessage))
     }
 
     internal fun sendBotListUpdate(conn: WebSocket) {
-        send(conn, botListUpdateMessage)
+        // Send a clone of the message to prevent race conditions
+        send(conn, cloneBotListUpdate(botListUpdateMessage))
+    }
+
+    private fun cloneBotListUpdate(original: BotListUpdate): BotListUpdate {
+        return BotListUpdate().apply {
+            type = Message.Type.BOT_LIST_UPDATE
+            bots = ArrayList(original.bots) // Create a new list with the same elements
+        }
     }
 
     internal fun handleBotJoined() {
