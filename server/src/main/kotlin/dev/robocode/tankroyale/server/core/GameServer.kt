@@ -79,6 +79,9 @@ class GameServer(
     /** Tick lock for onNextTurn() */
     private val tickLock = Any()
 
+    /** Lock for participant-related operations */
+    private val participantsLock = Any()
+
     /** Map over debug graphics enable flags */
     private val debugGraphicsEnableMap = ConcurrentHashMap<BotId, Boolean /* isDebugEnabled */>()
 
@@ -121,7 +124,11 @@ class GameServer(
     /** Starts the game if all participants are ready */
     private fun startGameIfParticipantsReady() {
         synchronized(startGameLock) {
-            if (readyParticipants.size == participants.size) {
+            // Make a local copy of participant size to prevent race condition
+            val currentParticipantSize = participants.size
+            val currentReadyParticipantSize = readyParticipants.size
+
+            if (currentReadyParticipantSize == currentParticipantSize) {
                 if (!readyTimeoutTimer.stop()) return
 
                 participantMap.clear()
@@ -371,9 +378,18 @@ class GameServer(
     }
 
     private fun updateGameState(): GameState {
-        val mappedBotIntents = mutableMapOf<BotId, dev.robocode.tankroyale.server.model.BotIntent>()
-        botIntents.forEach { (key, value) -> participantIds[key]?.let { botId -> mappedBotIntents[botId] = value } }
-        return modelUpdater!!.update(mappedBotIntents.toMap())
+        val botIntentsSnapshot = synchronized(tickLock) {
+            botIntents.mapNotNull { (key, value) ->
+                participantIds[key]?.let { botId ->
+                    botId to dev.robocode.tankroyale.server.model.BotIntent().apply {
+                        update(value)
+                    }
+                }
+            }.toMap()
+        }
+
+        return modelUpdater?.update(botIntentsSnapshot)
+            ?: throw IllegalStateException("Model updater is null when trying to update game state")
     }
 
     private fun onReadyTimeout() {
@@ -393,7 +409,7 @@ class GameServer(
         if (serverState !== ServerState.GAME_RUNNING) return
 
         // Required as this method can be called again while already running.
-        // This would give a raise condition without the synchronized lock.
+        // This would give a race condition without the synchronized lock.
         synchronized(tickLock) {
             // Update game state
             updateGameState().apply {
@@ -404,6 +420,7 @@ class GameServer(
                 }
             }
 
+            // Clear inside synchronized block to prevent race condition
             botsThatSentIntent.clear()
         }
 
@@ -635,21 +652,30 @@ class GameServer(
     }
 
     internal fun handleBotLeft(conn: WebSocket) {
-        if (participants.remove(conn) && participants.isEmpty() &&
-            (serverState === ServerState.GAME_RUNNING || serverState === ServerState.GAME_PAUSED)
-        ) {
+        val shouldAbortGame = synchronized(participantsLock) {
+            val wasRemoved = participants.remove(conn)
+            wasRemoved && participants.isEmpty() &&
+                    (serverState === ServerState.GAME_RUNNING || serverState === ServerState.GAME_PAUSED)
+        }
+
+        if (shouldAbortGame) {
             handleAbortGame() // Abort the battle when all bots left it!
         }
 
-        // If a bot leaves while in a game, make sure to reset all intent values to zeroes
-        botIntents[conn]?.disableMovement()
+        synchronized(tickLock) {
+            // If a bot leaves while in a game, make sure to reset all intent values to zeroes
+            botIntents[conn]?.disableMovement()
+        }
+
         updateBotListUpdateMessage()
         sendBotListUpdateToObservers()
     }
 
     internal fun handleBotReady(conn: WebSocket) {
         if (serverState === ServerState.WAIT_FOR_READY_PARTICIPANTS) {
-            readyParticipants += conn
+            synchronized(participantsLock) {
+                readyParticipants += conn
+            }
             startGameIfParticipantsReady()
         }
     }
@@ -657,14 +683,13 @@ class GameServer(
     internal fun handleBotIntent(conn: WebSocket, intent: BotIntent) {
         if (!participants.contains(conn)) return
 
-        // Update bot intent
-        (botIntents[conn] ?: dev.robocode.tankroyale.server.model.BotIntent()).apply {
-            update(BotIntentMapper.map(intent))
-            botIntents[conn] = this
-        }
-
-        // Required because the timer also updates botsThatSentIntent
+        // Update bot intent using a synchronized block to ensure atomic operation
         synchronized(tickLock) {
+            // Update bot intent
+            val botIntent = botIntents[conn] ?: dev.robocode.tankroyale.server.model.BotIntent()
+            botIntent.update(BotIntentMapper.map(intent))
+            botIntents[conn] = botIntent
+
             // If all bot intents have been received, we can start next turn
             botsThatSentIntent += conn
             if (botIntents.size == botsThatSentIntent.size) {
