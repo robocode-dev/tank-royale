@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.schema.GameSetup
 import dev.robocode.tankroyale.server.Server
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.ConnectionHandler
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.GameServerConnectionListener
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.mapper.TeamMessageMapper
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.ResultsView
@@ -685,10 +686,39 @@ class GameServer(
 
         // Update bot intent using a synchronized block to ensure atomic operation
         synchronized(tickLock) {
-            // Update bot intent
-            val botIntent = botIntents[conn] ?: dev.robocode.tankroyale.server.model.BotIntent()
-            botIntent.update(BotIntentMapper.map(intent))
-            botIntents[conn] = botIntent
+            // Get existing intent or null if it doesn't exist yet
+            val existingIntent = botIntents[conn]
+
+            if (existingIntent == null) {
+                // If there's no existing intent, create a new one with default values for null fields
+                botIntents[conn] = BotIntentMapper.map(intent)
+            } else {
+                // If intent exists, only update non-null values from new intent
+                intent.apply {
+                    // Only update fields that aren't null
+                    targetSpeed?.let { existingIntent.targetSpeed = it }
+                    turnRate?.let { existingIntent.turnRate = it }
+                    gunTurnRate?.let { existingIntent.gunTurnRate = it }
+                    radarTurnRate?.let { existingIntent.radarTurnRate = it }
+                    firepower?.let { existingIntent.firepower = it }
+                    adjustGunForBodyTurn?.let { existingIntent.adjustGunForBodyTurn = it }
+                    adjustRadarForBodyTurn?.let { existingIntent.adjustRadarForBodyTurn = it }
+                    adjustRadarForGunTurn?.let { existingIntent.adjustRadarForGunTurn = it }
+                    rescan?.let { existingIntent.rescan = it }
+                    fireAssist?.let { existingIntent.fireAssist = it }
+                    bodyColor?.let { existingIntent.bodyColor = it.ifBlank { null } }
+                    turretColor?.let { existingIntent.turretColor = it.ifBlank { null } }
+                    radarColor?.let { existingIntent.radarColor = it.ifBlank { null } }
+                    bulletColor?.let { existingIntent.bulletColor = it.ifBlank { null } }
+                    scanColor?.let { existingIntent.scanColor = it.ifBlank { null } }
+                    tracksColor?.let { existingIntent.tracksColor = it.ifBlank { null } }
+                    gunColor?.let { existingIntent.gunColor = it.ifBlank { null } }
+                    stdOut?.let { existingIntent.stdOut = it.ifBlank { null } }
+                    stdErr?.let { existingIntent.stdErr = it.ifBlank { null } }
+                    teamMessages?.let { existingIntent.teamMessages = TeamMessageMapper.map(it) }
+                    debugGraphics?.let { existingIntent.debugGraphics = it.ifBlank { null } }
+                }
+            }
 
             // If all bot intents have been received, we can start next turn
             botsThatSentIntent += conn
