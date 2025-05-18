@@ -334,7 +334,9 @@ class ClientWebSocketsHandler(
     }
 
     private fun handleException(clientSocket: WebSocket?, exception: Exception) {
-        listener.onException(clientSocket, exception)
-        exitProcess(1) // general error
+        log.error("Web socket error", exception)
+        executorService.submit {
+            listener.onException(clientSocket, exception)
+        }
     }
 }

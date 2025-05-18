@@ -1,12 +1,21 @@
 ## 📦 0.30.2
 
+### 🚀 Improvements
+
+- GUI:
+    - The GUI now automatically scales the battle view when it’s first displayed and adjusts it dynamically as the
+      window is resized.
+    - Thanks to [Jan Durovec](https://github.com/jandurovec) for this nice improvement. ❤️
+
 ### 🐞 Bug Fixes
 
+- Server:
+  -  #132: Fixed several race conditions and synchronization issues on the server side. 
 - BotAPI / Sample Bots:
     - Fixed issue where the Fire sample bot did not lock the radar on its target.
 - Sample Bots:
-    - The Fire andMyFirstBot sample bot did not turn perpendicular to the bullet direction anymore,
-      and the RamFire did not drive directly towards its target.
+    - The `Fire` and `MyFirstBot` sample bot did not turn perpendicular to the bullet direction anymore, and the RamFire
+      did not drive directly towards its target.
 
 ## 📦 0.30.1 - Fixes to sample bots - 08-Mar-2025
 
