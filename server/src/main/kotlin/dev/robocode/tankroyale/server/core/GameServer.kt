@@ -129,8 +129,9 @@ class GameServer(
             val currentParticipantSize = participants.size
             val currentReadyParticipantSize = readyParticipants.size
 
-            if (currentReadyParticipantSize == currentParticipantSize) {
-                if (!readyTimeoutTimer.stop()) return
+            if (currentReadyParticipantSize == currentParticipantSize && currentParticipantSize > 0) {
+                // Try to stop the timer, but if we can't (already stopped), make sure we're in the right state
+                if (!readyTimeoutTimer.stop() && serverState != ServerState.WAIT_FOR_READY_PARTICIPANTS) return
 
                 participantMap.clear()
                 participantMap.putAll(createParticipantMap())
@@ -395,14 +396,19 @@ class GameServer(
 
     private fun onReadyTimeout() {
         log.debug("Ready timeout")
-        if (readyParticipants.size >= gameSetup.minNumberOfParticipants) {
-            // Start the game with the participants that are ready
-            participants.clear()
-            participants.addAll(readyParticipants)
-            startGame()
-        } else {
-            // Not enough participants -> prepare another game
-            serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
+        synchronized(startGameLock) {
+            // Check again in case state changed during timer
+            if (serverState !== ServerState.WAIT_FOR_READY_PARTICIPANTS) return
+            
+            if (readyParticipants.size >= gameSetup.minNumberOfParticipants) {
+                // Start the game with the participants that are ready
+                participants.clear()
+                participants.addAll(readyParticipants)
+                startGame()
+            } else {
+                // Not enough participants -> prepare another game
+                serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
+            }
         }
     }
 
@@ -673,11 +679,12 @@ class GameServer(
     }
 
     internal fun handleBotReady(conn: WebSocket) {
-        if (serverState === ServerState.WAIT_FOR_READY_PARTICIPANTS) {
-            synchronized(participantsLock) {
+        synchronized(participantsLock) {
+            if (serverState === ServerState.WAIT_FOR_READY_PARTICIPANTS) {
                 readyParticipants += conn
+                // Start the game check from within the synchronized block
+                startGameIfParticipantsReady()
             }
-            startGameIfParticipantsReady()
         }
     }
 
