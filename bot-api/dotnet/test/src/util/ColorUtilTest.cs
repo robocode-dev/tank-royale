@@ -134,7 +134,7 @@ public class ColorUtilTest
     public class ToStringUtilTests: ColorUtilTest
     {
         [Test]
-        public void GivenColorWithSpeficHexValue_whenCallingToString_thenReturnedStringMustBeSameHexValue()
+        public void GivenColorWithSpecificHexValue_whenCallingToString_thenReturnedStringMustBeSameHexValue()
         {
             Assert.That(ColorUtil.FromHex("FDB975"), Is.EqualTo(Color.FromArgb(0xFD, 0xB9, 0x75)));
         }
