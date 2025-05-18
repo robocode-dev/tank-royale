@@ -109,15 +109,24 @@ class GameServer(
         log.debug("Preparing game")
 
         serverState = ServerState.WAIT_FOR_READY_PARTICIPANTS
+
         participantIds.clear()
         readyParticipants.clear()
+        botIntents.clear()
+        participantMap.clear()
+        botsThatSentIntent.clear()
+
+        modelUpdater = null
+
+        debugGraphicsEnableMap.clear()
+
+        turnTimeoutTimer?.stop()
+        turnTimeoutTimer = null
 
         prepareParticipantIds()
         prepareModelUpdater()
         sendGameStartedToParticipants()
         startReadyTimer()
-
-        debugGraphicsEnableMap.clear()
     }
 
     private val startGameLock = Any()
@@ -133,11 +142,9 @@ class GameServer(
                 // Try to stop the timer, but if we can't (already stopped), make sure we're in the right state
                 if (!readyTimeoutTimer.stop() && serverState != ServerState.WAIT_FOR_READY_PARTICIPANTS) return
 
-                participantMap.clear()
                 participantMap.putAll(createParticipantMap())
 
                 readyParticipants.clear()
-                botIntents.clear()
 
                 startGame()
             }
@@ -399,7 +406,7 @@ class GameServer(
         synchronized(startGameLock) {
             // Check again in case state changed during timer
             if (serverState !== ServerState.WAIT_FOR_READY_PARTICIPANTS) return
-            
+
             if (readyParticipants.size >= gameSetup.minNumberOfParticipants) {
                 // Start the game with the participants that are ready
                 participants.clear()
