@@ -142,10 +142,6 @@ class GameServer(
                 // Try to stop the timer, but if we can't (already stopped), make sure we're in the right state
                 if (!readyTimeoutTimer.stop() && serverState != ServerState.WAIT_FOR_READY_PARTICIPANTS) return
 
-                participantMap.putAll(createParticipantMap())
-
-                readyParticipants.clear()
-
                 startGame()
             }
         }
@@ -205,6 +201,8 @@ class GameServer(
     /** Starts a new game */
     private fun startGame() {
         log.info("Starting game")
+        readyParticipants.clear()
+        participantMap.putAll(createParticipantMap())
 
         serverState = ServerState.GAME_RUNNING
 
@@ -409,12 +407,13 @@ class GameServer(
 
             if (readyParticipants.size >= gameSetup.minNumberOfParticipants) {
                 // Start the game with the participants that are ready
-                participants.clear()
-                participants.addAll(readyParticipants)
+                log.warn("Starting game with ${readyParticipants.size}/${participants.size} participants ready because of timeout")
                 startGame()
             } else {
                 // Not enough participants -> prepare another game
+                log.warn("Aborting the game as only ${readyParticipants.size}/${participants.size} participants are ready")
                 serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
+                broadcastGameAborted()
             }
         }
     }
