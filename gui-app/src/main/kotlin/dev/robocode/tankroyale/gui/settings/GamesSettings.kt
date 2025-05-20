@@ -90,9 +90,9 @@ object GamesSettings : PropertiesStore("Robocode Games Settings", "games.propert
                 isGunCoolingRateLocked = false,
                 maxInactivityTurns = 450,
                 isMaxInactivityTurnsLocked = false,
-                turnTimeout = 30_000, // 30 milliseconds
+                turnTimeout = 30_000, // 30,000 microseconds = 30 milliseconds
                 isTurnTimeoutLocked = false,
-                readyTimeout = 1_000_000, // 1 second
+                readyTimeout = 1_000_000, // 1,000,000 microseconds = 1 second
                 isReadyTimeoutLocked = false,
                 defaultTurnsPerSecond = 30
             )
