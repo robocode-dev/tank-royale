@@ -27,5 +27,5 @@ const val DEFAULT_TURN_TIMEOUT = 5000 // 5 milliseconds
 /** Default ready timeout in microseconds (1 / 1,000,000 seconds) */
 const val DEFAULT_READY_TIMEOUT = 1_000_000 // 1 second
 
-/** Default turns per second in milliseconds */
+/** Default turns per second (TPS) */
 const val DEFAULT_TURNS_PER_SECOND = 30

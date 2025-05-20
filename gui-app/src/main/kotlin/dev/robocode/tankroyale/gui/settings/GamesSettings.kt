@@ -24,9 +24,9 @@ object GamesSettings : PropertiesStore("Robocode Games Settings", "games.propert
                 isGunCoolingRateLocked = false,
                 maxInactivityTurns = 450,
                 isMaxInactivityTurnsLocked = false,
-                turnTimeout = 30_000, // 30 milliseconds
+                turnTimeout = 30_000, // 30,000 microseconds = 30 milliseconds
                 isTurnTimeoutLocked = false,
-                readyTimeout = 1_000_000, // 1 second
+                readyTimeout = 1_000_000, // 1,000,000 microseconds = 1 second
                 isReadyTimeoutLocked = false,
                 defaultTurnsPerSecond = 30
             ),
@@ -46,9 +46,9 @@ object GamesSettings : PropertiesStore("Robocode Games Settings", "games.propert
                 isGunCoolingRateLocked = true,
                 maxInactivityTurns = 450,
                 isMaxInactivityTurnsLocked = true,
-                turnTimeout = 30_000, // 30 milliseconds
+                turnTimeout = 30_000, // 30,000 microseconds = 30 milliseconds
                 isTurnTimeoutLocked = false,
-                readyTimeout = 1_000_000, // 1 second
+                readyTimeout = 1_000_000, // 1,000,000 microseconds = 1 second
                 isReadyTimeoutLocked = false,
                 defaultTurnsPerSecond = 30
             ),
@@ -68,9 +68,9 @@ object GamesSettings : PropertiesStore("Robocode Games Settings", "games.propert
                 isGunCoolingRateLocked = false,
                 maxInactivityTurns = 450,
                 isMaxInactivityTurnsLocked = false,
-                turnTimeout = 30_000, // 30 milliseconds
+                turnTimeout = 30_000, // 30,000 microseconds = 30 milliseconds
                 isTurnTimeoutLocked = false,
-                readyTimeout = 1_000_000, // 1 second
+                readyTimeout = 1_000_000, // 1,000,000 microseconds = 1 second
                 isReadyTimeoutLocked = false,
                 defaultTurnsPerSecond = 30
             ),
@@ -125,7 +125,7 @@ object GamesSettings : PropertiesStore("Robocode Games Settings", "games.propert
                 "double" -> theField.setDouble(gameType, value.toDouble())
                 "java.lang.Integer" -> theField[gameType] = try {
                     Integer.parseInt(value)
-                } catch (e: NumberFormatException) {
+                } catch (_: NumberFormatException) {
                     null
                 }
                 "java.lang.String" -> theField[gameType] = value

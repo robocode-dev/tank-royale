@@ -24,7 +24,7 @@ class GameSetup:
     """Maximum number of inactive turns allowed, where a bot does not take any action before it is zapped by the game."""
 
     turn_timeout: int
-    """Timeout in milliseconds for sending intent after having received 'tick' message."""
+    """The turn timeout in microseconds (µs) (where 1 microsecond equals 1/1,000,000 of a second)."""
 
     ready_timeout: int
-    """Time limit in milliseconds for sending ready message after having received 'new battle' message."""
+    """The ready timeout in microseconds (µs) (where 1 microsecond equals 1/1,000,000 of a second)."""

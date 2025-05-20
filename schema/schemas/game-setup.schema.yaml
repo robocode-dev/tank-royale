@@ -52,15 +52,15 @@ properties:
     description: Flag specifying if the inactive turns is fixed for this game type
     type: boolean
   turnTimeout:
-    description: Turn timeout in microseconds (1 / 1,000,000 second) for sending intent
-      after having received 'tick' message
+    description: Timeout duration in microseconds (µs) (where 1 microsecond equals 1/1,000,000 of a second) for sending
+      intent after receiving a 'tick' message.
     type: integer
   isTurnTimeoutLocked:
     description: Flag specifying if the turn timeout is fixed for this game type
     type: boolean
   readyTimeout:
-    description: Time limit in microseconds (1 / 1,000,000 second) for sending ready
-      message after having received 'game started' message
+    description: Time limit in microseconds (µs) (where 1 microsecond equals 1/1,000,000 of a second) for sending a
+      'ready' message after receiving a 'new battle' message.
     type: integer
   isReadyTimeoutLocked:
     description: Flag specifying if the ready timeout is fixed for this game type

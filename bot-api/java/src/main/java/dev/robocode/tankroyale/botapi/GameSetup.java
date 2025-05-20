@@ -39,12 +39,14 @@ public final class GameSetup {
     private final int maxInactivityTurns;
 
     /**
-     * Timeout in milliseconds for sending intent after having received a 'tick' message.
+     * Timeout duration in microseconds (µs) (where 1 microsecond equals 1/1,000,000 of a second) for sending intent
+     * after receiving a 'tick' message.
      */
     private final int turnTimeout;
 
     /**
-     * Time limit in milliseconds for sending a ready message after having received a 'new battle' message.
+     * Time limit in microseconds (µs) (where 1 microsecond equals 1/1,000,000 of a second) for sending a 'ready'
+     * message after receiving a 'new battle' message.
      */
     private final int readyTimeout;
 
@@ -124,19 +126,18 @@ public final class GameSetup {
     }
 
     /**
-     * Returns the timeout in milliseconds for sending intent after having received 'tick' message.
+     * Returns the timeout in microseconds (µs) for sending intent after having received 'tick' message.
      *
-     * @return The turn timeout in milliseconds.
+     * @return The turn timeout in microseconds (µs) (where 1 microsecond equals 1/1,000,000 of a second).
      */
     public int getTurnTimeout() {
         return turnTimeout;
     }
 
     /**
-     * Returns the time limit in milliseconds for sending ready message after having received 'new
-     * battle' message.
+     * Returns the time limit in microseconds (µs) for sending ready message after having received 'new battle' message.
      *
-     * @return The ready timeout in milliseconds.
+     * @return The ready timeout in microseconds (µs) (where 1 microsecond equals 1/1,000,000 of a second).
      */
     public int getReadyTimeout() {
         return readyTimeout;
