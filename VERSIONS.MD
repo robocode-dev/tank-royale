@@ -16,6 +16,9 @@
 - Sample Bots:
     - The `Fire` and `MyFirstBot` sample bot did not turn perpendicular to the bullet direction anymore, and the RamFire
       did not drive directly towards its target.
+- Documentation:
+    - #136: The turn timeout and ready timeout were incorrectly specified in ~~milliseconds~~ instead of **microseconds**.
+      1 millisecond = 1/1,000 of a second, where 1 microsecond = 1/1,000,000 of a second
 
 ## 📦 0.30.1 - Fixes to sample bots - 08-Mar-2025
 
