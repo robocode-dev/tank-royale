@@ -408,6 +408,14 @@ class GameServer(
             if (readyParticipants.size >= gameSetup.minNumberOfParticipants) {
                 // Start the game with the participants that are ready
                 log.warn("Starting game with ${readyParticipants.size}/${participants.size} participants ready because of timeout")
+                val participantIterator = participants.iterator()
+                while (participantIterator.hasNext()) {
+                    val participantConn = participantIterator.next()
+                    if (!readyParticipants.contains(participantConn)) {
+                        participantIterator.remove()
+                        participantIds.remove(participantConn)
+                    }
+                }
                 startGame()
             } else {
                 // Not enough participants -> prepare another game
