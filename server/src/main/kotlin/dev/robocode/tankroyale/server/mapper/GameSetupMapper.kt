@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.server.model.GameSetup
+import kotlin.time.Duration.Companion.microseconds
 
 object GameSetupMapper {
     fun map(gameSetup: GameSetup): dev.robocode.tankroyale.schema.GameSetup {
@@ -14,8 +15,8 @@ object GameSetupMapper {
             setup.numberOfRounds = numberOfRounds
             setup.gunCoolingRate = gunCoolingRate
             setup.maxInactivityTurns = maxInactivityTurns
-            setup.turnTimeout = turnTimeout
-            setup.readyTimeout = readyTimeout
+            setup.turnTimeout = turnTimeout.inWholeMicroseconds.toInt()
+            setup.readyTimeout = readyTimeout.inWholeMicroseconds.toInt()
             setup.defaultTurnsPerSecond = defaultTurnsPerSecond
             setup.isArenaWidthLocked = isArenaWidthLocked
             setup.isArenaHeightLocked = isArenaHeightLocked
@@ -41,8 +42,8 @@ object GameSetupMapper {
                 numberOfRounds = numberOfRounds,
                 gunCoolingRate = gunCoolingRate,
                 maxInactivityTurns = maxInactivityTurns,
-                turnTimeout = turnTimeout,
-                readyTimeout = readyTimeout,
+                turnTimeout = turnTimeout.microseconds,
+                readyTimeout = readyTimeout.microseconds,
                 defaultTurnsPerSecond = defaultTurnsPerSecond,
                 isArenaWidthLocked = isArenaWidthLocked,
                 isArenaHeightLocked = isArenaHeightLocked,

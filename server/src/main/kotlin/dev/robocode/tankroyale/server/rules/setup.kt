@@ -1,5 +1,8 @@
 package dev.robocode.tankroyale.server.rules
 
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+
 /** Default game type */
 const val DEFAULT_GAME_TYPE = "classic"
 
@@ -21,11 +24,11 @@ const val DEFAULT_GUN_COOLING_RATE = 0.1
 /** Default number of allowed inactivity turns  */
 const val DEFAULT_INACTIVITY_TURNS = 450
 
-/** Default turn timeout in microseconds (1 / 1,000,000 seconds) */
-const val DEFAULT_TURN_TIMEOUT = 5000 // 5 milliseconds
+/** Default turn timeout */
+val DEFAULT_TURN_TIMEOUT = 5.milliseconds
 
-/** Default ready timeout in microseconds (1 / 1,000,000 seconds) */
-const val DEFAULT_READY_TIMEOUT = 1_000_000 // 1 second
+/** Default ready timeout */
+val DEFAULT_READY_TIMEOUT = 1.seconds
 
-/** Default turns per second in milliseconds */
+/** Default turns per second (TPS) */
 const val DEFAULT_TURNS_PER_SECOND = 30

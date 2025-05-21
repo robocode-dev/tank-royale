@@ -18,6 +18,8 @@ import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.nanoseconds
 
 
 /** Game server. */
@@ -193,7 +195,7 @@ class GameServer(
     private fun startReadyTimer() {
         readyTimeoutTimer = NanoTimer(
             minPeriodInNanos = 0,
-            maxPeriodInNanos = gameSetup.readyTimeout * 1_000L,
+            maxPeriodInNanos = gameSetup.readyTimeout.inWholeNanoseconds,
             job = { onReadyTimeout() }
         ).apply { start() }
     }
@@ -279,18 +281,18 @@ class GameServer(
     private fun resetTurnTimeout() {
         turnTimeoutTimer?.stop()
         turnTimeoutTimer = NanoTimer(
-            minPeriodInNanos = calculateTurnTimeoutMinPeriod(),
-            maxPeriodInNanos = calculateTurnTimeoutMaxPeriod(),
+            minPeriodInNanos = calculateTurnTimeoutMinPeriod().inWholeNanoseconds,
+            maxPeriodInNanos = calculateTurnTimeoutMaxPeriod().inWholeNanoseconds,
             job = { onNextTurn() }
         ).apply { start() }
     }
 
-    private fun calculateTurnTimeoutMinPeriod(): Long {
-        return if (tps <= 0) 0 else 1_000_000_000L / tps
+    private fun calculateTurnTimeoutMinPeriod(): Duration {
+        return if (tps <= 0) Duration.ZERO else 1_000_000_000.nanoseconds / tps
     }
 
-    private fun calculateTurnTimeoutMaxPeriod(): Long {
-        return gameSetup.turnTimeout * 1_000L
+    private fun calculateTurnTimeoutMaxPeriod(): Duration {
+        return gameSetup.turnTimeout
     }
 
     /** Broadcast game-aborted event to all observers and controllers */

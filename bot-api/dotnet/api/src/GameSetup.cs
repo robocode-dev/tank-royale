@@ -40,12 +40,14 @@ public sealed class GameSetup
     public int? MaxInactivityTurns { get; }
 
     /// <summary>
-    /// Timeout in milliseconds for sending intent after having received 'tick' message.
+    /// Timeout duration in microseconds (µs) (where 1 microsecond equals 1/1,000,000 of a second) for sending intent
+    //// after receiving a 'tick' message.
     /// </summary>
     public int TurnTimeout { get; }
 
     /// <summary>
-    /// Time limit in milliseconds for sending ready message after having received 'new battle' message.
+    /// Time limit in microseconds (µs) (where 1 microsecond equals 1/1,000,000 of a second) for sending a 'ready'
+    /// message after receiving a 'new battle' message.
     /// </summary>
     public int ReadyTimeout { get; }
 
