@@ -143,7 +143,10 @@ sequenceDiagram
             Server->>Controller: game-started-event-for-observer
             Note over Server: Start turn timeout timer
         else else the game is not started
-            Note over Server: Server state = WAIT_FOR_PARTICIPANTS_TO_JOIN            
+            Note over Server: Server state = WAIT_FOR_PARTICIPANTS_TO_JOIN
+            Server->>Observer: game-aborted-event
+            Server->>Bot: game-aborted-event
+            Server->>Controller: game-aborted-event
         end
     end
 ```
