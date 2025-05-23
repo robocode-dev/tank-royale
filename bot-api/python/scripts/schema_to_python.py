@@ -3,6 +3,7 @@ import re
 import yaml
 from pathlib import Path
 from typing import Dict, Any, List, Set, Tuple, Optional
+from enum import Enum
 
 
 class SchemaConverter:
@@ -111,21 +112,44 @@ class SchemaConverter:
         if description:
             class_lines.extend([f'    """{description}"""', ''])
 
+        # Process enum fields and generate nested enum classes
+        enum_definitions = []
+        for prop_name, prop_schema in properties.items():
+            if 'enum' in prop_schema:
+                enum_class_name = f"{prop_name.capitalize()}"
+                enum_items = prop_schema['enum']
+                enum_definition = [f"    class {enum_class_name}(str, Enum):"]
+                for item in enum_items:
+                    # Convert to uppercase for Python enum convention
+                    enum_member_name = item.upper()
+                    enum_definition.append(f"        {enum_member_name} = \"{item}\"")
+                enum_definition.append("")  # Add blank line after enum
+                enum_definitions.append("\n".join(enum_definition))
+    
+        # Add enum definitions to class
+        if enum_definitions:
+            class_lines.append("")  # Add blank line before enums
+            class_lines.extend(enum_definitions)
+    
         # Get parent properties and requirements
         parent_properties, parent_required, parent_schema = self.get_parent_schema_info(schema, file_path)
-
+    
         # Separate required and optional parameters
         required_params = []
         optional_params = []
-
+    
         # Add all parameters, including those from parent
         all_properties = properties.copy()
         if parent_schema:
             all_properties.update(parent_schema)
-
+    
         for prop_name, prop_schema in all_properties.items():
             python_name = prop_name
-            prop_type = self.get_python_type(prop_schema, file_path)
+            if 'enum' in prop_schema:
+                # Use the enum class name as the type
+                prop_type = f"{python_name.capitalize()}"
+            else:
+                prop_type = self.get_python_type(prop_schema, file_path)
 
             if prop_name in required or prop_name in parent_required:
                 required_params.append(f'{python_name}: {prop_type}')
