@@ -1,6 +1,7 @@
 import asyncio
 import json
 import websockets
+import time  # Added import
 from typing import Dict, Set, Any, Optional, Union
 
 from robocode_tank_royale.bot_api import BaseBotABC
@@ -22,7 +23,7 @@ from robocode_tank_royale.bot_api.bot_exception import BotException
 from robocode_tank_royale.bot_api.mapper.event_mapper import EventMapper
 from robocode_tank_royale.bot_api.mapper.game_setup_mapper import GameSetupMapper
 from robocode_tank_royale.bot_api.mapper.results_mapper import ResultsMapper
-from robocode_tank_royale.schema import ResultsForBot, TickEventForBot
+from robocode_tank_royale.schema import ResultsForBot, TickEventForBot, ServerHandshake # Added ServerHandshake
 
 
 class WebSocketHandler:
@@ -122,16 +123,16 @@ class WebSocketHandler:
         if self.base_bot_internals.get_event_handling_disabled_turn():
             return
 
-        self.base_bot_internals.set_tick_start_nano_time(asyncio.get_event_loop().time() * 1_000_000_000)
+        self.base_bot_internals.set_tick_start_nano_time(time.monotonic_ns()) # Changed to time.monotonic_ns()
 
         tick_event = TickEventForBot(**json_msg)  # Assuming TickEventForBot can be constructed from json_msg
         mapped_tick_event = EventMapper.map_tick_event(tick_event, self.base_bot)
 
         self.base_bot_internals.add_events_from_tick(mapped_tick_event)
 
-        bot_intent = self.base_bot_internals.get_bot_intent()
-        if bot_intent.get_rescan() is not None and bot_intent.get_rescan():
-            bot_intent.set_rescan(False)
+        bot_intent = self.base_bot_internals.get_bot_intent() # This is a dictionary
+        if bot_intent.get('rescan'): # Check if 'rescan' key exists and is true
+            bot_intent['rescan'] = False # Set 'rescan' to False
 
         self.base_bot_internals.set_tick_event(mapped_tick_event)
 
@@ -210,7 +211,8 @@ class WebSocketHandler:
 
     async def handle_server_handshake(self, json_msg: Dict):
         """Handle a server handshake from the server."""
-        self.base_bot_internals.set_server_handshake(json_msg)
+        server_handshake_obj = ServerHandshake(**json_msg)
+        self.base_bot_internals.set_server_handshake(server_handshake_obj)
 
         # Reply by sending bot handshake
         is_droid = hasattr(self.base_bot, 'is_droid') and self.base_bot.is_droid
