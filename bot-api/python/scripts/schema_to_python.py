@@ -2,8 +2,7 @@ import argparse
 import re
 import yaml
 from pathlib import Path
-from typing import Dict, Any, List, Set, Tuple, Optional
-from enum import Enum
+from typing import Dict, Any, List, Set, Tuple, Optional, Tuple
 
 
 class SchemaConverter:
@@ -120,29 +119,29 @@ class SchemaConverter:
                 enum_items = prop_schema['enum']
                 enum_definition = [f"    class {enum_class_name}(str, Enum):"]
                 for item in enum_items:
-                    # Convert to uppercase for Python enum convention
-                    enum_member_name = item.upper()
+                    # Convert to UPPER_SNAKE_CASE for Python enum convention
+                    enum_member_name = SchemaUtils.camel_to_upper_snake(item)
                     enum_definition.append(f"        {enum_member_name} = \"{item}\"")
                 enum_definition.append("")  # Add blank line after enum
                 enum_definitions.append("\n".join(enum_definition))
-    
+
         # Add enum definitions to class
         if enum_definitions:
             class_lines.append("")  # Add blank line before enums
             class_lines.extend(enum_definitions)
-    
+
         # Get parent properties and requirements
         parent_properties, parent_required, parent_schema = self.get_parent_schema_info(schema, file_path)
-    
+
         # Separate required and optional parameters
         required_params = []
         optional_params = []
-    
+
         # Add all parameters, including those from parent
         all_properties = properties.copy()
         if parent_schema:
             all_properties.update(parent_schema)
-    
+
         for prop_name, prop_schema in all_properties.items():
             python_name = prop_name
             if 'enum' in prop_schema:
@@ -188,15 +187,34 @@ class SchemaConverter:
         class_lines.append('')
         return '\n'.join(class_lines)
 
-    def process_schema_file(self, file_path: str) -> str:
-        """Process a single schema file and return the generated class code."""
+    def process_schema_file(self, file_path: str) -> Tuple[str, bool, bool]:
+        """
+        Process a single schema file and return the generated class code,
+        whether it has enums, and whether it uses Type.
+        """
         schema_data = SchemaUtils.load_yaml(file_path)
         class_name = SchemaUtils.sanitize_class_name(Path(file_path).name)
-        return self.generate_class(class_name, schema_data, file_path)
+        class_code = self.generate_class(class_name, schema_data, file_path)
 
-    def generate_import_statements(self, file_path: str) -> List[str]:
+        # Check if the generated class has any enum definitions
+        has_enum = 'class ' in class_code and '(str, Enum)' in class_code
+
+        # Check if Type is used as a parameter type
+        has_type_param = ': Type' in class_code
+
+        return class_code, has_enum, has_type_param
+
+    def generate_import_statements(self, file_path: str, has_enum: bool, has_type_param: bool) -> List[str]:
         """Generate import statements for a given schema file."""
         imports = []
+
+        # Add Enum import if the class contains enum definitions
+        if has_enum:
+            imports.append('from enum import Enum')
+
+        # Add Type import if it's used as a parameter type
+        if has_type_param:
+            imports.append('from typing import Type')
 
         if file_path in self.class_dependencies:
             for dep_file in self.class_dependencies[file_path]:
@@ -216,7 +234,7 @@ class SchemaConverter:
 
         sub_modules = []
         for file_path in yaml_files:
-            class_code = self.process_schema_file(str(file_path))
+            class_code, has_enum, has_type_param = self.process_schema_file(str(file_path))
 
             if class_code:
                 module_name = f"{SchemaUtils.sanitize_file_name(file_path)}"
@@ -227,7 +245,7 @@ class SchemaConverter:
                 content = ['"""', f'Generated Python class from {file_path.name}',
                            'This file is auto-generated. Do not edit manually.', '"""', '']
 
-                content.extend(self.generate_import_statements(str(file_path)))
+                content.extend(self.generate_import_statements(str(file_path), has_enum, has_type_param))
                 content.append('')
                 content.append(class_code)
 
@@ -244,6 +262,11 @@ class SchemaUtils:
     def camel_to_snake(name: str) -> str:
         """Convert a camelCase string to snake_case."""
         return re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()
+
+    @staticmethod
+    def camel_to_upper_snake(name: str) -> str:
+        """Convert a camelCase or PascalCase string to UPPER_SNAKE_CASE."""
+        return re.sub(r'(?<!^)(?=[A-Z])', '_', name).upper()
 
     @staticmethod
     def convert_dict_keys_to_snake(properties: Dict[str, Any]) -> Dict[str, Any]:
