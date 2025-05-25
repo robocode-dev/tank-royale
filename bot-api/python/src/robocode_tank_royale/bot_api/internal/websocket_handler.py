@@ -23,7 +23,6 @@ from robocode_tank_royale.bot_api.mapper.game_setup_mapper import GameSetupMappe
 from robocode_tank_royale.bot_api.mapper.results_mapper import ResultsMapper
 from robocode_tank_royale.schema import ResultsForBot, TickEventForBot
 
-
 class WebSocketHandler:
     """
     Websocket handler for Robocode Tank Royale Bot API that handles websocket connections

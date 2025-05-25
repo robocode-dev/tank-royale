@@ -6,6 +6,7 @@
 .idea/
 .vscode/
 .gradle/
+.venv/
 .vs/
 Folder.DotSettings.user
 
