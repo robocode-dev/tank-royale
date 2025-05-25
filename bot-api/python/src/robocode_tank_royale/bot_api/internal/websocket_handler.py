@@ -1,7 +1,7 @@
 import asyncio
 import json
 import websockets
-from typing import Dict, Set, Any, Optional, Union
+from typing import Dict
 
 from robocode_tank_royale.bot_api import BaseBotABC
 from robocode_tank_royale.bot_api.bot_info import BotInfo
@@ -12,8 +12,7 @@ from robocode_tank_royale.bot_api.events import (
     GameStartedEvent,
     GameEndedEvent,
     RoundStartedEvent,
-    RoundEndedEvent,
-    SkippedTurnEvent
+    RoundEndedEvent
 )
 from robocode_tank_royale.bot_api.internal.bot_event_handlers import BotEventHandlers
 from robocode_tank_royale.bot_api.internal.internal_event_handlers import InternalEventHandlers
@@ -216,8 +215,8 @@ class WebSocketHandler:
         is_droid = hasattr(self.base_bot, 'is_droid') and self.base_bot.is_droid
 
         # Create bot handshake message
-        from robocode_tank_royale.bot_api.internal.bot_handshake_factory import create as create_handshake
-        bot_handshake = create_handshake(
+        from robocode_tank_royale.bot_api.internal.bot_handshake_factory import BotHandshakeFactory
+        bot_handshake = BotHandshakeFactory.create(
             json_msg["sessionId"],
             self.bot_info,
             is_droid,
