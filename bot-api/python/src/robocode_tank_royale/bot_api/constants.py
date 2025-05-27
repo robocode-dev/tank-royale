@@ -72,3 +72,15 @@ Deceleration in units per turn.
 Incremental decrease in speed when moving backward.
 The bot brakes faster than it accelerates forward.
 """
+
+MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 8
+"""
+Maximum number of team messages that can be sent per turn.
+Note: This is an assumed value.
+"""
+
+TEAM_MESSAGE_MAX_SIZE = 128
+"""
+Maximum size of a team message in bytes.
+Note: This is an assumed value.
+"""

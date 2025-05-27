@@ -9,6 +9,7 @@ from types import SimpleNamespace # Keep for now, may be removed if get_current_
 from typing import Any, Optional, Set, Dict, List
 
 from robocode_tank_royale.bot_api.base_bot_abc import BaseBotABC
+from robocode_tank_royale.bot_api.base_bot_abc import BaseBotABC
 from robocode_tank_royale.bot_api.bot_abc import BotABC
 from robocode_tank_royale.bot_api.bot_info import BotInfo
 from robocode_tank_royale.bot_api.internal.bot_event_handlers import BotEventHandlers
@@ -16,7 +17,7 @@ from robocode_tank_royale.bot_api.internal.internal_event_handlers import Intern
 from robocode_tank_royale.bot_api.internal.event_queue import EventQueue
 from robocode_tank_royale.bot_api.game_setup import GameSetup
 from robocode_tank_royale.bot_api.events import TickEvent, BulletFiredEvent, RoundStartedEvent, BotEvent
-from robocode_tank_royale.bot_api.bullet_state import BulletState # Updated import
+from robocode_tank_royale.bot_api.bullet_state import BulletState
 from robocode_tank_royale.bot_api.events.condition import Condition
 from robocode_tank_royale.bot_api.initial_position import InitialPosition
 from robocode_tank_royale.bot_api.bot_exception import BotException
@@ -24,8 +25,10 @@ from robocode_tank_royale.bot_api.internal.thread_interrupted_exception import T
 from robocode_tank_royale.bot_api.internal.stop_resume_listener_abs import StopResumeListenerABC
 from robocode_tank_royale.bot_api.internal.websocket_handler import WebSocketHandler
 from robocode_tank_royale.bot_api.util.math_util import MathUtil
-from .graphics_state import GraphicsState
-from robocode_tank_royale.schema import ServerHandshake # Using this path
+# GraphicsState is now part of BaseBotInternalData, so direct import might not be needed here if accessed via self.data.graphics_state
+# from .graphics_state import GraphicsState
+from robocode_tank_royale.schema import ServerHandshake
+from .base_bot_internal_data import BaseBotInternalData
 
 from robocode_tank_royale.bot_api.constants import (
     MAX_SPEED,
@@ -61,30 +64,19 @@ class BaseBotInternals:
         self.server_url = server_url if server_url is not None else self._get_server_url_from_setting()
         self.server_secret = server_secret if server_secret is not None else self._get_server_secret_from_setting()
 
-        self.bot_intent: Dict[str, Any] = self._new_bot_intent()
+        self.data: BaseBotInternalData = BaseBotInternalData(self.bot_info)
 
         self.bot_event_handlers: BotEventHandlers = BotEventHandlers(base_bot)
         self.internal_event_handlers: InternalEventHandlers = InternalEventHandlers()
-        self.event_queue: EventQueue = EventQueue(self, self.bot_event_handlers)
-
-        self.conditions: Set[Any] = set()  # Using a standard set for now
+        self.event_queue: EventQueue = EventQueue(self.data, self.bot_event_handlers)
 
         self.closed_event: asyncio.Event = asyncio.Event()
         self.socket: Optional[Any] = None # To store the WebSocket connection
+        self.web_socket_handler: Optional[WebSocketHandler] = None
 
-        self.my_id: Optional[int] = None
-        self.teammate_ids: Set[int] = set()
-        self.game_setup: Optional[GameSetup] = None
-        self.initial_position: Optional[InitialPosition] = None
-
-        self.tick_event: Optional[TickEvent] = None
-        self.tick_start_nano_time: Optional[int] = None # Representing Long as int
-
-        self.next_turn_monitor: asyncio.Condition = asyncio.Condition() # Changed from Lock to Condition
+        self.next_turn_monitor: asyncio.Condition = asyncio.Condition()
 
         self.thread: Optional[asyncio.Task[Any]] = None # For asyncio task
-        self.is_running_atomic: bool = False # Simple boolean, manage access if threaded
-        self.is_stopped: bool = False
         self.stop_resume_listener: Optional[StopResumeListenerABC] = None
 
         self.max_speed: float = MAX_SPEED
@@ -92,19 +84,8 @@ class BaseBotInternals:
         self.max_gun_turn_rate: float = MAX_GUN_TURN_RATE
         self.max_radar_turn_rate: float = MAX_RADAR_TURN_RATE
 
-        self.saved_target_speed: Optional[float] = None
-        self.saved_turn_rate: Optional[float] = None
-        self.saved_gun_turn_rate: Optional[float] = None
-        self.saved_radar_turn_rate: Optional[float] = None
-
         self.abs_deceleration: float = abs(DECELERATION)
-
-        self.event_handling_disabled_turn: int = 0
         self.last_execute_turn_number: int = -1
-
-        self.graphics_state: GraphicsState = GraphicsState() # Uncommented and typed
-
-        self.server_handshake: Optional[ServerHandshake] = None # Added attribute
 
         self._init()
 
@@ -117,30 +98,6 @@ class BaseBotInternals:
     def _get_server_secret_from_setting(self) -> Optional[str]:
         return os.getenv('ROBOCODE_SERVER_SECRET', os.getenv('SERVER_SECRET'))
 
-    def _new_bot_intent(self) -> Dict[str, Any]:
-        return {
-            'type': 'BotIntent', # Must be set!
-            'targetSpeed': None,
-            'turnRate': None,
-            'gunTurnRate': None,
-            'radarTurnRate': None,
-            'firepower': None,
-            'adjustGunForBodyTurn': None,
-            'adjustRadarForGunTurn': None,
-            'scan': None,
-            'bodyColor': None,
-            'turretColor': None,
-            'radarColor': None,
-            'bulletColor': None,
-            'scanColor': None,
-            'tracksColor': None,
-            'gunColor': None,
-            'teamMessages': [],
-            'stdOut': None,
-            'stdErr': None,
-            'debugGraphics': None, # For SVG output from graphics_state
-        }
-
     def _init(self) -> None:
         # Skipping redirectStdOutAndStdErr for now
         self._subscribe_to_events()
@@ -152,103 +109,106 @@ class BaseBotInternals:
 
     def _on_round_started(self, event: RoundStartedEvent) -> None:
         self._reset_movement()
-        self.event_queue.clear()
-        self.is_stopped = False
-        self.event_handling_disabled_turn = 0
+        self.event_queue.clear() # Clears conditions in self.data.conditions
+        self.data.is_stopped = False
+        self.data.event_handling_disabled_turn = 0
         self.last_execute_turn_number = -1
 
     def _on_next_turn(self, event: TickEvent) -> None:
         # TODO: figure out how the next_turn thing works.
+        # This method might be related to waking up the bot's main loop if it's waiting.
+        # With asyncio, this could involve signaling an asyncio.Condition.
+        # For now, its direct equivalent might not be needed if `execute` and `_wait_for_next_turn`
+        # are correctly managed by the asyncio event loop and `self.next_turn_monitor`.
+        pass
 
     def _on_bullet_fired(self, event: BulletFiredEvent) -> None:
-        if self.bot_intent:
-            self.bot_intent['firepower'] = 0.0
+        if self.data.bot_intent:
+            self.data.bot_intent['firepower'] = 0.0
         pass
 
     def _reset_movement(self) -> None:
-        if self.bot_intent:
-            self.bot_intent['turnRate'] = None
-            self.bot_intent['gunTurnRate'] = None
-            self.bot_intent['radarTurnRate'] = None
-            self.bot_intent['targetSpeed'] = None
-            self.bot_intent['firepower'] = None
+        if self.data.bot_intent:
+            self.data.bot_intent['turnRate'] = None
+            self.data.bot_intent['gunTurnRate'] = None
+            self.data.bot_intent['radarTurnRate'] = None
+            self.data.bot_intent['targetSpeed'] = None
+            self.data.bot_intent['firepower'] = None
 
-    # Bot State Management
+    # Bot State Management - Delegated to self.data
     def get_my_id(self) -> int:
-        if self.my_id is None:
-            raise BotException(GAME_NOT_RUNNING_MSG)
-        return self.my_id
+        return self.data.my_id
 
-    def set_my_id(self, my_id: int) -> None:
-        self.my_id = my_id
+    def set_my_id(self, my_id: int) -> None: # Typically called by WebSocketHandler
+        self.data.my_id = my_id
 
     def get_teammate_ids(self) -> Set[int]:
-        if self.my_id is None: # Check if game has started via my_id
-            raise BotException(GAME_NOT_RUNNING_MSG)
-        return self.teammate_ids
+        return self.data.teammate_ids
 
-    def set_teammate_ids(self, teammate_ids: Set[int]) -> None:
-        self.teammate_ids = teammate_ids
+    def set_teammate_ids(self, teammate_ids: Set[int]) -> None: # Typically called by WebSocketHandler
+        self.data.teammate_ids = teammate_ids
 
     def get_game_setup(self) -> GameSetup:
-        if self.game_setup is None:
-            raise BotException(GAME_NOT_RUNNING_MSG)
-        return self.game_setup
+        return self.data.game_setup
 
-    def set_game_setup(self, game_setup: GameSetup) -> None:
-        self.game_setup = game_setup
+    def set_game_setup(self, game_setup: GameSetup) -> None: # Typically called by WebSocketHandler
+        self.data.game_setup = game_setup
 
     def get_initial_position(self) -> Optional[InitialPosition]:
-        return self.initial_position
+        return self.data.initial_position
 
-    def set_initial_position(self, initial_position: Optional[InitialPosition]) -> None:
-        self.initial_position = initial_position
+    def set_initial_position(self, initial_position: Optional[InitialPosition]) -> None: # Typically called by WebSocketHandler
+        self.data.initial_position = initial_position
 
     def get_bot_intent(self) -> Dict[str, Any]:
-        return self.bot_intent
+        return self.data.bot_intent
 
     def get_current_tick_or_throw(self) -> TickEvent:
-        if self.tick_event is None:
-            raise BotException(TICK_NOT_AVAILABLE_MSG)
-        return self.tick_event
+        return self.data.current_tick_or_throw
 
-    def set_tick_event(self, tick_event: TickEvent) -> None:
-        self.tick_event = tick_event
+    def set_tick_event(self, tick_event: TickEvent) -> None: # Typically called by WebSocketHandler
+        self.data.tick_event = tick_event
 
     def get_current_tick_or_null(self) -> Optional[TickEvent]:
-        return self.tick_event
+        return self.data.current_tick_or_null
 
     def get_tick_start_nano_time(self) -> int:
-        if self.tick_start_nano_time is None:
-            raise BotException(TICK_NOT_AVAILABLE_MSG)
-        return self.tick_start_nano_time
+        return self.data.tick_start_nano_time
 
-    def set_tick_start_nano_time(self, tick_start_nano_time: int) -> None:
-        self.tick_start_nano_time = tick_start_nano_time
-
-    def add_events_from_tick(self, tick_event: TickEvent) -> None:
-        self.event_queue.add_events_from_tick(tick_event)
+    def set_tick_start_nano_time(self, tick_start_nano_time: int) -> None: # Typically called by WebSocketHandler
+        self.data.tick_start_nano_time = tick_start_nano_time
 
     def get_time_left(self) -> int:
-        passed_microseconds = (time.monotonic_ns() - self.get_tick_start_nano_time()) // 1000
-        game_setup = self.get_game_setup()
-        if game_setup.turn_timeout is None: # Should not happen if game setup is correct
+        passed_microseconds = (time.monotonic_ns() - self.data.tick_start_nano_time) // 1000
+        game_setup = self.data.game_setup
+        if game_setup.turn_timeout is None:
              raise BotException("turn_timeout is not set in GameSetup")
         return game_setup.turn_timeout - passed_microseconds
 
     def enable_event_handling(self, enable: bool) -> None:
         if enable:
-            self.event_handling_disabled_turn = 0
+            self.data.event_handling_disabled_turn = 0
         else:
-            self.event_handling_disabled_turn = self.get_current_tick_or_throw().turn_number
+            # Ensure tick event is available before accessing turn_number
+            current_tick = self.data.current_tick_or_null
+            if current_tick:
+                self.data.event_handling_disabled_turn = current_tick.turn_number
+            else:
+                # If called before any tick, disabling implies from turn 0.
+                # Or consider raising an error if disabling without a current turn context is invalid.
+                self.data.event_handling_disabled_turn = 0 # Or some other default like -1 or 1
 
     def get_event_handling_disabled_turn(self) -> bool:
         # Important! Allow an additional turn so events like RoundStarted can be handled
-        return self.event_handling_disabled_turn != 0 and \
-               self.event_handling_disabled_turn < (self.get_current_tick_or_throw().turn_number - 1)
+        current_tick = self.data.current_tick_or_null
+        if not current_tick:
+            return self.data.event_handling_disabled_turn != 0 # If no tick, rely purely on the flag
+
+        return self.data.event_handling_disabled_turn != 0 and \
+               self.data.event_handling_disabled_turn < (current_tick.turn_number - 1)
 
     def get_events(self) -> List[BotEvent]:
-        turn_number = self.get_current_tick_or_throw().turn_number
+        turn_number = self.data.current_tick_or_throw.turn_number
         return self.event_queue.get_events(turn_number)
 
     def clear_events(self) -> None:
@@ -262,25 +222,25 @@ class BaseBotInternals:
             self.event_queue.dispatch_events(turn_number)
         except Exception:
             traceback.print_exc()
-            
+
     def set_stop_resume_listener(self, listener: StopResumeListenerABC) -> None:
         self.stop_resume_listener = listener
 
     def set_running(self, is_running: bool) -> None:
-        self.is_running_atomic = is_running
+        self.data.is_running = is_running
 
     def is_running(self) -> bool:
-        return self.is_running_atomic
+        return self.data.is_running
 
     async def _runnable(self, bot: BotABC) -> None:
-        self.set_running(True)
+        self.data.is_running = True
         self.enable_event_handling(True)
         try:
             # Assuming bot.run() is async. If not:
             # await asyncio.get_event_loop().run_in_executor(None, bot.run)
             await bot.run()
 
-            while self.is_running():
+            while self.data.is_running:
                 try:
                     # Assuming bot.go() is async. If not:
                     # await asyncio.get_event_loop().run_in_executor(None, bot.go)
@@ -291,7 +251,7 @@ class BaseBotInternals:
                     # Potentially log the error or handle specific bot exceptions
                     print(f"Exception in bot.go(): {e}") # Basic error logging
                     # Depending on desired behavior, may need to stop or continue
-                    self.set_running(False) # Example: stop on error
+                    self.data.is_running = False # Example: stop on error
                     return
         except asyncio.CancelledError:
             # This handles cancellation if bot.run() or the loop itself is cancelled
@@ -299,7 +259,7 @@ class BaseBotInternals:
         except Exception as e:
             # Potentially log the error or handle specific bot exceptions
             print(f"Exception in bot.run() or main loop: {e}") # Basic error logging
-            self.set_running(False) # Stop if unhandled exception in run()
+            self.data.is_running = False # Stop if unhandled exception in run()
         finally:
             self.enable_event_handling(False)
 
@@ -310,9 +270,9 @@ class BaseBotInternals:
         self.thread = asyncio.create_task(self._runnable(bot))
 
     def stop_thread(self) -> None:
-        if not self.is_running():
+        if not self.data.is_running:
             return
-        self.set_running(False)
+        self.data.is_running = False
         if self.thread is not None:
             self.thread.cancel()
             # It's good practice to await the task to ensure it finishes,
@@ -328,55 +288,62 @@ class BaseBotInternals:
     async def _connect(self) -> None:
         self._sanitize_url(self.server_url)
         try:
-            web_socket_handler = WebSocketHandler(
-                self, # base_bot_internals
+            self.web_socket_handler = WebSocketHandler( # Store the handler instance
+                self.data, # Pass BaseBotInternalData instance
                 self.server_url,
                 self.server_secret,
-                self.base_bot, # The bot instance itself (IBaseBot)
-                self.bot_info,
-                self.bot_event_handlers,
-                self.internal_event_handlers,
-                self.closed_event
+                self.base_bot, # The bot instance itself (BaseBotABC)
+                self.bot_info, # BotInfo needed by WebSocketHandler
+                self.bot_event_handlers, # Event handlers needed by WebSocketHandler
+                self.internal_event_handlers, # Event handlers needed by WebSocketHandler
+                self.closed_event # Async event needed by WebSocketHandler
             )
-            # The WebSocketHandler's connect method should establish the connection
-            # and store the websocket client in self.socket if needed by handler,
-            # or return it to be stored here. Assuming it stores it internally or this class gets it.
-            # For now, let's assume WebSocketHandler.connect() handles storing the socket if needed by it.
-            # If BaseBotInternals needs direct access to the socket, WebSocketHandler.connect() should return it.
-            self.socket = await web_socket_handler.connect() # Assuming connect returns the socket
+            self.socket = await self.web_socket_handler.connect()
 
         except Exception as ex:
             raise BotException(f"Could not create web socket for URL: {self.server_url}", ex)
 
     async def start(self) -> None:
         await self._connect()
+        if self.web_socket_handler: # Check if handler was created
+            asyncio.create_task(self.web_socket_handler.receive_messages())
         await self.closed_event.wait()
 
+
     async def execute(self) -> None:
-        if not self.is_running():
+        if not self.data.is_running:
             return
 
-        turn_number = self.get_current_tick_or_throw().turn_number
+        current_tick = self.data.current_tick_or_throw # Throws if not available
+        turn_number = current_tick.turn_number
+
         if turn_number != self.last_execute_turn_number:
             self.last_execute_turn_number = turn_number
+            
+            # Add events from the current tick to the event queue
+            self.event_queue.add_events_from_tick(current_tick)
+            
             self.dispatch_events(turn_number)
             await self._send_intent()
         
         await self._wait_for_next_turn(turn_number)
 
     async def _send_intent(self) -> None:
-        self._render_graphics_to_bot_intent()
-        self._transfer_std_out_to_bot_intent()
+        self._render_graphics_to_bot_intent() # Operates on self.data.graphics_state and self.data.bot_intent
+        self._transfer_std_out_to_bot_intent() # Placeholder
 
         if self.socket:
             try:
-                json_intent = json.dumps(self.bot_intent)
-                await self.socket.send(json_intent) # Assumes self.socket is WebsocketClientProtocol
-                if 'teamMessages' in self.bot_intent:
-                    self.bot_intent['teamMessages'] = []
+                # Ensure 'type' is set in bot_intent, BaseBotInternalData._new_bot_intent should do this
+                if 'type' not in self.data.bot_intent or self.data.bot_intent['type'] != 'BotIntent':
+                     self.data.bot_intent['type'] = 'BotIntent'
+
+                json_intent = json.dumps(self.data.bot_intent)
+                await self.socket.send(json_intent)
+                if 'teamMessages' in self.data.bot_intent:
+                    self.data.bot_intent['teamMessages'] = [] # Clear after sending
             except Exception as e:
-                # Handle potential errors during send, e.g., connection closed
-                print(f"Error sending bot intent: {e}") # Basic logging
+                print(f"Error sending bot intent: {e}")
                 # Consider if self.socket needs to be invalidated or reconnected
                 # For now, just printing error.
 
@@ -386,15 +353,23 @@ class BaseBotInternals:
         pass
 
     def _render_graphics_to_bot_intent(self) -> None:
-        # Graphics rendering will be addressed in a later step.
-        pass
+        current_tick = self.data.current_tick_or_null
+        # Check if debugging is enabled for the bot in the current tick
+        if current_tick and hasattr(current_tick, 'bot_state') and current_tick.bot_state and hasattr(current_tick.bot_state, 'is_debugging_enabled') and current_tick.bot_state.is_debugging_enabled: # type: ignore
+            svg_output = self.data.graphics_state.get_svg_output()
+            self.data.bot_intent['debugGraphics'] = svg_output
+            self.data.graphics_state.clear()
+        else:
+            # Ensure it's not set if debugging is off or tick not available
+            self.data.bot_intent['debugGraphics'] = None
+
 
     async def _wait_for_next_turn(self, turn_number: int) -> None:
         self._stop_rogue_thread()
         try:
             async with self.next_turn_monitor:
-                while (self.is_running() and
-                       turn_number == self.get_current_tick_or_throw().turn_number and
+                while (self.data.is_running and
+                       turn_number == self.data.current_tick_or_throw.turn_number and
                        self.thread == asyncio.current_task() and # Ensure this is the bot's main task
                        not asyncio.current_task().cancelled()):
                     await self.next_turn_monitor.wait()
@@ -412,79 +387,88 @@ class BaseBotInternals:
         if math.isnan(firepower):
             raise ValueError("'firepower' cannot be NaN")
         
-        # Assuming self.base_bot.energy is updated elsewhere based on TickEvent
+        current_tick = self.data.current_tick_or_null
+        if not current_tick or not current_tick.bot_state:
+             return False # Cannot determine gun heat or energy
+
+        # Assuming self.base_bot.energy is updated by the BaseBot instance from its on_tick handler
         current_energy = self.base_bot.energy 
-        gun_heat = self.get_gun_heat()
+        gun_heat = current_tick.bot_state.gun_heat
 
         if current_energy < firepower or gun_heat > 0:
             return False
         
-        self.bot_intent['firepower'] = firepower
+        self.data.bot_intent['firepower'] = firepower
         return True
 
     def get_gun_heat(self) -> float:
-        return self.tick_event.bot_state.gun_heat if self.tick_event and self.tick_event.bot_state else 0.0
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.gun_heat if tick and tick.bot_state else 0.0
 
     def get_speed(self) -> float:
-        return self.tick_event.bot_state.speed if self.tick_event and self.tick_event.bot_state else 0.0
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.speed if tick and tick.bot_state else 0.0
 
     def set_turn_rate(self, turn_rate: float) -> None:
         if math.isnan(turn_rate):
             raise ValueError("'turn_rate' cannot be NaN")
-        self.bot_intent['turnRate'] = MathUtil.clamp(turn_rate, -self.max_turn_rate, self.max_turn_rate)
+        self.data.bot_intent['turnRate'] = MathUtil.clamp(turn_rate, -self.max_turn_rate, self.max_turn_rate)
 
     def set_gun_turn_rate(self, gun_turn_rate: float) -> None:
         if math.isnan(gun_turn_rate):
             raise ValueError("'gun_turn_rate' cannot be NaN")
-        self.bot_intent['gunTurnRate'] = MathUtil.clamp(gun_turn_rate, -self.max_gun_turn_rate, self.max_gun_turn_rate)
+        self.data.bot_intent['gunTurnRate'] = MathUtil.clamp(gun_turn_rate, -self.max_gun_turn_rate, self.max_gun_turn_rate)
 
     def set_radar_turn_rate(self, radar_turn_rate: float) -> None:
         if math.isnan(radar_turn_rate):
             raise ValueError("'radar_turn_rate' cannot be NaN")
-        self.bot_intent['radarTurnRate'] = MathUtil.clamp(radar_turn_rate, -self.max_radar_turn_rate, self.max_radar_turn_rate)
+        self.data.bot_intent['radarTurnRate'] = MathUtil.clamp(radar_turn_rate, -self.max_radar_turn_rate, self.max_radar_turn_rate)
 
     def set_target_speed(self, target_speed: float) -> None:
         if math.isnan(target_speed):
             raise ValueError("'target_speed' cannot be NaN")
-        self.bot_intent['targetSpeed'] = MathUtil.clamp(target_speed, -self.max_speed, self.max_speed)
+        self.data.bot_intent['targetSpeed'] = MathUtil.clamp(target_speed, -self.max_speed, self.max_speed)
 
     def get_turn_rate(self) -> float:
-        if self.bot_intent.get('turnRate') is not None:
-            return self.bot_intent['turnRate']
-        return self.tick_event.bot_state.turn_rate if self.tick_event and self.tick_event.bot_state else 0.0
+        if self.data.bot_intent.get('turnRate') is not None:
+            return self.data.bot_intent['turnRate'] # type: ignore
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.turn_rate if tick and tick.bot_state else 0.0
 
     def get_gun_turn_rate(self) -> float:
-        if self.bot_intent.get('gunTurnRate') is not None:
-            return self.bot_intent['gunTurnRate']
-        return self.tick_event.bot_state.gun_turn_rate if self.tick_event and self.tick_event.bot_state else 0.0
+        if self.data.bot_intent.get('gunTurnRate') is not None:
+            return self.data.bot_intent['gunTurnRate'] # type: ignore
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.gun_turn_rate if tick and tick.bot_state else 0.0
 
     def get_radar_turn_rate(self) -> float:
-        if self.bot_intent.get('radarTurnRate') is not None:
-            return self.bot_intent['radarTurnRate']
-        return self.tick_event.bot_state.radar_turn_rate if self.tick_event and self.tick_event.bot_state else 0.0
+        if self.data.bot_intent.get('radarTurnRate') is not None:
+            return self.data.bot_intent['radarTurnRate'] # type: ignore
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.radar_turn_rate if tick and tick.bot_state else 0.0
 
-    def get_max_speed(self) -> float:
+    def get_max_speed(self) -> float: # Max speed is part of bot's own limits, not server state
         return self.max_speed
 
-    def set_max_speed(self, max_speed: float) -> None:
+    def set_max_speed(self, max_speed: float) -> None: # Max speed is part of bot's own limits
         self.max_speed = MathUtil.clamp(max_speed, 0, MAX_SPEED)
 
-    def get_max_turn_rate(self) -> float:
+    def get_max_turn_rate(self) -> float: # Max turn rate is part of bot's own limits
         return self.max_turn_rate
 
-    def set_max_turn_rate(self, max_turn_rate: float) -> None:
+    def set_max_turn_rate(self, max_turn_rate: float) -> None: # Max turn rate is part of bot's own limits
         self.max_turn_rate = MathUtil.clamp(max_turn_rate, 0, MAX_TURN_RATE)
 
-    def get_max_gun_turn_rate(self) -> float:
+    def get_max_gun_turn_rate(self) -> float: # Max gun turn rate is part of bot's own limits
         return self.max_gun_turn_rate
 
-    def set_max_gun_turn_rate(self, max_gun_turn_rate: float) -> None:
+    def set_max_gun_turn_rate(self, max_gun_turn_rate: float) -> None: # Max gun turn rate is part of bot's own limits
         self.max_gun_turn_rate = MathUtil.clamp(max_gun_turn_rate, 0, MAX_GUN_TURN_RATE)
 
-    def get_max_radar_turn_rate(self) -> float:
+    def get_max_radar_turn_rate(self) -> float: # Max radar turn rate is part of bot's own limits
         return self.max_radar_turn_rate
 
-    def set_max_radar_turn_rate(self, max_radar_turn_rate: float) -> None:
+    def set_max_radar_turn_rate(self, max_radar_turn_rate: float) -> None: # Max radar turn rate is part of bot's own limits
         self.max_radar_turn_rate = MathUtil.clamp(max_radar_turn_rate, 0, MAX_RADAR_TURN_RATE)
 
     def get_new_target_speed(self, speed: float, distance: float) -> float:
@@ -519,69 +503,70 @@ class BaseBotInternals:
         speed = math.fabs(speed)
         distance = 0.0
         while speed > 0:
-            speed = self.get_new_target_speed(speed, 0) # This will decelerate
+            # This uses the current bot's max_speed and deceleration properties.
+            # It simulates deceleration to zero under ideal conditions.
+            speed = self.get_new_target_speed(speed, 0) 
             distance += speed
         return distance
 
-    # Add other methods from BaseBotInternals.java as needed
+    # Conditions - Delegated to self.data.conditions
     def add_condition(self, condition: Condition) -> bool:
-        prev_len = len(self.conditions)
-        self.conditions.add(condition)
-        return len(self.conditions) > prev_len
+        # Set add method does not return a boolean indicating if the add was successful
+        # We need to check length before and after.
+        prev_len = len(self.data.conditions)
+        self.data.conditions.add(condition)
+        return len(self.data.conditions) > prev_len
 
     def remove_condition(self, condition: Condition) -> bool:
         try:
-            prev_len = len(self.conditions)
-            self.conditions.remove(condition)
-            return len(self.conditions) < prev_len # Or simply return True if no error
+            self.data.conditions.remove(condition)
+            return True # remove() raises KeyError if not found
         except KeyError:
             return False # Condition not found
 
     def set_stop(self, overwrite: bool) -> None:
-        if not self.is_stopped or overwrite:
-            self.is_stopped = True
+        if not self.data.is_stopped or overwrite:
+            self.data.is_stopped = True
 
-            self.saved_target_speed = self.bot_intent.get('targetSpeed')
-            self.saved_turn_rate = self.bot_intent.get('turnRate')
-            self.saved_gun_turn_rate = self.bot_intent.get('gunTurnRate')
-            self.saved_radar_turn_rate = self.bot_intent.get('radarTurnRate')
+            self.data.saved_target_speed = self.data.bot_intent.get('targetSpeed')
+            self.data.saved_turn_rate = self.data.bot_intent.get('turnRate')
+            self.data.saved_gun_turn_rate = self.data.bot_intent.get('gunTurnRate')
+            self.data.saved_radar_turn_rate = self.data.bot_intent.get('radarTurnRate')
 
-            self.bot_intent['targetSpeed'] = 0.0
-            self.bot_intent['turnRate'] = 0.0
-            self.bot_intent['gunTurnRate'] = 0.0
-            self.bot_intent['radarTurnRate'] = 0.0
+            self.data.bot_intent['targetSpeed'] = 0.0
+            self.data.bot_intent['turnRate'] = 0.0
+            self.data.bot_intent['gunTurnRate'] = 0.0
+            self.data.bot_intent['radarTurnRate'] = 0.0
 
             if self.stop_resume_listener is not None:
                 self.stop_resume_listener.on_stop()
 
     def set_resume(self) -> None:
-        if self.is_stopped:
-            self.bot_intent['targetSpeed'] = self.saved_target_speed
-            self.bot_intent['turnRate'] = self.saved_turn_rate
-            self.bot_intent['gunTurnRate'] = self.saved_gun_turn_rate
-            self.bot_intent['radarTurnRate'] = self.saved_radar_turn_rate
+        if self.data.is_stopped:
+            self.data.bot_intent['targetSpeed'] = self.data.saved_target_speed
+            self.data.bot_intent['turnRate'] = self.data.saved_turn_rate
+            self.data.bot_intent['gunTurnRate'] = self.data.saved_gun_turn_rate
+            self.data.bot_intent['radarTurnRate'] = self.data.saved_radar_turn_rate
 
             if self.stop_resume_listener is not None:
                 self.stop_resume_listener.on_resume()
             
-            self.is_stopped = False # Must be the last step
+            self.data.is_stopped = False # Must be the last step
 
     def is_teammate(self, bot_id: int) -> bool:
-        return bot_id in self.get_teammate_ids()
+        return bot_id in self.data.teammate_ids # Uses property getter
 
     def broadcast_team_message(self, message: 'Any') -> None:
         self.send_team_message(None, message)
 
     def send_team_message(self, teammate_id: Optional[int], message: Any) -> None:
-        if teammate_id is not None and teammate_id not in self.get_teammate_ids():
+        if teammate_id is not None and teammate_id not in self.data.teammate_ids: # Uses property getter
             raise ValueError("No teammate was found with the specified 'teammate_id'")
 
-        # Ensure 'teamMessages' key exists; _new_bot_intent should initialize it.
-        team_messages_list = self.bot_intent.get('teamMessages')
-        if team_messages_list is None: # Should not happen if _new_bot_intent is correct
+        team_messages_list = self.data.bot_intent.get('teamMessages')
+        if team_messages_list is None: 
             team_messages_list = []
-            self.bot_intent['teamMessages'] = team_messages_list
-
+            self.data.bot_intent['teamMessages'] = team_messages_list
 
         if len(team_messages_list) >= MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN:
             raise BotException(
@@ -590,94 +575,92 @@ class BaseBotInternals:
         if message is None:
             raise ValueError("The 'message' of a team message cannot be null")
 
-        json_message = json.dumps(message)
-        if len(json_message.encode('utf-8')) > TEAM_MESSAGE_MAX_SIZE:
+        # TODO: Consider how to handle message serialization if 'message' is not directly JSON serializable.
+        # The current approach relies on json.dumps(message) which might fail for complex types.
+        # For now, assuming 'message' is a simple dict or a type with a __dict__ attribute suitable for JSON.
+        json_message_str = json.dumps(message) # This might need a custom encoder for arbitrary objects
+        if len(json_message_str.encode('utf-8')) > TEAM_MESSAGE_MAX_SIZE:
             raise ValueError(
                 f"The team message is larger than the limit of {TEAM_MESSAGE_MAX_SIZE} bytes (compact JSON format)")
 
         team_message_dict = {
-            'messageType': type(message).__name__, # Using class name for now
+            # 'messageType': type(message).__name__, # This is a Python-specific way, might need adjustment for cross-platform
             'receiverId': teammate_id,
-            'message': json_message
+            'message': json_message_str # Store the JSON string
         }
         team_messages_list.append(team_message_dict)
-        # self.bot_intent['teamMessages'] = team_messages_list # Not needed as list is modified in place
 
-    # Color and Graphics
+    # Color and Graphics - Delegated
     def get_body_color(self) -> Optional[str]:
-        return self.tick_event.bot_state.body_color if self.tick_event and self.tick_event.bot_state else None
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.body_color if tick and tick.bot_state else None
 
     def get_turret_color(self) -> Optional[str]:
-        return self.tick_event.bot_state.turret_color if self.tick_event and self.tick_event.bot_state else None
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.turret_color if tick and tick.bot_state else None
 
     def get_radar_color(self) -> Optional[str]:
-        return self.tick_event.bot_state.radar_color if self.tick_event and self.tick_event.bot_state else None
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.radar_color if tick and tick.bot_state else None
 
     def get_bullet_color(self) -> Optional[str]:
-        return self.tick_event.bot_state.bullet_color if self.tick_event and self.tick_event.bot_state else None
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.bullet_color if tick and tick.bot_state else None
 
     def get_scan_color(self) -> Optional[str]:
-        return self.tick_event.bot_state.scan_color if self.tick_event and self.tick_event.bot_state else None
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.scan_color if tick and tick.bot_state else None
 
     def get_tracks_color(self) -> Optional[str]:
-        return self.tick_event.bot_state.tracks_color if self.tick_event and self.tick_event.bot_state else None
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.tracks_color if tick and tick.bot_state else None
 
     def get_gun_color(self) -> Optional[str]:
-        return self.tick_event.bot_state.gun_color if self.tick_event and self.tick_event.bot_state else None
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.gun_color if tick and tick.bot_state else None
 
     def set_body_color(self, color: Optional[str]) -> None:
-        self.bot_intent['bodyColor'] = color
+        self.data.bot_intent['bodyColor'] = color
 
     def set_turret_color(self, color: Optional[str]) -> None:
-        self.bot_intent['turretColor'] = color
+        self.data.bot_intent['turretColor'] = color
 
     def set_radar_color(self, color: Optional[str]) -> None:
-        self.bot_intent['radarColor'] = color
+        self.data.bot_intent['radarColor'] = color
 
     def set_bullet_color(self, color: Optional[str]) -> None:
-        self.bot_intent['bulletColor'] = color
+        self.data.bot_intent['bulletColor'] = color
 
     def set_scan_color(self, color: Optional[str]) -> None:
-        self.bot_intent['scanColor'] = color
+        self.data.bot_intent['scanColor'] = color
 
     def set_tracks_color(self, color: Optional[str]) -> None:
-        self.bot_intent['tracksColor'] = color
+        self.data.bot_intent['tracksColor'] = color
 
     def set_gun_color(self, color: Optional[str]) -> None:
-        self.bot_intent['gunColor'] = color
+        self.data.bot_intent['gunColor'] = color
 
-    def get_graphics(self) -> GraphicsState:
-        return self.graphics_state
-
-    def _render_graphics_to_bot_intent(self) -> None:
-        current_tick = self.get_current_tick_or_null()
-        if current_tick and current_tick.bot_state and current_tick.bot_state.is_debugging_enabled:
-            svg_output = self.graphics_state.get_svg_output()
-            self.bot_intent['debugGraphics'] = svg_output
-            self.graphics_state.clear()
-        else:
-            # Ensure it's not set if debugging is off or tick not available
-            self.bot_intent['debugGraphics'] = None
+    def get_graphics(self) -> 'GraphicsState': # Forward reference if GraphicsState is not imported
+        return self.data.graphics_state
 
 
-    # Bullet States
+    # Bullet States - Delegated
     def get_bullet_states(self) -> List[BulletState]:
-        if self.tick_event and self.tick_event.bullet_states:
-            return list(self.tick_event.bullet_states)
+        tick = self.data.current_tick_or_null
+        if tick and tick.bullet_states:
+            return list(tick.bullet_states)
         return []
 
-    # Server Handshake
-    def get_server_handshake(self) -> ServerHandshake: # Renamed from _get_server_handshake
-        if self.server_handshake is None:
-            raise BotException(NOT_CONNECTED_TO_SERVER_MSG)
-        return self.server_handshake
+    # Server Handshake - Delegated
+    def get_server_handshake(self) -> ServerHandshake:
+        return self.data.server_handshake # Uses property getter which throws if None
 
-    def set_server_handshake(self, server_handshake: ServerHandshake) -> None:
-        self.server_handshake = server_handshake
+    def set_server_handshake(self, server_handshake: ServerHandshake) -> None: # Typically called by WebSocketHandler
+        self.data.server_handshake = server_handshake
     
     def get_variant(self) -> str:
-        return self.get_server_handshake().variant # type: ignore 
+        return self.data.server_handshake.variant # type: ignore 
 
     def get_version(self) -> str:
-        return self.get_server_handshake().version # type: ignore
+        return self.data.server_handshake.version # type: ignore
     # ...

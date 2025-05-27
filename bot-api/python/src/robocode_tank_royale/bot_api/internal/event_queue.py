@@ -2,6 +2,7 @@ from collections import deque
 from threading import Lock
 
 from robocode_tank_royale.bot_api.events import CustomEvent, EventABC, TickEvent
+from .base_bot_internal_data import BaseBotInternalData
 from .event_interruption import EventInterruption
 from .event_priorities import EventPriorities
 from .thread_interrupted_exception import ThreadInterruptedException
@@ -17,8 +18,8 @@ class EventQueue:
     MAX_QUEUE_SIZE = 256
     MAX_EVENT_AGE = 2
 
-    def __init__(self, base_bot_internals, bot_event_handlers):
-        self.base_bot_internals = base_bot_internals
+    def __init__(self, base_bot_internal_data: BaseBotInternalData, bot_event_handlers):
+        self.base_bot_internal_data = base_bot_internal_data
         self.bot_event_handlers = bot_event_handlers
         self.events: deque[EventABC] = deque()
         self.events_lock = Lock()
@@ -28,7 +29,7 @@ class EventQueue:
     def clear(self):
         """Clears all events in the queue and custom event conditions."""
         self.clear_events()
-        self.base_bot_internals.get_conditions().clear()  # conditions might be added in the bots run() method each round
+        self.base_bot_internal_data.conditions.clear()  # conditions might be added in the bots run() method each round
         self.current_top_event_priority = float('-inf')
 
     def get_events(self, turn_number):
@@ -130,7 +131,7 @@ class EventQueue:
             )))
 
     def is_bot_running(self):
-        return self.base_bot_internals.is_running()
+        return self.base_bot_internal_data.is_running
 
     def get_next_event(self):
         with self.events_lock:
@@ -169,10 +170,10 @@ class EventQueue:
                 print(f"Maximum event queue size has been reached: {EventQueue.MAX_QUEUE_SIZE}")
 
     def add_custom_events(self):
-        for condition in self.base_bot_internals.get_conditions():
+        for condition in self.base_bot_internal_data.conditions:
             if condition.test():
                 self.add_event(
-                    CustomEvent(self.base_bot_internals.get_current_tick_or_throw().get_turn_number(), condition))
+                    CustomEvent(self.base_bot_internal_data.current_tick_or_throw.turn_number, condition))
 
     def dump_events(self, turn_number):
         string_joiner = ", ".join(

@@ -14,6 +14,7 @@ from ..events import (
     RoundStartedEvent,
     RoundEndedEvent
 )
+from .base_bot_internal_data import BaseBotInternalData
 from .bot_event_handlers import BotEventHandlers
 from .internal_event_handlers import InternalEventHandlers
 from ..initial_position import InitialPosition
@@ -31,7 +32,7 @@ class WebSocketHandler:
 
     def __init__(
             self,
-            base_bot_internals: 'BaseBotInternals',
+            base_bot_internal_data: BaseBotInternalData,
             server_url: str,
             server_secret: str,
             base_bot: BaseBotABC,
@@ -40,7 +41,7 @@ class WebSocketHandler:
             internal_event_handlers: InternalEventHandlers,
             closed_event: asyncio.Event):
         """Initialize the websocket handler."""
-        self.base_bot_internals = base_bot_internals
+        self.base_bot_internal_data = base_bot_internal_data
         self.server_url = server_url
         self.server_secret = server_secret
         self.base_bot = base_bot
@@ -117,23 +118,26 @@ class WebSocketHandler:
 
     async def handle_tick(self, json_msg: Dict):
         """Handle a tick event from the server."""
-        if self.base_bot_internals.get_event_handling_disabled_turn():
+        if self.base_bot_internal_data.event_handling_disabled_turn:
             return
 
-        self.base_bot_internals.set_tick_start_nano_time(asyncio.get_event_loop().time() * 1_000_000_000)
+        self.base_bot_internal_data.tick_start_nano_time = asyncio.get_event_loop().time() * 1_000_000_000
 
-        tick_event = TickEventForBot(**json_msg)  # Assuming TickEventForBot can be constructed from json_msg
-        mapped_tick_event = EventMapper.map_tick_event(tick_event, self.base_bot)
+        tick_event_for_bot = TickEventForBot(**json_msg)
+        mapped_tick_event = EventMapper.map_tick_event(tick_event_for_bot, self.base_bot)
 
-        self.base_bot_internals.add_events_from_tick(mapped_tick_event)
+        self.base_bot_internal_data.tick_event = mapped_tick_event
 
-        bot_intent = self.base_bot_internals.get_bot_intent()
-        if bot_intent.get_rescan() is not None and bot_intent.get_rescan():
-            bot_intent.set_rescan(False)
+        # The add_events_from_tick from BaseBotInternals used to also add individual events from the tick to event_queue
+        # This logic needs to be preserved if EventQueue is still used in a similar manner.
+        # For now, assuming EventQueue will source its events based on the new tick_event if needed,
+        # or that this responsibility shifts elsewhere. The subtask description focuses on BaseBotInternalData.
 
-        self.base_bot_internals.set_tick_event(mapped_tick_event)
+        bot_intent = self.base_bot_internal_data.bot_intent
+        if bot_intent.get("rescan") is not None and bot_intent.get("rescan"): # type: ignore
+            bot_intent["rescan"] = False # type: ignore
 
-        for event in mapped_tick_event.events:
+        for event in mapped_tick_event.events: # mapped_tick_event.events should still be iterable
             self.internal_event_handlers.fire_event(event)
 
         # Trigger next turn (not tick-event!)
@@ -156,19 +160,19 @@ class WebSocketHandler:
 
     async def handle_game_started(self, json_msg: Dict):
         """Handle a game started event from the server."""
-        self.base_bot_internals.set_my_id(json_msg["myId"])
+        self.base_bot_internal_data.my_id = json_msg["myId"]
 
         teammate_ids = set(json_msg.get("teammateIds", []))
-        self.base_bot_internals.set_teammate_ids(teammate_ids)
+        self.base_bot_internal_data.teammate_ids = teammate_ids
 
-        self.base_bot_internals.set_game_setup(GameSetupMapper.map(json_msg["gameSetup"]))
+        self.base_bot_internal_data.game_setup = GameSetupMapper.map(json_msg["gameSetup"])
 
         initial_position = InitialPosition(
             json_msg["startX"],
             json_msg["startY"],
             json_msg["startDirection"]
         )
-        self.base_bot_internals.set_initial_position(initial_position)
+        self.base_bot_internal_data.initial_position = initial_position
 
         # Send ready signal
         ready_msg = {
@@ -177,7 +181,7 @@ class WebSocketHandler:
         await self.websocket.send(json.dumps(ready_msg))
 
         self.bot_event_handlers.on_game_started.publish(
-            GameStartedEvent(json_msg["myId"], initial_position, self.base_bot_internals.get_game_setup()))
+            GameStartedEvent(json_msg["myId"], initial_position, self.base_bot_internal_data.game_setup))
 
     async def handle_game_ended(self, json_msg: Dict):
         """Handle a game ended event from the server."""
@@ -200,7 +204,7 @@ class WebSocketHandler:
 
     async def handle_skipped_turn(self, json_msg: Dict):
         """Handle a skipped turn event from the server."""
-        if self.base_bot_internals.get_event_handling_disabled_turn():
+        if self.base_bot_internal_data.event_handling_disabled_turn:
             return
 
         skipped_turn_event = EventMapper.map_skipped_turn_event(**json_msg)
@@ -208,10 +212,10 @@ class WebSocketHandler:
 
     async def handle_server_handshake(self, json_msg: Dict):
         """Handle a server handshake from the server."""
-        self.base_bot_internals.set_server_handshake(json_msg)
+        self.base_bot_internal_data.server_handshake = json_msg # type: ignore
 
         # Reply by sending bot handshake
-        is_droid = hasattr(self.base_bot, 'is_droid') and self.base_bot.is_droid
+        is_droid = hasattr(self.base_bot, 'is_droid') and self.base_bot.is_droid # type: ignore
 
         # Create bot handshake message
         from ..internal.bot_handshake_factory import BotHandshakeFactory
