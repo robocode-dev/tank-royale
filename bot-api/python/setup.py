@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages  # type: ignore - setuptools.setup is missing type.
 import configparser
 
 # Read version from gradle.properties file
