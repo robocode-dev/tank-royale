@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from dataclasses import dataclass
 
 from ..bot_state import BotState
@@ -18,6 +20,6 @@ class TickEvent(BotEvent):
     """
 
     round_number: int
-    bot_state: BotState
-    bullet_states: list[BulletState]
-    events: list[BotEvent]
+    bot_state: BotState | None
+    bullet_states: Sequence[BulletState | None] | None
+    events: Sequence[BotEvent]

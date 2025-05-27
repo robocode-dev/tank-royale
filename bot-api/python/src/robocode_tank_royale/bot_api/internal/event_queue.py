@@ -1,8 +1,10 @@
 from collections import deque
 from threading import Lock
 
-from robocode_tank_royale.bot_api.events import CustomEvent, EventABC, TickEvent
+
+from ..events import CustomEvent, BotEvent, TickEvent
 from .base_bot_internal_data import BaseBotInternalData
+from .bot_event_handlers import BotEventHandlers
 from .event_interruption import EventInterruption
 from .event_priorities import EventPriorities
 from .thread_interrupted_exception import ThreadInterruptedException
@@ -18,21 +20,21 @@ class EventQueue:
     MAX_QUEUE_SIZE = 256
     MAX_EVENT_AGE = 2
 
-    def __init__(self, base_bot_internal_data: BaseBotInternalData, bot_event_handlers):
+    def __init__(self, base_bot_internal_data: BaseBotInternalData, bot_event_handlers: BotEventHandlers):
         self.base_bot_internal_data = base_bot_internal_data
         self.bot_event_handlers = bot_event_handlers
-        self.events: deque[EventABC] = deque()
+        self.events: deque[BotEvent] = deque()
         self.events_lock = Lock()
-        self.current_top_event = None
+        self.current_top_event: None | BotEvent= None
         self.current_top_event_priority = float('-inf')
 
-    def clear(self):
+    def clear(self) -> None:
         """Clears all events in the queue and custom event conditions."""
         self.clear_events()
         self.base_bot_internal_data.conditions.clear()  # conditions might be added in the bots run() method each round
         self.current_top_event_priority = float('-inf')
 
-    def get_events(self, turn_number):
+    def get_events(self, turn_number: int) -> list[BotEvent]:
         """Returns a list containing all events in the queue.
         
         Args:
@@ -49,35 +51,37 @@ class EventQueue:
         with self.events_lock:
             self.events.clear()
 
-    def set_current_event_interruptible(self, interruptible):
+    def set_current_event_interruptible(self, interruptible: bool) -> None:
         """Sets if the current event can be interrupted by new events with higher priority.
         
         Args:
             interruptible: True if the current event can be interrupted; false otherwise.
         """
+        assert self.current_top_event is not None, "No current event to set interruptible state for."
         EventInterruption.set_interruptible(type(self.current_top_event), interruptible)
 
-    def is_current_event_interruptible(self):
+    def is_current_event_interruptible(self) -> bool:
         """Checks if the current event can be interrupted by new events with higher priority.
         
         Returns:
             True if the current event can be interrupted; false otherwise.
         """
+        assert self.current_top_event is not None, "No current event to check interruptibility for."
         return EventInterruption.is_interruptible(type(self.current_top_event))
 
-    def add_events_from_tick(self, event: TickEvent):
+    def add_events_from_tick(self, event: TickEvent) -> None:
         """Adds standard events from a tick event, and custom events from conditions.
         
         Args:
             event: The tick event containing the standard events to add.
         """
         self.add_event(event)
-        for e in event.get_events():
+        for e in event.events:
             self.add_event(e)
 
         self.add_custom_events()
 
-    def dispatch_events(self, turn_number):
+    def dispatch_events(self, turn_number: int) -> None:
         """Dispatches events in prioritized order to event handlers.
         
         Args:
@@ -117,16 +121,16 @@ class EventQueue:
             finally:
                 self.current_top_event_priority = old_top_event_priority
 
-    def remove_old_events(self, turn_number):
+    def remove_old_events(self, turn_number:int) -> None:
         with self.events_lock:
             self.events = deque(
                 filter(lambda event: not self.is_old_and_non_critical_event(event, turn_number), self.events))
 
-    def sort_events(self):
+    def sort_events(self) -> None:
         with self.events_lock:
             self.events = deque(sorted(self.events, key=lambda bot_event: (
                 -1 if bot_event.is_critical() else 0,
-                bot_event.get_turn_number(),
+                bot_event.turn_number,
                 -self.get_priority(bot_event)
             )))
 
@@ -137,15 +141,14 @@ class EventQueue:
         with self.events_lock:
             return self.events.popleft() if self.events else None
 
-    def is_same_event(self, bot_event):
+    def is_same_event(self, bot_event: BotEvent) -> bool:
         return self.get_priority(bot_event) == self.current_top_event_priority
 
     @staticmethod
-    def get_priority(bot_event):
-        event_class = type(bot_event)
-        return EventPriorities.get_priority(event_class)
+    def get_priority(bot_event: BotEvent) -> int:
+        return EventPriorities.get_priority(type(bot_event))
 
-    def dispatch(self, bot_event, turn_number):
+    def dispatch(self, bot_event: BotEvent, turn_number: int):
         try:
             if self.is_not_old_or_is_critical_event(bot_event, turn_number):
                 self.bot_event_handlers.fire_event(bot_event)
@@ -153,16 +156,16 @@ class EventQueue:
             EventInterruption.set_interruptible(type(bot_event), False)
 
     @staticmethod
-    def is_not_old_or_is_critical_event(bot_event, turn_number):
-        is_not_old = bot_event.get_turn_number() >= turn_number - EventQueue.MAX_EVENT_AGE
+    def is_not_old_or_is_critical_event(bot_event: BotEvent, turn_number: int) -> bool:
+        is_not_old = bot_event.turn_number >= turn_number - EventQueue.MAX_EVENT_AGE
         return is_not_old or bot_event.is_critical()
 
     @staticmethod
-    def is_old_and_non_critical_event(bot_event, turn_number):
-        is_old = bot_event.get_turn_number() < turn_number - EventQueue.MAX_EVENT_AGE
+    def is_old_and_non_critical_event(bot_event: BotEvent, turn_number: int) -> bool:
+        is_old = bot_event.turn_number < turn_number - EventQueue.MAX_EVENT_AGE
         return is_old and not bot_event.is_critical()
 
-    def add_event(self, bot_event: EventABC):
+    def add_event(self, bot_event: BotEvent):
         with self.events_lock:
             if len(self.events) <= EventQueue.MAX_QUEUE_SIZE:
                 self.events.append(bot_event)
@@ -175,8 +178,8 @@ class EventQueue:
                 self.add_event(
                     CustomEvent(self.base_bot_internal_data.current_tick_or_throw.turn_number, condition))
 
-    def dump_events(self, turn_number):
+    def dump_events(self, turn_number: int):
         string_joiner = ", ".join(
-            f"{type(event).__name__}({event.get_turn_number()})" for event in self.events
+            f"{type(event).__name__}({event.turn_number})" for event in self.events
         )
         print(f"{turn_number} events: {string_joiner}")

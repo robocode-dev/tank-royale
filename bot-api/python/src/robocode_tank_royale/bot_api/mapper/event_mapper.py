@@ -1,9 +1,9 @@
 import json
 from typing import Any, Dict, Union
 
-from robocode_tank_royale.bot_api.base_bot_abc import BaseBotABC
-from robocode_tank_royale.bot_api.bot_exception import BotException
-from robocode_tank_royale.bot_api.events import (
+from ..base_bot_abc import BaseBotABC
+from ..bot_exception import BotException
+from ..events import (
     BotDeathEvent,
     BulletFiredEvent,
     BulletHitBotEvent,
@@ -48,8 +48,8 @@ class EventMapper:
             event.turn_number,
             event.round_number,
             BotStateMapper.map(event.bot_state),
-            BulletStateMapper.map_list(event.bullet_states),
-            EventMapper._map_events(event.events, base_bot)
+            BulletStateMapper.map(event.bullet_states),  # type: ignore
+            EventMapper._map_events(event.events, base_bot)  # type: ignore
         )
 
     @staticmethod
@@ -82,7 +82,7 @@ class EventMapper:
         if isinstance(event, SchemaScannedBotEvent):
             return EventMapper._map_scanned_bot_event(event)
         if isinstance(event, SchemaSkippedTurnEvent):
-            return EventMapper._map_skipped_turn_event(event)
+            return EventMapper.map_skipped_turn_event(event)
         if isinstance(event, SchemaWonRoundEvent):
             return EventMapper._map_won_round_event(event)
         if isinstance(event, SchemaTeamMessageEvent):
@@ -187,7 +187,7 @@ class EventMapper:
     def _map_team_message_event(source: SchemaTeamMessageEvent) -> TeamMessageEvent:
         """Map a schema TeamMessageEvent to a bot-api TeamMessageEvent."""
         message = source.message
-        if message is None:
+        if message is None:  # type: ignore
             raise BotException("message in TeamMessageEvent is None")
 
         try:

@@ -5,10 +5,10 @@ These handlers may or may not be triggered by the bot event queue, and might
 not be handled immediately by the bot logic.
 """
 
-from typing import Dict, Type
+from typing import Any, Dict, Type
 
-from robocode_tank_royale.bot_api.base_bot_abc import BaseBotABC
-from robocode_tank_royale.bot_api.events import (
+from ..base_bot_abc import BaseBotABC
+from ..events import (
     ConnectedEvent, DisconnectedEvent, ConnectionErrorEvent,
     GameStartedEvent, GameEndedEvent, RoundStartedEvent, RoundEndedEvent,
     TickEvent, SkippedTurnEvent, DeathEvent, BotDeathEvent,
@@ -16,9 +16,10 @@ from robocode_tank_royale.bot_api.events import (
     BulletHitBotEvent, BulletHitBulletEvent, BulletHitWallEvent,
     ScannedBotEvent, WonRoundEvent, CustomEvent, TeamMessageEvent
 )
-from robocode_tank_royale.bot_api.events.bot_event import BotEvent
-from robocode_tank_royale.bot_api.events.event_abc import EventABC
-from robocode_tank_royale.bot_api.internal.event_handler import EventHandler
+from ..events.bot_event import BotEvent
+from ..events.event_abc import EventABC
+
+from .event_handler import EventHandler
 
 
 class BotEventHandlers:
@@ -36,33 +37,33 @@ class BotEventHandlers:
         Args:
             base_bot: The base bot that will handle the events.
         """
-        self.on_connected = EventHandler()
-        self.on_disconnected = EventHandler()
-        self.on_connection_error = EventHandler()
+        self.on_connected = EventHandler[ConnectedEvent]()
+        self.on_disconnected = EventHandler[DisconnectedEvent]()
+        self.on_connection_error = EventHandler[ConnectionErrorEvent]()
 
-        self.on_game_started = EventHandler()
-        self.on_game_ended = EventHandler()
-        self.on_game_aborted = EventHandler()
-        self.on_round_started = EventHandler()
-        self.on_round_ended = EventHandler()
+        self.on_game_started = EventHandler[GameStartedEvent]()
+        self.on_game_ended = EventHandler[GameEndedEvent]()
+        self.on_game_aborted = EventHandler[Any]()
+        self.on_round_started = EventHandler[RoundStartedEvent]()
+        self.on_round_ended = EventHandler[RoundEndedEvent]()
 
-        self.on_tick = EventHandler()
-        self.on_skipped_turn = EventHandler()
-        self.on_death = EventHandler()
-        self.on_bot_death = EventHandler()
-        self.on_hit_bot = EventHandler()
-        self.on_hit_wall = EventHandler()
-        self.on_bullet_fired = EventHandler()
-        self.on_hit_by_bullet = EventHandler()
-        self.on_bullet_hit = EventHandler()
-        self.on_bullet_hit_bullet = EventHandler()
-        self.on_bullet_hit_wall = EventHandler()
-        self.on_scanned_bot = EventHandler()
-        self.on_won_round = EventHandler()
-        self.on_custom_event = EventHandler()
-        self.on_team_message = EventHandler()
+        self.on_tick = EventHandler[TickEvent]()
+        self.on_skipped_turn = EventHandler[SkippedTurnEvent]()
+        self.on_death = EventHandler[DeathEvent]()
+        self.on_bot_death = EventHandler[BotDeathEvent]()
+        self.on_hit_bot = EventHandler[HitBotEvent]()
+        self.on_hit_wall = EventHandler[HitWallEvent]()
+        self.on_bullet_fired = EventHandler[BulletFiredEvent]()
+        self.on_hit_by_bullet = EventHandler[HitByBulletEvent]()
+        self.on_bullet_hit = EventHandler[BulletHitBotEvent]()
+        self.on_bullet_hit_bullet = EventHandler[BulletHitBulletEvent]()
+        self.on_bullet_hit_wall = EventHandler[BulletHitWallEvent]()
+        self.on_scanned_bot = EventHandler[ScannedBotEvent]()
+        self.on_won_round = EventHandler[WonRoundEvent]()
+        self.on_custom_event = EventHandler[CustomEvent]()
+        self.on_team_message = EventHandler[TeamMessageEvent]()
 
-        self._event_handler_map: Dict[Type[EventABC], EventHandler] = {}
+        self._event_handler_map: Dict[Type[EventABC], EventHandler[Any]] = {}
 
         self._initialize_event_handlers()
         self._subscribe_to_event_handlers(base_bot)

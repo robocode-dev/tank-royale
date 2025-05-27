@@ -1,5 +1,6 @@
 import asyncio
 import json
+from typing import Any
 import websockets
 from typing import Dict
 
@@ -49,7 +50,7 @@ class WebSocketHandler:
         self.bot_event_handlers = bot_event_handlers
         self.internal_event_handlers = internal_event_handlers
         self.closed_event = closed_event
-        self.websocket = None
+        self.websocket : None | websockets.ClientConnection = None
 
     async def connect(self):
         """Connect to the WebSocket server."""
@@ -68,22 +69,28 @@ class WebSocketHandler:
         if self.websocket:
             await self.websocket.close(code, reason)
 
-    async def on_close(self, websocket, code: int, reason: str):
+    async def on_close(self, websocket: websockets.ClientConnection, code: int, reason: str) -> None:
         """Handle WebSocket close event."""
+        del websocket  # Unused parameter, but kept for compatibility
         disconnected_event = DisconnectedEvent(self.server_url, True, code, reason)
         self.bot_event_handlers.on_disconnected.publish(disconnected_event)
         self.internal_event_handlers.on_disconnected.publish(disconnected_event)
         self.closed_event.set()
 
-    async def on_error(self, websocket, error: Exception):
+    async def on_error(self, websocket: websockets.ClientConnection, error: Exception):
         """Handle WebSocket error."""
+        del websocket  # Unused parameter, but kept for compatibility
         self.bot_event_handlers.on_connection_error.publish(ConnectionErrorEvent(self.server_url, error))
         self.closed_event.set()
 
     async def receive_messages(self):
         """Main loop for receiving messages from the WebSocket server."""
+        assert self.websocket is not None, "WebSocket connection is not established."
         try:
             async for message in self.websocket:
+                if isinstance(message, bytes):
+                    message = message.decode('utf-8')
+                assert isinstance(message, str), "Received message is not a string."
                 await self.process_message(message)
         except websockets.exceptions.ConnectionClosed as e:
             await self.on_close(self.websocket, e.code, e.reason)
@@ -116,12 +123,12 @@ class WebSocketHandler:
             else:
                 raise BotException(f"Unsupported WebSocket message type: {msg_type}")
 
-    async def handle_tick(self, json_msg: Dict):
+    async def handle_tick(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a tick event from the server."""
         if self.base_bot_internal_data.event_handling_disabled_turn:
             return
 
-        self.base_bot_internal_data.tick_start_nano_time = asyncio.get_event_loop().time() * 1_000_000_000
+        self.base_bot_internal_data.tick_start_nano_time = int(asyncio.get_event_loop().time() * 1_000_000_000)
 
         tick_event_for_bot = TickEventForBot(**json_msg)
         mapped_tick_event = EventMapper.map_tick_event(tick_event_for_bot, self.base_bot)
@@ -143,14 +150,14 @@ class WebSocketHandler:
         # Trigger next turn (not tick-event!)
         self.internal_event_handlers.on_next_turn.publish(mapped_tick_event)
 
-    async def handle_round_started(self, json_msg: Dict):
+    async def handle_round_started(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a round started event from the server."""
         round_started_event = RoundStartedEvent(json_msg["roundNumber"])
 
         self.bot_event_handlers.on_round_started.publish(round_started_event)
         self.internal_event_handlers.on_round_started.publish(round_started_event)
 
-    async def handle_round_ended(self, json_msg: Dict):
+    async def handle_round_ended(self, json_msg: Dict[Any, Any]):
         """Handle a round ended event from the server."""
         round_ended_event = RoundEndedEvent(
             json_msg["roundNumber"], json_msg["turnNumber"], json_msg["results"])
@@ -158,8 +165,9 @@ class WebSocketHandler:
         self.bot_event_handlers.on_round_ended.publish(round_ended_event)
         self.internal_event_handlers.on_round_ended.publish(round_ended_event)
 
-    async def handle_game_started(self, json_msg: Dict):
+    async def handle_game_started(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a game started event from the server."""
+        assert self.websocket is not None, "WebSocket connection is not established."
         self.base_bot_internal_data.my_id = json_msg["myId"]
 
         teammate_ids = set(json_msg.get("teammateIds", []))
@@ -183,12 +191,12 @@ class WebSocketHandler:
         self.bot_event_handlers.on_game_started.publish(
             GameStartedEvent(json_msg["myId"], initial_position, self.base_bot_internal_data.game_setup))
 
-    async def handle_game_ended(self, json_msg: Dict):
+    async def handle_game_ended(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a game ended event from the server."""
         number_of_rounds = json_msg.get("numberOfRounds", 0)  # Use get with default value for safety
 
         results = json_msg.get("results")
-        results_for_bot = ResultsForBot(**results)
+        results_for_bot = ResultsForBot(**results)  # type: ignore - schema code is generated and should be valid
 
         game_ended_event = GameEndedEvent()
         game_ended_event.number_of_rounds = number_of_rounds
@@ -197,12 +205,12 @@ class WebSocketHandler:
         self.bot_event_handlers.on_game_ended.publish(game_ended_event)
         self.internal_event_handlers.on_game_ended.publish(game_ended_event)
 
-    async def handle_game_aborted(self):
+    async def handle_game_aborted(self) -> None:
         """Handle a game aborted event from the server."""
         self.bot_event_handlers.on_game_aborted.publish(None)
         self.internal_event_handlers.on_game_aborted.publish(None)
 
-    async def handle_skipped_turn(self, json_msg: Dict):
+    async def handle_skipped_turn(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a skipped turn event from the server."""
         if self.base_bot_internal_data.event_handling_disabled_turn:
             return
@@ -210,12 +218,14 @@ class WebSocketHandler:
         skipped_turn_event = EventMapper.map_skipped_turn_event(**json_msg)
         self.bot_event_handlers.on_skipped_turn.publish(skipped_turn_event)
 
-    async def handle_server_handshake(self, json_msg: Dict):
+    async def handle_server_handshake(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a server handshake from the server."""
+        assert self.websocket is not None, "WebSocket connection is not established."
         self.base_bot_internal_data.server_handshake = json_msg # type: ignore
 
         # Reply by sending bot handshake
-        is_droid = hasattr(self.base_bot, 'is_droid') and self.base_bot.is_droid # type: ignore
+        is_droid :bool = hasattr(self.base_bot, 'is_droid') and self.base_bot.is_droid # type: ignore
+        assert isinstance(is_droid, bool), "is_droid must be a boolean value"
 
         # Create bot handshake message
         from ..internal.bot_handshake_factory import BotHandshakeFactory

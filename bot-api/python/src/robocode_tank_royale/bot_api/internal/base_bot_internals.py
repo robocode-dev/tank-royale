@@ -4,45 +4,41 @@ import traceback
 import time
 import json
 import math
-import os # Added import
-from types import SimpleNamespace # Keep for now, may be removed if get_current_tick_or_throw is fully stable
-from typing import Any, Optional, Set, Dict, List
+import os
+from typing import Any, Optional, Set, Dict, List, Sequence
 
-from robocode_tank_royale.bot_api.base_bot_abc import BaseBotABC
-from robocode_tank_royale.bot_api.base_bot_abc import BaseBotABC
-from robocode_tank_royale.bot_api.bot_abc import BotABC
-from robocode_tank_royale.bot_api.bot_info import BotInfo
-from robocode_tank_royale.bot_api.internal.bot_event_handlers import BotEventHandlers
-from robocode_tank_royale.bot_api.internal.internal_event_handlers import InternalEventHandlers
-from robocode_tank_royale.bot_api.internal.event_queue import EventQueue
-from robocode_tank_royale.bot_api.game_setup import GameSetup
-from robocode_tank_royale.bot_api.events import TickEvent, BulletFiredEvent, RoundStartedEvent, BotEvent
-from robocode_tank_royale.bot_api.bullet_state import BulletState
-from robocode_tank_royale.bot_api.events.condition import Condition
-from robocode_tank_royale.bot_api.initial_position import InitialPosition
-from robocode_tank_royale.bot_api.bot_exception import BotException
-from robocode_tank_royale.bot_api.internal.thread_interrupted_exception import ThreadInterruptedException
-from robocode_tank_royale.bot_api.internal.stop_resume_listener_abs import StopResumeListenerABC
-from robocode_tank_royale.bot_api.internal.websocket_handler import WebSocketHandler
-from robocode_tank_royale.bot_api.util.math_util import MathUtil
-# GraphicsState is now part of BaseBotInternalData, so direct import might not be needed here if accessed via self.data.graphics_state
-# from .graphics_state import GraphicsState
-from robocode_tank_royale.schema import ServerHandshake
+from ..base_bot_abc import BaseBotABC
+from ..bot_abc import BotABC
+from ..bot_exception import BotException
+from ..bot_info import BotInfo
+from ..bullet_state import BulletState
+from ..events import TickEvent, BulletFiredEvent, RoundStartedEvent, BotEvent
+from ..events.condition import Condition
+from ..game_setup import GameSetup
+from ..initial_position import InitialPosition
+from ..util.math_util import MathUtil
+
 from .base_bot_internal_data import BaseBotInternalData
+from .bot_event_handlers import BotEventHandlers
+from .event_queue import EventQueue
+from .env_vars import EnvVars
+from .internal_event_handlers import InternalEventHandlers
+from .stop_resume_listener_abs import StopResumeListenerABC
+from .thread_interrupted_exception import ThreadInterruptedException
+from .websocket_handler import WebSocketHandler
 
-from robocode_tank_royale.bot_api.constants import (
+from ..constants import (
     MAX_SPEED,
     MAX_TURN_RATE,
     MAX_GUN_TURN_RATE,
     MAX_RADAR_TURN_RATE,
     DECELERATION,
-    ACCELERATION, # Make sure this is defined in constants
-    MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN, # Added import
-    TEAM_MESSAGE_MAX_SIZE, # Added import
+    ACCELERATION,
+    MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN,
+    TEAM_MESSAGE_MAX_SIZE,
 )
-# Assuming schema_messages would provide BotIntent, but we are using a dictionary for now.
-# from robocode_tank_royale.schema_messages import BotIntent # Not used yet
-from robocode_tank_royale.bot_api.internal.env_vars import EnvVars
+
+from robocode_tank_royale.schema import ServerHandshake
 
 DEFAULT_SERVER_URL = "ws://localhost:7654"
 
@@ -52,6 +48,8 @@ TICK_NOT_AVAILABLE_MSG = \
 NOT_CONNECTED_TO_SERVER_MSG = \
     "Not connected to a game server. Make sure onConnected() event handler has been called first"
 
+
+# TODO: This class does not work yet - esp., figure out the asyncio integration and how to handle the bot's main loop.
 
 class BaseBotInternals:
     def __init__(self, base_bot: BaseBotABC, bot_info: Optional[BotInfo], server_url: Optional[str], server_secret: Optional[str]):
@@ -181,8 +179,6 @@ class BaseBotInternals:
     def get_time_left(self) -> int:
         passed_microseconds = (time.monotonic_ns() - self.data.tick_start_nano_time) // 1000
         game_setup = self.data.game_setup
-        if game_setup.turn_timeout is None:
-             raise BotException("turn_timeout is not set in GameSetup")
         return game_setup.turn_timeout - passed_microseconds
 
     def enable_event_handling(self, enable: bool) -> None:
@@ -207,7 +203,7 @@ class BaseBotInternals:
         return self.data.event_handling_disabled_turn != 0 and \
                self.data.event_handling_disabled_turn < (current_tick.turn_number - 1)
 
-    def get_events(self) -> List[BotEvent]:
+    def get_events(self) -> Sequence[BotEvent]:
         turn_number = self.data.current_tick_or_throw.turn_number
         return self.event_queue.get_events(turn_number)
 

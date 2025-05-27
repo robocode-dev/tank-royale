@@ -2,7 +2,7 @@ import os
 import re
 from typing import List, Set, Optional
 
-from robocode_tank_royale.bot_api import BotInfo, InitialPosition
+from ..bot_info import BotInfo, InitialPosition
 
 
 class EnvVars:

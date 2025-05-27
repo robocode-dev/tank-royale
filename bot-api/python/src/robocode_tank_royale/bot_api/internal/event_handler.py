@@ -2,7 +2,7 @@ from threading import Lock
 from typing import Any, Generic, TypeVar, Callable, List
 import heapq
 from weakref import WeakSet
-from robocode_tank_royale.bot_api.events import EventABC
+from ..events import EventABC
 
 T = TypeVar('T', bound=EventABC)
 

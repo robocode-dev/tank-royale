@@ -2,8 +2,8 @@
 
 from typing import Any, Dict, Type
 
-from robocode_tank_royale.bot_api.events import EventABC
-from robocode_tank_royale.bot_api.events import (
+from ..events import EventABC
+from ..events import (
     DisconnectedEvent,
     GameEndedEvent,
     RoundStartedEvent,

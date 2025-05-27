@@ -1,3 +1,7 @@
+from typing import Type
+
+from ..events import EventABC
+
 class EventInterruption:
     """
     Manages event interruption settings for bot events.
@@ -6,7 +10,7 @@ class EventInterruption:
     Events marked as interruptible can interrupt the normal execution flow of bot events.
     """
 
-    _INTERRUPTIBLES = set()
+    _INTERRUPTIBLES: set[Type[EventABC]] = set()
     """
     Set containing all event classes that are currently marked as interruptible.
     """
@@ -20,7 +24,7 @@ class EventInterruption:
         raise NotImplementedError("This class cannot be instantiated")
 
     @staticmethod
-    def set_interruptible(event_class, interruptible):
+    def set_interruptible(event_class: Type[EventABC], interruptible: bool) -> None:
         """
         Sets whether a specific event class should be interruptible or not.
 
@@ -34,7 +38,7 @@ class EventInterruption:
             EventInterruption._INTERRUPTIBLES.discard(event_class)
 
     @staticmethod
-    def is_interruptible(event_class):
+    def is_interruptible(event_class: Type[EventABC]) -> bool:
         """
         Checks if a specific event class is marked as interruptible.
 

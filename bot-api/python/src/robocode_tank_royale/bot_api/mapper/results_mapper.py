@@ -1,4 +1,4 @@
-from robocode_tank_royale.bot_api import BotResults
+from ..bot_results import BotResults
 from robocode_tank_royale.schema.results_for_bot import ResultsForBot
 
 
