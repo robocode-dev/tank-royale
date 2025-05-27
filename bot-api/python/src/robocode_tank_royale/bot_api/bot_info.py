@@ -1,7 +1,7 @@
 import json
 from typing import List, Set, Optional
 
-from robocode_tank_royale.bot_api import InitialPosition
+from .initial_position import InitialPosition
 
 
 class BotInfo:
@@ -115,9 +115,9 @@ class BotInfo:
             raise ValueError("'authors' cannot be null or empty")
         if len(authors) > cls.MAX_NUMBER_OF_AUTHORS:
             raise ValueError(f"Number of 'authors' exceeds {cls.MAX_NUMBER_OF_AUTHORS}")
-        processed_authors = []
+        processed_authors: List[str] = []
         for author in authors:
-            if not author or len(author.strip()) == 0:
+            if not author or not author.strip():
                 raise ValueError("'authors' cannot contain blank values")
             author = author.strip()
             if len(author) > cls.MAX_AUTHOR_LENGTH:
@@ -193,7 +193,7 @@ class BotInfo:
             self.description = None
             self.homepage = None
             self.country_codes = []
-            self.game_types = set()
+            self.game_types: set[str] = set()
             self.platform = None
             self.programming_lang = None
             self.initial_position = None
@@ -459,6 +459,9 @@ class BotInfo:
             Returns:
                 BotInfo: The resulting BotInfo instance.
             """
+            assert self.name is not None, "Name cannot be null"
+            assert self.version is not None, "Version cannot be null"
+            assert self.initial_position is not None, "Initial position cannot be null"
             return BotInfo(
                 name=self.name,
                 version=self.version,
@@ -469,5 +472,5 @@ class BotInfo:
                 game_types=self.game_types,
                 platform=self.platform,
                 programming_lang=self.programming_lang,
-                initial_position=self.initial_position,
+                initial_position=InitialPosition.from_string(self.initial_position),
             )

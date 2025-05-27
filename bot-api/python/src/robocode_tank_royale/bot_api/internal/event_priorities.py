@@ -1,5 +1,6 @@
-from robocode_tank_royale.bot_api.default_event_priority import DefaultEventPriority as Priority
-from robocode_tank_royale.bot_api.events import *
+from typing import Type
+from ..default_event_priority import DefaultEventPriority as Priority
+from ..events import *
 
 
 class EventPriorities:
@@ -17,14 +18,14 @@ class EventPriorities:
         raise NotImplementedError("This class cannot be instantiated")
 
     @staticmethod
-    def initialize_event_priorities():
+    def initialize_event_priorities() -> dict[Type[BotEvent], int]:
         """
         Initializes the default event priorities map.
 
         Returns:
             dict: A map containing default priority values for all supported event types.
         """
-        priorities = {
+        return {
             WonRoundEvent: Priority.WON_ROUND,
             SkippedTurnEvent: Priority.SKIPPED_TURN,
             TickEvent: Priority.TICK,
@@ -41,12 +42,11 @@ class EventPriorities:
             ScannedBotEvent: Priority.SCANNED_BOT,
             DeathEvent: Priority.DEATH,
         }
-        return priorities
 
     EVENT_PRIORITIES = initialize_event_priorities()
 
     @staticmethod
-    def set_priority(event_class, priority):
+    def set_priority(event_class: Type[BotEvent] | None, priority: int) -> None:
         """
         Sets the priority for a specific event class.
 
@@ -62,7 +62,7 @@ class EventPriorities:
         EventPriorities.EVENT_PRIORITIES[event_class] = priority
 
     @staticmethod
-    def get_priority(event_class):
+    def get_priority(event_class: Type[BotEvent] | None) -> int:
         """
         Gets the priority for a specific event class.
 

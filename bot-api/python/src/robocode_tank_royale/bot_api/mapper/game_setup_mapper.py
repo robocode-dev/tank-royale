@@ -1,11 +1,13 @@
-from robocode_tank_royale.bot_api.game_setup import GameSetup
+from ..game_setup import GameSetup
+
+from robocode_tank_royale.schema import GameSetup as SchemaGameSetup
 
 
 class GameSetupMapper:
     """Utility class for mapping game setups."""
 
     @staticmethod
-    def map(source) -> GameSetup:
+    def map(source: SchemaGameSetup) -> GameSetup:
         """Map a schema GameSetup to a bot-api GameSetup."""
 
         return GameSetup(

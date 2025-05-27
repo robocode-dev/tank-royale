@@ -1,4 +1,4 @@
-from robocode_tank_royale.bot_api import BotResults
+from ..bot_results import BotResults
 from .event_abc import EventABC
 
 

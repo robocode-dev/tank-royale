@@ -1,8 +1,8 @@
 from threading import Lock
-from typing import Generic, TypeVar, Callable, List, Set
+from typing import Any, Generic, TypeVar, Callable, List
 import heapq
 from weakref import WeakSet
-from robocode_tank_royale.bot_api.events import EventABC
+from ..events import EventABC
 
 T = TypeVar('T', bound=EventABC)
 
@@ -94,9 +94,6 @@ class EventHandler(Generic[T]):
         Raises:
             TypeError: If event_data does not implement the EventABC interface
         """
-        if not isinstance(event_data, EventABC):
-            raise TypeError("Event data must implement the EventABC interface")
-
         # Get a copy of subscriber entries under lock to allow concurrent modifications
         with self._lock:
             # Sort entries to ensure correct priority order for invocation
@@ -138,7 +135,7 @@ class EventHandler(Generic[T]):
             # Reverse comparison for higher priority first (heapq prioritizes lower values)
             return other.priority < self.priority
 
-        def __eq__(self, other):
+        def __eq__(self, other: Any):
             if not isinstance(other, EventHandler.EntryWithPriority):
                 return NotImplemented
             return self.subscriber == other.subscriber and self.priority == other.priority

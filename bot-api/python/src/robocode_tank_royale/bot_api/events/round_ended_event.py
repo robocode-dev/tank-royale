@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from robocode_tank_royale.bot_api import BotResults
-from robocode_tank_royale.bot_api.events import EventABC
+from ..bot_results import BotResults
+from .event_abc import EventABC
 
 
 @dataclass(frozen=True, repr=True)

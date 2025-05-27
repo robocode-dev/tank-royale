@@ -2,7 +2,7 @@ import os
 import re
 from typing import List, Set, Optional
 
-from robocode_tank_royale.bot_api import BotInfo, InitialPosition
+from ..bot_info import BotInfo, InitialPosition
 
 
 class EnvVars:
@@ -59,7 +59,7 @@ class EnvVars:
     MissingEnvValue = "Missing environment variable: "
 
     @staticmethod
-    def get_bot_info():
+    def get_bot_info() -> BotInfo:
         """
         Gets the bot info from environment variables.
 
@@ -69,10 +69,12 @@ class EnvVars:
         Raises:
             Exception: If any of the required environment variables are missing.
         """
-        if not EnvVars.get_bot_name():
+        bot_name = EnvVars.get_bot_name()
+        if not bot_name:
             raise Exception(EnvVars.MissingEnvValue + EnvVars.BotName)
 
-        if not EnvVars.get_bot_version():
+        bot_version = EnvVars.get_bot_version()
+        if not bot_version:
             raise Exception(EnvVars.MissingEnvValue + EnvVars.BotVersion)
 
         authors = EnvVars.get_bot_authors()
@@ -80,9 +82,9 @@ class EnvVars:
             raise Exception(EnvVars.MissingEnvValue + EnvVars.BotAuthors)
 
         return BotInfo(
-            EnvVars.get_bot_name(),
-            EnvVars.get_bot_version(),
-            EnvVars.get_bot_authors(),
+            bot_name,
+            bot_version,
+            authors,
             EnvVars.get_bot_description(),
             EnvVars.get_bot_homepage(),
             EnvVars.get_bot_country_codes(),
@@ -211,7 +213,10 @@ class EnvVars:
         Returns:
             InitialPosition: The initial position of the bot.
         """
-        return InitialPosition.from_string(os.getenv(EnvVars.BotInitialPosition))
+        init_pos = os.getenv(EnvVars.BotInitialPosition)
+        if not init_pos:
+            raise Exception(EnvVars.MissingEnvValue + EnvVars.BotInitialPosition)
+        return InitialPosition.from_string(init_pos)
 
     @staticmethod
     def get_team_id() -> Optional[int]:
