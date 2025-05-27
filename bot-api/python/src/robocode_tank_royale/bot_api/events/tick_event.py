@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from robocode_tank_royale.bot_api import BotState, BulletState
+from ..bot_state import BotState
+from ..bullet_state import BulletState
 from .bot_event import BotEvent
 
 

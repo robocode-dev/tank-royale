@@ -5,7 +5,7 @@ from typing import Any
 
 from PIL import Image
 
-from robocode_tank_royale.bot_api.events import *
+from .events import *
 from .bullet_state import BulletState
 from .color import Color
 

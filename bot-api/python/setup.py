@@ -8,17 +8,24 @@ with open('../../gradle.properties') as f:
 version = config.get('default', 'version')
 
 setup(
-    name='robocode-tank-royale',
+    name="robocode-tank-royale",
     version=version,
-    description='The Python Bot API for Robocode Tank Royale',
-    long_description=open('README.md').read(),
-    long_description_content_type='text/markdown',
-    url='https://robocode-dev.github.io/tank-royale',
+    description="The Python Bot API for Robocode Tank Royale",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
+    url="https://robocode-dev.github.io/tank-royale",
     package_dir={
-        "robocode_tank_royale.schema": "generated/robocode_tank_royale/schema",
-        "robocode_tank_royale.bot_api": "generated/robocode_tank_royale/bot_api",
+        "robocode_tank_royale.bot_api": "src/robocode_tank_royale/bot_api",
+        "robocode_tank_royale.schema": "generated/robocode_tank_royale/tank_royale/schema",  # Specific override for schema
     },
-    packages=find_packages(where='src') + find_packages(where='generated'),
-    python_requires='>=3.10',
-    install_requires=open('requirements.txt').read().splitlines(),
+    packages=[
+        "robocode_tank_royale.bot_api",
+        "robocode_tank_royale.schema",
+    ]
+    + [
+        f"robocode_tank_royale.bot_api.{subpackage}"
+        for subpackage in find_packages("src/robocode_tank_royale/bot_api")
+    ],
+    python_requires=">=3.10",
+    install_requires=open("requirements.txt").read().splitlines(),
 )

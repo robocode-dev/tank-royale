@@ -1,8 +1,18 @@
 """Internal event handler support."""
 
-from typing import Dict, Type
+from typing import Any, Dict, Type
 
 from robocode_tank_royale.bot_api.events import EventABC
+from robocode_tank_royale.bot_api.events import (
+    DisconnectedEvent,
+    GameEndedEvent,
+    RoundStartedEvent,
+    RoundEndedEvent,
+    DeathEvent,
+    HitBotEvent,
+    HitWallEvent,
+    BulletFiredEvent,
+)
 from .event_handler import EventHandler
 
 
@@ -13,32 +23,27 @@ class InternalEventHandlers:
 
     def __init__(self):
         """Initialize a new InternalEventHandlers instance."""
-        self.on_disconnected = EventHandler()
+        self.on_disconnected: EventHandler[DisconnectedEvent] = EventHandler()
 
-        self.on_game_ended = EventHandler()
-        self.on_game_aborted = EventHandler()
-        self.on_round_started = EventHandler()
-        self.on_round_ended = EventHandler()
+        self.on_game_ended: EventHandler[GameEndedEvent] = EventHandler()
+        self.on_game_aborted: EventHandler[Any] = EventHandler()
+        self.on_round_started: EventHandler[RoundStartedEvent] = EventHandler()
+        self.on_round_ended: EventHandler[RoundEndedEvent] = EventHandler()
 
-        self.on_death = EventHandler()
-        self.on_hit_bot = EventHandler()
-        self.on_hit_wall = EventHandler()
-        self.on_bullet_fired = EventHandler()
+        self.on_death: EventHandler[DeathEvent] = EventHandler()
+        self.on_hit_bot: EventHandler[HitBotEvent] = EventHandler()
+        self.on_hit_wall: EventHandler[HitWallEvent] = EventHandler()
+        self.on_bullet_fired: EventHandler[BulletFiredEvent] = EventHandler()
 
         # Virtual (fake) event handler
-        self.on_next_turn = EventHandler()
+        self.on_next_turn: EventHandler[Any] = EventHandler()
 
         # Map event types to their handlers
-        self._event_handler_map: Dict[Type[EventABC], EventHandler] = {}
+        self._event_handler_map: Dict[Type[EventABC], EventHandler[Any]] = {}
         self._initialize_event_handlers()
 
     def _initialize_event_handlers(self) -> None:
         """Initialize the mapping between event types and their handlers."""
-        from robocode_tank_royale.bot_api.events import (
-            DisconnectedEvent, GameEndedEvent, RoundStartedEvent,
-            RoundEndedEvent, DeathEvent, HitBotEvent,
-            HitWallEvent, BulletFiredEvent
-        )
 
         self._event_handler_map[DisconnectedEvent] = self.on_disconnected
 

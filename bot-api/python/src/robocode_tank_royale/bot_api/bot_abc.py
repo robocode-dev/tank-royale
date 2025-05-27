@@ -1,13 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Union
+from .events import Condition
 
 class BotABC(ABC):
     """
     Interface for a bot that extends the core API with convenient methods for movement,
     turning, and firing the gun.
     """
-
-    from events import Condition
 
     def run(self) -> None:
         """
@@ -184,7 +183,7 @@ class BotABC(ABC):
         See Also:
             set_forward, set_back, forward, back
         """
-        pass
+        raise NotImplementedError('get_distance_remaining not implemented')
 
     def set_turn_left(self, degrees: float) -> None:
         """
@@ -330,7 +329,7 @@ class BotABC(ABC):
             turn_left
             turn_right
         """
-        pass
+        raise NotImplementedError('get_turn_remaining not implemented')
 
     def set_turn_gun_left(self, degrees: float) -> None:
         """
@@ -446,7 +445,7 @@ class BotABC(ABC):
                    - If `float('inf')`, the gun is turning left indefinitely.
                    - If `float('-inf')`, the gun is turning right indefinitely.
         """
-        pass
+        raise NotImplementedError('get_gun_turn_remaining not implemented')
 
     def set_turn_radar_left(self, degrees: float) -> None:
         """
@@ -543,7 +542,7 @@ class BotABC(ABC):
               `set_turn_radar_left()`, `set_turn_radar_right()`,
               `turn_radar_left()`, or `turn_radar_right()`.
         """
-        pass
+        raise NotImplementedError('get_radar_turn_remaining not implemented')
 
     def fire(self, firepower: float) -> None:
         """

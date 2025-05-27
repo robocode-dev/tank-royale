@@ -6,9 +6,10 @@ import json
 import math
 import os # Added import
 from types import SimpleNamespace # Keep for now, may be removed if get_current_tick_or_throw is fully stable
-from typing import Optional, Set, Dict, Any, TYPE_CHECKING, List, Protocol
+from typing import Any, Optional, Set, Dict, List
 
-
+from robocode_tank_royale.bot_api.base_bot_abc import BaseBotABC
+from robocode_tank_royale.bot_api.bot_abc import BotABC
 from robocode_tank_royale.bot_api.bot_info import BotInfo
 from robocode_tank_royale.bot_api.internal.bot_event_handlers import BotEventHandlers
 from robocode_tank_royale.bot_api.internal.internal_event_handlers import InternalEventHandlers
@@ -19,32 +20,18 @@ from robocode_tank_royale.bot_api.bullet_state import BulletState # Updated impo
 from robocode_tank_royale.bot_api.events.condition import Condition
 from robocode_tank_royale.bot_api.initial_position import InitialPosition
 from robocode_tank_royale.bot_api.bot_exception import BotException
+from robocode_tank_royale.bot_api.internal.thread_interrupted_exception import ThreadInterruptedException
+from robocode_tank_royale.bot_api.internal.stop_resume_listener_abs import StopResumeListenerABC
 from robocode_tank_royale.bot_api.internal.websocket_handler import WebSocketHandler
-from robocode_tank_royale.bot_api.util.math_util import clamp
+from robocode_tank_royale.bot_api.util.math_util import MathUtil
 from .graphics_state import GraphicsState
 from robocode_tank_royale.schema import ServerHandshake # Using this path
 
-
-if TYPE_CHECKING:
-    from robocode_tank_royale.bot_api.bot_abc import IBaseBot, IBot
-    from typing import Any # For message type hint
-
-
-
-# Definition for IStopResumeListener using Protocol
-class IStopResumeListener(Protocol):
-  def on_stop(self) -> None: ...
-  def on_resume(self) -> None: ...
-
-class ThreadInterruptedException(BaseException): # As per Java, can be BaseException
-    pass
-
-
 from robocode_tank_royale.bot_api.constants import (
-    MAX_SPEED as MAX_SPEED_CONST, # Alias to avoid conflict with method
-    MAX_TURN_RATE as MAX_TURN_RATE_CONST,
-    MAX_GUN_TURN_RATE as MAX_GUN_TURN_RATE_CONST,
-    MAX_RADAR_TURN_RATE as MAX_RADAR_TURN_RATE_CONST,
+    MAX_SPEED,
+    MAX_TURN_RATE,
+    MAX_GUN_TURN_RATE,
+    MAX_RADAR_TURN_RATE,
     DECELERATION,
     ACCELERATION, # Make sure this is defined in constants
     MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN, # Added import
@@ -52,7 +39,7 @@ from robocode_tank_royale.bot_api.constants import (
 )
 # Assuming schema_messages would provide BotIntent, but we are using a dictionary for now.
 # from robocode_tank_royale.schema_messages import BotIntent # Not used yet
-from robocode_tank_royale.bot_api.internal import env_vars as EnvVars
+from robocode_tank_royale.bot_api.internal.env_vars import EnvVars
 
 DEFAULT_SERVER_URL = "ws://localhost:7654"
 
@@ -64,7 +51,7 @@ NOT_CONNECTED_TO_SERVER_MSG = \
 
 
 class BaseBotInternals:
-    def __init__(self, base_bot: 'IBaseBot', bot_info: Optional[BotInfo], server_url: Optional[str], server_secret: Optional[str]):
+    def __init__(self, base_bot: BaseBotABC, bot_info: Optional[BotInfo], server_url: Optional[str], server_secret: Optional[str]):
         self.base_bot = base_bot
         if bot_info is None:
             self.bot_info = EnvVars.get_bot_info()
@@ -95,15 +82,15 @@ class BaseBotInternals:
 
         self.next_turn_monitor: asyncio.Condition = asyncio.Condition() # Changed from Lock to Condition
 
-        self.thread: Optional[asyncio.Task] = None # For asyncio task
+        self.thread: Optional[asyncio.Task[Any]] = None # For asyncio task
         self.is_running_atomic: bool = False # Simple boolean, manage access if threaded
         self.is_stopped: bool = False
-        self.stop_resume_listener: Optional[IStopResumeListener] = None
+        self.stop_resume_listener: Optional[StopResumeListenerABC] = None
 
-        self.max_speed: float = MAX_SPEED_CONST
-        self.max_turn_rate: float = MAX_TURN_RATE_CONST
-        self.max_gun_turn_rate: float = MAX_GUN_TURN_RATE_CONST
-        self.max_radar_turn_rate: float = MAX_RADAR_TURN_RATE_CONST
+        self.max_speed: float = MAX_SPEED
+        self.max_turn_rate: float = MAX_TURN_RATE
+        self.max_gun_turn_rate: float = MAX_GUN_TURN_RATE
+        self.max_radar_turn_rate: float = MAX_RADAR_TURN_RATE
 
         self.saved_target_speed: Optional[float] = None
         self.saved_turn_rate: Optional[float] = None
@@ -171,8 +158,7 @@ class BaseBotInternals:
         self.last_execute_turn_number = -1
 
     def _on_next_turn(self, event: TickEvent) -> None:
-        async with self.next_turn_monitor:
-            self.next_turn_monitor.notify_all()
+        # TODO: figure out how the next_turn thing works.
 
     def _on_bullet_fired(self, event: BulletFiredEvent) -> None:
         if self.bot_intent:
@@ -277,7 +263,7 @@ class BaseBotInternals:
         except Exception:
             traceback.print_exc()
             
-    def set_stop_resume_listener(self, listener: IStopResumeListener) -> None:
+    def set_stop_resume_listener(self, listener: StopResumeListenerABC) -> None:
         self.stop_resume_listener = listener
 
     def set_running(self, is_running: bool) -> None:
@@ -286,7 +272,7 @@ class BaseBotInternals:
     def is_running(self) -> bool:
         return self.is_running_atomic
 
-    async def _runnable(self, bot: 'IBot') -> None:
+    async def _runnable(self, bot: BotABC) -> None:
         self.set_running(True)
         self.enable_event_handling(True)
         try:
@@ -317,7 +303,7 @@ class BaseBotInternals:
         finally:
             self.enable_event_handling(False)
 
-    def start_thread(self, bot: 'IBot') -> None:
+    def start_thread(self, bot: BotABC) -> None:
         if self.thread is not None:
             # Potentially handle if a thread/task is already running
             pass
@@ -445,22 +431,22 @@ class BaseBotInternals:
     def set_turn_rate(self, turn_rate: float) -> None:
         if math.isnan(turn_rate):
             raise ValueError("'turn_rate' cannot be NaN")
-        self.bot_intent['turnRate'] = clamp(turn_rate, -self.max_turn_rate, self.max_turn_rate)
+        self.bot_intent['turnRate'] = MathUtil.clamp(turn_rate, -self.max_turn_rate, self.max_turn_rate)
 
     def set_gun_turn_rate(self, gun_turn_rate: float) -> None:
         if math.isnan(gun_turn_rate):
             raise ValueError("'gun_turn_rate' cannot be NaN")
-        self.bot_intent['gunTurnRate'] = clamp(gun_turn_rate, -self.max_gun_turn_rate, self.max_gun_turn_rate)
+        self.bot_intent['gunTurnRate'] = MathUtil.clamp(gun_turn_rate, -self.max_gun_turn_rate, self.max_gun_turn_rate)
 
     def set_radar_turn_rate(self, radar_turn_rate: float) -> None:
         if math.isnan(radar_turn_rate):
             raise ValueError("'radar_turn_rate' cannot be NaN")
-        self.bot_intent['radarTurnRate'] = clamp(radar_turn_rate, -self.max_radar_turn_rate, self.max_radar_turn_rate)
+        self.bot_intent['radarTurnRate'] = MathUtil.clamp(radar_turn_rate, -self.max_radar_turn_rate, self.max_radar_turn_rate)
 
     def set_target_speed(self, target_speed: float) -> None:
         if math.isnan(target_speed):
             raise ValueError("'target_speed' cannot be NaN")
-        self.bot_intent['targetSpeed'] = clamp(target_speed, -self.max_speed, self.max_speed)
+        self.bot_intent['targetSpeed'] = MathUtil.clamp(target_speed, -self.max_speed, self.max_speed)
 
     def get_turn_rate(self) -> float:
         if self.bot_intent.get('turnRate') is not None:
@@ -481,25 +467,25 @@ class BaseBotInternals:
         return self.max_speed
 
     def set_max_speed(self, max_speed: float) -> None:
-        self.max_speed = clamp(max_speed, 0, MAX_SPEED_CONST)
+        self.max_speed = MathUtil.clamp(max_speed, 0, MAX_SPEED)
 
     def get_max_turn_rate(self) -> float:
         return self.max_turn_rate
 
     def set_max_turn_rate(self, max_turn_rate: float) -> None:
-        self.max_turn_rate = clamp(max_turn_rate, 0, MAX_TURN_RATE_CONST)
+        self.max_turn_rate = MathUtil.clamp(max_turn_rate, 0, MAX_TURN_RATE)
 
     def get_max_gun_turn_rate(self) -> float:
         return self.max_gun_turn_rate
 
     def set_max_gun_turn_rate(self, max_gun_turn_rate: float) -> None:
-        self.max_gun_turn_rate = clamp(max_gun_turn_rate, 0, MAX_GUN_TURN_RATE_CONST)
+        self.max_gun_turn_rate = MathUtil.clamp(max_gun_turn_rate, 0, MAX_GUN_TURN_RATE)
 
     def get_max_radar_turn_rate(self) -> float:
         return self.max_radar_turn_rate
 
     def set_max_radar_turn_rate(self, max_radar_turn_rate: float) -> None:
-        self.max_radar_turn_rate = clamp(max_radar_turn_rate, 0, MAX_RADAR_TURN_RATE_CONST)
+        self.max_radar_turn_rate = MathUtil.clamp(max_radar_turn_rate, 0, MAX_RADAR_TURN_RATE)
 
     def get_new_target_speed(self, speed: float, distance: float) -> float:
         if distance < 0:
@@ -512,14 +498,14 @@ class BaseBotInternals:
             target_speed = min(self.max_speed, self._get_max_speed_for_distance(distance))
 
         if speed >= 0:
-            return clamp(target_speed, speed - self.abs_deceleration, speed + ACCELERATION)
+            return MathUtil.clamp(target_speed, speed - self.abs_deceleration, speed + ACCELERATION)
         else: # speed < 0
-            return clamp(target_speed, speed - ACCELERATION, speed + self._get_max_deceleration(-speed))
+            return MathUtil.clamp(target_speed, speed - ACCELERATION, speed + self._get_max_deceleration(-speed))
 
     def _get_max_speed_for_distance(self, distance: float) -> float: # Corresponds to Java's getMaxSpeed(distance)
         deceleration_time = max(1, math.ceil((math.sqrt((4 * 2 / self.abs_deceleration) * distance + 1) - 1) / 2))
         if math.isinf(deceleration_time):
-            return MAX_SPEED_CONST
+            return MAX_SPEED
         
         deceleration_distance = (deceleration_time / 2) * (deceleration_time - 1) * self.abs_deceleration
         return ((deceleration_time - 1) * self.abs_deceleration) + ((distance - deceleration_distance) / deceleration_time)
@@ -580,16 +566,13 @@ class BaseBotInternals:
             
             self.is_stopped = False # Must be the last step
 
-    def is_stopped(self) -> bool:
-        return self.is_stopped
-
     def is_teammate(self, bot_id: int) -> bool:
         return bot_id in self.get_teammate_ids()
 
     def broadcast_team_message(self, message: 'Any') -> None:
         self.send_team_message(None, message)
 
-    def send_team_message(self, teammate_id: Optional[int], message: 'Any') -> None:
+    def send_team_message(self, teammate_id: Optional[int], message: Any) -> None:
         if teammate_id is not None and teammate_id not in self.get_teammate_ids():
             raise ValueError("No teammate was found with the specified 'teammate_id'")
 

@@ -3,9 +3,9 @@ import json
 import websockets
 from typing import Dict
 
-from robocode_tank_royale.bot_api import BaseBotABC
-from robocode_tank_royale.bot_api.bot_info import BotInfo
-from robocode_tank_royale.bot_api.events import (
+from ..base_bot_abc import BaseBotABC
+from ..bot_info import BotInfo
+from ..events import (
     ConnectedEvent,
     DisconnectedEvent,
     ConnectionErrorEvent,
@@ -14,13 +14,13 @@ from robocode_tank_royale.bot_api.events import (
     RoundStartedEvent,
     RoundEndedEvent
 )
-from robocode_tank_royale.bot_api.internal.bot_event_handlers import BotEventHandlers
-from robocode_tank_royale.bot_api.internal.internal_event_handlers import InternalEventHandlers
-from robocode_tank_royale.bot_api.initial_position import InitialPosition
-from robocode_tank_royale.bot_api.bot_exception import BotException
-from robocode_tank_royale.bot_api.mapper.event_mapper import EventMapper
-from robocode_tank_royale.bot_api.mapper.game_setup_mapper import GameSetupMapper
-from robocode_tank_royale.bot_api.mapper.results_mapper import ResultsMapper
+from .bot_event_handlers import BotEventHandlers
+from .internal_event_handlers import InternalEventHandlers
+from ..initial_position import InitialPosition
+from ..bot_exception import BotException
+from ..mapper.event_mapper import EventMapper
+from ..mapper.game_setup_mapper import GameSetupMapper
+from ..mapper.results_mapper import ResultsMapper
 from robocode_tank_royale.schema import ResultsForBot, TickEventForBot
 
 class WebSocketHandler:
@@ -31,7 +31,7 @@ class WebSocketHandler:
 
     def __init__(
             self,
-            base_bot_internals,
+            base_bot_internals: 'BaseBotInternals',
             server_url: str,
             server_secret: str,
             base_bot: BaseBotABC,
@@ -214,7 +214,7 @@ class WebSocketHandler:
         is_droid = hasattr(self.base_bot, 'is_droid') and self.base_bot.is_droid
 
         # Create bot handshake message
-        from robocode_tank_royale.bot_api.internal.bot_handshake_factory import BotHandshakeFactory
+        from ..internal.bot_handshake_factory import BotHandshakeFactory
         bot_handshake = BotHandshakeFactory.create(
             json_msg["sessionId"],
             self.bot_info,

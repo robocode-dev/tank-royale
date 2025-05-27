@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from robocode_tank_royale.bot_api import GameSetup, InitialPosition
+from ..game_setup import GameSetup
+from ..initial_position import InitialPosition
 from .event_abc import EventABC
 
 

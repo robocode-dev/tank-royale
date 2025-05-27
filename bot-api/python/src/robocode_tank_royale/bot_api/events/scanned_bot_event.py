@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from robocode_tank_royale.bot_api.events import BotEvent
+from .bot_event import BotEvent
 
 
 @dataclass(frozen=True, repr=True)

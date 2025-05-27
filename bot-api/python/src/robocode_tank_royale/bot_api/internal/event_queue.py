@@ -1,7 +1,7 @@
 from collections import deque
 from threading import Lock
 
-from robocode_tank_royale.bot_api.events import CustomEvent
+from robocode_tank_royale.bot_api.events import CustomEvent, EventABC, TickEvent
 from .event_interruption import EventInterruption
 from .event_priorities import EventPriorities
 from .thread_interrupted_exception import ThreadInterruptedException
@@ -20,7 +20,7 @@ class EventQueue:
     def __init__(self, base_bot_internals, bot_event_handlers):
         self.base_bot_internals = base_bot_internals
         self.bot_event_handlers = bot_event_handlers
-        self.events = deque()
+        self.events: deque[EventABC] = deque()
         self.events_lock = Lock()
         self.current_top_event = None
         self.current_top_event_priority = float('-inf')
@@ -64,7 +64,7 @@ class EventQueue:
         """
         return EventInterruption.is_interruptible(type(self.current_top_event))
 
-    def add_events_from_tick(self, event):
+    def add_events_from_tick(self, event: TickEvent):
         """Adds standard events from a tick event, and custom events from conditions.
         
         Args:
@@ -161,7 +161,7 @@ class EventQueue:
         is_old = bot_event.get_turn_number() < turn_number - EventQueue.MAX_EVENT_AGE
         return is_old and not bot_event.is_critical()
 
-    def add_event(self, bot_event):
+    def add_event(self, bot_event: EventABC):
         with self.events_lock:
             if len(self.events) <= EventQueue.MAX_QUEUE_SIZE:
                 self.events.append(bot_event)
