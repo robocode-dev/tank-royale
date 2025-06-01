@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
-import dev.robocode.tankroyale.gui.model.Participant
+import dev.robocode.tankroyale.client.model.Participant
 import java.awt.Dimension
 import javax.swing.JButton
 import javax.swing.SwingConstants

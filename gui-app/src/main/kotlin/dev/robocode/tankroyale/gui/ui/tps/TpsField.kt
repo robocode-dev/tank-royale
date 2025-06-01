@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.tps
 
-import dev.robocode.tankroyale.gui.model.TpsChangedEvent
+import dev.robocode.tankroyale.client.model.TpsChangedEvent
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.components.RcLimitedTextField

@@ -1,7 +1,7 @@
-package dev.robocode.tankroyale.gui.model
+package dev.robocode.tankroyale.client.model
 
 import kotlinx.serialization.Serializable
-import java.util.Objects
+import java.util.*
 
 @Serializable
 data class BotInfo(

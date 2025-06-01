@@ -30,3 +30,4 @@ generated/
 /config.properties
 
 /.codiumai/
+/.kotlin

@@ -1,9 +1,9 @@
 package dev.robocode.tankroyale.gui.booter
 
-import dev.robocode.tankroyale.gui.model.MessageConstants
+import dev.robocode.tankroyale.client.Event
+import dev.robocode.tankroyale.client.model.MessageConstants
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.FileUtil
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import java.io.BufferedReader

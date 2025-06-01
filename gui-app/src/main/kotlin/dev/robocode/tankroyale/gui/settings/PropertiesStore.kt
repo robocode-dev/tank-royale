@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.settings
 
-import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.client.Event
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileWriter

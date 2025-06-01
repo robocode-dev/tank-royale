@@ -1,10 +1,10 @@
 package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.client.model.BotPolicyUpdate
+import dev.robocode.tankroyale.client.model.Participant
+import dev.robocode.tankroyale.client.model.TickEvent
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
-import dev.robocode.tankroyale.gui.model.Participant
-import dev.robocode.tankroyale.gui.model.BotPolicyUpdate
-import dev.robocode.tankroyale.gui.model.TickEvent
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.SwitchButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel

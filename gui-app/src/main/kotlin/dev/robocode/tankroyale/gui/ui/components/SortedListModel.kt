@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.components
 
-import dev.robocode.tankroyale.gui.model.BotInfo
+import dev.robocode.tankroyale.client.model.BotInfo
 import java.awt.EventQueue
 import java.util.*
 import javax.swing.AbstractListModel

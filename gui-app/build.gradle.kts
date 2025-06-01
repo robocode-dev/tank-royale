@@ -34,6 +34,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":client-lib"))
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.miglayout.swing)
     implementation(libs.jsvg)

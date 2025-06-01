@@ -1,7 +1,7 @@
-package dev.robocode.tankroyale.gui.client
+package dev.robocode.tankroyale.client
 
-import dev.robocode.tankroyale.gui.model.Message
-import dev.robocode.tankroyale.gui.model.MessageConstants
+import dev.robocode.tankroyale.client.model.Message
+import dev.robocode.tankroyale.client.model.MessageConstants
 import kotlinx.serialization.PolymorphicSerializer
 import java.net.URI
 import java.net.http.HttpClient
