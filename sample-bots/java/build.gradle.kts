@@ -5,12 +5,15 @@ import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
 description = "Robocode Tank Royale sample bots for Java"
 
+group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
 val archiveFilename = "sample-bots-java-${version}.zip"
 
 plugins {
     base // for the clean and build task
+    `maven-publish`
+    signing
 }
 
 tasks {
@@ -108,4 +111,63 @@ tasks {
 
         from(archiveDir)
     }
+
+    publishing {
+        publications {
+            create<MavenPublication>("sample-bots") {
+                // Define the artifact
+                artifact(zip) {
+                    classifier = "" // No classifier for main artifact
+                    extension = "zip"
+                }
+
+                // Set publication coordinates
+                groupId = group.toString()
+                artifactId = "sample-bots-java"
+                version = project.version.toString()
+
+                pom {
+                    name.set("Robocode Tank Royale Sample Bots for Java")
+                    description.set(project.description)
+                    url.set("https://github.com/robocode-dev/tank-royale")
+
+                    licenses {
+                        license {
+                            name.set("The Apache License, Version 2.0")
+                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                        }
+                    }
+                    developers {
+                        developer {
+                            id.set("fnl")
+                            name.set("Flemming Nørnberg Larsen")
+                            organization.set("flemming-n-larsen")
+                            organizationUrl.set("https://github.com/flemming-n-larsen")
+                        }
+                    }
+                    scm {
+                        connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
+                        developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
+                        url.set("https://github.com/robocode-dev/tank-royale/tree/master")
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = "MavenCentral"
+                url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+
+                credentials {
+                    username = project.findProperty("ossrhUsername") as String? ?: System.getenv("OSSRH_USERNAME")
+                    password = project.findProperty("ossrhPassword") as String? ?: System.getenv("OSSRH_PASSWORD")
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications["sample-bots"])
 }
