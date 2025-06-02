@@ -89,4 +89,11 @@ subprojects {
     initializeSonatypeStagingRepository {
         shouldRunAfter(tasks.withType<Sign>())
     }
+
+    // Apply common signing configuration to all subprojects
+    plugins.withId("signing") {
+        configure<SigningExtension> {
+            useGpgCmd() // Use GPG agent instead of key file
+        }
+    }
 }
