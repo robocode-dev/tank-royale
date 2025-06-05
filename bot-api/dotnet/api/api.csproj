@@ -47,7 +47,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SvgNet" Version="3.5.0" />
 
-    <!-- Transative dependency that needs an update from version 8.0.0 -->
+    <!-- Transitive dependency that needs an update from version 8.0.0 -->
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
 
     <!-- Icon -->
