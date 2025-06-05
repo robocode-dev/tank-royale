@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Text.RegularExpressions;
 
 namespace Robocode.TankRoyale.BotApi.Util;
@@ -84,6 +83,6 @@ static class ColorUtil
             b = (b << 4) | b;
         }
 
-        return Color.FromArgb(r, g, b);
+        return Color.FromArgb((byte)r, (byte)g, (byte)b);
     }
 }
