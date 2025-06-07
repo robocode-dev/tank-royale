@@ -15,7 +15,7 @@ include("gui-app")
 include("bot-api:java")
 include("bot-api:dotnet")
 include("bot-api:dotnet:schema")
-include("bot-api:python")
+//include("bot-api:python")
 
 // Sample Bots archives
 include("sample-bots:java")
@@ -24,7 +24,7 @@ include("sample-bots:csharp")
 // Docs
 include("buildDocs")
 
-// Check dependencies with this command:  gradlew dependencyUpdates -Drevision=release
+// Check dependencies with this command: gradlew dependencyUpdates
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {

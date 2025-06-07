@@ -24,7 +24,7 @@ static class ColorUtil
         return color == null ? null : ToHex(color.Value.R) + ToHex(color.Value.G) + ToHex(color.Value.B);
     }
 
-    private static string ToHex(int value)
+    private static string ToHex(uint value)
     {
         return "" + (value >> 4).ToString("X") + (value & 0xF).ToString("X");
     }
@@ -61,7 +61,7 @@ static class ColorUtil
     /// <param name="hexTriplet">A string containing either three or six hexadecimal numbers like "09C" or "0099CC".</param>
     /// <returns>The created <see cref="Color"/>.</returns>
     /// <exception cref="ArgumentException">Thrown when the input string does not match the required hex triplet format.</exception>
-    internal static Color FromHex(string hexTriplet)
+    private static Color FromHex(string hexTriplet)
     {
         hexTriplet = hexTriplet.Trim();
         if (!Regex.IsMatch(hexTriplet, HexDigits))
@@ -72,9 +72,9 @@ static class ColorUtil
         bool isThreeDigits = hexTriplet.Length == 3;
         int componentLength = isThreeDigits ? 1 : 2;
 
-        int r = Convert.ToInt32(hexTriplet.Substring(0, componentLength), 16);
-        int g = Convert.ToInt32(hexTriplet.Substring(componentLength, componentLength), 16);
-        int b = Convert.ToInt32(hexTriplet.Substring(componentLength * 2, componentLength), 16);
+        uint r = (uint)Convert.ToInt32(hexTriplet.Substring(0, componentLength), 16);
+        uint g = (uint)Convert.ToInt32(hexTriplet.Substring(componentLength, componentLength), 16);
+        uint b = (uint)Convert.ToInt32(hexTriplet.Substring(componentLength * 2, componentLength), 16);
 
         if (isThreeDigits)
         {
@@ -83,6 +83,6 @@ static class ColorUtil
             b = (b << 4) | b;
         }
 
-        return Color.FromArgb((byte)r, (byte)g, (byte)b);
+        return Color.FromArgb(r, g, b);
     }
 }

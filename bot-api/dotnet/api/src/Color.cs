@@ -22,7 +22,7 @@ public readonly struct Color : IEquatable<Color>
     /// Gets the alpha component value of this color.
     /// </summary>
     /// <value>The alpha component value between 0 and 255.</value>
-    public byte A => (byte)((_value >> 24) & 0xFF);
+    public byte A => (byte)(_value >> 24 & 0xFF);
 
     /// <summary>
     /// Gets the red component value of this color.
@@ -48,7 +48,7 @@ public readonly struct Color : IEquatable<Color>
     /// </summary>
     /// <param name="argb">A 32-bit value specifying the ARGB components.</param>
     /// <returns>A new Color structure initialized with the specified ARGB value.</returns>
-    public static Color FromArgb(int argb) => new((uint)argb);
+    public static Color FromArgb(uint argb) => new(argb);
 
     /// <summary>
     /// Creates a color from the specified alpha, red, green, and blue values.
@@ -58,8 +58,8 @@ public readonly struct Color : IEquatable<Color>
     /// <param name="g">The green component value (0-255).</param>
     /// <param name="b">The blue component value (0-255).</param>
     /// <returns>A new Color structure initialized with the specified ARGB values.</returns>
-    public static Color FromArgb(byte a, byte r, byte g, byte b) =>
-        new((uint)(a << 24 | r << 16 | g << 8 | b));
+    public static Color FromArgb(uint a, uint r, uint g, uint b) =>
+        new(a << 24 | r << 16 | g << 8 | b);
 
     /// <summary>
     /// Creates a color from the specified red, green, and blue values, with an alpha value of 255 (fully opaque).
@@ -68,7 +68,7 @@ public readonly struct Color : IEquatable<Color>
     /// <param name="g">The green component value (0-255).</param>
     /// <param name="b">The blue component value (0-255).</param>
     /// <returns>A new Color structure initialized with the specified RGB values and an alpha value of 255.</returns>
-    public static Color FromArgb(byte r, byte g, byte b) =>
+    public static Color FromArgb(uint r, uint g, uint b) =>
         FromArgb(255, r, g, b);
 
     /// <summary>
@@ -77,8 +77,8 @@ public readonly struct Color : IEquatable<Color>
     /// <param name="a">The alpha component value (0-255).</param>
     /// <param name="baseColor">The Color structure from which to derive the RGB values.</param>
     /// <returns>A new Color structure with the specified alpha value and the RGB values from the base color.</returns>
-    public static Color FromArgb(int a, Color baseColor) =>
-        FromArgb((byte)a, baseColor.R, baseColor.G, baseColor.B);
+    public static Color FromArgb(uint a, Color baseColor) =>
+        FromArgb(a, baseColor.R, baseColor.G, baseColor.B);
 
     // Convert to int (ARGB)
     /// <summary>
@@ -295,5 +295,5 @@ public readonly struct Color : IEquatable<Color>
     /// </summary>
     /// <param name="argb">A 32-bit integer containing ARGB values.</param>
     /// <returns>A Color structure with the specified ARGB values.</returns>
-    public static implicit operator Color(int argb) => FromArgb(argb);
+    public static implicit operator Color(uint argb) => FromArgb(argb);
 }
