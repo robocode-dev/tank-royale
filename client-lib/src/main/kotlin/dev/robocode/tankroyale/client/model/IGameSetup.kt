@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.gui.model
+package dev.robocode.tankroyale.client.model
 
 import kotlinx.serialization.SerialName
 

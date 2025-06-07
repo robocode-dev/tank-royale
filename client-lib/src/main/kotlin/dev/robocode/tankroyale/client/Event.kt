@@ -1,6 +1,7 @@
-package dev.robocode.tankroyale.gui.util
+package dev.robocode.tankroyale.client
 
-import java.util.*
+import java.util.Collections
+import java.util.WeakHashMap
 
 /**
  * Used for defining an event handler. The thread handler is thread-safe and uses a WeakHashMap to get rid of event
@@ -58,20 +59,6 @@ open class Event<T> {
                 eventHandler.invoke(event)
             }
         }
-    }
-
-    /**
-     * Enqueues a task on the Event Queue that must be invoked later.
-     *
-     * Example of usage:
-     * ```
-     * onEvent.enqueue { myDialog.isVisible = true }
-     * ```
-     * @param owner is the owner of the event handler, typically `this` instance.
-     * @param callable is used for providing the event handler function.
-     */
-    fun enqueue(owner: Any, callable: () -> Unit) {
-        subscribe(owner) { EDT.enqueue { callable.invoke() } }
     }
 
     class Handler<T>(

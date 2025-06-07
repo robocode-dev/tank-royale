@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.client.model.Participant
 import dev.robocode.tankroyale.gui.client.ClientEvents
-import dev.robocode.tankroyale.gui.model.Participant
 import dev.robocode.tankroyale.gui.ui.Strings
 
 abstract class BaseBotConsolePanel(val bot: Participant) : ConsolePanel() {

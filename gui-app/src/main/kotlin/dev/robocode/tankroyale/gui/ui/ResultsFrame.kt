@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui
 
+import dev.robocode.tankroyale.client.model.Results
 import dev.robocode.tankroyale.gui.client.Client
-import dev.robocode.tankroyale.gui.model.Results
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
 import dev.robocode.tankroyale.gui.ui.components.RcToolTip
 import java.awt.Component

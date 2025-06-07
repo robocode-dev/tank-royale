@@ -1,6 +1,4 @@
-package dev.robocode.tankroyale.gui.client
-
-import dev.robocode.tankroyale.gui.util.Event
+package dev.robocode.tankroyale.client
 
 object WebSocketClientEvents {
     val onOpen = Event<Unit>()

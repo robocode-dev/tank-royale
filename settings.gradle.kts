@@ -2,6 +2,9 @@ rootProject.name = "robocode-tank-royale"
 
 val version: String = providers.gradleProperty("version").get()
 
+// Lib
+include("client-lib")
+
 // Booter
 include("booter")
 

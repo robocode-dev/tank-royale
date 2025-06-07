@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.menu
 
-import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.client.Event
 import javax.swing.JMenuItem
 
 object MenuEventTriggers {
