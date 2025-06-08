@@ -47,7 +47,8 @@ public readonly struct Point : IEquatable<Point>
     /// <returns>true if the specified Point is equal to the current Point; otherwise, false.</returns>
     public bool Equals(Point other)
     {
-        return X == other.X && Y == other.Y;
+        const double epsilon = 1e-10; // Define a tolerance for floating-point comparisons
+        return Math.Abs(X - other.X) < epsilon && Math.Abs(Y - other.Y) < epsilon;
     }
 
     /// <summary>
