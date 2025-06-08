@@ -32,6 +32,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":lib:common"))
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.picocli)
     implementation(libs.jansi)

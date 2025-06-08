@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.client.Event
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.ui.components.RcList
 import dev.robocode.tankroyale.gui.ui.components.SortedListModel
 import java.awt.event.KeyAdapter

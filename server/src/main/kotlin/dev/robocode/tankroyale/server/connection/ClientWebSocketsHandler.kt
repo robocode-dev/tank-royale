@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.server.connection
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
+import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.schema.*
 import dev.robocode.tankroyale.server.core.ServerSetup
 import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.IClientWebSocketObserver
@@ -20,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import kotlin.system.exitProcess
 
 class ClientWebSocketsHandler(
     private val setup: ServerSetup,
@@ -83,7 +83,7 @@ class ClientWebSocketsHandler(
             name = "Robocode Tank Royale server"
             sessionId = generateAndStoreSessionId(clientSocket)
             variant = "Tank Royale"
-            version = VersionFileProvider.version
+            version = Version.version
             gameTypes = setup.gameTypes
             gameSetup = currentGameSetup
         }.also {

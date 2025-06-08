@@ -37,6 +37,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":lib:common"))
     implementation(libs.java.websocket)
     implementation(libs.picocli)
     implementation(libs.jansi)
