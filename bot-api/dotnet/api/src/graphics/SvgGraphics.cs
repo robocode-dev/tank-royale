@@ -65,7 +65,7 @@ namespace Robocode.TankRoyale.BotApi.Graphics
         /// <summary>
         /// Draws the outline of a polygon defined by an array of points.
         /// </summary>
-        public void DrawPolygon(PointF[] points)
+        public void DrawPolygon(Point[] points)
         {
             if (points == null || points.Length < 3)
                 return;
@@ -83,7 +83,7 @@ namespace Robocode.TankRoyale.BotApi.Graphics
         /// <summary>
         /// Fills a polygon defined by an array of points with the current fill color.
         /// </summary>
-        public void FillPolygon(PointF[] points)
+        public void FillPolygon(Point[] points)
         {
             if (points == null || points.Length < 3)
                 return;
