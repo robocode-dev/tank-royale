@@ -4,7 +4,7 @@ using System.Drawing;
 using JetBrains.Annotations;
 using Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Internal;
-using SvgNet.Interfaces;
+using Robocode.TankRoyale.BotApi.Graphics;
 
 namespace Robocode.TankRoyale.BotApi;
 

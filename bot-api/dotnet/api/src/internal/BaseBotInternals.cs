@@ -8,7 +8,7 @@ using S = Robocode.TankRoyale.Schema;
 using E = Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Mapper;
 using Robocode.TankRoyale.BotApi.Util;
-using SvgNet.Interfaces;
+using Robocode.TankRoyale.BotApi.Graphics;
 using static System.Double;
 
 namespace Robocode.TankRoyale.BotApi.Internal;

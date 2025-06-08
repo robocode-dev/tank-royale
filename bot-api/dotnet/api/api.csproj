@@ -48,7 +48,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Text.Json" Version="6.0.0" />
-    <PackageReference Include="SvgNet" Version="3.5.0" />
 
     <!-- Icon -->
     <None Include="icon.png" Pack="true" PackagePath="\" />
