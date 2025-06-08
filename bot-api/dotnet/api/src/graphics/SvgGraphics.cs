@@ -22,8 +22,14 @@ namespace Robocode.TankRoyale.BotApi.Graphics
         /// </summary>
         public void DrawLine(double x1, double y1, double x2, double y2)
         {
-            _elements.Add($"<line x1=\"{Format(x1)}\" y1=\"{Format(y1)}\" x2=\"{Format(x2)}\" y2=\"{Format(y2)}\" " +
-                         $"stroke=\"{_strokeColor}\" stroke-width=\"{Format(_strokeWidth)}\" />\n");
+            _elements.Add($"<line " +
+                $"x1=\"{Format(x1)}\" " +
+                $"y1=\"{Format(y1)}\" " +
+                $"x2=\"{Format(x2)}\" " +
+                $"y2=\"{Format(y2)}\" " +
+                $"stroke=\"{_strokeColor}\" " +
+                $"stroke-width=\"{Format(_strokeWidth)}\" " +
+                "/>\n");
         }
 
         /// <summary>
@@ -31,8 +37,15 @@ namespace Robocode.TankRoyale.BotApi.Graphics
         /// </summary>
         public void DrawRectangle(double x, double y, double width, double height)
         {
-            _elements.Add($"<rect x=\"{Format(x)}\" y=\"{Format(y)}\" width=\"{Format(width)}\" height=\"{Format(height)}\" " +
-                         $"stroke=\"{_strokeColor}\" stroke-width=\"{Format(_strokeWidth)}\" fill=\"none\" />\n");
+            _elements.Add($"<rect " +
+                $"x=\"{Format(x)}\" " +
+                $"y=\"{Format(y)}\" " +
+                $"width=\"{Format(width)}\" " +
+                $"height=\"{Format(height)}\" " +
+                $"stroke=\"{_strokeColor}\" " +
+                $"stroke-width=\"{Format(_strokeWidth)}\" " +
+                $"fill=\"none\" " +
+                "/>\n");
         }
 
         /// <summary>
@@ -40,8 +53,14 @@ namespace Robocode.TankRoyale.BotApi.Graphics
         /// </summary>
         public void FillRectangle(double x, double y, double width, double height)
         {
-            _elements.Add($"<rect x=\"{Format(x)}\" y=\"{Format(y)}\" width=\"{Format(width)}\" height=\"{Format(height)}\" " +
-                         $"fill=\"{_fillColor}\" stroke=\"none\" />\n");
+            _elements.Add($"<rect " +
+                $"x=\"{Format(x)}\" " +
+                $"y=\"{Format(y)}\" " +
+                $"width=\"{Format(width)}\" " +
+                $"height=\"{Format(height)}\" " +
+                $"fill=\"{_fillColor}\" " +
+                $"stroke=\"none\" " +
+                $"/>\n");
         }
 
         /// <summary>
@@ -49,8 +68,14 @@ namespace Robocode.TankRoyale.BotApi.Graphics
         /// </summary>
         public void DrawCircle(double x, double y, double radius)
         {
-            _elements.Add($"<circle cx=\"{Format(x)}\" cy=\"{Format(y)}\" r=\"{Format(radius)}\" " +
-                         $"stroke=\"{_strokeColor}\" stroke-width=\"{Format(_strokeWidth)}\" fill=\"none\" />\n");
+            _elements.Add($"<circle " +
+                $"cx=\"{Format(x)}\" " +
+                $"cy=\"{Format(y)}\" " +
+                $"r=\"{Format(radius)}\" " +
+                $"stroke=\"{_strokeColor}\" " +
+                $"stroke-width=\"{Format(_strokeWidth)}\" " +
+                $"fill=\"none\" " +
+                $"/>\n");
         }
 
         /// <summary>
@@ -58,8 +83,13 @@ namespace Robocode.TankRoyale.BotApi.Graphics
         /// </summary>
         public void FillCircle(double x, double y, double radius)
         {
-            _elements.Add($"<circle cx=\"{Format(x)}\" cy=\"{Format(y)}\" r=\"{Format(radius)}\" " +
-                         $"fill=\"{_fillColor}\" stroke=\"none\" />\n");
+            _elements.Add($"<circle " +
+                $"cx=\"{Format(x)}\" " +
+                $"cy=\"{Format(y)}\" " +
+                $"r=\"{Format(radius)}\" " +
+                $"fill=\"{_fillColor}\" " +
+                $"stroke=\"none\" " +
+                $"/>\n");
         }
 
         /// <summary>
@@ -76,8 +106,12 @@ namespace Robocode.TankRoyale.BotApi.Graphics
                 pointsStr.Append($"{Format(point.X)},{Format(point.Y)} ");
             }
 
-            _elements.Add($"<polygon points=\"{pointsStr.ToString().Trim()}\" " +
-                         $"stroke=\"{_strokeColor}\" stroke-width=\"{Format(_strokeWidth)}\" fill=\"none\" />\n");
+            _elements.Add($"<polygon " +
+                $"points=\"{pointsStr.ToString().Trim()}\" " +
+                $"stroke=\"{_strokeColor}\" " +
+                $"stroke-width=\"{Format(_strokeWidth)}\" " +
+                $"fill=\"none\" " +
+                $"/>\n");
         }
 
         /// <summary>
@@ -94,8 +128,11 @@ namespace Robocode.TankRoyale.BotApi.Graphics
                 pointsStr.Append($"{Format(point.X)},{Format(point.Y)} ");
             }
 
-            _elements.Add($"<polygon points=\"{pointsStr.ToString().Trim()}\" " +
-                         $"fill=\"{_fillColor}\" stroke=\"none\" />\n");
+            _elements.Add($"<polygon " +
+                $"points=\"{pointsStr.ToString().Trim()}\" " +
+                $"fill=\"{_fillColor}\" " +
+                $"stroke=\"none\" " +
+                $"/>\n");
         }
 
         /// <summary>
@@ -103,9 +140,13 @@ namespace Robocode.TankRoyale.BotApi.Graphics
         /// </summary>
         public void DrawText(string text, double x, double y)
         {
-            _elements.Add($"<text x=\"{Format(x)}\" y=\"{Format(y)}\" " +
-                         $"font-family=\"{_fontFamily}\" font-size=\"{Format(_fontSize)}\" " +
-                         $"fill=\"{_strokeColor}\">{text}</text>\n");
+            _elements.Add($"<text " +
+                $"x=\"{Format(x)}\" " +
+                $"y=\"{Format(y)}\" " +
+                $"font-family=\"{_fontFamily}\" " +
+                $"font-size=\"{Format(_fontSize)}\" " +
+                $"fill=\"{_strokeColor}\" " +
+                $">{text}</text>\n");
         }
 
         /// <summary>
