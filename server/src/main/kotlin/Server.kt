@@ -1,9 +1,9 @@
 package dev.robocode.tankroyale.server
 
 import dev.robocode.tankroyale.server.core.GameServer
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.util.VersionFileProvider
 import dev.robocode.tankroyale.server.rules.DEFAULT_GAME_TYPE
 import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
+import dev.robocode.tankroyale.server.util.VersionFileProvider
 import org.fusesource.jansi.AnsiConsole
 import picocli.CommandLine
 import picocli.CommandLine.*

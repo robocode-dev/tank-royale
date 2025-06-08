@@ -1,7 +1,4 @@
-package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model
-
-import dev.robocode.tankroyale.server.model.BotId
-import dev.robocode.tankroyale.server.model.TeamId
+package dev.robocode.tankroyale.server.model
 
 /**
  * ParticipantId is a hybrid id to represent either a team or bot participating in a battle.

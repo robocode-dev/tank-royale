@@ -6,10 +6,7 @@ import com.google.gson.JsonSyntaxException
 import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.schema.*
 import dev.robocode.tankroyale.server.core.ServerSetup
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.IClientWebSocketObserver
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection.IConnectionListener
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.StatusCode
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.util.VersionFileProvider
+import dev.robocode.tankroyale.server.core.StatusCode
 import org.java_websocket.WebSocket
 import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.java_websocket.handshake.ClientHandshake

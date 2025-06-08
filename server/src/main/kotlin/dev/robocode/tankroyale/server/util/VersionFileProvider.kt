@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.util
+package dev.robocode.tankroyale.server.util
 
 import dev.robocode.tankroyale.common.util.Version
 import picocli.CommandLine

@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score
+package dev.robocode.tankroyale.server.score
 
 import dev.robocode.tankroyale.server.model.Score
 
