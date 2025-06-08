@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.Text;
 using JetBrains.Annotations;
@@ -61,7 +61,8 @@ public class SvgGraphics : IGraphics
                       $"width=\"{Format(width)}\" " +
                       $"height=\"{Format(height)}\" " +
                       $"fill=\"{_fillColor}\" " +
-                      $"stroke=\"none\" " +
+                      $"stroke=\"{_strokeColor}\" " +
+                      $"stroke-width=\"{Format(_strokeWidth)}\" " +
                       $"/>\n");
     }
 
@@ -74,9 +75,9 @@ public class SvgGraphics : IGraphics
                       $"cx=\"{Format(x)}\" " +
                       $"cy=\"{Format(y)}\" " +
                       $"r=\"{Format(radius)}\" " +
+                      $"fill=\"none\" " +
                       $"stroke=\"{_strokeColor}\" " +
                       $"stroke-width=\"{Format(_strokeWidth)}\" " +
-                      $"fill=\"none\" " +
                       $"/>\n");
     }
 
@@ -90,7 +91,8 @@ public class SvgGraphics : IGraphics
                       $"cy=\"{Format(y)}\" " +
                       $"r=\"{Format(radius)}\" " +
                       $"fill=\"{_fillColor}\" " +
-                      $"stroke=\"none\" " +
+                      $"stroke=\"{_strokeColor}\" " +
+                      $"stroke-width=\"{Format(_strokeWidth)}\" " +
                       $"/>\n");
     }
 
@@ -110,9 +112,9 @@ public class SvgGraphics : IGraphics
 
         _elements.Add($"<polygon " +
                       $"points=\"{pointsStr.ToString().Trim()}\" " +
+                      $"fill=\"none\" " +
                       $"stroke=\"{_strokeColor}\" " +
                       $"stroke-width=\"{Format(_strokeWidth)}\" " +
-                      $"fill=\"none\" " +
                       $"/>\n");
     }
 
@@ -133,14 +135,15 @@ public class SvgGraphics : IGraphics
         _elements.Add($"<polygon " +
                       $"points=\"{pointsStr.ToString().Trim()}\" " +
                       $"fill=\"{_fillColor}\" " +
-                      $"stroke=\"none\" " +
+                      $"stroke=\"{_strokeColor}\" " +
+                      $"stroke-width=\"{Format(_strokeWidth)}\" " +
                       $"/>\n");
     }
 
     /// <summary>
     /// Draws text at the specified position.
     /// </summary>
-    public void DrawText(string text, double x, double y)
+    public void DrawText(double x, double y, string text)
     {
         _elements.Add($"<text " +
                       $"x=\"{Format(x)}\" " +
