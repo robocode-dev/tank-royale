@@ -1,7 +1,5 @@
 package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
-
 /**
  * Score record for keeping track of the scores for a specific participant.
  */

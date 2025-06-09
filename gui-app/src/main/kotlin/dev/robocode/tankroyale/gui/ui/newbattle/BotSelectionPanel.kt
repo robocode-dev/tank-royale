@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.client.Event
 import dev.robocode.tankroyale.client.model.BotInfo
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client

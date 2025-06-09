@@ -18,7 +18,7 @@ import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
-import dev.robocode.tankroyale.gui.util.Version
+import dev.robocode.tankroyale.common.util.Version
 import kotlinx.serialization.PolymorphicSerializer
 import java.net.URI
 import java.util.concurrent.atomic.AtomicBoolean

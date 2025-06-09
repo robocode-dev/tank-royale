@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.control
 
-import dev.robocode.tankroyale.client.Event
 import dev.robocode.tankroyale.client.model.TpsChangedEvent
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
 import dev.robocode.tankroyale.gui.settings.ConfigSettings.DEFAULT_TPS

@@ -37,6 +37,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":lib:common"))
     implementation(libs.java.websocket)
     implementation(libs.picocli)
     implementation(libs.jansi)
@@ -90,6 +91,8 @@ tasks {
     }
 
     jar {
+        dependsOn(":lib:common:jar")
+
         archiveClassifier.set("all") // the final archive will not have this classifier
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE

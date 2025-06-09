@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.client.Event
 import dev.robocode.tankroyale.client.model.IGameSetup
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.MutableGameSetup

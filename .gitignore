@@ -28,6 +28,7 @@ generated/
 /games.properties
 /server.properties
 /config.properties
+/*.battle.gz
 
 /.codiumai/
 /.kotlin

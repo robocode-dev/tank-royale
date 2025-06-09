@@ -1,8 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
-import dev.robocode.tankroyale.client.Event
 import dev.robocode.tankroyale.client.model.GameStartedEvent
 import dev.robocode.tankroyale.client.model.Participant
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.console.BotConsoleFrame
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing

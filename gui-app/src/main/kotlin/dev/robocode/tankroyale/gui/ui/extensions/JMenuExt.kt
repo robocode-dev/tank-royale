@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.extensions
 
-import dev.robocode.tankroyale.client.Event
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.ui.MenuTitles
 import javax.swing.JMenu
 import javax.swing.JMenuItem

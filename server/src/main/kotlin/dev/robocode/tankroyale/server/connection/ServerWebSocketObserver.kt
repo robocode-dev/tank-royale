@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.connection
+package dev.robocode.tankroyale.server.connection
 
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake

@@ -1,15 +1,15 @@
 package dev.robocode.tankroyale.server.core
 
-import dev.robocode.tankroyale.server.Server
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.InitialPosition
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.AccumulatedScoreCalculator
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.ScoreCalculator
+import dev.robocode.tankroyale.server.model.InitialPosition
+import dev.robocode.tankroyale.server.model.ParticipantId
+import dev.robocode.tankroyale.server.score.AccumulatedScoreCalculator
+import dev.robocode.tankroyale.server.score.ScoreCalculator
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.Color.Companion.from
 import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
+import dev.robocode.tankroyale.server.Server
 import java.lang.Math.toDegrees
 import java.util.*
 import kotlin.math.abs

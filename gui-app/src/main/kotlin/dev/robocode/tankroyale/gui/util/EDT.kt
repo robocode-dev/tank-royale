@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.util
 
-import dev.robocode.tankroyale.client.Event
+import dev.robocode.tankroyale.common.Event
 import java.awt.EventQueue
 
 object EDT {

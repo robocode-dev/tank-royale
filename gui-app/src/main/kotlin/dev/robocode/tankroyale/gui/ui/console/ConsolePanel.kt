@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.console
 
-import dev.robocode.tankroyale.client.Event
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.ansi.AnsiEditorPane
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton

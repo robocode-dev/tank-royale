@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.client.Event
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.MainFrame
