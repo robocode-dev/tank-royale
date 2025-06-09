@@ -1,4 +1,4 @@
-pillow>=11
+drawsvg>=2
 pip>=24
 PyYAML>=6
 setuptools>=77

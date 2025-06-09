@@ -1,4 +1,6 @@
-from typing import Any, Optional, Set, Dict
+from typing import Optional, Set
+
+import drawsvg  # type: ignore
 
 from ..bot_exception import BotException
 from ..bot_info import BotInfo
@@ -6,9 +8,7 @@ from ..events import Condition, TickEvent
 from ..game_setup import GameSetup
 from ..initial_position import InitialPosition
 
-from .graphics_state import GraphicsState
-
-from robocode_tank_royale.schema import ServerHandshake
+from robocode_tank_royale.schema import BotIntent, ServerHandshake  # type: ignore
 
 GAME_NOT_RUNNING_MSG = "Game is not running"
 TICK_NOT_AVAILABLE_MSG = "Tick event is not available"
@@ -22,7 +22,7 @@ class BaseBotInternalData:
 
     def __init__(self, bot_info: Optional[BotInfo]):
         self.bot_info: Optional[BotInfo] = bot_info
-        self._bot_intent: Dict[str, Any] = self._new_bot_intent()
+        self.bot_intent: BotIntent = BotIntent(type=BotIntent)
         self._my_id: Optional[int] = None
         self._teammate_ids: Set[int] = set()
         self._game_setup: Optional[GameSetup] = None
@@ -33,40 +33,13 @@ class BaseBotInternalData:
         self._conditions: Set[Condition] = set()
         self._is_running_atomic: bool = False
         self._event_handling_disabled_turn: int = 0
-        self._graphics_state: GraphicsState = GraphicsState()
+        self.graphics_state: drawsvg.Drawing = drawsvg.Drawing(800, 600)
         # Fields for set_stop / set_resume
         self.is_stopped: bool = False
         self.saved_target_speed: Optional[float] = None
         self.saved_turn_rate: Optional[float] = None
         self.saved_gun_turn_rate: Optional[float] = None
         self.saved_radar_turn_rate: Optional[float] = None
-
-
-    def _new_bot_intent(self) -> Dict[str, Any]:
-        """
-        Creates a new bot intent.
-        """
-        return {
-            "type": "BotIntent",
-            "targetSpeed": 0.0,
-            "turnRate": 0.0,
-            "gunTurnRate": 0.0,
-            "radarTurnRate": 0.0,
-            "bodyTurnRate": 0.0,  # Old name, kept for compatibility
-            "firepower": 0.0,
-            "adjustGunForBodyTurn": False,
-            "adjustRadarForGunTurn": False,
-            "scan": False,
-            "bodyColor": None,
-            "turretColor": None,
-            "radarColor": None,
-            "bulletColor": None,
-            "scanColor": None,
-            "tracksColor": None,
-            "gunColor": None,
-            "stdOut": None,
-            "stdErr": None,
-        }
 
     @property
     def my_id(self) -> int:
@@ -163,11 +136,3 @@ class BaseBotInternalData:
     @event_handling_disabled_turn.setter
     def event_handling_disabled_turn(self, value: int):
         self._event_handling_disabled_turn = value
-
-    @property
-    def bot_intent(self) -> Dict[str, Any]:
-        return self._bot_intent
-
-    @property
-    def graphics_state(self) -> GraphicsState:
-        return self._graphics_state

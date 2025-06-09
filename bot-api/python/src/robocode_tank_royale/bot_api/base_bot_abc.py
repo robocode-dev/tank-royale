@@ -1,9 +1,9 @@
 import math
 import traceback
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Sequence
 
-from PIL import Image
+import drawsvg  # type: ignore
 
 from .events import *
 from .bullet_state import BulletState
@@ -20,7 +20,7 @@ class BaseBotABC(ABC):
     """The maximum number of team messages that can be sent per turn, which is 10 messages."""
 
     @abstractmethod
-    def start(self) -> None:
+    async def start(self) -> None:
         """
         The method used to start running the bot. You should call this method from the main function
         or a similar entry point.
@@ -34,7 +34,7 @@ class BaseBotABC(ABC):
         pass
 
     @abstractmethod
-    def go(self) -> None:
+    async def go(self) -> None:
         """
         Commits the current commands (actions), which finalizes the current turn for the bot.
 
@@ -329,7 +329,7 @@ class BaseBotABC(ABC):
         pass
 
     @abstractmethod
-    def get_bullet_states(self) -> list[BulletState]:
+    def get_bullet_states(self) -> Sequence[BulletState | None] | None:
         """
         Current bullet states.
         
@@ -341,7 +341,7 @@ class BaseBotABC(ABC):
         pass
 
     @abstractmethod
-    def get_events(self) -> list[BotEvent]:
+    def get_events(self) -> Sequence[BotEvent | None] | None:
         """
         Returns an ordered list containing all events currently in the bot's event queue.
         
@@ -1293,7 +1293,7 @@ class BaseBotABC(ABC):
         pass
 
     @abstractmethod
-    def get_graphics(self) -> Image.Image:
+    def get_graphics(self) -> drawsvg.Drawing:
         """
         Gets a graphics object for debug painting.
 
