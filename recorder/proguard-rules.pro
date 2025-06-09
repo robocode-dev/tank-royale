@@ -9,7 +9,7 @@
 -keepattributes AnnotationDefault,*Annotation*
 
 -keep public class dev.robocode.tankroyale.recorder.RecorderKt { *; }
--keep class dev.robocode.tankroyale.recorder.** { *; }
+-keep class dev.robocode.tankroyale.** { *; }
 -keep class org.fusesource.jansi.** { *; }
 -keep class picocli.** { *; }
 -keep class org.slf4j.** { *; }
