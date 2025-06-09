@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.config
 
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.MainFrame
@@ -7,7 +8,6 @@ import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
-import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import javax.swing.JButton
 import javax.swing.JCheckBox

@@ -1,8 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
+import dev.robocode.tankroyale.client.model.*
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
-import dev.robocode.tankroyale.gui.model.*
 import dev.robocode.tankroyale.gui.ui.ResultsFrame
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.hsl
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
@@ -14,12 +14,7 @@ import dev.robocode.tankroyale.gui.util.ColorUtil.Companion.fromString
 import dev.robocode.tankroyale.gui.util.Graphics2DState
 import dev.robocode.tankroyale.gui.util.HslColor
 import java.awt.*
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
-import java.awt.event.MouseMotionAdapter
-import java.awt.event.MouseWheelEvent
+import java.awt.event.*
 import java.awt.geom.AffineTransform
 import java.awt.geom.Arc2D
 import java.awt.geom.Area

@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.gui.model.BotInfo
+import dev.robocode.tankroyale.client.model.BotInfo
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import net.miginfocom.swing.MigLayout
 import java.awt.Desktop
@@ -69,7 +69,7 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         versionTextField.text = botInfo?.version
         authorsTextField.text = botInfo?.authors?.joinToString(separator = ", ") ?: ""
         descriptionTextField.text = botInfo?.description?.let { truncateDescriptionLines(it) } ?: ""
-        homepageTextPane.text = botInfo?.homepage?.let { generateUrlHtml(botInfo.homepage) } ?: ""
+        homepageTextPane.text = botInfo?.homepage?.let { generateUrlHtml(it) } ?: ""
         gameTypesTextField.text = botInfo?.gameTypes?.joinToString(separator = ", ") ?: ""
         countryCodesTextPane.text = botInfo?.countryCodes?.let { generateCountryHtml(botInfo.countryCodes) } ?: ""
         platformTextField.text = botInfo?.platform

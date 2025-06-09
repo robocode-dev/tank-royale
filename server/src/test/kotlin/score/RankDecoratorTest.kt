@@ -1,9 +1,9 @@
 package score
 
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.score.RankDecorator
 import dev.robocode.tankroyale.server.model.BotId
+import dev.robocode.tankroyale.server.model.ParticipantId
 import dev.robocode.tankroyale.server.model.Score
+import dev.robocode.tankroyale.server.score.RankDecorator
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.mockk.every

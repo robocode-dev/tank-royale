@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.settings
 
-import dev.robocode.tankroyale.gui.model.GameSetup
-import dev.robocode.tankroyale.gui.model.IGameSetup
+import dev.robocode.tankroyale.client.model.GameSetup
+import dev.robocode.tankroyale.client.model.IGameSetup
 import java.util.*
 
 object GamesSettings : PropertiesStore("Robocode Games Settings", "games.properties") {

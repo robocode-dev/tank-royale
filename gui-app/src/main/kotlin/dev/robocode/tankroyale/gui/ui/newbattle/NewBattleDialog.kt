@@ -1,25 +1,27 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.gui.ui.MainFrame
+import dev.robocode.tankroyale.client.model.BotInfo
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.client.Client
-import dev.robocode.tankroyale.gui.model.BotInfo
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.ui.Hints
+import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
+import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
-import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
-import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCancelButton
+import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
-import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.MessageDialog
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.event.ItemEvent
-import javax.swing.*
+import javax.swing.BorderFactory
+import javax.swing.JButton
+import javax.swing.JPanel
 
 object NewBattleDialog : RcDialog(MainFrame, "select_bots_dialog") {
 

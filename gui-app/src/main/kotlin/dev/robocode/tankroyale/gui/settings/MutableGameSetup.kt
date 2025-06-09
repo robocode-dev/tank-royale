@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.settings
 
-import dev.robocode.tankroyale.gui.model.IGameSetup
+import dev.robocode.tankroyale.client.model.GameSetup
+import dev.robocode.tankroyale.client.model.IGameSetup
 
 data class MutableGameSetup(
     override var gameType: String,
@@ -47,4 +48,29 @@ data class MutableGameSetup(
         isReadyTimeoutLocked = other.isReadyTimeoutLocked
         defaultTurnsPerSecond = other.defaultTurnsPerSecond
     }
+}
+
+fun GameSetup.toMutableGameSetup(): MutableGameSetup {
+    return MutableGameSetup(
+        gameType,
+        arenaWidth,
+        isArenaWidthLocked,
+        arenaHeight,
+        isArenaHeightLocked,
+        minNumberOfParticipants,
+        isMinNumberOfParticipantsLocked,
+        maxNumberOfParticipants,
+        isMaxNumberOfParticipantsLocked,
+        numberOfRounds,
+        isNumberOfRoundsLocked,
+        gunCoolingRate,
+        isGunCoolingRateLocked,
+        maxInactivityTurns,
+        isMaxInactivityTurnsLocked,
+        turnTimeout,
+        isTurnTimeoutLocked,
+        readyTimeout,
+        isReadyTimeoutLocked,
+        defaultTurnsPerSecond
+    )
 }

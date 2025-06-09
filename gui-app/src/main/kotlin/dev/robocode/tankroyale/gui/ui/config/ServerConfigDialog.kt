@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.config
 
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
@@ -20,16 +21,15 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosed
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onOpened
 import dev.robocode.tankroyale.gui.ui.server.RemoteServer
-import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.MessageDialog
 import net.miginfocom.swing.MigLayout
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Font
 import java.awt.event.ActionListener
-import javax.swing.*
 import java.awt.event.ItemEvent
 import java.awt.event.ItemListener
+import javax.swing.*
 
 class ServerConfigDialog : RcDialog(MainFrame, "server_config_dialog") {
     init {

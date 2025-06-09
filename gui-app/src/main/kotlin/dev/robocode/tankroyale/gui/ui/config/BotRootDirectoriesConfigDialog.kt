@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.config
 
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.settings.BotDirectoryConfig
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
@@ -12,10 +13,12 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.util.EDT
-import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
-import java.awt.event.*
+import java.awt.event.KeyAdapter
+import java.awt.event.KeyEvent
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import javax.swing.*
 
 object BotRootDirectoriesConfigDialog : RcDialog(MainFrame, "bot_root_directories_config_dialog") {

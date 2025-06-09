@@ -1,8 +1,9 @@
 package dev.robocode.tankroyale.gui.ui.control
 
+import dev.robocode.tankroyale.client.model.TpsChangedEvent
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
-import dev.robocode.tankroyale.gui.model.TpsChangedEvent
 import dev.robocode.tankroyale.gui.settings.ConfigSettings.DEFAULT_TPS
 import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.Strings
@@ -12,7 +13,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsField
 import dev.robocode.tankroyale.gui.ui.tps.TpsSlider
-import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import java.awt.EventQueue
 import javax.swing.JButton

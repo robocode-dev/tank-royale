@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.control
 
-import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.common.Event
 import javax.swing.JButton
 
 object ControlEvents {

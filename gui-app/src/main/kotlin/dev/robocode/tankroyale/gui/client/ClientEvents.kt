@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.client
 
-import dev.robocode.tankroyale.gui.model.*
-import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.client.model.*
+import dev.robocode.tankroyale.common.Event
 
 object ClientEvents {
     val onConnected = Event<Unit>()

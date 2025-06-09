@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.server
 
-import dev.robocode.tankroyale.gui.util.Event
+import dev.robocode.tankroyale.common.Event
 
 object ServerEvents {
     val onConnected = Event<Unit>()

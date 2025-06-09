@@ -18,6 +18,11 @@ plugins {
     alias(libs.plugins.benmanes.versions) // dependency management only
 }
 
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
 subprojects {
 
     repositories {

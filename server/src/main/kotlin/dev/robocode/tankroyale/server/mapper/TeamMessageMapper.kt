@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.mapper
+package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.TeamMessage

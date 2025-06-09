@@ -1,13 +1,16 @@
 package dev.robocode.tankroyale.gui.ui.extensions
 
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcToolTip
-import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.MessageDialog
 import java.awt.Component
 import java.awt.Container
 import java.awt.EventQueue
-import javax.swing.*
+import javax.swing.JButton
+import javax.swing.JCheckBox
+import javax.swing.JComponent
+import javax.swing.JLabel
 
 object JComponentExt {
 

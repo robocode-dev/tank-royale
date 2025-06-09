@@ -37,7 +37,7 @@ dependencies {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion = JavaLanguageVersion.of(11)
     }
 
     withJavadocJar()
@@ -87,7 +87,7 @@ tasks {
             attributes["Package"] = project.group
         }
         minimize()
-        archiveClassifier.set("")
+        archiveClassifier = ""
     }
 
     javadoc {
@@ -115,7 +115,7 @@ tasks {
         }
     }
 
-    val uploadDocs by registering(Copy::class) {
+    register<Copy>("uploadDocs") {
         dependsOn(javadoc)
 
         val javadocDir = layout.projectDirectory.dir("../../docs/api/java")
@@ -151,28 +151,29 @@ tasks {
                 version
 
                 pom {
-                    name.set(javadocTitle)
-                    description.set(project.description)
-                    url.set("https://github.com/robocode-dev/tank-royale")
+                    name = javadocTitle
+                    description = project.description
+                    url = "https://github.com/robocode-dev/tank-royale"
 
                     licenses {
                         license {
-                            name.set("The Apache License, Version 2.0")
-                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                            name = "The Apache License, Version 2.0"
+                            url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
                         }
                     }
                     developers {
                         developer {
-                            id.set("fnl")
-                            name.set("Flemming Nørnberg Larsen")
-                            organization.set("flemming-n-larsen")
-                            organizationUrl.set("https://github.com/flemming-n-larsen")
+                            id = "fnl"
+                            name = "Flemming Nørnberg Larsen"
+                            url = "https://github.com/flemming-n-larsen"
+                            organization = "robocode.dev"
+                            organizationUrl = "https://robocode-dev.github.io/tank-royale/"
                         }
                     }
                     scm {
-                        connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
-                        developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
-                        url.set("https://github.com/robocode-dev/tank-royale/tree/master")
+                        connection = "scm:git:git://github.com/robocode-dev/tank-royale.git"
+                        developerConnection = "scm:git:ssh://github.com:robocode-dev/tank-royale.git"
+                        url = "https://github.com/robocode-dev/tank-royale/tree/master"
                     }
                 }
             }

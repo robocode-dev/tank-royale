@@ -1,10 +1,15 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.gui.model.IGameSetup
+import dev.robocode.tankroyale.client.model.IGameSetup
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.MutableGameSetup
-import dev.robocode.tankroyale.gui.ui.*
+import dev.robocode.tankroyale.gui.settings.toMutableGameSetup
+import dev.robocode.tankroyale.gui.ui.GameConstants
+import dev.robocode.tankroyale.gui.ui.MainFrame
+import dev.robocode.tankroyale.gui.ui.Messages
+import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCancelButton
@@ -16,9 +21,11 @@ import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.onChange
 import dev.robocode.tankroyale.gui.ui.extensions.JTextFieldExt.setInputVerifier
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.ui.newbattle.GameTypeDropdown
-import dev.robocode.tankroyale.gui.util.Event
 import net.miginfocom.swing.MigLayout
-import javax.swing.*
+import javax.swing.BorderFactory
+import javax.swing.JButton
+import javax.swing.JPanel
+import javax.swing.JTextField
 
 object SetupRulesDialog : RcDialog(MainFrame, "setup_rules_dialog") {
 

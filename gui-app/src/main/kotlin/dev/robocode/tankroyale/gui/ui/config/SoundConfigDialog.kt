@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.config
 
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ConfigSettings.SOUNDS_DIR
 import dev.robocode.tankroyale.gui.ui.MainFrame
@@ -10,7 +11,6 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCheckBox
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showError
-import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.FileUtil
 import net.miginfocom.swing.MigLayout
 import javax.swing.BorderFactory

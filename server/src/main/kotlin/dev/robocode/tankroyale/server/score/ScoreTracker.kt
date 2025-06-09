@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.server.score
 
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.model.ParticipantId
+import dev.robocode.tankroyale.server.model.ParticipantId
 import dev.robocode.tankroyale.server.model.Score
 import dev.robocode.tankroyale.server.rules.*
 

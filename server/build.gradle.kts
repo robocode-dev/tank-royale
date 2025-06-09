@@ -37,6 +37,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":lib:common"))
     implementation(libs.java.websocket)
     implementation(libs.picocli)
     implementation(libs.jansi)
@@ -90,6 +91,8 @@ tasks {
     }
 
     jar {
+        dependsOn(":lib:common:jar")
+
         archiveClassifier.set("all") // the final archive will not have this classifier
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -185,10 +188,11 @@ tasks {
                     }
                     developers {
                         developer {
-                            id.set("fnl")
-                            name.set("Flemming Nørnberg Larsen")
-                            organization.set("flemming-n-larsen")
-                            organizationUrl.set("https://github.com/flemming-n-larsen")
+                            id = "fnl"
+                            name = "Flemming Nørnberg Larsen"
+                            url = "https://github.com/flemming-n-larsen"
+                            organization = "robocode.dev"
+                            organizationUrl = "https://robocode-dev.github.io/tank-royale/"
                         }
                     }
                     scm {

@@ -1,5 +1,8 @@
 package dev.robocode.tankroyale.gui.client
 
+import dev.robocode.tankroyale.client.WebSocketClient
+import dev.robocode.tankroyale.client.WebSocketClientEvents
+import dev.robocode.tankroyale.client.model.*
 import dev.robocode.tankroyale.gui.client.ClientEvents.onBotListUpdate
 import dev.robocode.tankroyale.gui.client.ClientEvents.onConnected
 import dev.robocode.tankroyale.gui.client.ClientEvents.onGameAborted
@@ -10,13 +13,12 @@ import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
 import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundEnded
 import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundStarted
 import dev.robocode.tankroyale.gui.client.ClientEvents.onTickEvent
-import dev.robocode.tankroyale.gui.model.*
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
-import dev.robocode.tankroyale.gui.util.Version
+import dev.robocode.tankroyale.common.util.Version
 import kotlinx.serialization.PolymorphicSerializer
 import java.net.URI
 import java.util.concurrent.atomic.AtomicBoolean

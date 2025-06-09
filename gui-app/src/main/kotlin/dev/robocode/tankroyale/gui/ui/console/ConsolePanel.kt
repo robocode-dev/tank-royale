@@ -1,12 +1,12 @@
 package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.ansi.AnsiEditorPane
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.util.Clipboard
 import dev.robocode.tankroyale.gui.util.EDT
-import dev.robocode.tankroyale.gui.util.Event
 import dev.robocode.tankroyale.gui.util.EscapedTextDecoder
 import java.awt.BorderLayout
 import javax.swing.*
