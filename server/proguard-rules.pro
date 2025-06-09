@@ -9,7 +9,7 @@
 -keepattributes AnnotationDefault,*Annotation*
 
 -keep public class dev.robocode.tankroyale.server.ServerKt { *; }
--keep class dev.robocode.tankroyale.server.** { *; }
+-keep class dev.robocode.tankroyale.** { *; }
 -keep class picocli.** { *; }
 -keep class org.fusesource.jansi.** { *; }
 -keep class org.slf4j.** { *; }
