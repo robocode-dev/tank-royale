@@ -141,10 +141,16 @@ tasks {
                     }
                     developers {
                         developer {
-                            id.set("fnl")
-                            name.set("Flemming Nørnberg Larsen")
-                            organization.set("flemming-n-larsen")
-                            organizationUrl.set("https://github.com/flemming-n-larsen")
+                            id = "jandurovec"
+                            name = "Jan Durovec"
+                            url = "https://github.com/jandurovec"
+                        }
+                        developer {
+                            id = "fnl"
+                            name = "Flemming Nørnberg Larsen"
+                            url = "https://github.com/flemming-n-larsen"
+                            organization = "robocode.dev"
+                            organizationUrl = "https://robocode-dev.github.io/tank-royale/"
                         }
                     }
                     scm {
