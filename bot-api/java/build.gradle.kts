@@ -115,7 +115,7 @@ tasks {
         }
     }
 
-    register<Copy>("uploadDocs") {
+    register<Copy>("copyJavaApiDocs") {
         dependsOn(javadoc)
 
         val javadocDir = layout.projectDirectory.dir("../../docs/api/java")

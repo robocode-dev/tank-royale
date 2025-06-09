@@ -56,9 +56,9 @@ tasks {
             "gui-app:assemble",          // GUI
             "sample-bots:java:zip",      // Sample bots for Java
             "sample-bots:csharp:zip",    // Sample bots for C#
-            "buildDocs:uploadDocs",      // Documentation
-            "bot-api:dotnet:uploadDocs", // Docfx documentation for .NET Bot API
-            "bot-api:java:uploadDocs"    // Javadocs for Java Bot API
+            "buildDocs:copyGeneratedDocs",      // Documentation
+            "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
+            "bot-api:java:copyJavaApiDocs"      // Javadocs for Java Bot API
         )
     }
 
