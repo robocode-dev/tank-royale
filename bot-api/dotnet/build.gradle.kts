@@ -94,6 +94,15 @@ tasks {
         into(dotnetApiDir)
     }
 
+    // Make sure documentation tasks are not part of the build task
+    afterEvaluate {
+        tasks.named("build").configure {
+            setDependsOn(dependsOn.filterNot {
+                it.toString().contains("docfx") || it.toString().contains("copyDotnetApiDocs")
+            })
+        }
+    }
+
     register<Exec>("pushLocal") {
         dependsOn(prepareNugetDocs)
 

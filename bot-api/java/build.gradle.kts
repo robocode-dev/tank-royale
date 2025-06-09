@@ -129,6 +129,15 @@ tasks {
         into(javadocDir)
     }
 
+    // Make sure documentation tasks are not part of the build task
+    afterEvaluate {
+        tasks.named("build").configure {
+            setDependsOn(dependsOn.filterNot {
+                it.toString().contains("javadoc") || it.toString().contains("copyJavaApiDocs")
+            })
+        }
+    }
+
     val javadocJar = named("javadocJar")
     val sourcesJar = named("sourcesJar") {
         dependsOn(compileJava)
