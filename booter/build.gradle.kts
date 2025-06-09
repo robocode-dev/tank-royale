@@ -49,6 +49,8 @@ java {
 
 tasks {
     jar {
+        dependsOn(":lib:common:jar")
+
         archiveClassifier.set("all") // the final archive will not have this classifier
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
