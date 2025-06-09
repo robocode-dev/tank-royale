@@ -98,8 +98,8 @@ dotnet run --no-build >nul
     val zip by registering(Zip::class) {
         dependsOn(build)
 
-        archiveFileName.set(archiveFilename)
-        destinationDirectory.set(layout.buildDirectory)
+        archiveFileName = archiveFilename
+        destinationDirectory = layout.buildDirectory
         filePermissions {
             user {
                 read = true
