@@ -34,7 +34,7 @@ class BaseBotABC(ABC):
         pass
 
     @abstractmethod
-    def go(self) -> None:
+    async def go(self) -> None:
         """
         Commits the current commands (actions), which finalizes the current turn for the bot.
 

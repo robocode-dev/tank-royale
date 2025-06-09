@@ -37,19 +37,19 @@ else:
 # print(f"Schema directory {schema_path_by_gradle_script} (from gradle) NOT FOUND")
 
 try:
-    from robocode_tank_royale.schema import ServerHandshake # Test schema import first
+    from robocode_tank_royale.schema import ServerHandshake # type: ignore
     print("Imported robocode_tank_royale.schema.ServerHandshake successfully.")
 
-    from robocode_tank_royale.bot_api.internal import base_bot_internal_data
+    from robocode_tank_royale.bot_api.internal import base_bot_internal_data # type: ignore
     print("Imported robocode_tank_royale.bot_api.internal.base_bot_internal_data successfully.")
 
-    from robocode_tank_royale.bot_api.internal import event_queue
+    from robocode_tank_royale.bot_api.internal import event_queue # type: ignore
     print("Imported robocode_tank_royale.bot_api.internal.event_queue successfully.")
 
-    from robocode_tank_royale.bot_api.internal import websocket_handler
+    from robocode_tank_royale.bot_api.internal import websocket_handler # type: ignore
     print("Imported robocode_tank_royale.bot_api.internal.websocket_handler successfully.")
 
-    from robocode_tank_royale.bot_api.internal import base_bot_internals
+    from robocode_tank_royale.bot_api.internal import base_bot_internals # type: ignore
     print("Imported robocode_tank_royale.bot_api.internal.base_bot_internals successfully.")
 
     print("All main refactored modules imported successfully.")

@@ -1,14 +1,16 @@
-from abc import ABC, abstractmethod
 from typing import Union
+from abc import abstractmethod
+
+from .base_bot_abc import BaseBotABC
 from .events import Condition
 
-class BotABC(ABC):
+class BotABC(BaseBotABC):
     """
     Interface for a bot that extends the core API with convenient methods for movement,
     turning, and firing the gun.
     """
 
-    def run(self) -> None:
+    async def run(self) -> None:
         """
         Used for running a program for the bot.
 

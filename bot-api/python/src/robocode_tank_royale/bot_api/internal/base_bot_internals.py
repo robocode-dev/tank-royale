@@ -5,7 +5,7 @@ import time
 import json
 import math
 import os
-from typing import Any, Optional, Set, Dict, List, Sequence
+from typing import Any, Optional, Set, Dict, Sequence
 
 from ..base_bot_abc import BaseBotABC
 from ..bot_abc import BotABC
@@ -17,6 +17,7 @@ from ..events.condition import Condition
 from ..game_setup import GameSetup
 from ..initial_position import InitialPosition
 from ..util.math_util import MathUtil
+from ..color import Color
 
 from .base_bot_internal_data import BaseBotInternalData
 from .bot_event_handlers import BotEventHandlers
@@ -38,7 +39,7 @@ from ..constants import (
     TEAM_MESSAGE_MAX_SIZE,
 )
 
-from robocode_tank_royale.schema import ServerHandshake
+from robocode_tank_royale.schema import ServerHandshake  # type: ignore
 
 DEFAULT_SERVER_URL = "ws://localhost:7654"
 
@@ -232,14 +233,11 @@ class BaseBotInternals:
         self.data.is_running = True
         self.enable_event_handling(True)
         try:
-            # Assuming bot.run() is async. If not:
-            # await asyncio.get_event_loop().run_in_executor(None, bot.run)
             await bot.run()
 
+            # Skip every turn after the run method has exited
             while self.data.is_running:
                 try:
-                    # Assuming bot.go() is async. If not:
-                    # await asyncio.get_event_loop().run_in_executor(None, bot.go)
                     await bot.go()
                 except asyncio.CancelledError:
                     return # Task was cancelled
@@ -283,6 +281,7 @@ class BaseBotInternals:
 
     async def _connect(self) -> None:
         self._sanitize_url(self.server_url)
+        assert self.server_secret is not None
         try:
             self.web_socket_handler = WebSocketHandler( # Store the handler instance
                 self.data, # Pass BaseBotInternalData instance
@@ -366,8 +365,8 @@ class BaseBotInternals:
             async with self.next_turn_monitor:
                 while (self.data.is_running and
                        turn_number == self.data.current_tick_or_throw.turn_number and
-                       self.thread == asyncio.current_task() and # Ensure this is the bot's main task
-                       not asyncio.current_task().cancelled()):
+                       self.thread == asyncio.current_task() and # Ensure this is the bot's main task\
+                       not asyncio.current_task().cancelled()):  # type: ignore
                     await self.next_turn_monitor.wait()
         except asyncio.CancelledError:
             raise ThreadInterruptedException() # Propagate as specific interruption
@@ -388,7 +387,7 @@ class BaseBotInternals:
              return False # Cannot determine gun heat or energy
 
         # Assuming self.base_bot.energy is updated by the BaseBot instance from its on_tick handler
-        current_energy = self.base_bot.energy 
+        current_energy = self.base_bot.get_energy() 
         gun_heat = current_tick.bot_state.gun_heat
 
         if current_energy < firepower or gun_heat > 0:
@@ -564,7 +563,7 @@ class BaseBotInternals:
             team_messages_list = []
             self.data.bot_intent['teamMessages'] = team_messages_list
 
-        if len(team_messages_list) >= MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN:
+        if len(team_messages_list) >= MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN:  # type: ignore
             raise BotException(
                 f"The maximum number team messages has already been reached: {MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}")
         
@@ -579,69 +578,69 @@ class BaseBotInternals:
             raise ValueError(
                 f"The team message is larger than the limit of {TEAM_MESSAGE_MAX_SIZE} bytes (compact JSON format)")
 
-        team_message_dict = {
+        team_message_dict: dict[str, int|str|None]= {
             # 'messageType': type(message).__name__, # This is a Python-specific way, might need adjustment for cross-platform
             'receiverId': teammate_id,
             'message': json_message_str # Store the JSON string
         }
-        team_messages_list.append(team_message_dict)
+        team_messages_list.append(team_message_dict)  # type: ignore
 
     # Color and Graphics - Delegated
-    def get_body_color(self) -> Optional[str]:
+    def get_body_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.body_color if tick and tick.bot_state else None
 
-    def get_turret_color(self) -> Optional[str]:
+    def get_turret_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.turret_color if tick and tick.bot_state else None
 
-    def get_radar_color(self) -> Optional[str]:
+    def get_radar_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.radar_color if tick and tick.bot_state else None
 
-    def get_bullet_color(self) -> Optional[str]:
+    def get_bullet_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.bullet_color if tick and tick.bot_state else None
 
-    def get_scan_color(self) -> Optional[str]:
+    def get_scan_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.scan_color if tick and tick.bot_state else None
 
-    def get_tracks_color(self) -> Optional[str]:
+    def get_tracks_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.tracks_color if tick and tick.bot_state else None
 
-    def get_gun_color(self) -> Optional[str]:
+    def get_gun_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.gun_color if tick and tick.bot_state else None
 
-    def set_body_color(self, color: Optional[str]) -> None:
+    def set_body_color(self, color: Optional[Color]) -> None:
         self.data.bot_intent['bodyColor'] = color
 
-    def set_turret_color(self, color: Optional[str]) -> None:
+    def set_turret_color(self, color: Optional[Color]) -> None:
         self.data.bot_intent['turretColor'] = color
 
-    def set_radar_color(self, color: Optional[str]) -> None:
+    def set_radar_color(self, color: Optional[Color]) -> None:
         self.data.bot_intent['radarColor'] = color
 
-    def set_bullet_color(self, color: Optional[str]) -> None:
+    def set_bullet_color(self, color: Optional[Color]) -> None:
         self.data.bot_intent['bulletColor'] = color
 
-    def set_scan_color(self, color: Optional[str]) -> None:
+    def set_scan_color(self, color: Optional[Color]) -> None:
         self.data.bot_intent['scanColor'] = color
 
-    def set_tracks_color(self, color: Optional[str]) -> None:
+    def set_tracks_color(self, color: Optional[Color]) -> None:
         self.data.bot_intent['tracksColor'] = color
 
-    def set_gun_color(self, color: Optional[str]) -> None:
+    def set_gun_color(self, color: Optional[Color]) -> None:
         self.data.bot_intent['gunColor'] = color
 
-    def get_graphics(self) -> 'GraphicsState': # Forward reference if GraphicsState is not imported
+    def get_graphics(self) -> 'GraphicsState': # type: ignore - Forward reference
         return self.data.graphics_state
 
 
     # Bullet States - Delegated
-    def get_bullet_states(self) -> List[BulletState]:
+    def get_bullet_states(self) -> Sequence[BulletState | None]:
         tick = self.data.current_tick_or_null
         if tick and tick.bullet_states:
             return list(tick.bullet_states)
