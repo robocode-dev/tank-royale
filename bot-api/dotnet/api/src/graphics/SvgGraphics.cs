@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -13,9 +12,9 @@ namespace Robocode.TankRoyale.BotApi.Graphics;
 public class SvgGraphics : IGraphics
 {
     private readonly List<string> _elements = new();
-    private string _strokeColor = "#000000";
+    private string _strokeColor = "none";
     private string _fillColor = "none";
-    private double _strokeWidth = 1.0;
+    private double _strokeWidth;
     private string _fontFamily = "Arial";
     private double _fontSize = 12;
 
@@ -39,14 +38,17 @@ public class SvgGraphics : IGraphics
     /// </summary>
     public void DrawRectangle(double x, double y, double width, double height)
     {
+        var strokeColor = _strokeColor == "none" ? "#000000" : _strokeColor;
+        var strokeWidth = _strokeWidth == 0 ? 1 : _strokeWidth;
+        
         _elements.Add($"<rect " +
                       $"x=\"{Format(x)}\" " +
                       $"y=\"{Format(y)}\" " +
                       $"width=\"{Format(width)}\" " +
                       $"height=\"{Format(height)}\" " +
-                      $"stroke=\"{_strokeColor}\" " +
-                      $"stroke-width=\"{Format(_strokeWidth)}\" " +
                       $"fill=\"none\" " +
+                      $"stroke=\"{strokeColor}\" " +
+                      $"stroke-width=\"{Format(strokeWidth)}\" " +
                       "/>\n");
     }
 
@@ -71,13 +73,16 @@ public class SvgGraphics : IGraphics
     /// </summary>
     public void DrawCircle(double x, double y, double radius)
     {
+        var strokeColor = _strokeColor == "none" ? "#000000" : _strokeColor;
+        var strokeWidth = _strokeWidth == 0 ? 1 : _strokeWidth;
+
         _elements.Add($"<circle " +
                       $"cx=\"{Format(x)}\" " +
                       $"cy=\"{Format(y)}\" " +
                       $"r=\"{Format(radius)}\" " +
                       $"fill=\"none\" " +
-                      $"stroke=\"{_strokeColor}\" " +
-                      $"stroke-width=\"{Format(_strokeWidth)}\" " +
+                      $"stroke=\"{strokeColor}\" " +
+                      $"stroke-width=\"{Format(strokeWidth)}\" " +
                       $"/>\n");
     }
 
@@ -110,11 +115,14 @@ public class SvgGraphics : IGraphics
             pointsStr.Append($"{Format(point.X)},{Format(point.Y)} ");
         }
 
+        var strokeColor = _strokeColor == "none" ? "#000000" : _strokeColor;
+        var strokeWidth = _strokeWidth == 0 ? 1 : _strokeWidth;
+
         _elements.Add($"<polygon " +
                       $"points=\"{pointsStr.ToString().Trim()}\" " +
                       $"fill=\"none\" " +
-                      $"stroke=\"{_strokeColor}\" " +
-                      $"stroke-width=\"{Format(_strokeWidth)}\" " +
+                      $"stroke=\"{strokeColor}\" " +
+                      $"stroke-width=\"{Format(strokeWidth)}\" " +
                       $"/>\n");
     }
 
@@ -143,7 +151,7 @@ public class SvgGraphics : IGraphics
     /// <summary>
     /// Draws text at the specified position.
     /// </summary>
-    public void DrawText(double x, double y, string text)
+    public void DrawText(string text, double x, double y)
     {
         _elements.Add($"<text " +
                       $"x=\"{Format(x)}\" " +
@@ -159,7 +167,7 @@ public class SvgGraphics : IGraphics
     /// </summary>
     public void SetStrokeColor(Color color)
     {
-        _strokeColor = ColorToHex(color);
+        _strokeColor = color.ToHexColor();
     }
 
     /// <summary>
@@ -167,7 +175,7 @@ public class SvgGraphics : IGraphics
     /// </summary>
     public void SetFillColor(Color color)
     {
-        _fillColor = ColorToHex(color);
+        _fillColor = color.ToHexColor();
     }
 
     /// <summary>
@@ -209,11 +217,6 @@ public class SvgGraphics : IGraphics
     public void Clear()
     {
         _elements.Clear();
-    }
-
-    private static string ColorToHex(Color color)
-    {
-        return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
     }
 
     private static string Format(double value)

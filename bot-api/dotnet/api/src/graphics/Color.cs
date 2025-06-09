@@ -281,6 +281,34 @@ public readonly struct Color : IEquatable<Color>
             return $"Color [R={R}, G={G}, B={B}]";
         return $"Color [A={A}, R={R}, G={G}, B={B}]";
     }
+    
+    /// <summary>
+    /// Converts the color to its hexadecimal representation.
+    /// </summary>
+    /// <returns>
+    /// A string representing the color in hexadecimal format:
+    /// - If alpha is 255 (fully opaque), returns #RRGGBB
+    /// - If alpha is not 255, returns #RRGGBB with an additional alpha channel AA
+    /// </returns>
+    /// <remarks>
+    /// The method uses uppercase hexadecimal notation with two digits for each color component.
+    /// R = Red, G = Green, B = Blue, A = Alpha
+    /// </remarks>
+    /// <example>
+    /// // For a fully opaque red color
+    /// Color red = Color.Red;
+    /// string hexRed = red.ToHexColor(); // Returns "#FF0000"
+    /// 
+    /// // For a semi-transparent blue color
+    /// Color semiTransparentBlue = Color.FromArgb(128, 0, 0, 255);
+    /// string hexBlue = semiTransparentBlue.ToHexColor(); // Returns "#0000FF80"
+    /// </example>
+    public string ToHexColor()
+    {
+        if (A == 255)
+            return $"#{R:X2}{G:X2}{B:X2}";
+        return $"#{R:X2}{G:X2}{B:X2}{A:X2}";
+    }
 
     // Implicit conversion to/from int (ARGB)
     /// <summary>

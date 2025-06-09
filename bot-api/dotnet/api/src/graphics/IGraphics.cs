@@ -63,10 +63,10 @@ public interface IGraphics
     /// <summary>
     /// Draws text at the specified position.
     /// </summary>
+    /// <param name="text">The text to draw.</param>
     /// <param name="x">The x coordinate where to draw the text.</param>
     /// <param name="y">The y coordinate where to draw the text.</param>
-    /// <param name="text">The text to draw.</param>
-    void DrawText(double x, double y, string text) ;
+    void DrawText(string text, double x, double y);
 
     /// <summary>
     /// Sets the color used for drawing outlines.
