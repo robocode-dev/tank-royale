@@ -5,7 +5,8 @@ import time
 import json
 import math
 import os
-from typing import Any, Optional, Set, Dict, Sequence
+from typing import Any, Optional, Set, Sequence
+import drawsvg  # type: ignore
 
 from ..base_bot_abc import BaseBotABC
 from ..bot_abc import BotABC
@@ -39,7 +40,7 @@ from ..constants import (
     TEAM_MESSAGE_MAX_SIZE,
 )
 
-from robocode_tank_royale.schema import ServerHandshake  # type: ignore
+from robocode_tank_royale.schema import BotIntent, ServerHandshake  # type: ignore
 
 DEFAULT_SERVER_URL = "ws://localhost:7654"
 
@@ -123,43 +124,46 @@ class BaseBotInternals:
 
     def _on_bullet_fired(self, event: BulletFiredEvent) -> None:
         if self.data.bot_intent:
-            self.data.bot_intent['firepower'] = 0.0
+            self.data.bot_intent.firepower = 0.0
         pass
 
     def _reset_movement(self) -> None:
         if self.data.bot_intent:
-            self.data.bot_intent['turnRate'] = None
-            self.data.bot_intent['gunTurnRate'] = None
-            self.data.bot_intent['radarTurnRate'] = None
-            self.data.bot_intent['targetSpeed'] = None
-            self.data.bot_intent['firepower'] = None
+            self.data.bot_intent.turn_rate = None  # type: ignore
+            self.data.bot_intent.gun_turn_rate = None  # type: ignore
+            self.data.bot_intent.radar_turn_rate = None  # type: ignore
+            self.data.bot_intent.target_speed = None  # type: ignore
+            self.data.bot_intent.firepower = None  # type: ignore
 
-    # Bot State Management - Delegated to self.data
-    def get_my_id(self) -> int:
+    @property
+    def my_id(self) -> int:
         return self.data.my_id
-
-    def set_my_id(self, my_id: int) -> None: # Typically called by WebSocketHandler
+    @my_id.setter
+    def my_id(self, my_id: int) -> None:
         self.data.my_id = my_id
 
-    def get_teammate_ids(self) -> Set[int]:
+    @property
+    def teammate_ids(self) -> Set[int]:
         return self.data.teammate_ids
-
-    def set_teammate_ids(self, teammate_ids: Set[int]) -> None: # Typically called by WebSocketHandler
+    @teammate_ids.setter
+    def teammate_ids(self, teammate_ids: Set[int]) -> None:
         self.data.teammate_ids = teammate_ids
 
-    def get_game_setup(self) -> GameSetup:
+    @property
+    def game_setup(self) -> GameSetup:
         return self.data.game_setup
-
-    def set_game_setup(self, game_setup: GameSetup) -> None: # Typically called by WebSocketHandler
+    @game_setup.setter
+    def game_setup(self, game_setup: GameSetup) -> None: # Typically called by WebSocketHandler
         self.data.game_setup = game_setup
 
-    def get_initial_position(self) -> Optional[InitialPosition]:
+    @property
+    def initial_position(self) -> Optional[InitialPosition]:
         return self.data.initial_position
-
-    def set_initial_position(self, initial_position: Optional[InitialPosition]) -> None: # Typically called by WebSocketHandler
+    @initial_position.setter
+    def initial_position(self, initial_position: Optional[InitialPosition]) -> None: # Typically called by WebSocketHandler
         self.data.initial_position = initial_position
 
-    def get_bot_intent(self) -> Dict[str, Any]:
+    def get_bot_intent(self) -> BotIntent:
         return self.data.bot_intent
 
     def get_current_tick_or_throw(self) -> TickEvent:
@@ -329,14 +333,10 @@ class BaseBotInternals:
 
         if self.socket:
             try:
-                # Ensure 'type' is set in bot_intent, BaseBotInternalData._new_bot_intent should do this
-                if 'type' not in self.data.bot_intent or self.data.bot_intent['type'] != 'BotIntent':
-                     self.data.bot_intent['type'] = 'BotIntent'
-
                 json_intent = json.dumps(self.data.bot_intent)
                 await self.socket.send(json_intent)
-                if 'teamMessages' in self.data.bot_intent:
-                    self.data.bot_intent['teamMessages'] = [] # Clear after sending
+                if self.data.bot_intent.team_messages:  # type: ignore
+                    self.data.bot_intent.team_messages = [] # Clear after sending
             except Exception as e:
                 print(f"Error sending bot intent: {e}")
                 # Consider if self.socket needs to be invalidated or reconnected
@@ -351,12 +351,12 @@ class BaseBotInternals:
         current_tick = self.data.current_tick_or_null
         # Check if debugging is enabled for the bot in the current tick
         if current_tick and hasattr(current_tick, 'bot_state') and current_tick.bot_state and hasattr(current_tick.bot_state, 'is_debugging_enabled') and current_tick.bot_state.is_debugging_enabled: # type: ignore
-            svg_output = self.data.graphics_state.get_svg_output()
-            self.data.bot_intent['debugGraphics'] = svg_output
+            svg_output = self.data.graphics_state.as_svg()  # type: ignore
+            self.data.bot_intent.debug_graphics = svg_output  # type: ignore
             self.data.graphics_state.clear()
         else:
             # Ensure it's not set if debugging is off or tick not available
-            self.data.bot_intent['debugGraphics'] = None
+            self.data.bot_intent.debug_graphics = None  # type: ignore
 
 
     async def _wait_for_next_turn(self, turn_number: int) -> None:
@@ -393,7 +393,7 @@ class BaseBotInternals:
         if current_energy < firepower or gun_heat > 0:
             return False
         
-        self.data.bot_intent['firepower'] = firepower
+        self.data.bot_intent.firepower = firepower
         return True
 
     def get_gun_heat(self) -> float:
@@ -404,43 +404,46 @@ class BaseBotInternals:
         tick = self.data.current_tick_or_null
         return tick.bot_state.speed if tick and tick.bot_state else 0.0
 
-    def set_turn_rate(self, turn_rate: float) -> None:
+    @property
+    def turn_rate(self) -> float:
+        if self.data.bot_intent.turn_rate is not None:  # type: ignore
+            return self.data.bot_intent.turn_rate
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.turn_rate if tick and tick.bot_state else 0.0
+    @turn_rate.setter
+    def turn_rate(self, turn_rate: float) -> None:
         if math.isnan(turn_rate):
             raise ValueError("'turn_rate' cannot be NaN")
-        self.data.bot_intent['turnRate'] = MathUtil.clamp(turn_rate, -self.max_turn_rate, self.max_turn_rate)
+        self.data.bot_intent.turn_rate = MathUtil.clamp(turn_rate, -self.max_turn_rate, self.max_turn_rate)
 
-    def set_gun_turn_rate(self, gun_turn_rate: float) -> None:
+    @property
+    def gun_turn_rate(self) -> float:
+        if self.data.bot_intent.gun_turn_rate is not None:  # type: ignore
+            return self.data.bot_intent.gun_turn_rate  # type: ignore
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.gun_turn_rate if tick and tick.bot_state else 0.0
+    @gun_turn_rate.setter
+    def gun_turn_rate(self, gun_turn_rate: float) -> None:
         if math.isnan(gun_turn_rate):
             raise ValueError("'gun_turn_rate' cannot be NaN")
-        self.data.bot_intent['gunTurnRate'] = MathUtil.clamp(gun_turn_rate, -self.max_gun_turn_rate, self.max_gun_turn_rate)
+        self.data.bot_intent.gun_turn_rate = MathUtil.clamp(gun_turn_rate, -self.max_gun_turn_rate, self.max_gun_turn_rate)
 
-    def set_radar_turn_rate(self, radar_turn_rate: float) -> None:
+    @property
+    def radar_turn_rate(self) -> float:
+        if self.data.bot_intent.radar_turn_rate is not None:  # type: ignore
+            return self.data.bot_intent.radar_turn_rate  # type: ignore
+        tick = self.data.current_tick_or_null
+        return tick.bot_state.radar_turn_rate if tick and tick.bot_state else 0.0
+    @radar_turn_rate.setter
+    def radar_turn_rate(self, radar_turn_rate: float) -> None:
         if math.isnan(radar_turn_rate):
             raise ValueError("'radar_turn_rate' cannot be NaN")
-        self.data.bot_intent['radarTurnRate'] = MathUtil.clamp(radar_turn_rate, -self.max_radar_turn_rate, self.max_radar_turn_rate)
+        self.data.bot_intent.radar_turn_rate = MathUtil.clamp(radar_turn_rate, -self.max_radar_turn_rate, self.max_radar_turn_rate)
 
     def set_target_speed(self, target_speed: float) -> None:
         if math.isnan(target_speed):
             raise ValueError("'target_speed' cannot be NaN")
-        self.data.bot_intent['targetSpeed'] = MathUtil.clamp(target_speed, -self.max_speed, self.max_speed)
-
-    def get_turn_rate(self) -> float:
-        if self.data.bot_intent.get('turnRate') is not None:
-            return self.data.bot_intent['turnRate'] # type: ignore
-        tick = self.data.current_tick_or_null
-        return tick.bot_state.turn_rate if tick and tick.bot_state else 0.0
-
-    def get_gun_turn_rate(self) -> float:
-        if self.data.bot_intent.get('gunTurnRate') is not None:
-            return self.data.bot_intent['gunTurnRate'] # type: ignore
-        tick = self.data.current_tick_or_null
-        return tick.bot_state.gun_turn_rate if tick and tick.bot_state else 0.0
-
-    def get_radar_turn_rate(self) -> float:
-        if self.data.bot_intent.get('radarTurnRate') is not None:
-            return self.data.bot_intent['radarTurnRate'] # type: ignore
-        tick = self.data.current_tick_or_null
-        return tick.bot_state.radar_turn_rate if tick and tick.bot_state else 0.0
+        self.data.bot_intent.target_speed = MathUtil.clamp(target_speed, -self.max_speed, self.max_speed)
 
     def get_max_speed(self) -> float: # Max speed is part of bot's own limits, not server state
         return self.max_speed
@@ -523,25 +526,25 @@ class BaseBotInternals:
         if not self.data.is_stopped or overwrite:
             self.data.is_stopped = True
 
-            self.data.saved_target_speed = self.data.bot_intent.get('targetSpeed')
-            self.data.saved_turn_rate = self.data.bot_intent.get('turnRate')
-            self.data.saved_gun_turn_rate = self.data.bot_intent.get('gunTurnRate')
-            self.data.saved_radar_turn_rate = self.data.bot_intent.get('radarTurnRate')
+            self.data.saved_target_speed = self.data.bot_intent.target_speed
+            self.data.saved_turn_rate = self.data.bot_intent.turn_rate
+            self.data.saved_gun_turn_rate = self.data.bot_intent.gun_turn_rate
+            self.data.saved_radar_turn_rate = self.data.bot_intent.radar_turn_rate
 
-            self.data.bot_intent['targetSpeed'] = 0.0
-            self.data.bot_intent['turnRate'] = 0.0
-            self.data.bot_intent['gunTurnRate'] = 0.0
-            self.data.bot_intent['radarTurnRate'] = 0.0
+            self.data.bot_intent.target_speed = 0.0
+            self.data.bot_intent.turn_rate = 0.0
+            self.data.bot_intent.gun_turn_rate = 0.0
+            self.data.bot_intent.radar_turn_rate = 0.0
 
             if self.stop_resume_listener is not None:
                 self.stop_resume_listener.on_stop()
 
     def set_resume(self) -> None:
         if self.data.is_stopped:
-            self.data.bot_intent['targetSpeed'] = self.data.saved_target_speed
-            self.data.bot_intent['turnRate'] = self.data.saved_turn_rate
-            self.data.bot_intent['gunTurnRate'] = self.data.saved_gun_turn_rate
-            self.data.bot_intent['radarTurnRate'] = self.data.saved_radar_turn_rate
+            self.data.bot_intent.target_speed = self.data.saved_target_speed  # type: ignore
+            self.data.bot_intent.turn_rate = self.data.saved_turn_rate  # type: ignore
+            self.data.bot_intent.gun_turn_rate = self.data.saved_gun_turn_rate  # type: ignore
+            self.data.bot_intent.radar_turn_rate = self.data.saved_radar_turn_rate  # type: ignore
 
             if self.stop_resume_listener is not None:
                 self.stop_resume_listener.on_resume()
@@ -558,10 +561,10 @@ class BaseBotInternals:
         if teammate_id is not None and teammate_id not in self.data.teammate_ids: # Uses property getter
             raise ValueError("No teammate was found with the specified 'teammate_id'")
 
-        team_messages_list = self.data.bot_intent.get('teamMessages')
-        if team_messages_list is None: 
+        team_messages_list = self.data.bot_intent.team_messages  # type: ignore
+        if team_messages_list is None:  # type: ignore
             team_messages_list = []
-            self.data.bot_intent['teamMessages'] = team_messages_list
+            self.data.bot_intent.team_messages = team_messages_list  # type: ignore
 
         if len(team_messages_list) >= MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN:  # type: ignore
             raise BotException(
@@ -585,59 +588,65 @@ class BaseBotInternals:
         }
         team_messages_list.append(team_message_dict)  # type: ignore
 
-    # Color and Graphics - Delegated
-    def get_body_color(self) -> Optional[Color]:
+    # Color and Graphics - Delegated\
+    @property
+    def body_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.body_color if tick and tick.bot_state else None
+    @body_color.setter
+    def body_color(self, color: Optional[Color]) -> None:
+        self.data.bot_intent.body_color = color  # type: ignore
 
-    def get_turret_color(self) -> Optional[Color]:
+    @property
+    def turret_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.turret_color if tick and tick.bot_state else None
+    @turret_color.setter
+    def turret_color(self, color: Optional[Color]) -> None:
+        self.data.bot_intent.turret_color = color  # type: ignore
 
-    def get_radar_color(self) -> Optional[Color]:
+    @property
+    def radar_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.radar_color if tick and tick.bot_state else None
+    @radar_color.setter
+    def radar_color(self, color: Optional[Color]) -> None:
+        self.data.bot_intent.radar_color = color   # type: ignore
 
-    def get_bullet_color(self) -> Optional[Color]:
+    @property
+    def bullet_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.bullet_color if tick and tick.bot_state else None
+    @bullet_color.setter
+    def bullet_color(self, color: Optional[Color]) -> None:
+        self.data.bot_intent.bullet_color = color  # type: ignore
 
-    def get_scan_color(self) -> Optional[Color]:
+    @property
+    def scan_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.scan_color if tick and tick.bot_state else None
+    @scan_color.setter
+    def scan_color(self, color: Optional[Color]) -> None:
+        self.data.bot_intent.scan_color = color  # type: ignore
 
-    def get_tracks_color(self) -> Optional[Color]:
+    @property
+    def tracks_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.tracks_color if tick and tick.bot_state else None
+    @tracks_color.setter
+    def tracks_color(self, color: Optional[Color]) -> None:
+        self.data.bot_intent.tracks_color = color  # type: ignore
 
-    def get_gun_color(self) -> Optional[Color]:
+    @property
+    def gun_color(self) -> Optional[Color]:
         tick = self.data.current_tick_or_null
         return tick.bot_state.gun_color if tick and tick.bot_state else None
+    @gun_color.setter
+    def gun_color(self, color: Optional[Color]) -> None:
+        self.data.bot_intent.gun_color = color  # type: ignore
 
-    def set_body_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent['bodyColor'] = color
-
-    def set_turret_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent['turretColor'] = color
-
-    def set_radar_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent['radarColor'] = color
-
-    def set_bullet_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent['bulletColor'] = color
-
-    def set_scan_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent['scanColor'] = color
-
-    def set_tracks_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent['tracksColor'] = color
-
-    def set_gun_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent['gunColor'] = color
-
-    def get_graphics(self) -> 'GraphicsState': # type: ignore - Forward reference
+    def get_graphics(self) -> drawsvg.Drawing:
         return self.data.graphics_state
-
 
     # Bullet States - Delegated
     def get_bullet_states(self) -> Sequence[BulletState | None]:
@@ -647,15 +656,23 @@ class BaseBotInternals:
         return []
 
     # Server Handshake - Delegated
-    def get_server_handshake(self) -> ServerHandshake:
+    @property
+    def server_handshake(self) -> ServerHandshake:
         return self.data.server_handshake # Uses property getter which throws if None
-
-    def set_server_handshake(self, server_handshake: ServerHandshake) -> None: # Typically called by WebSocketHandler
+    @server_handshake.setter
+    def server_handshake(self, server_handshake: ServerHandshake) -> None: # Typically called by WebSocketHandler
         self.data.server_handshake = server_handshake
     
-    def get_variant(self) -> str:
+    @property
+    def variant(self) -> str:
         return self.data.server_handshake.variant # type: ignore 
+    @variant.setter
+    def variant(self, variant: str) -> None:
+        self.data.server_handshake.variant = variant # type: ignore
 
-    def get_version(self) -> str:
+    @property
+    def version(self) -> str:
         return self.data.server_handshake.version # type: ignore
-    # ...
+    @version.setter
+    def version(self, version: str) -> None:
+        self.data.server_handshake.version = version # type: ignore
