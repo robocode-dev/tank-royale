@@ -41,7 +41,7 @@ public sealed class GameSetup
 
     /// <summary>
     /// Timeout duration in microseconds (µs) (where 1 microsecond equals 1/1,000,000 of a second) for sending intent
-    //// after receiving a 'tick' message.
+    /// after receiving a 'tick' message.
     /// </summary>
     public int TurnTimeout { get; }
 

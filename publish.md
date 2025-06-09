@@ -21,13 +21,13 @@ Publish to staging, close, and release:
 Enter the release folder:
 
 ```shell
-cd bot-api\dotnet\Robocode.TankRoyale.BotApi\bin\Release
+cd bot-api\dotnet\api\bin\Release
 ```
 
 Publish to Nuget:
 
-Note:  «version» and «nuget api key» must be prefilled with Robocode version and Nuget API key.
-
 ```
 dotnet nuget push robocode.tankroyale.botapi.«version».nupkg --api-key «nuget api key» --source https://api.nuget.org/v3/index.json
 ```
+
+Note:  «version» and «nuget api key» must be prefilled with Robocode version and Nuget API key.

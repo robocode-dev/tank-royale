@@ -1,11 +1,11 @@
 package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.client.model.*
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.ansi.esc_code.CommandCode
 import dev.robocode.tankroyale.gui.ansi.esc_code.EscapeSequence
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
-import dev.robocode.tankroyale.gui.model.*
 
 // TODO: Optimize: Only log for current turn
 // TODO: Missing listing bullet values for the tick event

@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.control
 
 import dev.robocode.tankroyale.gui.client.Client
+import dev.robocode.tankroyale.gui.util.enqueue
 
 object ControlEventHandlers {
     init {

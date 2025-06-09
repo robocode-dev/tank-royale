@@ -5,12 +5,10 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 description = "Robocode: Build the best - destroy the rest!"
 
 group = "dev.robocode.tankroyale"
-val version: String = libs.versions.tankroyale.get()
 
 val ossrhUsername: String? by project
 val ossrhPassword: String? by project
 val tankRoyaleGitHubToken: String? by project
-val `nuget-api-key`: String? by project
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -18,6 +16,11 @@ plugins {
     alias(libs.plugins.nexus.publish)
 
     alias(libs.plugins.benmanes.versions) // dependency management only
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
 }
 
 subprojects {
@@ -74,9 +77,11 @@ tasks {
 
 nexusPublishing {
     repositories.apply {
-        sonatype { // only for users registered in Sonatype after 24 Feb 202
-            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+        sonatype {
+            // Publishing By Using the Portal OSSRH Staging API:
+            // https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
 
             username.set(ossrhUsername)
             password.set(ossrhPassword)
@@ -88,5 +93,12 @@ val initializeSonatypeStagingRepository by tasks.existing
 subprojects {
     initializeSonatypeStagingRepository {
         shouldRunAfter(tasks.withType<Sign>())
+    }
+
+    // Apply common signing configuration to all subprojects
+    plugins.withId("signing") {
+        configure<SigningExtension> {
+            useGpgCmd() // Use GPG agent instead of key file
+        }
     }
 }

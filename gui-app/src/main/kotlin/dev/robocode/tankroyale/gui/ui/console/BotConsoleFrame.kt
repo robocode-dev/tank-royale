@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.console
 
-import dev.robocode.tankroyale.gui.model.Participant
+import dev.robocode.tankroyale.client.model.Participant
 import dev.robocode.tankroyale.gui.ui.Strings
 import javax.swing.JTabbedPane
 

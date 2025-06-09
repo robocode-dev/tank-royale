@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.svg
 
 import com.github.weisj.jsvg.SVGDocument
-import com.github.weisj.jsvg.parser.DefaultParserProvider
 import com.github.weisj.jsvg.parser.LoaderContext
 import com.github.weisj.jsvg.parser.SVGLoader
 import java.awt.Graphics2D
@@ -12,10 +11,7 @@ object SvgToGraphicsRender {
         "<style>text {transform-box: fill-box; transform-origin: 50% 50%; transform: scaleY(-1);}</style>"
 
     private val svgLoader = SVGLoader()
-    private val svgLoaderContext = LoaderContext
-        .builder()
-        .parserProvider(DefaultParserProvider())
-        .build()
+    private val svgLoaderContext = LoaderContext.createDefault()
 
     fun renderSvgToGraphics(svg: String, g: Graphics2D) {
         // Referenced ENTITY references like &E2; and &E3; are replaced (expanded) with the named ELEMENT definitions
