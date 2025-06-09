@@ -43,7 +43,7 @@ tasks {
         commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
     }
 
-    val test by registering(Exec::class) {
+    register<Exec>("test") {
         workingDir("test")
         commandLine("dotnet", "test")
     }
@@ -80,7 +80,7 @@ tasks {
         dependsOn(docfxMetadata, docfxBuild)
     }
 
-    val uploadDocs by registering(Copy::class) {
+    register<Copy>("copyDotnetApiDocs") {
         dependsOn(docfx)
 
         val dotnetApiDir = "../../docs/api/dotnet"
@@ -94,7 +94,16 @@ tasks {
         into(dotnetApiDir)
     }
 
-    val pushLocal by registering(Exec::class) {
+    // Make sure documentation tasks are not part of the build task
+    afterEvaluate {
+        tasks.named("build").configure {
+            setDependsOn(dependsOn.filterNot {
+                it.toString().contains("docfx") || it.toString().contains("copyDotnetApiDocs")
+            })
+        }
+    }
+
+    register<Exec>("pushLocal") {
         dependsOn(prepareNugetDocs)
 
         val userHome = System.getenv("USERPROFILE") ?: System.getenv("HOME")

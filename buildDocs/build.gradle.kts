@@ -24,13 +24,13 @@ tasks {
         args = listOf("run", "build")
     }
 
-    val run by registering(NpmTask::class) {
+    register<NpmTask>("run") {
         dependsOn(npmInstall)
 
         args = listOf("run", "dev")
     }
 
-    val uploadDocs by registering(Copy::class) {
+    register<Copy>("copyGeneratedDocs") {
         dependsOn(npmBuild)
         dependsOn(updateDocfx)
 

@@ -48,6 +48,7 @@ subprojects {
 
 tasks {
     register("build-release") {
+        description = "Builds a release"
         dependsOn(
             "bot-api:java:assemble",     // Bot API for Java VM
             "bot-api:dotnet:assemble",   // Bot API for .Net
@@ -56,14 +57,22 @@ tasks {
             "gui-app:assemble",          // GUI
             "sample-bots:java:zip",      // Sample bots for Java
             "sample-bots:csharp:zip",    // Sample bots for C#
-            "buildDocs:uploadDocs",      // Documentation
-            "bot-api:dotnet:uploadDocs", // Docfx documentation for .NET Bot API
-            "bot-api:java:uploadDocs"    // Javadocs for Java Bot API
+        )
+    }
+
+    register("upload-docs") {
+        description = "Generate and upload all documentation"
+        dependsOn(
+            "buildDocs:copyGeneratedDocs",      // Documentation
+            "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
+            "bot-api:java:copyJavaApiDocs"      // Javadocs for Java Bot API
         )
     }
 
     register("create-release") {
+        description = "Creates a release"
         dependsOn("build-release")
+        dependsOn("upload-docs") // Make sure documentation is generated for releases
 
         doLast {
             val version = libs.versions.tankroyale.get()

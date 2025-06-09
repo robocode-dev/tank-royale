@@ -115,7 +115,7 @@ tasks {
         }
     }
 
-    register<Copy>("uploadDocs") {
+    register<Copy>("copyJavaApiDocs") {
         dependsOn(javadoc)
 
         val javadocDir = layout.projectDirectory.dir("../../docs/api/java")
@@ -127,6 +127,15 @@ tasks {
 
         from(layout.buildDirectory.dir("docs/javadoc"))
         into(javadocDir)
+    }
+
+    // Make sure documentation tasks are not part of the build task
+    afterEvaluate {
+        tasks.named("build").configure {
+            setDependsOn(dependsOn.filterNot {
+                it.toString().contains("javadoc") || it.toString().contains("copyJavaApiDocs")
+            })
+        }
     }
 
     val javadocJar = named("javadocJar")
