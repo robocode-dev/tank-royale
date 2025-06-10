@@ -382,12 +382,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         }
 
         if (BootProcess.botDirs.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                null,
-                Messages.get("no_bot_directories_found"),
-                UiTitles.get("error"),
-                JOptionPane.ERROR_MESSAGE
-            )
+            showError("no_bot_directories_found")
             return
         }
 
