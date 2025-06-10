@@ -1,3 +1,10 @@
+## 📦 0.31.0
+
+### 🐞 Bug Fixes
+
+- GUI:
+    - Fixed multiple issues with the "No bot directory root has been configured" error dialog.  
+
 ## 📦 0.30.2
 
 ### 🚀 Improvements
