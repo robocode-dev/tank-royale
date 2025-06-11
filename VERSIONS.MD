@@ -2,6 +2,10 @@
 
 ### 🐞 Bug Fixes
 
+- BotAPI:
+    - #144: .NET bots run only on Windows since 0.30.0
+        - SvgNet requires `System.Drawing`, which is not available on Linux and macOS. Hence, the new Robocode specific
+          `IGraphics` interface must be used instead.
 - GUI:
     - Fixed multiple issues with the "No bot directory root has been configured" error dialog.  
 
