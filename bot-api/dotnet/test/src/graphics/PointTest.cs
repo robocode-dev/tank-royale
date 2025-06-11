@@ -1,4 +1,4 @@
-namespace Robocode.TankRoyale.BotApi.Tests;
+namespace Robocode.TankRoyale.BotApi.Tests.Graphics;
 
 using NUnit.Framework;
 using Robocode.TankRoyale.BotApi.Graphics;
