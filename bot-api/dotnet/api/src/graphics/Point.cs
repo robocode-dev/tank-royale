@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using JetBrains.Annotations;
 
 namespace Robocode.TankRoyale.BotApi.Graphics;
@@ -66,7 +67,7 @@ public readonly struct Point : IEquatable<Point>
     /// <returns>A string that represents the current Point.</returns>
     public override string ToString()
     {
-        return $"{{X={X}, Y={Y}}}";
+        return $"(X={X.ToString(CultureInfo.InvariantCulture)}, Y={Y.ToString(CultureInfo.InvariantCulture)})";
     }
 
     /// <summary>
