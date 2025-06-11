@@ -30,7 +30,7 @@ class ColorUtilTest {
         void givenValidRgbString_whenCallingFromString_thenCreatedColorMustContainTheSameRedGreenBlue(
                 String str, int expectedRed, int expectedGreen, int expectedBlue) {
 
-            var color = ColorUtil.fromString(str);
+            var color = ColorUtil.fromWebColor(str);
 
             assertThat(color.getRed()).isEqualTo(expectedRed);
             assertThat(color.getGreen()).isEqualTo(expectedGreen);
@@ -47,7 +47,7 @@ class ColorUtilTest {
                 "000000",    // Missing hash (#)
         })
         void givenInvalidRgbString_whenCallingFromString_thenThrowIllegalArgumentException(String str) {
-            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> ColorUtil.fromString(str));
+            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> ColorUtil.fromWebColor(str));
         }
     }
 

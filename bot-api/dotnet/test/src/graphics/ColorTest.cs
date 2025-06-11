@@ -8,42 +8,42 @@ public class ColorTest
     [Test]
     public void TestColorConstruction()
     {
-        // Test FromArgb with uint argb parameter
-        var color1 = Color.FromArgb(0xFFAABBCC);
-        Assert.That(color1.A, Is.EqualTo(255));
+        // Test FromRgba with uint rgba parameter
+        var color1 = Color.FromRgba(0xAABBCCFF);
         Assert.That(color1.R, Is.EqualTo(170));
         Assert.That(color1.G, Is.EqualTo(187));
         Assert.That(color1.B, Is.EqualTo(204));
+        Assert.That(color1.A, Is.EqualTo(255));
 
-        // Test FromArgb with separate components
-        var color2 = Color.FromArgb(128, 255, 0, 0); // Semi-transparent red
-        Assert.That(color2.A, Is.EqualTo(128));
+        // Test FromRgba with separate components
+        var color2 = Color.FromRgba(255, 0, 0, 128); // Semi-transparent red
         Assert.That(color2.R, Is.EqualTo(255));
         Assert.That(color2.G, Is.EqualTo(0));
         Assert.That(color2.B, Is.EqualTo(0));
+        Assert.That(color2.A, Is.EqualTo(128));
 
-        // Test FromArgb with RGB (fully opaque)
-        var color3 = Color.FromArgb(100, 150, 200);
-        Assert.That(color3.A, Is.EqualTo(255)); // Default alpha
+        // Test FromRgba with RGB (fully opaque)
+        var color3 = Color.FromRgba(100, 150, 200);
         Assert.That(color3.R, Is.EqualTo(100));
         Assert.That(color3.G, Is.EqualTo(150));
         Assert.That(color3.B, Is.EqualTo(200));
+        Assert.That(color3.A, Is.EqualTo(255)); // Default alpha
 
-        // Test FromArgb with alpha and base color
+        // Test FromRgba with base color and alpha
         var baseColor = Color.Blue;
-        var color4 = Color.FromArgb(64, baseColor);
-        Assert.That(color4.A, Is.EqualTo(64));
+        var color4 = Color.FromRgba(baseColor, 64);
         Assert.That(color4.R, Is.EqualTo(0));
         Assert.That(color4.G, Is.EqualTo(0));
         Assert.That(color4.B, Is.EqualTo(255));
+        Assert.That(color4.A, Is.EqualTo(64));
     }
 
     [Test]
-    public void TestToArgb()
+    public void TestToRgba()
     {
-        var color = Color.FromArgb(128, 255, 0, 0); // Semi-transparent red
-        int argb = color.ToArgb();
-        Assert.That(argb, Is.EqualTo(unchecked((int)0x80FF0000)));
+        var color = Color.FromRgba(255, 0, 0, 128); // Semi-transparent red
+        uint rgba = color.ToRgba();
+        Assert.That(rgba, Is.EqualTo(0xFF000080));
     }
 
     [Test]
@@ -65,9 +65,9 @@ public class ColorTest
     [Test]
     public void TestEquality()
     {
-        var color1 = Color.FromArgb(255, 100, 150, 200);
-        var color2 = Color.FromArgb(255, 100, 150, 200);
-        var color3 = Color.FromArgb(128, 100, 150, 200);
+        var color1 = Color.FromRgba(100, 150, 200);
+        var color2 = Color.FromRgba(100, 150, 200);
+        var color3 = Color.FromRgba(100, 150, 200, 128);
 
         Assert.That(color1, Is.EqualTo(color2));
         Assert.That(color1 == color2, Is.True);
@@ -82,8 +82,8 @@ public class ColorTest
     [Test]
     public void TestToString()
     {
-        var opaqueColor = Color.FromArgb(255, 100, 150, 200);
-        var transparentColor = Color.FromArgb(128, 100, 150, 200);
+        var opaqueColor = Color.FromRgba(100, 150, 200);
+        var transparentColor = Color.FromRgba(100, 150, 200, 128);
 
         Assert.That(opaqueColor.ToString(), Is.EqualTo("Color [R=100, G=150, B=200]"));
         Assert.That(transparentColor.ToString(), Is.EqualTo("Color [A=128, R=100, G=150, B=200]"));
@@ -92,8 +92,8 @@ public class ColorTest
     [Test]
     public void TestToHexColor()
     {
-        var opaqueColor = Color.FromArgb(255, 100, 150, 200);
-        var transparentColor = Color.FromArgb(128, 100, 150, 200);
+        var opaqueColor = Color.FromRgba(100, 150, 200);
+        var transparentColor = Color.FromRgba(100, 150, 200, 128);
 
         Assert.That(opaqueColor.ToHexColor(), Is.EqualTo("#6496C8"));
         Assert.That(transparentColor.ToHexColor(), Is.EqualTo("#6496C880"));
@@ -103,16 +103,16 @@ public class ColorTest
     public void TestImplicitConversions()
     {
         // Test uint to Color conversion
-        uint argb = 0xFF112233;
-        Color color = argb;
-        Assert.That(color.A, Is.EqualTo(255));
+        uint rgba = 0x112233FF;
+        Color color = rgba;
         Assert.That(color.R, Is.EqualTo(17));
         Assert.That(color.G, Is.EqualTo(34));
         Assert.That(color.B, Is.EqualTo(51));
+        Assert.That(color.A, Is.EqualTo(255));
 
         // Test Color to int conversion
-        Color testColor = Color.FromArgb(128, 255, 0, 0);
-        int colorInt = testColor;
-        Assert.That(colorInt, Is.EqualTo(unchecked((int)0x80FF0000)));
+        Color testColor = Color.FromRgba(255, 0, 0, 128);
+        uint colorInt = testColor;
+        Assert.That(colorInt, Is.EqualTo(0xFF000080));
     }
 }

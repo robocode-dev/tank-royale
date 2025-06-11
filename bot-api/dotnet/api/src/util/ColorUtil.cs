@@ -83,6 +83,6 @@ static class ColorUtil
             b = (b << 4) | b;
         }
 
-        return Color.FromArgb(r, g, b);
+        return Color.FromRgba(r, g, b);
     }
 }
