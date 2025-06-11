@@ -30,7 +30,7 @@ static class ColorUtil
     }
 
     /// <summary>
-    /// Creates a color from a string. Currently, only numeric RGB values are supported.
+    /// Creates a color from a web color. Currently, only numeric RGB values are supported.
     /// This method works the same was as <see cref="FromHex"/> except that is required as hash sign before the hex value.
     ///
     /// An example of a numeric RGB value is "#09C" or "#0099CC", which both represents the same color.
@@ -41,7 +41,7 @@ static class ColorUtil
     /// <exception cref="ArgumentException"/>
     /// <see href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</see>
     /// <see href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</see>
-    internal static Color? FromString(string str)
+    internal static Color? FromWebColor(string str)
     {
         if (str == null) return null;
         str = str.Trim();
@@ -61,7 +61,7 @@ static class ColorUtil
     /// <param name="hexTriplet">A string containing either three or six hexadecimal numbers like "09C" or "0099CC".</param>
     /// <returns>The created <see cref="Color"/>.</returns>
     /// <exception cref="ArgumentException">Thrown when the input string does not match the required hex triplet format.</exception>
-    private static Color FromHex(string hexTriplet)
+    internal static Color FromHex(string hexTriplet)
     {
         hexTriplet = hexTriplet.Trim();
         if (!Regex.IsMatch(hexTriplet, HexDigits))

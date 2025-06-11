@@ -21,13 +21,13 @@ static class BotStateMapper
             source.RadarTurnRate,
             source.GunHeat,
             source.EnemyCount,
-            FromString(source.BodyColor),
-            FromString(source.TurretColor),
-            FromString(source.RadarColor),
-            FromString(source.BulletColor),
-            FromString(source.ScanColor),
-            FromString(source.TracksColor),
-            FromString(source.GunColor),
+            FromWebColor(source.BodyColor),
+            FromWebColor(source.TurretColor),
+            FromWebColor(source.RadarColor),
+            FromWebColor(source.BulletColor),
+            FromWebColor(source.ScanColor),
+            FromWebColor(source.TracksColor),
+            FromWebColor(source.GunColor),
             source.IsDebuggingEnabled == true
         );
     }

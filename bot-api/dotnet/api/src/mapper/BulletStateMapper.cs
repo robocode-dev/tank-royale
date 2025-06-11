@@ -14,7 +14,7 @@ static class BulletStateMapper
             source.X,
             source.Y,
             source.Direction,
-            ColorUtil.FromString(source.Color)
+            ColorUtil.FromWebColor(source.Color)
         );
     }
 
