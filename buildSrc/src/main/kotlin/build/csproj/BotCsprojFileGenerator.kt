@@ -49,7 +49,7 @@ private fun writeXml(out: OutputStream, botName: String, botApiVersion: String) 
                 }
                 element("PackageReference") {
                     attribute("Include", "Microsoft.Extensions.Configuration.Binder")
-                    attribute("Version", "8.0.2")
+                    attribute("Version", "6.0.0")
                 }
             }
         }

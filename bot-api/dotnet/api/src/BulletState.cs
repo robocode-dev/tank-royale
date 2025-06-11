@@ -1,4 +1,3 @@
-using System.Drawing;
 using JetBrains.Annotations;
 
 namespace Robocode.TankRoyale.BotApi;

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using JetBrains.Annotations;
 using Robocode.TankRoyale.BotApi.Events;
-using SvgNet.Interfaces;
+using Robocode.TankRoyale.BotApi.Graphics;
 
 namespace Robocode.TankRoyale.BotApi;
 

@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
 
@@ -14,8 +13,8 @@ using Robocode.TankRoyale.BotApi.Events;
 // ---------------------------------------------------------------------------
 public class PaintingBot : Bot
 {
-    double scannedX;
-    double scannedY;
+    float scannedX;
+    float scannedY;
     int scannedTime;
 
     // The main method starts our bot
@@ -66,13 +65,15 @@ public class PaintingBot : Bot
             // The alpha value is at its maximum when a bot is initially scanned, gradually
             // diminishing over time as more time passes since the scan.
             int deltaTime = e.TurnNumber - scannedTime;
-            int alpha = Math.Max(0xff - (deltaTime * 16), 0);
+            uint alpha = (uint)Math.Max(0xff - (deltaTime * 16), 0);
 
             // Draw a red circle with the alpha value we calculated using anm ellipse
             var g = Graphics;
 
             var color = Color.FromArgb(alpha, 0xff, 0x00, 0x00);
-            g.FillEllipse(new SolidBrush(color), (int)scannedX - 20, (int)scannedY - 20, 40, 40);
+
+            g.SetFillColor(color);
+            g.FillCircle(scannedX, scannedY, 20); // 20 is the radius of the bots bounding circle
         }
     }
 }
