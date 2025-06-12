@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.botapi.mapper;
 
 import dev.robocode.tankroyale.botapi.BotState;
 
-import static dev.robocode.tankroyale.botapi.util.ColorUtil.fromWebColor;
+import static dev.robocode.tankroyale.botapi.util.ColorUtil.fromHexColor;
 
 /**
  * Utility class for mapping a bot state.
@@ -29,13 +29,13 @@ public final class BotStateMapper {
                 source.getRadarTurnRate(),
                 source.getGunHeat(),
                 source.getEnemyCount(),
-                fromWebColor(source.getBodyColor()),
-                fromWebColor(source.getTurretColor()),
-                fromWebColor(source.getRadarColor()),
-                fromWebColor(source.getBulletColor()),
-                fromWebColor(source.getScanColor()),
-                fromWebColor(source.getTracksColor()),
-                fromWebColor(source.getGunColor()),
+                fromHexColor(source.getBodyColor()),
+                fromHexColor(source.getTurretColor()),
+                fromHexColor(source.getRadarColor()),
+                fromHexColor(source.getBulletColor()),
+                fromHexColor(source.getScanColor()),
+                fromHexColor(source.getTracksColor()),
+                fromHexColor(source.getGunColor()),
                 source.getIsDebuggingEnabled()
         );
     }

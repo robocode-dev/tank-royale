@@ -1,6 +1,6 @@
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
-import java.awt.Color;
+import dev.robocode.tankroyale.botapi.graphics.Color;
 
 // ------------------------------------------------------------------
 // TrackFire
@@ -26,7 +26,7 @@ public class TrackFire extends Bot {
     @Override
     public void run() {
         // Set colors
-        var pink = new Color(0xFF, 0x69, 0xB4);
+        var pink = Color.fromRgb(0xFF, 0x69, 0xB4);
         setBodyColor(pink);
         setTurretColor(pink);
         setRadarColor(pink);

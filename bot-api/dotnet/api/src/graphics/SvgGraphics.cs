@@ -102,11 +102,11 @@ public class SvgGraphics : IGraphics
     }
 
     /// <summary>
-    /// Draws the outline of a polygon defined by an array of points.
+    /// Draws the outline of a polygon defined by a list of points.
     /// </summary>
-    public void DrawPolygon(Point[] points)
+    public void DrawPolygon(List<Point> points)
     {
-        if (points == null || points.Length < 3)
+        if (points == null || points.Count < 3)
             return;
 
         var pointsStr = new StringBuilder();
@@ -127,11 +127,11 @@ public class SvgGraphics : IGraphics
     }
 
     /// <summary>
-    /// Fills a polygon defined by an array of points with the current fill color.
+    /// Fills a polygon defined by a list of points with the current fill color.
     /// </summary>
-    public void FillPolygon(Point[] points)
+    public void FillPolygon(List<Point> points)
     {
-        if (points == null || points.Length < 3)
+        if (points == null || points.Count < 3)
             return;
 
         var pointsStr = new StringBuilder();

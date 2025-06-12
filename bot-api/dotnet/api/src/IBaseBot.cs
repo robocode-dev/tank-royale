@@ -847,7 +847,8 @@ public interface IBaseBot
     /// </summary>
     /// <example>
     /// var g = Graphics;
-    /// g.FillRectangle(Brushes.Blue, 50, 50, 100, 100);
+    /// g.SetStrokeColor(Color.Blue);
+    /// g.FillRectangle(50, 50, 100, 100);
     /// </example>
     /// <value>A graphics canvas to use for painting graphical objects making debugging easier.</value>
     IGraphics Graphics { get; }

@@ -1,9 +1,9 @@
 package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.*;
+import dev.robocode.tankroyale.botapi.graphics.Color;
+import dev.robocode.tankroyale.botapi.graphics.IGraphics;
 
-import java.awt.Graphics2D;
-import java.awt.Color;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -1074,13 +1074,13 @@ public interface IBaseBot {
      *
      * <pre><code class="language-java">
      *     var g = getGraphics();
-     *     g.setColor(Color.blue);
-     *     g.fillRect(50, 50, 100, 100);
+     *     g.setStrokeColor(Color.BLUE);
+     *     g.fillRectangle(50, 50, 100, 100);
      * </code></pre>
      *
      * @return A graphics canvas to use for painting graphical objects making debugging easier.
      */
-    Graphics2D getGraphics();
+    IGraphics getGraphics();
 
     /**
      * The event handler triggered when connected to the server.

@@ -1,5 +1,6 @@
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
+using Robocode.TankRoyale.BotApi.Graphics;
 
 using System.IO;
 using Microsoft.Extensions.Configuration;

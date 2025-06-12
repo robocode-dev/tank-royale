@@ -3,13 +3,14 @@ package dev.robocode.tankroyale.botapi.internal;
 import com.google.gson.Gson;
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
+import dev.robocode.tankroyale.botapi.graphics.Color;
+import dev.robocode.tankroyale.botapi.graphics.IGraphics;
 import dev.robocode.tankroyale.botapi.util.ColorUtil;
 import dev.robocode.tankroyale.schema.BotIntent;
 import dev.robocode.tankroyale.schema.Message;
 import dev.robocode.tankroyale.schema.ServerHandshake;
 import dev.robocode.tankroyale.schema.TeamMessage;
 
-import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -326,7 +327,7 @@ public final class BaseBotInternals {
 
     private void renderGraphicsToBotIntent() {
         if (getCurrentTickOrThrow().getBotState().isDebuggingEnabled()) {
-            botIntent.setDebugGraphics(graphicsState.getSVGOutput());
+            botIntent.setDebugGraphics(graphicsState.getSvgOutput());
             graphicsState.clear();
         }
     }
@@ -736,7 +737,7 @@ public final class BaseBotInternals {
         botIntent.setGunColor(toIntentColor(color));
     }
 
-    public Graphics2D getGraphics() {
+    public IGraphics getGraphics() {
         return graphicsState.getGraphics();
     }
 

@@ -6,9 +6,10 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
+import dev.robocode.tankroyale.botapi.graphics.Color;
+import dev.robocode.tankroyale.botapi.util.ColorUtil;
 import dev.robocode.tankroyale.schema.Event;
 
-import java.awt.*;
 import java.io.IOException;
 
 /**
@@ -63,14 +64,14 @@ public final class GsonFactory {
                 out.nullValue();
                 return;
             }
-            String hexColor = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+            String hexColor = String.format("#%02x%02x%02x", color.getR(), color.getG(), color.getB());
             out.value(hexColor);
         }
 
         @Override
         public Color read(JsonReader in) throws IOException {
-            String hexColor = in.nextString();
-            return Color.decode(hexColor);
+            String webColor = in.nextString();
+            return ColorUtil.fromHexColor(webColor);
         }
     }
 }

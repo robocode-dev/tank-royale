@@ -1,3 +1,5 @@
+using Robocode.TankRoyale.BotApi.Graphics;
+
 namespace Robocode.TankRoyale.BotApi.Tests.Graphics;
 
 using NUnit.Framework;
@@ -23,7 +25,7 @@ public class ColorTest
         Assert.That(color2.A, Is.EqualTo(128));
 
         // Test FromRgba with RGB (fully opaque)
-        var color3 = Color.FromRgba(100, 150, 200);
+        var color3 = Color.FromRgb(100, 150, 200);
         Assert.That(color3.R, Is.EqualTo(100));
         Assert.That(color3.G, Is.EqualTo(150));
         Assert.That(color3.B, Is.EqualTo(200));
@@ -65,8 +67,8 @@ public class ColorTest
     [Test]
     public void TestEquality()
     {
-        var color1 = Color.FromRgba(100, 150, 200);
-        var color2 = Color.FromRgba(100, 150, 200);
+        var color1 = Color.FromRgb(100, 150, 200);
+        var color2 = Color.FromRgb(100, 150, 200);
         var color3 = Color.FromRgba(100, 150, 200, 128);
 
         Assert.That(color1, Is.EqualTo(color2));
@@ -82,7 +84,7 @@ public class ColorTest
     [Test]
     public void TestToString()
     {
-        var opaqueColor = Color.FromRgba(100, 150, 200);
+        var opaqueColor = Color.FromRgb(100, 150, 200);
         var transparentColor = Color.FromRgba(100, 150, 200, 128);
 
         Assert.That(opaqueColor.ToString(), Is.EqualTo("Color [R=100, G=150, B=200]"));
@@ -92,7 +94,7 @@ public class ColorTest
     [Test]
     public void TestToHexColor()
     {
-        var opaqueColor = Color.FromRgba(100, 150, 200);
+        var opaqueColor = Color.FromRgb(100, 150, 200);
         var transparentColor = Color.FromRgba(100, 150, 200, 128);
 
         Assert.That(opaqueColor.ToHexColor(), Is.EqualTo("#6496C8"));

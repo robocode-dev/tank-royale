@@ -21,7 +21,7 @@ public class ColorTest {
     @Test
     public void testFromRgba_rgbParameters() {
         // Test creation from RGB values (alpha should be 255)
-        Color color = Color.fromRgba(100, 150, 200);
+        Color color = Color.fromRgb(100, 150, 200);
 
         assertEquals(255, color.getA());
         assertEquals(100, color.getR());
@@ -45,7 +45,7 @@ public class ColorTest {
     @Test
     public void testFromRgba_baseColor() {
         // Test creation with a base color and alpha
-        Color baseColor = Color.fromRgba(255, 200, 100);
+        Color baseColor = Color.fromRgb(255, 200, 100);
         Color color = Color.fromRgba(baseColor, 50);
 
         assertEquals(50, color.getA());
@@ -104,7 +104,7 @@ public class ColorTest {
     @Test
     public void testToString() {
         // Test toString() with opaque color
-        Color opaqueColor = Color.fromRgba(100, 150, 200);
+        Color opaqueColor = Color.fromRgb(100, 150, 200);
         assertEquals("Color(r=100, g=150, b=200)", opaqueColor.toString());
 
         // Test toString() with transparent color
@@ -115,7 +115,7 @@ public class ColorTest {
     @Test
     public void testToHexColor() {
         // Test toHexColor() with opaque color
-        Color opaqueColor = Color.fromRgba(17, 34, 51);
+        Color opaqueColor = Color.fromRgb(17, 34, 51);
         assertEquals("#112233", opaqueColor.toHexColor());
 
         // Test toHexColor() with transparent color

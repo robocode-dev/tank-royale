@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.botapi.util;
 
-import java.awt.Color;
+import dev.robocode.tankroyale.botapi.graphics.Color;
+
 import java.util.regex.Pattern;
 
 public class ColorUtil {
@@ -22,7 +23,7 @@ public class ColorUtil {
      * @return a string representing the color as a hex triplet of six hexadecimal digits
      */
     public static String toHex(Color color) {
-        return (color == null) ? null : toHex(color.getRed()) + toHex(color.getGreen()) + toHex(color.getBlue());
+        return (color == null) ? null : toHex(color.getR()) + toHex(color.getG()) + toHex(color.getB());
     }
 
     private static String toHex(int value) {
@@ -30,7 +31,7 @@ public class ColorUtil {
     }
 
     /**
-     * Creates a color from a web color. Currently, only numeric RGB values are supported.
+     * Creates a color from a hex color (#RGBA or #RRGGBBAA). Currently, only numeric RGB values are supported.
      * This method works the same was as {@link #fromHex} except that is required as hash sign before the hex value.
      * An example of a numeric RGB value is "#09C" or "#0099CC", which both represent the same color.
      *
@@ -39,7 +40,7 @@ public class ColorUtil {
      * @see <a href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</a>
      * @see <a href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</a>
      */
-    public static Color fromWebColor(String str) {
+    public static Color fromHexColor(String str) {
         if (str == null) return null;
         str = str.trim();
         if (NUMERIC_RGB.matcher(str).matches()) {
@@ -76,6 +77,6 @@ public class ColorUtil {
             g = g << 4 | g;
             b = b << 4 | b;
         }
-        return new Color(r, g, b);
+        return Color.fromRgb(r, g, b);
     }
 }

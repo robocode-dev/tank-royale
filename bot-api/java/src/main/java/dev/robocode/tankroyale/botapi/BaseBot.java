@@ -2,12 +2,12 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.events.BotEvent;
 import dev.robocode.tankroyale.botapi.events.Condition;
+import dev.robocode.tankroyale.botapi.graphics.Color;
+import dev.robocode.tankroyale.botapi.graphics.IGraphics;
 import dev.robocode.tankroyale.botapi.internal.BaseBotInternals;
 import dev.robocode.tankroyale.botapi.internal.EventPriorities;
 import dev.robocode.tankroyale.schema.BotIntent;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
@@ -822,7 +822,7 @@ public abstract class BaseBot implements IBaseBot {
      * {@inheritDoc}
      */
     @Override
-    public final Graphics2D getGraphics() {
+    public final IGraphics getGraphics() {
         return baseBotInternals.getGraphics();
     }
 }

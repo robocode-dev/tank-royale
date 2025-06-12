@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using Robocode.TankRoyale.BotApi.Graphics;
 
 namespace Robocode.TankRoyale.BotApi;
 

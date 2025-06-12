@@ -1,7 +1,6 @@
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
-
-import java.awt.*;
+import dev.robocode.tankroyale.botapi.graphics.*;
 
 // ---------------------------------------------------------------------------
 // PaintingBot
@@ -68,8 +67,10 @@ public class PaintingBot extends Bot {
 
             // Draw a red circle with the alpha value we calculated using anm ellipse
             var g = getGraphics();
-            g.setColor(new Color(0xff, 0x00, 0x00, alpha));
-            g.fillOval((int) scannedX - 20, (int) scannedY - 20, 40, 40);
+
+            var color = Color.fromRgba(0xff, 0x00, 0x00, alpha);
+            g.setFillColor(color);
+            g.fillCircle(scannedX, scannedY, 20); // 20 is the radius of the bots bounding circle
         }
     }
 }

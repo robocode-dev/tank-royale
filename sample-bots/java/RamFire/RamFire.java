@@ -1,6 +1,6 @@
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
-import java.awt.Color;
+import dev.robocode.tankroyale.botapi.graphics.Color;
 
 // ------------------------------------------------------------------
 // RamFire
@@ -28,9 +28,9 @@ public class RamFire extends Bot {
     @Override
     public void run() {
         // Set colors
-        setBodyColor(new Color(0x99, 0x99, 0x99));   // lighter gray
-        setTurretColor(new Color(0x88, 0x88, 0x88)); // gray
-        setRadarColor(new Color(0x66, 0x66, 0x66));  // dark gray
+        setBodyColor(Color.fromRgb(0x99, 0x99, 0x99));   // lighter gray
+        setTurretColor(Color.fromRgb(0x88, 0x88, 0x88)); // gray
+        setRadarColor(Color.fromRgb(0x66, 0x66, 0x66));  // dark gray
 
         while (isRunning()) {
             turnRight(5 * turnDirection);

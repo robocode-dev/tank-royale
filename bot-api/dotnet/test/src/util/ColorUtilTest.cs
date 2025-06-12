@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using Robocode.TankRoyale.BotApi.Graphics;
 using Robocode.TankRoyale.BotApi.Util;
 
 namespace Robocode.TankRoyale.BotApi.Tests.Util;
@@ -7,7 +8,7 @@ namespace Robocode.TankRoyale.BotApi.Tests.Util;
 public class ColorUtilTest
 {
     [TestFixture]
-    public class FromWebColorUtilTests: ColorUtilTest
+    public class FromHexColorUtilTests: ColorUtilTest
     {
         [Test]
         [TestCase("#000000", 0x00, 0x00, 0x00)]
@@ -20,9 +21,9 @@ public class ColorUtilTest
         [TestCase("#789aBc\t", 0x78, 0x9A, 0xBC)] // White space
         [TestCase(" #123\t", 0x11, 0x22, 0x33)] // White spaces
         [TestCase("#AbC\t", 0xAA, 0xBB, 0xCC)] // White space
-        public void GivenValidRgbString_whenCallingFromWebColor_thenCreatedColorMustContainTheSameRedGreenBlue(string str, int expectedRed, int expectedGreen, int expectedBlue)
+        public void GivenValidRgbString_whenCallingFromHexColor_thenCreatedColorMustContainTheSameRedGreenBlue(string str, int expectedRed, int expectedGreen, int expectedBlue)
         {
-            var color = ColorUtil.FromWebColor(str);
+            var color = ColorUtil.FromHexColor(str);
 
             Assert.That(color.Value.R, Is.EqualTo(expectedRed));
             Assert.That(color.Value.G, Is.EqualTo(expectedGreen));
@@ -36,9 +37,9 @@ public class ColorUtilTest
         [TestCase("#xxxxxx")] // Wrong letters
         [TestCase("#abcdeG")] // Wrong letter
         [TestCase("000000")] // Missing hashing sign
-        public void GivenInvalidRgbString_whenCallingFromWebColor_thenThrowIllegalArgumentException(string str)
+        public void GivenInvalidRgbString_whenCallingFromHexColor_thenThrowIllegalArgumentException(string str)
         {
-            Assert.Throws<ArgumentException>(() => ColorUtil.FromWebColor(str));
+            Assert.Throws<ArgumentException>(() => ColorUtil.FromHexColor(str));
         }
     }
 
@@ -97,16 +98,16 @@ public class ColorUtilTest
         [Test]
         public void GivenTwoCreatedColorsWithSameRgbValues_whenCallingIsEqualTo_thenTheTwoColorsMustBeEqual()
         {
-            Assert.That(Color.FromRgba(10, 20, 30), Is.EqualTo(Color.FromRgba(10, 20, 30)));
-            Assert.That(Color.FromRgba(11, 22, 33), Is.EqualTo(Color.FromRgba(11, 22, 33)));
+            Assert.That(Color.FromRgb(10, 20, 30), Is.EqualTo(Color.FromRgb(10, 20, 30)));
+            Assert.That(Color.FromRgb(11, 22, 33), Is.EqualTo(Color.FromRgb(11, 22, 33)));
         }
 
         [Test]
         public void GivenTwoCreatedColorsWithDifferentRgbValues_whenCallingIsEqualTo_thenTheTwoColorsMustNotBeEqual()
         {
-            Assert.That(Color.FromRgba(10, 20, 30), Is.Not.EqualTo(Color.FromRgba(11, 20, 30)));
-            Assert.That(Color.FromRgba(10, 20, 30), Is.Not.EqualTo(Color.FromRgba(10, 22, 30)));
-            Assert.That(Color.FromRgba(10, 20, 30), Is.Not.EqualTo(Color.FromRgba(10, 20, 33)));
+            Assert.That(Color.FromRgb(10, 20, 30), Is.Not.EqualTo(Color.FromRgb(11, 20, 30)));
+            Assert.That(Color.FromRgb(10, 20, 30), Is.Not.EqualTo(Color.FromRgb(10, 22, 30)));
+            Assert.That(Color.FromRgb(10, 20, 30), Is.Not.EqualTo(Color.FromRgb(10, 20, 33)));
         }
     }
 
@@ -116,16 +117,16 @@ public class ColorUtilTest
         [Test]
         public void GivenTwoEqualColorsCreatedDifferently_whenCallingHashCodeOnEachColor_thenTheHashCodesMustBeEqual()
         {
-            Assert.That(ColorUtil.FromWebColor("#102030").GetHashCode(),
-                Is.EqualTo(Color.FromRgba(0x10, 0x20, 0x30).GetHashCode()));
-            Assert.That(ColorUtil.FromWebColor("#112233").GetHashCode(),
-                Is.EqualTo(Color.FromRgba(0x11, 0x22, 0x33).GetHashCode()));
+            Assert.That(ColorUtil.FromHexColor("#102030").GetHashCode(),
+                Is.EqualTo(Color.FromRgb(0x10, 0x20, 0x30).GetHashCode()));
+            Assert.That(ColorUtil.FromHexColor("#112233").GetHashCode(),
+                Is.EqualTo(Color.FromRgb(0x11, 0x22, 0x33).GetHashCode()));
         }
 
         [Test]
         public void GivenTwoDifferentColors_whenCallingHashCodeOnEachColor_thenTheHashCodesMustNotBeEqual()
         {
-            Assert.That(Color.FromRgba(10, 20, 30).GetHashCode(), !Is.EqualTo(ColorUtil.FromWebColor("#123456").GetHashCode()));
+            Assert.That(Color.FromRgb(10, 20, 30).GetHashCode(), !Is.EqualTo(ColorUtil.FromHexColor("#123456").GetHashCode()));
         }
     }
 
@@ -135,7 +136,7 @@ public class ColorUtilTest
         [Test]
         public void GivenColorWithSpecificHexValue_whenCallingToString_thenReturnedStringMustBeSameHexValue()
         {
-            Assert.That(ColorUtil.FromHex("FDB975"), Is.EqualTo(Color.FromRgba(0xFD, 0xB9, 0x75)));
+            Assert.That(ColorUtil.FromHex("FDB975"), Is.EqualTo(Color.FromRgb(0xFD, 0xB9, 0x75)));
         }
     }
 }

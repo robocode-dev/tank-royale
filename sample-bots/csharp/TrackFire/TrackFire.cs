@@ -1,6 +1,7 @@
 using System;
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
+using Robocode.TankRoyale.BotApi.Graphics;
 
 // ------------------------------------------------------------------
 // TrackFire
@@ -25,7 +26,7 @@ public class TrackFire : Bot
     public override void Run()
     {
         // Set colors
-        var pink = Color.FromArgb(0xFF, 0x69, 0xB4);
+        var pink = Color.FromRgb(0xFF, 0x69, 0xB4);
         BodyColor = pink;
         TurretColor = pink;
         RadarColor = pink;

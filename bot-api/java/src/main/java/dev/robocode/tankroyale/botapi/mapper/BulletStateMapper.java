@@ -24,7 +24,7 @@ public final class BulletStateMapper {
                 source.getX(),
                 source.getY(),
                 source.getDirection(),
-                ColorUtil.fromWebColor(source.getColor()));
+                ColorUtil.fromHexColor(source.getColor()));
     }
 
     public static Set<BulletState> map(final Collection<dev.robocode.tankroyale.schema.BulletState> source) {

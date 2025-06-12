@@ -1,6 +1,6 @@
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
-import java.awt.Color;
+import dev.robocode.tankroyale.botapi.graphics.Color;
 
 // ------------------------------------------------------------------
 // Target
@@ -29,9 +29,9 @@ public class Target extends Bot {
     @Override
     public void run() {
         // Set colors
-        setBodyColor(Color.white);
-        setTurretColor(Color.white);
-        setRadarColor(Color.white);
+        setBodyColor(Color.WHITE);
+        setTurretColor(Color.WHITE);
+        setRadarColor(Color.WHITE);
 
         // Initially, we'll move when energy passes 80
         trigger = 80;

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Robocode.TankRoyale.BotApi.Tests.Graphics;
 
 using NUnit.Framework;
@@ -118,7 +120,7 @@ public class SvgGraphicsTest
     {
         _graphics.SetStrokeColor(Color.Black);
         _graphics.SetStrokeWidth(2);
-        Point[] points = new Point[]
+        List<Point> points = new List<Point>
         {
             new Point(10, 10),
             new Point(50, 10),
@@ -140,7 +142,7 @@ public class SvgGraphicsTest
         _graphics.SetFillColor(Color.Blue);
         _graphics.SetStrokeColor(Color.Black);
         _graphics.SetStrokeWidth(1);
-        Point[] points = new Point[]
+        List<Point> points = new List<Point>
         {
             new Point(10, 10),
             new Point(50, 10),
@@ -160,7 +162,7 @@ public class SvgGraphicsTest
     public void TestPolygonWithTooFewPoints()
     {
         _graphics.SetStrokeColor(Color.Black);
-        Point[] points = new Point[]
+        List<Point> points = new List<Point>
         {
             new Point(10, 10),
             new Point(50, 10)

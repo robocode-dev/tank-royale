@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Robocode.TankRoyale.BotApi.Graphics;
 
 namespace Robocode.TankRoyale.BotApi.Util;
 
@@ -30,7 +31,7 @@ static class ColorUtil
     }
 
     /// <summary>
-    /// Creates a color from a web color. Currently, only numeric RGB values are supported.
+    /// Creates a color from a hex color (#RGBA or #RRGGBBAA). Currently, only numeric RGB values are supported.
     /// This method works the same was as <see cref="FromHex"/> except that is required as hash sign before the hex value.
     ///
     /// An example of a numeric RGB value is "#09C" or "#0099CC", which both represents the same color.
@@ -41,7 +42,7 @@ static class ColorUtil
     /// <exception cref="ArgumentException"/>
     /// <see href="https://www.w3schools.com/colors/colors_rgb.asp">Colors RGB</see>
     /// <see href="https://en.wikipedia.org/wiki/Web_colors">Web Colors</see>
-    internal static Color? FromWebColor(string str)
+    internal static Color? FromHexColor(string str)
     {
         if (str == null) return null;
         str = str.Trim();
@@ -83,6 +84,6 @@ static class ColorUtil
             b = (b << 4) | b;
         }
 
-        return Color.FromRgba(r, g, b);
+        return Color.FromRgb(r, g, b);
     }
 }

@@ -1,6 +1,6 @@
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
-import java.awt.Color;
+import dev.robocode.tankroyale.botapi.graphics.Color;
 
 // ------------------------------------------------------------------
 // Walls
@@ -29,11 +29,11 @@ public class Walls extends Bot {
     @Override
     public void run() {
         // Set colors
-        setBodyColor(Color.black);
-        setTurretColor(Color.black);
-        setRadarColor(Color.orange);
-        setBulletColor(Color.cyan);
-        setScanColor(Color.cyan);
+        setBodyColor(Color.BLACK);
+        setTurretColor(Color.BLACK);
+        setRadarColor(Color.ORANGE);
+        setBulletColor(Color.CYAN);
+        setScanColor(Color.CYAN);
 
         // Initialize moveAmount to the maximum possible for the arena
         moveAmount = Math.max(getArenaWidth(), getArenaHeight());

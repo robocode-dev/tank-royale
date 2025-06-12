@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.botapi;
 
-import java.awt.Color;
+import dev.robocode.tankroyale.botapi.graphics.Color;
 
 /**
  * Represents the current bot state.

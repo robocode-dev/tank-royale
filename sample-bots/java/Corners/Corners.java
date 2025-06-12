@@ -1,6 +1,6 @@
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
-import java.awt.Color;
+import dev.robocode.tankroyale.botapi.graphics.Color;
 import java.util.Random;
 
 // ------------------------------------------------------------------
@@ -32,11 +32,11 @@ public class Corners extends Bot {
     @Override
     public void run() {
         // Set colors
-        setBodyColor(Color.red);
-        setTurretColor(Color.black);
-        setRadarColor(Color.yellow);
-        setBulletColor(Color.green);
-        setScanColor(Color.green);
+        setBodyColor(Color.RED);
+        setTurretColor(Color.BLACK);
+        setRadarColor(Color.YELLOW);
+        setBulletColor(Color.GREEN);
+        setScanColor(Color.GREEN);
 
         // Save # of other bots
         enemies = getEnemyCount();

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Robocode.TankRoyale.BotApi.Graphics;
 
 /// <summary>
@@ -49,16 +51,16 @@ public interface IGraphics
     void FillCircle(double x, double y, double radius);
 
     /// <summary>
-    /// Draws the outline of a polygon defined by an array of points.
+    /// Draws the outline of a polygon defined by a list of points.
     /// </summary>
-    /// <param name="points">Array of points defining the polygon.</param>
-    void DrawPolygon(Point[] points);
+    /// <param name="points">List of points defining the polygon.</param>
+    void DrawPolygon(List<Point> points);
 
     /// <summary>
-    /// Fills a polygon defined by an array of points with the current fill color.
+    /// Fills a polygon defined by a list of points with the current fill color.
     /// </summary>
-    /// <param name="points">Array of points defining the polygon.</param>
-    void FillPolygon(Point[] points);
+    /// <param name="points">List of points defining the polygon.</param>
+    void FillPolygon(List<Point> points);
 
     /// <summary>
     /// Draws text at the specified position.

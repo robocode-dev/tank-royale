@@ -1,6 +1,6 @@
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
-import java.awt.Color;
+import dev.robocode.tankroyale.botapi.graphics.Color;
 
 // ------------------------------------------------------------------
 // Crazy
@@ -27,11 +27,11 @@ public class Crazy extends Bot {
     // Called when a new round is started -> initialize and do some movement
     public void run() {
         // Set colors
-        setBodyColor(new Color(0x00, 0xC8, 0x00));   // lime
-        setTurretColor(new Color(0x00, 0x96, 0x32)); // green
-        setRadarColor(new Color(0x00, 0x64, 0x64));  // dark cyan
-        setBulletColor(new Color(0xFF, 0xFF, 0x64)); // yellow
-        setScanColor(new Color(0xFF, 0xC8, 0xC8));   // light red
+        setBodyColor(Color.fromRgb(0x00, 0xC8, 0x00));   // lime
+        setTurretColor(Color.fromRgb(0x00, 0x96, 0x32)); // green
+        setRadarColor(Color.fromRgb(0x00, 0x64, 0x64));  // dark cyan
+        setBulletColor(Color.fromRgb(0xFF, 0xFF, 0x64)); // yellow
+        setScanColor(Color.fromRgb(0xFF, 0xC8, 0xC8));   // light red
 
         // Loop while as long as the bot is running
         while (isRunning()) {

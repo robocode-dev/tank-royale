@@ -1,11 +1,10 @@
 package dev.robocode.tankroyale.botapi.util;
 
+import dev.robocode.tankroyale.botapi.graphics.Color;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.awt.Color;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -30,11 +29,11 @@ class ColorUtilTest {
         void givenValidRgbString_whenCallingFromString_thenCreatedColorMustContainTheSameRedGreenBlue(
                 String str, int expectedRed, int expectedGreen, int expectedBlue) {
 
-            var color = ColorUtil.fromWebColor(str);
+            var color = ColorUtil.fromHexColor(str);
 
-            assertThat(color.getRed()).isEqualTo(expectedRed);
-            assertThat(color.getGreen()).isEqualTo(expectedGreen);
-            assertThat(color.getBlue()).isEqualTo(expectedBlue);
+            assertThat(color.getR()).isEqualTo(expectedRed);
+            assertThat(color.getG()).isEqualTo(expectedGreen);
+            assertThat(color.getB()).isEqualTo(expectedBlue);
         }
 
         @ParameterizedTest
@@ -47,7 +46,7 @@ class ColorUtilTest {
                 "000000",    // Missing hash (#)
         })
         void givenInvalidRgbString_whenCallingFromString_thenThrowIllegalArgumentException(String str) {
-            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> ColorUtil.fromWebColor(str));
+            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> ColorUtil.fromHexColor(str));
         }
     }
 
@@ -71,9 +70,9 @@ class ColorUtilTest {
 
             var color = ColorUtil.fromHex(hex);
 
-            assertThat(color.getRed()).isEqualTo(expectedRed);
-            assertThat(color.getGreen()).isEqualTo(expectedGreen);
-            assertThat(color.getBlue()).isEqualTo(expectedBlue);
+            assertThat(color.getR()).isEqualTo(expectedRed);
+            assertThat(color.getG()).isEqualTo(expectedGreen);
+            assertThat(color.getB()).isEqualTo(expectedBlue);
         }
 
         @ParameterizedTest
@@ -107,15 +106,15 @@ class ColorUtilTest {
     class EqualsTests {
         @Test
         void givenTwoCreatedColorsWithSameRgbValues_whenCallingIsEqualTo_thenTheTwoColorsMustBeEqual() {
-            assertThat(new Color(10, 20, 30)).isEqualTo(new Color(10, 20, 30));
-            assertThat(new Color(11, 22, 33)).isEqualTo(new Color(11, 22, 33));
+            assertThat(Color.fromRgb(10, 20, 30)).isEqualTo(Color.fromRgb(10, 20, 30));
+            assertThat(Color.fromRgb(11, 22, 33)).isEqualTo(Color.fromRgb(11, 22, 33));
         }
 
         @Test
         void givenTwoCreatedColorsWithDifferentRgbValues_whenCallingIsEqualTo_thenTheTwoColorsMustNotBeEqual() {
-            assertThat(new Color(10, 20, 30)).isNotEqualTo(new Color(11, 20, 30));
-            assertThat(new Color(10, 20, 30)).isNotEqualTo(new Color(10, 22, 30));
-            assertThat(new Color(10, 20, 30)).isNotEqualTo(new Color(10, 20, 33));
+            assertThat(Color.fromRgb(10, 20, 30)).isNotEqualTo(Color.fromRgb(11, 20, 30));
+            assertThat(Color.fromRgb(10, 20, 30)).isNotEqualTo(Color.fromRgb(10, 22, 30));
+            assertThat(Color.fromRgb(10, 20, 30)).isNotEqualTo(Color.fromRgb(10, 20, 33));
         }
     }
 
@@ -123,13 +122,13 @@ class ColorUtilTest {
     class HashTests {
         @Test
         void givenTwoEqualColorsCreatedDifferently_whenCallingHashCodeOnEachColor_thenTheHashCodesMustBeEqual() {
-            assertThat(ColorUtil.fromHex("102030")).hasSameHashCodeAs(new Color(0x10, 0x20, 0x30).hashCode());
-            assertThat(ColorUtil.fromHex("112233")).hasSameHashCodeAs(new Color(0x11, 0x22, 0x33).hashCode());
+            assertThat(ColorUtil.fromHex("102030")).hasSameHashCodeAs(Color.fromRgb(0x10, 0x20, 0x30).hashCode());
+            assertThat(ColorUtil.fromHex("112233")).hasSameHashCodeAs(Color.fromRgb(0x11, 0x22, 0x33).hashCode());
         }
 
         @Test
         void givenTwoDifferentColors_whenCallingHashCodeOnEachColor_thenTheHashCodesMustNotBeEqual() {
-            assertThat(new Color(10, 20, 30).hashCode()).isNotEqualTo(ColorUtil.fromHex("123456").hashCode());
+            assertThat(Color.fromRgb(10, 20, 30).hashCode()).isNotEqualTo(ColorUtil.fromHex("123456").hashCode());
         }
     }
 
@@ -137,7 +136,7 @@ class ColorUtilTest {
     class ToStringTests {
         @Test
         void givenColorWithSpeficHexValue_whenCallingToString_thenReturnedStringMustBeSameHexValue() {
-            assertThat(ColorUtil.fromHex("FDB975")).isEqualTo(new Color(0xFD, 0xB9, 0x75));
+            assertThat(ColorUtil.fromHex("FDB975")).isEqualTo(Color.fromRgb(0xFD, 0xB9, 0x75));
         }
     }
 }

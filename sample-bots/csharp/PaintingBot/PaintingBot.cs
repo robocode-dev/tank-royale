@@ -1,6 +1,7 @@
 using System;
 using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Events;
+using Robocode.TankRoyale.BotApi.Graphics;
 
 // ---------------------------------------------------------------------------
 // PaintingBot
@@ -70,8 +71,7 @@ public class PaintingBot : Bot
             // Draw a red circle with the alpha value we calculated using anm ellipse
             var g = Graphics;
 
-            var color = Color.FromArgb(alpha, 0xff, 0x00, 0x00);
-
+            var color = Color.FromRgba(0xff, 0x00, 0x00, alpha);
             g.SetFillColor(color);
             g.FillCircle(scannedX, scannedY, 20); // 20 is the radius of the bots bounding circle
         }

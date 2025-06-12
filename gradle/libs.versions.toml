@@ -2,7 +2,6 @@
 
 kotlin = "2.1.21"
 
-batik = "1.19"
 gson = "2.13.1"
 gson-extras = "3.3.0"
 jansi = "2.4.2"
@@ -24,8 +23,6 @@ benmanes-versions = "0.52.0"
 
 [libraries]
 
-batik-svggen = { module = "org.apache.xmlgraphics:batik-svggen", version.ref = "batik" }
-batik-dom = { module = "org.apache.xmlgraphics:batik-dom", version.ref = "batik" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 gson-extras = { module = "org.danilopianini:gson-extras", version.ref = "gson-extras" }
 jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
