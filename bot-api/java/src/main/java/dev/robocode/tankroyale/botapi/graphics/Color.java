@@ -4,7 +4,6 @@ package dev.robocode.tankroyale.botapi.graphics;
  * Represents an RGBA (red, green, blue, alpha) color for use in the Tank Royale game.
  * This class provides methods for creating and manipulating colors.
  */
-@SuppressWarnings("unused")
 public final class Color {
     private final int value;
 
