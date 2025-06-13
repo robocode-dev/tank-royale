@@ -344,7 +344,7 @@ public final class BotInfo {
     public static BotInfo fromInputStream(InputStream inputStream) {
         var gson = new Gson();
         var reader = new JsonReader(new InputStreamReader(inputStream));
-        JsonProperties data = gson.fromJson(reader, JsonProperties.class);
+        BotProperties data = gson.fromJson(reader, BotProperties.class);
 
         throwExceptionIfJsonFieldIsBlank("name", data.name);
         throwExceptionIfJsonFieldIsBlank("version", data.version);
@@ -506,7 +506,7 @@ public final class BotInfo {
         return value == null || value.isBlank() ? null : value.trim();
     }
 
-    private static class JsonProperties {
+    private static class BotProperties {
         String name;
         String version;
         List<String> authors;
