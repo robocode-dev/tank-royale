@@ -224,9 +224,6 @@ class BaseBotInternals:
         except Exception:
             traceback.print_exc()
 
-    def set_stop_resume_listener(self, listener: StopResumeListenerABC) -> None:
-        self.stop_resume_listener = listener
-
     def set_running(self, is_running: bool) -> None:
         self.data.is_running = is_running
 

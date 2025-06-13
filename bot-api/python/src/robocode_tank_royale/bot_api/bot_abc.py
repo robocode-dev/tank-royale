@@ -1,8 +1,7 @@
-from typing import Union
+from typing import Union, Callable
 from abc import abstractmethod
 
 from .base_bot_abc import BaseBotABC
-from .events import Condition
 
 class BotABC(BaseBotABC):
     """
@@ -76,7 +75,7 @@ class BotABC(BaseBotABC):
         pass
 
     @abstractmethod
-    def forward(self, distance: float) -> None:
+    async def forward(self, distance: float) -> None:
         """
         Moves the bot forward until it has traveled a specific distance or reached an obstacle.
 
@@ -136,7 +135,7 @@ class BotABC(BaseBotABC):
         pass
 
     @abstractmethod
-    def back(self, distance: float) -> None:
+    async def back(self, distance: float) -> None:
         """
         Moves the bot backward until it has traveled a specific distance from its current position,
         or it is moving into an obstacle. The speed is limited by `setMaxSpeed`.
@@ -218,7 +217,7 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    def turn_left(self, degrees: float) -> None:
+    async def turn_left(self, degrees: float) -> None:
         """
         Turn the bot to the left (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it has turned
@@ -282,7 +281,7 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    def turn_right(self, degrees: float) -> None:
+    async def turn_right(self, degrees: float) -> None:
         """
         Turn the bot to the right (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it turned the specified
@@ -365,7 +364,7 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    def turn_gun_left(self, degrees: float) -> None:
+    async def turn_gun_left(self, degrees: float) -> None:
         """
         Rotates the gun to the left (increasing degrees of the unit circle) until
         it has turned the specified number of degrees.
@@ -410,7 +409,7 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    def turn_gun_right(self, degrees: float) -> None:
+    async def turn_gun_right(self, degrees: float) -> None:
         """
         Rotates the gun to the right (decreasing degrees of the unit circle) until
         it has turned the specified number of degrees.
@@ -471,7 +470,7 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    def turn_radar_left(self, degrees: Union[float, int]) -> None:
+    async def turn_radar_left(self, degrees: Union[float, int]) -> None:
         """Turn the radar to the left (following the increasing degrees of the
         unit circle) until it has turned the specified amount of degrees. This
         method will block until completed.
@@ -510,7 +509,7 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    def turn_radar_right(self, degrees: Union[float, int]) -> None:
+    async def turn_radar_right(self, degrees: Union[float, int]) -> None:
         """Turn the radar to the right (following the increasing degrees of the
         unit circle) until it has turned the specified amount of degrees. This
         method will block until completed.
@@ -546,7 +545,7 @@ class BotABC(BaseBotABC):
         """
         raise NotImplementedError('get_radar_turn_remaining not implemented')
 
-    def fire(self, firepower: float) -> None:
+    async def fire(self, firepower: float) -> None:
         """
         Fires the gun in the direction the gun is pointing.
 
@@ -591,7 +590,7 @@ class BotABC(BaseBotABC):
         pass
 
     @abstractmethod
-    def stop(self, overwrite: bool = False) -> None:
+    async def stop(self, overwrite: bool = False) -> None:
         """
         Immediately stops all motion, including the robot's movement, gun rotation,
         and radar movement. Any remaining movement is preserved for future execution
@@ -609,7 +608,7 @@ class BotABC(BaseBotABC):
         pass
 
     @abstractmethod
-    def resume(self) -> None:
+    async def resume(self) -> None:
         """
         Resume the movement prior to calling the `set_stop` or `stop` method.
         This method has no effect if it has already been called.
@@ -621,7 +620,7 @@ class BotABC(BaseBotABC):
         pass
 
     @abstractmethod
-    def rescan(self) -> None:
+    async def rescan(self) -> None:
         """
         Scan again with the radar. This method is useful if the radar has
         not been turning and is unable to scan bots automatically.
@@ -631,7 +630,7 @@ class BotABC(BaseBotABC):
         pass
 
     @abstractmethod
-    def wait_for(self, condition: Condition) -> None:
+    async def wait_for(self, condition: Callable[[], bool]) -> None:
         """
         Blocks until a condition is met, i.e., when `Condition.test()` returns True.
 
