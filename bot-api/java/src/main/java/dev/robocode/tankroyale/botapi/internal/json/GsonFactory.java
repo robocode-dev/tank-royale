@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.botapi.internal;
+package dev.robocode.tankroyale.botapi.internal.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,11 +20,11 @@ import java.io.IOException;
  * This class ensures a single Gson instance is shared across the application, preventing
  * redundant creation and supporting custom JSON handling for various data types.
  */
-public final class GsonFactory {
+final class GsonFactory {
 
     private static Gson gson;
 
-    public static Gson getGson() {
+    static Gson getGson() {
         if (gson == null) {
             gson = createGson();
         }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Fleck;
-using Newtonsoft.Json;
+using Robocode.TankRoyale.BotApi.Internal.Json;
 using Robocode.TankRoyale.BotApi.Util;
 using Robocode.TankRoyale.Schema;
 
@@ -214,14 +214,14 @@ public class MockedServer
     {
         Console.WriteLine("OnMessage: " + messageJson);
 
-        var message = JsonConvert.DeserializeObject<Message>(messageJson);
+        var message = JsonConverter.FromJson<Message>(messageJson);
         if (message == null) return;
 
         var msgType = (MessageType)Enum.Parse(typeof(MessageType), message.Type);
         switch (msgType)
         {
             case MessageType.BotHandshake:
-                Handshake = JsonConvert.DeserializeObject<BotHandshake>(messageJson);
+                Handshake = JsonConverter.FromJson<BotHandshake>(messageJson);
                 _botHandshakeEvent.Set();
 
                 SendGameStartedForBot(conn);
@@ -244,7 +244,7 @@ public class MockedServer
                 if (_directionMinLimit != null && _direction < _directionMinLimit) return;
                 if (_directionMaxLimit != null && _direction > _directionMaxLimit) return;
 
-                _botIntent = JsonConvert.DeserializeObject<BotIntent>(messageJson);
+                _botIntent = JsonConverter.FromJson<BotIntent>(messageJson);
                 _botIntentEvent.Set();
 
                 SendTickEventForBot(conn, _turnNumber++);
@@ -372,7 +372,7 @@ public class MockedServer
 
     private static void Send(IWebSocketConnection conn, Object obj)
     {
-        conn.Send(JsonConvert.SerializeObject(obj));
+        conn.Send(JsonConverter.ToJson(obj));
     }
 
     private static Schema.BulletState CreateBulletState(int id)

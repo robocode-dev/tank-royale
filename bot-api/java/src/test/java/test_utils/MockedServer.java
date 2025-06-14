@@ -1,7 +1,6 @@
 package test_utils;
 
-import com.google.gson.Gson;
-import dev.robocode.tankroyale.botapi.internal.GsonFactory;
+import dev.robocode.tankroyale.botapi.internal.json.JsonConverter;
 import dev.robocode.tankroyale.schema.*;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -82,8 +81,6 @@ public final class MockedServer {
     private final CountDownLatch botIntentLatch = new CountDownLatch(1);
 
     private CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
-
-    private final Gson gson = GsonFactory.getGson();
 
     private BotHandshake botHandshake;
     private BotIntent botIntent;
@@ -242,12 +239,12 @@ public final class MockedServer {
 
         @Override
         public void onMessage(WebSocket conn, String text) {
-            var message = gson.fromJson(text, Message.class);
+            var message = JsonConverter.fromJson(text, Message.class);
             switch (message.getType()) {
                 case BOT_HANDSHAKE:
                     System.out.println("BOT_HANDSHAKE");
 
-                    botHandshake = gson.fromJson(text, BotHandshake.class);
+                    botHandshake = JsonConverter.fromJson(text, BotHandshake.class);
                     botHandshakeLatch.countDown();
 
                     sendGameStartedForBot(conn);
@@ -285,7 +282,7 @@ public final class MockedServer {
                     }
                     botIntentContinueLatch = new CountDownLatch(1);
 
-                    botIntent = gson.fromJson(text, BotIntent.class);
+                    botIntent = JsonConverter.fromJson(text, BotIntent.class);
                     botIntentLatch.countDown();
 
                     sendTickEventForBot(conn, turnNumber++);
@@ -401,7 +398,7 @@ public final class MockedServer {
         }
 
         private void send(WebSocket conn, Message message) {
-            conn.send(gson.toJson(message));
+            conn.send(JsonConverter.toJson(message));
         }
 
         private BulletState createBulletState(int id) {

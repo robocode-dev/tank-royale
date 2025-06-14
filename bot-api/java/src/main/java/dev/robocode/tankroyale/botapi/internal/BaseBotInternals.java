@@ -1,10 +1,10 @@
 package dev.robocode.tankroyale.botapi.internal;
 
-import com.google.gson.Gson;
 import dev.robocode.tankroyale.botapi.*;
 import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.graphics.Color;
 import dev.robocode.tankroyale.botapi.graphics.IGraphics;
+import dev.robocode.tankroyale.botapi.internal.json.JsonConverter;
 import dev.robocode.tankroyale.botapi.util.ColorUtil;
 import dev.robocode.tankroyale.schema.BotIntent;
 import dev.robocode.tankroyale.schema.Message;
@@ -90,8 +90,6 @@ public final class BaseBotInternals {
     private Double savedRadarTurnRate;
 
     private final double absDeceleration = abs(DECELERATION);
-
-    private final Gson gson = GsonFactory.getGson();
 
     private int eventHandlingDisabledTurn;
 
@@ -309,7 +307,7 @@ public final class BaseBotInternals {
         synchronized (this) {
             renderGraphicsToBotIntent();
             transferStdOutToBotIntent();
-            socket.sendText(gson.toJson(botIntent), true);
+            socket.sendText(JsonConverter.toJson(botIntent), true);
             botIntent.getTeamMessages().clear();
         }
     }
@@ -668,7 +666,7 @@ public final class BaseBotInternals {
             throw new IllegalArgumentException("The 'message' of a team message cannot be null");
         }
 
-        var json = gson.toJson(message);
+        var json = JsonConverter.toJson(message);
         if (json.getBytes().length > TEAM_MESSAGE_MAX_SIZE) {
             throw new IllegalArgumentException(
                     "The team message is larger than the limit of " + TEAM_MESSAGE_MAX_SIZE + " bytes (compact JSON format)");

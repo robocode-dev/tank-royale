@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.botapi.internal;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.robocode.tankroyale.botapi.*;
@@ -12,6 +11,7 @@ import dev.robocode.tankroyale.botapi.events.GameStartedEvent;
 import dev.robocode.tankroyale.botapi.events.RoundEndedEvent;
 import dev.robocode.tankroyale.botapi.events.RoundStartedEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
+import dev.robocode.tankroyale.botapi.internal.json.JsonConverter;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
 import dev.robocode.tankroyale.botapi.mapper.GameSetupMapper;
 import dev.robocode.tankroyale.schema.BotReady;
@@ -40,7 +40,6 @@ final class WebSocketHandler implements WebSocket.Listener {
     private final BotEventHandlers botEventHandlers;
     private final InternalEventHandlers internalEventHandlers;
     private final CountDownLatch closedLatch;
-    private final Gson gson = GsonFactory.getGson();
 
     private WebSocket socket;
     private final StringBuilder payload = new StringBuilder();
@@ -94,7 +93,7 @@ final class WebSocketHandler implements WebSocket.Listener {
     public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
         payload.append(data);
         if (last) {
-            JsonObject jsonMsg = gson.fromJson(payload.toString(), JsonObject.class);
+            JsonObject jsonMsg = JsonConverter.fromJson(payload.toString(), JsonObject.class);
             payload.delete(0, payload.length()); // clear payload buffer
 
             JsonElement jsonType = jsonMsg.get("type");
@@ -139,7 +138,7 @@ final class WebSocketHandler implements WebSocket.Listener {
 
         baseBotInternals.setTickStartNanoTime(System.nanoTime());
 
-        var tickEventForBot = gson.fromJson(jsonMsg, TickEventForBot.class);
+        var tickEventForBot = JsonConverter.fromJson(jsonMsg, TickEventForBot.class);
 
         var mappedTickEvent = EventMapper.map(tickEventForBot, baseBot);
         baseBotInternals.addEventsFromTick(mappedTickEvent);
@@ -157,7 +156,7 @@ final class WebSocketHandler implements WebSocket.Listener {
     }
 
     private void handleRoundStarted(JsonObject jsonMsg) {
-        var roundStartedEvent = gson.fromJson(jsonMsg, RoundStartedEvent.class);
+        var roundStartedEvent = JsonConverter.fromJson(jsonMsg, RoundStartedEvent.class);
 
         var mappedRoundStartedEvent = new RoundStartedEvent(roundStartedEvent.getRoundNumber());
 
@@ -166,7 +165,7 @@ final class WebSocketHandler implements WebSocket.Listener {
     }
 
     private void handleRoundEnded(JsonObject jsonMsg) {
-        var roundEndedEvent = gson.fromJson(jsonMsg, RoundEndedEvent.class);
+        var roundEndedEvent = JsonConverter.fromJson(jsonMsg, RoundEndedEvent.class);
 
         var mappedRoundEndedEvent = new RoundEndedEvent(
                 roundEndedEvent.getRoundNumber(), roundEndedEvent.getTurnNumber(), roundEndedEvent.getResults());
@@ -176,7 +175,7 @@ final class WebSocketHandler implements WebSocket.Listener {
     }
 
     private void handleGameStarted(JsonObject jsonMsg) {
-        var gameStartedEventForBot = gson.fromJson(jsonMsg, GameStartedEventForBot.class);
+        var gameStartedEventForBot = JsonConverter.fromJson(jsonMsg, GameStartedEventForBot.class);
 
         baseBotInternals.setMyId(gameStartedEventForBot.getMyId());
 
@@ -196,7 +195,7 @@ final class WebSocketHandler implements WebSocket.Listener {
         var ready = new BotReady();
         ready.setType(Message.Type.BOT_READY);
 
-        String msg = gson.toJson(ready);
+        String msg = JsonConverter.toJson(ready);
         socket.sendText(msg, true);
 
         botEventHandlers.onGameStarted.publish(
@@ -205,7 +204,7 @@ final class WebSocketHandler implements WebSocket.Listener {
 
     private void handleGameEnded(JsonObject jsonMsg) {
         // Send the game ended event
-        var gameEndedEventForBot = gson.fromJson(jsonMsg, GameEndedEventForBot.class);
+        var gameEndedEventForBot = JsonConverter.fromJson(jsonMsg, GameEndedEventForBot.class);
 
         var mappedGameEnded = new GameEndedEvent(
                 gameEndedEventForBot.getNumberOfRounds(),
@@ -223,19 +222,19 @@ final class WebSocketHandler implements WebSocket.Listener {
     private void handleSkippedTurn(JsonObject jsonMsg) {
         if (baseBotInternals.getEventHandlingDisabledTurn()) return;
 
-        var skippedTurnEvent = gson.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
+        var skippedTurnEvent = JsonConverter.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
 
         botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent, baseBot));
     }
 
     private void handleServerHandshake(JsonObject jsonMsg) {
-        var serverHandshake = gson.fromJson(jsonMsg, ServerHandshake.class);
+        var serverHandshake = JsonConverter.fromJson(jsonMsg, ServerHandshake.class);
         baseBotInternals.setServerHandshake(serverHandshake);
 
         // Reply by sending bot handshake
         var isDroid = baseBot instanceof Droid;
         var botHandshake = BotHandshakeFactory.create(serverHandshake.getSessionId(), botInfo, isDroid, serverSecret);
-        String msg = gson.toJson(botHandshake);
+        String msg = JsonConverter.toJson(botHandshake);
 
         socket.sendText(msg, true);
     }
