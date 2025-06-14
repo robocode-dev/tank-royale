@@ -1,5 +1,31 @@
 ## 📦 0.31.0
 
+### ⚠️ Breaking Changes
+
+#### Bot API Updates
+
+If you are using `Color` and the `getGraphics()` method or `Graphics` property, you may need to update your bot(s).
+
+**Changes Implemented:**
+- Platform-specific graphics classes and external graphics libraries, such as those for SVG, have been replaced with the following classes:
+    - `IGraphics`
+    - `SvgGraphics`
+    - `Color`
+    - `Point`
+
+**Reasons for Changes:**
+- Simplify the development and maintenance of the debugging graphics feature.
+- Avoid using platform-specific features and frameworks that are not compatible across all platforms and operating systems.
+- Enhance the speed of SVG serialization, reduce RAM usage, and decrease distribution archive sizes.
+- Standardize the API for debug painting across all Bot APIs (Java, .Net, Python, etc.).
+
+**Specific Updates:**
+- **Java:** A new package `dev.robocode.tankroyale.botapi.graphics` has been introduced.
+- **.Net:** A new namespace `Robocode.TankRoyale.BotApi.Graphics` has been introduced.
+
+**Additional Information:**
+- Sample bots have been updated to use the new classes.
+
 ### 🐞 Bug Fixes
 
 - BotAPI:
