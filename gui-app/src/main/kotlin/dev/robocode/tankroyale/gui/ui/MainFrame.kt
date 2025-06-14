@@ -22,7 +22,6 @@ object MainFrame : RcFrame("main_frame") {
         defaultCloseOperation = EXIT_ON_CLOSE
 
         setSize(1050, 800)
-        setLocationRelativeTo(null) // center on screen
 
         contentPane.add(MainPanel)
 
