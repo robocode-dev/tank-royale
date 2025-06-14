@@ -64,10 +64,10 @@ public class PointTest
     public void TestToString()
     {
         var point = new Point(10.5, 20.5);
-        Assert.That(point.ToString(), Is.EqualTo("(X=10.5, Y=20.5)"));
+        Assert.That(point.ToString(), Is.EqualTo("(10.5, 20.5)"));
 
         var negativePoint = new Point(-10.5, -20.5);
-        Assert.That(negativePoint.ToString(), Is.EqualTo("(X=-10.5, Y=-20.5)"));
+        Assert.That(negativePoint.ToString(), Is.EqualTo("(-10.5, -20.5)"));
     }
 
     [Test]

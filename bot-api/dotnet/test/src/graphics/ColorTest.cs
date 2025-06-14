@@ -87,8 +87,8 @@ public class ColorTest
         var opaqueColor = Color.FromRgb(100, 150, 200);
         var transparentColor = Color.FromRgba(100, 150, 200, 128);
 
-        Assert.That(opaqueColor.ToString(), Is.EqualTo("Color [R=100, G=150, B=200]"));
-        Assert.That(transparentColor.ToString(), Is.EqualTo("Color [A=128, R=100, G=150, B=200]"));
+        Assert.That(opaqueColor.ToString(), Is.EqualTo("RGB[100, 150, 200]"));
+        Assert.That(transparentColor.ToString(), Is.EqualTo("RGBA[128, 100, 150, 200]"));
     }
 
     [Test]

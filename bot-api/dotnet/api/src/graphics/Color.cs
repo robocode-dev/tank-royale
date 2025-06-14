@@ -278,8 +278,8 @@ public readonly struct Color : IEquatable<Color>
     public override string ToString()
     {
         if (A == 255)
-            return $"Color [R={R}, G={G}, B={B}]";
-        return $"Color [A={A}, R={R}, G={G}, B={B}]";
+            return $"RGB[{R}, {G}, {B}]";
+        return $"RGBA[{A}, {R}, {G}, {B}]";
     }
     
     /// <summary>
@@ -324,9 +324,4 @@ public readonly struct Color : IEquatable<Color>
     /// <param name="rgba">A 32-bit integer containing RGBA values.</param>
     /// <returns>A Color structure with the specified RGBA values.</returns>
     public static implicit operator Color(uint rgba) => FromRgba(rgba);
-
-    void hest() {
-        uint alpha = 0xff;
-        Color.FromRgba(0xff, 0x00, 0x00, alpha);
-    }
 }

@@ -67,7 +67,7 @@ public readonly struct Point : IEquatable<Point>
     /// <returns>A string that represents the current Point.</returns>
     public override string ToString()
     {
-        return $"(X={X.ToString(CultureInfo.InvariantCulture)}, Y={Y.ToString(CultureInfo.InvariantCulture)})";
+        return $"({X.ToString(CultureInfo.InvariantCulture)}, {Y.ToString(CultureInfo.InvariantCulture)})";
     }
 
     /// <summary>
