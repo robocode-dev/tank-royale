@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
-using Newtonsoft.Json;
 using S = Robocode.TankRoyale.Schema;
 using E = Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Mapper;
 using Robocode.TankRoyale.BotApi.Util;
 using Robocode.TankRoyale.BotApi.Graphics;
+using Robocode.TankRoyale.BotApi.Internal.Json;
 using static System.Double;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
@@ -150,7 +150,7 @@ sealed class BaseBotInternals
 
     internal void StartThread(IBot bot)
     {
-        _thread = new Thread(() => CreateRunnable(bot));;
+        _thread = new Thread(() => CreateRunnable(bot));
         _thread.Start();
     }
 
@@ -310,7 +310,7 @@ sealed class BaseBotInternals
     {
         RenderGraphicsToBotIntent();
         TransferStdOutToBotIntent();
-        _socket.SendTextMessage(JsonConvert.SerializeObject(BotIntent));
+        _socket.SendTextMessage(JsonConverter.ToJson(BotIntent));
         BotIntent.TeamMessages.Clear();
     }
 
@@ -694,7 +694,7 @@ sealed class BaseBotInternals
                 "The maximum number team massages has already been reached: " +
                 IBaseBot.MaxNumberOfTeamMessagesPerTurn);
 
-        var json = JsonConvert.SerializeObject(message);
+        var json = JsonConverter.ToJson(message);
         var bytes = System.Text.Encoding.UTF8.GetBytes(json);
         if (bytes.Length > IBaseBot.TeamMessageMaxSize)
             throw new ArgumentException(
@@ -806,7 +806,7 @@ sealed class BaseBotInternals
 
     private void HandleTextMessage(string json)
     {
-        var jsonMsg = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+        var jsonMsg = JsonConverter.FromJson<Dictionary<string, object>>(json);
         try
         {
             var type = (string)jsonMsg?["type"];
@@ -876,7 +876,7 @@ sealed class BaseBotInternals
 
     private void HandleRoundStarted(string json)
     {
-        var roundStartedEvent = JsonConvert.DeserializeObject<S.RoundStartedEvent>(json);
+        var roundStartedEvent = JsonConverter.FromJson<S.RoundStartedEvent>(json);
         VerifyNotNull(roundStartedEvent, typeof(S.RoundStartedEvent));
 
         var mappedRoundStartedEvent = new E.RoundStartedEvent(roundStartedEvent.RoundNumber);
@@ -887,7 +887,7 @@ sealed class BaseBotInternals
 
     private void HandleRoundEnded(string json)
     {
-        var roundEndedEventForBot = JsonConvert.DeserializeObject<S.RoundEndedEventForBot>(json);
+        var roundEndedEventForBot = JsonConverter.FromJson<S.RoundEndedEventForBot>(json);
         VerifyNotNull(roundEndedEventForBot, typeof(S.RoundEndedEventForBot));
 
         var botResults = ResultsMapper.Map(roundEndedEventForBot.Results);
@@ -901,7 +901,7 @@ sealed class BaseBotInternals
 
     private void HandleGameStarted(string json)
     {
-        var gameStartedEventForBot = JsonConvert.DeserializeObject<S.GameStartedEventForBot>(json);
+        var gameStartedEventForBot = JsonConverter.FromJson<S.GameStartedEventForBot>(json);
         VerifyNotNull(gameStartedEventForBot, typeof(S.GameStartedEventForBot));
 
         MyId = gameStartedEventForBot.MyId;
@@ -919,7 +919,7 @@ sealed class BaseBotInternals
             Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotReady)
         };
 
-        var msg = JsonConvert.SerializeObject(ready);
+        var msg = JsonConverter.ToJson(ready);
         _socket.SendTextMessage(msg);
 
         BotEventHandlers.OnGameStarted.Publish(new E.GameStartedEvent(MyId, _initialPosition, _gameSetup));
@@ -928,7 +928,7 @@ sealed class BaseBotInternals
     private void HandleGameEnded(string json)
     {
         // Send the game ended event
-        var gameEndedEventForBot = JsonConvert.DeserializeObject<S.GameEndedEventForBot>(json);
+        var gameEndedEventForBot = JsonConverter.FromJson<S.GameEndedEventForBot>(json);
         VerifyNotNull(gameEndedEventForBot, typeof(S.GameEndedEventForBot));
 
         var results = ResultsMapper.Map(gameEndedEventForBot.Results);
@@ -948,20 +948,20 @@ sealed class BaseBotInternals
     {
         if (IsEventHandlingDisabled()) return;
 
-        var skippedTurnEvent = JsonConvert.DeserializeObject<Schema.SkippedTurnEvent>(json);
+        var skippedTurnEvent = JsonConverter.FromJson<Schema.SkippedTurnEvent>(json);
 
         BotEventHandlers.OnSkippedTurn.Publish(EventMapper.Map(skippedTurnEvent));
     }
 
     private void HandleServerHandshake(string json)
     {
-        _serverHandshake = JsonConvert.DeserializeObject<S.ServerHandshake>(json);
+        _serverHandshake = JsonConverter.FromJson<S.ServerHandshake>(json);
 
         // Reply by sending bot handshake
         var isDroid = _baseBot is Droid;
         var botHandshake = BotHandshakeFactory.Create(_serverHandshake?.SessionId, _botInfo, isDroid, _serverSecret);
         botHandshake.Type = EnumUtil.GetEnumMemberAttrValue(S.MessageType.BotHandshake);
-        var text = JsonConvert.SerializeObject(botHandshake);
+        var text = JsonConverter.ToJson(botHandshake);
 
         _socket.SendTextMessage(text);
     }
