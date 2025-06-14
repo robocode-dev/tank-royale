@@ -55,6 +55,9 @@ try:
     from robocode_tank_royale.bot_api import base_bot # type: ignore
     print("Imported robocode_tank_royale.bot_api.base_bot successfully.")
 
+    from robocode_tank_royale.bot_api import bot # type: ignore
+    print("Imported robocode_tank_royale.bot_api.bot successfully.")
+
     print("All main refactored modules imported successfully.")
     sys.exit(0) # Explicitly exit with 0 on success
 
