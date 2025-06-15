@@ -29,7 +29,8 @@ If you are using `Color` and the `getGraphics()` method or `Graphics` property, 
 ### 🐞 Bug Fixes
 
 - BotAPI:
-    - #144: .NET bots run only on Windows since 0.30.0
+    - #143: .NET bot fails to start with no or invalid country code. 
+    - #144: .NET bots run only on Windows since 0.30.0.
         - SvgNet requires `System.Drawing`, which is not available on Linux and macOS. Hence, the new Robocode specific
           `IGraphics` interface must be used instead.
 - GUI:
