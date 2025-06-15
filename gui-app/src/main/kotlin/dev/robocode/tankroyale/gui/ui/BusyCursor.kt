@@ -1,9 +1,9 @@
-package dev.robocode.tankroyale.gui.util
+package dev.robocode.tankroyale.gui.ui
 
-import dev.robocode.tankroyale.gui.ui.MainFrame
+import dev.robocode.tankroyale.gui.util.TimerTaskUtil
 import java.awt.Color
 import java.awt.Cursor
-import java.util.*
+import java.util.Timer
 import java.util.concurrent.atomic.AtomicInteger
 import javax.swing.JFrame
 

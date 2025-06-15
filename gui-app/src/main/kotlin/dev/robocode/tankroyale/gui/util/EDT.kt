@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.util
 
 import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.gui.ui.BusyCursor
 import java.awt.EventQueue
 
 object EDT {

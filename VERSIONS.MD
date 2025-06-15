@@ -42,9 +42,10 @@ If you are using `Color` and the `getGraphics()` method or `Graphics` property, 
 - GUI:
     - The GUI now automatically scales the battle view when it’s first displayed and adjusts it dynamically as the
       window is resized.
-    - Windows now open on the "active" screen where the mouse cursor is located instead of showing up on the primary
       screen only. This is helpful when running on systems with multiple screens.
-    - Thanks to [Jan Durovec](https://github.com/jandurovec) for this nice improvement. ❤️
+        - Thanks to [Jan Durovec](https://github.com/jandurovec) for this nice improvement. ❤️
+  - Windows now open on the "active" screen where the mouse cursor is located instead of showing up on the primary.
+  - Fixed an issue where Robocode could get stuck showing a black window.
 
 ### 🐞 Bug Fixes
 
