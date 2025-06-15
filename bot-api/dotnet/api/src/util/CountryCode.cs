@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -10,8 +11,15 @@ static class CountryCode
     internal static string GetLocalCountryCode()
     {
         var cultureInfo = Thread.CurrentThread.CurrentCulture;
-        var regionInfo = new RegionInfo(cultureInfo.LCID);
-        return regionInfo.TwoLetterISORegionName;
+        try
+        {
+            var regionInfo = new RegionInfo(cultureInfo.LCID);
+            return regionInfo.TwoLetterISORegionName;
+        }
+        catch (Exception)
+        {
+            return null; // no country code
+        }
     }
 
     internal static bool IsCountryCodeValid(string countryCode)

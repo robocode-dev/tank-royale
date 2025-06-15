@@ -254,22 +254,27 @@ public sealed class BotInfo
         private init
         {
             if (value.Count > MaxNumberOfCountryCodes)
-                throw new ArgumentException("Size of 'CountryCodes' exceeds the maximum of " + MaxNumberOfCountryCodes);
+                throw new ArgumentException($"Size of 'CountryCodes' exceeds the maximum of {MaxNumberOfCountryCodes}");
 
-            _countryCodes = value.ToListWithNoBlanks().ConvertAll(cc => cc.ToUpper());
-
-            foreach (var countryCode in _countryCodes)
-                if (!CountryCode.IsCountryCodeValid(countryCode))
-                    _countryCodes = new List<string> { CountryCode.GetLocalCountryCode() };
-
-            if (CountryCodes.Any()) return;
-            var list = new List<string>
-            {
-                // Get local country code
-                CountryCode.GetLocalCountryCode()
-            };
-            _countryCodes = list;
+            // Convert to uppercase and remove blanks
+            var validCodes = value.ToListWithNoBlanks().ConvertAll(cc => cc.ToUpper());
+        
+            // Check if all country codes are valid
+            bool allValid = validCodes.Count > 0 && validCodes.All(CountryCode.IsCountryCodeValid);
+        
+            // If all valid, use them; otherwise fallback to local country code
+            _countryCodes = allValid
+                ? validCodes
+                : CreateDefaultCountryCodesList();
         }
+    }
+
+    private static List<string> CreateDefaultCountryCodesList()
+    {
+        var localCode = CountryCode.GetLocalCountryCode();
+        return localCode != null 
+            ? new List<string> { localCode }
+            : new List<string>();
     }
 
     /// <summary>
