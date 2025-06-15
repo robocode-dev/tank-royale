@@ -43,7 +43,7 @@ tasks {
             when (fileExt) {
                 "sh" -> {
                     it.println("""#!/bin/sh
-if [ -d "bin" ]; then
+if [ ! -d "bin" ]; then
   dotnet build
 fi
 dotnet run --no-build

@@ -33,8 +33,9 @@ If you are using `Color` and the `getGraphics()` method or `Graphics` property, 
     - #144: .NET bots run only on Windows since 0.30.0.
         - SvgNet requires `System.Drawing`, which is not available on Linux and macOS. Hence, the new Robocode specific
           `IGraphics` interface must be used instead.
+    - Fixed the generated bot Bash scripts for .Net so `dotnet build` will be called if the `bin` folder is missing. 
 - GUI:
-    - Fixed multiple issues with the "No bot directory root has been configured" error dialog.  
+    - Fixed multiple issues with the "No bot directory root has been configured" error dialog. 
 
 ## 📦 0.30.2
 
