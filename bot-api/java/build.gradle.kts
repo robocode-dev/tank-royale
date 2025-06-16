@@ -96,6 +96,10 @@ tasks {
             memberLevel = JavadocMemberLevel.PROTECTED
             overview = layout.projectDirectory.file("src/main/javadoc/overview.html").asFile.path
 
+            charSet = "UTF-8"
+            encoding = "UTF-8"
+            docEncoding = "UTF-8"
+
             addFileOption("-add-stylesheet", layout.projectDirectory.file("src/main/javadoc/themes/prism.css").asFile)
             addBooleanOption("-allow-script-in-comments", true)
             addStringOption("Xdoclint:none", "-quiet")
