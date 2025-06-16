@@ -18,7 +18,7 @@ import static dev.robocode.tankroyale.schema.Message.Type.*;
 
 public final class MockedServer {
 
-    public static final int PORT = 7913;
+    public static final int PORT = findAvailablePort();
     public static final String SERVER_URL = "ws://localhost:" + PORT;
 
     public static final String SESSION_ID = "123abc";
@@ -217,10 +217,19 @@ public final class MockedServer {
         return botHandshake;
     }
 
+    private static int findAvailablePort() {
+        try (java.net.ServerSocket socket = new java.net.ServerSocket(0)) {
+            return socket.getLocalPort();
+        } catch (java.io.IOException e) {
+            return 7913; // fallback to default port
+        }
+    }
+
     private class WebSocketServerImpl extends WebSocketServer {
 
         public WebSocketServerImpl() {
             super(new InetSocketAddress(PORT));
+            setReuseAddr(true);
         }
 
         @Override
