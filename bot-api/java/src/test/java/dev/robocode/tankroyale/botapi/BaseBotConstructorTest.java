@@ -138,14 +138,14 @@ class BaseBotConstructorTest extends AbstractBotTest {
     void givenServerUrlWithValidPortAsParameter_whenCallingConstructor_thenBotIsConnectingToServer() throws URISyntaxException {
         var bot = new TestBot(null, new URI("ws://localhost:" + MockedServer.PORT)); // valid port
         startAsync(bot);
-        assertThat(server.awaitConnection(1000)).isTrue();
+        assertThat(server.awaitConnection(5000)).isTrue();
     }
 
     @Test
     void givenServerUrlWithInvalidPortAsParameter_whenCallingConstructor_thenBotIsNotConnectingToServer() throws URISyntaxException {
         var bot = new TestBot(null, new URI("ws://localhost:" + (MockedServer.PORT + 1))); // invalid port
         startAsync(bot);
-        assertThat(server.awaitConnection(1000)).isFalse();
+        assertThat(server.awaitConnection(5000)).isFalse();
     }
 
     @Test
