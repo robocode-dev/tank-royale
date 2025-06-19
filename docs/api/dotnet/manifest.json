@@ -414,6 +414,56 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Graphics.Color.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Graphics.Color.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Graphics.IGraphics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Graphics.IGraphics.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Graphics.Point.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Graphics.Point.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Robocode.TankRoyale.BotApi.Graphics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Robocode.TankRoyale.BotApi.Graphics.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Robocode.TankRoyale.BotApi.IBaseBot.yml",
       "output": {
         ".html": {

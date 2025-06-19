@@ -1,0 +1,689 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class SvgGraphics </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class SvgGraphics ">
+    
+    <meta name="description" content="Implementation of IGraphicsContext that generates SVG markup.">
+      <link rel="shortcut icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics">
+
+
+
+  <h1 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics" class="text-break">Class SvgGraphics</h1>
+  <div class="markdown level0 summary"><p>Implementation of IGraphicsContext that generates SVG markup.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">SvgGraphics</span></div>
+  </div>
+  <div class="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Robocode.TankRoyale.BotApi.Graphics.IGraphics.html">IGraphics</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Robocode.html">Robocode</a>.<a class="xref" href="Robocode.TankRoyale.html">TankRoyale</a>.<a class="xref" href="Robocode.TankRoyale.BotApi.html">BotApi</a>.<a class="xref" href="Robocode.TankRoyale.BotApi.Graphics.html">Graphics</a></h6>
+  <h6><strong>Assembly</strong>: api.dll</h6>
+  <h5 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[PublicAPI]
+public class SvgGraphics : IGraphics</code></pre>
+  </div>
+  <h3 id="methods">Methods
+</h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_Clear.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.Clear%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L217">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_Clear_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.Clear*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_Clear" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.Clear">Clear()</h4>
+  <div class="markdown level1 summary"><p>Clears all drawing operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Clear()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawCircle_System_Double_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawCircle(System.Double%2CSystem.Double%2CSystem.Double)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L74">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawCircle_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawCircle*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawCircle_System_Double_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawCircle(System.Double,System.Double,System.Double)">DrawCircle(double, double, double)</h4>
+  <div class="markdown level1 summary"><p>Draws the outline of a circle.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DrawCircle(double x, double y, double radius)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">x</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">y</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">radius</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawLine_System_Double_System_Double_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawLine(System.Double%2CSystem.Double%2CSystem.Double%2CSystem.Double)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L24">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawLine_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawLine*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawLine_System_Double_System_Double_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawLine(System.Double,System.Double,System.Double,System.Double)">DrawLine(double, double, double, double)</h4>
+  <div class="markdown level1 summary"><p>Draws a line from point (x1,y1) to point (x2,y2).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DrawLine(double x1, double y1, double x2, double y2)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">x1</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">y1</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">x2</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">y2</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawPolygon_System_Collections_Generic_List_Robocode_TankRoyale_BotApi_Graphics_Point__.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawPolygon(System.Collections.Generic.List%7BRobocode.TankRoyale.BotApi.Graphics.Point%7D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L107">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawPolygon_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawPolygon*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawPolygon_System_Collections_Generic_List_Robocode_TankRoyale_BotApi_Graphics_Point__" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawPolygon(System.Collections.Generic.List{Robocode.TankRoyale.BotApi.Graphics.Point})">DrawPolygon(List&lt;Point&gt;)</h4>
+  <div class="markdown level1 summary"><p>Draws the outline of a polygon defined by a list of points.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DrawPolygon(List&lt;Point&gt; points)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Robocode.TankRoyale.BotApi.Graphics.Point.html">Point</a>&gt;</td>
+        <td><span class="parametername">points</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawRectangle_System_Double_System_Double_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawRectangle(System.Double%2CSystem.Double%2CSystem.Double%2CSystem.Double)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L39">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawRectangle_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawRectangle*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawRectangle_System_Double_System_Double_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawRectangle(System.Double,System.Double,System.Double,System.Double)">DrawRectangle(double, double, double, double)</h4>
+  <div class="markdown level1 summary"><p>Draws the outline of a rectangle.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DrawRectangle(double x, double y, double width, double height)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">x</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">y</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">width</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">height</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawText_System_String_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawText(System.String%2CSystem.Double%2CSystem.Double)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L154">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawText_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawText*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_DrawText_System_String_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.DrawText(System.String,System.Double,System.Double)">DrawText(string, double, double)</h4>
+  <div class="markdown level1 summary"><p>Draws text at the specified position.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DrawText(string text, double x, double y)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">text</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">x</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">y</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_FillCircle_System_Double_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.FillCircle(System.Double%2CSystem.Double%2CSystem.Double)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L92">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_FillCircle_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.FillCircle*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_FillCircle_System_Double_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.FillCircle(System.Double,System.Double,System.Double)">FillCircle(double, double, double)</h4>
+  <div class="markdown level1 summary"><p>Fills a circle with the current fill color.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void FillCircle(double x, double y, double radius)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">x</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">y</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">radius</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_FillPolygon_System_Collections_Generic_List_Robocode_TankRoyale_BotApi_Graphics_Point__.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.FillPolygon(System.Collections.Generic.List%7BRobocode.TankRoyale.BotApi.Graphics.Point%7D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L132">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_FillPolygon_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.FillPolygon*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_FillPolygon_System_Collections_Generic_List_Robocode_TankRoyale_BotApi_Graphics_Point__" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.FillPolygon(System.Collections.Generic.List{Robocode.TankRoyale.BotApi.Graphics.Point})">FillPolygon(List&lt;Point&gt;)</h4>
+  <div class="markdown level1 summary"><p>Fills a polygon defined by a list of points with the current fill color.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void FillPolygon(List&lt;Point&gt; points)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Robocode.TankRoyale.BotApi.Graphics.Point.html">Point</a>&gt;</td>
+        <td><span class="parametername">points</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_FillRectangle_System_Double_System_Double_System_Double_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.FillRectangle(System.Double%2CSystem.Double%2CSystem.Double%2CSystem.Double)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L58">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_FillRectangle_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.FillRectangle*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_FillRectangle_System_Double_System_Double_System_Double_System_Double_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.FillRectangle(System.Double,System.Double,System.Double,System.Double)">FillRectangle(double, double, double, double)</h4>
+  <div class="markdown level1 summary"><p>Fills a rectangle with the current fill color.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void FillRectangle(double x, double y, double width, double height)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">x</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">y</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">width</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">height</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_SetFillColor_Robocode_TankRoyale_BotApi_Graphics_Color_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.SetFillColor(Robocode.TankRoyale.BotApi.Graphics.Color)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L176">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_SetFillColor_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.SetFillColor*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_SetFillColor_Robocode_TankRoyale_BotApi_Graphics_Color_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.SetFillColor(Robocode.TankRoyale.BotApi.Graphics.Color)">SetFillColor(Color)</h4>
+  <div class="markdown level1 summary"><p>Sets the color used for filling shapes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetFillColor(Color color)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Robocode.TankRoyale.BotApi.Graphics.Color.html">Color</a></td>
+        <td><span class="parametername">color</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_SetFont_System_String_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.SetFont(System.String%2CSystem.Double)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L192">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_SetFont_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.SetFont*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_SetFont_System_String_System_Double_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.SetFont(System.String,System.Double)">SetFont(string, double)</h4>
+  <div class="markdown level1 summary"><p>Sets the font used for drawing text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetFont(string fontFamily, double fontSize)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">fontFamily</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">fontSize</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_SetStrokeColor_Robocode_TankRoyale_BotApi_Graphics_Color_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.SetStrokeColor(Robocode.TankRoyale.BotApi.Graphics.Color)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L168">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_SetStrokeColor_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.SetStrokeColor*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_SetStrokeColor_Robocode_TankRoyale_BotApi_Graphics_Color_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.SetStrokeColor(Robocode.TankRoyale.BotApi.Graphics.Color)">SetStrokeColor(Color)</h4>
+  <div class="markdown level1 summary"><p>Sets the color used for drawing outlines.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetStrokeColor(Color color)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Robocode.TankRoyale.BotApi.Graphics.Color.html">Color</a></td>
+        <td><span class="parametername">color</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_SetStrokeWidth_System_Double_.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.SetStrokeWidth(System.Double)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L184">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_SetStrokeWidth_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.SetStrokeWidth*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_SetStrokeWidth_System_Double_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.SetStrokeWidth(System.Double)">SetStrokeWidth(double)</h4>
+  <div class="markdown level1 summary"><p>Sets the width of the stroke used for drawing outlines.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetStrokeWidth(double width)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td><span class="parametername">width</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_ToSvg.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.ToSvg%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L201">View Source</a>
+  </span>
+  <a id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_ToSvg_" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.ToSvg*"></a>
+  <h4 id="Robocode_TankRoyale_BotApi_Graphics_SvgGraphics_ToSvg" data-uid="Robocode.TankRoyale.BotApi.Graphics.SvgGraphics.ToSvg">ToSvg()</h4>
+  <div class="markdown level1 summary"><p>Generates the SVG representation of all drawing operations.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ToSvg()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="Robocode.TankRoyale.BotApi.Graphics.IGraphics.html">IGraphics</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/robocode-dev/tank-royale/new/main/apiSpec/new?filename=Robocode_TankRoyale_BotApi_Graphics_SvgGraphics.md&amp;value=---%0Auid%3A%20Robocode.TankRoyale.BotApi.Graphics.SvgGraphics%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Edit this page</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/robocode-dev/tank-royale/blob/main/bot-api/dotnet/api/src/graphics/SvgGraphics.cs/#L11" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-## 📦 0.31.0 - Graphical Debugging improved - 19-Jun-2025
+## 📦 0.31.0 - Improved Graphical Debugging - 19-Jun-2025
 
 ### ⚠️ Breaking Changes
 
