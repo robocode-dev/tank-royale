@@ -1,4 +1,4 @@
-## 📦 0.31.0
+## 📦 0.31.0 - Graphical Debugging improved - 19-Jun-2025
 
 ### ⚠️ Breaking Changes
 
@@ -7,37 +7,43 @@
 If you are using `Color` and the `getGraphics()` method or `Graphics` property, you may need to update your bot(s).
 
 **Changes Implemented:**
-- Platform-specific graphics classes and external graphics libraries, such as those for SVG, have been replaced with the following classes:
+
+- Platform-specific graphics classes and external graphics libraries, such as those for SVG, have been replaced with the
+  following classes:
     - `IGraphics`
     - `SvgGraphics`
     - `Color`
     - `Point`
 
 **Reasons for Changes:**
+
 - Simplify the development and maintenance of the debugging graphics feature.
-- Avoid using platform-specific features and frameworks that are not compatible across all platforms and operating systems.
+- Avoid using platform-specific features and frameworks that are not compatible across all platforms and operating
+  systems.
 - Enhance the speed of SVG serialization, reduce RAM usage, and decrease distribution archive sizes.
 - Standardize the API for debug painting across all Bot APIs (Java, .Net, Python, etc.).
 
 **Specific Updates:**
+
 - **Java:** A new package `dev.robocode.tankroyale.botapi.graphics` has been introduced.
 - **.Net:** A new namespace `Robocode.TankRoyale.BotApi.Graphics` has been introduced.
 
 **Additional Information:**
+
 - Sample bots have been updated to use the new classes.
 
 ### 🐞 Bug Fixes
 
 - BotAPI:
-    - #143: .NET bot fails to start with no or invalid country code. 
+    - #143: .NET bot fails to start with no or invalid country code.
     - #144: .NET bots run only on Windows since 0.30.0.
         - SvgNet requires `System.Drawing`, which is not available on Linux and macOS. Hence, the new Robocode specific
           `IGraphics` interface must be used instead.
-    - Fixed the generated bot Bash scripts for .Net so `dotnet build` will be called if the `bin` folder is missing. 
+    - Fixed the generated bot Bash scripts for .Net so `dotnet build` will be called if the `bin` folder is missing.
 - GUI:
-    - Fixed multiple issues with the "No bot directory root has been configured" error dialog. 
+    - Fixed multiple issues with the "No bot directory root has been configured" error dialog.
 
-## 📦 0.30.2
+## 📦 0.30.2 - GUI auto-scales the Battle View - 02-Jun-2025
 
 ### 🚀 Improvements
 
@@ -46,20 +52,21 @@ If you are using `Color` and the `getGraphics()` method or `Graphics` property, 
       window is resized.
       screen only. This is helpful when running on systems with multiple screens.
         - Thanks to [Jan Durovec](https://github.com/jandurovec) for this nice improvement. ❤️
-  - Windows now open on the "active" screen where the mouse cursor is located instead of showing up on the primary.
-  - Fixed an issue where Robocode could get stuck showing a black window.
+    - Windows now open on the "active" screen where the mouse cursor is located instead of showing up on the primary.
+    - Fixed an issue where Robocode could get stuck showing a black window.
 
 ### 🐞 Bug Fixes
 
 - Server:
-  -  #132: Fixed several race conditions and synchronization issues on the server side. 
+    - #132: Fixed several race conditions and synchronization issues on the server side.
 - BotAPI / Sample Bots:
     - Fixed issue where the Fire sample bot did not lock the radar on its target.
 - Sample Bots:
     - The `Fire` and `MyFirstBot` sample bot did not turn perpendicular to the bullet direction anymore, and the RamFire
       did not drive directly towards its target.
 - Documentation:
-    - #136: The turn timeout and ready timeout were incorrectly specified in ~~milliseconds~~ instead of **microseconds**.
+    - #136: The turn timeout and ready timeout were incorrectly specified in ~~milliseconds~~ instead of **microseconds
+      **.
       1 millisecond = 1/1,000 of a second, where 1 microsecond = 1/1,000,000 of a second
 
 ## 📦 0.30.1 - Fixes to sample bots - 08-Mar-2025
