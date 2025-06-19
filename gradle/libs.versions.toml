@@ -19,7 +19,7 @@ nv-i18n = "1.29"
 shadow-jar = "8.1.1"
 slf4j-api = "2.0.12"
 
-benmanes-versions = "0.52.0"
+benmanes-versions = "0.52.0" # task: dependencyUpdates
 
 [libraries]
 
