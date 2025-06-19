@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace Robocode.TankRoyale.BotApi.Graphics;
 
 /// <summary>
 /// Interface for graphics context that provides methods for drawing graphics primitives.
 /// </summary>
+[PublicAPI]
 public interface IGraphics
 {
     /// <summary>
