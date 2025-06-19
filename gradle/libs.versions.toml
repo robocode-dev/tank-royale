@@ -16,7 +16,7 @@ miglayout-swing = "11.4.2"
 nexus-publish = "2.0.0"
 node-gradle = "7.1.0"
 nv-i18n = "1.29"
-shadow-jar = "8.1.1"
+shadow = "8.3.5"
 slf4j-api = "2.0.12"
 
 benmanes-versions = "0.52.0" # task: dependencyUpdates
@@ -44,7 +44,7 @@ jsonschema2pojo = { id = "org.jsonschema2pojo", version.ref = "jsonschema2pojo" 
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexus-publish" }
-shadow-jar = { id = "com.github.johnrengelman.shadow", version.ref = "shadow-jar" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 node-gradle = { id = "com.github.node-gradle.node", version.ref = "node-gradle" }
 
 # ./gradlew dependencyUpdates

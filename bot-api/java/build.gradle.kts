@@ -17,7 +17,7 @@ base {
 plugins {
     `java-library`
     alias(libs.plugins.jsonschema2pojo)
-    alias(libs.plugins.shadow.jar)
+    alias(libs.plugins.shadow)
     `maven-publish`
     signing
 }
