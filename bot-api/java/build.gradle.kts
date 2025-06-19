@@ -103,6 +103,7 @@ tasks {
             addFileOption("-add-stylesheet", layout.projectDirectory.file("src/main/javadoc/themes/prism.css").asFile)
             addBooleanOption("-allow-script-in-comments", true)
             addStringOption("Xdoclint:none", "-quiet")
+            addStringOption("noqualifier", "all")
         }
         exclude(
             "**/dev/robocode/tankroyale/schema/**",
