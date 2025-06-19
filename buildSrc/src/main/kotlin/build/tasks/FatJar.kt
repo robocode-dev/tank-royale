@@ -20,7 +20,7 @@ abstract class FatJar : Jar() {
 
     @get:Input
     @get:Optional
-    abstract val outputFilename: Property<String?>
+    abstract val outputFilename: Property<String>
 
     // Declare configurations as inputs
     @get:InputFiles

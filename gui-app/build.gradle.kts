@@ -130,6 +130,10 @@ tasks {
         dependsOn(proguard)
     }
 
+    test {
+        useJUnitPlatform()
+    }
+
     withType<AbstractPublishToMaven> {
         dependsOn(jar)
     }
