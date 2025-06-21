@@ -12,7 +12,8 @@ using Microsoft.Extensions.Configuration.Json;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// Moves in a circle, firing hard when an enemy is detected.
+// Continuously moves in a circle while firing at maximum power when
+// detecting enemies.
 // ------------------------------------------------------------------
 public class SpinBot : Bot
 {

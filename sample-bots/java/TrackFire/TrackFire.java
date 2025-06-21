@@ -8,7 +8,8 @@ import dev.robocode.tankroyale.botapi.graphics.Color;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// Sits still. Tracks and fires at the nearest bot it sees.
+// Sits still while tracking and firing at the nearest robot it
+// detects.
 // ------------------------------------------------------------------
 public class TrackFire extends Bot {
 

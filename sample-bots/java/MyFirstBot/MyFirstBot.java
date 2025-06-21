@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.botapi.events.*;
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // Probably the first bot you will learn about.
-// Moves in a seesaw motion, and spins the gun around at each end.
+// Moves in a seesaw motion and spins the gun around at each end.
 // ------------------------------------------------------------------
 public class MyFirstBot extends Bot {
 

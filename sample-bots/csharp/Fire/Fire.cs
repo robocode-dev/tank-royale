@@ -8,7 +8,7 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// Sits still. Spins gun around. Moves when hit.
+// Sits still, continuously rotates its gun, and only moves when hit.
 // ------------------------------------------------------------------
 public class Fire : Bot
 {

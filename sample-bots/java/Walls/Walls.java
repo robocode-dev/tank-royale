@@ -8,7 +8,8 @@ import dev.robocode.tankroyale.botapi.graphics.Color;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// Moves around the outer edge with the gun facing in.
+// This robot navigates around the perimeter of the battlefield with
+// the gun pointed inward.
 // ------------------------------------------------------------------
 public class Walls extends Bot {
 

@@ -8,8 +8,8 @@ import dev.robocode.tankroyale.botapi.graphics.Color;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// Sits still. Moves every time energy drops by 20.
-// This bot demonstrates custom events.
+// A stationary robot that moves when its energy drops below a certain
+// threshold. This robot demonstrates how to use custom events.
 // ------------------------------------------------------------------
 public class Target extends Bot {
 

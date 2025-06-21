@@ -8,7 +8,8 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// Drives at bots trying to ram them. Fires when it hits them.
+// This robot actively seeks out opponents, rams into them, and fires
+// with appropriate power based on the enemy's remaining energy.
 // ------------------------------------------------------------------
 public class RamFire : Bot
 {

@@ -8,7 +8,7 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // A sample bot original made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// This bot moves around in a crazy pattern.
+// This robot moves in a zigzag pattern while firing at enemies.
 // ------------------------------------------------------------------
 public class Crazy : Bot
 {
