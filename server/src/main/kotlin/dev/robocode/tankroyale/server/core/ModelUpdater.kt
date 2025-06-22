@@ -775,16 +775,6 @@ class ModelUpdater(
      */
     private fun handleScannedBot(scanningBot: MutableBot, botBeingScanned: IBot) {
         createAndAddScannedBotEventToTurn(scanningBot.id, botBeingScanned)
-
-        if (isRescanning(scanningBot.id)) {
-            botsCopies[scanningBot.id]?.let {
-                scanningBot.x = it.x
-                scanningBot.y = it.y
-                scanningBot.direction = it.direction
-                scanningBot.gunDirection = it.gunDirection
-                scanningBot.radarDirection = it.radarDirection
-            }
-        }
     }
 
     /**
