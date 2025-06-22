@@ -859,15 +859,24 @@ class ModelUpdater(
      */
     private fun getScanAngles(bot: IBot): Pair<Double, Double> {
         val spreadAngle = bot.radarSpreadAngle
-        val startAngle: Double
-        val endAngle: Double
-        if (spreadAngle > 0) {
-            endAngle = bot.radarDirection
-            startAngle = normalizeAbsoluteDegrees(endAngle - spreadAngle)
+        val absSpreadAngle = abs(spreadAngle)
+
+        // Always use the radar direction as the reference point
+        val radarDirection = bot.radarDirection
+
+        // Calculate start and end based on the sign of the spread angle
+        val (startAngle, endAngle) = if (spreadAngle >= 0) {
+            Pair(
+                normalizeAbsoluteDegrees(radarDirection - absSpreadAngle),
+                radarDirection
+            )
         } else {
-            startAngle = bot.radarDirection
-            endAngle = normalizeAbsoluteDegrees(startAngle - spreadAngle)
+            Pair(
+                radarDirection,
+                normalizeAbsoluteDegrees(radarDirection + absSpreadAngle)
+            )
         }
+
         return Pair(startAngle, endAngle)
     }
 
