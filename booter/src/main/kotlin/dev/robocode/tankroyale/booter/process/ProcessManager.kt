@@ -10,7 +10,6 @@ import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentSkipListMap
-import java.util.function.Predicate
 import java.util.stream.Collectors.toList
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
@@ -24,7 +23,7 @@ class ProcessManager {
     private var teamId: TeamId = 1
 
     /**
-     * Register shutdown hook to clean up processes when JVM exits.
+     * Register a shutdown hook to clean up processes when JVM exits.
      */
     fun registerShutdownHook() {
         Runtime.getRuntime().addShutdownHook(Thread { killAllProcesses() })
@@ -34,12 +33,7 @@ class ProcessManager {
      * Create processes for a bot or team located at the specified path.
      */
     fun createBotProcess(bootDir: Path, getBootEntry: (Path) -> BootEntry?) {
-        if (!bootDir.exists()) {
-            Log.error("Bot directory not found", bootDir)
-            return
-        }
-        if (!Files.isDirectory(bootDir)) {
-            Log.error("Path is not a valid bot directory", bootDir)
+        if (!isValidBotDirectory(bootDir)) {
             return
         }
         boot(bootDir, getBootEntry).forEach { process ->
@@ -48,17 +42,33 @@ class ProcessManager {
     }
 
     /**
+     * Validates if a path is a valid bot directory.
+     * @return true if the directory exists and is a directory, false otherwise
+     */
+    private fun isValidBotDirectory(botDir: Path): Boolean {
+        if (!botDir.exists()) {
+            Log.error("Bot directory not found", botDir)
+            return false
+        }
+        if (!Files.isDirectory(botDir)) {
+            Log.error("Path is not a valid bot directory", botDir)
+            return false
+        }
+        return true
+    }
+
+    /**
      * Stop a bot process by its process ID.
+     * @return true if the process was found and stopped, false otherwise
      */
     fun stopBotProcess(pid: Pid): Boolean {
-        val process = processes[pid]
-        return if (process == null) {
+        val process = processes[pid] ?: run {
             println("lost: $pid")
-            false
-        } else {
-            stopProcess(process)
-            true
+            return false
         }
+
+        stopProcess(process)
+        return true
     }
 
     /**
@@ -91,31 +101,51 @@ class ProcessManager {
      */
     private fun boot(bootDir: Path, getBootEntry: (Path) -> BootEntry?): Set<Process> {
         try {
-            val bootEntry = getBootEntry(bootDir)
-            if (bootEntry == null) {
+            val bootEntry = getBootEntry(bootDir) ?: run {
                 Log.error("No valid boot entry found", bootDir)
                 return emptySet()
             }
 
-            // Check if this is a team entry
-            if (bootEntry.teamMembers?.isNotEmpty() == true) {
+            // If this is a team entry, boot as a team
+            if (isTeamEntry(bootEntry)) {
                 return bootTeam(
                     bootDir,
-                    Team(teamId, bootEntry.name, bootEntry.version, bootEntry.teamMembers),
+                    createTeam(bootEntry),
                     getBootEntry
                 )
             }
 
-            // Otherwise boot as single bot
-            bootBot(bootDir, null, getBootEntry)?.let { return setOf(it) }
-
-            // If we got here, the bot couldn't be booted but no exception was thrown
-            Log.error("Failed to boot bot - no suitable boot method found", bootDir)
-            return emptySet()
+            // Otherwise boot as a single bot
+            return bootSingleBot(bootDir, getBootEntry)
         } catch (ex: Exception) {
             Log.error(ex, bootDir)
             return emptySet()
         }
+    }
+
+    /**
+     * Checks if a boot entry represents a team
+     */
+    private fun isTeamEntry(bootEntry: BootEntry): Boolean {
+        return bootEntry.teamMembers?.isNotEmpty() == true
+    }
+
+    /**
+     * Creates a Team object from a boot entry
+     */
+    private fun createTeam(bootEntry: BootEntry): Team {
+        return Team(teamId, bootEntry.name, bootEntry.version, bootEntry.teamMembers!!)
+    }
+
+    /**
+     * Boots a single bot (not part of a team)
+     */
+    private fun bootSingleBot(bootDir: Path, getBootEntry: (Path) -> BootEntry?): Set<Process> {
+        bootBot(bootDir, null, getBootEntry)?.let { return setOf(it) }
+
+        // If we got here, the bot couldn't be booted, but no exception was thrown
+        Log.error("Failed to boot bot - no suitable boot method found", bootDir)
+        return emptySet()
     }
 
     /**
@@ -128,27 +158,7 @@ class ProcessManager {
 
         try {
             team.members.forEach { botName ->
-                try {
-                    val botDir = parentPath.resolve(botName)
-                    if (!botDir.exists()) {
-                        Log.error("Team member bot directory not found", botDir)
-                        return@forEach
-                    }
-                    if (!Files.isDirectory(botDir)) {
-                        Log.error("Team member path is not a valid directory", botDir)
-                        return@forEach
-                    }
-                    findBootScriptOrNull(botDir)?.let { scriptPath ->
-                        bootBot(botDir, team, getBootEntry)?.let { process ->
-                            botProcesses.add(process)
-                        } ?: run {
-                            Log.error("Failed to boot team member bot", botDir)
-                        }
-                    }
-                } catch (ex: Exception) {
-                    val botDir = parentPath.resolve(botName)
-                    Log.error(ex, botDir)
-                }
+                bootTeamMember(parentPath, botName, team, getBootEntry, botProcesses)
             }
 
             teamId++
@@ -160,37 +170,76 @@ class ProcessManager {
     }
 
     /**
+     * Boot an individual team member
+     */
+    private fun bootTeamMember(
+        parentPath: Path,
+        botName: String,
+        team: Team,
+        getBootEntry: (Path) -> BootEntry?,
+        botProcesses: MutableSet<Process>
+    ) {
+        try {
+            val botDir = parentPath.resolve(botName)
+
+            if (!isValidBotDirectory(botDir)) {
+                return
+            }
+
+            findBootScriptOrNull(botDir)?.let { scriptPath ->
+                bootBot(botDir, team, getBootEntry)?.let { process ->
+                    botProcesses.add(process)
+                } ?: run {
+                    Log.error("Failed to boot team member bot", botDir)
+                }
+            }
+        } catch (ex: Exception) {
+            val botDir = parentPath.resolve(botName)
+            Log.error(ex, botDir)
+        }
+    }
+
+    /**
      * Boot a single bot with optional team information.
      * Returns the started process or null if booting failed.
      */
     private fun bootBot(botDir: Path, team: Team? = null, getBootEntry: (Path) -> BootEntry?): Process? {
         try {
-            val botEntry = getBootEntry(botDir)
-            if (botEntry == null) {
+            // Get the boot entry
+            val botEntry = getBootEntry(botDir) ?: run {
                 Log.error("Failed to get boot entry for bot", botDir)
                 return null
             }
 
-            val scriptPath = findBootScriptOrNull(botDir)
-            if (scriptPath == null) {
-                // Error already logged in findBootScriptOrNull
-                return null
-            }
+            // Find the boot script
+            val scriptPath = findBootScriptOrNull(botDir) ?: return null
 
-            try {
-                val processBuilder = createProcessBuilder(scriptPath.toString())
-                processBuilder.directory(scriptPath.parent.toFile())
+            return createAndStartBotProcess(scriptPath, botDir, botEntry, team)
+        } catch (ex: Exception) {
+            Log.error(ex, botDir)
+            return null
+        }
+    }
 
-                // Set up environment variables
-                val envMap = processBuilder.environment()
-                setupBotEnvironment(envMap, botEntry, team)
+    /**
+     * Creates and starts a bot process
+     */
+    private fun createAndStartBotProcess(
+        scriptPath: Path,
+        botDir: Path,
+        botEntry: BootEntry,
+        team: Team?
+    ): Process? {
+        try {
+            val processBuilder = createProcessBuilder(scriptPath.toString())
+            processBuilder.directory(scriptPath.parent.toFile())
 
-                // Start the process
-                return startProcess(processBuilder, botDir)
-            } catch (ex: Exception) {
-                Log.error(ex, botDir)
-                return null
-            }
+            // Set up environment variables
+            val envMap = processBuilder.environment()
+            setupBotEnvironment(envMap, botEntry, team)
+
+            // Start the process
+            return startProcess(processBuilder, botDir)
         } catch (ex: Exception) {
             Log.error(ex, botDir)
             return null
@@ -199,7 +248,7 @@ class ProcessManager {
 
     /**
      * Start a process from the given process builder and register it.
-     * Returns the started process or throws an exception with formatted error message.
+     * Returns the started process or throws an exception with a formatted error message.
      */
     private fun startProcess(processBuilder: ProcessBuilder, botDir: Path): Process {
         try {
@@ -235,14 +284,10 @@ class ProcessManager {
      * Logs an error if no script is found using a simple line format.
      */
     private fun findBootScriptOrNull(botDir: Path): Path? {
-        if (!botDir.exists()) {
-            Log.error("Bot directory not found", botDir)
+        if (!isValidBotDirectory(botDir)) {
             return null
         }
-        if (!Files.isDirectory(botDir)) {
-            Log.error("Path is not a valid bot directory", botDir)
-            return null
-        }
+
         val scriptPath = findOsScript(botDir)
         if (scriptPath == null) {
             Log.error("No script found within the bot directory", botDir)
@@ -261,29 +306,29 @@ class ProcessManager {
 
     /**
      * Find a Windows-specific script (.bat or .cmd) for the bot.
+     * Falls back to a Unix script if not found.
      */
     private fun findWindowsScript(botDir: Path): Path? {
         val botName = botDir.fileName.toString()
+        val extensions = listOf("bat", "cmd")
 
-        var path = botDir.resolve("$botName.bat")
-        if (path.exists()) return path
-
-        path = botDir.resolve("$botName.cmd")
-        if (path.exists()) return path
+        for (extension in extensions) {
+            val path = botDir.resolve("$botName.$extension")
+            if (path.exists()) return path
+        }
 
         return findFirstUnixScript(botDir)
     }
 
     /**
      * Find a macOS-specific script (.command) for the bot.
+     * Falls back to a Unix script if not found.
      */
     private fun findMacOsScript(botDir: Path): Path? {
         val botName = botDir.fileName.toString()
-
         val path = botDir.resolve("$botName.command")
-        if (path.exists()) return path
 
-        return findFirstUnixScript(botDir)
+        return if (path.exists()) path else findFirstUnixScript(botDir)
     }
 
     /**
@@ -292,17 +337,38 @@ class ProcessManager {
     private fun findFirstUnixScript(botDir: Path): Path? {
         val botName = botDir.fileName.toString()
 
-        val path = botDir.resolve("$botName.sh")
-        if (path.exists()) return path
+        // First check for the.sh file as it is the most common
+        val shScript = botDir.resolve("$botName.sh")
+        if (shScript.exists()) return shScript
 
         // Look for any file with no file extension or containing the '#!' (shebang) characters
+        return findScriptWithShebangOrMatchingName(botDir, botName)
+    }
+
+    /**
+     * Find a script file that either has a shebang or matches the bot name
+     */
+    private fun findScriptWithShebangOrMatchingName(botDir: Path, botName: String): Path? {
         return list(botDir)
             .filter(IsBotFile(botName))
             .collect(toList())
             .firstOrNull { filePath ->
-                filePath.fileName.toString().equals(botName, ignoreCase = true) ||
-                        readFirstLine(botDir.resolve(filePath)).trim().startsWith("#!")
+                isExactNameMatch(filePath, botName) || hasShebang(botDir, filePath)
             }
+    }
+
+    /**
+     * Checks if the file name exactly matches the bot name (case-insensitive)
+     */
+    private fun isExactNameMatch(filePath: Path, botName: String): Boolean {
+        return filePath.fileName.toString().equals(botName, ignoreCase = true)
+    }
+
+    /**
+     * Checks if the file has a shebang (#!) at the beginning
+     */
+    private fun hasShebang(botDir: Path, filePath: Path): Boolean {
+        return readFirstLine(botDir.resolve(filePath)).trim().startsWith("#!")
     }
 
     // PROCESS CREATION
@@ -311,11 +377,31 @@ class ProcessManager {
      * Create a process builder for the given command, handling different script types.
      */
     private fun createProcessBuilder(command: String): ProcessBuilder {
+        return when (getScriptType(command)) {
+            ScriptType.WINDOWS_BATCH -> ProcessBuilder("cmd.exe", "/c \"$command\"")
+            ScriptType.SHELL_SCRIPT -> ProcessBuilder("bash", "-c", "\"$command\"")
+            ScriptType.OTHER -> ProcessBuilder(command)
+        }
+    }
+
+    /**
+     * Enum defining different types of scripts
+     */
+    private enum class ScriptType {
+        WINDOWS_BATCH,
+        SHELL_SCRIPT,
+        OTHER
+    }
+
+    /**
+     * Determines the script type based on file extension
+     */
+    private fun getScriptType(command: String): ScriptType {
         val cmd = command.lowercase()
         return when {
-            cmd.endsWith(".bat") -> ProcessBuilder("cmd.exe", "/c \"$command\"")
-            cmd.endsWith(".sh") -> ProcessBuilder("bash", "-c", "\"$command\"")
-            else -> ProcessBuilder(command)
+            cmd.endsWith(".bat") -> ScriptType.WINDOWS_BATCH
+            cmd.endsWith(".sh") -> ScriptType.SHELL_SCRIPT
+            else -> ScriptType.OTHER
         }
     }
 
@@ -324,24 +410,40 @@ class ProcessManager {
          * Read the first line of a file.
          */
         private fun readFirstLine(path: Path): String {
-            return Files.newInputStream(path).bufferedReader().readLine() ?: ""
+            return Files.newInputStream(path).bufferedReader().use { it.readLine() ?: "" }
         }
 
         /**
          * Set environment variables based on bot entry information.
          */
         private fun setEnvVars(envMap: MutableMap<String, String?>, bootEntry: BootEntry) {
-            // Set server connection properties
+            setServerProperties(envMap)
+            setBotProperties(envMap, bootEntry)
+            setOptionalBotProperties(envMap, bootEntry)
+        }
+
+        /**
+         * Set server connection properties
+         */
+        private fun setServerProperties(envMap: MutableMap<String, String?>) {
             System.getProperty("server.url")?.let { envMap[Env.SERVER_URL.name] = it }
             System.getProperty("server.secret")?.let { envMap[Env.SERVER_SECRET.name] = it }
+        }
 
-            // Set bot-specific properties
+        /**
+         * Set required bot properties
+         */
+        private fun setBotProperties(envMap: MutableMap<String, String?>, bootEntry: BootEntry) {
             envMap[Env.BOT_BOOTED.name] = "true"
             envMap[Env.BOT_NAME.name] = bootEntry.name
             envMap[Env.BOT_VERSION.name] = bootEntry.version
             envMap[Env.BOT_AUTHORS.name] = bootEntry.authors.joinToString()
+        }
 
-            // Set optional properties if available
+        /**
+         * Set optional bot properties if available
+         */
+        private fun setOptionalBotProperties(envMap: MutableMap<String, String?>, bootEntry: BootEntry) {
             bootEntry.gameTypes?.let { envMap[Env.BOT_GAME_TYPES.name] = it.joinToString() }
             bootEntry.description?.let { envMap[Env.BOT_DESCRIPTION.name] = it }
             bootEntry.homepage?.let { envMap[Env.BOT_HOMEPAGE.name] = it }
@@ -353,22 +455,6 @@ class ProcessManager {
     }
 }
 
-/**
- * Predicate for filtering files that match the bot name pattern.
- */
-internal class IsBotFile(private val botName: String) : Predicate<Path> {
-    override fun test(path: Path): Boolean {
-        val filename = path.fileName.toString().lowercase()
-        val botName = botName.lowercase()
-
-        return filename == botName || filename.startsWith("$botName.")
-    }
-}
-
-/**
- * Data class representing a team of bots.
- */
-internal class Team(val id: TeamId, val name: String, val version: String, val members: List<String>)
 
 /**
  * Type aliases
