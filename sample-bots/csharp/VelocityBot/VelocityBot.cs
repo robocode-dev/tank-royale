@@ -6,7 +6,6 @@ using Robocode.TankRoyale.BotApi.Events;
 // VelocityBot
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Joshua Galecki.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // Example bot of how to use turn rates.
 // ------------------------------------------------------------------
@@ -19,9 +18,6 @@ public class VelocityBot : Bot {
     {
         new VelocityBot().Start();
     }
-
-    // Constructor, which loads the bot config file
-    VelocityBot() : base(BotInfo.FromFile("VelocityBot.json")) { }
 
     // Called when a new round is started -> initialize and do some movement
     public override void Run()

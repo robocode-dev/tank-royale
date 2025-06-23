@@ -6,7 +6,6 @@ import dev.robocode.tankroyale.botapi.graphics.Color;
 // MyFirstDroid
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // This is a droid bot meaning that is has more energy, but no radar.
 // Member of the MyFirstTeam. Follows orders of team leader.
@@ -16,11 +15,6 @@ public class MyFirstDroid extends Bot implements Droid {
     // The main method starts our bot
     public static void main(String[] args) {
         new MyFirstDroid().start();
-    }
-
-    // Constructor, which loads the bot config file
-    MyFirstDroid() {
-        super(BotInfo.fromFile("MyFirstDroid.json"));
     }
 
     // Called when a new round is started -> just print out that the bot is ready

@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.botapi.events.*;
 // VelocityBot
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Joshua Galecki.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // Example bot of how to use turn rates.
 // ------------------------------------------------------------------
@@ -16,11 +15,6 @@ public class VelocityBot extends Bot {
     // The main method starts our bot
     public static void main(String[] args) {
         new VelocityBot().start();
-    }
-
-    // Constructor, which loads the bot config file
-    VelocityBot() {
-        super(BotInfo.fromFile("VelocityBot.json"));
     }
 
     // Called when a new round is started -> initialize and do some movement

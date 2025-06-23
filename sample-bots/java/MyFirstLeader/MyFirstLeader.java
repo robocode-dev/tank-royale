@@ -6,7 +6,6 @@ import dev.robocode.tankroyale.botapi.graphics.Color;
 // MyFirstLeader
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // Member of the MyFirstTeam. Looks around for enemies, and orders
 // teammates to fire.
@@ -16,11 +15,6 @@ public class MyFirstLeader extends Bot {
     // The main method starts our bot
     public static void main(String[] args) {
         new MyFirstLeader().start();
-    }
-
-    // Constructor, which loads the bot config file
-    MyFirstLeader() {
-        super(BotInfo.fromFile("MyFirstLeader.json"));
     }
 
     // Called when a new round is started -> Leader's default behavior

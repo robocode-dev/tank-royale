@@ -6,7 +6,6 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // Fire
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // Sits still, continuously rotates its gun, and only moves when hit.
 // ------------------------------------------------------------------
@@ -19,9 +18,6 @@ public class Fire : Bot
     {
         new Fire().Start();
     }
-
-    // Constructor, which loads the bot settings file
-    Fire() : base(BotInfo.FromFile("Fire.json")) { }
 
     // Called when a new round is started -> initialize and do some movement
     public override void Run()

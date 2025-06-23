@@ -6,7 +6,6 @@ import dev.robocode.tankroyale.botapi.graphics.Color;
 // TrackFire
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // Sits still while tracking and firing at the nearest robot it
 // detects.
@@ -16,11 +15,6 @@ public class TrackFire extends Bot {
     // The main method starts our bot
     public static void main(String[] args) {
         new TrackFire().start();
-    }
-
-    // Constructor, which loads the bot config file
-    TrackFire() {
-        super(BotInfo.fromFile("TrackFire.json"));
     }
 
     // Called when a new round is started -> initialize and do some movement
@@ -54,12 +48,8 @@ public class TrackFire extends Bot {
             fire(Math.min(3 - Math.abs(bearingFromGun), getEnergy() - .1));
         }
 
-        // Generates another scan event if we see a bot.
-        // We only need to call this if the gun (and therefore radar)
-        // are not turning. Otherwise, scan is called automatically.
-        if (bearingFromGun == 0) {
-            rescan();
-        }
+        // Rescan immediately to keep tracking the target bot
+        rescan();
     }
 
     // We won the round -> do a victory dance!

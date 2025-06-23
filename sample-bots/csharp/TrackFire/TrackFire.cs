@@ -7,7 +7,6 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // TrackFire
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // Sits still while tracking and firing at the nearest robot it
 // detects.
@@ -19,9 +18,6 @@ public class TrackFire : Bot
     {
         new TrackFire().Start();
     }
-
-    // Constructor, which loads the bot config file
-    TrackFire() : base(BotInfo.FromFile("TrackFire.json")) { }
 
     // Called when a new round is started -> initialize and do some movement
     public override void Run()

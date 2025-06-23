@@ -7,9 +7,8 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // PaintingBot
 // ---------------------------------------------------------------------------
 // A sample bot original made for Robocode by Pavel Savara based on MyFirstBot
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
-// A sample bot that demonstrate how to paint stuff on the battlefield.
+// Demonstrates how to paint stuff on the battlefield.
 // Remember to enable Graphical Debugging for the bot when running a battle.
 // ---------------------------------------------------------------------------
 public class PaintingBot : Bot
@@ -22,11 +21,6 @@ public class PaintingBot : Bot
     static void Main(string[] args)
     {
         new PaintingBot().Start();
-    }
-
-    // Constructor, which loads the bot config file
-    PaintingBot() : base(BotInfo.FromFile("PaintingBot.json"))
-    {
     }
 
     // Called when a new round is started -> initialize and do some movement

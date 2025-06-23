@@ -7,7 +7,6 @@ import java.util.Random;
 // Corners
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // This robot moves to a corner, then rotates its gun back and forth
 // scanning for enemies. If it performs poorly in a round, it will
@@ -22,11 +21,6 @@ public class Corners extends Bot {
     // The main method starts our bot
     public static void main(String[] args) {
         new Corners().start();
-    }
-
-    // Constructor, which loads the bot config file
-    Corners() {
-        super(BotInfo.fromFile("Corners.json"));
     }
 
     // Called when a new round is started -> initialize and do some movement

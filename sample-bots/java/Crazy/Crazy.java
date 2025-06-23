@@ -6,7 +6,6 @@ import dev.robocode.tankroyale.botapi.graphics.Color;
 // Crazy
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // This robot moves in a zigzag pattern while firing at enemies.
 // ------------------------------------------------------------------
@@ -17,11 +16,6 @@ public class Crazy extends Bot {
     // The main method starts our bot
     public static void main(String[] args) {
         new Crazy().start();
-    }
-
-    // Constructor, which loads the bot config file
-    Crazy() {
-        super(BotInfo.fromFile("Crazy.json"));
     }
 
     // Called when a new round is started -> initialize and do some movement

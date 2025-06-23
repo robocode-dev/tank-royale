@@ -6,7 +6,6 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // RamFire
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // This robot actively seeks out opponents, rams into them, and fires
 // with appropriate power based on the enemy's remaining energy.
@@ -20,9 +19,6 @@ public class RamFire : Bot
     {
         new RamFire().Start();
     }
-
-    // Constructor, which loads the bot settings file
-    RamFire() : base(BotInfo.FromFile("RamFire.json")) { }
 
     // Called when a new round is started -> initialize and do some movement
     public override void Run()

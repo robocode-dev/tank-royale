@@ -405,7 +405,7 @@ public sealed class BotInfo
     /// <summary>
     /// Reads the bot info from a configuration.
     ///
-    /// See <see cref="FromFile(String, String)"/> for an example file.
+    /// See <see cref="FromFile(string, string)"/> for an example file.
     /// </summary>
     /// <param name="configuration">Is the configuration</param>
     /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
