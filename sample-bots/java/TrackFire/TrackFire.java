@@ -54,12 +54,8 @@ public class TrackFire extends Bot {
             fire(Math.min(3 - Math.abs(bearingFromGun), getEnergy() - .1));
         }
 
-        // Generates another scan event if we see a bot.
-        // We only need to call this if the gun (and therefore radar)
-        // are not turning. Otherwise, scan is called automatically.
-        if (bearingFromGun == 0) {
-            rescan();
-        }
+        // Rescan immediately to keep tracking the target bot
+        rescan();
     }
 
     // We won the round -> do a victory dance!
