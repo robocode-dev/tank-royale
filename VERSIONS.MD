@@ -1,3 +1,11 @@
+## 📦 0.32.0
+
+### 🚀 Improvements
+
+- Bot API:
+    - The `Bot()` constructor now automatically searches for the bot config file (.json) and falls back on using
+      environment variables, if the config file could not be found.
+
 ## 📦 0.31.0 - Improved Graphical Debugging - 19-Jun-2025
 
 ### ⚠️ Breaking Changes
