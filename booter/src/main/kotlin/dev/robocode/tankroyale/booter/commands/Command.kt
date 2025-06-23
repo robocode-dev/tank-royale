@@ -5,9 +5,6 @@ import kotlinx.serialization.json.Json
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-typealias Pid = Long
-typealias TeamId = Long
-
 abstract class Command {
 
     companion object {
