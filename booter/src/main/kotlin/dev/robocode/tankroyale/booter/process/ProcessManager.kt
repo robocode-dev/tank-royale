@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.booter.process
 
 import dev.robocode.tankroyale.booter.model.BootEntry
 import dev.robocode.tankroyale.booter.util.Env
+import dev.robocode.tankroyale.booter.util.Log
 import dev.robocode.tankroyale.booter.util.OperatingSystemCheck
 import dev.robocode.tankroyale.booter.util.OperatingSystemCheck.OperatingSystemType.Mac
 import dev.robocode.tankroyale.booter.util.OperatingSystemCheck.OperatingSystemType.Windows
@@ -33,6 +34,14 @@ class ProcessManager {
      * Create processes for a bot or team located at the specified path.
      */
     fun createBotProcess(bootDir: Path, getBootEntry: (Path) -> BootEntry?) {
+        if (!bootDir.exists()) {
+            Log.error("Bot directory not found", bootDir)
+            return
+        }
+        if (!Files.isDirectory(bootDir)) {
+            Log.error("Path is not a valid bot directory", bootDir)
+            return
+        }
         boot(bootDir, getBootEntry).forEach { process ->
             processes[process.pid()] = process
         }
@@ -81,16 +90,32 @@ class ProcessManager {
      * Returns a set of started processes.
      */
     private fun boot(bootDir: Path, getBootEntry: (Path) -> BootEntry?): Set<Process> {
-        getBootEntry(bootDir)?.let { bootEntry ->
+        try {
+            val bootEntry = getBootEntry(bootDir)
+            if (bootEntry == null) {
+                Log.error("No valid boot entry found", bootDir)
+                return emptySet()
+            }
+
             // Check if this is a team entry
             if (bootEntry.teamMembers?.isNotEmpty() == true) {
-                return bootTeam(bootDir, Team(teamId, bootEntry.name, bootEntry.version, bootEntry.teamMembers), getBootEntry)
+                return bootTeam(
+                    bootDir,
+                    Team(teamId, bootEntry.name, bootEntry.version, bootEntry.teamMembers),
+                    getBootEntry
+                )
             }
 
             // Otherwise boot as single bot
             bootBot(bootDir, null, getBootEntry)?.let { return setOf(it) }
+
+            // If we got here, the bot couldn't be booted but no exception was thrown
+            Log.error("Failed to boot bot - no suitable boot method found", bootDir)
+            return emptySet()
+        } catch (ex: Exception) {
+            Log.error(ex, bootDir)
+            return emptySet()
         }
-        return emptySet()
     }
 
     /**
@@ -101,17 +126,37 @@ class ProcessManager {
         val parentPath = bootDir.parent
         val botProcesses = HashSet<Process>()
 
-        team.members.forEach { botName ->
-            val botDir = parentPath.resolve(botName)
-            findBootScriptOrNull(botDir)?.let { scriptPath ->
-                bootBot(botDir, team, getBootEntry)?.let { process ->
-                    botProcesses.add(process)
+        try {
+            team.members.forEach { botName ->
+                try {
+                    val botDir = parentPath.resolve(botName)
+                    if (!botDir.exists()) {
+                        Log.error("Team member bot directory not found", botDir)
+                        return@forEach
+                    }
+                    if (!Files.isDirectory(botDir)) {
+                        Log.error("Team member path is not a valid directory", botDir)
+                        return@forEach
+                    }
+                    findBootScriptOrNull(botDir)?.let { scriptPath ->
+                        bootBot(botDir, team, getBootEntry)?.let { process ->
+                            botProcesses.add(process)
+                        } ?: run {
+                            Log.error("Failed to boot team member bot", botDir)
+                        }
+                    }
+                } catch (ex: Exception) {
+                    val botDir = parentPath.resolve(botName)
+                    Log.error(ex, botDir)
                 }
             }
-        }
 
-        teamId++
-        return botProcesses
+            teamId++
+            return botProcesses
+        } catch (ex: Exception) {
+            Log.error(ex, bootDir)
+            return botProcesses
+        }
     }
 
     /**
@@ -119,8 +164,20 @@ class ProcessManager {
      * Returns the started process or null if booting failed.
      */
     private fun bootBot(botDir: Path, team: Team? = null, getBootEntry: (Path) -> BootEntry?): Process? {
-        getBootEntry(botDir)?.let { botEntry ->
-            findBootScriptOrNull(botDir)?.let { scriptPath ->
+        try {
+            val botEntry = getBootEntry(botDir)
+            if (botEntry == null) {
+                Log.error("Failed to get boot entry for bot", botDir)
+                return null
+            }
+
+            val scriptPath = findBootScriptOrNull(botDir)
+            if (scriptPath == null) {
+                // Error already logged in findBootScriptOrNull
+                return null
+            }
+
+            try {
                 val processBuilder = createProcessBuilder(scriptPath.toString())
                 processBuilder.directory(scriptPath.parent.toFile())
 
@@ -130,18 +187,29 @@ class ProcessManager {
 
                 // Start the process
                 return startProcess(processBuilder, botDir)
+            } catch (ex: Exception) {
+                Log.error(ex, botDir)
+                return null
             }
+        } catch (ex: Exception) {
+            Log.error(ex, botDir)
+            return null
         }
-        return null
     }
 
     /**
      * Start a process from the given process builder and register it.
+     * Returns the started process or throws an exception with formatted error message.
      */
     private fun startProcess(processBuilder: ProcessBuilder, botDir: Path): Process {
-        return processBuilder.start().also { process ->
-            println("${process.pid()};${botDir.absolutePathString()}")
-            processes[process.pid()] = process
+        try {
+            return processBuilder.start().also { process ->
+                println("${process.pid()};${botDir.absolutePathString()}")
+                processes[process.pid()] = process
+            }
+        } catch (ex: Exception) {
+            Log.error(ex, botDir)
+            throw ex
         }
     }
 
@@ -164,12 +232,20 @@ class ProcessManager {
 
     /**
      * Find the boot script for a bot based on the operating system.
-     * Logs an error if no script is found.
+     * Logs an error if no script is found using a simple line format.
      */
     private fun findBootScriptOrNull(botDir: Path): Path? {
+        if (!botDir.exists()) {
+            Log.error("Bot directory not found", botDir)
+            return null
+        }
+        if (!Files.isDirectory(botDir)) {
+            Log.error("Path is not a valid bot directory", botDir)
+            return null
+        }
         val scriptPath = findOsScript(botDir)
         if (scriptPath == null) {
-            System.err.println("ERROR: No script found within the bot directory: $botDir")
+            Log.error("No script found within the bot directory", botDir)
         }
         return scriptPath
     }
@@ -225,7 +301,7 @@ class ProcessManager {
             .collect(toList())
             .firstOrNull { filePath ->
                 filePath.fileName.toString().equals(botName, ignoreCase = true) ||
-                readFirstLine(botDir.resolve(filePath)).trim().startsWith("#!")
+                        readFirstLine(botDir.resolve(filePath)).trim().startsWith("#!")
             }
     }
 
