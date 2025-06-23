@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.booter
 
 import dev.robocode.tankroyale.booter.commands.DirCommand
-import dev.robocode.tankroyale.booter.commands.RunCommand
+import dev.robocode.tankroyale.booter.commands.BootCommand
 import dev.robocode.tankroyale.booter.util.VersionFileProvider
 import kotlinx.serialization.json.Json
 import org.fusesource.jansi.AnsiConsole
@@ -140,7 +140,7 @@ class Booter : Callable<Int> {
         )
         botDirectories: Array<String>?
     ) {
-        RunCommand().boot(botDirectories)
+        BootCommand().boot(botDirectories)
     }
 
     companion object {
