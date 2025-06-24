@@ -1,4 +1,4 @@
-## 📦 0.32.0 - Added Booter Error Log
+## 📦 0.32.0 - Added Booter Error Log - 24-Jun-2025
 
 This version makes it easier to figure out why a bot will not boot from a bot directory.
 
