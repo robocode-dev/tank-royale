@@ -6,7 +6,8 @@ import kotlin.io.path.absolutePathString
 object Log {
 
     private fun printBotDir(botDir: Path?) {
-        System.err.println("ERROR: Bot directory: ${botDir?.absolutePathString() ?: "unknown"}")
+        val botDirPath = botDir?.absolutePathString()?.replace("\\", "/")
+        System.err.println("ERROR: Bot directory: ${botDirPath ?: "unknown"}")
     }
 
     fun error(ex: Exception, botDir: Path? = null) {
