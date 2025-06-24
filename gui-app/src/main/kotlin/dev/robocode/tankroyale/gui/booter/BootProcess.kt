@@ -192,10 +192,10 @@ object BootProcess {
 
     private fun readInputToPids(process: Process) {
         process.inputStream?.let {
-            val reader = BufferedReader(InputStreamReader(process.inputStream, StandardCharsets.UTF_8))
-            while (stdoutThreadRef.get()?.isInterrupted == false) {
+            val reader = BufferedReader(InputStreamReader(it, StandardCharsets.UTF_8))
+            while (!isErrorStreamThreadInterrupted()) {
                 val line = reader.readLine()
-                if (line != null && line.isNotBlank()) {
+                if (isValidLine(line)) {
                     if (line.startsWith("stopped ")) {
                         removePid(line)
                     } else {
@@ -207,29 +207,49 @@ object BootProcess {
     }
 
     private fun readErrorToStdError(process: Process) {
-        process.errorStream?.let {
-            val reader = BufferedReader(InputStreamReader(process.errorStream, StandardCharsets.UTF_8))
-            while (stderrThreadRef.get()?.isInterrupted == false) {
-                try {
-                    val line = reader.readLine()
-                    if (line != null && line.isNotBlank()) {
-                        // Use EDT to update Swing components safely
-                        EDT.enqueue {
-                            // Display BooterConsole when the first line is written
-                            BooterErrorConsole.isVisible = true
-
-                            // Write to BooterConsole instead of stderr
-                            BooterErrorConsole.append(line + "\n")  // Adds a newline character
-                        }
-                    }
-                } catch (_: InterruptedException) {
-                    Thread.currentThread().interrupt()
-                    break
-                } catch (e: Exception) {
-                    System.err.println("Error reading from error stream: ${e.message}")
-                }
+        process.errorStream?.let { stream ->
+            val reader = BufferedReader(InputStreamReader(stream, StandardCharsets.UTF_8))
+            while (!isErrorStreamThreadInterrupted()) {
+                processErrorLine(reader)
             }
         }
+    }
+
+    private fun isErrorStreamThreadInterrupted(): Boolean {
+        return stderrThreadRef.get()?.isInterrupted == true
+    }
+
+    private fun processErrorLine(reader: BufferedReader) {
+        try {
+            val line = reader.readLine()
+            if (isValidLine(line)) {
+                displayErrorLine(line)
+            }
+        } catch (_: InterruptedException) {
+            Thread.currentThread().interrupt()
+            throw InterruptedException()
+        } catch (e: Exception) {
+            System.err.println("Error reading from error stream: ${e.message}")
+        }
+    }
+
+    private fun isValidLine(line: String?): Boolean {
+        return !line.isNullOrBlank()
+    }
+
+    private fun displayErrorLine(line: String) {
+        EDT.enqueue {
+            showBooterConsole()
+            appendLineToConsole(line)
+        }
+    }
+
+    private fun showBooterConsole() {
+        BooterErrorConsole.isVisible = true
+    }
+
+    private fun appendLineToConsole(line: String) {
+        BooterErrorConsole.append(line + "\n")
     }
 
     private fun startThread(process: Process, doReadInputToProcessIds: Boolean) {
