@@ -6,7 +6,6 @@ import dev.robocode.tankroyale.botapi.graphics.Color;
 // Target
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // A stationary robot that moves when its energy drops below a certain
 // threshold. This robot demonstrates how to use custom events.
@@ -18,11 +17,6 @@ public class Target extends Bot {
     // The main method starts our bot
     public static void main(String[] args) {
         new Target().start();
-    }
-
-    // Constructor, which loads the bot config file
-    Target() {
-        super(BotInfo.fromFile("Target.json"));
     }
 
     // Called when a new round is started -> initialize and do some movement

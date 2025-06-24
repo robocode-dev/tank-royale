@@ -7,7 +7,6 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // MyFirstDroid
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // This is a droid bot meaning that is has more energy, but no radar.
 // Member of the MyFirstTeam. Follows orders of team leader.
@@ -19,9 +18,6 @@ public class MyFirstDroid : Bot, Droid
     {
         new MyFirstDroid().Start();
     }
-
-    // Constructor, which loads the bot config file
-    MyFirstDroid() : base(BotInfo.FromFile("MyFirstDroid.json")) { }
 
     // Called when a new round is started -> just print out that the bot is ready
     public override void Run()

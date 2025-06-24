@@ -27,10 +27,17 @@ public abstract class BaseBot implements IBaseBot {
 
     /**
      * Constructor for initializing a new instance of the BaseBot class.
-     * This constructor should be used when both {@link BotInfo} and server URL is provided through
-     * environment variables, i.e., when starting up the bot using a booter. These environment
-     * variables must be set to provide the server URL and bot information and are automatically
-     * set by the booter tool for Robocode.
+     * This constructor automatically looks for a config file and falls back to environment variables
+     * if the config file is not found or is incomplete.
+     * <p>
+     * The config file is searched in the following locations:
+     * <ol>
+     * <li>The current directory of the application</li> 
+     * <li>The user's home directory</li>
+     * </ol>
+     * <p>
+     * When using environment variables (either as fallback or primary configuration), these must be set
+     * to provide the server URL and bot information and are automatically set by the booter tool for Robocode.
      * <p><br>
      * Example of how to set the predefined environment variables used for connecting to the server:
      * <ul>
@@ -52,7 +59,7 @@ public abstract class BaseBot implements IBaseBot {
      * <li>{@code BOT_INITIAL_POS=50,70, 270}</li>
      * </ul>
      * <p>
-     * These environment variables <em>must</em> be set prior to using this constructor:
+     * These environment variables <em>must</em> be set before using this constructor:
      * <ul>
      * <li>{@code BOT_NAME}</li>
      * <li>{@code BOT_VERSION}</li>

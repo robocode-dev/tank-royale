@@ -1,3 +1,22 @@
+## 📦 0.32.0 - Added Booter Error Log - 24-Jun-2025
+
+This version makes it easier to figure out why a bot will not boot from a bot directory.
+
+### 🚀 Improvements
+
+- Booter:
+    - The Booter now logs errors to standard error. Each error is recorded with the name of the bot directory in which
+      the error occurred.
+
+- GUI:
+    - When booting one or more bots that crash with an error, the error is written to a Booter Error Log window. This
+      window automatically appears and displays the detected errors for each bot directory that caused an error.
+
+- Bot API:
+    - The `Bot()` constructor now automatically searches for the bot config file (.json) and falls back on using
+      environment variables if the config file could not be found.
+    - Due to this change, the `Bot()` constructor has been removed from all sample bots.
+
 ## 📦 0.31.0 - Improved Graphical Debugging - 19-Jun-2025
 
 ### ⚠️ Breaking Changes
@@ -126,7 +145,7 @@ A new sample bot, PaintingBot, has been introduced to showcase the use of debug 
 
 - Server:
     - Log messages printed out `{}` instead of content.
-- UI:
+- GUI:
     - Fixed issue with the switch button in the Server Options for switching between using a local and remote server.
 
 ## 📦 0.29.0 - All about colors - 19-Jan-2024
@@ -231,7 +250,7 @@ This version fixes various issues, some found when running legacy bots with the 
 
 ### 🐞 Bug Fixes
 
-- GUI
+- GUI:
     - Control Panel was shown when server was stopped or rebooted.
 
 ## 📦 0.25.0 - Fix for Ranks and Event Queue improvements - 11-Oct-2024

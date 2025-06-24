@@ -6,7 +6,6 @@ import dev.robocode.tankroyale.botapi.graphics.Color;
 // Walls
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // This robot navigates around the perimeter of the battlefield with
 // the gun pointed inward.
@@ -19,11 +18,6 @@ public class Walls extends Bot {
     // The main method starts our bot
     public static void main(String[] args) {
         new Walls().start();
-    }
-
-    // Constructor, which loads the bot config file
-    Walls() {
-        super(BotInfo.fromFile("Walls.json"));
     }
 
     // Called when a new round is started -> initialize and do some movement

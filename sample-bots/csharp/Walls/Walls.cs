@@ -7,7 +7,6 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // Walls
 // ------------------------------------------------------------------
 // A sample bot original made for Robocode by Mathew Nelson.
-// Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // This robot navigates around the perimeter of the battlefield with
 // the gun pointed inward.
@@ -22,9 +21,6 @@ public class Walls : Bot
     {
         new Walls().Start();
     }
-
-    // Constructor, which loads the bot config file
-    Walls() : base(BotInfo.FromFile("Walls.json")) { }
 
     // Called when a new round is started -> initialize and do some movement
     public override void Run()

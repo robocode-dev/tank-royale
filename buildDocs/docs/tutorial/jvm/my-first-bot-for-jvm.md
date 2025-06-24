@@ -47,11 +47,6 @@ and hence the [main] method is the entry point of the bot.
     public static void main(String[]args) {
         new MyFirstBot().start();
     }
-
-    // Constructor, which loads the bot config file
-    MyFirstBot() {
-        super(BotInfo.fromFile("MyFirstBot.json"));
-    }
 ```
 
 The [main] method in this example simply calls the [start] method of the bot, which will let the bot startup reading
@@ -60,16 +55,11 @@ configuration and start communicating with the server.
 The bot will attempt to _join_ the server and wait for a signal to engage in a new battle, where one or multiple
 instances of this bot must participate.
 
-The constructor of `MyFirstBot` is set up to call the base constructor, which needs a [BotInfo] object containing the
-bot configuration. The [BotInfo] class contains a convenient method named [fromFile] which can initialize the [BotInfo]
-by reading a JSON file. In this case, it will read the `MyFirstBot.json` file we created earlier, which must be
-available within the bot directory (or some other file location accessible for the bot).
-
 Note that it is also possible to provide all the necessary configuration fields programmatically without a file.
 
 ### The Run method
 
-When the bot is started by the game, the [run] method will be called. Hence, your bot should override this method to
+When the game starts the bot, the [run] method will be called. Hence, your bot should override this method to
 provide the logic for the bot when the game is started. The [run] method should do all required initializing. After
 that, it should enter a loop that runs until the game is ended.
 
@@ -88,7 +78,7 @@ that, it should enter a loop that runs until the game is ended.
 ```
 
 With the code above, the bot will run in a loop, starting by moving forward 100 units. Then it will turn the gun 360°,
-move back 100 units and turn the gun 360° again. So the bot will continuously move forward and back all the time and
+move back 100 units, and turn the gun 360° again. So the bot will continuously move forward and back all the time and
 rotate the gun between moving.
 
 When leaving the [run] method, the bot will not be able to send new commands each round besides code that runs in event
@@ -154,11 +144,6 @@ public class MyFirstBot extends Bot {
         new MyFirstBot().start();
     }
 
-    // Constructor, which loads the bot config file
-    MyFirstBot() {
-        super(BotInfo.fromFile("MyFirstBot.json"));
-    }
-
     // Called when a new round is started -> initialize and do some movement
     @Override
     public void run() {
@@ -209,7 +194,7 @@ file into the `lib` folder.
 The remaining part is to supply some script files for starting up the bot. This will ease starting up the bot from the
 command line. But those files are also necessary for booting up the bot from Robocode, which will look out for script
 files when examining the bot directory and figure out how to run the bot. The script files tell the [booter] of Robocode
-how to start the bot, which is different for each programming language, platform and OS.
+how to start the bot, which is different for each programming language, platform, and OS.
 
 With Java it is possible to run your bot under Windows, macOS, and Linux. Hence, it is a good idea to provide script
 files for all these OSes, which mean that we should provide a [command file][.cmd] for Windows, and
