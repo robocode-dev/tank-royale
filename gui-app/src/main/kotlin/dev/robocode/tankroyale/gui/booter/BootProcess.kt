@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.client.model.MessageConstants
 import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
+import dev.robocode.tankroyale.gui.ui.console.BooterConsole
 import dev.robocode.tankroyale.gui.util.FileUtil
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import java.io.BufferedReader
@@ -206,11 +207,17 @@ object BootProcess {
     private fun readErrorToStdError(process: Process) {
         val reader = BufferedReader(InputStreamReader(process.errorStream!!, StandardCharsets.UTF_8))
         var line: String?
+
         while (run {
                 line = reader.readLine()
                 line
             } != null) {
-            System.err.println(line)
+
+            // Display BooterConsole when the first line is written
+            BooterConsole.isVisible = true
+
+            // Write to BooterConsole instead of stderr
+            BooterConsole.append(line!!)
         }
     }
 

@@ -8,19 +8,21 @@ import javax.swing.AbstractAction
 import javax.swing.JPanel
 import javax.swing.KeyStroke
 
-open class ConsoleFrame(
+abstract class ConsoleFrame(
     title: String, isTitlePropertyName: Boolean = true,
     protected val consolePanel: ConsolePanel = ConsolePanel()
 ) : RcFrame(title, isTitlePropertyName) {
 
     init {
+        setSize(600, 400)
+
         setDisposeOnEnterKeyPressed()
 
         contentPane.add(consolePanel)
 
         onActivated {
             consolePanel.scrollToBottom()
-            isFocusable = true // in order to close it by pressing enter
+            isFocusable = true // to close it by pressing the enter key
         }
     }
 
@@ -32,7 +34,7 @@ open class ConsoleFrame(
         consolePanel.append(text)
     }
 
-    // note that window must be in focus!
+    // note that the window must be in focus!
     private fun setDisposeOnEnterKeyPressed() {
         rootPane.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW).apply {
             val enter = "enter"
