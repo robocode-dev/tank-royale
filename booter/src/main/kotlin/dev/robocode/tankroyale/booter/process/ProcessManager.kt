@@ -250,15 +250,52 @@ class ProcessManager {
      * Start a process from the given process builder and register it.
      * Returns the started process or throws an exception with a formatted error message.
      */
+    /**
+     * Start a process from the given process builder and register it.
+     * Captures stderr output from the process and logs it.
+     * 
+     * @param processBuilder The ProcessBuilder to start the process from
+     * @param botDir The directory of the bot being started
+     * @return The started process
+     * @throws Exception if the process could not be started
+     */
     private fun startProcess(processBuilder: ProcessBuilder, botDir: Path): Process {
         try {
-            return processBuilder.start().also { process ->
-                println("${process.pid()};${botDir.absolutePathString()}")
-                processes[process.pid()] = process
-            }
+            val process = processBuilder.start()
+            registerProcess(process, botDir)
+            captureProcessErrorOutput(process, botDir)
+            return process
         } catch (ex: Exception) {
             Log.error(ex, botDir)
             throw ex
+        }
+    }
+
+    /**
+     * Registers a started process in the process map and logs its PID.
+     */
+    private fun registerProcess(process: Process, botDir: Path) {
+        val pid = process.pid()
+        println("$pid;${botDir.absolutePathString()}")
+        processes[pid] = process
+    }
+
+    /**
+     * Captures stderr output from a process and logs it via Log.error().
+     * Creates a dedicated thread for reading the error stream.
+     */
+    private fun captureProcessErrorOutput(process: Process, botDir: Path) {
+        Thread {
+            process.errorStream.bufferedReader().use { reader ->
+                val lines = reader.lineSequence().toList()
+                if (lines.isNotEmpty()) {
+                    Log.error(lines.joinToString("\n"), botDir)
+                }
+            }
+        }.apply {
+            name = "ErrorCapture-${process.pid()}"
+            isDaemon = true
+            start()
         }
     }
 

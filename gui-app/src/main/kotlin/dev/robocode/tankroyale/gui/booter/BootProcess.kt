@@ -26,7 +26,8 @@ object BootProcess {
     private const val JAR_FILE_NAME = "robocode-tankroyale-booter"
 
     private var booterProcess: Process? = null
-    private var threadRef = AtomicReference<Thread>()
+    private var stdoutThreadRef = AtomicReference<Thread>()
+    private var stderrThreadRef = AtomicReference<Thread>()
 
     private val json = MessageConstants.json
 
@@ -145,7 +146,7 @@ object BootProcess {
 
     private fun sendCommandToBootedProcess(command: String, arguments: Collection<Any>) {
         booterProcess?.outputStream?.let {
-            PrintStream(it).also {  printStream ->
+            PrintStream(it).also { printStream ->
                 arguments.forEach { pid -> printStream.println("$command $pid") }
                 printStream.flush()
             }
@@ -190,8 +191,8 @@ object BootProcess {
 
     private fun readInputToPids(process: Process) {
         process.inputStream?.let {
-            val reader = BufferedReader(InputStreamReader(process.inputStream))
-            while (threadRef.get()?.isInterrupted == false) {
+            val reader = BufferedReader(InputStreamReader(process.inputStream, StandardCharsets.UTF_8))
+            while (stdoutThreadRef.get()?.isInterrupted == false) {
                 val line = reader.readLine()
                 if (line != null && line.isNotBlank()) {
                     if (line.startsWith("stopped ")) {
@@ -205,19 +206,19 @@ object BootProcess {
     }
 
     private fun readErrorToStdError(process: Process) {
-        val reader = BufferedReader(InputStreamReader(process.errorStream!!, StandardCharsets.UTF_8))
-        var line: String?
+        process.errorStream?.let {
+            val reader = BufferedReader(InputStreamReader(process.errorStream, StandardCharsets.UTF_8))
+            while (stderrThreadRef.get()?.isInterrupted == false) {
+                val line = reader.readLine()
+                if (line != null && line.isNotBlank()) {
 
-        while (run {
-                line = reader.readLine()
-                line
-            } != null) {
+                    // Display BooterConsole when the first line is written
+                    BooterConsole.isVisible = true
 
-            // Display BooterConsole when the first line is written
-            BooterConsole.isVisible = true
-
-            // Write to BooterConsole instead of stderr
-            BooterConsole.append(line!!)
+                    // Write to BooterConsole instead of stderr
+                    BooterConsole.append(line)
+                }
+            }
         }
     }
 
@@ -225,24 +226,42 @@ object BootProcess {
         if (isRunning()) {
             return
         }
-        threadRef.set(Thread {
-            while (threadRef.get()?.isInterrupted == false) {
+
+        // Start thread for standard output
+        if (doReadInputToProcessIds) {
+            stdoutThreadRef.set(Thread {
                 try {
-                    if (doReadInputToProcessIds)
-                        readInputToPids(process)
-                    readErrorToStdError(process)
+                    readInputToPids(process)
                 } catch (_: InterruptedException) {
-                    break
+                    // Thread was interrupted, exit gracefully
                 }
+            }.apply {
+                name = "BootProcess-StdOut-Thread"
+                start()
+            })
+        }
+
+        // Start thread for standard error
+        stderrThreadRef.set(Thread {
+            try {
+                readErrorToStdError(process)
+            } catch (_: InterruptedException) {
+                // Thread was interrupted, exit gracefully
             }
-        }.apply { start() })
+        }.apply {
+            name = "BootProcess-StdErr-Thread"
+            start()
+        })
     }
 
     private fun stopThread() {
-        threadRef.get()?.interrupt()
+        stdoutThreadRef.get()?.interrupt()
+        stderrThreadRef.get()?.interrupt()
     }
 
-    private fun isRunning(): Boolean = threadRef.get()?.run { isAlive && !isInterrupted } ?: false
+    private fun isRunning(): Boolean =
+        (stdoutThreadRef.get()?.run { isAlive && !isInterrupted } ?: false) ||
+                (stderrThreadRef.get()?.run { isAlive && !isInterrupted } ?: false)
 
     private fun startPinging() {
         val pingTask = object : TimerTask() {
