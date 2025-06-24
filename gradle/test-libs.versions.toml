@@ -1,12 +1,12 @@
 [versions]
 
 assertj = "3.27.3"
-junit = "5.13.1"
-junit-platform = "1.13.1" # Subversion must match junit version!
+junit = "5.13.2" # update junit-platform as well
+junit-platform = "1.13.2" # Subversion must match junit version!
 system-stubs = "2.1.8"
 kotest = "6.0.0.M4"
 kotest-datatest = "5.9.1"
-mockk = "1.14.2"
+mockk = "1.14.4"
 
 [libraries]
 
