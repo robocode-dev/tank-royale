@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.client.model.MessageConstants
 import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.console.BooterConsole
+import dev.robocode.tankroyale.gui.ui.console.BooterErrorConsole
 import dev.robocode.tankroyale.gui.util.FileUtil
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import java.io.BufferedReader
@@ -211,12 +211,11 @@ object BootProcess {
             while (stderrThreadRef.get()?.isInterrupted == false) {
                 val line = reader.readLine()
                 if (line != null && line.isNotBlank()) {
-
                     // Display BooterConsole when the first line is written
-                    BooterConsole.isVisible = true
+                    BooterErrorConsole.isVisible = true
 
                     // Write to BooterConsole instead of stderr
-                    BooterConsole.append(line)
+                    BooterErrorConsole.append(line + "\n")  // Adds a newline character
                 }
             }
         }
