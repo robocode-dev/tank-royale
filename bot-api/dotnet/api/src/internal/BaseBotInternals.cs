@@ -300,7 +300,8 @@ sealed class BaseBotInternals
         var turnNumber = CurrentTickOrThrow.TurnNumber;
         if (turnNumber != _lastExecuteTurnNumber)
         {
-            DispatchEvents(turnNumber);
+            _lastExecuteTurnNumber = turnNumber;
+
             SendIntent();
         }
         WaitForNextTurn(turnNumber);
@@ -364,7 +365,7 @@ sealed class BaseBotInternals
         }
     }
 
-    private void DispatchEvents(int turnNumber)
+    internal void DispatchEvents(int turnNumber)
     {
         try
         {
@@ -392,6 +393,8 @@ sealed class BaseBotInternals
     internal S.BotIntent BotIntent { get; } = NewBotIntent();
 
     internal E.TickEvent CurrentTickOrThrow => _tickEvent ?? throw new BotException(TickNotAvailableMsg);
+
+    internal E.TickEvent CurrentTickOrNull => _tickEvent;
 
     private long TicksStart
     {

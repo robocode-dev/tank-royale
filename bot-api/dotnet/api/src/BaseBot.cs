@@ -102,7 +102,17 @@ public abstract class BaseBot : IBaseBot
     public void Start() => BaseBotInternals.Start();
 
     /// <inheritdoc/>
-    public void Go() => BaseBotInternals.Execute();
+    public void Go() {
+        // Process all events before executing the turn commands to mimic classic Robocode behavior where
+        // events are handled before the next turn's execution from the run() method.
+        var currentTick = BaseBotInternals.CurrentTickOrNull;
+        if (currentTick != null)
+        {
+            BaseBotInternals.DispatchEvents(currentTick.TurnNumber);
+        }
+
+        BaseBotInternals.Execute();
+    }
 
     /// <inheritdoc/>
     public string Variant => BaseBotInternals.Variant;

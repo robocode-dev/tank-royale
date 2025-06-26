@@ -297,7 +297,6 @@ public final class BaseBotInternals {
         if (turnNumber != lastExecuteTurnNumber) {
             lastExecuteTurnNumber = turnNumber;
 
-            dispatchEvents(turnNumber);
             sendIntent();
         }
         waitForNextTurn(turnNumber);
@@ -356,7 +355,7 @@ public final class BaseBotInternals {
         }
     }
 
-    private void dispatchEvents(int turnNumber) {
+    public void dispatchEvents(int turnNumber) {
         try {
             eventQueue.dispatchEvents(turnNumber);
         } catch (Exception e) {
@@ -413,12 +412,12 @@ public final class BaseBotInternals {
         return tickEvent;
     }
 
-    void setTickEvent(TickEvent tickEvent) {
-        this.tickEvent = tickEvent;
-    }
-
     public TickEvent getCurrentTickOrNull() {
         return tickEvent;
+    }
+
+    void setTickEvent(TickEvent tickEvent) {
+        this.tickEvent = tickEvent;
     }
 
     private long getTicksStart() {

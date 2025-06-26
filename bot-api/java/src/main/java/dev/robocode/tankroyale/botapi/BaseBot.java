@@ -131,6 +131,13 @@ public abstract class BaseBot implements IBaseBot {
     // We allow override of go() here to let the Robocode Bridge hook into this method
     @Override
     public void go() {
+        // Process all events before executing the turn commands to mimic classic Robocode behavior where
+        // events are handled before the next turn's execution from the run() method.
+        var currentTick = baseBotInternals.getCurrentTickOrNull();
+        if (currentTick != null) {
+            baseBotInternals.dispatchEvents(currentTick.getTurnNumber());
+        }
+
         baseBotInternals.execute();
     }
 
