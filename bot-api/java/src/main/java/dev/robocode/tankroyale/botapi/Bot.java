@@ -18,11 +18,6 @@ public abstract class Bot extends BaseBot implements IBot {
      */
     protected Bot() {
         super();
-        // try to automatically read the bot config file
-        try {
-            BotInfo.fromFile(getClass().getSimpleName() + ".json");
-        } catch (BotException ignore) {
-        }
     }
 
     /**

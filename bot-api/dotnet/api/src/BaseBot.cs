@@ -82,6 +82,7 @@ public abstract class BaseBot : IBaseBot
         {
             // Ignore
         }
+
         BaseBotInternals = new BaseBotInternals(this, botInfo, null, null);
     }
 

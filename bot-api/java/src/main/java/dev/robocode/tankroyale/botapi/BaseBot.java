@@ -32,7 +32,7 @@ public abstract class BaseBot implements IBaseBot {
      * <p>
      * The config file is searched in the following locations:
      * <ol>
-     * <li>The current directory of the application</li> 
+     * <li>The current directory of the application</li>
      * <li>The user's home directory</li>
      * </ol>
      * <p>
@@ -82,7 +82,13 @@ public abstract class BaseBot implements IBaseBot {
      * If the {@code SERVER_URL} is not set, then this default URL is used: ws://localhost:7654
      */
     protected BaseBot() {
-        baseBotInternals = new BaseBotInternals(this, null, null, null);
+        // try to automatically read the bot config file
+        BotInfo botInfo = null;
+        try {
+            botInfo = BotInfo.fromFile(getClass().getSimpleName() + ".json");
+        } catch (BotException ignore) {
+        }
+        baseBotInternals = new BaseBotInternals(this, botInfo, null, null);
     }
 
     /**
