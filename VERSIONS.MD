@@ -8,6 +8,9 @@
     - The sample bots could not start up due to this issue.
 - Booter
     - Fixed the escaping issue with double backslash characters.
+- Sample Bot:
+    - Fixed a bug in TrackFire.cs where the turret misaligned while attempting to lock onto a target, causing it to
+      oscillate erratically during target acquisition.
 
 ## 📦 0.32.0 - Added Booter Error Log - 24-Jun-2025
 

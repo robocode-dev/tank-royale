@@ -44,7 +44,7 @@ public class TrackFire : Bot
         var bearingFromGun = GunBearingTo(e.X, e.Y);
 
         // Turn the gun toward the scanned bot
-        TurnGunRight(bearingFromGun);
+        TurnGunLeft(bearingFromGun);
 
         // If it is close enough, fire!
         if (Math.Abs(bearingFromGun) <= 3 && GunHeat == 0)
