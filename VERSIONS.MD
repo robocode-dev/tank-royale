@@ -6,6 +6,8 @@
     - The `BaseBot()` constructor (instead of `Bot()` constructor) now automatically searches for the bot config file (
       .json) and falls back on using environment variables if the config file could not be found.
     - The sample bots could not start up due to this issue.
+- Booter
+    - Fixed the escaping issue with double backslash characters.
 
 ## 📦 0.32.0 - Added Booter Error Log - 24-Jun-2025
 
@@ -22,8 +24,8 @@ This version makes it easier to figure out why a bot will not boot from a bot di
       window automatically appears and displays the detected errors for each bot directory that caused an error.
 
 - Bot API:
-    - The ~~`Bot()`~~`BaseBot()` constructor now automatically searches for the bot config file (.json) and falls back
-      on using environment variables if the config file could not be found.
+    - The `Bot()` constructor now automatically searches for the bot config file (.json) and falls back on using
+      environment variables if the config file could not be found.
         - Due to this change, the default constructor has been removed from all sample bots.
 
 ## 📦 0.31.0 - Improved Graphical Debugging - 19-Jun-2025
