@@ -17,18 +17,7 @@ public abstract class Bot : BaseBot, IBot
     /// <see cref="BaseBot()"/>
     protected Bot()
     {
-        // try to automatically read the bot config file
-        BotInfo botInfo = null;
-        try
-        {
-            botInfo = BotInfo.FromFile(GetType().Name + ".json");
-        }
-        catch (BotException)
-        {
-            // Ignore
-        }
-        var baseBotInternals = new BaseBotInternals(this, botInfo, null, null);
-        _botInternals = new BotInternals(this, baseBotInternals);
+        _botInternals = new BotInternals(this, BaseBotInternals);
     }
 
     /// <see cref="BaseBot(BotInfo)"/>
