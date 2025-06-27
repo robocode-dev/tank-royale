@@ -70,7 +70,20 @@ public abstract class BaseBot : IBaseBot
     ///
     /// If the SERVER_URL is not set, then this default URL is used: ws://localhost:7654
     /// </example>
-    protected BaseBot() => BaseBotInternals = new BaseBotInternals(this, null, null, null);
+    protected BaseBot()
+    {
+        // try to automatically read the bot config file
+        BotInfo botInfo = null;
+        try
+        {
+            botInfo = BotInfo.FromFile(GetType().Name + ".json");
+        }
+        catch (BotException)
+        {
+            // Ignore
+        }
+        BaseBotInternals = new BaseBotInternals(this, botInfo, null, null);
+    }
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
