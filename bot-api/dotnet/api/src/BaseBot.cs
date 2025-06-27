@@ -259,10 +259,9 @@ public abstract class BaseBot : IBaseBot
     public void SetRescan() => BaseBotInternals.BotIntent.Rescan = true;
 
     public void SetFireAssist(bool enable) => BaseBotInternals.BotIntent.FireAssist = enable;
-
+    
     /// <inheritdoc/>
-    public bool Interruptible
-    {
+    public bool Interruptible {
         set => BaseBotInternals.SetInterruptible(value);
     }
 
@@ -447,7 +446,7 @@ public abstract class BaseBot : IBaseBot
 
     /// <inheritdoc/>
     public virtual IGraphics Graphics => BaseBotInternals.Graphics;
-
+    
     /// <inheritdoc/>
     public virtual void OnConnected(ConnectedEvent connectedEvent) =>
         Console.WriteLine($"Connected to {connectedEvent.ServerUri}");
@@ -570,7 +569,7 @@ public abstract class BaseBot : IBaseBot
     public virtual void OnCustomEvent(CustomEvent customEvent)
     {
     }
-
+    
     /// <inheritdoc/>
     public virtual void OnTeamMessage(TeamMessageEvent teamMessageEvent)
     {
