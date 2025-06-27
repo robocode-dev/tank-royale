@@ -51,7 +51,7 @@ sealed class BaseBotInternals
     private readonly object _isRunningLock = new();
 
     private IStopResumeListener _stopResumeListener;
-    
+
     private double _maxSpeed;
     private double _maxTurnRate;
     private double _maxGunTurnRate;
@@ -80,7 +80,14 @@ sealed class BaseBotInternals
     internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, string serverSecret)
     {
         _baseBot = baseBot;
-        _botInfo = botInfo ?? EnvVars.GetBotInfo();
+
+        if (botInfo == null)
+        {
+            // use environment variables for configuration
+            botInfo = EnvVars.GetBotInfo();
+        }
+
+        _botInfo = botInfo;
 
         BotEventHandlers = new BotEventHandlers(baseBot);
         InternalEventHandlers = new InternalEventHandlers();
@@ -303,6 +310,7 @@ sealed class BaseBotInternals
             DispatchEvents(turnNumber);
             SendIntent();
         }
+
         WaitForNextTurn(turnNumber);
     }
 
@@ -331,12 +339,13 @@ sealed class BaseBotInternals
 
     private void RenderGraphicsToBotIntent()
     {
-        if (CurrentTickOrThrow.BotState.IsDebuggingEnabled) {
+        if (CurrentTickOrThrow.BotState.IsDebuggingEnabled)
+        {
             BotIntent.DebugGraphics = _graphicsState.GetSvgOutput();
             _graphicsState.Clear();
         }
     }
-    
+
     private void WaitForNextTurn(int turnNumber)
     {
         // Most bot methods will call waitForNextTurn(), and hence this is a central place to stop a rogue thread that
@@ -751,7 +760,7 @@ sealed class BaseBotInternals
     }
 
     internal IGraphics Graphics => _graphicsState.Graphics;
-    
+
     private static string ToIntentColor(Color? color) => color == null ? null : "#" + ColorUtil.ToHex(color);
 
     internal IEnumerable<BulletState> BulletStates => _tickEvent?.BulletStates ?? ImmutableHashSet<BulletState>.Empty;
@@ -789,7 +798,7 @@ sealed class BaseBotInternals
     private void HandleDisconnected(bool remote, int? statusCode, string reason)
     {
         var disconnectedEvent = new E.DisconnectedEvent(_socket.ServerUri, remote, statusCode, reason);
-        
+
         BotEventHandlers.OnDisconnected.Publish(disconnectedEvent);
         InternalEventHandlers.OnDisconnected.Publish(disconnectedEvent);
 
@@ -864,7 +873,7 @@ sealed class BaseBotInternals
             BotIntent.Rescan = false;
 
         _tickEvent = mappedTickEvent;
-        
+
         foreach (var botEvent in _tickEvent.Events)
         {
             InternalEventHandlers.FireEvent(botEvent);
@@ -880,7 +889,7 @@ sealed class BaseBotInternals
         VerifyNotNull(roundStartedEvent, typeof(S.RoundStartedEvent));
 
         var mappedRoundStartedEvent = new E.RoundStartedEvent(roundStartedEvent.RoundNumber);
-        
+
         BotEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
         InternalEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
     }
@@ -894,7 +903,7 @@ sealed class BaseBotInternals
 
         var mappedRoundEndedEvent = new E.RoundEndedEvent(roundEndedEventForBot.RoundNumber,
             roundEndedEventForBot.TurnNumber, botResults);
-        
+
         BotEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
         InternalEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
     }
@@ -933,7 +942,7 @@ sealed class BaseBotInternals
 
         var results = ResultsMapper.Map(gameEndedEventForBot.Results);
         var mappedGameEnded = new E.GameEndedEvent(gameEndedEventForBot.NumberOfRounds, results);
-        
+
         BotEventHandlers.OnGameEnded.Publish(mappedGameEnded);
         InternalEventHandlers.OnGameEnded.Publish(mappedGameEnded);
     }

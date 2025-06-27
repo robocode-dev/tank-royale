@@ -102,7 +102,13 @@ public final class BaseBotInternals {
 
     public BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, URI serverUrl, String serverSecret) {
         this.baseBot = baseBot;
-        this.botInfo = (botInfo == null) ? EnvVars.getBotInfo() : botInfo;
+
+        if (botInfo == null) {
+            // use environment variables for configuration
+            botInfo = EnvVars.getBotInfo();
+        }
+
+        this.botInfo = botInfo;
 
         this.botEventHandlers = new BotEventHandlers(baseBot);
         this.eventQueue = new EventQueue(this, botEventHandlers);
@@ -297,7 +303,6 @@ public final class BaseBotInternals {
         if (turnNumber != lastExecuteTurnNumber) {
             lastExecuteTurnNumber = turnNumber;
 
-            dispatchEvents(turnNumber);
             sendIntent();
         }
         waitForNextTurn(turnNumber);
@@ -356,7 +361,7 @@ public final class BaseBotInternals {
         }
     }
 
-    private void dispatchEvents(int turnNumber) {
+    public void dispatchEvents(int turnNumber) {
         try {
             eventQueue.dispatchEvents(turnNumber);
         } catch (Exception e) {
@@ -413,12 +418,12 @@ public final class BaseBotInternals {
         return tickEvent;
     }
 
-    void setTickEvent(TickEvent tickEvent) {
-        this.tickEvent = tickEvent;
-    }
-
     public TickEvent getCurrentTickOrNull() {
         return tickEvent;
+    }
+
+    void setTickEvent(TickEvent tickEvent) {
+        this.tickEvent = tickEvent;
     }
 
     private long getTicksStart() {
@@ -431,8 +436,8 @@ public final class BaseBotInternals {
     void setTickStartNanoTime(Long tickStartNanoTime) {
         this.tickStartNanoTime = tickStartNanoTime;
     }
-    
-     void addEventsFromTick(TickEvent event) {
+
+    void addEventsFromTick(TickEvent event) {
         eventQueue.addEventsFromTick(event);
     }
 

@@ -70,7 +70,21 @@ public abstract class BaseBot : IBaseBot
     ///
     /// If the SERVER_URL is not set, then this default URL is used: ws://localhost:7654
     /// </example>
-    protected BaseBot() => BaseBotInternals = new BaseBotInternals(this, null, null, null);
+    protected BaseBot()
+    {
+        // try to automatically read the bot config file
+        BotInfo botInfo = null;
+        try
+        {
+            botInfo = BotInfo.FromFile(GetType().Name + ".json");
+        }
+        catch (BotException)
+        {
+            // Ignore
+        }
+
+        BaseBotInternals = new BaseBotInternals(this, botInfo, null, null);
+    }
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
@@ -245,9 +259,10 @@ public abstract class BaseBot : IBaseBot
     public void SetRescan() => BaseBotInternals.BotIntent.Rescan = true;
 
     public void SetFireAssist(bool enable) => BaseBotInternals.BotIntent.FireAssist = enable;
-    
+
     /// <inheritdoc/>
-    public bool Interruptible {
+    public bool Interruptible
+    {
         set => BaseBotInternals.SetInterruptible(value);
     }
 
@@ -432,7 +447,7 @@ public abstract class BaseBot : IBaseBot
 
     /// <inheritdoc/>
     public virtual IGraphics Graphics => BaseBotInternals.Graphics;
-    
+
     /// <inheritdoc/>
     public virtual void OnConnected(ConnectedEvent connectedEvent) =>
         Console.WriteLine($"Connected to {connectedEvent.ServerUri}");
@@ -555,7 +570,7 @@ public abstract class BaseBot : IBaseBot
     public virtual void OnCustomEvent(CustomEvent customEvent)
     {
     }
-    
+
     /// <inheritdoc/>
     public virtual void OnTeamMessage(TeamMessageEvent teamMessageEvent)
     {
