@@ -1,11 +1,14 @@
-## 📦 0.32.1
+## 📦 0.32.1 - No need of default constructor - 01-Jul-2025
 
-### 🐞 Bug Fixes
+### 🚀 Improvements
 
 - Bot API:
     - The `BaseBot()` constructor (instead of `Bot()` constructor) now automatically searches for the bot config file (
       .json) and falls back on using environment variables if the config file could not be found.
     - The sample bots could not start up due to this issue.
+
+### 🐞 Bug Fixes
+
 - Booter
     - Fixed the escaping issue with double backslash characters.
 - Sample Bot:
