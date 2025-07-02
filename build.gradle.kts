@@ -110,4 +110,16 @@ subprojects {
             useGpgCmd() // Use GPG agent instead of key file
         }
     }
+
+    // Include Tank.ico in the published artifacts
+    plugins.withId("maven-publish") {
+        configure<PublishingExtension> {
+            publications.withType<MavenPublication> {
+                artifact(file("${rootProject.projectDir}/gfx/Tank/Tank.ico")) {
+                    classifier = "icon"
+                    extension = "ico"
+                }
+            }
+        }
+    }
 }
