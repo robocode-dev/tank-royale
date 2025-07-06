@@ -28,3 +28,32 @@ from .skipped_turn_event import SkippedTurnEvent
 from .team_message_event import TeamMessageEvent
 from .tick_event import TickEvent
 from .won_round_event import WonRoundEvent
+
+__all__ = [
+    "BotEvent",
+    "BotDeathEvent",
+    "BulletFiredEvent",
+    "BulletHitBotEvent",
+    "BulletHitBulletEvent",
+    "BulletHitWallEvent",
+    "Condition",
+    "ConnectedEvent",
+    "ConnectionErrorEvent",
+    "ConnectionEvent",
+    "CustomEvent",
+    "DeathEvent",
+    "DisconnectedEvent",
+    "EventABC",
+    "GameEndedEvent",
+    "GameStartedEvent",
+    "HitBotEvent",
+    "HitByBulletEvent",
+    "HitWallEvent",
+    "RoundEndedEvent",
+    "RoundStartedEvent",
+    "ScannedBotEvent",
+    "SkippedTurnEvent",
+    "TeamMessageEvent",
+    "TickEvent",
+    "WonRoundEvent",
+]

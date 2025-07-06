@@ -2,7 +2,6 @@ import asyncio
 import urllib.parse
 import traceback
 import time
-import json
 import math
 import os
 from typing import Any, Optional, Set, Sequence
@@ -25,6 +24,7 @@ from .bot_event_handlers import BotEventHandlers
 from .event_queue import EventQueue
 from .env_vars import EnvVars
 from .internal_event_handlers import InternalEventHandlers
+from .json_util import to_json
 from .stop_resume_listener_abs import StopResumeListenerABC
 from .thread_interrupted_exception import ThreadInterruptedException
 from .websocket_handler import WebSocketHandler
@@ -370,7 +370,7 @@ class BaseBotInternals:
 
         if self.socket:
             try:
-                json_intent = json.dumps(self.data.bot_intent)
+                json_intent = to_json(self.data.bot_intent)
                 await self.socket.send(json_intent)
                 if self.data.bot_intent.team_messages:
                     self.data.bot_intent.team_messages = []  # Clear after sending
@@ -673,9 +673,9 @@ class BaseBotInternals:
             raise ValueError("The 'message' of a team message cannot be null")
 
         # TODO: Consider how to handle message serialization if 'message' is not directly JSON serializable.
-        # The current approach relies on json.dumps(message) which might fail for complex types.
+        # The current approach relies on to_json(message) which might fail for complex types.
         # For now, assuming 'message' is a simple dict or a type with a __dict__ attribute suitable for JSON.
-        json_message_str = json.dumps(message)
+        json_message_str = to_json(message)
         if len(json_message_str.encode("utf-8")) > TEAM_MESSAGE_MAX_SIZE:
             raise ValueError(
                 f"The team message is larger than the limit of {TEAM_MESSAGE_MAX_SIZE} bytes (compact JSON format)"
