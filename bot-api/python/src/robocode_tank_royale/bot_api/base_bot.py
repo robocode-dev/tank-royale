@@ -162,6 +162,7 @@ class BaseBot(BaseBotABC):
     @property
     def turn_rate(self) -> float:
         return self._internals.turn_rate
+
     @turn_rate.setter
     def turn_rate(self, turn_rate: float) -> None:
         self._internals.turn_rate = turn_rate
@@ -169,6 +170,7 @@ class BaseBot(BaseBotABC):
     @property
     def max_turn_rate(self) -> float:
         return self._internals.max_turn_rate
+
     @max_turn_rate.setter
     def max_turn_rate(self, max_turn_rate: float) -> None:
         self._internals.max_turn_rate = max_turn_rate
@@ -176,6 +178,7 @@ class BaseBot(BaseBotABC):
     @property
     def gun_turn_rate(self) -> float:
         return self._internals.gun_turn_rate
+
     @gun_turn_rate.setter
     def gun_turn_rate(self, gun_turn_rate: float) -> None:
         self._internals.gun_turn_rate = gun_turn_rate
@@ -183,6 +186,7 @@ class BaseBot(BaseBotABC):
     @property
     def max_gun_turn_rate(self) -> float:
         return self._internals.max_gun_turn_rate
+
     @max_gun_turn_rate.setter
     def max_gun_turn_rate(self, max_gun_turn_rate: float) -> None:
         self._internals.max_gun_turn_rate = max_gun_turn_rate
@@ -190,6 +194,7 @@ class BaseBot(BaseBotABC):
     @property
     def radar_turn_rate(self) -> float:
         return self._internals.radar_turn_rate
+
     @radar_turn_rate.setter
     def radar_turn_rate(self, radar_turn_rate: float) -> None:
         self._internals.radar_turn_rate = radar_turn_rate
@@ -197,13 +202,18 @@ class BaseBot(BaseBotABC):
     @property
     def max_radar_turn_rate(self) -> float:
         return self._internals.max_radar_turn_rate
+
     @max_radar_turn_rate.setter
     def max_radar_turn_rate(self, max_radar_turn_rate: float) -> None:
         self._internals.max_radar_turn_rate = max_radar_turn_rate
 
     @property
     def target_speed(self) -> float:
+        assert (
+            self._internals.data.bot_intent.target_speed is not None
+        ), "Target speed must be set before accessing it."
         return self._internals.data.bot_intent.target_speed
+
     @target_speed.setter
     def target_speed(self, target_speed: float) -> None:
         self._internals.data.bot_intent.target_speed = target_speed
@@ -211,6 +221,7 @@ class BaseBot(BaseBotABC):
     @property
     def max_speed(self) -> float:
         return self._internals.max_speed
+
     @max_speed.setter
     def max_speed(self, max_speed: float) -> None:
         self._internals.max_speed = max_speed
@@ -219,10 +230,13 @@ class BaseBot(BaseBotABC):
         return self._internals.set_fire(firepower)
 
     def get_firepower(self) -> float:
+        assert (
+            self._internals.data.bot_intent.firepower is not None
+        ), "Firepower must be set before accessing it."
         return self._internals.data.bot_intent.firepower
 
     def set_rescan(self) -> None:
-        self._internals.data.bot_intent.rescan = True 
+        self._internals.data.bot_intent.rescan = True
 
     def set_fire_assist(self, enable: bool) -> None:
         self._internals.data.bot_intent.fire_assist = enable
@@ -234,18 +248,27 @@ class BaseBot(BaseBotABC):
         self._internals.data.bot_intent.adjust_gun_for_body_turn = adjust
 
     def is_adjust_gun_for_body_turn(self) -> bool:
+        assert self._internals.data.bot_intent.adjust_gun_for_body_turn is not None, (
+            "Adjust gun for body turn must be set before accessing it."
+        )
         return self._internals.data.bot_intent.adjust_gun_for_body_turn
 
     def set_adjust_radar_for_body_turn(self, adjust: bool) -> None:
         self._internals.data.bot_intent.adjust_radar_for_body_turn = adjust
 
     def is_adjust_radar_for_body_turn(self) -> bool:
+        assert self._internals.data.bot_intent.adjust_radar_for_body_turn is not None, (
+            "Adjust radar for body turn must be set before accessing it."
+        )
         return self._internals.data.bot_intent.adjust_radar_for_body_turn
 
     def set_adjust_radar_for_gun_turn(self, adjust: bool) -> None:
         self._internals.data.bot_intent.adjust_radar_for_gun_turn = adjust
 
     def is_adjust_radar_for_gun_turn(self) -> bool:
+        assert self._internals.data.bot_intent.adjust_radar_for_gun_turn is not None, (
+            "Adjust radar for gun turn must be set before accessing it."
+        )
         return self._internals.data.bot_intent.adjust_radar_for_gun_turn
 
     def add_custom_event(self, condition: Condition) -> bool:
@@ -281,6 +304,7 @@ class BaseBot(BaseBotABC):
     @property
     def body_color(self) -> Optional[Color]:
         return self._internals.body_color
+
     @body_color.setter
     def body_color(self, color: Optional[Color]) -> None:
         self._internals.body_color = color
@@ -288,6 +312,7 @@ class BaseBot(BaseBotABC):
     @property
     def turret_color(self) -> Optional[Color]:
         return self._internals.turret_color
+
     @turret_color.setter
     def turret_color(self, color: Optional[Color]) -> None:
         self._internals.turret_color = color
@@ -295,6 +320,7 @@ class BaseBot(BaseBotABC):
     @property
     def radar_color(self) -> Optional[Color]:
         return self._internals.radar_color
+
     @radar_color.setter
     def radar_color(self, color: Optional[Color]) -> None:
         self._internals.radar_color = color
@@ -302,6 +328,7 @@ class BaseBot(BaseBotABC):
     @property
     def bullet_color(self) -> Optional[Color]:
         return self._internals.bullet_color
+
     @bullet_color.setter
     def bullet_color(self, color: Optional[Color]) -> None:
         self._internals.bullet_color = color
@@ -309,6 +336,7 @@ class BaseBot(BaseBotABC):
     @property
     def scan_color(self) -> Optional[Color]:
         return self._internals.scan_color
+
     @scan_color.setter
     def scan_color(self, color: Optional[Color]) -> None:
         self._internals.scan_color = color
@@ -316,6 +344,7 @@ class BaseBot(BaseBotABC):
     @property
     def tracks_color(self) -> Optional[Color]:
         return self._internals.tracks_color
+
     @tracks_color.setter
     def tracks_color(self, color: Optional[Color]) -> None:
         self._internals.tracks_color = color
@@ -323,6 +352,7 @@ class BaseBot(BaseBotABC):
     @property
     def gun_color(self) -> Optional[Color]:
         return self._internals.gun_color
+
     @gun_color.setter
     def gun_color(self, color: Optional[Color]) -> None:
         self._internals.gun_color = color
@@ -336,7 +366,9 @@ class BaseBot(BaseBotABC):
 
     # Utility methods
     def calc_max_turn_rate(self, speed: float) -> float:
-        return MAX_TURN_RATE - 0.75 * math.fabs(MathUtil.clamp(speed, -MAX_SPEED, MAX_SPEED))
+        return MAX_TURN_RATE - 0.75 * math.fabs(
+            MathUtil.clamp(speed, -MAX_SPEED, MAX_SPEED)
+        )
 
     def calc_bullet_speed(self, firepower: float) -> float:
         return 20 - 3 * MathUtil.clamp(firepower, MIN_FIREPOWER, MAX_FIREPOWER)

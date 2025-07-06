@@ -59,7 +59,7 @@ class BaseBotABC(ABC):
     def get_my_id(self) -> int:
         """
         Unique id of this bot, which is available when the game has started.
-        
+
         Returns:
             int: The unique id of this bot.
         """
@@ -69,7 +69,7 @@ class BaseBotABC(ABC):
     def get_variant(self) -> str:
         """
         The game variant, which is "Tank Royale".
-        
+
         Returns:
             str: The game variant of Robocode.
         """
@@ -79,7 +79,7 @@ class BaseBotABC(ABC):
     def get_version(self) -> str:
         """
         Game version, e.g. "1.0.0".
-        
+
         Returns:
             str: The game version.
         """
@@ -89,7 +89,7 @@ class BaseBotABC(ABC):
     def get_game_type(self) -> str:
         """
         Game type, e.g. "melee" or "1v1".
-        
+
         First available when the game has started.
 
         Returns:
@@ -101,7 +101,7 @@ class BaseBotABC(ABC):
     def get_arena_width(self) -> int:
         """
         Width of the arena measured in units.
-        
+
         First available when the game has started.
 
         Returns:
@@ -113,7 +113,7 @@ class BaseBotABC(ABC):
     def get_arena_height(self) -> int:
         """
         Height of the arena measured in units.
-        
+
         First available when the game has started.
 
         Returns:
@@ -125,7 +125,7 @@ class BaseBotABC(ABC):
     def get_number_of_rounds(self) -> int:
         """
         The number of rounds in a battle.
-        
+
         First available when the game has started.
 
         Returns:
@@ -137,7 +137,7 @@ class BaseBotABC(ABC):
     def get_gun_cooling_rate(self) -> float:
         """
         Gun cooling rate.
-        
+
         The gun needs to cool down to a gun heat of zero before the gun can fire.
         The gun cooling rate determines how fast the gun cools down. That is, the gun cooling rate is
         subtracted from the gun heat each turn until the gun heat reaches zero.
@@ -153,10 +153,10 @@ class BaseBotABC(ABC):
     def get_max_inactivity_turns(self) -> int:
         """
         The maximum number of inactive turns allowed.
-        
+
         The bot will become zapped by the game for being inactive. Inactive means
         that the bot has taken no action in several turns in a row.
-        
+
         First available when the game has started.
 
         Returns:
@@ -168,13 +168,13 @@ class BaseBotABC(ABC):
     def get_turn_timeout(self) -> int:
         """
         The turn timeout in microseconds.
-        
+
         The turn timeout is important as the bot needs to take action by calling go() before
         the turn timeout occurs. As soon as the TickEvent() is triggered, i.e. when onTick() is called,
         you need to call go() to take action before the turn timeout occurs.
         Otherwise, your bot will skip a turn and receive a onSkippedTurn for each turn where
         go() is called too late.
-        
+
         First available when the game has started.
 
         Returns:
@@ -186,7 +186,7 @@ class BaseBotABC(ABC):
     def get_time_left(self) -> int:
         """
         The number of microseconds left of this turn before the bot will skip the turn.
-        
+
         Make sure to call go() before the time runs out.
 
         Returns:
@@ -228,7 +228,7 @@ class BaseBotABC(ABC):
     def get_energy(self) -> float:
         """
         Current energy level.
-        
+
         When the energy level is positive, the bot is alive and active. When the
         energy level is 0, the bot is still alive but disabled. If the bot becomes disabled it will not
         be able to move or take any action. If negative, the bot has been defeated.
@@ -242,7 +242,7 @@ class BaseBotABC(ABC):
     def is_disabled(self) -> bool:
         """
         Specifies if the bot is disabled, i.e., when the energy is zero.
-        
+
         When the bot is disabled, it is not able to take any action like movement, turning, and firing.
 
         Returns:
@@ -304,7 +304,7 @@ class BaseBotABC(ABC):
     def get_speed(self) -> float:
         """
         The current speed measured in units per turn.
-        
+
         If the speed is positive, the bot moves forward. If negative, the bot moves backward.
         Zero speed means that the bot is not moving from its current position.
 
@@ -317,7 +317,7 @@ class BaseBotABC(ABC):
     def get_gun_heat(self) -> float:
         """
         Current gun heat.
-        
+
         When the gun is fired it gets heated and will not be able to fire before it has
         been cooled down. The gun is cooled down when the gun heat is zero.
         When the gun has fired the gun heat is set to 1 + (firepower / 5) and will be cooled down by
@@ -332,7 +332,7 @@ class BaseBotABC(ABC):
     def get_bullet_states(self) -> Sequence[BulletState | None] | None:
         """
         Current bullet states.
-        
+
         Keeps track of all the bullets fired by the bot, which are still active on the arena.
 
         Returns:
@@ -344,7 +344,7 @@ class BaseBotABC(ABC):
     def get_events(self) -> Sequence[BotEvent | None] | None:
         """
         Returns an ordered list containing all events currently in the bot's event queue.
-        
+
         You might, for example, call this while processing another event.
 
         Returns:
@@ -359,8 +359,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_turn_rate(self) -> float:
+    def turn_rate(self) -> float:
         """
         Returns the turn rate of the bot in degrees per turn.
 
@@ -369,8 +370,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @turn_rate.setter
     @abstractmethod
-    def set_turn_rate(self, turn_rate: float) -> None:
+    def turn_rate(self, turn_rate: float) -> None:
         """
         Sets the turn rate of the bot, which can be positive or negative. The turn rate is measured in
         degrees per turn. The turn rate is added to the current direction of the bot, as well as the
@@ -390,8 +392,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_max_turn_rate(self) -> float:
+    def max_turn_rate(self) -> float:
         """
         Returns the maximum turn rate of the bot in degrees per turn.
 
@@ -400,8 +403,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @max_turn_rate.setter
     @abstractmethod
-    def set_max_turn_rate(self, max_turn_rate: float) -> None:
+    def max_turn_rate(self, max_turn_rate: float) -> None:
         """
         Sets the maximum turn rate, which applies to turning the bot to the left or right.
 
@@ -427,8 +431,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_gun_turn_rate(self) -> float:
+    def gun_turn_rate(self) -> float:
         """
         Returns the gun turn rate in degrees per turn.
 
@@ -437,8 +442,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @gun_turn_rate.setter
     @abstractmethod
-    def set_gun_turn_rate(self, gun_turn_rate: float) -> None:
+    def gun_turn_rate(self, gun_turn_rate: float) -> None:
         """
         Sets the turn rate of the gun, which can be positive or negative. The gun turn rate is
         measured in degrees per turn. The turn rate is added to the current turn direction of the gun.
@@ -457,8 +463,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_max_gun_turn_rate(self) -> float:
+    def max_gun_turn_rate(self) -> float:
         """
         Returns the maximum gun turn rate in degrees per turn.
 
@@ -467,8 +474,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @max_gun_turn_rate.setter
     @abstractmethod
-    def set_max_gun_turn_rate(self, max_gun_turn_rate: float) -> None:
+    def max_gun_turn_rate(self, max_gun_turn_rate: float) -> None:
         """
         Sets the maximum turn rate for rotating the gun to the left or right. The maximum turn rate
         must be an absolute value between 0 and `Constants.MAX_GUN_TURN_RATE`, inclusive. If the input
@@ -495,8 +503,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_radar_turn_rate(self) -> float:
+    def radar_turn_rate(self) -> float:
         """
         Returns the radar turn rate in degrees per turn.
 
@@ -505,8 +514,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @radar_turn_rate.setter
     @abstractmethod
-    def set_radar_turn_rate(self, radar_turn_rate: float) -> None:
+    def radar_turn_rate(self, radar_turn_rate: float) -> None:
         """
         Sets the turn rate of the radar, which can be positive or negative. The radar turn rate is
         measured in degrees per turn. The turn rate is added to the current direction of the radar.
@@ -527,8 +537,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_max_radar_turn_rate(self) -> float:
+    def max_radar_turn_rate(self) -> float:
         """
         Returns the maximum radar turn rate in degrees per turn.
 
@@ -537,8 +548,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @max_radar_turn_rate.setter
     @abstractmethod
-    def set_max_radar_turn_rate(self, max_radar_turn_rate: float) -> None:
+    def max_radar_turn_rate(self, max_radar_turn_rate: float) -> None:
         """
         Sets the maximum turn rate for turning the radar to the left or right. The maximum turn rate must
         be an absolute value between 0 and `Constants.MAX_RADAR_TURN_RATE`, inclusive. If the input turn
@@ -564,8 +576,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_target_speed(self) -> float:
+    def target_speed(self) -> float:
         """
         Returns the target speed in units per turn.
 
@@ -574,8 +587,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @target_speed.setter
     @abstractmethod
-    def set_target_speed(self, target_speed: float) -> None:
+    def target_speed(self, target_speed: float) -> None:
         """
         Sets the new target speed for the bot in units per turn. The target speed is the speed you want
         to achieve eventually, which could take one to several turns depending on the current speed.
@@ -599,8 +613,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_max_speed(self) -> float:
+    def max_speed(self) -> float:
         """
         Returns the maximum speed in units per turn.
 
@@ -609,8 +624,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @max_speed.setter
     @abstractmethod
-    def set_max_speed(self, max_speed: float) -> None:
+    def max_speed(self, max_speed: float) -> None:
         """
         Sets the maximum speed for the bot.
 
@@ -689,7 +705,7 @@ class BaseBotABC(ABC):
     def set_rescan(self) -> None:
         """
         Sets the bot to rescan with the radar.
-        
+
         This method is useful if the radar has not turned, and hence will not automatically scan bots.
         The last radar direction and sweep angle will be used for scanning for bots.
         """
@@ -1093,8 +1109,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_body_color(self) -> Color:
+    def body_color(self) -> Color | None:
         """
         Returns the color of the body.
 
@@ -1104,8 +1121,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @body_color.setter
     @abstractmethod
-    def set_body_color(self, color: Color) -> None:
+    def body_color(self, color: Color | None) -> None:
         """
         Sets the color of the body. Colors can (only) be changed each turn.
 
@@ -1118,8 +1136,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_turret_color(self) -> Color:
+    def turret_color(self) -> Color|None:
         """
         Returns the color of the gun turret.
 
@@ -1129,8 +1148,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @turret_color.setter
     @abstractmethod
-    def set_turret_color(self, color: Color) -> None:
+    def turret_color(self, color: Color|None) -> None:
         """
         Sets the color of the gun turret.
 
@@ -1146,8 +1166,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_radar_color(self) -> Color:
+    def radar_color(self) -> Color|None:
         """
         Returns the color of the radar.
 
@@ -1157,8 +1178,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @radar_color.setter
     @abstractmethod
-    def set_radar_color(self, color: Color) -> None:
+    def radar_color(self, color: Color|None) -> None:
         """
         Sets the color of the radar.
 
@@ -1174,8 +1196,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_bullet_color(self) -> Color:
+    def bullet_color(self) -> Color|None:
         """
         Returns the color of the fired bullets.
 
@@ -1185,8 +1208,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @bullet_color.setter
     @abstractmethod
-    def set_bullet_color(self, color: Color) -> None:
+    def bullet_color(self, color: Color|None) -> None:
         """
         Sets the color of the fired bullets. Colors can only be changed each turn.
 
@@ -1204,8 +1228,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_scan_color(self) -> Color:
+    def scan_color(self) -> Color|None:
         """
         Returns the color of the scan arc.
 
@@ -1214,8 +1239,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @scan_color.setter
     @abstractmethod
-    def set_scan_color(self, color: Color) -> None:
+    def scan_color(self, color: Color|None) -> None:
         """
         Sets the color of the scan arc. Colors can (only) be changed each turn.
 
@@ -1228,8 +1254,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_tracks_color(self) -> Color:
+    def tracks_color(self) -> Color|None:
         """
         Returns the color of the tank tracks.
 
@@ -1239,8 +1266,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @tracks_color.setter
     @abstractmethod
-    def set_tracks_color(self, color: Color) -> None:
+    def tracks_color(self, color: Color|None) -> None:
         """
         Sets the color of the tracks. Colors can only be changed once per turn.
 
@@ -1253,8 +1281,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_gun_color(self) -> Color:
+    def gun_color(self) -> Color|None:
         """
         Returns the color of the gun.
 
@@ -1264,8 +1293,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @gun_color.setter
     @abstractmethod
-    def set_gun_color(self, color: Color) -> None:
+    def gun_color(self, color: Color|None) -> None:
         """
         Sets the color of the gun.
 
@@ -1343,7 +1373,9 @@ class BaseBotABC(ABC):
         print(f"Connection error with {connection_error_event.server_uri}")
 
         if connection_error_event.error is not None:
-            traceback.print_exception(connection_error_event.error)  # Print the exception
+            traceback.print_exception(
+                connection_error_event.error
+            )  # Print the exception
 
     def on_game_started(self, game_started_event: GameStartedEvent) -> None:
         """
@@ -1453,7 +1485,9 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_bullet_hit_bullet(self, bullet_hit_bullet_event: BulletHitBulletEvent) -> None:
+    def on_bullet_hit_bullet(
+        self, bullet_hit_bullet_event: BulletHitBulletEvent
+    ) -> None:
         """
         The event handler triggered when a bullet fired from the bot has collided with another bullet.
 
@@ -1689,7 +1723,9 @@ class BaseBotABC(ABC):
         Returns:
             float: The direction to the point (x, y) in the range [0, 360).
         """
-        return self.normalize_absolute_angle(math.degrees(math.atan2(y - self.get_y(), x - self.get_x())))
+        return self.normalize_absolute_angle(
+            math.degrees(math.atan2(y - self.get_y(), x - self.get_x()))
+        )
 
     def bearing_to(self, x: float, y: float) -> float:
         """
@@ -1703,7 +1739,9 @@ class BaseBotABC(ABC):
         Returns:
             float: A bearing to the point (x, y) in the range [-180, 180).
         """
-        return self.normalize_relative_angle(self.direction_to(x, y) - self.get_direction())
+        return self.normalize_relative_angle(
+            self.direction_to(x, y) - self.get_direction()
+        )
 
     def gun_bearing_to(self, x: float, y: float) -> float:
         """
@@ -1717,7 +1755,9 @@ class BaseBotABC(ABC):
         Returns:
             float: A bearing to the point (x, y) in the range [-180, 180).
         """
-        return self.normalize_relative_angle(self.direction_to(x, y) - self.get_gun_direction())
+        return self.normalize_relative_angle(
+            self.direction_to(x, y) - self.get_gun_direction()
+        )
 
     def radar_bearing_to(self, x: float, y: float) -> float:
         """
@@ -1731,7 +1771,9 @@ class BaseBotABC(ABC):
         Returns:
             float: A bearing to the point (x, y) in the range [-180, 180).
         """
-        return self.normalize_relative_angle(self.direction_to(x, y) - self.get_radar_direction())
+        return self.normalize_relative_angle(
+            self.direction_to(x, y) - self.get_radar_direction()
+        )
 
     def distance_to(self, x: float, y: float) -> float:
         """

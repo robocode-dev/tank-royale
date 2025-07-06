@@ -7,6 +7,10 @@ with open('../../gradle.properties') as f:
     config.read_string(f"[default]\n{f.read()}")
 version = config.get('default', 'version')
 
+# stubgen src/robocode_tank_royale -o src/robocode_tank_royale-stubs
+# stubgen generated/robocode_tank_royale -o generated/robocode_tank_royale-stubs
+# touch generated/robocode_tank_royale/tank_royale/schema/py.typed
+
 setup(
     name="robocode-tank-royale",
     version=version,

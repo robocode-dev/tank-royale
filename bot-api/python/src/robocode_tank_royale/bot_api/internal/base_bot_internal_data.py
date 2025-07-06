@@ -8,7 +8,7 @@ from ..events import Condition, TickEvent
 from ..game_setup import GameSetup
 from ..initial_position import InitialPosition
 
-from robocode_tank_royale.schema import BotIntent, ServerHandshake  # type: ignore
+from robocode_tank_royale.schema import Message, BotIntent, ServerHandshake  
 
 GAME_NOT_RUNNING_MSG = "Game is not running"
 TICK_NOT_AVAILABLE_MSG = "Tick event is not available"
@@ -22,7 +22,7 @@ class BaseBotInternalData:
 
     def __init__(self, bot_info: Optional[BotInfo]):
         self.bot_info: Optional[BotInfo] = bot_info
-        self.bot_intent: BotIntent = BotIntent(type=BotIntent)
+        self.bot_intent: BotIntent = BotIntent(type=Message.Type.BOT_INTENT)
         self._my_id: Optional[int] = None
         self._teammate_ids: Set[int] = set()
         self._game_setup: Optional[GameSetup] = None
@@ -108,13 +108,13 @@ class BaseBotInternalData:
         self._tick_start_nano_time = value
 
     @property
-    def server_handshake(self) -> ServerHandshake:
-        if self._server_handshake is None:
-            raise BotException(NOT_CONNECTED_TO_SERVER_MSG)
-        return self._server_handshake
+    def server_handshake(self) -> ServerHandshake:  
+        if self._server_handshake is None:  
+            raise BotException(NOT_CONNECTED_TO_SERVER_MSG)  
+        return self._server_handshake  
 
     @server_handshake.setter
-    def server_handshake(self, value: ServerHandshake):
+    def server_handshake(self, value: ServerHandshake):  
         self._server_handshake = value
 
     @property
