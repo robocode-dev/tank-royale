@@ -72,6 +72,32 @@ class Color:
         """
         return cls(red, green, blue, alpha)
 
+    @classmethod
+    def from_hex(cls, hex_string: str) -> "Color":
+        """
+        Creates a Color instance from a hex color string.
+
+        Args:
+            hex_string (str): The hex color string, e.g., "#RRGGBB" or "#RRGGBBAA".
+
+        Returns:
+            Color: A new Color instance.
+        """
+        hex_string = hex_string.lstrip("#")
+        if len(hex_string) == 6:
+            r = int(hex_string[0:2], 16)
+            g = int(hex_string[2:4], 16)
+            b = int(hex_string[4:6], 16)
+            return cls(r, g, b)
+        elif len(hex_string) == 8:
+            r = int(hex_string[0:2], 16)
+            g = int(hex_string[2:4], 16)
+            b = int(hex_string[4:6], 16)
+            a = int(hex_string[6:8], 16)
+            return cls(r, g, b, a)
+        else:
+            raise ValueError("Invalid hex color string format")
+
     def to_tuple(self) -> tuple[int, int, int, int]:
         """
         Converts the color into a tuple representation.
