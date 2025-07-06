@@ -37,26 +37,33 @@ else:
 # print(f"Schema directory {schema_path_by_gradle_script} (from gradle) NOT FOUND")
 
 try:
+    # Test robocode_tank_royale.schema classes can be imported.
     from robocode_tank_royale.schema import ServerHandshake # type: ignore
     print("Imported robocode_tank_royale.schema.ServerHandshake successfully.")
 
+    # Test robocode_tank_royale.bot_api modules can be imported.
     from robocode_tank_royale.bot_api.internal import base_bot_internal_data # type: ignore
     print("Imported robocode_tank_royale.bot_api.internal.base_bot_internal_data successfully.")
-
     from robocode_tank_royale.bot_api.internal import event_queue # type: ignore
     print("Imported robocode_tank_royale.bot_api.internal.event_queue successfully.")
-
     from robocode_tank_royale.bot_api.internal import websocket_handler # type: ignore
     print("Imported robocode_tank_royale.bot_api.internal.websocket_handler successfully.")
-
     from robocode_tank_royale.bot_api.internal import base_bot_internals # type: ignore
     print("Imported robocode_tank_royale.bot_api.internal.base_bot_internals successfully.")
-
     from robocode_tank_royale.bot_api import base_bot # type: ignore
     print("Imported robocode_tank_royale.bot_api.base_bot successfully.")
-
     from robocode_tank_royale.bot_api import bot # type: ignore
     print("Imported robocode_tank_royale.bot_api.bot successfully.")
+
+    # Test robocode_tank_royale.bot_api classes can be imported.
+    from robocode_tank_royale.bot_api import Bot # type: ignore
+    print("Imported robocode_tank_royale.bot_api.Bot successfully.")
+    from robocode_tank_royale.bot_api import BotABC # type: ignore
+    print("Imported robocode_tank_royale.bot_api.BotABC successfully.")
+    from robocode_tank_royale.bot_api import BaseBot # type: ignore
+    print("Imported robocode_tank_royale.bot_api.BaseBot successfully.")
+    from robocode_tank_royale.bot_api import BaseBotABC # type: ignore
+    print("Imported robocode_tank_royale.bot_api.BaseBotABC successfully.")
 
     print("All main refactored modules imported successfully.")
     sys.exit(0) # Explicitly exit with 0 on success

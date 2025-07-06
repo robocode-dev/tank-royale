@@ -1,5 +1,4 @@
 from typing import Callable
-from abc import abstractmethod
 import asyncio
 import math
 
@@ -56,9 +55,14 @@ class _BotInternals(StopResumeListenerABC):
         self.turn_remaining: float = 0.
         self.gun_turn_remaining: float = 0.
         self.radar_turn_remaining: float = 0.
-        self._previous_direction: float = self._bot.get_direction()
-        self._previous_gun_direction: float = self._bot.get_gun_direction()
-        self._previous_radar_direction: float = self._bot.get_radar_direction()
+        try:
+            self._previous_direction: float = self._bot.get_direction()
+            self._previous_gun_direction: float = self._bot.get_gun_direction()
+            self._previous_radar_direction: float = self._bot.get_radar_direction()
+        except Exception:
+            self._previous_direction = 0.
+            self._previous_gun_direction = 0.
+            self._previous_radar_direction = 0.
     
     def _process_turn(self) -> None:
         """Process the bot's turn, updating movement and turn values."""
@@ -307,12 +311,10 @@ class Bot(BaseBot, BotABC):
         super().__init__(bot_info, server_url, server_secret)
         self._bot_internals = _BotInternals(bot=self, base_bot_internals=self._internals)
 
-    @abstractmethod
     async def run(self) -> None:
         """Main method to run the bot's logic."""
         pass
 
-    @abstractmethod
     def on_event(self, event: Condition) -> None:
         """Handle events that occur during the bot's execution."""
         pass

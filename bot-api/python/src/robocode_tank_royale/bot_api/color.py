@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from robocode_tank_royale.schema import Color as ColorSchema
+
 
 @dataclass(frozen=True)
 class Color:
@@ -13,6 +15,7 @@ class Color:
         alpha (int): The alpha (transparency) component of the color, ranging from 0 (fully transparent)
                      to 255 (fully opaque). Defaults to 255 (fully opaque).
     """
+
     red: int
     green: int
     blue: int
@@ -27,10 +30,16 @@ class Color:
         Raises:
             ValueError: If any component is outside the valid range.
         """
-        for component, name in [(self.red, "red"), (self.green, "green"), (self.blue, "blue"), (self.alpha, "alpha")]:
-            if component is not None:
-                if not 0 <= component <= 255:
-                    raise ValueError(f"{name} component must be between 0 and 255, got {component}")
+        for component, name in [
+            (self.red, "red"),
+            (self.green, "green"),
+            (self.blue, "blue"),
+            (self.alpha, "alpha"),
+        ]:
+            if not 0 <= component <= 255:
+                raise ValueError(
+                    f"{name} component must be between 0 and 255, got {component}"
+                )
 
     @classmethod
     def from_rgb(cls, red: int, green: int, blue: int) -> "Color":
@@ -63,7 +72,7 @@ class Color:
         """
         return cls(red, green, blue, alpha)
 
-    def to_tuple(self) -> tuple:
+    def to_tuple(self) -> tuple[int, int, int, int]:
         """
         Converts the color into a tuple representation.
 
@@ -72,7 +81,7 @@ class Color:
         """
         return self.red, self.green, self.blue, self.alpha
 
-    def to_rgb_tuple(self) -> tuple:
+    def to_rgb_tuple(self) -> tuple[int, int, int]:
         """
         Converts the color into an RGB tuple representation, excluding the alpha value.
 
@@ -80,3 +89,14 @@ class Color:
             tuple: A tuple of the form (red, green, blue).
         """
         return self.red, self.green, self.blue
+
+    def to_color_schema(self) -> ColorSchema:
+        """
+        Converts the Color instance to a schema.Color instance.
+
+        Returns:
+            schema.Color: A schema.Color instance with the same RGB and alpha values.
+        """
+        return ColorSchema(
+            value=f"#{self.red:02x}{self.green:02x}{self.blue:02x}{self.alpha:02x}"
+        )

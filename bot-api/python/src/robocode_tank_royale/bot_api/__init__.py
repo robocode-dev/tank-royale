@@ -16,9 +16,11 @@ from .game_setup import GameSetup
 from .game_type import GameType
 from .initial_position import InitialPosition
 from .base_bot import BaseBot
+from .bot import Bot
 
 __all__ = [
     "BaseBotABC",
+    "Bot",
     "BotABC",
     "BotException",
     "BotInfo",
