@@ -414,7 +414,8 @@ class BaseBotInternals:
                 ):
                     await self.next_turn_monitor.wait()
         except asyncio.CancelledError:
-            raise ThreadInterruptedException()  # Propagate as specific interruption
+            # We get a CancelledError if the server stops the game.
+            return None
 
     def _stop_rogue_thread(self) -> None:
         # In asyncio, tasks don't have a direct 'thread' equivalent accessible this way for comparison.

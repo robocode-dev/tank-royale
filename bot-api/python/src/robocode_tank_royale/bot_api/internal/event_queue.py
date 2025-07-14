@@ -110,9 +110,6 @@ class EventQueue:
             self.current_top_event_priority = self.get_priority(current_event)
             self.current_top_event = current_event
 
-            with self.events_lock:
-                self.events.remove(current_event)
-
             try:
                 self.dispatch(current_event, turn_number)
             except ThreadInterruptedException:

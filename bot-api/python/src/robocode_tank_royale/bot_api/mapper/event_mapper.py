@@ -44,12 +44,20 @@ class EventMapper:
     @staticmethod
     def map_tick_event(event: SchemaTickEvent, base_bot: BaseBotABC) -> TickEvent:
         """Map a schema TickEventForBot to a bot-api TickEvent."""
+        mapped_events = None
+        assert event.events is not None
+        non_null_events: list[SchemaEvent] = []
+        for e in event.events:
+            assert e is not None
+            non_null_events.append(e)
+        mapped_events = EventMapper._map_events(non_null_events, base_bot)
+        assert mapped_events is not None
         return TickEvent(
             event.turn_number,
             event.round_number,
             BotStateMapper.map(event.bot_state),
-            BulletStateMapper.map(event.bullet_states),  # type: ignore
-            EventMapper._map_events(event.events, base_bot)  # type: ignore
+            BulletStateMapper.map(event.bullet_states),
+            mapped_events,
         )
 
     @staticmethod
