@@ -370,8 +370,21 @@ class SchemaUtils:
             class_names.append(class_name)
 
         # Create file content with proper formatting
-        file_content = "\n".join(import_statements)
-        file_content += f"\n\n__all__ = [\n    " + ",\n    ".join(class_names) + "\n]"
+        file_content = '"""\nAuto-generated __init__.py for schema types.\n"""\n\n'
+        file_content += "from typing import Any, Type\n\n"
+        file_content += "\n".join(import_statements)
+
+        file_content += (
+            f'\n\n__all__ = [\n    '
+            + ',\n    '.join(f'"{n}"' for n in class_names)
+            + '\n]\n\n'
+        )
+
+        # Generate the class map
+        file_content += "CLASS_MAP: dict[str, Type[Any]] = {\n"
+        map_entries = [f'    "{name}": {name},' for name in class_names]
+        file_content += "\n".join(map_entries)
+        file_content += "\n}\n"
 
         # Write to file
         with open(init_file_path, "w") as f:

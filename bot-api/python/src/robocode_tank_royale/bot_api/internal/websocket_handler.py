@@ -18,14 +18,23 @@ from ..events import (
 from .base_bot_internal_data import BaseBotInternalData
 from .bot_event_handlers import BotEventHandlers
 from .internal_event_handlers import InternalEventHandlers
-from .json_util import to_json
+from .json_util import to_json, from_json
 from ..initial_position import InitialPosition
 from ..bot_exception import BotException
 from ..mapper.event_mapper import EventMapper
 from ..mapper.game_setup_mapper import GameSetupMapper
 from ..mapper.results_mapper import ResultsMapper
-from robocode_tank_royale.schema import Message, ResultsForBot, TickEventForBot, BotReady
-
+from robocode_tank_royale.schema import (
+    Message,
+    TickEventForBot,
+    BotReady,
+    GameStartedEventForBot,
+    GameEndedEventForBot,
+    RoundEndedEventForBot,
+    SkippedTurnEvent,
+    ServerHandshake,
+    RoundStartedEvent as RoundStartedEventForBot,
+)
 
 
 class WebSocketHandler:
@@ -145,7 +154,7 @@ class WebSocketHandler:
             asyncio.get_event_loop().time() * 1_000_000_000
         )
 
-        tick_event_for_bot = TickEventForBot(**json_msg)
+        tick_event_for_bot: TickEventForBot = from_json(json_msg)  # type: ignore
         mapped_tick_event = EventMapper.map_tick_event(
             tick_event_for_bot, self.base_bot
         )
@@ -158,8 +167,8 @@ class WebSocketHandler:
         # or that this responsibility shifts elsewhere. The subtask description focuses on BaseBotInternalData.
 
         bot_intent = self.base_bot_internal_data.bot_intent
-        if bot_intent.get("rescan") is not None and bot_intent.get("rescan"):  # type: ignore
-            bot_intent["rescan"] = False  # type: ignore
+        if bot_intent.rescan is not None and bot_intent.rescan:
+            bot_intent.rescan = False
 
         for (
             event
@@ -173,15 +182,18 @@ class WebSocketHandler:
 
     async def handle_round_started(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a round started event from the server."""
-        round_started_event = RoundStartedEvent(json_msg["roundNumber"])
+        schema_evt: RoundStartedEventForBot = from_json(json_msg)  # type: ignore
+        round_started_event = RoundStartedEvent(schema_evt.round_number)
 
         self.bot_event_handlers.on_round_started.publish(round_started_event)
         self.internal_event_handlers.on_round_started.publish(round_started_event)
 
     async def handle_round_ended(self, json_msg: Dict[Any, Any]):
         """Handle a round ended event from the server."""
+        schema_evt: RoundEndedEventForBot = from_json(json_msg)  # type: ignore
+        results = ResultsMapper.map(schema_evt.results)
         round_ended_event = RoundEndedEvent(
-            json_msg["roundNumber"], json_msg["turnNumber"], json_msg["results"]
+            schema_evt.round_number, schema_evt.turn_number, results
         )
 
         self.bot_event_handlers.on_round_ended.publish(round_ended_event)
@@ -190,17 +202,23 @@ class WebSocketHandler:
     async def handle_game_started(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a game started event from the server."""
         assert self.websocket is not None, "WebSocket connection is not established."
-        self.base_bot_internal_data.my_id = json_msg["myId"]
+        game_started_event: GameStartedEventForBot = from_json(json_msg)  # type: ignore
+        print(game_started_event)
+        self.base_bot_internal_data.my_id = game_started_event.my_id
 
-        teammate_ids = set(json_msg.get("teammateIds", []))
-        self.base_bot_internal_data.teammate_ids = teammate_ids
+        if game_started_event.teammate_ids is not None:
+            self.base_bot_internal_data.teammate_ids = set(
+                id for id in game_started_event.teammate_ids if id is not None
+            )
 
         self.base_bot_internal_data.game_setup = GameSetupMapper.map(
-            json_msg["gameSetup"]
+            game_started_event.game_setup
         )
 
         initial_position = InitialPosition(
-            json_msg["startX"], json_msg["startY"], json_msg["startDirection"]
+            game_started_event.start_x,
+            game_started_event.start_y,
+            game_started_event.start_direction,
         )
         self.base_bot_internal_data.initial_position = initial_position
 
@@ -209,7 +227,7 @@ class WebSocketHandler:
 
         self.bot_event_handlers.on_game_started.publish(
             GameStartedEvent(
-                json_msg["myId"],
+                game_started_event.my_id,
                 initial_position,
                 self.base_bot_internal_data.game_setup,
             )
@@ -217,16 +235,11 @@ class WebSocketHandler:
 
     async def handle_game_ended(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a game ended event from the server."""
-        number_of_rounds = json_msg.get(
-            "numberOfRounds", 0
-        )  # Use get with default value for safety
-
-        results = json_msg.get("results")
-        results_for_bot = ResultsForBot(**results)  # type: ignore - schema code is generated and should be valid
+        schema_evt: GameEndedEventForBot = from_json(json_msg)  # type: ignore
 
         game_ended_event = GameEndedEvent()
-        game_ended_event.number_of_rounds = number_of_rounds
-        game_ended_event.results = ResultsMapper.map(results_for_bot)
+        game_ended_event.number_of_rounds = schema_evt.number_of_rounds
+        game_ended_event.results = ResultsMapper.map(schema_evt.results)
 
         self.bot_event_handlers.on_game_ended.publish(game_ended_event)
         self.internal_event_handlers.on_game_ended.publish(game_ended_event)
@@ -241,13 +254,15 @@ class WebSocketHandler:
         if self.base_bot_internal_data.event_handling_disabled_turn:
             return
 
-        skipped_turn_event = EventMapper.map_skipped_turn_event(**json_msg)
+        schema_evt: SkippedTurnEvent = from_json(json_msg)  # type: ignore
+        skipped_turn_event = EventMapper.map_skipped_turn_event(schema_evt)
         self.bot_event_handlers.on_skipped_turn.publish(skipped_turn_event)
 
     async def handle_server_handshake(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a server handshake from the server."""
         assert self.websocket is not None, "WebSocket connection is not established."
-        self.base_bot_internal_data.server_handshake = json_msg  # type: ignore
+        server_handshake: ServerHandshake = from_json(json_msg)  # type: ignore
+        self.base_bot_internal_data.server_handshake = server_handshake
 
         # Reply by sending bot handshake
         is_droid: bool = hasattr(self.base_bot, "is_droid") and self.base_bot.is_droid  # type: ignore
@@ -257,7 +272,7 @@ class WebSocketHandler:
         from ..internal.bot_handshake_factory import BotHandshakeFactory
 
         bot_handshake = BotHandshakeFactory.create(
-            json_msg["sessionId"], self.bot_info, is_droid, self.server_secret
+            server_handshake.session_id, self.bot_info, is_droid, self.server_secret
         )
 
         # Send handshake message
