@@ -88,7 +88,7 @@ def _from_json_object(obj: dict[str, Any], klass: Type[Any]) -> Any:
                 deserialized_items = []
                 for item in value:  # type: ignore
                     assert isinstance(item, dict)
-                    item_type = schema.CLASS_MAP[item["type"]]
+                    item_type = schema.CLASS_MAP[item["type"]] if 'type' in item else param_type
                     deserialized_items.append(_from_json_object(item, item_type))  # type: ignore
                 kwargs[key] = deserialized_items
             else:

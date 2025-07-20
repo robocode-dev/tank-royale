@@ -1,4 +1,5 @@
 from threading import Lock
+from types import CoroutineType
 from typing import Any, Generic, TypeVar, Callable, List
 import heapq
 from weakref import WeakSet
@@ -24,9 +25,15 @@ class EventHandler(Generic[T]):
         """Initialize a new EventHandler instance."""
         self._lock = Lock()
         self._subscriber_entries: List[EventHandler.EntryWithPriority] = []
-        self._subscriber_set: WeakSet[Callable[[T], None]] = WeakSet()
+        self._subscriber_set: WeakSet[Callable[[T], CoroutineType[Any, Any, None]]] = (
+            WeakSet()
+        )
 
-    def subscribe(self, subscriber: Callable[[T], None], priority: int = _DEFAULT_PRIORITY) -> None:
+    def subscribe(
+        self,
+        subscriber: Callable[[T], CoroutineType[Any, Any, None]],
+        priority: int = _DEFAULT_PRIORITY,
+    ) -> None:
         """Subscribe a new event handler with a given priority.
 
         Args:
@@ -53,7 +60,9 @@ class EventHandler(Generic[T]):
             # Use heapq to maintain the priority queue
             heapq.heappush(self._subscriber_entries, entry)
 
-    def unsubscribe(self, subscriber: Callable[[T], None]) -> bool:
+    def unsubscribe(
+        self, subscriber: Callable[[T], CoroutineType[Any, Any, None]]
+    ) -> bool:
         """Unsubscribe a subscriber from this event handler.
 
         Args:
@@ -85,7 +94,7 @@ class EventHandler(Generic[T]):
             self._subscriber_set.clear()
             # No need to heapify an empty list
 
-    def publish(self, event_data: T) -> None:
+    async def publish(self, event_data: T) -> None:
         """Publishes an event, invoking all subscribed listeners in order of their priority.
 
         Args:
@@ -102,11 +111,11 @@ class EventHandler(Generic[T]):
 
         # Process subscribers in priority order
         for entry in sorted_entries:
-            try:
-                entry.subscriber(event_data)
-            except Exception:
-                # Catch the exception to allow other subscribers to process
-                pass
+            # try:
+            await entry.subscriber(event_data)
+            # except Exception:
+            #     # Catch the exception to allow other subscribers to process
+            #     pass
 
     def get_subscriber_count(self) -> int:
         """Returns the number of subscribers currently registered.
@@ -121,7 +130,11 @@ class EventHandler(Generic[T]):
     class EntryWithPriority:
         """Private class to store a subscriber together with its priority."""
 
-        def __init__(self, subscriber: Callable[[T], None], priority: int):
+        def __init__(
+            self,
+            subscriber: Callable[[T], CoroutineType[Any, Any, None]],
+            priority: int,
+        ):
             """Constructs a new entry with the specified subscriber and priority.
 
             Args:

@@ -70,12 +70,12 @@ class WebSocketHandler:
         try:
             self.websocket = await websockets.connect(self.server_url)
             # Publish connected event
-            self.bot_event_handlers.on_connected.publish(
+            await self.bot_event_handlers.on_connected.publish(
                 ConnectedEvent(self.server_url)
             )
             return self.websocket
         except Exception as e:
-            self.bot_event_handlers.on_connection_error.publish(
+            await self.bot_event_handlers.on_connection_error.publish(
                 ConnectionErrorEvent(self.server_url, e)
             )
             self.closed_event.set()
@@ -89,17 +89,19 @@ class WebSocketHandler:
     async def on_close(
         self, websocket: websockets.ClientConnection, code: int, reason: str
     ) -> None:
-        """Handle WebSocket close event."""
-        del websocket  # Unused parameter, but kept for compatibility
+        """Handle WebSocket close event.""" # Unused parameter, but kept for compatibility
+        # Publish and await on both event handlers in parallel
         disconnected_event = DisconnectedEvent(self.server_url, True, code, reason)
-        self.bot_event_handlers.on_disconnected.publish(disconnected_event)
-        self.internal_event_handlers.on_disconnected.publish(disconnected_event)
+        await asyncio.gather(
+            self.bot_event_handlers.on_disconnected.publish(disconnected_event),
+            self.internal_event_handlers.on_disconnected.publish(disconnected_event)
+        )
         self.closed_event.set()
 
     async def on_error(self, websocket: websockets.ClientConnection, error: Exception):
         """Handle WebSocket error."""
         del websocket  # Unused parameter, but kept for compatibility
-        self.bot_event_handlers.on_connection_error.publish(
+        await self.bot_event_handlers.on_connection_error.publish(
             ConnectionErrorEvent(self.server_url, error)
         )
         self.closed_event.set()
@@ -117,6 +119,7 @@ class WebSocketHandler:
             assert e.rcvd is not None, "ConnectionClosed without received data."
             await self.on_close(self.websocket, e.rcvd.code, e.rcvd.reason)
         except Exception as e:
+            print(f'Unexpected error: {e}')
             await self.on_error(self.websocket, e)
 
     async def process_message(self, message: str):
@@ -161,32 +164,37 @@ class WebSocketHandler:
 
         self.base_bot_internal_data.tick_event = mapped_tick_event
 
-        # The add_events_from_tick from BaseBotInternals used to also add individual events from the tick to event_queue
+        # The add_events_from_tick from BaseBotInternals used to also add individual
+        # events from the tick to event_queue
         # This logic needs to be preserved if EventQueue is still used in a similar manner.
         # For now, assuming EventQueue will source its events based on the new tick_event if needed,
-        # or that this responsibility shifts elsewhere. The subtask description focuses on BaseBotInternalData.
+        # or that this responsibility shifts elsewhere.
+        # The subtask description focuses on BaseBotInternalData.
 
         bot_intent = self.base_bot_internal_data.bot_intent
         if bot_intent.rescan is not None and bot_intent.rescan:
             bot_intent.rescan = False
 
-        for (
-            event
-        ) in (
-            mapped_tick_event.events
-        ):  # mapped_tick_event.events should still be iterable
-            self.internal_event_handlers.fire_event(event)
+        # mapped_tick_event.events should still be iterable
+        await asyncio.gather(
+            *(
+                self.internal_event_handlers.fire_event(event)
+                for event in mapped_tick_event.events
+            )
+        )
 
         # Trigger next turn (not tick-event!)
-        self.internal_event_handlers.on_next_turn.publish(mapped_tick_event)
+        await self.internal_event_handlers.on_next_turn.publish(mapped_tick_event)
 
     async def handle_round_started(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a round started event from the server."""
         schema_evt: RoundStartedEventForBot = from_json(json_msg)  # type: ignore
         round_started_event = RoundStartedEvent(schema_evt.round_number)
 
-        self.bot_event_handlers.on_round_started.publish(round_started_event)
-        self.internal_event_handlers.on_round_started.publish(round_started_event)
+        await asyncio.gather(
+            self.bot_event_handlers.on_round_started.publish(round_started_event),
+            self.internal_event_handlers.on_round_started.publish(round_started_event),
+        )
 
     async def handle_round_ended(self, json_msg: Dict[Any, Any]):
         """Handle a round ended event from the server."""
@@ -195,9 +203,10 @@ class WebSocketHandler:
         round_ended_event = RoundEndedEvent(
             schema_evt.round_number, schema_evt.turn_number, results
         )
-
-        self.bot_event_handlers.on_round_ended.publish(round_ended_event)
-        self.internal_event_handlers.on_round_ended.publish(round_ended_event)
+        await asyncio.gather(
+            self.bot_event_handlers.on_round_ended.publish(round_ended_event),
+            self.internal_event_handlers.on_round_ended.publish(round_ended_event),
+        )
 
     async def handle_game_started(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a game started event from the server."""
@@ -225,7 +234,7 @@ class WebSocketHandler:
         # Send ready signal
         await self.websocket.send(to_json(BotReady(type=Message.Type.BOT_READY)))
 
-        self.bot_event_handlers.on_game_started.publish(
+        await self.bot_event_handlers.on_game_started.publish(
             GameStartedEvent(
                 game_started_event.my_id,
                 initial_position,
@@ -241,13 +250,17 @@ class WebSocketHandler:
         game_ended_event.number_of_rounds = schema_evt.number_of_rounds
         game_ended_event.results = ResultsMapper.map(schema_evt.results)
 
-        self.bot_event_handlers.on_game_ended.publish(game_ended_event)
-        self.internal_event_handlers.on_game_ended.publish(game_ended_event)
+        await asyncio.gather(
+            self.bot_event_handlers.on_game_ended.publish(game_ended_event),
+            self.internal_event_handlers.on_game_ended.publish(game_ended_event),
+        )
 
     async def handle_game_aborted(self) -> None:
         """Handle a game aborted event from the server."""
-        self.bot_event_handlers.on_game_aborted.publish(None)
-        self.internal_event_handlers.on_game_aborted.publish(None)
+        await asyncio.gather(
+            self.bot_event_handlers.on_game_aborted.publish(None),
+            self.internal_event_handlers.on_game_aborted.publish(None),
+        )
 
     async def handle_skipped_turn(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a skipped turn event from the server."""
@@ -256,7 +269,7 @@ class WebSocketHandler:
 
         schema_evt: SkippedTurnEvent = from_json(json_msg)  # type: ignore
         skipped_turn_event = EventMapper.map_skipped_turn_event(schema_evt)
-        self.bot_event_handlers.on_skipped_turn.publish(skipped_turn_event)
+        await self.bot_event_handlers.on_skipped_turn.publish(skipped_turn_event)
 
     async def handle_server_handshake(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a server handshake from the server."""
