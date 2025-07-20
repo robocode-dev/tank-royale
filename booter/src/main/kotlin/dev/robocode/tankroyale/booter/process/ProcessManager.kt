@@ -378,6 +378,10 @@ class ProcessManager {
         val shScript = botDir.resolve("$botName.sh")
         if (shScript.exists()) return shScript
 
+        // Then check for the.py file since python is also supported
+        val pyScript = botDir.resolve("$botName.py")
+        if (pyScript.exists()) return pyScript
+
         // Look for any file with no file extension or containing the '#!' (shebang) characters
         return findScriptWithShebangOrMatchingName(botDir, botName)
     }
@@ -417,6 +421,7 @@ class ProcessManager {
         return when (getScriptType(command)) {
             ScriptType.WINDOWS_BATCH -> ProcessBuilder("cmd.exe", "/c \"$command\"")
             ScriptType.SHELL_SCRIPT -> ProcessBuilder("bash", "-c", "\"$command\"")
+            ScriptType.PYTHON_SCRIPT -> ProcessBuilder("python", command)
             ScriptType.OTHER -> ProcessBuilder(command)
         }
     }
@@ -427,6 +432,7 @@ class ProcessManager {
     private enum class ScriptType {
         WINDOWS_BATCH,
         SHELL_SCRIPT,
+        PYTHON_SCRIPT,
         OTHER
     }
 
@@ -438,6 +444,7 @@ class ProcessManager {
         return when {
             cmd.endsWith(".bat") -> ScriptType.WINDOWS_BATCH
             cmd.endsWith(".sh") -> ScriptType.SHELL_SCRIPT
+            cmd.endsWith(".py") -> ScriptType.PYTHON_SCRIPT
             else -> ScriptType.OTHER
         }
     }
