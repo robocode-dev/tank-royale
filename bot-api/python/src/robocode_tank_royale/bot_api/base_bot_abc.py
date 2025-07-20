@@ -1337,7 +1337,7 @@ class BaseBotABC(ABC):
         pass
 
     @staticmethod
-    def on_connected(connected_event: ConnectedEvent) -> None:
+    async def on_connected(connected_event: ConnectedEvent) -> None:
         """
         The event handler triggered when connected to the server.
 
@@ -1347,7 +1347,7 @@ class BaseBotABC(ABC):
         print(f"Connected to: {connected_event.server_uri}")  # Use f-string
 
     @staticmethod
-    def on_disconnected(disconnected_event: DisconnectedEvent) -> None:
+    async def on_disconnected(disconnected_event: DisconnectedEvent) -> None:
         """
         The event handler triggered when disconnected from the server.
 
@@ -1363,7 +1363,7 @@ class BaseBotABC(ABC):
         print(msg)
 
     @staticmethod
-    def on_connection_error(connection_error_event: ConnectionErrorEvent) -> None:
+    async def on_connection_error(connection_error_event: ConnectionErrorEvent) -> None:
         """
         The event handler triggered when a connection error occurs.
 
@@ -1377,7 +1377,7 @@ class BaseBotABC(ABC):
                 connection_error_event.error
             )  # Print the exception
 
-    def on_game_started(self, game_started_event: GameStartedEvent) -> None:
+    async def on_game_started(self, game_started_event: GameStartedEvent) -> None:
         """
         The event handler triggered when a game has started.
 
@@ -1386,7 +1386,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_game_ended(self, game_ended_event: GameEndedEvent) -> None:
+    async def on_game_ended(self, game_ended_event: GameEndedEvent) -> None:
         """
         The event handler triggered when a game has ended.
 
@@ -1395,7 +1395,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_round_started(self, round_started_event: RoundStartedEvent) -> None:
+    async def on_round_started(self, round_started_event: RoundStartedEvent) -> None:
         """
         The event handler triggered when a new round has started.
 
@@ -1404,7 +1404,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_round_ended(self, round_ended_event: RoundEndedEvent) -> None:
+    async def on_round_ended(self, round_ended_event: RoundEndedEvent) -> None:
         """
         The event handler triggered when a round has ended.
 
@@ -1413,7 +1413,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_tick(self, tick_event: TickEvent) -> None:
+    async def on_tick(self, tick_event: TickEvent) -> None:
         """
         The event handler triggered when a game tick event occurs, i.e., when a new turn in a round has started.
 
@@ -1422,7 +1422,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_bot_death(self, bot_death_event: BotDeathEvent) -> None:
+    async def on_bot_death(self, bot_death_event: BotDeathEvent) -> None:
         """
         The event handler triggered when another bot has died.
 
@@ -1431,7 +1431,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_death(self, death_event: DeathEvent) -> None:
+    async def on_death(self, death_event: DeathEvent) -> None:
         """
         The event handler triggered when this bot has died.
 
@@ -1440,7 +1440,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_hit_bot(self, bot_hit_bot_event: HitBotEvent) -> None:
+    async def on_hit_bot(self, bot_hit_bot_event: HitBotEvent) -> None:
         """
         The event handler triggered when the bot has collided with another bot.
 
@@ -1449,7 +1449,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_hit_wall(self, bot_hit_wall_event: HitWallEvent) -> None:
+    async def on_hit_wall(self, bot_hit_wall_event: HitWallEvent) -> None:
         """
         The event handler triggered when the bot has hit a wall.
 
@@ -1458,7 +1458,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_bullet_fired(self, bullet_fired_event: BulletFiredEvent) -> None:
+    async def on_bullet_fired(self, bullet_fired_event: BulletFiredEvent) -> None:
         """
         The event handler triggered when the bot has fired a bullet.
 
@@ -1467,7 +1467,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_hit_by_bullet(self, hit_by_bullet_event: HitByBulletEvent) -> None:
+    async def on_hit_by_bullet(self, hit_by_bullet_event: HitByBulletEvent) -> None:
         """
         The event handler triggered when the bot has been hit by a bullet.
 
@@ -1476,7 +1476,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_bullet_hit(self, bullet_hit_bot_event: BulletHitBotEvent) -> None:
+    async def on_bullet_hit(self, bullet_hit_bot_event: BulletHitBotEvent) -> None:
         """
         The event handler triggered when the bot has hit another bot with a bullet.
 
@@ -1485,7 +1485,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_bullet_hit_bullet(
+    async def on_bullet_hit_bullet(
         self, bullet_hit_bullet_event: BulletHitBulletEvent
     ) -> None:
         """
@@ -1496,7 +1496,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_bullet_hit_wall(self, bullet_hit_wall_event: BulletHitWallEvent) -> None:
+    async def on_bullet_hit_wall(self, bullet_hit_wall_event: BulletHitWallEvent) -> None:
         """
         The event handler triggered when a bullet has hit a wall.
 
@@ -1505,7 +1505,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_scanned_bot(self, scanned_bot_event: ScannedBotEvent) -> None:
+    async def on_scanned_bot(self, scanned_bot_event: ScannedBotEvent) -> None:
         """
         Event handler triggered when the bot's radar scans another bot.
 
@@ -1521,7 +1521,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_skipped_turn(self, skipped_turn_event: SkippedTurnEvent) -> None:
+    async def on_skipped_turn(self, skipped_turn_event: SkippedTurnEvent) -> None:
         """
         Handles the event when the bot skips a turn.
 
@@ -1542,7 +1542,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_won_round(self, won_round_event: WonRoundEvent) -> None:
+    async def on_won_round(self, won_round_event: WonRoundEvent) -> None:
         """
         The event handler triggered when the bot has won a round.
 
@@ -1553,7 +1553,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_custom_event(self, custom_event: CustomEvent) -> None:
+    async def on_custom_event(self, custom_event: CustomEvent) -> None:
         """
         The event handler triggered when some specific custom condition has been met.
 
@@ -1565,7 +1565,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    def on_team_message(self, team_message_event: TeamMessageEvent) -> None:
+    async def on_team_message(self, team_message_event: TeamMessageEvent) -> None:
         """
         The event handler triggered when the bot has received a message from a teammate.
 

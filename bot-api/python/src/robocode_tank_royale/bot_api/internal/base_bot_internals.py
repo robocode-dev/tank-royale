@@ -126,22 +126,18 @@ class BaseBotInternals:
             self._on_bullet_fired, 100
         )
 
-    def _on_round_started(self, event: RoundStartedEvent) -> None:
+    async def _on_round_started(self, event: RoundStartedEvent) -> None:
         self._reset_movement()
         self.event_queue.clear()  # Clears conditions in self.data.conditions
         self.data.is_stopped = False
         self.data.event_handling_disabled_turn = 0
         self.last_execute_turn_number = -1
 
-    def _on_next_turn(self, event: TickEvent) -> None:
-        # TODO: figure out how the next_turn thing works.
-        # This method might be related to waking up the bot's main loop if it's waiting.
-        # With asyncio, this could involve signaling an asyncio.Condition.
-        # For now, its direct equivalent might not be needed if `execute` and `_wait_for_next_turn`
-        # are correctly managed by the asyncio event loop and `self.next_turn_monitor`.
-        pass
+    async def _on_next_turn(self, event: TickEvent) -> None:
+        async with self.next_turn_monitor:
+            self.next_turn_monitor.notify_all()
 
-    def _on_bullet_fired(self, event: BulletFiredEvent) -> None:
+    async def _on_bullet_fired(self, event: BulletFiredEvent) -> None:
         if self.data.bot_intent:
             self.data.bot_intent.firepower = 0.0
         pass
@@ -257,9 +253,9 @@ class BaseBotInternals:
     def set_interruptible(self, interruptible: bool) -> None:
         self.event_queue.set_current_event_interruptible(interruptible)
 
-    def dispatch_events(self, turn_number: int) -> None:
+    async def dispatch_events(self, turn_number: int) -> None:
         try:
-            self.event_queue.dispatch_events(turn_number)
+            await self.event_queue.dispatch_events(turn_number)
         except Exception:
             traceback.print_exc()
 
@@ -359,9 +355,8 @@ class BaseBotInternals:
             # Add events from the current tick to the event queue
             self.event_queue.add_events_from_tick(current_tick)
 
-            self.dispatch_events(turn_number)
+            await self.dispatch_events(turn_number)
             await self._send_intent()
-
         await self._wait_for_next_turn(turn_number)
 
     async def _send_intent(self) -> None:
@@ -412,7 +407,7 @@ class BaseBotInternals:
                     == asyncio.current_task()  # Ensure this is the bot's main task\
                     and not asyncio.current_task().cancelled()  # type: ignore
                 ):
-                    await self.next_turn_monitor.wait()
+                        await self.next_turn_monitor.wait()
         except asyncio.CancelledError:
             # We get a CancelledError if the server stops the game.
             return None

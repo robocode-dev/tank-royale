@@ -22,7 +22,7 @@ class BaseBotInternalData:
 
     def __init__(self, bot_info: Optional[BotInfo]):
         self.bot_info: Optional[BotInfo] = bot_info
-        self.bot_intent: BotIntent = BotIntent(type=Message.Type.BOT_INTENT)
+        self.bot_intent: BotIntent = BotIntent(type=Message.Type.BOT_INTENT, team_messages=[])
         self._my_id: Optional[int] = None
         self._teammate_ids: Set[int] = set()
         self._game_setup: Optional[GameSetup] = None

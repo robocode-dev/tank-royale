@@ -21,7 +21,7 @@ class _BotInternals(StopResumeListenerABC):
         self._clear_remaining()
 
         handlers = self._base_bot_internals.internal_event_handlers
-        def _stop_thread(_: ...) -> None:
+        async def _stop_thread(_: ...) -> None:
             self._base_bot_internals.stop_thread()
         handlers.on_game_aborted.subscribe(_stop_thread, 100)
         handlers.on_round_ended.subscribe(_stop_thread, 90)
@@ -37,18 +37,23 @@ class _BotInternals(StopResumeListenerABC):
         self._gun_turn_reached = asyncio.Condition()
         self._radar_turn_reached = asyncio.Condition()
 
-    def on_next_turn(self, e: TickEvent) -> None:
+        self._override_target_speed = False
+        self._override_turn_rate = False
+        self._override_gun_turn_rate = False
+        self._override_radar_turn_rate = False
+
+    async def on_next_turn(self, e: TickEvent) -> None:
         """Handle the next turn event."""
         if e.turn_number == 1:
             self.on_first_turn()
         self._process_turn()
-    
+
     def on_first_turn(self) -> None:
         """Handle the first turn of the bot."""
         self._base_bot_internals.stop_thread()  # sanity before starting a new thread (later)
         self._clear_remaining()
         self._base_bot_internals.start_thread(self._bot)
-    
+
     def _clear_remaining(self) -> None:
         """Clear the remaining movement and turn values."""
         self.distance_remaining: float = 0.
@@ -63,24 +68,24 @@ class _BotInternals(StopResumeListenerABC):
             self._previous_direction = 0.
             self._previous_gun_direction = 0.
             self._previous_radar_direction = 0.
-    
+
     def _process_turn(self) -> None:
         """Process the bot's turn, updating movement and turn values."""
         if self._bot.is_disabled():
             self._clear_remaining()
-        else:
-            self._update_turn_remaining()
-            self._update_gun_turn_remaining()
-            self._update_radar_turn_remaining()
-            self._update_movement()
-    
-    def on_hit_wall(self):
+            return
+        self._update_movement()
+        self._update_turn_remaining()
+        self._update_gun_turn_remaining()
+        self._update_radar_turn_remaining()
+
+    async def on_hit_wall(self):
         self.distance_remaining = 0.
-    
-    def on_hit_bot(self, e: HitBotEvent) -> None:
+
+    async def on_hit_bot(self, e: HitBotEvent) -> None:
         if e.is_rammed:
             self.distance_remaining = 0.
-    
+
     @property
     def turn_rate(self) -> float:
         return self._base_bot_internals.turn_rate
@@ -89,7 +94,7 @@ class _BotInternals(StopResumeListenerABC):
         self._override_turn_rate = False
         self.turn_remaining = self._to_infinite_value(self._base_bot_internals.turn_rate)
         self._base_bot_internals.turn_rate = x
-    
+
     @property
     def gun_turn_rate(self) -> float:
         return self._base_bot_internals.gun_turn_rate
@@ -98,7 +103,7 @@ class _BotInternals(StopResumeListenerABC):
         self._override_gun_turn_rate = False
         self.gun_turn_remaining = self._to_infinite_value(self._base_bot_internals.gun_turn_rate)
         self._base_bot_internals.gun_turn_rate = x
-    
+
     @property
     def radar_turn_rate(self) -> float:
         return self._base_bot_internals.radar_turn_rate
@@ -107,7 +112,7 @@ class _BotInternals(StopResumeListenerABC):
         self._override_radar_turn_rate = False
         self.radar_turn_remaining = self._to_infinite_value(self._base_bot_internals.radar_turn_rate)
         self._base_bot_internals.radar_turn_rate = x
-    
+
     def _to_infinite_value(self, x: float) -> float:
         """Convert a turn rate to an infinite value for remaining turns."""
         if x > 0:
@@ -115,26 +120,26 @@ class _BotInternals(StopResumeListenerABC):
         elif x < 0:
             return float('-inf')
         return 0.0
-    
+
     def set_target_speed(self, speed: float) -> None:
         self._override_target_speed = False
         self.distance_remaining = self._to_infinite_value(speed)
         self._base_bot_internals.set_target_speed(speed)
-    
+
     def set_forward(self, distance: float) -> None:
         self._override_target_speed = True
         if math.isnan(distance):
             raise ValueError("'distance' cannot be NaN")
         self._get_and_set_new_target_speed(distance)
         self.distance_remaining = distance
-    
+
     async def forward(self, distance: float) -> None:
         if self._bot.is_stopped():
             await self._bot.go()
         else:
             self.set_forward(distance)
             await self.wait_for(lambda: self.distance_remaining == 0. and self._bot.get_speed() == 0.)
-    
+
     def set_turn_left(self, degrees: float) -> None:
         self._override_turn_rate = True
         self.turn_remaining = degrees
@@ -146,24 +151,24 @@ class _BotInternals(StopResumeListenerABC):
         else:
             self.set_turn_left(degrees)
             await self.wait_for(lambda: self.turn_remaining == 0)
-    
+
     def set_turn_gun_left(self, degrees: float) -> None:
         self._override_gun_turn_rate = True
         self.gun_turn_remaining = degrees
         self._base_bot_internals.gun_turn_rate = degrees
-    
+
     async def turn_gun_left(self, degrees: float) -> None:
         if self._bot.is_stopped():
             await self._bot.go()
         else:
             self.set_turn_gun_left(degrees)
             await self.wait_for(lambda: self.gun_turn_remaining == 0)
-    
+
     def set_turn_radar_left(self, degrees: float) -> None:
         self._override_radar_turn_rate = True
         self.radar_turn_remaining = degrees
         self._base_bot_internals.radar_turn_rate = degrees
-    
+
     async def turn_radar_left(self, degrees: float) -> None:
         if self._bot.is_stopped():
             await self._bot.go()
@@ -174,12 +179,12 @@ class _BotInternals(StopResumeListenerABC):
     async def fire(self, firepower: float) -> None:
         self._bot.set_fire(firepower)
         await self._bot.go()
-    
+
     async def rescan(self) -> None:
         EventInterruption.set_interruptible(ScannedBotEvent, True)
         self._bot.set_rescan()
         await self._bot.go()
-    
+
     async def wait_for(self, condition: Callable[[], bool]) -> None:
         await self._bot.go()
         while (self._base_bot_internals.is_running() and not condition()):
@@ -188,21 +193,21 @@ class _BotInternals(StopResumeListenerABC):
     async def stop(self, overwrite: bool) -> None:
         self._bot.set_stop(overwrite)
         await self._bot.go()
-    
+
     async def resume(self) -> None:
         self._base_bot_internals.set_resume()
         await self._bot.go()
-    
+
     def on_stop(self) -> None:
         self._saved_previous_direction = self._previous_direction
         self._saved_previous_gun_direction = self._previous_gun_direction
         self._saved_previous_radar_direction = self._previous_radar_direction
-        
+
         self._saved_distance_remaining = self.distance_remaining
         self._saved_turn_remaining = self.turn_remaining
         self._saved_gun_turn_remaining = self.gun_turn_remaining
         self._saved_radar_turn_remaining = self.radar_turn_remaining
-    
+
     def on_resume(self):
         self._previous_direction = self._saved_previous_direction
         self._previous_gun_direction = self._saved_previous_gun_direction
@@ -229,7 +234,7 @@ class _BotInternals(StopResumeListenerABC):
                 self.turn_remaining = 0
 
         self._base_bot_internals.turn_rate = self.turn_remaining
-    
+
     def _update_gun_turn_remaining(self) -> None:
         """Update the gun turn remaining value based on the bot's current gun direction."""
         delta = self._bot.calc_delta_angle(self._bot.get_gun_direction(), self._previous_gun_direction)
@@ -263,7 +268,7 @@ class _BotInternals(StopResumeListenerABC):
                 self.radar_turn_remaining = 0
 
         self._base_bot_internals.radar_turn_rate = self.radar_turn_remaining
-    
+
     def _update_movement(self):
         if not self._override_target_speed:
             if abs(self.distance_remaining) < abs(self._bot.get_speed()):
@@ -285,9 +290,9 @@ class _BotInternals(StopResumeListenerABC):
             # the overdrive flag
             if distance * new_speed >= 0:
                 self._is_over_driving = self._base_bot_internals.get_distance_traveled_until_stop(new_speed) > abs(distance)
-            
+
             self.distance_remaining = distance - new_speed
-    
+
     def _get_and_set_new_target_speed(self, distance: float) -> float:
         """Get and set the new target speed based on the remaining distance."""
         speed = self._base_bot_internals.get_new_target_speed(self._bot.get_speed(), distance)

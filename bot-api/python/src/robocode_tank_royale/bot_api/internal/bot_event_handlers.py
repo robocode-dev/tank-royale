@@ -128,7 +128,7 @@ class BotEventHandlers:
         self.on_custom_event.subscribe(base_bot.on_custom_event)
         self.on_team_message.subscribe(base_bot.on_team_message)
 
-    def fire_event(self, event: BotEvent) -> None:
+    async def fire_event(self, event: BotEvent) -> None:
         """
         Fire an event to its registered handler.
         
@@ -142,7 +142,7 @@ class BotEventHandlers:
         handler = self._event_handler_map.get(event_type)
 
         if handler is not None:
-            handler.publish(event)
+            await handler.publish(event)
         else:
             raise RuntimeError(f"Unhandled event type: {event}")
 

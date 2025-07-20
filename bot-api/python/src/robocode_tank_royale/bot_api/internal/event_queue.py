@@ -81,7 +81,7 @@ class EventQueue:
 
         self.add_custom_events()
 
-    def dispatch_events(self, turn_number: int) -> None:
+    async def dispatch_events(self, turn_number: int) -> None:
         """Dispatches events in prioritized order to event handlers.
         
         Args:
@@ -111,7 +111,7 @@ class EventQueue:
             self.current_top_event = current_event
 
             try:
-                self.dispatch(current_event, turn_number)
+                await self.dispatch(current_event, turn_number)
             except ThreadInterruptedException:
                 # Expected when event handler is interrupted on purpose
                 pass
@@ -145,10 +145,10 @@ class EventQueue:
     def get_priority(bot_event: BotEvent) -> int:
         return EventPriorities.get_priority(type(bot_event))
 
-    def dispatch(self, bot_event: BotEvent, turn_number: int):
+    async def dispatch(self, bot_event: BotEvent, turn_number: int):
         try:
             if self.is_not_old_or_is_critical_event(bot_event, turn_number):
-                self.bot_event_handlers.fire_event(bot_event)
+                await self.bot_event_handlers.fire_event(bot_event)
         finally:
             EventInterruption.set_interruptible(type(bot_event), False)
 
