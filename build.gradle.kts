@@ -103,11 +103,25 @@ subprojects {
             val signingKey: String? by project
             val signingPassword: String? by project
 
+            // Add debug info to check if key exists
+            if (signingKey.isNullOrBlank()) {
+                logger.warn("Signing key is null or blank. Signing will not work.")
+            } else {
+                logger.info("Signing key found with length: ${signingKey?.length}")
+            }
+
+            if (!signingPassword.isNullOrBlank()) {
+                logger.info("Signing password is present")
+            }
+
             useInMemoryPgpKeys(signingKey, signingPassword)
+
+            // Make signing required for artifacts
+            isRequired = true
+
             sign(publishing.publications["maven"])
         }
     }
-
 
     tasks {
         withType<KotlinJvmCompile>().configureEach {
@@ -181,13 +195,6 @@ val initializeSonatypeStagingRepository by tasks.existing
 subprojects {
     initializeSonatypeStagingRepository {
         shouldRunAfter(tasks.withType<Sign>())
-    }
-
-    // Apply common signing configuration to all subprojects
-    plugins.withId("signing") {
-        configure<SigningExtension> {
-            useGpgCmd() // Use GPG agent instead of key file
-        }
     }
 
     // Include Tank.ico in the published artifacts
