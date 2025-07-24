@@ -16,7 +16,12 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.nexus.publish)
 
-    alias(libs.plugins.benmanes.versions) // dependency management only
+    // Publishing with signing
+    `maven-publish`
+    signing
+
+    // Dependency management providing task: dependencyUpdates
+    alias(libs.plugins.benmanes.versions)
 }
 
 repositories {
@@ -43,6 +48,66 @@ subprojects {
             withSourcesJar()
         }
     }
+
+    // Common publishing configuration for all subprojects with maven-publish plugin
+    plugins.withId("maven-publish") {
+        publishing {
+            publications {
+                create<MavenPublication>("maven") {
+                    // Set group, artifactId, and version dynamically from a project
+                    groupId = project.group.toString()
+                    // If archivesName is set via base plugin, use it; otherwise use project name as fallback
+                    artifactId = if (project.extensions.findByType<BasePluginExtension>() != null) {
+                        project.extensions.getByType<BasePluginExtension>().archivesName.get()
+                    } else {
+                        project.name
+                    }
+                    version = project.version.toString()
+
+                    pom {
+                        name.set(project.name)
+                        description.set(project.description)
+                        url.set("https://github.com/robocode-dev/tank-royale")
+
+                        licenses {
+                            license {
+                                name.set("The Apache License, Version 2.0")
+                                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id.set("fnl")
+                                name.set("Flemming Nørnberg Larsen")
+                                url.set("https://github.com/flemming-n-larsen")
+                                organization.set("robocode.dev")
+                                organizationUrl.set("https://robocode-dev.github.io/tank-royale/")
+                            }
+                        }
+
+                        scm {
+                            connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
+                            developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
+                            url.set("https://github.com/robocode-dev/tank-royale/tree/master")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Configure signing for all subprojects with signing plugin
+    plugins.withId("signing") {
+        signing {
+            val signingKey: String? by project
+            val signingPassword: String? by project
+
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            sign(publishing.publications["maven"])
+        }
+    }
+
 
     tasks {
         withType<KotlinJvmCompile>().configureEach {

@@ -29,7 +29,6 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
     `maven-publish`
-    signing
 }
 
 dependencies {
@@ -137,9 +136,10 @@ tasks {
     }
     val sourcesJar = named("sourcesJar")
 
+    // Configure the maven publication to use the ProGuard jar as the main artifact
     publishing {
         publications {
-            create<MavenPublication>("gui-app") {
+            named<MavenPublication>("maven") {
                 val outJars = proguard.get().outJarFiles
                 if (outJars.isEmpty()) {
                     throw GradleException("Proguard did not produce output artifacts")
@@ -151,41 +151,9 @@ tasks {
                 artifact(javadocJar) // required at Sonatype
                 artifact(sourcesJar)
 
-                groupId = group as String?
-                artifactId = base.archivesName.get()
-                version
-
-                pom {
-                    name.set(archiveTitle)
-                    description.set(project.description)
-                    url.set("https://github.com/robocode-dev/tank-royale")
-
-                    licenses {
-                        license {
-                            name.set("The Apache License, Version 2.0")
-                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = "fnl"
-                            name = "Flemming Nørnberg Larsen"
-                            url = "https://github.com/flemming-n-larsen"
-                            organization = "robocode.dev"
-                            organizationUrl = "https://robocode-dev.github.io/tank-royale/"
-                        }
-                    }
-                    scm {
-                        connection.set("scm:git:git://github.com/robocode-dev/tank-royale.git")
-                        developerConnection.set("scm:git:ssh://github.com:robocode-dev/tank-royale.git")
-                        url.set("https://github.com/robocode-dev/tank-royale/tree/master")
-                    }
-                }
+                // Override the name in the POM with the archiveTitle variable
+                pom.name.set(archiveTitle)
             }
         }
     }
-}
-
-signing {
-    sign(publishing.publications["gui-app"])
 }

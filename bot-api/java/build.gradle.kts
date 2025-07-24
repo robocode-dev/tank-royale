@@ -19,7 +19,6 @@ plugins {
     alias(libs.plugins.jsonschema2pojo)
     alias(libs.plugins.shadow)
     `maven-publish`
-    signing
 }
 
 dependencies {
@@ -137,53 +136,22 @@ tasks {
         dependsOn(compileJava)
     }
 
+    // Configure the maven publication to use the shadow jar as the main artifact
     publishing {
         publications {
-            create<MavenPublication>("bot-api") {
+            named<MavenPublication>("maven") {
                 val outJars = shadowJar.get().outputs.files
                 if (outJars.isEmpty) {
-                    throw GradleException("Proguard did not produce output artifacts")
+                    throw GradleException("Shadow jar did not produce output artifacts")
                 }
 
                 artifact(shadowJar)
                 artifact(javadocJar)
                 artifact(sourcesJar)
 
-                groupId = group as String?
-                artifactId = base.archivesName.get()
-                version
-
-                pom {
-                    name = javadocTitle
-                    description = project.description
-                    url = "https://github.com/robocode-dev/tank-royale"
-
-                    licenses {
-                        license {
-                            name = "The Apache License, Version 2.0"
-                            url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = "fnl"
-                            name = "Flemming Nørnberg Larsen"
-                            url = "https://github.com/flemming-n-larsen"
-                            organization = "robocode.dev"
-                            organizationUrl = "https://robocode-dev.github.io/tank-royale/"
-                        }
-                    }
-                    scm {
-                        connection = "scm:git:git://github.com/robocode-dev/tank-royale.git"
-                        developerConnection = "scm:git:ssh://github.com:robocode-dev/tank-royale.git"
-                        url = "https://github.com/robocode-dev/tank-royale/tree/master"
-                    }
-                }
+                // Override the name in the POM with the javadocTitle variable
+                pom.name.set(javadocTitle)
             }
         }
     }
-}
-
-signing {
-    sign(publishing.publications["bot-api"])
 }
