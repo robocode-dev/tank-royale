@@ -1,6 +1,7 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import build.release.createRelease
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 description = "Robocode: Build the best - destroy the rest!"
 
@@ -28,6 +29,19 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+    }
+
+    // Apply common Java configuration to all subprojects with a Java plugin
+    plugins.withId("java") {
+        java {
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(11))
+            }
+
+            // required for publishing:
+            withJavadocJar()
+            withSourcesJar()
+        }
     }
 
     tasks {

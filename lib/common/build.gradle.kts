@@ -22,15 +22,6 @@ dependencies {
     testImplementation(testLibs.kotest.junit5)
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
-    }
-
-    withJavadocJar()
-    withSourcesJar()
-}
-
 tasks {
     test {
         useJUnitPlatform()

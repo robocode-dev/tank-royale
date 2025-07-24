@@ -38,15 +38,6 @@ dependencies {
     implementation(libs.jansi)
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-    }
-
-    withJavadocJar() // required for uploading to Sonatype
-    withSourcesJar()
-}
-
 tasks {
     jar {
         dependsOn(":lib:common:jar")

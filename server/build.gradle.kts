@@ -49,15 +49,6 @@ dependencies {
     testImplementation(testLibs.mockk)
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
-    }
-
-    withJavadocJar() // required for uploading to Sonatype
-    withSourcesJar()
-}
-
 jsonSchema2Pojo {
     val schemaDir = layout.projectDirectory.dir("../schema/schemas").asFile
     if (!schemaDir.exists() || !schemaDir.isDirectory) {

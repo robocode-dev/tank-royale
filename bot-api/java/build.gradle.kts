@@ -33,15 +33,6 @@ dependencies {
     testImplementation(libs.java.websocket) // for mocked server
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-    }
-
-    withJavadocJar()
-    withSourcesJar()
-}
-
 jsonSchema2Pojo {
     val schemaDir = layout.projectDirectory.dir("../../schema/schemas").asFile
     if (!schemaDir.exists() || !schemaDir.isDirectory) {
