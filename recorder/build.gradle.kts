@@ -41,15 +41,6 @@ dependencies {
     implementation(libs.java.websocket)
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
-    }
-
-    withJavadocJar() // required for uploading to Sonatype
-    withSourcesJar()
-}
-
 tasks {
     jar {
         dependsOn(":lib:common:jar")

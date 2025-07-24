@@ -42,15 +42,6 @@ dependencies {
     testImplementation(testLibs.kotest.junit5)
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
-    }
-
-    withJavadocJar() // required for uploading to Sonatype
-    withSourcesJar()
-}
-
 tasks {
     val copyBooterJar by registering(Copy::class) {
         dependsOn(":booter:proguard")
