@@ -29,7 +29,7 @@ class Condition:
             self.bot = bot
 
         def test(self) -> bool:
-            return self.bot.get_turn_remaining() == 0
+            return self.bot.turn_remaining == 0
 
     ### Example 2: Using a lambda expression
     The same behavior can also be achieved using a lambda expression instead
@@ -40,7 +40,7 @@ class Condition:
             while self.is_running():
                 # ...
                 self.set_turn_right(90)
-                self.wait_for(Condition(lambda: self.get_turn_remaining() == 0))
+                self.wait_for(Condition(lambda: self.turn_remaining == 0))
                 # ...
 
     Attributes:

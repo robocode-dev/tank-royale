@@ -205,7 +205,7 @@ class EnvVars:
         return os.getenv(EnvVars.BotProgrammingLang)
 
     @staticmethod
-    def get_bot_initial_position():
+    def get_bot_initial_position() -> InitialPosition | None:
         """
         Gets the initial starting position for the bot used for debugging from 
         environment variables.
@@ -215,7 +215,7 @@ class EnvVars:
         """
         init_pos = os.getenv(EnvVars.BotInitialPosition)
         if not init_pos:
-            raise Exception(EnvVars.MissingEnvValue + EnvVars.BotInitialPosition)
+            return None
         return InitialPosition.from_string(init_pos)
 
     @staticmethod

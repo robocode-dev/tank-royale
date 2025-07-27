@@ -29,6 +29,13 @@ class BaseBot(BaseBotABC):
         server_secret: Optional[str] = None,
     ):
         super().__init__()
+        # try to automatically read the bot config file
+        if bot_info is None:
+            bot_info_file = f"{self.__class__.__name__}.json"
+            try:
+                bot_info = BotInfo.from_file(bot_info_file)
+            except:
+                print('Failed to read bot info json file: {bot_info_file}.')
         self._internals = BaseBotInternals(self, bot_info, server_url, server_secret)
 
     async def start(self) -> None:

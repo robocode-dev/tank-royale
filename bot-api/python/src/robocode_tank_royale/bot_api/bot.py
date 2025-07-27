@@ -36,6 +36,8 @@ class _BotInternals(StopResumeListenerABC):
         self._turn_reached = asyncio.Condition()
         self._gun_turn_reached = asyncio.Condition()
         self._radar_turn_reached = asyncio.Condition()
+        # Did we go over desired distance to travel
+        self._is_over_driving = False
 
         self._override_target_speed = False
         self._override_turn_rate = False

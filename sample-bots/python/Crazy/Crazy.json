@@ -1,12 +1,11 @@
 {
-  "name": "My First Bot",
+  "name": "CrazyPython",
   "version": "1.0",
   "authors": [
     "Mathew Nelson",
-    "Flemming N. Larsen",
-    "Yang Li"
+    "Flemming N. Larsen"
   ],
-  "description": "A sample bot that is probably the first bot you will learn about.",
+  "description": "This bot moves around in a crazy pattern.",
   "homepage": "",
   "countryCodes": [
     "us",

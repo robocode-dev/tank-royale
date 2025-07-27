@@ -179,6 +179,21 @@ class BotInfo:
             initial_position=data.get("initialPosition"),
         )
 
+    @classmethod
+    def from_file(cls, file_path: str) -> "BotInfo":
+        """
+        Reads the bot info from a JSON file.
+
+        Args:
+            file_path (str): The path to the JSON file containing bot info.
+
+        Returns:
+            BotInfo: An instance of BotInfo populated with data from the file.
+        """
+        with open(file_path, 'r') as file:
+            json_data = file.read()
+        return cls.from_json(json_data)
+
     # Support builder pattern
     class Builder:
         """
