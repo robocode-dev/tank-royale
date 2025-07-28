@@ -26,11 +26,11 @@ class Crazy(ba.Bot):
         self._moving_forward = False
 
     async def run(self) -> None:
-        # self.body_color = ba.Color.from_rgb(0x00, 0xC8, 0x00)  # lime
-        # self.turrent_color = ba.Color.from_rgb(0x00, 0x96, 0x32)  # green
-        # self.radar_color = ba.Color.from_rgb(0x00, 0x64, 0x64)  # dark cyan
-        # self.bullet_color = ba.Color.from_rgb(0xFF, 0xFF, 0x64)  # yellow
-        # self.scan_color = ba.Color.from_rgb(0xFF, 0xC8, 0xC8)  # light red
+        self.body_color = ba.Color.from_rgb(0x00, 0xC8, 0x00)  # lime
+        self.turrent_color = ba.Color.from_rgb(0x00, 0x96, 0x32)  # green
+        self.radar_color = ba.Color.from_rgb(0x00, 0x64, 0x64)  # dark cyan
+        self.bullet_color = ba.Color.from_rgb(0xFF, 0xFF, 0x64)  # yellow
+        self.scan_color = ba.Color.from_rgb(0xFF, 0xC8, 0xC8)  # light red
 
         while self.is_running():
             # Tell the game we will want to move ahead 40000 -- some large number

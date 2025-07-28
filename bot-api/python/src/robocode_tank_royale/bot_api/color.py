@@ -63,7 +63,7 @@ class Color:
 
         Args:
             red (int): The red component of the color (0–255).
-            green (int): The green component of the color (0–255).
+            green (int): The green componen8t of the color (0–255).
             blue (int): The blue component of the color (0–255).
             alpha (int): The alpha (transparency) component of the color (0–255).
 
@@ -123,6 +123,9 @@ class Color:
         Returns:
             schema.Color: A schema.Color instance with the same RGB and alpha values.
         """
-        return ColorSchema(
-            value=f"#{self.red:02x}{self.green:02x}{self.blue:02x}{self.alpha:02x}"
-        )
+        if self.alpha == 255:
+            return ColorSchema(value=f"#{self.red:02x}{self.green:02x}{self.blue:02x}")
+        else:
+            return ColorSchema(
+                value=f"#{self.red:02x}{self.green:02x}{self.blue:02x}{self.alpha:02x}"
+            )

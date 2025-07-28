@@ -176,11 +176,11 @@ class BaseBot(BaseBotABC):
 
     @property
     def max_turn_rate(self) -> float:
-        return self._internals.max_turn_rate
+        return self._internals.get_max_turn_rate()
 
     @max_turn_rate.setter
     def max_turn_rate(self, max_turn_rate: float) -> None:
-        self._internals.max_turn_rate = max_turn_rate
+        self._internals.set_max_turn_rate(max_turn_rate)
 
     @property
     def gun_turn_rate(self) -> float:
@@ -192,11 +192,11 @@ class BaseBot(BaseBotABC):
 
     @property
     def max_gun_turn_rate(self) -> float:
-        return self._internals.max_gun_turn_rate
+        return self._internals.get_max_gun_turn_rate()
 
     @max_gun_turn_rate.setter
     def max_gun_turn_rate(self, max_gun_turn_rate: float) -> None:
-        self._internals.max_gun_turn_rate = max_gun_turn_rate
+        self._internals.set_max_gun_turn_rate(max_gun_turn_rate)
 
     @property
     def radar_turn_rate(self) -> float:
@@ -208,11 +208,11 @@ class BaseBot(BaseBotABC):
 
     @property
     def max_radar_turn_rate(self) -> float:
-        return self._internals.max_radar_turn_rate
+        return self._internals.get_max_radar_turn_rate()
 
     @max_radar_turn_rate.setter
     def max_radar_turn_rate(self, max_radar_turn_rate: float) -> None:
-        self._internals.max_radar_turn_rate = max_radar_turn_rate
+        self._internals.set_max_radar_turn_rate(max_radar_turn_rate)
 
     @property
     def target_speed(self) -> float:
@@ -227,11 +227,11 @@ class BaseBot(BaseBotABC):
 
     @property
     def max_speed(self) -> float:
-        return self._internals.max_speed
+        return self._internals.get_max_speed()
 
     @max_speed.setter
     def max_speed(self, max_speed: float) -> None:
-        self._internals.max_speed = max_speed
+        self._internals.set_max_speed(max_speed)
 
     def set_fire(self, firepower: float) -> bool:
         return self._internals.set_fire(firepower)

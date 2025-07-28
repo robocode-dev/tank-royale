@@ -407,7 +407,7 @@ class BaseBotInternals:
                     == asyncio.current_task()  # Ensure this is the bot's main task\
                     and not asyncio.current_task().cancelled()  # type: ignore
                 ):
-                        await self.next_turn_monitor.wait()
+                    await self.next_turn_monitor.wait()
         except asyncio.CancelledError:
             # We get a CancelledError if the server stops the game.
             return None
@@ -490,49 +490,48 @@ class BaseBotInternals:
             radar_turn_rate, -self.max_radar_turn_rate, self.max_radar_turn_rate
         )
 
-    def set_target_speed(self, target_speed: float) -> None:
+    @property
+    def target_speed(self) -> float | None:
+        return self.data.bot_intent.target_speed
+
+    @target_speed.setter
+    def target_speed(self, target_speed: float) -> None:
         if math.isnan(target_speed):
             raise ValueError("'target_speed' cannot be NaN")
         self.data.bot_intent.target_speed = MathUtil.clamp(
             target_speed, -self.max_speed, self.max_speed
         )
 
-    def get_max_speed(
-        self,
-    ) -> float:  # Max speed is part of bot's own limits, not server state
+    def get_max_speed(self) -> float:
+        # Max speed is part of bot's own limits, not server state
         return self.max_speed
 
-    def set_max_speed(
-        self, max_speed: float
-    ) -> None:  # Max speed is part of bot's own limits
+    def set_max_speed(self, max_speed: float) -> None:
+        # Max speed is part of bot's own limits
         self.max_speed = MathUtil.clamp(max_speed, 0, MAX_SPEED)
 
-    def get_max_turn_rate(self) -> float:  # Max turn rate is part of bot's own limits
+    def get_max_turn_rate(self) -> float:
+        # Max turn rate is part of bot's own limits
         return self.max_turn_rate
 
-    def set_max_turn_rate(
-        self, max_turn_rate: float
-    ) -> None:  # Max turn rate is part of bot's own limits
+    def set_max_turn_rate(self, max_turn_rate: float) -> None:
+        # Max turn rate is part of bot's own limits
         self.max_turn_rate = MathUtil.clamp(max_turn_rate, 0, MAX_TURN_RATE)
 
-    def get_max_gun_turn_rate(
-        self,
-    ) -> float:  # Max gun turn rate is part of bot's own limits
+    def get_max_gun_turn_rate(self) -> float:
+        # Max gun turn rate is part of bot's own limits
         return self.max_gun_turn_rate
 
-    def set_max_gun_turn_rate(
-        self, max_gun_turn_rate: float
-    ) -> None:  # Max gun turn rate is part of bot's own limits
+    def set_max_gun_turn_rate(self, max_gun_turn_rate: float) -> None:
+        # Max gun turn rate is part of bot's own limits
         self.max_gun_turn_rate = MathUtil.clamp(max_gun_turn_rate, 0, MAX_GUN_TURN_RATE)
 
-    def get_max_radar_turn_rate(
-        self,
-    ) -> float:  # Max radar turn rate is part of bot's own limits
+    def get_max_radar_turn_rate(self) -> float:
+        # Max radar turn rate is part of bot's own limits
         return self.max_radar_turn_rate
 
-    def set_max_radar_turn_rate(
-        self, max_radar_turn_rate: float
-    ) -> None:  # Max radar turn rate is part of bot's own limits
+    def set_max_radar_turn_rate(self, max_radar_turn_rate: float) -> None:
+        # Max radar turn rate is part of bot's own limits
         self.max_radar_turn_rate = MathUtil.clamp(
             max_radar_turn_rate, 0, MAX_RADAR_TURN_RATE
         )
