@@ -1,3 +1,10 @@
+## 📦 0.32.2 -  
+
+### 🐞 Bug Fixes
+
+- Booter:
+    - Bots could not be booted on Linux. Thanks goes to [Yang Li](https://github.com/yangli2) for fixing this. ❤️
+
 ## 📦 0.32.1 - No need of default constructor - 01-Jul-2025
 
 ### 🚀 Improvements
