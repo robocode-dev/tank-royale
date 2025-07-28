@@ -61,7 +61,7 @@ class BotABC(BaseBotABC):
               methods (e.g., turning, firing) to occur in parallel in a single turn.
             - For multiple calls to this method, the most recent call before `go()` is executed.
             - Cancels the effect of prior calls to `set_target_speed`, as this method adjusts the
-              target speed for each turn until `get_distance_remaining` is 0.
+              target speed for each turn until `distance_remaining` is 0.
 
         Args:
             distance (float): Distance to move forward.
@@ -70,7 +70,7 @@ class BotABC(BaseBotABC):
                 - If `float('-inf')`, the bot will move backward infinitely.
 
         References:
-            - `forward`, `set_back`, `back`, `get_distance_remaining`, `set_target_speed`
+            - `forward`, `set_back`, `back`, `distance_remaining`, `set_target_speed`
         """
         pass
 
@@ -99,7 +99,7 @@ class BotABC(BaseBotABC):
                 - If `float('-inf')`, the bot will move backward infinitely.
 
         References:
-            - `set_forward`, `set_back`, `back`, `get_distance_remaining`, `set_target_speed`
+            - `set_forward`, `set_back`, `back`, `distance_remaining`, `set_target_speed`
         """
         pass
 
@@ -121,7 +121,7 @@ class BotABC(BaseBotABC):
               methods (e.g., turning, firing) to occur in parallel in a single turn.
             - For multiple calls to this method, the most recent call before `go()` is executed.
             - Cancels the effect of prior calls to `set_target_speed`, as this method adjusts the
-              target speed for each turn until `get_distance_remaining` is 0.
+              target speed for each turn until `distance_remaining` is 0.
 
         Args:
             distance (float): Distance to move backward.
@@ -130,7 +130,7 @@ class BotABC(BaseBotABC):
                 - If `float('-inf')`, the bot will move forward infinitely.
 
         References:
-            - `back`, `set_forward`, `forward`, `get_distance_remaining`, `set_target_speed`
+            - `back`, `set_forward`, `forward`, `distance_remaining`, `set_target_speed`
         """
         pass
 
@@ -167,7 +167,8 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    def get_distance_remaining(self) -> float:
+    @property
+    def distance_remaining(self) -> float:
         """
         Returns the distance remaining until the bot has finished moving after calling set_forward,
         set_back, forward, or back. When the distance remaining reaches 0, the bot has finished its
@@ -184,13 +185,13 @@ class BotABC(BaseBotABC):
         See Also:
             set_forward, set_back, forward, back
         """
-        raise NotImplementedError('get_distance_remaining not implemented')
+        raise NotImplementedError('distance_remaining not implemented')
 
     def set_turn_left(self, degrees: float) -> None:
         """
         Set the bot to turn to the left (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it has turned the specified
-        amount of degrees. This completes when `get_turn_remaining()` returns 0. The amount of degrees
+        amount of degrees. This completes when `turn_remaining` returns 0. The amount of degrees
         to turn each turn is limited by `set_max_turn_rate()`.
 
         This method will first be executed when `go()` is called, making it possible to call
@@ -212,7 +213,7 @@ class BotABC(BaseBotABC):
             - `set_turn_right`
             - `turn_right`
             - `turn_left`
-            - `get_turn_remaining`
+            - `turn_remaining`
             - `set_turn_rate`
         """
         pass
@@ -221,7 +222,7 @@ class BotABC(BaseBotABC):
         """
         Turn the bot to the left (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it has turned
-        the specified amount of degrees. That is, when `get_turn_remaining()` is 0.
+        the specified amount of degrees. That is, when `turn_remaining` is 0.
         The amount of degrees to turn each turn is limited by `set_max_turn_rate()`.
 
         This call is executed immediately by invoking `go()` in the code behind.
@@ -245,7 +246,7 @@ class BotABC(BaseBotABC):
             - `set_turn_left()`
             - `set_turn_right()`
             - `turn_right()`
-            - `get_turn_remaining()`
+            - `turn_remaining`
             - `set_turn_rate()`
         """
         pass
@@ -254,7 +255,7 @@ class BotABC(BaseBotABC):
         """
         Set the bot to turn to the right (following the decreasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it turned the specified
-        amount of degrees. That is, when `get_turn_remaining()` returns 0. The amount of degrees to
+        amount of degrees. That is, when `turn_remaining` returns 0. The amount of degrees to
         turn each turn is limited by `set_max_turn_rate()`.
 
         This method will first be executed when `go()` is called, making it possible to call
@@ -276,7 +277,7 @@ class BotABC(BaseBotABC):
             set_turn_left
             turn_right
             turn_left
-            get_turn_remaining
+            turn_remaining
             set_turn_rate
         """
         pass
@@ -285,7 +286,7 @@ class BotABC(BaseBotABC):
         """
         Turn the bot to the right (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it turned the specified
-        amount of degrees. That is, when `get_turn_remaining()` returns 0. The amount of degrees to
+        amount of degrees. That is, when `turn_remaining` returns 0. The amount of degrees to
         turn each turn is limited by `set_max_turn_rate()`.
 
         This call is executed immediately, and it will block until it has been completed, which can
@@ -305,12 +306,13 @@ class BotABC(BaseBotABC):
             set_turn_left
             set_turn_right
             turn_left
-            get_turn_remaining
+            turn_remaining
             set_turn_rate
         """
         pass
 
-    def get_turn_remaining(self) -> float:
+    @property
+    def turn_remaining(self) -> float:
         """
         Returns the remaining turn in degrees until the bot has finished turning after having called
         `set_turn_left()`, `set_turn_right()`, `turn_left()`, or `turn_right()`.
@@ -330,13 +332,13 @@ class BotABC(BaseBotABC):
             turn_left
             turn_right
         """
-        raise NotImplementedError('get_turn_remaining not implemented')
+        raise NotImplementedError('turn_remaining not implemented')
 
     def set_turn_gun_left(self, degrees: float) -> None:
         """
         Set the gun to turn to the left (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it turned the specified
-        amount of degrees. That is, when `get_gun_turn_remaining()` returns 0. The amount of degrees
+        amount of degrees. That is, when `gun_turn_remaining` returns 0. The amount of degrees
         to turn each turn is limited by `set_max_gun_turn_rate()`.
 
         This method will first be executed when `go()` is called, making it possible to call
@@ -359,7 +361,7 @@ class BotABC(BaseBotABC):
             set_turn_gun_right
             turn_gun_right
             turn_gun_left
-            get_gun_turn_remaining
+            gun_turn_remaining
             set_gun_turn_rate
         """
         pass
@@ -432,7 +434,8 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    def get_gun_turn_remaining(self) -> float:
+    @property
+    def gun_turn_remaining(self) -> float:
         """
         Gets the remaining turn angle in degrees for the gun to finish its
         current turning action.
@@ -446,7 +449,7 @@ class BotABC(BaseBotABC):
                    - If `float('inf')`, the gun is turning left indefinitely.
                    - If `float('-inf')`, the gun is turning right indefinitely.
         """
-        raise NotImplementedError('get_gun_turn_remaining not implemented')
+        raise NotImplementedError('gun_turn_remaining not implemented')
 
     def set_turn_radar_left(self, degrees: float) -> None:
         """
@@ -528,7 +531,8 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    def get_radar_turn_remaining(self) -> float:
+    @property
+    def radar_turn_remaining(self) -> float:
         """Get the remaining turn in degrees until the radar has finished its current turn.
 
         Returns:
@@ -543,7 +547,7 @@ class BotABC(BaseBotABC):
               `set_turn_radar_left()`, `set_turn_radar_right()`,
               `turn_radar_left()`, or `turn_radar_right()`.
         """
-        raise NotImplementedError('get_radar_turn_remaining not implemented')
+        raise NotImplementedError('radar_turn_remaining not implemented')
 
     async def fire(self, firepower: float) -> None:
         """

@@ -1,0 +1,16 @@
+{
+  "name": "CrazyPython",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "This bot moves around in a crazy pattern.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "platform": "Python",
+  "programmingLang": "Python 3"
+}

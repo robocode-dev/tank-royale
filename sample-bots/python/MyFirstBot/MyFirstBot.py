@@ -24,14 +24,7 @@ class MyFirstBot(ba.Bot):
         await self.turn_right(90 - bearing)
 
 async def main():
-    b = MyFirstBot(
-        bot_info=ba.BotInfo(
-            name="MyFirstBotPython",
-            version="1.0",
-            authors=["Robocode Tank Royale"],
-            description="Python my first bot",
-        )
-    , server_secret='RECTjjm7ntrLpoYFh+kDuA/LHONbTYsLEnLMbuCnaU')
+    b = MyFirstBot()
     await b.start()
 
 if __name__ == "__main__":

@@ -1,0 +1,17 @@
+{
+  "name": "My First Bot",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen",
+    "Yang Li"
+  ],
+  "description": "A sample bot that is probably the first bot you will learn about.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "platform": "Python",
+  "programmingLang": "Python 3"
+}
