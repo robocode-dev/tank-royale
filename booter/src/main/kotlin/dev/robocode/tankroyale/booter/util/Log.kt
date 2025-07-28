@@ -13,6 +13,8 @@ object Log {
 
     fun error(ex: Exception, botDir: Path? = null) {
         printBotDir(botDir)
+        // Also print the stack trace for easier debugging.
+        ex.stackTraceToString().let { if (it.isNotBlank()) error(it) }
         error(ex.message ?: "Unknown error")
         ex.stackTrace?.firstOrNull()?.let { println(it.toString()) }
     }

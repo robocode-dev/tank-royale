@@ -47,7 +47,7 @@ class ProcessManager {
      */
     private fun isValidBotDirectory(botDir: Path): Boolean {
         if (!botDir.exists()) {
-            Log.error("Bot directory not found", botDir)
+            Log.error(Exception("Bot directory not found"), botDir)
             return false
         }
         if (!Files.isDirectory(botDir)) {
