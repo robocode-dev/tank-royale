@@ -151,6 +151,10 @@ tasks {
             "sample-bots:java:zip",      // Sample bots for Java
             "sample-bots:csharp:zip",    // Sample bots for C#
         )
+        finalizedBy(
+            "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
+            "bot-api:java:copyJavaApiDocs"      // Javadocs for Java Bot API
+        )
     }
 
     register("upload-docs") {

@@ -122,6 +122,19 @@ tasks {
         into(javadocDir)
     }
 
+    // Make sure javadoc is only generated when specifically requested
+    javadoc {
+        onlyIf {
+            gradle.startParameter.taskNames.any {
+                it.contains("build-release") ||
+                it.contains("upload-docs") ||
+                it.contains("create-release") ||
+                it == "javadoc" ||
+                it.endsWith(":javadoc")
+            }
+        }
+    }
+
     // Make sure documentation tasks are not part of the build task
     afterEvaluate {
         tasks.named("build").configure {
