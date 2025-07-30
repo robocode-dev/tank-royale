@@ -134,7 +134,9 @@ tasks {
     val javadocJar = named<Jar>("javadocJar") {
         dependsOn("copyJars")
     }
-    val sourcesJar = named("sourcesJar")
+    val sourcesJar = named<Jar>("sourcesJar") {
+        dependsOn("copyJars")
+    }
 
     // Configure the maven publication to use the ProGuard jar as the main artifact
     publishing {
