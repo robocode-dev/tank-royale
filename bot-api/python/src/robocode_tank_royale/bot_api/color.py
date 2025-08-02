@@ -63,7 +63,7 @@ class Color:
 
         Args:
             red (int): The red component of the color (0–255).
-            green (int): The green componen8t of the color (0–255).
+            green (int): The green component of the color (0–255).
             blue (int): The blue component of the color (0–255).
             alpha (int): The alpha (transparency) component of the color (0–255).
 
