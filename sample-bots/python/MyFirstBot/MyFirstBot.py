@@ -21,7 +21,10 @@ class MyFirstBot(ba.Bot):
 
     async def on_hit_by_bullet(self, hit_by_bullet_event: HitByBulletEvent) -> None:
         bearing = self.calc_bearing(hit_by_bullet_event.bullet.direction)
-        await self.turn_right(90 - bearing)
+        turn_angle = 90 - bearing
+        if turn_angle > 180:
+            turn_angle -= 180
+        await self.turn_right(turn_angle)
 
 async def main():
     b = MyFirstBot()
