@@ -23,6 +23,7 @@ include("bot-api:java")
 include("bot-api:dotnet")
 include("bot-api:dotnet:schema")
 //include("bot-api:python")
+include("bot-api:wasm")
 
 // Sample Bots archives
 include("sample-bots:java")
