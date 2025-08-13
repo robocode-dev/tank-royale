@@ -9,7 +9,7 @@ kotlin {
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         binaries.executable()
-        browser()
+        nodejs() // we use node.js to run the tests (instead of using a browser as test runtime)
     }
 
     sourceSets {

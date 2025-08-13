@@ -32,3 +32,5 @@ generated/
 
 /.codiumai/
 /.kotlin
+
+yarn.lock
