@@ -13,12 +13,12 @@ kotlin {
     }
 
     sourceSets {
-        val wasmJsMain by getting {
+        wasmJsMain {
             dependencies {
                 implementation(kotlin("stdlib-wasm-js"))
             }
         }
-        val wasmJsTest by getting {
+        wasmJsTest {
             dependencies {
                 implementation(kotlin("test"))
             }
