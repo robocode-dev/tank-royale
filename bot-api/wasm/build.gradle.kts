@@ -1,7 +1,14 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import com.github.gradle.node.task.NodeTask
 
 plugins {
     kotlin("multiplatform")
+    alias(libs.plugins.node.gradle)
+}
+
+node {
+    version = "22.11.0"
+    download = true
 }
 
 // Add the Kotlin configuration with wasm target
@@ -27,7 +34,7 @@ kotlin {
 }
 
 // Add a task to run the compiled WebAssembly with Node.js
-tasks.register<Exec>("runWithNodeJs") {
+tasks.register<NodeTask>("run") {
     group = "application"
     description = "Runs the compiled WebAssembly with Node.js"
 
@@ -35,36 +42,37 @@ tasks.register<Exec>("runWithNodeJs") {
     dependsOn("build")
 
     // The directory containing our WebAssembly files
-    val wasmDir = "${layout.buildDirectory.get()}/compileSync/wasmJs/main/productionExecutable"
+    val wasmDir = "${layout.buildDirectory.get()}/compileSync/wasmJs/main/productionExecutable/kotlin"
 
     // The JavaScript loader file that Node.js can execute
-    val jsLoaderFile = "$wasmDir/kotlin.js"
+    val jsLoaderFile = "$wasmDir/dev.robocode.tankroyale-bot-api-wasm.mjs"
 
-    doFirst {
-        if (!file(jsLoaderFile).exists()) {
-            logger.error("JavaScript loader not found at: $jsLoaderFile")
-            logger.error("Looking for alternative loaders...")
-
+    // Resolve the script lazily: prefer the default loader if it exists, otherwise pick the first .mjs file.
+    // This provider will be evaluated at execution time, so we set the script only once (to a provider-backed file).
+    val resolvedScriptFile = providers.provider {
+        val defaultFile = file(jsLoaderFile)
+        if (defaultFile.exists()) {
+            defaultFile
+        } else {
             val jsFiles = fileTree(wasmDir) {
                 include("**/*.mjs")
             }.files
-
             if (jsFiles.isEmpty()) {
                 throw GradleException("No JavaScript files found in $wasmDir to load WebAssembly")
-            } else {
-                logger.info("Found JavaScript files: ${jsFiles.joinToString { it.name }}")
-                // Use the first JavaScript file found as a fallback
-                commandLine("node", jsFiles.first().absolutePath)
-                return@doFirst
             }
+            jsFiles.first()
         }
-
-        logger.info("Running Node.js with: $jsLoaderFile")
     }
 
-    // The command to execute (will be overridden in doFirst if jsLoaderFile doesn't exist)
-    commandLine("node", jsLoaderFile)
+    // Set the NodeTask script to a provider-backed file (deferred evaluation).
+    script.set(layout.file(resolvedScriptFile.map { it.absolutePath }.map { File(it) }))
+
+    doFirst {
+        // Log which script will be used; do NOT attempt to reassign script (it's final once set).
+        val scriptFile = resolvedScriptFile.get()
+        logger.info("Running Node.js with: ${scriptFile.absolutePath}")
+    }
 
     // Working directory
-    workingDir = file(wasmDir)
+    workingDir.set(file(wasmDir))
 }
