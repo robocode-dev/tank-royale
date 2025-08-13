@@ -44,24 +44,14 @@ tasks.register<NodeTask>("run") {
     // The directory containing our WebAssembly files
     val wasmDir = "${layout.buildDirectory.get()}/compileSync/wasmJs/main/productionExecutable/kotlin"
 
-    // The JavaScript loader file that Node.js can execute
-    val jsLoaderFile = "$wasmDir/dev.robocode.tankroyale-bot-api-wasm.mjs"
-
-    // Resolve the script lazily: prefer the default loader if it exists, otherwise pick the first .mjs file.
-    // This provider will be evaluated at execution time, so we set the script only once (to a provider-backed file).
     val resolvedScriptFile = providers.provider {
-        val defaultFile = file(jsLoaderFile)
-        if (defaultFile.exists()) {
-            defaultFile
-        } else {
-            val jsFiles = fileTree(wasmDir) {
-                include("**/*.mjs")
-            }.files
-            if (jsFiles.isEmpty()) {
-                throw GradleException("No JavaScript files found in $wasmDir to load WebAssembly")
-            }
-            jsFiles.first()
+        val jsFiles = fileTree(wasmDir) {
+            include("**/*.mjs")
+        }.files
+        if (jsFiles.isEmpty()) {
+            throw GradleException("No JavaScript files found in $wasmDir to load WebAssembly")
         }
+        jsFiles.first()
     }
 
     // Set the NodeTask script to a provider-backed file (deferred evaluation).
