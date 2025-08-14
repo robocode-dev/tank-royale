@@ -54,8 +54,7 @@ public class Point {
         if (obj == null || getClass() != obj.getClass()) return false;
 
         Point other = (Point) obj;
-        final double epsilon = 1e-10; // Define a tolerance for floating-point comparisons
-        return Math.abs(x - other.x) < epsilon && Math.abs(y - other.y) < epsilon;
+        return Double.compare(x, other.x) == 0 && Double.compare(y, other.y) == 0;
     }
 
     /**
