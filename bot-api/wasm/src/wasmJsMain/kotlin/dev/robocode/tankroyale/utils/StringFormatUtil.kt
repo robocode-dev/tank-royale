@@ -39,4 +39,11 @@ object StringFormatUtil {
     fun formatHexRgba(r: Int, g: Int, b: Int, a: Int): String {
         return "#${toHex2(r)}${toHex2(g)}${toHex2(b)}${toHex2(a)}"
     }
+
+    /**
+     * Formats a Point string representation
+     */
+    fun formatPoint(x: Double, y: Double): String {
+        return "(X=$x, Y=$y)"
+    }
 }
