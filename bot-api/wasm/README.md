@@ -27,5 +27,5 @@ This project is build with Kotlin/Wasm and uses Node.js as runtime for testing.
 #### Run tests
 
 ```shell
-./gradlew bot-api:wasm:wasmJsTest
+./gradlew bot-api:wasm:test
 ```

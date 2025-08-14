@@ -34,35 +34,42 @@ kotlin {
 }
 
 // Add a task to run the compiled WebAssembly with Node.js
-tasks.register<NodeTask>("run") {
-    group = "application"
-    description = "Runs the compiled WebAssembly with Node.js"
+tasks {
+    register("test") { // alias for `wasmJsTest`
+        dependsOn(named("wasmJsTest"))
 
-    // This task depends on the build task to ensure the code is compiled
-    dependsOn("build")
+    }
 
-    // The directory containing our WebAssembly files
-    val wasmDir = "${layout.buildDirectory.get()}/compileSync/wasmJs/main/productionExecutable/kotlin"
+    register<NodeTask>("run") {
+        group = "application"
+        description = "Runs the compiled WebAssembly with Node.js"
 
-    val resolvedScriptFile = providers.provider {
-        val jsFiles = fileTree(wasmDir) {
-            include("**/*.mjs")
-        }.files
-        if (jsFiles.isEmpty()) {
-            throw GradleException("No JavaScript files found in $wasmDir to load WebAssembly")
+        // This task depends on the build task to ensure the code is compiled
+        dependsOn("build")
+
+        // The directory containing our WebAssembly files
+        val wasmDir = "${layout.buildDirectory.get()}/compileSync/wasmJs/main/productionExecutable/kotlin"
+
+        val resolvedScriptFile = providers.provider {
+            val jsFiles = fileTree(wasmDir) {
+                include("**/*.mjs")
+            }.files
+            if (jsFiles.isEmpty()) {
+                throw GradleException("No JavaScript files found in $wasmDir to load WebAssembly")
+            }
+            jsFiles.first()
         }
-        jsFiles.first()
+
+        // Set the NodeTask script to a provider-backed file (deferred evaluation).
+        script.set(layout.file(resolvedScriptFile.map { it.absolutePath }.map { File(it) }))
+
+        doFirst {
+            // Log which script will be used; do NOT attempt to reassign script (it's final once set).
+            val scriptFile = resolvedScriptFile.get()
+            logger.info("Running Node.js with: ${scriptFile.absolutePath}")
+        }
+
+        // Working directory
+        workingDir.set(file(wasmDir))
     }
-
-    // Set the NodeTask script to a provider-backed file (deferred evaluation).
-    script.set(layout.file(resolvedScriptFile.map { it.absolutePath }.map { File(it) }))
-
-    doFirst {
-        // Log which script will be used; do NOT attempt to reassign script (it's final once set).
-        val scriptFile = resolvedScriptFile.get()
-        logger.info("Running Node.js with: ${scriptFile.absolutePath}")
-    }
-
-    // Working directory
-    workingDir.set(file(wasmDir))
 }
