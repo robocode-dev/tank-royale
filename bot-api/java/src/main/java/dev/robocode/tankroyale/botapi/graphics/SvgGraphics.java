@@ -158,7 +158,7 @@ public class SvgGraphics implements IGraphics {
                      "y=\"" + format(y) + "\" " +
                      "font-family=\"" + fontFamily + "\" " +
                      "font-size=\"" + format(fontSize) + "\" " +
-                     "fill=\"" + strokeColor + "\" " +
+                     "fill=\"" + strokeColor + "\"" +
                      ">" + text + "</text>\n");
     }
 

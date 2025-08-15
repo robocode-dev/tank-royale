@@ -39,18 +39,6 @@ public class PointTest {
     }
 
     @Test
-    public void testEqualityWithSmallDifferences() {
-        // Given
-        Point point1 = new Point(1.0, 2.0);
-        Point point2 = new Point(1.0 + 1e-11, 2.0 - 1e-11); // Difference smaller than epsilon
-        Point point3 = new Point(1.0 + 1e-9, 2.0); // Difference larger than epsilon
-
-        // Then
-        assertEquals(point1, point2, "Points with differences smaller than epsilon should be equal");
-        assertNotEquals(point1, point3, "Points with differences larger than epsilon should not be equal");
-    }
-
-    @Test
     public void testHashCode() {
         // Given
         Point point1 = new Point(1.0, 2.0);

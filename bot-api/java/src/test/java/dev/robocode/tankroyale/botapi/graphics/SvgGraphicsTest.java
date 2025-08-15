@@ -176,7 +176,7 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("y=\"200\" "));
         assertTrue(svg.contains("font-family=\"Verdana\" "));
         assertTrue(svg.contains("font-size=\"24\" "));
-        assertTrue(svg.contains("fill=\"#0000FF\" "));
+        assertTrue(svg.contains("fill=\"#0000FF\""));
         assertTrue(svg.contains(">Hello World</text>"));
     }
 
