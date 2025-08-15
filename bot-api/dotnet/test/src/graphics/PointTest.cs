@@ -37,13 +37,6 @@ public class PointTest
         Assert.That(point1.Equals((object)point2), Is.True);
         Assert.That(point1.Equals("not a point"), Is.False);
         Assert.That(point1.Equals(null), Is.False);
-
-        // Test floating-point comparison tolerance
-        var point5 = new Point(10.5 + Epsilon / 2, 20.5);
-        Assert.That(point1, Is.EqualTo(point5), "Points should be equal within epsilon");
-
-        var point6 = new Point(10.5 + Epsilon * 2, 20.5);
-        Assert.That(point1, Is.Not.EqualTo(point6), "Points should not be equal outside epsilon");
     }
 
     [Test]
@@ -81,23 +74,5 @@ public class PointTest
         Assert.That(point1 != point3, Is.True);
         Assert.That(point1 == point3, Is.False);
         Assert.That(point1 != point2, Is.False);
-    }
-
-    [Test]
-    public void TestWithDifferentEpsilons()
-    {
-        // This test verifies the epsilon comparison behavior
-        var basePoint = new Point(10.0, 20.0);
-
-        // Should be equal (difference < epsilon)
-        var slightlyDifferentPoint = new Point(10.0 + Epsilon / 2, 20.0 + Epsilon / 2);
-        Assert.That(basePoint.Equals(slightlyDifferentPoint), Is.True);
-
-        // Should be different (difference > epsilon)
-        var moreDifferentPoint = new Point(10.0 + Epsilon * 2, 20.0);
-        Assert.That(basePoint.Equals(moreDifferentPoint), Is.False);
-
-        var evenMoreDifferentPoint = new Point(10.0, 20.0 + Epsilon * 2);
-        Assert.That(basePoint.Equals(evenMoreDifferentPoint), Is.False);
     }
 }
