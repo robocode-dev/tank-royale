@@ -10,41 +10,31 @@ class Color private constructor(private val value: Int) {
 
     // RGBA properties
     /**
-     * Gets the red component value of this color.
-     *
-     * @return The red component value between 0 and 255.
+     * The red component value between 0 and 255.
      */
     val r: Int
         get() = (value shr 24) and 0xFF
 
     /**
-     * Gets the green component value of this color.
-     *
-     * @return The green component value between 0 and 255.
+     * The green component value between 0 and 255.
      */
     val g: Int
         get() = (value shr 16) and 0xFF
 
     /**
-     * Gets the blue component value of this color.
-     *
-     * @return The blue component value between 0 and 255.
+     * The blue component value between 0 and 255.
      */
     val b: Int
         get() = (value shr 8) and 0xFF
 
     /**
-     * Gets the alpha component value of this color.
-     *
-     * @return The alpha component value between 0 and 255.
+     * The alpha component value between 0 and 255.
      */
     val a: Int
         get() = value and 0xFF
 
     /**
-     * Converts this Color object to a 32-bit RGBA value.
-     *
-     * @return A 32-bit integer containing the RGBA representation of this color.
+     * Returns this color as a 32-bit RGBA integer.
      */
     fun toRgba(): Int = value
 
@@ -68,11 +58,9 @@ class Color private constructor(private val value: Int) {
     }
 
     /**
-     * Converts the color to its hexadecimal representation.
-     *
-     * @return A string representing the color in hexadecimal format:
-     *         - If alpha is 255 (fully opaque), returns #RRGGBB
-     *         - If alpha is not 255, returns #RRGGBBAA
+     * Returns the color in hexadecimal notation.  
+     * - `#RRGGBB` when alpha is 255 (fully opaque)  
+     * - `#RRGGBBAA` otherwise
      */
     fun toHexColor(): String {
         return if (a == 255) {

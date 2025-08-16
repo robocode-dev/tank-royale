@@ -1,10 +1,9 @@
 package dev.robocode.tankroyale.botapi.graphics
 
 /**
- * Interface for a graphics context that provides methods for drawing graphics primitives.
- *
- * This interface is shared across the WASM target and mimics the API of the original Java version,
- * but uses Kotlin collection types.
+ * Graphics context capable of drawing primitives.  
+ * Shared across the WASM target and keeps parity with the original Java API while using Kotlin
+ * collection types.
  */
 interface IGraphics {
 
