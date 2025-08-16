@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.botapi.graphics
 import dev.robocode.tankroyale.utils.NumberFormatUtil.format
 
 /**
- * Implementation of [IGraphics] that generates SVG markup.
+ * [IGraphics] implementation that produces SVG markup.
  */
 class SvgGraphics : IGraphics {
 
