@@ -9,7 +9,7 @@ public class ConstantsTest {
     private static final double EPS = 1e-10;
 
     @Test
-    public void testConstantsValues() {
+    public void givenDefinedConstants_whenChecked_thenValuesMatchSpec() {
         assertEquals(18, Constants.BOUNDING_CIRCLE_RADIUS);
         assertEquals(1200, Constants.SCAN_RADIUS);
         assertEquals(10, Constants.MAX_TURN_RATE);

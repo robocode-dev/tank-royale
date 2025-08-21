@@ -9,7 +9,7 @@ public class ConstantsTest
     private const double Eps = 1e-10;
 
     [Test]
-    public void TestConstantValues()
+    public void GivenDefinedConstants_whenChecked_thenValuesMatchSpec()
     {
         Assert.That(Constants.BoundingCircleRadius, Is.EqualTo(18));
         Assert.That(Constants.ScanRadius, Is.EqualTo(1200));

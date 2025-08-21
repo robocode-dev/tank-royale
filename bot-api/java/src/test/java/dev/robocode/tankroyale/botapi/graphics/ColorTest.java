@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ColorTest {
 
     @Test
-    public void testFromRgba_singleParameter() {
+    public void givenRgbaInt_whenFromRgba_thenChannelsAndRoundtripMatch() {
         // Test creation from single RGBA integer
         int rgbaValue = 0x112233FF; // Red: 17, Green: 34, Blue: 51, Alpha: 255
         Color color = Color.fromRgba(rgbaValue);
@@ -19,7 +19,7 @@ public class ColorTest {
     }
 
     @Test
-    public void testFromRgba_rgbParameters() {
+    public void givenRgb_whenFromRgb_thenAlphaIs255AndRoundtripRgbaMatches() {
         // Test creation from RGB values (alpha should be 255)
         Color color = Color.fromRgb(100, 150, 200);
 
@@ -31,7 +31,7 @@ public class ColorTest {
     }
 
     @Test
-    public void testFromRgba_rgbaParameters() {
+    public void givenRgbaComponents_whenFromRgba_thenChannelsAndRoundtripMatch() {
         // Test creation from RGBA values
         Color color = Color.fromRgba(64, 32, 16, 128);
 
@@ -43,7 +43,7 @@ public class ColorTest {
     }
 
     @Test
-    public void testFromRgba_baseColor() {
+    public void givenBaseColorAndAlpha_whenCallingFromRgba_thenReturnedColorHasBaseRgbAndAlpha() {
         // Test creation with a base color and alpha
         Color baseColor = Color.fromRgb(255, 200, 100);
         Color color = Color.fromRgba(baseColor, 50);
@@ -55,7 +55,7 @@ public class ColorTest {
     }
 
     @Test
-    public void testToRgba() {
+    public void givenRgbaInt_whenToRgba_thenReturnsSameInt() {
         // Create a color and test toRgba() returns the correct value
         int rgbaValue = 0x11223344;
         Color color = Color.fromRgba(rgbaValue);
@@ -64,7 +64,7 @@ public class ColorTest {
     }
 
     @Test
-    public void testRgbBoundsHandling() {
+    public void givenOutOfRangeRgba_whenFromRgba_thenChannelsAreClampedToByte() {
         // Test RGB values are properly bounded to 0-255
         Color color = Color.fromRgba(300, 300, 300, 300);
 
@@ -76,7 +76,7 @@ public class ColorTest {
     }
 
     @Test
-    public void testPredefinedColors() {
+    public void givenPredefinedColors_whenToRgba_thenValuesMatchAndTransparentAlphaIsZero() {
         // Test a few predefined colors
         assertEquals(0x000000FF, Color.BLACK.toRgba());
         assertEquals(0xFFFFFFFF, Color.WHITE.toRgba());
@@ -89,7 +89,7 @@ public class ColorTest {
     }
 
     @Test
-    public void testEquality() {
+    public void givenColors_whenEqualsAndHashCode_thenBehaveAsExpected() {
         // Test equality of colors
         Color color1 = Color.fromRgba(0x112233FF);
         Color color2 = Color.fromRgba(0x112233FF);
@@ -102,7 +102,7 @@ public class ColorTest {
     }
 
     @Test
-    public void testToString() {
+    public void givenOpaqueAndTransparentColors_whenToString_thenFormattedStringMatches() {
         // Test toString() with opaque color
         Color opaqueColor = Color.fromRgb(100, 150, 200);
         assertEquals("Color(r=100, g=150, b=200)", opaqueColor.toString());
@@ -113,7 +113,7 @@ public class ColorTest {
     }
 
     @Test
-    public void testToHexColor() {
+    public void givenOpaqueAndTransparentColors_whenToHexColor_thenHexStringMatches() {
         // Test toHexColor() with opaque color
         Color opaqueColor = Color.fromRgb(17, 34, 51);
         assertEquals("#112233", opaqueColor.toHexColor());
