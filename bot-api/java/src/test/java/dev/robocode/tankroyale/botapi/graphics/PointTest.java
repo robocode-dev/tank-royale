@@ -57,8 +57,8 @@ public class PointTest {
         String result = point.toString();
 
         // Then
-        assertTrue(result.contains("X=1.0"), "toString should contain X coordinate");
-        assertTrue(result.contains("Y=2.0"), "toString should contain Y coordinate");
+        assertTrue(result.contains("x=1.0"), "toString should contain X coordinate");
+        assertTrue(result.contains("y=2.0"), "toString should contain Y coordinate");
     }
 
     @Test

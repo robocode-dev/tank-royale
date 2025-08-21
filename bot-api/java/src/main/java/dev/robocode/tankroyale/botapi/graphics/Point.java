@@ -74,6 +74,6 @@ public class Point {
      */
     @Override
     public String toString() {
-        return String.format("(X=%s, Y=%s)", Double.toString(x), Double.toString(y));
+        return String.format("(x=%s, y=%s)", x, y);
     }
 }
