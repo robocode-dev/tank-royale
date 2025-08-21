@@ -1,119 +1,67 @@
 package dev.robocode.tankroyale.botapi.graphics
 
-import dev.robocode.tankroyale.utils.StringFormatUtil
-
 /**
- * Represents an RGBA (red, green, blue, alpha) color for use in the Tank Royale game.
- * This class provides methods for creating and manipulating colors.
+ * Simple RGBA color class for SVG rendering.
  */
-class Color private constructor(private val value: Int) {
+data class Color(val r: Int, val g: Int, val b: Int, val a: Int = 255) {
 
-    // RGBA properties
-    /**
-     * The red component value between 0 and 255.
-     */
-    val r: Int
-        get() = (value shr 24) and 0xFF
-
-    /**
-     * The green component value between 0 and 255.
-     */
-    val g: Int
-        get() = (value shr 16) and 0xFF
-
-    /**
-     * The blue component value between 0 and 255.
-     */
-    val b: Int
-        get() = (value shr 8) and 0xFF
-
-    /**
-     * The alpha component value between 0 and 255.
-     */
-    val a: Int
-        get() = value and 0xFF
-
-    /**
-     * Returns this color as a 32-bit RGBA integer.
-     */
-    fun toRgba(): Int = value
-
-    // Equality and comparison
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as Color
-        return value == other.value
-    }
-
-    override fun hashCode(): Int = value
-
-    // String representation
-    override fun toString(): String {
-        return if (a == 255) {
-            StringFormatUtil.formatRgbColor(r, g, b)
-        } else {
-            StringFormatUtil.formatRgbaColor(r, g, b, a)
+    init {
+        require(r in 0..255 && g in 0..255 && b in 0..255 && a in 0..255) {
+            "Color components must be within 0..255"
         }
     }
 
+    fun toRgba(): Int {
+        val rr = r and 0xFF
+        val gg = g and 0xFF
+        val bb = b and 0xFF
+        val aa = a and 0xFF
+        return (rr shl 24) or (gg shl 16) or (bb shl 8) or aa
+    }
+
     /**
-     * Returns the color in hexadecimal notation.  
-     * - `#RRGGBB` when alpha is 255 (fully opaque)  
-     * - `#RRGGBBAA` otherwise
+     * Hex color string. If opaque, returns #RRGGBB, else #RRGGBBAA.
      */
     fun toHexColor(): String {
+        val hex = buildString(1 + 6 + if (a != 255) 2 else 0) {
+            append('#')
+            append(r.toString(16).padStart(2, '0'))
+            append(g.toString(16).padStart(2, '0'))
+            append(b.toString(16).padStart(2, '0'))
+            if (a != 255) append(a.toString(16).padStart(2, '0'))
+        }
+        return hex.uppercase()
+    }
+
+    override fun toString(): String {
         return if (a == 255) {
-            StringFormatUtil.formatHexRgb(r, g, b)
+            "Color(r=$r, g=$g, b=$b)"
         } else {
-            StringFormatUtil.formatHexRgba(r, g, b, a)
+            "Color(r=$r, g=$g, b=$b, a=$a)"
         }
     }
 
     companion object {
-        // Factory methods
-        /**
-         * Creates a color from a 32-bit RGBA value.
-         *
-         * @param rgba A 32-bit value specifying the RGBA components.
-         * @return A new Color object initialized with the specified RGBA value.
-         */
-        fun fromRgba(rgba: Int): Color = Color(rgba)
+        fun fromRgb(r: Int, g: Int, b: Int): Color =
+            Color(r and 0xFF, g and 0xFF, b and 0xFF, 255)
 
-        /**
-         * Creates a color from the specified red, green, blue, and alpha values.
-         *
-         * @param r The red component value (0-255).
-         * @param g The green component value (0-255).
-         * @param b The blue component value (0-255).
-         * @param a The alpha component value (0-255).
-         * @return A new Color object initialized with the specified RGBA values.
-         */
-        fun fromRgba(r: Int, g: Int, b: Int, a: Int): Color {
-            return Color((r and 0xFF) shl 24 or ((g and 0xFF) shl 16) or ((b and 0xFF) shl 8) or (a and 0xFF))
+        fun fromRgba(r: Int, g: Int, b: Int, a: Int): Color =
+            Color(r and 0xFF, g and 0xFF, b and 0xFF, a and 0xFF)
+
+        fun fromRgba(rgba: Int): Color {
+            val rr = (rgba ushr 24) and 0xFF
+            val gg = (rgba ushr 16) and 0xFF
+            val bb = (rgba ushr 8) and 0xFF
+            val aa = (rgba) and 0xFF
+            return Color(rr, gg, bb, aa)
         }
 
-        /**
-         * Creates a color from the specified red, green, and blue values, with an alpha value of 255 (fully opaque).
-         *
-         * @param r The red component value (0-255).
-         * @param g The green component value (0-255).
-         * @param b The blue component value (0-255).
-         * @return A new Color object initialized with the specified RGB values and an alpha value of 255.
-         */
-        fun fromRgb(r: Int, g: Int, b: Int): Color = fromRgba(r, g, b, 255)
+        fun fromRgba(base: Color, alpha: Int): Color =
+            Color(base.r, base.g, base.b, alpha and 0xFF)
 
-        /**
-         * Creates a color from the specified base color with a new alpha value.
-         *
-         * @param baseColor The Color object from which to derive the RGB values.
-         * @param a The alpha component value (0-255).
-         * @return A new Color object with the RGB values from the base color and the specified alpha value.
-         */
-        fun fromRgba(baseColor: Color, a: Int): Color = fromRgba(baseColor.r, baseColor.g, baseColor.b, a)
-
-        // Common colors
+        // Predefined colors (aligned with Java API)
         val TRANSPARENT = fromRgba(255, 255, 255, 0)
+
         val ALICE_BLUE = fromRgb(240, 248, 255)
         val ANTIQUE_WHITE = fromRgb(250, 235, 215)
         val AQUA = fromRgb(0, 255, 255)

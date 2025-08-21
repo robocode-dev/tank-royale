@@ -7,48 +7,15 @@ package dev.robocode.tankroyale.botapi
  * Note that initial starting positions must be enabled at the server-side; otherwise the initial starting position
  * is ignored.
  */
-class InitialPosition(
-    /**
-     * Returns the x coordinate;
-     *
-     * @return The x coordinate or `null` if no x coordinate is specified and a random value must be used.
-     */
-    val x: Double?,
+class InitialPosition(val x: Double?, val y: Double?, val direction: Double?) {
 
-    /**
-     * Returns the y coordinate;
-     *
-     * @return The y coordinate or `null` if no y coordinate is specified and a random value must be used.
-     */
-    val y: Double?,
-
-    /**
-     * Returns the shared direction of the body, gun, and radar;
-     *
-     * @return The direction or `null` if no direction is specified and a random value must be used.
-     */
-    val direction: Double?
-) {
-
-    /**
-     * {@inheritDoc}
-     */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-
         other as InitialPosition
-
-        if (x != other.x) return false
-        if (y != other.y) return false
-        if (direction != other.direction) return false
-
-        return true
+        return x == other.x && y == other.y && direction == other.direction
     }
 
-    /**
-     * {@inheritDoc}
-     */
     override fun hashCode(): Int {
         var result = x?.hashCode() ?: 0
         result = 31 * result + (y?.hashCode() ?: 0)
@@ -56,15 +23,12 @@ class InitialPosition(
         return result
     }
 
-    /**
-     * {@inheritDoc}
-     */
     override fun toString(): String {
         if (x == null && y == null && direction == null) return ""
-        val strX = x?.toString() ?: ""
-        val strY = y?.toString() ?: ""
-        val strDirection = direction?.toString() ?: ""
-        return "$strX,$strY,$strDirection"
+        val sx = x?.toString() ?: ""
+        val sy = y?.toString() ?: ""
+        val sd = direction?.toString() ?: ""
+        return "$sx,$sy,$sd"
     }
 
     companion object {
@@ -72,30 +36,24 @@ class InitialPosition(
          * Creates a new instance of the InitialPosition class from a string.
          *
          * @param initialPosition is comma and/or white-space separated string.
-         * @return An InitialPosition instance.
+         * @return An InitialPosition instance or null if input represents an empty position.
          */
         fun fromString(initialPosition: String?): InitialPosition? {
             if (initialPosition == null || initialPosition.isBlank()) return null
-            // Treat strings containing only commas and/or whitespace as empty
             val trimmed = initialPosition.trim()
+            // Treat strings containing only commas and/or whitespace as empty
             if (trimmed.replace(Regex("[,\\s]"), "").isEmpty()) return null
 
             val values = trimmed.split(Regex("\\s*,\\s*|\\s+"))
-            return parseInitialPosition(values.toTypedArray())
+            return parseInitialPosition(values)
         }
 
-        private fun parseInitialPosition(values: Array<String>): InitialPosition? {
+        private fun parseInitialPosition(values: List<String>): InitialPosition? {
             if (values.isEmpty()) return null
 
-            val x = parseDouble(values[0])
-            if (values.size < 2) {
-                return InitialPosition(x, null, null)
-            }
-            val y = parseDouble(values[1])
-            var direction: Double? = null
-            if (values.size >= 3) {
-                direction = parseDouble(values[2])
-            }
+            val x = parseDouble(values.getOrNull(0))
+            val y = if (values.size >= 2) parseDouble(values[1]) else null
+            val direction = if (values.size >= 3) parseDouble(values[2]) else null
             return InitialPosition(x, y, direction)
         }
 
@@ -103,7 +61,7 @@ class InitialPosition(
             if (str == null) return null
             return try {
                 str.trim().toDouble()
-            } catch (ex: NumberFormatException) {
+            } catch (_: Throwable) {
                 null
             }
         }

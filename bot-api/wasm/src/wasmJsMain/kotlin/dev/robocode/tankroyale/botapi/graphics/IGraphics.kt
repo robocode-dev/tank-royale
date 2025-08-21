@@ -1,13 +1,10 @@
 package dev.robocode.tankroyale.botapi.graphics
 
 /**
- * Graphics context capable of drawing primitives.  
- * Shared across the WASM target and keeps parity with the original Java API while using Kotlin
- * collection types.
+ * Interface for graphics context that provides methods for drawing graphics primitives.
  */
 interface IGraphics {
-
-    /** Draws a line from point (x1, y1) to point (x2, y2). */
+    /** Draws a line from point (x1,y1) to point (x2,y2). */
     fun drawLine(x1: Double, y1: Double, x2: Double, y2: Double)
 
     /** Draws the outline of a rectangle. */
@@ -41,7 +38,7 @@ interface IGraphics {
     fun setStrokeWidth(width: Double)
 
     /** Sets the font used for drawing text. */
-    fun setFont(fontFamily: String, fontSize: Double)
+    fun setFont(family: String, size: Double)
 
     /** Generates the SVG representation of all drawing operations. */
     fun toSvg(): String

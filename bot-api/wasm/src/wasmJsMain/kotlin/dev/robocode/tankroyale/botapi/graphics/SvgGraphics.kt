@@ -1,152 +1,187 @@
 package dev.robocode.tankroyale.botapi.graphics
 
-import dev.robocode.tankroyale.utils.NumberFormatUtil.format
+import kotlin.math.round
 
-/**
- * [IGraphics] implementation that produces SVG markup.
- */
 class SvgGraphics : IGraphics {
-
     private val elements = mutableListOf<String>()
-    private var strokeColor: String = "none"
-    private var fillColor: String = "none"
-    private var strokeWidth: Double = 0.0
-    private var fontFamily: String = "Arial"
-    private var fontSize: Double = 12.0
 
-    override fun drawLine(x1: Double, y1: Double, x2: Double, y2: Double) {
-        elements += "<line " +
-                "x1=\"${format(x1)}\" " +
-                "y1=\"${format(y1)}\" " +
-                "x2=\"${format(x2)}\" " +
-                "y2=\"${format(y2)}\" " +
-                "stroke=\"$strokeColor\" " +
-                "stroke-width=\"${format(strokeWidth)}\" " +
-                "/>\n"
-    }
+    private var strokeColor: Color = Color.BLACK
+    private var strokeWidth: Double = 1.0
+    private var fillColor: Color = Color.TRANSPARENT
 
-    override fun drawRectangle(x: Double, y: Double, width: Double, height: Double) {
-        val sColor = if (strokeColor == "none") "#000000" else strokeColor
-        val sWidth = if (strokeWidth == 0.0) 1.0 else strokeWidth
-
-        elements += "<rect " +
-                "x=\"${format(x)}\" " +
-                "y=\"${format(y)}\" " +
-                "width=\"${format(width)}\" " +
-                "height=\"${format(height)}\" " +
-                "fill=\"none\" stroke=\"$sColor\" " +
-                "stroke-width=\"${format(sWidth)}\" " +
-                "/>\n"
-    }
-
-    override fun fillRectangle(x: Double, y: Double, width: Double, height: Double) {
-        elements += "<rect " +
-                "x=\"${format(x)}\" " +
-                "y=\"${format(y)}\" " +
-                "width=\"${format(width)}\" " +
-                "height=\"${format(height)}\" " +
-                "fill=\"$fillColor\" " +
-                "stroke=\"$strokeColor\" " +
-                "stroke-width=\"${format(strokeWidth)}\" " +
-                "/>\n"
-    }
-
-    override fun drawCircle(x: Double, y: Double, radius: Double) {
-        val sColor = if (strokeColor == "none") "#000000" else strokeColor
-        val sWidth = if (strokeWidth == 0.0) 1.0 else strokeWidth
-
-        elements += "<circle " +
-                "cx=\"${format(x)}\" " +
-                "cy=\"${format(y)}\" " +
-                "r=\"${format(radius)}\" " +
-                "fill=\"none\" " +
-                "stroke=\"$sColor\" " +
-                "stroke-width=\"${format(sWidth)}\" " +
-                "/>\n"
-    }
-
-    override fun fillCircle(x: Double, y: Double, radius: Double) {
-        elements += "<circle " +
-                "cx=\"${format(x)}\" " +
-                "cy=\"${format(y)}\" " +
-                "r=\"${format(radius)}\" " +
-                "fill=\"$fillColor\" " +
-                "stroke=\"$strokeColor\" " +
-                "stroke-width=\"${format(strokeWidth)}\" " +
-                "/>\n"
-    }
-
-    override fun drawPolygon(points: List<Point>) {
-        if (points.size < 3) return
-        val pointsStr = points.joinToString(" ") { "${format(it.x)},${format(it.y)}" }
-        val sColor = if (strokeColor == "none") "#000000" else strokeColor
-        val sWidth = if (strokeWidth == 0.0) 1.0 else strokeWidth
-
-        elements += "<polygon " +
-                "points=\"$pointsStr\" " +
-                "fill=\"none\" " +
-                "stroke=\"$sColor\" " +
-                "stroke-width=\"${format(sWidth)}\" " +
-                "/>\n"
-    }
-
-    override fun fillPolygon(points: List<Point>) {
-        if (points.size < 3) return
-        val pointsStr = points.joinToString(" ") { "${format(it.x)},${format(it.y)}" }
-
-        elements += "<polygon " +
-                "points=\"$pointsStr\" " +
-                "fill=\"$fillColor\" " +
-                "stroke=\"$strokeColor\" " +
-                "stroke-width=\"${format(strokeWidth)}\" " +
-                "/>\n"
-    }
-
-    override fun drawText(text: String, x: Double, y: Double) {
-        elements += "<text " +
-                "x=\"${format(x)}\" " +
-                "y=\"${format(y)}\" " +
-                "font-family=\"$fontFamily\" " +
-                "font-size=\"${format(fontSize)}\" " +
-                "fill=\"$strokeColor\"" +
-                ">" + text + "</text>\n"
-    }
+    private var fontFamily: String? = null
+    private var fontSize: Double? = null
 
     override fun setStrokeColor(color: Color) {
-        strokeColor = color.toHexColor()
-    }
-
-    override fun setFillColor(color: Color) {
-        fillColor = color.toHexColor()
+        strokeColor = color
     }
 
     override fun setStrokeWidth(width: Double) {
         strokeWidth = width
     }
 
-    override fun setFont(fontFamily: String, fontSize: Double) {
-        this.fontFamily = fontFamily
-        this.fontSize = fontSize
+    override fun setFillColor(color: Color) {
+        fillColor = color
     }
 
-    override fun toSvg(): String {
-        val sb = StringBuilder()
-        sb.append("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 5000 5000\">\n")
-        elements.forEach { sb.append(it) }
-        sb.append("</svg>\n")
-        return sb.toString()
+    override fun setFont(family: String, size: Double) {
+        fontFamily = family
+        fontSize = size
     }
 
     override fun clear() {
         elements.clear()
     }
-}
 
-fun main() {
-    val g = SvgGraphics()
-    g.setStrokeColor(Color.BLUE)
-    g.setFont("Verdana", 24.0)
-    g.drawText("Hello World", 100.0, 200.0)
+    override fun drawLine(x1: Double, y1: Double, x2: Double, y2: Double) {
+        val sb = StringBuilder()
+        sb.append("<line ")
+        sb.append("x1=\"").append(formatNumber(x1)).append("\" ")
+        sb.append("y1=\"").append(formatNumber(y1)).append("\" ")
+        sb.append("x2=\"").append(formatNumber(x2)).append("\" ")
+        sb.append("y2=\"").append(formatNumber(y2)).append("\" ")
+        sb.append("stroke=\"").append(hexNoAlpha(strokeColor)).append("\" ")
+        sb.append("stroke-width=\"").append(formatNumber(strokeWidth)).append("\" ")
+        sb.append("/>")
+        elements.add(sb.toString())
+    }
 
-    println(g.toSvg())
+    override fun drawRectangle(x: Double, y: Double, width: Double, height: Double) {
+        val sb = StringBuilder()
+        sb.append("<rect ")
+        sb.append("x=\"").append(formatNumber(x)).append("\" ")
+        sb.append("y=\"").append(formatNumber(y)).append("\" ")
+        sb.append("width=\"").append(formatNumber(width)).append("\" ")
+        sb.append("height=\"").append(formatNumber(height)).append("\" ")
+        sb.append("fill=\"none\" ")
+        sb.append("stroke=\"").append(hexNoAlpha(strokeColor)).append("\" ")
+        sb.append("stroke-width=\"").append(formatNumber(strokeWidth)).append("\" ")
+        sb.append("/>")
+        elements.add(sb.toString())
+    }
+
+    override fun fillRectangle(x: Double, y: Double, width: Double, height: Double) {
+        val sb = StringBuilder()
+        sb.append("<rect ")
+        sb.append("x=\"").append(formatNumber(x)).append("\" ")
+        sb.append("y=\"").append(formatNumber(y)).append("\" ")
+        sb.append("width=\"").append(formatNumber(width)).append("\" ")
+        sb.append("height=\"").append(formatNumber(height)).append("\" ")
+        sb.append("fill=\"").append(hex(fillColor)).append("\" ")
+        sb.append("stroke=\"").append(hexNoAlpha(strokeColor)).append("\" ")
+        sb.append("stroke-width=\"").append(formatNumber(strokeWidth)).append("\" ")
+        sb.append("/>")
+        elements.add(sb.toString())
+    }
+
+    override fun drawCircle(cx: Double, cy: Double, r: Double) {
+        val sb = StringBuilder()
+        sb.append("<circle ")
+        sb.append("cx=\"").append(formatNumber(cx)).append("\" ")
+        sb.append("cy=\"").append(formatNumber(cy)).append("\" ")
+        sb.append("r=\"").append(formatNumber(r)).append("\" ")
+        sb.append("fill=\"none\" ")
+        sb.append("stroke=\"").append(hexNoAlpha(strokeColor)).append("\" ")
+        sb.append("stroke-width=\"").append(formatNumber(strokeWidth)).append("\" ")
+        sb.append("/>")
+        elements.add(sb.toString())
+    }
+
+    override fun fillCircle(cx: Double, cy: Double, r: Double) {
+        val sb = StringBuilder()
+        sb.append("<circle ")
+        sb.append("cx=\"").append(formatNumber(cx)).append("\" ")
+        sb.append("cy=\"").append(formatNumber(cy)).append("\" ")
+        sb.append("r=\"").append(formatNumber(r)).append("\" ")
+        sb.append("fill=\"").append(hex(fillColor)).append("\" ")
+        sb.append("stroke=\"").append(hexNoAlpha(strokeColor)).append("\" ")
+        sb.append("stroke-width=\"").append(formatNumber(strokeWidth)).append("\" ")
+        sb.append("/>")
+        elements.add(sb.toString())
+    }
+
+    override fun drawPolygon(points: List<Point>) {
+        if (points.size < 3) return
+        val sb = StringBuilder()
+        sb.append("<polygon ")
+        sb.append("points=\"")
+        sb.append(points.joinToString(" ") { p -> "${formatNumber(p.x)},${formatNumber(p.y)}" })
+        sb.append("\" ")
+        sb.append("fill=\"none\" ")
+        sb.append("stroke=\"").append(hexNoAlpha(strokeColor)).append("\" ")
+        sb.append("stroke-width=\"").append(formatNumber(strokeWidth)).append("\" ")
+        sb.append("/>")
+        elements.add(sb.toString())
+    }
+
+    override fun fillPolygon(points: List<Point>) {
+        if (points.size < 3) return
+        val sb = StringBuilder()
+        sb.append("<polygon ")
+        sb.append("points=\"")
+        sb.append(points.joinToString(" ") { p -> "${formatNumber(p.x)},${formatNumber(p.y)}" })
+        sb.append("\" ")
+        sb.append("fill=\"").append(hex(fillColor)).append("\" ")
+        sb.append("stroke=\"").append(hexNoAlpha(strokeColor)).append("\" ")
+        sb.append("stroke-width=\"").append(formatNumber(strokeWidth)).append("\" ")
+        sb.append("/>")
+        elements.add(sb.toString())
+    }
+
+    override fun drawText(text: String, x: Double, y: Double) {
+        val sb = StringBuilder()
+        sb.append("<text ")
+        sb.append("x=\"").append(formatNumber(x)).append("\" ")
+        sb.append("y=\"").append(formatNumber(y)).append("\" ")
+        fontFamily?.let { sb.append("font-family=\"$it\" ") }
+        fontSize?.let { sb.append("font-size=\"").append(formatNumber(it)).append("\" ") }
+        // According to tests, text fill should follow stroke color
+        sb.append("fill=\"").append(hexNoAlpha(strokeColor)).append("\"")
+        sb.append(">")
+        sb.append(escapeXml(text))
+        sb.append("</text>")
+        elements.add(sb.toString())
+    }
+
+    override fun toSvg(): String {
+        val sb = StringBuilder()
+        sb.append("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 5000 5000\">")
+        if (elements.isNotEmpty()) {
+            sb.append("\n")
+            elements.forEach { el -> sb.append(el).append("\n") }
+        }
+        sb.append("</svg>")
+        return sb.toString()
+    }
+
+    private fun formatNumber(value: Double): String {
+        // Round to 3 decimals
+        val scaled = round(value * 1000.0).toLong()
+        val negative = scaled < 0
+        val absScaled = kotlin.math.abs(scaled)
+        val whole = absScaled / 1000
+        val frac = absScaled % 1000
+        val fracStr = if (frac == 0L) "" else frac.toString().padStart(3, '0').trimEnd('0')
+        val sign = if (negative) "-" else ""
+        return if (fracStr.isEmpty()) "$sign$whole" else "$sign$whole.$fracStr"
+    }
+
+    private fun hex(color: Color): String = color.toHexColor()
+
+    private fun hexNoAlpha(color: Color): String = Color.fromRgba(color, 255).toHexColor()
+
+    private fun escapeXml(text: String): String {
+        return buildString(text.length) {
+            for (ch in text) {
+                when (ch) {
+                    '&' -> append("&amp;")
+                    '<' -> append("&lt;")
+                    '>' -> append("&gt;")
+                    '"' -> append("&quot;")
+                    '\'' -> append("&apos;")
+                    else -> append(ch)
+                }
+            }
+        }
+    }
 }

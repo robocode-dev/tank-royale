@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.botapi.graphics
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class ColorTest {
 
@@ -122,5 +123,54 @@ class ColorTest {
         // Test toHexColor() with transparent color
         val transparentColor = Color.fromRgba(17, 34, 51, 128)
         assertEquals("#11223380", transparentColor.toHexColor())
+    }
+
+    // --- Merged from ColorConstantsTest ---
+
+    @Test
+    fun testTransparentAndOpaqueHex() {
+        // TRANSPARENT should have alpha 0 with white RGB per Java API
+        val transparent = Color.TRANSPARENT
+        assertEquals(0, transparent.a)
+        assertEquals(0xFFFFFF00.toInt(), transparent.toRgba())
+        assertEquals("#FFFFFF00", transparent.toHexColor())
+
+        val white = Color.WHITE
+        assertEquals(0xFFFFFFFF.toInt(), white.toRgba())
+        assertEquals("#FFFFFF", white.toHexColor())
+    }
+
+    @Test
+    fun testSomeNamedColorsMatchJava() {
+        // Spot-check a selection of named colors, values taken from Java API
+        val expected = mapOf(
+            "ALICE_BLUE" to 0xF0F8FFFF.toInt(),
+            "HOT_PINK" to 0xFF69B4FF.toInt(),
+            "ROYAL_BLUE" to 0x4169E1FF,
+            "SPRING_GREEN" to 0x00FF7FFF,
+            "SLATE_GRAY" to 0x708090FF,
+            "ORANGE_RED" to 0xFF4500FF.toInt(),
+            "DARK_TURQUOISE" to 0x00CED1FF,
+            "LIME_GREEN" to 0x32CD32FF
+        )
+        val actual = mapOf(
+            "ALICE_BLUE" to Color.ALICE_BLUE.toRgba(),
+            "HOT_PINK" to Color.HOT_PINK.toRgba(),
+            "ROYAL_BLUE" to Color.ROYAL_BLUE.toRgba(),
+            "SPRING_GREEN" to Color.SPRING_GREEN.toRgba(),
+            "SLATE_GRAY" to Color.SLATE_GRAY.toRgba(),
+            "ORANGE_RED" to Color.ORANGE_RED.toRgba(),
+            "DARK_TURQUOISE" to Color.DARK_TURQUOISE.toRgba(),
+            "LIME_GREEN" to Color.LIME_GREEN.toRgba()
+        )
+        for ((name, exp) in expected) {
+            assertEquals(exp, actual[name], "Color constant $name mismatch")
+        }
+    }
+
+    @Test
+    fun testSvgGraphicsIsIGraphics() {
+        val g = SvgGraphics()
+        assertTrue(g is IGraphics)
     }
 }
