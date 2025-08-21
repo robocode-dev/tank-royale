@@ -7,7 +7,7 @@ import kotlin.test.assertTrue
 class ConstantsTest {
 
     @Test
-    fun testFixedConstantsMatchJava() {
+    fun givenDefinedConstants_whenChecked_thenValuesMatchSpec() {
         assertEquals(18, Constants.BOUNDING_CIRCLE_RADIUS, "BOUNDING_CIRCLE_RADIUS mismatch")
         assertEquals(1200, Constants.SCAN_RADIUS, "SCAN_RADIUS mismatch")
 
@@ -25,7 +25,7 @@ class ConstantsTest {
     }
 
     @Test
-    fun testComputedConstantsMatchFormulas() {
+    fun givenComputedConstants_whenEvaluated_thenMatchFormulasAndSanityChecks() {
         val expectedMinBulletSpeed = 20 - 3 * Constants.MAX_FIREPOWER
         val expectedMaxBulletSpeed = 20 - 3 * Constants.MIN_FIREPOWER
 

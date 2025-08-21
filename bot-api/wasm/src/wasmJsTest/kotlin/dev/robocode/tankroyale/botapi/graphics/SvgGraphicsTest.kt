@@ -14,7 +14,7 @@ class SvgGraphicsTest {
         Regex(Regex.escape(token)).findAll(text).count()
 
     @Test
-    fun testInitialState() {
+    fun givenNewGraphics_whenToSvg_thenContainsRootSvgAndClosed() {
         val graphics = SvgGraphics()
         val svg = graphics.toSvg()
         assertTrue(svg.contains("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 5000 5000\">"))
@@ -22,7 +22,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testDrawLine() {
+    fun givenStrokeSet_whenDrawLine_thenLineElementWithAttributesPresent() {
         val g = SvgGraphics()
         g.setStrokeColor(Color.RED)
         g.setStrokeWidth(2.0)
@@ -39,7 +39,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testDrawRectangle() {
+    fun givenStrokeSet_whenDrawRectangle_thenRectElementWithAttributesPresent() {
         val g = SvgGraphics()
         g.setStrokeColor(Color.BLUE)
         g.setStrokeWidth(3.0)
@@ -57,7 +57,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testFillRectangle() {
+    fun givenFillAndStrokeSet_whenFillRectangle_thenRectElementWithAttributesPresent() {
         val g = SvgGraphics()
         g.setFillColor(Color.GREEN)
         g.setStrokeColor(Color.RED)
@@ -72,7 +72,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testDrawCircle() {
+    fun givenStrokeSet_whenDrawCircle_thenCircleElementWithAttributesPresent() {
         val g = SvgGraphics()
         g.setStrokeColor(Color.PURPLE)
         g.setStrokeWidth(2.0)
@@ -89,7 +89,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testFillCircle() {
+    fun givenFillAndStrokeSet_whenFillCircle_thenCircleElementWithAttributesPresent() {
         val g = SvgGraphics()
         g.setFillColor(Color.YELLOW)
         g.setStrokeColor(Color.ORANGE)
@@ -102,7 +102,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testDrawPolygon() {
+    fun givenStrokeSet_whenDrawPolygon_thenPolygonElementWithAttributesPresent() {
         val g = SvgGraphics()
         g.setStrokeColor(Color.BLACK)
         g.setStrokeWidth(2.0)
@@ -118,7 +118,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testFillPolygon() {
+    fun givenFillAndStrokeSet_whenFillPolygon_thenPolygonElementWithAttributesPresent() {
         val g = SvgGraphics()
         g.setFillColor(Color.BLUE)
         g.setStrokeColor(Color.BLACK)
@@ -132,7 +132,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testPolygonWithTooFewPoints() {
+    fun givenTooFewPoints_whenDrawOrFillPolygon_thenNoPolygonIsAdded() {
         val g = SvgGraphics()
         val pts = listOf(Point(10.0, 10.0), Point(50.0, 10.0))
         g.drawPolygon(pts)
@@ -143,7 +143,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testDrawText() {
+    fun givenStrokeAndFontSet_whenDrawText_thenTextElementWithAttributesPresent() {
         val g = SvgGraphics()
         g.setStrokeColor(Color.BLUE)
         g.setFont("Verdana", 24.0)
@@ -160,7 +160,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testMultipleElements() {
+    fun givenVariousElementsDrawn_whenToSvg_thenCountsMatch() {
         val g = SvgGraphics()
         g.setStrokeColor(Color.RED)
         g.drawLine(10.0, 10.0, 20.0, 20.0)
@@ -176,7 +176,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testClear() {
+    fun givenGraphicsWithElements_whenClear_thenElementsAreRemovedFromSvg() {
         val g = SvgGraphics()
         g.setStrokeColor(Color.RED)
         g.drawLine(10.0, 10.0, 20.0, 20.0)
@@ -193,7 +193,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testDefaultStrokeValues() {
+    fun givenNoStrokeSet_whenDrawShapes_thenDefaultBlackStrokeAndWidth1Used() {
         val g = SvgGraphics()
         g.drawRectangle(10.0, 20.0, 100.0, 50.0)
         var svg = g.toSvg()
@@ -208,7 +208,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testToSvgFormatting() {
+    fun givenLineDrawn_whenToSvg_thenContainsRootSvgAndClosed() {
         val g = SvgGraphics()
         g.drawLine(10.0, 10.0, 20.0, 20.0)
         val svg = g.toSvg().trim()
@@ -217,7 +217,7 @@ class SvgGraphicsTest {
     }
 
     @Test
-    fun testNumberFormatting() {
+    fun givenPreciseNumbers_whenToSvg_thenFormattedToThreeDecimals() {
         val g = SvgGraphics()
         g.drawLine(10.123, 20.456, 30.789, 40.987)
         var svg = g.toSvg()
@@ -235,3 +235,4 @@ class SvgGraphicsTest {
         assertTrue(svg.contains("y2=\"40.988\" "))
     }
 }
+

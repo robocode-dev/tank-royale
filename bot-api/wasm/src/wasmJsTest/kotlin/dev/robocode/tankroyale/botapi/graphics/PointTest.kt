@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 class PointTest {
 
     @Test
-    fun testConstructorAndGetters() {
+    fun givenCoordinates_whenConstructingPoint_thenGettersReturnSameValues() {
         // Given
         val x = 10.5
         val y = -5.25
@@ -26,7 +26,7 @@ class PointTest {
     }
 
     @Test
-    fun testEquality() {
+    fun givenPoints_whenComparingEquality_thenBehaveAsExpected() {
         // Given
         val point1 = Point(1.0, 2.0)
         val point2 = Point(1.0, 2.0)
@@ -41,7 +41,7 @@ class PointTest {
     }
 
     @Test
-    fun testEqualityWithExactValues() {
+    fun givenSlightDifferences_whenComparingPoints_thenNotEqualWithExactComparison() {
         // Given - Note: Since we now use exact equality, small differences will make points unequal
         val point1 = Point(1.0, 2.0)
         val point2 = Point(1.0, 2.0) // Exactly the same values
@@ -55,7 +55,7 @@ class PointTest {
     }
 
     @Test
-    fun testHashCode() {
+    fun givenEqualPoints_whenHashCode_thenSameHashCode() {
         // Given
         val point1 = Point(1.0, 2.0)
         val point2 = Point(1.0, 2.0)
@@ -65,7 +65,7 @@ class PointTest {
     }
 
     @Test
-    fun testToString() {
+    fun givenPoint_whenToString_thenIncludesXAndYCoordinates() {
         // Given
         val point = Point(1.0, 2.0)
 
@@ -78,7 +78,7 @@ class PointTest {
     }
 
     @Test
-    fun testReflexiveEquality() {
+    fun givenPoint_whenCheckingReflexiveEquality_thenEqualToItself() {
         // Given
         val point = Point(1.0, 2.0)
 
@@ -86,3 +86,4 @@ class PointTest {
         assertEquals(point, point, "A point should be equal to itself")
     }
 }
+

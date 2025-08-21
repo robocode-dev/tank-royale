@@ -8,7 +8,7 @@ import kotlin.test.assertTrue
 class ColorTest {
 
     @Test
-    fun testFromRgba_singleParameter() {
+    fun givenRgbaInt_whenFromRgba_thenChannelsAndRoundtripMatch() {
         // Test creation from a single RGBA integer
         val rgbaValue = 0x112233FF // Red: 17, Green: 34, Blue: 51, Alpha: 255
         val color = Color.fromRgba(rgbaValue)
@@ -21,7 +21,7 @@ class ColorTest {
     }
 
     @Test
-    fun testFromRgba_rgbParameters() {
+    fun givenRgb_whenFromRgb_thenAlphaIs255AndRoundtripRgbaMatches() {
         // Test creation from RGB values (alpha should be 255)
         val color = Color.fromRgb(100, 150, 200)
 
@@ -33,7 +33,7 @@ class ColorTest {
     }
 
     @Test
-    fun testFromRgba_rgbaParameters() {
+    fun givenRgbaComponents_whenFromRgba_thenChannelsAndRoundtripMatch() {
         // Test creation from RGBA values
         val color = Color.fromRgba(64, 32, 16, 128)
 
@@ -45,7 +45,7 @@ class ColorTest {
     }
 
     @Test
-    fun testFromRgba_baseColor() {
+    fun givenBaseColorAndAlpha_whenFromRgba_thenReturnedColorHasBaseRgbAndAlpha() {
         // Test creation with a base color and alpha
         val baseColor = Color.fromRgb(255, 200, 100)
         val color = Color.fromRgba(baseColor, 50)
@@ -57,7 +57,7 @@ class ColorTest {
     }
 
     @Test
-    fun testToRgba() {
+    fun givenRgbaInt_whenToRgba_thenReturnsSameInt() {
         // Create a color and test toRgba() returns the correct value
         val rgbaValue = 0x11223344
         val color = Color.fromRgba(rgbaValue)
@@ -66,7 +66,7 @@ class ColorTest {
     }
 
     @Test
-    fun testRgbBoundsHandling() {
+    fun givenOutOfRangeRgba_whenFromRgba_thenChannelsAreClampedToByte() {
         // Test RGB values are properly bounded to 0-255
         val color = Color.fromRgba(300, 300, 300, 300)
 
@@ -78,7 +78,7 @@ class ColorTest {
     }
 
     @Test
-    fun testPredefinedColors() {
+    fun givenPredefinedColors_whenToRgba_thenValuesMatchAndTransparentAlphaIsZero() {
         // Test a few predefined colors
         assertEquals(0x000000FF, Color.BLACK.toRgba())
         assertEquals(0xFFFFFFFF.toInt(), Color.WHITE.toRgba())
@@ -91,7 +91,7 @@ class ColorTest {
     }
 
     @Test
-    fun testEquality() {
+    fun givenColors_whenEqualsAndHashCode_thenBehaveAsExpected() {
         // Test equality of colors
         val color1 = Color.fromRgba(0x112233FF)
         val color2 = Color.fromRgba(0x112233FF)
@@ -104,7 +104,7 @@ class ColorTest {
     }
 
     @Test
-    fun testToString() {
+    fun givenOpaqueAndTransparentColors_whenToString_thenFormattedStringMatches() {
         // Test toString() with opaque color
         val opaqueColor = Color.fromRgb(100, 150, 200)
         assertEquals("Color(r=100, g=150, b=200)", opaqueColor.toString())
@@ -115,7 +115,7 @@ class ColorTest {
     }
 
     @Test
-    fun testToHexColor() {
+    fun givenOpaqueAndTransparentColors_whenToHexColor_thenHexStringMatches() {
         // Test toHexColor() with opaque color
         val opaqueColor = Color.fromRgb(17, 34, 51)
         assertEquals("#112233", opaqueColor.toHexColor())
@@ -128,7 +128,7 @@ class ColorTest {
     // --- Merged from ColorConstantsTest ---
 
     @Test
-    fun testTransparentAndOpaqueHex() {
+    fun givenTransparentAndWhiteColors_whenToRgbaAndToHex_thenExpectedValues() {
         // TRANSPARENT should have alpha 0 with white RGB per Java API
         val transparent = Color.TRANSPARENT
         assertEquals(0, transparent.a)
@@ -141,7 +141,7 @@ class ColorTest {
     }
 
     @Test
-    fun testSomeNamedColorsMatchJava() {
+    fun givenSelectedNamedColors_whenToRgba_thenMatchJavaValues() {
         // Spot-check a selection of named colors, values taken from Java API
         val expected = mapOf(
             "ALICE_BLUE" to 0xF0F8FFFF.toInt(),
@@ -169,7 +169,7 @@ class ColorTest {
     }
 
     @Test
-    fun testSvgGraphicsIsIGraphics() {
+    fun givenSvgGraphics_whenCheckingType_thenIsIGraphics() {
         val g = SvgGraphics()
         assertTrue(g is IGraphics)
     }
