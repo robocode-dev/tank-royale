@@ -94,7 +94,12 @@ public final class InitialPosition {
      */
     public static InitialPosition fromString(String initialPosition) {
         if (initialPosition == null || initialPosition.isBlank()) return null;
-        var values = initialPosition.trim().split("\\s*,\\s*|\\s+");
+
+        // Treat strings containing only commas and/or whitespace as empty
+        String trimmed = initialPosition.trim();
+        if (trimmed.replaceAll("[,\\s]", "").isEmpty()) return null;
+
+        var values = trimmed.split("\\s*,\\s*|\\s+");
         return parseInitialPosition(values);
     }
 

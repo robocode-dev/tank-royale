@@ -70,7 +70,12 @@ public sealed class InitialPosition
     public static InitialPosition FromString(string initialPosition)
     {
         if (initialPosition == null || string.IsNullOrWhiteSpace(initialPosition)) return null;
-        var values = Regex.Split(initialPosition.Trim(), @"\s*,\s*|\s+");
+
+        // Treat strings containing only commas and/or whitespace as empty
+        var trimmed = initialPosition.Trim();
+        if (Regex.Replace(trimmed, "[,\\s]", "").Length == 0) return null;
+
+        var values = Regex.Split(trimmed, @"\s*,\s*|\s+");
         return ParseInitialPosition(values);
     }
 

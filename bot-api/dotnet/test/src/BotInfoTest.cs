@@ -463,7 +463,7 @@ public class BotInfoTest
         public void GivenNonExistingFileName_whenCallingFromFile_thenThrowFileBotFoundException()
         {
             const string filename = "non-existing-filename";
-            Assert.Throws<FileNotFoundException>(() => FromFile(filename));
+            Assert.Throws<BotException>(() => FromFile(filename));
         }
     }
 

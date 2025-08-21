@@ -395,11 +395,18 @@ public sealed class BotInfo
     /// <returns> A BotInfo instance containing the bot properties read from the configuration.</returns>
     public static BotInfo FromFile(string filePath, string basePath = null)
     {
-        basePath ??= Directory.GetCurrentDirectory();
-        var configBuilder = new ConfigurationBuilder().SetBasePath(basePath).AddJsonFile(filePath);
-        var config = configBuilder.Build();
+        try
+        {
+            basePath ??= Directory.GetCurrentDirectory();
+            var configBuilder = new ConfigurationBuilder().SetBasePath(basePath).AddJsonFile(filePath);
+            var config = configBuilder.Build();
 
-        return FromConfiguration(config);
+            return FromConfiguration(config);
+        }
+        catch (FileNotFoundException ex)
+        {
+            throw new BotException("Could not read the file: " + filePath, ex);
+        }
     }
 
     /// <summary>

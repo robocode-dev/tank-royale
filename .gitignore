@@ -24,6 +24,8 @@ generated/
 /bot-api/dotnet/docs/Release-notes.txt
 
 *.iml
+*.lock
+*.sln.DotSettings.user
 
 /games.properties
 /server.properties
