@@ -189,10 +189,10 @@ public class SvgGraphics : IGraphics
     /// <summary>
     /// Sets the font used for drawing text.
     /// </summary>
-    public void SetFont(string fontFamily, double fontSize)
+    public void SetFont(string family, double size)
     {
-        _fontFamily = fontFamily;
-        _fontSize = fontSize;
+        _fontFamily = family;
+        _fontSize = size;
     }
 
     /// <summary>

@@ -190,9 +190,9 @@ public class SvgGraphics implements IGraphics {
      * Sets the font used for drawing text.
      */
     @Override
-    public void setFont(String fontFamily, double fontSize) {
-        this.fontFamily = fontFamily;
-        this.fontSize = fontSize;
+    public void setFont(String family, double size) {
+        this.fontFamily = family;
+        this.fontSize = size;
     }
 
     /**

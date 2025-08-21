@@ -93,9 +93,9 @@ public interface IGraphics
     /// <summary>
     /// Sets the font used for drawing text.
     /// </summary>
-    /// <param name="fontFamily">The font family name.</param>
-    /// <param name="fontSize">The font size.</param>
-    void SetFont(string fontFamily, double fontSize);
+    /// <param name="family">The font family name.</param>
+    /// <param name="size">The font size.</param>
+    void SetFont(string family, double size);
 
     /// <summary>
     /// Generates the SVG representation of all drawing operations.
