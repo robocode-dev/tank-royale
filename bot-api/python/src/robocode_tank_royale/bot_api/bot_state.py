@@ -3,7 +3,7 @@ from typing import Optional
 
 @dataclass
 class BotState:
-    from .color import Color
+    from .graphics.color import Color
 
     """Represents the current bot state."""
 

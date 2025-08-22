@@ -1,7 +1,7 @@
 import re
 from abc import ABC
 
-from robocode_tank_royale.bot_api import Color
+from robocode_tank_royale.bot_api.graphics.color import Color
 
 
 class ColorUtil(ABC):
@@ -98,4 +98,4 @@ class ColorUtil(ABC):
             g = (g << 4) | g
             b = (b << 4) | b
 
-        return Color(r, g, b)
+        return Color.from_rgb(r, g, b)
