@@ -19,11 +19,28 @@ tasks {
     val `generate-schema` by registering(Exec::class) {
         dependsOn(`install-requirements`)
 
-        commandLine("python", "scripts/schema_to_python.py", "-d", "../../schema/schemas", "-o", "generated/robocode_tank_royale/schema");
+        commandLine("python", "scripts/schema_to_python.py", "-d", "../../schema/schemas", "-o", "generated/robocode_tank_royale/tank_royale/schema");
+    }
+
+    val `generate-version` by registering {
+        inputs.file("../../gradle.properties")
+        outputs.file("VERSION")
+        doLast {
+            val propsFile = file("../../gradle.properties")
+            if (!propsFile.exists()) {
+                throw org.gradle.api.GradleException("version properties file not found: ${propsFile.absolutePath}")
+            }
+            val versionLine = propsFile.readLines().firstOrNull { it.trim().startsWith("version=") }
+                ?: throw org.gradle.api.GradleException("No 'version=' entry found in ${propsFile.absolutePath}")
+            val ver = versionLine.substringAfter("version=").trim()
+            file("VERSION").writeText(ver)
+            println("Wrote VERSION file with version $ver")
+        }
     }
 
     val `pip-install` by registering(Exec::class) {
         dependsOn(`generate-schema`)
+        dependsOn(`generate-version`)
 
         commandLine("pip", "install", "-e", ".")
     }
