@@ -1,7 +1,5 @@
 package dev.robocode.tankroyale.gui.client
 
-import dev.robocode.tankroyale.client.WebSocketClient
-import dev.robocode.tankroyale.client.WebSocketClientEvents
 import dev.robocode.tankroyale.client.model.*
 import dev.robocode.tankroyale.gui.client.ClientEvents.onBotListUpdate
 import dev.robocode.tankroyale.gui.client.ClientEvents.onConnected
@@ -12,300 +10,145 @@ import dev.robocode.tankroyale.gui.client.ClientEvents.onGameResumed
 import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
 import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundEnded
 import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundStarted
+import dev.robocode.tankroyale.gui.client.ClientEvents.onStdOutputUpdated
 import dev.robocode.tankroyale.gui.client.ClientEvents.onTickEvent
-import dev.robocode.tankroyale.gui.settings.ConfigSettings
-import dev.robocode.tankroyale.gui.settings.GamesSettings
-import dev.robocode.tankroyale.gui.settings.ServerSettings
-import dev.robocode.tankroyale.gui.ui.server.ServerEvents
+import dev.robocode.tankroyale.gui.player.BattlePlayer
+import dev.robocode.tankroyale.gui.player.LiveBattlePlayer
 import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
-import dev.robocode.tankroyale.common.util.Version
-import kotlinx.serialization.PolymorphicSerializer
-import java.net.URI
-import java.util.concurrent.atomic.AtomicBoolean
 
+/**
+ * Manages the lifecycle and coordination of battle players.
+ * Acts as a central coordinator between the UI and different battle player implementations.
+ */
 object Client {
 
-    var currentGameSetup: GameSetup? = null
-
-    var currentTick: TickEvent? = null
-
-    private val isRunning = AtomicBoolean(false)
-    private val isPaused = AtomicBoolean(false)
-
-    private var participants = listOf<Participant>()
-    private var bots = mutableSetOf<BotInfo>()
-
-    private var websocket: WebSocketClient? = null
-
-    private val json = MessageConstants.json
-
-    private var gameTypes = setOf<String>()
-
-    private lateinit var lastStartGame: StartGame
-
-    private var lastTps: Int? = null
-
-    private val savedStdOutput =
-        mutableMapOf<Int /* BotId */, MutableMap<Int /* round */, MutableMap<Int /* turn */, String>>>()
-    private val savedStdError =
-        mutableMapOf<Int /* BotId */, MutableMap<Int /* round */, MutableMap<Int /* turn */, String>>>()
+    private var liveBattlePlayer: LiveBattlePlayer = LiveBattlePlayer()
+    private var currentPlayer: BattlePlayer? = null
 
     init {
-        TpsEvents.onTpsChanged.subscribe(Client) { changeTps(it.tps) }
-        ClientEvents.onBotPolicyChanged.subscribe(Client) { changeBotPolicy(it) }
-
-        ServerEvents.onStopped.subscribe(Client) {
-            isRunning.set(false)
-            isPaused.set(false)
-
-            bots.clear()
-
-            websocket?.let {
-                if (it.isOpen()) {
-                    it.close()
-                }
-                websocket = null
-            }
+        // Subscribe to bot policy changes
+        ClientEvents.onBotPolicyChanged.subscribe(Client) {
+            currentPlayer?.changeBotPolicy(it)
+        }
+        TpsEvents.onTpsChanged.subscribe(Client) {
+            currentPlayer?.changeTps(it.tps)
         }
     }
 
-    fun isConnected(): Boolean = websocket?.isOpen() ?: false
+    val currentGameSetup: GameSetup?
+        get() = currentPlayer?.getCurrentGameSetup()
 
-    fun connect() {
-        check (!isConnected()) { "Websocket is already connected" }
-        websocket = WebSocketClient(URI(ServerSettings.serverUrl()))
+    val currentTick: TickEvent?
+        get() = currentPlayer?.getCurrentTick()
 
-        WebSocketClientEvents.apply {
-            websocket?.let { ws ->
-                onOpen.subscribe(ws) { onConnected.fire(Unit) }
-                onMessage.subscribe(ws) { onMessage(it) }
-                onError.subscribe(ws) {
-                    System.err.println("WebSocket error: " + it.message)
-                    ServerEvents.onStopped.fire(Unit)
-                }
-                try {
-                    ws.open() // must be called AFTER onOpen.subscribe()
-                } catch (_: Exception) {
-                    // to prevent redundant subscriptions which are kept both on failure, and
-                    // new attempt to open the web socket
-                    onOpen.unsubscribe(ws)
-                    onMessage.unsubscribe(ws)
-                    onError.unsubscribe(ws)
-                }
-            }
-        }
+    fun switchToLiveBattlePlayer() {
+        setPlayer(liveBattlePlayer)
     }
+
+    /**
+     * Registers and activates a battle player.
+     * Any previously active player will be stopped.
+     */
+    fun setPlayer(player: BattlePlayer) {
+        // Stop current player if exists
+        currentPlayer?.let { current ->
+            if (current.isRunning()) {
+                current.stop()
+            }
+            unsubscribeFromPlayerEvents(current)
+        }
+
+        currentPlayer = player
+        subscribeToPlayerEvents(player)
+        player.start()
+        // Initialize player with current TPS setting
+        //player.changeTps(ConfigSettings.tps)
+    }
+
+    fun isLivePlayerConnected(): Boolean =
+        currentPlayer == liveBattlePlayer && liveBattlePlayer.isCorrectlyConnected()
 
     fun close() {
-        stopGame()
+        liveBattlePlayer.close()
+    }
 
-        if (isConnected()) {
-            WebSocketClientEvents.apply {
-                websocket?.let { ws ->
-                    onOpen.unsubscribe(ws)
-                    onMessage.unsubscribe(ws)
-                    onError.unsubscribe(ws)
-                    ws.close()
-                }
-            }
-            websocket = null
-        }
-
-        savedStdOutput.clear()
-        savedStdError.clear()
+    fun start() {
+        currentPlayer?.start() ?: throw IllegalStateException("No active battle player")
     }
 
     fun startGame(botAddresses: Set<BotAddress>) {
-        savedStdOutput.clear()
-        savedStdError.clear()
-
-        if (isRunning.get()) {
-            stopGame()
+        if (currentPlayer == liveBattlePlayer) {
+            liveBattlePlayer.startGame(botAddresses)
+        } else {
+            throw IllegalStateException("Trying to start game with websocket bots without server connection")
         }
-
-        val displayName = ConfigSettings.gameType.displayName
-        val gameSetup = GamesSettings.games[displayName]!!
-
-        lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses)
-        send(lastStartGame)
     }
 
     fun stopGame() {
-        resumeGame()
-        if (isRunning.get()) {
-            send(StopGame)
-        }
+        currentPlayer?.stop()
     }
 
     fun restartGame() {
-        if (isRunning.get()) {
-            val eventOwner = Object()
-            onGameAborted.subscribe(eventOwner, true) {
-                startWithLastGameSetup()
-            }
-            onGameEnded.subscribe(eventOwner, true) {
-                startWithLastGameSetup()
-            }
-            stopGame()
-
-        } else {
-            startWithLastGameSetup()
-        }
+        currentPlayer?.restart()
     }
 
     fun pauseGame() {
-        if (isRunning.get() && !isPaused.get()) {
-            send(PauseGame)
-        }
+        currentPlayer?.pause()
     }
 
     fun resumeGame() {
-        if (isRunning.get() && isPaused.get()) {
-            send(ResumeGame)
-        }
+        currentPlayer?.resume()
     }
 
     internal fun doNextTurn() {
-        if (isRunning.get() && isPaused.get()) {
-            send(NextTurn)
-        }
+        currentPlayer?.nextTurn()
     }
 
-    fun isGameRunning(): Boolean = isRunning.get()
-    fun isGamePaused(): Boolean = isPaused.get()
+    fun isGameRunning(): Boolean = currentPlayer?.isRunning() ?: false
 
-    val joinedBots: Set<BotInfo> get() = bots
+    fun isGamePaused(): Boolean = currentPlayer?.isPaused() ?: false
 
-    fun getParticipant(botId: Int): Participant = participants.first { participant -> participant.id == botId }
+    val joinedBots: Set<BotInfo>
+        get() = currentPlayer?.getJoinedBots() ?: emptySet()
 
-    fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdOutput[botId]
-
-    fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdError[botId]
-
-    private fun startWithLastGameSetup() {
-        send(lastStartGame)
+    fun getParticipant(botId: Int): Participant {
+        return currentPlayer?.getParticipant(botId)
+            ?: throw IllegalStateException("No battle player available")
     }
 
-    private fun send(message: Message) {
-        check(isConnected()) { "Websocket is not connected" }
-        websocket?.send(message)
+    fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? {
+        return currentPlayer?.getStandardOutput(botId)
     }
 
-    private fun changeTps(tps: Int) {
-        if (isRunning.get() && tps != lastTps) {
-            lastTps = tps
-            send(ChangeTps(tps))
-        }
+    fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? {
+        return currentPlayer?.getStandardError(botId)
     }
 
-    private fun changeBotPolicy(botPolicyUpdate: BotPolicyUpdate) {
-        send(botPolicyUpdate)
+    private fun subscribeToPlayerEvents(player: BattlePlayer) {
+        player.onConnected.subscribe(Client) { onConnected.fire(it) }
+        player.onGameStarted.subscribe(Client) { onGameStarted.fire(it) }
+        player.onGameEnded.subscribe(Client) { onGameEnded.fire(it) }
+        player.onGameAborted.subscribe(Client) { onGameAborted.fire(it) }
+        player.onGamePaused.subscribe(Client) { onGamePaused.fire(it) }
+        player.onGameResumed.subscribe(Client) { onGameResumed.fire(it) }
+        player.onRoundStarted.subscribe(Client) { onRoundStarted.fire(it) }
+        player.onRoundEnded.subscribe(Client) { onRoundEnded.fire(it) }
+        player.onTickEvent.subscribe(Client) { onTickEvent.fire(it) }
+        player.onBotListUpdate.subscribe(Client) { onBotListUpdate.fire(it) }
+        player.onStdOutputUpdated.subscribe(Client) { onStdOutputUpdated.fire(it) }
     }
 
-    private fun onMessage(msg: String) {
-//        println("msg: $msg")
-        when (val type = json.decodeFromString(PolymorphicSerializer(Message::class), msg)) {
-            is TickEvent -> handleTickEvent(type)
-            is ServerHandshake -> handleServerHandshake(type)
-            is BotListUpdate -> handleBotListUpdate(type)
-            is GameStartedEvent -> handleGameStarted(type)
-            is GameEndedEvent -> handleGameEnded(type)
-            is GameAbortedEvent -> handleGameAborted(type)
-            is GamePausedEvent -> handleGamePaused(type)
-            is GameResumedEvent -> handleGameResumed(type)
-            is RoundStartedEvent -> handleRoundStarted(type)
-            is RoundEndedEvent -> handleRoundEnded(type)
-            is TpsChangedEvent -> {
-                // do nothing to prevent TPS change loop between server and client
-            }
-            else -> throw IllegalArgumentException("Unknown content type: $type")
-        }
-    }
-
-    private fun handleServerHandshake(serverHandshake: ServerHandshake) {
-        gameTypes = serverHandshake.gameTypes
-
-        val handshake = ControllerHandshake(
-            sessionId = serverHandshake.sessionId,
-            name = "Robocode Tank Royale UI",
-            version = "${Version.version}",
-            author = "Flemming N. Larsen",
-            secret = ServerSettings.controllerSecret()
-        )
-        send(handshake)
-    }
-
-    private fun handleBotListUpdate(botListUpdate: BotListUpdate) {
-        bots = HashSet(botListUpdate.bots)
-        onBotListUpdate.fire(botListUpdate)
-    }
-
-    private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
-        isRunning.set(true)
-        currentGameSetup = gameStartedEvent.gameSetup
-        participants = gameStartedEvent.participants
-
-        onGameStarted.fire(gameStartedEvent)
-
-        changeTps(ConfigSettings.tps)
-    }
-
-    private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
-        isRunning.set(false)
-        isPaused.set(false)
-        onGameEnded.fire(gameEndedEvent)
-    }
-
-    private fun handleGameAborted(gameAbortedEvent: GameAbortedEvent) {
-        isRunning.set(false)
-        isPaused.set(false)
-        onGameAborted.fire(gameAbortedEvent)
-    }
-
-    private fun handleGamePaused(gamePausedEvent: GamePausedEvent) {
-        isPaused.set(true)
-
-        onGamePaused.fire(gamePausedEvent)
-    }
-
-    private fun handleGameResumed(gameResumedEvent: GameResumedEvent) {
-        isPaused.set(false)
-        onGameResumed.fire(gameResumedEvent)
-    }
-
-    private fun handleRoundStarted(roundStartedEvent: RoundStartedEvent) {
-        onRoundStarted.fire(roundStartedEvent)
-    }
-
-    private fun handleRoundEnded(roundEndedEvent: RoundEndedEvent) {
-        onRoundEnded.fire(roundEndedEvent)
-    }
-
-    private fun handleTickEvent(tickEvent: TickEvent) {
-        currentTick = tickEvent
-
-        onTickEvent.fire(tickEvent)
-
-        updateSavedStdOutput(tickEvent)
-    }
-
-    private fun updateSavedStdOutput(tickEvent: TickEvent) {
-        tickEvent.apply {
-            botStates.forEach { botState ->
-                val id = botState.id
-                botState.stdOut?.let { updateStandardOutput(savedStdOutput, id, roundNumber, turnNumber, it) }
-                botState.stdErr?.let { updateStandardOutput(savedStdError, id, roundNumber, turnNumber, it) }
-            }
-            ClientEvents.onStdOutputUpdated.fire(tickEvent)
-        }
-    }
-
-    private fun updateStandardOutput(
-        stdOutputMaps: MutableMap<Int /* BotId */, MutableMap<Int /* round */, MutableMap<Int /* turn */, String>>>,
-        id: Int, round: Int, turn: Int, output: String
-    ) {
-        stdOutputMaps
-            .getOrPut(id) { LinkedHashMap() }
-            .getOrPut(round) { LinkedHashMap() }[turn] = output
+    private fun unsubscribeFromPlayerEvents(player: BattlePlayer) {
+        player.onConnected.unsubscribe(Client)
+        player.onGameStarted.unsubscribe(Client)
+        player.onGameEnded.unsubscribe(Client)
+        player.onGameAborted.unsubscribe(Client)
+        player.onGamePaused.unsubscribe(Client)
+        player.onGameResumed.unsubscribe(Client)
+        player.onRoundStarted.unsubscribe(Client)
+        player.onRoundEnded.unsubscribe(Client)
+        player.onTickEvent.unsubscribe(Client)
+        player.onBotListUpdate.unsubscribe(Client)
+        player.onStdOutputUpdated.unsubscribe(Client)
     }
 }
