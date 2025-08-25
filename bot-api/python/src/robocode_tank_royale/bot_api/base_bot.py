@@ -7,7 +7,7 @@ from .base_bot_abc import BaseBotABC
 from .bot_info import BotInfo
 from .constants import *
 from .internal.base_bot_internals import BaseBotInternals
-from .color import Color
+from .graphics import Color
 from .events.condition import Condition
 from .util.math_util import MathUtil
 from .bullet_state import BulletState

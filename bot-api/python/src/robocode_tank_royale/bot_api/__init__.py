@@ -8,7 +8,7 @@ from .bot_info import BotInfo
 from .bot_results import BotResults
 from .bot_state import BotState
 from .bullet_state import BulletState
-from .color import Color
+from .graphics import Color
 from .constants import *
 from .default_event_priority import DefaultEventPriority
 from .droid_abc import DroidABC

@@ -17,7 +17,7 @@ from ..events.condition import Condition
 from ..game_setup import GameSetup
 from ..initial_position import InitialPosition
 from ..util.math_util import MathUtil
-from ..color import Color
+from ..graphics import Color
 
 from .base_bot_internal_data import BaseBotInternalData
 from .bot_event_handlers import BotEventHandlers

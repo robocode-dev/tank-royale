@@ -7,7 +7,7 @@ import drawsvg  # type: ignore
 
 from .events import *
 from .bullet_state import BulletState
-from .color import Color
+from .graphics import Color
 
 
 class BaseBotABC(ABC):
