@@ -12,6 +12,8 @@ import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import kotlinx.serialization.PolymorphicSerializer
 import java.net.URI
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
+
 
 /**
  * Battle player implementation for live battles connecting to a Tank Royale server via WebSocket.
@@ -21,6 +23,7 @@ class LiveBattlePlayer : BattlePlayer {
     private var currentGameSetup: GameSetup? = null
     private var currentTick: TickEvent? = null
 
+    private val serverUrl = AtomicReference(ServerSettings.serverUrl())
     private val isRunning = AtomicBoolean(false)
     private val isPaused = AtomicBoolean(false)
 
@@ -139,7 +142,9 @@ class LiveBattlePlayer : BattlePlayer {
 
     override fun getCurrentTick(): TickEvent? = currentTick
 
-    fun isConnected(): Boolean = websocket?.isOpen() ?: false
+    fun isCorrectlyConnected(): Boolean = serverUrl.get() == ServerSettings.serverUrl() && isConnected()
+
+    private fun isConnected(): Boolean = websocket?.isOpen() ?: false
 
     override fun getJoinedBots(): Set<BotInfo> = bots
 
@@ -150,9 +155,14 @@ class LiveBattlePlayer : BattlePlayer {
 
     override fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdError[botId]
 
-    private fun connect() {
+    fun connect() {
+        val url = ServerSettings.serverUrl()
+        if (url != serverUrl.get()) {
+            close()
+        }
         if (!isConnected()) {
-            websocket = WebSocketClient(URI(ServerSettings.serverUrl()))
+            serverUrl.set(url)
+            websocket = WebSocketClient(URI(url))
 
             WebSocketClientEvents.apply {
                 websocket?.let { ws ->
@@ -176,7 +186,7 @@ class LiveBattlePlayer : BattlePlayer {
         }
     }
 
-    private fun close() {
+    fun close() {
         if (isConnected()) {
             WebSocketClientEvents.apply {
                 websocket?.let { ws ->
@@ -213,7 +223,7 @@ class LiveBattlePlayer : BattlePlayer {
         }
     }
 
-    fun changeBotPolicy(botPolicyUpdate: BotPolicyUpdate) {
+    override fun changeBotPolicy(botPolicyUpdate: BotPolicyUpdate) {
         send(botPolicyUpdate)
     }
 

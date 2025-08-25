@@ -1,13 +1,12 @@
 package dev.robocode.tankroyale.gui.ui.replay
 
-import dev.robocode.tankroyale.gui.player.BattleManager
+import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.player.ReplayBattlePlayer
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.util.MessageDialog
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileFilter
-import javax.swing.filechooser.FileNameExtensionFilter
 
 /**
  * File chooser dialog specifically for selecting replay files.
@@ -79,8 +78,8 @@ object ReplayFileChooser {
 
             // Create and start the replay player
             val replayPlayer = ReplayBattlePlayer(file)
-            BattleManager.setPlayer(replayPlayer)
-            BattleManager.start()
+            Client.setPlayer(replayPlayer)
+            Client.start()
 
             return true
 

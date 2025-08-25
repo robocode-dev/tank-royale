@@ -186,6 +186,10 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
     override fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdError[botId]
 
+    override fun changeBotPolicy(botPolicyUpdate: BotPolicyUpdate) {
+        // the events are already recorded, change policy is not supported when running replay
+    }
+
     override fun changeTps(tps: Int) {
         currentTps = tps
         // No need to update timer immediately - it will use the new TPS on next tick

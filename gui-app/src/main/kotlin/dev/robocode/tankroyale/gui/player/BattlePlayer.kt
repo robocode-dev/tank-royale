@@ -98,6 +98,11 @@ interface BattlePlayer {
     fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>?
 
     /**
+     * Changes the bot policy for this battle player.
+     */
+    fun changeBotPolicy(botPolicyUpdate: BotPolicyUpdate)
+
+    /**
      * Changes the TPS (Turns Per Second) for this battle player.
      */
     fun changeTps(tps: Int)

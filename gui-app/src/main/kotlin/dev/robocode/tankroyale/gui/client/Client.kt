@@ -1,103 +1,154 @@
 package dev.robocode.tankroyale.gui.client
 
 import dev.robocode.tankroyale.client.model.*
-import dev.robocode.tankroyale.gui.player.BattleManager
+import dev.robocode.tankroyale.gui.client.ClientEvents.onBotListUpdate
+import dev.robocode.tankroyale.gui.client.ClientEvents.onConnected
+import dev.robocode.tankroyale.gui.client.ClientEvents.onGameAborted
+import dev.robocode.tankroyale.gui.client.ClientEvents.onGameEnded
+import dev.robocode.tankroyale.gui.client.ClientEvents.onGamePaused
+import dev.robocode.tankroyale.gui.client.ClientEvents.onGameResumed
+import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
+import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundEnded
+import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundStarted
+import dev.robocode.tankroyale.gui.client.ClientEvents.onStdOutputUpdated
+import dev.robocode.tankroyale.gui.client.ClientEvents.onTickEvent
+import dev.robocode.tankroyale.gui.player.BattlePlayer
 import dev.robocode.tankroyale.gui.player.LiveBattlePlayer
+import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 
 /**
- * Client facade for backward compatibility.
- * Delegates to BattleManager and LiveBattlePlayer for actual functionality.
+ * Manages the lifecycle and coordination of battle players.
+ * Acts as a central coordinator between the UI and different battle player implementations.
  */
 object Client {
 
-    private var liveBattlePlayer: LiveBattlePlayer? = null
+    private var liveBattlePlayer: LiveBattlePlayer = LiveBattlePlayer()
+    private var currentPlayer: BattlePlayer? = null
 
     init {
-        // Forward BattleManager events to ClientEvents for backward compatibility
-        BattleManager.onConnected.subscribe(Client) { ClientEvents.onConnected.fire(it) }
-        BattleManager.onBotListUpdate.subscribe(Client) { ClientEvents.onBotListUpdate.fire(it) }
-        BattleManager.onGameStarted.subscribe(Client) { ClientEvents.onGameStarted.fire(it) }
-        BattleManager.onGameEnded.subscribe(Client) { ClientEvents.onGameEnded.fire(it) }
-        BattleManager.onGameAborted.subscribe(Client) { ClientEvents.onGameAborted.fire(it) }
-        BattleManager.onGamePaused.subscribe(Client) { ClientEvents.onGamePaused.fire(it) }
-        BattleManager.onGameResumed.subscribe(Client) { ClientEvents.onGameResumed.fire(it) }
-        BattleManager.onRoundStarted.subscribe(Client) { ClientEvents.onRoundStarted.fire(it) }
-        BattleManager.onRoundEnded.subscribe(Client) { ClientEvents.onRoundEnded.fire(it) }
-        BattleManager.onTickEvent.subscribe(Client) { ClientEvents.onTickEvent.fire(it) }
-        BattleManager.onStdOutputUpdated.subscribe(Client) { ClientEvents.onStdOutputUpdated.fire(it) }
-
         // Subscribe to bot policy changes
         ClientEvents.onBotPolicyChanged.subscribe(Client) {
-            liveBattlePlayer?.changeBotPolicy(it)
+            currentPlayer?.changeBotPolicy(it)
+        }
+        TpsEvents.onTpsChanged.subscribe(Client) {
+            currentPlayer?.changeTps(it.tps)
         }
     }
 
     val currentGameSetup: GameSetup?
-        get() = BattleManager.getCurrentGameSetup()
+        get() = currentPlayer?.getCurrentGameSetup()
 
     val currentTick: TickEvent?
-        get() = BattleManager.getCurrentTick()
+        get() = currentPlayer?.getCurrentTick()
 
-    fun isConnected(): Boolean = BattleManager.getCurrentPlayer() == liveBattlePlayer && liveBattlePlayer?.isConnected() ?: false
-
-    fun connect() {
-        // Always ensure we have a fresh LiveBattlePlayer for connection
-        // This handles the case where a ReplayBattlePlayer might be active
-        if (liveBattlePlayer == null) {
-            liveBattlePlayer = LiveBattlePlayer()
-        }
-        BattleManager.setPlayer(liveBattlePlayer!!)
-        BattleManager.start()
+    fun switchToLiveBattlePlayer() {
+        setPlayer(liveBattlePlayer)
     }
 
+    /**
+     * Registers and activates a battle player.
+     * Any previously active player will be stopped.
+     */
+    fun setPlayer(player: BattlePlayer) {
+        // Stop current player if exists
+        currentPlayer?.let { current ->
+            if (current.isRunning()) {
+                current.stop()
+            }
+            unsubscribeFromPlayerEvents(current)
+        }
+
+        currentPlayer = player
+        subscribeToPlayerEvents(player)
+        player.start()
+        // Initialize player with current TPS setting
+        //player.changeTps(ConfigSettings.tps)
+    }
+
+    fun isLivePlayerConnected(): Boolean =
+        currentPlayer == liveBattlePlayer && liveBattlePlayer.isCorrectlyConnected()
+
     fun close() {
-        BattleManager.stop()
-        BattleManager.clearPlayer()
-        liveBattlePlayer = null
+        liveBattlePlayer.close()
+    }
+
+    fun start() {
+        currentPlayer?.start() ?: throw IllegalStateException("No active battle player")
     }
 
     fun startGame(botAddresses: Set<BotAddress>) {
-        connect()
-        liveBattlePlayer!!.startGame(botAddresses)
+        if (currentPlayer == liveBattlePlayer) {
+            liveBattlePlayer.startGame(botAddresses)
+        } else {
+            throw IllegalStateException("Trying to start game with websocket bots without server connection")
+        }
     }
 
     fun stopGame() {
-        BattleManager.stop()
+        currentPlayer?.stop()
     }
 
     fun restartGame() {
-        BattleManager.restart()
+        currentPlayer?.restart()
     }
 
     fun pauseGame() {
-        BattleManager.pause()
+        currentPlayer?.pause()
     }
 
     fun resumeGame() {
-        BattleManager.resume()
+        currentPlayer?.resume()
     }
 
     internal fun doNextTurn() {
-        BattleManager.nextTurn()
+        currentPlayer?.nextTurn()
     }
 
-    fun isGameRunning(): Boolean = BattleManager.isRunning()
+    fun isGameRunning(): Boolean = currentPlayer?.isRunning() ?: false
 
-    fun isGamePaused(): Boolean = BattleManager.isPaused()
+    fun isGamePaused(): Boolean = currentPlayer?.isPaused() ?: false
 
     val joinedBots: Set<BotInfo>
-        get() = BattleManager.getCurrentPlayer()?.getJoinedBots() ?: emptySet()
+        get() = currentPlayer?.getJoinedBots() ?: emptySet()
 
     fun getParticipant(botId: Int): Participant {
-        return BattleManager.getCurrentPlayer()?.getParticipant(botId)
+        return currentPlayer?.getParticipant(botId)
             ?: throw IllegalStateException("No battle player available")
     }
 
     fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? {
-        return BattleManager.getCurrentPlayer()?.getStandardOutput(botId)
+        return currentPlayer?.getStandardOutput(botId)
     }
 
     fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? {
-        return BattleManager.getCurrentPlayer()?.getStandardError(botId)
+        return currentPlayer?.getStandardError(botId)
+    }
+
+    private fun subscribeToPlayerEvents(player: BattlePlayer) {
+        player.onConnected.subscribe(Client) { onConnected.fire(it) }
+        player.onGameStarted.subscribe(Client) { onGameStarted.fire(it) }
+        player.onGameEnded.subscribe(Client) { onGameEnded.fire(it) }
+        player.onGameAborted.subscribe(Client) { onGameAborted.fire(it) }
+        player.onGamePaused.subscribe(Client) { onGamePaused.fire(it) }
+        player.onGameResumed.subscribe(Client) { onGameResumed.fire(it) }
+        player.onRoundStarted.subscribe(Client) { onRoundStarted.fire(it) }
+        player.onRoundEnded.subscribe(Client) { onRoundEnded.fire(it) }
+        player.onTickEvent.subscribe(Client) { onTickEvent.fire(it) }
+        player.onBotListUpdate.subscribe(Client) { onBotListUpdate.fire(it) }
+        player.onStdOutputUpdated.subscribe(Client) { onStdOutputUpdated.fire(it) }
+    }
+
+    private fun unsubscribeFromPlayerEvents(player: BattlePlayer) {
+        player.onConnected.unsubscribe(Client)
+        player.onGameStarted.unsubscribe(Client)
+        player.onGameEnded.unsubscribe(Client)
+        player.onGameAborted.unsubscribe(Client)
+        player.onGamePaused.unsubscribe(Client)
+        player.onGameResumed.unsubscribe(Client)
+        player.onRoundStarted.unsubscribe(Client)
+        player.onRoundEnded.unsubscribe(Client)
+        player.onTickEvent.unsubscribe(Client)
+        player.onBotListUpdate.unsubscribe(Client)
+        player.onStdOutputUpdated.unsubscribe(Client)
     }
 }
