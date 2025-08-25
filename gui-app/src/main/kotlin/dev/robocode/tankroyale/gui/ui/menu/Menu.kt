@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onDebugConfig
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onServerConfig
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onSetupRules
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onShowServerLog
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onReplayFromFile
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStartBattle
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.ui.MenuTitles
@@ -50,6 +51,10 @@ object Menu : JMenuBar() {
             addNewMenuItem("item.start_battle", onStartBattle).apply {
                 mnemonic = KeyEvent.VK_B
                 accelerator = ctrlDown(mnemonic)
+            }
+            addNewMenuItem("item.replay_from_file", onReplayFromFile).apply {
+                mnemonic = KeyEvent.VK_F
+                accelerator = ctrlDown(KeyEvent.VK_O)
             }
             addSeparator()
             addNewMenuItem("item.setup_rules", onSetupRules).apply {

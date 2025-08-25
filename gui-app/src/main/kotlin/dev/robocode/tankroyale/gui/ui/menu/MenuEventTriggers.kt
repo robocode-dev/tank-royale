@@ -5,6 +5,7 @@ import javax.swing.JMenuItem
 
 object MenuEventTriggers {
     val onStartBattle = MenuEvent()
+    val onReplayFromFile = MenuEvent()
     val onSetupRules = MenuEvent()
     val onShowServerLog = MenuEvent()
     val onStartServer = MenuEvent()
