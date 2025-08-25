@@ -650,7 +650,8 @@ class GameServer(
         connectionHandler.broadcast(participants, json) // note: it is only participants, not all bots
     }
 
-    private fun sendBotListUpdateToObservers() {
+    // Note: Despite the name, this update is intended for both observers and controllers
+    private fun sendBotListUpdateToObserversAndControllers() {
         // Send a clone of the message to prevent race conditions if the message is updated during broadcast
         broadcastToObserverAndControllers(cloneBotListUpdate(botListUpdateMessage))
     }
@@ -669,7 +670,7 @@ class GameServer(
 
     internal fun handleBotJoined() {
         updateBotListUpdateMessage()
-        sendBotListUpdateToObservers()
+        sendBotListUpdateToObserversAndControllers()
     }
 
     internal fun handleBotLeft(conn: WebSocket) {
@@ -689,7 +690,7 @@ class GameServer(
         }
 
         updateBotListUpdateMessage()
-        sendBotListUpdateToObservers()
+        sendBotListUpdateToObserversAndControllers()
     }
 
     internal fun handleBotReady(conn: WebSocket) {
