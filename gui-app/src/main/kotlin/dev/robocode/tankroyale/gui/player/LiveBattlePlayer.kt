@@ -9,7 +9,6 @@ import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
-import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 import kotlinx.serialization.PolymorphicSerializer
 import java.net.URI
 import java.util.concurrent.atomic.AtomicBoolean
@@ -57,8 +56,6 @@ class LiveBattlePlayer : BattlePlayer {
     override val onStdOutputUpdated = Event<TickEvent>()
 
     init {
-        TpsEvents.onTpsChanged.subscribe(this) { changeTps(it.tps) }
-
         ServerEvents.onStopped.subscribe(this) {
             if (isRunning.get()) {
                 stop()
@@ -144,34 +141,36 @@ class LiveBattlePlayer : BattlePlayer {
 
     fun isConnected(): Boolean = websocket?.isOpen() ?: false
 
-    val joinedBots: Set<BotInfo> get() = bots
+    override fun getJoinedBots(): Set<BotInfo> = bots
 
-    fun getParticipant(botId: Int): Participant = participants.first { participant -> participant.id == botId }
+    override fun getParticipant(botId: Int): Participant = participants.first { participant -> participant.id == botId }
 
-    fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdOutput[botId]
+    override fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? =
+        savedStdOutput[botId]
 
-    fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdError[botId]
+    override fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdError[botId]
 
     private fun connect() {
-        check(!isConnected()) { "WebSocket is already connected" }
-        websocket = WebSocketClient(URI(ServerSettings.serverUrl()))
+        if (!isConnected()) {
+            websocket = WebSocketClient(URI(ServerSettings.serverUrl()))
 
-        WebSocketClientEvents.apply {
-            websocket?.let { ws ->
-                onOpen.subscribe(ws) { onConnected.fire(Unit) }
-                onMessage.subscribe(ws) { onMessage(it) }
-                onError.subscribe(ws) {
-                    System.err.println("WebSocket error: " + it.message)
-                    ServerEvents.onStopped.fire(Unit)
-                }
-                try {
-                    ws.open() // must be called AFTER onOpen.subscribe()
-                } catch (_: Exception) {
-                    // to prevent redundant subscriptions which are kept both on failure, and
-                    // new attempt to open the web socket
-                    onOpen.unsubscribe(ws)
-                    onMessage.unsubscribe(ws)
-                    onError.unsubscribe(ws)
+            WebSocketClientEvents.apply {
+                websocket?.let { ws ->
+                    onOpen.subscribe(ws) { onConnected.fire(Unit) }
+                    onMessage.subscribe(ws) { onMessage(it) }
+                    onError.subscribe(ws) {
+                        System.err.println("WebSocket error: " + it.message)
+                        ServerEvents.onStopped.fire(Unit)
+                    }
+                    try {
+                        ws.open() // must be called AFTER onOpen.subscribe()
+                    } catch (_: Exception) {
+                        // to prevent redundant subscriptions which are kept both on failure, and
+                        // new attempt to open the web socket
+                        onOpen.unsubscribe(ws)
+                        onMessage.unsubscribe(ws)
+                        onError.unsubscribe(ws)
+                    }
                 }
             }
         }
@@ -207,7 +206,7 @@ class LiveBattlePlayer : BattlePlayer {
         websocket?.send(message)
     }
 
-    private fun changeTps(tps: Int) {
+    override fun changeTps(tps: Int) {
         if (isRunning.get() && tps != lastTps) {
             lastTps = tps
             send(ChangeTps(tps))
@@ -262,8 +261,6 @@ class LiveBattlePlayer : BattlePlayer {
         participants = gameStartedEvent.participants
 
         onGameStarted.fire(gameStartedEvent)
-
-        changeTps(ConfigSettings.tps)
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {

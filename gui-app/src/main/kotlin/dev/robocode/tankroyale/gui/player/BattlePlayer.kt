@@ -77,6 +77,31 @@ interface BattlePlayer {
      */
     fun getCurrentTick(): TickEvent?
 
+    /**
+     * Gets a participant by bot ID.
+     */
+    fun getParticipant(botId: Int): Participant
+
+    /**
+     * Gets the joined bots for this battle.
+     */
+    fun getJoinedBots(): Set<BotInfo>
+
+    /**
+     * Gets standard output for a specific bot.
+     */
+    fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>?
+
+    /**
+     * Gets standard error for a specific bot.
+     */
+    fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>?
+
+    /**
+     * Changes the TPS (Turns Per Second) for this battle player.
+     */
+    fun changeTps(tps: Int)
+
     // Events that can be fired by battle players
 
     /** Fired when connected to battle source */

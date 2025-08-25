@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.gui.player
 import dev.robocode.tankroyale.client.model.*
 import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.replay.ReplayFileReader
-import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.Timer
@@ -29,7 +29,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
     private var messages = listOf<Message>()
     private var currentMessageIndex = 0
-    private var currentTps = 30
+    private var currentTps = ConfigSettings.tps
 
     private var playbackTimer: Timer? = null
 
@@ -55,10 +55,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
             throw IllegalArgumentException("Invalid replay file: ${replayFile.absolutePath}")
         }
 
-        // Listen for TPS changes to adjust tick playback speed
-        TpsEvents.onTpsChanged.subscribe(this) { event ->
-            currentTps = event.tps
-        }
+        // TPS changes are now handled by BattleManager calling changeTps()
     }
 
     override fun getSupportedFeatures(): Set<BattlePlayerFeature> {
@@ -158,11 +155,41 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
     override fun getCurrentTick(): TickEvent? = currentTick
 
-    fun getParticipant(botId: Int): Participant = participants.first { participant -> participant.id == botId }
+    override fun getJoinedBots(): Set<BotInfo> {
+        // Convert participants to BotInfo objects for compatibility
+        return participants.map { participant ->
+            BotInfo(
+                name = participant.name,
+                version = participant.version,
+                authors = participant.authors,
+                description = participant.description,
+                homepage = participant.homepage,
+                countryCodes = participant.countryCodes,
+                gameTypes = participant.gameTypes,
+                platform = participant.platform,
+                programmingLang = participant.programmingLang,
+                initialPosition = participant.initialPosition,
+                teamId = participant.teamId,
+                teamName = participant.teamName,
+                teamVersion = participant.teamVersion,
+                host = "replay", // Placeholder host for replay
+                port = participant.id, // Use participant ID as port for uniqueness
+                sessionId = participant.sessionId
+            )
+        }.toSet()
+    }
 
-    fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdOutput[botId]
+    override fun getParticipant(botId: Int): Participant = participants.first { participant -> participant.id == botId }
 
-    fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdError[botId]
+    override fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? =
+        savedStdOutput[botId]
+
+    override fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? = savedStdError[botId]
+
+    override fun changeTps(tps: Int) {
+        currentTps = tps
+        // No need to update timer immediately - it will use the new TPS on next tick
+    }
 
     private fun startPlayback() {
         // Process all non-tick messages immediately until we hit a tick

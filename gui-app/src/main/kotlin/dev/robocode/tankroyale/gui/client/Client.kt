@@ -38,13 +38,15 @@ object Client {
     val currentTick: TickEvent?
         get() = BattleManager.getCurrentTick()
 
-    fun isConnected(): Boolean = liveBattlePlayer?.isConnected() ?: false
+    fun isConnected(): Boolean = BattleManager.getCurrentPlayer() == liveBattlePlayer && liveBattlePlayer?.isConnected() ?: false
 
     fun connect() {
+        // Always ensure we have a fresh LiveBattlePlayer for connection
+        // This handles the case where a ReplayBattlePlayer might be active
         if (liveBattlePlayer == null) {
             liveBattlePlayer = LiveBattlePlayer()
-            BattleManager.setPlayer(liveBattlePlayer!!)
         }
+        BattleManager.setPlayer(liveBattlePlayer!!)
         BattleManager.start()
     }
 
@@ -55,7 +57,7 @@ object Client {
     }
 
     fun startGame(botAddresses: Set<BotAddress>) {
-        ensureLivePlayer()
+        connect()
         liveBattlePlayer!!.startGame(botAddresses)
     }
 
@@ -84,25 +86,18 @@ object Client {
     fun isGamePaused(): Boolean = BattleManager.isPaused()
 
     val joinedBots: Set<BotInfo>
-        get() = liveBattlePlayer?.joinedBots ?: emptySet()
+        get() = BattleManager.getCurrentPlayer()?.getJoinedBots() ?: emptySet()
 
     fun getParticipant(botId: Int): Participant {
-        return liveBattlePlayer?.getParticipant(botId)
-            ?: throw IllegalStateException("No live battle player available")
+        return BattleManager.getCurrentPlayer()?.getParticipant(botId)
+            ?: throw IllegalStateException("No battle player available")
     }
 
     fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? {
-        return liveBattlePlayer?.getStandardOutput(botId)
+        return BattleManager.getCurrentPlayer()?.getStandardOutput(botId)
     }
 
     fun getStandardError(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? {
-        return liveBattlePlayer?.getStandardError(botId)
-    }
-
-    private fun ensureLivePlayer() {
-        if (liveBattlePlayer == null) {
-            liveBattlePlayer = LiveBattlePlayer()
-            BattleManager.setPlayer(liveBattlePlayer!!)
-        }
+        return BattleManager.getCurrentPlayer()?.getStandardError(botId)
     }
 }

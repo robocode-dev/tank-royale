@@ -2,6 +2,8 @@ package dev.robocode.tankroyale.gui.player
 
 import dev.robocode.tankroyale.client.model.*
 import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
+import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 
 /**
  * Manages the lifecycle and coordination of battle players.
@@ -10,6 +12,13 @@ import dev.robocode.tankroyale.common.Event
 object BattleManager {
 
     private var currentPlayer: BattlePlayer? = null
+
+    init {
+        // Subscribe to TPS changes and delegate to current player
+        TpsEvents.onTpsChanged.subscribe(this) { event ->
+            currentPlayer?.changeTps(event.tps)
+        }
+    }
 
     /**
      * Gets the currently active battle player, if any.
@@ -31,6 +40,9 @@ object BattleManager {
 
         currentPlayer = player
         subscribeToPlayerEvents(player)
+
+        // Initialize player with current TPS setting
+        player.changeTps(ConfigSettings.tps)
     }
 
     /**
