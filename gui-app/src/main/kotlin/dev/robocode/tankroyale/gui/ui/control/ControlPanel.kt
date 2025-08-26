@@ -77,11 +77,14 @@ object ControlPanel : JPanel() {
             }
             onGameResumed.subscribe(ControlPanel) {
                 setPausedText()
-
                 nextButton.isEnabled = false
             }
             onGameStarted.subscribe(ControlPanel) {
                 setPausedText()
+            }
+            onGameAborted.subscribe(ControlPanel) {
+                setPausedText()
+                nextButton.isEnabled = false
             }
         }
 
