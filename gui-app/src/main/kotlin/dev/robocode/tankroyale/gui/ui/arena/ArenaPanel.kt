@@ -61,6 +61,7 @@ object ArenaPanel : JPanel() {
         addComponentListener(object : ComponentAdapter() {
             override fun componentResized(e: ComponentEvent) {
                 recalcScale()
+                repaint()
             }
         })
 
