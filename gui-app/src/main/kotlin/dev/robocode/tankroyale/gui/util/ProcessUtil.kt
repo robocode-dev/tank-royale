@@ -9,7 +9,7 @@ object ProcessUtil {
     private val logger = Logger.getLogger(ProcessUtil::class.java.name)
 
     // Timeout constants
-    private const val GRACEFUL_EXIT_TIMEOUT_MS = 500L
+    private const val GRACEFUL_EXIT_TIMEOUT_MS = 2000L
     private const val FORCE_TERMINATE_TIMEOUT_MS = 3 * GRACEFUL_EXIT_TIMEOUT_MS
 
     /**

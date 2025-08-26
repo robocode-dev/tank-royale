@@ -78,10 +78,13 @@ object BootProcess {
         if (!isRunning())
             return
 
-        stopThread()
         stopPinging()
 
+        // Stop the booter process first so its streams close and threads can exit
         stopProcess()
+
+        // Now stop threads if still running
+        stopThread()
 
         notifyUnbootBotProcesses()
 

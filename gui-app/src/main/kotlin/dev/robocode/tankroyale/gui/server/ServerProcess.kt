@@ -68,11 +68,13 @@ object ServerProcess {
     fun stop() {
         if (!isRunning()) return
 
-        stopLogThread()
-
+        // Stop the server process first to close its stdout (lets the log thread exit)
         val process = processRef.get()
         ProcessUtil.stopProcess(process, "q", true, true)
         processRef.set(null)
+
+        // Now stop the log thread if still running
+        stopLogThread()
         logThread = null
 
         ServerEvents.onStopped.fire(Unit)
@@ -103,20 +105,22 @@ object ServerProcess {
             logThreadRunning.set(true)
 
             val process = processRef.get()
-            BufferedReader(InputStreamReader(process?.inputStream!!)).use {
-                while (logThreadRunning.get()) {
-                    try {
-                        it.lines().forEach { line ->
-                            EDT.enqueue {
-                                ServerLogFrame.append(line + "\n")
-                            }
-                        }
-                    } catch (_: InterruptedException) {
-                        logThreadRunning.set(false)
+            BufferedReader(InputStreamReader(process?.inputStream!!)).use { reader ->
+                try {
+                    while (logThreadRunning.get()) {
+                        val line = reader.readLine() ?: break
+                        EDT.enqueue { ServerLogFrame.append(line + "\n") }
                     }
+                } catch (_: Exception) {
+                    // Ignore; occurs when process closes stream or thread is interrupted
+                } finally {
+                    logThreadRunning.set(false)
                 }
             }
-        }.apply { start() }
+        }.apply {
+            name = "ServerProcess-Log-Thread"
+            start()
+        }
     }
 
     private fun stopLogThread() {
