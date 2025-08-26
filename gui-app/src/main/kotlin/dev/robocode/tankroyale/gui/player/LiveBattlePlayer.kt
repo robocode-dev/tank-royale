@@ -68,10 +68,6 @@ class LiveBattlePlayer : BattlePlayer {
         }
     }
 
-    override fun getSupportedFeatures(): Set<BattlePlayerFeature> {
-        return setOf()
-    }
-
     override fun start() {
         connect()
     }
@@ -129,10 +125,6 @@ class LiveBattlePlayer : BattlePlayer {
         } else {
             startWithLastGameSetup()
         }
-    }
-
-    override fun seekToTurn(turnNumber: Int) {
-        throw UnsupportedOperationException("SEEK feature not supported by live battle player")
     }
 
     override fun isRunning(): Boolean = isRunning.get()

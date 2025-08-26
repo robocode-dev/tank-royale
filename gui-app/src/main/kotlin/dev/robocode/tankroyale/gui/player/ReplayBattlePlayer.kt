@@ -91,10 +91,6 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         }
         .map { (i, turn) -> i to turn.any { it is RoundEndedEvent } }
 
-    override fun getSupportedFeatures(): Set<BattlePlayerFeature> {
-        return setOf(BattlePlayerFeature.SEEK)
-    }
-
     override fun start() {
         if (isRunning.get()) {
             stop()
@@ -156,7 +152,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         start()
     }
 
-    override fun seekToTurn(turnNumber: Int) {
+    fun seekToTurn(turnNumber: Int) {
         val wasRunning = isRunning.get()
         val wasPaused = isPaused.get()
 

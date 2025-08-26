@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.control
 
 import dev.robocode.tankroyale.gui.client.ClientEvents
-import dev.robocode.tankroyale.gui.player.BattlePlayerFeature
 import dev.robocode.tankroyale.gui.player.ReplayBattlePlayer
 import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.components.RcSlider
@@ -39,13 +38,12 @@ object ProgressSlider : RcSlider() {
 
         ClientEvents.onPlayerChanged.subscribe(ProgressSlider) { player ->
             EventQueue.invokeLater {
-                isVisible = player.supportsFeature(BattlePlayerFeature.SEEK)
-
                 // Reset to default scale when player changes
                 value = 0
 
                 // If this is a replay player, subscribe to its events
                 if (player is ReplayBattlePlayer) {
+                    isVisible = true
                     currentReplayPlayer = player
                     maximum = maxOf(player.getTotalRounds() - 1, 0)
                     player.onReplayEvent.subscribe(ProgressSlider) { eventIndex ->
@@ -57,6 +55,7 @@ object ProgressSlider : RcSlider() {
                     }
                     this.labelTable = labelTable
                 } else {
+                    isVisible = false
                     currentReplayPlayer = null
                     maximum = DEFAULT_MAX_VALUE
                     labelTable = null
