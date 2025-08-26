@@ -9,6 +9,7 @@ import dev.robocode.tankroyale.gui.ui.config.ServerConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.config.SoundConfigDialog
 import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
+import dev.robocode.tankroyale.gui.ui.replay.ReplayFileChooser
 import dev.robocode.tankroyale.gui.ui.server.RemoteServer
 import dev.robocode.tankroyale.gui.ui.server.Server
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
@@ -28,6 +29,9 @@ object MenuEventHandlers {
             }
             onStartBattle.subscribe(this) {
                 startBattle()
+            }
+            onReplayFromFile.subscribe(this) {
+                startReplayFromFile()
             }
             onShowServerLog.subscribe(this) {
                 ServerLogFrame.isVisible = true
@@ -74,5 +78,9 @@ object MenuEventHandlers {
         } else if (Server.connectOrStart()) {
             NewBattleDialog.isVisible = true
         }
+    }
+
+    private fun startReplayFromFile() {
+        ReplayFileChooser.chooseAndStartReplay()
     }
 }

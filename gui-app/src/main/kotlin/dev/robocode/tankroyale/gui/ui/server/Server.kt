@@ -55,7 +55,7 @@ object Server {
     }
 
     private fun connectToServer() {
-        if (Client.isConnected()) {
+        if (Client.isLivePlayerConnected()) {
             return
         }
 
@@ -71,7 +71,7 @@ object Server {
         var exception: Exception? = null
         while (connected.count > 0 && attempts-- > 0) {
             try {
-                Client.connect()
+                Client.switchToLiveBattlePlayer()
             } catch (ex: Exception) {
                 exception = ex
             }
