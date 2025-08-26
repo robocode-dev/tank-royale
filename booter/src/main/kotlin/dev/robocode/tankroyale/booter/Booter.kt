@@ -4,7 +4,6 @@ import dev.robocode.tankroyale.booter.commands.DirCommand
 import dev.robocode.tankroyale.booter.commands.BootCommand
 import dev.robocode.tankroyale.booter.util.VersionFileProvider
 import kotlinx.serialization.json.Json
-import org.fusesource.jansi.AnsiConsole
 import picocli.CommandLine
 import picocli.CommandLine.*
 import java.nio.file.Files
@@ -16,9 +15,6 @@ import kotlin.system.exitProcess
 val cmdLine = CommandLine(Booter())
 
 fun main(args: Array<String>) {
-    System.setProperty("jansi.force", "true")
-    AnsiConsole.systemInstall()
-
     cmdLine.apply {
         isSubcommandsCaseInsensitive = true
         isOptionsCaseInsensitive = true

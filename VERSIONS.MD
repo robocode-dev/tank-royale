@@ -2,6 +2,9 @@
 
 ### 🐞 Bug Fixes
 
+- Server, Booter, Recorder:
+    - Got rid of `WARNING: A restricted method in java.lang.System has been called` when running with Java 22 or later. 
+
 - Booter:
     - Bots could not be booted on Linux. Thanks goes to [Yang Li](https://github.com/yangli2) for fixing this. ❤️
 
