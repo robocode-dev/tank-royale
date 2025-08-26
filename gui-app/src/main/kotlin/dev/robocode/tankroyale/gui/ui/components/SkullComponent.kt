@@ -7,8 +7,9 @@ import javax.swing.JComponent
 /**
  * Custom JComponent that renders a skull using Java2D primitives.
  * The component is sized to fit the skull exactly without extra padding.
+ * @param opacity The opacity level for rendering the skull (0.0f - 1.0f), default is 1.0f (100%)
  */
-class SkullComponent : JComponent() {
+class SkullComponent(private val opacity: Float = 1.0f) : JComponent() {
 
     // The actual dimensions of the skull
     private val skullWidth = 14
@@ -30,6 +31,9 @@ class SkullComponent : JComponent() {
         try {
             // Enable anti-aliasing for smoother rendering
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+            
+            // Apply opacity to all rendering operations
+            g2d.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity)
             
             // Scale to fit the component size
             val scaleX = width.toDouble() / skullWidth

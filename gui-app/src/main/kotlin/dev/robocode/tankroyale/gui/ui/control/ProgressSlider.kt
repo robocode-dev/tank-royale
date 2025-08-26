@@ -37,7 +37,6 @@ object ProgressSlider : RcSlider() {
         // Initially hide the progress slider until we know the player supports seeking
         isVisible = false
 
-        // Subscribe to player changes to update visibility based on seek capability
         ClientEvents.onPlayerChanged.subscribe(ProgressSlider) { player ->
             EventQueue.invokeLater {
                 isVisible = player.supportsFeature(BattlePlayerFeature.SEEK)
@@ -53,8 +52,8 @@ object ProgressSlider : RcSlider() {
                         updateProgress(eventIndex)
                     }
                     val labelTable = Hashtable<Int, JComponent>()
-                    player.getDeathMarkers().forEach {
-                        labelTable[it] = SkullComponent()
+                    player.getDeathMarkers().forEach { (pos, roundEnd) ->
+                        labelTable[pos] = SkullComponent(if (roundEnd) 1.0f else 0.6f)
                     }
                     this.labelTable = labelTable
                 } else {
@@ -64,6 +63,16 @@ object ProgressSlider : RcSlider() {
                 }
             }
         }
+        ClientEvents.onConnected.subscribe(ProgressSlider) {
+            setEnabled(true)
+        }
+        ClientEvents.onGameAborted.subscribe(ProgressSlider) {
+            setEnabled(false)
+        }
+        ClientEvents.onGameEnded.subscribe(ProgressSlider) {
+            setEnabled(false)
+        }
+
 
         // Add change listener to handle user interaction
         addChangeListener {

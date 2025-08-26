@@ -79,14 +79,17 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
     fun getTotalRounds() = turns.size
 
+    /**
+     * @return list of pairs where first is the turn number and second is boolean indicating whether
+     * this death also means end of round
+     */
     fun getDeathMarkers() = turns
         .mapIndexed { index, turn -> index to turn }
         .filter { (_, turn) ->
-            turn.firstOrNull { it is TickEvent }?.let {
-                (it as TickEvent).events.any { e -> e is BotDeathEvent }
-            } ?: false
+            (turn.firstOrNull { it is TickEvent } as TickEvent?)
+                ?.events?.any { it is BotDeathEvent } ?: false
         }
-        .map { it.first }
+        .map { (i, turn) -> i to turn.any { it is RoundEndedEvent } }
 
     override fun getSupportedFeatures(): Set<BattlePlayerFeature> {
         return setOf(BattlePlayerFeature.SEEK)
