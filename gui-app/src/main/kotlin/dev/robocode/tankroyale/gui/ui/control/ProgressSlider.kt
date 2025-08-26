@@ -5,7 +5,10 @@ import dev.robocode.tankroyale.gui.player.BattlePlayerFeature
 import dev.robocode.tankroyale.gui.player.ReplayBattlePlayer
 import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.components.RcSlider
+import dev.robocode.tankroyale.gui.ui.components.SkullComponent
 import java.awt.EventQueue
+import java.util.*
+import javax.swing.JComponent
 
 /**
  * Slider component for showing battle progress. This component allows users to
@@ -27,9 +30,8 @@ object ProgressSlider : RcSlider() {
         maximum = DEFAULT_MAX_VALUE
         value = 0
 
-        paintTicks = false
-        paintLabels = false
-
+        paintTicks = true
+        paintLabels = true
         toolTipText = Hints.get("control.progress")
 
         // Initially hide the progress slider until we know the player supports seeking
@@ -50,9 +52,15 @@ object ProgressSlider : RcSlider() {
                     player.onReplayEvent.subscribe(ProgressSlider) { eventIndex ->
                         updateProgress(eventIndex)
                     }
+                    val labelTable = Hashtable<Int, JComponent>()
+                    player.getDeathMarkers().forEach {
+                        labelTable[it] = SkullComponent()
+                    }
+                    this.labelTable = labelTable
                 } else {
                     currentReplayPlayer = null
                     maximum = DEFAULT_MAX_VALUE
+                    labelTable = null
                 }
             }
         }

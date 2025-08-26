@@ -79,6 +79,15 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
     fun getTotalRounds() = turns.size
 
+    fun getDeathMarkers() = turns
+        .mapIndexed { index, turn -> index to turn }
+        .filter { (_, turn) ->
+            turn.firstOrNull { it is TickEvent }?.let {
+                (it as TickEvent).events.any { e -> e is BotDeathEvent }
+            } ?: false
+        }
+        .map { it.first }
+
     override fun getSupportedFeatures(): Set<BattlePlayerFeature> {
         return setOf(BattlePlayerFeature.SEEK)
     }
