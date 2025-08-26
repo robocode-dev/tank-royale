@@ -57,6 +57,7 @@ class LiveBattlePlayer : BattlePlayer {
     override val onTickEvent = Event<TickEvent>()
     override val onBotListUpdate = Event<BotListUpdate>()
     override val onStdOutputUpdated = Event<TickEvent>()
+    override val onSeekToTurn = Event<TickEvent>()
 
     init {
         ServerEvents.onStopped.subscribe(this) {
@@ -65,10 +66,6 @@ class LiveBattlePlayer : BattlePlayer {
             }
             close()
         }
-    }
-
-    override fun getSupportedFeatures(): Set<BattlePlayerFeature> {
-        return setOf()
     }
 
     override fun start() {
@@ -128,10 +125,6 @@ class LiveBattlePlayer : BattlePlayer {
         } else {
             startWithLastGameSetup()
         }
-    }
-
-    override fun seekToTurn(turnNumber: Int) {
-        throw UnsupportedOperationException("SEEK feature not supported by live battle player")
     }
 
     override fun isRunning(): Boolean = isRunning.get()

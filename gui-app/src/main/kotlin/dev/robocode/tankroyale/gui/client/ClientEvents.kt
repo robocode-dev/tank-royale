@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.gui.client
 
 import dev.robocode.tankroyale.client.model.*
 import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.gui.player.BattlePlayer
 
 object ClientEvents {
     val onConnected = Event<Unit>()
@@ -17,4 +18,10 @@ object ClientEvents {
 
     val onStdOutputUpdated = Event<TickEvent>()
     val onBotPolicyChanged = Event<BotPolicyUpdate>()
+
+    /** Fired when the active battle player changes */
+    val onPlayerChanged = Event<BattlePlayer>()
+
+    /** Fired when the user seeks to a specific position when replaying a battle */
+    val onSeekToTurn = Event<TickEvent>()
 }

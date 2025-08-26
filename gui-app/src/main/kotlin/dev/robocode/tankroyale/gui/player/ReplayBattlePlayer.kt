@@ -27,13 +27,13 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
     private val isRunning = AtomicBoolean(false)
     private val isPaused = AtomicBoolean(false)
 
-    private var messages = listOf<Message>()
+    private var turns = mutableListOf<List<Message>>()
     private var currentMessageIndex = 0
     private var currentTps = ConfigSettings.tps
 
     private var playbackTimer: Timer? = null
 
-    // Events - same as LiveBattlePlayer
+    // Events
     override val onConnected = Event<Unit>()
     override val onGameStarted = Event<GameStartedEvent>()
     override val onGameEnded = Event<GameEndedEvent>()
@@ -45,12 +45,31 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
     override val onTickEvent = Event<TickEvent>()
     override val onBotListUpdate = Event<BotListUpdate>()
     override val onStdOutputUpdated = Event<TickEvent>()
+    override val onSeekToTurn = Event<TickEvent>()
+
+    val onReplayEvent = Event<Int>()
 
     init {
         // Load messages from the replay file
         val fileReader = ReplayFileReader(replayFile)
         if (fileReader.isValid()) {
-            messages = fileReader.loadMessages()
+            val events = fileReader.loadMessages()
+            var currentEventIndex = 0
+            var currentRound: MutableList<Message>? = null
+            var containsTickEvent = false
+            while (currentEventIndex < events.size) {
+                if (currentRound == null || (events[currentEventIndex] is TickEvent && containsTickEvent)) {
+                    currentRound = mutableListOf()
+                    containsTickEvent = false
+                    turns.add(currentRound)
+                }
+                var event = events[currentEventIndex]
+                currentRound.add(event)
+                if (event is TickEvent) {
+                    containsTickEvent = true
+                }
+                currentEventIndex++
+            }
         } else {
             throw IllegalArgumentException("Invalid replay file: ${replayFile.absolutePath}")
         }
@@ -58,9 +77,19 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         // TPS changes are now handled by BattleManager calling changeTps()
     }
 
-    override fun getSupportedFeatures(): Set<BattlePlayerFeature> {
-        return setOf(BattlePlayerFeature.SEEK)
-    }
+    fun getTotalRounds() = turns.size
+
+    /**
+     * @return list of pairs where first is the turn number and second is boolean indicating whether
+     * this death also means end of round
+     */
+    fun getDeathMarkers() = turns
+        .mapIndexed { index, turn -> index to turn }
+        .filter { (_, turn) ->
+            (turn.firstOrNull { it is TickEvent } as TickEvent?)
+                ?.events?.any { it is BotDeathEvent } ?: false
+        }
+        .map { (i, turn) -> i to turn.any { it is RoundEndedEvent } }
 
     override fun start() {
         if (isRunning.get()) {
@@ -92,6 +121,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         if (currentGameSetup != null) {
             onGameAborted.fire(GameAbortedEvent)
         }
+        onReplayEvent.fire(currentMessageIndex)
     }
 
     override fun pause() {
@@ -113,7 +143,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
     override fun nextTurn() {
         if (isRunning.get() && isPaused.get()) {
             // When paused, advance to next tick event
-            advanceToNextTick()
+            processCurrentMessage()
         }
     }
 
@@ -122,16 +152,14 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         start()
     }
 
-    override fun seekToTurn(turnNumber: Int) {
+    fun seekToTurn(turnNumber: Int) {
         val wasRunning = isRunning.get()
         val wasPaused = isPaused.get()
 
-        // Find the message index for the specified turn
-        val targetIndex = findMessageIndexForTurn(turnNumber)
-        if (targetIndex >= 0) {
+        if (turnNumber >= 0) {
             // Rebuild stdout state up to the target turn
-            rebuildStateUpToIndex(targetIndex)
-            currentMessageIndex = targetIndex
+            rebuildStateUpToIndex(turnNumber)
+            currentMessageIndex = turnNumber
 
             // If we were running, continue; if paused, stay paused
             if (wasRunning) {
@@ -143,6 +171,10 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
                     // Continue playing from new position
                     continuePlayback()
                 }
+            }
+
+            turns[turnNumber].firstOrNull { it is TickEvent }?.let {
+                onSeekToTurn.fire(it as TickEvent)
             }
         }
     }
@@ -197,36 +229,21 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
     private fun startPlayback() {
         // Process all non-tick messages immediately until we hit a tick
-        processMessagesUntilTick()
+        processUntilNextChunk()
     }
 
     private fun continuePlayback() {
         // Continue from where we left off
-        processMessagesUntilTick()
+        processUntilNextChunk()
     }
 
-    private fun processMessagesUntilTick() {
-        // Process all non-tick events immediately
-        while (currentMessageIndex < messages.size && isRunning.get() && !isPaused.get()) {
-            val message = messages[currentMessageIndex]
-
-            if (message is TickEvent) {
-                // Found a tick - process it and set up timer for next tick
-                handleMessage(message)
-                currentMessageIndex++
-
-                // Set up timer for next tick processing
+    private fun processUntilNextChunk() {
+        if (isRunning.get() && !isPaused.get()) {
+            if (currentMessageIndex < turns.size) {
+                processCurrentMessage()
                 startTickTimer()
-                break
-            } else {
-                // Non-tick event - process immediately
-                handleMessage(message)
-                currentMessageIndex++
             }
-        }
-
-        // If we've reached the end without finding a tick, we're done
-        if (currentMessageIndex >= messages.size) {
+        } else {
             stop()
         }
     }
@@ -238,7 +255,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         playbackTimer = Timer(delay) {
             if (isRunning.get() && !isPaused.get()) {
                 // Process next batch of messages
-                processMessagesUntilTick()
+                processUntilNextChunk()
             }
         }
         playbackTimer?.isRepeats = false // Only fire once
@@ -251,37 +268,14 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
     }
 
     private fun processCurrentMessage() {
-        if (currentMessageIndex < messages.size) {
-            val message = messages[currentMessageIndex]
-            handleMessage(message)
-        }
-    }
-
-    private fun advanceToNextTick() {
-        // Find next tick event and process all messages up to and including it
-        while (currentMessageIndex < messages.size) {
-            val message = messages[currentMessageIndex]
-            handleMessage(message)
+        if (currentMessageIndex < turns.size) {
+            val messageList = turns[currentMessageIndex]
+            messageList.forEach {
+                handleMessage(it)
+            }
+            onReplayEvent.fire(currentMessageIndex)
             currentMessageIndex++
-
-            if (message is TickEvent) {
-                break
-            }
         }
-    }
-
-    private fun findMessageIndexForTurn(turnNumber: Int): Int {
-        var tickCount = 0
-        for (i in messages.indices) {
-            val message = messages[i]
-            if (message is TickEvent) {
-                if (tickCount == turnNumber) {
-                    return i
-                }
-                tickCount++
-            }
-        }
-        return -1 // Turn not found
     }
 
     private fun handleMessage(message: Message) {
@@ -334,20 +328,22 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
         // Replay all messages up to target index to rebuild state
         for (i in 0 until targetIndex) {
-            when (val message = messages[i]) {
-                is GameStartedEvent -> {
-                    currentGameSetup = message.gameSetup
-                    participants = message.participants
-                }
+            turns[i].forEach { message ->
+                when (message) {
+                    is GameStartedEvent -> {
+                        currentGameSetup = message.gameSetup
+                        participants = message.participants
+                    }
 
-                is TickEvent -> {
-                    currentTick = message
-                    // Update stdout/stderr state without firing events
-                    updateSavedStdOutputSilently(message)
-                }
+                    is TickEvent -> {
+                        currentTick = message
+                        // Update stdout/stderr state without firing events
+                        updateSavedStdOutputSilently(message)
+                    }
 
-                else -> {
-                    // Only track state-changing messages, ignore events
+                    else -> {
+                        // Only track state-changing messages, ignore events
+                    }
                 }
             }
         }

@@ -10,16 +10,6 @@ import dev.robocode.tankroyale.common.Event
 interface BattlePlayer {
 
     /**
-     * Returns the set of features supported by this battle player.
-     */
-    fun getSupportedFeatures(): Set<BattlePlayerFeature>
-
-    /**
-     * Checks if a specific feature is supported by this player.
-     */
-    fun supportsFeature(feature: BattlePlayerFeature): Boolean = feature in getSupportedFeatures()
-
-    /**
      * Starts the battle. For live players, this connects to server and starts game.
      * For replay players, this begins playback from the beginning.
      */
@@ -49,13 +39,6 @@ interface BattlePlayer {
      * Restarts the current battle.
      */
     fun restart()
-
-    /**
-     * Seeks to a specific turn in the battle (if supported).
-     * @param turnNumber The turn number to seek to
-     * @throws UnsupportedOperationException if SEEK feature is not supported
-     */
-    fun seekToTurn(turnNumber: Int)
 
     /**
      * Returns true if the battle is currently running.
@@ -141,4 +124,7 @@ interface BattlePlayer {
 
     /** Fired when standard output is updated */
     val onStdOutputUpdated: Event<TickEvent>
+
+    /** Fired when the user seeks to a specific position when replaying a battle */
+    val onSeekToTurn: Event<TickEvent>
 }

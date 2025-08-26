@@ -14,37 +14,51 @@ import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsField
 import dev.robocode.tankroyale.gui.ui.tps.TpsSlider
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
+import java.awt.BorderLayout
 import java.awt.EventQueue
+import java.awt.FlowLayout
 import javax.swing.JButton
 import javax.swing.JPanel
 
 object ControlPanel : JPanel() {
 
-    private val pauseResumeButton = addButton("pause", ControlEvents.onPauseResume).apply {
+    private val controlsPanel = JPanel(FlowLayout())
+
+    private val pauseResumeButton = controlsPanel.addButton("pause", ControlEvents.onPauseResume).apply {
         toolTipText = Hints.get("control.pause")
     }
 
-    private val nextButton = addButton("next_turn", ControlEvents.onNextTurn).apply {
+    private val nextButton = controlsPanel.addButton("next_turn", ControlEvents.onNextTurn).apply {
         toolTipText = Hints.get("control.next_turn")
         isEnabled = false
     }
-    private val stopButton = addButton("stop", ControlEvents.onStop).apply {
+    private val stopButton = controlsPanel.addButton("stop", ControlEvents.onStop).apply {
         toolTipText = Hints.get("control.stop")
     }
 
     private val onDefaultTps = Event<JButton>()
 
     init {
-        addButton("restart", ControlEvents.onRestart).apply {
+        // Set BorderLayout for the main panel
+        layout = BorderLayout()
+
+        // Add progress slider at the top (NORTH)
+        add(ProgressSlider, BorderLayout.NORTH)
+
+        // Add controls panel at the bottom (CENTER)
+        add(controlsPanel, BorderLayout.CENTER)
+
+        // Add buttons and controls to the controls panel
+        controlsPanel.addButton("restart", ControlEvents.onRestart).apply {
             toolTipText = Hints.get("control.restart")
         }
 
         RegisterWsProtocol
 
-        add(TpsSlider)
-        val tpsLabel = addLabel("tps_label")
-        add(TpsField)
-        addButton("default_tps", onDefaultTps).apply {
+        controlsPanel.add(TpsSlider)
+        val tpsLabel = controlsPanel.addLabel("tps_label")
+        controlsPanel.add(TpsField)
+        controlsPanel.addButton("default_tps", onDefaultTps).apply {
             toolTipText = Hints.get("control.default_tps").format(DEFAULT_TPS)
         }
 
@@ -63,11 +77,14 @@ object ControlPanel : JPanel() {
             }
             onGameResumed.subscribe(ControlPanel) {
                 setPausedText()
-
                 nextButton.isEnabled = false
             }
             onGameStarted.subscribe(ControlPanel) {
                 setPausedText()
+            }
+            onGameAborted.subscribe(ControlPanel) {
+                setPausedText()
+                nextButton.isEnabled = false
             }
         }
 
