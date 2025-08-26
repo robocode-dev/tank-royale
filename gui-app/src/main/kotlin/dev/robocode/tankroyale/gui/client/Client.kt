@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.gui.client.ClientEvents.onGameEnded
 import dev.robocode.tankroyale.gui.client.ClientEvents.onGamePaused
 import dev.robocode.tankroyale.gui.client.ClientEvents.onGameResumed
 import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
+import dev.robocode.tankroyale.gui.client.ClientEvents.onPlayerChanged
 import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundEnded
 import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundStarted
 import dev.robocode.tankroyale.gui.client.ClientEvents.onStdOutputUpdated
@@ -61,8 +62,9 @@ object Client {
         currentPlayer = player
         subscribeToPlayerEvents(player)
         player.start()
-        // Initialize player with current TPS setting
-        //player.changeTps(ConfigSettings.tps)
+
+        // Fire event that player has changed
+        onPlayerChanged.fire(player)
     }
 
     fun isLivePlayerConnected(): Boolean =
