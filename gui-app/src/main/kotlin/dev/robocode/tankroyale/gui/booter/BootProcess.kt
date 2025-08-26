@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.gui.ui.console.BooterErrorConsole
 import dev.robocode.tankroyale.gui.util.EDT
 import dev.robocode.tankroyale.gui.util.FileUtil
 import dev.robocode.tankroyale.gui.util.ResourceUtil
+import dev.robocode.tankroyale.gui.util.ProcessUtil
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
@@ -155,14 +156,7 @@ object BootProcess {
     }
 
     private fun stopProcess() {
-        booterProcess?.apply {
-            if (isAlive) {
-                PrintStream(outputStream).apply {
-                    println("quit")
-                    flush()
-                }
-            }
-        }
+        ProcessUtil.stopProcess(booterProcess, "quit", false)
         booterProcess = null
     }
 

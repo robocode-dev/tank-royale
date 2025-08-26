@@ -8,10 +8,10 @@ import dev.robocode.tankroyale.gui.ui.server.ServerLogFrame
 import dev.robocode.tankroyale.gui.util.EDT
 import dev.robocode.tankroyale.gui.util.FileUtil
 import dev.robocode.tankroyale.gui.util.ResourceUtil
+import dev.robocode.tankroyale.gui.util.ProcessUtil
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
-import java.io.PrintStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
@@ -26,7 +26,7 @@ object ServerProcess {
     private val logThreadRunning = AtomicBoolean(false)
 
     init {
-        ServerActions
+        ServerActions // trigger initialization of ServerEvents. Is not "unused"
     }
 
     fun isRunning(): Boolean {
@@ -71,15 +71,7 @@ object ServerProcess {
         stopLogThread()
 
         val process = processRef.get()
-        process?.apply {
-            if (isAlive) {
-                PrintStream(outputStream).apply {
-                    println("q")
-                    flush()
-                }
-            }
-            waitFor()
-        }
+        ProcessUtil.stopProcess(process, "q", true)
         processRef.set(null)
         logThread = null
 
