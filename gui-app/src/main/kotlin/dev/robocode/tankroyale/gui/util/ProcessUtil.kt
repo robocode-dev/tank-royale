@@ -8,6 +8,10 @@ import java.util.logging.Logger
 object ProcessUtil {
     private val logger = Logger.getLogger(ProcessUtil::class.java.name)
 
+    // Timeout constants
+    private const val GRACEFUL_EXIT_TIMEOUT_MS = 500L
+    private const val FORCE_TERMINATE_TIMEOUT_MS = 3 * GRACEFUL_EXIT_TIMEOUT_MS
+
     /**
      * Sends a quit command to the given process and optionally waits for it to exit.
      *
@@ -20,8 +24,8 @@ object ProcessUtil {
     @JvmStatic
     @JvmOverloads
     fun stopProcess(
-        process: Process?, 
-        quitCommand: String, 
+        process: Process?,
+        quitCommand: String,
         waitForExit: Boolean = false,
         forceTerminate: Boolean = false
     ): Boolean {
@@ -29,34 +33,23 @@ object ProcessUtil {
             return true // Nothing to do, a process is already stopped
         }
 
-        // Send quit command
-        var quitCommandSent = false
-        try {
-            PrintStream(process.outputStream).use { ps ->
-                ps.println(quitCommand)
-                ps.flush()
-                quitCommandSent = true
-            }
-        } catch (e: Exception) {
-            logger.log(Level.WARNING, "Failed to send quit command to process", e)
-        }
+        // Send quit command and close stdin to signal EOF
+        val quitCommandSent = sendQuitCommand(process, quitCommand)
 
-        // If we don't need to wait, return whether the command was sent
         if (!waitForExit) {
             return quitCommandSent
         }
 
-        // Wait for a process to exit
+        // Wait for the process to exit gracefully
         try {
-            val exited = process.waitFor(500, TimeUnit.MILLISECONDS)
-
-            // If a process didn't exit and force termination is requested
-            if (!exited && forceTerminate) {
-                process.destroyForcibly()
-                return process.waitFor(1000, TimeUnit.MILLISECONDS) // Give it 3 more seconds to terminate
+            if (process.waitFor(GRACEFUL_EXIT_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                return true
             }
-            return exited
 
+            if (forceTerminate) {
+                return terminateProcessTree(process)
+            }
+            return false
         } catch (_: InterruptedException) {
             Thread.currentThread().interrupt()
             logger.log(Level.WARNING, "Thread interrupted while waiting for process to exit")
@@ -65,5 +58,70 @@ object ProcessUtil {
         }
 
         return !process.isAlive
+    }
+
+    /**
+     * Sends a quit command to the process.
+     *
+     * @param process The process to send the command to
+     * @param quitCommand The command to send
+     * @return True if the command was sent successfully
+     */
+    private fun sendQuitCommand(process: Process, quitCommand: String): Boolean {
+        return try {
+            PrintStream(process.outputStream).use { ps ->
+                ps.println(quitCommand)
+                ps.flush()
+                true
+            }
+        } catch (e: Exception) {
+            logger.log(Level.WARNING, "Failed to send quit command to process", e)
+            false
+        }
+    }
+
+    /**
+     * Terminates a process tree gracefully first, then forcibly if needed.
+     *
+     * @param process The root process to terminate
+     * @return True if the process was terminated successfully
+     */
+    private fun terminateProcessTree(process: Process): Boolean {
+        // First, attempt to terminate the process tree gracefully
+        try {
+            val handle = process.toHandle()
+            handle.descendants().forEach { child ->
+                try { child.destroy() } catch (_: Exception) { }
+            }
+
+            // Give children a brief moment to exit
+            if (process.isAlive && !process.waitFor(GRACEFUL_EXIT_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                // If still alive, forcibly terminate the process tree
+                handle.descendants().forEach { child ->
+                    if (child.isAlive) {
+                        try { child.destroyForcibly() } catch (_: Exception) { }
+                    }
+                }
+
+                if (process.isAlive) {
+                    process.destroyForcibly()
+                }
+            }
+
+            // Wait for final termination
+            return process.waitFor(FORCE_TERMINATE_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+        } catch (e: Exception) {
+            logger.log(Level.WARNING, "Failed to terminate process tree", e)
+
+            // Last resort: try to terminate just the main process
+            try {
+                if (process.isAlive) {
+                    process.destroyForcibly()
+                    return process.waitFor(FORCE_TERMINATE_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+                }
+            } catch (_: Exception) { }
+
+            return !process.isAlive
+        }
     }
 }

@@ -71,7 +71,7 @@ object ServerProcess {
         stopLogThread()
 
         val process = processRef.get()
-        ProcessUtil.stopProcess(process, "q", true)
+        ProcessUtil.stopProcess(process, "q", true, true)
         processRef.set(null)
         logThread = null
 

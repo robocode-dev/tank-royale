@@ -156,7 +156,7 @@ object BootProcess {
     }
 
     private fun stopProcess() {
-        ProcessUtil.stopProcess(booterProcess, "quit", false)
+        ProcessUtil.stopProcess(booterProcess, "quit", true, true)
         booterProcess = null
     }
 
