@@ -141,4 +141,7 @@ interface BattlePlayer {
 
     /** Fired when standard output is updated */
     val onStdOutputUpdated: Event<TickEvent>
+
+    /** Fired when the user seeks to a specific position when replaying a battle */
+    val onSeekToTurn: Event<TickEvent>
 }

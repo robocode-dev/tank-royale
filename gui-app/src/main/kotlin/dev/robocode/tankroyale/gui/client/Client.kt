@@ -11,6 +11,7 @@ import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
 import dev.robocode.tankroyale.gui.client.ClientEvents.onPlayerChanged
 import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundEnded
 import dev.robocode.tankroyale.gui.client.ClientEvents.onRoundStarted
+import dev.robocode.tankroyale.gui.client.ClientEvents.onSeekToTurn
 import dev.robocode.tankroyale.gui.client.ClientEvents.onStdOutputUpdated
 import dev.robocode.tankroyale.gui.client.ClientEvents.onTickEvent
 import dev.robocode.tankroyale.gui.player.BattlePlayer
@@ -138,6 +139,7 @@ object Client {
         player.onTickEvent.subscribe(Client) { onTickEvent.fire(it) }
         player.onBotListUpdate.subscribe(Client) { onBotListUpdate.fire(it) }
         player.onStdOutputUpdated.subscribe(Client) { onStdOutputUpdated.fire(it) }
+        player.onSeekToTurn.subscribe(Client) { onSeekToTurn.fire(it) }
     }
 
     private fun unsubscribeFromPlayerEvents(player: BattlePlayer) {
@@ -152,5 +154,6 @@ object Client {
         player.onTickEvent.unsubscribe(Client)
         player.onBotListUpdate.unsubscribe(Client)
         player.onStdOutputUpdated.unsubscribe(Client)
+        player.onSeekToTurn.unsubscribe(Client)
     }
 }

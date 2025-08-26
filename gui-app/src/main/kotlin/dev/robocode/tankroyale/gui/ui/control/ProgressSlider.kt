@@ -46,7 +46,7 @@ object ProgressSlider : RcSlider() {
                 // If this is a replay player, subscribe to its events
                 if (player is ReplayBattlePlayer) {
                     currentReplayPlayer = player
-                    maximum = maxOf(player.getEventCount() - 1, 0)
+                    maximum = maxOf(player.getTotalRounds() - 1, 0)
                     player.onReplayEvent.subscribe(ProgressSlider) { eventIndex ->
                         updateProgress(eventIndex)
                     }

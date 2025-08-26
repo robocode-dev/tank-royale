@@ -21,4 +21,7 @@ object ClientEvents {
 
     /** Fired when the active battle player changes */
     val onPlayerChanged = Event<BattlePlayer>()
+
+    /** Fired when the user seeks to a specific position when replaying a battle */
+    val onSeekToTurn = Event<TickEvent>()
 }

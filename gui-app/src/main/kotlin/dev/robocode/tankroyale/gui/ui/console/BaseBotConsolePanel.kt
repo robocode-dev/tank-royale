@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.client.model.Participant
+import dev.robocode.tankroyale.client.model.TickEvent
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.Strings
 
@@ -21,7 +22,15 @@ abstract class BaseBotConsolePanel(val bot: Participant) : ConsolePanel() {
             onRoundStarted.subscribe(this@BaseBotConsolePanel) {
                 updateRoundInfo(it.roundNumber)
             }
+            onSeekToTurn.subscribe(this@BaseBotConsolePanel) {
+                informAboutSeek(it)
+            }
         }
+    }
+
+    private fun informAboutSeek(tickEvent: TickEvent) {
+        val text = Strings.get("bot_console.seek_to_turn").format(tickEvent.roundNumber, tickEvent.turnNumber)
+        banner(text)
     }
 
     private fun updateRoundInfo(roundNumber: Int) {
@@ -29,10 +38,14 @@ abstract class BaseBotConsolePanel(val bot: Participant) : ConsolePanel() {
         if (numberOfRounds > 0) {
             roundInfo += "/$numberOfRounds"
         }
+        banner(roundInfo)
+    }
 
-        appendBanner("""
+    private fun banner(text: String) {
+        appendBanner(
+            """
             --------------------
-            $roundInfo
+            $text
             --------------------
         """.trimIndent()
         )

@@ -57,6 +57,7 @@ class LiveBattlePlayer : BattlePlayer {
     override val onTickEvent = Event<TickEvent>()
     override val onBotListUpdate = Event<BotListUpdate>()
     override val onStdOutputUpdated = Event<TickEvent>()
+    override val onSeekToTurn = Event<TickEvent>()
 
     init {
         ServerEvents.onStopped.subscribe(this) {
