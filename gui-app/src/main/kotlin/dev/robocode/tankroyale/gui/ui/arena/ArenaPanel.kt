@@ -16,10 +16,7 @@ import dev.robocode.tankroyale.gui.util.Graphics2DState
 import dev.robocode.tankroyale.gui.util.HslColor
 import java.awt.*
 import java.awt.event.*
-import java.awt.geom.AffineTransform
-import java.awt.geom.Arc2D
-import java.awt.geom.Area
-import java.awt.geom.Ellipse2D
+import java.awt.geom.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JPanel
@@ -389,22 +386,23 @@ object ArenaPanel : JPanel() {
         val roundX = x + statusWidth.toDouble()
         val turnX = roundX + roundWidth.toDouble()
 
-        // Draw status section (LIVE/REPLAY) - only left side rounded, right side square
+        // Draw stackable blocks from right
+
+        // Draw TURN section - right side rounded, left side inversely rounded for ROUND to fit in
+        g.color = INDICATOR_TURN_BG_COLOR
+        g.clip = createStackableRoundedCornersShape(turnX - INDICATOR_CORNER_RADIUS, y, (turnWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble())
+        g.fillRect(turnX.toInt() - INDICATOR_CORNER_RADIUS, y.toInt(), turnWidth + INDICATOR_CORNER_RADIUS, INDICATOR_HEIGHT.toInt())
+
+        // Draw ROUND section - right side rounded, left side inversely rounded for STATUS to fit in
+        g.color = INDICATOR_ROUND_BG_COLOR
+        g.clip = createStackableRoundedCornersShape(roundX - INDICATOR_CORNER_RADIUS, y, (roundWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble())
+        g.fillRect(roundX.toInt() - INDICATOR_CORNER_RADIUS, y.toInt(), roundWidth + INDICATOR_CORNER_RADIUS, INDICATOR_HEIGHT.toInt())
+        g.clip = null
+
+        // Draw status section (LIVE/REPLAY) - both sides rounded
         val statusColor = if (isLiveMode) INDICATOR_LIVE_BG_COLOR else INDICATOR_REPLAY_BG_COLOR
         g.color = statusColor
         g.fillRoundRect(x.toInt(), y.toInt(), statusWidth, INDICATOR_HEIGHT.toInt(), INDICATOR_CORNER_RADIUS, INDICATOR_CORNER_RADIUS)
-        g.fillRect((x + statusWidth - INDICATOR_CORNER_RADIUS).toInt(), y.toInt(), INDICATOR_CORNER_RADIUS, INDICATOR_HEIGHT.toInt())
-
-        // Draw ROUND section - completely square (no rounded corners)
-        g.color = INDICATOR_ROUND_BG_COLOR
-        g.fillRect(roundX.toInt(), y.toInt(), roundWidth, INDICATOR_HEIGHT.toInt())
-
-        // Draw TURN section - only right side rounded, left side square
-        g.color = INDICATOR_TURN_BG_COLOR
-        // set clip mask to tight half of the rounded rect to avoid stacking semitransparent rectangles on top of each other
-        g.setClip(turnX.toInt(), y.toInt(), turnWidth, INDICATOR_HEIGHT.toInt())
-        g.fillRoundRect((turnX - INDICATOR_CORNER_RADIUS).toInt(), y.toInt(), turnWidth + INDICATOR_CORNER_RADIUS, INDICATOR_HEIGHT.toInt(), INDICATOR_CORNER_RADIUS, INDICATOR_CORNER_RADIUS)
-        g.clip = null
 
         // Draw status text (LIVE/REPLAY) (properly centered)
         g.font = INDICATOR_STATUS_FONT
@@ -542,4 +540,16 @@ object ArenaPanel : JPanel() {
             y = origY
         }
     }
+
+    /**
+     * Draws a rectangle with rounded corners on the right side and negative rounded corners (for stacking) on the
+     * left side.
+     */
+    private fun createStackableRoundedCornersShape(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double): Area {
+        // start with the rounded rectangle
+        val area = Area(RoundRectangle2D.Double(x - cornerRadius, y, width + cornerRadius, height, cornerRadius, cornerRadius))
+        area.subtract(Area(RoundRectangle2D.Double(x - cornerRadius, y, 2 * cornerRadius, height, cornerRadius, cornerRadius)))
+        return area
+    }
+
 }
