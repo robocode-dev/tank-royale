@@ -5,7 +5,6 @@ import time
 import math
 import os
 from typing import Any, Optional, Set, Sequence
-import drawsvg  # type: ignore
 
 from ..base_bot_abc import BaseBotABC
 from ..bot_abc import BotABC
@@ -17,7 +16,7 @@ from ..events.condition import Condition
 from ..game_setup import GameSetup
 from ..initial_position import InitialPosition
 from ..util.math_util import MathUtil
-from ..graphics import Color
+from ..graphics import Color, GraphicsABC
 
 from .base_bot_internal_data import BaseBotInternalData
 from .bot_event_handlers import BotEventHandlers
@@ -389,7 +388,7 @@ class BaseBotInternals:
             and hasattr(current_tick.bot_state, "is_debugging_enabled")
             and current_tick.bot_state.is_debugging_enabled
         ):
-            svg_output = self.data.graphics_state.as_svg()  # type: ignore
+            svg_output = self.data.graphics_state.to_svg()
             self.data.bot_intent.debug_graphics = svg_output
             self.data.graphics_state.clear()
         else:
@@ -747,7 +746,7 @@ class BaseBotInternals:
     def gun_color(self, color: Optional[Color]) -> None:
         self.data.bot_intent.gun_color = color.to_color_schema() if color else None
 
-    def get_graphics(self) -> drawsvg.Drawing:
+    def get_graphics(self) -> GraphicsABC:
         return self.data.graphics_state
 
     # Bullet States - Delegated
