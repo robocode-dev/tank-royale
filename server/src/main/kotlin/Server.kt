@@ -4,7 +4,6 @@ import dev.robocode.tankroyale.server.core.GameServer
 import dev.robocode.tankroyale.server.rules.DEFAULT_GAME_TYPE
 import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
 import dev.robocode.tankroyale.server.util.VersionFileProvider
-import org.fusesource.jansi.AnsiConsole
 import picocli.CommandLine
 import picocli.CommandLine.*
 import picocli.CommandLine.Model.CommandSpec
@@ -15,9 +14,6 @@ import kotlin.system.exitProcess
 private const val DEFAULT_PORT: Int = 7654
 
 fun main(args: Array<String>) {
-    System.setProperty("jansi.force", "true")
-    AnsiConsole.systemInstall()
-
     Server.cmdLine.apply {
         isSubcommandsCaseInsensitive = true
         isOptionsCaseInsensitive = true

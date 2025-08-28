@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.recorder
 
 import dev.robocode.tankroyale.recorder.core.RecordingObserver
 import dev.robocode.tankroyale.recorder.util.VersionFileProvider
-import org.fusesource.jansi.AnsiConsole
 import org.slf4j.LoggerFactory
 import picocli.CommandLine
 import picocli.CommandLine.Command
@@ -14,9 +13,6 @@ import kotlin.system.exitProcess
 val cmdLine = CommandLine(Recorder())
 
 fun main(args: Array<String>) {
-    System.setProperty("jansi.force", "true")
-    AnsiConsole.systemInstall()
-
     cmdLine.apply {
         isSubcommandsCaseInsensitive = true
         isOptionsCaseInsensitive = true

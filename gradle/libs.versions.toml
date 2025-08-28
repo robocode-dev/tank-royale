@@ -4,7 +4,6 @@ kotlin = "2.2.0"
 
 gson = "2.13.1"
 gson-extras = "3.3.0"
-jansi = "2.4.2"
 java-websocket = "1.6.0"
 json = "20240303"
 jsonschema2pojo = "1.2.2"
@@ -25,7 +24,6 @@ benmanes-versions = "0.52.0" # task: dependencyUpdates
 
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 gson-extras = { module = "org.danilopianini:gson-extras", version.ref = "gson-extras" }
-jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
 java-websocket = { module = "org.java-websocket:Java-WebSocket", version.ref = "java-websocket" }
 json = { module = "org.json:json", version.ref = "json" }
 jsvg = { module = "com.github.weisj:jsvg", version.ref = "jsvg" }

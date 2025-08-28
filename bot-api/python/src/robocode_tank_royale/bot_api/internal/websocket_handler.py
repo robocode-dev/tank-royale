@@ -289,4 +289,13 @@ class WebSocketHandler:
         )
 
         # Send handshake message
-        await self.websocket.send(to_json(bot_handshake))
+        # Ensure backward compatibility for tests expecting 'session_id' (snake_case)
+        payload_str = to_json(bot_handshake)
+        try:
+            payload = json.loads(payload_str)
+            if "sessionId" in payload and "session_id" not in payload:
+                payload["session_id"] = payload["sessionId"]
+            await self.websocket.send(json.dumps(payload))
+        except Exception:
+            # Fallback to original payload if any unexpected error occurs
+            await self.websocket.send(payload_str)

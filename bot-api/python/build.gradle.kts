@@ -45,16 +45,21 @@ tasks {
         commandLine("pip", "install", "-e", ".")
     }
 
+    val `pip-install-test-requirements` by registering(Exec::class) {
+        commandLine("pip", "install", "-r", "requirements-test.txt")
+    }
+
     // run pytest
-    val pythonTest by registering(Exec::class) {
+    val test by registering(Exec::class) {
         group = "verification"
         description = "Runs Python tests with pytest"
+        dependsOn(`pip-install-test-requirements`)
         commandLine("python", "-m", "pytest")
     }
 
     // make it part of the standard verification lifecycle
     named("check") {
-        dependsOn(pythonTest)
+        dependsOn(test)
     }
 
     named("build") {
