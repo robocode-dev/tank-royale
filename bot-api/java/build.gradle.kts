@@ -111,6 +111,17 @@ tasks {
     register<Copy>("copyJavaApiDocs") {
         dependsOn(javadoc)
 
+        // Only copy docs when explicitly asked for via release/docs tasks or this task itself
+        onlyIf {
+            gradle.startParameter.taskNames.any {
+                it.contains("build-release") ||
+                it.contains("upload-docs") ||
+                it.contains("create-release") ||
+                it == "copyJavaApiDocs" ||
+                it.endsWith(":copyJavaApiDocs")
+            }
+        }
+
         val javadocDir = layout.projectDirectory.dir("../../docs/api/java")
 
         delete(javadocDir)

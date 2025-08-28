@@ -18,7 +18,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestInitialState()
+    public void GivenNewGraphics_whenToSvg_thenContainsRootSvgAndClosed()
     {
         // Initial SVG should just contain the basic structure
         string svg = _graphics.ToSvg();
@@ -27,7 +27,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestDrawLine()
+    public void GivenStrokeSet_whenDrawLine_thenLineElementWithAttributesPresent()
     {
         _graphics.SetStrokeColor(Color.Red);
         _graphics.SetStrokeWidth(2);
@@ -44,7 +44,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestDrawRectangle()
+    public void GivenStrokeSet_whenDrawRectangle_thenRectElementWithAttributesPresent()
     {
         _graphics.SetStrokeColor(Color.Blue);
         _graphics.SetStrokeWidth(3);
@@ -62,7 +62,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestFillRectangle()
+    public void GivenFillAndStrokeSet_whenFillRectangle_thenRectElementWithAttributesPresent()
     {
         _graphics.SetFillColor(Color.Green);
         _graphics.SetStrokeColor(Color.Red);
@@ -81,7 +81,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestDrawCircle()
+    public void GivenStrokeSet_whenDrawCircle_thenCircleElementWithAttributesPresent()
     {
         _graphics.SetStrokeColor(Color.Purple);
         _graphics.SetStrokeWidth(2);
@@ -98,7 +98,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestFillCircle()
+    public void GivenFillAndStrokeSet_whenFillCircle_thenCircleElementWithAttributesPresent()
     {
         _graphics.SetFillColor(Color.Yellow);
         _graphics.SetStrokeColor(Color.Orange);
@@ -116,7 +116,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestDrawPolygon()
+    public void GivenStrokeSet_whenDrawPolygon_thenPolygonElementWithAttributesPresent()
     {
         _graphics.SetStrokeColor(Color.Black);
         _graphics.SetStrokeWidth(2);
@@ -137,7 +137,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestFillPolygon()
+    public void GivenFillAndStrokeSet_whenFillPolygon_thenPolygonElementWithAttributesPresent()
     {
         _graphics.SetFillColor(Color.Blue);
         _graphics.SetStrokeColor(Color.Black);
@@ -159,7 +159,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestPolygonWithTooFewPoints()
+    public void GivenTooFewPoints_whenDrawOrFillPolygon_thenNoPolygonIsAdded()
     {
         _graphics.SetStrokeColor(Color.Black);
         List<Point> points = new List<Point>
@@ -176,7 +176,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestDrawText()
+    public void GivenStrokeAndFontSet_whenDrawText_thenTextElementWithAttributesPresent()
     {
         _graphics.SetStrokeColor(Color.Blue);
         _graphics.SetFont("Verdana", 24);
@@ -193,7 +193,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestMultipleElements()
+    public void GivenVariousElementsDrawn_whenToSvg_thenCountsMatch()
     {
         _graphics.SetStrokeColor(Color.Red);
         _graphics.DrawLine(10, 10, 20, 20);
@@ -212,7 +212,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestClear()
+    public void GivenGraphicsWithElements_whenClear_thenElementsAreRemovedFromSvg()
     {
         _graphics.SetStrokeColor(Color.Red);
         _graphics.DrawLine(10, 10, 20, 20);
@@ -232,7 +232,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestDefaultStrokeValues()
+    public void GivenNoStrokeSet_whenDrawShapes_thenDefaultBlackStrokeAndWidth1Used()
     {
         // DrawRectangle and DrawCircle should use default black stroke if none is set
         _graphics.DrawRectangle(10, 20, 100, 50);
@@ -248,7 +248,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestToSvgFormatting()
+    public void GivenLineDrawn_whenToSvg_thenContainsRootSvgAndClosed()
     {
         _graphics.DrawLine(10, 10, 20, 20);
         string svg = _graphics.ToSvg();
@@ -259,7 +259,7 @@ public class SvgGraphicsTest
     }
 
     [Test]
-    public void TestNumberFormatting()
+    public void GivenPreciseNumbers_whenToSvg_thenFormattedToThreeDecimals()
     {
         // Test that decimal numbers are formatted correctly
         _graphics.DrawLine(10.123, 20.456, 30.789, 40.987);

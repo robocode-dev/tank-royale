@@ -35,7 +35,6 @@ dependencies {
     implementation(project(":lib:client"))
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.picocli)
-    implementation(libs.jansi)
     implementation(libs.slf4j.api)
     implementation(libs.java.websocket)
 }

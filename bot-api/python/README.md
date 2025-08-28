@@ -26,13 +26,13 @@ pip install -e .
 #### Clean:
 
 ```shell
-./gradlew :bot-api:python:clean
+../../gradlew :bot-api:python:clean
 ```
 
 #### Build:
 
 ```shell
-./gradlew :bot-api:python:build
+../../gradlew :bot-api:python:build
 ```
 
 ## Usage

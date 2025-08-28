@@ -1,6 +1,29 @@
-## 📦 0.32.2 -  
+## 📦 0.33.0 - Added Recording and Replays
+
+This version adds support for recording and replaying battles (#55: Game replays). All credits go
+to [Jan Durovec](https://github.com/jandurovec) for this cool feature! 🤩
+
+It is now possible to record a battle and replay it later. This is useful for debugging and for replaying battles that
+you have recorded. When replaying a battle, you can see the replay timeline and seek to a specific point in the battle.
+Skulls on the timeline show when a bot has killed.
+
+Note that the replays also make it possible to study the standard output of the bots in the bot consoles and also see
+the properties and events at specific points in the battle.
+
+### 🚀 Improvements
+
+- Recorder:
+    - #55: A new **recorder** application was added, which is a command-line tool for recording battles.
+
+- GUI app:
+    - #159: Replay feature added.
+    - #160: Added replay timeline and allow seeking.
+    - #161: Updated round/turn indicator in the arena panel.
 
 ### 🐞 Bug Fixes
+
+- Server, Booter, Recorder:
+    - Got rid of `WARNING: A restricted method in java.lang.System has been called` when running with Java 22 or later.
 
 - Booter:
     - Bots could not be booted on Linux. Thanks goes to [Yang Li](https://github.com/yangli2) for fixing this. ❤️

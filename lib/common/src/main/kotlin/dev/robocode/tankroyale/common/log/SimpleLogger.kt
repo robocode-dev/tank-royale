@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.common.log
 
-import org.fusesource.jansi.Ansi.ansi
 import org.slf4j.event.Level.ERROR
 import org.slf4j.event.Level.WARN
 import org.slf4j.event.Level.INFO
@@ -12,6 +11,16 @@ import org.slf4j.Marker
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.ConcurrentHashMap
+
+private object AnsiCodes {
+    const val RESET = "\u001B[0m"
+    const val DEFAULT = "\u001B[39m"
+    const val CYAN = "\u001B[36m"
+    const val BLUE = "\u001B[34m"
+    const val GREEN = "\u001B[32m"
+    const val YELLOW = "\u001B[33m"
+    const val BRIGHT_RED = "\u001B[91m"
+}
 
 class SimpleLogger(private val loggerName: String) : Logger {
 
@@ -34,15 +43,15 @@ class SimpleLogger(private val loggerName: String) : Logger {
             return
         }
 
-        val ansiColor = when (level) {
-            TRACE.name -> ansi().fgCyan()
-            DEBUG.name -> ansi().fgBlue()
-            INFO.name -> ansi().fgGreen()
-            WARN.name -> ansi().fgYellow()
-            else -> ansi().fgDefault()
+        val color = when (level) {
+            TRACE.name -> AnsiCodes.CYAN
+            DEBUG.name -> AnsiCodes.BLUE
+            INFO.name -> AnsiCodes.GREEN
+            WARN.name -> AnsiCodes.YELLOW
+            else -> AnsiCodes.DEFAULT
         }
 
-        val levelInfo = " ${ansiColor}[$level]${ansi().fgDefault()} "
+        val levelInfo = " ${color}[$level]${AnsiCodes.DEFAULT} "
 
         buildString {
             append(dateFormat.format(Date()))
@@ -57,14 +66,14 @@ class SimpleLogger(private val loggerName: String) : Logger {
     private fun logError(message: String, throwable: Throwable? = null) {
         val levelInfo = " [${ERROR.name}] "
         buildString {
-            append(ansi().fgBrightRed())
+            append(AnsiCodes.BRIGHT_RED)
             append(dateFormat.format(Date()))
             append(levelInfo)
             append(message)
+            append(AnsiCodes.RESET)
         }.also {
             System.err.println(it)
             throwable?.printStackTrace(System.err)
-            System.err.println(ansi().fgDefault().toString())
         }
     }
 
@@ -155,7 +164,8 @@ class SimpleLogger(private val loggerName: String) : Logger {
         // Replace each "{}" with the next argument
         return regex.replace(format) {
             if (argumentIndex < arguments.size) {
-                arguments[argumentIndex++].toString()
+                val result = arguments[argumentIndex++].toString()
+                result
             } else {
                 "{}" // If no more arguments are left, keep "{}" as is
             }

@@ -22,7 +22,7 @@ public class SvgGraphicsTest {
     }
 
     @Test
-    public void testInitialState() {
+    public void givenNewGraphics_whenToSvg_thenContainsRootSvgAndClosed() {
         // Initial SVG should just contain the basic structure
         String svg = graphics.toSvg();
         assertTrue(svg.contains("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 5000 5000\">"));
@@ -30,7 +30,7 @@ public class SvgGraphicsTest {
     }
 
     @Test
-    public void testDrawLine() {
+    public void givenStrokeSet_whenDrawLine_thenLineElementWithAttributesPresent() {
         graphics.setStrokeColor(Color.RED);
         graphics.setStrokeWidth(2);
         graphics.drawLine(10, 20, 30, 40);
@@ -46,7 +46,7 @@ public class SvgGraphicsTest {
     }
 
     @Test
-    public void testDrawRectangle() {
+    public void givenStrokeSet_whenDrawRectangle_thenRectElementWithAttributesPresent() {
         graphics.setStrokeColor(Color.BLUE);
         graphics.setStrokeWidth(3);
         graphics.drawRectangle(10, 20, 100, 50);
@@ -63,7 +63,7 @@ public class SvgGraphicsTest {
     }
 
     @Test
-    public void testFillRectangle() {
+    public void givenFillAndStrokeSet_whenFillRectangle_thenRectElementWithAttributesPresent() {
         graphics.setFillColor(Color.GREEN);
         graphics.setStrokeColor(Color.RED);
         graphics.setStrokeWidth(1);
@@ -81,7 +81,7 @@ public class SvgGraphicsTest {
     }
 
     @Test
-    public void testDrawCircle() {
+    public void givenStrokeSet_whenDrawCircle_thenCircleElementWithAttributesPresent() {
         graphics.setStrokeColor(Color.PURPLE);
         graphics.setStrokeWidth(2);
         graphics.drawCircle(100, 100, 50);
@@ -97,7 +97,7 @@ public class SvgGraphicsTest {
     }
 
     @Test
-    public void testFillCircle() {
+    public void givenFillAndStrokeSet_whenFillCircle_thenCircleElementWithAttributesPresent() {
         graphics.setFillColor(Color.YELLOW);
         graphics.setStrokeColor(Color.ORANGE);
         graphics.setStrokeWidth(1);
@@ -114,7 +114,7 @@ public class SvgGraphicsTest {
     }
 
     @Test
-    public void testDrawPolygon() {
+    public void givenStrokeSet_whenDrawPolygon_thenPolygonElementWithAttributesPresent() {
         graphics.setStrokeColor(Color.BLACK);
         graphics.setStrokeWidth(2);
         List<Point> points = new ArrayList<>();
@@ -132,7 +132,7 @@ public class SvgGraphicsTest {
     }
 
     @Test
-    public void testFillPolygon() {
+    public void givenFillAndStrokeSet_whenFillPolygon_thenPolygonElementWithAttributesPresent() {
         graphics.setFillColor(Color.BLUE);
         graphics.setStrokeColor(Color.BLACK);
         graphics.setStrokeWidth(1);
@@ -151,7 +151,7 @@ public class SvgGraphicsTest {
     }
 
     @Test
-    public void testPolygonWithTooFewPoints() {
+    public void givenTooFewPoints_whenDrawOrFillPolygon_thenNoPolygonIsAdded() {
         graphics.setStrokeColor(Color.BLACK);
         List<Point> points = new ArrayList<>();
         points.add(new Point(10, 10));
@@ -165,7 +165,7 @@ public class SvgGraphicsTest {
     }
 
     @Test
-    public void testDrawText() {
+    public void givenStrokeAndFontSet_whenDrawText_thenTextElementWithAttributesPresent() {
         graphics.setStrokeColor(Color.BLUE);
         graphics.setFont("Verdana", 24);
         graphics.drawText("Hello World", 100, 200);
@@ -181,7 +181,7 @@ public class SvgGraphicsTest {
     }
 
     @Test
-    public void testMultipleElements() {
+    public void givenVariousElementsDrawn_whenToSvg_thenCountsMatch() {
         graphics.setStrokeColor(Color.RED);
         graphics.drawLine(10, 10, 20, 20);
         graphics.setFillColor(Color.BLUE);

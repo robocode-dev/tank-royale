@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui.arena
 import dev.robocode.tankroyale.client.model.*
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
+import dev.robocode.tankroyale.gui.player.ReplayBattlePlayer
 import dev.robocode.tankroyale.gui.ui.ResultsFrame
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.hsl
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
@@ -15,19 +16,36 @@ import dev.robocode.tankroyale.gui.util.Graphics2DState
 import dev.robocode.tankroyale.gui.util.HslColor
 import java.awt.*
 import java.awt.event.*
-import java.awt.geom.AffineTransform
-import java.awt.geom.Arc2D
-import java.awt.geom.Area
-import java.awt.geom.Ellipse2D
+import java.awt.geom.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JPanel
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 
 object ArenaPanel : JPanel() {
 
     private val circleShape = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
+
+    // Game status indicator constants
+    private const val INDICATOR_BACKGROUND_OPACITY = 0.8f
+    private const val INDICATOR_SHADOW_OPACITY = 0.3f
+    private val INDICATOR_LIVE_BG_COLOR = Color(220, 20, 60) // Crimson red (solid)
+    private val INDICATOR_REPLAY_BG_COLOR = Color(40, 40, 40) // Dark gray (solid)
+    private val INDICATOR_ROUND_BG_COLOR = Color(60, 60, 60, (255 * INDICATOR_BACKGROUND_OPACITY).toInt()) // Medium dark gray
+    private val INDICATOR_TURN_BG_COLOR = Color(80, 80, 80, (255 * INDICATOR_BACKGROUND_OPACITY).toInt()) // Lighter gray
+    private val INDICATOR_SHADOW_COLOR = Color.BLACK
+    private val INDICATOR_STATUS_COLOR = Color.WHITE
+    private val INDICATOR_TEXT_COLOR = Color.WHITE
+    private val INDICATOR_STATUS_FONT = Font(Font.SANS_SERIF, Font.BOLD, 14)
+    private val INDICATOR_INFO_FONT = Font(Font.SANS_SERIF, Font.PLAIN, 12)
+    private const val INDICATOR_X_OFFSET = 20.0
+    private const val INDICATOR_Y_OFFSET = 20.0
+    private const val INDICATOR_HEIGHT = 25.0
+    private const val INDICATOR_CORNER_RADIUS = 8
+    private const val INDICATOR_TEXT_PADDING = 8
+
 
     private val explosions = CopyOnWriteArrayList<Animation>()
 
@@ -38,6 +56,9 @@ object ArenaPanel : JPanel() {
     private var time: Int = 0
     private var bots: Set<BotState> = HashSet()
     private var bullets: Set<BulletState> = HashSet()
+
+    // Battle mode state
+    private var isLiveMode: Boolean = true
 
     private val tick = AtomicBoolean(false)
 
@@ -61,6 +82,7 @@ object ArenaPanel : JPanel() {
         addComponentListener(object : ComponentAdapter() {
             override fun componentResized(e: ComponentEvent) {
                 recalcScale()
+                repaint()
             }
         })
 
@@ -68,11 +90,17 @@ object ArenaPanel : JPanel() {
             onGameEnded.subscribe(ArenaPanel) { onGameEnded(it) }
             onTickEvent.subscribe(ArenaPanel) { onTick(it) }
             onGameStarted.subscribe(ArenaPanel) { onGameStarted(it) }
+            onPlayerChanged.subscribe(ArenaPanel) { onPlayerChanged(it) }
         }
     }
 
     private fun onGameEnded(gameEndedEvent: GameEndedEvent) {
         ResultsFrame(gameEndedEvent.results).isVisible = true
+    }
+
+    private fun onPlayerChanged(player: dev.robocode.tankroyale.gui.player.BattlePlayer) {
+        isLiveMode = player !is ReplayBattlePlayer // Default to LIVE mode for other player types
+        repaint() // Refresh the display to show correct indicator
     }
 
     private fun onTick(tickEvent: TickEvent) {
@@ -214,6 +242,9 @@ object ArenaPanel : JPanel() {
         val marginX = (size.width - arenaWidth * scale) / 2
         val marginY = (size.height - arenaHeight * scale) / 2
 
+        // Save original transform to restore for indicator rendering
+        val originalTransform = g.transform
+
         // Move the offset of the arena
         g.translate(marginX + deltaX, marginY + deltaY)
 
@@ -224,8 +255,11 @@ object ArenaPanel : JPanel() {
         drawBots(g)
         drawExplosions(g)
         drawBullets(g)
-        drawRoundInfo(g)
         drawDebugGraphics(g)
+
+        // Restore original transform and draw indicator last (so it's not overwritten)
+        g.transform = originalTransform
+        drawRoundInfo(g)
     }
 
     private fun drawBots(g: Graphics2D) {
@@ -320,9 +354,83 @@ object ArenaPanel : JPanel() {
     private fun drawRoundInfo(g: Graphics2D) {
         val oldState = Graphics2DState(g)
 
-        g.scale(1.0, -1.0)
-        g.color = Color.YELLOW
-        g.drawString("Round $round, Turn: $time", 10, 20 - arenaHeight)
+        val x = INDICATOR_X_OFFSET
+        val y = INDICATOR_Y_OFFSET
+
+        // Calculate section widths
+        val statusText = if (isLiveMode) "LIVE" else "REPLAY"
+        val roundText = "ROUND $round"
+        val turnText = "TURN $time"
+
+        g.font = INDICATOR_STATUS_FONT
+        val statusFontMetrics = g.fontMetrics
+        val statusBounds = statusFontMetrics.getStringBounds(statusText, g)
+        val statusWidth = (statusBounds.width + 2 * INDICATOR_TEXT_PADDING).toInt()
+
+        g.font = INDICATOR_INFO_FONT
+        val infoFontMetrics = g.fontMetrics
+        val roundBounds = infoFontMetrics.getStringBounds(roundText, g)
+        val turnBounds = infoFontMetrics.getStringBounds(turnText, g)
+        val roundWidth = (roundBounds.width + 2 * INDICATOR_TEXT_PADDING).toInt()
+        val turnWidth = (turnBounds.width + 2 * INDICATOR_TEXT_PADDING).toInt()
+
+        val totalWidth = statusWidth + roundWidth + turnWidth
+
+        // Draw drop shadow
+        g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, INDICATOR_SHADOW_OPACITY)
+        g.color = INDICATOR_SHADOW_COLOR
+        g.fillRoundRect((x + 2).toInt(), (y + 2).toInt(), totalWidth, INDICATOR_HEIGHT.toInt(), INDICATOR_CORNER_RADIUS, INDICATOR_CORNER_RADIUS)
+        g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f)
+
+        // Draw all sections pixel-perfect without overlaps
+        val roundX = x + statusWidth.toDouble()
+        val turnX = roundX + roundWidth.toDouble()
+
+        // Draw stackable blocks from right
+
+        // Draw TURN section - right side rounded, left side inversely rounded for ROUND to fit in
+        g.color = INDICATOR_TURN_BG_COLOR
+        g.clip = createStackableRoundedCornersShape(turnX - INDICATOR_CORNER_RADIUS, y, (turnWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble())
+        g.fillRect(turnX.toInt() - INDICATOR_CORNER_RADIUS, y.toInt(), turnWidth + INDICATOR_CORNER_RADIUS, INDICATOR_HEIGHT.toInt())
+
+        // Draw ROUND section - right side rounded, left side inversely rounded for STATUS to fit in
+        g.color = INDICATOR_ROUND_BG_COLOR
+        g.clip = createStackableRoundedCornersShape(roundX - INDICATOR_CORNER_RADIUS, y, (roundWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble())
+        g.fillRect(roundX.toInt() - INDICATOR_CORNER_RADIUS, y.toInt(), roundWidth + INDICATOR_CORNER_RADIUS, INDICATOR_HEIGHT.toInt())
+        g.clip = null
+
+        // Draw status section (LIVE/REPLAY) - both sides rounded
+        val statusColor = if (isLiveMode) INDICATOR_LIVE_BG_COLOR else INDICATOR_REPLAY_BG_COLOR
+        g.color = statusColor
+        g.fillRoundRect(x.toInt(), y.toInt(), statusWidth, INDICATOR_HEIGHT.toInt(), INDICATOR_CORNER_RADIUS, INDICATOR_CORNER_RADIUS)
+
+        // Draw status text (LIVE/REPLAY) (properly centered)
+        g.font = INDICATOR_STATUS_FONT
+
+        if (isLiveMode) {
+            g.color = INDICATOR_STATUS_COLOR
+        } else {
+            // Pulsating effect for REPLAY text (opacity between 60% and 100%)
+            val replayOpacity = (0.6 + 0.4 * sin(System.currentTimeMillis() * 0.004)).toFloat()
+            g.color = Color(INDICATOR_STATUS_COLOR.red, INDICATOR_STATUS_COLOR.green, INDICATOR_STATUS_COLOR.blue, (255 * replayOpacity).toInt())
+        }
+
+        val statusTextX = x + INDICATOR_TEXT_PADDING
+        val statusTextY = y + (INDICATOR_HEIGHT - statusFontMetrics.height) / 2 + statusFontMetrics.ascent
+        g.drawString(statusText, statusTextX.toInt(), statusTextY.toInt())
+
+        // Draw round text (properly centered)
+        g.font = INDICATOR_INFO_FONT
+        g.color = INDICATOR_TEXT_COLOR
+        val roundTextX = roundX + INDICATOR_TEXT_PADDING
+        val roundTextY = y + (INDICATOR_HEIGHT - infoFontMetrics.height) / 2 + infoFontMetrics.ascent
+        g.drawString(roundText, roundTextX.toInt(), roundTextY.toInt())
+
+        // Draw turn text (properly centered)
+        g.color = INDICATOR_TEXT_COLOR
+        val turnTextX = turnX + INDICATOR_TEXT_PADDING
+        val turnTextY = y + (INDICATOR_HEIGHT - infoFontMetrics.height) / 2 + infoFontMetrics.ascent
+        g.drawString(turnText, turnTextX.toInt(), turnTextY.toInt())
 
         oldState.restore(g)
     }
@@ -432,4 +540,16 @@ object ArenaPanel : JPanel() {
             y = origY
         }
     }
+
+    /**
+     * Draws a rectangle with rounded corners on the right side and negative rounded corners (for stacking) on the
+     * left side.
+     */
+    private fun createStackableRoundedCornersShape(x: Double, y: Double, width: Double, height: Double, cornerRadius: Double): Area {
+        // start with the rounded rectangle
+        val area = Area(RoundRectangle2D.Double(x - cornerRadius, y, width + cornerRadius, height, cornerRadius, cornerRadius))
+        area.subtract(Area(RoundRectangle2D.Double(x - cornerRadius, y, 2 * cornerRadius, height, cornerRadius, cornerRadius)))
+        return area
+    }
+
 }
