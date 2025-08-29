@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"dev.robocode.tankroyale.botapi"},{"l":"dev.robocode.tankroyale.botapi.events"},{"l":"dev.robocode.tankroyale.botapi.graphics"}]
