@@ -75,7 +75,7 @@ only need to deal with the bot logic:
 Both implementations are first-class citizens within Tank Royale, and more might follow in the future for other popular
 platforms. Also, note that sample bots are provided for both APIs.
 
-## Supported programming languages
+## Supported platforms / programming languages
 
 Due to the current bot APIs for the JVM and .Net, Robocode (should be) able to support these programming languages with
 the current Bot APIs:
@@ -85,6 +85,21 @@ the current Bot APIs:
 
 - **.Net platform:** These programming languages (and more) are available:
     - [C#], [F#], [Visual Basic], and [IronPython]
+
+## Work in progress
+
+- **Bot API for**:
+    - Python
+    - WebAssembly (Wasm)
+      - JavaScript
+      - TypeScript
+- **Robocode API bridge for Tank Royale**
+    - Project can be found here: [robocode-api-bridge](https://github.com/robocode-dev/robocode-api-bridge) 
+
+## Thanks to the contributors
+
+Huge thanks to every [contributor](https://github.com/robocode-dev/tank-royale/graphs/contributors) — you make this
+project shine! 🙌
 
 ## Maintainer
 
