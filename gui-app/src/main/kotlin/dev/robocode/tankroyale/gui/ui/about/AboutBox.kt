@@ -61,11 +61,13 @@ object AboutBox : RcDialog(MainFrame, "about_dialog") {
             <tr>
                 <td valign="top"><image width="64" height="64" src="$url"></td>
                 <td><span style="font-family: Arial, Helvetica, sans-serif;">
-                    <b>Robocode Tank Royale</b>
-                    <br>
+                    <b>Robocode Tank Royale</b><br>
                     Version: $version<br>
-                    <br>
                     Running on <strong>Java $javaVersion ($javaWordSize)</strong> by $javaVendor<br>
+                    <br>
+                    <b>Huge thanks to every
+                    <a href=\"https://github.com/robocode-dev/tank-royale/graphs/contributors\">contributor</a></b>
+                     — you make this project shine! ❤️<br>
                     <br>
                     Copyright © 2022 Flemming N&oslash;rnberg Larsen
                  </span></td>

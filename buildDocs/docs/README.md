@@ -19,6 +19,11 @@ If you are new to Robocode you should start with:
 - read the [Getting Started](tutorial/getting-started), and then
 - continue to [My First Bot](tutorial/my-first-bot) to create your first bot.
 
+## Thanks to the contributors
+
+Huge thanks to every [contributor](https://github.com/robocode-dev/tank-royale/graphs/contributors) — you make this
+project shine! 🙌
+
 ## Support Robocode
 
 If you are a fan of Robocode, you can support the project and me by buying some coffee 😊
