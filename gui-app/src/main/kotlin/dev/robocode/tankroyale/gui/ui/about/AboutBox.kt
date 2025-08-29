@@ -91,8 +91,7 @@ object AboutBox : RcDialog(MainFrame, "about_dialog") {
                 if (!link.isNullOrBlank()) {
                     Browser.browse(link)
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } catch (ignore: Exception) {
             }
         }
     }
