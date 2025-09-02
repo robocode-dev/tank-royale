@@ -31,6 +31,10 @@ class Recorder : Runnable {
 
     companion object {
         private const val EXIT_COMMAND = "quit"
+        private const val STOP_COMMAND = "stop"
+        private const val START_COMMAND = "start"
+
+        private const val NOT_INITIALIZED_WARNING = "Recorder is not initialized yet. Please wait and try again."
 
         private const val DEFAULT_URL: String = "ws://localhost:7654"
 
@@ -95,12 +99,24 @@ class Recorder : Runnable {
         Scanner(System.`in`).use { scanner ->
             while (scanner.hasNextLine()) {
                 val input = scanner.nextLine().trim()
-                if (input.equals(EXIT_COMMAND, ignoreCase = true)) {
-                    recordingObserver.stop()
-                    exitProcess(1)
-                }
+                handleInput(input)
             }
         }
+    }
+
+    private fun handleInput(input: String) {
+        when {
+            input.equals(EXIT_COMMAND, ignoreCase = true) -> handleExit()
+            input.equals(START_COMMAND, ignoreCase = true) -> handleStart()
+            input.equals(STOP_COMMAND, ignoreCase = true) -> handleStop()
+        }
+    }
+
+    private fun handleExit() {
+        if (this::recordingObserver.isInitialized) {
+            recordingObserver.stop()
+        }
+        exitProcess(1)
     }
 
     private fun startRecorder() {
@@ -109,4 +125,28 @@ class Recorder : Runnable {
         recordingObserver.awaitClose()
     }
 
+    private fun handleStart() {
+        if (!this::recordingObserver.isInitialized) {
+            log.warn(NOT_INITIALIZED_WARNING)
+            return
+        }
+        if (!recordingObserver.isRecording()) {
+            recordingObserver.startRecording()
+            log.info("Recording started.")
+        } else {
+            log.info("Recording is already started.")
+        }
+    }
+
+    private fun handleStop() {
+        if (!this::recordingObserver.isInitialized) {
+            log.warn(NOT_INITIALIZED_WARNING)
+            return
+        }
+        if (recordingObserver.isRecording()) {
+            recordingObserver.stopAndDeleteRecording()
+        } else {
+            log.info("No active recording to stop.")
+        }
+    }
 }
