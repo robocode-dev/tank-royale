@@ -30,7 +30,8 @@ fun main(args: Array<String>) {
 class Recorder : Runnable {
 
     companion object {
-        private const val EXIT_COMMAND = "q"
+        private const val EXIT_COMMAND = "quit"
+
         private const val DEFAULT_URL: String = "ws://localhost:7654"
 
         @Option(names = ["-v", "--version"], description = ["Display version info"])
