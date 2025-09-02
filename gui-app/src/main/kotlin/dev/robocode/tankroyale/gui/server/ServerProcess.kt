@@ -70,7 +70,7 @@ object ServerProcess {
 
         // Stop the server process first to close its stdout (lets the log thread exit)
         val process = processRef.get()
-        ProcessUtil.stopProcess(process, "q", true, true)
+        ProcessUtil.stopProcess(process, "quit", true, true)
         processRef.set(null)
 
         // Now stop the log thread if still running

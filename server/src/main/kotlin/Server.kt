@@ -44,7 +44,8 @@ class Server : Runnable {
 
     companion object {
 
-        private const val EXIT_COMMAND = "q"
+        private const val EXIT_COMMAND = "quit"
+
         private const val MIN_PORT = 1000
         private const val MAX_PORT = 65535
 
