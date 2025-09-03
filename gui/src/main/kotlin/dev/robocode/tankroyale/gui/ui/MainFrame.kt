@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.menu.Menu
 import dev.robocode.tankroyale.gui.server.ServerProcess
+import dev.robocode.tankroyale.gui.recorder.RecorderProcess
 import dev.robocode.tankroyale.gui.ui.arena.BattlePanel
 import dev.robocode.tankroyale.gui.ui.arena.LogoPanel
 import dev.robocode.tankroyale.gui.ui.components.RcFrame
@@ -43,12 +44,15 @@ object MainFrame : RcFrame("main_frame") {
     private fun close() {
         Client.close()
         BootProcess.stop()
+        RecorderProcess.stop()
         ServerProcess.stop()
     }
 
     private object MainPanel : JPanel() {
         init {
+            @Suppress("UnusedExpression")
             ControlEventHandlers
+            @Suppress("UnusedExpression")
             SoundActions
 
             layout = BorderLayout()
