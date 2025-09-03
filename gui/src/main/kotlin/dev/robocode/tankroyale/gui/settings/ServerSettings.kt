@@ -22,6 +22,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
     private const val REMOTE_SERVER_CONTROLLER_SECRETS = "remote-server-controller-secrets"
     private const val REMOTE_SERVER_BOT_SECRETS = "remote-server-bot-secrets"
     private const val INITIAL_POSITION_ENABLED = "initial-position-enabled"
+    private const val SERVER_SECRETS_ENABLED = "server-secrets-enabled"
 
     init {
         RegisterWsProtocol // work-around for ws:// with URI class
@@ -64,19 +65,19 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
 
     fun controllerSecret(): String {
         load()
-        return controllerSecrets.first()
+        return controllerSecrets.firstOrNull() ?: ""
     }
 
     fun botSecret(): String {
         load()
-        return botSecrets.first()
+        return botSecrets.firstOrNull() ?: ""
     }
 
     var controllerSecrets: Set<String>
         get() = if (useRemoteServer) {
             setOf(remoteServerControllerSecret())
         } else {
-            getPropertyAsSet(CONTROLLER_SECRETS).ifEmpty {
+            if (!serverSecretsEnabled) emptySet() else getPropertyAsSet(CONTROLLER_SECRETS).ifEmpty {
                 controllerSecrets = setOf(generateSecret())
                 controllerSecrets
             }
@@ -91,7 +92,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
             if (useRemoteServer) {
                 setOf(remoteServerBotSecret())
             } else { // local server
-                getPropertyAsSet(BOT_SECRETS).ifEmpty {
+                if (!serverSecretsEnabled) emptySet() else getPropertyAsSet(BOT_SECRETS).ifEmpty {
                     botSecrets = setOf(generateSecret())
                     botSecrets
                 }
@@ -115,6 +116,12 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         get() = load(INITIAL_POSITION_ENABLED, "false").toBoolean()
         set(value) {
             save(INITIAL_POSITION_ENABLED, value.toString())
+        }
+
+    var serverSecretsEnabled: Boolean
+        get() = load(SERVER_SECRETS_ENABLED, "false").toBoolean()
+        set(value) {
+            save(SERVER_SECRETS_ENABLED, value.toString())
         }
 
     fun addRemoteServer(serverUrl: String, controllerSecret: String, botSecret: String) {
