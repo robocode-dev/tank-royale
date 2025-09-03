@@ -80,7 +80,6 @@ class AnsiEditorKit(
 
         ansiEscCodeRegex.findAll(ansiText, codeStart).forEach { m ->
             val ansiCode = m.value
-            codeStart = m.range.first
             val codeEnd = m.range.last + 1
 
             attributes = attributes.updateAnsi(EscapeSequence.parse(ansiCode), ansiColors)
