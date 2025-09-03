@@ -99,14 +99,14 @@ object ServerProcess {
 
     private fun startLogThread() {
         val process = processRef.get() ?: return
-        val reader = LineReaderThread(
+        val logReader = LineReaderThread(
             "ServerProcess-Log-Thread",
             process.inputStream
         ) { line ->
             EDT.enqueue { ServerLogFrame.append(line + "\n") }
         }
-        logReaderRef.set(reader)
-        reader.start()
+        logReaderRef.set(logReader)
+        logReader.start()
     }
 
     private fun stopLogThread() {
