@@ -114,11 +114,3 @@ object ServerProcess {
         logReaderRef.set(null)
     }
 }
-
-fun main() {
-    ServerProcess.start()
-    println("Server started")
-    System.`in`.read()
-    ServerProcess.stop()
-    println("Server stopped ")
-}
