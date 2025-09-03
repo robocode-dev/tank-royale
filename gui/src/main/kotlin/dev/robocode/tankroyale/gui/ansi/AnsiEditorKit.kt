@@ -73,7 +73,7 @@ class AnsiEditorKit(
 
         var codeStart = match.range.first
 
-        var text = ansiText.substring(0, codeStart)
+        var text = ansiText.take(codeStart)
         if (text.isNotEmpty()) {
             doc.insertString(doc.length, text, attributes) // no ansi codes found
         }
