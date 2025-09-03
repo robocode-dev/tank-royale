@@ -23,7 +23,7 @@ import javax.swing.BorderFactory
 import javax.swing.JButton
 import javax.swing.JPanel
 
-object NewBattleDialog : RcDialog(MainFrame, "select_bots_dialog") {
+object NewBattleDialog : RcDialog(MainFrame, "new_battle_dialog") {
 
     private val selectBotsAndStartPanel = NewBattlePanel()
 
