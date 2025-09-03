@@ -65,6 +65,7 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
     private val serverSwitchButton = createServerSwitchButton()
     private val useRemoteOrLocalServerLabel = createUseRemoteOrLocalServerLabel()
     private val localPortInputField = createLocalPortInputField()
+    private val serverSecretsSwitchButton = createServerSecretsSwitchButton()
     private val remoteServerComboBox = createRemoteServerComboBox()
     private val localServerPanel = createLocalServerPanel()
     private val remoteServerPanel = createRemoteServerPanel()
@@ -179,14 +180,25 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
         add(useRemoteOrLocalServerLabel)
     }
 
-    private fun createLocalServerPanel() = JPanel(MigLayout("insets 10, fillx", "", "[][]")).apply {
+    private fun createLocalServerPanel() = JPanel(MigLayout("insets 10, fillx", "", "[][][]")).apply {
         border = BorderFactory.createTitledBorder(Strings.get("option.server.local_server"))
         add(createPortPanel(), "wrap")
+        add(createServerSecretsPanel(), "wrap")
     }
 
     private fun createPortPanel() = JPanel().apply {
         addLabel("port")
         add(localPortInputField, "wrap")
+    }
+
+    private fun createServerSecretsPanel() = JPanel().apply {
+        add(JLabel(Strings.get("option.server.enable_server_secrets")))
+        add(serverSecretsSwitchButton)
+    }
+
+    private fun createServerSecretsSwitchButton() = SwitchButton(ServerSettings.serverSecretsEnabled).apply {
+        addSwitchHandler { isSelected -> ServerSettings.serverSecretsEnabled = isSelected }
+        toolTipText = Messages.get("switch_between_local_and_remote_server")
     }
 
     private fun createRemoteServerPanel() = JPanel(MigLayout("insets 10, fillx", "[right][grow][]", "[][]")).apply {

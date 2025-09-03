@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.server.core.GameServer
 import dev.robocode.tankroyale.server.rules.DEFAULT_GAME_TYPE
 import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
 import dev.robocode.tankroyale.server.util.VersionFileProvider
+import org.slf4j.LoggerFactory
 import picocli.CommandLine
 import picocli.CommandLine.*
 import picocli.CommandLine.Model.CommandSpec
@@ -116,6 +117,12 @@ class Server : Runnable {
     private val spec: CommandSpec? = null
     private lateinit var gameServer: GameServer
 
+    private val log = LoggerFactory.getLogger(this::class.java)
+
+    private val ANSI_GREEN = "\u001B[32m"
+    private val ANSI_RED = "\u001B[31m"
+    private val ANSI_DEFAULT = "\u001B[39m"
+
     override fun run() {
         handleCommandLineOptions()
         validatePort()
@@ -130,9 +137,11 @@ class Server : Runnable {
             isUsageHelpRequested -> {
                 printUsageHelp(cmdLine)
             }
+
             isVersionInfoRequested -> {
                 printVersionHelp(cmdLine)
             }
+
             else -> {
                 displayBanner()
                 printVersionHelp(cmdLine)
@@ -197,10 +206,25 @@ class Server : Runnable {
     }
 
     private fun startGameServer() {
+        val controllerSecretsSet = controllerSecrets.toSetOfTrimmedStrings()
+        val botSecretsSet = botSecrets.toSetOfTrimmedStrings()
+        val secretsEnabled = controllerSecretsSet.isNotEmpty() || botSecretsSet.isNotEmpty()
+
+        // Log whether server secrets (keys) are enabled at startup
+        if (secretsEnabled) {
+            log.info(
+                "Server secrets: ${ANSI_GREEN}ENABLED${ANSI_DEFAULT} (controllers={}, bots={})",
+                controllerSecretsSet.size,
+                botSecretsSet.size
+            )
+        } else {
+            log.info("Server secrets: ${ANSI_RED}DISABLED${ANSI_DEFAULT}")
+        }
+
         gameServer = GameServer(
             gameTypes.toSetOfTrimmedStrings(),
-            controllerSecrets.toSetOfTrimmedStrings(),
-            botSecrets.toSetOfTrimmedStrings()
+            controllerSecretsSet,
+            botSecretsSet
         )
         gameServer.start()
     }

@@ -46,7 +46,7 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
             }
             return try {
                 tpsStr?.toInt() ?: DEFAULT_TPS
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 DEFAULT_TPS
             }
         }

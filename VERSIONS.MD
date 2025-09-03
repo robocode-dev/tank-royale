@@ -12,6 +12,11 @@ the properties and events at specific points in the battle.
 
 ### 🚀 Improvements
 
+- Server and GUI:
+    - Add support for enabling/disabling server secrets in GUI and server. Server secrets will be disabled by default.
+      In earlier versions, the server secrets were enabled by default, which could be annoying when you want to test
+      your bots without having to worry about the server secrets.
+
 - Recorder:
     - #55: A new **recorder** application was added, which is a command-line tool for recording battles.
 
