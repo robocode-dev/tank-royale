@@ -71,7 +71,7 @@ class AnsiEditorKit(
             return
         }
 
-        var codeStart = match.range.first
+        val codeStart = match.range.first
 
         var text = ansiText.take(codeStart)
         if (text.isNotEmpty()) {
