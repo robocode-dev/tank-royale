@@ -9,12 +9,10 @@ import dev.robocode.tankroyale.gui.util.EDT
 import dev.robocode.tankroyale.gui.util.FileUtil
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import dev.robocode.tankroyale.gui.util.ProcessUtil
-import java.io.BufferedReader
+import dev.robocode.tankroyale.gui.util.LineReaderThread
 import java.io.FileNotFoundException
-import java.io.InputStreamReader
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 
 object ServerProcess {
@@ -22,11 +20,11 @@ object ServerProcess {
     private const val JAR_FILE_NAME = "robocode-tankroyale-server"
 
     private var processRef = AtomicReference<Process?>()
-    private var logThread: Thread? = null
-    private val logThreadRunning = AtomicBoolean(false)
+    private var logReaderRef = AtomicReference<LineReaderThread?>()
 
     init {
-        ServerActions // trigger initialization of ServerEvents. Is not "unused"
+        @Suppress("UnusedExpression")
+        ServerActions // trigger initialization of ServerEvents
     }
 
     fun isRunning(): Boolean {
@@ -75,7 +73,6 @@ object ServerProcess {
 
         // Now stop the log thread if still running
         stopLogThread()
-        logThread = null
 
         ServerEvents.onStopped.fire(Unit)
     }
@@ -101,31 +98,20 @@ object ServerProcess {
     }
 
     private fun startLogThread() {
-        logThread = Thread {
-            logThreadRunning.set(true)
-
-            val process = processRef.get()
-            BufferedReader(InputStreamReader(process?.inputStream!!)).use { reader ->
-                try {
-                    while (logThreadRunning.get()) {
-                        val line = reader.readLine() ?: break
-                        EDT.enqueue { ServerLogFrame.append(line + "\n") }
-                    }
-                } catch (_: Exception) {
-                    // Ignore; occurs when process closes stream or thread is interrupted
-                } finally {
-                    logThreadRunning.set(false)
-                }
-            }
-        }.apply {
-            name = "ServerProcess-Log-Thread"
-            start()
+        val process = processRef.get() ?: return
+        val reader = LineReaderThread(
+            "ServerProcess-Log-Thread",
+            process.inputStream
+        ) { line ->
+            EDT.enqueue { ServerLogFrame.append(line + "\n") }
         }
+        logReaderRef.set(reader)
+        reader.start()
     }
 
     private fun stopLogThread() {
-        logThreadRunning.set(false)
-        logThread?.interrupt()
+        logReaderRef.get()?.stop()
+        logReaderRef.set(null)
     }
 }
 

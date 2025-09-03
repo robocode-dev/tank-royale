@@ -7,11 +7,10 @@ import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.console.BooterErrorConsole
 import dev.robocode.tankroyale.gui.util.EDT
 import dev.robocode.tankroyale.gui.util.FileUtil
+import dev.robocode.tankroyale.gui.util.LineReaderThread
 import dev.robocode.tankroyale.gui.util.ResourceUtil
 import dev.robocode.tankroyale.gui.util.ProcessUtil
-import java.io.BufferedReader
 import java.io.FileNotFoundException
-import java.io.InputStreamReader
 import java.io.PrintStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -28,8 +27,8 @@ object BootProcess {
     private const val JAR_FILE_NAME = "robocode-tankroyale-booter"
 
     private var booterProcess: Process? = null
-    private var stdoutThreadRef = AtomicReference<Thread>()
-    private var stderrThreadRef = AtomicReference<Thread>()
+    private var stdoutReaderRef = AtomicReference<LineReaderThread>()
+    private var stderrReaderRef = AtomicReference<LineReaderThread>()
 
     private val json = MessageConstants.json
 
@@ -187,48 +186,7 @@ object BootProcess {
         }
     }
 
-    private fun readInputToPids(process: Process) {
-        process.inputStream?.let {
-            val reader = BufferedReader(InputStreamReader(it, StandardCharsets.UTF_8))
-            while (!isErrorStreamThreadInterrupted()) {
-                val line = reader.readLine()
-                if (isValidLine(line)) {
-                    if (line.startsWith("stopped ")) {
-                        removePid(line)
-                    } else {
-                        addPid(line)
-                    }
-                }
-            }
-        }
-    }
 
-    private fun readErrorToStdError(process: Process) {
-        process.errorStream?.let { stream ->
-            val reader = BufferedReader(InputStreamReader(stream, StandardCharsets.UTF_8))
-            while (!isErrorStreamThreadInterrupted()) {
-                processErrorLine(reader)
-            }
-        }
-    }
-
-    private fun isErrorStreamThreadInterrupted(): Boolean {
-        return stderrThreadRef.get()?.isInterrupted == true
-    }
-
-    private fun processErrorLine(reader: BufferedReader) {
-        try {
-            val line = reader.readLine()
-            if (isValidLine(line)) {
-                displayErrorLine(line)
-            }
-        } catch (_: InterruptedException) {
-            Thread.currentThread().interrupt()
-            throw InterruptedException()
-        } catch (e: Exception) {
-            System.err.println("Error reading from error stream: ${e.message}")
-        }
-    }
 
     private fun isValidLine(line: String?): Boolean {
         return !line.isNullOrBlank()
@@ -250,45 +208,47 @@ object BootProcess {
     }
 
     private fun startThread(process: Process, doReadInputToProcessIds: Boolean) {
-        if (isRunning()) {
-            return
-        }
+        if (isRunning()) return
 
-        // Start thread for standard output
+        // Start reader for standard output if needed (to parse PID messages)
         if (doReadInputToProcessIds) {
-            stdoutThreadRef.set(Thread {
-                try {
-                    readInputToPids(process)
-                } catch (_: InterruptedException) {
-                    // Thread was interrupted, exit gracefully
+            val stdoutReader = LineReaderThread(
+                "BootProcess-StdOut-Thread",
+                process.inputStream
+            ) { line ->
+                if (isValidLine(line)) {
+                    if (line.startsWith("stopped ")) {
+                        removePid(line)
+                    } else {
+                        addPid(line)
+                    }
                 }
-            }.apply {
-                name = "BootProcess-StdOut-Thread"
-                start()
-            })
+            }
+            stdoutReaderRef.set(stdoutReader)
+            stdoutReader.start()
         }
 
-        // Start thread for standard error
-        stderrThreadRef.set(Thread {
-            try {
-                readErrorToStdError(process)
-            } catch (_: InterruptedException) {
-                // Thread was interrupted, exit gracefully
+        // Always start reader for standard error (to show error console output)
+        val stderrReader = LineReaderThread(
+            "BootProcess-StdErr-Thread",
+            process.errorStream
+        ) { line ->
+            if (isValidLine(line)) {
+                displayErrorLine(line)
             }
-        }.apply {
-            name = "BootProcess-StdErr-Thread"
-            start()
-        })
+        }
+        stderrReaderRef.set(stderrReader)
+        stderrReader.start()
     }
 
     private fun stopThread() {
-        stdoutThreadRef.get()?.interrupt()
-        stderrThreadRef.get()?.interrupt()
+        stdoutReaderRef.get()?.stop()
+        stderrReaderRef.get()?.stop()
     }
 
     private fun isRunning(): Boolean =
-        (stdoutThreadRef.get()?.run { isAlive && !isInterrupted } ?: false) ||
-                (stderrThreadRef.get()?.run { isAlive && !isInterrupted } ?: false)
+        (stdoutReaderRef.get()?.isRunning() ?: false) ||
+                (stderrReaderRef.get()?.isRunning() ?: false)
 
     private fun startPinging() {
         val pingTask = object : TimerTask() {

@@ -22,7 +22,7 @@ include("gui-app")
 include("bot-api:java")
 include("bot-api:dotnet")
 include("bot-api:dotnet:schema")
-include("bot-api:python")
+//include("bot-api:python")
 
 // Sample Bots archives
 include("sample-bots:java")
