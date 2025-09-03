@@ -35,7 +35,7 @@ version of the Java that is being used along with the vendor of the java distrib
 
 ## Running the Robocode GUI
 
-Robocode has a GUI application that can be used for running and viewing battles on your local machine. You should use
+Robocode has a GUI that can be used for running and viewing battles on your local machine. You should use
 this application for observing how your bot(s) perform in the battle arena against other bots.
 
 You can download the application from the [Robocode releases].
@@ -55,7 +55,7 @@ java -jar robocode-tankroyale-gui-x.y.z.jar
 I recommend that you create a directory for Tank Royale, and create a script file for starting up the GUI using the
 command line above.
 
-The GUI application will automatically create and store `.properties` files beside your
+The GUI will automatically create and store `.properties` files beside your
 `robocode-tankroyale-gui-x.y.z.jar` file when running the application.
 
 ## Sample bots
@@ -99,7 +99,7 @@ the jar file for the GUI like this:
 ```
 
 The sounds are automatically enabled, and you can enable/disable all sounds and the individual sound from the Sound
-Options in the GUI application.
+Options in the GUI.
 
 ### Using your own sound files
 

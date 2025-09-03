@@ -15,7 +15,7 @@ the properties and events at specific points in the battle.
 - Recorder:
     - #55: A new **recorder** application was added, which is a command-line tool for recording battles.
 
-- GUI app:
+- GUI:
     - #159: Replay feature added.
     - #160: Added replay timeline and allow seeking.
     - #161: Updated round/turn indicator in the arena panel.
@@ -654,7 +654,7 @@ This version fixes various issues, some found when running legacy bots with the 
       had been set for the current turn.
 - Bot API for .Net:
     - Setting the max speed and max turn rates for the body, gun, and radar did not work.
-- GUI app:
+- GUI:
     - Fixed rendering issues on Windows (and Linux?) when using accelerated hardware, by setting these Java properties
     - as defaults:
         - `sun.java2d.d3d=false` (turn off use of Direct3D)
@@ -678,13 +678,13 @@ This version fixes various issues, some found when running legacy bots with the 
     - Added `--tps` option to the server for setting the initial Turns Per Second (TPS).
     - Fire assistant is now only activated, when both the radar and gun are pointing in the same direction for two turns
       in a row (like original Robocode).
-- GUI App:
+- GUI:
     - Switched the order of the Game Type dropdown and Setup Rules button.
     - The positioning of the battle view is now controlled by dragging the mouse, instead of clicking.
     - Now sends the current tps to the server when changing game type.
-    - Added `Help` menu item under the Help menu, which opens browser to the documentation of the GUI application.
+    - Added `Help` menu item under the Help menu, which opens browser to the documentation of the GUI.
 - Release
-    - All Java artifacts are now sent to Maven Central, i.e. Bot API, GUI Application, Server, and Booter.
+    - All Java artifacts are now sent to Maven Central, i.e. Bot API, GUI, Server, and Booter.
     - New assets are now added to releases: Server and Booter
     - Added build scripts to automated creating (draft) releases using GitHub REST API.
     - Improved layout for release notes.
@@ -693,7 +693,7 @@ This version fixes various issues, some found when running legacy bots with the 
 
 ### 🐞 Bug Fixes
 
-- Bot API and GUI App: Fixed various concurrency issues.
+- Bot API and GUI: Fixed various concurrency issues.
 
 ## 📦 0.17.3 - Maintenance - 02-Oct-2022
 
@@ -720,9 +720,9 @@ This version fixes various issues, some found when running legacy bots with the 
 ### 🚀 Improvements
 
 - GUI/Sounds: [#4: Fire and Explosion Sounds:
-    - Added feature to play sounds to the GUI application.
+    - Added feature to play sounds to the GUI.
     - Added Sound Options to configure sounds.
-    - Note that sound files are distributed independently besides the gui application from the [sounds releases].
+    - Note that sound files are distributed independently besides the GUI from the [sounds releases].
 - GUI: Moved the ~~Dismiss~~OK button on the Bot Root Directories configuration down under the Add and Remove buttons,
   and adjusted the size of the dialog.
 
@@ -1095,7 +1095,7 @@ Bot info:
 
 [installation guide]: https://robocode-dev.github.io/tank-royale/articles/installation.html "Installing and running Robocode"
 
-[GUI Application]: https://robocode-dev.github.io/tank-royale/articles/gui.html "The GUI application"
+[GUI]: https://robocode-dev.github.io/tank-royale/articles/gui.html "The Graphical User Interface (GUI)"
 
 [BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 

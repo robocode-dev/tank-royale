@@ -44,7 +44,7 @@ Or continue to [My First Bot tutorial](https://robocode-dev.github.io/tank-royal
 how to set up your first bot for Robocode Tank Royale.
 
 An [Installation](https://robocode-dev.github.io/tank-royale/articles/installation.html) guide for installing the
-[GUI application](https://robocode-dev.github.io/tank-royale/articles/gui.html) is available, as well the
+[GUI](https://robocode-dev.github.io/tank-royale/articles/gui.html) is available, as well the
 [sample bots](https://robocode-dev.github.io/tank-royale/articles/installation.html#sample-bots) for demoing some
 battles in Robocode without any need to code anything yourself (yet).
 

@@ -15,8 +15,8 @@ include("server")
 // Recorder
 include("recorder")
 
-// GUI app
-include("gui-app")
+// GUI
+include("gui")
 
 // Bot API
 include("bot-api:java")

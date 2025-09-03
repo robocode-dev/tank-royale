@@ -123,4 +123,4 @@ the [booter].
 
 [booter]: ../articles/booter.md "Booter"
 
-[GUI]: ../articles/gui.md "GUI application"
+[GUI]: ../articles/gui.md "GUI"

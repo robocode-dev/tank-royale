@@ -1,7 +1,7 @@
 import build.tasks.FatJar
 import proguard.gradle.ProGuardTask
 
-description = "Robocode Tank Royale GUI Application"
+description = "Robocode Tank Royale GUI"
 
 val archiveTitle = "Robocode Tank Royale GUI"
 group = "dev.robocode.tankroyale"

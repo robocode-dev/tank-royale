@@ -1,8 +1,8 @@
-# The GUI application
+# The GUI
 
 ## Introduction
 
-The **GUI application** is a graphical user interface for Robocode Tank Royale that allows you to:
+The **GUI** is a graphical user interface for Robocode Tank Royale that allows you to:
 
 - Connect to a server running locally, or start up a new server that will run locally.
 - Startup battles with selected bots and define the rules to apply for the battle.
@@ -11,7 +11,7 @@ The **GUI application** is a graphical user interface for Robocode Tank Royale t
 
 ## Start window
 
-When starting up the GUI application, this window is the first thing you will see:
+When starting up the GUI, this window is the first thing you will see:
 
 ![Start window](../images/gui/start-window.png)
 
@@ -20,7 +20,7 @@ a new battle.
 
 ## Starting a battle
 
-The main feature of the GUI application is starting a new battle and selecting the bots to participate in the battle.
+The main feature of the GUI is starting a new battle and selecting the bots to participate in the battle.
 
 ![Start battle](../images/gui/start-battle.png)
 
@@ -233,7 +233,7 @@ The **Sound Options** let you enable and disable sounds, but also toggle the ind
 
 ## About box
 
-The about-box provides information about the version of the GUI application and built in booter and server.
+The about-box provides information about the version of the GUI and built in booter and server.
 
 In addition, the Java version and vendor is also provided, which is useful information when e.g. filing a
 new [new issue].

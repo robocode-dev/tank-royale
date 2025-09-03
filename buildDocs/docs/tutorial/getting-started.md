@@ -15,7 +15,7 @@ This GIF animation can give you a glimpse, but not the full picture:
 
 So if you have not seen the battles already, you should:
 
-1) [install and run](../articles/installation) the GUI application,
+1) [install and run](../articles/installation) the GUI,
 2) [unzip the sample bots](../articles/installation#sample-bots) to some directory on your system,
 3) [set up bot directories](../articles/installation#set-up-bot-directories) for the sample bots, and
 4) [start a battle](../articles/installation#sample-bots) with the sample bots.

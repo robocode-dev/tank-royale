@@ -1,11 +1,11 @@
-# The GUI Application
+# The GUI
 
-This module contains the GUI application used for letting a user boot up bots on a local or remote server, and then
+This module contains the GUI used for letting a user boot up bots on a local or remote server, and then
 watch the battles.
 
-The [booter] and [server] are built into the GUI application.
+The [booter] and [server] are built into the GUI.
 
-The GUI application is running on the [Java 11] platform and the [Kotlin] programming language (typically the newest
+The GUI is running on the [Java 11] platform and the [Kotlin] programming language (typically the newest
 available version).
 
 ## Build commands
@@ -28,13 +28,13 @@ available version).
 ./gradlew :gui-app:publishToMavenLocal
 ```
 
-## Running the GUI application
+## Running the GUI
 
 The GUI is started by running the `dev.robocode.tankroyale.booter.BooterKt` as a Kotlin application on Java.
 
-When you run the GUI application from [IntelliJ IDEA] (used for developing Robocode), you can use the Gradle
+When you run the GUI from [IntelliJ IDEA] (used for developing Robocode), you can use the Gradle
 task `copyJars` when setting up a Run/Debug Configuration. The `copyJars` tasks will make sure to build and copy the jar
-files for the [booter] and [server] into the classpath for the GUI application so it is possible to boot up bots and
+files for the [booter] and [server] into the classpath for the GUI so it is possible to boot up bots and
 start battles on a server running locally.
 
 

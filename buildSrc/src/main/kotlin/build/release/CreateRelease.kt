@@ -18,9 +18,9 @@ fun createRelease(projectDir: File, version: String, token: String) {
     val release = prepareRelease(projectDir, version, token)
     val releaseId = JSONObject(release)["id"].toString().toInt()
 
-    // GUI Application
-    uploadAsset(projectDir, releaseId, token, "gui-app/build/libs/robocode-tankroyale-gui-$version.jar",
-        JAR_MIME_TYPE, "GUI Application (jar)")
+    // GUI
+    uploadAsset(projectDir, releaseId, token, "gui/build/libs/robocode-tankroyale-gui-$version.jar",
+        JAR_MIME_TYPE, "GUI (jar)")
 
     // Server
     uploadAsset(projectDir, releaseId, token, "server/build/libs/robocode-tankroyale-server-$version.jar",

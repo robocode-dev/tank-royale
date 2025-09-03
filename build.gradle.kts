@@ -147,7 +147,7 @@ tasks {
             "bot-api:dotnet:assemble",   // Bot API for .Net
             "booter:assemble",           // Booter (for booting up bots locally)
             "server:assemble",           // Server
-            "gui-app:assemble",          // GUI
+            "gui:assemble",              // GUI
             "sample-bots:java:zip",      // Sample bots for Java
             "sample-bots:csharp:zip",    // Sample bots for C#
         )

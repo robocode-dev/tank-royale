@@ -14,9 +14,9 @@ You can read the [installation guide] to get more details about installing both 
 
 ## ▶ Running Robocode
 
-The main application is the [GUI Application] which is a Java application. You can read about how to use the GUI Application [here](https://robocode-dev.github.io/tank-royale/articles/gui.html#gui-application).
+The main application is the [GUI] which is a Java application. You can read about how to use the GUI [here](https://robocode-dev.github.io/tank-royale/articles/gui.html#gui-application).
 
-The Robocode [GUI application] is run from the command line (shell or command prompt) in order to start and view
+The Robocode [GUI] is run from the command line (shell or command prompt) in order to start and view
 battles:
 
 ```shell
@@ -71,4 +71,4 @@ Available as:
 
 [installation guide]: https://robocode-dev.github.io/tank-royale/articles/installation.html "Installing and running Robocode"
 
-[GUI Application]: https://robocode-dev.github.io/tank-royale/articles/gui.html "The GUI application"
+[GUI]: https://robocode-dev.github.io/tank-royale/articles/gui.html "The GUI"

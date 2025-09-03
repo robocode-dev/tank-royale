@@ -291,7 +291,7 @@ package one to multiple bots into a zip archive.
 
 ## Bot Secrets
 
-When you want to run your bot outside the GUI application from a terminal/shell, you will have to supply `bot secrets`
+When you want to run your bot outside the GUI from a terminal/shell, you will have to supply `bot secrets`
 to the bot. The `bot secrets` is one to several keys that is used by the server to allow the bot to access the server.
 
 A server will automatically create a `server.properties` file when it is running. This file will contain generated keys
