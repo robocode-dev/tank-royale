@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.gui.settings
 
 import java.util.*
 
-object ConfigSettings : PropertiesStore("Robocode Misc Settings", "config.properties") {
+object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.properties") {
 
     const val DEFAULT_TPS = 30
     const val SOUNDS_DIR = "sounds/"

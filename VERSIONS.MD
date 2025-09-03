@@ -20,6 +20,12 @@ the properties and events at specific points in the battle.
     - #160: Added replay timeline and allow seeking.
     - #161: Updated round/turn indicator in the arena panel.
 
+### ⚠️ Breaking Changes
+
+- GUI:
+    - The config file `config.properties` has been renamed to `gui.properties`. Make sure to rename your
+      `config.properties` file to `gui.properties`.
+
 ### 🐞 Bug Fixes
 
 - Server, Booter, Recorder:

@@ -29,7 +29,8 @@ generated/
 
 /games.properties
 /server.properties
-/config.properties
+/gui.properties
+
 /*.battle.gz
 
 /.codiumai/
