@@ -53,6 +53,7 @@ tasks {
     val test by registering(Exec::class) {
         group = "verification"
         description = "Runs Python tests with pytest"
+        dependsOn(`pip-install`)
         dependsOn(`pip-install-test-requirements`)
         commandLine("python", "-m", "pytest")
     }
