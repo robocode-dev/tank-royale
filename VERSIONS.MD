@@ -23,8 +23,10 @@ the properties and events at specific points in the battle.
 ### ⚠️ Breaking Changes
 
 - GUI:
-    - The config file `config.properties` has been renamed to `gui.properties`. Make sure to rename your
-      `config.properties` file to `gui.properties`.
+    - The GUI configuration file has been renamed from `config.properties` to `gui.properties`. If you have a local
+      `config.properties`, rename it to `gui.properties` to retain your settings.
+    - The game type setup file has been renamed from `games.properties` to `game-setups.properties`. Rename your
+      existing file to `game-setups.properties` to preserve custom setups.
 
 ### 🐞 Bug Fixes
 

@@ -4,7 +4,7 @@ import dev.robocode.tankroyale.client.model.GameSetup
 import dev.robocode.tankroyale.client.model.IGameSetup
 import java.util.*
 
-object GamesSettings : PropertiesStore("Robocode Games Settings", "games.properties") {
+object GamesSettings : PropertiesStore("Robocode Games Setups", "game-setups.properties") {
 
     val defaultGameSetup: Map<String, GameSetup>
         get() = mapOf(

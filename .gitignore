@@ -27,7 +27,7 @@ generated/
 *.lock
 *.sln.DotSettings.user
 
-/games.properties
+/game-setups.properties
 /server.properties
 /gui.properties
 
