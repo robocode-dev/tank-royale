@@ -120,12 +120,16 @@ class RecordingObserver(
         recorder = GameRecorder(dir)
     }
 
-    private fun stopRecording() {
+    fun stopRecordingKeepFile() {
         recorder?.let {
             it.close()
             log.info("Game recording stopped. Recorded to file: ${recorder?.file?.absolutePath}")
             recorder = null
         }
+    }
+
+    private fun stopRecording() {
+        stopRecordingKeepFile()
     }
 
     fun isRecording(): Boolean = recorder != null

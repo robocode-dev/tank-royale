@@ -32,6 +32,7 @@ class Recorder : Runnable {
     companion object {
         private const val EXIT_COMMAND = "quit"
         private const val STOP_COMMAND = "stop"
+        private const val ABORT_COMMAND = "abort"
         private const val START_COMMAND = "start"
 
         private const val NOT_INITIALIZED_WARNING = "Recorder is not initialized yet. Please wait and try again."
@@ -109,6 +110,7 @@ class Recorder : Runnable {
             input.equals(EXIT_COMMAND, ignoreCase = true) -> handleExit()
             input.equals(START_COMMAND, ignoreCase = true) -> handleStart()
             input.equals(STOP_COMMAND, ignoreCase = true) -> handleStop()
+            input.equals(ABORT_COMMAND, ignoreCase = true) -> handleAbort()
         }
     }
 
@@ -144,9 +146,21 @@ class Recorder : Runnable {
             return
         }
         if (recordingObserver.isRecording()) {
-            recordingObserver.stopAndDeleteRecording()
+            recordingObserver.stopRecordingKeepFile()
         } else {
             log.info("No active recording to stop.")
+        }
+    }
+
+    private fun handleAbort() {
+        if (!this::recordingObserver.isInitialized) {
+            log.warn(NOT_INITIALIZED_WARNING)
+            return
+        }
+        if (recordingObserver.isRecording()) {
+            recordingObserver.stopAndDeleteRecording()
+        } else {
+            log.info("No active recording to abort.")
         }
     }
 }

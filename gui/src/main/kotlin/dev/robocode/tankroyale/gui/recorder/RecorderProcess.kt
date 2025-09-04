@@ -73,10 +73,17 @@ object RecorderProcess {
     }
 
     /**
-     * Sends a stop command to the recorder to stop recording (and delete if applicable).
+     * Sends a stop command to the recorder to stop recording and keep the recording file.
      */
     fun stopRecording() {
         sendCommand("stop")
+    }
+
+    /**
+     * Sends an abort command to the recorder to stop recording and delete the current recording file.
+     */
+    fun abortRecording() {
+        sendCommand("abort")
     }
 
     /**
