@@ -14,6 +14,7 @@ import dev.robocode.tankroyale.gui.ui.svg.SvgToGraphicsRender
 import dev.robocode.tankroyale.gui.util.ColorUtil.Companion.fromString
 import dev.robocode.tankroyale.gui.util.Graphics2DState
 import dev.robocode.tankroyale.gui.util.HslColor
+import dev.robocode.tankroyale.gui.recorder.AutoRecorder
 import java.awt.*
 import java.awt.event.*
 import java.awt.geom.*
@@ -31,7 +32,8 @@ object ArenaPanel : JPanel() {
     // Game status indicator constants
     private const val INDICATOR_BACKGROUND_OPACITY = 0.8f
     private const val INDICATOR_SHADOW_OPACITY = 0.3f
-    private val INDICATOR_LIVE_BG_COLOR = Color(220, 20, 60) // Crimson red (solid)
+    private val INDICATOR_LIVE_BG_COLOR = Color(27,79,114) // Crimson blue (solid)
+    private val INDICATOR_LIVE_REC_BG_COLOR = Color(220, 20, 60) // Crimson red (solid)
     private val INDICATOR_REPLAY_BG_COLOR = Color(40, 40, 40) // Dark gray (solid)
     private val INDICATOR_ROUND_BG_COLOR = Color(60, 60, 60, (255 * INDICATOR_BACKGROUND_OPACITY).toInt()) // Medium dark gray
     private val INDICATOR_TURN_BG_COLOR = Color(80, 80, 80, (255 * INDICATOR_BACKGROUND_OPACITY).toInt()) // Lighter gray
@@ -358,7 +360,9 @@ object ArenaPanel : JPanel() {
         val y = INDICATOR_Y_OFFSET
 
         // Calculate section widths
-        val statusText = if (isLiveMode) "LIVE" else "REPLAY"
+        val statusText = if (isLiveMode) {
+            if (AutoRecorder.isRecording) "LIVE REC" else "LIVE"
+        } else "REPLAY"
         val roundText = "ROUND $round"
         val turnText = "TURN $time"
 
@@ -400,7 +404,7 @@ object ArenaPanel : JPanel() {
         g.clip = null
 
         // Draw status section (LIVE/REPLAY) - both sides rounded
-        val statusColor = if (isLiveMode) INDICATOR_LIVE_BG_COLOR else INDICATOR_REPLAY_BG_COLOR
+        val statusColor = if (isLiveMode) (if (AutoRecorder.isRecording) INDICATOR_LIVE_REC_BG_COLOR else INDICATOR_LIVE_BG_COLOR) else INDICATOR_REPLAY_BG_COLOR
         g.color = statusColor
         g.fillRoundRect(x.toInt(), y.toInt(), statusWidth, INDICATOR_HEIGHT.toInt(), INDICATOR_CORNER_RADIUS, INDICATOR_CORNER_RADIUS)
 
@@ -469,7 +473,7 @@ object ArenaPanel : JPanel() {
                 }
             }
 
-        } catch (ignore: NoSuchElementException) {
+        } catch (_: NoSuchElementException) {
             // Do nothing
         }
 
@@ -508,7 +512,7 @@ object ArenaPanel : JPanel() {
         val oldState = Graphics2DState(g)
         try {
             SvgToGraphicsRender.renderSvgToGraphics(debugGraphics, g)
-        } catch (ignore: Exception) {
+        } catch (_: Exception) {
             // Silently ignore SVG parsing/rendering errors
         } finally {
             oldState.restore(g)

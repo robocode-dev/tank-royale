@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.gui.audio.SoundActions
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
+import dev.robocode.tankroyale.gui.recorder.AutoRecorder
 import dev.robocode.tankroyale.gui.ui.menu.Menu
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.recorder.RecorderProcess
@@ -28,12 +29,14 @@ object MainFrame : RcFrame("main_frame") {
 
         jMenuBar = Menu
 
+        @Suppress("UNUSED_EXPRESSION")
         BattlePanel // make sure the battle panel is initialized before being used the first time
 
         ClientEvents.apply {
             onGameStarted.subscribe(MainFrame) { MainPanel.showArena() }
             onGameEnded.subscribe(MainFrame) { MainPanel.showLogo() }
             onGameAborted.subscribe(MainFrame) { MainPanel.showLogo() }
+            onPlayerChanged.subscribe(MainFrame) { MainPanel.showArena() }
         }
         ServerEvents.onStopped.subscribe(MainFrame) { MainPanel.showLogo() }
 
@@ -54,6 +57,8 @@ object MainFrame : RcFrame("main_frame") {
             ControlEventHandlers
             @Suppress("UnusedExpression")
             SoundActions
+            @Suppress("UnusedExpression")
+            AutoRecorder
 
             layout = BorderLayout()
             add(LogoPanel, BorderLayout.CENTER)

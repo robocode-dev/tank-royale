@@ -63,8 +63,19 @@ tasks {
         rename(".*", "robocode-tankroyale-server.jar")
     }
 
+    val copyRecorderJar by registering(Copy::class) {
+        dependsOn(":recorder:proguard")
+
+        duplicatesStrategy = DuplicatesStrategy.FAIL
+        from(project(":recorder").file("./build/libs"))
+        into(file("./build/classes/kotlin/main"))
+        include("robocode-tankroyale-recorder-*.jar")
+        exclude("*-javadoc.jar", "*-sources.jar", "*-all.jar")
+        rename(".*", "robocode-tankroyale-recorder.jar")
+    }
+
     val copyJars = register("copyJars") {
-        dependsOn(copyBooterJar, copyServerJar)
+        dependsOn(copyBooterJar, copyServerJar, copyRecorderJar)
 
         // Make copyJars properly declare its outputs
         outputs.dir(file("./build/classes/kotlin/main"))

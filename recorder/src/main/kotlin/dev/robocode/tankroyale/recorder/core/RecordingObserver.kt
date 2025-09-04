@@ -84,6 +84,11 @@ class RecordingObserver(
                 log.info("Starting recording to file: ${recorder?.file?.absolutePath}")
             }
             if (eventsToRecord.contains(type)) {
+                // If we joined late and missed GameStarted, start recording on first recordable event
+                if (recorder == null) {
+                    startRecording()
+                    log.info("Starting recording to file: ${recorder?.file?.absolutePath}")
+                }
                 recorder?.record(jsonElement)
             }
             if (endRecordingEvents.contains(type)) {

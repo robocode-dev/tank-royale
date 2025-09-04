@@ -19,7 +19,15 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private const val ENABLE_BULLET_COLLISION_SOUND = "enable-bullet-collision-sound"
     private const val ENABLE_DEATH_EXPLOSION_SOUND = "enable-death-explosion-sound"
 
+    private const val ENABLE_AUTO_RECORDING = "enable-auto-recording"
+
     private const val BOT_DIRS_SEPARATOR = ','
+
+    var enableAutoRecording: Boolean
+        get() = load(ENABLE_AUTO_RECORDING)?.lowercase() == "true"
+        set(value) {
+            save(ENABLE_AUTO_RECORDING, if (value) "true" else "false")
+        }
 
     var botDirectories: List<BotDirectoryConfig>
         get() = getBotDirectoryConfigs()

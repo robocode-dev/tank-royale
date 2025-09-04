@@ -16,6 +16,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCancelButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.util.MessageDialog
+import dev.robocode.tankroyale.gui.ui.components.ToggleSwitch
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
 import java.awt.event.ItemEvent
@@ -51,7 +52,8 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
     private var gameTypeDropdown = GameTypeDropdown()
 
     init {
-        val topPanel = JPanel(MigLayout("left, insets 5")).apply {
+        // Left: Select game type group
+        val topLeftPanel = JPanel(MigLayout("left, insets 5")).apply {
             border = BorderFactory.createTitledBorder(Strings.get("select_game_type"))
 
             val hint = Hints.get("new_battle.game_type")
@@ -66,9 +68,32 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
             }
         }
 
+        // Right: Recording group
+        val topRightPanel = JPanel(MigLayout("left, insets 5")).apply {
+            border = BorderFactory.createTitledBorder(Strings.get("recording"))
+
+            val autoRecordHint = Hints.get("new_battle.auto_record")
+            addLabel("auto_record").apply {
+                toolTipText = autoRecordHint
+            }
+            val autoRecordSwitch = ToggleSwitch(ConfigSettings.enableAutoRecording).apply {
+                toolTipText = autoRecordHint
+                addSwitchHandler { isSelected ->
+                    ConfigSettings.enableAutoRecording = isSelected
+                }
+            }
+            add(autoRecordSwitch)
+        }
+
+        // Row container for placing both groups side-by-side with minimal widths and equal heights
+        val topRow = JPanel(MigLayout("insets 0", "[pref!][pref!]", "[]")).apply {
+            add(topLeftPanel, "growy")
+            add(topRightPanel, "growy, wrap")
+        }
+
         val buttonPanel = JPanel(MigLayout("center, insets 0"))
 
-        add(topPanel, "wrap")
+        add(topRow, "growx, wrap")
         add(BotSelectionPanel, "grow, wrap")
         add(BotInfoPanel, "grow, wrap")
         add(buttonPanel, "center")
