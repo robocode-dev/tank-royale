@@ -151,7 +151,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     private fun updateBotState(tickEvent: TickEvent) {
         val botState = tickEvent.botStates.firstOrNull { it.id == bot.id } ?: return
 
-        debugGraphicsToggleSwitch.isSelected = botState.isDebuggingEnabled
+        debugGraphicsToggleSwitch.isOn = botState.isDebuggingEnabled
 
         model.apply {
             // Column 1

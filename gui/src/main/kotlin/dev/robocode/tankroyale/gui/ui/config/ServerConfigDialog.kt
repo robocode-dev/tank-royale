@@ -133,7 +133,7 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
     }
 
     private fun createUseRemoteOrLocalServerLabel() = JLabel().apply {
-        text = getUseRemoteOrLocalServerText(serverSwitchButton.isSelected)
+        text = getUseRemoteOrLocalServerText(serverSwitchButton.isOn)
     }
 
     private fun createLocalPortInputField() = PortInputField(ServerSettings.localPort).apply {

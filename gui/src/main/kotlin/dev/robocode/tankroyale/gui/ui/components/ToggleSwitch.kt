@@ -12,12 +12,12 @@ import javax.swing.Timer
 // https://github.com/DJ-Raven/java-swing-switch-button/blob/main/src/swing/SwitchButton.java
 //
 // This version takes an initial selection state, and has been ported for Kotlin as well
-class ToggleSwitch(initialSelected: Boolean) : JComponent() {
+class ToggleSwitch(initiallyOn: Boolean) : JComponent() {
 
     private var knobLocation: Float = 2f
     private val animationTimer = createAnimationTimer()
 
-    var isSelected = initialSelected
+    var isOn = initiallyOn
         set(value) {
             if (field == value) {
                 return // no change -> leave
@@ -37,7 +37,7 @@ class ToggleSwitch(initialSelected: Boolean) : JComponent() {
 
         addComponentListener(object : ComponentAdapter() {
             override fun componentResized(e: ComponentEvent) {
-                knobLocation = if (isSelected) width - height + 2f else 2f
+                knobLocation = if (isOn) width - height + 2f else 2f
 
                 repaint() // paint for the first time!
             }
@@ -45,13 +45,13 @@ class ToggleSwitch(initialSelected: Boolean) : JComponent() {
 
         addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(me: MouseEvent) {
-                isSelected = !isSelected
+                isOn = !isOn
             }
         })
     }
 
     private fun createAnimationTimer(): Timer = Timer(1000 / 60) { _ ->
-        if (isSelected) {
+        if (isOn) {
             val endLocation = width - height + 2f
             if (knobLocation < endLocation) {
                 knobLocation += 4f
@@ -103,7 +103,7 @@ class ToggleSwitch(initialSelected: Boolean) : JComponent() {
         }
 
     private fun fireSwitchEvent() {
-        eventHandlers.forEach { it(isSelected) }
+        eventHandlers.forEach { it(isOn) }
     }
 
     fun addSwitchHandler(event: SwitchEvent) {
