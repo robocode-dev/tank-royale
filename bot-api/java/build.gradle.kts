@@ -124,13 +124,16 @@ tasks {
 
         val javadocDir = layout.projectDirectory.dir("../../docs/api/java")
 
-        delete(javadocDir)
-        mkdir(javadocDir)
-
         duplicatesStrategy = DuplicatesStrategy.FAIL
 
         from(layout.buildDirectory.dir("docs/javadoc"))
         into(javadocDir)
+
+        doFirst {
+            // Clean target directory only when task actually runs
+            delete(javadocDir)
+            mkdir(javadocDir)
+        }
     }
 
     // Make sure javadoc is only generated when specifically requested
