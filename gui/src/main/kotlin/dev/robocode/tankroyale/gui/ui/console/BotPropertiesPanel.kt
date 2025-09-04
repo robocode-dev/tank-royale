@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.client.model.TickEvent
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.Strings
-import dev.robocode.tankroyale.gui.ui.components.SwitchButton
+import dev.robocode.tankroyale.gui.ui.components.ToggleSwitch
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import java.awt.BorderLayout
 import java.awt.Component
@@ -20,7 +20,7 @@ import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
 
 class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
-    private lateinit var toggleDebugGraphicsButton: SwitchButton
+    private lateinit var debugGraphicsToggleSwitch: ToggleSwitch
 
     override val buttonPanel: JPanel
         get() =
@@ -31,14 +31,14 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
                 add(okButton)
                 add(spacer)
                 addLabel("toggle_graphical_debugging")
-                add(createDebugGraphicsToggleButton())
+                add(createDebugGraphicsToggleSwitch())
             }
 
-    private fun createDebugGraphicsToggleButton(): SwitchButton {
-        toggleDebugGraphicsButton = SwitchButton(false).apply {
+    private fun createDebugGraphicsToggleSwitch(): ToggleSwitch {
+        debugGraphicsToggleSwitch = ToggleSwitch(false).apply {
             addSwitchHandler { isSelected -> ClientEvents.onBotPolicyChanged.fire(BotPolicyUpdate(bot.id, isSelected)) }
         }
-        return toggleDebugGraphicsButton;
+        return debugGraphicsToggleSwitch
     }
 
     private val columns = arrayOf(
@@ -154,7 +154,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     private fun updateBotState(tickEvent: TickEvent) {
         val botState = tickEvent.botStates.firstOrNull { it.id == bot.id } ?: return
 
-        toggleDebugGraphicsButton.isSelected = botState.isDebuggingEnabled
+        debugGraphicsToggleSwitch.isSelected = botState.isDebuggingEnabled
 
         model.apply {
             // Column 1

@@ -12,7 +12,7 @@ import javax.swing.Timer
 // https://github.com/DJ-Raven/java-swing-switch-button/blob/main/src/swing/SwitchButton.java
 //
 // This version takes an initial selection state, and has been ported for Kotlin as well
-class SwitchButton(initialSelected: Boolean) : JComponent() {
+class ToggleSwitch(initialSelected: Boolean) : JComponent() {
 
     private var knobLocation: Float = 2f
     private val animationTimer = createAnimationTimer()

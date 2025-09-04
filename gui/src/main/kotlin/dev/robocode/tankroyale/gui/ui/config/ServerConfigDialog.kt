@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.PortInputField
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.components.RcToolTip
-import dev.robocode.tankroyale.gui.ui.components.SwitchButton
+import dev.robocode.tankroyale.gui.ui.components.ToggleSwitch
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.createAddButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.createButton
@@ -62,10 +62,10 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
     private val testButton = createButton("test", onTest)
 
     private val selectedServerLabel = createSelectedServerLabel()
-    private val serverSwitchButton = createServerSwitchButton()
+    private val serverSwitchButton = createServerToggleSwitch()
     private val useRemoteOrLocalServerLabel = createUseRemoteOrLocalServerLabel()
     private val localPortInputField = createLocalPortInputField()
-    private val serverSecretsSwitchButton = createServerSecretsSwitchButton()
+    private val serverSecretsSwitchButton = createServerSecretsToggleSwitch()
     private val remoteServerComboBox = createRemoteServerComboBox()
     private val localServerPanel = createLocalServerPanel()
     private val remoteServerPanel = createRemoteServerPanel()
@@ -126,7 +126,7 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
             toolTipText = Messages.get("selected_server_is_used")
         }
 
-    private fun createServerSwitchButton() = SwitchButton(ServerSettings.useRemoteServer).apply {
+    private fun createServerToggleSwitch() = ToggleSwitch(ServerSettings.useRemoteServer).apply {
         addSwitchHandler { isSelected -> onToggleRemoteServer.fire(isSelected) }
 
         toolTipText = Messages.get("switch_between_local_and_remote_server")
@@ -196,7 +196,7 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
         add(serverSecretsSwitchButton)
     }
 
-    private fun createServerSecretsSwitchButton() = SwitchButton(ServerSettings.serverSecretsEnabled).apply {
+    private fun createServerSecretsToggleSwitch() = ToggleSwitch(ServerSettings.serverSecretsEnabled).apply {
         addSwitchHandler { isSelected -> ServerSettings.serverSecretsEnabled = isSelected }
         toolTipText = Messages.get("switch_between_local_and_remote_server")
     }
