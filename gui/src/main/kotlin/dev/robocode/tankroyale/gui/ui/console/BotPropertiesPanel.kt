@@ -20,7 +20,7 @@ import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
 
 class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
-    private lateinit var debugGraphicsToggleSwitch: ToggleSwitch
+    private val debugGraphicsToggleSwitch = createDebugGraphicsToggleSwitch()
 
     override val buttonPanel: JPanel
         get() =
@@ -34,11 +34,8 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
                 add(createDebugGraphicsToggleSwitch())
             }
 
-    private fun createDebugGraphicsToggleSwitch(): ToggleSwitch {
-        debugGraphicsToggleSwitch = ToggleSwitch(false).apply {
-            addSwitchHandler { isSelected -> ClientEvents.onBotPolicyChanged.fire(BotPolicyUpdate(bot.id, isSelected)) }
-        }
-        return debugGraphicsToggleSwitch
+    private fun createDebugGraphicsToggleSwitch() = ToggleSwitch(false).apply {
+        addSwitchHandler { isSelected -> ClientEvents.onBotPolicyChanged.fire(BotPolicyUpdate(bot.id, isSelected)) }
     }
 
     private val columns = arrayOf(
