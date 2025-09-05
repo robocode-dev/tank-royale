@@ -46,6 +46,7 @@ object BootProcess {
     fun info(botsOnly: Boolean? = false, teamsOnly: Boolean? = false): List<BootEntry> {
         val args = mutableListOf(
             "java",
+            "-Dapp.processName=RobocodeTankRoyale-Booter",
             "-jar",
             getBooterJar(),
             "info",
@@ -176,6 +177,7 @@ object BootProcess {
     private fun bootBotProcess(botDirNames: Collection<String>) {
         val args = mutableListOf(
             "java",
+            "-Dapp.processName=RobocodeTankRoyale-Booter",
             "-Dserver.url=${ServerSettings.serverUrl()}",
             "-Dserver.secret=${ServerSettings.botSecret()}",
             "-jar",

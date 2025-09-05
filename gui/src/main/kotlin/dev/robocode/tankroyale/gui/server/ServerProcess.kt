@@ -39,6 +39,7 @@ object ServerProcess {
         ServerSettings.apply {
             command = mutableListOf(
                 "java",
+                "-Dapp.processName=RobocodeTankRoyale-Server",
                 "-Dpicocli.ansi=true", // to show server logo in ANSI colors
                 "-jar",
                 getServerJar(),

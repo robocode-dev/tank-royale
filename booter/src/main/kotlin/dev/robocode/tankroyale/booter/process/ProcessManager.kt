@@ -303,7 +303,7 @@ class ProcessManager {
      * Set up environment variables for a bot process.
      */
     private fun setupBotEnvironment(envMap: MutableMap<String, String?>, bootEntry: BootEntry, team: Team? = null) {
-        // Set server properties
+        // Set server and bot properties
         setEnvVars(envMap, bootEntry)
 
         // Set team-specific properties if this is part of a team
