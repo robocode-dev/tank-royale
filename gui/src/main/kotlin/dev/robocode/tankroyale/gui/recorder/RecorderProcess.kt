@@ -50,7 +50,7 @@ object RecorderProcess {
             "--url=$effectiveUrl"
         )
 
-        if (!effectiveSecret.isNullOrBlank()) {
+        if (effectiveSecret.isNotBlank()) {
             command += "--secret=$effectiveSecret"
         }
         if (!dir.isNullOrBlank()) {

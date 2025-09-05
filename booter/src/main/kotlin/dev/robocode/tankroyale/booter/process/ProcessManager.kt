@@ -186,7 +186,7 @@ class ProcessManager {
                 return
             }
 
-            findBootScriptOrNull(botDir)?.let { scriptPath ->
+            findBootScriptOrNull(botDir)?.let { _ ->
                 bootBot(botDir, team, getBootEntry)?.let { process ->
                     botProcesses.add(process)
                 } ?: run {
