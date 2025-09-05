@@ -24,6 +24,11 @@ object BootProcess {
     val onBootBot = Event<DirAndPid>()
     val onUnbootBot = Event<DirAndPid>()
 
+    // Ensure bots are stopped if the JVM shuts down unexpectedly
+    @Volatile
+    private var shutdownHookRegistered = false
+    private var shutdownHook: Thread? = null
+
     private const val JAR_FILE_NAME = "robocode-tankroyale-booter"
 
     private var booterProcess: Process? = null
@@ -60,7 +65,7 @@ object BootProcess {
             val jsonStr = String(process.inputStream.readAllBytes(), StandardCharsets.UTF_8)
             return json.decodeFromString(jsonStr)
         } finally {
-            stopThread()
+            stopThreads()
         }
     }
 
@@ -70,6 +75,7 @@ object BootProcess {
         } else {
             bootBotProcess(botDirNames)
         }
+        registerShutdownHookIfNeeded()
         startPinging()
     }
 
@@ -79,19 +85,82 @@ object BootProcess {
 
         stopPinging()
 
-        // Stop the booter process first so its streams close and threads can exit
+        stopAllBootedBots()
+
         stopProcess()
 
-        // Now stop threads if still running
-        stopThread()
+        stopThreads()
 
         notifyUnbootBotProcesses()
 
         bootedBotsList.clear()
+
+        unregisterShutdownHookIfPossible()
     }
 
     fun stop(pids: Collection<Long>) {
         stopBotsWithBootedProcess(pids)
+    }
+
+    private fun stopAllBootedBots() {
+        // Try to gracefully stop all booted bot processes first
+        val pids = pidAndDirs.keys.toList()
+        if (pids.isNotEmpty()) {
+            stopBotsWithBootedProcess(pids)
+            // Give booter a short time to stop bots gracefully
+            try {
+                Thread.sleep(1000)
+            } catch (_: InterruptedException) {
+                Thread.currentThread().interrupt()
+            }
+            // Force kill any still-alive bot processes
+            pids.forEach { pid ->
+                val opt = ProcessHandle.of(pid)
+                val alive = opt.isEmpty || opt.get().isAlive
+                if (alive) {
+                    ProcessUtil.killProcessTreeByPid(pid)
+                }
+            }
+        }
+    }
+
+    private fun registerShutdownHookIfNeeded() {
+        if (shutdownHookRegistered) return
+        synchronized(this) {
+            if (shutdownHookRegistered) return
+            val hook = Thread({
+                try {
+                    // Ensure all bots are stopped on JVM shutdown
+                    stop()
+                } catch (_: Throwable) {
+                    // Ignore all exceptions during shutdown
+                }
+            }, "BootProcess-ShutdownHook")
+            return try {
+                Runtime.getRuntime().addShutdownHook(hook)
+                shutdownHook = hook
+                shutdownHookRegistered = true
+            } catch (_: IllegalStateException) {
+                // JVM is already shutting down
+            } catch (_: SecurityException) {
+                // Cannot install hook due to security manager
+            }
+        }
+    }
+
+    private fun unregisterShutdownHookIfPossible() {
+        val hook = shutdownHook ?: return
+        try {
+            if (shutdownHookRegistered) {
+                Runtime.getRuntime().removeShutdownHook(hook)
+                shutdownHookRegistered = false
+                shutdownHook = null
+            }
+        } catch (_: IllegalStateException) {
+            // Ignored: JVM is shutting down
+        } catch (_: SecurityException) {
+            // Ignored: not permitted
+        }
     }
 
     val bootedBots: List<DirAndPid>
@@ -186,8 +255,6 @@ object BootProcess {
         }
     }
 
-
-
     private fun isValidLine(line: String?): Boolean {
         return !line.isNullOrBlank()
     }
@@ -241,7 +308,7 @@ object BootProcess {
         stderrReader.start()
     }
 
-    private fun stopThread() {
+    private fun stopThreads() {
         stdoutReaderRef.get()?.stop()
         stderrReaderRef.get()?.stop()
     }

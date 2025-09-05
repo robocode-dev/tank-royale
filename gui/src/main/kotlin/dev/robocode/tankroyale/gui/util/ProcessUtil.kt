@@ -12,6 +12,8 @@ object ProcessUtil {
     private const val GRACEFUL_EXIT_TIMEOUT_MS = 2000L
     private const val FORCE_TERMINATE_TIMEOUT_MS = 3 * GRACEFUL_EXIT_TIMEOUT_MS
 
+    private val isWindows: Boolean = System.getProperty("os.name").lowercase().contains("win")
+
     /**
      * Sends a quit command to the given process and optionally waits for it to exit.
      *
@@ -47,7 +49,12 @@ object ProcessUtil {
             }
 
             if (forceTerminate) {
-                return terminateProcessTree(process)
+                val ok = terminateProcessTree(process)
+                if (!ok && isWindows) {
+                    // Fallback: use taskkill to force kill the process tree
+                    return taskKillTree(process.pid())
+                }
+                return ok
             }
             return false
         } catch (_: InterruptedException) {
@@ -78,6 +85,41 @@ object ProcessUtil {
             logger.log(Level.WARNING, "Failed to send quit command to process", e)
             false
         }
+    }
+
+    /**
+     * Public helper to kill a process tree by PID. Best effort with Windows fallback.
+     */
+    @JvmStatic
+    fun killProcessTreeByPid(pid: Long): Boolean {
+        // Try with Java APIs first
+        val handleOpt = ProcessHandle.of(pid)
+        if (handleOpt.isPresent) {
+            val handle = handleOpt.get()
+            try {
+                handle.descendants().forEach { child ->
+                    try { child.destroy() } catch (_: Exception) { }
+                }
+                if (handle.isAlive) {
+                    handle.destroy()
+                }
+                if (handle.isAlive) {
+                    handle.descendants().forEach { child ->
+                        if (child.isAlive) {
+                            try { child.destroyForcibly() } catch (_: Exception) { }
+                        }
+                    }
+                    if (handle.isAlive) {
+                        handle.destroyForcibly()
+                    }
+                }
+                if (!handle.isAlive) return true
+            } catch (_: Exception) {
+                // fall through to taskkill
+            }
+        }
+        // Windows hard kill fallback
+        return if (isWindows) taskKillTree(pid) else false
     }
 
     /**
@@ -122,6 +164,18 @@ object ProcessUtil {
             } catch (_: Exception) { }
 
             return !process.isAlive
+        }
+    }
+
+    private fun taskKillTree(pid: Long): Boolean {
+        return try {
+            val pb = ProcessBuilder("taskkill", "/PID", pid.toString(), "/T", "/F")
+            val proc = pb.start()
+            val finished = proc.waitFor(FORCE_TERMINATE_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+            finished && proc.exitValue() == 0
+        } catch (e: Exception) {
+            logger.log(Level.WARNING, "taskkill failed for PID $pid", e)
+            false
         }
     }
 }
