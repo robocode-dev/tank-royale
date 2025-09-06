@@ -1,14 +1,21 @@
 ## 📦 0.33.0 - Added Recording and Replays - 06-Sep-2025
 
 This version adds support for recording and replaying battles (#55: Game replays). All credits go
-to [Jan Durovec](https://github.com/jandurovec) for this cool feature! 🤩
+to [Jan Durovec](https://github.com/jandurovec) for implementing this cool feature! 🤩
 
-It is now possible to record a battle and replay it later. This is useful for debugging and for replaying battles that
-you have recorded. When replaying a battle, you can see the replay timeline and seek to a specific point in the battle.
-Skulls on the timeline show when a bot has killed.
+The new recording and replay functionality allows you to:
 
-Note that the replays also make it possible to study the standard output of the bots in the bot consoles and also see
-the properties and events at specific points in the battle.
+- Record battles and save them for later replay
+- View the replay timeline and seek to specific points in time
+- See skull markers on the timeline indicating when bots were killed
+- Study the standard output from bots in their console windows
+- Inspect bot properties and events at any point during the battle
+
+This feature is particularly useful for:
+
+- Debugging bot behavior
+- Analyzing past battles in detail
+- Learning from recorded matches
 
 ### 🚀 Improvements
 
