@@ -55,9 +55,9 @@ subprojects {
         publishing {
             publications {
                 create<MavenPublication>("maven") {
-                    // Set group, artifactId, and version dynamically from a project
-                    groupId = project.group.toString()
-                    // If archivesName is set via base plugin, use it; otherwise use project name as fallback
+                    // Set coordinates, resolve lazily to avoid order issues
+                    groupId = "dev.robocode.tankroyale"
+                    // Initial artifactId; we will re-apply after project is evaluated, see afterEvaluate below
                     artifactId = if (project.extensions.findByType<BasePluginExtension>() != null) {
                         project.extensions.getByType<BasePluginExtension>().archivesName.get()
                     } else {
@@ -96,6 +96,16 @@ subprojects {
                             url.set("https://github.com/robocode-dev/tank-royale/tree/master")
                         }
                     }
+                }
+            }
+        }
+        // Ensure coordinates are correct after all project configuration has been evaluated
+        afterEvaluate {
+            extensions.configure<PublishingExtension> {
+                publications.withType<MavenPublication> {
+                    groupId = "dev.robocode.tankroyale"
+                    val baseExt = project.extensions.findByType<BasePluginExtension>()
+                    artifactId = baseExt?.archivesName?.get() ?: project.name
                 }
             }
         }

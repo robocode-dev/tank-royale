@@ -8,7 +8,9 @@ description = "Robocode Tank Royale sample bots for Java"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
-val archiveFilename = "sample-bots-java-${version}.zip"
+base {
+    archivesName = "robocode-tankroyale-sample-bots-java"
+}
 
 plugins {
     base // for the clean and build task
@@ -96,7 +98,7 @@ tasks {
     val zip by registering(Zip::class) {
         dependsOn(build)
 
-        archiveFileName.set(archiveFilename)
+        archiveFileName.set("${base.archivesName.get()}-${version}.zip")
         destinationDirectory.set(layout.buildDirectory)
         filePermissions {
             user {
@@ -121,8 +123,8 @@ tasks {
                     extension = "zip"
                 }
 
-                // Override the artifactId since it's different from the project name
-                artifactId = "sample-bots-java"
+                // Ensure artifactId follows base.archivesName
+                artifactId = base.archivesName.get()
 
                 // Override the POM name
                 pom.name.set("Robocode Tank Royale Sample Bots for Java")

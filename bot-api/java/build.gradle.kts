@@ -75,6 +75,8 @@ tasks {
             attributes["Package"] = project.group
         }
         minimize()
+        // Ensure artifact follows <base.archivesName>-<version>.jar
+        archiveBaseName.set(base.archivesName)
         archiveClassifier = ""
     }
 
