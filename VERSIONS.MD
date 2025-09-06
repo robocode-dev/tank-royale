@@ -1,4 +1,4 @@
-## 📦 0.33.0 - Added Recording and Replays
+## 📦 0.33.0 - Added Recording and Replays - 06-Sep-2025
 
 This version adds support for recording and replaying battles (#55: Game replays). All credits go
 to [Jan Durovec](https://github.com/jandurovec) for this cool feature! 🤩
