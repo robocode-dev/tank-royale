@@ -25,8 +25,22 @@ object AutoRecorder {
     private fun onGameStarted() {
         if (!ConfigSettings.enableAutoRecording) return
 
-        // Ensure recorder process is running
-        RecorderProcess.start()
+        // Ensure 'recordings' directory exists and start recorder with that directory
+        val recordingsDir = java.nio.file.Paths.get("recordings")
+        var dirArg: String? = null
+        try {
+            java.nio.file.Files.createDirectories(recordingsDir)
+            dirArg = recordingsDir.toAbsolutePath().toString()
+        } catch (_: Exception) {
+            // If we cannot create the directory, we fall back to default behavior
+        }
+
+        // Ensure recorder process is running, prefer using the recordings directory when available
+        if (dirArg != null) {
+            RecorderProcess.start(dir = dirArg)
+        } else {
+            RecorderProcess.start()
+        }
 
         // If a recording is already ongoing (e.g., on restart), stop before starting a new one
         if (recording.get()) {
