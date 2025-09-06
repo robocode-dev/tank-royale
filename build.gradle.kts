@@ -51,6 +51,7 @@ subprojects {
 
     // Common publishing configuration for all subprojects with maven-publish plugin
     plugins.withId("maven-publish") {
+        apply(plugin = "signing")
         publishing {
             publications {
                 create<MavenPublication>("maven") {
@@ -66,7 +67,10 @@ subprojects {
 
                     pom {
                         name.set(project.name)
-                        description.set(project.description)
+                        description.set(providers.provider {
+                            val d = project.description?.trim()
+                            if (!d.isNullOrEmpty()) d else "Robocode Tank Royale - ${project.name}"
+                        })
                         url.set("https://github.com/robocode-dev/tank-royale")
 
                         licenses {
@@ -119,7 +123,7 @@ subprojects {
             // Make signing required for artifacts
             isRequired = true
 
-            sign(publishing.publications["maven"])
+            sign(publishing.publications)
         }
     }
 
@@ -201,11 +205,23 @@ subprojects {
         shouldRunAfter(tasks.withType<Sign>())
     }
 
-    // Include Tank.ico in the published artifacts
+    // Include Tank.ico in the published artifacts without cross-project output conflicts
+    // We copy the icon into a subproject-local build directory, so each module signs its own copy.
     plugins.withId("maven-publish") {
+        // Create a task per subproject that copies the shared icon into the module's buildDir
+        val preparePublicationIcon = tasks.register<Copy>("preparePublicationIcon") {
+            val srcIcon = file("${rootProject.projectDir}/gfx/Tank/Tank.ico")
+            val destDir = layout.buildDirectory.dir("publication-resources/icon").get().asFile
+            from(srcIcon)
+            into(destDir)
+            outputs.file(file("${destDir}/Tank.ico"))
+        }
+
         configure<PublishingExtension> {
             publications.withType<MavenPublication> {
-                artifact(file("${rootProject.projectDir}/gfx/Tank/Tank.ico")) {
+                val copiedIcon = layout.buildDirectory.file("publication-resources/icon/Tank.ico").get().asFile
+                artifact(copiedIcon) {
+                    builtBy(preparePublicationIcon)
                     classifier = "icon"
                     extension = "ico"
                 }
