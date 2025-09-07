@@ -23,7 +23,11 @@ object AutoRecorder {
     }
 
     private fun onGameStarted() {
-        if (!ConfigSettings.enableAutoRecording) return
+        if (!ConfigSettings.enableAutoRecording) {
+            // Ensure recorder process is not running when auto-recording is disabled
+            RecorderProcess.stop()
+            return
+        }
 
         // Ensure 'recordings' directory exists and start recorder with that directory
         val recordingsDir = java.nio.file.Paths.get("recordings")
@@ -63,5 +67,7 @@ object AutoRecorder {
         if (recording.getAndSet(false)) {
             RecorderProcess.stopRecording()
         }
+        // Always stop the recorder process between games to prevent unintended auto-recording on next game
+        RecorderProcess.stop()
     }
 }
