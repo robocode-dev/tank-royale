@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.client.model.*
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.player.ReplayBattlePlayer
+import dev.robocode.tankroyale.gui.recorder.AutoRecorder
 import dev.robocode.tankroyale.gui.ui.ResultsFrame
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.hsl
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
@@ -14,7 +15,6 @@ import dev.robocode.tankroyale.gui.ui.svg.SvgToGraphicsRender
 import dev.robocode.tankroyale.gui.util.ColorUtil.Companion.fromString
 import dev.robocode.tankroyale.gui.util.Graphics2DState
 import dev.robocode.tankroyale.gui.util.HslColor
-import dev.robocode.tankroyale.gui.recorder.AutoRecorder
 import java.awt.*
 import java.awt.event.*
 import java.awt.geom.*
@@ -358,11 +358,11 @@ object ArenaPanel : JPanel() {
 
         val x = INDICATOR_X_OFFSET
         val y = INDICATOR_Y_OFFSET
+        val drawRecIndicator = AutoRecorder.isRecording
 
         // Calculate section widths
-        val statusText = if (isLiveMode) {
-            if (AutoRecorder.isRecording) "LIVE REC" else "LIVE"
-        } else "REPLAY"
+        val recText = "REC"
+        val statusText = if (isLiveMode) "LIVE" else "REPLAY"
         val roundText = "ROUND $round"
         val turnText = "TURN $time"
 
@@ -373,12 +373,15 @@ object ArenaPanel : JPanel() {
 
         g.font = INDICATOR_INFO_FONT
         val infoFontMetrics = g.fontMetrics
+        val recBounds = infoFontMetrics.getStringBounds(recText, g)
         val roundBounds = infoFontMetrics.getStringBounds(roundText, g)
         val turnBounds = infoFontMetrics.getStringBounds(turnText, g)
+        val recDotSize = infoFontMetrics.ascent
+        val recWidth = if (drawRecIndicator) (recBounds.width + 2.5 * INDICATOR_TEXT_PADDING + recDotSize).toInt() else 0
         val roundWidth = (roundBounds.width + 2 * INDICATOR_TEXT_PADDING).toInt()
         val turnWidth = (turnBounds.width + 2 * INDICATOR_TEXT_PADDING).toInt()
 
-        val totalWidth = statusWidth + roundWidth + turnWidth
+        val totalWidth = recWidth + statusWidth + roundWidth + turnWidth
 
         // Draw drop shadow
         g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, INDICATOR_SHADOW_OPACITY)
@@ -387,8 +390,10 @@ object ArenaPanel : JPanel() {
         g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f)
 
         // Draw all sections pixel-perfect without overlaps
-        val roundX = x + statusWidth.toDouble()
-        val turnX = roundX + roundWidth.toDouble()
+        val recX = x
+        val statusX = x + recWidth
+        val roundX = statusX + statusWidth
+        val turnX = roundX + roundWidth
 
         // Draw stackable blocks from right
 
@@ -400,10 +405,22 @@ object ArenaPanel : JPanel() {
         g.color = INDICATOR_ROUND_BG_COLOR
         g.fill(createStackableRoundedCornersShape(roundX - INDICATOR_CORNER_RADIUS, y, (roundWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble()))
 
+        // Pulsating effect for REPLAY text or REC indicator (opacity between 60% and 100%)
+        val pulsatingAlpha = (255 * (0.6 + 0.4 * sin(System.currentTimeMillis() * 0.004))).toInt()
+
+        // Draw REC section
+        if (drawRecIndicator) {
+            val area = Area(RoundRectangle2D.Double(recX, y, (recWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble(), INDICATOR_CORNER_RADIUS.toDouble()))
+            area.subtract(Area(RoundRectangle2D.Double(recX + recWidth, y, 2.0 * INDICATOR_CORNER_RADIUS, INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble(), INDICATOR_CORNER_RADIUS.toDouble())))
+            g.fill(area)
+            g.color = Color(INDICATOR_LIVE_REC_BG_COLOR.red, INDICATOR_LIVE_REC_BG_COLOR.green, INDICATOR_LIVE_REC_BG_COLOR.blue, pulsatingAlpha)
+            g.fillCircle(recX + INDICATOR_TEXT_PADDING + recDotSize / 2, y + INDICATOR_HEIGHT / 2, recDotSize.toDouble())
+        }
+
         // Draw status section (LIVE/REPLAY) - both sides rounded
         val statusColor = if (isLiveMode) (if (AutoRecorder.isRecording) INDICATOR_LIVE_REC_BG_COLOR else INDICATOR_LIVE_BG_COLOR) else INDICATOR_REPLAY_BG_COLOR
         g.color = statusColor
-        g.fillRoundRect(x.toInt(), y.toInt(), statusWidth, INDICATOR_HEIGHT.toInt(), INDICATOR_CORNER_RADIUS, INDICATOR_CORNER_RADIUS)
+        g.fillRoundRect(statusX.toInt(), y.toInt(), statusWidth, INDICATOR_HEIGHT.toInt(), INDICATOR_CORNER_RADIUS, INDICATOR_CORNER_RADIUS)
 
         // Draw status text (LIVE/REPLAY) (properly centered)
         g.font = INDICATOR_STATUS_FONT
@@ -411,27 +428,32 @@ object ArenaPanel : JPanel() {
         if (isLiveMode) {
             g.color = INDICATOR_STATUS_COLOR
         } else {
-            // Pulsating effect for REPLAY text (opacity between 60% and 100%)
-            val replayOpacity = (0.6 + 0.4 * sin(System.currentTimeMillis() * 0.004)).toFloat()
-            g.color = Color(INDICATOR_STATUS_COLOR.red, INDICATOR_STATUS_COLOR.green, INDICATOR_STATUS_COLOR.blue, (255 * replayOpacity).toInt())
+            g.color = Color(INDICATOR_STATUS_COLOR.red, INDICATOR_STATUS_COLOR.green, INDICATOR_STATUS_COLOR.blue, pulsatingAlpha)
         }
 
-        val statusTextX = x + INDICATOR_TEXT_PADDING
+        val statusTextX = statusX + INDICATOR_TEXT_PADDING
         val statusTextY = y + (INDICATOR_HEIGHT - statusFontMetrics.height) / 2 + statusFontMetrics.ascent
         g.drawString(statusText, statusTextX.toInt(), statusTextY.toInt())
 
-        // Draw round text (properly centered)
+        // Draw info texts
         g.font = INDICATOR_INFO_FONT
         g.color = INDICATOR_TEXT_COLOR
+        val infoTextY = (y + (INDICATOR_HEIGHT - infoFontMetrics.height) / 2 + infoFontMetrics.ascent).toInt()
+
+        // Draw REC text
+        if (drawRecIndicator) {
+            val recTextX = recX + 1.5 * INDICATOR_TEXT_PADDING + recDotSize
+            g.drawString(recText, recTextX.toInt(), infoTextY)
+        }
+
+        // Draw round text (properly centered)
         val roundTextX = roundX + INDICATOR_TEXT_PADDING
-        val roundTextY = y + (INDICATOR_HEIGHT - infoFontMetrics.height) / 2 + infoFontMetrics.ascent
-        g.drawString(roundText, roundTextX.toInt(), roundTextY.toInt())
+        g.drawString(roundText, roundTextX.toInt(), infoTextY)
 
         // Draw turn text (properly centered)
         g.color = INDICATOR_TEXT_COLOR
         val turnTextX = turnX + INDICATOR_TEXT_PADDING
-        val turnTextY = y + (INDICATOR_HEIGHT - infoFontMetrics.height) / 2 + infoFontMetrics.ascent
-        g.drawString(turnText, turnTextX.toInt(), turnTextY.toInt())
+        g.drawString(turnText, turnTextX.toInt(), infoTextY)
 
         oldState.restore(g)
     }
@@ -483,6 +505,11 @@ object ArenaPanel : JPanel() {
         g.drawString(text, x.toFloat() - width / 2, y.toFloat())
     }
 
+    /**
+     * @param x x-coordinate of the circle center
+     * @param y y-coordinate of the circle center
+     * @param size circle diameter
+     */
     private fun Graphics2D.fillCircle(x: Double, y: Double, size: Double) {
         this.color = color
         val transform = AffineTransform.getTranslateInstance(x, y)
