@@ -386,7 +386,9 @@ object ArenaPanel : JPanel() {
         // Draw drop shadow
         g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, INDICATOR_SHADOW_OPACITY)
         g.color = INDICATOR_SHADOW_COLOR
-        g.fillRoundRect((x + 2).toInt(), (y + 2).toInt(), totalWidth, INDICATOR_HEIGHT.toInt(), INDICATOR_CORNER_RADIUS, INDICATOR_CORNER_RADIUS)
+        val shadow = Area(RoundRectangle2D.Double((x + 2), (y + 2), totalWidth.toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble(), INDICATOR_CORNER_RADIUS.toDouble()))
+        shadow.subtract(Area(RoundRectangle2D.Double(x, y, totalWidth.toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble(), INDICATOR_CORNER_RADIUS.toDouble())))
+        g.fill(shadow)
         g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f)
 
         // Draw all sections pixel-perfect without overlaps
