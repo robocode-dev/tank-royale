@@ -1,3 +1,10 @@
+## 📦 0.33.1
+
+### 🐞 Bug Fixes
+- 
+- GUI:
+    - #162: Death indicator (skulls) order.
+
 ## 📦 0.33.0 - Added Recording and Replays - 06-Sep-2025
 
 This version adds support for recording and replaying battles (#55: Game replays). All credits go
