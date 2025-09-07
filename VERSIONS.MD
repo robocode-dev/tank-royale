@@ -3,8 +3,15 @@
 ### 🐞 Bug Fixes
 
 - GUI:
-    - #162: Death indicator (skulls) order.
-    - When disabling auto-record, the battle was still recorded.
+    - Fixed Issue #162: Corrected the order of death indicators (skulls) to accurately reflect in-game events.
+    - Auto-Record Bug Fix: Resolved an issue where battles were still being recorded after disabling the auto-record
+      feature.
+
+### 🚀 Improvements
+
+- GUI:
+    - Enhanced "🔴REC" Indicator: Improved the visual design of the recording indicator for better clarity and user
+      experience.
 
 ## 📦 0.33.0 - Added Recording and Replays - 06-Sep-2025
 
