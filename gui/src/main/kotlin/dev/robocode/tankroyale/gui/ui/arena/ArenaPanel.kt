@@ -32,7 +32,7 @@ object ArenaPanel : JPanel() {
     // Game status indicator constants
     private const val INDICATOR_BACKGROUND_OPACITY = 0.8f
     private const val INDICATOR_SHADOW_OPACITY = 0.3f
-    private val INDICATOR_LIVE_BG_COLOR = Color(27,79,114) // Crimson blue (solid)
+    private val INDICATOR_LIVE_BG_COLOR = Color(0, 120, 215) // "MS Edge Blue" to match sliders on Windows (solid)
     private val INDICATOR_LIVE_REC_BG_COLOR = Color(220, 20, 60) // Crimson red (solid)
     private val INDICATOR_REPLAY_BG_COLOR = Color(40, 40, 40) // Dark gray (solid)
     private val INDICATOR_ROUND_BG_COLOR = Color(60, 60, 60, (255 * INDICATOR_BACKGROUND_OPACITY).toInt()) // Medium dark gray
