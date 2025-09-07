@@ -394,14 +394,11 @@ object ArenaPanel : JPanel() {
 
         // Draw TURN section - right side rounded, left side inversely rounded for ROUND to fit in
         g.color = INDICATOR_TURN_BG_COLOR
-        g.clip = createStackableRoundedCornersShape(turnX - INDICATOR_CORNER_RADIUS, y, (turnWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble())
-        g.fillRect(turnX.toInt() - INDICATOR_CORNER_RADIUS, y.toInt(), turnWidth + INDICATOR_CORNER_RADIUS, INDICATOR_HEIGHT.toInt())
+        g.fill(createStackableRoundedCornersShape(turnX - INDICATOR_CORNER_RADIUS, y, (turnWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble()))
 
         // Draw ROUND section - right side rounded, left side inversely rounded for STATUS to fit in
         g.color = INDICATOR_ROUND_BG_COLOR
-        g.clip = createStackableRoundedCornersShape(roundX - INDICATOR_CORNER_RADIUS, y, (roundWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble())
-        g.fillRect(roundX.toInt() - INDICATOR_CORNER_RADIUS, y.toInt(), roundWidth + INDICATOR_CORNER_RADIUS, INDICATOR_HEIGHT.toInt())
-        g.clip = null
+        g.fill(createStackableRoundedCornersShape(roundX - INDICATOR_CORNER_RADIUS, y, (roundWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble()))
 
         // Draw status section (LIVE/REPLAY) - both sides rounded
         val statusColor = if (isLiveMode) (if (AutoRecorder.isRecording) INDICATOR_LIVE_REC_BG_COLOR else INDICATOR_LIVE_BG_COLOR) else INDICATOR_REPLAY_BG_COLOR
