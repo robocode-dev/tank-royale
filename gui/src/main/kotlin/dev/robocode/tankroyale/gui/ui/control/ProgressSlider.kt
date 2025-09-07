@@ -14,6 +14,21 @@ import javax.swing.JComponent
  * seek to specific positions in a replay by dragging the slider.
  */
 object ProgressSlider : RcSlider() {
+    /**
+     * LinkedDictionary wraps LinkedHashMap to preserve insertion order
+     * while implementing the Dictionary interface required by JSlider.
+     */
+    private class LinkedDictionary<K, V> : Dictionary<K, V>() {
+        private val map = LinkedHashMap<K, V>()
+
+        override fun size(): Int = map.size
+        override fun isEmpty(): Boolean = map.isEmpty()
+        override fun keys(): Enumeration<K> = Collections.enumeration(map.keys)
+        override fun elements(): Enumeration<V> = Collections.enumeration(map.values)
+        override fun get(key: Any): V? = map[key as? K]
+        override fun put(key: K, value: V): V? = map.put(key, value)
+        override fun remove(key: Any): V? = map.remove(key as? K)
+    }
 
     // Default maximum value for the slider
     private const val DEFAULT_MAX_VALUE = 100
@@ -49,10 +64,10 @@ object ProgressSlider : RcSlider() {
                     player.onReplayEvent.subscribe(ProgressSlider) { eventIndex ->
                         updateProgress(eventIndex)
                     }
-                    val labelTable = Hashtable<Int, JComponent>()
-                    player.getDeathMarkers().forEach { (pos, roundEnd) ->
-                        labelTable[pos] = SkullComponent(if (roundEnd) 1.0f else 0.6f)
-                    }
+                    val labelTable = LinkedDictionary<Int, JComponent>()
+                    player.getDeathMarkers()
+                        .sortedWith(compareBy<Pair<Int, Boolean>> { it.second }.thenBy { it.first })
+                        .forEach { (pos, roundEnd) -> labelTable.put(pos, SkullComponent(if (roundEnd) 1.0f else 0.6f)) }
                     this.labelTable = labelTable
                 } else {
                     isVisible = false
