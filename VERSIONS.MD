@@ -3,12 +3,8 @@
 ### 🐞 Bug Fixes
 
 - Maven Central:
-    - Fixed the names of the artifacts in the Maven Central repository that were missing the `robocode-tankroyale`
+    - Fixed the names of the artifacts in the Maven Central repository, which were lacking the `robocode-tankroyale`
       prefix.
-- Server:
-    - #164: Fixed an issue where the server would not start if the `server.properties` file was missing.
-- Server:
-    - #163: Fixed an issue where the server would not start if the `server.properties` file was missing.
 - GUI:
     - #162: Corrected the order of death indicators (skulls) to accurately reflect in-game events.
     - Auto-Record Bug Fix: Resolved an issue where battles were still being recorded after disabling the auto-record
