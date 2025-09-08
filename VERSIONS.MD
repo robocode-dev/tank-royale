@@ -1,4 +1,4 @@
-## 📦 0.33.1
+## 📦 0.33.1 - Fixes for Recording and Replays - 08-Sep-2025
 
 ### 🐞 Bug Fixes
 
