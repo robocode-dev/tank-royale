@@ -30,4 +30,4 @@ Publish to Nuget:
 dotnet nuget push robocode.tankroyale.botapi.«version».nupkg --api-key «nuget api key» --source https://api.nuget.org/v3/index.json
 ```
 
-Note:  «version» and «nuget api key» must be prefilled with Robocode version and Nuget API key.
+Note: «version» and «nuget api key» must be prefilled with Robocode version and Nuget API key.

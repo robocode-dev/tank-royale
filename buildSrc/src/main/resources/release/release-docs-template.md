@@ -47,7 +47,7 @@ In order to start developing bots for Robocode, the following APIs are available
 Available as:
 
 - Jar file: [robocode-tankroyale-bot-api-{VERSION}.jar]
-- Artifact at [Maven Central Repository](https://search.maven.org/search?q=g:dev.robocode.tankroyale)
+- Artifact at [Maven Central Repository](https://repo1.maven.org/maven2/dev/robocode/tankroyale/robocode-tankroyale-bot-api/{VERSION}/robocode-tankroyale-bot-api-{VERSION}.jar)
 
 #### 📦 .Net:
 
