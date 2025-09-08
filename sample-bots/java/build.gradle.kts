@@ -9,7 +9,7 @@ group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
 base {
-    archivesName = "robocode-tankroyale-sample-bots-java"
+    archivesName = "sample-bots-java"
 }
 
 plugins {
