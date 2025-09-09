@@ -1,13 +1,11 @@
 import math
 from typing import Any, Optional, Sequence
 
-import drawsvg  # type: ignore
-
 from .base_bot_abc import BaseBotABC
 from .bot_info import BotInfo
 from .constants import *
 from .internal.base_bot_internals import BaseBotInternals
-from .color import Color
+from .graphics import Color, GraphicsABC
 from .events.condition import Condition
 from .util.math_util import MathUtil
 from .bullet_state import BulletState
@@ -368,7 +366,7 @@ class BaseBot(BaseBotABC):
         # Debugging is always enabled for now in Python client
         return True
 
-    def get_graphics(self) -> drawsvg.Drawing:
+    def get_graphics(self) -> GraphicsABC:
         return self._internals.get_graphics()
 
     # Utility methods

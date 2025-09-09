@@ -16,7 +16,7 @@ class BulletState:
         color (Color): The visual color of the bullet.
     """
 
-    from .color import Color
+    from .graphics.color import Color
 
     bullet_id: int
     owner_id: int
