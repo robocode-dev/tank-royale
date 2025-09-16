@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.botapi.graphics.Color;
 // ------------------------------------------------------------------
 // Walls
 // ------------------------------------------------------------------
-// A sample bot original made for Robocode by Mathew Nelson.
+// A sample bot originally made for Robocode by Mathew Nelson.
 //
 // This robot navigates around the perimeter of the battlefield with
 // the gun pointed inward.

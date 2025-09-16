@@ -5,7 +5,7 @@ using Robocode.TankRoyale.BotApi.Events;
 // ------------------------------------------------------------------
 // VelocityBot
 // ------------------------------------------------------------------
-// A sample bot original made for Robocode by Joshua Galecki.
+// A sample bot originally made for Robocode by Joshua Galecki.
 //
 // Example bot of how to use turn rates.
 // ------------------------------------------------------------------

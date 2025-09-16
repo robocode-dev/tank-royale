@@ -5,7 +5,7 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // ------------------------------------------------------------------
 // RamFire
 // ------------------------------------------------------------------
-// A sample bot original made for Robocode by Mathew Nelson.
+// A sample bot originally made for Robocode by Mathew Nelson.
 //
 // This robot actively seeks out opponents, rams into them, and fires
 // with appropriate power based on the enemy's remaining energy.

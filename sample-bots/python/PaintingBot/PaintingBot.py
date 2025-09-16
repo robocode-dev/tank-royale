@@ -1,19 +1,17 @@
 import asyncio
 
-# ---------------------------------------------------------------------------
-# PaintingBot
-# ---------------------------------------------------------------------------
-# A sample bot original made for Robocode by Pavel Savara
-#
-# Demonstrates how to paint stuff on the battlefield.
-# Remember to enable Graphical Debugging for the bot when running a battle.
-# ---------------------------------------------------------------------------
-
 from robocode_tank_royale.bot_api import Bot
 from robocode_tank_royale.bot_api.events import ScannedBotEvent, TickEvent
 from robocode_tank_royale.bot_api.graphics.color import Color
 
-
+# ---------------------------------------------------------------------------
+# PaintingBot
+# ---------------------------------------------------------------------------
+# A sample bot originally made for Robocode by Pavel Savara
+#
+# Demonstrates how to paint stuff on the battlefield.
+# Remember to enable Graphical Debugging for the bot when running a battle.
+# ---------------------------------------------------------------------------
 class PaintingBot(Bot):
     scanned_x: float
     scanned_y: float

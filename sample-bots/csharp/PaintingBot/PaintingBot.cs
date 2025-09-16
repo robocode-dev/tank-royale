@@ -6,7 +6,7 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // ---------------------------------------------------------------------------
 // PaintingBot
 // ---------------------------------------------------------------------------
-// A sample bot original made for Robocode by Pavel Savara based on MyFirstBot
+// A sample bot originally made for Robocode by Pavel Savara based on MyFirstBot
 //
 // Demonstrates how to paint stuff on the battlefield.
 // Remember to enable Graphical Debugging for the bot when running a battle.

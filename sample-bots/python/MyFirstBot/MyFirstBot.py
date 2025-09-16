@@ -4,7 +4,7 @@ from robocode_tank_royale import bot_api as ba
 from robocode_tank_royale.bot_api.events import HitByBulletEvent, ScannedBotEvent
 
 class MyFirstBot(ba.Bot):
-    """A sample bot original made for Robocode by Mathew Nelson.
+    """A sample bot originally made for Robocode by Mathew Nelson.
     
     Probably the first bot you will learn about.
     Moves in a seesaw motion and spins the gun around at each end.
