@@ -222,7 +222,7 @@ When server secrets are enabled, all clients and bots must authenticate using th
 provide the secret either through:
 
 - The Bot API
-- Environment variable `ROBOCODE_SERVER_SECRET`
+- Environment variable `SERVER_SECRET`
 
 ![Local Server Options](../images/gui/server-options-local.png)
 

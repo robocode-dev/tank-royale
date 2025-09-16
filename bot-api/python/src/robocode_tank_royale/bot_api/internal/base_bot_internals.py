@@ -104,13 +104,13 @@ class BaseBotInternals:
         self._init()
 
     def _get_server_url_from_setting(self) -> str:
-        url = os.getenv("ROBOCODE_SERVER_URL", os.getenv("SERVER_URL"))
+        url = os.getenv("SERVER_URL", os.getenv("SERVER_URL"))
         if url is None:
             url = DEFAULT_SERVER_URL
         return url
 
     def _get_server_secret_from_setting(self) -> Optional[str]:
-        return os.getenv("ROBOCODE_SERVER_SECRET", os.getenv("SERVER_SECRET"))
+        return os.getenv("SERVER_SECRET", os.getenv("SERVER_SECRET"))
 
     def _init(self) -> None:
         # Skipping redirectStdOutAndStdErr for now
