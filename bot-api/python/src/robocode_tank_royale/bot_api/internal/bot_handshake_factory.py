@@ -8,7 +8,7 @@ from robocode_tank_royale.schema.message import Message
 class BotHandshakeFactory:
 
     @staticmethod
-    def create(session_id: str, bot_info: BotInfo, is_droid: bool, secret: str) -> BotHandshake:
+    def create(session_id: str, bot_info: BotInfo, is_droid: bool, secret: 'str | None') -> BotHandshake:
         return BotHandshake(
             session_id = session_id,
             type = Message.Type.BOT_HANDSHAKE,  # type: ignore

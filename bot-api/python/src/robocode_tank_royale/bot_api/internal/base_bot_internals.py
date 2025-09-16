@@ -316,7 +316,6 @@ class BaseBotInternals:
 
     async def _connect(self) -> None:
         self._sanitize_url(self.server_url)
-        assert self.server_secret is not None
         try:
             self.web_socket_handler = WebSocketHandler(  # Store the handler instance
                 self.data,  # Pass BaseBotInternalData instance
