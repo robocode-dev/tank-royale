@@ -1,0 +1,16 @@
+{
+  "name": "Corners",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "Moves to a corner, then swings the gun back and forth. If it dies, it tries a new corner in the next round.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "platform": "Python",
+  "programmingLang": "Python 3"
+}
