@@ -3,11 +3,11 @@ import traceback
 from abc import ABC, abstractmethod
 from typing import Any, Sequence
 
-import drawsvg  # type: ignore
+from .graphics import GraphicsABC
 
 from .events import *
 from .bullet_state import BulletState
-from .color import Color
+from .graphics import Color
 
 
 class BaseBotABC(ABC):
@@ -1323,13 +1323,14 @@ class BaseBotABC(ABC):
         pass
 
     @abstractmethod
-    def get_graphics(self) -> drawsvg.Drawing:
+    def get_graphics(self) -> GraphicsABC:
         """
         Gets a graphics object for debug painting.
 
         Example:
             g = get_graphics()
-            g.rectangle(50, 50, 100, 100, fill=(0, 0, 255))  # A blue filled rect
+            g.set_fill_color(Color.from_rgb(0, 0, 255))
+            g.fill_rectangle(50, 50, 100, 100)  # A blue filled rect
 
         Returns:
             A graphics canvas to use for painting graphical objects, making debugging easier.
