@@ -159,7 +159,7 @@ class BaseBot(BaseBotABC):
         return self._internals.get_bullet_states()
 
     def get_events(self) -> Sequence[BotEvent | None] | None:
-        self._internals.get_events()
+        return self._internals.get_events()
 
     def clear_events(self) -> None:
         self._internals.clear_events()
