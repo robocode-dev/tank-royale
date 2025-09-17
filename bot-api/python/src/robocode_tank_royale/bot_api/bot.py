@@ -9,6 +9,7 @@ from .events import Condition, TickEvent, HitBotEvent, ScannedBotEvent
 from .internal.base_bot_internals import BaseBotInternals
 from .internal.stop_resume_listener_abs import StopResumeListenerABC
 from .internal.event_interruption import EventInterruption
+from .internal.thread_interrupted_exception import ThreadInterruptedException
 from .constants import *
 
 
@@ -201,9 +202,14 @@ class _BotInternals(StopResumeListenerABC):
         await self._bot.go()
 
     async def rescan(self) -> None:
+        # Mark ScannedBotEvent as interruptible so a new scan can interrupt the current handler
         EventInterruption.set_interruptible(ScannedBotEvent, True)
         self._bot.set_rescan()
         await self._bot.go()
+        # If a new ScannedBotEvent interrupted the current handler, simulate Java behavior by interrupting here
+        if self._base_bot_internals.data.was_current_event_interrupted:
+            self._base_bot_internals.data.was_current_event_interrupted = False
+            raise ThreadInterruptedException()
 
     async def wait_for(self, condition: Callable[[], bool]) -> None:
         await self._bot.go()

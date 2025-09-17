@@ -617,13 +617,9 @@ class BaseBotInternals:
 
             self.data.saved_target_speed = self.data.bot_intent.target_speed
             self.data.saved_turn_rate = self.data.bot_intent.turn_rate
-            self.data.saved_gun_turn_rate = self.data.bot_intent.gun_turn_rate
-            self.data.saved_radar_turn_rate = self.data.bot_intent.radar_turn_rate
 
             self.data.bot_intent.target_speed = 0.0
             self.data.bot_intent.turn_rate = 0.0
-            self.data.bot_intent.gun_turn_rate = 0.0
-            self.data.bot_intent.radar_turn_rate = 0.0
 
             if self.stop_resume_listener is not None:
                 self.stop_resume_listener.on_stop()
@@ -632,8 +628,6 @@ class BaseBotInternals:
         if self.data.is_stopped:
             self.data.bot_intent.target_speed = self.data.saved_target_speed
             self.data.bot_intent.turn_rate = self.data.saved_turn_rate
-            self.data.bot_intent.gun_turn_rate = self.data.saved_gun_turn_rate
-            self.data.bot_intent.radar_turn_rate = self.data.saved_radar_turn_rate
 
             if self.stop_resume_listener is not None:
                 self.stop_resume_listener.on_resume()

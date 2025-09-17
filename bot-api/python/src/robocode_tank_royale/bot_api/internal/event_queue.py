@@ -100,6 +100,9 @@ class EventQueue:
                 if self.is_current_event_interruptible():
                     EventInterruption.set_interruptible(type(current_event), False)  # clear interruptible flag
 
+                    # Mark that the current handler was interrupted so API methods can react accordingly
+                    self.base_bot_internal_data.was_current_event_interrupted = True
+
                     # We are already in an event handler, took action, and a new event was generated.
                     # So we want to break out of the old handler to process the new event here.
                     raise ThreadInterruptedException()

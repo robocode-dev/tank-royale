@@ -40,6 +40,8 @@ class BaseBotInternalData:
         self.saved_turn_rate: Optional[float] = None
         self.saved_gun_turn_rate: Optional[float] = None
         self.saved_radar_turn_rate: Optional[float] = None
+        # Flag set when the current event handler was interrupted by a new event
+        self.was_current_event_interrupted: bool = False
 
     @property
     def my_id(self) -> int:
