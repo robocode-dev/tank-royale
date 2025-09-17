@@ -706,16 +706,19 @@ sealed class BaseBotInternals
                 "The maximum number team massages has already been reached: " +
                 IBaseBot.MaxNumberOfTeamMessagesPerTurn);
 
+        if (message == null)
+            throw new ArgumentException("The 'message' of a team message cannot be null");
+
         var json = JsonConverter.ToJson(message);
         var bytes = System.Text.Encoding.UTF8.GetBytes(json);
         if (bytes.Length > IBaseBot.TeamMessageMaxSize)
             throw new ArgumentException(
-                $"The team message is larger than the limit of {IBaseBot.TeamMessageMaxSize} bytes");
+                $"The team message is larger than the limit of {IBaseBot.TeamMessageMaxSize} bytes (compact JSON format)");
 
         BotIntent.TeamMessages.Add(new S.TeamMessage
         {
             MessageType = message.GetType().ToString(),
-            Message = Convert.ToBase64String(bytes),
+            Message = json,
             ReceiverId = teammateId,
         });
     }
