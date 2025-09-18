@@ -81,7 +81,7 @@ dotnet run --no-build >nul
         }
     }
 
-    val build = named("build") {
+    named("build") {
         doLast {
             prepareBotFiles()
         }

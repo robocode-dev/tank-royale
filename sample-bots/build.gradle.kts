@@ -47,12 +47,16 @@ subprojects {
     }
 }
 
-tasks.register("zip") {
-    description = "Builds the zip archives for all sample-bots subprojects"
-    group = "distribution"
-    // Depend explicitly on known zip tasks in subprojects
-    dependsOn(
-        ":sample-bots:csharp:zip",
-        ":sample-bots:java:zip",
-    )
+tasks {
+    named("clean") {
+        dependsOn(subprojects.map { "${it.path}:clean" })
+    }
+
+    val zip = register("zip") {
+        dependsOn(subprojects.map { "${it.path}:zip" })
+    }
+
+    named("build") {
+        dependsOn(zip)
+    }
 }

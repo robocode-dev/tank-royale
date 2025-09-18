@@ -81,9 +81,7 @@ tasks {
         }
     }
 
-    val build = named("build") {
-        dependsOn(copyBotApiJar)
-
+    named("build") {
         doLast {
             prepareBotFiles()
         }
