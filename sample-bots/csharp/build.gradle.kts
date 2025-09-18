@@ -8,8 +8,6 @@ description = "Robocode Tank Royale sample bots for C#"
 
 version = libs.versions.tankroyale.get()
 
-val archiveFilename = "sample-bots-csharp-${version}.zip"
-
 plugins {
     base // for the clean and build task
 }
@@ -93,23 +91,5 @@ dotnet run --no-build >nul
             prepareBotFiles()
             copyReadMeFile(projectDir, archiveDirPath)
         }
-    }
-
-    val zip by registering(Zip::class) {
-        dependsOn(build)
-
-        archiveFileName = archiveFilename
-        destinationDirectory = layout.buildDirectory
-        filePermissions {
-            user {
-                read = true
-                execute = true
-            }
-            other {
-                execute = true
-            }
-        }
-
-        from(archiveDir)
     }
 }

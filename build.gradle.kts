@@ -162,8 +162,7 @@ tasks {
             "booter:assemble",           // Booter (for booting up bots locally)
             "server:assemble",           // Server
             "gui:assemble",              // GUI
-            "sample-bots:java:zip",      // Sample bots for Java
-            "sample-bots:csharp:zip",    // Sample bots for C#
+            "sample-bots:zip",           // Sample bots
         )
         finalizedBy(
             "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
