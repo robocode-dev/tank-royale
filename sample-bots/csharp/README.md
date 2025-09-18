@@ -10,6 +10,12 @@ This module contains sample bots for Robocode Tank Royale developed for the C# p
 ./gradlew :sample-bots:csharp:clean
 ```
 
+#### Build:
+
+```shell
+./gradlew :sample-bots:csharp:build
+```
+
 #### Create archive
 
 ```shell

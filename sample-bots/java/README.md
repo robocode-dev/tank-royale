@@ -10,6 +10,12 @@ This module contains sample bots for Robocode Tank Royale developed for the Java
 ./gradlew :sample-bots:java:clean
 ```
 
+#### Build:
+
+```shell
+./gradlew :sample-bots:java:build
+```
+
 #### Create archive
 
 ```shell
