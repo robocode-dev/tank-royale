@@ -1,10 +1,26 @@
 import org.gradle.api.tasks.bundling.Zip
+import java.nio.file.Files.*
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
 description = "Robocode Tank Royale sample bots"
 
 plugins {
     base // for clean/build lifecycle tasks
 }
+
+// Shared helper functions exposed to subprojects via rootProject.extra
+val isBotProjectDirShared: (Path) -> Boolean = { dir ->
+    val botName = dir.fileName.toString()
+    !botName.startsWith(".") && botName !in listOf("build", "assets")
+}
+val copyBotFilesShared: (Path, Path) -> Unit = { projectDir, botArchivePath ->
+    for (file in list(projectDir)) {
+        copy(file, botArchivePath.resolve(file.fileName), REPLACE_EXISTING)
+    }
+}
+rootProject.extra["isBotProjectDir"] = isBotProjectDirShared
+rootProject.extra["copyBotFiles"] = copyBotFilesShared
 
 // Common configuration shared by all sample-bots subprojects
 subprojects {

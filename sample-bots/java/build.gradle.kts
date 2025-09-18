@@ -1,7 +1,6 @@
 import java.io.PrintWriter
 import java.nio.file.Files.*
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
 description = "Robocode Tank Royale sample bots for Java"
 
@@ -24,16 +23,11 @@ tasks {
 
     fun Path.botName() = fileName.toString()
 
-    fun isBotProjectDir(dir: Path): Boolean {
-        val botName = dir.botName()
-        return !botName.startsWith(".") && botName !in listOf("build", "assets")
-    }
-
-    fun copyBotFiles(projectDir: Path, botArchivePath: Path) {
-        for (file in list(projectDir)) {
-            copy(file, botArchivePath.resolve(file.fileName), REPLACE_EXISTING)
-        }
-    }
+    // Shared helpers provided by parent sample-bots/build.gradle.kts
+    @Suppress("UNCHECKED_CAST")
+    val isBotProjectDir = rootProject.extra["isBotProjectDir"] as (Path) -> Boolean
+    @Suppress("UNCHECKED_CAST")
+    val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
     fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
         val botName = projectDir.botName()
