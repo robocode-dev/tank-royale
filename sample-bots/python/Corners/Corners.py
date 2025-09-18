@@ -1,6 +1,5 @@
 import asyncio
 import random
-from typing import ClassVar
 
 from robocode_tank_royale.bot_api.bot import Bot
 from robocode_tank_royale.bot_api.color import Color
@@ -17,21 +16,25 @@ from robocode_tank_royale.bot_api.events import ScannedBotEvent, DeathEvent
 # try a different corner in the next round.
 # ------------------------------------------------------------------
 class Corners(Bot):
-    # Class variable to keep the chosen corner across rounds within the same battle
-    corner: ClassVar[int] = 90 * random.randint(0, 3)  # 0, 90, 180, or 270 degrees
+    """Moves to a corner, scans by swinging the gun, and adapts corner per round."""
 
-    def __init__(self):
+    # Which corner we are currently using (in degrees). Set to a random corner at startup
+    # Using a class attribute to persist between rounds in the same match, similar to Java 'static'.
+    corner: int = 90 * random.randrange(4)  # 0, 90, 180, or 270
+
+    def __init__(self) -> None:
         super().__init__()
-        self._enemies = 0  # Number of enemy bots in the current round
-        self._stop_when_see_enemy = False
+        self._enemies: int = 0  # Number of enemy bots in the game
+        self._stop_when_see_enemy: bool = False  # See go_corner()
 
     async def run(self) -> None:
+        """Called when a new round is started -> initialize and do some movement."""
         # Set colors
-        self.body_color = Color.from_rgb(0xFF, 0x00, 0x00)  # Red
-        self.turret_color = Color.from_rgb(0x00, 0x00, 0x00)  # Black
-        self.radar_color = Color.from_rgb(0xFF, 0xFF, 0x00)  # Yellow
-        self.bullet_color = Color.from_rgb(0x00, 0xFF, 0x00)  # Green
-        self.scan_color = Color.from_rgb(0x00, 0xFF, 0x00)  # Green
+        self.body_color = Color.from_rgb(0xFF, 0x00, 0x00)   # red
+        self.turret_color = Color.from_rgb(0x00, 0x00, 0x00) # black
+        self.radar_color = Color.from_rgb(0xFF, 0xFF, 0x00)  # yellow
+        self.bullet_color = Color.from_rgb(0x00, 0xFF, 0x00) # green
+        self.scan_color = Color.from_rgb(0x00, 0xFF, 0x00)   # green
 
         # Save number of other bots
         self._enemies = self.get_enemy_count()
@@ -40,51 +43,50 @@ class Corners(Bot):
         await self._go_corner()
 
         # Initialize gun turn speed to 3
-        gun_increment = 3.0
+        gun_increment = 3
 
         # Spin gun back and forth
         while self.is_running():
             for _ in range(30):
                 await self.turn_gun_left(gun_increment)
-            gun_increment = -gun_increment
+            gun_increment *= -1
 
     async def _go_corner(self) -> None:
-        """Move inefficiently to a corner like the original sample bot."""
+        """Move to the selected corner (very simple approach to mirror the Java sample)."""
         # We don't want to stop when we're just turning...
         self._stop_when_see_enemy = False
-
         # Turn to face the wall towards our desired corner
-        bearing = self.calc_bearing(Corners.corner)
-        await self.turn_left(bearing)
-
+        await self.turn_left(self.calc_bearing(Corners.corner))
         # Ok, now we don't want to crash into any bot in our way...
         self._stop_when_see_enemy = True
-
         # Move to that wall
         await self.forward(5000)
-
         # Turn to face the corner
         await self.turn_left(90)
-
         # Move to the corner
         await self.forward(5000)
-
         # Turn gun to starting point
         await self.turn_gun_left(90)
 
     async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
         """We saw another bot -> stop and fire!"""
-        distance = self.distance_to(e.x, e.y)
+        del e  # not used directly except for coordinates below
+        distance = self.distance_to(float(e.x), float(e.y))
 
         if self._stop_when_see_enemy:
             # Stop movement
             await self.stop()
-            # Fire smartly
+            # Call our custom firing method
             await self._smart_fire(distance)
             # Rescan for another bot
-            await self.rescan()
-            # If no other bot is scanned, resume movement
-            await self.resume()
+            try:
+                await self.rescan()
+                # If not interrupted by a new scan, resume movement
+                await self.resume()
+            except Exception:
+                # A new ScannedBotEvent can interrupt rescan; internal logic handles interruption
+                # No resume here to mirror Java behavior (resume only when not interrupted)
+                pass
         else:
             await self._smart_fire(distance)
 
@@ -99,6 +101,7 @@ class Corners(Bot):
             await self.fire(3)
 
     async def on_death(self, e: DeathEvent) -> None:
+        """We died -> figure out if we need to switch to another corner."""
         del e
         # Well, others should never be 0, but better safe than sorry.
         if self._enemies == 0:
@@ -106,7 +109,7 @@ class Corners(Bot):
 
         # If 75% of the bots are still alive when we die, we'll switch corners.
         if self.get_enemy_count() / float(self._enemies) >= 0.75:
-            Corners.corner = (Corners.corner + 90) % 360  # Next corner, keep within 0-359
+            Corners.corner = (Corners.corner + 90) % 360  # Next corner, normalized
             print(f"I died and did poorly... switching corner to {Corners.corner}")
         else:
             print(f"I died but did well. I will still use corner {Corners.corner}")
