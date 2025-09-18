@@ -82,6 +82,8 @@ tasks {
     }
 
     named("build") {
+        dependsOn(copyBotApiJar)
+
         doLast {
             prepareBotFiles()
         }
