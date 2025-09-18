@@ -23,18 +23,20 @@ tasks {
     @Suppress("UNCHECKED_CAST")
     val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
-    fun generateShellScript(): String = """#!/bin/sh
-if [ ! -d "bin" ]; then
-  dotnet build
-fi
-dotnet run --no-build
-"""
+    fun generateShellScript(): String = """
+        #!/bin/sh
+        if [ ! -d "bin" ]; then
+          dotnet build
+        fi
+        dotnet run --no-build
+        """.trimIndent()
 
-    fun generateBatchScript(): String = """if not exist bin\ (
-  dotnet build >nul
-)
-dotnet run --no-build >nul
-"""
+    fun generateBatchScript(): String = """
+        if not exist bin\ (
+            dotnet build >nul
+        )
+        dotnet run --no-build >nul
+        """.trimIndent()
 
     fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
         val botName = projectDir.botName()
