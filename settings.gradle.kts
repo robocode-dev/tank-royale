@@ -27,6 +27,7 @@ include("bot-api:python")
 // Sample Bots archives
 include("sample-bots:java")
 include("sample-bots:csharp")
+include("sample-bots:python")
 
 // Docs
 include("buildDocs")
