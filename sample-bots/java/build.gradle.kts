@@ -2,7 +2,6 @@ import java.io.PrintWriter
 import java.nio.file.Files.*
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption.REPLACE_EXISTING
-import org.gradle.api.tasks.bundling.Zip
 
 description = "Robocode Tank Royale sample bots for Java"
 
@@ -93,6 +92,25 @@ tasks {
         doLast {
             prepareBotFiles()
             copyReadMeFile(projectDir, archiveDirPath)
+        }
+    }
+
+    // Configure the maven publication to use the zip artifact
+    publishing {
+        publications {
+            named<MavenPublication>("maven") {
+                // Define the artifact
+                artifact(zip) {
+                    classifier = "" // No classifier for the main artifact
+                    extension = "zip"
+                }
+
+                // Ensure artifactId follows base.archivesName
+                artifactId = base.archivesName.get()
+
+                // Override the POM name
+                pom.name.set("Robocode Tank Royale Sample Bots for Java")
+            }
         }
     }
 }
