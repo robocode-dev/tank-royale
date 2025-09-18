@@ -22,17 +22,6 @@ tasks {
     val archiveDirPath = archiveDir.get().asFile.toPath()
     val libDir = archiveDirPath.resolve("lib")
 
-    val copyBotApiJar by registering(Copy::class) {
-        mkdir(libDir)
-
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-        dependsOn(":bot-api:java:jar")
-
-        from(project(":bot-api:java").file("build/libs/robocode-tankroyale-bot-api-${version}.jar"))
-        into(libDir)
-    }
-
     fun Path.botName() = fileName.toString()
 
     fun isBotProjectDir(dir: Path): Boolean {
@@ -79,6 +68,17 @@ tasks {
                 }
             }
         }
+    }
+
+    val copyBotApiJar by registering(Copy::class) {
+        mkdir(libDir)
+
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+        dependsOn(":bot-api:java:jar")
+
+        from(project(":bot-api:java").file("build/libs/robocode-tankroyale-bot-api-${version}.jar"))
+        into(libDir)
     }
 
     named("build") {
