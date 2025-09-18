@@ -23,37 +23,29 @@ tasks {
     @Suppress("UNCHECKED_CAST")
     val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
-    fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
-        val botName = projectDir.botName()
-        val file = botArchivePath.resolve("$botName.$fileExt").toFile()
-        val printWriter = object : PrintWriter(file) {
-            override fun println() {
-                write(newLine)
-            }
-        }
-        printWriter.use {
-            when (fileExt) {
-                "sh" -> {
-                    it.println("""#!/bin/sh
+    fun generateShellScript(): String = """#!/bin/sh
 if [ ! -d "bin" ]; then
   dotnet build
 fi
 dotnet run --no-build
 """
-                    )
-                }
 
-                "cmd" -> {
-                    it.println("""
-if not exist bin\ (
+    fun generateBatchScript(): String = """if not exist bin\ (
   dotnet build >nul
 )
 dotnet run --no-build >nul
 """
-                    )
-                }
-            }
+
+    fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
+        val botName = projectDir.botName()
+        val scriptContent = when (fileExt) {
+            "sh" -> generateShellScript()
+            "cmd" -> generateBatchScript()
+            else -> throw IllegalArgumentException("Unsupported file extension: $fileExt")
         }
+
+        val file = botArchivePath.resolve("$botName.$fileExt").toFile()
+        file.writeText(scriptContent.replace("\n", newLine))
     }
 
     fun prepareBotFiles() {
