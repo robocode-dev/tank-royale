@@ -4,10 +4,10 @@ This directory contains sample bots for Robocode Tank Royale developed for C# pr
 
 ## Requirements for running the sample bots
 
-1. You need to unpack the archive or copy the directories in the root of your `bots` directory to run these with
-   Robocode.
-2. .Net 6 (or newer) must be installed on your system. You can download it from here:
+1. .Net 6 (or newer) must be installed on your system. You can download it from here:
    https://dotnet.microsoft.com/download
+2. You need to unpack the archive or copy the directories in the root of your `bots` directory to run these with
+   Robocode.
 
 Note that you need the SDK (Software Development Kit) if you want to develop your own bot.
 
