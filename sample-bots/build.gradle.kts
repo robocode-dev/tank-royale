@@ -22,11 +22,21 @@ subprojects {
         }
     }
 
+    // Shared task to copy ReadMe.md from assets into the archive directory
+    val copySampleBotsReadme by tasks.register<Copy>("copySampleBotsReadme") {
+        val readmeFile = project.layout.projectDirectory.file("assets/ReadMe.md").asFile
+        onlyIf { readmeFile.exists() }
+        from(readmeFile)
+        into(layout.buildDirectory.dir("archive"))
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
+
     // Provide a standardized `zip` task in each subproject
     tasks.register<Zip>("zip") {
         group = "distribution"
         description = "Packages ${project.name} sample bots as a zip"
         dependsOn("build")
+        dependsOn(copySampleBotsReadme)
 
         // Use a consistent archive file name across subprojects
         archiveFileName.set("sample-bots-${project.name}-${version}.zip")

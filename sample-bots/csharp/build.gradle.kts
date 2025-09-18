@@ -81,15 +81,9 @@ dotnet run --no-build >nul
         }
     }
 
-    fun copyReadMeFile(projectDir: File, archivePath: Path) {
-        val filename = "ReadMe.md"
-        copy(File(projectDir, "assets/$filename").toPath(), archivePath.resolve(filename), REPLACE_EXISTING)
-    }
-
     val build = named("build") {
         doLast {
             prepareBotFiles()
-            copyReadMeFile(projectDir, archiveDirPath)
         }
     }
 }
