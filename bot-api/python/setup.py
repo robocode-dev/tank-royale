@@ -7,7 +7,7 @@ setup(
     name="robocode-tank-royale",
     version=version,
     description="The Python Bot API for Robocode Tank Royale",
-    long_description=open("README.md").read(),
+    long_description=open("PyPi-ReadMe.md").read(),
     long_description_content_type="text/markdown",
     url="https://robocode-dev.github.io/tank-royale",
     package_dir={

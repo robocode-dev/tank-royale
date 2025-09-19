@@ -63,7 +63,25 @@ tasks {
         dependsOn(test)
     }
 
+    // Install Python build tooling (build + wheel)
+    val `install-build-tools` by registering(Exec::class) {
+        group = "build"
+        description = "Installs Python build tooling"
+        commandLine("python", "-m", "pip", "install", "build", "wheel")
+    }
+
+    // Build distributable artifacts (wheel + sdist)
+    val `build-dist` by registering(Exec::class) {
+        group = "build"
+        description = "Builds wheel and sdist into dist/ using PEP 517"
+        dependsOn(`generate-schema`)
+        dependsOn(`generate-version`)
+        dependsOn(`install-build-tools`)
+        commandLine("python", "-m", "build")
+    }
+
     named("build") {
         dependsOn(`pip-install`)
+        dependsOn(`build-dist`)
     }
 }

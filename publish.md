@@ -18,6 +18,32 @@ Publish to staging, close, and release:
 
 ## .Net archives (Nuget)
 
+## Python package (pip)
+
+From repository root, build the Python Bot API package (wheel + sdist):
+
+```
+./gradlew :bot-api:python:build-dist
+```
+
+This will:
+- Generate schema sources into bot-api/python/generated
+- Generate the VERSION file from gradle.properties
+- Build dist/*.whl and dist/*.tar.gz inside bot-api/python/dist
+
+Install the built wheel from anywhere on your system:
+
+```
+pip install path\to\tank-royale\bot-api\python\dist\robocode_tank_royale-<version>-py3-none-any.whl
+```
+
+Alternatively, to install directly from the project folder without building first (editable for development):
+
+```
+cd bot-api\python
+pip install -e .
+```
+
 Enter the release folder:
 
 ```shell

@@ -1,5 +1,7 @@
 # Python Bot API for Robocode Tank Royale
 
+Note: This README is for developers—not PyPi. The README for PyPi is [here](PyPi-ReadMe.md)
+
 This directory contains the Bot API for developing bots for Robocode Tank Royale with Python.
 
 The Bot API is provided via a pip package.
@@ -8,7 +10,7 @@ The Bot API is provided via a pip package.
 
 ### From the current directory:
 
-First generate schemas into a tank_royale.schema package:
+First, generate schemas into a tank_royale.schema package:
 
 ```shell
 python scripts/schema_to_python.py -d ../../schema/schemas -o generated/robocode_tank_royale/tank_royale/schema
