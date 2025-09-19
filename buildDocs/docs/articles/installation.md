@@ -13,14 +13,8 @@ Robocode in the Java programming language, then you need a JDK (Java Development
 > Java/JVM-based bot. I encourage you to run the newest Java version. But you cannot use Java versions older than
 > version 11.
 
-Numerous Java distributions are available:
-
-- [Oracle JDK](https://www.oracle.com/java/technologies/javase/)
-- [OpenJDK](https://openjdk.java.net/)
-- [Adoption / Eclipse Temurin](https://adoptium.net/)
-- [Red Hat](https://developers.redhat.com/products/openjdk)
-- [Azul Zulu](https://www.azul.com/downloads/?package=jdk)
-- [Amazon Corretto](https://aws.amazon.com/corretto)
+Numerous Java distributions are available. [whichjdk.com](https://whichjdk.com/) is a good resource for finding the
+best Java distribution for you.
 
 If you do not have java installed already (can be checked writing the command below), you should download and install
 Java first. Follow the installation instructions carefully, and make sure that you are able to run `java` from the
