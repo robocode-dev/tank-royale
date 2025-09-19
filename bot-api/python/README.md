@@ -1,6 +1,6 @@
 # Python Bot API for Robocode Tank Royale
 
-Note: This README is for developers—not PyPi. The README for PyPi is [here](PyPi-ReadMe.md)
+Note: This README is for developers—not PyPi. The README for PyPi is [here](README-PyPI.md)
 
 This directory contains the Bot API for developing bots for Robocode Tank Royale with Python.
 

@@ -1,4 +1,4 @@
 include VERSION
-include PyPi-ReadMe.md
+include README-PyPI.md
 include requirements.txt
 recursive-include generated/robocode_tank_royale/tank_royale/schema *.py
