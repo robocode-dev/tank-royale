@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages  # type: ignore - setuptools.setup is missing type.
 
-with open('VERSION', 'r') as f:
+with open('VERSION', 'r', encoding='utf-8') as f:
     version = f.read()
 
 setup(
     name="robocode-tank-royale",
     version=version,
     description="The Python Bot API for Robocode Tank Royale",
-    long_description=open("README-PyPI.md").read(),
+    long_description=open("README-PyPI.md", encoding='utf-8').read(),
     long_description_content_type="text/markdown",
     url="https://robocode-dev.github.io/tank-royale",
     package_dir={
@@ -23,5 +23,5 @@ setup(
         for subpackage in find_packages("src/robocode_tank_royale/bot_api")
     ],
     python_requires=">=3.10",
-    install_requires=open("requirements.txt").read().splitlines(),
+    install_requires=open("requirements.txt", encoding='utf-8').read().splitlines(),
 )
