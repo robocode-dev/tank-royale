@@ -11,116 +11,172 @@ plugins {
     base // for the clean and build task
 }
 
+// Constants
+private val shellExtension = "sh"
+private val batchExtension = "cmd"
+private val unixLineEnding = "\n"
+private val windowsLineEnding = "\r\n"
+private val teamSuffix = "Team"
+private val depsFolder = "deps"
+private val assetsFolder = "assets"
+private val requirementsFile = "requirements.txt"
+private val wheelPrefix = "robocode_tank_royale-"
+private val wheelExtension = ".whl"
+private val botApiPythonPath = "bot-api/python"
+private val pythonDistPath = "$botApiPythonPath/dist"
+
 val archiveDir = layout.buildDirectory.dir("archive")
-val archiveDirPath = archiveDir.get().asFile.toPath()
+val archiveDirPath: Path = archiveDir.get().asFile.toPath()
 
 fun Path.botName() = fileName.toString()
 
 // Shared helpers provided by parent sample-bots/build.gradle.kts
 @Suppress("UNCHECKED_CAST")
 val isBotProjectDir = rootProject.extra["isBotProjectDir"] as (Path) -> Boolean
+
 @Suppress("UNCHECKED_CAST")
 val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
-private fun writeShellScript(writer: PrintWriter, botName: String) {
-    val shellScript = """
-        #!/bin/sh
-        ../deps/install-dependencies.sh
+private fun createShellScript(botName: String): String = $$"""
+    #!/bin/sh
+    ../deps/install-dependencies.sh
 
-        cd -- "${'$'}(dirname -- "${'$'}0")"
-        if command -v python3 >/dev/null 2>&1; then
-          PY=python3
-        elif command -v python >/dev/null 2>&1; then
-          PY=python
-        else
-          echo "Error: Python not found. Please install python3 or python." >&2
-          exit 1
-        fi
+    cd -- "$(dirname -- "$0")"
+    if command -v python3 >/dev/null 2>&1; then
+      PY=python3
+    elif command -v python >/dev/null 2>&1; then
+      PY=python
+    else
+      echo "Error: Python not found. Please install python3 or python." >&2
+      exit 1
+    fi
 
-        exec "${'$'}PY" $botName.py
-        """.trimIndent()
+    exec "$PY" $$botName.py
+    """.trimIndent()
 
-    writer.print(shellScript)
+private fun createBatchScript(botName: String): String = """
+    call ..\deps\install-dependencies.cmd
+
+    cd /d "%~dp0"
+    set "PY="
+    where python3 >nul 2>nul && set "PY=python3"
+    if not defined PY (
+      where python >nul 2>nul && set "PY=python"
+    )
+    if not defined PY (
+      echo Error: Python not found. Please install Python 3.
+      exit /b 1
+    )
+    %PY% $botName.py >nul
+    """.trimIndent()
+
+private fun writeScriptContent(writer: PrintWriter, scriptType: String, botName: String) {
+    val script = when (scriptType) {
+        shellExtension -> createShellScript(botName)
+        batchExtension -> createBatchScript(botName)
+        else -> throw IllegalArgumentException("Unsupported script type: $scriptType")
+    }
+    writer.print(script)
 }
 
-private fun writeBatchScript(writer: PrintWriter, botName: String) {
-    // Important: We need to add the `>nul` redirection to avoid cmd processes halting
-    val batchScript = """
-        call ..\deps\install-dependencies.cmd
-
-        cd /d "%~dp0"
-        set "PY="
-        where python3 >nul 2>nul && set "PY=python3"
-        if not defined PY (
-          where python >nul 2>nul && set "PY=python"
-        )
-        if not defined PY (
-          echo Error: Python not found. Please install Python 3.
-          exit /b 1
-        )
-        %PY% $botName.py >nul
-        """.trimIndent()
-
-    writer.print(batchScript)
-}
-
-private fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
-    val botName = projectDir.botName()
-    val file = botArchivePath.resolve("$botName.$fileExt").toFile()
-    val printWriter = object : PrintWriter(file) {
+private fun createCustomPrintWriter(file: File, lineEnding: String): PrintWriter {
+    return object : PrintWriter(file) {
         override fun println() {
-            write(newLine)
+            write(lineEnding)
         }
+    }
+}
+
+private fun createBotScriptFile(botDir: Path, archivePath: Path, extension: String, lineEnding: String) {
+    val botName = botDir.botName()
+    val scriptFile = archivePath.resolve("$botName.$extension").toFile()
+
+    createCustomPrintWriter(scriptFile, lineEnding).use { writer ->
+        writeScriptContent(writer, extension, botName)
+    }
+}
+
+private fun createBotScriptFiles(botDir: Path, archivePath: Path) {
+    createBotScriptFile(botDir, archivePath, batchExtension, windowsLineEnding)
+    createBotScriptFile(botDir, archivePath, shellExtension, unixLineEnding)
+}
+
+private fun isTeamBot(botDir: Path): Boolean = botDir.toString().endsWith(teamSuffix)
+
+private fun processIndividualBot(botDir: Path) {
+    val botArchivePath = archiveDirPath.resolve(botDir.botName())
+    mkdir(botArchivePath)
+    copyBotFiles(botDir, botArchivePath)
+
+    if (!isTeamBot(botDir)) {
+        createBotScriptFiles(botDir, botArchivePath)
+    }
+}
+
+private fun copyInstallationScripts(depsDir: Path) {
+    val assetsDir = project.projectDir.toPath().resolve(assetsFolder)
+    val installScriptCmd = "install-dependencies.$batchExtension"
+    val installScriptSh = "install-dependencies.$shellExtension"
+
+    copy(assetsDir.resolve(installScriptCmd), depsDir.resolve(installScriptCmd), REPLACE_EXISTING)
+    copy(assetsDir.resolve(installScriptSh), depsDir.resolve(installScriptSh), REPLACE_EXISTING)
+}
+
+private fun copyRequirementsFile(depsDir: Path) {
+    val requirementsPath = rootProject.projectDir.toPath().resolve("$botApiPythonPath/$requirementsFile")
+
+    if (!exists(requirementsPath)) {
+        throw GradleException("$requirementsFile not found at: ${requirementsPath.toAbsolutePath()}")
     }
 
-    printWriter.use { writer ->
-        when (fileExt) {
-            "sh" -> writeShellScript(writer, botName)
-            "cmd" -> writeBatchScript(writer, botName)
+    copy(requirementsPath, depsDir.resolve(requirementsFile), REPLACE_EXISTING)
+}
+
+private fun findWheelFile(distDir: Path): Path {
+    return list(distDir).use { paths ->
+        paths.filter { path ->
+            val fileName = path.fileName.toString()
+            fileName.startsWith(wheelPrefix) && fileName.endsWith(wheelExtension)
+        }.findFirst().orElseThrow {
+            GradleException("robocode_tank_royale wheel file not found in: ${distDir.toAbsolutePath()}")
         }
     }
+}
+
+private fun copyWheelFile(depsDir: Path) {
+    val distDir = rootProject.projectDir.toPath().resolve(pythonDistPath)
+
+    if (!exists(distDir)) {
+        throw GradleException("Python dist directory not found at: ${distDir.toAbsolutePath()}")
+    }
+
+    val wheelFile = findWheelFile(distDir)
+    copy(wheelFile, depsDir.resolve(wheelFile.fileName.toString()), REPLACE_EXISTING)
 }
 
 tasks {
     fun prepareBotFiles() {
         list(projectDir.toPath()).forEach { botDir ->
             if (isDirectory(botDir) && isBotProjectDir(botDir)) {
-                val botArchivePath: Path = archiveDirPath.resolve(botDir.botName())
-
-                mkdir(botArchivePath)
-                copyBotFiles(botDir, botArchivePath)
-
-                if (!botDir.toString().endsWith("Team")) {
-                    createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
-                    createScriptFile(botDir, botArchivePath, "sh", "\n")
-                }
+                processIndividualBot(botDir)
             }
         }
     }
 
-    fun prepareDepsDir() {
-        // Create a deps folder and copy dependency installers + requirements.txt
-        val depsDir = archiveDirPath.resolve("deps")
+    fun prepareDependencies() {
+        val depsDir = archiveDirPath.resolve(depsFolder)
         mkdir(depsDir)
 
-        // Copy install-dependencies scripts from assets
-        val assetsDir = project.projectDir.toPath().resolve("assets")
-        copy(assetsDir.resolve("install-dependencies.cmd"), depsDir.resolve("install-dependencies.cmd"), REPLACE_EXISTING)
-        copy(assetsDir.resolve("install-dependencies.sh"), depsDir.resolve("install-dependencies.sh"), REPLACE_EXISTING)
-
-        // Copy requirements.txt from bot-api/python into deps
-        val requirements = rootProject.projectDir.toPath().resolve("bot-api/python/requirements.txt")
-        if (exists(requirements)) {
-            copy(requirements, depsDir.resolve("requirements.txt"), REPLACE_EXISTING)
-        } else {
-            throw GradleException("requirements.txt not found at: ${requirements.toAbsolutePath()}")
-        }
+        copyInstallationScripts(depsDir)
+        copyRequirementsFile(depsDir)
+        copyWheelFile(depsDir)
     }
 
     named("build") {
+        dependsOn(":bot-api:python:build-dist")
         doLast {
             prepareBotFiles()
-            prepareDepsDir()
+            prepareDependencies()
         }
     }
 }
