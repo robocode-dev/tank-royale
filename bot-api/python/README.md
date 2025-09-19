@@ -37,12 +37,13 @@ pip install -e .
 ../../gradlew :bot-api:python:build --info
 ```
 
+The artifacts are located in `/bot-api/python/dist`.
+
 #### Test:
 
 ```shell
 ../../gradlew :bot-api:python:test --info
 ```
-
 
 ## Usage
 
