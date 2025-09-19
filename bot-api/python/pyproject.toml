@@ -24,13 +24,13 @@ classifiers = [
 # Using setup.py to supply dependencies and version dynamically
 dynamic = ["version", "dependencies"]
 
+maintainers = [
+    {name = "Yang Li"},
+    {name = "Flemming N. Larsen"}
+]
+
 [tool.setuptools.packages.find]
 where = ["src", "generated/robocode_tank_royale/tank_royale"]
-
-maintainers = [
-    {name = "Yang Li", url = "https://github.com/yangli2"},
-    {name = "Maintainer Two", url = "https://github.com/flemming-n-larsen"}
-]
 
 [project.urls]
 Homepage = "https://robocode-dev.github.io/tank-royale"
