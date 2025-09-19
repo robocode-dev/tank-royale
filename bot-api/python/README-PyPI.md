@@ -38,17 +38,45 @@ pip install robocode-tank-royale
 
 Check out the complete **MyFirstBot** example on GitHub:
 
-**📁 [MyFirstBot.py](https://github.com/robocode-dev/tank-royale/blob/master/sample-bots/python/MyFirstBot/MyFirstBot.py)
-**
+**📁 MyFirstBot.py**: https://github.com/robocode-dev/tank-royale/blob/main/sample-bots/python/MyFirstBot/MyFirstBot.py
 
-This sample bot demonstrates:
+Or start with this minimal example you can run right away:
 
-- Basic movement (forward/backward)
-- Gun rotation and targeting
-- Event handling (scanned bot, hit by bullet)
-- Async/await programming pattern
+```python
+import asyncio
+from robocode_tank_royale.bot_api.bot import Bot
+from robocode_tank_royale.bot_api.bot_info import BotInfo
+from robocode_tank_royale.bot_api.events import ScannedBotEvent
 
-The bot moves in a seesaw motion, spins its gun to scan for enemies, and fires when it spots another bot.
+class MyFirstBot(Bot):
+    async def run(self) -> None:
+        # Main loop: move and keep the radar/gun scanning
+        while self.is_running():
+            self.set_forward(100)
+            self.set_turn_gun_right(20)
+            await self.go()
+
+    async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
+        # Fire small bullets when the gun is cool
+        if self.get_gun_heat() == 0:
+            await self.fire(1.5)
+
+if __name__ == "__main__":
+    # Provide bot metadata via BotInfo so no env vars are required
+    info = BotInfo(
+        name="MyFirstBot",
+        version="1.0",
+        authors=["Your Name"],
+        description="A simple starter bot written in Python",
+    )
+    # Default server URL in the GUI is ws://localhost:7654
+    asyncio.run(MyFirstBot(bot_info=info, server_url="ws://localhost:7654").start())
+```
+
+How to run:
+- Install and start the Robocode Tank Royale GUI from the releases page (it starts the game server).
+- Save the code above as MyFirstBot.py and run: `python MyFirstBot.py`
+- In the GUI, add your bot process and start a battle.
 
 ## Features
 
@@ -76,12 +104,10 @@ The Python Bot API provides:
 ## Documentation & Resources
 
 - **📖 Official Documentation**: [robocode-dev.github.io/tank-royale](https://robocode-dev.github.io/tank-royale/)
-- **🚀 Getting Started Guide
-  **: [Getting Started Tutorial](https://robocode-dev.github.io/tank-royale/tutorial/getting-started)
-- **🤖 My First Bot Tutorial
-  **: [Create Your First Bot](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html)
+- 🚀 Getting Started: [Tutorial](https://robocode-dev.github.io/tank-royale/tutorial/getting-started.html)
+- 🤖 My First Bot: [Create Your First Bot](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html)
 - **📚 API Reference**: [Python API Documentation](https://robocode-dev.github.io/tank-royale/api/apis.html)
-- **🤖 Sample Bots**: [Python Examples](https://github.com/robocode-dev/tank-royale/tree/master/sample-bots/python)
+- **🤖 Sample Bots**: [Python Examples](https://github.com/robocode-dev/tank-royale/tree/main/sample-bots/python)
 - **💾 Source Code**: [GitHub Repository](https://github.com/robocode-dev/tank-royale/tree/main/bot-api/python)
 
 ## Supported Platforms
@@ -108,7 +134,7 @@ the stable release.
 
 ## License
 
-Licensed under the [Apache License 2.0](https://github.com/robocode-dev/tank-royale/blob/master/LICENSE)
+Licensed under the [Apache License 2.0](https://github.com/robocode-dev/tank-royale/blob/main/LICENSE)
 
 ## Copyright
 
