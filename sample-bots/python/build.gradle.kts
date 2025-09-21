@@ -107,6 +107,11 @@ private fun createBotScriptFile(botDir: Path, archivePath: Path, extension: Stri
     createCustomPrintWriter(scriptFile, lineEnding).use { writer ->
         writeScriptContent(writer, extension, botName)
     }
+
+    // Make scripts executable on *nix systems for better UX; harmless on Windows
+    // Using java.io.File#setExecutable to avoid POSIX dependency on Windows build agents
+    @Suppress("ResultOfMethodCallIgnored")
+    scriptFile.setExecutable(true, false)
 }
 
 private fun createBotScriptFiles(botDir: Path, archivePath: Path) {
