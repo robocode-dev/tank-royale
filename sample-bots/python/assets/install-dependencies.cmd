@@ -38,19 +38,24 @@ if not exist ".deps_installed" (
     set "WHEEL="
     for %%f in ("robocode_tank_royale-*.whl") do (
         set "WHEEL=%%~nxf"
-        goto :foundwheel
-    )
-    goto :afterwheel
-
-:foundwheel
-    echo Installing local wheel: %WHEEL%
-    %PY% -m pip install -q "%WHEEL%"
-    if errorlevel 1 (
-        echo Error: Failed to install local wheel %WHEEL%
-        exit /b %errorlevel%
     )
 
-:afterwheel
+    if defined WHEEL (
+        echo Installing local wheel: %WHEEL%
+        %PY% -m pip install -q "%WHEEL%"
+        if errorlevel 1 (
+            echo Error: Failed to install local wheel %WHEEL%
+            exit /b %errorlevel%
+        )
+    ) else (
+        echo Local robocode_tank_royale-*.whl not found. Installing robocode-tank-royale from PyPI...
+        %PY% -m pip install -q robocode-tank-royale
+        if errorlevel 1 (
+            echo Error: Failed to install robocode-tank-royale from PyPI
+            exit /b %errorlevel%
+        )
+    )
+
     rem Create marker file to indicate dependencies are installed
     echo. > .deps_installed
     echo Dependencies installed.
