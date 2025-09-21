@@ -20,7 +20,7 @@ private val teamSuffix = "Team"
 private val depsFolder = "deps"
 private val assetsFolder = "assets"
 private val requirementsFile = "requirements.txt"
-private val wheelPrefix = "robocode_tank_royale-"
+private val wheelPrefixes = listOf("robocode_tank_royale-", "robocode-tank-royale-")
 private val wheelExtension = ".whl"
 private val botApiPythonPath = "bot-api/python"
 private val pythonDistPath = "$botApiPythonPath/dist"
@@ -154,7 +154,7 @@ private fun findWheelFile(distDir: Path): Path {
     return list(distDir).use { paths ->
         paths.filter { path ->
             val fileName = path.fileName.toString()
-            fileName.startsWith(wheelPrefix) && fileName.endsWith(wheelExtension)
+            wheelPrefixes.any { prefix -> fileName.startsWith(prefix) } && fileName.endsWith(wheelExtension)
         }.findFirst().orElseThrow {
             GradleException("robocode_tank_royale wheel file not found in: ${distDir.toAbsolutePath()}")
         }

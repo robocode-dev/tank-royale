@@ -64,13 +64,13 @@ setup_venv() {
 install_local_wheel_or_pypi() {
   # Install local wheel if present, otherwise install from PyPI
   shopt -s nullglob
-  local wheels=(robocode_tank_royale-*.whl)
+  local wheels=(robocode_tank_royale-*.whl robocode-tank-royale-*.whl)
   shopt -u nullglob
   if [ ${#wheels[@]} -gt 0 ]; then
     echo "Installing local wheel: ${wheels[0]}"
     $1 install -q "${wheels[0]}"
   else
-    echo "Local robocode_tank_royale-*.whl not found. Installing robocode-tank-royale from PyPI..."
+    echo "Local robocode_tank_royale-*.whl or robocode-tank-royale-*.whl not found. Installing robocode-tank-royale from PyPI..."
     $1 install -q "robocode-tank-royale"
   fi
 }

@@ -77,7 +77,7 @@ goto :DONE
 :install_wheel_or_pypi
 rem Install local wheel if present, otherwise install from PyPI
 set "WHEEL="
-for %%f in ("robocode_tank_royale-*.whl") do (
+for %%f in ("robocode_tank_royale-*.whl" "robocode-tank-royale-*.whl") do (
     set "WHEEL=%%~nxf"
 )
 if defined WHEEL (
@@ -88,7 +88,7 @@ if defined WHEEL (
         exit /b %errorlevel%
     )
 ) else (
-    echo Local robocode_tank_royale-*.whl not found. Installing robocode-tank-royale from PyPI...
+    echo Local robocode_tank_royale-*.whl or robocode-tank-royale-*.whl not found. Installing robocode-tank-royale from PyPI...
     "%VENV_PY%" -m pip install -q robocode-tank-royale
     if errorlevel 1 (
         echo Error: Failed to install robocode-tank-royale from PyPI
