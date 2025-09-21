@@ -65,7 +65,6 @@ if errorlevel 1 (
     exit /b %errorlevel%
 )
 
-set "PIPCMD=\"%VENV_PY%\" -m pip"
 call :install_wheel_or_pypi
 if errorlevel 1 exit /b %errorlevel%
 
@@ -83,14 +82,14 @@ for %%f in ("robocode_tank_royale-*.whl") do (
 )
 if defined WHEEL (
     echo Installing local wheel: !WHEEL!
-    call %PIPCMD% install -q "!WHEEL!"
+    "%VENV_PY%" -m pip install -q "!WHEEL!"
     if errorlevel 1 (
         echo Error: Failed to install local wheel !WHEEL!
         exit /b %errorlevel%
     )
 ) else (
     echo Local robocode_tank_royale-*.whl not found. Installing robocode-tank-royale from PyPI...
-    call %PIPCMD% install -q robocode-tank-royale
+    "%VENV_PY%" -m pip install -q robocode-tank-royale
     if errorlevel 1 (
         echo Error: Failed to install robocode-tank-royale from PyPI
         exit /b %errorlevel%
