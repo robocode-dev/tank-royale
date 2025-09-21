@@ -35,7 +35,7 @@ setup_venv() {
 
   # Create virtual environment if it doesn't exist
   if [ ! -d "$venv_dir" ]; then
-    echo "Creating virtual environment..."
+    echo "Creating virtual environment..." >&2
     if ! "$python_cmd" -m venv "$venv_dir"; then
       echo "Error: Failed to create virtual environment. Make sure python3-venv is installed." >&2
       echo "Try: sudo apt install python3-venv python3-full" >&2
@@ -43,8 +43,22 @@ setup_venv() {
     fi
   fi
 
-  # Return the path to the venv pip
-  echo "$venv_dir/bin/pip"
+  local venv_python="$venv_dir/bin/python"
+
+  # Ensure pip module is available in the virtual environment
+  if ! "$venv_python" -m pip --version >/dev/null 2>&1; then
+    # Try to bootstrap pip quietly; ignore failure so we can check afterwards
+    "$venv_python" -m ensurepip --upgrade >/dev/null 2>&1 || true
+  fi
+
+  # Verify pip works via module invocation and return a runner command
+  if "$venv_python" -m pip --version >/dev/null 2>&1; then
+    echo "$venv_python -m pip"
+    return 0
+  else
+    echo "Error: pip is not available in the virtual environment. ensurepip may be disabled. Please install python3-venv or Python with pip included." >&2
+    return 1
+  fi
 }
 
 install_local_wheel_or_pypi() {
@@ -98,7 +112,7 @@ if [ ! -f ".deps_installed" ]; then
       exit 1
     fi
 
-    if "$VENV_PIP" install -q -r requirements.txt; then
+    if ${VENV_PIP} install -q -r requirements.txt; then
       install_local_wheel_or_pypi "$VENV_PIP"
       # Create marker file to indicate dependencies are installed
       : > .deps_installed
