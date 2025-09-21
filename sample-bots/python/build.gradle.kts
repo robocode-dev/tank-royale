@@ -61,9 +61,9 @@ private fun createShellScript(botName: String): String = """
     """.trimIndent()
 
 private fun createBatchScript(botName: String): String = """
-    call ..\deps\install-dependencies.cmd
-
     cd /d "%~dp0"
+
+    call ..\deps\install-dependencies.cmd
 
     set "VENV_PY=..\deps\venv\Scripts\python.exe"
     if exist "%VENV_PY%" (
@@ -80,7 +80,7 @@ private fun createBatchScript(botName: String): String = """
       echo Error: Python not found. Please install Python 3.
       exit /b 1
     )
-    %PY% "$botName.py" >nul
+    %PY% "$botName.py"
     """.trimIndent()
 
 private fun writeScriptContent(writer: PrintWriter, scriptType: String, botName: String) {
