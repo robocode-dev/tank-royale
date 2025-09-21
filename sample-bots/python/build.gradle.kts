@@ -41,11 +41,11 @@ private fun createShellScript(botName: String): String = """
     #!/bin/sh
     set -e
     
-    # Install dependencies first
-    ../deps/install-dependencies.sh
-    
     # Change to script directory
     cd -- "$(dirname -- "$0")"
+    
+    # Install dependencies (relative to script dir)
+    ../deps/install-dependencies.sh
     
     # Try to use venv python first (correct path: ../deps/venv)
     if [ -x "../deps/venv/bin/python" ]; then
@@ -64,6 +64,13 @@ private fun createBatchScript(botName: String): String = """
     call ..\deps\install-dependencies.cmd
 
     cd /d "%~dp0"
+
+    set "VENV_PY=..\deps\venv\Scripts\python.exe"
+    if exist "%VENV_PY%" (
+      "%VENV_PY%" "$botName.py"
+      exit /b %errorlevel%
+    )
+
     set "PY="
     where python3 >nul 2>nul && set "PY=python3"
     if not defined PY (
@@ -73,7 +80,7 @@ private fun createBatchScript(botName: String): String = """
       echo Error: Python not found. Please install Python 3.
       exit /b 1
     )
-    %PY% $botName.py >nul
+    %PY% "$botName.py" >nul
     """.trimIndent()
 
 private fun writeScriptContent(writer: PrintWriter, scriptType: String, botName: String) {
