@@ -15,18 +15,14 @@ setup(
         "robocode_tank_royale.bot_api": "src/robocode_tank_royale/bot_api",
         # Install the lightweight shim as robocode_tank_royale.schema
         # This shim forwards imports to the generated schema package at runtime
-        "robocode_tank_royale.schema": "src/robocode_tank_royale/schema",
+        "robocode_tank_royale.schema": "generated/robocode_tank_royale/schema",
         # Ship the generated schema as an actual package under the 'generated' namespace
-        # so the shim can import it in installed environments
-        "generated.robocode_tank_royale.tank_royale.schema": "generated/robocode_tank_royale/tank_royale/schema",
     },
     packages=[
         # Core API packages
         "robocode_tank_royale.bot_api",
         # Shim package (re-exports generated types)
         "robocode_tank_royale.schema",
-        # Generated schema package (installed under the 'generated' namespace)
-        "generated.robocode_tank_royale.tank_royale.schema",
     ]
     + [
         f"robocode_tank_royale.bot_api.{subpackage}"

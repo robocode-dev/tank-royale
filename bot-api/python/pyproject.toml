@@ -30,7 +30,7 @@ maintainers = [
 ]
 
 [tool.setuptools.packages.find]
-where = ["src", "generated/robocode_tank_royale/tank_royale"]
+where = ["src", "generated"]
 
 [project.urls]
 Homepage = "https://robocode-dev.github.io/tank-royale"

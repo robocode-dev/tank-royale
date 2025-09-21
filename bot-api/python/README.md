@@ -13,7 +13,7 @@ The Bot API is provided via a pip package.
 First, generate schemas into a tank_royale.schema package:
 
 ```shell
-python scripts/schema_to_python.py -d ../../schema/schemas -o generated/robocode_tank_royale/tank_royale/schema
+python scripts/schema_to_python.py -d ../../schema/schemas -o generated/robocode_tank_royale/schema
 ```
 
 Then install a local package using in "editable" mode setup.py, linking the installed package to the source directory
