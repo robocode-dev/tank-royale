@@ -6,6 +6,7 @@
 # - Changes to the directory where this script resides
 # - If .deps_installed does not exist, installs requirements from requirements.txt
 # - Uses a virtual environment to avoid externally-managed-environment errors
+# - Also installs local robocode_tank_royale-*.whl if present
 # - Only creates .deps_installed if installation succeeds
 # - Exits with non-zero code and message on failure
 
@@ -46,6 +47,17 @@ setup_venv() {
   echo "$venv_dir/bin/pip"
 }
 
+install_local_wheel() {
+  # Install local wheel if present
+  shopt -s nullglob
+  local wheels=(robocode_tank_royale-*.whl)
+  shopt -u nullglob
+  if [ ${#wheels[@]} -gt 0 ]; then
+    echo "Installing local wheel: ${wheels[0]}"
+    $1 install -q "${wheels[0]}"
+  fi
+}
+
 if [ ! -f ".deps_installed" ]; then
   echo "Installing dependencies..."
 
@@ -70,6 +82,7 @@ if [ ! -f ".deps_installed" ]; then
 
   # Try system pip installation first
   if [ -n "$PIP_CMD" ] && ${PIP_CMD} install -q -r requirements.txt 2>/dev/null; then
+    install_local_wheel "$PIP_CMD"
     # Create marker file to indicate dependencies are installed
     : > .deps_installed
     echo "Dependencies installed using system pip."
@@ -83,6 +96,7 @@ if [ ! -f ".deps_installed" ]; then
     fi
 
     if "$VENV_PIP" install -q -r requirements.txt; then
+      install_local_wheel "$VENV_PIP"
       # Create marker file to indicate dependencies are installed
       : > .deps_installed
       echo "Dependencies installed in virtual environment."

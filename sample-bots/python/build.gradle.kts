@@ -37,21 +37,27 @@ val isBotProjectDir = rootProject.extra["isBotProjectDir"] as (Path) -> Boolean
 @Suppress("UNCHECKED_CAST")
 val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
-private fun createShellScript(botName: String): String = $$"""
+private fun createShellScript(botName: String): String = """
     #!/bin/sh
+    set -e
+    
+    # Install dependencies first
     ../deps/install-dependencies.sh
-
+    
+    # Change to script directory
     cd -- "$(dirname -- "$0")"
-    if command -v python3 >/dev/null 2>&1; then
-      PY=python3
+    
+    # Try to use venv python first (correct path: ../deps/venv)
+    if [ -x "../deps/venv/bin/python" ]; then
+        exec "../deps/venv/bin/python" "$botName.py"
+    elif command -v python3 >/dev/null 2>&1; then
+        exec python3 "$botName.py"
     elif command -v python >/dev/null 2>&1; then
-      PY=python
+        exec python "$botName.py"
     else
-      echo "Error: Python not found. Please install python3 or python." >&2
-      exit 1
+        echo "Error: Python not found. Please install python3 or python." >&2
+        exit 1
     fi
-
-    exec "$PY" $$botName.py
     """.trimIndent()
 
 private fun createBatchScript(botName: String): String = """
