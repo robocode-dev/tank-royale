@@ -1,6 +1,5 @@
 from threading import Lock
-from types import CoroutineType
-from typing import Any, Generic, TypeVar, Callable, List
+from typing import Any, Generic, TypeVar, Callable, List, Coroutine
 import heapq
 from weakref import WeakSet
 from ..events import EventABC
@@ -25,13 +24,13 @@ class EventHandler(Generic[T]):
         """Initialize a new EventHandler instance."""
         self._lock = Lock()
         self._subscriber_entries: List[EventHandler.EntryWithPriority] = []
-        self._subscriber_set: WeakSet[Callable[[T], CoroutineType[Any, Any, None]]] = (
+        self._subscriber_set: WeakSet[Callable[[T], Coroutine[Any, Any, None]]] = (
             WeakSet()
         )
 
     def subscribe(
         self,
-        subscriber: Callable[[T], CoroutineType[Any, Any, None]],
+        subscriber: Callable[[T], Coroutine[Any, Any, None]],
         priority: int = _DEFAULT_PRIORITY,
     ) -> None:
         """Subscribe a new event handler with a given priority.
@@ -61,7 +60,7 @@ class EventHandler(Generic[T]):
             heapq.heappush(self._subscriber_entries, entry)
 
     def unsubscribe(
-        self, subscriber: Callable[[T], CoroutineType[Any, Any, None]]
+        self, subscriber: Callable[[T], Coroutine[Any, Any, None]]
     ) -> bool:
         """Unsubscribe a subscriber from this event handler.
 
@@ -132,7 +131,7 @@ class EventHandler(Generic[T]):
 
         def __init__(
             self,
-            subscriber: Callable[[T], CoroutineType[Any, Any, None]],
+            subscriber: Callable[[T], Coroutine[Any, Any, None]],
             priority: int,
         ):
             """Constructs a new entry with the specified subscriber and priority.
