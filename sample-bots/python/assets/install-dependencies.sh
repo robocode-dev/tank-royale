@@ -9,11 +9,46 @@
 # - Also installs local robocode_tank_royale-*.whl if present
 # - Only creates .deps_installed if installation succeeds
 # - Exits with non-zero code and message on failure
+# - Uses a simple lock (.deps_lock dir) to avoid concurrent installs
 
 set -euo pipefail
 
 # Change to the directory where this script is located
 cd -- "$(dirname -- "$0")"
+
+LOCK_DIR=".deps_lock"
+
+# Fast path: if already installed, exit silently
+if [ -f ".deps_installed" ]; then
+  exit 0
+fi
+
+# Acquire lock using mkdir as a mutex, wait up to 300 seconds
+acquire_lock() {
+  local tries=0
+  while ! mkdir "$LOCK_DIR" 2>/dev/null; do
+    tries=$((tries+1))
+    if [ $tries -ge 300 ]; then
+      echo "Error: Could not acquire dependency installation lock after 300 seconds." >&2
+      exit 1
+    fi
+    sleep 1
+  done
+}
+
+release_lock() {
+  rmdir "$LOCK_DIR" 2>/dev/null || rm -rf "$LOCK_DIR" 2>/dev/null || true
+}
+
+trap 'release_lock' EXIT INT TERM
+
+acquire_lock
+
+# Double-check after acquiring lock
+if [ -f ".deps_installed" ]; then
+  release_lock
+  exit 0
+fi
 
 # Helper to find a working Python command
 find_python() {
@@ -75,52 +110,50 @@ install_local_wheel_or_pypi() {
   fi
 }
 
-if [ ! -f ".deps_installed" ]; then
-  echo "Installing dependencies..."
+echo "Installing dependencies..."
 
-  if ! PYTHON_CMD=$(find_python); then
-    echo "Error: Python not found. Please install Python." >&2
+if ! PYTHON_CMD=$(find_python); then
+  echo "Error: Python not found. Please install Python." >&2
+  exit 1
+fi
+
+# Try to use system pip first, fall back to virtual environment on failure
+PIP_CMD=""
+
+# First, try to find system pip
+if command -v python3 >/dev/null 2>&1 && python3 -m pip --version >/dev/null 2>&1; then
+  PIP_CMD="python3 -m pip"
+elif command -v python >/dev/null 2>&1 && python -m pip --version >/dev/null 2>&1; then
+  PIP_CMD="python -m pip"
+elif command -v pip3 >/dev/null 2>&1; then
+  PIP_CMD="pip3"
+elif command -v pip >/dev/null 2>&1; then
+  PIP_CMD="pip"
+fi
+
+# Try system pip installation first
+if [ -n "$PIP_CMD" ] && ${PIP_CMD} install -q -r requirements.txt 2>/dev/null; then
+  install_local_wheel_or_pypi "$PIP_CMD"
+  # Create marker file to indicate dependencies are installed
+  : > .deps_installed
+  echo "Dependencies installed using system pip."
+else
+  # System pip failed (likely externally-managed-environment), use virtual environment
+  echo "System pip failed (likely externally managed environment). Using virtual environment..."
+
+  if ! VENV_PIP=$(setup_venv "$PYTHON_CMD"); then
+    echo "Error: Failed to setup virtual environment." >&2
     exit 1
   fi
 
-  # Try to use system pip first, fall back to virtual environment on failure
-  PIP_CMD=""
-
-  # First, try to find system pip
-  if command -v python3 >/dev/null 2>&1 && python3 -m pip --version >/dev/null 2>&1; then
-    PIP_CMD="python3 -m pip"
-  elif command -v python >/dev/null 2>&1 && python -m pip --version >/dev/null 2>&1; then
-    PIP_CMD="python -m pip"
-  elif command -v pip3 >/dev/null 2>&1; then
-    PIP_CMD="pip3"
-  elif command -v pip >/dev/null 2>&1; then
-    PIP_CMD="pip"
-  fi
-
-  # Try system pip installation first
-  if [ -n "$PIP_CMD" ] && ${PIP_CMD} install -q -r requirements.txt 2>/dev/null; then
-    install_local_wheel_or_pypi "$PIP_CMD"
+  if ${VENV_PIP} install -q -r requirements.txt; then
+    install_local_wheel_or_pypi "$VENV_PIP"
     # Create marker file to indicate dependencies are installed
     : > .deps_installed
-    echo "Dependencies installed using system pip."
+    echo "Dependencies installed in virtual environment."
+    echo "Note: Virtual environment created in ./venv directory"
   else
-    # System pip failed (likely externally-managed-environment), use virtual environment
-    echo "System pip failed (likely externally managed environment). Using virtual environment..."
-
-    if ! VENV_PIP=$(setup_venv "$PYTHON_CMD"); then
-      echo "Error: Failed to setup virtual environment." >&2
-      exit 1
-    fi
-
-    if ${VENV_PIP} install -q -r requirements.txt; then
-      install_local_wheel_or_pypi "$VENV_PIP"
-      # Create marker file to indicate dependencies are installed
-      : > .deps_installed
-      echo "Dependencies installed in virtual environment."
-      echo "Note: Virtual environment created in ./venv directory"
-    else
-      echo "Error: Failed to install dependencies in virtual environment." >&2
-      exit 1
-    fi
+    echo "Error: Failed to install dependencies in virtual environment." >&2
+    exit 1
   fi
 fi

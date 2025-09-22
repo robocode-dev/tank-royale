@@ -11,12 +11,36 @@ rem - Uses a virtual environment to avoid externally-managed-environment errors
 rem - Also installs local robocode_tank_royale-*.whl if present
 rem - Only creates .deps_installed if installation succeeds
 rem - Exits with non-zero code and message on failure
+rem - Uses a simple lock (.deps_lock dir) to avoid concurrent installs
 
 rem Change to the directory where this script is located
 cd /d "%~dp0"
 
-rem If already installed, exit silently
+rem Fast path: if already installed, exit silently
 if exist ".deps_installed" goto :DONE
+
+rem Acquire lock (mkdir as mutex). Wait up to 300 seconds.
+set "LOCK_DIR=.deps_lock"
+set "LOCK_ACQUIRED="
+set /a TRY=0
+:ACQUIRE_LOCK
+2>nul mkdir "%LOCK_DIR%"
+if not errorlevel 1 (
+  set "LOCK_ACQUIRED=1"
+  goto :LOCKED
+)
+set /a TRY+=1
+if %TRY% GEQ 300 (
+  echo Error: Could not acquire dependency installation lock after 300 seconds.
+  exit /b 1
+)
+rem Sleep 1 second and retry
+>nul timeout /t 1 /nobreak
+goto :ACQUIRE_LOCK
+
+:LOCKED
+rem Double-check after acquiring lock
+if exist ".deps_installed" goto :RELEASE_AND_DONE
 
 echo Installing dependencies...
 
@@ -28,7 +52,7 @@ if not defined PY (
 )
 if not defined PY (
     echo Error: Python not found. Please install Python 3.
-    exit /b 1
+    goto :RELEASE_AND_FAIL
 )
 
 rem Always use a virtual environment to avoid installing into global Python
@@ -41,7 +65,7 @@ if not exist "%VENV_DIR%" (
     %PY% -m venv "%VENV_DIR%"
     if errorlevel 1 (
         echo Error: Failed to create virtual environment. Make sure the Python venv module is installed.
-        exit /b %errorlevel%
+        goto :RELEASE_AND_FAIL
     )
 )
 
@@ -55,24 +79,34 @@ if errorlevel 1 (
 "%VENV_PY%" -m pip --version >nul 2>nul
 if errorlevel 1 (
     echo Error: pip is not available in the virtual environment. ensurepip may be disabled. Please install Python with pip included.
-    exit /b 1
+    goto :RELEASE_AND_FAIL
 )
 
 rem Install requirements in the virtual environment
 "%VENV_PY%" -m pip install -q -r requirements.txt
 if errorlevel 1 (
     echo Error: Failed to install dependencies in virtual environment.
-    exit /b %errorlevel%
+    goto :RELEASE_AND_FAIL
 )
 
 call :install_wheel_or_pypi
-if errorlevel 1 exit /b %errorlevel%
+if errorlevel 1 goto :RELEASE_AND_FAIL
 
 echo. > .deps_installed
 echo Dependencies installed in virtual environment.
 echo Note: Virtual environment created in .\venv directory
 
+:RELEASE_AND_DONE
+if defined LOCK_ACQUIRED (
+  rmdir "%LOCK_DIR%" 2>nul
+)
 goto :DONE
+
+:RELEASE_AND_FAIL
+if defined LOCK_ACQUIRED (
+  rmdir "%LOCK_DIR%" 2>nul
+)
+exit /b 1
 
 :install_wheel_or_pypi
 rem Install local wheel if present, otherwise install from PyPI
