@@ -2,6 +2,26 @@ plugins {
     base
 }
 
+// Helper that tries python3 first, then python. Throws if neither is available.
+fun findPython(): String {
+    val candidates = listOf("python3", "python")
+    for (c in candidates) {
+        try {
+            val pb = ProcessBuilder(c, "--version")
+            pb.redirectErrorStream(true)
+            val proc = pb.start()
+            val exit = proc.waitFor()
+            if (exit == 0) {
+                println("Using python command: $c")
+                return c
+            }
+        } catch (_: Exception) {
+            // ignore and try next candidate
+        }
+    }
+    throw GradleException("Neither 'python3' nor 'python' was found on PATH. Please install Python.")
+}
+
 tasks {
     named("clean") {
         doLast {
@@ -13,13 +33,13 @@ tasks {
     }
 
     val `install-requirements` by registering(Exec::class) {
-        commandLine("pip", "install", "-r", "requirements.txt")
+        commandLine(findPython(), "-m", "pip", "install", "-r", "requirements.txt")
     }
 
     val `generate-schema` by registering(Exec::class) {
         dependsOn(`install-requirements`)
 
-        commandLine("python", "scripts/schema_to_python.py", "-d", "../../schema/schemas", "-o", "generated/robocode_tank_royale/schema")
+        commandLine(findPython(), "scripts/schema_to_python.py", "-d", "../../schema/schemas", "-o", "generated/robocode_tank_royale/schema")
     }
 
     val `generate-version` by registering {
@@ -42,11 +62,11 @@ tasks {
         dependsOn(`generate-schema`)
         dependsOn(`generate-version`)
 
-        commandLine("pip", "install", "-e", ".")
+        commandLine(findPython(), "-m", "pip", "install", "-e", ".")
     }
 
     val `pip-install-test-requirements` by registering(Exec::class) {
-        commandLine("pip", "install", "-r", "requirements-test.txt")
+        commandLine(findPython(), "-m", "pip", "install", "-r", "requirements-test.txt")
     }
 
     // run pytest
@@ -55,7 +75,7 @@ tasks {
         description = "Runs Python tests with pytest"
         dependsOn(`pip-install`)
         dependsOn(`pip-install-test-requirements`)
-        commandLine("python", "-m", "pytest")
+        commandLine(findPython(), "-m", "pytest")
     }
 
     // make it part of the standard verification lifecycle
@@ -67,7 +87,7 @@ tasks {
     val `install-build-tools` by registering(Exec::class) {
         group = "build"
         description = "Installs Python build tooling"
-        commandLine("python", "-m", "pip", "install", "build", "wheel")
+        commandLine(findPython(), "-m", "pip", "install", "build", "wheel")
     }
 
     // Build distributable artifacts (wheel + sdist)
@@ -77,7 +97,7 @@ tasks {
         dependsOn(`generate-schema`)
         dependsOn(`generate-version`)
         dependsOn(`install-build-tools`)
-        commandLine("python", "-m", "build")
+        commandLine(findPython(), "-m", "build")
     }
 
     named("build") {
