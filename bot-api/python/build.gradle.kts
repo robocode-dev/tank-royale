@@ -110,7 +110,9 @@ tasks {
     val `install-sphinx` by registering(Exec::class) {
         group = "documentation"
         description = "Installs Sphinx for building Python API docs"
-        commandLine(findPython(), "-m", "pip", "install", "sphinx")
+        // Also install sphinxawesome-theme so the sphinxawesome_theme is available
+        // during sphinx-build: pip install sphinx sphinxawesome-theme
+        commandLine(findPython(), "-m", "pip", "install", "sphinx", "sphinxawesome-theme")
     }
 
     val prepareSphinxSource by registering(Copy::class) {

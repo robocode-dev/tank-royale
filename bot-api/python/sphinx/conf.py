@@ -79,5 +79,49 @@ exclude_patterns: list[str] = [
 
 # -- Options for HTML output -------------------------------------------------
 
+# Try to use the Awesome Sphinx Theme (sphinxawesome_theme) if it's installed.
+# If not installed, warn and fall back to the default 'alabaster' theme so
+# documentation builds don't fail unexpectedly.
+#
+# Install the theme with:
+#   pip install sphinxawesome-theme
+#
+# See: https://pypi.org/project/sphinxawesome-theme/
+import warnings
+
 html_theme = "alabaster"
+html_theme_path: list[str] = []
+
+try:
+    import sphinxawesome_theme  # type: ignore
+except Exception:
+    warnings.warn(
+        "sphinxawesome_theme not found; falling back to 'alabaster'. "
+        "To use the Awesome theme install it with: pip install sphinxawesome-theme",
+        UserWarning,
+    )
+    html_theme = "alabaster"
+else:
+    html_theme = "sphinxawesome_theme"
+    # Some theme packages expose get_html_theme_path(); if available, add it so
+    # Sphinx can locate theme resources (older setups sometimes require this).
+    get_path = getattr(sphinxawesome_theme, "get_html_theme_path", None)
+    if callable(get_path):
+        try:
+            theme_path = get_path()
+            if theme_path:
+                html_theme_path = [theme_path]
+        except Exception:
+            # If retrieving the theme path fails, ignore and rely on Sphinx's
+            # normal theme discovery (the theme is installed in site-packages).
+            pass
+
+# Minimal theme options placeholder; customize as needed (see theme docs).
+html_theme_options = {
+    # Example options you can enable/adjust:
+    # "github_user": "your-gh-username",
+    # "github_repo": "your-repo",
+    # "logo": "logo.png",
+}
+
 html_static_path = ["_static"]
