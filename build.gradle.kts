@@ -24,17 +24,14 @@ plugins {
     alias(libs.plugins.benmanes.versions)
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
-subprojects {
-
+allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
     }
+}
+
+subprojects {
 
     // Apply common Java configuration to all subprojects with a Java plugin
     plugins.withId("java") {
