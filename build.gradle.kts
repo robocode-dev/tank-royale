@@ -158,6 +158,13 @@ subprojects {
 }
 
 tasks {
+    // Re-usable list of documentation tasks used in multiple task definitions
+    val docTasks = listOf(
+        "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
+        "bot-api:java:copyJavaApiDocs",     // Javadocs for Java Bot API
+        "bot-api:python:copyPythonApiDocs"  // Sphinx documentation for Python Bot API
+    )
+
     register("build-release") {
         description = "Builds a release"
         dependsOn(
@@ -168,20 +175,12 @@ tasks {
             "gui:assemble",              // GUI
             "sample-bots:zip",           // Sample bots
         )
-        finalizedBy(
-            "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
-            "bot-api:java:copyJavaApiDocs",     // Javadocs for Java Bot API
-            "bot-api:python:copyPythonApiDocs"  // Sphinx documentation for Python Bot API
-        )
+        finalizedBy(*docTasks.toTypedArray())
     }
 
     register("upload-docs") {
         description = "Generate and upload all documentation"
-        dependsOn(
-            "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
-            "bot-api:java:copyJavaApiDocs",     // Javadocs for Java Bot API
-            "bot-api:python:copyPythonApiDocs"  // Sphinx documentation for Python Bot API
-        )
+        dependsOn(*docTasks.toTypedArray())
     }
 
     register("create-release") {
