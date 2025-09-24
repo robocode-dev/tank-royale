@@ -166,16 +166,17 @@ tasks {
         )
         finalizedBy(
             "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
-            "bot-api:java:copyJavaApiDocs"      // Javadocs for Java Bot API
+            "bot-api:java:copyJavaApiDocs",     // Javadocs for Java Bot API
+            "bot-api:python:copyPythonApiDocs"  // Sphinx documentation for Python Bot API
         )
     }
 
     register("upload-docs") {
         description = "Generate and upload all documentation"
         dependsOn(
-            "docs-build:copyGeneratedDocs",      // Documentation
             "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
-            "bot-api:java:copyJavaApiDocs"      // Javadocs for Java Bot API
+            "bot-api:java:copyJavaApiDocs",     // Javadocs for Java Bot API
+            "bot-api:python:copyPythonApiDocs"  // Sphinx documentation for Python Bot API
         )
     }
 
