@@ -8,3 +8,10 @@ Welcome to the API documentation for the Robocode Tank Royale Bot API (Python).
    :caption: Contents:
 
    api/modules
+
+Indices and tables
+------------------
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
