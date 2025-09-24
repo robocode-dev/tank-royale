@@ -125,12 +125,19 @@ subprojects {
                 logger.info("Signing password is present")
             }
 
-            useInMemoryPgpKeys(signingKey, signingPassword)
+            if (!signingKey.isNullOrBlank()) {
+                useInMemoryPgpKeys(signingKey, signingPassword)
+            } else {
+                // Avoid calling useInMemoryPgpKeys with a null/blank key
+                logger.info("Skipping useInMemoryPgpKeys because signing key is missing")
+            }
 
-            // Make signing required for artifacts
-            isRequired = true
+            // Make signing required only when a key is provided
+            isRequired = !signingKey.isNullOrBlank()
 
-            sign(publishing.publications)
+            if (isRequired) {
+                sign(publishing.publications)
+            }
         }
     }
 
