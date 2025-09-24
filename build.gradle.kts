@@ -173,7 +173,7 @@ tasks {
     register("upload-docs") {
         description = "Generate and upload all documentation"
         dependsOn(
-            "buildDocs:copyGeneratedDocs",      // Documentation
+            "docs-build:copyGeneratedDocs",      // Documentation
             "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
             "bot-api:java:copyJavaApiDocs"      // Javadocs for Java Bot API
         )

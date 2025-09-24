@@ -19,13 +19,13 @@ and for Gradle [here](https://gradle.org/install/#prerequisites).
 The docs are build by this command:
 
 ```shell
-./gradlew :buildDocs:clean :buildDocs:build
+./gradlew :docs-build:clean :docs-build:build
 ```
 
 In order to run and view the generated documentation, you write:
 
 ```shell
-./gradlew :buildDocs:run
+./gradlew :docs-build:run
 ```
 
 Now you can view the documentation with a browser from the link provided by VuePress as a result of generating the
@@ -36,7 +36,7 @@ documentation.
 After having built the docs you can upload the documentation to GitHub docs using this command:
 
 ```shell
-./gradlew :buildDocs:clean
+./gradlew :docs-build:clean
 ```
 
 This will create new files, update existing ones, and remove others.

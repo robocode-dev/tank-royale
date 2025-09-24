@@ -91,7 +91,7 @@ The official server is the heart of the game; drop-in replacements are a no-go. 
 
 ## Tools used for building all modules of Robocode
 
-[Here](buildDocs/docs/dev/tools.md) you can find a list of all the tools required for building all parts of Robocode.
+[Here](docs-build/docs/dev/tools.md) you can find a list of all the tools required for building all parts of Robocode.
 
 [programming game]: https://www.makeuseof.com/tag/best-programming-games/
 [LiteRumble]: https://literumble.appspot.com/

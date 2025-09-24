@@ -29,7 +29,7 @@ competition we appreciate so much.
 
 ## Example of a battle
 
-<img src="buildDocs/docs/images/robocode-battle-anim.gif" alt="GIF animation of tanks battling each other on a 2D battlefield">
+<img src="docs-build/docs/images/robocode-battle-anim.gif" alt="GIF animation of tanks battling each other on a 2D battlefield">
 
 ## Documentation
 

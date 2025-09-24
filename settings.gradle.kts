@@ -30,7 +30,7 @@ include("sample-bots:csharp")
 include("sample-bots:python")
 
 // Docs
-include("buildDocs")
+include("docs-build")
 
 // Check dependencies with this command: gradlew dependencyUpdates
 dependencyResolutionManagement {
