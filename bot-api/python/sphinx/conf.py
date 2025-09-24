@@ -49,6 +49,13 @@ extensions = [
     "sphinx.ext.viewcode",
 ]
 
+# Suppress duplicate-target warnings from the Python domain caused by re-exported
+# symbols (e.g., bot_api.BulletState and bot_api.bullet_state.BulletState). These
+# are harmless for our docs but clutter the build output.
+suppress_warnings = [
+    "ref.python",
+]
+
 # Have autodoc include members by default so method names are visible even if undocumented
 autodoc_default_options = {
     "members": True,
