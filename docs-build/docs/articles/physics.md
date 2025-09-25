@@ -33,7 +33,7 @@ Hence speed = acceleration × time, or deceleration × time.
 #### Maximum speed
 
 The speed can never exceed 8 units per turn. Note that technically, velocity is a vector, but in Robocode we simply
-assume the direction of the vector to be the bot´s heading.
+assume the direction of the vector to be the bot's heading.
 
 ### Distance (d)
 
@@ -72,7 +72,7 @@ The maximum rate of rotation is 45° per turn. This is added to the current rate
 ### Firepower
 
 The maximum firepower is 3 and the minimum firepower is 0.1. The amount of energy used on the firepower is subtracted
-from the bot´s energy.
+from the bot's energy.
 
 ### Bullet damage
 

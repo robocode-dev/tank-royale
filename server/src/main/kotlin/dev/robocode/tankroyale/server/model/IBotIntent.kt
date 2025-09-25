@@ -2,7 +2,7 @@ package dev.robocode.tankroyale.server.model
 
 /**
  * Interface for a bot intent. Bot intents are sent from bots between turns.
- * A bot intent reflects the bot´s orders for setting a new target speed, turn rates, bullet power etc.
+ * A bot intent reflects the bot's orders for setting a new target speed, turn rates, bullet power etc.
  */
 interface IBotIntent {
     /** New target speed. */

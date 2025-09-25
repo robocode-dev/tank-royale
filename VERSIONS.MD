@@ -1023,7 +1023,7 @@ Bot info:
 
 - Bot API:
     - Blocking bot functions do not stop bot after finishing ([#17]).
-    - Fixed issue where event queue would overflow with unhandled events when a Bot´s `run()` method has ended.
+    - Fixed issue where event queue would overflow with unhandled events when a bot's `run()` method has ended.
 - GUI:
     - The 'Start game' button is now disabled when the minimum or maximum number of participants is not met.
 

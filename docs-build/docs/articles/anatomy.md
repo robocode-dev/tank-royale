@@ -52,7 +52,7 @@ the radar is kept busy.
 ## Center
 
 The x,y coordinate of the bot is in the exact center of the bot. All parts of the bot is rotated around the center,
-which is the local coordinate (0,0) seen from the bot´s perspective.
+which is the local coordinate (0,0) seen from the bot's perspective.
 
 ![Bot anatomy](../images/center.svg)
 
@@ -81,7 +81,7 @@ $d = distance (hypotenuse) = \sqrt{\Delta{x}^2 + \Delta{y}^2}$
 Here Δx and Δy is the difference between the two coordinates i.e, the bot center and the bullet coordinate, on the x-
 and y-axis, where Δx = |x<sub>c</sub> - x<sub>b</sub>|, and Δy = |y<sub>c</sub> - y<sub>b</sub>|.
 
-If the _distance_ is lesser than the radius of the bot´s bounding circle, i.e. 18 units, then the bot has been hit by
+If the _distance_ is lesser than the radius of the bot's bounding circle, i.e. 18 units, then the bot has been hit by
 the bullet.
 
 > With the original Robocode a bounding square of 36x36 units is being used for detection if a bot is hit or not.  
