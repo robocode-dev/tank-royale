@@ -18,8 +18,7 @@ behave during battles.
 
 - Network-based battles via WebSocket connections
 - Multiple programming languages and platforms
-- Modern architecture and improved performance
-- Real-time multiplayer battles
+- Real-time battles with multiple bots
 
 ## Installation
 
@@ -104,8 +103,8 @@ The Python Bot API provides:
 ## Documentation & Resources
 
 - **📖 Official Documentation**: [robocode-dev.github.io/tank-royale](https://robocode-dev.github.io/tank-royale/)
-- 🚀 Getting Started: [Tutorial](https://robocode-dev.github.io/tank-royale/tutorial/getting-started.html)
-- 🤖 My First Bot: [Create Your First Bot](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html)
+- **🚀 Getting Started:** [Tutorial](https://robocode-dev.github.io/tank-royale/tutorial/getting-started.html)
+- **🤖 My First Bot:** [Create Your First Bot](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html)
 - **📚 API Reference**: [Python API Documentation](https://robocode-dev.github.io/tank-royale/api/apis.html)
 - **🤖 Sample Bots**: [Python Examples](https://github.com/robocode-dev/tank-royale/tree/main/sample-bots/python)
 - **💾 Source Code**: [GitHub Repository](https://github.com/robocode-dev/tank-royale/tree/main/bot-api/python)
@@ -124,8 +123,7 @@ The Python Bot API works with **Python 3.10+** on all supported platforms.
 
 - **GitHub Issues**: [Report bugs and request features](https://github.com/robocode-dev/tank-royale/issues)
 - **Discussions**: [Community discussions and help](https://github.com/robocode-dev/tank-royale/discussions)
-- **Contributing**: Check out
-  our [Contributing Guide](https://github.com/robocode-dev/tank-royale/blob/master/CONTRIBUTING.md)
+- **Contributing**: Check out our [Contributing Guide](https://github.com/robocode-dev/tank-royale/blob/master/CONTRIBUTING.md)
 
 ## Development Status
 
