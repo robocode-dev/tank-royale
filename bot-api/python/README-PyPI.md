@@ -1,6 +1,6 @@
 # Robocode Tank Royale - Python Bot API
 
-<img src="https://github.com/robocode-dev/tank-royale/raw/master/gfx/Logo/Robocode-logo.svg" width="220" alt="Robocode logo">
+<img src="https://raw.githubusercontent.com/robocode-dev/tank-royale/refs/heads/main/gfx/Tank/Tank-logo.svg" width="150" alt="Robocode logo">
 
 **Build the best - destroy the rest!**
 
