@@ -14,7 +14,26 @@ export default defineUserConfig({
 
   head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
 
-  bundler: viteBundler(),
+  bundler: viteBundler({
+    viteOptions: {
+      build: {
+        rollupOptions: {
+          output: {
+            // Use stable, non-hashed filenames so links remain the same across builds
+            entryFileNames: 'assets/[name].js',
+            chunkFileNames: 'assets/[name].js',
+            assetFileNames: (chunkInfo) => {
+              // Preserve original extension and folder
+              const ext = chunkInfo.name && chunkInfo.name.includes('.')
+                ? chunkInfo.name.substring(chunkInfo.name.lastIndexOf('.'))
+                : '[extname]'
+              return `assets/[name]${ext}`
+            },
+          },
+        },
+      },
+    },
+  }),
 
   theme: defaultTheme({
 
