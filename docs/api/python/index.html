@@ -7,9 +7,9 @@
 <meta content="white" media="(prefers-color-scheme: light)" name="theme-color"/>
 <meta content="black" media="(prefers-color-scheme: dark)" name="theme-color"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Robocode Tank Royale Bot API (Python) | Robocode Tank Royale Bot API (Python) 0.33.1 documentation</title>
-<meta content="Robocode Tank Royale Bot API (Python) | Robocode Tank Royale Bot API (Python) 0.33.1 documentation" property="og:title"/>
-<meta content="Robocode Tank Royale Bot API (Python) | Robocode Tank Royale Bot API (Python) 0.33.1 documentation" name="twitter:title"/>
+<title>Overview | Robocode Tank Royale Bot API (Python) 0.33.1 documentation</title>
+<meta content="Overview | Robocode Tank Royale Bot API (Python) 0.33.1 documentation" property="og:title"/>
+<meta content="Overview | Robocode Tank Royale Bot API (Python) 0.33.1 documentation" name="twitter:title"/>
 <link href="_static/pygments.css?v=e72c8e07" rel="stylesheet" type="text/css"/>
 <link href="_static/theme.css?v=42baaae4" rel="stylesheet" type="text/css"/>
 <link href="search.html" rel="search" title="Search"/>
@@ -86,9 +86,109 @@
 <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
 <div class="w-full min-w-0 mx-auto">
 <div id="content" role="main">
-<section id="robocode-tank-royale-bot-api-python">
-<h1>Robocode Tank Royale Bot API (Python)<a class="headerlink" href="#robocode-tank-royale-bot-api-python" title="Link to this heading">¶</a></h1>
-<p>Welcome to the API documentation for the Robocode Tank Royale Bot API (Python).</p>
+<section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h1>
+<p>This API is used when creating bots for the Robocode Tank Royale programming game. The API handles communication with a
+game server behind the scene, so you can focus on the fun part of controlling the bot.</p>
+<p>The Bot API is available here:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://robocode-dev.github.io/tank-royale/api/python/index.html">Bot API for Python</a></p></li>
+</ul>
+<p>A good way to get started with Robocode Tank Royale is to head over to the general documentation for Tank Royale to
+learn about the basics first:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://robocode-dev.github.io/tank-royale/">Robocode Tank Royale Docs</a></p></li>
+</ul>
+<p>Another good way to get started is to look at the source files for the sample bots.</p>
+<section id="the-bot-classes">
+<h2>The bot classes<a class="headerlink" href="#the-bot-classes" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#the-bot-classes'">¶</a></h2>
+<p>The first primary class that you should know about is the <code class="docutils literal notranslate"><span class="pre">Bot</span></code> class and perhaps the <code class="docutils literal notranslate"><span class="pre">BaseBot</span></code>. The <code class="docutils literal notranslate"><span class="pre">BaseBot</span></code> class
+provides all the base and minimum functionality of a bot and deals with the communication with the server. The <code class="docutils literal notranslate"><span class="pre">Bot</span></code>
+class is based on <code class="docutils literal notranslate"><span class="pre">BaseBot</span></code>, but provides more convenient methods like e.g. blocking methods for moving and turning the
+bot, and firing the gun.</p>
+</section>
+<section id="code-example">
+<h2>Code example<a class="headerlink" href="#code-example" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#code-example'">¶</a></h2>
+<p>Here is an example of a simple bot using the Bot API written in Python and should run as a regular application.</p>
+<p>MyFirstBot.py:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="kn">from</span><span class="w"> </span><span class="nn">robocode_tankroyale_botapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Bot</span><span class="p">,</span> <span class="n">BaseBot</span><span class="p">,</span> <span class="n">BotInfo</span>
+</span><span id="line-2"><span class="kn">from</span><span class="w"> </span><span class="nn">robocode_tankroyale_botapi.events</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScannedBotEvent</span><span class="p">,</span> <span class="n">HitByBulletEvent</span>
+</span><span id="line-3">
+</span><span id="line-4"><span class="c1"># ------------------------------------------------------------------</span>
+</span><span id="line-5"><span class="c1"># MyFirstBot</span>
+</span><span id="line-6"><span class="c1"># ------------------------------------------------------------------</span>
+</span><span id="line-7"><span class="c1"># A sample bot originally made for Robocode by Mathew Nelson.</span>
+</span><span id="line-8"><span class="c1"># Ported to Robocode Tank Royale by Flemming N. Larsen.</span>
+</span><span id="line-9"><span class="c1">#</span>
+</span><span id="line-10"><span class="c1"># Probably the first bot you will learn about.</span>
+</span><span id="line-11"><span class="c1"># Moves in a seesaw motion, and spins the gun around at each end.</span>
+</span><span id="line-12"><span class="c1"># ------------------------------------------------------------------</span>
+</span><span id="line-13"><span class="k">class</span><span class="w"> </span><span class="nc">MyFirstBot</span><span class="p">(</span><span class="n">Bot</span><span class="p">):</span>
+</span><span id="line-14">    <span class="c1"># Constructor, which loads the bot config file</span>
+</span><span id="line-15">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-16">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">BotInfo</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"MyFirstBot.json"</span><span class="p">))</span>
+</span><span id="line-17">
+</span><span id="line-18">    <span class="c1"># Called when a new round is started -&gt; initialize and do some movement</span>
+</span><span id="line-19">    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-20">        <span class="c1"># Repeat while the bot is running</span>
+</span><span id="line-21">        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+</span><span id="line-22">            <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</span><span id="line-23">            <span class="bp">self</span><span class="o">.</span><span class="n">turn_gun_left</span><span class="p">(</span><span class="mi">360</span><span class="p">)</span>
+</span><span id="line-24">            <span class="bp">self</span><span class="o">.</span><span class="n">back</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</span><span id="line-25">            <span class="bp">self</span><span class="o">.</span><span class="n">turn_gun_left</span><span class="p">(</span><span class="mi">360</span><span class="p">)</span>
+</span><span id="line-26">
+</span><span id="line-27">    <span class="c1"># We saw another bot -&gt; fire!</span>
+</span><span id="line-28">    <span class="k">def</span><span class="w"> </span><span class="nf">on_scanned_bot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">:</span> <span class="n">ScannedBotEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-29">        <span class="bp">self</span><span class="o">.</span><span class="n">fire</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="line-30">
+</span><span id="line-31">    <span class="c1"># We were hit by a bullet -&gt; turn perpendicular to the bullet</span>
+</span><span id="line-32">    <span class="k">def</span><span class="w"> </span><span class="nf">on_hit_by_bullet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">:</span> <span class="n">HitByBulletEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-33">        <span class="c1"># Calculate the bearing to the direction of the bullet</span>
+</span><span id="line-34">        <span class="n">bearing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_bearing</span><span class="p">(</span><span class="n">evt</span><span class="o">.</span><span class="n">bullet</span><span class="o">.</span><span class="n">direction</span><span class="p">)</span>
+</span><span id="line-35">
+</span><span id="line-36">        <span class="c1"># Turn 90 degrees to the bullet direction based on the bearing</span>
+</span><span id="line-37">        <span class="bp">self</span><span class="o">.</span><span class="n">turn_right</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">bearing</span><span class="p">)</span>
+</span><span id="line-38">
+</span><span id="line-39"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+</span><span id="line-40">    <span class="c1"># Start the bot and join a battle</span>
+</span><span id="line-41">    <span class="n">MyFirstBot</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+<p>The above code describes the behavior of the bot. In Python, the entry point is guarded by <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">__name__</span> <span class="pre">==</span> <span class="pre">"__main__":</span></code>.
+Using the bot API, we need to start the bot by calling the <code class="docutils literal notranslate"><span class="pre">start()</span></code> method, which will tell the server that this bot wants
+to join the battle and also provide the server with the required bot info.</p>
+<p>With the bot’s constructor (<code class="docutils literal notranslate"><span class="pre">__init__</span></code>) we call the <code class="docutils literal notranslate"><span class="pre">BotInfo.from_file(str)</span></code> method that provides the bot info for the
+server, like e.g. the name of the bot, and its author, etc.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">run()</span></code> method is called when the bot needs to start its real execution to send instructions to the server.</p>
+<p>The on-methods (for example, <code class="docutils literal notranslate"><span class="pre">on_scanned_bot</span></code> and <code class="docutils literal notranslate"><span class="pre">on_hit_by_bullet</span></code>) are event handlers with code that triggers when a
+specific type of event occurs. For example, the event handler <code class="docutils literal notranslate"><span class="pre">on_scanned_bot</span></code> triggers whenever an opponent bot is
+scanned by the radar. The event instance (e.g. <code class="docutils literal notranslate"><span class="pre">ScannedBotEvent</span></code>) contains the event data for the scanned bot.</p>
+</section>
+<section id="json-config-file">
+<h2>JSON config file<a class="headerlink" href="#json-config-file" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#json-config-file'">¶</a></h2>
+<p>The code in this example is accompanied by a <code class="docutils literal notranslate"><span class="pre">MyFirstBot.json</span></code>, which is a JSON file containing the config file for
+the bot, and is used by the <strong>booter</strong> to start up the bot on a local machine.</p>
+<p>MyFirstBot.json:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="p">{</span>
+</span><span id="line-2"><span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My First Bot"</span><span class="p">,</span>
+</span><span id="line-3"><span class="w">  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0"</span><span class="p">,</span>
+</span><span id="line-4"><span class="w">  </span><span class="nt">"authors"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="line-5"><span class="w">    </span><span class="s2">"Mathew Nelson"</span><span class="p">,</span>
+</span><span id="line-6"><span class="w">    </span><span class="s2">"Flemming N. Larsen"</span>
+</span><span id="line-7"><span class="w">  </span><span class="p">],</span>
+</span><span id="line-8"><span class="w">  </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A sample bot that is probably the first bot you will learn about."</span><span class="p">,</span>
+</span><span id="line-9"><span class="w">  </span><span class="nt">"homepage"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span>
+</span><span id="line-10"><span class="w">  </span><span class="nt">"countryCodes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="line-11"><span class="w">    </span><span class="s2">"us"</span><span class="p">,</span>
+</span><span id="line-12"><span class="w">    </span><span class="s2">"dk"</span>
+</span><span id="line-13"><span class="w">  </span><span class="p">],</span>
+</span><span id="line-14"><span class="w">  </span><span class="nt">"platform"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Python"</span><span class="p">,</span>
+</span><span id="line-15"><span class="w">  </span><span class="nt">"programmingLang"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Python 3.x"</span>
+</span><span id="line-16"><span class="p">}</span>
+</span></code></pre></div>
+</div>
+<p>You can read more details about the format of this JSON file here:
+<a class="reference external" href="https://robocode-dev.github.io/tank-royale/articles/booter.html#json-config-file.html">https://robocode-dev.github.io/tank-royale/articles/booter.html#json-config-file.html</a></p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -98,6 +198,7 @@
 </li>
 </ul>
 </div>
+</section>
 <section id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#indices-and-tables'">¶</a></h2>
 <ul class="simple">
@@ -110,6 +211,9 @@
 </div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
 <div class="sticky top-16 -mt-10 max-h-[calc(100vh-5rem)] overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
 <ul>
+<li><a :data-current="activeSection === '#the-bot-classes'" class="reference internal" href="#the-bot-classes">The bot classes</a></li>
+<li><a :data-current="activeSection === '#code-example'" class="reference internal" href="#code-example">Code example</a></li>
+<li><a :data-current="activeSection === '#json-config-file'" class="reference internal" href="#json-config-file">JSON config file</a></li>
 <li><a :data-current="activeSection === '#indices-and-tables'" class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </div>
