@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en"
+      data-content_root="../../../"
+      x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }"
+      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
+      class="scroll-smooth"
+      :class="{'dark': darkMode === 'dark' || (darkMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}"
+>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
+  
+    <title>bot_api.internal.base_bot_internals | Robocode Tank Royale Bot API (Python) 0.33.1 documentation</title>
+    <meta property="og:title" content="bot_api.internal.base_bot_internals | Robocode Tank Royale Bot API (Python) 0.33.1 documentation" />
+    <meta name="twitter:title" content="bot_api.internal.base_bot_internals | Robocode Tank Royale Bot API (Python) 0.33.1 documentation" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e72c8e07" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/theme.css?v=42baaae4" />
+        <link rel="search" title="Search" href="../../../search.html" />
+        <link rel="index" title="Index" href="../../../genindex.html" />
+
+    <script>
+    <!-- Prevent Flash of wrong theme -->
+      const userPreference = localStorage.getItem('darkMode');
+      let mode;
+      if (userPreference === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        mode = 'dark';
+        document.documentElement.classList.add('dark');
+      } else {
+        mode = 'light';
+      }
+      if (!userPreference) {localStorage.setItem('darkMode', mode)}
+    </script>
+</head>
+  <body x-data="{ showSidebar: false, showScrollTop: false }" class="min-h-screen font-sans antialiased bg-background text-foreground" :class="{ 'overflow-hidden': showSidebar }">
+    <div x-cloak x-show="showSidebar" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" @click.self="showSidebar = false"></div><div id="page" class="relative flex flex-col min-h-screen"><a href="#content" class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100">
+      Skip to content
+    </a><header
+  class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
+    <div class="hidden mr-4 md:flex">
+      <a href="../../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.33.1 documentation</span>
+      </a></div><button
+      class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
+      type="button" @click="showSidebar = true">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" aria-hidden="true"
+        fill="currentColor">
+        <path
+          d="M152.587 825.087q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440Zm0-203.587q-19.152 0-32.326-13.174T107.087 576q0-19.152 13.174-32.326t32.326-13.174h320q19.152 0 32.326 13.174T518.087 576q0 19.152-13.174 32.326T472.587 621.5h-320Zm0-203.587q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440ZM708.913 576l112.174 112.174q12.674 12.674 12.674 31.826t-12.674 31.826Q808.413 764.5 789.261 764.5t-31.826-12.674l-144-144Q600 594.391 600 576t13.435-31.826l144-144q12.674-12.674 31.826-12.674t31.826 12.674q12.674 12.674 12.674 31.826t-12.674 31.826L708.913 576Z" />
+      </svg>
+      <span class="sr-only">Toggle navigation menu</span>
+    </button>
+    <div class="flex items-center justify-between flex-1 space-x-2 sm:space-x-4 md:justify-end">
+      <div class="flex-1 w-full md:w-auto md:flex-none"><form id="searchbox"
+      action="../../../search.html"
+      method="get"
+      class="relative flex items-center group"
+      @keydown.k.window.meta="$refs.search.focus()">
+  <input x-ref="search"
+          name="q"
+          id="search-input"
+          type="search"
+          aria-label="Search the docs"
+          placeholder="Search ..."
+          class="inline-flex items-center font-medium transition-colors bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background border border-input hover:bg-accent focus:bg-accent hover:text-accent-foreground focus:text-accent-foreground hover:placeholder-accent-foreground py-2 px-4 relative h-9 w-full justify-start rounded-[0.5rem] text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64" />
+  <kbd class="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none text-muted-foreground items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex group-hover:bg-accent group-hover:text-accent-foreground">
+    <span class="text-xs">⌘</span>
+    K
+  </kbd>
+</form>
+      </div>
+      <nav class="flex items-center space-x-1">
+        <button @click="darkMode = darkMode === 'light' ? 'dark' : 'light'"
+          class="relative inline-flex items-center justify-center px-0 text-sm font-medium transition-colors rounded-md hover:bg-accent hover:text-accent-foreground h-9 w-9"
+          type="button"
+          aria-label="Color theme switcher">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+            class="absolute transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0">
+            <path
+              d="M480 685q45.456 0 77.228-31.772Q589 621.456 589 576q0-45.456-31.772-77.228Q525.456 467 480 467q-45.456 0-77.228 31.772Q371 530.544 371 576q0 45.456 31.772 77.228Q434.544 685 480 685Zm0 91q-83 0-141.5-58.5T280 576q0-83 58.5-141.5T480 376q83 0 141.5 58.5T680 576q0 83-58.5 141.5T480 776ZM80 621.5q-19.152 0-32.326-13.174T34.5 576q0-19.152 13.174-32.326T80 530.5h80q19.152 0 32.326 13.174T205.5 576q0 19.152-13.174 32.326T160 621.5H80Zm720 0q-19.152 0-32.326-13.174T754.5 576q0-19.152 13.174-32.326T800 530.5h80q19.152 0 32.326 13.174T925.5 576q0 19.152-13.174 32.326T880 621.5h-80Zm-320-320q-19.152 0-32.326-13.174T434.5 256v-80q0-19.152 13.174-32.326T480 130.5q19.152 0 32.326 13.174T525.5 176v80q0 19.152-13.174 32.326T480 301.5Zm0 720q-19.152 0-32.326-13.17Q434.5 995.152 434.5 976v-80q0-19.152 13.174-32.326T480 850.5q19.152 0 32.326 13.174T525.5 896v80q0 19.152-13.174 32.33-13.174 13.17-32.326 13.17ZM222.174 382.065l-43-42Q165.5 327.391 166 308.239t13.174-33.065q13.435-13.674 32.587-13.674t32.065 13.674l42.239 43q12.674 13.435 12.555 31.706-.12 18.272-12.555 31.946-12.674 13.674-31.445 13.413-18.772-.261-32.446-13.174Zm494 494.761-42.239-43q-12.674-13.435-12.674-32.087t12.674-31.565Q686.609 756.5 705.38 757q18.772.5 32.446 13.174l43 41.761Q794.5 824.609 794 843.761t-13.174 33.065Q767.391 890.5 748.239 890.5t-32.065-13.674Zm-42-494.761Q660.5 369.391 661 350.62q.5-18.772 13.174-32.446l41.761-43Q728.609 261.5 747.761 262t33.065 13.174q13.674 13.435 13.674 32.587t-13.674 32.065l-43 42.239q-13.435 12.674-31.706 12.555-18.272-.12-31.946-12.555Zm-495 494.761Q165.5 863.391 165.5 844.239t13.674-32.065l43-42.239q13.435-12.674 32.087-12.674t31.565 12.674Q299.5 782.609 299 801.38q-.5 18.772-13.174 32.446l-41.761 43Q231.391 890.5 212.239 890t-33.065-13.174ZM480 576Z" />
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+            class="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100">
+            <path
+              d="M480 936q-151 0-255.5-104.5T120 576q0-138 90-239.5T440 218q25-3 39 18t-1 44q-17 26-25.5 55t-8.5 61q0 90 63 153t153 63q31 0 61.5-9t54.5-25q21-14 43-1.5t19 39.5q-14 138-117.5 229T480 936Zm0-80q88 0 158-48.5T740 681q-20 5-40 8t-40 3q-123 0-209.5-86.5T364 396q0-20 3-40t8-40q-78 32-126.5 102T200 576q0 116 82 198t198 82Zm-10-270Z" />
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </div>
+</header>
+
+    <div class="flex-1"><div class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside id="left-sidebar"
+  class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full shrink-0 overflow-y-auto border-r border-border md:sticky"
+  :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
+
+    <a href="../../../index.html" class="!justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.33.1 documentation</span>
+    </a>
+
+    <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
+      <div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">robocode_tank_royale</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/bot_api.html">bot_api package</a></li>
+</ul>
+</li>
+</ul>
+
+</nav>
+      </div>
+    </div>
+    <button type="button" @click="showSidebar = false"
+      class="absolute md:hidden right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+        stroke="none" class="h-4 w-4">
+        <path
+          d="M480 632 284 828q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536 576l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480 632Z" />
+      </svg>
+    </button>
+  </aside>
+        <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
+<div class="w-full min-w-0 mx-auto">
+<nav aria-label="breadcrumbs"
+     class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
+  <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
+     href="../../../index.html">
+    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.33.1 documentation</span>
+    <svg xmlns="http://www.w3.org/2000/svg"
+         height="18"
+         width="18"
+         viewBox="0 96 960 960"
+         aria-label="Home"
+         fill="currentColor"
+         stroke="none"
+         class="md:hidden">
+      <path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z" />
+    </svg>
+  </a>
+  
+<div class="mr-1">/</div><a class="hover:text-foreground overflow-hidden text-ellipsis whitespace-nowrap"
+       href="../../index.html">Module code</a>
+    
+<div class="mr-1">/</div><span aria-current="page"
+        class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">bot_api.internal.base_bot_internals</span>
+</nav>
+
+    <div id="content" role="main">
+      <h1>Source code for bot_api.internal.base_bot_internals</h1><div class="highlight"><pre>
+<span></span><code><span id="line-1"><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+</span><span id="line-2"><span class="kn">import</span><span class="w"> </span><span class="nn">urllib.parse</span>
+</span><span id="line-3"><span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+</span><span id="line-4"><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+</span><span id="line-5"><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+</span><span id="line-6"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</span><span id="line-7"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Sequence</span>
+</span><span id="line-8">
+</span><span id="line-9"><span class="kn">from</span><span class="w"> </span><span class="nn">..base_bot_abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseBotABC</span>
+</span><span id="line-10"><span class="kn">from</span><span class="w"> </span><span class="nn">..bot_abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">BotABC</span>
+</span><span id="line-11"><span class="kn">from</span><span class="w"> </span><span class="nn">..bot_exception</span><span class="w"> </span><span class="kn">import</span> <span class="n">BotException</span>
+</span><span id="line-12"><span class="kn">from</span><span class="w"> </span><span class="nn">..bot_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">BotInfo</span>
+</span><span id="line-13"><span class="kn">from</span><span class="w"> </span><span class="nn">..bullet_state</span><span class="w"> </span><span class="kn">import</span> <span class="n">BulletState</span>
+</span><span id="line-14"><span class="kn">from</span><span class="w"> </span><span class="nn">..events</span><span class="w"> </span><span class="kn">import</span> <span class="n">TickEvent</span><span class="p">,</span> <span class="n">BulletFiredEvent</span><span class="p">,</span> <span class="n">RoundStartedEvent</span><span class="p">,</span> <span class="n">BotEvent</span>
+</span><span id="line-15"><span class="kn">from</span><span class="w"> </span><span class="nn">..events.condition</span><span class="w"> </span><span class="kn">import</span> <span class="n">Condition</span>
+</span><span id="line-16"><span class="kn">from</span><span class="w"> </span><span class="nn">..game_setup</span><span class="w"> </span><span class="kn">import</span> <span class="n">GameSetup</span>
+</span><span id="line-17"><span class="kn">from</span><span class="w"> </span><span class="nn">..initial_position</span><span class="w"> </span><span class="kn">import</span> <span class="n">InitialPosition</span>
+</span><span id="line-18"><span class="kn">from</span><span class="w"> </span><span class="nn">..util.math_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">MathUtil</span>
+</span><span id="line-19"><span class="kn">from</span><span class="w"> </span><span class="nn">..graphics</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span><span class="p">,</span> <span class="n">GraphicsABC</span>
+</span><span id="line-20">
+</span><span id="line-21"><span class="kn">from</span><span class="w"> </span><span class="nn">.base_bot_internal_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseBotInternalData</span>
+</span><span id="line-22"><span class="kn">from</span><span class="w"> </span><span class="nn">.bot_event_handlers</span><span class="w"> </span><span class="kn">import</span> <span class="n">BotEventHandlers</span>
+</span><span id="line-23"><span class="kn">from</span><span class="w"> </span><span class="nn">.event_queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">EventQueue</span>
+</span><span id="line-24"><span class="kn">from</span><span class="w"> </span><span class="nn">.env_vars</span><span class="w"> </span><span class="kn">import</span> <span class="n">EnvVars</span>
+</span><span id="line-25"><span class="kn">from</span><span class="w"> </span><span class="nn">.internal_event_handlers</span><span class="w"> </span><span class="kn">import</span> <span class="n">InternalEventHandlers</span>
+</span><span id="line-26"><span class="kn">from</span><span class="w"> </span><span class="nn">.json_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_json</span>
+</span><span id="line-27"><span class="kn">from</span><span class="w"> </span><span class="nn">.stop_resume_listener_abs</span><span class="w"> </span><span class="kn">import</span> <span class="n">StopResumeListenerABC</span>
+</span><span id="line-28"><span class="kn">from</span><span class="w"> </span><span class="nn">.thread_interrupted_exception</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThreadInterruptedException</span>
+</span><span id="line-29"><span class="kn">from</span><span class="w"> </span><span class="nn">.websocket_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebSocketHandler</span>
+</span><span id="line-30">
+</span><span id="line-31"><span class="kn">from</span><span class="w"> </span><span class="nn">..constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="line-32">    <span class="n">MAX_SPEED</span><span class="p">,</span>
+</span><span id="line-33">    <span class="n">MAX_TURN_RATE</span><span class="p">,</span>
+</span><span id="line-34">    <span class="n">MAX_GUN_TURN_RATE</span><span class="p">,</span>
+</span><span id="line-35">    <span class="n">MAX_RADAR_TURN_RATE</span><span class="p">,</span>
+</span><span id="line-36">    <span class="n">DECELERATION</span><span class="p">,</span>
+</span><span id="line-37">    <span class="n">ACCELERATION</span><span class="p">,</span>
+</span><span id="line-38">    <span class="n">MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN</span><span class="p">,</span>
+</span><span id="line-39">    <span class="n">TEAM_MESSAGE_MAX_SIZE</span><span class="p">,</span>
+</span><span id="line-40"><span class="p">)</span>
+</span><span id="line-41">
+</span><span id="line-42"><span class="kn">from</span><span class="w"> </span><span class="nn">robocode_tank_royale.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">BotIntent</span><span class="p">,</span> <span class="n">ServerHandshake</span><span class="p">,</span> <span class="n">TeamMessage</span>
+</span><span id="line-43">
+</span><span id="line-44"><span class="n">DEFAULT_SERVER_URL</span> <span class="o">=</span> <span class="s2">&quot;ws://localhost:7654&quot;</span>
+</span><span id="line-45">
+</span><span id="line-46"><span class="n">GAME_NOT_RUNNING_MSG</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="line-47">    <span class="s2">&quot;Game is not running. Make sure onGameStarted() event handler has been called first&quot;</span>
+</span><span id="line-48"><span class="p">)</span>
+</span><span id="line-49"><span class="n">TICK_NOT_AVAILABLE_MSG</span> <span class="o">=</span> <span class="s2">&quot;Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first&quot;</span>
+</span><span id="line-50"><span class="n">NOT_CONNECTED_TO_SERVER_MSG</span> <span class="o">=</span> <span class="s2">&quot;Not connected to a game server. Make sure onConnected() event handler has been called first&quot;</span>
+</span><span id="line-51">
+</span><span id="line-52">
+</span><span id="line-53"><span class="c1"># TODO: This class does not work yet - esp., figure out the asyncio integration and how to handle the bot&#39;s main loop.</span>
+</span><span id="line-54">
+</span><span id="line-55">
+<div class="viewcode-block" id="BaseBotInternals">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals">[docs]</a>
+</span><span id="line-56"><span class="k">class</span><span class="w"> </span><span class="nc">BaseBotInternals</span><span class="p">:</span>
+</span><span id="line-57">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="line-58">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="line-59">        <span class="n">base_bot</span><span class="p">:</span> <span class="n">BaseBotABC</span><span class="p">,</span>
+</span><span id="line-60">        <span class="n">bot_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BotInfo</span><span class="p">],</span>
+</span><span id="line-61">        <span class="n">server_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span id="line-62">        <span class="n">server_secret</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span id="line-63">    <span class="p">):</span>
+</span><span id="line-64">        <span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span> <span class="o">=</span> <span class="n">base_bot</span>
+</span><span id="line-65">        <span class="k">if</span> <span class="n">bot_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-66">            <span class="bp">self</span><span class="o">.</span><span class="n">bot_info</span> <span class="o">=</span> <span class="n">EnvVars</span><span class="o">.</span><span class="n">get_bot_info</span><span class="p">()</span>
+</span><span id="line-67">        <span class="k">else</span><span class="p">:</span>
+</span><span id="line-68">            <span class="bp">self</span><span class="o">.</span><span class="n">bot_info</span> <span class="o">=</span> <span class="n">bot_info</span>
+</span><span id="line-69">
+</span><span id="line-70">        <span class="bp">self</span><span class="o">.</span><span class="n">server_url</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="line-71">            <span class="n">server_url</span>
+</span><span id="line-72">            <span class="k">if</span> <span class="n">server_url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-73">            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_server_url_from_setting</span><span class="p">()</span>
+</span><span id="line-74">        <span class="p">)</span>
+</span><span id="line-75">        <span class="bp">self</span><span class="o">.</span><span class="n">server_secret</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="line-76">            <span class="n">server_secret</span>
+</span><span id="line-77">            <span class="k">if</span> <span class="n">server_secret</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-78">            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_server_secret_from_setting</span><span class="p">()</span>
+</span><span id="line-79">        <span class="p">)</span>
+</span><span id="line-80">
+</span><span id="line-81">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span> <span class="n">BaseBotInternalData</span> <span class="o">=</span> <span class="n">BaseBotInternalData</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bot_info</span><span class="p">)</span>
+</span><span id="line-82">
+</span><span id="line-83">        <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="p">:</span> <span class="n">BotEventHandlers</span> <span class="o">=</span> <span class="n">BotEventHandlers</span><span class="p">(</span><span class="n">base_bot</span><span class="p">)</span>
+</span><span id="line-84">        <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span><span class="p">:</span> <span class="n">InternalEventHandlers</span> <span class="o">=</span> <span class="n">InternalEventHandlers</span><span class="p">()</span>
+</span><span id="line-85">        <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="p">:</span> <span class="n">EventQueue</span> <span class="o">=</span> <span class="n">EventQueue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="p">)</span>
+</span><span id="line-86">
+</span><span id="line-87">        <span class="bp">self</span><span class="o">.</span><span class="n">closed_event</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+</span><span id="line-88">        <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># To store the WebSocket connection</span>
+</span><span id="line-89">        <span class="bp">self</span><span class="o">.</span><span class="n">web_socket_handler</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">WebSocketHandler</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-90">
+</span><span id="line-91">        <span class="bp">self</span><span class="o">.</span><span class="n">next_turn_monitor</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Condition</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Condition</span><span class="p">()</span>
+</span><span id="line-92">
+</span><span id="line-93">        <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># For asyncio task</span>
+</span><span id="line-94">        <span class="bp">self</span><span class="o">.</span><span class="n">stop_resume_listener</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StopResumeListenerABC</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-95">
+</span><span id="line-96">        <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">MAX_SPEED</span>
+</span><span id="line-97">        <span class="bp">self</span><span class="o">.</span><span class="n">max_turn_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">MAX_TURN_RATE</span>
+</span><span id="line-98">        <span class="bp">self</span><span class="o">.</span><span class="n">max_gun_turn_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">MAX_GUN_TURN_RATE</span>
+</span><span id="line-99">        <span class="bp">self</span><span class="o">.</span><span class="n">max_radar_turn_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">MAX_RADAR_TURN_RATE</span>
+</span><span id="line-100">
+</span><span id="line-101">        <span class="bp">self</span><span class="o">.</span><span class="n">abs_deceleration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">DECELERATION</span><span class="p">)</span>
+</span><span id="line-102">        <span class="bp">self</span><span class="o">.</span><span class="n">last_execute_turn_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="line-103">
+</span><span id="line-104">        <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">()</span>
+</span><span id="line-105">
+</span><span id="line-106">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_server_url_from_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="line-107">        <span class="n">url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SERVER_URL&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SERVER_URL&quot;</span><span class="p">))</span>
+</span><span id="line-108">        <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-109">            <span class="n">url</span> <span class="o">=</span> <span class="n">DEFAULT_SERVER_URL</span>
+</span><span id="line-110">        <span class="k">return</span> <span class="n">url</span>
+</span><span id="line-111">
+</span><span id="line-112">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_server_secret_from_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="line-113">        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SERVER_SECRET&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SERVER_SECRET&quot;</span><span class="p">))</span>
+</span><span id="line-114">
+</span><span id="line-115">    <span class="k">def</span><span class="w"> </span><span class="nf">_init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-116">        <span class="c1"># Skipping redirectStdOutAndStdErr for now</span>
+</span><span id="line-117">        <span class="bp">self</span><span class="o">.</span><span class="n">_subscribe_to_events</span><span class="p">()</span>
+</span><span id="line-118">
+</span><span id="line-119">    <span class="k">def</span><span class="w"> </span><span class="nf">_subscribe_to_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-120">        <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span><span class="o">.</span><span class="n">on_round_started</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span>
+</span><span id="line-121">            <span class="bp">self</span><span class="o">.</span><span class="n">_on_round_started</span><span class="p">,</span> <span class="mi">100</span>
+</span><span id="line-122">        <span class="p">)</span>
+</span><span id="line-123">        <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span><span class="o">.</span><span class="n">on_next_turn</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_next_turn</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+</span><span id="line-124">        <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span><span class="o">.</span><span class="n">on_bullet_fired</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span>
+</span><span id="line-125">            <span class="bp">self</span><span class="o">.</span><span class="n">_on_bullet_fired</span><span class="p">,</span> <span class="mi">100</span>
+</span><span id="line-126">        <span class="p">)</span>
+</span><span id="line-127">
+</span><span id="line-128">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_on_round_started</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">RoundStartedEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-129">        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_movement</span><span class="p">()</span>
+</span><span id="line-130">        <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>  <span class="c1"># Clears conditions in self.data.conditions</span>
+</span><span id="line-131">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_stopped</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="line-132">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">event_handling_disabled_turn</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="line-133">        <span class="bp">self</span><span class="o">.</span><span class="n">last_execute_turn_number</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="line-134">
+</span><span id="line-135">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_on_next_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">TickEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-136">        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_turn_monitor</span><span class="p">:</span>
+</span><span id="line-137">            <span class="bp">self</span><span class="o">.</span><span class="n">next_turn_monitor</span><span class="o">.</span><span class="n">notify_all</span><span class="p">()</span>
+</span><span id="line-138">
+</span><span id="line-139">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_on_bullet_fired</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">BulletFiredEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-140">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="p">:</span>
+</span><span id="line-141">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">firepower</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span id="line-142">        <span class="k">pass</span>
+</span><span id="line-143">
+</span><span id="line-144">    <span class="k">def</span><span class="w"> </span><span class="nf">_reset_movement</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-145">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="p">:</span>
+</span><span id="line-146">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">turn_rate</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-147">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">gun_turn_rate</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-148">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">radar_turn_rate</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-149">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">target_speed</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-150">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">firepower</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-151">
+</span><span id="line-152">    <span class="nd">@property</span>
+</span><span id="line-153">    <span class="k">def</span><span class="w"> </span><span class="nf">my_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-154">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">my_id</span>
+</span><span id="line-155">
+</span><span id="line-156">    <span class="nd">@my_id</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-157">    <span class="k">def</span><span class="w"> </span><span class="nf">my_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">my_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-158">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">my_id</span> <span class="o">=</span> <span class="n">my_id</span>
+</span><span id="line-159">
+</span><span id="line-160">    <span class="nd">@property</span>
+</span><span id="line-161">    <span class="k">def</span><span class="w"> </span><span class="nf">teammate_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="line-162">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">teammate_ids</span>
+</span><span id="line-163">
+</span><span id="line-164">    <span class="nd">@teammate_ids</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-165">    <span class="k">def</span><span class="w"> </span><span class="nf">teammate_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">teammate_ids</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-166">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">teammate_ids</span> <span class="o">=</span> <span class="n">teammate_ids</span>
+</span><span id="line-167">
+</span><span id="line-168">    <span class="nd">@property</span>
+</span><span id="line-169">    <span class="k">def</span><span class="w"> </span><span class="nf">game_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GameSetup</span><span class="p">:</span>
+</span><span id="line-170">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">game_setup</span>
+</span><span id="line-171">
+</span><span id="line-172">    <span class="nd">@game_setup</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-173">    <span class="k">def</span><span class="w"> </span><span class="nf">game_setup</span><span class="p">(</span>
+</span><span id="line-174">        <span class="bp">self</span><span class="p">,</span> <span class="n">game_setup</span><span class="p">:</span> <span class="n">GameSetup</span>
+</span><span id="line-175">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Typically called by WebSocketHandler</span>
+</span><span id="line-176">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">game_setup</span> <span class="o">=</span> <span class="n">game_setup</span>
+</span><span id="line-177">
+</span><span id="line-178">    <span class="nd">@property</span>
+</span><span id="line-179">    <span class="k">def</span><span class="w"> </span><span class="nf">initial_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">InitialPosition</span><span class="p">]:</span>
+</span><span id="line-180">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">initial_position</span>
+</span><span id="line-181">
+</span><span id="line-182">    <span class="nd">@initial_position</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-183">    <span class="k">def</span><span class="w"> </span><span class="nf">initial_position</span><span class="p">(</span>
+</span><span id="line-184">        <span class="bp">self</span><span class="p">,</span> <span class="n">initial_position</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">InitialPosition</span><span class="p">]</span>
+</span><span id="line-185">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Typically called by WebSocketHandler</span>
+</span><span id="line-186">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">initial_position</span> <span class="o">=</span> <span class="n">initial_position</span>
+</span><span id="line-187">
+<div class="viewcode-block" id="BaseBotInternals.get_bot_intent">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_bot_intent">[docs]</a>
+</span><span id="line-188">    <span class="k">def</span><span class="w"> </span><span class="nf">get_bot_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BotIntent</span><span class="p">:</span>
+</span><span id="line-189">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span></div>
+
+</span><span id="line-190">
+<div class="viewcode-block" id="BaseBotInternals.get_current_tick_or_throw">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_current_tick_or_throw">[docs]</a>
+</span><span id="line-191">    <span class="k">def</span><span class="w"> </span><span class="nf">get_current_tick_or_throw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TickEvent</span><span class="p">:</span>
+</span><span id="line-192">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_throw</span></div>
+
+</span><span id="line-193">
+<div class="viewcode-block" id="BaseBotInternals.set_tick_event">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_tick_event">[docs]</a>
+</span><span id="line-194">    <span class="k">def</span><span class="w"> </span><span class="nf">set_tick_event</span><span class="p">(</span>
+</span><span id="line-195">        <span class="bp">self</span><span class="p">,</span> <span class="n">tick_event</span><span class="p">:</span> <span class="n">TickEvent</span>
+</span><span id="line-196">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Typically called by WebSocketHandler</span>
+</span><span id="line-197">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">tick_event</span> <span class="o">=</span> <span class="n">tick_event</span></div>
+
+</span><span id="line-198">
+<div class="viewcode-block" id="BaseBotInternals.get_current_tick_or_null">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_current_tick_or_null">[docs]</a>
+</span><span id="line-199">    <span class="k">def</span><span class="w"> </span><span class="nf">get_current_tick_or_null</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TickEvent</span><span class="p">]:</span>
+</span><span id="line-200">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span></div>
+
+</span><span id="line-201">
+<div class="viewcode-block" id="BaseBotInternals.get_tick_start_nano_time">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_tick_start_nano_time">[docs]</a>
+</span><span id="line-202">    <span class="k">def</span><span class="w"> </span><span class="nf">get_tick_start_nano_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-203">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">tick_start_nano_time</span></div>
+
+</span><span id="line-204">
+<div class="viewcode-block" id="BaseBotInternals.set_tick_start_nano_time">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_tick_start_nano_time">[docs]</a>
+</span><span id="line-205">    <span class="k">def</span><span class="w"> </span><span class="nf">set_tick_start_nano_time</span><span class="p">(</span>
+</span><span id="line-206">        <span class="bp">self</span><span class="p">,</span> <span class="n">tick_start_nano_time</span><span class="p">:</span> <span class="nb">int</span>
+</span><span id="line-207">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Typically called by WebSocketHandler</span>
+</span><span id="line-208">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">tick_start_nano_time</span> <span class="o">=</span> <span class="n">tick_start_nano_time</span></div>
+
+</span><span id="line-209">
+<div class="viewcode-block" id="BaseBotInternals.get_time_left">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_time_left">[docs]</a>
+</span><span id="line-210">    <span class="k">def</span><span class="w"> </span><span class="nf">get_time_left</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-211">        <span class="n">passed_microseconds</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="line-212">            <span class="n">time</span><span class="o">.</span><span class="n">monotonic_ns</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">tick_start_nano_time</span>
+</span><span id="line-213">        <span class="p">)</span> <span class="o">//</span> <span class="mi">1000</span>
+</span><span id="line-214">        <span class="n">game_setup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">game_setup</span>
+</span><span id="line-215">        <span class="k">return</span> <span class="n">game_setup</span><span class="o">.</span><span class="n">turn_timeout</span> <span class="o">-</span> <span class="n">passed_microseconds</span></div>
+
+</span><span id="line-216">
+<div class="viewcode-block" id="BaseBotInternals.enable_event_handling">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.enable_event_handling">[docs]</a>
+</span><span id="line-217">    <span class="k">def</span><span class="w"> </span><span class="nf">enable_event_handling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-218">        <span class="k">if</span> <span class="n">enable</span><span class="p">:</span>
+</span><span id="line-219">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">event_handling_disabled_turn</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="line-220">        <span class="k">else</span><span class="p">:</span>
+</span><span id="line-221">            <span class="c1"># Ensure tick event is available before accessing turn_number</span>
+</span><span id="line-222">            <span class="n">current_tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-223">            <span class="k">if</span> <span class="n">current_tick</span><span class="p">:</span>
+</span><span id="line-224">                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">event_handling_disabled_turn</span> <span class="o">=</span> <span class="n">current_tick</span><span class="o">.</span><span class="n">turn_number</span>
+</span><span id="line-225">            <span class="k">else</span><span class="p">:</span>
+</span><span id="line-226">                <span class="c1"># If called before any tick, disabling implies from turn 0.</span>
+</span><span id="line-227">                <span class="c1"># Or consider raising an error if disabling without a current turn context is invalid.</span>
+</span><span id="line-228">                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">event_handling_disabled_turn</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="line-229">                    <span class="mi">0</span>  <span class="c1"># Or some other default like -1 or 1</span>
+</span><span id="line-230">                <span class="p">)</span></div>
+
+</span><span id="line-231">
+<div class="viewcode-block" id="BaseBotInternals.get_event_handling_disabled_turn">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_event_handling_disabled_turn">[docs]</a>
+</span><span id="line-232">    <span class="k">def</span><span class="w"> </span><span class="nf">get_event_handling_disabled_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-233">        <span class="c1"># Important! Allow an additional turn so events like RoundStarted can be handled</span>
+</span><span id="line-234">        <span class="n">current_tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-235">        <span class="k">if</span> <span class="ow">not</span> <span class="n">current_tick</span><span class="p">:</span>
+</span><span id="line-236">            <span class="k">return</span> <span class="p">(</span>
+</span><span id="line-237">                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">event_handling_disabled_turn</span> <span class="o">!=</span> <span class="mi">0</span>
+</span><span id="line-238">            <span class="p">)</span>  <span class="c1"># If no tick, rely purely on the flag</span>
+</span><span id="line-239">
+</span><span id="line-240">        <span class="k">return</span> <span class="p">(</span>
+</span><span id="line-241">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">event_handling_disabled_turn</span> <span class="o">!=</span> <span class="mi">0</span>
+</span><span id="line-242">            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">event_handling_disabled_turn</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">current_tick</span><span class="o">.</span><span class="n">turn_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="line-243">        <span class="p">)</span></div>
+
+</span><span id="line-244">
+<div class="viewcode-block" id="BaseBotInternals.get_events">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_events">[docs]</a>
+</span><span id="line-245">    <span class="k">def</span><span class="w"> </span><span class="nf">get_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BotEvent</span><span class="p">]:</span>
+</span><span id="line-246">        <span class="n">turn_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_throw</span><span class="o">.</span><span class="n">turn_number</span>
+</span><span id="line-247">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">get_events</span><span class="p">(</span><span class="n">turn_number</span><span class="p">)</span></div>
+
+</span><span id="line-248">
+<div class="viewcode-block" id="BaseBotInternals.clear_events">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.clear_events">[docs]</a>
+</span><span id="line-249">    <span class="k">def</span><span class="w"> </span><span class="nf">clear_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-250">        <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">clear_events</span><span class="p">()</span></div>
+
+</span><span id="line-251">
+<div class="viewcode-block" id="BaseBotInternals.set_interruptible">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_interruptible">[docs]</a>
+</span><span id="line-252">    <span class="k">def</span><span class="w"> </span><span class="nf">set_interruptible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interruptible</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-253">        <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">set_current_event_interruptible</span><span class="p">(</span><span class="n">interruptible</span><span class="p">)</span></div>
+
+</span><span id="line-254">
+<div class="viewcode-block" id="BaseBotInternals.dispatch_events">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.dispatch_events">[docs]</a>
+</span><span id="line-255">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">dispatch_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-256">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-257">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">dispatch_events</span><span class="p">(</span><span class="n">turn_number</span><span class="p">)</span>
+</span><span id="line-258">        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span><span id="line-259">            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span></div>
+
+</span><span id="line-260">
+<div class="viewcode-block" id="BaseBotInternals.set_running">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_running">[docs]</a>
+</span><span id="line-261">    <span class="k">def</span><span class="w"> </span><span class="nf">set_running</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_running</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-262">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="n">is_running</span></div>
+
+</span><span id="line-263">
+<div class="viewcode-block" id="BaseBotInternals.is_running">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.is_running">[docs]</a>
+</span><span id="line-264">    <span class="k">def</span><span class="w"> </span><span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-265">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_running</span></div>
+
+</span><span id="line-266">
+</span><span id="line-267">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_runnable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">:</span> <span class="n">BotABC</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-268">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="line-269">        <span class="bp">self</span><span class="o">.</span><span class="n">enable_event_handling</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="line-270">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-271">            <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span><span id="line-272">
+</span><span id="line-273">            <span class="c1"># Skip every turn after the run method has exited</span>
+</span><span id="line-274">            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+</span><span id="line-275">                <span class="k">try</span><span class="p">:</span>
+</span><span id="line-276">                    <span class="k">await</span> <span class="n">bot</span><span class="o">.</span><span class="n">go</span><span class="p">()</span>
+</span><span id="line-277">                <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
+</span><span id="line-278">                    <span class="k">return</span>  <span class="c1"># Task was cancelled</span>
+</span><span id="line-279">                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># Catch other exceptions during bot.go()</span>
+</span><span id="line-280">                    <span class="c1"># Potentially log the error or handle specific bot exceptions</span>
+</span><span id="line-281">                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in bot.go(): </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Basic error logging</span>
+</span><span id="line-282">                    <span class="c1"># Depending on desired behavior, may need to stop or continue</span>
+</span><span id="line-283">                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Example: stop on error</span>
+</span><span id="line-284">                    <span class="k">return</span>
+</span><span id="line-285">        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
+</span><span id="line-286">            <span class="c1"># This handles cancellation if bot.run() or the loop itself is cancelled</span>
+</span><span id="line-287">            <span class="k">pass</span>  <span class="c1"># Task was cancelled</span>
+</span><span id="line-288">        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="line-289">            <span class="c1"># Potentially log the error or handle specific bot exceptions</span>
+</span><span id="line-290">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in bot.run() or main loop: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Basic error logging</span>
+</span><span id="line-291">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Stop if unhandled exception in run()</span>
+</span><span id="line-292">        <span class="k">finally</span><span class="p">:</span>
+</span><span id="line-293">            <span class="bp">self</span><span class="o">.</span><span class="n">enable_event_handling</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="line-294">
+<div class="viewcode-block" id="BaseBotInternals.start_thread">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.start_thread">[docs]</a>
+</span><span id="line-295">    <span class="k">def</span><span class="w"> </span><span class="nf">start_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot</span><span class="p">:</span> <span class="n">BotABC</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-296">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-297">            <span class="c1"># Potentially handle if a thread/task is already running</span>
+</span><span id="line-298">            <span class="k">pass</span>
+</span><span id="line-299">        <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_runnable</span><span class="p">(</span><span class="n">bot</span><span class="p">))</span></div>
+
+</span><span id="line-300">
+<div class="viewcode-block" id="BaseBotInternals.stop_thread">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.stop_thread">[docs]</a>
+</span><span id="line-301">    <span class="k">def</span><span class="w"> </span><span class="nf">stop_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-302">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+</span><span id="line-303">            <span class="k">return</span>
+</span><span id="line-304">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="line-305">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-306">            <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+</span><span id="line-307">            <span class="c1"># It&#39;s good practice to await the task to ensure it finishes,</span>
+</span><span id="line-308">            <span class="c1"># but this might block if the task doesn&#39;t handle cancellation promptly.</span>
+</span><span id="line-309">            <span class="c1"># Consider if `await self.thread` is needed here or if fire-and-forget cancel is okay.</span>
+</span><span id="line-310">            <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+</span><span id="line-311">
+</span><span id="line-312">    <span class="k">def</span><span class="w"> </span><span class="nf">_sanitize_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-313">        <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+</span><span id="line-314">        <span class="k">if</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">scheme</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ws&quot;</span><span class="p">,</span> <span class="s2">&quot;wss&quot;</span><span class="p">):</span>
+</span><span id="line-315">            <span class="k">raise</span> <span class="n">BotException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong scheme used with server URL: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="line-316">
+</span><span id="line-317">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-318">        <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_url</span><span class="p">)</span>
+</span><span id="line-319">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-320">            <span class="bp">self</span><span class="o">.</span><span class="n">web_socket_handler</span> <span class="o">=</span> <span class="n">WebSocketHandler</span><span class="p">(</span>  <span class="c1"># Store the handler instance</span>
+</span><span id="line-321">                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>  <span class="c1"># Pass BaseBotInternalData instance</span>
+</span><span id="line-322">                <span class="bp">self</span><span class="o">.</span><span class="n">server_url</span><span class="p">,</span>
+</span><span id="line-323">                <span class="bp">self</span><span class="o">.</span><span class="n">server_secret</span><span class="p">,</span>
+</span><span id="line-324">                <span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span><span class="p">,</span>  <span class="c1"># The bot instance itself (BaseBotABC)</span>
+</span><span id="line-325">                <span class="bp">self</span><span class="o">.</span><span class="n">bot_info</span><span class="p">,</span>  <span class="c1"># BotInfo needed by WebSocketHandler</span>
+</span><span id="line-326">                <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="p">,</span>  <span class="c1"># Event handlers needed by WebSocketHandler</span>
+</span><span id="line-327">                <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span><span class="p">,</span>  <span class="c1"># Event handlers needed by WebSocketHandler</span>
+</span><span id="line-328">                <span class="bp">self</span><span class="o">.</span><span class="n">closed_event</span><span class="p">,</span>  <span class="c1"># Async event needed by WebSocketHandler</span>
+</span><span id="line-329">            <span class="p">)</span>
+</span><span id="line-330">            <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">web_socket_handler</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+</span><span id="line-331">
+</span><span id="line-332">        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+</span><span id="line-333">            <span class="k">raise</span> <span class="n">BotException</span><span class="p">(</span>
+</span><span id="line-334">                <span class="sa">f</span><span class="s2">&quot;Could not create web socket for URL: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">server_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ex</span>
+</span><span id="line-335">            <span class="p">)</span>
+</span><span id="line-336">
+<div class="viewcode-block" id="BaseBotInternals.start">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.start">[docs]</a>
+</span><span id="line-337">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-338">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connect</span><span class="p">()</span>
+</span><span id="line-339">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">web_socket_handler</span><span class="p">:</span>  <span class="c1"># Check if handler was created</span>
+</span><span id="line-340">            <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">web_socket_handler</span><span class="o">.</span><span class="n">receive_messages</span><span class="p">())</span>
+</span><span id="line-341">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed_event</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span></div>
+
+</span><span id="line-342">
+<div class="viewcode-block" id="BaseBotInternals.execute">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.execute">[docs]</a>
+</span><span id="line-343">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-344">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+</span><span id="line-345">            <span class="k">return</span>
+</span><span id="line-346">
+</span><span id="line-347">        <span class="n">current_tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_throw</span>  <span class="c1"># Throws if not available</span>
+</span><span id="line-348">        <span class="n">turn_number</span> <span class="o">=</span> <span class="n">current_tick</span><span class="o">.</span><span class="n">turn_number</span>
+</span><span id="line-349">
+</span><span id="line-350">        <span class="k">if</span> <span class="n">turn_number</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_execute_turn_number</span><span class="p">:</span>
+</span><span id="line-351">            <span class="bp">self</span><span class="o">.</span><span class="n">last_execute_turn_number</span> <span class="o">=</span> <span class="n">turn_number</span>
+</span><span id="line-352">
+</span><span id="line-353">            <span class="c1"># Add events from the current tick to the event queue</span>
+</span><span id="line-354">            <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">add_events_from_tick</span><span class="p">(</span><span class="n">current_tick</span><span class="p">)</span>
+</span><span id="line-355">
+</span><span id="line-356">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_events</span><span class="p">(</span><span class="n">turn_number</span><span class="p">)</span>
+</span><span id="line-357">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_send_intent</span><span class="p">()</span>
+</span><span id="line-358">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_next_turn</span><span class="p">(</span><span class="n">turn_number</span><span class="p">)</span></div>
+
+</span><span id="line-359">
+</span><span id="line-360">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_send_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-361">        <span class="bp">self</span><span class="o">.</span><span class="n">_render_graphics_to_bot_intent</span><span class="p">()</span>  <span class="c1"># Operates on self.data.graphics_state and self.data.bot_intent</span>
+</span><span id="line-362">        <span class="bp">self</span><span class="o">.</span><span class="n">_transfer_std_out_to_bot_intent</span><span class="p">()</span>  <span class="c1"># Placeholder</span>
+</span><span id="line-363">
+</span><span id="line-364">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="p">:</span>
+</span><span id="line-365">            <span class="k">try</span><span class="p">:</span>
+</span><span id="line-366">                <span class="n">json_intent</span> <span class="o">=</span> <span class="n">to_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="p">)</span>
+</span><span id="line-367">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">json_intent</span><span class="p">)</span>
+</span><span id="line-368">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">team_messages</span><span class="p">:</span>
+</span><span id="line-369">                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">team_messages</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Clear after sending</span>
+</span><span id="line-370">            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="line-371">                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error sending bot intent: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="line-372">                <span class="c1"># Consider if self.socket needs to be invalidated or reconnected</span>
+</span><span id="line-373">                <span class="c1"># For now, just printing error.</span>
+</span><span id="line-374">
+</span><span id="line-375">    <span class="k">def</span><span class="w"> </span><span class="nf">_transfer_std_out_to_bot_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-376">        <span class="c1"># Stdout/stderr redirection and inclusion in intent might be handled differently in Python</span>
+</span><span id="line-377">        <span class="c1"># For now, this is a placeholder.</span>
+</span><span id="line-378">        <span class="k">pass</span>
+</span><span id="line-379">
+</span><span id="line-380">    <span class="k">def</span><span class="w"> </span><span class="nf">_render_graphics_to_bot_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-381">        <span class="n">current_tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-382">        <span class="c1"># Check if debugging is enabled for the bot in the current tick</span>
+</span><span id="line-383">        <span class="k">if</span> <span class="p">(</span>
+</span><span id="line-384">            <span class="n">current_tick</span>
+</span><span id="line-385">            <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">current_tick</span><span class="p">,</span> <span class="s2">&quot;bot_state&quot;</span><span class="p">)</span>
+</span><span id="line-386">            <span class="ow">and</span> <span class="n">current_tick</span><span class="o">.</span><span class="n">bot_state</span>
+</span><span id="line-387">            <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">current_tick</span><span class="o">.</span><span class="n">bot_state</span><span class="p">,</span> <span class="s2">&quot;is_debugging_enabled&quot;</span><span class="p">)</span>
+</span><span id="line-388">            <span class="ow">and</span> <span class="n">current_tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">is_debugging_enabled</span>
+</span><span id="line-389">        <span class="p">):</span>
+</span><span id="line-390">            <span class="n">svg_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">graphics_state</span><span class="o">.</span><span class="n">to_svg</span><span class="p">()</span>
+</span><span id="line-391">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">debug_graphics</span> <span class="o">=</span> <span class="n">svg_output</span>
+</span><span id="line-392">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">graphics_state</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</span><span id="line-393">        <span class="k">else</span><span class="p">:</span>
+</span><span id="line-394">            <span class="c1"># Ensure it&#39;s not set if debugging is off or tick not available</span>
+</span><span id="line-395">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">debug_graphics</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-396">
+</span><span id="line-397">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_wait_for_next_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-398">        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_rogue_thread</span><span class="p">()</span>
+</span><span id="line-399">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-400">            <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_turn_monitor</span><span class="p">:</span>
+</span><span id="line-401">                <span class="k">while</span> <span class="p">(</span>
+</span><span id="line-402">                    <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_running</span>
+</span><span id="line-403">                    <span class="ow">and</span> <span class="n">turn_number</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_throw</span><span class="o">.</span><span class="n">turn_number</span>
+</span><span id="line-404">                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span>
+</span><span id="line-405">                    <span class="o">==</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">current_task</span><span class="p">()</span>  <span class="c1"># Ensure this is the bot&#39;s main task\</span>
+</span><span id="line-406">                    <span class="ow">and</span> <span class="ow">not</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">current_task</span><span class="p">()</span><span class="o">.</span><span class="n">cancelled</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-407">                <span class="p">):</span>
+</span><span id="line-408">                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_turn_monitor</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</span><span id="line-409">        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
+</span><span id="line-410">            <span class="c1"># We get a CancelledError if the server stops the game.</span>
+</span><span id="line-411">            <span class="k">return</span> <span class="kc">None</span>
+</span><span id="line-412">
+</span><span id="line-413">    <span class="k">def</span><span class="w"> </span><span class="nf">_stop_rogue_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-414">        <span class="c1"># In asyncio, tasks don&#39;t have a direct &#39;thread&#39; equivalent accessible this way for comparison.</span>
+</span><span id="line-415">        <span class="c1"># self.thread is the asyncio.Task object for the bot&#39;s main execution.</span>
+</span><span id="line-416">        <span class="c1"># We check if the current task is the one we stored.</span>
+</span><span id="line-417">        <span class="k">if</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">current_task</span><span class="p">()</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="p">:</span>
+</span><span id="line-418">            <span class="k">raise</span> <span class="n">ThreadInterruptedException</span><span class="p">()</span>
+</span><span id="line-419">
+<div class="viewcode-block" id="BaseBotInternals.set_fire">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_fire">[docs]</a>
+</span><span id="line-420">    <span class="k">def</span><span class="w"> </span><span class="nf">set_fire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firepower</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-421">        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">firepower</span><span class="p">):</span>
+</span><span id="line-422">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;firepower&#39; cannot be NaN&quot;</span><span class="p">)</span>
+</span><span id="line-423">
+</span><span id="line-424">        <span class="n">current_tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-425">        <span class="k">if</span> <span class="ow">not</span> <span class="n">current_tick</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">current_tick</span><span class="o">.</span><span class="n">bot_state</span><span class="p">:</span>
+</span><span id="line-426">            <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># Cannot determine gun heat or energy</span>
+</span><span id="line-427">
+</span><span id="line-428">        <span class="c1"># Assuming self.base_bot.energy is updated by the BaseBot instance from its on_tick handler</span>
+</span><span id="line-429">        <span class="n">current_energy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span>
+</span><span id="line-430">        <span class="n">gun_heat</span> <span class="o">=</span> <span class="n">current_tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">gun_heat</span>
+</span><span id="line-431">
+</span><span id="line-432">        <span class="k">if</span> <span class="n">current_energy</span> <span class="o">&lt;</span> <span class="n">firepower</span> <span class="ow">or</span> <span class="n">gun_heat</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="line-433">            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="line-434">
+</span><span id="line-435">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">firepower</span> <span class="o">=</span> <span class="n">firepower</span>
+</span><span id="line-436">        <span class="k">return</span> <span class="kc">True</span></div>
+
+</span><span id="line-437">
+<div class="viewcode-block" id="BaseBotInternals.get_gun_heat">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_gun_heat">[docs]</a>
+</span><span id="line-438">    <span class="k">def</span><span class="w"> </span><span class="nf">get_gun_heat</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-439">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-440">        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">gun_heat</span> <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span> <span class="k">else</span> <span class="mf">0.0</span></div>
+
+</span><span id="line-441">
+<div class="viewcode-block" id="BaseBotInternals.get_speed">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_speed">[docs]</a>
+</span><span id="line-442">    <span class="k">def</span><span class="w"> </span><span class="nf">get_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-443">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-444">        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">speed</span> <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span> <span class="k">else</span> <span class="mf">0.0</span></div>
+
+</span><span id="line-445">
+</span><span id="line-446">    <span class="nd">@property</span>
+</span><span id="line-447">    <span class="k">def</span><span class="w"> </span><span class="nf">turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-448">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">turn_rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-449">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">turn_rate</span>
+</span><span id="line-450">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-451">        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">turn_rate</span> <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span> <span class="k">else</span> <span class="mf">0.0</span>
+</span><span id="line-452">
+</span><span id="line-453">    <span class="nd">@turn_rate</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-454">    <span class="k">def</span><span class="w"> </span><span class="nf">turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-455">        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">turn_rate</span><span class="p">):</span>
+</span><span id="line-456">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;turn_rate&#39; cannot be NaN&quot;</span><span class="p">)</span>
+</span><span id="line-457">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">turn_rate</span> <span class="o">=</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
+</span><span id="line-458">            <span class="n">turn_rate</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_turn_rate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_turn_rate</span>
+</span><span id="line-459">        <span class="p">)</span>
+</span><span id="line-460">
+</span><span id="line-461">    <span class="nd">@property</span>
+</span><span id="line-462">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-463">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">gun_turn_rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-464">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">gun_turn_rate</span>
+</span><span id="line-465">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-466">        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">gun_turn_rate</span> <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span> <span class="k">else</span> <span class="mf">0.0</span>
+</span><span id="line-467">
+</span><span id="line-468">    <span class="nd">@gun_turn_rate</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-469">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gun_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-470">        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">gun_turn_rate</span><span class="p">):</span>
+</span><span id="line-471">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;gun_turn_rate&#39; cannot be NaN&quot;</span><span class="p">)</span>
+</span><span id="line-472">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">gun_turn_rate</span> <span class="o">=</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
+</span><span id="line-473">            <span class="n">gun_turn_rate</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_gun_turn_rate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_gun_turn_rate</span>
+</span><span id="line-474">        <span class="p">)</span>
+</span><span id="line-475">
+</span><span id="line-476">    <span class="nd">@property</span>
+</span><span id="line-477">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-478">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">radar_turn_rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-479">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">radar_turn_rate</span>
+</span><span id="line-480">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-481">        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">radar_turn_rate</span> <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span> <span class="k">else</span> <span class="mf">0.0</span>
+</span><span id="line-482">
+</span><span id="line-483">    <span class="nd">@radar_turn_rate</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-484">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radar_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-485">        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">radar_turn_rate</span><span class="p">):</span>
+</span><span id="line-486">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;radar_turn_rate&#39; cannot be NaN&quot;</span><span class="p">)</span>
+</span><span id="line-487">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">radar_turn_rate</span> <span class="o">=</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
+</span><span id="line-488">            <span class="n">radar_turn_rate</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_radar_turn_rate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_radar_turn_rate</span>
+</span><span id="line-489">        <span class="p">)</span>
+</span><span id="line-490">
+</span><span id="line-491">    <span class="nd">@property</span>
+</span><span id="line-492">    <span class="k">def</span><span class="w"> </span><span class="nf">target_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-493">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">target_speed</span>
+</span><span id="line-494">
+</span><span id="line-495">    <span class="nd">@target_speed</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-496">    <span class="k">def</span><span class="w"> </span><span class="nf">target_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-497">        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">target_speed</span><span class="p">):</span>
+</span><span id="line-498">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;target_speed&#39; cannot be NaN&quot;</span><span class="p">)</span>
+</span><span id="line-499">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">target_speed</span> <span class="o">=</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
+</span><span id="line-500">            <span class="n">target_speed</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span>
+</span><span id="line-501">        <span class="p">)</span>
+</span><span id="line-502">
+<div class="viewcode-block" id="BaseBotInternals.get_max_speed">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_max_speed">[docs]</a>
+</span><span id="line-503">    <span class="k">def</span><span class="w"> </span><span class="nf">get_max_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-504">        <span class="c1"># Max speed is part of bot&#39;s own limits, not server state</span>
+</span><span id="line-505">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span></div>
+
+</span><span id="line-506">
+<div class="viewcode-block" id="BaseBotInternals.set_max_speed">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_max_speed">[docs]</a>
+</span><span id="line-507">    <span class="k">def</span><span class="w"> </span><span class="nf">set_max_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-508">        <span class="c1"># Max speed is part of bot&#39;s own limits</span>
+</span><span id="line-509">        <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span> <span class="o">=</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">max_speed</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MAX_SPEED</span><span class="p">)</span></div>
+
+</span><span id="line-510">
+<div class="viewcode-block" id="BaseBotInternals.get_max_turn_rate">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_max_turn_rate">[docs]</a>
+</span><span id="line-511">    <span class="k">def</span><span class="w"> </span><span class="nf">get_max_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-512">        <span class="c1"># Max turn rate is part of bot&#39;s own limits</span>
+</span><span id="line-513">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_turn_rate</span></div>
+
+</span><span id="line-514">
+<div class="viewcode-block" id="BaseBotInternals.set_max_turn_rate">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_max_turn_rate">[docs]</a>
+</span><span id="line-515">    <span class="k">def</span><span class="w"> </span><span class="nf">set_max_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-516">        <span class="c1"># Max turn rate is part of bot&#39;s own limits</span>
+</span><span id="line-517">        <span class="bp">self</span><span class="o">.</span><span class="n">max_turn_rate</span> <span class="o">=</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">max_turn_rate</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MAX_TURN_RATE</span><span class="p">)</span></div>
+
+</span><span id="line-518">
+<div class="viewcode-block" id="BaseBotInternals.get_max_gun_turn_rate">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_max_gun_turn_rate">[docs]</a>
+</span><span id="line-519">    <span class="k">def</span><span class="w"> </span><span class="nf">get_max_gun_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-520">        <span class="c1"># Max gun turn rate is part of bot&#39;s own limits</span>
+</span><span id="line-521">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_gun_turn_rate</span></div>
+
+</span><span id="line-522">
+<div class="viewcode-block" id="BaseBotInternals.set_max_gun_turn_rate">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_max_gun_turn_rate">[docs]</a>
+</span><span id="line-523">    <span class="k">def</span><span class="w"> </span><span class="nf">set_max_gun_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_gun_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-524">        <span class="c1"># Max gun turn rate is part of bot&#39;s own limits</span>
+</span><span id="line-525">        <span class="bp">self</span><span class="o">.</span><span class="n">max_gun_turn_rate</span> <span class="o">=</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">max_gun_turn_rate</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MAX_GUN_TURN_RATE</span><span class="p">)</span></div>
+
+</span><span id="line-526">
+<div class="viewcode-block" id="BaseBotInternals.get_max_radar_turn_rate">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_max_radar_turn_rate">[docs]</a>
+</span><span id="line-527">    <span class="k">def</span><span class="w"> </span><span class="nf">get_max_radar_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-528">        <span class="c1"># Max radar turn rate is part of bot&#39;s own limits</span>
+</span><span id="line-529">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_radar_turn_rate</span></div>
+
+</span><span id="line-530">
+<div class="viewcode-block" id="BaseBotInternals.set_max_radar_turn_rate">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_max_radar_turn_rate">[docs]</a>
+</span><span id="line-531">    <span class="k">def</span><span class="w"> </span><span class="nf">set_max_radar_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_radar_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-532">        <span class="c1"># Max radar turn rate is part of bot&#39;s own limits</span>
+</span><span id="line-533">        <span class="bp">self</span><span class="o">.</span><span class="n">max_radar_turn_rate</span> <span class="o">=</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
+</span><span id="line-534">            <span class="n">max_radar_turn_rate</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MAX_RADAR_TURN_RATE</span>
+</span><span id="line-535">        <span class="p">)</span></div>
+
+</span><span id="line-536">
+<div class="viewcode-block" id="BaseBotInternals.get_new_target_speed">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_new_target_speed">[docs]</a>
+</span><span id="line-537">    <span class="k">def</span><span class="w"> </span><span class="nf">get_new_target_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-538">        <span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="line-539">            <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">get_new_target_speed</span><span class="p">(</span><span class="o">-</span><span class="n">speed</span><span class="p">,</span> <span class="o">-</span><span class="n">distance</span><span class="p">)</span>
+</span><span id="line-540">
+</span><span id="line-541">        <span class="n">target_speed</span><span class="p">:</span> <span class="nb">float</span>
+</span><span id="line-542">        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">distance</span><span class="p">):</span>
+</span><span id="line-543">            <span class="n">target_speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span>
+</span><span id="line-544">        <span class="k">else</span><span class="p">:</span>
+</span><span id="line-545">            <span class="n">target_speed</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+</span><span id="line-546">                <span class="bp">self</span><span class="o">.</span><span class="n">max_speed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_max_speed_for_distance</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+</span><span id="line-547">            <span class="p">)</span>
+</span><span id="line-548">
+</span><span id="line-549">        <span class="k">if</span> <span class="n">speed</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="line-550">            <span class="k">return</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
+</span><span id="line-551">                <span class="n">target_speed</span><span class="p">,</span> <span class="n">speed</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">abs_deceleration</span><span class="p">,</span> <span class="n">speed</span> <span class="o">+</span> <span class="n">ACCELERATION</span>
+</span><span id="line-552">            <span class="p">)</span>
+</span><span id="line-553">        <span class="k">else</span><span class="p">:</span>  <span class="c1"># speed &lt; 0</span>
+</span><span id="line-554">            <span class="k">return</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
+</span><span id="line-555">                <span class="n">target_speed</span><span class="p">,</span>
+</span><span id="line-556">                <span class="n">speed</span> <span class="o">-</span> <span class="n">ACCELERATION</span><span class="p">,</span>
+</span><span id="line-557">                <span class="n">speed</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_max_deceleration</span><span class="p">(</span><span class="o">-</span><span class="n">speed</span><span class="p">),</span>
+</span><span id="line-558">            <span class="p">)</span></div>
+
+</span><span id="line-559">
+</span><span id="line-560">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_max_speed_for_distance</span><span class="p">(</span>
+</span><span id="line-561">        <span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span>
+</span><span id="line-562">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>  <span class="c1"># Corresponds to Java&#39;s getMaxSpeed(distance)</span>
+</span><span id="line-563">        <span class="n">deceleration_time</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+</span><span id="line-564">            <span class="mi">1</span><span class="p">,</span>
+</span><span id="line-565">            <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span>
+</span><span id="line-566">                <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mi">4</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">abs_deceleration</span><span class="p">)</span> <span class="o">*</span> <span class="n">distance</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+</span><span id="line-567">            <span class="p">),</span>
+</span><span id="line-568">        <span class="p">)</span>
+</span><span id="line-569">        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">deceleration_time</span><span class="p">):</span>
+</span><span id="line-570">            <span class="k">return</span> <span class="n">MAX_SPEED</span>
+</span><span id="line-571">
+</span><span id="line-572">        <span class="n">deceleration_distance</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="line-573">            <span class="p">(</span><span class="n">deceleration_time</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">deceleration_time</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">abs_deceleration</span>
+</span><span id="line-574">        <span class="p">)</span>
+</span><span id="line-575">        <span class="k">return</span> <span class="p">((</span><span class="n">deceleration_time</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">abs_deceleration</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span>
+</span><span id="line-576">            <span class="p">(</span><span class="n">distance</span> <span class="o">-</span> <span class="n">deceleration_distance</span><span class="p">)</span> <span class="o">/</span> <span class="n">deceleration_time</span>
+</span><span id="line-577">        <span class="p">)</span>
+</span><span id="line-578">
+</span><span id="line-579">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_max_deceleration</span><span class="p">(</span>
+</span><span id="line-580">        <span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span>
+</span><span id="line-581">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>  <span class="c1"># Corresponds to Java&#39;s getMaxDeceleration(speed)</span>
+</span><span id="line-582">        <span class="n">deceleration_time</span> <span class="o">=</span> <span class="n">speed</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">abs_deceleration</span>
+</span><span id="line-583">        <span class="n">acceleration_time</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">deceleration_time</span>
+</span><span id="line-584">        <span class="k">return</span> <span class="p">(</span>
+</span><span id="line-585">            <span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">deceleration_time</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">abs_deceleration</span>
+</span><span id="line-586">            <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">acceleration_time</span><span class="p">)</span> <span class="o">*</span> <span class="n">ACCELERATION</span>
+</span><span id="line-587">        <span class="p">)</span>
+</span><span id="line-588">
+<div class="viewcode-block" id="BaseBotInternals.get_distance_traveled_until_stop">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_distance_traveled_until_stop">[docs]</a>
+</span><span id="line-589">    <span class="k">def</span><span class="w"> </span><span class="nf">get_distance_traveled_until_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-590">        <span class="n">speed</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span>
+</span><span id="line-591">        <span class="n">distance</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span id="line-592">        <span class="k">while</span> <span class="n">speed</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="line-593">            <span class="c1"># This uses the current bot&#39;s max_speed and deceleration properties.</span>
+</span><span id="line-594">            <span class="c1"># It simulates deceleration to zero under ideal conditions.</span>
+</span><span id="line-595">            <span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_new_target_speed</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="line-596">            <span class="n">distance</span> <span class="o">+=</span> <span class="n">speed</span>
+</span><span id="line-597">        <span class="k">return</span> <span class="n">distance</span></div>
+
+</span><span id="line-598">
+</span><span id="line-599">    <span class="c1"># Conditions - Delegated to self.data.conditions</span>
+<div class="viewcode-block" id="BaseBotInternals.add_condition">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.add_condition">[docs]</a>
+</span><span id="line-600">    <span class="k">def</span><span class="w"> </span><span class="nf">add_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Condition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-601">        <span class="c1"># Set add method does not return a boolean indicating if the add was successful</span>
+</span><span id="line-602">        <span class="c1"># We need to check length before and after.</span>
+</span><span id="line-603">        <span class="n">prev_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">conditions</span><span class="p">)</span>
+</span><span id="line-604">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">conditions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span>
+</span><span id="line-605">        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">conditions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">prev_len</span></div>
+
+</span><span id="line-606">
+<div class="viewcode-block" id="BaseBotInternals.remove_condition">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.remove_condition">[docs]</a>
+</span><span id="line-607">    <span class="k">def</span><span class="w"> </span><span class="nf">remove_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Condition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-608">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-609">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">conditions</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span>
+</span><span id="line-610">            <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># remove() raises KeyError if not found</span>
+</span><span id="line-611">        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+</span><span id="line-612">            <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># Condition not found</span></div>
+
+</span><span id="line-613">
+<div class="viewcode-block" id="BaseBotInternals.set_stop">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_stop">[docs]</a>
+</span><span id="line-614">    <span class="k">def</span><span class="w"> </span><span class="nf">set_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-615">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_stopped</span> <span class="ow">or</span> <span class="n">overwrite</span><span class="p">:</span>
+</span><span id="line-616">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_stopped</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="line-617">
+</span><span id="line-618">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">saved_target_speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">target_speed</span>
+</span><span id="line-619">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">saved_turn_rate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">turn_rate</span>
+</span><span id="line-620">
+</span><span id="line-621">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">target_speed</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span id="line-622">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">turn_rate</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span id="line-623">
+</span><span id="line-624">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_resume_listener</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-625">                <span class="bp">self</span><span class="o">.</span><span class="n">stop_resume_listener</span><span class="o">.</span><span class="n">on_stop</span><span class="p">()</span></div>
+
+</span><span id="line-626">
+<div class="viewcode-block" id="BaseBotInternals.set_resume">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_resume">[docs]</a>
+</span><span id="line-627">    <span class="k">def</span><span class="w"> </span><span class="nf">set_resume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-628">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_stopped</span><span class="p">:</span>
+</span><span id="line-629">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">target_speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">saved_target_speed</span>
+</span><span id="line-630">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">turn_rate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">saved_turn_rate</span>
+</span><span id="line-631">
+</span><span id="line-632">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_resume_listener</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-633">                <span class="bp">self</span><span class="o">.</span><span class="n">stop_resume_listener</span><span class="o">.</span><span class="n">on_resume</span><span class="p">()</span>
+</span><span id="line-634">
+</span><span id="line-635">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_stopped</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Must be the last step</span></div>
+
+</span><span id="line-636">
+<div class="viewcode-block" id="BaseBotInternals.is_teammate">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.is_teammate">[docs]</a>
+</span><span id="line-637">    <span class="k">def</span><span class="w"> </span><span class="nf">is_teammate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-638">        <span class="k">return</span> <span class="n">bot_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">teammate_ids</span>  <span class="c1"># Uses property getter</span></div>
+
+</span><span id="line-639">
+<div class="viewcode-block" id="BaseBotInternals.broadcast_team_message">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.broadcast_team_message">[docs]</a>
+</span><span id="line-640">    <span class="k">def</span><span class="w"> </span><span class="nf">broadcast_team_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="s2">&quot;Any&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-641">        <span class="bp">self</span><span class="o">.</span><span class="n">send_team_message</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+
+</span><span id="line-642">
+<div class="viewcode-block" id="BaseBotInternals.send_team_message">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.send_team_message">[docs]</a>
+</span><span id="line-643">    <span class="k">def</span><span class="w"> </span><span class="nf">send_team_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">teammate_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-644">        <span class="k">if</span> <span class="p">(</span>
+</span><span id="line-645">            <span class="n">teammate_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">teammate_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">teammate_ids</span>
+</span><span id="line-646">        <span class="p">):</span>  <span class="c1"># Uses property getter</span>
+</span><span id="line-647">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No teammate was found with the specified &#39;teammate_id&#39;&quot;</span><span class="p">)</span>
+</span><span id="line-648">
+</span><span id="line-649">        <span class="n">team_messages_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">team_messages</span>
+</span><span id="line-650">        <span class="k">if</span> <span class="n">team_messages_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-651">            <span class="n">team_messages_list</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="line-652">            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">team_messages</span> <span class="o">=</span> <span class="n">team_messages_list</span>
+</span><span id="line-653">
+</span><span id="line-654">        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">team_messages_list</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN</span><span class="p">:</span>
+</span><span id="line-655">            <span class="k">raise</span> <span class="n">BotException</span><span class="p">(</span>
+</span><span id="line-656">                <span class="sa">f</span><span class="s2">&quot;The maximum number team messages has already been reached: </span><span class="si">{</span><span class="n">MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="line-657">            <span class="p">)</span>
+</span><span id="line-658">
+</span><span id="line-659">        <span class="k">if</span> <span class="n">message</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-660">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;message&#39; of a team message cannot be null&quot;</span><span class="p">)</span>
+</span><span id="line-661">
+</span><span id="line-662">        <span class="c1"># TODO: Consider how to handle message serialization if &#39;message&#39; is not directly JSON serializable.</span>
+</span><span id="line-663">        <span class="c1"># The current approach relies on to_json(message) which might fail for complex types.</span>
+</span><span id="line-664">        <span class="c1"># For now, assuming &#39;message&#39; is a simple dict or a type with a __dict__ attribute suitable for JSON.</span>
+</span><span id="line-665">        <span class="n">json_message_str</span> <span class="o">=</span> <span class="n">to_json</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span id="line-666">        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_message_str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">TEAM_MESSAGE_MAX_SIZE</span><span class="p">:</span>
+</span><span id="line-667">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="line-668">                <span class="sa">f</span><span class="s2">&quot;The team message is larger than the limit of </span><span class="si">{</span><span class="n">TEAM_MESSAGE_MAX_SIZE</span><span class="si">}</span><span class="s2"> bytes (compact JSON format)&quot;</span>
+</span><span id="line-669">            <span class="p">)</span>
+</span><span id="line-670">
+</span><span id="line-671">        <span class="n">team_message</span> <span class="o">=</span> <span class="n">TeamMessage</span><span class="p">(</span>
+</span><span id="line-672">            <span class="n">message_type</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+</span><span id="line-673">            <span class="n">receiver_id</span><span class="o">=</span><span class="n">teammate_id</span><span class="p">,</span>
+</span><span id="line-674">            <span class="n">message</span><span class="o">=</span><span class="n">json_message_str</span><span class="p">,</span>
+</span><span id="line-675">        <span class="p">)</span>
+</span><span id="line-676">        <span class="n">team_messages_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">team_message</span><span class="p">)</span></div>
+
+</span><span id="line-677">
+</span><span id="line-678">    <span class="c1"># Color and Graphics - Delegated</span>
+</span><span id="line-679">    <span class="nd">@property</span>
+</span><span id="line-680">    <span class="k">def</span><span class="w"> </span><span class="nf">body_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-681">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-682">        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">body_color</span> <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-683">
+</span><span id="line-684">    <span class="nd">@body_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-685">    <span class="k">def</span><span class="w"> </span><span class="nf">body_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-686">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">body_color</span> <span class="o">=</span> <span class="n">color</span><span class="o">.</span><span class="n">to_color_schema</span><span class="p">()</span> <span class="k">if</span> <span class="n">color</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-687">
+</span><span id="line-688">    <span class="nd">@property</span>
+</span><span id="line-689">    <span class="k">def</span><span class="w"> </span><span class="nf">turret_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-690">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-691">        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">turret_color</span> <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-692">
+</span><span id="line-693">    <span class="nd">@turret_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-694">    <span class="k">def</span><span class="w"> </span><span class="nf">turret_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-695">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">turret_color</span> <span class="o">=</span> <span class="n">color</span><span class="o">.</span><span class="n">to_color_schema</span><span class="p">()</span> <span class="k">if</span> <span class="n">color</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-696">
+</span><span id="line-697">    <span class="nd">@property</span>
+</span><span id="line-698">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-699">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-700">        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">radar_color</span> <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-701">
+</span><span id="line-702">    <span class="nd">@radar_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-703">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-704">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">radar_color</span> <span class="o">=</span> <span class="n">color</span><span class="o">.</span><span class="n">to_color_schema</span><span class="p">()</span> <span class="k">if</span> <span class="n">color</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-705">
+</span><span id="line-706">    <span class="nd">@property</span>
+</span><span id="line-707">    <span class="k">def</span><span class="w"> </span><span class="nf">bullet_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-708">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-709">        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">bullet_color</span> <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-710">
+</span><span id="line-711">    <span class="nd">@bullet_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-712">    <span class="k">def</span><span class="w"> </span><span class="nf">bullet_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-713">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">bullet_color</span> <span class="o">=</span> <span class="n">color</span><span class="o">.</span><span class="n">to_color_schema</span><span class="p">()</span> <span class="k">if</span> <span class="n">color</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-714">
+</span><span id="line-715">    <span class="nd">@property</span>
+</span><span id="line-716">    <span class="k">def</span><span class="w"> </span><span class="nf">scan_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-717">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-718">        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">scan_color</span> <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-719">
+</span><span id="line-720">    <span class="nd">@scan_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-721">    <span class="k">def</span><span class="w"> </span><span class="nf">scan_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-722">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">scan_color</span> <span class="o">=</span> <span class="n">color</span><span class="o">.</span><span class="n">to_color_schema</span><span class="p">()</span> <span class="k">if</span> <span class="n">color</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-723">
+</span><span id="line-724">    <span class="nd">@property</span>
+</span><span id="line-725">    <span class="k">def</span><span class="w"> </span><span class="nf">tracks_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-726">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-727">        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">tracks_color</span> <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-728">
+</span><span id="line-729">    <span class="nd">@tracks_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-730">    <span class="k">def</span><span class="w"> </span><span class="nf">tracks_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-731">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">tracks_color</span> <span class="o">=</span> <span class="n">color</span><span class="o">.</span><span class="n">to_color_schema</span><span class="p">()</span> <span class="k">if</span> <span class="n">color</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-732">
+</span><span id="line-733">    <span class="nd">@property</span>
+</span><span id="line-734">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-735">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-736">        <span class="k">return</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span><span class="o">.</span><span class="n">gun_color</span> <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-737">
+</span><span id="line-738">    <span class="nd">@gun_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-739">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-740">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">gun_color</span> <span class="o">=</span> <span class="n">color</span><span class="o">.</span><span class="n">to_color_schema</span><span class="p">()</span> <span class="k">if</span> <span class="n">color</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="line-741">
+<div class="viewcode-block" id="BaseBotInternals.get_graphics">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_graphics">[docs]</a>
+</span><span id="line-742">    <span class="k">def</span><span class="w"> </span><span class="nf">get_graphics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GraphicsABC</span><span class="p">:</span>
+</span><span id="line-743">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">graphics_state</span></div>
+
+</span><span id="line-744">
+</span><span id="line-745">    <span class="c1"># Bullet States - Delegated</span>
+<div class="viewcode-block" id="BaseBotInternals.get_bullet_states">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_bullet_states">[docs]</a>
+</span><span id="line-746">    <span class="k">def</span><span class="w"> </span><span class="nf">get_bullet_states</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BulletState</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="line-747">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">current_tick_or_null</span>
+</span><span id="line-748">        <span class="k">if</span> <span class="n">tick</span> <span class="ow">and</span> <span class="n">tick</span><span class="o">.</span><span class="n">bullet_states</span><span class="p">:</span>
+</span><span id="line-749">            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">tick</span><span class="o">.</span><span class="n">bullet_states</span><span class="p">)</span>
+</span><span id="line-750">        <span class="k">return</span> <span class="p">[]</span></div>
+
+</span><span id="line-751">
+</span><span id="line-752">    <span class="c1"># Server Handshake - Delegated</span>
+</span><span id="line-753">    <span class="nd">@property</span>
+</span><span id="line-754">    <span class="k">def</span><span class="w"> </span><span class="nf">server_handshake</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ServerHandshake</span><span class="p">:</span>
+</span><span id="line-755">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">server_handshake</span>  <span class="c1"># Uses property getter which throws if None</span>
+</span><span id="line-756">
+</span><span id="line-757">    <span class="nd">@server_handshake</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-758">    <span class="k">def</span><span class="w"> </span><span class="nf">server_handshake</span><span class="p">(</span>
+</span><span id="line-759">        <span class="bp">self</span><span class="p">,</span> <span class="n">server_handshake</span><span class="p">:</span> <span class="n">ServerHandshake</span>
+</span><span id="line-760">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Typically called by WebSocketHandler</span>
+</span><span id="line-761">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">server_handshake</span> <span class="o">=</span> <span class="n">server_handshake</span>
+</span><span id="line-762">
+</span><span id="line-763">    <span class="nd">@property</span>
+</span><span id="line-764">    <span class="k">def</span><span class="w"> </span><span class="nf">variant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="line-765">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">server_handshake</span><span class="o">.</span><span class="n">variant</span>
+</span><span id="line-766">
+</span><span id="line-767">    <span class="nd">@variant</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-768">    <span class="k">def</span><span class="w"> </span><span class="nf">variant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-769">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">server_handshake</span><span class="o">.</span><span class="n">variant</span> <span class="o">=</span> <span class="n">variant</span>
+</span><span id="line-770">
+</span><span id="line-771">    <span class="nd">@property</span>
+</span><span id="line-772">    <span class="k">def</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="line-773">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">server_handshake</span><span class="o">.</span><span class="n">version</span>
+</span><span id="line-774">
+</span><span id="line-775">    <span class="nd">@version</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-776">    <span class="k">def</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-777">        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">server_handshake</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version</span></div>
+
+</span></code></pre></div>
+    </div></div>
+        </main>
+      </div>
+    </div><footer class="py-6 border-t border-border md:py-0">
+    <div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
+      <div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
+        <p class="text-sm leading-loose text-center text-muted-foreground md:text-left">Built with <a class="font-medium underline underline-offset-4"
+    href="https://www.sphinx-doc.org"
+    rel="noreferrer">Sphinx 8.2.3</a></p>
+</div>
+</div>
+</footer>
+  </div>
+  
+    <script src="../../../_static/documentation_options.js?v=91ed0785"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script defer="defer" src="../../../_static/theme.js?v=073f68d9"></script>
+  
+</body>
+</html>

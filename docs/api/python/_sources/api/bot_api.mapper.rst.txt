@@ -1,0 +1,61 @@
+bot\_api.mapper package
+=======================
+
+Submodules
+----------
+
+bot\_api.mapper.bot\_state\_mapper module
+-----------------------------------------
+
+.. automodule:: bot_api.mapper.bot_state_mapper
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.mapper.bullet\_state\_mapper module
+--------------------------------------------
+
+.. automodule:: bot_api.mapper.bullet_state_mapper
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.mapper.event\_mapper module
+------------------------------------
+
+.. automodule:: bot_api.mapper.event_mapper
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.mapper.game\_setup\_mapper module
+------------------------------------------
+
+.. automodule:: bot_api.mapper.game_setup_mapper
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.mapper.initial\_position\_mapper module
+------------------------------------------------
+
+.. automodule:: bot_api.mapper.initial_position_mapper
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.mapper.results\_mapper module
+--------------------------------------
+
+.. automodule:: bot_api.mapper.results_mapper
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: bot_api.mapper
+   :members:
+   :show-inheritance:
+   :undoc-members:

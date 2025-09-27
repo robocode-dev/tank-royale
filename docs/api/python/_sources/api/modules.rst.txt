@@ -1,0 +1,7 @@
+robocode_tank_royale
+====================
+
+.. toctree::
+   :maxdepth: 4
+
+   bot_api

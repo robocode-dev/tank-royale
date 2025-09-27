@@ -1,0 +1,221 @@
+bot\_api.events package
+=======================
+
+Submodules
+----------
+
+bot\_api.events.bot\_death\_event module
+----------------------------------------
+
+.. automodule:: bot_api.events.bot_death_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.bot\_event module
+---------------------------------
+
+.. automodule:: bot_api.events.bot_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.bullet\_fired\_event module
+-------------------------------------------
+
+.. automodule:: bot_api.events.bullet_fired_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.bullet\_hit\_bot\_event module
+----------------------------------------------
+
+.. automodule:: bot_api.events.bullet_hit_bot_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.bullet\_hit\_bullet\_event module
+-------------------------------------------------
+
+.. automodule:: bot_api.events.bullet_hit_bullet_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.bullet\_hit\_wall\_event module
+-----------------------------------------------
+
+.. automodule:: bot_api.events.bullet_hit_wall_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.condition module
+--------------------------------
+
+.. automodule:: bot_api.events.condition
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.connected\_event module
+---------------------------------------
+
+.. automodule:: bot_api.events.connected_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.connection\_error\_event module
+-----------------------------------------------
+
+.. automodule:: bot_api.events.connection_error_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.connection\_event module
+----------------------------------------
+
+.. automodule:: bot_api.events.connection_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.custom\_event module
+------------------------------------
+
+.. automodule:: bot_api.events.custom_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.death\_event module
+-----------------------------------
+
+.. automodule:: bot_api.events.death_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.disconnected\_event module
+------------------------------------------
+
+.. automodule:: bot_api.events.disconnected_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.event\_abc module
+---------------------------------
+
+.. automodule:: bot_api.events.event_abc
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.game\_ended\_event module
+-----------------------------------------
+
+.. automodule:: bot_api.events.game_ended_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.game\_started\_event module
+-------------------------------------------
+
+.. automodule:: bot_api.events.game_started_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.hit\_bot\_event module
+--------------------------------------
+
+.. automodule:: bot_api.events.hit_bot_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.hit\_by\_bullet\_event module
+---------------------------------------------
+
+.. automodule:: bot_api.events.hit_by_bullet_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.hit\_wall\_event module
+---------------------------------------
+
+.. automodule:: bot_api.events.hit_wall_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.round\_ended\_event module
+------------------------------------------
+
+.. automodule:: bot_api.events.round_ended_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.round\_started\_event module
+--------------------------------------------
+
+.. automodule:: bot_api.events.round_started_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.scanned\_bot\_event module
+------------------------------------------
+
+.. automodule:: bot_api.events.scanned_bot_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.skipped\_turn\_event module
+-------------------------------------------
+
+.. automodule:: bot_api.events.skipped_turn_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.team\_message\_event module
+-------------------------------------------
+
+.. automodule:: bot_api.events.team_message_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.tick\_event module
+----------------------------------
+
+.. automodule:: bot_api.events.tick_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.events.won\_round\_event module
+----------------------------------------
+
+.. automodule:: bot_api.events.won_round_event
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: bot_api.events
+   :members:
+   :show-inheritance:
+   :undoc-members:
