@@ -12,5 +12,5 @@
 
 ## Python
 
-- [API overview](https://robocode-dev.github.io/tank-royale/api/python/index.html)
+- [API overview](https://robocode-dev.github.io/tank-royale/api/python/)
 - [Bot API](https://robocode-dev.github.io/tank-royale/api/python/index.html)

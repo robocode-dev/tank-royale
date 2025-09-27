@@ -45,6 +45,15 @@ tasks {
             )
         }
 
+        doLast {
+            // Ensure GitHub Pages won't try to apply Jekyll processing
+            val noJekyll = File(rootProject.projectDir, "docs/.nojekyll")
+            noJekyll.parentFile.mkdirs()
+            if (!noJekyll.exists()) {
+                noJekyll.createNewFile()
+            }
+        }
+
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         from("build/docs")
