@@ -1,0 +1,16 @@
+{
+  "name": "Ram Fire",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "Drives at bots trying to ram them. Fires when it hits them.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "platform": "Python",
+  "programmingLang": "Python 3"
+}
