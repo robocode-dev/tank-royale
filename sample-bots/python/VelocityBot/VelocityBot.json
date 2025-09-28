@@ -6,7 +6,7 @@
   ],
   "description": "Example bot of how to use turn rates.",
   "homepage": "",
-  "country_codes": [],
+  "countryCodes": [],
   "platform": "Python",
-  "programming_lang": "Python"
+  "programmingLang": "Python 3"
 }

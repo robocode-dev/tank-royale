@@ -1,11 +1,7 @@
 import asyncio
 
 from robocode_tank_royale.bot_api.bot import Bot
-from robocode_tank_royale.bot_api.events import (
-    ScannedBotEvent,
-    HitByBulletEvent,
-    HitWallEvent,
-)
+from robocode_tank_royale.bot_api.events import ScannedBotEvent, HitByBulletEvent, HitWallEvent
 
 
 # ------------------------------------------------------------------
@@ -13,8 +9,7 @@ from robocode_tank_royale.bot_api.events import (
 # ------------------------------------------------------------------
 # A sample bot originally made for Robocode by Joshua Galecki.
 #
-# Example bot demonstrating how to use turn rates and target speed. Mirrors the
-# Java VelocityBot behavior using the async Python Bot API.
+# Example bot of how to use turn rates and target speeds.
 # ------------------------------------------------------------------
 class VelocityBot(Bot):
     def __init__(self) -> None:
@@ -23,6 +18,9 @@ class VelocityBot(Bot):
 
     async def run(self) -> None:
         """Called when a new round is started -> initialize and control movement each turn."""
+
+        self._turn_counter = 0
+
         # Set the gun (turret) turn rate to rotate slowly all the time
         self.gun_turn_rate = 15
 
@@ -59,12 +57,10 @@ class VelocityBot(Bot):
         Note that current speed is 0 as the bot just hit the wall.
         """
         del e
-        # Reverse the current target speed (property getter requires it has been set before)
-        try:
-            self.target_speed = -1 * self.target_speed
-        except Exception:
-            # If target speed was not set for some reason, default to backing up
-            self.target_speed = -4
+        # Move away from the wall by reversing the target speed.
+        # Note that current speed is 0 as the bot just hit the wall.
+        current = self.target_speed if self.target_speed is not None else 0.0
+        self.target_speed = -1 * current if current != 0.0 else -4.0
 
 
 async def main() -> None:
