@@ -2,24 +2,24 @@ plugins {
     base
 }
 
-// Helper that tries python3 first, then python. Throws if neither is available.
-fun findPython(): String {
-    val candidates = listOf("python3", "python")
-    for (c in candidates) {
-        try {
-            val pb = ProcessBuilder(c, "--version")
-            pb.redirectErrorStream(true)
-            val proc = pb.start()
-            val exit = proc.waitFor()
-            if (exit == 0) {
-                println("Using python command: $c")
-                return c
-            }
-        } catch (_: Exception) {
-            // ignore and try next candidate
-        }
+// Resolve venv Python path (creates OS-specific path under .venv)
+fun venvPythonPath(): String {
+    val isWindows = org.gradle.internal.os.OperatingSystem.current().isWindows
+    val venvDir = project.layout.projectDirectory.dir(".venv").asFile
+    val py = if (isWindows) venvDir.resolve("Scripts/python.exe") else venvDir.resolve("bin/python")
+    return py.absolutePath
+}
+
+// Task to ensure a local virtual environment exists and has base requirements installed
+val setupVenv by tasks.registering(Exec::class) {
+    group = "python"
+    description = "Creates local Python virtual environment and installs base requirements"
+    val os = org.gradle.internal.os.OperatingSystem.current()
+    if (os.isWindows) {
+        commandLine("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "scripts/create-venv.ps1")
+    } else {
+        commandLine("bash", "scripts/create-venv.sh")
     }
-    throw GradleException("Neither 'python3' nor 'python' was found on PATH. Please install Python.")
 }
 
 tasks {
@@ -33,13 +33,15 @@ tasks {
     }
 
     val `install-requirements` by registering(Exec::class) {
-        commandLine(findPython(), "-m", "pip", "install", "-r", "requirements.txt")
+        dependsOn(setupVenv)
+        commandLine(venvPythonPath(), "-m", "pip", "install", "-r", "requirements.txt")
     }
 
     val `generate-schema` by registering(Exec::class) {
         dependsOn(`install-requirements`)
 
-        commandLine(findPython(), "scripts/schema_to_python.py", "-d", "../../schema/schemas", "-o", "generated/robocode_tank_royale/schema")
+        dependsOn(setupVenv)
+        commandLine(venvPythonPath(), "scripts/schema_to_python.py", "-d", "../../schema/schemas", "-o", "generated/robocode_tank_royale/schema")
     }
 
     val `generate-version` by registering {
@@ -62,11 +64,13 @@ tasks {
         dependsOn(`generate-schema`)
         dependsOn(`generate-version`)
 
-        commandLine(findPython(), "-m", "pip", "install", "-e", ".")
+        dependsOn(setupVenv)
+        commandLine(venvPythonPath(), "-m", "pip", "install", "-e", ".")
     }
 
     val `pip-install-test-requirements` by registering(Exec::class) {
-        commandLine(findPython(), "-m", "pip", "install", "-r", "requirements-test.txt")
+        dependsOn(setupVenv)
+        commandLine(venvPythonPath(), "-m", "pip", "install", "-r", "requirements-test.txt")
     }
 
     // run pytest
@@ -75,7 +79,8 @@ tasks {
         description = "Runs Python tests with pytest"
         dependsOn(`pip-install`)
         dependsOn(`pip-install-test-requirements`)
-        commandLine(findPython(), "-m", "pytest")
+        dependsOn(setupVenv)
+        commandLine(venvPythonPath(), "-m", "pytest")
     }
 
     // make it part of the standard verification lifecycle
@@ -87,7 +92,8 @@ tasks {
     val `install-build-tools` by registering(Exec::class) {
         group = "build"
         description = "Installs Python build tooling"
-        commandLine(findPython(), "-m", "pip", "install", "build", "wheel")
+        dependsOn(setupVenv)
+        commandLine(venvPythonPath(), "-m", "pip", "install", "build", "wheel")
     }
 
     // Build distributable artifacts (wheel + sdist)
@@ -97,7 +103,7 @@ tasks {
         dependsOn(`generate-schema`)
         dependsOn(`generate-version`)
         dependsOn(`install-build-tools`)
-        commandLine(findPython(), "-m", "build")
+        commandLine(venvPythonPath(), "-m", "build")
     }
 
     named("build") {
@@ -112,7 +118,8 @@ tasks {
         description = "Installs Sphinx for building Python API docs"
         // Also install sphinxawesome-theme so the sphinxawesome_theme is available
         // during sphinx-build: pip install sphinx sphinxawesome-theme
-        commandLine(findPython(), "-m", "pip", "install", "sphinx", "sphinxawesome-theme")
+        dependsOn(setupVenv)
+        commandLine(venvPythonPath(), "-m", "pip", "install", "sphinx", "sphinxawesome-theme")
     }
 
     val prepareSphinxSource by registering(Copy::class) {
@@ -133,7 +140,7 @@ tasks {
         // Output API docs alongside the prepared Sphinx source under build/
         val outApiDir = layout.buildDirectory.dir("sphinx/source/api").get().asFile.path
         commandLine(
-            findPython(), "-m", "sphinx.ext.apidoc",
+            venvPythonPath(), "-m", "sphinx.ext.apidoc",
             "-o", outApiDir,
             "src/robocode_tank_royale"
         )
@@ -147,7 +154,7 @@ tasks {
         dependsOn(`pip-install`)
         val sourceDir = layout.buildDirectory.dir("sphinx/source").get().asFile.path
         val htmlDir = layout.buildDirectory.dir("sphinx/html").get().asFile.path
-        commandLine(findPython(), "-m", "sphinx", "-b", "html", sourceDir, htmlDir)
+        commandLine(venvPythonPath(), "-m", "sphinx", "-b", "html", sourceDir, htmlDir)
     }
 
     register<Copy>("copyPythonApiDocs") {
