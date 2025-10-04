@@ -124,7 +124,7 @@ Meaning of each field in the JSON file:
 - `description`: is a brief description of the bot.
 - `homepage`: is a link to a web page for the bot.
 - `countryCodes`: is a list containing [Alpha-2] country codes, representing the country of each author and/or bot.
-- `platform`: is the platform required for running the bot, e.g. Java 17 or .Net 6.0.
+- `platform`: is the platform required for running the bot, e.g. Java 17 or .Net 8.
 - `programmingLang`: is the programming language used for programming the bot, e.g. C# or Kotlin.
 - `gameTypes`: is a comma-separated list containing the [game types](game_types.md) that the bot is supporting, meaning
   that it should

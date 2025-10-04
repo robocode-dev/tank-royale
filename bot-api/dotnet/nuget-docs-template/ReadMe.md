@@ -31,7 +31,7 @@ dotnet add package Robocode.TankRoyale.BotApi --version @VERSION@
 
 ## Requirements
 
-- .NET 6.0 or higher
+- .NET 8 or higher
 - Windows, macOS, or Linux
 
 ## Quick Start
@@ -79,7 +79,7 @@ Robocode Tank Royale runs on:
 - **macOS**
 - **Linux**
 
-The .NET Bot API works with **.NET 6.0+** on all supported platforms.
+The .NET Bot API works with **.NET 8** or higher on all supported platforms.
 
 ## Community & Support
 

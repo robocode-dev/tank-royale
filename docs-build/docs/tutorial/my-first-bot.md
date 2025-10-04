@@ -62,7 +62,7 @@ The fields `name`, `version` and `authors` are required, and the rest of the fie
 Note that the `authors` field should contain your full name, nickname, or handle, which identifies you.
 The `platform` and `programmingLang` depends on your choice of programming language and platform. For example, the
 platform could be Java 17, and the programming Language Kotlin 1.8.20 or Java 17.
-Or the platform could be .Net 6.0, and the programming language C# 10.0 or F# 6.0.
+Or the platform could be .Net 8, and the programming language C# 12 or F# 8.
 
 This concludes the common part of the tutorial, and the following depends on the platform of your choice.
 
