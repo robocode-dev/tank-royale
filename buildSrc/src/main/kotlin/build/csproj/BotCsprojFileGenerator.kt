@@ -39,8 +39,8 @@ private fun writeXml(out: OutputStream, botName: String, botApiVersion: String) 
             element("PropertyGroup") {
                 element("RootNamespace", botName)
                 element("OutputType", "Exe")
-                element("TargetFramework", "net6.0")
-                element("LangVersion", "10.0")
+                element("TargetFramework", "net8.0")
+                element("LangVersion", "12.0")
             }
             element("ItemGroup") {
                 element("PackageReference") {
@@ -49,7 +49,7 @@ private fun writeXml(out: OutputStream, botName: String, botApiVersion: String) 
                 }
                 element("PackageReference") {
                     attribute("Include", "Microsoft.Extensions.Configuration.Binder")
-                    attribute("Version", "6.0.0")
+                    attribute("Version", "8.0.2")
                 }
             }
         }
