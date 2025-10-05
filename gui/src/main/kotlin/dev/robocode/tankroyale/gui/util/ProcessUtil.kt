@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.gui.util
 
+import dev.robocode.tankroyale.common.util.Platform
+import dev.robocode.tankroyale.common.util.Platform.isWindows
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
@@ -11,8 +13,6 @@ object ProcessUtil {
     // Timeout constants
     private const val GRACEFUL_EXIT_TIMEOUT_MS = 2000L
     private const val FORCE_TERMINATE_TIMEOUT_MS = 3 * GRACEFUL_EXIT_TIMEOUT_MS
-
-    private val isWindows: Boolean = System.getProperty("os.name").lowercase().contains("win")
 
     /**
      * Sends a quit command to the given process and optionally waits for it to exit.

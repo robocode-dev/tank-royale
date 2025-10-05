@@ -3,9 +3,10 @@ package dev.robocode.tankroyale.booter.process
 import dev.robocode.tankroyale.booter.model.BootEntry
 import dev.robocode.tankroyale.booter.util.Env
 import dev.robocode.tankroyale.booter.util.Log
-import dev.robocode.tankroyale.booter.util.OperatingSystemCheck
-import dev.robocode.tankroyale.booter.util.OperatingSystemCheck.OperatingSystemType.Mac
-import dev.robocode.tankroyale.booter.util.OperatingSystemCheck.OperatingSystemType.Windows
+import dev.robocode.tankroyale.common.util.Platform
+import dev.robocode.tankroyale.common.util.Platform.PlatformType.Mac
+import dev.robocode.tankroyale.common.util.Platform.PlatformType.Windows
+import dev.robocode.tankroyale.common.util.Platform.isWindows
 import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
@@ -131,7 +132,7 @@ class ProcessManager {
     }
 
     private fun verifyAndForceTermination(process: Process, pid: Long) {
-        if (isProcessStillAlive(process) && isWindows()) {
+        if (isProcessStillAlive(process) && isWindows) {
             runTaskKillTree(pid)
         }
     }
@@ -140,10 +141,6 @@ class ProcessManager {
         return runCatching {
             process.toHandle().isAlive
         }.getOrDefault(true)
-    }
-
-    private fun isWindows(): Boolean {
-        return OperatingSystemCheck.getOperatingSystemType() == Windows
     }
 
     /**
@@ -400,7 +397,7 @@ class ProcessManager {
     /**
      * Find the appropriate boot script based on the current operating system.
      */
-    private fun findOsScript(botDir: Path): Path? = when (OperatingSystemCheck.getOperatingSystemType()) {
+    private fun findOsScript(botDir: Path): Path? = when (Platform.operatingSystemType) {
         Windows -> findWindowsScript(botDir)
         Mac -> findMacOsScript(botDir)
         else -> findFirstUnixScript(botDir)

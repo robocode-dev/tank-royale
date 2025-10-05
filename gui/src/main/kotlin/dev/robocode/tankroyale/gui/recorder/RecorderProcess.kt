@@ -44,7 +44,6 @@ object RecorderProcess {
         val command = mutableListOf(
             "java",
             "-Dapp.processName=RobocodeTankRoyale-Recorder",
-            "-Dpicocli.ansi=true",
             "-jar",
             getRecorderJar(),
             "--url=$effectiveUrl"
