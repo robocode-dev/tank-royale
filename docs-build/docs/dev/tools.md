@@ -30,7 +30,7 @@ all the tools for macOS and Linux as well.
 
 ### .Net platform
 
-- [.Net 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+- [.Net 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - [DocFX](https://dotnet.github.io/docfx/)
 
 ### Documentation

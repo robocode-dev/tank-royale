@@ -1,3 +1,9 @@
+## 📦 0.33.2
+
+### 🚀 Improvements
+
+- Bot API for .Net has been updated to .Net 8 and C# 12 from .Net 6 (EOL) and C# 10 
+
 ## 📦 0.33.1 - Fixes for Recording and Replays - 08-Sep-2025
 
 ### 🐞 Bug Fixes

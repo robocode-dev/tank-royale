@@ -6,8 +6,8 @@
     <AssemblyTitle>Bot API for Robocode Tank Royale</AssemblyTitle>
     <RootNamespace>Robocode.TankRoyale.BotApi</RootNamespace>
     <OutputType>Library</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>10.0</LangVersion>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>12.0</LangVersion>
 
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
 
@@ -44,7 +44,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Text.Json" Version="6.0.0" />
 
     <!-- Icon -->
     <None Include="icon.png" Pack="true" PackagePath="\" />
