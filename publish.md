@@ -18,6 +18,20 @@ Publish to staging, close, and release:
 
 ## .Net archives (Nuget)
 
+Enter the release folder:
+
+```shell
+cd bot-api\dotnet\api\bin\Release
+```
+
+Publish to Nuget:
+
+```
+dotnet nuget push robocode.tankroyale.botapi.«version».nupkg --api-key «nuget api key» --source https://api.nuget.org/v3/index.json
+```
+
+Note: «version» and «nuget api key» must be prefilled with Robocode version and Nuget API key.
+
 ## Python package (pip)
 
 From repository root, build the Python Bot API package (wheel + sdist):
@@ -43,17 +57,3 @@ Alternatively, to install directly from the project folder without building firs
 cd bot-api\python
 pip install -e .
 ```
-
-Enter the release folder:
-
-```shell
-cd bot-api\dotnet\api\bin\Release
-```
-
-Publish to Nuget:
-
-```
-dotnet nuget push robocode.tankroyale.botapi.«version».nupkg --api-key «nuget api key» --source https://api.nuget.org/v3/index.json
-```
-
-Note: «version» and «nuget api key» must be prefilled with Robocode version and Nuget API key.
