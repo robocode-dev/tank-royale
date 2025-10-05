@@ -33,9 +33,9 @@ tasks {
 
     fun generateBatchScript(): String = """
         if not exist bin\ (
-            dotnet build >nul
+            dotnet build
         )
-        dotnet run --no-build >nul
+        dotnet run --no-build
         """.trimIndent()
 
     fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {

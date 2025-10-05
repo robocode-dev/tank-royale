@@ -203,8 +203,12 @@ a [shell script][.sh] for macOS and Linux.
 We create a command file for Windows named `MyFirstBot.cmd` and put it into our bot directory:
 
 ```
-java -cp ../lib/* MyFirstBot.java >nul
+java -cp ../lib/* MyFirstBot.java
 ```
+
+Note on Windows; you might want to add a `>nul` at the end of the command line, to avoid a Windows-specific quirk where
+the bot becomes unresponsive when started up as a process with the Robocode. [^cmd-quirk]
+If you don't want the console window to pop up, you can use the `javaw` command instead of `java`.
 
 So the `java ... MyFirstBot.java` part is used for starting the bot standing in the bot directory from a command prompt.
 The `-cp ../lib/*` part is used for setting the [classpath] containing the bot API. We put this in the library beside
@@ -212,9 +216,6 @@ the bot directory, and hence the classpath is `../lib`.
 
 The star (*) tell the classloader in Java to read any file in the `lib` folder, and is just a convenient way to avoid
 specifying the full name of the filename of the bot API `robocode-tankroyale-bot-api-x.y.z.jar`, which is quite long.
-
-***IMPORTANT NOTE:*** The `>nul` is a work-around necessary to avoid a Windows-specific quirk where the bot becomes
-unresponsive when started up as a process with the Robocode. [^cmd-quirk]
 
 Next, we provide a shell script for macOS and Linux named `MyFirstBot.sh` and put it into our bot directory:
 

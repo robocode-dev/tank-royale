@@ -244,13 +244,10 @@ a [shell script][.sh] for macOS and Linux.
 We create a command file for Windows named `MyFirstBot.cmd` and put it into our bot directory:
 
 ```
-dotnet run >nul
+dotnet run
 ```
 
 So the `dotnet run` part is used for starting the bot standing in the bot directory from a command prompt.
-
-***IMPORTANT NOTE:*** The `>nul` is a work-around necessary to avoid a Windows-specific quirk where the bot becomes
-unresponsive when started up as a process with the Robocode. [^cmd-quirk]
 
 Next, we provide a shell script for macOS and Linux named `MyFirstBot.sh` and put it into our bot directory:
 
@@ -328,10 +325,6 @@ $Env:BOT_SECRETS = zDuQrkCLQU5VQgytofkNrQ
 Note that it is also possible to provide the server secret and URL programmatically with the Bot APIs with the `Bot`
 and `BaseBot` constructors.
 
-
-[^cmd-quirk]: ? "Note that the unresponsiveness of a Windows process running a bot is not observed when running the
-bot directly from the command line with or without the script; only when using a Java process for running the script
-inside the Robocode booter."
 
 [C#]: https://docs.microsoft.com/en-us/dotnet/csharp/ "C# documentation"
 
