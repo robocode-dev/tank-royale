@@ -81,20 +81,22 @@ object BootProcess {
     }
 
     fun stop() {
-        if (!isRunning())
-            return
-
+        // Stop ping regardless of reader thread state
         stopPinging()
 
+        // Attempt to stop any booted bots even if booter I/O threads are not running
         stopAllBootedBots()
 
+        // Stop the booter process (safe no-op if already null or not alive)
         stopProcess()
 
+        // Stop reader threads
         stopThreads()
 
+        // Notify GUI and clear internal state
         notifyUnbootBotProcesses()
-
         bootedBotsList.clear()
+        pidAndDirs.clear()
 
         unregisterShutdownHookIfPossible()
     }
@@ -229,7 +231,15 @@ object BootProcess {
     }
 
     private fun stopProcess() {
-        ProcessUtil.stopProcess(booterProcess, "quit", true, true)
+        val process = booterProcess
+        if (process != null) {
+            val pid = runCatching { process.pid() }.getOrNull()
+            ProcessUtil.stopProcess(process, "quit", true, true)
+            // Last resort: if still alive, try to kill by PID
+            if (process.isAlive && pid != null) {
+                ProcessUtil.killProcessTreeByPid(pid)
+            }
+        }
         booterProcess = null
     }
 
