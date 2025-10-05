@@ -27,6 +27,12 @@ The Bot API is provided as a [Nuget] package and build for [.Net 8].
 
 Artifact is output to the `/bin/Release/` directory named `Robocode.TankRoyale.BotApi.x.y.z.nupkg`.
 
+#### Push Nuget package to the local repository:
+
+```shell
+./gradlew :bot-api:dotnet:pushLocal
+```
+
 ### Build API documentation
 
 ```shell
