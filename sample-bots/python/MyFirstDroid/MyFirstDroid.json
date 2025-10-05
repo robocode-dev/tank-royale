@@ -1,0 +1,16 @@
+{
+  "name": "MyFirstDroid",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "A droid bot with more energy but no radar. Member of the MyFirstTeam; follows leader orders.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "platform": "Python",
+  "programmingLang": "Python 3"
+}

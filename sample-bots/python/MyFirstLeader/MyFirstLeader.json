@@ -1,0 +1,16 @@
+{
+  "name": "MyFirstLeader",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "Member of the MyFirstTeam. Looks around for enemies, and orders teammates to fire.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "platform": "Python",
+  "programmingLang": "Python 3"
+}
