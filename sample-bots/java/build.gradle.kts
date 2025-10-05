@@ -29,6 +29,8 @@ tasks {
     @Suppress("UNCHECKED_CAST")
     val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
+    fun isWindows() = System.getProperty("os.name").lowercase().contains("windows")
+
     fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
         val botName = projectDir.botName()
         val file = botArchivePath.resolve("$botName.$fileExt").toFile()
@@ -37,14 +39,14 @@ tasks {
                 write(newLine)
             }
         }
-        // Important: It seems that we need to add the `>nul` redirection to avoid the cmd processes to halt!?
-        val redirect = if (fileExt == "cmd") ">nul" else ""
+
+        val java = if (isWindows()) "javaw" else "java"
 
         printWriter.use {
             if (fileExt == "sh") {
                 it.println("#!/bin/sh")
             }
-            it.println("java -cp ../lib/* $botName.java $redirect")
+            it.println("$java -cp ../lib/* $botName.java")
         }
     }
 
