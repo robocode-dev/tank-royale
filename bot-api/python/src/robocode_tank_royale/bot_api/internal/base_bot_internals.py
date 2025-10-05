@@ -256,6 +256,7 @@ class BaseBotInternals:
         try:
             await self.event_queue.dispatch_events(turn_number)
         except Exception:
+            # Align with Java: do not propagate interruptions from event handling
             traceback.print_exc()
 
     def set_running(self, is_running: bool) -> None:
@@ -274,6 +275,8 @@ class BaseBotInternals:
             while self.data.is_running:
                 try:
                     await bot.go()
+                except ThreadInterruptedException:
+                    return  # Thread was interrupted deliberately - exit silently
                 except asyncio.CancelledError:
                     return  # Task was cancelled
                 except Exception as e:  # Catch other exceptions during bot.go()
@@ -282,6 +285,8 @@ class BaseBotInternals:
                     # Depending on desired behavior, may need to stop or continue
                     self.data.is_running = False  # Example: stop on error
                     return
+        except ThreadInterruptedException:
+            return  # Thread was interrupted deliberately - exit silently
         except asyncio.CancelledError:
             # This handles cancellation if bot.run() or the loop itself is cancelled
             pass  # Task was cancelled

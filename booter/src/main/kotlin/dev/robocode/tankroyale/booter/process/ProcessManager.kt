@@ -63,7 +63,7 @@ class ProcessManager {
      */
     fun stopBotProcess(pid: Pid): Boolean {
         val process = processes[pid] ?: run {
-            println("lost: $pid")
+            println("lost $pid")
             return false
         }
 
