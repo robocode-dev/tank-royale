@@ -82,15 +82,80 @@ class ProcessManager {
      * Stop a specific process and remove it from the process map.
      */
     private fun stopProcess(process: Process) {
-        process.apply {
-            val pid = pid()
-            onExit().thenAccept {
-                processes.remove(pid)
-                println("stopped $pid")
-            }
-            descendants().forEach { it.destroyForcibly() }
-            destroyForcibly()
+        val pid = process.pid()
+
+        registerProcessCleanup(process, pid)
+        terminateProcessTree(process)
+        verifyAndForceTermination(process, pid)
+    }
+
+    private fun registerProcessCleanup(process: Process, pid: Long) {
+        process.onExit().thenAccept {
+            processes.remove(pid)
+            println("stopped $pid")
         }
+    }
+
+    private fun terminateProcessTree(process: Process) {
+        terminateDescendants(process)
+        gracefullyTerminateProcess(process)
+        forceTerminateRemainingProcesses(process)
+    }
+
+    private fun terminateDescendants(process: Process) {
+        runCatching {
+            process.toHandle().descendants().forEach { child ->
+                runCatching { child.destroy() }
+            }
+        }
+    }
+
+    private fun gracefullyTerminateProcess(process: Process) {
+        runCatching { process.destroy() }
+    }
+
+    private fun forceTerminateRemainingProcesses(process: Process) {
+        runCatching {
+            process.toHandle().descendants().forEach { child ->
+                if (child.isAlive) {
+                    runCatching { child.destroyForcibly() }
+                }
+            }
+        }
+
+        runCatching {
+            if (process.isAlive) {
+                process.destroyForcibly()
+            }
+        }
+    }
+
+    private fun verifyAndForceTermination(process: Process, pid: Long) {
+        if (isProcessStillAlive(process) && isWindows()) {
+            runTaskKillTree(pid)
+        }
+    }
+
+    private fun isProcessStillAlive(process: Process): Boolean {
+        return runCatching {
+            process.toHandle().isAlive
+        }.getOrDefault(true)
+    }
+
+    private fun isWindows(): Boolean {
+        return OperatingSystemCheck.getOperatingSystemType() == Windows
+    }
+
+    /**
+     * Uses Windows taskkill to terminate a process tree as a last resort.
+     */
+    private fun runTaskKillTree(pid: Long) {
+        try {
+            ProcessBuilder("taskkill", "/PID", pid.toString(), "/T", "/F")
+                .redirectErrorStream(true)
+                .start()
+                .waitFor()
+        } catch (_: Exception) { }
     }
 
     // BOT BOOTING
