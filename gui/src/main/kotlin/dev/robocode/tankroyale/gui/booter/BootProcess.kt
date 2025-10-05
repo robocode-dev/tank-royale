@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.gui.booter
 
 import dev.robocode.tankroyale.client.model.MessageConstants
 import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.util.JavaExec
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.console.BooterErrorConsole
@@ -45,7 +46,7 @@ object BootProcess {
 
     fun info(botsOnly: Boolean? = false, teamsOnly: Boolean? = false): List<BootEntry> {
         val args = mutableListOf(
-            "java",
+            JavaExec.java(),
             "-Dapp.processName=RobocodeTankRoyale-Booter",
             "-jar",
             getBooterJar(),
@@ -178,7 +179,7 @@ object BootProcess {
 
     private fun bootBotProcess(botDirNames: Collection<String>) {
         val args = mutableListOf(
-            "java",
+            JavaExec.java(),
             "-Dapp.processName=RobocodeTankRoyale-Booter",
             "-Dserver.url=${ServerSettings.serverUrl()}",
             "-Dserver.secret=${ServerSettings.botSecret()}",

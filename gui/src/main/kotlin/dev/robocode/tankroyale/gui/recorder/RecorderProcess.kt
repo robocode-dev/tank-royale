@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.recorder
 
+import dev.robocode.tankroyale.common.util.JavaExec
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.util.FileUtil
 import dev.robocode.tankroyale.gui.util.LineReaderThread
@@ -32,7 +33,7 @@ object RecorderProcess {
      *
      * @param url Optional server URL. Defaults to ServerSettings.serverUrl().
      * @param secret Optional secret. Defaults to ServerSettings.controllerSecret().
-     * @param dir Optional directory where recordings are saved. Defaults to current dir when null.
+     * @param dir Optional directory where recordings are saved. Defaults to the current dir when null.
      */
     @JvmOverloads
     fun start(url: String? = null, secret: String? = null, dir: String? = null) {
@@ -42,7 +43,7 @@ object RecorderProcess {
         val effectiveSecret = secret ?: ServerSettings.controllerSecret()
 
         val command = mutableListOf(
-            "java",
+            JavaExec.java(),
             "-Dapp.processName=RobocodeTankRoyale-Recorder",
             "-jar",
             getRecorderJar(),

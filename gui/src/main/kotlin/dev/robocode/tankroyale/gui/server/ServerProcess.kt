@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.server
 
+import dev.robocode.tankroyale.common.util.JavaExec
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.server.ServerActions
@@ -38,7 +39,7 @@ object ServerProcess {
         var command: MutableList<String>
         ServerSettings.apply {
             command = mutableListOf(
-                "java",
+                JavaExec.java(),
                 "-Dapp.processName=RobocodeTankRoyale-Server",
                 "-Dpicocli.ansi=true", // to show server logo in ANSI colors
                 "-jar",
