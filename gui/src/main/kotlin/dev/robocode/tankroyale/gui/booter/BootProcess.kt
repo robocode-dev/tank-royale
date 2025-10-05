@@ -335,13 +335,17 @@ object BootProcess {
                 ping(pidAndDirs.keys)
             }
         }
-        pingTimer = Timer().apply {
+        // Use a daemon Timer so it cannot keep the JVM alive on shutdown
+        pingTimer = Timer(true).apply {
             scheduleAtFixedRate(pingTask, Date(), 1000L)
         }
     }
 
     private fun stopPinging() {
         pingTimer?.cancel()
+        // Remove canceled tasks and drop reference to allow GC
+        pingTimer?.purge()
+        pingTimer = null
     }
 
     private fun addPid(line: String) {
