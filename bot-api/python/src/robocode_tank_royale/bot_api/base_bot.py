@@ -269,6 +269,7 @@ class BaseBot(BaseBotABC):
 
     def set_adjust_radar_for_gun_turn(self, adjust: bool) -> None:
         self._internals.data.bot_intent.adjust_radar_for_gun_turn = adjust
+        self._internals.data.bot_intent.fire_assist = not adjust
 
     def is_adjust_radar_for_gun_turn(self) -> bool:
         assert self._internals.data.bot_intent.adjust_radar_for_gun_turn is not None, (

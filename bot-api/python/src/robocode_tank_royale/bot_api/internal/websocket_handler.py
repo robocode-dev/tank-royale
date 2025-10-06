@@ -148,9 +148,15 @@ class WebSocketHandler:
             else:
                 raise BotException(f"Unsupported WebSocket message type: {msg_type}")
 
+    def _is_event_handling_disabled(self, current_turn: int) -> bool:
+        disabled_turn = self.base_bot_internal_data.event_handling_disabled_turn
+        return disabled_turn != 0 and disabled_turn < (int(current_turn) - 1)
+
     async def handle_tick(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a tick event from the server."""
-        if self.base_bot_internal_data.event_handling_disabled_turn:
+        # Determine turn number early to apply correct disabled-handling semantics
+        turn_number = json_msg.get("turn_number") or json_msg.get("turnNumber")
+        if turn_number is not None and self._is_event_handling_disabled(int(turn_number)):
             return
 
         self.base_bot_internal_data.tick_start_nano_time = int(
@@ -264,7 +270,8 @@ class WebSocketHandler:
 
     async def handle_skipped_turn(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a skipped turn event from the server."""
-        if self.base_bot_internal_data.event_handling_disabled_turn:
+        turn_number = json_msg.get("turn_number") or json_msg.get("turnNumber")
+        if turn_number is not None and self._is_event_handling_disabled(int(turn_number)):
             return
 
         schema_evt: SkippedTurnEvent = from_json(json_msg)  # type: ignore
