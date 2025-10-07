@@ -241,10 +241,8 @@ class BaseBot(BaseBotABC):
         return self._internals.set_fire(firepower)
 
     def get_firepower(self) -> float:
-        assert (
-            self._internals.data.bot_intent.firepower is not None
-        ), "Firepower must be set before accessing it."
-        return self._internals.data.bot_intent.firepower
+        firepower = self._internals.data.bot_intent.firepower
+        return 0.0 if firepower is None else firepower
 
     def set_rescan(self) -> None:
         self._internals.data.bot_intent.rescan = True
