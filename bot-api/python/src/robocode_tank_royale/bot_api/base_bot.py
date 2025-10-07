@@ -370,8 +370,10 @@ class BaseBot(BaseBotABC):
         self._internals.gun_color = color
 
     def is_debugging_enabled(self) -> bool:
-        # Debugging is always enabled for now in Python client
-        return True
+        tick = self._internals.get_current_tick_or_throw()
+        bot_state = tick.bot_state
+        assert bot_state is not None
+        return bot_state.is_debugging_enabled
 
     def get_graphics(self) -> GraphicsABC:
         return self._internals.get_graphics()
