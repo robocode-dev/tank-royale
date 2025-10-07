@@ -40,6 +40,12 @@ class BaseBot(BaseBotABC):
         await self._internals.start()
 
     async def go(self) -> None:
+        # Process all events before executing the turn commands to mimic classic Robocode behavior
+        current_tick = self._internals.get_current_tick_or_null()
+        if current_tick is not None:
+            # Add events from the current tick to the event queue and dispatch them
+            self._internals.add_events_from_tick(current_tick)
+            await self._internals.dispatch_events(current_tick.turn_number)
         await self._internals.execute()
 
     def get_my_id(self) -> int:
@@ -214,14 +220,14 @@ class BaseBot(BaseBotABC):
 
     @property
     def target_speed(self) -> float:
-        assert (
-            self._internals.data.bot_intent.target_speed is not None
-        ), "Target speed must be set before accessing it."
-        return self._internals.data.bot_intent.target_speed
+        # Match Java semantics: return 0 if not set
+        ts = self._internals.target_speed
+        return 0.0 if ts is None else ts
 
     @target_speed.setter
     def target_speed(self, target_speed: float) -> None:
-        self._internals.data.bot_intent.target_speed = target_speed
+        # Delegate to internals to ensure clamping/validation
+        self._internals.target_speed = target_speed
 
     @property
     def max_speed(self) -> float:

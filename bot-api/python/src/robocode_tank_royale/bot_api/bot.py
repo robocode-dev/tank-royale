@@ -324,7 +324,6 @@ class _BotInternals(StopResumeListenerABC):
             if self._is_near_zero(new_speed) and self._is_over_driving:
                 distance = 0
                 self._is_over_driving = False
-            self.distance_remaining = distance - new_speed
             # the overdrive flag
             if distance * new_speed >= 0:
                 self._is_over_driving = (

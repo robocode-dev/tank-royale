@@ -249,6 +249,10 @@ class BaseBotInternals:
     def clear_events(self) -> None:
         self.event_queue.clear_events()
 
+    # Public wrapper to enqueue events from a tick, aligning with Java BaseBotInternals
+    def add_events_from_tick(self, event: TickEvent) -> None:
+        self.event_queue.add_events_from_tick(event)
+
     def set_interruptible(self, interruptible: bool) -> None:
         self.event_queue.set_current_event_interruptible(interruptible)
 
@@ -355,10 +359,7 @@ class BaseBotInternals:
         if turn_number != self.last_execute_turn_number:
             self.last_execute_turn_number = turn_number
 
-            # Add events from the current tick to the event queue
-            self.event_queue.add_events_from_tick(current_tick)
-
-            await self.dispatch_events(turn_number)
+            # Events are now added and dispatched from BaseBot.go() to match Java semantics
             await self._send_intent()
         await self._wait_for_next_turn(turn_number)
 
