@@ -386,7 +386,7 @@ class BaseBot(BaseBotABC):
         return 20 - 3 * MathUtil.clamp(firepower, MIN_FIREPOWER, MAX_FIREPOWER)
 
     def calc_gun_heat(self, firepower: float) -> float:
-        return 1 + MathUtil.clamp(firepower, MIN_FIREPOWER, MAX_FIREPOWER)
+        return 1 + (MathUtil.clamp(firepower, MIN_FIREPOWER, MAX_FIREPOWER) / 5)
 
     def get_event_priority(self, event_class: type) -> int:
         return EventPriorities.get_priority(event_class)
