@@ -34,8 +34,8 @@ if %TRY% GEQ 300 (
   echo Error: Could not acquire dependency installation lock after 300 seconds.
   exit /b 1
 )
-rem Sleep 1 second and retry
->nul timeout /t 1 /nobreak
+rem Sleep ~1 second and retry (avoid TIMEOUT due to stdin redirection issues)
+ping 127.0.0.1 -n 2 >nul
 goto :ACQUIRE_LOCK
 
 :LOCKED
