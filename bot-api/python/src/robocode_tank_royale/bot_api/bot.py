@@ -399,8 +399,9 @@ class Bot(BaseBot, BotABC):
         self._bot_internals.radar_turn_rate = radar_turn_rate
 
     @property
-    def target_speed(self) -> float | None:
-        return self._bot_internals.target_speed
+    def target_speed(self) -> float:
+        ts = self._bot_internals.target_speed
+        return 0.0 if ts is None else ts
 
     @target_speed.setter
     def target_speed(self, speed: float) -> None:
