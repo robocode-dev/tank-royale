@@ -335,6 +335,7 @@ class BaseBotInternals:
                 self.bot_event_handlers,  # Event handlers needed by WebSocketHandler
                 self.internal_event_handlers,  # Event handlers needed by WebSocketHandler
                 self.closed_event,  # Async event needed by WebSocketHandler
+                self.event_queue,  # Provide access to the shared EventQueue for staging events
             )
             self.socket = await self.web_socket_handler.connect()
 
@@ -359,7 +360,7 @@ class BaseBotInternals:
         if turn_number != self.last_execute_turn_number:
             self.last_execute_turn_number = turn_number
 
-            # Events are now added and dispatched from BaseBot.go() to match Java semantics
+            # Events are dispatched from BaseBot.go(); staging happens on tick reception
             await self._send_intent()
         await self._wait_for_next_turn(turn_number)
 

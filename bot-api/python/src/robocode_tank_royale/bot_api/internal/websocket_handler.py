@@ -53,6 +53,7 @@ class WebSocketHandler:
         bot_event_handlers: BotEventHandlers,
         internal_event_handlers: InternalEventHandlers,
         closed_event: asyncio.Event,
+        event_queue: 'EventQueue',
     ):
         """Initialize the websocket handler."""
         self.base_bot_internal_data = base_bot_internal_data
@@ -63,6 +64,7 @@ class WebSocketHandler:
         self.bot_event_handlers = bot_event_handlers
         self.internal_event_handlers = internal_event_handlers
         self.closed_event = closed_event
+        self.event_queue = event_queue
         self.websocket: None | websockets.ClientConnection = None
 
     async def connect(self):
@@ -170,12 +172,8 @@ class WebSocketHandler:
 
         self.base_bot_internal_data.tick_event = mapped_tick_event
 
-        # The add_events_from_tick from BaseBotInternals used to also add individual
-        # events from the tick to event_queue
-        # This logic needs to be preserved if EventQueue is still used in a similar manner.
-        # For now, assuming EventQueue will source its events based on the new tick_event if needed,
-        # or that this responsibility shifts elsewhere.
-        # The subtask description focuses on BaseBotInternalData.
+        # Stage events from this tick into the event queue (Java parity)
+        self.event_queue.add_events_from_tick(mapped_tick_event)
 
         bot_intent = self.base_bot_internal_data.bot_intent
         if bot_intent.rescan is not None and bot_intent.rescan:

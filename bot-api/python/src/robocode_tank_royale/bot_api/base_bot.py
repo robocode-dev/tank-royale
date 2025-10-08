@@ -43,8 +43,7 @@ class BaseBot(BaseBotABC):
         # Process all events before executing the turn commands to mimic classic Robocode behavior
         current_tick = self._internals.get_current_tick_or_null()
         if current_tick is not None:
-            # Add events from the current tick to the event queue and dispatch them
-            self._internals.add_events_from_tick(current_tick)
+            # Align with Java: only dispatch events here; staging happens when the tick is received
             await self._internals.dispatch_events(current_tick.turn_number)
         await self._internals.execute()
 
