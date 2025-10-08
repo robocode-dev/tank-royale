@@ -256,10 +256,7 @@ class _BotInternals(StopResumeListenerABC):
             if self._is_near_zero(self.turn_remaining):
                 self.turn_remaining = 0
 
-        # Limit per-tick turn rate to avoid overshooting the remaining angle (aligns with Java/.NET)
-        max_turn = self._base_bot_internals.get_max_turn_rate()
-        limited_turn = math.copysign(min(abs(self.turn_remaining), max_turn), self.turn_remaining)
-        self._base_bot_internals.turn_rate = limited_turn
+        self._base_bot_internals.turn_rate = self.turn_remaining
 
     def _update_gun_turn_remaining(self) -> None:
         """Update the gun turn remaining value based on the bot's current gun direction."""
@@ -278,10 +275,7 @@ class _BotInternals(StopResumeListenerABC):
             if self._is_near_zero(self.gun_turn_remaining):
                 self.gun_turn_remaining = 0
 
-        # Limit per-tick gun turn rate to avoid overshooting
-        max_turn = self._base_bot_internals.get_max_gun_turn_rate()
-        limited_turn = math.copysign(min(abs(self.gun_turn_remaining), max_turn), self.gun_turn_remaining)
-        self._base_bot_internals.gun_turn_rate = limited_turn
+        self._base_bot_internals.gun_turn_rate = self.gun_turn_remaining
 
     def _update_radar_turn_remaining(self) -> None:
         """Update the radar turn remaining value based on the bot's current radar direction."""
@@ -300,10 +294,7 @@ class _BotInternals(StopResumeListenerABC):
             if self._is_near_zero(self.radar_turn_remaining):
                 self.radar_turn_remaining = 0
 
-        # Limit per-tick radar turn rate to avoid overshooting
-        max_turn = self._base_bot_internals.get_max_radar_turn_rate()
-        limited_turn = math.copysign(min(abs(self.radar_turn_remaining), max_turn), self.radar_turn_remaining)
-        self._base_bot_internals.radar_turn_rate = limited_turn
+        self._base_bot_internals.radar_turn_rate = self.radar_turn_remaining
 
     def _update_movement(self):
         if not self._override_target_speed:
