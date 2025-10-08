@@ -26,7 +26,7 @@ class SpinBot(Bot):
             # Tell the game that when we move, we'll also want to turn right... a lot
             self.set_turn_right(10_000)
             # Limit our speed to 5
-            self.set_max_speed(5)
+            self.max_speed = 5
             # Start moving (and turning)
             await self.forward(10_000)
 
