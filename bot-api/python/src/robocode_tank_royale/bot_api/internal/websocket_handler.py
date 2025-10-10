@@ -283,7 +283,17 @@ class WebSocketHandler:
         self.base_bot_internal_data.server_handshake = server_handshake
 
         # Reply by sending bot handshake
-        is_droid: bool = hasattr(self.base_bot, "is_droid") and self.base_bot.is_droid  # type: ignore
+        # Infer droid status by marker interface inheritance (Java parity), with fallback to explicit flag for backward compatibility
+        try:
+            from ..droid_abc import DroidABC  # type: ignore
+        except Exception:
+            DroidABC = None  # type: ignore
+        is_droid: bool = False
+        if 'DroidABC' in locals() and DroidABC is not None and isinstance(self.base_bot, DroidABC):  # type: ignore
+            is_droid = True
+        elif hasattr(self.base_bot, "is_droid"):
+            # Allow legacy bots explicitly setting the flag
+            is_droid = bool(getattr(self.base_bot, "is_droid"))
         assert isinstance(is_droid, bool), "is_droid must be a boolean value"
 
         # Create bot handshake message
