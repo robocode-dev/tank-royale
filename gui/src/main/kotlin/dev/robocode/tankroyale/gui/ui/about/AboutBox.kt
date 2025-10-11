@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onActivated
 import dev.robocode.tankroyale.gui.util.JavaVersion
 import dev.robocode.tankroyale.common.util.Version
+import dev.robocode.tankroyale.gui.ui.About
 import net.miginfocom.swing.MigLayout
 import java.awt.Container
 import dev.robocode.tankroyale.gui.util.Browser
@@ -22,24 +23,14 @@ import javax.swing.text.html.HTMLEditorKit
 
 object AboutBox : RcDialog(MainFrame, "about_dialog") {
 
-    private fun html(): String = """
-        <table style="border-spacing: 10px; font-size: 10px">
-            <tr>
-                <td valign="top"><image width="64" height="64" src="$url"></td>
-                <td><span style="font-family: Arial, Helvetica, sans-serif;">
-                    <b>Robocode Tank Royale</b><br>
-                    Version: $version<br>
-                    Running on <strong>Java $javaVersion ($javaWordSize)</strong> by $javaVendor<br>
-                    <br>
-                    <b>Huge thanks to every
-                    <a href="https://github.com/robocode-dev/tank-royale/graphs/contributors">contributor</a></b>
-                     — you make this project shine! <font color="red">❤️</font><br>
-                    <br>
-                    Copyright © 2022 Flemming N&oslash;rnberg Larsen
-                 </span></td>
-            </tr>
-        </table>
-    """.trimIndent()
+    private fun html(): String = String.format(
+        About.get("about_html"),
+        url,
+        version,
+        javaVersion,
+        javaWordSize,
+        javaVendor
+    )
 
     private val onOk = Event<JButton>()
 
@@ -91,7 +82,7 @@ object AboutBox : RcDialog(MainFrame, "about_dialog") {
                 if (!link.isNullOrBlank()) {
                     Browser.browse(link)
                 }
-            } catch (ignore: Exception) {
+            } catch (_: Exception) {
             }
         }
     }

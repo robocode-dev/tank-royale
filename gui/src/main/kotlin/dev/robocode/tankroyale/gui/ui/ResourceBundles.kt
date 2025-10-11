@@ -24,13 +24,18 @@ object Hints {
     fun get(propertyName: String): String = "<html>${ResourceBundles.HINTS.get(propertyName)}</html>"
 }
 
+object About {
+    fun get(propertyName: String): String = ResourceBundles.ABOUT.get(propertyName)
+}
+
 private enum class ResourceBundles(private val resourceName: String) {
 
     UI_TITLES("UI titles"),
     STRINGS("Strings"),
     MESSAGES("Messages"),
     MENU("Menu"),
-    HINTS("Hints");
+    HINTS("Hints"),
+    ABOUT("About");
 
     private val supportedLocales = listOf(
         Locale.ENGLISH,
@@ -42,10 +47,10 @@ private enum class ResourceBundles(private val resourceName: String) {
     fun get(propertyName: String): String {
         return try {
             ResourceBundle.getBundle(resourceName, currentLocale).getString(propertyName)
-        } catch (e: MissingResourceException) {
+        } catch (_: MissingResourceException) {
             try {
                 ResourceBundle.getBundle(resourceName, Locale.ENGLISH).getString(propertyName)
-            } catch (e: MissingResourceException) {
+            } catch (_: MissingResourceException) {
                 "[$propertyName]"
             }
         }
