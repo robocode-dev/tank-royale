@@ -19,6 +19,7 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private const val ENABLE_BOT_COLLISION_SOUND = "enable-bot-collision-sound"
     private const val ENABLE_BULLET_COLLISION_SOUND = "enable-bullet-collision-sound"
     private const val ENABLE_DEATH_EXPLOSION_SOUND = "enable-death-explosion-sound"
+    private const val SOUND_VOLUME = "sound-volume"
 
     private const val ENABLE_AUTO_RECORDING = "enable-auto-recording"
 
@@ -67,6 +68,17 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         get() = load(ENABLE_SOUNDS)?.lowercase() != "false"
         set(value) {
             save(ENABLE_SOUNDS, if (value) "true" else "false")
+        }
+
+    var soundVolume: Int
+        get() = try {
+            load(SOUND_VOLUME, "50").toInt().coerceIn(0, 100)
+        } catch (_: NumberFormatException) {
+            50
+        }
+        set(value) {
+            val clamped = value.coerceIn(0, 100)
+            save(SOUND_VOLUME, clamped.toString())
         }
 
     var uiScale: Int

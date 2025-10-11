@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
+import dev.robocode.tankroyale.gui.ui.components.RcSlider
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCheckBox
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
@@ -17,6 +18,7 @@ import javax.swing.BorderFactory
 import javax.swing.JButton
 import javax.swing.JCheckBox
 import javax.swing.JPanel
+import javax.swing.JSlider
 
 object SoundConfigDialog : RcDialog(MainFrame, "sound_config_dialog") {
 
@@ -29,63 +31,95 @@ object SoundConfigDialog : RcDialog(MainFrame, "sound_config_dialog") {
 
 object SoundConfigPanel : JPanel(MigLayout("fill")) {
 
-    private val onOk = Event<JButton>().apply { subscribe(this) { SoundConfigDialog.dispose() } }
+    // Volume slider constants
+    private const val VOLUME_MIN = 0
+    private const val VOLUME_MAX = 100
+    private const val VOLUME_MAJOR_TICK = 25
+    private const val VOLUME_MINOR_TICK = 5
 
-    private val onEnableSounds = Event<JCheckBox>()
-        .apply { subscribe(this) { ConfigSettings.enableSounds = it.isSelected } }
-    private val onEnableGunshot = Event<JCheckBox>()
-        .apply { subscribe(this) { ConfigSettings.enableGunshotSound = it.isSelected } }
-    private val onEnableBulletHit = Event<JCheckBox>()
-        .apply { subscribe(this) { ConfigSettings.enableBulletHitSound = it.isSelected } }
-    private val onEnableDeath = Event<JCheckBox>()
-        .apply { subscribe(this) { ConfigSettings.enableDeathExplosionSound = it.isSelected } }
-    private val onEnableWallCollision = Event<JCheckBox>()
-        .apply { subscribe(this) { ConfigSettings.enableWallCollisionSound = it.isSelected } }
-    private val onEnableBotCollision = Event<JCheckBox>()
-        .apply { subscribe(this) { ConfigSettings.enableBotCollisionSound = it.isSelected } }
-    private val onEnableBulletCollision = Event<JCheckBox>()
-        .apply { subscribe(this) { ConfigSettings.enableBulletCollisionSound = it.isSelected } }
+    private val onOk = Event<JButton>().apply {
+        subscribe(this@SoundConfigPanel) { SoundConfigDialog.dispose() }
+    }
+
+    // Helper to wire a checkbox event to a settings setter
+    private fun checkboxEvent(setter: (Boolean) -> Unit) = Event<JCheckBox>().apply {
+        subscribe(this@SoundConfigPanel) { setter(it.isSelected) }
+    }
+
+    private val onEnableSounds = checkboxEvent { ConfigSettings.enableSounds = it }
+    private val onEnableGunshot = checkboxEvent { ConfigSettings.enableGunshotSound = it }
+    private val onEnableBulletHit = checkboxEvent { ConfigSettings.enableBulletHitSound = it }
+    private val onEnableDeath = checkboxEvent { ConfigSettings.enableDeathExplosionSound = it }
+    private val onEnableWallCollision = checkboxEvent { ConfigSettings.enableWallCollisionSound = it }
+    private val onEnableBotCollision = checkboxEvent { ConfigSettings.enableBotCollisionSound = it }
+    private val onEnableBulletCollision = checkboxEvent { ConfigSettings.enableBulletCollisionSound = it }
 
     init {
-        val panel1 = JPanel(MigLayout("fill"))
-        add(panel1, "wrap")
-        panel1.apply {
-            addCheckBox("option.sound.enable_sounds", onEnableSounds, "wrap").apply {
-                isSelected = ConfigSettings.enableSounds
-            }
-        }
+        add(createLeftColumn(), "growx, pushx")
+        add(createVolumePanel(), "gapleft 16, top, growy, pushy")
 
-        val panel2 = JPanel(MigLayout("fill"))
-        add(panel2, "wrap")
-        panel2.apply {
-            border = BorderFactory.createTitledBorder(Strings.get("option.sound.sounds_title"))
-            addCheckBox("option.sound.enable_gunshot", onEnableGunshot, "wrap").apply {
-                isSelected = ConfigSettings.enableGunshotSound
-            }
-            addCheckBox("option.sound.enable_bullet_hit", onEnableBulletHit, "wrap").apply {
-                isSelected = ConfigSettings.enableBulletHitSound
-            }
-            addCheckBox("option.sound.enable_death", onEnableDeath, "wrap").apply {
-                isSelected = ConfigSettings.enableDeathExplosionSound
-            }
-            addCheckBox("option.sound.enable_wall_collision", onEnableWallCollision, "wrap").apply {
-                isSelected = ConfigSettings.enableWallCollisionSound
-            }
-            addCheckBox("option.sound.enable_bot_collision", onEnableBotCollision, "wrap").apply {
-                isSelected = ConfigSettings.enableBotCollisionSound
-            }
-            addCheckBox("option.sound.enable_bullet_collision", onEnableBulletCollision, "wrap").apply {
-                isSelected = ConfigSettings.enableBulletCollisionSound
-            }
-        }
-
-        add(JPanel(MigLayout("fill")), "wrap").apply {
-            addOkButton(onOk, "center").apply {
-                setDefaultButton(this)
-            }
+        // Buttons spanning both columns
+        addOkButton(onOk, "newline, span 2, alignx center, gaptop para, wrap").apply {
+            setDefaultButton(this)
         }
 
         showErrorIfSoundDirIsMissingOrEmpty()
+    }
+
+    private fun createLeftColumn(): JPanel {
+        val leftColumn = JPanel(MigLayout("fill, ins 0, wrap"))
+        leftColumn.add(createMasterTogglePanel(), "growx")
+        leftColumn.add(createSoundTogglesPanel(), "growx")
+        return leftColumn
+    }
+
+    private fun createMasterTogglePanel(): JPanel {
+        val panel = JPanel(MigLayout("fill"))
+        panel.addCheckBox("option.sound.enable_sounds", onEnableSounds, "wrap").apply {
+            isSelected = ConfigSettings.enableSounds
+        }
+        return panel
+    }
+
+    private fun createSoundTogglesPanel(): JPanel {
+        val panel = JPanel(MigLayout("fill"))
+        panel.border = BorderFactory.createTitledBorder(Strings.get("option.sound.sounds_title"))
+        addSoundCheckbox(panel, "option.sound.enable_gunshot", ConfigSettings.enableGunshotSound, onEnableGunshot)
+        addSoundCheckbox(panel, "option.sound.enable_bullet_hit", ConfigSettings.enableBulletHitSound, onEnableBulletHit)
+        addSoundCheckbox(panel, "option.sound.enable_death", ConfigSettings.enableDeathExplosionSound, onEnableDeath)
+        addSoundCheckbox(panel, "option.sound.enable_wall_collision", ConfigSettings.enableWallCollisionSound, onEnableWallCollision)
+        addSoundCheckbox(panel, "option.sound.enable_bot_collision", ConfigSettings.enableBotCollisionSound, onEnableBotCollision)
+        addSoundCheckbox(panel, "option.sound.enable_bullet_collision", ConfigSettings.enableBulletCollisionSound, onEnableBulletCollision)
+        return panel
+    }
+
+    private fun addSoundCheckbox(panel: JPanel, key: String, selected: Boolean, event: Event<JCheckBox>) {
+        panel.addCheckBox(key, event, "wrap").apply { isSelected = selected }
+    }
+
+    private fun createVolumePanel(): JPanel {
+        val panel = JPanel(MigLayout("fill"))
+        panel.border = BorderFactory.createTitledBorder(Strings.get("option.sound.volume"))
+
+        val volumeSlider = RcSlider().apply {
+            minimum = VOLUME_MIN
+            maximum = VOLUME_MAX
+            value = ConfigSettings.soundVolume
+            orientation = JSlider.VERTICAL
+            inverted = false
+            paintTicks = true
+            majorTickSpacing = VOLUME_MAJOR_TICK
+            minorTickSpacing = VOLUME_MINOR_TICK
+            toolTipText = Strings.get("option.sound.volume")
+        }
+
+        panel.add(volumeSlider, "center, growy, pushy")
+        volumeSlider.addChangeListener {
+            if (!volumeSlider.valueIsAdjusting) {
+                ConfigSettings.soundVolume = volumeSlider.value
+            }
+        }
+        return panel
     }
 
     private fun showErrorIfSoundDirIsMissingOrEmpty() {
