@@ -19,6 +19,8 @@ fun main() {
 
     applyGlobalUiScaleFromSettings() // Set HiDPI scale for the entire UI before L&F
 
+    applyDefaultLocaleFromSettings() // Ensure JVM default locale follows GUI language
+
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     MainFrame.isVisible = true
@@ -31,6 +33,16 @@ private fun applyGlobalUiScaleFromSettings() {
         val value = String.format(Locale.US, "%.2f", scale)
         System.setProperty("sun.java2d.uiScale", value)
     }
+}
+
+private fun applyDefaultLocaleFromSettings() {
+    val locale = when (ConfigSettings.language) {
+        "es" -> Locale("es")
+        "da" -> Locale("da")
+        else -> Locale.ENGLISH
+    }
+    // Setting default Locale avoids fallback to system locale (e.g., da) for any UI using default locale
+    Locale.setDefault(locale)
 }
 
 private fun fixRenderingIssues() {

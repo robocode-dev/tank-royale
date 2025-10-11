@@ -39,14 +39,13 @@ private enum class ResourceBundles(private val resourceName: String) {
 
     private val supportedLocales = listOf(
         Locale.ENGLISH,
-        Locale("es")
+        Locale("es"),
+        Locale("da")
     )
-
-    private var currentLocale = getLocale()
 
     fun get(propertyName: String): String {
         return try {
-            ResourceBundle.getBundle(resourceName, currentLocale).getString(propertyName)
+            ResourceBundle.getBundle(resourceName, getLocale()).getString(propertyName)
         } catch (_: MissingResourceException) {
             try {
                 ResourceBundle.getBundle(resourceName, Locale.ENGLISH).getString(propertyName)
@@ -58,7 +57,11 @@ private enum class ResourceBundles(private val resourceName: String) {
 
     private fun getLocale(): Locale {
         val lang = try { ConfigSettings.language } catch (_: Exception) { "en" }
-        val selected = if (lang == "es") Locale("es") else Locale.ENGLISH
+        val selected = when (lang) {
+            "es" -> Locale("es")
+            "da" -> Locale("da")
+            else -> Locale.ENGLISH
+        }
         return if (supportedLocales.contains(selected)) selected else Locale.ENGLISH
     }
 }

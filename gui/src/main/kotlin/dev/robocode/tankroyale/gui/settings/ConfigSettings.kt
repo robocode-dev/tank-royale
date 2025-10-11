@@ -96,10 +96,18 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     var language: String
         get() {
             val lang = load(LANGUAGE, "en").lowercase(Locale.getDefault())
-            return if (lang == "es") "es" else "en"
+            return when (lang) {
+                "es" -> "es"
+                "da" -> "da"
+                else -> "en"
+            }
         }
         set(value) {
-            val v = if (value.lowercase(Locale.getDefault()) == "es") "es" else "en"
+            val v = when (value.lowercase(Locale.getDefault())) {
+                "es" -> "es"
+                "da" -> "da"
+                else -> "en"
+            }
             save(LANGUAGE, v)
         }
 
