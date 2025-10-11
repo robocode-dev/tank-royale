@@ -14,6 +14,7 @@ import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onAbout
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onHelp
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onRebootServer
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onSoundConfig
+import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onGuiConfig
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStartServer
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onStopServer
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
@@ -31,7 +32,7 @@ object Menu : JMenuBar() {
     private lateinit var stopServerMenuItem: JMenuItem
 
     init {
-        MenuEventHandlers
+        MenuEventHandlers // important: triggers the initialization of handlers
 
         setupBattleMenu()
         setupServerMenu()
@@ -103,12 +104,17 @@ object Menu : JMenuBar() {
                 accelerator = ctrlDown(mnemonic)
             }
 
+            // Place GUI Options before Server Options
+            addNewMenuItem("item.gui_config", onGuiConfig).apply {
+                mnemonic = KeyEvent.VK_G
+            }
+
             addNewMenuItem("item.server_config", onServerConfig).apply {
                 mnemonic = KeyEvent.VK_C
             }
 
             addNewMenuItem("item.debug_config", onDebugConfig).apply {
-                mnemonic = KeyEvent.VK_C
+                mnemonic = KeyEvent.VK_E
             }
 
             addNewMenuItem("item.sound_config", onSoundConfig).apply {

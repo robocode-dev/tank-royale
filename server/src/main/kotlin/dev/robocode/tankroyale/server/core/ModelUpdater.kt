@@ -111,6 +111,7 @@ class ModelUpdater(
             roundEnded = false
             roundNumber++
         }
+        // Initialize to 0; nextTurn() will increment it to 1 before the first TickEvent is mapped/sent
         turn.turnNumber = 0
 
         nextBulletId = 0
@@ -125,7 +126,7 @@ class ModelUpdater(
 
     /** Proceed with the next turn. */
     private fun nextTurn() {
-        // Reset events
+        // Increment at the very start of a turn; the first turn becomes 1
         turn.turnNumber++
         turn.resetEvents()
 

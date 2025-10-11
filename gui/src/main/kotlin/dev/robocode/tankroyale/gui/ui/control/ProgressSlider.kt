@@ -18,6 +18,7 @@ object ProgressSlider : RcSlider() {
      * LinkedDictionary wraps LinkedHashMap to preserve insertion order
      * while implementing the Dictionary interface required by JSlider.
      */
+    @Suppress("UNCHECKED_CAST")
     private class LinkedDictionary<K, V> : Dictionary<K, V>() {
         private val map = LinkedHashMap<K, V>()
 

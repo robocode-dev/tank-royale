@@ -4,6 +4,7 @@ from typing import Any, Dict
 from robocode_tank_royale.bot_api.bot import Bot
 from robocode_tank_royale.bot_api.color import Color
 from robocode_tank_royale.bot_api.events import TeamMessageEvent
+from robocode_tank_royale.bot_api.droid_abc import DroidABC
 
 
 # ------------------------------------------------------------------
@@ -14,7 +15,8 @@ from robocode_tank_royale.bot_api.events import TeamMessageEvent
 # This is a droid bot meaning that it has more energy, but no radar.
 # Member of the MyFirstTeam. Follows orders of team leader.
 # ------------------------------------------------------------------
-class MyFirstDroid(Bot):
+class MyFirstDroid(Bot, DroidABC):
+
     async def run(self) -> None:
         print("MyFirstDroid ready")
         while self.is_running():
