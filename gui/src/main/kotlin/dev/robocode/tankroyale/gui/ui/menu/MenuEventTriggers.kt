@@ -15,6 +15,7 @@ object MenuEventTriggers {
     val onBotDirConfig = MenuEvent()
     val onDebugConfig = MenuEvent()
     val onSoundConfig = MenuEvent()
+    val onGuiConfig = MenuEvent()
     val onHelp = MenuEvent()
     val onAbout = MenuEvent()
 }

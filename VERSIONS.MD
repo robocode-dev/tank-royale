@@ -1,9 +1,12 @@
-## 📦 0.33.2
+## 📦 0.33.2 - GUI scaling options and polish
 
 ### 🚀 Improvements
 
 - Bot API
     - .Net version has been updated to .Net 8 and C# 12
+- GUI
+    - #168: Added GUI Options dialog with a UI scale setting (100%, 125%, 150%, 175%, 200%, 250%, 300%).
+    - #168: Applied full-UI HiDPI scaling by using the JVM property sun.java2d.uiScale based on the saved setting.
 
 ## 📦 0.33.1 - Fixes for Recording and Replays - 08-Sep-2025
 

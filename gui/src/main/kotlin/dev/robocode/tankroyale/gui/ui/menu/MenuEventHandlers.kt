@@ -8,6 +8,7 @@ import dev.robocode.tankroyale.gui.ui.config.DebugConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.ServerConfigDialog
 import dev.robocode.tankroyale.gui.ui.config.SetupRulesDialog
 import dev.robocode.tankroyale.gui.ui.config.SoundConfigDialog
+import dev.robocode.tankroyale.gui.ui.config.GuiConfigDialog
 import dev.robocode.tankroyale.gui.ui.newbattle.NewBattleDialog
 import dev.robocode.tankroyale.gui.ui.replay.ReplayFileChooser
 import dev.robocode.tankroyale.gui.ui.server.RemoteServer
@@ -58,6 +59,9 @@ object MenuEventHandlers {
             }
             onSoundConfig.subscribe(this) {
                 SoundConfigDialog.isVisible = true
+            }
+            onGuiConfig.subscribe(this) {
+                GuiConfigDialog.isVisible = true
             }
             onHelp.subscribe(this) {
                 Browser.browse(HELP_URL)
