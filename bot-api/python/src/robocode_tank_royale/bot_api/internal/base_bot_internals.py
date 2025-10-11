@@ -283,6 +283,8 @@ class BaseBotInternals:
                     return  # Thread was interrupted deliberately - exit silently
                 except asyncio.CancelledError:
                     return  # Task was cancelled
+                except ThreadInterruptedException:
+                    return  # Rogue thread detected, stop execution
                 except Exception as e:  # Catch other exceptions during bot.go()
                     # Potentially log the error or handle specific bot exceptions
                     print(f"Exception in bot.go(): {e}")  # Basic error logging
@@ -294,6 +296,9 @@ class BaseBotInternals:
         except asyncio.CancelledError:
             # This handles cancellation if bot.run() or the loop itself is cancelled
             pass  # Task was cancelled
+        except ThreadInterruptedException:
+            # Rogue thread detected during bot.run()
+            pass
         except Exception as e:
             # Potentially log the error or handle specific bot exceptions
             print(f"Exception in bot.run() or main loop: {e}")  # Basic error logging
@@ -342,7 +347,7 @@ class BaseBotInternals:
         except Exception as ex:
             raise BotException(
                 f"Could not create web socket for URL: {self.server_url}", ex
-            )
+            ) from ex
 
     async def start(self) -> None:
         await self._connect()

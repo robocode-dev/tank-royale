@@ -288,18 +288,19 @@ package one to multiple bots into a zip archive.
 
 ## Bot Secrets
 
-When you want to run your bot outside the GUI from a terminal/shell, you will have to supply `bot secrets`
-to the bot. The `bot secrets` is one to several keys that is used by the server to allow the bot to access the server.
+When you run your bot outside the GUI from a terminal/shell, you only need to supply bot secrets if (and only if) the
+server is configured to require bots to present a secret to connect. The bot secret is one or more keys used by the
+server to authorize access.
 
-A server will automatically create a `server.properties` file when it is running. This file will contain generated keys
-that must be used by "external" bots and controller for accessing the server. Inside the properties file, you will find
-the field `bot-secrets` like this example:
+When a server is running, it will automatically create a `server.properties` file. If bot secrets are required, that
+file will contain generated keys to be used by external bots and controllers. In that case, look for the `bot-secrets`
+field like this example:
 
 ```
 bots-secrets=zDuQrkCLQU5VQgytofkNrQ
 ```
 
-Here the key of `bot-secrets` is `zDuQrkCLQU5VQgytofkNrQ`.
+Here, the value of `bot-secrets` (e.g., `zDuQrkCLQU5VQgytofkNrQ`) is the secret your bot must supply.
 
 A simple way to set the bot secret for the Java and .Net bot APIs is to set the environment variable `BOT_SECRETS` in
 the shell before running the bot:
