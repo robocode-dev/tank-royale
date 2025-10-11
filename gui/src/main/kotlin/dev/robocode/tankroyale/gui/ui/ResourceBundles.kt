@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui
 
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import java.util.*
 
 
@@ -31,7 +32,10 @@ private enum class ResourceBundles(private val resourceName: String) {
     MENU("Menu"),
     HINTS("Hints");
 
-    private val supportedLocales = listOf(Locale.ENGLISH)
+    private val supportedLocales = listOf(
+        Locale.ENGLISH,
+        Locale("es")
+    )
 
     private var currentLocale = getLocale()
 
@@ -48,10 +52,8 @@ private enum class ResourceBundles(private val resourceName: String) {
     }
 
     private fun getLocale(): Locale {
-        val locale = Locale.getDefault()
-        return when (supportedLocales.contains(locale)) {
-            true -> locale
-            false -> Locale.ENGLISH
-        }
+        val lang = try { ConfigSettings.language } catch (_: Exception) { "en" }
+        val selected = if (lang == "es") Locale("es") else Locale.ENGLISH
+        return if (supportedLocales.contains(selected)) selected else Locale.ENGLISH
     }
 }

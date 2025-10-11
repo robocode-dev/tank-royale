@@ -11,6 +11,7 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private const val GAME_TYPE = "game-type"
     private const val TPS = "tps"
     private const val UI_SCALE = "ui-scale"
+    private const val LANGUAGE = "language"
 
     private const val ENABLE_SOUNDS = "enable-sounds"
     private const val ENABLE_GUNSHOT_SOUND = "enable-gunshot-sound"
@@ -90,6 +91,16 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         set(value) {
             val clamped = value.coerceIn(50, 400)
             save(UI_SCALE, clamped.toString())
+        }
+
+    var language: String
+        get() {
+            val lang = load(LANGUAGE, "en").lowercase(Locale.getDefault())
+            return if (lang == "es") "es" else "en"
+        }
+        set(value) {
+            val v = if (value.lowercase(Locale.getDefault()) == "es") "es" else "en"
+            save(LANGUAGE, v)
         }
 
     var enableGunshotSound: Boolean
