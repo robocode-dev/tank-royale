@@ -32,7 +32,7 @@ object Menu : JMenuBar() {
     private lateinit var stopServerMenuItem: JMenuItem
 
     init {
-        MenuEventHandlers
+        MenuEventHandlers // important: triggers the initialization of handlers
 
         setupBattleMenu()
         setupServerMenu()
@@ -114,7 +114,7 @@ object Menu : JMenuBar() {
             }
 
             addNewMenuItem("item.debug_config", onDebugConfig).apply {
-                mnemonic = KeyEvent.VK_C
+                mnemonic = KeyEvent.VK_E
             }
 
             addNewMenuItem("item.sound_config", onSoundConfig).apply {
