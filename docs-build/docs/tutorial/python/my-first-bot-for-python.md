@@ -83,7 +83,7 @@ With the code above, the bot will run in a loop, starting by moving forward 100 
 
 When leaving the [run] method, the bot will not be able to send new commands each round besides code that runs in event handlers. Therefore, a loop is used for preventing the [run] method from exiting. However, we should stop the loop as soon as the bot is no longer running, and hence need to exit the [run] method when `is_running()` returns `False`.
 
-The `is_running()` method returns a flag maintained by the API. When the bot is told to stop/terminate its execution, `is_running()` will automatically return `False`.
+The [is_running] method returns a flag maintained by the API. When the bot is told to stop/terminate its execution, [is_running] will automatically return `False`.
 
 ### Event handlers
 
@@ -272,12 +272,13 @@ Note that it is also possible to provide the server secret and URL programmatica
 [IDE]: https://en.wikipedia.org/wiki/Integrated_development_environment "Integrated development environment"
 [PyCharm]: https://www.jetbrains.com/pycharm/ "PyCharm homepage"
 [Visual Studio Code]: https://code.visualstudio.com/ "Visual Studio Code homepage"
-[Bot]: https://robocode-dev.github.io/tank-royale/api/python/api/robocode_tank_royale/bot_api/bot.html "Bot class"
-[start]: https://robocode-dev.github.io/tank-royale/api/python/api/robocode_tank_royale/bot_api/base_bot.html#robocode_tank_royale.bot_api.base_bot.BaseBot.start "start() method"
-[run]: https://robocode-dev.github.io/tank-royale/api/python/api/robocode_tank_royale/bot_api/bot.html#robocode_tank_royale.bot_api.bot.Bot.run "run() method"
-[on_scanned_bot]: https://robocode-dev.github.io/tank-royale/api/python/api/robocode_tank_royale/bot_api/base_bot_abc.html#robocode_tank_royale.bot_api.base_bot_abc.BaseBotABC.on_scanned_bot "on_scanned_bot event handler"
-[on_hit_by_bullet]: https://robocode-dev.github.io/tank-royale/api/python/api/robocode_tank_royale/bot_api/base_bot_abc.html#robocode_tank_royale.bot_api.base_bot_abc.BaseBotABC.on_hit_by_bullet "on_hit_by_bullet event handler"
-[Bot API]: https://robocode-dev.github.io/tank-royale/api/python/api/robocode_tank_royale/bot_api/bot.html "Bot API"
+[Bot]: https://robocode-dev.github.io/tank-royale/api/python/api/bot_api.html#bot_api.Bot "Bot class"
+[start]: https://robocode-dev.github.io/tank-royale/api/python/api/bot_api.html#bot_api.Bot.start "start() method"
+[run]: https://robocode-dev.github.io/tank-royale/api/python/api/bot_api.html#bot_api.bot.Bot.run "run() method"
+[is_running]: https://robocode-dev.github.io/tank-royale/api/python/api/bot_api.html#bot_api.bot.Bot.is_running "is_running() method"
+[on_scanned_bot]: https://robocode-dev.github.io/tank-royale/api/python/api/bot_api.html#bot_api.base_bot.BaseBot.on_scanned_bot "on_scanned_bot event handler"
+[on_hit_by_bullet]: https://robocode-dev.github.io/tank-royale/api/python/api/bot_api.html#bot_api.base_bot.BaseBot.on_hit_by_bullet "on_hit_by_bullet event handler"
+[Bot API]: https://robocode-dev.github.io/tank-royale/api/python/index.html "Bot API"
 [booter]: ../../articles/booter.md "Robocode booter"
 [.cmd]: https://fileinfo.com/extension/cmd "Windows Command File"
 [.sh]: https://fileinfo.com/extension/sh "Bash Shell Script"
