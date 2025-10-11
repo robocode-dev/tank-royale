@@ -43,10 +43,10 @@ The next thing we need to do is to declare a [main] method for our bot. The bot 
 and hence the [main] method is the entry point of the bot.
 
 ```java
-    // The main method starts our bot
-    public static void main(String[]args) {
-        new MyFirstBot().start();
-    }
+// The main method starts our bot
+public static void main(String[] args) {
+    new MyFirstBot().start();
+}
 ```
 
 The [main] method in this example simply calls the [start] method of the bot, which will let the bot startup reading
@@ -64,17 +64,17 @@ provide the logic for the bot when the game is started. The [run] method should 
 that, it should enter a loop that runs until the game is ended.
 
 ```java
-    // Called when a new round is started -> initialize and do some movement
-    @Override
-    public void run() {
-        // Repeat while the bot is running
-        while (isRunning()) {
-            forward(100);
-            turnGunRight(360);
-            back(100);
-            turnGunRight(360);
-        }
+// Called when a new round is started -> initialize and do some movement
+@Override
+public void run() {
+    // Repeat while the bot is running
+    while (isRunning()) {
+        forward(100);
+        turnGunRight(360);
+        back(100);
+        turnGunRight(360);
     }
+}
 ```
 
 With the code above, the bot will run in a loop, starting by moving forward 100 units. Then it will turn the gun 360°,
@@ -99,32 +99,34 @@ Talking about the common [onScannedBot] event handler, we can implement this han
 scans an opponent bot:
 
 ```java
-    import dev.robocode.tankroyale.botapi.events.*;
-    ...
+import dev.robocode.tankroyale.botapi.events.*;
+...
 
-    // We saw another bot -> fire!
-    @Override
-    public void onScannedBot(ScannedBotEvent e) {
-        fire(1);
-    }
+// We saw another bot -> fire!
+
+@Override
+public void onScannedBot(ScannedBotEvent e) {
+    fire(1);
+}
 ```
 
 We can also implement another event handler [onHitByBullet] to let the bot attempt to avoid new bullet hits by turning
 the bot perpendicular to the bullet direction:
 
 ```java
-    import dev.robocode.tankroyale.botapi.events.*;
-    ...
+import dev.robocode.tankroyale.botapi.events.*;
+...
 
-    // We were hit by a bullet -> turn perpendicular to the bullet
-    @Override
-    public void onHitByBullet(HitByBulletEvent e) {
-        // Calculate the bearing to the direction of the bullet
-        double bearing = calcBearing(e.getBullet().getDirection());
+// We were hit by a bullet -> turn perpendicular to the bullet
 
-        // Turn 90 degrees to the bullet direction based on the bearing
-        turnLeft(90 - bearing);
-    }
+@Override
+public void onHitByBullet(HitByBulletEvent e) {
+    // Calculate the bearing to the direction of the bullet
+    double bearing = calcBearing(e.getBullet().getDirection());
+
+    // Turn 90 degrees to the bullet direction based on the bearing
+    turnLeft(90 - bearing);
+}
 ```
 
 Note that the [Bot API] provides helper methods like [calcBearing] to ease calculating angles and bearings in the game.
@@ -251,18 +253,19 @@ package one to multiple bots into a zip archive.
 
 ## Bot Secrets
 
-When you want to run your bot outside the GUI from a terminal/shell, you will have to supply `bot secrets`
-to the bot. The `bot secrets` is one to several keys that is used by the server to allow the bot to access the server.
+When you run your bot outside the GUI from a terminal/shell, you only need to supply bot secrets if (and only if) the
+server is configured to require bots to present a secret to connect. The bot secret is one or more keys used by the
+server to authorize access.
 
-A server will automatically create a `server.properties` file when it is running. This file will contain generated keys
-that must be used by "external" bots and controller for accessing the server. Inside the properties file, you will find
-the field `bot-secrets` like this example:
+When a server is running, it will automatically create a `server.properties` file. If bot secrets are required, that
+file will contain generated keys to be used by external bots and controllers. In that case, look for the `bot-secrets`
+field like this example:
 
 ```
 bots-secrets=zDuQrkCLQU5VQgytofkNrQ
 ```
 
-Here the key of `bot-secrets` is `zDuQrkCLQU5VQgytofkNrQ`.
+Here, the value of `bot-secrets` (e.g., `zDuQrkCLQU5VQgytofkNrQ`) is the secret your bot must supply.
 
 A simple way to set the bot secret for the Java and .Net bot APIs is to set the environment variable `BOT_SECRETS` in
 the shell before running the bot:
