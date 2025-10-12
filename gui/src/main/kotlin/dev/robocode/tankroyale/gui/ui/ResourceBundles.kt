@@ -41,7 +41,8 @@ private enum class ResourceBundles(private val resourceName: String) {
         Locale.ENGLISH,
         Locale("es"),
         Locale("da"),
-        Locale("va")
+        Locale("ca"),
+        Locale("ca", "ES", "VALENCIA")
     )
 
     fun get(propertyName: String): String {
@@ -58,10 +59,12 @@ private enum class ResourceBundles(private val resourceName: String) {
 
     private fun getLocale(): Locale {
         val lang = try { ConfigSettings.language } catch (_: Exception) { "en" }
-        val selected = when (lang) {
+        val selected = when (lang.lowercase(Locale.getDefault())) {
             "es" -> Locale("es")
             "da" -> Locale("da")
-            "va" -> Locale("va")
+            "ca" -> Locale("ca")
+            // Accept common notations for Valencian
+            "ca-es-valencia", "ca_es_valencia", "ca_es_valencia" -> Locale("ca", "ES", "VALENCIA")
             else -> Locale.ENGLISH
         }
         return if (supportedLocales.contains(selected)) selected else Locale.ENGLISH
