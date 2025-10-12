@@ -61,7 +61,6 @@ private enum class ResourceBundles(private val resourceName: String) {
         val selected = when (lang.lowercase(Locale.getDefault())) {
             "es" -> Locale("es")
             "ca" -> Locale("ca")
-            "va" -> Locale("ca") // legacy alias: Valencian -> Catalan
             "da" -> Locale("da")
             else -> Locale.ENGLISH
         }
