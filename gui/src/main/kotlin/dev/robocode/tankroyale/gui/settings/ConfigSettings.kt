@@ -100,7 +100,6 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
                 "es" -> "es"
                 "da" -> "da"
                 "ca" -> "ca"
-                "va" -> "ca" // backward compatibility: map old Valencian code to Catalan
                 else -> "en"
             }
         }
@@ -109,7 +108,6 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
                 "es" -> "es"
                 "da" -> "da"
                 "ca" -> "ca"
-                "va" -> "ca" // normalize persisted value to 'ca'
                 else -> "en"
             }
             save(LANGUAGE, v)
