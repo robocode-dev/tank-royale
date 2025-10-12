@@ -1,4 +1,4 @@
-## 📦 0.33.2 - GUI scaling options and polish
+## 📦 0.33.2 - GUI scaling options + Spanish and Danish translations
 
 ### 🚀 Improvements
 
