@@ -99,6 +99,7 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
             return when (lang) {
                 "es" -> "es"
                 "da" -> "da"
+                "va" -> "va"
                 else -> "en"
             }
         }
@@ -106,6 +107,7 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
             val v = when (value.lowercase(Locale.getDefault())) {
                 "es" -> "es"
                 "da" -> "da"
+                "va" -> "va"
                 else -> "en"
             }
             save(LANGUAGE, v)

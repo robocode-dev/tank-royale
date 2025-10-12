@@ -40,7 +40,8 @@ private enum class ResourceBundles(private val resourceName: String) {
     private val supportedLocales = listOf(
         Locale.ENGLISH,
         Locale("es"),
-        Locale("da")
+        Locale("da"),
+        Locale("va")
     )
 
     fun get(propertyName: String): String {
@@ -60,6 +61,7 @@ private enum class ResourceBundles(private val resourceName: String) {
         val selected = when (lang) {
             "es" -> Locale("es")
             "da" -> Locale("da")
+            "va" -> Locale("va")
             else -> Locale.ENGLISH
         }
         return if (supportedLocales.contains(selected)) selected else Locale.ENGLISH
