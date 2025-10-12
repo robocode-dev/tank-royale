@@ -37,9 +37,8 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
     private val languageOptions = arrayOf(
         LanguageOption("en", Strings.get("language.english")),
         LanguageOption("es", Strings.get("language.spanish")),
-        LanguageOption("da", Strings.get("language.danish")),
         LanguageOption("ca", Strings.get("language.catalan")),
-        LanguageOption("ca-ES-valencia", Strings.get("language.valencian")),
+        LanguageOption("da", Strings.get("language.danish")),
     )
     private val languageCombo = JComboBox(languageOptions)
 
