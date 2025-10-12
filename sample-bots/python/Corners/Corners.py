@@ -70,7 +70,6 @@ class Corners(Bot):
 
     async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
         """We saw another bot -> stop and fire!"""
-        del e  # not used directly except for coordinates below
         distance = self.distance_to(float(e.x), float(e.y))
 
         if self._stop_when_see_enemy:
