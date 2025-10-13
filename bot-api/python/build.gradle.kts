@@ -93,7 +93,7 @@ tasks {
         group = "build"
         description = "Installs Python build tooling"
         dependsOn(setupVenv)
-        commandLine(venvPythonPath(), "-m", "pip", "install", "build", "wheel")
+        commandLine(venvPythonPath(), "-m", "pip", "install", "build", "wheel", "twine")
     }
 
     // Build distributable artifacts (wheel + sdist)
@@ -104,6 +104,26 @@ tasks {
         dependsOn(`generate-version`)
         dependsOn(`install-build-tools`)
         commandLine(venvPythonPath(), "-m", "build")
+        finalizedBy("verify-dist")
+    }
+
+    // Verify distributable artifacts with twine
+    val `verify-dist` by registering(Exec::class) {
+        group = "build"
+        description = "Verifies built distributions with twine"
+        dependsOn(`install-build-tools`)
+        dependsOn(setupVenv)
+        doFirst {
+            val distDir = file("dist")
+            if (!distDir.exists()) {
+                throw GradleException("Distribution directory not found: ${distDir.absolutePath}")
+            }
+            val files = distDir.listFiles { f -> f.isFile && (f.name.endsWith(".whl") || f.name.endsWith(".tar.gz")) }?.map { it.absolutePath } ?: emptyList()
+            if (files.isEmpty()) {
+                throw GradleException("No distribution files found in ${distDir.absolutePath}")
+            }
+            commandLine(venvPythonPath(), "-m", "twine", "check", *files.toTypedArray())
+        }
     }
 
     named("build") {
