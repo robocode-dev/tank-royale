@@ -8,7 +8,7 @@
     - #168: Added GUI Options dialog with a UI scale setting (100%, 125%, 150%, 175%, 200%, 250%, 300%).
     - #168: Applied full-UI HiDPI scaling by using the JVM property `sun.java2d.uiScale` based on the saved setting.
     - Added volume slider on the Sound Options dialog.
-    - #169: Added Spanish translations.
+    - #169: Added Spanish and Catalan/Valencian translations.
     - Added Danish translations.
     - Added option to change between Spanish, English, and Danish in the GUI Options dialog.
 
