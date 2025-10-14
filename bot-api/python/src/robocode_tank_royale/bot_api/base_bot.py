@@ -16,8 +16,18 @@ from .events import BotEvent
 class BaseBot(BaseBotABC):
     """
     BaseBot is a base class for creating Robocode Tank Royale bots.
-    It provides common functionality and abstract methods that should be
-    implemented by subclasses to define bot-specific behavior.
+
+    Configuration and defaults:
+    - By default, the constructor attempts to load a bot config JSON named <ClassName>.json located
+      next to your bot class. If not found or incomplete, environment variables are used instead.
+    - SERVER_URL can be set to the WebSocket URL of the server. If not set, ws://localhost:7654 is used.
+    - SERVER_SECRET is optional. Set it only if the server requires a secret for connecting bots.
+      If the server enforces secrets and none is provided, the server will disconnect the bot.
+    - When no config file is used, these BotInfo environment variables must be provided:
+      BOT_NAME, BOT_VERSION, BOT_AUTHORS. Optional vars include: BOT_DESCRIPTION, BOT_HOMEPAGE,
+      BOT_COUNTRY_CODES, BOT_GAME_TYPES, BOT_PLATFORM, BOT_PROG_LANG, BOT_INITIAL_POS.
+
+    You can also pass bot_info, server_url, and server_secret explicitly via the constructor.
     """
 
     def __init__(

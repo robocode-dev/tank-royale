@@ -37,7 +37,7 @@ pip install robocode-tank-royale
 
 Check out the complete **MyFirstBot** example on GitHub:
 
-**📁 [MyFirstBot.py](https://github.com/robocode-dev/tank-royale/blob/main/sample-bots/python/MyFirstBot/MyFirstBot.py)**: 
+**📁 [MyFirstBot.py](https://github.com/robocode-dev/tank-royale/blob/main/sample-bots/python/MyFirstBot/MyFirstBot.py)**:
 
 Or start with this minimal example you can run right away:
 
@@ -72,9 +72,21 @@ if __name__ == "__main__":
 ```
 
 How to run:
+
 - Install and start the Robocode Tank Royale GUI from the releases page (it starts the game server).
 - Save the code above as MyFirstBot.py and run: `python MyFirstBot.py`
 - In the GUI, add your bot process and start a battle.
+
+### Configuration
+
+By default, the bot looks for a <ClassName>.json file with bot information. If not found, it falls back to environment
+variables.
+
+- SERVER_URL: WebSocket URL of the server (default: ws://localhost:7654 if not set)
+- SERVER_SECRET: Optional. Only set this if the server requires a secret; otherwise leave it unset.
+- Required when no config file is used: BOT_NAME, BOT_VERSION, BOT_AUTHORS
+- Optional: BOT_DESCRIPTION, BOT_HOMEPAGE, BOT_COUNTRY_CODES, BOT_GAME_TYPES, BOT_PLATFORM, BOT_PROG_LANG,
+  BOT_INITIAL_POS
 
 ## Features
 
@@ -122,7 +134,8 @@ The Python Bot API works with **Python 3.10+** on all supported platforms.
 
 - **GitHub Issues**: [Report bugs and request features](https://github.com/robocode-dev/tank-royale/issues)
 - **Discussions**: [Community discussions and help](https://github.com/robocode-dev/tank-royale/discussions)
-- **Contributing**: Check out our [Contributing Guide](https://github.com/robocode-dev/tank-royale/blob/master/CONTRIBUTING.md)
+- **Contributing**: Check out
+  our [Contributing Guide](https://github.com/robocode-dev/tank-royale/blob/master/CONTRIBUTING.md)
 
 ## Development Status
 

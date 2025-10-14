@@ -93,8 +93,8 @@ public abstract class BaseBot implements IBaseBot {
 
     /**
      * Constructor for initializing a new instance of the BaseBot class.
-     * This constructor assumes the server URL and secret are provided by the environment
-     * variables SERVER_URL and SERVER_SECRET.
+     * This constructor assumes the server URL and, optionally, the server secret
+     * are provided by the environment variables SERVER_URL and SERVER_SECRET.
      *
      * @param botInfo is the bot info containing information about your bot.
      */
