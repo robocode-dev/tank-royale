@@ -40,11 +40,12 @@ tasks {
     val `generate-schema` by registering(Exec::class) {
         dependsOn(`install-requirements`)
 
-        dependsOn(setupVenv)
         commandLine(venvPythonPath(), "scripts/schema_to_python.py", "-d", "../../schema/schemas", "-o", "generated/robocode_tank_royale/schema")
     }
 
     val `generate-version` by registering {
+        group = "build"
+        description = "Generates VERSION file from root gradle.properties"
         inputs.file("../../gradle.properties")
         outputs.file("VERSION")
         doLast {
@@ -64,7 +65,6 @@ tasks {
         dependsOn(`generate-schema`)
         dependsOn(`generate-version`)
 
-        dependsOn(setupVenv)
         commandLine(venvPythonPath(), "-m", "pip", "install", "-e", ".")
     }
 
@@ -79,7 +79,6 @@ tasks {
         description = "Runs Python tests with pytest"
         dependsOn(`pip-install`)
         dependsOn(`pip-install-test-requirements`)
-        dependsOn(setupVenv)
         commandLine(venvPythonPath(), "-m", "pytest")
     }
 
@@ -112,7 +111,6 @@ tasks {
         group = "build"
         description = "Verifies built distributions with twine"
         dependsOn(`install-build-tools`)
-        dependsOn(setupVenv)
         doFirst {
             val distDir = file("dist")
             if (!distDir.exists()) {
@@ -212,7 +210,6 @@ tasks {
         group = "publishing"
         description = "Uploads the built wheel to TestPyPI using twine. Requires TWINE_USERNAME and TWINE_PASSWORD, a TestPyPI token (-PtestpypiToken / TESTPYPI_API_TOKEN), or a configured .pypirc"
         dependsOn(`install-build-tools`)
-        dependsOn(setupVenv)
         // Ensure artifacts are built before attempting upload
         dependsOn(`build-dist`)
         doFirst {
