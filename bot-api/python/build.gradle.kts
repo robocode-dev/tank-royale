@@ -26,6 +26,8 @@ tasks {
     named("clean") {
         doLast {
             delete(
+                ".venv",
+                "dist",
                 "generated",
                 "robocode_tank_royale.egg-info",
             )
@@ -40,7 +42,14 @@ tasks {
     val `generate-schema` by registering(Exec::class) {
         dependsOn(`install-requirements`)
 
-        commandLine(venvPythonPath(), "scripts/schema_to_python.py", "-d", "../../schema/schemas", "-o", "generated/robocode_tank_royale/schema")
+        commandLine(
+            venvPythonPath(),
+            "scripts/schema_to_python.py",
+            "-d",
+            "../../schema/schemas",
+            "-o",
+            "generated/robocode_tank_royale/schema"
+        )
     }
 
     val `generate-version` by registering {
@@ -116,7 +125,8 @@ tasks {
             if (!distDir.exists()) {
                 throw GradleException("Distribution directory not found: ${distDir.absolutePath}")
             }
-            val files = distDir.listFiles { f -> f.isFile && (f.name.endsWith(".whl") || f.name.endsWith(".tar.gz")) }?.map { it.absolutePath } ?: emptyList()
+            val files = distDir.listFiles { f -> f.isFile && (f.name.endsWith(".whl") || f.name.endsWith(".tar.gz")) }
+                ?.map { it.absolutePath } ?: emptyList()
             if (files.isEmpty()) {
                 throw GradleException("No distribution files found in ${distDir.absolutePath}")
             }
@@ -184,10 +194,10 @@ tasks {
         onlyIf {
             gradle.startParameter.taskNames.any {
                 it.contains("build-release") ||
-                it.contains("upload-docs") ||
-                it.contains("create-release") ||
-                it == "copyPythonApiDocs" ||
-                it.endsWith(":copyPythonApiDocs")
+                        it.contains("upload-docs") ||
+                        it.contains("create-release") ||
+                        it == "copyPythonApiDocs" ||
+                        it.endsWith(":copyPythonApiDocs")
             }
         }
 
@@ -208,7 +218,8 @@ tasks {
     // Upload built wheel to TestPyPI using twine
     val `upload-testpypi` by registering(Exec::class) {
         group = "publishing"
-        description = "Uploads the built wheel to TestPyPI using twine. Requires TWINE_USERNAME and TWINE_PASSWORD, a TestPyPI token (-PtestpypiToken / TESTPYPI_API_TOKEN), or a configured .pypirc"
+        description =
+            "Uploads the built wheel to TestPyPI using twine. Requires TWINE_USERNAME and TWINE_PASSWORD, a TestPyPI token (-PtestpypiToken / TESTPYPI_API_TOKEN), or a configured .pypirc"
         dependsOn(`install-build-tools`)
         // Ensure artifacts are built before attempting upload
         dependsOn(`build-dist`)
@@ -217,13 +228,16 @@ tasks {
             if (!distDir.exists()) {
                 throw GradleException("Distribution directory not found: ${distDir.absolutePath}")
             }
-            val wheels = distDir.listFiles { f -> f.isFile && f.name.endsWith(".whl") }?.map { it.absolutePath } ?: emptyList()
+            val wheels =
+                distDir.listFiles { f -> f.isFile && f.name.endsWith(".whl") }?.map { it.absolutePath } ?: emptyList()
             if (wheels.isEmpty()) {
                 throw GradleException("No wheel files found in ${distDir.absolutePath}. Run the build-dist task first.")
             }
 
             // Resolve credentials for non-interactive twine upload
-            fun prop(name: String): String? = if (project.hasProperty(name)) project.property(name)?.toString() else null
+            fun prop(name: String): String? =
+                if (project.hasProperty(name)) project.property(name)?.toString() else null
+
             val usernameFromProp = prop("twineUsername")
             val passwordFromProp = prop("twinePassword")
             val tokenFromProp = prop("testpypiToken")
@@ -248,13 +262,13 @@ tasks {
             if (username.isNullOrBlank() || password.isNullOrBlank()) {
                 // Allow using ~/.pypirc when explicit credentials are not provided
                 val home = System.getProperty("user.home")
-                val pypirc = java.io.File(home, ".pypirc")
+                val pypirc = File(home, ".pypirc")
                 if (!pypirc.exists()) {
                     throw GradleException(
                         "Twine credentials not found. Provide TWINE_USERNAME and TWINE_PASSWORD env vars, " +
-                            "a TestPyPI token via -PtestpypiToken=<token> (or TESTPYPI_API_TOKEN / PYPI_TOKEN), " +
-                            "or configure credentials in %USERPROFILE%/.pypirc (Windows) or ~/.pypirc (Unix). " +
-                            "When using a token, the username must be __token__."
+                                "a TestPyPI token via -PtestpypiToken=<token> (or TESTPYPI_API_TOKEN / PYPI_TOKEN), " +
+                                "or configure credentials in %USERPROFILE%/.pypirc (Windows) or ~/.pypirc (Unix). " +
+                                "When using a token, the username must be __token__."
                     )
                 }
             }
@@ -267,7 +281,16 @@ tasks {
             }
 
             // Use non-interactive mode so CI fails fast if credentials are missing
-            commandLine(venvPythonPath(), "-m", "twine", "upload", "--non-interactive", "--repository", "testpypi", *wheels.toTypedArray())
+            commandLine(
+                venvPythonPath(),
+                "-m",
+                "twine",
+                "upload",
+                "--non-interactive",
+                "--repository",
+                "testpypi",
+                *wheels.toTypedArray()
+            )
         }
     }
 
