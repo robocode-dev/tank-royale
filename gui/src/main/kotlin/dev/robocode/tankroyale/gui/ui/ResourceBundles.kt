@@ -14,6 +14,8 @@ object UiTitles {
 
 object Strings {
     fun get(propertyName: String): String = ResourceBundles.STRINGS.get(propertyName)
+
+    fun get(propertyName: String, locale: Locale): String = ResourceBundles.STRINGS.get(propertyName, locale)
 }
 
 object Messages {
@@ -44,9 +46,11 @@ private enum class ResourceBundles(private val resourceName: String) {
         Locale("da"),
     )
 
-    fun get(propertyName: String): String {
+    fun get(propertyName: String): String = get(propertyName, getLocale())
+
+    fun get(propertyName: String, locale: Locale): String {
         return try {
-            ResourceBundle.getBundle(resourceName, getLocale()).getString(propertyName)
+            ResourceBundle.getBundle(resourceName, locale).getString(propertyName)
         } catch (_: MissingResourceException) {
             try {
                 ResourceBundle.getBundle(resourceName, Locale.ENGLISH).getString(propertyName)
@@ -57,7 +61,11 @@ private enum class ResourceBundles(private val resourceName: String) {
     }
 
     private fun getLocale(): Locale {
-        val lang = try { ConfigSettings.language } catch (_: Exception) { "en" }
+        val lang = try {
+            ConfigSettings.language
+        } catch (_: Exception) {
+            "en"
+        }
         val selected = when (lang.lowercase(Locale.getDefault())) {
             "es" -> Locale("es")
             "ca" -> Locale("ca")

@@ -10,6 +10,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.Strings
 import net.miginfocom.swing.MigLayout
+import java.util.Locale
 import javax.swing.JButton
 import javax.swing.JComboBox
 import javax.swing.JPanel
@@ -35,10 +36,10 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
     private val scaleCombo = JComboBox(scaleOptions.map { "$it%" }.toTypedArray())
 
     private val languageOptions = arrayOf(
-        LanguageOption("en", Strings.get("language.english")),
-        LanguageOption("es", Strings.get("language.spanish")),
-        LanguageOption("ca", Strings.get("language.catalan")),
-        LanguageOption("da", Strings.get("language.danish")),
+        LanguageOption("en", Strings.get("language.english", Locale.ENGLISH)),
+        LanguageOption("es", Strings.get("language.spanish", Locale("es"))),
+        LanguageOption("ca", Strings.get("language.catalan", Locale("ca"))),
+        LanguageOption("da", Strings.get("language.danish", Locale("da"))),
     )
     private val languageCombo = JComboBox(languageOptions)
 
