@@ -44,6 +44,7 @@ tasks {
     }
 
     register<Exec>("test") {
+        dependsOn(":bot-api:dotnet:schema:build")
         workingDir("test")
         commandLine("dotnet", "test")
     }
