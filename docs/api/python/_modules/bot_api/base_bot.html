@@ -12,9 +12,9 @@
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
   
-    <title>bot_api.base_bot | Robocode Tank Royale Bot API (Python) 0.33.1 documentation</title>
-    <meta property="og:title" content="bot_api.base_bot | Robocode Tank Royale Bot API (Python) 0.33.1 documentation" />
-    <meta name="twitter:title" content="bot_api.base_bot | Robocode Tank Royale Bot API (Python) 0.33.1 documentation" />
+    <title>bot_api.base_bot | Robocode Tank Royale Bot API (Python) 0.34.0 documentation</title>
+    <meta property="og:title" content="bot_api.base_bot | Robocode Tank Royale Bot API (Python) 0.34.0 documentation" />
+    <meta name="twitter:title" content="bot_api.base_bot | Robocode Tank Royale Bot API (Python) 0.34.0 documentation" />
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e72c8e07" />
       <link rel="stylesheet" type="text/css" href="../../_static/theme.css?v=42baaae4" />
         <link rel="search" title="Search" href="../../search.html" />
@@ -39,7 +39,7 @@
     </a><header
   class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
     <div class="hidden mr-4 md:flex">
-      <a href="../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.33.1 documentation</span>
+      <a href="../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.0 documentation</span>
       </a></div><button
       class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
       type="button" @click="showSidebar = true">
@@ -94,7 +94,7 @@
   class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full shrink-0 overflow-y-auto border-r border-border md:sticky"
   :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
 
-    <a href="../../index.html" class="!justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.33.1 documentation</span>
+    <a href="../../index.html" class="!justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.0 documentation</span>
     </a>
 
     <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
@@ -125,7 +125,7 @@
      class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
   <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
      href="../../index.html">
-    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.33.1 documentation</span>
+    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.34.0 documentation</span>
     <svg xmlns="http://www.w3.org/2000/svg"
          height="18"
          width="18"
@@ -167,540 +167,556 @@
 </span><span id="line-16"><span class="k">class</span><span class="w"> </span><span class="nc">BaseBot</span><span class="p">(</span><span class="n">BaseBotABC</span><span class="p">):</span>
 </span><span id="line-17"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="line-18"><span class="sd">    BaseBot is a base class for creating Robocode Tank Royale bots.</span>
-</span><span id="line-19"><span class="sd">    It provides common functionality and abstract methods that should be</span>
-</span><span id="line-20"><span class="sd">    implemented by subclasses to define bot-specific behavior.</span>
-</span><span id="line-21"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="line-22">
-</span><span id="line-23">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-</span><span id="line-24">        <span class="bp">self</span><span class="p">,</span>
-</span><span id="line-25">        <span class="n">bot_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BotInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="line-26">        <span class="n">server_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="line-27">        <span class="n">server_secret</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="line-28">    <span class="p">):</span>
-</span><span id="line-29">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</span><span id="line-30">        <span class="c1"># try to automatically read the bot config file</span>
-</span><span id="line-31">        <span class="k">if</span> <span class="n">bot_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-32">            <span class="n">bot_info_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.json&quot;</span>
-</span><span id="line-33">            <span class="k">try</span><span class="p">:</span>
-</span><span id="line-34">                <span class="n">bot_info</span> <span class="o">=</span> <span class="n">BotInfo</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">bot_info_file</span><span class="p">)</span>
-</span><span id="line-35">            <span class="k">except</span><span class="p">:</span>
-</span><span id="line-36">                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Failed to read bot info json file: </span><span class="si">{bot_info_file}</span><span class="s1">.&#39;</span><span class="p">)</span>
-</span><span id="line-37">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span> <span class="o">=</span> <span class="n">BaseBotInternals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot_info</span><span class="p">,</span> <span class="n">server_url</span><span class="p">,</span> <span class="n">server_secret</span><span class="p">)</span>
-</span><span id="line-38">
+</span><span id="line-19">
+</span><span id="line-20"><span class="sd">    Configuration and defaults:</span>
+</span><span id="line-21"><span class="sd">    - By default, the constructor attempts to load a bot config JSON named &lt;ClassName&gt;.json located</span>
+</span><span id="line-22"><span class="sd">      next to your bot class. If not found or incomplete, environment variables are used instead.</span>
+</span><span id="line-23"><span class="sd">    - SERVER_URL can be set to the WebSocket URL of the server. If not set, ws://localhost:7654 is used.</span>
+</span><span id="line-24"><span class="sd">    - SERVER_SECRET is optional. Set it only if the server requires a secret for connecting bots.</span>
+</span><span id="line-25"><span class="sd">      If the server enforces secrets and none is provided, the server will disconnect the bot.</span>
+</span><span id="line-26"><span class="sd">    - When no config file is used, these BotInfo environment variables must be provided:</span>
+</span><span id="line-27"><span class="sd">      BOT_NAME, BOT_VERSION, BOT_AUTHORS. Optional vars include: BOT_DESCRIPTION, BOT_HOMEPAGE,</span>
+</span><span id="line-28"><span class="sd">      BOT_COUNTRY_CODES, BOT_GAME_TYPES, BOT_PLATFORM, BOT_PROG_LANG, BOT_INITIAL_POS.</span>
+</span><span id="line-29">
+</span><span id="line-30"><span class="sd">    You can also pass bot_info, server_url, and server_secret explicitly via the constructor.</span>
+</span><span id="line-31"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="line-32">
+</span><span id="line-33">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="line-34">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="line-35">        <span class="n">bot_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BotInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="line-36">        <span class="n">server_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="line-37">        <span class="n">server_secret</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="line-38">    <span class="p">):</span>
+</span><span id="line-39">        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="line-40">        <span class="c1"># try to automatically read the bot config file</span>
+</span><span id="line-41">        <span class="k">if</span> <span class="n">bot_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-42">            <span class="n">bot_info_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.json&quot;</span>
+</span><span id="line-43">            <span class="k">try</span><span class="p">:</span>
+</span><span id="line-44">                <span class="n">bot_info</span> <span class="o">=</span> <span class="n">BotInfo</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">bot_info_file</span><span class="p">)</span>
+</span><span id="line-45">            <span class="k">except</span><span class="p">:</span>
+</span><span id="line-46">                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Failed to read bot info json file: </span><span class="si">{bot_info_file}</span><span class="s1">.&#39;</span><span class="p">)</span>
+</span><span id="line-47">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span> <span class="o">=</span> <span class="n">BaseBotInternals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot_info</span><span class="p">,</span> <span class="n">server_url</span><span class="p">,</span> <span class="n">server_secret</span><span class="p">)</span>
+</span><span id="line-48">
 <div class="viewcode-block" id="BaseBot.start">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.start">[docs]</a>
-</span><span id="line-39">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-40">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+</span><span id="line-49">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-50">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
-</span><span id="line-41">
+</span><span id="line-51">
 <div class="viewcode-block" id="BaseBot.go">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.go">[docs]</a>
-</span><span id="line-42">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">go</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-43">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
-
-</span><span id="line-44">
-<div class="viewcode-block" id="BaseBot.get_my_id">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_my_id">[docs]</a>
-</span><span id="line-45">    <span class="k">def</span><span class="w"> </span><span class="nf">get_my_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="line-46">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">my_id</span></div>
-
-</span><span id="line-47">
-<div class="viewcode-block" id="BaseBot.get_variant">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_variant">[docs]</a>
-</span><span id="line-48">    <span class="k">def</span><span class="w"> </span><span class="nf">get_variant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="line-49">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">variant</span></div>
-
-</span><span id="line-50">
-<div class="viewcode-block" id="BaseBot.get_version">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_version">[docs]</a>
-</span><span id="line-51">    <span class="k">def</span><span class="w"> </span><span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="line-52">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">version</span></div>
-
-</span><span id="line-53">
-<div class="viewcode-block" id="BaseBot.get_game_type">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_game_type">[docs]</a>
-</span><span id="line-54">    <span class="k">def</span><span class="w"> </span><span class="nf">get_game_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="line-55">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">game_type</span></div>
-
-</span><span id="line-56">
-<div class="viewcode-block" id="BaseBot.get_arena_width">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_arena_width">[docs]</a>
-</span><span id="line-57">    <span class="k">def</span><span class="w"> </span><span class="nf">get_arena_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="line-58">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">arena_width</span></div>
+</span><span id="line-52">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">go</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-53">        <span class="c1"># Process all events before executing the turn commands to mimic classic Robocode behavior</span>
+</span><span id="line-54">        <span class="n">current_tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_null</span><span class="p">()</span>
+</span><span id="line-55">        <span class="k">if</span> <span class="n">current_tick</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-56">            <span class="c1"># Align with Java: only dispatch events here; staging happens when the tick is received</span>
+</span><span id="line-57">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">dispatch_events</span><span class="p">(</span><span class="n">current_tick</span><span class="o">.</span><span class="n">turn_number</span><span class="p">)</span>
+</span><span id="line-58">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
 
 </span><span id="line-59">
-<div class="viewcode-block" id="BaseBot.get_arena_height">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_arena_height">[docs]</a>
-</span><span id="line-60">    <span class="k">def</span><span class="w"> </span><span class="nf">get_arena_height</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="line-61">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">arena_height</span></div>
+<div class="viewcode-block" id="BaseBot.get_my_id">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_my_id">[docs]</a>
+</span><span id="line-60">    <span class="k">def</span><span class="w"> </span><span class="nf">get_my_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-61">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">my_id</span></div>
 
 </span><span id="line-62">
-<div class="viewcode-block" id="BaseBot.get_number_of_rounds">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_number_of_rounds">[docs]</a>
-</span><span id="line-63">    <span class="k">def</span><span class="w"> </span><span class="nf">get_number_of_rounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="line-64">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">number_of_rounds</span></div>
+<div class="viewcode-block" id="BaseBot.get_variant">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_variant">[docs]</a>
+</span><span id="line-63">    <span class="k">def</span><span class="w"> </span><span class="nf">get_variant</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="line-64">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">variant</span></div>
 
 </span><span id="line-65">
-<div class="viewcode-block" id="BaseBot.get_gun_cooling_rate">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_gun_cooling_rate">[docs]</a>
-</span><span id="line-66">    <span class="k">def</span><span class="w"> </span><span class="nf">get_gun_cooling_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-67">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">gun_cooling_rate</span></div>
+<div class="viewcode-block" id="BaseBot.get_version">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_version">[docs]</a>
+</span><span id="line-66">    <span class="k">def</span><span class="w"> </span><span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="line-67">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">version</span></div>
 
 </span><span id="line-68">
-<div class="viewcode-block" id="BaseBot.get_max_inactivity_turns">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_max_inactivity_turns">[docs]</a>
-</span><span id="line-69">    <span class="k">def</span><span class="w"> </span><span class="nf">get_max_inactivity_turns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="line-70">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">max_inactivity_turns</span></div>
+<div class="viewcode-block" id="BaseBot.get_game_type">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_game_type">[docs]</a>
+</span><span id="line-69">    <span class="k">def</span><span class="w"> </span><span class="nf">get_game_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="line-70">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">game_type</span></div>
 
 </span><span id="line-71">
-<div class="viewcode-block" id="BaseBot.get_turn_timeout">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_turn_timeout">[docs]</a>
-</span><span id="line-72">    <span class="k">def</span><span class="w"> </span><span class="nf">get_turn_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="line-73">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">turn_timeout</span></div>
+<div class="viewcode-block" id="BaseBot.get_arena_width">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_arena_width">[docs]</a>
+</span><span id="line-72">    <span class="k">def</span><span class="w"> </span><span class="nf">get_arena_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-73">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">arena_width</span></div>
 
 </span><span id="line-74">
-<div class="viewcode-block" id="BaseBot.get_time_left">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_time_left">[docs]</a>
-</span><span id="line-75">    <span class="k">def</span><span class="w"> </span><span class="nf">get_time_left</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="line-76">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_time_left</span><span class="p">()</span></div>
+<div class="viewcode-block" id="BaseBot.get_arena_height">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_arena_height">[docs]</a>
+</span><span id="line-75">    <span class="k">def</span><span class="w"> </span><span class="nf">get_arena_height</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-76">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">arena_height</span></div>
 
 </span><span id="line-77">
-<div class="viewcode-block" id="BaseBot.get_round_number">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_round_number">[docs]</a>
-</span><span id="line-78">    <span class="k">def</span><span class="w"> </span><span class="nf">get_round_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="line-79">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span><span class="o">.</span><span class="n">round_number</span></div>
+<div class="viewcode-block" id="BaseBot.get_number_of_rounds">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_number_of_rounds">[docs]</a>
+</span><span id="line-78">    <span class="k">def</span><span class="w"> </span><span class="nf">get_number_of_rounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-79">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">number_of_rounds</span></div>
 
 </span><span id="line-80">
-<div class="viewcode-block" id="BaseBot.get_turn_number">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_turn_number">[docs]</a>
-</span><span id="line-81">    <span class="k">def</span><span class="w"> </span><span class="nf">get_turn_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="line-82">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span><span class="o">.</span><span class="n">turn_number</span></div>
+<div class="viewcode-block" id="BaseBot.get_gun_cooling_rate">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_gun_cooling_rate">[docs]</a>
+</span><span id="line-81">    <span class="k">def</span><span class="w"> </span><span class="nf">get_gun_cooling_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-82">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">gun_cooling_rate</span></div>
 
 </span><span id="line-83">
+<div class="viewcode-block" id="BaseBot.get_max_inactivity_turns">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_max_inactivity_turns">[docs]</a>
+</span><span id="line-84">    <span class="k">def</span><span class="w"> </span><span class="nf">get_max_inactivity_turns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-85">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">max_inactivity_turns</span></div>
+
+</span><span id="line-86">
+<div class="viewcode-block" id="BaseBot.get_turn_timeout">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_turn_timeout">[docs]</a>
+</span><span id="line-87">    <span class="k">def</span><span class="w"> </span><span class="nf">get_turn_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-88">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">game_setup</span><span class="o">.</span><span class="n">turn_timeout</span></div>
+
+</span><span id="line-89">
+<div class="viewcode-block" id="BaseBot.get_time_left">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_time_left">[docs]</a>
+</span><span id="line-90">    <span class="k">def</span><span class="w"> </span><span class="nf">get_time_left</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-91">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_time_left</span><span class="p">()</span></div>
+
+</span><span id="line-92">
+<div class="viewcode-block" id="BaseBot.get_round_number">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_round_number">[docs]</a>
+</span><span id="line-93">    <span class="k">def</span><span class="w"> </span><span class="nf">get_round_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-94">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span><span class="o">.</span><span class="n">round_number</span></div>
+
+</span><span id="line-95">
+<div class="viewcode-block" id="BaseBot.get_turn_number">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_turn_number">[docs]</a>
+</span><span id="line-96">    <span class="k">def</span><span class="w"> </span><span class="nf">get_turn_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-97">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span><span class="o">.</span><span class="n">turn_number</span></div>
+
+</span><span id="line-98">
 <div class="viewcode-block" id="BaseBot.get_enemy_count">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_enemy_count">[docs]</a>
-</span><span id="line-84">    <span class="k">def</span><span class="w"> </span><span class="nf">get_enemy_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="line-85">        <span class="n">bot_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span><span class="o">.</span><span class="n">bot_state</span>
-</span><span id="line-86">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-87">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">enemy_count</span></div>
+</span><span id="line-99">    <span class="k">def</span><span class="w"> </span><span class="nf">get_enemy_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-100">        <span class="n">bot_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span><span class="o">.</span><span class="n">bot_state</span>
+</span><span id="line-101">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-102">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">enemy_count</span></div>
 
-</span><span id="line-88">
+</span><span id="line-103">
 <div class="viewcode-block" id="BaseBot.get_energy">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_energy">[docs]</a>
-</span><span id="line-89">    <span class="k">def</span><span class="w"> </span><span class="nf">get_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-90">        <span class="n">bot_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span><span class="o">.</span><span class="n">bot_state</span>
-</span><span id="line-91">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-92">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">energy</span></div>
+</span><span id="line-104">    <span class="k">def</span><span class="w"> </span><span class="nf">get_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-105">        <span class="n">bot_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span><span class="o">.</span><span class="n">bot_state</span>
+</span><span id="line-106">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-107">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">energy</span></div>
 
-</span><span id="line-93">
+</span><span id="line-108">
 <div class="viewcode-block" id="BaseBot.is_disabled">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.is_disabled">[docs]</a>
-</span><span id="line-94">    <span class="k">def</span><span class="w"> </span><span class="nf">is_disabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-95">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span></div>
+</span><span id="line-109">    <span class="k">def</span><span class="w"> </span><span class="nf">is_disabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-110">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_energy</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span></div>
 
-</span><span id="line-96">
+</span><span id="line-111">
 <div class="viewcode-block" id="BaseBot.get_x">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_x">[docs]</a>
-</span><span id="line-97">    <span class="k">def</span><span class="w"> </span><span class="nf">get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-98">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_null</span><span class="p">()</span>
-</span><span id="line-99">        <span class="k">if</span> <span class="ow">not</span> <span class="n">tick</span><span class="p">:</span>
-</span><span id="line-100">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-101">            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span><span class="o">.</span><span class="n">x</span>
-</span><span id="line-102">            <span class="k">assert</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-103">            <span class="k">return</span> <span class="n">x</span>
-</span><span id="line-104">        <span class="n">bot_state</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span>
-</span><span id="line-105">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-106">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">x</span></div>
+</span><span id="line-112">    <span class="k">def</span><span class="w"> </span><span class="nf">get_x</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-113">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_null</span><span class="p">()</span>
+</span><span id="line-114">        <span class="k">if</span> <span class="ow">not</span> <span class="n">tick</span><span class="p">:</span>
+</span><span id="line-115">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-116">            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span><span class="o">.</span><span class="n">x</span>
+</span><span id="line-117">            <span class="k">assert</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-118">            <span class="k">return</span> <span class="n">x</span>
+</span><span id="line-119">        <span class="n">bot_state</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span>
+</span><span id="line-120">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-121">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">x</span></div>
 
-</span><span id="line-107">
+</span><span id="line-122">
 <div class="viewcode-block" id="BaseBot.get_y">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_y">[docs]</a>
-</span><span id="line-108">    <span class="k">def</span><span class="w"> </span><span class="nf">get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-109">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_null</span><span class="p">()</span>
-</span><span id="line-110">        <span class="k">if</span> <span class="ow">not</span> <span class="n">tick</span><span class="p">:</span>
-</span><span id="line-111">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-112">            <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span><span class="o">.</span><span class="n">y</span>
-</span><span id="line-113">            <span class="k">assert</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-114">            <span class="k">return</span> <span class="n">y</span>
-</span><span id="line-115">        <span class="n">bot_state</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span>
-</span><span id="line-116">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-117">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">y</span></div>
+</span><span id="line-123">    <span class="k">def</span><span class="w"> </span><span class="nf">get_y</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-124">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_null</span><span class="p">()</span>
+</span><span id="line-125">        <span class="k">if</span> <span class="ow">not</span> <span class="n">tick</span><span class="p">:</span>
+</span><span id="line-126">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-127">            <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span><span class="o">.</span><span class="n">y</span>
+</span><span id="line-128">            <span class="k">assert</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-129">            <span class="k">return</span> <span class="n">y</span>
+</span><span id="line-130">        <span class="n">bot_state</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span>
+</span><span id="line-131">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-132">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">y</span></div>
 
-</span><span id="line-118">
+</span><span id="line-133">
 <div class="viewcode-block" id="BaseBot.get_direction">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_direction">[docs]</a>
-</span><span id="line-119">    <span class="k">def</span><span class="w"> </span><span class="nf">get_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-120">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_null</span><span class="p">()</span>
-</span><span id="line-121">        <span class="k">if</span> <span class="ow">not</span> <span class="n">tick</span><span class="p">:</span>
-</span><span id="line-122">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-123">            <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span><span class="o">.</span><span class="n">direction</span>
-</span><span id="line-124">            <span class="k">assert</span> <span class="n">direction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-125">            <span class="k">return</span> <span class="n">direction</span>
-</span><span id="line-126">        <span class="n">bot_state</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span>
-</span><span id="line-127">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-128">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">direction</span></div>
+</span><span id="line-134">    <span class="k">def</span><span class="w"> </span><span class="nf">get_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-135">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_null</span><span class="p">()</span>
+</span><span id="line-136">        <span class="k">if</span> <span class="ow">not</span> <span class="n">tick</span><span class="p">:</span>
+</span><span id="line-137">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-138">            <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span><span class="o">.</span><span class="n">direction</span>
+</span><span id="line-139">            <span class="k">assert</span> <span class="n">direction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-140">            <span class="k">return</span> <span class="n">direction</span>
+</span><span id="line-141">        <span class="n">bot_state</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span>
+</span><span id="line-142">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-143">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">direction</span></div>
 
-</span><span id="line-129">
+</span><span id="line-144">
 <div class="viewcode-block" id="BaseBot.get_gun_direction">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_gun_direction">[docs]</a>
-</span><span id="line-130">    <span class="k">def</span><span class="w"> </span><span class="nf">get_gun_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-131">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_null</span><span class="p">()</span>
-</span><span id="line-132">        <span class="k">if</span> <span class="ow">not</span> <span class="n">tick</span><span class="p">:</span>
-</span><span id="line-133">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-134">            <span class="n">gun_direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span><span class="o">.</span><span class="n">direction</span>
-</span><span id="line-135">            <span class="k">assert</span> <span class="n">gun_direction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-136">            <span class="k">return</span> <span class="n">gun_direction</span>
-</span><span id="line-137">        <span class="n">bot_state</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span>
-</span><span id="line-138">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-139">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">gun_direction</span></div>
+</span><span id="line-145">    <span class="k">def</span><span class="w"> </span><span class="nf">get_gun_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-146">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_null</span><span class="p">()</span>
+</span><span id="line-147">        <span class="k">if</span> <span class="ow">not</span> <span class="n">tick</span><span class="p">:</span>
+</span><span id="line-148">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-149">            <span class="n">gun_direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span><span class="o">.</span><span class="n">direction</span>
+</span><span id="line-150">            <span class="k">assert</span> <span class="n">gun_direction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-151">            <span class="k">return</span> <span class="n">gun_direction</span>
+</span><span id="line-152">        <span class="n">bot_state</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span>
+</span><span id="line-153">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-154">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">gun_direction</span></div>
 
-</span><span id="line-140">
+</span><span id="line-155">
 <div class="viewcode-block" id="BaseBot.get_radar_direction">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_radar_direction">[docs]</a>
-</span><span id="line-141">    <span class="k">def</span><span class="w"> </span><span class="nf">get_radar_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-142">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_null</span><span class="p">()</span>
-</span><span id="line-143">        <span class="k">if</span> <span class="ow">not</span> <span class="n">tick</span><span class="p">:</span>
-</span><span id="line-144">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-145">            <span class="n">radar_direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span><span class="o">.</span><span class="n">direction</span>
-</span><span id="line-146">            <span class="k">assert</span> <span class="n">radar_direction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-147">            <span class="k">return</span> <span class="n">radar_direction</span>
-</span><span id="line-148">        <span class="n">bot_state</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span>
-</span><span id="line-149">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-150">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">radar_direction</span></div>
-
-</span><span id="line-151">
-<div class="viewcode-block" id="BaseBot.get_speed">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_speed">[docs]</a>
-</span><span id="line-152">    <span class="k">def</span><span class="w"> </span><span class="nf">get_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-153">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_speed</span><span class="p">()</span></div>
-
-</span><span id="line-154">
-<div class="viewcode-block" id="BaseBot.get_gun_heat">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_gun_heat">[docs]</a>
-</span><span id="line-155">    <span class="k">def</span><span class="w"> </span><span class="nf">get_gun_heat</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-156">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_gun_heat</span><span class="p">()</span></div>
-
-</span><span id="line-157">
-<div class="viewcode-block" id="BaseBot.get_bullet_states">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_bullet_states">[docs]</a>
-</span><span id="line-158">    <span class="k">def</span><span class="w"> </span><span class="nf">get_bullet_states</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BulletState</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-159">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_bullet_states</span><span class="p">()</span></div>
-
-</span><span id="line-160">
-<div class="viewcode-block" id="BaseBot.get_events">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_events">[docs]</a>
-</span><span id="line-161">    <span class="k">def</span><span class="w"> </span><span class="nf">get_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BotEvent</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-162">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_events</span><span class="p">()</span></div>
-
-</span><span id="line-163">
-<div class="viewcode-block" id="BaseBot.clear_events">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.clear_events">[docs]</a>
-</span><span id="line-164">    <span class="k">def</span><span class="w"> </span><span class="nf">clear_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-165">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">clear_events</span><span class="p">()</span></div>
+</span><span id="line-156">    <span class="k">def</span><span class="w"> </span><span class="nf">get_radar_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-157">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_null</span><span class="p">()</span>
+</span><span id="line-158">        <span class="k">if</span> <span class="ow">not</span> <span class="n">tick</span><span class="p">:</span>
+</span><span id="line-159">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-160">            <span class="n">radar_direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">initial_position</span><span class="o">.</span><span class="n">direction</span>
+</span><span id="line-161">            <span class="k">assert</span> <span class="n">radar_direction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-162">            <span class="k">return</span> <span class="n">radar_direction</span>
+</span><span id="line-163">        <span class="n">bot_state</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span>
+</span><span id="line-164">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-165">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">radar_direction</span></div>
 
 </span><span id="line-166">
-</span><span id="line-167">    <span class="nd">@property</span>
-</span><span id="line-168">    <span class="k">def</span><span class="w"> </span><span class="nf">turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-169">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">turn_rate</span>
-</span><span id="line-170">
-</span><span id="line-171">    <span class="nd">@turn_rate</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-172">    <span class="k">def</span><span class="w"> </span><span class="nf">turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-173">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">turn_rate</span> <span class="o">=</span> <span class="n">turn_rate</span>
-</span><span id="line-174">
-</span><span id="line-175">    <span class="nd">@property</span>
-</span><span id="line-176">    <span class="k">def</span><span class="w"> </span><span class="nf">max_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-177">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_max_turn_rate</span><span class="p">()</span>
+<div class="viewcode-block" id="BaseBot.get_speed">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_speed">[docs]</a>
+</span><span id="line-167">    <span class="k">def</span><span class="w"> </span><span class="nf">get_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-168">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_speed</span><span class="p">()</span></div>
+
+</span><span id="line-169">
+<div class="viewcode-block" id="BaseBot.get_gun_heat">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_gun_heat">[docs]</a>
+</span><span id="line-170">    <span class="k">def</span><span class="w"> </span><span class="nf">get_gun_heat</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-171">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_gun_heat</span><span class="p">()</span></div>
+
+</span><span id="line-172">
+<div class="viewcode-block" id="BaseBot.get_bullet_states">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_bullet_states">[docs]</a>
+</span><span id="line-173">    <span class="k">def</span><span class="w"> </span><span class="nf">get_bullet_states</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BulletState</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-174">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_bullet_states</span><span class="p">()</span></div>
+
+</span><span id="line-175">
+<div class="viewcode-block" id="BaseBot.get_events">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_events">[docs]</a>
+</span><span id="line-176">    <span class="k">def</span><span class="w"> </span><span class="nf">get_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BotEvent</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-177">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_events</span><span class="p">()</span></div>
+
 </span><span id="line-178">
-</span><span id="line-179">    <span class="nd">@max_turn_rate</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-180">    <span class="k">def</span><span class="w"> </span><span class="nf">max_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-181">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_max_turn_rate</span><span class="p">(</span><span class="n">max_turn_rate</span><span class="p">)</span>
-</span><span id="line-182">
-</span><span id="line-183">    <span class="nd">@property</span>
-</span><span id="line-184">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-185">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">gun_turn_rate</span>
-</span><span id="line-186">
-</span><span id="line-187">    <span class="nd">@gun_turn_rate</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-188">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gun_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-189">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">gun_turn_rate</span> <span class="o">=</span> <span class="n">gun_turn_rate</span>
-</span><span id="line-190">
-</span><span id="line-191">    <span class="nd">@property</span>
-</span><span id="line-192">    <span class="k">def</span><span class="w"> </span><span class="nf">max_gun_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-193">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_max_gun_turn_rate</span><span class="p">()</span>
-</span><span id="line-194">
-</span><span id="line-195">    <span class="nd">@max_gun_turn_rate</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-196">    <span class="k">def</span><span class="w"> </span><span class="nf">max_gun_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_gun_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-197">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_max_gun_turn_rate</span><span class="p">(</span><span class="n">max_gun_turn_rate</span><span class="p">)</span>
-</span><span id="line-198">
-</span><span id="line-199">    <span class="nd">@property</span>
-</span><span id="line-200">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-201">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">radar_turn_rate</span>
-</span><span id="line-202">
-</span><span id="line-203">    <span class="nd">@radar_turn_rate</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-204">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radar_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-205">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">radar_turn_rate</span> <span class="o">=</span> <span class="n">radar_turn_rate</span>
-</span><span id="line-206">
-</span><span id="line-207">    <span class="nd">@property</span>
-</span><span id="line-208">    <span class="k">def</span><span class="w"> </span><span class="nf">max_radar_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-209">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_max_radar_turn_rate</span><span class="p">()</span>
-</span><span id="line-210">
-</span><span id="line-211">    <span class="nd">@max_radar_turn_rate</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-212">    <span class="k">def</span><span class="w"> </span><span class="nf">max_radar_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_radar_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-213">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_max_radar_turn_rate</span><span class="p">(</span><span class="n">max_radar_turn_rate</span><span class="p">)</span>
-</span><span id="line-214">
-</span><span id="line-215">    <span class="nd">@property</span>
-</span><span id="line-216">    <span class="k">def</span><span class="w"> </span><span class="nf">target_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-217">        <span class="k">assert</span> <span class="p">(</span>
-</span><span id="line-218">            <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">target_speed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-219">        <span class="p">),</span> <span class="s2">&quot;Target speed must be set before accessing it.&quot;</span>
-</span><span id="line-220">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">target_speed</span>
+<div class="viewcode-block" id="BaseBot.clear_events">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.clear_events">[docs]</a>
+</span><span id="line-179">    <span class="k">def</span><span class="w"> </span><span class="nf">clear_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-180">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">clear_events</span><span class="p">()</span></div>
+
+</span><span id="line-181">
+</span><span id="line-182">    <span class="nd">@property</span>
+</span><span id="line-183">    <span class="k">def</span><span class="w"> </span><span class="nf">turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-184">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">turn_rate</span>
+</span><span id="line-185">
+</span><span id="line-186">    <span class="nd">@turn_rate</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-187">    <span class="k">def</span><span class="w"> </span><span class="nf">turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-188">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">turn_rate</span> <span class="o">=</span> <span class="n">turn_rate</span>
+</span><span id="line-189">
+</span><span id="line-190">    <span class="nd">@property</span>
+</span><span id="line-191">    <span class="k">def</span><span class="w"> </span><span class="nf">max_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-192">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_max_turn_rate</span><span class="p">()</span>
+</span><span id="line-193">
+</span><span id="line-194">    <span class="nd">@max_turn_rate</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-195">    <span class="k">def</span><span class="w"> </span><span class="nf">max_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-196">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_max_turn_rate</span><span class="p">(</span><span class="n">max_turn_rate</span><span class="p">)</span>
+</span><span id="line-197">
+</span><span id="line-198">    <span class="nd">@property</span>
+</span><span id="line-199">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-200">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">gun_turn_rate</span>
+</span><span id="line-201">
+</span><span id="line-202">    <span class="nd">@gun_turn_rate</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-203">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gun_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-204">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">gun_turn_rate</span> <span class="o">=</span> <span class="n">gun_turn_rate</span>
+</span><span id="line-205">
+</span><span id="line-206">    <span class="nd">@property</span>
+</span><span id="line-207">    <span class="k">def</span><span class="w"> </span><span class="nf">max_gun_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-208">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_max_gun_turn_rate</span><span class="p">()</span>
+</span><span id="line-209">
+</span><span id="line-210">    <span class="nd">@max_gun_turn_rate</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-211">    <span class="k">def</span><span class="w"> </span><span class="nf">max_gun_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_gun_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-212">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_max_gun_turn_rate</span><span class="p">(</span><span class="n">max_gun_turn_rate</span><span class="p">)</span>
+</span><span id="line-213">
+</span><span id="line-214">    <span class="nd">@property</span>
+</span><span id="line-215">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-216">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">radar_turn_rate</span>
+</span><span id="line-217">
+</span><span id="line-218">    <span class="nd">@radar_turn_rate</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-219">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radar_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-220">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">radar_turn_rate</span> <span class="o">=</span> <span class="n">radar_turn_rate</span>
 </span><span id="line-221">
-</span><span id="line-222">    <span class="nd">@target_speed</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-223">    <span class="k">def</span><span class="w"> </span><span class="nf">target_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-224">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">target_speed</span> <span class="o">=</span> <span class="n">target_speed</span>
+</span><span id="line-222">    <span class="nd">@property</span>
+</span><span id="line-223">    <span class="k">def</span><span class="w"> </span><span class="nf">max_radar_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-224">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_max_radar_turn_rate</span><span class="p">()</span>
 </span><span id="line-225">
-</span><span id="line-226">    <span class="nd">@property</span>
-</span><span id="line-227">    <span class="k">def</span><span class="w"> </span><span class="nf">max_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-228">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_max_speed</span><span class="p">()</span>
+</span><span id="line-226">    <span class="nd">@max_radar_turn_rate</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-227">    <span class="k">def</span><span class="w"> </span><span class="nf">max_radar_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_radar_turn_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-228">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_max_radar_turn_rate</span><span class="p">(</span><span class="n">max_radar_turn_rate</span><span class="p">)</span>
 </span><span id="line-229">
-</span><span id="line-230">    <span class="nd">@max_speed</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-231">    <span class="k">def</span><span class="w"> </span><span class="nf">max_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-232">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_max_speed</span><span class="p">(</span><span class="n">max_speed</span><span class="p">)</span>
-</span><span id="line-233">
+</span><span id="line-230">    <span class="nd">@property</span>
+</span><span id="line-231">    <span class="k">def</span><span class="w"> </span><span class="nf">target_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-232">        <span class="c1"># Match Java semantics: return 0 if not set</span>
+</span><span id="line-233">        <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">target_speed</span>
+</span><span id="line-234">        <span class="k">return</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ts</span>
+</span><span id="line-235">
+</span><span id="line-236">    <span class="nd">@target_speed</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-237">    <span class="k">def</span><span class="w"> </span><span class="nf">target_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-238">        <span class="c1"># Delegate to internals to ensure clamping/validation</span>
+</span><span id="line-239">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">target_speed</span> <span class="o">=</span> <span class="n">target_speed</span>
+</span><span id="line-240">
+</span><span id="line-241">    <span class="nd">@property</span>
+</span><span id="line-242">    <span class="k">def</span><span class="w"> </span><span class="nf">max_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-243">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_max_speed</span><span class="p">()</span>
+</span><span id="line-244">
+</span><span id="line-245">    <span class="nd">@max_speed</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-246">    <span class="k">def</span><span class="w"> </span><span class="nf">max_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-247">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_max_speed</span><span class="p">(</span><span class="n">max_speed</span><span class="p">)</span>
+</span><span id="line-248">
 <div class="viewcode-block" id="BaseBot.set_fire">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_fire">[docs]</a>
-</span><span id="line-234">    <span class="k">def</span><span class="w"> </span><span class="nf">set_fire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firepower</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-235">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_fire</span><span class="p">(</span><span class="n">firepower</span><span class="p">)</span></div>
-
-</span><span id="line-236">
-<div class="viewcode-block" id="BaseBot.get_firepower">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_firepower">[docs]</a>
-</span><span id="line-237">    <span class="k">def</span><span class="w"> </span><span class="nf">get_firepower</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-238">        <span class="k">assert</span> <span class="p">(</span>
-</span><span id="line-239">            <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">firepower</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="line-240">        <span class="p">),</span> <span class="s2">&quot;Firepower must be set before accessing it.&quot;</span>
-</span><span id="line-241">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">firepower</span></div>
-
-</span><span id="line-242">
-<div class="viewcode-block" id="BaseBot.set_rescan">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_rescan">[docs]</a>
-</span><span id="line-243">    <span class="k">def</span><span class="w"> </span><span class="nf">set_rescan</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-244">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">rescan</span> <span class="o">=</span> <span class="kc">True</span></div>
-
-</span><span id="line-245">
-<div class="viewcode-block" id="BaseBot.set_fire_assist">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_fire_assist">[docs]</a>
-</span><span id="line-246">    <span class="k">def</span><span class="w"> </span><span class="nf">set_fire_assist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-247">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">fire_assist</span> <span class="o">=</span> <span class="n">enable</span></div>
-
-</span><span id="line-248">
-<div class="viewcode-block" id="BaseBot.set_interruptible">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_interruptible">[docs]</a>
-</span><span id="line-249">    <span class="k">def</span><span class="w"> </span><span class="nf">set_interruptible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interruptible</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-250">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_interruptible</span><span class="p">(</span><span class="n">interruptible</span><span class="p">)</span></div>
+</span><span id="line-249">    <span class="k">def</span><span class="w"> </span><span class="nf">set_fire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firepower</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-250">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_fire</span><span class="p">(</span><span class="n">firepower</span><span class="p">)</span></div>
 
 </span><span id="line-251">
+<div class="viewcode-block" id="BaseBot.get_firepower">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_firepower">[docs]</a>
+</span><span id="line-252">    <span class="k">def</span><span class="w"> </span><span class="nf">get_firepower</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-253">        <span class="n">firepower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">firepower</span>
+</span><span id="line-254">        <span class="k">return</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">firepower</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">firepower</span></div>
+
+</span><span id="line-255">
+<div class="viewcode-block" id="BaseBot.set_rescan">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_rescan">[docs]</a>
+</span><span id="line-256">    <span class="k">def</span><span class="w"> </span><span class="nf">set_rescan</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-257">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">rescan</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+</span><span id="line-258">
+<div class="viewcode-block" id="BaseBot.set_fire_assist">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_fire_assist">[docs]</a>
+</span><span id="line-259">    <span class="k">def</span><span class="w"> </span><span class="nf">set_fire_assist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-260">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">fire_assist</span> <span class="o">=</span> <span class="n">enable</span></div>
+
+</span><span id="line-261">
+<div class="viewcode-block" id="BaseBot.set_interruptible">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_interruptible">[docs]</a>
+</span><span id="line-262">    <span class="k">def</span><span class="w"> </span><span class="nf">set_interruptible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interruptible</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-263">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_interruptible</span><span class="p">(</span><span class="n">interruptible</span><span class="p">)</span></div>
+
+</span><span id="line-264">
 <div class="viewcode-block" id="BaseBot.set_adjust_gun_for_body_turn">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_adjust_gun_for_body_turn">[docs]</a>
-</span><span id="line-252">    <span class="k">def</span><span class="w"> </span><span class="nf">set_adjust_gun_for_body_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjust</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-253">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_gun_for_body_turn</span> <span class="o">=</span> <span class="n">adjust</span></div>
+</span><span id="line-265">    <span class="k">def</span><span class="w"> </span><span class="nf">set_adjust_gun_for_body_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjust</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-266">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_gun_for_body_turn</span> <span class="o">=</span> <span class="n">adjust</span></div>
 
-</span><span id="line-254">
+</span><span id="line-267">
 <div class="viewcode-block" id="BaseBot.is_adjust_gun_for_body_turn">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.is_adjust_gun_for_body_turn">[docs]</a>
-</span><span id="line-255">    <span class="k">def</span><span class="w"> </span><span class="nf">is_adjust_gun_for_body_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-256">        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_gun_for_body_turn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span>
-</span><span id="line-257">            <span class="s2">&quot;Adjust gun for body turn must be set before accessing it.&quot;</span>
-</span><span id="line-258">        <span class="p">)</span>
-</span><span id="line-259">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_gun_for_body_turn</span></div>
+</span><span id="line-268">    <span class="k">def</span><span class="w"> </span><span class="nf">is_adjust_gun_for_body_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-269">        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_gun_for_body_turn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span>
+</span><span id="line-270">            <span class="s2">&quot;Adjust gun for body turn must be set before accessing it.&quot;</span>
+</span><span id="line-271">        <span class="p">)</span>
+</span><span id="line-272">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_gun_for_body_turn</span></div>
 
-</span><span id="line-260">
+</span><span id="line-273">
 <div class="viewcode-block" id="BaseBot.set_adjust_radar_for_body_turn">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_adjust_radar_for_body_turn">[docs]</a>
-</span><span id="line-261">    <span class="k">def</span><span class="w"> </span><span class="nf">set_adjust_radar_for_body_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjust</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-262">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_radar_for_body_turn</span> <span class="o">=</span> <span class="n">adjust</span></div>
+</span><span id="line-274">    <span class="k">def</span><span class="w"> </span><span class="nf">set_adjust_radar_for_body_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjust</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-275">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_radar_for_body_turn</span> <span class="o">=</span> <span class="n">adjust</span></div>
 
-</span><span id="line-263">
+</span><span id="line-276">
 <div class="viewcode-block" id="BaseBot.is_adjust_radar_for_body_turn">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.is_adjust_radar_for_body_turn">[docs]</a>
-</span><span id="line-264">    <span class="k">def</span><span class="w"> </span><span class="nf">is_adjust_radar_for_body_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-265">        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_radar_for_body_turn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span>
-</span><span id="line-266">            <span class="s2">&quot;Adjust radar for body turn must be set before accessing it.&quot;</span>
-</span><span id="line-267">        <span class="p">)</span>
-</span><span id="line-268">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_radar_for_body_turn</span></div>
+</span><span id="line-277">    <span class="k">def</span><span class="w"> </span><span class="nf">is_adjust_radar_for_body_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-278">        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_radar_for_body_turn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span>
+</span><span id="line-279">            <span class="s2">&quot;Adjust radar for body turn must be set before accessing it.&quot;</span>
+</span><span id="line-280">        <span class="p">)</span>
+</span><span id="line-281">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_radar_for_body_turn</span></div>
 
-</span><span id="line-269">
+</span><span id="line-282">
 <div class="viewcode-block" id="BaseBot.set_adjust_radar_for_gun_turn">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_adjust_radar_for_gun_turn">[docs]</a>
-</span><span id="line-270">    <span class="k">def</span><span class="w"> </span><span class="nf">set_adjust_radar_for_gun_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjust</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-271">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_radar_for_gun_turn</span> <span class="o">=</span> <span class="n">adjust</span></div>
+</span><span id="line-283">    <span class="k">def</span><span class="w"> </span><span class="nf">set_adjust_radar_for_gun_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjust</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-284">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_radar_for_gun_turn</span> <span class="o">=</span> <span class="n">adjust</span>
+</span><span id="line-285">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">fire_assist</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">adjust</span></div>
 
-</span><span id="line-272">
+</span><span id="line-286">
 <div class="viewcode-block" id="BaseBot.is_adjust_radar_for_gun_turn">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.is_adjust_radar_for_gun_turn">[docs]</a>
-</span><span id="line-273">    <span class="k">def</span><span class="w"> </span><span class="nf">is_adjust_radar_for_gun_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-274">        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_radar_for_gun_turn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span>
-</span><span id="line-275">            <span class="s2">&quot;Adjust radar for gun turn must be set before accessing it.&quot;</span>
-</span><span id="line-276">        <span class="p">)</span>
-</span><span id="line-277">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_radar_for_gun_turn</span></div>
+</span><span id="line-287">    <span class="k">def</span><span class="w"> </span><span class="nf">is_adjust_radar_for_gun_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-288">        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_radar_for_gun_turn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span>
+</span><span id="line-289">            <span class="s2">&quot;Adjust radar for gun turn must be set before accessing it.&quot;</span>
+</span><span id="line-290">        <span class="p">)</span>
+</span><span id="line-291">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">adjust_radar_for_gun_turn</span></div>
 
-</span><span id="line-278">
+</span><span id="line-292">
 <div class="viewcode-block" id="BaseBot.add_custom_event">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.add_custom_event">[docs]</a>
-</span><span id="line-279">    <span class="k">def</span><span class="w"> </span><span class="nf">add_custom_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Condition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-280">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">add_condition</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span></div>
+</span><span id="line-293">    <span class="k">def</span><span class="w"> </span><span class="nf">add_custom_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Condition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-294">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">add_condition</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span></div>
 
-</span><span id="line-281">
+</span><span id="line-295">
 <div class="viewcode-block" id="BaseBot.remove_custom_event">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.remove_custom_event">[docs]</a>
-</span><span id="line-282">    <span class="k">def</span><span class="w"> </span><span class="nf">remove_custom_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Condition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-283">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">remove_condition</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span></div>
+</span><span id="line-296">    <span class="k">def</span><span class="w"> </span><span class="nf">remove_custom_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Condition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-297">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">remove_condition</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span></div>
 
-</span><span id="line-284">
+</span><span id="line-298">
 <div class="viewcode-block" id="BaseBot.set_stop">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_stop">[docs]</a>
-</span><span id="line-285">    <span class="k">def</span><span class="w"> </span><span class="nf">set_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-286">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_stop</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span></div>
-
-</span><span id="line-287">
-<div class="viewcode-block" id="BaseBot.set_resume">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_resume">[docs]</a>
-</span><span id="line-288">    <span class="k">def</span><span class="w"> </span><span class="nf">set_resume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-289">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_resume</span><span class="p">()</span></div>
-
-</span><span id="line-290">
-<div class="viewcode-block" id="BaseBot.get_teammate_ids">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_teammate_ids">[docs]</a>
-</span><span id="line-291">    <span class="k">def</span><span class="w"> </span><span class="nf">get_teammate_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="line-292">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">teammate_ids</span></div>
-
-</span><span id="line-293">
-<div class="viewcode-block" id="BaseBot.is_teammate">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.is_teammate">[docs]</a>
-</span><span id="line-294">    <span class="k">def</span><span class="w"> </span><span class="nf">is_teammate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-295">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span>
-</span><span id="line-296">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">is_teammate</span><span class="p">(</span><span class="n">bot_id</span><span class="p">)</span></div>
-
-</span><span id="line-297">
-<div class="viewcode-block" id="BaseBot.broadcast_team_message">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.broadcast_team_message">[docs]</a>
-</span><span id="line-298">    <span class="k">def</span><span class="w"> </span><span class="nf">broadcast_team_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-299">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span>
-</span><span id="line-300">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">broadcast_team_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+</span><span id="line-299">    <span class="k">def</span><span class="w"> </span><span class="nf">set_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-300">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_stop</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span></div>
 
 </span><span id="line-301">
+<div class="viewcode-block" id="BaseBot.set_resume">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_resume">[docs]</a>
+</span><span id="line-302">    <span class="k">def</span><span class="w"> </span><span class="nf">set_resume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-303">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">set_resume</span><span class="p">()</span></div>
+
+</span><span id="line-304">
+<div class="viewcode-block" id="BaseBot.get_teammate_ids">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_teammate_ids">[docs]</a>
+</span><span id="line-305">    <span class="k">def</span><span class="w"> </span><span class="nf">get_teammate_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="line-306">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">teammate_ids</span></div>
+
+</span><span id="line-307">
+<div class="viewcode-block" id="BaseBot.is_teammate">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.is_teammate">[docs]</a>
+</span><span id="line-308">    <span class="k">def</span><span class="w"> </span><span class="nf">is_teammate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-309">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span>
+</span><span id="line-310">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">is_teammate</span><span class="p">(</span><span class="n">bot_id</span><span class="p">)</span></div>
+
+</span><span id="line-311">
+<div class="viewcode-block" id="BaseBot.broadcast_team_message">
+<a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.broadcast_team_message">[docs]</a>
+</span><span id="line-312">    <span class="k">def</span><span class="w"> </span><span class="nf">broadcast_team_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-313">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span>
+</span><span id="line-314">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">broadcast_team_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+</span><span id="line-315">
 <div class="viewcode-block" id="BaseBot.send_team_message">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.send_team_message">[docs]</a>
-</span><span id="line-302">    <span class="k">def</span><span class="w"> </span><span class="nf">send_team_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">teammate_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-303">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span>
-</span><span id="line-304">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">send_team_message</span><span class="p">(</span><span class="n">teammate_id</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+</span><span id="line-316">    <span class="k">def</span><span class="w"> </span><span class="nf">send_team_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">teammate_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-317">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span>
+</span><span id="line-318">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">send_team_message</span><span class="p">(</span><span class="n">teammate_id</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
 
-</span><span id="line-305">
+</span><span id="line-319">
 <div class="viewcode-block" id="BaseBot.is_stopped">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.is_stopped">[docs]</a>
-</span><span id="line-306">    <span class="k">def</span><span class="w"> </span><span class="nf">is_stopped</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-307">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_stopped</span></div>
+</span><span id="line-320">    <span class="k">def</span><span class="w"> </span><span class="nf">is_stopped</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-321">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">is_stopped</span></div>
 
-</span><span id="line-308">
-</span><span id="line-309">    <span class="nd">@property</span>
-</span><span id="line-310">    <span class="k">def</span><span class="w"> </span><span class="nf">body_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
-</span><span id="line-311">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">body_color</span>
-</span><span id="line-312">
-</span><span id="line-313">    <span class="nd">@body_color</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-314">    <span class="k">def</span><span class="w"> </span><span class="nf">body_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-315">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">body_color</span> <span class="o">=</span> <span class="n">color</span>
-</span><span id="line-316">
-</span><span id="line-317">    <span class="nd">@property</span>
-</span><span id="line-318">    <span class="k">def</span><span class="w"> </span><span class="nf">turret_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
-</span><span id="line-319">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">turret_color</span>
-</span><span id="line-320">
-</span><span id="line-321">    <span class="nd">@turret_color</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-322">    <span class="k">def</span><span class="w"> </span><span class="nf">turret_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-323">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">turret_color</span> <span class="o">=</span> <span class="n">color</span>
-</span><span id="line-324">
-</span><span id="line-325">    <span class="nd">@property</span>
-</span><span id="line-326">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
-</span><span id="line-327">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">radar_color</span>
-</span><span id="line-328">
-</span><span id="line-329">    <span class="nd">@radar_color</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-330">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-331">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">radar_color</span> <span class="o">=</span> <span class="n">color</span>
-</span><span id="line-332">
-</span><span id="line-333">    <span class="nd">@property</span>
-</span><span id="line-334">    <span class="k">def</span><span class="w"> </span><span class="nf">bullet_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
-</span><span id="line-335">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">bullet_color</span>
-</span><span id="line-336">
-</span><span id="line-337">    <span class="nd">@bullet_color</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-338">    <span class="k">def</span><span class="w"> </span><span class="nf">bullet_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-339">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">bullet_color</span> <span class="o">=</span> <span class="n">color</span>
-</span><span id="line-340">
-</span><span id="line-341">    <span class="nd">@property</span>
-</span><span id="line-342">    <span class="k">def</span><span class="w"> </span><span class="nf">scan_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
-</span><span id="line-343">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">scan_color</span>
-</span><span id="line-344">
-</span><span id="line-345">    <span class="nd">@scan_color</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-346">    <span class="k">def</span><span class="w"> </span><span class="nf">scan_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-347">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">scan_color</span> <span class="o">=</span> <span class="n">color</span>
-</span><span id="line-348">
-</span><span id="line-349">    <span class="nd">@property</span>
-</span><span id="line-350">    <span class="k">def</span><span class="w"> </span><span class="nf">tracks_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
-</span><span id="line-351">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">tracks_color</span>
-</span><span id="line-352">
-</span><span id="line-353">    <span class="nd">@tracks_color</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-354">    <span class="k">def</span><span class="w"> </span><span class="nf">tracks_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-355">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">tracks_color</span> <span class="o">=</span> <span class="n">color</span>
-</span><span id="line-356">
-</span><span id="line-357">    <span class="nd">@property</span>
-</span><span id="line-358">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
-</span><span id="line-359">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">gun_color</span>
-</span><span id="line-360">
-</span><span id="line-361">    <span class="nd">@gun_color</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="line-362">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-363">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">gun_color</span> <span class="o">=</span> <span class="n">color</span>
-</span><span id="line-364">
+</span><span id="line-322">
+</span><span id="line-323">    <span class="nd">@property</span>
+</span><span id="line-324">    <span class="k">def</span><span class="w"> </span><span class="nf">body_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-325">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">body_color</span>
+</span><span id="line-326">
+</span><span id="line-327">    <span class="nd">@body_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-328">    <span class="k">def</span><span class="w"> </span><span class="nf">body_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-329">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">body_color</span> <span class="o">=</span> <span class="n">color</span>
+</span><span id="line-330">
+</span><span id="line-331">    <span class="nd">@property</span>
+</span><span id="line-332">    <span class="k">def</span><span class="w"> </span><span class="nf">turret_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-333">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">turret_color</span>
+</span><span id="line-334">
+</span><span id="line-335">    <span class="nd">@turret_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-336">    <span class="k">def</span><span class="w"> </span><span class="nf">turret_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-337">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">turret_color</span> <span class="o">=</span> <span class="n">color</span>
+</span><span id="line-338">
+</span><span id="line-339">    <span class="nd">@property</span>
+</span><span id="line-340">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-341">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">radar_color</span>
+</span><span id="line-342">
+</span><span id="line-343">    <span class="nd">@radar_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-344">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-345">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">radar_color</span> <span class="o">=</span> <span class="n">color</span>
+</span><span id="line-346">
+</span><span id="line-347">    <span class="nd">@property</span>
+</span><span id="line-348">    <span class="k">def</span><span class="w"> </span><span class="nf">bullet_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-349">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">bullet_color</span>
+</span><span id="line-350">
+</span><span id="line-351">    <span class="nd">@bullet_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-352">    <span class="k">def</span><span class="w"> </span><span class="nf">bullet_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-353">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">bullet_color</span> <span class="o">=</span> <span class="n">color</span>
+</span><span id="line-354">
+</span><span id="line-355">    <span class="nd">@property</span>
+</span><span id="line-356">    <span class="k">def</span><span class="w"> </span><span class="nf">scan_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-357">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">scan_color</span>
+</span><span id="line-358">
+</span><span id="line-359">    <span class="nd">@scan_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-360">    <span class="k">def</span><span class="w"> </span><span class="nf">scan_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-361">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">scan_color</span> <span class="o">=</span> <span class="n">color</span>
+</span><span id="line-362">
+</span><span id="line-363">    <span class="nd">@property</span>
+</span><span id="line-364">    <span class="k">def</span><span class="w"> </span><span class="nf">tracks_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-365">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">tracks_color</span>
+</span><span id="line-366">
+</span><span id="line-367">    <span class="nd">@tracks_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-368">    <span class="k">def</span><span class="w"> </span><span class="nf">tracks_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-369">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">tracks_color</span> <span class="o">=</span> <span class="n">color</span>
+</span><span id="line-370">
+</span><span id="line-371">    <span class="nd">@property</span>
+</span><span id="line-372">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">]:</span>
+</span><span id="line-373">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">gun_color</span>
+</span><span id="line-374">
+</span><span id="line-375">    <span class="nd">@gun_color</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="line-376">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Color</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-377">        <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">gun_color</span> <span class="o">=</span> <span class="n">color</span>
+</span><span id="line-378">
 <div class="viewcode-block" id="BaseBot.is_debugging_enabled">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.is_debugging_enabled">[docs]</a>
-</span><span id="line-365">    <span class="k">def</span><span class="w"> </span><span class="nf">is_debugging_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-366">        <span class="c1"># Debugging is always enabled for now in Python client</span>
-</span><span id="line-367">        <span class="k">return</span> <span class="kc">True</span></div>
+</span><span id="line-379">    <span class="k">def</span><span class="w"> </span><span class="nf">is_debugging_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-380">        <span class="n">tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_current_tick_or_throw</span><span class="p">()</span>
+</span><span id="line-381">        <span class="n">bot_state</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">bot_state</span>
+</span><span id="line-382">        <span class="k">assert</span> <span class="n">bot_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-383">        <span class="k">return</span> <span class="n">bot_state</span><span class="o">.</span><span class="n">is_debugging_enabled</span></div>
 
-</span><span id="line-368">
+</span><span id="line-384">
 <div class="viewcode-block" id="BaseBot.get_graphics">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_graphics">[docs]</a>
-</span><span id="line-369">    <span class="k">def</span><span class="w"> </span><span class="nf">get_graphics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GraphicsABC</span><span class="p">:</span>
-</span><span id="line-370">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_graphics</span><span class="p">()</span></div>
+</span><span id="line-385">    <span class="k">def</span><span class="w"> </span><span class="nf">get_graphics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GraphicsABC</span><span class="p">:</span>
+</span><span id="line-386">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internals</span><span class="o">.</span><span class="n">get_graphics</span><span class="p">()</span></div>
 
-</span><span id="line-371">
-</span><span id="line-372">    <span class="c1"># Utility methods</span>
+</span><span id="line-387">
+</span><span id="line-388">    <span class="c1"># Utility methods</span>
 <div class="viewcode-block" id="BaseBot.calc_max_turn_rate">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.calc_max_turn_rate">[docs]</a>
-</span><span id="line-373">    <span class="k">def</span><span class="w"> </span><span class="nf">calc_max_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-374">        <span class="k">return</span> <span class="n">MAX_TURN_RATE</span> <span class="o">-</span> <span class="mf">0.75</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span>
-</span><span id="line-375">            <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="o">-</span><span class="n">MAX_SPEED</span><span class="p">,</span> <span class="n">MAX_SPEED</span><span class="p">)</span>
-</span><span id="line-376">        <span class="p">)</span></div>
+</span><span id="line-389">    <span class="k">def</span><span class="w"> </span><span class="nf">calc_max_turn_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-390">        <span class="k">return</span> <span class="n">MAX_TURN_RATE</span> <span class="o">-</span> <span class="mf">0.75</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span>
+</span><span id="line-391">            <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="o">-</span><span class="n">MAX_SPEED</span><span class="p">,</span> <span class="n">MAX_SPEED</span><span class="p">)</span>
+</span><span id="line-392">        <span class="p">)</span></div>
 
-</span><span id="line-377">
+</span><span id="line-393">
 <div class="viewcode-block" id="BaseBot.calc_bullet_speed">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.calc_bullet_speed">[docs]</a>
-</span><span id="line-378">    <span class="k">def</span><span class="w"> </span><span class="nf">calc_bullet_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firepower</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-379">        <span class="k">return</span> <span class="mi">20</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">firepower</span><span class="p">,</span> <span class="n">MIN_FIREPOWER</span><span class="p">,</span> <span class="n">MAX_FIREPOWER</span><span class="p">)</span></div>
+</span><span id="line-394">    <span class="k">def</span><span class="w"> </span><span class="nf">calc_bullet_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firepower</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-395">        <span class="k">return</span> <span class="mi">20</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">firepower</span><span class="p">,</span> <span class="n">MIN_FIREPOWER</span><span class="p">,</span> <span class="n">MAX_FIREPOWER</span><span class="p">)</span></div>
 
-</span><span id="line-380">
+</span><span id="line-396">
 <div class="viewcode-block" id="BaseBot.calc_gun_heat">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.calc_gun_heat">[docs]</a>
-</span><span id="line-381">    <span class="k">def</span><span class="w"> </span><span class="nf">calc_gun_heat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firepower</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-382">        <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">firepower</span><span class="p">,</span> <span class="n">MIN_FIREPOWER</span><span class="p">,</span> <span class="n">MAX_FIREPOWER</span><span class="p">)</span></div>
+</span><span id="line-397">    <span class="k">def</span><span class="w"> </span><span class="nf">calc_gun_heat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firepower</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-398">        <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">MathUtil</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">firepower</span><span class="p">,</span> <span class="n">MIN_FIREPOWER</span><span class="p">,</span> <span class="n">MAX_FIREPOWER</span><span class="p">)</span> <span class="o">/</span> <span class="mi">5</span><span class="p">)</span></div>
 
-</span><span id="line-383">
+</span><span id="line-399">
 <div class="viewcode-block" id="BaseBot.get_event_priority">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.get_event_priority">[docs]</a>
-</span><span id="line-384">    <span class="k">def</span><span class="w"> </span><span class="nf">get_event_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="line-385">        <span class="k">return</span> <span class="n">EventPriorities</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="n">event_class</span><span class="p">)</span></div>
+</span><span id="line-400">    <span class="k">def</span><span class="w"> </span><span class="nf">get_event_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-401">        <span class="k">return</span> <span class="n">EventPriorities</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="n">event_class</span><span class="p">)</span></div>
 
-</span><span id="line-386">
+</span><span id="line-402">
 <div class="viewcode-block" id="BaseBot.set_event_priority">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.base_bot.BaseBot.set_event_priority">[docs]</a>
-</span><span id="line-387">    <span class="k">def</span><span class="w"> </span><span class="nf">set_event_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">priority</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-388">        <span class="n">EventPriorities</span><span class="o">.</span><span class="n">set_priority</span><span class="p">(</span><span class="n">event_class</span><span class="p">,</span> <span class="n">priority</span><span class="p">)</span></div>
+</span><span id="line-403">    <span class="k">def</span><span class="w"> </span><span class="nf">set_event_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_class</span><span class="p">:</span> <span class="nb">type</span><span class="p">,</span> <span class="n">priority</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-404">        <span class="n">EventPriorities</span><span class="o">.</span><span class="n">set_priority</span><span class="p">(</span><span class="n">event_class</span><span class="p">,</span> <span class="n">priority</span><span class="p">)</span></div>
 </div>
 
 </span></code></pre></div>
@@ -718,7 +734,7 @@
 </footer>
   </div>
   
-    <script src="../../_static/documentation_options.js?v=91ed0785"></script>
+    <script src="../../_static/documentation_options.js?v=bbce7252"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script defer="defer" src="../../_static/theme.js?v=073f68d9"></script>
