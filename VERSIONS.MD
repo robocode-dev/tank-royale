@@ -1,16 +1,27 @@
-## 📦 0.33.2 - GUI scaling options + Spanish and Danish translations
+## 📦 0.34.0 – Python Support + GUI Improvements – 19-Oct-2025
+
+The Python Bot API, sample bots, and documentation are now complete. 🎉  
+We also added Spanish, Catalan/Valencian, and Danish translations. New translations are always welcome!  
+Additionally, we introduced UI improvements such as UI scaling and a volume slider in the options.
 
 ### 🚀 Improvements
 
 - Bot API
-    - .Net version has been updated to .Net 8 and C# 12
+    - #128: Python Bot API + sample bots.
+        - A huge thank-you, [Yang Li](https://github.com/yangli2) for the tremendous effort in making this a reality! ❤️
+    - .NET version has been updated to .NET 8 and C# 12.
+
 - GUI
     - #168: Added GUI Options dialog with a UI scale setting (100%, 125%, 150%, 175%, 200%, 250%, 300%).
-    - #168: Applied full-UI HiDPI scaling by using the JVM property `sun.java2d.uiScale` based on the saved setting.
-    - Added volume slider on the Sound Options dialog.
+    - #168: Applied full-UI HiDPI scaling using the JVM property `sun.java2d.uiScale`, based on the saved setting.
+        - Thanks to [David Martinez Peña](https://github.com/martinezpenya) for proposing the solution that made this
+          possible. 💪
+    - Added volume slider in the Sound Options dialog.
     - #169: Added Spanish and Catalan/Valencian translations.
-    - Added Danish translations.
-    - Added option to change between Spanish, English, and Danish in the GUI Options dialog.
+        - Thank you, [David Martinez Peña](https://github.com/martinezpenya), for contributing the first translations
+          ever—and for helping test the Python API! ❤️
+    - Added Danish translations as well.
+    - Added an option to switch between Spanish, English, and Danish in the GUI Options dialog.
 
 ## 📦 0.33.1 - Fixes for Recording and Replays - 08-Sep-2025
 
