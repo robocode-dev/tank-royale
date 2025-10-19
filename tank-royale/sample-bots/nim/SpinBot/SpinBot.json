@@ -1,0 +1,10 @@
+{
+  "name": "Spin Bot",
+  "version": "1.0",
+  "authors": ["Davide Cappellini"],
+  "description": "A sample bot that spins in a circles, firing hard when an enemy is detected.",
+  "homepage": "",
+  "countryCodes": ["it"],
+  "platform": "Nim",
+  "programmingLang": "Nim 2.0"
+}
