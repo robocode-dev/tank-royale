@@ -1,0 +1,11 @@
+{
+  "name": "Target",
+  "version": "1.0",
+  "authors": ["Davide Cappellini"],
+  "description": "Sits still. Moves every time energy drops by 20. This bot demonstrates custom events.",
+  "homepage": "",
+  "countryCodes": ["it"],
+  "platform": "Nim",
+  "programmingLang": "Nim 2.0",
+  "initialPosition": "50,50, 90"
+}
