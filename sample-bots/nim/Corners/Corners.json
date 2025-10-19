@@ -1,0 +1,10 @@
+{
+  "name": "Corners",
+  "version": "1.0",
+  "authors": ["Davide Cappellini"],
+  "description": "Moves to a corner, then swings the gun back and forth. If it dies, it tries a new corner in the next round.",
+  "homepage": "",
+  "countryCodes": ["it"],
+  "platform": "Nim",
+  "programmingLang": "Nim 2.0"
+}
