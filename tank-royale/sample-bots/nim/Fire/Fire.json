@@ -1,0 +1,10 @@
+{
+  "name": "Fire",
+  "version": "1.0",
+  "authors": ["Davide Cappellini"],
+  "description": "This bot sits still. Spins gun around. Moves when hit.",
+  "homepage": "",
+  "countryCodes": ["it"],
+  "platform": "Nim",
+  "programmingLang": "Nim 2.0"
+}
