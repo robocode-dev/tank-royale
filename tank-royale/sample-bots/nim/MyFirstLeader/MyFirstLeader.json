@@ -1,0 +1,10 @@
+{
+  "name": "My First Leader",
+  "version": "1.0",
+  "authors": ["Davide Cappellini"],
+  "description": "Member of the MyFirstTeam\nLooks around for enemies, and orders teammates to fire.",
+  "homepage": "",
+  "countryCodes": ["it"],
+  "platform": "Nim",
+  "programmingLang": "Nim 2.0"
+}
