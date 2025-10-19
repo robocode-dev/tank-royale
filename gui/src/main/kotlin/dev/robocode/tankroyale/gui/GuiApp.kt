@@ -11,10 +11,10 @@ import java.util.Locale
 fun main() {
     val scale = try { ConfigSettings.uiScale } catch (_: Exception) { 100 }
 
-    //set ui scale factor for high dpi displays
-
-    System.setProperty("sun.java2d.uiScale", (scale/100).toString()) // default
-
+    //set ui scale factor for high dpi displays, but only if not already set (via command line)
+    if (System.getProperty("sun.java2d.uiScale") == null) {
+        System.setProperty("sun.java2d.uiScale", (scale/100).toString()) // default
+    }
     try {
         Taskbar.getTaskbar().iconImage = RcImages.tankImage // for macOS
     } catch (_: UnsupportedOperationException) {
