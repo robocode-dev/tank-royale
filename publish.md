@@ -2,7 +2,19 @@
 
 ## Java archives (jar files)
 
-### Publish jar archives to Sonatype (Maven Central Repository)
+Publish jar archives to Sonatype (Maven Central Repository)
+
+Make sure you have a `.gradle/gradle.properties` file in your home folder (`%USERHOME%` on Windows, and `~` on Linux and macOS):
+
+```properties
+signingKey=-----BEGIN PGP PRIVATE KEY BLOCK-----\n\nlQWGBGBq5...-----END PGP PRIVATE KEY BLOCK-----
+signingPassword=...
+
+ossrhUsername=...
+ossrhPassword=JfRES...
+
+tankRoyaleGitHubToken=ghp_lDygeO...
+```
 
 Publish to staging:
 
@@ -10,7 +22,7 @@ Publish to staging:
 ./gradlew publishToSonatype
 ```
 
-Publish to staging, close, and release:
+Publish to staging, close, and release in one go:
 
 ```shell
 ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
@@ -32,28 +44,44 @@ dotnet nuget push robocode.tankroyale.botapi.«version».nupkg --api-key «nuget
 
 Note: «version» and «nuget api key» must be prefilled with Robocode version and Nuget API key.
 
-## Python package (pip)
+## Python package
 
-From repository root, build the Python Bot API package (wheel + sdist):
+Make sure you have a `.pypyrc` file in your home folder (`%USERHOME%` on Windows, and `~` on Linux and macOS):
 
+```toml
+[distutils]
+index-servers =
+testpypi
+pypi
+
+[testpypi]
+repository: https://test.pypi.org/legacy/
+username: __token__
+password: pypi-AgENdG...
+
+[pypi]
+repository: https://upload.pypi.org/legacy/
+username: __token__
+password: pypi-AgEIcH...
 ```
+
+You need to create an API key for both TestPyPI and PyPI, and copy and paste each one into the password field for
+`testpypi` and `pypi`, respectively.
+
+From repository root, build the Python Bot API package (wheel):
+
+```shell
 ./gradlew :bot-api:python:build-dist
 ```
 
-This will:
-- Generate schema sources into bot-api/python/generated
-- Generate the VERSION file from gradle.properties
-- Build dist/*.whl and dist/*.tar.gz inside bot-api/python/dist
+Upload the TestPyPI first:
 
-Install the built wheel from anywhere on your system:
-
-```
-pip install path\to\tank-royale\bot-api\python\dist\robocode_tank_royale-<version>-py3-none-any.whl
+```shell
+./gradlew :bot-api:python:upload-testpypi
 ```
 
-Alternatively, to install directly from the project folder without building first (editable for development):
+Upload the PyPI first:
 
-```
-cd bot-api\python
-pip install -e .
+```shell
+./gradlew :bot-api:python:upload-pypi
 ```
