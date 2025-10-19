@@ -1,0 +1,10 @@
+{
+  "name": "Crazy",
+  "version": "1.0",
+  "authors": ["Davide Cappellini"],
+  "description": "This bot moves around in a crazy pattern.",
+  "homepage": "",
+  "countryCodes": ["it"],
+  "platform": "Nim",
+  "programmingLang": "Nim 2.0"
+}
