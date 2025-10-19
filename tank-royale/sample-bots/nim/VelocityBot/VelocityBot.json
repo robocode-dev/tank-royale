@@ -1,0 +1,10 @@
+{
+  "name": "Velocity Bot",
+  "version": "1.0",
+  "authors": ["Davide Cappellini"],
+  "description": "Example bot of how to use turn rates",
+  "homepage": "",
+  "countryCodes": ["it"],
+  "platform": "Nim",
+  "programmingLang": "Nim 2.0"
+}
