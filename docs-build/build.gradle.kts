@@ -15,7 +15,7 @@ node {
 tasks {
     // Install or update to `docfx`
     val updateDocfx by registering(Exec::class) {
-        commandLine("dotnet", "tool", "update", "-g", "docfx", "--version", "2.77.0")
+        commandLine("dotnet", "tool", "update", "-g", "docfx", "--version", "2.78.3")
     }
 
     val npmBuild by registering(NpmTask::class) {
