@@ -8,7 +8,7 @@ plugins {
 }
 
 node {
-    version = "22.11.0"
+    version = "22.20.0" // LTS
     download = true
 }
 
