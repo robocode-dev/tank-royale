@@ -1,3 +1,10 @@
+## 📦 ???
+
+- GUI
+    - #174: Prevent overwriting UI scale property (`sun.java2d.uiScale`) for high DPI displays if already set (via
+      command line). Thanks goes to [David Martinez Peña](https://github.com/martinezpenya) 👍
+    - Fixed the code so _all_ system properties can be overwritten from the command line.
+
 ## 📦 0.34.0 – Python Support + GUI Improvements – 19-Oct-2025
 
 The Python Bot API, sample bots, and documentation are now complete. 🎉  

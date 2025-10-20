@@ -11,10 +11,9 @@ import java.util.Locale
 fun main() {
     val scale = try { ConfigSettings.uiScale } catch (_: Exception) { 100 }
 
-    //set ui scale factor for high dpi displays, but only if not already set (via command line)
-    if (System.getProperty("sun.java2d.uiScale") == null) {
-        System.setProperty("sun.java2d.uiScale", (scale/100).toString()) // default
-    }
+    // set ui scale factor for high dpi displays, but only if not already set (via command line)
+    setIfPropertyMissing("sun.java2d.uiScale") { (scale/100).toString() } // default
+
     try {
         Taskbar.getTaskbar().iconImage = RcImages.tankImage // for macOS
     } catch (_: UnsupportedOperationException) {
@@ -33,11 +32,10 @@ fun main() {
 }
 
 private fun applyGlobalUiScaleFromSettings() {
-    if (System.getProperty("sun.java2d.uiScale") == null) {
+    setIfPropertyMissing("sun.java2d.uiScale") {
         val percent = ConfigSettings.uiScale.coerceIn(50, 400)
         val scale = percent / 100.0
-        val value = String.format(Locale.US, "%.2f", scale)
-        System.setProperty("sun.java2d.uiScale", value)
+        String.format(Locale.US, "%.2f", scale)
     }
 }
 
@@ -54,7 +52,13 @@ private fun applyDefaultLocaleFromSettings() {
 private fun fixRenderingIssues() {
     if (isWindows) {
         // Disable hardware acceleration to avoid issue with rendering
-        System.setProperty("sun.java2d.d3d", "false") // disable Direct3D acceleration
-        System.setProperty("sun.java2d.opengl", "false") // disable OpenGL acceleration
+        setIfPropertyMissing("sun.java2d.d3d") { "false" } // disable Direct3D acceleration
+        setIfPropertyMissing("sun.java2d.opengl") { "false" } // disable OpenGL acceleration
+    }
+}
+
+private fun setIfPropertyMissing(propertyName: String, valueProvider: () -> String) {
+    if (System.getProperty(propertyName) == null) {
+        System.setProperty(propertyName, valueProvider())
     }
 }
