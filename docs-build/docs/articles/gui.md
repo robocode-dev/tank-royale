@@ -205,6 +205,14 @@ servers, not remote servers.
 
 ![Local Server Log](../images/gui/server-log.png)
 
+## GUI Options
+
+The GUI options allow you to customize the language used across the entire interface.
+
+You can also adjust the UI scaling, which is especially useful for optimizing display on high-resolution screens.
+
+![GUI Options](../images/gui/gui-options.png)
+
 ## Server Options
 
 The Server Options dialog allows you to configure and select the server used for battles. At the top of the dialog, you
@@ -274,9 +282,9 @@ position.
 
 The **Sound Options** dialog gives you complete control over the game audio:
 
-- Master sound toggle to enable/disable all audio
+- Sound toggle to enable/disable all audio
 - Individual toggles for each sound effect type
-- Volume controls for fine-tuning the audio experience
+- Volume control for fine-tuning the audio experience
 
 ![Sound Options](../images/gui/sound-options.png)
 
