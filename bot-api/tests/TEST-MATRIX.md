@@ -18,16 +18,97 @@ language-agnostic matrix of semantic tests that must be implemented identically 
 
 #### Naming and IDs
 
-- Test IDs: `TR-API-<AREA>-<NNN>` (e.g., `TR-API-VAL-001`).
-- Files and test names should mirror across languages:
-    - Java: `XxxTest.java`, methods `test_<id>_<short_description>()` (use display names as helpful).
-    - .NET: `XxxTest.cs`, methods `Test_<id>_<ShortDescription>()` (use `[Test]` and `TestCase`/`TestName` as needed).
-    - Python: `test_xxx.py`, functions `test_<id>_<short_description>()`.
-- Per-language annotation/metadata to embed the canonical ID and title consistently:
-    - Java (JUnit 5): add `@DisplayName("TR-API-<ID> <short description>")` on the test class or methods as appropriate.
-    - .NET (NUnit): add `[Description("TR-API-<ID> <short description>")]` on the test class or methods as appropriate.
-    - Python (pytest): add a docstring whose first line is `TR-API-<ID> <short description>` at module or test-function
-      level.
+- Canonical Test IDs: `TR-API-<AREA>-<NNN>` (e.g., `TR-API-VAL-001`). Use sub-IDs when defined (e.g.,
+  `TR-API-BOT-001a`).
+- Organize tests by subject or scenario, not by ID:
+    - Keep files/classes named after the subject under test (e.g., `BotInfoTest`, `InitialPositionTest`) or a
+      cross-cutting scenario (e.g., `BaseBotConstructorTest`).
+    - It is expected and encouraged that a single `XxxTest` file contains multiple matrix IDs when they relate to the
+      same subject/scenario.
+- Cross-language mirroring (names should align across Java/.NET/Python idioms):
+    - Java: file/class `XxxTest.java`; methods `test_<id>_<short_description>()`.
+    - .NET (NUnit): file/class `XxxTest.cs`; methods `Test_<id>_<ShortDescription>()`.
+    - Python (pytest): file/module `test_xxx.py`; functions `test_<id>_<short_description>()`.
+- Embed the canonical ID and title via language-appropriate metadata, so reports display the matrix ID clearly:
+    - Java (JUnit 5): add `@DisplayName("TR-API-<ID> <short description>")` on each test method; optionally
+      `@Tag("<AREA>")` and `@Tag("TR-API-<ID>")` for filtering.
+    - .NET (NUnit): add `[Description("TR-API-<ID> <short description>")]` on each test method; optionally
+      `[Category("<AREA>")]` and `[Category("TR-API-<ID>")]`.
+    - Python (pytest): put a docstring whose first line is `TR-API-<ID> <short description>` on each test function;
+      optionally use markers for filtering (e.g., `@pytest.mark.VAL`).
+- Sub-IDs and parameterization:
+    - Group sub-IDs (`001a`, `001b`, …) for the same umbrella requirement in the same scenario file/class (e.g.,
+      `BaseBotConstructorTest`).
+    - If one ID has multiple data variations, use parameterized tests so the ID maps to a single method with multiple
+      cases.
+
+##### Example: BotInfoTest across languages (VAL)
+
+Java (JUnit 5):
+
+```java
+class BotInfoTest {
+
+    @Test
+    @DisplayName("TR-API-VAL-001 BotInfo required fields")
+    @Tag("VAL")
+    @Tag("TR-API-VAL-001")
+    void test_TR_API_VAL_001_required_fields() {
+        // Arrange/Act/Assert
+    }
+
+    @Test
+    @DisplayName("TR-API-VAL-002 BotInfo validation: invalid fields raise/throw")
+    @Tag("VAL")
+    @Tag("TR-API-VAL-002")
+    void test_TR_API_VAL_002_invalid_fields_validation() {
+        // Arrange/Act/Assert
+    }
+}
+```
+
+.NET (NUnit):
+
+```csharp
+[TestFixture]
+public class BotInfoTest {
+    [Test]
+    [Category("VAL")]
+    [Category("TR-API-VAL-001")]
+    [Description("TR-API-VAL-001 BotInfo required fields")]
+    public void Test_TR_API_VAL_001_Required_Fields() {
+        // Arrange/Act/Assert
+    }
+
+    [Test]
+    [Category("VAL")]
+    [Category("TR-API-VAL-002")]
+    [Description("TR-API-VAL-002 BotInfo validation: invalid fields raise/throw")]
+    public void Test_TR_API_VAL_002_Invalid_Fields_Validation() {
+        // Arrange/Act/Assert
+    }
+}
+```
+
+Python (pytest):
+
+```python
+def test_TR_API_VAL_001_required_fields():
+    """TR-API-VAL-001 BotInfo required fields"""
+    # arrange/act/assert
+
+
+def test_TR_API_VAL_002_invalid_fields_validation():
+    """TR-API-VAL-002 BotInfo validation: invalid fields raise/throw"""
+    # arrange/act/assert
+```
+
+Notes:
+
+- Keep tests for the same subject (`BotInfo`) together; add additional `TR-API-VAL-00x` methods as needed in the same
+  file.
+- For umbrella items like `TR-API-BOT-001a`..`001e`, place them in a scenario-focused file like
+  `BaseBotConstructorTest` (one method per sub-ID).
 
 ---
 
