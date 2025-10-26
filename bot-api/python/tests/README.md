@@ -9,6 +9,7 @@ This folder contains Python tests for the Bot API. Tests must maintain strict 1â
 ## Parity policy
 - Keep test IDs and names aligned with Java and .NET (see TEST-MATRIX.md).
 - Prefer public-behavior testing. Import underscore-prefixed helpers only when large internals are otherwise untestable.
+- Embed the canonical ID/title by adding a module or test function docstring whose first line is `TR-API-<ID> <short description>`.
 
 ## Concrete PR checklist (Python)
 Use this checklist when adding or updating tests.

@@ -12,6 +12,7 @@ See the shared matrix at `../../tests/TEST-MATRIX.md`.
 
 - Keep test IDs and names aligned with Java and Python (see TEST-MATRIX.md).
 - Prefer public-behavior testing. When internals are necessary, use `InternalsVisibleTo` or reflection in tests only.
+- Embed the canonical ID/title using `[Description("TR-API-<ID> <short description>")]` on test classes or methods as appropriate.
 
 ## Concrete PR checklist (.NET)
 

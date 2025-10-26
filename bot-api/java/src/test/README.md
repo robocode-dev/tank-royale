@@ -8,6 +8,7 @@ This folder contains Java tests for the Bot API. Java is the reference implement
 ## Parity policy
 - Keep test IDs and names aligned with `.NET` and `Python` (see TEST-MATRIX.md).
 - Prefer public-behavior testing; use reflection only for large internal methods where unavoidable.
+- Embed the canonical ID/title in tests using `@DisplayName("TR-API-<ID> <short description>")` on classes or methods as appropriate.
 
 ## Concrete PR checklist (Java)
 Use this checklist when adding or updating tests.

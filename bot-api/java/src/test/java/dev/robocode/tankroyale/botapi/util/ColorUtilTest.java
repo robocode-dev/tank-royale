@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.botapi.util;
 
 import dev.robocode.tankroyale.botapi.graphics.Color;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,6 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
+@DisplayName("TR-API-UTL-001 ColorUtil conversions")
 class ColorUtilTest {
 
     @Nested

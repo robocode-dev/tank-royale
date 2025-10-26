@@ -23,6 +23,11 @@ language-agnostic matrix of semantic tests that must be implemented identically 
     - Java: `XxxTest.java`, methods `test_<id>_<short_description>()` (use display names as helpful).
     - .NET: `XxxTest.cs`, methods `Test_<id>_<ShortDescription>()` (use `[Test]` and `TestCase`/`TestName` as needed).
     - Python: `test_xxx.py`, functions `test_<id>_<short_description>()`.
+- Per-language annotation/metadata to embed the canonical ID and title consistently:
+    - Java (JUnit 5): add `@DisplayName("TR-API-<ID> <short description>")` on the test class or methods as appropriate.
+    - .NET (NUnit): add `[Description("TR-API-<ID> <short description>")]` on the test class or methods as appropriate.
+    - Python (pytest): add a docstring whose first line is `TR-API-<ID> <short description>` at module or test-function
+      level.
 
 ---
 
