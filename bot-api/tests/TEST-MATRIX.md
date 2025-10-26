@@ -57,8 +57,19 @@ language-agnostic matrix of semantic tests that must be implemented identically 
 
 ### D. Bot lifecycle and configuration (BOT)
 
-- TR-API-BOT-001 BaseBot constructor: environment/config required vars read; errors for missing/invalid env; default
-  server URL/port.
+- TR-API-BOT-001 BaseBot constructor (umbrella): configuration via environment variables and (Java-only) System
+  properties; explicit args where applicable.
+    - TR-API-BOT-001a ENV read & defaults: with required vars present, constructor reads values; when absent, defaults (
+      server URL/port) are applied per Java reference. [Parity: Java/.NET/Python]
+    - TR-API-BOT-001b ENV validation: missing/invalid values produce clear errors/exceptions identical to Java
+      semantics (e.g., non-numeric or out-of-range ports, empty/whitespace-only values). [Parity: Java/.NET/Python]
+    - TR-API-BOT-001c Precedence: explicit args > Java System properties > ENV (confirm against Java reference;
+      .NET/Python verify explicit args > ENV). When multiple sources define the same key, the higher-precedence source
+      wins. [Parity: Java (full chain), .NET/Python (no Java properties)]
+    - TR-API-BOT-001d Type parsing/normalization: ints/bools parsed consistently; trimming/whitespace handling and case
+      normalization where applicable; deterministic error messages. [Parity: Java/.NET/Python]
+    - TR-API-BOT-001e Java System properties facet (Java-only): `-D` properties mirror ENV keys with the same
+      defaults/validation and precedence relative to ENV. [Parity: Java only]
 - TR-API-BOT-002 Connect/Disconnect: bot opens and closes connection; handshake messages are valid per schema.
 - TR-API-BOT-003 Start/Stop/Pause/Resume: correct state flags, idempotence, and event firing order.
 - TR-API-BOT-004 Error handling: on protocol error or server disconnect, bot transitions to safe state and surfaces
