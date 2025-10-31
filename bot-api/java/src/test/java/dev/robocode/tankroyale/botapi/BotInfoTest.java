@@ -1,6 +1,8 @@
 package dev.robocode.tankroyale.botapi;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -30,6 +32,35 @@ class BotInfoTest {
     static final String PLATFORM = " JVM 19 ";
     static final String PROGRAMMING_LANGUAGE = " Java 19 ";
     static final InitialPosition INITIAL_POSITION = InitialPosition.fromString("  10, 20, 30  ");
+
+    @Test
+    @DisplayName("TR-API-VAL-001 BotInfo required fields")
+    @Tag("VAL")
+    @Tag("TR-API-VAL-001")
+    void test_TR_API_VAL_001_required_fields() {
+        // Arrange
+        var name = "MyBot";
+        var version = "1.0";
+        var authors = List.of("Author 1", "Author 2");
+
+        // Act
+        var info = new BotInfo(name, version, authors,
+                null, null, null, null, null, null, null);
+
+        // Assert
+        assertThat(info.getName()).isEqualTo(name);
+        assertThat(info.getVersion()).isEqualTo(version);
+        assertThat(info.getAuthors()).isEqualTo(authors);
+
+        // Optional fields default/processing
+        assertThat(info.getDescription()).isNull();
+        assertThat(info.getHomepage()).isNull();
+        assertThat(info.getCountryCodes()).isEqualTo(getLocalCountryCodeAsList());
+        assertThat(info.getGameTypes()).isEmpty();
+        assertThat(info.getPlatform()).isEqualTo("Java Runtime Environment (JRE) " + System.getProperty("java.version"));
+        assertThat(info.getProgrammingLang()).isNull();
+        assertThat(info.getInitialPosition()).isNull();
+    }
 
     @Nested
     class NameTest {

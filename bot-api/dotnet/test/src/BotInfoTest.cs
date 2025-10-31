@@ -24,6 +24,36 @@ public class BotInfoTest
     static readonly string ProgrammingLang = " C# 11 ";
     static readonly InitialPosition InitialPosition = InitialPosition.FromString("  10, 20, 30  ");
 
+    [Test]
+    [Category("VAL")]
+    [Category("TR-API-VAL-001")]
+    [Description("TR-API-VAL-001 BotInfo required fields")]
+    public void Test_TR_API_VAL_001_Required_Fields()
+    {
+        // Arrange
+        var name = "MyBot";
+        var version = "1.0";
+        var authors = new List<string> { "Author 1", "Author 2" };
+
+        // Act
+        var info = new BotInfo(name, version, authors,
+            null, null, new List<string>(), new HashSet<string>(), null, null, null);
+
+        // Assert
+        Assert.That(info.Name, Is.EqualTo(name));
+        Assert.That(info.Version, Is.EqualTo(version));
+        Assert.That(info.Authors, Is.EqualTo(authors));
+
+        // Optional fields default/processing
+        Assert.That(info.Description, Is.Null);
+        Assert.That(info.Homepage, Is.Null);
+        Assert.That(info.CountryCodes, Is.EqualTo(new List<string> { GetLocalCountryCode() }));
+        Assert.That(info.GameTypes.Count, Is.EqualTo(0));
+        Assert.That(info.Platform, Is.EqualTo(PlatformUtil.GetPlatformName()));
+        Assert.That(info.ProgrammingLang, Is.Null);
+        Assert.That(info.InitialPosition, Is.Null);
+    }
+
     [TestFixture]
     public class NameTest : BotInfoTest
     {

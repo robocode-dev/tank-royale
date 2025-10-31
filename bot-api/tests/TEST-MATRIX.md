@@ -114,7 +114,7 @@ Notes:
 
 ### A. Value objects and constants (VAL)
 
-- TR-API-VAL-001 BotInfo required fields: constructing with minimal valid data sets defaults correctly; getters return
+- ✅ TR-API-VAL-001 BotInfo required fields: constructing with minimal valid data sets defaults correctly; getters return
   exact values.
 - TR-API-VAL-002 BotInfo validation: invalid fields (e.g., negative energy, invalid name) raise/throw as per Java
   reference semantics.
@@ -202,9 +202,9 @@ Notes:
 
 ### Parity execution plan
 
-1) Establish spec and matrix (this file).
-2) Build/refine test scaffolding (MockedServer & intent capture).
-3) Implement VAL/UTL/GFX.
+1) Establish spec and matrix (this file). ✅
+2) Build/refine test scaffolding (MockedServer & intent capture). ✅
+3) Implement VAL/UTL/GFX. (✅)
 4) Lifecycle & protocol.
 5) Command & tick semantics.
 6) Events.
