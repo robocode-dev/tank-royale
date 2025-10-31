@@ -147,7 +147,17 @@ class BotInfo:
     def _process_game_types(cls, game_types: Set[str]) -> Set[str]:
         if len(game_types) > cls.MAX_NUMBER_OF_GAME_TYPES:
             raise ValueError(f"'game_types' must not exceed {cls.MAX_NUMBER_OF_GAME_TYPES}")
-        return {game_type.strip() for game_type in game_types if game_type.strip()}
+        processed: Set[str] = set()
+        for gt in game_types:
+            if gt is None:
+                continue
+            s = gt.strip()
+            if not s:
+                continue
+            if len(s) > cls.MAX_GAME_TYPE_LENGTH:
+                raise ValueError(f"'game_type' length exceeds {cls.MAX_GAME_TYPE_LENGTH} characters")
+            processed.add(s)
+        return processed
 
     @classmethod
     def _process_platform(cls, platform: Optional[str]) -> str:
