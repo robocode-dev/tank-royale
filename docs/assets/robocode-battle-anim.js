@@ -1,1 +1,1 @@
-const o="/tank-royale/assets/robocode-battle-anim.gif";export{o as _};
+const o="/assets/robocode-battle-anim.gif";export{o as _};

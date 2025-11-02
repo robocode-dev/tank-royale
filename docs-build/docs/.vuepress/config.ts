@@ -8,7 +8,7 @@ export default defineUserConfig({
   title: 'Robocode Tank Royale Docs',
   description: 'Documentation for the programming game Robocode Tank Royale.',
 
-  base: '/tank-royale/',
+  base: '/',
   port: 8080,
   dest: 'build/docs',
 
