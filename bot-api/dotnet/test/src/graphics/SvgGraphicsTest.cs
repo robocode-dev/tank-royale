@@ -280,4 +280,40 @@ public class SvgGraphicsTest
         Assert.That(svg, Does.Contain("x2=\"30.789\" "));
         Assert.That(svg, Does.Contain("y2=\"40.988\" "));
     }
+
+    [Test]
+    [Category("GFX")]
+    [Property("ID", "TR-API-GFX-002")]
+    public void GivenAlphaStrokeAndFill_whenDrawing_thenHexWithAlphaIsEmitted()
+    {
+        // Stroke with alpha
+        _graphics.SetStrokeColor(Color.FromRgba(255, 0, 0, 128));
+        _graphics.SetStrokeWidth(2);
+        _graphics.DrawLine(1, 2, 3, 4);
+        var svg = _graphics.ToSvg();
+        Assert.That(svg, Does.Contain("stroke=\"#FF000080\" "));
+        Assert.That(svg, Does.Contain("stroke-width=\"2\" "));
+
+        // Fill with alpha
+        _graphics.Clear();
+        _graphics.SetFillColor(Color.FromRgba(0, 0, 255, 64));
+        _graphics.SetStrokeColor(Color.Black);
+        _graphics.FillRectangle(10, 20, 30, 40);
+        svg = _graphics.ToSvg();
+        Assert.That(svg, Does.Contain("fill=\"#0000FF40\" "));
+        Assert.That(svg, Does.Contain("stroke=\"#000000\" "));
+    }
+
+    [Test]
+    [Category("GFX")]
+    [Property("ID", "TR-API-GFX-002")]
+    public void GivenOnlyFillSet_whenDrawingOutline_thenFillIsNoneAndDefaultsUsed()
+    {
+        _graphics.SetFillColor(Color.Green);
+        _graphics.DrawRectangle(10, 20, 100, 50);
+        var svg = _graphics.ToSvg();
+        Assert.That(svg, Does.Contain("fill=\"none\" "));
+        Assert.That(svg, Does.Contain("stroke=\"#000000\" "));
+        Assert.That(svg, Does.Contain("stroke-width=\"1\" "));
+    }
 }

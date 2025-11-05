@@ -264,6 +264,39 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("y2=\"40.988\" "));
     }
 
+    @Test
+    public void test_TR_API_GFX_002_alpha_on_stroke_and_fill_is_applied_in_svg_attributes() {
+        // Stroke with alpha
+        graphics.setStrokeColor(Color.fromRgba(255, 0, 0, 128)); // semi-transparent red
+        graphics.setStrokeWidth(2);
+        graphics.drawLine(1, 2, 3, 4);
+        String svg = graphics.toSvg();
+        assertTrue(svg.contains("stroke=\"#FF000080\" "));
+        assertTrue(svg.contains("stroke-width=\"2\" "));
+
+        // Fill with alpha
+        graphics.clear();
+        graphics.setFillColor(Color.fromRgba(0, 0, 255, 64)); // semi-transparent blue
+        graphics.setStrokeColor(Color.BLACK);
+        graphics.fillRectangle(10, 20, 30, 40);
+        svg = graphics.toSvg();
+        assertTrue(svg.contains("fill=\"#0000FF40\" "));
+        assertTrue(svg.contains("stroke=\"#000000\" "));
+    }
+
+    @Test
+    public void test_TR_API_GFX_002_outline_shapes_ignore_fill_and_use_defaults_when_no_stroke_set() {
+        // Set only fill color and no explicit stroke
+        graphics.setFillColor(Color.GREEN);
+        graphics.drawRectangle(10, 20, 100, 50);
+        String svg = graphics.toSvg();
+        // Outline rectangle must not be filled even if a fill color was set earlier
+        assertTrue(svg.contains("fill=\"none\" "));
+        // Default stroke should be black with width 1 when no stroke state was set
+        assertTrue(svg.contains("stroke=\"#000000\" "));
+        assertTrue(svg.contains("stroke-width=\"1\" "));
+    }
+
     private int countOccurrences(String text, String pattern) {
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(text);

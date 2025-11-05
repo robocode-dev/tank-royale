@@ -178,6 +178,35 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('x2="30.789" ', svg)
         self.assertIn('y2="40.988" ', svg)
 
+    def test_TR_API_GFX_002_alpha_on_stroke_and_fill_is_applied(self):
+        """TR-API-GFX-002 SvgGraphics styles: stroke/fill/alpha apply as expected"""
+        # Stroke with alpha
+        self.graphics.set_stroke_color(Color.from_rgba(255, 0, 0, 128))
+        self.graphics.set_stroke_width(2)
+        self.graphics.draw_line(1, 2, 3, 4)
+        svg = self.graphics.to_svg()
+        self.assertIn('stroke="#FF000080" ', svg)
+        self.assertIn('stroke-width="2" ', svg)
+
+        # Fill with alpha
+        self.graphics.clear()
+        self.graphics.set_fill_color(Color.from_rgba(0, 0, 255, 64))
+        self.graphics.set_stroke_color(Color.from_rgb(0, 0, 0))
+        self.graphics.fill_rectangle(10, 20, 30, 40)
+        svg = self.graphics.to_svg()
+        self.assertIn('fill="#0000FF40" ', svg)
+        self.assertIn('stroke="#000000" ', svg)
+
+    def test_TR_API_GFX_002_outline_shapes_ignore_fill_and_default_stroke(self):
+        """TR-API-GFX-002 SvgGraphics styles: outline shapes not filled and default stroke applied"""
+        # Only fill set
+        self.graphics.set_fill_color(Color.from_rgb(0, 255, 0))
+        self.graphics.draw_rectangle(10, 20, 100, 50)
+        svg = self.graphics.to_svg()
+        self.assertIn('fill="none" ', svg)
+        self.assertIn('stroke="#000000" ', svg)
+        self.assertIn('stroke-width="1" ', svg)
+
 
 if __name__ == "__main__":
     unittest.main()
