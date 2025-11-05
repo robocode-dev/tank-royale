@@ -54,6 +54,38 @@ public class BotInfoTest
         Assert.That(info.InitialPosition, Is.Null);
     }
 
+    [Test]
+    [Category("VAL")]
+    [Category("TR-API-VAL-002")]
+    [Description("TR-API-VAL-002 BotInfo validation: invalid fields raise/throw")]
+    public void Test_TR_API_VAL_002_Invalid_Fields_Validation()
+    {
+        // Required non-blank name
+        var builder1 = PrefilledBuilder().SetName("   ");
+        var ex1 = Assert.Throws<ArgumentException>(() => builder1.Build());
+        Assert.That(ex1?.Message.ToLower().Contains("'name' cannot be null, empty or blank"), Is.True);
+
+        // Required non-blank version
+        var builder2 = PrefilledBuilder().SetVersion("\t ");
+        var ex2 = Assert.Throws<ArgumentException>(() => builder2.Build());
+        Assert.That(ex2?.Message.ToLower().Contains("'version' cannot be null, empty or blank"), Is.True);
+
+        // Max length name
+        var builder3 = PrefilledBuilder().SetName(StringOfLength(MaxNameLength + 1));
+        var ex3 = Assert.Throws<ArgumentException>(() => builder3.Build());
+        Assert.That(ex3?.Message.ToLower().Contains("'name' length exceeds"), Is.True);
+
+        // Authors rules: empty list
+        var builder4 = PrefilledBuilder().SetAuthors(new List<string>());
+        Assert.Throws<ArgumentException>(() => builder4.Build());
+
+        // Game type too long
+        var tooLongGameType = StringOfLength(MaxGameTypeLength + 1);
+        var builder5 = PrefilledBuilder().SetGameTypes(new HashSet<string> { tooLongGameType });
+        var ex5 = Assert.Throws<ArgumentException>(() => builder5.Build());
+        Assert.That(ex5?.Message.ToLower().Contains("'gameTypes".ToLower()), Is.True);
+    }
+
     [TestFixture]
     public class NameTest : BotInfoTest
     {

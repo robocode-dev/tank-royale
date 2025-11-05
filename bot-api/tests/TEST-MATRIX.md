@@ -116,7 +116,7 @@ Notes:
 
 - ✅ TR-API-VAL-001 BotInfo required fields: constructing with minimal valid data sets defaults correctly; getters return
   exact values.
-- TR-API-VAL-002 BotInfo validation: invalid fields (e.g., negative energy, invalid name) raise/throw as per Java
+- ✅ TR-API-VAL-002 BotInfo validation: invalid fields (e.g., negative energy, invalid name) raise/throw as per Java
   reference semantics.
 - TR-API-VAL-003 InitialPosition defaults: unspecified fields default to spec (e.g., random vs fixed optional fields);
   mapping consistency.

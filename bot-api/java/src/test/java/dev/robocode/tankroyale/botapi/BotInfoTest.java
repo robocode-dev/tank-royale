@@ -62,6 +62,37 @@ class BotInfoTest {
         assertThat(info.getInitialPosition()).isNull();
     }
 
+    @Test
+    @DisplayName("TR-API-VAL-002 BotInfo validation: invalid fields raise/throw")
+    @Tag("VAL")
+    @Tag("TR-API-VAL-002")
+    void test_TR_API_VAL_002_invalid_fields_validation() {
+        // Required non-blank name
+        var builder = prefilledBuilder().setName("   ");
+        var e1 = assertThrows(IllegalArgumentException.class, builder::build);
+        assertThat(e1.getMessage()).containsIgnoringCase("'name' cannot be null, empty or blank");
+
+        // Required non-blank version
+        var builder2 = prefilledBuilder().setVersion("\t ");
+        var e2 = assertThrows(IllegalArgumentException.class, builder2::build);
+        assertThat(e2.getMessage()).containsIgnoringCase("'version' cannot be null, empty or blank");
+
+        // Max lengths
+        var builder3 = prefilledBuilder().setName(stringOfLength(MAX_NAME_LENGTH + 1));
+        var e3 = assertThrows(IllegalArgumentException.class, builder3::build);
+        assertThat(e3.getMessage()).containsIgnoringCase("'name' length exceeds");
+
+        // Authors rules: empty list
+        var builder4 = prefilledBuilder().setAuthors(List.of());
+        assertThrows(IllegalArgumentException.class, builder4::build);
+
+        // Game type too long
+        var tooLongGameType = stringOfLength(MAX_GAME_TYPE_LENGTH + 1);
+        var builder5 = prefilledBuilder().setGameTypes(Set.of(tooLongGameType));
+        var e5 = assertThrows(IllegalArgumentException.class, builder5::build);
+        assertThat(e5.getMessage()).containsIgnoringCase("'gameTypes'");
+    }
+
     @Nested
     class NameTest {
         @Test
