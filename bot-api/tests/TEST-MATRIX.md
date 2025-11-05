@@ -118,9 +118,9 @@ Notes:
   exact values.
 - ✅ TR-API-VAL-002 BotInfo validation: invalid fields (e.g., negative energy, invalid name) raise/throw as per Java
   reference semantics.
-- TR-API-VAL-003 InitialPosition defaults: unspecified fields default to spec (e.g., random vs fixed optional fields);
+- ✅ TR-API-VAL-003 InitialPosition defaults: unspecified fields default to spec (e.g., random vs fixed optional fields);
   mapping consistency.
-- TR-API-VAL-004 InitialPosition mapping round-trip: `InitialPositionMapper` round-trips to/from schema JSON 1:1.
+- ✅ TR-API-VAL-004 InitialPosition mapping round-trip: `InitialPositionMapper` round-trips to/from schema JSON 1:1.
 - TR-API-VAL-005 Constants integrity: named constants exist and do not change unexpectedly (e.g., battlefield defaults,
   max/min values).
 - TR-API-VAL-006 Graphics Color: constructors, from-hex, to-hex, clamping, equality/hash.
