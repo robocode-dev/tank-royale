@@ -153,13 +153,25 @@ public class SvgGraphics : IGraphics
     /// </summary>
     public void DrawText(string text, double x, double y)
     {
+        var escaped = EscapeXmlText(text);
         _elements.Add($"<text " +
                       $"x=\"{Format(x)}\" " +
                       $"y=\"{Format(y)}\" " +
                       $"font-family=\"{_fontFamily}\" " +
                       $"font-size=\"{Format(_fontSize)}\" " +
                       $"fill=\"{_strokeColor}\" " +
-                      $">{text}</text>\n");
+                      $">{escaped}</text>\n");
+    }
+
+    private static string EscapeXmlText(string s)
+    {
+        if (s == null) return null;
+        // Ampersand first to avoid double-escaping
+        return s
+            .Replace("&", "&amp;")
+            .Replace("<", "&lt;")
+            .Replace(">", "&gt;")
+            .Replace("\"", "&quot;");
     }
 
     /// <summary>

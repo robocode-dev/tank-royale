@@ -181,6 +181,15 @@ public class SvgGraphicsTest {
     }
 
     @Test
+    public void test_TR_API_GFX_003_text_is_escaped_in_svg_output() {
+        graphics.setStrokeColor(Color.BLACK);
+        graphics.setFont("Arial", 12);
+        graphics.drawText("5 < 7 & \"quote\"", 10, 20);
+        String svg = graphics.toSvg();
+        assertTrue(svg.contains(">5 &lt; 7 &amp; &quot;quote&quot;</text>"));
+    }
+
+    @Test
     public void givenVariousElementsDrawn_whenToSvg_thenCountsMatch() {
         graphics.setStrokeColor(Color.RED);
         graphics.drawLine(10, 10, 20, 20);

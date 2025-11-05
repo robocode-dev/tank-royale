@@ -193,6 +193,18 @@ public class SvgGraphicsTest
     }
 
     [Test]
+    [Category("GFX")]
+    [Property("ID", "TR-API-GFX-003")]
+    public void GivenTextWithSpecialChars_whenDrawText_thenContentIsXmlEscaped()
+    {
+        _graphics.SetStrokeColor(Color.Black);
+        _graphics.SetFont("Arial", 12);
+        _graphics.DrawText("5 < 7 & \"quote\"", 10, 20);
+        var svg = _graphics.ToSvg();
+        Assert.That(svg, Does.Contain(">5 &lt; 7 &amp; &quot;quote&quot;</text>"));
+    }
+
+    [Test]
     public void GivenVariousElementsDrawn_whenToSvg_thenCountsMatch()
     {
         _graphics.SetStrokeColor(Color.Red);

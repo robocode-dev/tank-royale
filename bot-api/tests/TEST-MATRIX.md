@@ -137,7 +137,7 @@ Notes:
 
 - ✅ TR-API-GFX-001 SvgGraphics path basics: move/line/curve commands produce expected SVG fragments.
 - ✅ TR-API-GFX-002 SvgGraphics styles: stroke/fill/alpha apply as expected; state resets between shapes if defined by API.
-- TR-API-GFX-003 SvgGraphics text/images (if applicable): correct attributes and escaping.
+- ✅ TR-API-GFX-003 SvgGraphics text/images (if applicable): correct attributes and escaping.
 - TR-API-GFX-004 IGraphics contract: drawing primitives map to the same resulting SVG across languages for identical
   sequences.
 

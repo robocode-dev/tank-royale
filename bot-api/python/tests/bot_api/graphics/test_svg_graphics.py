@@ -128,6 +128,14 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('fill="#0000FF"', svg)
         self.assertIn(">Hello World</text>", svg)
 
+    def test_TR_API_GFX_003_text_is_escaped_in_svg_output(self):
+        """TR-API-GFX-003 SvgGraphics text: correct attributes and escaping"""
+        self.graphics.set_stroke_color(Color.from_rgb(0, 0, 0))
+        self.graphics.set_font("Arial", 12)
+        self.graphics.draw_text('5 < 7 & "quote"', 10, 20)
+        svg = self.graphics.to_svg()
+        self.assertIn(">5 &lt; 7 &amp; &quot;quote&quot;</text>", svg)
+
     def test_given_various_elements_drawn_when_to_svg_then_counts_match(self):
         self.graphics.set_stroke_color(Color.from_rgb(255, 0, 0))
         self.graphics.draw_line(10, 10, 20, 20)

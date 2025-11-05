@@ -133,9 +133,10 @@ class SvgGraphicsABC(GraphicsABC):
             x: The x coordinate where to draw the text.
             y: The y coordinate where to draw the text.
         """
+        escaped = _escape_xml_text(text)
         self._elements.append(
             f"<text x=\"{_fmt(x)}\" y=\"{_fmt(y)}\" font-family=\"{self._font_family}\" "
-            f"font-size=\"{_fmt(self._font_size)}\" fill=\"{self._stroke_color}\">{text}</text>\n"
+            f"font-size=\"{_fmt(self._font_size)}\" fill=\"{self._stroke_color}\">{escaped}</text>\n"
         )
 
     # State setters
@@ -198,6 +199,18 @@ def _fmt(value: float) -> str:
     if "." in s:
         s = s.rstrip("0").rstrip(".")
     return s
+
+
+def _escape_xml_text(s: str) -> str:
+    if s is None:
+        return None
+    # Ampersand first to avoid double-escaping
+    return (
+        s.replace("&", "&amp;")
+         .replace("<", "&lt;")
+         .replace(">", "&gt;")
+         .replace('"', "&quot;")
+    )
 
 
 def _to_hex(color: Color) -> str:
