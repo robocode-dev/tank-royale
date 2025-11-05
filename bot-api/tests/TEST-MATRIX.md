@@ -131,7 +131,7 @@ Notes:
 - ✅ TR-API-UTL-001 ColorUtil conversions: RGB↔HSV (and others if present) within tolerance; invalid input handling.
 - ✅ TR-API-UTL-002 JsonUtil serialization: canonical formatting for API DTOs; schema compliance for all message types used
   by the API.
-- TR-API-UTL-003 CountryCode utility: detection/normalization per ISO list; error handling.
+- ✅ TR-API-UTL-003 CountryCode utility: detection/normalization per ISO list; error handling.
 
 ### C. Graphics API (GFX)
 
