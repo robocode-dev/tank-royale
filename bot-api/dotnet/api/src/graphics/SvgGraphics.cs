@@ -159,8 +159,8 @@ public class SvgGraphics : IGraphics
                       $"y=\"{Format(y)}\" " +
                       $"font-family=\"{_fontFamily}\" " +
                       $"font-size=\"{Format(_fontSize)}\" " +
-                      $"fill=\"{_strokeColor}\" " +
-                      $">{escaped}</text>\n");
+                      $"fill=\"{_strokeColor}\">" +
+                      $"{escaped}</text>\n");
     }
 
     private static string EscapeXmlText(string s)
@@ -213,13 +213,13 @@ public class SvgGraphics : IGraphics
     public string ToSvg()
     {
         var svg = new StringBuilder();
-        svg.AppendLine("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 5000 5000\">");
+        svg.Append("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 5000 5000\">\n");
         foreach (var element in _elements)
         {
             svg.Append(element);
         }
 
-        svg.AppendLine("</svg>");
+        svg.Append("</svg>\n");
         return svg.ToString();
     }
 

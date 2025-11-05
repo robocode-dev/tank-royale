@@ -215,6 +215,28 @@ class TestSvgGraphics(unittest.TestCase):
         self.assertIn('stroke="#000000" ', svg)
         self.assertIn('stroke-width="1" ', svg)
 
+    def test_TR_API_GFX_004_identical_sequences_produce_identical_svg(self):
+        """TR-API-GFX-004 IGraphics contract: identical sequences yield identical SVG"""
+        g = SvgGraphics()
+        g.set_stroke_color(Color.from_rgb(255, 0, 0))  # RED
+        g.set_stroke_width(2)
+        g.draw_line(10, 20, 30, 40)
+        g.set_fill_color(Color.from_rgb(0, 0, 255))  # BLUE
+        g.set_stroke_color(Color.from_rgb(0, 0, 0))  # BLACK
+        g.set_stroke_width(1)
+        g.fill_circle(100, 100, 50)
+        g.set_font("Verdana", 24)
+        g.draw_text("Hello", 200, 300)
+
+        expected = (
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5000 5000">\n'
+            '<line x1="10" y1="20" x2="30" y2="40" stroke="#FF0000" stroke-width="2" />\n'
+            '<circle cx="100" cy="100" r="50" fill="#0000FF" stroke="#000000" stroke-width="1" />\n'
+            '<text x="200" y="300" font-family="Verdana" font-size="24" fill="#000000">Hello</text>\n'
+            '</svg>\n'
+        )
+        self.assertEqual(expected, g.to_svg())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -306,6 +306,29 @@ public class SvgGraphicsTest {
         assertTrue(svg.contains("stroke-width=\"1\" "));
     }
 
+    @Test
+    public void test_TR_API_GFX_004_identical_sequences_produce_identical_svg() {
+        // TR-API-GFX-004 IGraphics contract: identical sequences yield identical SVG
+        SvgGraphics g = new SvgGraphics();
+        g.setStrokeColor(Color.RED);
+        g.setStrokeWidth(2);
+        g.drawLine(10, 20, 30, 40);
+        g.setFillColor(Color.BLUE);
+        g.setStrokeColor(Color.BLACK);
+        g.setStrokeWidth(1);
+        g.fillCircle(100, 100, 50);
+        g.setFont("Verdana", 24);
+        g.drawText("Hello", 200, 300);
+
+        String expected = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 5000 5000\">\n" +
+                "<line x1=\"10\" y1=\"20\" x2=\"30\" y2=\"40\" stroke=\"#FF0000\" stroke-width=\"2\" />\n" +
+                "<circle cx=\"100\" cy=\"100\" r=\"50\" fill=\"#0000FF\" stroke=\"#000000\" stroke-width=\"1\" />\n" +
+                "<text x=\"200\" y=\"300\" font-family=\"Verdana\" font-size=\"24\" fill=\"#000000\">Hello</text>\n" +
+                "</svg>\n";
+
+        assertEquals(expected, g.toSvg());
+    }
+
     private int countOccurrences(String text, String pattern) {
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(text);

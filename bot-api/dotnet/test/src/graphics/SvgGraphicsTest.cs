@@ -188,7 +188,7 @@ public class SvgGraphicsTest
         Assert.That(svg, Does.Contain("y=\"200\" "));
         Assert.That(svg, Does.Contain("font-family=\"Verdana\" "));
         Assert.That(svg, Does.Contain("font-size=\"24\" "));
-        Assert.That(svg, Does.Contain("fill=\"#0000FF\" "));
+        Assert.That(svg, Does.Contain("fill=\"#0000FF\""));
         Assert.That(svg, Does.Contain(">Hello World</text>"));
     }
 
@@ -327,5 +327,30 @@ public class SvgGraphicsTest
         Assert.That(svg, Does.Contain("fill=\"none\" "));
         Assert.That(svg, Does.Contain("stroke=\"#000000\" "));
         Assert.That(svg, Does.Contain("stroke-width=\"1\" "));
+    }
+    
+    [Test]
+    [Category("GFX")]
+    [Property("ID", "TR-API-GFX-004")]
+    public void GivenIdenticalSequences_whenToSvg_thenExactSvgMatchesExpected()
+    {
+        var g = new SvgGraphics();
+        g.SetStrokeColor(Color.Red);
+        g.SetStrokeWidth(2);
+        g.DrawLine(10, 20, 30, 40);
+        g.SetFillColor(Color.Blue);
+        g.SetStrokeColor(Color.Black);
+        g.SetStrokeWidth(1);
+        g.FillCircle(100, 100, 50);
+        g.SetFont("Verdana", 24);
+        g.DrawText("Hello", 200, 300);
+
+        var expected = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 5000 5000\">\n" +
+                       "<line x1=\"10\" y1=\"20\" x2=\"30\" y2=\"40\" stroke=\"#FF0000\" stroke-width=\"2\" />\n" +
+                       "<circle cx=\"100\" cy=\"100\" r=\"50\" fill=\"#0000FF\" stroke=\"#000000\" stroke-width=\"1\" />\n" +
+                       "<text x=\"200\" y=\"300\" font-family=\"Verdana\" font-size=\"24\" fill=\"#000000\">Hello</text>\n" +
+                       "</svg>\n";
+
+        Assert.That(g.ToSvg(), Is.EqualTo(expected));
     }
 }
