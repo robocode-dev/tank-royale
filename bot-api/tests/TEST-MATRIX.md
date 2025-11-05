@@ -121,15 +121,15 @@ Notes:
 - ✅ TR-API-VAL-003 InitialPosition defaults: unspecified fields default to spec (e.g., random vs fixed optional fields);
   mapping consistency.
 - ✅ TR-API-VAL-004 InitialPosition mapping round-trip: `InitialPositionMapper` round-trips to/from schema JSON 1:1.
-- TR-API-VAL-005 Constants integrity: named constants exist and do not change unexpectedly (e.g., battlefield defaults,
+- ✅ TR-API-VAL-005 Constants integrity: named constants exist and do not change unexpectedly (e.g., battlefield defaults,
   max/min values).
-- TR-API-VAL-006 Graphics Color: constructors, from-hex, to-hex, clamping, equality/hash.
-- TR-API-VAL-007 Graphics Point: creation, equality/hash, basic vector ops if exposed.
+- ✅ TR-API-VAL-006 Graphics Color: constructors, from-hex, to-hex, clamping, equality/hash.
+- ✅ TR-API-VAL-007 Graphics Point: creation, equality/hash, basic vector ops if exposed.
 
 ### B. Utilities (UTL)
 
-- TR-API-UTL-001 ColorUtil conversions: RGB↔HSV (and others if present) within tolerance; invalid input handling.
-- TR-API-UTL-002 JsonUtil serialization: canonical formatting for API DTOs; schema compliance for all message types used
+- ✅ TR-API-UTL-001 ColorUtil conversions: RGB↔HSV (and others if present) within tolerance; invalid input handling.
+- ✅ TR-API-UTL-002 JsonUtil serialization: canonical formatting for API DTOs; schema compliance for all message types used
   by the API.
 - TR-API-UTL-003 CountryCode utility: detection/normalization per ISO list; error handling.
 
