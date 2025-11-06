@@ -356,15 +356,15 @@ class BaseBotInternals:
         await self.closed_event.wait()
 
     async def execute(self) -> None:
-        if not self.data.is_running:
+        current_tick = self.data.current_tick_or_null
+        # If no tick has been received yet, send current intent once to allow the server to progress
+        if current_tick is None:
+            await self._send_intent()
             return
 
-        current_tick = self.data.current_tick_or_throw  # Throws if not available
         turn_number = current_tick.turn_number
-
         if turn_number != self.last_execute_turn_number:
             self.last_execute_turn_number = turn_number
-
             # Events are dispatched from BaseBot.go(); staging happens on tick reception
             await self._send_intent()
         await self._wait_for_next_turn(turn_number)

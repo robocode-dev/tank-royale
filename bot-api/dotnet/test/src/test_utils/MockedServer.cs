@@ -79,6 +79,8 @@ public class MockedServer
 
     private BotIntent _botIntent;
     
+    public BotIntent BotIntent => _botIntent;
+    
 
     public void Start()
     {

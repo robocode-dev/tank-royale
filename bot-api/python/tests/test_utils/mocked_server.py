@@ -1,6 +1,7 @@
 import asyncio
 import threading
 import socket
+import time
 from typing import Optional, Set, List
 
 import websockets
@@ -93,6 +94,7 @@ class MockedServer:
 
         # sync primitives
         self._opened_event = threading.Event()
+        self._server_started_event = threading.Event()
         self._bot_handshake_event = threading.Event()
         self._game_started_event = threading.Event()
         self._tick_event = threading.Event()
@@ -123,12 +125,21 @@ class MockedServer:
         self._loop = asyncio.new_event_loop()
         self._thread = threading.Thread(target=self._run_loop, daemon=True)
         self._thread.start()
+        # Wait until the server is accepting connections to avoid race conditions
+        self._server_started_event.wait(timeout=2.0)
 
     def _run_loop(self) -> None:
         assert self._loop is not None
         asyncio.set_event_loop(self._loop)
-        self._server = websockets.serve(self._handler, "127.0.0.1", self._port)
-        self._loop.run_until_complete(self._server)
+
+        async def _start_server():
+            # Create the server inside a running event loop context
+            self._server = await websockets.serve(self._handler, "127.0.0.1", self._port)
+            # Signal that the server is ready to accept connections
+            self._server_started_event.set()
+
+        # Start the server while the loop is running
+        self._loop.run_until_complete(_start_server())
         self._loop.run_forever()
 
     def stop(self) -> None:
@@ -275,63 +286,78 @@ class MockedServer:
         self._bot_intent_continue_event.clear()
 
     async def _send_server_handshake(self, websocket) -> None:
-        msg = ServerHandshake()
-        msg.type = "ServerHandshake"
-        msg.session_id = self.session_id
-        msg.name = self.name
-        msg.version = self.version
-        msg.variant = self.variant
-        msg.game_types = list(self.game_types)
-        msg.game_setup = None
+        # Build ServerHandshake using required constructor args per generated schema
+        msg = ServerHandshake(
+            session_id=self.session_id,
+            variant=self.variant,
+            version=self.version,
+            game_types=list(self.game_types),
+            type=Message.Type.SERVER_HANDSHAKE,
+            name=self.name,
+            game_setup=None,
+        )
         await websocket.send(to_json(msg))
 
     async def _send_game_started(self, websocket) -> None:
-        evt = GameStartedEventForBot()
-        evt.type = "GameStartedEventForBot"
-        evt.my_id = self.my_id
-
-        gs = GameSetup()
-        gs.game_type = self.game_type
-        gs.arena_width = self.arena_width
-        gs.arena_height = self.arena_height
-        gs.number_of_rounds = self.number_of_rounds
-        gs.gun_cooling_rate = self.gun_cooling_rate
-        gs.max_inactivity_turns = self.max_inactivity_turns
-        gs.turn_timeout = self.turn_timeout
-        gs.ready_timeout = self.ready_timeout
-        evt.game_setup = gs
-
+        # Build GameSetup with required constructor params; use unlocked flags and defaults
+        gs = GameSetup(
+            game_type=self.game_type,
+            arena_width=self.arena_width,
+            is_arena_width_locked=False,
+            arena_height=self.arena_height,
+            is_arena_height_locked=False,
+            min_number_of_participants=2,
+            is_min_number_of_participants_locked=False,
+            is_max_number_of_participants_locked=False,
+            number_of_rounds=self.number_of_rounds,
+            is_number_of_rounds_locked=False,
+            gun_cooling_rate=self.gun_cooling_rate,
+            is_gun_cooling_rate_locked=False,
+            max_inactivity_turns=self.max_inactivity_turns,
+            is_max_inactivity_turns_locked=False,
+            turn_timeout=self.turn_timeout,
+            is_turn_timeout_locked=False,
+            ready_timeout=self.ready_timeout,
+            is_ready_timeout_locked=False,
+            default_turns_per_second=30,
+            max_number_of_participants=None,
+        )
+        # Build GameStartedEventForBot
+        evt = GameStartedEventForBot(
+            my_id=self.my_id,
+            game_setup=gs,
+            type=Message.Type.GAME_STARTED_EVENT_FOR_BOT,
+            start_x=None,
+            start_y=None,
+            start_direction=None,
+            teammate_ids=None,
+        )
         await websocket.send(to_json(evt))
 
     async def _send_round_started(self, websocket) -> None:
-        evt = RoundStartedEvent()
-        evt.type = "RoundStartedEvent"
-        evt.round_number = 1
+        evt = RoundStartedEvent(
+            round_number=1,
+            type=Message.Type.ROUND_STARTED_EVENT,
+        )
         await websocket.send(to_json(evt))
 
     async def _send_tick(self, websocket, turn_number: int) -> None:
-        tick = TickEventForBot()
-        tick.type = "TickEventForBot"
-        tick.round_number = 1
-        tick.turn_number = turn_number
-
-        # Base state
-        state = SchemaBotState()
-        state.energy = self._energy
-        state.x = self.bot_x
-        state.y = self.bot_y
-        state.direction = self._direction
-        state.gun_direction = self._gun_direction
-        state.radar_direction = self._radar_direction
-        state.radar_sweep = self.bot_radar_sweep
-        state.speed = self._speed
-        # turn rates default then overridden by intent values if present
-        state.turn_rate = self.bot_turn_rate
-        state.gun_turn_rate = self.bot_gun_turn_rate
-        state.radar_turn_rate = self.bot_radar_turn_rate
-        state.gun_heat = self._gun_heat
-        state.enemy_count = self.bot_enemy_count
-        tick.bot_state = state
+        # Build bot state
+        state = SchemaBotState(
+            energy=self._energy,
+            x=self.bot_x,
+            y=self.bot_y,
+            direction=self._direction,
+            gun_direction=self._gun_direction,
+            radar_direction=self._radar_direction,
+            radar_sweep=self.bot_radar_sweep,
+            speed=self._speed,
+            turn_rate=self.bot_turn_rate,
+            gun_turn_rate=self.bot_gun_turn_rate,
+            radar_turn_rate=self.bot_radar_turn_rate,
+            gun_heat=self._gun_heat,
+            enemy_count=self.bot_enemy_count,
+        )
 
         # Override turn rates from intent (if any)
         if self._bot_intent is not None:
@@ -348,40 +374,50 @@ class MockedServer:
         # Bullet states example
         b1 = self._create_bullet_state(1)
         b2 = self._create_bullet_state(2)
-        tick.bullet_states = [b1, b2]
+        bullet_states = [b1, b2]
 
         # Events
         events: List[object] = []
-        scanned = ScannedBotEvent()
-        scanned.type = "ScannedBotEvent"
-        scanned.direction = 45.0
-        scanned.x = 134.56
-        scanned.y = 256.7
-        scanned.energy = 56.9
-        scanned.speed = 9.6
-        scanned.turn_number = 1
-        scanned.scanned_bot_id = 2
-        scanned.scanned_by_bot_id = 1
+        scanned = ScannedBotEvent(
+            scanned_by_bot_id=1,
+            scanned_bot_id=2,
+            energy=56.9,
+            x=134.56,
+            y=256.7,
+            direction=45.0,
+            speed=9.6,
+            turn_number=1,
+            type=Message.Type.SCANNED_BOT_EVENT,
+        )
         events.append(scanned)
 
         fp = getattr(self._bot_intent, "firepower", None) if self._bot_intent is not None else None
         if fp is not None:
-            bullet_evt = SchemaBulletFiredEvent()
-            bullet_evt.type = "BulletFiredEvent"
-            bullet_evt.bullet = self._create_bullet_state(99)
+            bullet_evt = SchemaBulletFiredEvent(
+                bullet=self._create_bullet_state(99),
+                turn_number=1,
+                type=Message.Type.BULLET_FIRED_EVENT,
+            )
             events.append(bullet_evt)
 
-        tick.events = events
+        tick = TickEventForBot(
+            round_number=1,
+            bot_state=state,
+            bullet_states=bullet_states,
+            events=events,
+            turn_number=turn_number,
+            type=Message.Type.TICK_EVENT_FOR_BOT,
+        )
 
         await websocket.send(to_json(tick))
 
     @staticmethod
     def _create_bullet_state(bid: int) -> SchemaBulletState:
-        b = SchemaBulletState()
-        b.bullet_id = bid
-        b.x = 0.0
-        b.y = 0.0
-        b.owner_id = 0
-        b.direction = 0.0
-        b.power = 0.0
-        return b
+        return SchemaBulletState(
+            bullet_id=bid,
+            owner_id=0,
+            power=0.0,
+            x=0.0,
+            y=0.0,
+            direction=0.0,
+        )

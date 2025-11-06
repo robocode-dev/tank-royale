@@ -301,14 +301,19 @@ sealed class BaseBotInternals
 
     internal void Execute()
     {
-        if (!IsRunning)
+        // Allow Execute() to be called outside the bot run thread (e.g., tests invoking Go())
+        // If no tick has been received yet (e.g., immediately after GameStarted), send current intent once
+        // so the server can proceed to the first tick. This mirrors Java behavior.
+        if (CurrentTickOrNull == null)
+        {
+            SendIntent();
             return;
+        }
 
         var turnNumber = CurrentTickOrThrow.TurnNumber;
         if (turnNumber != _lastExecuteTurnNumber)
         {
             _lastExecuteTurnNumber = turnNumber;
-
             SendIntent();
         }
 
@@ -340,7 +345,8 @@ sealed class BaseBotInternals
 
     private void RenderGraphicsToBotIntent()
     {
-        if (CurrentTickOrThrow.BotState.IsDebuggingEnabled)
+        var currentTick = CurrentTickOrNull;
+        if (currentTick != null && currentTick.BotState.IsDebuggingEnabled)
         {
             BotIntent.DebugGraphics = _graphicsState.GetSvgOutput();
             _graphicsState.Clear();

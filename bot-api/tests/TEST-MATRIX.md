@@ -121,7 +121,8 @@ Notes:
 - ✅ TR-API-VAL-003 InitialPosition defaults: unspecified fields default to spec (e.g., random vs fixed optional fields);
   mapping consistency.
 - ✅ TR-API-VAL-004 InitialPosition mapping round-trip: `InitialPositionMapper` round-trips to/from schema JSON 1:1.
-- ✅ TR-API-VAL-005 Constants integrity: named constants exist and do not change unexpectedly (e.g., battlefield defaults,
+- ✅ TR-API-VAL-005 Constants integrity: named constants exist and do not change unexpectedly (e.g., battlefield
+  defaults,
   max/min values).
 - ✅ TR-API-VAL-006 Graphics Color: constructors, from-hex, to-hex, clamping, equality/hash.
 - ✅ TR-API-VAL-007 Graphics Point: creation, equality/hash, basic vector ops if exposed.
@@ -129,31 +130,33 @@ Notes:
 ### B. Utilities (UTL)
 
 - ✅ TR-API-UTL-001 ColorUtil conversions: RGB↔HSV (and others if present) within tolerance; invalid input handling.
-- ✅ TR-API-UTL-002 JsonUtil serialization: canonical formatting for API DTOs; schema compliance for all message types used
+- ✅ TR-API-UTL-002 JsonUtil serialization: canonical formatting for API DTOs; schema compliance for all message types
+  used
   by the API.
 - ✅ TR-API-UTL-003 CountryCode utility: detection/normalization per ISO list; error handling.
 
 ### C. Graphics API (GFX)
 
 - ✅ TR-API-GFX-001 SvgGraphics path basics: move/line/curve commands produce expected SVG fragments.
-- ✅ TR-API-GFX-002 SvgGraphics styles: stroke/fill/alpha apply as expected; state resets between shapes if defined by API.
+- ✅ TR-API-GFX-002 SvgGraphics styles: stroke/fill/alpha apply as expected; state resets between shapes if defined by
+  API.
 - ✅ TR-API-GFX-003 SvgGraphics text/images (if applicable): correct attributes and escaping.
 - ✅ TR-API-GFX-004 IGraphics contract: drawing primitives map to the same resulting SVG across languages for identical
   sequences.
 
 ### D. Bot lifecycle and configuration (BOT)
 
-- TR-API-BOT-001 BaseBot constructor (umbrella): configuration via environment variables and (Java-only) System
+- ✅ TR-API-BOT-001 BaseBot constructor (umbrella): configuration via environment variables and (Java-only) System
   properties; explicit args where applicable.
-    - ✅ TR-API-BOT-001a ENV read & defaults: with required vars present, constructor reads values; when absent, defaults (
-      server URL/port) are applied per Java reference. [Parity: Java/.NET/Python]
+    - ✅ TR-API-BOT-001a ENV read & defaults: with required vars present, constructor reads values; when absent,
+      defaults (server URL/port) are applied per Java reference. [Parity: Java/.NET/Python]
     - ✅ TR-API-BOT-001b ENV validation: missing/invalid values produce clear errors/exceptions identical to Java
       semantics (e.g., non-numeric or out-of-range ports, empty/whitespace-only values). [Parity: Java/.NET/Python]
     - ✅ TR-API-BOT-001c Precedence: explicit args > Java System properties > ENV (confirm against Java reference;
       .NET/Python verify explicit args > ENV). When multiple sources define the same key, the higher-precedence source
       wins. [Parity: Java (full chain), .NET/Python (no Java properties)]
-    - ✅ TR-API-BOT-001d Type parsing/normalization: ints/bools parsed consistently; trimming/whitespace handling and case
-      normalization where applicable; deterministic error messages. [Parity: Java/.NET/Python]
+    - ✅ TR-API-BOT-001d Type parsing/normalization: ints/bools parsed consistently; trimming/whitespace handling and
+      case normalization where applicable; deterministic error messages. [Parity: Java/.NET/Python]
     - ✅ TR-API-BOT-001e Java System properties facet (Java-only): `-D` properties mirror ENV keys with the same
       defaults/validation and precedence relative to ENV. [Parity: Java only]
 - TR-API-BOT-002 Connect/Disconnect: bot opens and closes connection; handshake messages are valid per schema.
@@ -163,7 +166,7 @@ Notes:
 
 ### E. Commands (CMD)
 
-- TR-API-CMD-001 Movement commands: setting target speed/turn rates updates the next tick’s intent payload exactly as
+- ✅ TR-API-CMD-001 Movement commands: setting target speed/turn rates updates the next tick’s intent payload exactly as
   per spec.
 - TR-API-CMD-002 Fire command: power bounds enforced; resulting intent serializes correctly; cooldown respected if
   applicable.
