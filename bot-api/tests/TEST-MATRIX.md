@@ -145,9 +145,9 @@ Notes:
 
 - TR-API-BOT-001 BaseBot constructor (umbrella): configuration via environment variables and (Java-only) System
   properties; explicit args where applicable.
-    - TR-API-BOT-001a ENV read & defaults: with required vars present, constructor reads values; when absent, defaults (
+    - ✅ TR-API-BOT-001a ENV read & defaults: with required vars present, constructor reads values; when absent, defaults (
       server URL/port) are applied per Java reference. [Parity: Java/.NET/Python]
-    - TR-API-BOT-001b ENV validation: missing/invalid values produce clear errors/exceptions identical to Java
+    - ✅ TR-API-BOT-001b ENV validation: missing/invalid values produce clear errors/exceptions identical to Java
       semantics (e.g., non-numeric or out-of-range ports, empty/whitespace-only values). [Parity: Java/.NET/Python]
     - TR-API-BOT-001c Precedence: explicit args > Java System properties > ENV (confirm against Java reference;
       .NET/Python verify explicit args > ENV). When multiple sources define the same key, the higher-precedence source
