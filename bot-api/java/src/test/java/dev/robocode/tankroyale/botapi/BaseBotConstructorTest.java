@@ -23,6 +23,8 @@ import static test_utils.EnvironmentVariables.*;
 @ExtendWith(SystemStubsExtension.class)
 class BaseBotConstructorTest extends AbstractBotTest {
 
+    private static final String SERVER_URL_PROPERTY_KEY = "server.url";
+
     static class TestBot extends BaseBot {
 
         TestBot() {
@@ -167,6 +169,37 @@ class BaseBotConstructorTest extends AbstractBotTest {
         } catch (Exception e) {
             assertThat(e).isInstanceOf(BotException.class);
             assertThat(e.getMessage()).startsWith("Wrong scheme used with server URL");
+        }
+    }
+
+    @Test
+    void test_TR_API_BOT_001c_precedence_explicit_args_over_env_and_sysprop() throws Exception {
+        // ENV set to invalid port
+        envVars.set(SERVER_URL, "ws://localhost:" + (MockedServer.PORT + 1));
+        // System property set to invalid as well
+        System.setProperty(SERVER_URL_PROPERTY_KEY, "ws://localhost:" + (MockedServer.PORT + 2));
+        try {
+            // Explicit arg should win and connect to MockedServer.PORT
+            var bot = new TestBot(null, new URI("ws://localhost:" + MockedServer.PORT));
+            startAsync(bot);
+            assertThat(server.awaitConnection(5000)).isTrue();
+        } finally {
+            System.clearProperty(SERVER_URL_PROPERTY_KEY);
+        }
+    }
+
+    @Test
+    void test_TR_API_BOT_001c_precedence_sysprop_over_env_when_no_explicit_arg() {
+        // ENV set to invalid port
+        envVars.set(SERVER_URL, "ws://localhost:" + (MockedServer.PORT + 1));
+        // System property set to valid port
+        System.setProperty(SERVER_URL_PROPERTY_KEY, "ws://localhost:" + MockedServer.PORT);
+        try {
+            var bot = new TestBot(); // no explicit args
+            startAsync(bot);
+            assertThat(server.awaitConnection(5000)).isTrue();
+        } finally {
+            System.clearProperty(SERVER_URL_PROPERTY_KEY);
         }
     }
 }
