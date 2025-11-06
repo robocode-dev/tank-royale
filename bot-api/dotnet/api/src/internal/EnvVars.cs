@@ -214,7 +214,9 @@ static class EnvVars
     internal static int? GetTeamId()
     {
         var teamId = Environment.GetEnvironmentVariable(TeamId);
-        return teamId != null ? int.Parse(teamId) : null;
+        if (teamId == null) return null;
+        teamId = teamId.Trim();
+        return teamId.Length == 0 ? (int?)null : int.Parse(teamId);
     }
 
     /// <summary>

@@ -201,7 +201,9 @@ final class EnvVars {
      */
     static Integer getTeamId() {
         String teamId = System.getenv(TEAM_ID);
-        return teamId != null ? Integer.parseInt(teamId) : null;
+        if (teamId == null) return null;
+        teamId = teamId.trim();
+        return teamId.isEmpty() ? null : Integer.parseInt(teamId);
     }
 
     /**

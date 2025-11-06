@@ -227,6 +227,9 @@ class EnvVars:
             Optional[int]: The team ID, or None if not set.
         """
         team_id = os.getenv(EnvVars.TeamId)
+        if team_id is None:
+            return None
+        team_id = team_id.strip()
         return int(team_id) if team_id else None
 
     @staticmethod

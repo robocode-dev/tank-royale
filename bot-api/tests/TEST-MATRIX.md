@@ -152,7 +152,7 @@ Notes:
     - ✅ TR-API-BOT-001c Precedence: explicit args > Java System properties > ENV (confirm against Java reference;
       .NET/Python verify explicit args > ENV). When multiple sources define the same key, the higher-precedence source
       wins. [Parity: Java (full chain), .NET/Python (no Java properties)]
-    - TR-API-BOT-001d Type parsing/normalization: ints/bools parsed consistently; trimming/whitespace handling and case
+    - ✅ TR-API-BOT-001d Type parsing/normalization: ints/bools parsed consistently; trimming/whitespace handling and case
       normalization where applicable; deterministic error messages. [Parity: Java/.NET/Python]
     - TR-API-BOT-001e Java System properties facet (Java-only): `-D` properties mirror ENV keys with the same
       defaults/validation and precedence relative to ENV. [Parity: Java only]
