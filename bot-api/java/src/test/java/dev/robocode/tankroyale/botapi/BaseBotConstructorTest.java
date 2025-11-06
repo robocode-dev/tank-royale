@@ -160,6 +160,21 @@ class BaseBotConstructorTest extends AbstractBotTest {
         assertThat(botHandshake.getSecret()).isEqualTo(secret);
     }
 
+    @Test
+    void test_TR_API_BOT_001e_java_system_properties_facet_server_secret_via_sysprop() {
+        var secret = UUID.randomUUID().toString();
+        System.setProperty("server.secret", secret);
+        try {
+            var bot = new TestBot(); // no explicit args; secret via -Dserver.secret
+            startAsync(bot);
+            awaitBotHandshake();
+            var botHandshake = server.getBotHandshake();
+            assertThat(botHandshake.getSecret()).isEqualTo(secret);
+        } finally {
+            System.clearProperty("server.secret");
+        }
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"file", "dict", "ftp", "gopher"})
     void givenUnknownScheme_whenCallingConstructor_thenThrowException(String scheme) throws Exception {

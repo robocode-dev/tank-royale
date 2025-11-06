@@ -154,7 +154,7 @@ Notes:
       wins. [Parity: Java (full chain), .NET/Python (no Java properties)]
     - ✅ TR-API-BOT-001d Type parsing/normalization: ints/bools parsed consistently; trimming/whitespace handling and case
       normalization where applicable; deterministic error messages. [Parity: Java/.NET/Python]
-    - TR-API-BOT-001e Java System properties facet (Java-only): `-D` properties mirror ENV keys with the same
+    - ✅ TR-API-BOT-001e Java System properties facet (Java-only): `-D` properties mirror ENV keys with the same
       defaults/validation and precedence relative to ENV. [Parity: Java only]
 - TR-API-BOT-002 Connect/Disconnect: bot opens and closes connection; handshake messages are valid per schema.
 - TR-API-BOT-003 Start/Stop/Pause/Resume: correct state flags, idempotence, and event firing order.
