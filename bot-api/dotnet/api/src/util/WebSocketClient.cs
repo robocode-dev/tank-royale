@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using System.NET.WebSockets;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Robocode.TankRoyale.BotApi.Util;
 
 /// <summary>
-/// Client WebSocket class based on ClientWebSocket from System.NET.WebSockets which provides these delegate methods:
+/// Client WebSocket class based on ClientWebSocket from System.Net.WebSockets which provides these delegate methods:
 /// OnMessage(string message) and OnError(Exception ex). No need to call ReceiveAsync() in order to receive data.
 /// </summary>
 class WebSocketClient

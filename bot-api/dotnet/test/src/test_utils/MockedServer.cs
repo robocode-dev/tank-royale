@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.NET;
-using System.NET.Sockets;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using Fleck;
 using Robocode.TankRoyale.BotApi.Internal.Json;
