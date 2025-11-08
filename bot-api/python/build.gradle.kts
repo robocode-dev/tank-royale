@@ -19,6 +19,7 @@ val setupVenv by tasks.registering(Exec::class) {
         commandLine("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "scripts/create-venv.ps1")
     } else {
         commandLine("bash", "scripts/create-venv.sh")
+        workingDir = file(projectDir)
     }
 }
 
