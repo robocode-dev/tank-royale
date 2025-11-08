@@ -35,7 +35,7 @@ These sample bots are currently available:
 | Platform | Archive                            | Requirements                    |
 |----------|------------------------------------|---------------------------------|
 | Python   | [sample-bots-python-{VERSION}.zip] | [Python] 3.10 or newer          |
-| C#       | [sample-bots-csharp-{VERSION}.zip] | Microsoft [.Net SDK] 8 or newer |
+| C#       | [sample-bots-csharp-{VERSION}.zip] | Microsoft [.NET SDK] 8 or newer |
 | Java     | [sample-bots-java-{VERSION}.zip]   | Any [Java SDK] 11 or newer      |
 
 All bots are put in zip archives, which should be installed in independent directories.
@@ -59,7 +59,7 @@ Available as:
 - Maven package at
   the [Maven Central Repository](https://central.sonatype.com/artifact/dev.robocode.tankroyale/robocode-tankroyale-bot-api/{VERSION})
 
-#### 📦 .Net:
+#### 📦 .NET:
 
 Available as:
 
@@ -75,7 +75,7 @@ Available as:
 
 [Python]: https://www.python.org/downloads/ "Python downloads"
 
-[.Net SDK]: https://dotnet.microsoft.com/en-us/download/dotnet ".Net SDK"
+[.NET SDK]: https://dotnet.microsoft.com/en-us/download/dotnet ".NET SDK"
 
 [Java SDK]: https://robocode-dev.github.io/tank-royale/articles/installation.html#java-11-or-newer "Java SDK"
 

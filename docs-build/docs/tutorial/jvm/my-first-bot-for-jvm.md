@@ -268,7 +268,7 @@ bots-secrets=zDuQrkCLQU5VQgytofkNrQ
 
 Here, the value of `bot-secrets` (e.g., `zDuQrkCLQU5VQgytofkNrQ`) is the secret your bot must supply.
 
-A simple way to set the bot secret for the Java and .Net bot APIs is to set the environment variable `BOT_SECRETS` in
+A simple way to set the bot secret for the Java and .NET bot APIs is to set the environment variable `BOT_SECRETS` in
 the shell before running the bot:
 
 Mac/Linux bash/shell:

@@ -204,8 +204,8 @@ class EnvVarsTest
             [Test]
             public void GivenValidEnvVar_whenCallingGetPlatform_thenReturnedPlatformIsTheSame()
             {
-                SetEnvVar(BotPlatform, ".Net");
-                Assert.That(EnvVars.GetBotInfo().Platform, Is.EqualTo(".Net"));
+                SetEnvVar(BotPlatform, ".NET");
+                Assert.That(EnvVars.GetBotInfo().Platform, Is.EqualTo(".NET"));
             }
 
             [Test]

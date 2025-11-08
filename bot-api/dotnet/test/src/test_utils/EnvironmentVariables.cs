@@ -26,7 +26,7 @@ public static class EnvironmentVariables
         SetEnvVar(BotDescription, "Short description");
         SetEnvVar(BotHomepage, "https://testbot.robocode.dev");
         SetEnvVar(BotCountryCodes, "gb, us");
-        SetEnvVar(BotPlatform, ".Net 6");
+        SetEnvVar(BotPlatform, ".NET 6");
         SetEnvVar(BotProgrammingLang, "C# 10");
         SetEnvVar(BotInitialPosition, "50,50, 90");
     }

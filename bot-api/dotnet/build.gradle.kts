@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import kotlin.text.lowercase
 
-description = "Robocode Tank Royale Bot API for .Net"
+description = "Robocode Tank Royale Bot API for .NET"
 
 val artifactName = "Robocode.TankRoyale.BotApi"
 version = libs.versions.tankroyale.get()

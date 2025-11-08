@@ -19,7 +19,7 @@ A specific sample bot like e.g. Corners or Walls must work the same way between 
 
 #### Prefer running the bots from source files
 
-Sample bots for C#/.Net and Java/JVM are provided as source files instead of binary versions. The reasons are:
+Sample bots for C#/.NET and Java/JVM are provided as source files instead of binary versions. The reasons are:
 
 - Making it easy and quick to make modifications to a bot using a text editor without a compiler or IDE.
 - Keeping the size of the sample archive as small using source files instead of pre-compiled binary files.

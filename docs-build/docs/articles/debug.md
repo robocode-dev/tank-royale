@@ -6,7 +6,7 @@ Here follows some information about [print debugging] your bot using print state
 
 One easy way to debug your bot is to run it from the command line and put some print statements into your code to write
 out debugging information into the command line via stdin and/or stderr. With Java/JVM, you will typically use
-[System.out.println()], [SLF4J] or [Log4j], and for .Net you'll typically use [Console.WriteLine()] or use [Logging].
+[System.out.println()], [SLF4J] or [Log4j], and for .NET you'll typically use [Console.WriteLine()] or use [Logging].
 
 To see how a bot is started up you can have a look at the sample bots and examine the script files. How your robot is
 started depends on the programming language and platform you are using. But here follows some examples of what to write
@@ -20,7 +20,7 @@ java -cp ../lib/* MyFirstBot.java
 
 Here `../lib/*` assumes the `robocode-tankroyale-bot-api-x.y.z.jar` is located in the `lib` directory.
 
-#### .Net
+#### .NET
 
 ```shell
 dotnet run
@@ -88,7 +88,7 @@ determine if a virtual bullet would have hit an enemy if it were real, which hel
 For drawing objects in Robocode, the methods differ depending on the Bot API variant you're using:
 
 - Java: Use the `getGraphics()` method, which returns a `java.awt.Graphics2D` instance for painting objects.
-- .Net: Use the `Graphics` property, which provides a `System.Drawing.Graphics` compatible instance for drawing.
+- .NET: Use the `Graphics` property, which provides a `System.Drawing.Graphics` compatible instance for drawing.
 
 The sample bot, **PaintingBot**, showcases how to effectively use debugging graphics. Every tick, it paints a red circle
 at the most recent location where it scanned another bot.
@@ -106,7 +106,7 @@ at the most recent location where it scanned another bot.
 
 [System.out.println()]: https://www.geeksforgeeks.org/system-out-println-in-java/ "Print debugging in Java"
 
-[Console.WriteLine()]: https://docs.microsoft.com/en-us/dotnet/api/system.console.writeline?view=net-6.0 "Print debugging in .Net"
+[Console.WriteLine()]: https://docs.microsoft.com/en-us/dotnet/api/system.console.writeline?view=net-6.0 "Print debugging in .NET"
 
 [SLF4J]: https://www.slf4j.org/ "Simple Logging Facade for Java (SLF4J)"
 

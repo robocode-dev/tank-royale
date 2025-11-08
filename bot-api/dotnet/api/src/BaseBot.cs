@@ -45,7 +45,7 @@ public abstract class BaseBot : IBaseBot
     /// <li>BOT_HOMEPAGE=https://somewhere.net/MyBot</li>
     /// <li>BOT_COUNTRY_CODES=us</li>
     /// <li>BOT_GAME_TYPES=melee,1v1</li>
-    /// <li>BOT_PLATFORM=.Net 6.0</li>
+    /// <li>BOT_PLATFORM=.NET 6.0</li>
     /// <li>BOT_PROG_LANG=C# 10.0</li>
     /// <li>BOT_INITIAL_POS=50,70, 270</li>
     /// </ul>

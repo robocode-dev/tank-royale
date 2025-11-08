@@ -89,7 +89,7 @@ The .NET Bot API works with **.NET 8** or higher on all supported platforms.
 
 ## Development Status
 
-🚧 **Work in Progress**: The .Net Bot API is currently under active development. Features and APIs may change before
+🚧 **Work in Progress**: The .NET Bot API is currently under active development. Features and APIs may change before
 the stable release.
 
 ## License

@@ -74,7 +74,7 @@ booter will try to locate a shell script file (.sh file) with the name _BotName_
 to locate a command script file (.cmd file) with the name _BotName_.cmd.
 
 The script should contain the necessary command for running a bot. For Java-based bots, the `java` command can be used
-for running a bot, and for a .Net-based bot the `dotnet` command can be used for running the bot.
+for running a bot, and for a .NET-based bot the `dotnet` command can be used for running the bot.
 
 The assumption here is the command(s) used within the scripts are available on the local machine running the bots.
 Hence, it is a good idea to provide a ReadMe file that describes the required commands that must be installed to run the
@@ -86,7 +86,7 @@ All bot directories must contain a [JSON] file, which is basically a description
 
 For example, the bot MyFirstBot is accompanied by a **MyFirstBot.json** file.
 
-MyFirstBot.json for .Net:
+MyFirstBot.json for .NET:
 
 ```json{2-7}
 {
@@ -102,7 +102,7 @@ MyFirstBot.json for .Net:
     "us",
     "dk"
   ],
-  "platform": ".Net 6.0",
+  "platform": ".NET 6.0",
   "programmingLang": "C# 10.0",
   "initialPosition": "50,50, 90"
 }
@@ -124,7 +124,7 @@ Meaning of each field in the JSON file:
 - `description`: is a brief description of the bot.
 - `homepage`: is a link to a web page for the bot.
 - `countryCodes`: is a list containing [Alpha-2] country codes, representing the country of each author and/or bot.
-- `platform`: is the platform required for running the bot, e.g. Java 17 or .Net 8.
+- `platform`: is the platform required for running the bot, e.g. Java 17 or .NET 8.
 - `programmingLang`: is the programming language used for programming the bot, e.g. C# or Kotlin.
 - `gameTypes`: is a comma-separated list containing the [game types](game_types.md) that the bot is supporting, meaning
   that it should

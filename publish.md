@@ -28,7 +28,7 @@ Publish to staging, close, and release in one go:
 ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
 ```
 
-## .Net archives (Nuget)
+## .NET archives (Nuget)
 
 Enter the release folder:
 

@@ -6,7 +6,7 @@
   "description": "description",
   "homepage": "https://testbot.robocode.dev",
   "countryCodes": ["gb", "US"],
-  "platform": ".Net 6",
+  "platform": ".NET 6",
   "programmingLang": "C# 10",
   "initialPosition": "10,20, 30"
 }

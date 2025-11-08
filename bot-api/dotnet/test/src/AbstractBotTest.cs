@@ -22,7 +22,7 @@ public class AbstractBotTest
         .AddGameType("classic")
         .AddGameType("1v1")
         .AddGameType("melee")
-        .SetPlatform(".Net 6")
+        .SetPlatform(".NET 6")
         .SetProgrammingLang("C# 10")
         .SetInitialPosition(InitialPosition.FromString("10, 20, 30"))
         .Build();

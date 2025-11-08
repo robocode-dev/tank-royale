@@ -31,9 +31,9 @@ and contributions from the community.
 
 ## Robocode Tank Royale
 
-The original Robocode runs entirely on Java, where robots musts be made for the Java platform. At some point, a .Net
-plugin was available for supporting .Net bots. However, this plugin was hard to maintain, and used a .Net bridge to
-convert robot commands written in .Net into code executed in Java.
+The original Robocode runs entirely on Java, where robots musts be made for the Java platform. At some point, a .NET
+plugin was available for supporting .NET bots. However, this plugin was hard to maintain, and used a .NET bridge to
+convert robot commands written in .NET into code executed in Java.
 
 In addition, a Java security manager is needed as bots runs in the same process inside the Java virtual machine, but
 should

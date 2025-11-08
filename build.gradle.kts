@@ -169,7 +169,7 @@ tasks {
         description = "Builds a release"
         dependsOn(
             "bot-api:java:assemble",     // Bot API for Java VM
-            "bot-api:dotnet:assemble",   // Bot API for .Net
+            "bot-api:dotnet:assemble",   // Bot API for .NET
             "booter:assemble",           // Booter (for booting up bots locally)
             "server:assemble",           // Server
             "gui:assemble",              // GUI

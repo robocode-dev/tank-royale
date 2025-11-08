@@ -28,9 +28,9 @@ all the tools for macOS and Linux as well.
   [Oracle JDK 11](https://www.oracle.com/uk/java/technologies/javase/jdk11-archive-downloads.html) or
 - [Eclipse Temurin JDK 11](https://adoptium.net/temurin/releases/?version=11)
 
-### .Net platform
+### .NET platform
 
-- [.Net 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - [DocFX](https://dotnet.github.io/docfx/)
 
 ### Documentation

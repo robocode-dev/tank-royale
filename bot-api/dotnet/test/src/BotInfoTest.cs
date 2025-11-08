@@ -20,7 +20,7 @@ public class BotInfoTest
     static readonly string Homepage = " https://testbot.robocode.dev ";
     static readonly List<string> CountryCodes = new() { " gb ", "  US " };
     static readonly ISet<string> GameTypes = new HashSet<string> { " classic ", " melee ", " 1v1 " };
-    static readonly string Platform = " .Net 6 ";
+    static readonly string Platform = " .NET 6 ";
     static readonly string ProgrammingLang = " C# 11 ";
     static readonly InitialPosition InitialPosition = InitialPosition.FromString("  10, 20, 30  ");
 

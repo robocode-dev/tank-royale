@@ -1,4 +1,4 @@
-description = "Robocode Tank Royale schema for .Net"
+description = "Robocode Tank Royale schema for .NET"
 
 plugins {
     base

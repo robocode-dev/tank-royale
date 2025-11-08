@@ -1,6 +1,6 @@
-# Sample bots for C# / .Net
+# Sample bots for C# / .NET
 
-This module contains sample bots for Robocode Tank Royale developed for the C# programming language and .Net platform.
+This module contains sample bots for Robocode Tank Royale developed for the C# programming language and .NET platform.
 
 ## Build commands
 

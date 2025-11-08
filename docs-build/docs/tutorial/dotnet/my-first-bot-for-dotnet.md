@@ -1,20 +1,20 @@
-# My First Bot for .Net
+# My First Bot for .NET
 
 ## Introduction
 
-This tutorial is meant for the .Net platform and a continuation of [My First Bot](../my-first-bot.md) tutorial.
+This tutorial is meant for the .NET platform and a continuation of [My First Bot](../my-first-bot.md) tutorial.
 
-The programming language used in this tutorial is [C#], which is a very popular programming language for .Net. But other
-.Net programming languages like [Visual Basic] and [F#] can be used as well.
+The programming language used in this tutorial is [C#], which is a very popular programming language for .NET. But other
+.NET programming languages like [Visual Basic] and [F#] can be used as well.
 
-This tutorial assumes you are already familiar with basic [C#] and [.Net] programming. But this tutorial should suit
-well for practising your skills programming for .Net in C# by making a bot for Robocode.
+This tutorial assumes you are already familiar with basic [C#] and [.NET] programming. But this tutorial should suit
+well for practising your skills programming for .NET in C# by making a bot for Robocode.
 
 ## Programming
 
-### .Net API
+### .NET API
 
-The documentation of the .Net API for Robocode Tank Royale is available on [this page](../../api/apis.md).
+The documentation of the .NET API for Robocode Tank Royale is available on [this page](../../api/apis.md).
 
 ### Create a source file
 
@@ -207,7 +207,7 @@ bot.
 Most parts of this file are static content. But these fields need attention:
 
 - `RootNamespace` should contain the exact class name of your bot.
-- `TargetFramework` tells what .Net version your bot requires for running.
+- `TargetFramework` tells what .NET version your bot requires for running.
 - `LangVersion` is the C# version
 - `Version` for the `PackageReference` for the *Robocode.TankRoyale.BotApi* must use the version of the API the bot is
   built for.
@@ -237,7 +237,7 @@ command line. But those files are also necessary for booting up the bot from Rob
 files when examining the bot directory and figure out how to run the bot. The script files tell the [booter] of Robocode
 how to start the bot, which is different for each programming language, platform, and OS.
 
-With .Net it is possible to run your bot under Windows, macOS, and Linux. Hence, it is a good idea to provide script
+With .NET it is possible to run your bot under Windows, macOS, and Linux. Hence, it is a good idea to provide script
 files for all these OSes, which mean that we should provide a [command file][.cmd] for Windows, and
 a [shell script][.sh] for macOS and Linux.
 
@@ -302,7 +302,7 @@ bots-secrets=zDuQrkCLQU5VQgytofkNrQ
 
 Here, the value of `bot-secrets` (e.g., `zDuQrkCLQU5VQgytofkNrQ`) is the secret your bot must supply.
 
-A simple way to set the bot secret for the Java and .Net bot APIs is to set the environment variable `BOT_SECRETS` in
+A simple way to set the bot secret for the Java and .NET bot APIs is to set the environment variable `BOT_SECRETS` in
 the shell before running the bot:
 
 Mac/Linux bash/shell:
@@ -333,7 +333,7 @@ and `BaseBot` constructors.
 
 [Visual Basic]: https://docs.microsoft.com/en-us/dotnet/visual-basic/ "Visual Basic documentation"
 
-[.Net]: https://dotnet.microsoft.com/en-us/ ".Net homepage"
+[.NET]: https://dotnet.microsoft.com/en-us/ ".NET homepage"
 
 [IDE]: https://en.wikipedia.org/wiki/Integrated_development_environment "Integrated development environment"
 

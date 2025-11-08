@@ -157,12 +157,12 @@ If you are using `Color` and the `getGraphics()` method or `Graphics` property, 
 - Avoid using platform-specific features and frameworks that are not compatible across all platforms and operating
   systems.
 - Enhance the speed of SVG serialization, reduce RAM usage, and decrease distribution archive sizes.
-- Standardize the API for debug painting across all Bot APIs (Java, .Net, Python, etc.).
+- Standardize the API for debug painting across all Bot APIs (Java, .NET, Python, etc.).
 
 **Specific Updates:**
 
 - **Java:** A new package `dev.robocode.tankroyale.botapi.graphics` has been introduced.
-- **.Net:** A new namespace `Robocode.TankRoyale.BotApi.Graphics` has been introduced.
+- **.NET:** A new namespace `Robocode.TankRoyale.BotApi.Graphics` has been introduced.
 
 **Additional Information:**
 
@@ -175,7 +175,7 @@ If you are using `Color` and the `getGraphics()` method or `Graphics` property, 
     - #144: .NET bots run only on Windows since 0.30.0.
         - SvgNet requires `System.Drawing`, which is not available on Linux and macOS. Hence, the new Robocode specific
           `IGraphics` interface must be used instead.
-    - Fixed the generated bot Bash scripts for .Net so `dotnet build` will be called if the `bin` folder is missing.
+    - Fixed the generated bot Bash scripts for .NET so `dotnet build` will be called if the `bin` folder is missing.
 - GUI:
     - Fixed multiple issues with the "No bot directory root has been configured" error dialog.
 
@@ -219,7 +219,7 @@ This version provides bug fixes to the sample bots only.
 
 **Graphical debugging**, known from the original game, has been implemented using SVG with the [JSVG] library. This
 allows you to paint graphics objects on the battlefield while the game is running, making it easier to visualize
-elements such as estimated target positions. This feature is available for both the Java API and .Net API.
+elements such as estimated target positions. This feature is available for both the Java API and .NET API.
 
 #### Java API
 
@@ -229,10 +229,10 @@ elements such as estimated target positions. This feature is available for both 
 - Thanks also to [Jannis Weis](https://github.com/weisJ) for providing [JSVG] and helping fix an issue with using the
   correct libraries for JSVG. Make sure to [buy him a coffee](https://buymeacoffee.com/weisj). 😊
 
-#### .Net API
+#### .NET API
 
 - Get a `SvnNet.SvgGraphics` context for painting by using the `Graphics` getter.
-- The .Net API uses the [SvgNet](https://github.com/managed-commons/SvgNet) library. The `SvgGraphics` is context used
+- The .NET API uses the [SvgNet](https://github.com/managed-commons/SvgNet) library. The `SvgGraphics` is context used
   similarly to
   [System.Drawing.Graphics](https://learn.microsoft.com/en-us/dotnet/api/system.drawing.graphics?view=windowsdesktop-6.0).
 
@@ -320,7 +320,7 @@ This version fixes various issues, some found when running legacy bots with the 
 
 ### 🚀 Improvements
 
-- Bot API for .Net:
+- Bot API for .NET:
     - Improved performance of event handling by replacing `ImmutableList` and `ImmutableHashSet` with `List` and
       `HashSet` protected with `lock` blocks.
 - Bot API for Java:
@@ -339,7 +339,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - #119: Battle was not starting on Windows 11 and 10 after installing Docker Linux subsystem.
     - Bridged bots run multiple threads after round 2 due to old thread(s) hanging that could not be stopped.
     - Bridged bots could not be restarted as they got a connection error with the WebSocket when restarting.
-    - .Net bots sometimes exited when running at max speed without any exceptions occurring.
+    - .NET bots sometimes exited when running at max speed without any exceptions occurring.
 
 ## 📦 0.26.1 - Various bug fixes - 03-Nov-2024
 
@@ -548,7 +548,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - Added `stop(boolean overwrite)` and `setStop(boolean overwrite)` to overwrite the saved movement from a previous
       call to `setStop()` with current movement values. These methods provide backwards compatibility with the original
       Robocode with the [Robocode API Bridge] (in progress).
-    - Due to the removal of Java's `Thread.kill()` and .Net's `Thread.Abort()`, the main thread of the bot is no longer
+    - Due to the removal of Java's `Thread.kill()` and .NET's `Thread.Abort()`, the main thread of the bot is no longer
       being killed by those methods is those threads could not be interrupted. Instead, the bot process it shut down
       with an error message:
       `The thread of the bot could not be interrupted causing the bot to hang. So the bot was stopped by force.`
@@ -633,7 +633,7 @@ This version fixes various issues, some found when running legacy bots with the 
 - Server:
     - Allow bots to connect to non-localhost addresses (PR [#69]).
 - Bot API:
-    - Fixed broken unit test for .Net.
+    - Fixed broken unit test for .NET.
 - GUI:
     - Fixed issue, where the battle graphics was not displayed when starting the battle.
     - Fixed calculation of 1st, 2nd, and 3rd places.
@@ -677,7 +677,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - The properties `sun.java2d.d3d`, `sun.java2d.noddraw`, and `sun.java2d.opengl` is now omitted under macOS.
     - Fixed label colors for fields showing country codes (with flags).
     - Sometimes flags were "empty" when clicking on a joined bot.
-- Bot API for .Net:
+- Bot API for .NET:
     - Issue where the `Game Types` field was overwritten by `Country Codes` (could be seen on the UI).
 
 ## 📦 0.19.0 - Added bot console windows - 28-Jan-2023
@@ -722,7 +722,7 @@ This version fixes various issues, some found when running legacy bots with the 
       been set explicitly on the API.~~
     - Reading the turn rates and target speed for the current turn did not reflect if the turn rate and/or target speed
       had been set for the current turn.
-- Bot API for .Net:
+- Bot API for .NET:
     - Setting the max speed and max turn rates for the body, gun, and radar did not work.
 - GUI:
     - Fixed rendering issues on Windows (and Linux?) when using accelerated hardware, by setting these Java properties
@@ -737,7 +737,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - `addCondition()` and `removeCondition()` now returns a boolean value instead of void.
     - Condition can take an optional lambda expression as an input parameter as an alternative to overriding the test()
       method.
-    - Added more test units, which did show bugs within the Bot API for both Java and .Net.
+    - Added more test units, which did show bugs within the Bot API for both Java and .NET.
     - The event priority order was reversed to match the order used with the original Robocode.
 
 ## 📦 0.17.4 - Maintenance - 16-Oct-2022
@@ -1003,7 +1003,7 @@ Bot info:
 
 ### 🐞 Bug Fixes
 
-- Bot API for .Net:
+- Bot API for .NET:
     - Setting Bot.TargetSpeed did not set the distance to travel.
     - Fixed issue with turning the body, gun, and radar as first and only thing ([#22], [#23]).
     - Fixed issue with event queue reaching max after bot has terminated execution ([#23]).
@@ -1017,8 +1017,8 @@ Bot info:
 - Bot APIs:
     - Fixed issue with rescanning and interrupting current event handler. Redesigned the event queue.
     - Fixed issue with dangling threads not been stopped (interrupted) correctly.
-- Bot API for .Net:
-    - Fixed issue with country codes (on macOS) which also caused boot up problems for .Net based bots running under
+- Bot API for .NET:
+    - Fixed issue with country codes (on macOS) which also caused boot up problems for .NET based bots running under
       macOS ([#20]).
     - Fixed issue with bots stopping doing actions when battle is restarted. E.g. the Corners sample bot was affected by
       this issue.
@@ -1030,12 +1030,12 @@ Bot info:
 - Sample bots:
     - Optimized TrackFire after fixing rescanning issue.
 
-## 📦 0.13.0 - Bot API for .Net 6 - 03-May-2022
+## 📦 0.13.0 - Bot API for .NET 6 - 03-May-2022
 
 #### Changes
 
 - Bot API:
-    - Upgraded the .Net version of the bot API for .Net 6.0 as .Net 5.0 is soon EOL.
+    - Upgraded the .NET version of the bot API for .NET 6.0 as .NET 5.0 is soon EOL.
     - The id was removed from `BotResults`, and `GameEndedEvent` will only return a single `BotResult` containing
       the battle results for the bot (instead of a list containing results from all bots).
     - Added setting and getting 'adjusting radar for body turn'.
@@ -1113,7 +1113,7 @@ Bot info:
 - Fixes for building Java artifacts to deploy to Maven artifactory.
 - Bot API:
     - Replaced the environment variable BOT_URL (deprecated) with BOT_HOMEPAGE.
-- Bot API for .Net:
+- Bot API for .NET:
     - Added missing public Bot(BotInfo, Uri, string serverSecret) constructor.
 
 #### Changes
@@ -1147,8 +1147,8 @@ Bot info:
   does not need `sudo`)
 - Bot APIs: Moved constants to a Constants class.
 - Bot APIs: Introduced a Color class for representing colors.
-- Bot API for .Net: Some Set/Get methods were refactored into properties for e.g. speed, turn rates, and colors.
-- Bot API for .Net: Lots of optimizations were made.
+- Bot API for .NET: Some Set/Get methods were refactored into properties for e.g. speed, turn rates, and colors.
+- Bot API for .NET: Lots of optimizations were made.
 
 ### 🚀 Improvements
 

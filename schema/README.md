@@ -72,7 +72,7 @@ Controllers are used for sending _control commands_ to the server e.g. for stopp
 The protocol of Robocode Tank Royale is used for communication over [WebSocket], which is a computer communications
 protocol based on [RFC 6455], providing full-duplex communication channels over a single TCP connection.
 
-The [WebSocket] is supported by lots of platforms like Java and .Net, but also JavaScript.  And WebSocket is also based on am RFC standard, which is the primary reason why this communication protocol has been chosen for Robocode Tank Royale.
+The [WebSocket] is supported by lots of platforms like Java and .NET, but also JavaScript.  And WebSocket is also based on am RFC standard, which is the primary reason why this communication protocol has been chosen for Robocode Tank Royale.
 
 ### Using JSON as message format
 
