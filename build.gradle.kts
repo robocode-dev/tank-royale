@@ -46,6 +46,12 @@ subprojects {
         }
     }
 
+    // Set Java compile encoding to UTF-8 for all subprojects
+    // Yes, it must be done!
+    tasks.withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
+
     // Common publishing configuration for all subprojects with maven-publish plugin
     plugins.withId("maven-publish") {
         apply(plugin = "signing")
