@@ -1,10 +1,7 @@
 {
-  "name": "robocode-tank-royale-devcontainer",
-  "image":"mcr.microsoft.com/devcontainers/universal:2.5.2-linux",
-  "features": {
-    "ghcr.io/devcontainers/features/dotnet:1": {
-      "version": "6"
-    }
+  "name": "Multi-SDK Development for Robocode Tank Royale",
+  "build": {
+    "dockerfile": "Dockerfile"
   },
-  "postCreateCommand": "sh .devcontainer/post-create.sh"
+  "remoteUser": "devuser"
 }
