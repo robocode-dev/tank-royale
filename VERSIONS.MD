@@ -1,9 +1,13 @@
 ## 📦 ???
 
+### 🚀 Improvements
+
 - GUI
     - #174: Prevent overwriting UI scale property (`sun.java2d.uiScale`) for high DPI displays if already set (via
       command line). Thanks goes to [David Martinez Peña](https://github.com/martinezpenya) 👍
         - Fixed for the `sun.java2d.d3d` and `sun.java2d.opengl` as well. 
+
+- Updated the devcontainer so it uses the current and full tech stack necessary to build all of Robocode Tank Royale. 
 
 ## 📦 0.34.0 – Python Support + GUI Improvements – 19-Oct-2025
 
