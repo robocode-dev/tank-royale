@@ -263,11 +263,14 @@ public class MockedServer
 
                 SendGameStartedForBot(conn);
                 _gameStartedEvent.Set();
+                // Immediately send a tick event after game start to guarantee tick for all tests
+                SendTickEventForBot(conn, _turnNumber++);
+                _tickEvent.Set();
                 break;
 
             case MessageType.BotReady:
                 SendRoundStarted(conn);
-
+                // Existing tick event logic remains
                 SendTickEventForBot(conn, _turnNumber++);
                 _tickEvent.Set();
                 break;

@@ -6,6 +6,7 @@ from typing import Optional, Set, List
 
 import websockets
 
+
 from robocode_tank_royale.bot_api.internal.json_util import to_json, from_json
 from robocode_tank_royale.schema import (
     Message,
@@ -108,7 +109,7 @@ class MockedServer:
         # server/loop/thread
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._thread: Optional[threading.Thread] = None
-        self._server: Optional[websockets.server.Serve] = None
+        self._server: Optional[websockets.serve] = None
 
     @property
     def server_url(self) -> str:
@@ -133,7 +134,7 @@ class MockedServer:
         asyncio.set_event_loop(self._loop)
 
         async def _start_server():
-            # Create the server inside a running event loop context
+            # Create the server inside a running event loop context using modern API
             self._server = await websockets.serve(self._handler, "127.0.0.1", self._port)
             # Signal that the server is ready to accept connections
             self._server_started_event.set()
@@ -215,6 +216,8 @@ class MockedServer:
         self._opened_event.set()
         await self._send_server_handshake(websocket)
 
+        movement_reset_pending = False
+
         try:
             async for msg in websocket:
                 message: Message = from_json(msg)  # type: ignore
@@ -223,7 +226,6 @@ class MockedServer:
                 if msg_type == "BotHandshake":
                     self.handshake = message
                     self._bot_handshake_event.set()
-
                     await self._send_game_started(websocket)
                     self._game_started_event.set()
 
@@ -232,6 +234,7 @@ class MockedServer:
                     await self._send_tick(websocket, self._turn_number)
                     self._turn_number += 1
                     self._tick_event.set()
+                    movement_reset_pending = True  # defer movement reset until after first intent
 
                 elif msg_type == "BotIntent":
                     # Enforce limits (pre intent/state update)
@@ -239,17 +242,14 @@ class MockedServer:
                         continue
                     if self._speed_max_limit is not None and self._speed > self._speed_max_limit:
                         continue
-
                     if self._direction_min_limit is not None and self._direction < self._direction_min_limit:
                         continue
                     if self._direction_max_limit is not None and self._direction > self._direction_max_limit:
                         continue
-
                     if self._gun_direction_min_limit is not None and self._gun_direction < self._gun_direction_min_limit:
                         continue
                     if self._gun_direction_max_limit is not None and self._gun_direction > self._gun_direction_max_limit:
                         continue
-
                     if self._radar_direction_min_limit is not None and self._radar_direction < self._radar_direction_min_limit:
                         continue
                     if self._radar_direction_max_limit is not None and self._radar_direction > self._radar_direction_max_limit:
@@ -271,9 +271,23 @@ class MockedServer:
                     self._gun_direction += self._gun_turn_increment
                     self._radar_direction += self._radar_turn_increment
 
+                    # Only reset movement after first intent following round start
+                    if movement_reset_pending:
+                        self._reset_movement_commands()
+                        movement_reset_pending = False
+
         except websockets.exceptions.ConnectionClosed:
             # client closed connection
             pass
+
+    def _reset_movement_commands(self):
+        # This should match the Java/.NET logic
+        if self._bot_intent:
+            self._bot_intent.turn_rate = None
+            self._bot_intent.gun_turn_rate = None
+            self._bot_intent.radar_turn_rate = None
+            self._bot_intent.target_speed = None
+            self._bot_intent.firepower = None
 
     async def _wait_for_intent_continue(self) -> None:
         # Bridge threading.Event into asyncio loop
