@@ -220,7 +220,7 @@ tasks {
     val `upload-testpypi` by registering(Exec::class) {
         group = "publishing"
         description =
-            "Uploads the built wheel to TestPyPI using twine. Requires TWINE_USERNAME and TWINE_PASSWORD, a TestPyPI token (-PtestpypiToken / TESTPYPI_API_TOKEN), or a configured .pypirc"
+            "Uploads the built wheel to TestPyPI using twine. Requires -PtestpypiToken in ~/.gradle/gradle.properties (tokens-only)"
         dependsOn(`install-build-tools`)
         // Ensure artifacts are built before attempting upload
         dependsOn(`build-dist`)
@@ -235,51 +235,21 @@ tasks {
                 throw GradleException("No wheel files found in ${distDir.absolutePath}. Run the build-dist task first.")
             }
 
-            // Resolve credentials for non-interactive twine upload
+            // Resolve token for non-interactive twine upload (tokens-only)
             fun prop(name: String): String? =
                 if (project.hasProperty(name)) project.property(name)?.toString() else null
 
-            val usernameFromProp = prop("twineUsername")
-            val passwordFromProp = prop("twinePassword")
-            val tokenFromProp = prop("testpypiToken")
-
-            val envMap = System.getenv()
-            val usernameFromEnv = envMap["TWINE_USERNAME"]
-            val passwordFromEnv = envMap["TWINE_PASSWORD"]
-            val tokenFromEnv = envMap["TESTPYPI_API_TOKEN"] ?: envMap["PYPI_TOKEN"] ?: envMap["TEST_PYPI_API_TOKEN"]
-
-            var username = usernameFromProp ?: usernameFromEnv
-            var password = passwordFromProp ?: passwordFromEnv
-
-            // If only a token is provided, use TestPyPI token semantics
-            if ((username == null || password == null) && !tokenFromProp.isNullOrBlank()) {
-                username = "__token__"
-                password = tokenFromProp
-            } else if ((username == null || password == null) && !tokenFromEnv.isNullOrBlank()) {
-                username = "__token__"
-                password = tokenFromEnv
+            val token = prop("testpypiToken")
+            if (token.isNullOrBlank()) {
+                throw GradleException(
+                    "TestPyPI token is missing. Set testpypiToken in ~/.gradle/gradle.properties. Tokens are required; username/password and .pypirc are not supported."
+                )
             }
 
-            if (username.isNullOrBlank() || password.isNullOrBlank()) {
-                // Allow using ~/.pypirc when explicit credentials are not provided
-                val home = System.getProperty("user.home")
-                val pypirc = File(home, ".pypirc")
-                if (!pypirc.exists()) {
-                    throw GradleException(
-                        "Twine credentials not found. Provide TWINE_USERNAME and TWINE_PASSWORD env vars, " +
-                                "a TestPyPI token via -PtestpypiToken=<token> (or TESTPYPI_API_TOKEN / PYPI_TOKEN), " +
-                                "or configure credentials in %USERPROFILE%/.pypirc (Windows) or ~/.pypirc (Unix). " +
-                                "When using a token, the username must be __token__."
-                    )
-                }
-            }
-
-            // Only set environment variables when explicit credentials are supplied
-            if (!username.isNullOrBlank() && !password.isNullOrBlank()) {
-                val exec = this as Exec
-                exec.environment("TWINE_USERNAME", username)
-                exec.environment("TWINE_PASSWORD", password)
-            }
+            // Provide credentials to Twine via environment
+            val exec = this as Exec
+            exec.environment("TWINE_USERNAME", "__token__")
+            exec.environment("TWINE_PASSWORD", token)
 
             // Use non-interactive mode so CI fails fast if credentials are missing
             commandLine(
@@ -299,7 +269,7 @@ tasks {
     val `upload-pypi` by registering(Exec::class) {
         group = "publishing"
         description =
-            "Uploads the built wheel to the real PyPI repository using twine. Requires TWINE_USERNAME and TWINE_PASSWORD, a PyPI token (-PpypiToken / PYPI_TOKEN), or a configured .pypirc"
+            "Uploads the built wheel to PyPI using twine. Requires -PpypiToken in ~/.gradle/gradle.properties (tokens-only)"
         dependsOn(`install-build-tools`)
         // Ensure artifacts are built before attempting upload
         dependsOn(`build-dist`)
@@ -314,50 +284,21 @@ tasks {
                 throw GradleException("No wheel files found in ${distDir.absolutePath}. Run the build-dist task first.")
             }
 
-            // Resolve credentials for non-interactive twine upload
+            // Resolve token for non-interactive twine upload (tokens-only)
             fun prop(name: String): String? =
                 if (project.hasProperty(name)) project.property(name)?.toString() else null
 
-            val usernameFromProp = prop("twineUsername")
-            val passwordFromProp = prop("twinePassword")
-            val tokenFromProp = prop("pypiToken")
-
-            val envMap = System.getenv()
-            val usernameFromEnv = envMap["TWINE_USERNAME"]
-            val passwordFromEnv = envMap["TWINE_PASSWORD"]
-            val tokenFromEnv = envMap["PYPI_TOKEN"] ?: envMap["TEST_PYPI_API_TOKEN"]
-
-            var username = usernameFromProp ?: usernameFromEnv
-            var password = passwordFromProp ?: passwordFromEnv
-
-            // If only a token is provided, use PyPI token semantics
-            if ((username == null || password == null) && !tokenFromProp.isNullOrBlank()) {
-                username = "__token__"
-                password = tokenFromProp
-            } else if ((username == null || password == null) && !tokenFromEnv.isNullOrBlank()) {
-                username = "__token__"
-                password = tokenFromEnv
+            val token = prop("pypiToken")
+            if (token.isNullOrBlank()) {
+                throw GradleException(
+                    "PyPI token is missing. Set pypiToken in ~/.gradle/gradle.properties. Tokens are required; username/password and .pypirc are not supported."
+                )
             }
 
-            if (username.isNullOrBlank() || password.isNullOrBlank()) {
-                // Allow using ~/.pypirc when explicit credentials are not provided
-                val home = System.getProperty("user.home")
-                val pypirc = File(home, ".pypirc")
-                if (!pypirc.exists()) {
-                    throw GradleException(
-                        "Twine credentials not found. Provide TWINE_USERNAME and TWINE_PASSWORD env vars, " +
-                                "a PyPI token via -PpypiToken=<token> (or PYPI_TOKEN), or configure credentials in %USERPROFILE%/.pypirc (Windows) or ~/.pypirc (Unix). " +
-                                "When using a token, the username must be __token__."
-                    )
-                }
-            }
-
-            // Only set environment variables when explicit credentials are supplied
-            if (!username.isNullOrBlank() && !password.isNullOrBlank()) {
-                val exec = this as Exec
-                exec.environment("TWINE_USERNAME", username)
-                exec.environment("TWINE_PASSWORD", password)
-            }
+            // Provide credentials to Twine via environment
+            val exec = this as Exec
+            exec.environment("TWINE_USERNAME", "__token__")
+            exec.environment("TWINE_PASSWORD", token)
 
             // Use non-interactive mode so CI fails fast if credentials are missing
             commandLine(

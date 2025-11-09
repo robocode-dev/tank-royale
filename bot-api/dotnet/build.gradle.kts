@@ -175,4 +175,33 @@ tasks {
         workingDir("api/bin/Release")
         commandLine("dotnet", "nuget", "push", "$artifactName.$version.nupkg", "--source", "$userHome/.nuget/packages")
     }
+
+    // Create NuGet package (.nupkg)
+    val packNuget by registering(Exec::class) {
+        dependsOn(prepareNugetDocs)
+        dependsOn(":bot-api:dotnet:schema:build")
+        workingDir("api")
+        commandLine("dotnet", "pack", "--configuration", "Release", "-p:Version=$version", "-o", "bin/Release")
+    }
+
+    // Publish package to NuGet.org
+    val publishNuget by registering(Exec::class) {
+        group = "publishing"
+        description = "Publishes the .NET Bot API package to NuGet.org. Requires -PnugetApiKey property (from ~/.gradle/gradle.properties)"
+        dependsOn(packNuget)
+
+        doFirst {
+            fun prop(name: String): String? = if (project.hasProperty(name)) project.property(name)?.toString() else null
+            val apiKey = prop("nugetApiKey")
+            if (apiKey.isNullOrBlank()) {
+                throw GradleException("NuGet API key is missing. Set nugetApiKey in ~/.gradle/gradle.properties or pass -PnugetApiKey=<key>.")
+            }
+            workingDir("api/bin/Release")
+            commandLine(
+                "dotnet", "nuget", "push", "$artifactName.$version.nupkg",
+                "--source", "https://api.nuget.org/v3/index.json",
+                "--api-key", apiKey
+            )
+        }
+    }
 }
