@@ -5,10 +5,10 @@ platform.
 
 ## Requirements for running the sample bots
 
-1. You need to unpack the archive or copy the directories in the root of your `bots` directory to run these with
-   Robocode.
-2. Java 11 (or newer) must be installed on your system. You can download it from here:
+1. Java 11 (or newer) must be installed on your system. You can download it from here:
    https://www.oracle.com/java/technologies/downloads/.
+2. You need to unpack the archive or copy the directories in the root of your `bots` directory to run these with
+   Robocode.
 
 Note that you need the JDK (Java Development Kit) if you want to develop your own bot.
 

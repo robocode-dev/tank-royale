@@ -24,17 +24,14 @@ plugins {
     alias(libs.plugins.benmanes.versions)
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
-subprojects {
-
+allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
     }
+}
+
+subprojects {
 
     // Apply common Java configuration to all subprojects with a Java plugin
     plugins.withId("java") {
@@ -49,14 +46,21 @@ subprojects {
         }
     }
 
+    // Set Java compile encoding to UTF-8 for all subprojects
+    // Yes, it must be done!
+    tasks.withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
+
     // Common publishing configuration for all subprojects with maven-publish plugin
     plugins.withId("maven-publish") {
+        apply(plugin = "signing")
         publishing {
             publications {
                 create<MavenPublication>("maven") {
-                    // Set group, artifactId, and version dynamically from a project
-                    groupId = project.group.toString()
-                    // If archivesName is set via base plugin, use it; otherwise use project name as fallback
+                    // Set coordinates, resolve lazily to avoid order issues
+                    groupId = "dev.robocode.tankroyale"
+                    // Initial artifactId; we will re-apply after project is evaluated, see afterEvaluate below
                     artifactId = if (project.extensions.findByType<BasePluginExtension>() != null) {
                         project.extensions.getByType<BasePluginExtension>().archivesName.get()
                     } else {
@@ -66,7 +70,10 @@ subprojects {
 
                     pom {
                         name.set(project.name)
-                        description.set(project.description)
+                        description.set(providers.provider {
+                            val d = project.description?.trim()
+                            if (!d.isNullOrEmpty()) d else "Robocode Tank Royale - ${project.name}"
+                        })
                         url.set("https://github.com/robocode-dev/tank-royale")
 
                         licenses {
@@ -95,6 +102,16 @@ subprojects {
                 }
             }
         }
+        // Ensure coordinates are correct after all project configuration has been evaluated
+        afterEvaluate {
+            extensions.configure<PublishingExtension> {
+                publications.withType<MavenPublication> {
+                    groupId = "dev.robocode.tankroyale"
+                    val baseExt = project.extensions.findByType<BasePluginExtension>()
+                    artifactId = baseExt?.archivesName?.get() ?: project.name
+                }
+            }
+        }
     }
 
     // Configure signing for all subprojects with signing plugin
@@ -114,12 +131,19 @@ subprojects {
                 logger.info("Signing password is present")
             }
 
-            useInMemoryPgpKeys(signingKey, signingPassword)
+            if (!signingKey.isNullOrBlank()) {
+                useInMemoryPgpKeys(signingKey, signingPassword)
+            } else {
+                // Avoid calling useInMemoryPgpKeys with a null/blank key
+                logger.info("Skipping useInMemoryPgpKeys because signing key is missing")
+            }
 
-            // Make signing required for artifacts
-            isRequired = true
+            // Make signing required only when a key is provided
+            isRequired = !signingKey.isNullOrBlank()
 
-            sign(publishing.publications["maven"])
+            if (isRequired) {
+                sign(publishing.publications)
+            }
         }
     }
 
@@ -140,30 +164,29 @@ subprojects {
 }
 
 tasks {
+    // Re-usable list of documentation tasks used in multiple task definitions
+    val docTasks = listOf(
+        "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
+        "bot-api:java:copyJavaApiDocs",     // Javadocs for Java Bot API
+        "bot-api:python:copyPythonApiDocs"  // Sphinx documentation for Python Bot API
+    )
+
     register("build-release") {
         description = "Builds a release"
         dependsOn(
             "bot-api:java:assemble",     // Bot API for Java VM
-            "bot-api:dotnet:assemble",   // Bot API for .Net
+            "bot-api:dotnet:assemble",   // Bot API for .NET
             "booter:assemble",           // Booter (for booting up bots locally)
             "server:assemble",           // Server
-            "gui-app:assemble",          // GUI
-            "sample-bots:java:zip",      // Sample bots for Java
-            "sample-bots:csharp:zip",    // Sample bots for C#
+            "gui:assemble",              // GUI
+            "sample-bots:zip",           // Sample bots
         )
-        finalizedBy(
-            "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
-            "bot-api:java:copyJavaApiDocs"      // Javadocs for Java Bot API
-        )
+        finalizedBy(*docTasks.toTypedArray())
     }
 
     register("upload-docs") {
         description = "Generate and upload all documentation"
-        dependsOn(
-            "buildDocs:copyGeneratedDocs",      // Documentation
-            "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
-            "bot-api:java:copyJavaApiDocs"      // Javadocs for Java Bot API
-        )
+        dependsOn(*docTasks.toTypedArray())
     }
 
     register("create-release") {
@@ -201,11 +224,23 @@ subprojects {
         shouldRunAfter(tasks.withType<Sign>())
     }
 
-    // Include Tank.ico in the published artifacts
+    // Include Tank.ico in the published artifacts without cross-project output conflicts
+    // We copy the icon into a subproject-local build directory, so each module signs its own copy.
     plugins.withId("maven-publish") {
+        // Create a task per subproject that copies the shared icon into the module's buildDir
+        val preparePublicationIcon = tasks.register<Copy>("preparePublicationIcon") {
+            val srcIcon = file("${rootProject.projectDir}/gfx/Tank/Tank.ico")
+            val destDir = layout.buildDirectory.dir("publication-resources/icon").get().asFile
+            from(srcIcon)
+            into(destDir)
+            outputs.file(file("${destDir}/Tank.ico"))
+        }
+
         configure<PublishingExtension> {
             publications.withType<MavenPublication> {
-                artifact(file("${rootProject.projectDir}/gfx/Tank/Tank.ico")) {
+                val copiedIcon = layout.buildDirectory.file("publication-resources/icon/Tank.ico").get().asFile
+                artifact(copiedIcon) {
+                    builtBy(preparePublicationIcon)
                     classifier = "icon"
                     extension = "ico"
                 }

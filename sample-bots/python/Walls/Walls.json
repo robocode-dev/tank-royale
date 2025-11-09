@@ -1,0 +1,16 @@
+{
+  "name": "Walls",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "Navigates around the walls with the gun pointed inward.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "platform": "Python",
+  "programmingLang": "Python 3"
+}

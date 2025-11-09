@@ -5,7 +5,6 @@ import time
 import math
 import os
 from typing import Any, Optional, Set, Sequence
-import drawsvg  # type: ignore
 
 from ..base_bot_abc import BaseBotABC
 from ..bot_abc import BotABC
@@ -17,7 +16,7 @@ from ..events.condition import Condition
 from ..game_setup import GameSetup
 from ..initial_position import InitialPosition
 from ..util.math_util import MathUtil
-from ..color import Color
+from ..graphics import Color, GraphicsABC
 
 from .base_bot_internal_data import BaseBotInternalData
 from .bot_event_handlers import BotEventHandlers
@@ -102,16 +101,19 @@ class BaseBotInternals:
         self.abs_deceleration: float = abs(DECELERATION)
         self.last_execute_turn_number: int = -1
 
+        # Movement reset deferral flag (mirrors Java/.NET movementResetPending)
+        self._movement_reset_pending: bool = False
+
         self._init()
 
     def _get_server_url_from_setting(self) -> str:
-        url = os.getenv("ROBOCODE_SERVER_URL", os.getenv("SERVER_URL"))
+        url = os.getenv("SERVER_URL", os.getenv("SERVER_URL"))
         if url is None:
             url = DEFAULT_SERVER_URL
         return url
 
     def _get_server_secret_from_setting(self) -> Optional[str]:
-        return os.getenv("ROBOCODE_SERVER_SECRET", os.getenv("SERVER_SECRET"))
+        return os.getenv("SERVER_SECRET", os.getenv("SERVER_SECRET"))
 
     def _init(self) -> None:
         # Skipping redirectStdOutAndStdErr for now
@@ -127,7 +129,10 @@ class BaseBotInternals:
         )
 
     async def _on_round_started(self, event: RoundStartedEvent) -> None:
-        self._reset_movement()
+        # Defer movement reset until after first intent has been sent, mirroring Java/.NET behavior
+        if not hasattr(self, "_movement_reset_pending"):
+            self._movement_reset_pending = False
+        self._movement_reset_pending = True
         self.event_queue.clear()  # Clears conditions in self.data.conditions
         self.data.is_stopped = False
         self.data.event_handling_disabled_turn = 0
@@ -136,6 +141,10 @@ class BaseBotInternals:
     async def _on_next_turn(self, event: TickEvent) -> None:
         async with self.next_turn_monitor:
             self.next_turn_monitor.notify_all()
+        # Only reset movement after first intent following round start
+        if self._movement_reset_pending:
+            self._reset_movement()
+            self._movement_reset_pending = False
 
     async def _on_bullet_fired(self, event: BulletFiredEvent) -> None:
         if self.data.bot_intent:
@@ -250,6 +259,10 @@ class BaseBotInternals:
     def clear_events(self) -> None:
         self.event_queue.clear_events()
 
+    # Public wrapper to enqueue events from a tick, aligning with Java BaseBotInternals
+    def add_events_from_tick(self, event: TickEvent) -> None:
+        self.event_queue.add_events_from_tick(event)
+
     def set_interruptible(self, interruptible: bool) -> None:
         self.event_queue.set_current_event_interruptible(interruptible)
 
@@ -257,6 +270,7 @@ class BaseBotInternals:
         try:
             await self.event_queue.dispatch_events(turn_number)
         except Exception:
+            # Align with Java: do not propagate interruptions from event handling
             traceback.print_exc()
 
     def set_running(self, is_running: bool) -> None:
@@ -275,17 +289,26 @@ class BaseBotInternals:
             while self.data.is_running:
                 try:
                     await bot.go()
+                except ThreadInterruptedException:
+                    return  # Thread was interrupted deliberately - exit silently
                 except asyncio.CancelledError:
                     return  # Task was cancelled
+                except ThreadInterruptedException:
+                    return  # Rogue thread detected, stop execution
                 except Exception as e:  # Catch other exceptions during bot.go()
                     # Potentially log the error or handle specific bot exceptions
                     print(f"Exception in bot.go(): {e}")  # Basic error logging
                     # Depending on desired behavior, may need to stop or continue
                     self.data.is_running = False  # Example: stop on error
                     return
+        except ThreadInterruptedException:
+            return  # Thread was interrupted deliberately - exit silently
         except asyncio.CancelledError:
             # This handles cancellation if bot.run() or the loop itself is cancelled
             pass  # Task was cancelled
+        except ThreadInterruptedException:
+            # Rogue thread detected during bot.run()
+            pass
         except Exception as e:
             # Potentially log the error or handle specific bot exceptions
             print(f"Exception in bot.run() or main loop: {e}")  # Basic error logging
@@ -317,7 +340,6 @@ class BaseBotInternals:
 
     async def _connect(self) -> None:
         self._sanitize_url(self.server_url)
-        assert self.server_secret is not None
         try:
             self.web_socket_handler = WebSocketHandler(  # Store the handler instance
                 self.data,  # Pass BaseBotInternalData instance
@@ -328,13 +350,14 @@ class BaseBotInternals:
                 self.bot_event_handlers,  # Event handlers needed by WebSocketHandler
                 self.internal_event_handlers,  # Event handlers needed by WebSocketHandler
                 self.closed_event,  # Async event needed by WebSocketHandler
+                self.event_queue,  # Provide access to the shared EventQueue for staging events
             )
             self.socket = await self.web_socket_handler.connect()
 
         except Exception as ex:
             raise BotException(
                 f"Could not create web socket for URL: {self.server_url}", ex
-            )
+            ) from ex
 
     async def start(self) -> None:
         await self._connect()
@@ -343,19 +366,16 @@ class BaseBotInternals:
         await self.closed_event.wait()
 
     async def execute(self) -> None:
-        if not self.data.is_running:
+        current_tick = self.data.current_tick_or_null
+        # If no tick has been received yet, send current intent once to allow the server to progress
+        if current_tick is None:
+            await self._send_intent()
             return
 
-        current_tick = self.data.current_tick_or_throw  # Throws if not available
         turn_number = current_tick.turn_number
-
         if turn_number != self.last_execute_turn_number:
             self.last_execute_turn_number = turn_number
-
-            # Add events from the current tick to the event queue
-            self.event_queue.add_events_from_tick(current_tick)
-
-            await self.dispatch_events(turn_number)
+            # Events are dispatched from BaseBot.go(); staging happens on tick reception
             await self._send_intent()
         await self._wait_for_next_turn(turn_number)
 
@@ -389,7 +409,7 @@ class BaseBotInternals:
             and hasattr(current_tick.bot_state, "is_debugging_enabled")
             and current_tick.bot_state.is_debugging_enabled
         ):
-            svg_output = self.data.graphics_state.as_svg()  # type: ignore
+            svg_output = self.data.graphics_state.to_svg()
             self.data.bot_intent.debug_graphics = svg_output
             self.data.graphics_state.clear()
         else:
@@ -617,11 +637,13 @@ class BaseBotInternals:
         if not self.data.is_stopped or overwrite:
             self.data.is_stopped = True
 
+            # Save current intent values
             self.data.saved_target_speed = self.data.bot_intent.target_speed
             self.data.saved_turn_rate = self.data.bot_intent.turn_rate
             self.data.saved_gun_turn_rate = self.data.bot_intent.gun_turn_rate
             self.data.saved_radar_turn_rate = self.data.bot_intent.radar_turn_rate
 
+            # Stop all movement/turning immediately
             self.data.bot_intent.target_speed = 0.0
             self.data.bot_intent.turn_rate = 0.0
             self.data.bot_intent.gun_turn_rate = 0.0
@@ -632,6 +654,7 @@ class BaseBotInternals:
 
     def set_resume(self) -> None:
         if self.data.is_stopped:
+            # Restore saved intent values
             self.data.bot_intent.target_speed = self.data.saved_target_speed
             self.data.bot_intent.turn_rate = self.data.saved_turn_rate
             self.data.bot_intent.gun_turn_rate = self.data.saved_gun_turn_rate
@@ -747,7 +770,7 @@ class BaseBotInternals:
     def gun_color(self, color: Optional[Color]) -> None:
         self.data.bot_intent.gun_color = color.to_color_schema() if color else None
 
-    def get_graphics(self) -> drawsvg.Drawing:
+    def get_graphics(self) -> GraphicsABC:
         return self.data.graphics_state
 
     # Bullet States - Delegated

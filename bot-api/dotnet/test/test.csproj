@@ -3,24 +3,16 @@
         <AssemblyName>Robocode.TankRoyale.BotApi.Tests</AssemblyName>
         <RootNamespace>Robocode.TankRoyale.BotApi.Tests</RootNamespace>
 
-        <TargetFramework>net6.0</TargetFramework>
-        <LangVersion>10.0</LangVersion>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>12.0</LangVersion>
 
         <IsPackable>false</IsPackable>
-
-        <!-- Uncomment this to run console application with a Main method -->
-        <!--<GenerateProgramFile>false</GenerateProgramFile>-->
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="../api/api.csproj"  />
 
         <!-- for Bot API -->
-        <!--
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-        -->
         <PackageReference Include="System.Reflection.Metadata" Version="8.0.0" />
 
         <!-- for testing -->

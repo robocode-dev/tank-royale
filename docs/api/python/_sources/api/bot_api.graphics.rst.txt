@@ -1,0 +1,45 @@
+bot\_api.graphics package
+=========================
+
+Submodules
+----------
+
+bot\_api.graphics.color module
+------------------------------
+
+.. automodule:: bot_api.graphics.color
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.graphics.graphics\_abc module
+--------------------------------------
+
+.. automodule:: bot_api.graphics.graphics_abc
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.graphics.point module
+------------------------------
+
+.. automodule:: bot_api.graphics.point
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.graphics.svg\_graphics module
+--------------------------------------
+
+.. automodule:: bot_api.graphics.svg_graphics
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: bot_api.graphics
+   :members:
+   :show-inheritance:
+   :undoc-members:

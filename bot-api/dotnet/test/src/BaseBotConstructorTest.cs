@@ -166,4 +166,24 @@ public class BaseBotConstructorTest : AbstractBotTest
             Assert.That(ex?.Message, Does.StartWith("Wrong scheme used with server URL"));
         }
     }
+
+    [Test]
+    [Category("BOT")]
+    [Category("TR-API-BOT-001d")]
+    [Description("TR-API-BOT-001d Type parsing/normalization: ints/bools parsed consistently; trimming/whitespace handling")]
+    public void Test_TR_API_BOT_001d_Type_Parsing_Normalization()
+    {
+        // Arrange
+        EnvironmentVariables.SetEnvVar("TEAM_ID", "  42  ");
+        EnvironmentVariables.SetEnvVar(EnvironmentVariables.BotInitialPosition, "  10, 20, 30  ");
+
+        // Act
+        StartAndAwaitHandshake();
+        var handshake = Server.Handshake;
+
+        // Assert
+        Assert.That(handshake, Is.Not.Null);
+        Assert.That(handshake.TeamId, Is.EqualTo(42));
+        Assert.That(handshake.InitialPosition, Is.Not.Null);
+    }
 }

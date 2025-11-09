@@ -6,7 +6,7 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // ------------------------------------------------------------------
 // MyFirstDroid
 // ------------------------------------------------------------------
-// A sample bot original made for Robocode by Mathew Nelson.
+// A sample bot originally made for Robocode by Mathew Nelson.
 //
 // This is a droid bot meaning that is has more energy, but no radar.
 // Member of the MyFirstTeam. Follows orders of team leader.

@@ -9,6 +9,7 @@ from .events import Condition, TickEvent, HitBotEvent, ScannedBotEvent
 from .internal.base_bot_internals import BaseBotInternals
 from .internal.stop_resume_listener_abs import StopResumeListenerABC
 from .internal.event_interruption import EventInterruption
+from .internal.thread_interrupted_exception import ThreadInterruptedException
 from .constants import *
 
 
@@ -78,10 +79,10 @@ class _BotInternals(StopResumeListenerABC):
         if self._bot.is_disabled():
             self._clear_remaining()
             return
-        self._update_movement()
         self._update_turn_remaining()
         self._update_gun_turn_remaining()
         self._update_radar_turn_remaining()
+        self._update_movement()
 
     async def on_hit_wall(self):
         self.distance_remaining = 0.0
@@ -97,9 +98,8 @@ class _BotInternals(StopResumeListenerABC):
     @turn_rate.setter
     def turn_rate(self, x: float) -> None:
         self._override_turn_rate = False
-        self.turn_remaining = self._to_infinite_value(
-            self._base_bot_internals.turn_rate
-        )
+        # Match Java semantics: remaining is based on the new requested turn rate
+        self.turn_remaining = self._to_infinite_value(x)
         self._base_bot_internals.turn_rate = x
 
     @property
@@ -109,9 +109,8 @@ class _BotInternals(StopResumeListenerABC):
     @gun_turn_rate.setter
     def gun_turn_rate(self, x: float) -> None:
         self._override_gun_turn_rate = False
-        self.gun_turn_remaining = self._to_infinite_value(
-            self._base_bot_internals.gun_turn_rate
-        )
+        # Match Java semantics: remaining is based on the new requested gun turn rate
+        self.gun_turn_remaining = self._to_infinite_value(x)
         self._base_bot_internals.gun_turn_rate = x
 
     @property
@@ -121,9 +120,8 @@ class _BotInternals(StopResumeListenerABC):
     @radar_turn_rate.setter
     def radar_turn_rate(self, x: float) -> None:
         self._override_radar_turn_rate = False
-        self.radar_turn_remaining = self._to_infinite_value(
-            self._base_bot_internals.radar_turn_rate
-        )
+        # Match Java semantics: remaining is based on the new requested radar turn rate
+        self.radar_turn_remaining = self._to_infinite_value(x)
         self._base_bot_internals.radar_turn_rate = x
 
     def _to_infinite_value(self, x: float) -> float:
@@ -201,8 +199,10 @@ class _BotInternals(StopResumeListenerABC):
         await self._bot.go()
 
     async def rescan(self) -> None:
+        # Mark ScannedBotEvent as interruptible so a new scan can interrupt the current handler
         EventInterruption.set_interruptible(ScannedBotEvent, True)
         self._bot.set_rescan()
+        # Align with Java: do not raise interruption here; event dispatch handles and swallows it
         await self._bot.go()
 
     async def wait_for(self, condition: Callable[[], bool]) -> None:
@@ -249,9 +249,12 @@ class _BotInternals(StopResumeListenerABC):
             # called after a previous direction has been calculated and stored!
             return
 
-        self.turn_remaining -= delta
-        if self._is_near_zero(self.turn_remaining):
+        if abs(self.turn_remaining) <= abs(delta):
             self.turn_remaining = 0
+        else:
+            self.turn_remaining -= delta
+            if self._is_near_zero(self.turn_remaining):
+                self.turn_remaining = 0
 
         self._base_bot_internals.turn_rate = self.turn_remaining
 
@@ -265,9 +268,12 @@ class _BotInternals(StopResumeListenerABC):
         if not self._override_gun_turn_rate:
             return
 
-        self.gun_turn_remaining -= delta
-        if self._is_near_zero(self.gun_turn_remaining):
+        if abs(self.gun_turn_remaining) <= abs(delta):
             self.gun_turn_remaining = 0
+        else:
+            self.gun_turn_remaining -= delta
+            if self._is_near_zero(self.gun_turn_remaining):
+                self.gun_turn_remaining = 0
 
         self._base_bot_internals.gun_turn_rate = self.gun_turn_remaining
 
@@ -281,9 +287,12 @@ class _BotInternals(StopResumeListenerABC):
         if not self._override_radar_turn_rate:
             return
 
-        self.radar_turn_remaining -= delta
-        if self._is_near_zero(self.radar_turn_remaining):
+        if abs(self.radar_turn_remaining) <= abs(delta):
             self.radar_turn_remaining = 0
+        else:
+            self.radar_turn_remaining -= delta
+            if self._is_near_zero(self.radar_turn_remaining):
+                self.radar_turn_remaining = 0
 
         self._base_bot_internals.radar_turn_rate = self.radar_turn_remaining
 
@@ -306,7 +315,6 @@ class _BotInternals(StopResumeListenerABC):
             if self._is_near_zero(new_speed) and self._is_over_driving:
                 distance = 0
                 self._is_over_driving = False
-            self.distance_remaining = distance - new_speed
             # the overdrive flag
             if distance * new_speed >= 0:
                 self._is_over_driving = (
@@ -380,6 +388,16 @@ class Bot(BaseBot, BotABC):
     @radar_turn_rate.setter
     def radar_turn_rate(self, radar_turn_rate: float) -> None:
         self._bot_internals.radar_turn_rate = radar_turn_rate
+
+    @property
+    def target_speed(self) -> float:
+        ts = self._bot_internals.target_speed
+        return 0.0 if ts is None else ts
+
+    @target_speed.setter
+    def target_speed(self, speed: float) -> None:
+        # Ensure Java parity: setting target speed should clear overrideTargetSpeed and set distance_remaining to +/-inf
+        self._bot_internals.target_speed = speed
 
     def is_running(self) -> bool:
         """Check if the bot is currently running."""

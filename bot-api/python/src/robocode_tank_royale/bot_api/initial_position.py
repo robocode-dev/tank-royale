@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
+import re
 
 
 @dataclass
@@ -50,9 +51,13 @@ class InitialPosition:
             InitialPosition: An instance of the class if parsing is successful.
             None: If the input string is invalid or empty.
         """
-        if initial_position is None or initial_position.isspace():
+        if initial_position is None:
             return None
-        values = initial_position.strip().split(r"\s*,\s*|\s+")
+        s = initial_position.strip()
+        if s == "":
+            return None
+        # Split on commas (with optional surrounding whitespace) or any whitespace
+        values = [v for v in re.split(r"\s*,\s*|\s+", s) if v != ""]
         return InitialPosition._parse_initial_position(values)
 
     @staticmethod

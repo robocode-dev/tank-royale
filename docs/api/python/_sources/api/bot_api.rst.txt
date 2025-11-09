@@ -1,0 +1,153 @@
+bot\_api package
+================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bot_api.events
+   bot_api.graphics
+   bot_api.internal
+   bot_api.mapper
+   bot_api.util
+
+Submodules
+----------
+
+bot\_api.base\_bot module
+-------------------------
+
+.. automodule:: bot_api.base_bot
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.base\_bot\_abc module
+------------------------------
+
+.. automodule:: bot_api.base_bot_abc
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.bot module
+-------------------
+
+.. automodule:: bot_api.bot
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.bot\_abc module
+------------------------
+
+.. automodule:: bot_api.bot_abc
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.bot\_exception module
+------------------------------
+
+.. automodule:: bot_api.bot_exception
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.bot\_info module
+-------------------------
+
+.. automodule:: bot_api.bot_info
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.bot\_results module
+----------------------------
+
+.. automodule:: bot_api.bot_results
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.bot\_state module
+--------------------------
+
+.. automodule:: bot_api.bot_state
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.bullet\_state module
+-----------------------------
+
+.. automodule:: bot_api.bullet_state
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.color module
+---------------------
+
+.. automodule:: bot_api.color
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.constants module
+-------------------------
+
+.. automodule:: bot_api.constants
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.default\_event\_priority module
+----------------------------------------
+
+.. automodule:: bot_api.default_event_priority
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.droid\_abc module
+--------------------------
+
+.. automodule:: bot_api.droid_abc
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.game\_setup module
+---------------------------
+
+.. automodule:: bot_api.game_setup
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.game\_type module
+--------------------------
+
+.. automodule:: bot_api.game_type
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.initial\_position module
+---------------------------------
+
+.. automodule:: bot_api.initial_position
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: bot_api
+   :members:
+   :show-inheritance:
+   :undoc-members:

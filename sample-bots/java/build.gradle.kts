@@ -1,14 +1,15 @@
 import java.io.PrintWriter
 import java.nio.file.Files.*
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
 description = "Robocode Tank Royale sample bots for Java"
 
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
-val archiveFilename = "sample-bots-java-${version}.zip"
+base {
+    archivesName = "sample-bots-java"
+}
 
 plugins {
     base // for the clean and build task
@@ -20,29 +21,15 @@ tasks {
     val archiveDirPath = archiveDir.get().asFile.toPath()
     val libDir = archiveDirPath.resolve("lib")
 
-    val copyBotApiJar by registering(Copy::class) {
-        mkdir(libDir)
-
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-        dependsOn(":bot-api:java:jar")
-
-        from(project(":bot-api:java").file("build/libs/robocode-tankroyale-bot-api-${version}.jar"))
-        into(libDir)
-    }
-
     fun Path.botName() = fileName.toString()
 
-    fun isBotProjectDir(dir: Path): Boolean {
-        val botName = dir.botName()
-        return !botName.startsWith(".") && botName !in listOf("build", "assets")
-    }
+    // Shared helpers provided by parent sample-bots/build.gradle.kts
+    @Suppress("UNCHECKED_CAST")
+    val isBotProjectDir = rootProject.extra["isBotProjectDir"] as (Path) -> Boolean
+    @Suppress("UNCHECKED_CAST")
+    val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
-    fun copyBotFiles(projectDir: Path, botArchivePath: Path) {
-        for (file in list(projectDir)) {
-            copy(file, botArchivePath.resolve(file.fileName), REPLACE_EXISTING)
-        }
-    }
+    fun isWindows() = System.getProperty("os.name").lowercase().contains("windows")
 
     fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
         val botName = projectDir.botName()
@@ -52,14 +39,14 @@ tasks {
                 write(newLine)
             }
         }
-        // Important: It seems that we need to add the `>nul` redirection to avoid the cmd processes to halt!?
-        val redirect = if (fileExt == "cmd") ">nul" else ""
+
+        val java = if (isWindows()) "javaw" else "java"
 
         printWriter.use {
             if (fileExt == "sh") {
                 it.println("#!/bin/sh")
             }
-            it.println("java -cp ../lib/* $botName.java $redirect")
+            it.println("$java -cp ../lib/* $botName.java")
         }
     }
 
@@ -79,36 +66,23 @@ tasks {
         }
     }
 
-    fun copyReadMeFile(projectDir: File, archivePath: Path) {
-        val filename = "ReadMe.md"
-        copy(File(projectDir, "assets/$filename").toPath(), archivePath.resolve(filename), REPLACE_EXISTING)
+    val copyBotApiJar by registering(Copy::class) {
+        mkdir(libDir)
+
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+        dependsOn(":bot-api:java:jar")
+
+        from(project(":bot-api:java").file("build/libs/robocode-tankroyale-bot-api-${version}.jar"))
+        into(libDir)
     }
 
-    val build = named("build") {
+    named("build") {
         dependsOn(copyBotApiJar)
 
         doLast {
             prepareBotFiles()
-            copyReadMeFile(projectDir, archiveDirPath)
         }
-    }
-
-    val zip by registering(Zip::class) {
-        dependsOn(build)
-
-        archiveFileName.set(archiveFilename)
-        destinationDirectory.set(layout.buildDirectory)
-        filePermissions {
-            user {
-                read = true
-                execute = true
-            }
-            other {
-                execute = true
-            }
-        }
-
-        from(archiveDir)
     }
 
     // Configure the maven publication to use the zip artifact
@@ -117,12 +91,12 @@ tasks {
             named<MavenPublication>("maven") {
                 // Define the artifact
                 artifact(zip) {
-                    classifier = "" // No classifier for main artifact
+                    classifier = "" // No classifier for the main artifact
                     extension = "zip"
                 }
 
-                // Override the artifactId since it's different from the project name
-                artifactId = "sample-bots-java"
+                // Ensure artifactId follows base.archivesName
+                artifactId = base.archivesName.get()
 
                 // Override the POM name
                 pom.name.set("Robocode Tank Royale Sample Bots for Java")

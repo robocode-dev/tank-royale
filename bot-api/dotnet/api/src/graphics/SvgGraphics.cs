@@ -153,13 +153,25 @@ public class SvgGraphics : IGraphics
     /// </summary>
     public void DrawText(string text, double x, double y)
     {
+        var escaped = EscapeXmlText(text);
         _elements.Add($"<text " +
                       $"x=\"{Format(x)}\" " +
                       $"y=\"{Format(y)}\" " +
                       $"font-family=\"{_fontFamily}\" " +
                       $"font-size=\"{Format(_fontSize)}\" " +
-                      $"fill=\"{_strokeColor}\" " +
-                      $">{text}</text>\n");
+                      $"fill=\"{_strokeColor}\">" +
+                      $"{escaped}</text>\n");
+    }
+
+    private static string EscapeXmlText(string s)
+    {
+        if (s == null) return null;
+        // Ampersand first to avoid double-escaping
+        return s
+            .Replace("&", "&amp;")
+            .Replace("<", "&lt;")
+            .Replace(">", "&gt;")
+            .Replace("\"", "&quot;");
     }
 
     /// <summary>
@@ -201,13 +213,13 @@ public class SvgGraphics : IGraphics
     public string ToSvg()
     {
         var svg = new StringBuilder();
-        svg.AppendLine("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 5000 5000\">");
+        svg.Append("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 5000 5000\">\n");
         foreach (var element in _elements)
         {
             svg.Append(element);
         }
 
-        svg.AppendLine("</svg>");
+        svg.Append("</svg>\n");
         return svg.ToString();
     }
 

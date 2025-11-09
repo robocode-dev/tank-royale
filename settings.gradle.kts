@@ -15,8 +15,8 @@ include("server")
 // Recorder
 include("recorder")
 
-// GUI app
-include("gui-app")
+// GUI
+include("gui")
 
 // Bot API
 include("bot-api:java")
@@ -28,9 +28,10 @@ include("bot-api:wasm")
 // Sample Bots archives
 include("sample-bots:java")
 include("sample-bots:csharp")
+include("sample-bots:python")
 
 // Docs
-include("buildDocs")
+include("docs-build")
 
 // Check dependencies with this command: gradlew dependencyUpdates
 dependencyResolutionManagement {

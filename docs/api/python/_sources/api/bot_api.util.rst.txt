@@ -1,0 +1,37 @@
+bot\_api.util package
+=====================
+
+Submodules
+----------
+
+bot\_api.util.color\_util module
+--------------------------------
+
+.. automodule:: bot_api.util.color_util
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.util.country\_code\_util module
+----------------------------------------
+
+.. automodule:: bot_api.util.country_code_util
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.util.math\_util module
+-------------------------------
+
+.. automodule:: bot_api.util.math_util
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: bot_api.util
+   :members:
+   :show-inheritance:
+   :undoc-members:

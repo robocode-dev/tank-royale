@@ -1,88 +1,91 @@
-from typing import Any, Callable
-
 import asyncio
 
-from robocode_tank_royale import bot_api as ba
+from robocode_tank_royale.bot_api.bot import Bot
+from robocode_tank_royale.bot_api.color import Color
 from robocode_tank_royale.bot_api.events import (
-    HitBotEvent,
-    HitWallEvent,
     ScannedBotEvent,
+    HitWallEvent,
+    HitBotEvent,
 )
 
 
-def turn_complete_condition(bot: ba.BotABC) -> Callable[[], bool]:
-    """Condition that is triggered when the turning is complete."""
-    return lambda b = bot: b.turn_remaining == 0
+# ------------------------------------------------------------------
+# Crazy
+# ------------------------------------------------------------------
+# A sample bot originally made for Robocode by Mathew Nelson.
+#
+# This robot moves in a zigzag pattern while firing at enemies.
+# ------------------------------------------------------------------
+class Crazy(Bot):
+    """Moves in a zigzag pattern and fires when scanning other bots."""
 
-
-class Crazy(ba.Bot):
-    """A sample bot original made for Robocode by Mathew Nelson.
-
-    This robot moves in a zigzag pattern while firing at enemies.
-    """
-
-    def __init__(self, *args: Any, **kwargs: Any):
-        super().__init__(*args, **kwargs)
-        self._moving_forward = False
+    def __init__(self) -> None:
+        super().__init__()
+        self._moving_forward: bool = False
 
     async def run(self) -> None:
-        self.body_color = ba.Color.from_rgb(0x00, 0xC8, 0x00)  # lime
-        self.turrent_color = ba.Color.from_rgb(0x00, 0x96, 0x32)  # green
-        self.radar_color = ba.Color.from_rgb(0x00, 0x64, 0x64)  # dark cyan
-        self.bullet_color = ba.Color.from_rgb(0xFF, 0xFF, 0x64)  # yellow
-        self.scan_color = ba.Color.from_rgb(0xFF, 0xC8, 0xC8)  # light red
+        """Called when a new round is started -> initialize and do some movement."""
+        # Set colors (matching the Java sample)
+        self.body_color = Color.from_rgb(0x00, 0xC8, 0x00)   # lime
+        self.turret_color = Color.from_rgb(0x00, 0x96, 0x32) # green
+        self.radar_color = Color.from_rgb(0x00, 0x64, 0x64)  # dark cyan
+        self.bullet_color = Color.from_rgb(0xFF, 0xFF, 0x64) # yellow
+        self.scan_color = Color.from_rgb(0xFF, 0xC8, 0xC8)   # light red
 
+        # Loop while the bot is running
         while self.is_running():
             # Tell the game we will want to move ahead 40000 -- some large number
             self.set_forward(40000)
             self._moving_forward = True
-            # Tell the game we will want to turn right 90
+
+            # Tell the game we will want to turn left 90
             self.set_turn_left(90)
-            # At this point, we have indicated to the game that *when we do something*,
-            # we will want to move ahead and turn right. That's what "set" means.
-            # It is important to realize we have not done anything yet!
-            # In order to actually move, we'll want to call a method that takes real time, such as
-            # waitFor.
-            # waitFor actually starts the action -- we start moving and turning.
-            # It will not return until we have finished turning.
-            await self.wait_for(turn_complete_condition(self))
+
+            # Start the action and wait until the turn is complete
+            await self.wait_for(lambda: self.turn_remaining == 0)
 
             # Note: We are still moving ahead now, but the turn is complete.
             # Now we'll turn the other way...
             self.set_turn_right(180)
             # ... and wait for the turn to finish ...
-            await self.wait_for(turn_complete_condition(self))
+            await self.wait_for(lambda: self.turn_remaining == 0)
+
             # ... then the other way ...
             self.set_turn_left(180)
             # ... and wait for that turn to finish.
-            await self.wait_for(turn_complete_condition(self))
+            await self.wait_for(lambda: self.turn_remaining == 0)
             # then back to the top to do it all again.
 
-    def _reverse_direction(self) -> None:
+    async def on_hit_wall(self, e: HitWallEvent) -> None:
+        """We collided with a wall -> reverse the direction."""
+        del e
+        await self._reverse_direction()
+
+    async def on_hit_bot(self, e: HitBotEvent) -> None:
+        """We hit another bot -> back up if we rammed it."""
+        if e.is_rammed:
+            await self._reverse_direction()
+
+    async def _reverse_direction(self) -> None:
+        """Switch from ahead to back & vice versa and commit the change."""
         if self._moving_forward:
             self.set_back(40000)
             self._moving_forward = False
         else:
             self.set_forward(40000)
             self._moving_forward = True
+        # Commit the command changes immediately
+        await self.go()
 
-    async def on_hit_wall(self, bot_hit_wall_event: HitWallEvent) -> None:
-        del bot_hit_wall_event
-        # Bounce off!
-        self._reverse_direction()
-
-    async def on_scanned_bot(self, scanned_bot_event: ScannedBotEvent) -> None:
+    async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
+        """We scanned another bot -> fire!"""
+        del e
         await self.fire(1)
 
-    async def on_hit_bot(self, bot_hit_bot_event: HitBotEvent) -> None:
-        # If we're moving into the other bot, reverse!
-        if bot_hit_bot_event.is_rammed:
-            self._reverse_direction()
 
-
-async def main():
-    b = Crazy()
-    await b.start()
+async def main() -> None:
+    bot = Crazy()
+    await bot.start()
 
 
 if __name__ == "__main__":

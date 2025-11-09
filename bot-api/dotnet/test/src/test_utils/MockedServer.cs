@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using Fleck;
 using Robocode.TankRoyale.BotApi.Internal.Json;
@@ -10,7 +12,7 @@ namespace Robocode.TankRoyale.BotApi.Tests.Test_utils;
 
 public class MockedServer
 {
-    public const int Port = 7913;
+    public static readonly int Port = FindAvailablePort();
     public static Uri ServerUrl => new($"ws://127.0.0.1:{Port}");
 
     public static string SessionId = "123abc";
@@ -28,12 +30,13 @@ public class MockedServer
     public static int TurnTimeout = 30_000;
     public static int ReadyTimeout = 1_000_000;
 
+    public static int BotEnemyCount = 7;
     public static double BotEnergy = 99.7;
     public static double BotX = 44.5;
     public static double BotY = 721.34;
     public static double BotDirection = 120.1;
-    public static double BotGunDirection = 3.45;
-    public static double BotRadarDirection = 653.3;
+    public static double BotGunDirection = 103.45;
+    public static double BotRadarDirection = 253.3;
     public static double BotRadarSweep = 13.5;
     public static double BotSpeed = 8.0;
     public static double BotTurnRate = 5.1;
@@ -46,14 +49,22 @@ public class MockedServer
     private double _gunHeat = BotGunHeat;
     private double _speed = BotSpeed;
     private double _direction = BotDirection;
+    private double _gunDirection = BotGunDirection;
+    private double _radarDirection = BotRadarDirection;
 
     private double _speedIncrement;
     private double _turnIncrement;
+    private double _gunTurnIncrement;
+    private double _radarTurnIncrement;
     
     private double? _speedMinLimit;
     private double? _speedMaxLimit;
     private double? _directionMinLimit;
     private double? _directionMaxLimit;
+    private double? _gunDirectionMinLimit;
+    private double? _gunDirectionMaxLimit;
+    private double? _radarDirectionMinLimit;
+    private double? _radarDirectionMaxLimit;
 
     private WebSocketServer _server;
 //    private readonly ISet<IWebSocketConnection> _clients = new HashSet<IWebSocketConnection>();
@@ -67,6 +78,8 @@ public class MockedServer
     private readonly EventWaitHandle _botIntentContinueEvent = new AutoResetEvent(false);
 
     private BotIntent _botIntent;
+    
+    public BotIntent BotIntent => _botIntent;
     
 
     public void Start()
@@ -107,6 +120,14 @@ public class MockedServer
         _turnIncrement = increment;
     }
 
+    public void SetGunTurnIncrement(double increment) {
+        _gunTurnIncrement = increment;
+    }
+
+    public void SetRadarTurnIncrement(double increment) {
+        _radarTurnIncrement = increment;
+    }
+
     public void SetSpeedMinLimit(double minLimit) {
         _speedMinLimit = minLimit;
     }
@@ -121,6 +142,22 @@ public class MockedServer
 
     public void SetDirectionMaxLimit(double maxLimit) {
         _directionMaxLimit = maxLimit;
+    }
+
+    public void SetGunDirectionMinLimit(double minLimit) {
+        _gunDirectionMinLimit = minLimit;
+    }
+
+    public void SetGunDirectionMaxLimit(double maxLimit) {
+        _gunDirectionMaxLimit = maxLimit;
+    }
+
+    public void SetRadarDirectionMinLimit(double minLimit) {
+        _radarDirectionMinLimit = minLimit;
+    }
+
+    public void SetRadarDirectionMaxLimit(double maxLimit) {
+        _radarDirectionMaxLimit = maxLimit;
     }
 
     public bool AwaitConnection(int milliSeconds)
@@ -226,11 +263,14 @@ public class MockedServer
 
                 SendGameStartedForBot(conn);
                 _gameStartedEvent.Set();
+                // Immediately send a tick event after game start to guarantee tick for all tests
+                SendTickEventForBot(conn, _turnNumber++);
+                _tickEvent.Set();
                 break;
 
             case MessageType.BotReady:
                 SendRoundStarted(conn);
-
+                // Existing tick event logic remains
                 SendTickEventForBot(conn, _turnNumber++);
                 _tickEvent.Set();
                 break;
@@ -244,6 +284,12 @@ public class MockedServer
                 if (_directionMinLimit != null && _direction < _directionMinLimit) return;
                 if (_directionMaxLimit != null && _direction > _directionMaxLimit) return;
 
+                if (_gunDirectionMinLimit != null && _gunDirection < _gunDirectionMinLimit) return;
+                if (_gunDirectionMaxLimit != null && _gunDirection > _gunDirectionMaxLimit) return;
+
+                if (_radarDirectionMinLimit != null && _radarDirection < _radarDirectionMinLimit) return;
+                if (_radarDirectionMaxLimit != null && _radarDirection > _radarDirectionMaxLimit) return;
+
                 _botIntent = JsonConverter.FromJson<BotIntent>(messageJson);
                 _botIntentEvent.Set();
 
@@ -253,6 +299,8 @@ public class MockedServer
                 // Update states
                 _speed += _speedIncrement;
                 _direction += _turnIncrement;
+                _gunDirection += _gunTurnIncrement;
+                _radarDirection += _radarTurnIncrement;
                 break;
         }
     }
@@ -260,6 +308,15 @@ public class MockedServer
     private static void OnError(Exception ex)
     {
         throw new InvalidOperationException("MockedServer error", ex);
+    }
+
+    private static int FindAvailablePort()
+    {
+        var listener = new TcpListener(IPAddress.Loopback, 0);
+        listener.Start();
+        var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+        listener.Stop();
+        return port;
     }
 
     private static void SendServerHandshake(IWebSocketConnection conn)
@@ -335,14 +392,15 @@ public class MockedServer
             X = BotX,
             Y = BotY,
             Direction = _direction,
-            GunDirection = BotGunDirection,
-            RadarDirection = BotRadarDirection,
+            GunDirection = _gunDirection,
+            RadarDirection = _radarDirection,
             RadarSweep = BotRadarSweep,
             Speed = _speed,
             TurnRate = turnRate,
             GunTurnRate = gunTurnRate,
             RadarTurnRate = radarTurnRate,
-            GunHeat = _gunHeat
+            GunHeat = _gunHeat,
+            EnemyCount = BotEnemyCount
         };
         tickEvent.BotState = state;
 
@@ -352,6 +410,8 @@ public class MockedServer
         {
             bulletState1, bulletState2
         };
+
+        var events = new HashSet<Event>();
 
         var scannedEvent = new ScannedBotEvent()
         {
@@ -365,7 +425,19 @@ public class MockedServer
             ScannedBotId = 2,
             ScannedByBotId = 1
         };
-        tickEvent.Events = new HashSet<Event> { scannedEvent };
+        events.Add(scannedEvent);
+
+        if (_botIntent != null && _botIntent.Firepower != null)
+        {
+            var bulletEvt = new Schema.BulletFiredEvent
+            {
+                Type = EnumUtil.GetEnumMemberAttrValue(MessageType.BulletFiredEvent),
+                Bullet = CreateBulletState(99)
+            };
+            events.Add(bulletEvt);
+        }
+
+        tickEvent.Events = events;
 
         Send(conn, tickEvent);
     }

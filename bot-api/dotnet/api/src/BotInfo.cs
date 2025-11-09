@@ -311,7 +311,7 @@ public sealed class BotInfo
     }
 
     /// <summary>
-    /// The platform used for running the bot, e.g., ".Net 6.0" (optional).
+    /// The platform used for running the bot, e.g., ".NET 6.0" (optional).
     ///
     /// <inheritdoc cref="MaxPlatformLength"/>
     /// </summary>
@@ -367,7 +367,7 @@ public sealed class BotInfo
     ///   "url": "https://somewhere.net/MyBot",
     ///   "countryCodes": "us",
     ///   "gameTypes": "classic, melee, 1v1",
-    ///   "platform": ".Net 6.0",
+    ///   "platform": ".NET 6.0",
     ///   "programmingLang": "C# 10.0",
     ///   "initialPosition": "50,50, 90"
     /// }

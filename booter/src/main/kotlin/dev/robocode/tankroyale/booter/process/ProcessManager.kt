@@ -3,9 +3,10 @@ package dev.robocode.tankroyale.booter.process
 import dev.robocode.tankroyale.booter.model.BootEntry
 import dev.robocode.tankroyale.booter.util.Env
 import dev.robocode.tankroyale.booter.util.Log
-import dev.robocode.tankroyale.booter.util.OperatingSystemCheck
-import dev.robocode.tankroyale.booter.util.OperatingSystemCheck.OperatingSystemType.Mac
-import dev.robocode.tankroyale.booter.util.OperatingSystemCheck.OperatingSystemType.Windows
+import dev.robocode.tankroyale.common.util.Platform
+import dev.robocode.tankroyale.common.util.Platform.PlatformType.Mac
+import dev.robocode.tankroyale.common.util.Platform.PlatformType.Windows
+import dev.robocode.tankroyale.common.util.Platform.isWindows
 import java.nio.file.Files
 import java.nio.file.Files.list
 import java.nio.file.Path
@@ -63,7 +64,7 @@ class ProcessManager {
      */
     fun stopBotProcess(pid: Pid): Boolean {
         val process = processes[pid] ?: run {
-            println("lost: $pid")
+            println("lost $pid")
             return false
         }
 
@@ -82,15 +83,76 @@ class ProcessManager {
      * Stop a specific process and remove it from the process map.
      */
     private fun stopProcess(process: Process) {
-        process.apply {
-            val pid = pid()
-            onExit().thenAccept {
-                processes.remove(pid)
-                println("stopped $pid")
-            }
-            descendants().forEach { it.destroyForcibly() }
-            destroyForcibly()
+        val pid = process.pid()
+
+        registerProcessCleanup(process, pid)
+        terminateProcessTree(process)
+        verifyAndForceTermination(process, pid)
+    }
+
+    private fun registerProcessCleanup(process: Process, pid: Long) {
+        process.onExit().thenAccept {
+            processes.remove(pid)
+            println("stopped $pid")
         }
+    }
+
+    private fun terminateProcessTree(process: Process) {
+        terminateDescendants(process)
+        gracefullyTerminateProcess(process)
+        forceTerminateRemainingProcesses(process)
+    }
+
+    private fun terminateDescendants(process: Process) {
+        runCatching {
+            process.toHandle().descendants().forEach { child ->
+                runCatching { child.destroy() }
+            }
+        }
+    }
+
+    private fun gracefullyTerminateProcess(process: Process) {
+        runCatching { process.destroy() }
+    }
+
+    private fun forceTerminateRemainingProcesses(process: Process) {
+        runCatching {
+            process.toHandle().descendants().forEach { child ->
+                if (child.isAlive) {
+                    runCatching { child.destroyForcibly() }
+                }
+            }
+        }
+
+        runCatching {
+            if (process.isAlive) {
+                process.destroyForcibly()
+            }
+        }
+    }
+
+    private fun verifyAndForceTermination(process: Process, pid: Long) {
+        if (isProcessStillAlive(process) && isWindows) {
+            runTaskKillTree(pid)
+        }
+    }
+
+    private fun isProcessStillAlive(process: Process): Boolean {
+        return runCatching {
+            process.toHandle().isAlive
+        }.getOrDefault(true)
+    }
+
+    /**
+     * Uses Windows taskkill to terminate a process tree as a last resort.
+     */
+    private fun runTaskKillTree(pid: Long) {
+        try {
+            ProcessBuilder("taskkill", "/PID", pid.toString(), "/T", "/F")
+                .redirectErrorStream(true)
+                .start()
+                .waitFor()
+        } catch (_: Exception) { }
     }
 
     // BOT BOOTING
@@ -186,7 +248,7 @@ class ProcessManager {
                 return
             }
 
-            findBootScriptOrNull(botDir)?.let { scriptPath ->
+            findBootScriptOrNull(botDir)?.let { _ ->
                 bootBot(botDir, team, getBootEntry)?.let { process ->
                     botProcesses.add(process)
                 } ?: run {
@@ -303,7 +365,7 @@ class ProcessManager {
      * Set up environment variables for a bot process.
      */
     private fun setupBotEnvironment(envMap: MutableMap<String, String?>, bootEntry: BootEntry, team: Team? = null) {
-        // Set server properties
+        // Set server and bot properties
         setEnvVars(envMap, bootEntry)
 
         // Set team-specific properties if this is part of a team
@@ -335,7 +397,7 @@ class ProcessManager {
     /**
      * Find the appropriate boot script based on the current operating system.
      */
-    private fun findOsScript(botDir: Path): Path? = when (OperatingSystemCheck.getOperatingSystemType()) {
+    private fun findOsScript(botDir: Path): Path? = when (Platform.operatingSystemType) {
         Windows -> findWindowsScript(botDir)
         Mac -> findMacOsScript(botDir)
         else -> findFirstUnixScript(botDir)

@@ -619,13 +619,13 @@ public interface IBaseBot {
     void setInterruptible(boolean interruptible);
 
     /**
-     * Sets the gun to adjust for the bot´s turn when setting the gun turn rate. So the gun behaves
-     * like it is turning independent of the bot´s turn.
+     * Sets the gun to adjust for the bot's turn when setting the gun turn rate. So the gun behaves
+     * like it is turning independent of the bot's turn.
      *
-     * <p>Ok, so this needs some explanation: The gun is mounted on the bot´s body. So, normally, if
+     * <p>Ok, so this needs some explanation: The gun is mounted on the bot's body. So, normally, if
      * the bot turns 90 degrees to the right, then the gun will turn with it as it is mounted on top
-     * of the bot´s body. To compensate for this, you can adjust the gun for the bot´s turn. When this
-     * is set, the gun will turn independent of the bot´s turn.
+     * of the bot's body. To compensate for this, you can adjust the gun for the bot's turn. When this
+     * is set, the gun will turn independent of the bot's turn.
      *
      * <p>Note: This property is additive until you reach the maximum the gun can turn {@link
      * Constants#MAX_GUN_TURN_RATE}. The "adjust" is added to the amount, you set for turning the bot by the
@@ -644,12 +644,12 @@ public interface IBaseBot {
     void setAdjustGunForBodyTurn(boolean adjust);
 
     /**
-     * Checks if the gun is set to adjust for the bot turning, i.e. to turn independent of the bot´s
+     * Checks if the gun is set to adjust for the bot turning, i.e. to turn independent of the bot's
      * body turn.
      *
      * <p>This call returns {@code true} if the gun is set to turn independent of the turn of the
-     * bot´s body. Otherwise, {@code false} is returned, meaning that the gun is set to turn with the
-     * bot´s body turn.
+     * bot's body. Otherwise, {@code false} is returned, meaning that the gun is set to turn with the
+     * bot's body turn.
      *
      * @return {@code true} if the gun is set to turn independent of the body turning; {@code false} if
      * the gun is set to turn with the body turning (default).
@@ -665,7 +665,7 @@ public interface IBaseBot {
      * Sets the radar to adjust for the body's turn when setting the radar turn rate. So the radar
      * behaves like it is turning independent of the body's turn.
      *
-     * <p>Ok, so this needs some explanation: The radar is mounted on the gun, and the gun is mounted on the bot´s body.
+     * <p>Ok, so this needs some explanation: The radar is mounted on the gun, and the gun is mounted on the bot's body.
      * So, normally, if the bot turns 90 degrees to the right, the gun turns, as does the radar. Hence, if the bot
      * turns 90 degrees to the right, then the gun and radar will turn with it as the radar is mounted on top of the
      * gun. To compensate for this, you can adjust the radar for the body turn. When this is set, the radar will turn
@@ -1399,7 +1399,7 @@ public interface IBaseBot {
     }
 
     /**
-     * Calculates the direction (angle) from the bot´s coordinates to a point x,y.
+     * Calculates the direction (angle) from the bot's coordinates to a point x,y.
      *
      * @param x is the x coordinate of the point.
      * @param y is the y coordinate of the point.
@@ -1410,7 +1410,7 @@ public interface IBaseBot {
     }
 
     /**
-     * Calculates the bearing (delta angle) between the current direction of the bot´s body and the
+     * Calculates the bearing (delta angle) between the current direction of the bot's body and the
      * direction to the point x,y.
      *
      * @param x is the x coordinate of the point.
@@ -1422,7 +1422,7 @@ public interface IBaseBot {
     }
 
     /**
-     * Calculates the bearing (delta angle) between the current direction of the bot´s gun and the
+     * Calculates the bearing (delta angle) between the current direction of the bot's gun and the
      * direction to the point x,y.
      *
      * @param x is the x coordinate of the point.
@@ -1434,7 +1434,7 @@ public interface IBaseBot {
     }
 
     /**
-     * Calculates the bearing (delta angle) between the current direction of the bot´s radar and the
+     * Calculates the bearing (delta angle) between the current direction of the bot's radar and the
      * direction to the point x,y.
      *
      * @param x is the x coordinate of the point.

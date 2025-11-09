@@ -6,7 +6,7 @@ import java.util.Random;
 // ------------------------------------------------------------------
 // Corners
 // ------------------------------------------------------------------
-// A sample bot original made for Robocode by Mathew Nelson.
+// A sample bot originally made for Robocode by Mathew Nelson.
 //
 // This robot moves to a corner, then rotates its gun back and forth
 // scanning for enemies. If it performs poorly in a round, it will

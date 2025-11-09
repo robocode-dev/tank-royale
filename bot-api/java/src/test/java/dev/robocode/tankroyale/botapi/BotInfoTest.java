@@ -1,6 +1,8 @@
 package dev.robocode.tankroyale.botapi;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -30,6 +32,66 @@ class BotInfoTest {
     static final String PLATFORM = " JVM 19 ";
     static final String PROGRAMMING_LANGUAGE = " Java 19 ";
     static final InitialPosition INITIAL_POSITION = InitialPosition.fromString("  10, 20, 30  ");
+
+    @Test
+    @DisplayName("TR-API-VAL-001 BotInfo required fields")
+    @Tag("VAL")
+    @Tag("TR-API-VAL-001")
+    void test_TR_API_VAL_001_required_fields() {
+        // Arrange
+        var name = "MyBot";
+        var version = "1.0";
+        var authors = List.of("Author 1", "Author 2");
+
+        // Act
+        var info = new BotInfo(name, version, authors,
+                null, null, null, null, null, null, null);
+
+        // Assert
+        assertThat(info.getName()).isEqualTo(name);
+        assertThat(info.getVersion()).isEqualTo(version);
+        assertThat(info.getAuthors()).isEqualTo(authors);
+
+        // Optional fields default/processing
+        assertThat(info.getDescription()).isNull();
+        assertThat(info.getHomepage()).isNull();
+        assertThat(info.getCountryCodes()).isEqualTo(getLocalCountryCodeAsList());
+        assertThat(info.getGameTypes()).isEmpty();
+        assertThat(info.getPlatform()).isEqualTo("Java Runtime Environment (JRE) " + System.getProperty("java.version"));
+        assertThat(info.getProgrammingLang()).isNull();
+        assertThat(info.getInitialPosition()).isNull();
+    }
+
+    @Test
+    @DisplayName("TR-API-VAL-002 BotInfo validation: invalid fields raise/throw")
+    @Tag("VAL")
+    @Tag("TR-API-VAL-002")
+    void test_TR_API_VAL_002_invalid_fields_validation() {
+        // Required non-blank name
+        var builder = prefilledBuilder().setName("   ");
+        var e1 = assertThrows(IllegalArgumentException.class, builder::build);
+        assertThat(e1.getMessage()).containsIgnoringCase("'name' cannot be null, empty or blank");
+
+        // Required non-blank version
+        var builder2 = prefilledBuilder().setVersion("\t ");
+        var e2 = assertThrows(IllegalArgumentException.class, builder2::build);
+        assertThat(e2.getMessage()).containsIgnoringCase("'version' cannot be null, empty or blank");
+
+        // Max lengths
+        var builder3 = prefilledBuilder().setName(stringOfLength(MAX_NAME_LENGTH + 1));
+        var e3 = assertThrows(IllegalArgumentException.class, builder3::build);
+        assertThat(e3.getMessage()).containsIgnoringCase("'name' length exceeds");
+
+        // Authors rules: empty list
+        var builder4 = prefilledBuilder().setAuthors(List.of());
+        assertThrows(IllegalArgumentException.class, builder4::build);
+
+        // Game type too long
+        var tooLongGameType = stringOfLength(MAX_GAME_TYPE_LENGTH + 1);
+        var builder5 = prefilledBuilder().setGameTypes(Set.of(tooLongGameType));
+        var e5 = assertThrows(IllegalArgumentException.class, builder5::build);
+        assertThat(e5.getMessage()).containsIgnoringCase("'gameTypes'");
+    }
 
     @Nested
     class NameTest {

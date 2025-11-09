@@ -32,7 +32,7 @@ class ImportTestCase(unittest.TestCase):
 
         # Check for the specific schema path that setup.py uses
         schema_path_expected_by_setup = (
-            "generated/robocode_tank_royale/tank_royale/schema"
+            "generated/robocode_tank_royale/schema"
         )
         if os.path.exists(schema_path_expected_by_setup):
             print(

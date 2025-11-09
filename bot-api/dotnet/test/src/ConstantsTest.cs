@@ -4,6 +4,7 @@ using Robocode.TankRoyale.BotApi;
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 [TestFixture]
+[Description("TR-API-VAL-005 Constants integrity")]
 public class ConstantsTest
 {
     private const double Eps = 1e-10;

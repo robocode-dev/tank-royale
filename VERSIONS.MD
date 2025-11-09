@@ -1,24 +1,98 @@
-## 📦 0.33.0 - Added Recording and Replays
-
-This version adds support for recording and replaying battles (#55: Game replays). All credits go
-to [Jan Durovec](https://github.com/jandurovec) for this cool feature! 🤩
-
-It is now possible to record a battle and replay it later. This is useful for debugging and for replaying battles that
-you have recorded. When replaying a battle, you can see the replay timeline and seek to a specific point in the battle.
-Skulls on the timeline show when a bot has killed.
-
-Note that the replays also make it possible to study the standard output of the bots in the bot consoles and also see
-the properties and events at specific points in the battle.
+## 📦 ???
 
 ### 🚀 Improvements
+
+- GUI
+    - #174: Prevent overwriting UI scale property (`sun.java2d.uiScale`) for high DPI displays if already set (via
+      command line). Thanks goes to [David Martinez Peña](https://github.com/martinezpenya) 👍
+        - Fixed for the `sun.java2d.d3d` and `sun.java2d.opengl` as well. 
+
+- Updated the devcontainer so it uses the current and full tech stack necessary to build all of Robocode Tank Royale. 
+
+## 📦 0.34.0 – Python Support + GUI Improvements – 19-Oct-2025
+
+The Python Bot API, sample bots, and documentation are now complete. 🎉  
+We also added Spanish, Catalan/Valencian, and Danish translations. New translations are always welcome!  
+Additionally, we introduced UI improvements such as UI scaling and a volume slider in the options.
+
+### 🚀 Improvements
+
+- Bot API
+    - #128: Python Bot API + sample bots.
+        - A huge thank-you, [Yang Li](https://github.com/yangli2) for the tremendous effort in making this a reality! ❤️
+    - .NET version has been updated to .NET 8 and C# 12.
+
+- GUI
+    - #168: Added GUI Options dialog with a UI scale setting (100%, 125%, 150%, 175%, 200%, 250%, 300%).
+    - #168: Applied full-UI HiDPI scaling using the JVM property `sun.java2d.uiScale`, based on the saved setting.
+        - Thanks to [David Martinez Peña](https://github.com/martinezpenya) for proposing the solution that made this
+          possible. 💪
+    - Added volume slider in the Sound Options dialog.
+    - #169: Added Spanish and Catalan/Valencian translations.
+        - Thank you, [David Martinez Peña](https://github.com/martinezpenya), for contributing the first translations
+          ever—and for helping test the Python API! ❤️
+    - Added Danish translations as well.
+    - Added an option to switch between Spanish, English, and Danish in the GUI Options dialog.
+
+## 📦 0.33.1 - Fixes for Recording and Replays - 08-Sep-2025
+
+### 🐞 Bug Fixes
+
+- Maven Central:
+    - Fixed the names of the artifacts in the Maven Central repository, which were lacking the `robocode-tankroyale`
+      prefix.
+- GUI:
+    - #162: Corrected the order of death indicators (skulls) to accurately reflect in-game events.
+    - Auto-Record Bug Fix: Resolved an issue where battles were still being recorded after disabling the auto-record
+      feature.
+
+### 🚀 Improvements
+
+- GUI:
+    - #165: Enhanced "🔴REC" Indicator: Improved the visual design of the recording indicator for better clarity and
+      user experience.
+
+## 📦 0.33.0 - Added Recording and Replays - 06-Sep-2025
+
+This version adds support for recording and replaying battles (#55: Game replays). All credits go
+to [Jan Durovec](https://github.com/jandurovec) for implementing this cool feature! 🤩
+
+The new recording and replay functionality allows you to:
+
+- Record battles and save them for later replay
+- View the replay timeline and seek to specific points in time
+- See skull markers on the timeline indicating when bots were killed
+- Study the standard output from bots in their console windows
+- Inspect bot properties and events at any point during the battle
+
+This feature is particularly useful for:
+
+- Debugging bot behavior
+- Analyzing past battles in detail
+- Learning from recorded matches
+
+### 🚀 Improvements
+
+- Server and GUI:
+    - Add support for enabling/disabling server secrets in GUI and server. Server secrets will be disabled by default.
+      In earlier versions, the server secrets were enabled by default, which could be annoying when you want to test
+      your bots without having to worry about the server secrets.
 
 - Recorder:
     - #55: A new **recorder** application was added, which is a command-line tool for recording battles.
 
-- GUI app:
+- GUI:
     - #159: Replay feature added.
     - #160: Added replay timeline and allow seeking.
     - #161: Updated round/turn indicator in the arena panel.
+
+### ⚠️ Breaking Changes
+
+- GUI:
+    - The GUI configuration file has been renamed from `config.properties` to `gui.properties`. If you have a local
+      `config.properties`, rename it to `gui.properties` to retain your settings.
+    - The game type setup file has been renamed from `games.properties` to `game-setups.properties`. Rename your
+      existing file to `game-setups.properties` to preserve custom setups.
 
 ### 🐞 Bug Fixes
 
@@ -87,12 +161,12 @@ If you are using `Color` and the `getGraphics()` method or `Graphics` property, 
 - Avoid using platform-specific features and frameworks that are not compatible across all platforms and operating
   systems.
 - Enhance the speed of SVG serialization, reduce RAM usage, and decrease distribution archive sizes.
-- Standardize the API for debug painting across all Bot APIs (Java, .Net, Python, etc.).
+- Standardize the API for debug painting across all Bot APIs (Java, .NET, Python, etc.).
 
 **Specific Updates:**
 
 - **Java:** A new package `dev.robocode.tankroyale.botapi.graphics` has been introduced.
-- **.Net:** A new namespace `Robocode.TankRoyale.BotApi.Graphics` has been introduced.
+- **.NET:** A new namespace `Robocode.TankRoyale.BotApi.Graphics` has been introduced.
 
 **Additional Information:**
 
@@ -105,7 +179,7 @@ If you are using `Color` and the `getGraphics()` method or `Graphics` property, 
     - #144: .NET bots run only on Windows since 0.30.0.
         - SvgNet requires `System.Drawing`, which is not available on Linux and macOS. Hence, the new Robocode specific
           `IGraphics` interface must be used instead.
-    - Fixed the generated bot Bash scripts for .Net so `dotnet build` will be called if the `bin` folder is missing.
+    - Fixed the generated bot Bash scripts for .NET so `dotnet build` will be called if the `bin` folder is missing.
 - GUI:
     - Fixed multiple issues with the "No bot directory root has been configured" error dialog.
 
@@ -149,7 +223,7 @@ This version provides bug fixes to the sample bots only.
 
 **Graphical debugging**, known from the original game, has been implemented using SVG with the [JSVG] library. This
 allows you to paint graphics objects on the battlefield while the game is running, making it easier to visualize
-elements such as estimated target positions. This feature is available for both the Java API and .Net API.
+elements such as estimated target positions. This feature is available for both the Java API and .NET API.
 
 #### Java API
 
@@ -159,10 +233,10 @@ elements such as estimated target positions. This feature is available for both 
 - Thanks also to [Jannis Weis](https://github.com/weisJ) for providing [JSVG] and helping fix an issue with using the
   correct libraries for JSVG. Make sure to [buy him a coffee](https://buymeacoffee.com/weisj). 😊
 
-#### .Net API
+#### .NET API
 
 - Get a `SvnNet.SvgGraphics` context for painting by using the `Graphics` getter.
-- The .Net API uses the [SvgNet](https://github.com/managed-commons/SvgNet) library. The `SvgGraphics` is context used
+- The .NET API uses the [SvgNet](https://github.com/managed-commons/SvgNet) library. The `SvgGraphics` is context used
   similarly to
   [System.Drawing.Graphics](https://learn.microsoft.com/en-us/dotnet/api/system.drawing.graphics?view=windowsdesktop-6.0).
 
@@ -250,7 +324,7 @@ This version fixes various issues, some found when running legacy bots with the 
 
 ### 🚀 Improvements
 
-- Bot API for .Net:
+- Bot API for .NET:
     - Improved performance of event handling by replacing `ImmutableList` and `ImmutableHashSet` with `List` and
       `HashSet` protected with `lock` blocks.
 - Bot API for Java:
@@ -269,7 +343,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - #119: Battle was not starting on Windows 11 and 10 after installing Docker Linux subsystem.
     - Bridged bots run multiple threads after round 2 due to old thread(s) hanging that could not be stopped.
     - Bridged bots could not be restarted as they got a connection error with the WebSocket when restarting.
-    - .Net bots sometimes exited when running at max speed without any exceptions occurring.
+    - .NET bots sometimes exited when running at max speed without any exceptions occurring.
 
 ## 📦 0.26.1 - Various bug fixes - 03-Nov-2024
 
@@ -478,7 +552,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - Added `stop(boolean overwrite)` and `setStop(boolean overwrite)` to overwrite the saved movement from a previous
       call to `setStop()` with current movement values. These methods provide backwards compatibility with the original
       Robocode with the [Robocode API Bridge] (in progress).
-    - Due to the removal of Java's `Thread.kill()` and .Net's `Thread.Abort()`, the main thread of the bot is no longer
+    - Due to the removal of Java's `Thread.kill()` and .NET's `Thread.Abort()`, the main thread of the bot is no longer
       being killed by those methods is those threads could not be interrupted. Instead, the bot process it shut down
       with an error message:
       `The thread of the bot could not be interrupted causing the bot to hang. So the bot was stopped by force.`
@@ -563,7 +637,7 @@ This version fixes various issues, some found when running legacy bots with the 
 - Server:
     - Allow bots to connect to non-localhost addresses (PR [#69]).
 - Bot API:
-    - Fixed broken unit test for .Net.
+    - Fixed broken unit test for .NET.
 - GUI:
     - Fixed issue, where the battle graphics was not displayed when starting the battle.
     - Fixed calculation of 1st, 2nd, and 3rd places.
@@ -607,7 +681,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - The properties `sun.java2d.d3d`, `sun.java2d.noddraw`, and `sun.java2d.opengl` is now omitted under macOS.
     - Fixed label colors for fields showing country codes (with flags).
     - Sometimes flags were "empty" when clicking on a joined bot.
-- Bot API for .Net:
+- Bot API for .NET:
     - Issue where the `Game Types` field was overwritten by `Country Codes` (could be seen on the UI).
 
 ## 📦 0.19.0 - Added bot console windows - 28-Jan-2023
@@ -652,9 +726,9 @@ This version fixes various issues, some found when running legacy bots with the 
       been set explicitly on the API.~~
     - Reading the turn rates and target speed for the current turn did not reflect if the turn rate and/or target speed
       had been set for the current turn.
-- Bot API for .Net:
+- Bot API for .NET:
     - Setting the max speed and max turn rates for the body, gun, and radar did not work.
-- GUI app:
+- GUI:
     - Fixed rendering issues on Windows (and Linux?) when using accelerated hardware, by setting these Java properties
     - as defaults:
         - `sun.java2d.d3d=false` (turn off use of Direct3D)
@@ -667,7 +741,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - `addCondition()` and `removeCondition()` now returns a boolean value instead of void.
     - Condition can take an optional lambda expression as an input parameter as an alternative to overriding the test()
       method.
-    - Added more test units, which did show bugs within the Bot API for both Java and .Net.
+    - Added more test units, which did show bugs within the Bot API for both Java and .NET.
     - The event priority order was reversed to match the order used with the original Robocode.
 
 ## 📦 0.17.4 - Maintenance - 16-Oct-2022
@@ -678,13 +752,13 @@ This version fixes various issues, some found when running legacy bots with the 
     - Added `--tps` option to the server for setting the initial Turns Per Second (TPS).
     - Fire assistant is now only activated, when both the radar and gun are pointing in the same direction for two turns
       in a row (like original Robocode).
-- GUI App:
+- GUI:
     - Switched the order of the Game Type dropdown and Setup Rules button.
     - The positioning of the battle view is now controlled by dragging the mouse, instead of clicking.
     - Now sends the current tps to the server when changing game type.
-    - Added `Help` menu item under the Help menu, which opens browser to the documentation of the GUI application.
+    - Added `Help` menu item under the Help menu, which opens browser to the documentation of the GUI.
 - Release
-    - All Java artifacts are now sent to Maven Central, i.e. Bot API, GUI Application, Server, and Booter.
+    - All Java artifacts are now sent to Maven Central, i.e. Bot API, GUI, Server, and Booter.
     - New assets are now added to releases: Server and Booter
     - Added build scripts to automated creating (draft) releases using GitHub REST API.
     - Improved layout for release notes.
@@ -693,7 +767,7 @@ This version fixes various issues, some found when running legacy bots with the 
 
 ### 🐞 Bug Fixes
 
-- Bot API and GUI App: Fixed various concurrency issues.
+- Bot API and GUI: Fixed various concurrency issues.
 
 ## 📦 0.17.3 - Maintenance - 02-Oct-2022
 
@@ -720,9 +794,9 @@ This version fixes various issues, some found when running legacy bots with the 
 ### 🚀 Improvements
 
 - GUI/Sounds: [#4: Fire and Explosion Sounds:
-    - Added feature to play sounds to the GUI application.
+    - Added feature to play sounds to the GUI.
     - Added Sound Options to configure sounds.
-    - Note that sound files are distributed independently besides the gui application from the [sounds releases].
+    - Note that sound files are distributed independently besides the GUI from the [sounds releases].
 - GUI: Moved the ~~Dismiss~~OK button on the Bot Root Directories configuration down under the Add and Remove buttons,
   and adjusted the size of the dialog.
 
@@ -933,7 +1007,7 @@ Bot info:
 
 ### 🐞 Bug Fixes
 
-- Bot API for .Net:
+- Bot API for .NET:
     - Setting Bot.TargetSpeed did not set the distance to travel.
     - Fixed issue with turning the body, gun, and radar as first and only thing ([#22], [#23]).
     - Fixed issue with event queue reaching max after bot has terminated execution ([#23]).
@@ -947,8 +1021,8 @@ Bot info:
 - Bot APIs:
     - Fixed issue with rescanning and interrupting current event handler. Redesigned the event queue.
     - Fixed issue with dangling threads not been stopped (interrupted) correctly.
-- Bot API for .Net:
-    - Fixed issue with country codes (on macOS) which also caused boot up problems for .Net based bots running under
+- Bot API for .NET:
+    - Fixed issue with country codes (on macOS) which also caused boot up problems for .NET based bots running under
       macOS ([#20]).
     - Fixed issue with bots stopping doing actions when battle is restarted. E.g. the Corners sample bot was affected by
       this issue.
@@ -960,12 +1034,12 @@ Bot info:
 - Sample bots:
     - Optimized TrackFire after fixing rescanning issue.
 
-## 📦 0.13.0 - Bot API for .Net 6 - 03-May-2022
+## 📦 0.13.0 - Bot API for .NET 6 - 03-May-2022
 
 #### Changes
 
 - Bot API:
-    - Upgraded the .Net version of the bot API for .Net 6.0 as .Net 5.0 is soon EOL.
+    - Upgraded the .NET version of the bot API for .NET 6.0 as .NET 5.0 is soon EOL.
     - The id was removed from `BotResults`, and `GameEndedEvent` will only return a single `BotResult` containing
       the battle results for the bot (instead of a list containing results from all bots).
     - Added setting and getting 'adjusting radar for body turn'.
@@ -985,7 +1059,7 @@ Bot info:
 
 - Bot API:
     - Blocking bot functions do not stop bot after finishing ([#17]).
-    - Fixed issue where event queue would overflow with unhandled events when a Bot´s `run()` method has ended.
+    - Fixed issue where event queue would overflow with unhandled events when a bot's `run()` method has ended.
 - GUI:
     - The 'Start game' button is now disabled when the minimum or maximum number of participants is not met.
 
@@ -1043,7 +1117,7 @@ Bot info:
 - Fixes for building Java artifacts to deploy to Maven artifactory.
 - Bot API:
     - Replaced the environment variable BOT_URL (deprecated) with BOT_HOMEPAGE.
-- Bot API for .Net:
+- Bot API for .NET:
     - Added missing public Bot(BotInfo, Uri, string serverSecret) constructor.
 
 #### Changes
@@ -1077,8 +1151,8 @@ Bot info:
   does not need `sudo`)
 - Bot APIs: Moved constants to a Constants class.
 - Bot APIs: Introduced a Color class for representing colors.
-- Bot API for .Net: Some Set/Get methods were refactored into properties for e.g. speed, turn rates, and colors.
-- Bot API for .Net: Lots of optimizations were made.
+- Bot API for .NET: Some Set/Get methods were refactored into properties for e.g. speed, turn rates, and colors.
+- Bot API for .NET: Lots of optimizations were made.
 
 ### 🚀 Improvements
 
@@ -1095,7 +1169,7 @@ Bot info:
 
 [installation guide]: https://robocode-dev.github.io/tank-royale/articles/installation.html "Installing and running Robocode"
 
-[GUI Application]: https://robocode-dev.github.io/tank-royale/articles/gui.html "The GUI application"
+[GUI]: https://robocode-dev.github.io/tank-royale/articles/gui.html "The Graphical User Interface (GUI)"
 
 [BotInfo/BotHandshake]: https://github.com/robocode-dev/tank-royale/blob/master/schema/schemas/bot-handshake.yaml
 

@@ -2,13 +2,10 @@ import build.csproj.generateBotCsprojFile
 import java.io.PrintWriter
 import java.nio.file.Files.*
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
 description = "Robocode Tank Royale sample bots for C#"
 
 version = libs.versions.tankroyale.get()
-
-val archiveFilename = "sample-bots-csharp-${version}.zip"
 
 plugins {
     base // for the clean and build task
@@ -20,48 +17,37 @@ tasks {
 
     fun Path.botName() = fileName.toString()
 
-    fun isBotProjectDir(dir: Path): Boolean {
-        val botName = dir.botName()
-        return !botName.startsWith(".") && botName !in listOf("build", "assets")
-    }
+    // Shared helpers provided by parent sample-bots/build.gradle.kts
+    @Suppress("UNCHECKED_CAST")
+    val isBotProjectDir = rootProject.extra["isBotProjectDir"] as (Path) -> Boolean
+    @Suppress("UNCHECKED_CAST")
+    val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
-    fun copyBotFiles(projectDir: Path, botArchivePath: Path) {
-        for (file in list(projectDir)) {
-            copy(file, botArchivePath.resolve(file.fileName), REPLACE_EXISTING)
-        }
-    }
+    fun generateShellScript(): String = """
+        #!/bin/sh
+        if [ ! -d "bin" ]; then
+          dotnet build
+        fi
+        dotnet run --no-build
+        """.trimIndent()
+
+    fun generateBatchScript(): String = """
+        if not exist bin\ (
+            dotnet build
+        )
+        dotnet run --no-build
+        """.trimIndent()
 
     fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
         val botName = projectDir.botName()
-        val file = botArchivePath.resolve("$botName.$fileExt").toFile()
-        val printWriter = object : PrintWriter(file) {
-            override fun println() {
-                write(newLine)
-            }
+        val scriptContent = when (fileExt) {
+            "sh" -> generateShellScript()
+            "cmd" -> generateBatchScript()
+            else -> throw IllegalArgumentException("Unsupported file extension: $fileExt")
         }
-        printWriter.use {
-            when (fileExt) {
-                "sh" -> {
-                    it.println("""#!/bin/sh
-if [ ! -d "bin" ]; then
-  dotnet build
-fi
-dotnet run --no-build
-"""
-                    )
-                }
 
-                "cmd" -> {
-                    it.println("""
-if not exist bin\ (
-  dotnet build >nul
-)
-dotnet run --no-build >nul
-"""
-                    )
-                }
-            }
-        }
+        val file = botArchivePath.resolve("$botName.$fileExt").toFile()
+        file.writeText(scriptContent.replace("\n", newLine))
     }
 
     fun prepareBotFiles() {
@@ -83,33 +69,9 @@ dotnet run --no-build >nul
         }
     }
 
-    fun copyReadMeFile(projectDir: File, archivePath: Path) {
-        val filename = "ReadMe.md"
-        copy(File(projectDir, "assets/$filename").toPath(), archivePath.resolve(filename), REPLACE_EXISTING)
-    }
-
-    val build = named("build") {
+    named("build") {
         doLast {
             prepareBotFiles()
-            copyReadMeFile(projectDir, archiveDirPath)
         }
-    }
-
-    val zip by registering(Zip::class) {
-        dependsOn(build)
-
-        archiveFileName = archiveFilename
-        destinationDirectory = layout.buildDirectory
-        filePermissions {
-            user {
-                read = true
-                execute = true
-            }
-            other {
-                execute = true
-            }
-        }
-
-        from(archiveDir)
     }
 }

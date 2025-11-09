@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en"
+      data-content_root="../../../"
+      x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }"
+      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
+      class="scroll-smooth"
+      :class="{'dark': darkMode === 'dark' || (darkMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}"
+>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
+  
+    <title>bot_api.internal.websocket_handler | Robocode Tank Royale Bot API (Python) 0.34.0 documentation</title>
+    <meta property="og:title" content="bot_api.internal.websocket_handler | Robocode Tank Royale Bot API (Python) 0.34.0 documentation" />
+    <meta name="twitter:title" content="bot_api.internal.websocket_handler | Robocode Tank Royale Bot API (Python) 0.34.0 documentation" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e72c8e07" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/theme.css?v=42baaae4" />
+        <link rel="search" title="Search" href="../../../search.html" />
+        <link rel="index" title="Index" href="../../../genindex.html" />
+
+    <script>
+    <!-- Prevent Flash of wrong theme -->
+      const userPreference = localStorage.getItem('darkMode');
+      let mode;
+      if (userPreference === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        mode = 'dark';
+        document.documentElement.classList.add('dark');
+      } else {
+        mode = 'light';
+      }
+      if (!userPreference) {localStorage.setItem('darkMode', mode)}
+    </script>
+</head>
+  <body x-data="{ showSidebar: false, showScrollTop: false }" class="min-h-screen font-sans antialiased bg-background text-foreground" :class="{ 'overflow-hidden': showSidebar }">
+    <div x-cloak x-show="showSidebar" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" @click.self="showSidebar = false"></div><div id="page" class="relative flex flex-col min-h-screen"><a href="#content" class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100">
+      Skip to content
+    </a><header
+  class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
+    <div class="hidden mr-4 md:flex">
+      <a href="../../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.0 documentation</span>
+      </a></div><button
+      class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
+      type="button" @click="showSidebar = true">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" aria-hidden="true"
+        fill="currentColor">
+        <path
+          d="M152.587 825.087q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440Zm0-203.587q-19.152 0-32.326-13.174T107.087 576q0-19.152 13.174-32.326t32.326-13.174h320q19.152 0 32.326 13.174T518.087 576q0 19.152-13.174 32.326T472.587 621.5h-320Zm0-203.587q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440ZM708.913 576l112.174 112.174q12.674 12.674 12.674 31.826t-12.674 31.826Q808.413 764.5 789.261 764.5t-31.826-12.674l-144-144Q600 594.391 600 576t13.435-31.826l144-144q12.674-12.674 31.826-12.674t31.826 12.674q12.674 12.674 12.674 31.826t-12.674 31.826L708.913 576Z" />
+      </svg>
+      <span class="sr-only">Toggle navigation menu</span>
+    </button>
+    <div class="flex items-center justify-between flex-1 space-x-2 sm:space-x-4 md:justify-end">
+      <div class="flex-1 w-full md:w-auto md:flex-none"><form id="searchbox"
+      action="../../../search.html"
+      method="get"
+      class="relative flex items-center group"
+      @keydown.k.window.meta="$refs.search.focus()">
+  <input x-ref="search"
+          name="q"
+          id="search-input"
+          type="search"
+          aria-label="Search the docs"
+          placeholder="Search ..."
+          class="inline-flex items-center font-medium transition-colors bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background border border-input hover:bg-accent focus:bg-accent hover:text-accent-foreground focus:text-accent-foreground hover:placeholder-accent-foreground py-2 px-4 relative h-9 w-full justify-start rounded-[0.5rem] text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64" />
+  <kbd class="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none text-muted-foreground items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex group-hover:bg-accent group-hover:text-accent-foreground">
+    <span class="text-xs">⌘</span>
+    K
+  </kbd>
+</form>
+      </div>
+      <nav class="flex items-center space-x-1">
+        <button @click="darkMode = darkMode === 'light' ? 'dark' : 'light'"
+          class="relative inline-flex items-center justify-center px-0 text-sm font-medium transition-colors rounded-md hover:bg-accent hover:text-accent-foreground h-9 w-9"
+          type="button"
+          aria-label="Color theme switcher">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+            class="absolute transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0">
+            <path
+              d="M480 685q45.456 0 77.228-31.772Q589 621.456 589 576q0-45.456-31.772-77.228Q525.456 467 480 467q-45.456 0-77.228 31.772Q371 530.544 371 576q0 45.456 31.772 77.228Q434.544 685 480 685Zm0 91q-83 0-141.5-58.5T280 576q0-83 58.5-141.5T480 376q83 0 141.5 58.5T680 576q0 83-58.5 141.5T480 776ZM80 621.5q-19.152 0-32.326-13.174T34.5 576q0-19.152 13.174-32.326T80 530.5h80q19.152 0 32.326 13.174T205.5 576q0 19.152-13.174 32.326T160 621.5H80Zm720 0q-19.152 0-32.326-13.174T754.5 576q0-19.152 13.174-32.326T800 530.5h80q19.152 0 32.326 13.174T925.5 576q0 19.152-13.174 32.326T880 621.5h-80Zm-320-320q-19.152 0-32.326-13.174T434.5 256v-80q0-19.152 13.174-32.326T480 130.5q19.152 0 32.326 13.174T525.5 176v80q0 19.152-13.174 32.326T480 301.5Zm0 720q-19.152 0-32.326-13.17Q434.5 995.152 434.5 976v-80q0-19.152 13.174-32.326T480 850.5q19.152 0 32.326 13.174T525.5 896v80q0 19.152-13.174 32.33-13.174 13.17-32.326 13.17ZM222.174 382.065l-43-42Q165.5 327.391 166 308.239t13.174-33.065q13.435-13.674 32.587-13.674t32.065 13.674l42.239 43q12.674 13.435 12.555 31.706-.12 18.272-12.555 31.946-12.674 13.674-31.445 13.413-18.772-.261-32.446-13.174Zm494 494.761-42.239-43q-12.674-13.435-12.674-32.087t12.674-31.565Q686.609 756.5 705.38 757q18.772.5 32.446 13.174l43 41.761Q794.5 824.609 794 843.761t-13.174 33.065Q767.391 890.5 748.239 890.5t-32.065-13.674Zm-42-494.761Q660.5 369.391 661 350.62q.5-18.772 13.174-32.446l41.761-43Q728.609 261.5 747.761 262t33.065 13.174q13.674 13.435 13.674 32.587t-13.674 32.065l-43 42.239q-13.435 12.674-31.706 12.555-18.272-.12-31.946-12.555Zm-495 494.761Q165.5 863.391 165.5 844.239t13.674-32.065l43-42.239q13.435-12.674 32.087-12.674t31.565 12.674Q299.5 782.609 299 801.38q-.5 18.772-13.174 32.446l-41.761 43Q231.391 890.5 212.239 890t-33.065-13.174ZM480 576Z" />
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+            class="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100">
+            <path
+              d="M480 936q-151 0-255.5-104.5T120 576q0-138 90-239.5T440 218q25-3 39 18t-1 44q-17 26-25.5 55t-8.5 61q0 90 63 153t153 63q31 0 61.5-9t54.5-25q21-14 43-1.5t19 39.5q-14 138-117.5 229T480 936Zm0-80q88 0 158-48.5T740 681q-20 5-40 8t-40 3q-123 0-209.5-86.5T364 396q0-20 3-40t8-40q-78 32-126.5 102T200 576q0 116 82 198t198 82Zm-10-270Z" />
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </div>
+</header>
+
+    <div class="flex-1"><div class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside id="left-sidebar"
+  class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full shrink-0 overflow-y-auto border-r border-border md:sticky"
+  :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
+
+    <a href="../../../index.html" class="!justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.0 documentation</span>
+    </a>
+
+    <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
+      <div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">robocode_tank_royale</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/bot_api.html">bot_api package</a></li>
+</ul>
+</li>
+</ul>
+
+</nav>
+      </div>
+    </div>
+    <button type="button" @click="showSidebar = false"
+      class="absolute md:hidden right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+        stroke="none" class="h-4 w-4">
+        <path
+          d="M480 632 284 828q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536 576l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480 632Z" />
+      </svg>
+    </button>
+  </aside>
+        <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
+<div class="w-full min-w-0 mx-auto">
+<nav aria-label="breadcrumbs"
+     class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
+  <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
+     href="../../../index.html">
+    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.34.0 documentation</span>
+    <svg xmlns="http://www.w3.org/2000/svg"
+         height="18"
+         width="18"
+         viewBox="0 96 960 960"
+         aria-label="Home"
+         fill="currentColor"
+         stroke="none"
+         class="md:hidden">
+      <path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z" />
+    </svg>
+  </a>
+  
+<div class="mr-1">/</div><a class="hover:text-foreground overflow-hidden text-ellipsis whitespace-nowrap"
+       href="../../index.html">Module code</a>
+    
+<div class="mr-1">/</div><span aria-current="page"
+        class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">bot_api.internal.websocket_handler</span>
+</nav>
+
+    <div id="content" role="main">
+      <h1>Source code for bot_api.internal.websocket_handler</h1><div class="highlight"><pre>
+<span></span><code><span id="line-1"><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+</span><span id="line-2"><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+</span><span id="line-3"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+</span><span id="line-4"><span class="kn">import</span><span class="w"> </span><span class="nn">websockets</span>
+</span><span id="line-5"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
+</span><span id="line-6">
+</span><span id="line-7"><span class="kn">from</span><span class="w"> </span><span class="nn">..base_bot_abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseBotABC</span>
+</span><span id="line-8"><span class="kn">from</span><span class="w"> </span><span class="nn">..bot_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">BotInfo</span>
+</span><span id="line-9"><span class="kn">from</span><span class="w"> </span><span class="nn">..events</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="line-10">    <span class="n">ConnectedEvent</span><span class="p">,</span>
+</span><span id="line-11">    <span class="n">DisconnectedEvent</span><span class="p">,</span>
+</span><span id="line-12">    <span class="n">ConnectionErrorEvent</span><span class="p">,</span>
+</span><span id="line-13">    <span class="n">GameStartedEvent</span><span class="p">,</span>
+</span><span id="line-14">    <span class="n">GameEndedEvent</span><span class="p">,</span>
+</span><span id="line-15">    <span class="n">RoundStartedEvent</span><span class="p">,</span>
+</span><span id="line-16">    <span class="n">RoundEndedEvent</span><span class="p">,</span>
+</span><span id="line-17"><span class="p">)</span>
+</span><span id="line-18"><span class="kn">from</span><span class="w"> </span><span class="nn">.base_bot_internal_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseBotInternalData</span>
+</span><span id="line-19"><span class="kn">from</span><span class="w"> </span><span class="nn">.bot_event_handlers</span><span class="w"> </span><span class="kn">import</span> <span class="n">BotEventHandlers</span>
+</span><span id="line-20"><span class="kn">from</span><span class="w"> </span><span class="nn">.internal_event_handlers</span><span class="w"> </span><span class="kn">import</span> <span class="n">InternalEventHandlers</span>
+</span><span id="line-21"><span class="kn">from</span><span class="w"> </span><span class="nn">.json_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_json</span><span class="p">,</span> <span class="n">from_json</span>
+</span><span id="line-22"><span class="kn">from</span><span class="w"> </span><span class="nn">..initial_position</span><span class="w"> </span><span class="kn">import</span> <span class="n">InitialPosition</span>
+</span><span id="line-23"><span class="kn">from</span><span class="w"> </span><span class="nn">..bot_exception</span><span class="w"> </span><span class="kn">import</span> <span class="n">BotException</span>
+</span><span id="line-24"><span class="kn">from</span><span class="w"> </span><span class="nn">..mapper.event_mapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">EventMapper</span>
+</span><span id="line-25"><span class="kn">from</span><span class="w"> </span><span class="nn">..mapper.game_setup_mapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">GameSetupMapper</span>
+</span><span id="line-26"><span class="kn">from</span><span class="w"> </span><span class="nn">..mapper.results_mapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResultsMapper</span>
+</span><span id="line-27"><span class="kn">from</span><span class="w"> </span><span class="nn">robocode_tank_royale.schema</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="line-28">    <span class="n">Message</span><span class="p">,</span>
+</span><span id="line-29">    <span class="n">TickEventForBot</span><span class="p">,</span>
+</span><span id="line-30">    <span class="n">BotReady</span><span class="p">,</span>
+</span><span id="line-31">    <span class="n">GameStartedEventForBot</span><span class="p">,</span>
+</span><span id="line-32">    <span class="n">GameEndedEventForBot</span><span class="p">,</span>
+</span><span id="line-33">    <span class="n">RoundEndedEventForBot</span><span class="p">,</span>
+</span><span id="line-34">    <span class="n">SkippedTurnEvent</span><span class="p">,</span>
+</span><span id="line-35">    <span class="n">ServerHandshake</span><span class="p">,</span>
+</span><span id="line-36">    <span class="n">RoundStartedEvent</span> <span class="k">as</span> <span class="n">RoundStartedEventForBot</span><span class="p">,</span>
+</span><span id="line-37"><span class="p">)</span>
+</span><span id="line-38">
+</span><span id="line-39">
+<div class="viewcode-block" id="WebSocketHandler">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler">[docs]</a>
+</span><span id="line-40"><span class="k">class</span><span class="w"> </span><span class="nc">WebSocketHandler</span><span class="p">:</span>
+</span><span id="line-41"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-42"><span class="sd">    Websocket handler for Robocode Tank Royale Bot API that handles websocket connections</span>
+</span><span id="line-43"><span class="sd">    and messages from the server.</span>
+</span><span id="line-44"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="line-45">
+<div class="viewcode-block" id="WebSocketHandler.__init__">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.__init__">[docs]</a>
+</span><span id="line-46">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="line-47">        <span class="bp">self</span><span class="p">,</span>
+</span><span id="line-48">        <span class="n">base_bot_internal_data</span><span class="p">:</span> <span class="n">BaseBotInternalData</span><span class="p">,</span>
+</span><span id="line-49">        <span class="n">server_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="line-50">        <span class="n">server_secret</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span id="line-51">        <span class="n">base_bot</span><span class="p">:</span> <span class="n">BaseBotABC</span><span class="p">,</span>
+</span><span id="line-52">        <span class="n">bot_info</span><span class="p">:</span> <span class="n">BotInfo</span><span class="p">,</span>
+</span><span id="line-53">        <span class="n">bot_event_handlers</span><span class="p">:</span> <span class="n">BotEventHandlers</span><span class="p">,</span>
+</span><span id="line-54">        <span class="n">internal_event_handlers</span><span class="p">:</span> <span class="n">InternalEventHandlers</span><span class="p">,</span>
+</span><span id="line-55">        <span class="n">closed_event</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">,</span>
+</span><span id="line-56">        <span class="n">event_queue</span><span class="p">:</span> <span class="s1">&#39;EventQueue&#39;</span><span class="p">,</span>
+</span><span id="line-57">    <span class="p">):</span>
+</span><span id="line-58"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the websocket handler.&quot;&quot;&quot;</span>
+</span><span id="line-59">        <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span> <span class="o">=</span> <span class="n">base_bot_internal_data</span>
+</span><span id="line-60">        <span class="bp">self</span><span class="o">.</span><span class="n">server_url</span> <span class="o">=</span> <span class="n">server_url</span>
+</span><span id="line-61">        <span class="bp">self</span><span class="o">.</span><span class="n">server_secret</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">server_secret</span>
+</span><span id="line-62">        <span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span> <span class="o">=</span> <span class="n">base_bot</span>
+</span><span id="line-63">        <span class="bp">self</span><span class="o">.</span><span class="n">bot_info</span> <span class="o">=</span> <span class="n">bot_info</span>
+</span><span id="line-64">        <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span> <span class="o">=</span> <span class="n">bot_event_handlers</span>
+</span><span id="line-65">        <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span> <span class="o">=</span> <span class="n">internal_event_handlers</span>
+</span><span id="line-66">        <span class="bp">self</span><span class="o">.</span><span class="n">closed_event</span> <span class="o">=</span> <span class="n">closed_event</span>
+</span><span id="line-67">        <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span> <span class="o">=</span> <span class="n">event_queue</span>
+</span><span id="line-68">        <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">websockets</span><span class="o">.</span><span class="n">ClientConnection</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+</span><span id="line-69">
+<div class="viewcode-block" id="WebSocketHandler.connect">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.connect">[docs]</a>
+</span><span id="line-70">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="line-71"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect to the WebSocket server.&quot;&quot;&quot;</span>
+</span><span id="line-72">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-73">            <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span> <span class="o">=</span> <span class="k">await</span> <span class="n">websockets</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_url</span><span class="p">)</span>
+</span><span id="line-74">            <span class="c1"># Publish connected event</span>
+</span><span id="line-75">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="o">.</span><span class="n">on_connected</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
+</span><span id="line-76">                <span class="n">ConnectedEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_url</span><span class="p">)</span>
+</span><span id="line-77">            <span class="p">)</span>
+</span><span id="line-78">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span>
+</span><span id="line-79">        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="line-80">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="o">.</span><span class="n">on_connection_error</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
+</span><span id="line-81">                <span class="n">ConnectionErrorEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_url</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</span><span id="line-82">            <span class="p">)</span>
+</span><span id="line-83">            <span class="bp">self</span><span class="o">.</span><span class="n">closed_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+</span><span id="line-84">            <span class="k">raise</span></div>
+
+</span><span id="line-85">
+<div class="viewcode-block" id="WebSocketHandler.disconnect">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.disconnect">[docs]</a>
+</span><span id="line-86">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+</span><span id="line-87"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect from the WebSocket server.&quot;&quot;&quot;</span>
+</span><span id="line-88">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="p">:</span>
+</span><span id="line-89">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span></div>
+
+</span><span id="line-90">
+<div class="viewcode-block" id="WebSocketHandler.on_close">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.on_close">[docs]</a>
+</span><span id="line-91">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_close</span><span class="p">(</span>
+</span><span id="line-92">        <span class="bp">self</span><span class="p">,</span> <span class="n">websocket</span><span class="p">:</span> <span class="n">websockets</span><span class="o">.</span><span class="n">ClientConnection</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="line-93">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-94"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle WebSocket close event.&quot;&quot;&quot;</span> <span class="c1"># Unused parameter, but kept for compatibility</span>
+</span><span id="line-95">        <span class="c1"># Publish and await on both event handlers in parallel</span>
+</span><span id="line-96">        <span class="n">disconnected_event</span> <span class="o">=</span> <span class="n">DisconnectedEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_url</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
+</span><span id="line-97">        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+</span><span id="line-98">            <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="o">.</span><span class="n">on_disconnected</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">disconnected_event</span><span class="p">),</span>
+</span><span id="line-99">            <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span><span class="o">.</span><span class="n">on_disconnected</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">disconnected_event</span><span class="p">)</span>
+</span><span id="line-100">        <span class="p">)</span>
+</span><span id="line-101">        <span class="bp">self</span><span class="o">.</span><span class="n">closed_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
+
+</span><span id="line-102">
+<div class="viewcode-block" id="WebSocketHandler.on_error">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.on_error">[docs]</a>
+</span><span id="line-103">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket</span><span class="p">:</span> <span class="n">websockets</span><span class="o">.</span><span class="n">ClientConnection</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">):</span>
+</span><span id="line-104"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle WebSocket error.&quot;&quot;&quot;</span>
+</span><span id="line-105">        <span class="k">del</span> <span class="n">websocket</span>  <span class="c1"># Unused parameter, but kept for compatibility</span>
+</span><span id="line-106">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="o">.</span><span class="n">on_connection_error</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
+</span><span id="line-107">            <span class="n">ConnectionErrorEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_url</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+</span><span id="line-108">        <span class="p">)</span>
+</span><span id="line-109">        <span class="bp">self</span><span class="o">.</span><span class="n">closed_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
+
+</span><span id="line-110">
+<div class="viewcode-block" id="WebSocketHandler.receive_messages">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.receive_messages">[docs]</a>
+</span><span id="line-111">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">receive_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="line-112"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Main loop for receiving messages from the WebSocket server.&quot;&quot;&quot;</span>
+</span><span id="line-113">        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;WebSocket connection is not established.&quot;</span>
+</span><span id="line-114">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-115">            <span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="p">:</span>
+</span><span id="line-116">                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+</span><span id="line-117">                    <span class="n">message</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+</span><span id="line-118">                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="s2">&quot;Received message is not a string.&quot;</span>
+</span><span id="line-119">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span id="line-120">        <span class="k">except</span> <span class="n">websockets</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionClosed</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="line-121">            <span class="k">assert</span> <span class="n">e</span><span class="o">.</span><span class="n">rcvd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;ConnectionClosed without received data.&quot;</span>
+</span><span id="line-122">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">rcvd</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">rcvd</span><span class="o">.</span><span class="n">reason</span><span class="p">)</span>
+</span><span id="line-123">        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="line-124">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span id="line-125">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span></div>
+
+</span><span id="line-126">
+<div class="viewcode-block" id="WebSocketHandler.process_message">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.process_message">[docs]</a>
+</span><span id="line-127">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">process_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="line-128"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Process the received WebSocket message.&quot;&quot;&quot;</span>
+</span><span id="line-129">        <span class="n">json_msg</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</span><span id="line-130">
+</span><span id="line-131">        <span class="k">if</span> <span class="s2">&quot;type&quot;</span> <span class="ow">in</span> <span class="n">json_msg</span><span class="p">:</span>
+</span><span id="line-132">            <span class="n">msg_type</span> <span class="o">=</span> <span class="n">json_msg</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+</span><span id="line-133">
+</span><span id="line-134">            <span class="k">if</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="s2">&quot;TickEventForBot&quot;</span><span class="p">:</span>
+</span><span id="line-135">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_tick</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>
+</span><span id="line-136">            <span class="k">elif</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="s2">&quot;RoundStartedEvent&quot;</span><span class="p">:</span>
+</span><span id="line-137">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_round_started</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>
+</span><span id="line-138">            <span class="k">elif</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="s2">&quot;RoundEndedEventForBot&quot;</span><span class="p">:</span>
+</span><span id="line-139">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_round_ended</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>
+</span><span id="line-140">            <span class="k">elif</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="s2">&quot;GameStartedEventForBot&quot;</span><span class="p">:</span>
+</span><span id="line-141">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_game_started</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>
+</span><span id="line-142">            <span class="k">elif</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="s2">&quot;GameEndedEventForBot&quot;</span><span class="p">:</span>
+</span><span id="line-143">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_game_ended</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>
+</span><span id="line-144">            <span class="k">elif</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="s2">&quot;SkippedTurnEvent&quot;</span><span class="p">:</span>
+</span><span id="line-145">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_skipped_turn</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>
+</span><span id="line-146">            <span class="k">elif</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="s2">&quot;ServerHandshake&quot;</span><span class="p">:</span>
+</span><span id="line-147">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_server_handshake</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>
+</span><span id="line-148">            <span class="k">elif</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="s2">&quot;GameAbortedEvent&quot;</span><span class="p">:</span>
+</span><span id="line-149">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_game_aborted</span><span class="p">()</span>
+</span><span id="line-150">            <span class="k">else</span><span class="p">:</span>
+</span><span id="line-151">                <span class="k">raise</span> <span class="n">BotException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported WebSocket message type: </span><span class="si">{</span><span class="n">msg_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+</span><span id="line-152">
+</span><span id="line-153">    <span class="k">def</span><span class="w"> </span><span class="nf">_is_event_handling_disabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_turn</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-154">        <span class="n">disabled_turn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">event_handling_disabled_turn</span>
+</span><span id="line-155">        <span class="k">return</span> <span class="n">disabled_turn</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">disabled_turn</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">current_turn</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="line-156">
+<div class="viewcode-block" id="WebSocketHandler.handle_tick">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.handle_tick">[docs]</a>
+</span><span id="line-157">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_tick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_msg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-158"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a tick event from the server.&quot;&quot;&quot;</span>
+</span><span id="line-159">        <span class="c1"># Determine turn number early to apply correct disabled-handling semantics</span>
+</span><span id="line-160">        <span class="n">turn_number</span> <span class="o">=</span> <span class="n">json_msg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;turn_number&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">json_msg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;turnNumber&quot;</span><span class="p">)</span>
+</span><span id="line-161">        <span class="k">if</span> <span class="n">turn_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_event_handling_disabled</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">turn_number</span><span class="p">)):</span>
+</span><span id="line-162">            <span class="k">return</span>
+</span><span id="line-163">
+</span><span id="line-164">        <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">tick_start_nano_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+</span><span id="line-165">            <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1_000_000_000</span>
+</span><span id="line-166">        <span class="p">)</span>
+</span><span id="line-167">
+</span><span id="line-168">        <span class="n">tick_event_for_bot</span><span class="p">:</span> <span class="n">TickEventForBot</span> <span class="o">=</span> <span class="n">from_json</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-169">        <span class="n">mapped_tick_event</span> <span class="o">=</span> <span class="n">EventMapper</span><span class="o">.</span><span class="n">map_tick_event</span><span class="p">(</span>
+</span><span id="line-170">            <span class="n">tick_event_for_bot</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span>
+</span><span id="line-171">        <span class="p">)</span>
+</span><span id="line-172">
+</span><span id="line-173">        <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">tick_event</span> <span class="o">=</span> <span class="n">mapped_tick_event</span>
+</span><span id="line-174">
+</span><span id="line-175">        <span class="c1"># Stage events from this tick into the event queue (Java parity)</span>
+</span><span id="line-176">        <span class="bp">self</span><span class="o">.</span><span class="n">event_queue</span><span class="o">.</span><span class="n">add_events_from_tick</span><span class="p">(</span><span class="n">mapped_tick_event</span><span class="p">)</span>
+</span><span id="line-177">
+</span><span id="line-178">        <span class="n">bot_intent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">bot_intent</span>
+</span><span id="line-179">        <span class="k">if</span> <span class="n">bot_intent</span><span class="o">.</span><span class="n">rescan</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">bot_intent</span><span class="o">.</span><span class="n">rescan</span><span class="p">:</span>
+</span><span id="line-180">            <span class="n">bot_intent</span><span class="o">.</span><span class="n">rescan</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="line-181">
+</span><span id="line-182">        <span class="c1"># mapped_tick_event.events should still be iterable</span>
+</span><span id="line-183">        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+</span><span id="line-184">            <span class="o">*</span><span class="p">(</span>
+</span><span id="line-185">                <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span><span class="o">.</span><span class="n">fire_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</span><span id="line-186">                <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">mapped_tick_event</span><span class="o">.</span><span class="n">events</span>
+</span><span id="line-187">            <span class="p">)</span>
+</span><span id="line-188">        <span class="p">)</span>
+</span><span id="line-189">
+</span><span id="line-190">        <span class="c1"># Trigger next turn (not tick-event!)</span>
+</span><span id="line-191">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span><span class="o">.</span><span class="n">on_next_turn</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">mapped_tick_event</span><span class="p">)</span></div>
+
+</span><span id="line-192">
+<div class="viewcode-block" id="WebSocketHandler.handle_round_started">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.handle_round_started">[docs]</a>
+</span><span id="line-193">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_round_started</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_msg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-194"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a round started event from the server.&quot;&quot;&quot;</span>
+</span><span id="line-195">        <span class="n">schema_evt</span><span class="p">:</span> <span class="n">RoundStartedEventForBot</span> <span class="o">=</span> <span class="n">from_json</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-196">        <span class="n">round_started_event</span> <span class="o">=</span> <span class="n">RoundStartedEvent</span><span class="p">(</span><span class="n">schema_evt</span><span class="o">.</span><span class="n">round_number</span><span class="p">)</span>
+</span><span id="line-197">
+</span><span id="line-198">        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+</span><span id="line-199">            <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="o">.</span><span class="n">on_round_started</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">round_started_event</span><span class="p">),</span>
+</span><span id="line-200">            <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span><span class="o">.</span><span class="n">on_round_started</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">round_started_event</span><span class="p">),</span>
+</span><span id="line-201">        <span class="p">)</span></div>
+
+</span><span id="line-202">
+<div class="viewcode-block" id="WebSocketHandler.handle_round_ended">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.handle_round_ended">[docs]</a>
+</span><span id="line-203">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_round_ended</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_msg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+</span><span id="line-204"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a round ended event from the server.&quot;&quot;&quot;</span>
+</span><span id="line-205">        <span class="n">schema_evt</span><span class="p">:</span> <span class="n">RoundEndedEventForBot</span> <span class="o">=</span> <span class="n">from_json</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-206">        <span class="n">results</span> <span class="o">=</span> <span class="n">ResultsMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">schema_evt</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+</span><span id="line-207">        <span class="n">round_ended_event</span> <span class="o">=</span> <span class="n">RoundEndedEvent</span><span class="p">(</span>
+</span><span id="line-208">            <span class="n">schema_evt</span><span class="o">.</span><span class="n">round_number</span><span class="p">,</span> <span class="n">schema_evt</span><span class="o">.</span><span class="n">turn_number</span><span class="p">,</span> <span class="n">results</span>
+</span><span id="line-209">        <span class="p">)</span>
+</span><span id="line-210">        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+</span><span id="line-211">            <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="o">.</span><span class="n">on_round_ended</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">round_ended_event</span><span class="p">),</span>
+</span><span id="line-212">            <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span><span class="o">.</span><span class="n">on_round_ended</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">round_ended_event</span><span class="p">),</span>
+</span><span id="line-213">        <span class="p">)</span></div>
+
+</span><span id="line-214">
+<div class="viewcode-block" id="WebSocketHandler.handle_game_started">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.handle_game_started">[docs]</a>
+</span><span id="line-215">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_game_started</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_msg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-216"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a game started event from the server.&quot;&quot;&quot;</span>
+</span><span id="line-217">        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;WebSocket connection is not established.&quot;</span>
+</span><span id="line-218">        <span class="n">game_started_event</span><span class="p">:</span> <span class="n">GameStartedEventForBot</span> <span class="o">=</span> <span class="n">from_json</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-219">        <span class="nb">print</span><span class="p">(</span><span class="n">game_started_event</span><span class="p">)</span>
+</span><span id="line-220">        <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">my_id</span> <span class="o">=</span> <span class="n">game_started_event</span><span class="o">.</span><span class="n">my_id</span>
+</span><span id="line-221">
+</span><span id="line-222">        <span class="k">if</span> <span class="n">game_started_event</span><span class="o">.</span><span class="n">teammate_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-223">            <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">teammate_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+</span><span id="line-224">                <span class="nb">id</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">game_started_event</span><span class="o">.</span><span class="n">teammate_ids</span> <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</span><span id="line-225">            <span class="p">)</span>
+</span><span id="line-226">
+</span><span id="line-227">        <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">game_setup</span> <span class="o">=</span> <span class="n">GameSetupMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+</span><span id="line-228">            <span class="n">game_started_event</span><span class="o">.</span><span class="n">game_setup</span>
+</span><span id="line-229">        <span class="p">)</span>
+</span><span id="line-230">
+</span><span id="line-231">        <span class="n">initial_position</span> <span class="o">=</span> <span class="n">InitialPosition</span><span class="p">(</span>
+</span><span id="line-232">            <span class="n">game_started_event</span><span class="o">.</span><span class="n">start_x</span><span class="p">,</span>
+</span><span id="line-233">            <span class="n">game_started_event</span><span class="o">.</span><span class="n">start_y</span><span class="p">,</span>
+</span><span id="line-234">            <span class="n">game_started_event</span><span class="o">.</span><span class="n">start_direction</span><span class="p">,</span>
+</span><span id="line-235">        <span class="p">)</span>
+</span><span id="line-236">        <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">initial_position</span> <span class="o">=</span> <span class="n">initial_position</span>
+</span><span id="line-237">
+</span><span id="line-238">        <span class="c1"># Send ready signal</span>
+</span><span id="line-239">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">to_json</span><span class="p">(</span><span class="n">BotReady</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">Message</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">BOT_READY</span><span class="p">)))</span>
+</span><span id="line-240">
+</span><span id="line-241">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="o">.</span><span class="n">on_game_started</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
+</span><span id="line-242">            <span class="n">GameStartedEvent</span><span class="p">(</span>
+</span><span id="line-243">                <span class="n">game_started_event</span><span class="o">.</span><span class="n">my_id</span><span class="p">,</span>
+</span><span id="line-244">                <span class="n">initial_position</span><span class="p">,</span>
+</span><span id="line-245">                <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">game_setup</span><span class="p">,</span>
+</span><span id="line-246">            <span class="p">)</span>
+</span><span id="line-247">        <span class="p">)</span></div>
+
+</span><span id="line-248">
+<div class="viewcode-block" id="WebSocketHandler.handle_game_ended">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.handle_game_ended">[docs]</a>
+</span><span id="line-249">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_game_ended</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_msg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-250"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a game ended event from the server.&quot;&quot;&quot;</span>
+</span><span id="line-251">        <span class="n">schema_evt</span><span class="p">:</span> <span class="n">GameEndedEventForBot</span> <span class="o">=</span> <span class="n">from_json</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-252">
+</span><span id="line-253">        <span class="n">game_ended_event</span> <span class="o">=</span> <span class="n">GameEndedEvent</span><span class="p">()</span>
+</span><span id="line-254">        <span class="n">game_ended_event</span><span class="o">.</span><span class="n">number_of_rounds</span> <span class="o">=</span> <span class="n">schema_evt</span><span class="o">.</span><span class="n">number_of_rounds</span>
+</span><span id="line-255">        <span class="n">game_ended_event</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">ResultsMapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">schema_evt</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+</span><span id="line-256">
+</span><span id="line-257">        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+</span><span id="line-258">            <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="o">.</span><span class="n">on_game_ended</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">game_ended_event</span><span class="p">),</span>
+</span><span id="line-259">            <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span><span class="o">.</span><span class="n">on_game_ended</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">game_ended_event</span><span class="p">),</span>
+</span><span id="line-260">        <span class="p">)</span></div>
+
+</span><span id="line-261">
+<div class="viewcode-block" id="WebSocketHandler.handle_game_aborted">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.handle_game_aborted">[docs]</a>
+</span><span id="line-262">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_game_aborted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-263"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a game aborted event from the server.&quot;&quot;&quot;</span>
+</span><span id="line-264">        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+</span><span id="line-265">            <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="o">.</span><span class="n">on_game_aborted</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+</span><span id="line-266">            <span class="bp">self</span><span class="o">.</span><span class="n">internal_event_handlers</span><span class="o">.</span><span class="n">on_game_aborted</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+</span><span id="line-267">        <span class="p">)</span></div>
+
+</span><span id="line-268">
+<div class="viewcode-block" id="WebSocketHandler.handle_skipped_turn">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.handle_skipped_turn">[docs]</a>
+</span><span id="line-269">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_skipped_turn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_msg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-270"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a skipped turn event from the server.&quot;&quot;&quot;</span>
+</span><span id="line-271">        <span class="n">turn_number</span> <span class="o">=</span> <span class="n">json_msg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;turn_number&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">json_msg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;turnNumber&quot;</span><span class="p">)</span>
+</span><span id="line-272">        <span class="k">if</span> <span class="n">turn_number</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_event_handling_disabled</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">turn_number</span><span class="p">)):</span>
+</span><span id="line-273">            <span class="k">return</span>
+</span><span id="line-274">
+</span><span id="line-275">        <span class="n">schema_evt</span><span class="p">:</span> <span class="n">SkippedTurnEvent</span> <span class="o">=</span> <span class="n">from_json</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-276">        <span class="n">skipped_turn_event</span> <span class="o">=</span> <span class="n">EventMapper</span><span class="o">.</span><span class="n">map_skipped_turn_event</span><span class="p">(</span><span class="n">schema_evt</span><span class="p">)</span>
+</span><span id="line-277">        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="o">.</span><span class="n">on_skipped_turn</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">skipped_turn_event</span><span class="p">)</span></div>
+
+</span><span id="line-278">
+<div class="viewcode-block" id="WebSocketHandler.handle_server_handshake">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.handle_server_handshake">[docs]</a>
+</span><span id="line-279">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_server_handshake</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_msg</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-280"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a server handshake from the server.&quot;&quot;&quot;</span>
+</span><span id="line-281">        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;WebSocket connection is not established.&quot;</span>
+</span><span id="line-282">        <span class="n">server_handshake</span><span class="p">:</span> <span class="n">ServerHandshake</span> <span class="o">=</span> <span class="n">from_json</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-283">        <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">server_handshake</span> <span class="o">=</span> <span class="n">server_handshake</span>
+</span><span id="line-284">
+</span><span id="line-285">        <span class="c1"># Reply by sending bot handshake</span>
+</span><span id="line-286">        <span class="c1"># Infer droid status by marker interface inheritance (Java parity), with fallback to explicit flag for backward compatibility</span>
+</span><span id="line-287">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-288">            <span class="kn">from</span><span class="w"> </span><span class="nn">..droid_abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">DroidABC</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-289">        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span><span id="line-290">            <span class="n">DroidABC</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-291">        <span class="n">is_droid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="line-292">        <span class="k">if</span> <span class="s1">&#39;DroidABC&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span> <span class="ow">and</span> <span class="n">DroidABC</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span><span class="p">,</span> <span class="n">DroidABC</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-293">            <span class="n">is_droid</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="line-294">        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span><span class="p">,</span> <span class="s2">&quot;is_droid&quot;</span><span class="p">):</span>
+</span><span id="line-295">            <span class="c1"># Allow legacy bots explicitly setting the flag</span>
+</span><span id="line-296">            <span class="n">is_droid</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span><span class="p">,</span> <span class="s2">&quot;is_droid&quot;</span><span class="p">))</span>
+</span><span id="line-297">        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">is_droid</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span> <span class="s2">&quot;is_droid must be a boolean value&quot;</span>
+</span><span id="line-298">
+</span><span id="line-299">        <span class="c1"># Create bot handshake message</span>
+</span><span id="line-300">        <span class="kn">from</span><span class="w"> </span><span class="nn">..internal.bot_handshake_factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">BotHandshakeFactory</span>
+</span><span id="line-301">
+</span><span id="line-302">        <span class="n">bot_handshake</span> <span class="o">=</span> <span class="n">BotHandshakeFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+</span><span id="line-303">            <span class="n">server_handshake</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_info</span><span class="p">,</span> <span class="n">is_droid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_secret</span>
+</span><span id="line-304">        <span class="p">)</span>
+</span><span id="line-305">
+</span><span id="line-306">        <span class="c1"># Send handshake message</span>
+</span><span id="line-307">        <span class="c1"># Ensure backward compatibility for tests expecting &#39;session_id&#39; (snake_case)</span>
+</span><span id="line-308">        <span class="n">payload_str</span> <span class="o">=</span> <span class="n">to_json</span><span class="p">(</span><span class="n">bot_handshake</span><span class="p">)</span>
+</span><span id="line-309">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-310">            <span class="n">payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">payload_str</span><span class="p">)</span>
+</span><span id="line-311">            <span class="k">if</span> <span class="s2">&quot;sessionId&quot;</span> <span class="ow">in</span> <span class="n">payload</span> <span class="ow">and</span> <span class="s2">&quot;session_id&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">:</span>
+</span><span id="line-312">                <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;session_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;sessionId&quot;</span><span class="p">]</span>
+</span><span id="line-313">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+</span><span id="line-314">        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span><span id="line-315">            <span class="c1"># Fallback to original payload if any unexpected error occurs</span>
+</span><span id="line-316">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">payload_str</span><span class="p">)</span></div>
+</div>
+
+</span></code></pre></div>
+    </div></div>
+        </main>
+      </div>
+    </div><footer class="py-6 border-t border-border md:py-0">
+    <div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
+      <div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
+        <p class="text-sm leading-loose text-center text-muted-foreground md:text-left">Built with <a class="font-medium underline underline-offset-4"
+    href="https://www.sphinx-doc.org"
+    rel="noreferrer">Sphinx 8.2.3</a></p>
+</div>
+</div>
+</footer>
+  </div>
+  
+    <script src="../../../_static/documentation_options.js?v=bbce7252"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script defer="defer" src="../../../_static/theme.js?v=073f68d9"></script>
+  
+</body>
+</html>

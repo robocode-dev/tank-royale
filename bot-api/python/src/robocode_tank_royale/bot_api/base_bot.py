@@ -1,13 +1,11 @@
 import math
 from typing import Any, Optional, Sequence
 
-import drawsvg  # type: ignore
-
 from .base_bot_abc import BaseBotABC
 from .bot_info import BotInfo
 from .constants import *
 from .internal.base_bot_internals import BaseBotInternals
-from .color import Color
+from .graphics import Color, GraphicsABC
 from .events.condition import Condition
 from .util.math_util import MathUtil
 from .bullet_state import BulletState
@@ -18,8 +16,18 @@ from .events import BotEvent
 class BaseBot(BaseBotABC):
     """
     BaseBot is a base class for creating Robocode Tank Royale bots.
-    It provides common functionality and abstract methods that should be
-    implemented by subclasses to define bot-specific behavior.
+
+    Configuration and defaults:
+    - By default, the constructor attempts to load a bot config JSON named <ClassName>.json located
+      next to your bot class. If not found or incomplete, environment variables are used instead.
+    - SERVER_URL can be set to the WebSocket URL of the server. If not set, ws://localhost:7654 is used.
+    - SERVER_SECRET is optional. Set it only if the server requires a secret for connecting bots.
+      If the server enforces secrets and none is provided, the server will disconnect the bot.
+    - When no config file is used, these BotInfo environment variables must be provided:
+      BOT_NAME, BOT_VERSION, BOT_AUTHORS. Optional vars include: BOT_DESCRIPTION, BOT_HOMEPAGE,
+      BOT_COUNTRY_CODES, BOT_GAME_TYPES, BOT_PLATFORM, BOT_PROG_LANG, BOT_INITIAL_POS.
+
+    You can also pass bot_info, server_url, and server_secret explicitly via the constructor.
     """
 
     def __init__(
@@ -42,6 +50,11 @@ class BaseBot(BaseBotABC):
         await self._internals.start()
 
     async def go(self) -> None:
+        # Process all events before executing the turn commands to mimic classic Robocode behavior
+        current_tick = self._internals.get_current_tick_or_null()
+        if current_tick is not None:
+            # Align with Java: only dispatch events here; staging happens when the tick is received
+            await self._internals.dispatch_events(current_tick.turn_number)
         await self._internals.execute()
 
     def get_my_id(self) -> int:
@@ -161,7 +174,7 @@ class BaseBot(BaseBotABC):
         return self._internals.get_bullet_states()
 
     def get_events(self) -> Sequence[BotEvent | None] | None:
-        self._internals.get_events()
+        return self._internals.get_events()
 
     def clear_events(self) -> None:
         self._internals.clear_events()
@@ -216,14 +229,14 @@ class BaseBot(BaseBotABC):
 
     @property
     def target_speed(self) -> float:
-        assert (
-            self._internals.data.bot_intent.target_speed is not None
-        ), "Target speed must be set before accessing it."
-        return self._internals.data.bot_intent.target_speed
+        # Match Java semantics: return 0 if not set
+        ts = self._internals.target_speed
+        return 0.0 if ts is None else ts
 
     @target_speed.setter
     def target_speed(self, target_speed: float) -> None:
-        self._internals.data.bot_intent.target_speed = target_speed
+        # Delegate to internals to ensure clamping/validation
+        self._internals.target_speed = target_speed
 
     @property
     def max_speed(self) -> float:
@@ -237,10 +250,8 @@ class BaseBot(BaseBotABC):
         return self._internals.set_fire(firepower)
 
     def get_firepower(self) -> float:
-        assert (
-            self._internals.data.bot_intent.firepower is not None
-        ), "Firepower must be set before accessing it."
-        return self._internals.data.bot_intent.firepower
+        firepower = self._internals.data.bot_intent.firepower
+        return 0.0 if firepower is None else firepower
 
     def set_rescan(self) -> None:
         self._internals.data.bot_intent.rescan = True
@@ -271,6 +282,7 @@ class BaseBot(BaseBotABC):
 
     def set_adjust_radar_for_gun_turn(self, adjust: bool) -> None:
         self._internals.data.bot_intent.adjust_radar_for_gun_turn = adjust
+        self._internals.data.bot_intent.fire_assist = not adjust
 
     def is_adjust_radar_for_gun_turn(self) -> bool:
         assert self._internals.data.bot_intent.adjust_radar_for_gun_turn is not None, (
@@ -365,10 +377,12 @@ class BaseBot(BaseBotABC):
         self._internals.gun_color = color
 
     def is_debugging_enabled(self) -> bool:
-        # Debugging is always enabled for now in Python client
-        return True
+        tick = self._internals.get_current_tick_or_throw()
+        bot_state = tick.bot_state
+        assert bot_state is not None
+        return bot_state.is_debugging_enabled
 
-    def get_graphics(self) -> drawsvg.Drawing:
+    def get_graphics(self) -> GraphicsABC:
         return self._internals.get_graphics()
 
     # Utility methods
@@ -381,7 +395,7 @@ class BaseBot(BaseBotABC):
         return 20 - 3 * MathUtil.clamp(firepower, MIN_FIREPOWER, MAX_FIREPOWER)
 
     def calc_gun_heat(self, firepower: float) -> float:
-        return 1 + MathUtil.clamp(firepower, MIN_FIREPOWER, MAX_FIREPOWER)
+        return 1 + (MathUtil.clamp(firepower, MIN_FIREPOWER, MAX_FIREPOWER) / 5)
 
     def get_event_priority(self, event_class: type) -> int:
         return EventPriorities.get_priority(event_class)

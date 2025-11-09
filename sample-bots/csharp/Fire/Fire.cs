@@ -5,7 +5,7 @@ using Robocode.TankRoyale.BotApi.Graphics;
 // ------------------------------------------------------------------
 // Fire
 // ------------------------------------------------------------------
-// A sample bot original made for Robocode by Mathew Nelson.
+// A sample bot originally made for Robocode by Mathew Nelson.
 //
 // Sits still, continuously rotates its gun, and only moves when hit.
 // ------------------------------------------------------------------

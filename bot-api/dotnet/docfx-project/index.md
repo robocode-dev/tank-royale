@@ -5,7 +5,7 @@ game server behind the scene, so you can focus on the fun part of controlling th
 
 The Bot API is available here:
 
-- [Bot API for .Net](https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.html)
+- [Bot API for .NET](https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.html)
 
 A good way to get started with Robocode Tank Royale is to head over to the general documentation for Tank Royale to
 learn about the basics first:
@@ -34,7 +34,7 @@ using Robocode.TankRoyale.BotApi.Events;
 // ------------------------------------------------------------------
 // MyFirstBot
 // ------------------------------------------------------------------
-// A sample bot original made for Robocode by Mathew Nelson.
+// A sample bot originally made for Robocode by Mathew Nelson.
 // Ported to Robocode Tank Royale by Flemming N. Larsen.
 //
 // Probably the first bot you will learn about.
@@ -87,7 +87,7 @@ running the program. Using the bot API, we need to start the bot by calling the
 [IBaseBot.Start()] method of the bot API, which will tell the server that this bot wants to join the battle and also
 provide the server with the required bot info.
 
-With the bot´s constructor (_MyFirstBot()_) we call the [BotInfo.fromFile(string)] method provides the bot info for the
+With the bot's constructor (_MyFirstBot()_) we call the [BotInfo.fromFile(string)] method provides the bot info for the
 server, like e.g. the name of the bot, and its author, etc.
 
 The [Run()] method is called when the bot need to start its real execution to send instructions to the server.
@@ -118,7 +118,7 @@ MyFirstBot.json:
     "us",
     "dk"
   ],
-  "platform": ".Net 6.0",
+  "platform": ".NET 6.0",
   "programmingLang": "C# 10.0"
 }
 ```
@@ -127,7 +127,7 @@ You can read more details about the format of this JSON
 file [here](https://robocode-dev.github.io/tank-royale/articles/booter.html#json-config-file.html).
 
 
-[Bot API for .Net]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.html
+[Bot API for .NET]: https://robocode-dev.github.io/tank-royale/api/dotnet/api/Robocode.TankRoyale.BotApi.html
 
 [Robocode Tank Royale Docs]: https://robocode-dev.github.io/tank-royale/
 

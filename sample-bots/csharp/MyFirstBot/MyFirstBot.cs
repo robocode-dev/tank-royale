@@ -4,7 +4,7 @@ using Robocode.TankRoyale.BotApi.Events;
 // ------------------------------------------------------------------
 // MyFirstBot
 // ------------------------------------------------------------------
-// A sample bot original made for Robocode by Mathew Nelson.
+// A sample bot originally made for Robocode by Mathew Nelson.
 //
 // Probably the first bot you will learn about.
 // Moves in a seesaw motion and spins the gun around at each end.

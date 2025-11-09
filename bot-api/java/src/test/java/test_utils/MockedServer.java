@@ -217,6 +217,10 @@ public final class MockedServer {
         return botHandshake;
     }
 
+    public BotIntent getBotIntent() {
+        return botIntent;
+    }
+
     private static int findAvailablePort() {
         try (java.net.ServerSocket socket = new java.net.ServerSocket(0)) {
             return socket.getLocalPort();

@@ -1,6 +1,6 @@
 import asyncio
 import json
-from typing import Any
+from typing import Any, Optional
 import websockets
 from typing import Dict
 
@@ -47,22 +47,24 @@ class WebSocketHandler:
         self,
         base_bot_internal_data: BaseBotInternalData,
         server_url: str,
-        server_secret: str,
+        server_secret: Optional[str],
         base_bot: BaseBotABC,
         bot_info: BotInfo,
         bot_event_handlers: BotEventHandlers,
         internal_event_handlers: InternalEventHandlers,
         closed_event: asyncio.Event,
+        event_queue: 'EventQueue',
     ):
         """Initialize the websocket handler."""
         self.base_bot_internal_data = base_bot_internal_data
         self.server_url = server_url
-        self.server_secret = server_secret
+        self.server_secret: Optional[str] = server_secret
         self.base_bot = base_bot
         self.bot_info = bot_info
         self.bot_event_handlers = bot_event_handlers
         self.internal_event_handlers = internal_event_handlers
         self.closed_event = closed_event
+        self.event_queue = event_queue
         self.websocket: None | websockets.ClientConnection = None
 
     async def connect(self):
@@ -148,9 +150,15 @@ class WebSocketHandler:
             else:
                 raise BotException(f"Unsupported WebSocket message type: {msg_type}")
 
+    def _is_event_handling_disabled(self, current_turn: int) -> bool:
+        disabled_turn = self.base_bot_internal_data.event_handling_disabled_turn
+        return disabled_turn != 0 and disabled_turn < (int(current_turn) - 1)
+
     async def handle_tick(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a tick event from the server."""
-        if self.base_bot_internal_data.event_handling_disabled_turn:
+        # Determine turn number early to apply correct disabled-handling semantics
+        turn_number = json_msg.get("turn_number") or json_msg.get("turnNumber")
+        if turn_number is not None and self._is_event_handling_disabled(int(turn_number)):
             return
 
         self.base_bot_internal_data.tick_start_nano_time = int(
@@ -164,12 +172,8 @@ class WebSocketHandler:
 
         self.base_bot_internal_data.tick_event = mapped_tick_event
 
-        # The add_events_from_tick from BaseBotInternals used to also add individual
-        # events from the tick to event_queue
-        # This logic needs to be preserved if EventQueue is still used in a similar manner.
-        # For now, assuming EventQueue will source its events based on the new tick_event if needed,
-        # or that this responsibility shifts elsewhere.
-        # The subtask description focuses on BaseBotInternalData.
+        # Stage events from this tick into the event queue (Java parity)
+        self.event_queue.add_events_from_tick(mapped_tick_event)
 
         bot_intent = self.base_bot_internal_data.bot_intent
         if bot_intent.rescan is not None and bot_intent.rescan:
@@ -264,7 +268,8 @@ class WebSocketHandler:
 
     async def handle_skipped_turn(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a skipped turn event from the server."""
-        if self.base_bot_internal_data.event_handling_disabled_turn:
+        turn_number = json_msg.get("turn_number") or json_msg.get("turnNumber")
+        if turn_number is not None and self._is_event_handling_disabled(int(turn_number)):
             return
 
         schema_evt: SkippedTurnEvent = from_json(json_msg)  # type: ignore
@@ -278,7 +283,17 @@ class WebSocketHandler:
         self.base_bot_internal_data.server_handshake = server_handshake
 
         # Reply by sending bot handshake
-        is_droid: bool = hasattr(self.base_bot, "is_droid") and self.base_bot.is_droid  # type: ignore
+        # Infer droid status by marker interface inheritance (Java parity), with fallback to explicit flag for backward compatibility
+        try:
+            from ..droid_abc import DroidABC  # type: ignore
+        except Exception:
+            DroidABC = None  # type: ignore
+        is_droid: bool = False
+        if 'DroidABC' in locals() and DroidABC is not None and isinstance(self.base_bot, DroidABC):  # type: ignore
+            is_droid = True
+        elif hasattr(self.base_bot, "is_droid"):
+            # Allow legacy bots explicitly setting the flag
+            is_droid = bool(getattr(self.base_bot, "is_droid"))
         assert isinstance(is_droid, bool), "is_droid must be a boolean value"
 
         # Create bot handshake message

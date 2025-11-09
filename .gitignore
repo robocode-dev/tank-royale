@@ -11,8 +11,7 @@
 Folder.DotSettings.user
 
 target/
-!sample-bots/java/Target/
-!sample-bots/csharp/Target/
+!sample-bots/**/Target/
 build/
 !buildSrc/src/main/kotlin/build
 out/
@@ -27,12 +26,11 @@ generated/
 *.lock
 *.sln.DotSettings.user
 
-/games.properties
+/game-setups.properties
 /server.properties
-/config.properties
+/gui.properties
+
 /*.battle.gz
 
-/.codiumai/
 /.kotlin
-
-yarn.lock
+/recordings/

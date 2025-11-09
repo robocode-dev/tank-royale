@@ -100,10 +100,20 @@ class EventQueue:
                 if self.is_current_event_interruptible():
                     EventInterruption.set_interruptible(type(current_event), False)  # clear interruptible flag
 
+                    # Mark that the current handler was interrupted so API methods can react accordingly
+                    self.base_bot_internal_data.was_current_event_interrupted = True
+
                     # We are already in an event handler, took action, and a new event was generated.
                     # So we want to break out of the old handler to process the new event here.
                     raise ThreadInterruptedException()
+                # Same event but not interruptible: we've finished handling the previous event, clear its flag
+                if self.current_top_event is not None:
+                    EventInterruption.set_interruptible(type(self.current_top_event), False)
                 break
+
+            # Different event than the one we just handled: clear any pending interruptible flag
+            if self.current_top_event is not None:
+                EventInterruption.set_interruptible(type(self.current_top_event), False)
 
             old_top_event_priority = self.current_top_event_priority
 
@@ -150,6 +160,7 @@ class EventQueue:
             if self.is_not_old_or_is_critical_event(bot_event, turn_number):
                 await self.bot_event_handlers.fire_event(bot_event)
         finally:
+            # Align with Java semantics: always clear interruptible flag for the event type after dispatch
             EventInterruption.set_interruptible(type(bot_event), False)
 
     @staticmethod

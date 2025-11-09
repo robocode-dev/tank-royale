@@ -1,21 +1,27 @@
 from setuptools import setup, find_packages  # type: ignore - setuptools.setup is missing type.
 
-with open('VERSION', 'r') as f:
+with open('VERSION', 'r', encoding='utf-8') as f:
     version = f.read()
 
 setup(
     name="robocode-tank-royale",
     version=version,
     description="The Python Bot API for Robocode Tank Royale",
-    long_description=open("README.md").read(),
+    long_description=open("README-PyPI.md", encoding='utf-8').read(),
     long_description_content_type="text/markdown",
     url="https://robocode-dev.github.io/tank-royale",
     package_dir={
+        # Core bot API lives under src
         "robocode_tank_royale.bot_api": "src/robocode_tank_royale/bot_api",
-        "robocode_tank_royale.schema": "generated/robocode_tank_royale/tank_royale/schema",  # Specific override for schema
+        # Install the lightweight shim as robocode_tank_royale.schema
+        # This shim forwards imports to the generated schema package at runtime
+        "robocode_tank_royale.schema": "generated/robocode_tank_royale/schema",
+        # Ship the generated schema as an actual package under the 'generated' namespace
     },
     packages=[
+        # Core API packages
         "robocode_tank_royale.bot_api",
+        # Shim package (re-exports generated types)
         "robocode_tank_royale.schema",
     ]
     + [
@@ -23,5 +29,5 @@ setup(
         for subpackage in find_packages("src/robocode_tank_royale/bot_api")
     ],
     python_requires=">=3.10",
-    install_requires=open("requirements.txt").read().splitlines(),
+    install_requires=open("requirements.txt", encoding='utf-8').read().splitlines(),
 )

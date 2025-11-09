@@ -1,0 +1,16 @@
+{
+  "name": "Fire",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "Sits still, continuously rotates its gun, and only moves when hit.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "platform": "Python",
+  "programmingLang": "Python 3"
+}

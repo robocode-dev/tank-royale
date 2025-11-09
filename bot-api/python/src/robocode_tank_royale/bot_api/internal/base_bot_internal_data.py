@@ -1,6 +1,6 @@
 from typing import Optional, Set
 
-import drawsvg  # type: ignore
+from ..graphics import SvgGraphics, GraphicsABC
 
 from ..bot_exception import BotException
 from ..bot_info import BotInfo
@@ -33,13 +33,15 @@ class BaseBotInternalData:
         self._conditions: Set[Condition] = set()
         self._is_running_atomic: bool = False
         self._event_handling_disabled_turn: int = 0
-        self.graphics_state: drawsvg.Drawing = drawsvg.Drawing(800, 600)
+        self.graphics_state: GraphicsABC = SvgGraphics()
         # Fields for set_stop / set_resume
         self.is_stopped: bool = False
         self.saved_target_speed: Optional[float] = None
         self.saved_turn_rate: Optional[float] = None
         self.saved_gun_turn_rate: Optional[float] = None
         self.saved_radar_turn_rate: Optional[float] = None
+        # Flag set when the current event handler was interrupted by a new event
+        self.was_current_event_interrupted: bool = False
 
     @property
     def my_id(self) -> int:

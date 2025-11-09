@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import kotlin.text.lowercase
 
-description = "Robocode Tank Royale Bot API for .Net"
+description = "Robocode Tank Royale Bot API for .NET"
 
 val artifactName = "Robocode.TankRoyale.BotApi"
 version = libs.versions.tankroyale.get()
@@ -44,6 +44,7 @@ tasks {
     }
 
     register<Exec>("test") {
+        dependsOn(":bot-api:dotnet:schema:build")
         workingDir("test")
         commandLine("dotnet", "test")
     }

@@ -1,9 +1,10 @@
 package dev.robocode.tankroyale.botapi;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("TR-API-VAL-005 Constants integrity")
 public class ConstantsTest {
 
     private static final double EPS = 1e-10;

@@ -6,8 +6,8 @@
     <AssemblyTitle>Bot API for Robocode Tank Royale</AssemblyTitle>
     <RootNamespace>Robocode.TankRoyale.BotApi</RootNamespace>
     <OutputType>Library</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>10.0</LangVersion>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>12.0</LangVersion>
 
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
 
@@ -15,7 +15,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <Title>Bot API for Robocode Tank Royale</Title>
-    <Description>.Net API library for developing bots for Robocode Tank Royale</Description>
+    <Description>.NET API library for developing bots for Robocode Tank Royale</Description>
 
     <Authors>Flemming Nørnberg Larsen</Authors>
     <Copyright>Copyright 2022 Flemming Nørnberg Larsen</Copyright>
@@ -37,14 +37,13 @@
     <Compile Include="../schema/generated/*.cs" />
 
     <!-- For [PublicAPI] -->
-    <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
 
     <!-- for Bot API -->
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Text.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 
     <!-- Icon -->
     <None Include="icon.png" Pack="true" PackagePath="\" />

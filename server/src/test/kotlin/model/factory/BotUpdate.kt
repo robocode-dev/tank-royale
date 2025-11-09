@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.server.model.TeamMessage
 
 /**
  * BotUpdate is a bot intent sent from a bot between turns.
- * A bot intent reflects the bot´s orders for setting a new target speed, turn rates, bullet power etc.
+ * A bot intent reflects the bot's orders for setting a new target speed, turn rates, bullet power etc.
  * @param targetSpeed New target speed.
  * @param turnRate New driving turn rate.
  * @param gunTurnRate New gun turn rate.

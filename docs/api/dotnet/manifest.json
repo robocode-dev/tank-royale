@@ -1,5 +1,5 @@
 {
-  "source_base_path": "C:/Code/robocode-tank-royale/bot-api/dotnet/docfx-project",
+  "source_base_path": "C:/Code/tank-royale/bot-api/dotnet/docfx-project",
   "xrefmap": "xrefmap.yml",
   "files": [
     {

@@ -1,4 +1,4 @@
-description = "Robocode Tank Royale schema for .Net"
+description = "Robocode Tank Royale schema for .NET"
 
 plugins {
     base
@@ -21,23 +21,24 @@ tasks {
 
         doFirst {
             mkdir(generatedOutputDir)
+
+            val releaseDir = "${layout.projectDirectory}/bin/Release"
+            var codeGeneratorPath = file("$releaseDir/net8.0/CodeGeneratorApp").absolutePath
+            if (System.getProperty("os.name").lowercase().contains("windows")) {
+                codeGeneratorPath += ".exe"
+            }
+
+            println("codeGeneratorPath: $codeGeneratorPath")
+            println(inputSchemaDir)
+            println(generatedOutputDir)
+
+            commandLine(
+                codeGeneratorPath,
+                inputSchemaDir,
+                generatedOutputDir,
+                "Robocode.TankRoyale.Schema"
+            )
         }
-
-        var codeGeneratorPath = "${layout.projectDirectory}/bin/Release/net6.0/CodeGeneratorApp"
-        if (System.getProperty("os.name").lowercase().contains("windows")) {
-            codeGeneratorPath += ".exe"
-        }
-
-        println("codeGeneratorPath: $codeGeneratorPath")
-        println(inputSchemaDir)
-        println(generatedOutputDir)
-
-        commandLine(
-            codeGeneratorPath,
-            inputSchemaDir,
-            generatedOutputDir,
-            "Robocode.TankRoyale.Schema"
-        )
     }
 
     named("clean") {

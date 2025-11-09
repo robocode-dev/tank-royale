@@ -5,6 +5,7 @@ namespace Robocode.TankRoyale.BotApi.Tests.Graphics;
 using NUnit.Framework;
 
 [TestFixture]
+[Description("TR-API-VAL-006 Graphics Color")]
 public class ColorTest
 {
     [Test]

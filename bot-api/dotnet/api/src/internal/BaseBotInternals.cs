@@ -249,14 +249,17 @@ sealed class BaseBotInternals
 
     internal void SetInterruptible(bool interruptible) => _eventQueue.SetCurrentEventInterruptible(interruptible);
 
+    private bool movementResetPending = false;
+
     private void OnRoundStarted(E.RoundStartedEvent e)
     {
-        ResetMovement();
         _eventQueue.Clear();
         IsStopped = false;
         _eventHandlingDisabledTurn = 0;
         _lastExecuteTurnNumber = -1;
+        movementResetPending = true; // defer movement reset until after first intent
     }
+
 
     private void OnNextTurn(E.TickEvent e)
     {
@@ -264,6 +267,12 @@ sealed class BaseBotInternals
         {
             // Unblock methods waiting for the next turn
             Monitor.PulseAll(_nextTurnMonitor);
+        }
+        // Only reset movement after first intent following round start
+        if (movementResetPending)
+        {
+            ResetMovement();
+            movementResetPending = false;
         }
     }
 
@@ -301,14 +310,19 @@ sealed class BaseBotInternals
 
     internal void Execute()
     {
-        if (!IsRunning)
+        // Allow Execute() to be called outside the bot run thread (e.g., tests invoking Go())
+        // If no tick has been received yet (e.g., immediately after GameStarted), send current intent once
+        // so the server can proceed to the first tick. This mirrors Java behavior.
+        if (CurrentTickOrNull == null)
+        {
+            SendIntent();
             return;
+        }
 
         var turnNumber = CurrentTickOrThrow.TurnNumber;
         if (turnNumber != _lastExecuteTurnNumber)
         {
             _lastExecuteTurnNumber = turnNumber;
-
             SendIntent();
         }
 
@@ -340,7 +354,8 @@ sealed class BaseBotInternals
 
     private void RenderGraphicsToBotIntent()
     {
-        if (CurrentTickOrThrow.BotState.IsDebuggingEnabled)
+        var currentTick = CurrentTickOrNull;
+        if (currentTick != null && currentTick.BotState.IsDebuggingEnabled)
         {
             BotIntent.DebugGraphics = _graphicsState.GetSvgOutput();
             _graphicsState.Clear();
@@ -706,16 +721,19 @@ sealed class BaseBotInternals
                 "The maximum number team massages has already been reached: " +
                 IBaseBot.MaxNumberOfTeamMessagesPerTurn);
 
+        if (message == null)
+            throw new ArgumentException("The 'message' of a team message cannot be null");
+
         var json = JsonConverter.ToJson(message);
         var bytes = System.Text.Encoding.UTF8.GetBytes(json);
         if (bytes.Length > IBaseBot.TeamMessageMaxSize)
             throw new ArgumentException(
-                $"The team message is larger than the limit of {IBaseBot.TeamMessageMaxSize} bytes");
+                $"The team message is larger than the limit of {IBaseBot.TeamMessageMaxSize} bytes (compact JSON format)");
 
         BotIntent.TeamMessages.Add(new S.TeamMessage
         {
             MessageType = message.GetType().ToString(),
-            Message = Convert.ToBase64String(bytes),
+            Message = json,
             ReceiverId = teammateId,
         });
     }

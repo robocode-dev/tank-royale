@@ -112,6 +112,8 @@ final class EnvVars {
      * Server URL
      */
     static String getServerUrl() {
+        String value = System.getProperty(SERVER_URL);
+        if (value != null && !value.trim().isEmpty()) return value;
         return System.getenv(SERVER_URL);
     }
 
@@ -119,6 +121,8 @@ final class EnvVars {
      * Server secret
      */
     static String getServerSecret() {
+        String value = System.getProperty(SERVER_SECRET);
+        if (value != null && !value.trim().isEmpty()) return value;
         return System.getenv(SERVER_SECRET);
     }
 
@@ -197,7 +201,9 @@ final class EnvVars {
      */
     static Integer getTeamId() {
         String teamId = System.getenv(TEAM_ID);
-        return teamId != null ? Integer.parseInt(teamId) : null;
+        if (teamId == null) return null;
+        teamId = teamId.trim();
+        return teamId.isEmpty() ? null : Integer.parseInt(teamId);
     }
 
     /**

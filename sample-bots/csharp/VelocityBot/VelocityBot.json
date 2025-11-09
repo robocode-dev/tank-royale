@@ -2,7 +2,7 @@
   "name": "Velocity Bot",
   "version": "1.0",
   "authors": [
-    "Mathew Nelson",
+    "Joshua Galecki",
     "Flemming N. Larsen"
   ],
   "description": "Example bot of how to use turn rates",
@@ -11,6 +11,6 @@
     "ie",
     "dk"
   ],
-  "platform": ".Net 6.0",
+  "platform": ".NET 6.0",
   "programmingLang": "C# 10.0"
 }

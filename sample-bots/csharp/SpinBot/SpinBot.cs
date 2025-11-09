@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration.Json;
 // ------------------------------------------------------------------
 // SpinBot
 // ------------------------------------------------------------------
-// A sample bot original made for Robocode by Mathew Nelson.
+// A sample bot originally made for Robocode by Mathew Nelson.
 //
 // Continuously moves in a circle while firing at maximum power when
 // detecting enemies.

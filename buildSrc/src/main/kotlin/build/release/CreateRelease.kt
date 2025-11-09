@@ -18,17 +18,21 @@ fun createRelease(projectDir: File, version: String, token: String) {
     val release = prepareRelease(projectDir, version, token)
     val releaseId = JSONObject(release)["id"].toString().toInt()
 
-    // GUI Application
-    uploadAsset(projectDir, releaseId, token, "gui-app/build/libs/robocode-tankroyale-gui-$version.jar",
-        JAR_MIME_TYPE, "GUI Application (jar)")
+    // GUI
+    uploadAsset(projectDir, releaseId, token, "gui/build/libs/robocode-tankroyale-gui-$version.jar",
+        JAR_MIME_TYPE, "GUI (jar)")
 
     // Server
     uploadAsset(projectDir, releaseId, token, "server/build/libs/robocode-tankroyale-server-$version.jar",
         JAR_MIME_TYPE, "Server (jar)")
 
-    // Booter
-    uploadAsset(projectDir, releaseId, token, "booter/build/libs/robocode-tankroyale-booter-$version.jar",
-        JAR_MIME_TYPE, "Booter (jar)")
+//    // Booter
+//    uploadAsset(projectDir, releaseId, token, "booter/build/libs/robocode-tankroyale-booter-$version.jar",
+//        JAR_MIME_TYPE, "Booter (jar)")
+
+    // Sample Bots for Python
+    uploadAsset(projectDir, releaseId, token, "sample-bots/python/build/sample-bots-python-$version.zip",
+        ZIP_MIME_TYPE, "Sample bots for Python (zip)")
 
     // Sample Bots for C#
     uploadAsset(projectDir, releaseId, token, "sample-bots/csharp/build/sample-bots-csharp-$version.zip",

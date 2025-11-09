@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Robocode.TankRoyale.BotApi.Graphics;
 
 [TestFixture]
+[Description("TR-API-VAL-007 Graphics Point")]
 public class PointTest
 {
     private const double Epsilon = 1e-10; // Same epsilon used in Point.cs

@@ -238,18 +238,25 @@ public final class BaseBotInternals {
         return conditions;
     }
 
+    private boolean movementResetPending = false;
+
     private void onRoundStarted(RoundStartedEvent e) {
-        resetMovement();
         eventQueue.clear();
         isStopped = false;
         eventHandlingDisabledTurn = 0;
         lastExecuteTurnNumber = -1;
+        movementResetPending = true; // defer movement reset until after first intent
     }
 
     private void onNextTurn(TickEvent e) {
         synchronized (nextTurnMonitor) {
             // Unblock methods waiting for the next turn
             nextTurnMonitor.notifyAll();
+        }
+        // Only reset movement after first intent following round start
+        if (movementResetPending) {
+            resetMovement();
+            movementResetPending = false;
         }
     }
 
@@ -295,10 +302,13 @@ public final class BaseBotInternals {
     }
 
     public void execute() {
-        // If we are running at this point, make sure this method and the thread running it is stopped by force
-        if (!isRunning())
+        // Allow execute() to be called outside the bot run thread (e.g., tests invoking go())
+        // If no tick has been received yet (e.g., immediately after GameStarted), send current intent once
+        // so the server can proceed to the first tick. This mirrors test scaffolding that calls go() proactively.
+        if (getCurrentTickOrNull() == null) {
+            sendIntent();
             return;
-
+        }
         final var turnNumber = getCurrentTickOrThrow().getTurnNumber();
         if (turnNumber != lastExecuteTurnNumber) {
             lastExecuteTurnNumber = turnNumber;
@@ -329,7 +339,8 @@ public final class BaseBotInternals {
     }
 
     private void renderGraphicsToBotIntent() {
-        if (getCurrentTickOrThrow().getBotState().isDebuggingEnabled()) {
+        var currentTick = getCurrentTickOrNull();
+        if (currentTick != null && currentTick.getBotState().isDebuggingEnabled()) {
             botIntent.setDebugGraphics(graphicsState.getSvgOutput());
             graphicsState.clear();
         }

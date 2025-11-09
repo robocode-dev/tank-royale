@@ -153,13 +153,24 @@ public class SvgGraphics implements IGraphics {
      */
     @Override
     public void drawText(String text, double x, double y) {
+        String escaped = escapeXmlText(text);
         elements.add("<text " +
                      "x=\"" + format(x) + "\" " +
                      "y=\"" + format(y) + "\" " +
                      "font-family=\"" + fontFamily + "\" " +
                      "font-size=\"" + format(fontSize) + "\" " +
                      "fill=\"" + strokeColor + "\"" +
-                     ">" + text + "</text>\n");
+                     ">" + escaped + "</text>\n");
+    }
+
+    private static String escapeXmlText(String s) {
+        if (s == null) return null;
+        // Order matters: ampersand first to avoid double-escaping
+        return s
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;");
     }
 
     /**

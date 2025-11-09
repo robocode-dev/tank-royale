@@ -1,11 +1,13 @@
 package dev.robocode.tankroyale.botapi.graphics;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for the {@link Point} class.
  */
+@DisplayName("TR-API-VAL-007 Graphics Point")
 public class PointTest {
 
     @Test

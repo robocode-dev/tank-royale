@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.botapi.graphics.Color;
 // ------------------------------------------------------------------
 // Target
 // ------------------------------------------------------------------
-// A sample bot original made for Robocode by Mathew Nelson.
+// A sample bot originally made for Robocode by Mathew Nelson.
 //
 // A stationary robot that moves when its energy drops below a certain
 // threshold. This robot demonstrates how to use custom events.

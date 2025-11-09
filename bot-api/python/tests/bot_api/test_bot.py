@@ -40,12 +40,14 @@ class TestBot(unittest.IsolatedAsyncioTestCase):
         mock_connect.return_value = mock_ws_connection
 
         secret = "RECTjjm7ntrLpoYFh+kDuA/LHONbTYsLEnLMbuCnaU"
+        # Ensure a valid default URL (unset any bad value possibly set by other tests) BEFORE constructing bot
+        import os
+        os.environ.pop("SERVER_URL", None)
         b = Bot(
             bot_info=BotInfo(name="TestBot", version="0.42", authors=["Tester"]),
             server_secret=secret,
         )
         self.assertIsNotNone(b)
-
         # The start() method will connect to the mock server and perform a handshake before returning.
         await b.start()
 

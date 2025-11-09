@@ -84,6 +84,11 @@ class RecordingObserver(
                 log.info("Starting recording to file: ${recorder?.file?.absolutePath}")
             }
             if (eventsToRecord.contains(type)) {
+                // If we joined late and missed GameStarted, start recording on first recordable event
+                if (recorder == null) {
+                    startRecording()
+                    log.info("Starting recording to file: ${recorder?.file?.absolutePath}")
+                }
                 recorder?.record(jsonElement)
             }
             if (endRecordingEvents.contains(type)) {
@@ -110,16 +115,60 @@ class RecordingObserver(
         latch.await()
     }
 
-    private fun startRecording() {
+    fun startRecording() {
         stopRecording()
         recorder = GameRecorder(dir)
     }
 
-    private fun stopRecording() {
+    fun stopRecordingKeepFile() {
         recorder?.let {
             it.close()
             log.info("Game recording stopped. Recorded to file: ${recorder?.file?.absolutePath}")
             recorder = null
+        }
+    }
+
+    private fun stopRecording() {
+        stopRecordingKeepFile()
+    }
+
+    fun isRecording(): Boolean = recorder != null
+
+    fun stopAndDeleteRecording() {
+        recorder?.let {
+            val f = it.file
+            try {
+                it.close()
+            } catch (_: Exception) {
+                // ignore
+            }
+            val existedBeforeDelete = f.exists()
+            var deleted = false
+            var deleteException: Exception? = null
+            if (existedBeforeDelete) {
+                try {
+                    deleted = f.delete()
+                } catch (e: Exception) {
+                    deleteException = e
+                }
+            }
+            when {
+                deleted -> {
+                    log.info("Recording stopped and file deleted: ${f.absolutePath}")
+                }
+                !existedBeforeDelete -> {
+                    log.info("Recording stopped. File did not exist (already deleted?): ${f.absolutePath}")
+                }
+                deleteException != null -> {
+                    log.error("Recording stopped. Failed to delete existing file due to I/O error: ${f.absolutePath}. ${deleteException.message}", deleteException)
+                }
+                else -> {
+                    log.warn("Recording stopped. Unable to delete existing file: ${f.absolutePath}")
+                }
+            }
+            recorder = null
+        } ?: run {
+            log.info("No active recording to stop.")
         }
     }
 

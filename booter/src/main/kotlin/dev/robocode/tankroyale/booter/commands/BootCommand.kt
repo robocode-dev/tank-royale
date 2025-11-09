@@ -21,8 +21,13 @@ class BootCommand : Command() {
         // Start initial bots if provided
         bootInitialBots(bootPaths)
 
-        // Start interactive command loop
-        processCommandLineInput()
+        // Start interactive command loop and ensure cleanup on exit (quit/EOF/error)
+        try {
+            processCommandLineInput()
+        } finally {
+            // Proactively terminate any remaining bot processes
+            processManager.killAllProcesses()
+        }
     }
 
     // COMMAND PROCESSING
@@ -32,10 +37,12 @@ class BootCommand : Command() {
      */
     private fun processCommandLineInput() {
         while (true) {
-            val line = readlnOrNull()?.trim()
-            val cmdAndArgs = line?.split("\\s+".toRegex(), limit = 2)
+            val raw = readlnOrNull() ?: break // EOF -> exit loop
+            val line = raw.trim()
+            if (line.isEmpty()) continue
 
-            if (cmdAndArgs?.isNotEmpty() != true) continue
+            val cmdAndArgs = line.split("\\s+".toRegex(), limit = 2)
+            if (cmdAndArgs.isEmpty()) continue
 
             val command = cmdAndArgs[0].lowercase(Locale.getDefault()).trim()
 

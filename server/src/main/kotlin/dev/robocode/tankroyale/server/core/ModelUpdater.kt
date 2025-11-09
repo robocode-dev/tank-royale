@@ -111,6 +111,7 @@ class ModelUpdater(
             roundEnded = false
             roundNumber++
         }
+        // Initialize to 0; nextTurn() will increment it to 1 before the first TickEvent is mapped/sent
         turn.turnNumber = 0
 
         nextBulletId = 0
@@ -125,7 +126,7 @@ class ModelUpdater(
 
     /** Proceed with the next turn. */
     private fun nextTurn() {
-        // Reset events
+        // Increment at the very start of a turn; the first turn becomes 1
         turn.turnNumber++
         turn.resetEvents()
 
@@ -503,7 +504,7 @@ class ModelUpdater(
         // Both bots take damage when hitting each other
         registerRamHit(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
 
-        // Restore both bot´s old position
+        // Restore both bot's old position
         val lastTurn = round.lastTurn
         if (turn.turnNumber == 1 || lastTurn == null) {
             // Same position on first turn? => Move the second bot to a random position
@@ -1041,7 +1042,7 @@ class ModelUpdater(
         /**
          * Update bot turn rates and directions.
          * @param bot is the bot.
-         * @param intent is the bot´s intent.
+         * @param intent is the bot's intent.
          */
         private fun updateBotTurnRatesAndDirections(bot: MutableBot, intent: BotIntent) {
             val turnRate = limitTurnRate(intent.turnRate ?: 0.0, bot.speed)
@@ -1080,7 +1081,7 @@ class ModelUpdater(
         /**
          * Updates the bot colors.
          * @param bot is the bot.
-         * @param intent is the bot´s intent.
+         * @param intent is the bot's intent.
          */
         private fun updateBotColors(bot: MutableBot, intent: BotIntent) {
             bot.apply {
@@ -1103,7 +1104,7 @@ class ModelUpdater(
         /**
          * Updates last received data from standard output and standard error.
          * @param bot is the bot.
-         * @param intent is the bot´s intent.
+         * @param intent is the bot's intent.
          */
         private fun processStdErrAndStdOut(bot: MutableBot, intent: BotIntent) {
             // transfer from intent to state

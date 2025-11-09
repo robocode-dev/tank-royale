@@ -1,0 +1,133 @@
+bot\_api.internal package
+=========================
+
+Submodules
+----------
+
+bot\_api.internal.base\_bot\_internal\_data module
+--------------------------------------------------
+
+.. automodule:: bot_api.internal.base_bot_internal_data
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.base\_bot\_internals module
+---------------------------------------------
+
+.. automodule:: bot_api.internal.base_bot_internals
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.bot\_event\_handlers module
+---------------------------------------------
+
+.. automodule:: bot_api.internal.bot_event_handlers
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.bot\_handshake\_factory module
+------------------------------------------------
+
+.. automodule:: bot_api.internal.bot_handshake_factory
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.env\_vars module
+----------------------------------
+
+.. automodule:: bot_api.internal.env_vars
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.event\_handler module
+---------------------------------------
+
+.. automodule:: bot_api.internal.event_handler
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.event\_interruption module
+--------------------------------------------
+
+.. automodule:: bot_api.internal.event_interruption
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.event\_priorities module
+------------------------------------------
+
+.. automodule:: bot_api.internal.event_priorities
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.event\_queue module
+-------------------------------------
+
+.. automodule:: bot_api.internal.event_queue
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.graphics\_state module
+----------------------------------------
+
+.. automodule:: bot_api.internal.graphics_state
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.internal\_event\_handlers module
+--------------------------------------------------
+
+.. automodule:: bot_api.internal.internal_event_handlers
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.json\_util module
+-----------------------------------
+
+.. automodule:: bot_api.internal.json_util
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.stop\_resume\_listener\_abs module
+----------------------------------------------------
+
+.. automodule:: bot_api.internal.stop_resume_listener_abs
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.thread\_interrupted\_exception module
+-------------------------------------------------------
+
+.. automodule:: bot_api.internal.thread_interrupted_exception
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.websocket\_handler module
+-------------------------------------------
+
+.. automodule:: bot_api.internal.websocket_handler
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: bot_api.internal
+   :members:
+   :show-inheritance:
+   :undoc-members:

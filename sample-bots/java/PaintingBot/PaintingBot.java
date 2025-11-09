@@ -5,9 +5,9 @@ import dev.robocode.tankroyale.botapi.graphics.*;
 // ---------------------------------------------------------------------------
 // PaintingBot
 // ---------------------------------------------------------------------------
-// A sample bot original made for Robocode by Pavel Savara
+// A sample bot originally made for Robocode by Pavel Savara
 //
-// Bemonstrates how to paint stuff on the battlefield.
+// Demonstrates how to paint stuff on the battlefield.
 // Remember to enable Graphical Debugging for the bot when running a battle.
 // ---------------------------------------------------------------------------
 public class PaintingBot extends Bot {

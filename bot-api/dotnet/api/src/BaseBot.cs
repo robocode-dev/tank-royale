@@ -45,7 +45,7 @@ public abstract class BaseBot : IBaseBot
     /// <li>BOT_HOMEPAGE=https://somewhere.net/MyBot</li>
     /// <li>BOT_COUNTRY_CODES=us</li>
     /// <li>BOT_GAME_TYPES=melee,1v1</li>
-    /// <li>BOT_PLATFORM=.Net 6.0</li>
+    /// <li>BOT_PLATFORM=.NET 6.0</li>
     /// <li>BOT_PROG_LANG=C# 10.0</li>
     /// <li>BOT_INITIAL_POS=50,70, 270</li>
     /// </ul>
@@ -88,8 +88,8 @@ public abstract class BaseBot : IBaseBot
 
     /// <summary>
     /// Constructor for initializing a new instance of the BaseBot class.
-    /// This constructor assumes the server URL and secret is provided by the environment
-    /// variables SERVER_URL and SERVER_SECRET.
+    /// This constructor assumes the server URL and, optionally, the server secret is provided
+    /// by the environment variables SERVER_URL and SERVER_SECRET.
     /// </summary>
     /// <param name="botInfo">Is the bot info containing information about your bot.</param>
     protected BaseBot(BotInfo botInfo) =>

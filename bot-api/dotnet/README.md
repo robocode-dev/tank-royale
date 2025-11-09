@@ -1,8 +1,8 @@
-# Bot API for .Net
+# Bot API for .NET
 
-This directory contains the Bot API for developing bots for Robocode Tank Royale with the .Net platform.
+This directory contains the Bot API for developing bots for Robocode Tank Royale with the .NET platform.
 
-The Bot API is provided as a [Nuget] package and build for [.Net 6.0].
+The Bot API is provided as a [Nuget] package and build for [.NET 8].
 
 ## Directory structure
 
@@ -26,6 +26,12 @@ The Bot API is provided as a [Nuget] package and build for [.Net 6.0].
 ```
 
 Artifact is output to the `/bin/Release/` directory named `Robocode.TankRoyale.BotApi.x.y.z.nupkg`.
+
+#### Push Nuget package to the local repository:
+
+```shell
+./gradlew :bot-api:dotnet:pushLocal
+```
 
 ### Build API documentation
 
@@ -72,7 +78,7 @@ macOS and Linux:
 <add key="local" value="~/.nuget/packages"/>
 ```
 
-[.Net 6.0]: https://dotnet.microsoft.com/en-us/download/dotnet/6.0 "Download .NET 6.0"
+[.NET 8]: https://dotnet.microsoft.com/en-us/download/dotnet/8.0 "Download .NET 8"
 
 [Nuget]: https://www.nuget.org/ "Nuget homepage"
 

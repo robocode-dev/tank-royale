@@ -1,4 +1,6 @@
-
+"""
+TR-API-UTL-002 JsonUtil serialization + schema compliance
+"""
 import unittest
 from robocode_tank_royale.schema import ScannedBotEvent, Message, BulletFiredEvent, BulletState, Color
 from robocode_tank_royale.bot_api.internal.json_util import from_json, to_json
