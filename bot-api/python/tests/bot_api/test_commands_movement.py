@@ -23,6 +23,15 @@ class TestCommandsMovement(unittest.IsolatedAsyncioTestCase):
     async def test_TR_API_CMD_001_movement_commands_clamped_in_intent(self):
         """TR-API-CMD-001 Movement commands: setting movement rates/speed updates next intent and clamps to limits"""
         # Arrange
+        # Ensure all movement limits are unset so intent is always accepted
+        self.server.set_speed_min_limit(None)
+        self.server.set_speed_max_limit(None)
+        self.server.set_direction_min_limit(None)
+        self.server.set_direction_max_limit(None)
+        self.server.set_gun_direction_min_limit(None)
+        self.server.set_gun_direction_max_limit(None)
+        self.server.set_radar_direction_min_limit(None)
+        self.server.set_radar_direction_max_limit(None)
         bot = BaseBot(
             bot_info=BotInfo(name="CmdBot", version="1.0", authors=["Tester"]),
             server_url=self.server.server_url,

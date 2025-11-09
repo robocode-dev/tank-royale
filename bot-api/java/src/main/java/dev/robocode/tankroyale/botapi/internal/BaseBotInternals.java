@@ -238,18 +238,25 @@ public final class BaseBotInternals {
         return conditions;
     }
 
+    private boolean movementResetPending = false;
+
     private void onRoundStarted(RoundStartedEvent e) {
-        resetMovement();
         eventQueue.clear();
         isStopped = false;
         eventHandlingDisabledTurn = 0;
         lastExecuteTurnNumber = -1;
+        movementResetPending = true; // defer movement reset until after first intent
     }
 
     private void onNextTurn(TickEvent e) {
         synchronized (nextTurnMonitor) {
             // Unblock methods waiting for the next turn
             nextTurnMonitor.notifyAll();
+        }
+        // Only reset movement after first intent following round start
+        if (movementResetPending) {
+            resetMovement();
+            movementResetPending = false;
         }
     }
 
