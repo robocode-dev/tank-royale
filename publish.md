@@ -1,22 +1,30 @@
 # Publish archives
 
-## Java archives (jar files)
+## Configure credentials in ~/.gradle/gradle.properties
 
-Publish jar archives to Sonatype (Maven Central Repository)
-
-Make sure you have a `.gradle/gradle.properties` file in your home folder (`%USERHOME%` on Windows, and `~` on Linux and macOS):
+To avoid environment variables, keep all publishing secrets in your user Gradle properties file (`%USERPROFILE%\ .gradle\gradle.properties` on Windows, `~/.gradle/gradle.properties` on Linux/macOS):
 
 ```properties
-signingKey=-----BEGIN PGP PRIVATE KEY BLOCK-----\n\nlQWGBGBq5...-----END PGP PRIVATE KEY BLOCK-----
-signingPassword=...
+# Java signing + Sonatype (Maven Central)
+signingKey=-----BEGIN PGP PRIVATE KEY BLOCK-----\n...\n-----END PGP PRIVATE KEY BLOCK-----
+signingPassword=your-signing-passphrase
+ossrhUsername=your-ossrh-username
+ossrhPassword=your-ossrh-password
 
-ossrhUsername=...
-ossrhPassword=JfRES...
+# GitHub token used by create-release
+tankRoyaleGitHubToken=ghp_...
 
-tankRoyaleGitHubToken=ghp_lDygeO...
+# NuGet (.NET Bot API)
+nugetApiKey=your-nuget-api-key
+
+# PyPI/TestPyPI (Python Bot API) — tokens only
+pypiToken=pypi-xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+testpypiToken=pypi-xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-Publish to staging:
+## Java archives (jar files)
+
+Publish jar archives to Sonatype (Maven Central Repository):
 
 ```shell
 ./gradlew publishToSonatype
@@ -28,45 +36,21 @@ Publish to staging, close, and release in one go:
 ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
 ```
 
-## .NET archives (Nuget)
-
-Enter the release folder:
+Or using the convenience task from the root project:
 
 ```shell
-cd bot-api\dotnet\api\bin\Release
+./gradlew publish-maven-central
 ```
 
-Publish to Nuget:
+## .NET archives (NuGet)
 
-```
-dotnet nuget push robocode.tankroyale.botapi.«version».nupkg --api-key «nuget api key» --source https://api.nuget.org/v3/index.json
-```
+From the repository root, create and publish the .NET Bot API package to NuGet.org (uses `nugetApiKey` from your Gradle properties):
 
-Note: «version» and «nuget api key» must be prefilled with Robocode version and Nuget API key.
+```shell
+./gradlew publish-nuget
+```
 
 ## Python package
-
-Make sure you have a `.pypyrc` file in your home folder (`%USERHOME%` on Windows, and `~` on Linux and macOS):
-
-```toml
-[distutils]
-index-servers =
-testpypi
-pypi
-
-[testpypi]
-repository: https://test.pypi.org/legacy/
-username: __token__
-password: pypi-AgENdG...
-
-[pypi]
-repository: https://upload.pypi.org/legacy/
-username: __token__
-password: pypi-AgEIcH...
-```
-
-You need to create an API key for both TestPyPI and PyPI, and copy and paste each one into the password field for
-`testpypi` and `pypi`, respectively.
 
 From repository root, build the Python Bot API package (wheel):
 
@@ -74,14 +58,14 @@ From repository root, build the Python Bot API package (wheel):
 ./gradlew :bot-api:python:build-dist
 ```
 
-Upload the TestPyPI first:
+Upload to TestPyPI (tokens-only: uses `testpypiToken` from Gradle properties):
 
 ```shell
-./gradlew :bot-api:python:upload-testpypi
+./gradlew publish-testpypi
 ```
 
-Upload the PyPI first:
+Upload to PyPI (tokens-only: uses `pypiToken` from Gradle properties):
 
 ```shell
-./gradlew :bot-api:python:upload-pypi
+./gradlew publish-pypi
 ```

@@ -202,6 +202,45 @@ tasks {
             createRelease(projectDir, version, tankRoyaleGitHubToken!!)
         }
     }
+
+    // Publish Java artifacts to Maven Central via Sonatype (OSSRH)
+    register("publish-maven-central") {
+        group = "publishing"
+        description = "Publishes all Maven publications to Sonatype and closes/releases the staging repository"
+        dependsOn("publishToSonatype")
+        finalizedBy("closeAndReleaseSonatypeStagingRepository")
+    }
+
+    // Publish .NET Bot API to NuGet.org
+    register("publish-nuget") {
+        group = "publishing"
+        description = "Publishes the .NET Bot API package to NuGet.org (requires -PnugetApiKey, typically via ~/.gradle/gradle.properties)"
+        dependsOn(":bot-api:dotnet:publishNuget")
+    }
+
+    // Publish Python Bot API to PyPI/TestPyPI
+    register("publish-pypi") {
+        group = "publishing"
+        description = "Publishes the Python Bot API package to PyPI (tokens-only: requires -PpypiToken in ~/.gradle/gradle.properties)"
+        dependsOn(":bot-api:python:upload-pypi")
+    }
+
+    register("publish-testpypi") {
+        group = "publishing"
+        description = "Publishes the Python Bot API package to TestPyPI (tokens-only: requires -PtestpypiToken in ~/.gradle/gradle.properties)"
+        dependsOn(":bot-api:python:upload-testpypi")
+    }
+
+    // Aggregate task to publish all artifacts to their respective package repositories
+    register("publish-artifacts") {
+        group = "publishing"
+        description = "Publishes artifacts to Maven Central, NuGet.org, and PyPI"
+        dependsOn(
+            "publish-maven-central",
+            "publish-nuget",
+            "publish-pypi"
+        )
+    }
 }
 
 nexusPublishing {
