@@ -101,6 +101,9 @@ class BaseBotInternals:
         self.abs_deceleration: float = abs(DECELERATION)
         self.last_execute_turn_number: int = -1
 
+        # Movement reset deferral flag (mirrors Java/.NET movementResetPending)
+        self._movement_reset_pending: bool = False
+
         self._init()
 
     def _get_server_url_from_setting(self) -> str:
@@ -126,7 +129,10 @@ class BaseBotInternals:
         )
 
     async def _on_round_started(self, event: RoundStartedEvent) -> None:
-        self._reset_movement()
+        # Defer movement reset until after first intent has been sent, mirroring Java/.NET behavior
+        if not hasattr(self, "_movement_reset_pending"):
+            self._movement_reset_pending = False
+        self._movement_reset_pending = True
         self.event_queue.clear()  # Clears conditions in self.data.conditions
         self.data.is_stopped = False
         self.data.event_handling_disabled_turn = 0
@@ -135,6 +141,10 @@ class BaseBotInternals:
     async def _on_next_turn(self, event: TickEvent) -> None:
         async with self.next_turn_monitor:
             self.next_turn_monitor.notify_all()
+        # Only reset movement after first intent following round start
+        if self._movement_reset_pending:
+            self._reset_movement()
+            self._movement_reset_pending = False
 
     async def _on_bullet_fired(self, event: BulletFiredEvent) -> None:
         if self.data.bot_intent:
