@@ -9,12 +9,12 @@
   "author": "Flemming Nørnberg Larsen",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@vuepress/bundler-vite": "2.0.0-rc.26",
-    "@vuepress/theme-default": "2.0.0-rc.116",
+    "@vuepress/bundler-vite": "2.0.0-rc.13",
+    "@vuepress/theme-default": "2.0.0-rc.35",
     "footnote": "1.1.0",
     "katex": "0.16.10",
     "mermaid": "10.9.1",
-    "vuepress": "2.0.0-rc.26",
-    "vuepress-plugin-md-enhance": "2.0.0-rc.26"
+    "vuepress": "2.0.0-rc.13",
+    "vuepress-plugin-md-enhance": "2.0.0-rc.48"
   }
 }
