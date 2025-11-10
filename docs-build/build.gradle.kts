@@ -37,6 +37,7 @@ tasks {
         doFirst {
             delete(fileTree("../docs").matching {
                 exclude("api/**")
+                exclude("CNAME")
             })
             delete(
                 "docs/.vuepress/.cache",
