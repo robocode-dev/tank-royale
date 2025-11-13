@@ -179,8 +179,12 @@ Notes:
 - TR-API-EVT-001 GameStartedEvent: populated fields match handshake/game setup; timing at round 1, tick 1.
 - TR-API-EVT-002 RoundStartedEvent: round counter increments, initial state matches spec.
 - TR-API-EVT-003 ScannedBotEvent: geometry fields (bearing, distance, heading) computed consistently from world state.
+  - Note (semantics): `direction` is the scanned bot’s absolute heading (degrees), not a bearing from the scanning
+    bot. Compute bearings via helpers where needed.
 - TR-API-EVT-004 SkippedTurnEvent: triggered when bot exceeds time budget; state unaffected except documented fields.
 - TR-API-EVT-005 Event interruption semantics: handler interruption rules match Java reference and do not deadlock.
+- TR-API-EVT-006 DeathEvent callback: for self-death (`victimId == myId`), `on_death(DeathEvent)` is invoked before the
+  bot is stopped; ordering aligns with Java/.NET. For non‑self, `on_bot_death(BotDeathEvent)` is raised.
 
 ### G. Ticks and state (TCK)
 

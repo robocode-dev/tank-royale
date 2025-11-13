@@ -17,6 +17,7 @@ from robocode_tank_royale.schema import (
     TickEventForBot,
     BotState as SchemaBotState,
     ScannedBotEvent,
+    BotDeathEvent as SchemaBotDeathEvent,
     BulletFiredEvent as SchemaBulletFiredEvent,
     BulletState as SchemaBulletState,
 )
@@ -105,6 +106,9 @@ class MockedServer:
         # state captured
         self.handshake = None
         self._bot_intent = None
+
+        # optional injections
+        self._self_death_turn: Optional[int] = None
 
         # server/loop/thread
         self._loop: Optional[asyncio.AbstractEventLoop] = None
@@ -405,6 +409,16 @@ class MockedServer:
         )
         events.append(scanned)
 
+        # Inject self-death event if configured for this turn
+        if self._self_death_turn is not None and turn_number == self._self_death_turn:
+            events.append(
+                SchemaBotDeathEvent(
+                    victim_id=self.my_id,
+                    turn_number=turn_number,
+                    type=Message.Type.BOT_DEATH_EVENT,
+                )
+            )
+
         fp = getattr(self._bot_intent, "firepower", None) if self._bot_intent is not None else None
         if fp is not None:
             bullet_evt = SchemaBulletFiredEvent(
@@ -435,3 +449,7 @@ class MockedServer:
             y=0.0,
             direction=0.0,
         )
+
+    # Test helpers (API)
+    def set_self_death_on_turn(self, turn_number: int | None) -> None:
+        self._self_death_turn = turn_number

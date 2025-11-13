@@ -21,6 +21,7 @@ class _BotInternals(StopResumeListenerABC):
 
         self._clear_remaining()
 
+        # Internal handlers are used for maintaining internal state only
         handlers = self._base_bot_internals.internal_event_handlers
 
         async def _stop_thread(_: ...) -> None:
@@ -30,7 +31,12 @@ class _BotInternals(StopResumeListenerABC):
         handlers.on_round_ended.subscribe(_stop_thread, 90)
         handlers.on_game_ended.subscribe(_stop_thread, 90)
         handlers.on_disconnected.subscribe(_stop_thread, 90)
-        handlers.on_death.subscribe(_stop_thread, 90)
+
+        # Important: Do NOT stop the bot on internal DeathEvent before user callbacks run.
+        # Align with Java/.NET semantics: invoke user on_death first, then stop the bot.
+        # Therefore, subscribe to the PUBLIC bot event handler with a LOWER priority than the user handler (default=1).
+        public_handlers = self._base_bot_internals.bot_event_handlers
+        public_handlers.on_death.subscribe(_stop_thread, 0)
         handlers.on_next_turn.subscribe(self.on_next_turn, 90)
         handlers.on_hit_wall.subscribe(lambda _: self.on_hit_wall(), 90)
         handlers.on_hit_bot.subscribe(self.on_hit_bot, 90)
