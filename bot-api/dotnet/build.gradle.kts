@@ -71,8 +71,7 @@ tasks {
                 it.contains("build-release") ||
                 it.contains("upload-docs") ||
                 it.contains("create-release") ||
-                it == "docfx" ||
-                it.endsWith(":docfx")
+                it.contains("docfx") // also run when explicitly calling docfx tasks like docfxBuild/docfxMetadata
             }
         }
     }
@@ -88,7 +87,8 @@ tasks {
     }
 
     val docfxBuild by registering(Exec::class) {
-        dependsOn(docfxClean, prepareNugetDocs)
+        // Ensure metadata (YAML) is generated before building the site
+        dependsOn(docfxClean, prepareNugetDocs, docfxMetadata)
 
         workingDir("docfx-project")
         commandLine("docfx")
@@ -105,8 +105,7 @@ tasks {
                 it.contains("build-release") ||
                 it.contains("upload-docs") ||
                 it.contains("create-release") ||
-                it == "docfx" ||
-                it.endsWith(":docfx")
+                it.contains("docfx") // allow direct calls to docfxBuild/docfx
             }
         }
     }
