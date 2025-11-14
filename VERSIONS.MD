@@ -1,4 +1,4 @@
-## 📦 ???
+## 📦 0.34.1 - Fixes on_death in Python Bot API and GUI improvements – 14-Nov-2025
 
 ### 🚀 Improvements
 
