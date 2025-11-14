@@ -40,7 +40,7 @@ and includes sample bots for quick demos.
 
 ## Supported platforms
 
-Robocode runs on Java 11 or newer and supports Windows, macOS and Linux out of the box.  
+Robocode runs on Java 11 or newer and supports Windows, macOS and Linux out of the box.  
 Bot APIs are available for:
 
 - **Python**
@@ -52,11 +52,11 @@ Bots can be written in any language that can access a WebSocket API and follows 
 
 The following Bot APIs provide full client implementations:
 
-| Language | API |
-|----------|-----|
-| **Python** | [Python Bot API](https://robocode-dev.github.io/tank-royale/api/python/) |
+| Language       | API                                                                                   |
+|----------------|---------------------------------------------------------------------------------------|
+| **Python**     | [Python Bot API](https://robocode-dev.github.io/tank-royale/api/python/)              |
 | **Java (JVM)** | [Java/JVM Bot API](https://robocode-dev.github.io/tank-royale/api/apis.html#java-jvm) |
-| **.NET** | [.NET Bot API](https://robocode-dev.github.io/tank-royale/api/apis.html#net) |
+| **.NET**       | [.NET Bot API](https://robocode-dev.github.io/tank-royale/api/apis.html#net)          |
 
 Additional languages supported by the Java/JVM API:
 
