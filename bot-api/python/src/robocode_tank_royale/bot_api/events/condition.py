@@ -8,40 +8,36 @@ class Condition:
     A class used to test whether a specific condition is met.
 
     This class can be utilized in multiple ways:
-    1. To block program execution by using methods like `IBot.wait_for`, which halts
-       until a condition is satisfied.
-    2. To trigger a custom event by adding a handler using `IBaseBot.add_custom_event`.
-       When the condition is fulfilled, the `IBaseBot.on_custom_event` method is triggered.
 
-    ### Example 1: Using a Condition subclass
-    Here's an implementation where a condition is defined as a reusable subclass:
+    1. To block program execution by using methods like `IBot.wait_for`, which halts until a condition is satisfied.
+    2. To trigger a custom event by adding a handler using `IBaseBot.add_custom_event`. When the condition is fulfilled, the `IBaseBot.on_custom_event` method is triggered.
 
-    class MyBot(Bot):
-        def run(self):
-            while self.is_running():
-                # ...
-                self.set_turn_right(90)
-                self.wait_for(TurnCompleteCondition(self))
-                # ...
+    Example 1: Using a Condition subclass
 
-    class TurnCompleteCondition(Condition):
-        def __init__(self, bot: Bot):
-            self.bot = bot
+        class MyBot(Bot):
+            def run(self):
+                while self.is_running():
+                    # ...
+                    self.set_turn_right(90)
+                    self.wait_for(TurnCompleteCondition(self))
+                    # ...
 
-        def test(self) -> bool:
-            return self.bot.turn_remaining == 0
+        class TurnCompleteCondition(Condition):
+            def __init__(self, bot: Bot):
+                self.bot = bot
 
-    ### Example 2: Using a lambda expression
-    The same behavior can also be achieved using a lambda expression instead
-    of a reusable class:
+            def test(self) -> bool:
+                return self.bot.turn_remaining == 0
 
-    class MyBot(Bot):
-        def run(self):
-            while self.is_running():
-                # ...
-                self.set_turn_right(90)
-                self.wait_for(Condition(lambda: self.turn_remaining == 0))
-                # ...
+    Example 2: Using a lambda expression
+
+        class MyBot(Bot):
+            def run(self):
+                while self.is_running():
+                    # ...
+                    self.set_turn_right(90)
+                    self.wait_for(lambda: self.turn_remaining == 0)
+                    # ...
 
     Attributes:
         name (Optional[str]): The name of the condition (optional). This is useful

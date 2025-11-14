@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
 
@@ -1572,7 +1572,8 @@ accelerate back to achieve max negative speed.</p>
 Acceleration is 1 unit per turn and deceleration/braking is faster than acceleration as it
 is -2 unit per turn. Deceleration is negative as it is added to the speed and hence needs
 to be negative when slowing down.
-</p></div><div class="NOTE"><h5>note</h5><p>
+</p></div>
+<div class="NOTE"><h5>note</h5><p>
 The target speed is truncated to <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxSpeed">MaxSpeed</a> if the target speed exceeds this value.
 </p></div>
 <p>If this property is set multiple times, the last value set before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> counts.</p>
@@ -4069,10 +4070,14 @@ aiming capabilities as it will help the bot by firing directly at a scanned bot 
 which is a very simple aiming strategy.</p>
 <p>When fire assistance is enabled the gun will fire directly towards the center of the scanned bot
 when all these conditions are met:</p>
-<ul><li>The gun is fired <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetFire_System_Double_">SetFire(double)</a> and <a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Fire_System_Double_">Fire(double)</a></li><li>The radar is scanning a bot <em>when</em> firing the gun (<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_OnScannedBot_Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_">OnScannedBot(ScannedBotEvent)</a>,
-        <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetRescan">SetRescan()</a>, <a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Rescan">Rescan()</a>)</li><li>The gun and radar are pointing in the exact the same direction. You can set
+<ul>
+    <li>The gun is fired <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetFire_System_Double_">SetFire(double)</a> and <a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Fire_System_Double_">Fire(double)</a></li>
+    <li>The radar is scanning a bot <em>when</em> firing the gun (<a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_OnScannedBot_Robocode_TankRoyale_BotApi_Events_ScannedBotEvent_">OnScannedBot(ScannedBotEvent)</a>,
+        <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_SetRescan">SetRescan()</a>, <a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_Rescan">Rescan()</a>)</li>
+    <li>The gun and radar are pointing in the exact the same direction. You can set
         <code>AdjustRadarForGunTurn=false</code> to align the gun and radar and make sure not to
-        turn the radar beside the gun.</li></ul>
+        turn the radar beside the gun.</li>
+</ul>
 The fire assistance feature is provided for backwards compatibility with the original Robocode,
 where robots that are not an <code>AdvancedRobot</code> got fire assistance per default as the gun and
 radar cannot be moved independently of each other. (The <code>AdvancedRobot</code> allows the body, gun,

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
 
@@ -817,7 +817,8 @@ accelerate back to achieve max negative speed.</p>
 Acceleration is 1 unit per turn and deceleration/braking is faster than acceleration as it
 is -2 unit per turn. Deceleration is negative as it is added to the speed and hence needs
 to be negative when slowing down.
-</p></div><div class="NOTE"><h5>note</h5><p>
+</p></div>
+<div class="NOTE"><h5>note</h5><p>
 The target speed is truncated to <a class="xref" href="Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxSpeed">MaxSpeed</a> if the target speed exceeds this value.
 </p></div>
 <p>If this property is set multiple times, the last value set before <a class="xref" href="Robocode.TankRoyale.BotApi.IBaseBot.html#Robocode_TankRoyale_BotApi_IBaseBot_Go">Go()</a> counts.</p>
@@ -1184,11 +1185,12 @@ method.</p>
     Back(100);
     TurnGunRight(360);
   }
-}</code></pre><div class="NOTE"><h5>note</h5><p>
-<p>The program runs in a loop in this example (as long as the bot is running),
+}</code></pre>
+<div class="NOTE"><h5>note</h5><p>
+The program runs in a loop in this example (as long as the bot is running),
 meaning that it will start moving forward as soon as <a class="xref" href="Robocode.TankRoyale.BotApi.IBot.html#Robocode_TankRoyale_BotApi_IBot_TurnGunRight_System_Double_">TurnGunRight(double)</a>
-has executed.</p>
-</div>
+has executed.
+</p></div>
 <p>When running a loop that could potentially run forever. The best practice is to check if
 the bot is still running to stop and exit the loop. This gives the game a chance of
 stopping the thread running the loop in the code behind. If the thread is not stopped

@@ -12,9 +12,9 @@
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
   
-    <title>bot_api.internal.env_vars | Robocode Tank Royale Bot API (Python) 0.34.0 documentation</title>
-    <meta property="og:title" content="bot_api.internal.env_vars | Robocode Tank Royale Bot API (Python) 0.34.0 documentation" />
-    <meta name="twitter:title" content="bot_api.internal.env_vars | Robocode Tank Royale Bot API (Python) 0.34.0 documentation" />
+    <title>bot_api.internal.env_vars | Robocode Tank Royale Bot API (Python) 0.34.1 documentation</title>
+    <meta property="og:title" content="bot_api.internal.env_vars | Robocode Tank Royale Bot API (Python) 0.34.1 documentation" />
+    <meta name="twitter:title" content="bot_api.internal.env_vars | Robocode Tank Royale Bot API (Python) 0.34.1 documentation" />
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e72c8e07" />
       <link rel="stylesheet" type="text/css" href="../../../_static/theme.css?v=42baaae4" />
         <link rel="search" title="Search" href="../../../search.html" />
@@ -39,7 +39,7 @@
     </a><header
   class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
     <div class="hidden mr-4 md:flex">
-      <a href="../../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.0 documentation</span>
+      <a href="../../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.1 documentation</span>
       </a></div><button
       class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
       type="button" @click="showSidebar = true">
@@ -94,7 +94,7 @@
   class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full shrink-0 overflow-y-auto border-r border-border md:sticky"
   :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
 
-    <a href="../../../index.html" class="!justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.0 documentation</span>
+    <a href="../../../index.html" class="!justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.1 documentation</span>
     </a>
 
     <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
@@ -125,7 +125,7 @@
      class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
   <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
      href="../../../index.html">
-    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.34.0 documentation</span>
+    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.34.1 documentation</span>
     <svg xmlns="http://www.w3.org/2000/svg"
          height="18"
          width="18"
@@ -419,61 +419,64 @@
 </span><span id="line-227"><span class="sd">            Optional[int]: The team ID, or None if not set.</span>
 </span><span id="line-228"><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="line-229">        <span class="n">team_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">EnvVars</span><span class="o">.</span><span class="n">TeamId</span><span class="p">)</span>
-</span><span id="line-230">        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">team_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">team_id</span> <span class="k">else</span> <span class="kc">None</span></div>
+</span><span id="line-230">        <span class="k">if</span> <span class="n">team_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-231">            <span class="k">return</span> <span class="kc">None</span>
+</span><span id="line-232">        <span class="n">team_id</span> <span class="o">=</span> <span class="n">team_id</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span id="line-233">        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">team_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">team_id</span> <span class="k">else</span> <span class="kc">None</span></div>
 
-</span><span id="line-231">
+</span><span id="line-234">
 <div class="viewcode-block" id="EnvVars.get_team_name">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.get_team_name">[docs]</a>
-</span><span id="line-232">    <span class="nd">@staticmethod</span>
-</span><span id="line-233">    <span class="k">def</span><span class="w"> </span><span class="nf">get_team_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-</span><span id="line-234"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-235"><span class="sd">        Gets the bot team name if provided from environment variables.</span>
-</span><span id="line-236">
-</span><span id="line-237"><span class="sd">        Returns:</span>
-</span><span id="line-238"><span class="sd">            Optional[str]: The team name, or None if not set.</span>
-</span><span id="line-239"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-240">        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">EnvVars</span><span class="o">.</span><span class="n">TeamName</span><span class="p">)</span></div>
+</span><span id="line-235">    <span class="nd">@staticmethod</span>
+</span><span id="line-236">    <span class="k">def</span><span class="w"> </span><span class="nf">get_team_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="line-237"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-238"><span class="sd">        Gets the bot team name if provided from environment variables.</span>
+</span><span id="line-239">
+</span><span id="line-240"><span class="sd">        Returns:</span>
+</span><span id="line-241"><span class="sd">            Optional[str]: The team name, or None if not set.</span>
+</span><span id="line-242"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-243">        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">EnvVars</span><span class="o">.</span><span class="n">TeamName</span><span class="p">)</span></div>
 
-</span><span id="line-241">
+</span><span id="line-244">
 <div class="viewcode-block" id="EnvVars.get_team_version">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.get_team_version">[docs]</a>
-</span><span id="line-242">    <span class="nd">@staticmethod</span>
-</span><span id="line-243">    <span class="k">def</span><span class="w"> </span><span class="nf">get_team_version</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-</span><span id="line-244"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-245"><span class="sd">        Gets the bot team version if provided from environment variables.</span>
-</span><span id="line-246">
-</span><span id="line-247"><span class="sd">        Returns:</span>
-</span><span id="line-248"><span class="sd">            Optional[str]: The team version, or None if not set.</span>
-</span><span id="line-249"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-250">        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">EnvVars</span><span class="o">.</span><span class="n">TeamVersion</span><span class="p">)</span></div>
+</span><span id="line-245">    <span class="nd">@staticmethod</span>
+</span><span id="line-246">    <span class="k">def</span><span class="w"> </span><span class="nf">get_team_version</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="line-247"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-248"><span class="sd">        Gets the bot team version if provided from environment variables.</span>
+</span><span id="line-249">
+</span><span id="line-250"><span class="sd">        Returns:</span>
+</span><span id="line-251"><span class="sd">            Optional[str]: The team version, or None if not set.</span>
+</span><span id="line-252"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-253">        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">EnvVars</span><span class="o">.</span><span class="n">TeamVersion</span><span class="p">)</span></div>
 
-</span><span id="line-251">
+</span><span id="line-254">
 <div class="viewcode-block" id="EnvVars.is_bot_booted">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.is_bot_booted">[docs]</a>
-</span><span id="line-252">    <span class="nd">@staticmethod</span>
-</span><span id="line-253">    <span class="k">def</span><span class="w"> </span><span class="nf">is_bot_booted</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-254"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-255"><span class="sd">        Checks if the bot is being booted.</span>
-</span><span id="line-256">
-</span><span id="line-257"><span class="sd">        Returns:</span>
-</span><span id="line-258"><span class="sd">            bool: True if the bot is being booted, False otherwise.</span>
-</span><span id="line-259"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-260">        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">EnvVars</span><span class="o">.</span><span class="n">BotBooted</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+</span><span id="line-255">    <span class="nd">@staticmethod</span>
+</span><span id="line-256">    <span class="k">def</span><span class="w"> </span><span class="nf">is_bot_booted</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-257"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-258"><span class="sd">        Checks if the bot is being booted.</span>
+</span><span id="line-259">
+</span><span id="line-260"><span class="sd">        Returns:</span>
+</span><span id="line-261"><span class="sd">            bool: True if the bot is being booted, False otherwise.</span>
+</span><span id="line-262"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-263">        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">EnvVars</span><span class="o">.</span><span class="n">BotBooted</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
-</span><span id="line-261">
-</span><span id="line-262">    <span class="nd">@staticmethod</span>
-</span><span id="line-263">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_env_var_as_list</span><span class="p">(</span><span class="n">env_var_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-</span><span id="line-264"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-265"><span class="sd">        Splits an environment variable&#39;s value into a list by commas.</span>
-</span><span id="line-266">
-</span><span id="line-267"><span class="sd">        Args:</span>
-</span><span id="line-268"><span class="sd">            env_var_name (str): The name of the environment variable.</span>
+</span><span id="line-264">
+</span><span id="line-265">    <span class="nd">@staticmethod</span>
+</span><span id="line-266">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_env_var_as_list</span><span class="p">(</span><span class="n">env_var_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</span><span id="line-267"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-268"><span class="sd">        Splits an environment variable&#39;s value into a list by commas.</span>
 </span><span id="line-269">
-</span><span id="line-270"><span class="sd">        Returns:</span>
-</span><span id="line-271"><span class="sd">            List[str]: A list of strings or an empty list if the variable is not set.</span>
-</span><span id="line-272"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-273">        <span class="n">value</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">env_var_name</span><span class="p">)</span>
-</span><span id="line-274">        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s*,\s*&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="p">[]</span></div>
+</span><span id="line-270"><span class="sd">        Args:</span>
+</span><span id="line-271"><span class="sd">            env_var_name (str): The name of the environment variable.</span>
+</span><span id="line-272">
+</span><span id="line-273"><span class="sd">        Returns:</span>
+</span><span id="line-274"><span class="sd">            List[str]: A list of strings or an empty list if the variable is not set.</span>
+</span><span id="line-275"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-276">        <span class="n">value</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">env_var_name</span><span class="p">)</span>
+</span><span id="line-277">        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s*,\s*&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">else</span> <span class="p">[]</span></div>
 
 </span></code></pre></div>
     </div></div>
@@ -490,7 +493,7 @@
 </footer>
   </div>
   
-    <script src="../../../_static/documentation_options.js?v=bbce7252"></script>
+    <script src="../../../_static/documentation_options.js?v=1fb6f64b"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script defer="defer" src="../../../_static/theme.js?v=073f68d9"></script>

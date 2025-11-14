@@ -11,7 +11,9 @@ from .graphics import Color
 
 
 class BaseBotABC(ABC):
-    """Interface containing the core API for a bot."""
+    """
+    Interface containing the core API for a bot.
+    """
 
     TEAM_MESSAGE_MAX_SIZE: int = 32768  # bytes
     """Maximum size of a team message, which is 32 KB."""
@@ -22,10 +24,10 @@ class BaseBotABC(ABC):
     @abstractmethod
     async def start(self) -> None:
         """
-        The method used to start running the bot. You should call this method from the main function
-        or a similar entry point.
+        The method used to start running the bot. You should call this method from the main function or a similar entry point.
 
-        Example:
+        Example::
+
             def main():
                 # create my_bot
                 ...
@@ -38,19 +40,11 @@ class BaseBotABC(ABC):
         """
         Commits the current commands (actions), which finalizes the current turn for the bot.
 
-        This method must be called once per turn to send the bot's actions to the server and must
-        be called before the turn timeout occurs. A turn timer starts when the `GameStartedEvent`
-        and `TickEvent` occur. If the `go()` method is called too late, a turn timeout will occur,
-        and the `SkippedTurnEvent` will be triggered, meaning the bot has skipped all actions for
-        the previous turn. In such a case, the server will continue executing the last actions
-        received. This could be fatal for the bot due to the loss of control over it. Ensure that
-        `go()` is called before the turn ends.
+        This method must be called once per turn to send the bot's actions to the server and must be called before the turn timeout occurs. A turn timer starts when the `GameStartedEvent` and `TickEvent` occur. If the `go()` method is called too late, a turn timeout will occur, and the `SkippedTurnEvent` will be triggered, meaning the bot has skipped all actions for the previous turn. In such a case, the server will continue executing the last actions received. This could be fatal for the bot due to the loss of control over it. Ensure that `go()` is called before the turn ends.
 
-        The commands executed when `go()` is called are set via the appropriate setter methods
-        prior to calling `go()`: `setTurnRate`, `setGunTurnRate`, `setRadarTurnRate`,
-        `setTargetSpeed`, and `setFire`.
+        The commands executed when `go()` is called are set via the appropriate setter methods prior to calling `go()`: `setTurnRate`, `setGunTurnRate`, `setRadarTurnRate`, `setTargetSpeed`, and `setFire`.
 
-        See:
+        See also:
             `getTurnTimeout`: For additional information on the turn timeout.
         """
         pass
@@ -58,10 +52,7 @@ class BaseBotABC(ABC):
     @abstractmethod
     def get_my_id(self) -> int:
         """
-        Unique id of this bot, which is available when the game has started.
-
-        Returns:
-            int: The unique id of this bot.
+        Returns the bot's unique identifier.
         """
         pass
 
@@ -741,266 +732,52 @@ class BaseBotABC(ABC):
     @abstractmethod
     def set_interruptible(self, interruptible: bool) -> None:
         """
-        Call this method during an event handler to control whether the handler continues
-        or restarts when a new event of the same type occurs while processing an earlier event.
+        Sets whether the bot's event handlers are interruptible.
 
-        Example:
-            def on_scanned_bot(event):
-                fire(1)
-                set_interruptible(True)
-                forward(100)  # When a new bot is scanned while moving forward, this handler will restart
-                              # from the top as it has been set to be interruptible after firing.
-                              # Without `set_interruptible(True)`, new scan events would not be triggered
-                              # while moving forward.
-                # This line is only reached if no bot is scanned during the move.
-                print("No bots were scanned")
+        When set to True, event handlers can be interrupted by higher-priority events.
+        When set to False, handlers run to completion before other events are processed.
 
         Args:
-            interruptible (bool): True if the event handler should be interrupted and restart when a
-                                  new event of the same type occurs again; False otherwise, where the
-                                  event handler continues processing.
+            interruptible (bool): If True, event handlers are interruptible; otherwise, they are not.
         """
         pass
 
     @abstractmethod
     def set_adjust_gun_for_body_turn(self, adjust: bool) -> None:
         """
-        Sets the gun to adjust for the bot's turn when setting the gun turn rate. This makes the gun behave
-        as if it is turning independently of the bot's turn.
+        Sets whether the gun's direction should adjust for the bot's body turn.
 
-        Explanation:
-        The gun is mounted on the bot's body. Normally, if the bot turns 90 degrees to the right, the gun
-        also turns with it since it is mounted on top of the bot's body. To compensate for this behavior,
-        you can set the gun to adjust for the bot's turn. When this adjustment is enabled, the gun will
-        turn independently of the bot's turn.
-
-        Notes:
-        - This property is additive until you reach the maximum turn rate of the gun. The "adjust" value is
-          added to the turn rate and then capped by the game's physical constraints.
-        - Turning the gun in this way is still considered as "turning the gun" by the game.
+        When set to True, the gun maintains its direction relative to the body as the bot turns.
+        When set to False, the gun turns with the body.
 
         Args:
-            adjust (bool): Set to True if the gun must adjust/compensate for the body's turning.
-                           Set to False if the gun should turn with the body (default).
-
-        Related Methods:
-            - `set_adjust_radar_for_body_turn()`
-            - `set_adjust_radar_for_gun_turn()`
-            - `is_adjust_gun_for_body_turn()`
-            - `is_adjust_radar_for_body_turn()`
-            - `is_adjust_radar_for_gun_turn()`
-        """
-        pass
-
-    @abstractmethod
-    def is_adjust_gun_for_body_turn(self) -> bool:
-        """
-        Checks if the gun is set to adjust for the bot turning, i.e., to turn independently of the bot's
-        body turn.
-
-        Returns:
-            bool: True if the gun is set to turn independently of the body turning. False if the gun is
-            set to turn with the body turning (default).
-
-        See Also:
-            - `setAdjustGunForBodyTurn`
-            - `setAdjustRadarForBodyTurn`
-            - `setAdjustRadarForGunTurn`
-            - `isAdjustRadarForBodyTurn`
-            - `isAdjustRadarForGunTurn`
-        """
-        pass
-
-    @abstractmethod
-    def set_adjust_radar_for_body_turn(self, adjust: bool) -> None:
-        """
-        Sets the radar to adjust for the body's turn when setting the radar turn rate.
-        This allows the radar to behave as if it is turning independently of the body's turn.
-
-        Ok, so this needs some explanation: The radar is mounted on the gun, and the gun is mounted on
-        the robot's body. Normally, if the robot turns 90 degrees to the right, the gun will turn along
-        with it, and so will the radar. Since the radar is mounted on top of the gun, it also follows
-        the body's movement. To compensate for this, you can adjust the radar for the body turn. When this
-        setting is enabled, the radar will turn independently of the body's turn.
-
-        Notes:
-            - This property is additive until you reach the maximum the radar can turn
-              (`Constants.MAX_RADAR_TURN_RATE`). The "adjust" value is added to the body's turn rate, and
-              the total is capped by the game's physics.
-            - The radar compensating in this way still counts as "turning the radar".
-
-        Args:
-            adjust (bool): Set to True if the radar should adjust/compensate for the body's turn. Set
-                           to False if the radar should turn with the body (default).
-
-        See Also:
-            - set_adjust_gun_for_body_turn()
-            - set_adjust_radar_for_gun_turn()
-            - is_adjust_gun_for_body_turn()
-            - is_adjust_radar_for_body_turn()
-            - is_adjust_radar_for_gun_turn()
-        """
-        pass
-
-    @abstractmethod
-    def is_adjust_radar_for_body_turn(self) -> bool:
-        """
-        Checks if the radar is set to adjust for the body turning, i.e., to turn independently
-        of the body's turn.
-
-        This call returns True if the radar is set to turn independently of the turn of the
-        body. Otherwise, it returns False, meaning that the radar is set to turn with the body
-        turning.
-
-        Returns:
-            bool: True if the radar is set to turn independently of the body turning;
-                  False if the radar is set to turn with the body turning (default).
-
-        See Also:
-            - set_adjust_gun_for_body_turn
-            - set_adjust_radar_for_body_turn
-            - set_adjust_radar_for_gun_turn
-            - is_adjust_gun_for_body_turn
-            - is_adjust_radar_for_gun_turn
+            adjust (bool): If True, gun direction is adjusted for body turn.
         """
         pass
 
     @abstractmethod
     def set_adjust_radar_for_gun_turn(self, adjust: bool) -> None:
         """
-        Sets the radar to adjust for the gun's turn when setting the radar turn rate.
-        This makes the radar behave as if it is turning independently of the gun's turn.
+        Sets whether the radar's direction should adjust for the gun's turn.
 
-        Explanation:
-        The radar is mounted on the gun. By default, if the gun turns 90 degrees to the
-        right, the radar turns along with it because it is mounted on top of the gun.
-        To counteract this behavior, this method allows you to adjust the radar to turn
-        independently of the gun’s directional changes. When this setting is enabled
-        (`adjust=True`), the radar behaves as though it is not mounted on the gun.
-
-        Additional Details:
-        - This property is additive until the radar turn rate reaches its maximum value
-          (determined by `Constants.MAX_RADAR_TURN_RATE`). The adjustment amount will
-          be capped by the game’s physical constraints after being combined with the
-          gun's turn rate.
-        - If the radar compensates in this way, it still counts as "turning the radar,"
-          even when the radar is not explicitly commanded to turn.
-
-        Notes:
-        - Enabling this setting (`adjust=True`) automatically disables fire assistance.
-        - Disabling this setting (`adjust=False`) automatically enables fire assistance.
-        - This behavior differs from `setAdjustGunForBodyTurn` and `setAdjustRadarForBodyTurn`,
-          which do not toggle fire assistance.
-        - For more information on fire assistance, refer to the `setFireAssist` method.
+        When set to True, the radar maintains its direction relative to the gun as the gun turns.
+        When set to False, the radar turns with the gun.
 
         Args:
-            adjust (bool):
-                - True to enable radar adjustment/compensation for gun turning.
-                - False to make the radar turn with the gun (default).
-
-        See Also:
-            - `setAdjustGunForBodyTurn`
-            - `setAdjustRadarForBodyTurn`
-            - `isAdjustGunForBodyTurn`
-            - `isAdjustRadarForBodyTurn`
-            - `isAdjustRadarForGunTurn`
+            adjust (bool): If True, radar direction is adjusted for gun turn.
         """
         pass
 
     @abstractmethod
-    def is_adjust_radar_for_gun_turn(self) -> bool:
+    def is_teammate(self, bot_id: int) -> bool:
         """
-        Checks if the radar is set to adjust independently of the gun's turning.
+        Checks if the specified bot ID is a teammate.
 
-        This method returns True if the radar is configured to turn independent
-        of the gun's turn. Otherwise, it returns False, indicating that the radar
-        turns together with the gun (default behavior).
+        Args:
+            bot_id (int): The bot ID to check.
 
         Returns:
-            bool: True if the radar is set to turn independent of the gun's turning;
-            False if the radar is set to turn with the gun turning (default).
-
-        See Also:
-            set_adjust_gun_for_body_turn: Adjusts the gun to turn independently of the body.
-            set_adjust_radar_for_body_turn: Adjusts the radar to turn independently of the body.
-            set_adjust_radar_for_gun_turn: Adjusts the radar to turn independently of the gun.
-            is_adjust_gun_for_body_turn: Checks if the gun is set to turn independently of the body.
-            is_adjust_radar_for_body_turn: Checks if the radar is set to turn independently of the body.
-        """
-        pass
-
-    @abstractmethod
-    def add_custom_event(self, condition: Condition) -> bool:
-        """
-        Adds an event handler that will automatically trigger `on_custom_event` when the condition's `test` method
-        returns True.
-
-        Args:
-            condition: The condition that must be met to trigger the custom event.
-
-        Returns:
-            bool: True if the condition was not added already; False if the condition was already added.
-
-        See Also:
-            remove_custom_event: A method that removes the custom event.
-        """
-        pass
-
-    @abstractmethod
-    def remove_custom_event(self, condition: Condition) -> bool:
-        """
-        Removes triggering a custom event handler for a specific condition that was previously added
-        with `add_custom_event`.
-
-        Args:
-            condition: The condition that was previously added with `add_custom_event`.
-
-        Returns:
-            bool: True if the condition was found; False if the condition was not found.
-
-        See Also:
-            add_custom_event
-        """
-        pass
-
-    @abstractmethod
-    def set_stop(self, overwrite: bool = False) -> None:
-        """
-        Sets the bot to stop all movement, including turning the gun and radar. The remaining movement
-        is saved for a subsequent call to `set_resume`.
-
-        This method will be executed when the `go()` method is called, allowing other setter methods
-        to be called before execution. This enables the bot to perform movements, turn the body,
-        radar, gun, and fire in parallel during a single turn, as long as these actions are set
-        using the relevant setter methods prior to calling `go()`. Note that parallel execution of
-        multiple methods is only possible with setter methods before invoking `go()`.
-
-        Args:
-            overwrite (bool): If set to True, any movement saved by a previous call to this method
-                              or `set_stop()` will be overridden with the current movement.
-                              When set to False, this method is identical to `set_stop()`.
-
-        See Also:
-            set_resume: Resumes any previously saved movement.
-        """
-        pass
-
-    @abstractmethod
-    def set_resume(self) -> None:
-        """
-        Sets the bot to resume movement after it has been stopped, for example, when the `set_stop()`
-        method has been called. The last radar direction and sweep angle will be used for rescanning
-        for bots.
-
-        This method will be executed when `go()` is called, allowing other setter methods to be called
-        before execution. This enables the bot to perform multiple actions, such as moving, turning the
-        body, radar, and gun, as well as firing the gun simultaneously within a single turn when `go()`
-        is invoked. However, note that executing multiple actions in parallel is only possible when using
-        setter methods prior to calling `go()`.
-
-        See Also:
-            set_stop(): Stops the bot's movement.
-            set_stop(stop: bool): Provides conditional control over the stop behavior.
+            bool: True if the bot is a teammate; False otherwise.
         """
         pass
 
@@ -1016,29 +793,6 @@ class BaseBotABC(ABC):
         See Also:
             is_teammate: Checks if a bot is a teammate.
             send_team_message: Sends a message to the team.
-        """
-        pass
-
-    @abstractmethod
-    def is_teammate(self, bot_id: int) -> bool:
-        """
-        Checks if the provided bot ID is a teammate or not.
-
-        Example:
-            def on_scanned_bot(event):
-                if is_teammate(event.scanned_bot_id):
-                    return  # don't do anything by leaving
-                fire(1)
-
-        Args:
-            bot_id: The ID of the bot to check.
-
-        Returns:
-            bool: True if the provided ID is an ID of a teammate; False otherwise.
-
-        See Also:
-            - get_teammate_ids
-            - send_team_message
         """
         pass
 
@@ -1191,8 +945,7 @@ class BaseBotABC(ABC):
             set_radar_color(Color(255, 0, 0))  # also the red color
 
         Args:
-            color: The color of the radar or `None` if the bot must use the
-                default color instead.
+            color: The color of the radar or `None` if the bot must use the default color instead.
         """
         pass
 
@@ -1804,23 +1557,13 @@ class BaseBotABC(ABC):
 
     def normalize_relative_angle(self, angle: float) -> float:
         """
-        Normalizes an angle to a relative angle in the range [-180, 180).
-
-        A **relative angle** represents the shortest angular distance between two directions.
-        For example:
-        - An angle of 190° is equivalent to -170° in relative terms, as turning -170° is
-          shorter than turning 190° to reach the same direction.
-        - Similarly, -190° is normalized to 170°, as turning 170° is the shorter path.
-
-        This method ensures that any input angle is adjusted to this range, making it easier
-        to work with directional calculations where relative angles are more intuitive
-        (e.g., determining how much to turn to face a specific direction).
+        Normalizes the given angle to the range [-180, 180] degrees.
 
         Args:
-            angle (float): The angle to normalize, in degrees.
+            angle (float): The angle to normalize.
 
         Returns:
-            float: A normalized relative angle in the range [-180, 180).
+            float: The normalized angle in degrees.
         """
 
         angle %= 360

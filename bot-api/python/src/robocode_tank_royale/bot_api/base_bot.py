@@ -18,14 +18,11 @@ class BaseBot(BaseBotABC):
     BaseBot is a base class for creating Robocode Tank Royale bots.
 
     Configuration and defaults:
-    - By default, the constructor attempts to load a bot config JSON named <ClassName>.json located
-      next to your bot class. If not found or incomplete, environment variables are used instead.
+
+    - By default, the constructor attempts to load a bot config JSON named <ClassName>.json located next to your bot class. If not found or incomplete, environment variables are used instead.
     - SERVER_URL can be set to the WebSocket URL of the server. If not set, ws://localhost:7654 is used.
-    - SERVER_SECRET is optional. Set it only if the server requires a secret for connecting bots.
-      If the server enforces secrets and none is provided, the server will disconnect the bot.
-    - When no config file is used, these BotInfo environment variables must be provided:
-      BOT_NAME, BOT_VERSION, BOT_AUTHORS. Optional vars include: BOT_DESCRIPTION, BOT_HOMEPAGE,
-      BOT_COUNTRY_CODES, BOT_GAME_TYPES, BOT_PLATFORM, BOT_PROG_LANG, BOT_INITIAL_POS.
+    - SERVER_SECRET is optional. Set it only if the server requires a secret for connecting bots. If the server enforces secrets and none is provided, the server will disconnect the bot.
+    - When no config file is used, these BotInfo environment variables must be provided: BOT_NAME, BOT_VERSION, BOT_AUTHORS. Optional vars include: BOT_DESCRIPTION, BOT_HOMEPAGE, BOT_COUNTRY_CODES, BOT_GAME_TYPES, BOT_PLATFORM, BOT_PROG_LANG, BOT_INITIAL_POS.
 
     You can also pass bot_info, server_url, and server_secret explicitly via the constructor.
     """
@@ -260,16 +257,28 @@ class BaseBot(BaseBotABC):
         self._internals.data.bot_intent.fire_assist = enable
 
     def set_interruptible(self, interruptible: bool) -> None:
+        """
+        Sets whether the bot's event handlers are interruptible.
+
+        When set to True, the bot's event handlers can be interrupted by higher-priority events.
+        When set to False, event handlers will run to completion before other events are processed.
+
+        Args:
+            interruptible (bool): If True, event handlers are interruptible; otherwise, they are not.
+        """
         self._internals.set_interruptible(interruptible)
 
     def set_adjust_gun_for_body_turn(self, adjust: bool) -> None:
-        self._internals.data.bot_intent.adjust_gun_for_body_turn = adjust
+        """
+        Sets whether the gun's direction should adjust for the bot's body turn.
 
-    def is_adjust_gun_for_body_turn(self) -> bool:
-        assert self._internals.data.bot_intent.adjust_gun_for_body_turn is not None, (
-            "Adjust gun for body turn must be set before accessing it."
-        )
-        return self._internals.data.bot_intent.adjust_gun_for_body_turn
+        When set to True, the gun will maintain its direction relative to the body as the bot turns.
+        When set to False, the gun will turn with the body.
+
+        Args:
+            adjust (bool): If True, gun direction is adjusted for body turn.
+        """
+        self._internals.data.bot_intent.adjust_gun_for_body_turn = adjust
 
     def set_adjust_radar_for_body_turn(self, adjust: bool) -> None:
         self._internals.data.bot_intent.adjust_radar_for_body_turn = adjust
@@ -281,6 +290,15 @@ class BaseBot(BaseBotABC):
         return self._internals.data.bot_intent.adjust_radar_for_body_turn
 
     def set_adjust_radar_for_gun_turn(self, adjust: bool) -> None:
+        """
+        Sets whether the radar's direction should adjust for the gun's turn.
+
+        When set to True, the radar will maintain its direction relative to the gun as the gun turns.
+        When set to False, the radar will turn with the gun.
+
+        Args:
+            adjust (bool): If True, radar direction is adjusted for gun turn.
+        """
         self._internals.data.bot_intent.adjust_radar_for_gun_turn = adjust
         self._internals.data.bot_intent.fire_assist = not adjust
 
@@ -306,6 +324,15 @@ class BaseBot(BaseBotABC):
         return self._internals.teammate_ids
 
     def is_teammate(self, bot_id: int) -> bool:
+        """
+        Checks if the specified bot ID is a teammate.
+
+        Args:
+            bot_id (int): The bot ID to check.
+
+        Returns:
+            bool: True if the bot is a teammate; False otherwise.
+        """
         self._internals.get_current_tick_or_throw()
         return self._internals.is_teammate(bot_id)
 
