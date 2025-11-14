@@ -11,7 +11,8 @@
 
 ### 🐞 Bug Fixes
 
-- Bot API for Python: The on_death() handler was not called when the bot died.
+- Bot API for Python:
+    - The on_death() event handler is now called when the bot dies.
 
 ## 📦 0.34.0 – Python Support + GUI Improvements – 19-Oct-2025
 
