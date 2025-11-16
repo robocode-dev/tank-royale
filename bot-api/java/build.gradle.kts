@@ -82,7 +82,7 @@ tasks {
 
     javadoc {
         title = "$javadocTitle $version"
-        source(sourceSets.main.get().allJava)
+        source = fileTree("src/main/java") { include("**/*.java") }
 
         (options as StandardJavadocDocletOptions).apply {
             memberLevel = JavadocMemberLevel.PROTECTED
