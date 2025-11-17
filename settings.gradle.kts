@@ -1,4 +1,4 @@
-rootProject.name = "dev.robocode.tankroyale"
+rootProject.name = "Robocode Tank Royale"
 
 val version: String = providers.gradleProperty("version").get()
 
