@@ -10,10 +10,6 @@
   </g>
 
   <defs>
-    <symbol id="arrow-head">
-      <path d="M 0,30 70,0 50,30 70,60 z" fill="yellow" />
-    </symbol>
-
     <symbol id="link0">
       <rect x="5" y="55" width="125" height="25" fill="#aaaaaa" />
       <rect x="10" y="70" width="116" height="35" fill="#666666" rx="10" ry="10" />
