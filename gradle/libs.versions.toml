@@ -45,5 +45,5 @@ nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "n
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 node-gradle = { id = "com.github.node-gradle.node", version.ref = "node-gradle" }
 
-# ./gradlew dependencyUpdates
+# ./gradlew dependencyUpdates -Drevision=release --no-parallel
 benmanes-versions = { id = "com.github.ben-manes.versions", version.ref = "benmanes-versions" }
