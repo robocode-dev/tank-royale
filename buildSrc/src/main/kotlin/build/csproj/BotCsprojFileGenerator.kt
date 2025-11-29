@@ -48,8 +48,24 @@ private fun writeXml(out: OutputStream, botName: String, botApiVersion: String) 
                     attribute("Version", botApiVersion)
                 }
                 element("PackageReference") {
+                    attribute("Include", "JetBrains.Annotations")
+                    attribute("Version", "2025.2.4")
+                }
+                element("PackageReference") {
+                    attribute("Include", "Microsoft.Extensions.Configuration")
+                    attribute("Version", "10.0.0")
+                }
+                element("PackageReference") {
                     attribute("Include", "Microsoft.Extensions.Configuration.Binder")
-                    attribute("Version", "8.0.2")
+                    attribute("Version", "10.0.0")
+                }
+                element("PackageReference") {
+                    attribute("Include", "Microsoft.Extensions.Configuration.Json")
+                    attribute("Version", "10.0.0")
+                }
+                element("PackageReference") {
+                    attribute("Include", "Newtonsoft.Json")
+                    attribute("Version", "13.0.4")
                 }
             }
         }

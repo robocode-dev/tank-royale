@@ -15,12 +15,12 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
 
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="10.0.0" />
 
-    <PackageReference Include="NJsonSchema.CodeGeneration.CSharp" Version="11.0.2" />
-    <PackageReference Include="NJsonSchema.Yaml" Version="11.0.2" />
+    <PackageReference Include="NJsonSchema.CodeGeneration.CSharp" Version="11.5.2" />
+    <PackageReference Include="NJsonSchema.Yaml" Version="11.5.2" />
 
-    <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="10.0.0" />
   </ItemGroup>
 
 </Project>
