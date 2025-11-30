@@ -73,9 +73,6 @@ Legend: [ ] Pending, [*] In progress, [✓] Done, [!] Blocked
   - Schema required list matches what server always sets: `energy`, `x`, `y`, `direction`, `gunDirection`, `radarDirection`, `radarSweep`, `speed`, `turnRate`, `gunTurnRate`, `radarTurnRate`, `gunHeat`, `enemyCount`. Cosmetic fields and `isDebuggingEnabled` are optional — matches server (nulls omitted by Gson).
   - Documentation clarified (non‑breaking): angles for `direction`, `gunDirection`, `radarDirection` are normalized to [0, 360); `radarSweep` is in [0, 360). No protocol/shape changes.
   - No further schema changes needed; server enforces value ranges at runtime. (Verified 2025-11-30)
-- [ ] `bot-intent.schema.yaml`
-  - Validate optionality of `turnRate`, `gunTurnRate`, `radarTurnRate`, `targetSpeed`, `firepower`.
-  - Confirm `firepower` is omitted (null) unless firing is allowed. Enforce min/max for movement and firepower.
 - [✓] `bot-intent.schema.yaml`
   - Verified against server mapper and execution flow:
     - Mapping: `server/src/main/kotlin/dev/robocode/tankroyale/server/mapper/BotIntentMapper.kt` (nulls → defaults; fields optional and interpreted as "no change").
@@ -91,18 +88,45 @@ Legend: [ ] Pending, [*] In progress, [✓] Done, [!] Blocked
 
 #### Events (polymorphic)
 
-- [ ] `scanned-bot-event.schema.yaml`
-  - Confirm all numeric fields and IDs; check `turnNumber` semantics.
-- [ ] `bot-hit-bot-event.schema.yaml`
-  - Verify actor/subject IDs and positions; check damage fields.
-- [ ] `bot-hit-wall-event.schema.yaml`
-  - Validate position and impact fields.
-- [ ] `bot-death-event.schema.yaml`
-  - Confirm cause/source fields.
-- [ ] `bullet-fired-event.schema.yaml`
-  - Ensure alignment with projectile state creation timing.
-- [ ] `bullet-hit-bot-event.schema.yaml`
-  - Verify hit data and energy transfer.
+- [✓] `scanned-bot-event.schema.yaml`
+  - Verified against server mapping in `server/src/main/kotlin/dev/robocode/tankroyale/server/mapper/EventsMapper.kt` (ScannedBotEvent): sets `turnNumber`, `scannedByBotId`, `scannedBotId`, `energy`, `x`, `y`, `direction`, `speed`.
+  - Event creation: produced from `ModelUpdater.checkAndHandleScans()/handleScannedBot()/createAndAddScannedBotEventToTurn(...)` with values taken from the scanned bot at the moment of detection; `direction` comes from bot model which is normalized to [0, 360) during updates.
+  - Schema extends `event.schema.yaml` and inherits required `turnNumber` (1‑based). Required list includes all event-specific fields — matches server payload.
+  - Documentation clarified: `direction` now explicitly states angles are normalized to the [0, 360) range (non‑breaking clarification).
+  - No other changes needed; schema matches current server serialization. (Verified 2025-11-30)
+- [✓] `bot-hit-bot-event.schema.yaml`
+  - Verified against server mapping in `server/src/main/kotlin/dev/robocode/tankroyale/server/mapper/EventsMapper.kt` and creation in `server/src/main/kotlin/dev/robocode/tankroyale/server/core/ModelUpdater.kt#handleBotHitBot(...)`.
+  - Server sets: `type = BotHitBotEvent`, `turnNumber` (inherited from base `event.schema.yaml`), `botId` (attacker), `victimId`, `energy` (victim remaining after collision), `x`, `y` (victim position), and `rammed` (true if attacker rammed victim).
+  - Schema fix: corrected `$schema` key typo (was `$schema"`) and clarified descriptions for `energy`, `x`, `y`, and `rammed`. Required fields unchanged: `botId`, `victimId`, `energy`, `x`, `y`, `rammed` — matches server payload.
+  - No protocol changes; documentation-only clarification plus YAML syntax fix. (Verified 2025-11-30)
+- [✓] `bot-hit-wall-event.schema.yaml`
+  - Verified against server mapping in `server/src/main/kotlin/dev/robocode/tankroyale/server/mapper/EventsMapper.kt` (BotHitWallEvent) and creation in `server/src/main/kotlin/dev/robocode/tankroyale/server/core/ModelUpdater.kt#checkAndHandleBotWallCollisions()`.
+  - Server creates `BotHitWallEvent(turnNumber, bot.id)` on wall collision and throttles duplicates within consecutive turns; mapper sets `turnNumber` (inherited from base `event.schema.yaml`) and `victimId`.
+  - Schema extends `event.schema.yaml` and requires `victimId` only — matches server payload. `turnNumber` is required via the base schema and documented as 1‑based.
+  - Cross‑checked generated model `server/build/generated-sources/schema/.../BotHitWallEvent.java` — fields match.
+  - No changes needed; schema matches current server serialization. (Verified 2025-11-30)
+- [✓] `bot-death-event.schema.yaml`
+  - Verified against server creation and mapping.
+  - Server creation: `server/src/main/kotlin/dev/robocode/tankroyale/server/core/ModelUpdater.kt#checkAndHandleDefeatedBots()` creates `BotDeathEvent(turn.turnNumber, botId)` for each defeated bot and adds it to both bot and observer event streams.
+  - Mapping: `server/src/main/kotlin/dev/robocode/tankroyale/server/mapper/EventsMapper.kt#map(BotDeathEvent)` sets `type`, inherits `turnNumber` from base `event.schema.yaml`, and sets `victimId`.
+  - Schema shape matches: `schema/schemas/bot-death-event.schema.yaml` defines `victimId` only and extends `event.schema.yaml` (which provides required 1‑based `turnNumber`). Required list aligns with server payload.
+  - No changes needed; documentation-only tracking updated. (Verified 2025-11-30)
+- [✓] `bullet-fired-event.schema.yaml`
+  - Verified against server creation and mapping:
+    - Creation: `server/src/main/kotlin/dev/robocode/tankroyale/server/core/ModelUpdater.kt#fireBullet(...)` constructs `BulletFiredEvent(turn.turnNumber, bullet.copy())` right after spawning the bullet and before energy deduction.
+    - Mapping: `server/src/main/kotlin/dev/robocode/tankroyale/server/mapper/EventsMapper.kt#map(BulletFiredEvent)` sets `type`, `turnNumber` (from base `event`), and `bullet = BulletToBulletStateMapper.map(bullet)`.
+    - Bullet snapshot mapping: `server/src/main/kotlin/dev/robocode/tankroyale/server/mapper/BulletToBulletStateMapper.kt` assigns `ownerId`, `bulletId`, normalized `direction`, `power`, `x`, `y`, and `color`.
+  - Documentation clarified in schema (non‑breaking): the `bullet` description now states it’s a snapshot at fire time; direction normalized to [0, 360); firepower clamped to [0.1, 3.0] by server; color equals bot’s bullet color at fire time and does not change afterwards.
+  - No protocol shape changes; required fields unchanged. (Verified 2025-11-30)
+- [✓] `bullet-hit-bot-event.schema.yaml`
+  - Verified against server creation and mapping:
+    - Creation: `server/src/main/kotlin/dev/robocode/tankroyale/server/core/ModelUpdater.kt#handleBulletHittingBot(...)` creates `BulletHitBotEvent(turn.turnNumber, bullet, victimId, damage, bot.energy)` when a bullet hits a bot.
+    - Mapping: `server/src/main/kotlin/dev/robocode/tankroyale/server/mapper/EventsMapper.kt#map(BulletHitBotEvent)` sets `type`, `turnNumber` (from base `event.schema.yaml`), `bullet = BulletToBulletStateMapper.map(bullet)`, `victimId`, `damage` (calculated via `calcBulletDamage(bullet.power)`), and `energy` (victim's remaining energy after damage).
+  - Schema shape matches: extends `event.schema.yaml` (provides required `turnNumber`), requires `victimId`, `bullet`, `damage`, and `energy` — all fields present in server payload.
+  - The `bullet` field is a snapshot of the bullet state at the moment of impact (mapped via `BulletToBulletStateMapper`).
+  - Damage calculation: `damage = calcBulletDamage(bullet.power)` as per server rules; `energy` is the victim's energy after `bot.addDamage(damage)`.
+  - Generated model `server/build/generated-sources/schema/.../BulletHitBotEvent.java` confirms the same structure.
+  - No changes needed; schema matches current server serialization. (Verified 2025-11-30)
 - [ ] `bullet-hit-wall-event.schema.yaml`
   - Validate impact coordinates and bullet state changes.
 
