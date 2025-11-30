@@ -2,6 +2,7 @@ import build.release.createRelease
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import org.gradle.api.tasks.Exec
 
 description = "Robocode: Build the best - destroy the rest!"
 
@@ -163,9 +164,28 @@ subprojects {
     }
 }
 
+val schemaReadmeFile = file("schema/schemas/README.md")
+
+val generateSchemaDiagrams by tasks.registering(Exec::class) {
+    group = "documentation"
+    description = "Regenerates Mermaid diagrams in schema/schemas/README.md"
+    workingDir = rootDir
+    val gradlew = if (System.getProperty("os.name").lowercase().contains("win")) "gradlew.bat" else "gradlew"
+    commandLine(
+        file(gradlew).absolutePath,
+        "-p", "schema/scripts/diagram-gen",
+        "-P", "schemaReadmePath=${schemaReadmeFile.absolutePath}",
+        "updateSchemaReadme"
+    )
+    inputs.dir("schema/scripts/diagram-gen/src")
+    inputs.file("schema/scripts/diagram-gen/build.gradle.kts")
+    inputs.file("schema/scripts/diagram-gen/settings.gradle.kts")
+    outputs.file(schemaReadmeFile)
+}
+
 tasks {
-    // Re-usable list of documentation tasks used in multiple task definitions
     val docTasks = listOf(
+        generateSchemaDiagrams.name,        // Update mermaid diagrams in schema/schemas/README.md
         "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
         "bot-api:java:copyJavaApiDocs",     // Javadocs for Java Bot API
         "bot-api:python:copyPythonApiDocs"  // Sphinx documentation for Python Bot API
