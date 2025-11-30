@@ -5,7 +5,7 @@ extends:
   $ref: event.schema.yaml
 properties:
   roundNumber:
-    description: The current round number in the battle when event occurred
+    description: The current round number in the battle when event occurred. Numbering is 1-based (the first round is 1).
     type: integer
   botState:
     description: Current state of this bot

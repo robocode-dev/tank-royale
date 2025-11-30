@@ -5,10 +5,10 @@ extends:
   $ref: message.schema.yaml
 properties:
   roundNumber:
-    description: The current round number in the battle when event occurred
+    description: The current round number in the battle when event occurred. Numbering is 1-based (the first round is 1).
     type: integer
   turnNumber:
-    description: The current turn number in the round when event occurred
+    description: The current turn number in the round when event occurred. Numbering is 1-based (the first turn is 1).
     type: integer
   results:
     description: The accumulated results for all bots by the end of the round.

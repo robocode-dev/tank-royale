@@ -5,7 +5,7 @@ extends:
   $ref: message.schema.yaml
 properties:
   turnNumber:
-    description: The turn number in current round when event occurred
+    description: The turn number in current round when event occurred. Numbering is 1-based (the first turn is 1).
     type: integer
 required:
   - turnNumber
