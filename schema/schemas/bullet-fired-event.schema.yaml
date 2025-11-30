@@ -5,7 +5,12 @@ extends:
   $ref: event.schema.yaml
 properties:
   bullet:
-    description: Bullet that was fired
+    description: |
+      Bullet that was fired. The bullet state is a snapshot taken at the exact moment of firing:
+      - Position (`x`,`y`) reflects the firing bot's position at fire time.
+      - Direction is normalized to the [0, 360) range.
+      - Firepower is clamped by the server to its allowed range [0.1, 3.0]; higher values are capped and lower values will not fire.
+      - Color equals the bot's `bulletColor` at fire time; bullets already fired do not change color afterwards.
     $ref: bullet-state.schema.yaml
 required:
   - bullet
