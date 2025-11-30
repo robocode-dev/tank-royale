@@ -7,7 +7,8 @@ This module contains the schema of the protocol used by Robocode Tank Royale for
 - observers
 - controllers
 
-The and sequence diagrams the game communication is provided [here](schemas/README.md)
+The component overviews and sequence diagrams that illustrate the game communication flow are
+provided [here](schemas/README.md). They show how each schema-backed message participates in the lifecycle of a battle.
 
 ## Intention and purpose of the protocol
 
@@ -21,22 +22,41 @@ communication.
 ### Bot API is using the protocol
 
 But the primary focus has been to make it possible to write bots for any platform and in any programming language. And
-nobody is forced to use the provided [Bot API]. The Bot API is provided so people are not forced to handle the communication between a bot and the server by themselves.
+nobody is forced to use the provided [Bot API]. The Bot API is provided so people are not forced to handle the
+communication between a bot and the server by themselves.
 Robocode aims towards letting the bot developers and fun
 and focus on developing a bot instead of being forced to figure out how to communicate with the server.
 
-### Direct communication
+## Schema overview
 
-So it is possible to communicate *directly* with the server without an API, and also develop specialized APIs directly on top of the protocol.
+These schemas are the contract shared by every participant on the wire. They describe:
 
-However, the [Bot API] suits well for figuring out how the communication between a bot and the server can be done. And it might be easier to create a specialized Bot API on top of an existing API anyhow.
+**Core entities** – reusable building blocks such as bots, rounds, ticks, and battlefield state.
+**Events** – server-to-client notifications (e.g., tick updates, damage reports) that bots or observers react to.
+**Intents** – client-to-server messages describing a bot’s desired actions for the next tick.
+**Control commands** – management operations issued by controllers (start, pause, resume, shutdown).
+
+Each schema is versioned and referenced from the main manifest, so tooling can discover the relevant definition without
+guessing file names.
+
+## Practical usage
+
+1. **Validation** – use any JSON Schema validator to ensure messages conform before they hit the network, catching
+   mistakes early.
+2. **Code generation** – point a generator (e.g., quicktype, jsonschema2pojo, NJsonSchema) at the YAML files to produce
+   strongly typed models in your language of choice.
+3. **Customization** – extend the schemas by adding optional fields or composing new messages, then share them with
+   your team without changing server code as long as backward compatibility is preserved.
+4. **Documentation** – render the schemas into human-friendly docs so contributors can reason about message layouts
+   alongside the sequence diagrams.
 
 ## Server
 
-A server is running the battles with bots as participants. The game state and firing game events are handled entirely by
-the server.
+A server is running the battles with bots as participants. The server handles the game state and firing game events
+entirely.
 
-Bots must _join_ the server (like a lobby) but are selected to _participate_ in a battle by the server. Hence, when the bot has joined a server, it must wait for the server to let it participate in a battle (like waiting in a lobby).
+Bots must _join_ the server (like a lobby) but are selected to _participate_ in a battle by the server. Hence, when the
+bot has joined a server, it must wait for the server to let it participate in a battle (like waiting in a lobby).
 
 The server will provide a bot with an event when the bot must be _ready_ to start in a new battle.
 
@@ -44,8 +64,9 @@ The server will provide a bot with an event when the bot must be _ready_ to star
 
 ### Bots
 
-Bots are participants in battles. And a bot only sends _intents_ on its own behalf and cannot control the game in any way.
-And it is not able to observe the entire game state, but only receives events that are relevant for itself. So a bot is
+Bots are participants in battles. And a bot only sends _intents_ on its own behalf and cannot control the game in any
+way.
+And it is not able to observe the entire game state but only receives events that are relevant for itself. So a bot is
 forced to perform _scans_ to receive information about other bots' locations on the battle arena.
 
 ### Observers
@@ -63,7 +84,8 @@ should only receive _bot events_ from the server.
 
 A _controller_ can be seen as having _read_ and _control_ access to the state of the game.
 
-Controllers are used for sending _control commands_ to the server e.g. for stopping, starting, pausing, and resuming the game. But the controller itself has no impact on the game itself, as this is still up to the server to handle.
+Controllers are used for sending _control commands_ to the server, e.g. for stopping, starting, pausing, and resuming
+the game. But the controller itself has no impact on the game itself, as this is still up to the server to handle.
 
 ## About the protocol
 
@@ -72,17 +94,20 @@ Controllers are used for sending _control commands_ to the server e.g. for stopp
 The protocol of Robocode Tank Royale is used for communication over [WebSocket], which is a computer communications
 protocol based on [RFC 6455], providing full-duplex communication channels over a single TCP connection.
 
-The [WebSocket] is supported by lots of platforms like Java and .NET, but also JavaScript.  And WebSocket is also based on am RFC standard, which is the primary reason why this communication protocol has been chosen for Robocode Tank Royale.
+The [WebSocket] is supported by lots of platforms like Java and .NET, but also JavaScript. And WebSocket is also based
+on an am RFC standard, which is the primary reason why this communication protocol has been chosen for Robocode Tank
+Royale.
 
-### Using JSON as message format
+### Using JSON as the message format
 
-The chosen message format is [JSON] ([RFC 7159]), which is supported by lots of platforms and is a human-readable format
-making it ideal for debugging the communication between the server and clients.
+The chosen message format is [JSON] ([RFC 7159]), which is supported by lots of platforms and is a human-readable
+format, making it ideal for debugging the communication between the server and clients.
 
 ### Using JSON Schema and YAML for schema definitions
 
-The [JSON Schema] is used for defining the JSON messages. For example, JSON Schema is used for defining the type of each field in a message, but also to tell if a field is optional or required and if there are any constraints on the field. JSON schema also helps with generating
-classes to represent each message for each platform.
+The [JSON Schema] is used for defining the JSON messages. For example, JSON Schema is used for defining the type of each
+field in a message but also to tell if a field is optional or required and if there are any constraints on the field.
+JSON schema also helps with generating classes to represent each message for each platform.
 
 Even though JSON is the default format for defining JSON schemas, [YAML] is being used for defining the schemas in
 Robocode. YAML is easier to read and less verbose than [JSON].
