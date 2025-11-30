@@ -20,7 +20,7 @@ properties:
     description: Y coordinate of the scanned bot
     type: number
   direction:
-    description: Direction in degrees of the scanned bot
+    description: Direction in degrees of the scanned bot. Angles are normalized to the [0, 360) range.
     type: number
   speed:
     description: Speed measured in units per turn of the scanned bot

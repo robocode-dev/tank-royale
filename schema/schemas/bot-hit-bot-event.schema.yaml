@@ -1,5 +1,5 @@
 $id: bot-hit-bot-event.schema.yaml
-$schema": https://json-schema.org/draft/2020-12/schema
+$schema: https://json-schema.org/draft/2020-12/schema
 description: Event occurring when a bot has collided with another bot
 extends:
   $ref: event.schema.yaml
@@ -11,16 +11,16 @@ properties:
     description: id of the bot that hit another bot
     type: integer
   energy:
-    description: Remaining energy level of the victim bot
+    description: Remaining energy level of the victim bot after the collision
     type: number
   x:
-    description: X coordinate of victim bot
+    description: X coordinate of the victim bot in arena units
     type: number
   y:
-    description: Y coordinate of victim bot
+    description: Y coordinate of the victim bot in arena units
     type: number
   rammed:
-    description: Flag specifying, if the victim bot got rammed
+    description: Flag specifying if the victim bot was rammed (attacker drove into the victim)
     type: boolean
 required:
   - botId
