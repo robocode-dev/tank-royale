@@ -127,15 +127,33 @@ Legend: [ ] Pending, [*] In progress, [✓] Done, [!] Blocked
   - Damage calculation: `damage = calcBulletDamage(bullet.power)` as per server rules; `energy` is the victim's energy after `bot.addDamage(damage)`.
   - Generated model `server/build/generated-sources/schema/.../BulletHitBotEvent.java` confirms the same structure.
   - No changes needed; schema matches current server serialization. (Verified 2025-11-30)
-- [ ] `bullet-hit-wall-event.schema.yaml`
-  - Validate impact coordinates and bullet state changes.
+- [✓] `bullet-hit-wall-event.schema.yaml`
+  - Verified against server mapping in `server/src/main/kotlin/dev/robocode/tankroyale/server/mapper/EventsMapper.kt#map(BulletHitWallEvent)` which sets `type`, inherits `turnNumber` from base `event.schema.yaml`, and maps `bullet` via `BulletToBulletStateMapper.map(bullet)`.
+  - Schema doc clarification (non‑breaking): described `bullet` as a snapshot at impact time; direction normalized to [0, 360); coordinates (`x`, `y`) represent the impact location on that turn; color equals bullet color at impact; bullet ceases to exist after collision.
+  - Required fields unchanged: `bullet` (plus inherited `turnNumber`). No protocol shape changes needed; matches server serialization and generated models.
+  - Changes in commit: updated `schema/schemas/bullet-hit-wall-event.schema.yaml` description only. (Verified 2025-11-30)
 
 #### Collections and updates
 
-- [ ] `bot-list-update.schema.yaml`
-  - Verify add/remove payloads and minimal fields.
-- [ ] `message-event.schema.yaml` / `team-message.schema.yaml`
-  - Validate message size, sender/recipient IDs, per-turn limits.
+- [✓] `bot-list-update.schema.yaml`
+  - Verified against server emission in `GameServer`:
+    - Maintained snapshot `botListUpdateMessage` updated via `updateBotListUpdateMessage()`; broadcast on join/leave via `sendBotListUpdateToObserversAndControllers()` and sent to a newly connected client via `sendBotListUpdate(conn)`.
+    - Cloned message sets `type = BotListUpdate` and copies `bots` list to avoid races (`cloneBotListUpdate(...)`).
+    - Bots list is built from current connections using `BotHandshakeToBotInfoMapper.map(...)`, which maps `BotHandshake` fields and adds `host`/`port`.
+  - Schema doc clarification (non‑breaking): `description` now states it is a full replacement snapshot, may be empty, order unspecified; item references `bot-info.schema.yaml` which already requires `host` and `port` in addition to handshake fields.
+  - Required fields unchanged: inherits required `type` from `message.schema.yaml`; keeps `bots` required. No protocol/shape change. (Verified 2025-11-30)
+- [✓] `team-message-event.schema.yaml`
+  - Verified against server creation and mapping:
+    - Creation: `server/src/main/kotlin/dev/robocode/tankroyale/server/core/ModelUpdater.kt#processTeamMessages(...)` emits
+      `TeamMessageEvent(turn.turnNumber, message, messageType, bot.id)` either to a specific `receiverId` or all teammates when broadcasting.
+    - Limits enforced by server (source of truth):
+      - `MAX_TEAM_MESSAGE_SIZE = 4096` (`server/src/main/kotlin/dev/robocode/tankroyale/server/rules/rules.kt#L94`). If a message exceeds this size, that message and any following messages for the same turn are ignored (see guard in `processTeamMessages`).
+      - `MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 5` (`rules.kt#L97`), enforced via `coerceAtMost(...)` over the intent list.
+    - Mapping: `server/src/main/kotlin/dev/robocode/tankroyale/server/mapper/EventsMapper.kt#map(TeamMessageEvent)` sets `type`, inherits `turnNumber` from base `event.schema.yaml`, and sets `message`, `messageType`, and `senderId`.
+  - Schema updates:
+    - `schema/schemas/team-message-event.schema.yaml`: Reduced `message.maxLength` from 32768 to 4096 to match server runtime limit. Expanded description to clarify 1‑based `turnNumber` inheritance, delivery semantics (private/broadcast to teammates), and server-side limits/ignore behavior when size exceeded. No field additions/removals.
+  - Compatibility: Wire shape unchanged; aligning maxLength with actual server constraint prevents oversized messages in generated clients. (Verified 2025-11-30)
+  - Note: There is no `message-event.schema.yaml` in the repository; prior checklist item name was a typo. The correct schema is `team-message-event.schema.yaml`.
 
 #### Server control/utility
 
