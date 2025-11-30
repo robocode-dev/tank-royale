@@ -8,23 +8,40 @@ extends:
   $ref: message.schema.yaml
 properties:
   turnRate:
-    description: Turn rate of the body in degrees per turn (can be positive and negative)
+    description: |
+      Turn rate of the body in degrees per turn (can be positive and negative).
+      Server clamps the effective turn rate each tick based on current speed: see limitTurnRate(speed).
+      Omitting this field means no change from previous intent.
     type: number
   gunTurnRate:
-    description: Turn rate of the gun in degrees per turn (can be positive and negative)
+    description: |
+      Turn rate of the gun in degrees per turn (can be positive and negative).
+      Server clamps to the allowed range each tick.
+      Omitting this field means no change from previous intent.
     type: number
   radarTurnRate:
-    description: Turn rate of the radar in degrees per turn (can be positive and negative)
+    description: |
+      Turn rate of the radar in degrees per turn (can be positive and negative).
+      Server clamps to the allowed range each tick.
+      Omitting this field means no change from previous intent.
     type: number
   targetSpeed:
-    description: New target speed in units per turn (can be positive and negative)
+    description: |
+      New target speed in units per turn (can be positive and negative).
+      Server applies acceleration/deceleration and clamps to the allowed speed range each tick.
+      Omitting this field means no change from previous intent.
     type: number
   firepower:
-    description: Attempt to fire gun with the specified firepower
+    description: |
+      Attempt to fire the gun with the specified firepower.
+      Server rules apply when executing intents:
+      - Firing only occurs when the gun is cool (gunHeat == 0) and the bot has more energy than the requested firepower.
+      - Firepower below the server minimum will not fire; when firing, the effective firepower is clamped to the server range [MIN_FIREPOWER, MAX_FIREPOWER] (currently [0.1, 3.0]).
+      - Values above the maximum are clamped to the maximum.
+      - Omitting this field means "no change"; typical clients omit it when not firing.
     type: number
     minimum: 0.0
     maximum: 3.0
-    exclusiveMinimum: true
   adjustGunForBodyTurn:
     description: Flag indicating if the gun must be adjusted to compensate for the body turn. Default is false.
     type: boolean
@@ -35,10 +52,10 @@ properties:
     description: Flag indicating if the radar must be adjusted to compensate for the gun turn. Default is false.
     type: boolean
   rescan:
-    description: Flag indicating if the bot should rescan with previous radar direction and scan sweep angle.
+    description: Flag indicating if the bot should rescan with previous radar direction and scan sweep angle. Default is false.
     type: boolean
   fireAssist:
-    description: Flag indication if fire assistance is enabled.
+    description: Flag indication if fire assistance is enabled. Default is true.
     type: boolean
   bodyColor:
     description: New color of the body
