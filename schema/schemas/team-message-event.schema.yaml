@@ -1,18 +1,30 @@
 $id: team-message-event.schema.yaml
 $schema: https://json-schema.org/2020-12/schema#
-description: Event occurring when a message has been received from a teammate
+description: >-
+  Event occurring when a message has been received from a teammate.
+  Inherits the required 1-based `turnNumber` from `event.schema.yaml`.
+  The event is delivered privately to a teammate (either a specific recipient
+  or all teammates when broadcast). Server-side limits apply: each bot can send
+  at most `MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN` team messages per turn, and a
+  single team message must not exceed `MAX_TEAM_MESSAGE_SIZE` bytes/characters.
+  If one message exceeds the size limit, that message and any following team
+  messages in the same turn are ignored by the server.
 extends:
   $ref: event.schema.yaml
 properties:
   message:
-    description: The message to send, e.g. in JSON format
+    description: >-
+      Payload sent by the teammate, typically a JSON-encoded string. The server
+      enforces a maximum length of 4096 characters.
     type: string
-    maxLength: 32768
+    maxLength: 4096
   messageType:
-    description: The message type, e.g. a class name
+    description: >-
+      Application-defined message type identifier, e.g., a class name or tag
+      used by the receiving bot to interpret `message`.
     type: string
   senderId:
-    description: The id of the sender teammate
+    description: The id of the teammate that sent the message.
     type: integer
 required:
   - message
