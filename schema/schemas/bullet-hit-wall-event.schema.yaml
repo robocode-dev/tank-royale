@@ -1,11 +1,18 @@
 $id: bullet-hit-wall-event.schema.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
-description: Event occurring when a bullet has hit a wall
+description: >-
+  Event occurring when a bullet has hit a wall.
+  Inherits the required 1-based turnNumber from event.schema.yaml.
+  The bullet is a snapshot at the moment of impact.
 extends:
   $ref: event.schema.yaml
 properties:
   bullet:
-    description: Bullet that has hit a wall
+    description: >-
+      Snapshot of the bullet state at the moment it collided with a wall.
+      Direction is normalized to the [0, 360) range. Coordinates (x, y) are the
+      impact location for the bullet on this turn. Color equals the bullet color
+      at impact time. The bullet ceases to exist after the collision.
     $ref: bullet-state.schema.yaml
 required:
   - bullet
