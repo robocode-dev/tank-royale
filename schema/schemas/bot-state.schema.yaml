@@ -15,16 +15,16 @@ properties:
     description: Y coordinate
     type: number
   direction:
-    description: Driving direction in degrees
+    description: Driving direction in degrees. Angles are normalized to the [0, 360) range.
     type: number
   gunDirection:
-    description: Gun direction in degrees
+    description: Gun direction in degrees. Angles are normalized to the [0, 360) range.
     type: number
   radarDirection:
-    description: Radar direction in degrees
+    description: Radar direction in degrees. Angles are normalized to the [0, 360) range.
     type: number
   radarSweep:
-    description: Radar sweep angle in degrees, i.e. angle between previous and current radar direction
+    description: Radar sweep angle in degrees, i.e. angle between previous and current radar direction. Value is in the [0, 360) range.
     type: number
   speed:
     description: Speed measured in units per turn
