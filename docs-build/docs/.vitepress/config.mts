@@ -5,6 +5,7 @@ export default withMermaid(defineConfig({
   lang: 'en-US',
   title: 'Robocode Tank Royale Docs',
   description: 'Documentation for the programming game Robocode Tank Royale.',
+  appearance: 'dark',
 
   base: '/',
   outDir: 'build/docs',
