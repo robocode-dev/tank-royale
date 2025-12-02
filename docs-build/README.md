@@ -2,16 +2,16 @@
 
 This module contains the documentation for Robocode Tank Royale.
 
-[VuePress] is being used for generating static web content for the Robocode documentation. You will find all
+[VitePress] is being used for generating static web content for the Robocode documentation. You will find all
 documentation under the `/docs` directory in the root directory.
 
 ## Prerequisites
 
-* node.js 10+
+* node.js 16+
 * Java JDK 11+
 
 Check out the official prerequisite for
-VuePress [here](https://vuepress.vuejs.org/guide/getting-started.html#prerequisites)
+VitePress [here](https://vitepress.dev/guide/getting-started#prerequisites)
 and for Gradle [here](https://gradle.org/install/#prerequisites).
 
 ## Building the docs
@@ -28,7 +28,7 @@ In order to run and view the generated documentation, you write:
 ./gradlew :docs-build:run
 ```
 
-Now you can view the documentation with a browser from the link provided by VuePress as a result of generating the
+Now you can view the documentation with a browser from the link provided by VitePress as a result of generating the
 documentation.
 
 ## Uploading the docs
@@ -49,4 +49,4 @@ git add .
 git commit -m "Updated docs"
 ```
 
-[VuePress]: https://vuepress.vuejs.org/ "VuePress home page"
+[VitePress]: https://vitepress.dev/ "VitePress home page"

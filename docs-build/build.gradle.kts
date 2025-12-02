@@ -40,9 +40,8 @@ tasks {
                 exclude("CNAME")
             })
             delete(
-                "docs/.vuepress/.cache",
-                "docs/.vuepress/.temp",
-                "docs/.vuepress/dist"
+                "docs/.vitepress/cache",
+                "docs/.vitepress/dist"
             )
         }
 

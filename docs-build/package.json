@@ -3,18 +3,15 @@
   "description": "Documentation for the programming game Robocode Tank Royale.",
   "main": "index.js",
   "scripts": {
-    "dev": "vuepress dev docs",
-    "build": "vuepress build docs"
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs"
   },
   "author": "Flemming Nørnberg Larsen",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@vuepress/bundler-vite": "2.0.0-rc.13",
-    "@vuepress/theme-default": "2.0.0-rc.35",
-    "footnote": "1.1.0",
-    "katex": "0.16.10",
-    "mermaid": "10.9.1",
-    "vuepress": "2.0.0-rc.13",
-    "vuepress-plugin-md-enhance": "2.0.0-rc.48"
+    "vitepress": "^1.2.3",
+    "vitepress-plugin-mermaid": "^2.0.16"
   }
 }
+
+

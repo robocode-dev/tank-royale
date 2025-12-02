@@ -1,0 +1,76 @@
+/* VitePress custom styles migrated from VuePress index.scss */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+  --vp-c-brand: #377B37;
+  --vp-c-brand-light: #6EF76E;
+  --vp-c-bg: #111117;
+  --vp-c-text: #CCC;
+  --vp-c-link: #6EF76E;
+  --vp-c-border: #CCC;
+  --vp-font-family-base: 'Fira Sans', sans-serif;
+  --vp-font-size-base: 14px;
+}
+
+.dark {
+  --vp-c-brand: #377B37;
+  --vp-c-brand-light: #6EF76E;
+  --vp-c-bg: #111117;
+  --vp-c-text: #CCC;
+  --vp-c-link: #6EF76E;
+  --vp-c-border: #CCC;
+}
+
+::-webkit-scrollbar {
+  background: hsl(120, 15%, 8%);
+  border-inline: solid var(--vp-c-border) 1px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vp-c-border);
+  border: 5px solid transparent;
+  border-radius: 10px;
+  background-clip: content-box;
+}
+
+.VPNavBar .title {
+  color: var(--vp-c-brand-light);
+}
+
+p, li, .VPMenuGroup .title {
+  font-size: var(--vp-font-size-base);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--vp-c-brand-light);
+}
+
+a {
+  color: var(--vp-c-link);
+}
+
+.VPSidebar .group .title {
+  color: var(--vp-c-brand);
+}
+
+.VPSidebar .group .items {
+  border-left-color: var(--vp-c-brand-light);
+}
+
+.VPSidebar .item.active {
+  color: var(--vp-c-brand-light);
+  border-left: 3px solid var(--vp-c-brand-light);
+}
+
+.VPSidebar .item {
+  color: var(--vp-c-brand);
+}
+
+tr:nth-child(2n) {
+  background-color: #0C180C;
+}
+
+th {
+  background-color: #183018;
+}
+
