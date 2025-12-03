@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
+import katex from './katex-plugin'
 
 export default withMermaid(defineConfig({
   lang: 'en-US',
@@ -8,10 +9,13 @@ export default withMermaid(defineConfig({
   appearance: 'dark',
 
   base: '/',
-  outDir: 'build/docs',
+  outDir: './build/docs',
   srcExclude: ['api/**'],
 
-  head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['link', { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css' }]
+  ],
 
   themeConfig: {
     logo: '/Tank-logo.svg',
@@ -63,6 +67,12 @@ export default withMermaid(defineConfig({
     footer: {
       message: 'Released under the Apache License 2.0.',
       copyright: 'Copyright © 2024 Flemming Nørnberg Larsen'
+    }
+  },
+
+  markdown: {
+    config(md) {
+      md.use(katex);
     }
   },
 }));

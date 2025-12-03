@@ -9,9 +9,10 @@
   "author": "Flemming Nørnberg Larsen",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@mdit/plugin-katex": "^0.24.0",
+    "katex": "^0.16.25",
+    "markdown-it": "^14.1.0",
     "vitepress": "^1.2.3",
     "vitepress-plugin-mermaid": "^2.0.16"
   }
 }
-
-
