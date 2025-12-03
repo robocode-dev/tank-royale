@@ -14,7 +14,7 @@ practising your skills programming for Java by making a bot for Robocode.
 
 ### Java (JVM) API
 
-The documentation of the Java (JVM) API for Robocode Tank Royale is available on [this page](../../api/apis.md).
+The documentation of the Java (JVM) API for Robocode Tank Royale is available on [this page](../../api/apis).
 
 ### Create a source file
 

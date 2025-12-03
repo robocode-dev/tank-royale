@@ -8,7 +8,7 @@ You might also have a look at the provided [sample bots] for Robocode for inspir
 bots to provide a starting template containing all the necessary files to create a bot for a specific programming
 language and platform.
 
-Note that this tutorial is aimed towards the official [APIs](../api/apis.md) available for Robocode Tank Royale provided on this
+Note that this tutorial is aimed towards the official [APIs](../api/apis) available for Robocode Tank Royale provided on this
 site.
 
 ## Initial setup

@@ -12,7 +12,7 @@ practicing your Python skills by making a bot for Robocode Tank Royale.
 
 ### Python API
 
-The documentation of the Python API for Robocode Tank Royale is available on [this page](../../api/apis.md).
+The documentation of the Python API for Robocode Tank Royale is available on [this page](../../api/apis).
 
 ### Create a source file
 

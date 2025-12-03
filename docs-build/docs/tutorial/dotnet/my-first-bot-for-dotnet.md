@@ -14,7 +14,7 @@ well for practising your skills programming for .NET in C# by making a bot for R
 
 ### .NET API
 
-The documentation of the .NET API for Robocode Tank Royale is available on [this page](../../api/apis.md).
+The documentation of the .NET API for Robocode Tank Royale is available on [this page](../../api/apis).
 
 ### Create a source file
 
