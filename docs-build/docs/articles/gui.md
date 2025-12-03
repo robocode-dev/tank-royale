@@ -130,7 +130,7 @@ bots.
 Output includes:
 
 - <font color=gray>Gray</font> labels with turn numbers
-- <font color=white>White</font> standard output messages
+- <font color=lightgray>White</font> standard output messages
 - <font color=#FF5733>Red</font> standard error messages
 - <font color=#377B37>Green</font> game info messages
 

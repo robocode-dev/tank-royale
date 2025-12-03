@@ -2,22 +2,22 @@
      height="412px" viewBox="-0.5 -0.5 422 412" style="color: rgb(255, 255, 255);">
     <defs/>
     <g>
-        <ellipse cx="211" cy="201" rx="100" ry="100" fill="none" stroke="#DDD" stroke-width="2" pointer-events="all"/>
-        <path d="M 231 201 L 322.76 200.73" fill="none" stroke="#DDD" stroke-width="2" stroke-miterlimit="10"
+        <ellipse cx="211" cy="201" rx="100" ry="100" fill="none" stroke="grey" stroke-width="2" pointer-events="all"/>
+        <path d="M 231 201 L 322.76 200.73" fill="none" stroke="grey" stroke-width="2" stroke-miterlimit="10"
               pointer-events="stroke"/>
-        <path d="M 328.76 200.72 L 320.78 204.74 L 322.76 200.73 L 320.75 196.74 Z" fill="#DDD" stroke="#DDD"
+        <path d="M 328.76 200.72 L 320.78 204.74 L 322.76 200.73 L 320.75 196.74 Z" fill="grey" stroke="grey"
               stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
-        <path d="M 191 201 L 99.24 201" fill="none" stroke="#DDD" stroke-width="2" stroke-miterlimit="10"
+        <path d="M 191 201 L 99.24 201" fill="none" stroke="grey" stroke-width="2" stroke-miterlimit="10"
               pointer-events="stroke"/>
-        <path d="M 93.24 201 L 101.24 197 L 99.24 201 L 101.24 205 Z" fill="#DDD" stroke="#DDD" stroke-width="2"
+        <path d="M 93.24 201 L 101.24 197 L 99.24 201 L 101.24 205 Z" fill="grey" stroke="grey" stroke-width="2"
               stroke-miterlimit="10" pointer-events="all"/>
-        <path d="M 211 221 L 211 312.76" fill="none" stroke="#DDD" stroke-width="2" stroke-miterlimit="10"
+        <path d="M 211 221 L 211 312.76" fill="none" stroke="grey" stroke-width="2" stroke-miterlimit="10"
               pointer-events="stroke"/>
-        <path d="M 211 318.76 L 207 310.76 L 211 312.76 L 215 310.76 Z" fill="#DDD" stroke="#DDD" stroke-width="2"
+        <path d="M 211 318.76 L 207 310.76 L 211 312.76 L 215 310.76 Z" fill="grey" stroke="grey" stroke-width="2"
               stroke-miterlimit="10" pointer-events="all"/>
-        <path d="M 211 181 L 210.73 89.24" fill="none" stroke="#DDD" stroke-width="2" stroke-miterlimit="10"
+        <path d="M 211 181 L 210.73 89.24" fill="none" stroke="grey" stroke-width="2" stroke-miterlimit="10"
               pointer-events="stroke"/>
-        <path d="M 210.72 83.24 L 214.74 91.22 L 210.73 89.24 L 206.74 91.25 Z" fill="#DDD" stroke="#DDD"
+        <path d="M 210.72 83.24 L 214.74 91.22 L 210.73 89.24 L 206.74 91.25 Z" fill="grey" stroke="grey"
               stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
         <rect x="331" y="191" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
         <g transform="translate(-0.5 -0.5)">
@@ -27,13 +27,13 @@
                     <div xmlns="http://www.w3.org/1999/xhtml"
                          style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 38px; height: 1px; padding-top: 201px; margin-left: 332px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
-                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #DDD; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: grey; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 0°
                             </div>
                         </div>
                     </div>
                 </foreignObject>
-                <text x="351" y="205" fill="#DDD" font-family="Helvetica" font-size="14px" text-anchor="middle">0°
+                <text x="351" y="205" fill="grey" font-family="Helvetica" font-size="14px" text-anchor="middle">0°
                 </text>
             </switch>
         </g>
@@ -45,13 +45,13 @@
                     <div xmlns="http://www.w3.org/1999/xhtml"
                          style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 38px; height: 1px; padding-top: 61px; margin-left: 192px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
-                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #DDD; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: grey; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 90°
                             </div>
                         </div>
                     </div>
                 </foreignObject>
-                <text x="211" y="65" fill="#DDD" font-family="Helvetica" font-size="14px" text-anchor="middle">90°
+                <text x="211" y="65" fill="grey" font-family="Helvetica" font-size="14px" text-anchor="middle">90°
                 </text>
             </switch>
         </g>
@@ -63,13 +63,13 @@
                     <div xmlns="http://www.w3.org/1999/xhtml"
                          style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 38px; height: 1px; padding-top: 201px; margin-left: 42px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
-                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #DDD; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: grey; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 180°
                             </div>
                         </div>
                     </div>
                 </foreignObject>
-                <text x="61" y="205" fill="#DDD" font-family="Helvetica" font-size="14px" text-anchor="middle">180°
+                <text x="61" y="205" fill="grey" font-family="Helvetica" font-size="14px" text-anchor="middle">180°
                 </text>
             </switch>
         </g>
@@ -81,23 +81,23 @@
                     <div xmlns="http://www.w3.org/1999/xhtml"
                          style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 38px; height: 1px; padding-top: 341px; margin-left: 192px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
-                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #DDD; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: grey; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 270°
                             </div>
                         </div>
                     </div>
                 </foreignObject>
-                <text x="211" y="345" fill="#DDD" font-family="Helvetica" font-size="14px" text-anchor="middle">270°
+                <text x="211" y="345" fill="grey" font-family="Helvetica" font-size="14px" text-anchor="middle">270°
                 </text>
             </switch>
         </g>
-        <path d="M 291 111 Q 271 91 238.99 83" fill="none" stroke="#DDD" stroke-width="2" stroke-miterlimit="10"
+        <path d="M 291 111 Q 271 91 238.99 83" fill="none" stroke="grey" stroke-width="2" stroke-miterlimit="10"
               pointer-events="stroke"/>
-        <path d="M 233.17 81.54 L 241.9 79.6 L 238.99 83 L 239.96 87.36 Z" fill="#DDD" stroke="#DDD" stroke-width="2"
+        <path d="M 233.17 81.54 L 241.9 79.6 L 238.99 83 L 239.96 87.36 Z" fill="grey" stroke="grey" stroke-width="2"
               stroke-miterlimit="10" pointer-events="all"/>
-        <path d="M 301 121 Q 321 141 329 173.01" fill="none" stroke="#DDD" stroke-width="2" stroke-miterlimit="10"
+        <path d="M 301 121 Q 321 141 329 173.01" fill="none" stroke="grey" stroke-width="2" stroke-miterlimit="10"
               pointer-events="stroke"/>
-        <path d="M 330.46 178.83 L 324.64 172.04 L 329 173.01 L 332.4 170.1 Z" fill="#DDD" stroke="#DDD"
+        <path d="M 330.46 178.83 L 324.64 172.04 L 329 173.01 L 332.4 170.1 Z" fill="grey" stroke="grey"
               stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
         <rect x="261" y="71" width="60" height="20" fill="none" stroke="none" pointer-events="all"/>
         <g transform="translate(-0.5 -0.5)">
@@ -107,13 +107,13 @@
                     <div xmlns="http://www.w3.org/1999/xhtml"
                          style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 58px; height: 1px; padding-top: 81px; margin-left: 262px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
-                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #DDD; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: grey; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 Turn left
                             </div>
                         </div>
                     </div>
                 </foreignObject>
-                <text x="291" y="85" fill="#DDD" font-family="Helvetica" font-size="14px" text-anchor="middle">Turn
+                <text x="291" y="85" fill="grey" font-family="Helvetica" font-size="14px" text-anchor="middle">Turn
                     left
                 </text>
             </switch>
@@ -126,24 +126,24 @@
                     <div xmlns="http://www.w3.org/1999/xhtml"
                          style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 68px; height: 1px; padding-top: 141px; margin-left: 322px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
-                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #DDD; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: grey; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 Turn right
                             </div>
                         </div>
                     </div>
                 </foreignObject>
-                <text x="356" y="145" fill="#DDD" font-family="Helvetica" font-size="14px" text-anchor="middle">Turn
+                <text x="356" y="145" fill="grey" font-family="Helvetica" font-size="14px" text-anchor="middle">Turn
                     right
                 </text>
             </switch>
         </g>
-        <path d="M 31 381 L 31 29.24" fill="none" stroke="#DDD" stroke-width="2" stroke-miterlimit="10"
+        <path d="M 31 381 L 31 29.24" fill="none" stroke="grey" stroke-width="2" stroke-miterlimit="10"
               pointer-events="stroke"/>
-        <path d="M 31 23.24 L 35 31.24 L 31 29.24 L 27 31.24 Z" fill="#DDD" stroke="#DDD" stroke-width="2"
+        <path d="M 31 23.24 L 35 31.24 L 31 29.24 L 27 31.24 Z" fill="grey" stroke="grey" stroke-width="2"
               stroke-miterlimit="10" pointer-events="all"/>
-        <path d="M 31 381 L 382.76 381" fill="none" stroke="#DDD" stroke-width="2" stroke-miterlimit="10"
+        <path d="M 31 381 L 382.76 381" fill="none" stroke="grey" stroke-width="2" stroke-miterlimit="10"
               pointer-events="stroke"/>
-        <path d="M 388.76 381 L 380.76 385 L 382.76 381 L 380.76 377 Z" fill="#DDD" stroke="#DDD" stroke-width="2"
+        <path d="M 388.76 381 L 380.76 385 L 382.76 381 L 380.76 377 Z" fill="grey" stroke="grey" stroke-width="2"
               stroke-miterlimit="10" pointer-events="all"/>
         <rect x="11" y="391" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
         <g transform="translate(-0.5 -0.5)">
@@ -153,13 +153,13 @@
                     <div xmlns="http://www.w3.org/1999/xhtml"
                          style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 38px; height: 1px; padding-top: 401px; margin-left: 12px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
-                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #DDD; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: grey; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 (0,0)
                             </div>
                         </div>
                     </div>
                 </foreignObject>
-                <text x="31" y="405" fill="#DDD" font-family="Helvetica" font-size="14px" text-anchor="middle">(0,0)
+                <text x="31" y="405" fill="grey" font-family="Helvetica" font-size="14px" text-anchor="middle">(0,0)
                 </text>
             </switch>
         </g>
@@ -171,13 +171,13 @@
                     <div xmlns="http://www.w3.org/1999/xhtml"
                          style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 358px; height: 1px; padding-top: 401px; margin-left: 32px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
-                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #DDD; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: grey; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 X coordinate
                             </div>
                         </div>
                     </div>
                 </foreignObject>
-                <text x="211" y="405" fill="#DDD" font-family="Helvetica" font-size="14px" text-anchor="middle">X
+                <text x="211" y="405" fill="grey" font-family="Helvetica" font-size="14px" text-anchor="middle">X
                     coordinate
                 </text>
             </switch>
@@ -191,13 +191,13 @@
                     <div xmlns="http://www.w3.org/1999/xhtml"
                          style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 358px; height: 1px; padding-top: 201px; margin-left: -168px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
-                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #DDD; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: grey; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 Y coordinate
                             </div>
                         </div>
                     </div>
                 </foreignObject>
-                <text x="11" y="205" fill="#DDD" font-family="Helvetica" font-size="14px" text-anchor="middle">Y
+                <text x="11" y="205" fill="grey" font-family="Helvetica" font-size="14px" text-anchor="middle">Y
                     coordinate
                 </text>
             </switch>
@@ -210,13 +210,13 @@
                     <div xmlns="http://www.w3.org/1999/xhtml"
                          style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 98px; height: 1px; padding-top: 401px; margin-left: 322px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
-                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #DDD; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: grey; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 (arena-width,0)
                             </div>
                         </div>
                     </div>
                 </foreignObject>
-                <text x="371" y="405" fill="#DDD" font-family="Helvetica" font-size="14px" text-anchor="middle">
+                <text x="371" y="405" fill="grey" font-family="Helvetica" font-size="14px" text-anchor="middle">
                     (arena-width,0)
                 </text>
             </switch>
@@ -230,13 +230,13 @@
                     <div xmlns="http://www.w3.org/1999/xhtml"
                          style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 108px; height: 1px; padding-top: 56px; margin-left: -43px;">
                         <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
-                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: #DDD; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                            <div style="display: inline-block; font-size: 14px; font-family: Helvetica; color: grey; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
                                 (0, arena-height)
                             </div>
                         </div>
                     </div>
                 </foreignObject>
-                <text x="11" y="60" fill="#DDD" font-family="Helvetica" font-size="14px" text-anchor="middle">(0,
+                <text x="11" y="60" fill="grey" font-family="Helvetica" font-size="14px" text-anchor="middle">(0,
                     arena-height)
                 </text>
             </switch>
