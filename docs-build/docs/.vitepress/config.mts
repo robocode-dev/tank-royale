@@ -11,7 +11,6 @@ export default withMermaid(defineConfig({
 
   base: '/',
   outDir: './.vitepress/dist',
-  srcExclude: ['api/**'],
 
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
