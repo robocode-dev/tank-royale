@@ -24,26 +24,31 @@ tasks {
         args = listOf("run", "build")
     }
 
+    val build = named("build") {
+        dependsOn(npmBuild)
+    }
+
     register<NpmTask>("run") {
         dependsOn(npmInstall)
 
         args = listOf("run", "dev")
     }
 
-    register<Copy>("copyGeneratedDocs") {
-        dependsOn(npmBuild)
-        dependsOn(updateDocfx)
+    var clean = named("clean") {
+        delete(fileTree("../docs").matching {
+            exclude("api/**")
+            exclude("CNAME")
+        })
+        delete(
+            "./docs/.vitepress/cache",
+            "./docs/.vitepress/dist"
+        )
+    }
 
-        doFirst {
-            delete(fileTree("../docs").matching {
-                exclude("api/**")
-                exclude("CNAME")
-            })
-            delete(
-                "docs/.vitepress/cache",
-                "docs/.vitepress/dist"
-            )
-        }
+    register<Copy>("copy-generated-docs") {
+        dependsOn(clean)
+        dependsOn(build)
+        dependsOn(updateDocfx)
 
         doLast {
             // Ensure GitHub Pages won't try to apply Jekyll processing
@@ -56,7 +61,7 @@ tasks {
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-        from("build/docs")
+        from("./docs/.vitepress/dist")
         into("../docs")
     }
 }

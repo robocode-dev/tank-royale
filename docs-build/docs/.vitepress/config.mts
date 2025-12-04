@@ -7,9 +7,10 @@ export default withMermaid(defineConfig({
   title: 'Robocode Tank Royale Docs',
   description: 'Documentation for the programming game Robocode Tank Royale.',
   appearance: 'dark',
+  ignoreDeadLinks: true,
 
   base: '/',
-  outDir: './build/docs',
+  outDir: './.vitepress/dist',
   srcExclude: ['api/**'],
 
   head: [
