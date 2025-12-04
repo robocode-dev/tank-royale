@@ -65,7 +65,7 @@ export default withMermaid(defineConfig({
 
     footer: {
       message: 'Released under the Apache License 2.0.',
-      copyright: 'Copyright © 2024 Flemming Nørnberg Larsen'
+        copyright: 'Copyright © 2022 Flemming Nørnberg Larsen'
     }
   },
 
