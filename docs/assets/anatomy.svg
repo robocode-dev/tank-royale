@@ -9,21 +9,21 @@
     <use xlink:href="#tank" />
 
     <use xlink:href="#arrow-head" transform="translate(700,230)"/>
-    <rect x="740" y="250" width="100" height="20" fill="yellow" />
-    <text x="870" y="290" class="text" fill="white">Gun</text>
+    <rect x="740" y="250" width="100" height="20" fill="orange" />
+    <text x="870" y="290" class="text" fill="orange">Gun</text>
 
     <use xlink:href="#arrow-head" transform="translate(400,370)"/>
-    <rect x="430" y="390" width="410" height="20" fill="yellow" />
-    <text x="870" y="430" class="text" fill="white">Radar</text>
+    <rect x="430" y="390" width="410" height="20" fill="orange" />
+    <text x="870" y="430" class="text" fill="orange">Radar</text>
 
     <use xlink:href="#arrow-head" transform="translate(420,540)"/>
-    <rect x="450" y="560" width="390" height="20" fill="yellow" />
-    <text x="870" y="600" class="text" fill="white">Body</text>
+    <rect x="450" y="560" width="390" height="20" fill="orange" />
+    <text x="870" y="600" class="text" fill="orange">Body</text>
   </g>
 
   <defs>
     <symbol id="arrow-head">
-      <path d="M 0,30 70,0 50,30 70,60 z" fill="yellow" />
+      <path d="M 0,30 70,0 50,30 70,60 z" fill="orange" />
     </symbol>
 
     <symbol id="link0">

@@ -79,7 +79,7 @@ How to run:
 
 ### Configuration
 
-By default, the bot looks for a <ClassName>.json file with bot information. If not found, it falls back to environment
+By default, the bot looks for a `<ClassName>.json` file with bot information. If not found, it falls back to environment
 variables.
 
 - SERVER_URL: WebSocket URL of the server (default: ws://localhost:7654 if not set)
