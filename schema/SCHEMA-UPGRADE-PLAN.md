@@ -157,14 +157,39 @@ Legend: [ ] Pending, [*] In progress, [✓] Done, [!] Blocked
 
 #### Server control/utility
 
-- [ ] `pause-game.schema.yaml` / `resume-game.schema.yaml`
-  - Confirm presence and any metadata.
-- [ ] `abort-game.schema.yaml`
-  - Validate reason codes and required fields.
+- [✓] `pause-game.schema.yaml` / `resume-game.schema.yaml`
+    - Verified against server handlers:
+        - `ClientWebSocketsHandler`: routes `Message.Type.PAUSE_GAME` → `handlePauseGame()` and
+          `Message.Type.RESUME_GAME` → `handleResumeGame()`.
+        - `GameServerConnectionListener.onPauseGame()/onResumeGame()` delegate to
+          `GameServer.handlePauseGame()/handleResumeGame()`.
+    - Wire payload shape: command messages include only the required `type` discriminator (`"PauseGame"` /
+      `"ResumeGame"`) from `message.schema.yaml`. No additional fields are read or required by the server.
+    - Schemas (`schema/schemas/pause-game.schema.yaml`, `schema/schemas/resume-game.schema.yaml`) extend
+      `message.schema.yaml` and provide descriptions. This matches server behavior and the pattern used by
+      `stop-game.schema.yaml`.
+    - Documentation cross-check: `schema/schemas/README.md` already lists pause/resume with Controller→Server direction
+      entries.
+    - No changes needed; schemas match current server serialization. (Verified 2025-12-06)
+- [✓] `abort-game.schema.yaml`
+    - Not applicable: there is no `abort-game` controller command schema. Aborting is triggered by the `StopGame`
+      command, which results in the server emitting `GameAbortedEvent` to all parties.
+    - Verified server flow:
+        - `ClientWebSocketsHandler.handleStopGame()` → `listener.onAbortGame()`
+        - `GameServerConnectionListener.onAbortGame()` → `GameServer.handleAbortGame()`
+        - `GameServer.handleAbortGame()` sets `serverState = GAME_STOPPED`, broadcasts `GameAbortedEvent`, and performs
+          cleanup. No reason code or additional fields are used.
+    - Schemas involved (already present):
+        - `stop-game.schema.yaml` (controller→server command) extends `message.schema.yaml` and contains no extra
+          fields — OK.
+        - `game-aborted-event.schema.yaml` (server→all) defines the abort event — handled in Events section.
+    - Documentation: `schema/schemas/README.md` sequence under "Aborting a game" shows `Controller→Server: stop-game`
+      followed by `game-aborted-event` to all — matches implementation.
+    - No changes needed; leave as-is. (Verified 2025-12-06)
 
 #### Cross-language binding regeneration tasks
 
-- [ ] Java (server): `jsonschema2pojo` generates models from `schema/schemas`.
+- [✓] Java (server): `jsonschema2pojo` generates models from `schema/schemas`.
   - Action: run `./gradlew :server:clean :server:build`. Verify generated classes match updated YAML.
 - [ ] .NET: Update codegen (if any) or schema-derived models.
   - Action: run `.\gradlew :bot-api:dotnet:clean :bot-api:dotnet:test` after regeneration.
