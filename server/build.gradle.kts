@@ -64,6 +64,7 @@ jsonSchema2Pojo {
 
 sourceSets {
     main {
+        // Add generated sources to Kotlin source set to avoid Java/Kotlin compile cycles
         kotlin {
             srcDir(layout.buildDirectory.dir("generated-sources/schema"))
         }
@@ -71,6 +72,7 @@ sourceSets {
 }
 
 tasks {
+    // Generate sources before compiling Kotlin (which includes generated Java as sources)
     compileKotlin {
         dependsOn(generateJsonSchema2Pojo)
     }

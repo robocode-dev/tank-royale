@@ -190,10 +190,12 @@ Legend: [ ] Pending, [*] In progress, [✓] Done, [!] Blocked
 #### Cross-language binding regeneration tasks
 
 - [✓] Java (server): `jsonschema2pojo` generates models from `schema/schemas`.
-  - Action: run `./gradlew :server:clean :server:build`. Verify generated classes match updated YAML.
-- [ ] .NET: Update codegen (if any) or schema-derived models.
+    - Done: Server Gradle wired to generate from `schema/schemas` (YAML) into `server/build/generated-sources/schema`
+      using `jsonschema2pojo` with `AnnotationStyle.GSON`. Generated sources are included on the main source set and
+      built before Kotlin. Verified with `./gradlew :server:clean :server:build` (BUILD SUCCESSFUL).
+    - [ ] .NET: Update codegen (if any) or schema-derived models.
   - Action: run `.\gradlew :bot-api:dotnet:clean :bot-api:dotnet:test` after regeneration.
-- [ ] Python: Use `bot-api/python/scripts/schema_to_python.py` to regenerate.
+    - [ ] Python: Use `bot-api/python/scripts/schema_to_python.py` to regenerate.
   - Action: run `./gradlew :bot-api:python:setupVenv` then Python unit tests.
 
 #### Known risks and investigation hooks
