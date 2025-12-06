@@ -18,13 +18,29 @@ tasks {
         commandLine("dotnet", "tool", "update", "-g", "docfx", "--version", "2.78.3")
     }
 
+    // Predicate: run docs-related generation only when explicitly requested
+    fun isDocsRequested(): Boolean = gradle.startParameter.taskNames.any {
+        it.contains("build-release") ||
+                it.contains("upload-docs") ||
+                it.contains("create-release") ||
+                it == "copy-generated-docs" ||
+                it.endsWith(":copy-generated-docs") ||
+                it == ":docs-build:build" ||
+                it.endsWith(":docs-build:build")
+    }
+
     val npmBuild by registering(NpmTask::class) {
         dependsOn(npmInstall)
+
+        // Do not build the docs site during a normal root build
+        onlyIf { isDocsRequested() }
 
         args = listOf("run", "build")
     }
 
     val build = named("build") {
+        // Avoid participating in the global `build` unless docs are explicitly requested
+        onlyIf { isDocsRequested() }
         dependsOn(npmBuild)
     }
 
@@ -34,11 +50,8 @@ tasks {
         args = listOf("run", "dev")
     }
 
-    var clean = named("clean") {
-        delete(fileTree("../docs").matching {
-            exclude("api/**")
-            exclude("CNAME")
-        })
+    // Configure the local clean task: never touch ../docs on a plain `clean` run
+    val clean = named<Delete>("clean") {
         delete(
             "./docs/.vitepress/cache",
             "./docs/.vitepress/dist"
@@ -46,6 +59,17 @@ tasks {
     }
 
     register<Copy>("copy-generated-docs") {
+        // Only run when explicitly requested by docs/release tasks or this task itself
+        onlyIf {
+            gradle.startParameter.taskNames.any {
+                it.contains("build-release") ||
+                        it.contains("upload-docs") ||
+                        it.contains("create-release") ||
+                        it == "copy-generated-docs" ||
+                        it.endsWith(":copy-generated-docs")
+            }
+        }
+
         dependsOn(clean)
         dependsOn(build)
         dependsOn(updateDocfx)
