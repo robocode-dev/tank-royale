@@ -26,6 +26,7 @@ tasks {
     // Shared helpers provided by parent sample-bots/build.gradle.kts
     @Suppress("UNCHECKED_CAST")
     val isBotProjectDir = rootProject.extra["isBotProjectDir"] as (Path) -> Boolean
+
     @Suppress("UNCHECKED_CAST")
     val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
@@ -40,7 +41,13 @@ tasks {
             }
         }
 
-        val java = if (isWindows()) "javaw" else "java"
+        // Choose Java executable based on the target script type-Windows batch (.cmd): use javaw to avoid opening a
+        // console window.
+        // - Unix shell (.sh): use java (javaw does not exist on macOS/Linux).
+        val java = when (fileExt) {
+            "cmd" -> "javaw"
+            else -> "java"
+        }
 
         printWriter.use {
             if (fileExt == "sh") {
