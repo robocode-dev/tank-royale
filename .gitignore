@@ -4,6 +4,7 @@
 .recommenders/
 .sonarlint/
 .idea/
+!/.idea/icon.svg
 .vscode/
 .gradle/
 .venv/
