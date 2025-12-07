@@ -1,4 +1,10 @@
-##
+## 📦 0.34.2
+
+### 🐞 Bug Fixes
+
+- #178: Fix .sh scripts to use `java` instead of `javaw`
+
+### 🚀 Improvements
 
 - Bot API for C#/.NET:
     - Updated to the newest dependencies.
