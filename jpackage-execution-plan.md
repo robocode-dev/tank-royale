@@ -94,8 +94,7 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
    - [X] Copyright: "Copyright © 2022 Flemming N. Larsen"
    - [X] License: https://github.com/robocode-dev/tank-royale/blob/main/LICENSE
    - [X] Homepage/URL: E.g., https://robocode.dev
-   - [ ] Main Class: Entry point for each component (e.g., `org.robocode.tankroyale.gui.Main`)
-   - [ ] Icon: Path to platform-specific icon file
+   - [X] Icon: Path to platform-specific icon file
    - [X] Installation Directory Name: (Optional): "robocode-tank-royale"
    - [ ] Contact Email: (Optional):
 6. [X] (user/developer) Decide on distribution channels: GitHub Releases
