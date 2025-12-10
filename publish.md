@@ -12,8 +12,6 @@ signingPassword=...
 
 ossrhUsername=...
 ossrhPassword=JfRES...
-
-tankRoyaleGitHubToken=ghp_lDygeO...
 ```
 
 Publish to staging:
@@ -48,7 +46,7 @@ Note: «version» and «nuget api key» must be prefilled with Robocode version 
 
 Make sure you have a `.pypyrc` file in your home folder (`%USERHOME%` on Windows, and `~` on Linux and macOS):
 
-```toml
+```ini
 [distutils]
 index-servers =
 testpypi

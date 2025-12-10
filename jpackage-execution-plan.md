@@ -11,13 +11,14 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
 > maintainability, and clarity throughout the project.
 > **Alert:** If any issue or decision point arises during execution, the user will be notified to make a decision before
 > proceeding.
+> Update the execution plan accordingly by putting a checkmark [X] next to the relevant step.
 
-1. [ ] **Evaluate and Transform `create-release` Task into GitHub Action**
-   - [ ] Analyze the current `create-release` task and its steps.
-   - [ ] Check if all steps can be mapped 1:1 to a GitHub Actions workflow (e.g., environment setup, build, versioning,
+1. [X] **Evaluate and Transform `create-release` Task into GitHub Action**
+   - [X] Analyze the current `create-release` task and its steps.
+   - [X] Check if all steps can be mapped 1:1 to a GitHub Actions workflow (e.g., environment setup, build, versioning,
      changelog, artifact upload, release creation).
-   - [ ] If possible, implement a GitHub Actions workflow that mirrors the `create-release` task exactly.
-   - [ ] If not possible, plan to extend or adapt the existing `create-release` task to work with GitHub Actions, and
+   - [X] If possible, implement a GitHub Actions workflow that mirrors the `create-release` task exactly.
+   - [X] If not possible, plan to extend or adapt the existing `create-release` task to work with GitHub Actions, and
      update the plan accordingly.
 
 2. [ ] **Audit and Prepare Components for Packaging**
