@@ -2,111 +2,161 @@
 Tank logo for Robocode Tank Royale
 Copyright 2022 Flemming Nørnberg Larsen
 -->
-<svg version="1.1" width="500" height="500" viewBox="0 0 600 600"
-     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg version="1.1"
+     width="500" height="500"
+     viewBox="0 0 600 600"
+     xmlns="http://www.w3.org/2000/svg">
 
-  <!--<rect x="0" y="0" width="100%" height="100%" fill="grey" />-->
-
-  <g>
-    <use xlink:href="#tank" />
-    <!-- <rect x="0" y="50" width="500" height="500" fill="yellow" opacity="0.3" /> -->
-  </g>
+  <use href="#tank"/>
 
   <defs>
+    <style>
+      .tank-body, .tank-turret, .tank-radar {
+      transform-origin: 300px 350px;
+      }
+      .tank-body {
+      transform: rotate(var(--body-rotation, 0deg));
+      }
+      .tank-turret {
+      transform: rotate(var(--turret-rotation, 0deg));
+      }
+      .tank-radar {
+      transform: rotate(var(--radar-rotation, 0deg));
+      }
+      svg {
+      --tank-body-color: #019;
+      --tank-turret-color: #06c;
+      --tank-radar-color: #aaf;
+      --left-belt-track-1: inline;
+      --left-belt-track-2: none;
+      --left-belt-track-3: none;
+      --right-belt-track-1: inline;
+      --right-belt-track-2: none;
+      --right-belt-track-3: none;
+      }
+      .tank-body-fill {
+      fill: var(--tank-body-color, #019);
+      }
+      .tank-turret-fill {
+      fill: var(--tank-turret-color, #06c);
+      }
+      .tank-radar-fill {
+      fill: var(--tank-radar-color, #aaf);
+      }
+      .left-belt, .right-belt {
+      display: none;
+      }
+      .left-belt.track1 {
+      display: var(--left-belt-track-1, none);
+      }
+      .left-belt.track2 {
+      display: var(--left-belt-track-2, none);
+      }
+      .left-belt.track3 {
+      display: var(--left-belt-track-3, none);
+      }
+      .right-belt.track1 {
+      display: var(--right-belt-track-1, none);
+      }
+      .right-belt.track2 {
+      display: var(--right-belt-track-2, none);
+      }
+      .right-belt.track3 {
+      display: var(--right-belt-track-3, none);
+      }
+    </style>
+
+    <linearGradient id="cannon-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#333"/>
+      <stop offset="50%" stop-color="#CCC"/>
+      <stop offset="100%" stop-color="#333"/>
+    </linearGradient>
+
     <symbol id="link0">
-      <rect x="5" y="55" width="125" height="25" fill="#aaaaaa" />
-      <rect x="10" y="70" width="116" height="35" fill="#666666" rx="10" ry="10" />
-      <rect x="5" y="55" width="125" height="50" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
+      <rect x="5" y="55" width="125" height="25" fill="#aaaaaa"/>
+      <rect x="10" y="70" width="116" height="35" fill="#666666" rx="10" ry="10"/>
+      <rect x="5" y="55" width="125" height="50" fill="none" stroke="black" stroke-width="10" rx="10" ry="10"/>
     </symbol>
 
     <symbol id="link30">
-      <rect x="5" y="55" width="125" height="25" fill="#939393" />
-      <rect x="10" y="70" width="116" height="30" fill="#585858" rx="10" ry="10" />
-      <rect x="5" y="55" width="125" height="42" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
+      <rect x="5" y="55" width="125" height="25" fill="#939393"/>
+      <rect x="10" y="70" width="116" height="30" fill="#585858" rx="10" ry="10"/>
+      <rect x="5" y="55" width="125" height="42" fill="none" stroke="black" stroke-width="10" rx="10" ry="10"/>
     </symbol>
 
     <symbol id="link60">
-      <rect x="5" y="55" width="125" height="20" fill="#555555" />
-      <rect x="5" y="55" width="125" height="20" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
+      <rect x="5" y="55" width="125" height="20" fill="#555555"/>
+      <rect x="5" y="55" width="125" height="20" fill="none" stroke="black" stroke-width="10" rx="10" ry="10"/>
     </symbol>
 
     <symbol id="main-track">
-      <rect x="20" y="75" width="95" height="450" fill="#333333" stroke="black" stroke-width="10" />
+      <rect x="20" y="75" width="95" height="450" fill="#333333" stroke="black" stroke-width="10"/>
     </symbol>
 
     <symbol id="track1">
-      <use xlink:href="#main-track" x="0" y="0" />
-      <use xlink:href="#link30" x="0" y="0" />
-      <use xlink:href="#link0" x="0" y="60" />
-      <use xlink:href="#link0" x="0" y="140" />
-      <use xlink:href="#link0" x="0" y="220" />
-      <use xlink:href="#link0" x="0" y="300" />
-      <use xlink:href="#link0" x="0" y="380" />
-      <use xlink:href="#link30" x="0" y="448" />
+      <use href="#main-track"/>
+      <use href="#link30"/>
+      <use href="#link0" y="60"/>
+      <use href="#link0" y="140"/>
+      <use href="#link0" y="220"/>
+      <use href="#link0" y="300"/>
+      <use href="#link0" y="380"/>
+      <use href="#link30" y="448"/>
     </symbol>
-    <!--
+
     <symbol id="track2">
-      <use xlink:href="#main-track" x="0" y="0" />
-      <use xlink:href="#link60" x="0" y="0" />
-      <use xlink:href="#link0" x="0" y="33" />
-      <use xlink:href="#link0" x="0" y="113" />
-      <use xlink:href="#link0" x="0" y="193" />
-      <use xlink:href="#link0" x="0" y="273" />
-      <use xlink:href="#link0" x="0" y="353" />
-      <use xlink:href="#link0" x="0" y="433" />
+      <use href="#main-track"/>
+      <use href="#link60"/>
+      <use href="#link0" y="33"/>
+      <use href="#link0" y="113"/>
+      <use href="#link0" y="193"/>
+      <use href="#link0" y="273"/>
+      <use href="#link0" y="353"/>
+      <use href="#link0" y="433"/>
     </symbol>
 
     <symbol id="track3">
-      <use xlink:href="#main-track" x="0" y="0" />
-      <use xlink:href="#link0" x="0" y="7" />
-      <use xlink:href="#link0" x="0" y="87" />
-      <use xlink:href="#link0" x="0" y="167" />
-      <use xlink:href="#link0" x="0" y="247" />
-      <use xlink:href="#link0" x="0" y="327" />
-      <use xlink:href="#link0" x="0" y="407" />
-      <use xlink:href="#link60" x="0" y="470" />
+      <use href="#main-track"/>
+      <use href="#link0" y="7"/>
+      <use href="#link0" y="87"/>
+      <use href="#link0" y="167"/>
+      <use href="#link0" y="247"/>
+      <use href="#link0" y="327"/>
+      <use href="#link0" y="407"/>
+      <use href="#link60" y="470"/>
     </symbol>
-    -->
-    <symbol id="body">
-      <use xlink:href="#track1" x="50" y="45" />
-      <use xlink:href="#track1" x="415" y="45" />
 
-      <rect x="140" y="135" width="320" height="420" fill="#019" stroke="black" stroke-width="20" rx="10" ry="10" />
-      <rect x="150" y="465" width="300" height="80" fill="black" opacity="0.5" />
+    <symbol id="body">
+      <use href="#track1" x="50" y="45" class="left-belt track1"/>
+      <use href="#track2" x="50" y="45" class="left-belt track2"/>
+      <use href="#track3" x="50" y="45" class="left-belt track3"/>
+      <use href="#track1" x="415" y="45" class="right-belt track1"/>
+      <use href="#track2" x="415" y="45" class="right-belt track2"/>
+      <use href="#track3" x="415" y="45" class="right-belt track3"/>
+
+      <rect class="tank-body-fill" x="140" y="135" width="320" height="420" stroke="black" stroke-width="20"
+            rx="10" ry="10"/>
+      <rect class="tank-body-accent" x="150" y="465" width="300" height="80" opacity="0.5"/>
     </symbol>
 
     <symbol id="turret">
-      <rect x="200" y="265" width="200" height="200" fill="#06C" stroke="black" stroke-width="20" rx="10" ry="10" />
-      <rect x="210" y="405" width="180" height="50" fill="black" opacity="0.5" />
+      <rect class="tank-turret-fill" x="200" y="265" width="200" height="200" stroke="black" stroke-width="20"
+            rx="10" ry="10"/>
+      <rect x="210" y="405" width="180" height="50" fill="black" opacity="0.5"/>
 
-      <rect x="260" y="185" width="80" height="80" fill="url(#cannon-grad)" stroke="black" stroke-width="20" />
-      <rect x="275" y="15" width="50" height="170" fill="url(#cannon-grad)" stroke="black" stroke-width="20" />
-
-      <linearGradient id="cannon-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#333" />
-        <stop offset="50%" stop-color="#CCC" />
-        <stop offset="100%" stop-color="#333" />
-      </linearGradient>
+      <rect x="260" y="185" width="80" height="80" fill="url(#cannon-grad)" stroke="black" stroke-width="20"/>
+      <rect x="275" y="15" width="50" height="170" fill="url(#cannon-grad)" stroke="black" stroke-width="20"/>
     </symbol>
 
     <symbol id="radar">
-      <circle cx="300" cy="345" r="30" fill="#AAF" stroke="black" stroke-width="20" />
-      <path d="M 190 365 q 110 100 220 0 z" fill="#AAF" stroke="black" stroke-width="20" />
-      <!--<path d="M 300 340 l -150, -800 q 150 -50 300 0 z" fill="grey" fill-opacity="0.75" />-->
+      <circle class="tank-radar-fill" cx="300" cy="345" r="30" stroke="black" stroke-width="20"/>
+      <path class="tank-radar-fill" d="M 190 365 q 110 100 220 0 z" stroke="black" stroke-width="20"/>
     </symbol>
 
     <symbol id="tank">
-      <use xlink:href="#body"/>
-      <use xlink:href="#turret"/>
-      <use xlink:href="#radar"/>
-      <!--<circle cx="300" cy="345" r="10" fill="yellow" opacity="1" />--> <!-- center -->
-      <!--<use xlink:href="#bounding-sphere" />-->
+      <use class="tank-body" href="#body"/>
+      <use class="tank-turret" href="#turret"/>
+      <use class="tank-radar" href="#radar"/>
     </symbol>
-
-    <!--
-    <symbol id="bounding-sphere">
-      <circle cx="300" cy="345" r="250" fill="red" opacity="0.35" />
-    </symbol>
-    -->
   </defs>
 </svg>
