@@ -33,12 +33,15 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
 4. [ ] **Create jpackage Configuration for Each Component**
     - [ ] For each component, define jpackage parameters (main jar, main class, icon, app name, version, vendor, etc.).
     - [ ] Add or update a `jpackage-config.json` or equivalent config file in each component directory.
-    - [ ] Prepare platform-specific assets (icons, license files, etc.) in each component.
-       - [ ] (user/developer) Prepare and convert the application icon for each platform:
-          - [ ] Windows: `.ico` format (recommended sizes: 16x16, 32x32, 48x48, 256x256)
-          - [ ] macOS: `.icns` format (recommended sizes: 16x16, 32x32, 128x128, 256x256, 512x512)
-          - [ ] Linux: `.png` format (recommended sizes: 32x32, 48x48, 128x128, 256x256)
-       - [ ] (user/developer) Convert your `tank.svg` to the required formats using ImageMagick or online tools.
+   - [X] Prepare platform-specific assets (icons, license files, etc.) in each component.
+      - [X] (user/developer) Prepare and convert the application icon for each platform:
+         - [X] Windows: `.ico` format (recommended sizes: 16x16, 32x32, 48x48, 256x256)
+            - Available icon source: `resources/icons/Tank.ico`
+         - [X] macOS: `.icns` format (recommended sizes: 16x16, 32x32, 128x128, 256x256, 512x512)
+            - Available icon source: `resources/icons/Tank.icns`
+         - [X] Linux: `.png` format (recommended sizes: 32x32, 48x48, 128x128, 256x256)
+            - Available icon source: `resources/icons/Tank.png`
+      - [X] (user/developer) Convert your `tank.svg` to the required formats using ImageMagick or online tools.
 
 5. [ ] **Update Build Scripts for jpackage Integration**
     - [ ] Modify each component’s `build.gradle.kts` to add jpackage tasks for Windows, Linux, and macOS.
