@@ -136,10 +136,12 @@ class Server : Runnable {
         when {
             isUsageHelpRequested -> {
                 printUsageHelp(cmdLine)
+                exitProcess(0)
             }
 
             isVersionInfoRequested -> {
                 printVersionHelp(cmdLine)
+                exitProcess(0)
             }
 
             else -> {

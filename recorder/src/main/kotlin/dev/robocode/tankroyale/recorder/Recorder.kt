@@ -75,8 +75,15 @@ class Recorder : Runnable {
         val cmdLine = CommandLine(this)
 
         when {
-            isUsageHelpRequested -> cmdLine.usage(System.out)
-            isVersionInfoRequested -> cmdLine.printVersionHelp(System.out)
+            isUsageHelpRequested -> {
+                cmdLine.usage(System.out)
+                exitProcess(0)
+            }
+
+            isVersionInfoRequested -> {
+                cmdLine.printVersionHelp(System.out)
+                exitProcess(0)
+            }
             else -> {
                 cmdLine.printVersionHelp(System.out)
                 startExitInputMonitorThread()
