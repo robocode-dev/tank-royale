@@ -37,6 +37,10 @@ task `copyJars` when setting up a Run/Debug Configuration. The `copyJars` tasks 
 files for the [booter] and [server] into the classpath for the GUI so it is possible to boot up bots and
 start battles on a server running locally.
 
+## Packaging (jpackage)
+
+See the packaging guide in [./jpackage.md](./jpackage.md).
+
 
 [booter]: ../booter/README.md
 

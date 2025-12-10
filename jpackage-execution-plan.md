@@ -21,10 +21,10 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
    - [X] If not possible, plan to extend or adapt the existing `create-release` task to work with GitHub Actions, and
      update the plan accordingly.
 
-2. [ ] **Audit and Prepare Components for Packaging**
-    - [ ] Review `gui/`, `server/`, `booter/`, and `recorder/` for main class, dependencies, and resource inclusion.
-    - [ ] Ensure each has a clear entry point and all runtime dependencies are bundled or referenced.
-    - [ ] Update documentation in each component’s `README.md` to clarify packaging requirements.
+2. [X] **Audit and Prepare Components for Packaging**
+   - [X] Review `gui/`, `server/`, `booter/`, and `recorder/` for main class, dependencies, and resource inclusion.
+   - [X] Ensure each has a clear entry point and all runtime dependencies are bundled or referenced.
+   - [X] Update documentation in each component’s `README.md` to clarify packaging requirements.
 
 3. [ ] **Build and Test JAR Artifacts**
     - [ ] Generate runnable JARs for each component.

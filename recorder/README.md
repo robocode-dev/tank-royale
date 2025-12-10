@@ -25,6 +25,10 @@ The recorder is run using the `java` command from the command line:
 java -jar robocode-tankroyale-recorder-x.y.z.jar
 ```
 
+## Packaging (jpackage)
+
+See the packaging guide in [./jpackage.md](./jpackage.md).
+
 ## Options
 
 The server has these options:
