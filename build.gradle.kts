@@ -38,9 +38,8 @@ subprojects {
     plugins.withId("java") {
         java {
             toolchain {
-                languageVersion.set(JavaLanguageVersion.of(11))
+                languageVersion.set(JavaLanguageVersion.of(11)) // Java 11
             }
-
             // required for publishing:
             withJavadocJar()
             withSourcesJar()
@@ -50,6 +49,7 @@ subprojects {
     // Set Java compile encoding to UTF-8 for all subprojects
     // Yes, it must be done!
     tasks.withType<JavaCompile> {
+        options.release.set(11) // Java 11
         options.encoding = "UTF-8"
     }
 
@@ -151,7 +151,7 @@ subprojects {
     tasks {
         withType<KotlinJvmCompile>().configureEach {
             compilerOptions {
-                jvmTarget = JvmTarget.JVM_11
+                jvmTarget = JvmTarget.JVM_11 // Java 11.(
             }
         }
 
