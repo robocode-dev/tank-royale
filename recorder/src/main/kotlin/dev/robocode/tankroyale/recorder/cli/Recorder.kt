@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.recorder
+package dev.robocode.tankroyale.recorder.cli
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.option
@@ -11,9 +11,11 @@ import java.io.File
 import java.util.*
 import kotlin.system.exitProcess
 
-fun main(args: Array<String>) = RecorderCli().main(args)
-
-class Recorder : Runnable {
+class RecorderRuntime(
+    private val url: String = DEFAULT_URL,
+    private val secret: String? = null,
+    private val dir: String? = null,
+) : Runnable {
 
     companion object {
         private const val EXIT_COMMAND = "quit"
@@ -24,17 +26,6 @@ class Recorder : Runnable {
         private const val NOT_INITIALIZED_WARNING = "Recorder is not initialized yet. Please wait and try again."
 
         const val DEFAULT_URL: String = "ws://localhost:7654"
-
-        // Set by CLI
-        @JvmStatic
-        var url: String = DEFAULT_URL
-
-        @JvmStatic
-        var secret: String? = null
-
-        @JvmStatic
-        var dir: String? = null
-
     }
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -123,22 +114,5 @@ class Recorder : Runnable {
         } else {
             log.info("No active recording to abort.")
         }
-    }
-}
-
-private class RecorderCli : CliktCommand(name = "recorder", help = "Tool for recording Robocode Tank Royale battles.") {
-    private val urlOpt by option("-u", "--url", help = "Server URL (default: ws://localhost:7654)")
-    private val secretOpt by option("-s", "--secret", help = "Secret used for server authentication")
-    private val dirOpt by option("-d", "--dir", help = "Directory to save recordings (default: current directory)")
-
-    init {
-        versionOption("Robocode Tank Royale Recorder ${Version.version}", names = setOf("-v", "--version"))
-    }
-
-    override fun run() {
-        Recorder.url = urlOpt ?: Recorder.DEFAULT_URL
-        Recorder.secret = secretOpt
-        Recorder.dir = dirOpt
-        Recorder().run()
     }
 }
