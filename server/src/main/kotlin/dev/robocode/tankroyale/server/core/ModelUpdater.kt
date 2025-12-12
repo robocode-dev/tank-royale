@@ -9,7 +9,7 @@ import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.Color.Companion.from
 import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
-import dev.robocode.tankroyale.server.Server
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.Server
 import java.lang.Math.toDegrees
 import java.util.*
 import kotlin.math.abs

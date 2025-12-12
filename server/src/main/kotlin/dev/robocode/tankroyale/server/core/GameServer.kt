@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import dev.robocode.tankroyale.schema.*
 import dev.robocode.tankroyale.schema.BotIntent
 import dev.robocode.tankroyale.schema.GameSetup
-import dev.robocode.tankroyale.server.Server
+import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.Server
 import dev.robocode.tankroyale.server.connection.ConnectionHandler
 import dev.robocode.tankroyale.server.connection.GameServerConnectionListener
 import dev.robocode.tankroyale.server.mapper.*
