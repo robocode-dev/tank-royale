@@ -1,32 +1,18 @@
 package dev.robocode.tankroyale.recorder
 
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.versionOption
+import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.recorder.core.RecordingObserver
 import dev.robocode.tankroyale.recorder.util.VersionFileProvider
 import org.slf4j.LoggerFactory
-import picocli.CommandLine
-import picocli.CommandLine.Command
-import picocli.CommandLine.Option
 import java.io.File
 import java.util.*
 import kotlin.system.exitProcess
 
-val cmdLine = CommandLine(Recorder())
+fun main(args: Array<String>) = RecorderCli().main(args)
 
-fun main(args: Array<String>) {
-    cmdLine.apply {
-        isSubcommandsCaseInsensitive = true
-        isOptionsCaseInsensitive = true
-
-        exitProcess(execute(*args))
-    }
-}
-
-@Command(
-    name = "recorder",
-    versionProvider = VersionFileProvider::class,
-    description = ["Tool for recording Robocode Tank Royale battles."],
-    mixinStandardHelpOptions = true
-)
 class Recorder : Runnable {
 
     companion object {
@@ -37,34 +23,17 @@ class Recorder : Runnable {
 
         private const val NOT_INITIALIZED_WARNING = "Recorder is not initialized yet. Please wait and try again."
 
-        private const val DEFAULT_URL: String = "ws://localhost:7654"
+        const val DEFAULT_URL: String = "ws://localhost:7654"
 
-        @Option(names = ["-v", "--version"], description = ["Display version info"])
-        private var isVersionInfoRequested = false
+        // Set by CLI
+        @JvmStatic
+        var url: String = DEFAULT_URL
 
-        @Option(names = ["-h", "--help"], description = ["Display this help message"])
-        private var isUsageHelpRequested = false
+        @JvmStatic
+        var secret: String? = null
 
-        @Option(
-            names = ["-u", "--url"],
-            type = [String::class],
-            description = ["Server URL (default: $DEFAULT_URL)"]
-        )
-        private var url: String = DEFAULT_URL
-
-        @Option(
-            names = ["-s", "--secret"],
-            type = [String::class],
-            description = ["Secret used for server authentication"]
-        )
-        private var secret: String? = null
-
-        @Option(
-            names = ["-d", "--dir"],
-            type = [String::class],
-            description = ["Directory to save recordings (default: current directory)"]
-        )
-        private var dir: String? = null
+        @JvmStatic
+        var dir: String? = null
 
     }
 
@@ -72,26 +41,11 @@ class Recorder : Runnable {
     private lateinit var recordingObserver: RecordingObserver
 
     override fun run() {
-        val cmdLine = CommandLine(this)
-
-        when {
-            isUsageHelpRequested -> {
-                cmdLine.usage(System.out)
-                exitProcess(0)
-            }
-
-            isVersionInfoRequested -> {
-                cmdLine.printVersionHelp(System.out)
-                exitProcess(0)
-            }
-            else -> {
-                cmdLine.printVersionHelp(System.out)
-                startExitInputMonitorThread()
-                val canonicalDir = File(dir, ".").canonicalPath
-                log.info("Recordings will be stored in $canonicalDir")
-                startRecorder()
-            }
-        }
+        println(VersionFileProvider.getVersion())
+        startExitInputMonitorThread()
+        val canonicalDir = File(dir, ".").canonicalPath
+        log.info("Recordings will be stored in $canonicalDir")
+        startRecorder()
     }
 
     private fun startExitInputMonitorThread() {
@@ -169,5 +123,22 @@ class Recorder : Runnable {
         } else {
             log.info("No active recording to abort.")
         }
+    }
+}
+
+private class RecorderCli : CliktCommand(name = "recorder", help = "Tool for recording Robocode Tank Royale battles.") {
+    private val urlOpt by option("-u", "--url", help = "Server URL (default: ws://localhost:7654)")
+    private val secretOpt by option("-s", "--secret", help = "Secret used for server authentication")
+    private val dirOpt by option("-d", "--dir", help = "Directory to save recordings (default: current directory)")
+
+    init {
+        versionOption("Robocode Tank Royale Recorder ${Version.version}", names = setOf("-v", "--version"))
+    }
+
+    override fun run() {
+        Recorder.url = urlOpt ?: Recorder.DEFAULT_URL
+        Recorder.secret = secretOpt
+        Recorder.dir = dirOpt
+        Recorder().run()
     }
 }

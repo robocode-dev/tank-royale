@@ -1,5 +1,9 @@
 ## 📦 0.34.2
 
+### 🔧 Changes
+
+- Replaced Picocli for Clikt for the server, booter, and recorder.
+
 ### 🐞 Bug Fixes
 
 - #178: Fix .sh scripts to use `java` instead of `javaw`

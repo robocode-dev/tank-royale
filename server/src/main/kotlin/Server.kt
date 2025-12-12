@@ -1,46 +1,21 @@
 package dev.robocode.tankroyale.server
 
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.*
+import com.github.ajalt.clikt.parameters.types.int
+import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.server.core.GameServer
 import dev.robocode.tankroyale.server.rules.DEFAULT_GAME_TYPE
 import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
-import dev.robocode.tankroyale.server.util.VersionFileProvider
 import org.slf4j.LoggerFactory
-import picocli.CommandLine
-import picocli.CommandLine.*
-import picocli.CommandLine.Model.CommandSpec
 import java.nio.channels.ServerSocketChannel
 import java.util.*
 import kotlin.system.exitProcess
 
 private const val DEFAULT_PORT: Int = 7654
 
-fun main(args: Array<String>) {
-    Server.cmdLine.apply {
-        isSubcommandsCaseInsensitive = true
-        isOptionsCaseInsensitive = true
+fun main(args: Array<String>) = ServerCli().main(args)
 
-        exitProcess(execute(*args))
-    }
-}
-
-@Command(
-    name = "Server",
-    versionProvider = VersionFileProvider::class,
-    header = [
-        "@|bold,fg(0;0;5)               ___________|@",
-        "@|bold,fg(0;0;5)              /           ||@@|bold,fg(2;2;2) [[[]========((()|@",
-        "@|bold,fg(0;0;5)    _________|____________|___________|@",
-        "@|bold,fg(2;2;2)  _|@@|bold,fg(0;0;5) /|@@|bold,fg(2;2;2) _|@@|bold,fg(0;0;5) ________________________________|@@|bold,fg(2;2;2) _|@@|bold,fg(0;0;5) \\|@@|bold,fg(2;2;2) _|@",
-        "@|bold,fg(2;2;2) / _ ) ___  ___  ___  ___  ___  ___ / ,_||@",
-        "@|bold,fg(2;2;2) \\_\\_\\/ _ \\| __)/ _ \\/ __// _ \\| _ \\\\__||@",
-        "@|bold,fg(2;2;2)      \\___/|___)\\___/\\___|\\___/|___/|@",
-        "",
-        "@|bold,green           Robocode Tank Royale|@",
-        ""
-    ],
-    descriptionHeading = "Description:%n",
-    description = ["Runs a Robocode Tank Royale server"]
-)
 class Server : Runnable {
 
     companion object {
@@ -52,18 +27,8 @@ class Server : Runnable {
 
         const val INHERIT = "inherit"
 
-        @Option(names = ["-v", "--version"], description = ["Display version info"])
-        private var isVersionInfoRequested = false
-
-        @Option(names = ["-h", "--help"], description = ["Display this help message"])
-        private var isUsageHelpRequested = false
-
-        @Option(
-            names = ["-p", "--port"],
-            type = [String::class],
-            description = ["Port number (default: $DEFAULT_PORT) or '$INHERIT' to use socket activation (if supported by the system)"]
-        )
-        private var port: String = DEFAULT_PORT.toString()
+        // Set by CLI
+        var port: String = DEFAULT_PORT.toString()
 
         val useInheritedChannel: Boolean
             get() = port.equals(INHERIT, ignoreCase = true)
@@ -71,41 +36,15 @@ class Server : Runnable {
         val portNumber: Int
             get() = if (useInheritedChannel) getInheritedPort() else port.toIntOrNull() ?: DEFAULT_PORT
 
-        @Option(
-            names = ["-g", "--games"],
-            type = [String::class],
-            description = ["Comma-separated list of game types (default: $DEFAULT_GAME_TYPE)"]
-        )
-        private var gameTypes: String = DEFAULT_GAME_TYPE
+        var gameTypes: String = DEFAULT_GAME_TYPE
 
-        @Option(
-            names = ["-c", "--controller-secrets"],
-            type = [String::class],
-            description = ["Comma-separated list of controller secrets used for access control"]
-        )
-        private var controllerSecrets: String? = null
+        var controllerSecrets: String? = null
 
-        @Option(
-            names = ["-b", "--bot-secrets"],
-            type = [String::class],
-            description = ["Comma-separated list of bot secrets used for access control"]
-        )
-        private var botSecrets: String? = null
+        var botSecrets: String? = null
 
-        @Option(
-            names = ["-i", "--enable-initial-position"],
-            description = ["Enable initial position for bots (default: false)"]
-        )
         var initialPositionEnabled = false
 
-        @Option(
-            names = ["-t", "--tps"],
-            type = [Short::class],
-            description = ["Initial Turns Per Second (TPS) (default: $DEFAULT_TURNS_PER_SECOND) in the range [-1..999], where -1 means maximum TPS, and 0 means paused."]
-        )
         var tps: Int = DEFAULT_TURNS_PER_SECOND
-
-        val cmdLine = CommandLine(Server())
 
         private fun getInheritedPort(): Int {
             val channel = System.inheritedChannel() as? ServerSocketChannel
@@ -113,8 +52,6 @@ class Server : Runnable {
         }
     }
 
-    @Spec
-    private val spec: CommandSpec? = null
     private lateinit var gameServer: GameServer
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -124,46 +61,15 @@ class Server : Runnable {
     private val ANSI_DEFAULT = "\u001B[39m"
 
     override fun run() {
-        handleCommandLineOptions()
+        printBannerAndVersion()
         validatePort()
         startExitInputMonitorThread()
         startGameServer()
     }
 
-    private fun handleCommandLineOptions() {
-        val cmdLine = CommandLine(this)
-
-        when {
-            isUsageHelpRequested -> {
-                printUsageHelp(cmdLine)
-                exitProcess(0)
-            }
-
-            isVersionInfoRequested -> {
-                printVersionHelp(cmdLine)
-                exitProcess(0)
-            }
-
-            else -> {
-                displayBanner()
-                printVersionHelp(cmdLine)
-            }
-        }
-    }
-
-    private fun printUsageHelp(cmdLine: CommandLine) {
-        cmdLine.usage(System.out)
-    }
-
-    private fun printVersionHelp(cmdLine: CommandLine) {
-        cmdLine.printVersionHelp(System.out)
-    }
-
-    private fun displayBanner() {
-        val banner = spec?.usageMessage()?.header() ?: return
-        banner.forEach { line ->
-            printAnsiLine(line)
-        }
+    private fun printBannerAndVersion() {
+        SERVER_BANNER_LINES.forEach { println(convertPicocliMarkupToAnsi(it)) }
+        println("Robocode Tank Royale Server ${Version.version}")
     }
 
     private fun validatePort() {
@@ -233,8 +139,111 @@ class Server : Runnable {
 
     private fun String?.toSetOfTrimmedStrings(): Set<String> =
         HashSet(this?.replace("\\s".toRegex(), "")?.split(",")?.filter { it.isNotBlank() }.orEmpty())
+}
 
-    private fun printAnsiLine(line: String?) {
-        println(Help.Ansi.AUTO.string(line))
+private class ServerCli : CliktCommand(name = "server", help = "Runs a Robocode Tank Royale server") {
+    private val portOpt by option(
+        "-p",
+        "--port",
+        help = "Port number (default: $DEFAULT_PORT) or 'inherit' to use socket activation (if supported by the system)"
+    )
+    private val games by option(
+        "-g",
+        "--games",
+        help = "Comma-separated list of game types (default: $DEFAULT_GAME_TYPE)"
+    )
+    private val controllerSecrets by option(
+        "-c",
+        "--controller-secrets",
+        help = "Comma-separated list of controller secrets used for access control"
+    )
+    private val botSecrets by option(
+        "-b",
+        "--bot-secrets",
+        help = "Comma-separated list of bot secrets used for access control"
+    )
+    private val enableInitialPosition by option(
+        "-i",
+        "--enable-initial-position",
+        help = "Enable initial position for bots (default: false)"
+    ).flag(default = false)
+    private val tps by option(
+        "-t",
+        "--tps",
+        help = "Initial Turns Per Second (TPS) (default: $DEFAULT_TURNS_PER_SECOND) in the range [-1..999], where -1 means maximum TPS, and 0 means paused."
+    ).int()
+
+    init {
+        versionOption("Robocode Tank Royale Server ${Version.version}", names = setOf("-v", "--version"))
+    }
+
+    override fun run() {
+        // Apply options to Server companion object as the rest of the server reads from there
+        Server.port = portOpt ?: DEFAULT_PORT.toString()
+        Server.gameTypes = games ?: DEFAULT_GAME_TYPE
+        Server.controllerSecrets = controllerSecrets
+        Server.botSecrets = botSecrets
+        Server.initialPositionEnabled = enableInitialPosition
+        tps?.let { Server.tps = it }
+
+        Server().run()
     }
 }
+
+// ------- Banner utilities (Picocli ANSI markup -> real ANSI) -------
+private const val RESET_ANSI = "\u001B[0m"
+private val PICOCli_TAG = Regex("@\\|([^ ]+) (.*?)\\|@")
+
+private fun convertPicocliMarkupToAnsi(s: String): String {
+    // Replace Picocli markup tags with ANSI and collapse escaped '@@' to '@'
+    val withAnsi = PICOCli_TAG.replace(s) { m ->
+        val attrs = m.groupValues[1].split(",")
+        val text = m.groupValues[2]
+        val codes = attrs.mapNotNull { aRaw ->
+            val a = aRaw.trim()
+            when {
+                a.equals("bold", true) -> "1"
+                a.startsWith("fg(", ignoreCase = true) -> {
+                    val inside = a.substringAfter('(').substringBeforeLast(')')
+                    val parts = inside.split(';')
+                    if (parts.size == 3) {
+                        val (r, g, b) = parts.map { it.toIntOrNull() }
+                        if (r != null && g != null && b != null) {
+                            if (r in 0..5 && g in 0..5 && b in 0..5) {
+                                val idx = 16 + 36 * r + 6 * g + b
+                                "38;5;$idx"
+                            } else {
+                                "38;2;${r.coerceIn(0, 255)};${g.coerceIn(0, 255)};${b.coerceIn(0, 255)}"
+                            }
+                        } else null
+                    } else {
+                        when (inside.lowercase()) {
+                            "green" -> "32"
+                            "red" -> "31"
+                            "blue" -> "34"
+                            else -> null
+                        }
+                    }
+                }
+
+                else -> null
+            }
+        }
+        val start = if (codes.isNotEmpty()) codes.joinToString(separator = "") { code -> "\u001B[${code}m" } else ""
+        "$start${text}$RESET_ANSI"
+    }
+    return withAnsi.replace("@@", "@")
+}
+
+private val SERVER_BANNER_LINES = listOf(
+    "@|bold,fg(0;0;5)               ___________|@",
+    "@|bold,fg(0;0;5)              /           ||@@|bold,fg(2;2;2) [[[]========((()|@",
+    "@|bold,fg(0;0;5)    _________|____________|___________|@",
+    "@|bold,fg(2;2;2)  _|@@|bold,fg(0;0;5) /|@@|bold,fg(2;2;2) _|@@|bold,fg(0;0;5) ________________________________|@@|bold,fg(2;2;2) _|@@|bold,fg(0;0;5) \\|@@|bold,fg(2;2;2) _|@",
+    "@|bold,fg(2;2;2) / _ ) ___  ___  ___  ___  ___  ___ / ,_||@",
+    "@|bold,fg(2;2;2) \\_\\_\\/ _ \\| __)/ _ \\/ __// _ \\| _ \\\\__||@",
+    "@|bold,fg(2;2;2)      \\___/|___)\\___/\\___|\\___/|___/|@",
+    "",
+    "@|bold,green           Robocode Tank Royale|@",
+    ""
+)

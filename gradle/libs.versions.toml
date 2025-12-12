@@ -9,7 +9,7 @@ json = "20240303"
 jsonschema2pojo = "1.2.2"
 jsvg = "2.0.0"
 kotlinx-serialization-json = "1.9.0"
-picocli = "4.7.7"
+clikt = "4.4.0"
 proguard-gradle = "7.8.1"
 miglayout-swing = "11.4.2"
 nexus-publish = "2.0.0"
@@ -28,7 +28,7 @@ java-websocket = { module = "org.java-websocket:Java-WebSocket", version.ref = "
 json = { module = "org.json:json", version.ref = "json" }
 jsvg = { module = "com.github.weisj:jsvg", version.ref = "jsvg" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
-picocli = { module = "info.picocli:picocli", version.ref = "picocli" }
+clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
 proguard-gradle = { module = "com.guardsquare:proguard-gradle", version.ref = "proguard-gradle" }
 miglayout-swing = { module = "com.miglayout:miglayout-swing", version.ref = "miglayout-swing" }
 nv-i18n = { module = "com.neovisionaries:nv-i18n", version.ref = "nv-i18n" }
