@@ -6,7 +6,7 @@ val title = "Robocode Tank Royale Booter"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
-val jarManifestMainClass = "dev.robocode.tankroyale.booter.BooterKt"
+val jarManifestMainClass = "dev.robocode.tankroyale.booter.MainKt"
 
 base {
     archivesName = "robocode-tankroyale-booter" // renames _all_ archive names
