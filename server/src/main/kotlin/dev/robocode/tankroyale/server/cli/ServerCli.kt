@@ -10,8 +10,6 @@ import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.Server
 import dev.robocode.tankroyale.server.rules.DEFAULT_GAME_TYPE
 import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
 
-fun main(args: Array<String>) = ServerCli().main(args)
-
 internal class ServerCli : CliktCommand(name = "server", help = "Runs a Robocode Tank Royale server") {
     private val portOpt by option(
         "-p",
