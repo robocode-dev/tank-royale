@@ -26,9 +26,10 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
    - [X] Ensure each has a clear entry point and all runtime dependencies are bundled or referenced.
    - [X] Update documentation in each component’s `README.md` to clarify packaging requirements.
 
-3. [ ] **Build and Test JAR Artifacts**
-    - [ ] Generate runnable JARs for each component.
-    - [ ] Test each JAR by running (e.g., `java -jar server.jar`) and verify expected output.
+3. [X] **Build and Test JAR Artifacts**
+   - [X] Generate runnable JARs for each component (server, booter, recorder, and gui)
+   - [X] Test each JAR by running (e.g., `java -jar server.jar`) and verify expected output by using the `--version`
+     argument.
 
 4. [ ] **Create jpackage Configuration for Each Component**
     - [ ] For each component, define jpackage parameters (main jar, main class, icon, app name, version, vendor, etc.).
