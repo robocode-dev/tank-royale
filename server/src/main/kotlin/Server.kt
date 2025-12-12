@@ -221,11 +221,17 @@ private fun convertPicocliMarkupToAnsi(s: String): String {
                             "green" -> "32"
                             "red" -> "31"
                             "blue" -> "34"
+                            // Add support for 'fg(0;1;0)' and similar for green
+                            "0;1;0" -> "32"
+                            // Add more color mappings as needed
                             else -> null
                         }
                     }
                 }
-
+                // Add support for just 'green', 'red', 'blue' as attribute
+                a.equals("green", true) -> "32"
+                a.equals("red", true) -> "31"
+                a.equals("blue", true) -> "34"
                 else -> null
             }
         }
