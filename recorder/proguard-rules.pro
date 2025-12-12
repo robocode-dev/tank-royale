@@ -9,7 +9,7 @@
 
 -keepattributes AnnotationDefault,*Annotation*,Signature,InnerClasses,EnclosingMethod,RuntimeVisibleAnnotations,RuntimeInvisibleAnnotations,RuntimeVisibleParameterAnnotations,RuntimeInvisibleParameterAnnotations,RuntimeVisibleTypeAnnotations,RuntimeInvisibleTypeAnnotations,SourceFile,LineNumberTable
 
--keep public class dev.robocode.tankroyale.recorder.RecorderKt { *; }
+-keep public class dev.robocode.tankroyale.recorder.cli.RecorderKt { *; }
 -keep class dev.robocode.tankroyale.** { *; }
 -keep class org.slf4j.** { *; }
 -keep class org.java_websocket.** { *; }

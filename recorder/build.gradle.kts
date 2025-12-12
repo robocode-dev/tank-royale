@@ -6,7 +6,7 @@ val title = "Robocode Tank Royale Recorder"
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
-val jarManifestMainClass = "dev.robocode.tankroyale.recorder.RecorderKt"
+val jarManifestMainClass = "dev.robocode.tankroyale.recorder.MainKt"
 
 base {
     archivesName = "robocode-tankroyale-recorder" // renames _all_ archive names
