@@ -33,8 +33,15 @@ class Booter : Callable<Int> {
     override fun call(): Int {
         cmdLine.apply {
             when {
-                isUsageHelpRequested -> usage(System.out)
-                isVersionHelpRequested -> printVersionHelp(System.out)
+                isUsageHelpRequested -> {
+                    usage(System.out)
+                    exitProcess(0)
+                }
+
+                isVersionHelpRequested -> {
+                    printVersionHelp(System.out)
+                    exitProcess(0)
+                }
                 else -> usage(System.out)
             }
         }

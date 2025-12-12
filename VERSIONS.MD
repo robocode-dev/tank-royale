@@ -3,6 +3,8 @@
 ### 🐞 Bug Fixes
 
 - #178: Fix .sh scripts to use `java` instead of `javaw`
+- Fixed a major bug with the Server, Booter, and Recorder where the application ran when `--info` or `--help` was passed
+  as a command line argument.
 
 ### 🚀 Improvements
 
