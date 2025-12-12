@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui
 
 import dev.robocode.tankroyale.common.util.Platform.isWindows
+import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.components.RcImages
@@ -8,7 +9,11 @@ import java.awt.Taskbar
 import javax.swing.UIManager
 import java.util.Locale
 
-fun main() {
+fun main(args: Array<String>) {
+    if (args.contains("-v") || args.contains("--version")) {
+        println("Robocode Tank Royale GUI ${Version.version}")
+        return
+    }
     val scale = try { ConfigSettings.uiScale } catch (_: Exception) { 100 }
 
     // set ui scale factor for high dpi displays, but only if not already set (via command line)

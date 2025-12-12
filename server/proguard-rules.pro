@@ -4,13 +4,16 @@
 
 -dontoptimize
 -dontobfuscate
--dontwarn # remove when debugging
+-ignorewarnings
 
 -keepattributes AnnotationDefault,*Annotation*
 
 -keep public class dev.robocode.tankroyale.server.ServerKt { *; }
 -keep class dev.robocode.tankroyale.** { *; }
--keep class picocli.** { *; }
--keep class org.fusesource.jansi.** { *; }
+-keep class com.github.ajalt.clikt.** { *; }
+-keep class com.github.ajalt.mordant.** { *; }
+-dontwarn com.github.ajalt.clikt.**
+-dontwarn com.github.ajalt.mordant.**
+-dontwarn com.sun.jna.**
 -keep class org.slf4j.** { *; }
 -keep class org.java_websocket.** { *; }

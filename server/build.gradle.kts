@@ -38,7 +38,7 @@ plugins {
 dependencies {
     implementation(project(":lib:common"))
     implementation(libs.java.websocket)
-    implementation(libs.picocli)
+    implementation(libs.clikt)
     implementation(libs.gson)
     implementation(libs.slf4j.api)
 

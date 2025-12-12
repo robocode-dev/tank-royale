@@ -41,7 +41,6 @@ object ServerProcess {
             command = mutableListOf(
                 JavaExec.java(),
                 "-Dapp.processName=RobocodeTankRoyale-Server",
-                "-Dpicocli.ansi=true", // to show server logo in ANSI colors
                 "-jar",
                 getServerJar(),
                 "--port=${localPort}",
@@ -105,6 +104,7 @@ object ServerProcess {
             "ServerProcess-Log-Thread",
             process.inputStream
         ) { line ->
+            // Forward raw ANSI to the GUI console; AnsiEditorPane will render colors
             EDT.enqueue { ServerLogFrame.append(line + "\n") }
         }
         logReaderRef.set(logReader)
@@ -114,5 +114,13 @@ object ServerProcess {
     private fun stopLogThread() {
         logReaderRef.get()?.stop()
         logReaderRef.set(null)
+    }
+
+    // Deprecated: kept for reference if we need no-color fallback later
+    @Suppress("unused")
+    private fun stripAnsi(s: String): String {
+        val ansiRegex = Regex("\u001B\\[[0-9;?]*[ -/]*[@-~]")
+        val escRegex = Regex("\u001B[@-_]")
+        return s.replace(ansiRegex, "").replace(escRegex, "")
     }
 }
