@@ -295,15 +295,16 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
                 extra = listOf(
                     "--mac-package-name", appName,
                     "--mac-package-identifier", "dev.robocode.tankroyale.${project.name}",
-                    "--mac-dmg-volume-name", appName,
-                    "--verbose"
-                )
+                    "--mac-dmg-volume-name", appName
+                ) + if ((project.findProperty("ciVerbose") == "true")) listOf("--verbose") else emptyList()
             )
             // Print effective jpackage args just before execution for easier debugging on CI
             doFirst {
-                println("[jpackageMac] App: $appName  Identifier: dev.robocode.tankroyale.${project.name}")
-                println("[jpackageMac] Icon exists: ${file(iconMac).exists()} → ${file(iconMac).absolutePath}")
-                println("[jpackageMac] Main JAR: ${file(mainJarPath).name} in ${file(mainJarPath).parentFile.absolutePath}")
+                if (project.findProperty("ciVerbose") == "true") {
+                    println("[jpackageMac] App: $appName  Identifier: dev.robocode.tankroyale.${project.name}")
+                    println("[jpackageMac] Icon exists: ${file(iconMac).exists()} → ${file(iconMac).absolutePath}")
+                    println("[jpackageMac] Main JAR: ${file(mainJarPath).name} in ${file(mainJarPath).parentFile.absolutePath}")
+                }
             }
         }
 
@@ -320,14 +321,15 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
                 iconPath = iconMac,
                 extra = listOf(
                     "--mac-package-name", appName,
-                    "--mac-package-identifier", "dev.robocode.tankroyale.${project.name}",
-                    "--verbose"
-                )
+                    "--mac-package-identifier", "dev.robocode.tankroyale.${project.name}"
+                ) + if ((project.findProperty("ciVerbose") == "true")) listOf("--verbose") else emptyList()
             )
             doFirst {
-                println("[jpackageMacPkg] App: $appName  Identifier: dev.robocode.tankroyale.${project.name}")
-                println("[jpackageMacPkg] Icon exists: ${file(iconMac).exists()} → ${file(iconMac).absolutePath}")
-                println("[jpackageMacPkg] Main JAR: ${file(mainJarPath).name} in ${file(mainJarPath).parentFile.absolutePath}")
+                if (project.findProperty("ciVerbose") == "true") {
+                    println("[jpackageMacPkg] App: $appName  Identifier: dev.robocode.tankroyale.${project.name}")
+                    println("[jpackageMacPkg] Icon exists: ${file(iconMac).exists()} → ${file(iconMac).absolutePath}")
+                    println("[jpackageMacPkg] Main JAR: ${file(mainJarPath).name} in ${file(mainJarPath).parentFile.absolutePath}")
+                }
             }
         }
 

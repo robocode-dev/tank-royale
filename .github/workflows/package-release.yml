@@ -53,16 +53,16 @@ jobs:
           java -version
           jpackage --version
 
-      - name: Build and create installers for this OS
+      - name: Build and create installers for this OS (concise)
         run: |
-          ./gradlew --no-daemon --stacktrace --info stageAllInstallers
+          ./gradlew --no-daemon --stacktrace stageAllInstallers
         shell: bash
 
       - name: Re-run macOS with deep jpackage diagnostics (only on macOS)
         if: matrix.os == 'macos-latest' && failure()
         run: |
           echo "Re-running macOS packaging with --debug to surface jpackage stderr"
-          ./gradlew --no-daemon --debug :booter:jpackageMac :recorder:jpackageMac
+          ./gradlew --no-daemon --debug -PciVerbose=true :booter:jpackageMac :recorder:jpackageMac
         shell: bash
 
       - name: Upload installers
