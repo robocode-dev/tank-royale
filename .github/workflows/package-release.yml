@@ -1,0 +1,52 @@
+name: Package Installers (jpackage)
+
+on:
+  workflow_dispatch: { }
+
+jobs:
+  build-package:
+    name: Build installers on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK 21 (for jpackage)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Install Linux packaging prerequisites
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm fakeroot
+
+      - name: Verify Java and jpackage
+        run: |
+          java -version
+          jpackage --version
+
+      - name: Build and create installers for this OS
+        run: |
+          ./gradlew --no-daemon --stacktrace stageAllInstallers
+        shell: bash
+
+      - name: Upload installers
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: installers-${{ matrix.os }}
+          path: |
+            build/dist/**/*
+          if-no-files-found: warn

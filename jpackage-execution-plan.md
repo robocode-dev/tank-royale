@@ -49,12 +49,12 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
    - [X] Ensure tasks produce native installers (e.g., `.exe`, `.msi`, `.deb`, `.rpm`, `.pkg`, `.dmg`).
    - [X] Add Gradle logic to copy or stage output installers in a common distribution directory.
 
-6. [ ] **Set Up GitHub Actions Workflow for Packaging and Release**
-    - [ ] Create or update a workflow YAML (e.g., `.github/workflows/package-release.yml`) to:
-        - [ ] Build all components for all platforms using matrix builds.
-        - [ ] Run jpackage tasks for each component and platform.
-        - [ ] Collect and upload resulting installers as workflow artifacts.
-        - [ ] Trigger workflow manually (workflow_dispatch) and/or via a "release" task.
+6. [X] **Set Up GitHub Actions Workflow for Packaging and Release**
+   - [X] Create or update a workflow YAML (e.g., `.github/workflows/package-release.yml`) to:
+      - [X] Build all components for all platforms using matrix builds.
+      - [X] Run jpackage tasks for each component and platform.
+      - [X] Collect and upload resulting installers as workflow artifacts.
+      - [X] Trigger workflow manually (workflow_dispatch) and/or via a "release" task.
 
 7. [ ] **Integrate with Existing Release Scripts**
     - [ ] Review and update any release scripts (e.g., in `scripts/` or root) to invoke new jpackage Gradle tasks.
