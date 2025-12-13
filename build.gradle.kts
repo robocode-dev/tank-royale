@@ -191,12 +191,26 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
         val rawVersion = project.version.toString()
         val appVersionSanitized = rawVersion.replace(Regex("[^0-9.]"), ".").trim('.')
 
+        // macOS requires CFBundleVersion of the form 1..3 integers and the first must be >= 1
+        val isMac = org.gradle.internal.os.OperatingSystem.current().isMacOsX
+        val macVersion = run {
+            val parts = appVersionSanitized.split('.')
+                .filter { it.isNotBlank() }
+                .map { it.toIntOrNull() ?: 0 }
+                .toMutableList()
+            if (parts.isEmpty()) parts.add(1)
+            if (parts[0] < 1) parts[0] = 1
+            while (parts.size > 3) parts.removeLast()
+            parts.joinToString(".")
+        }
+        val effectiveAppVersion = if (isMac) macVersion else appVersionSanitized
+
         executable = jpackageExecutable
         workingDir = project.projectDir
         args = listOf(
             "--type", installerType,
             "--name", appNameLocal,
-            "--app-version", appVersionSanitized,
+            "--app-version", effectiveAppVersion,
             "--vendor", "robocode.dev",
             "--input", inputDir.absolutePath,
             "--main-jar", mainJarFile,
