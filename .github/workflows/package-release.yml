@@ -29,11 +29,16 @@ jobs:
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v3
 
+      - name: Install WiX 3.x (Windows)
+        if: matrix.os == 'windows-latest'
+        run: choco install wixtoolset --version=3.11.2 -y
+        shell: powershell
+
       - name: Install Linux packaging prerequisites
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y rpm fakeroot
+          sudo apt-get install -y rpm fakeroot libfuse2
 
       - name: Verify Java and jpackage
         run: |
@@ -42,7 +47,7 @@ jobs:
 
       - name: Build and create installers for this OS
         run: |
-          ./gradlew --no-daemon --stacktrace stageAllInstallers
+          ./gradlew --no-daemon --stacktrace --info stageAllInstallers
         shell: bash
 
       - name: Upload installers

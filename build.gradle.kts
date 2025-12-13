@@ -179,7 +179,12 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
     val jpackageOutputDir = layout.buildDirectory.dir("jpackage").get().asFile
     val installersStageDir = rootProject.layout.buildDirectory.dir("dist/${project.name}").get().asFile
 
-    fun Exec.configureCommonJpackageArgs(installerType: String, appNameLocal: String, iconPath: String) {
+    fun Exec.configureCommonJpackageArgs(
+        installerType: String,
+        appNameLocal: String,
+        iconPath: String,
+        extra: List<String> = emptyList()
+    ) {
         val inputDir = file(mainJarPath).parentFile
         val mainJarFile = file(mainJarPath).name
 
@@ -195,13 +200,13 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             "--icon", file(iconPath).absolutePath,
             "--dest", jpackageOutputDir.absolutePath,
             "--license-file", rootProject.file("LICENSE").absolutePath
-        )
+        ) + extra
     }
 
-    // Resolve icons from root resources
-    val iconWin = rootProject.file("resources/icons/Tank.ico").absolutePath
-    val iconLinux = rootProject.file("resources/icons/Tank.png").absolutePath
-    val iconMac = rootProject.file("resources/icons/Tank.icns").absolutePath
+    // Resolve icons from repo gfx assets (actual locations)
+    val iconWin = rootProject.file("gfx/Tank/Tank.ico").absolutePath
+    val iconLinux = rootProject.file("gfx/Tank/Tank.png").absolutePath
+    val iconMac = rootProject.file("gfx/Tank/Tank.icns").absolutePath
 
     // Try to wire up dependency if task exists
     val dependsOnProvider = runCatching { tasks.named(dependsOnTaskName) }.getOrNull()
@@ -230,7 +235,10 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             configureCommonJpackageArgs(
                 installerType = "deb",
                 appNameLocal = appName,
-                iconPath = iconLinux
+                iconPath = iconLinux,
+                extra = listOf(
+                    "--linux-deb-maintainer", "Flemming N. Larsen <flemming.n.larsen@gmail.com>"
+                )
             )
         }
 
