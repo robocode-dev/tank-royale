@@ -29,10 +29,18 @@ jobs:
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v3
 
-      - name: Install WiX 3.x (Windows)
+      - name: Ensure WiX 3.x available (Windows)
         if: matrix.os == 'windows-latest'
-        run: choco install wixtoolset --version=3.11.2 -y
         shell: powershell
+        run: |
+          $wix = Get-Command candle.exe -ErrorAction SilentlyContinue
+          if ($wix) {
+            Write-Host "WiX already available: $($wix.Path)"
+            candle.exe -? | Select-Object -First 1
+          }
+          else {
+            choco install wixtoolset -y --no-progress
+          }
 
       - name: Install Linux packaging prerequisites
         if: matrix.os == 'ubuntu-latest'

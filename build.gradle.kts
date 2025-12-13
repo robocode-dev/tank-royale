@@ -270,10 +270,15 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             dependsOnProvider?.let { dependsOn(it) }
             onlyIf { org.gradle.internal.os.OperatingSystem.current().isMacOsX }
             doFirst { jpackageOutputDir.mkdirs() }
+            // Add macOS-specific flags for better diagnostics and stable naming
             configureCommonJpackageArgs(
                 installerType = "dmg",
                 appNameLocal = appName,
-                iconPath = iconMac
+                iconPath = iconMac,
+                extra = listOf(
+                    "--mac-package-name", appName,
+                    "--verbose"
+                )
             )
         }
 
