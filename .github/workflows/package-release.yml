@@ -2,6 +2,9 @@ name: Package Installers (jpackage)
 
 on:
   workflow_dispatch: { }
+  push: {
+    branches: [ jpackage-releases ]
+  }
 
 jobs:
   build-package:
