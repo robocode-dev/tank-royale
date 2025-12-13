@@ -31,9 +31,9 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
    - [X] Test each JAR by running (e.g., `java -jar server.jar`) and verify expected output by using the `--version`
      argument.
 
-4. [ ] **Create jpackage Configuration for Each Component**
-    - [ ] For each component, define jpackage parameters (main jar, main class, icon, app name, version, vendor, etc.).
-    - [ ] Add or update a `jpackage-config.json` or equivalent config file in each component directory.
+4. [X] **Create jpackage Configuration for Each Component**
+   - [X] For each component, define jpackage parameters (main jar, main class, icon, app name, version, vendor, etc.).
+   - [X] Add or update a `jpackage-config.json` or equivalent config file in each component directory.
    - [X] Prepare platform-specific assets (icons, license files, etc.) in each component.
       - [X] (user/developer) Prepare and convert the application icon for each platform:
          - [X] Windows: `.ico` format (recommended sizes: 16x16, 32x32, 48x48, 256x256)
