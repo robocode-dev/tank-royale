@@ -56,6 +56,8 @@ jobs:
       - name: Build and create installers for this OS (quiet)
         run: |
           set -e
+          # Ensure log directory exists
+          mkdir -p build
           # Run Gradle quietly and capture all output to a log. On failure, print only the tail.
           ./gradlew --no-daemon --stacktrace --quiet --console=plain -Dorg.gradle.warning.mode=none stageAllInstallers \
             > build/ci-gradle.log 2>&1 \
