@@ -44,10 +44,10 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
             - Available icon source: `resources/icons/Tank.png`
       - [X] (user/developer) Convert your `tank.svg` to the required formats using ImageMagick or online tools.
 
-5. [ ] **Update Build Scripts for jpackage Integration**
-    - [ ] Modify each component’s `build.gradle.kts` to add jpackage tasks for Windows, Linux, and macOS.
-    - [ ] Ensure tasks produce native installers (e.g., `.exe`, `.msi`, `.deb`, `.rpm`, `.pkg`, `.dmg`).
-    - [ ] Add Gradle logic to copy or stage output installers in a common distribution directory.
+5. [X] **Update Build Scripts for jpackage Integration**
+   - [X] Modify each component’s `build.gradle.kts` to add jpackage tasks for Windows, Linux, and macOS.
+   - [X] Ensure tasks produce native installers (e.g., `.exe`, `.msi`, `.deb`, `.rpm`, `.pkg`, `.dmg`).
+   - [X] Add Gradle logic to copy or stage output installers in a common distribution directory.
 
 6. [ ] **Set Up GitHub Actions Workflow for Packaging and Release**
     - [ ] Create or update a workflow YAML (e.g., `.github/workflows/package-release.yml`) to:
@@ -86,7 +86,7 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
 2. [X] Clarify and implement signing requirements for all platforms.
 3. [X] Test JAR artifacts before packaging installers.
 4. [X] Test installers after packaging.
-5. [ ] (user/developer) Confirm application name, vendor, version, and other metadata for each package.
+5. [X] (user/developer) Confirm application name, vendor, version, and other metadata for each package.
    - [X] Application Name: Set in /settings.gradle.kts (`rootProject.name`)
    - [X] Vendor: `robocode.dev`
    - [X] Version: Set in /gradle.properties (`version`)

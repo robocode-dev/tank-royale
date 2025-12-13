@@ -169,4 +169,10 @@ tasks {
             }
         }
     }
+
+    // Opt-in to centralized jpackage tasks (configured in root build.gradle.kts)
+    extra["useJpackage"] = true
+    extra["jpackageAppName"] = archiveTitle
+    extra["jpackageMainJar"] = finalJar
+    extra["jpackageDependsOn"] = "proguard"
 }

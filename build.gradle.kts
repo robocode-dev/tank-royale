@@ -3,6 +3,8 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.gradle.api.tasks.Exec
+import org.gradle.api.tasks.Copy
+import org.gradle.api.Project
 
 description = "Robocode: Build the best - destroy the rest!"
 
@@ -151,7 +153,7 @@ subprojects {
     tasks {
         withType<KotlinJvmCompile>().configureEach {
             compilerOptions {
-                jvmTarget = JvmTarget.JVM_11 // Java 11.(
+                jvmTarget = JvmTarget.JVM_11 // Java 11
             }
         }
 
@@ -160,6 +162,153 @@ subprojects {
             filesMatching("version.properties") {
                 expand(mapOf("version" to version))
             }
+        }
+    }
+}
+
+// --- Centralized jpackage convention and task registration ---
+
+fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsOnTaskName: String = "proguard") {
+    val jpackageExecutable: String by lazy {
+        val javaHome = System.getenv("JAVA_HOME") ?: System.getProperty("java.home")
+        val bin = if (org.gradle.internal.os.OperatingSystem.current().isWindows) "bin/jpackage.exe" else "bin/jpackage"
+        val candidate = file("$javaHome/$bin")
+        if (candidate.exists()) candidate.absolutePath else "jpackage"
+    }
+
+    val jpackageOutputDir = layout.buildDirectory.dir("jpackage").get().asFile
+    val installersStageDir = rootProject.layout.buildDirectory.dir("dist/${project.name}").get().asFile
+
+    fun Exec.configureCommonJpackageArgs(installerType: String, appNameLocal: String, iconPath: String) {
+        val inputDir = file(mainJarPath).parentFile
+        val mainJarFile = file(mainJarPath).name
+
+        executable = jpackageExecutable
+        workingDir = project.projectDir
+        args = listOf(
+            "--type", installerType,
+            "--name", appNameLocal,
+            "--app-version", project.version.toString(),
+            "--vendor", "robocode.dev",
+            "--input", inputDir.absolutePath,
+            "--main-jar", mainJarFile,
+            "--icon", file(iconPath).absolutePath,
+            "--dest", jpackageOutputDir.absolutePath,
+            "--license-file", rootProject.file("LICENSE").absolutePath
+        )
+    }
+
+    // Resolve icons from root resources
+    val iconWin = rootProject.file("resources/icons/Tank.ico").absolutePath
+    val iconLinux = rootProject.file("resources/icons/Tank.png").absolutePath
+    val iconMac = rootProject.file("resources/icons/Tank.icns").absolutePath
+
+    // Try to wire up dependency if task exists
+    val dependsOnProvider = runCatching { tasks.named(dependsOnTaskName) }.getOrNull()
+
+    tasks {
+        register<Exec>("jpackageWin") {
+            group = "distribution"
+            description = "Create Windows installer (MSI) using jpackage"
+            dependsOnProvider?.let { dependsOn(it) }
+            onlyIf { org.gradle.internal.os.OperatingSystem.current().isWindows }
+            doFirst { jpackageOutputDir.mkdirs() }
+            configureCommonJpackageArgs(
+                installerType = "msi",
+                appNameLocal = appName,
+                iconPath = iconWin
+            )
+        }
+
+        // Linux: DEB
+        register<Exec>("jpackageLinuxDeb") {
+            group = "distribution"
+            description = "Create Linux DEB installer using jpackage"
+            dependsOnProvider?.let { dependsOn(it) }
+            onlyIf { org.gradle.internal.os.OperatingSystem.current().isLinux }
+            doFirst { jpackageOutputDir.mkdirs() }
+            configureCommonJpackageArgs(
+                installerType = "deb",
+                appNameLocal = appName,
+                iconPath = iconLinux
+            )
+        }
+
+        // Linux: RPM
+        register<Exec>("jpackageLinuxRpm") {
+            group = "distribution"
+            description = "Create Linux RPM installer using jpackage"
+            dependsOnProvider?.let { dependsOn(it) }
+            onlyIf { org.gradle.internal.os.OperatingSystem.current().isLinux }
+            doFirst { jpackageOutputDir.mkdirs() }
+            configureCommonJpackageArgs(
+                installerType = "rpm",
+                appNameLocal = appName,
+                iconPath = iconLinux
+            )
+        }
+
+        // Backward-compatible aggregate Linux task
+        register("jpackageLinux") {
+            group = "distribution"
+            description = "Create Linux installers (DEB and RPM) using jpackage"
+            onlyIf { org.gradle.internal.os.OperatingSystem.current().isLinux }
+            dependsOn("jpackageLinuxDeb", "jpackageLinuxRpm")
+        }
+
+        register<Exec>("jpackageMac") {
+            group = "distribution"
+            description = "Create macOS installer (DMG) using jpackage"
+            dependsOnProvider?.let { dependsOn(it) }
+            onlyIf { org.gradle.internal.os.OperatingSystem.current().isMacOsX }
+            doFirst { jpackageOutputDir.mkdirs() }
+            configureCommonJpackageArgs(
+                installerType = "dmg",
+                appNameLocal = appName,
+                iconPath = iconMac
+            )
+        }
+
+        register<Copy>("stageInstallers") {
+            group = "distribution"
+            description = "Copy generated installers to root build/dist/${project.name}"
+            dependsOn("jpackageWin", "jpackageLinuxDeb", "jpackageLinuxRpm", "jpackageMac")
+            from(jpackageOutputDir)
+            include("*.msi", "*.exe", "*.deb", "*.rpm", "*.pkg", "*.dmg")
+            into(installersStageDir)
+        }
+    }
+}
+
+subprojects {
+    // Opt-in signal from subprojects via extra properties to avoid repeating task definitions
+    afterEvaluate {
+        val extras = extensions.extraProperties
+        val enabled = extras.has("useJpackage") && (extras["useJpackage"] as? Boolean == true)
+        if (enabled) {
+            val appName = (extras["jpackageAppName"] as? String) ?: project.name
+            val mainJar = (extras["jpackageMainJar"] as? String)
+            val dependsOn = (extras["jpackageDependsOn"] as? String) ?: "proguard"
+            if (mainJar == null) {
+                logger.warn("jpackage enabled for ${project.path}, but 'jpackageMainJar' not provided – skipping task registration")
+            } else {
+                registerJpackageTasks(appName, mainJar, dependsOn)
+            }
+        }
+    }
+}
+
+// Aggregate task at root to stage installers from all enabled subprojects
+val stageAllInstallers = tasks.register("stageAllInstallers") {
+    group = "distribution"
+    description = "Produce and stage installers for all enabled subprojects on this OS"
+}
+
+gradle.projectsEvaluated {
+    subprojects.forEach { p ->
+        val t = p.tasks.findByName("stageInstallers")
+        if (t != null) {
+            stageAllInstallers.configure { dependsOn(t) }
         }
     }
 }
