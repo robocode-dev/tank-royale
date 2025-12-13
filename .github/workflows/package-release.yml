@@ -53,9 +53,14 @@ jobs:
           java -version
           jpackage --version
 
-      - name: Build and create installers for this OS (concise)
+      - name: Build and create installers for this OS (quiet)
         run: |
-          ./gradlew --no-daemon --stacktrace stageAllInstallers
+          set -e
+          # Run Gradle quietly and capture all output to a log. On failure, print only the tail.
+          ./gradlew --no-daemon --stacktrace --quiet --console=plain -Dorg.gradle.warning.mode=none stageAllInstallers \
+            > build/ci-gradle.log 2>&1 \
+            || (echo "Gradle build failed — showing last 400 lines of log:" && tail -n 400 build/ci-gradle.log && exit 1)
+          echo "Gradle build succeeded. (Logs suppressed; see build/ci-gradle.log in the artifact if needed.)"
         shell: bash
 
       - name: Re-run macOS with deep jpackage diagnostics (only on macOS)
@@ -72,4 +77,5 @@ jobs:
           name: installers-${{ matrix.os }}
           path: |
             build/dist/**/*
+            build/ci-gradle.log
           if-no-files-found: warn
