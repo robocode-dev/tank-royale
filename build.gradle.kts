@@ -295,6 +295,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
                 extra = listOf(
                     "--mac-package-name", appName,
                     "--mac-package-identifier", "dev.robocode.tankroyale.${project.name}",
+                    "--mac-dmg-volume-name", appName,
                     "--verbose"
                 )
             )
@@ -306,10 +307,35 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             }
         }
 
+        // Alternative macOS package: PKG (often more reliable on CI than DMG)
+        register<Exec>("jpackageMacPkg") {
+            group = "distribution"
+            description = "Create macOS installer (PKG) using jpackage"
+            dependsOnProvider?.let { dependsOn(it) }
+            onlyIf { org.gradle.internal.os.OperatingSystem.current().isMacOsX }
+            doFirst { jpackageOutputDir.mkdirs() }
+            configureCommonJpackageArgs(
+                installerType = "pkg",
+                appNameLocal = appName,
+                iconPath = iconMac,
+                extra = listOf(
+                    "--mac-package-name", appName,
+                    "--mac-package-identifier", "dev.robocode.tankroyale.${project.name}",
+                    "--verbose"
+                )
+            )
+            doFirst {
+                println("[jpackageMacPkg] App: $appName  Identifier: dev.robocode.tankroyale.${project.name}")
+                println("[jpackageMacPkg] Icon exists: ${file(iconMac).exists()} → ${file(iconMac).absolutePath}")
+                println("[jpackageMacPkg] Main JAR: ${file(mainJarPath).name} in ${file(mainJarPath).parentFile.absolutePath}")
+            }
+        }
+
         register<Copy>("stageInstallers") {
             group = "distribution"
             description = "Copy generated installers to root build/dist/${project.name}"
-            dependsOn("jpackageWin", "jpackageLinuxDeb", "jpackageLinuxRpm", "jpackageMac")
+            // Prefer PKG on macOS to avoid occasional DMG hangs in CI
+            dependsOn("jpackageWin", "jpackageLinuxDeb", "jpackageLinuxRpm", "jpackageMacPkg")
             from(jpackageOutputDir)
             include("*.msi", "*.exe", "*.deb", "*.rpm", "*.pkg", "*.dmg")
             into(installersStageDir)
