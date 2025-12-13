@@ -284,6 +284,12 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
                     "--verbose"
                 )
             )
+            // Print effective jpackage args just before execution for easier debugging on CI
+            doFirst {
+                println("[jpackageMac] App: $appName  Identifier: dev.robocode.tankroyale.${project.name}")
+                println("[jpackageMac] Icon exists: ${file(iconMac).exists()} → ${file(iconMac).absolutePath}")
+                println("[jpackageMac] Main JAR: ${file(mainJarPath).name} in ${file(mainJarPath).parentFile.absolutePath}")
+            }
         }
 
         register<Copy>("stageInstallers") {
