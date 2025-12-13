@@ -187,13 +187,16 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
     ) {
         val inputDir = file(mainJarPath).parentFile
         val mainJarFile = file(mainJarPath).name
+        // jpackage (especially on macOS) is strict about app-version format: digits and dots only
+        val rawVersion = project.version.toString()
+        val appVersionSanitized = rawVersion.replace(Regex("[^0-9.]"), ".").trim('.')
 
         executable = jpackageExecutable
         workingDir = project.projectDir
         args = listOf(
             "--type", installerType,
             "--name", appNameLocal,
-            "--app-version", project.version.toString(),
+            "--app-version", appVersionSanitized,
             "--vendor", "robocode.dev",
             "--input", inputDir.absolutePath,
             "--main-jar", mainJarFile,
@@ -277,6 +280,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
                 iconPath = iconMac,
                 extra = listOf(
                     "--mac-package-name", appName,
+                    "--mac-package-identifier", "dev.robocode.tankroyale.${project.name}",
                     "--verbose"
                 )
             )
