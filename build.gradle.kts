@@ -1,4 +1,5 @@
 import build.release.createRelease
+import build.release.dispatchWorkflow
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
@@ -434,6 +435,20 @@ tasks {
                 throw IllegalStateException("'token' is null or blank meaning that it is missing")
             }
             createRelease(projectDir, version, tankRoyaleGitHubToken!!)
+
+            // Optionally trigger the GitHub Actions workflow that builds native installers via jpackage
+            val trigger = (findProperty("triggerPackageReleaseWorkflow")?.toString()?.toBoolean() ?: false)
+            if (trigger) {
+                // Run package workflow against the main branch by default and pass the release version
+                dispatchWorkflow(
+                    token = tankRoyaleGitHubToken!!,
+                    workflowFileName = "package-release.yml",
+                    ref = "main",
+                    inputs = mapOf("version" to version)
+                )
+            } else {
+                println("Skipping package-release workflow dispatch. Enable with -PtriggerPackageReleaseWorkflow=true")
+            }
         }
     }
 }

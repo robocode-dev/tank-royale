@@ -1,7 +1,16 @@
 name: Package Installers (jpackage)
 
+permissions:
+  contents: write
+  actions: read
+
 on:
-  workflow_dispatch: { }
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g., 1.2.3)"
+        required: true
+        type: string
   push: {
     branches: [ jpackage-releases ]
   }
@@ -10,6 +19,8 @@ jobs:
   build-package:
     name: Build installers on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    env:
+      VERSION: ${{ github.event.inputs.version }}
     strategy:
       fail-fast: false
       matrix:
@@ -81,3 +92,14 @@ jobs:
             build/dist/**/*
             build/ci-gradle.log
           if-no-files-found: warn
+
+      - name: Attach installers to GitHub Release (workflow_dispatch only)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION }}
+          files: |
+            build/dist/**/*
+            build/ci-gradle.log
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

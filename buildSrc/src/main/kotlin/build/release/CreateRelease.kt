@@ -43,6 +43,47 @@ fun createRelease(projectDir: File, version: String, token: String) {
         ZIP_MIME_TYPE, "Sample bots for Java (zip)")
 }
 
+/**
+ * Dispatches a GitHub Actions workflow in this repository using the workflow_dispatch event.
+ *
+ * @param token A GitHub token with workflow:write permission (e.g., GITHUB_TOKEN from Actions).
+ * @param workflowFileName The workflow file name located under .github/workflows (e.g., "package-release.yml").
+ * @param ref The git ref (branch or tag) to run the workflow on. Defaults to "main".
+ * @param inputs Optional key/value inputs to pass to the workflow_dispatch event.
+ */
+fun dispatchWorkflow(
+    token: String,
+    workflowFileName: String,
+    ref: String = "main",
+    inputs: Map<String, String>? = null
+) {
+    val uri =
+        URI("https://api.github.com/repos/robocode-dev/tank-royale/actions/workflows/$workflowFileName/dispatches")
+    val inputsJson = inputs?.entries
+        ?.joinToString(separator = ",") { "\"${it.key}\": \"${it.value}\"" }
+        ?.let { "\n        ,\"inputs\": { $it }" }
+        ?: ""
+    val body = """{
+        "ref": "$ref"$inputsJson
+    }"""
+
+    val request = HttpRequest.newBuilder()
+        .uri(uri)
+        .header("Accept", "application/vnd.github+json")
+        .header("Authorization", "Bearer $token")
+        .POST(HttpRequest.BodyPublishers.ofString(body))
+        .build()
+
+    val response = HttpClient
+        .newBuilder()
+        .build()
+        .send(request, HttpResponse.BodyHandlers.ofString())
+
+    println("Dispatch workflow '$workflowFileName' on '$ref' statusCode: ${'$'}{response.statusCode()}, body: ${'$'}{response.body()}")
+
+    check(response.statusCode() == 204) { "Could not dispatch workflow '$workflowFileName'" }
+}
+
 private fun prepareRelease(projectDir: File, version: String, token: String): String /* JSON result */ {
 
     val releaseNotes = generateReleaseNotes(projectDir, version)

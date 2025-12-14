@@ -56,9 +56,9 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
       - [X] Collect and upload resulting installers as workflow artifacts.
       - [X] Trigger workflow manually (workflow_dispatch) and/or via a "release" task.
 
-7. [ ] **Integrate with Existing Release Scripts**
-    - [ ] Review and update any release scripts (e.g., in `scripts/` or root) to invoke new jpackage Gradle tasks.
-    - [ ] Ensure versioning and changelog steps are compatible with new packaging process.
+7. [x] **Integrate with Existing Release Scripts**
+    - [X] Review and update any release scripts (e.g., in `scripts/` or root) to invoke new jpackage Gradle tasks.
+    - [X] Ensure versioning and changelog steps are compatible with new packaging process.
 
 8. [ ] **Signing Installers and Artifacts**
     - [ ] Clarify signing requirements for Windows, Linux, and macOS installers.
