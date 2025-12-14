@@ -133,5 +133,6 @@ tasks {
     extra["useJpackage"] = true
     extra["jpackageAppName"] = title
     extra["jpackageMainJar"] = finalJar
+    extra["jpackageMainClass"] = jarManifestMainClass
     extra["jpackageDependsOn"] = "proguard"
 }

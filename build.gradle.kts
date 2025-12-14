@@ -184,6 +184,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
         installerType: String,
         appNameLocal: String,
         iconPath: String,
+        mainClass: String,
         extra: List<String> = emptyList()
     ) {
         val inputDir = file(mainJarPath).parentFile
@@ -207,7 +208,6 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
         val effectiveAppVersion = if (isMac) macVersion else appVersionSanitized
 
         val appDescription = project.description ?: "Robocode Tank Royale - ${project.name}"
-
         val isWindows = org.gradle.internal.os.OperatingSystem.current().isWindows
 
         executable = jpackageExecutable
@@ -219,6 +219,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             "--vendor", "robocode.dev",
             "--input", inputDir.absolutePath,
             "--main-jar", mainJarFile,
+            "--main-class", mainClass,
             "--icon", file(iconPath).absolutePath,
             "--dest", jpackageOutputDir.absolutePath,
             "--license-file", rootProject.file("LICENSE").absolutePath
@@ -250,7 +251,8 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             configureCommonJpackageArgs(
                 installerType = "msi",
                 appNameLocal = appName,
-                iconPath = iconWin
+                iconPath = iconWin,
+                mainClass = (project.extra["jpackageMainClass"] as String)
             )
         }
 
@@ -265,6 +267,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
                 installerType = "deb",
                 appNameLocal = appName,
                 iconPath = iconLinux,
+                mainClass = (project.extra["jpackageMainClass"] as String),
                 extra = listOf(
                     "--linux-deb-maintainer", "Flemming N. Larsen <flemming.n.larsen@gmail.com>"
                 )
@@ -281,7 +284,8 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             configureCommonJpackageArgs(
                 installerType = "rpm",
                 appNameLocal = appName,
-                iconPath = iconLinux
+                iconPath = iconLinux,
+                mainClass = (project.extra["jpackageMainClass"] as String)
             )
         }
 
@@ -304,6 +308,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
                 installerType = "dmg",
                 appNameLocal = appName,
                 iconPath = iconMac,
+                mainClass = (project.extra["jpackageMainClass"] as String),
                 extra = listOf(
                     "--mac-package-name", appName,
                     "--mac-package-identifier", "dev.robocode.tankroyale.${project.name}",
@@ -331,6 +336,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
                 installerType = "pkg",
                 appNameLocal = appName,
                 iconPath = iconMac,
+                mainClass = (project.extra["jpackageMainClass"] as String),
                 extra = listOf(
                     "--mac-package-name", appName,
                     "--mac-package-identifier", "dev.robocode.tankroyale.${project.name}"
