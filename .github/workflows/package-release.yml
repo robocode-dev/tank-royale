@@ -83,8 +83,18 @@ jobs:
           ./gradlew --no-daemon --debug -PciVerbose=true :booter:jpackageMac :recorder:jpackageMac
         shell: bash
 
-      - name: Import GPG key
+      - name: Import GPG key (Linux/macOS)
+        if: matrix.os != 'windows-latest'
         run: echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Import GPG key (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          Set-Content -Path gpg-key.asc -Value $env:GPG_PRIVATE_KEY -NoNewline
+          gpg --batch --import gpg-key.asc
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
