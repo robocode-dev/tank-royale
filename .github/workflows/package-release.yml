@@ -145,15 +145,35 @@ jobs:
             build/dist/SHA256SUMS.asc
           if-no-files-found: warn
 
-      - name: Attach installers to GitHub Release (workflow_dispatch only)
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+  upload-to-release:
+    name: Upload installers to GitHub Release
+    needs: build-package
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    steps:
+      - name: Download all installer artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-installers
+
+      - name: List downloaded files (debug)
+        run: |
+          find all-installers
+
+      - name: Upload installers to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ env.VERSION }}
+          tag_name: v${{ github.event.inputs.version || env.VERSION }}
           files: |
-            build/dist/**/*
-            build/ci-gradle.log
-            build/dist/SHA256SUMS
-            build/dist/SHA256SUMS.asc
+            all-installers/**/*.exe
+            all-installers/**/*.msi
+            all-installers/**/*.deb
+            all-installers/**/*.rpm
+            all-installers/**/*.pkg
+            all-installers/**/*.dmg
+            all-installers/**/*.zip
+            all-installers/**/*.tar.gz
+            all-installers/**/SHA256SUMS
+            all-installers/**/SHA256SUMS.asc
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
