@@ -68,9 +68,9 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
     - [X] (user/developer) Decide how to securely store and access certificates/keys for CI/CD.
     - [X] (user/developer) Configure signing in build scripts and GitHub Actions (if required).
 
-9. [ ] **Upload Installers as Artifacts**
-    - [ ] In the GitHub Actions workflow, use `actions/upload-artifact` to upload all generated installers.
-    - [ ] Name artifacts clearly by component and platform for easy retrieval.
+9. [X] **Upload Installers as Artifacts**
+    - [X] In the GitHub Actions workflow, use `actions/upload-artifact` to upload all generated installers.
+    - [X] Name artifacts clearly by component and platform for easy retrieval.
 
 10. [ ] **Test Installers**
     - [ ] Download and install each package on its respective OS.

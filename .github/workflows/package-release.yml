@@ -92,16 +92,16 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: |
           cd build/dist
-          sha256sum * > SHA256SUMS
+          find . -type f -exec sha256sum {} + > SHA256SUMS
 
       - name: Generate SHA256 checksums (Windows)
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
           Set-Location build/dist
-          Get-ChildItem -File | ForEach-Object {
+          Get-ChildItem -Recurse -File | ForEach-Object {
             $hash = Get-FileHash $_.FullName -Algorithm SHA256
-            "$($hash.Hash)  $($_.Name)" | Out-File -Encoding ascii -Append SHA256SUMS
+            "$($hash.Hash)  $($_.FullName.Substring((Get-Location).Path.Length + 1))" | Out-File -Encoding ascii -Append SHA256SUMS
           }
 
       - name: Sign SHA256SUMS
