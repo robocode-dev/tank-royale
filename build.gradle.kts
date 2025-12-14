@@ -208,6 +208,8 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
 
         val appDescription = project.description ?: "Robocode Tank Royale - ${project.name}"
 
+        val isWindows = org.gradle.internal.os.OperatingSystem.current().isWindows
+
         executable = jpackageExecutable
         workingDir = project.projectDir
         args = listOf(
@@ -219,12 +221,15 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             "--main-jar", mainJarFile,
             "--icon", file(iconPath).absolutePath,
             "--dest", jpackageOutputDir.absolutePath,
-            "--license-file", rootProject.file("LICENSE").absolutePath,
+            "--license-file", rootProject.file("LICENSE").absolutePath
+        ) +
+                (if (isWindows) listOf(
             "--description", appDescription,
             "--win-menu",
             "--win-shortcut",
             "--win-menu-group", "Robocode Tank Royale"
-        ) + extra
+                ) else emptyList()) +
+                extra
     }
 
     // Resolve icons from repo gfx assets (actual locations)
