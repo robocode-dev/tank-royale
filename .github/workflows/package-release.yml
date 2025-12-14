@@ -114,12 +114,22 @@ jobs:
             "$($hash.Hash)  $($_.FullName.Substring((Get-Location).Path.Length + 1))" | Out-File -Encoding ascii -Append SHA256SUMS
           }
 
-      - name: Sign SHA256SUMS
+      - name: Sign SHA256SUMS (Linux/macOS)
+        if: matrix.os != 'windows-latest'
         run: |
           cd build/dist
           gpg --batch --yes --pinentry-mode loopback \
               --passphrase "$GPG_PASSPHRASE" \
               --armor --detach-sign SHA256SUMS
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Sign SHA256SUMS (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          Set-Location build/dist
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$env:GPG_PASSPHRASE" --armor --detach-sign SHA256SUMS
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
