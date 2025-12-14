@@ -160,20 +160,25 @@ jobs:
         run: |
           find all-installers
 
+      - name: Deduplicate SHA256SUMS files
+        run: |
+          # Keep only the first found SHA256SUMS and SHA256SUMS.asc
+          find all-installers -name 'SHA256SUMS' | head -n 1 | xargs -I{} cp {} all-installers/SHA256SUMS
+          find all-installers -name 'SHA256SUMS.asc' | head -n 1 | xargs -I{} cp {} all-installers/SHA256SUMS.asc
+          # Remove all other SHA256SUMS and SHA256SUMS.asc
+          find all-installers -name 'SHA256SUMS' ! -path 'all-installers/SHA256SUMS' -delete
+          find all-installers -name 'SHA256SUMS.asc' ! -path 'all-installers/SHA256SUMS.asc' -delete
+
       - name: Upload installers to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.event.inputs.version || env.VERSION }}
           files: |
-            all-installers/**/*.exe
             all-installers/**/*.msi
             all-installers/**/*.deb
             all-installers/**/*.rpm
             all-installers/**/*.pkg
-            all-installers/**/*.dmg
-            all-installers/**/*.zip
-            all-installers/**/*.tar.gz
-            all-installers/**/SHA256SUMS
-            all-installers/**/SHA256SUMS.asc
+            all-installers/SHA256SUMS
+            all-installers/SHA256SUMS.asc
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

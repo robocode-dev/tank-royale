@@ -206,6 +206,8 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
         }
         val effectiveAppVersion = if (isMac) macVersion else appVersionSanitized
 
+        val appDescription = project.description ?: "Robocode Tank Royale - ${project.name}"
+
         executable = jpackageExecutable
         workingDir = project.projectDir
         args = listOf(
@@ -217,7 +219,11 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             "--main-jar", mainJarFile,
             "--icon", file(iconPath).absolutePath,
             "--dest", jpackageOutputDir.absolutePath,
-            "--license-file", rootProject.file("LICENSE").absolutePath
+            "--license-file", rootProject.file("LICENSE").absolutePath,
+            "--description", appDescription,
+            "--win-menu",
+            "--win-shortcut",
+            "--win-menu-group", "Robocode Tank Royale"
         ) + extra
     }
 
