@@ -83,6 +83,36 @@ jobs:
           ./gradlew --no-daemon --debug -PciVerbose=true :booter:jpackageMac :recorder:jpackageMac
         shell: bash
 
+      - name: Import GPG key
+        run: echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Generate SHA256 checksums (Linux/macOS)
+        if: matrix.os != 'windows-latest'
+        run: |
+          cd build/dist
+          sha256sum * > SHA256SUMS
+
+      - name: Generate SHA256 checksums (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          Set-Location build/dist
+          Get-ChildItem -File | ForEach-Object {
+            $hash = Get-FileHash $_.FullName -Algorithm SHA256
+            "$($hash.Hash)  $($_.Name)" | Out-File -Encoding ascii -Append SHA256SUMS
+          }
+
+      - name: Sign SHA256SUMS
+        run: |
+          cd build/dist
+          gpg --batch --yes --pinentry-mode loopback \
+              --passphrase "$GPG_PASSPHRASE" \
+              --armor --detach-sign SHA256SUMS
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
       - name: Upload installers
         if: always()
         uses: actions/upload-artifact@v4
@@ -91,6 +121,8 @@ jobs:
           path: |
             build/dist/**/*
             build/ci-gradle.log
+            build/dist/SHA256SUMS
+            build/dist/SHA256SUMS.asc
           if-no-files-found: warn
 
       - name: Attach installers to GitHub Release (workflow_dispatch only)
@@ -101,5 +133,7 @@ jobs:
           files: |
             build/dist/**/*
             build/ci-gradle.log
+            build/dist/SHA256SUMS
+            build/dist/SHA256SUMS.asc
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

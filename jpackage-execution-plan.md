@@ -60,13 +60,13 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
     - [X] Review and update any release scripts (e.g., in `scripts/` or root) to invoke new jpackage Gradle tasks.
     - [X] Ensure versioning and changelog steps are compatible with new packaging process.
 
-8. [ ] **Signing Installers and Artifacts**
-    - [ ] Clarify signing requirements for Windows, Linux, and macOS installers.
-   - [ ] [ ] (user/developer) Decide if signing is required for each platform (Windows, macOS, Linux).
-   - [ ] [ ] (user/developer) Choose signing method/tool for each platform.
-   - [ ] [ ] (user/developer) Obtain necessary certificates/keys for signing (if required).
-   - [ ] [ ] (user/developer) Decide how to securely store and access certificates/keys for CI/CD.
-   - [ ] [ ] (user/developer) Configure signing in build scripts and GitHub Actions (if required).
+8. [X] **Signing Installers and Artifacts**
+    - [X] Clarify signing requirements for Windows, Linux, and macOS installers.
+    - [X] (user/developer) Decide if signing is required for each platform (Windows, macOS, Linux).
+    - [X] (user/developer) Choose signing method/tool for each platform.
+    - [X] (user/developer) Obtain necessary certificates/keys for signing (if required).
+    - [X] (user/developer) Decide how to securely store and access certificates/keys for CI/CD.
+    - [X] (user/developer) Configure signing in build scripts and GitHub Actions (if required).
 
 9. [ ] **Upload Installers as Artifacts**
     - [ ] In the GitHub Actions workflow, use `actions/upload-artifact` to upload all generated installers.
