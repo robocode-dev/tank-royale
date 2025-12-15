@@ -1,3 +1,8 @@
+<!--
+Developers are strongly encouraged to use the provided [devcontainer](../../.devcontainer) for a pre-configured development environment.
+See [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers) for guidance.
+-->
+
 # Tools used for building Robocode Tank Royale
 
 ## Required build tool
