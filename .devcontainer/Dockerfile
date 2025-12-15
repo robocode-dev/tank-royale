@@ -43,10 +43,18 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python
 
 # Set environment variables
 # Use Java 17 as default (for Gradle 9.x), but Java 11 is available as toolchain
-# Create architecture-independent symlink for JAVA_HOME
-RUN ln -s /usr/lib/jvm/temurin-17-jdk-$(dpkg --print-architecture) /usr/lib/jvm/temurin-17-jdk
+# Create architecture-independent symlink for JAVA_HOME (idempotent)
+RUN target="/usr/lib/jvm/temurin-17-jdk-$(dpkg --print-architecture)" \
+    && if [ ! -d "$target" ]; then echo "Expected JDK not found: $target" >&2; exit 1; fi \
+    && ln -sfn "$target" /usr/lib/jvm/temurin-17-jdk
 ENV JAVA_HOME=/usr/lib/jvm/temurin-17-jdk
 ENV DOTNET_ROOT=/usr/share/dotnet
+
+# Ensure Java 17 is the default 'java' and 'javac' on PATH (deterministic)
+RUN update-alternatives --set java  \
+      /usr/lib/jvm/temurin-17-jdk-$(dpkg --print-architecture)/bin/java \
+    && update-alternatives --set javac \
+      /usr/lib/jvm/temurin-17-jdk-$(dpkg --print-architecture)/bin/javac
 
 # Install DocFX 2.78.4 as a .NET tool
 RUN dotnet tool install -g docfx --version 2.78.4
