@@ -12,6 +12,46 @@ val ossrhUsername: String? by project
 val ossrhPassword: String? by project
 val tankRoyaleGitHubToken: String? by project
 
+// Validate JDK version for building
+val javaVersion = JavaVersion.current()
+val minJdkVersion = JavaVersion.VERSION_17
+val maxJdkVersion = JavaVersion.VERSION_21
+
+if (javaVersion < minJdkVersion) {
+    throw GradleException(
+        """
+        ================================================================================
+        ERROR: JDK version ${javaVersion} is too old for building Robocode Tank Royale.
+        
+        Required: JDK 17-21
+        Current:  JDK ${javaVersion.majorVersion}
+        
+        Please install JDK 17 or 21:
+        - Eclipse Temurin JDK 17: https://adoptium.net/temurin/releases/?version=17
+        - Eclipse Temurin JDK 21: https://adoptium.net/temurin/releases/?version=21
+        
+        Note: End users only need Java 11+ to run Robocode, but developers need
+        JDK 17-21 to build it.
+        ================================================================================
+        """.trimIndent()
+    )
+} else if (javaVersion > maxJdkVersion) {
+    logger.warn(
+        """
+        ================================================================================
+        WARNING: JDK version ${javaVersion} may cause issues with ProGuard.
+        
+        Recommended: JDK 17-21
+        Current:     JDK ${javaVersion.majorVersion}
+        
+        If you encounter build errors, please switch to JDK 17 or 21:
+        - Eclipse Temurin JDK 17: https://adoptium.net/temurin/releases/?version=17
+        - Eclipse Temurin JDK 21: https://adoptium.net/temurin/releases/?version=21
+        ================================================================================
+        """.trimIndent()
+    )
+}
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)

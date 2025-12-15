@@ -28,7 +28,17 @@ Robocode should evolve, but breaking changes must be avoided. Focus on improveme
 
 See the [roadmap] for upcoming ideas and directions.
 
-Note: There’s no timeline or ETA. Robocode is a spare-time project, not a full-time product.
+Note: There's no timeline or ETA. Robocode is a spare-time project, not a full-time product.
+
+## Developer Requirements
+
+Before you start contributing code to Robocode Tank Royale, please note:
+
+- **JDK Version:** You must use **JDK 17-21** to build the project with Gradle. Using JDK 11 (the runtime target) will
+  not work for building. Java 22+ may cause issues with ProGuard.
+- **Build Tools:** See the complete list of required tools in [tools.md](docs-build/docs/dev/tools.md).
+
+End users running Robocode only need Java 11 or newer, but developers building from source have different requirements.
 
 ## How to contribute
 
