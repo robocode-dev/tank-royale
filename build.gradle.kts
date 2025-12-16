@@ -177,8 +177,16 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
         if (candidate.exists()) candidate.absolutePath else "jpackage"
     }
 
+    val jlinkExecutable: String by lazy {
+        val javaHome = System.getenv("JAVA_HOME") ?: System.getProperty("java.home")
+        val bin = if (org.gradle.internal.os.OperatingSystem.current().isWindows) "bin/jlink.exe" else "bin/jlink"
+        val candidate = file("$javaHome/$bin")
+        if (candidate.exists()) candidate.absolutePath else "jlink"
+    }
+
     val jpackageOutputDir = layout.buildDirectory.dir("jpackage").get().asFile
     val installersStageDir = rootProject.layout.buildDirectory.dir("dist/${project.name}").get().asFile
+    val jlinkRuntimeDirWin = rootProject.layout.buildDirectory.dir("jlink/${project.name}-runtime-win").get().asFile
 
     fun Exec.configureCommonJpackageArgs(
         installerType: String,
@@ -242,17 +250,63 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
     val dependsOnProvider = runCatching { tasks.named(dependsOnTaskName) }.getOrNull()
 
     tasks {
+        // Build a trimmed runtime image for Windows to avoid "Failed to launch VM" issues on some machines.
+        // This keeps behavior stable and deterministic by not relying on auto-detected runtimes.
+        register<Exec>("jlinkRuntimeWin") {
+            group = "distribution"
+            description = "Create trimmed runtime image for Windows using jlink"
+            onlyIf { org.gradle.internal.os.OperatingSystem.current().isWindows }
+            // jlink requires that the output directory does NOT already exist.
+            // Ensure a clean state before executing jlink.
+            doFirst {
+                if (jlinkRuntimeDirWin.exists()) {
+                    project.delete(jlinkRuntimeDirWin)
+                }
+            }
+            executable = jlinkExecutable
+            // Module set chosen for Swing/Kotlin desktop apps; extend if logs indicate more are needed
+            // Common extras: java.xml, java.datatransfer, java.prefs, java.net.http, jdk.crypto.ec
+            val modules = listOf(
+                "java.base",
+                "java.desktop",
+                "java.logging",
+                "java.scripting",
+                "java.xml",
+                "java.datatransfer",
+                "java.prefs",
+                "java.net.http",
+                "jdk.crypto.ec"
+            ).joinToString(",")
+            args = listOf(
+                "--add-modules", modules,
+                "--no-header-files",
+                "--no-man-pages",
+                "--strip-debug",
+                "--compress", "2",
+                "--output", jlinkRuntimeDirWin.absolutePath
+            )
+        }
+
         register<Exec>("jpackageWin") {
             group = "distribution"
             description = "Create Windows installer (MSI) using jpackage"
             dependsOnProvider?.let { dependsOn(it) }
+            // Ensure our explicit runtime image exists before packaging to avoid VM launch issues
+            dependsOn("jlinkRuntimeWin")
             onlyIf { org.gradle.internal.os.OperatingSystem.current().isWindows }
             doFirst { jpackageOutputDir.mkdirs() }
+            val winExtra = buildList {
+                // Use the explicit runtime image built by jlink
+                addAll(listOf("--runtime-image", jlinkRuntimeDirWin.absolutePath))
+                // Allow turning on a console for diagnostics with -PwinConsole=true
+                if (project.findProperty("winConsole") == "true") add("--win-console")
+            }
             configureCommonJpackageArgs(
                 installerType = "msi",
                 appNameLocal = appName,
                 iconPath = iconWin,
-                mainClass = (project.extra["jpackageMainClass"] as String)
+                mainClass = (project.extra["jpackageMainClass"] as String),
+                extra = winExtra
             )
         }
 
