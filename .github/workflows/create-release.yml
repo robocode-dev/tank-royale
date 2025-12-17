@@ -1,0 +1,39 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+
+# Needed for creating releases and uploading assets and dispatching packaging workflow
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  create-release:
+    name: Gradle create-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java (Temurin 17)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v2
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Ensure gradlew is executable
+        run: chmod +x gradlew
+
+      - name: Run Gradle create-release (create draft release and trigger packaging)
+        run: |
+          ./gradlew --no-daemon create-release \
+            -PtankRoyaleGitHubToken=${{ secrets.GITHUB_TOKEN }} \
+            -PtriggerPackageReleaseWorkflow=true
