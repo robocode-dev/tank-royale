@@ -1,3 +1,8 @@
+<!--
+Developers are strongly encouraged to use the provided [devcontainer](../../.devcontainer) for a pre-configured development environment.
+See [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers) for guidance.
+-->
+
 # Tools used for building Robocode Tank Royale
 
 ## Required build tool
@@ -24,9 +29,16 @@ all the tools for macOS and Linux as well.
 
 ### Java / JVM platform
 
-- JDK 11 (Java Developer Kit), e.g.
-  [Oracle JDK 11](https://www.oracle.com/uk/java/technologies/javase/jdk11-archive-downloads.html) or
-- [Eclipse Temurin JDK 11](https://adoptium.net/temurin/releases/?version=11)
+**Important:** Developers building Robocode Tank Royale require **JDK 17-21** (not JDK 11).
+
+- **For building Robocode (developers):** JDK 17-21, e.g.
+  - [Eclipse Temurin JDK 17](https://adoptium.net/temurin/releases/?version=17) or
+  - [Eclipse Temurin JDK 21](https://adoptium.net/temurin/releases/?version=21)
+
+- **For running Robocode (end users):** Java 11 or newer
+
+**Note:** Java 22 or newer may cause issues with ProGuard. This will be resolved in the future, but for now, stick to
+JDK 17-21 for building the project.
 
 ### .NET platform
 
