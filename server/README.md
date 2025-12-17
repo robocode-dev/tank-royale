@@ -14,6 +14,10 @@ The server is run using the `java` command from the command line:
 java -jar robocode-tankroyale-server-x.y.z.jar
 ```
 
+## Packaging (jpackage)
+
+See the packaging guide in [./jpackage.md](./jpackage.md).
+
 ## Stopping the server
 
 You can stop the server by writing ´quit´ and press Enter.

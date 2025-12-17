@@ -33,6 +33,10 @@ The booter is run using the `java` command from the command line:
 java -jar robocode-tankroyale-booter-x.y.z.jar
 ```
 
+## Packaging (jpackage)
+
+See the packaging guide in [./jpackage.md](./jpackage.md).
+
 ## Main options
 
 The booter has some options to display help, but also version information:

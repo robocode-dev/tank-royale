@@ -1,0 +1,186 @@
+name: Package Installers (jpackage)
+
+permissions:
+  contents: write
+  actions: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g., 1.2.3)"
+        required: true
+        type: string
+  workflow_run:
+    workflows: [ "Create Release" ]
+    types:
+      - completed
+
+jobs:
+  build-package:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    name: Build installers on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      VERSION: ${{ github.event.inputs.version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK 21 (for jpackage)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Ensure WiX 3.x available (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: powershell
+        run: |
+          $wix = Get-Command candle.exe -ErrorAction SilentlyContinue
+          if ($wix) {
+            Write-Host "WiX already available: $($wix.Path)"
+            candle.exe -? | Select-Object -First 1
+            exit 0
+          } else {
+            choco install wixtoolset -y --no-progress
+          }
+
+      - name: Install Linux packaging prerequisites
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm fakeroot libfuse2
+
+      - name: Verify Java and jpackage
+        run: |
+          java -version
+          jpackage --version
+
+      - name: Build and create installers for this OS (quiet)
+        run: |
+          set -e
+          # Ensure log directory exists
+          mkdir -p build
+          # Run Gradle quietly and capture all output to a log. On failure, print only the tail.
+          ./gradlew --no-daemon --stacktrace --quiet --console=plain -Dorg.gradle.warning.mode=none stageAllInstallers \
+            > build/ci-gradle.log 2>&1 \
+            || (echo "Gradle build failed — showing last 400 lines of log:" && tail -n 400 build/ci-gradle.log && exit 1)
+          echo "Gradle build succeeded. (Logs suppressed; see build/ci-gradle.log in the artifact if needed.)"
+        shell: bash
+
+      - name: Re-run macOS with deep jpackage diagnostics (only on macOS)
+        if: matrix.os == 'macos-latest' && failure()
+        run: |
+          echo "Re-running macOS packaging with --debug to surface jpackage stderr"
+          ./gradlew --no-daemon --debug -PciVerbose=true :booter:jpackageMac :recorder:jpackageMac
+        shell: bash
+
+      - name: Import GPG key (Linux/macOS)
+        if: matrix.os != 'windows-latest'
+        run: echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Import GPG key (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          Set-Content -Path gpg-key.asc -Value $env:GPG_PRIVATE_KEY -NoNewline
+          gpg --batch --import gpg-key.asc
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Generate SHA256 checksums (Linux/macOS)
+        if: matrix.os != 'windows-latest'
+        run: |
+          cd build/dist
+          find . -type f -exec sha256sum {} + > SHA256SUMS
+
+      - name: Generate SHA256 checksums (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          Set-Location build/dist
+          Get-ChildItem -Recurse -File | ForEach-Object {
+            $hash = Get-FileHash $_.FullName -Algorithm SHA256
+            "$($hash.Hash)  $($_.FullName.Substring((Get-Location).Path.Length + 1))" | Out-File -Encoding ascii -Append SHA256SUMS
+          }
+
+      - name: Sign SHA256SUMS (Linux/macOS)
+        if: matrix.os != 'windows-latest'
+        run: |
+          cd build/dist
+          gpg --batch --yes --pinentry-mode loopback \
+              --passphrase "$GPG_PASSPHRASE" \
+              --armor --detach-sign SHA256SUMS
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Sign SHA256SUMS (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          Set-Location build/dist
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$env:GPG_PASSPHRASE" --armor --detach-sign SHA256SUMS
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Upload installers
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: installers-${{ matrix.os }}
+          path: |
+            build/dist/**/*
+            build/ci-gradle.log
+            build/dist/SHA256SUMS
+            build/dist/SHA256SUMS.asc
+          if-no-files-found: warn
+
+  upload-to-release:
+    name: Upload installers to GitHub Release
+    needs: build-package
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    steps:
+      - name: Download all installer artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-installers
+
+      - name: List downloaded files (debug)
+        run: |
+          find all-installers
+
+      - name: Deduplicate SHA256SUMS files
+        run: |
+          # Keep only the first found SHA256SUMS and SHA256SUMS.asc
+          find all-installers -name 'SHA256SUMS' | head -n 1 | xargs -I{} cp {} all-installers/SHA256SUMS
+          find all-installers -name 'SHA256SUMS.asc' | head -n 1 | xargs -I{} cp {} all-installers/SHA256SUMS.asc
+          # Remove all other SHA256SUMS and SHA256SUMS.asc
+          find all-installers -name 'SHA256SUMS' ! -path 'all-installers/SHA256SUMS' -delete
+          find all-installers -name 'SHA256SUMS.asc' ! -path 'all-installers/SHA256SUMS.asc' -delete
+
+      - name: Upload installers to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.event.inputs.version || env.VERSION }}
+          files: |
+            all-installers/**/*.msi
+            all-installers/**/*.deb
+            all-installers/**/*.rpm
+            all-installers/**/*.pkg
+            all-installers/SHA256SUMS
+            all-installers/SHA256SUMS.asc
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

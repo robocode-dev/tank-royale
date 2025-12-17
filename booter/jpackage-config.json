@@ -1,0 +1,16 @@
+{
+  "appName": "Robocode Tank Royale Booter",
+  "vendor": "robocode.dev",
+  "version": "${version}",
+  "description": "Robocode Tank Royale is a programming game where you code autonomous virtual tanks to battle in an arena",
+  "licenseUrl": "https://github.com/robocode-dev/tank-royale/blob/main/LICENSE",
+  "homepage": "https://robocode.dev",
+  "installDirName": "robocode-tank-royale",
+  "mainJar": "build/libs/robocode-tankroyale-booter-${version}.jar",
+  "mainClass": "dev.robocode.tankroyale.booter.MainKt",
+  "icons": {
+    "windows": "../gfx/Tank/Tank.ico",
+    "mac": "../gfx/Tank/Tank.icns",
+    "linux": "../gfx/Tank/Tank.png"
+  }
+}
