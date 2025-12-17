@@ -73,11 +73,15 @@ release scripts, uploading installers as artifacts, and signing/testing requirem
     - [X] Name artifacts clearly by component and platform for easy retrieval.
 
 10. [ ] **Test Installers**
-    - [ ] Download and install each package on its respective OS.
-    - [ ] Launch the application and verify basic functionality (e.g., open GUI, start battle).
+    - Download and install each package on its respective OS to verify installation process.
+    - Launch the application and verify basic functionality (e.g., open GUI, start battle).
+    - GUI:
+        - [X] Windows
+        - [X] Linux
+        - [ ] macOS
 
-11. [ ] **(Optional) Publish Releases Automatically**
-    - [ ] Extend the workflow to create GitHub Releases and attach installers as release assets.
+11. [X] **(Optional) Publish Releases Automatically**
+    - [X] Extend the workflow to create GitHub Releases and attach installers as release assets.
     - [ ] Optionally, trigger this on tag creation or manual dispatch.
 
 ### Further Considerations

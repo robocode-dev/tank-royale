@@ -19,28 +19,38 @@ fun createRelease(projectDir: File, version: String, token: String) {
     val releaseId = JSONObject(release)["id"].toString().toInt()
 
     // GUI
-    uploadAsset(projectDir, releaseId, token, "gui/build/libs/robocode-tankroyale-gui-$version.jar",
-        JAR_MIME_TYPE, "GUI (jar)")
+    uploadAsset(
+        projectDir, releaseId, token, "gui/build/libs/robocode-tankroyale-gui-$version.jar",
+        JAR_MIME_TYPE, "GUI (jar)"
+    )
 
     // Server
-    uploadAsset(projectDir, releaseId, token, "server/build/libs/robocode-tankroyale-server-$version.jar",
-        JAR_MIME_TYPE, "Server (jar)")
+    uploadAsset(
+        projectDir, releaseId, token, "server/build/libs/robocode-tankroyale-server-$version.jar",
+        JAR_MIME_TYPE, "Server (jar)"
+    )
 
 //    // Booter
 //    uploadAsset(projectDir, releaseId, token, "booter/build/libs/robocode-tankroyale-booter-$version.jar",
 //        JAR_MIME_TYPE, "Booter (jar)")
 
     // Sample Bots for Python
-    uploadAsset(projectDir, releaseId, token, "sample-bots/python/build/sample-bots-python-$version.zip",
-        ZIP_MIME_TYPE, "Sample bots for Python (zip)")
+    uploadAsset(
+        projectDir, releaseId, token, "sample-bots/python/build/sample-bots-python-$version.zip",
+        ZIP_MIME_TYPE, "Sample bots for Python (zip)"
+    )
 
     // Sample Bots for C#
-    uploadAsset(projectDir, releaseId, token, "sample-bots/csharp/build/sample-bots-csharp-$version.zip",
-        ZIP_MIME_TYPE, "Sample bots for C# (zip)")
+    uploadAsset(
+        projectDir, releaseId, token, "sample-bots/csharp/build/sample-bots-csharp-$version.zip",
+        ZIP_MIME_TYPE, "Sample bots for C# (zip)"
+    )
 
     // Sample Bots for Java
-    uploadAsset(projectDir, releaseId, token, "sample-bots/java/build/sample-bots-java-$version.zip",
-        ZIP_MIME_TYPE, "Sample bots for Java (zip)")
+    uploadAsset(
+        projectDir, releaseId, token, "sample-bots/java/build/sample-bots-java-$version.zip",
+        ZIP_MIME_TYPE, "Sample bots for Java (zip)"
+    )
 }
 
 /**
@@ -85,11 +95,30 @@ fun dispatchWorkflow(
 }
 
 private fun prepareRelease(projectDir: File, version: String, token: String): String /* JSON result */ {
-
     val releaseNotes = generateReleaseNotes(projectDir, version)
     val quotedReleaseNotes = JSONObject.quote(releaseNotes)
+    val tag = "v$version"
 
-    val body = """{
+    val client = HttpClient.newBuilder().build()
+
+    // Try to fetch existing release by tag
+    val getRequest = HttpRequest.newBuilder()
+        .uri(URI("https://api.github.com/repos/robocode-dev/tank-royale/releases/tags/$tag"))
+        .header("Accept", "application/vnd.github+json")
+        .header("Authorization", "Bearer $token")
+        .GET()
+        .build()
+
+    var response = client.send(getRequest, HttpResponse.BodyHandlers.ofString())
+    println("GET release by tag statusCode: ${response.statusCode()}, body: ${response.body()}")
+
+    if (response.statusCode() == 200) {
+        return response.body()
+    }
+
+    // If not found, create the release with tag v<version>
+    if (response.statusCode() == 404) {
+        val body = """{
         "tag_name": "v$version",
         "target_commitish": "main",
         "name": "$version",
@@ -100,25 +129,30 @@ private fun prepareRelease(projectDir: File, version: String, token: String): St
         "generate_release_notes": false
     }"""
 
-    val request = HttpRequest.newBuilder()
-        .uri(URI("https://api.github.com/repos/robocode-dev/tank-royale/releases"))
-        .header("Accept", "application/vnd.github+json")
-        .header("Authorization", "Bearer $token")
-        .POST(HttpRequest.BodyPublishers.ofString(body))
-        .build()
+        val postRequest = HttpRequest.newBuilder()
+            .uri(URI("https://api.github.com/repos/robocode-dev/tank-royale/releases"))
+            .header("Accept", "application/vnd.github+json")
+            .header("Authorization", "Bearer $token")
+            .POST(HttpRequest.BodyPublishers.ofString(body))
+            .build()
 
-    val response = HttpClient
-        .newBuilder()
-        .build()
-        .send(request, HttpResponse.BodyHandlers.ofString())
+        response = client.send(postRequest, HttpResponse.BodyHandlers.ofString())
+        println("POST create release statusCode: ${response.statusCode()}, body: ${response.body()}")
+        check(response.statusCode() == 201) { "Could not create release" }
+        return response.body()
+    }
 
-    println("statusCode: ${response.statusCode()}, body: ${response.body()}")
-
-    check(response.statusCode() == 201) { "Could not create release" }
-    return response.body()
+    throw IllegalStateException("Failed to query or create release for tag '$tag'. status=${response.statusCode()}, body=${response.body()}")
 }
 
-private fun uploadAsset(projectDir: File, releaseId: Int, token: String, filepath: String, contentType: String, label: String?) {
+private fun uploadAsset(
+    projectDir: File,
+    releaseId: Int,
+    token: String,
+    filepath: String,
+    contentType: String,
+    label: String?
+) {
     val filePath = Path.of("$projectDir/$filepath")
     val name = filePath.fileName.toString()
 

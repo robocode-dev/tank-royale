@@ -3,9 +3,10 @@ name: Create Release
 on:
   workflow_dispatch:
 
-# Needed for creating releases and uploading assets
+# Needed for creating releases and uploading assets and dispatching packaging workflow
 permissions:
   contents: write
+  actions: write
 
 jobs:
   create-release:
@@ -28,5 +29,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Run Gradle create-release
-        run: ./gradlew create-release -PtankRoyaleGitHubToken=${{ github.token }}
+      - name: Ensure gradlew is executable
+        run: chmod +x gradlew
+
+      - name: Run Gradle create-release (create draft release and trigger packaging)
+        run: |
+          ./gradlew --no-daemon create-release \
+            -PtankRoyaleGitHubToken=${{ secrets.GITHUB_TOKEN }} \
+            -PtriggerPackageReleaseWorkflow=true
