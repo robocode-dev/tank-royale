@@ -34,14 +34,19 @@ fun main(args: Array<String>) {
         Flows.all.forEach { flow ->
             val replacement = renderBlock(flow.id, renderer.render(flow))
             val regex = Regex("<!-- BEGIN:${flow.id} -->.*?<!-- END:${flow.id} -->", RegexOption.DOT_MATCHES_ALL)
-            // If there is no marker present at all, that's an error.
+            // If there is no marker present at all, append the block to the end of the README.
+            // This makes the generator robust in CI where the README might be missing the markers
+            // while still keeping existing blocks up-to-date via replacement.
             if (!regex.containsMatchIn(content)) {
-                error("Markers for flow '${flow.id}' were not found in ${readmePath.toAbsolutePath()}")
+                println("Warning: Markers for flow '${flow.id}' were not found in ${readmePath.toAbsolutePath()}; appending block.")
+                // Ensure a newline separation
+                content = content.trimEnd() + "\n\n" + replacement + "\n"
+            } else {
+                // Perform the replacement. It's okay if the replacement results in no change
+                // (the README was already up-to-date).
+                val newContent = regex.replace(content, replacement)
+                content = newContent
             }
-            // Perform the replacement. It's okay if the replacement results in no change
-            // (the README was already up-to-date); we only want to fail when markers are missing.
-            val newContent = regex.replace(content, replacement)
-            content = newContent
         }
 
         Files.writeString(readmePath, content)
