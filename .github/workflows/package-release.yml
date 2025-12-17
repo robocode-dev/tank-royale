@@ -11,12 +11,14 @@ on:
         description: "Release version (e.g., 1.2.3)"
         required: true
         type: string
-  push: {
-    branches: [ jpackage-releases ]
-  }
+  workflow_run:
+    workflows: [ "Create Release" ]
+    types:
+      - completed
 
 jobs:
   build-package:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     name: Build installers on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     env:
