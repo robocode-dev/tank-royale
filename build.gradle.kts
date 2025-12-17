@@ -221,6 +221,15 @@ val generateSchemaDiagrams by tasks.registering(Exec::class) {
     inputs.file("schema/scripts/diagram-gen/build.gradle.kts")
     inputs.file("schema/scripts/diagram-gen/settings.gradle.kts")
     outputs.file(schemaReadmeFile)
+
+    // Don't fail the build if diagram generation fails - it's not critical for releases
+    isIgnoreExitValue = true
+
+    doLast {
+        if (executionResult.get().exitValue != 0) {
+            logger.warn("WARNING: Schema diagram generation failed, but continuing build. Check logs above for details.")
+        }
+    }
 }
 
 tasks {
