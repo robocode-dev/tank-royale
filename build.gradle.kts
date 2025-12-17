@@ -218,20 +218,21 @@ val generateSchemaDiagrams by tasks.registering {
     doLast {
         try {
             val gradlew = if (System.getProperty("os.name").lowercase().contains("win")) "gradlew.bat" else "gradlew"
-            val result = project.exec {
-                workingDir(rootDir)
-                commandLine(
-                    file(gradlew).absolutePath,
-                    "-p", "schema/scripts/diagram-gen",
-                    "-P", "schemaReadmePath=${readmeFile.absolutePath}",
-                    "updateSchemaReadme"
-                )
-                isIgnoreExitValue = true
-            }
-            if (result.exitValue == 0) {
+            val process = ProcessBuilder(
+                file(gradlew).absolutePath,
+                "-p", "schema/scripts/diagram-gen",
+                "-P", "schemaReadmePath=${readmeFile.absolutePath}",
+                "updateSchemaReadme"
+            )
+                .directory(rootDir)
+                .inheritIO()
+                .start()
+
+            val exitCode = process.waitFor()
+            if (exitCode == 0) {
                 logger.lifecycle("Schema diagram generation completed successfully")
             } else {
-                logger.warn("WARNING: Schema diagram generation failed with exit code ${result.exitValue}, but continuing build.")
+                logger.warn("WARNING: Schema diagram generation failed with exit code $exitCode, but continuing build.")
                 logger.warn("This is not critical for releases - diagrams will be updated manually if needed.")
             }
         } catch (e: Exception) {
