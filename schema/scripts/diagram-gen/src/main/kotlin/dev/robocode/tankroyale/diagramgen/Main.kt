@@ -34,10 +34,13 @@ fun main(args: Array<String>) {
         Flows.all.forEach { flow ->
             val replacement = renderBlock(flow.id, renderer.render(flow))
             val regex = Regex("<!-- BEGIN:${flow.id} -->.*?<!-- END:${flow.id} -->", RegexOption.DOT_MATCHES_ALL)
-            val newContent = regex.replace(content, replacement)
-            require(newContent != content) {
-                "Markers for flow '${flow.id}' were not found in ${readmePath.toAbsolutePath()}"
+            // If there is no marker present at all, that's an error.
+            if (!regex.containsMatchIn(content)) {
+                error("Markers for flow '${flow.id}' were not found in ${readmePath.toAbsolutePath()}")
             }
+            // Perform the replacement. It's okay if the replacement results in no change
+            // (the README was already up-to-date); we only want to fail when markers are missing.
+            val newContent = regex.replace(content, replacement)
             content = newContent
         }
 
