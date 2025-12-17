@@ -2,7 +2,6 @@ import build.release.createRelease
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
-import org.gradle.api.tasks.Exec
 
 description = "Robocode: Build the best - destroy the rest!"
 
@@ -206,28 +205,38 @@ subprojects {
 
 val schemaReadmeFile = file("schema/schemas/README.md")
 
-val generateSchemaDiagrams by tasks.registering(Exec::class) {
+val generateSchemaDiagrams by tasks.registering {
     group = "documentation"
-    description = "Regenerates Mermaid diagrams in schema/schemas/README.md"
-    workingDir = rootDir
-    val gradlew = if (System.getProperty("os.name").lowercase().contains("win")) "gradlew.bat" else "gradlew"
-    commandLine(
-        file(gradlew).absolutePath,
-        "-p", "schema/scripts/diagram-gen",
-        "-P", "schemaReadmePath=${schemaReadmeFile.absolutePath}",
-        "updateSchemaReadme"
-    )
+    description = "Regenerates Mermaid diagrams in schema/schemas/README.md (non-critical - won't fail build)"
+
+    val readmeFile = schemaReadmeFile
     inputs.dir("schema/scripts/diagram-gen/src")
     inputs.file("schema/scripts/diagram-gen/build.gradle.kts")
     inputs.file("schema/scripts/diagram-gen/settings.gradle.kts")
-    outputs.file(schemaReadmeFile)
-
-    // Don't fail the build if diagram generation fails - it's not critical for releases
-    isIgnoreExitValue = true
+    outputs.file(readmeFile)
 
     doLast {
-        if (executionResult.get().exitValue != 0) {
-            logger.warn("WARNING: Schema diagram generation failed, but continuing build. Check logs above for details.")
+        try {
+            val gradlew = if (System.getProperty("os.name").lowercase().contains("win")) "gradlew.bat" else "gradlew"
+            val result = project.exec {
+                workingDir(rootDir)
+                commandLine(
+                    file(gradlew).absolutePath,
+                    "-p", "schema/scripts/diagram-gen",
+                    "-P", "schemaReadmePath=${readmeFile.absolutePath}",
+                    "updateSchemaReadme"
+                )
+                isIgnoreExitValue = true
+            }
+            if (result.exitValue == 0) {
+                logger.lifecycle("Schema diagram generation completed successfully")
+            } else {
+                logger.warn("WARNING: Schema diagram generation failed with exit code ${result.exitValue}, but continuing build.")
+                logger.warn("This is not critical for releases - diagrams will be updated manually if needed.")
+            }
+        } catch (e: Exception) {
+            logger.warn("WARNING: Schema diagram generation failed with exception, but continuing build. Error: ${e.message}")
+            logger.warn("This is not critical for releases - diagrams will be updated manually if needed.")
         }
     }
 }
