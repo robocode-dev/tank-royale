@@ -182,7 +182,23 @@ jobs:
       - name: Upload installers to GitHub Release
         run: |
           set -euo pipefail
-          TAG=v${{ github.event.inputs.version || env.VERSION }}
+
+          # Determine version from inputs or detect from latest release
+          VERSION="${{ github.event.inputs.version }}"
+          if [ -z "$VERSION" ]; then
+            echo "No version provided via workflow_dispatch inputs. Attempting to detect from latest release..."
+            VERSION=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/latest" \
+              | jq -r '.tag_name' | sed 's/^v//')
+          fi
+
+          if [ -z "$VERSION" ] || [ "$VERSION" == "null" ]; then
+            echo "ERROR: Could not determine release version"
+            exit 1
+          fi
+
+          TAG="v${VERSION}"
+          echo "Working with release version: $VERSION (tag: $TAG)"
 
           # Import GPG key so we can sign a combined SHA256SUMS for ALL artifacts
           echo "$GPG_PRIVATE_KEY" > /tmp/gpg-key.asc
@@ -201,7 +217,18 @@ jobs:
 
           # Get upload URL for the release
           API_URL="https://api.github.com/repos/${{ github.repository }}/releases/tags/${TAG}"
-          upload_url=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" "$API_URL" | jq -r .upload_url | sed -e 's/{.*//')
+          echo "Fetching release info from: $API_URL"
+          release_response=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" "$API_URL")
+          upload_url=$(echo "$release_response" | jq -r .upload_url | sed -e 's/{.*//')
+
+          if [ -z "$upload_url" ] || [ "$upload_url" == "null" ]; then
+            echo "ERROR: Could not get upload URL for release $TAG"
+            echo "API Response:"
+            echo "$release_response" | jq .
+            exit 1
+          fi
+
+          echo "Upload URL: $upload_url"
 
           # Helper to URI-encode strings (jq required)
           urlencode() { jq -nr --arg v "$1" '$v|@uri'; }
@@ -251,7 +278,7 @@ jobs:
               Robocode.Tank.Royale.GUI-*.pkg)
                 # Ensure package name uses release version rather than packaging internal version
                 # Replace embedded version with release version input if different
-                asset_name="Robocode.Tank.Royale.GUI-${{ github.event.inputs.version || env.VERSION }}.pkg"
+                asset_name="Robocode.Tank.Royale.GUI-${VERSION}.pkg"
                 label="GUI for macOS"
                 ;;
               *GUI*.jar)
@@ -284,3 +311,4 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           shell: bash
+
