@@ -162,6 +162,14 @@ jobs:
         run: |
           find all-installers
 
+      - name: Ensure jq is available (required for URL encoding)
+        run: |
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y jq
+          else
+            echo "jq already installed"
+          fi
+
       - name: Deduplicate SHA256SUMS files
         run: |
           # Keep only the first found SHA256SUMS and SHA256SUMS.asc
@@ -172,15 +180,104 @@ jobs:
           find all-installers -name 'SHA256SUMS.asc' ! -path 'all-installers/SHA256SUMS.asc' -delete
 
       - name: Upload installers to GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ github.event.inputs.version || env.VERSION }}
-          files: |
-            all-installers/**/*.msi
-            all-installers/**/*.deb
-            all-installers/**/*.rpm
-            all-installers/**/*.pkg
-            all-installers/SHA256SUMS
-            all-installers/SHA256SUMS.asc
+        run: |
+          set -euo pipefail
+          TAG=v${{ github.event.inputs.version || env.VERSION }}
+          
+          # Import GPG key so we can sign a combined SHA256SUMS for ALL artifacts
+          echo "$GPG_PRIVATE_KEY" > /tmp/gpg-key.asc
+          gpg --batch --import /tmp/gpg-key.asc
+          
+          # Create combined SHA256SUMS from all downloaded artifacts (exclude existing SHA files)
+          cd all-installers
+          # Find files (exclude any existing SHA files) and produce a checksum list
+          find . -type f ! -name 'SHA256SUMS*' -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
+          
+          # Sign the combined SHA256SUMS
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --detach-sign SHA256SUMS
+          
+          # Get upload URL for the release
+          API_URL="https://api.github.com/repos/${{ github.repository }}/releases/tags/${TAG}"
+          upload_url=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" "$API_URL" | jq -r .upload_url | sed -e 's/{.*//')
+          
+          # Helper to URI-encode strings (jq required)
+          urlencode() { jq -nr --arg v "$1" '$v|@uri'; }
+          
+          # Upload function: uploads a file and sets a user-friendly asset name and label
+          upload_asset() {
+            local file_path="$1"
+            local desired_name="$2"
+            local label="$3"
+            # determine MIME type
+            mime=$(file --brief --mime-type "$file_path" || echo application/octet-stream)
+            enc_label=$(urlencode "$label")
+            # Upload via GitHub uploads API
+            echo "Uploading $file_path as '$desired_name' (label: $label)"
+            curl --fail -sS -X POST \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: $mime" \
+              --data-binary @"$file_path" \
+              "$upload_url?name=$(urlencode "$desired_name")&label=${enc_label}"
+            echo
+          }
+          
+          # Map files to human-friendly labels and corrected asset names
+          while IFS= read -r -d '' f; do
+            rel=${f#./}
+            base=$(basename "$rel")
+          
+            # Default: upload with same name and a generic label
+            asset_name="$base"
+            label="${base}"
+          
+            # Fix common naming issues and set friendly labels
+            case "$base" in
+              robocode-tank-royale-gui-*.rpm)
+                # Convert: name-version-release.arch.rpm -> name-version.arch.rpm (strip release)
+                # Example: robocode-tank-royale-gui-0.34.2-1.x86_64.rpm -> robocode-tank-royale-gui-0.34.2.x86_64.rpm
+                # Use perl with lookahead to only replace the '-<digits>.' that precedes the arch and .rpm
+                asset_name=$(echo "$base" | perl -pe 's/-\d+\.(?=[^.]+\.rpm$)/./')
+                 label="GUI for Linux (Red Hat Package Manager package)"
+                ;;
+              robocode-tank-royale-gui_*.deb)
+                label="GUI for Linux (Debian package)"
+                ;;
+              *.msi)
+                label="GUI for Windows (MSI)"
+                ;;
+              Robocode.Tank.Royale.GUI-*.pkg)
+                # Ensure package name uses release version rather than packaging internal version
+                # Replace embedded version with release version input if different
+                asset_name="Robocode.Tank.Royale.GUI-${{ github.event.inputs.version || env.VERSION }}.pkg"
+                label="GUI for macOS"
+                ;;
+              *GUI*.jar)
+                label="GUI (jar)"
+                ;;
+              *Server*.jar)
+                label="Server (jar)"
+                ;;
+              *)
+                # Detect sample-bots archives by name inspection
+                lower=$(echo "$base" | tr '[:upper:]' '[:lower:]')
+                if [[ "$lower" == *sample* && ( "$lower" == *csharp* || "$lower" == *cs* ) ]]; then
+                  label="Sample bots for C# (zip)"
+                elif [[ "$lower" == *sample* && "$lower" == *java* ]]; then
+                  label="Sample bots for Java (zip)"
+                elif [[ "$lower" == *sample* && ( "$lower" == *python* || "$lower" == *py* ) ]]; then
+                  label="Sample bots for Python (zip)"
+                fi
+                ;;
+            esac
+          
+            upload_asset "$f" "$asset_name" "$label"
+          done < <(find all-installers -type f -print0)
+          
+          # Finally upload the combined checksums and signature
+          upload_asset "all-installers/SHA256SUMS" "SHA256SUMS" "SHA256 checksums"
+          upload_asset "all-installers/SHA256SUMS.asc" "SHA256SUMS.asc" "Signed SHA256 checksums (ASCII-armored)"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          shell: bash
