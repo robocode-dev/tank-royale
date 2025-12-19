@@ -216,18 +216,35 @@ jobs:
           cd ..
 
           # Get upload URL for the release
-          API_URL="https://api.github.com/repos/${{ github.repository }}/releases/tags/${TAG}"
-          echo "Fetching release info from: $API_URL"
-          release_response=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" "$API_URL")
-          upload_url=$(echo "$release_response" | jq -r .upload_url | sed -e 's/{.*//')
+          # Note: We query all releases because draft releases may not be fetchable by tag
+          API_URL="https://api.github.com/repos/${{ github.repository }}/releases"
+          echo "Fetching releases from: $API_URL"
+          echo "Looking for release with tag: $TAG"
 
-          if [ -z "$upload_url" ] || [ "$upload_url" == "null" ]; then
-            echo "ERROR: Could not get upload URL for release $TAG"
-            echo "API Response:"
-            echo "$release_response" | jq .
+          releases_response=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" "$API_URL")
+
+          # Find the release matching our tag (including draft releases)
+          release_info=$(echo "$releases_response" | jq -r ".[] | select(.tag_name == \"$TAG\" or .name == \"$VERSION\")")
+
+          if [ -z "$release_info" ]; then
+            echo "ERROR: Could not find release with tag '$TAG' or name '$VERSION'"
+            echo "Available releases:"
+            echo "$releases_response" | jq -r '.[] | "\(.tag_name) - \(.name) (draft: \(.draft))"' | head -10
             exit 1
           fi
 
+          upload_url=$(echo "$release_info" | jq -r .upload_url | sed -e 's/{.*//')
+          release_id=$(echo "$release_info" | jq -r .id)
+          is_draft=$(echo "$release_info" | jq -r .draft)
+
+          if [ -z "$upload_url" ] || [ "$upload_url" == "null" ]; then
+            echo "ERROR: Could not get upload URL for release"
+            echo "Release info:"
+            echo "$release_info" | jq .
+            exit 1
+          fi
+
+          echo "Found release: ID=$release_id, tag=$TAG, draft=$is_draft"
           echo "Upload URL: $upload_url"
 
           # Helper to URI-encode strings (jq required)
