@@ -183,26 +183,29 @@ jobs:
         run: |
           set -euo pipefail
           TAG=v${{ github.event.inputs.version || env.VERSION }}
-          
+
           # Import GPG key so we can sign a combined SHA256SUMS for ALL artifacts
           echo "$GPG_PRIVATE_KEY" > /tmp/gpg-key.asc
           gpg --batch --import /tmp/gpg-key.asc
-          
+
           # Create combined SHA256SUMS from all downloaded artifacts (exclude existing SHA files)
           cd all-installers
           # Find files (exclude any existing SHA files) and produce a checksum list
           find . -type f ! -name 'SHA256SUMS*' -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
-          
+
           # Sign the combined SHA256SUMS
           gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --detach-sign SHA256SUMS
-          
+
+          # Return to the original directory
+          cd ..
+
           # Get upload URL for the release
           API_URL="https://api.github.com/repos/${{ github.repository }}/releases/tags/${TAG}"
           upload_url=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" "$API_URL" | jq -r .upload_url | sed -e 's/{.*//')
-          
+
           # Helper to URI-encode strings (jq required)
           urlencode() { jq -nr --arg v "$1" '$v|@uri'; }
-          
+
           # Upload function: uploads a file and sets a user-friendly asset name and label
           upload_asset() {
             local file_path="$1"
@@ -220,16 +223,16 @@ jobs:
               "$upload_url?name=$(urlencode "$desired_name")&label=${enc_label}"
             echo
           }
-          
+
           # Map files to human-friendly labels and corrected asset names
           while IFS= read -r -d '' f; do
             rel=${f#./}
             base=$(basename "$rel")
-          
+
             # Default: upload with same name and a generic label
             asset_name="$base"
             label="${base}"
-          
+
             # Fix common naming issues and set friendly labels
             case "$base" in
               robocode-tank-royale-gui-*.rpm)
@@ -269,10 +272,10 @@ jobs:
                 fi
                 ;;
             esac
-          
+
             upload_asset "$f" "$asset_name" "$label"
           done < <(find all-installers -type f -print0)
-          
+
           # Finally upload the combined checksums and signature
           upload_asset "all-installers/SHA256SUMS" "SHA256SUMS" "SHA256 checksums"
           upload_asset "all-installers/SHA256SUMS.asc" "SHA256SUMS.asc" "Signed SHA256 checksums (ASCII-armored)"
