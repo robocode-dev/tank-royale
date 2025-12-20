@@ -25,14 +25,14 @@ if (javaVersion < minJdkVersion) {
         """
         ================================================================================
         ERROR: JDK version ${javaVersion} is too old for building Robocode Tank Royale.
-        
+
         Required: JDK 17-21
         Current:  JDK ${javaVersion.majorVersion}
-        
+
         Please install JDK 17 or 21:
         - Eclipse Temurin JDK 17: https://adoptium.net/temurin/releases/?version=17
         - Eclipse Temurin JDK 21: https://adoptium.net/temurin/releases/?version=21
-        
+
         Note: End users only need Java 11+ to run Robocode, but developers need
         JDK 17-21 to build it.
         ================================================================================
@@ -43,10 +43,10 @@ if (javaVersion < minJdkVersion) {
         """
         ================================================================================
         WARNING: JDK version ${javaVersion} may cause issues with ProGuard.
-        
+
         Recommended: JDK 17-21
         Current:     JDK ${javaVersion.majorVersion}
-        
+
         If you encounter build errors, please switch to JDK 17 or 21:
         - Eclipse Temurin JDK 17: https://adoptium.net/temurin/releases/?version=17
         - Eclipse Temurin JDK 21: https://adoptium.net/temurin/releases/?version=21
@@ -209,7 +209,12 @@ subprojects {
 
 // --- Centralized jpackage convention and task registration ---
 
-fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsOnTaskName: String = "proguard") {
+fun Project.registerJpackageTasks(
+    appName: String,
+    packageName: String,
+    mainJarPath: String,
+    dependsOnTaskName: String = "proguard"
+) {
     val jpackageExecutable: String by lazy {
         val javaHome = System.getenv("JAVA_HOME") ?: System.getProperty("java.home")
         val bin = if (org.gradle.internal.os.OperatingSystem.current().isWindows) "bin/jpackage.exe" else "bin/jpackage"
@@ -230,7 +235,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
 
     fun Exec.configureCommonJpackageArgs(
         installerType: String,
-        appNameLocal: String,
+        packageNameLocal: String,
         iconPath: String,
         mainClass: String,
         extra: List<String> = emptyList()
@@ -262,7 +267,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
         workingDir = project.projectDir
         args = listOf(
             "--type", installerType,
-            "--name", appNameLocal,
+            "--name", packageNameLocal,
             "--app-version", effectiveAppVersion,
             "--vendor", "robocode.dev",
             "--input", inputDir.absolutePath,
@@ -343,7 +348,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             }
             configureCommonJpackageArgs(
                 installerType = "msi",
-                appNameLocal = appName,
+                packageNameLocal = packageName,
                 iconPath = iconWin,
                 mainClass = (project.extra["jpackageMainClass"] as String),
                 extra = winExtra
@@ -359,7 +364,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             doFirst { jpackageOutputDir.mkdirs() }
             configureCommonJpackageArgs(
                 installerType = "deb",
-                appNameLocal = appName,
+                packageNameLocal = packageName,
                 iconPath = iconLinux,
                 mainClass = (project.extra["jpackageMainClass"] as String),
                 extra = listOf(
@@ -377,7 +382,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             doFirst { jpackageOutputDir.mkdirs() }
             configureCommonJpackageArgs(
                 installerType = "rpm",
-                appNameLocal = appName,
+                packageNameLocal = packageName,
                 iconPath = iconLinux,
                 mainClass = (project.extra["jpackageMainClass"] as String)
             )
@@ -400,7 +405,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             // Add macOS-specific flags for better diagnostics and stable naming
             configureCommonJpackageArgs(
                 installerType = "dmg",
-                appNameLocal = appName,
+                packageNameLocal = packageName,
                 iconPath = iconMac,
                 mainClass = (project.extra["jpackageMainClass"] as String),
                 extra = listOf(
@@ -428,7 +433,7 @@ fun Project.registerJpackageTasks(appName: String, mainJarPath: String, dependsO
             doFirst { jpackageOutputDir.mkdirs() }
             configureCommonJpackageArgs(
                 installerType = "pkg",
-                appNameLocal = appName,
+                packageNameLocal = packageName,
                 iconPath = iconMac,
                 mainClass = (project.extra["jpackageMainClass"] as String),
                 extra = listOf(
@@ -464,12 +469,13 @@ subprojects {
         val enabled = extras.has("useJpackage") && (extras["useJpackage"] as? Boolean == true)
         if (enabled) {
             val appName = (extras["jpackageAppName"] as? String) ?: project.name
+            val packageName = (extras["jpackagePackageName"] as? String) ?: appName.lowercase().replace(" ", "-")
             val mainJar = (extras["jpackageMainJar"] as? String)
             val dependsOn = (extras["jpackageDependsOn"] as? String) ?: "proguard"
             if (mainJar == null) {
                 logger.warn("jpackage enabled for ${project.path}, but 'jpackageMainJar' not provided – skipping task registration")
             } else {
-                registerJpackageTasks(appName, mainJar, dependsOn)
+                registerJpackageTasks(appName, packageName, mainJar, dependsOn)
             }
         }
     }

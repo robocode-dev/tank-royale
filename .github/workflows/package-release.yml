@@ -291,19 +291,16 @@ jobs:
                 # Example: robocode-tank-royale-gui-0.34.2-1.x86_64.rpm -> robocode-tank-royale-gui-0.34.2.x86_64.rpm
                 # Use perl with lookahead to only replace the '-<digits>.' that precedes the arch and .rpm
                 asset_name=$(echo "$base" | perl -pe 's/-\d+\.(?=[^.]+\.rpm$)/./')
-                 label="GUI for Linux (Red Hat Package Manager package)"
+                label="GUI for Linux (RPM)"
                 ;;
-              robocode-tank-royale-gui_*.deb)
-                label="GUI for Linux (Debian package)"
+              robocode-tank-royale-gui_*.deb | robocode-tank-royale-gui-*.deb)
+                label="GUI for Linux (DEB)"
                 ;;
-              *.msi)
+              robocode-tank-royale-gui-*.msi)
                 label="GUI for Windows (MSI)"
                 ;;
-              Robocode.Tank.Royale.GUI-*.pkg)
-                # Ensure package name uses release version rather than packaging internal version
-                # Replace embedded version with release version input if different
-                asset_name="Robocode.Tank.Royale.GUI-${VERSION}.pkg"
-                label="GUI for macOS"
+              robocode-tank-royale-gui-*.pkg)
+                label="GUI for macOS (PKG)"
                 ;;
               *GUI*.jar)
                 label="GUI (jar)"

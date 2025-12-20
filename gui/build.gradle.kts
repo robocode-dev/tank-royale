@@ -4,6 +4,7 @@ import proguard.gradle.ProGuardTask
 description = "Robocode Tank Royale GUI"
 
 val archiveTitle = "Robocode Tank Royale GUI"
+val packageName = "robocode-tank-royale-gui" // Used for installer filenames (lowercase with hyphens)
 group = "dev.robocode.tankroyale"
 version = libs.versions.tankroyale.get()
 
@@ -173,6 +174,7 @@ tasks {
     // Opt-in to centralized jpackage tasks (configured in root build.gradle.kts)
     extra["useJpackage"] = true
     extra["jpackageAppName"] = archiveTitle
+    extra["jpackagePackageName"] = packageName // For consistent installer filenames
     extra["jpackageMainJar"] = finalJar
     extra["jpackageMainClass"] = jarManifestMainClass
     extra["jpackageDependsOn"] = "proguard"
