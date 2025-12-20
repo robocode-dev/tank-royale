@@ -468,7 +468,7 @@ jobs:
 
           # Finally upload the combined checksums and signature
           upload_asset "all-installers/SHA256SUMS" "SHA256SUMS" "SHA256 checksums"
-          upload_asset "all-installers/SHA256SUMS.asc" "SHA256SUMS.asc" "Signed SHA256 checksums (ASCII-armored)"
+          upload_asset "all-installers/SHA256SUMS.asc" "SHA256SUMS.asc" "SHA256 checksums (GPG signature)"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
