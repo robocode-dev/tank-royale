@@ -275,6 +275,11 @@ jobs:
             rel=${f#./}
             base=$(basename "$rel")
 
+            # Skip SHA256SUMS files - they will be uploaded explicitly at the end
+            if [[ "$base" == "SHA256SUMS" || "$base" == "SHA256SUMS.asc" ]]; then
+              continue
+            fi
+
             # Default: upload with same name and a generic label
             asset_name="$base"
             label="${base}"
