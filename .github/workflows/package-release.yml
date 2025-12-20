@@ -158,6 +158,55 @@ jobs:
         with:
           path: all-installers
 
+      - name: Download existing release assets (JARs, sample bots, etc.)
+        run: |
+          set -euo pipefail
+
+          # Determine version
+          VERSION="${{ github.event.inputs.version }}"
+          if [ -z "$VERSION" ]; then
+            echo "No version provided, detecting from latest release..."
+            VERSION=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/latest" \
+              | jq -r '.tag_name' | sed 's/^v//')
+          fi
+
+          if [ -z "$VERSION" ] || [ "$VERSION" == "null" ]; then
+            echo "ERROR: Could not determine version"
+            exit 1
+          fi
+
+          TAG="v${VERSION}"
+          echo "Downloading assets for release: $TAG"
+
+          # Get release info (including draft releases)
+          releases=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/releases")
+
+          release_info=$(echo "$releases" | jq -r ".[] | select(.tag_name == \"$TAG\")")
+
+          if [ -z "$release_info" ]; then
+            echo "WARNING: Release $TAG not found or has no assets yet. Skipping asset download."
+            exit 0
+          fi
+
+          # Create directory for release assets
+          mkdir -p all-installers/release-assets
+
+          # Download all non-installer assets (JARs, sample bots)
+          echo "$release_info" | jq -r '.assets[] | select(.name | test("\\.(jar|zip)$")) | .browser_download_url' | while read -r url; do
+            if [ -n "$url" ]; then
+              filename=$(basename "$url" | cut -d'?' -f1)
+              echo "Downloading: $filename"
+              curl -sS -L -H "Authorization: token $GITHUB_TOKEN" -o "all-installers/release-assets/$filename" "$url"
+            fi
+          done
+
+          echo "Downloaded release assets:"
+          ls -lh all-installers/release-assets/ || echo "No assets downloaded"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: List downloaded files (debug)
         run: |
           find all-installers
@@ -252,11 +301,34 @@ jobs:
           # Helper to URI-encode strings (jq required)
           urlencode() { jq -nr --arg v "$1" '$v|@uri'; }
 
+          # Function to delete an existing asset if it exists
+          delete_existing_asset() {
+            local asset_name="$1"
+            # Get list of assets for this release
+            local assets=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/$release_id/assets")
+
+            # Find asset with matching name
+            local asset_id=$(echo "$assets" | jq -r ".[] | select(.name == \"$asset_name\") | .id")
+
+            if [ -n "$asset_id" ] && [ "$asset_id" != "null" ]; then
+              echo "Deleting existing asset: $asset_name (ID: $asset_id)"
+              curl -sS -X DELETE \
+                -H "Authorization: token $GITHUB_TOKEN" \
+                "https://api.github.com/repos/${{ github.repository }}/releases/assets/$asset_id"
+              echo
+            fi
+          }
+
           # Upload function: uploads a file and sets a user-friendly asset name and label
           upload_asset() {
             local file_path="$1"
             local desired_name="$2"
             local label="$3"
+
+            # Delete existing asset if it exists (prevents 422 errors on re-runs)
+            delete_existing_asset "$desired_name"
+
             # determine MIME type
             mime=$(file --brief --mime-type "$file_path" || echo application/octet-stream)
             enc_label=$(urlencode "$label")
