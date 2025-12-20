@@ -170,7 +170,7 @@ jobs:
             echo "jq already installed"
           fi
 
-      - name: Deduplicate SHA256SUMS files
+      - name: Deduplicate SHA256SUMS files and remove build logs
         run: |
           # Keep only the first found SHA256SUMS and SHA256SUMS.asc
           find all-installers -name 'SHA256SUMS' | head -n 1 | xargs -I{} cp {} all-installers/SHA256SUMS
@@ -178,6 +178,8 @@ jobs:
           # Remove all other SHA256SUMS and SHA256SUMS.asc
           find all-installers -name 'SHA256SUMS' ! -path 'all-installers/SHA256SUMS' -delete
           find all-installers -name 'SHA256SUMS.asc' ! -path 'all-installers/SHA256SUMS.asc' -delete
+          # Remove ci-gradle.log files (debug logs not needed in release)
+          find all-installers -name 'ci-gradle.log' -delete
 
       - name: Upload installers to GitHub Release
         run: |
