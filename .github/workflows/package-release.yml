@@ -202,6 +202,21 @@ jobs:
             fi
           done
 
+          # Verify downloaded files are not HTML error pages
+          echo "Verifying downloaded files..."
+          for file in all-installers/release-assets/*; do
+            if [ -f "$file" ]; then
+              # Check if file is HTML (error page) instead of expected binary
+              if file "$file" | grep -qi "HTML"; then
+                echo "ERROR: Downloaded file $(basename "$file") is HTML (likely an error page)"
+                cat "$file"
+                exit 1
+              fi
+              size=$(ls -lh "$file" | awk '{print $5}')
+              echo "✓ $(basename "$file"): $size"
+            fi
+          done
+
           echo "Downloaded release assets:"
           ls -lh all-installers/release-assets/ || echo "No assets downloaded"
         env:
@@ -257,8 +272,14 @@ jobs:
 
           # Create combined SHA256SUMS from all downloaded artifacts (exclude existing SHA files)
           cd all-installers
-          # Find files (exclude any existing SHA files) and produce a checksum list
-          find . -type f ! -name 'SHA256SUMS*' -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
+          # Generate checksums with only filenames (no paths)
+          > SHA256SUMS  # Clear the file
+          find . -type f ! -name 'SHA256SUMS*' ! -name 'ci-gradle.log' -print0 | sort -z | while IFS= read -r -d '' file; do
+            # Calculate checksum and extract just the filename (no path)
+            filename=$(basename "$file")
+            checksum=$(sha256sum "$file" | awk '{print $1}')
+            printf "%s  %s\n" "$checksum" "$filename" >> SHA256SUMS
+          done
 
           # Sign the combined SHA256SUMS
           gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --detach-sign SHA256SUMS
@@ -374,11 +395,11 @@ jobs:
               robocode-tank-royale-gui-*.pkg)
                 label="GUI for macOS (PKG)"
                 ;;
-              *GUI*.jar)
-                label="GUI (jar)"
+              robocode-tankroyale-gui-*.jar)
+                label="GUI (JAR)"
                 ;;
-              *Server*.jar)
-                label="Server (jar)"
+              robocode-tankroyale-server-*.jar)
+                label="Server (JAR)"
                 ;;
               *)
                 # Detect sample-bots archives by name inspection
