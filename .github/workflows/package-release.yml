@@ -190,35 +190,76 @@ jobs:
             exit 0
           fi
 
+          # Show ALL assets in the release for debugging
+          echo "=== ALL Assets in Release $TAG ==="
+          echo "$release_info" | jq -r '.assets[] | "\(.name) (\(.size) bytes)"'
+          echo ""
+
           # Create directory for release assets
           mkdir -p all-installers/release-assets
 
+          # Extract asset information for debugging
+          echo "=== Release Assets Found ==="
+          echo "$release_info" | jq -r '.assets[] | select(.name | test("\\.(jar|zip)$")) | "\(.name) -> \(.browser_download_url)"'
+          echo "=== Starting Downloads ==="
+
           # Download all non-installer assets (JARs, sample bots)
-          echo "$release_info" | jq -r '.assets[] | select(.name | test("\\.(jar|zip)$")) | .browser_download_url' | while read -r url; do
+          # Use process substitution to avoid subshell issues
+          while IFS= read -r url; do
             if [ -n "$url" ]; then
               filename=$(basename "$url" | cut -d'?' -f1)
-              echo "Downloading: $filename"
-              curl -sS -L -H "Authorization: token $GITHUB_TOKEN" -o "all-installers/release-assets/$filename" "$url"
-            fi
-          done
+              echo "Downloading: $filename from $url"
 
-          # Verify downloaded files are not HTML error pages
-          echo "Verifying downloaded files..."
-          for file in all-installers/release-assets/*; do
-            if [ -f "$file" ]; then
-              # Check if file is HTML (error page) instead of expected binary
-              if file "$file" | grep -qi "HTML"; then
-                echo "ERROR: Downloaded file $(basename "$file") is HTML (likely an error page)"
-                cat "$file"
+              # Download with verbose error reporting
+              if ! curl -fSL -H "Authorization: token $GITHUB_TOKEN" \
+                   -o "all-installers/release-assets/$filename" "$url" 2>&1; then
+                echo "ERROR: Failed to download $filename"
                 exit 1
               fi
+
+              # Show what we got
+              downloaded_size=$(stat -c%s "all-installers/release-assets/$filename" 2>/dev/null || stat -f%z "all-installers/release-assets/$filename" 2>/dev/null || echo "unknown")
+              echo "  Downloaded: $downloaded_size bytes"
+            fi
+          done < <(echo "$release_info" | jq -r '.assets[] | select(.name | test("\\.(jar|zip)$")) | .browser_download_url')
+
+          # Verify downloaded files are not HTML error pages
+          echo ""
+          echo "=== Verifying Downloaded Files ==="
+          file_count=0
+          for file in all-installers/release-assets/*; do
+            if [ -f "$file" ]; then
+              file_count=$((file_count + 1))
+              filename=$(basename "$file")
+
+              # Check file type
+              filetype=$(file -b "$file")
+
+              # Check if file is HTML (error page) instead of expected binary
+              if echo "$filetype" | grep -qi "HTML"; then
+                echo "❌ ERROR: $filename is HTML (likely an error page)"
+                echo "File type: $filetype"
+                echo "Content preview:"
+                head -n 20 "$file"
+                exit 1
+              fi
+
+              # Show size and checksum
               size=$(ls -lh "$file" | awk '{print $5}')
-              echo "✓ $(basename "$file"): $size"
+              checksum=$(sha256sum "$file" | awk '{print $1}')
+              echo "✓ $filename"
+              echo "  Size: $size"
+              echo "  Type: $filetype"
+              echo "  SHA256: $checksum"
             fi
           done
 
-          echo "Downloaded release assets:"
-          ls -lh all-installers/release-assets/ || echo "No assets downloaded"
+          if [ $file_count -eq 0 ]; then
+            echo "WARNING: No files were downloaded!"
+          else
+            echo ""
+            echo "Successfully verified $file_count file(s)"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -384,22 +425,22 @@ jobs:
                 # Example: robocode-tank-royale-gui-0.34.2-1.x86_64.rpm -> robocode-tank-royale-gui-0.34.2.x86_64.rpm
                 # Use perl with lookahead to only replace the '-<digits>.' that precedes the arch and .rpm
                 asset_name=$(echo "$base" | perl -pe 's/-\d+\.(?=[^.]+\.rpm$)/./')
-                label="GUI for Linux (RPM)"
+                label="GUI for Linux (rpm)"
                 ;;
               robocode-tank-royale-gui_*.deb | robocode-tank-royale-gui-*.deb)
-                label="GUI for Linux (DEB)"
+                label="GUI for Linux (deb)"
                 ;;
               robocode-tank-royale-gui-*.msi)
-                label="GUI for Windows (MSI)"
+                label="GUI for Windows (msi)"
                 ;;
               robocode-tank-royale-gui-*.pkg)
-                label="GUI for macOS (PKG)"
+                label="GUI for macOS (pkg)"
                 ;;
               robocode-tankroyale-gui-*.jar)
-                label="GUI (JAR)"
+                label="GUI (jar)"
                 ;;
               robocode-tankroyale-server-*.jar)
-                label="Server (JAR)"
+                label="Server (jar)"
                 ;;
               *)
                 # Detect sample-bots archives by name inspection
@@ -425,4 +466,3 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           shell: bash
-
