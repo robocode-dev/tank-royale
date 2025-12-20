@@ -200,28 +200,36 @@ jobs:
 
           # Extract asset information for debugging
           echo "=== Release Assets Found ==="
-          echo "$release_info" | jq -r '.assets[] | select(.name | test("\\.(jar|zip)$")) | "\(.name) -> \(.browser_download_url)"'
+          echo "$release_info" | jq -r '.assets[] | select(.name | test("\\.(jar|zip)$")) | "\(.name) (\(.size) bytes, ID: \(.id))"'
           echo "=== Starting Downloads ==="
 
           # Download all non-installer assets (JARs, sample bots)
-          # Use process substitution to avoid subshell issues
-          while IFS= read -r url; do
-            if [ -n "$url" ]; then
-              filename=$(basename "$url" | cut -d'?' -f1)
-              echo "Downloading: $filename from $url"
+          # Use the asset API URL with Accept header for draft releases
+          while IFS='|' read -r asset_id asset_name asset_size; do
+            if [ -n "$asset_id" ]; then
+              echo "Downloading: $asset_name ($asset_size bytes, ID: $asset_id)"
 
-              # Download with verbose error reporting
-              if ! curl -fSL -H "Authorization: token $GITHUB_TOKEN" \
-                   -o "all-installers/release-assets/$filename" "$url" 2>&1; then
-                echo "ERROR: Failed to download $filename"
+              # Use GitHub API to download asset with proper authentication
+              # This works for both draft and published releases
+              if ! curl -fSL \
+                   -H "Authorization: token $GITHUB_TOKEN" \
+                   -H "Accept: application/octet-stream" \
+                   -o "all-installers/release-assets/$asset_name" \
+                   "https://api.github.com/repos/${{ github.repository }}/releases/assets/$asset_id" 2>&1; then
+                echo "ERROR: Failed to download $asset_name"
                 exit 1
               fi
 
               # Show what we got
-              downloaded_size=$(stat -c%s "all-installers/release-assets/$filename" 2>/dev/null || stat -f%z "all-installers/release-assets/$filename" 2>/dev/null || echo "unknown")
+              downloaded_size=$(stat -c%s "all-installers/release-assets/$asset_name" 2>/dev/null || stat -f%z "all-installers/release-assets/$asset_name" 2>/dev/null || echo "unknown")
               echo "  Downloaded: $downloaded_size bytes"
+
+              # Verify size matches
+              if [ "$downloaded_size" != "$asset_size" ] && [ "$downloaded_size" != "unknown" ]; then
+                echo "  WARNING: Downloaded size ($downloaded_size) doesn't match expected size ($asset_size)"
+              fi
             fi
-          done < <(echo "$release_info" | jq -r '.assets[] | select(.name | test("\\.(jar|zip)$")) | .browser_download_url')
+          done < <(echo "$release_info" | jq -r '.assets[] | select(.name | test("\\.(jar|zip)$")) | "\(.id)|\(.name)|\(.size)"')
 
           # Verify downloaded files are not HTML error pages
           echo ""
