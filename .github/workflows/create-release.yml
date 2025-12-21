@@ -12,6 +12,8 @@ jobs:
   create-release:
     name: Gradle create-release
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,8 +34,22 @@ jobs:
       - name: Ensure gradlew is executable
         run: chmod +x gradlew
 
-      - name: Run Gradle create-release (create draft release and trigger packaging)
+      - name: Get version from Gradle
+        id: get-version
+        run: |
+          VERSION=$(./gradlew -q properties | grep "^version:" | awk '{print $2}')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Release version: $VERSION"
+
+      - name: Run Gradle create-release (create draft release)
         run: |
           ./gradlew --no-daemon create-release \
-            -PtankRoyaleGitHubToken=${{ secrets.GITHUB_TOKEN }} \
-            -PtriggerPackageReleaseWorkflow=true
+            -PtankRoyaleGitHubToken=${{ secrets.GITHUB_TOKEN }}
+
+  package-release:
+    name: Call package-release workflow
+    needs: create-release
+    uses: ./.github/workflows/package-release.yml
+    with:
+      version: ${{ needs.create-release.outputs.version }}
+    secrets: inherit

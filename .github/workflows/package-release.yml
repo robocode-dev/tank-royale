@@ -11,6 +11,12 @@ on:
         description: "Release version (e.g., 1.2.3)"
         required: true
         type: string
+  workflow_call:
+    inputs:
+      version:
+        description: "Release version (e.g., 1.2.3)"
+        required: true
+        type: string
   workflow_run:
     workflows: [ "Create Release" ]
     types:
@@ -22,7 +28,7 @@ jobs:
     name: Build installers on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     env:
-      VERSION: ${{ github.event.inputs.version }}
+      VERSION: ${{ inputs.version || github.event.inputs.version }}
     strategy:
       fail-fast: false
       matrix:
@@ -151,7 +157,7 @@ jobs:
     name: Upload installers to GitHub Release
     needs: build-package
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event_name == 'workflow_run'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'workflow_run'
     steps:
       - name: Download all installer artifacts
         uses: actions/download-artifact@v4
@@ -162,8 +168,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Determine version
-          VERSION="${{ github.event.inputs.version }}"
+          # Determine version (handle both workflow_dispatch and workflow_call)
+          VERSION="${{ inputs.version || github.event.inputs.version }}"
           if [ -z "$VERSION" ]; then
             echo "No version provided, detecting from latest release..."
             VERSION=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
@@ -298,10 +304,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Determine version from inputs or detect from latest release
-          VERSION="${{ github.event.inputs.version }}"
+          # Determine version from inputs or detect from latest release (handle both workflow_dispatch and workflow_call)
+          VERSION="${{ inputs.version || github.event.inputs.version }}"
           if [ -z "$VERSION" ]; then
-            echo "No version provided via workflow_dispatch inputs. Attempting to detect from latest release..."
+            echo "No version provided via inputs. Attempting to detect from latest release..."
             VERSION=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
               "https://api.github.com/repos/${{ github.repository }}/releases/latest" \
               | jq -r '.tag_name' | sed 's/^v//')
