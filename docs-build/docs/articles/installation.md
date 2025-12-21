@@ -95,29 +95,116 @@ the version you want:
 | 🍎 **macOS**   | `robocode-tank-royale-gui-{VERSION}.pkg`                                                         |
 | 🐧 **Linux**   | `robocode-tank-royale-gui-{VERSION}.rpm` (RPM) or `robocode-tank-royale-gui-{VERSION}.deb` (DEB) |
 
+#### Important: Unsigned Installers
+
+> ⚠️ **Security Notice:** The Robocode Tank Royale installers are **not signed** with a code signing certificate. This
+> means your operating system may display security warnings when you try to install or run the application.
+>
+> This is normal for open-source projects, as code signing certificates are expensive and require ongoing maintenance.
+> The installers are safe to use — you can verify the authenticity by checking the GPG-signed SHA256 checksums provided
+> with each release.
+
+**Verifying installer authenticity:**
+
+Each release includes `SHA256SUMS` and `SHA256SUMS.asc` files. You can verify the integrity of downloaded installers:
+
+```bash
+# Download the checksum files
+# Verify the GPG signature (optional, requires the project's public key)
+gpg --verify SHA256SUMS.asc SHA256SUMS
+
+# Verify the installer checksum
+sha256sum -c SHA256SUMS 2>/dev/null | grep robocode-tank-royale-gui
+```
+
+On Windows PowerShell:
+
+```powershell
+# Calculate the hash of your downloaded installer
+Get-FileHash robocode-tank-royale-gui-{VERSION}.msi -Algorithm SHA256
+
+# Compare the output with the value in SHA256SUMS file
+```
+
+---
+
 #### Installation Instructions
 
-**Windows (MSI):**
+##### Windows (MSI)
 
 1. Ensure Java 11+ is installed and `JAVA_HOME` is set
 2. Download the `.msi` file from GitHub Releases
-3. Double-click the `.msi` file, or run from an elevated command prompt:
+3. Double-click the `.msi` file to start the installation
+
+**Handling the Windows SmartScreen warning:**
+
+When you run the installer, Windows may display a **"Windows protected your PC"** SmartScreen warning because the
+installer is not signed with a Microsoft-trusted certificate.
+
+To proceed with the installation:
+
+1. Click **"More info"** on the warning dialog
+2. Click **"Run anyway"** to continue with the installation
+3. If prompted by User Account Control (UAC), click **"Yes"** to allow the installation
+
+Alternatively, you can install from an elevated command prompt:
 
 ```powershell
 msiexec /i robocode-tank-royale-gui-{VERSION}.msi
 ```
 
-**macOS (PKG):**
+---
+
+##### macOS (PKG)
 
 1. Ensure Java 11+ is installed and `JAVA_HOME` is set
 2. Download the `.pkg` file from GitHub Releases
-3. Double-click the `.pkg` to run the macOS Installer, or run from the terminal:
+3. Double-click the `.pkg` to run the macOS Installer
+
+**Handling the macOS Gatekeeper warning:**
+
+macOS Gatekeeper will block the installer because it's from an "unidentified developer" (not signed with an Apple
+Developer certificate).
+
+**Method 1: Using System Settings (Recommended)**
+
+1. Double-click the `.pkg` file — you'll see a warning that it cannot be opened
+2. Open **System Settings** (or System Preferences on older macOS)
+3. Go to **Privacy & Security**
+4. Scroll down to the **Security** section
+5. You should see a message about the blocked installer with an **"Open Anyway"** button
+6. Click **"Open Anyway"** and confirm by clicking **"Open"** in the dialog
+7. Enter your administrator password when prompted
+
+**Method 2: Using Right-Click Context Menu**
+
+1. Right-click (or Control-click) on the `.pkg` file
+2. Select **"Open"** from the context menu
+3. Click **"Open"** in the warning dialog that appears
+4. Enter your administrator password when prompted
+
+**Method 3: Using Terminal**
+
+If the above methods don't work, you can remove the quarantine attribute and install via Terminal:
 
 ```bash
+# Remove the quarantine attribute
+xattr -d com.apple.quarantine robocode-tank-royale-gui-{VERSION}.pkg
+
+# Run the installer
 sudo installer -pkg robocode-tank-royale-gui-{VERSION}.pkg -target /
 ```
 
-**Linux (RPM):**
+Or bypass Gatekeeper temporarily for this specific file:
+
+```bash
+sudo spctl --add robocode-tank-royale-gui-{VERSION}.pkg
+sudo installer -pkg robocode-tank-royale-gui-{VERSION}.pkg -target /
+```
+
+---
+
+##### Linux (RPM)
 
 1. Ensure Java 11+ is installed and `JAVA_HOME` is set
 2. Download the `.rpm` file from GitHub Releases
@@ -127,7 +214,19 @@ sudo installer -pkg robocode-tank-royale-gui-{VERSION}.pkg -target /
 sudo rpm -ivh robocode-tank-royale-gui-{VERSION}.rpm
 ```
 
-**Linux (DEB):**
+Or using DNF (Fedora):
+
+```bash
+sudo dnf install ./robocode-tank-royale-gui-{VERSION}.rpm
+```
+
+> **Note:** Linux packages are typically not code-signed. The package manager may warn about an unsigned package, but
+> this is standard for community-distributed software. You can verify the package integrity using the SHA256 checksums
+> provided with the release.
+
+---
+
+##### Linux (DEB)
 
 1. Ensure Java 11+ is installed and `JAVA_HOME` is set
 2. Download the `.deb` file from GitHub Releases
@@ -136,6 +235,17 @@ sudo rpm -ivh robocode-tank-royale-gui-{VERSION}.rpm
 ```bash
 sudo apt install ./robocode-tank-royale-gui-{VERSION}.deb
 ```
+
+Or using dpkg:
+
+```bash
+sudo dpkg -i robocode-tank-royale-gui-{VERSION}.deb
+# If there are dependency issues:
+sudo apt-get install -f
+```
+
+> **Note:** Like RPM packages, DEB packages from third-party sources are not signed by the distribution. This is normal
+> for open-source software distributed outside official repositories.
 
 #### After Installation
 

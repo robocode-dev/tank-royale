@@ -66,12 +66,67 @@ allowing you to launch it from your application menu or desktop shortcut.
     - **Need help?** Read this article from Baeldung:
       [How to Set JAVA_HOME on Windows, macOS, and Linux](https://www.baeldung.com/java-home-on-windows-mac-os-x-linux)
 
+> ⚠️ **Important: Unsigned Installers**
+>
+> The native installers are **not code-signed** with platform certificates. This is normal for open-source projects.
+> Your operating system may display security warnings when installing — see the instructions below for your platform.
+>
+> You can verify installer authenticity using the [SHA256SUMS] and [SHA256SUMS.asc] files provided with this release.
+
 **Installation Steps:**
 
-1. Download the appropriate installer for your operating system
-2. Run the installer and follow the on-screen instructions
-3. After installation, find **Robocode Tank Royale GUI** in your application menu/launcher
-4. Launch the application and start battling!
+<details>
+<summary>🪟 <b>Windows (MSI)</b></summary>
+
+1. Download the `.msi` file
+2. Double-click to run the installer
+3. **If Windows SmartScreen appears** ("Windows protected your PC"):
+    - Click **"More info"**
+    - Click **"Run anyway"**
+4. If prompted by User Account Control (UAC), click **"Yes"**
+5. Follow the installation wizard
+
+</details>
+
+<details>
+<summary>🍎 <b>macOS (PKG)</b></summary>
+
+1. Download the `.pkg` file
+2. Double-click to run the installer
+3. **If macOS Gatekeeper blocks it** ("cannot be opened because it is from an unidentified developer"):
+    - Open **System Settings** → **Privacy & Security**
+    - Scroll down and click **"Open Anyway"** next to the blocked installer
+    - Or: Right-click the `.pkg` file and select **"Open"**, then click **"Open"** in the dialog
+    - Or: Run in Terminal: `xattr -d com.apple.quarantine robocode-tank-royale-gui-{VERSION}.pkg`
+4. Enter your administrator password when prompted
+5. Follow the installation wizard
+
+</details>
+
+<details>
+<summary>🐧 <b>Linux (RPM/DEB)</b></summary>
+
+**RPM (Fedora/CentOS/RHEL):**
+
+```bash
+sudo dnf install ./robocode-tank-royale-gui-{VERSION}.x86_64.rpm
+# or
+sudo rpm -ivh robocode-tank-royale-gui-{VERSION}.x86_64.rpm
+```
+
+**DEB (Debian/Ubuntu):**
+
+```bash
+sudo apt install ./robocode-tank-royale-gui_{VERSION}_amd64.deb
+# or
+sudo dpkg -i robocode-tank-royale-gui_{VERSION}_amd64.deb
+```
+
+> **Note:** Linux packages may show warnings about being unsigned. This is normal for community-distributed software.
+
+</details>
+
+After installation, find **Robocode Tank Royale GUI** in your application menu/launcher and start battling!
 
 ---
 
@@ -272,3 +327,8 @@ Sounds include gunshots, explosions, collisions, and more!
 [installation guide]: https://robocode-dev.github.io/tank-royale/articles/installation.html "Installing and running Robocode"
 
 [GUI]: https://robocode-dev.github.io/tank-royale/articles/gui.html "The GUI"
+
+[SHA256SUMS]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/SHA256SUMS "SHA256 checksums for verifying installer integrity"
+
+[SHA256SUMS.asc]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/SHA256SUMS.asc "GPG signature for SHA256SUMS"
+
