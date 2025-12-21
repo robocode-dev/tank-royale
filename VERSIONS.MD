@@ -15,6 +15,11 @@
 - Bot API for C#/.NET:
     - Updated to the newest dependencies.
 
+- GUI:
+    - Added native installer packages for the GUI (Windows MSI, macOS PKG, Linux RPM and DEB).
+        - Note: Java 11+ is required and the runtime must be discoverable via the `JAVA_HOME` environment variable. See
+          the installation documentation for platform-specific instructions.
+
 ## 📦 0.34.1 - Fixes on_death in Python Bot API and GUI improvements – 14-Nov-2025
 
 ### 🚀 Improvements
@@ -33,8 +38,8 @@
 
 ## 📦 0.34.0 – Python Support + GUI Improvements – 19-Oct-2025
 
-The Python Bot API, sample bots, and documentation are now complete. 🎉  
-We also added Spanish, Catalan/Valencian, and Danish translations. New translations are always welcome!  
+The Python Bot API, sample bots, and documentation are now complete. 🎉
+We also added Spanish, Catalan/Valencian, and Danish translations. New translations are always welcome!
 Additionally, we introduced UI improvements such as UI scaling and a volume slider in the options.
 
 ### 🚀 Improvements
@@ -1006,7 +1011,7 @@ Bot info:
 
 ## 📦 0.13.3 - Stabilization of Bot APIs - 01-Jun-2022
 
-### 🐞 Bug Fixes
+### 🐞 Bug Fixs
 
 - Bot API:
     - Fix for running bots under macOS/bash when bot directory contains whitespaces ([#20]).
@@ -1209,4 +1214,4 @@ Bot info:
 
 [Socket Activation]: https://insanity.industries/post/socket-activation-all-the-things/ "Socket Activation"
 
-[JSVG]: https://github.com/weisJ/jsvg "JSVG library on GitHub" 
+[JSVG]: https://github.com/weisJ/jsvg "JSVG library on GitHub"
