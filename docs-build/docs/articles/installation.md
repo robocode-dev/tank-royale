@@ -2,103 +2,287 @@
 
 ## Introduction
 
-This guide describes how to install and run Robocode Tank Royale.
+This guide provides detailed instructions on how to install and run Robocode Tank Royale. Whether you're new to Robocode
+or setting up a new installation, this guide will walk you through the entire process.
 
-## Java 11 or newer
+**Quick overview:**
 
-Robocode is running on a Java Runtime Environment (JRE) and needs Java 11 as a minimum. If you want to develop bots for
-Robocode in the Java programming language, then you need a JDK (Java Development Kit).
+1. Install Java 11 or newer
+2. Choose your installation method (Native installer or JAR file)
+3. Download and set up sample bots
+4. Configure bot directories and start battling!
 
-> Note that you do not need to run version 11 of Java specifically to run the GUI, booter, server, or your
-> Java/JVM-based bot. I encourage you to run the newest Java version. But you cannot use Java versions older than
-> version 11.
+## Requirements
 
-Numerous Java distributions are available. [whichjdk.com](https://whichjdk.com/) is a good resource for finding the
-best Java distribution for you.
+### Java 11 or newer
 
-If you do not have java installed already (can be checked writing the command below), you should download and install
-Java first. Follow the installation instructions carefully, and make sure that you are able to run `java` from the
-command line by writing:
+Robocode Tank Royale runs on the Java Runtime Environment (JRE) and requires **Java 11 as a minimum**. We recommend
+using the latest Java version for best performance and security.
+
+**What you need:**
+
+- **Java Runtime Environment (JRE)** – Required to run Robocode GUI (including the server, booter, and recorder)
+- **Java Development Kit (JDK)** – Required if you want to develop bots in the Java programming language
+
+> **Note:** You don't need to run Java 11 specifically. Any version 11 or newer will work, including the latest Java
+> releases. We encourage you to use the newest Java version available.
+
+**Where to get Java:**
+
+- **Oracle JDK:** [Oracle Java Downloads](https://www.oracle.com/java/technologies/downloads/)
+- **OpenJDK:** [Adoptium Eclipse Temurin](https://adoptium.net/) (recommended free distribution)
+- **Need help choosing?** Visit [whichjdk.com](https://whichjdk.com/) for guidance on selecting the best Java
+  distribution
+
+### Verifying Java installation
+
+To check if Java is already installed on your system, open a terminal (or command prompt) and run:
 
 ```shell
 java -version
 ```
 
-This is a check that Java has been installed correctly and is available. Entering `java -version` should write the
-version of the Java that is being used along with the vendor of the java distribution.
-
-## Running the Robocode GUI
-
-Robocode has a GUI that can be used for running and viewing battles on your local machine. You should use
-this application for observing how your bot(s) perform in the battle arena against other bots.
-
-You can download the application from the [Robocode releases].
-
-You need the file named `robocode-tankroyale-gui-x.y.z.jar`, where x.y.z is the specific version number of Robocode,
-e.g.
-version 0.14.1.
-
-You might be able to simply start the application by (double)clicking it, depending on the OS and Java version you have.
-If you cannot start the Robocode application by clicking it, you should start it from the command line like this. You
-need to stand in the directory containing the .jar file of course.
+This command should display the Java version and vendor information, confirming that Java is installed correctly and
+available from the command line. For example:
 
 ```
+openjdk version "21.0.1" 2023-10-17 LTS
+OpenJDK Runtime Environment Temurin-21.0.1+12 (build 21.0.1+12-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.1+12 (build 21.0.1+12-LTS, mixed mode, sharing)
+```
+
+If the command is not recognized, you need to install Java first and ensure it's added to your system PATH.
+
+---
+
+## Installing Robocode
+
+### Choose Your Installation Method
+
+You have two options to install and run the Robocode GUI:
+
+1. **Native Installers (Recommended)** – Installs as a native application with desktop shortcuts
+2. **Portable JAR File** – Run directly from the command line without installation
+
+Both options require Java 11 or newer.
+
+---
+
+### Option 1: Installing with Native Installers (Recommended)
+
+Native installers provide the easiest installation experience. The GUI will be registered with your operating system,
+allowing you to launch it from your application menu or desktop shortcut.
+
+We provide native installer packages for the GUI application that are produced by CI and attached to the
+project's [GitHub Releases](https://github.com/robocode-dev/tank-royale/releases). These installers are recommended for
+most end-users as they install the GUI in platform-native locations and register file associations where appropriate.
+
+**System Requirements:**
+
+- Java 11 or newer must be installed
+- The `JAVA_HOME` environment variable must be set to your Java installation directory
+    - **Need help?** Read this article from
+      Baeldung: [How to Set JAVA_HOME on Windows, macOS, and Linux](https://www.baeldung.com/java-home-on-windows-mac-os-x-linux)
+
+**Where to get the installers:**
+
+Download the appropriate installer from the [GitHub Releases](https://github.com/robocode-dev/tank-royale/releases) for
+the version you want:
+
+| Platform       | Installer File                                                                                   |
+|----------------|--------------------------------------------------------------------------------------------------|
+| 🪟 **Windows** | `robocode-tank-royale-gui-{VERSION}.msi`                                                         |
+| 🍎 **macOS**   | `robocode-tank-royale-gui-{VERSION}.pkg`                                                         |
+| 🐧 **Linux**   | `robocode-tank-royale-gui-{VERSION}.rpm` (RPM) or `robocode-tank-royale-gui-{VERSION}.deb` (DEB) |
+
+#### Installation Instructions
+
+**Windows (MSI):**
+
+1. Ensure Java 11+ is installed and `JAVA_HOME` is set
+2. Download the `.msi` file from GitHub Releases
+3. Double-click the `.msi` file, or run from an elevated command prompt:
+
+```powershell
+msiexec /i robocode-tank-royale-gui-{VERSION}.msi
+```
+
+**macOS (PKG):**
+
+1. Ensure Java 11+ is installed and `JAVA_HOME` is set
+2. Download the `.pkg` file from GitHub Releases
+3. Double-click the `.pkg` to run the macOS Installer, or run from the terminal:
+
+```bash
+sudo installer -pkg robocode-tank-royale-gui-{VERSION}.pkg -target /
+```
+
+**Linux (RPM):**
+
+1. Ensure Java 11+ is installed and `JAVA_HOME` is set
+2. Download the `.rpm` file from GitHub Releases
+3. Install the RPM (example for Fedora/CentOS/RHEL):
+
+```bash
+sudo rpm -ivh robocode-tank-royale-gui-{VERSION}.rpm
+```
+
+**Linux (DEB):**
+
+1. Ensure Java 11+ is installed and `JAVA_HOME` is set
+2. Download the `.deb` file from GitHub Releases
+3. Install the DEB (example for Debian/Ubuntu):
+
+```bash
+sudo apt install ./robocode-tank-royale-gui-{VERSION}.deb
+```
+
+#### After Installation
+
+- The GUI should be available in your system's application menu or launcher
+- Find and launch **Robocode Tank Royale GUI** to start the application
+- If the application fails to start, verify that:
+    - Java 11+ is installed (`java -version`)
+    - `JAVA_HOME` environment variable points to your Java installation
+
+---
+
+### Option 2: Running the Robocode GUI (Portable JAR File)
+
+For users who prefer a portable installation or want more control, you can download the GUI as a standalone JAR file.
+
+**System Requirements:**
+
+- Java 11 or newer must be installed and available on your system `PATH`
+
+**Where to get the JAR file:**
+
+You can download the application from the [Robocode releases](https://github.com/robocode-dev/tank-royale/releases).
+
+Download the file named `robocode-tankroyale-gui-x.y.z.jar`, where `x.y.z` is the specific version number of Robocode (
+e.g., version 0.34.2).
+
+**Running the GUI:**
+
+You might be able to simply start the application by (double)clicking it, depending on your OS and Java version. If you
+cannot start the Robocode application by clicking it, you should start it from the command line.
+
+Open a terminal (or command prompt on Windows), navigate to the directory containing the JAR file, and run:
+
+```bash
 java -jar robocode-tankroyale-gui-x.y.z.jar
 ```
 
-I recommend that you create a directory for Tank Royale, and create a script file for starting up the GUI using the
-command line above.
+**💡 Pro Tips for Better Organization:**
 
-The GUI will automatically create and store `.properties` files beside your
-`robocode-tankroyale-gui-x.y.z.jar` file when running the application.
+Create a dedicated directory for Tank Royale (e.g., `C:\Robocode` or `~/Robocode`) and place the JAR file there. Then
+create a launcher script for easy access:
 
-## Sample bots
+**Windows** (`run-robocode.bat`):
 
-Next, you'll need to provide some bots for the game in order to start up bots that can battle against each other. For
-this purpose, the sample bots provided for Robocode come in handy. So you could download a zip archive from the
-[Robocode releases], e.g. sample bots for Java that will run when Java has already been installed on your system.
+```batch
+@echo off
+java -jar robocode-tankroyale-gui-x.y.z.jar
+```
 
-So download and extract the `sample-bots-java-x.y.z.zip` archive to a directory somewhere, and note the file path of the
-directory where all the sample bot directories are located.
+**Linux/macOS** (`run-robocode.sh`):
 
-## Set up bot directories
+```bash
+#!/bin/sh
+java -jar robocode-tankroyale-gui-x.y.z.jar
+```
 
-Next, you should start up the Robocode application and select Config -> Bot Root Directories from the menu, and then add
-the directory to where you installed the sample bots.
+Make the script executable on Linux/macOS:
 
-The sample bots should show up under the Bot Directories when selecting Battle -> Start Battle from the menu. If not,
-you might have a misconfiguration with the root bot directory.
+```bash
+chmod +x run-robocode.sh
+```
 
-[Robocode releases]: https://github.com/robocode-dev/tank-royale/releases "Robocode releases"
+**Why use a dedicated directory?**
 
-## Installing sound files
+- The GUI automatically creates and stores `.properties` configuration files in the same directory as the JAR file
+- Makes it easy to manage settings, logs, and optional resources (like the `sounds/` folder)
+- Keeps your system organized with all Robocode files in one place
 
-Note: Installing the sound files is optional, but are provided if you want to add sounds to the game. 🙂
+---
 
-You download the `sounds.zip` archive from the [sounds releases](https://github.com/robocode-dev/sounds/releases),
-e.g. [sounds.zip 1.0.0](https://github.com/robocode-dev/sounds/releases/download/v1.0.0/sounds.zip).
+## Sample Bots
 
-Unpack the `sounds` directory from the zip archive, and copy the `sounds` directory into the directory containing
-your `robocode-tankroyale-gui-x.y.z.jar` file so that the `sounds` directory is located next to
-the jar file for the GUI like this:
+To start battling immediately, download pre-built sample bots. These bots demonstrate different strategies and
+programming styles, and are perfect for learning how the game works.
+
+**How to install sample bots:**
+
+1. Download the sample bots archive for your preferred language(s) from
+   the [Robocode releases](https://github.com/robocode-dev/tank-royale/releases)
+2. Extract the archive to a directory on your system (e.g., `C:\Robocode\bots\java` or `~/robocode/bots/java`)
+3. Note the file path of the directory where all the sample bot directories are located
+4. In the GUI, go to **Config → Bot Root Directories** and add the extracted directory
+5. The bots will now appear in your bot list!
+
+**Available sample bots:**
+
+| Language      | Archive File                   | Requirements         |
+|---------------|--------------------------------|----------------------|
+| 🐍 **Python** | `sample-bots-python-x.y.z.zip` | Python 3.10 or newer |
+| 🔷 **C#**     | `sample-bots-csharp-x.y.z.zip` | .NET SDK 8 or newer  |
+| ☕ **Java**    | `sample-bots-java-x.y.z.zip`   | Java SDK 11 or newer |
+
+📝 Each archive contains a `README.md` file with platform-specific instructions.
+
+**Troubleshooting:**
+
+The sample bots should show up under the Bot Directories when selecting **Battle → Start Battle** from the menu. If they
+don't appear, you might have a misconfiguration with the root bot directory. Make sure you've added the correct parent
+directory containing all the bot subdirectories.
+
+---
+
+## Installing Sound Files
+
+> **Note:** Installing sound files is optional, but highly recommended if you want to enhance your gaming experience
+> with audio effects! 🔊
+
+Sound files for Robocode are provided separately and can add exciting audio feedback to battles, including gunshots,
+explosions, and collisions.
+
+**Download:**
+
+Download the `sounds.zip` archive from the [sounds releases](https://github.com/robocode-dev/sounds/releases), for
+example: [sounds.zip 1.0.0](https://github.com/robocode-dev/sounds/releases/download/v1.0.0/sounds.zip).
+
+**Installation Instructions:**
+
+1. Unpack the `sounds` directory from the zip archive
+2. Copy the `sounds` directory into the directory containing your `robocode-tankroyale-gui-x.y.z.jar` file
+3. The directory structure should look like this:
 
 ```
 [your tank royale directory]
 ├── robocode-tankroyale-gui-x.y.z.jar
-└── sounds/  <-- this directory
+└── sounds/  <-- place the sounds directory here
     ├── bots_collision.wav
     ├── bullet_hit.wav
-    ...
-    └── wall_collision.wav    
+    ├── bullets_collision.wav
+    ├── death.wav
+    ├── gunshot.wav
+    ├── wall_collision.wav
+    └── ...
 ```
 
-The sounds are automatically enabled, and you can enable/disable all sounds and the individual sound from the Sound
-Options in the GUI.
+**After Installation:**
 
-### Using your own sound files
+- Sounds are automatically enabled when the `sounds/` directory is detected
+- You can enable/disable all sounds or individual sound effects from the **Sound Options** in the GUI menu
+- The GUI will automatically detect and use the sound files
 
-If you want you replace one or more sounds, you can do this by simple overwriting the sound files with other [WAV] files
-as long as you stick to the existing file names. Also note that only [WAV] files are supported.
+### Using Your Own Sound Files
 
+You can customize the audio experience by replacing one or more sounds with your own audio files:
+
+- Replace any sound file in the `sounds/` directory with your own [WAV] file
+- Keep the original filenames (e.g., `gunshot.wav`, `bullet_hit.wav`)
+- Only [WAV] format files are supported
+- Make sure your custom files are in the correct WAV format for best compatibility
 
 [WAV]: https://en.wikipedia.org/wiki/WAV "WAV file"
