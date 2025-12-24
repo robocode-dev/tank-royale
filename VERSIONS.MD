@@ -1,5 +1,12 @@
 ## 📦 0.34.2
 
+Native installer packages for the GUI have been added for Windows, Linux, and macOS. These packages might still be early
+days. If you find any issues, please report them on the
+[issue tracker](https://github.com/robocode-dev/tank-royale/issues).
+These packages still require Java 11 or higher to be installed on your system, but they make it easier to install,
+uninstall, and run Robocode Tank Royale.
+You can still download the JAR version as usual, which works on all platforms with Java 11 or higher installed.
+
 ### 🔧 Changes
 
 - Replaced Picocli for Clikt for the server, booter, and recorder.
@@ -16,7 +23,7 @@
     - Updated to the newest dependencies.
 
 - GUI:
-    - Added native installer packages for the GUI (Windows MSI, macOS PKG, Linux RPM and DEB).
+    - Added native installer packages for the GUI (Windows MSI, macOS PKG, Linux RPM, and DEB).
         - Note: Java 11+ is required and the runtime must be discoverable via the `JAVA_HOME` environment variable. See
           the installation documentation for platform-specific instructions.
 
@@ -26,7 +33,7 @@
 
 - GUI
     - #174: Prevent overwriting UI scale property (`sun.java2d.uiScale`) for high DPI displays if already set (via
-      command line). Thanks goes to [David Martinez Peña](https://github.com/martinezpenya) 👍
+      command line). Thanks go to [David Martinez Peña](https://github.com/martinezpenya) 👍
         - Fixed for the `sun.java2d.d3d` and `sun.java2d.opengl` as well.
 
 - Updated the devcontainer so it uses the current and full tech stack necessary to build all of Robocode Tank Royale.
