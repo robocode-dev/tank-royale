@@ -1,4 +1,4 @@
-## 📦 0.34.2
+## 📦 0.34.2 - Added native installer packages for GUI – 25-Dec-2025
 
 Native installer packages for the GUI have been added for Windows, Linux, and macOS. These packages might still be early
 days. If you find any issues, please report them on the
