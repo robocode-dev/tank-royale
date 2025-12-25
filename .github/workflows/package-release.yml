@@ -91,6 +91,77 @@ jobs:
           ./gradlew --no-daemon --debug -PciVerbose=true :booter:jpackageMac :recorder:jpackageMac
         shell: bash
 
+      - name: Rename macOS .pkg files to match release version
+        if: matrix.os == 'macos-latest'
+        run: |
+          set -e
+          echo "=== Renaming macOS .pkg files ==="
+
+          # Use the version from workflow input or gradle.properties
+          VERSION="${{ inputs.version || github.event.inputs.version }}"
+          if [ -z "$VERSION" ]; then
+            echo "No version from workflow input, reading from gradle.properties"
+            VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2 | tr -d '\r')
+          fi
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: Could not determine version for renaming!"
+            exit 1
+          fi
+          echo "Target version: $VERSION"
+          echo ""
+
+          # Check if build/dist exists
+          if [ ! -d "build/dist" ]; then
+            echo "ERROR: build/dist directory does not exist!"
+            echo "Listing contents of build:"
+            ls -la build/ || echo "build/ does not exist"
+            exit 1
+          fi
+
+          echo "=== Contents of build/dist before renaming: ==="
+          find build/dist -type f -name '*.pkg' -exec ls -lh {} \; || echo "No .pkg files found"
+          echo ""
+
+          # Find all .pkg files and rename them (using array to avoid subshell issues)
+          FOUND_FILES=0
+          RENAMED_FILES=0
+          while IFS= read -r -d '' PKG_ORIG; do
+            FOUND_FILES=$((FOUND_FILES + 1))
+            BASENAME=$(basename "$PKG_ORIG")
+            echo "Found .pkg file: $PKG_ORIG"
+
+            # Check if filename contains version pattern like 1.34.3
+            if [[ "$BASENAME" =~ -1\.[0-9]+\.[0-9]+\.pkg$ ]]; then
+              # Replace 1.x.y with the target version
+              PKG_NEW=$(echo "$PKG_ORIG" | sed "s/-1\.\([0-9]\+\)\.\([0-9]\+\)\.pkg$/-${VERSION}.pkg/")
+              echo "  Pattern matched! Renaming to: $PKG_NEW"
+
+              if mv "$PKG_ORIG" "$PKG_NEW"; then
+                echo "  ✓ Successfully renamed"
+                RENAMED_FILES=$((RENAMED_FILES + 1))
+              else
+                echo "  ✗ Failed to rename!"
+                exit 1
+              fi
+            else
+              echo "  Skipping (no version 1.x.y pattern found in: $BASENAME)"
+            fi
+            echo ""
+          done < <(find build/dist -type f -name '*.pkg' -print0)
+
+          echo "=== Summary ==="
+          echo "Files found: $FOUND_FILES"
+          echo "Files renamed: $RENAMED_FILES"
+          echo ""
+
+          if [ $FOUND_FILES -eq 0 ]; then
+            echo "WARNING: No .pkg files found in build/dist!"
+          fi
+
+          echo "=== Final .pkg files in build/dist: ==="
+          find build/dist -type f -name '*.pkg' -exec ls -lh {} \; || echo "No .pkg files found"
+        shell: bash
+
       - name: Import GPG key (Linux/macOS)
         if: matrix.os != 'windows-latest'
         run: echo "$GPG_PRIVATE_KEY" | gpg --batch --import
@@ -328,11 +399,20 @@ jobs:
           # Create combined SHA256SUMS from all downloaded artifacts (exclude existing SHA files)
           cd all-installers
           # Generate checksums with only filenames (no paths)
+          # Note: For .pkg files, we fix the version in the filename (1.x.y -> actual VERSION)
           > SHA256SUMS  # Clear the file
           find . -type f ! -name 'SHA256SUMS*' ! -name 'ci-gradle.log' -print0 | sort -z | while IFS= read -r -d '' file; do
             # Calculate checksum and extract just the filename (no path)
             filename=$(basename "$file")
             checksum=$(sha256sum "$file" | awk '{print $1}')
+
+            # Fix .pkg filename in checksum (macOS jpackage uses 1.x.y, we want actual VERSION)
+            if [[ "$filename" =~ -1\.[0-9]+\.[0-9]+\.pkg$ ]]; then
+              fixed_filename=$(echo "$filename" | sed "s/-1\.\([0-9]\+\)\.\([0-9]\+\)\.pkg$/-${VERSION}.pkg/")
+              echo "  Fixing .pkg checksum filename: $filename -> $fixed_filename"
+              filename="$fixed_filename"
+            fi
+
             printf "%s  %s\n" "$checksum" "$filename" >> SHA256SUMS
           done
 
@@ -350,19 +430,19 @@ jobs:
 
           releases_response=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" "$API_URL")
 
-          # Find the release matching our tag (including draft releases)
-          release_info=$(echo "$releases_response" | jq -r ".[] | select(.tag_name == \"$TAG\" or .name == \"$VERSION\")")
+          # Find the release matching our tag (including draft releases) - get only the first match
+          release_info=$(echo "$releases_response" | jq -c ".[] | select(.tag_name == \"$TAG\")" | head -n 1)
 
           if [ -z "$release_info" ]; then
-            echo "ERROR: Could not find release with tag '$TAG' or name '$VERSION'"
+            echo "ERROR: Could not find release with tag '$TAG'"
             echo "Available releases:"
             echo "$releases_response" | jq -r '.[] | "\(.tag_name) - \(.name) (draft: \(.draft))"' | head -10
             exit 1
           fi
 
-          upload_url=$(echo "$release_info" | jq -r .upload_url | sed -e 's/{.*//')
-          release_id=$(echo "$release_info" | jq -r .id)
-          is_draft=$(echo "$release_info" | jq -r .draft)
+          upload_url=$(echo "$release_info" | jq -r '.upload_url' | sed -e 's/{.*//')
+          release_id=$(echo "$release_info" | jq -r '.id')
+          is_draft=$(echo "$release_info" | jq -r '.draft')
 
           if [ -z "$upload_url" ] || [ "$upload_url" == "null" ]; then
             echo "ERROR: Could not get upload URL for release"
@@ -448,6 +528,12 @@ jobs:
                 label="GUI for Windows (msi)"
                 ;;
               robocode-tank-royale-gui-*.pkg)
+                # Fix macOS .pkg version: jpackage uses 1.x.y due to Apple requirements,
+                # but we want the filename to show the actual version (0.x.y)
+                if [[ "$base" =~ -1\.[0-9]+\.[0-9]+\.pkg$ ]]; then
+                  asset_name=$(echo "$base" | sed "s/-1\.\([0-9]\+\)\.\([0-9]\+\)\.pkg$/-${VERSION}.pkg/")
+                  echo "  Fixing macOS .pkg version: $base -> $asset_name"
+                fi
                 label="GUI for macOS (pkg)"
                 ;;
               robocode-tankroyale-gui-*.jar)
@@ -480,3 +566,4 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           shell: bash
+
