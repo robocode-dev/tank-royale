@@ -6,7 +6,7 @@ junit-platform = "1.14.1" # Subversion must match junit version!
 system-stubs = "2.1.8"
 kotest = "5.9.1"
 kotest-datatest = "5.9.1"
-mockk = "1.14.6"
+mockk = "1.14.7"
 
 [libraries]
 
