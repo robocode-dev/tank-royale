@@ -249,7 +249,7 @@ sealed class BaseBotInternals
 
     internal void SetInterruptible(bool interruptible) => _eventQueue.SetCurrentEventInterruptible(interruptible);
 
-    private bool movementResetPending = false;
+    private bool _movementResetPending;
 
     private void OnRoundStarted(E.RoundStartedEvent e)
     {
@@ -257,9 +257,8 @@ sealed class BaseBotInternals
         IsStopped = false;
         _eventHandlingDisabledTurn = 0;
         _lastExecuteTurnNumber = -1;
-        movementResetPending = true; // defer movement reset until after first intent
+        _movementResetPending = true; // defer movement reset until after first intent
     }
-
 
     private void OnNextTurn(E.TickEvent e)
     {
@@ -267,12 +266,6 @@ sealed class BaseBotInternals
         {
             // Unblock methods waiting for the next turn
             Monitor.PulseAll(_nextTurnMonitor);
-        }
-        // Only reset movement after first intent following round start
-        if (movementResetPending)
-        {
-            ResetMovement();
-            movementResetPending = false;
         }
     }
 
@@ -324,6 +317,12 @@ sealed class BaseBotInternals
         {
             _lastExecuteTurnNumber = turnNumber;
             SendIntent();
+
+            if (_movementResetPending)
+            {
+                ResetMovement();
+                _movementResetPending = false;
+            }
         }
 
         WaitForNextTurn(turnNumber);

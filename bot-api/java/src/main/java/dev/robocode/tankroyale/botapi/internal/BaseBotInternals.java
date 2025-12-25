@@ -253,11 +253,6 @@ public final class BaseBotInternals {
             // Unblock methods waiting for the next turn
             nextTurnMonitor.notifyAll();
         }
-        // Only reset movement after first intent following round start
-        if (movementResetPending) {
-            resetMovement();
-            movementResetPending = false;
-        }
     }
 
     private void onBulletFired(BulletFiredEvent e) {
@@ -314,6 +309,11 @@ public final class BaseBotInternals {
             lastExecuteTurnNumber = turnNumber;
 
             sendIntent();
+
+            if (movementResetPending) {
+                resetMovement();
+                movementResetPending = false;
+            }
         }
         waitForNextTurn(turnNumber);
     }

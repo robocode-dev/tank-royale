@@ -6,7 +6,7 @@ using static Robocode.TankRoyale.BotApi.Constants;
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 [TestFixture]
-[Description("TR-API-CMD-001 Movement commands")] 
+[Description("TR-API-CMD-001 Movement commands")]
 public class CommandsMovementTest : AbstractBotTest
 {
     [Test]
@@ -15,16 +15,13 @@ public class CommandsMovementTest : AbstractBotTest
     public void GivenMovementCommandsSet_whenGo_thenIntentContainsClampedValues()
     {
         // Arrange
-    // Ensure all movement limits are unset so intent is always accepted
-    Server.SetSpeedMinLimit(double.MinValue);
-    Server.SetSpeedMaxLimit(double.MaxValue);
-    Server.SetDirectionMinLimit(double.MinValue);
-    Server.SetDirectionMaxLimit(double.MaxValue);
-    Server.SetGunDirectionMinLimit(double.MinValue);
-    Server.SetGunDirectionMaxLimit(double.MaxValue);
-    Server.SetRadarDirectionMinLimit(double.MinValue);
-    Server.SetRadarDirectionMaxLimit(double.MaxValue);
-    var bot = StartAndAwaitTick();
+        var bot = StartAndAwaitTick();
+
+        // Ensure all movement limits are unset so intent is always accepted
+        bot.MaxSpeed = double.MaxValue;
+        bot.MaxTurnRate = double.MaxValue;
+        bot.MaxGunTurnRate = double.MaxValue;
+        bot.MaxRadarTurnRate = double.MaxValue;
 
         // Act: set values beyond limits to verify clamping
         bot.TurnRate = 999; // > MAX_TURN_RATE
@@ -50,22 +47,11 @@ public class CommandsMovementTest : AbstractBotTest
     [Property("ID", "TR-API-CMD-001")]
     public void GivenNaNValues_whenSettingMovementCommands_thenThrowArgumentException()
     {
-    TestContext.WriteLine("Starting NaN movement command test");
-    var bot = Start();
-    TestContext.WriteLine("Bot started");
-    var handshake = Server.AwaitBotHandshake(1000);
-    TestContext.WriteLine($"AwaitBotHandshake: {handshake}");
-    var gameStarted = Server.AwaitGameStarted(1000);
-    TestContext.WriteLine($"AwaitGameStarted: {gameStarted}");
-    var tick = Server.AwaitTick(1000);
-    TestContext.WriteLine($"AwaitTick: {tick}");
-    Assert.That(handshake, Is.True, "Bot handshake not received");
-    Assert.That(gameStarted, Is.True, "Game did not start in time");
-    Assert.That(tick, Is.True, "Tick not received in time");
+        var bot = Start();
 
-    Assert.Throws<System.ArgumentException>(() => bot.TurnRate = double.NaN);
-    Assert.Throws<System.ArgumentException>(() => bot.GunTurnRate = double.NaN);
-    Assert.Throws<System.ArgumentException>(() => bot.RadarTurnRate = double.NaN);
-    Assert.Throws<System.ArgumentException>(() => bot.TargetSpeed = double.NaN);
+        Assert.Throws<System.ArgumentException>(() => bot.TurnRate = double.NaN);
+        Assert.Throws<System.ArgumentException>(() => bot.GunTurnRate = double.NaN);
+        Assert.Throws<System.ArgumentException>(() => bot.RadarTurnRate = double.NaN);
+        Assert.Throws<System.ArgumentException>(() => bot.TargetSpeed = double.NaN);
     }
 }

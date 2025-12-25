@@ -141,10 +141,6 @@ class BaseBotInternals:
     async def _on_next_turn(self, event: TickEvent) -> None:
         async with self.next_turn_monitor:
             self.next_turn_monitor.notify_all()
-        # Only reset movement after first intent following round start
-        if self._movement_reset_pending:
-            self._reset_movement()
-            self._movement_reset_pending = False
 
     async def _on_bullet_fired(self, event: BulletFiredEvent) -> None:
         if self.data.bot_intent:
@@ -377,6 +373,11 @@ class BaseBotInternals:
             self.last_execute_turn_number = turn_number
             # Events are dispatched from BaseBot.go(); staging happens on tick reception
             await self._send_intent()
+
+            if self._movement_reset_pending:
+                self._reset_movement()
+                self._movement_reset_pending = False
+
         await self._wait_for_next_turn(turn_number)
 
     async def _send_intent(self) -> None:
