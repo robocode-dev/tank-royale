@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.booter
 
+import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.subcommands
 import dev.robocode.tankroyale.booter.cli.BootCli
 import dev.robocode.tankroyale.booter.cli.BooterCli

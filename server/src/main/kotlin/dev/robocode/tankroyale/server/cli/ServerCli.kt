@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.server.cli
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.versionOption
@@ -10,7 +11,8 @@ import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.Server
 import dev.robocode.tankroyale.server.rules.DEFAULT_GAME_TYPE
 import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
 
-internal class ServerCli : CliktCommand(name = "server", help = "Runs a Robocode Tank Royale server") {
+internal class ServerCli : CliktCommand() {
+    override fun help(context: Context): String = "Runs a Robocode Tank Royale server"
     private val portOpt by option(
         "-p",
         "--port",
