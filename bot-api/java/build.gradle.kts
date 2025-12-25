@@ -145,8 +145,10 @@ tasks {
                 it.contains("build-release") ||
                 it.contains("upload-docs") ||
                 it.contains("create-release") ||
+                        it.contains("publish") ||
                 it == "javadoc" ||
-                it.endsWith(":javadoc")
+                        it.endsWith(":javadoc") ||
+                        it.endsWith(":javadocJar")
             }
         }
     }
