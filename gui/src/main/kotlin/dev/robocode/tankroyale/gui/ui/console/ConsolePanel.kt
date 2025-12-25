@@ -7,13 +7,12 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.util.Clipboard
 import dev.robocode.tankroyale.gui.util.EDT
-import dev.robocode.tankroyale.gui.util.EscapedTextDecoder
 import java.awt.BorderLayout
 import javax.swing.*
 
 open class ConsolePanel : JPanel() {
 
-    private val ansiEditorPane = AnsiEditorPane()
+    internal val ansiEditorPane = AnsiEditorPane()
     private val scrollPane = JScrollPane(ansiEditorPane).apply {
         border = null
     }
@@ -61,8 +60,7 @@ open class ConsolePanel : JPanel() {
             ansi.cyan().text(turnNumber).defaultColor().text(' ')
         }
 
-        val unescapedText = EscapedTextDecoder.unescape(text)
-        ansi.text(unescapedText)
+        ansi.text(text)
 
         EDT.enqueue {
             ansiEditorPane.apply {

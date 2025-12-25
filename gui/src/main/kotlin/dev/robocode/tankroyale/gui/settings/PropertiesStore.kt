@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.settings
 
 import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.gui.util.EscapedTextDecoder
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileWriter
@@ -95,12 +96,14 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
 
     protected fun load(propertyName: String, defaultValue: String): String {
         load()
-        return properties.getProperty(propertyName, defaultValue)
+        val raw = properties.getProperty(propertyName, defaultValue)
+        return EscapedTextDecoder.unescape(raw) ?: defaultValue
     }
 
     protected fun load(propertyName: String): String? {
         load()
-        return properties.getProperty(propertyName)
+        val raw = properties.getProperty(propertyName)
+        return if (raw == null) null else EscapedTextDecoder.unescape(raw)
     }
 
     protected fun save(propertyName: String, value: String) {
