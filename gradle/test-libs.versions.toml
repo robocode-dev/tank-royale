@@ -1,8 +1,8 @@
 [versions]
 
 assertj = "3.27.3"
-junit = "5.13.2" # update junit-platform as well
-junit-platform = "1.13.2" # Subversion must match junit version!
+junit = "5.14.1" # update junit-platform as well. Cannot update to junit 6 as it requires Java 17
+junit-platform = "1.14.1" # Subversion must match junit version!
 system-stubs = "2.1.8"
 kotest = "5.9.1"
 kotest-datatest = "5.9.1"
