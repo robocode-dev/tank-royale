@@ -371,6 +371,56 @@ jobs:
           # Remove ci-gradle.log files (debug logs not needed in release)
           find all-installers -name 'ci-gradle.log' -delete
 
+      - name: Ensure release is published with correct tag
+        run: |
+          set -euo pipefail
+
+          # Determine version
+          VERSION="${{ inputs.version || github.event.inputs.version }}"
+          if [ -z "$VERSION" ]; then
+            echo "No version provided via inputs. Attempting to detect from latest release..."
+            VERSION=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/latest" \
+              | jq -r '.tag_name' | sed 's/^v//')
+          fi
+
+          if [ -z "$VERSION" ] || [ "$VERSION" == "null" ]; then
+            echo "ERROR: Could not determine release version"
+            exit 1
+          fi
+
+          TAG="v${VERSION}"
+          REPO="${{ github.repository }}"
+          API_URL="https://api.github.com/repos/$REPO/releases"
+
+          echo "Ensuring release $TAG exists and is published..."
+
+          # Find release by tag
+          release_info=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" "$API_URL" | jq -c ".[] | select(.tag_name == \"$TAG\")" | head -n 1)
+          release_id=$(echo "$release_info" | jq -r '.id // empty')
+          is_draft=$(echo "$release_info" | jq -r '.draft // empty')
+
+          if [ -z "$release_id" ]; then
+            echo "Release with tag $TAG not found. Creating published release..."
+            create_response=$(curl -sS -X POST "$API_URL" \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"tag_name\": \"$TAG\", \"name\": \"Release $VERSION\", \"draft\": false, \"prerelease\": false}")
+            echo "Created release: $(echo "$create_response" | jq -r '.html_url')"
+          elif [ "$is_draft" = "true" ]; then
+            echo "Release $TAG is a draft (ID: $release_id). Publishing it..."
+            curl -sS -X PATCH "$API_URL/$release_id" \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"draft\": false}"
+            echo "Release $TAG is now published."
+          else
+            echo "Release $TAG is already published (ID: $release_id)."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+
       - name: Upload installers to GitHub Release
         run: |
           set -euo pipefail
