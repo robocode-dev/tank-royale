@@ -162,6 +162,7 @@ tasks {
     }
 
     register<Exec>("pushLocal") {
+        dependsOn(buildDotnetBotApi)
         dependsOn(prepareNugetDocs)
 
         val userHome = System.getenv("USERPROFILE") ?: System.getenv("HOME")
