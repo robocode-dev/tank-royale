@@ -107,6 +107,18 @@ public final class MockedServer {
         }
     }
 
+    public void closeConnections() {
+        for (WebSocket conn : server.getConnections()) {
+            conn.close();
+        }
+    }
+
+    public void sendRawText(String text) {
+        for (WebSocket conn : server.getConnections()) {
+            conn.send(text);
+        }
+    }
+
     public void setEnergy(double energy) {
         this.energy = energy;
     }
