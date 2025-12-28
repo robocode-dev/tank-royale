@@ -6,7 +6,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import dev.robocode.tankroyale.booter.commands.BootCommand
 
-internal class BootCli : CliktCommand() {
+internal class BootCli : CliktCommand(name = "boot") {
     override fun help(context: Context): String = """
             Boot one or multiple bot or team entries into individual bot processes.
             If a team is specified, the each bot members will be booted (not the team itself).

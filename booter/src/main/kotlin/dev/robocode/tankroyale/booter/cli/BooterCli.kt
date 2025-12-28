@@ -5,7 +5,7 @@ import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.options.versionOption
 import dev.robocode.tankroyale.booter.util.VersionFileProvider
 
-internal class BooterCli : CliktCommand() {
+internal class BooterCli : CliktCommand(name = "booter") {
     override fun help(context: Context): String = "Tool for booting up Robocode bots."
     init {
         versionOption(VersionFileProvider.getVersion(), names = setOf("-v", "--version"))

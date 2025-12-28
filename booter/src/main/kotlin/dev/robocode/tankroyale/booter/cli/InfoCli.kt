@@ -9,7 +9,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import dev.robocode.tankroyale.booter.commands.DirCommand
 import kotlinx.serialization.json.Json
 
-internal class InfoCli : CliktCommand() {
+internal class InfoCli : CliktCommand(name = "info") {
     override fun help(context: Context): String = "List info of all available bots in JSON format."
     private val botRootDirs by argument("BOT_ROOT_DIRS").multiple(required = true)
     private val gameTypes by option(

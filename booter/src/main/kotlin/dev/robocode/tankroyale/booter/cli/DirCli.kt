@@ -8,7 +8,7 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import dev.robocode.tankroyale.booter.commands.DirCommand
 
-internal class DirCli : CliktCommand() {
+internal class DirCli : CliktCommand(name = "dir") {
     override fun help(context: Context): String = "List all available bot and team directories."
     private val botRootDirs by argument("BOT_ROOT_DIRS").multiple(required = true)
     private val gameTypes by option(
