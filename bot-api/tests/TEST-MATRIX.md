@@ -159,7 +159,7 @@ Notes:
       case normalization where applicable; deterministic error messages. [Parity: Java/.NET/Python]
     - ✅ TR-API-BOT-001e Java System properties facet (Java-only): `-D` properties mirror ENV keys with the same
       defaults/validation and precedence relative to ENV. [Parity: Java only]
-- TR-API-BOT-002 Connect/Disconnect: bot opens and closes connection; handshake messages are valid per schema.
+- ✅ TR-API-BOT-002 Connect/Disconnect: bot opens and closes connection; handshake messages are valid per schema.
 - TR-API-BOT-003 Start/Stop/Pause/Resume: correct state flags, idempotence, and event firing order.
 - TR-API-BOT-004 Error handling: on protocol error or server disconnect, bot transitions to safe state and surfaces
   error appropriately.
@@ -170,6 +170,10 @@ Notes:
   per spec.
 - TR-API-CMD-002 Fire command: power bounds enforced; resulting intent serializes correctly; cooldown respected if
   applicable.
+    - [ ] `test_TR_API_CMD_002_fire_power_bounds()`: Verify firepower clamping (0.1 to 3.0).
+    - [ ] `test_TR_API_CMD_002_fire_cooldown()`: Verify `setFire()` returns `false` if `getGunHeat() > 0`.
+    - [ ] `test_TR_API_CMD_002_fire_energy_limit()`: Verify `setFire()` returns `false` if `firepower > getEnergy()`.
+    - [ ] `test_TR_API_CMD_002_fire_nan_throws()`: Verify `Double.NaN` throws `IllegalArgumentException`.
 - TR-API-CMD-003 Radar/Scan commands: rescan/locking behavior produces expected intents/events.
 - TR-API-CMD-004 Graphics frame emission: drawings are emitted in the tick where added and cleared/reset according to
   API semantics.
