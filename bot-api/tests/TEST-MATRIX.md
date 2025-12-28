@@ -160,8 +160,8 @@ Notes:
     - ✅ TR-API-BOT-001e Java System properties facet (Java-only): `-D` properties mirror ENV keys with the same
       defaults/validation and precedence relative to ENV. [Parity: Java only]
 - ✅ TR-API-BOT-002 Connect/Disconnect: bot opens and closes connection; handshake messages are valid per schema.
-- TR-API-BOT-003 Start/Stop/Pause/Resume: correct state flags, idempotence, and event firing order.
-- TR-API-BOT-004 Error handling: on protocol error or server disconnect, bot transitions to safe state and surfaces
+- ✅ TR-API-BOT-003 Start/Stop/Pause/Resume: correct state flags, idempotence, and event firing order.
+- TR-API-BOT-004 Error handling: on protocol error or server disconnect, bot transitions to a safe state and surfaces
   error appropriately.
 
 ### E. Commands (CMD)
