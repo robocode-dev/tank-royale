@@ -174,7 +174,7 @@ Notes:
     - [ ] `test_TR_API_CMD_002_fire_cooldown()`: Verify `setFire()` returns `false` if `getGunHeat() > 0`.
     - [ ] `test_TR_API_CMD_002_fire_energy_limit()`: Verify `setFire()` returns `false` if `firepower > getEnergy()`.
     - [ ] `test_TR_API_CMD_002_fire_nan_throws()`: Verify `Double.NaN` throws `IllegalArgumentException`.
-- TR-API-CMD-003 Radar/Scan commands: rescan/locking behavior produces expected intents/events.
+- ✅ TR-API-CMD-003 Radar/Scan commands: rescan/locking behavior produces expected intents/events.
 - TR-API-CMD-004 Graphics frame emission: drawings are emitted in the tick where added and cleared/reset according to
   API semantics.
 

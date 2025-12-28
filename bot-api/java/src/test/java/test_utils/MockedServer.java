@@ -78,7 +78,7 @@ public final class MockedServer {
     private final CountDownLatch botHandshakeLatch = new CountDownLatch(1);
     private final CountDownLatch gameStartedLatch = new CountDownLatch(1);
     private final CountDownLatch tickEventLatch = new CountDownLatch(1);
-    private final CountDownLatch botIntentLatch = new CountDownLatch(1);
+    private CountDownLatch botIntentLatch = new CountDownLatch(1);
 
     private CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
 
@@ -177,6 +177,10 @@ public final class MockedServer {
 
     public void setRadarDirectionMaxLimit(double maxLimit) {
         this.radarDirectionMaxLimit = maxLimit;
+    }
+
+    public void resetBotIntentLatch() {
+        botIntentLatch = new CountDownLatch(1);
     }
 
     public boolean awaitConnection(int milliSeconds) {
