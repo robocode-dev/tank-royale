@@ -10,7 +10,7 @@ import javax.swing.text.StyledDocument
 /**
  * The AnsiEditorPane is a specialized [JEditorPane] which will automatically set up an [AnsiEditorKit] and
  * [StyledDocument] for the pane.
- * It also sets the background color to dark grey to better see the ANSI colors, and enables anti-aliased text painting.
+ * It also sets the background color to dark gray to better see the ANSI colors and enables anti-aliased text painting.
  */
 class AnsiEditorPane : JEditorPane() {
 
