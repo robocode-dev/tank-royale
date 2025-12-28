@@ -2,13 +2,8 @@ package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.client.model.*
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
-import dev.robocode.tankroyale.gui.ansi.esc_code.CommandCode
-import dev.robocode.tankroyale.gui.ansi.esc_code.EscapeSequence
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
-
-// TODO: Optimize: Only log for current turn
-// TODO: Missing listing bullet values for the tick event
 
 class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
 
@@ -22,33 +17,34 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
         ClientEvents.apply {
             onTickEvent.subscribe(this@BotEventsPanel) { tickEvent ->
                 if (isAlive(tickEvent) || hasJustDied(tickEvent)) {
-                    dump(tickEvent.events)
+                    dump(tickEvent)
+                    tickEvent.events
+                        .filter { it.turnNumber == tickEvent.turnNumber }
+                        .forEach { dump(it) }
                 }
             }
         }
     }
 
     private fun isAlive(tickEvent: TickEvent): Boolean {
-        val botStates = tickEvent.botStates.filter { botState -> bot.id == botState.id }.toList()
-        return botStates.isNotEmpty() && botStates.first().energy >= 0
+        return tickEvent.botStates.any { it.id == bot.id && it.energy >= 0 }
     }
 
     private fun hasJustDied(tickEvent: TickEvent): Boolean =
-        tickEvent.events.any { event -> event is BotDeathEvent && bot.id == event.victimId }
+        tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id && it.turnNumber == tickEvent.turnNumber }
 
-    private fun dump(events: Set<Event>) {
-        events.forEach { event ->
-            when (event) {
-                is BotDeathEvent -> dumpBotDeathEvent(event)
-                is BotHitWallEvent -> dumpBotHitWallEvent(event)
-                is BotHitBotEvent -> dumpBotHitBotEvent(event)
-                is BulletFiredEvent -> dumpBulletFiredEvent(event)
-                is BulletHitBotEvent -> dumpBulletHitBotEvent(event)
-                is BulletHitBulletEvent -> dumpBulletHitBulletEvent(event)
-                is BulletHitWallEvent -> dumpBulletHitWallEvent(event)
-                is ScannedBotEvent -> dumpScannedBotEvent(event)
-                else -> dumpUnknownEvent(event)
-            }
+    private fun dump(event: Event) {
+        when (event) {
+            is TickEvent -> dumpTickEvent(event)
+            is BotDeathEvent -> dumpBotDeathEvent(event)
+            is BotHitWallEvent -> dumpBotHitWallEvent(event)
+            is BotHitBotEvent -> dumpBotHitBotEvent(event)
+            is BulletFiredEvent -> dumpBulletFiredEvent(event)
+            is BulletHitBotEvent -> dumpBulletHitBotEvent(event)
+            is BulletHitBulletEvent -> dumpBulletHitBulletEvent(event)
+            is BulletHitWallEvent -> dumpBulletHitWallEvent(event)
+            is ScannedBotEvent -> dumpScannedBotEvent(event)
+            else -> dumpUnknownEvent(event)
         }
     }
 
@@ -61,8 +57,9 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
             .fieldValue("turnNumber", event.turnNumber)
 
     private fun createEventNameBuilder(event: Event) =
-        AnsiTextBuilder().newline().space(numberOfIndentionSpaces).esc(EscapeSequence(CommandCode.CYAN)).text(
+        AnsiTextBuilder().newline().space(numberOfIndentionSpaces).cyan().text(
             when (event) {
+                is TickEvent -> "TickEvent"
                 is BotDeathEvent -> if (bot.id == event.victimId) "DeathEvent" else "BotDeathEvent"
                 is BulletHitBotEvent -> if (bot.id == event.victimId) "HitByBulletEvent" else "BulletHitBotEvent"
                 else -> event.javaClass.simpleName
@@ -77,27 +74,46 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
         return ansi
     }
 
-    private fun AnsiTextBuilder.fieldValue(fieldName: String, value: Any?, indention: Int = 2): AnsiTextBuilder {
-        newline().space(indention * numberOfIndentionSpaces).green().text(fieldName).text(": ").defaultColor().bold().text(value).reset()
+    private fun AnsiTextBuilder.fieldValue(fieldName: String, value: Any?, indention: Int = 1): AnsiTextBuilder {
+        newline().space((indention + 1) * numberOfIndentionSpaces).green().text(fieldName).text(": ").defaultColor()
+            .bold().text(value).reset()
         return this
     }
 
-    private fun AnsiTextBuilder.bulletValues(fieldName: String, bullet: BulletState, indention: Int = 2): AnsiTextBuilder {
+    private fun AnsiTextBuilder.bulletValues(
+        fieldName: String,
+        bullet: BulletState,
+        indention: Int = 1
+    ): AnsiTextBuilder {
         val indent = indention + 1
 
         val bulletAnsi = AnsiTextBuilder()
             .fieldValue("bulletId", bullet.bulletId, indent)
-            if (bot.id != bullet.ownerId) {
-                fieldValue("ownerId", botIdAndName(bullet.ownerId), indent)
-            }
-            fieldValue("power", bullet.power, indent)
-                .fieldValue("x", bullet.x, indent)
-                .fieldValue("y", bullet.y, indent)
-                .fieldValue("direction", bullet.direction, indent)
-                .fieldValue("color", bullet.color, indent)
+        if (bot.id != bullet.ownerId) {
+            bulletAnsi.fieldValue("ownerId", botIdAndName(bullet.ownerId), indent)
+        }
+        bulletAnsi.fieldValue("power", bullet.power, indent)
+            .fieldValue("x", bullet.x, indent)
+            .fieldValue("y", bullet.y, indent)
+            .fieldValue("direction", bullet.direction, indent)
+            .fieldValue("color", bullet.color, indent)
 
         fieldValue(fieldName, bulletAnsi.build(), indention)
         return this
+    }
+
+    private fun dumpTickEvent(tickEvent: TickEvent) {
+        val ansi = createEventAndTurnNumberBuilder(tickEvent)
+            .fieldValue("roundNumber", tickEvent.roundNumber)
+
+        val bulletStates = tickEvent.bulletStates.filter { it.ownerId == bot.id }
+        if (bulletStates.isNotEmpty()) {
+            ansi.fieldValue("bulletStates", "")
+            bulletStates.forEach { bulletState ->
+                ansi.bulletValues("bulletState", bulletState, indention = 2)
+            }
+        }
+        appendNewLine(ansi, tickEvent.turnNumber)
     }
 
     private fun dumpBotDeathEvent(botDeathEvent: BotDeathEvent) {
@@ -105,7 +121,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
     }
 
     private fun dumpBotHitWallEvent(botHitWallEvent: BotHitWallEvent) {
-        if (bot.id == botHitWallEvent.victimId) { // -> no need to dump victimId
+        if (bot.id == botHitWallEvent.victimId) {
             val ansi = createEventAndTurnNumberBuilder(botHitWallEvent)
             appendNewLine(ansi, botHitWallEvent.turnNumber)
         }
@@ -117,9 +133,12 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
     }
 
     private fun dumpBotHitBotEvent(botHitBotEvent: BotHitBotEvent) {
-        if (botHitBotEvent.botId == bot.id) {
+        if (botHitBotEvent.botId == bot.id || botHitBotEvent.victimId == bot.id) {
             val ansi = createVictimIdBuilder(botHitBotEvent, botHitBotEvent.victimId)
-                .fieldValue("energy", botHitBotEvent.energy)
+            if (botHitBotEvent.botId != bot.id) {
+                ansi.fieldValue("botId", botIdAndName(botHitBotEvent.botId))
+            }
+            ansi.fieldValue("energy", botHitBotEvent.energy)
                 .fieldValue("x", botHitBotEvent.x)
                 .fieldValue("y", botHitBotEvent.y)
                 .fieldValue("rammed", botHitBotEvent.rammed)
@@ -128,7 +147,11 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
     }
 
     private fun dumpBulletFiredEvent(bulletFiredEvent: BulletFiredEvent) {
-        dumpBulletOnly(bulletFiredEvent, bulletFiredEvent.bullet)
+        if (bulletFiredEvent.bullet.ownerId == bot.id) {
+            val ansi = createEventAndTurnNumberBuilder(bulletFiredEvent)
+                .bulletValues("bullet", bulletFiredEvent.bullet)
+            appendNewLine(ansi, bulletFiredEvent.turnNumber)
+        }
     }
 
     private fun dumpBulletHitBotEvent(bulletHitBotEvent: BulletHitBotEvent) {
@@ -154,14 +177,10 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
     }
 
     private fun dumpBulletHitWallEvent(bulletHitWallEvent: BulletHitWallEvent) {
-        dumpBulletOnly(bulletHitWallEvent, bulletHitWallEvent.bullet)
-    }
-
-    private fun dumpBulletOnly(event: Event, bullet: BulletState) {
-        if (bullet.ownerId == bot.id) {
-            val ansi = createEventAndTurnNumberBuilder(event)
-                .bulletValues("bullet", bullet)
-            appendNewLine(ansi, event.turnNumber)
+        if (bulletHitWallEvent.bullet.ownerId == bot.id) {
+            val ansi = createEventAndTurnNumberBuilder(bulletHitWallEvent)
+                .bulletValues("bullet", bulletHitWallEvent.bullet)
+            appendNewLine(ansi, bulletHitWallEvent.turnNumber)
         }
     }
 

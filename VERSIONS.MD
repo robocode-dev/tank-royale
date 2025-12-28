@@ -12,6 +12,11 @@
         - **How to configure**:
             - Open the `Config` -> `GUI Options` menu in the GUI.
             - Adjust the `Console max characters` value and click `OK` to save.
+  - Bot Events Panel:
+      - Optimized logging to only include events for the current game turn.
+      - Improved event dumping to include all relevant events for the monitored bot, including `TickEvent`.
+      - Enhanced formatting of event data with consistent indentation and ANSI colors.
+      - Grouped `bulletState` entries under a `bulletStates` header for better readability in `TickEvent`.
 
 ## 📦 0.34.2 - Added native installer packages for GUI – 25-Dec-2025
 
