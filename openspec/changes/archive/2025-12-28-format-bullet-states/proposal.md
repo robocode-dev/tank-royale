@@ -7,11 +7,9 @@ the event. This made it unclear that there could be multiple bullets. Grouping t
 improves clarity and reflects that it's a collection.
 
 ## What Changes
-
 - Group individual `bulletState` entries under a `bulletStates:` header in the `BotEventsPanel`.
 - Indent `bulletState` entries further under the `bulletStates:` header.
 
 ## Impact
-
 - Affected specs: `gui-bot-console`
 - Affected code: `BotEventsPanel.kt`
