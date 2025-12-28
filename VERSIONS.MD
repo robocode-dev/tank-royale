@@ -1,4 +1,4 @@
-## 📦 0.34.3 - GUI Bot Console Performance Improvements – 28-Dec-2025
+## 📦 0.34.3 - GUI Bot Console Performance Improvements
 
 ### 🚀 Improvements
 
