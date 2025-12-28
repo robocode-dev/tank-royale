@@ -14,6 +14,8 @@ import java.util.Locale
 import javax.swing.JButton
 import javax.swing.JComboBox
 import javax.swing.JPanel
+import javax.swing.JSpinner
+import javax.swing.SpinnerNumberModel
 
 object GuiConfigDialog : RcDialog(MainFrame, "gui_config_dialog") {
 
@@ -43,9 +45,12 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
     )
     private val languageCombo = JComboBox(languageOptions)
 
+    private val maxCharsSpinner = JSpinner(SpinnerNumberModel(10000, 1000, 1000000, 1000))
+
     init {
         addLanguageSelector()
         addUiScaleSelector()
+        addConsoleMaxCharsSelector()
         setInitialSelections()
         addOkButton(onOk, "span 2, alignx center, gaptop para, wrap").apply {
             setDefaultButton(this)
@@ -62,6 +67,11 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         add(scaleCombo, "wrap")
     }
 
+    private fun addConsoleMaxCharsSelector() {
+        addLabel("option.gui.console_max_characters")
+        add(maxCharsSpinner, "wrap")
+    }
+
     private fun setInitialSelections() {
         // Initialize UI scale
         val currentScale = ConfigSettings.uiScale
@@ -72,6 +82,9 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         val currentLang = ConfigSettings.language
         val idxLang = languageOptions.indexOfFirst { it.code == currentLang }.let { if (it >= 0) it else 0 }
         languageCombo.selectedIndex = idxLang
+
+        // Initialize console max characters
+        maxCharsSpinner.value = ConfigSettings.consoleMaxCharacters
     }
 
     private fun onOkClicked() {
@@ -95,6 +108,10 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
                 showMessage(Strings.get("restart_required_to_apply_language"))
             }
         }
+
+        // Save console max characters
+        ConfigSettings.consoleMaxCharacters = maxCharsSpinner.value as Int
+
         GuiConfigDialog.dispose()
     }
 

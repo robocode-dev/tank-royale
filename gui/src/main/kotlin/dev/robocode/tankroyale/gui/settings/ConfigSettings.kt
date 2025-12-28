@@ -12,6 +12,9 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private const val TPS = "tps"
     private const val UI_SCALE = "ui-scale"
     private const val LANGUAGE = "language"
+    private const val CONSOLE_MAX_CHARACTERS = "console-max-characters"
+
+    private const val DEFAULT_CONSOLE_MAX_CHARACTERS = 10000
 
     private const val ENABLE_SOUNDS = "enable-sounds"
     private const val ENABLE_GUNSHOT_SOUND = "enable-gunshot-sound"
@@ -111,6 +114,16 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
                 else -> "en"
             }
             save(LANGUAGE, v)
+        }
+
+    var consoleMaxCharacters: Int
+        get() = try {
+            load(CONSOLE_MAX_CHARACTERS, DEFAULT_CONSOLE_MAX_CHARACTERS.toString()).toInt()
+        } catch (_: NumberFormatException) {
+            DEFAULT_CONSOLE_MAX_CHARACTERS
+        }
+        set(value) {
+            save(CONSOLE_MAX_CHARACTERS, value.toString())
         }
 
     var enableGunshotSound: Boolean

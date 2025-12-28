@@ -1,7 +1,9 @@
 package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import javax.swing.SwingUtilities
@@ -102,6 +104,56 @@ class ConsolePanelTest : StringSpec({
         documentText shouldContain "\\\\_\\\\_\\\\"
         // Should NOT have single backslashes where doubles were expected
         documentText shouldNotContain "\\_\\_\\/ _ \\"
+    }
+
+    "should enforce max character limit" {
+        val consolePanel = ConsolePanel()
+        val originalLimit = ConfigSettings.consoleMaxCharacters
+        ConfigSettings.consoleMaxCharacters = 100
+
+        try {
+            val longText = "a".repeat(150)
+            SwingUtilities.invokeAndWait {
+                consolePanel.append(longText)
+            }
+
+            // Wait for flush
+            Thread.sleep(200)
+
+            var documentLength = 0
+            SwingUtilities.invokeAndWait {
+                documentLength = consolePanel.ansiEditorPane.document.length
+            }
+
+            documentLength shouldBe 100
+        } finally {
+            ConfigSettings.consoleMaxCharacters = originalLimit
+        }
+    }
+
+    "should batch multiple appends" {
+        val consolePanel = ConsolePanel()
+
+        SwingUtilities.invokeAndWait {
+            consolePanel.append("1")
+            consolePanel.append("2")
+            consolePanel.append("3")
+        }
+
+        // Initially empty because of batching
+        var documentText = ""
+        SwingUtilities.invokeAndWait {
+            documentText = consolePanel.ansiEditorPane.text
+        }
+        documentText shouldBe ""
+
+        // Wait for flush
+        Thread.sleep(200)
+
+        SwingUtilities.invokeAndWait {
+            documentText = consolePanel.ansiEditorPane.text
+        }
+        documentText shouldContain "123"
     }
 })
 

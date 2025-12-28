@@ -64,8 +64,21 @@ object BootProcess {
         val process = ProcessBuilder(args).start()
         startThread(process, false)
         try {
-            val jsonStr = String(process.inputStream.readAllBytes(), StandardCharsets.UTF_8)
-            return json.decodeFromString(jsonStr)
+            val jsonStr = String(process.inputStream.readAllBytes(), StandardCharsets.UTF_8).trim()
+            if (jsonStr.isBlank()) {
+                return emptyList()
+            }
+            // Find the start of the JSON array '[' in case there's leading non-JSON output
+            val startIndex = jsonStr.indexOf('[')
+            if (startIndex == -1) {
+                return emptyList()
+            }
+            val cleanedJsonStr = jsonStr.substring(startIndex)
+
+            return json.decodeFromString(cleanedJsonStr)
+        } catch (ex: Exception) {
+            System.err.println("Error decoding booter info: ${ex.message}")
+            return emptyList()
         } finally {
             stopThreads()
         }

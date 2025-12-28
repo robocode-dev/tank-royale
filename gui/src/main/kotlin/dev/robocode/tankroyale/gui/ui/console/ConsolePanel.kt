@@ -3,12 +3,15 @@ package dev.robocode.tankroyale.gui.ui.console
 import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.ansi.AnsiEditorPane
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.util.Clipboard
 import dev.robocode.tankroyale.gui.util.EDT
 import java.awt.BorderLayout
+import java.util.concurrent.ConcurrentLinkedQueue
 import javax.swing.*
+import javax.swing.Timer
 
 open class ConsolePanel : JPanel() {
 
@@ -34,6 +37,10 @@ open class ConsolePanel : JPanel() {
     private val clearButton = JPanel().addButton("clear", onClear)
     private val copyToClipboardButton = JPanel().addButton("copy_to_clipboard", onCopyToClipboard)
 
+    private val logQueue = ConcurrentLinkedQueue<String>()
+
+    private val flushTimer = Timer(100) { flushLogQueue() }.apply { start() }
+
     protected open val buttonPanel
         get() = JPanel().apply {
             add(okButton)
@@ -50,6 +57,7 @@ open class ConsolePanel : JPanel() {
     }
 
     fun clear() {
+        logQueue.clear()
         ansiEditorPane.text = ""
     }
 
@@ -62,13 +70,29 @@ open class ConsolePanel : JPanel() {
 
         ansi.text(text)
 
-        EDT.enqueue {
-            ansiEditorPane.apply {
-                ansiKit.insertAnsi(ansiDocument, ansi.build())
+        logQueue.add(ansi.build())
+    }
 
-                // Scroll to bottom
-                caretPosition = ansiDocument.length
+    private fun flushLogQueue() {
+        if (logQueue.isEmpty()) return
+
+        val sb = StringBuilder()
+        while (!logQueue.isEmpty()) {
+            sb.append(logQueue.poll())
+        }
+        val fullText = sb.toString()
+
+        ansiEditorPane.apply {
+            ansiKit.insertAnsi(ansiDocument, fullText)
+
+            val maxChars = ConfigSettings.consoleMaxCharacters
+            if (ansiDocument.length > maxChars) {
+                val overflow = ansiDocument.length - maxChars
+                ansiDocument.remove(0, overflow)
             }
+
+            // Scroll to bottom
+            caretPosition = ansiDocument.length
         }
     }
 

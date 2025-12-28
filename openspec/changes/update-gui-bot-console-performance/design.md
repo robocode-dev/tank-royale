@@ -51,20 +51,27 @@ Capture and summarize:
 
 ## Decisions (to be filled after investigation)
 
-- Decision: TBD
-- Alternatives considered: TBD
+- Decision: Implement bounded retention and batched updates in `ConsolePanel`.
+    - Bounded retention: Limit the maximum number of characters in the `StyledDocument` to 10,000 (configurable via
+      `ConfigSettings`). This prevents memory leaks and keeps document operations fast.
+    - Batched updates: Use a background buffer to collect log lines and flush them to the EDT at a fixed interval (e.g.,
+      every 100ms). This reduces the number of `insertString` calls and EDT overhead.
+- Alternatives considered:
+    - Background ANSI parsing: While beneficial, batched updates already address the main bottleneck of EDT flooding.
+      Parsing is relatively fast compared to Swing document mutations.
+    - Alternative rendering model: Too complex for the current requirements and risks breaking existing functionality.
 
 ## Candidate mitigation strategies
 
 (Select based on measured bottlenecks.)
 
-1) Bounded retention (ring buffer)
+1) Bounded retention (ring buffer) [SELECTED]
 
 - Keep only the last X lines / chars.
 - Pros: hard bound on memory + document size.
 - Cons: truncates history; needs UX (export/copy, setting).
 
-2) Batched updates + repaint coalescing
+2) Batched updates + repaint coalescing [SELECTED]
 
 - Coalesce frequent small appends into a single append every N ms.
 - Pros: reduces document churn and repaint frequency.

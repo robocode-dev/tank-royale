@@ -1,4 +1,17 @@
-## 📦 0.34.3
+## 📦 0.34.3 - GUI Bot Console Performance Improvements – 28-Dec-2025
+
+### 🚀 Improvements
+
+- GUI:
+    - Improved performance of the bot console and server log windows under heavy logging.
+    - Added **batched updates** to reduce UI freezes when bots or the server produce a high volume of output.
+    - Introduced **bounded retention** to prevent the console from consuming too much memory and becoming slow over
+      time.
+    - Added a new configuration setting `console-max-characters` (default: 10,000) to control the maximum amount of
+      text retained in each console window.
+        - **How to configure**:
+            - Open the `Config` -> `GUI Options` menu in the GUI.
+            - Adjust the `Console max characters` value and click `OK` to save.
 
 ## 📦 0.34.2 - Added native installer packages for GUI – 25-Dec-2025
 
