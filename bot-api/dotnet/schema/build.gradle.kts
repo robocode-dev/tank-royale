@@ -1,3 +1,5 @@
+import build.isWindows
+
 description = "Robocode Tank Royale schema for .NET"
 
 plugins {
@@ -24,7 +26,7 @@ tasks {
 
             val releaseDir = "${layout.projectDirectory}/bin/Release"
             var codeGeneratorPath = file("$releaseDir/net8.0/CodeGeneratorApp").absolutePath
-            if (System.getProperty("os.name").lowercase().contains("windows")) {
+            if (isWindows()) {
                 codeGeneratorPath += ".exe"
             }
 

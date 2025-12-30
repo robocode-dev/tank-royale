@@ -1,5 +1,8 @@
 import build.release.createRelease
 import build.release.dispatchWorkflow
+import build.isWindows
+import build.isMacOS
+import build.isLinux
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
@@ -225,14 +228,14 @@ fun Project.registerJpackageTasks(
 ) {
     val jpackageExecutable: String by lazy {
         val javaHome = System.getenv("JAVA_HOME") ?: System.getProperty("java.home")
-        val bin = if (org.gradle.internal.os.OperatingSystem.current().isWindows) "bin/jpackage.exe" else "bin/jpackage"
+        val bin = if (isWindows()) "bin/jpackage.exe" else "bin/jpackage"
         val candidate = file("$javaHome/$bin")
         if (candidate.exists()) candidate.absolutePath else "jpackage"
     }
 
     val jlinkExecutable: String by lazy {
         val javaHome = System.getenv("JAVA_HOME") ?: System.getProperty("java.home")
-        val bin = if (org.gradle.internal.os.OperatingSystem.current().isWindows) "bin/jlink.exe" else "bin/jlink"
+        val bin = if (isWindows()) "bin/jlink.exe" else "bin/jlink"
         val candidate = file("$javaHome/$bin")
         if (candidate.exists()) candidate.absolutePath else "jlink"
     }
@@ -255,7 +258,7 @@ fun Project.registerJpackageTasks(
         val appVersionSanitized = rawVersion.replace(Regex("[^0-9.]"), ".").trim('.')
 
         // macOS requires CFBundleVersion of the form 1..3 integers and the first must be >= 1
-        val isMac = org.gradle.internal.os.OperatingSystem.current().isMacOsX
+        val isMac = isMacOS()
         val macVersion = run {
             val parts = appVersionSanitized.split('.')
                 .filter { it.isNotBlank() }
@@ -269,7 +272,7 @@ fun Project.registerJpackageTasks(
         val effectiveAppVersion = if (isMac) macVersion else appVersionSanitized
 
         val appDescription = project.description ?: "Robocode Tank Royale - ${project.name}"
-        val isWindows = org.gradle.internal.os.OperatingSystem.current().isWindows
+        val isWin = isWindows()
 
         executable = jpackageExecutable
         workingDir = project.projectDir
@@ -285,7 +288,7 @@ fun Project.registerJpackageTasks(
             "--dest", jpackageOutputDir.absolutePath,
             "--license-file", rootProject.file("LICENSE").absolutePath
         ) +
-                (if (isWindows) listOf(
+            (if (isWin) listOf(
             "--description", appDescription,
             "--win-menu",
             "--win-shortcut",
@@ -346,7 +349,7 @@ fun Project.registerJpackageTasks(
             dependsOnProvider?.let { dependsOn(it) }
             // Ensure our explicit runtime image exists before packaging to avoid VM launch issues
             dependsOn("jlinkRuntimeWin")
-            onlyIf { org.gradle.internal.os.OperatingSystem.current().isWindows }
+            onlyIf { isWindows() }
             doFirst { jpackageOutputDir.mkdirs() }
             val winExtra = buildList {
                 // Use the explicit runtime image built by jlink
@@ -368,7 +371,7 @@ fun Project.registerJpackageTasks(
             group = "distribution"
             description = "Create Linux DEB installer using jpackage"
             dependsOnProvider?.let { dependsOn(it) }
-            onlyIf { org.gradle.internal.os.OperatingSystem.current().isLinux }
+            onlyIf { isLinux() }
             doFirst { jpackageOutputDir.mkdirs() }
             configureCommonJpackageArgs(
                 installerType = "deb",
@@ -386,7 +389,7 @@ fun Project.registerJpackageTasks(
             group = "distribution"
             description = "Create Linux RPM installer using jpackage"
             dependsOnProvider?.let { dependsOn(it) }
-            onlyIf { org.gradle.internal.os.OperatingSystem.current().isLinux }
+            onlyIf { isLinux() }
             doFirst { jpackageOutputDir.mkdirs() }
             configureCommonJpackageArgs(
                 installerType = "rpm",
@@ -400,7 +403,7 @@ fun Project.registerJpackageTasks(
         register("jpackageLinux") {
             group = "distribution"
             description = "Create Linux installers (DEB and RPM) using jpackage"
-            onlyIf { org.gradle.internal.os.OperatingSystem.current().isLinux }
+            onlyIf { isLinux() }
             dependsOn("jpackageLinuxDeb", "jpackageLinuxRpm")
         }
 
@@ -408,7 +411,7 @@ fun Project.registerJpackageTasks(
             group = "distribution"
             description = "Create macOS installer (DMG) using jpackage"
             dependsOnProvider?.let { dependsOn(it) }
-            onlyIf { org.gradle.internal.os.OperatingSystem.current().isMacOsX }
+            onlyIf { isMacOS() }
             doFirst { jpackageOutputDir.mkdirs() }
             // Add macOS-specific flags for better diagnostics and stable naming
             configureCommonJpackageArgs(
@@ -437,7 +440,7 @@ fun Project.registerJpackageTasks(
             group = "distribution"
             description = "Create macOS installer (PKG) using jpackage"
             dependsOnProvider?.let { dependsOn(it) }
-            onlyIf { org.gradle.internal.os.OperatingSystem.current().isMacOsX }
+            onlyIf { isMacOS() }
             doFirst { jpackageOutputDir.mkdirs() }
             configureCommonJpackageArgs(
                 installerType = "pkg",
@@ -518,7 +521,7 @@ val generateSchemaDiagrams by tasks.registering {
 
     doLast {
         try {
-            val gradlew = if (System.getProperty("os.name").lowercase().contains("win")) "gradlew.bat" else "gradlew"
+            val gradlew = if (isWindows()) "gradlew.bat" else "gradlew"
             val process = ProcessBuilder(
                 file(gradlew).absolutePath,
                 "-p", "schema/scripts/diagram-gen",

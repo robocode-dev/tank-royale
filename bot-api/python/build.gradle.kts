@@ -1,12 +1,13 @@
+import build.isWindows
+
 plugins {
     base
 }
 
 // Resolve venv Python path (creates OS-specific path under .venv)
 fun venvPythonPath(): String {
-    val isWindows = org.gradle.internal.os.OperatingSystem.current().isWindows
     val venvDir = project.layout.projectDirectory.dir(".venv").asFile
-    val py = if (isWindows) venvDir.resolve("Scripts/python.exe") else venvDir.resolve("bin/python")
+    val py = if (isWindows()) venvDir.resolve("Scripts/python.exe") else venvDir.resolve("bin/python")
     return py.absolutePath
 }
 
@@ -14,8 +15,7 @@ fun venvPythonPath(): String {
 val setupVenv by tasks.registering(Exec::class) {
     group = "python"
     description = "Creates local Python virtual environment and installs base requirements"
-    val os = org.gradle.internal.os.OperatingSystem.current()
-    if (os.isWindows) {
+    if (isWindows()) {
         commandLine("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "scripts/create-venv.ps1")
     } else {
         commandLine("bash", "scripts/create-venv.sh")
