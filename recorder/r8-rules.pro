@@ -18,21 +18,10 @@
 -dontwarn kotlin.**
 
 # Kotlinx Serialization
--keep class kotlinx.serialization.** { *; }
--keep class **$$serializer { *; }
--keepclassmembers class ** {
-    *** Companion;
-}
--keepclasseswithmembers class ** {
-    static ** serializer(...);
-}
--keepclasseswithmembers class ** {
-    kotlinx.serialization.KSerializer serializer(...);
-}
--keepclassmembers class kotlinx.serialization.** {
-    *;
-}
 -dontwarn kotlinx.serialization.**
+
+# Note: Serialization keep rules are handled by kotlinx-serialization-common.pro in META-INF
+# Our broad -keep for dev.robocode.tankroyale.** ensures serialized classes are retained
 
 # Clikt CLI library
 -keep class com.github.ajalt.clikt.** { *; }
@@ -54,7 +43,6 @@
 -keep class dev.robocode.tankroyale.** { *; }
 
 # Recorder-specific keep rules
--keep public class dev.robocode.tankroyale.recorder.cli.RecorderKt { *; }
 -keep public class dev.robocode.tankroyale.recorder.MainKt { *; }
 
 # Keep enum methods that may be accessed reflectively

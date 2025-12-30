@@ -23,21 +23,10 @@
 -dontwarn kotlin.**
 
 # Kotlinx Serialization
--keep class kotlinx.serialization.** { *; }
--keep class **$$serializer { *; }
--keepclassmembers class ** {
-    *** Companion;
-}
--keepclasseswithmembers class ** {
-    static ** serializer(...);
-}
--keepclasseswithmembers class ** {
-    kotlinx.serialization.KSerializer serializer(...);
-}
--keepclassmembers class kotlinx.serialization.** {
-    *;
-}
 -dontwarn kotlinx.serialization.**
+
+# Note: Serialization keep rules are handled by kotlinx-serialization-common.pro in META-INF
+# Our broad -keep for dev.robocode.tankroyale.** ensures serialized classes are retained
 
 # SLF4J logging
 -keep class org.slf4j.** { *; }
@@ -54,7 +43,6 @@
 
 # MigLayout (Swing layout manager)
 -keep class net.miginfocom.** { *; }
--keep class com.miglayout.** { *; }
 
 # Keep enum methods that may be accessed reflectively
 -keepclassmembers class * extends java.lang.Enum {
