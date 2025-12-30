@@ -114,6 +114,7 @@ class MockedServer:
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._thread: Optional[threading.Thread] = None
         self._server: Optional[websockets.serve] = None
+        self._current_websocket: Optional[websockets.WebSocketServerProtocol] = None
 
     @property
     def server_url(self) -> str:
@@ -153,6 +154,22 @@ class MockedServer:
         if self._thread:
             self._thread.join(timeout=1.0)
 
+    def close_connections(self) -> None:
+        """Close all active WebSocket connections."""
+        if self._current_websocket and self._loop:
+            asyncio.run_coroutine_threadsafe(
+                self._current_websocket.close(),
+                self._loop
+            )
+
+    def send_raw_text(self, text: str) -> None:
+        """Send raw text to the connected client (for testing malformed messages)."""
+        if self._current_websocket and self._loop:
+            asyncio.run_coroutine_threadsafe(
+                self._current_websocket.send(text),
+                self._loop
+            )
+
     # Await helpers
     def await_connection(self, timeout_ms: int) -> bool:
         return self._opened_event.wait(timeout_ms / 1000.0)
@@ -174,6 +191,9 @@ class MockedServer:
     # Config setters used by tests
     def set_energy(self, energy: float) -> None:
         self._energy = energy
+
+    def set_speed(self, speed: float) -> None:
+        self._speed = speed
 
     def set_gun_heat(self, gun_heat: float) -> None:
         self._gun_heat = gun_heat
@@ -214,9 +234,14 @@ class MockedServer:
     def set_radar_direction_max_limit(self, v: float) -> None:
         self._radar_direction_max_limit = v
 
+    def reset_bot_intent_event(self) -> None:
+        """Reset the bot intent event to allow awaiting multiple intents in sequence."""
+        self._bot_intent_event.clear()
+
     # Internal server logic
     async def _handler(self, websocket: websockets.WebSocketServerProtocol):
         # on open
+        self._current_websocket = websocket
         self._opened_event.set()
         await self._send_server_handshake(websocket)
 
@@ -283,6 +308,9 @@ class MockedServer:
         except websockets.exceptions.ConnectionClosed:
             # client closed connection
             pass
+        finally:
+            if self._current_websocket == websocket:
+                self._current_websocket = None
 
     def _reset_movement_commands(self):
         # This should match the Java/.NET logic

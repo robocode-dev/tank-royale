@@ -403,7 +403,10 @@ public final class MockedServer {
                 }
 
                 if (botIntent.getFirepower() != null) {
-                    tickEvent.getEvents().add(new BulletFiredEvent()); // bullet event is completely empty
+                    var bulletEvent = new BulletFiredEvent();
+                    bulletEvent.setType(BULLET_FIRED_EVENT);
+                    bulletEvent.setBullet(createBulletState(99));
+                    tickEvent.getEvents().add(bulletEvent);
                 }
             }
 
