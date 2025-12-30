@@ -42,7 +42,7 @@ if (javaVersion < minJdkVersion) {
     logger.warn(
         """
         ================================================================================
-        WARNING: JDK version ${javaVersion} may cause issues with ProGuard.
+        WARNING: JDK version ${javaVersion} may cause issues with the build.
 
         Recommended: JDK 17-21
         Current:     JDK ${javaVersion.majorVersion}
@@ -70,12 +70,20 @@ plugins {
 
 allprojects {
     repositories {
+        google()
         mavenLocal()
         mavenCentral()
     }
 }
 
 subprojects {
+    // Centralized buildscript configuration for all subprojects
+    buildscript {
+        repositories {
+            google()
+            mavenCentral()
+        }
+    }
 
     // Apply common Java configuration to all subprojects with a Java plugin
     plugins.withId("java") {

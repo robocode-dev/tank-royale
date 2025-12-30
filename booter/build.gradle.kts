@@ -1,5 +1,3 @@
-import proguard.gradle.ProGuardTask
-
 description = "Robocode Tank Royale Booter"
 
 val title = "Robocode Tank Royale Booter"
@@ -19,7 +17,7 @@ val intermediateJar = "$artifactBasePath-all.jar"
 
 buildscript {
     dependencies {
-        classpath(libs.proguard.gradle)
+        classpath(libs.r8)
     }
 }
 
@@ -55,34 +53,55 @@ tasks {
         from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     }
 
-    val proguard by registering(ProGuardTask::class) { // used for compacting and code-shaking
+    val proguard by registering(JavaExec::class) { // R8 shrinking task (kept name for compatibility)
         dependsOn(jar)
 
         doFirst {
             if (!file(intermediateJar).exists()) {
                 logger.error("Intermediate JAR not found at expected location: $intermediateJar")
-                throw GradleException("Cannot proceed with ProGuard. Ensure the 'jar' task successfully creates $intermediateJar.")
+                throw GradleException("Cannot proceed with R8. Ensure the 'jar' task successfully creates $intermediateJar.")
             }
-            logger.lifecycle("Found intermediate JAR: $intermediateJar. Proceeding with ProGuard.")
+            logger.lifecycle("Found intermediate JAR: $intermediateJar. Proceeding with R8.")
         }
 
-        configuration(file("proguard-rules.pro")) // Path to your ProGuard rules file
+        mainClass.set("com.android.tools.r8.R8")
+        classpath = buildscript.configurations["classpath"]
 
-        injars(intermediateJar) // Input JAR to process
-        outjars(finalJar)       // Output JAR after ProGuard processing
+        args = listOf(
+            "--release",
+            "--classfile",
+            "--lib", System.getProperty("java.home"),
+            "--output", finalJar,
+            "--pg-conf", file("r8-rules.pro").absolutePath,
+            intermediateJar
+        )
 
         doLast {
             if (!file(finalJar).exists()) {
-                logger.error("ProGuard task completed, but final JAR is missing: $finalJar")
-                throw GradleException("ProGuard did not produce the expected output.")
+                logger.error("R8 task completed, but final JAR is missing: $finalJar")
+                throw GradleException("R8 did not produce the expected output.")
             }
-            logger.lifecycle("ProGuard task completed successfully. Final JAR available at: $finalJar")
+            logger.lifecycle("R8 task completed successfully. Final JAR available at: $finalJar")
         }
     }
 
     register("runJar", JavaExec::class) {
         dependsOn(jar)
         classpath = files(jar)
+    }
+
+    val smokeTest by registering(Exec::class) {
+        dependsOn(proguard)
+        group = "verification"
+        description = "Smoke test the distributable JAR with --version"
+
+        commandLine("java", "-jar", finalJar, "--version")
+
+        doFirst {
+            if (!file(finalJar).exists()) {
+                throw GradleException("Final JAR not found at: $finalJar")
+            }
+        }
     }
 
     assemble {
@@ -95,16 +114,11 @@ tasks {
     val javadocJar = named("javadocJar")
     val sourcesJar = named("sourcesJar")
 
-    // Configure the maven publication to use the ProGuard jar as the main artifact
+    // Configure the maven publication to use the R8 jar as the main artifact
     publishing {
         publications {
             named<MavenPublication>("maven") {
-                val outJars = proguard.get().outJarFiles
-                if (outJars.isEmpty()) {
-                    throw GradleException("Proguard did not produce output artifacts")
-                }
-
-                artifact(proguard.get().outJarFiles[0]) {
+                artifact(file(finalJar)) {
                     builtBy(proguard)
                 }
                 artifact(javadocJar)
