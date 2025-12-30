@@ -40,8 +40,7 @@ Before you start contributing code to Robocode Tank Royale, please note:
 - **Dev Container:** It is strongly recommended to use the provided [devcontainer](.devcontainer) for a pre-configured
   development environment.
   See [Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers) for details.
-- **JDK Version:** You must use **JDK 17-21** to build the project with Gradle. Using JDK 11 (the runtime target) will
-  not work for building. Java 22+ may cause issues with ProGuard.
+- **JDK Version:** You must use **JDK 17+** to build the project with Gradle.
 - **Build Tools:** See the complete list of required tools in [tools.md](docs-build/docs/dev/tools.md).
 
 End users running Robocode only need Java 11 or newer, but developers building from source have different requirements.

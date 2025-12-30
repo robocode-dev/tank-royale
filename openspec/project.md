@@ -131,7 +131,7 @@ Key goals:
 
 ### Build Requirements
 
-- **JDK 17-21 required** for building (JDK 22+ may cause ProGuard issues)
+- **JDK 17+ required** for building
 - **Java 11+ required** for running (end users)
 - Use Dev Container (`.devcontainer/`) for consistent development environment
 - Python 3.x for Python bot development

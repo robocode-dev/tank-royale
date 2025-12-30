@@ -42,7 +42,7 @@
 # Markdown
 *.md            text
 
-# ProGuard
+# ProGuard / R8 rule files
 *.pro           text
 
 # These files are binary and should be left untouched

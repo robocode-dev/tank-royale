@@ -1,6 +1,6 @@
 # Packaging (jpackage)
 
-This component is built as an all-in-one runnable JAR and then compacted with ProGuard.
+This component is built as an all-in-one runnable JAR and then compacted with R8.
 
 - App name: Robocode Tank Royale Server
 - Main class: dev.robocode.tankroyale.server.ServerKt

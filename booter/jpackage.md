@@ -1,6 +1,6 @@
 # Packaging (jpackage)
 
-This component is packaged as a runnable JAR with all runtime dependencies included and then compacted via ProGuard.
+This component is packaged as a runnable JAR with all runtime dependencies included and then compacted via R8.
 
 - App name: Robocode Tank Royale Booter
 - Main class: dev.robocode.tankroyale.booter.BooterKt
@@ -18,4 +18,4 @@ When creating a native installer with jpackage, use parameters equivalent to:
 - --vendor robocode.dev
 - --icon <platform-specific icon path> (to be provided)
 
-Note: The Gradle build produces a fat/ProGuarded JAR; you can point jpackage at that output.
+Note: The Gradle build produces a fat/shrinked JAR; you can point jpackage at that output.

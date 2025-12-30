@@ -37,9 +37,6 @@ all the tools for macOS and Linux as well.
 
 - **For running Robocode (end users):** Java 11 or newer
 
-**Note:** Java 22 or newer may cause issues with ProGuard. This will be resolved in the future, but for now, stick to
-JDK 17-21 for building the project.
-
 ### .NET platform
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)

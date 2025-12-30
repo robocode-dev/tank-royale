@@ -1,7 +1,7 @@
 # Packaging (jpackage)
 
 This component assembles a fat JAR that embeds the booter, server, and recorder JARs and then compacts the result with
-ProGuard.
+R8.
 
 - App name: Robocode Tank Royale
 - Main class: dev.robocode.tankroyale.gui.GuiAppKt

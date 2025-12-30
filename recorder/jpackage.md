@@ -1,6 +1,6 @@
 # Packaging (jpackage)
 
-This component is produced as a runnable JAR with bundled runtime dependencies and compacted via ProGuard.
+This component is produced as a runnable JAR with bundled runtime dependencies and compacted via R8.
 
 - App name: Robocode Tank Royale Recorder
 - Main class: dev.robocode.tankroyale.recorder.RecorderKt
