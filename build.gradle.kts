@@ -224,7 +224,7 @@ fun Project.registerJpackageTasks(
     appName: String,
     packageName: String,
     mainJarPath: String,
-    dependsOnTaskName: String = "proguard"
+    dependsOnTaskName: String = "r8ShrinkTask"
 ) {
     val jpackageExecutable: String by lazy {
         val javaHome = System.getenv("JAVA_HOME") ?: System.getProperty("java.home")
@@ -482,7 +482,7 @@ subprojects {
             val appName = (extras["jpackageAppName"] as? String) ?: project.name
             val packageName = (extras["jpackagePackageName"] as? String) ?: appName.lowercase().replace(" ", "-")
             val mainJar = (extras["jpackageMainJar"] as? String)
-            val dependsOn = (extras["jpackageDependsOn"] as? String) ?: "proguard"
+            val dependsOn = (extras["jpackageDependsOn"] as? String) ?: "r8ShrinkTask"
             if (mainJar == null) {
                 logger.warn("jpackage enabled for ${project.path}, but 'jpackageMainJar' not provided – skipping task registration")
             } else {

@@ -42,7 +42,7 @@ dependencies {
 
 tasks {
     val copyBooterJar by registering(Copy::class) {
-        dependsOn(":booter:proguard")
+        dependsOn(":booter:r8ShrinkTask")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":booter").file("./build/libs"))
@@ -53,7 +53,7 @@ tasks {
     }
 
     val copyServerJar by registering(Copy::class) {
-        dependsOn(":server:proguard")
+        dependsOn(":server:r8ShrinkTask")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":server").file("./build/libs"))
@@ -64,7 +64,7 @@ tasks {
     }
 
     val copyRecorderJar by registering(Copy::class) {
-        dependsOn(":recorder:proguard")
+        dependsOn(":recorder:r8ShrinkTask")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
         from(project(":recorder").file("./build/libs"))
@@ -95,7 +95,7 @@ tasks {
         mainClass.set(jarManifestMainClass)
     }
 
-    val proguard by registering(JavaExec::class) { // R8 shrinking task (kept name for compatibility)
+    val r8ShrinkTask by registering(JavaExec::class) { // R8 shrinking task (kept name for compatibility)
         dependsOn(fatJar)
 
         doFirst {
@@ -128,12 +128,12 @@ tasks {
     }
 
     register("runJar", JavaExec::class) {
-        dependsOn(proguard)
+        dependsOn(r8ShrinkTask)
         classpath = files(finalJar)
     }
 
     val smokeTest by registering(Exec::class) {
-        dependsOn(proguard)
+        dependsOn(r8ShrinkTask)
         group = "verification"
         description = "Smoke test the distributable JAR with --version"
 
@@ -148,7 +148,7 @@ tasks {
 
     jar {
         enabled = false
-        dependsOn(proguard)
+        dependsOn(r8ShrinkTask)
     }
 
     test {
@@ -175,7 +175,7 @@ tasks {
         publications {
             named<MavenPublication>("maven") {
                 artifact(file(finalJar)) {
-                    builtBy(proguard)
+                    builtBy(r8ShrinkTask)
                 }
                 artifact(javadocJar) // required at Sonatype
                 artifact(sourcesJar)
@@ -192,5 +192,5 @@ tasks {
     extra["jpackagePackageName"] = packageName // For consistent installer filenames
     extra["jpackageMainJar"] = finalJar
     extra["jpackageMainClass"] = jarManifestMainClass
-    extra["jpackageDependsOn"] = "proguard"
+    extra["jpackageDependsOn"] = "r8ShrinkTask"
 }

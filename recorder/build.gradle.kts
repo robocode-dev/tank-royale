@@ -57,7 +57,7 @@ tasks {
         from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     }
 
-    val proguard by registering(JavaExec::class) { // R8 shrinking task (kept name for compatibility)
+    val r8ShrinkTask by registering(JavaExec::class) { // R8 shrinking task (kept name for compatibility)
         dependsOn(jar)
 
         doFirst {
@@ -95,7 +95,7 @@ tasks {
     }
 
     val smokeTest by registering(Exec::class) {
-        dependsOn(proguard)
+        dependsOn(r8ShrinkTask)
         group = "verification"
         description = "Smoke test the distributable JAR with --version"
 
@@ -109,7 +109,7 @@ tasks {
     }
 
     assemble {
-        dependsOn(proguard)
+        dependsOn(r8ShrinkTask)
         doLast {
             delete(intermediateJar) // Ensure intermediate JAR is cleaned
         }
@@ -123,7 +123,7 @@ tasks {
         publications {
             named<MavenPublication>("maven") {
                 artifact(file(finalJar)) {
-                    builtBy(proguard)
+                    builtBy(r8ShrinkTask)
                 }
                 artifact(javadocJar)
                 artifact(sourcesJar)
@@ -148,5 +148,5 @@ tasks {
     extra["jpackageAppName"] = title
     extra["jpackageMainJar"] = finalJar
     extra["jpackageMainClass"] = jarManifestMainClass
-    extra["jpackageDependsOn"] = "proguard"
+    extra["jpackageDependsOn"] = "r8ShrinkTask"
 }
