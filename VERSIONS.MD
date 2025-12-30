@@ -17,6 +17,8 @@
       - Improved event dumping to include all relevant events for the monitored bot, including `TickEvent`.
       - Enhanced formatting of event data with consistent indentation and ANSI colors.
       - Grouped `bulletState` entries under a `bulletStates` header for better readability in `TickEvent`.
+- Other:
+    - Replaced Proguard with R8 which is now the default code shrinker for Java projects.
 
 ## 📦 0.34.2 - Added native installer packages for GUI – 25-Dec-2025
 
