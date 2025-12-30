@@ -22,7 +22,7 @@ Key goals:
 
 - **Gradle** with Kotlin DSL (`build.gradle.kts`, `settings.gradle.kts`)
 - Version catalog: `gradle/libs.versions.toml`
-- Plugins: Shadow JAR, ProGuard, jsonschema2pojo, nexus-publish
+- Plugins: Shadow JAR, R8, jsonschema2pojo, nexus-publish
 
 ### Languages & Runtimes
 
@@ -40,7 +40,7 @@ Key goals:
 - `com.github.weisj:jsvg` – SVG rendering (GUI)
 - `com.miglayout:miglayout-swing` – Swing layout (GUI)
 - `com.github.ajalt.clikt:clikt` – CLI parsing
-- `com.guardsquare:proguard-gradle` – code shrinking/obfuscation
+- `com.android.tools:r8` – code shrinking/optimization
 - `org.slf4j:slf4j-api` – logging
 
 ### Project Modules
