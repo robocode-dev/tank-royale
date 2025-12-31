@@ -15,13 +15,20 @@ public class CommandsMovementTest : AbstractBotTest
     public void GivenMovementCommandsSet_whenGo_thenIntentContainsClampedValues()
     {
         // Arrange
-        var bot = StartAndAwaitTick();
+        var bot = Start();
 
         // Ensure all movement limits are unset so intent is always accepted
-        bot.MaxSpeed = double.MaxValue;
-        bot.MaxTurnRate = double.MaxValue;
-        bot.MaxGunTurnRate = double.MaxValue;
-        bot.MaxRadarTurnRate = double.MaxValue;
+        Server.SetSpeedMinLimit(double.NegativeInfinity);
+        Server.SetSpeedMaxLimit(double.PositiveInfinity);
+        Server.SetDirectionMinLimit(double.NegativeInfinity);
+        Server.SetDirectionMaxLimit(double.PositiveInfinity);
+        Server.SetGunDirectionMinLimit(double.NegativeInfinity);
+        Server.SetGunDirectionMaxLimit(double.PositiveInfinity);
+        Server.SetRadarDirectionMinLimit(double.NegativeInfinity);
+        Server.SetRadarDirectionMaxLimit(double.PositiveInfinity);
+
+        AwaitBotHandshake();
+        AwaitGameStarted(bot);
 
         // Act: set values beyond limits to verify clamping
         bot.TurnRate = 999; // > MAX_TURN_RATE

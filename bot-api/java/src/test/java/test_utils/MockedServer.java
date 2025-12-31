@@ -82,8 +82,8 @@ public final class MockedServer {
 
     private CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
 
-    private BotHandshake botHandshake;
-    private BotIntent botIntent;
+    private volatile BotHandshake botHandshake;
+    private volatile BotIntent botIntent;
 
 
     public static URI getServerUrl() {
@@ -181,6 +181,7 @@ public final class MockedServer {
 
     public void resetBotIntentLatch() {
         botIntentLatch = new CountDownLatch(1);
+        botIntentContinueLatch = new CountDownLatch(1);
     }
 
     public boolean awaitConnection(int milliSeconds) {
