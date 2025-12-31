@@ -277,19 +277,26 @@ Phase 4: Refactor Radar Tests (TR-API-CMD-003)
   ├─→ .NET:   Refactor CommandsRadarTest
   └─→ Python: Implement test_commands_radar.py
   
-Phase 5: Refactor All Existing Tests
+Phase 5: Refactor All Existing Tests (incl. CMD-001, CMD-004)
   │
   ├─→ Audit all MockedServer-based tests
-  ├─→ Apply new patterns incrementally
+  ├─→ Apply new patterns to CMD-001 (movement) tests
+  ├─→ Apply new patterns to CMD-004 (graphics) tests if applicable
   └─→ Remove old coordination code
   
-Phase 6: Documentation
+Phase 6: Mock/Stub Test Bot Factory
+  │
+  ├─→ Java:   TestBotBuilder + configurable behaviors
+  ├─→ .NET:   TestBotBuilder + configurable behaviors
+  └─→ Python: test_bot_factory + configurable behaviors
+  
+Phase 7: Documentation
   │
   ├─→ Create TESTING-GUIDE.md
   ├─→ Update TEST-MATRIX.md
   └─→ Add inline documentation
   
-Phase 7-8: Validation & Review
+Phase 8-9: Validation & Review
   │
   ├─→ Run all tests 20x for stability
   ├─→ Measure performance
@@ -299,15 +306,16 @@ Phase 7-8: Validation & Review
 
 ## Success Metrics
 
-| Metric               | Before    | After     | Improvement          |
-|----------------------|-----------|-----------|----------------------|
-| Lines per test       | ~35       | ~15       | **57% reduction**    |
-| Coordination points  | 7         | 0         | **100% elimination** |
-| Race conditions      | 3         | 0         | **100% elimination** |
-| Thread.sleep() calls | 2-3       | 0         | **100% elimination** |
-| Test readability     | Poor      | Excellent | **Qualitative**      |
-| Test stability       | Flaky     | Stable    | **Qualitative**      |
-| Time to write test   | 30-60 min | 10-15 min | **60% reduction**    |
+| Metric                     | Before    | After     | Improvement          |
+|----------------------------|-----------|-----------|----------------------|
+| Lines per test             | ~35       | ~15       | **57% reduction**    |
+| Coordination points        | 7         | 0         | **100% elimination** |
+| Race conditions            | 3         | 0         | **100% elimination** |
+| Thread.sleep() calls       | 2-3       | 0         | **100% elimination** |
+| Test readability           | Poor      | Excellent | **Qualitative**      |
+| Test stability             | Flaky     | Stable    | **Qualitative**      |
+| Time to write test         | 30-60 min | 10-15 min | **60% reduction**    |
+| Mock bot setup boilerplate | High      | Minimal   | **Builder pattern**  |
 
 ## Impact Summary
 
@@ -315,6 +323,11 @@ Phase 7-8: Validation & Review
 
 - ✅ Test infrastructure (MockedServer, AbstractBotTest)
 - ✅ Test implementations (new and refactored)
+- ✅ TR-API-CMD-001 tests (movement) - refactored
+- ✅ TR-API-CMD-002 tests (fire) - new
+- ✅ TR-API-CMD-003 tests (radar) - refactored
+- ✅ TR-API-CMD-004 tests (graphics) - refactored where applicable
+- ✅ Mock/stub test bot factory
 - ✅ Documentation (TESTING-GUIDE.md)
 
 ### What Doesn't Change
@@ -333,11 +346,12 @@ Week 1-3:  Enhanced MockedServer (all languages)
 Week 4:    Command execution utilities (all languages)
 Week 5-6:  Fire command tests (TR-API-CMD-002)
 Week 7:    Radar test refactor (TR-API-CMD-003)
-Week 8-10: Refactor all existing tests
-Week 11:   Documentation
-Week 12:   Validation, review, finalization
+Week 8-10: Refactor all existing tests (incl. CMD-001, CMD-004)
+Week 11:   Mock/stub test bot factory
+Week 12:   Documentation
+Week 13:   Validation, review, finalization
 
-Total: 12 weeks (6-10 weeks estimated effort)
+Total: 13 weeks (7-11 weeks estimated effort)
 ```
 
 ## Next Steps

@@ -163,6 +163,79 @@ protected BotIntent executeBlocking(Runnable blockingCommand) {
 }
 ```
 
+### Pattern 4: Mock/Stub Test Bot Factory
+
+**Problem**: Creating test bots requires boilerplate code in each test class.
+
+**Solution**: A builder/factory that produces configurable test bots.
+
+```java
+// Instead of:
+private class TestBot extends BaseBot {
+    public TestBot() {
+        super(BotInfo.builder()...build(), server.getServerUrl());
+    }
+
+    @Override
+    public void run() { /* custom logic */ }
+
+    @Override
+    public void onScannedBot(ScannedBotEvent e) { /* custom logic */ }
+}
+
+BaseBot bot = new TestBot();
+
+// Use:
+BaseBot bot = TestBotBuilder.create(server)
+    .withName("TestBot")
+    .onRun(() -> { /* custom logic */ })
+    .onScannedBot(e -> { /* custom logic */ })
+    .build();
+```
+
+**Implementation** (Java):
+
+```java
+public class TestBotBuilder {
+    private final MockedServer server;
+    private String name = "TestBot";
+    private Runnable onRun = () -> {
+    };
+    private Consumer<ScannedBotEvent> onScannedBot = e -> {
+    };
+    // ... other callbacks
+
+    public static TestBotBuilder create(MockedServer server) {
+        return new TestBotBuilder(server);
+    }
+
+    public TestBotBuilder withName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public TestBotBuilder onRun(Runnable handler) {
+        this.onRun = handler;
+        return this;
+    }
+
+    public TestBotBuilder onScannedBot(Consumer<ScannedBotEvent> handler) {
+        this.onScannedBot = handler;
+        return this;
+    }
+
+    public BaseBot build() {
+        var botInfo = BotInfo.builder()
+            .setName(name)
+            .setVersion("1.0")
+            .addAuthor("Test")
+            .build();
+        return new ConfigurableTestBot(botInfo, server.getServerUrl(),
+            onRun, onScannedBot, /* other callbacks */);
+    }
+}
+```
+
 ## API Specifications
 
 ### MockedServer Enhancements

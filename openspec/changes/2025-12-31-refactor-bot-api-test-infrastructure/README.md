@@ -128,7 +128,7 @@ This is **purely test infrastructure improvement**.
 
 ## Timeline
 
-**Estimated Duration**: 6-10 weeks (29-48 days)
+**Estimated Duration**: 7-11 weeks (35-56 days)
 
 **Phases**:
 
@@ -136,17 +136,20 @@ This is **purely test infrastructure improvement**.
 2. Command execution utilities (1 week)
 3. Fire command tests (1.5 weeks)
 4. Radar test refactor (1 week)
-5. Full test refactor (2-3 weeks)
-6. Documentation (1 week)
-7. Validation (1 week)
-8. Review (0.5 weeks)
+5. Full test refactor incl. CMD-001, CMD-004 (2-3 weeks)
+6. Mock/stub test bot factory (1 week)
+7. Documentation (1 week)
+8. Validation (1 week)
+9. Review (0.5 weeks)
 
 ## Success Criteria
 
-- ✅ All TR-API-CMD-001 movement command tests passing
-- ✅ All TR-API-CMD-002 fire command tests passing
-- ✅ All TR-API-CMD-003 radar/scan tests passing
-- ✅ All existing tests refactored and stable
+- ✅ All TR-API-CMD-001 movement command tests updated to use new framework
+- ✅ All TR-API-CMD-002 fire command tests implemented (new) and passing
+- ✅ All TR-API-CMD-003 radar/scan tests refactored and passing
+- ✅ TR-API-CMD-004 graphics frame emission tests updated to use new framework
+- ✅ All existing MockedServer-based tests refactored and stable
+- ✅ Ability to create mock/stub test bots for easier test authoring
 - ✅ No flaky tests
 - ✅ Test execution time reasonable (<2x baseline)
 - ✅ TESTING-GUIDE.md complete

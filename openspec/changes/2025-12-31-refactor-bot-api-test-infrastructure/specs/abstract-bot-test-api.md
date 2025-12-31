@@ -802,3 +802,350 @@ assertTrue(result.result); // We know energy=100, so this should succeed
 
 Tests should not need to worry about thread safety when using the provided helper methods.
 
+## Test Bot Builder/Factory
+
+### Overview
+
+The TestBotBuilder provides a fluent API for creating configurable test bots without boilerplate. This eliminates the
+need to create inner classes for each test scenario.
+
+### Java Implementation
+
+```java
+package test_utils;
+
+import dev.robocode.tankroyale.botapi.*;
+import dev.robocode.tankroyale.botapi.events.*;
+
+import java.net.URI;
+import java.util.function.Consumer;
+
+/**
+ * Builder for creating configurable test bots.
+ *
+ * <p>Usage:
+ * <pre>
+ * BaseBot bot = TestBotBuilder.create(server)
+ *     .withName("TestBot")
+ *     .onRun(() -> { /* custom run logic */ })
+    *.onScannedBot(e ->{ /* handle scan */ })
+    *.
+
+build();
+ * </pre>
+    */
+
+public class TestBotBuilder {
+    private final MockedServer server;
+    private String name = "TestBot";
+    private String version = "1.0";
+    private Runnable onRun = () -> {
+    };
+    private Consumer<ScannedBotEvent> onScannedBot = e -> {
+    };
+    private Consumer<HitByBulletEvent> onHitByBullet = e -> {
+    };
+    private Consumer<BulletHitBotEvent> onBulletHit = e -> {
+    };
+    private Consumer<DeathEvent> onDeath = e -> {
+    };
+
+    private TestBotBuilder(MockedServer server) {
+        this.server = server;
+    }
+
+    public static TestBotBuilder create(MockedServer server) {
+        return new TestBotBuilder(server);
+    }
+
+    public TestBotBuilder withName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public TestBotBuilder withVersion(String version) {
+        this.version = version;
+        return this;
+    }
+
+    public TestBotBuilder onRun(Runnable handler) {
+        this.onRun = handler;
+        return this;
+    }
+
+    public TestBotBuilder onScannedBot(Consumer<ScannedBotEvent> handler) {
+        this.onScannedBot = handler;
+        return this;
+    }
+
+    public TestBotBuilder onHitByBullet(Consumer<HitByBulletEvent> handler) {
+        this.onHitByBullet = handler;
+        return this;
+    }
+
+    public TestBotBuilder onBulletHit(Consumer<BulletHitBotEvent> handler) {
+        this.onBulletHit = handler;
+        return this;
+    }
+
+    public TestBotBuilder onDeath(Consumer<DeathEvent> handler) {
+        this.onDeath = handler;
+        return this;
+    }
+
+    public BaseBot build() {
+        var botInfo = BotInfo.builder()
+            .setName(name)
+            .setVersion(version)
+            .addAuthor("Test")
+            .build();
+        return new ConfigurableTestBot(botInfo, server.getServerUrl(),
+            onRun, onScannedBot, onHitByBullet, onBulletHit, onDeath);
+    }
+
+    private static class ConfigurableTestBot extends BaseBot {
+        private final Runnable onRunHandler;
+        private final Consumer<ScannedBotEvent> onScannedBotHandler;
+        private final Consumer<HitByBulletEvent> onHitByBulletHandler;
+        private final Consumer<BulletHitBotEvent> onBulletHitHandler;
+        private final Consumer<DeathEvent> onDeathHandler;
+
+        ConfigurableTestBot(BotInfo botInfo, URI serverUrl,
+                            Runnable onRun,
+                            Consumer<ScannedBotEvent> onScannedBot,
+                            Consumer<HitByBulletEvent> onHitByBullet,
+                            Consumer<BulletHitBotEvent> onBulletHit,
+                            Consumer<DeathEvent> onDeath) {
+            super(botInfo, serverUrl);
+            this.onRunHandler = onRun;
+            this.onScannedBotHandler = onScannedBot;
+            this.onHitByBulletHandler = onHitByBullet;
+            this.onBulletHitHandler = onBulletHit;
+            this.onDeathHandler = onDeath;
+        }
+
+        @Override
+        public void run() {
+            onRunHandler.run();
+        }
+
+        @Override
+        public void onScannedBot(ScannedBotEvent e) {
+            onScannedBotHandler.accept(e);
+        }
+
+        @Override
+        public void onHitByBullet(HitByBulletEvent e) {
+            onHitByBulletHandler.accept(e);
+        }
+
+        @Override
+        public void onBulletHitBot(BulletHitBotEvent e) {
+            onBulletHitHandler.accept(e);
+        }
+
+        @Override
+        public void onDeath(DeathEvent e) {
+            onDeathHandler.accept(e);
+        }
+    }
+}
+```
+
+### .NET Implementation
+
+```csharp
+public class TestBotBuilder
+{
+    private readonly MockedServer _server;
+    private string _name = "TestBot";
+    private string _version = "1.0";
+    private Action _onRun = () => {};
+    private Action<ScannedBotEvent> _onScannedBot = _ => {};
+    private Action<HitByBulletEvent> _onHitByBullet = _ => {};
+    private Action<BulletHitBotEvent> _onBulletHit = _ => {};
+    private Action<DeathEvent> _onDeath = _ => {};
+    
+    private TestBotBuilder(MockedServer server) { _server = server; }
+    
+    public static TestBotBuilder Create(MockedServer server) => new(server);
+    
+    public TestBotBuilder WithName(string name) { _name = name; return this; }
+    public TestBotBuilder WithVersion(string version) { _version = version; return this; }
+    public TestBotBuilder OnRun(Action handler) { _onRun = handler; return this; }
+    public TestBotBuilder OnScannedBot(Action<ScannedBotEvent> handler) { _onScannedBot = handler; return this; }
+    public TestBotBuilder OnHitByBullet(Action<HitByBulletEvent> handler) { _onHitByBullet = handler; return this; }
+    public TestBotBuilder OnBulletHit(Action<BulletHitBotEvent> handler) { _onBulletHit = handler; return this; }
+    public TestBotBuilder OnDeath(Action<DeathEvent> handler) { _onDeath = handler; return this; }
+    
+    public BaseBot Build()
+    {
+        var botInfo = BotInfo.Builder()
+            .SetName(_name)
+            .SetVersion(_version)
+            .AddAuthor("Test")
+            .Build();
+        return new ConfigurableTestBot(botInfo, MockedServer.ServerUrl,
+            _onRun, _onScannedBot, _onHitByBullet, _onBulletHit, _onDeath);
+    }
+    
+    private class ConfigurableTestBot : BaseBot
+    {
+        private readonly Action _onRunHandler;
+        private readonly Action<ScannedBotEvent> _onScannedBotHandler;
+        private readonly Action<HitByBulletEvent> _onHitByBulletHandler;
+        private readonly Action<BulletHitBotEvent> _onBulletHitHandler;
+        private readonly Action<DeathEvent> _onDeathHandler;
+        
+        public ConfigurableTestBot(BotInfo botInfo, Uri serverUrl,
+            Action onRun,
+            Action<ScannedBotEvent> onScannedBot,
+            Action<HitByBulletEvent> onHitByBullet,
+            Action<BulletHitBotEvent> onBulletHit,
+            Action<DeathEvent> onDeath) : base(botInfo, serverUrl)
+        {
+            _onRunHandler = onRun;
+            _onScannedBotHandler = onScannedBot;
+            _onHitByBulletHandler = onHitByBullet;
+            _onBulletHitHandler = onBulletHit;
+            _onDeathHandler = onDeath;
+        }
+        
+        public override void Run() => _onRunHandler();
+        public override void OnScannedBot(ScannedBotEvent e) => _onScannedBotHandler(e);
+        public override void OnHitByBullet(HitByBulletEvent e) => _onHitByBulletHandler(e);
+        public override void OnBulletHitBot(BulletHitBotEvent e) => _onBulletHitHandler(e);
+        public override void OnDeath(DeathEvent e) => _onDeathHandler(e);
+    }
+}
+```
+
+### Python Implementation
+
+```python
+class TestBotFactory:
+    """Factory for creating configurable test bots."""
+    
+    def __init__(self, server):
+        self.server = server
+        self._name = "TestBot"
+        self._version = "1.0"
+        self._on_run = lambda: None
+        self._on_scanned_bot = lambda e: None
+        self._on_hit_by_bullet = lambda e: None
+        self._on_bullet_hit = lambda e: None
+        self._on_death = lambda e: None
+    
+    @classmethod
+    def create(cls, server):
+        return cls(server)
+    
+    def with_name(self, name):
+        self._name = name
+        return self
+    
+    def with_version(self, version):
+        self._version = version
+        return self
+    
+    def on_run(self, handler):
+        self._on_run = handler
+        return self
+    
+    def on_scanned_bot(self, handler):
+        self._on_scanned_bot = handler
+        return self
+    
+    def on_hit_by_bullet(self, handler):
+        self._on_hit_by_bullet = handler
+        return self
+    
+    def on_bullet_hit(self, handler):
+        self._on_bullet_hit = handler
+        return self
+    
+    def on_death(self, handler):
+        self._on_death = handler
+        return self
+    
+    def build(self):
+        bot_info = BotInfo(
+            name=self._name,
+            version=self._version,
+            authors=["Test"],
+            description="Test bot",
+            homepage="",
+            country_codes=[],
+            game_types=["classic"],
+            platform="Python",
+            programming_lang="Python 3.x",
+            initial_position=None
+        )
+        return ConfigurableTestBot(
+            bot_info, self.server.server_url,
+            self._on_run, self._on_scanned_bot, self._on_hit_by_bullet,
+            self._on_bullet_hit, self._on_death
+        )
+
+
+class ConfigurableTestBot(BaseBot):
+    """Test bot with configurable event handlers."""
+    
+    def __init__(self, bot_info, server_url, on_run, on_scanned_bot,
+                 on_hit_by_bullet, on_bullet_hit, on_death):
+        super().__init__(bot_info, server_url)
+        self._on_run_handler = on_run
+        self._on_scanned_bot_handler = on_scanned_bot
+        self._on_hit_by_bullet_handler = on_hit_by_bullet
+        self._on_bullet_hit_handler = on_bullet_hit
+        self._on_death_handler = on_death
+    
+    def run(self):
+        self._on_run_handler()
+    
+    def on_scanned_bot(self, event):
+        self._on_scanned_bot_handler(event)
+    
+    def on_hit_by_bullet(self, event):
+        self._on_hit_by_bullet_handler(event)
+    
+    def on_bullet_hit_bot(self, event):
+        self._on_bullet_hit_handler(event)
+    
+    def on_death(self, event):
+        self._on_death_handler(event)
+```
+
+### Usage Examples
+
+#### Simple Passive Bot
+
+```java
+BaseBot bot = TestBotBuilder.create(server)
+    .withName("PassiveBot")
+    .build();
+```
+
+#### Bot That Fires on Scan
+
+```java
+BaseBot bot = TestBotBuilder.create(server)
+    .withName("AggressiveBot")
+    .onScannedBot(e -> {
+        fire(1.0);
+    })
+    .build();
+```
+
+#### Bot for Testing Specific Behavior
+
+```java
+AtomicBoolean scanned = new AtomicBoolean(false);
+BaseBot bot = TestBotBuilder.create(server)
+    .onScannedBot(e -> scanned.set(true))
+    .build();
+
+// ... run test ...
+
+assertTrue(scanned.get());
+```

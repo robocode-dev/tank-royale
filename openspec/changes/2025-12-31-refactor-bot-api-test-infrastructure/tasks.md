@@ -236,6 +236,7 @@
 - [ ] Identify all tests using MockedServer
 - [ ] Create refactoring checklist
 - [ ] Prioritize by test complexity and importance
+- [ ] Include TR-API-CMD-001 (movement) and TR-API-CMD-004 (graphics) tests
 
 **Estimated time**: 1 day
 
@@ -243,7 +244,8 @@
 
 **Files**: Various in `bot-api/java/src/test/java/`
 
-- [ ] Refactor `CommandsMovementTest.java` (if exists)
+- [ ] Refactor `CommandsMovementTest.java` (TR-API-CMD-001) to use new utilities
+- [ ] Refactor graphics tests (TR-API-CMD-004) if applicable
 - [ ] Refactor lifecycle tests
 - [ ] Refactor any other MockedServer-based tests
 - [ ] Verify all tests pass after refactoring
@@ -254,19 +256,21 @@
 
 **Files**: Various in `bot-api/dotnet/test/src/`
 
-- [ ] Refactor `CommandsMovementTest.cs`
+- [ ] Refactor `CommandsMovementTest.cs` (TR-API-CMD-001) to use new utilities
+- [ ] Refactor graphics tests (TR-API-CMD-004) if applicable
 - [ ] Refactor lifecycle tests
 - [ ] Refactor any other MockedServer-based tests
 - [ ] Verify all tests pass after refactoring
 
 **Estimated time**: 2-3 days
 
-### Task 5.4: Refactor Python Tests
+### Task 5.4: Refactor/Implement Python Tests
 
 **Files**: Various in `bot-api/python/tests/`
 
-- [ ] Refactor or create movement tests
-- [ ] Refactor lifecycle tests
+- [ ] Implement movement tests (TR-API-CMD-001) using new patterns
+- [ ] Implement graphics tests (TR-API-CMD-004) if applicable
+- [ ] Refactor or implement lifecycle tests
 - [ ] Refactor any other MockedServer-based tests
 - [ ] Verify all tests pass after refactoring
 
@@ -282,15 +286,53 @@
 
 ---
 
-## Phase 6: Documentation and Guidelines
+## Phase 6: Mock/Stub Test Bot Factory
 
-### Task 6.1: Create TESTING-GUIDE.md
+### Task 6.1: Java Test Bot Builder
+
+**Files**: `bot-api/java/src/test/java/test_utils/TestBotBuilder.java` (new)
+
+- [ ] Create builder/factory for test bots
+- [ ] Support configurable bot behaviors (passive, aggressive, scanning)
+- [ ] Allow callback overrides for targeted testing
+- [ ] Add unit tests for the builder
+
+**Estimated time**: 1-2 days
+
+### Task 6.2: .NET Test Bot Builder
+
+**Files**: `bot-api/dotnet/test/src/test_utils/TestBotBuilder.cs` (new)
+
+- [ ] Create builder/factory for test bots
+- [ ] Support configurable bot behaviors
+- [ ] Allow callback overrides for targeted testing
+- [ ] Add unit tests for the builder
+
+**Estimated time**: 1-2 days
+
+### Task 6.3: Python Test Bot Factory
+
+**Files**: `bot-api/python/tests/test_utils/test_bot_factory.py` (new)
+
+- [ ] Create factory for test bots
+- [ ] Support configurable bot behaviors
+- [ ] Allow callback overrides for targeted testing
+- [ ] Add unit tests for the factory
+
+**Estimated time**: 1-2 days
+
+---
+
+## Phase 7: Documentation and Guidelines
+
+### Task 7.1: Create TESTING-GUIDE.md
 
 **Files**: `bot-api/tests/TESTING-GUIDE.md` (new)
 
 - [ ] Introduction: Why these patterns exist
 - [ ] MockedServer overview and capabilities
 - [ ] AbstractBotTest patterns and best practices
+- [ ] Test bot builder/factory usage
 - [ ] Examples: Simple command test
 - [ ] Examples: Blocking command test
 - [ ] Examples: State setup test
@@ -300,18 +342,20 @@
 
 **Estimated time**: 2 days
 
-### Task 6.2: Update TEST-MATRIX.md
+### Task 7.2: Update TEST-MATRIX.md
 
 **Files**: `bot-api/tests/TEST-MATRIX.md`
 
+- [ ] Mark CMD-001 as refactored/complete
 - [ ] Mark CMD-002 as complete
 - [ ] Mark CMD-003 as complete
+- [ ] Mark CMD-004 as refactored/complete (if applicable)
 - [ ] Add notes about new testing utilities
 - [ ] Link to TESTING-GUIDE.md
 
 **Estimated time**: 0.5 days
 
-### Task 6.3: Add Inline Documentation
+### Task 7.3: Add Inline Documentation
 
 - [ ] Add JavaDoc to Java test utilities
 - [ ] Add XML doc comments to .NET test utilities
@@ -322,9 +366,9 @@
 
 ---
 
-## Phase 7: Validation and Stabilization
+## Phase 8: Validation and Stabilization
 
-### Task 7.1: Comprehensive Test Run
+### Task 8.1: Comprehensive Test Run
 
 - [ ] Run all Java tests: `./gradlew :bot-api:java:test`
 - [ ] Run all .NET tests: `./gradlew :bot-api:dotnet:test`
@@ -334,7 +378,7 @@
 
 **Estimated time**: 1 day
 
-### Task 7.2: Stability Testing
+### Task 8.2: Stability Testing
 
 - [ ] Run each language's tests 20 times
 - [ ] Track any flaky tests
@@ -343,16 +387,18 @@
 
 **Estimated time**: 1 day
 
-### Task 7.3: Cross-Language Parity Check
+### Task 8.3: Cross-Language Parity Check
 
+- [ ] Verify CMD-001 tests are equivalent across languages
 - [ ] Verify CMD-002 tests are equivalent across languages
 - [ ] Verify CMD-003 tests are equivalent across languages
+- [ ] Verify CMD-004 tests are equivalent across languages (if applicable)
 - [ ] Verify test behavior is identical (not just names)
 - [ ] Document any intentional differences
 
 **Estimated time**: 0.5 days
 
-### Task 7.4: Performance Baseline
+### Task 8.4: Performance Baseline
 
 - [ ] Measure total test suite execution time per language
 - [ ] Compare to baseline (if available)
@@ -363,9 +409,9 @@
 
 ---
 
-## Phase 8: Review and Finalization
+## Phase 9: Review and Finalization
 
-### Task 8.1: Code Review Preparation
+### Task 9.1: Code Review Preparation
 
 - [ ] Ensure all code follows language conventions
 - [ ] Run linters/formatters on all changed files
@@ -374,7 +420,7 @@
 
 **Estimated time**: 1 day
 
-### Task 8.2: Documentation Review
+### Task 9.2: Documentation Review
 
 - [ ] Proofread TESTING-GUIDE.md
 - [ ] Verify all examples are tested and working
@@ -383,7 +429,7 @@
 
 **Estimated time**: 0.5 days
 
-### Task 8.3: Create Summary
+### Task 9.3: Create Summary
 
 **Files**: `openspec/changes/2025-12-31-refactor-bot-api-test-infrastructure/EXECUTION-SUMMARY.md`
 
@@ -398,14 +444,15 @@
 
 ## Summary
 
-**Total Estimated Time**: 29-48 days (6-10 weeks)
+**Total Estimated Time**: 35-56 days (7-11 weeks)
 
 **Critical Path**:
 
 1. Phase 1 (MockedServer) → Phase 2 (Utilities) → Phase 3 (Fire Tests)
 2. Phase 4 (Radar Refactor) can partially overlap with Phase 3
-3. Phase 5 (Full Refactor) depends on Phase 2
-4. Phase 6-8 (Documentation & Validation) can overlap with Phase 5
+3. Phase 5 (Full Refactor including CMD-001, CMD-004) depends on Phase 2
+4. Phase 6 (Mock Test Bot Factory) can partially overlap with Phase 5
+5. Phase 7-9 (Documentation & Validation) can overlap with Phase 5-6
 
 **Risk Mitigation**:
 
@@ -416,10 +463,13 @@
 
 **Success Metrics**:
 
-- All TR-API-CMD-002 tests passing ✅
-- All TR-API-CMD-003 tests passing ✅
-- All existing tests refactored and passing ✅
-- No flaky tests ✅
-- Test execution time < 2x baseline ✅
-- TESTING-GUIDE.md complete ✅
+- [ ] All TR-API-CMD-001 tests refactored and passing ✅
+- [ ] All TR-API-CMD-002 tests passing ✅
+- [ ] All TR-API-CMD-003 tests passing ✅
+- [ ] TR-API-CMD-004 tests refactored (if applicable) ✅
+- [ ] All existing tests refactored and passing ✅
+- [ ] Mock/stub test bot factory available ✅
+- [ ] No flaky tests ✅
+- [ ] Test execution time < 2x baseline ✅
+- [ ] TESTING-GUIDE.md complete ✅
 

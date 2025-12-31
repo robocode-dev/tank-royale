@@ -84,6 +84,7 @@
 - [ ] Tests follow patterns in [design.md](./design.md)
 - [ ] Tests use AbstractBotTest utilities (no manual coordination)
 - [ ] Tests use setBotStateAndAwaitTick (no manual state setup)
+- [ ] Tests use TestBotBuilder for test bot creation (where applicable)
 - [ ] Tests are readable (clear Arrange/Act/Assert)
 - [ ] Tests pass consistently (run 20 times)
 - [ ] Behavior identical across Java/.NET/Python
@@ -102,6 +103,12 @@
 
 ## 📊 Test Coverage
 
+### TR-API-CMD-001: Movement Commands (Refactor Existing)
+
+| Test              | Java | .NET | Python | Description                                     |
+|-------------------|------|------|--------|-------------------------------------------------|
+| movement_commands | ✅    | ✅    | ☐      | Needs refactor (Java/.NET) / implement (Python) |
+
 ### TR-API-CMD-002: Fire Command (New)
 
 | Test              | Java | .NET | Python | Description                                   |
@@ -119,6 +126,12 @@
 | blocking_rescan   | ✅    | ✅    | ☐      | Needs refactor (Java/.NET) / implement (Python) |
 | adjust_radar_body | ✅    | ✅    | ☐      | Needs refactor (Java/.NET) / implement (Python) |
 | adjust_radar_gun  | ✅    | ✅    | ☐      | Needs refactor (Java/.NET) / implement (Python) |
+
+### TR-API-CMD-004: Graphics Frame Emission (Refactor if applicable)
+
+| Test              | Java | .NET | Python | Description                                   |
+|-------------------|------|------|--------|-----------------------------------------------|
+| graphics_emission | ☐    | ☐    | ☐      | Refactor to use new patterns where applicable |
 
 ### Other Tests (Refactor)
 
@@ -156,21 +169,26 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │ Phase 5: Full Test Refactor (2-3 weeks)                        │
 ├─────────────────────────────────────────────────────────────────┤
-│ Week 8-10: Migrate all existing MockedServer-based tests      │
+│ Week 8-10: Migrate CMD-001, CMD-004, and other tests          │
 └─────────────────────────────────────────────────────────────────┘
 ┌─────────────────────────────────────────────────────────────────┐
-│ Phase 6: Documentation (1 week)                                │
+│ Phase 6: Mock/Stub Test Bot Factory (1 week)                   │
 ├─────────────────────────────────────────────────────────────────┤
-│ Week 11: TESTING-GUIDE.md, update TEST-MATRIX.md              │
+│ Week 11: TestBotBuilder in all languages                       │
 └─────────────────────────────────────────────────────────────────┘
 ┌─────────────────────────────────────────────────────────────────┐
-│ Phase 7-8: Validation & Review (1 week)                        │
+│ Phase 7: Documentation (1 week)                                │
 ├─────────────────────────────────────────────────────────────────┤
-│ Week 12: Stability testing, performance check, final review    │
+│ Week 12: TESTING-GUIDE.md, update TEST-MATRIX.md              │
+└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ Phase 8-9: Validation & Review (1 week)                        │
+├─────────────────────────────────────────────────────────────────┤
+│ Week 13: Stability testing, performance check, final review    │
 └─────────────────────────────────────────────────────────────────┘
 
-Total: 12 weeks (with buffer)
-Core effort: 6-10 weeks
+Total: 13 weeks (with buffer)
+Core effort: 7-11 weeks
 ```
 
 ## 🎓 Learning Resources
@@ -221,7 +239,8 @@ Core effort: 6-10 weeks
 1. **Atomic state setup**: `setBotStateAndAwaitTick()` guarantees bot sees new state
 2. **Command wrappers**: `executeCommand()` handles all coordination automatically
 3. **Blocking command support**: `executeBlocking()` for commands that call go() internally
-4. **Language parity**: Same semantics, idiomatic syntax per language
+4. **Mock bot factory**: `TestBotBuilder` eliminates test bot boilerplate
+5. **Language parity**: Same semantics, idiomatic syntax per language
 
 ### Out of Scope
 
@@ -235,10 +254,10 @@ Core effort: 6-10 weeks
 
 After this change completes:
 
-1. Apply patterns to TR-API-CMD-001 (movement)
-2. Consider test bot builder pattern
-3. Explore timeline-based test replays
-4. Extract shared test utilities
+1. Recording bot pattern for complex scenarios
+2. Timeline-based test replays
+3. Extract shared test utilities across languages
+4. Event injection utilities (TR-API-EVT-* tests)
 
 ## 🚀 Getting Started
 

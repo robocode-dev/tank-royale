@@ -206,11 +206,20 @@ Simplify existing radar tests in `CommandsRadarTest` (Java/.NET) to use the new 
 
 Apply the same patterns to existing tests:
 
-- `CommandsMovementTest` (Java/.NET)
+- `CommandsMovementTest` (Java/.NET) - TR-API-CMD-001 (already exists, needs refactoring)
+- TR-API-CMD-004 Graphics frame emission tests
 - Other command tests
 - Lifecycle tests
 
 **Goal**: Every test using MockedServer should be simple, readable, and follow the same pattern.
+
+### Phase 6: Mock/Stub Test Bot Factory
+
+Add helper utilities to create configurable mock/stub test bots:
+
+- Test bot factory/builder pattern for common test scenarios
+- Pre-configured bot behaviors (passive, aggressive, scanning, etc.)
+- Ability to override specific bot callbacks for targeted testing
 
 ## Impact
 
@@ -251,13 +260,16 @@ No user-facing behavior changes. This is purely test infrastructure improvement.
 
 ## Success Criteria
 
-1. ✅ All TR-API-CMD-002 fire command tests implemented and passing across Java, .NET, Python
-2. ✅ TR-API-CMD-003 radar/scan tests refactored and passing across Java, .NET, Python
-3. ✅ All existing MockedServer-based tests refactored to use new utilities
-4. ✅ Tests are simple, readable, and follow consistent patterns across languages
-5. ✅ No flaky tests due to race conditions or timing issues
-6. ✅ Test execution time remains reasonable (no significant regression)
-7. ✅ TESTING-GUIDE.md documents the new patterns with examples
+1. ✅ All TR-API-CMD-001 movement command tests refactored to use new utilities and passing across Java, .NET, Python
+2. ✅ All TR-API-CMD-002 fire command tests implemented and passing across Java, .NET, Python
+3. ✅ All TR-API-CMD-003 radar/scan tests refactored and passing across Java, .NET, Python
+4. ✅ TR-API-CMD-004 graphics frame emission tests refactored to use new utilities (where applicable)
+5. ✅ All existing MockedServer-based tests refactored to use new utilities
+6. ✅ Mock/stub test bot factory available for easy test bot creation
+7. ✅ Tests are simple, readable, and follow consistent patterns across languages
+8. ✅ No flaky tests due to race conditions or timing issues
+9. ✅ Test execution time remains reasonable (no significant regression)
+10. ✅ TESTING-GUIDE.md documents the new patterns with examples
 
 ## Non-Goals
 
@@ -283,15 +295,15 @@ No user-facing behavior changes. This is purely test infrastructure improvement.
 - Phase 2 (Command execution utilities): 1-2 days per language = 3-6 days
 - Phase 3 (Fire command tests): 2-3 days per language = 6-9 days
 - Phase 4 (Refactor radar tests): 1-2 days per language = 3-6 days
-- Phase 5 (Refactor all tests): 3-5 days per language = 9-15 days
+- Phase 5 (Refactor all tests, including CMD-001 and CMD-004): 3-5 days per language = 9-15 days
+- Phase 6 (Mock/stub test bot factory): 1-2 days per language = 3-6 days
 - Documentation: 2-3 days
 
-**Total**: 29-48 days (approximately 6-10 weeks)
+**Total**: 32-54 days (approximately 7-11 weeks)
 
 ## Follow-up Considerations
 
-1. **Movement command tests (TR-API-CMD-001)**: Apply same patterns for consistency
-2. **Test bot builder pattern**: Consider a fluent API for test bot setup
-3. **Recording bot pattern**: For complex scenarios, consider timeline-based test replays
-4. **Shared test utilities**: Extract common patterns into a cross-language test library (where practical)
+1. **Recording bot pattern**: For complex scenarios, consider timeline-based test replays
+2. **Shared test utilities**: Extract common patterns into a cross-language test library (where practical)
+3. **Event injection tests**: Consider adding utilities for injecting events (TR-API-EVT-* tests)
 
