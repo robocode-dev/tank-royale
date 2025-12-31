@@ -278,11 +278,51 @@
 
 ### Task 5.5: Remove Dead Code
 
-- [ ] Remove old helper methods no longer needed
-- [ ] Clean up commented-out code
+- [ ] Remove old test-specific helper methods no longer needed (in test classes, NOT MockedServer)
+- [ ] Clean up commented-out test code from refactoring
 - [ ] Update imports and dependencies
 
 **Estimated time**: 1 day
+
+### Task 5.6: Remove Bad Practice Methods from MockedServer
+
+**Files**:
+
+- `bot-api/java/src/test/java/test_utils/MockedServer.java`
+- `bot-api/dotnet/test/src/test_utils/MockedServer.cs`
+- `bot-api/python/tests/test_utils/mocked_server.py`
+
+**Methods to DELETE completely** (all languages):
+
+| Java                 | .NET                 | Python                |
+|----------------------|----------------------|-----------------------|
+| `setEnergy(double)`  | `SetEnergy(double)`  | `set_energy(float)`   |
+| `setGunHeat(double)` | `SetGunHeat(double)` | `set_gun_heat(float)` |
+| `setSpeed(double)`   | `SetSpeed(double)`   | `set_speed(float)`    |
+| `sendTick()`         | `SendTick()`         | `send_tick()`         |
+
+**Rationale**: These methods encourage flaky, timing-dependent tests. By removing them entirely:
+
+- ✅ Contributors cannot accidentally use bad patterns
+- ✅ No deprecation warnings to ignore
+- ✅ Forces use of `setBotStateAndAwaitTick()` which is deterministic
+- ✅ Cleaner API surface
+
+**Pre-requisites**:
+
+- [ ] ALL existing tests have been migrated (Task 5.1-5.4)
+- [ ] No code references these methods
+
+**Steps**:
+
+- [ ] Search codebase for any remaining usages
+- [ ] Delete methods from Java MockedServer
+- [ ] Delete methods from .NET MockedServer
+- [ ] Delete methods from Python MockedServer
+- [ ] Run all tests to confirm nothing breaks
+- [ ] Update any documentation referencing old methods
+
+**Estimated time**: 0.5 days
 
 ---
 
@@ -331,6 +371,7 @@
 
 - [ ] Introduction: Why these patterns exist
 - [ ] MockedServer overview and capabilities
+- [ ] Removed methods and why they were deleted (setEnergy, sendTick, etc.)
 - [ ] AbstractBotTest patterns and best practices
 - [ ] Test bot builder/factory usage
 - [ ] Examples: Simple command test
@@ -444,11 +485,11 @@
 
 ## Summary
 
-**Total Estimated Time**: 35-56 days (7-11 weeks)
+**Total Estimated Time**: 36-57 days (7-11 weeks)
 
 **Critical Path**:
 
-1. Phase 1 (MockedServer) → Phase 2 (Utilities) → Phase 3 (Fire Tests)
+1. Phase 1 (MockedServer + deprecations) → Phase 2 (Utilities) → Phase 3 (Fire Tests)
 2. Phase 4 (Radar Refactor) can partially overlap with Phase 3
 3. Phase 5 (Full Refactor including CMD-001, CMD-004) depends on Phase 2
 4. Phase 6 (Mock Test Bot Factory) can partially overlap with Phase 5

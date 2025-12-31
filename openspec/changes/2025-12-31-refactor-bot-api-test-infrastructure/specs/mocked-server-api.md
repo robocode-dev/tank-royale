@@ -18,7 +18,111 @@ purposes. This specification defines the enhanced API that makes testing simple 
 - .NET: `bot-api/dotnet/test/src/test_utils/MockedServer.cs`
 - Python: `bot-api/python/tests/test_utils/mocked_server.py`
 
-## Existing API (Preserved)
+## Backward Compatibility Guarantee
+
+**Existing tests will be migrated to new patterns.** After migration, bad practice methods will be **removed** to
+prevent future misuse:
+
+- ✅ New convenience methods replace problematic old methods
+- ✅ All existing tests are refactored during Phase 5
+- ✅ Bad practice methods are removed after all tests are migrated
+- ✅ Contributors cannot accidentally use unstable patterns
+
+**Rationale**: Keeping bad methods around—even with deprecation warnings—creates a trap for contributors. By removing
+them entirely, we ensure all future tests follow stable, deterministic patterns.
+
+## Methods to Remove (Breaking Change After Migration)
+
+The following methods will be **completely removed** from MockedServer after all tests are migrated. These methods
+encourage **unstable testing patterns** that lead to flaky tests.
+
+### Methods to Remove (❌ Delete After Migration)
+
+| Method                | Language | Reason for Removal                                       |
+|-----------------------|----------|----------------------------------------------------------|
+| `setEnergy(double)`   | Java     | Requires manual tick/sleep coordination; race conditions |
+| `setGunHeat(double)`  | Java     | Requires manual tick/sleep coordination; race conditions |
+| `setSpeed(double)`    | Java     | Requires manual tick/sleep coordination; race conditions |
+| `sendTick()`          | Java     | Requires manual timing; fragile tests                    |
+| `SetEnergy(double)`   | .NET     | Same as Java                                             |
+| `SetGunHeat(double)`  | .NET     | Same as Java                                             |
+| `SetSpeed(double)`    | .NET     | Same as Java                                             |
+| `SendTick()`          | .NET     | Same as Java                                             |
+| `set_energy(float)`   | Python   | Same as Java                                             |
+| `set_gun_heat(float)` | Python   | Same as Java                                             |
+| `set_speed(float)`    | Python   | Same as Java                                             |
+| `send_tick()`         | Python   | Same as Java                                             |
+
+### Why These Methods Are Harmful
+
+```java
+// ❌ BAD PATTERN - This is why we're removing these methods:
+server.setEnergy(5.0);        // State set, but bot doesn't see it yet
+server.
+
+sendTick();            // Tick sent, but bot hasn't processed it
+Thread.
+
+sleep(100);            // Arbitrary wait - timing dependent!
+bot.
+
+setFire(1.0);             // Race condition - might see old state!
+
+// What can go wrong:
+// 1. Sleep too short → bot hasn't processed tick → test fails intermittently
+// 2. Sleep too long → tests are slow
+// 3. CI server under load → timing varies → flaky tests
+// 4. Different machines → different timing → "works on my machine"
+```
+
+### What Replaces Them
+
+```java
+// ✅ GOOD PATTERN - Atomic, deterministic, guaranteed:
+server.setBotStateAndAwaitTick(5.0,0.0,null,null,null,null);
+// Bot GUARANTEED to see energy=5.0, gunHeat=0.0 before this returns
+
+var result = executeCommand(() -> bot.setFire(1.0));
+// Intent GUARANTEED to be captured before this returns
+```
+
+### Migration Strategy
+
+1. **Phase 1-4**: Add new methods, implement new tests
+2. **Phase 5**: Refactor ALL existing tests to use new patterns
+3. **Phase 5.5 (NEW)**: Remove bad practice methods from MockedServer
+4. **Phase 6+**: No going back - only good patterns available
+
+## Methods Kept (✅ Preserved)
+
+## Methods Kept (✅ Preserved)
+
+These low-level synchronization methods are still useful and remain available:
+
+```java
+// Still useful for advanced scenarios
+public boolean awaitBotHandshake(int timeoutMs)  // ✅ Fine-grained control
+
+public boolean awaitGameStarted(int timeoutMs)   // ✅ Fine-grained control
+
+public boolean awaitTick(int timeoutMs)          // ✅ Fine-grained control
+
+public boolean awaitBotIntent(int timeoutMs)     // ✅ Used by AbstractBotTest
+
+public void resetBotIntentLatch()                // ✅ Used by AbstractBotTest
+
+// Still useful for accessors
+public BotIntent getBotIntent()                  // ✅ Essential for assertions
+
+public BotHandshake getBotHandshake()            // ✅ Useful for verification
+
+public URI getServerUrl()                        // ✅ Required for bot connection
+```
+
+## Existing API (After Cleanup)
+
+The following methods remain after the cleanup. Bad practice methods (setEnergy, setGunHeat, setSpeed, sendTick) are *
+*removed**.
 
 ### Lifecycle
 
@@ -31,26 +135,6 @@ stop() : void
   
 closeConnections() : void
   Close all active WebSocket connections.
-```
-
-### State Setters (Basic)
-
-```
-setEnergy(energy: double) : void
-  Set the bot's energy value for subsequent ticks.
-  
-setSpeed(speed: double) : void
-  Set the bot's speed value for subsequent ticks.
-  
-setGunHeat(gunHeat: double) : void
-  Set the bot's gun heat value for subsequent ticks.
-  
-set<Field>Increment(increment: double) : void
-  Set per-tick increment for speed, turn, gunTurn, radarTurn.
-  
-set<Field>MinLimit(limit: double) : void
-set<Field>MaxLimit(limit: double) : void
-  Set min/max bounds for state fields (used to test boundary conditions).
 ```
 
 ### Synchronization Primitives
@@ -86,6 +170,17 @@ getBotIntent() : BotIntent
   
 getServerUrl() : URI/string
   Get the WebSocket URL for bot connection.
+```
+
+### State Setters (REMOVED - Use setBotStateAndAwaitTick instead)
+
+The following methods have been **removed** to prevent unstable test patterns:
+
+```
+❌ setEnergy(energy: double) : void       → Use setBotStateAndAwaitTick()
+❌ setSpeed(speed: double) : void         → Use setBotStateAndAwaitTick()
+❌ setGunHeat(gunHeat: double) : void     → Use setBotStateAndAwaitTick()
+❌ sendTick() : void                      → Use setBotStateAndAwaitTick()
 ```
 
 ## New API (Phase 1)

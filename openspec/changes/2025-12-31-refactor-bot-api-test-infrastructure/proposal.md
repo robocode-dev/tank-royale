@@ -45,6 +45,9 @@ Add **synchronous state management** APIs to MockedServer that guarantee the bot
 - `set_bot_state_and_await_tick(energy, gun_heat, speed, direction, ...)`: Atomically update and sync state
 - `reset_bot_intent_event()`: Already exists; ensure naming consistency
 
+**Note**: Bad practice methods (`setEnergy`, `setGunHeat`, `setSpeed`, `sendTick`) will be **removed** after all tests
+are migrated in Phase 5, not just deprecated.
+
 ### Phase 2: Synchronous Command Execution Utilities
 
 Add test helper methods to base test classes that handle the async orchestration:
@@ -277,6 +280,9 @@ No user-facing behavior changes. This is purely test infrastructure improvement.
 - This change does NOT affect bot behavior or wire protocol
 - This change does NOT add new Bot API features
 - Performance optimization of test execution (acceptable if tests remain reasonable)
+
+**Note**: Bad practice MockedServer methods WILL be removed (not just deprecated) to prevent contributors from falling
+into flaky test traps.
 
 ## Risks and Mitigations
 

@@ -38,25 +38,28 @@ The current test infrastructure is a **message-capture framework** optimized for
 Add **synchronous state management** to MockedServer:
 
 ```java
-// OLD: Multi-step, racy
-server.setEnergy(5.0);
+// OLD: Multi-step, racy (❌ Will be REMOVED)
+server.setEnergy(5.0);        // REMOVED after migration
 server.
 
-sendTick();
+sendTick();            // REMOVED after migration
 Thread.
 
-sleep(100); // Hope it processed!
+sleep(100);            // Hope it processed!
 bot.
 
 setFire(1.0);
 
-// NEW: Atomic, guaranteed
+// NEW: Atomic, guaranteed (✅ The only way)
 server.
 
 setBotStateAndAwaitTick(energy:5.0, gunHeat:0.0);
-
 boolean fired = bot.setFire(1.0); // Guaranteed to see energy=5.0
 ```
+
+**Important**: Old methods like `setEnergy()`, `setGunHeat()`, `setSpeed()`, and `sendTick()` will be **completely
+removed** from MockedServer after all tests are migrated. This ensures contributors cannot accidentally use unstable
+patterns.
 
 ### 2. Command Execution Utilities
 
@@ -123,6 +126,9 @@ Apply the same patterns across **all three languages** (Java, .NET, Python) to e
 - ❌ No changes to Bot API public interfaces
 - ❌ No changes to bot behavior or wire protocol
 - ❌ No new Bot API features
+
+**Breaking Change (Internal Only)**: Bad practice MockedServer methods (`setEnergy`, `setGunHeat`, `setSpeed`,
+`sendTick`) will be **removed** after all tests are migrated to prevent contributors from using unstable patterns.
 
 This is **purely test infrastructure improvement**.
 

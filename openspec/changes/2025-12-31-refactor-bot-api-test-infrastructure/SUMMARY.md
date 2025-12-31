@@ -329,6 +329,7 @@ Phase 8-9: Validation & Review
 - ✅ TR-API-CMD-004 tests (graphics) - refactored where applicable
 - ✅ Mock/stub test bot factory
 - ✅ Documentation (TESTING-GUIDE.md)
+- ✅ Bad practice methods **removed** from MockedServer (`setEnergy()`, `setGunHeat()`, `setSpeed()`, `sendTick()`)
 
 ### What Doesn't Change
 
@@ -336,6 +337,12 @@ Phase 8-9: Validation & Review
 - ❌ Bot behavior (zero changes)
 - ❌ Wire protocol (zero changes)
 - ❌ User-visible functionality (zero changes)
+
+### Breaking Changes (Test Code Only)
+
+- ⚠️ MockedServer methods `setEnergy()`, `setGunHeat()`, `setSpeed()`, `sendTick()` are **deleted**
+- ⚠️ Any test using these methods must be migrated first
+- ⚠️ After migration, these methods cannot be used (compile/runtime error)
 
 **This is purely internal test infrastructure improvement.**
 

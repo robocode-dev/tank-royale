@@ -64,19 +64,19 @@ optimized for protocol validation, not a **state-driven testing framework** opti
 **Solution**: Atomic "set-and-sync" operations.
 
 ```java
-// Instead of:
-server.setEnergy(5.0);
+// Instead of (❌ REMOVED - these methods no longer exist after migration):
+server.setEnergy(5.0);        // DELETED - caused race conditions
 server.
 
-sendTick();
+sendTick();            // DELETED - required manual coordination
 Thread.
 
-sleep(100); // hope the bot processed it
+sleep(100);            // Hope the bot processed it - flaky!
 bot.
 
 setFire(1.0);
 
-// Use:
+// Use (✅ THE ONLY WAY - deterministic and guaranteed):
 server.
 
 setBotStateAndAwaitTick(
@@ -84,9 +84,16 @@ setBotStateAndAwaitTick(
     gunHeat:0.0,
     /* other fields use defaults */
 );
-
 boolean fired = bot.setFire(1.0); // Guaranteed to see energy=5.0
 ```
+
+**Why the old methods are removed (not just deprecated)**:
+
+- `setEnergy()` alone doesn't guarantee the bot sees the value
+- `sendTick()` requires manual timing coordination
+- `Thread.sleep()` is timing-dependent and creates flaky tests
+- Race conditions between state update and command execution
+- Deprecation warnings can be ignored - removal cannot
 
 **Implementation**:
 
@@ -680,12 +687,26 @@ def test_TR_API_CMD_002_fire_energy_limit():
 
 ## Migration Strategy
 
+### Important: Bad Practice Methods Will Be Removed
+
+**After all tests are migrated, bad practice methods will be deleted.** This ensures contributors cannot fall into the
+trap of using unstable patterns:
+
+- Old methods (`setEnergy()`, `setGunHeat()`, `setSpeed()`, `sendTick()`) exist during migration only
+- After Phase 5 completes, these methods are **completely removed**
+- New contributors will only see and use the stable, deterministic APIs
+- No deprecation warnings to ignore - the methods simply don't exist
+
+This is a **breaking change for test code** but ensures long-term test stability.
+
 ### Phase 1: Add New APIs (Non-Breaking)
 
 1. Add `awaitBotReady()` / `AwaitBotReady()` / `await_bot_ready()` to MockedServer
 2. Add `setBotStateAndAwaitTick()` / etc. to MockedServer
 3. Create AbstractBotTest base classes with helper methods
 4. Verify new APIs work with simple smoke tests
+
+**Note**: Bad practice methods remain temporarily during migration, then removed in Phase 5.
 
 ### Phase 2: Implement New Tests
 

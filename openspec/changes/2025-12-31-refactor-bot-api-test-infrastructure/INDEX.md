@@ -240,7 +240,8 @@ Core effort: 7-11 weeks
 2. **Command wrappers**: `executeCommand()` handles all coordination automatically
 3. **Blocking command support**: `executeBlocking()` for commands that call go() internally
 4. **Mock bot factory**: `TestBotBuilder` eliminates test bot boilerplate
-5. **Language parity**: Same semantics, idiomatic syntax per language
+5. **Remove bad methods**: `setEnergy()`, `sendTick()`, etc. deleted to prevent misuse
+6. **Language parity**: Same semantics, idiomatic syntax per language
 
 ### Out of Scope
 
