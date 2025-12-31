@@ -93,10 +93,16 @@ def _from_json_object(obj: dict[str, Any], klass: Type[Any]) -> Any:
                 kwargs[key] = deserialized_items
             else:
                 kwargs[key] = value
-        elif "color" == key.lower():
-            assert _sanitize_type_str(str(sig.parameters[key].annotation)) == "Color"
-            assert isinstance(value, str)
-            kwargs[key] = schema.Color(value=value)
+        elif key.lower().endswith("color"):
+            annotation = _sanitize_type_str(str(sig.parameters[key].annotation))
+            if annotation == "Color":
+                if value is not None and isinstance(value, str):
+                    kwargs[key] = schema.Color(value=value)
+                else:
+                    kwargs[key] = None
+            else:
+                # Not actually a Color type, just a field ending with "color"
+                kwargs[key] = value
         else:
             kwargs[key] = value
     result = klass(**kwargs)

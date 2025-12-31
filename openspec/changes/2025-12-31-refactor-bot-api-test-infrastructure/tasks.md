@@ -1,0 +1,425 @@
+# Implementation Tasks
+
+## Phase 1: Enhanced MockedServer State Control
+
+### Task 1.1: Java MockedServer Enhancement
+
+**Files**: `bot-api/java/src/test/java/test_utils/MockedServer.java`
+
+- [ ] Add `awaitBotReady(int milliSeconds)` method
+    - Chains: `awaitBotHandshake()` → `awaitGameStarted()` → `awaitTick()`
+    - Returns `true` if all succeed within timeout
+- [ ] Add `setBotStateAndAwaitTick()` method with nullable parameters:
+    - `Double energy, Double gunHeat, Double speed, Double direction, Double gunDirection, Double radarDirection`
+    - Update internal state for non-null values
+    - Reset and await tick event
+    - Send tick with updated state
+    - Return success status
+- [ ] Refactor tick sending logic to support manual trigger
+- [ ] Add unit tests for new methods
+
+**Estimated time**: 1-2 days
+
+### Task 1.2: .NET MockedServer Enhancement
+
+**Files**: `bot-api/dotnet/test/src/test_utils/MockedServer.cs`
+
+- [ ] Add `AwaitBotReady(int timeoutMs = 1000)` method
+- [ ] Add `SetBotStateAndAwaitTick()` method with nullable parameters
+- [ ] Ensure threading safety with CountDownEvent
+- [ ] Add unit tests for new methods
+
+**Estimated time**: 1-2 days
+
+### Task 1.3: Python MockedServer Enhancement
+
+**Files**: `bot-api/python/tests/test_utils/mocked_server.py`
+
+- [ ] Add `await_bot_ready(timeout_ms: int = 1000)` method
+- [ ] Add `set_bot_state_and_await_tick()` method with optional parameters
+- [ ] Ensure thread-safe state updates
+- [ ] Handle asyncio event loop properly
+- [ ] Add unit tests for new methods
+
+**Estimated time**: 1-2 days
+
+### Task 1.4: Cross-Language Verification
+
+- [ ] Create smoke test that verifies state synchronization works identically across languages
+- [ ] Document any language-specific quirks
+
+**Estimated time**: 0.5 days
+
+---
+
+## Phase 2: Synchronous Command Execution Utilities
+
+### Task 2.1: Java AbstractBotTest Base Class
+
+**Files**: `bot-api/java/src/test/java/test_utils/AbstractBotTest.java` (new)
+
+- [ ] Create abstract base class
+- [ ] Implement `setUp()` and `tearDown()` with MockedServer lifecycle
+- [ ] Add `startBot()` method that starts bot and waits for ready
+- [ ] Add abstract `createTestBot()` method for subclasses
+- [ ] Implement `executeCommand(Supplier<T>)` method
+- [ ] Implement `executeBlocking(Runnable)` method
+- [ ] Create `CommandResult<T>` inner class
+- [ ] Add JavaDoc for all public methods
+
+**Estimated time**: 1 day
+
+### Task 2.2: .NET AbstractBotTest Enhancement
+
+**Files**: `bot-api/dotnet/test/src/AbstractBotTest.cs`
+
+- [ ] Add `ExecuteCommand<T>(Func<T>)` method
+- [ ] Add `ExecuteAndCaptureIntent(Action)` method
+- [ ] Add `ExecuteBlocking(Action)` method
+- [ ] Ensure thread safety with proper async/await patterns
+- [ ] Add XML documentation comments
+
+**Estimated time**: 1 day
+
+### Task 2.3: Python AbstractBotTest Base Class
+
+**Files**: `bot-api/python/tests/test_utils/abstract_bot_test.py` (new)
+
+- [ ] Create AbstractBotTest class
+- [ ] Implement `setup_method()` and `teardown_method()`
+- [ ] Add `start_bot()` method
+- [ ] Add abstract `create_test_bot()` method
+- [ ] Implement `_start_async()` and `_go_async()` helpers
+- [ ] Implement `execute_command()` method
+- [ ] Implement `execute_and_capture_intent()` method
+- [ ] Implement `execute_blocking()` method
+- [ ] Add type hints and docstrings
+
+**Estimated time**: 1 day
+
+### Task 2.4: Integration Testing
+
+- [ ] Create example test using new utilities in each language
+- [ ] Verify behavior is identical across languages
+- [ ] Document any differences
+
+**Estimated time**: 0.5 days
+
+---
+
+## Phase 3: Implement TR-API-CMD-002 Fire Command Tests
+
+### Task 3.1: Java CommandsFireTest
+
+**Files**: `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/CommandsFireTest.java` (new)
+
+- [ ] Create test class extending `AbstractBotTest`
+- [ ] Implement `createTestBot()` with simple test bot
+- [ ] Test: `test_TR_API_CMD_002_fire_power_bounds()`
+    - Verify firepower < 0.1 is clamped to 0.1 in intent
+    - Verify firepower > 3.0 is clamped to 3.0 in intent
+    - Verify valid firepower (1.0) is preserved in intent
+- [ ] Test: `test_TR_API_CMD_002_fire_cooldown()`
+    - Set gunHeat = 5.0, energy = 100.0
+    - Call `setFire(1.0)`
+    - Assert returns `false`
+    - Assert firepower is `null` in intent
+- [ ] Test: `test_TR_API_CMD_002_fire_energy_limit()`
+    - Set energy = 1.0, gunHeat = 0.0
+    - Call `setFire(3.0)`
+    - Assert returns `false`
+    - Assert firepower is `null` in intent
+- [ ] Test: `test_TR_API_CMD_002_fire_nan_throws()`
+    - Assert `setFire(Double.NaN)` throws `IllegalArgumentException`
+- [ ] Add proper annotations: `@Test`, `@DisplayName`, `@Tag`
+
+**Estimated time**: 2 days
+
+### Task 3.2: .NET CommandsFireTest
+
+**Files**: `bot-api/dotnet/test/src/CommandsFireTest.cs` (new)
+
+- [ ] Create test class inheriting `AbstractBotTest`
+- [ ] Implement test bot class
+- [ ] Test: `Test_TR_API_CMD_002_Fire_Power_Bounds()`
+- [ ] Test: `Test_TR_API_CMD_002_Fire_Cooldown()`
+- [ ] Test: `Test_TR_API_CMD_002_Fire_Energy_Limit()`
+- [ ] Test: `Test_TR_API_CMD_002_Fire_Nan_Throws()`
+- [ ] Add proper attributes: `[Test]`, `[Category]`, `[Property]`, `[Description]`
+
+**Estimated time**: 2 days
+
+### Task 3.3: Python CommandsFireTest
+
+**Files**: `bot-api/python/tests/bot_api/commands/test_commands_fire.py` (new)
+
+- [ ] Create test module
+- [ ] Create test fixture class extending `AbstractBotTest`
+- [ ] Create simple test bot class
+- [ ] Test: `test_TR_API_CMD_002_fire_power_bounds()`
+- [ ] Test: `test_TR_API_CMD_002_fire_cooldown()`
+- [ ] Test: `test_TR_API_CMD_002_fire_energy_limit()`
+- [ ] Test: `test_TR_API_CMD_002_fire_nan_throws()`
+- [ ] Add proper docstrings and pytest markers
+
+**Estimated time**: 2 days
+
+### Task 3.4: Verify Test Coverage
+
+- [ ] Run tests in all three languages
+- [ ] Verify all tests pass
+- [ ] Check test stability (run 10 times, should pass consistently)
+- [ ] Measure test execution time
+- [ ] Update TEST-MATRIX.md to mark CMD-002 as complete
+
+**Estimated time**: 0.5 days
+
+---
+
+## Phase 4: Refactor TR-API-CMD-003 Radar/Scan Tests
+
+### Task 4.1: Refactor Java CommandsRadarTest
+
+**Files**: `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/CommandsRadarTest.java` (if exists, create if not)
+
+- [ ] Convert to extend `AbstractBotTest`
+- [ ] Refactor `test_rescan_intent()` to use `executeCommand()`
+- [ ] Refactor `test_blocking_rescan()` to use `executeBlocking()`
+- [ ] Refactor `test_adjust_radar_body()` to use new patterns
+- [ ] Refactor `test_adjust_radar_gun()` to use new patterns
+- [ ] Remove manual thread spawning and sleep calls
+- [ ] Verify tests pass and are stable
+
+**Estimated time**: 1 day
+
+### Task 4.2: Refactor .NET CommandsRadarTest
+
+**Files**: `bot-api/dotnet/test/src/CommandsRadarTest.cs`
+
+- [ ] Refactor `Test_Rescan_Intent()` to use `ExecuteCommand()`
+- [ ] Refactor `Test_Blocking_Rescan()` to use `ExecuteBlocking()`
+- [ ] Refactor `Test_Adjust_Radar_Body()` to use new patterns
+- [ ] Refactor `Test_Adjust_Radar_Gun()` to use new patterns
+- [ ] Remove `Task.Run()` and `Thread.Sleep()` patterns
+- [ ] Verify tests pass and are stable
+
+**Estimated time**: 1 day
+
+### Task 4.3: Implement Python CommandsRadarTest
+
+**Files**: `bot-api/python/tests/bot_api/commands/test_commands_radar.py` (new)
+
+- [ ] Create test module extending `AbstractBotTest`
+- [ ] Implement `test_TR_API_CMD_003_rescan_intent()`
+- [ ] Implement `test_TR_API_CMD_003_blocking_rescan()`
+- [ ] Implement `test_TR_API_CMD_003_adjust_radar_body()`
+- [ ] Implement `test_TR_API_CMD_003_adjust_radar_gun()`
+- [ ] Verify tests pass and are stable
+
+**Estimated time**: 1.5 days
+
+### Task 4.4: Update Documentation
+
+- [ ] Update TEST-MATRIX.md to mark CMD-003 as complete
+- [ ] Document any Python-specific considerations
+
+**Estimated time**: 0.5 days
+
+---
+
+## Phase 5: Refactor All Existing MockedServer-based Tests
+
+### Task 5.1: Audit Existing Tests
+
+**Files**: All test files in `bot-api/*/test/`
+
+- [ ] Identify all tests using MockedServer
+- [ ] Create refactoring checklist
+- [ ] Prioritize by test complexity and importance
+
+**Estimated time**: 1 day
+
+### Task 5.2: Refactor Java Tests
+
+**Files**: Various in `bot-api/java/src/test/java/`
+
+- [ ] Refactor `CommandsMovementTest.java` (if exists)
+- [ ] Refactor lifecycle tests
+- [ ] Refactor any other MockedServer-based tests
+- [ ] Verify all tests pass after refactoring
+
+**Estimated time**: 2-3 days
+
+### Task 5.3: Refactor .NET Tests
+
+**Files**: Various in `bot-api/dotnet/test/src/`
+
+- [ ] Refactor `CommandsMovementTest.cs`
+- [ ] Refactor lifecycle tests
+- [ ] Refactor any other MockedServer-based tests
+- [ ] Verify all tests pass after refactoring
+
+**Estimated time**: 2-3 days
+
+### Task 5.4: Refactor Python Tests
+
+**Files**: Various in `bot-api/python/tests/`
+
+- [ ] Refactor or create movement tests
+- [ ] Refactor lifecycle tests
+- [ ] Refactor any other MockedServer-based tests
+- [ ] Verify all tests pass after refactoring
+
+**Estimated time**: 2-3 days
+
+### Task 5.5: Remove Dead Code
+
+- [ ] Remove old helper methods no longer needed
+- [ ] Clean up commented-out code
+- [ ] Update imports and dependencies
+
+**Estimated time**: 1 day
+
+---
+
+## Phase 6: Documentation and Guidelines
+
+### Task 6.1: Create TESTING-GUIDE.md
+
+**Files**: `bot-api/tests/TESTING-GUIDE.md` (new)
+
+- [ ] Introduction: Why these patterns exist
+- [ ] MockedServer overview and capabilities
+- [ ] AbstractBotTest patterns and best practices
+- [ ] Examples: Simple command test
+- [ ] Examples: Blocking command test
+- [ ] Examples: State setup test
+- [ ] Common pitfalls and solutions
+- [ ] Debugging tips
+- [ ] Cross-language considerations
+
+**Estimated time**: 2 days
+
+### Task 6.2: Update TEST-MATRIX.md
+
+**Files**: `bot-api/tests/TEST-MATRIX.md`
+
+- [ ] Mark CMD-002 as complete
+- [ ] Mark CMD-003 as complete
+- [ ] Add notes about new testing utilities
+- [ ] Link to TESTING-GUIDE.md
+
+**Estimated time**: 0.5 days
+
+### Task 6.3: Add Inline Documentation
+
+- [ ] Add JavaDoc to Java test utilities
+- [ ] Add XML doc comments to .NET test utilities
+- [ ] Add docstrings to Python test utilities
+- [ ] Add comments to complex test examples
+
+**Estimated time**: 1 day
+
+---
+
+## Phase 7: Validation and Stabilization
+
+### Task 7.1: Comprehensive Test Run
+
+- [ ] Run all Java tests: `./gradlew :bot-api:java:test`
+- [ ] Run all .NET tests: `./gradlew :bot-api:dotnet:test`
+- [ ] Run all Python tests: `./gradlew :bot-api:python:test`
+- [ ] Document any failures
+- [ ] Fix any issues found
+
+**Estimated time**: 1 day
+
+### Task 7.2: Stability Testing
+
+- [ ] Run each language's tests 20 times
+- [ ] Track any flaky tests
+- [ ] Fix or document flaky tests
+- [ ] Measure average test execution time
+
+**Estimated time**: 1 day
+
+### Task 7.3: Cross-Language Parity Check
+
+- [ ] Verify CMD-002 tests are equivalent across languages
+- [ ] Verify CMD-003 tests are equivalent across languages
+- [ ] Verify test behavior is identical (not just names)
+- [ ] Document any intentional differences
+
+**Estimated time**: 0.5 days
+
+### Task 7.4: Performance Baseline
+
+- [ ] Measure total test suite execution time per language
+- [ ] Compare to baseline (if available)
+- [ ] Document in proposal.md
+- [ ] Ensure no significant regression (>20%)
+
+**Estimated time**: 0.5 days
+
+---
+
+## Phase 8: Review and Finalization
+
+### Task 8.1: Code Review Preparation
+
+- [ ] Ensure all code follows language conventions
+- [ ] Run linters/formatters on all changed files
+- [ ] Verify all tests have proper metadata (tags, descriptions)
+- [ ] Check for any TODOs or FIXMEs
+
+**Estimated time**: 1 day
+
+### Task 8.2: Documentation Review
+
+- [ ] Proofread TESTING-GUIDE.md
+- [ ] Verify all examples are tested and working
+- [ ] Check for broken links
+- [ ] Ensure consistent terminology
+
+**Estimated time**: 0.5 days
+
+### Task 8.3: Create Summary
+
+**Files**: `openspec/changes/2025-12-31-refactor-bot-api-test-infrastructure/EXECUTION-SUMMARY.md`
+
+- [ ] List all files changed
+- [ ] Summarize key improvements
+- [ ] Document any breaking changes (should be none)
+- [ ] List follow-up tasks if any
+
+**Estimated time**: 0.5 days
+
+---
+
+## Summary
+
+**Total Estimated Time**: 29-48 days (6-10 weeks)
+
+**Critical Path**:
+
+1. Phase 1 (MockedServer) → Phase 2 (Utilities) → Phase 3 (Fire Tests)
+2. Phase 4 (Radar Refactor) can partially overlap with Phase 3
+3. Phase 5 (Full Refactor) depends on Phase 2
+4. Phase 6-8 (Documentation & Validation) can overlap with Phase 5
+
+**Risk Mitigation**:
+
+- Start with Java (reference implementation)
+- Validate patterns work before porting to .NET and Python
+- Keep old patterns working until migration complete
+- Test continuously, not just at end
+
+**Success Metrics**:
+
+- All TR-API-CMD-002 tests passing ✅
+- All TR-API-CMD-003 tests passing ✅
+- All existing tests refactored and passing ✅
+- No flaky tests ✅
+- Test execution time < 2x baseline ✅
+- TESTING-GUIDE.md complete ✅
+

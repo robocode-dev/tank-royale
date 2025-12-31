@@ -102,6 +102,7 @@ class MockedServer:
         self._tick_event = threading.Event()
         self._bot_intent_event = threading.Event()
         self._bot_intent_continue_event = threading.Event()
+        self._bot_intent_continue_event.set()  # Start as set so first intent proceeds without waiting
 
         # state captured
         self.handshake = None
