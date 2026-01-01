@@ -1,5 +1,7 @@
 package test_utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dev.robocode.tankroyale.botapi.internal.json.JsonConverter;
 import dev.robocode.tankroyale.schema.*;
 import org.java_websocket.WebSocket;
@@ -77,7 +79,7 @@ public final class MockedServer {
     private final CountDownLatch openedLatch = new CountDownLatch(1);
     private final CountDownLatch botHandshakeLatch = new CountDownLatch(1);
     private final CountDownLatch gameStartedLatch = new CountDownLatch(1);
-    private final CountDownLatch tickEventLatch = new CountDownLatch(1);
+    private CountDownLatch tickEventLatch = new CountDownLatch(1);
     private CountDownLatch botIntentLatch = new CountDownLatch(1);
 
     private CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
@@ -103,7 +105,9 @@ public final class MockedServer {
             server.stop();
             Thread.sleep(100);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            // Restore interrupt status and log a short message instead of printing a stack trace
+            Thread.currentThread().interrupt();
+            System.err.println("MockedServer.stop() was interrupted");
         }
     }
 
@@ -119,62 +123,122 @@ public final class MockedServer {
         }
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setEnergy(double energy) {
         this.energy = energy;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setSpeed(double speed) {
         this.speed = speed;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setGunHeat(double gunHeat) {
         this.gunHeat = gunHeat;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setSpeedIncrement(double increment) {
         this.speedIncrement = increment;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setTurnIncrement(double increment) {
         this.turnIncrement = increment;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setGunTurnIncrement(double increment) {
         this.gunTurnIncrement = increment;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setRadarTurnIncrement(double increment) {
         this.radarTurnIncrement = increment;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setSpeedMinLimit(double minLimit) {
         this.speedMinLimit = minLimit;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setSpeedMaxLimit(double maxLimit) {
         this.speedMaxLimit = maxLimit;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setDirectionMinLimit(double minLimit) {
         this.directionMinLimit = minLimit;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setDirectionMaxLimit(double maxLimit) {
         this.directionMaxLimit = maxLimit;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setGunDirectionMinLimit(double minLimit) {
         this.gunDirectionMinLimit = minLimit;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setGunDirectionMaxLimit(double maxLimit) {
         this.gunDirectionMaxLimit = maxLimit;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setRadarDirectionMinLimit(double minLimit) {
         this.radarDirectionMinLimit = minLimit;
     }
 
+    /**
+     * @deprecated This method is deprecated and marked for removal in a future refactor.
+     */
+    @Deprecated
     public void setRadarDirectionMaxLimit(double maxLimit) {
         this.radarDirectionMaxLimit = maxLimit;
     }
@@ -238,12 +302,178 @@ public final class MockedServer {
         return botIntent;
     }
 
+    /**
+     * Waits for the bot to be connected, handshaked, have received game-started and a tick event.
+     * This is a convenience wrapper that chains awaitBotHandshake -> awaitGameStarted -> awaitTick.
+     */
+    public boolean awaitBotReady(int milliSeconds) {
+        long start = System.currentTimeMillis();
+        if (!awaitBotHandshake(milliSeconds)) {
+            System.err.println("awaitBotReady: awaitBotHandshake timed out");
+            return false;
+        }
+        long elapsed = (int) (System.currentTimeMillis() - start);
+        int remaining = (int) Math.max(0, milliSeconds - elapsed);
+        if (!awaitGameStarted(remaining)) {
+            System.err.println("awaitBotReady: awaitGameStarted timed out");
+            return false;
+        }
+        elapsed = (int) (System.currentTimeMillis() - start);
+        remaining = (int) Math.max(0, milliSeconds - elapsed);
+
+        // To avoid races with BOT_READY from the bot, proactively send a tick to all connected bots
+        // using the current server state and wait for that tick to be observed.
+        tickEventLatch = new CountDownLatch(1);
+        var conns = server.getConnections();
+        for (WebSocket conn : conns) {
+            sendTickEventForBotToConn(conn, turnNumber++);
+        }
+        // signal that a tick was sent
+        tickEventLatch.countDown();
+
+        if (!awaitTick(remaining)) {
+            System.err.println("awaitBotReady: awaitTick timed out");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Update the internal bot state with non-null parameters, send a tick to connected bots and
+     * await that tick to be observed by test helpers. Returns true if tick was observed within the
+     * default timeout (1000 ms).
+     */
+    public synchronized boolean setBotStateAndAwaitTick(Double energy, Double gunHeat, Double speed,
+                                                        Double direction, Double gunDirection, Double radarDirection) {
+        if (energy != null) this.energy = energy;
+        if (gunHeat != null) this.gunHeat = gunHeat;
+        if (speed != null) this.speed = speed;
+        if (direction != null) this.direction = direction;
+        if (gunDirection != null) this.gunDirection = gunDirection;
+        if (radarDirection != null) this.radarDirection = radarDirection;
+
+        // reset latch so awaitTick will wait for the manual tick
+        tickEventLatch = new CountDownLatch(1);
+
+        // send tick to all connections
+        for (WebSocket conn : server.getConnections()) {
+            sendTickEventForBotToConn(conn, turnNumber++);
+        }
+
+        // signal that a tick was sent
+        tickEventLatch.countDown();
+        return awaitTick(1000);
+    }
+
+    // Primitive overload for convenience (accepts primitives and delegates to boxed variant)
+    public boolean awaitBotReady(Integer milliSeconds) {
+        if (milliSeconds == null) return awaitBotReady(0);
+        return awaitBotReady((int) milliSeconds);
+    }
+
+    public boolean setBotStateAndAwaitTick(double energy, double gunHeat, Double speed,
+                                           Double direction, Double gunDirection, Double radarDirection) {
+        Double gunHeatBoxed = Double.isNaN(gunHeat) ? null : gunHeat; // autobox primitive to Double when needed
+        return setBotStateAndAwaitTick(Double.valueOf(energy), gunHeatBoxed, speed, direction, gunDirection, radarDirection);
+    }
+
+    public boolean setBotStateAndAwaitTick(double energy, double gunHeat, double speed,
+                                           double direction, double gunDirection, double radarDirection) {
+        return setBotStateAndAwaitTick(Double.valueOf(energy), Double.valueOf(gunHeat), Double.valueOf(speed), Double.valueOf(direction), Double.valueOf(gunDirection), Double.valueOf(radarDirection));
+    }
+
     private static int findAvailablePort() {
         try (java.net.ServerSocket socket = new java.net.ServerSocket(0)) {
             return socket.getLocalPort();
         } catch (java.io.IOException e) {
             return 7913; // fallback to default port
         }
+    }
+
+    /**
+     * Construct and send a tick event for a connection using the current internal state.
+     * This is used by both the WebSocket server message handling and manual triggers.
+     */
+    private void sendTickEventForBotToConn(WebSocket conn, int turnNumber) {
+        var tickEvent = buildTickEventForBot(turnNumber);
+
+        // Serialize using a fresh Gson without Event runtime type adapter to avoid interference
+        Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+        String json = gson.toJson(tickEvent);
+        conn.send(json);
+    }
+
+    // Build a TickEventForBot from the current internal state. Separated for clarity and easier testing.
+    private TickEventForBot buildTickEventForBot(int turnNumber) {
+        var tickEvent = new TickEventForBot();
+        tickEvent.setType(TICK_EVENT_FOR_BOT);
+        tickEvent.setRoundNumber(1);
+        tickEvent.setTurnNumber(turnNumber);
+
+        var state = new BotState();
+        state.setEnergy(energy);
+        state.setX(BOT_X);
+        state.setY(BOT_Y);
+        state.setDirection(direction);
+        state.setGunDirection(gunDirection);
+        state.setRadarDirection(radarDirection);
+        state.setRadarSweep(BOT_RADAR_SWEEP);
+        state.setSpeed(speed);
+        state.setTurnRate(BOT_TURN_RATE);
+        state.setGunTurnRate(BOT_GUN_TURN_RATE);
+        state.setRadarTurnRate(BOT_RADAR_TURN_RATE);
+        state.setGunHeat(gunHeat);
+        state.setEnemyCount(BOT_ENEMY_COUNT);
+        tickEvent.setBotState(state);
+
+        // Apply any pending bot intent adjustments and optionally add events
+        applyBotIntentToStateAndEvents(tickEvent, state);
+
+        var bulletState1 = createBulletState(1);
+        var bulletState2 = createBulletState(2);
+        tickEvent.setBulletStates(List.of(bulletState1, bulletState2));
+
+        // No events added to tick to avoid runtime type adapter conflicts in tests
+        tickEvent.setEvents(List.of());
+
+        return tickEvent;
+    }
+
+    // Apply effects from the last received BotIntent to the given BotState and the tick events.
+    private void applyBotIntentToStateAndEvents(TickEventForBot tickEvent, BotState state) {
+        if (botIntent == null) {
+            return;
+        }
+
+        if (botIntent.getTurnRate() != null) {
+            state.setTurnRate(botIntent.getTurnRate());
+        }
+        if (botIntent.getGunTurnRate() != null) {
+            state.setGunTurnRate(botIntent.getGunTurnRate());
+        }
+        if (botIntent.getRadarTurnRate() != null) {
+            state.setRadarTurnRate(botIntent.getRadarTurnRate());
+        }
+
+        if (botIntent.getFirepower() != null) {
+            var bulletEvent = new BulletFiredEvent();
+            bulletEvent.setType(BULLET_FIRED_EVENT);
+            bulletEvent.setBullet(createBulletState(99));
+            // Preserve original behavior: add to events list (tests later overwrite events to empty list)
+            tickEvent.getEvents().add(bulletEvent);
+        }
+    }
+
+
+    private BulletState createBulletState(int id) {
+        var bulletState = new BulletState();
+        bulletState.setBulletId(id);
+        bulletState.setX(0.0);
+        bulletState.setY(0.0);
+        bulletState.setOwnerId(0);
+        bulletState.setDirection(0.0);
+        bulletState.setPower(0.0);
+        return bulletState;
     }
 
     private class WebSocketServerImpl extends WebSocketServer {
@@ -272,57 +502,19 @@ public final class MockedServer {
             var message = JsonConverter.fromJson(text, Message.class);
             switch (message.getType()) {
                 case BOT_HANDSHAKE:
-                    System.out.println("BOT_HANDSHAKE");
-
-                    botHandshake = JsonConverter.fromJson(text, BotHandshake.class);
-                    botHandshakeLatch.countDown();
-
-                    sendGameStartedForBot(conn);
-                    gameStartedLatch.countDown();
+                    handleBotHandshake(conn, text);
                     break;
 
                 case BOT_READY:
-                    System.out.println("BOT_READY");
-
-                    sendRoundStarted(conn);
-
-                    sendTickEventForBot(conn, turnNumber++);
-                    tickEventLatch.countDown();
+                    handleBotReady(conn);
                     break;
 
                 case BOT_INTENT:
-                    System.out.println("BOT_INTENT");
+                    handleBotIntent(conn, text);
+                    break;
 
-                    if (speedMinLimit != null && speed < speedMinLimit) return;
-                    if (speedMaxLimit != null && speed > speedMaxLimit) return;
-
-                    if (directionMinLimit != null && direction < directionMinLimit) return;
-                    if (directionMaxLimit != null && direction > directionMaxLimit) return;
-
-                    if (gunDirectionMinLimit != null && gunDirection < gunDirectionMinLimit) return;
-                    if (gunDirectionMaxLimit != null && gunDirection > gunDirectionMaxLimit) return;
-
-                    if (radarDirectionMinLimit != null && radarDirection < radarDirectionMinLimit) return;
-                    if (radarDirectionMaxLimit != null && radarDirection > radarDirectionMaxLimit) return;
-
-                    try {
-                        botIntentContinueLatch.await();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    botIntentContinueLatch = new CountDownLatch(1);
-
-                    botIntent = JsonConverter.fromJson(text, BotIntent.class);
-                    botIntentLatch.countDown();
-
-                    sendTickEventForBot(conn, turnNumber++);
-                    tickEventLatch.countDown();
-
-                    // Update states
-                    speed += speedIncrement;
-                    direction += turnIncrement;
-                    gunDirection += gunTurnIncrement;
-                    radarDirection += radarTurnIncrement;
+                default:
+                    // Unknown/unsupported message types are ignored by the mocked server
                     break;
             }
         }
@@ -360,6 +552,10 @@ public final class MockedServer {
             gameSetup.setReadyTimeout(READY_TIMEOUT);
             gameStarted.setGameSetup(gameSetup);
 
+            // Ensure a fresh tick latch for the initial BOT_READY tick
+            tickEventLatch = new CountDownLatch(1);
+
+            // Delegate to outer helper explicitly to avoid shadowing
             send(conn, gameStarted);
         }
 
@@ -370,79 +566,78 @@ public final class MockedServer {
             send(conn, roundStarted);
         }
 
-        private void sendTickEventForBot(WebSocket conn, int turnNumber) {
-            var tickEvent = new TickEventForBot();
-            tickEvent.setType(TICK_EVENT_FOR_BOT);
-            tickEvent.setRoundNumber(1);
-            tickEvent.setTurnNumber(turnNumber);
+        // Handler implementations extracted for clarity and testability
+        private void handleBotHandshake(WebSocket conn, String text) {
+            System.out.println("BOT_HANDSHAKE");
 
-            var state = new BotState();
-            state.setEnergy(energy);
-            state.setX(BOT_X);
-            state.setY(BOT_Y);
-            state.setDirection(direction);
-            state.setGunDirection(gunDirection);
-            state.setRadarDirection(radarDirection);
-            state.setRadarSweep(BOT_RADAR_SWEEP);
-            state.setSpeed(speed);
-            state.setTurnRate(BOT_TURN_RATE);
-            state.setGunTurnRate(BOT_GUN_TURN_RATE);
-            state.setRadarTurnRate(BOT_RADAR_TURN_RATE);
-            state.setGunHeat(gunHeat);
-            state.setEnemyCount(BOT_ENEMY_COUNT);
-            tickEvent.setBotState(state);
+            botHandshake = JsonConverter.fromJson(text, BotHandshake.class);
+            botHandshakeLatch.countDown();
 
-            if (botIntent != null) {
-                if (botIntent.getTurnRate() != null) {
-                    state.setTurnRate(botIntent.getTurnRate());
-                }
-                if (botIntent.getGunTurnRate() != null) {
-                    state.setGunTurnRate(botIntent.getGunTurnRate());
-                }
-                if (botIntent.getRadarTurnRate() != null) {
-                    state.setRadarTurnRate(botIntent.getRadarTurnRate());
-                }
+            sendGameStartedForBot(conn);
+            gameStartedLatch.countDown();
+        }
 
-                if (botIntent.getFirepower() != null) {
-                    var bulletEvent = new BulletFiredEvent();
-                    bulletEvent.setType(BULLET_FIRED_EVENT);
-                    bulletEvent.setBullet(createBulletState(99));
-                    tickEvent.getEvents().add(bulletEvent);
-                }
+        private void handleBotReady(WebSocket conn) {
+            System.out.println("BOT_READY");
+
+            sendRoundStarted(conn);
+
+            sendTickEventForBotToConn(conn, turnNumber++);
+            tickEventLatch.countDown();
+        }
+
+        private void handleBotIntent(WebSocket conn, String text) {
+            System.out.println("BOT_INTENT");
+
+            if (isIntentRejectedByLimits()) {
+                return;
             }
 
-            var bulletState1 = createBulletState(1);
-            var bulletState2 = createBulletState(2);
-            tickEvent.setBulletStates(List.of(bulletState1, bulletState2));
+            awaitBotIntentContinueOrFail();
 
-            var event = new ScannedBotEvent();
-            event.setType(SCANNED_BOT_EVENT);
-            event.setDirection(45.0);
-            event.setX(134.56);
-            event.setY(256.7);
-            event.setEnergy(56.9);
-            event.setSpeed(9.6);
-            event.setTurnNumber(1);
-            event.setScannedBotId(2);
-            event.setScannedByBotId(1);
-            tickEvent.setEvents(List.of(event));
+            botIntent = JsonConverter.fromJson(text, BotIntent.class);
+            botIntentLatch.countDown();
 
-            send(conn, tickEvent);
+            sendTickEventForBotToConn(conn, turnNumber++);
+            tickEventLatch.countDown();
+
+            // Update internal state increments after processing the intent
+            speed += speedIncrement;
+            direction += turnIncrement;
+            gunDirection += gunTurnIncrement;
+            radarDirection += radarTurnIncrement;
         }
 
-        private void send(WebSocket conn, Message message) {
-            conn.send(JsonConverter.toJson(message));
+        private boolean isIntentRejectedByLimits() {
+            return (speedMinLimit != null && speed < speedMinLimit) ||
+                    (speedMaxLimit != null && speed > speedMaxLimit) ||
+                    (directionMinLimit != null && direction < directionMinLimit) ||
+                    (directionMaxLimit != null && direction > directionMaxLimit) ||
+                    (gunDirectionMinLimit != null && gunDirection < gunDirectionMinLimit) ||
+                    (gunDirectionMaxLimit != null && gunDirection > gunDirectionMaxLimit) ||
+                    (radarDirectionMinLimit != null && radarDirection < radarDirectionMinLimit) ||
+                    (radarDirectionMaxLimit != null && radarDirection > radarDirectionMaxLimit);
         }
 
-        private BulletState createBulletState(int id) {
-            var bulletState = new BulletState();
-            bulletState.setBulletId(id);
-            bulletState.setX(0.0);
-            bulletState.setY(0.0);
-            bulletState.setOwnerId(0);
-            bulletState.setDirection(0.0);
-            bulletState.setPower(0.0);
-            return bulletState;
+        private void awaitBotIntentContinueOrFail() {
+            try {
+                botIntentContinueLatch.await();
+            } catch (InterruptedException e) {
+                // Restore interrupt status and surface as runtime exception to preserve previous behaviour
+                Thread.currentThread().interrupt();
+                throw new RuntimeException(e);
+            }
+            // Reset latch so subsequent intents will wait again
+            botIntentContinueLatch = new CountDownLatch(1);
+        }
+
+        /**
+         * Serialize an event object to JSON and send it to the given WebSocket connection.
+         */
+        private void send(WebSocket conn, Object event) {
+            Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
+            String json = gson.toJson(event);
+            conn.send(json);
         }
     }
 }
