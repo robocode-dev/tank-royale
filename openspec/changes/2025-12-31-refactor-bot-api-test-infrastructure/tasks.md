@@ -107,9 +107,50 @@
 
 ---
 
-## Phase 3: Implement TR-API-CMD-002 Fire Command Tests
+## Phase 3: Mock/Stub Test Bot Factory
 
-### Task 3.1: Java CommandsFireTest
+> **Rationale**: The test bot factory is moved early (before writing new tests) so that all subsequent test
+> implementations in Phases 4, 5, and 6 can leverage reusable, configurable test bots. This ensures consistency, reduces
+> boilerplate, and makes tests more readable from the start.
+
+### Task 3.1: Java Test Bot Builder
+
+**Files**: `bot-api/java/src/test/java/test_utils/TestBotBuilder.java` (new)
+
+- [ ] Create builder/factory for test bots
+- [ ] Support configurable bot behaviors (passive, aggressive, scanning)
+- [ ] Allow callback overrides for targeted testing
+- [ ] Add unit tests for the builder
+
+**Estimated time**: 1-2 days
+
+### Task 3.2: .NET Test Bot Builder
+
+**Files**: `bot-api/dotnet/test/src/test_utils/TestBotBuilder.cs` (new)
+
+- [ ] Create builder/factory for test bots
+- [ ] Support configurable bot behaviors
+- [ ] Allow callback overrides for targeted testing
+- [ ] Add unit tests for the builder
+
+**Estimated time**: 1-2 days
+
+### Task 3.3: Python Test Bot Factory
+
+**Files**: `bot-api/python/tests/test_utils/test_bot_factory.py` (new)
+
+- [ ] Create factory for test bots
+- [ ] Support configurable bot behaviors
+- [ ] Allow callback overrides for targeted testing
+- [ ] Add unit tests for the factory
+
+**Estimated time**: 1-2 days
+
+---
+
+## Phase 4: Implement TR-API-CMD-002 Fire Command Tests
+
+### Task 4.1: Java CommandsFireTest
 
 **Files**: `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/CommandsFireTest.java` (new)
 
@@ -135,7 +176,7 @@
 
 **Estimated time**: 2 days
 
-### Task 3.2: .NET CommandsFireTest
+### Task 4.2: .NET CommandsFireTest
 
 **Files**: `bot-api/dotnet/test/src/CommandsFireTest.cs` (new)
 
@@ -149,7 +190,7 @@
 
 **Estimated time**: 2 days
 
-### Task 3.3: Python CommandsFireTest
+### Task 4.3: Python CommandsFireTest
 
 **Files**: `bot-api/python/tests/bot_api/commands/test_commands_fire.py` (new)
 
@@ -164,7 +205,7 @@
 
 **Estimated time**: 2 days
 
-### Task 3.4: Verify Test Coverage
+### Task 4.4: Verify Test Coverage
 
 - [ ] Run tests in all three languages
 - [ ] Verify all tests pass
@@ -176,9 +217,9 @@
 
 ---
 
-## Phase 4: Refactor TR-API-CMD-003 Radar/Scan Tests
+## Phase 5: Refactor TR-API-CMD-003 Radar/Scan Tests
 
-### Task 4.1: Refactor Java CommandsRadarTest
+### Task 5.1: Refactor Java CommandsRadarTest
 
 **Files**: `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/CommandsRadarTest.java` (if exists, create if not)
 
@@ -192,7 +233,7 @@
 
 **Estimated time**: 1 day
 
-### Task 4.2: Refactor .NET CommandsRadarTest
+### Task 5.2: Refactor .NET CommandsRadarTest
 
 **Files**: `bot-api/dotnet/test/src/CommandsRadarTest.cs`
 
@@ -205,7 +246,7 @@
 
 **Estimated time**: 1 day
 
-### Task 4.3: Implement Python CommandsRadarTest
+### Task 5.3: Implement Python CommandsRadarTest
 
 **Files**: `bot-api/python/tests/bot_api/commands/test_commands_radar.py` (new)
 
@@ -218,7 +259,7 @@
 
 **Estimated time**: 1.5 days
 
-### Task 4.4: Update Documentation
+### Task 5.4: Update Documentation
 
 - [ ] Update TEST-MATRIX.md to mark CMD-003 as complete
 - [ ] Document any Python-specific considerations
@@ -227,9 +268,9 @@
 
 ---
 
-## Phase 5: Refactor All Existing MockedServer-based Tests
+## Phase 6: Refactor All Existing MockedServer-based Tests
 
-### Task 5.1: Audit Existing Tests
+### Task 6.1: Audit Existing Tests
 
 **Files**: All test files in `bot-api/*/test/`
 
@@ -240,7 +281,7 @@
 
 **Estimated time**: 1 day
 
-### Task 5.2: Refactor Java Tests
+### Task 6.2: Refactor Java Tests
 
 **Files**: Various in `bot-api/java/src/test/java/`
 
@@ -252,7 +293,7 @@
 
 **Estimated time**: 2-3 days
 
-### Task 5.3: Refactor .NET Tests
+### Task 6.3: Refactor .NET Tests
 
 **Files**: Various in `bot-api/dotnet/test/src/`
 
@@ -264,7 +305,7 @@
 
 **Estimated time**: 2-3 days
 
-### Task 5.4: Refactor/Implement Python Tests
+### Task 6.4: Refactor/Implement Python Tests
 
 **Files**: Various in `bot-api/python/tests/`
 
@@ -276,7 +317,7 @@
 
 **Estimated time**: 2-3 days
 
-### Task 5.5: Remove Dead Code
+### Task 6.5: Remove Dead Code
 
 - [ ] Remove old test-specific helper methods no longer needed (in test classes, NOT MockedServer)
 - [ ] Clean up commented-out test code from refactoring
@@ -284,7 +325,7 @@
 
 **Estimated time**: 1 day
 
-### Task 5.6: Remove Bad Practice Methods from MockedServer
+### Task 6.6: Remove Bad Practice Methods from MockedServer
 
 **Files**:
 
@@ -310,7 +351,7 @@
 
 **Pre-requisites**:
 
-- [ ] ALL existing tests have been migrated (Task 5.1-5.4)
+- [ ] ALL existing tests have been migrated (Task 6.1-6.4)
 - [ ] No code references these methods
 
 **Steps**:
@@ -326,42 +367,6 @@
 
 ---
 
-## Phase 6: Mock/Stub Test Bot Factory
-
-### Task 6.1: Java Test Bot Builder
-
-**Files**: `bot-api/java/src/test/java/test_utils/TestBotBuilder.java` (new)
-
-- [ ] Create builder/factory for test bots
-- [ ] Support configurable bot behaviors (passive, aggressive, scanning)
-- [ ] Allow callback overrides for targeted testing
-- [ ] Add unit tests for the builder
-
-**Estimated time**: 1-2 days
-
-### Task 6.2: .NET Test Bot Builder
-
-**Files**: `bot-api/dotnet/test/src/test_utils/TestBotBuilder.cs` (new)
-
-- [ ] Create builder/factory for test bots
-- [ ] Support configurable bot behaviors
-- [ ] Allow callback overrides for targeted testing
-- [ ] Add unit tests for the builder
-
-**Estimated time**: 1-2 days
-
-### Task 6.3: Python Test Bot Factory
-
-**Files**: `bot-api/python/tests/test_utils/test_bot_factory.py` (new)
-
-- [ ] Create factory for test bots
-- [ ] Support configurable bot behaviors
-- [ ] Allow callback overrides for targeted testing
-- [ ] Add unit tests for the factory
-
-**Estimated time**: 1-2 days
-
----
 
 ## Phase 7: Documentation and Guidelines
 
@@ -489,11 +494,11 @@
 
 **Critical Path**:
 
-1. Phase 1 (MockedServer + deprecations) → Phase 2 (Utilities) → Phase 3 (Fire Tests)
-2. Phase 4 (Radar Refactor) can partially overlap with Phase 3
-3. Phase 5 (Full Refactor including CMD-001, CMD-004) depends on Phase 2
-4. Phase 6 (Mock Test Bot Factory) can partially overlap with Phase 5
-5. Phase 7-9 (Documentation & Validation) can overlap with Phase 5-6
+1. Phase 1 (MockedServer) → Phase 2 (Utilities) → Phase 3 (Test Bot Factory)
+2. Phase 4 (Fire Tests) depends on Phases 2 & 3
+3. Phase 5 (Radar Refactor) can partially overlap with Phase 4
+4. Phase 6 (Full Refactor including CMD-001, CMD-004) depends on Phases 2 & 3
+5. Phase 7-9 (Documentation & Validation) can overlap with Phase 6
 
 **Risk Mitigation**:
 
