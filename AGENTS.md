@@ -31,8 +31,11 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 ## Source of Truth & Cross-Platform
 
-- **Java Bot API** is reference for all platforms: align behavior, API names, defaults, event semantics
-- Keep JSON/wire behavior consistent; platform idioms OK if semantics identical
+- **Java Bot API** is the reference implementation for all Bot API platforms: align behavior, API names, defaults, event
+  semantics
+- **Bot API changes**: Only modify for bug fixes or new features; when ANY Bot API is changed, ALL other Bot APIs (Java,
+  Python, .NET) MUST be updated to maintain 1:1 semantic equivalence
+- Keep JSON/wire behavior consistent across all platforms; platform-specific idioms OK if semantics identical
 - **Public API**: stable; avoid breaking changes; coordinate all ports if unavoidable
 - **Protocol**: no breaking changes; additive only; update `/schema` and docs
 
@@ -47,10 +50,11 @@ programming
 
 ## Cross-Language Workflow
 
-1. Implement/verify Java Bot API first
-2. Port to other languages matching names, defaults, behavior
-3. Update sample bots if user-visible
-4. Build and test each module
+1. Implement/verify Java Bot API first (reference implementation)
+2. Port to ALL other Bot API languages (Python, .NET) matching names, defaults, behavior exactly
+3. Verify 1:1 semantic equivalence across all Bot API platforms
+4. Update sample bots if user-visible
+5. Build and test each module
 
 ## Testing & Build
 
