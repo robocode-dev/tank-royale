@@ -33,14 +33,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # Linux builds - split by installer type for parallelism
           - os: ubuntu-latest
             arch: native
+            installer_type: deb
+          - os: ubuntu-latest
+            arch: native
+            installer_type: rpm
+          # Windows build
           - os: windows-latest
             arch: native
+            installer_type: msi
+          # macOS builds - one per architecture
           - os: macos-latest
             arch: arm64
+            installer_type: pkg
           - os: macos-12
             arch: x86_64
+            installer_type: pkg
 
     steps:
       - name: Checkout
@@ -122,18 +132,48 @@ jobs:
           set -e
           # Ensure log directory exists
           mkdir -p build
+
+          # Determine which jpackage task to run based on installer type
+          case "${{ matrix.installer_type }}" in
+            deb)
+              JPACKAGE_TASK="jpackageLinuxDeb"
+              ;;
+            rpm)
+              JPACKAGE_TASK="jpackageLinuxRpm"
+              ;;
+            msi)
+              JPACKAGE_TASK="jpackageWin"
+              ;;
+            pkg)
+              JPACKAGE_TASK="jpackageMacPkg"
+              ;;
+            *)
+              echo "Unknown installer type: ${{ matrix.installer_type }}"
+              exit 1
+              ;;
+          esac
+
+          echo "Running Gradle task: gui:$JPACKAGE_TASK"
+
           # Run Gradle quietly and capture all output to a log. On failure, print only the tail.
-          ./gradlew --no-daemon --stacktrace --quiet --console=plain -Dorg.gradle.warning.mode=none stageAllInstallers \
+          # Use --parallel to enable parallel task execution within Gradle
+          ./gradlew --no-daemon --parallel --stacktrace --quiet --console=plain -Dorg.gradle.warning.mode=none \
+            gui:$JPACKAGE_TASK \
             > build/ci-gradle.log 2>&1 \
             || (echo "Gradle build failed — showing last 400 lines of log:" && tail -n 400 build/ci-gradle.log && exit 1)
+
           echo "Gradle build succeeded. (Logs suppressed; see build/ci-gradle.log in the artifact if needed.)"
+
+          # Copy installers to build/dist for artifact upload
+          mkdir -p build/dist
+          find gui/build/jpackage -type f \( -name "*.deb" -o -name "*.rpm" -o -name "*.msi" -o -name "*.pkg" \) -exec cp {} build/dist/ \;
         shell: bash
 
       - name: Re-run macOS with deep jpackage diagnostics (only on macOS)
         if: startsWith(matrix.os, 'macos') && failure()
         run: |
           echo "Re-running macOS packaging with --debug to surface jpackage stderr"
-          ./gradlew --no-daemon --debug -PciVerbose=true :booter:jpackageMac :recorder:jpackageMac
+          ./gradlew --no-daemon --debug -PciVerbose=true gui:jpackageMacPkg
         shell: bash
 
       - name: Rename macOS .pkg files to match release version
@@ -280,7 +320,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: installers-${{ matrix.os }}-${{ matrix.arch }}
+          name: installers-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.installer_type }}
           path: |
             build/dist/**/*
             build/ci-gradle.log
