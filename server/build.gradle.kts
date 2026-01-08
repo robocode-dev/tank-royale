@@ -87,6 +87,9 @@ tasks {
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
+        // Ensure the intermediate '-all.jar' is declared as an output so Gradle knows about it
+        outputs.file(file(intermediateJar))
+
         manifest {
             attributes["Main-Class"] = jarManifestMainClass
             attributes["Implementation-Title"] = title
