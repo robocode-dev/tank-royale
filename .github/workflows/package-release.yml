@@ -32,18 +32,63 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        include:
+          - os: ubuntu-latest
+            arch: native
+          - os: windows-latest
+            arch: native
+          - os: macos-latest
+            arch: arm64
+          - os: macos-12
+            arch: x86_64
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Temurin JDK 21 (for jpackage)
+      - name: Verify runner architecture (macOS only)
+        if: matrix.arch != 'native'
+        run: |
+          EXPECTED="${{ matrix.arch }}"
+          ACTUAL="$(uname -m)"
+          echo "Expected architecture: $EXPECTED"
+          echo "Actual architecture: $ACTUAL"
+          if [ "$EXPECTED" = "arm64" ] && [ "$ACTUAL" != "arm64" ]; then
+            echo "ERROR: Expected arm64 but runner is $ACTUAL"
+            exit 1
+          fi
+          if [ "$EXPECTED" = "x86_64" ] && [ "$ACTUAL" != "x86_64" ]; then
+            echo "ERROR: Expected x86_64 but runner is $ACTUAL"
+            exit 1
+          fi
+          echo "✓ Architecture verification passed"
+        shell: bash
+
+      - name: Set up Temurin JDK 21 (default/native)
+        if: matrix.arch == 'native'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
           cache: 'gradle'
+
+      - name: Set up Temurin JDK 21 (Intel x86_64)
+        if: matrix.arch == 'x86_64'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: 'gradle'
+          architecture: 'x64'
+
+      - name: Set up Temurin JDK 21 (Apple Silicon arm64)
+        if: matrix.arch == 'arm64'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: 'gradle'
+          architecture: 'arm64'
 
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v3
@@ -85,14 +130,16 @@ jobs:
         shell: bash
 
       - name: Re-run macOS with deep jpackage diagnostics (only on macOS)
-        if: matrix.os == 'macos-latest' && failure()
+        if: startsWith(matrix.os, 'macos') && failure()
         run: |
           echo "Re-running macOS packaging with --debug to surface jpackage stderr"
           ./gradlew --no-daemon --debug -PciVerbose=true :booter:jpackageMac :recorder:jpackageMac
         shell: bash
 
       - name: Rename macOS .pkg files to match release version
-        if: matrix.os == 'macos-latest'
+        if: startsWith(matrix.os, 'macos')
+        env:
+          MACOS_ARCH: ${{ matrix.arch }}
         run: |
           set -e
           echo "=== Renaming macOS .pkg files ==="
@@ -142,6 +189,23 @@ jobs:
               else
                 echo "  ✗ Failed to rename!"
                 exit 1
+              fi
+              # If we are building per-arch on macOS, append arch to the .pkg filename to avoid collisions
+              if [ -n "$MACOS_ARCH" ] && [ "$MACOS_ARCH" != "native" ]; then
+                DIRNAME=$(dirname "$PKG_NEW")
+                BASE_NEW=$(basename "$PKG_NEW")
+                if [[ "$BASE_NEW" =~ \.pkg$ ]] && [[ "$BASE_NEW" != *".$MACOS_ARCH.pkg" ]]; then
+                  PKG_ARCHED="$DIRNAME/$(echo "$BASE_NEW" | sed -E 's/\.pkg$/.'.$MACOS_ARCH'.pkg/')"
+                  echo "  Appending arch to renamed macOS .pkg file: $PKG_ARCHED"
+
+                  if mv "$PKG_NEW" "$PKG_ARCHED"; then
+                    echo "  ✓ Successfully renamed with arch"
+                    RENAMED_FILES=$((RENAMED_FILES + 1))
+                  else
+                    echo "  ✗ Failed to rename with arch!"
+                    exit 1
+                  fi
+                fi
               fi
             else
               echo "  Skipping (no version 1.x.y pattern found in: $BASENAME)"
@@ -216,7 +280,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: installers-${{ matrix.os }}
+          name: installers-${{ matrix.os }}-${{ matrix.arch }}
           path: |
             build/dist/**/*
             build/ci-gradle.log
@@ -456,11 +520,28 @@ jobs:
             filename=$(basename "$file")
             checksum=$(sha256sum "$file" | awk '{print $1}')
 
-            # Fix .pkg filename in checksum (macOS jpackage uses 1.x.y, we want actual VERSION)
+            # Fix .pkg filename in checksum (macOS jpackage uses 1.x.y due to Apple requirements,
+            # but we want the filename to show the actual version (e.g., 0.x.y)
             if [[ "$filename" =~ -1\.[0-9]+\.[0-9]+\.pkg$ ]]; then
               fixed_filename=$(echo "$filename" | sed "s/-1\.\([0-9]\+\)\.\([0-9]\+\)\.pkg$/-${VERSION}.pkg/")
               echo "  Fixing .pkg checksum filename: $filename -> $fixed_filename"
               filename="$fixed_filename"
+            fi
+
+            # Detect architecture from the original file basename and append arch to .pkg checksum filename
+            orig_base=$(basename "$file")
+            arch=""
+            if [[ "$orig_base" =~ (x86_64|x86|intel) ]]; then
+              arch="x86_64"
+            elif [[ "$orig_base" =~ (arm64|aarch64|arm) ]]; then
+              arch="arm64"
+            fi
+
+            if [ -n "$arch" ]; then
+              if [[ "$filename" =~ \.pkg$ ]] && [[ "$filename" != *".$arch.pkg" ]]; then
+                filename=$(echo "$filename" | sed -E "s/\.pkg$/.$arch.pkg/")
+                echo "  Appending arch to checksum filename: $filename"
+              fi
             fi
 
             printf "%s  %s\n" "$checksum" "$filename" >> SHA256SUMS
@@ -579,12 +660,33 @@ jobs:
                 ;;
               robocode-tank-royale-gui-*.pkg)
                 # Fix macOS .pkg version: jpackage uses 1.x.y due to Apple requirements,
-                # but we want the filename to show the actual version (0.x.y)
+                # but we want the filename to show the actual version (e.g., 0.x.y)
                 if [[ "$base" =~ -1\.[0-9]+\.[0-9]+\.pkg$ ]]; then
                   asset_name=$(echo "$base" | sed "s/-1\.\([0-9]\+\)\.\([0-9]\+\)\.pkg$/-${VERSION}.pkg/")
                   echo "  Fixing macOS .pkg version: $base -> $asset_name"
                 fi
-                label="GUI for macOS (pkg)"
+
+                # Detect architecture from filename and set human-friendly labels
+                arch=""
+                if [[ "$base" =~ (x86_64|x86|intel) ]]; then
+                  arch="x86_64"
+                  label="GUI for macOS (pkg) - Intel - x86_64"
+                elif [[ "$base" =~ (arm64|aarch64|arm) ]]; then
+                  arch="arm64"
+                  label="GUI for macOS (pkg) - Apple Silicon - arm64"
+                else
+                  # Fallback: generic macOS label when arch not detectable
+                  label="GUI for macOS (pkg)"
+                fi
+
+                # Ensure uploaded asset names are unique per-arch to avoid overwriting
+                # If we detected an arch and the asset_name doesn't already include it, append it
+                if [ -n "$arch" ]; then
+                  if [[ "$asset_name" =~ \.pkg$ ]] && [[ "$asset_name" != *".$arch.pkg" ]]; then
+                    asset_name=$(echo "$asset_name" | sed -E "s/\.pkg$/.$arch.pkg/")
+                    echo "  Appending arch to macOS pkg filename: $asset_name"
+                  fi
+                fi
                 ;;
               robocode-tankroyale-gui-*.jar)
                 label="GUI (jar)"
