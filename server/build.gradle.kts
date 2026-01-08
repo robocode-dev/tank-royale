@@ -104,6 +104,8 @@ tasks {
     val r8ShrinkTask by registering(JavaExec::class) { // R8 shrinking task (kept name for compatibility)
         dependsOn(jar)
 
+        outputs.file(finalJar)
+
         doFirst {
             if (!file(intermediateJar).exists()) {
                 logger.error("Intermediate JAR not found at expected location: $intermediateJar")
@@ -154,9 +156,6 @@ tasks {
 
     assemble {
         dependsOn(r8ShrinkTask)
-        doLast {
-            delete(intermediateJar) // Ensure intermediate JAR is cleaned
-        }
     }
 
     val javadocJar = named("javadocJar")
