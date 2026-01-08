@@ -22,15 +22,52 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 # Agent Specifications
 
-- Keep this file compact and avoid redundancy.
-- Do not insert escape/ANSI or other non-printable control characters into repository files; strip terminal color/escape
-  sequences before committing.
-- All files MUST use UTF-8 encoding. Emojis are welcome in comments and documentation (UTF-8 encoded).
-- Do not create separate summary files (e.g. summary.md) unless explicitly requested.
-- Be concise in answers; keep summaries short and compact.
-- Build requirement: after changes that affect code, config, or build artifacts, run the Gradle wrapper and ensure the
-  build succeeds before marking the task complete.
-    - Preferred command: `./gradlew clean build`
-    - Exception: purely textual changes (plain text, markdown, documentation) do not require a build.
-    - If unsure whether a change affects the build, run the Gradle wrapper to be safe.
-    - Tasks remain incomplete until the required build finishes successfully.
+## Core Principles
+
+- Clean code: readability over cleverness, meaningful names, small functions, clear responsibilities, minimal coupling
+- Minimal changes: implement only what's required; no drive-by refactors unless necessary
+- Small atomic commits explaining why, not just what; concise answers; no summary files unless requested. But AI agent
+  should never make git commits.
+
+## Source of Truth & Cross-Platform
+
+- **Java Bot API** is reference for all platforms: align behavior, API names, defaults, event semantics
+- Keep JSON/wire behavior consistent; platform idioms OK if semantics identical
+- **Public API**: stable; avoid breaking changes; coordinate all ports if unavoidable
+- **Protocol**: no breaking changes; additive only; update `/schema` and docs
+
+## Coding Conventions
+
+**Java**: existing style; immutability/`final`; clear names; no magic numbers; explicit nullability; defensive
+programming
+
+**Python**: PEP 8 + PEP 484 type hints; keep `py.typed` valid; run `mypy`; prefer dataclasses; read-only state objects
+
+**General**: SRP, DRY, YAGNI; composition over inheritance; pure functions; early returns; precise errors
+
+## Cross-Language Workflow
+
+1. Implement/verify Java Bot API first
+2. Port to other languages matching names, defaults, behavior
+3. Update sample bots if user-visible
+4. Build and test each module
+
+## Testing & Build
+
+- Build modules; run tests; add tests for bugs/new behavior
+- Protocol changes: update JSON examples, schema, docs; verify backward compatibility
+- Timing/state changes: validate with sample bot
+- **Build**: run `./gradlew clean build` after code/config/build changes (exception: pure text/markdown/docs)
+
+## Documentation & Review
+
+- Update README/docs/VERSIONS.MD for user-visible changes
+- Keep Javadoc/docstrings aligned across ports
+- Verify: Java reference match, backward compatibility, minimal diff, tests/docs updated, naming consistency
+
+## Standards
+
+- UTF-8 encoding; emojis OK in comments/docs
+- No escape/ANSI/non-printable chars; strip terminal sequences
+- Use file tools; no interactive programs; no files outside repo
+- Ask before broad/breaking changes
