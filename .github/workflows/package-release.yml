@@ -48,7 +48,7 @@ jobs:
           - os: macos-latest
             arch: arm64
             installer_type: pkg
-          - os: macos-12
+          - os: macos-13
             arch: x86_64
             installer_type: pkg
 
