@@ -28,7 +28,6 @@ jobs:
     name: Build installers on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
-    continue-on-error: ${{ matrix.allow_failure || false }}
     env:
       VERSION: ${{ inputs.version || github.event.inputs.version }}
     strategy:
@@ -46,15 +45,10 @@ jobs:
           - os: windows-latest
             arch: native
             installer_type: msi
-          # macOS builds - one per architecture
+          # macOS build - Apple Silicon (also runs on Intel via Rosetta 2)
           - os: macos-latest
             arch: arm64
             installer_type: pkg
-          # macOS Intel build - may have limited runner availability
-          - os: macos-13
-            arch: x86_64
-            installer_type: pkg
-            allow_failure: true
 
     steps:
       - name: Checkout
@@ -336,19 +330,8 @@ jobs:
     name: Upload installers to GitHub Release
     needs: build-package
     runs-on: ubuntu-latest
-    # Run even if some matrix jobs failed (e.g., optional macOS Intel build)
-    if: |
-      always() &&
-      (needs.build-package.result == 'success' || needs.build-package.result == 'failure') &&
-      (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'workflow_run')
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'workflow_run'
     steps:
-      - name: Check build results
-        run: |
-          echo "=== Build Package Job Results ==="
-          echo "Overall result: ${{ needs.build-package.result }}"
-          echo ""
-          echo "Note: macOS Intel (macos-13) build is optional and may fail due to runner availability"
-          echo "This will not prevent the release from completing with other installers."
 
       - name: Download all installer artifacts
         uses: actions/download-artifact@v4
@@ -739,28 +722,8 @@ jobs:
                   echo "  Fixing macOS .pkg version: $base -> $asset_name"
                 fi
 
-                # Detect architecture from file path (includes artifact dir) and filename
-                # Check both $f (full path) and $base (filename) to catch arch in directory structure
-                arch=""
-                if [[ "$f" =~ (x86_64|x86|intel) ]] || [[ "$base" =~ (x86_64|x86|intel) ]]; then
-                  arch="x86_64"
-                  label="GUI for macOS (pkg) - Intel - x86_64"
-                elif [[ "$f" =~ (arm64|aarch64|arm) ]] || [[ "$base" =~ (arm64|aarch64|arm) ]]; then
-                  arch="arm64"
-                  label="GUI for macOS (pkg) - Apple Silicon - arm64"
-                else
-                  # Fallback: generic macOS label when arch not detectable
-                  label="GUI for macOS (pkg)"
-                fi
-
-                # Ensure uploaded asset names are unique per-arch to avoid overwriting
-                # If we detected an arch and the asset_name doesn't already include it, append it
-                if [ -n "$arch" ]; then
-                  if [[ "$asset_name" =~ \.pkg$ ]] && [[ "$asset_name" != *".$arch.pkg" ]]; then
-                    asset_name=$(echo "$asset_name" | sed -E "s/\.pkg$/.$arch.pkg/")
-                    echo "  Appending arch to macOS pkg filename: $asset_name"
-                  fi
-                fi
+                # Label for macOS (ARM build works on both Apple Silicon and Intel via Rosetta 2)
+                label="GUI for macOS (pkg)"
                 ;;
               robocode-tankroyale-gui-*.jar)
                 label="GUI (jar)"
