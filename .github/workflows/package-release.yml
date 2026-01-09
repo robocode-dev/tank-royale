@@ -228,23 +228,7 @@ jobs:
                 echo "  ✗ Failed to rename!"
                 exit 1
               fi
-              # If we are building per-arch on macOS, append arch to the .pkg filename to avoid collisions
-              if [ -n "$MACOS_ARCH" ] && [ "$MACOS_ARCH" != "native" ]; then
-                DIRNAME=$(dirname "$PKG_NEW")
-                BASE_NEW=$(basename "$PKG_NEW")
-                if [[ "$BASE_NEW" =~ \.pkg$ ]] && [[ "$BASE_NEW" != *".$MACOS_ARCH.pkg" ]]; then
-                  PKG_ARCHED="$DIRNAME/$(echo "$BASE_NEW" | sed -E 's/\.pkg$/.'.$MACOS_ARCH'.pkg/')"
-                  echo "  Appending arch to renamed macOS .pkg file: $PKG_ARCHED"
-
-                  if mv "$PKG_NEW" "$PKG_ARCHED"; then
-                    echo "  ✓ Successfully renamed with arch"
-                    RENAMED_FILES=$((RENAMED_FILES + 1))
-                  else
-                    echo "  ✗ Failed to rename with arch!"
-                    exit 1
-                  fi
-                fi
-              fi
+              # Note: We no longer append arch suffix since we only build one macOS PKG (ARM, works on Intel via Rosetta 2)
             else
               echo "  Skipping (no version 1.x.y pattern found in: $BASENAME)"
             fi
@@ -627,6 +611,24 @@ jobs:
           # Helper to URI-encode strings (jq required)
           urlencode() { jq -nr --arg v "$1" '$v|@uri'; }
 
+          # Function to delete ALL installer assets (cleanup stale assets from previous runs)
+          cleanup_installer_assets() {
+            echo "=== Cleaning up existing installer assets ==="
+            local assets=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/$release_id/assets")
+
+            # Find all assets matching installer patterns (.deb, .rpm, .msi, .pkg)
+            echo "$assets" | jq -r '.[] | select(.name | test("\\.(deb|rpm|msi|pkg)$")) | "\(.id)|\(.name)"' | while IFS='|' read -r asset_id asset_name; do
+              if [ -n "$asset_id" ] && [ "$asset_id" != "null" ]; then
+                echo "Deleting stale installer asset: $asset_name (ID: $asset_id)"
+                curl -sS -X DELETE \
+                  -H "Authorization: token $GITHUB_TOKEN" \
+                  "https://api.github.com/repos/${{ github.repository }}/releases/assets/$asset_id"
+              fi
+            done
+            echo "=== Cleanup complete ==="
+          }
+
           # Function to delete an existing asset if it exists
           delete_existing_asset() {
             local asset_name="$1"
@@ -668,6 +670,9 @@ jobs:
             echo
           }
 
+          # Clean up all old installer assets before uploading new ones
+          cleanup_installer_assets
+
           # Map files to human-friendly labels and corrected asset names
           while IFS= read -r -d '' f; do
             rel=${f#./}
@@ -689,27 +694,12 @@ jobs:
                 # Example: robocode-tank-royale-gui-0.34.2-1.x86_64.rpm -> robocode-tank-royale-gui-0.34.2.x86_64.rpm
                 # Use perl with lookahead to only replace the '-<digits>.' that precedes the arch and .rpm
                 asset_name=$(echo "$base" | perl -pe 's/-\d+\.(?=[^.]+\.rpm$)/./')
-
-                # Detect architecture from the corrected asset_name for the label
-                if [[ "$asset_name" =~ x86_64 ]]; then
-                  label="GUI for Linux (rpm) - x86_64"
-                elif [[ "$asset_name" =~ x64 ]]; then
-                  label="GUI for Linux (rpm) - x64"
-                else
-                  label="GUI for Linux (rpm)"
-                fi
+                # We only build one RPM (native on ubuntu-latest = x86_64)
+                label="GUI for Linux (rpm)"
                 ;;
               robocode-tank-royale-gui_*.deb | robocode-tank-royale-gui-*.deb)
-                # Detect architecture from filename for the label
-                if [[ "$base" =~ amd64 ]]; then
-                  label="GUI for Linux (deb) - amd64"
-                elif [[ "$base" =~ i386 ]]; then
-                  label="GUI for Linux (deb) - i386"
-                elif [[ "$base" =~ arm64 ]]; then
-                  label="GUI for Linux (deb) - arm64"
-                else
-                  label="GUI for Linux (deb)"
-                fi
+                # We only build one DEB (native on ubuntu-latest = amd64)
+                label="GUI for Linux (deb)"
                 ;;
               robocode-tank-royale-gui-*.msi)
                 label="GUI for Windows (msi)"
