@@ -690,10 +690,27 @@ jobs:
                 # Example: robocode-tank-royale-gui-0.34.2-1.x86_64.rpm -> robocode-tank-royale-gui-0.34.2.x86_64.rpm
                 # Use perl with lookahead to only replace the '-<digits>.' that precedes the arch and .rpm
                 asset_name=$(echo "$base" | perl -pe 's/-\d+\.(?=[^.]+\.rpm$)/./')
-                label="GUI for Linux (rpm)"
+
+                # Detect architecture from the corrected asset_name for the label
+                if [[ "$asset_name" =~ x86_64 ]]; then
+                  label="GUI for Linux (rpm) - x86_64"
+                elif [[ "$asset_name" =~ x64 ]]; then
+                  label="GUI for Linux (rpm) - x64"
+                else
+                  label="GUI for Linux (rpm)"
+                fi
                 ;;
               robocode-tank-royale-gui_*.deb | robocode-tank-royale-gui-*.deb)
-                label="GUI for Linux (deb)"
+                # Detect architecture from filename for the label
+                if [[ "$base" =~ amd64 ]]; then
+                  label="GUI for Linux (deb) - amd64"
+                elif [[ "$base" =~ i386 ]]; then
+                  label="GUI for Linux (deb) - i386"
+                elif [[ "$base" =~ arm64 ]]; then
+                  label="GUI for Linux (deb) - arm64"
+                else
+                  label="GUI for Linux (deb)"
+                fi
                 ;;
               robocode-tank-royale-gui-*.msi)
                 label="GUI for Windows (msi)"
@@ -706,12 +723,13 @@ jobs:
                   echo "  Fixing macOS .pkg version: $base -> $asset_name"
                 fi
 
-                # Detect architecture from filename and set human-friendly labels
+                # Detect architecture from file path (includes artifact dir) and filename
+                # Check both $f (full path) and $base (filename) to catch arch in directory structure
                 arch=""
-                if [[ "$base" =~ (x86_64|x86|intel) ]]; then
+                if [[ "$f" =~ (x86_64|x86|intel) ]] || [[ "$base" =~ (x86_64|x86|intel) ]]; then
                   arch="x86_64"
                   label="GUI for macOS (pkg) - Intel - x86_64"
-                elif [[ "$base" =~ (arm64|aarch64|arm) ]]; then
+                elif [[ "$f" =~ (arm64|aarch64|arm) ]] || [[ "$base" =~ (arm64|aarch64|arm) ]]; then
                   arch="arm64"
                   label="GUI for macOS (pkg) - Apple Silicon - arm64"
                 else
