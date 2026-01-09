@@ -647,6 +647,27 @@ jobs:
             fi
           }
 
+          # Function to delete ALL installer assets (cleanup stale assets from previous runs)
+          cleanup_installer_assets() {
+            echo "=== Cleaning up existing installer assets ==="
+            local assets=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/$release_id/assets")
+
+            # Find all assets matching installer patterns (.deb, .rpm, .msi, .pkg)
+            echo "$assets" | jq -r '.[] | select(.name | test("\\.(deb|rpm|msi|pkg)$")) | "\(.id)|\(.name)"' | while IFS='|' read -r asset_id asset_name; do
+              if [ -n "$asset_id" ] && [ "$asset_id" != "null" ]; then
+                echo "Deleting stale installer asset: $asset_name (ID: $asset_id)"
+                curl -sS -X DELETE \
+                  -H "Authorization: token $GITHUB_TOKEN" \
+                  "https://api.github.com/repos/${{ github.repository }}/releases/assets/$asset_id"
+              fi
+            done
+            echo "=== Cleanup complete ==="
+          }
+
+          # Clean up all old installer assets before uploading new ones
+          cleanup_installer_assets
+
           # Upload function: uploads a file and sets a user-friendly asset name and label
           upload_asset() {
             local file_path="$1"
@@ -670,9 +691,16 @@ jobs:
           }
 
           # Map files to human-friendly labels and corrected asset names
+          echo "=== Starting file upload loop ==="
+          echo "Files to process:"
+          find all-installers -type f | sort
+          echo ""
+
           while IFS= read -r -d '' f; do
             rel=${f#./}
             base=$(basename "$rel")
+            echo "--- Processing file: $f ---"
+            echo "  rel=$rel, base=$base"
 
             # Skip SHA256SUMS files - they will be uploaded explicitly at the end
             if [[ "$base" == "SHA256SUMS" || "$base" == "SHA256SUMS.asc" ]]; then
@@ -690,32 +718,21 @@ jobs:
                 # Example: robocode-tank-royale-gui-0.34.2-1.x86_64.rpm -> robocode-tank-royale-gui-0.34.2.x86_64.rpm
                 # Use perl with lookahead to only replace the '-<digits>.' that precedes the arch and .rpm
                 asset_name=$(echo "$base" | perl -pe 's/-\d+\.(?=[^.]+\.rpm$)/./')
-
-                # Detect architecture from the corrected asset_name for the label
-                if [[ "$asset_name" =~ x86_64 ]]; then
-                  label="GUI for Linux (rpm) - x86_64"
-                elif [[ "$asset_name" =~ x64 ]]; then
-                  label="GUI for Linux (rpm) - x64"
-                else
-                  label="GUI for Linux (rpm)"
-                fi
+                # We only build one RPM (native on ubuntu-latest = x86_64)
+                label="GUI for Linux (rpm)"
                 ;;
               robocode-tank-royale-gui_*.deb | robocode-tank-royale-gui-*.deb)
-                # Detect architecture from filename for the label
-                if [[ "$base" =~ amd64 ]]; then
-                  label="GUI for Linux (deb) - amd64"
-                elif [[ "$base" =~ i386 ]]; then
-                  label="GUI for Linux (deb) - i386"
-                elif [[ "$base" =~ arm64 ]]; then
-                  label="GUI for Linux (deb) - arm64"
-                else
-                  label="GUI for Linux (deb)"
-                fi
+                # We only build one DEB (native on ubuntu-latest = amd64)
+                label="GUI for Linux (deb)"
                 ;;
               robocode-tank-royale-gui-*.msi)
                 label="GUI for Windows (msi)"
                 ;;
               robocode-tank-royale-gui-*.pkg)
+                echo "  .pkg file detected - starting macOS processing"
+                echo "  Full path (f): $f"
+                echo "  Base name: $base"
+
                 # Fix macOS .pkg version: jpackage uses 1.x.y due to Apple requirements,
                 # but we want the filename to show the actual version (e.g., 0.x.y)
                 if [[ "$base" =~ -1\.[0-9]+\.[0-9]+\.pkg$ ]]; then
@@ -726,15 +743,28 @@ jobs:
                 # Detect architecture from file path (includes artifact dir) and filename
                 # Check both $f (full path) and $base (filename) to catch arch in directory structure
                 arch=""
+                echo "  Checking for x86_64/x86/intel in path or base..."
+                echo "  Path regex test x86_64: [[ \"$f\" =~ x86_64 ]] = $([[ "$f" =~ x86_64 ]] && echo true || echo false)"
+                echo "  Path regex test x86: [[ \"$f\" =~ x86 ]] = $([[ "$f" =~ x86 ]] && echo true || echo false)"
+                echo "  Path regex test intel: [[ \"$f\" =~ intel ]] = $([[ "$f" =~ intel ]] && echo true || echo false)"
+                echo "  Base regex test x86_64: [[ \"$base\" =~ x86_64 ]] = $([[ "$base" =~ x86_64 ]] && echo true || echo false)"
+                echo "  Checking for arm64/aarch64/arm in path or base..."
+                echo "  Path regex test arm64: [[ \"$f\" =~ arm64 ]] = $([[ "$f" =~ arm64 ]] && echo true || echo false)"
+                echo "  Path regex test arm: [[ \"$f\" =~ arm ]] = $([[ "$f" =~ arm ]] && echo true || echo false)"
+                echo "  Base regex test arm64: [[ \"$base\" =~ arm64 ]] = $([[ "$base" =~ arm64 ]] && echo true || echo false)"
+
                 if [[ "$f" =~ (x86_64|x86|intel) ]] || [[ "$base" =~ (x86_64|x86|intel) ]]; then
                   arch="x86_64"
                   label="GUI for macOS (pkg) - Intel - x86_64"
+                  echo "  Detected architecture: x86_64 (Intel)"
                 elif [[ "$f" =~ (arm64|aarch64|arm) ]] || [[ "$base" =~ (arm64|aarch64|arm) ]]; then
                   arch="arm64"
                   label="GUI for macOS (pkg) - Apple Silicon - arm64"
+                  echo "  Detected architecture: arm64 (Apple Silicon)"
                 else
                   # Fallback: generic macOS label when arch not detectable
                   label="GUI for macOS (pkg)"
+                  echo "  WARNING: Could not detect architecture!"
                 fi
 
                 # Ensure uploaded asset names are unique per-arch to avoid overwriting
@@ -766,6 +796,8 @@ jobs:
             esac
 
             upload_asset "$f" "$asset_name" "$label"
+            echo "  UPLOADED: $asset_name with label: $label"
+            echo ""
           done < <(find all-installers -type f -print0)
 
           # Finally upload the combined checksums and signature
