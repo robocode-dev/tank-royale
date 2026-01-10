@@ -713,7 +713,7 @@ jobs:
                 fi
 
                 # Label for macOS (ARM build works on both Apple Silicon and Intel via Rosetta 2)
-                label="GUI for macOS (pkg)"
+                label="GUI for macOS (pkg) - Apple Silicon - arm64"
                 ;;
               robocode-tankroyale-gui-*.jar)
                 label="GUI (jar)"
