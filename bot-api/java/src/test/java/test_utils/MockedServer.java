@@ -75,9 +75,10 @@ public final class MockedServer {
     private final WebSocketServerImpl server = new WebSocketServerImpl();
 
     private final CountDownLatch openedLatch = new CountDownLatch(1);
-    private final CountDownLatch botHandshakeLatch = new CountDownLatch(1);
-    private final CountDownLatch gameStartedLatch = new CountDownLatch(1);
-    private final CountDownLatch tickEventLatch = new CountDownLatch(1);
+    private CountDownLatch botHandshakeLatch = new CountDownLatch(1);
+    private CountDownLatch gameStartedLatch = new CountDownLatch(1);
+    private CountDownLatch tickEventLatch = new CountDownLatch(1);
+    private CountDownLatch tickEventLatchCountDown;
     private CountDownLatch botIntentLatch = new CountDownLatch(1);
 
     private CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
@@ -101,10 +102,17 @@ public final class MockedServer {
     public void stop() {
         try {
             server.stop();
-            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void resetLatches() {
+        botHandshakeLatch = new CountDownLatch(1);
+        gameStartedLatch = new CountDownLatch(1);
+        tickEventLatch = new CountDownLatch(1);
+        botIntentLatch = new CountDownLatch(1);
+        botIntentContinueLatch = new CountDownLatch(1);
     }
 
     public void closeConnections() {
@@ -179,6 +187,10 @@ public final class MockedServer {
         this.radarDirectionMaxLimit = maxLimit;
     }
 
+    public void setTurnNumber(int turnNumber) {
+        this.turnNumber = turnNumber;
+    }
+
     public void resetBotIntentLatch() {
         botIntentLatch = new CountDownLatch(1);
         botIntentContinueLatch = new CountDownLatch(1);
@@ -191,6 +203,15 @@ public final class MockedServer {
             System.err.println("awaitConnection() was interrupted");
         }
         return false;
+    }
+
+    public boolean awaitBotReady(int milliSeconds) {
+        long start = System.currentTimeMillis();
+        if (!awaitBotHandshake(milliSeconds)) return false;
+        long elapsed = System.currentTimeMillis() - start;
+        if (!awaitGameStarted((int) (milliSeconds - elapsed))) return false;
+        elapsed = System.currentTimeMillis() - start;
+        return awaitTick((int) (milliSeconds - elapsed));
     }
 
     public boolean awaitBotHandshake(int milliSeconds) {
@@ -226,6 +247,31 @@ public final class MockedServer {
             return botIntentLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             System.err.println("awaitBotIntent() was interrupted");
+        }
+        return false;
+    }
+
+    public boolean setBotStateAndAwaitTick(
+            Double energy, Double gunHeat, Double speed,
+            Double direction, Double gunDirection, Double radarDirection) {
+
+        if (energy != null) this.energy = energy;
+        if (gunHeat != null) this.gunHeat = gunHeat;
+        if (speed != null) this.speed = speed;
+        if (direction != null) this.direction = direction;
+        if (gunDirection != null) this.gunDirection = gunDirection;
+        if (radarDirection != null) this.radarDirection = radarDirection;
+
+        tickEventLatchCountDown = new CountDownLatch(1);
+
+        for (WebSocket conn : server.getConnections()) {
+            server.sendTickEventForBot(conn, turnNumber++);
+        }
+
+        try {
+            return tickEventLatchCountDown.await(1000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            System.err.println("setBotStateAndAwaitTick() was interrupted");
         }
         return false;
     }
@@ -282,12 +328,13 @@ public final class MockedServer {
                     break;
 
                 case BOT_READY:
-                    System.out.println("BOT_READY");
-
                     sendRoundStarted(conn);
 
                     sendTickEventForBot(conn, turnNumber++);
                     tickEventLatch.countDown();
+                    if (tickEventLatchCountDown != null) {
+                        tickEventLatchCountDown.countDown();
+                    }
                     break;
 
                 case BOT_INTENT:
@@ -317,6 +364,9 @@ public final class MockedServer {
 
                     sendTickEventForBot(conn, turnNumber++);
                     tickEventLatch.countDown();
+                    if (tickEventLatchCountDown != null) {
+                        tickEventLatchCountDown.countDown();
+                    }
 
                     // Update states
                     speed += speedIncrement;
