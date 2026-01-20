@@ -52,6 +52,11 @@ public class MockedServer
     private double _gunDirection = BotGunDirection;
     private double _radarDirection = BotRadarDirection;
 
+    private EventWaitHandle _tickEventLatchCountDown;
+    private EventWaitHandle _botIntentEvent = new AutoResetEvent(false);
+
+    private EventWaitHandle _botIntentContinueEvent = new ManualResetEvent(true);
+
     private double _speedIncrement;
     private double _turnIncrement;
     private double _gunTurnIncrement;
@@ -73,15 +78,11 @@ public class MockedServer
     private EventWaitHandle _botHandshakeEvent = new AutoResetEvent(false);
     private EventWaitHandle _gameStartedEvent = new AutoResetEvent(false);
     private EventWaitHandle _tickEvent = new AutoResetEvent(false);
-    private EventWaitHandle _tickEventCountDown;
-    private EventWaitHandle _botIntentEvent = new AutoResetEvent(false);
-
-    private EventWaitHandle _botIntentContinueEvent = new ManualResetEvent(true);
 
     private BotIntent _botIntent;
-
     public BotIntent BotIntent => _botIntent;
 
+    private readonly object _lock = new();
 
     public void Start()
     {
@@ -102,11 +103,15 @@ public class MockedServer
 
     public void ResetLatches()
     {
-        _botHandshakeEvent = new AutoResetEvent(false);
-        _gameStartedEvent = new AutoResetEvent(false);
-        _tickEvent = new AutoResetEvent(false);
-        _botIntentEvent = new AutoResetEvent(false);
-        _botIntentContinueEvent = new ManualResetEvent(true);
+        lock (_lock)
+        {
+            _botHandshakeEvent = new AutoResetEvent(false);
+            _gameStartedEvent = new AutoResetEvent(false);
+            _tickEvent = new AutoResetEvent(false);
+            _botIntentEvent = new AutoResetEvent(false);
+            _botIntentContinueEvent = new ManualResetEvent(true);
+            _tickEventLatchCountDown = null;
+        }
     }
 
     public void CloseConnections()
@@ -284,7 +289,12 @@ public class MockedServer
         if (gunDirection != null) _gunDirection = gunDirection.Value;
         if (radarDirection != null) _radarDirection = radarDirection.Value;
 
-        _tickEventCountDown = new AutoResetEvent(false);
+        EventWaitHandle latch;
+        lock (_lock)
+        {
+            latch = new ManualResetEvent(false);
+            _tickEventLatchCountDown = latch;
+        }
 
         if (_currentConnection != null)
         {
@@ -293,7 +303,7 @@ public class MockedServer
 
         try
         {
-            return _tickEventCountDown.WaitOne(2000);
+            return latch.WaitOne(5000);
         }
         catch (Exception ex)
         {
@@ -301,7 +311,13 @@ public class MockedServer
         }
         finally
         {
-            _tickEventCountDown = null;
+            lock (_lock)
+            {
+                if (_tickEventLatchCountDown == latch)
+                {
+                    _tickEventLatchCountDown = null;
+                }
+            }
         }
         return false;
     }
@@ -326,10 +342,21 @@ public class MockedServer
 
     private void OnMessage(IWebSocketConnection conn, string messageJson)
     {
+        Console.WriteLine($"MockedServer: Received message raw: {messageJson}");
         var message = JsonConverter.FromJson<Message>(messageJson);
         if (message == null) return;
 
-        var msgType = (MessageType)Enum.Parse(typeof(MessageType), message.Type);
+        var msgTypeString = message.Type;
+        if (string.IsNullOrEmpty(msgTypeString)) return;
+
+        // Strip "Robocode.TankRoyale.Schema." prefix if it exists (happens with some serializers)
+        if (msgTypeString.StartsWith("Robocode.TankRoyale.Schema.")) {
+            msgTypeString = msgTypeString.Substring("Robocode.TankRoyale.Schema.".Length);
+        }
+
+        if (!Enum.TryParse(typeof(MessageType), msgTypeString, true, out var msgTypeObj)) return;
+        var msgType = (MessageType)msgTypeObj;
+
         switch (msgType)
         {
             case MessageType.BotHandshake:
@@ -342,25 +369,15 @@ public class MockedServer
 
             case MessageType.BotReady:
                 SendRoundStarted(conn);
-                // Existing tick event logic remains
-                SendTickEventForBot(conn, _turnNumber++);
-                _tickEvent.Set();
-                _tickEventCountDown?.Set();
+                lock (_lock)
+                {
+                    SendTickEventForBot(conn, _turnNumber++);
+                    _tickEvent.Set();
+                    _tickEventLatchCountDown?.Set();
+                }
                 break;
 
             case MessageType.BotIntent:
-                if (_speedMinLimit != null && _speed < _speedMinLimit) return;
-                if (_speedMaxLimit != null && _speed > _speedMaxLimit) return;
-
-                if (_directionMinLimit != null && _direction < _directionMinLimit) return;
-                if (_directionMaxLimit != null && _direction > _directionMaxLimit) return;
-
-                if (_gunDirectionMinLimit != null && _gunDirection < _gunDirectionMinLimit) return;
-                if (_gunDirectionMaxLimit != null && _gunDirection > _gunDirectionMaxLimit) return;
-
-                if (_radarDirectionMinLimit != null && _radarDirection < _radarDirectionMinLimit) return;
-                if (_radarDirectionMaxLimit != null && _radarDirection > _radarDirectionMaxLimit) return;
-
                 _botIntentContinueEvent.WaitOne();
 
                 _botIntent = JsonConverter.FromJson<BotIntent>(messageJson);
@@ -369,9 +386,17 @@ public class MockedServer
                 // Reset continue event for next time
                 _botIntentContinueEvent.Reset();
 
-                SendTickEventForBot(conn, _turnNumber++);
-                _tickEvent.Set();
-                _tickEventCountDown?.Set();
+                lock (_lock)
+                {
+                    if (_tickEventLatchCountDown != null)
+                    {
+                        _tickEventLatchCountDown.Set();
+                    }
+                    else
+                    {
+                        SendTickEventForBot(conn, _turnNumber++);
+                    }
+                }
 
                 // Update states
                 _speed += _speedIncrement;
@@ -445,13 +470,13 @@ public class MockedServer
 
     private void SendTickEventForBot(IWebSocketConnection conn, int turnNumber)
     {
+        Console.WriteLine("MockedServer: Sending TickEventForBot for turn " + turnNumber);
         var tickEvent = new TickEventForBot()
         {
             Type = EnumUtil.GetEnumMemberAttrValue(MessageType.TickEventForBot),
             RoundNumber = 1,
             TurnNumber = turnNumber,
         };
-        Console.WriteLine("MockedServer: Sending TickEventForBot for turn " + turnNumber);
 
         var turnRate = BotTurnRate;
         var gunTurnRate = BotGunTurnRate;
