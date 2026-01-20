@@ -97,9 +97,9 @@ speed is 11 units/turn with the maximum bullet power of 3.
 
 The gun gets heated when fired. The amount of gun heat produced is:
 
-$\frac{1 + firepower}{5}$
+$1 + \frac{firepower}{5}$
 
-Bots cannot fire if gun heat > 0. All guns start hot at the start of each round and start at 3.
+Bots cannot fire if the gun heats > 0. All guns start hot at the start of each round and start at 3.
 
 ### Energy gain
 
