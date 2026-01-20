@@ -70,12 +70,13 @@ public class MockedServer
     private IWebSocketConnection _currentConnection;
 
     private readonly EventWaitHandle _openedEvent = new AutoResetEvent(false);
-    private readonly EventWaitHandle _botHandshakeEvent = new AutoResetEvent(false);
-    private readonly EventWaitHandle _gameStartedEvent = new AutoResetEvent(false);
-    private readonly EventWaitHandle _tickEvent = new AutoResetEvent(false);
-    private readonly EventWaitHandle _botIntentEvent = new AutoResetEvent(false);
+    private EventWaitHandle _botHandshakeEvent = new AutoResetEvent(false);
+    private EventWaitHandle _gameStartedEvent = new AutoResetEvent(false);
+    private EventWaitHandle _tickEvent = new AutoResetEvent(false);
+    private EventWaitHandle _tickEventCountDown;
+    private EventWaitHandle _botIntentEvent = new AutoResetEvent(false);
 
-    private readonly EventWaitHandle _botIntentContinueEvent = new AutoResetEvent(false);
+    private EventWaitHandle _botIntentContinueEvent = new ManualResetEvent(true);
 
     private BotIntent _botIntent;
 
@@ -97,6 +98,15 @@ public class MockedServer
     public void Stop()
     {
         _server?.Dispose();
+    }
+
+    public void ResetLatches()
+    {
+        _botHandshakeEvent = new AutoResetEvent(false);
+        _gameStartedEvent = new AutoResetEvent(false);
+        _tickEvent = new AutoResetEvent(false);
+        _botIntentEvent = new AutoResetEvent(false);
+        _botIntentContinueEvent = new ManualResetEvent(true);
     }
 
     public void CloseConnections()
@@ -172,6 +182,11 @@ public class MockedServer
         _radarDirectionMaxLimit = maxLimit;
     }
 
+    public void SetTurnNumber(int turnNumber)
+    {
+        _turnNumber = turnNumber;
+    }
+
     public void ResetBotIntentEvent()
     {
         _botIntentEvent.Reset();
@@ -189,6 +204,16 @@ public class MockedServer
         }
 
         return false;
+    }
+
+    public bool AwaitBotReady(int milliSeconds)
+    {
+        var startTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        if (!AwaitBotHandshake(milliSeconds)) return false;
+        var elapsed = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - startTime;
+        if (!AwaitGameStarted((int)(milliSeconds - elapsed))) return false;
+        elapsed = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - startTime;
+        return AwaitTick((int)(milliSeconds - elapsed));
     }
 
     public bool AwaitBotHandshake(int milliSeconds)
@@ -248,6 +273,39 @@ public class MockedServer
         return false;
     }
 
+    public bool SetBotStateAndAwaitTick(
+        double? energy, double? gunHeat, double? speed,
+        double? direction, double? gunDirection, double? radarDirection)
+    {
+        if (energy != null) _energy = energy.Value;
+        if (gunHeat != null) _gunHeat = gunHeat.Value;
+        if (speed != null) _speed = speed.Value;
+        if (direction != null) _direction = direction.Value;
+        if (gunDirection != null) _gunDirection = gunDirection.Value;
+        if (radarDirection != null) _radarDirection = radarDirection.Value;
+
+        _tickEventCountDown = new AutoResetEvent(false);
+
+        if (_currentConnection != null)
+        {
+            SendTickEventForBot(_currentConnection, _turnNumber++);
+        }
+
+        try
+        {
+            return _tickEventCountDown.WaitOne(2000);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine("SetBotStateAndAwaitTick: Exception occurred: " + ex);
+        }
+        finally
+        {
+            _tickEventCountDown = null;
+        }
+        return false;
+    }
+
     public BotHandshake Handshake { get; private set; }
 
 
@@ -268,8 +326,6 @@ public class MockedServer
 
     private void OnMessage(IWebSocketConnection conn, string messageJson)
     {
-        Console.WriteLine("OnMessage: " + messageJson);
-
         var message = JsonConverter.FromJson<Message>(messageJson);
         if (message == null) return;
 
@@ -289,6 +345,7 @@ public class MockedServer
                 // Existing tick event logic remains
                 SendTickEventForBot(conn, _turnNumber++);
                 _tickEvent.Set();
+                _tickEventCountDown?.Set();
                 break;
 
             case MessageType.BotIntent:
@@ -309,8 +366,12 @@ public class MockedServer
                 _botIntent = JsonConverter.FromJson<BotIntent>(messageJson);
                 _botIntentEvent.Set();
 
+                // Reset continue event for next time
+                _botIntentContinueEvent.Reset();
+
                 SendTickEventForBot(conn, _turnNumber++);
                 _tickEvent.Set();
+                _tickEventCountDown?.Set();
 
                 // Update states
                 _speed += _speedIncrement;
@@ -390,6 +451,7 @@ public class MockedServer
             RoundNumber = 1,
             TurnNumber = turnNumber,
         };
+        Console.WriteLine("MockedServer: Sending TickEventForBot for turn " + turnNumber);
 
         var turnRate = BotTurnRate;
         var gunTurnRate = BotGunTurnRate;

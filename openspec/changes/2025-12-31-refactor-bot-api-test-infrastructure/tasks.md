@@ -24,10 +24,10 @@
 
 **Files**: `bot-api/dotnet/test/src/test_utils/MockedServer.cs`
 
-- [ ] Add `AwaitBotReady(int timeoutMs = 1000)` method
-- [ ] Add `SetBotStateAndAwaitTick()` method with nullable parameters
-- [ ] Ensure threading safety with CountDownEvent
-- [ ] Add unit tests for new methods
+- [x] Add `AwaitBotReady(int timeoutMs = 1000)` method
+- [x] Add `SetBotStateAndAwaitTick()` method with nullable parameters
+- [x] Ensure threading safety with CountDownEvent
+- [x] Add unit tests for new methods
 
 **Estimated time**: 1-2 days
 
