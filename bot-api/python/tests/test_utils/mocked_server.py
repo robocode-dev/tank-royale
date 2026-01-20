@@ -100,6 +100,7 @@ class MockedServer:
         self._bot_handshake_event = threading.Event()
         self._game_started_event = threading.Event()
         self._tick_event = threading.Event()
+        self._tick_event_count_down: Optional[threading.Event] = None
         self._bot_intent_event = threading.Event()
         self._bot_intent_continue_event = threading.Event()
         self._bot_intent_continue_event.set()  # Start as set so first intent proceeds without waiting
@@ -155,6 +156,13 @@ class MockedServer:
         if self._thread:
             self._thread.join(timeout=1.0)
 
+    def reset_events(self) -> None:
+        self._bot_handshake_event.clear()
+        self._game_started_event.clear()
+        self._tick_event.clear()
+        self._bot_intent_event.clear()
+        self._bot_intent_continue_event.set()
+
     def close_connections(self) -> None:
         """Close all active WebSocket connections."""
         if self._current_websocket and self._loop:
@@ -175,6 +183,16 @@ class MockedServer:
     def await_connection(self, timeout_ms: int) -> bool:
         return self._opened_event.wait(timeout_ms / 1000.0)
 
+    def await_bot_ready(self, timeout_ms: int = 1000) -> bool:
+        start_time = time.time()
+        if not self.await_bot_handshake(timeout_ms):
+            return False
+        elapsed = int((time.time() - start_time) * 1000)
+        if not self.await_game_started(timeout_ms - elapsed):
+            return False
+        elapsed = int((time.time() - start_time) * 1000)
+        return self.await_tick(timeout_ms - elapsed)
+
     def await_bot_handshake(self, timeout_ms: int) -> bool:
         return self._bot_handshake_event.wait(timeout_ms / 1000.0)
 
@@ -188,6 +206,39 @@ class MockedServer:
         # Allow next bot intent to continue processing
         self._bot_intent_continue_event.set()
         return self._bot_intent_event.wait(timeout_ms / 1000.0)
+
+    def set_bot_state_and_await_tick(
+        self,
+        energy: Optional[float] = None,
+        gun_heat: Optional[float] = None,
+        speed: Optional[float] = None,
+        direction: Optional[float] = None,
+        gun_direction: Optional[float] = None,
+        radar_direction: Optional[float] = None,
+    ) -> bool:
+        if energy is not None:
+            self._energy = energy
+        if gun_heat is not None:
+            self._gun_heat = gun_heat
+        if speed is not None:
+            self._speed = speed
+        if direction is not None:
+            self._direction = direction
+        if gun_direction is not None:
+            self._gun_direction = gun_direction
+        if radar_direction is not None:
+            self._radar_direction = radar_direction
+
+        self._tick_event_count_down = threading.Event()
+
+        if self._current_websocket and self._loop:
+            self._loop.call_soon_threadsafe(
+                asyncio.create_task,
+                self._send_tick(self._current_websocket, self._turn_number)
+            )
+            self._turn_number += 1
+
+        return self._tick_event_count_down.wait(timeout=1.0)
 
     # Config setters used by tests
     def set_energy(self, energy: float) -> None:
@@ -235,6 +286,9 @@ class MockedServer:
     def set_radar_direction_max_limit(self, v: float) -> None:
         self._radar_direction_max_limit = v
 
+    def set_turn_number(self, turn_number: int) -> None:
+        self._turn_number = turn_number
+
     def reset_bot_intent_event(self) -> None:
         """Reset the bot intent event to allow awaiting multiple intents in sequence."""
         self._bot_intent_event.clear()
@@ -263,7 +317,6 @@ class MockedServer:
                     await self._send_round_started(websocket)
                     await self._send_tick(websocket, self._turn_number)
                     self._turn_number += 1
-                    self._tick_event.set()
                     movement_reset_pending = True  # defer movement reset until after first intent
 
                 elif msg_type == "BotIntent":
@@ -293,7 +346,6 @@ class MockedServer:
 
                     await self._send_tick(websocket, self._turn_number)
                     self._turn_number += 1
-                    self._tick_event.set()
 
                     # Advance state after sending tick
                     self._speed += self._speed_increment
@@ -467,6 +519,9 @@ class MockedServer:
         )
 
         await websocket.send(to_json(tick))
+        self._tick_event.set()
+        if self._tick_event_count_down:
+            self._tick_event_count_down.set()
 
     @staticmethod
     def _create_bullet_state(bid: int) -> SchemaBulletState:

@@ -35,11 +35,11 @@
 
 **Files**: `bot-api/python/tests/test_utils/mocked_server.py`
 
-- [ ] Add `await_bot_ready(timeout_ms: int = 1000)` method
-- [ ] Add `set_bot_state_and_await_tick()` method with optional parameters
-- [ ] Ensure thread-safe state updates
-- [ ] Handle asyncio event loop properly
-- [ ] Add unit tests for new methods
+- [x] Add `await_bot_ready(timeout_ms: int = 1000)` method
+- [x] Add `set_bot_state_and_await_tick()` method with optional parameters
+- [x] Ensure thread-safe state updates
+- [x] Handle asyncio event loop properly
+- [x] Add unit tests for new methods
 
 **Estimated time**: 1-2 days
 
