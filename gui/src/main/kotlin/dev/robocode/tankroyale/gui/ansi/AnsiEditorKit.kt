@@ -26,6 +26,21 @@ class AnsiEditorKit(
     override fun getContentType() = "text/x-ansi"
 
     /** {@inheritDoc} */
+    override fun createDefaultDocument(): DefaultStyledDocument {
+        val doc = DefaultStyledDocument()
+
+        // Set up default character attributes with bright white foreground color
+        // so that text appears white from the start instead of black
+        val attrs = SimpleAttributeSet()
+        StyleConstants.setFontFamily(attrs, "Monospaced")
+        StyleConstants.setFontSize(attrs, fontSize)
+        StyleConstants.setForeground(attrs, ansiColors.default)
+        doc.setParagraphAttributes(0, 0, attrs, false)
+
+        return doc
+    }
+
+    /** {@inheritDoc} */
     override fun read(inputStream: InputStream, doc: Document, pos: Int) {
         read(BufferedReader(InputStreamReader(inputStream)), doc, pos)
     }
