@@ -32,6 +32,41 @@ optimized for protocol validation, not a **state-driven testing framework** opti
 3. **No guarantee** that `bot.getEnergy()` returns 5 when `setFire()` is called
 4. **Timeout ambiguity**: Is the bot stuck, or just slow?
 
+### Detailed Obstacles and Mitigations
+
+During implementation, several specific technical hurdles were identified. These are addressed by the design patterns
+and the stabilization tasks in Phase 1.5.
+
+#### 1. Thread Synchronization and Race Conditions
+
+* **Rogue Thread Interruption**: Using `bot.go()` in a separate thread often leads to `ThreadInterruptedException` when
+  the test ends or the server stops.
+    * *Mitigation*: Improved lifecycle management in `AbstractBotTest` with thread tracking and suppressed interruption
+      noise in test logs.
+* **Intent Race Conditions**: `awaitBotIntent()` might return as soon as the server receives the message, but before the
+  state is fully visible to the test thread.
+    * *Mitigation*: Ensure proper memory visibility (volatile/synchronized) and only release latches after state is
+      fully updated.
+
+#### 2. Protocol and State Synchronization
+
+* **Implicit vs. Explicit State Progression**: The Bot API hides the wait for a `TickEvent`.
+    * *Mitigation*: `MockedServer` explicitly simulates the reactive loop using `setBotStateAndAwaitTick`.
+* **Invisible Bot State**: State updates are only visible after a tick is processed.
+    * *Mitigation*: Deterministic tick advancement (Pattern 1) ensures the bot "sees" state changes before commands are
+      executed.
+* **Non-running Bots**: If `setBotStateAndAwaitTick` is called before the bot's main loop has started, the server will
+  timeout.
+    * *Mitigation*: Ensure bots are active (e.g., via `goAsync`) or provide passive test bots that respond to every
+      tick.
+
+#### 3. Language-Specific Challenges
+
+* **Python Async**: Synchronizing synchronous test threads with the async server and bot events.
+* **.NET SynchronizationContext**: Avoiding deadlocks when mixing `async/await` with blocking test waits.
+    * *Mitigation*: Tailored synchronization strategies in `MockedServer` and `AbstractBotTest` for each platform (
+      Pattern 1, 2, 3).
+
 ### Desired Architecture
 
 ```

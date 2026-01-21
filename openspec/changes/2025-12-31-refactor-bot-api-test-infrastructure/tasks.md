@@ -52,6 +52,44 @@
 
 ---
 
+## Phase 1.5: Infrastructure Stabilization & Reliability (MANDATORY PREREQUISITE)
+
+> **Priority Note**: These stabilization tasks MUST be completed and verified for each language before proceeding to
+> Phase 3 (Test Bot Factory) or Phase 4 (Fire Command Tests). The "Empty Intent" and "State Visibility" issues
+> must be resolved to ensure test reliability.
+
+### Task 1.5.1: Java Reliability Improvements
+
+- [ ] Implement thread tracking in `AbstractBotTest` to ensure clean shutdown (Suppresses Rogue Thread Interruption)
+- [ ] Suppress `ThreadInterruptedException` logs in tests when they are expected during teardown
+- [ ] Fix memory visibility issues in `MockedServer` (volatile fields for intent/state)
+- [ ] Ensure `botIntentLatch` is only counted down AFTER the intent is fully parsed
+- [ ] Add `executeCommandAndGetIntent` helper to `AbstractBotTest`
+- [ ] **Audit**: Verify `MockedServer.java` logic against sequence diagrams in `schema/schemas/README.md`
+- [ ] **State Setup**: Refine `setBotStateAndAwaitTick` or add `setInitialBotState` to handle non-running bots (
+  Mitigation for "Non-running Bots" obstacle)
+- [ ] **Verify**: Fix `CommandsFireTest` failures by ensuring proper state setup (addressing default GunHeat)
+
+### Task 1.5.2: .NET Reliability Improvements
+
+- [ ] Port thread/task tracking to .NET base test class
+- [ ] Ensure thread-safe state updates in `MockedServer.cs`
+- [ ] Add equivalent `ExecuteCommand` helpers
+- [ ] **Audit**: Verify `MockedServer.cs` logic against sequence diagrams in `schema/schemas/README.md`
+- [ ] **State Setup**: Handle non-running bot state synchronization equivalent to Java
+- [ ] **Verify**: Create a simple test that would previously have been flaky
+
+### Task 1.5.3: Python Reliability Improvements
+
+- [ ] Implement clean async cleanup in Python base test
+- [ ] Fix race conditions in `mocked_server.py` state updates
+- [ ] Add equivalent `execute_command` helpers
+- [ ] **Audit**: Verify `mocked_server.py` logic against sequence diagrams in `schema/schemas/README.md`
+- [ ] **State Setup**: Handle non-running bot state synchronization equivalent to Java
+- [ ] **Verify**: Create a simple test that would previously have been flaky
+
+---
+
 ## Phase 2: Synchronous Command Execution Utilities
 
 ### Task 2.1: Java AbstractBotTest Base Class
@@ -375,6 +413,7 @@
 **Files**: `bot-api/tests/TESTING-GUIDE.md` (new)
 
 - [ ] Introduction: Why these patterns exist
+- [ ] Protocol Alignment: Explicitly link test utilities to sequence diagrams in `schema/schemas/README.md`
 - [ ] MockedServer overview and capabilities
 - [ ] Removed methods and why they were deleted (setEnergy, sendTick, etc.)
 - [ ] AbstractBotTest patterns and best practices
