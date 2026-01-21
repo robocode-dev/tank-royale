@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Text;
-using System.Web;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
 
@@ -25,7 +24,6 @@ class RecordingTextWriter : TextWriter
     public string ReadNext()
     {
         var output = _stringWriter.ToString();
-        output = HttpUtility.JavaScriptStringEncode(output);
 
         _stringWriter.GetStringBuilder().Clear();
 
