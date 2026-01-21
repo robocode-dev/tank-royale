@@ -102,7 +102,6 @@ class MockedServer:
         self._tick_event = threading.Event()
         self._bot_intent_event = threading.Event()
         self._bot_intent_continue_event = threading.Event()
-        self._bot_intent_continue_event.set()  # Start as set so first intent proceeds without waiting
 
         # state captured
         self.handshake = None
@@ -115,7 +114,6 @@ class MockedServer:
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._thread: Optional[threading.Thread] = None
         self._server: Optional[websockets.serve] = None
-        self._current_websocket: Optional[websockets.WebSocketServerProtocol] = None
 
     @property
     def server_url(self) -> str:
@@ -155,22 +153,6 @@ class MockedServer:
         if self._thread:
             self._thread.join(timeout=1.0)
 
-    def close_connections(self) -> None:
-        """Close all active WebSocket connections."""
-        if self._current_websocket and self._loop:
-            asyncio.run_coroutine_threadsafe(
-                self._current_websocket.close(),
-                self._loop
-            )
-
-    def send_raw_text(self, text: str) -> None:
-        """Send raw text to the connected client (for testing malformed messages)."""
-        if self._current_websocket and self._loop:
-            asyncio.run_coroutine_threadsafe(
-                self._current_websocket.send(text),
-                self._loop
-            )
-
     # Await helpers
     def await_connection(self, timeout_ms: int) -> bool:
         return self._opened_event.wait(timeout_ms / 1000.0)
@@ -182,9 +164,13 @@ class MockedServer:
         return self._game_started_event.wait(timeout_ms / 1000.0)
 
     def await_tick(self, timeout_ms: int) -> bool:
+        # Reset the event for this wait
+        self._tick_event.clear()
         return self._tick_event.wait(timeout_ms / 1000.0)
 
     def await_bot_intent(self, timeout_ms: int) -> bool:
+        # Reset the event for this wait
+        self._bot_intent_event.clear()
         # Allow next bot intent to continue processing
         self._bot_intent_continue_event.set()
         return self._bot_intent_event.wait(timeout_ms / 1000.0)
@@ -192,9 +178,6 @@ class MockedServer:
     # Config setters used by tests
     def set_energy(self, energy: float) -> None:
         self._energy = energy
-
-    def set_speed(self, speed: float) -> None:
-        self._speed = speed
 
     def set_gun_heat(self, gun_heat: float) -> None:
         self._gun_heat = gun_heat
@@ -211,38 +194,98 @@ class MockedServer:
     def set_radar_turn_increment(self, inc: float) -> None:
         self._radar_turn_increment = inc
 
-    def set_speed_min_limit(self, v: float) -> None:
+    def set_speed_min_limit(self, v: Optional[float]) -> None:
         self._speed_min_limit = v
 
-    def set_speed_max_limit(self, v: float) -> None:
+    def set_speed_max_limit(self, v: Optional[float]) -> None:
         self._speed_max_limit = v
 
-    def set_direction_min_limit(self, v: float) -> None:
+    def set_direction_min_limit(self, v: Optional[float]) -> None:
         self._direction_min_limit = v
 
-    def set_direction_max_limit(self, v: float) -> None:
+    def set_direction_max_limit(self, v: Optional[float]) -> None:
         self._direction_max_limit = v
 
-    def set_gun_direction_min_limit(self, v: float) -> None:
+    def set_gun_direction_min_limit(self, v: Optional[float]) -> None:
         self._gun_direction_min_limit = v
 
-    def set_gun_direction_max_limit(self, v: float) -> None:
+    def set_gun_direction_max_limit(self, v: Optional[float]) -> None:
         self._gun_direction_max_limit = v
 
-    def set_radar_direction_min_limit(self, v: float) -> None:
+    def set_radar_direction_min_limit(self, v: Optional[float]) -> None:
         self._radar_direction_min_limit = v
 
-    def set_radar_direction_max_limit(self, v: float) -> None:
+    def set_radar_direction_max_limit(self, v: Optional[float]) -> None:
         self._radar_direction_max_limit = v
 
-    def reset_bot_intent_event(self) -> None:
-        """Reset the bot intent event to allow awaiting multiple intents in sequence."""
-        self._bot_intent_event.clear()
+    # Property versions (0.35.0+ compatibility)
+    @property
+    def speed_min_limit(self) -> Optional[float]:
+        return self._speed_min_limit
+
+    @speed_min_limit.setter
+    def speed_min_limit(self, v: Optional[float]) -> None:
+        self._speed_min_limit = v
+
+    @property
+    def speed_max_limit(self) -> Optional[float]:
+        return self._speed_max_limit
+
+    @speed_max_limit.setter
+    def speed_max_limit(self, v: Optional[float]) -> None:
+        self._speed_max_limit = v
+
+    @property
+    def direction_min_limit(self) -> Optional[float]:
+        return self._direction_min_limit
+
+    @direction_min_limit.setter
+    def direction_min_limit(self, v: Optional[float]) -> None:
+        self._direction_min_limit = v
+
+    @property
+    def direction_max_limit(self) -> Optional[float]:
+        return self._direction_max_limit
+
+    @direction_max_limit.setter
+    def direction_max_limit(self, v: Optional[float]) -> None:
+        self._direction_max_limit = v
+
+    @property
+    def gun_direction_min_limit(self) -> Optional[float]:
+        return self._gun_direction_min_limit
+
+    @gun_direction_min_limit.setter
+    def gun_direction_min_limit(self, v: Optional[float]) -> None:
+        self._gun_direction_min_limit = v
+
+    @property
+    def gun_direction_max_limit(self) -> Optional[float]:
+        return self._gun_direction_max_limit
+
+    @gun_direction_max_limit.setter
+    def gun_direction_max_limit(self, v: Optional[float]) -> None:
+        self._gun_direction_max_limit = v
+
+    @property
+    def radar_direction_min_limit(self) -> Optional[float]:
+        return self._radar_direction_min_limit
+
+    @radar_direction_min_limit.setter
+    def radar_direction_min_limit(self, v: Optional[float]) -> None:
+        self._radar_direction_min_limit = v
+
+    @property
+    def radar_direction_max_limit(self) -> Optional[float]:
+        return self._radar_direction_max_limit
+
+    @radar_direction_max_limit.setter
+    def radar_direction_max_limit(self, v: Optional[float]) -> None:
+        self._radar_direction_max_limit = v
 
     # Internal server logic
     async def _handler(self, websocket: websockets.WebSocketServerProtocol):
         # on open
-        self._current_websocket = websocket
         self._opened_event.set()
         await self._send_server_handshake(websocket)
 
@@ -309,9 +352,6 @@ class MockedServer:
         except websockets.exceptions.ConnectionClosed:
             # client closed connection
             pass
-        finally:
-            if self._current_websocket == websocket:
-                self._current_websocket = None
 
     def _reset_movement_commands(self):
         # This should match the Java/.NET logic

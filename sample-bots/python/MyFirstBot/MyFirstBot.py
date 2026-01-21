@@ -16,7 +16,7 @@ class MyFirstBot(Bot):
     async def run(self) -> None:
         """Called when a new round is started -> initialize and do some movement."""
         # Repeat while the bot is running
-        while self.is_running():
+        while self.running:
             await self.forward(100)
             await self.turn_gun_left(360)
             await self.back(100)

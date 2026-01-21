@@ -449,7 +449,7 @@ class BaseBotInternals:
             return False  # Cannot determine gun heat or energy
 
         # Assuming self.base_bot.energy is updated by the BaseBot instance from its on_tick handler
-        current_energy = self.base_bot.get_energy()
+        current_energy = self.base_bot.energy
         gun_heat = current_tick.bot_state.gun_heat
 
         if current_energy < firepower or gun_heat > 0:

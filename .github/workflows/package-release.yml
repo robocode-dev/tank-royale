@@ -27,23 +27,76 @@ jobs:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' || !github.event.workflow_run.conclusion }}
     name: Build installers on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     env:
       VERSION: ${{ inputs.version || github.event.inputs.version }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        include:
+          # Linux builds - split by installer type for parallelism
+          - os: ubuntu-latest
+            arch: native
+            installer_type: deb
+          - os: ubuntu-latest
+            arch: native
+            installer_type: rpm
+          # Windows build
+          - os: windows-latest
+            arch: native
+            installer_type: msi
+          # macOS build - Apple Silicon (also runs on Intel via Rosetta 2)
+          - os: macos-latest
+            arch: arm64
+            installer_type: pkg
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Temurin JDK 21 (for jpackage)
+      - name: Verify runner architecture (macOS only)
+        if: matrix.arch != 'native'
+        run: |
+          EXPECTED="${{ matrix.arch }}"
+          ACTUAL="$(uname -m)"
+          echo "Expected architecture: $EXPECTED"
+          echo "Actual architecture: $ACTUAL"
+          if [ "$EXPECTED" = "arm64" ] && [ "$ACTUAL" != "arm64" ]; then
+            echo "ERROR: Expected arm64 but runner is $ACTUAL"
+            exit 1
+          fi
+          if [ "$EXPECTED" = "x86_64" ] && [ "$ACTUAL" != "x86_64" ]; then
+            echo "ERROR: Expected x86_64 but runner is $ACTUAL"
+            exit 1
+          fi
+          echo "✓ Architecture verification passed"
+        shell: bash
+
+      - name: Set up Temurin JDK 21 (default/native)
+        if: matrix.arch == 'native'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
           cache: 'gradle'
+
+      - name: Set up Temurin JDK 21 (Intel x86_64)
+        if: matrix.arch == 'x86_64'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: 'gradle'
+          architecture: 'x64'
+
+      - name: Set up Temurin JDK 21 (Apple Silicon arm64)
+        if: matrix.arch == 'arm64'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: 'gradle'
+          architecture: 'arm64'
 
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v3
@@ -77,22 +130,54 @@ jobs:
           set -e
           # Ensure log directory exists
           mkdir -p build
+
+          # Determine which jpackage task to run based on installer type
+          case "${{ matrix.installer_type }}" in
+            deb)
+              JPACKAGE_TASK="jpackageLinuxDeb"
+              ;;
+            rpm)
+              JPACKAGE_TASK="jpackageLinuxRpm"
+              ;;
+            msi)
+              JPACKAGE_TASK="jpackageWin"
+              ;;
+            pkg)
+              JPACKAGE_TASK="jpackageMacPkg"
+              ;;
+            *)
+              echo "Unknown installer type: ${{ matrix.installer_type }}"
+              exit 1
+              ;;
+          esac
+
+          echo "Running Gradle task: gui:$JPACKAGE_TASK"
+
           # Run Gradle quietly and capture all output to a log. On failure, print only the tail.
-          ./gradlew --no-daemon --stacktrace --quiet --console=plain -Dorg.gradle.warning.mode=none stageAllInstallers \
+          # Use --parallel to enable parallel task execution within Gradle
+          ./gradlew --no-daemon --parallel --stacktrace --quiet --console=plain -Dorg.gradle.warning.mode=none \
+            gui:$JPACKAGE_TASK \
             > build/ci-gradle.log 2>&1 \
             || (echo "Gradle build failed — showing last 400 lines of log:" && tail -n 400 build/ci-gradle.log && exit 1)
+
           echo "Gradle build succeeded. (Logs suppressed; see build/ci-gradle.log in the artifact if needed.)"
+
+          # Copy installers to build/dist for artifact upload
+          mkdir -p build/dist
+          find gui/build/jpackage -type f \( -name "*.deb" -o -name "*.rpm" -o -name "*.msi" -o -name "*.pkg" \) -exec cp {} build/dist/ \;
         shell: bash
 
       - name: Re-run macOS with deep jpackage diagnostics (only on macOS)
-        if: matrix.os == 'macos-latest' && failure()
+        if: startsWith(matrix.os, 'macos') && failure()
         run: |
           echo "Re-running macOS packaging with --debug to surface jpackage stderr"
-          ./gradlew --no-daemon --debug -PciVerbose=true :booter:jpackageMac :recorder:jpackageMac
+          ./gradlew --no-daemon --debug -PciVerbose=true gui:jpackageMacPkg
         shell: bash
 
       - name: Rename macOS .pkg files to match release version
-        if: matrix.os == 'macos-latest'
+        if: startsWith(matrix.os, 'macos')
+        env:
+          MACOS_ARCH: ${{ matrix.arch }}
         run: |
           set -e
           echo "=== Renaming macOS .pkg files ==="
@@ -143,6 +228,7 @@ jobs:
                 echo "  ✗ Failed to rename!"
                 exit 1
               fi
+              # Note: We no longer append arch suffix since we only build one macOS PKG (ARM, works on Intel via Rosetta 2)
             else
               echo "  Skipping (no version 1.x.y pattern found in: $BASENAME)"
             fi
@@ -216,7 +302,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: installers-${{ matrix.os }}
+          name: installers-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.installer_type }}
           path: |
             build/dist/**/*
             build/ci-gradle.log
@@ -230,6 +316,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'workflow_run'
     steps:
+
       - name: Download all installer artifacts
         uses: actions/download-artifact@v4
         with:
@@ -456,11 +543,28 @@ jobs:
             filename=$(basename "$file")
             checksum=$(sha256sum "$file" | awk '{print $1}')
 
-            # Fix .pkg filename in checksum (macOS jpackage uses 1.x.y, we want actual VERSION)
+            # Fix .pkg filename in checksum (macOS jpackage uses 1.x.y due to Apple requirements,
+            # but we want the filename to show the actual version (e.g., 0.x.y)
             if [[ "$filename" =~ -1\.[0-9]+\.[0-9]+\.pkg$ ]]; then
               fixed_filename=$(echo "$filename" | sed "s/-1\.\([0-9]\+\)\.\([0-9]\+\)\.pkg$/-${VERSION}.pkg/")
               echo "  Fixing .pkg checksum filename: $filename -> $fixed_filename"
               filename="$fixed_filename"
+            fi
+
+            # Detect architecture from the original file basename and append arch to .pkg checksum filename
+            orig_base=$(basename "$file")
+            arch=""
+            if [[ "$orig_base" =~ (x86_64|x86|intel) ]]; then
+              arch="x86_64"
+            elif [[ "$orig_base" =~ (arm64|aarch64|arm) ]]; then
+              arch="arm64"
+            fi
+
+            if [ -n "$arch" ]; then
+              if [[ "$filename" =~ \.pkg$ ]] && [[ "$filename" != *".$arch.pkg" ]]; then
+                filename=$(echo "$filename" | sed -E "s/\.pkg$/.$arch.pkg/")
+                echo "  Appending arch to checksum filename: $filename"
+              fi
             fi
 
             printf "%s  %s\n" "$checksum" "$filename" >> SHA256SUMS
@@ -507,6 +611,24 @@ jobs:
           # Helper to URI-encode strings (jq required)
           urlencode() { jq -nr --arg v "$1" '$v|@uri'; }
 
+          # Function to delete ALL installer assets (cleanup stale assets from previous runs)
+          cleanup_installer_assets() {
+            echo "=== Cleaning up existing installer assets ==="
+            local assets=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/$release_id/assets")
+
+            # Find all assets matching installer patterns (.deb, .rpm, .msi, .pkg)
+            echo "$assets" | jq -r '.[] | select(.name | test("\\.(deb|rpm|msi|pkg)$")) | "\(.id)|\(.name)"' | while IFS='|' read -r asset_id asset_name; do
+              if [ -n "$asset_id" ] && [ "$asset_id" != "null" ]; then
+                echo "Deleting stale installer asset: $asset_name (ID: $asset_id)"
+                curl -sS -X DELETE \
+                  -H "Authorization: token $GITHUB_TOKEN" \
+                  "https://api.github.com/repos/${{ github.repository }}/releases/assets/$asset_id"
+              fi
+            done
+            echo "=== Cleanup complete ==="
+          }
+
           # Function to delete an existing asset if it exists
           delete_existing_asset() {
             local asset_name="$1"
@@ -548,6 +670,9 @@ jobs:
             echo
           }
 
+          # Clean up all old installer assets before uploading new ones
+          cleanup_installer_assets
+
           # Map files to human-friendly labels and corrected asset names
           while IFS= read -r -d '' f; do
             rel=${f#./}
@@ -569,9 +694,11 @@ jobs:
                 # Example: robocode-tank-royale-gui-0.34.2-1.x86_64.rpm -> robocode-tank-royale-gui-0.34.2.x86_64.rpm
                 # Use perl with lookahead to only replace the '-<digits>.' that precedes the arch and .rpm
                 asset_name=$(echo "$base" | perl -pe 's/-\d+\.(?=[^.]+\.rpm$)/./')
+                # We only build one RPM (native on ubuntu-latest = x86_64)
                 label="GUI for Linux (rpm)"
                 ;;
               robocode-tank-royale-gui_*.deb | robocode-tank-royale-gui-*.deb)
+                # We only build one DEB (native on ubuntu-latest = amd64)
                 label="GUI for Linux (deb)"
                 ;;
               robocode-tank-royale-gui-*.msi)
@@ -579,12 +706,14 @@ jobs:
                 ;;
               robocode-tank-royale-gui-*.pkg)
                 # Fix macOS .pkg version: jpackage uses 1.x.y due to Apple requirements,
-                # but we want the filename to show the actual version (0.x.y)
+                # but we want the filename to show the actual version (e.g., 0.x.y)
                 if [[ "$base" =~ -1\.[0-9]+\.[0-9]+\.pkg$ ]]; then
                   asset_name=$(echo "$base" | sed "s/-1\.\([0-9]\+\)\.\([0-9]\+\)\.pkg$/-${VERSION}.pkg/")
                   echo "  Fixing macOS .pkg version: $base -> $asset_name"
                 fi
-                label="GUI for macOS (pkg)"
+
+                # Label for macOS (ARM build works on both Apple Silicon and Intel via Rosetta 2)
+                label="GUI for macOS (pkg) - Apple Silicon - arm64"
                 ;;
               robocode-tankroyale-gui-*.jar)
                 label="GUI (jar)"

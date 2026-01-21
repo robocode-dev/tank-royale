@@ -20,7 +20,7 @@ class PaintingBot(Bot):
     # The main method starts our bot
     async def run(self) -> None:
         # Continuous forward and backward movement repeating forever
-        while self.is_running():
+        while self.running:
             await self.forward(100)
             await self.turn_gun_left(360)
             await self.back(100)
@@ -49,7 +49,7 @@ class PaintingBot(Bot):
             alpha = max(0xFF - (delta_time * 16), 0)
 
             # Draw a red circle with the alpha value we calculated using anm ellipse
-            g = self.get_graphics()
+            g = self.graphics
 
             color = Color.from_rgba(0xFF, 0x00, 0x00, alpha)
             g.set_fill_color(color)

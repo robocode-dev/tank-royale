@@ -72,9 +72,9 @@ class _BotInternals(StopResumeListenerABC):
         self.gun_turn_remaining: float = 0.0
         self.radar_turn_remaining: float = 0.0
         try:
-            self._previous_direction: float = self._bot.get_direction()
-            self._previous_gun_direction: float = self._bot.get_gun_direction()
-            self._previous_radar_direction: float = self._bot.get_radar_direction()
+            self._previous_direction: float = self._bot.direction
+            self._previous_gun_direction: float = self._bot.gun_direction
+            self._previous_radar_direction: float = self._bot.radar_direction
         except Exception:
             self._previous_direction = 0.0
             self._previous_gun_direction = 0.0
@@ -82,7 +82,7 @@ class _BotInternals(StopResumeListenerABC):
 
     def _process_turn(self) -> None:
         """Process the bot's turn, updating movement and turn values."""
-        if self._bot.is_disabled():
+        if self._bot.disabled:
             self._clear_remaining()
             return
         self._update_turn_remaining()
@@ -156,12 +156,12 @@ class _BotInternals(StopResumeListenerABC):
         self.distance_remaining = distance
 
     async def forward(self, distance: float) -> None:
-        if self._bot.is_stopped():
+        if self._bot.stopped:
             await self._bot.go()
         else:
             self.set_forward(distance)
             await self.wait_for(
-                lambda: self.distance_remaining == 0.0 and self._bot.get_speed() == 0.0
+                lambda: self.distance_remaining == 0.0 and self._bot.speed == 0.0
             )
 
     def set_turn_left(self, degrees: float) -> None:
@@ -170,7 +170,7 @@ class _BotInternals(StopResumeListenerABC):
         self._base_bot_internals.turn_rate = degrees
 
     async def turn_left(self, degrees: float) -> None:
-        if self._bot.is_stopped():
+        if self._bot.stopped:
             await self._bot.go()
         else:
             self.set_turn_left(degrees)
@@ -182,7 +182,7 @@ class _BotInternals(StopResumeListenerABC):
         self._base_bot_internals.gun_turn_rate = degrees
 
     async def turn_gun_left(self, degrees: float) -> None:
-        if self._bot.is_stopped():
+        if self._bot.stopped:
             await self._bot.go()
         else:
             self.set_turn_gun_left(degrees)
@@ -194,7 +194,7 @@ class _BotInternals(StopResumeListenerABC):
         self._base_bot_internals.radar_turn_rate = degrees
 
     async def turn_radar_left(self, degrees: float) -> None:
-        if self._bot.is_stopped():
+        if self._bot.stopped:
             await self._bot.go()
         else:
             self.set_turn_radar_left(degrees)
@@ -247,9 +247,9 @@ class _BotInternals(StopResumeListenerABC):
     def _update_turn_remaining(self) -> None:
         """Update the turn remaining value based on the bot's current direction."""
         delta = self._bot.calc_delta_angle(
-            self._bot.get_direction(), self._previous_direction
+            self._bot.direction, self._previous_direction
         )
-        self._previous_direction = self._bot.get_direction()
+        self._previous_direction = self._bot.direction
 
         if not self._override_turn_rate:
             # called after a previous direction has been calculated and stored!
@@ -267,9 +267,9 @@ class _BotInternals(StopResumeListenerABC):
     def _update_gun_turn_remaining(self) -> None:
         """Update the gun turn remaining value based on the bot's current gun direction."""
         delta = self._bot.calc_delta_angle(
-            self._bot.get_gun_direction(), self._previous_gun_direction
+            self._bot.gun_direction, self._previous_gun_direction
         )
-        self._previous_gun_direction = self._bot.get_gun_direction()
+        self._previous_gun_direction = self._bot.gun_direction
 
         if not self._override_gun_turn_rate:
             return
@@ -286,9 +286,9 @@ class _BotInternals(StopResumeListenerABC):
     def _update_radar_turn_remaining(self) -> None:
         """Update the radar turn remaining value based on the bot's current radar direction."""
         delta = self._bot.calc_delta_angle(
-            self._bot.get_radar_direction(), self._previous_radar_direction
+            self._bot.radar_direction, self._previous_radar_direction
         )
-        self._previous_radar_direction = self._bot.get_radar_direction()
+        self._previous_radar_direction = self._bot.radar_direction
 
         if not self._override_radar_turn_rate:
             return
@@ -405,7 +405,8 @@ class Bot(BaseBot, BotABC):
         # Ensure Java parity: setting target speed should clear overrideTargetSpeed and set distance_remaining to +/-inf
         self._bot_internals.target_speed = speed
 
-    def is_running(self) -> bool:
+    @property
+    def running(self) -> bool:
         """Check if the bot is currently running."""
         return self._internals.is_running()
 

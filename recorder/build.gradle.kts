@@ -46,6 +46,9 @@ tasks {
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
+        // Ensure the intermediate '-all.jar' is declared as an output so Gradle knows about it
+        outputs.file(file(intermediateJar))
+
         manifest {
             attributes["Main-Class"] = jarManifestMainClass
             attributes["Implementation-Title"] = title
@@ -59,6 +62,8 @@ tasks {
 
     val r8ShrinkTask by registering(JavaExec::class) { // R8 shrinking task (kept name for compatibility)
         dependsOn(jar)
+
+        outputs.file(finalJar)
 
         doFirst {
             if (!file(intermediateJar).exists()) {
@@ -110,9 +115,6 @@ tasks {
 
     assemble {
         dependsOn(r8ShrinkTask)
-        doLast {
-            delete(intermediateJar) // Ensure intermediate JAR is cleaned
-        }
     }
 
     val javadocJar = named("javadocJar")

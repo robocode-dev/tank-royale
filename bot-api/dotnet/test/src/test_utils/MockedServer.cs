@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -56,7 +56,7 @@ public class MockedServer
     private double _turnIncrement;
     private double _gunTurnIncrement;
     private double _radarTurnIncrement;
-
+    
     private double? _speedMinLimit;
     private double? _speedMaxLimit;
     private double? _directionMinLimit;
@@ -67,7 +67,7 @@ public class MockedServer
     private double? _radarDirectionMaxLimit;
 
     private WebSocketServer _server;
-    private IWebSocketConnection _currentConnection;
+//    private readonly ISet<IWebSocketConnection> _clients = new HashSet<IWebSocketConnection>();
 
     private readonly EventWaitHandle _openedEvent = new AutoResetEvent(false);
     private readonly EventWaitHandle _botHandshakeEvent = new AutoResetEvent(false);
@@ -78,9 +78,9 @@ public class MockedServer
     private readonly EventWaitHandle _botIntentContinueEvent = new AutoResetEvent(false);
 
     private BotIntent _botIntent;
-
+    
     public BotIntent BotIntent => _botIntent;
-
+    
 
     public void Start()
     {
@@ -96,27 +96,15 @@ public class MockedServer
 
     public void Stop()
     {
-        _server?.Dispose();
-    }
+//        foreach (var client in _clients) client.Close();
+//        _clients.Clear();
 
-    public void CloseConnections()
-    {
-        _currentConnection?.Close();
-    }
-
-    public void SendRawText(string text)
-    {
-        _currentConnection?.Send(text);
+        _server.Dispose();
     }
 
     public void SetEnergy(double energy)
     {
         _energy = energy;
-    }
-
-    public void SetSpeed(double speed)
-    {
-        _speed = speed;
     }
 
     public void SetGunHeat(double gunHeat)
@@ -147,7 +135,7 @@ public class MockedServer
     public void SetSpeedMaxLimit(double maxLimit) {
         _speedMaxLimit = maxLimit;
     }
-
+    
     public void SetDirectionMinLimit(double minLimit) {
         _directionMinLimit = minLimit;
     }
@@ -170,11 +158,6 @@ public class MockedServer
 
     public void SetRadarDirectionMaxLimit(double maxLimit) {
         _radarDirectionMaxLimit = maxLimit;
-    }
-
-    public void ResetBotIntentEvent()
-    {
-        _botIntentEvent.Reset();
     }
 
     public bool AwaitConnection(int milliSeconds)
@@ -253,17 +236,15 @@ public class MockedServer
 
     private void OnOpen(IWebSocketConnection conn)
     {
-        _currentConnection = conn;
+//        _clients.Add(conn);
+        
         _openedEvent.Set();
         SendServerHandshake(conn);
     }
-
+    
     private void OnClose(IWebSocketConnection conn)
     {
-        if (_currentConnection == conn)
-        {
-            _currentConnection = null;
-        }
+//        _clients.Remove(conn);
     }
 
     private void OnMessage(IWebSocketConnection conn, string messageJson)
@@ -282,6 +263,9 @@ public class MockedServer
 
                 SendGameStartedForBot(conn);
                 _gameStartedEvent.Set();
+                // Immediately send a tick event after game start to guarantee tick for all tests
+                SendTickEventForBot(conn, _turnNumber++);
+                _tickEvent.Set();
                 break;
 
             case MessageType.BotReady:
@@ -292,6 +276,8 @@ public class MockedServer
                 break;
 
             case MessageType.BotIntent:
+                _botIntentContinueEvent.WaitOne();
+
                 if (_speedMinLimit != null && _speed < _speedMinLimit) return;
                 if (_speedMaxLimit != null && _speed > _speedMaxLimit) return;
 
@@ -303,8 +289,6 @@ public class MockedServer
 
                 if (_radarDirectionMinLimit != null && _radarDirection < _radarDirectionMinLimit) return;
                 if (_radarDirectionMaxLimit != null && _radarDirection > _radarDirectionMaxLimit) return;
-
-                _botIntentContinueEvent.WaitOne();
 
                 _botIntent = JsonConverter.FromJson<BotIntent>(messageJson);
                 _botIntentEvent.Set();

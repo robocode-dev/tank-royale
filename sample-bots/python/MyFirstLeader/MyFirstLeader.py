@@ -64,7 +64,7 @@ class MyFirstLeader(Bot):
         self.set_turn_radar_left(float("inf"))
 
         # Repeat while the bot is running: Move forward and back
-        while self.is_running():
+        while self.running:
             await self.forward(100)
             await self.back(100)
 

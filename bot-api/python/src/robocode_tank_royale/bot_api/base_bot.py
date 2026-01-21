@@ -54,59 +54,76 @@ class BaseBot(BaseBotABC):
             await self._internals.dispatch_events(current_tick.turn_number)
         await self._internals.execute()
 
-    def get_my_id(self) -> int:
+    @property
+    def my_id(self) -> int:
         return self._internals.my_id
 
-    def get_variant(self) -> str:
+    @property
+    def variant(self) -> str:
         return self._internals.variant
 
-    def get_version(self) -> str:
+    @property
+    def version(self) -> str:
         return self._internals.version
 
-    def get_game_type(self) -> str:
+    @property
+    def game_type(self) -> str:
         return self._internals.game_setup.game_type
 
-    def get_arena_width(self) -> int:
+    @property
+    def arena_width(self) -> int:
         return self._internals.game_setup.arena_width
 
-    def get_arena_height(self) -> int:
+    @property
+    def arena_height(self) -> int:
         return self._internals.game_setup.arena_height
 
-    def get_number_of_rounds(self) -> int:
+    @property
+    def number_of_rounds(self) -> int:
         return self._internals.game_setup.number_of_rounds
 
-    def get_gun_cooling_rate(self) -> float:
+    @property
+    def gun_cooling_rate(self) -> float:
         return self._internals.game_setup.gun_cooling_rate
 
-    def get_max_inactivity_turns(self) -> int:
+    @property
+    def max_inactivity_turns(self) -> int:
         return self._internals.game_setup.max_inactivity_turns
 
-    def get_turn_timeout(self) -> int:
+    @property
+    def turn_timeout(self) -> int:
         return self._internals.game_setup.turn_timeout
 
-    def get_time_left(self) -> int:
+    @property
+    def time_left(self) -> int:
         return self._internals.get_time_left()
 
-    def get_round_number(self) -> int:
+    @property
+    def round_number(self) -> int:
         return self._internals.get_current_tick_or_throw().round_number
 
-    def get_turn_number(self) -> int:
+    @property
+    def turn_number(self) -> int:
         return self._internals.get_current_tick_or_throw().turn_number
 
-    def get_enemy_count(self) -> int:
+    @property
+    def enemy_count(self) -> int:
         bot_state = self._internals.get_current_tick_or_throw().bot_state
         assert bot_state is not None
         return bot_state.enemy_count
 
-    def get_energy(self) -> float:
+    @property
+    def energy(self) -> float:
         bot_state = self._internals.get_current_tick_or_throw().bot_state
         assert bot_state is not None
         return bot_state.energy
 
-    def is_disabled(self) -> bool:
-        return self.get_energy() == 0
+    @property
+    def disabled(self) -> bool:
+        return self.energy == 0
 
-    def get_x(self) -> float:
+    @property
+    def x(self) -> float:
         tick = self._internals.get_current_tick_or_null()
         if not tick:
             assert self._internals.initial_position is not None
@@ -117,7 +134,8 @@ class BaseBot(BaseBotABC):
         assert bot_state is not None
         return bot_state.x
 
-    def get_y(self) -> float:
+    @property
+    def y(self) -> float:
         tick = self._internals.get_current_tick_or_null()
         if not tick:
             assert self._internals.initial_position is not None
@@ -128,7 +146,8 @@ class BaseBot(BaseBotABC):
         assert bot_state is not None
         return bot_state.y
 
-    def get_direction(self) -> float:
+    @property
+    def direction(self) -> float:
         tick = self._internals.get_current_tick_or_null()
         if not tick:
             assert self._internals.initial_position is not None
@@ -139,7 +158,8 @@ class BaseBot(BaseBotABC):
         assert bot_state is not None
         return bot_state.direction
 
-    def get_gun_direction(self) -> float:
+    @property
+    def gun_direction(self) -> float:
         tick = self._internals.get_current_tick_or_null()
         if not tick:
             assert self._internals.initial_position is not None
@@ -150,7 +170,8 @@ class BaseBot(BaseBotABC):
         assert bot_state is not None
         return bot_state.gun_direction
 
-    def get_radar_direction(self) -> float:
+    @property
+    def radar_direction(self) -> float:
         tick = self._internals.get_current_tick_or_null()
         if not tick:
             assert self._internals.initial_position is not None
@@ -161,16 +182,20 @@ class BaseBot(BaseBotABC):
         assert bot_state is not None
         return bot_state.radar_direction
 
-    def get_speed(self) -> float:
+    @property
+    def speed(self) -> float:
         return self._internals.get_speed()
 
-    def get_gun_heat(self) -> float:
+    @property
+    def gun_heat(self) -> float:
         return self._internals.get_gun_heat()
 
-    def get_bullet_states(self) -> Sequence[BulletState | None] | None:
+    @property
+    def bullet_states(self) -> Sequence[BulletState | None] | None:
         return self._internals.get_bullet_states()
 
-    def get_events(self) -> Sequence[BotEvent | None] | None:
+    @property
+    def events(self) -> Sequence[BotEvent | None] | None:
         return self._internals.get_events()
 
     def clear_events(self) -> None:
@@ -246,7 +271,8 @@ class BaseBot(BaseBotABC):
     def set_fire(self, firepower: float) -> bool:
         return self._internals.set_fire(firepower)
 
-    def get_firepower(self) -> float:
+    @property
+    def firepower(self) -> float:
         firepower = self._internals.data.bot_intent.firepower
         return 0.0 if firepower is None else firepower
 
@@ -268,7 +294,16 @@ class BaseBot(BaseBotABC):
         """
         self._internals.set_interruptible(interruptible)
 
-    def set_adjust_gun_for_body_turn(self, adjust: bool) -> None:
+    @property
+    def adjust_gun_for_body_turn(self) -> bool:
+        """Returns whether the gun adjusts for the bot's body turn."""
+        assert self._internals.data.bot_intent.adjust_gun_for_body_turn is not None, (
+            "Adjust gun for body turn must be set before accessing it."
+        )
+        return self._internals.data.bot_intent.adjust_gun_for_body_turn
+
+    @adjust_gun_for_body_turn.setter
+    def adjust_gun_for_body_turn(self, adjust: bool) -> None:
         """
         Sets whether the gun's direction should adjust for the bot's body turn.
 
@@ -280,16 +315,29 @@ class BaseBot(BaseBotABC):
         """
         self._internals.data.bot_intent.adjust_gun_for_body_turn = adjust
 
-    def set_adjust_radar_for_body_turn(self, adjust: bool) -> None:
-        self._internals.data.bot_intent.adjust_radar_for_body_turn = adjust
-
-    def is_adjust_radar_for_body_turn(self) -> bool:
+    @property
+    def adjust_radar_for_body_turn(self) -> bool:
+        """Returns whether the radar adjusts for the bot's body turn."""
         assert self._internals.data.bot_intent.adjust_radar_for_body_turn is not None, (
             "Adjust radar for body turn must be set before accessing it."
         )
         return self._internals.data.bot_intent.adjust_radar_for_body_turn
 
-    def set_adjust_radar_for_gun_turn(self, adjust: bool) -> None:
+    @adjust_radar_for_body_turn.setter
+    def adjust_radar_for_body_turn(self, adjust: bool) -> None:
+        """Sets whether the radar adjusts for the bot's body turn."""
+        self._internals.data.bot_intent.adjust_radar_for_body_turn = adjust
+
+    @property
+    def adjust_radar_for_gun_turn(self) -> bool:
+        """Returns whether the radar adjusts for the gun's turn."""
+        assert self._internals.data.bot_intent.adjust_radar_for_gun_turn is not None, (
+            "Adjust radar for gun turn must be set before accessing it."
+        )
+        return self._internals.data.bot_intent.adjust_radar_for_gun_turn
+
+    @adjust_radar_for_gun_turn.setter
+    def adjust_radar_for_gun_turn(self, adjust: bool) -> None:
         """
         Sets whether the radar's direction should adjust for the gun's turn.
 
@@ -302,11 +350,6 @@ class BaseBot(BaseBotABC):
         self._internals.data.bot_intent.adjust_radar_for_gun_turn = adjust
         self._internals.data.bot_intent.fire_assist = not adjust
 
-    def is_adjust_radar_for_gun_turn(self) -> bool:
-        assert self._internals.data.bot_intent.adjust_radar_for_gun_turn is not None, (
-            "Adjust radar for gun turn must be set before accessing it."
-        )
-        return self._internals.data.bot_intent.adjust_radar_for_gun_turn
 
     def add_custom_event(self, condition: Condition) -> bool:
         return self._internals.add_condition(condition)
@@ -320,7 +363,8 @@ class BaseBot(BaseBotABC):
     def set_resume(self) -> None:
         self._internals.set_resume()
 
-    def get_teammate_ids(self) -> set[int]:
+    @property
+    def teammate_ids(self) -> set[int]:
         return self._internals.teammate_ids
 
     def is_teammate(self, bot_id: int) -> bool:
@@ -344,7 +388,8 @@ class BaseBot(BaseBotABC):
         self._internals.get_current_tick_or_throw()
         self._internals.send_team_message(teammate_id, message)
 
-    def is_stopped(self) -> bool:
+    @property
+    def stopped(self) -> bool:
         return self._internals.data.is_stopped
 
     @property
@@ -403,13 +448,15 @@ class BaseBot(BaseBotABC):
     def gun_color(self, color: Optional[Color]) -> None:
         self._internals.gun_color = color
 
-    def is_debugging_enabled(self) -> bool:
+    @property
+    def debugging_enabled(self) -> bool:
         tick = self._internals.get_current_tick_or_throw()
         bot_state = tick.bot_state
         assert bot_state is not None
         return bot_state.is_debugging_enabled
 
-    def get_graphics(self) -> GraphicsABC:
+    @property
+    def graphics(self) -> GraphicsABC:
         return self._internals.get_graphics()
 
     # Utility methods

@@ -48,6 +48,19 @@ Add **synchronous state management** APIs to MockedServer that guarantee the bot
 **Note**: Bad practice methods (`setEnergy`, `setGunHeat`, `setSpeed`, `sendTick`) will be **removed** after all tests
 are migrated in Phase 5, not just deprecated.
 
+### Phase 1.5: Infrastructure Stabilization & Reliability (MANDATORY)
+
+Before implementing new command tests (Phase 4) or even the test bot factory (Phase 3), the infrastructure MUST be
+stabilized. This phase addresses the core obstacles identified:
+
+- **Rogue Thread Interruption**: Managed via thread tracking in base test classes.
+- **State Visibility**: Guaranteed via synchronized/volatile fields in `MockedServer`.
+- **Non-running Bots**: Handling cases where `setBotStateAndAwaitTick` is called before `bot.go()`.
+- **Deterministic Sequencing**: Ensuring `MockedServer` latches are only released when the state is fully visible.
+
+This phase is a mandatory prerequisite for all subsequent implementation tasks to ensure that the resulting test suite
+is stable and reliable.
+
 ### Phase 2: Synchronous Command Execution Utilities
 
 Add test helper methods to base test classes that handle the async orchestration:
@@ -215,6 +228,48 @@ Apply the same patterns to existing tests:
 - Lifecycle tests
 
 **Goal**: Every test using MockedServer should be simple, readable, and follow the same pattern.
+
+## Implementation Issues and Obstacles
+
+As the implementation progressed, several technical obstacles were identified that the new infrastructure must address:
+
+1. **Rogue Thread Interruption**: Using `bot.go()` in a separate thread often leads to `ThreadInterruptedException` when
+   the test ends.
+2. **Latch Reusability**: Standard `CountDownLatch` is one-shot, making multi-tick tests difficult to orchestrate
+   without race conditions.
+3. **State Visibility**: Bots only see state changes after a `TickEvent` is fully processed, making immediate command
+   verification after a state change (like `setFire` after `setGunHeat`) fragile.
+4. **Language Heterogeneity**: Python's `asyncio` and .NET's Task model require different synchronization strategies to
+   remain semantically equivalent to the Java reference.
+
+Detailed tracking of these issues can be found in [design.md](./design.md).
+
+## Alignment with Sequence Diagrams
+
+The `MockedServer` and the test infrastructure are designed as a deterministic simulator of the authoritative sequence
+diagrams found in `schema/schemas/README.md`.
+
+1. **Deterministic Turn Advancment**: The **"Running next turn"** diagram shows that `bot-intent` is a reactive response
+   to `tick-event-for-bot`. Our `executeCommand` pattern and `setBotStateAndAwaitTick` method directly implement this
+   sequence, ensuring the test advances turn-by-turn as defined.
+2. **Readiness Synchronization**: The **"Starting a game"** diagram illustrates the `game-started-event-for-bot` ->
+   `bot-ready` flow. `MockedServer.awaitBotReady()` validates that this handshake is completed correctly before tests
+   begin.
+3. **Protocol Fidelity**: By following these diagrams, the test infrastructure ensures that we are testing the bots
+   against the *actual* protocol behavior, rather than a simplified or incorrect mock version.
+
+## Stabilization Strategies
+
+To address these obstacles, the following strategies will be incorporated into the implementation:
+
+1. **Managed Bot Lifecycles**: `AbstractBotTest` will track all threads started via `startAsync()` or `goAsync()` and
+   provide a clean shutdown mechanism that suppresses expected `ThreadInterruptedException` logs.
+2. **Atomic State Updates**: `MockedServer` message handlers will ensure that `botIntent` and other received state are
+   fully assigned *before* any latches are counted down, using `volatile` fields and proper synchronization.
+3. **Command Execution Helper**: A high-level `executeCommand()` utility will encapsulate the pattern of setting a
+   command, triggering a tick, and waiting for the resulting intent, reducing boilerplate and race conditions in tests.
+4. **Deterministic Tick Advancement**: Instead of free-running bots, the test infrastructure will prefer a "Step" model
+   where the server only sends ticks when the test specifically requests them after verifying the previous state.
 
 ### Phase 6: Mock/Stub Test Bot Factory
 

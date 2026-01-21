@@ -19,7 +19,7 @@ class MyFirstDroid(Bot, DroidABC):
 
     async def run(self) -> None:
         print("MyFirstDroid ready")
-        while self.is_running():
+        while self.running:
             # Execute next turn (on_team_message() handles the logic based on team messages)
             await self.go()
         # terminates when this point is reached

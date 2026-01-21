@@ -39,7 +39,12 @@ open class ConsolePanel : JPanel() {
 
     private val logQueue = ConcurrentLinkedQueue<String>()
 
-    private val flushTimer = Timer(100) { flushLogQueue() }.apply { start() }
+    // Flush queue regularly. Set initialDelay to 0 so the first flush can occur immediately
+    // (helps tests that rely on a short wait after appending).
+    private val flushTimer = Timer(100) { flushLogQueue() }.apply {
+        initialDelay = 0
+        start()
+    }
 
     protected open val buttonPanel
         get() = JPanel().apply {

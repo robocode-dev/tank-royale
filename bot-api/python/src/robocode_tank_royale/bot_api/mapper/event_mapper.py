@@ -74,7 +74,7 @@ class EventMapper:
         event_type = type(event).__name__
 
         if isinstance(event, SchemaBotDeathEvent):
-            return EventMapper._map_bot_death_event(event, base_bot.get_my_id())
+            return EventMapper._map_bot_death_event(event, base_bot.my_id)
         if isinstance(event, SchemaBotHitBotEvent):
             return EventMapper._map_hit_bot_event(event)
         if isinstance(event, SchemaBotHitWallEvent):
@@ -82,7 +82,7 @@ class EventMapper:
         if isinstance(event, SchemaBulletFiredEvent):
             return EventMapper._map_bullet_fired_event(event)
         if isinstance(event, SchemaBulletHitBotEvent):
-            return EventMapper._map_bullet_hit_bot_event(event, base_bot.get_my_id())
+            return EventMapper._map_bullet_hit_bot_event(event, base_bot.my_id)
         if isinstance(event, SchemaBulletHitBulletEvent):
             return EventMapper._map_bullet_hit_bullet_event(event)
         if isinstance(event, SchemaBulletHitWallEvent):

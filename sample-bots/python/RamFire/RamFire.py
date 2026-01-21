@@ -26,7 +26,7 @@ class RamFire(Bot):
         self.turret_color = Color.from_rgb(0x88, 0x88, 0x88) # gray
         self.radar_color = Color.from_rgb(0x66, 0x66, 0x66)  # dark gray
 
-        while self.is_running():
+        while self.running:
             await self.turn_right(5 * self._turn_dir)
 
     async def on_scanned_bot(self, e: ScannedBotEvent) -> None:

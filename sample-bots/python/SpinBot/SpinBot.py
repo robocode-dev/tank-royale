@@ -22,7 +22,7 @@ class SpinBot(Bot):
         self.scan_color = Color.YELLOW
 
         # Repeat while the bot is running
-        while self.is_running():
+        while self.running:
             # Tell the game that when we move, we'll also want to turn right... a lot
             self.set_turn_right(10_000)
             # Limit our speed to 5

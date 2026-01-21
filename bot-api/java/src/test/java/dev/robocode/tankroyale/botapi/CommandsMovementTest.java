@@ -18,18 +18,18 @@ class CommandsMovementTest extends AbstractBotTest {
     @Tag("TR-API-CMD-001")
     void givenMovementCommandsSet_whenGo_thenIntentContainsClampedValues() {
         // Arrange
-    var bot = start();
-    // Ensure all movement limits are unset so intent is always accepted
-    server.setSpeedMinLimit(Double.NEGATIVE_INFINITY);
-    server.setSpeedMaxLimit(Double.POSITIVE_INFINITY);
-    server.setDirectionMinLimit(Double.NEGATIVE_INFINITY);
-    server.setDirectionMaxLimit(Double.POSITIVE_INFINITY);
-    server.setGunDirectionMinLimit(Double.NEGATIVE_INFINITY);
-    server.setGunDirectionMaxLimit(Double.POSITIVE_INFINITY);
-    server.setRadarDirectionMinLimit(Double.NEGATIVE_INFINITY);
-    server.setRadarDirectionMaxLimit(Double.POSITIVE_INFINITY);
-    awaitBotHandshake();
-    awaitGameStarted(bot);
+        var bot = start();
+        // Ensure all movement limits are unset so intent is always accepted
+        server.setSpeedMinLimit(Double.NEGATIVE_INFINITY);
+        server.setSpeedMaxLimit(Double.POSITIVE_INFINITY);
+        server.setDirectionMinLimit(Double.NEGATIVE_INFINITY);
+        server.setDirectionMaxLimit(Double.POSITIVE_INFINITY);
+        server.setGunDirectionMinLimit(Double.NEGATIVE_INFINITY);
+        server.setGunDirectionMaxLimit(Double.POSITIVE_INFINITY);
+        server.setRadarDirectionMinLimit(Double.NEGATIVE_INFINITY);
+        server.setRadarDirectionMaxLimit(Double.POSITIVE_INFINITY);
+        awaitBotHandshake();
+        awaitGameStarted(bot);
         // Act: set values beyond limits to verify clamping
         System.out.println("Setting movement commands...");
         bot.setTurnRate(999); // > MAX_TURN_RATE
@@ -47,8 +47,10 @@ class CommandsMovementTest extends AbstractBotTest {
         BotIntent intent = server.getBotIntent();
         System.out.println("Intent received: " + intent);
         assertThat(intent).isNotNull();
-        System.out.printf("TurnRate: %s, GunTurnRate: %s, RadarTurnRate: %s, TargetSpeed: %s\n",
-                intent.getTurnRate(), intent.getGunTurnRate(), intent.getRadarTurnRate(), intent.getTargetSpeed());
+        if (intent != null) {
+            System.out.printf("TurnRate: %s, GunTurnRate: %s, RadarTurnRate: %s, TargetSpeed: %s\n",
+                    intent.getTurnRate(), intent.getGunTurnRate(), intent.getRadarTurnRate(), intent.getTargetSpeed());
+        }
         assertThat(intent.getTurnRate()).isEqualTo((double) MAX_TURN_RATE);
         assertThat(intent.getGunTurnRate()).isEqualTo(-(double) MAX_GUN_TURN_RATE);
         assertThat(intent.getRadarTurnRate()).isEqualTo((double) MAX_RADAR_TURN_RATE);

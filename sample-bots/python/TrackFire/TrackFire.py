@@ -24,7 +24,7 @@ class TrackFire(Bot):
         self.bullet_color = pink
 
         # Loop while running: keep turning the gun to scan (radar is mounted on gun)
-        while self.is_running():
+        while self.running:
             await self.turn_gun_right(10)
 
     async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
@@ -36,8 +36,8 @@ class TrackFire(Bot):
         await self.turn_gun_left(bearing_from_gun)
 
         # If it is close enough and gun is cool, fire with power based on alignment & energy
-        if abs(bearing_from_gun) <= 3 and self.get_gun_heat() == 0:
-            firepower = min(3 - abs(bearing_from_gun), self.get_energy() - 0.1)
+        if abs(bearing_from_gun) <= 3 and self.gun_heat == 0:
+            firepower = min(3 - abs(bearing_from_gun), self.energy - 0.1)
             if firepower > 0:
                 await self.fire(firepower)
 

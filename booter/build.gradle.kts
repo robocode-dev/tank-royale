@@ -38,7 +38,7 @@ tasks {
     jar {
         dependsOn(":lib:common:jar")
 
-        archiveClassifier = "all" // the final archive will not have this classifier
+        archiveClassifier.set("all") // the final archive will not have this classifier
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
@@ -51,10 +51,15 @@ tasks {
         }
 
         from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+
+        // Explicitly declare the intermediate JAR as an output
+        outputs.file(intermediateJar)
     }
 
     val r8ShrinkTask by registering(JavaExec::class) { // R8 shrinking task (kept name for compatibility)
         dependsOn(jar)
+
+        outputs.file(finalJar)
 
         doFirst {
             if (!file(intermediateJar).exists()) {
@@ -106,9 +111,6 @@ tasks {
 
     assemble {
         dependsOn(r8ShrinkTask)
-        doLast {
-            delete(intermediateJar) // Ensure intermediate JAR is cleaned
-        }
     }
 
     val javadocJar = named("javadocJar")
