@@ -75,14 +75,14 @@ public final class MockedServer {
 
     private final WebSocketServerImpl server = new WebSocketServerImpl();
 
-    private CountDownLatch openedLatch = new CountDownLatch(1);
-    private CountDownLatch botHandshakeLatch = new CountDownLatch(1);
-    private CountDownLatch gameStartedLatch = new CountDownLatch(1);
-    private CountDownLatch tickEventLatch = new CountDownLatch(1);
-    private CountDownLatch tickEventLatchCountDown;
-    private CountDownLatch botIntentLatch = new CountDownLatch(1);
+    private volatile CountDownLatch openedLatch = new CountDownLatch(1);
+    private volatile CountDownLatch botHandshakeLatch = new CountDownLatch(1);
+    private volatile CountDownLatch gameStartedLatch = new CountDownLatch(1);
+    private volatile CountDownLatch tickEventLatch = new CountDownLatch(1);
+    private volatile CountDownLatch tickEventLatchCountDown;
+    private volatile CountDownLatch botIntentLatch = new CountDownLatch(1);
 
-    private CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
+    private volatile CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
 
     private volatile BotHandshake botHandshake;
     private volatile BotIntent botIntent;
@@ -194,9 +194,9 @@ public final class MockedServer {
         this.turnNumber = turnNumber;
     }
 
-    public void resetBotIntentLatch() {
+    public synchronized void resetBotIntentLatch() {
+        botIntent = null;
         botIntentLatch = new CountDownLatch(1);
-        botIntentContinueLatch = new CountDownLatch(0);
     }
 
     public boolean awaitConnection(int milliSeconds) {
@@ -246,8 +246,13 @@ public final class MockedServer {
 
     public boolean awaitBotIntent(int milliSeconds) {
         try {
-            botIntentContinueLatch = new CountDownLatch(0);
-            return botIntentLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
+            boolean success = botIntentLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
+            if (success) {
+                // Short sleep to ensure memory consistency across threads if needed,
+                // though volatile should handle it.
+                Thread.sleep(10);
+            }
+            return success;
         } catch (InterruptedException e) {
             System.err.println("awaitBotIntent() was interrupted");
         }
@@ -283,7 +288,7 @@ public final class MockedServer {
         return botHandshake;
     }
 
-    public BotIntent getBotIntent() {
+    public synchronized BotIntent getBotIntent() {
         return botIntent;
     }
 
@@ -408,8 +413,20 @@ public final class MockedServer {
                         throw new RuntimeException(e);
                     }
 
-                    botIntent = JsonConverter.fromJson(text, BotIntent.class);
-                    botIntentLatch.countDown();
+                    synchronized (MockedServer.this) {
+                        botIntent = JsonConverter.fromJson(text, BotIntent.class);
+                        if (botIntent.getFirepower() == null && text.contains("\"firepower\":")) {
+                            System.err.println("CRITICAL: firepower parsed as null but exists in JSON: " + text);
+                        }
+
+                        // Update states
+                        speed += speedIncrement;
+                        direction += turnIncrement;
+                        gunDirection += gunTurnIncrement;
+                        radarDirection += radarTurnIncrement;
+
+                        botIntentLatch.countDown();
+                    }
 
                     if (tickEventLatchCountDown != null) {
                         tickEventLatchCountDown.countDown();
@@ -418,12 +435,6 @@ public final class MockedServer {
                         server.sendTickEventForBot(conn, turnNumber++);
                         tickEventLatch.countDown();
                     }
-
-                    // Update states
-                    speed += speedIncrement;
-                    direction += turnIncrement;
-                    gunDirection += gunTurnIncrement;
-                    radarDirection += radarTurnIncrement;
 
                     botIntentContinueLatch = new CountDownLatch(0);
                     break;
