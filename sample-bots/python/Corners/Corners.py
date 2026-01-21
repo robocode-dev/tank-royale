@@ -91,7 +91,7 @@ class Corners(Bot):
 
     async def _smart_fire(self, distance: float) -> None:
         """Custom fire method that determines firepower based on distance."""
-        energy = self.get_energy()
+        energy = self.energy
         if distance > 200 or energy < 15:
             await self.fire(1)
         elif distance > 50:

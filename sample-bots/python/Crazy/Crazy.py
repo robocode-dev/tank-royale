@@ -33,7 +33,7 @@ class Crazy(Bot):
         self.scan_color = Color.from_rgb(0xFF, 0xC8, 0xC8)   # light red
 
         # Loop while the bot is running
-        while self.is_running():
+        while self.running:
             # Tell the game we will want to move ahead 40000 -- some large number
             self.set_forward(40000)
             self._moving_forward = True

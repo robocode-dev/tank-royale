@@ -49,15 +49,17 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_my_id(self) -> int:
+    def my_id(self) -> int:
         """
-        Returns the bot's unique identifier.
+        The bot's unique identifier.
         """
         pass
 
+    @property
     @abstractmethod
-    def get_variant(self) -> str:
+    def variant(self) -> str:
         """
         The game variant, which is "Tank Royale".
 
@@ -66,8 +68,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_version(self) -> str:
+    def version(self) -> str:
         """
         Game version, e.g. "1.0.0".
 
@@ -76,8 +79,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_game_type(self) -> str:
+    def game_type(self) -> str:
         """
         Game type, e.g. "melee" or "1v1".
 
@@ -88,8 +92,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_arena_width(self) -> int:
+    def arena_width(self) -> int:
         """
         Width of the arena measured in units.
 
@@ -100,8 +105,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_arena_height(self) -> int:
+    def arena_height(self) -> int:
         """
         Height of the arena measured in units.
 
@@ -112,8 +118,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_number_of_rounds(self) -> int:
+    def number_of_rounds(self) -> int:
         """
         The number of rounds in a battle.
 
@@ -124,8 +131,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_gun_cooling_rate(self) -> float:
+    def gun_cooling_rate(self) -> float:
         """
         Gun cooling rate.
 
@@ -140,8 +148,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_max_inactivity_turns(self) -> int:
+    def max_inactivity_turns(self) -> int:
         """
         The maximum number of inactive turns allowed.
 
@@ -155,8 +164,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_turn_timeout(self) -> int:
+    def turn_timeout(self) -> int:
         """
         The turn timeout in microseconds.
 
@@ -173,8 +183,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_time_left(self) -> int:
+    def time_left(self) -> int:
         """
         The number of microseconds left of this turn before the bot will skip the turn.
 
@@ -185,8 +196,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_round_number(self) -> int:
+    def round_number(self) -> int:
         """
         Current round number.
 
@@ -195,8 +207,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_turn_number(self) -> int:
+    def turn_number(self) -> int:
         """
         Current turn number.
 
@@ -205,8 +218,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_enemy_count(self) -> int:
+    def enemy_count(self) -> int:
         """
         Number of enemies left in the round.
 
@@ -215,8 +229,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_energy(self) -> float:
+    def energy(self) -> float:
         """
         Current energy level.
 
@@ -229,8 +244,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def is_disabled(self) -> bool:
+    def disabled(self) -> bool:
         """
         Specifies if the bot is disabled, i.e., when the energy is zero.
 
@@ -241,8 +257,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_x(self) -> float:
+    def x(self) -> float:
         """
         Current X coordinate of the center of the bot.
 
@@ -251,8 +268,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_y(self) -> float:
+    def y(self) -> float:
         """
         Current Y coordinate of the center of the bot.
 
@@ -261,8 +279,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_direction(self) -> float:
+    def direction(self) -> float:
         """
         Current driving direction of the bot in degrees.
 
@@ -271,8 +290,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_gun_direction(self) -> float:
+    def gun_direction(self) -> float:
         """
         Current direction of the gun in degrees.
 
@@ -281,8 +301,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_radar_direction(self) -> float:
+    def radar_direction(self) -> float:
         """
         Current direction of the radar in degrees.
 
@@ -291,8 +312,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_speed(self) -> float:
+    def speed(self) -> float:
         """
         The current speed measured in units per turn.
 
@@ -304,8 +326,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_gun_heat(self) -> float:
+    def gun_heat(self) -> float:
         """
         Current gun heat.
 
@@ -319,8 +342,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_bullet_states(self) -> Sequence[BulletState | None] | None:
+    def bullet_states(self) -> Sequence[BulletState | None] | None:
         """
         Current bullet states.
 
@@ -331,8 +355,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_events(self) -> Sequence[BotEvent | None] | None:
+    def events(self) -> Sequence[BotEvent | None] | None:
         """
         Returns an ordered list containing all events currently in the bot's event queue.
 
@@ -682,8 +707,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_firepower(self) -> float:
+    def firepower(self) -> float:
         """
         Returns the firepower.
 
@@ -742,8 +768,20 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def set_adjust_gun_for_body_turn(self, adjust: bool) -> None:
+    def adjust_gun_for_body_turn(self) -> bool:
+        """
+        Returns whether the gun adjusts for the bot's body turn.
+
+        Returns:
+            bool: True if the gun adjusts for body turn; False otherwise.
+        """
+        pass
+
+    @adjust_gun_for_body_turn.setter
+    @abstractmethod
+    def adjust_gun_for_body_turn(self, adjust: bool) -> None:
         """
         Sets whether the gun's direction should adjust for the bot's body turn.
 
@@ -755,8 +793,45 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def set_adjust_radar_for_gun_turn(self, adjust: bool) -> None:
+    def adjust_radar_for_body_turn(self) -> bool:
+        """
+        Returns whether the radar adjusts for the bot's body turn.
+
+        Returns:
+            bool: True if the radar adjusts for body turn; False otherwise.
+        """
+        pass
+
+    @adjust_radar_for_body_turn.setter
+    @abstractmethod
+    def adjust_radar_for_body_turn(self, adjust: bool) -> None:
+        """
+        Sets whether the radar's direction should adjust for the bot's body turn.
+
+        When set to True, the radar maintains its direction relative to the body as the bot turns.
+        When set to False, the radar turns with the body.
+
+        Args:
+            adjust (bool): If True, radar direction is adjusted for body turn.
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def adjust_radar_for_gun_turn(self) -> bool:
+        """
+        Returns whether the radar adjusts for the gun's turn.
+
+        Returns:
+            bool: True if the radar adjusts for gun turn; False otherwise.
+        """
+        pass
+
+    @adjust_radar_for_gun_turn.setter
+    @abstractmethod
+    def adjust_radar_for_gun_turn(self, adjust: bool) -> None:
         """
         Sets whether the radar's direction should adjust for the gun's turn.
 
@@ -781,10 +856,11 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def get_teammate_ids(self) -> set[int]:
+    def teammate_ids(self) -> set[int]:
         """
-        Returns the IDs of all teammates.
+        The IDs of all teammates.
 
         Returns:
             Set[int]: A set of IDs of all teammates if the bot is participating in a team,
@@ -848,8 +924,9 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def is_stopped(self) -> bool:
+    def stopped(self) -> bool:
         """
         Checks if the movement has been stopped.
 
@@ -1064,24 +1141,26 @@ class BaseBotABC(ABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def is_debugging_enabled(self) -> bool:
+    def debugging_enabled(self) -> bool:
         """
-        Indicates whether graphical debugging is enabled. If enabled, the `get_graphics`
-        method can be used for debug painting.
+        Indicates whether graphical debugging is enabled. If enabled, the `graphics`
+        property can be used for debug painting.
 
         Returns:
             bool: True if graphical debugging is enabled, False otherwise.
         """
         pass
 
+    @property
     @abstractmethod
-    def get_graphics(self) -> GraphicsABC:
+    def graphics(self) -> GraphicsABC:
         """
         Gets a graphics object for debug painting.
 
         Example:
-            g = get_graphics()
+            g = self.graphics
             g.set_fill_color(Color.from_rgb(0, 0, 255))
             g.fill_rectangle(50, 50, 100, 100)  # A blue filled rect
 
@@ -1415,7 +1494,7 @@ class BaseBotABC(ABC):
         Calculates the bearing (delta angle) between the input direction and the bot's direction.
 
         Example:
-            bearing = calc_bearing(direction) = normalize_relative_degrees(direction - get_direction())
+            bearing = calc_bearing(direction) = normalize_relative_degrees(direction - self.direction)
 
         Args:
             direction (float): The input direction to calculate the bearing from.
@@ -1424,9 +1503,9 @@ class BaseBotABC(ABC):
             float: A normalized bearing (delta angle) in the range [-180, 180).
 
         See Also:
-            get_direction, normalize_relative_angle.
+            direction, normalize_relative_angle.
         """
-        return self.normalize_relative_angle(direction - self.get_direction())
+        return self.normalize_relative_angle(direction - self.direction)
 
     def calc_gun_bearing(self, direction: float) -> float:
         """
@@ -1434,7 +1513,7 @@ class BaseBotABC(ABC):
 
         Example:
             bearing = calc_gun_bearing(direction) =
-                      normalize_relative_degrees(direction - get_gun_direction())
+                      normalize_relative_degrees(direction - self.gun_direction)
 
         Args:
             direction (float): The input direction to calculate the bearing from.
@@ -1443,9 +1522,9 @@ class BaseBotABC(ABC):
             float: A normalized bearing (delta angle) in the range [-180, 180).
 
         See Also:
-            get_gun_direction, normalize_relative_angle.
+            gun_direction, normalize_relative_angle.
         """
-        return self.normalize_relative_angle(direction - self.get_gun_direction())
+        return self.normalize_relative_angle(direction - self.gun_direction)
 
     def calc_radar_bearing(self, direction: float) -> float:
         """
@@ -1453,7 +1532,7 @@ class BaseBotABC(ABC):
 
         Example:
             bearing = calc_radar_bearing(direction) =
-                      normalize_relative_degrees(direction - get_radar_direction())
+                      normalize_relative_degrees(direction - self.radar_direction)
 
         Args:
             direction (float): The input direction to calculate the bearing from.
@@ -1462,9 +1541,9 @@ class BaseBotABC(ABC):
             float: A normalized bearing (delta angle) in the range [-180, 180).
 
         See Also:
-            get_radar_direction, normalize_relative_angle.
+            radar_direction, normalize_relative_angle.
         """
-        return self.normalize_relative_angle(direction - self.get_radar_direction())
+        return self.normalize_relative_angle(direction - self.radar_direction)
 
     def direction_to(self, x: float, y: float) -> float:
         """
@@ -1478,7 +1557,7 @@ class BaseBotABC(ABC):
             float: The direction to the point (x, y) in the range [0, 360).
         """
         return self.normalize_absolute_angle(
-            math.degrees(math.atan2(y - self.get_y(), x - self.get_x()))
+            math.degrees(math.atan2(y - self.y, x - self.x))
         )
 
     def bearing_to(self, x: float, y: float) -> float:
@@ -1494,7 +1573,7 @@ class BaseBotABC(ABC):
             float: A bearing to the point (x, y) in the range [-180, 180).
         """
         return self.normalize_relative_angle(
-            self.direction_to(x, y) - self.get_direction()
+            self.direction_to(x, y) - self.direction
         )
 
     def gun_bearing_to(self, x: float, y: float) -> float:
@@ -1510,7 +1589,7 @@ class BaseBotABC(ABC):
             float: A bearing to the point (x, y) in the range [-180, 180).
         """
         return self.normalize_relative_angle(
-            self.direction_to(x, y) - self.get_gun_direction()
+            self.direction_to(x, y) - self.gun_direction
         )
 
     def radar_bearing_to(self, x: float, y: float) -> float:
@@ -1526,7 +1605,7 @@ class BaseBotABC(ABC):
             float: A bearing to the point (x, y) in the range [-180, 180).
         """
         return self.normalize_relative_angle(
-            self.direction_to(x, y) - self.get_radar_direction()
+            self.direction_to(x, y) - self.radar_direction
         )
 
     def distance_to(self, x: float, y: float) -> float:
@@ -1540,7 +1619,7 @@ class BaseBotABC(ABC):
         Returns:
             float: The distance to the point (x, y).
         """
-        return math.hypot(x - self.get_x(), y - self.get_y())
+        return math.hypot(x - self.x, y - self.y)
 
     def normalize_absolute_angle(self, angle: float) -> float:
         """

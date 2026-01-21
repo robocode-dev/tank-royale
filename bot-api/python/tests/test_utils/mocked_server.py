@@ -146,15 +146,65 @@ class MockedServer:
             # Signal that the server is ready to accept connections
             self._server_started_event.set()
 
-        # Start the server while the loop is running
-        self._loop.run_until_complete(_start_server())
-        self._loop.run_forever()
+        try:
+            # Start the server while the loop is running
+            self._loop.run_until_complete(_start_server())
+            self._loop.run_forever()
+        except Exception:
+            # Ignore exceptions during shutdown
+            pass
+        finally:
+            # Cleanup tasks
+            try:
+                # Cancel all pending tasks
+                pending = asyncio.all_tasks(self._loop)
+                for task in pending:
+                    task.cancel()
+
+                # Wait for cancellation to complete
+                if pending:
+                    self._loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+            except Exception:
+                pass
+
+            try:
+                self._loop.close()
+            except Exception:
+                pass
 
     def stop(self) -> None:
-        if self._loop:
-            self._loop.call_soon_threadsafe(self._loop.stop)
-        if self._thread:
-            self._thread.join(timeout=1.0)
+        """Properly stop the server and clean up all resources."""
+        if self._loop and self._loop.is_running():
+            async def _cleanup():
+                # Close WebSocket connections first
+                if self._current_websocket:
+                    try:
+                        await self._current_websocket.close()
+                    except Exception:
+                        pass
+
+                # Then close the server
+                if self._server:
+                    try:
+                        self._server.close()
+                        await self._server.wait_closed()
+                    except Exception:
+                        pass
+
+                # Stop the event loop
+                self._loop.stop()
+
+            # Schedule cleanup and stop
+            asyncio.run_coroutine_threadsafe(_cleanup(), self._loop)
+
+        # Wait for thread to finish with timeout
+        if self._thread and self._thread.is_alive():
+            self._thread.join(timeout=3.0)
+
+        # Reset state
+        self._server = None
+        self._current_websocket = None
+        self._loop = None
 
     def reset_events(self) -> None:
         self._bot_handshake_event.clear()

@@ -28,12 +28,12 @@ class Walls(Bot):
         self.scan_color = Color.CYAN
 
         # Initialize move_amount to the maximum possible for the arena
-        self._move_amount = max(self.get_arena_width(), self.get_arena_height())
+        self._move_amount = max(self.arena_width, self.arena_height)
         # Initialize peek to false
         self._peek = False
 
         # Turn to face a wall
-        await self.turn_right(self.get_direction() % 90)
+        await self.turn_right(self.direction % 90)
         await self.forward(self._move_amount)
 
         # Turn the gun to turn right 90 degrees.
@@ -42,7 +42,7 @@ class Walls(Bot):
         await self.turn_left(90)
 
         # Main loop
-        while self.is_running():
+        while self.running:
             # Peek before we turn when forward() completes.
             self._peek = True
             # Move up the wall

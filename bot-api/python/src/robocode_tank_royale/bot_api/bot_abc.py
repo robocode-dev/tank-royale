@@ -33,8 +33,9 @@ class BotABC(BaseBotABC):
         """
         pass
 
+    @property
     @abstractmethod
-    def is_running(self) -> bool:
+    def running(self) -> bool:
         """
         Checks if this bot is running.
 

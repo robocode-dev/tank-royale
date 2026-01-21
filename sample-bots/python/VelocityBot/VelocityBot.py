@@ -25,7 +25,7 @@ class VelocityBot(Bot):
         self.gun_turn_rate = 15
 
         # Main control loop: one go() per iteration to represent a turn
-        while self.is_running():
+        while self.running:
             if self._turn_counter % 64 == 0:
                 # Straighten out if we were hit by a bullet (ends turning)
                 self.turn_rate = 0

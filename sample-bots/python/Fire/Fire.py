@@ -32,13 +32,13 @@ class Fire(Bot):
         self.bullet_color = Color.from_rgb(0x00, 0x88, 0xFF) # light blue
 
         # Spin the gun around slowly... forever
-        while self.is_running():
+        while self.running:
             await self.turn_gun_right(5)
 
     async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
         # If the other bot is close by, and we have plenty of life, fire hard!
         distance = self.distance_to(float(e.x), float(e.y))
-        if distance < 50 and self.get_energy() > 50:
+        if distance < 50 and self.energy > 50:
             await self.fire(3)
         else:
             # Otherwise, only fire 1

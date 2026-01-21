@@ -40,7 +40,7 @@ def test_await_bot_ready():
         time.sleep(0.1)
 
         # Verify bot is actually ready (no exception on getting energy)
-        assert bot.get_energy() is not None
+        assert bot.energy is not None
 
     finally:
         server.stop()
@@ -76,8 +76,8 @@ def test_set_bot_state_and_await_tick():
         # Give bot a tiny bit of time to process the tick event and update its internal state
         time.sleep(0.1)
 
-        assert bot.get_energy() == new_energy
-        assert bot.get_speed() == new_speed
+        assert bot.energy == new_energy
+        assert bot.speed == new_speed
 
     finally:
         server.stop()
@@ -138,7 +138,7 @@ def test_set_turn_number():
         assert server.set_bot_state_and_await_tick() is True
 
         time.sleep(0.1)
-        assert bot.get_turn_number() == 100
+        assert bot.turn_number == 100
 
     finally:
         server.stop()

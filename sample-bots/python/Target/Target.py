@@ -32,12 +32,12 @@ class Target(Bot):
         self.add_custom_event(
             Condition(
                 name="trigger-hit",
-                callable=lambda: self.get_energy() <= self._trigger,
+                callable=lambda: self.energy <= self._trigger,
             )
         )
 
         # No continuous action; the bot reacts to events
-        while self.is_running():
+        while self.running:
             await self.go()
 
     async def on_custom_event(self, e: CustomEvent) -> None:
@@ -47,7 +47,7 @@ class Target(Bot):
             self._trigger -= 20
 
             # Print out energy level
-            print(f"Ouch, down to {int(self.get_energy() + 0.5)} energy.")
+            print(f"Ouch, down to {int(self.energy + 0.5)} energy.")
 
             # Move around a bit
             await self.turn_right(65)
