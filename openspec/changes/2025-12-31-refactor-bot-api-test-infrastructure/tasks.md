@@ -6,17 +6,17 @@
 
 **Files**: `bot-api/java/src/test/java/test_utils/MockedServer.java`
 
-- [x] Add `awaitBotReady(int milliSeconds)` method
+- [ ] Add `awaitBotReady(int milliSeconds)` method
     - Chains: `awaitBotHandshake()` → `awaitGameStarted()` → `awaitTick()`
     - Returns `true` if all succeed within timeout
-- [x] Add `setBotStateAndAwaitTick()` method with nullable parameters:
+- [ ] Add `setBotStateAndAwaitTick()` method with nullable parameters:
     - `Double energy, Double gunHeat, Double speed, Double direction, Double gunDirection, Double radarDirection`
     - Update internal state for non-null values
     - Reset and await tick event
     - Send tick with updated state
     - Return success status
-- [x] Refactor tick sending logic to support manual trigger
-- [x] Add unit tests for new methods
+- [ ] Refactor tick sending logic to support manual trigger
+- [ ] Add unit tests for new methods
 
 **Status**: ✅ COMPLETED (2026-01-01)  
 **See**: [TASK-1.1-SUMMARY.md](TASK-1.1-SUMMARY.md)
