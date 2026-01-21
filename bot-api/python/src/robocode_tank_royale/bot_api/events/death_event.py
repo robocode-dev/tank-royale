@@ -9,7 +9,8 @@ class DeathEvent(BotEvent):
     Represents an event triggered when the bot has died.
     """
 
-    def is_critical(self) -> bool:
+    @property
+    def critical(self) -> bool:
         """
         Overrides the default implementation to mark this event as critical.
         Returns:

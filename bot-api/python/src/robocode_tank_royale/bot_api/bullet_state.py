@@ -26,16 +26,17 @@ class BulletState:
     direction: float
     color: Color
 
-    def get_speed(self) -> float:
+    @property
+    def speed(self) -> float:
         """
-            Calculates and returns the speed of the bullet in units per turn.
-            The speed decreases with higher firepower levels.
+        Calculates and returns the speed of the bullet in units per turn.
+        The speed decreases with higher firepower levels.
 
-            Formula:
-                speed = 20 - 3 * power
+        Formula:
+            speed = 20 - 3 * power
 
-            Returns:
-                float: The calculated speed of the bullet in units per turn.
-            """
+        Returns:
+            float: The calculated speed of the bullet in units per turn.
+        """
         return 20 - 3 * self.power
 

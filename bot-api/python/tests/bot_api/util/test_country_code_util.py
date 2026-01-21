@@ -13,7 +13,7 @@ def test_TR_API_UTL_003_country_code_valid_examples():
 
 def test_TR_API_UTL_003_country_code_local_detection():
     """TR-API-UTL-003 CountryCode utility: local country code is recognized"""
-    local = CountryCodeUtil.get_local_country_code()
+    local = CountryCodeUtil.local_country_code()
     if local is not None:
         # If environment provides a locale with territory, ensure it's a valid code
         assert len(local) == 2

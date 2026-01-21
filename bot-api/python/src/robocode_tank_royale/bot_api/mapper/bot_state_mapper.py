@@ -12,7 +12,7 @@ class BotStateMapper:
             return None
 
         return BotState(
-            source.is_droid,
+            source.is_droid,  # Schema field name remains is_droid
             source.energy,
             source.x,
             source.y,
@@ -33,5 +33,5 @@ class BotStateMapper:
             source.scan_color,  # type: ignore
             source.tracks_color,  # type: ignore
             source.gun_color,  # type: ignore
-            source.is_debugging_enabled,
+            source.is_debugging_enabled,  # Schema field name remains is_debugging_enabled
         )

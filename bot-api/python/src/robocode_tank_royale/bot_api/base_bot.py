@@ -453,7 +453,7 @@ class BaseBot(BaseBotABC):
         tick = self._internals.get_current_tick_or_throw()
         bot_state = tick.bot_state
         assert bot_state is not None
-        return bot_state.is_debugging_enabled
+        return bot_state.debugging_enabled
 
     @property
     def graphics(self) -> GraphicsABC:

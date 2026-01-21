@@ -407,8 +407,8 @@ class BaseBotInternals:
             current_tick
             and hasattr(current_tick, "bot_state")
             and current_tick.bot_state
-            and hasattr(current_tick.bot_state, "is_debugging_enabled")
-            and current_tick.bot_state.is_debugging_enabled
+            and hasattr(current_tick.bot_state, "debugging_enabled")
+            and current_tick.bot_state.debugging_enabled
         ):
             svg_output = self.data.graphics_state.to_svg()
             self.data.bot_intent.debug_graphics = svg_output

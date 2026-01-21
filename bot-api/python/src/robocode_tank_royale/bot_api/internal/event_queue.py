@@ -12,7 +12,7 @@ from .thread_interrupted_exception import ThreadInterruptedException
 
 class EventQueue:
     """Queue containing bot events that are being prioritized and dispatched to event handlers.
-    
+
     The event queue makes sure that the events are being processed in the right order based on event
     priority and age of the events. Old events that are no longer relevant will be removed from the
     queue.
@@ -36,7 +36,7 @@ class EventQueue:
 
     def get_events(self, turn_number: int) -> list[BotEvent]:
         """Returns a list containing all events in the queue.
-        
+
         Args:
             turn_number: Current turn number used for removing old events.
         Returns:
@@ -53,7 +53,7 @@ class EventQueue:
 
     def set_current_event_interruptible(self, interruptible: bool) -> None:
         """Sets if the current event can be interrupted by new events with higher priority.
-        
+
         Args:
             interruptible: True if the current event can be interrupted; false otherwise.
         """
@@ -62,7 +62,7 @@ class EventQueue:
 
     def is_current_event_interruptible(self) -> bool:
         """Checks if the current event can be interrupted by new events with higher priority.
-        
+
         Returns:
             True if the current event can be interrupted; false otherwise.
         """
@@ -71,7 +71,7 @@ class EventQueue:
 
     def add_events_from_tick(self, event: TickEvent) -> None:
         """Adds standard events from a tick event, and custom events from conditions.
-        
+
         Args:
             event: The tick event containing the standard events to add.
         """
@@ -83,7 +83,7 @@ class EventQueue:
 
     async def dispatch_events(self, turn_number: int) -> None:
         """Dispatches events in prioritized order to event handlers.
-        
+
         Args:
             turn_number: Current turn number used for removing old events.
         """
@@ -136,7 +136,7 @@ class EventQueue:
     def sort_events(self) -> None:
         with self.events_lock:
             self.events = deque(sorted(self.events, key=lambda bot_event: (
-                -1 if bot_event.is_critical() else 0,
+                -1 if bot_event.critical else 0,
                 bot_event.turn_number,
                 -self.get_priority(bot_event)
             )))
@@ -166,12 +166,12 @@ class EventQueue:
     @staticmethod
     def is_not_old_or_is_critical_event(bot_event: BotEvent, turn_number: int) -> bool:
         is_not_old = bot_event.turn_number >= turn_number - EventQueue.MAX_EVENT_AGE
-        return is_not_old or bot_event.is_critical()
+        return is_not_old or bot_event.critical
 
     @staticmethod
     def is_old_and_non_critical_event(bot_event: BotEvent, turn_number: int) -> bool:
         is_old = bot_event.turn_number < turn_number - EventQueue.MAX_EVENT_AGE
-        return is_old and not bot_event.is_critical()
+        return is_old and not bot_event.critical
 
     def add_event(self, bot_event: BotEvent):
         with self.events_lock:

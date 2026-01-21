@@ -11,7 +11,8 @@ class SkippedTurnEvent(BotEvent):
     This event occurs when the bot fails to take its turn within the allotted time frame.
     """
 
-    def is_critical(self) -> bool:
+    @property
+    def critical(self) -> bool:
         """
         Indicates whether this event is critical.
 

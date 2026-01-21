@@ -45,62 +45,12 @@ if self.adjust_gun_for_body_turn:
     print("Gun adjusts for body turn")
 ```
 
-#### Complete Property Mapping
-
-| Old Method                                                              | New Property                 |
-|-------------------------------------------------------------------------|------------------------------|
-| `get_my_id()`                                                           | `my_id`                      |
-| `get_variant()`                                                         | `variant`                    |
-| `get_version()`                                                         | `version`                    |
-| `get_game_type()`                                                       | `game_type`                  |
-| `get_arena_width()`                                                     | `arena_width`                |
-| `get_arena_height()`                                                    | `arena_height`               |
-| `get_number_of_rounds()`                                                | `number_of_rounds`           |
-| `get_gun_cooling_rate()`                                                | `gun_cooling_rate`           |
-| `get_max_inactivity_turns()`                                            | `max_inactivity_turns`       |
-| `get_turn_timeout()`                                                    | `turn_timeout`               |
-| `get_time_left()`                                                       | `time_left`                  |
-| `get_round_number()`                                                    | `round_number`               |
-| `get_turn_number()`                                                     | `turn_number`                |
-| `get_enemy_count()`                                                     | `enemy_count`                |
-| `get_energy()`                                                          | `energy`                     |
-| `get_x()`, `get_y()`                                                    | `x`, `y`                     |
-| `get_direction()`                                                       | `direction`                  |
-| `get_gun_direction()`                                                   | `gun_direction`              |
-| `get_radar_direction()`                                                 | `radar_direction`            |
-| `get_speed()`                                                           | `speed`                      |
-| `get_gun_heat()`                                                        | `gun_heat`                   |
-| `get_bullet_states()`                                                   | `bullet_states`              |
-| `get_events()`                                                          | `events`                     |
-| `get_firepower()`                                                       | `firepower`                  |
-| `get_teammate_ids()`                                                    | `teammate_ids`               |
-| `get_graphics()`                                                        | `graphics`                   |
-| `is_disabled()`                                                         | `disabled`                   |
-| `is_running()`                                                          | `running`                    |
-| `is_stopped()`                                                          | `stopped`                    |
-| `is_debugging_enabled()`                                                | `debugging_enabled`          |
-| `is_adjust_gun_for_body_turn()`<br>`set_adjust_gun_for_body_turn()`     | `adjust_gun_for_body_turn`   |
-| `is_adjust_radar_for_body_turn()`<br>`set_adjust_radar_for_body_turn()` | `adjust_radar_for_body_turn` |
-| `is_adjust_radar_for_gun_turn()`<br>`set_adjust_radar_for_gun_turn()`   | `adjust_radar_for_gun_turn`  |
-
-#### Unchanged Methods
-
-- `is_teammate(bot_id)` — parameterized method, still a method
-- `get_event_priority(event_class)` / `set_event_priority()` — parameterized methods
-- All action methods (`set_fire()`, `set_rescan()`, etc.)
-- All calculation methods (`calc_*()`, `*_to()`, `normalize_*()`)
-- All event handlers (`on_*()`)
-
 ### 🚀 Improvements
 
+- Bot API:
 - **Python Bot API**: Now follows Python conventions with property-based accessors
-- **Code Quality**: More idiomatic Python code that feels natural to Python developers
-- **Semantic Equivalence**: Maintains 1:1 behavior with Java API while using appropriate language idioms
-
-## 📦 0.34.3 - GUI Bot Console Performance Improvements
-
-### 🚀 Improvements
-
+    - **Code Quality**: More idiomatic Python code that feels natural to Python developers
+    - **Semantic Equivalence**: Maintains 1:1 behavior with Java API while using appropriate language idioms
 - GUI:
     - Improved performance of the bot console and server log windows under heavy logging.
     - Added **batched updates** to reduce UI freezes when bots or the server produce a high volume of output.

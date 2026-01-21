@@ -6,7 +6,13 @@ class CountryCodeUtil:
     """Country code utility class."""
 
     @staticmethod
-    def get_local_country_code():
+    def local_country_code():
+        """
+        Get the local country code based on the current locale.
+
+        Returns:
+            str or None: The two-letter country code in uppercase if found, None otherwise.
+        """
         try:
             # Get the current locale's language and territory
             current_locale = locale.getlocale()[0]
