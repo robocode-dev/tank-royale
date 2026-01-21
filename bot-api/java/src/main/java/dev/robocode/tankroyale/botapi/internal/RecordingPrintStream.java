@@ -1,7 +1,5 @@
 package dev.robocode.tankroyale.botapi.internal;
 
-import dev.robocode.tankroyale.botapi.util.JsonUtil;
-
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -48,7 +46,7 @@ final class RecordingPrintStream extends PrintStream {
 
     public String readNext() {
         synchronized (this) {
-            String output = JsonUtil.escaped(byteArrayOutputStream.toString(UTF_8));
+            String output = byteArrayOutputStream.toString(UTF_8);
             byteArrayOutputStream.reset();
             return output;
         }
