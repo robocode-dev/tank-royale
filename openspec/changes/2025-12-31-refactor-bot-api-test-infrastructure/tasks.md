@@ -405,7 +405,6 @@
 
 ---
 
-
 ## Phase 7: Documentation and Guidelines
 
 ### Task 7.1: Create TESTING-GUIDE.md
@@ -524,6 +523,11 @@
 - [ ] List follow-up tasks if any
 
 **Estimated time**: 0.5 days
+
+### Task 10: Fix broken tests
+
+- [ ] Re-enable the skipped test in test_TR_API_CMD_001_movement_commands_clamped_in_intent
+  (bot-api/python/tests/bot_api/test_commands_movement.py)
 
 ---
 

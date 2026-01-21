@@ -1,6 +1,5 @@
 package test_utils;
 
-import com.google.gson.annotations.SerializedName;
 import dev.robocode.tankroyale.botapi.internal.json.JsonConverter;
 import dev.robocode.tankroyale.schema.*;
 import org.java_websocket.WebSocket;
@@ -52,12 +51,12 @@ public final class MockedServer {
     public static final double BOT_GUN_HEAT = 7.6;
 
     private int turnNumber = 1;
-    private Double energy = BOT_ENERGY;
-    private Double speed = BOT_SPEED;
-    private Double gunHeat = BOT_GUN_HEAT;
-    private Double direction = BOT_DIRECTION;
-    private Double gunDirection = BOT_GUN_DIRECTION;
-    private Double radarDirection = BOT_RADAR_DIRECTION;
+    private double energy = BOT_ENERGY;
+    private double speed = BOT_SPEED;
+    private double gunHeat = BOT_GUN_HEAT;
+    private double direction = BOT_DIRECTION;
+    private double gunDirection = BOT_GUN_DIRECTION;
+    private double radarDirection = BOT_RADAR_DIRECTION;
 
     private double speedIncrement;
     private double turnIncrement;
@@ -75,17 +74,16 @@ public final class MockedServer {
 
     private final WebSocketServerImpl server = new WebSocketServerImpl();
 
-    private volatile CountDownLatch openedLatch = new CountDownLatch(1);
-    private volatile CountDownLatch botHandshakeLatch = new CountDownLatch(1);
-    private volatile CountDownLatch gameStartedLatch = new CountDownLatch(1);
-    private volatile CountDownLatch tickEventLatch = new CountDownLatch(1);
-    private volatile CountDownLatch tickEventLatchCountDown;
-    private volatile CountDownLatch botIntentLatch = new CountDownLatch(1);
+    private final CountDownLatch openedLatch = new CountDownLatch(1);
+    private final CountDownLatch botHandshakeLatch = new CountDownLatch(1);
+    private final CountDownLatch gameStartedLatch = new CountDownLatch(1);
+    private final CountDownLatch tickEventLatch = new CountDownLatch(1);
+    private final CountDownLatch botIntentLatch = new CountDownLatch(1);
 
-    private volatile CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
+    private CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
 
-    private volatile BotHandshake botHandshake;
-    private volatile BotIntent botIntent;
+    private BotHandshake botHandshake;
+    private BotIntent botIntent;
 
 
     public static URI getServerUrl() {
@@ -97,36 +95,15 @@ public final class MockedServer {
     }
 
     public void start() {
-        resetLatches();
         server.start();
     }
 
     public void stop() {
         try {
             server.stop();
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-    }
-
-    public void resetLatches() {
-        openedLatch = new CountDownLatch(1);
-        botHandshakeLatch = new CountDownLatch(1);
-        gameStartedLatch = new CountDownLatch(1);
-        tickEventLatch = new CountDownLatch(1);
-        botIntentLatch = new CountDownLatch(1);
-        botIntentContinueLatch = new CountDownLatch(0);
-    }
-
-    public void closeConnections() {
-        for (WebSocket conn : server.getConnections()) {
-            conn.close();
-        }
-    }
-
-    public void sendRawText(String text) {
-        for (WebSocket conn : server.getConnections()) {
-            conn.send(text);
         }
     }
 
@@ -190,15 +167,6 @@ public final class MockedServer {
         this.radarDirectionMaxLimit = maxLimit;
     }
 
-    public void setTurnNumber(int turnNumber) {
-        this.turnNumber = turnNumber;
-    }
-
-    public synchronized void resetBotIntentLatch() {
-        botIntent = null;
-        botIntentLatch = new CountDownLatch(1);
-    }
-
     public boolean awaitConnection(int milliSeconds) {
         try {
             return openedLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
@@ -206,15 +174,6 @@ public final class MockedServer {
             System.err.println("awaitConnection() was interrupted");
         }
         return false;
-    }
-
-    public boolean awaitBotReady(int milliSeconds) {
-        long start = System.currentTimeMillis();
-        if (!awaitBotHandshake(milliSeconds)) return false;
-        long elapsed = System.currentTimeMillis() - start;
-        if (!awaitGameStarted((int) (milliSeconds - elapsed))) return false;
-        elapsed = System.currentTimeMillis() - start;
-        return awaitTick((int) (milliSeconds - elapsed));
     }
 
     public boolean awaitBotHandshake(int milliSeconds) {
@@ -237,7 +196,7 @@ public final class MockedServer {
 
     public boolean awaitTick(int milliSeconds) {
         try {
-            return tickEventLatch.await(Math.max(0, milliSeconds), TimeUnit.MILLISECONDS);
+            return tickEventLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             System.err.println("awaitTickEvent() was interrupted");
         }
@@ -246,40 +205,10 @@ public final class MockedServer {
 
     public boolean awaitBotIntent(int milliSeconds) {
         try {
-            boolean success = botIntentLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
-            if (success) {
-                // Short sleep to ensure memory consistency across threads if needed,
-                // though volatile should handle it.
-                Thread.sleep(10);
-            }
-            return success;
+            botIntentContinueLatch.countDown();
+            return botIntentLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             System.err.println("awaitBotIntent() was interrupted");
-        }
-        return false;
-    }
-
-    public boolean setBotStateAndAwaitTick(
-            Double energy, Double gunHeat, Double speed,
-            Double direction, Double gunDirection, Double radarDirection) {
-
-        if (energy != null) this.energy = energy;
-        if (gunHeat != null) this.gunHeat = gunHeat;
-        if (speed != null) this.speed = speed;
-        if (direction != null) this.direction = direction;
-        if (gunDirection != null) this.gunDirection = gunDirection;
-        if (radarDirection != null) this.radarDirection = radarDirection;
-
-        tickEventLatchCountDown = new CountDownLatch(1);
-
-        for (WebSocket conn : server.getConnections()) {
-            server.sendTickEventForBot(conn, turnNumber++);
-        }
-
-        try {
-            return tickEventLatchCountDown.await(5000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            System.err.println("setBotStateAndAwaitTick() was interrupted");
         }
         return false;
     }
@@ -288,7 +217,7 @@ public final class MockedServer {
         return botHandshake;
     }
 
-    public synchronized BotIntent getBotIntent() {
+    public BotIntent getBotIntent() {
         return botIntent;
     }
 
@@ -297,42 +226,6 @@ public final class MockedServer {
             return socket.getLocalPort();
         } catch (java.io.IOException e) {
             return 7913; // fallback to default port
-        }
-    }
-
-    private static class MessageWithOptionalType extends Message {
-        @SerializedName("type")
-        private String typeString;
-
-        public void setTypeString(String typeString) {
-            this.typeString = typeString;
-        }
-    }
-
-    private static class EventWithOptionalType extends Event {
-        @SerializedName("type")
-        private String typeString;
-
-        public void setTypeString(String typeString) {
-            this.typeString = typeString;
-        }
-    }
-
-    private static class ScannedBotEventWithOptionalType extends ScannedBotEvent {
-        @SerializedName("type")
-        private String typeString;
-
-        public void setTypeString(String typeString) {
-            this.typeString = typeString;
-        }
-    }
-
-    private static class BulletFiredEventWithOptionalType extends BulletFiredEvent {
-        @SerializedName("type")
-        private String typeString;
-
-        public void setTypeString(String typeString) {
-            this.typeString = typeString;
         }
     }
 
@@ -359,20 +252,11 @@ public final class MockedServer {
 
         @Override
         public void onMessage(WebSocket conn, String text) {
-            System.out.println("MockedServer: ON_MESSAGE: " + text);
-            if (text.contains("BotIntent")) {
-                System.out.println("MockedServer: BOT_INTENT received");
-            }
-            Message message;
-            try {
-                message = JsonConverter.fromJson(text, Message.class);
-            } catch (Exception e) {
-                System.out.println("MockedServer: Error parsing message: " + text);
-                e.printStackTrace();
-                return;
-            }
+            var message = JsonConverter.fromJson(text, Message.class);
             switch (message.getType()) {
                 case BOT_HANDSHAKE:
+                    System.out.println("BOT_HANDSHAKE");
+
                     botHandshake = JsonConverter.fromJson(text, BotHandshake.class);
                     botHandshakeLatch.countDown();
 
@@ -381,20 +265,17 @@ public final class MockedServer {
                     break;
 
                 case BOT_READY:
-                    try {
-                        sendRoundStarted(conn);
-                        sendTickEventForBot(conn, turnNumber++);
-                        tickEventLatch.countDown();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if (tickEventLatchCountDown != null) {
-                        tickEventLatchCountDown.countDown();
-                        tickEventLatchCountDown = null;
-                    }
+                    System.out.println("BOT_READY");
+
+                    sendRoundStarted(conn);
+
+                    sendTickEventForBot(conn, turnNumber++);
+                    tickEventLatch.countDown();
                     break;
 
                 case BOT_INTENT:
+                    System.out.println("BOT_INTENT");
+
                     if (speedMinLimit != null && speed < speedMinLimit) return;
                     if (speedMaxLimit != null && speed > speedMaxLimit) return;
 
@@ -412,31 +293,19 @@ public final class MockedServer {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+                    botIntentContinueLatch = new CountDownLatch(1);
 
-                    synchronized (MockedServer.this) {
-                        botIntent = JsonConverter.fromJson(text, BotIntent.class);
-                        if (botIntent.getFirepower() == null && text.contains("\"firepower\":")) {
-                            System.err.println("CRITICAL: firepower parsed as null but exists in JSON: " + text);
-                        }
+                    botIntent = JsonConverter.fromJson(text, BotIntent.class);
+                    botIntentLatch.countDown();
 
-                        // Update states
-                        speed += speedIncrement;
-                        direction += turnIncrement;
-                        gunDirection += gunTurnIncrement;
-                        radarDirection += radarTurnIncrement;
+                    sendTickEventForBot(conn, turnNumber++);
+                    tickEventLatch.countDown();
 
-                        botIntentLatch.countDown();
-                    }
-
-                    if (tickEventLatchCountDown != null) {
-                        tickEventLatchCountDown.countDown();
-                        tickEventLatchCountDown = null;
-                    } else {
-                        server.sendTickEventForBot(conn, turnNumber++);
-                        tickEventLatch.countDown();
-                    }
-
-                    botIntentContinueLatch = new CountDownLatch(0);
+                    // Update states
+                    speed += speedIncrement;
+                    direction += turnIncrement;
+                    gunDirection += gunTurnIncrement;
+                    radarDirection += radarTurnIncrement;
                     break;
             }
         }
@@ -491,7 +360,6 @@ public final class MockedServer {
             tickEvent.setTurnNumber(turnNumber);
 
             var state = new BotState();
-            state.setIsDroid(false);
             state.setEnergy(energy);
             state.setX(BOT_X);
             state.setY(BOT_Y);
@@ -505,17 +373,7 @@ public final class MockedServer {
             state.setRadarTurnRate(BOT_RADAR_TURN_RATE);
             state.setGunHeat(gunHeat);
             state.setEnemyCount(BOT_ENEMY_COUNT);
-            state.setBodyColor("#ffffff");
-            state.setTurretColor("#ffffff");
-            state.setRadarColor("#ffffff");
-            state.setBulletColor("#ffffff");
-            state.setScanColor("#ffffff");
-            state.setTracksColor("#ffffff");
-            state.setGunColor("#ffffff");
-            state.setIsDebuggingEnabled(false);
             tickEvent.setBotState(state);
-
-            List<Event> events = new java.util.ArrayList<>();
 
             if (botIntent != null) {
                 if (botIntent.getTurnRate() != null) {
@@ -529,9 +387,7 @@ public final class MockedServer {
                 }
 
                 if (botIntent.getFirepower() != null) {
-                    var bulletEvent = new BulletFiredEvent();
-                    bulletEvent.setBullet(createBulletState(99));
-                    events.add(bulletEvent);
+                    tickEvent.getEvents().add(new BulletFiredEvent()); // bullet event is completely empty
                 }
             }
 
@@ -539,9 +395,19 @@ public final class MockedServer {
             var bulletState2 = createBulletState(2);
             tickEvent.setBulletStates(List.of(bulletState1, bulletState2));
 
-            tickEvent.setEvents(new java.util.ArrayList<>());
+            var event = new ScannedBotEvent();
+            event.setType(SCANNED_BOT_EVENT);
+            event.setDirection(45.0);
+            event.setX(134.56);
+            event.setY(256.7);
+            event.setEnergy(56.9);
+            event.setSpeed(9.6);
+            event.setTurnNumber(1);
+            event.setScannedBotId(2);
+            event.setScannedByBotId(1);
+            tickEvent.setEvents(List.of(event));
 
-            conn.send(JsonConverter.toJson(tickEvent));
+            send(conn, tickEvent);
         }
 
         private void send(WebSocket conn, Message message) {

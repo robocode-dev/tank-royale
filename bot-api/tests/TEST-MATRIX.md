@@ -159,14 +159,14 @@ Notes:
       case normalization where applicable; deterministic error messages. [Parity: Java/.NET/Python]
     - ✅ TR-API-BOT-001e Java System properties facet (Java-only): `-D` properties mirror ENV keys with the same
       defaults/validation and precedence relative to ENV. [Parity: Java only]
-- ✅ TR-API-BOT-002 Connect/Disconnect: bot opens and closes connection; handshake messages are valid per schema.
-- ✅ TR-API-BOT-003 Start/Stop/Pause/Resume: correct state flags, idempotence, and event firing order.
-- ✅ TR-API-BOT-004 Error handling: on protocol error or server disconnect, bot transitions to a safe state and surfaces
+- TR-API-BOT-002 Connect/Disconnect: bot opens and closes connection; handshake messages are valid per schema.
+- TR-API-BOT-003 Start/Stop/Pause/Resume: correct state flags, idempotence, and event firing order.
+- TR-API-BOT-004 Error handling: on protocol error or server disconnect, bot transitions to safe state and surfaces
   error appropriately.
 
 ### E. Commands (CMD)
 
-- ✅ TR-API-CMD-001 Movement commands: setting target speed/turn rates updates the next tick’s intent payload exactly as
+- TR-API-CMD-001 Movement commands: setting target speed/turn rates updates the next tick’s intent payload exactly as
   per spec.
 - TR-API-CMD-002 Fire command: power bounds enforced; resulting intent serializes correctly; cooldown respected if
   applicable.

@@ -3,10 +3,7 @@ package dev.robocode.tankroyale.botapi;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import test_utils.MockedServer;
-import dev.robocode.tankroyale.schema.BotIntent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BooleanSupplier;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -14,7 +11,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 abstract class AbstractBotTest {
 
     protected MockedServer server;
-    protected final List<Thread> botThreads = new ArrayList<>();
 
     protected static final BotInfo botInfo = BotInfo.builder()
             .setName("TestBot")
@@ -47,49 +43,23 @@ abstract class AbstractBotTest {
 
     @AfterEach
     void tearDown() {
-        for (Thread thread : botThreads) {
-            thread.interrupt();
-            try {
-                thread.join(100);
-            } catch (InterruptedException ignored) {
-            }
-        }
-        botThreads.clear();
         server.stop();
     }
 
-    protected BaseBot start() {
+    protected static BaseBot start() {
         var bot = new TestBot();
         startAsync(bot);
         return bot;
     }
 
-    protected Thread startAsync(BaseBot bot) {
-        var thread = new Thread(() -> {
-            try {
-                bot.start();
-            } catch (Exception e) {
-                if (!(e.getCause() instanceof InterruptedException) && !(e instanceof BotException && e.getMessage().contains("Interrupted"))) {
-                    // Only print if it's not a normal interruption
-                    e.printStackTrace();
-                }
-            }
-        });
+    protected static Thread startAsync(BaseBot bot) {
+        var thread = new Thread(bot::start);
         thread.start();
-        botThreads.add(thread);
         return thread;
     }
 
-    protected void goAsync(BaseBot bot) {
-        var thread = new Thread(() -> {
-            try {
-                bot.go();
-            } catch (Exception e) {
-                // Ignore interruption noise
-            }
-        });
-        thread.start();
-        botThreads.add(thread);
+    protected static void goAsync(BaseBot bot) {
+        new Thread(bot::go).start();
     }
 
     protected BaseBot startAndAwaitHandshake() {
@@ -145,31 +115,7 @@ abstract class AbstractBotTest {
     }
 
     protected void awaitBotIntent() {
-        if (!server.awaitBotIntent(5000)) { // Increased timeout for debugging
-            throw new RuntimeException("Timeout waiting for BotIntent");
-        }
-    }
-
-    protected BotIntent executeCommandAndGetIntent(BaseBot bot, Runnable command) {
-        command.run();
-        goAsync(bot);
-        awaitBotIntent();
-        var intent = server.getBotIntent();
-        assertThat(intent).as("BotIntent should not be null after execution").isNotNull();
-        return intent;
-    }
-
-    protected <T> T executeCommand(BaseBot bot, java.util.function.Supplier<T> command) {
-        T result = command.get();
-        goAsync(bot);
-        awaitBotIntent();
-        return result;
-    }
-
-    protected void executeCommand(BaseBot bot, Runnable command) {
-        command.run();
-        goAsync(bot);
-        awaitBotIntent();
+        assertThat(server.awaitBotIntent(1000)).isTrue();
     }
 
     protected static boolean exceptionContainsEnvVarName(BotException botException, String envVarName) {

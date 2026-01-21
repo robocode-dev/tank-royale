@@ -100,10 +100,8 @@ class MockedServer:
         self._bot_handshake_event = threading.Event()
         self._game_started_event = threading.Event()
         self._tick_event = threading.Event()
-        self._tick_event_count_down: Optional[threading.Event] = None
         self._bot_intent_event = threading.Event()
         self._bot_intent_continue_event = threading.Event()
-        self._bot_intent_continue_event.set()  # Start as set so first intent proceeds without waiting
 
         # state captured
         self.handshake = None
@@ -116,7 +114,6 @@ class MockedServer:
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._thread: Optional[threading.Thread] = None
         self._server: Optional[websockets.serve] = None
-        self._current_websocket: Optional[websockets.WebSocketServerProtocol] = None
 
     @property
     def server_url(self) -> str:
@@ -146,102 +143,19 @@ class MockedServer:
             # Signal that the server is ready to accept connections
             self._server_started_event.set()
 
-        try:
-            # Start the server while the loop is running
-            self._loop.run_until_complete(_start_server())
-            self._loop.run_forever()
-        except Exception:
-            # Ignore exceptions during shutdown
-            pass
-        finally:
-            # Cleanup tasks
-            try:
-                # Cancel all pending tasks
-                pending = asyncio.all_tasks(self._loop)
-                for task in pending:
-                    task.cancel()
-
-                # Wait for cancellation to complete
-                if pending:
-                    self._loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
-            except Exception:
-                pass
-
-            try:
-                self._loop.close()
-            except Exception:
-                pass
+        # Start the server while the loop is running
+        self._loop.run_until_complete(_start_server())
+        self._loop.run_forever()
 
     def stop(self) -> None:
-        """Properly stop the server and clean up all resources."""
-        if self._loop and self._loop.is_running():
-            async def _cleanup():
-                # Close WebSocket connections first
-                if self._current_websocket:
-                    try:
-                        await self._current_websocket.close()
-                    except Exception:
-                        pass
-
-                # Then close the server
-                if self._server:
-                    try:
-                        self._server.close()
-                        await self._server.wait_closed()
-                    except Exception:
-                        pass
-
-                # Stop the event loop
-                self._loop.stop()
-
-            # Schedule cleanup and stop
-            asyncio.run_coroutine_threadsafe(_cleanup(), self._loop)
-
-        # Wait for thread to finish with timeout
-        if self._thread and self._thread.is_alive():
-            self._thread.join(timeout=3.0)
-
-        # Reset state
-        self._server = None
-        self._current_websocket = None
-        self._loop = None
-
-    def reset_events(self) -> None:
-        self._bot_handshake_event.clear()
-        self._game_started_event.clear()
-        self._tick_event.clear()
-        self._bot_intent_event.clear()
-        self._bot_intent_continue_event.set()
-
-    def close_connections(self) -> None:
-        """Close all active WebSocket connections."""
-        if self._current_websocket and self._loop:
-            asyncio.run_coroutine_threadsafe(
-                self._current_websocket.close(),
-                self._loop
-            )
-
-    def send_raw_text(self, text: str) -> None:
-        """Send raw text to the connected client (for testing malformed messages)."""
-        if self._current_websocket and self._loop:
-            asyncio.run_coroutine_threadsafe(
-                self._current_websocket.send(text),
-                self._loop
-            )
+        if self._loop:
+            self._loop.call_soon_threadsafe(self._loop.stop)
+        if self._thread:
+            self._thread.join(timeout=1.0)
 
     # Await helpers
     def await_connection(self, timeout_ms: int) -> bool:
         return self._opened_event.wait(timeout_ms / 1000.0)
-
-    def await_bot_ready(self, timeout_ms: int = 1000) -> bool:
-        start_time = time.time()
-        if not self.await_bot_handshake(timeout_ms):
-            return False
-        elapsed = int((time.time() - start_time) * 1000)
-        if not self.await_game_started(timeout_ms - elapsed):
-            return False
-        elapsed = int((time.time() - start_time) * 1000)
-        return self.await_tick(timeout_ms - elapsed)
 
     def await_bot_handshake(self, timeout_ms: int) -> bool:
         return self._bot_handshake_event.wait(timeout_ms / 1000.0)
@@ -250,52 +164,20 @@ class MockedServer:
         return self._game_started_event.wait(timeout_ms / 1000.0)
 
     def await_tick(self, timeout_ms: int) -> bool:
+        # Reset the event for this wait
+        self._tick_event.clear()
         return self._tick_event.wait(timeout_ms / 1000.0)
 
     def await_bot_intent(self, timeout_ms: int) -> bool:
+        # Reset the event for this wait
+        self._bot_intent_event.clear()
         # Allow next bot intent to continue processing
         self._bot_intent_continue_event.set()
         return self._bot_intent_event.wait(timeout_ms / 1000.0)
 
-    def set_bot_state_and_await_tick(
-        self,
-        energy: Optional[float] = None,
-        gun_heat: Optional[float] = None,
-        speed: Optional[float] = None,
-        direction: Optional[float] = None,
-        gun_direction: Optional[float] = None,
-        radar_direction: Optional[float] = None,
-    ) -> bool:
-        if energy is not None:
-            self._energy = energy
-        if gun_heat is not None:
-            self._gun_heat = gun_heat
-        if speed is not None:
-            self._speed = speed
-        if direction is not None:
-            self._direction = direction
-        if gun_direction is not None:
-            self._gun_direction = gun_direction
-        if radar_direction is not None:
-            self._radar_direction = radar_direction
-
-        self._tick_event_count_down = threading.Event()
-
-        if self._current_websocket and self._loop:
-            self._loop.call_soon_threadsafe(
-                asyncio.create_task,
-                self._send_tick(self._current_websocket, self._turn_number)
-            )
-            self._turn_number += 1
-
-        return self._tick_event_count_down.wait(timeout=1.0)
-
     # Config setters used by tests
     def set_energy(self, energy: float) -> None:
         self._energy = energy
-
-    def set_speed(self, speed: float) -> None:
-        self._speed = speed
 
     def set_gun_heat(self, gun_heat: float) -> None:
         self._gun_heat = gun_heat
@@ -312,41 +194,98 @@ class MockedServer:
     def set_radar_turn_increment(self, inc: float) -> None:
         self._radar_turn_increment = inc
 
-    def set_speed_min_limit(self, v: float) -> None:
+    def set_speed_min_limit(self, v: Optional[float]) -> None:
         self._speed_min_limit = v
 
-    def set_speed_max_limit(self, v: float) -> None:
+    def set_speed_max_limit(self, v: Optional[float]) -> None:
         self._speed_max_limit = v
 
-    def set_direction_min_limit(self, v: float) -> None:
+    def set_direction_min_limit(self, v: Optional[float]) -> None:
         self._direction_min_limit = v
 
-    def set_direction_max_limit(self, v: float) -> None:
+    def set_direction_max_limit(self, v: Optional[float]) -> None:
         self._direction_max_limit = v
 
-    def set_gun_direction_min_limit(self, v: float) -> None:
+    def set_gun_direction_min_limit(self, v: Optional[float]) -> None:
         self._gun_direction_min_limit = v
 
-    def set_gun_direction_max_limit(self, v: float) -> None:
+    def set_gun_direction_max_limit(self, v: Optional[float]) -> None:
         self._gun_direction_max_limit = v
 
-    def set_radar_direction_min_limit(self, v: float) -> None:
+    def set_radar_direction_min_limit(self, v: Optional[float]) -> None:
         self._radar_direction_min_limit = v
 
-    def set_radar_direction_max_limit(self, v: float) -> None:
+    def set_radar_direction_max_limit(self, v: Optional[float]) -> None:
         self._radar_direction_max_limit = v
 
-    def set_turn_number(self, turn_number: int) -> None:
-        self._turn_number = turn_number
+    # Property versions (0.35.0+ compatibility)
+    @property
+    def speed_min_limit(self) -> Optional[float]:
+        return self._speed_min_limit
 
-    def reset_bot_intent_event(self) -> None:
-        """Reset the bot intent event to allow awaiting multiple intents in sequence."""
-        self._bot_intent_event.clear()
+    @speed_min_limit.setter
+    def speed_min_limit(self, v: Optional[float]) -> None:
+        self._speed_min_limit = v
+
+    @property
+    def speed_max_limit(self) -> Optional[float]:
+        return self._speed_max_limit
+
+    @speed_max_limit.setter
+    def speed_max_limit(self, v: Optional[float]) -> None:
+        self._speed_max_limit = v
+
+    @property
+    def direction_min_limit(self) -> Optional[float]:
+        return self._direction_min_limit
+
+    @direction_min_limit.setter
+    def direction_min_limit(self, v: Optional[float]) -> None:
+        self._direction_min_limit = v
+
+    @property
+    def direction_max_limit(self) -> Optional[float]:
+        return self._direction_max_limit
+
+    @direction_max_limit.setter
+    def direction_max_limit(self, v: Optional[float]) -> None:
+        self._direction_max_limit = v
+
+    @property
+    def gun_direction_min_limit(self) -> Optional[float]:
+        return self._gun_direction_min_limit
+
+    @gun_direction_min_limit.setter
+    def gun_direction_min_limit(self, v: Optional[float]) -> None:
+        self._gun_direction_min_limit = v
+
+    @property
+    def gun_direction_max_limit(self) -> Optional[float]:
+        return self._gun_direction_max_limit
+
+    @gun_direction_max_limit.setter
+    def gun_direction_max_limit(self, v: Optional[float]) -> None:
+        self._gun_direction_max_limit = v
+
+    @property
+    def radar_direction_min_limit(self) -> Optional[float]:
+        return self._radar_direction_min_limit
+
+    @radar_direction_min_limit.setter
+    def radar_direction_min_limit(self, v: Optional[float]) -> None:
+        self._radar_direction_min_limit = v
+
+    @property
+    def radar_direction_max_limit(self) -> Optional[float]:
+        return self._radar_direction_max_limit
+
+    @radar_direction_max_limit.setter
+    def radar_direction_max_limit(self, v: Optional[float]) -> None:
+        self._radar_direction_max_limit = v
 
     # Internal server logic
     async def _handler(self, websocket: websockets.WebSocketServerProtocol):
         # on open
-        self._current_websocket = websocket
         self._opened_event.set()
         await self._send_server_handshake(websocket)
 
@@ -367,6 +306,7 @@ class MockedServer:
                     await self._send_round_started(websocket)
                     await self._send_tick(websocket, self._turn_number)
                     self._turn_number += 1
+                    self._tick_event.set()
                     movement_reset_pending = True  # defer movement reset until after first intent
 
                 elif msg_type == "BotIntent":
@@ -396,6 +336,7 @@ class MockedServer:
 
                     await self._send_tick(websocket, self._turn_number)
                     self._turn_number += 1
+                    self._tick_event.set()
 
                     # Advance state after sending tick
                     self._speed += self._speed_increment
@@ -411,9 +352,6 @@ class MockedServer:
         except websockets.exceptions.ConnectionClosed:
             # client closed connection
             pass
-        finally:
-            if self._current_websocket == websocket:
-                self._current_websocket = None
 
     def _reset_movement_commands(self):
         # This should match the Java/.NET logic
@@ -569,9 +507,6 @@ class MockedServer:
         )
 
         await websocket.send(to_json(tick))
-        self._tick_event.set()
-        if self._tick_event_count_down:
-            self._tick_event_count_down.set()
 
     @staticmethod
     def _create_bullet_state(bid: int) -> SchemaBulletState:

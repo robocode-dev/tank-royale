@@ -304,10 +304,10 @@ class _BotInternals(StopResumeListenerABC):
 
     def _update_movement(self):
         if not self._override_target_speed:
-            if abs(self.distance_remaining) < abs(self._bot.speed):
+            if abs(self.distance_remaining) < abs(self._bot.get_speed()):
                 self.distance_remaining = 0
             else:
-                self.distance_remaining -= self._bot.speed
+                self.distance_remaining -= self._bot.get_speed()
         elif math.isinf(self.distance_remaining):
             self._base_bot_internals.target_speed = (
                 MAX_SPEED if self.distance_remaining > 0 else -MAX_SPEED
@@ -333,7 +333,7 @@ class _BotInternals(StopResumeListenerABC):
     def _get_and_set_new_target_speed(self, distance: float) -> float:
         """Get and set the new target speed based on the remaining distance."""
         speed = self._base_bot_internals.get_new_target_speed(
-            self._bot.speed, distance
+            self._bot.get_speed(), distance
         )
         self._base_bot_internals.target_speed = speed
         return speed
