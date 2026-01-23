@@ -27,11 +27,6 @@ generated/
 *.lock
 *.sln.DotSettings.user
 
-/game-setups.properties
-/server.properties
-/gui.properties
-
 /*.battle.gz
 
 /.kotlin
-/recordings/

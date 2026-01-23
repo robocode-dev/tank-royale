@@ -66,6 +66,10 @@ if self.adjust_gun_for_body_turn:
       - Improved event dumping to include all relevant events for the monitored bot, including `TickEvent`.
       - Enhanced formatting of event data with consistent indentation and ANSI colors.
       - Grouped `bulletState` entries under a `bulletStates` header for better readability in `TickEvent`.
+  - Recordings:
+      - Recordings are now saved to a `recordings` subdirectory within the platform-specific user data directory.
+      - The replay file dialog now defaults to opening in the `recordings` directory for easier access to recorded
+        battles.
 - Other:
     - Replaced Proguard with R8 which is now the default code shrinker for Java projects.
 
@@ -97,6 +101,13 @@ You can still download the JAR version as usual, which works on all platforms wi
     - Added native installer packages for the GUI (Windows MSI, macOS PKG, Linux RPM, and DEB).
         - Note: Java 11+ is required and the runtime must be discoverable via the `JAVA_HOME` environment variable. See
           the installation documentation for platform-specific instructions.
+  - Settings are now stored in platform-specific user directories to avoid permission issues:
+      - Windows: `%LOCALAPPDATA%\Robocode Tank Royale` or `%APPDATA%\Robocode Tank Royale`
+      - macOS: `~/Library/Application Support/Robocode Tank Royale`
+      - Linux: `$XDG_CONFIG_HOME/robocode-tank-royale` or `~/.config/robocode-tank-royale`
+  - You need to move your `gui.properties`, `server.properties`, `game-setups.properties` and the `recordings`
+    directory into the new user data directory for the GUI.
+  - Added jlink runtime image creation for Windows installers to avoid "Failed to launch VM" issues on some machines.
 
 ## 📦 0.34.1 - Fixes on_death in Python Bot API and GUI improvements – 14-Nov-2025
 

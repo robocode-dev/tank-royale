@@ -33,6 +33,7 @@ export default withMermaid(defineConfig({
           { text: 'Introduction', link: '/articles/intro' },
           { text: 'Installation', link: '/articles/installation' },
           { text: 'GUI', link: '/articles/gui' },
+            {text: 'User Data & Config Files', link: '/articles/user-data-config'},
         ]
       },
       {
