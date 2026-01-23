@@ -93,7 +93,7 @@ class ConsolePanelTest : StringSpec({
             consolePanel.append(bannerLine2)
         }
 
-        Thread.sleep(100)
+        Thread.sleep(150)
 
         var documentText = ""
         SwingUtilities.invokeAndWait {

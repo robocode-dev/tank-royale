@@ -42,7 +42,7 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
 
     protected fun load(): Boolean {
         val file = File(baseDir, fileName)
-        // Ensure parent exists and create the file if missing
+        // Ensure a parent exists and create the file if missing
         if (!file.parentFile.exists()) file.parentFile.mkdirs()
         val alreadyExists = file.createNewFile()
         val input = FileInputStream(file)
@@ -55,7 +55,12 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
     }
 
     open fun save() {
-        if (properties == backedUpProperties) return
+        // Check if properties content has changed by comparing as maps
+        if (properties.size == backedUpProperties.size &&
+            properties.all { (key, value) -> backedUpProperties[key] == value }
+        ) {
+            return
+        }
 
         val file = File(baseDir, fileName)
         if (!file.parentFile.exists()) file.parentFile.mkdirs()
@@ -64,7 +69,7 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
             val sortedProperties = object : Properties() {
                 override fun store(writer: Writer, comments: String) {
                     keys.stream().map { k -> k }.sorted().forEach { k ->
-                        val value = "${get(k)}".replace("\\", "\\\\")
+                        val value = "${get(k)}"
                         writer.append("${k}=${value}\n")
                     }
                 }
@@ -72,6 +77,11 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
             sortedProperties.putAll(properties) // Use our properties
             sortedProperties.store(output, title)
         }
+
+        // Update backup to reflect the current saved state
+        backedUpProperties.clear()
+        backedUpProperties.putAll(properties)
+
         onSaved.fire(Unit)
     }
 
