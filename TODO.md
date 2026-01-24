@@ -113,7 +113,7 @@ public_handlers.on_death.subscribe(_stop_thread, 0)
 
 ---
 
-### Issue #4: Events Lost When IsSameEvent Returns True
+### Issue #4: dispatchEvents Refactored to Match Original Robocode
 
 **Status**: ✅ FIXED (C#, Java, Python)  
 **Severity**: Medium  
@@ -124,74 +124,83 @@ public_handlers.on_death.subscribe(_stop_thread, 0)
 - Python: `bot-api/python/src/robocode_tank_royale/bot_api/internal/event_queue.py` - `dispatch_events()` method
 
 **Problem**:  
-In `DispatchEvents()`, when processing events during a nested `Go()` call from an event handler:
+The original implementation differed from the original Robocode in several key ways:
 
-```csharp
-BotEvent currentEvent = GetNextEvent();  // REMOVES event from queue
-if (IsSameEvent(currentEvent))  // Checks if same priority as current top event
-{
-    if (IsCurrentEventInterruptible)
-    {
-        throw new ThreadInterruptedException();
-    }
-    break;  // ⚠️ EVENT WAS LOST! Removed but never dispatched
-}
-```
+1. **Removed event before checking priority** - caused events to be lost
+2. **While loop only checked `isBotRunning()`** - didn't check priority condition
+3. **Didn't set `currentTopEvent = null` on exceptions**
 
-When `IsSameEvent` returns true (meaning the new event has the same priority as the currently-being-handled event) and
-the event is NOT interruptible, the code would `break` out of the loop. However, the event had already been removed from
-the queue by `GetNextEvent()`, causing it to be permanently lost.
-
-**Scenario**:
-
-1. Bot is handling a `ScannedBotEvent` (priority 50)
-2. Handler calls `go()` which triggers `dispatchEvents()` (nested call)
-3. Another `ScannedBotEvent` (also priority 50) is retrieved and REMOVED from queue
-4. `isSameEvent()` returns true (50 == 50)
-5. If not interruptible: `break` → Event is gone forever!
-
-**Fix Applied (all languages)**:  
-Before breaking, put the event back at the **front** of the queue (preserving event order) so it's not lost:
+**Original Robocode behavior** (from `EventManager.java`):
 
 ```java
-// Java: In EventQueue.java
-if (isSameEvent(currentEvent)) {
-    if (isCurrentEventInterruptible()) {
-        // ... throw exception
+while ((currentEvent = eventQueue.get(0)) != null  // PEEK, not remove!
+        && currentEvent.getPriority() >= currentTopEventPriority) {  // Priority check in loop!
+    
+    if (currentEvent.getPriority() == currentTopEventPriority) {
+        if (isInterruptible(currentTopEventPriority)) {
+            throw new EventInterruptedException();
+        }
+        break;  // Event stays in queue - intentional loss for non-interruptible
     }
-    // Put the event back at front so it's not lost - it will be processed when the outer handler completes
-    addEventFirst(currentEvent);
-    break;
+    
+    // Only remove AFTER passing all checks
+    eventQueue.remove(currentEvent);
+    
+    try {
+        dispatch(currentEvent);
+    } catch (EventInterruptedException e) {
+        currentTopEvent = null;  // Clear on exception
+    } catch (RuntimeException | Error e) {
+        currentTopEvent = null;  // Clear on exception
+        throw e;
+    } finally {
+        currentTopEventPriority = oldTopEventPriority;
+    }
 }
 ```
 
-```csharp
-// C#: In EventQueue.cs
-if (IsSameEvent(currentEvent))
-{
-    if (IsCurrentEventInterruptible)
-    {
-        // ... throw exception
+**Fix Applied (all languages)**:  
+Refactored to match original Robocode exactly:
+
+1. **Peek first, remove later**: Use `peekNextEvent()` to check the event, only call `removeNextEvent()` after deciding
+   to dispatch
+2. **Priority check in while condition**: `getPriority(currentEvent) >= currentTopEventPriority`
+3. **Set `currentTopEvent = null` on exceptions**: Match original Robocode catch block behavior
+4. **Move `addCustomEvents()` to `dispatchEvents()`**: Match original Robocode which processes custom events at dispatch
+   time
+
+```java
+// New Java implementation (C# and Python match this pattern)
+while (isBotRunning()
+        && (currentEvent = peekNextEvent()) != null
+        && getPriority(currentEvent) >= currentTopEventPriority) {
+
+    if (getPriority(currentEvent) == currentTopEventPriority) {
+        if (currentTopEventPriority > Integer.MIN_VALUE && isCurrentEventInterruptible()) {
+            // ... throw exception
+        }
+        break; // Same priority but not interruptible - intentional in original Robocode
     }
-    // Put the event back at front so it's not lost - it will be processed when the outer handler completes
-    AddEventFirst(currentEvent);
-    break;
+
+    // ... set up priority tracking ...
+    
+    removeNextEvent(); // Remove only after we've decided to dispatch
+
+    try {
+        dispatch(currentEvent, turnNumber);
+    } catch (ThreadInterruptedException ignore) {
+        currentTopEvent = null; // Match original Robocode
+    } catch (RuntimeException | Error e) {
+        currentTopEvent = null; // Match original Robocode
+        throw e;
+    } finally {
+        currentTopEventPriority = oldTopEventPriority;
+    }
 }
 ```
 
-```python
-# Python: In event_queue.py
-if self.is_same_event(current_event):
-    if self.is_current_event_interruptible():
-        # ... raise exception
-    # Put the event back at front so it's not lost - it will be processed when the outer handler completes
-    self.add_event_first(current_event)
-    break
-```
-
-**Why front insertion?**: Events are sorted at the start of `dispatchEvents()`. If we added to the end with
-`addEvent()`, the event would be out of order. By using `addEventFirst()` (insert at index 0 / appendleft), the event
-maintains its proper position as the next event to process when the outer handler completes.
+**Note**: The "loss of event" when same priority and not interruptible is **intentional** behavior from original
+Robocode - the event stays in the queue and will be processed when the outer handler completes.
 
 ---
 
@@ -213,7 +222,7 @@ The event was removed twice:
 The second remove was a no-op since the event was already gone, but it was unnecessary code and could cause confusion.
 
 **Fix Applied**:  
-Removed the redundant second remove call. Python was not affected as it didn't have this issue.
+Refactored to use `peekNextEvent()` + `removeNextEvent()` pattern, eliminating the double-remove issue entirely.
 
 ---
 
@@ -266,9 +275,9 @@ Removed the extra code to align with Java/C# behavior.
 2. ✅ Base64 decoding bug in team messages (C# only)
 3. ✅ OnDeath callback not being called (C#, Java, Python) - internal death handler was stopping the thread before user's
    OnDeath callback could run
-4. ✅ Events lost when IsSameEvent returns true (C#, Java, Python) - events with same priority were being lost during
-   nested dispatchEvents calls
-5. ✅ Double remove in DispatchEvents (C#, Java) - redundant remove calls cleaned up
+4. ✅ dispatchEvents refactored to match original Robocode (C#, Java, Python) - peek before remove, priority check in
+   while loop, currentTopEvent nulled on exceptions
+5. ✅ Double remove in DispatchEvents fixed via peek/remove pattern (C#, Java)
 6. ✅ Python had extra inconsistent code (Python only) - removed redundant EventInterruption calls
 
 ## Related Files

@@ -79,8 +79,6 @@ class EventQueue:
         for e in event.events:
             self.add_event(e)
 
-        self.add_custom_events()
-
     async def dispatch_events(self, turn_number: int) -> None:
         """Dispatches events in prioritized order to event handlers.
 
@@ -90,15 +88,19 @@ class EventQueue:
         #        dumpEvents(turn_number); // for debugging purposes
 
         self.remove_old_events(turn_number)
+        self.add_custom_events()
         self.sort_events()
 
         while self.is_bot_running():
-            current_event = self.get_next_event()
+            current_event = self.peek_next_event()
             if current_event is None:
                 break
-            if self.is_same_event(current_event):
-                if self.is_current_event_interruptible():
-                    EventInterruption.set_interruptible(type(current_event), False)  # clear interruptible flag
+            if self.get_priority(current_event) < self.current_top_event_priority:
+                break
+
+            if self.get_priority(current_event) == self.current_top_event_priority:
+                if self.current_top_event_priority > float('-inf') and self.is_current_event_interruptible():
+                    EventInterruption.set_interruptible(type(self.current_top_event), False)  # clear interruptible flag
 
                     # Mark that the current handler was interrupted so API methods can react accordingly
                     self.base_bot_internal_data.was_current_event_interrupted = True
@@ -106,20 +108,22 @@ class EventQueue:
                     # We are already in an event handler, took action, and a new event was generated.
                     # So we want to break out of the old handler to process the new event here.
                     raise ThreadInterruptedException()
-                # Put the event back at front so it's not lost - it will be processed when the outer handler completes
-                self.add_event_first(current_event)
-                break
+                break  # Same priority but not interruptible - Loss of event is intentional in original Robocode
 
             old_top_event_priority = self.current_top_event_priority
 
             self.current_top_event_priority = self.get_priority(current_event)
             self.current_top_event = current_event
 
+            self.remove_next_event()  # Remove only after we've decided to dispatch
+
             try:
                 await self.dispatch(current_event, turn_number)
             except ThreadInterruptedException:
-                # Expected when event handler is interrupted on purpose
-                pass
+                self.current_top_event = None  # Match original Robocode behavior
+            except Exception:
+                self.current_top_event = None  # Match original Robocode behavior
+                raise
             finally:
                 self.current_top_event_priority = old_top_event_priority
 
@@ -139,16 +143,14 @@ class EventQueue:
     def is_bot_running(self):
         return self.base_bot_internal_data.is_running
 
-    def get_next_event(self):
+    def peek_next_event(self):
         with self.events_lock:
-            return self.events.popleft() if self.events else None
+            return self.events[0] if self.events else None
 
-    def add_event_first(self, bot_event: BotEvent):
+    def remove_next_event(self):
         with self.events_lock:
-            self.events.appendleft(bot_event)
-
-    def is_same_event(self, bot_event: BotEvent) -> bool:
-        return self.get_priority(bot_event) == self.current_top_event_priority
+            if self.events:
+                self.events.popleft()
 
     @staticmethod
     def get_priority(bot_event: BotEvent) -> int:

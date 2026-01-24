@@ -106,8 +106,6 @@ sealed class EventQueue : IComparer<BotEvent>
         {
             AddEvent(botEvent);
         }
-
-        AddCustomEvents();
     }
 
     /// <summary>
@@ -119,19 +117,17 @@ sealed class EventQueue : IComparer<BotEvent>
 //        DumpEvents(); // for debugging purposes
 
         RemoveOldEvents(turnNumber);
+        AddCustomEvents();
         SortEvents();
 
-        while (IsBotRunning)
+        BotEvent currentEvent;
+        while (IsBotRunning
+               && (currentEvent = PeekNextEvent()) != null
+               && GetPriority(currentEvent) >= _currentTopEventPriority)
         {
-            BotEvent currentEvent = GetNextEvent();
-            if (currentEvent == null)
+            if (GetPriority(currentEvent) == _currentTopEventPriority)
             {
-                break;
-            }
-
-            if (IsSameEvent(currentEvent))
-            {
-                if (IsCurrentEventInterruptible)
+                if (_currentTopEventPriority > MinValue && IsCurrentEventInterruptible)
                 {
                     EventInterruption.SetInterruptible(_currentTopEvent.GetType(), false); // clear interruptible flag
 
@@ -140,9 +136,7 @@ sealed class EventQueue : IComparer<BotEvent>
                     throw new ThreadInterruptedException();
                 }
 
-                // Put the event back at front so it's not lost - it will be processed when the outer handler completes
-                AddEventFirst(currentEvent);
-                break;
+                break; // Same priority but not interruptible - Loss of event is intentional in original Robocode
             }
 
             int oldTopEventPriority = _currentTopEventPriority;
@@ -150,6 +144,7 @@ sealed class EventQueue : IComparer<BotEvent>
             _currentTopEventPriority = GetPriority(currentEvent);
             _currentTopEvent = currentEvent;
 
+            RemoveNextEvent(); // Remove only after we've decided to dispatch
 
             try
             {
@@ -157,7 +152,12 @@ sealed class EventQueue : IComparer<BotEvent>
             }
             catch (ThreadInterruptedException)
             {
-                // Expected when event handler is interrupted on purpose
+                _currentTopEvent = null; // Match original Robocode behavior
+            }
+            catch (Exception)
+            {
+                _currentTopEvent = null; // Match original Robocode behavior
+                throw;
             }
             finally
             {
@@ -187,27 +187,24 @@ sealed class EventQueue : IComparer<BotEvent>
 
     private bool IsBotRunning => _baseBotInternals.IsRunning;
 
-    private BotEvent GetNextEvent()
+    private BotEvent PeekNextEvent()
     {
         lock (_events)
         {
-            if (_events.Count == 0) return null;
-            var botEvent = _events[0];
-            _events.Remove(botEvent);
-            return botEvent;
+            return _events.Count == 0 ? null : _events[0];
         }
     }
 
-    private void AddEventFirst(BotEvent botEvent)
+    private void RemoveNextEvent()
     {
         lock (_events)
         {
-            _events.Insert(0, botEvent);
+            if (_events.Count > 0)
+            {
+                _events.RemoveAt(0);
+            }
         }
     }
-
-    private bool IsSameEvent(BotEvent botEvent) =>
-        GetPriority(botEvent) == _currentTopEventPriority;
 
     private int GetPriority(BotEvent botEvent)
     {
