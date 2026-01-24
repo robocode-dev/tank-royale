@@ -124,6 +124,8 @@ final class EventQueue {
                     // So we want to break out of the old handler to process the new event here.
                     throw new ThreadInterruptedException();
                 }
+                // Put the event back at front so it's not lost - it will be processed when the outer handler completes
+                addEventFirst(currentEvent);
                 break;
             }
 
@@ -132,7 +134,6 @@ final class EventQueue {
             currentTopEventPriority = getPriority(currentEvent);
             currentTopEvent = currentEvent;
 
-            events.remove(currentEvent);
 
             try {
                 dispatch(currentEvent, turnNumber);
@@ -174,6 +175,12 @@ final class EventQueue {
     private BotEvent getNextEvent() {
         synchronized (events) {
             return events.isEmpty() ? null : events.remove(0);
+        }
+    }
+
+    private void addEventFirst(BotEvent botEvent) {
+        synchronized (events) {
+            events.add(0, botEvent);
         }
     }
 

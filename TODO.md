@@ -115,9 +115,13 @@ public_handlers.on_death.subscribe(_stop_thread, 0)
 
 ### Issue #4: Events Lost When IsSameEvent Returns True
 
-**Status**: 🟡 Investigate  
+**Status**: ✅ FIXED (C#, Java, Python)  
 **Severity**: Medium  
-**Location**: `bot-api/dotnet/api/src/internal/EventQueue.cs` - `DispatchEvents()` method
+**Location**:
+
+- C#: `bot-api/dotnet/api/src/internal/EventQueue.cs` - `DispatchEvents()` method
+- Java: `bot-api/java/src/main/java/dev/robocode/tankroyale/botapi/internal/EventQueue.java` - `dispatchEvents()` method
+- Python: `bot-api/python/src/robocode_tank_royale/bot_api/internal/event_queue.py` - `dispatch_events()` method
 
 **Problem**:  
 In `DispatchEvents()`, when processing events during a nested `Go()` call from an event handler:
@@ -130,27 +134,108 @@ if (IsSameEvent(currentEvent))  // Checks if same priority as current top event
     {
         throw new ThreadInterruptedException();
     }
-    break;  // ⚠️ EVENT IS LOST! Removed but never dispatched
+    break;  // ⚠️ EVENT WAS LOST! Removed but never dispatched
 }
 ```
 
-**Note**: Java has the same pattern. Need to verify if this is intentional behavior or a bug in both implementations.
+When `IsSameEvent` returns true (meaning the new event has the same priority as the currently-being-handled event) and
+the event is NOT interruptible, the code would `break` out of the loop. However, the event had already been removed from
+the queue by `GetNextEvent()`, causing it to be permanently lost.
+
+**Scenario**:
+
+1. Bot is handling a `ScannedBotEvent` (priority 50)
+2. Handler calls `go()` which triggers `dispatchEvents()` (nested call)
+3. Another `ScannedBotEvent` (also priority 50) is retrieved and REMOVED from queue
+4. `isSameEvent()` returns true (50 == 50)
+5. If not interruptible: `break` → Event is gone forever!
+
+**Fix Applied (all languages)**:  
+Before breaking, put the event back at the **front** of the queue (preserving event order) so it's not lost:
+
+```java
+// Java: In EventQueue.java
+if (isSameEvent(currentEvent)) {
+    if (isCurrentEventInterruptible()) {
+        // ... throw exception
+    }
+    // Put the event back at front so it's not lost - it will be processed when the outer handler completes
+    addEventFirst(currentEvent);
+    break;
+}
+```
+
+```csharp
+// C#: In EventQueue.cs
+if (IsSameEvent(currentEvent))
+{
+    if (IsCurrentEventInterruptible)
+    {
+        // ... throw exception
+    }
+    // Put the event back at front so it's not lost - it will be processed when the outer handler completes
+    AddEventFirst(currentEvent);
+    break;
+}
+```
+
+```python
+# Python: In event_queue.py
+if self.is_same_event(current_event):
+    if self.is_current_event_interruptible():
+        # ... raise exception
+    # Put the event back at front so it's not lost - it will be processed when the outer handler completes
+    self.add_event_first(current_event)
+    break
+```
+
+**Why front insertion?**: Events are sorted at the start of `dispatchEvents()`. If we added to the end with
+`addEvent()`, the event would be out of order. By using `addEventFirst()` (insert at index 0 / appendleft), the event
+maintains its proper position as the next event to process when the outer handler completes.
 
 ---
 
 ### Issue #5: Double Remove in DispatchEvents (Minor)
 
-**Status**: 🟡 Investigate  
+**Status**: ✅ FIXED (C#, Java)  
 **Severity**: Low  
-**Location**: `bot-api/dotnet/api/src/internal/EventQueue.cs`
+**Location**:
+
+- C#: `bot-api/dotnet/api/src/internal/EventQueue.cs`
+- Java: `bot-api/java/src/main/java/dev/robocode/tankroyale/botapi/internal/EventQueue.java`
 
 **Problem**:  
-The event is removed twice:
+The event was removed twice:
 
-1. In `GetNextEvent()`: `_events.Remove(botEvent);`
-2. Later in `DispatchEvents()`: `_events.Remove(currentEvent);`
+1. In `GetNextEvent()`: event is removed from the list/queue
+2. Later in `DispatchEvents()`: `_events.Remove(currentEvent)` / `events.remove(currentEvent)`
 
-The second remove is a no-op since the event is already gone, but it's unnecessary code.
+The second remove was a no-op since the event was already gone, but it was unnecessary code and could cause confusion.
+
+**Fix Applied**:  
+Removed the redundant second remove call. Python was not affected as it didn't have this issue.
+
+---
+
+### Issue #6: Python Had Extra Inconsistent Code (Minor)
+
+**Status**: ✅ FIXED (Python only)  
+**Severity**: Low  
+**Location**: `bot-api/python/src/robocode_tank_royale/bot_api/internal/event_queue.py`
+
+**Problem**:  
+Python had extra `EventInterruption.set_interruptible()` calls in `dispatch_events` that didn't exist in Java/C#:
+
+```python
+# This code was in Python but NOT in Java/C#
+if self.current_top_event is not None:
+    EventInterruption.set_interruptible(type(self.current_top_event), False)
+```
+
+These calls were redundant since the `dispatch()` method already clears the interruptible flag in its `finally` block.
+
+**Fix Applied**:  
+Removed the extra code to align with Java/C# behavior.
 
 ---
 
@@ -181,11 +266,10 @@ The second remove is a no-op since the event is already gone, but it's unnecessa
 2. ✅ Base64 decoding bug in team messages (C# only)
 3. ✅ OnDeath callback not being called (C#, Java, Python) - internal death handler was stopping the thread before user's
    OnDeath callback could run
-
-### Issues to Investigate:
-
-4. 🟡 Events lost when IsSameEvent returns true
-5. 🟡 Double remove in DispatchEvents
+4. ✅ Events lost when IsSameEvent returns true (C#, Java, Python) - events with same priority were being lost during
+   nested dispatchEvents calls
+5. ✅ Double remove in DispatchEvents (C#, Java) - redundant remove calls cleaned up
+6. ✅ Python had extra inconsistent code (Python only) - removed redundant EventInterruption calls
 
 ## Related Files
 

@@ -106,14 +106,9 @@ class EventQueue:
                     # We are already in an event handler, took action, and a new event was generated.
                     # So we want to break out of the old handler to process the new event here.
                     raise ThreadInterruptedException()
-                # Same event but not interruptible: we've finished handling the previous event, clear its flag
-                if self.current_top_event is not None:
-                    EventInterruption.set_interruptible(type(self.current_top_event), False)
+                # Put the event back at front so it's not lost - it will be processed when the outer handler completes
+                self.add_event_first(current_event)
                 break
-
-            # Different event than the one we just handled: clear any pending interruptible flag
-            if self.current_top_event is not None:
-                EventInterruption.set_interruptible(type(self.current_top_event), False)
 
             old_top_event_priority = self.current_top_event_priority
 
@@ -147,6 +142,10 @@ class EventQueue:
     def get_next_event(self):
         with self.events_lock:
             return self.events.popleft() if self.events else None
+
+    def add_event_first(self, bot_event: BotEvent):
+        with self.events_lock:
+            self.events.appendleft(bot_event)
 
     def is_same_event(self, bot_event: BotEvent) -> bool:
         return self.get_priority(bot_event) == self.current_top_event_priority

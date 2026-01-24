@@ -140,6 +140,8 @@ sealed class EventQueue : IComparer<BotEvent>
                     throw new ThreadInterruptedException();
                 }
 
+                // Put the event back at front so it's not lost - it will be processed when the outer handler completes
+                AddEventFirst(currentEvent);
                 break;
             }
 
@@ -148,10 +150,6 @@ sealed class EventQueue : IComparer<BotEvent>
             _currentTopEventPriority = GetPriority(currentEvent);
             _currentTopEvent = currentEvent;
 
-            lock (_events)
-            {
-                _events.Remove(currentEvent);
-            }
 
             try
             {
@@ -197,6 +195,14 @@ sealed class EventQueue : IComparer<BotEvent>
             var botEvent = _events[0];
             _events.Remove(botEvent);
             return botEvent;
+        }
+    }
+
+    private void AddEventFirst(BotEvent botEvent)
+    {
+        lock (_events)
+        {
+            _events.Insert(0, botEvent);
         }
     }
 
