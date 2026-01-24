@@ -47,14 +47,24 @@ public final class BotInternals implements IStopResumeListener {
 
         // Bot events have higher priorities than BaseBot events, meaning that these events will be executed first
         var instantEventHandlers = baseBotInternals.getInstantEventHandlers();
+
+        // Priority 110 ensures processTurn() runs BEFORE BaseBotInternals.onNextTurn (priority 100)
+        // which calls notifyAll() to wake up the bot thread. This prevents a race condition
+        // where the bot thread wakes up before turnRemaining/distanceRemaining are updated.
+        instantEventHandlers.onNextTurn.subscribe(this::onNextTurn, 110);
+
         instantEventHandlers.onGameAborted.subscribe(e -> onGameAborted(), 100);
-        instantEventHandlers.onNextTurn.subscribe(this::onNextTurn, 90);
         instantEventHandlers.onRoundEnded.subscribe(e -> onRoundEnded(), 90);
         instantEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
         instantEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
         instantEventHandlers.onHitWall.subscribe(e -> onHitWall(), 90);
         instantEventHandlers.onHitBot.subscribe(this::onHitBot, 90);
-        instantEventHandlers.onDeath.subscribe(this::onDeath, 90);
+
+        // Subscribe to public bot event handlers for onDeath with priority 0 (lower than user's default of 1).
+        // This ensures user's onDeath callback runs BEFORE we stop the thread, since dispatchEvents()
+        // checks isRunning() and would skip events if thread was already stopped.
+        var botEventHandlers = baseBotInternals.getBotEventHandlers();
+        botEventHandlers.onDeath.subscribe(this::onDeath, 0);
     }
 
     private void onNextTurn(TickEvent e) {

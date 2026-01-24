@@ -239,7 +239,7 @@ sealed class BaseBotInternals
         BotIntent.Firepower = null;
     }
 
-    private BotEventHandlers BotEventHandlers { get; }
+    internal BotEventHandlers BotEventHandlers { get; }
 
     internal InternalEventHandlers InternalEventHandlers { get; }
 

@@ -27,19 +27,23 @@ class _BotInternals(StopResumeListenerABC):
         async def _stop_thread(_: ...) -> None:
             self._base_bot_internals.stop_thread()
 
+        # Priority 110 ensures _process_turn() runs BEFORE BaseBotInternals._on_next_turn (priority 100)
+        # which calls notify_all() to wake up the bot thread. This prevents a race condition
+        # where the bot thread wakes up before turn_remaining/distance_remaining are updated.
+        handlers.on_next_turn.subscribe(self.on_next_turn, 110)
+
         handlers.on_game_aborted.subscribe(_stop_thread, 100)
         handlers.on_round_ended.subscribe(_stop_thread, 90)
         handlers.on_game_ended.subscribe(_stop_thread, 90)
         handlers.on_disconnected.subscribe(_stop_thread, 90)
-
-        # Important: Do NOT stop the bot on internal DeathEvent before user callbacks run.
-        # Align with Java/.NET semantics: invoke user on_death first, then stop the bot.
-        # Therefore, subscribe to the PUBLIC bot event handler with a LOWER priority than the user handler (default=1).
-        public_handlers = self._base_bot_internals.bot_event_handlers
-        public_handlers.on_death.subscribe(_stop_thread, 0)
-        handlers.on_next_turn.subscribe(self.on_next_turn, 90)
         handlers.on_hit_wall.subscribe(lambda _: self.on_hit_wall(), 90)
         handlers.on_hit_bot.subscribe(self.on_hit_bot, 90)
+
+        # Subscribe to public bot event handlers for on_death with priority 0 (lower than user's default of 1).
+        # This ensures user's on_death callback runs BEFORE we stop the thread, since dispatch_events()
+        # checks is_running() and would skip events if thread was already stopped.
+        public_handlers = self._base_bot_internals.bot_event_handlers
+        public_handlers.on_death.subscribe(_stop_thread, 0)
 
         self._distance_reached = asyncio.Condition()
         self._turn_reached = asyncio.Condition()

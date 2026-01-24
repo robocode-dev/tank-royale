@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Robocode.TankRoyale.BotApi.Events;
 using Newtonsoft.Json.Linq;
 using Robocode.TankRoyale.BotApi.Internal.Json;
@@ -19,7 +20,7 @@ static class EventMapper
             throw new BotException("TickEventForBot dictionary is missing in JSON message from server");
 
         var events = (JArray)jsonTickEvent["events"];
-    
+
         return new TickEvent
         (
             tickEvent.TurnNumber,
@@ -36,6 +37,7 @@ static class EventMapper
         foreach (var jEvent in events)
         {
             var evt = (JObject)jEvent;
+
             gameEvents.Add(Map(evt, baseBot));
         }
 
@@ -139,15 +141,57 @@ static class EventMapper
     {
         try
         {
-            // type name of the base bot is required for the DLL name.
-            // Otherwise, null is will be returned with Type.GetType(typeName).
-            var typeName = source.MessageType + "," + baseBot.GetType().Name;
-            var type = Type.GetType(typeName)!;
+            // Load the message type from the RECEIVING bot's assembly, not the sender's.
+            // This allows each bot to have its own version of the message class.
+            // For example, if MyFirstLeader sends a "RobotColors" message to MyFirstDroid,
+            // the message is serialized to JSON on the leader side, sent with the type name "RobotColors",
+            // then deserialized into MyFirstDroid's own "RobotColors" class definition.
+            // This is similar to how Java's ClassLoader.loadClass() works.
+            var botAssembly = baseBot.GetType().Assembly;
+            Type? type = null;
 
-            var bytes = Convert.FromBase64String(source.Message);
-            var decodedString = System.Text.Encoding.UTF8.GetString(bytes);
+            // Strategy 1: Try to find the type directly in the bot's assembly
+            // This works for types in the global namespace or with full namespace
+            type = botAssembly.GetType(source.MessageType);
 
-            var messageObject = JsonConverter.FromJson(decodedString, type);
+            // Strategy 2: Search all types in the bot's assembly by name
+            // This handles cases where the simple name matches but namespace differs
+            if (type == null)
+            {
+                var messageTypeName = source.MessageType;
+                // Extract just the class name if it contains namespace or assembly info
+                var lastDotIndex = messageTypeName.LastIndexOf('.');
+                var simpleTypeName = lastDotIndex >= 0 ? messageTypeName.Substring(lastDotIndex + 1) : messageTypeName;
+
+                foreach (var t in botAssembly.GetTypes())
+                {
+                    if (t.Name == simpleTypeName || t.FullName == messageTypeName)
+                    {
+                        type = t;
+                        break;
+                    }
+                }
+            }
+
+            // Strategy 3: Try with assembly-qualified name
+            if (type == null)
+            {
+                var typeName = source.MessageType + "," + botAssembly.GetName().Name;
+                type = Type.GetType(typeName);
+            }
+
+            // Strategy 4: Try across all loaded assemblies
+            if (type == null)
+            {
+                type = Type.GetType(source.MessageType);
+            }
+
+            if (type == null)
+            {
+                throw new BotException($"Could not find type '{source.MessageType}' in bot assembly '{botAssembly.GetName().Name}' or other loaded assemblies");
+            }
+
+            var messageObject = JsonConverter.FromJson(source.Message, type);
 
             return new TeamMessageEvent(
                 source.TurnNumber,

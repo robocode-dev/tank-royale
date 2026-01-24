@@ -221,6 +221,10 @@ public final class BaseBotInternals {
         return internalEventHandlers;
     }
 
+    BotEventHandlers getBotEventHandlers() {
+        return botEventHandlers;
+    }
+
     public List<BotEvent> getEvents() {
         final var turnNumber = getCurrentTickOrThrow().getTurnNumber();
         return eventQueue.getEvents(turnNumber);

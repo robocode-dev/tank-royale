@@ -51,6 +51,15 @@ if self.adjust_gun_for_body_turn:
 - **Python Bot API**: Now follows Python conventions with property-based accessors
     - **Code Quality**: More idiomatic Python code that feels natural to Python developers
     - **Semantic Equivalence**: Maintains 1:1 behavior with Java API while using appropriate language idioms
+
+### 🐞 Bug Fixes
+
+- Bot API (Java, C#/.NET, Python):
+    - Fixed a bug where the user's `OnDeath` callback would not be called when the bot dies. The internal death handler
+      was stopping the bot thread before the event queue could dispatch the `DeathEvent` to user callbacks.
+      Now the `OnDeath` handler is subscribed to public event handlers with priority 0 (lower than user's default of 1),
+      ensuring user's `OnDeath` callback runs before the thread is stopped.
+
 - GUI:
     - Improved performance of the bot console and server log windows under heavy logging.
     - Added **batched updates** to reduce UI freezes when bots or the server produce a high volume of output.
