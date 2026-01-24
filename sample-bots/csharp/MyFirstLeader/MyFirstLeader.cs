@@ -52,9 +52,7 @@ public class MyFirstLeader : Bot
         while (IsRunning)
         {
             Forward(100);
-            TurnGunLeft(360);
             Back(100);
-            TurnGunLeft(360);
         }
     }
 
