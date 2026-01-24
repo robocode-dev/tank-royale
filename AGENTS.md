@@ -20,58 +20,54 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 <!-- OPENSPEC:END -->
 
-# Agent Specifications
+# Tank Royale AI Agent Instructions
 
-## Core Principles
+This file serves as the **routing hub** for AI coding assistants. Detailed instructions are modularized in the `.ai/`
+directory for token efficiency and focused context loading.
 
-- Clean code: readability over cleverness, meaningful names, small functions, clear responsibilities, minimal coupling
-- Minimal changes: implement only what's required; no drive-by refactors unless necessary
-- Small atomic commits explaining why, not just what; concise answers; no summary files unless requested. But AI agent
-  should never make git commits.
+## Quick Reference - What to Load
 
-## Source of Truth & Cross-Platform
+Load specific instruction files from `.ai/` based on your task:
 
-- **Java Bot API** is the reference implementation for all Bot API platforms: align behavior, API names, defaults, event
-  semantics
-- **Bot API changes**: Only modify for bug fixes or new features; when ANY Bot API is changed, ALL other Bot APIs (Java,
-  Python, .NET) MUST be updated to maintain 1:1 semantic equivalence
-- Keep JSON/wire behavior consistent across all platforms; platform-specific idioms OK if semantics identical
-- **Public API**: stable; avoid breaking changes; coordinate all ports if unavoidable
-- **Protocol**: no breaking changes; additive only; update `/schema` and docs
+| **Task/Keywords**                  | **Load These Files**        |
+|------------------------------------|-----------------------------|
+| General guidelines, clean code     | `.ai/core-principles.md`    |
+| Bot API changes, Java/Python/.NET  | `.ai/cross-platform.md`     |
+| Java, Python, C# style conventions | `.ai/coding-conventions.md` |
+| Testing, building, Gradle          | `.ai/testing-and-build.md`  |
+| Docs, VERSIONS.MD, Javadoc         | `.ai/documentation.md`      |
+| File encoding, standards           | `.ai/standards.md`          |
+| **Planning, specs, proposals**     | `@/openspec/AGENTS.md` ⚠️   |
 
-## Coding Conventions
+**Default Strategy:** If task is unclear, load `.ai/core-principles.md` + `.ai/cross-platform.md` first.
 
-**Java**: existing style; immutability/`final`; clear names; no magic numbers; explicit nullability; defensive
-programming
+## AI Learning Loop
 
-**Python**: PEP 8 + PEP 484 type hints; keep `py.typed` valid; run `mypy`; prefer dataclasses; read-only state objects
+**Capture feedback during chat to improve AI instructions permanently.**
 
-**General**: SRP, DRY, YAGNI; composition over inheritance; pure functions; early returns; precise errors
+When the user gives corrective feedback like:
 
-## Cross-Language Workflow
+- "Remember ..." or "Always ..." (preferred)
+- "@ai-learn: ..." (explicit trigger)
 
-1. Implement/verify Java Bot API first (reference implementation)
-2. Port to ALL other Bot API languages (Python, .NET) matching names, defaults, behavior exactly
-3. Verify 1:1 semantic equivalence across all Bot API platforms
-4. Update sample bots if user-visible
-5. Build and test each module
+**Action:** Recognize this as a learning opportunity, propose an edit to the appropriate `.ai/*.md` file, and apply it.
 
-## Testing & Build
+**When in doubt:** Ask "Would you like me to add this to the AI instructions?"
 
-- Build modules; run tests; add tests for bugs/new behavior
-- Protocol changes: update JSON examples, schema, docs; verify backward compatibility
-- Timing/state changes: validate with sample bot
-- **Build**: run `./gradlew clean build` after code/config/build changes (exception: pure text/markdown/docs)
+See `.ai/README.md` for target file mapping and best practices.
 
-## Documentation & Review
+## Full Index
 
-- Update README/docs/VERSIONS.MD for user-visible changes
-- Keep Javadoc/docstrings aligned across ports
-- Verify: Java reference match, backward compatibility, minimal diff, tests/docs updated, naming consistency
+See `.ai/README.md` for detailed routing guide, file metadata, and token budgets.
 
-## Standards
+---
 
-- UTF-8 encoding; emojis OK in comments/docs
-- No escape/ANSI/non-printable chars; strip terminal sequences
-- Use file tools; no interactive programs; no files outside repo
-- Ask before broad/breaking changes
+<!-- 
+MAINTENANCE NOTE (for human developers):
+When updating agent instructions:
+1. Keep this file (AGENTS.md) as lightweight router only
+2. Add/modify content in specific `.ai/*.md` topic files
+3. Update keyword mappings in table above
+4. Run token count check: each .ai/*.md should be 50-150 lines (500-1500 tokens)
+5. Keep OpenSpec section (OPENSPEC:START/END) untouched for auto-updates
+-->
