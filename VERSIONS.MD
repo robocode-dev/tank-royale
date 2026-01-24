@@ -1,4 +1,4 @@
-## 📦 0.35.0 - **BREAKING**: Python Bot API Refactored to Use Properties - 21-Jan-2026
+## 📦 0.35.0 - **BREAKING**: Python Bot API Refactored to Use Properties - 24-Jan-2026
 
 ### 💥 Breaking Changes
 
@@ -51,6 +51,77 @@ if self.adjust_gun_for_body_turn:
 - **Python Bot API**: Now follows Python conventions with property-based accessors
     - **Code Quality**: More idiomatic Python code that feels natural to Python developers
     - **Semantic Equivalence**: Maintains 1:1 behavior with Java API while using appropriate language idioms
+- **Python Bot API**: Typed team messages now work like Java/C#
+    - **Typed Team Messages**: Use the `@team_message_type` decorator or `register_team_message_type()` function to
+      register message classes. Messages are automatically serialized/deserialized to typed objects.
+    - **Color Serialization**: `Color` objects in team messages are automatically serialized to hex strings and
+      deserialized back to `Color` objects.
+    - **Added `Color.from_hex_color()`**: Factory method to create a Color from a hex string like `#RGB`, `#RRGGBB`, or
+      `#RRGGBBAA`. Returns `None` for `None` input. Matches Java's `ColorUtil.fromHexColor()`.
+    - **Added `Color.from_hex()`**: Factory method to create a Color from hex digits without the hash prefix.
+      Matches Java's `ColorUtil.fromHex()`.
+    - **Simplified Sample Bots**: `MyFirstLeader` and `MyFirstDroid` now use typed message classes and `isinstance()`
+      checks, matching the Java/C# pattern exactly. No more manual hex string parsing.
+- Bot Events Panel:
+    - Optimized logging to only include events for the current game turn.
+    - Improved event dumping to include all relevant events for the monitored bot, including `TickEvent`.
+    - Enhanced formatting of event data with consistent indentation and ANSI colors.
+    - Grouped `bulletState` entries under a `bulletStates` header for better readability in `TickEvent`.
+- Recordings:
+    - Recordings are now saved to a `recordings` subdirectory within the platform-specific user data directory.
+    - The replay file dialog now defaults to opening in the `recordings` directory for easier access to recorded
+      battles.
+- Other:
+    - Replaced Proguard with R8 which is now the default code shrinker for Java projects.
+
+#### Python Team Message Example
+
+**Defining message types:**
+
+```python
+from dataclasses import dataclass
+from typing import Optional
+from robocode_tank_royale.bot_api import team_message_type
+from robocode_tank_royale.bot_api.color import Color
+
+@team_message_type
+@dataclass
+class RobotColors:
+    body_color: Optional[Color] = None
+    turret_color: Optional[Color] = None
+
+@team_message_type
+@dataclass
+class Point:
+    x: float
+    y: float
+```
+
+**Sending messages (leader):**
+
+```python
+colors = RobotColors()
+colors.body_color = Color.RED
+colors.turret_color = Color.BLUE
+self.broadcast_team_message(colors)  # Typed object, not dict
+
+self.broadcast_team_message(Point(x=e.x, y=e.y))
+```
+
+**Receiving messages (droid):**
+
+```python
+async def on_team_message(self, e: TeamMessageEvent) -> None:
+    message = e.message
+
+    if isinstance(message, RobotColors):
+        self.body_color = message.body_color  # Already a Color object
+        self.turret_color = message.turret_color
+
+    elif isinstance(message, Point):
+        await self.turn_right(self.bearing_to(message.x, message.y))
+        await self.fire(3)
+```
 
 ### 🐞 Bug Fixes
 
@@ -70,17 +141,6 @@ if self.adjust_gun_for_body_turn:
         - **How to configure**:
             - Open the `Config` -> `GUI Options` menu in the GUI.
             - Adjust the `Console max characters` value and click `OK` to save.
-  - Bot Events Panel:
-      - Optimized logging to only include events for the current game turn.
-      - Improved event dumping to include all relevant events for the monitored bot, including `TickEvent`.
-      - Enhanced formatting of event data with consistent indentation and ANSI colors.
-      - Grouped `bulletState` entries under a `bulletStates` header for better readability in `TickEvent`.
-  - Recordings:
-      - Recordings are now saved to a `recordings` subdirectory within the platform-specific user data directory.
-      - The replay file dialog now defaults to opening in the `recordings` directory for easier access to recorded
-        battles.
-- Other:
-    - Replaced Proguard with R8 which is now the default code shrinker for Java projects.
 
 ## 📦 0.34.2 - Added native installer packages for GUI – 25-Dec-2025
 

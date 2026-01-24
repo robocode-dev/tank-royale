@@ -193,13 +193,23 @@ class EventMapper:
 
     @staticmethod
     def _map_team_message_event(source: SchemaTeamMessageEvent) -> TeamMessageEvent:
-        """Map a schema TeamMessageEvent to a bot-api TeamMessageEvent."""
+        """Map a schema TeamMessageEvent to a bot-api TeamMessageEvent.
+
+        Uses the message_type field to look up registered types and deserialize
+        into typed objects. Handles Color fields by converting hex strings.
+        """
+        from ..team_message import deserialize_team_message
+
         message = source.message
         if message is None:  # type: ignore
             raise BotException("message in TeamMessageEvent is None")
 
+        message_type = source.message_type
+        if message_type is None:
+            raise BotException("message_type in TeamMessageEvent is None")
+
         try:
-            message_object: Dict[str, Any] = json.loads(message)
+            message_object = deserialize_team_message(message, message_type)
             return TeamMessageEvent(source.turn_number, message_object, source.sender_id)
         except json.JSONDecodeError as e:
             raise BotException(f"Could not parse team message: {str(e)}")

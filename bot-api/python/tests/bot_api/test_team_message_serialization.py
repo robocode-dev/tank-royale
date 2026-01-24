@@ -2,126 +2,164 @@
 Test to simulate team message serialization/deserialization between MyFirstLeader and MyFirstDroid.
 This test reproduces the exact scenario where colors are sent from leader to droid.
 """
-import json
 import unittest
 from dataclasses import dataclass
-from typing import Any, Dict
+
+from robocode_tank_royale.bot_api.color import Color
+from robocode_tank_royale.bot_api.team_message import (
+    team_message_type,
+    register_team_message_type,
+    serialize_team_message,
+    deserialize_team_message,
+    get_team_message_type,
+)
+
+# Import shared message types
+from tests.test_utils.team_message_types import Point, RobotColors
 
 
 class TestTeamMessageSerialization(unittest.TestCase):
     """Tests for team message serialization and deserialization."""
 
-    def test_colors_serialization(self):
-        """Test RobotColors message serialization/deserialization."""
-        print("=== Testing RobotColors Serialization ===")
+    def test_colors_serialization_and_deserialization(self):
+        """Test RobotColors message serialization/deserialization with typed objects."""
+        print("=== Testing RobotColors Serialization (Typed) ===")
 
-        # Create colors message as MyFirstLeader would (as a dict with type field)
-        leader_colors = {
-            "type": "RobotColors",
-            "bodyColor": "#FF0000FF",
-            "tracksColor": "#00FFFFFF",
-            "turretColor": "#FF0000FF",
-            "gunColor": "#FFFF00FF",
-            "radarColor": "#FF0000FF",
-            "scanColor": "#FFFF00FF",
-            "bulletColor": "#FFFF00FF"
-        }
+        # Create colors as MyFirstLeader would
+        colors = RobotColors()
+        colors.body_color = Color.RED
+        colors.tracks_color = Color.CYAN
+        colors.turret_color = Color.RED
+        colors.gun_color = Color.YELLOW
+        colors.radar_color = Color.RED
+        colors.scan_color = Color.YELLOW
+        colors.bullet_color = Color.YELLOW
 
-        # Simulate what BaseBotInternals._send_team_message does
-        json_str = json.dumps(leader_colors)
+        # Serialize as BaseBotInternals.send_team_message does
+        json_str = serialize_team_message(colors)
+        message_type = type(colors).__name__
 
         print(f"JSON: {json_str}")
+        print(f"Message Type: {message_type}")
 
-        # Now simulate receiving on MyFirstDroid side
-        print("\n=== Attempting to deserialize ===")
+        # Deserialize as EventMapper._map_team_message_event does
+        received = deserialize_team_message(json_str, message_type)
 
-        # Python uses json.loads which returns a dict
-        received_object: Dict[str, Any] = json.loads(json_str)
+        # Verify it's a typed RobotColors object
+        self.assertIsInstance(received, RobotColors)
+        self.assertEqual(received.body_color, Color.RED)
+        self.assertEqual(received.tracks_color, Color.CYAN)
+        self.assertEqual(received.gun_color, Color.YELLOW)
 
-        self.assertIsNotNone(received_object)
-        self.assertIsInstance(received_object, dict)
-        self.assertEqual(received_object.get("type"), "RobotColors")
-
-        print(f"Received type: {received_object.get('type')}")
-        print(f"BodyColor: {received_object.get('bodyColor')}")
-        print(f"GunColor: {received_object.get('gunColor')}")
-
-        self.assertEqual(received_object.get("bodyColor"), "#FF0000FF")
-        self.assertEqual(received_object.get("gunColor"), "#FFFF00FF")
-        self.assertEqual(received_object.get("tracksColor"), "#00FFFFFF")
+        print(f"Received type: {type(received).__name__}")
+        print(f"BodyColor: {received.body_color}")
+        print(f"GunColor: {received.gun_color}")
 
         print("\n✓ TEST PASSED")
 
-    def test_point_serialization(self):
-        """Test Point message serialization/deserialization."""
-        print("=== Testing Point Serialization ===")
+    def test_point_serialization_and_deserialization(self):
+        """Test Point message serialization/deserialization with typed objects."""
+        print("=== Testing Point Serialization (Typed) ===")
 
-        # Create point message as MyFirstLeader would
-        leader_point = {
-            "type": "Point",
-            "x": 100.5,
-            "y": 200.7
-        }
+        # Create point as MyFirstLeader would
+        point = Point(x=100.5, y=200.7)
 
-        json_str = json.dumps(leader_point)
+        json_str = serialize_team_message(point)
+        message_type = type(point).__name__
 
         print(f"JSON: {json_str}")
+        print(f"Message Type: {message_type}")
 
-        # Now simulate receiving on MyFirstDroid side
-        received_object: Dict[str, Any] = json.loads(json_str)
+        # Deserialize
+        received = deserialize_team_message(json_str, message_type)
 
-        self.assertIsNotNone(received_object)
-        self.assertIsInstance(received_object, dict)
-        self.assertEqual(received_object.get("type"), "Point")
+        # Verify it's a typed Point object
+        self.assertIsInstance(received, Point)
+        self.assertAlmostEqual(received.x, 100.5)
+        self.assertAlmostEqual(received.y, 200.7)
 
-        x = float(received_object.get("x", 0.0))
-        y = float(received_object.get("y", 0.0))
-
-        print(f"Point X: {x}, Y: {y}")
-
-        self.assertAlmostEqual(x, 100.5)
-        self.assertAlmostEqual(y, 200.7)
+        print(f"Point X: {received.x}, Y: {received.y}")
 
         print("\n✓ TEST PASSED")
 
-    def test_python_dict_message_handling(self):
-        """Test that Python correctly handles dict-based messages."""
-        print("=== Testing Python Dict Message Handling ===")
+    def test_isinstance_message_handling(self):
+        """Test that messages can be checked with isinstance() like Java/C#."""
+        print("=== Testing isinstance() Message Handling ===")
 
-        # In Python, messages are received as dicts (not typed objects)
-        # The bot needs to check the "type" field to determine message type
+        # Create and serialize messages
+        colors = RobotColors(body_color=Color.RED)
+        point = Point(x=150.0, y=250.0)
 
-        colors_message = {
-            "type": "RobotColors",
-            "bodyColor": "#FF0000FF"
-        }
+        colors_json = serialize_team_message(colors)
+        point_json = serialize_team_message(point)
 
-        point_message = {
-            "type": "Point",
-            "x": 150.0,
-            "y": 250.0
-        }
+        # Deserialize
+        received_colors = deserialize_team_message(colors_json, "RobotColors")
+        received_point = deserialize_team_message(point_json, "Point")
 
-        # Test colors handling as MyFirstDroid would do it
-        msg_type = colors_message.get("type")
-        if msg_type == "RobotColors":
-            body_color = colors_message.get("bodyColor")
-            print(f"Received RobotColors with bodyColor: {body_color}")
-            self.assertEqual(body_color, "#FF0000FF")
+        # Test isinstance handling as MyFirstDroid would do
+        if isinstance(received_colors, RobotColors):
+            print(f"Received RobotColors with bodyColor: {received_colors.body_color}")
+            self.assertEqual(received_colors.body_color, Color.RED)
         else:
             self.fail("Should have matched RobotColors")
 
-        # Test point handling as MyFirstDroid would do it
-        msg_type = point_message.get("type")
-        if msg_type == "Point":
-            x = float(point_message.get("x", 0.0))
-            y = float(point_message.get("y", 0.0))
-            print(f"Received Point at ({x}, {y})")
-            self.assertAlmostEqual(x, 150.0)
-            self.assertAlmostEqual(y, 250.0)
+        if isinstance(received_point, Point):
+            print(f"Received Point at ({received_point.x}, {received_point.y})")
+            self.assertAlmostEqual(received_point.x, 150.0)
+            self.assertAlmostEqual(received_point.y, 250.0)
         else:
             self.fail("Should have matched Point")
 
+        print("\n✓ TEST PASSED")
+
+    def test_register_team_message_type_function(self):
+        """Test that register_team_message_type() works as alternative to decorator."""
+        print("=== Testing register_team_message_type() function ===")
+
+        @dataclass
+        class CustomMessage:
+            value: int
+
+        # Register using function instead of decorator
+        register_team_message_type(CustomMessage)
+
+        # Verify it's registered
+        self.assertEqual(get_team_message_type("CustomMessage"), CustomMessage)
+
+        # Test serialization/deserialization
+        msg = CustomMessage(value=42)
+        json_str = serialize_team_message(msg)
+        received = deserialize_team_message(json_str, "CustomMessage")
+
+        self.assertIsInstance(received, CustomMessage)
+        self.assertEqual(received.value, 42)
+
+        print("\n✓ TEST PASSED")
+
+    def test_unregistered_type_returns_dict(self):
+        """Test that unregistered types fall back to dictionary."""
+        print("=== Testing unregistered type fallback ===")
+
+        json_str = '{"someField": "someValue"}'
+        received = deserialize_team_message(json_str, "UnknownType")
+
+        self.assertIsInstance(received, dict)
+        self.assertEqual(received["someField"], "someValue")
+
+        print("\n✓ TEST PASSED")
+
+    def test_color_serialization_format(self):
+        """Test that colors are serialized to hex strings."""
+        print("=== Testing Color serialization format ===")
+
+        colors = RobotColors(body_color=Color.RED)
+        json_str = serialize_team_message(colors)
+
+        # Should contain hex color string
+        self.assertIn("#FF0000", json_str)
+
+        print(f"Serialized: {json_str}")
         print("\n✓ TEST PASSED")
 
 

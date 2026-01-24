@@ -673,6 +673,8 @@ class BaseBotInternals:
         self.send_team_message(None, message)
 
     def send_team_message(self, teammate_id: Optional[int], message: Any) -> None:
+        from ..team_message import serialize_team_message
+
         if (
             teammate_id is not None and teammate_id not in self.data.teammate_ids
         ):  # Uses property getter
@@ -691,10 +693,8 @@ class BaseBotInternals:
         if message is None:
             raise ValueError("The 'message' of a team message cannot be null")
 
-        # TODO: Consider how to handle message serialization if 'message' is not directly JSON serializable.
-        # The current approach relies on to_json(message) which might fail for complex types.
-        # For now, assuming 'message' is a simple dict or a type with a __dict__ attribute suitable for JSON.
-        json_message_str = to_json(message)
+        # Serialize the message using team_message module which handles Color objects
+        json_message_str = serialize_team_message(message)
         if len(json_message_str.encode("utf-8")) > TEAM_MESSAGE_MAX_SIZE:
             raise ValueError(
                 f"The team message is larger than the limit of {TEAM_MESSAGE_MAX_SIZE} bytes (compact JSON format)"

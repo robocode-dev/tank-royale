@@ -1,38 +1,35 @@
 import asyncio
 from dataclasses import dataclass
+from typing import Optional
 
-from robocode_tank_royale.bot_api.bot import Bot
+from robocode_tank_royale.bot_api import Bot, team_message_type
 from robocode_tank_royale.bot_api.color import Color
 from robocode_tank_royale.bot_api.events import ScannedBotEvent, HitByBulletEvent
 
 
+# ------------------------------------------------------------------
+# Communication objects for team messages
+# ------------------------------------------------------------------
+
+# Point (x,y) class
+@team_message_type
 @dataclass
 class Point:
-    type: str
     x: float
     y: float
 
 
-def colors_to_message_dict() -> dict:
-    # Prepare robot colors to send to teammates as hex strings
-    body = Color.RED
-    tracks = Color.CYAN
-    turret = Color.RED
-    gun = Color.YELLOW
-    radar = Color.RED
-    scan = Color.YELLOW
-    bullet = Color.YELLOW
-
-    return {
-        "type": "RobotColors",
-        "bodyColor": body.to_hex_color(),
-        "tracksColor": tracks.to_hex_color(),
-        "turretColor": turret.to_hex_color(),
-        "gunColor": gun.to_hex_color(),
-        "radarColor": radar.to_hex_color(),
-        "scanColor": scan.to_hex_color(),
-        "bulletColor": bullet.to_hex_color(),
-    }
+# Robot colors
+@team_message_type
+@dataclass
+class RobotColors:
+    body_color: Optional[Color] = None
+    tracks_color: Optional[Color] = None
+    turret_color: Optional[Color] = None
+    gun_color: Optional[Color] = None
+    radar_color: Optional[Color] = None
+    scan_color: Optional[Color] = None
+    bullet_color: Optional[Color] = None
 
 
 # ------------------------------------------------------------------
@@ -44,20 +41,29 @@ def colors_to_message_dict() -> dict:
 # teammates to fire.
 # ------------------------------------------------------------------
 class MyFirstLeader(Bot):
+
     async def run(self) -> None:
-        # Prepare and set robot colors
-        colors = colors_to_message_dict()
+        # Prepare robot colors to send to teammates
+        colors = RobotColors()
 
-        # Apply colors to this robot
-        self.body_color = Color.from_rgb(int(colors["bodyColor"][1:3], 16), int(colors["bodyColor"][3:5], 16), int(colors["bodyColor"][5:7], 16))
-        self.tracks_color = Color.from_rgb(int(colors["tracksColor"][1:3], 16), int(colors["tracksColor"][3:5], 16), int(colors["tracksColor"][5:7], 16))
-        self.turret_color = Color.from_rgb(int(colors["turretColor"][1:3], 16), int(colors["turretColor"][3:5], 16), int(colors["turretColor"][5:7], 16))
-        self.gun_color = Color.from_rgb(int(colors["gunColor"][1:3], 16), int(colors["gunColor"][3:5], 16), int(colors["gunColor"][5:7], 16))
-        self.radar_color = Color.from_rgb(int(colors["radarColor"][1:3], 16), int(colors["radarColor"][3:5], 16), int(colors["radarColor"][5:7], 16))
-        self.scan_color = Color.from_rgb(int(colors["scanColor"][1:3], 16), int(colors["scanColor"][3:5], 16), int(colors["scanColor"][5:7], 16))
-        self.bullet_color = Color.from_rgb(int(colors["bulletColor"][1:3], 16), int(colors["bulletColor"][3:5], 16), int(colors["bulletColor"][5:7], 16))
+        colors.body_color = Color.RED
+        colors.tracks_color = Color.CYAN
+        colors.turret_color = Color.RED
+        colors.gun_color = Color.YELLOW
+        colors.radar_color = Color.RED
+        colors.scan_color = Color.YELLOW
+        colors.bullet_color = Color.YELLOW
 
-        # Send RobotColors to every member in the team
+        # Set the color of this robot containing the robot colors
+        self.body_color = colors.body_color
+        self.tracks_color = colors.tracks_color
+        self.turret_color = colors.turret_color
+        self.gun_color = colors.gun_color
+        self.radar_color = colors.radar_color
+        self.scan_color = colors.scan_color
+        self.bullet_color = colors.bullet_color
+
+        # Send RobotColors object to every member in the team
         self.broadcast_team_message(colors)
 
         # Set the radar to turn left forever
@@ -73,7 +79,7 @@ class MyFirstLeader(Bot):
         if self.is_teammate(e.scanned_bot_id):
             return
         # Send enemy position to teammates
-        self.broadcast_team_message({"type": "Point", "x": float(e.x), "y": float(e.y)})
+        self.broadcast_team_message(Point(x=e.x, y=e.y))
 
     async def on_hit_by_bullet(self, e: HitByBulletEvent) -> None:
         # Calculate the bullet bearing

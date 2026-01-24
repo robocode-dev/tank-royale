@@ -33,6 +33,9 @@ class MessageEncoder(json.JSONEncoder):
     def default(self, o: Any) -> Any:
         if isinstance(o, schema.Color):
             return o.value
+        # Handle bot-api Color objects (from graphics.color module)
+        if hasattr(o, "to_hex_color") and callable(o.to_hex_color):
+            return o.to_hex_color()
         if hasattr(o, "__dict__"):
             return {to_camel_case(k): v for k, v in o.__dict__.items() if not k.startswith("_")}
         return super().default(o)
