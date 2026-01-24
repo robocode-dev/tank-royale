@@ -37,7 +37,7 @@ class Corners(Bot):
         self.scan_color = Color.from_rgb(0x00, 0xFF, 0x00)   # green
 
         # Save number of other bots
-        self._enemies = self.get_enemy_count()
+        self._enemies = self.enemy_count
 
         # Move to a corner
         await self._go_corner()
@@ -107,7 +107,7 @@ class Corners(Bot):
             return
 
         # If 75% of the bots are still alive when we die, we'll switch corners.
-        if self.get_enemy_count() / float(self._enemies) >= 0.75:
+        if self.enemy_count / float(self._enemies) >= 0.75:
             Corners.corner = (Corners.corner + 90) % 360  # Next corner, normalized
             print(f"I died and did poorly... switching corner to {Corners.corner}")
         else:

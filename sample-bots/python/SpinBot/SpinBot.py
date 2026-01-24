@@ -41,7 +41,7 @@ class SpinBot(Bot):
         if -10 < bearing < 10:
             await self.fire(3)
         # If we rammed it, nudge to keep spinning
-        if e.is_rammed:
+        if e.rammed:
             await self.turn_right(10)
 
 

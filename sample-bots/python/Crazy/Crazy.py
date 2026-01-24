@@ -63,7 +63,7 @@ class Crazy(Bot):
 
     async def on_hit_bot(self, e: HitBotEvent) -> None:
         """We hit another bot -> back up if we rammed it."""
-        if e.is_rammed:
+        if e.rammed:
             await self._reverse_direction()
 
     async def _reverse_direction(self) -> None:

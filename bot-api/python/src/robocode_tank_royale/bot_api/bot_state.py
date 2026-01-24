@@ -7,7 +7,7 @@ class BotState:
 
     """Represents the current bot state."""
 
-    is_droid: bool
+    droid: bool
     """Flag specifying if the bot is a droid."""
 
     energy: float
@@ -70,5 +70,5 @@ class BotState:
     gun_color: Optional[Color]
     """Gun color."""
 
-    is_debugging_enabled: bool
+    debugging_enabled: bool
     """Flag indicating if graphical debugging is enabled."""

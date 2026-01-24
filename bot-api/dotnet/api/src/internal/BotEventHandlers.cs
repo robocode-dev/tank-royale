@@ -19,10 +19,10 @@ sealed class BotEventHandlers
     internal readonly EventHandler<GameAbortedEvent> OnGameAborted = new();
     internal readonly EventHandler<RoundStartedEvent> OnRoundStarted = new();
     internal readonly EventHandler<RoundEndedEvent> OnRoundEnded = new();
+    internal readonly EventHandler<DeathEvent> OnDeath = new();
+    internal readonly EventHandler<SkippedTurnEvent> OnSkippedTurn = new();
 
     private readonly EventHandler<TickEvent> _onTick = new();
-    internal readonly EventHandler<SkippedTurnEvent> OnSkippedTurn = new();
-    private readonly EventHandler<DeathEvent> _onDeath = new();
     private readonly EventHandler<BotDeathEvent> _onBotDeath = new();
     private readonly EventHandler<HitBotEvent> _onHitBot = new();
     private readonly EventHandler<HitWallEvent> _onHitWall = new();
@@ -59,7 +59,7 @@ sealed class BotEventHandlers
 
         _eventHandlers[typeof(TickEvent)] = e => _onTick.Publish((TickEvent)e);
         _eventHandlers[typeof(SkippedTurnEvent)] = e => OnSkippedTurn.Publish((SkippedTurnEvent)e);
-        _eventHandlers[typeof(DeathEvent)] = e => _onDeath.Publish((DeathEvent)e);
+        _eventHandlers[typeof(DeathEvent)] = e => OnDeath.Publish((DeathEvent)e);
         _eventHandlers[typeof(BotDeathEvent)] = e => _onBotDeath.Publish((BotDeathEvent)e);
         _eventHandlers[typeof(HitBotEvent)] = e => _onHitBot.Publish((HitBotEvent)e);
         _eventHandlers[typeof(HitWallEvent)] = e => _onHitWall.Publish((HitWallEvent)e);
@@ -87,7 +87,7 @@ sealed class BotEventHandlers
 
         _onTick.Subscribe(baseBot.OnTick);
         OnSkippedTurn.Subscribe(baseBot.OnSkippedTurn);
-        _onDeath.Subscribe(baseBot.OnDeath);
+        OnDeath.Subscribe(baseBot.OnDeath);
         _onBotDeath.Subscribe(baseBot.OnBotDeath);
         _onHitBot.Subscribe(baseBot.OnHitBot);
         _onHitWall.Subscribe(baseBot.OnHitWall);

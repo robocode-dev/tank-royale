@@ -156,7 +156,16 @@ Enable auto-recording via the toggle in the New Battle dialog to automatically r
 
 ![Recording](../images/gui/recording.png)
 
-Recordings save to separate files in the `recordings` directory, enabling detailed replay analysis of bot behavior.
+Recordings are automatically saved to separate files in the `recordings` directory within your user data folder:
+
+- **Windows**: `%LOCALAPPDATA%\Robocode Tank Royale\recordings`
+- **macOS**: `~/Library/Application Support/Robocode Tank Royale/recordings`
+- **Linux**: `~/.config/robocode-tank-royale/recordings`
+
+This enables detailed replay analysis of bot behavior.
+
+> **Note:** For more information about the user data directory and configuration files, see
+> the [User Data and Configuration Files](user-data-config.md) guide.
 
 ## Replaying
 
@@ -164,7 +173,11 @@ Access recorded battles through Battle → Replay from File...:
 
 ![Replay from File](../images/gui/replay-from-file.png)
 
-Select a recording file:
+Select a recording file. The file dialog automatically opens in the `recordings` directory within your user data folder:
+
+- **Windows**: `%LOCALAPPDATA%\Robocode Tank Royale\recordings`
+- **macOS**: `~/Library/Application Support/Robocode Tank Royale/recordings`
+- **Linux**: `~/.config/robocode-tank-royale/recordings`
 
 ![Select replay file](../images/gui/select-replay-file.png)
 
@@ -252,6 +265,9 @@ You can change the server secrets by editing the `server.properties` file.
 
 The `bots-secrets` contains the secret for authenticating bots, while the `controller-secrets` contains the secret for
 authenticating GUI components and the battle recorder.
+
+> **Note:** For detailed information about the `server.properties` file and other configuration files, see
+> the [User Data and Configuration Files](user-data-config.md) guide.
 
 ### Remote Server
 

@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.gui.ansi
 import dev.robocode.tankroyale.gui.ansi.AnsiAttributesExt.updateAnsi
 import dev.robocode.tankroyale.gui.ansi.esc_code.CommandCode
 import dev.robocode.tankroyale.gui.ansi.esc_code.EscapeSequence
-import java.awt.Color
 import java.io.*
 import javax.swing.text.*
 
@@ -24,6 +23,11 @@ class AnsiEditorKit(
     private val ansiEscCodeRegex = Regex("\u001b\\[\\d+(;\\d+)*m")
 
     override fun getContentType() = "text/x-ansi"
+
+    /** {@inheritDoc} */
+    override fun createDefaultDocument(): DefaultStyledDocument {
+        return DefaultStyledDocument()
+    }
 
     /** {@inheritDoc} */
     override fun read(inputStream: InputStream, doc: Document, pos: Int) {
@@ -56,14 +60,12 @@ class AnsiEditorKit(
     fun insertAnsi(doc: StyledDocument, ansiText: String, offset: Int = doc.length) {
         require(offset >= 0) { "Offset cannot be negative. Was: $offset" }
 
-        var attributes: MutableAttributeSet = SimpleAttributeSet(doc.getCharacterElement(offset).attributes)
+        var attributes: MutableAttributeSet = SimpleAttributeSet()
         StyleConstants.setFontFamily(attributes, "Monospaced")
         StyleConstants.setFontSize(attributes, fontSize)
 
-        // Set the foreground color to the default ANSI color if no foreground color has been set previously
-        if (StyleConstants.getForeground(attributes) == Color.black) { // if no foreground color is set, black is returned?!
-            attributes = attributes.updateAnsi(EscapeSequence(CommandCode.DEFAULT), ansiColors)
-        }
+        // Initialize with default color instead of trying to get attributes from empty document
+        attributes = attributes.updateAnsi(EscapeSequence(CommandCode.DEFAULT), ansiColors)
 
         val match = ansiEscCodeRegex.find(ansiText, 0)
         if (match == null) {
@@ -72,10 +74,12 @@ class AnsiEditorKit(
         }
 
         val codeStart = match.range.first
+        var currentOffset = offset
 
         var text = ansiText.take(codeStart)
         if (text.isNotEmpty()) {
-            doc.insertString(doc.length, text, attributes) // no ansi codes found
+            doc.insertString(currentOffset, text, attributes)
+            currentOffset += text.length
         }
 
         ansiEscCodeRegex.findAll(ansiText, codeStart).forEach { m ->
@@ -92,7 +96,8 @@ class AnsiEditorKit(
                 ansiText.substring(codeEnd, endMatch.range.first)
             }
             if (text.isNotEmpty()) {
-                doc.insertString(doc.length, text, attributes)
+                doc.insertString(currentOffset, text, attributes)
+                currentOffset += text.length
             }
         }
     }

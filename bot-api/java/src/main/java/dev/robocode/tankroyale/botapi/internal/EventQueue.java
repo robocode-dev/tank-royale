@@ -96,8 +96,6 @@ final class EventQueue {
     void addEventsFromTick(TickEvent event) {
         addEvent(event);
         event.getEvents().forEach(this::addEvent);
-
-        addCustomEvents();
     }
 
     /**
@@ -109,22 +107,23 @@ final class EventQueue {
 //        dumpEvents(turnNumber); // for debugging purposes
 
         removeOldEvents(turnNumber);
+        addCustomEvents();
         sortEvents();
 
-        while (isBotRunning()) {
-            BotEvent currentEvent = getNextEvent();
-            if (currentEvent == null) {
-                break;
-            }
-            if (isSameEvent(currentEvent)) {
-                if (isCurrentEventInterruptible()) {
-                    EventInterruption.setInterruptible(currentEvent.getClass(), false); // clear interruptible flag
+        BotEvent currentEvent;
+        while (isBotRunning()
+                && (currentEvent = peekNextEvent()) != null
+                && getPriority(currentEvent) >= currentTopEventPriority) {
+
+            if (getPriority(currentEvent) == currentTopEventPriority) {
+                if (currentTopEventPriority > Integer.MIN_VALUE && isCurrentEventInterruptible()) {
+                    EventInterruption.setInterruptible(currentTopEvent.getClass(), false); // clear interruptible flag
 
                     // We are already in an event handler, took action, and a new event was generated.
                     // So we want to break out of the old handler to process the new event here.
                     throw new ThreadInterruptedException();
                 }
-                break;
+                break; // Same priority but not interruptible - Loss of event is intentional in original Robocode
             }
 
             int oldTopEventPriority = currentTopEventPriority;
@@ -132,12 +131,15 @@ final class EventQueue {
             currentTopEventPriority = getPriority(currentEvent);
             currentTopEvent = currentEvent;
 
-            events.remove(currentEvent);
+            removeNextEvent(); // Remove only after we've decided to dispatch
 
             try {
                 dispatch(currentEvent, turnNumber);
             } catch (ThreadInterruptedException ignore) {
-                // Expected when event handler is interrupted on purpose
+                currentTopEvent = null; // Match original Robocode behavior
+            } catch (RuntimeException | Error e) {
+                currentTopEvent = null; // Match original Robocode behavior
+                throw e;
             } finally {
                 currentTopEventPriority = oldTopEventPriority;
             }
@@ -171,14 +173,18 @@ final class EventQueue {
         return baseBotInternals.isRunning();
     }
 
-    private BotEvent getNextEvent() {
+    private BotEvent peekNextEvent() {
         synchronized (events) {
-            return events.isEmpty() ? null : events.remove(0);
+            return events.isEmpty() ? null : events.get(0);
         }
     }
 
-    private boolean isSameEvent(BotEvent botEvent) {
-        return getPriority(botEvent) == currentTopEventPriority;
+    private void removeNextEvent() {
+        synchronized (events) {
+            if (!events.isEmpty()) {
+                events.remove(0);
+            }
+        }
     }
 
     private int getPriority(BotEvent botEvent) {

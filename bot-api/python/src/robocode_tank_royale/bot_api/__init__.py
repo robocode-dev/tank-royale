@@ -17,6 +17,7 @@ from .game_type import GameType
 from .initial_position import InitialPosition
 from .base_bot import BaseBot
 from .bot import Bot
+from .team_message import team_message_type, register_team_message_type
 
 __all__ = [
     "BaseBotABC",
@@ -34,6 +35,9 @@ __all__ = [
     "GameType",
     "InitialPosition",
     "BaseBot",
+    # Team message type registration
+    "team_message_type",
+    "register_team_message_type",
     # Constants - export all of them
     "MAX_SPEED",
     "MAX_TURN_RATE",

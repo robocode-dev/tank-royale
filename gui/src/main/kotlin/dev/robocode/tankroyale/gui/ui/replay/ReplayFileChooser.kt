@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.replay
 
+import dev.robocode.tankroyale.common.RECORDINGS_DIR
+import dev.robocode.tankroyale.common.util.UserDataDirectory
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.player.ReplayBattlePlayer
 import dev.robocode.tankroyale.gui.ui.MainFrame
@@ -34,6 +36,12 @@ object ReplayFileChooser {
         val fileChooser = JFileChooser().apply {
             dialogTitle = "Select Replay File"
 
+            // Set the default directory to the recordings directory in the user data directory
+            val recordingsDir = UserDataDirectory.getSubdir(RECORDINGS_DIR)
+            if (recordingsDir.exists() && recordingsDir.isDirectory) {
+                currentDirectory = recordingsDir
+            }
+
             // Create custom file filters for precise matching
             val battleGzFilter = object : FileFilter() {
                 override fun accept(f: File): Boolean {
@@ -46,7 +54,7 @@ object ReplayFileChooser {
             val allBattleFilter = object : FileFilter() {
                 override fun accept(f: File): Boolean {
                     // Show directories for navigation and battle files for selection
-                    return f.isDirectory || 
+                    return f.isDirectory ||
                            f.name.endsWith(".battle.gz", ignoreCase = true) ||
                            f.name.endsWith(".battle", ignoreCase = true)
                 }

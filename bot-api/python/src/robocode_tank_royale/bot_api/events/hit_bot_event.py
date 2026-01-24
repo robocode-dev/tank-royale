@@ -13,11 +13,11 @@ class HitBotEvent(BotEvent):
         energy (float): The remaining energy level of the victim bot.
         x (float): The X coordinate of the victim bot at the time of collision.
         y (float): The Y coordinate of the victim bot at the time of collision.
-        is_rammed (bool): Whether the collision was caused by ramming.
+        rammed (bool): Whether the collision was caused by ramming.
     """
 
     victim_id: int
     energy: float
     x: float
     y: float
-    is_rammed: bool
+    rammed: bool

@@ -1,10 +1,36 @@
 import asyncio
-from typing import Any, Dict
+from dataclasses import dataclass
+from typing import Optional
 
-from robocode_tank_royale.bot_api.bot import Bot
+from robocode_tank_royale.bot_api import Bot, team_message_type
 from robocode_tank_royale.bot_api.color import Color
 from robocode_tank_royale.bot_api.events import TeamMessageEvent
 from robocode_tank_royale.bot_api.droid_abc import DroidABC
+
+
+# ------------------------------------------------------------------
+# Communication objects for team messages
+# ------------------------------------------------------------------
+
+# Point (x,y) class
+@team_message_type
+@dataclass
+class Point:
+    x: float
+    y: float
+
+
+# Robot colors
+@team_message_type
+@dataclass
+class RobotColors:
+    body_color: Optional[Color] = None
+    tracks_color: Optional[Color] = None
+    turret_color: Optional[Color] = None
+    gun_color: Optional[Color] = None
+    radar_color: Optional[Color] = None
+    scan_color: Optional[Color] = None
+    bullet_color: Optional[Color] = None
 
 
 # ------------------------------------------------------------------
@@ -25,51 +51,30 @@ class MyFirstDroid(Bot, DroidABC):
         # terminates when this point is reached
 
     async def on_team_message(self, e: TeamMessageEvent) -> None:
-        message: Dict[str, Any] = e.message  # JSON object
-        msg_type = message.get("type")
+        message = e.message
 
-        if msg_type == "Point":
+        if isinstance(message, Point):
             # ------------------------------------------------------
             # Message is a point towards a target
             # ------------------------------------------------------
-            x = float(message.get("x", 0.0))
-            y = float(message.get("y", 0.0))
+
             # Turn body to target and fire hard
-            await self.turn_right(self.bearing_to(x, y))
+            await self.turn_right(self.bearing_to(message.x, message.y))
             await self.fire(3)
 
-        elif msg_type == "RobotColors":
+        elif isinstance(message, RobotColors):
             # ------------------------------------------------------
-            # Message contains new robot colors (hex strings)
+            # Message is containing new robot colors
             # ------------------------------------------------------
-            self.body_color = _parse_hex_color(message.get("bodyColor"))
-            self.tracks_color = _parse_hex_color(message.get("tracksColor"))
-            self.turret_color = _parse_hex_color(message.get("turretColor"))
-            self.gun_color = _parse_hex_color(message.get("gunColor"))
-            self.radar_color = _parse_hex_color(message.get("radarColor"))
-            self.scan_color = _parse_hex_color(message.get("scanColor"))
-            self.bullet_color = _parse_hex_color(message.get("bulletColor"))
 
-
-def _parse_hex_color(hex_str: Any) -> Color | None:
-    if not isinstance(hex_str, str) or not hex_str.startswith('#'):
-        return None
-    hex_body = hex_str[1:]
-    try:
-        if len(hex_body) == 6:
-            r = int(hex_body[0:2], 16)
-            g = int(hex_body[2:4], 16)
-            b = int(hex_body[4:6], 16)
-            return Color.from_rgb(r, g, b)
-        if len(hex_body) == 8:
-            r = int(hex_body[0:2], 16)
-            g = int(hex_body[2:4], 16)
-            b = int(hex_body[4:6], 16)
-            a = int(hex_body[6:8], 16)
-            return Color.from_rgba(r, g, b, a)
-    except ValueError:
-        return None
-    return None
+            # Read and set the robot colors
+            self.body_color = message.body_color
+            self.tracks_color = message.tracks_color
+            self.turret_color = message.turret_color
+            self.gun_color = message.gun_color
+            self.radar_color = message.radar_color
+            self.scan_color = message.scan_color
+            self.bullet_color = message.bullet_color
 
 
 async def main() -> None:

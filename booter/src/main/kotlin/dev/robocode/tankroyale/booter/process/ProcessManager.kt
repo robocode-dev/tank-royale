@@ -315,7 +315,7 @@ class ProcessManager {
     /**
      * Start a process from the given process builder and register it.
      * Captures stderr output from the process and logs it.
-     * 
+     *
      * @param processBuilder The ProcessBuilder to start the process from
      * @param botDir The directory of the bot being started
      * @return The started process
@@ -481,8 +481,8 @@ class ProcessManager {
      */
     private fun createProcessBuilder(command: String): ProcessBuilder {
         return when (getScriptType(command)) {
-            ScriptType.WINDOWS_BATCH -> ProcessBuilder("cmd.exe", "/c \"$command\"")
-            ScriptType.SHELL_SCRIPT -> ProcessBuilder("bash", "-c", "\"$command\"")
+            ScriptType.WINDOWS_BATCH -> ProcessBuilder("cmd.exe", "/c", command)
+            ScriptType.SHELL_SCRIPT -> ProcessBuilder("bash", "-c", command)
             ScriptType.PYTHON_SCRIPT -> ProcessBuilder("python", command)
             ScriptType.OTHER -> ProcessBuilder(command)
         }
@@ -504,7 +504,7 @@ class ProcessManager {
     private fun getScriptType(command: String): ScriptType {
         val cmd = command.lowercase()
         return when {
-            cmd.endsWith(".bat") -> ScriptType.WINDOWS_BATCH
+            cmd.endsWith(".bat") || cmd.endsWith(".cmd") -> ScriptType.WINDOWS_BATCH
             cmd.endsWith(".sh") -> ScriptType.SHELL_SCRIPT
             cmd.endsWith(".py") -> ScriptType.PYTHON_SCRIPT
             else -> ScriptType.OTHER

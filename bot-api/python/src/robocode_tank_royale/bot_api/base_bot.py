@@ -40,7 +40,7 @@ class BaseBot(BaseBotABC):
             try:
                 bot_info = BotInfo.from_file(bot_info_file)
             except:
-                print('Failed to read bot info json file: {bot_info_file}.')
+                print(f'Failed to read bot info json file: {bot_info_file}.')
         self._internals = BaseBotInternals(self, bot_info, server_url, server_secret)
 
     async def start(self) -> None:
@@ -453,7 +453,7 @@ class BaseBot(BaseBotABC):
         tick = self._internals.get_current_tick_or_throw()
         bot_state = tick.bot_state
         assert bot_state is not None
-        return bot_state.is_debugging_enabled
+        return bot_state.debugging_enabled
 
     @property
     def graphics(self) -> GraphicsABC:

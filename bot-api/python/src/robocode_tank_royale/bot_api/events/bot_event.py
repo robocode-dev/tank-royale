@@ -15,7 +15,8 @@ class BotEvent(EventABC):
     """
     turn_number: int
 
-    def is_critical(self) -> bool:
+    @property
+    def critical(self) -> bool:
         """
            Determines whether the event is critical.
            By default, events are not critical, but subclasses can override this

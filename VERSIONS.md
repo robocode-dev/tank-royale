@@ -1,4 +1,4 @@
-## 📦 0.35.0 - **BREAKING**: Python Bot API Refactored to Use Properties - 21-Jan-2026
+## 📦 0.35.0 - **BREAKING**: Python Bot API Refactored to Use Properties - 24-Jan-2026
 
 ### 💥 Breaking Changes
 
@@ -45,61 +45,94 @@ if self.adjust_gun_for_body_turn:
     print("Gun adjusts for body turn")
 ```
 
-#### Complete Property Mapping
-
-| Old Method                                                              | New Property                 |
-|-------------------------------------------------------------------------|------------------------------|
-| `get_my_id()`                                                           | `my_id`                      |
-| `get_variant()`                                                         | `variant`                    |
-| `get_version()`                                                         | `version`                    |
-| `get_game_type()`                                                       | `game_type`                  |
-| `get_arena_width()`                                                     | `arena_width`                |
-| `get_arena_height()`                                                    | `arena_height`               |
-| `get_number_of_rounds()`                                                | `number_of_rounds`           |
-| `get_gun_cooling_rate()`                                                | `gun_cooling_rate`           |
-| `get_max_inactivity_turns()`                                            | `max_inactivity_turns`       |
-| `get_turn_timeout()`                                                    | `turn_timeout`               |
-| `get_time_left()`                                                       | `time_left`                  |
-| `get_round_number()`                                                    | `round_number`               |
-| `get_turn_number()`                                                     | `turn_number`                |
-| `get_enemy_count()`                                                     | `enemy_count`                |
-| `get_energy()`                                                          | `energy`                     |
-| `get_x()`, `get_y()`                                                    | `x`, `y`                     |
-| `get_direction()`                                                       | `direction`                  |
-| `get_gun_direction()`                                                   | `gun_direction`              |
-| `get_radar_direction()`                                                 | `radar_direction`            |
-| `get_speed()`                                                           | `speed`                      |
-| `get_gun_heat()`                                                        | `gun_heat`                   |
-| `get_bullet_states()`                                                   | `bullet_states`              |
-| `get_events()`                                                          | `events`                     |
-| `get_firepower()`                                                       | `firepower`                  |
-| `get_teammate_ids()`                                                    | `teammate_ids`               |
-| `get_graphics()`                                                        | `graphics`                   |
-| `is_disabled()`                                                         | `disabled`                   |
-| `is_running()`                                                          | `running`                    |
-| `is_stopped()`                                                          | `stopped`                    |
-| `is_debugging_enabled()`                                                | `debugging_enabled`          |
-| `is_adjust_gun_for_body_turn()`<br>`set_adjust_gun_for_body_turn()`     | `adjust_gun_for_body_turn`   |
-| `is_adjust_radar_for_body_turn()`<br>`set_adjust_radar_for_body_turn()` | `adjust_radar_for_body_turn` |
-| `is_adjust_radar_for_gun_turn()`<br>`set_adjust_radar_for_gun_turn()`   | `adjust_radar_for_gun_turn`  |
-
-#### Unchanged Methods
-
-- `is_teammate(bot_id)` — parameterized method, still a method
-- `get_event_priority(event_class)` / `set_event_priority()` — parameterized methods
-- All action methods (`set_fire()`, `set_rescan()`, etc.)
-- All calculation methods (`calc_*()`, `*_to()`, `normalize_*()`)
-- All event handlers (`on_*()`)
-
 ### 🚀 Improvements
 
+- Bot API:
 - **Python Bot API**: Now follows Python conventions with property-based accessors
-- **Code Quality**: More idiomatic Python code that feels natural to Python developers
-- **Semantic Equivalence**: Maintains 1:1 behavior with Java API while using appropriate language idioms
+    - **Code Quality**: More idiomatic Python code that feels natural to Python developers
+    - **Semantic Equivalence**: Maintains 1:1 behavior with Java API while using appropriate language idioms
+- **Python Bot API**: Typed team messages now work like Java/C#
+    - **Typed Team Messages**: Use the `@team_message_type` decorator or `register_team_message_type()` function to
+      register message classes. Messages are automatically serialized/deserialized to typed objects.
+    - **Color Serialization**: `Color` objects in team messages are automatically serialized to hex strings and
+      deserialized back to `Color` objects.
+    - **Added `Color.from_hex_color()`**: Factory method to create a Color from a hex string like `#RGB`, `#RRGGBB`, or
+      `#RRGGBBAA`. Returns `None` for `None` input. Matches Java's `ColorUtil.fromHexColor()`.
+    - **Added `Color.from_hex()`**: Factory method to create a Color from hex digits without the hash prefix.
+      Matches Java's `ColorUtil.fromHex()`.
+    - **Simplified Sample Bots**: `MyFirstLeader` and `MyFirstDroid` now use typed message classes and `isinstance()`
+      checks, matching the Java/C# pattern exactly. No more manual hex string parsing.
+- Bot Events Panel:
+    - Optimized logging to only include events for the current game turn.
+    - Improved event dumping to include all relevant events for the monitored bot, including `TickEvent`.
+    - Enhanced formatting of event data with consistent indentation and ANSI colors.
+    - Grouped `bulletState` entries under a `bulletStates` header for better readability in `TickEvent`.
+- Recordings:
+    - Recordings are now saved to a `recordings` subdirectory within the platform-specific user data directory.
+    - The replay file dialog now defaults to opening in the `recordings` directory for easier access to recorded
+      battles.
+- Other:
+    - Replaced Proguard with R8 which is now the default code shrinker for Java projects.
 
-## 📦 0.34.3 - GUI Bot Console Performance Improvements
+#### Python Team Message Example
 
-### 🚀 Improvements
+**Defining message types:**
+
+```python
+from dataclasses import dataclass
+from typing import Optional
+from robocode_tank_royale.bot_api import team_message_type
+from robocode_tank_royale.bot_api.color import Color
+
+@team_message_type
+@dataclass
+class RobotColors:
+    body_color: Optional[Color] = None
+    turret_color: Optional[Color] = None
+
+@team_message_type
+@dataclass
+class Point:
+    x: float
+    y: float
+```
+
+**Sending messages (leader):**
+
+```python
+colors = RobotColors()
+colors.body_color = Color.RED
+colors.turret_color = Color.BLUE
+self.broadcast_team_message(colors)  # Typed object, not dict
+
+self.broadcast_team_message(Point(x=e.x, y=e.y))
+```
+
+**Receiving messages (droid):**
+
+```python
+async def on_team_message(self, e: TeamMessageEvent) -> None:
+    message = e.message
+
+    if isinstance(message, RobotColors):
+        self.body_color = message.body_color  # Already a Color object
+        self.turret_color = message.turret_color
+
+    elif isinstance(message, Point):
+        await self.turn_right(self.bearing_to(message.x, message.y))
+        await self.fire(3)
+```
+
+> **Note:** The team message feature is demonstrated with the `MyFirstLeader` and `MyFirstDroid` sample bots. See the
+> [Team Messages](../articles/team-messages.md) article for a complete guide.
+
+### 🐞 Bug Fixes
+
+- Bot API (Java, C#/.NET, Python):
+    - Fixed a bug where the user's `OnDeath` callback would not be called when the bot dies. The internal death handler
+      was stopping the bot thread before the event queue could dispatch the `DeathEvent` to user callbacks.
+      Now the `OnDeath` handler is subscribed to public event handlers with priority 0 (lower than user's default of 1),
+      ensuring user's `OnDeath` callback runs before the thread is stopped.
 
 - GUI:
     - Improved performance of the bot console and server log windows under heavy logging.
@@ -111,13 +144,6 @@ if self.adjust_gun_for_body_turn:
         - **How to configure**:
             - Open the `Config` -> `GUI Options` menu in the GUI.
             - Adjust the `Console max characters` value and click `OK` to save.
-  - Bot Events Panel:
-      - Optimized logging to only include events for the current game turn.
-      - Improved event dumping to include all relevant events for the monitored bot, including `TickEvent`.
-      - Enhanced formatting of event data with consistent indentation and ANSI colors.
-      - Grouped `bulletState` entries under a `bulletStates` header for better readability in `TickEvent`.
-- Other:
-    - Replaced Proguard with R8 which is now the default code shrinker for Java projects.
 
 ## 📦 0.34.2 - Added native installer packages for GUI – 25-Dec-2025
 
@@ -147,6 +173,13 @@ You can still download the JAR version as usual, which works on all platforms wi
     - Added native installer packages for the GUI (Windows MSI, macOS PKG, Linux RPM, and DEB).
         - Note: Java 11+ is required and the runtime must be discoverable via the `JAVA_HOME` environment variable. See
           the installation documentation for platform-specific instructions.
+  - Settings are now stored in platform-specific user directories to avoid permission issues:
+      - Windows: `%LOCALAPPDATA%\Robocode Tank Royale` or `%APPDATA%\Robocode Tank Royale`
+      - macOS: `~/Library/Application Support/Robocode Tank Royale`
+      - Linux: `$XDG_CONFIG_HOME/robocode-tank-royale` or `~/.config/robocode-tank-royale`
+  - You need to move your `gui.properties`, `server.properties`, `game-setups.properties` and the `recordings`
+    directory into the new user data directory for the GUI.
+  - Added jlink runtime image creation for Windows installers to avoid "Failed to launch VM" issues on some machines.
 
 ## 📦 0.34.1 - Fixes on_death in Python Bot API and GUI improvements – 14-Nov-2025
 

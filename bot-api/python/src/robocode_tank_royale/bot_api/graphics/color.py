@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
+from typing import Optional
 
 from robocode_tank_royale.schema import Color as ColorSchema
+
+# Regex patterns matching Java's ColorUtil
+_NUMERIC_RGB = re.compile(r"^#[0-9a-fA-F]{3,8}$")
+_HEX_DIGITS = re.compile(r"^(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
 
 
 @dataclass(frozen=True)
@@ -79,6 +85,79 @@ class Color:
             A new Color with the RGB values from the base color and the specified alpha value.
         """
         return cls.from_rgba(base_color.red, base_color.green, base_color.blue, a)
+
+    @classmethod
+    def from_hex_color(cls, hex_color: Optional[str]) -> Optional[Color]:
+        """Creates a color from a hex color string (#RGB, #RRGGBB, or #RRGGBBAA).
+
+        This method works the same as from_hex() except that it requires a hash sign
+        before the hex value. An example of a numeric RGB value is "#09C" or "#0099CC",
+        which both represent the same color.
+
+        Args:
+            hex_color: A string containing a hex color like "#09C", "#0099CC", or "#0099CCFF".
+
+        Returns:
+            A new Color; None if the input is None.
+
+        Raises:
+            ValueError: If the string is not in valid numeric RGB format.
+        """
+        if hex_color is None:
+            return None
+        hex_color = hex_color.strip()
+        if _NUMERIC_RGB.match(hex_color):
+            return cls.from_hex(hex_color[1:])
+        raise ValueError(
+            'You must supply the string in numeric RGB format #[0-9a-fA-F], e.g. "#09C" or "#0099CC"'
+        )
+
+    @classmethod
+    def from_hex(cls, hex_triplet: str) -> Color:
+        """Creates a color from a hex triplet (RGB, RRGGBB, or RRGGBBAA without hash).
+
+        A hex triplet is either three, six, or eight hexadecimal digits that represent
+        an RGB or RGBA color. An example of a hex triplet is "09C" or "0099CC", which
+        both represent the same color.
+
+        Args:
+            hex_triplet: A string containing hex digits like "09C", "0099CC", or "0099CCFF".
+
+        Returns:
+            A new Color.
+
+        Raises:
+            ValueError: If the string is not valid hex digits (3, 6, or 8 characters).
+        """
+        hex_triplet = hex_triplet.strip()
+        if not _HEX_DIGITS.match(hex_triplet):
+            raise ValueError(
+                'You must supply 3, 6, or 8 hex digits [0-9a-fA-F], e.g. "09C", "0099CC", or "0099CCFF"'
+            )
+
+        length = len(hex_triplet)
+        if length == 3:
+            # Short form: RGB -> expand to RRGGBB
+            r = int(hex_triplet[0], 16)
+            g = int(hex_triplet[1], 16)
+            b = int(hex_triplet[2], 16)
+            r = (r << 4) | r
+            g = (g << 4) | g
+            b = (b << 4) | b
+            return cls.from_rgb(r, g, b)
+        elif length == 6:
+            # Standard form: RRGGBB
+            r = int(hex_triplet[0:2], 16)
+            g = int(hex_triplet[2:4], 16)
+            b = int(hex_triplet[4:6], 16)
+            return cls.from_rgb(r, g, b)
+        else:
+            # Extended form: RRGGBBAA
+            r = int(hex_triplet[0:2], 16)
+            g = int(hex_triplet[2:4], 16)
+            b = int(hex_triplet[4:6], 16)
+            a = int(hex_triplet[6:8], 16)
+            return cls.from_rgba(r, g, b, a)
 
     # --- Channel properties ---
     @property

@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.settings
 
 import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.util.UserDataDirectory
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileWriter
@@ -15,34 +16,14 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
     private val properties = Properties()
     private val backedUpProperties = Properties()
 
-    // Determine a per-user writable base directory for settings to avoid permission issues
-    // on platforms like Windows where Program Files is read-only for standard users.
+    // Use platform-specific user data directory for storing settings
     private val baseDir: File by lazy {
-        val os = System.getProperty("os.name").lowercase()
-        when {
-            os.contains("win") -> {
-                val localAppData = System.getenv("LOCALAPPDATA")
-                    ?: System.getenv("APPDATA")
-                    ?: File(System.getProperty("user.home"), "AppData${File.separator}Local").absolutePath
-                File(localAppData, "Robocode Tank Royale")
-            }
-
-            os.contains("mac") -> File(
-                System.getProperty("user.home"),
-                "Library${File.separator}Application Support${File.separator}Robocode Tank Royale"
-            )
-
-            else -> {
-                val xdg = System.getenv("XDG_CONFIG_HOME")
-                val base = if (xdg.isNullOrBlank()) File(System.getProperty("user.home"), ".config") else File(xdg)
-                File(base, "robocode-tank-royale")
-            }
-        }.also { it.mkdirs() }
+        UserDataDirectory.get()
     }
 
     protected fun load(): Boolean {
         val file = File(baseDir, fileName)
-        // Ensure parent exists and create the file if missing
+        // Ensure a parent exists and create the file if missing
         if (!file.parentFile.exists()) file.parentFile.mkdirs()
         val alreadyExists = file.createNewFile()
         val input = FileInputStream(file)
@@ -55,7 +36,12 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
     }
 
     open fun save() {
-        if (properties == backedUpProperties) return
+        // Check if properties content has changed by comparing as maps
+        if (properties.size == backedUpProperties.size &&
+            properties.all { (key, value) -> backedUpProperties[key] == value }
+        ) {
+            return
+        }
 
         val file = File(baseDir, fileName)
         if (!file.parentFile.exists()) file.parentFile.mkdirs()
@@ -64,7 +50,7 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
             val sortedProperties = object : Properties() {
                 override fun store(writer: Writer, comments: String) {
                     keys.stream().map { k -> k }.sorted().forEach { k ->
-                        val value = "${get(k)}".replace("\\", "\\\\")
+                        val value = "${get(k)}"
                         writer.append("${k}=${value}\n")
                     }
                 }
@@ -72,6 +58,11 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
             sortedProperties.putAll(properties) // Use our properties
             sortedProperties.store(output, title)
         }
+
+        // Update backup to reflect the current saved state
+        backedUpProperties.clear()
+        backedUpProperties.putAll(properties)
+
         onSaved.fire(Unit)
     }
 

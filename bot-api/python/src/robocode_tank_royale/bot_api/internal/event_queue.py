@@ -12,7 +12,7 @@ from .thread_interrupted_exception import ThreadInterruptedException
 
 class EventQueue:
     """Queue containing bot events that are being prioritized and dispatched to event handlers.
-    
+
     The event queue makes sure that the events are being processed in the right order based on event
     priority and age of the events. Old events that are no longer relevant will be removed from the
     queue.
@@ -36,7 +36,7 @@ class EventQueue:
 
     def get_events(self, turn_number: int) -> list[BotEvent]:
         """Returns a list containing all events in the queue.
-        
+
         Args:
             turn_number: Current turn number used for removing old events.
         Returns:
@@ -53,7 +53,7 @@ class EventQueue:
 
     def set_current_event_interruptible(self, interruptible: bool) -> None:
         """Sets if the current event can be interrupted by new events with higher priority.
-        
+
         Args:
             interruptible: True if the current event can be interrupted; false otherwise.
         """
@@ -62,7 +62,7 @@ class EventQueue:
 
     def is_current_event_interruptible(self) -> bool:
         """Checks if the current event can be interrupted by new events with higher priority.
-        
+
         Returns:
             True if the current event can be interrupted; false otherwise.
         """
@@ -71,7 +71,7 @@ class EventQueue:
 
     def add_events_from_tick(self, event: TickEvent) -> None:
         """Adds standard events from a tick event, and custom events from conditions.
-        
+
         Args:
             event: The tick event containing the standard events to add.
         """
@@ -79,26 +79,28 @@ class EventQueue:
         for e in event.events:
             self.add_event(e)
 
-        self.add_custom_events()
-
     async def dispatch_events(self, turn_number: int) -> None:
         """Dispatches events in prioritized order to event handlers.
-        
+
         Args:
             turn_number: Current turn number used for removing old events.
         """
         #        dumpEvents(turn_number); // for debugging purposes
 
         self.remove_old_events(turn_number)
+        self.add_custom_events()
         self.sort_events()
 
         while self.is_bot_running():
-            current_event = self.get_next_event()
+            current_event = self.peek_next_event()
             if current_event is None:
                 break
-            if self.is_same_event(current_event):
-                if self.is_current_event_interruptible():
-                    EventInterruption.set_interruptible(type(current_event), False)  # clear interruptible flag
+            if self.get_priority(current_event) < self.current_top_event_priority:
+                break
+
+            if self.get_priority(current_event) == self.current_top_event_priority:
+                if self.current_top_event_priority > float('-inf') and self.is_current_event_interruptible():
+                    EventInterruption.set_interruptible(type(self.current_top_event), False)  # clear interruptible flag
 
                     # Mark that the current handler was interrupted so API methods can react accordingly
                     self.base_bot_internal_data.was_current_event_interrupted = True
@@ -106,25 +108,22 @@ class EventQueue:
                     # We are already in an event handler, took action, and a new event was generated.
                     # So we want to break out of the old handler to process the new event here.
                     raise ThreadInterruptedException()
-                # Same event but not interruptible: we've finished handling the previous event, clear its flag
-                if self.current_top_event is not None:
-                    EventInterruption.set_interruptible(type(self.current_top_event), False)
-                break
-
-            # Different event than the one we just handled: clear any pending interruptible flag
-            if self.current_top_event is not None:
-                EventInterruption.set_interruptible(type(self.current_top_event), False)
+                break  # Same priority but not interruptible - Loss of event is intentional in original Robocode
 
             old_top_event_priority = self.current_top_event_priority
 
             self.current_top_event_priority = self.get_priority(current_event)
             self.current_top_event = current_event
 
+            self.remove_next_event()  # Remove only after we've decided to dispatch
+
             try:
                 await self.dispatch(current_event, turn_number)
             except ThreadInterruptedException:
-                # Expected when event handler is interrupted on purpose
-                pass
+                self.current_top_event = None  # Match original Robocode behavior
+            except Exception:
+                self.current_top_event = None  # Match original Robocode behavior
+                raise
             finally:
                 self.current_top_event_priority = old_top_event_priority
 
@@ -136,7 +135,7 @@ class EventQueue:
     def sort_events(self) -> None:
         with self.events_lock:
             self.events = deque(sorted(self.events, key=lambda bot_event: (
-                -1 if bot_event.is_critical() else 0,
+                -1 if bot_event.critical else 0,
                 bot_event.turn_number,
                 -self.get_priority(bot_event)
             )))
@@ -144,12 +143,14 @@ class EventQueue:
     def is_bot_running(self):
         return self.base_bot_internal_data.is_running
 
-    def get_next_event(self):
+    def peek_next_event(self):
         with self.events_lock:
-            return self.events.popleft() if self.events else None
+            return self.events[0] if self.events else None
 
-    def is_same_event(self, bot_event: BotEvent) -> bool:
-        return self.get_priority(bot_event) == self.current_top_event_priority
+    def remove_next_event(self):
+        with self.events_lock:
+            if self.events:
+                self.events.popleft()
 
     @staticmethod
     def get_priority(bot_event: BotEvent) -> int:
@@ -166,12 +167,12 @@ class EventQueue:
     @staticmethod
     def is_not_old_or_is_critical_event(bot_event: BotEvent, turn_number: int) -> bool:
         is_not_old = bot_event.turn_number >= turn_number - EventQueue.MAX_EVENT_AGE
-        return is_not_old or bot_event.is_critical()
+        return is_not_old or bot_event.critical
 
     @staticmethod
     def is_old_and_non_critical_event(bot_event: BotEvent, turn_number: int) -> bool:
         is_old = bot_event.turn_number < turn_number - EventQueue.MAX_EVENT_AGE
-        return is_old and not bot_event.is_critical()
+        return is_old and not bot_event.critical
 
     def add_event(self, bot_event: BotEvent):
         with self.events_lock:
