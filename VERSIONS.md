@@ -123,6 +123,9 @@ async def on_team_message(self, e: TeamMessageEvent) -> None:
         await self.fire(3)
 ```
 
+> **Note:** The team message feature is demonstrated with the `MyFirstLeader` and `MyFirstDroid` sample bots. See the
+> [Team Messages](../articles/team-messages.md) article for a complete guide.
+
 ### 🐞 Bug Fixes
 
 - Bot API (Java, C#/.NET, Python):
