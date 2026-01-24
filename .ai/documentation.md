@@ -1,7 +1,7 @@
 # Documentation Standards
 
 <!-- METADATA: ~30 lines, ~300 tokens -->
-<!-- KEYWORDS: docs, README, VERSIONS.MD, Javadoc, docstring, changelog, user-visible -->
+<!-- KEYWORDS: docs, README, VERSIONS.md, Javadoc, docstring, changelog, user-visible -->
 
 ## When to Update Documentation
 
