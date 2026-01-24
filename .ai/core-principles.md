@@ -30,8 +30,15 @@
 **Concise communication**
 
 - Keep answers short and actionable
-- No summary files unless explicitly requested
+- **Start responses with "AI Guidelines loaded."** to confirm you've read the instructions
+- **NEVER create summary/documentation files unless explicitly requested**
+    - No `*_Resolution.md`, `*_Fix.md`, `*_Summary.md`, or similar files
+    - Just fix the code and give a brief explanation
+- **Temporary scripts are allowed** during a task but must be cleaned up after
+    - Remove test/verification scripts when the task is complete
+    - If a script might be useful permanently, ask: "Would you like to keep this script?"
 - Focus on what matters for the task
+- Brief explanation format: "Changed X in file Y because Z"
 
 **AI Agent boundaries**
 
