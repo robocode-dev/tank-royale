@@ -6,19 +6,12 @@
 
 **Files**: `bot-api/java/src/test/java/test_utils/MockedServer.java`
 
-- [ ] Add `awaitBotReady(int milliSeconds)` method
-    - Chains: `awaitBotHandshake()` → `awaitGameStarted()` → `awaitTick()`
-    - Returns `true` if all succeed within timeout
-- [ ] Add `setBotStateAndAwaitTick()` method with nullable parameters:
-    - `Double energy, Double gunHeat, Double speed, Double direction, Double gunDirection, Double radarDirection`
-    - Update internal state for non-null values
-    - Reset and await tick event
-    - Send tick with updated state
-    - Return success status
-- [ ] Refactor tick sending logic to support manual trigger
-- [ ] Add unit tests for new methods
+- [x] Add `awaitBotReady(int milliSeconds)` method
+- [x] Add `setBotStateAndAwaitTick()` method with nullable parameters
+- [x] Refactor tick sending logic to support manual trigger
+- [x] Add unit tests for new methods
 
-**Status**: ✅ COMPLETED (2026-01-01)  
+**Status**: ✅ COMPLETED (2026-01-25)  
 **See**: [TASK-1.1-SUMMARY.md](TASK-1.1-SUMMARY.md)
 
 **Estimated time**: 1-2 days
@@ -27,10 +20,13 @@
 
 **Files**: `bot-api/dotnet/test/src/test_utils/MockedServer.cs`
 
-- [ ] Add `AwaitBotReady(int timeoutMs = 1000)` method
-- [ ] Add `SetBotStateAndAwaitTick()` method with nullable parameters
-- [ ] Ensure threading safety with CountDownEvent
-- [ ] Add unit tests for new methods
+- [x] Add `AwaitBotReady(int timeoutMs = 1000)` method
+- [x] Add `SetBotStateAndAwaitTick()` method with nullable parameters
+- [x] Ensure threading safety with CountDownEvent
+- [x] Add unit tests for new methods
+
+**Status**: ✅ COMPLETED (2026-01-25)  
+**See**: `MockedServerTest.cs`
 
 **Estimated time**: 1-2 days
 
@@ -38,18 +34,23 @@
 
 **Files**: `bot-api/python/tests/test_utils/mocked_server.py`
 
-- [ ] Add `await_bot_ready(timeout_ms: int = 1000)` method
-- [ ] Add `set_bot_state_and_await_tick()` method with optional parameters
-- [ ] Ensure thread-safe state updates
-- [ ] Handle asyncio event loop properly
-- [ ] Add unit tests for new methods
+- [x] Add `await_bot_ready(timeout_ms: int = 1000)` method
+- [x] Add `set_bot_state_and_await_tick()` method with optional parameters
+- [x] Ensure thread-safe state updates
+- [x] Handle asyncio event loop properly
+- [x] Add unit tests for new methods
+
+**Status**: ✅ COMPLETED (2026-01-25)  
+**See**: `test_mocked_server.py`
 
 **Estimated time**: 1-2 days
 
 ### Task 1.4: Cross-Language Verification
 
-- [ ] Create smoke test that verifies state synchronization works identically across languages
-- [ ] Document any language-specific quirks
+- [x] Create smoke test that verifies state synchronization works identically across languages
+- [x] Document any language-specific quirks
+
+**Status**: ✅ COMPLETED (2026-01-25)
 
 **Estimated time**: 0.5 days
 
@@ -61,14 +62,16 @@
 
 **Files**: `bot-api/java/src/test/java/test_utils/AbstractBotTest.java` (new)
 
-- [ ] Create abstract base class
-- [ ] Implement `setUp()` and `tearDown()` with MockedServer lifecycle
-- [ ] Add `startBot()` method that starts bot and waits for ready
-- [ ] Add abstract `createTestBot()` method for subclasses
-- [ ] Implement `executeCommand(Supplier<T>)` method
-- [ ] Implement `executeBlocking(Runnable)` method
-- [ ] Create `CommandResult<T>` inner class
-- [ ] Add JavaDoc for all public methods
+- [x] Create abstract base class
+- [x] Implement `setUp()` and `tearDown()` with MockedServer lifecycle
+- [x] Add `startBot()` method that starts bot and waits for ready
+- [x] Add abstract `createTestBot()` method for subclasses
+- [x] Implement `executeCommand(Supplier<T>)` method
+- [x] Implement `executeBlocking(Runnable)` method
+- [x] Create `CommandResult<T>` inner class
+- [x] Add JavaDoc for all public methods
+
+**Status**: ✅ COMPLETED (2026-01-25)
 
 **Estimated time**: 1 day
 
@@ -76,11 +79,13 @@
 
 **Files**: `bot-api/dotnet/test/src/AbstractBotTest.cs`
 
-- [ ] Add `ExecuteCommand<T>(Func<T>)` method
-- [ ] Add `ExecuteAndCaptureIntent(Action)` method
-- [ ] Add `ExecuteBlocking(Action)` method
-- [ ] Ensure thread safety with proper async/await patterns
-- [ ] Add XML documentation comments
+- [x] Add `ExecuteCommand<T>(Func<T>)` method
+- [x] Add `ExecuteAndCaptureIntent(Action)` method
+- [x] Add `ExecuteBlocking(Action)` method
+- [x] Ensure thread safety with proper async/await patterns
+- [x] Add XML documentation comments
+
+**Status**: ✅ COMPLETED (2026-01-25)
 
 **Estimated time**: 1 day
 
@@ -88,23 +93,27 @@
 
 **Files**: `bot-api/python/tests/test_utils/abstract_bot_test.py` (new)
 
-- [ ] Create AbstractBotTest class
-- [ ] Implement `setup_method()` and `teardown_method()`
-- [ ] Add `start_bot()` method
-- [ ] Add abstract `create_test_bot()` method
-- [ ] Implement `_start_async()` and `_go_async()` helpers
-- [ ] Implement `execute_command()` method
-- [ ] Implement `execute_and_capture_intent()` method
-- [ ] Implement `execute_blocking()` method
-- [ ] Add type hints and docstrings
+- [x] Create AbstractBotTest class
+- [x] Implement `setup_method()` and `teardown_method()`
+- [x] Add `start_bot()` method
+- [x] Add abstract `create_test_bot()` method
+- [x] Implement `_start_async()` and `_go_async()` helpers
+- [x] Implement `execute_command()` method
+- [x] Implement `execute_and_capture_intent()` method
+- [x] Implement `execute_blocking()` method
+- [x] Add type hints and docstrings
+
+**Status**: ✅ COMPLETED (2026-01-25)
 
 **Estimated time**: 1 day
 
 ### Task 2.4: Integration Testing
 
-- [ ] Create example test using new utilities in each language
-- [ ] Verify behavior is identical across languages
-- [ ] Document any differences
+- [x] Create example test using new utilities in each language
+- [x] Verify behavior is identical across languages
+- [x] Document any differences
+
+**Status**: ✅ COMPLETED (2026-01-25)
 
 **Estimated time**: 0.5 days
 

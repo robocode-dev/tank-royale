@@ -26,13 +26,13 @@ public class AbstractBotTest
         .SetProgrammingLang("C# 10")
         .SetInitialPosition(InitialPosition.FromString("10, 20, 30"))
         .Build();
-    
+
     private class TestBot : BaseBot {
         public TestBot() : base(BotInfo, MockedServer.ServerUrl)
         {
         }
     }
-    
+
     [SetUp]
     public void SetUp()
     {
@@ -45,7 +45,7 @@ public class AbstractBotTest
     {
         Server.Stop();
     }
-    
+
     protected static BaseBot Start()
     {
         var bot = new TestBot();
@@ -124,7 +124,22 @@ public class AbstractBotTest
     {
         Assert.That(Server.AwaitBotIntent(1000), Is.True);
     }
-    
+
+    protected T ExecuteCommand<T>(Func<T> command)
+    {
+        Server.ResetBotIntentEvent();
+        var result = command();
+        AwaitBotIntent();
+        return result;
+    }
+
+    protected void ExecuteBlocking(Action action)
+    {
+        Server.ResetBotIntentEvent();
+        action();
+        AwaitBotIntent();
+    }
+
     protected static bool ExceptionContainsEnvVarName(BotException botException, string envVarName) =>
         botException != null && botException.Message.ToUpper().Contains(envVarName);
 }

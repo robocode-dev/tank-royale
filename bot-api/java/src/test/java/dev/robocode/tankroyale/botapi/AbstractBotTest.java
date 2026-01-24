@@ -118,6 +118,19 @@ abstract class AbstractBotTest {
         assertThat(server.awaitBotIntent(1000)).isTrue();
     }
 
+    protected <T> T executeCommand(java.util.function.Supplier<T> command) {
+        server.resetBotIntentLatch();
+        T result = command.get();
+        awaitBotIntent();
+        return result;
+    }
+
+    protected void executeBlocking(Runnable action) {
+        server.resetBotIntentLatch();
+        action.run();
+        awaitBotIntent();
+    }
+
     protected static boolean exceptionContainsEnvVarName(BotException botException, String envVarName) {
         return botException.getMessage().toUpperCase().contains(envVarName);
     }

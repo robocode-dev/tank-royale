@@ -56,7 +56,7 @@ public class MockedServer
     private double _turnIncrement;
     private double _gunTurnIncrement;
     private double _radarTurnIncrement;
-    
+
     private double? _speedMinLimit;
     private double? _speedMaxLimit;
     private double? _directionMinLimit;
@@ -67,20 +67,20 @@ public class MockedServer
     private double? _radarDirectionMaxLimit;
 
     private WebSocketServer _server;
-//    private readonly ISet<IWebSocketConnection> _clients = new HashSet<IWebSocketConnection>();
+    private readonly ISet<IWebSocketConnection> _clients = new HashSet<IWebSocketConnection>();
 
-    private readonly EventWaitHandle _openedEvent = new AutoResetEvent(false);
-    private readonly EventWaitHandle _botHandshakeEvent = new AutoResetEvent(false);
-    private readonly EventWaitHandle _gameStartedEvent = new AutoResetEvent(false);
-    private readonly EventWaitHandle _tickEvent = new AutoResetEvent(false);
-    private readonly EventWaitHandle _botIntentEvent = new AutoResetEvent(false);
+    private readonly EventWaitHandle _openedEvent = new ManualResetEvent(false);
+    private readonly EventWaitHandle _botHandshakeEvent = new ManualResetEvent(false);
+    private readonly EventWaitHandle _gameStartedEvent = new ManualResetEvent(false);
+    private readonly EventWaitHandle _tickEvent = new ManualResetEvent(false);
+    private readonly EventWaitHandle _botIntentEvent = new ManualResetEvent(false);
 
-    private readonly EventWaitHandle _botIntentContinueEvent = new AutoResetEvent(false);
+    private readonly EventWaitHandle _botIntentContinueEvent = new ManualResetEvent(true);
 
     private BotIntent _botIntent;
-    
+
     public BotIntent BotIntent => _botIntent;
-    
+
 
     public void Start()
     {
@@ -135,7 +135,7 @@ public class MockedServer
     public void SetSpeedMaxLimit(double maxLimit) {
         _speedMaxLimit = maxLimit;
     }
-    
+
     public void SetDirectionMinLimit(double minLimit) {
         _directionMinLimit = minLimit;
     }
@@ -158,6 +158,72 @@ public class MockedServer
 
     public void SetRadarDirectionMaxLimit(double maxLimit) {
         _radarDirectionMaxLimit = maxLimit;
+    }
+
+    public void ResetBotIntentEvent()
+    {
+        _botIntentEvent.Reset();
+    }
+
+    public bool AwaitBotReady(int timeoutMs = 1000)
+    {
+        var start = DateTime.Now;
+        if (!AwaitBotHandshake(timeoutMs))
+        {
+            Console.Error.WriteLine("AwaitBotReady: AwaitBotHandshake timed out");
+            return false;
+        }
+
+        var remaining = timeoutMs - (int)(DateTime.Now - start).TotalMilliseconds;
+        if (!AwaitGameStarted(Math.Max(0, remaining)))
+        {
+            Console.Error.WriteLine("AwaitBotReady: AwaitGameStarted timed out");
+            return false;
+        }
+
+        remaining = timeoutMs - (int)(DateTime.Now - start).TotalMilliseconds;
+        _tickEvent.Reset();
+        lock (_clients)
+        {
+            foreach (var conn in _clients)
+            {
+                SendTickEventForBot(conn, _turnNumber++);
+            }
+        }
+
+        if (!AwaitTick(Math.Max(0, remaining)))
+        {
+            Console.Error.WriteLine("AwaitBotReady: AwaitTick timed out");
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool SetBotStateAndAwaitTick(double? energy = null, double? gunHeat = null, double? speed = null,
+        double? direction = null, double? gunDirection = null, double? radarDirection = null)
+    {
+        lock (this)
+        {
+            if (energy.HasValue) _energy = energy.Value;
+            if (gunHeat.HasValue) _gunHeat = gunHeat.Value;
+            if (speed.HasValue) _speed = speed.Value;
+            if (direction.HasValue) _direction = direction.Value;
+            if (gunDirection.HasValue) _gunDirection = gunDirection.Value;
+            if (radarDirection.HasValue) _radarDirection = radarDirection.Value;
+
+            _tickEvent.Reset();
+
+            lock (_clients)
+            {
+                foreach (var conn in _clients)
+                {
+                    SendTickEventForBot(conn, _turnNumber++);
+                }
+            }
+        }
+
+        return AwaitTick(1000);
     }
 
     public bool AwaitConnection(int milliSeconds)
@@ -236,15 +302,21 @@ public class MockedServer
 
     private void OnOpen(IWebSocketConnection conn)
     {
-//        _clients.Add(conn);
-        
+        lock (_clients)
+        {
+            _clients.Add(conn);
+        }
+
         _openedEvent.Set();
         SendServerHandshake(conn);
     }
-    
+
     private void OnClose(IWebSocketConnection conn)
     {
-//        _clients.Remove(conn);
+        lock (_clients)
+        {
+            _clients.Remove(conn);
+        }
     }
 
     private void OnMessage(IWebSocketConnection conn, string messageJson)
@@ -263,16 +335,10 @@ public class MockedServer
 
                 SendGameStartedForBot(conn);
                 _gameStartedEvent.Set();
-                // Immediately send a tick event after game start to guarantee tick for all tests
-                SendTickEventForBot(conn, _turnNumber++);
-                _tickEvent.Set();
                 break;
 
             case MessageType.BotReady:
                 SendRoundStarted(conn);
-                // Existing tick event logic remains
-                SendTickEventForBot(conn, _turnNumber++);
-                _tickEvent.Set();
                 break;
 
             case MessageType.BotIntent:
@@ -293,14 +359,13 @@ public class MockedServer
                 _botIntent = JsonConverter.FromJson<BotIntent>(messageJson);
                 _botIntentEvent.Set();
 
-                SendTickEventForBot(conn, _turnNumber++);
-                _tickEvent.Set();
-
                 // Update states
                 _speed += _speedIncrement;
                 _direction += _turnIncrement;
                 _gunDirection += _gunTurnIncrement;
                 _radarDirection += _radarTurnIncrement;
+
+                SendTickEventForBot(conn, _turnNumber++);
                 break;
         }
     }
@@ -440,6 +505,7 @@ public class MockedServer
         tickEvent.Events = events;
 
         Send(conn, tickEvent);
+        _tickEvent.Set();
     }
 
     private static void Send(IWebSocketConnection conn, Object obj)

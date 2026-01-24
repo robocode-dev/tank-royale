@@ -80,6 +80,9 @@ class MockedServer:
         self._gun_direction: float = self.bot_gun_direction
         self._radar_direction: float = self.bot_radar_direction
 
+        self._connections: Set[websockets.WebSocketServerProtocol] = set()
+        self._lock = threading.Lock()
+
         self._speed_increment: float = 0.0
         self._turn_increment: float = 0.0
         self._gun_turn_increment: float = 0.0
@@ -154,6 +157,82 @@ class MockedServer:
             self._thread.join(timeout=1.0)
 
     # Await helpers
+    def await_bot_ready(self, timeout_ms: int = 1000) -> bool:
+        start = time.time()
+        if not self.await_bot_handshake(timeout_ms):
+            print("await_bot_ready: await_bot_handshake timed out", flush=True)
+            return False
+
+        elapsed = int((time.time() - start) * 1000)
+        remaining = max(0, timeout_ms - elapsed)
+        if not self.await_game_started(remaining):
+            print("await_bot_ready: await_game_started timed out", flush=True)
+            return False
+
+        elapsed = int((time.time() - start) * 1000)
+        remaining = max(0, timeout_ms - elapsed)
+
+        self._tick_event.clear()
+
+        # Get the loop that the server is running on
+        loop = self._loop
+        if loop and loop.is_running():
+            async def send_ticks():
+                with self._lock:
+                    for conn in list(self._connections):
+                        await self._send_tick(conn, self._turn_number)
+                        self._turn_number += 1
+
+            asyncio.run_coroutine_threadsafe(send_ticks(), loop)
+        else:
+            print("await_bot_ready: server loop not running", flush=True)
+            return False
+
+        if not self.await_tick(remaining):
+            print("await_bot_ready: await_tick timed out", flush=True)
+            return False
+
+        return True
+
+    def set_bot_state_and_await_tick(
+        self,
+        energy: Optional[float] = None,
+        gun_heat: Optional[float] = None,
+        speed: Optional[float] = None,
+        direction: Optional[float] = None,
+        gun_direction: Optional[float] = None,
+        radar_direction: Optional[float] = None,
+    ) -> bool:
+        with self._lock:
+            if energy is not None:
+                self._energy = energy
+            if gun_heat is not None:
+                self._gun_heat = gun_heat
+            if speed is not None:
+                self._speed = speed
+            if direction is not None:
+                self._direction = direction
+            if gun_direction is not None:
+                self._gun_direction = gun_direction
+            if radar_direction is not None:
+                self._radar_direction = radar_direction
+
+            self._tick_event.clear()
+
+            loop = self._loop
+            if loop and loop.is_running():
+                async def send_ticks():
+                    with self._lock:
+                        for conn in list(self._connections):
+                            await self._send_tick(conn, self._turn_number)
+                            self._turn_number += 1
+
+                asyncio.run_coroutine_threadsafe(send_ticks(), loop)
+            else:
+                return False
+
+        return self.await_tick(1000)
+
     def await_connection(self, timeout_ms: int) -> bool:
         return self._opened_event.wait(timeout_ms / 1000.0)
 
@@ -285,73 +364,79 @@ class MockedServer:
 
     # Internal server logic
     async def _handler(self, websocket: websockets.WebSocketServerProtocol):
-        # on open
-        self._opened_event.set()
-        await self._send_server_handshake(websocket)
-
-        movement_reset_pending = False
-
+        with self._lock:
+            self._connections.add(websocket)
         try:
-            async for msg in websocket:
-                message: Message = from_json(msg)  # type: ignore
-                msg_type = getattr(message, "type", None)
+            # on open
+            self._opened_event.set()
+            await self._send_server_handshake(websocket)
 
-                if msg_type == "BotHandshake":
-                    self.handshake = message
-                    self._bot_handshake_event.set()
-                    await self._send_game_started(websocket)
-                    self._game_started_event.set()
+            movement_reset_pending = False
 
-                elif msg_type == "BotReady":
-                    await self._send_round_started(websocket)
-                    await self._send_tick(websocket, self._turn_number)
-                    self._turn_number += 1
-                    self._tick_event.set()
-                    movement_reset_pending = True  # defer movement reset until after first intent
+            try:
+                async for msg in websocket:
+                    message: Message = from_json(msg)  # type: ignore
+                    msg_type = getattr(message, "type", None)
 
-                elif msg_type == "BotIntent":
-                    # Enforce limits (pre intent/state update)
-                    if self._speed_min_limit is not None and self._speed < self._speed_min_limit:
-                        continue
-                    if self._speed_max_limit is not None and self._speed > self._speed_max_limit:
-                        continue
-                    if self._direction_min_limit is not None and self._direction < self._direction_min_limit:
-                        continue
-                    if self._direction_max_limit is not None and self._direction > self._direction_max_limit:
-                        continue
-                    if self._gun_direction_min_limit is not None and self._gun_direction < self._gun_direction_min_limit:
-                        continue
-                    if self._gun_direction_max_limit is not None and self._gun_direction > self._gun_direction_max_limit:
-                        continue
-                    if self._radar_direction_min_limit is not None and self._radar_direction < self._radar_direction_min_limit:
-                        continue
-                    if self._radar_direction_max_limit is not None and self._radar_direction > self._radar_direction_max_limit:
-                        continue
+                    if msg_type == "BotHandshake":
+                        self.handshake = message
+                        self._bot_handshake_event.set()
+                        await self._send_game_started(websocket)
+                        self._game_started_event.set()
 
-                    # Wait for external allowance to continue
-                    await self._wait_for_intent_continue()
+                    elif msg_type == "BotReady":
+                        await self._send_round_started(websocket)
+                        # We do NOT send initial tick here anymore if we want to control it via await_bot_ready
+                        # But to stay compatible with existing tests that might not use await_bot_ready yet:
+                        # Actually, Java/C# removed it from here to avoid races.
+                        # Let's see.
 
-                    self._bot_intent = message
-                    self._bot_intent_event.set()
+                    elif msg_type == "BotIntent":
+                        # Enforce limits (pre intent/state update)
+                        if self._speed_min_limit is not None and self._speed < self._speed_min_limit:
+                            continue
+                        if self._speed_max_limit is not None and self._speed > self._speed_max_limit:
+                            continue
+                        if self._direction_min_limit is not None and self._direction < self._direction_min_limit:
+                            continue
+                        if self._direction_max_limit is not None and self._direction > self._direction_max_limit:
+                            continue
+                        if self._gun_direction_min_limit is not None and self._gun_direction < self._gun_direction_min_limit:
+                            continue
+                        if self._gun_direction_max_limit is not None and self._gun_direction > self._gun_direction_max_limit:
+                            continue
+                        if self._radar_direction_min_limit is not None and self._radar_direction < self._radar_direction_min_limit:
+                            continue
+                        if self._radar_direction_max_limit is not None and self._radar_direction > self._radar_direction_max_limit:
+                            continue
 
-                    await self._send_tick(websocket, self._turn_number)
-                    self._turn_number += 1
-                    self._tick_event.set()
+                        # Wait for external allowance to continue
+                        await self._wait_for_intent_continue()
 
-                    # Advance state after sending tick
-                    self._speed += self._speed_increment
-                    self._direction += self._turn_increment
-                    self._gun_direction += self._gun_turn_increment
-                    self._radar_direction += self._radar_turn_increment
+                        self._bot_intent = message
+                        self._bot_intent_event.set()
 
-                    # Only reset movement after first intent following round start
-                    if movement_reset_pending:
-                        self._reset_movement_commands()
-                        movement_reset_pending = False
+                        # Advance state before sending tick
+                        self._speed += self._speed_increment
+                        self._direction += self._turn_increment
+                        self._gun_direction += self._gun_turn_increment
+                        self._radar_direction += self._radar_turn_increment
 
-        except websockets.exceptions.ConnectionClosed:
-            # client closed connection
-            pass
+                        await self._send_tick(websocket, self._turn_number)
+                        self._turn_number += 1
+                        self._tick_event.set()
+
+                        # Only reset movement after first intent following round start
+                        if movement_reset_pending:
+                            self._reset_movement_commands()
+                            movement_reset_pending = False
+
+            except websockets.exceptions.ConnectionClosed:
+                # client closed connection
+                pass
+        finally:
+            with self._lock:
+                self._connections.remove(websocket)
 
     def _reset_movement_commands(self):
         # This should match the Java/.NET logic
@@ -507,6 +592,7 @@ class MockedServer:
         )
 
         await websocket.send(to_json(tick))
+        self._tick_event.set()
 
     @staticmethod
     def _create_bullet_state(bid: int) -> SchemaBulletState:
