@@ -97,17 +97,51 @@ very large changes, coordinate with the [maintainer] before implementation.
 
 ## Regarding Bot APIs
 
-### In the spirit of the original Robocode API
+### 1:1 Semantic Equivalence (Hard Requirement)
 
-Official APIs are inspired by the original game to ease migration, but 1:1 compatibility isn’t expected or possible.
+**All official Bot APIs must be 1:1 semantically equivalent to the Java Bot API**, which is the reference
+implementation. This is a non-negotiable requirement for the following reasons:
 
-### Cross-platform consistency
+- **Maintainability**: Cross-platform code must stay familiar and consistent across Java, .NET, and Python.
+- **Testing**: Identical semantics allow test strategies and scenarios to be shared across platforms.
+- **Documentation**: API documentation can be written once and adapted, not rewritten from scratch.
+- **Learning**: Users moving between platforms should find the same concepts, methods, and behaviors.
 
-All official APIs should offer equivalent features in consistent ways, while following each platform’s conventions.
+**Why Java is the reference implementation:**
+
+The classic Robocode API was originally written for Java, and Tank Royale remains loyal to this heritage. While there
+are some changes and improvements, the Java Bot API is the most battle-tested implementation and serves as the
+authoritative source for all other platform implementations.
+
+**What 1:1 equivalence means:**
+
+- Method names match (adjusted for language conventions: `camelCase` in Java/C#, `snake_case` in Python).
+- Method signatures match (same parameters, same return types, same semantics).
+- Blocking methods block, non-blocking (setter) methods queue actions for execution on `go()`.
+- Event handlers have identical names and receive equivalent event objects.
+- Default values, validation rules, and error handling are consistent.
+
+**Allowed language-specific idioms:**
+
+- Python and C# may use **properties** instead of Java's getter/setter methods (e.g., `bot.energy` instead of
+  `bot.getEnergy()`).
+- Naming conventions follow each language's standards (`camelCase` vs `snake_case` vs `PascalCase`).
+- Language-specific constructs (decorators, attributes) may be used if they don't change semantics.
+
+**Not allowed:**
+
+- Different default values across platforms.
+- Different method behavior (e.g., async in one API, sync in another).
+- Missing methods or extra methods that don't exist in the Java reference.
+- Different event firing order or timing.
+
+If you have ideas that deviate from the Java reference, you're welcome to create your own Bot API in a separate
+repository. The official Bot APIs prioritize consistency and maintainability over innovation.
 
 ### Alternative Bot APIs
 
-You’re welcome to create alternative APIs in separate repositories. We can link to them as community options.
+You're welcome to create alternative APIs in separate repositories with different paradigms (async, reactive,
+functional, etc.). We can link to them as community options. The official APIs will remain 1:1 with Java.
 
 ## Booters, GUIs, and servers
 

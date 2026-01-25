@@ -2,21 +2,24 @@
 
 ## Why
 
-The Python Bot API currently uses `async/await` throughout its public interface, which breaks the 1:1 semantic
-equivalence with the Java and C# reference implementations. This causes:
+The Python Bot API currently uses `async/await` throughout its public interface, which **violates the 1:1 semantic
+equivalence requirement** with the Java reference implementation (see CONTRIBUTING.md). This causes:
 
-1. **Testing difficulties** - Async tests require `IsolatedAsyncioTestCase`, leading to test hangs and complexity
-2. **Maintenance burden** - The async API structure differs significantly from Java/C#, making cross-platform
+1. **Violates hard requirement** - All official Bot APIs must be 1:1 semantically equivalent to Java for
+   maintainability, testing, documentation, and learning purposes
+2. **Testing difficulties** - Async tests require `IsolatedAsyncioTestCase`, leading to test hangs and complexity
+3. **Maintenance burden** - The async API structure differs significantly from Java/C#, making cross-platform
    maintenance harder
-3. **User confusion** - Robocoders familiar with Java/C# expect synchronous blocking methods; Python's async model adds
+4. **User confusion** - Robocoders familiar with Java/C# expect synchronous blocking methods; Python's async model adds
    unnecessary cognitive overhead for a game bot
-4. **Documentation mismatch** - The async signatures don't align with Java/C# documentation patterns
+5. **Documentation mismatch** - The async signatures don't align with Java/C# documentation patterns
 
 The Java and C# implementations use synchronous blocking methods (via threading primitives like `wait()`/`notify()`)
-for the public API, while keeping async I/O internal. Python should follow the same pattern.
+for the public API, while keeping async I/O internal. Python must follow the same pattern.
 
-**Author's decision**: The Python API is still under development. 1:1 semantic equivalence with Java/C# takes priority
-over backwards compatibility. Users who want an async approach can build their own wrapper on top of the official API.
+**Author's decision**: The Python API is still under development. 1:1 semantic equivalence with Java/C# is a hard
+requirement and takes priority over backwards compatibility. Users who want an async approach can build their own
+wrapper on top of the official API or create an alternative Bot API in a separate repository.
 
 ## What Changes
 

@@ -7,8 +7,10 @@ chose an async/await approach for Python, but this diverges from the threading m
 
 **Constraints**:
 
+- **1:1 semantic equivalence with Java is a hard requirement** (see CONTRIBUTING.md)
 - Must match Java API behavior exactly (blocking semantics for `forward()`, `turn_left()`, `fire()`, etc.)
 - Must support the same programming model: `run()` loop with blocking calls
+- Properties allowed instead of getters/setters (Python/C# idiom), but semantics must be identical
 - Internal WebSocket communication naturally uses async I/O in Python
 - Python's GIL provides thread-safety for shared state access
 
@@ -39,14 +41,14 @@ chose an async/await approach for Python, but this diverges from the threading m
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         Main Thread                              │
+│                         Main Thread                             │
 │  bot = SpinBot()                                                │
-│  bot.start()  ←── blocks until game ends (closedLatch.await()) │
+│  bot.start()  ←── blocks until game ends (closedLatch.await() ) │
 └─────────────────────────────────────────────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    WebSocket Thread (daemon)                     │
+│                    WebSocket Thread (daemon)                    │
 │  - Runs asyncio event loop                                      │
 │  - Handles all WebSocket I/O                                    │
 │  - Dispatches events to bot thread via thread-safe queue        │
@@ -55,7 +57,7 @@ chose an async/await approach for Python, but this diverges from the threading m
          │
          ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                       Bot Thread                                 │
+│                       Bot Thread                                │
 │  - Created on first tick (onFirstTurn)                          │
 │  - Runs bot.run() method                                        │
 │  - Blocking methods use threading.Condition.wait()              │

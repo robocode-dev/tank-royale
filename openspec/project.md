@@ -129,6 +129,20 @@ Key goals:
 - **Backward compatibility**: Changes must not break existing bots
 - **Server is authoritative**: No alternative drop-in server replacements
 
+### Bot API Rules (Non-negotiable)
+
+- **1:1 semantic equivalence with Java**: All official Bot APIs (Python, .NET, Wasm) must be semantically identical to
+  the Java Bot API, which is the reference implementation
+- **Java is the reference**: The classic Robocode API was originally written for Java, and Tank Royale remains loyal to
+  this heritage. The Java Bot API is the most battle-tested implementation and serves as the authoritative source for
+  all other platform implementations. When in doubt, Java's behavior is authoritative.
+- **Properties allowed**: Python/C# may use properties instead of getters/setters, but semantics must be identical
+- **Same defaults and validation**: Default values, validation rules, and error handling must match across platforms
+- **Same event order**: Events must fire in the same order across all platforms
+- **No extra/missing methods**: All platforms must have equivalent methods; no platform-specific additions to the
+  public API
+- **Rationale**: This hard requirement exists for maintainability, testing, documentation, and learning purposes
+
 ### Build Requirements
 
 - **JDK 17+ required** for building

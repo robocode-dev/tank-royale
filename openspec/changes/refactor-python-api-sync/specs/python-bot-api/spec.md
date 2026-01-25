@@ -43,7 +43,16 @@ The Python Bot API SHALL use async I/O internally for WebSocket communication, b
 - **THEN** it SHALL use `threading.Condition` to wait for completion
 - **AND** the pattern SHALL match Java's `wait()`/`notifyAll()` synchronization
 
-### Requirement: 1:1 Semantic Equivalence with Java
+### Requirement: 1:1 Semantic Equivalence with Java (Hard Requirement)
+
+All official Bot APIs MUST be 1:1 semantically equivalent to the Java Bot API, which is the reference implementation.
+This is a non-negotiable requirement for maintainability, testing, documentation, and learning purposes.
+
+**Why Java is the reference implementation:**
+
+The classic Robocode API was originally written for Java, and Tank Royale remains loyal to this heritage. While there
+are some changes and improvements, the Java Bot API is the most battle-tested implementation and serves as the
+authoritative source for all other platform implementations.
 
 The Python Bot API public methods SHALL have identical semantics to the corresponding Java Bot API methods.
 
@@ -58,6 +67,31 @@ The Python Bot API public methods SHALL have identical semantics to the correspo
 - **GIVEN** a public method in the Python Bot API
 - **THEN** its docstring SHALL match the corresponding Javadoc in the Java Bot API
 - **AND** SHALL use Python conventions (Args/Returns instead of @param/@return)
+
+#### Scenario: Properties allowed instead of getters/setters
+
+- **GIVEN** Java getter `double getEnergy()` and setter `void setTurnRate(double)`
+- **THEN** Python MAY use properties: `energy` (read-only) and `turn_rate` (read-write)
+- **AND** the semantics SHALL be identical to the Java getter/setter
+
+#### Scenario: Default values are identical
+
+- **GIVEN** a method or property with a default value in Java
+- **THEN** the Python equivalent SHALL have the same default value
+- **AND** validation rules SHALL be identical
+
+#### Scenario: Event firing order is identical
+
+- **GIVEN** a sequence of game events in Java
+- **WHEN** the same game state occurs in Python
+- **THEN** events SHALL fire in the same order
+- **AND** event handlers SHALL receive equivalent event data
+
+#### Scenario: No extra or missing methods
+
+- **GIVEN** the set of public methods in Java's `IBot` and `IBaseBot` interfaces
+- **THEN** Python's `Bot` and `BaseBot` classes SHALL have equivalent methods for all of them
+- **AND** SHALL NOT have public methods that don't exist in Java (except Python-specific idioms like `__init__`)
 
 ### Requirement: Sample Bots Match Cross-Platform Pattern
 
