@@ -320,9 +320,15 @@ class BaseBotInternals:
 
         self.set_running(False)
 
+        # Wake up any threads waiting on the next turn condition so they can see is_running=False
+        with self._next_turn_condition:
+            self._next_turn_condition.notify_all()
+
         if self.thread is not None:
             # Python doesn't have thread.interrupt() like Java, but we set is_running to False
             # The thread will exit when it checks is_running() or gets ThreadInterruptedException
+            # Wait for the thread to actually terminate to prevent race conditions when restarting
+            self.thread.join(timeout=5.0)  # Wait up to 5 seconds for thread to finish
             self.thread = None
 
     def _sanitize_url(self, uri: str) -> None:

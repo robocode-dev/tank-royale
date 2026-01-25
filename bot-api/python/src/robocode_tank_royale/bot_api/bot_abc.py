@@ -30,7 +30,7 @@ class BotABC(BaseBotABC):
               behave strangely in new rounds.
 
         References:
-            - `is_running`
+            - `running`
         """
         pass
 

@@ -45,7 +45,7 @@ class Corners(Bot):
         gun_increment = 3
 
         # Spin gun back and forth
-        while self.is_running():
+        while self.running:
             for _ in range(30):
                 self.turn_gun_left(gun_increment)
             gun_increment *= -1
