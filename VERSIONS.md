@@ -1,11 +1,58 @@
-## 📦 0.35.0 - **BREAKING**: Python Bot API Refactored to Use Properties - 24-Jan-2026
+## 📦 0.35.0 - **BREAKING**: Python Bot API Converted to Synchronous API & Refactored to Use Properties - 25-Jan-2026
 
 ### 💥 Breaking Changes
 
-- **Python Bot API**: Refactored all getter methods to use Pythonic property accessors instead of Java-style getter
-  methods.
+- **Python Bot API**:
+    - Converted from async/await to synchronous blocking API to match Java and .NET Bot APIs.
+    - Refactored all getter methods to use Pythonic property accessors instead of Java-style getter methods.
 
-#### Migration Required
+#### Migration Required - Async to Sync
+
+**Before (0.34.x)**:
+
+```python
+import asyncio
+from robocode_tank_royale.bot_api import Bot
+
+class MyBot(Bot):
+    async def run(self):
+        while self.running:
+            await self.forward(100)
+            await self.turn_gun_left(360)
+            await self.back(100)
+            await self.turn_gun_right(360)
+
+if __name__ == "__main__":
+    bot = MyBot()
+    asyncio.run(bot.start())
+```
+
+**After (0.35.0)**:
+
+```python
+from robocode_tank_royale.bot_api import Bot
+
+class MyBot(Bot):
+    def run(self):
+        while self.running:
+            self.forward(100)
+            self.turn_gun_left(360)
+            self.back(100)
+            self.turn_gun_right(360)
+
+if __name__ == "__main__":
+    bot = MyBot()
+    bot.start()
+```
+
+### 🔄 Migration Steps - Async to Sync
+
+1. Remove `async` keyword from all method definitions (`run`, event handlers)
+2. Remove `await` keyword from all bot method calls
+3. Remove `asyncio.run()` wrapper - call `bot.start()` directly
+4. Remove `import asyncio` if no longer needed
+
+#### Migration Required - Properties
 
 **Before (0.34.x)**:
 
@@ -47,21 +94,27 @@ if self.adjust_gun_for_body_turn:
 
 ### 🚀 Improvements
 
-- Bot API:
-- **Python Bot API**: Now follows Python conventions with property-based accessors
-    - **Code Quality**: More idiomatic Python code that feels natural to Python developers
-    - **Semantic Equivalence**: Maintains 1:1 behavior with Java API while using appropriate language idioms
-- **Python Bot API**: Typed team messages now work like Java/C#
-    - **Typed Team Messages**: Use the `@team_message_type` decorator or `register_team_message_type()` function to
-      register message classes. Messages are automatically serialized/deserialized to typed objects.
-    - **Color Serialization**: `Color` objects in team messages are automatically serialized to hex strings and
-      deserialized back to `Color` objects.
-    - **Added `Color.from_hex_color()`**: Factory method to create a Color from a hex string like `#RGB`, `#RRGGBB`, or
-      `#RRGGBBAA`. Returns `None` for `None` input. Matches Java's `ColorUtil.fromHexColor()`.
-    - **Added `Color.from_hex()`**: Factory method to create a Color from hex digits without the hash prefix.
-      Matches Java's `ColorUtil.fromHex()`.
-    - **Simplified Sample Bots**: `MyFirstLeader` and `MyFirstDroid` now use typed message classes and `isinstance()`
-      checks, matching the Java/C# pattern exactly. No more manual hex string parsing.
+- **Python Bot API**:
+    - **Now matches Java and .NET API semantics exactly**:
+        - **Simpler Code**: No async/await complexity - straightforward blocking calls
+        - **Better Debugging**: Synchronous stack traces are easier to understand
+        - **Cross-Platform Parity**: Sample bots now look nearly identical across all languages
+    - **Now follows Python conventions with property-based accessors**:
+        - **Code Quality**: More idiomatic Python code that feels natural to Python developers
+        - **Semantic Equivalence**: Maintains 1:1 behavior with Java API while using appropriate language idioms
+    - **Typed team messages now work like Java/C#**:
+        - **Typed Team Messages**: Use the `@team_message_type` decorator or `register_team_message_type()` function to
+          register message classes. Messages are automatically serialized/deserialized to typed objects.
+        - **Color Serialization**: `Color` objects in team messages are automatically serialized to hex strings and
+          deserialized back to `Color` objects.
+        - **Added `Color.from_hex_color()`**: Factory method to create a Color from a hex string like `#RGB`, `#RRGGBB`,
+          or
+          `#RRGGBBAA`. Returns `None` for `None` input. Matches Java's `ColorUtil.fromHexColor()`.
+        - **Added `Color.from_hex()`**: Factory method to create a Color from hex digits without the hash prefix.
+          Matches Java's `ColorUtil.fromHex()`.
+        - **Simplified Sample Bots**: `MyFirstLeader` and `MyFirstDroid` now use typed message classes and
+          `isinstance()`
+          checks, matching the Java/C# pattern exactly. No more manual hex string parsing.
 - Bot Events Panel:
     - Optimized logging to only include events for the current game turn.
     - Improved event dumping to include all relevant events for the monitored bot, including `TickEvent`.
@@ -124,7 +177,7 @@ async def on_team_message(self, e: TeamMessageEvent) -> None:
 ```
 
 > **Note:** The team message feature is demonstrated with the `MyFirstLeader` and `MyFirstDroid` sample bots. See the
-> [Team Messages](../articles/team-messages.md) article for a complete guide.
+> [Team Messages](docs-build/docs/articles/team-messages.md) article for a complete guide.
 
 ### 🐞 Bug Fixes
 

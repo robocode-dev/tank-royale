@@ -78,11 +78,11 @@
 
 ## 8. Documentation
 
-- [ ] 8.1 Update all docstrings in `base_bot.py` to match `IBaseBot.java` Javadoc
-- [ ] 8.2 Update all docstrings in `bot.py` to match `IBot.java` Javadoc
-- [ ] 8.3 Update all docstrings in `base_bot_abc.py` to match Java interfaces
-- [ ] 8.4 Update all docstrings in `bot_abc.py` to match Java interfaces
-- [ ] 8.5 Update `VERSIONS.md` with breaking change entry and migration guide
+- [x] 8.1 Update all docstrings in `base_bot.py` to match `IBaseBot.java` Javadoc
+- [x] 8.2 Update all docstrings in `bot.py` to match `IBot.java` Javadoc
+- [x] 8.3 Update all docstrings in `base_bot_abc.py` to match Java interfaces
+- [x] 8.4 Update all docstrings in `bot_abc.py` to match Java interfaces
+- [x] 8.5 Update `VERSIONS.md` with breaking change entry and migration guide
 
 ## 9. Validation
 
