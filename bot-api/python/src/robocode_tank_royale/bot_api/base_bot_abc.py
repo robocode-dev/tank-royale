@@ -1180,7 +1180,7 @@ class BaseBotABC(ABC):
         pass
 
     @staticmethod
-    async def on_connected(connected_event: ConnectedEvent) -> None:
+    def on_connected(connected_event: ConnectedEvent) -> None:
         """
         The event handler triggered when connected to the server.
 
@@ -1190,7 +1190,7 @@ class BaseBotABC(ABC):
         print(f"Connected to: {connected_event.server_uri}")  # Use f-string
 
     @staticmethod
-    async def on_disconnected(disconnected_event: DisconnectedEvent) -> None:
+    def on_disconnected(disconnected_event: DisconnectedEvent) -> None:
         """
         The event handler triggered when disconnected from the server.
 
@@ -1206,12 +1206,12 @@ class BaseBotABC(ABC):
         print(msg)
 
     @staticmethod
-    async def on_connection_error(connection_error_event: ConnectionErrorEvent) -> None:
+    def on_connection_error(connection_error_event: ConnectionErrorEvent) -> None:
         """
         The event handler triggered when a connection error occurs.
 
-        Parameters:
-            connection_error_event: Object containing details about the connection error from the game.
+        Args:
+            connection_error_event: The event details from the game.
         """
         print(f"Connection error with {connection_error_event.server_uri}")
 
@@ -1220,7 +1220,7 @@ class BaseBotABC(ABC):
                 connection_error_event.error
             )  # Print the exception
 
-    async def on_game_started(self, game_started_event: GameStartedEvent) -> None:
+    def on_game_started(self, game_started_event: GameStartedEvent) -> None:
         """
         The event handler triggered when a game has started.
 
@@ -1229,7 +1229,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_game_ended(self, game_ended_event: GameEndedEvent) -> None:
+    def on_game_ended(self, game_ended_event: GameEndedEvent) -> None:
         """
         The event handler triggered when a game has ended.
 
@@ -1238,7 +1238,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_round_started(self, round_started_event: RoundStartedEvent) -> None:
+    def on_round_started(self, round_started_event: RoundStartedEvent) -> None:
         """
         The event handler triggered when a new round has started.
 
@@ -1247,7 +1247,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_round_ended(self, round_ended_event: RoundEndedEvent) -> None:
+    def on_round_ended(self, round_ended_event: RoundEndedEvent) -> None:
         """
         The event handler triggered when a round has ended.
 
@@ -1256,7 +1256,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_tick(self, tick_event: TickEvent) -> None:
+    def on_tick(self, tick_event: TickEvent) -> None:
         """
         The event handler triggered when a game tick event occurs, i.e., when a new turn in a round has started.
 
@@ -1265,7 +1265,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_bot_death(self, bot_death_event: BotDeathEvent) -> None:
+    def on_bot_death(self, bot_death_event: BotDeathEvent) -> None:
         """
         The event handler triggered when another bot has died.
 
@@ -1274,7 +1274,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_death(self, death_event: DeathEvent) -> None:
+    def on_death(self, death_event: DeathEvent) -> None:
         """
         The event handler triggered when this bot has died.
 
@@ -1283,7 +1283,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_hit_bot(self, bot_hit_bot_event: HitBotEvent) -> None:
+    def on_hit_bot(self, bot_hit_bot_event: HitBotEvent) -> None:
         """
         The event handler triggered when the bot has collided with another bot.
 
@@ -1292,7 +1292,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_hit_wall(self, bot_hit_wall_event: HitWallEvent) -> None:
+    def on_hit_wall(self, bot_hit_wall_event: HitWallEvent) -> None:
         """
         The event handler triggered when the bot has hit a wall.
 
@@ -1301,7 +1301,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_bullet_fired(self, bullet_fired_event: BulletFiredEvent) -> None:
+    def on_bullet_fired(self, bullet_fired_event: BulletFiredEvent) -> None:
         """
         The event handler triggered when the bot has fired a bullet.
 
@@ -1310,7 +1310,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_hit_by_bullet(self, hit_by_bullet_event: HitByBulletEvent) -> None:
+    def on_hit_by_bullet(self, hit_by_bullet_event: HitByBulletEvent) -> None:
         """
         The event handler triggered when the bot has been hit by a bullet.
 
@@ -1319,7 +1319,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_bullet_hit(self, bullet_hit_bot_event: BulletHitBotEvent) -> None:
+    def on_bullet_hit(self, bullet_hit_bot_event: BulletHitBotEvent) -> None:
         """
         The event handler triggered when the bot has hit another bot with a bullet.
 
@@ -1328,7 +1328,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_bullet_hit_bullet(
+    def on_bullet_hit_bullet(
         self, bullet_hit_bullet_event: BulletHitBulletEvent
     ) -> None:
         """
@@ -1339,7 +1339,7 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_bullet_hit_wall(self, bullet_hit_wall_event: BulletHitWallEvent) -> None:
+    def on_bullet_hit_wall(self, bullet_hit_wall_event: BulletHitWallEvent) -> None:
         """
         The event handler triggered when a bullet has hit a wall.
 
@@ -1348,72 +1348,64 @@ class BaseBotABC(ABC):
         """
         pass
 
-    async def on_scanned_bot(self, scanned_bot_event: ScannedBotEvent) -> None:
+    def on_scanned_bot(self, scanned_bot_event: ScannedBotEvent) -> None:
         """
-        Event handler triggered when the bot's radar scans another bot.
-
-        This event occurs when the bot's radar detects another bot within its scanning range.
-        The event provides information about the scanned bot such as its position, energy level,
-        and velocity.
-
-        The information provided by this event is essential for targeting, tracking, and making
-        strategic decisions based on the positions and states of other bots on the battlefield.
+        The event handler triggered when the bot has skipped a turn. This event occurs if the bot did
+        not take any action in a specific turn. That is, `go()` was not called before the turn
+        timeout occurred for the turn. If the bot does not take action for multiple turns in a row, it
+        will receive a SkippedTurnEvent for each turn where it did not take action. When the
+        bot is skipping a turn, the server did not receive the message from the bot, and the server
+        will use the newest received instructions for target speed, turn rates, firing, etc.
 
         Args:
-            scanned_bot_event: The event details about the scanned bot from the game.
+            scanned_bot_event: The event details from the game.
         """
         pass
 
-    async def on_skipped_turn(self, skipped_turn_event: SkippedTurnEvent) -> None:
+    def on_skipped_turn(self, skipped_turn_event: SkippedTurnEvent) -> None:
         """
-        Handles the event when the bot skips a turn.
+        Handles the event triggered when the bot skips a turn.
 
         A turn is skipped if the bot does not send any instructions to the server (via the `go()` method)
         before the turn timeout occurs. When this happens, the server continues using the last received
         set of actions, such as movement, turning rates, or firing commands.
 
         Reasons for skipped turns may include:
-        - Excessive processing or delays in the bot's logic, leading to timeout.
-        - Failure to invoke the `go()` method in the current turn.
-        - Misaligned or unintended logic in the bot's turn-handling code.
+            - Excessive processing or delays in the bot's logic, leading to a timeout.
+            - Failure to invoke the `go()` method in the current turn.
+            - Misaligned or unintended logic in the bot's turn-handling code.
 
         This method can be overridden to define custom behavior for handling skipped turns, such as
         logging the event, debugging performance issues, or modifying the bot's logic to avoid future skips.
 
         Args:
-            skipped_turn_event (SkippedTurnEvent): An event containing details about the skipped turn.
+            skipped_turn_event: An event containing details about the skipped turn.
         """
         pass
 
-    async def on_won_round(self, won_round_event: WonRoundEvent) -> None:
+    def on_won_round(self, won_round_event: WonRoundEvent) -> None:
         """
         The event handler triggered when the bot has won a round.
-
-        This event indicates that the bot successfully won a single round in the match.
 
         Args:
             won_round_event: The event details from the game.
         """
         pass
 
-    async def on_custom_event(self, custom_event: CustomEvent) -> None:
+    def on_custom_event(self, custom_event: CustomEvent) -> None:
         """
-        The event handler triggered when some specific custom condition has been met.
-
-        You can differentiate between various types of conditions by using the `getName()` method
-        of the condition object associated with the event.
+        The event handler triggered when some condition has been met. Use the `name` of the condition
+        when you need to differentiate between different types of conditions received with this event
+        handler.
 
         Args:
             custom_event: The event details from the game.
         """
         pass
 
-    async def on_team_message(self, team_message_event: TeamMessageEvent) -> None:
+    def on_team_message(self, team_message_event: TeamMessageEvent) -> None:
         """
         The event handler triggered when the bot has received a message from a teammate.
-
-        This event provides the message and its associated details when a teammate sends communication
-        during the game.
 
         Args:
             team_message_event: The event details from the game.

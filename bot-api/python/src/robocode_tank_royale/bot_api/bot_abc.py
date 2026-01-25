@@ -9,9 +9,9 @@ class BotABC(BaseBotABC):
     turning, and firing the gun.
     """
 
-    async def run(self) -> None:
+    def run(self) -> None:
         """
-        Used for running a program for the bot.
+        The run() method is used for running a program for the bot like:
 
         Example:
             def run(self):
@@ -22,11 +22,12 @@ class BotABC(BaseBotABC):
                     self.turn_gun_right(360)
 
         Notes:
-            - In this example, the program runs in a loop (as long as the bot is running),
-              meaning that it will start moving forward as soon as `turn_gun_right` has completed.
-            - When running a loop that could run forever, it is best practice to check if the
-              bot is still running (`is_running`) to stop the loop. This ensures the game can
-              stop the thread correctly, preventing strange behavior in new rounds.
+            - Note that the program runs in a loop in this example (as long as the bot is running),
+              meaning that it will start moving forward as soon as `turn_gun_right` has executed.
+            - When running a loop that could potentially run forever, the best practice is to check if the
+              bot is still running to stop and exit the loop. This gives the game a chance of stopping the
+              thread running the loop in the code behind. If the thread is not stopped correctly, the bot may
+              behave strangely in new rounds.
 
         References:
             - `is_running`
@@ -76,7 +77,7 @@ class BotABC(BaseBotABC):
         pass
 
     @abstractmethod
-    async def forward(self, distance: float) -> None:
+    def forward(self, distance: float) -> None:
         """
         Moves the bot forward until it has traveled a specific distance or reached an obstacle.
 
@@ -136,7 +137,7 @@ class BotABC(BaseBotABC):
         pass
 
     @abstractmethod
-    async def back(self, distance: float) -> None:
+    def back(self, distance: float) -> None:
         """
         Moves the bot backward until it has traveled a specific distance from its current position,
         or it is moving into an obstacle. The speed is limited by `setMaxSpeed`.
@@ -219,7 +220,7 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    async def turn_left(self, degrees: float) -> None:
+    def turn_left(self, degrees: float) -> None:
         """
         Turn the bot to the left (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it has turned
@@ -283,7 +284,7 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    async def turn_right(self, degrees: float) -> None:
+    def turn_right(self, degrees: float) -> None:
         """
         Turn the bot to the right (following the increasing degrees of the
         `unit circle <https://en.wikipedia.org/wiki/Unit_circle>`_) until it turned the specified
@@ -367,7 +368,7 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    async def turn_gun_left(self, degrees: float) -> None:
+    def turn_gun_left(self, degrees: float) -> None:
         """
         Rotates the gun to the left (increasing degrees of the unit circle) until
         it has turned the specified number of degrees.
@@ -412,7 +413,7 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    async def turn_gun_right(self, degrees: float) -> None:
+    def turn_gun_right(self, degrees: float) -> None:
         """
         Rotates the gun to the right (decreasing degrees of the unit circle) until
         it has turned the specified number of degrees.
@@ -474,7 +475,7 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    async def turn_radar_left(self, degrees: Union[float, int]) -> None:
+    def turn_radar_left(self, degrees: Union[float, int]) -> None:
         """Turn the radar to the left (following the increasing degrees of the
         unit circle) until it has turned the specified amount of degrees. This
         method will block until completed.
@@ -513,7 +514,7 @@ class BotABC(BaseBotABC):
         """
         pass
 
-    async def turn_radar_right(self, degrees: Union[float, int]) -> None:
+    def turn_radar_right(self, degrees: Union[float, int]) -> None:
         """Turn the radar to the right (following the increasing degrees of the
         unit circle) until it has turned the specified amount of degrees. This
         method will block until completed.
@@ -550,7 +551,7 @@ class BotABC(BaseBotABC):
         """
         raise NotImplementedError('radar_turn_remaining not implemented')
 
-    async def fire(self, firepower: float) -> None:
+    def fire(self, firepower: float) -> None:
         """
         Fires the gun in the direction the gun is pointing.
 
@@ -595,7 +596,7 @@ class BotABC(BaseBotABC):
         pass
 
     @abstractmethod
-    async def stop(self, overwrite: bool = False) -> None:
+    def stop(self, overwrite: bool = False) -> None:
         """
         Immediately stops all motion, including the robot's movement, gun rotation,
         and radar movement. Any remaining movement is preserved for future execution
@@ -613,7 +614,7 @@ class BotABC(BaseBotABC):
         pass
 
     @abstractmethod
-    async def resume(self) -> None:
+    def resume(self) -> None:
         """
         Resume the movement prior to calling the `set_stop` or `stop` method.
         This method has no effect if it has already been called.
@@ -625,7 +626,7 @@ class BotABC(BaseBotABC):
         pass
 
     @abstractmethod
-    async def rescan(self) -> None:
+    def rescan(self) -> None:
         """
         Scan again with the radar. This method is useful if the radar has
         not been turning and is unable to scan bots automatically.
@@ -635,7 +636,7 @@ class BotABC(BaseBotABC):
         pass
 
     @abstractmethod
-    async def wait_for(self, condition: Callable[[], bool]) -> None:
+    def wait_for(self, condition: Callable[[], bool]) -> None:
         """
         Blocks until a condition is met, i.e., when `Condition.test()` returns True.
 

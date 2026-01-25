@@ -16,27 +16,27 @@
 
 ## 3. Public API - Bot
 
-- [ ] 3.1 Convert `async def run()` → `def run()`
-- [ ] 3.2 Convert `async def forward()` → `def forward()` (blocking)
-- [ ] 3.3 Convert `async def back()` → `def back()` (blocking)
-- [ ] 3.4 Convert `async def turn_left()` → `def turn_left()` (blocking)
-- [ ] 3.5 Convert `async def turn_right()` → `def turn_right()` (blocking)
-- [ ] 3.6 Convert `async def turn_gun_left()` → `def turn_gun_left()` (blocking)
-- [ ] 3.7 Convert `async def turn_gun_right()` → `def turn_gun_right()` (blocking)
-- [ ] 3.8 Convert `async def turn_radar_left()` → `def turn_radar_left()` (blocking)
-- [ ] 3.9 Convert `async def turn_radar_right()` → `def turn_radar_right()` (blocking)
-- [ ] 3.10 Convert `async def fire()` → `def fire()` (blocking)
-- [ ] 3.11 Convert `async def stop()` → `def stop()` (blocking)
-- [ ] 3.12 Convert `async def resume()` → `def resume()` (blocking)
-- [ ] 3.13 Convert `async def rescan()` → `def rescan()` (blocking)
-- [ ] 3.14 Convert `async def wait_for()` → `def wait_for()` (blocking)
-- [ ] 3.15 Update docstrings to match Java's `IBot` Javadoc
+- [x] 3.1 Convert `async def run()` → `def run()`
+- [x] 3.2 Convert `async def forward()` → `def forward()` (blocking)
+- [x] 3.3 Convert `async def back()` → `def back()` (blocking)
+- [x] 3.4 Convert `async def turn_left()` → `def turn_left()` (blocking)
+- [x] 3.5 Convert `async def turn_right()` → `def turn_right()` (blocking)
+- [x] 3.6 Convert `async def turn_gun_left()` → `def turn_gun_left()` (blocking)
+- [x] 3.7 Convert `async def turn_gun_right()` → `def turn_gun_right()` (blocking)
+- [x] 3.8 Convert `async def turn_radar_left()` → `def turn_radar_left()` (blocking)
+- [x] 3.9 Convert `async def turn_radar_right()` → `def turn_radar_right()` (blocking)
+- [x] 3.10 Convert `async def fire()` → `def fire()` (blocking)
+- [x] 3.11 Convert `async def stop()` → `def stop()` (blocking)
+- [x] 3.12 Convert `async def resume()` → `def resume()` (blocking)
+- [x] 3.13 Convert `async def rescan()` → `def rescan()` (blocking)
+- [x] 3.14 Convert `async def wait_for()` → `def wait_for()` (blocking)
+- [x] 3.15 Update docstrings to match Java's `IBot` Javadoc
 
 ## 4. Public API - Abstract Base Classes
 
-- [ ] 4.1 Update `BaseBotABC` - remove async from method signatures
-- [ ] 4.2 Update `BotABC` - remove async from method signatures
-- [ ] 4.3 Update docstrings in ABCs to match Java interfaces
+- [x] 4.1 Update `BaseBotABC` - remove async from method signatures
+- [x] 4.2 Update `BotABC` - remove async from method signatures
+- [x] 4.3 Update docstrings in ABCs to match Java interfaces
 
 ## 5. Event Handlers
 
