@@ -1,5 +1,6 @@
 import asyncio
 import json
+import threading
 from typing import Any, Optional
 import websockets
 from typing import Dict
@@ -52,7 +53,7 @@ class WebSocketHandler:
         bot_info: BotInfo,
         bot_event_handlers: BotEventHandlers,
         internal_event_handlers: InternalEventHandlers,
-        closed_event: asyncio.Event,
+        closed_event: threading.Event,
         event_queue: 'EventQueue',
     ):
         """Initialize the websocket handler."""

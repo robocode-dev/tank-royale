@@ -79,7 +79,7 @@ class EventQueue:
         for e in event.events:
             self.add_event(e)
 
-    async def dispatch_events(self, turn_number: int) -> None:
+    def dispatch_events(self, turn_number: int) -> None:
         """Dispatches events in prioritized order to event handlers.
 
         Args:
@@ -118,7 +118,7 @@ class EventQueue:
             self.remove_next_event()  # Remove only after we've decided to dispatch
 
             try:
-                await self.dispatch(current_event, turn_number)
+                self.dispatch(current_event, turn_number)
             except ThreadInterruptedException:
                 self.current_top_event = None  # Match original Robocode behavior
             except Exception:
@@ -156,10 +156,10 @@ class EventQueue:
     def get_priority(bot_event: BotEvent) -> int:
         return EventPriorities.get_priority(type(bot_event))
 
-    async def dispatch(self, bot_event: BotEvent, turn_number: int):
+    def dispatch(self, bot_event: BotEvent, turn_number: int):
         try:
             if self.is_not_old_or_is_critical_event(bot_event, turn_number):
-                await self.bot_event_handlers.fire_event(bot_event)
+                self.bot_event_handlers.fire_event(bot_event)
         finally:
             # Align with Java semantics: always clear interruptible flag for the event type after dispatch
             EventInterruption.set_interruptible(type(bot_event), False)

@@ -1,11 +1,11 @@
 ## 1. Internal Infrastructure
 
-- [ ] 1.1 Create `threading.Condition` for next-turn synchronization in `BaseBotInternals`
-- [ ] 1.2 Create WebSocket background thread with async event loop
-- [ ] 1.3 Implement `start_thread()` / `stop_thread()` matching Java's `BotInternals`
-- [ ] 1.4 Implement `execute()` with blocking wait (matches Java's `waitForNextTurn()`)
-- [ ] 1.5 Implement thread-safe event queue for cross-thread event dispatch
-- [ ] 1.6 Update `closed_event` to use `threading.Event` for `start()` blocking
+- [x] 1.1 Create `threading.Condition` for next-turn synchronization in `BaseBotInternals`
+- [x] 1.2 Create WebSocket background thread with async event loop
+- [x] 1.3 Implement `start_thread()` / `stop_thread()` matching Java's `BotInternals`
+- [x] 1.4 Implement `execute()` with blocking wait (matches Java's `waitForNextTurn()`)
+- [x] 1.5 Implement thread-safe event queue for cross-thread event dispatch
+- [x] 1.6 Update `closed_event` to use `threading.Event` for `start()` blocking
 
 ## 2. Public API - BaseBot
 
