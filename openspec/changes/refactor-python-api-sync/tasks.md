@@ -9,10 +9,10 @@
 
 ## 2. Public API - BaseBot
 
-- [ ] 2.1 Convert `async def start()` → `def start()` (blocks until disconnect)
-- [ ] 2.2 Convert `async def go()` → `def go()` (dispatches events, sends intent, waits)
-- [ ] 2.3 Update all property getters to be synchronous (already sync, verify)
-- [ ] 2.4 Update docstrings to match Java's `IBaseBot` Javadoc
+- [x] 2.1 Convert `async def start()` → `def start()` (blocks until disconnect)
+- [x] 2.2 Convert `async def go()` → `def go()` (dispatches events, sends intent, waits)
+- [x] 2.3 Update all property getters to be synchronous (already sync, verify)
+- [x] 2.4 Update docstrings to match Java's `IBaseBot` Javadoc
 
 ## 3. Public API - Bot
 

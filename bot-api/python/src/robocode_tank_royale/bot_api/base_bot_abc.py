@@ -22,13 +22,15 @@ class BaseBotABC(ABC):
     """The maximum number of team messages that can be sent per turn, which is 10 messages."""
 
     @abstractmethod
-    async def start(self) -> None:
+    def start(self) -> None:
         """
         The method used to start running the bot. You should call this method from the main function or a similar entry point.
 
+        This method blocks until the bot disconnects from the server.
+
         Example::
 
-            def main():
+            if __name__ == "__main__":
                 # create my_bot
                 ...
                 my_bot.start()
@@ -36,16 +38,24 @@ class BaseBotABC(ABC):
         pass
 
     @abstractmethod
-    async def go(self) -> None:
+    def go(self) -> None:
         """
         Commits the current commands (actions), which finalizes the current turn for the bot.
 
-        This method must be called once per turn to send the bot's actions to the server and must be called before the turn timeout occurs. A turn timer starts when the `GameStartedEvent` and `TickEvent` occur. If the `go()` method is called too late, a turn timeout will occur, and the `SkippedTurnEvent` will be triggered, meaning the bot has skipped all actions for the previous turn. In such a case, the server will continue executing the last actions received. This could be fatal for the bot due to the loss of control over it. Ensure that `go()` is called before the turn ends.
+        This method must be called once per turn to send the bot actions to the server and must be
+        called before the turn timeout occurs. A turn timer is started when the GameStartedEvent
+        and TickEvent occurs. If the go() method is called too late, a turn timeout will
+        occur and the SkippedTurnEvent will occur, which means that the bot has skipped all
+        actions for the last turn. In this case, the server will continue executing the last actions
+        received. This could be fatal for the bot due to loss of control over the bot. So make sure that
+        go() is called before the turn ends.
 
-        The commands executed when `go()` is called are set via the appropriate setter methods prior to calling `go()`: `setTurnRate`, `setGunTurnRate`, `setRadarTurnRate`, `setTargetSpeed`, and `setFire`.
+        The commands executed when go() is called are set by calling the various setter
+        methods prior to calling the go() method: turn_rate, gun_turn_rate,
+        radar_turn_rate, target_speed, and set_fire().
 
-        See also:
-            `getTurnTimeout`: For additional information on the turn timeout.
+        See Also:
+            turn_timeout
         """
         pass
 

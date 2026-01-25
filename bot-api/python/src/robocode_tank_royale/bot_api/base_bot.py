@@ -43,16 +43,44 @@ class BaseBot(BaseBotABC):
                 print(f'Failed to read bot info json file: {bot_info_file}.')
         self._internals = BaseBotInternals(self, bot_info, server_url, server_secret)
 
-    async def start(self) -> None:
-        await self._internals.start()
+    def start(self) -> None:
+        """
+        The method used to start running the bot. You should call this method from the main method or
+        similar.
 
-    async def go(self) -> None:
+        Example:
+            if __name__ == "__main__":
+                # create my_bot
+                ...
+                my_bot.start()
+        """
+        self._internals.start()
+
+    def go(self) -> None:
+        """
+        Commits the current commands (actions), which finalizes the current turn for the bot.
+
+        This method must be called once per turn to send the bot actions to the server and must be
+        called before the turn timeout occurs. A turn timer is started when the GameStartedEvent
+        and TickEvent occurs. If the go() method is called too late, a turn timeout will
+        occur and the SkippedTurnEvent will occur, which means that the bot has skipped all
+        actions for the last turn. In this case, the server will continue executing the last actions
+        received. This could be fatal for the bot due to loss of control over the bot. So make sure that
+        go() is called before the turn ends.
+
+        The commands executed when go() is called are set by calling the various setter
+        methods prior to calling the go() method: turn_rate, gun_turn_rate,
+        radar_turn_rate, target_speed, and set_fire().
+
+        See Also:
+            turn_timeout
+        """
         # Process all events before executing the turn commands to mimic classic Robocode behavior
         current_tick = self._internals.get_current_tick_or_null()
         if current_tick is not None:
             # Align with Java: only dispatch events here; staging happens when the tick is received
-            await self._internals.dispatch_events(current_tick.turn_number)
-        await self._internals.execute()
+            self._internals.dispatch_events(current_tick.turn_number)
+        self._internals.execute()
 
     @property
     def my_id(self) -> int:
