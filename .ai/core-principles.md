@@ -44,6 +44,9 @@
 
 - AI agents should NEVER make git commits directly
 - Suggest commit messages, but leave execution to humans
+- **NEVER start implementing tasks.md after creating/updating an OpenSpec change proposal**
+    - The human must first: store the spec in git, create a branch, and choose an AI model
+    - Only implement when explicitly asked to do so
 
 ## Design Patterns
 
