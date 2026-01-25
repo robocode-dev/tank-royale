@@ -1,5 +1,5 @@
 from threading import Lock
-from typing import Any, Generic, TypeVar, Callable, List, Awaitable
+from typing import Any, Generic, TypeVar, Callable, List
 import heapq
 from weakref import WeakSet
 from ..events import EventABC
@@ -11,7 +11,7 @@ class EventHandler(Generic[T]):
     """Generic event handler for handling and dispatching events of type T.
 
     Events can be published to all subscribed listeners, which will be invoked in order of their priority.
-    Subscribers with higher priority are invoked before lower priority ones. This handler provides 
+    Subscribers with higher priority are invoked before lower priority ones. This handler provides
     thread-safety through synchronization and exception handling during event publication.
 
     Type Parameters:
@@ -24,13 +24,11 @@ class EventHandler(Generic[T]):
         """Initialize a new EventHandler instance."""
         self._lock = Lock()
         self._subscriber_entries: List[EventHandler.EntryWithPriority] = []
-        self._subscriber_set: WeakSet[Callable[[T], Awaitable[None]]] = (
-            WeakSet()
-        )
+        self._subscriber_set: WeakSet[Callable[[T], None]] = WeakSet()
 
     def subscribe(
         self,
-        subscriber: Callable[[T], Awaitable[None]],
+        subscriber: Callable[[T], None],
         priority: int = _DEFAULT_PRIORITY,
     ) -> None:
         """Subscribe a new event handler with a given priority.
@@ -59,9 +57,7 @@ class EventHandler(Generic[T]):
             # Use heapq to maintain the priority queue
             heapq.heappush(self._subscriber_entries, entry)
 
-    def unsubscribe(
-        self, subscriber: Callable[[T], Awaitable[None]]
-    ) -> bool:
+    def unsubscribe(self, subscriber: Callable[[T], None]) -> bool:
         """Unsubscribe a subscriber from this event handler.
 
         Args:
@@ -93,7 +89,7 @@ class EventHandler(Generic[T]):
             self._subscriber_set.clear()
             # No need to heapify an empty list
 
-    async def publish(self, event_data: T) -> None:
+    def publish(self, event_data: T) -> None:
         """Publishes an event, invoking all subscribed listeners in order of their priority.
 
         Args:
@@ -111,7 +107,7 @@ class EventHandler(Generic[T]):
         # Process subscribers in priority order
         for entry in sorted_entries:
             # try:
-            await entry.subscriber(event_data)
+            entry.subscriber(event_data)
             # except Exception:
             #     # Catch the exception to allow other subscribers to process
             #     pass
@@ -131,7 +127,7 @@ class EventHandler(Generic[T]):
 
         def __init__(
             self,
-            subscriber: Callable[[T], Awaitable[None]],
+            subscriber: Callable[[T], None],
             priority: int,
         ):
             """Constructs a new entry with the specified subscriber and priority.

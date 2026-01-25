@@ -40,9 +40,9 @@
 
 ## 5. Event Handlers
 
-- [ ] 5.1 Convert all `async def on_*` handlers to `def on_*` in `BotEventHandlers`
-- [ ] 5.2 Update event dispatch to call handlers synchronously
-- [ ] 5.3 Verify interruptible event handling works with sync handlers
+- [x] 5.1 Convert all `async def on_*` handlers to `def on_*` in `BotEventHandlers`
+- [x] 5.2 Update event dispatch to call handlers synchronously
+- [x] 5.3 Verify interruptible event handling works with sync handlers
 
 ## 6. Sample Bots (14 bots)
 

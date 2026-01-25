@@ -59,20 +59,20 @@ class InternalEventHandlers:
 
         self._event_handler_map[self.NextTurnEvent] = self.on_next_turn
 
-    async def fire_event(self, event: EventABC) -> None:
+    def fire_event(self, event: EventABC) -> None:
         """
         Fire an event to its registered handler.
-        
+
         Args:
             event: The event to fire.
-        
+
         Note:
             If there is no registered event handler for the event type,
             the event is ignored.
         """
         handler = self._event_handler_map.get(type(event))
         if handler is not None:
-            await handler.publish(event)
+            handler.publish(event)
         # ignore if there is no registered event handler
 
     # Virtual (fake) events:
