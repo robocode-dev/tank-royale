@@ -1,4 +1,5 @@
 import asyncio
+from concurrent.futures import TimeoutError as FuturesTimeoutError
 import threading
 import socket
 import time
@@ -148,6 +149,21 @@ class MockedServer:
         self._loop.run_forever()
 
     def stop(self) -> None:
+        if self._loop and self._server is not None:
+            async def _close_server() -> None:
+                self._server.close()
+                await self._server.wait_closed()
+
+            if self._loop.is_running():
+                future = asyncio.run_coroutine_threadsafe(_close_server(), self._loop)
+                try:
+                    future.result(timeout=2.0)
+                except FuturesTimeoutError:
+                    future.cancel()
+                except Exception:
+                    future.cancel()
+            else:
+                self._server.close()
         if self._loop:
             self._loop.call_soon_threadsafe(self._loop.stop)
         if self._thread:

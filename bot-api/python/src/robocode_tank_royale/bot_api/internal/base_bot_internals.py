@@ -94,6 +94,7 @@ class BaseBotInternals:
         # WebSocket background thread with async event loop
         self._ws_thread: Optional[threading.Thread] = None
         self._ws_loop: Optional[asyncio.AbstractEventLoop] = None
+        self._ws_loop_ready_event: threading.Event = threading.Event()
 
         # Bot thread (runs bot.run() and bot.go())
         self.thread: Optional[threading.Thread] = None
@@ -361,10 +362,14 @@ class BaseBotInternals:
         def ws_thread_target():
             self._ws_loop = asyncio.new_event_loop()
             asyncio.set_event_loop(self._ws_loop)
+            self._ws_loop_ready_event.set()
             self._ws_loop.run_forever()
 
+        self._ws_loop_ready_event.clear()
         self._ws_thread = threading.Thread(target=ws_thread_target, daemon=True)
         self._ws_thread.start()
+        if not self._ws_loop_ready_event.wait(timeout=2.0):
+            raise BotException("WebSocket event loop not started")
 
     def _connect_sync(self) -> None:
         """Connect to WebSocket server (synchronous wrapper)"""

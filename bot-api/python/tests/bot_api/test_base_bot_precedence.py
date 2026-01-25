@@ -1,6 +1,5 @@
 import os
 import json
-import asyncio
 from unittest.mock import AsyncMock, patch
 
 from robocode_tank_royale.bot_api.base_bot import BaseBot
@@ -47,7 +46,7 @@ def test_TR_API_BOT_001c_explicit_args_override_env_for_server_url_and_botinfo()
         explicit_url = "ws://localhost:7654"  # default good URL; explicit should be used over ENV
 
         bot = BaseBot(bot_info=explicit_info, server_url=explicit_url)
-        asyncio.run(bot.start())
+        bot.start()
 
         # Assert connect URL is explicit, not ENV
         mock_connect.assert_called_once_with(explicit_url)
