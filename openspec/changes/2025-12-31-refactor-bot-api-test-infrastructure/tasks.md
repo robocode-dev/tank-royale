@@ -88,6 +88,39 @@
 - [ ] **State Setup**: Handle non-running bot state synchronization equivalent to Java
 - [ ] **Verify**: Create a simple test that would previously have been flaky
 
+### Task 1.5.4: Python Blocking `go()` Interruptibility (Critical)
+
+**Files**:
+
+- `bot-api/python/src/robocode_tank_royale/bot_api/internal/base_bot_internals.py`
+- `bot-api/python/tests/bot_api/test_commands_movement.py`
+- `bot-api/python/tests/test_utils/abstract_bot_test.py` (new)
+
+**Problem**: The Python Bot API's blocking `go()` method uses `threading.Condition.wait()` which cannot be interrupted
+from another thread. This causes `test_commands_movement.py` to hang indefinitely and requires
+`@unittest.skipIf(True, ...)`
+as a workaround. All AI coding assistants have struggled with this issue.
+
+**Tasks**:
+
+- [ ] Evaluate and choose interruptibility approach:
+    - **Option A (Timeout-based)**: Add `wait(timeout=0.1)` with shutdown flag check in the blocking loop
+    - **Option B (Daemon threads)**: Use daemon threads for bot execution in tests
+    - **Option C (Mock-based)**: Mock blocking internals for tests that require `go()` behavior
+- [ ] Implement chosen approach in `base_bot_internals.py` (if modifying core API)
+- [ ] Implement chosen approach in `abstract_bot_test.py` (if test-only solution)
+- [ ] Remove `@unittest.skipIf(True, ...)` from `test_commands_movement.py`
+- [ ] Verify `test_commands_movement.py` passes reliably (run 20 times without hangs)
+- [ ] Document the chosen approach and rationale
+
+**Acceptance Criteria**:
+
+- `test_commands_movement.py` runs without hanging
+- Test teardown completes cleanly (no orphaned threads)
+- No `@unittest.skipIf` workarounds for blocking `go()` issues
+
+**Estimated time**: 2-3 days
+
 ---
 
 ## Phase 2: Synchronous Command Execution Utilities

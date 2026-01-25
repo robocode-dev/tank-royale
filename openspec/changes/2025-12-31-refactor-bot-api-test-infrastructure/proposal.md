@@ -241,6 +241,12 @@ As the implementation progressed, several technical obstacles were identified th
    verification after a state change (like `setFire` after `setGunHeat`) fragile.
 4. **Language Heterogeneity**: Python's `asyncio` and .NET's Task model require different synchronization strategies to
    remain semantically equivalent to the Java reference.
+5. **Python Blocking `go()` Interruptibility**: The Python Bot API's blocking `go()` method cannot be cleanly
+   interrupted when running in a test thread. This causes tests like `test_commands_movement.py` to hang indefinitely
+   when the test thread calls `bot.go()` and the test needs to terminate. The current workaround is to skip these tests
+   with `@unittest.skipIf(True, "FIXME: Test requires blocking go() to be interruptible")`. This is a known limitation
+   of the Python threading model where `threading.Condition.wait()` cannot be interrupted from another thread without
+   explicit timeout handling or a shutdown flag check. **All AI coding assistants have struggled with this issue.**
 
 Detailed tracking of these issues can be found in [design.md](./design.md).
 
@@ -270,6 +276,15 @@ To address these obstacles, the following strategies will be incorporated into t
    command, triggering a tick, and waiting for the resulting intent, reducing boilerplate and race conditions in tests.
 4. **Deterministic Tick Advancement**: Instead of free-running bots, the test infrastructure will prefer a "Step" model
    where the server only sends ticks when the test specifically requests them after verifying the previous state.
+5. **Python Interruptible Blocking**: To address the Python blocking `go()` interruptibility issue, implement one of:
+    - **Option A (Timeout-based)**: Use `threading.Condition.wait(timeout=X)` in a loop with a shutdown flag check,
+      allowing the blocking wait to be interrupted when the test ends.
+    - **Option B (Daemon threads)**: Run bot threads as daemon threads so they terminate when the main test thread
+      exits.
+    - **Option C (Mock-based testing)**: For tests that require `go()` behavior, use mocked internals that don't
+      actually
+      block, verifying the correct methods are called without the threading complexity.
+    - The chosen approach must be documented in the Python `AbstractBotTest` implementation.
 
 ### Phase 6: Mock/Stub Test Bot Factory
 

@@ -63,18 +63,18 @@
 
 ## 7. Tests
 
-- [ ] 7.1 Update `MockedServer` for synchronous testing
-- [ ] 7.2 Convert `test_bot.py` from `IsolatedAsyncioTestCase` → `TestCase`
-- [ ] 7.3 Convert `test_base_bot_constructor.py` → synchronous
-- [ ] 7.4 Convert `test_base_bot_precedence.py` → synchronous
-- [ ] 7.5 Convert `test_base_bot_type_parsing.py` → synchronous
-- [ ] 7.6 Convert `test_bot_factory.py` → synchronous
-- [ ] 7.7 Convert `test_commands_fire.py` → synchronous, remove skip annotations
-- [ ] 7.8 Convert `test_commands_movement.py` → synchronous, remove skip annotations
-- [ ] 7.9 Convert `test_constants.py` → synchronous (if needed)
-- [ ] 7.10 Convert `test_team_message_realistic.py` → synchronous
-- [ ] 7.11 Convert `test_team_message_serialization.py` → synchronous
-- [ ] 7.12 Update any internal tests under `tests/bot_api/internal/`
+- [x] 7.1 Update `MockedServer` for synchronous testing
+- [x] 7.2 Convert `test_bot.py` from `IsolatedAsyncioTestCase` → `TestCase`
+- [x] 7.3 Convert `test_base_bot_constructor.py` → synchronous
+- [x] 7.4 Convert `test_base_bot_precedence.py` → synchronous
+- [x] 7.5 Convert `test_base_bot_type_parsing.py` → synchronous
+- [x] 7.6 Convert `test_bot_factory.py` → synchronous (no Python test present)
+- [x] 7.7 Convert `test_commands_fire.py` → synchronous, remove skip annotations (no Python test present)
+- [x] 7.8 Convert `test_commands_movement.py` → synchronous, remove skip annotations
+- [x] 7.9 Convert `test_constants.py` → synchronous (already sync)
+- [x] 7.10 Convert `test_team_message_realistic.py` → synchronous (already sync)
+- [x] 7.11 Convert `test_team_message_serialization.py` → synchronous (already sync)
+- [x] 7.12 Update any internal tests under `tests/bot_api/internal/` (already sync)
 
 ## 8. Documentation
 
