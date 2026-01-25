@@ -1,4 +1,3 @@
-import asyncio
 import random
 
 from robocode_tank_royale.bot_api.bot import Bot
@@ -27,7 +26,7 @@ class Corners(Bot):
         self._enemies: int = 0  # Number of enemy bots in the game
         self._stop_when_see_enemy: bool = False  # See go_corner()
 
-    async def run(self) -> None:
+    def run(self) -> None:
         """Called when a new round is started -> initialize and do some movement."""
         # Set colors
         self.body_color = Color.from_rgb(0xFF, 0x00, 0x00)   # red
@@ -40,7 +39,7 @@ class Corners(Bot):
         self._enemies = self.enemy_count
 
         # Move to a corner
-        await self._go_corner()
+        self._go_corner()
 
         # Initialize gun turn speed to 3
         gun_increment = 3
@@ -48,58 +47,58 @@ class Corners(Bot):
         # Spin gun back and forth
         while self.is_running():
             for _ in range(30):
-                await self.turn_gun_left(gun_increment)
+                self.turn_gun_left(gun_increment)
             gun_increment *= -1
 
-    async def _go_corner(self) -> None:
+    def _go_corner(self) -> None:
         """Move to the selected corner (very simple approach to mirror the Java sample)."""
         # We don't want to stop when we're just turning...
         self._stop_when_see_enemy = False
         # Turn to face the wall towards our desired corner
-        await self.turn_left(self.calc_bearing(Corners.corner))
+        self.turn_left(self.calc_bearing(Corners.corner))
         # Ok, now we don't want to crash into any bot in our way...
         self._stop_when_see_enemy = True
         # Move to that wall
-        await self.forward(5000)
+        self.forward(5000)
         # Turn to face the corner
-        await self.turn_left(90)
+        self.turn_left(90)
         # Move to the corner
-        await self.forward(5000)
+        self.forward(5000)
         # Turn gun to starting point
-        await self.turn_gun_left(90)
+        self.turn_gun_left(90)
 
-    async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
+    def on_scanned_bot(self, e: ScannedBotEvent) -> None:
         """We saw another bot -> stop and fire!"""
         distance = self.distance_to(float(e.x), float(e.y))
 
         if self._stop_when_see_enemy:
             # Stop movement
-            await self.stop()
+            self.stop()
             # Call our custom firing method
-            await self._smart_fire(distance)
+            self._smart_fire(distance)
             # Rescan for another bot
             try:
-                await self.rescan()
+                self.rescan()
                 # If not interrupted by a new scan, resume movement
-                await self.resume()
+                self.resume()
             except Exception:
                 # A new ScannedBotEvent can interrupt rescan; internal logic handles interruption
                 # No resume here to mirror Java behavior (resume only when not interrupted)
                 pass
         else:
-            await self._smart_fire(distance)
+            self._smart_fire(distance)
 
-    async def _smart_fire(self, distance: float) -> None:
+    def _smart_fire(self, distance: float) -> None:
         """Custom fire method that determines firepower based on distance."""
         energy = self.energy
         if distance > 200 or energy < 15:
-            await self.fire(1)
+            self.fire(1)
         elif distance > 50:
-            await self.fire(2)
+            self.fire(2)
         else:
-            await self.fire(3)
+            self.fire(3)
 
-    async def on_death(self, e: DeathEvent) -> None:
+    def on_death(self, e: DeathEvent) -> None:
         """We died -> figure out if we need to switch to another corner."""
         del e
         # Well, others should never be 0, but better safe than sorry.
@@ -114,10 +113,10 @@ class Corners(Bot):
             print(f"I died but did well. I will still use corner {Corners.corner}")
 
 
-async def main() -> None:
+def main() -> None:
     bot = Corners()
-    await bot.start()
+    bot.start()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

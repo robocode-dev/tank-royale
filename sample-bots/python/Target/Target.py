@@ -1,5 +1,3 @@
-import asyncio
-
 from robocode_tank_royale.bot_api.bot import Bot
 from robocode_tank_royale.bot_api.color import Color
 from robocode_tank_royale.bot_api.events import CustomEvent
@@ -19,7 +17,7 @@ class Target(Bot):
         super().__init__()
         self._trigger: int = 80  # Keeps track of when to move
 
-    async def run(self) -> None:
+    def run(self) -> None:
         # Set colors
         self.body_color = Color.WHITE
         self.turret_color = Color.WHITE
@@ -38,9 +36,9 @@ class Target(Bot):
 
         # No continuous action; the bot reacts to events
         while self.running:
-            await self.go()
+            self.go()
 
-    async def on_custom_event(self, e: CustomEvent) -> None:
+    def on_custom_event(self, e: CustomEvent) -> None:
         # Check if our custom event "trigger-hit" went off
         if e.condition.name == "trigger-hit":
             # Adjust the trigger value, or else the event will fire again and again and again...
@@ -50,14 +48,14 @@ class Target(Bot):
             print(f"Ouch, down to {int(self.energy + 0.5)} energy.")
 
             # Move around a bit
-            await self.turn_right(65)
-            await self.forward(100)
+            self.turn_right(65)
+            self.forward(100)
 
 
-async def main() -> None:
+def main() -> None:
     bot = Target()
-    await bot.start()
+    bot.start()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

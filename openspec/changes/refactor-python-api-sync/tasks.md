@@ -46,20 +46,20 @@
 
 ## 6. Sample Bots (14 bots)
 
-- [ ] 6.1 Update `Corners/Corners.py` - remove async/await
-- [ ] 6.2 Update `Crazy/Crazy.py` - remove async/await
-- [ ] 6.3 Update `Fire/Fire.py` - remove async/await
-- [ ] 6.4 Update `MyFirstBot/MyFirstBot.py` - remove async/await
-- [ ] 6.5 Update `MyFirstDroid/MyFirstDroid.py` - remove async/await
-- [ ] 6.6 Update `MyFirstLeader/MyFirstLeader.py` - remove async/await
-- [ ] 6.7 Update `MyFirstTeam/` (all team bots) - remove async/await
-- [ ] 6.8 Update `PaintingBot/PaintingBot.py` - remove async/await
-- [ ] 6.9 Update `RamFire/RamFire.py` - remove async/await
-- [ ] 6.10 Update `SpinBot/SpinBot.py` - remove async/await
-- [ ] 6.11 Update `Target/Target.py` - remove async/await
-- [ ] 6.12 Update `TrackFire/TrackFire.py` - remove async/await
-- [ ] 6.13 Update `VelocityBot/VelocityBot.py` - remove async/await
-- [ ] 6.14 Update `Walls/Walls.py` - remove async/await
+- [x] 6.1 Update `Corners/Corners.py` - remove async/await
+- [x] 6.2 Update `Crazy/Crazy.py` - remove async/await
+- [x] 6.3 Update `Fire/Fire.py` - remove async/await
+- [x] 6.4 Update `MyFirstBot/MyFirstBot.py` - remove async/await
+- [x] 6.5 Update `MyFirstDroid/MyFirstDroid.py` - remove async/await
+- [x] 6.6 Update `MyFirstLeader/MyFirstLeader.py` - remove async/await
+- [x] 6.7 Update `MyFirstTeam/` (all team bots) - remove async/await
+- [x] 6.8 Update `PaintingBot/PaintingBot.py` - remove async/await
+- [x] 6.9 Update `RamFire/RamFire.py` - remove async/await
+- [x] 6.10 Update `SpinBot/SpinBot.py` - remove async/await
+- [x] 6.11 Update `Target/Target.py` - remove async/await
+- [x] 6.12 Update `TrackFire/TrackFire.py` - remove async/await
+- [x] 6.13 Update `VelocityBot/VelocityBot.py` - remove async/await
+- [x] 6.14 Update `Walls/Walls.py` - remove async/await
 
 ## 7. Tests
 

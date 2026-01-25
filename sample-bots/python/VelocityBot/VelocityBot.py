@@ -1,5 +1,3 @@
-import asyncio
-
 from robocode_tank_royale.bot_api.bot import Bot
 from robocode_tank_royale.bot_api.events import ScannedBotEvent, HitByBulletEvent, HitWallEvent
 
@@ -16,7 +14,7 @@ class VelocityBot(Bot):
         super().__init__()
         self._turn_counter: int = 0
 
-    async def run(self) -> None:
+    def run(self) -> None:
         """Called when a new round is started -> initialize and control movement each turn."""
 
         self._turn_counter = 0
@@ -39,20 +37,20 @@ class VelocityBot(Bot):
             self._turn_counter += 1
 
             # Execute the current turn
-            await self.go()
+            self.go()
 
-    async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
+    def on_scanned_bot(self, e: ScannedBotEvent) -> None:
         """We scanned another bot -> fire!"""
         del e
-        await self.fire(1)
+        self.fire(1)
 
-    async def on_hit_by_bullet(self, e: HitByBulletEvent) -> None:
+    def on_hit_by_bullet(self, e: HitByBulletEvent) -> None:
         """We were hit by a bullet -> set turn rate to make movement less predictable."""
         del e
         # Turn to confuse other bots
         self.turn_rate = 5
 
-    async def on_hit_wall(self, e: HitWallEvent) -> None:
+    def on_hit_wall(self, e: HitWallEvent) -> None:
         """We hit a wall -> move in the opposite direction by reversing target speed.
         Note that current speed is 0 as the bot just hit the wall.
         """
@@ -63,10 +61,10 @@ class VelocityBot(Bot):
         self.target_speed = -1 * current if current != 0.0 else -4.0
 
 
-async def main() -> None:
+def main() -> None:
     bot = VelocityBot()
-    await bot.start()
+    bot.start()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
