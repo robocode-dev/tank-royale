@@ -1,46 +1,52 @@
 <!DOCTYPE html>
-<html lang="en"
-      data-content_root="../../"
-      x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }"
-      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
-      class="scroll-smooth"
-      :class="{'dark': darkMode === 'dark' || (darkMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}"
->
+<html lang="en" data-content_root="../../"
+      x-data="{ darkMode: $persist(window.matchMedia('(prefers-color-scheme: dark)').matches), activeSection: ''}"
+      :class="{ 'dark' : darkMode === true }">
+
 <head>
+    <script>
+        (function () {
+            // Set initial color scheme
+            if ((localStorage.getItem("_x_darkMode") === "true") || (window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+                document.documentElement.classList.add("dark");
+            }
+
+            // Watch for media preference changes
+            window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+                localStorage.setItem("_x_darkMode", event.matches);
+                document.documentElement.classList.toggle("dark", event.matches);
+            });
+        })();
+    </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta charset="utf-8" />
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"/>
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#030711"/>
 
-    <title>bot_api.bot_abc | Robocode Tank Royale Bot API (Python) 0.34.2 documentation</title>
-    <meta property="og:title" content="bot_api.bot_abc | Robocode Tank Royale Bot API (Python) 0.34.2 documentation"/>
-    <meta name="twitter:title" content="bot_api.bot_abc | Robocode Tank Royale Bot API (Python) 0.34.2 documentation"/>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e72c8e07" />
-      <link rel="stylesheet" type="text/css" href="../../_static/theme.css?v=42baaae4" />
-        <link rel="search" title="Search" href="../../search.html" />
-        <link rel="index" title="Index" href="../../genindex.html" />
-
-    <script>
-    <!-- Prevent Flash of wrong theme -->
-      const userPreference = localStorage.getItem('darkMode');
-      let mode;
-      if (userPreference === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        mode = 'dark';
-        document.documentElement.classList.add('dark');
-      } else {
-        mode = 'light';
-      }
-      if (!userPreference) {localStorage.setItem('darkMode', mode)}
-    </script>
+    <title>bot_api.bot_abc | Robocode Tank Royale Bot API (Python) 0.35.0 documentation</title>
+    <meta property="og:title" content="bot_api.bot_abc | Robocode Tank Royale Bot API (Python) 0.35.0 documentation"/>
+    <meta name="twitter:title" content="bot_api.bot_abc | Robocode Tank Royale Bot API (Python) 0.35.0 documentation"/>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e72c8e07"/>
+    <link rel="stylesheet" type="text/css" href="../../_static/theme.css?v=73505e79"/>
+    <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="index" title="Index" href="../../genindex.html"/>
 </head>
-  <body x-data="{ showSidebar: false, showScrollTop: false }" class="min-h-screen font-sans antialiased bg-background text-foreground" :class="{ 'overflow-hidden': showSidebar }">
-    <div x-cloak x-show="showSidebar" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" @click.self="showSidebar = false"></div><div id="page" class="relative flex flex-col min-h-screen"><a href="#content" class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100">
+
+<body x-data="{ showSidebar: false, showScrollTop: false }"
+      class="min-h-screen font-sans antialiased bg-background text-foreground"
+      :class="{ 'overflow-hidden': showSidebar }">
+<div x-cloak x-show="showSidebar"
+     class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden"
+     @click.self="showSidebar = false"></div>
+<div id="page" class="relative flex flex-col min-h-screen"><a href="#content"
+                                                              class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100">
       Skip to content
-    </a><header
-  class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
+</a>
+    <header class="sticky top-0 z-40 w-full border-b shadow-xs border-border bg-background/90 backdrop-blur">
+        <div class="container flex items-center h-14">
     <div class="hidden mr-4 md:flex">
         <a href="../../index.html" class="flex items-center mr-6"><span
-            class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.2 documentation</span>
+            class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
       </a></div><button
       class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
       type="button" @click="showSidebar = true">
@@ -51,7 +57,7 @@
       </svg>
       <span class="sr-only">Toggle navigation menu</span>
     </button>
-    <div class="flex items-center justify-between flex-1 space-x-2 sm:space-x-4 md:justify-end">
+            <div class="flex items-center justify-between flex-1 gap-2 sm:gap-4 md:justify-end">
       <div class="flex-1 w-full md:w-auto md:flex-none"><form id="searchbox"
       action="../../search.html"
       method="get"
@@ -70,17 +76,19 @@
   </kbd>
 </form>
       </div>
-      <nav class="flex items-center space-x-1">
-        <button @click="darkMode = darkMode === 'light' ? 'dark' : 'light'"
+                <nav class="flex items-center gap-1">
+                    <button @click="darkMode = !darkMode"
           class="relative inline-flex items-center justify-center px-0 text-sm font-medium transition-colors rounded-md hover:bg-accent hover:text-accent-foreground h-9 w-9"
           type="button"
-          aria-label="Color theme switcher">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+                            title="Toggle color scheme">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 96 960 960"
+                             fill="currentColor"
             class="absolute transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0">
             <path
               d="M480 685q45.456 0 77.228-31.772Q589 621.456 589 576q0-45.456-31.772-77.228Q525.456 467 480 467q-45.456 0-77.228 31.772Q371 530.544 371 576q0 45.456 31.772 77.228Q434.544 685 480 685Zm0 91q-83 0-141.5-58.5T280 576q0-83 58.5-141.5T480 376q83 0 141.5 58.5T680 576q0 83-58.5 141.5T480 776ZM80 621.5q-19.152 0-32.326-13.174T34.5 576q0-19.152 13.174-32.326T80 530.5h80q19.152 0 32.326 13.174T205.5 576q0 19.152-13.174 32.326T160 621.5H80Zm720 0q-19.152 0-32.326-13.174T754.5 576q0-19.152 13.174-32.326T800 530.5h80q19.152 0 32.326 13.174T925.5 576q0 19.152-13.174 32.326T880 621.5h-80Zm-320-320q-19.152 0-32.326-13.174T434.5 256v-80q0-19.152 13.174-32.326T480 130.5q19.152 0 32.326 13.174T525.5 176v80q0 19.152-13.174 32.326T480 301.5Zm0 720q-19.152 0-32.326-13.17Q434.5 995.152 434.5 976v-80q0-19.152 13.174-32.326T480 850.5q19.152 0 32.326 13.174T525.5 896v80q0 19.152-13.174 32.33-13.174 13.17-32.326 13.17ZM222.174 382.065l-43-42Q165.5 327.391 166 308.239t13.174-33.065q13.435-13.674 32.587-13.674t32.065 13.674l42.239 43q12.674 13.435 12.555 31.706-.12 18.272-12.555 31.946-12.674 13.674-31.445 13.413-18.772-.261-32.446-13.174Zm494 494.761-42.239-43q-12.674-13.435-12.674-32.087t12.674-31.565Q686.609 756.5 705.38 757q18.772.5 32.446 13.174l43 41.761Q794.5 824.609 794 843.761t-13.174 33.065Q767.391 890.5 748.239 890.5t-32.065-13.674Zm-42-494.761Q660.5 369.391 661 350.62q.5-18.772 13.174-32.446l41.761-43Q728.609 261.5 747.761 262t33.065 13.174q13.674 13.435 13.674 32.587t-13.674 32.065l-43 42.239q-13.435 12.674-31.706 12.555-18.272-.12-31.946-12.555Zm-495 494.761Q165.5 863.391 165.5 844.239t13.674-32.065l43-42.239q13.435-12.674 32.087-12.674t31.565 12.674Q299.5 782.609 299 801.38q-.5 18.772-13.174 32.446l-41.761 43Q231.391 890.5 212.239 890t-33.065-13.174ZM480 576Z" />
           </svg>
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 96 960 960"
+                             fill="currentColor"
             class="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100">
             <path
               d="M480 936q-151 0-255.5-104.5T120 576q0-138 90-239.5T440 218q25-3 39 18t-1 44q-17 26-25.5 55t-8.5 61q0 90 63 153t153 63q31 0 61.5-9t54.5-25q21-14 43-1.5t19 39.5q-14 138-117.5 229T480 936Zm0-80q88 0 158-48.5T740 681q-20 5-40 8t-40 3q-123 0-209.5-86.5T364 396q0-20 3-40t8-40q-78 32-126.5 102T200 576q0 116 82 198t198 82Zm-10-270Z" />
@@ -91,15 +99,18 @@
   </div>
 </header>
 
-    <div class="flex-1"><div class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside id="left-sidebar"
-  class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full shrink-0 overflow-y-auto border-r border-border md:sticky"
+    <div class="flex-1">
+        <div
+            class="container md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
+            <aside id="left-sidebar"
+                   class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full overflow-y-auto border-r border-border md:sticky"
   :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
 
-        <a href="../../index.html" class="!justify-start text-sm md:!hidden bg-background"><span
-            class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.2 documentation</span>
+                <a href="../../index.html" class="justify-start text-sm md:!hidden bg-background"><span
+                    class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
     </a>
 
-    <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
+                <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0">
       <div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -121,13 +132,13 @@
       </svg>
     </button>
   </aside>
-        <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
+            <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
 <div class="w-full min-w-0 mx-auto">
 <nav aria-label="breadcrumbs"
      class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
   <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
      href="../../index.html">
-      <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.34.2 documentation</span>
+      <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
     <svg xmlns="http://www.w3.org/2000/svg"
          height="18"
          width="18"
@@ -140,10 +151,10 @@
     </svg>
   </a>
 
-<div class="mr-1">/</div><a class="hover:text-foreground overflow-hidden text-ellipsis whitespace-nowrap"
+    <div class="mr-1">/</div><a class="hover:text-foreground overflow-hidden text-ellipsis whitespace-nowrap"
        href="../index.html">Module code</a>
 
-<div class="mr-1">/</div><span aria-current="page"
+    <div class="mr-1">/</div><span aria-current="page"
         class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">bot_api.bot_abc</span>
 </nav>
 
@@ -164,9 +175,12 @@
 </span><span id="line-11">
 <div class="viewcode-block" id="BotABC.run">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.run">[docs]</a>
-</span><span id="line-12">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-12">    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span
+        class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+        class="kc">None</span><span class="p">:</span>
 </span><span id="line-13"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-14"><span class="sd">        Used for running a program for the bot.</span>
+</span><span id="line-14"><span
+        class="sd">        The run() method is used for running a program for the bot like:</span>
 </span><span id="line-15">
 </span><span id="line-16"><span class="sd">        Example:</span>
 </span><span id="line-17"><span class="sd">            def run(self):</span>
@@ -177,714 +191,825 @@
 </span><span id="line-22"><span class="sd">                    self.turn_gun_right(360)</span>
 </span><span id="line-23">
 </span><span id="line-24"><span class="sd">        Notes:</span>
-</span><span id="line-25"><span class="sd">            - In this example, the program runs in a loop (as long as the bot is running),</span>
-</span><span id="line-26"><span class="sd">              meaning that it will start moving forward as soon as `turn_gun_right` has completed.</span>
-</span><span id="line-27"><span class="sd">            - When running a loop that could run forever, it is best practice to check if the</span>
-</span><span id="line-28"><span class="sd">              bot is still running (`is_running`) to stop the loop. This ensures the game can</span>
-</span><span id="line-29"><span class="sd">              stop the thread correctly, preventing strange behavior in new rounds.</span>
-</span><span id="line-30">
-</span><span id="line-31"><span class="sd">        References:</span>
-</span><span id="line-32"><span class="sd">            - `is_running`</span>
-</span><span id="line-33"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-34">        <span class="k">pass</span></div>
+</span><span id="line-25"><span class="sd">            - Note that the program runs in a loop in this example (as long as the bot is running),</span>
+</span><span id="line-26"><span class="sd">              meaning that it will start moving forward as soon as `turn_gun_right` has executed.</span>
+</span><span id="line-27"><span class="sd">            - When running a loop that could potentially run forever, the best practice is to check if the</span>
+</span><span id="line-28"><span class="sd">              bot is still running to stop and exit the loop. This gives the game a chance of stopping the</span>
+</span><span id="line-29"><span class="sd">              thread running the loop in the code behind. If the thread is not stopped correctly, the bot may</span>
+</span><span id="line-30"><span class="sd">              behave strangely in new rounds.</span>
+</span><span id="line-31">
+</span><span id="line-32"><span class="sd">        References:</span>
+</span><span id="line-33"><span class="sd">            - `running`</span>
+</span><span id="line-34"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-35">        <span class="k">pass</span>
+    </div>
 
-</span><span id="line-35">
-<div class="viewcode-block" id="BotABC.is_running">
-<a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.is_running">[docs]</a>
-</span><span id="line-36">    <span class="nd">@abstractmethod</span>
-</span><span id="line-37">    <span class="k">def</span><span class="w"> </span><span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-38"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-39"><span class="sd">        Checks if this bot is running.</span>
-</span><span id="line-40">
-</span><span id="line-41"><span class="sd">        Returns:</span>
-</span><span id="line-42"><span class="sd">            bool: True when the bot is running, False otherwise.</span>
-</span><span id="line-43"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-44">        <span class="k">pass</span></div>
-
-</span><span id="line-45">
+        </span><span id="line-36">
+</span><span id="line-37">    <span class="nd">@property</span>
+</span><span id="line-38">    <span class="nd">@abstractmethod</span>
+</span><span id="line-39">    <span class="k">def</span><span class="w"> </span><span class="nf">running</span><span
+        class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+        class="nb">bool</span><span class="p">:</span>
+</span><span id="line-40"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-41"><span class="sd">        Checks if this bot is running.</span>
+</span><span id="line-42">
+</span><span id="line-43"><span class="sd">        Returns:</span>
+</span><span id="line-44"><span class="sd">            bool: True when the bot is running, False otherwise.</span>
+</span><span id="line-45"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-46">        <span class="k">pass</span>
+</span><span id="line-47">
 <div class="viewcode-block" id="BotABC.set_forward">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.set_forward">[docs]</a>
-</span><span id="line-46">    <span class="nd">@abstractmethod</span>
-</span><span id="line-47">    <span class="k">def</span><span class="w"> </span><span class="nf">set_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-48"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-49"><span class="sd">        Sets the bot to move forward until it has traveled a specific distance from its</span>
-</span><span id="line-50"><span class="sd">        current position or reached an obstacle.</span>
-</span><span id="line-51">
-</span><span id="line-52"><span class="sd">        The movement speed is limited by `set_max_speed`.</span>
+</span><span id="line-48">    <span class="nd">@abstractmethod</span>
+</span><span id="line-49">    <span class="k">def</span><span class="w"> </span><span class="nf">set_forward</span><span
+        class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span
+        class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+        class="kc">None</span><span class="p">:</span>
+</span><span id="line-50"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-51"><span class="sd">        Sets the bot to move forward until it has traveled a specific distance from its</span>
+</span><span id="line-52"><span class="sd">        current position or reached an obstacle.</span>
 </span><span id="line-53">
-</span><span id="line-54"><span class="sd">        Acceleration/Deceleration:</span>
-</span><span id="line-55"><span class="sd">            - The bot&#39;s acceleration and deceleration are controlled by constants:</span>
-</span><span id="line-56"><span class="sd">                - `Constants.ACCELERATION`: Adds 1 unit to the speed per turn while accelerating.</span>
-</span><span id="line-57"><span class="sd">                - `Constants.DECELERATION`: Subtracts 2 units from speed per turn while decelerating.</span>
-</span><span id="line-58">
-</span><span id="line-59"><span class="sd">        Behavior:</span>
-</span><span id="line-60"><span class="sd">            - The method is executed when `go()` is called, allowing you to combine other</span>
-</span><span id="line-61"><span class="sd">              methods (e.g., turning, firing) to occur in parallel in a single turn.</span>
-</span><span id="line-62"><span class="sd">            - For multiple calls to this method, the most recent call before `go()` is executed.</span>
-</span><span id="line-63"><span class="sd">            - Cancels the effect of prior calls to `set_target_speed`, as this method adjusts the</span>
-</span><span id="line-64"><span class="sd">              target speed for each turn until `distance_remaining` is 0.</span>
-</span><span id="line-65">
-</span><span id="line-66"><span class="sd">        Args:</span>
-</span><span id="line-67"><span class="sd">            distance (float): Distance to move forward.</span>
-</span><span id="line-68"><span class="sd">                - If negative, the bot will move backward.</span>
-</span><span id="line-69"><span class="sd">                - If `float(&#39;inf&#39;)`, the bot will move forward infinitely.</span>
-</span><span id="line-70"><span class="sd">                - If `float(&#39;-inf&#39;)`, the bot will move backward infinitely.</span>
-</span><span id="line-71">
-</span><span id="line-72"><span class="sd">        References:</span>
-</span><span id="line-73"><span class="sd">            - `forward`, `set_back`, `back`, `distance_remaining`, `set_target_speed`</span>
-</span><span id="line-74"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-75">        <span class="k">pass</span></div>
+</span><span id="line-54"><span class="sd">        The movement speed is limited by `set_max_speed`.</span>
+</span><span id="line-55">
+</span><span id="line-56"><span class="sd">        Acceleration/Deceleration:</span>
+</span><span id="line-57"><span class="sd">            - The bot&#39;s acceleration and deceleration are controlled by constants:</span>
+</span><span id="line-58"><span class="sd">                - `Constants.ACCELERATION`: Adds 1 unit to the speed per turn while accelerating.</span>
+</span><span id="line-59"><span class="sd">                - `Constants.DECELERATION`: Subtracts 2 units from speed per turn while decelerating.</span>
+</span><span id="line-60">
+</span><span id="line-61"><span class="sd">        Behavior:</span>
+</span><span id="line-62"><span class="sd">            - The method is executed when `go()` is called, allowing you to combine other</span>
+</span><span id="line-63"><span class="sd">              methods (e.g., turning, firing) to occur in parallel in a single turn.</span>
+</span><span id="line-64"><span class="sd">            - For multiple calls to this method, the most recent call before `go()` is executed.</span>
+</span><span id="line-65"><span class="sd">            - Cancels the effect of prior calls to `set_target_speed`, as this method adjusts the</span>
+</span><span id="line-66"><span
+        class="sd">              target speed for each turn until `distance_remaining` is 0.</span>
+</span><span id="line-67">
+</span><span id="line-68"><span class="sd">        Args:</span>
+</span><span id="line-69"><span class="sd">            distance (float): Distance to move forward.</span>
+</span><span id="line-70"><span class="sd">                - If negative, the bot will move backward.</span>
+</span><span id="line-71"><span class="sd">                - If `float(&#39;inf&#39;)`, the bot will move forward infinitely.</span>
+</span><span id="line-72"><span class="sd">                - If `float(&#39;-inf&#39;)`, the bot will move backward infinitely.</span>
+</span><span id="line-73">
+</span><span id="line-74"><span class="sd">        References:</span>
+</span><span id="line-75"><span class="sd">            - `forward`, `set_back`, `back`, `distance_remaining`, `set_target_speed`</span>
+</span><span id="line-76"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-77">        <span class="k">pass</span></div>
 
-</span><span id="line-76">
+    </span><span id="line-78">
 <div class="viewcode-block" id="BotABC.forward">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.forward">[docs]</a>
-</span><span id="line-77">    <span class="nd">@abstractmethod</span>
-</span><span id="line-78">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-79"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-80"><span class="sd">        Moves the bot forward until it has traveled a specific distance or reached an obstacle.</span>
-</span><span id="line-81">
-</span><span id="line-82"><span class="sd">        The movement speed is limited by `set_max_speed`.</span>
+</span><span id="line-79">    <span class="nd">@abstractmethod</span>
+</span><span id="line-80">    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span
+    class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span
+    class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+    class="kc">None</span><span class="p">:</span>
+</span><span id="line-81"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-82"><span class="sd">        Moves the bot forward until it has traveled a specific distance or reached an obstacle.</span>
 </span><span id="line-83">
-</span><span id="line-84"><span class="sd">        Acceleration/Deceleration:</span>
-</span><span id="line-85"><span class="sd">            - The bot&#39;s acceleration and deceleration are controlled by constants:</span>
-</span><span id="line-86"><span class="sd">                - `Constants.ACCELERATION`: Adds 1 unit to the speed per turn while accelerating.</span>
-</span><span id="line-87"><span class="sd">                - `Constants.DECELERATION`: Subtracts 2 units from speed per turn while decelerating.</span>
-</span><span id="line-88">
-</span><span id="line-89"><span class="sd">        Behavior:</span>
-</span><span id="line-90"><span class="sd">            - This method executes immediately by internally calling `go()` and blocks execution</span>
-</span><span id="line-91"><span class="sd">              until the movement is complete. Subsequent commands will execute only after this.</span>
-</span><span id="line-92"><span class="sd">              Use setter methods if parallel execution is needed.</span>
-</span><span id="line-93"><span class="sd">            - Cancels the effect of previous calls to `set_target_speed`, `set_forward`, and `set_back`.</span>
-</span><span id="line-94">
-</span><span id="line-95"><span class="sd">        Args:</span>
-</span><span id="line-96"><span class="sd">            distance (float): Distance to move forward.</span>
-</span><span id="line-97"><span class="sd">                - If negative, the bot will move backward.</span>
-</span><span id="line-98"><span class="sd">                - If `float(&#39;inf&#39;)`, the bot will move forward infinitely.</span>
-</span><span id="line-99"><span class="sd">                - If `float(&#39;-inf&#39;)`, the bot will move backward infinitely.</span>
-</span><span id="line-100">
-</span><span id="line-101"><span class="sd">        References:</span>
-</span><span id="line-102"><span class="sd">            - `set_forward`, `set_back`, `back`, `distance_remaining`, `set_target_speed`</span>
-</span><span id="line-103"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-104">        <span class="k">pass</span></div>
+</span><span id="line-84"><span class="sd">        The movement speed is limited by `set_max_speed`.</span>
+</span><span id="line-85">
+</span><span id="line-86"><span class="sd">        Acceleration/Deceleration:</span>
+</span><span id="line-87"><span class="sd">            - The bot&#39;s acceleration and deceleration are controlled by constants:</span>
+</span><span id="line-88"><span class="sd">                - `Constants.ACCELERATION`: Adds 1 unit to the speed per turn while accelerating.</span>
+</span><span id="line-89"><span class="sd">                - `Constants.DECELERATION`: Subtracts 2 units from speed per turn while decelerating.</span>
+</span><span id="line-90">
+</span><span id="line-91"><span class="sd">        Behavior:</span>
+</span><span id="line-92"><span class="sd">            - This method executes immediately by internally calling `go()` and blocks execution</span>
+</span><span id="line-93"><span class="sd">              until the movement is complete. Subsequent commands will execute only after this.</span>
+</span><span id="line-94"><span class="sd">              Use setter methods if parallel execution is needed.</span>
+</span><span id="line-95"><span class="sd">            - Cancels the effect of previous calls to `set_target_speed`, `set_forward`, and `set_back`.</span>
+</span><span id="line-96">
+</span><span id="line-97"><span class="sd">        Args:</span>
+</span><span id="line-98"><span class="sd">            distance (float): Distance to move forward.</span>
+</span><span id="line-99"><span class="sd">                - If negative, the bot will move backward.</span>
+</span><span id="line-100"><span class="sd">                - If `float(&#39;inf&#39;)`, the bot will move forward infinitely.</span>
+</span><span id="line-101"><span class="sd">                - If `float(&#39;-inf&#39;)`, the bot will move backward infinitely.</span>
+</span><span id="line-102">
+</span><span id="line-103"><span class="sd">        References:</span>
+</span><span id="line-104"><span class="sd">            - `set_forward`, `set_back`, `back`, `distance_remaining`, `set_target_speed`</span>
+</span><span id="line-105"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-106">        <span class="k">pass</span></div>
 
-</span><span id="line-105">
+                </span><span id="line-107">
 <div class="viewcode-block" id="BotABC.set_back">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.set_back">[docs]</a>
-</span><span id="line-106">    <span class="nd">@abstractmethod</span>
-</span><span id="line-107">    <span class="k">def</span><span class="w"> </span><span class="nf">set_back</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-108"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-109"><span class="sd">        Sets the bot to move backward until it has traveled a specific distance from its</span>
-</span><span id="line-110"><span class="sd">        current position or reached an obstacle.</span>
-</span><span id="line-111">
-</span><span id="line-112"><span class="sd">        The movement speed is limited by `set_max_speed`.</span>
+</span><span id="line-108">    <span class="nd">@abstractmethod</span>
+</span><span id="line-109">    <span class="k">def</span><span class="w"> </span><span class="nf">set_back</span><span
+                class="p">(</span><span class="bp">self</span><span class="p">,</span> <span
+                class="n">distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span
+                class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-110"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-111"><span class="sd">        Sets the bot to move backward until it has traveled a specific distance from its</span>
+</span><span id="line-112"><span class="sd">        current position or reached an obstacle.</span>
 </span><span id="line-113">
-</span><span id="line-114"><span class="sd">        Acceleration/Deceleration:</span>
-</span><span id="line-115"><span class="sd">            - The bot&#39;s acceleration and deceleration are controlled by constants:</span>
-</span><span id="line-116"><span class="sd">                - `Constants.ACCELERATION`: Adds 1 unit to the speed per turn while accelerating.</span>
-</span><span id="line-117"><span class="sd">                - `Constants.DECELERATION`: Subtracts 2 units from speed per turn while decelerating.</span>
-</span><span id="line-118">
-</span><span id="line-119"><span class="sd">        Behavior:</span>
-</span><span id="line-120"><span class="sd">            - The method is executed when `go()` is called, allowing you to combine other</span>
-</span><span id="line-121"><span class="sd">              methods (e.g., turning, firing) to occur in parallel in a single turn.</span>
-</span><span id="line-122"><span class="sd">            - For multiple calls to this method, the most recent call before `go()` is executed.</span>
-</span><span id="line-123"><span class="sd">            - Cancels the effect of prior calls to `set_target_speed`, as this method adjusts the</span>
-</span><span id="line-124"><span class="sd">              target speed for each turn until `distance_remaining` is 0.</span>
-</span><span id="line-125">
-</span><span id="line-126"><span class="sd">        Args:</span>
-</span><span id="line-127"><span class="sd">            distance (float): Distance to move backward.</span>
-</span><span id="line-128"><span class="sd">                - If negative, the bot will move forward.</span>
-</span><span id="line-129"><span class="sd">                - If `float(&#39;inf&#39;)`, the bot will move backward infinitely.</span>
-</span><span id="line-130"><span class="sd">                - If `float(&#39;-inf&#39;)`, the bot will move forward infinitely.</span>
-</span><span id="line-131">
-</span><span id="line-132"><span class="sd">        References:</span>
-</span><span id="line-133"><span class="sd">            - `back`, `set_forward`, `forward`, `distance_remaining`, `set_target_speed`</span>
-</span><span id="line-134"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-135">        <span class="k">pass</span></div>
+</span><span id="line-114"><span class="sd">        The movement speed is limited by `set_max_speed`.</span>
+</span><span id="line-115">
+</span><span id="line-116"><span class="sd">        Acceleration/Deceleration:</span>
+</span><span id="line-117"><span class="sd">            - The bot&#39;s acceleration and deceleration are controlled by constants:</span>
+</span><span id="line-118"><span class="sd">                - `Constants.ACCELERATION`: Adds 1 unit to the speed per turn while accelerating.</span>
+</span><span id="line-119"><span class="sd">                - `Constants.DECELERATION`: Subtracts 2 units from speed per turn while decelerating.</span>
+</span><span id="line-120">
+</span><span id="line-121"><span class="sd">        Behavior:</span>
+</span><span id="line-122"><span class="sd">            - The method is executed when `go()` is called, allowing you to combine other</span>
+</span><span id="line-123"><span class="sd">              methods (e.g., turning, firing) to occur in parallel in a single turn.</span>
+</span><span id="line-124"><span class="sd">            - For multiple calls to this method, the most recent call before `go()` is executed.</span>
+</span><span id="line-125"><span class="sd">            - Cancels the effect of prior calls to `set_target_speed`, as this method adjusts the</span>
+</span><span id="line-126"><span
+                class="sd">              target speed for each turn until `distance_remaining` is 0.</span>
+</span><span id="line-127">
+</span><span id="line-128"><span class="sd">        Args:</span>
+</span><span id="line-129"><span class="sd">            distance (float): Distance to move backward.</span>
+</span><span id="line-130"><span class="sd">                - If negative, the bot will move forward.</span>
+</span><span id="line-131"><span class="sd">                - If `float(&#39;inf&#39;)`, the bot will move backward infinitely.</span>
+</span><span id="line-132"><span class="sd">                - If `float(&#39;-inf&#39;)`, the bot will move forward infinitely.</span>
+</span><span id="line-133">
+</span><span id="line-134"><span class="sd">        References:</span>
+</span><span id="line-135"><span class="sd">            - `back`, `set_forward`, `forward`, `distance_remaining`, `set_target_speed`</span>
+</span><span id="line-136"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-137">        <span class="k">pass</span>
+        </div>
 
-</span><span id="line-136">
+        </span><span id="line-138">
 <div class="viewcode-block" id="BotABC.back">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.back">[docs]</a>
-</span><span id="line-137">    <span class="nd">@abstractmethod</span>
-</span><span id="line-138">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">back</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-139"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-140"><span class="sd">        Moves the bot backward until it has traveled a specific distance from its current position,</span>
-</span><span id="line-141"><span class="sd">        or it is moving into an obstacle. The speed is limited by `setMaxSpeed`.</span>
-</span><span id="line-142">
-</span><span id="line-143"><span class="sd">        When the bot is moving forward, the `Constants.ACCELERATION` determines the acceleration of the</span>
-</span><span id="line-144"><span class="sd">        bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot is</span>
-</span><span id="line-145"><span class="sd">        faster at braking. The `Constants.DECELERATION` determines the deceleration of the bot that</span>
-</span><span id="line-146"><span class="sd">        subtracts 2 units from the speed per turn.</span>
-</span><span id="line-147">
-</span><span id="line-148"><span class="sd">        This call is executed immediately by calling `go` in the code behind. This method will block</span>
-</span><span id="line-149"><span class="sd">        until it has been completed, which can take one to several turns. New commands will first take</span>
-</span><span id="line-150"><span class="sd">        place after this method is completed. If you need to execute multiple commands in parallel, use</span>
-</span><span id="line-151"><span class="sd">        setter methods instead of this blocking method.</span>
-</span><span id="line-152">
-</span><span id="line-153"><span class="sd">        This method will cancel the effect of prior calls to `setTargetSpeed`, `setForward`, and `setBack`</span>
-</span><span id="line-154"><span class="sd">        methods.</span>
-</span><span id="line-155">
-</span><span id="line-156"><span class="sd">        Args:</span>
-</span><span id="line-157"><span class="sd">            distance (float): The distance to move backward. If negative, the bot will move forward.</span>
-</span><span id="line-158"><span class="sd">                If `float(&#39;inf&#39;)`, the bot will move backward infinitely.</span>
-</span><span id="line-159"><span class="sd">                If `float(&#39;-inf&#39;)`, the bot will move forward infinitely.</span>
-</span><span id="line-160">
-</span><span id="line-161"><span class="sd">        See Also:</span>
-</span><span id="line-162"><span class="sd">            setForward: Method to set the bot to move forward.</span>
-</span><span id="line-163"><span class="sd">            setBack: Method to set the bot to move backward.</span>
-</span><span id="line-164"><span class="sd">            forward: Method to immediately move the bot forward.</span>
-</span><span id="line-165"><span class="sd">            getDistanceRemaining: Method to get the remaining travel distance.</span>
-</span><span id="line-166"><span class="sd">            setTargetSpeed: Method to set the target speed of the bot.</span>
-</span><span id="line-167"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-168">        <span class="k">pass</span></div>
+</span><span id="line-139">    <span class="nd">@abstractmethod</span>
+</span><span id="line-140">    <span class="k">def</span><span class="w"> </span><span class="nf">back</span><span
+        class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span
+        class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+        class="kc">None</span><span class="p">:</span>
+</span><span id="line-141"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-142"><span class="sd">        Moves the bot backward until it has traveled a specific distance from its current position,</span>
+</span><span id="line-143"><span class="sd">        or it is moving into an obstacle. The speed is limited by `setMaxSpeed`.</span>
+</span><span id="line-144">
+</span><span id="line-145"><span class="sd">        When the bot is moving forward, the `Constants.ACCELERATION` determines the acceleration of the</span>
+</span><span id="line-146"><span class="sd">        bot that adds 1 additional unit to the speed per turn while accelerating. However, the bot is</span>
+</span><span id="line-147"><span class="sd">        faster at braking. The `Constants.DECELERATION` determines the deceleration of the bot that</span>
+</span><span id="line-148"><span class="sd">        subtracts 2 units from the speed per turn.</span>
+</span><span id="line-149">
+</span><span id="line-150"><span class="sd">        This call is executed immediately by calling `go` in the code behind. This method will block</span>
+</span><span id="line-151"><span class="sd">        until it has been completed, which can take one to several turns. New commands will first take</span>
+</span><span id="line-152"><span class="sd">        place after this method is completed. If you need to execute multiple commands in parallel, use</span>
+</span><span id="line-153"><span class="sd">        setter methods instead of this blocking method.</span>
+</span><span id="line-154">
+</span><span id="line-155"><span class="sd">        This method will cancel the effect of prior calls to `setTargetSpeed`, `setForward`, and `setBack`</span>
+</span><span id="line-156"><span class="sd">        methods.</span>
+</span><span id="line-157">
+</span><span id="line-158"><span class="sd">        Args:</span>
+</span><span id="line-159"><span class="sd">            distance (float): The distance to move backward. If negative, the bot will move forward.</span>
+</span><span id="line-160"><span class="sd">                If `float(&#39;inf&#39;)`, the bot will move backward infinitely.</span>
+</span><span id="line-161"><span class="sd">                If `float(&#39;-inf&#39;)`, the bot will move forward infinitely.</span>
+</span><span id="line-162">
+</span><span id="line-163"><span class="sd">        See Also:</span>
+</span><span id="line-164"><span class="sd">            setForward: Method to set the bot to move forward.</span>
+</span><span id="line-165"><span class="sd">            setBack: Method to set the bot to move backward.</span>
+</span><span id="line-166"><span class="sd">            forward: Method to immediately move the bot forward.</span>
+</span><span id="line-167"><span class="sd">            getDistanceRemaining: Method to get the remaining travel distance.</span>
+</span><span id="line-168"><span
+        class="sd">            setTargetSpeed: Method to set the target speed of the bot.</span>
+</span><span id="line-169"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-170">        <span class="k">pass</span></div>
 
-</span><span id="line-169">
-</span><span id="line-170">    <span class="nd">@property</span>
-</span><span id="line-171">    <span class="k">def</span><span class="w"> </span><span class="nf">distance_remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-172"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-173"><span class="sd">        Returns the distance remaining until the bot has finished moving after calling set_forward,</span>
-</span><span id="line-174"><span class="sd">        set_back, forward, or back. When the distance remaining reaches 0, the bot has finished its</span>
-</span><span id="line-175"><span class="sd">        current movement.</span>
-</span><span id="line-176">
-</span><span id="line-177"><span class="sd">        When the distance remaining is positive, the bot is moving forward. When the distance</span>
-</span><span id="line-178"><span class="sd">        remaining is negative, the bot is moving backward.</span>
-</span><span id="line-179">
-</span><span id="line-180"><span class="sd">        Returns:</span>
-</span><span id="line-181"><span class="sd">            float: The remaining distance to move before the current movement is completed.</span>
-</span><span id="line-182"><span class="sd">                - If float(&#39;inf&#39;), the bot will move forward infinitely.</span>
-</span><span id="line-183"><span class="sd">                - If float(&#39;-inf&#39;), the bot will move backward infinitely.</span>
-</span><span id="line-184">
-</span><span id="line-185"><span class="sd">        See Also:</span>
-</span><span id="line-186"><span class="sd">            set_forward, set_back, forward, back</span>
-</span><span id="line-187"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-188">        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;distance_remaining not implemented&#39;</span><span class="p">)</span>
-</span><span id="line-189">
+    </span><span id="line-171">
+</span><span id="line-172">    <span class="nd">@property</span>
+</span><span id="line-173">    <span class="k">def</span><span class="w"> </span><span
+        class="nf">distance_remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span
+        class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-174"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-175"><span class="sd">        Returns the distance remaining until the bot has finished moving after calling set_forward,</span>
+</span><span id="line-176"><span class="sd">        set_back, forward, or back. When the distance remaining reaches 0, the bot has finished its</span>
+</span><span id="line-177"><span class="sd">        current movement.</span>
+</span><span id="line-178">
+</span><span id="line-179"><span class="sd">        When the distance remaining is positive, the bot is moving forward. When the distance</span>
+</span><span id="line-180"><span class="sd">        remaining is negative, the bot is moving backward.</span>
+</span><span id="line-181">
+</span><span id="line-182"><span class="sd">        Returns:</span>
+</span><span id="line-183"><span class="sd">            float: The remaining distance to move before the current movement is completed.</span>
+</span><span id="line-184"><span class="sd">                - If float(&#39;inf&#39;), the bot will move forward infinitely.</span>
+</span><span id="line-185"><span class="sd">                - If float(&#39;-inf&#39;), the bot will move backward infinitely.</span>
+</span><span id="line-186">
+</span><span id="line-187"><span class="sd">        See Also:</span>
+</span><span id="line-188"><span class="sd">            set_forward, set_back, forward, back</span>
+</span><span id="line-189"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-190">        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span
+        class="p">(</span><span class="s1">&#39;distance_remaining not implemented&#39;</span><span class="p">)</span>
+</span><span id="line-191">
 <div class="viewcode-block" id="BotABC.set_turn_left">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.set_turn_left">[docs]</a>
-</span><span id="line-190">    <span class="k">def</span><span class="w"> </span><span class="nf">set_turn_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-191"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-192"><span class="sd">        Set the bot to turn to the left (following the increasing degrees of the</span>
-</span><span id="line-193"><span class="sd">        `unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_) until it has turned the specified</span>
-</span><span id="line-194"><span class="sd">        amount of degrees. This completes when `turn_remaining` returns 0. The amount of degrees</span>
-</span><span id="line-195"><span class="sd">        to turn each turn is limited by `set_max_turn_rate()`.</span>
-</span><span id="line-196">
-</span><span id="line-197"><span class="sd">        This method will first be executed when `go()` is called, making it possible to call</span>
-</span><span id="line-198"><span class="sd">        other set methods after execution. This allows the bot to move, turn the body, radar, gun, and</span>
-</span><span id="line-199"><span class="sd">        fire the gun in parallel during a single turn when `go()` is called. Note that executing multiple</span>
-</span><span id="line-200"><span class="sd">        methods in parallel is only possible by using **setter** methods prior to calling `go()`.</span>
-</span><span id="line-201">
-</span><span id="line-202"><span class="sd">        If this method is called multiple times, only the last call before `go()` is executed is honored.</span>
+</span><span id="line-192">    <span class="k">def</span><span class="w"> </span><span
+        class="nf">set_turn_left</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span
+        class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-193"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-194"><span class="sd">        Set the bot to turn to the left (following the increasing degrees of the</span>
+</span><span id="line-195"><span class="sd">        `unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_) until it has turned the specified</span>
+</span><span id="line-196"><span class="sd">        amount of degrees. This completes when `turn_remaining` returns 0. The amount of degrees</span>
+</span><span id="line-197"><span class="sd">        to turn each turn is limited by `set_max_turn_rate()`.</span>
+</span><span id="line-198">
+</span><span id="line-199"><span class="sd">        This method will first be executed when `go()` is called, making it possible to call</span>
+</span><span id="line-200"><span class="sd">        other set methods after execution. This allows the bot to move, turn the body, radar, gun, and</span>
+</span><span id="line-201"><span class="sd">        fire the gun in parallel during a single turn when `go()` is called. Note that executing multiple</span>
+</span><span id="line-202"><span class="sd">        methods in parallel is only possible by using **setter** methods prior to calling `go()`.</span>
 </span><span id="line-203">
-</span><span id="line-204"><span class="sd">        This method cancels the effect of prior calls to `set_turn_right()`.</span>
+</span><span id="line-204"><span class="sd">        If this method is called multiple times, only the last call before `go()` is executed is honored.</span>
 </span><span id="line-205">
-</span><span id="line-206"><span class="sd">        Args:</span>
-</span><span id="line-207"><span class="sd">            degrees (float): The amount of degrees to turn left. If negative, the bot will turn right.</span>
-</span><span id="line-208"><span class="sd">                If `float(&#39;inf&#39;)`, the bot will turn left infinitely.</span>
-</span><span id="line-209"><span class="sd">                If `float(&#39;-inf&#39;)`, the bot will turn right infinitely.</span>
-</span><span id="line-210">
-</span><span id="line-211"><span class="sd">        See:</span>
-</span><span id="line-212"><span class="sd">            - `unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_</span>
-</span><span id="line-213"><span class="sd">            - `set_turn_right`</span>
-</span><span id="line-214"><span class="sd">            - `turn_right`</span>
-</span><span id="line-215"><span class="sd">            - `turn_left`</span>
-</span><span id="line-216"><span class="sd">            - `turn_remaining`</span>
-</span><span id="line-217"><span class="sd">            - `set_turn_rate`</span>
-</span><span id="line-218"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-219">        <span class="k">pass</span></div>
+</span><span id="line-206"><span
+        class="sd">        This method cancels the effect of prior calls to `set_turn_right()`.</span>
+</span><span id="line-207">
+</span><span id="line-208"><span class="sd">        Args:</span>
+</span><span id="line-209"><span class="sd">            degrees (float): The amount of degrees to turn left. If negative, the bot will turn right.</span>
+</span><span id="line-210"><span class="sd">                If `float(&#39;inf&#39;)`, the bot will turn left infinitely.</span>
+</span><span id="line-211"><span class="sd">                If `float(&#39;-inf&#39;)`, the bot will turn right infinitely.</span>
+</span><span id="line-212">
+</span><span id="line-213"><span class="sd">        See:</span>
+</span><span id="line-214"><span class="sd">            - `unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_</span>
+</span><span id="line-215"><span class="sd">            - `set_turn_right`</span>
+</span><span id="line-216"><span class="sd">            - `turn_right`</span>
+</span><span id="line-217"><span class="sd">            - `turn_left`</span>
+</span><span id="line-218"><span class="sd">            - `turn_remaining`</span>
+</span><span id="line-219"><span class="sd">            - `set_turn_rate`</span>
+</span><span id="line-220"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-221">        <span class="k">pass</span></div>
 
-</span><span id="line-220">
+</span><span id="line-222">
 <div class="viewcode-block" id="BotABC.turn_left">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.turn_left">[docs]</a>
-</span><span id="line-221">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">turn_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-222"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-223"><span class="sd">        Turn the bot to the left (following the increasing degrees of the</span>
-</span><span id="line-224"><span class="sd">        `unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_) until it has turned</span>
-</span><span id="line-225"><span class="sd">        the specified amount of degrees. That is, when `turn_remaining` is 0.</span>
-</span><span id="line-226"><span class="sd">        The amount of degrees to turn each turn is limited by `set_max_turn_rate()`.</span>
-</span><span id="line-227">
-</span><span id="line-228"><span class="sd">        This call is executed immediately by invoking `go()` in the code behind.</span>
-</span><span id="line-229"><span class="sd">        This method will block until it has been completed, which can take one to several turns.</span>
-</span><span id="line-230"><span class="sd">        New commands will first take place after this method is completed.</span>
-</span><span id="line-231">
-</span><span id="line-232"><span class="sd">        If you need to execute multiple commands in parallel, use *setter* methods</span>
-</span><span id="line-233"><span class="sd">        instead of this blocking method.</span>
-</span><span id="line-234">
-</span><span id="line-235"><span class="sd">        This method will cancel the effect of prior calls to `set_turn_left()`</span>
-</span><span id="line-236"><span class="sd">        and `set_turn_right()`.</span>
-</span><span id="line-237">
-</span><span id="line-238"><span class="sd">        Args:</span>
-</span><span id="line-239"><span class="sd">            degrees (float): The amount of degrees to turn left.</span>
-</span><span id="line-240"><span class="sd">                - If negative, the bot will turn right.</span>
-</span><span id="line-241"><span class="sd">                - If `float(&#39;inf&#39;)`, the bot will turn left infinitely.</span>
-</span><span id="line-242"><span class="sd">                - If `float(&#39;-inf&#39;)`, the bot will turn right infinitely.</span>
-</span><span id="line-243">
-</span><span id="line-244"><span class="sd">        See Also:</span>
-</span><span id="line-245"><span class="sd">            - `Unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_</span>
-</span><span id="line-246"><span class="sd">            - `set_turn_left()`</span>
-</span><span id="line-247"><span class="sd">            - `set_turn_right()`</span>
-</span><span id="line-248"><span class="sd">            - `turn_right()`</span>
-</span><span id="line-249"><span class="sd">            - `turn_remaining`</span>
-</span><span id="line-250"><span class="sd">            - `set_turn_rate()`</span>
-</span><span id="line-251"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-252">        <span class="k">pass</span></div>
+</span><span id="line-223">    <span class="k">def</span><span class="w"> </span><span class="nf">turn_left</span><span
+    class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span
+    class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+    class="kc">None</span><span class="p">:</span>
+</span><span id="line-224"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-225"><span
+    class="sd">        Turn the bot to the left (following the increasing degrees of the</span>
+</span><span id="line-226"><span class="sd">        `unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_) until it has turned</span>
+</span><span id="line-227"><span class="sd">        the specified amount of degrees. That is, when `turn_remaining` is 0.</span>
+</span><span id="line-228"><span class="sd">        The amount of degrees to turn each turn is limited by `set_max_turn_rate()`.</span>
+</span><span id="line-229">
+</span><span id="line-230"><span class="sd">        This call is executed immediately by invoking `go()` in the code behind.</span>
+</span><span id="line-231"><span class="sd">        This method will block until it has been completed, which can take one to several turns.</span>
+</span><span id="line-232"><span
+    class="sd">        New commands will first take place after this method is completed.</span>
+</span><span id="line-233">
+</span><span id="line-234"><span class="sd">        If you need to execute multiple commands in parallel, use *setter* methods</span>
+</span><span id="line-235"><span class="sd">        instead of this blocking method.</span>
+</span><span id="line-236">
+</span><span id="line-237"><span class="sd">        This method will cancel the effect of prior calls to `set_turn_left()`</span>
+</span><span id="line-238"><span class="sd">        and `set_turn_right()`.</span>
+</span><span id="line-239">
+</span><span id="line-240"><span class="sd">        Args:</span>
+</span><span id="line-241"><span class="sd">            degrees (float): The amount of degrees to turn left.</span>
+</span><span id="line-242"><span class="sd">                - If negative, the bot will turn right.</span>
+</span><span id="line-243"><span class="sd">                - If `float(&#39;inf&#39;)`, the bot will turn left infinitely.</span>
+</span><span id="line-244"><span class="sd">                - If `float(&#39;-inf&#39;)`, the bot will turn right infinitely.</span>
+</span><span id="line-245">
+</span><span id="line-246"><span class="sd">        See Also:</span>
+</span><span id="line-247"><span class="sd">            - `Unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_</span>
+</span><span id="line-248"><span class="sd">            - `set_turn_left()`</span>
+</span><span id="line-249"><span class="sd">            - `set_turn_right()`</span>
+</span><span id="line-250"><span class="sd">            - `turn_right()`</span>
+</span><span id="line-251"><span class="sd">            - `turn_remaining`</span>
+</span><span id="line-252"><span class="sd">            - `set_turn_rate()`</span>
+</span><span id="line-253"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-254">        <span class="k">pass</span></div>
 
-</span><span id="line-253">
+</span><span id="line-255">
 <div class="viewcode-block" id="BotABC.set_turn_right">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.set_turn_right">[docs]</a>
-</span><span id="line-254">    <span class="k">def</span><span class="w"> </span><span class="nf">set_turn_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-255"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-256"><span class="sd">        Set the bot to turn to the right (following the decreasing degrees of the</span>
-</span><span id="line-257"><span class="sd">        `unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_) until it turned the specified</span>
-</span><span id="line-258"><span class="sd">        amount of degrees. That is, when `turn_remaining` returns 0. The amount of degrees to</span>
-</span><span id="line-259"><span class="sd">        turn each turn is limited by `set_max_turn_rate()`.</span>
-</span><span id="line-260">
-</span><span id="line-261"><span class="sd">        This method will first be executed when `go()` is called, making it possible to call</span>
-</span><span id="line-262"><span class="sd">        other set methods after execution. This makes it possible to set the bot to move, turn the</span>
-</span><span id="line-263"><span class="sd">        body, radar, gun, and fire the gun in parallel in a single turn when calling `go()`.</span>
-</span><span id="line-264"><span class="sd">        But notice that this is only possible to execute multiple methods in parallel by using</span>
-</span><span id="line-265"><span class="sd">        setter methods only prior to calling `go()`.</span>
-</span><span id="line-266">
-</span><span id="line-267"><span class="sd">        If this method is called multiple times, the last call before `go()` is executed counts.</span>
+</span><span id="line-256">    <span class="k">def</span><span class="w"> </span><span
+    class="nf">set_turn_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span
+    class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span
+    class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-257"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-258"><span class="sd">        Set the bot to turn to the right (following the decreasing degrees of the</span>
+</span><span id="line-259"><span class="sd">        `unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_) until it turned the specified</span>
+</span><span id="line-260"><span class="sd">        amount of degrees. That is, when `turn_remaining` returns 0. The amount of degrees to</span>
+</span><span id="line-261"><span class="sd">        turn each turn is limited by `set_max_turn_rate()`.</span>
+</span><span id="line-262">
+</span><span id="line-263"><span class="sd">        This method will first be executed when `go()` is called, making it possible to call</span>
+</span><span id="line-264"><span class="sd">        other set methods after execution. This makes it possible to set the bot to move, turn the</span>
+</span><span id="line-265"><span class="sd">        body, radar, gun, and fire the gun in parallel in a single turn when calling `go()`.</span>
+</span><span id="line-266"><span class="sd">        But notice that this is only possible to execute multiple methods in parallel by using</span>
+</span><span id="line-267"><span class="sd">        setter methods only prior to calling `go()`.</span>
 </span><span id="line-268">
-</span><span id="line-269"><span class="sd">        This method will cancel the effect of prior calls to `set_turn_left()`.</span>
+</span><span id="line-269"><span class="sd">        If this method is called multiple times, the last call before `go()` is executed counts.</span>
 </span><span id="line-270">
-</span><span id="line-271"><span class="sd">        Args:</span>
-</span><span id="line-272"><span class="sd">            degrees (float): The amount of degrees to turn right. If negative, the bot will turn left.</span>
-</span><span id="line-273"><span class="sd">                If `float(&#39;inf&#39;)`, the bot will turn right infinitely.</span>
-</span><span id="line-274"><span class="sd">                If `float(&#39;-inf&#39;)`, the bot will turn left infinitely.</span>
-</span><span id="line-275">
-</span><span id="line-276"><span class="sd">        See Also:</span>
-</span><span id="line-277"><span class="sd">            set_turn_left</span>
-</span><span id="line-278"><span class="sd">            turn_right</span>
-</span><span id="line-279"><span class="sd">            turn_left</span>
-</span><span id="line-280"><span class="sd">            turn_remaining</span>
-</span><span id="line-281"><span class="sd">            set_turn_rate</span>
-</span><span id="line-282"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-283">        <span class="k">pass</span></div>
+</span><span id="line-271"><span class="sd">        This method will cancel the effect of prior calls to `set_turn_left()`.</span>
+</span><span id="line-272">
+</span><span id="line-273"><span class="sd">        Args:</span>
+</span><span id="line-274"><span class="sd">            degrees (float): The amount of degrees to turn right. If negative, the bot will turn left.</span>
+</span><span id="line-275"><span class="sd">                If `float(&#39;inf&#39;)`, the bot will turn right infinitely.</span>
+</span><span id="line-276"><span class="sd">                If `float(&#39;-inf&#39;)`, the bot will turn left infinitely.</span>
+</span><span id="line-277">
+</span><span id="line-278"><span class="sd">        See Also:</span>
+</span><span id="line-279"><span class="sd">            set_turn_left</span>
+</span><span id="line-280"><span class="sd">            turn_right</span>
+</span><span id="line-281"><span class="sd">            turn_left</span>
+</span><span id="line-282"><span class="sd">            turn_remaining</span>
+</span><span id="line-283"><span class="sd">            set_turn_rate</span>
+</span><span id="line-284"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-285">        <span class="k">pass</span></div>
 
-</span><span id="line-284">
+</span><span id="line-286">
 <div class="viewcode-block" id="BotABC.turn_right">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.turn_right">[docs]</a>
-</span><span id="line-285">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">turn_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-286"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-287"><span class="sd">        Turn the bot to the right (following the increasing degrees of the</span>
-</span><span id="line-288"><span class="sd">        `unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_) until it turned the specified</span>
-</span><span id="line-289"><span class="sd">        amount of degrees. That is, when `turn_remaining` returns 0. The amount of degrees to</span>
-</span><span id="line-290"><span class="sd">        turn each turn is limited by `set_max_turn_rate()`.</span>
-</span><span id="line-291">
-</span><span id="line-292"><span class="sd">        This call is executed immediately, and it will block until it has been completed, which can</span>
-</span><span id="line-293"><span class="sd">        take one to several turns. New commands will first take place after this method is completed.</span>
-</span><span id="line-294"><span class="sd">        If you need to execute multiple commands in parallel, use setter methods instead of this</span>
-</span><span id="line-295"><span class="sd">        blocking method.</span>
-</span><span id="line-296">
-</span><span id="line-297"><span class="sd">        This method will cancel the effect of prior calls to `set_turn_left()` and `set_turn_right()`.</span>
+</span><span id="line-287">    <span class="k">def</span><span class="w"> </span><span class="nf">turn_right</span><span
+    class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span
+    class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+    class="kc">None</span><span class="p">:</span>
+</span><span id="line-288"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-289"><span
+    class="sd">        Turn the bot to the right (following the increasing degrees of the</span>
+</span><span id="line-290"><span class="sd">        `unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_) until it turned the specified</span>
+</span><span id="line-291"><span class="sd">        amount of degrees. That is, when `turn_remaining` returns 0. The amount of degrees to</span>
+</span><span id="line-292"><span class="sd">        turn each turn is limited by `set_max_turn_rate()`.</span>
+</span><span id="line-293">
+</span><span id="line-294"><span class="sd">        This call is executed immediately, and it will block until it has been completed, which can</span>
+</span><span id="line-295"><span class="sd">        take one to several turns. New commands will first take place after this method is completed.</span>
+</span><span id="line-296"><span class="sd">        If you need to execute multiple commands in parallel, use setter methods instead of this</span>
+</span><span id="line-297"><span class="sd">        blocking method.</span>
 </span><span id="line-298">
-</span><span id="line-299"><span class="sd">        Args:</span>
-</span><span id="line-300"><span class="sd">            degrees (float): The amount of degrees to turn right. If negative, the bot will turn left.</span>
-</span><span id="line-301"><span class="sd">                If `float(&#39;inf&#39;)`, the bot will turn right infinitely.</span>
-</span><span id="line-302"><span class="sd">                If `float(&#39;-inf&#39;)`, the bot will turn left infinitely.</span>
-</span><span id="line-303">
-</span><span id="line-304"><span class="sd">        See Also:</span>
-</span><span id="line-305"><span class="sd">            `Unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_</span>
-</span><span id="line-306"><span class="sd">            set_turn_left</span>
-</span><span id="line-307"><span class="sd">            set_turn_right</span>
-</span><span id="line-308"><span class="sd">            turn_left</span>
-</span><span id="line-309"><span class="sd">            turn_remaining</span>
-</span><span id="line-310"><span class="sd">            set_turn_rate</span>
-</span><span id="line-311"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-312">        <span class="k">pass</span></div>
+</span><span id="line-299"><span class="sd">        This method will cancel the effect of prior calls to `set_turn_left()` and `set_turn_right()`.</span>
+</span><span id="line-300">
+</span><span id="line-301"><span class="sd">        Args:</span>
+</span><span id="line-302"><span class="sd">            degrees (float): The amount of degrees to turn right. If negative, the bot will turn left.</span>
+</span><span id="line-303"><span class="sd">                If `float(&#39;inf&#39;)`, the bot will turn right infinitely.</span>
+</span><span id="line-304"><span class="sd">                If `float(&#39;-inf&#39;)`, the bot will turn left infinitely.</span>
+</span><span id="line-305">
+</span><span id="line-306"><span class="sd">        See Also:</span>
+</span><span id="line-307"><span
+    class="sd">            `Unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_</span>
+</span><span id="line-308"><span class="sd">            set_turn_left</span>
+</span><span id="line-309"><span class="sd">            set_turn_right</span>
+</span><span id="line-310"><span class="sd">            turn_left</span>
+</span><span id="line-311"><span class="sd">            turn_remaining</span>
+</span><span id="line-312"><span class="sd">            set_turn_rate</span>
+</span><span id="line-313"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-314">        <span class="k">pass</span></div>
 
-</span><span id="line-313">
-</span><span id="line-314">    <span class="nd">@property</span>
-</span><span id="line-315">    <span class="k">def</span><span class="w"> </span><span class="nf">turn_remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-316"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-317"><span class="sd">        Returns the remaining turn in degrees until the bot has finished turning after having called</span>
-</span><span id="line-318"><span class="sd">        `set_turn_left()`, `set_turn_right()`, `turn_left()`, or `turn_right()`.</span>
-</span><span id="line-319"><span class="sd">        When the turn remaining has reached 0, the bot has finished turning.</span>
-</span><span id="line-320">
-</span><span id="line-321"><span class="sd">        When the turn remaining is positive, the bot is turning to the left (along the unit circle).</span>
-</span><span id="line-322"><span class="sd">        When the turn remaining is negative, the bot is turning to the right.</span>
-</span><span id="line-323">
-</span><span id="line-324"><span class="sd">        Returns:</span>
-</span><span id="line-325"><span class="sd">            float: The remaining degrees to turn before its current turning is completed.</span>
-</span><span id="line-326"><span class="sd">            If `float(&#39;inf&#39;)`, the bot will turn left infinitely.</span>
-</span><span id="line-327"><span class="sd">            If `float(&#39;-inf&#39;)`, the bot will turn right infinitely.</span>
-</span><span id="line-328">
-</span><span id="line-329"><span class="sd">        See Also:</span>
-</span><span id="line-330"><span class="sd">            set_turn_left</span>
-</span><span id="line-331"><span class="sd">            set_turn_right</span>
-</span><span id="line-332"><span class="sd">            turn_left</span>
-</span><span id="line-333"><span class="sd">            turn_right</span>
-</span><span id="line-334"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-335">        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;turn_remaining not implemented&#39;</span><span class="p">)</span>
-</span><span id="line-336">
+</span><span id="line-315">
+</span><span id="line-316">    <span class="nd">@property</span>
+</span><span id="line-317">    <span class="k">def</span><span class="w"> </span><span
+    class="nf">turn_remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span
+    class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-318"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-319"><span class="sd">        Returns the remaining turn in degrees until the bot has finished turning after having called</span>
+</span><span id="line-320"><span class="sd">        `set_turn_left()`, `set_turn_right()`, `turn_left()`, or `turn_right()`.</span>
+</span><span id="line-321"><span
+    class="sd">        When the turn remaining has reached 0, the bot has finished turning.</span>
+</span><span id="line-322">
+</span><span id="line-323"><span class="sd">        When the turn remaining is positive, the bot is turning to the left (along the unit circle).</span>
+</span><span id="line-324"><span class="sd">        When the turn remaining is negative, the bot is turning to the right.</span>
+</span><span id="line-325">
+</span><span id="line-326"><span class="sd">        Returns:</span>
+</span><span id="line-327"><span class="sd">            float: The remaining degrees to turn before its current turning is completed.</span>
+</span><span id="line-328"><span
+    class="sd">            If `float(&#39;inf&#39;)`, the bot will turn left infinitely.</span>
+</span><span id="line-329"><span
+    class="sd">            If `float(&#39;-inf&#39;)`, the bot will turn right infinitely.</span>
+</span><span id="line-330">
+</span><span id="line-331"><span class="sd">        See Also:</span>
+</span><span id="line-332"><span class="sd">            set_turn_left</span>
+</span><span id="line-333"><span class="sd">            set_turn_right</span>
+</span><span id="line-334"><span class="sd">            turn_left</span>
+</span><span id="line-335"><span class="sd">            turn_right</span>
+</span><span id="line-336"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-337">        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span
+    class="p">(</span><span class="s1">&#39;turn_remaining not implemented&#39;</span><span class="p">)</span>
+</span><span id="line-338">
 <div class="viewcode-block" id="BotABC.set_turn_gun_left">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.set_turn_gun_left">[docs]</a>
-</span><span id="line-337">    <span class="k">def</span><span class="w"> </span><span class="nf">set_turn_gun_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-338"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-339"><span class="sd">        Set the gun to turn to the left (following the increasing degrees of the</span>
-</span><span id="line-340"><span class="sd">        `unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_) until it turned the specified</span>
-</span><span id="line-341"><span class="sd">        amount of degrees. That is, when `gun_turn_remaining` returns 0. The amount of degrees</span>
-</span><span id="line-342"><span class="sd">        to turn each turn is limited by `set_max_gun_turn_rate()`.</span>
-</span><span id="line-343">
-</span><span id="line-344"><span class="sd">        This method will first be executed when `go()` is called, making it possible to call</span>
-</span><span id="line-345"><span class="sd">        other set methods after execution. This makes it possible to set the bot to move, turn the</span>
-</span><span id="line-346"><span class="sd">        body, radar, gun, and fire the gun in parallel in a single turn when calling `go()`.</span>
-</span><span id="line-347"><span class="sd">        But notice that this is only possible to execute multiple methods in parallel by using</span>
-</span><span id="line-348"><span class="sd">        setter methods only prior to calling `go()`.</span>
-</span><span id="line-349">
-</span><span id="line-350"><span class="sd">        If this method is called multiple times, the last call before `go()` is executed counts.</span>
+</span><span id="line-339">    <span class="k">def</span><span class="w"> </span><span
+    class="nf">set_turn_gun_left</span><span class="p">(</span><span class="bp">self</span><span
+    class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span
+    class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-340"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-341"><span class="sd">        Set the gun to turn to the left (following the increasing degrees of the</span>
+</span><span id="line-342"><span class="sd">        `unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_) until it turned the specified</span>
+</span><span id="line-343"><span class="sd">        amount of degrees. That is, when `gun_turn_remaining` returns 0. The amount of degrees</span>
+</span><span id="line-344"><span class="sd">        to turn each turn is limited by `set_max_gun_turn_rate()`.</span>
+</span><span id="line-345">
+</span><span id="line-346"><span class="sd">        This method will first be executed when `go()` is called, making it possible to call</span>
+</span><span id="line-347"><span class="sd">        other set methods after execution. This makes it possible to set the bot to move, turn the</span>
+</span><span id="line-348"><span class="sd">        body, radar, gun, and fire the gun in parallel in a single turn when calling `go()`.</span>
+</span><span id="line-349"><span class="sd">        But notice that this is only possible to execute multiple methods in parallel by using</span>
+</span><span id="line-350"><span class="sd">        setter methods only prior to calling `go()`.</span>
 </span><span id="line-351">
-</span><span id="line-352"><span class="sd">        This method will cancel the effect of prior calls to `set_turn_gun_right()`.</span>
+</span><span id="line-352"><span class="sd">        If this method is called multiple times, the last call before `go()` is executed counts.</span>
 </span><span id="line-353">
-</span><span id="line-354"><span class="sd">        Args:</span>
-</span><span id="line-355"><span class="sd">            degrees (float): The amount of degrees to turn left. If negative, the gun will turn right.</span>
-</span><span id="line-356"><span class="sd">                If `float(&#39;inf&#39;)`, the gun will turn left infinitely.</span>
-</span><span id="line-357"><span class="sd">                If `float(&#39;-inf&#39;)`, the gun will turn right infinitely.</span>
-</span><span id="line-358">
-</span><span id="line-359"><span class="sd">        See Also:</span>
-</span><span id="line-360"><span class="sd">            `Unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_</span>
-</span><span id="line-361"><span class="sd">            set_turn_gun_right</span>
-</span><span id="line-362"><span class="sd">            turn_gun_right</span>
-</span><span id="line-363"><span class="sd">            turn_gun_left</span>
-</span><span id="line-364"><span class="sd">            gun_turn_remaining</span>
-</span><span id="line-365"><span class="sd">            set_gun_turn_rate</span>
-</span><span id="line-366"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-367">        <span class="k">pass</span></div>
+</span><span id="line-354"><span class="sd">        This method will cancel the effect of prior calls to `set_turn_gun_right()`.</span>
+</span><span id="line-355">
+</span><span id="line-356"><span class="sd">        Args:</span>
+</span><span id="line-357"><span class="sd">            degrees (float): The amount of degrees to turn left. If negative, the gun will turn right.</span>
+</span><span id="line-358"><span class="sd">                If `float(&#39;inf&#39;)`, the gun will turn left infinitely.</span>
+</span><span id="line-359"><span class="sd">                If `float(&#39;-inf&#39;)`, the gun will turn right infinitely.</span>
+</span><span id="line-360">
+</span><span id="line-361"><span class="sd">        See Also:</span>
+</span><span id="line-362"><span
+    class="sd">            `Unit circle &lt;https://en.wikipedia.org/wiki/Unit_circle&gt;`_</span>
+</span><span id="line-363"><span class="sd">            set_turn_gun_right</span>
+</span><span id="line-364"><span class="sd">            turn_gun_right</span>
+</span><span id="line-365"><span class="sd">            turn_gun_left</span>
+</span><span id="line-366"><span class="sd">            gun_turn_remaining</span>
+</span><span id="line-367"><span class="sd">            set_gun_turn_rate</span>
+</span><span id="line-368"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-369">        <span class="k">pass</span></div>
 
-</span><span id="line-368">
+</span><span id="line-370">
 <div class="viewcode-block" id="BotABC.turn_gun_left">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.turn_gun_left">[docs]</a>
-</span><span id="line-369">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">turn_gun_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-370"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-371"><span class="sd">        Rotates the gun to the left (increasing degrees of the unit circle) until</span>
-</span><span id="line-372"><span class="sd">        it has turned the specified number of degrees.</span>
-</span><span id="line-373">
-</span><span id="line-374"><span class="sd">        This method is executed immediately and will block until the action is</span>
-</span><span id="line-375"><span class="sd">        completed, which might take several turns. During this time, new commands</span>
-</span><span id="line-376"><span class="sd">        will not take effect. To execute multiple commands in parallel, use the</span>
-</span><span id="line-377"><span class="sd">        corresponding &quot;set&quot; methods instead of this blocking method.</span>
-</span><span id="line-378">
-</span><span id="line-379"><span class="sd">        The turn rate per tick is limited by `set_max_gun_turn_rate`.</span>
+</span><span id="line-371">    <span class="k">def</span><span class="w"> </span><span
+    class="nf">turn_gun_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span
+    class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span
+    class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-372"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-373"><span class="sd">        Rotates the gun to the left (increasing degrees of the unit circle) until</span>
+</span><span id="line-374"><span class="sd">        it has turned the specified number of degrees.</span>
+</span><span id="line-375">
+</span><span id="line-376"><span class="sd">        This method is executed immediately and will block until the action is</span>
+</span><span id="line-377"><span class="sd">        completed, which might take several turns. During this time, new commands</span>
+</span><span id="line-378"><span class="sd">        will not take effect. To execute multiple commands in parallel, use the</span>
+</span><span id="line-379"><span class="sd">        corresponding &quot;set&quot; methods instead of this blocking method.</span>
 </span><span id="line-380">
-</span><span id="line-381"><span class="sd">        If called, this method cancels any prior calls to `set_turn_gun_left` or</span>
-</span><span id="line-382"><span class="sd">        `set_turn_gun_right`.</span>
-</span><span id="line-383">
-</span><span id="line-384"><span class="sd">        Args:</span>
-</span><span id="line-385"><span class="sd">            degrees (float): The number of degrees to turn the gun left.</span>
-</span><span id="line-386"><span class="sd">                             - If negative, the gun will turn right.</span>
-</span><span id="line-387"><span class="sd">                             - If `float(&#39;inf&#39;)`, the gun will turn left indefinitely.</span>
-</span><span id="line-388"><span class="sd">                             - If `float(&#39;-inf&#39;)`, the gun will turn right indefinitely.</span>
-</span><span id="line-389"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-390">        <span class="k">pass</span></div>
+</span><span id="line-381"><span class="sd">        The turn rate per tick is limited by `set_max_gun_turn_rate`.</span>
+</span><span id="line-382">
+</span><span id="line-383"><span class="sd">        If called, this method cancels any prior calls to `set_turn_gun_left` or</span>
+</span><span id="line-384"><span class="sd">        `set_turn_gun_right`.</span>
+</span><span id="line-385">
+</span><span id="line-386"><span class="sd">        Args:</span>
+</span><span id="line-387"><span
+    class="sd">            degrees (float): The number of degrees to turn the gun left.</span>
+</span><span id="line-388"><span class="sd">                             - If negative, the gun will turn right.</span>
+</span><span id="line-389"><span class="sd">                             - If `float(&#39;inf&#39;)`, the gun will turn left indefinitely.</span>
+</span><span id="line-390"><span class="sd">                             - If `float(&#39;-inf&#39;)`, the gun will turn right indefinitely.</span>
+</span><span id="line-391"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-392">        <span class="k">pass</span></div>
 
-</span><span id="line-391">
+</span><span id="line-393">
 <div class="viewcode-block" id="BotABC.set_turn_gun_right">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.set_turn_gun_right">[docs]</a>
-</span><span id="line-392">    <span class="k">def</span><span class="w"> </span><span class="nf">set_turn_gun_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-393"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-394"><span class="sd">        Schedules the gun to turn to the right (decreasing degrees of the unit</span>
-</span><span id="line-395"><span class="sd">        circle) until it has turned the specified number of degrees.</span>
-</span><span id="line-396">
-</span><span id="line-397"><span class="sd">        This method will execute when `go()` is called, allowing you to chain</span>
-</span><span id="line-398"><span class="sd">        multiple commands such as moving, turning, and firing together for</span>
-</span><span id="line-399"><span class="sd">        simultaneous execution in a single turn.</span>
-</span><span id="line-400">
-</span><span id="line-401"><span class="sd">        The turn rate per tick is limited by `set_max_gun_turn_rate`.</span>
+</span><span id="line-394">    <span class="k">def</span><span class="w"> </span><span
+    class="nf">set_turn_gun_right</span><span class="p">(</span><span class="bp">self</span><span
+    class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span
+    class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-395"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-396"><span class="sd">        Schedules the gun to turn to the right (decreasing degrees of the unit</span>
+</span><span id="line-397"><span class="sd">        circle) until it has turned the specified number of degrees.</span>
+</span><span id="line-398">
+</span><span id="line-399"><span class="sd">        This method will execute when `go()` is called, allowing you to chain</span>
+</span><span id="line-400"><span
+    class="sd">        multiple commands such as moving, turning, and firing together for</span>
+</span><span id="line-401"><span class="sd">        simultaneous execution in a single turn.</span>
 </span><span id="line-402">
-</span><span id="line-403"><span class="sd">        If this method is called multiple times before `go()`, only the last call</span>
-</span><span id="line-404"><span class="sd">        will be executed. It also cancels any prior calls to `set_turn_gun_left`.</span>
-</span><span id="line-405">
-</span><span id="line-406"><span class="sd">        Args:</span>
-</span><span id="line-407"><span class="sd">            degrees (float): The number of degrees to turn the gun right.</span>
-</span><span id="line-408"><span class="sd">                             - If negative, the gun will turn left.</span>
-</span><span id="line-409"><span class="sd">                             - If `float(&#39;inf&#39;)`, the gun will turn right indefinitely.</span>
-</span><span id="line-410"><span class="sd">                             - If `float(&#39;-inf&#39;)`, the gun will turn left indefinitely.</span>
-</span><span id="line-411"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-412">        <span class="k">pass</span></div>
+</span><span id="line-403"><span class="sd">        The turn rate per tick is limited by `set_max_gun_turn_rate`.</span>
+</span><span id="line-404">
+</span><span id="line-405"><span class="sd">        If this method is called multiple times before `go()`, only the last call</span>
+</span><span id="line-406"><span class="sd">        will be executed. It also cancels any prior calls to `set_turn_gun_left`.</span>
+</span><span id="line-407">
+</span><span id="line-408"><span class="sd">        Args:</span>
+</span><span id="line-409"><span
+    class="sd">            degrees (float): The number of degrees to turn the gun right.</span>
+</span><span id="line-410"><span class="sd">                             - If negative, the gun will turn left.</span>
+</span><span id="line-411"><span class="sd">                             - If `float(&#39;inf&#39;)`, the gun will turn right indefinitely.</span>
+</span><span id="line-412"><span class="sd">                             - If `float(&#39;-inf&#39;)`, the gun will turn left indefinitely.</span>
+</span><span id="line-413"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-414">        <span class="k">pass</span></div>
 
-</span><span id="line-413">
+</span><span id="line-415">
 <div class="viewcode-block" id="BotABC.turn_gun_right">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.turn_gun_right">[docs]</a>
-</span><span id="line-414">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">turn_gun_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-415"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-416"><span class="sd">        Rotates the gun to the right (decreasing degrees of the unit circle) until</span>
-</span><span id="line-417"><span class="sd">        it has turned the specified number of degrees.</span>
-</span><span id="line-418">
-</span><span id="line-419"><span class="sd">        This method is executed immediately and will block until the action is</span>
-</span><span id="line-420"><span class="sd">        completed, which might take several turns. During this time, new commands</span>
-</span><span id="line-421"><span class="sd">        will not take effect. To execute multiple commands in parallel, use the</span>
-</span><span id="line-422"><span class="sd">        corresponding &quot;set&quot; methods instead of this blocking method.</span>
-</span><span id="line-423">
-</span><span id="line-424"><span class="sd">        The turn rate per tick is limited by `set_max_gun_turn_rate`.</span>
+</span><span id="line-416">    <span class="k">def</span><span class="w"> </span><span
+    class="nf">turn_gun_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span
+    class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span
+    class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-417"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-418"><span class="sd">        Rotates the gun to the right (decreasing degrees of the unit circle) until</span>
+</span><span id="line-419"><span class="sd">        it has turned the specified number of degrees.</span>
+</span><span id="line-420">
+</span><span id="line-421"><span class="sd">        This method is executed immediately and will block until the action is</span>
+</span><span id="line-422"><span class="sd">        completed, which might take several turns. During this time, new commands</span>
+</span><span id="line-423"><span class="sd">        will not take effect. To execute multiple commands in parallel, use the</span>
+</span><span id="line-424"><span class="sd">        corresponding &quot;set&quot; methods instead of this blocking method.</span>
 </span><span id="line-425">
-</span><span id="line-426"><span class="sd">        If called, this method cancels any prior calls to `set_turn_gun_left` or</span>
-</span><span id="line-427"><span class="sd">        `set_turn_gun_right`.</span>
-</span><span id="line-428">
-</span><span id="line-429"><span class="sd">        Args:</span>
-</span><span id="line-430"><span class="sd">            degrees (float): The number of degrees to turn the gun right.</span>
-</span><span id="line-431"><span class="sd">                             - If negative, the gun will turn left.</span>
-</span><span id="line-432"><span class="sd">                             - If `float(&#39;inf&#39;)`, the gun will turn right indefinitely.</span>
-</span><span id="line-433"><span class="sd">                             - If `float(&#39;-inf&#39;)`, the gun will turn left indefinitely.</span>
-</span><span id="line-434"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-435">        <span class="k">pass</span></div>
+</span><span id="line-426"><span class="sd">        The turn rate per tick is limited by `set_max_gun_turn_rate`.</span>
+</span><span id="line-427">
+</span><span id="line-428"><span class="sd">        If called, this method cancels any prior calls to `set_turn_gun_left` or</span>
+</span><span id="line-429"><span class="sd">        `set_turn_gun_right`.</span>
+</span><span id="line-430">
+</span><span id="line-431"><span class="sd">        Args:</span>
+</span><span id="line-432"><span
+    class="sd">            degrees (float): The number of degrees to turn the gun right.</span>
+</span><span id="line-433"><span class="sd">                             - If negative, the gun will turn left.</span>
+</span><span id="line-434"><span class="sd">                             - If `float(&#39;inf&#39;)`, the gun will turn right indefinitely.</span>
+</span><span id="line-435"><span class="sd">                             - If `float(&#39;-inf&#39;)`, the gun will turn left indefinitely.</span>
+</span><span id="line-436"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-437">        <span class="k">pass</span></div>
 
-</span><span id="line-436">
-</span><span id="line-437">    <span class="nd">@property</span>
-</span><span id="line-438">    <span class="k">def</span><span class="w"> </span><span class="nf">gun_turn_remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-439"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-440"><span class="sd">        Gets the remaining turn angle in degrees for the gun to finish its</span>
-</span><span id="line-441"><span class="sd">        current turning action.</span>
-</span><span id="line-442">
-</span><span id="line-443"><span class="sd">        Positive values indicate the gun is turning left (increasing degrees of</span>
-</span><span id="line-444"><span class="sd">        the unit circle), while negative values indicate it is turning right</span>
-</span><span id="line-445"><span class="sd">        (decreasing degrees of the unit circle).</span>
-</span><span id="line-446">
-</span><span id="line-447"><span class="sd">        Returns:</span>
-</span><span id="line-448"><span class="sd">            float: The remaining degrees for the gun to complete the turn.</span>
-</span><span id="line-449"><span class="sd">                   - If `float(&#39;inf&#39;)`, the gun is turning left indefinitely.</span>
-</span><span id="line-450"><span class="sd">                   - If `float(&#39;-inf&#39;)`, the gun is turning right indefinitely.</span>
-</span><span id="line-451"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-452">        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;gun_turn_remaining not implemented&#39;</span><span class="p">)</span>
-</span><span id="line-453">
+</span><span id="line-438">
+</span><span id="line-439">    <span class="nd">@property</span>
+</span><span id="line-440">    <span class="k">def</span><span class="w"> </span><span
+    class="nf">gun_turn_remaining</span><span class="p">(</span><span class="bp">self</span><span
+    class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-441"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-442"><span
+    class="sd">        Gets the remaining turn angle in degrees for the gun to finish its</span>
+</span><span id="line-443"><span class="sd">        current turning action.</span>
+</span><span id="line-444">
+</span><span id="line-445"><span class="sd">        Positive values indicate the gun is turning left (increasing degrees of</span>
+</span><span id="line-446"><span
+    class="sd">        the unit circle), while negative values indicate it is turning right</span>
+</span><span id="line-447"><span class="sd">        (decreasing degrees of the unit circle).</span>
+</span><span id="line-448">
+</span><span id="line-449"><span class="sd">        Returns:</span>
+</span><span id="line-450"><span
+    class="sd">            float: The remaining degrees for the gun to complete the turn.</span>
+</span><span id="line-451"><span class="sd">                   - If `float(&#39;inf&#39;)`, the gun is turning left indefinitely.</span>
+</span><span id="line-452"><span class="sd">                   - If `float(&#39;-inf&#39;)`, the gun is turning right indefinitely.</span>
+</span><span id="line-453"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-454">        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span
+    class="p">(</span><span class="s1">&#39;gun_turn_remaining not implemented&#39;</span><span class="p">)</span>
+</span><span id="line-455">
 <div class="viewcode-block" id="BotABC.set_turn_radar_left">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.set_turn_radar_left">[docs]</a>
-</span><span id="line-454">    <span class="k">def</span><span class="w"> </span><span class="nf">set_turn_radar_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-455"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-456"><span class="sd">        Schedules the radar to turn to the left (increasing degrees of the unit</span>
-</span><span id="line-457"><span class="sd">        circle) until it has turned the specified number of degrees.</span>
-</span><span id="line-458">
-</span><span id="line-459"><span class="sd">        This method will execute when `go()` is called, allowing you to chain</span>
-</span><span id="line-460"><span class="sd">        multiple commands such as moving, turning, and scanning together for</span>
-</span><span id="line-461"><span class="sd">        simultaneous execution in a single turn.</span>
-</span><span id="line-462">
-</span><span id="line-463"><span class="sd">        The turn rate per tick is limited by `set_max_radar_turn_rate`.</span>
+</span><span id="line-456">    <span class="k">def</span><span class="w"> </span><span
+    class="nf">set_turn_radar_left</span><span class="p">(</span><span class="bp">self</span><span
+    class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">float</span><span
+    class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-457"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-458"><span class="sd">        Schedules the radar to turn to the left (increasing degrees of the unit</span>
+</span><span id="line-459"><span class="sd">        circle) until it has turned the specified number of degrees.</span>
+</span><span id="line-460">
+</span><span id="line-461"><span class="sd">        This method will execute when `go()` is called, allowing you to chain</span>
+</span><span id="line-462"><span
+    class="sd">        multiple commands such as moving, turning, and scanning together for</span>
+</span><span id="line-463"><span class="sd">        simultaneous execution in a single turn.</span>
 </span><span id="line-464">
-</span><span id="line-465"><span class="sd">        If this method is called multiple times before `go()`, only the last call</span>
-</span><span id="line-466"><span class="sd">        will be executed. It also cancels any prior calls to `set_turn_radar_right`.</span>
-</span><span id="line-467">
-</span><span id="line-468"><span class="sd">        Args:</span>
-</span><span id="line-469"><span class="sd">            degrees (float): The number of degrees to turn the radar left.</span>
-</span><span id="line-470"><span class="sd">                             - If negative, the radar will turn right.</span>
-</span><span id="line-471"><span class="sd">                             - If `float(&#39;inf&#39;)`, the radar will turn left indefinitely.</span>
-</span><span id="line-472"><span class="sd">                             - If `float(&#39;-inf&#39;)`, the radar will turn right indefinitely.</span>
-</span><span id="line-473"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-474">        <span class="k">pass</span></div>
+</span><span id="line-465"><span
+    class="sd">        The turn rate per tick is limited by `set_max_radar_turn_rate`.</span>
+</span><span id="line-466">
+</span><span id="line-467"><span class="sd">        If this method is called multiple times before `go()`, only the last call</span>
+</span><span id="line-468"><span class="sd">        will be executed. It also cancels any prior calls to `set_turn_radar_right`.</span>
+</span><span id="line-469">
+</span><span id="line-470"><span class="sd">        Args:</span>
+</span><span id="line-471"><span
+    class="sd">            degrees (float): The number of degrees to turn the radar left.</span>
+</span><span id="line-472"><span
+    class="sd">                             - If negative, the radar will turn right.</span>
+</span><span id="line-473"><span class="sd">                             - If `float(&#39;inf&#39;)`, the radar will turn left indefinitely.</span>
+</span><span id="line-474"><span class="sd">                             - If `float(&#39;-inf&#39;)`, the radar will turn right indefinitely.</span>
+</span><span id="line-475"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-476">        <span class="k">pass</span></div>
 
-</span><span id="line-475">
+</span><span id="line-477">
 <div class="viewcode-block" id="BotABC.turn_radar_left">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.turn_radar_left">[docs]</a>
-</span><span id="line-476">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">turn_radar_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-477"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Turn the radar to the left (following the increasing degrees of the</span>
-</span><span id="line-478"><span class="sd">        unit circle) until it has turned the specified amount of degrees. This</span>
-</span><span id="line-479"><span class="sd">        method will block until completed.</span>
-</span><span id="line-480">
-</span><span id="line-481"><span class="sd">        Args:</span>
-</span><span id="line-482"><span class="sd">            degrees (Union[float, int]): The amount of degrees to turn left. If negative, the</span>
-</span><span id="line-483"><span class="sd">                radar will turn right. If positive infinity, the radar will turn left</span>
-</span><span id="line-484"><span class="sd">                infinitely. If negative infinity, the radar will turn right infinitely.</span>
-</span><span id="line-485">
-</span><span id="line-486"><span class="sd">        Notes:</span>
-</span><span id="line-487"><span class="sd">            - The amount of degrees to turn per turn is limited by the maximum radar</span>
-</span><span id="line-488"><span class="sd">              turn rate.</span>
-</span><span id="line-489"><span class="sd">            - New commands will only be processed after this call completes.</span>
-</span><span id="line-490"><span class="sd">            - This will cancel any prior calls to `set_turn_radar_left()` or</span>
-</span><span id="line-491"><span class="sd">              `set_turn_radar_right()`.</span>
-</span><span id="line-492"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-493">        <span class="k">pass</span></div>
+</span><span id="line-478">    <span class="k">def</span><span class="w"> </span><span class="nf">turn_radar_left</span><span
+    class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span
+    class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span
+    class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span
+    class="p">:</span>
+</span><span id="line-479"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Turn the radar to the left (following the increasing degrees of the</span>
+</span><span id="line-480"><span class="sd">        unit circle) until it has turned the specified amount of degrees. This</span>
+</span><span id="line-481"><span class="sd">        method will block until completed.</span>
+</span><span id="line-482">
+</span><span id="line-483"><span class="sd">        Args:</span>
+</span><span id="line-484"><span class="sd">            degrees (Union[float, int]): The amount of degrees to turn left. If negative, the</span>
+</span><span id="line-485"><span class="sd">                radar will turn right. If positive infinity, the radar will turn left</span>
+</span><span id="line-486"><span class="sd">                infinitely. If negative infinity, the radar will turn right infinitely.</span>
+</span><span id="line-487">
+</span><span id="line-488"><span class="sd">        Notes:</span>
+</span><span id="line-489"><span class="sd">            - The amount of degrees to turn per turn is limited by the maximum radar</span>
+</span><span id="line-490"><span class="sd">              turn rate.</span>
+</span><span id="line-491"><span
+    class="sd">            - New commands will only be processed after this call completes.</span>
+</span><span id="line-492"><span
+    class="sd">            - This will cancel any prior calls to `set_turn_radar_left()` or</span>
+</span><span id="line-493"><span class="sd">              `set_turn_radar_right()`.</span>
+</span><span id="line-494"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-495">        <span class="k">pass</span></div>
 
-</span><span id="line-494">
+</span><span id="line-496">
 <div class="viewcode-block" id="BotABC.set_turn_radar_right">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.set_turn_radar_right">[docs]</a>
-</span><span id="line-495">    <span class="k">def</span><span class="w"> </span><span class="nf">set_turn_radar_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-496"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the radar to turn right (following the decreasing degrees of the</span>
-</span><span id="line-497"><span class="sd">        unit circle) until it has turned the specified amount of degrees. This</span>
-</span><span id="line-498"><span class="sd">        method does not block but will execute when `go()` is called.</span>
-</span><span id="line-499">
-</span><span id="line-500"><span class="sd">        Args:</span>
-</span><span id="line-501"><span class="sd">            degrees (Union[float, int]): The amount of degrees to turn right. If negative,</span>
-</span><span id="line-502"><span class="sd">                the radar will turn left. If positive infinity, the radar will turn</span>
-</span><span id="line-503"><span class="sd">                right infinitely. If negative infinity, the radar will turn left</span>
-</span><span id="line-504"><span class="sd">                infinitely.</span>
-</span><span id="line-505">
-</span><span id="line-506"><span class="sd">        Notes:</span>
-</span><span id="line-507"><span class="sd">            - The amount of degrees turned per turn is limited by the maximum radar</span>
-</span><span id="line-508"><span class="sd">              turn rate.</span>
-</span><span id="line-509"><span class="sd">            - The last call to this method before `go()` is executed will override any</span>
-</span><span id="line-510"><span class="sd">              previous ones.</span>
-</span><span id="line-511"><span class="sd">            - This cancels prior calls to `set_turn_radar_left()` and itself.</span>
-</span><span id="line-512"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-513">        <span class="k">pass</span></div>
+</span><span id="line-497">    <span class="k">def</span><span class="w"> </span><span
+    class="nf">set_turn_radar_right</span><span class="p">(</span><span class="bp">self</span><span
+    class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="n">Union</span><span
+    class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span
+    class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-498"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the radar to turn right (following the decreasing degrees of the</span>
+</span><span id="line-499"><span class="sd">        unit circle) until it has turned the specified amount of degrees. This</span>
+</span><span id="line-500"><span class="sd">        method does not block but will execute when `go()` is called.</span>
+</span><span id="line-501">
+</span><span id="line-502"><span class="sd">        Args:</span>
+</span><span id="line-503"><span class="sd">            degrees (Union[float, int]): The amount of degrees to turn right. If negative,</span>
+</span><span id="line-504"><span class="sd">                the radar will turn left. If positive infinity, the radar will turn</span>
+</span><span id="line-505"><span class="sd">                right infinitely. If negative infinity, the radar will turn left</span>
+</span><span id="line-506"><span class="sd">                infinitely.</span>
+</span><span id="line-507">
+</span><span id="line-508"><span class="sd">        Notes:</span>
+</span><span id="line-509"><span class="sd">            - The amount of degrees turned per turn is limited by the maximum radar</span>
+</span><span id="line-510"><span class="sd">              turn rate.</span>
+</span><span id="line-511"><span class="sd">            - The last call to this method before `go()` is executed will override any</span>
+</span><span id="line-512"><span class="sd">              previous ones.</span>
+</span><span id="line-513"><span class="sd">            - This cancels prior calls to `set_turn_radar_left()` and itself.</span>
+</span><span id="line-514"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-515">        <span class="k">pass</span></div>
 
-</span><span id="line-514">
+</span><span id="line-516">
 <div class="viewcode-block" id="BotABC.turn_radar_right">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.turn_radar_right">[docs]</a>
-</span><span id="line-515">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">turn_radar_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-516"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Turn the radar to the right (following the increasing degrees of the</span>
-</span><span id="line-517"><span class="sd">        unit circle) until it has turned the specified amount of degrees. This</span>
-</span><span id="line-518"><span class="sd">        method will block until completed.</span>
-</span><span id="line-519">
-</span><span id="line-520"><span class="sd">        Args:</span>
-</span><span id="line-521"><span class="sd">            degrees (Union[float, int]): The amount of degrees to turn right. If negative, the</span>
-</span><span id="line-522"><span class="sd">                radar will turn left. If positive infinity, the radar will turn right</span>
-</span><span id="line-523"><span class="sd">                infinitely. If negative infinity, the radar will turn left infinitely.</span>
-</span><span id="line-524">
-</span><span id="line-525"><span class="sd">        Notes:</span>
-</span><span id="line-526"><span class="sd">            - The amount of degrees to turn per turn is limited by the maximum radar</span>
-</span><span id="line-527"><span class="sd">              turn rate.</span>
-</span><span id="line-528"><span class="sd">            - New commands will only be processed after this call completes.</span>
-</span><span id="line-529"><span class="sd">            - This will cancel any prior calls to `set_turn_radar_left()` or</span>
-</span><span id="line-530"><span class="sd">              `set_turn_radar_right()`.</span>
-</span><span id="line-531"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-532">        <span class="k">pass</span></div>
+</span><span id="line-517">    <span class="k">def</span><span class="w"> </span><span
+    class="nf">turn_radar_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span
+    class="n">degrees</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span
+    class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span
+    class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-518"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Turn the radar to the right (following the increasing degrees of the</span>
+</span><span id="line-519"><span class="sd">        unit circle) until it has turned the specified amount of degrees. This</span>
+</span><span id="line-520"><span class="sd">        method will block until completed.</span>
+</span><span id="line-521">
+</span><span id="line-522"><span class="sd">        Args:</span>
+</span><span id="line-523"><span class="sd">            degrees (Union[float, int]): The amount of degrees to turn right. If negative, the</span>
+</span><span id="line-524"><span class="sd">                radar will turn left. If positive infinity, the radar will turn right</span>
+</span><span id="line-525"><span class="sd">                infinitely. If negative infinity, the radar will turn left infinitely.</span>
+</span><span id="line-526">
+</span><span id="line-527"><span class="sd">        Notes:</span>
+</span><span id="line-528"><span class="sd">            - The amount of degrees to turn per turn is limited by the maximum radar</span>
+</span><span id="line-529"><span class="sd">              turn rate.</span>
+</span><span id="line-530"><span
+    class="sd">            - New commands will only be processed after this call completes.</span>
+</span><span id="line-531"><span
+    class="sd">            - This will cancel any prior calls to `set_turn_radar_left()` or</span>
+</span><span id="line-532"><span class="sd">              `set_turn_radar_right()`.</span>
+</span><span id="line-533"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-534">        <span class="k">pass</span></div>
 
-</span><span id="line-533">
-</span><span id="line-534">    <span class="nd">@property</span>
-</span><span id="line-535">    <span class="k">def</span><span class="w"> </span><span class="nf">radar_turn_remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="line-536"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the remaining turn in degrees until the radar has finished its current turn.</span>
-</span><span id="line-537">
-</span><span id="line-538"><span class="sd">        Returns:</span>
-</span><span id="line-539"><span class="sd">            float: The remaining degrees to turn the radar. Positive values indicate</span>
-</span><span id="line-540"><span class="sd">            the radar is turning left (along the unit circle), and negative values</span>
-</span><span id="line-541"><span class="sd">            indicate it is turning right. If positive infinity, the radar will</span>
-</span><span id="line-542"><span class="sd">            turn left infinitely. If negative infinity, the radar will turn right</span>
-</span><span id="line-543"><span class="sd">            infinitely.</span>
-</span><span id="line-544">
-</span><span id="line-545"><span class="sd">        Notes:</span>
-</span><span id="line-546"><span class="sd">            - This applies to the current turn initiated by methods like</span>
-</span><span id="line-547"><span class="sd">              `set_turn_radar_left()`, `set_turn_radar_right()`,</span>
-</span><span id="line-548"><span class="sd">              `turn_radar_left()`, or `turn_radar_right()`.</span>
-</span><span id="line-549"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-550">        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;radar_turn_remaining not implemented&#39;</span><span class="p">)</span>
-</span><span id="line-551">
+</span><span id="line-535">
+</span><span id="line-536">    <span class="nd">@property</span>
+</span><span id="line-537">    <span class="k">def</span><span class="w"> </span><span
+    class="nf">radar_turn_remaining</span><span class="p">(</span><span class="bp">self</span><span
+    class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="line-538"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the remaining turn in degrees until the radar has finished its current turn.</span>
+</span><span id="line-539">
+</span><span id="line-540"><span class="sd">        Returns:</span>
+</span><span id="line-541"><span class="sd">            float: The remaining degrees to turn the radar. Positive values indicate</span>
+</span><span id="line-542"><span class="sd">            the radar is turning left (along the unit circle), and negative values</span>
+</span><span id="line-543"><span class="sd">            indicate it is turning right. If positive infinity, the radar will</span>
+</span><span id="line-544"><span class="sd">            turn left infinitely. If negative infinity, the radar will turn right</span>
+</span><span id="line-545"><span class="sd">            infinitely.</span>
+</span><span id="line-546">
+</span><span id="line-547"><span class="sd">        Notes:</span>
+</span><span id="line-548"><span
+    class="sd">            - This applies to the current turn initiated by methods like</span>
+</span><span id="line-549"><span class="sd">              `set_turn_radar_left()`, `set_turn_radar_right()`,</span>
+</span><span id="line-550"><span class="sd">              `turn_radar_left()`, or `turn_radar_right()`.</span>
+</span><span id="line-551"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-552">        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span
+    class="p">(</span><span class="s1">&#39;radar_turn_remaining not implemented&#39;</span><span class="p">)</span>
+</span><span id="line-553">
 <div class="viewcode-block" id="BotABC.fire">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.fire">[docs]</a>
-</span><span id="line-552">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firepower</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-553"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-554"><span class="sd">        Fires the gun in the direction the gun is pointing.</span>
-</span><span id="line-555">
-</span><span id="line-556"><span class="sd">        Note:</span>
-</span><span id="line-557"><span class="sd">            - Firing the gun spends energy. The energy loss is equal to the firepower used.</span>
-</span><span id="line-558"><span class="sd">            - If the bullet hits an opponent bot, the bot gains energy from the bullet hit. Specifically,</span>
-</span><span id="line-559"><span class="sd">              the bot is rewarded with an energy boost of 3 times the firepower.</span>
-</span><span id="line-560">
-</span><span id="line-561"><span class="sd">        Rules:</span>
-</span><span id="line-562"><span class="sd">            - The gun will only fire if the firepower is at or above the minimum (Constants.MIN_FIREPOWER).</span>
-</span><span id="line-563"><span class="sd">            - If the firepower exceeds the maximum (Constants.MAX_FIREPOWER), it is truncated to the maximum allowed value.</span>
-</span><span id="line-564">
-</span><span id="line-565"><span class="sd">        Gun Heat:</span>
-</span><span id="line-566"><span class="sd">            - The gun heats up whenever it is fired and must cool down to zero heat before it can fire again.</span>
-</span><span id="line-567"><span class="sd">            - The heat generated is calculated as `1 + (firepower / 5)`, meaning higher firepower increases cooling time.</span>
-</span><span id="line-568"><span class="sd">            - The gun&#39;s cooling rate can be retrieved via `get_gun_cooling_rate()`.</span>
-</span><span id="line-569">
-</span><span id="line-570"><span class="sd">        Energy Usage and Damage:</span>
-</span><span id="line-571"><span class="sd">            - The energy used for firing is subtracted from the bot’s total energy.</span>
-</span><span id="line-572"><span class="sd">            - Damage dealt by the bullet is `4 * firepower`. Additionally, if firepower exceeds 1,</span>
-</span><span id="line-573"><span class="sd">              extra damage is calculated as `2 * (firepower - 1)`.</span>
-</span><span id="line-574">
-</span><span id="line-575"><span class="sd">        Execution:</span>
-</span><span id="line-576"><span class="sd">            - This method is executed immediately and blocks until completion, taking one or several turns.</span>
-</span><span id="line-577"><span class="sd">            - New commands will only take effect after the completion of this method.</span>
-</span><span id="line-578"><span class="sd">            - For executing multiple commands in parallel, it is recommended to use setter methods instead of this blocking method.</span>
-</span><span id="line-579">
-</span><span id="line-580"><span class="sd">        Side Effects:</span>
-</span><span id="line-581"><span class="sd">            - Cancels prior calls to `set_fire`.</span>
-</span><span id="line-582">
-</span><span id="line-583"><span class="sd">        Args:</span>
-</span><span id="line-584"><span class="sd">            firepower (float): The amount of energy spent on firing the gun.</span>
-</span><span id="line-585"><span class="sd">                - Must be greater than Constants.MIN_FIREPOWER.</span>
-</span><span id="line-586"><span class="sd">                - Cannot exceed the energy available to the bot.</span>
-</span><span id="line-587">
-</span><span id="line-588"><span class="sd">        See Also:</span>
-</span><span id="line-589"><span class="sd">            - `on_bullet_fired()`</span>
-</span><span id="line-590"><span class="sd">            - `set_fire()`</span>
-</span><span id="line-591"><span class="sd">            - `get_gun_heat()`</span>
-</span><span id="line-592"><span class="sd">            - `get_gun_cooling_rate()`</span>
-</span><span id="line-593"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-594">        <span class="k">pass</span></div>
+</span><span id="line-554">    <span class="k">def</span><span class="w"> </span><span class="nf">fire</span><span
+    class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">firepower</span><span
+    class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+    class="kc">None</span><span class="p">:</span>
+</span><span id="line-555"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-556"><span class="sd">        Fires the gun in the direction the gun is pointing.</span>
+</span><span id="line-557">
+</span><span id="line-558"><span class="sd">        Note:</span>
+</span><span id="line-559"><span class="sd">            - Firing the gun spends energy. The energy loss is equal to the firepower used.</span>
+</span><span id="line-560"><span class="sd">            - If the bullet hits an opponent bot, the bot gains energy from the bullet hit. Specifically,</span>
+</span><span id="line-561"><span class="sd">              the bot is rewarded with an energy boost of 3 times the firepower.</span>
+</span><span id="line-562">
+</span><span id="line-563"><span class="sd">        Rules:</span>
+</span><span id="line-564"><span class="sd">            - The gun will only fire if the firepower is at or above the minimum (Constants.MIN_FIREPOWER).</span>
+</span><span id="line-565"><span class="sd">            - If the firepower exceeds the maximum (Constants.MAX_FIREPOWER), it is truncated to the maximum allowed value.</span>
+</span><span id="line-566">
+</span><span id="line-567"><span class="sd">        Gun Heat:</span>
+</span><span id="line-568"><span class="sd">            - The gun heats up whenever it is fired and must cool down to zero heat before it can fire again.</span>
+</span><span id="line-569"><span class="sd">            - The heat generated is calculated as `1 + (firepower / 5)`, meaning higher firepower increases cooling time.</span>
+</span><span id="line-570"><span class="sd">            - The gun&#39;s cooling rate can be retrieved via `get_gun_cooling_rate()`.</span>
+</span><span id="line-571">
+</span><span id="line-572"><span class="sd">        Energy Usage and Damage:</span>
+</span><span id="line-573"><span class="sd">            - The energy used for firing is subtracted from the bot’s total energy.</span>
+</span><span id="line-574"><span class="sd">            - Damage dealt by the bullet is `4 * firepower`. Additionally, if firepower exceeds 1,</span>
+</span><span id="line-575"><span class="sd">              extra damage is calculated as `2 * (firepower - 1)`.</span>
+</span><span id="line-576">
+</span><span id="line-577"><span class="sd">        Execution:</span>
+</span><span id="line-578"><span class="sd">            - This method is executed immediately and blocks until completion, taking one or several turns.</span>
+</span><span id="line-579"><span class="sd">            - New commands will only take effect after the completion of this method.</span>
+</span><span id="line-580"><span class="sd">            - For executing multiple commands in parallel, it is recommended to use setter methods instead of this blocking method.</span>
+</span><span id="line-581">
+</span><span id="line-582"><span class="sd">        Side Effects:</span>
+</span><span id="line-583"><span class="sd">            - Cancels prior calls to `set_fire`.</span>
+</span><span id="line-584">
+</span><span id="line-585"><span class="sd">        Args:</span>
+</span><span id="line-586"><span
+    class="sd">            firepower (float): The amount of energy spent on firing the gun.</span>
+</span><span id="line-587"><span class="sd">                - Must be greater than Constants.MIN_FIREPOWER.</span>
+</span><span id="line-588"><span class="sd">                - Cannot exceed the energy available to the bot.</span>
+</span><span id="line-589">
+</span><span id="line-590"><span class="sd">        See Also:</span>
+</span><span id="line-591"><span class="sd">            - `on_bullet_fired()`</span>
+</span><span id="line-592"><span class="sd">            - `set_fire()`</span>
+</span><span id="line-593"><span class="sd">            - `get_gun_heat()`</span>
+</span><span id="line-594"><span class="sd">            - `get_gun_cooling_rate()`</span>
+</span><span id="line-595"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-596">        <span class="k">pass</span></div>
 
-</span><span id="line-595">
+</span><span id="line-597">
 <div class="viewcode-block" id="BotABC.stop">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.stop">[docs]</a>
-</span><span id="line-596">    <span class="nd">@abstractmethod</span>
-</span><span id="line-597">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-598"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-599"><span class="sd">        Immediately stops all motion, including the robot&#39;s movement, gun rotation,</span>
-</span><span id="line-600"><span class="sd">        and radar movement. Any remaining movement is preserved for future execution</span>
-</span><span id="line-601"><span class="sd">        via `set_resume` or `resume`.</span>
-</span><span id="line-602">
-</span><span id="line-603"><span class="sd">        This is a blocking call and will only return after the stop operation is</span>
-</span><span id="line-604"><span class="sd">        completed. New commands will take effect after this method finishes. To</span>
-</span><span id="line-605"><span class="sd">        perform multiple commands concurrently, use the non-blocking setter methods.</span>
-</span><span id="line-606">
-</span><span id="line-607"><span class="sd">        Args:</span>
-</span><span id="line-608"><span class="sd">            overwrite (bool): If True, overwrites previously saved movement data</span>
-</span><span id="line-609"><span class="sd">                              from a prior call to `stop_with_overwrite` or `set_stop`.</span>
-</span><span id="line-610"><span class="sd">                              If False, behaves equivalently to `stop_with_overwrite(False)`.</span>
-</span><span id="line-611"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-612">        <span class="k">pass</span></div>
+</span><span id="line-598">    <span class="nd">@abstractmethod</span>
+</span><span id="line-599">    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span
+    class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span
+    class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span
+    class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-600"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-601"><span class="sd">        Immediately stops all motion, including the robot&#39;s movement, gun rotation,</span>
+</span><span id="line-602"><span class="sd">        and radar movement. Any remaining movement is preserved for future execution</span>
+</span><span id="line-603"><span class="sd">        via `set_resume` or `resume`.</span>
+</span><span id="line-604">
+</span><span id="line-605"><span class="sd">        This is a blocking call and will only return after the stop operation is</span>
+</span><span id="line-606"><span class="sd">        completed. New commands will take effect after this method finishes. To</span>
+</span><span id="line-607"><span class="sd">        perform multiple commands concurrently, use the non-blocking setter methods.</span>
+</span><span id="line-608">
+</span><span id="line-609"><span class="sd">        Args:</span>
+</span><span id="line-610"><span class="sd">            overwrite (bool): If True, overwrites previously saved movement data</span>
+</span><span id="line-611"><span class="sd">                              from a prior call to `stop_with_overwrite` or `set_stop`.</span>
+</span><span id="line-612"><span class="sd">                              If False, behaves equivalently to `stop_with_overwrite(False)`.</span>
+</span><span id="line-613"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-614">        <span class="k">pass</span></div>
 
-</span><span id="line-613">
+</span><span id="line-615">
 <div class="viewcode-block" id="BotABC.resume">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.resume">[docs]</a>
-</span><span id="line-614">    <span class="nd">@abstractmethod</span>
-</span><span id="line-615">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-616"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-617"><span class="sd">        Resume the movement prior to calling the `set_stop` or `stop` method.</span>
-</span><span id="line-618"><span class="sd">        This method has no effect if it has already been called.</span>
-</span><span id="line-619">
-</span><span id="line-620"><span class="sd">        This call is executed immediately and blocks until completed. New commands</span>
-</span><span id="line-621"><span class="sd">        will take effect only after this method is completed. To execute multiple</span>
-</span><span id="line-622"><span class="sd">        commands in parallel, use non-blocking setter methods.</span>
-</span><span id="line-623"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-624">        <span class="k">pass</span></div>
+</span><span id="line-616">    <span class="nd">@abstractmethod</span>
+</span><span id="line-617">    <span class="k">def</span><span class="w"> </span><span class="nf">resume</span><span
+    class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+    class="kc">None</span><span class="p">:</span>
+</span><span id="line-618"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-619"><span class="sd">        Resume the movement prior to calling the `set_stop` or `stop` method.</span>
+</span><span id="line-620"><span class="sd">        This method has no effect if it has already been called.</span>
+</span><span id="line-621">
+</span><span id="line-622"><span class="sd">        This call is executed immediately and blocks until completed. New commands</span>
+</span><span id="line-623"><span class="sd">        will take effect only after this method is completed. To execute multiple</span>
+</span><span id="line-624"><span class="sd">        commands in parallel, use non-blocking setter methods.</span>
+</span><span id="line-625"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-626">        <span class="k">pass</span></div>
 
-</span><span id="line-625">
+</span><span id="line-627">
 <div class="viewcode-block" id="BotABC.rescan">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.rescan">[docs]</a>
-</span><span id="line-626">    <span class="nd">@abstractmethod</span>
-</span><span id="line-627">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">rescan</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-628"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-629"><span class="sd">        Scan again with the radar. This method is useful if the radar has</span>
-</span><span id="line-630"><span class="sd">        not been turning and is unable to scan bots automatically.</span>
-</span><span id="line-631">
-</span><span id="line-632"><span class="sd">        The last radar direction and sweep angle will be used for rescanning for bots.</span>
-</span><span id="line-633"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-634">        <span class="k">pass</span></div>
+</span><span id="line-628">    <span class="nd">@abstractmethod</span>
+</span><span id="line-629">    <span class="k">def</span><span class="w"> </span><span class="nf">rescan</span><span
+    class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span
+    class="kc">None</span><span class="p">:</span>
+</span><span id="line-630"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-631"><span
+    class="sd">        Scan again with the radar. This method is useful if the radar has</span>
+</span><span id="line-632"><span class="sd">        not been turning and is unable to scan bots automatically.</span>
+</span><span id="line-633">
+</span><span id="line-634"><span class="sd">        The last radar direction and sweep angle will be used for rescanning for bots.</span>
+</span><span id="line-635"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-636">        <span class="k">pass</span></div>
 
-</span><span id="line-635">
+</span><span id="line-637">
 <div class="viewcode-block" id="BotABC.wait_for">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_abc.BotABC.wait_for">[docs]</a>
-</span><span id="line-636">    <span class="nd">@abstractmethod</span>
-</span><span id="line-637">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">wait_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-638"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-639"><span class="sd">        Blocks until a condition is met, i.e., when `Condition.test()` returns True.</span>
-</span><span id="line-640">
-</span><span id="line-641"><span class="sd">        Args:</span>
-</span><span id="line-642"><span class="sd">            condition: The condition to be met before this method stops waiting.</span>
-</span><span id="line-643"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-644">        <span class="k">pass</span></div>
+</span><span id="line-638">    <span class="nd">@abstractmethod</span>
+</span><span id="line-639">    <span class="k">def</span><span class="w"> </span><span class="nf">wait_for</span><span
+    class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span
+    class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">bool</span><span
+    class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-640"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-641"><span class="sd">        Blocks until a condition is met, i.e., when `Condition.test()` returns True.</span>
+</span><span id="line-642">
+</span><span id="line-643"><span class="sd">        Args:</span>
+</span><span id="line-644"><span class="sd">            condition: The condition to be met before this method stops waiting.</span>
+</span><span id="line-645"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-646">        <span class="k">pass</span></div>
 </div>
 
 </span></code></pre></div>
     </div></div>
-        </main>
-      </div>
-    </div><footer class="py-6 border-t border-border md:py-0">
+</main>
+</div>
+</div>
+<footer class="py-6 border-t border-border md:py-0">
     <div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
       <div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
         <p class="text-sm leading-loose text-center text-muted-foreground md:text-left">Built with <a class="font-medium underline underline-offset-4"
     href="https://www.sphinx-doc.org"
                                                                                                       rel="noreferrer">Sphinx
-            9.0.4</a></p>
+            9.1.0</a></p>
 </div>
 </div>
 </footer>
-  </div>
+</div>
 
-    <script src="../../_static/documentation_options.js?v=284e7c21"></script>
+<script src="../../_static/documentation_options.js?v=ca1b380b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script defer="defer" src="../../_static/theme.js?v=073f68d9"></script>
+<script defer="defer" src="../../_static/theme.js?v=582b20c5"></script>
 
 </body>
+
 </html>

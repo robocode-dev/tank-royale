@@ -144,6 +144,14 @@ bot\_api.initial\_position module
    :show-inheritance:
    :undoc-members:
 
+bot\_api.team\_message module
+-----------------------------
+
+.. automodule:: bot_api.team_message
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Module contents
 ---------------
 

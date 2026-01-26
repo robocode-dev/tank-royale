@@ -1,46 +1,52 @@
 <!DOCTYPE html>
-<html lang="en"
-      data-content_root="./"
-      x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }"
-      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
-      class="scroll-smooth"
-      :class="{'dark': darkMode === 'dark' || (darkMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}"
->
+<html lang="en" data-content_root="./"
+      x-data="{ darkMode: $persist(window.matchMedia('(prefers-color-scheme: dark)').matches), activeSection: ''}"
+      :class="{ 'dark' : darkMode === true }">
+
 <head>
+    <script>
+        (function () {
+            // Set initial color scheme
+            if ((localStorage.getItem("_x_darkMode") === "true") || (window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+                document.documentElement.classList.add("dark");
+            }
+
+            // Watch for media preference changes
+            window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+                localStorage.setItem("_x_darkMode", event.matches);
+                document.documentElement.classList.toggle("dark", event.matches);
+            });
+        })();
+    </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta charset="utf-8" />
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"/>
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#030711"/>
 
-    <title>Index | Robocode Tank Royale Bot API (Python) 0.34.2 documentation</title>
-    <meta property="og:title" content="Index | Robocode Tank Royale Bot API (Python) 0.34.2 documentation"/>
-    <meta name="twitter:title" content="Index | Robocode Tank Royale Bot API (Python) 0.34.2 documentation"/>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e72c8e07" />
-      <link rel="stylesheet" type="text/css" href="_static/theme.css?v=42baaae4" />
-        <link rel="search" title="Search" href="search.html" />
-        <link rel="index" title="Index" href="#" />
-
-    <script>
-    <!-- Prevent Flash of wrong theme -->
-      const userPreference = localStorage.getItem('darkMode');
-      let mode;
-      if (userPreference === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        mode = 'dark';
-        document.documentElement.classList.add('dark');
-      } else {
-        mode = 'light';
-      }
-      if (!userPreference) {localStorage.setItem('darkMode', mode)}
-    </script>
+    <title>Index | Robocode Tank Royale Bot API (Python) 0.35.0 documentation</title>
+    <meta property="og:title" content="Index | Robocode Tank Royale Bot API (Python) 0.35.0 documentation"/>
+    <meta name="twitter:title" content="Index | Robocode Tank Royale Bot API (Python) 0.35.0 documentation"/>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e72c8e07"/>
+    <link rel="stylesheet" type="text/css" href="_static/theme.css?v=73505e79"/>
+    <link rel="search" title="Search" href="search.html"/>
+    <link rel="index" title="Index" href="#"/>
 </head>
-  <body x-data="{ showSidebar: false, showScrollTop: false }" class="min-h-screen font-sans antialiased bg-background text-foreground" :class="{ 'overflow-hidden': showSidebar }">
-    <div x-cloak x-show="showSidebar" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" @click.self="showSidebar = false"></div><div id="page" class="relative flex flex-col min-h-screen"><a href="#content" class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100">
+
+<body x-data="{ showSidebar: false, showScrollTop: false }"
+      class="min-h-screen font-sans antialiased bg-background text-foreground"
+      :class="{ 'overflow-hidden': showSidebar }">
+<div x-cloak x-show="showSidebar"
+     class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden"
+     @click.self="showSidebar = false"></div>
+<div id="page" class="relative flex flex-col min-h-screen"><a href="#content"
+                                                              class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100">
       Skip to content
-    </a><header
-  class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
+</a>
+    <header class="sticky top-0 z-40 w-full border-b shadow-xs border-border bg-background/90 backdrop-blur">
+        <div class="container flex items-center h-14">
     <div class="hidden mr-4 md:flex">
         <a href="index.html" class="flex items-center mr-6"><span
-            class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.2 documentation</span>
+            class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
       </a></div><button
       class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
       type="button" @click="showSidebar = true">
@@ -51,7 +57,7 @@
       </svg>
       <span class="sr-only">Toggle navigation menu</span>
     </button>
-    <div class="flex items-center justify-between flex-1 space-x-2 sm:space-x-4 md:justify-end">
+            <div class="flex items-center justify-between flex-1 gap-2 sm:gap-4 md:justify-end">
       <div class="flex-1 w-full md:w-auto md:flex-none"><form id="searchbox"
       action="search.html"
       method="get"
@@ -70,17 +76,19 @@
   </kbd>
 </form>
       </div>
-      <nav class="flex items-center space-x-1">
-        <button @click="darkMode = darkMode === 'light' ? 'dark' : 'light'"
+                <nav class="flex items-center gap-1">
+                    <button @click="darkMode = !darkMode"
           class="relative inline-flex items-center justify-center px-0 text-sm font-medium transition-colors rounded-md hover:bg-accent hover:text-accent-foreground h-9 w-9"
           type="button"
-          aria-label="Color theme switcher">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+                            title="Toggle color scheme">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 96 960 960"
+                             fill="currentColor"
             class="absolute transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0">
             <path
               d="M480 685q45.456 0 77.228-31.772Q589 621.456 589 576q0-45.456-31.772-77.228Q525.456 467 480 467q-45.456 0-77.228 31.772Q371 530.544 371 576q0 45.456 31.772 77.228Q434.544 685 480 685Zm0 91q-83 0-141.5-58.5T280 576q0-83 58.5-141.5T480 376q83 0 141.5 58.5T680 576q0 83-58.5 141.5T480 776ZM80 621.5q-19.152 0-32.326-13.174T34.5 576q0-19.152 13.174-32.326T80 530.5h80q19.152 0 32.326 13.174T205.5 576q0 19.152-13.174 32.326T160 621.5H80Zm720 0q-19.152 0-32.326-13.174T754.5 576q0-19.152 13.174-32.326T800 530.5h80q19.152 0 32.326 13.174T925.5 576q0 19.152-13.174 32.326T880 621.5h-80Zm-320-320q-19.152 0-32.326-13.174T434.5 256v-80q0-19.152 13.174-32.326T480 130.5q19.152 0 32.326 13.174T525.5 176v80q0 19.152-13.174 32.326T480 301.5Zm0 720q-19.152 0-32.326-13.17Q434.5 995.152 434.5 976v-80q0-19.152 13.174-32.326T480 850.5q19.152 0 32.326 13.174T525.5 896v80q0 19.152-13.174 32.33-13.174 13.17-32.326 13.17ZM222.174 382.065l-43-42Q165.5 327.391 166 308.239t13.174-33.065q13.435-13.674 32.587-13.674t32.065 13.674l42.239 43q12.674 13.435 12.555 31.706-.12 18.272-12.555 31.946-12.674 13.674-31.445 13.413-18.772-.261-32.446-13.174Zm494 494.761-42.239-43q-12.674-13.435-12.674-32.087t12.674-31.565Q686.609 756.5 705.38 757q18.772.5 32.446 13.174l43 41.761Q794.5 824.609 794 843.761t-13.174 33.065Q767.391 890.5 748.239 890.5t-32.065-13.674Zm-42-494.761Q660.5 369.391 661 350.62q.5-18.772 13.174-32.446l41.761-43Q728.609 261.5 747.761 262t33.065 13.174q13.674 13.435 13.674 32.587t-13.674 32.065l-43 42.239q-13.435 12.674-31.706 12.555-18.272-.12-31.946-12.555Zm-495 494.761Q165.5 863.391 165.5 844.239t13.674-32.065l43-42.239q13.435-12.674 32.087-12.674t31.565 12.674Q299.5 782.609 299 801.38q-.5 18.772-13.174 32.446l-41.761 43Q231.391 890.5 212.239 890t-33.065-13.174ZM480 576Z" />
           </svg>
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 96 960 960"
+                             fill="currentColor"
             class="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100">
             <path
               d="M480 936q-151 0-255.5-104.5T120 576q0-138 90-239.5T440 218q25-3 39 18t-1 44q-17 26-25.5 55t-8.5 61q0 90 63 153t153 63q31 0 61.5-9t54.5-25q21-14 43-1.5t19 39.5q-14 138-117.5 229T480 936Zm0-80q88 0 158-48.5T740 681q-20 5-40 8t-40 3q-123 0-209.5-86.5T364 396q0-20 3-40t8-40q-78 32-126.5 102T200 576q0 116 82 198t198 82Zm-10-270Z" />
@@ -91,15 +99,18 @@
   </div>
 </header>
 
-    <div class="flex-1"><div class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside id="left-sidebar"
-  class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full shrink-0 overflow-y-auto border-r border-border md:sticky"
+    <div class="flex-1">
+        <div
+            class="container md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
+            <aside id="left-sidebar"
+                   class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full overflow-y-auto border-r border-border md:sticky"
   :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
 
-        <a href="index.html" class="!justify-start text-sm md:!hidden bg-background"><span
-            class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.2 documentation</span>
+                <a href="index.html" class="justify-start text-sm md:!hidden bg-background"><span
+                    class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
     </a>
 
-    <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
+                <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0">
       <div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -121,13 +132,13 @@
       </svg>
     </button>
   </aside>
-        <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
+            <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
 <div class="w-full min-w-0 mx-auto">
 <nav aria-label="breadcrumbs"
      class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
   <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
      href="index.html">
-      <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.34.2 documentation</span>
+      <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
     <svg xmlns="http://www.w3.org/2000/svg"
          height="18"
          width="18"
@@ -140,7 +151,7 @@
     </svg>
   </a>
 
-<div class="mr-1">/</div><span aria-current="page"
+    <div class="mr-1">/</div><span aria-current="page"
         class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">Index</span>
 </nav>
 
@@ -178,7 +189,7 @@
   </tr>
       </table>
 
-  <h2 id="A">A</h2>
+    <h2 id="A">A</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.a">a (BotState.Color property)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.a">[1]</a>
@@ -223,6 +234,55 @@
         <li><a href="api/bot_api.internal.html#bot_api.internal.thread_interrupted_exception.ThreadInterruptedException.add_note">(ThreadInterruptedException method)</a>
 </li>
       </ul></li>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.adjust_gun_for_body_turn">adjust_gun_for_body_turn (BaseBot
+          property)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.adjust_gun_for_body_turn">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.adjust_gun_for_body_turn">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.adjust_gun_for_body_turn">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.adjust_gun_for_body_turn">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.adjust_gun_for_body_turn">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotABC.adjust_gun_for_body_turn">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.adjust_gun_for_body_turn">[1]</a>
+              </li>
+          </ul>
+      </li>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.adjust_radar_for_body_turn">adjust_radar_for_body_turn (BaseBot
+          property)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.adjust_radar_for_body_turn">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.adjust_radar_for_body_turn">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.adjust_radar_for_body_turn">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.adjust_radar_for_body_turn">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.adjust_radar_for_body_turn">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotABC.adjust_radar_for_body_turn">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.adjust_radar_for_body_turn">[1]</a>
+              </li>
+          </ul>
+      </li>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.adjust_radar_for_gun_turn">adjust_radar_for_gun_turn (BaseBot
+          property)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.adjust_radar_for_gun_turn">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.adjust_radar_for_gun_turn">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.adjust_radar_for_gun_turn">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.adjust_radar_for_gun_turn">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.adjust_radar_for_gun_turn">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotABC.adjust_radar_for_gun_turn">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.adjust_radar_for_gun_turn">[1]</a>
+              </li>
+          </ul>
+      </li>
+  </ul>
+  </td>
+      <td style="width: 33%; vertical-align: top;">
+          <ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.ALICE_BLUE">ALICE_BLUE (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.ALICE_BLUE">[1]</a>
 
       <ul style="list-style-type:none">
@@ -231,8 +291,6 @@
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.ALICE_BLUE">(Color attribute)</a>, <a href="api/bot_api.html#bot_api.Color.ALICE_BLUE">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.ALICE_BLUE">[2]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.alpha">alpha (BotState.Color property)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.alpha">[1]</a>
 
       <ul style="list-style-type:none">
@@ -265,10 +323,42 @@
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.AQUAMARINE">(Color attribute)</a>, <a href="api/bot_api.html#bot_api.Color.AQUAMARINE">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.AQUAMARINE">[2]</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.html#bot_api.GameSetup.arena_height">arena_height (GameSetup attribute)</a>, <a href="api/bot_api.html#bot_api.game_setup.GameSetup.arena_height">[1]</a>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.arena_height">arena_height (BaseBot property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot.BaseBot.arena_height">[1]</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#bot_api.BaseBotABC.arena_height">(BaseBotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.arena_height">[1]</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.GameSetup.arena_width">arena_width (GameSetup attribute)</a>, <a href="api/bot_api.html#bot_api.game_setup.GameSetup.arena_width">[1]</a>
+                      <li><a href="api/bot_api.html#bot_api.Bot.arena_height">(Bot property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot.Bot.arena_height">[1]</a>
 </li>
+                      <li><a href="api/bot_api.html#bot_api.BotABC.arena_height">(BotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_abc.BotABC.arena_height">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.GameSetup.arena_height">(GameSetup attribute)</a>, <a
+                          href="api/bot_api.html#bot_api.game_setup.GameSetup.arena_height">[1]</a>
+                      </li>
+                  </ul>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.arena_width">arena_width (BaseBot property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot.BaseBot.arena_width">[1]</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#bot_api.BaseBotABC.arena_width">(BaseBotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.arena_width">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.Bot.arena_width">(Bot property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot.Bot.arena_width">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.BotABC.arena_width">(BotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_abc.BotABC.arena_width">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.GameSetup.arena_width">(GameSetup attribute)</a>, <a
+                          href="api/bot_api.html#bot_api.game_setup.GameSetup.arena_width">[1]</a>
+                      </li>
+                  </ul>
+              </li>
       <li><a href="api/bot_api.html#bot_api.BotException.args">args (BotException attribute)</a>, <a href="api/bot_api.html#bot_api.bot_exception.BotException.args">[1]</a>
 
       <ul style="list-style-type:none">
@@ -287,7 +377,7 @@
   </tr>
       </table>
 
-  <h2 id="B">B</h2>
+    <h2 id="B">B</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.b">b (BotState.Color property)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.b">[1]</a>
@@ -731,8 +821,6 @@
         <li><a href="api/bot_api.graphics.html#module-bot_api.graphics.point">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li>
     bot_api.graphics.svg_graphics
 
@@ -747,6 +835,10 @@
         <li><a href="api/bot_api.html#module-bot_api.initial_position">module</a>
 </li>
       </ul></li>
+  </ul>
+  </td>
+      <td style="width: 33%; vertical-align: top;">
+          <ul style="margin-left:0;list-style-type:none">
       <li>
     bot_api.internal
 
@@ -906,6 +998,14 @@
 
       <ul style="list-style-type:none">
         <li><a href="api/bot_api.mapper.html#module-bot_api.mapper.results_mapper">module</a>
+        </li>
+      </ul>
+      </li>
+              <li>
+                  bot_api.team_message
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#module-bot_api.team_message">module</a>
 </li>
       </ul></li>
       <li>
@@ -1088,8 +1188,25 @@
 </li>
       <li><a href="api/bot_api.html#bot_api.BotResults.bullet_kill_bonus">bullet_kill_bonus (BotResults attribute)</a>, <a href="api/bot_api.html#bot_api.bot_results.BotResults.bullet_kill_bonus">[1]</a>
 </li>
-      <li><a href="api/bot_api.events.html#bot_api.events.TickEvent.bullet_states">bullet_states (TickEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.tick_event.TickEvent.bullet_states">[1]</a>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.bullet_states">bullet_states (BaseBot property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot.BaseBot.bullet_states">[1]</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#bot_api.BaseBotABC.bullet_states">(BaseBotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.bullet_states">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.Bot.bullet_states">(Bot property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot.Bot.bullet_states">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.BotABC.bullet_states">(BotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_abc.BotABC.bullet_states">[1]</a>
 </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.TickEvent.bullet_states">(TickEvent
+                          attribute)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.tick_event.TickEvent.bullet_states">[1]</a>
+                      </li>
+                  </ul>
+              </li>
       <li><a href="api/bot_api.events.html#bot_api.events.BulletFiredEvent">BulletFiredEvent (class in bot_api.events)</a>
 
       <ul style="list-style-type:none">
@@ -1144,7 +1261,7 @@
   </tr>
       </table>
 
-  <h2 id="C">C</h2>
+    <h2 id="C">C</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.CADET_BLUE">CADET_BLUE (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.CADET_BLUE">[1]</a>
@@ -1259,8 +1376,6 @@
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.svg_graphics.SvgGraphicsABC.clear">(SvgGraphicsABC method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BaseBot.clear_events">clear_events() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.clear_events">[1]</a>
 
       <ul style="list-style-type:none">
@@ -1285,6 +1400,10 @@
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color">(class in bot_api.graphics.color)</a>
 </li>
       </ul></li>
+  </ul>
+  </td>
+      <td style="width: 33%; vertical-align: top;">
+          <ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.util.html#bot_api.util.ColorUtil">ColorUtil (class in bot_api.util)</a>
 
       <ul style="list-style-type:none">
@@ -1361,6 +1480,70 @@
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.CRIMSON">(Color attribute)</a>, <a href="api/bot_api.html#bot_api.Color.CRIMSON">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.CRIMSON">[2]</a>
 </li>
       </ul></li>
+              <li><a href="api/bot_api.events.html#bot_api.events.BotDeathEvent.critical">critical (BotDeathEvent
+                  property)</a>, <a
+                  href="api/bot_api.events.html#bot_api.events.bot_death_event.BotDeathEvent.critical">[1]</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.events.html#bot_api.events.BotEvent.critical">(BotEvent property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.bot_event.BotEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.BulletFiredEvent.critical">(BulletFiredEvent
+                          property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.bullet_fired_event.BulletFiredEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.BulletHitBotEvent.critical">(BulletHitBotEvent
+                          property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.bullet_hit_bot_event.BulletHitBotEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.BulletHitBulletEvent.critical">(BulletHitBulletEvent
+                          property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.bullet_hit_bullet_event.BulletHitBulletEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.BulletHitWallEvent.critical">(BulletHitWallEvent
+                          property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.bullet_hit_wall_event.BulletHitWallEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.CustomEvent.critical">(CustomEvent
+                          property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.custom_event.CustomEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.DeathEvent.critical">(DeathEvent property)</a>,
+                          <a href="api/bot_api.events.html#bot_api.events.death_event.DeathEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.HitBotEvent.critical">(HitBotEvent
+                          property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.hit_bot_event.HitBotEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.HitByBulletEvent.critical">(HitByBulletEvent
+                          property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.hit_by_bullet_event.HitByBulletEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.HitWallEvent.critical">(HitWallEvent
+                          property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.hit_wall_event.HitWallEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.ScannedBotEvent.critical">(ScannedBotEvent
+                          property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.scanned_bot_event.ScannedBotEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.SkippedTurnEvent.critical">(SkippedTurnEvent
+                          property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.skipped_turn_event.SkippedTurnEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.TeamMessageEvent.critical">(TeamMessageEvent
+                          property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.team_message_event.TeamMessageEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.TickEvent.critical">(TickEvent property)</a>,
+                          <a href="api/bot_api.events.html#bot_api.events.tick_event.TickEvent.critical">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.WonRoundEvent.critical">(WonRoundEvent
+                          property)</a>, <a
+                          href="api/bot_api.events.html#bot_api.events.won_round_event.WonRoundEvent.critical">[1]</a>
+                      </li>
+                  </ul>
+              </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internal_data.BaseBotInternalData.current_tick_or_null">current_tick_or_null (BaseBotInternalData property)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internal_data.BaseBotInternalData.current_tick_or_throw">current_tick_or_throw (BaseBotInternalData property)</a>
@@ -1385,7 +1568,7 @@
   </tr>
       </table>
 
-  <h2 id="D">D</h2>
+    <h2 id="D">D</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.events.html#bot_api.events.BulletHitBotEvent.damage">damage (BulletHitBotEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.bullet_hit_bot_event.BulletHitBotEvent.damage">[1]</a>
@@ -1530,8 +1713,6 @@
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.DARK_VIOLET">(Color attribute)</a>, <a href="api/bot_api.html#bot_api.Color.DARK_VIOLET">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.DARK_VIOLET">[2]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.DefaultEventPriority.DEATH">DEATH (DefaultEventPriority attribute)</a>, <a href="api/bot_api.html#bot_api.default_event_priority.DefaultEventPriority.DEATH">[1]</a>
 </li>
       <li><a href="api/bot_api.events.html#bot_api.events.DeathEvent">DeathEvent (class in bot_api.events)</a>
@@ -1540,6 +1721,28 @@
         <li><a href="api/bot_api.events.html#bot_api.events.death_event.DeathEvent">(class in bot_api.events.death_event)</a>
 </li>
       </ul></li>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.debugging_enabled">debugging_enabled (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.debugging_enabled">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.debugging_enabled">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.debugging_enabled">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.debugging_enabled">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.debugging_enabled">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotABC.debugging_enabled">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.debugging_enabled">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotState.debugging_enabled">(BotState attribute)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_state.BotState.debugging_enabled">[1]</a>
+              </li>
+          </ul>
+      </li>
+  </ul>
+  </td>
+      <td style="width: 33%; vertical-align: top;">
+          <ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.constants.DECELERATION">DECELERATION (in module bot_api.constants)</a>
 </li>
       <li><a href="api/bot_api.html#bot_api.BotState.Color.DEEP_PINK">DEEP_PINK (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.DEEP_PINK">[1]</a>
@@ -1566,6 +1769,9 @@
         <li><a href="api/bot_api.html#bot_api.default_event_priority.DefaultEventPriority">(class in bot_api.default_event_priority)</a>
 </li>
       </ul></li>
+              <li><a href="api/bot_api.html#bot_api.team_message.deserialize_team_message">deserialize_team_message()
+                  (in module bot_api.team_message)</a>
+              </li>
       <li><a href="api/bot_api.html#bot_api.BotState.Color.DIM_GRAY">DIM_GRAY (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.DIM_GRAY">[1]</a>
 
       <ul style="list-style-type:none">
@@ -1574,9 +1780,22 @@
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.DIM_GRAY">(Color attribute)</a>, <a href="api/bot_api.html#bot_api.Color.DIM_GRAY">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.DIM_GRAY">[2]</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BotState.direction">direction (BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.direction">[1]</a>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.direction">direction (BaseBot property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot.BaseBot.direction">[1]</a>
 
       <ul style="list-style-type:none">
+          <li><a href="api/bot_api.html#bot_api.BaseBotABC.direction">(BaseBotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.direction">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.Bot.direction">(Bot property)</a>, <a
+              href="api/bot_api.html#bot_api.bot.Bot.direction">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotABC.direction">(BotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.bot_abc.BotABC.direction">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotState.direction">(BotState attribute)</a>, <a
+              href="api/bot_api.html#bot_api.bot_state.BotState.direction">[1]</a>
+          </li>
         <li><a href="api/bot_api.html#bot_api.BulletState.direction">(BulletState attribute)</a>, <a href="api/bot_api.html#bot_api.bullet_state.BulletState.direction">[1]</a>
 </li>
         <li><a href="api/bot_api.html#bot_api.InitialPosition.direction">(InitialPosition attribute)</a>, <a href="api/bot_api.html#bot_api.initial_position.InitialPosition.direction">[1]</a>
@@ -1593,6 +1812,21 @@
 </li>
         <li><a href="api/bot_api.html#bot_api.BotABC.direction_to">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.direction_to">[1]</a>
 </li>
+      </ul>
+      </li>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.disabled">disabled (BaseBot property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot.BaseBot.disabled">[1]</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#bot_api.BaseBotABC.disabled">(BaseBotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.disabled">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.Bot.disabled">(Bot property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot.Bot.disabled">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.BotABC.disabled">(BotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_abc.BotABC.disabled">[1]</a>
+                      </li>
       </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.disconnect">disconnect() (WebSocketHandler method)</a>
 </li>
@@ -1664,6 +1898,9 @@
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.svg_graphics.SvgGraphicsABC.draw_text">(SvgGraphicsABC method)</a>
 </li>
       </ul></li>
+              <li><a href="api/bot_api.html#bot_api.BotState.droid">droid (BotState attribute)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_state.BotState.droid">[1]</a>
+              </li>
       <li><a href="api/bot_api.html#bot_api.DroidABC">DroidABC (class in bot_api)</a>
 
       <ul style="list-style-type:none">
@@ -1676,18 +1913,47 @@
   </tr>
       </table>
 
-  <h2 id="E">E</h2>
+    <h2 id="E">E</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.enable_event_handling">enable_event_handling() (BaseBotInternals method)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.json_util.MessageEncoder.encode">encode() (MessageEncoder method)</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BotState.enemy_count">enemy_count (BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.enemy_count">[1]</a>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.enemy_count">enemy_count (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.enemy_count">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.enemy_count">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.enemy_count">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.enemy_count">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.enemy_count">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotABC.enemy_count">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.enemy_count">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotState.enemy_count">(BotState attribute)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_state.BotState.enemy_count">[1]</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BotState.energy">energy (BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.energy">[1]</a>
+          </ul>
+      </li>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.energy">energy (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.energy">[1]</a>
 
       <ul style="list-style-type:none">
+          <li><a href="api/bot_api.html#bot_api.BaseBotABC.energy">(BaseBotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.energy">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.Bot.energy">(Bot property)</a>, <a
+              href="api/bot_api.html#bot_api.bot.Bot.energy">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotABC.energy">(BotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.bot_abc.BotABC.energy">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotState.energy">(BotState attribute)</a>, <a
+              href="api/bot_api.html#bot_api.bot_state.BotState.energy">[1]</a>
+          </li>
         <li><a href="api/bot_api.events.html#bot_api.events.BulletHitBotEvent.energy">(BulletHitBotEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.bullet_hit_bot_event.BulletHitBotEvent.energy">[1]</a>
 </li>
         <li><a href="api/bot_api.events.html#bot_api.events.HitBotEvent.energy">(HitBotEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.hit_bot_event.HitBotEvent.energy">[1]</a>
@@ -1699,12 +1965,14 @@
       </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars">EnvVars (class in bot_api.internal.env_vars)</a>
 </li>
+  </ul>
+  </td>
+      <td style="width: 33%; vertical-align: top;">
+          <ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.events.html#bot_api.events.ConnectionErrorEvent.error">error (ConnectionErrorEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.connection_error_event.ConnectionErrorEvent.error">[1]</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internal_data.BaseBotInternalData.event_handling_disabled_turn">event_handling_disabled_turn (BaseBotInternalData property)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_priorities.EventPriorities.EVENT_PRIORITIES">EVENT_PRIORITIES (EventPriorities attribute)</a>
 </li>
       <li><a href="api/bot_api.events.html#bot_api.events.EventABC">EventABC (class in bot_api.events)</a>
@@ -1729,15 +1997,31 @@
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue">EventQueue (class in bot_api.internal.event_queue)</a>
 </li>
-      <li><a href="api/bot_api.events.html#bot_api.events.TickEvent.events">events (TickEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.tick_event.TickEvent.events">[1]</a>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.events">events (BaseBot property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot.BaseBot.events">[1]</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#bot_api.BaseBotABC.events">(BaseBotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.events">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.Bot.events">(Bot property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot.Bot.events">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.BotABC.events">(BotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_abc.BotABC.events">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.events.html#bot_api.events.TickEvent.events">(TickEvent attribute)</a>,
+                          <a href="api/bot_api.events.html#bot_api.events.tick_event.TickEvent.events">[1]</a>
 </li>
+                  </ul>
+              </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.execute">execute() (BaseBotInternals method)</a>
 </li>
   </ul></td>
   </tr>
       </table>
 
-  <h2 id="F">F</h2>
+    <h2 id="F">F</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.graphics.html#bot_api.graphics.graphics_abc.GraphicsABC.fill_circle">fill_circle() (GraphicsABC method)</a>
@@ -1776,6 +2060,21 @@
         <li><a href="api/bot_api.html#bot_api.BulletState.Color.FIREBRICK">(BulletState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bullet_state.BulletState.Color.FIREBRICK">[1]</a>
 </li>
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.FIREBRICK">(Color attribute)</a>, <a href="api/bot_api.html#bot_api.Color.FIREBRICK">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.FIREBRICK">[2]</a>
+        </li>
+      </ul>
+      </li>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.firepower">firepower (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.firepower">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.firepower">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.firepower">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.firepower">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.firepower">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotABC.firepower">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.firepower">[1]</a>
 </li>
       </ul></li>
       <li><a href="api/bot_api.html#bot_api.BotResults.first_places">first_places (BotResults attribute)</a>, <a href="api/bot_api.html#bot_api.bot_results.BotResults.first_places">[1]</a>
@@ -1814,8 +2113,35 @@
       </ul></li>
       <li><a href="api/bot_api.html#bot_api.BotInfo.from_file">from_file() (BotInfo class method)</a>, <a href="api/bot_api.html#bot_api.bot_info.BotInfo.from_file">[1]</a>
 </li>
-      <li><a href="api/bot_api.util.html#bot_api.util.ColorUtil.from_hex">from_hex() (ColorUtil static method)</a>, <a href="api/bot_api.util.html#bot_api.util.color_util.ColorUtil.from_hex">[1]</a>
+      <li><a href="api/bot_api.html#bot_api.BotState.Color.from_hex">from_hex() (BotState.Color class method)</a>, <a
+          href="api/bot_api.html#bot_api.bot_state.BotState.Color.from_hex">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BulletState.Color.from_hex">(BulletState.Color class method)</a>, <a
+                  href="api/bot_api.html#bot_api.bullet_state.BulletState.Color.from_hex">[1]</a>
+              </li>
+              <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.from_hex">(Color class method)</a>, <a
+                  href="api/bot_api.html#bot_api.Color.from_hex">[1]</a>, <a
+                  href="api/bot_api.html#bot_api.color.Color.from_hex">[2]</a>
+              </li>
+              <li><a href="api/bot_api.util.html#bot_api.util.ColorUtil.from_hex">(ColorUtil static method)</a>, <a
+                  href="api/bot_api.util.html#bot_api.util.color_util.ColorUtil.from_hex">[1]</a>
+              </li>
+          </ul>
+      </li>
+      <li><a href="api/bot_api.html#bot_api.BotState.Color.from_hex_color">from_hex_color() (BotState.Color class
+          method)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.from_hex_color">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BulletState.Color.from_hex_color">(BulletState.Color class
+                  method)</a>, <a href="api/bot_api.html#bot_api.bullet_state.BulletState.Color.from_hex_color">[1]</a>
+              </li>
+              <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.from_hex_color">(Color class
+                  method)</a>, <a href="api/bot_api.html#bot_api.Color.from_hex_color">[1]</a>, <a
+                  href="api/bot_api.html#bot_api.color.Color.from_hex_color">[2]</a>
 </li>
+          </ul>
+      </li>
       <li><a href="api/bot_api.html#bot_api.BotInfo.from_json">from_json() (BotInfo class method)</a>, <a href="api/bot_api.html#bot_api.bot_info.BotInfo.from_json">[1]</a>
 
       <ul style="list-style-type:none">
@@ -1864,7 +2190,7 @@
   </tr>
       </table>
 
-  <h2 id="G">G</h2>
+    <h2 id="G">G</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.g">g (BotState.Color property)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.g">[1]</a>
@@ -1891,8 +2217,24 @@
         <li><a href="api/bot_api.events.html#bot_api.events.GameStartedEvent.game_setup">(GameStartedEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.game_started_event.GameStartedEvent.game_setup">[1]</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.html#bot_api.GameSetup.game_type">game_type (GameSetup attribute)</a>, <a href="api/bot_api.html#bot_api.game_setup.GameSetup.game_type">[1]</a>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.game_type">game_type (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.game_type">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.game_type">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.game_type">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.game_type">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.game_type">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotABC.game_type">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.game_type">[1]</a>
 </li>
+              <li><a href="api/bot_api.html#bot_api.GameSetup.game_type">(GameSetup attribute)</a>, <a
+                  href="api/bot_api.html#bot_api.game_setup.GameSetup.game_type">[1]</a>
+              </li>
+          </ul>
+      </li>
       <li><a href="api/bot_api.html#bot_api.BotInfo.Builder.game_types">game_types (BotInfo.Builder attribute)</a>, <a
           href="api/bot_api.html#bot_api.bot_info.BotInfo.Builder.game_types">[1]</a>
       </li>
@@ -1926,26 +2268,6 @@
         <li><a href="api/bot_api.html#bot_api.game_type.GameType">(class in bot_api.game_type)</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_arena_height">get_arena_height() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_arena_height">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_arena_height">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_arena_height">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_arena_height">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_arena_height">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_arena_height">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_arena_height">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_arena_width">get_arena_width() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_arena_width">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_arena_width">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_arena_width">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_arena_width">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_arena_width">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_arena_width">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_arena_width">[1]</a>
-</li>
-      </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.get_bot_authors">get_bot_authors() (EnvVars static method)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.get_bot_country_codes">get_bot_country_codes() (EnvVars static method)</a>
@@ -1970,54 +2292,15 @@
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.get_bot_version">get_bot_version() (EnvVars static method)</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_bullet_states">get_bullet_states() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_bullet_states">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_bullet_states">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_bullet_states">[1]</a>
+      <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_bullet_states">get_bullet_states()
+          (BaseBotInternals method)</a>
 </li>
-        <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_bullet_states">(BaseBotInternals method)</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_bullet_states">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_bullet_states">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_bullet_states">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_bullet_states">[1]</a>
-</li>
-      </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_current_tick_or_null">get_current_tick_or_null() (BaseBotInternals method)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_current_tick_or_throw">get_current_tick_or_throw() (BaseBotInternals method)</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_direction">get_direction() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_direction">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_direction">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_direction">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_direction">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_direction">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_direction">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_direction">[1]</a>
-</li>
-      </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_distance_traveled_until_stop">get_distance_traveled_until_stop() (BaseBotInternals method)</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_enemy_count">get_enemy_count() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_enemy_count">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_enemy_count">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_enemy_count">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_enemy_count">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_enemy_count">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_enemy_count">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_enemy_count">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_energy">get_energy() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_energy">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_energy">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_energy">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_energy">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_energy">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_energy">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_energy">[1]</a>
-</li>
-      </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_event_handling_disabled_turn">get_event_handling_disabled_turn() (BaseBotInternals method)</a>
 </li>
       <li><a href="api/bot_api.html#bot_api.BaseBot.get_event_priority">get_event_priority() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_event_priority">[1]</a>
@@ -2030,268 +2313,65 @@
         <li><a href="api/bot_api.html#bot_api.BotABC.get_event_priority">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_event_priority">[1]</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_events">get_events() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_events">[1]</a>
+      <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_events">get_events()
+          (BaseBotInternals method)</a>
 
       <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_events">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_events">[1]</a>
-</li>
-        <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_events">(BaseBotInternals method)</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_events">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_events">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_events">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_events">[1]</a>
-</li>
         <li><a href="api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.get_events">(EventQueue method)</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_firepower">get_firepower() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_firepower">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_firepower">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_firepower">[1]</a>
+      <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_graphics">get_graphics()
+          (BaseBotInternals method)</a>
 </li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_firepower">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_firepower">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_firepower">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_firepower">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_game_type">get_game_type() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_game_type">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_game_type">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_game_type">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_game_type">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_game_type">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_game_type">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_game_type">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_graphics">get_graphics() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_graphics">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_graphics">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_graphics">[1]</a>
-</li>
-        <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_graphics">(BaseBotInternals method)</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_graphics">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_graphics">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_graphics">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_graphics">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_gun_cooling_rate">get_gun_cooling_rate() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_gun_cooling_rate">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_gun_cooling_rate">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_gun_cooling_rate">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_gun_cooling_rate">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_gun_cooling_rate">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_gun_cooling_rate">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_gun_cooling_rate">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_gun_direction">get_gun_direction() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_gun_direction">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_gun_direction">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_gun_direction">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_gun_direction">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_gun_direction">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_gun_direction">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_gun_direction">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_gun_heat">get_gun_heat() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_gun_heat">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_gun_heat">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_gun_heat">[1]</a>
-</li>
-        <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_gun_heat">(BaseBotInternals method)</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_gun_heat">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_gun_heat">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_gun_heat">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_gun_heat">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.util.html#bot_api.util.CountryCodeUtil.get_local_country_code">get_local_country_code() (CountryCodeUtil static method)</a>, <a href="api/bot_api.util.html#bot_api.util.country_code_util.CountryCodeUtil.get_local_country_code">[1]</a>
+      <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_gun_heat">get_gun_heat()
+          (BaseBotInternals method)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_max_gun_turn_rate">get_max_gun_turn_rate() (BaseBotInternals method)</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_max_inactivity_turns">get_max_inactivity_turns() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_max_inactivity_turns">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_max_inactivity_turns">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_max_inactivity_turns">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_max_inactivity_turns">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_max_inactivity_turns">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_max_inactivity_turns">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_max_inactivity_turns">[1]</a>
-</li>
-      </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_max_radar_turn_rate">get_max_radar_turn_rate() (BaseBotInternals method)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_max_speed">get_max_speed() (BaseBotInternals method)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_max_turn_rate">get_max_turn_rate() (BaseBotInternals method)</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_my_id">get_my_id() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_my_id">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_my_id">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_my_id">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_my_id">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_my_id">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_my_id">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_my_id">[1]</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_new_target_speed">get_new_target_speed() (BaseBotInternals method)</a>
 </li>
-      <li><a href="api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.get_next_event">get_next_event() (EventQueue method)</a>
-</li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_number_of_rounds">get_number_of_rounds() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_number_of_rounds">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_number_of_rounds">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_number_of_rounds">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_number_of_rounds">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_number_of_rounds">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_number_of_rounds">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_number_of_rounds">[1]</a>
-</li>
-      </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_priorities.EventPriorities.get_priority">get_priority() (EventPriorities static method)</a>
 
       <ul style="list-style-type:none">
         <li><a href="api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.get_priority">(EventQueue static method)</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_radar_direction">get_radar_direction() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_radar_direction">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_radar_direction">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_radar_direction">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_radar_direction">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_radar_direction">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_radar_direction">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_radar_direction">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_round_number">get_round_number() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_round_number">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_round_number">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_round_number">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_round_number">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_round_number">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_round_number">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_round_number">[1]</a>
-</li>
-      </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.get_server_secret">get_server_secret() (EnvVars static method)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.get_server_url">get_server_url() (EnvVars static method)</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_speed">get_speed() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_speed">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_speed">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_speed">[1]</a>
+      <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_speed">get_speed()
+          (BaseBotInternals method)</a>
 </li>
-        <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_speed">(BaseBotInternals method)</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_speed">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_speed">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_speed">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_speed">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BulletState.get_speed">(BulletState method)</a>, <a href="api/bot_api.html#bot_api.bullet_state.BulletState.get_speed">[1]</a>
-</li>
-      </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_handler.EventHandler.get_subscriber_count">get_subscriber_count() (EventHandler method)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.graphics_state.GraphicsState.get_svg_output">get_svg_output() (GraphicsState method)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.get_team_id">get_team_id() (EnvVars static method)</a>
 </li>
+      <li><a href="api/bot_api.html#bot_api.team_message.get_team_message_type">get_team_message_type() (in module
+          bot_api.team_message)</a>
+      </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.get_team_name">get_team_name() (EnvVars static method)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.get_team_version">get_team_version() (EnvVars static method)</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_teammate_ids">get_teammate_ids() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_teammate_ids">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_teammate_ids">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_teammate_ids">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_teammate_ids">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_teammate_ids">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_teammate_ids">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_teammate_ids">[1]</a>
-</li>
-      </ul></li>
+  </ul>
+  </td>
+      <td style="width: 33%; vertical-align: top;">
+          <ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_tick_start_nano_time">get_tick_start_nano_time() (BaseBotInternals method)</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_time_left">get_time_left() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_time_left">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_time_left">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_time_left">[1]</a>
+              <li><a
+                  href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_time_left">get_time_left()
+                  (BaseBotInternals method)</a>
 </li>
-        <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.get_time_left">(BaseBotInternals method)</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_time_left">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_time_left">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_time_left">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_time_left">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_turn_number">get_turn_number() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_turn_number">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_turn_number">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_turn_number">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_turn_number">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_turn_number">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_turn_number">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_turn_number">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_turn_timeout">get_turn_timeout() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_turn_timeout">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_turn_timeout">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_turn_timeout">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_turn_timeout">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_turn_timeout">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_turn_timeout">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_turn_timeout">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_variant">get_variant() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_variant">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_variant">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_variant">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_variant">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_variant">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_variant">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_variant">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_version">get_version() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_version">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_version">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_version">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_version">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_version">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_version">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_version">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_x">get_x() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_x">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_x">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_x">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_x">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_x">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_x">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_x">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.get_y">get_y() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.get_y">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.get_y">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.get_y">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.get_y">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.get_y">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.get_y">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.get_y">[1]</a>
-</li>
-      </ul></li>
       <li><a href="api/bot_api.html#bot_api.BotState.Color.GHOST_WHITE">GHOST_WHITE (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.GHOST_WHITE">[1]</a>
 
       <ul style="list-style-type:none">
@@ -2325,6 +2405,21 @@
 </li>
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.GOLDENROD">(Color attribute)</a>, <a href="api/bot_api.html#bot_api.Color.GOLDENROD">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.GOLDENROD">[2]</a>
 </li>
+      </ul>
+      </li>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.graphics">graphics (BaseBot property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot.BaseBot.graphics">[1]</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#bot_api.BaseBotABC.graphics">(BaseBotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.graphics">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.Bot.graphics">(Bot property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot.Bot.graphics">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.BotABC.graphics">(BotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_abc.BotABC.graphics">[1]</a>
+                      </li>
       </ul></li>
       <li><a href="api/bot_api.graphics.html#bot_api.graphics.graphics_abc.GraphicsABC">GraphicsABC (class in bot_api.graphics.graphics_abc)</a>
 </li>
@@ -2382,12 +2477,60 @@
         <li><a href="api/bot_api.html#bot_api.BotState.gun_color">(BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.gun_color">[1]</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.html#bot_api.GameSetup.gun_cooling_rate">gun_cooling_rate (GameSetup attribute)</a>, <a href="api/bot_api.html#bot_api.game_setup.GameSetup.gun_cooling_rate">[1]</a>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.gun_cooling_rate">gun_cooling_rate (BaseBot property)</a>,
+                  <a href="api/bot_api.html#bot_api.base_bot.BaseBot.gun_cooling_rate">[1]</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#bot_api.BaseBotABC.gun_cooling_rate">(BaseBotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.gun_cooling_rate">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.Bot.gun_cooling_rate">(Bot property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot.Bot.gun_cooling_rate">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.BotABC.gun_cooling_rate">(BotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_abc.BotABC.gun_cooling_rate">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.GameSetup.gun_cooling_rate">(GameSetup attribute)</a>, <a
+                          href="api/bot_api.html#bot_api.game_setup.GameSetup.gun_cooling_rate">[1]</a>
+                      </li>
+                  </ul>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.gun_direction">gun_direction (BaseBot property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot.BaseBot.gun_direction">[1]</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#bot_api.BaseBotABC.gun_direction">(BaseBotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.gun_direction">[1]</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BotState.gun_direction">gun_direction (BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.gun_direction">[1]</a>
+                      <li><a href="api/bot_api.html#bot_api.Bot.gun_direction">(Bot property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot.Bot.gun_direction">[1]</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BotState.gun_heat">gun_heat (BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.gun_heat">[1]</a>
+                      <li><a href="api/bot_api.html#bot_api.BotABC.gun_direction">(BotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_abc.BotABC.gun_direction">[1]</a>
 </li>
+                      <li><a href="api/bot_api.html#bot_api.BotState.gun_direction">(BotState attribute)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_state.BotState.gun_direction">[1]</a>
+                      </li>
+                  </ul>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.gun_heat">gun_heat (BaseBot property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot.BaseBot.gun_heat">[1]</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#bot_api.BaseBotABC.gun_heat">(BaseBotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.gun_heat">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.Bot.gun_heat">(Bot property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot.Bot.gun_heat">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.BotABC.gun_heat">(BotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_abc.BotABC.gun_heat">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.BotState.gun_heat">(BotState attribute)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_state.BotState.gun_heat">[1]</a>
+                      </li>
+                  </ul>
+              </li>
       <li><a href="api/bot_api.html#bot_api.BaseBot.gun_turn_rate">gun_turn_rate (BaseBot property)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.gun_turn_rate">[1]</a>
 
       <ul style="list-style-type:none">
@@ -2412,7 +2555,7 @@
   </tr>
       </table>
 
-  <h2 id="H">H</h2>
+    <h2 id="H">H</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.internal.html#bot_api.internal.websocket_handler.WebSocketHandler.handle_game_aborted">handle_game_aborted() (WebSocketHandler method)</a>
@@ -2479,7 +2622,7 @@
   </tr>
       </table>
 
-  <h2 id="I">I</h2>
+    <h2 id="I">I</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.INDIAN_RED">INDIAN_RED (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.INDIAN_RED">[1]</a>
@@ -2526,83 +2669,15 @@
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.internal_event_handlers.InternalEventHandlers.NextTurnEvent">InternalEventHandlers.NextTurnEvent (class in bot_api.internal.internal_event_handlers)</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.is_adjust_radar_for_body_turn">is_adjust_radar_for_body_turn() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.is_adjust_radar_for_body_turn">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.Bot.is_adjust_radar_for_body_turn">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.is_adjust_radar_for_body_turn">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.is_adjust_radar_for_gun_turn">is_adjust_radar_for_gun_turn() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.is_adjust_radar_for_gun_turn">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.Bot.is_adjust_radar_for_gun_turn">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.is_adjust_radar_for_gun_turn">[1]</a>
-</li>
-      </ul></li>
+  </ul>
+  </td>
+      <td style="width: 33%; vertical-align: top;">
+          <ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.is_bot_booted">is_bot_booted() (EnvVars static method)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.is_bot_running">is_bot_running() (EventQueue method)</a>
 </li>
-      <li><a href="api/bot_api.events.html#bot_api.events.BotDeathEvent.is_critical">is_critical() (BotDeathEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.bot_death_event.BotDeathEvent.is_critical">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.events.html#bot_api.events.BotEvent.is_critical">(BotEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.bot_event.BotEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.BulletFiredEvent.is_critical">(BulletFiredEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.bullet_fired_event.BulletFiredEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.BulletHitBotEvent.is_critical">(BulletHitBotEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.bullet_hit_bot_event.BulletHitBotEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.BulletHitBulletEvent.is_critical">(BulletHitBulletEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.bullet_hit_bullet_event.BulletHitBulletEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.BulletHitWallEvent.is_critical">(BulletHitWallEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.bullet_hit_wall_event.BulletHitWallEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.CustomEvent.is_critical">(CustomEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.custom_event.CustomEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.DeathEvent.is_critical">(DeathEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.death_event.DeathEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.HitBotEvent.is_critical">(HitBotEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.hit_bot_event.HitBotEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.HitByBulletEvent.is_critical">(HitByBulletEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.hit_by_bullet_event.HitByBulletEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.HitWallEvent.is_critical">(HitWallEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.hit_wall_event.HitWallEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.ScannedBotEvent.is_critical">(ScannedBotEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.scanned_bot_event.ScannedBotEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.SkippedTurnEvent.is_critical">(SkippedTurnEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.skipped_turn_event.SkippedTurnEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.TeamMessageEvent.is_critical">(TeamMessageEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.team_message_event.TeamMessageEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.TickEvent.is_critical">(TickEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.tick_event.TickEvent.is_critical">[1]</a>
-</li>
-        <li><a href="api/bot_api.events.html#bot_api.events.WonRoundEvent.is_critical">(WonRoundEvent method)</a>, <a href="api/bot_api.events.html#bot_api.events.won_round_event.WonRoundEvent.is_critical">[1]</a>
-</li>
-      </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.is_current_event_interruptible">is_current_event_interruptible() (EventQueue method)</a>
-</li>
-      <li><a href="api/bot_api.html#bot_api.BotState.is_debugging_enabled">is_debugging_enabled (BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.is_debugging_enabled">[1]</a>
-</li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.is_debugging_enabled">is_debugging_enabled() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.is_debugging_enabled">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.is_debugging_enabled">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.is_debugging_enabled">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.is_debugging_enabled">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.is_debugging_enabled">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.is_debugging_enabled">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.is_debugging_enabled">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.is_disabled">is_disabled() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.is_disabled">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.is_disabled">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.is_disabled">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.is_disabled">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.is_disabled">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.is_disabled">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.is_disabled">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BotState.is_droid">is_droid (BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.is_droid">[1]</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_interruption.EventInterruption.is_interruptible">is_interruptible() (EventInterruption static method)</a>
 </li>
@@ -2610,32 +2685,10 @@
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.is_old_and_non_critical_event">is_old_and_non_critical_event() (EventQueue static method)</a>
 </li>
-      <li><a href="api/bot_api.events.html#bot_api.events.HitBotEvent.is_rammed">is_rammed (HitBotEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.hit_bot_event.HitBotEvent.is_rammed">[1]</a>
-</li>
-      <li><a href="api/bot_api.events.html#bot_api.events.DisconnectedEvent.is_remote">is_remote (DisconnectedEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.disconnected_event.DisconnectedEvent.is_remote">[1]</a>
-</li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internal_data.BaseBotInternalData.is_running">is_running (BaseBotInternalData property)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.is_running">is_running() (BaseBotInternals method)</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.Bot.is_running">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.is_running">[1]</a>
 </li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.is_running">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.is_running">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.is_same_event">is_same_event() (EventQueue method)</a>
-</li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.is_stopped">is_stopped() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.is_stopped">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.is_stopped">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.is_stopped">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.is_stopped">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.is_stopped">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.is_stopped">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.is_stopped">[1]</a>
-</li>
-      </ul></li>
       <li><a href="api/bot_api.html#bot_api.BaseBot.is_teammate">is_teammate() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.is_teammate">[1]</a>
 
       <ul style="list-style-type:none">
@@ -2664,7 +2717,7 @@
   </tr>
       </table>
 
-  <h2 id="K">K</h2>
+    <h2 id="K">K</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.internal.html#bot_api.internal.json_util.MessageEncoder.key_separator">key_separator (MessageEncoder attribute)</a>
@@ -2681,7 +2734,7 @@
   </tr>
       </table>
 
-  <h2 id="L">L</h2>
+    <h2 id="L">L</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotResults.last_survivor_bonus">last_survivor_bonus (BotResults attribute)</a>, <a href="api/bot_api.html#bot_api.bot_results.BotResults.last_survivor_bonus">[1]</a>
@@ -2848,11 +2901,15 @@
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.LINEN">(Color attribute)</a>, <a href="api/bot_api.html#bot_api.Color.LINEN">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.LINEN">[2]</a>
 </li>
       </ul></li>
+      <li><a href="api/bot_api.util.html#bot_api.util.CountryCodeUtil.local_country_code">local_country_code()
+          (CountryCodeUtil static method)</a>, <a
+          href="api/bot_api.util.html#bot_api.util.country_code_util.CountryCodeUtil.local_country_code">[1]</a>
+      </li>
   </ul></td>
   </tr>
       </table>
 
-  <h2 id="M">M</h2>
+    <h2 id="M">M</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.MAGENTA">MAGENTA (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.MAGENTA">[1]</a>
@@ -2921,8 +2978,24 @@
 </li>
       <li><a href="api/bot_api.html#bot_api.BotInfo.MAX_HOMEPAGE_LENGTH">MAX_HOMEPAGE_LENGTH (BotInfo attribute)</a>, <a href="api/bot_api.html#bot_api.bot_info.BotInfo.MAX_HOMEPAGE_LENGTH">[1]</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.GameSetup.max_inactivity_turns">max_inactivity_turns (GameSetup attribute)</a>, <a href="api/bot_api.html#bot_api.game_setup.GameSetup.max_inactivity_turns">[1]</a>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.max_inactivity_turns">max_inactivity_turns (BaseBot property)</a>,
+          <a href="api/bot_api.html#bot_api.base_bot.BaseBot.max_inactivity_turns">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.max_inactivity_turns">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.max_inactivity_turns">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.max_inactivity_turns">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.max_inactivity_turns">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotABC.max_inactivity_turns">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.max_inactivity_turns">[1]</a>
 </li>
+              <li><a href="api/bot_api.html#bot_api.GameSetup.max_inactivity_turns">(GameSetup attribute)</a>, <a
+                  href="api/bot_api.html#bot_api.game_setup.GameSetup.max_inactivity_turns">[1]</a>
+              </li>
+          </ul>
+      </li>
       <li><a href="api/bot_api.html#bot_api.BotInfo.MAX_NAME_LENGTH">MAX_NAME_LENGTH (BotInfo attribute)</a>, <a href="api/bot_api.html#bot_api.bot_info.BotInfo.MAX_NAME_LENGTH">[1]</a>
 </li>
       <li><a href="api/bot_api.html#bot_api.BotInfo.MAX_NUMBER_OF_AUTHORS">MAX_NUMBER_OF_AUTHORS (BotInfo attribute)</a>, <a href="api/bot_api.html#bot_api.bot_info.BotInfo.MAX_NUMBER_OF_AUTHORS">[1]</a>
@@ -3253,6 +3326,8 @@
 </li>
         <li><a href="api/bot_api.mapper.html#module-bot_api.mapper.results_mapper">bot_api.mapper.results_mapper</a>
 </li>
+          <li><a href="api/bot_api.html#module-bot_api.team_message">bot_api.team_message</a>
+          </li>
         <li><a href="api/bot_api.util.html#module-bot_api.util">bot_api.util</a>
 </li>
         <li><a href="api/bot_api.util.html#module-bot_api.util.color_util">bot_api.util.color_util</a>
@@ -3262,10 +3337,23 @@
         <li><a href="api/bot_api.util.html#module-bot_api.util.math_util">bot_api.util.math_util</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internal_data.BaseBotInternalData.my_id">my_id (BaseBotInternalData property)</a>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.my_id">my_id (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.my_id">[1]</a>
 
       <ul style="list-style-type:none">
+          <li><a href="api/bot_api.html#bot_api.BaseBotABC.my_id">(BaseBotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.my_id">[1]</a>
+          </li>
+          <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internal_data.BaseBotInternalData.my_id">(BaseBotInternalData
+              property)</a>
+          </li>
         <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.my_id">(BaseBotInternals property)</a>
+        </li>
+          <li><a href="api/bot_api.html#bot_api.Bot.my_id">(Bot property)</a>, <a
+              href="api/bot_api.html#bot_api.bot.Bot.my_id">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotABC.my_id">(BotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.bot_abc.BotABC.my_id">[1]</a>
 </li>
         <li><a href="api/bot_api.events.html#bot_api.events.GameStartedEvent.my_id">(GameStartedEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.game_started_event.GameStartedEvent.my_id">[1]</a>
 </li>
@@ -3274,7 +3362,7 @@
   </tr>
       </table>
 
-  <h2 id="N">N</h2>
+    <h2 id="N">N</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.events.html#bot_api.events.Condition.name">name (Condition attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.condition.Condition.name">[1]</a>
@@ -3317,9 +3405,23 @@
         <li><a href="api/bot_api.html#bot_api.BotABC.normalize_relative_angle">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.normalize_relative_angle">[1]</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.events.html#bot_api.events.GameEndedEvent.number_of_rounds">number_of_rounds (GameEndedEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.game_ended_event.GameEndedEvent.number_of_rounds">[1]</a>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.number_of_rounds">number_of_rounds (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.number_of_rounds">[1]</a>
 
       <ul style="list-style-type:none">
+          <li><a href="api/bot_api.html#bot_api.BaseBotABC.number_of_rounds">(BaseBotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.number_of_rounds">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.Bot.number_of_rounds">(Bot property)</a>, <a
+              href="api/bot_api.html#bot_api.bot.Bot.number_of_rounds">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotABC.number_of_rounds">(BotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.bot_abc.BotABC.number_of_rounds">[1]</a>
+          </li>
+          <li><a href="api/bot_api.events.html#bot_api.events.GameEndedEvent.number_of_rounds">(GameEndedEvent
+              attribute)</a>, <a
+              href="api/bot_api.events.html#bot_api.events.game_ended_event.GameEndedEvent.number_of_rounds">[1]</a>
+          </li>
         <li><a href="api/bot_api.html#bot_api.GameSetup.number_of_rounds">(GameSetup attribute)</a>, <a href="api/bot_api.html#bot_api.game_setup.GameSetup.number_of_rounds">[1]</a>
 </li>
       </ul></li>
@@ -3327,7 +3429,7 @@
   </tr>
       </table>
 
-  <h2 id="O">O</h2>
+    <h2 id="O">O</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.OLD_LACE">OLD_LACE (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.OLD_LACE">[1]</a>
@@ -3618,7 +3720,7 @@
   </tr>
       </table>
 
-  <h2 id="P">P</h2>
+    <h2 id="P">P</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.PALE_GOLDENROD">PALE_GOLDENROD (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.PALE_GOLDENROD">[1]</a>
@@ -3669,6 +3771,9 @@
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.PEACH_PUFF">(Color attribute)</a>, <a href="api/bot_api.html#bot_api.Color.PEACH_PUFF">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.PEACH_PUFF">[2]</a>
 </li>
       </ul></li>
+      <li><a href="api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.peek_next_event">peek_next_event()
+          (EventQueue method)</a>
+      </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.PERU">PERU (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.PERU">[1]</a>
@@ -3723,7 +3828,7 @@
   </tr>
       </table>
 
-  <h2 id="R">R</h2>
+    <h2 id="R">R</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.r">r (BotState.Color property)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.r">[1]</a>
@@ -3758,8 +3863,24 @@
         <li><a href="api/bot_api.html#bot_api.BotState.radar_color">(BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.radar_color">[1]</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BotState.radar_direction">radar_direction (BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.radar_direction">[1]</a>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.radar_direction">radar_direction (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.radar_direction">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.radar_direction">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.radar_direction">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.radar_direction">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.radar_direction">[1]</a>
 </li>
+              <li><a href="api/bot_api.html#bot_api.BotABC.radar_direction">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.radar_direction">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotState.radar_direction">(BotState attribute)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_state.BotState.radar_direction">[1]</a>
+              </li>
+          </ul>
+      </li>
       <li><a href="api/bot_api.html#bot_api.BotState.radar_sweep">radar_sweep (BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.radar_sweep">[1]</a>
 </li>
       <li><a href="api/bot_api.html#bot_api.BaseBot.radar_turn_rate">radar_turn_rate (BaseBot property)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.radar_turn_rate">[1]</a>
@@ -3785,6 +3906,9 @@
       <li><a href="api/bot_api.html#bot_api.BotResults.ram_damage">ram_damage (BotResults attribute)</a>, <a href="api/bot_api.html#bot_api.bot_results.BotResults.ram_damage">[1]</a>
 </li>
       <li><a href="api/bot_api.html#bot_api.BotResults.ram_kill_bonus">ram_kill_bonus (BotResults attribute)</a>, <a href="api/bot_api.html#bot_api.bot_results.BotResults.ram_kill_bonus">[1]</a>
+      </li>
+      <li><a href="api/bot_api.events.html#bot_api.events.HitBotEvent.rammed">rammed (HitBotEvent attribute)</a>, <a
+          href="api/bot_api.events.html#bot_api.events.hit_bot_event.HitBotEvent.rammed">[1]</a>
 </li>
       <li><a href="api/bot_api.html#bot_api.BotResults.rank">rank (BotResults attribute)</a>, <a href="api/bot_api.html#bot_api.bot_results.BotResults.rank">[1]</a>
 </li>
@@ -3798,15 +3922,30 @@
 </li>
       <li><a href="api/bot_api.html#bot_api.BotState.Color.red">red (BotState.Color property)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.red">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BulletState.Color.RED">RED (BulletState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bullet_state.BulletState.Color.RED">[1]</a>
 </li>
       <li><a href="api/bot_api.html#bot_api.BulletState.Color.red">red (BulletState.Color property)</a>, <a href="api/bot_api.html#bot_api.bullet_state.BulletState.Color.red">[1]</a>
 </li>
+  </ul>
+  </td>
+      <td style="width: 33%; vertical-align: top;">
+          <ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.RED">RED (Color attribute)</a>, <a href="api/bot_api.html#bot_api.Color.RED">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.RED">[2]</a>
 </li>
       <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.red">red (Color property)</a>, <a href="api/bot_api.html#bot_api.Color.red">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.red">[2]</a>
+      </li>
+              <li><a href="api/bot_api.html#bot_api.register_team_message_type">register_team_message_type() (in module
+                  bot_api)</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#bot_api.team_message.register_team_message_type">(in module
+                          bot_api.team_message)</a>
+                      </li>
+                  </ul>
+              </li>
+              <li><a href="api/bot_api.events.html#bot_api.events.DisconnectedEvent.remote">remote (DisconnectedEvent
+                  attribute)</a>, <a
+                  href="api/bot_api.events.html#bot_api.events.disconnected_event.DisconnectedEvent.remote">[1]</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.remove_condition">remove_condition() (BaseBotInternals method)</a>
 </li>
@@ -3816,6 +3955,9 @@
         <li><a href="api/bot_api.html#bot_api.Bot.remove_custom_event">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.remove_custom_event">[1]</a>
 </li>
       </ul></li>
+              <li><a href="api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.remove_next_event">remove_next_event()
+                  (EventQueue method)</a>
+              </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.remove_old_events">remove_old_events() (EventQueue method)</a>
 </li>
       <li><a href="api/bot_api.html#bot_api.Bot.rescan">rescan() (Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.rescan">[1]</a>
@@ -3850,9 +3992,23 @@
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.ROSY_BROWN">(Color attribute)</a>, <a href="api/bot_api.html#bot_api.Color.ROSY_BROWN">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.ROSY_BROWN">[2]</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.events.html#bot_api.events.RoundEndedEvent.round_number">round_number (RoundEndedEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.round_ended_event.RoundEndedEvent.round_number">[1]</a>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.round_number">round_number (BaseBot property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot.BaseBot.round_number">[1]</a>
 
       <ul style="list-style-type:none">
+          <li><a href="api/bot_api.html#bot_api.BaseBotABC.round_number">(BaseBotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.round_number">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.Bot.round_number">(Bot property)</a>, <a
+              href="api/bot_api.html#bot_api.bot.Bot.round_number">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotABC.round_number">(BotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.bot_abc.BotABC.round_number">[1]</a>
+          </li>
+          <li><a href="api/bot_api.events.html#bot_api.events.RoundEndedEvent.round_number">(RoundEndedEvent
+              attribute)</a>, <a
+              href="api/bot_api.events.html#bot_api.events.round_ended_event.RoundEndedEvent.round_number">[1]</a>
+          </li>
         <li><a href="api/bot_api.events.html#bot_api.events.RoundStartedEvent.round_number">(RoundStartedEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.round_started_event.RoundStartedEvent.round_number">[1]</a>
 </li>
         <li><a href="api/bot_api.events.html#bot_api.events.TickEvent.round_number">(TickEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.tick_event.TickEvent.round_number">[1]</a>
@@ -3882,13 +4038,22 @@
 
       <ul style="list-style-type:none">
         <li><a href="api/bot_api.html#bot_api.BotABC.run">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.run">[1]</a>
+        </li>
+      </ul>
+      </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.running">running (Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.running">[1]</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#bot_api.BotABC.running">(BotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_abc.BotABC.running">[1]</a>
 </li>
       </ul></li>
   </ul></td>
   </tr>
       </table>
 
-  <h2 id="S">S</h2>
+    <h2 id="S">S</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.SADDLE_BROWN">SADDLE_BROWN (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.SADDLE_BROWN">[1]</a>
@@ -3974,6 +4139,9 @@
 </li>
       </ul></li>
       <li><a href="api/bot_api.events.html#bot_api.events.TeamMessageEvent.sender_id">sender_id (TeamMessageEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.team_message_event.TeamMessageEvent.sender_id">[1]</a>
+      </li>
+      <li><a href="api/bot_api.html#bot_api.team_message.serialize_team_message">serialize_team_message() (in module
+          bot_api.team_message)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internal_data.BaseBotInternalData.server_handshake">server_handshake (BaseBotInternalData property)</a>
 
@@ -3995,32 +4163,6 @@
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.ServerUrl">ServerUrl (EnvVars attribute)</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.set_adjust_gun_for_body_turn">set_adjust_gun_for_body_turn() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.set_adjust_gun_for_body_turn">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.set_adjust_gun_for_body_turn">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.set_adjust_gun_for_body_turn">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.set_adjust_gun_for_body_turn">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.set_adjust_gun_for_body_turn">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.set_adjust_gun_for_body_turn">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.set_adjust_gun_for_body_turn">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.set_adjust_radar_for_body_turn">set_adjust_radar_for_body_turn() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.set_adjust_radar_for_body_turn">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.Bot.set_adjust_radar_for_body_turn">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.set_adjust_radar_for_body_turn">[1]</a>
-</li>
-      </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BaseBot.set_adjust_radar_for_gun_turn">set_adjust_radar_for_gun_turn() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.set_adjust_radar_for_gun_turn">[1]</a>
-
-      <ul style="list-style-type:none">
-        <li><a href="api/bot_api.html#bot_api.BaseBotABC.set_adjust_radar_for_gun_turn">(BaseBotABC method)</a>, <a href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.set_adjust_radar_for_gun_turn">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.Bot.set_adjust_radar_for_gun_turn">(Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.set_adjust_radar_for_gun_turn">[1]</a>
-</li>
-        <li><a href="api/bot_api.html#bot_api.BotABC.set_adjust_radar_for_gun_turn">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.set_adjust_radar_for_gun_turn">[1]</a>
-</li>
-      </ul></li>
       <li><a href="api/bot_api.html#bot_api.BotInfo.Builder.set_authors">set_authors() (BotInfo.Builder method)</a>, <a href="api/bot_api.html#bot_api.bot_info.BotInfo.Builder.set_authors">[1]</a>
 </li>
       <li><a href="api/bot_api.html#bot_api.Bot.set_back">set_back() (Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.set_back">[1]</a>
@@ -4105,8 +4247,6 @@
         <li><a href="api/bot_api.internal.html#bot_api.internal.event_interruption.EventInterruption.set_interruptible">(EventInterruption static method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_max_gun_turn_rate">set_max_gun_turn_rate() (BaseBotInternals method)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.set_max_radar_turn_rate">set_max_radar_turn_rate() (BaseBotInternals method)</a>
@@ -4121,6 +4261,10 @@
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_priorities.EventPriorities.set_priority">set_priority() (EventPriorities static method)</a>
 </li>
+  </ul>
+  </td>
+      <td style="width: 33%; vertical-align: top;">
+          <ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotInfo.Builder.set_programming_lang">set_programming_lang() (BotInfo.Builder method)</a>, <a href="api/bot_api.html#bot_api.bot_info.BotInfo.Builder.set_programming_lang">[1]</a>
 </li>
       <li><a href="api/bot_api.html#bot_api.BaseBot.set_rescan">set_rescan() (BaseBot method)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.set_rescan">[1]</a>
@@ -4263,9 +4407,25 @@
       </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.sort_events">sort_events() (EventQueue method)</a>
 </li>
-      <li><a href="api/bot_api.html#bot_api.BotState.speed">speed (BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.speed">[1]</a>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.speed">speed (BaseBot property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot.BaseBot.speed">[1]</a>
 
       <ul style="list-style-type:none">
+          <li><a href="api/bot_api.html#bot_api.BaseBotABC.speed">(BaseBotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.speed">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.Bot.speed">(Bot property)</a>, <a
+              href="api/bot_api.html#bot_api.bot.Bot.speed">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotABC.speed">(BotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.bot_abc.BotABC.speed">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotState.speed">(BotState attribute)</a>, <a
+              href="api/bot_api.html#bot_api.bot_state.BotState.speed">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BulletState.speed">(BulletState property)</a>, <a
+              href="api/bot_api.html#bot_api.bullet_state.BulletState.speed">[1]</a>
+          </li>
         <li><a href="api/bot_api.events.html#bot_api.events.ScannedBotEvent.speed">(ScannedBotEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.scanned_bot_event.ScannedBotEvent.speed">[1]</a>
 </li>
       </ul></li>
@@ -4309,6 +4469,21 @@
       </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.stop_thread">stop_thread() (BaseBotInternals method)</a>
 </li>
+              <li><a href="api/bot_api.html#bot_api.BaseBot.stopped">stopped (BaseBot property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot.BaseBot.stopped">[1]</a>
+
+                  <ul style="list-style-type:none">
+                      <li><a href="api/bot_api.html#bot_api.BaseBotABC.stopped">(BaseBotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.stopped">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.Bot.stopped">(Bot property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot.Bot.stopped">[1]</a>
+                      </li>
+                      <li><a href="api/bot_api.html#bot_api.BotABC.stopped">(BotABC property)</a>, <a
+                          href="api/bot_api.html#bot_api.bot_abc.BotABC.stopped">[1]</a>
+                      </li>
+                  </ul>
+              </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.stop_resume_listener_abs.StopResumeListenerABC">StopResumeListenerABC (class in bot_api.internal.stop_resume_listener_abs)</a>
 </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_handler.EventHandler.subscribe">subscribe() (EventHandler method)</a>
@@ -4321,7 +4496,7 @@
   </tr>
       </table>
 
-  <h2 id="T">T</h2>
+    <h2 id="T">T</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.TAN">TAN (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.TAN">[1]</a>
@@ -4366,12 +4541,33 @@
         <li><a href="api/bot_api.html#bot_api.constants.TEAM_MESSAGE_MAX_SIZE">(in module bot_api.constants)</a>
 </li>
       </ul></li>
+      <li><a href="api/bot_api.html#bot_api.team_message_type">team_message_type() (in module bot_api)</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.team_message.team_message_type">(in module bot_api.team_message)</a>
+              </li>
+          </ul>
+      </li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.env_vars.EnvVars.TeamId">TeamId (EnvVars attribute)</a>
 </li>
-      <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internal_data.BaseBotInternalData.teammate_ids">teammate_ids (BaseBotInternalData property)</a>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.teammate_ids">teammate_ids (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.teammate_ids">[1]</a>
 
       <ul style="list-style-type:none">
+          <li><a href="api/bot_api.html#bot_api.BaseBotABC.teammate_ids">(BaseBotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.teammate_ids">[1]</a>
+          </li>
+          <li><a
+              href="api/bot_api.internal.html#bot_api.internal.base_bot_internal_data.BaseBotInternalData.teammate_ids">(BaseBotInternalData
+              property)</a>
+          </li>
         <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.teammate_ids">(BaseBotInternals property)</a>
+        </li>
+          <li><a href="api/bot_api.html#bot_api.Bot.teammate_ids">(Bot property)</a>, <a
+              href="api/bot_api.html#bot_api.bot.Bot.teammate_ids">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotABC.teammate_ids">(BotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.bot_abc.BotABC.teammate_ids">[1]</a>
 </li>
       </ul></li>
       <li><a href="api/bot_api.events.html#bot_api.events.TeamMessageEvent">TeamMessageEvent (class in bot_api.events)</a>
@@ -4408,6 +4604,21 @@
 
       <ul style="list-style-type:none">
         <li><a href="api/bot_api.events.html#bot_api.events.tick_event.TickEvent">(class in bot_api.events.tick_event)</a>
+        </li>
+      </ul>
+      </li>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.time_left">time_left (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.time_left">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.time_left">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.time_left">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.time_left">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.time_left">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotABC.time_left">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.time_left">[1]</a>
 </li>
       </ul></li>
       <li><a href="api/bot_api.internal.html#bot_api.internal.json_util.to_camel_case">to_camel_case() (in module bot_api.internal.json_util)</a>
@@ -4458,10 +4669,11 @@
         <li><a href="api/bot_api.graphics.html#bot_api.graphics.color.Color.TOMATO">(Color attribute)</a>, <a href="api/bot_api.html#bot_api.Color.TOMATO">[1]</a>, <a href="api/bot_api.html#bot_api.color.Color.TOMATO">[2]</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.html#bot_api.BotResults.total_score">total_score (BotResults attribute)</a>, <a href="api/bot_api.html#bot_api.bot_results.BotResults.total_score">[1]</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
+      <li><a href="api/bot_api.html#bot_api.BotResults.total_score">total_score (BotResults attribute)</a>, <a
+          href="api/bot_api.html#bot_api.bot_results.BotResults.total_score">[1]</a>
+      </li>
       <li><a href="api/bot_api.html#bot_api.BaseBot.tracks_color">tracks_color (BaseBot property)</a>, <a href="api/bot_api.html#bot_api.base_bot.BaseBot.tracks_color">[1]</a>
 
       <ul style="list-style-type:none">
@@ -4502,9 +4714,22 @@
         <li><a href="api/bot_api.html#bot_api.BotABC.turn_left">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.turn_left">[1]</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.events.html#bot_api.events.BotDeathEvent.turn_number">turn_number (BotDeathEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.bot_death_event.BotDeathEvent.turn_number">[1]</a>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.turn_number">turn_number (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.turn_number">[1]</a>
 
       <ul style="list-style-type:none">
+          <li><a href="api/bot_api.html#bot_api.BaseBotABC.turn_number">(BaseBotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.turn_number">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.Bot.turn_number">(Bot property)</a>, <a
+              href="api/bot_api.html#bot_api.bot.Bot.turn_number">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotABC.turn_number">(BotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.bot_abc.BotABC.turn_number">[1]</a>
+          </li>
+          <li><a href="api/bot_api.events.html#bot_api.events.BotDeathEvent.turn_number">(BotDeathEvent attribute)</a>,
+              <a href="api/bot_api.events.html#bot_api.events.bot_death_event.BotDeathEvent.turn_number">[1]</a>
+          </li>
         <li><a href="api/bot_api.events.html#bot_api.events.BotEvent.turn_number">(BotEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.bot_event.BotEvent.turn_number">[1]</a>
 </li>
         <li><a href="api/bot_api.events.html#bot_api.events.BulletFiredEvent.turn_number">(BulletFiredEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.bullet_fired_event.BulletFiredEvent.turn_number">[1]</a>
@@ -4576,8 +4801,24 @@
         <li><a href="api/bot_api.html#bot_api.BotABC.turn_right">(BotABC method)</a>, <a href="api/bot_api.html#bot_api.bot_abc.BotABC.turn_right">[1]</a>
 </li>
       </ul></li>
-      <li><a href="api/bot_api.html#bot_api.GameSetup.turn_timeout">turn_timeout (GameSetup attribute)</a>, <a href="api/bot_api.html#bot_api.game_setup.GameSetup.turn_timeout">[1]</a>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.turn_timeout">turn_timeout (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.turn_timeout">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.turn_timeout">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.turn_timeout">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.turn_timeout">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.turn_timeout">[1]</a>
 </li>
+              <li><a href="api/bot_api.html#bot_api.BotABC.turn_timeout">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.turn_timeout">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.GameSetup.turn_timeout">(GameSetup attribute)</a>, <a
+                  href="api/bot_api.html#bot_api.game_setup.GameSetup.turn_timeout">[1]</a>
+              </li>
+          </ul>
+      </li>
       <li><a href="api/bot_api.html#bot_api.BotState.Color.TURQUOISE">TURQUOISE (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.TURQUOISE">[1]</a>
 
       <ul style="list-style-type:none">
@@ -4604,7 +4845,7 @@
   </tr>
       </table>
 
-  <h2 id="U">U</h2>
+    <h2 id="U">U</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.internal.html#bot_api.internal.event_handler.EventHandler.unsubscribe">unsubscribe() (EventHandler method)</a>
@@ -4613,13 +4854,49 @@
   </tr>
       </table>
 
-  <h2 id="V">V</h2>
+    <h2 id="V">V</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
-      <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.variant">variant (BaseBotInternals property)</a>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.variant">variant (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.variant">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.variant">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.variant">[1]</a>
+              </li>
+              <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.variant">(BaseBotInternals
+                  property)</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.variant">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.variant">[1]</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.BotABC.variant">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.variant">[1]</a>
+              </li>
+          </ul>
+      </li>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.version">version (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.version">[1]</a>
+
+          <ul style="list-style-type:none">
+              <li><a href="api/bot_api.html#bot_api.BaseBotABC.version">(BaseBotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.version">[1]</a>
+              </li>
+              <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.version">(BaseBotInternals
+                  property)</a>
+              </li>
+              <li><a href="api/bot_api.html#bot_api.Bot.version">(Bot property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot.Bot.version">[1]</a>
 </li>
-      <li><a href="api/bot_api.internal.html#bot_api.internal.base_bot_internals.BaseBotInternals.version">version (BaseBotInternals property)</a>
+              <li><a href="api/bot_api.html#bot_api.BotABC.version">(BotABC property)</a>, <a
+                  href="api/bot_api.html#bot_api.bot_abc.BotABC.version">[1]</a>
 </li>
+          </ul>
+      </li>
+  </ul>
+  </td>
+      <td style="width: 33%; vertical-align: top;">
+          <ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.events.html#bot_api.events.BotDeathEvent.victim_id">victim_id (BotDeathEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.bot_death_event.BotDeathEvent.victim_id">[1]</a>
 
       <ul style="list-style-type:none">
@@ -4628,8 +4905,6 @@
         <li><a href="api/bot_api.events.html#bot_api.events.HitBotEvent.victim_id">(HitBotEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.hit_bot_event.HitBotEvent.victim_id">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.BotState.Color.VIOLET">VIOLET (BotState.Color attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.Color.VIOLET">[1]</a>
 
       <ul style="list-style-type:none">
@@ -4642,7 +4917,7 @@
   </tr>
       </table>
 
-  <h2 id="W">W</h2>
+    <h2 id="W">W</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
       <li><a href="api/bot_api.html#bot_api.Bot.wait_for">wait_for() (Bot method)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.wait_for">[1]</a>
@@ -4697,12 +4972,24 @@
   </tr>
       </table>
 
-  <h2 id="X">X</h2>
+    <h2 id="X">X</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
-      <li><a href="api/bot_api.html#bot_api.BotState.x">x (BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.x">[1]</a>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.x">x (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.x">[1]</a>
 
       <ul style="list-style-type:none">
+          <li><a href="api/bot_api.html#bot_api.BaseBotABC.x">(BaseBotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.x">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.Bot.x">(Bot property)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.x">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotABC.x">(BotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.bot_abc.BotABC.x">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotState.x">(BotState attribute)</a>, <a
+              href="api/bot_api.html#bot_api.bot_state.BotState.x">[1]</a>
+          </li>
         <li><a href="api/bot_api.html#bot_api.BulletState.x">(BulletState attribute)</a>, <a href="api/bot_api.html#bot_api.bullet_state.BulletState.x">[1]</a>
 </li>
         <li><a href="api/bot_api.events.html#bot_api.events.HitBotEvent.x">(HitBotEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.hit_bot_event.HitBotEvent.x">[1]</a>
@@ -4718,12 +5005,24 @@
   </tr>
       </table>
 
-  <h2 id="Y">Y</h2>
+    <h2 id="Y">Y</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul style="margin-left:0;list-style-type:none">
-      <li><a href="api/bot_api.html#bot_api.BotState.y">y (BotState attribute)</a>, <a href="api/bot_api.html#bot_api.bot_state.BotState.y">[1]</a>
+      <li><a href="api/bot_api.html#bot_api.BaseBot.y">y (BaseBot property)</a>, <a
+          href="api/bot_api.html#bot_api.base_bot.BaseBot.y">[1]</a>
 
       <ul style="list-style-type:none">
+          <li><a href="api/bot_api.html#bot_api.BaseBotABC.y">(BaseBotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.base_bot_abc.BaseBotABC.y">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.Bot.y">(Bot property)</a>, <a href="api/bot_api.html#bot_api.bot.Bot.y">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotABC.y">(BotABC property)</a>, <a
+              href="api/bot_api.html#bot_api.bot_abc.BotABC.y">[1]</a>
+          </li>
+          <li><a href="api/bot_api.html#bot_api.BotState.y">(BotState attribute)</a>, <a
+              href="api/bot_api.html#bot_api.bot_state.BotState.y">[1]</a>
+          </li>
         <li><a href="api/bot_api.html#bot_api.BulletState.y">(BulletState attribute)</a>, <a href="api/bot_api.html#bot_api.bullet_state.BulletState.y">[1]</a>
 </li>
         <li><a href="api/bot_api.events.html#bot_api.events.HitBotEvent.y">(HitBotEvent attribute)</a>, <a href="api/bot_api.events.html#bot_api.events.hit_bot_event.HitBotEvent.y">[1]</a>
@@ -4764,24 +5063,26 @@
 <a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#_">_</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#A">A</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#B">B</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#C">C</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#D">D</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#E">E</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#F">F</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#G">G</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#H">H</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#I">I</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#K">K</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#L">L</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#M">M</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#N">N</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#O">O</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#P">P</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#R">R</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#S">S</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#T">T</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#U">U</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#V">V</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#W">W</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#X">X</a><a class="pt-2 block text-muted-foreground no-underline transition-colors hover:text-foreground focus-visible:outline-offset-[-1px]" href="#Y">Y</a>
 </div>
 </aside>
-        </main>
-      </div>
-    </div><footer class="py-6 border-t border-border md:py-0">
+            </main>
+        </div>
+    </div>
+    <footer class="py-6 border-t border-border md:py-0">
     <div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
       <div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
         <p class="text-sm leading-loose text-center text-muted-foreground md:text-left">Built with <a class="font-medium underline underline-offset-4"
     href="https://www.sphinx-doc.org"
                                                                                                       rel="noreferrer">Sphinx
-            9.0.4</a></p>
+            9.1.0</a></p>
 </div>
 </div>
 </footer>
-  </div>
+</div>
 
-    <script src="_static/documentation_options.js?v=284e7c21"></script>
+<script src="_static/documentation_options.js?v=ca1b380b"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script defer="defer" src="_static/theme.js?v=073f68d9"></script>
+<script defer="defer" src="_static/theme.js?v=582b20c5"></script>
 
 </body>
+
 </html>
