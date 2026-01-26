@@ -35,7 +35,7 @@ Load specific instruction files from `.ai/` based on your task:
 | Bot API changes, Java/Python/.NET  | `.ai/cross-platform.md`     |
 | Java, Python, C# style conventions | `.ai/coding-conventions.md` |
 | Testing, building, Gradle          | `.ai/testing-and-build.md`  |
-| Docs, VERSION.md, Javadoc         | `.ai/documentation.md`      |
+| Docs, VERSIONS.md, Javadoc         | `.ai/documentation.md`      |
 | File encoding, standards           | `.ai/standards.md`          |
 | **Planning, specs, proposals**     | `@/openspec/AGENTS.md` ⚠️   |
 
