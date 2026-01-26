@@ -52,7 +52,7 @@ become available.
 
 #### Scenario: User checks version history
 
-- **WHEN** a user reads the VERSIOND.md file
+- **WHEN** a user reads the VERSION.md file
 - **THEN** they SHALL find an entry documenting the availability of native GUI installer packages
 - **AND** they SHALL see which platforms are supported (Windows, macOS, Linux)
 - **AND** they SHALL see which package formats are available (msi, pkg, rpm, deb)
