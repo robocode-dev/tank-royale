@@ -191,14 +191,12 @@ tasks {
         description = "Copies generated Python API docs into the /docs folder"
         dependsOn(`sphinx-build`)
 
-        // Only copy docs when explicitly asked for via release/docs tasks or this task itself
+        // Only copy docs when explicitly asked for via upload-docs task or this task itself
         onlyIf {
             gradle.startParameter.taskNames.any {
-                it.contains("build-release") ||
-                        it.contains("upload-docs") ||
-                        it.contains("create-release") ||
-                        it == "copyPythonApiDocs" ||
-                        it.endsWith(":copyPythonApiDocs")
+                it.contains("upload-docs") ||
+                it == "copyPythonApiDocs" ||
+                it.endsWith(":copyPythonApiDocs")
             }
         }
 

@@ -119,12 +119,10 @@ tasks {
     register<Copy>("copyJavaApiDocs") {
         dependsOn(javadoc)
 
-        // Only copy docs when explicitly asked for via release/docs tasks or this task itself
+        // Only copy docs when explicitly asked for via upload-docs task or this task itself
         onlyIf {
             gradle.startParameter.taskNames.any {
-                it.contains("build-release") ||
                 it.contains("upload-docs") ||
-                it.contains("create-release") ||
                 it == "copyJavaApiDocs" ||
                 it.endsWith(":copyJavaApiDocs")
             }
@@ -148,13 +146,11 @@ tasks {
     javadoc {
         onlyIf {
             gradle.startParameter.taskNames.any {
-                it.contains("build-release") ||
                 it.contains("upload-docs") ||
-                it.contains("create-release") ||
-                        it.contains("publish") ||
+                it.contains("publish") ||
                 it == "javadoc" ||
-                        it.endsWith(":javadoc") ||
-                        it.endsWith(":javadocJar")
+                it.endsWith(":javadoc") ||
+                it.endsWith(":javadocJar")
             }
         }
     }

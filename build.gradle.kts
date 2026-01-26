@@ -556,9 +556,7 @@ tasks {
     )
 
     register("build-release") {
-        description = "Builds a release"
-        // Run documentation tasks first to avoid circular dependency issues
-        dependsOn(*docTasks.toTypedArray())
+        description = "Builds a release (without documentation)"
         dependsOn(
             "bot-api:java:assemble",     // Bot API for Java VM
             "bot-api:dotnet:assemble",   // Bot API for .NET
@@ -575,9 +573,8 @@ tasks {
     }
 
     register("create-release") {
-        description = "Creates a release"
+        description = "Creates a release (use 'upload-docs' separately to build and upload documentation)"
         dependsOn("build-release")
-        dependsOn("upload-docs") // Make sure documentation is generated for releases
 
         doLast {
             val version = libs.versions.tankroyale.get()

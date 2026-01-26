@@ -20,9 +20,7 @@ tasks {
 
     // Predicate: run docs-related generation only when explicitly requested
     fun isDocsRequested(): Boolean = gradle.startParameter.taskNames.any {
-        it.contains("build-release") ||
-                it.contains("upload-docs") ||
-                it.contains("create-release") ||
+        it.contains("upload-docs") ||
                 it == "copy-generated-docs" ||
                 it.endsWith(":copy-generated-docs") ||
                 it == ":docs-build:build" ||
@@ -59,14 +57,12 @@ tasks {
     }
 
     register<Copy>("copy-generated-docs") {
-        // Only run when explicitly requested by docs/release tasks or this task itself
+        // Only run when explicitly requested by upload-docs task or this task itself
         onlyIf {
             gradle.startParameter.taskNames.any {
-                it.contains("build-release") ||
-                        it.contains("upload-docs") ||
-                        it.contains("create-release") ||
-                        it == "copy-generated-docs" ||
-                        it.endsWith(":copy-generated-docs")
+                it.contains("upload-docs") ||
+                it == "copy-generated-docs" ||
+                it.endsWith(":copy-generated-docs")
             }
         }
 
