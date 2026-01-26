@@ -71,6 +71,12 @@ sourceSets {
 }
 
 tasks {
+    // Ensure schema diagram generation runs before schema code generation
+    // This prevents timing issues when both tasks run in parallel
+    named("generateJsonSchema2Pojo") {
+        mustRunAfter(rootProject.tasks.named("generateSchemaDiagrams"))
+    }
+
     // Generate sources before compiling Kotlin (which includes generated Java as sources)
     compileKotlin {
         dependsOn(generateJsonSchema2Pojo)
