@@ -87,6 +87,6 @@
 ## 9. Validation
 
 - [ ] 9.1 Run all tests: `pytest tests/`
-- [ ] 9.2 Run sample bots against local server
+- [x] 9.2 Run sample bots against local server
 - [ ] 9.3 Verify docfx documentation generates correctly
 - [ ] 9.4 Run `./gradlew :bot-api:python:build`

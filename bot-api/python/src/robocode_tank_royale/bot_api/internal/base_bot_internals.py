@@ -274,6 +274,7 @@ class BaseBotInternals:
         self.event_queue.set_current_event_interruptible(interruptible)
 
     def dispatch_events(self, turn_number: int) -> None:
+
         try:
             self.event_queue.dispatch_events(turn_number)
         except Exception:
@@ -425,10 +426,12 @@ class BaseBotInternals:
                     self.socket.send(json_intent),
                     self._ws_loop
                 )
+                # Clear team messages after sending intent (matches Java implementation)
                 if self.data.bot_intent.team_messages:
-                    self.data.bot_intent.team_messages = []  # Clear after sending
+                    self.data.bot_intent.team_messages.clear()
             except Exception as e:
                 print(f"Error sending bot intent: {e}")
+
 
     def _transfer_std_out_to_bot_intent(self) -> None:
         # Stdout/stderr redirection and inclusion in intent might be handled differently in Python
