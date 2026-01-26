@@ -56,7 +56,8 @@ sourceSets {
 }
 
 tasks {
-    // Fix task dependency issue with generateSchemaDiagrams
+    // Ensure schema diagram generation runs before schema code generation
+    // This prevents timing issues when both tasks run in parallel
     named("generateJsonSchema2Pojo") {
         mustRunAfter(rootProject.tasks.named("generateSchemaDiagrams"))
     }

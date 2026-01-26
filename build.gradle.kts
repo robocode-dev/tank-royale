@@ -556,6 +556,8 @@ tasks {
 
     register("build-release") {
         description = "Builds a release"
+        // Run documentation tasks first to avoid circular dependency issues
+        dependsOn(*docTasks.toTypedArray())
         dependsOn(
             "bot-api:java:assemble",     // Bot API for Java VM
             "bot-api:dotnet:assemble",   // Bot API for .NET
@@ -564,7 +566,6 @@ tasks {
             "gui:assemble",              // GUI
             "sample-bots:zip",           // Sample bots
         )
-        finalizedBy(*docTasks.toTypedArray())
     }
 
     register("upload-docs") {
