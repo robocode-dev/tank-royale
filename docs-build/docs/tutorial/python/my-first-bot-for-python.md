@@ -24,22 +24,21 @@ file using a text editor of your choice, or an [IDE] like e.g. [PyCharm] or [Vis
 The initial skeleton of your bot could look like this:
 
 ```python
-import asyncio
 from robocode_tank_royale.bot_api import Bot
 
 
 class MyFirstBot(Bot):
-    async def run(self) -> None:
+    def run(self) -> None:
         pass
 
 
-async def main() -> None:
+def main() -> None:
     bot = MyFirstBot()
-    await bot.start()
+    bot.start()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
 ```
 
 The class in this example (`MyFirstBot`) is inherited from the [Bot] class from the `robocode_tank_royale.bot_api`
@@ -52,15 +51,14 @@ The next thing we need to do is to implement the `main` entry point for our bot.
 Python application, typically started with `python MyFirstBot.py`.
 
 ```python
-import asyncio
 
 # The main function starts our bot
-async def main() -> None:
-    await MyFirstBot().start()
+def main() -> None:
+    MyFirstBot().start()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
 ```
 
 The `main` function in this example simply creates the bot and calls its [start] method, which will let the bot start up
@@ -80,13 +78,13 @@ should enter a loop that runs until the game is ended.
 ```python
 class MyFirstBot(Bot):
     # Called when a new round is started -> initialize and do some movement
-    async def run(self) -> None:
+    def run(self) -> None:
         # Repeat while the bot is running
-        while self.is_running():
-            await self.forward(100)
-            await self.turn_gun_left(360)
-            await self.back(100)
-            await self.turn_gun_left(360)
+        while self.running:
+            self.forward(100)
+            self.turn_gun_left(360)
+            self.back(100)
+            self.turn_gun_left(360)
 ```
 
 With the code above, the bot will run in a loop, starting by moving forward 100 units. Then it will turn the gun 360°,
@@ -95,10 +93,10 @@ rotate the gun between moving.
 
 When leaving the [run] method, the bot will not be able to send new commands each round besides code that runs in event
 handlers. Therefore, a loop is used for preventing the [run] method from exiting. However, we should stop the loop as
-soon as the bot is no longer running, and hence need to exit the [run] method when `is_running()` returns `False`.
+soon as the bot is no longer running, and hence need to exit the [run] method when `running` returns `False`.
 
-The [is_running] method returns a flag maintained by the API. When the bot is told to stop/terminate its
-execution, [is_running] will automatically return `False`.
+The [running] method returns a flag maintained by the API. When the bot is told to stop/terminate its
+execution, [running] will automatically return `False`.
 
 ### Event handlers
 
@@ -115,8 +113,8 @@ from robocode_tank_royale.bot_api.events import ScannedBotEvent
 class MyFirstBot(Bot):
     ...
     # We saw another bot -> fire!
-    async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
-        await self.fire(1)
+    def on_scanned_bot(self, e: ScannedBotEvent) -> None:
+        self.fire(1)
 ```
 
 We can also implement another event handler [on_hit_by_bullet] to let the bot attempt to avoid new bullet hits by
@@ -128,12 +126,12 @@ from robocode_tank_royale.bot_api.events import HitByBulletEvent
 class MyFirstBot(Bot):
     ...
     # We were hit by a bullet -> turn perpendicular to the bullet
-    async def on_hit_by_bullet(self, e: HitByBulletEvent) -> None:
+    def on_hit_by_bullet(self, e: HitByBulletEvent) -> None:
         # Calculate the bearing to the direction of the bullet
         bearing = self.calc_bearing(e.bullet.direction)
 
         # Turn 90 degrees to the bullet direction based on the bearing
-        await self.turn_right(90 - bearing)
+        self.turn_right(90 - bearing)
 ```
 
 Note that the [Bot API] provides helper methods like `calc_bearing` to ease calculating angles and bearings in the game.
@@ -143,42 +141,40 @@ Note that the [Bot API] provides helper methods like `calc_bearing` to ease calc
 Okay, let us put all the parts together in a single source file:
 
 ```python
-import asyncio
-
 from robocode_tank_royale.bot_api import Bot
 from robocode_tank_royale.bot_api.events import ScannedBotEvent, HitByBulletEvent
 
-
 class MyFirstBot(Bot):
     # Called when a new round is started -> initialize and do some movement
-    async def run(self) -> None:
+    def run(self) -> None:
         # Repeat while the bot is running
-        while self.is_running():
-            await self.forward(100)
-            await self.turn_gun_left(360)
-            await self.back(100)
-            await self.turn_gun_left(360)
+        while self.running:
+            self.forward(100)
+            self.turn_gun_left(360)
+            self.back(100)
+            self.turn_gun_left(360)
 
     # We saw another bot -> fire!
-    async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
+    def on_scanned_bot(self, e: ScannedBotEvent) -> None:
         del e
-        await self.fire(1)
+        self.fire(1)
 
     # We were hit by a bullet -> turn perpendicular to the bullet
-    async def on_hit_by_bullet(self, e: HitByBulletEvent) -> None:
+    def on_hit_by_bullet(self, e: HitByBulletEvent) -> None:
         # Calculate the bearing to the direction of the bullet
         bearing = self.calc_bearing(e.bullet.direction)
 
         # Turn 90 degrees to the bullet direction based on the bearing
-        await self.turn_right(90 - bearing)
+        self.turn_right(90 - bearing)
 
 
-async def main() -> None:
-    await MyFirstBot().start()
+def main() -> None:
+    bot = MyFirstBot()
+    bot.start()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
 ```
 
 ## Running the bot
@@ -318,7 +314,7 @@ constructor.
 
 [run]: https://robocode-dev.github.io/tank-royale/api/python/api/bot_api.html#bot_api.bot.Bot.run "run() method"
 
-[is_running]: https://robocode-dev.github.io/tank-royale/api/python/api/bot_api.html#bot_api.bot.Bot.is_running "is_running() method"
+[running]: https://robocode-dev.github.io/tank-royale/api/python/api/bot_api.html#bot_api.bot.Bot.is_running "running method"
 
 [on_scanned_bot]: https://robocode-dev.github.io/tank-royale/api/python/api/bot_api.html#bot_api.base_bot.BaseBot.on_scanned_bot "on_scanned_bot event handler"
 
