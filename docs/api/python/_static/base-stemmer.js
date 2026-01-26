@@ -1,7 +1,7 @@
 // @ts-check
 
 /**@constructor*/
-BaseStemmer = function () {
+BaseStemmer = function() {
     /** @protected */
     this.current = '';
     this.cursor = 0;
@@ -13,7 +13,7 @@ BaseStemmer = function () {
     /**
      * @param {string} value
      */
-    this.setCurrent = function (value) {
+    this.setCurrent = function(value) {
         this.current = value;
         this.cursor = 0;
         this.limit = this.current.length;
@@ -25,21 +25,21 @@ BaseStemmer = function () {
     /**
      * @return {string}
      */
-    this.getCurrent = function () {
+    this.getCurrent = function() {
         return this.current;
     };
 
     /**
      * @param {BaseStemmer} other
      */
-    this.copy_from = function (other) {
+    this.copy_from = function(other) {
         /** @protected */
-        this.current = other.current;
-        this.cursor = other.cursor;
-        this.limit = other.limit;
-        this.limit_backward = other.limit_backward;
-        this.bra = other.bra;
-        this.ket = other.ket;
+        this.current          = other.current;
+        this.cursor           = other.cursor;
+        this.limit            = other.limit;
+        this.limit_backward   = other.limit_backward;
+        this.bra              = other.bra;
+        this.ket              = other.ket;
     };
 
     /**
@@ -48,7 +48,7 @@ BaseStemmer = function () {
      * @param {number} max
      * @return {boolean}
      */
-    this.in_grouping = function (s, min, max) {
+    this.in_grouping = function(s, min, max) {
         /** @protected */
         if (this.cursor >= this.limit) return false;
         var ch = this.current.charCodeAt(this.cursor);
@@ -65,7 +65,7 @@ BaseStemmer = function () {
      * @param {number} max
      * @return {boolean}
      */
-    this.go_in_grouping = function (s, min, max) {
+    this.go_in_grouping = function(s, min, max) {
         /** @protected */
         while (this.cursor < this.limit) {
             var ch = this.current.charCodeAt(this.cursor);
@@ -85,7 +85,7 @@ BaseStemmer = function () {
      * @param {number} max
      * @return {boolean}
      */
-    this.in_grouping_b = function (s, min, max) {
+    this.in_grouping_b = function(s, min, max) {
         /** @protected */
         if (this.cursor <= this.limit_backward) return false;
         var ch = this.current.charCodeAt(this.cursor - 1);
@@ -102,7 +102,7 @@ BaseStemmer = function () {
      * @param {number} max
      * @return {boolean}
      */
-    this.go_in_grouping_b = function (s, min, max) {
+    this.go_in_grouping_b = function(s, min, max) {
         /** @protected */
         while (this.cursor > this.limit_backward) {
             var ch = this.current.charCodeAt(this.cursor - 1);
@@ -120,7 +120,7 @@ BaseStemmer = function () {
      * @param {number} max
      * @return {boolean}
      */
-    this.out_grouping = function (s, min, max) {
+    this.out_grouping = function(s, min, max) {
         /** @protected */
         if (this.cursor >= this.limit) return false;
         var ch = this.current.charCodeAt(this.cursor);
@@ -142,7 +142,7 @@ BaseStemmer = function () {
      * @param {number} max
      * @return {boolean}
      */
-    this.go_out_grouping = function (s, min, max) {
+    this.go_out_grouping = function(s, min, max) {
         /** @protected */
         while (this.cursor < this.limit) {
             var ch = this.current.charCodeAt(this.cursor);
@@ -163,7 +163,7 @@ BaseStemmer = function () {
      * @param {number} max
      * @return {boolean}
      */
-    this.out_grouping_b = function (s, min, max) {
+    this.out_grouping_b = function(s, min, max) {
         /** @protected */
         if (this.cursor <= this.limit_backward) return false;
         var ch = this.current.charCodeAt(this.cursor - 1);
@@ -185,7 +185,7 @@ BaseStemmer = function () {
      * @param {number} max
      * @return {boolean}
      */
-    this.go_out_grouping_b = function (s, min, max) {
+    this.go_out_grouping_b = function(s, min, max) {
         /** @protected */
         while (this.cursor > this.limit_backward) {
             var ch = this.current.charCodeAt(this.cursor - 1);
@@ -204,10 +204,12 @@ BaseStemmer = function () {
      * @param {string} s
      * @return {boolean}
      */
-    this.eq_s = function (s) {
+    this.eq_s = function(s)
+    {
         /** @protected */
         if (this.limit - this.cursor < s.length) return false;
-        if (this.current.slice(this.cursor, this.cursor + s.length) != s) {
+        if (this.current.slice(this.cursor, this.cursor + s.length) != s)
+        {
             return false;
         }
         this.cursor += s.length;
@@ -218,10 +220,12 @@ BaseStemmer = function () {
      * @param {string} s
      * @return {boolean}
      */
-    this.eq_s_b = function (s) {
+    this.eq_s_b = function(s)
+    {
         /** @protected */
         if (this.cursor - this.limit_backward < s.length) return false;
-        if (this.current.slice(this.cursor - s.length, this.cursor) != s) {
+        if (this.current.slice(this.cursor - s.length, this.cursor) != s)
+        {
             return false;
         }
         this.cursor -= s.length;
@@ -232,7 +236,8 @@ BaseStemmer = function () {
      * @param {Among[]} v
      * @return {number}
      */
-    this.find_among = function (v) {
+    this.find_among = function(v)
+    {
         /** @protected */
         var i = 0;
         var j = v.length;
@@ -245,15 +250,18 @@ BaseStemmer = function () {
 
         var first_key_inspected = false;
 
-        while (true) {
+        while (true)
+        {
             var k = i + ((j - i) >>> 1);
             var diff = 0;
             var common = common_i < common_j ? common_i : common_j; // smaller
             // w[0]: string, w[1]: substring_i, w[2]: result, w[3]: function (optional)
             var w = v[k];
             var i2;
-            for (i2 = common; i2 < w[0].length; i2++) {
-                if (c + common == l) {
+            for (i2 = common; i2 < w[0].length; i2++)
+            {
+                if (c + common == l)
+                {
                     diff = -1;
                     break;
                 }
@@ -261,14 +269,18 @@ BaseStemmer = function () {
                 if (diff != 0) break;
                 common++;
             }
-            if (diff < 0) {
+            if (diff < 0)
+            {
                 j = k;
                 common_j = common;
-            } else {
+            }
+            else
+            {
                 i = k;
                 common_i = common;
             }
-            if (j - i <= 1) {
+            if (j - i <= 1)
+            {
                 if (i > 0) break; // v->s has been inspected
                 if (j == i) break; // only one item in v
 
@@ -282,7 +294,8 @@ BaseStemmer = function () {
         }
         do {
             var w = v[i];
-            if (common_i >= w[0].length) {
+            if (common_i >= w[0].length)
+            {
                 this.cursor = c + w[0].length;
                 if (w.length < 4) return w[2];
                 var res = w[3](this);
@@ -299,7 +312,8 @@ BaseStemmer = function () {
      * @param {Among[]} v
      * @return {number}
      */
-    this.find_among_b = function (v) {
+    this.find_among_b = function(v)
+    {
         /** @protected */
         var i = 0;
         var j = v.length
@@ -312,14 +326,17 @@ BaseStemmer = function () {
 
         var first_key_inspected = false;
 
-        while (true) {
+        while (true)
+        {
             var k = i + ((j - i) >> 1);
             var diff = 0;
             var common = common_i < common_j ? common_i : common_j;
             var w = v[k];
             var i2;
-            for (i2 = w[0].length - 1 - common; i2 >= 0; i2--) {
-                if (c - common == lb) {
+            for (i2 = w[0].length - 1 - common; i2 >= 0; i2--)
+            {
+                if (c - common == lb)
+                {
                     diff = -1;
                     break;
                 }
@@ -327,14 +344,18 @@ BaseStemmer = function () {
                 if (diff != 0) break;
                 common++;
             }
-            if (diff < 0) {
+            if (diff < 0)
+            {
                 j = k;
                 common_j = common;
-            } else {
+            }
+            else
+            {
                 i = k;
                 common_i = common;
             }
-            if (j - i <= 1) {
+            if (j - i <= 1)
+            {
                 if (i > 0) break;
                 if (j == i) break;
                 if (first_key_inspected) break;
@@ -343,7 +364,8 @@ BaseStemmer = function () {
         }
         do {
             var w = v[i];
-            if (common_i >= w[0].length) {
+            if (common_i >= w[0].length)
+            {
                 this.cursor = c - w[0].length;
                 if (w.length < 4) return w[2];
                 var res = w[3](this);
@@ -364,7 +386,8 @@ BaseStemmer = function () {
      * @param {string} s
      * @return {number}
      */
-    this.replace_s = function (c_bra, c_ket, s) {
+    this.replace_s = function(c_bra, c_ket, s)
+    {
         /** @protected */
         var adjustment = s.length - (c_ket - c_bra);
         this.current = this.current.slice(0, c_bra) + s + this.current.slice(c_ket);
@@ -377,12 +400,14 @@ BaseStemmer = function () {
     /**
      * @return {boolean}
      */
-    this.slice_check = function () {
+    this.slice_check = function()
+    {
         /** @protected */
         if (this.bra < 0 ||
             this.bra > this.ket ||
             this.ket > this.limit ||
-            this.limit > this.current.length) {
+            this.limit > this.current.length)
+        {
             return false;
         }
         return true;
@@ -392,10 +417,12 @@ BaseStemmer = function () {
      * @param {number} c_bra
      * @return {boolean}
      */
-    this.slice_from = function (s) {
+    this.slice_from = function(s)
+    {
         /** @protected */
         var result = false;
-        if (this.slice_check()) {
+        if (this.slice_check())
+        {
             this.replace_s(this.bra, this.ket, s);
             result = true;
         }
@@ -405,7 +432,8 @@ BaseStemmer = function () {
     /**
      * @return {boolean}
      */
-    this.slice_del = function () {
+    this.slice_del = function()
+    {
         /** @protected */
         return this.slice_from("");
     };
@@ -415,7 +443,8 @@ BaseStemmer = function () {
      * @param {number} c_ket
      * @param {string} s
      */
-    this.insert = function (c_bra, c_ket, s) {
+    this.insert = function(c_bra, c_ket, s)
+    {
         /** @protected */
         var adjustment = this.replace_s(c_bra, c_ket, s);
         if (c_bra <= this.bra) this.bra += adjustment;
@@ -425,10 +454,12 @@ BaseStemmer = function () {
     /**
      * @return {string}
      */
-    this.slice_to = function () {
+    this.slice_to = function()
+    {
         /** @protected */
         var result = '';
-        if (this.slice_check()) {
+        if (this.slice_check())
+        {
             result = this.current.slice(this.bra, this.ket);
         }
         return result;
@@ -437,7 +468,8 @@ BaseStemmer = function () {
     /**
      * @return {string}
      */
-    this.assign_to = function () {
+    this.assign_to = function()
+    {
         /** @protected */
         return this.current.slice(0, this.limit);
     };

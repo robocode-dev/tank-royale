@@ -66,7 +66,6 @@ tasks {
             }
         }
 
-        dependsOn(clean)
         dependsOn(build)
         dependsOn(updateDocfx)
 

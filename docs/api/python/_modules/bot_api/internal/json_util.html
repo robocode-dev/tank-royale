@@ -1,54 +1,47 @@
 <!DOCTYPE html>
 <html lang="en" data-content_root="../../../"
-      x-data="{ darkMode: $persist(window.matchMedia('(prefers-color-scheme: dark)').matches), activeSection: ''}"
-      :class="{ 'dark' : darkMode === true }">
+  x-data="{ darkMode: $persist(window.matchMedia('(prefers-color-scheme: dark)').matches), activeSection: ''}"
+  :class="{ 'dark' : darkMode === true }">
 
 <head>
-    <script>
-        (function () {
-            // Set initial color scheme
-            if ((localStorage.getItem("_x_darkMode") === "true") || (window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-                document.documentElement.classList.add("dark");
-            }
+  <script>
+    (function () {
+      // Set initial color scheme
+      if ((localStorage.getItem("_x_darkMode") === "true") || (window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.classList.add("dark");
+      }
 
-            // Watch for media preference changes
-            window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
-                localStorage.setItem("_x_darkMode", event.matches);
-                document.documentElement.classList.toggle("dark", event.matches);
-            });
-        })();
-    </script>
+      // Watch for media preference changes
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+        localStorage.setItem("_x_darkMode", event.matches);
+        document.documentElement.classList.toggle("dark", event.matches);
+      });
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta charset="utf-8" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"/>
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#030711"/>
-
-    <title>bot_api.internal.json_util | Robocode Tank Royale Bot API (Python) 0.35.0 documentation</title>
-    <meta property="og:title"
-          content="bot_api.internal.json_util | Robocode Tank Royale Bot API (Python) 0.35.0 documentation"/>
-    <meta name="twitter:title"
-          content="bot_api.internal.json_util | Robocode Tank Royale Bot API (Python) 0.35.0 documentation"/>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e72c8e07"/>
-    <link rel="stylesheet" type="text/css" href="../../../_static/theme.css?v=73505e79"/>
-    <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="index" title="Index" href="../../../genindex.html"/>
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#030711" />
+  
+  <title>bot_api.internal.json_util | Robocode Tank Royale Bot API (Python) 0.35.0 documentation</title>
+  <meta property="og:title" content="bot_api.internal.json_util | Robocode Tank Royale Bot API (Python) 0.35.0 documentation" />
+  <meta name="twitter:title" content="bot_api.internal.json_util | Robocode Tank Royale Bot API (Python) 0.35.0 documentation" />
+  <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e72c8e07" />
+  <link rel="stylesheet" type="text/css" href="../../../_static/theme.css?v=73505e79" />
+  <link rel="search" title="Search" href="../../../search.html" />
+  <link rel="index" title="Index" href="../../../genindex.html" />
 </head>
 
 <body x-data="{ showSidebar: false, showScrollTop: false }"
-      class="min-h-screen font-sans antialiased bg-background text-foreground"
-      :class="{ 'overflow-hidden': showSidebar }">
-<div x-cloak x-show="showSidebar"
-     class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden"
-     @click.self="showSidebar = false"></div>
-<div id="page" class="relative flex flex-col min-h-screen"><a href="#content"
-                                                              class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100">
+  class="min-h-screen font-sans antialiased bg-background text-foreground" :class="{ 'overflow-hidden': showSidebar }">
+  <div x-cloak x-show="showSidebar"
+    class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden"
+    @click.self="showSidebar = false"></div><div id="page" class="relative flex flex-col min-h-screen"><a href="#content"
+      class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100">
       Skip to content
-</a>
-    <header class="sticky top-0 z-40 w-full border-b shadow-xs border-border bg-background/90 backdrop-blur">
-        <div class="container flex items-center h-14">
+    </a><header class="sticky top-0 z-40 w-full border-b shadow-xs border-border bg-background/90 backdrop-blur"><div class="container flex items-center h-14">
     <div class="hidden mr-4 md:flex">
-        <a href="../../../index.html" class="flex items-center mr-6"><span
-            class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
+      <a href="../../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
       </a></div><button
       class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
       type="button" @click="showSidebar = true">
@@ -59,7 +52,7 @@
       </svg>
       <span class="sr-only">Toggle navigation menu</span>
     </button>
-            <div class="flex items-center justify-between flex-1 gap-2 sm:gap-4 md:justify-end">
+    <div class="flex items-center justify-between flex-1 gap-2 sm:gap-4 md:justify-end">
       <div class="flex-1 w-full md:w-auto md:flex-none"><form id="searchbox"
       action="../../../search.html"
       method="get"
@@ -78,19 +71,17 @@
   </kbd>
 </form>
       </div>
-                <nav class="flex items-center gap-1">
-                    <button @click="darkMode = !darkMode"
+      <nav class="flex items-center gap-1">
+        <button @click="darkMode = !darkMode"
           class="relative inline-flex items-center justify-center px-0 text-sm font-medium transition-colors rounded-md hover:bg-accent hover:text-accent-foreground h-9 w-9"
           type="button"
-                            title="Toggle color scheme">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 96 960 960"
-                             fill="currentColor"
+          title="Toggle color scheme">
+          <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 96 960 960" fill="currentColor"
             class="absolute transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0">
             <path
               d="M480 685q45.456 0 77.228-31.772Q589 621.456 589 576q0-45.456-31.772-77.228Q525.456 467 480 467q-45.456 0-77.228 31.772Q371 530.544 371 576q0 45.456 31.772 77.228Q434.544 685 480 685Zm0 91q-83 0-141.5-58.5T280 576q0-83 58.5-141.5T480 376q83 0 141.5 58.5T680 576q0 83-58.5 141.5T480 776ZM80 621.5q-19.152 0-32.326-13.174T34.5 576q0-19.152 13.174-32.326T80 530.5h80q19.152 0 32.326 13.174T205.5 576q0 19.152-13.174 32.326T160 621.5H80Zm720 0q-19.152 0-32.326-13.174T754.5 576q0-19.152 13.174-32.326T800 530.5h80q19.152 0 32.326 13.174T925.5 576q0 19.152-13.174 32.326T880 621.5h-80Zm-320-320q-19.152 0-32.326-13.174T434.5 256v-80q0-19.152 13.174-32.326T480 130.5q19.152 0 32.326 13.174T525.5 176v80q0 19.152-13.174 32.326T480 301.5Zm0 720q-19.152 0-32.326-13.17Q434.5 995.152 434.5 976v-80q0-19.152 13.174-32.326T480 850.5q19.152 0 32.326 13.174T525.5 896v80q0 19.152-13.174 32.33-13.174 13.17-32.326 13.17ZM222.174 382.065l-43-42Q165.5 327.391 166 308.239t13.174-33.065q13.435-13.674 32.587-13.674t32.065 13.674l42.239 43q12.674 13.435 12.555 31.706-.12 18.272-12.555 31.946-12.674 13.674-31.445 13.413-18.772-.261-32.446-13.174Zm494 494.761-42.239-43q-12.674-13.435-12.674-32.087t12.674-31.565Q686.609 756.5 705.38 757q18.772.5 32.446 13.174l43 41.761Q794.5 824.609 794 843.761t-13.174 33.065Q767.391 890.5 748.239 890.5t-32.065-13.674Zm-42-494.761Q660.5 369.391 661 350.62q.5-18.772 13.174-32.446l41.761-43Q728.609 261.5 747.761 262t33.065 13.174q13.674 13.435 13.674 32.587t-13.674 32.065l-43 42.239q-13.435 12.674-31.706 12.555-18.272-.12-31.946-12.555Zm-495 494.761Q165.5 863.391 165.5 844.239t13.674-32.065l43-42.239q13.435-12.674 32.087-12.674t31.565 12.674Q299.5 782.609 299 801.38q-.5 18.772-13.174 32.446l-41.761 43Q231.391 890.5 212.239 890t-33.065-13.174ZM480 576Z" />
           </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 96 960 960"
-                             fill="currentColor"
+          <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 96 960 960" fill="currentColor"
             class="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100">
             <path
               d="M480 936q-151 0-255.5-104.5T120 576q0-138 90-239.5T440 218q25-3 39 18t-1 44q-17 26-25.5 55t-8.5 61q0 90 63 153t153 63q31 0 61.5-9t54.5-25q21-14 43-1.5t19 39.5q-14 138-117.5 229T480 936Zm0-80q88 0 158-48.5T740 681q-20 5-40 8t-40 3q-123 0-209.5-86.5T364 396q0-20 3-40t8-40q-78 32-126.5 102T200 576q0 116 82 198t198 82Zm-10-270Z" />
@@ -101,18 +92,15 @@
   </div>
 </header>
 
-    <div class="flex-1">
-        <div
-            class="container md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
-            <aside id="left-sidebar"
-                   class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full overflow-y-auto border-r border-border md:sticky"
+    <div class="flex-1"><div
+        class="container md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside id="left-sidebar"
+  class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full overflow-y-auto border-r border-border md:sticky"
   :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
 
-                <a href="../../../index.html" class="justify-start text-sm md:!hidden bg-background"><span
-                    class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
+    <a href="../../../index.html" class="justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
     </a>
 
-                <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0">
+    <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0">
       <div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -134,13 +122,13 @@
       </svg>
     </button>
   </aside>
-            <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
+          <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
 <div class="w-full min-w-0 mx-auto">
 <nav aria-label="breadcrumbs"
      class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
   <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
      href="../../../index.html">
-      <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
+    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
     <svg xmlns="http://www.w3.org/2000/svg"
          height="18"
          width="18"
@@ -152,13 +140,11 @@
       <path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z" />
     </svg>
   </a>
-
-    <div class="mr-1">/</div>
-    <a class="hover:text-foreground overflow-hidden text-ellipsis whitespace-nowrap"
+  
+<div class="mr-1">/</div><a class="hover:text-foreground overflow-hidden text-ellipsis whitespace-nowrap"
        href="../../index.html">Module code</a>
-
-    <div class="mr-1">/</div>
-    <span aria-current="page"
+    
+<div class="mr-1">/</div><span aria-current="page"
         class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">bot_api.internal.json_util</span>
 </nav>
 
@@ -210,223 +196,117 @@
 </span><span id="line-34">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">schema</span><span class="o">.</span><span class="n">Color</span><span class="p">):</span>
 </span><span id="line-35">            <span class="k">return</span> <span class="n">o</span><span class="o">.</span><span class="n">value</span>
 </span><span id="line-36">        <span class="c1"># Handle bot-api Color objects (from graphics.color module)</span>
-</span><span id="line-37">        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span
-    class="n">o</span><span class="p">,</span> <span class="s2">&quot;to_hex_color&quot;</span><span class="p">)</span> <span
-    class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="n">o</span><span
-    class="o">.</span><span class="n">to_hex_color</span><span class="p">):</span>
-</span><span id="line-38">            <span class="k">return</span> <span class="n">o</span><span
-    class="o">.</span><span class="n">to_hex_color</span><span class="p">()</span>
-</span><span id="line-39">        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span
-    class="n">o</span><span class="p">,</span> <span class="s2">&quot;__dict__&quot;</span><span class="p">):</span>
-</span><span id="line-40">            <span class="k">return</span> <span class="p">{</span><span class="n">to_camel_case</span><span
-    class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span
-    class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span
-    class="ow">in</span> <span class="n">o</span><span class="o">.</span><span class="vm">__dict__</span><span
-    class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span
-    class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span
-    class="p">)}</span>
-</span><span id="line-41">        <span class="k">return</span> <span class="nb">super</span><span
-    class="p">()</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span
-    class="n">o</span><span class="p">)</span></div>
+</span><span id="line-37">        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="s2">&quot;to_hex_color&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">to_hex_color</span><span class="p">):</span>
+</span><span id="line-38">            <span class="k">return</span> <span class="n">o</span><span class="o">.</span><span class="n">to_hex_color</span><span class="p">()</span>
+</span><span id="line-39">        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="s2">&quot;__dict__&quot;</span><span class="p">):</span>
+</span><span id="line-40">            <span class="k">return</span> <span class="p">{</span><span class="n">to_camel_case</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">o</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)}</span>
+</span><span id="line-41">        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">o</span><span class="p">)</span></div>
 </div>
 
-        </span><span id="line-42">
+</span><span id="line-42">
 </span><span id="line-43">
 <div class="viewcode-block" id="from_json">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.json_util.from_json">[docs]</a>
-</span><span id="line-44"><span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span
-        class="p">(</span><span class="n">json_str_or_dict</span><span class="p">:</span> <span
-        class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span
-        class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span
-        class="o">-&gt;</span> <span class="n">schema</span><span class="o">.</span><span class="n">Message</span><span
-        class="p">:</span>
+</span><span id="line-44"><span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="n">json_str_or_dict</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">schema</span><span class="o">.</span><span class="n">Message</span><span class="p">:</span>
 </span><span id="line-45"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="line-46"><span class="sd">    Deserializes a JSON string into a Message object.</span>
 </span><span id="line-47"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="line-48">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span
-        class="n">json_str_or_dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="line-48">    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json_str_or_dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
 </span><span id="line-49">        <span class="n">json_str</span> <span class="o">=</span> <span class="n">json_str_or_dict</span>
-</span><span id="line-50">        <span class="n">obj</span> <span class="o">=</span> <span class="n">json</span><span
-        class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span
-        class="p">)</span>
+</span><span id="line-50">        <span class="n">obj</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>
 </span><span id="line-51">    <span class="k">else</span><span class="p">:</span>
-</span><span id="line-52">        <span class="n">obj</span> <span class="o">=</span> <span
-        class="n">json_str_or_dict</span>
-</span><span id="line-53">    <span class="n">msg_type</span> <span class="o">=</span> <span class="n">obj</span><span
-        class="o">.</span><span class="n">get</span><span class="p">(</span><span
-        class="s2">&quot;type&quot;</span><span class="p">)</span>
-</span><span id="line-54">    <span class="k">if</span> <span class="ow">not</span> <span class="n">msg_type</span><span
-        class="p">:</span>
-</span><span id="line-55">        <span class="k">raise</span> <span class="ne">ValueError</span><span
-        class="p">(</span>
+</span><span id="line-52">        <span class="n">obj</span> <span class="o">=</span> <span class="n">json_str_or_dict</span>
+</span><span id="line-53">    <span class="n">msg_type</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+</span><span id="line-54">    <span class="k">if</span> <span class="ow">not</span> <span class="n">msg_type</span><span class="p">:</span>
+</span><span id="line-55">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
 </span><span id="line-56">            <span class="s2">&quot;JSON object does not have a &#39;type&#39; field for message deserialization&quot;</span>
 </span><span id="line-57">        <span class="p">)</span>
 </span><span id="line-58">
-</span><span id="line-59">    <span class="k">if</span> <span class="n">msg_type</span> <span class="ow">in</span> <span
-        class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="p">:</span>
-</span><span id="line-60">        <span class="n">event_class</span> <span class="o">=</span> <span
-        class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="p">[</span><span
-        class="n">msg_type</span><span class="p">]</span>
-</span><span id="line-61">        <span class="k">return</span> <span class="n">_from_json_object</span><span class="p">(</span><span
-        class="n">obj</span><span class="p">,</span> <span class="n">event_class</span><span class="p">)</span>
+</span><span id="line-59">    <span class="k">if</span> <span class="n">msg_type</span> <span class="ow">in</span> <span class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="p">:</span>
+</span><span id="line-60">        <span class="n">event_class</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="p">[</span><span class="n">msg_type</span><span class="p">]</span>
+</span><span id="line-61">        <span class="k">return</span> <span class="n">_from_json_object</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">event_class</span><span class="p">)</span>
 </span><span id="line-62">
 </span><span id="line-63">    <span class="c1"># Fallback for other message types if needed</span>
 </span><span id="line-64">    <span class="c1"># For now, we only handle events</span>
-</span><span id="line-65">    <span class="k">raise</span> <span class="ne">ValueError</span><span
-        class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown message type: </span><span class="si">{</span><span
-        class="n">msg_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</span><span id="line-65">    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown message type: </span><span class="si">{</span><span class="n">msg_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-    </span><span id="line-66">
+</span><span id="line-66">
 </span><span id="line-67">
-</span><span id="line-68"><span class="k">def</span><span class="w"> </span><span
-        class="nf">_from_json_object</span><span class="p">(</span><span class="n">obj</span><span
-        class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span
-        class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">klass</span><span
-        class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span
-        class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</span><span id="line-68"><span class="k">def</span><span class="w"> </span><span class="nf">_from_json_object</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">klass</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 </span><span id="line-69"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="line-70"><span class="sd">    Recursively deserializes a dictionary into an object of the specified class.</span>
 </span><span id="line-71"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="line-72">    <span class="k">if</span> <span class="ow">not</span> <span class="n">inspect</span><span
-        class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">klass</span><span
-        class="p">):</span>
+</span><span id="line-72">    <span class="k">if</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">klass</span><span class="p">):</span>
 </span><span id="line-73">        <span class="k">return</span> <span class="n">obj</span>
 </span><span id="line-74">
 </span><span id="line-75">    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="line-76">    <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span
-        class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">klass</span><span
-        class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
-</span><span id="line-77">    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span
-        class="n">value</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span
-        class="n">items</span><span class="p">():</span>
-</span><span id="line-78">        <span class="n">key</span> <span class="o">=</span> <span
-        class="n">to_snake_case</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</span><span id="line-79">        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span
-        class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span
-        class="p">:</span>
+</span><span id="line-76">    <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">klass</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+</span><span id="line-77">    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="line-78">        <span class="n">key</span> <span class="o">=</span> <span class="n">to_snake_case</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</span><span id="line-79">        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
 </span><span id="line-80">            <span class="c1"># `key` not needed to construct the class.</span>
 </span><span id="line-81">            <span class="k">continue</span>
 </span><span id="line-82">
-</span><span id="line-83">        <span class="k">if</span> <span class="nb">isinstance</span><span
-        class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span
-        class="p">):</span>
-</span><span id="line-84">            <span class="n">param</span> <span class="o">=</span> <span
-        class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span
-        class="n">key</span><span class="p">]</span>
-</span><span id="line-85">            <span class="n">param_type</span> <span class="o">=</span> <span
-        class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="p">[</span><span
-        class="n">_sanitize_type_str</span><span class="p">(</span><span class="nb">str</span><span
-        class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span
-        class="p">))]</span>
-</span><span id="line-86">            <span class="n">kwargs</span><span class="p">[</span><span
-        class="n">key</span><span class="p">]</span> <span class="o">=</span> <span
-        class="n">_from_json_object</span><span class="p">(</span><span class="n">value</span><span
-        class="p">,</span> <span class="n">param_type</span><span class="p">)</span>  <span
-        class="c1"># type: ignore</span>
-</span><span id="line-87">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span
-        class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-</span><span id="line-88">            <span class="n">param</span> <span class="o">=</span> <span
-        class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span
-        class="n">key</span><span class="p">]</span>
-</span><span id="line-89">            <span class="n">param_type</span> <span class="o">=</span> <span
-        class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="o">.</span><span
-        class="n">get</span><span class="p">(</span><span class="n">_sanitize_type_str</span><span
-        class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">param</span><span
-        class="o">.</span><span class="n">annotation</span><span class="p">)),</span> <span class="kc">None</span><span
-        class="p">)</span>
-</span><span id="line-90">            <span class="k">if</span> <span class="n">param_type</span> <span
-        class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-91">                <span class="n">deserialized_items</span> <span class="o">=</span> <span
-        class="p">[]</span>
-</span><span id="line-92">                <span class="k">for</span> <span class="n">item</span> <span
-        class="ow">in</span> <span class="n">value</span><span class="p">:</span>  <span
-        class="c1"># type: ignore</span>
-</span><span id="line-93">                    <span class="k">assert</span> <span class="nb">isinstance</span><span
-        class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span
-        class="p">)</span>
-</span><span id="line-94">                    <span class="n">item_type</span> <span class="o">=</span> <span class="n">schema</span><span
-        class="o">.</span><span class="n">CLASS_MAP</span><span class="p">[</span><span class="n">item</span><span
-        class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]]</span> <span
-        class="k">if</span> <span class="s1">&#39;type&#39;</span> <span class="ow">in</span> <span
-        class="n">item</span> <span class="k">else</span> <span class="n">param_type</span>
-</span><span id="line-95">                    <span class="n">deserialized_items</span><span class="o">.</span><span
-        class="n">append</span><span class="p">(</span><span class="n">_from_json_object</span><span
-        class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">item_type</span><span
-        class="p">))</span>  <span class="c1"># type: ignore</span>
-</span><span id="line-96">                <span class="n">kwargs</span><span class="p">[</span><span
-        class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">deserialized_items</span>
+</span><span id="line-83">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span id="line-84">            <span class="n">param</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+</span><span id="line-85">            <span class="n">param_type</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="p">[</span><span class="n">_sanitize_type_str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">))]</span>
+</span><span id="line-86">            <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_from_json_object</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">param_type</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-87">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span id="line-88">            <span class="n">param</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+</span><span id="line-89">            <span class="n">param_type</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_sanitize_type_str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="line-90">            <span class="k">if</span> <span class="n">param_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-91">                <span class="n">deserialized_items</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="line-92">                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-93">                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+</span><span id="line-94">                    <span class="n">item_type</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]]</span> <span class="k">if</span> <span class="s1">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">item</span> <span class="k">else</span> <span class="n">param_type</span>
+</span><span id="line-95">                    <span class="n">deserialized_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_from_json_object</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">item_type</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-96">                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">deserialized_items</span>
 </span><span id="line-97">            <span class="k">else</span><span class="p">:</span>
-</span><span id="line-98">                <span class="n">kwargs</span><span class="p">[</span><span
-        class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</span><span id="line-99">        <span class="k">elif</span> <span class="n">key</span><span class="o">.</span><span
-        class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span
-        class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">):</span>
-</span><span id="line-100">            <span class="n">annotation</span> <span class="o">=</span> <span class="n">_sanitize_type_str</span><span
-        class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sig</span><span
-        class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span
-        class="p">]</span><span class="o">.</span><span class="n">annotation</span><span class="p">))</span>
-</span><span id="line-101">            <span class="k">if</span> <span class="n">annotation</span> <span
-        class="o">==</span> <span class="s2">&quot;Color&quot;</span><span class="p">:</span>
-</span><span id="line-102">                <span class="k">if</span> <span class="n">value</span> <span
-        class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span
-        class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span
-        class="nb">str</span><span class="p">):</span>
-</span><span id="line-103">                    <span class="n">kwargs</span><span class="p">[</span><span
-        class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span
-        class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="n">value</span><span
-        class="o">=</span><span class="n">value</span><span class="p">)</span>
+</span><span id="line-98">                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span id="line-99">        <span class="k">elif</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">):</span>
+</span><span id="line-100">            <span class="n">annotation</span> <span class="o">=</span> <span class="n">_sanitize_type_str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">annotation</span><span class="p">))</span>
+</span><span id="line-101">            <span class="k">if</span> <span class="n">annotation</span> <span class="o">==</span> <span class="s2">&quot;Color&quot;</span><span class="p">:</span>
+</span><span id="line-102">                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="line-103">                    <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
 </span><span id="line-104">                <span class="k">else</span><span class="p">:</span>
-</span><span id="line-105">                    <span class="n">kwargs</span><span class="p">[</span><span
-        class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-105">                    <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="line-106">            <span class="k">else</span><span class="p">:</span>
 </span><span id="line-107">                <span class="c1"># Not actually a Color type, just a field ending with &quot;color&quot;</span>
-</span><span id="line-108">                <span class="n">kwargs</span><span class="p">[</span><span
-        class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span id="line-108">                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </span><span id="line-109">        <span class="k">else</span><span class="p">:</span>
-</span><span id="line-110">            <span class="n">kwargs</span><span class="p">[</span><span
-        class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</span><span id="line-111">    <span class="n">result</span> <span class="o">=</span> <span class="n">klass</span><span
-        class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="line-110">            <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span id="line-111">    <span class="n">result</span> <span class="o">=</span> <span class="n">klass</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span><span id="line-112">    <span class="k">return</span> <span class="n">result</span>
 </span><span id="line-113">
 </span><span id="line-114">
 <div class="viewcode-block" id="to_json">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.json_util.to_json">[docs]</a>
-</span><span id="line-115"><span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span
-        class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">schema</span><span
-        class="o">.</span><span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span
-        class="nb">str</span><span class="p">:</span>
+</span><span id="line-115"><span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">schema</span><span class="o">.</span><span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 </span><span id="line-116"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="line-117"><span class="sd">    Serializes a Message object into a JSON string.</span>
 </span><span id="line-118"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="line-119">    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span
-        class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span
-        class="bp">cls</span><span class="o">=</span><span class="n">MessageEncoder</span><span class="p">,</span> <span
-        class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span
-        class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+</span><span id="line-119">    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">MessageEncoder</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
 </span></code></pre></div>
     </div></div>
-</main>
-</div>
-</div>
-<footer class="py-6 border-t border-border md:py-0">
+          </main>
+        </div>
+      </div><footer class="py-6 border-t border-border md:py-0">
     <div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
       <div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
         <p class="text-sm leading-loose text-center text-muted-foreground md:text-left">Built with <a class="font-medium underline underline-offset-4"
     href="https://www.sphinx-doc.org"
-                                                                                                      rel="noreferrer">Sphinx
-            9.1.0</a></p>
+    rel="noreferrer">Sphinx 9.1.0</a></p>
 </div>
 </div>
 </footer>
-</div>
-
-<script src="../../../_static/documentation_options.js?v=ca1b380b"></script>
+    </div>
+    
+    <script src="../../../_static/documentation_options.js?v=ca1b380b"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-<script defer="defer" src="../../../_static/theme.js?v=582b20c5"></script>
-
+    <script defer="defer" src="../../../_static/theme.js?v=582b20c5"></script>
+    
 </body>
 
 </html>
