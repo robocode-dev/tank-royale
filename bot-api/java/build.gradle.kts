@@ -56,6 +56,11 @@ sourceSets {
 }
 
 tasks {
+    // Fix task dependency issue with generateSchemaDiagrams
+    named("generateJsonSchema2Pojo") {
+        mustRunAfter(rootProject.tasks.named("generateSchemaDiagrams"))
+    }
+
     test {
         useJUnitPlatform()
         failFast = true
