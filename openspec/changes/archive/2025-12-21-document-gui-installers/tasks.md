@@ -1,6 +1,6 @@
 # Implementation Tasks
 
-## 1. Update VERSIONS.MD
+## 1. Update VERSIOND.md
 
 - [x] 1.1 Add entry in the latest version section documenting the new GUI installer packages
 - [x] 1.2 Mention available formats: Windows (msi), macOS (pkg), Linux (rpm and deb)
@@ -41,6 +41,6 @@ Notes:
 - The release docs template (`buildSrc/.../release-docs-template.md`) and the installation guide (
   `docs-build/.../installation.md`) were updated and aligned. Filenames and download links now use the `{VERSION}`
   placeholder and include platform-specific installer guidance and `JAVA_HOME` setup instructions.
-- Remaining work: update `VERSIONS.MD` to document the new GUI installer packages (see section 1). Also consider
+- Remaining work: update `VERSIOND.md` to document the new GUI installer packages (see section 1). Also consider
   gradually replacing remaining `x.y.z` occurrences across other docs (some tutorials and READMEs still reference
   `x.y.z`).

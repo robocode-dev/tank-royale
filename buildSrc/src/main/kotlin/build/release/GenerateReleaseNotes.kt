@@ -9,7 +9,7 @@ import java.nio.file.Files
 
 fun generateReleaseNotes(projectDir: File, version: String): String {
 
-    val versionsFilename = File(projectDir, "VERSIONS.MD").absolutePath
+    val versionsFilename = File(projectDir, "VERSIOND.md").absolutePath
 
     val extractedVersion = extractVersion(versionsFilename)
     check(extractedVersion == version) {

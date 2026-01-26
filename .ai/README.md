@@ -15,7 +15,7 @@ current task.
 | `cross-platform.md`     | ~55   | ~600        | Bot API, Java, Python, .NET, C#, cross-platform, port, reference implementation |
 | `coding-conventions.md` | ~35   | ~350        | style, conventions, naming, format, PEP 8, immutability                         |
 | `testing-and-build.md`  | ~40   | ~450        | test, build, Gradle, gradlew, compile, validation                               |
-| `documentation.md`      | ~30   | ~300        | docs, README, markdown, mermaid, VERSIONS.MD, Javadoc, docstring, changelog     |
+| `documentation.md`      | ~30   | ~300        | docs, README, markdown, mermaid, VERSIOND.md, Javadoc, docstring, changelog     |
 | `standards.md`          | ~25   | ~250        | encoding, UTF-8, standards, file format, characters                             |
 
 **Total if all loaded:** ~225 lines, ~2350 tokens
@@ -92,7 +92,7 @@ Note: A colon (e.g., "Remember: ...") makes it more command-like.
 | Bot API, Java/Python/.NET, porting | `cross-platform.md`     |
 | Style, naming, language-specific   | `coding-conventions.md` |
 | Tests, Gradle, build               | `testing-and-build.md`  |
-| README, VERSIONS.MD, docs          | `documentation.md`      |
+| README, VERSIOND.md, docs          | `documentation.md`      |
 | Encoding, file formats             | `standards.md`          |
 
 ### Best Practices
@@ -121,7 +121,7 @@ Build and test procedures: Gradle commands, test requirements, validation steps.
 
 ### `documentation.md`
 
-Documentation standards: README updates, VERSIONS.MD format, Javadoc/docstring alignment.
+Documentation standards: README updates, VERSIOND.md format, Javadoc/docstring alignment.
 
 ### `standards.md`
 

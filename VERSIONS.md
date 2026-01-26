@@ -1,4 +1,4 @@
-## 📦 0.35.0 - **BREAKING**: Python Bot API Converted to Synchronous API & Refactored to Use Properties - 25-Jan-2026
+## 📦 0.35.0 - **BREAKING**: Python Bot API Converted to Synchronous API & Refactored to Use Properties - 26-Jan-2026
 
 ### 💥 Breaking Changes (Python Bot API)
 
