@@ -1,3 +1,13 @@
+## 📦 0.35.1 - Automatic User Data Migration – 27-Jan-2026
+
+### 🚀 Improvements
+
+- GUI:
+    - Added automatic migration of user data files (`gui.properties`, `server.properties`, `game-setups.properties`, 
+      and `recordings/` directory) from the old location (current working directory or JAR location) to the new 
+      platform-specific user data directory. This removes the need for manual file migration when upgrading from 
+      pre-0.35.0 versions.
+
 ## 📦 0.35.0 - **BREAKING**: Python Bot API Converted to Synchronous API & Refactored to Use Properties - 26-Jan-2026
 
 ### 💥 Breaking Changes (Python Bot API)
