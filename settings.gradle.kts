@@ -43,3 +43,8 @@ dependencyResolutionManagement {
         }
     }
 }
+
+// Disable parallel execution if the dependencyUpdates task is being run (it doesn't support parallel builds)
+if (gradle.startParameter.taskNames.any { it.contains("dependencyUpdates") }) {
+    gradle.startParameter.isParallelProjectExecutionEnabled = false
+}

@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Copy
 import org.gradle.api.Project
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 description = "Robocode: Build the best - destroy the rest!"
 
@@ -637,6 +638,18 @@ subprojects {
                     extension = "ico"
                 }
             }
+        }
+    }
+}
+
+// Configure the dependencyUpdates task to exclude pre-release versions from reports
+pluginManager.withPlugin("com.github.ben-manes.versions") {
+    tasks.named<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask>("dependencyUpdates") {
+        rejectVersionIf {
+            val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { candidate.version.uppercase().contains(it) }
+            val regex = "^[0-9,.v-]+(-SNAPSHOT)?$".toRegex()
+            val isStable = stableKeyword || regex.matches(candidate.version)
+            !isStable
         }
     }
 }
