@@ -115,7 +115,7 @@ object RecorderProcess {
     private fun getRecorderJar(): String {
         System.getProperty("recorderJar")?.let {
             Paths.get(it).apply {
-                if (Files.exists(this)) {
+                if (!Files.exists(this)) {
                     throw FileNotFoundException(toString())
                 }
                 return toString()

@@ -81,7 +81,7 @@ object ServerProcess {
     private fun getServerJar(): String {
         System.getProperty("serverJar")?.let {
             Paths.get(it).apply {
-                if (Files.exists(this)) {
+                if (!Files.exists(this)) {
                     throw FileNotFoundException(toString())
                 }
                 return toString()
