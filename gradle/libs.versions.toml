@@ -1,6 +1,6 @@
 [versions]
 
-kotlin = "2.2.21" # 2.3.0 does not work with the newest R8 8.13.17 causing spammy warnings
+kotlin = "2.3.0"
 
 gson = "2.13.2"
 gson-extras = "3.3.0"
@@ -9,16 +9,16 @@ json = "20240303"
 jsonschema2pojo = "1.2.2"
 jsvg = "2.0.0"
 kotlinx-serialization-json = "1.9.0"
-clikt = "5.0.3"
-r8 = "8.13.17"
+clikt = "5.1.0"
+r8 = "8.13.19"
 miglayout-swing = "11.4.2"
 nexus-publish = "2.0.0"
 node-gradle = "7.1.0"
 nv-i18n = "1.29"
-shadow = "9.3.0"
+shadow = "9.3.1"
 slf4j-api = "2.0.12"
 
-benmanes-versions = "0.53.0" #  ./gradlew dependencyUpdates --no-parallel
+benmanes-versions = "0.53.0"  # ./gradlew dependencyUpdates
 
 [libraries]
 
