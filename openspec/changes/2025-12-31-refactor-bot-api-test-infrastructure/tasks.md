@@ -43,12 +43,6 @@
 
 **Estimated time**: 1-2 days
 
-### Task 1.4: Cross-Language Verification
-
-- [ ] Create smoke test that verifies state synchronization works identically across languages
-- [ ] Document any language-specific quirks
-
-**Estimated time**: 0.5 days
 
 ---
 
@@ -62,7 +56,7 @@
 
 - [ ] Implement thread tracking in `AbstractBotTest` to ensure clean shutdown (Suppresses Rogue Thread Interruption)
 - [ ] Suppress `ThreadInterruptedException` logs in tests when they are expected during teardown
-- [ ] Fix memory visibility issues in `MockedServer` (volatile fields for intent/state)
+- [x] Fix memory visibility issues in `MockedServer` (volatile fields for intent/state)
 - [ ] Ensure `botIntentLatch` is only counted down AFTER the intent is fully parsed
 - [ ] Add `executeCommandAndGetIntent` helper to `AbstractBotTest`
 - [ ] **Audit**: Verify `MockedServer.java` logic against sequence diagrams in `schema/schemas/README.md`
@@ -121,52 +115,69 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 **Estimated time**: 2-3 days
 
+### Task 1.6: Cross-Language Verification
+
+> **Note**: This task was moved from 1.4 to after 1.5 because cross-language verification is only meaningful 
+> after the infrastructure is stable. Running verification on flaky code produces unreliable results.
+
+- [ ] Create smoke test that verifies state synchronization works identically across languages
+- [ ] Document any language-specific quirks
+
+**Estimated time**: 0.5 days
+
 ---
 
 ## Phase 2: Synchronous Command Execution Utilities
 
 ### Task 2.1: Java AbstractBotTest Base Class
 
-**Files**: `bot-api/java/src/test/java/test_utils/AbstractBotTest.java` (new)
+**Files**: `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/AbstractBotTest.java` (EXISTS)
 
-- [ ] Create abstract base class
-- [ ] Implement `setUp()` and `tearDown()` with MockedServer lifecycle
-- [ ] Add `startBot()` method that starts bot and waits for ready
+> **Status (2026-01-28)**: Class already exists with most methods. Missing: abstract `createTestBot()` and `CommandResult<T>`.
+
+- [x] Create abstract base class
+- [x] Implement `setUp()` and `tearDown()` with MockedServer lifecycle
+- [x] Add `startBot()` method that starts bot and waits for ready (named `start()`)
 - [ ] Add abstract `createTestBot()` method for subclasses
-- [ ] Implement `executeCommand(Supplier<T>)` method
-- [ ] Implement `executeBlocking(Runnable)` method
+- [x] Implement `executeCommand(Supplier<T>)` method
+- [x] Implement `executeBlocking(Runnable)` method
 - [ ] Create `CommandResult<T>` inner class
 - [ ] Add JavaDoc for all public methods
 
-**Estimated time**: 1 day
+**Estimated time**: 0.5 days (remaining items only)
 
 ### Task 2.2: .NET AbstractBotTest Enhancement
 
-**Files**: `bot-api/dotnet/test/src/AbstractBotTest.cs`
+**Files**: `bot-api/dotnet/test/src/AbstractBotTest.cs` (EXISTS)
 
-- [ ] Add `ExecuteCommand<T>(Func<T>)` method
+> **Status (2026-01-28)**: Class already exists with ExecuteCommand<T>() and ExecuteBlocking(). Missing: ExecuteAndCaptureIntent and XML docs.
+
+- [x] Add `ExecuteCommand<T>(Func<T>)` method
 - [ ] Add `ExecuteAndCaptureIntent(Action)` method
-- [ ] Add `ExecuteBlocking(Action)` method
-- [ ] Ensure thread safety with proper async/await patterns
+- [x] Add `ExecuteBlocking(Action)` method
+- [x] Ensure thread safety with proper async/await patterns
 - [ ] Add XML documentation comments
 
-**Estimated time**: 1 day
+**Estimated time**: 0.5 days (remaining items only)
 
 ### Task 2.3: Python AbstractBotTest Base Class
 
-**Files**: `bot-api/python/tests/test_utils/abstract_bot_test.py` (new)
+**Files**: `bot-api/python/tests/bot_api/abstract_bot_test.py` (EXISTS)
 
-- [ ] Create AbstractBotTest class
-- [ ] Implement `setup_method()` and `teardown_method()`
-- [ ] Add `start_bot()` method
+> **Status (2026-01-28)**: Class already exists with start_bot(), execute_command(), execute_blocking(), await_condition(). 
+> Missing: abstract create_test_bot() method. Note: reset_bot_intent_event() was added to MockedServer.
+
+- [x] Create AbstractBotTest class
+- [x] Implement `setup_method()` and `teardown_method()` (as setUp/tearDown)
+- [x] Add `start_bot()` method
 - [ ] Add abstract `create_test_bot()` method
-- [ ] Implement `_start_async()` and `_go_async()` helpers
-- [ ] Implement `execute_command()` method
+- [x] Implement `_start_async()` and `_go_async()` helpers (as start_async/go_async)
+- [x] Implement `execute_command()` method
 - [ ] Implement `execute_and_capture_intent()` method
-- [ ] Implement `execute_blocking()` method
+- [x] Implement `execute_blocking()` method
 - [ ] Add type hints and docstrings
 
-**Estimated time**: 1 day
+**Estimated time**: 0.5 days (remaining items only)
 
 ### Task 2.4: Integration Testing
 
@@ -179,6 +190,8 @@ as a workaround. All AI coding assistants have struggled with this issue.
 ---
 
 ## Phase 3: Mock/Stub Test Bot Factory
+
+> **Status (2026-01-28)**: NOT STARTED. None of the TestBotBuilder/factory files exist yet.
 
 > **Rationale**: The test bot factory is moved early (before writing new tests) so that all subsequent test
 > implementations in Phases 4, 5, and 6 can leverage reusable, configurable test bots. This ensures consistency, reduces
@@ -220,6 +233,8 @@ as a workaround. All AI coding assistants have struggled with this issue.
 ---
 
 ## Phase 4: Implement TR-API-CMD-002 Fire Command Tests
+
+> **Status (2026-01-28)**: NOT STARTED. None of the CommandsFireTest files exist yet.
 
 ### Task 4.1: Java CommandsFireTest
 
@@ -557,10 +572,6 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 **Estimated time**: 0.5 days
 
-### Task 10: Fix broken tests
-
-- [ ] Re-enable the skipped test in test_TR_API_CMD_001_movement_commands_clamped_in_intent
-  (bot-api/python/tests/bot_api/test_commands_movement.py)
 
 ---
 
@@ -570,11 +581,13 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 **Critical Path**:
 
-1. Phase 1 (MockedServer) → Phase 2 (Utilities) → Phase 3 (Test Bot Factory)
-2. Phase 4 (Fire Tests) depends on Phases 2 & 3
-3. Phase 5 (Radar Refactor) can partially overlap with Phase 4
-4. Phase 6 (Full Refactor including CMD-001, CMD-004) depends on Phases 2 & 3
-5. Phase 7-9 (Documentation & Validation) can overlap with Phase 6
+1. Phase 1.1-1.3 (MockedServer) ✅ → Phase 1.5 (Stabilization) → Phase 1.6 (Cross-Language Verification)
+2. Phase 2 (Utilities) → Phase 3 (Test Bot Factory)
+3. Phase 4 (Fire Tests) depends on Phases 2 & 3
+4. Phase 5 (Radar Refactor) can partially overlap with Phase 4
+5. Phase 6 (Refactor ALL existing tests) depends on Phases 2 & 3
+6. Phase 6.6 (Remove bad methods) depends on Phase 6.1-6.4 (all tests migrated)
+7. Phase 7-9 (Documentation & Validation) depends on Phase 6 completion
 
 **Risk Mitigation**:
 
