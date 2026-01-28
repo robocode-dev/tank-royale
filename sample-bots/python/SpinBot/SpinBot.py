@@ -1,5 +1,3 @@
-import asyncio
-
 from robocode_tank_royale.bot_api.bot import Bot
 from robocode_tank_royale.bot_api.color import Color
 from robocode_tank_royale.bot_api.events import ScannedBotEvent, HitBotEvent
@@ -14,7 +12,7 @@ from robocode_tank_royale.bot_api.events import ScannedBotEvent, HitBotEvent
 # detecting enemies.
 # ------------------------------------------------------------------
 class SpinBot(Bot):
-    async def run(self) -> None:
+    def run(self) -> None:
         # Set colors
         self.body_color = Color.BLUE
         self.turret_color = Color.BLUE
@@ -28,27 +26,27 @@ class SpinBot(Bot):
             # Limit our speed to 5
             self.max_speed = 5
             # Start moving (and turning)
-            await self.forward(10_000)
+            self.forward(10_000)
 
-    async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
+    def on_scanned_bot(self, e: ScannedBotEvent) -> None:
         del e
         # Fire hard!
-        await self.fire(3)
+        self.fire(3)
 
-    async def on_hit_bot(self, e: HitBotEvent) -> None:
+    def on_hit_bot(self, e: HitBotEvent) -> None:
         # If the bot is roughly in front of us, fire hard
         bearing = self.calc_bearing(self.direction_to(float(e.x), float(e.y)))
         if -10 < bearing < 10:
-            await self.fire(3)
+            self.fire(3)
         # If we rammed it, nudge to keep spinning
         if e.rammed:
-            await self.turn_right(10)
+            self.turn_right(10)
 
 
-async def main() -> None:
+def main() -> None:
     bot = SpinBot()
-    await bot.start()
+    bot.start()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

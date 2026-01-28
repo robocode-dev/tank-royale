@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.components.RcImages
+import dev.robocode.tankroyale.gui.util.UserDataMigration
 import java.awt.Taskbar
 import javax.swing.UIManager
 import java.util.Locale
@@ -14,6 +15,10 @@ fun main(args: Array<String>) {
         println("Robocode Tank Royale GUI ${Version.version}")
         return
     }
+
+    // Migrate user data from old location (CWD) to user data directory if needed
+    UserDataMigration.migrateIfNeeded()
+
     val scale = try { ConfigSettings.uiScale } catch (_: Exception) { 100 }
 
     // set ui scale factor for high dpi displays, but only if not already set (via command line)

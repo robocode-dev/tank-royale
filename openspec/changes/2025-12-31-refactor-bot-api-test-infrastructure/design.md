@@ -67,6 +67,47 @@ and the stabilization tasks in Phase 1.5.
     * *Mitigation*: Tailored synchronization strategies in `MockedServer` and `AbstractBotTest` for each platform (
       Pattern 1, 2, 3).
 
+#### 4. Python Blocking `go()` Interruptibility (Critical)
+
+The Python Bot API uses `threading.Condition.wait()` internally for blocking methods like `go()`, `forward()`, `fire()`,
+etc. Unlike Java's `Object.wait()` which can be interrupted by calling `Thread.interrupt()`, Python's condition wait
+cannot be cleanly interrupted from another thread.
+
+**Symptoms**:
+
+* Tests like `test_commands_movement.py` hang indefinitely when calling `bot.go()` in a thread
+* Test teardown cannot stop the bot thread cleanly
+* `@unittest.skipIf(True, "FIXME: Test requires blocking go() to be interruptible")` is required as a workaround
+* All AI coding assistants have struggled with this issue
+
+**Root Cause**:
+
+```python
+# In base_bot_internals.py
+with self._next_turn_condition:
+    while self._is_running and turn_number == self._current_tick.turn_number:
+        self._next_turn_condition.wait()  # ← Cannot be interrupted from another thread!
+```
+
+**Proposed Solutions** (to be evaluated in Phase 1.5.3):
+
+1. **Timeout-based wait with shutdown flag**:
+   ```python
+   with self._next_turn_condition:
+       while self._is_running and turn_number == self._current_tick.turn_number:
+           self._next_turn_condition.wait(timeout=0.1)  # Short timeout
+           if self._shutdown_requested:
+               raise ThreadInterruptedException()
+   ```
+
+2. **Daemon threads for tests**: Run bot threads as daemon threads so they are killed when the main test thread exits.
+   This is less clean but effective for test scenarios.
+
+3. **Mock-based testing**: For tests that verify `go()` behavior, mock the blocking internals to avoid actual blocking.
+   This trades test fidelity for reliability.
+
+**Note**: The chosen approach must ensure that the `test_commands_movement.py` tests can be unskipped and run reliably.
+
 ### Desired Architecture
 
 ```

@@ -3,10 +3,25 @@
 <!-- METADATA: ~60 lines, ~650 tokens -->
 <!-- KEYWORDS: Bot API, Java, Python, .NET, C#, cross-platform, port, reference implementation, semantic equivalence -->
 
+## 1:1 Semantic Equivalence (Hard Requirement)
+
+**All official Bot APIs MUST be 1:1 semantically equivalent to the Java Bot API.**
+
+This is a non-negotiable requirement. See CONTRIBUTING.md for the full policy.
+
+**Why this matters:**
+
+- **Maintainability**: Cross-platform code stays familiar and consistent
+- **Testing**: Identical semantics allow test strategies to be shared
+- **Documentation**: API docs can be adapted, not rewritten from scratch
+- **Learning**: Users moving between platforms find the same concepts and behaviors
+
 ## Source of Truth
 
 Remember Java Bot API is the reference implementation.
 
+- The classic Robocode API was originally written for Java, and Tank Royale remains loyal to this heritage
+- The Java Bot API is the most battle-tested implementation and serves as the authoritative source
 - All Bot API platforms must align with Java's behavior
 - API names, defaults, and event semantics must match
 - When in doubt, Java implementation is authoritative
@@ -33,6 +48,9 @@ Always update sample bots if the change is user-visible.
 - Events firing in different order
 - Different null/None handling behavior
 - Inconsistent validation rules
+- Different blocking/async behavior (all platforms must use synchronous blocking for action methods)
+- Extra or missing public methods (all platforms must have equivalent methods)
+- Different method semantics (e.g., `forward()` must block until complete on ALL platforms)
 
 ## Cross-Language Workflow
 

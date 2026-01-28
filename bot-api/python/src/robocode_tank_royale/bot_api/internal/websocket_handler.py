@@ -1,5 +1,6 @@
 import asyncio
 import json
+import threading
 from typing import Any, Optional
 import websockets
 from typing import Dict
@@ -52,7 +53,7 @@ class WebSocketHandler:
         bot_info: BotInfo,
         bot_event_handlers: BotEventHandlers,
         internal_event_handlers: InternalEventHandlers,
-        closed_event: asyncio.Event,
+        closed_event: threading.Event,
         event_queue: 'EventQueue',
     ):
         """Initialize the websocket handler."""
@@ -72,12 +73,12 @@ class WebSocketHandler:
         try:
             self.websocket = await websockets.connect(self.server_url)
             # Publish connected event
-            await self.bot_event_handlers.on_connected.publish(
+            self.bot_event_handlers.on_connected.publish(
                 ConnectedEvent(self.server_url)
             )
             return self.websocket
         except Exception as e:
-            await self.bot_event_handlers.on_connection_error.publish(
+            self.bot_event_handlers.on_connection_error.publish(
                 ConnectionErrorEvent(self.server_url, e)
             )
             self.closed_event.set()
@@ -92,18 +93,16 @@ class WebSocketHandler:
         self, websocket: websockets.ClientConnection, code: int, reason: str
     ) -> None:
         """Handle WebSocket close event.""" # Unused parameter, but kept for compatibility
-        # Publish and await on both event handlers in parallel
+        # Publish to both event handlers
         disconnected_event = DisconnectedEvent(self.server_url, True, code, reason)
-        await asyncio.gather(
-            self.bot_event_handlers.on_disconnected.publish(disconnected_event),
-            self.internal_event_handlers.on_disconnected.publish(disconnected_event)
-        )
+        self.bot_event_handlers.on_disconnected.publish(disconnected_event)
+        self.internal_event_handlers.on_disconnected.publish(disconnected_event)
         self.closed_event.set()
 
     async def on_error(self, websocket: websockets.ClientConnection, error: Exception):
         """Handle WebSocket error."""
         del websocket  # Unused parameter, but kept for compatibility
-        await self.bot_event_handlers.on_connection_error.publish(
+        self.bot_event_handlers.on_connection_error.publish(
             ConnectionErrorEvent(self.server_url, error)
         )
         self.closed_event.set()
@@ -180,25 +179,19 @@ class WebSocketHandler:
             bot_intent.rescan = False
 
         # mapped_tick_event.events should still be iterable
-        await asyncio.gather(
-            *(
-                self.internal_event_handlers.fire_event(event)
-                for event in mapped_tick_event.events
-            )
-        )
+        for event in mapped_tick_event.events:
+            self.internal_event_handlers.fire_event(event)
 
         # Trigger next turn (not tick-event!)
-        await self.internal_event_handlers.on_next_turn.publish(mapped_tick_event)
+        self.internal_event_handlers.on_next_turn.publish(mapped_tick_event)
 
     async def handle_round_started(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a round started event from the server."""
         schema_evt: RoundStartedEventForBot = from_json(json_msg)  # type: ignore
         round_started_event = RoundStartedEvent(schema_evt.round_number)
 
-        await asyncio.gather(
-            self.bot_event_handlers.on_round_started.publish(round_started_event),
-            self.internal_event_handlers.on_round_started.publish(round_started_event),
-        )
+        self.bot_event_handlers.on_round_started.publish(round_started_event)
+        self.internal_event_handlers.on_round_started.publish(round_started_event)
 
     async def handle_round_ended(self, json_msg: Dict[Any, Any]):
         """Handle a round ended event from the server."""
@@ -207,10 +200,8 @@ class WebSocketHandler:
         round_ended_event = RoundEndedEvent(
             schema_evt.round_number, schema_evt.turn_number, results
         )
-        await asyncio.gather(
-            self.bot_event_handlers.on_round_ended.publish(round_ended_event),
-            self.internal_event_handlers.on_round_ended.publish(round_ended_event),
-        )
+        self.bot_event_handlers.on_round_ended.publish(round_ended_event)
+        self.internal_event_handlers.on_round_ended.publish(round_ended_event)
 
     async def handle_game_started(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a game started event from the server."""
@@ -238,7 +229,7 @@ class WebSocketHandler:
         # Send ready signal
         await self.websocket.send(to_json(BotReady(type=Message.Type.BOT_READY)))
 
-        await self.bot_event_handlers.on_game_started.publish(
+        self.bot_event_handlers.on_game_started.publish(
             GameStartedEvent(
                 game_started_event.my_id,
                 initial_position,
@@ -254,17 +245,13 @@ class WebSocketHandler:
         game_ended_event.number_of_rounds = schema_evt.number_of_rounds
         game_ended_event.results = ResultsMapper.map(schema_evt.results)
 
-        await asyncio.gather(
-            self.bot_event_handlers.on_game_ended.publish(game_ended_event),
-            self.internal_event_handlers.on_game_ended.publish(game_ended_event),
-        )
+        self.bot_event_handlers.on_game_ended.publish(game_ended_event)
+        self.internal_event_handlers.on_game_ended.publish(game_ended_event)
 
     async def handle_game_aborted(self) -> None:
         """Handle a game aborted event from the server."""
-        await asyncio.gather(
-            self.bot_event_handlers.on_game_aborted.publish(None),
-            self.internal_event_handlers.on_game_aborted.publish(None),
-        )
+        self.bot_event_handlers.on_game_aborted.publish(None)
+        self.internal_event_handlers.on_game_aborted.publish(None)
 
     async def handle_skipped_turn(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a skipped turn event from the server."""
@@ -274,7 +261,7 @@ class WebSocketHandler:
 
         schema_evt: SkippedTurnEvent = from_json(json_msg)  # type: ignore
         skipped_turn_event = EventMapper.map_skipped_turn_event(schema_evt)
-        await self.bot_event_handlers.on_skipped_turn.publish(skipped_turn_event)
+        self.bot_event_handlers.on_skipped_turn.publish(skipped_turn_event)
 
     async def handle_server_handshake(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a server handshake from the server."""

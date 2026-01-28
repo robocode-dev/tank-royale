@@ -1,4 +1,3 @@
-import asyncio
 from dataclasses import dataclass
 from typing import Optional
 
@@ -42,7 +41,7 @@ class RobotColors:
 # ------------------------------------------------------------------
 class MyFirstLeader(Bot):
 
-    async def run(self) -> None:
+    def run(self) -> None:
         # Prepare robot colors to send to teammates
         colors = RobotColors()
 
@@ -71,27 +70,27 @@ class MyFirstLeader(Bot):
 
         # Repeat while the bot is running: Move forward and back
         while self.running:
-            await self.forward(100)
-            await self.back(100)
+            self.forward(100)
+            self.back(100)
 
-    async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
+    def on_scanned_bot(self, e: ScannedBotEvent) -> None:
         # We scanned a teammate -> ignore
         if self.is_teammate(e.scanned_bot_id):
             return
         # Send enemy position to teammates
         self.broadcast_team_message(Point(x=e.x, y=e.y))
 
-    async def on_hit_by_bullet(self, e: HitByBulletEvent) -> None:
+    def on_hit_by_bullet(self, e: HitByBulletEvent) -> None:
         # Calculate the bullet bearing
         bullet_bearing = self.calc_bearing(e.bullet.direction)
         # Turn perpendicular to the bullet direction
-        await self.turn_left(90 - bullet_bearing)
+        self.turn_left(90 - bullet_bearing)
 
 
-async def main() -> None:
+def main() -> None:
     bot = MyFirstLeader()
-    await bot.start()
+    bot.start()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

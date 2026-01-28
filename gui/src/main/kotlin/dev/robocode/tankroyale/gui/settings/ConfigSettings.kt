@@ -184,8 +184,10 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private fun setBotDirectoryConfigs(botDirectoryConfigs: List<BotDirectoryConfig>) {
         val stringBuffer = StringBuilder()
         botDirectoryConfigs.filter { it.path.isNotBlank() }.forEach { botDirectoryConfig ->
+            // Normalize path separators to forward slashes to avoid escape sequence issues in properties files
+            val normalizedPath = botDirectoryConfig.path.replace('\\', '/')
             stringBuffer
-                .append(botDirectoryConfig.path).append(BOT_DIRS_SEPARATOR)
+                .append(normalizedPath).append(BOT_DIRS_SEPARATOR)
                 .append(if (botDirectoryConfig.enabled) "true" else "false").append(BOT_DIRS_SEPARATOR)
         }
         save(BOT_DIRECTORIES, stringBuffer.toString().trimEnd(BOT_DIRS_SEPARATOR))

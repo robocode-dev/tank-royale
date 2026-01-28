@@ -1,4 +1,5 @@
 import math
+import threading
 import unittest
 
 from robocode_tank_royale.bot_api import BotInfo, Bot
@@ -8,19 +9,26 @@ from robocode_tank_royale.bot_api.constants import (
     MAX_RADAR_TURN_RATE,
     MAX_SPEED,
 )
-from tests.test_utils.mocked_server import MockedServer
+from test_utils.mocked_server import MockedServer
 
 
-class TestCommandsMovement(unittest.IsolatedAsyncioTestCase):
-    async def asyncSetUp(self) -> None:
+@unittest.skipIf(True, "FIXME: Test requires blocking go() to be interruptible")
+class TestCommandsMovement(unittest.TestCase):
+    def setUp(self) -> None:
         self.server = MockedServer()
         self.server.start()
+        self._bot_thread: threading.Thread | None = None
 
-    async def asyncTearDown(self) -> None:
+    def tearDown(self) -> None:
         self.server.stop()
+        if self._bot_thread is not None:
+            self._bot_thread.join(timeout=1.0)
 
-    @unittest.skip("FIXME: Test hanging")
-    async def test_TR_API_CMD_001_movement_commands_clamped_in_intent(self):
+    def _start_bot(self, bot: Bot) -> None:
+        self._bot_thread = threading.Thread(target=bot.start, daemon=True)
+        self._bot_thread.start()
+
+    def test_TR_API_CMD_001_movement_commands_clamped_in_intent(self):
         """TR-API-CMD-001 Movement commands: setting movement rates/speed updates next intent and clamps to limits"""
         # Arrange
         # Ensure all movement limits are unset so intent is always accepted
@@ -36,8 +44,9 @@ class TestCommandsMovement(unittest.IsolatedAsyncioTestCase):
             bot_info=BotInfo(name="CmdBot", version="1.0", authors=["Tester"]),
             server_url=self.server.server_url,
         )
-        await bot.start()
-        self.assertTrue(self.server.await_game_started(1000))
+        self._start_bot(bot)
+        if not self.server.await_game_started(2000):
+            self.fail("Timeout waiting for game started")
 
         # Act: set values beyond limits to verify clamping
         bot.turn_rate = 999  # > MAX_TURN_RATE
@@ -45,9 +54,12 @@ class TestCommandsMovement(unittest.IsolatedAsyncioTestCase):
         bot.radar_turn_rate = 1000  # > MAX_RADAR_TURN_RATE
         bot.target_speed = 123  # > MAX_SPEED
 
-        # Trigger intent emission
-        await bot.go()
-        self.assertTrue(self.server.await_bot_intent(1000))
+        # Trigger intent emission in daemon thread (go() blocks forever)
+        go_thread = threading.Thread(target=bot.go, daemon=True)
+        go_thread.start()
+
+        if not self.server.await_bot_intent(2000):
+            self.fail("Timeout waiting for bot intent")
 
         # Assert (Python schema uses snake_case fields)
         intent = self.server._bot_intent  # type: ignore[attr-defined]
@@ -57,8 +69,7 @@ class TestCommandsMovement(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(intent.radar_turn_rate, float(MAX_RADAR_TURN_RATE))
         self.assertEqual(intent.target_speed, float(MAX_SPEED))
 
-    @unittest.skip("FIXME: Test hanging after property refactor (v0.35.0) - verify property setters work with mocked server")
-    async def test_TR_API_CMD_001_movement_commands_nan_raises(self):
+    def test_TR_API_CMD_001_movement_commands_nan_raises(self):
         """TR-API-CMD-001 Movement commands: NaN values raise ValueError in setters"""
         bot = Bot(
             bot_info=BotInfo(name="CmdBot", version="1.0", authors=["Tester"]),

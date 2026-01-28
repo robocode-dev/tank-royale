@@ -264,7 +264,7 @@ object BootProcess {
     private fun getBooterJar(): String {
         System.getProperty("booterJar")?.let {
             Paths.get(it).apply {
-                if (Files.exists(this)) {
+                if (!Files.exists(this)) {
                     throw FileNotFoundException(toString())
                 }
                 return toString()

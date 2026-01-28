@@ -1,4 +1,3 @@
-import asyncio
 import json
 import os
 import pytest
@@ -44,7 +43,7 @@ def test_TR_API_BOT_001d_type_parsing_normalization_team_id_and_initial_position
 
         # Act
         bot = BaseBot()
-        asyncio.run(bot.start())
+        bot.start()
 
         # Assert handshake payload reflects parsed values
         sent_handshake = json.loads(mock_ws.send.call_args[0][0])

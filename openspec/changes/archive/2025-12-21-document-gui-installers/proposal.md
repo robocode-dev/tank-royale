@@ -19,7 +19,7 @@ potentially leading to confusion and support issues.
 
 ## What Changes
 
-- Update `VERSIONS.MD` to document the availability of native GUI installer packages
+- Update `VERSIONS.md` to document the availability of native GUI installer packages
 - Update `buildSrc/src/main/resources/release/release-docs-template.md` to include:
     - Information about native installer packages for Windows, macOS, and Linux
     - Java 11+ requirement and JAVA_HOME setup instructions
@@ -32,7 +32,7 @@ potentially leading to confusion and support issues.
 ## Impact
 
 - **Affected documentation files**:
-    - `VERSIONS.MD` - Add note about new installer packages in the latest version section
+    - `VERSIONS.md` - Add note about new installer packages in the latest version section
     - `buildSrc/src/main/resources/release/release-docs-template.md` - Add installer section before "Running Robocode"
     - `docs-build/docs/articles/installation.md` - Add new section for native installers
 

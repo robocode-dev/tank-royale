@@ -53,7 +53,7 @@ export default withMermaid(defineConfig({
           { text: 'Coordinates and Angles', link: '/articles/coordinates-and-angles' },
           { text: 'Physics', link: '/articles/physics' },
           { text: 'Scoring', link: '/articles/scoring' },
-            {text: 'Team Messages', link: '/articles/team-messages'},
+          { text: 'Team Messages', link: '/articles/team-messages'},
           { text: 'Booter', link: '/articles/booter' },
           { text: 'Tank Royale', link: '/articles/tank-royale' },
           { text: 'History', link: '/articles/history' },

@@ -1,5 +1,3 @@
-import asyncio
-
 from robocode_tank_royale.bot_api.bot import Bot
 from robocode_tank_royale.bot_api.color import Color
 from robocode_tank_royale.bot_api.events import ScannedBotEvent, HitBotEvent
@@ -19,7 +17,7 @@ class Walls(Bot):
         self._peek: bool = False  # Don't turn if there's a bot there
         self._move_amount: float = 0.0  # How much to move
 
-    async def run(self) -> None:
+    def run(self) -> None:
         # Set colors
         self.body_color = Color.BLACK
         self.turret_color = Color.BLACK
@@ -33,45 +31,45 @@ class Walls(Bot):
         self._peek = False
 
         # Turn to face a wall
-        await self.turn_right(self.direction % 90)
-        await self.forward(self._move_amount)
+        self.turn_right(self.direction % 90)
+        self.forward(self._move_amount)
 
         # Turn the gun to turn right 90 degrees.
         self._peek = True
-        await self.turn_gun_left(90)
-        await self.turn_left(90)
+        self.turn_gun_left(90)
+        self.turn_left(90)
 
         # Main loop
         while self.running:
             # Peek before we turn when forward() completes.
             self._peek = True
             # Move up the wall
-            await self.forward(self._move_amount)
+            self.forward(self._move_amount)
             # Don't peek now
             self._peek = False
             # Turn to the next wall
-            await self.turn_left(90)
+            self.turn_left(90)
 
-    async def on_hit_bot(self, e: HitBotEvent) -> None:
+    def on_hit_bot(self, e: HitBotEvent) -> None:
         # If he's in front of us, back up a bit; else move ahead a bit.
         bearing = self.bearing_to(float(e.x), float(e.y))
         if -90 < bearing < 90:
-            await self.back(100)
+            self.back(100)
         else:
-            await self.forward(100)
+            self.forward(100)
 
-    async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
+    def on_scanned_bot(self, e: ScannedBotEvent) -> None:
         del e
-        await self.fire(2)
+        self.fire(2)
         # Ensure we generate another scan event if we're peeking
         if self._peek:
-            await self.rescan()
+            self.rescan()
 
 
-async def main() -> None:
+def main() -> None:
     bot = Walls()
-    await bot.start()
+    bot.start()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

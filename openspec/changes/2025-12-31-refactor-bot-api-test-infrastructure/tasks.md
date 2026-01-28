@@ -7,12 +7,16 @@
 **Files**: `bot-api/java/src/test/java/test_utils/MockedServer.java`
 
 - [x] Add `awaitBotReady(int milliSeconds)` method
-- [x] Add `setBotStateAndAwaitTick()` method with nullable parameters
+    - Chains: `awaitBotHandshake()` → `awaitGameStarted()` → `awaitTick()`
+    - Returns `true` if all succeed within timeout
+- [x] Add `setBotStateAndAwaitTick()` method with nullable parameters:
+    - `Double energy, Double gunHeat, Double speed, Double direction, Double gunDirection, Double radarDirection`
+    - Update internal state for non-null values
+    - Reset and await tick event
+    - Send tick with updated state
+    - Return success status
 - [x] Refactor tick sending logic to support manual trigger
 - [x] Add unit tests for new methods
-
-**Status**: ✅ COMPLETED (2026-01-25)  
-**See**: [TASK-1.1-SUMMARY.md](TASK-1.1-SUMMARY.md)
 
 **Estimated time**: 1-2 days
 
@@ -24,9 +28,6 @@
 - [x] Add `SetBotStateAndAwaitTick()` method with nullable parameters
 - [x] Ensure threading safety with CountDownEvent
 - [x] Add unit tests for new methods
-
-**Status**: ✅ COMPLETED (2026-01-25)  
-**See**: `MockedServerTest.cs`
 
 **Estimated time**: 1-2 days
 
@@ -40,19 +41,85 @@
 - [x] Handle asyncio event loop properly
 - [x] Add unit tests for new methods
 
-**Status**: ✅ COMPLETED (2026-01-25)  
-**See**: `test_mocked_server.py`
-
 **Estimated time**: 1-2 days
 
 ### Task 1.4: Cross-Language Verification
 
-- [x] Create smoke test that verifies state synchronization works identically across languages
-- [x] Document any language-specific quirks
-
-**Status**: ✅ COMPLETED (2026-01-25)
+- [ ] Create smoke test that verifies state synchronization works identically across languages
+- [ ] Document any language-specific quirks
 
 **Estimated time**: 0.5 days
+
+---
+
+## Phase 1.5: Infrastructure Stabilization & Reliability (MANDATORY PREREQUISITE)
+
+> **Priority Note**: These stabilization tasks MUST be completed and verified for each language before proceeding to
+> Phase 3 (Test Bot Factory) or Phase 4 (Fire Command Tests). The "Empty Intent" and "State Visibility" issues
+> must be resolved to ensure test reliability.
+
+### Task 1.5.1: Java Reliability Improvements
+
+- [ ] Implement thread tracking in `AbstractBotTest` to ensure clean shutdown (Suppresses Rogue Thread Interruption)
+- [ ] Suppress `ThreadInterruptedException` logs in tests when they are expected during teardown
+- [ ] Fix memory visibility issues in `MockedServer` (volatile fields for intent/state)
+- [ ] Ensure `botIntentLatch` is only counted down AFTER the intent is fully parsed
+- [ ] Add `executeCommandAndGetIntent` helper to `AbstractBotTest`
+- [ ] **Audit**: Verify `MockedServer.java` logic against sequence diagrams in `schema/schemas/README.md`
+- [ ] **State Setup**: Refine `setBotStateAndAwaitTick` or add `setInitialBotState` to handle non-running bots (
+  Mitigation for "Non-running Bots" obstacle)
+- [ ] **Verify**: Fix `CommandsFireTest` failures by ensuring proper state setup (addressing default GunHeat)
+
+### Task 1.5.2: .NET Reliability Improvements
+
+- [ ] Port thread/task tracking to .NET base test class
+- [ ] Ensure thread-safe state updates in `MockedServer.cs`
+- [ ] Add equivalent `ExecuteCommand` helpers
+- [ ] **Audit**: Verify `MockedServer.cs` logic against sequence diagrams in `schema/schemas/README.md`
+- [ ] **State Setup**: Handle non-running bot state synchronization equivalent to Java
+- [ ] **Verify**: Create a simple test that would previously have been flaky
+
+### Task 1.5.3: Python Reliability Improvements
+
+- [ ] Implement clean async cleanup in Python base test
+- [ ] Fix race conditions in `mocked_server.py` state updates
+- [ ] Add equivalent `execute_command` helpers
+- [ ] **Audit**: Verify `mocked_server.py` logic against sequence diagrams in `schema/schemas/README.md`
+- [ ] **State Setup**: Handle non-running bot state synchronization equivalent to Java
+- [ ] **Verify**: Create a simple test that would previously have been flaky
+
+### Task 1.5.4: Python Blocking `go()` Interruptibility (Critical)
+
+**Files**:
+
+- `bot-api/python/src/robocode_tank_royale/bot_api/internal/base_bot_internals.py`
+- `bot-api/python/tests/bot_api/test_commands_movement.py`
+- `bot-api/python/tests/test_utils/abstract_bot_test.py` (new)
+
+**Problem**: The Python Bot API's blocking `go()` method uses `threading.Condition.wait()` which cannot be interrupted
+from another thread. This causes `test_commands_movement.py` to hang indefinitely and requires
+`@unittest.skipIf(True, ...)`
+as a workaround. All AI coding assistants have struggled with this issue.
+
+**Tasks**:
+
+- [ ] Evaluate and choose interruptibility approach:
+    - **Option A (Timeout-based)**: Add `wait(timeout=0.1)` with shutdown flag check in the blocking loop
+    - **Option B (Daemon threads)**: Use daemon threads for bot execution in tests
+    - **Option C (Mock-based)**: Mock blocking internals for tests that require `go()` behavior
+- [ ] Implement chosen approach in `base_bot_internals.py` (if modifying core API)
+- [ ] Implement chosen approach in `abstract_bot_test.py` (if test-only solution)
+- [ ] Remove `@unittest.skipIf(True, ...)` from `test_commands_movement.py`
+- [ ] Verify `test_commands_movement.py` passes reliably (run 20 times without hangs)
+- [ ] Document the chosen approach and rationale
+
+**Acceptance Criteria**:
+
+- `test_commands_movement.py` runs without hanging
+- Test teardown completes cleanly (no orphaned threads)
+- No `@unittest.skipIf` workarounds for blocking `go()` issues
+
+**Estimated time**: 2-3 days
 
 ---
 
@@ -62,16 +129,14 @@
 
 **Files**: `bot-api/java/src/test/java/test_utils/AbstractBotTest.java` (new)
 
-- [x] Create abstract base class
-- [x] Implement `setUp()` and `tearDown()` with MockedServer lifecycle
-- [x] Add `startBot()` method that starts bot and waits for ready
-- [x] Add abstract `createTestBot()` method for subclasses
-- [x] Implement `executeCommand(Supplier<T>)` method
-- [x] Implement `executeBlocking(Runnable)` method
-- [x] Create `CommandResult<T>` inner class
-- [x] Add JavaDoc for all public methods
-
-**Status**: ✅ COMPLETED (2026-01-25)
+- [ ] Create abstract base class
+- [ ] Implement `setUp()` and `tearDown()` with MockedServer lifecycle
+- [ ] Add `startBot()` method that starts bot and waits for ready
+- [ ] Add abstract `createTestBot()` method for subclasses
+- [ ] Implement `executeCommand(Supplier<T>)` method
+- [ ] Implement `executeBlocking(Runnable)` method
+- [ ] Create `CommandResult<T>` inner class
+- [ ] Add JavaDoc for all public methods
 
 **Estimated time**: 1 day
 
@@ -79,13 +144,11 @@
 
 **Files**: `bot-api/dotnet/test/src/AbstractBotTest.cs`
 
-- [x] Add `ExecuteCommand<T>(Func<T>)` method
-- [x] Add `ExecuteAndCaptureIntent(Action)` method
-- [x] Add `ExecuteBlocking(Action)` method
-- [x] Ensure thread safety with proper async/await patterns
-- [x] Add XML documentation comments
-
-**Status**: ✅ COMPLETED (2026-01-25)
+- [ ] Add `ExecuteCommand<T>(Func<T>)` method
+- [ ] Add `ExecuteAndCaptureIntent(Action)` method
+- [ ] Add `ExecuteBlocking(Action)` method
+- [ ] Ensure thread safety with proper async/await patterns
+- [ ] Add XML documentation comments
 
 **Estimated time**: 1 day
 
@@ -93,27 +156,23 @@
 
 **Files**: `bot-api/python/tests/test_utils/abstract_bot_test.py` (new)
 
-- [x] Create AbstractBotTest class
-- [x] Implement `setup_method()` and `teardown_method()`
-- [x] Add `start_bot()` method
-- [x] Add abstract `create_test_bot()` method
-- [x] Implement `_start_async()` and `_go_async()` helpers
-- [x] Implement `execute_command()` method
-- [x] Implement `execute_and_capture_intent()` method
-- [x] Implement `execute_blocking()` method
-- [x] Add type hints and docstrings
-
-**Status**: ✅ COMPLETED (2026-01-25)
+- [ ] Create AbstractBotTest class
+- [ ] Implement `setup_method()` and `teardown_method()`
+- [ ] Add `start_bot()` method
+- [ ] Add abstract `create_test_bot()` method
+- [ ] Implement `_start_async()` and `_go_async()` helpers
+- [ ] Implement `execute_command()` method
+- [ ] Implement `execute_and_capture_intent()` method
+- [ ] Implement `execute_blocking()` method
+- [ ] Add type hints and docstrings
 
 **Estimated time**: 1 day
 
 ### Task 2.4: Integration Testing
 
-- [x] Create example test using new utilities in each language
-- [x] Verify behavior is identical across languages
-- [x] Document any differences
-
-**Status**: ✅ COMPLETED (2026-01-25)
+- [ ] Create example test using new utilities in each language
+- [ ] Verify behavior is identical across languages
+- [ ] Document any differences
 
 **Estimated time**: 0.5 days
 
@@ -379,7 +438,6 @@
 
 ---
 
-
 ## Phase 7: Documentation and Guidelines
 
 ### Task 7.1: Create TESTING-GUIDE.md
@@ -387,6 +445,7 @@
 **Files**: `bot-api/tests/TESTING-GUIDE.md` (new)
 
 - [ ] Introduction: Why these patterns exist
+- [ ] Protocol Alignment: Explicitly link test utilities to sequence diagrams in `schema/schemas/README.md`
 - [ ] MockedServer overview and capabilities
 - [ ] Removed methods and why they were deleted (setEnergy, sendTick, etc.)
 - [ ] AbstractBotTest patterns and best practices
@@ -497,6 +556,11 @@
 - [ ] List follow-up tasks if any
 
 **Estimated time**: 0.5 days
+
+### Task 10: Fix broken tests
+
+- [ ] Re-enable the skipped test in test_TR_API_CMD_001_movement_commands_clamped_in_intent
+  (bot-api/python/tests/bot_api/test_commands_movement.py)
 
 ---
 

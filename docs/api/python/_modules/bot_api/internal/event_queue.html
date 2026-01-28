@@ -1,48 +1,47 @@
 <!DOCTYPE html>
-<html lang="en"
-      data-content_root="../../../"
-      x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }"
-      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
-      class="scroll-smooth"
-      :class="{'dark': darkMode === 'dark' || (darkMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}"
->
+<html lang="en" data-content_root="../../../"
+  x-data="{ darkMode: $persist(window.matchMedia('(prefers-color-scheme: dark)').matches), activeSection: ''}"
+  :class="{ 'dark' : darkMode === true }">
+
 <head>
+  <script>
+    (function () {
+      // Set initial color scheme
+      if ((localStorage.getItem("_x_darkMode") === "true") || (window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.classList.add("dark");
+      }
+
+      // Watch for media preference changes
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+        localStorage.setItem("_x_darkMode", event.matches);
+        document.documentElement.classList.toggle("dark", event.matches);
+      });
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta charset="utf-8" />
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
-
-    <title>bot_api.internal.event_queue | Robocode Tank Royale Bot API (Python) 0.34.2 documentation</title>
-    <meta property="og:title"
-          content="bot_api.internal.event_queue | Robocode Tank Royale Bot API (Python) 0.34.2 documentation"/>
-    <meta name="twitter:title"
-          content="bot_api.internal.event_queue | Robocode Tank Royale Bot API (Python) 0.34.2 documentation"/>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e72c8e07" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/theme.css?v=42baaae4" />
-        <link rel="search" title="Search" href="../../../search.html" />
-        <link rel="index" title="Index" href="../../../genindex.html" />
-
-    <script>
-    <!-- Prevent Flash of wrong theme -->
-      const userPreference = localStorage.getItem('darkMode');
-      let mode;
-      if (userPreference === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        mode = 'dark';
-        document.documentElement.classList.add('dark');
-      } else {
-        mode = 'light';
-      }
-      if (!userPreference) {localStorage.setItem('darkMode', mode)}
-    </script>
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#030711" />
+  
+  <title>bot_api.internal.event_queue | Robocode Tank Royale Bot API (Python) 0.35.0 documentation</title>
+  <meta property="og:title" content="bot_api.internal.event_queue | Robocode Tank Royale Bot API (Python) 0.35.0 documentation" />
+  <meta name="twitter:title" content="bot_api.internal.event_queue | Robocode Tank Royale Bot API (Python) 0.35.0 documentation" />
+  <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e72c8e07" />
+  <link rel="stylesheet" type="text/css" href="../../../_static/theme.css?v=73505e79" />
+  <link rel="search" title="Search" href="../../../search.html" />
+  <link rel="index" title="Index" href="../../../genindex.html" />
 </head>
-  <body x-data="{ showSidebar: false, showScrollTop: false }" class="min-h-screen font-sans antialiased bg-background text-foreground" :class="{ 'overflow-hidden': showSidebar }">
-    <div x-cloak x-show="showSidebar" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" @click.self="showSidebar = false"></div><div id="page" class="relative flex flex-col min-h-screen"><a href="#content" class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100">
+
+<body x-data="{ showSidebar: false, showScrollTop: false }"
+  class="min-h-screen font-sans antialiased bg-background text-foreground" :class="{ 'overflow-hidden': showSidebar }">
+  <div x-cloak x-show="showSidebar"
+    class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden"
+    @click.self="showSidebar = false"></div><div id="page" class="relative flex flex-col min-h-screen"><a href="#content"
+      class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100">
       Skip to content
-    </a><header
-  class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
+    </a><header class="sticky top-0 z-40 w-full border-b shadow-xs border-border bg-background/90 backdrop-blur"><div class="container flex items-center h-14">
     <div class="hidden mr-4 md:flex">
-        <a href="../../../index.html" class="flex items-center mr-6"><span
-            class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.2 documentation</span>
+      <a href="../../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
       </a></div><button
       class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
       type="button" @click="showSidebar = true">
@@ -53,7 +52,7 @@
       </svg>
       <span class="sr-only">Toggle navigation menu</span>
     </button>
-    <div class="flex items-center justify-between flex-1 space-x-2 sm:space-x-4 md:justify-end">
+    <div class="flex items-center justify-between flex-1 gap-2 sm:gap-4 md:justify-end">
       <div class="flex-1 w-full md:w-auto md:flex-none"><form id="searchbox"
       action="../../../search.html"
       method="get"
@@ -72,17 +71,17 @@
   </kbd>
 </form>
       </div>
-      <nav class="flex items-center space-x-1">
-        <button @click="darkMode = darkMode === 'light' ? 'dark' : 'light'"
+      <nav class="flex items-center gap-1">
+        <button @click="darkMode = !darkMode"
           class="relative inline-flex items-center justify-center px-0 text-sm font-medium transition-colors rounded-md hover:bg-accent hover:text-accent-foreground h-9 w-9"
           type="button"
-          aria-label="Color theme switcher">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+          title="Toggle color scheme">
+          <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 96 960 960" fill="currentColor"
             class="absolute transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0">
             <path
               d="M480 685q45.456 0 77.228-31.772Q589 621.456 589 576q0-45.456-31.772-77.228Q525.456 467 480 467q-45.456 0-77.228 31.772Q371 530.544 371 576q0 45.456 31.772 77.228Q434.544 685 480 685Zm0 91q-83 0-141.5-58.5T280 576q0-83 58.5-141.5T480 376q83 0 141.5 58.5T680 576q0 83-58.5 141.5T480 776ZM80 621.5q-19.152 0-32.326-13.174T34.5 576q0-19.152 13.174-32.326T80 530.5h80q19.152 0 32.326 13.174T205.5 576q0 19.152-13.174 32.326T160 621.5H80Zm720 0q-19.152 0-32.326-13.174T754.5 576q0-19.152 13.174-32.326T800 530.5h80q19.152 0 32.326 13.174T925.5 576q0 19.152-13.174 32.326T880 621.5h-80Zm-320-320q-19.152 0-32.326-13.174T434.5 256v-80q0-19.152 13.174-32.326T480 130.5q19.152 0 32.326 13.174T525.5 176v80q0 19.152-13.174 32.326T480 301.5Zm0 720q-19.152 0-32.326-13.17Q434.5 995.152 434.5 976v-80q0-19.152 13.174-32.326T480 850.5q19.152 0 32.326 13.174T525.5 896v80q0 19.152-13.174 32.33-13.174 13.17-32.326 13.17ZM222.174 382.065l-43-42Q165.5 327.391 166 308.239t13.174-33.065q13.435-13.674 32.587-13.674t32.065 13.674l42.239 43q12.674 13.435 12.555 31.706-.12 18.272-12.555 31.946-12.674 13.674-31.445 13.413-18.772-.261-32.446-13.174Zm494 494.761-42.239-43q-12.674-13.435-12.674-32.087t12.674-31.565Q686.609 756.5 705.38 757q18.772.5 32.446 13.174l43 41.761Q794.5 824.609 794 843.761t-13.174 33.065Q767.391 890.5 748.239 890.5t-32.065-13.674Zm-42-494.761Q660.5 369.391 661 350.62q.5-18.772 13.174-32.446l41.761-43Q728.609 261.5 747.761 262t33.065 13.174q13.674 13.435 13.674 32.587t-13.674 32.065l-43 42.239q-13.435 12.674-31.706 12.555-18.272-.12-31.946-12.555Zm-495 494.761Q165.5 863.391 165.5 844.239t13.674-32.065l43-42.239q13.435-12.674 32.087-12.674t31.565 12.674Q299.5 782.609 299 801.38q-.5 18.772-13.174 32.446l-41.761 43Q231.391 890.5 212.239 890t-33.065-13.174ZM480 576Z" />
           </svg>
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 96 960 960" fill="currentColor"
+          <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 96 960 960" fill="currentColor"
             class="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100">
             <path
               d="M480 936q-151 0-255.5-104.5T120 576q0-138 90-239.5T440 218q25-3 39 18t-1 44q-17 26-25.5 55t-8.5 61q0 90 63 153t153 63q31 0 61.5-9t54.5-25q21-14 43-1.5t19 39.5q-14 138-117.5 229T480 936Zm0-80q88 0 158-48.5T740 681q-20 5-40 8t-40 3q-123 0-209.5-86.5T364 396q0-20 3-40t8-40q-78 32-126.5 102T200 576q0 116 82 198t198 82Zm-10-270Z" />
@@ -93,15 +92,15 @@
   </div>
 </header>
 
-    <div class="flex-1"><div class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside id="left-sidebar"
-  class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full shrink-0 overflow-y-auto border-r border-border md:sticky"
+    <div class="flex-1"><div
+        class="container md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside id="left-sidebar"
+  class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full overflow-y-auto border-r border-border md:sticky"
   :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
 
-        <a href="../../../index.html" class="!justify-start text-sm md:!hidden bg-background"><span
-            class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.34.2 documentation</span>
+    <a href="../../../index.html" class="justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
     </a>
 
-    <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
+    <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0">
       <div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -123,13 +122,13 @@
       </svg>
     </button>
   </aside>
-        <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
+          <main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
 <div class="w-full min-w-0 mx-auto">
 <nav aria-label="breadcrumbs"
      class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
   <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
      href="../../../index.html">
-      <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.34.2 documentation</span>
+    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
     <svg xmlns="http://www.w3.org/2000/svg"
          height="18"
          width="18"
@@ -141,10 +140,10 @@
       <path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z" />
     </svg>
   </a>
-
+  
 <div class="mr-1">/</div><a class="hover:text-foreground overflow-hidden text-ellipsis whitespace-nowrap"
        href="../../index.html">Module code</a>
-
+    
 <div class="mr-1">/</div><span aria-current="page"
         class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">bot_api.internal.event_queue</span>
 </nav>
@@ -167,7 +166,7 @@
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue">[docs]</a>
 </span><span id="line-13"><span class="k">class</span><span class="w"> </span><span class="nc">EventQueue</span><span class="p">:</span>
 </span><span id="line-14"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Queue containing bot events that are being prioritized and dispatched to event handlers.</span>
-</span><span id="line-15"><span class="sd">    </span>
+</span><span id="line-15">
 </span><span id="line-16"><span class="sd">    The event queue makes sure that the events are being processed in the right order based on event</span>
 </span><span id="line-17"><span class="sd">    priority and age of the events. Old events that are no longer relevant will be removed from the</span>
 </span><span id="line-18"><span class="sd">    queue.</span>
@@ -196,7 +195,7 @@
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.get_events">[docs]</a>
 </span><span id="line-37">    <span class="k">def</span><span class="w"> </span><span class="nf">get_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">BotEvent</span><span class="p">]:</span>
 </span><span id="line-38"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list containing all events in the queue.</span>
-</span><span id="line-39"><span class="sd">        </span>
+</span><span id="line-39">
 </span><span id="line-40"><span class="sd">        Args:</span>
 </span><span id="line-41"><span class="sd">            turn_number: Current turn number used for removing old events.</span>
 </span><span id="line-42"><span class="sd">        Returns:</span>
@@ -219,7 +218,7 @@
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.set_current_event_interruptible">[docs]</a>
 </span><span id="line-54">    <span class="k">def</span><span class="w"> </span><span class="nf">set_current_event_interruptible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interruptible</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="line-55"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets if the current event can be interrupted by new events with higher priority.</span>
-</span><span id="line-56"><span class="sd">        </span>
+</span><span id="line-56">
 </span><span id="line-57"><span class="sd">        Args:</span>
 </span><span id="line-58"><span class="sd">            interruptible: True if the current event can be interrupted; false otherwise.</span>
 </span><span id="line-59"><span class="sd">        &quot;&quot;&quot;</span>
@@ -231,7 +230,7 @@
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.is_current_event_interruptible">[docs]</a>
 </span><span id="line-63">    <span class="k">def</span><span class="w"> </span><span class="nf">is_current_event_interruptible</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 </span><span id="line-64"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if the current event can be interrupted by new events with higher priority.</span>
-</span><span id="line-65"><span class="sd">        </span>
+</span><span id="line-65">
 </span><span id="line-66"><span class="sd">        Returns:</span>
 </span><span id="line-67"><span class="sd">            True if the current event can be interrupted; false otherwise.</span>
 </span><span id="line-68"><span class="sd">        &quot;&quot;&quot;</span>
@@ -243,187 +242,188 @@
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.add_events_from_tick">[docs]</a>
 </span><span id="line-72">    <span class="k">def</span><span class="w"> </span><span class="nf">add_events_from_tick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">TickEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="line-73"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds standard events from a tick event, and custom events from conditions.</span>
-</span><span id="line-74"><span class="sd">        </span>
+</span><span id="line-74">
 </span><span id="line-75"><span class="sd">        Args:</span>
 </span><span id="line-76"><span class="sd">            event: The tick event containing the standard events to add.</span>
 </span><span id="line-77"><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="line-78">        <span class="bp">self</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 </span><span id="line-79">        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">event</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
-</span><span id="line-80">            <span class="bp">self</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-</span><span id="line-81">
-</span><span id="line-82">        <span class="bp">self</span><span class="o">.</span><span class="n">add_custom_events</span><span class="p">()</span></div>
+</span><span id="line-80">            <span class="bp">self</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
 
-</span><span id="line-83">
+</span><span id="line-81">
 <div class="viewcode-block" id="EventQueue.dispatch_events">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.dispatch_events">[docs]</a>
-</span><span id="line-84">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">dispatch_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-85"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Dispatches events in prioritized order to event handlers.</span>
-</span><span id="line-86"><span class="sd">        </span>
-</span><span id="line-87"><span class="sd">        Args:</span>
-</span><span id="line-88"><span class="sd">            turn_number: Current turn number used for removing old events.</span>
-</span><span id="line-89"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="line-90">        <span class="c1">#        dumpEvents(turn_number); // for debugging purposes</span>
-</span><span id="line-91">
-</span><span id="line-92">        <span class="bp">self</span><span class="o">.</span><span class="n">remove_old_events</span><span class="p">(</span><span class="n">turn_number</span><span class="p">)</span>
-</span><span id="line-93">        <span class="bp">self</span><span class="o">.</span><span class="n">sort_events</span><span class="p">()</span>
-</span><span id="line-94">
-</span><span id="line-95">        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_bot_running</span><span class="p">():</span>
-</span><span id="line-96">            <span class="n">current_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_next_event</span><span class="p">()</span>
-</span><span id="line-97">            <span class="k">if</span> <span class="n">current_event</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-98">                <span class="k">break</span>
-</span><span id="line-99">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_same_event</span><span class="p">(</span><span class="n">current_event</span><span class="p">):</span>
-</span><span id="line-100">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_current_event_interruptible</span><span class="p">():</span>
-</span><span id="line-101">                    <span class="n">EventInterruption</span><span class="o">.</span><span class="n">set_interruptible</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">current_event</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span>  <span class="c1"># clear interruptible flag</span>
-</span><span id="line-102">
-</span><span id="line-103">                    <span class="c1"># Mark that the current handler was interrupted so API methods can react accordingly</span>
-</span><span id="line-104">                    <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">was_current_event_interrupted</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="line-105">
-</span><span id="line-106">                    <span class="c1"># We are already in an event handler, took action, and a new event was generated.</span>
-</span><span id="line-107">                    <span class="c1"># So we want to break out of the old handler to process the new event here.</span>
-</span><span id="line-108">                    <span class="k">raise</span> <span class="n">ThreadInterruptedException</span><span class="p">()</span>
-</span><span id="line-109">                <span class="c1"># Same event but not interruptible: we&#39;ve finished handling the previous event, clear its flag</span>
-</span><span id="line-110">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-111">                    <span class="n">EventInterruption</span><span class="o">.</span><span class="n">set_interruptible</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_top_event</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span>
-</span><span id="line-112">                <span class="k">break</span>
-</span><span id="line-113">
-</span><span id="line-114">            <span class="c1"># Different event than the one we just handled: clear any pending interruptible flag</span>
-</span><span id="line-115">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-116">                <span class="n">EventInterruption</span><span class="o">.</span><span class="n">set_interruptible</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_top_event</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span>
+</span><span id="line-82">    <span class="k">def</span><span class="w"> </span><span class="nf">dispatch_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-83"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Dispatches events in prioritized order to event handlers.</span>
+</span><span id="line-84">
+</span><span id="line-85"><span class="sd">        Args:</span>
+</span><span id="line-86"><span class="sd">            turn_number: Current turn number used for removing old events.</span>
+</span><span id="line-87"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="line-88">        <span class="c1">#        dumpEvents(turn_number); // for debugging purposes</span>
+</span><span id="line-89">
+</span><span id="line-90">        <span class="bp">self</span><span class="o">.</span><span class="n">remove_old_events</span><span class="p">(</span><span class="n">turn_number</span><span class="p">)</span>
+</span><span id="line-91">        <span class="bp">self</span><span class="o">.</span><span class="n">add_custom_events</span><span class="p">()</span>
+</span><span id="line-92">        <span class="bp">self</span><span class="o">.</span><span class="n">sort_events</span><span class="p">()</span>
+</span><span id="line-93">
+</span><span id="line-94">        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_bot_running</span><span class="p">():</span>
+</span><span id="line-95">            <span class="n">current_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">peek_next_event</span><span class="p">()</span>
+</span><span id="line-96">            <span class="k">if</span> <span class="n">current_event</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-97">                <span class="k">break</span>
+</span><span id="line-98">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="n">current_event</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span><span class="p">:</span>
+</span><span id="line-99">                <span class="k">break</span>
+</span><span id="line-100">
+</span><span id="line-101">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="n">current_event</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span><span class="p">:</span>
+</span><span id="line-102">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span> <span class="o">&gt;</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;-inf&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_current_event_interruptible</span><span class="p">():</span>
+</span><span id="line-103">                    <span class="n">EventInterruption</span><span class="o">.</span><span class="n">set_interruptible</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_top_event</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span>  <span class="c1"># clear interruptible flag</span>
+</span><span id="line-104">
+</span><span id="line-105">                    <span class="c1"># Mark that the current handler was interrupted so API methods can react accordingly</span>
+</span><span id="line-106">                    <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">was_current_event_interrupted</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="line-107">
+</span><span id="line-108">                    <span class="c1"># We are already in an event handler, took action, and a new event was generated.</span>
+</span><span id="line-109">                    <span class="c1"># So we want to break out of the old handler to process the new event here.</span>
+</span><span id="line-110">                    <span class="k">raise</span> <span class="n">ThreadInterruptedException</span><span class="p">()</span>
+</span><span id="line-111">                <span class="k">break</span>  <span class="c1"># Same priority but not interruptible - Loss of event is intentional in original Robocode</span>
+</span><span id="line-112">
+</span><span id="line-113">            <span class="n">old_top_event_priority</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span>
+</span><span id="line-114">
+</span><span id="line-115">            <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="n">current_event</span><span class="p">)</span>
+</span><span id="line-116">            <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event</span> <span class="o">=</span> <span class="n">current_event</span>
 </span><span id="line-117">
-</span><span id="line-118">            <span class="n">old_top_event_priority</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span>
+</span><span id="line-118">            <span class="bp">self</span><span class="o">.</span><span class="n">remove_next_event</span><span class="p">()</span>  <span class="c1"># Remove only after we&#39;ve decided to dispatch</span>
 </span><span id="line-119">
-</span><span id="line-120">            <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="n">current_event</span><span class="p">)</span>
-</span><span id="line-121">            <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event</span> <span class="o">=</span> <span class="n">current_event</span>
-</span><span id="line-122">
-</span><span id="line-123">            <span class="k">try</span><span class="p">:</span>
-</span><span id="line-124">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">current_event</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">)</span>
-</span><span id="line-125">            <span class="k">except</span> <span class="n">ThreadInterruptedException</span><span class="p">:</span>
-</span><span id="line-126">                <span class="c1"># Expected when event handler is interrupted on purpose</span>
-</span><span id="line-127">                <span class="k">pass</span>
-</span><span id="line-128">            <span class="k">finally</span><span class="p">:</span>
-</span><span id="line-129">                <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span> <span class="o">=</span> <span class="n">old_top_event_priority</span></div>
+</span><span id="line-120">            <span class="k">try</span><span class="p">:</span>
+</span><span id="line-121">                <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">current_event</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">)</span>
+</span><span id="line-122">            <span class="k">except</span> <span class="n">ThreadInterruptedException</span><span class="p">:</span>
+</span><span id="line-123">                <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Match original Robocode behavior</span>
+</span><span id="line-124">            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span><span id="line-125">                <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Match original Robocode behavior</span>
+</span><span id="line-126">                <span class="k">raise</span>
+</span><span id="line-127">            <span class="k">finally</span><span class="p">:</span>
+</span><span id="line-128">                <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span> <span class="o">=</span> <span class="n">old_top_event_priority</span></div>
 
-</span><span id="line-130">
+</span><span id="line-129">
 <div class="viewcode-block" id="EventQueue.remove_old_events">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.remove_old_events">[docs]</a>
-</span><span id="line-131">    <span class="k">def</span><span class="w"> </span><span class="nf">remove_old_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-132">        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">events_lock</span><span class="p">:</span>
-</span><span id="line-133">            <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span>
-</span><span id="line-134">                <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_old_and_non_critical_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">))</span></div>
+</span><span id="line-130">    <span class="k">def</span><span class="w"> </span><span class="nf">remove_old_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-131">        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">events_lock</span><span class="p">:</span>
+</span><span id="line-132">            <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span>
+</span><span id="line-133">                <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_old_and_non_critical_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">))</span></div>
 
-</span><span id="line-135">
+</span><span id="line-134">
 <div class="viewcode-block" id="EventQueue.sort_events">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.sort_events">[docs]</a>
-</span><span id="line-136">    <span class="k">def</span><span class="w"> </span><span class="nf">sort_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-137">        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">events_lock</span><span class="p">:</span>
-</span><span id="line-138">            <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">bot_event</span><span class="p">:</span> <span class="p">(</span>
-</span><span id="line-139">                <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">bot_event</span><span class="o">.</span><span class="n">is_critical</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
-</span><span id="line-140">                <span class="n">bot_event</span><span class="o">.</span><span class="n">turn_number</span><span class="p">,</span>
-</span><span id="line-141">                <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="n">bot_event</span><span class="p">)</span>
-</span><span id="line-142">            <span class="p">)))</span></div>
+</span><span id="line-135">    <span class="k">def</span><span class="w"> </span><span class="nf">sort_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-136">        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">events_lock</span><span class="p">:</span>
+</span><span id="line-137">            <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">bot_event</span><span class="p">:</span> <span class="p">(</span>
+</span><span id="line-138">                <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">bot_event</span><span class="o">.</span><span class="n">critical</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="line-139">                <span class="n">bot_event</span><span class="o">.</span><span class="n">turn_number</span><span class="p">,</span>
+</span><span id="line-140">                <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="n">bot_event</span><span class="p">)</span>
+</span><span id="line-141">            <span class="p">)))</span></div>
 
-</span><span id="line-143">
+</span><span id="line-142">
 <div class="viewcode-block" id="EventQueue.is_bot_running">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.is_bot_running">[docs]</a>
-</span><span id="line-144">    <span class="k">def</span><span class="w"> </span><span class="nf">is_bot_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="line-145">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">is_running</span></div>
+</span><span id="line-143">    <span class="k">def</span><span class="w"> </span><span class="nf">is_bot_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="line-144">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">is_running</span></div>
 
-</span><span id="line-146">
-<div class="viewcode-block" id="EventQueue.get_next_event">
-<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.get_next_event">[docs]</a>
-</span><span id="line-147">    <span class="k">def</span><span class="w"> </span><span class="nf">get_next_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="line-148">        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">events_lock</span><span class="p">:</span>
-</span><span id="line-149">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="k">else</span> <span class="kc">None</span></div>
+</span><span id="line-145">
+<div class="viewcode-block" id="EventQueue.peek_next_event">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.peek_next_event">[docs]</a>
+</span><span id="line-146">    <span class="k">def</span><span class="w"> </span><span class="nf">peek_next_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="line-147">        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">events_lock</span><span class="p">:</span>
+</span><span id="line-148">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="k">else</span> <span class="kc">None</span></div>
 
-</span><span id="line-150">
-<div class="viewcode-block" id="EventQueue.is_same_event">
-<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.is_same_event">[docs]</a>
-</span><span id="line-151">    <span class="k">def</span><span class="w"> </span><span class="nf">is_same_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot_event</span><span class="p">:</span> <span class="n">BotEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-152">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="n">bot_event</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span></div>
+</span><span id="line-149">
+<div class="viewcode-block" id="EventQueue.remove_next_event">
+<a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.remove_next_event">[docs]</a>
+</span><span id="line-150">    <span class="k">def</span><span class="w"> </span><span class="nf">remove_next_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="line-151">        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">events_lock</span><span class="p">:</span>
+</span><span id="line-152">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+</span><span id="line-153">                <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span></div>
 
-</span><span id="line-153">
+</span><span id="line-154">
 <div class="viewcode-block" id="EventQueue.get_priority">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.get_priority">[docs]</a>
-</span><span id="line-154">    <span class="nd">@staticmethod</span>
-</span><span id="line-155">    <span class="k">def</span><span class="w"> </span><span class="nf">get_priority</span><span class="p">(</span><span class="n">bot_event</span><span class="p">:</span> <span class="n">BotEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="line-156">        <span class="k">return</span> <span class="n">EventPriorities</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">bot_event</span><span class="p">))</span></div>
+</span><span id="line-155">    <span class="nd">@staticmethod</span>
+</span><span id="line-156">    <span class="k">def</span><span class="w"> </span><span class="nf">get_priority</span><span class="p">(</span><span class="n">bot_event</span><span class="p">:</span> <span class="n">BotEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="line-157">        <span class="k">return</span> <span class="n">EventPriorities</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">bot_event</span><span class="p">))</span></div>
 
-</span><span id="line-157">
+</span><span id="line-158">
 <div class="viewcode-block" id="EventQueue.dispatch">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.dispatch">[docs]</a>
-</span><span id="line-158">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot_event</span><span class="p">:</span> <span class="n">BotEvent</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-</span><span id="line-159">        <span class="k">try</span><span class="p">:</span>
-</span><span id="line-160">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_not_old_or_is_critical_event</span><span class="p">(</span><span class="n">bot_event</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">):</span>
-</span><span id="line-161">                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="o">.</span><span class="n">fire_event</span><span class="p">(</span><span class="n">bot_event</span><span class="p">)</span>
-</span><span id="line-162">        <span class="k">finally</span><span class="p">:</span>
-</span><span id="line-163">            <span class="c1"># Align with Java semantics: always clear interruptible flag for the event type after dispatch</span>
-</span><span id="line-164">            <span class="n">EventInterruption</span><span class="o">.</span><span class="n">set_interruptible</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">bot_event</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span></div>
+</span><span id="line-159">    <span class="k">def</span><span class="w"> </span><span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot_event</span><span class="p">:</span> <span class="n">BotEvent</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="line-160">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-161">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_not_old_or_is_critical_event</span><span class="p">(</span><span class="n">bot_event</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">):</span>
+</span><span id="line-162">                <span class="bp">self</span><span class="o">.</span><span class="n">bot_event_handlers</span><span class="o">.</span><span class="n">fire_event</span><span class="p">(</span><span class="n">bot_event</span><span class="p">)</span>
+</span><span id="line-163">        <span class="k">finally</span><span class="p">:</span>
+</span><span id="line-164">            <span class="c1"># Align with Java semantics: always clear interruptible flag for the event type after dispatch</span>
+</span><span id="line-165">            <span class="n">EventInterruption</span><span class="o">.</span><span class="n">set_interruptible</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">bot_event</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span></div>
 
-</span><span id="line-165">
+</span><span id="line-166">
 <div class="viewcode-block" id="EventQueue.is_not_old_or_is_critical_event">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.is_not_old_or_is_critical_event">[docs]</a>
-</span><span id="line-166">    <span class="nd">@staticmethod</span>
-</span><span id="line-167">    <span class="k">def</span><span class="w"> </span><span class="nf">is_not_old_or_is_critical_event</span><span class="p">(</span><span class="n">bot_event</span><span class="p">:</span> <span class="n">BotEvent</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-168">        <span class="n">is_not_old</span> <span class="o">=</span> <span class="n">bot_event</span><span class="o">.</span><span class="n">turn_number</span> <span class="o">&gt;=</span> <span class="n">turn_number</span> <span class="o">-</span> <span class="n">EventQueue</span><span class="o">.</span><span class="n">MAX_EVENT_AGE</span>
-</span><span id="line-169">        <span class="k">return</span> <span class="n">is_not_old</span> <span class="ow">or</span> <span class="n">bot_event</span><span class="o">.</span><span class="n">is_critical</span><span class="p">()</span></div>
+</span><span id="line-167">    <span class="nd">@staticmethod</span>
+</span><span id="line-168">    <span class="k">def</span><span class="w"> </span><span class="nf">is_not_old_or_is_critical_event</span><span class="p">(</span><span class="n">bot_event</span><span class="p">:</span> <span class="n">BotEvent</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-169">        <span class="n">is_not_old</span> <span class="o">=</span> <span class="n">bot_event</span><span class="o">.</span><span class="n">turn_number</span> <span class="o">&gt;=</span> <span class="n">turn_number</span> <span class="o">-</span> <span class="n">EventQueue</span><span class="o">.</span><span class="n">MAX_EVENT_AGE</span>
+</span><span id="line-170">        <span class="k">return</span> <span class="n">is_not_old</span> <span class="ow">or</span> <span class="n">bot_event</span><span class="o">.</span><span class="n">critical</span></div>
 
-</span><span id="line-170">
+</span><span id="line-171">
 <div class="viewcode-block" id="EventQueue.is_old_and_non_critical_event">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.is_old_and_non_critical_event">[docs]</a>
-</span><span id="line-171">    <span class="nd">@staticmethod</span>
-</span><span id="line-172">    <span class="k">def</span><span class="w"> </span><span class="nf">is_old_and_non_critical_event</span><span class="p">(</span><span class="n">bot_event</span><span class="p">:</span> <span class="n">BotEvent</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="line-173">        <span class="n">is_old</span> <span class="o">=</span> <span class="n">bot_event</span><span class="o">.</span><span class="n">turn_number</span> <span class="o">&lt;</span> <span class="n">turn_number</span> <span class="o">-</span> <span class="n">EventQueue</span><span class="o">.</span><span class="n">MAX_EVENT_AGE</span>
-</span><span id="line-174">        <span class="k">return</span> <span class="n">is_old</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">bot_event</span><span class="o">.</span><span class="n">is_critical</span><span class="p">()</span></div>
+</span><span id="line-172">    <span class="nd">@staticmethod</span>
+</span><span id="line-173">    <span class="k">def</span><span class="w"> </span><span class="nf">is_old_and_non_critical_event</span><span class="p">(</span><span class="n">bot_event</span><span class="p">:</span> <span class="n">BotEvent</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-174">        <span class="n">is_old</span> <span class="o">=</span> <span class="n">bot_event</span><span class="o">.</span><span class="n">turn_number</span> <span class="o">&lt;</span> <span class="n">turn_number</span> <span class="o">-</span> <span class="n">EventQueue</span><span class="o">.</span><span class="n">MAX_EVENT_AGE</span>
+</span><span id="line-175">        <span class="k">return</span> <span class="n">is_old</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">bot_event</span><span class="o">.</span><span class="n">critical</span></div>
 
-</span><span id="line-175">
+</span><span id="line-176">
 <div class="viewcode-block" id="EventQueue.add_event">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.add_event">[docs]</a>
-</span><span id="line-176">    <span class="k">def</span><span class="w"> </span><span class="nf">add_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot_event</span><span class="p">:</span> <span class="n">BotEvent</span><span class="p">):</span>
-</span><span id="line-177">        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">events_lock</span><span class="p">:</span>
-</span><span id="line-178">            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">EventQueue</span><span class="o">.</span><span class="n">MAX_QUEUE_SIZE</span><span class="p">:</span>
-</span><span id="line-179">                <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bot_event</span><span class="p">)</span>
-</span><span id="line-180">            <span class="k">else</span><span class="p">:</span>
-</span><span id="line-181">                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum event queue size has been reached: </span><span class="si">{</span><span class="n">EventQueue</span><span class="o">.</span><span class="n">MAX_QUEUE_SIZE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</span><span id="line-177">    <span class="k">def</span><span class="w"> </span><span class="nf">add_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bot_event</span><span class="p">:</span> <span class="n">BotEvent</span><span class="p">):</span>
+</span><span id="line-178">        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">events_lock</span><span class="p">:</span>
+</span><span id="line-179">            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">EventQueue</span><span class="o">.</span><span class="n">MAX_QUEUE_SIZE</span><span class="p">:</span>
+</span><span id="line-180">                <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bot_event</span><span class="p">)</span>
+</span><span id="line-181">            <span class="k">else</span><span class="p">:</span>
+</span><span id="line-182">                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum event queue size has been reached: </span><span class="si">{</span><span class="n">EventQueue</span><span class="o">.</span><span class="n">MAX_QUEUE_SIZE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-</span><span id="line-182">
+</span><span id="line-183">
 <div class="viewcode-block" id="EventQueue.add_custom_events">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.add_custom_events">[docs]</a>
-</span><span id="line-183">    <span class="k">def</span><span class="w"> </span><span class="nf">add_custom_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="line-184">        <span class="k">for</span> <span class="n">condition</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">conditions</span><span class="p">:</span>
-</span><span id="line-185">            <span class="k">if</span> <span class="n">condition</span><span class="o">.</span><span class="n">test</span><span class="p">():</span>
-</span><span id="line-186">                <span class="bp">self</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
-</span><span id="line-187">                    <span class="n">CustomEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">current_tick_or_throw</span><span class="o">.</span><span class="n">turn_number</span><span class="p">,</span> <span class="n">condition</span><span class="p">))</span></div>
+</span><span id="line-184">    <span class="k">def</span><span class="w"> </span><span class="nf">add_custom_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="line-185">        <span class="k">for</span> <span class="n">condition</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">conditions</span><span class="p">:</span>
+</span><span id="line-186">            <span class="k">if</span> <span class="n">condition</span><span class="o">.</span><span class="n">test</span><span class="p">():</span>
+</span><span id="line-187">                <span class="bp">self</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
+</span><span id="line-188">                    <span class="n">CustomEvent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">current_tick_or_throw</span><span class="o">.</span><span class="n">turn_number</span><span class="p">,</span> <span class="n">condition</span><span class="p">))</span></div>
 
-</span><span id="line-188">
+</span><span id="line-189">
 <div class="viewcode-block" id="EventQueue.dump_events">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.event_queue.EventQueue.dump_events">[docs]</a>
-</span><span id="line-189">    <span class="k">def</span><span class="w"> </span><span class="nf">dump_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-</span><span id="line-190">        <span class="n">string_joiner</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-</span><span id="line-191">            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">turn_number</span><span class="si">}</span><span class="s2">)&quot;</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span>
-</span><span id="line-192">        <span class="p">)</span>
-</span><span id="line-193">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">turn_number</span><span class="si">}</span><span class="s2"> events: </span><span class="si">{</span><span class="n">string_joiner</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</span><span id="line-190">    <span class="k">def</span><span class="w"> </span><span class="nf">dump_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">turn_number</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="line-191">        <span class="n">string_joiner</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="line-192">            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">turn_number</span><span class="si">}</span><span class="s2">)&quot;</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span>
+</span><span id="line-193">        <span class="p">)</span>
+</span><span id="line-194">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">turn_number</span><span class="si">}</span><span class="s2"> events: </span><span class="si">{</span><span class="n">string_joiner</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </div>
 
 </span></code></pre></div>
     </div></div>
-        </main>
-      </div>
-    </div><footer class="py-6 border-t border-border md:py-0">
+          </main>
+        </div>
+      </div><footer class="py-6 border-t border-border md:py-0">
     <div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
       <div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
         <p class="text-sm leading-loose text-center text-muted-foreground md:text-left">Built with <a class="font-medium underline underline-offset-4"
     href="https://www.sphinx-doc.org"
-                                                                                                      rel="noreferrer">Sphinx
-            9.0.4</a></p>
+    rel="noreferrer">Sphinx 9.1.0</a></p>
 </div>
 </div>
 </footer>
-  </div>
-
-    <script src="../../../_static/documentation_options.js?v=284e7c21"></script>
+    </div>
+    
+    <script src="../../../_static/documentation_options.js?v=ca1b380b"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script defer="defer" src="../../../_static/theme.js?v=073f68d9"></script>
-
+    <script defer="defer" src="../../../_static/theme.js?v=582b20c5"></script>
+    
 </body>
+
 </html>

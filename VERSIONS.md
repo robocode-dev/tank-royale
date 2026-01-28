@@ -1,130 +1,53 @@
-## 📦 0.35.0 - **BREAKING**: Python Bot API Refactored to Use Properties - 24-Jan-2026
+## 📦 0.35.2 - Windows Path Fix – 28-Jan-2026
 
-### 💥 Breaking Changes
+### 🐞 Bug Fixes
 
-- **Python Bot API**: Refactored all getter methods to use Pythonic property accessors instead of Java-style getter
-  methods.
+- GUI:
+    - Fixed `InvalidPathException` on Windows when bot directories contained backslashes. Windows paths like 
+      `C:\robocode\bots\python` were being corrupted because backslash sequences (e.g., `\r`, `\b`) were interpreted 
+      as escape characters when saved to the properties file. Bot directory paths are now normalized to use forward 
+      slashes, which work correctly on all platforms.
 
-#### Migration Required
-
-**Before (0.34.x)**:
-
-```python
-energy = self.get_energy()
-if self.is_disabled():
-    return
-x, y = self.get_x(), self.get_y()
-direction = self.get_direction()
-enemy_count = self.get_enemy_count()
-running = self.is_running()
-stopped = self.is_stopped()
-gun_heat = self.get_gun_heat()
-
-# Adjustment flags
-self.set_adjust_gun_for_body_turn(True)
-if self.is_adjust_gun_for_body_turn():
-    print("Gun adjusts for body turn")
-```
-
-**After (0.35.0)**:
-
-```python
-energy = self.energy
-if self.disabled:
-    return
-x, y = self.x, self.y
-direction = self.direction
-enemy_count = self.enemy_count
-running = self.running
-stopped = self.stopped
-gun_heat = self.gun_heat
-
-# Adjustment flags are now read-write properties
-self.adjust_gun_for_body_turn = True
-if self.adjust_gun_for_body_turn:
-    print("Gun adjusts for body turn")
-```
+## 📦 0.35.1 - Automatic User Data Migration – 27-Jan-2026
 
 ### 🚀 Improvements
 
-- Bot API:
-- **Python Bot API**: Now follows Python conventions with property-based accessors
-    - **Code Quality**: More idiomatic Python code that feels natural to Python developers
-    - **Semantic Equivalence**: Maintains 1:1 behavior with Java API while using appropriate language idioms
-- **Python Bot API**: Typed team messages now work like Java/C#
-    - **Typed Team Messages**: Use the `@team_message_type` decorator or `register_team_message_type()` function to
-      register message classes. Messages are automatically serialized/deserialized to typed objects.
-    - **Color Serialization**: `Color` objects in team messages are automatically serialized to hex strings and
-      deserialized back to `Color` objects.
-    - **Added `Color.from_hex_color()`**: Factory method to create a Color from a hex string like `#RGB`, `#RRGGBB`, or
-      `#RRGGBBAA`. Returns `None` for `None` input. Matches Java's `ColorUtil.fromHexColor()`.
-    - **Added `Color.from_hex()`**: Factory method to create a Color from hex digits without the hash prefix.
-      Matches Java's `ColorUtil.fromHex()`.
-    - **Simplified Sample Bots**: `MyFirstLeader` and `MyFirstDroid` now use typed message classes and `isinstance()`
-      checks, matching the Java/C# pattern exactly. No more manual hex string parsing.
-- Bot Events Panel:
-    - Optimized logging to only include events for the current game turn.
-    - Improved event dumping to include all relevant events for the monitored bot, including `TickEvent`.
-    - Enhanced formatting of event data with consistent indentation and ANSI colors.
-    - Grouped `bulletState` entries under a `bulletStates` header for better readability in `TickEvent`.
-- Recordings:
-    - Recordings are now saved to a `recordings` subdirectory within the platform-specific user data directory.
-    - The replay file dialog now defaults to opening in the `recordings` directory for easier access to recorded
-      battles.
-- Other:
-    - Replaced Proguard with R8 which is now the default code shrinker for Java projects.
+- GUI:
+    - Added automatic migration of user data files (`gui.properties`, `server.properties`, `game-setups.properties`, 
+      and `recordings/` directory) from the old location (current working directory or JAR location) to the new 
+      platform-specific user data directory. This removes the need for manual file migration when upgrading from 
+      pre-0.35.0 versions.
 
-#### Python Team Message Example
+## 📦 0.35.0 - **BREAKING**: Python Bot API Converted to Synchronous API & Refactored to Use Properties - 26-Jan-2026
 
-**Defining message types:**
+### 💥 Breaking Changes (Python Bot API)
 
-```python
-from dataclasses import dataclass
-from typing import Optional
-from robocode_tank_royale.bot_api import team_message_type
-from robocode_tank_royale.bot_api.color import Color
+The Python Bot API has been refactored to match Java and .NET:
 
-@team_message_type
-@dataclass
-class RobotColors:
-    body_color: Optional[Color] = None
-    turret_color: Optional[Color] = None
+1. **Async → Sync**: Converted from `async`/`await` to synchronous blocking API
+2. **Properties**: Replaced getter/setter methods with Pythonic property accessors
+3. **Typed Team Messages**: Use `@team_message_type` decorator for automatic serialization
 
-@team_message_type
-@dataclass
-class Point:
-    x: float
-    y: float
-```
+#### Quick Migration
 
-**Sending messages (leader):**
+| Before (0.34.x)                           | After (0.35.0)                         |
+|-------------------------------------------|----------------------------------------|
+| `async def run(self):`                    | `def run(self):`                       |
+| `await self.forward(100)`                 | `self.forward(100)`                    |
+| `asyncio.run(bot.start())`                | `bot.start()`                          |
+| `self.get_energy()`                       | `self.energy`                          |
+| `self.is_running()`                       | `self.running`                         |
+| `self.set_adjust_gun_for_body_turn(True)` | `self.adjust_gun_for_body_turn = True` |
 
-```python
-colors = RobotColors()
-colors.body_color = Color.RED
-colors.turret_color = Color.BLUE
-self.broadcast_team_message(colors)  # Typed object, not dict
+> **Full migration guide**: See the `MyFirstBot` sample bots
+> and [Team Messages](docs-build/docs/articles/team-messages.md) article.
 
-self.broadcast_team_message(Point(x=e.x, y=e.y))
-```
+### 🚀 Improvements
 
-**Receiving messages (droid):**
-
-```python
-async def on_team_message(self, e: TeamMessageEvent) -> None:
-    message = e.message
-
-    if isinstance(message, RobotColors):
-        self.body_color = message.body_color  # Already a Color object
-        self.turret_color = message.turret_color
-
-    elif isinstance(message, Point):
-        await self.turn_right(self.bearing_to(message.x, message.y))
-        await self.fire(3)
-```
-
-> **Note:** The team message feature is demonstrated with the `MyFirstLeader` and `MyFirstDroid` sample bots. See the
-> [Team Messages](../articles/team-messages.md) article for a complete guide.
+- **Python Bot API**: Synchronous API with property accessors, typed team messages with `Color` serialization
+- **Bot Events Panel**: Optimized logging, improved formatting with ANSI colors, grouped `bulletStates`
+- **Recordings**: Now saved to `recordings` subdirectory in user data directory
+- **Build**: Replaced Proguard with R8 for code shrinking
 
 ### 🐞 Bug Fixes
 

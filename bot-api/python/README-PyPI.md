@@ -42,33 +42,31 @@ Check out the complete **MyFirstBot** example on GitHub:
 Or start with this minimal example you can run right away:
 
 ```python
-import asyncio
-
 from robocode_tank_royale.bot_api.bot import Bot
 from robocode_tank_royale.bot_api.events import ScannedBotEvent, HitByBulletEvent
 
 class MyFirstBot(Bot):
-    async def run(self) -> None:
-        while self.is_running():
-            await self.forward(100)
-            await self.turn_gun_left(360)
-            await self.back(100)
-            await self.turn_gun_left(360)
+    def run(self) -> None:
+        while self.running:
+            self.forward(100)
+            self.turn_gun_left(360)
+            self.back(100)
+            self.turn_gun_left(360)
 
-    async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
+    def on_scanned_bot(self, e: ScannedBotEvent) -> None:
         del e
-        await self.fire(1)
+        self.fire(1)
 
-    async def on_hit_by_bullet(self, e: HitByBulletEvent) -> None:
+    def on_hit_by_bullet(self, e: HitByBulletEvent) -> None:
         bearing = self.calc_bearing(e.bullet.direction)
-        await self.turn_right(90 - bearing)
+        self.turn_right(90 - bearing)
 
-async def main() -> None:
+def main() -> None:
     bot = MyFirstBot()
-    await bot.start()
+    bot.start()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
 ```
 
 How to run:

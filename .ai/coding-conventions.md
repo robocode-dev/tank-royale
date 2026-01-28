@@ -1,7 +1,21 @@
 # Coding Conventions
 
-<!-- METADATA: ~35 lines, ~350 tokens -->
-<!-- KEYWORDS: style, conventions, naming, format, Java, Python, C#, PEP 8, immutability, type hints -->
+<!-- METADATA: ~60 lines, ~600 tokens -->
+<!-- KEYWORDS: style, conventions, naming, format, Java, Kotlin, Python, C#, PEP 8, immutability, type hints, modern -->
+
+## Modern Approach (All Languages)
+
+**Always use modern language features and APIs:**
+
+- **Java 11+**: Use `Path.of()`, `Files.*`, `var`, `Optional`, `Stream` API, `HttpClient`, text blocks
+- **Kotlin**: Use `kotlin.io.path.*` extensions, `runCatching`, `Result`, scope functions, `sealed class`, coroutines where appropriate
+- **Python 3.10+**: Use `match` statements, `|` union types, `@dataclass`, `pathlib.Path`, type hints, f-strings
+
+**Prefer:**
+- NIO.2 `Path` API over legacy `java.io.File`
+- Early returns over nested conditionals
+- Immutable data structures
+- Functional transformations over imperative loops
 
 ## Java Conventions
 

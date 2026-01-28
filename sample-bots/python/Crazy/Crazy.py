@@ -1,5 +1,3 @@
-import asyncio
-
 from robocode_tank_royale.bot_api.bot import Bot
 from robocode_tank_royale.bot_api.color import Color
 from robocode_tank_royale.bot_api.events import (
@@ -23,7 +21,7 @@ class Crazy(Bot):
         super().__init__()
         self._moving_forward: bool = False
 
-    async def run(self) -> None:
+    def run(self) -> None:
         """Called when a new round is started -> initialize and do some movement."""
         # Set colors (matching the Java sample)
         self.body_color = Color.from_rgb(0x00, 0xC8, 0x00)   # lime
@@ -42,31 +40,31 @@ class Crazy(Bot):
             self.set_turn_left(90)
 
             # Start the action and wait until the turn is complete
-            await self.wait_for(lambda: self.turn_remaining == 0)
+            self.wait_for(lambda: self.turn_remaining == 0)
 
             # Note: We are still moving ahead now, but the turn is complete.
             # Now we'll turn the other way...
             self.set_turn_right(180)
             # ... and wait for the turn to finish ...
-            await self.wait_for(lambda: self.turn_remaining == 0)
+            self.wait_for(lambda: self.turn_remaining == 0)
 
             # ... then the other way ...
             self.set_turn_left(180)
             # ... and wait for that turn to finish.
-            await self.wait_for(lambda: self.turn_remaining == 0)
+            self.wait_for(lambda: self.turn_remaining == 0)
             # then back to the top to do it all again.
 
-    async def on_hit_wall(self, e: HitWallEvent) -> None:
+    def on_hit_wall(self, e: HitWallEvent) -> None:
         """We collided with a wall -> reverse the direction."""
         del e
-        await self._reverse_direction()
+        self._reverse_direction()
 
-    async def on_hit_bot(self, e: HitBotEvent) -> None:
+    def on_hit_bot(self, e: HitBotEvent) -> None:
         """We hit another bot -> back up if we rammed it."""
         if e.rammed:
-            await self._reverse_direction()
+            self._reverse_direction()
 
-    async def _reverse_direction(self) -> None:
+    def _reverse_direction(self) -> None:
         """Switch from ahead to back & vice versa and commit the change."""
         if self._moving_forward:
             self.set_back(40000)
@@ -75,18 +73,18 @@ class Crazy(Bot):
             self.set_forward(40000)
             self._moving_forward = True
         # Commit the command changes immediately
-        await self.go()
+        self.go()
 
-    async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
+    def on_scanned_bot(self, e: ScannedBotEvent) -> None:
         """We scanned another bot -> fire!"""
         del e
-        await self.fire(1)
+        self.fire(1)
 
 
-async def main() -> None:
+def main() -> None:
     bot = Crazy()
-    await bot.start()
+    bot.start()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

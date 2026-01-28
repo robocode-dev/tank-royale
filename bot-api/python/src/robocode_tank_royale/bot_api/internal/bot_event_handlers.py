@@ -25,7 +25,7 @@ from .event_handler import EventHandler
 class BotEventHandlers:
     """
     Class used for bot event handlers on the public API.
-    
+
     These handlers may or may not be triggered by the bot event queue, and might
     not be handled immediately by the bot logic.
     """
@@ -33,7 +33,7 @@ class BotEventHandlers:
     def __init__(self, base_bot: BaseBotABC):
         """
         Initialize a new BotEventHandlers instance.
-        
+
         Args:
             base_bot: The base bot that will handle the events.
         """
@@ -99,7 +99,7 @@ class BotEventHandlers:
     def _subscribe_to_event_handlers(self, base_bot: BaseBotABC) -> None:
         """
         Subscribe the base bot to all event handlers.
-        
+
         Args:
             base_bot: The base bot that will handle the events.
         """
@@ -128,13 +128,13 @@ class BotEventHandlers:
         self.on_custom_event.subscribe(base_bot.on_custom_event)
         self.on_team_message.subscribe(base_bot.on_team_message)
 
-    async def fire_event(self, event: BotEvent) -> None:
+    def fire_event(self, event: BotEvent) -> None:
         """
         Fire an event to its registered handler.
-        
+
         Args:
             event: The event to fire.
-            
+
         Raises:
             IllegalStateException: If there is no handler for the event type.
         """
@@ -142,7 +142,7 @@ class BotEventHandlers:
         handler = self._event_handler_map.get(event_type)
 
         if handler is not None:
-            await handler.publish(event)
+            handler.publish(event)
         else:
             raise RuntimeError(f"Unhandled event type: {event}")
 

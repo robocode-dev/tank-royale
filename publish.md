@@ -78,7 +78,7 @@ Upload the TestPyPI first:
 ./gradlew :bot-api:python:upload-testpypi
 ```
 
-Upload the PyPI first:
+Upload to the real PyPI:
 
 ```shell
 ./gradlew :bot-api:python:upload-pypi

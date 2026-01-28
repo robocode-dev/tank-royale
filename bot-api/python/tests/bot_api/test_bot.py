@@ -8,10 +8,10 @@ import websockets
 from robocode_tank_royale.bot_api import Bot, BotInfo
 
 
-class TestBot(unittest.IsolatedAsyncioTestCase):
+class TestBot(unittest.TestCase):
 
     @patch("websockets.connect", new_callable=AsyncMock)
-    async def test_initialization_default(self, mock_connect: AsyncMock):
+    def test_initialization_default(self, mock_connect: AsyncMock):
         # Given
         server_handshake: dict[str, Any] = {
             "type": "ServerHandshake",
@@ -49,7 +49,7 @@ class TestBot(unittest.IsolatedAsyncioTestCase):
         )
         self.assertIsNotNone(b)
         # The start() method will connect to the mock server and perform a handshake before returning.
-        await b.start()
+        b.start()
 
         # Then
         mock_connect.assert_called_once_with("ws://localhost:7654")

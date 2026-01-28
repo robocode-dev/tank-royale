@@ -4,6 +4,7 @@ import traceback
 import time
 import math
 import os
+import threading
 from typing import Any, Optional, Set, Sequence
 
 from ..base_bot_abc import BaseBotABC
@@ -84,13 +85,19 @@ class BaseBotInternals:
         self.internal_event_handlers: InternalEventHandlers = InternalEventHandlers()
         self.event_queue: EventQueue = EventQueue(self.data, self.bot_event_handlers)
 
-        self.closed_event: asyncio.Event = asyncio.Event()
+        self.closed_event: threading.Event = threading.Event()
         self.socket: Optional[Any] = None  # To store the WebSocket connection
         self.web_socket_handler: Optional[WebSocketHandler] = None
 
-        self.next_turn_monitor: asyncio.Condition = asyncio.Condition()
+        self._next_turn_condition: threading.Condition = threading.Condition()
 
-        self.thread: Optional[asyncio.Task[Any]] = None  # For asyncio task
+        # WebSocket background thread with async event loop
+        self._ws_thread: Optional[threading.Thread] = None
+        self._ws_loop: Optional[asyncio.AbstractEventLoop] = None
+        self._ws_loop_ready_event: threading.Event = threading.Event()
+
+        # Bot thread (runs bot.run() and bot.go())
+        self.thread: Optional[threading.Thread] = None
         self.stop_resume_listener: Optional[StopResumeListenerABC] = None
 
         self.max_speed: float = MAX_SPEED
@@ -128,7 +135,8 @@ class BaseBotInternals:
             self._on_bullet_fired, 100
         )
 
-    async def _on_round_started(self, event: RoundStartedEvent) -> None:
+    def _on_round_started(self, event: RoundStartedEvent) -> None:
+        """Handle round started event (matches Java's onRoundStarted)"""
         # Defer movement reset until after first intent has been sent, mirroring Java/.NET behavior
         if not hasattr(self, "_movement_reset_pending"):
             self._movement_reset_pending = False
@@ -138,14 +146,17 @@ class BaseBotInternals:
         self.data.event_handling_disabled_turn = 0
         self.last_execute_turn_number = -1
 
-    async def _on_next_turn(self, event: TickEvent) -> None:
-        async with self.next_turn_monitor:
-            self.next_turn_monitor.notify_all()
+    def _on_next_turn(self, event: TickEvent) -> None:
+        """Handle next turn event - unblock waiting threads (matches Java's onNextTurn)"""
+        with self._next_turn_condition:
+            # Unblock methods waiting for the next turn
+            self._next_turn_condition.notify_all()
 
-    async def _on_bullet_fired(self, event: BulletFiredEvent) -> None:
+    def _on_bullet_fired(self, event: BulletFiredEvent) -> None:
+        """Handle bullet fired event (matches Java's onBulletFired)"""
         if self.data.bot_intent:
+            # Reset firepower so the bot stops firing continuously
             self.data.bot_intent.firepower = 0.0
-        pass
 
     def _reset_movement(self) -> None:
         if self.data.bot_intent:
@@ -262,9 +273,10 @@ class BaseBotInternals:
     def set_interruptible(self, interruptible: bool) -> None:
         self.event_queue.set_current_event_interruptible(interruptible)
 
-    async def dispatch_events(self, turn_number: int) -> None:
+    def dispatch_events(self, turn_number: int) -> None:
+
         try:
-            await self.event_queue.dispatch_events(turn_number)
+            self.event_queue.dispatch_events(turn_number)
         except Exception:
             # Align with Java: do not propagate interruptions from event handling
             traceback.print_exc()
@@ -275,58 +287,49 @@ class BaseBotInternals:
     def is_running(self) -> bool:
         return self.data.is_running
 
-    async def _runnable(self, bot: BotABC) -> None:
-        self.data.is_running = True
-        self.enable_event_handling(True)
-        try:
-            await bot.run()
+    def _create_runnable(self, bot: BotABC):
+        """Create runnable function for bot thread (matches Java's createRunnable)"""
+        def runnable():
+            self.set_running(True)
+            try:
+                self.enable_event_handling(True)
 
-            # Skip every turn after the run method has exited
-            while self.data.is_running:
                 try:
-                    await bot.go()
+                    bot.run()
                 except ThreadInterruptedException:
-                    return  # Thread was interrupted deliberately - exit silently
-                except asyncio.CancelledError:
-                    return  # Task was cancelled
-                except ThreadInterruptedException:
-                    return  # Rogue thread detected, stop execution
-                except Exception as e:  # Catch other exceptions during bot.go()
-                    # Potentially log the error or handle specific bot exceptions
-                    print(f"Exception in bot.go(): {e}")  # Basic error logging
-                    # Depending on desired behavior, may need to stop or continue
-                    self.data.is_running = False  # Example: stop on error
                     return
-        except ThreadInterruptedException:
-            return  # Thread was interrupted deliberately - exit silently
-        except asyncio.CancelledError:
-            # This handles cancellation if bot.run() or the loop itself is cancelled
-            pass  # Task was cancelled
-        except ThreadInterruptedException:
-            # Rogue thread detected during bot.run()
-            pass
-        except Exception as e:
-            # Potentially log the error or handle specific bot exceptions
-            print(f"Exception in bot.run() or main loop: {e}")  # Basic error logging
-            self.data.is_running = False  # Stop if unhandled exception in run()
-        finally:
-            self.enable_event_handling(False)
+
+                # Skip every turn after the run method has exited
+                while self.is_running():
+                    try:
+                        bot.go()
+                    except ThreadInterruptedException:
+                        return
+            finally:
+                self.enable_event_handling(False)
+        return runnable
 
     def start_thread(self, bot: BotABC) -> None:
-        if self.thread is not None:
-            # Potentially handle if a thread/task is already running
-            pass
-        self.thread = asyncio.create_task(self._runnable(bot))
+        """Start bot thread (matches Java's startThread)"""
+        self.thread = threading.Thread(target=self._create_runnable(bot))
+        self.thread.start()
 
     def stop_thread(self) -> None:
-        if not self.data.is_running:
+        """Stop bot thread (matches Java's stopThread)"""
+        if not self.is_running():
             return
-        self.data.is_running = False
+
+        self.set_running(False)
+
+        # Wake up any threads waiting on the next turn condition so they can see is_running=False
+        with self._next_turn_condition:
+            self._next_turn_condition.notify_all()
+
         if self.thread is not None:
-            self.thread.cancel()
-            # It's good practice to await the task to ensure it finishes,
-            # but this might block if the task doesn't handle cancellation promptly.
-            # Consider if `await self.thread` is needed here or if fire-and-forget cancel is okay.
+            # Python doesn't have thread.interrupt() like Java, but we set is_running to False
+            # The thread will exit when it checks is_running() or gets ThreadInterruptedException
+            # Wait for the thread to actually terminate to prevent race conditions when restarting
+            self.thread.join(timeout=5.0)  # Wait up to 5 seconds for thread to finish
             self.thread = None
 
     def _sanitize_url(self, uri: str) -> None:
@@ -345,7 +348,7 @@ class BaseBotInternals:
                 self.bot_info,  # BotInfo needed by WebSocketHandler
                 self.bot_event_handlers,  # Event handlers needed by WebSocketHandler
                 self.internal_event_handlers,  # Event handlers needed by WebSocketHandler
-                self.closed_event,  # Async event needed by WebSocketHandler
+                self.closed_event,  # Threading event for signaling connection close
                 self.event_queue,  # Provide access to the shared EventQueue for staging events
             )
             self.socket = await self.web_socket_handler.connect()
@@ -355,45 +358,80 @@ class BaseBotInternals:
                 f"Could not create web socket for URL: {self.server_url}", ex
             ) from ex
 
-    async def start(self) -> None:
-        await self._connect()
-        if self.web_socket_handler:  # Check if handler was created
-            asyncio.create_task(self.web_socket_handler.receive_messages())
-        await self.closed_event.wait()
+    def start(self) -> None:
+        """Start bot and block until game ends (matches Java's start)"""
+        self._start_websocket_thread()
+        self._connect_sync()
+        self.closed_event.wait()
 
-    async def execute(self) -> None:
+    def _start_websocket_thread(self) -> None:
+        """Start WebSocket background thread with async event loop"""
+        def ws_thread_target():
+            self._ws_loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(self._ws_loop)
+            self._ws_loop_ready_event.set()
+            self._ws_loop.run_forever()
+
+        self._ws_loop_ready_event.clear()
+        self._ws_thread = threading.Thread(target=ws_thread_target, daemon=True)
+        self._ws_thread.start()
+        if not self._ws_loop_ready_event.wait(timeout=2.0):
+            raise BotException("WebSocket event loop not started")
+
+    def _connect_sync(self) -> None:
+        """Connect to WebSocket server (synchronous wrapper)"""
+        if self._ws_loop is None:
+            raise BotException("WebSocket event loop not started")
+
+        future = asyncio.run_coroutine_threadsafe(self._connect(), self._ws_loop)
+        future.result()  # Block until connection is established
+
+        # Start receiving messages in the WebSocket thread
+        if self.web_socket_handler:
+            asyncio.run_coroutine_threadsafe(
+                self.web_socket_handler.receive_messages(),
+                self._ws_loop
+            )
+
+    def execute(self) -> None:
+        """Execute bot intent and wait for next turn (matches Java's execute)"""
         current_tick = self.data.current_tick_or_null
         # If no tick has been received yet, send current intent once to allow the server to progress
         if current_tick is None:
-            await self._send_intent()
+            self._send_intent()
             return
 
         turn_number = current_tick.turn_number
         if turn_number != self.last_execute_turn_number:
             self.last_execute_turn_number = turn_number
             # Events are dispatched from BaseBot.go(); staging happens on tick reception
-            await self._send_intent()
+            self._send_intent()
 
             if self._movement_reset_pending:
                 self._reset_movement()
                 self._movement_reset_pending = False
 
-        await self._wait_for_next_turn(turn_number)
+        self._wait_for_next_turn(turn_number)
 
-    async def _send_intent(self) -> None:
-        self._render_graphics_to_bot_intent()  # Operates on self.data.graphics_state and self.data.bot_intent
-        self._transfer_std_out_to_bot_intent()  # Placeholder
+    def _send_intent(self) -> None:
+        """Send bot intent to server (synchronous)"""
+        self._render_graphics_to_bot_intent()
+        self._transfer_std_out_to_bot_intent()
 
-        if self.socket:
+        if self.socket and self._ws_loop:
             try:
                 json_intent = to_json(self.data.bot_intent)
-                await self.socket.send(json_intent)
+                # Send via WebSocket in the WebSocket thread
+                asyncio.run_coroutine_threadsafe(
+                    self.socket.send(json_intent),
+                    self._ws_loop
+                )
+                # Clear team messages after sending intent (matches Java implementation)
                 if self.data.bot_intent.team_messages:
-                    self.data.bot_intent.team_messages = []  # Clear after sending
+                    self.data.bot_intent.team_messages.clear()
             except Exception as e:
                 print(f"Error sending bot intent: {e}")
-                # Consider if self.socket needs to be invalidated or reconnected
-                # For now, just printing error.
+
 
     def _transfer_std_out_to_bot_intent(self) -> None:
         # Stdout/stderr redirection and inclusion in intent might be handled differently in Python
@@ -417,27 +455,26 @@ class BaseBotInternals:
             # Ensure it's not set if debugging is off or tick not available
             self.data.bot_intent.debug_graphics = None
 
-    async def _wait_for_next_turn(self, turn_number: int) -> None:
+    def _wait_for_next_turn(self, turn_number: int) -> None:
+        """Wait for next turn (matches Java's waitForNextTurn)"""
+        # Most bot methods will call _wait_for_next_turn(), and hence this is a central place
+        # to stop a rogue thread that cannot be killed any other way.
         self._stop_rogue_thread()
-        try:
-            async with self.next_turn_monitor:
-                while (
-                    self.data.is_running
-                    and turn_number == self.data.current_tick_or_throw.turn_number
-                    and self.thread
-                    == asyncio.current_task()  # Ensure this is the bot's main task\
-                    and not asyncio.current_task().cancelled()  # type: ignore
-                ):
-                    await self.next_turn_monitor.wait()
-        except asyncio.CancelledError:
-            # We get a CancelledError if the server stops the game.
-            return None
+
+        with self._next_turn_condition:
+            while (
+                self.is_running()
+                and turn_number == self.data.current_tick_or_throw.turn_number
+                and threading.current_thread() == self.thread
+            ):
+                try:
+                    self._next_turn_condition.wait()  # Wait for the next turn
+                except InterruptedError:
+                    raise ThreadInterruptedException()
 
     def _stop_rogue_thread(self) -> None:
-        # In asyncio, tasks don't have a direct 'thread' equivalent accessible this way for comparison.
-        # self.thread is the asyncio.Task object for the bot's main execution.
-        # We check if the current task is the one we stored.
-        if asyncio.current_task() != self.thread:
+        """Stop rogue thread (matches Java's stopRogueThread)"""
+        if threading.current_thread() != self.thread:
             raise ThreadInterruptedException()
 
     def set_fire(self, firepower: float) -> bool:

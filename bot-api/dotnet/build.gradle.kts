@@ -68,9 +68,7 @@ tasks {
 
         onlyIf {
             isDocfxInstalled && gradle.startParameter.taskNames.any {
-                it.contains("build-release") ||
                 it.contains("upload-docs") ||
-                it.contains("create-release") ||
                 it.contains("docfx") // also run when explicitly calling docfx tasks like docfxBuild/docfxMetadata
             }
         }
@@ -102,9 +100,7 @@ tasks {
 
         onlyIf {
             isDocfxInstalled && gradle.startParameter.taskNames.any {
-                it.contains("build-release") ||
                 it.contains("upload-docs") ||
-                it.contains("create-release") ||
                 it.contains("docfx") // allow direct calls to docfxBuild/docfx
             }
         }

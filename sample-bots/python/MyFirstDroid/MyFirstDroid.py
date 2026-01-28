@@ -1,4 +1,3 @@
-import asyncio
 from dataclasses import dataclass
 from typing import Optional
 
@@ -43,14 +42,14 @@ class RobotColors:
 # ------------------------------------------------------------------
 class MyFirstDroid(Bot, DroidABC):
 
-    async def run(self) -> None:
+    def run(self) -> None:
         print("MyFirstDroid ready")
         while self.running:
             # Execute next turn (on_team_message() handles the logic based on team messages)
-            await self.go()
+            self.go()
         # terminates when this point is reached
 
-    async def on_team_message(self, e: TeamMessageEvent) -> None:
+    def on_team_message(self, e: TeamMessageEvent) -> None:
         message = e.message
 
         if isinstance(message, Point):
@@ -59,8 +58,8 @@ class MyFirstDroid(Bot, DroidABC):
             # ------------------------------------------------------
 
             # Turn body to target and fire hard
-            await self.turn_right(self.bearing_to(message.x, message.y))
-            await self.fire(3)
+            self.turn_right(self.bearing_to(message.x, message.y))
+            self.fire(3)
 
         elif isinstance(message, RobotColors):
             # ------------------------------------------------------
@@ -77,10 +76,10 @@ class MyFirstDroid(Bot, DroidABC):
             self.bullet_color = message.bullet_color
 
 
-async def main() -> None:
+def main() -> None:
     bot = MyFirstDroid()
-    await bot.start()
+    bot.start()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

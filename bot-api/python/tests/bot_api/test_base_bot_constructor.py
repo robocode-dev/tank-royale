@@ -1,4 +1,3 @@
-import asyncio
 import json
 import os
 from typing import Any
@@ -9,7 +8,7 @@ from unittest.mock import AsyncMock, patch
 from robocode_tank_royale.bot_api.base_bot import BaseBot
 from robocode_tank_royale.bot_api.internal.env_vars import EnvVars
 from robocode_tank_royale.bot_api import BotInfo
-from tests.test_utils.mocked_server import MockedServer
+from test_utils.mocked_server import MockedServer
 
 
 def test_TR_API_BOT_001a_env_read_and_defaults_handshake_fields_from_env():
@@ -54,7 +53,7 @@ def test_TR_API_BOT_001a_env_read_and_defaults_handshake_fields_from_env():
 
         # Act
         bot = BaseBot()
-        asyncio.run(bot.start())
+        bot.start()
 
         # Assert connection to provided URL
         mock_connect.assert_called_once_with("ws://127.0.0.1:12345")
@@ -110,7 +109,7 @@ def test_TR_API_BOT_001a_default_server_url_is_used_when_env_absent():
 
         # Act
         bot = BaseBot()
-        asyncio.run(bot.start())
+        bot.start()
 
         # Assert default URL used
         mock_connect.assert_called_once_with("ws://localhost:7654")
@@ -179,5 +178,5 @@ def test_TR_API_BOT_001b_invalid_server_url_scheme_raises_bot_exception():
 
     with pytest.raises(Exception) as exc:
         bot = BaseBot()
-        asyncio.run(bot.start())
+        bot.start()
     assert "Wrong scheme used with server URL" in str(exc.value)

@@ -15,11 +15,11 @@
 **Files to update:**
 
 - `/README.md` - Project overview and getting started
-- `/VERSIONS.MD` - Version history and changelog
+- `/VERSIONS.md` - Version history and changelog
 - Module-specific `README.md` files
 - API documentation (Javadoc/docstrings)
 
-## VERSIONS.MD Format
+## VERSIONS.md Format
 
 **Follow existing format:**
 

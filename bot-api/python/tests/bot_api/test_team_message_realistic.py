@@ -11,7 +11,7 @@ from robocode_tank_royale.bot_api.team_message import (
 )
 
 # Import shared message types
-from tests.test_utils.team_message_types import Point, RobotColors
+from test_utils.team_message_types import Point, RobotColors
 
 
 class TestTeamMessageRealistic(unittest.TestCase):
