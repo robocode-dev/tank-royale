@@ -10,6 +10,19 @@ import java.util.function.BooleanSupplier;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+/**
+ * Abstract base class for bot API tests.
+ * Provides common test infrastructure including MockedServer lifecycle management,
+ * bot thread tracking, and command execution utilities.
+ *
+ * <p>This class handles:
+ * <ul>
+ *   <li>MockedServer setup and teardown</li>
+ *   <li>Bot thread lifecycle and clean shutdown</li>
+ *   <li>Synchronous command execution with intent capture</li>
+ *   <li>Await helpers for synchronization</li>
+ * </ul>
+ */
 abstract class AbstractBotTest {
 
     protected MockedServer server;
@@ -66,12 +79,25 @@ abstract class AbstractBotTest {
         trackedThreads.clear();
     }
 
+    /**
+     * Create and start a test bot asynchronously.
+     * The bot thread is automatically tracked for clean shutdown.
+     *
+     * @return the started bot instance
+     */
     protected BaseBot start() {
         var bot = new TestBot();
         startAsync(bot);
         return bot;
     }
 
+    /**
+     * Start a bot asynchronously in a tracked thread.
+     * The thread is registered for cleanup during teardown.
+     *
+     * @param bot the bot to start
+     * @return the thread running the bot
+     */
     protected Thread startAsync(BaseBot bot) {
         var thread = new Thread(bot::start);
         thread.setName("TestBot-" + System.currentTimeMillis());
@@ -80,6 +106,12 @@ abstract class AbstractBotTest {
         return thread;
     }
 
+    /**
+     * Execute bot.go() asynchronously in a tracked thread.
+     * The thread is registered for cleanup during teardown.
+     *
+     * @param bot the bot to run
+     */
     protected void goAsync(BaseBot bot) {
         var thread = new Thread(bot::go);
         thread.setName("TestBot-go-" + System.currentTimeMillis());
@@ -102,6 +134,20 @@ abstract class AbstractBotTest {
     protected BaseBot startAndAwaitGameStarted() {
         var bot = start();
         awaitGameStarted(bot);
+        return bot;
+    }
+
+    /**
+     * Start bot, wait for game started, and set gun heat to 0 for fire tests.
+     * This convenience method prepares the bot to be able to fire immediately.
+     *
+     * @return the started bot with gun heat at 0
+     */
+    protected BaseBot startAndPrepareForFire() {
+        var bot = start();
+        awaitGameStarted(bot);
+        // Set gun heat to 0 so bot can fire immediately
+        server.setInitialBotState(null, 0.0, null, null, null, null);
         return bot;
     }
 
@@ -143,6 +189,14 @@ abstract class AbstractBotTest {
         assertThat(server.awaitBotIntent(1000)).isTrue();
     }
 
+    /**
+     * Execute a command and wait for the bot to send its intent to the server.
+     * This is useful for testing non-blocking commands that immediately return.
+     *
+     * @param command the command to execute
+     * @param <T> the return type of the command
+     * @return the result of the command
+     */
     protected <T> T executeCommand(java.util.function.Supplier<T> command) {
         server.resetBotIntentLatch();
         T result = command.get();
@@ -150,6 +204,12 @@ abstract class AbstractBotTest {
         return result;
     }
 
+    /**
+     * Execute a blocking action and wait for the bot to send its intent to the server.
+     * This is useful for testing blocking commands like go().
+     *
+     * @param action the action to execute
+     */
     protected void executeBlocking(Runnable action) {
         server.resetBotIntentLatch();
         action.run();
@@ -160,9 +220,9 @@ abstract class AbstractBotTest {
      * Execute a command and capture both the result and the bot intent sent to the server.
      * This is useful for verifying that commands produce the expected intent values.
      *
-     * @param command The command to execute
-     * @param <T> The return type of the command
-     * @return A CommandResult containing both the command result and captured intent
+     * @param command the command to execute
+     * @param <T> the return type of the command
+     * @return a CommandResult containing both the command result and captured intent
      */
     protected <T> CommandResult<T> executeCommandAndGetIntent(java.util.function.Supplier<T> command) {
         server.resetBotIntentLatch();
@@ -173,6 +233,9 @@ abstract class AbstractBotTest {
 
     /**
      * Wrapper class that holds both a command's return value and the captured bot intent.
+     * Use this to verify that bot commands produce the correct intent values sent to the server.
+     *
+     * @param <T> the type of the command result
      */
     protected static class CommandResult<T> {
         private final T result;

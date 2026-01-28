@@ -7,6 +7,15 @@ from robocode_tank_royale.bot_api import BotInfo, Bot, BotException
 from tests.test_utils.mocked_server import MockedServer
 
 class AbstractBotTest(unittest.TestCase):
+    """
+    Abstract base class for bot API tests.
+
+    Provides common test infrastructure including:
+    - MockedServer lifecycle management
+    - Bot thread tracking for clean shutdown
+    - Command execution utilities with intent capture
+    - Synchronization helpers
+    """
     bot_info = BotInfo(
         name="TestBot",
         version="1.0",
@@ -32,6 +41,19 @@ class AbstractBotTest(unittest.TestCase):
                 t.join(timeout=1.0)
 
     def start_bot(self, bot: Optional[Bot] = None) -> Bot:
+        """
+        Create and start a test bot, waiting for it to be ready.
+        The bot thread is automatically tracked for clean shutdown.
+
+        Args:
+            bot: Optional bot instance. If None, creates a default test bot.
+
+        Returns:
+            The started bot instance.
+
+        Raises:
+            TimeoutError: If bot fails to become ready within timeout.
+        """
         if bot is None:
             bot = Bot(self.bot_info, self.server.server_url)
         self.start_async(bot)
@@ -40,6 +62,16 @@ class AbstractBotTest(unittest.TestCase):
         return bot
 
     def start_async(self, bot: Bot) -> threading.Thread:
+        """
+        Start a bot asynchronously in a tracked thread.
+        The thread is registered for cleanup during teardown.
+
+        Args:
+            bot: The bot to start.
+
+        Returns:
+            The thread running the bot.
+        """
         def run_bot():
             asyncio.run(bot.start())
 
@@ -49,6 +81,16 @@ class AbstractBotTest(unittest.TestCase):
         return t
 
     def go_async(self, bot: Bot) -> threading.Thread:
+        """
+        Execute bot.go() asynchronously in a tracked thread.
+        The thread is registered for cleanup during teardown.
+
+        Args:
+            bot: The bot to run.
+
+        Returns:
+            The thread running bot.go().
+        """
         def run_go():
             asyncio.run(bot.go())
 
@@ -86,12 +128,29 @@ class AbstractBotTest(unittest.TestCase):
         self.assertTrue(self.server.await_bot_intent(1000))
 
     def execute_command(self, command: Callable[[], Any]) -> Any:
+        """
+        Execute a command and wait for the bot to send its intent to the server.
+        This is useful for testing non-blocking commands that immediately return.
+
+        Args:
+            command: The command callable to execute.
+
+        Returns:
+            The result of the command.
+        """
         self.server.reset_bot_intent_event()
         result = command()
         self.await_bot_intent()
         return result
 
     def execute_blocking(self, action: Callable[[], None]) -> None:
+        """
+        Execute a blocking action and wait for the bot to send its intent to the server.
+        This is useful for testing blocking commands like go().
+
+        Args:
+            action: The blocking action callable to execute.
+        """
         self.server.reset_bot_intent_event()
         action()
         self.await_bot_intent()

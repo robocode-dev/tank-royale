@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +8,11 @@ using Robocode.TankRoyale.Schema;
 
 namespace Robocode.TankRoyale.BotApi.Tests;
 
+/// <summary>
+/// Abstract base class for bot API tests.
+/// Provides common test infrastructure including MockedServer lifecycle management,
+/// bot task tracking, and command execution utilities.
+/// </summary>
 public class AbstractBotTest
 {
     protected MockedServer Server;
@@ -64,6 +69,11 @@ public class AbstractBotTest
         }
     }
 
+    /// <summary>
+    /// Create and start a test bot asynchronously.
+    /// The bot task is automatically tracked for clean shutdown.
+    /// </summary>
+    /// <returns>The started bot instance</returns>
     protected BaseBot Start()
     {
         var bot = new TestBot();
@@ -71,6 +81,12 @@ public class AbstractBotTest
         return bot;
     }
 
+    /// <summary>
+    /// Start a bot asynchronously in a tracked task.
+    /// The task is registered for cleanup during teardown.
+    /// </summary>
+    /// <param name="bot">The bot to start</param>
+    /// <returns>The task running the bot</returns>
     protected Task StartAsync(BaseBot bot)
     {
         var task = Task.Run(bot.Start);
@@ -78,6 +94,11 @@ public class AbstractBotTest
         return task;
     }
 
+    /// <summary>
+    /// Execute bot.Go() asynchronously in a tracked task.
+    /// The task is registered for cleanup during teardown.
+    /// </summary>
+    /// <param name="bot">The bot to run</param>
     protected void GoAsync(BaseBot bot)
     {
         var task = Task.Run(bot.Go);
@@ -149,6 +170,13 @@ public class AbstractBotTest
         Assert.That(Server.AwaitBotIntent(1000), Is.True);
     }
 
+    /// <summary>
+    /// Execute a command and wait for the bot to send its intent to the server.
+    /// This is useful for testing non-blocking commands that immediately return.
+    /// </summary>
+    /// <typeparam name="T">The return type of the command</typeparam>
+    /// <param name="command">The command to execute</param>
+    /// <returns>The result of the command</returns>
     protected T ExecuteCommand<T>(Func<T> command)
     {
         Server.ResetBotIntentEvent();
@@ -157,6 +185,11 @@ public class AbstractBotTest
         return result;
     }
 
+    /// <summary>
+    /// Execute a blocking action and wait for the bot to send its intent to the server.
+    /// This is useful for testing blocking commands like Go().
+    /// </summary>
+    /// <param name="action">The action to execute</param>
     protected void ExecuteBlocking(Action action)
     {
         Server.ResetBotIntentEvent();

@@ -339,6 +339,28 @@ public final class MockedServer {
     }
 
     /**
+     * Update the internal bot state with non-null parameters WITHOUT sending a tick.
+     * This is useful for setting initial state before the bot starts running.
+     * Unlike setBotStateAndAwaitTick, this does not require connections to be established.
+     *
+     * @param energy bot energy (nullable)
+     * @param gunHeat gun heat value (nullable)
+     * @param speed bot speed (nullable)
+     * @param direction bot direction (nullable)
+     * @param gunDirection gun direction (nullable)
+     * @param radarDirection radar direction (nullable)
+     */
+    public synchronized void setInitialBotState(Double energy, Double gunHeat, Double speed,
+                                                Double direction, Double gunDirection, Double radarDirection) {
+        if (energy != null) this.energy = energy;
+        if (gunHeat != null) this.gunHeat = gunHeat;
+        if (speed != null) this.speed = speed;
+        if (direction != null) this.direction = direction;
+        if (gunDirection != null) this.gunDirection = gunDirection;
+        if (radarDirection != null) this.radarDirection = radarDirection;
+    }
+
+    /**
      * Update the internal bot state with non-null parameters, send a tick to connected bots and
      * await that tick to be observed by test helpers. Returns true if tick was observed within the
      * default timeout (1000 ms).
@@ -369,6 +391,18 @@ public final class MockedServer {
     public boolean awaitBotReady(Integer milliSeconds) {
         if (milliSeconds == null) return awaitBotReady(0);
         return awaitBotReady((int) milliSeconds);
+    }
+
+    public void setInitialBotState(double energy, double gunHeat, Double speed,
+                                   Double direction, Double gunDirection, Double radarDirection) {
+        Double gunHeatBoxed = Double.isNaN(gunHeat) ? null : gunHeat;
+        setInitialBotState(Double.valueOf(energy), gunHeatBoxed, speed, direction, gunDirection, radarDirection);
+    }
+
+    public void setInitialBotState(double energy, double gunHeat, double speed,
+                                   double direction, double gunDirection, double radarDirection) {
+        setInitialBotState(Double.valueOf(energy), Double.valueOf(gunHeat), Double.valueOf(speed),
+                          Double.valueOf(direction), Double.valueOf(gunDirection), Double.valueOf(radarDirection));
     }
 
     public boolean setBotStateAndAwaitTick(double energy, double gunHeat, Double speed,
@@ -595,7 +629,12 @@ public final class MockedServer {
 
             awaitBotIntentContinueOrFail();
 
+            // Parse the intent and assign to volatile field (ensures visibility)
             botIntent = JsonConverter.fromJson(text, BotIntent.class);
+
+            // Count down latch AFTER intent is fully parsed and assigned
+            // The volatile write to botIntent happens-before this countdown,
+            // ensuring test threads see the parsed intent when latch releases
             botIntentLatch.countDown();
 
             sendTickEventForBotToConn(conn, turnNumber++);
