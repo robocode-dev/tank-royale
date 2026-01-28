@@ -66,11 +66,11 @@
 ### Task 1.5.2: .NET Reliability Improvements
 
 - [x] Port thread/task tracking to .NET base test class
-- [ ] Ensure thread-safe state updates in `MockedServer.cs`
+- [x] Ensure thread-safe state updates in `MockedServer.cs`
 - [x] Add equivalent `ExecuteCommand` helpers
-- [ ] **Audit**: Verify `MockedServer.cs` logic against sequence diagrams in `schema/schemas/README.md`
-- [ ] **State Setup**: Handle non-running bot state synchronization equivalent to Java
-- [ ] **Verify**: Create a simple test that would previously have been flaky
+- [x] **Audit**: Verify `MockedServer.cs` logic against sequence diagrams in `schema/schemas/README.md`
+- [x] **State Setup**: Handle non-running bot state synchronization equivalent to Java
+- [x] **Verify**: Create a simple test that would previously have been flaky
 
 ### Task 1.5.3: Python Reliability Improvements
 

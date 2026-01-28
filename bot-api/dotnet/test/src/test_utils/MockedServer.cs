@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -43,6 +43,8 @@ public class MockedServer
     public static double BotGunTurnRate = 18.9;
     public static double BotRadarTurnRate = 34.1;
     public static double BotGunHeat = 7.6;
+
+    private readonly object _stateLock = new object();
 
     private int _turnNumber = 1;
     private double _energy = BotEnergy;
@@ -104,12 +106,18 @@ public class MockedServer
 
     public void SetEnergy(double energy)
     {
-        _energy = energy;
+        lock (_stateLock)
+        {
+            _energy = energy;
+        }
     }
 
     public void SetGunHeat(double gunHeat)
     {
-        _gunHeat = gunHeat;
+        lock (_stateLock)
+        {
+            _gunHeat = gunHeat;
+        }
     }
 
     public void SetSpeedIncrement(double increment) {
@@ -160,6 +168,25 @@ public class MockedServer
         _radarDirectionMaxLimit = maxLimit;
     }
 
+    /// <summary>
+    /// Update the internal bot state with non-null parameters WITHOUT sending a tick.
+    /// This is useful for setting initial state before the bot starts running.
+    /// Unlike SetBotStateAndAwaitTick, this does not require connections to be established.
+    /// </summary>
+    public void SetInitialBotState(double? energy = null, double? gunHeat = null, double? speed = null,
+        double? direction = null, double? gunDirection = null, double? radarDirection = null)
+    {
+        lock (_stateLock)
+        {
+            if (energy.HasValue) _energy = energy.Value;
+            if (gunHeat.HasValue) _gunHeat = gunHeat.Value;
+            if (speed.HasValue) _speed = speed.Value;
+            if (direction.HasValue) _direction = direction.Value;
+            if (gunDirection.HasValue) _gunDirection = gunDirection.Value;
+            if (radarDirection.HasValue) _radarDirection = radarDirection.Value;
+        }
+    }
+
     public void ResetBotIntentEvent()
     {
         _botIntentEvent.Reset();
@@ -183,11 +210,15 @@ public class MockedServer
 
         remaining = timeoutMs - (int)(DateTime.Now - start).TotalMilliseconds;
         _tickEvent.Reset();
-        lock (_clients)
+
+        lock (_stateLock)
         {
-            foreach (var conn in _clients)
+            lock (_clients)
             {
-                SendTickEventForBot(conn, _turnNumber++);
+                foreach (var conn in _clients)
+                {
+                    SendTickEventForBot(conn, _turnNumber++);
+                }
             }
         }
 
@@ -203,7 +234,7 @@ public class MockedServer
     public bool SetBotStateAndAwaitTick(double? energy = null, double? gunHeat = null, double? speed = null,
         double? direction = null, double? gunDirection = null, double? radarDirection = null)
     {
-        lock (this)
+        lock (_stateLock)
         {
             if (energy.HasValue) _energy = energy.Value;
             if (gunHeat.HasValue) _gunHeat = gunHeat.Value;
@@ -339,33 +370,42 @@ public class MockedServer
 
             case MessageType.BotReady:
                 SendRoundStarted(conn);
+
+                lock (_stateLock)
+                {
+                    SendTickEventForBot(conn, _turnNumber++);
+                }
+                _tickEvent.Set();
                 break;
 
             case MessageType.BotIntent:
                 _botIntentContinueEvent.WaitOne();
 
-                if (_speedMinLimit != null && _speed < _speedMinLimit) return;
-                if (_speedMaxLimit != null && _speed > _speedMaxLimit) return;
+                lock (_stateLock)
+                {
+                    if (_speedMinLimit != null && _speed < _speedMinLimit) return;
+                    if (_speedMaxLimit != null && _speed > _speedMaxLimit) return;
 
-                if (_directionMinLimit != null && _direction < _directionMinLimit) return;
-                if (_directionMaxLimit != null && _direction > _directionMaxLimit) return;
+                    if (_directionMinLimit != null && _direction < _directionMinLimit) return;
+                    if (_directionMaxLimit != null && _direction > _directionMaxLimit) return;
 
-                if (_gunDirectionMinLimit != null && _gunDirection < _gunDirectionMinLimit) return;
-                if (_gunDirectionMaxLimit != null && _gunDirection > _gunDirectionMaxLimit) return;
+                    if (_gunDirectionMinLimit != null && _gunDirection < _gunDirectionMinLimit) return;
+                    if (_gunDirectionMaxLimit != null && _gunDirection > _gunDirectionMaxLimit) return;
 
-                if (_radarDirectionMinLimit != null && _radarDirection < _radarDirectionMinLimit) return;
-                if (_radarDirectionMaxLimit != null && _radarDirection > _radarDirectionMaxLimit) return;
+                    if (_radarDirectionMinLimit != null && _radarDirection < _radarDirectionMinLimit) return;
+                    if (_radarDirectionMaxLimit != null && _radarDirection > _radarDirectionMaxLimit) return;
 
-                _botIntent = JsonConverter.FromJson<BotIntent>(messageJson);
-                _botIntentEvent.Set();
+                    _botIntent = JsonConverter.FromJson<BotIntent>(messageJson);
+                    _botIntentEvent.Set();
 
-                // Update states
-                _speed += _speedIncrement;
-                _direction += _turnIncrement;
-                _gunDirection += _gunTurnIncrement;
-                _radarDirection += _radarTurnIncrement;
+                    SendTickEventForBot(conn, _turnNumber++);
 
-                SendTickEventForBot(conn, _turnNumber++);
+                    // Update states after sending tick
+                    _speed += _speedIncrement;
+                    _direction += _turnIncrement;
+                    _gunDirection += _gunTurnIncrement;
+                    _radarDirection += _radarTurnIncrement;
+                }
                 break;
         }
     }
