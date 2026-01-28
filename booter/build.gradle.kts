@@ -75,6 +75,7 @@ tasks {
         args = listOf(
             "--release",
             "--classfile",
+            "--no-desugaring", // Disable desugaring to prevent bytecode transformation issues with Clikt 5.x
             "--lib", System.getProperty("java.home"),
             "--output", finalJar,
             "--pg-conf", file("r8-rules.pro").absolutePath,
