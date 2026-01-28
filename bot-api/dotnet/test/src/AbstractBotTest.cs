@@ -1,14 +1,17 @@
-﻿using System;
+﻿﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Robocode.TankRoyale.BotApi.Tests.Test_utils;
+using Robocode.TankRoyale.Schema;
 
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 public class AbstractBotTest
 {
     protected MockedServer Server;
+    private readonly List<Task> _trackedTasks = new();
 
     protected static readonly BotInfo BotInfo = BotInfo.Builder()
         .SetName("TestBot")
@@ -43,21 +46,42 @@ public class AbstractBotTest
     [TearDown]
     public void Teardown()
     {
+        // Stop server first to trigger bot task shutdown
         Server.Stop();
+
+        // Wait for tracked tasks to complete with timeout
+        if (_trackedTasks.Count > 0)
+        {
+            try
+            {
+                Task.WaitAll(_trackedTasks.ToArray(), TimeSpan.FromSeconds(2));
+            }
+            catch (AggregateException)
+            {
+                // Tasks didn't complete cleanly - acceptable in test teardown
+            }
+            _trackedTasks.Clear();
+        }
     }
 
-    protected static BaseBot Start()
+    protected BaseBot Start()
     {
         var bot = new TestBot();
         StartAsync(bot);
         return bot;
     }
 
-    protected static Task StartAsync(BaseBot bot) => Task.Run(bot.Start);
-
-    protected static void GoAsync(BaseBot bot)
+    protected Task StartAsync(BaseBot bot)
     {
-        Task.Run(bot.Go);
+        var task = Task.Run(bot.Start);
+        _trackedTasks.Add(task);
+        return task;
+    }
+
+    protected void GoAsync(BaseBot bot)
+    {
+        var task = Task.Run(bot.Go);
+        _trackedTasks.Add(task);
     }
 
     protected BaseBot StartAndAwaitHandshake()
@@ -138,6 +162,36 @@ public class AbstractBotTest
         Server.ResetBotIntentEvent();
         action();
         AwaitBotIntent();
+    }
+
+    /// <summary>
+    /// Execute a command and capture both the result and the bot intent sent to the server.
+    /// This is useful for verifying that commands produce the expected intent values.
+    /// </summary>
+    /// <typeparam name="T">The return type of the command</typeparam>
+    /// <param name="command">The command to execute</param>
+    /// <returns>A CommandResult containing both the command result and captured intent</returns>
+    protected CommandResult<T> ExecuteCommandAndGetIntent<T>(Func<T> command)
+    {
+        Server.ResetBotIntentEvent();
+        var result = command();
+        AwaitBotIntent();
+        return new CommandResult<T>(result, Server.BotIntent);
+    }
+
+    /// <summary>
+    /// Wrapper class that holds both a command's return value and the captured bot intent.
+    /// </summary>
+    protected class CommandResult<T>
+    {
+        public T Result { get; }
+        public BotIntent Intent { get; }
+
+        public CommandResult(T result, BotIntent intent)
+        {
+            Result = result;
+            Intent = intent;
+        }
     }
 
     protected static bool ExceptionContainsEnvVarName(BotException botException, string envVarName) =>

@@ -4,6 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import test_utils.MockedServer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -11,6 +13,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 abstract class AbstractBotTest {
 
     protected MockedServer server;
+    private final List<Thread> trackedThreads = new ArrayList<>();
 
     protected static final BotInfo botInfo = BotInfo.builder()
             .setName("TestBot")
@@ -43,23 +46,45 @@ abstract class AbstractBotTest {
 
     @AfterEach
     void tearDown() {
+        // Stop server first to trigger bot thread shutdown
         server.stop();
+
+        // Wait for tracked threads to complete with timeout
+        for (Thread thread : trackedThreads) {
+            if (thread.isAlive()) {
+                try {
+                    thread.join(2000); // 2 second timeout per thread
+                    if (thread.isAlive()) {
+                        // Thread didn't stop cleanly - interrupt it
+                        thread.interrupt();
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+        trackedThreads.clear();
     }
 
-    protected static BaseBot start() {
+    protected BaseBot start() {
         var bot = new TestBot();
         startAsync(bot);
         return bot;
     }
 
-    protected static Thread startAsync(BaseBot bot) {
+    protected Thread startAsync(BaseBot bot) {
         var thread = new Thread(bot::start);
+        thread.setName("TestBot-" + System.currentTimeMillis());
+        trackedThreads.add(thread);
         thread.start();
         return thread;
     }
 
-    protected static void goAsync(BaseBot bot) {
-        new Thread(bot::go).start();
+    protected void goAsync(BaseBot bot) {
+        var thread = new Thread(bot::go);
+        thread.setName("TestBot-go-" + System.currentTimeMillis());
+        trackedThreads.add(thread);
+        thread.start();
     }
 
     protected BaseBot startAndAwaitHandshake() {
@@ -129,6 +154,42 @@ abstract class AbstractBotTest {
         server.resetBotIntentLatch();
         action.run();
         awaitBotIntent();
+    }
+
+    /**
+     * Execute a command and capture both the result and the bot intent sent to the server.
+     * This is useful for verifying that commands produce the expected intent values.
+     *
+     * @param command The command to execute
+     * @param <T> The return type of the command
+     * @return A CommandResult containing both the command result and captured intent
+     */
+    protected <T> CommandResult<T> executeCommandAndGetIntent(java.util.function.Supplier<T> command) {
+        server.resetBotIntentLatch();
+        T result = command.get();
+        awaitBotIntent();
+        return new CommandResult<>(result, server.getBotIntent());
+    }
+
+    /**
+     * Wrapper class that holds both a command's return value and the captured bot intent.
+     */
+    protected static class CommandResult<T> {
+        private final T result;
+        private final dev.robocode.tankroyale.schema.BotIntent intent;
+
+        public CommandResult(T result, dev.robocode.tankroyale.schema.BotIntent intent) {
+            this.result = result;
+            this.intent = intent;
+        }
+
+        public T getResult() {
+            return result;
+        }
+
+        public dev.robocode.tankroyale.schema.BotIntent getIntent() {
+            return intent;
+        }
     }
 
     protected static boolean exceptionContainsEnvVarName(BotException botException, String envVarName) {

@@ -96,6 +96,23 @@ class AbstractBotTest(unittest.TestCase):
         action()
         self.await_bot_intent()
 
+    def execute_command_and_get_intent(self, command: Callable[[], Any]) -> tuple[Any, Any]:
+        """
+        Execute a command and capture both the result and the bot intent sent to the server.
+        This is useful for verifying that commands produce the expected intent values.
+
+        Args:
+            command: The command to execute
+
+        Returns:
+            A tuple of (result, intent) where result is the command's return value
+            and intent is the captured BotIntent
+        """
+        self.server.reset_bot_intent_event()
+        result = command()
+        self.await_bot_intent()
+        return result, self.server._bot_intent
+
     def await_condition(self, condition: Callable[[], bool], timeout_ms: int = 1000) -> bool:
         start_time = time.time()
         while (time.time() - start_time) * 1000 < timeout_ms:

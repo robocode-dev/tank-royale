@@ -12,7 +12,6 @@ from robocode_tank_royale.bot_api.constants import (
 from test_utils.mocked_server import MockedServer
 
 
-@unittest.skipIf(True, "FIXME: Test requires blocking go() to be interruptible")
 class TestCommandsMovement(unittest.TestCase):
     def setUp(self) -> None:
         self.server = MockedServer()

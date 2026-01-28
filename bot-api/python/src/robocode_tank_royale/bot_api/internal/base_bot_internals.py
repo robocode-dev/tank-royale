@@ -468,7 +468,9 @@ class BaseBotInternals:
                 and threading.current_thread() == self.thread
             ):
                 try:
-                    self._next_turn_condition.wait()  # Wait for the next turn
+                    # Use timeout to allow periodic check of is_running() flag
+                    # This makes the bot thread interruptible for clean shutdown
+                    self._next_turn_condition.wait(timeout=0.1)
                 except InterruptedError:
                     raise ThreadInterruptedException()
 
