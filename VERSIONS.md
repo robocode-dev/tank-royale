@@ -1,3 +1,13 @@
+## 📦 0.35.2 - Windows Path Fix – 28-Jan-2026
+
+### 🐞 Bug Fixes
+
+- GUI:
+    - Fixed `InvalidPathException` on Windows when bot directories contained backslashes. Windows paths like 
+      `C:\robocode\bots\python` were being corrupted because backslash sequences (e.g., `\r`, `\b`) were interpreted 
+      as escape characters when saved to the properties file. Bot directory paths are now normalized to use forward 
+      slashes, which work correctly on all platforms.
+
 ## 📦 0.35.1 - Automatic User Data Migration – 27-Jan-2026
 
 ### 🚀 Improvements
