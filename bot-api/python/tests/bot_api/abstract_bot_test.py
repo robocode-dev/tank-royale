@@ -4,6 +4,7 @@ import asyncio
 from typing import Optional, Callable, Any
 import unittest
 from robocode_tank_royale.bot_api import BotInfo, Bot, BotException
+from robocode_tank_royale.bot_api.internal.thread_interrupted_exception import ThreadInterruptedException
 from tests.test_utils.mocked_server import MockedServer
 
 class AbstractBotTest(unittest.TestCase):
@@ -32,13 +33,44 @@ class AbstractBotTest(unittest.TestCase):
         self.server = MockedServer()
         self.server.start()
         self._threads = []
+        self._bots = []  # Track bots for proper cleanup
 
     def tearDown(self) -> None:
-        self.server.stop()
+        """
+        Clean up test resources with proper timeout handling.
+
+        Cleanup sequence:
+        1. Stop the mocked server (causes bot threads to exit naturally)
+        2. Wait for bot threads with timeout
+        3. Clear tracking lists
+
+        Note: We stop the server FIRST (like Java does) rather than calling bot.stop()
+        from the test thread, which would trigger ThreadInterruptedException.
+        Stopping the server causes the WebSocket connection to close, which makes
+        the bot threads exit cleanly.
+        """
+        # Stop the server with timeout protection
+        # This causes the bot threads to exit naturally when WebSocket closes
+        try:
+            self.server.stop()
+        except asyncio.CancelledError:
+            pass  # Expected during async cleanup
+        except Exception:
+            pass  # Ignore errors during server cleanup
+
+        # Wait for threads to finish with timeout
+        # Use shorter individual timeouts to avoid long cumulative waits
+        timeout_per_thread = 1.0
         for t in self._threads:
             if t.is_alive():
-                # We can't easily force stop a thread in Python
-                t.join(timeout=1.0)
+                t.join(timeout=timeout_per_thread)
+                # If thread didn't stop, it will be cleaned up when process exits
+                # (daemon threads) or left for GC
+
+
+        # Clear tracking lists
+        self._threads.clear()
+        self._bots.clear()
 
     def start_bot(self, bot: Optional[Bot] = None) -> Bot:
         """
@@ -56,10 +88,32 @@ class AbstractBotTest(unittest.TestCase):
         """
         if bot is None:
             bot = Bot(self.bot_info, self.server.server_url)
+        self._bots.append(bot)  # Track for cleanup
         self.start_async(bot)
         if not self.server.await_bot_ready(2000):
             raise TimeoutError("Bot failed to become ready")
         return bot
+
+    def start_and_prepare_for_fire(self, bot: Optional[Bot] = None, energy: float = 100.0) -> Bot:
+        """
+        Start a bot and prepare it for fire command tests.
+
+        Sets gun_heat to 0.0 so the bot can fire immediately,
+        and sets energy to the specified value (default 100.0).
+
+        Args:
+            bot: Optional bot instance. If None, creates a default test bot.
+            energy: Initial energy level (default 100.0).
+
+        Returns:
+            The started bot instance ready for fire tests.
+
+        Raises:
+            TimeoutError: If bot fails to become ready within timeout.
+        """
+        # Set initial state BEFORE starting the bot
+        self.server.set_initial_bot_state(energy=energy, gun_heat=0.0)
+        return self.start_bot(bot)
 
     def start_async(self, bot: Bot) -> threading.Thread:
         """
@@ -72,8 +126,11 @@ class AbstractBotTest(unittest.TestCase):
         Returns:
             The thread running the bot.
         """
+        if bot not in self._bots:
+            self._bots.append(bot)  # Ensure bot is tracked
+
         def run_bot():
-            asyncio.run(bot.start())
+            bot.start()
 
         t = threading.Thread(target=run_bot)
         t.start()
@@ -91,8 +148,11 @@ class AbstractBotTest(unittest.TestCase):
         Returns:
             The thread running bot.go().
         """
+        if bot not in self._bots:
+            self._bots.append(bot)  # Ensure bot is tracked
+
         def run_go():
-            asyncio.run(bot.go())
+            bot.go()
 
         t = threading.Thread(target=run_go)
         t.start()
@@ -170,7 +230,7 @@ class AbstractBotTest(unittest.TestCase):
         self.server.reset_bot_intent_event()
         result = command()
         self.await_bot_intent()
-        return result, self.server._bot_intent
+        return result, self.server.get_bot_intent()
 
     def await_condition(self, condition: Callable[[], bool], timeout_ms: int = 1000) -> bool:
         start_time = time.time()

@@ -2,11 +2,13 @@ package dev.robocode.tankroyale.botapi;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Timeout;
 import test_utils.MockedServer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -22,7 +24,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
  *   <li>Synchronous command execution with intent capture</li>
  *   <li>Await helpers for synchronization</li>
  * </ul>
+ *
+ * <p>All tests inheriting from this class have a global timeout of 10 seconds
+ * to prevent hangs.
  */
+@Timeout(value = 10, unit = TimeUnit.SECONDS)
 abstract class AbstractBotTest {
 
     protected MockedServer server;

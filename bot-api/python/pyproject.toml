@@ -31,5 +31,11 @@ maintainers = [
 [tool.setuptools.packages.find]
 where = ["src", "generated"]
 
+[tool.pytest.ini_options]
+# Global timeout of 10 seconds for all tests to prevent hangs
+timeout = 10
+# Use thread method for cross-platform compatibility (works on Windows)
+timeout_method = "thread"
+
 [project.urls]
 Homepage = "https://robocode-dev.github.io/tank-royale"

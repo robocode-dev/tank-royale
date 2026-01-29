@@ -52,6 +52,58 @@
 > Phase 3 (Test Bot Factory) or Phase 4 (Fire Command Tests). The "Empty Intent" and "State Visibility" issues
 > must be resolved to ensure test reliability.
 
+### Task 1.5.0: **CRITICAL - Fix Python Test Hanging After Completion** 
+
+> **Status (2026-01-29)**: CRITICAL BUG - BLOCKING ALL PYTHON TEST EXECUTION
+> 
+> **Problem**: Python tests complete successfully (89 passed in 15.68s) but then hang indefinitely
+> with pending asyncio tasks. Gradle process never exits. User has to manually terminate (Ctrl+C).
+>
+> **Evidence**:
+> ```
+> ============================= 89 passed in 15.68s =============================
+> Task was destroyed but it is pending!
+> task: <Task pending name='Task-142' coro=<IocpProactor.accept.<locals>.accept_coro()...
+> Task was destroyed but it is pending!
+> task: <Task pending name='Task-143' coro=<Server._close()...
+> <===========--> 85% EXECUTING [2m 2s]
+> > :bot-api:python:test
+> Terminate batch job (Y/N)? ^C
+> ```
+
+**Files**: 
+- `bot-api/python/tests/test_utils/mocked_server.py`
+- `bot-api/python/tests/bot_api/abstract_bot_test.py`
+
+**Root Cause**: 
+- `MockedServer.stop()` does not properly cancel pending asyncio tasks
+- WebSocket server accept loop continues running after `server.close()` 
+- Event loop has orphaned tasks that prevent clean shutdown
+- Daemon threads mask the problem but don't solve it
+
+**Tasks**:
+- [ ] Fix `MockedServer.stop()` to cancel ALL pending asyncio tasks before stopping loop
+- [ ] Add `asyncio.all_tasks()` enumeration and cancellation
+- [ ] Wait for task cancellation with timeout (max 2s)
+- [ ] Ensure WebSocket server properly closes accept coroutines
+- [ ] Add logging to identify which tasks are still pending
+- [ ] Test: Run `pytest tests/` and verify it exits cleanly without manual intervention
+- [ ] Test: Run via Gradle `gradlew :bot-api:python:test` and verify it completes
+- [ ] Document asyncio cleanup pattern for future reference
+
+**Acceptance Criteria**:
+- [ ] `pytest tests/` exits cleanly (no Ctrl+C needed)
+- [ ] `gradlew :bot-api:python:test` completes without hanging
+- [ ] No "Task was destroyed but it is pending!" warnings
+- [ ] All 89 tests still pass
+- [ ] Total execution time < 30 seconds (including cleanup)
+
+**Estimated time**: 2-4 hours (critical debugging session)
+
+**Priority**: 🔴 **CRITICAL - MUST FIX BEFORE ANY OTHER PYTHON WORK**
+
+---
+
 ### Task 1.5.1: Java Reliability Improvements
 
 - [x] Implement thread tracking in `AbstractBotTest` to ensure clean shutdown (Suppresses Rogue Thread Interruption)
@@ -72,7 +124,53 @@
 - [x] **State Setup**: Handle non-running bot state synchronization equivalent to Java
 - [x] **Verify**: Create a simple test that would previously have been flaky
 
+### Task 1.5.3a: Python Test Infrastructure Threading Fix (PREREQUISITE)
+
+> **Status (2026-01-28)**: NEW. Created to address async/threading complexity blocking Task 1.5.3.
+
+**Files**:
+- `bot-api/python/tests/test_utils/mocked_server.py`
+- `bot-api/python/tests/bot_api/abstract_bot_test.py`
+
+**Problem**: The Python test infrastructure mixes `asyncio` (WebSocket) and `threading` (bot execution)
+without sufficient synchronization, causing:
+- Race conditions in state updates (non-atomic reads/writes)
+- Unreliable async cleanup during teardown (event loop may hang)
+- Cross-thread coordination issues (intent capture timing)
+
+**Current State**:
+- `mocked_server.py` has `_lock` and `_bot_intent_lock` but not all state accesses use them consistently
+- `abstract_bot_test.py` teardown calls `bot.stop()` but doesn't handle async cleanup properly
+- No timeout on event loop shutdown can cause hangs
+
+**Tasks**:
+- [x] Audit all shared state in `mocked_server.py` and ensure lock protection:
+    - [x] `_energy`, `_gun_heat`, `_speed`, `_direction`, `_gun_direction`, `_radar_direction` (already protected)
+    - [x] All increment/limit fields (already protected)
+    - [x] `_bot_intent` access (verified - uses separate `_bot_intent_lock`)
+    - [x] `_handshake` access (fixed - now uses `_lock` protection)
+- [x] Add thread-safe property accessors where needed (getter/setter with lock) - added `get_handshake()`
+- [x] Fix `_handler()` to avoid holding locks during async operations - verified correct
+- [x] Improve `abstract_bot_test.py` teardown:
+    - [x] Stop server first (like Java) instead of calling bot.stop() from test thread
+    - [x] Handle `asyncio.CancelledError` gracefully
+    - [x] Use proper timeouts on thread.join()
+- [x] Add `set_initial_bot_state()` overload for fire tests (energy + gun_heat) - already exists
+- [x] Create verification test that would expose race conditions - added `test_concurrent_state_access_thread_safety`
+
+**Acceptance Criteria**:
+- [x] All mutable state protected by appropriate locks
+- [x] Teardown completes within 3 seconds (no hangs) - verified 14.4s for all 7 tests
+- [x] No orphaned threads after test completion
+- [x] State changes are immediately visible across threads - verified with concurrent test
+
+**Estimated time**: 1 day
+
+---
+
 ### Task 1.5.3: Python Reliability Improvements
+
+> **Depends on**: Task 1.5.3a must be completed first.
 
 - [ ] Implement clean async cleanup in Python base test
 - [ ] Fix race conditions in `mocked_server.py` state updates

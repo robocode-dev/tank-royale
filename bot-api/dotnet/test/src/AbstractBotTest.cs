@@ -1,4 +1,4 @@
-﻿﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +12,11 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 /// Abstract base class for bot API tests.
 /// Provides common test infrastructure including MockedServer lifecycle management,
 /// bot task tracking, and command execution utilities.
+///
+/// All tests inheriting from this class have a global timeout of 10 seconds
+/// to prevent hangs.
 /// </summary>
+[Timeout(10000)] // 10 seconds timeout for all tests
 public class AbstractBotTest
 {
     protected MockedServer Server;

@@ -1,3 +1,4 @@
 -r requirements.txt
 pytest
+pytest-timeout
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
