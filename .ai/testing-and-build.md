@@ -1,7 +1,7 @@
 # Testing and Build Procedures
 
-<!-- METADATA: ~45 lines, ~500 tokens -->
-<!-- KEYWORDS: test, build, Gradle, gradlew, compile, validation, sample bot, backward compatibility -->
+<!-- METADATA: ~135 lines, ~1200 tokens -->
+<!-- KEYWORDS: test, build, Gradle, gradlew, compile, validation, sample bot, backward compatibility, asyncio, python, hanging -->
 
 ## Build Requirements
 
@@ -86,3 +86,52 @@ Always ensure cross-platform consistency.
 - Faster iteration during focused work
 - Isolating build issues
 - Testing single-platform changes
+
+## Python Asyncio Testing (CRITICAL)
+
+**Problem:** Python tests using asyncio (websockets, event loops in threads) will hang
+after completion due to asyncio's default ThreadPoolExecutor never shutting down.
+
+**Root causes of hanging:**
+- `loop.run_in_executor(None, ...)` creates a hidden ThreadPoolExecutor
+- `asyncio.run_coroutine_threadsafe()` uses the same executor
+- websockets library's `Server._close()` waits indefinitely for accept coroutines
+- Python's threading shutdown waits for non-daemon threads
+
+**Solution implemented in this project:**
+
+1. Use `os._exit(0)` in a pytest session-scoped fixture (`conftest.py`):
+   ```python
+   @pytest.fixture(scope="session", autouse=True)
+   def force_exit_after_tests():
+       yield
+       os._exit(0)
+   ```
+
+2. Use daemon threads for asyncio event loops in test infrastructure:
+   ```python
+   self._thread = threading.Thread(target=self._run_loop, daemon=True)
+   ```
+
+3. Keep `stop()` methods simple - just stop the loop, don't wait for cleanup:
+   ```python
+   def stop(self):
+       if self._loop and self._loop.is_running():
+           self._loop.call_soon_threadsafe(self._loop.stop)
+   ```
+
+**What NOT to do:**
+- Don't use `run_in_executor(None, ...)` - use polling with `asyncio.sleep(0)` instead
+- Don't wait for `server.wait_closed()` in cleanup - it may hang
+- Don't use `pytest-asyncio` unless tests are actual `async def` functions
+- Don't try complex asyncio cleanup sequences - they often deadlock
+
+**Testing:**
+```bash
+# Verify tests don't hang
+./gradlew :bot-api:python:test
+
+# Or directly with pytest
+python -m pytest tests/ --timeout=15
+```
+
