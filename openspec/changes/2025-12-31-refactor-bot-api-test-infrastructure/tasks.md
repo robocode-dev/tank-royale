@@ -167,13 +167,14 @@ without sufficient synchronization, causing:
 ### Task 1.5.3: Python Reliability Improvements
 
 > **Depends on**: Task 1.5.3a must be completed first.
+> **Status (2026-01-29)**: COMPLETED. All items addressed in Task 1.5.3a or verified complete.
 
-- [ ] Implement clean async cleanup in Python base test
-- [ ] Fix race conditions in `mocked_server.py` state updates
+- [x] Implement clean async cleanup in Python base test (completed in 1.5.3a - proper timeout-based teardown)
+- [x] Fix race conditions in `mocked_server.py` state updates (completed in 1.5.3a - all state protected by locks)
 - [x] Add equivalent `execute_command` helpers
-- [ ] **Audit**: Verify `mocked_server.py` logic against sequence diagrams in `schema/schemas/README.md`
-- [ ] **State Setup**: Handle non-running bot state synchronization equivalent to Java
-- [ ] **Verify**: Create a simple test that would previously have been flaky
+- [x] **Audit**: Verify `mocked_server.py` logic against sequence diagrams in `schema/schemas/README.md` (audit comment in `_handler()` method)
+- [x] **State Setup**: Handle non-running bot state synchronization equivalent to Java (implemented via `set_initial_bot_state()`)
+- [x] **Verify**: Create a simple test that would previously have been flaky (added `test_concurrent_state_access_thread_safety`)
 
 ### Task 1.5.4: Python Blocking `go()` Interruptibility (Critical)
 
@@ -197,7 +198,7 @@ as a workaround. All AI coding assistants have struggled with this issue.
     - ~~**Option C (Mock-based)**: Mock blocking internals for tests that require `go()` behavior~~
 - [x] Implement chosen approach in `base_bot_internals.py` - added timeout to `_wait_for_next_turn()`
 - [x] Remove `@unittest.skipIf(True, ...)` from `test_commands_movement.py`
-- [ ] Verify `test_commands_movement.py` passes reliably (run 20 times without hangs)
+- [x] Verify `test_commands_movement.py` passes reliably (run 20 times without hangs) - verified 2026-01-29
 - [x] Document the chosen approach and rationale
 
 **Implementation Details**:
