@@ -363,6 +363,8 @@ class BaseBotInternals:
         self._start_websocket_thread()
         self._connect_sync()
         self.closed_event.wait()
+        # CRITICAL: Stop the WebSocket event loop when bot finishes
+        self._stop_websocket_thread()
 
     def _start_websocket_thread(self) -> None:
         """Start WebSocket background thread with async event loop"""
@@ -370,13 +372,47 @@ class BaseBotInternals:
             self._ws_loop = asyncio.new_event_loop()
             asyncio.set_event_loop(self._ws_loop)
             self._ws_loop_ready_event.set()
-            self._ws_loop.run_forever()
+            try:
+                self._ws_loop.run_forever()
+            finally:
+                # Standard asyncio shutdown: cancel all tasks, shutdown executor, then close loop
+                try:
+                    # Cancel all tasks
+                    pending = asyncio.all_tasks(self._ws_loop)
+                    for task in pending:
+                        task.cancel()
+                    # Wait for cancellation to complete
+                    if pending:
+                        self._ws_loop.run_until_complete(
+                            asyncio.gather(*pending, return_exceptions=True)
+                        )
+                    # CRITICAL: Shutdown the default executor to prevent hanging
+                    self._ws_loop.run_until_complete(self._ws_loop.shutdown_default_executor())
+                except Exception:
+                    pass  # Ignore errors during cleanup
+                finally:
+                    self._ws_loop.close()
 
         self._ws_loop_ready_event.clear()
-        self._ws_thread = threading.Thread(target=ws_thread_target, daemon=True)
+        self._ws_thread = threading.Thread(target=ws_thread_target, daemon=False)
         self._ws_thread.start()
         if not self._ws_loop_ready_event.wait(timeout=2.0):
             raise BotException("WebSocket event loop not started")
+
+    def _stop_websocket_thread(self) -> None:
+        """Stop WebSocket event loop and thread using proper asyncio shutdown"""
+        if not self._ws_loop or self._ws_loop.is_closed():
+            return
+
+        # Simply stop the loop - cleanup happens in the finally block
+        try:
+            self._ws_loop.call_soon_threadsafe(self._ws_loop.stop)
+        except RuntimeError:
+            pass
+
+        # Wait for thread to finish (it will clean up all tasks)
+        if self._ws_thread and self._ws_thread.is_alive():
+            self._ws_thread.join(timeout=3.0)
 
     def _connect_sync(self) -> None:
         """Connect to WebSocket server (synchronous wrapper)"""

@@ -49,23 +49,17 @@ class AbstractBotTest(unittest.TestCase):
         Stopping the server causes the WebSocket connection to close, which makes
         the bot threads exit cleanly.
         """
-        # Stop the server with timeout protection
-        # This causes the bot threads to exit naturally when WebSocket closes
+        # Stop the server - this causes bot threads to exit naturally
         try:
             self.server.stop()
-        except asyncio.CancelledError:
-            pass  # Expected during async cleanup
         except Exception:
-            pass  # Ignore errors during server cleanup
+            pass  # Ignore all errors during cleanup
 
-        # Wait for threads to finish with timeout
-        # Use shorter individual timeouts to avoid long cumulative waits
-        timeout_per_thread = 1.0
+        # Wait for bot threads to finish with timeout
+        timeout_per_thread = 0.5  # Short timeout per thread
         for t in self._threads:
             if t.is_alive():
                 t.join(timeout=timeout_per_thread)
-                # If thread didn't stop, it will be cleaned up when process exits
-                # (daemon threads) or left for GC
 
 
         # Clear tracking lists

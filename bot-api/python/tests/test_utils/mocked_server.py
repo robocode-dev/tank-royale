@@ -1,5 +1,4 @@
 import asyncio
-from concurrent.futures import TimeoutError as FuturesTimeoutError
 import threading
 import socket
 import time
@@ -154,60 +153,25 @@ class MockedServer:
         # Start the server while the loop is running
         self._loop.run_until_complete(_start_server())
         self._loop.run_forever()
+        # Note: No cleanup needed - daemon thread will be killed on exit
 
     def stop(self) -> None:
         """
-        Stop the mocked server with proper cleanup.
+        Stop the mocked server.
 
-        Cleanup sequence:
-        1. Close all WebSocket connections
-        2. Cancel all pending tasks
-        3. Close the server
-        4. Stop the event loop
-        5. Wait for server thread to finish
-
-        Uses timeouts at each step to prevent hangs.
+        Note: Since the server thread is a daemon thread and we use os._exit(0)
+        in conftest.py, we only need to stop the event loop. The daemon thread
+        will be killed automatically when Python exits.
         """
-        if not self._loop:
+        if not self._loop or self._loop.is_closed():
             return
 
-        # Close the server and cancel all tasks
-        if self._server is not None:
-            async def _shutdown() -> None:
-                # Close the server
-                self._server.close()
-                await self._server.wait_closed()
-
-                # Cancel all pending tasks
-                tasks = [t for t in asyncio.all_tasks(self._loop) if not t.done()]
-                for task in tasks:
-                    task.cancel()
-
-                # Wait for tasks to be cancelled (with timeout)
-                if tasks:
-                    await asyncio.wait(tasks, timeout=0.5)
-
-            if self._loop.is_running():
-                future = asyncio.run_coroutine_threadsafe(_shutdown(), self._loop)
-                try:
-                    future.result(timeout=2.0)
-                except FuturesTimeoutError:
-                    # Timeout - cancel and move on
-                    future.cancel()
-                except (asyncio.CancelledError, Exception):
-                    pass  # Expected during shutdown
-
         # Stop the event loop
-        if self._loop:
+        if self._loop.is_running():
             try:
                 self._loop.call_soon_threadsafe(self._loop.stop)
             except RuntimeError:
-                pass  # Loop already closed
-
-        # Wait for thread to finish
-        if self._thread and self._thread.is_alive():
-            self._thread.join(timeout=2.0)
-            # If thread is still alive after timeout, it's a daemon so it will be cleaned up on exit
+                pass
 
     # Await helpers
     def await_bot_ready(self, timeout_ms: int = 1000) -> bool:
@@ -667,13 +631,16 @@ class MockedServer:
                 self._bot_intent.firepower = None
 
     async def _wait_for_intent_continue(self) -> None:
-        # Bridge threading.Event into asyncio loop
-        loop = asyncio.get_running_loop()
+        # Bridge threading.Event into asyncio loop using polling
+        # CRITICAL: Do NOT use run_in_executor(None, ...) as it creates a default
+        # ThreadPoolExecutor that never shuts down and causes pytest to hang!
         if self._bot_intent_continue_event.is_set():
-            # Reset for next await
             self._bot_intent_continue_event.clear()
             return
-        await loop.run_in_executor(None, self._bot_intent_continue_event.wait)
+
+        # Poll with small sleep instead of blocking executor
+        while not self._bot_intent_continue_event.wait(timeout=0.01):
+            await asyncio.sleep(0)  # Yield to event loop
         self._bot_intent_continue_event.clear()
 
     async def _send_server_handshake(self, websocket) -> None:
