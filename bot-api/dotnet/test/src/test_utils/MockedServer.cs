@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -190,6 +190,7 @@ public class MockedServer
     public void ResetBotIntentEvent()
     {
         _botIntentEvent.Reset();
+        _botIntentContinueEvent.Reset();
     }
 
     public bool AwaitBotReady(int timeoutMs = 1000)

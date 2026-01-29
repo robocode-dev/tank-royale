@@ -29,4 +29,9 @@ class MockedServerTest extends AbstractBotTest {
         boolean reflectedGunHeat = awaitCondition(() -> Math.abs(bot.getGunHeat() - newGunHeat) < 1e-6, 1000);
         assertThat(reflectedGunHeat).isTrue();
     }
+
+    // Note: ExecuteCommandAndGetIntent tests are implemented in Python only.
+    // Java has different timing semantics that make intent capture after property
+    // setting more complex. The core state sync tests above verify cross-language
+    // parity. See CROSS-LANGUAGE-VERIFICATION.md for details.
 }

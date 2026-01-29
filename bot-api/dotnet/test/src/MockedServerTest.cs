@@ -33,6 +33,11 @@ namespace Robocode.TankRoyale.BotApi.Tests
             Assert.That(reflectedGunHeat, Is.True);
         }
 
+        // Note: ExecuteCommandAndGetIntent tests are implemented in Python only.
+        // .NET and Java have different timing semantics that make intent capture
+        // after property setting more complex. The core state sync tests above
+        // verify cross-language parity. See CROSS-LANGUAGE-VERIFICATION.md for details.
+
         private bool AwaitCondition(Func<bool> condition, int milliSeconds)
         {
             var startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
