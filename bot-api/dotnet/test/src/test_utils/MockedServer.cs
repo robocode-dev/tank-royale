@@ -12,8 +12,19 @@ namespace Robocode.TankRoyale.BotApi.Tests.Test_utils;
 
 public class MockedServer
 {
-    public static readonly int Port = FindAvailablePort();
-    public static Uri ServerUrl => new($"ws://127.0.0.1:{Port}");
+    // Instance-based port to avoid conflicts between tests
+    private readonly int _port;
+
+    /// <summary>
+    /// Instance-specific server URL. Use this when possible.
+    /// </summary>
+    public Uri ServerUrl { get; }
+
+    /// <summary>
+    /// Static port for backward compatibility. Note: This finds a new port each time it's called.
+    /// Prefer using instance ServerUrl property instead.
+    /// </summary>
+    public static int Port => FindAvailablePort();
 
     public static string SessionId = "123abc";
     public static string Name = nameof(MockedServer);
@@ -75,14 +86,21 @@ public class MockedServer
     private readonly EventWaitHandle _botHandshakeEvent = new ManualResetEvent(false);
     private readonly EventWaitHandle _gameStartedEvent = new ManualResetEvent(false);
     private readonly EventWaitHandle _tickEvent = new ManualResetEvent(false);
-    private readonly EventWaitHandle _botIntentEvent = new ManualResetEvent(false);
 
-    private readonly EventWaitHandle _botIntentContinueEvent = new ManualResetEvent(true);
+    // Use AutoResetEvent for one-shot signaling (matches Java's CountDownLatch behavior)
+    private readonly AutoResetEvent _botIntentEvent = new AutoResetEvent(false);
+    private readonly AutoResetEvent _botIntentContinueEvent = new AutoResetEvent(false);
 
-    private BotIntent _botIntent;
+    // Use volatile for cross-thread visibility (matches Java's volatile botIntent field)
+    private volatile BotIntent _botIntent;
 
     public BotIntent BotIntent => _botIntent;
 
+    public MockedServer()
+    {
+        _port = FindAvailablePort();
+        ServerUrl = new Uri($"ws://127.0.0.1:{_port}");
+    }
 
     public void Start()
     {
@@ -94,6 +112,9 @@ public class MockedServer
             conn.OnMessage = message => OnMessage(conn, message);
             conn.OnError = OnError;
         });
+        // Small delay to ensure server is fully listening
+        Thread.Sleep(100);
+        Console.WriteLine($"[Info] Server started at {ServerUrl} (actual port {_port})");
     }
 
     public void Stop()
@@ -318,7 +339,9 @@ public class MockedServer
     {
         try
         {
+            // Signal handler to proceed (matches Java's botIntentContinueLatch.countDown())
             _botIntentContinueEvent.Set();
+            // Wait for handler to process intent and signal back
             return _botIntentEvent.WaitOne(milliSeconds);
         }
         catch (Exception ex)
@@ -380,7 +403,9 @@ public class MockedServer
                 break;
 
             case MessageType.BotIntent:
+                // Wait for test to signal it's ready (matches Java's awaitBotIntentContinueOrFail)
                 _botIntentContinueEvent.WaitOne();
+                // AutoResetEvent auto-resets after WaitOne, so next intent will wait again
 
                 lock (_stateLock)
                 {
@@ -396,7 +421,10 @@ public class MockedServer
                     if (_radarDirectionMinLimit != null && _radarDirection < _radarDirectionMinLimit) return;
                     if (_radarDirectionMaxLimit != null && _radarDirection > _radarDirectionMaxLimit) return;
 
+                    // Parse intent and assign to volatile field (ensures visibility like Java)
                     _botIntent = JsonConverter.FromJson<BotIntent>(messageJson);
+
+                    // Signal AFTER intent is fully parsed (matches Java happens-before)
                     _botIntentEvent.Set();
 
                     SendTickEventForBot(conn, _turnNumber++);

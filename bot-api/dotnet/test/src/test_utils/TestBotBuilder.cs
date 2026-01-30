@@ -276,12 +276,12 @@ public class TestBotBuilder
     }
 
     /// <summary>
-    /// Build a bot using the default server URL (MockedServer.ServerUrl).
+    /// Build a bot using a fresh server URL (finds an available port).
     /// </summary>
     /// <returns>A configured bot instance.</returns>
     public Bot Build()
     {
-        return Build(MockedServer.ServerUrl);
+        return Build(new Uri($"ws://127.0.0.1:{MockedServer.Port}"));
     }
 
     /// <summary>

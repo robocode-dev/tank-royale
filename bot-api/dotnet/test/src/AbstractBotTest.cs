@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,7 +40,7 @@ public class AbstractBotTest
         .Build();
 
     private class TestBot : BaseBot {
-        public TestBot() : base(BotInfo, MockedServer.ServerUrl)
+        public TestBot(Uri serverUrl) : base(BotInfo, serverUrl)
         {
         }
     }
@@ -80,7 +80,7 @@ public class AbstractBotTest
     /// <returns>The started bot instance</returns>
     protected BaseBot Start()
     {
-        var bot = new TestBot();
+        var bot = new TestBot(Server.ServerUrl);
         StartAsync(bot);
         return bot;
     }
