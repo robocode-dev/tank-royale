@@ -1,7 +1,40 @@
 # Testing and Build Procedures
 
-<!-- METADATA: ~135 lines, ~1200 tokens -->
-<!-- KEYWORDS: test, build, Gradle, gradlew, compile, validation, sample bot, backward compatibility, asyncio, python, hanging -->
+<!-- METADATA: ~160 lines, ~1400 tokens -->
+<!-- KEYWORDS: test, build, Gradle, gradlew, compile, validation, sample bot, backward compatibility, asyncio, python, hanging, sequence diagram, protocol -->
+
+## Protocol Sequence Diagrams (CRITICAL)
+
+**Always consult `schema/schemas/README.md` before writing tests for Bot API or MockedServer.**
+
+This file contains authoritative Mermaid sequence diagrams showing the exact message flow between:
+- Bot ↔ Server
+- Observer ↔ Server  
+- Controller ↔ Server
+
+**Key sequences to understand:**
+
+| Sequence | When to Reference |
+|----------|-------------------|
+| `bot-joining` | Tests involving bot handshake, connection |
+| `starting-game` | Tests involving game start, bot-ready |
+| `running-next-turn` | Tests involving tick events, bot-intent, turn flow |
+| `game-ending` | Tests involving game end, results |
+
+**For MockedServer test utilities:**
+- The MockedServer MUST follow the same message ordering as the real server
+- `await_bot_ready()` must chain: handshake → game-started → tick (per diagram)
+- `set_bot_state_and_await_tick()` must send tick and await intent response
+- Intent is sent BEFORE waiting for next turn (per `running-next-turn` diagram)
+
+**Example from diagram - Running next turn:**
+```
+Server → Bot: tick-event-for-bot
+Bot → Server: bot-intent
+Server → Server: Turn timeout
+```
+
+This means: tick is sent first, bot responds with intent, then turn timeout occurs.
 
 ## Build Requirements
 

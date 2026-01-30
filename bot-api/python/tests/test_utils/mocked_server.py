@@ -106,7 +106,10 @@ class MockedServer:
         self._bot_ready_event = threading.Event()  # Set when bot sends BotReady
         self._tick_event = threading.Event()
         self._bot_intent_event = threading.Event()
+        # Initialize continue event to SET so intents flow through by default
+        # Tests call reset_bot_intent_latch() to clear it and set up for capture
         self._bot_intent_continue_event = threading.Event()
+        self._bot_intent_continue_event.set()  # Allow intents through by default
 
         # state captured
         # These are accessed from multiple threads and must be protected by _lock
@@ -323,20 +326,27 @@ class MockedServer:
         self._tick_event.clear()
 
     def await_bot_intent(self, timeout_ms: int) -> bool:
-        # Reset the event for this wait
-        self._bot_intent_event.clear()
-        # Allow next bot intent to continue processing
+        """Wait for bot intent with timeout. Matches Java's awaitBotIntent().
+
+        First releases the continue event to allow the handler to proceed,
+        then waits for the intent event to be signaled.
+        """
+        # Release the continue event (like Java: botIntentContinueLatch.countDown())
         self._bot_intent_continue_event.set()
+        # Then wait for the intent event (like Java: botIntentLatch.await())
         return self._bot_intent_event.wait(timeout_ms / 1000.0)
 
-    def reset_bot_intent_event(self) -> None:
-        """
-        Reset the bot intent event and latch.
-        This is called before executing a command to prepare for capturing the next intent.
-        """
+    def reset_bot_intent_latch(self) -> None:
+        """Reset the bot intent event. Call before triggering an intent you want to capture."""
         self._bot_intent_event.clear()
-        # Reset the continue event to block the next intent until we're ready
         self._bot_intent_continue_event.clear()
+        with self._bot_intent_lock:
+            self._bot_intent = None
+
+    # Alias for backward compatibility
+    def reset_bot_intent_event(self) -> None:
+        """Alias for reset_bot_intent_latch for backward compatibility."""
+        self.reset_bot_intent_latch()
 
     def get_bot_intent(self):
         """
@@ -585,15 +595,16 @@ class MockedServer:
                             if self._radar_direction_max_limit is not None and self._radar_direction > self._radar_direction_max_limit:
                                 continue
 
-                        # Wait for external allowance to continue
-                        await self._wait_for_intent_continue()
+                        # Wait for test to call await_bot_intent() which sets the continue event
+                        # This prevents feedback loop where tick->intent->tick->intent...
+                        # Matches Java's awaitBotIntentContinueOrFail()
+                        await self._await_bot_intent_continue()
 
-                        # Store intent with proper locking BEFORE signaling the event
-                        # This ensures test threads see the parsed intent when the event is set
+                        # Store intent immediately
                         with self._bot_intent_lock:
                             self._bot_intent = message
 
-                        # Signal that intent is available AFTER it's fully stored
+                        # Signal that intent is available
                         self._bot_intent_event.set()
 
                         # Advance state before sending tick
@@ -621,27 +632,28 @@ class MockedServer:
                 self._connections.remove(websocket)
 
     def _reset_movement_commands(self):
-        # This should match the Java/.NET logic
-        with self._bot_intent_lock:
-            if self._bot_intent:
-                self._bot_intent.turn_rate = None
-                self._bot_intent.gun_turn_rate = None
-                self._bot_intent.radar_turn_rate = None
-                self._bot_intent.target_speed = None
-                self._bot_intent.firepower = None
+        # This method was incorrectly modifying the captured bot intent.
+        # The captured intent should remain unchanged for test assertions.
+        # If we need to reset server-side state for the next turn, we should use
+        # separate internal variables, not modify the captured intent.
+        # For now, this method is a no-op since we don't need to reset anything.
+        pass
 
-    async def _wait_for_intent_continue(self) -> None:
-        # Bridge threading.Event into asyncio loop using polling
-        # CRITICAL: Do NOT use run_in_executor(None, ...) as it creates a default
-        # ThreadPoolExecutor that never shuts down and causes pytest to hang!
-        if self._bot_intent_continue_event.is_set():
-            self._bot_intent_continue_event.clear()
-            return
+    async def _await_bot_intent_continue(self) -> None:
+        """Wait for continue event to be set. Matches Java's awaitBotIntentContinueOrFail().
 
+        Bridge threading.Event into asyncio loop using polling.
+        CRITICAL: Do NOT use run_in_executor(None, ...) as it creates a default
+        ThreadPoolExecutor that never shuts down and causes pytest to hang!
+
+        Note: We do NOT clear the event here. The event stays set until
+        reset_bot_intent_latch() is called. This allows intents to flow
+        through during setup, and only blocks when test explicitly resets.
+        """
         # Poll with small sleep instead of blocking executor
         while not self._bot_intent_continue_event.wait(timeout=0.01):
             await asyncio.sleep(0)  # Yield to event loop
-        self._bot_intent_continue_event.clear()
+        # Do NOT clear here - let reset_bot_intent_latch() control blocking
 
     async def _send_server_handshake(self, websocket) -> None:
         # Build ServerHandshake using required constructor args per generated schema

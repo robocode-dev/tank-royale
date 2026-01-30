@@ -36,6 +36,7 @@ Load specific instruction files from `.ai/` based on your task:
 | Java, Python, C# style conventions | `.ai/coding-conventions.md` |
 | Testing, building, Gradle          | `.ai/testing-and-build.md`  |
 | Python asyncio, test hanging       | `.ai/testing-and-build.md`  |
+| **MockedServer, sequence diagrams**| `.ai/testing-and-build.md` + `schema/schemas/README.md` |
 | Docs, VERSIONS.md, Javadoc         | `.ai/documentation.md`      |
 | File encoding, standards           | `.ai/standards.md`          |
 | **Planning, specs, proposals**     | `@/openspec/AGENTS.md` ⚠️   |

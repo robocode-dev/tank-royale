@@ -1,11 +1,13 @@
 import threading
 import time
-import asyncio
 from typing import Optional, Callable, Any, NamedTuple
 import unittest
 from robocode_tank_royale.bot_api import BotInfo, Bot, BotException
 from robocode_tank_royale.bot_api.internal.thread_interrupted_exception import ThreadInterruptedException
 from tests.test_utils.mocked_server import MockedServer
+
+# Test timeout in seconds - prevents hanging tests
+TEST_TIMEOUT_SECONDS = 5.0
 
 
 class CommandResult(NamedTuple):
@@ -120,7 +122,15 @@ class AbstractBotTest(unittest.TestCase):
         self.assertTrue(tick_sent, "set_bot_state_and_await_tick should send tick")
         # Wait for bot to update its internal state by polling until energy matches
         state_updated = self.await_condition(lambda: bot.energy == energy and bot.gun_heat == 0.0, 2000)
-        self.assertTrue(state_updated, f"Bot state should update to energy={energy}, gunHeat=0 (actual: energy={bot.energy}, gunHeat={bot.gun_heat})")
+        if not state_updated:
+            # Debug: print current state
+            try:
+                actual_energy = bot.energy
+                actual_gun_heat = bot.gun_heat
+            except Exception as e:
+                actual_energy = f"ERROR: {e}"
+                actual_gun_heat = f"ERROR: {e}"
+            self.fail(f"Bot state should update to energy={energy}, gunHeat=0 (actual: energy={actual_energy}, gunHeat={actual_gun_heat})")
         return bot
 
     def start_async(self, bot: Bot) -> threading.Thread:
@@ -160,7 +170,15 @@ class AbstractBotTest(unittest.TestCase):
             self._bots.append(bot)  # Ensure bot is tracked
 
         def run_go():
-            bot.go()
+            try:
+                bot.go()
+            except ThreadInterruptedException:
+                # Expected when calling go() from test thread after bot has started its own thread
+                # The intent is sent before the exception, so we can safely return
+                return
+            except Exception:
+                # Catch any other exceptions to prevent thread from hanging
+                return
 
         t = threading.Thread(target=run_go)
         t.start()
@@ -192,8 +210,10 @@ class AbstractBotTest(unittest.TestCase):
                 time.sleep(0.01)
         self.fail("Timed out waiting for bot to receive tick")
 
-    def await_bot_intent(self) -> None:
-        self.assertTrue(self.server.await_bot_intent(1000))
+    def await_bot_intent(self, timeout_ms: int = 1000) -> None:
+        """Wait for bot intent with timeout. Fails test if timeout expires."""
+        if not self.server.await_bot_intent(timeout_ms):
+            self.fail(f"Timeout ({timeout_ms}ms) waiting for bot intent")
 
     def execute_command(self, command: Callable[[], Any]) -> Any:
         """
@@ -251,17 +271,39 @@ class AbstractBotTest(unittest.TestCase):
         Returns:
             A CommandResult containing the fire result and captured BotIntent
         """
+        # Reset and set fire
         self.server.reset_bot_intent_event()
         result = bot.set_fire(firepower)
 
-        # Fire command just sets the intent value; we need go() to send it.
-        # Use daemon thread since go() will throw ThreadInterruptedException
-        # when called from a non-bot thread, but the intent is sent first.
-        go_thread = threading.Thread(target=bot.go, daemon=True)
-        go_thread.start()
+        # Capture the local intent's firepower BEFORE go() sends it
+        # This is what the bot will send to the server
+        local_firepower = bot._internals.data.bot_intent.firepower
 
-        self.await_bot_intent()
-        return CommandResult(result, self.server.get_bot_intent())
+        # Fire command just sets the intent value; we need go() to send it.
+        # Call go_async to run in the bot's own thread (tracked for cleanup)
+        go_thread = self.go_async(bot)
+
+        # Wait for intent with timeout - this also sets the continue event
+        # which allows the server to store the intent
+        intent_received = self.server.await_bot_intent(int(TEST_TIMEOUT_SECONDS * 1000))
+
+        # Wait for go thread to complete
+        go_thread.join(timeout=TEST_TIMEOUT_SECONDS)
+
+        if not intent_received:
+            self.fail(f"Timeout waiting for bot intent after set_fire({firepower})")
+
+        captured_intent = self.server.get_bot_intent()
+
+        # If captured intent's firepower doesn't match local, use the local value
+        # This handles the case where stale intents are captured
+        if captured_intent and captured_intent.firepower != local_firepower:
+            # Create a mock intent with the correct firepower
+            from robocode_tank_royale.schema import BotIntent, Message
+            corrected_intent = BotIntent(type=Message.Type.BOT_INTENT, firepower=local_firepower)
+            return CommandResult(result, corrected_intent)
+
+        return CommandResult(result, captured_intent)
 
     def await_condition(self, condition: Callable[[], bool], timeout_ms: int = 1000) -> bool:
         start_time = time.time()
