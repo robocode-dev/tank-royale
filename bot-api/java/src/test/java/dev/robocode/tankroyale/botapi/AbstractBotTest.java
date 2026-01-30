@@ -152,8 +152,13 @@ abstract class AbstractBotTest {
     protected BaseBot startAndPrepareForFire() {
         var bot = start();
         awaitGameStarted(bot);
-        // Set gun heat to 0 so bot can fire immediately
-        server.setInitialBotState(null, 0.0, null, null, null, null);
+        // Set gun heat to 0 and energy to 100 so bot can fire immediately
+        // Use setBotStateAndAwaitTick to actually send the state to the bot
+        boolean tickSent = server.setBotStateAndAwaitTick(100.0, 0.0, null, null, null, null);
+        assertThat(tickSent).as("setBotStateAndAwaitTick should send tick").isTrue();
+        // Wait for bot to update its internal state by polling until energy matches
+        boolean stateUpdated = awaitCondition(() -> bot.getEnergy() == 100.0 && bot.getGunHeat() == 0.0, 2000);
+        assertThat(stateUpdated).as("Bot state should update to energy=100, gunHeat=0 (actual: energy=" + bot.getEnergy() + ", gunHeat=" + bot.getGunHeat() + ")").isTrue();
         return bot;
     }
 

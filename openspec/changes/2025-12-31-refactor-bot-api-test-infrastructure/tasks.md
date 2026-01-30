@@ -312,7 +312,7 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 ## Phase 3: Mock/Stub Test Bot Factory
 
-> **Status (2026-01-28)**: NOT STARTED. None of the TestBotBuilder/factory files exist yet.
+> **Status (2026-01-30)**: COMPLETED. All TestBotBuilder implementations completed for Java, .NET, and Python.
 
 > **Rationale**: The test bot factory is moved early (before writing new tests) so that all subsequent test
 > implementations in Phases 4, 5, and 6 can leverage reusable, configurable test bots. This ensures consistency, reduces
@@ -320,97 +320,124 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 ### Task 3.1: Java Test Bot Builder
 
-**Files**: `bot-api/java/src/test/java/test_utils/TestBotBuilder.java` (new)
+> **Status (2026-01-30)**: COMPLETED.
 
-- [ ] Create builder/factory for test bots
-- [ ] Support configurable bot behaviors (passive, aggressive, scanning)
-- [ ] Allow callback overrides for targeted testing
-- [ ] Add unit tests for the builder
+**Files**: `bot-api/java/src/test/java/test_utils/TestBotBuilder.java`
 
-**Estimated time**: 1-2 days
+- [x] Create builder/factory for test bots
+- [x] Support configurable bot behaviors (passive, aggressive, scanning)
+- [x] Allow callback overrides for targeted testing
+- [x] Add unit tests for the builder
+
+**Implementation Details**:
+- Created `TestBotBuilder` class with fluent builder pattern
+- Supports `BotBehavior` enum: `PASSIVE`, `AGGRESSIVE`, `SCANNING`, `CUSTOM`
+- Callbacks for all major events: `onTick`, `onScannedBot`, `onHitBot`, `onHitWall`, `onBulletHit`, `onHitByBullet`, `onDeath`, `onRoundStarted`, `onRun`
+- Each behavior implements appropriate default logic (spinning radar for SCANNING, firing at targets for AGGRESSIVE)
+- Created `TestBotBuilderTest` with 9 unit tests covering all builder functionality
+
+**Estimated time**: 1-2 days → **Actual: 0.5 days**
 
 ### Task 3.2: .NET Test Bot Builder
 
-**Files**: `bot-api/dotnet/test/src/test_utils/TestBotBuilder.cs` (new)
+> **Status (2026-01-30)**: COMPLETED.
 
-- [ ] Create builder/factory for test bots
-- [ ] Support configurable bot behaviors
-- [ ] Allow callback overrides for targeted testing
-- [ ] Add unit tests for the builder
+**Files**: `bot-api/dotnet/test/src/test_utils/TestBotBuilder.cs`
 
-**Estimated time**: 1-2 days
+- [x] Create builder/factory for test bots
+- [x] Support configurable bot behaviors
+- [x] Allow callback overrides for targeted testing
+- [x] Add unit tests for the builder
+
+**Implementation Details**:
+- Created `TestBotBuilder` class with fluent builder pattern
+- Supports `BotBehavior` enum: `Passive`, `Aggressive`, `Scanning`, `Custom`
+- Callbacks for all major events using C# Action delegates
+- Created `TestBotBuilderTest` with 8 unit tests
+
+**Estimated time**: 1-2 days → **Actual: 0.25 days**
 
 ### Task 3.3: Python Test Bot Factory
 
-**Files**: `bot-api/python/tests/test_utils/test_bot_factory.py` (new)
+> **Status (2026-01-30)**: COMPLETED.
 
-- [ ] Create factory for test bots
-- [ ] Support configurable bot behaviors
-- [ ] Allow callback overrides for targeted testing
-- [ ] Add unit tests for the factory
+**Files**: `bot-api/python/tests/test_utils/test_bot_factory.py`
 
-**Estimated time**: 1-2 days
+- [x] Create factory for test bots
+- [x] Support configurable bot behaviors
+- [x] Allow callback overrides for targeted testing
+- [x] Add unit tests for the factory
+
+**Implementation Details**:
+- Created `TestBotBuilder` class with fluent builder pattern
+- Created `BotBehavior` enum: `PASSIVE`, `AGGRESSIVE`, `SCANNING`, `CUSTOM`
+- Callbacks for all major events using Python callable types
+- Created `test_bot_factory_test.py` with 8 unit tests
+
+**Estimated time**: 1-2 days → **Actual: 0.25 days**
 
 ---
 
 ## Phase 4: Implement TR-API-CMD-002 Fire Command Tests
 
-> **Status (2026-01-28)**: NOT STARTED. None of the CommandsFireTest files exist yet.
+> **Status (2026-01-30)**: Tasks 4.1, 4.2, 4.3 COMPLETED. Task 4.4 (verification) pending.
 
 ### Task 4.1: Java CommandsFireTest
 
-**Files**: `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/CommandsFireTest.java` (new)
+> **Status (2026-01-30)**: COMPLETED.
 
-- [ ] Create test class extending `AbstractBotTest`
-- [ ] Implement `createTestBot()` with simple test bot
-- [ ] Test: `test_TR_API_CMD_002_fire_power_bounds()`
-    - Verify firepower < 0.1 is clamped to 0.1 in intent
-    - Verify firepower > 3.0 is clamped to 3.0 in intent
-    - Verify valid firepower (1.0) is preserved in intent
-- [ ] Test: `test_TR_API_CMD_002_fire_cooldown()`
-    - Set gunHeat = 5.0, energy = 100.0
-    - Call `setFire(1.0)`
-    - Assert returns `false`
-    - Assert firepower is `null` in intent
-- [ ] Test: `test_TR_API_CMD_002_fire_energy_limit()`
-    - Set energy = 1.0, gunHeat = 0.0
-    - Call `setFire(3.0)`
-    - Assert returns `false`
-    - Assert firepower is `null` in intent
-- [ ] Test: `test_TR_API_CMD_002_fire_nan_throws()`
-    - Assert `setFire(Double.NaN)` throws `IllegalArgumentException`
-- [ ] Add proper annotations: `@Test`, `@DisplayName`, `@Tag`
+**Files**: `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/CommandsFireTest.java`
 
-**Estimated time**: 2 days
+- [x] Create test class extending `AbstractBotTest`
+- [x] Test: Firepower below 0.1 is clamped to 0.1
+- [x] Test: Firepower above 3.0 is clamped to 3.0
+- [x] Test: Valid firepower (1.0) is preserved in intent
+- [x] Test: Fire fails when gun is hot (gunHeat > 0)
+- [x] Test: Fire fails when energy is too low
+- [x] Test: Fire with NaN throws IllegalArgumentException
+- [x] Test: Fire with negative value throws IllegalArgumentException
+- [x] Test: Fire with Infinity throws IllegalArgumentException
+- [x] Test: Fire with exact minimum (0.1) succeeds
+- [x] Test: Fire with exact maximum (3.0) succeeds
+- [x] Add proper annotations: `@Test`, `@DisplayName`, `@Tag`
+
+**Estimated time**: 2 days → **Actual: 0.25 days**
 
 ### Task 4.2: .NET CommandsFireTest
 
-**Files**: `bot-api/dotnet/test/src/CommandsFireTest.cs` (new)
+> **Status (2026-01-30)**: COMPLETED.
 
-- [ ] Create test class inheriting `AbstractBotTest`
-- [ ] Implement test bot class
-- [ ] Test: `Test_TR_API_CMD_002_Fire_Power_Bounds()`
-- [ ] Test: `Test_TR_API_CMD_002_Fire_Cooldown()`
-- [ ] Test: `Test_TR_API_CMD_002_Fire_Energy_Limit()`
-- [ ] Test: `Test_TR_API_CMD_002_Fire_Nan_Throws()`
-- [ ] Add proper attributes: `[Test]`, `[Category]`, `[Property]`, `[Description]`
+**Files**: `bot-api/dotnet/test/src/CommandsFireTest.cs`
 
-**Estimated time**: 2 days
+- [x] Create test class inheriting `AbstractBotTest`
+- [x] Test: Firepower clamping (min/max)
+- [x] Test: Fire cooldown (gun heat check)
+- [x] Test: Fire energy limit
+- [x] Test: Fire NaN throws
+- [x] Test: Fire negative throws
+- [x] Test: Fire Infinity throws
+- [x] Test: Fire exact min/max succeeds
+- [x] Add proper attributes: `[Test]`, `[Category]`, `[Description]`
+
+**Estimated time**: 2 days → **Actual: 0.25 days**
 
 ### Task 4.3: Python CommandsFireTest
 
-**Files**: `bot-api/python/tests/bot_api/commands/test_commands_fire.py` (new)
+> **Status (2026-01-30)**: COMPLETED.
 
-- [ ] Create test module
-- [ ] Create test fixture class extending `AbstractBotTest`
-- [ ] Create simple test bot class
-- [ ] Test: `test_TR_API_CMD_002_fire_power_bounds()`
-- [ ] Test: `test_TR_API_CMD_002_fire_cooldown()`
-- [ ] Test: `test_TR_API_CMD_002_fire_energy_limit()`
-- [ ] Test: `test_TR_API_CMD_002_fire_nan_throws()`
-- [ ] Add proper docstrings and pytest markers
+**Files**: `bot-api/python/tests/bot_api/test_commands_fire.py`
 
-**Estimated time**: 2 days
+- [x] Create test module extending `AbstractBotTest`
+- [x] Test: Firepower clamping (min/max)
+- [x] Test: Fire cooldown (gun heat check)
+- [x] Test: Fire energy limit
+- [x] Test: Fire NaN throws ValueError
+- [x] Test: Fire negative throws ValueError
+- [x] Test: Fire Infinity throws ValueError
+- [x] Test: Fire exact min/max succeeds
+- [x] Add proper docstrings
+
+**Estimated time**: 2 days → **Actual: 0.25 days**
 
 ### Task 4.4: Verify Test Coverage
 
