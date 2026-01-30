@@ -1,6 +1,5 @@
 using System;
 using NUnit.Framework;
-using Robocode.TankRoyale.BotApi.Tests.Test_utils;
 
 namespace Robocode.TankRoyale.BotApi.Tests;
 
@@ -18,32 +17,46 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 [Description("Fire Commands (TR-API-CMD-002)")]
 public class CommandsFireTest : AbstractBotTest
 {
+    /// <summary>
+    /// Helper to test SetFire and capture the resulting intent.
+    /// After calling SetFire, we need to trigger Go() to actually send the intent.
+    /// </summary>
+    private CommandResult<bool> SetFireAndGetIntent(BaseBot bot, double firepower)
+    {
+        Server.ResetBotIntentEvent();
+        bool result = bot.SetFire(firepower);
+        // Fire command just sets the intent value; we need Go() to send it
+        GoAsync(bot);
+        AwaitBotIntent();
+        return new CommandResult<bool>(result, Server.BotIntent);
+    }
+
     [Test]
-    [Description("Firepower below 0.1 is clamped to 0.1")]
-    public void TestFirepowerBelowMinIsClamped()
+    [Description("Firepower below 0.1 is sent as-is (server clamps)")]
+    public void TestFirepowerBelowMinSentAsIs()
     {
         var bot = StartAndPrepareForFire();
 
         // Execute fire with value below minimum
-        var result = ExecuteCommandAndGetIntent(() => bot.SetFire(0.05));
+        var result = SetFireAndGetIntent(bot, 0.05);
 
-        // Fire should succeed (true) with clamped value
+        // Fire should succeed - API sends raw value, server will clamp
         Assert.That(result.Result, Is.True);
-        Assert.That(result.Intent.Firepower, Is.EqualTo(0.1));
+        Assert.That(result.Intent.Firepower, Is.EqualTo(0.05));
     }
 
     [Test]
-    [Description("Firepower above 3.0 is clamped to 3.0")]
-    public void TestFirepowerAboveMaxIsClamped()
+    [Description("Firepower above 3.0 is sent as-is (server clamps)")]
+    public void TestFirepowerAboveMaxSentAsIs()
     {
         var bot = StartAndPrepareForFire();
 
-        // Execute fire with value above maximum
-        var result = ExecuteCommandAndGetIntent(() => bot.SetFire(5.0));
+        // Execute fire with value of 5.0 - this is above max but passes energy check (100 > 5)
+        var result = SetFireAndGetIntent(bot, 5.0);
 
-        // Fire should succeed (true) with clamped value
+        // Fire should succeed - API sends raw value, server will clamp
         Assert.That(result.Result, Is.True);
-        Assert.That(result.Intent.Firepower, Is.EqualTo(3.0));
+        Assert.That(result.Intent.Firepower, Is.EqualTo(5.0));
     }
 
     [Test]
@@ -53,7 +66,7 @@ public class CommandsFireTest : AbstractBotTest
         var bot = StartAndPrepareForFire();
 
         // Execute fire with valid value
-        var result = ExecuteCommandAndGetIntent(() => bot.SetFire(1.0));
+        var result = SetFireAndGetIntent(bot, 1.0);
 
         // Fire should succeed (true) with exact value
         Assert.That(result.Result, Is.True);
@@ -68,11 +81,13 @@ public class CommandsFireTest : AbstractBotTest
         var bot = Start();
         AwaitGameStarted(bot);
 
-        // Set high gun heat so bot cannot fire
-        Server.SetInitialBotState(100.0, 5.0, null, null, null, null);
+        // Set high gun heat so bot cannot fire - use SetBotStateAndAwaitTick to send state to bot
+        Server.SetBotStateAndAwaitTick(100.0, 5.0, null, null, null, null);
+        // Wait for bot to process the updated state
+        AwaitCondition(() => bot.GunHeat == 5.0, 1000);
 
         // Execute fire - should fail due to gun heat
-        var result = ExecuteCommandAndGetIntent(() => bot.SetFire(1.0));
+        var result = SetFireAndGetIntent(bot, 1.0);
 
         // Fire should fail (false) and firepower should be null
         Assert.That(result.Result, Is.False);
@@ -87,11 +102,13 @@ public class CommandsFireTest : AbstractBotTest
         var bot = Start();
         AwaitGameStarted(bot);
 
-        // Set low energy and no gun heat
-        Server.SetInitialBotState(0.5, 0.0, null, null, null, null);
+        // Set low energy and no gun heat - use SetBotStateAndAwaitTick to send state to bot
+        Server.SetBotStateAndAwaitTick(0.5, 0.0, null, null, null, null);
+        // Wait for bot to process the updated state
+        AwaitCondition(() => bot.Energy == 0.5 && bot.GunHeat == 0.0, 1000);
 
         // Execute fire with high firepower - should fail due to energy
-        var result = ExecuteCommandAndGetIntent(() => bot.SetFire(3.0));
+        var result = SetFireAndGetIntent(bot, 3.0);
 
         // Fire should fail (false) and firepower should be null
         Assert.That(result.Result, Is.False);
@@ -109,31 +126,32 @@ public class CommandsFireTest : AbstractBotTest
     }
 
     [Test]
-    [Description("Fire with negative value is clamped to minimum (0.1)")]
-    public void TestFireWithNegativeValueIsClamped()
+    [Description("Fire with negative value sets raw value (API does not clamp)")]
+    public void TestFireWithNegativeValueSetsRawValue()
     {
         var bot = StartAndPrepareForFire();
 
-        // Execute fire with negative value - should be clamped to 0.1
-        var result = ExecuteCommandAndGetIntent(() => bot.SetFire(-1.0));
+        // Execute fire with negative value - API does not validate/clamp
+        var result = SetFireAndGetIntent(bot, -1.0);
 
-        // Fire should succeed (true) with clamped value
+        // Fire succeeds because energy check passes (100.0 >= -1.0)
+        // The raw value is sent to the server (no clamping in client API)
         Assert.That(result.Result, Is.True);
-        Assert.That(result.Intent.Firepower, Is.EqualTo(0.1));
+        Assert.That(result.Intent.Firepower, Is.EqualTo(-1.0));
     }
 
     [Test]
-    [Description("Fire with Infinity is clamped to maximum (3.0)")]
-    public void TestFireWithInfinityIsClamped()
+    [Description("Fire with Infinity fails because energy is insufficient")]
+    public void TestFireWithInfinityFailsEnergyCheck()
     {
         var bot = StartAndPrepareForFire();
 
-        // Execute fire with Infinity - should be clamped to 3.0
-        var result = ExecuteCommandAndGetIntent(() => bot.SetFire(double.PositiveInfinity));
+        // Execute fire with Infinity - fails because energy < Infinity
+        var result = SetFireAndGetIntent(bot, double.PositiveInfinity);
 
-        // Fire should succeed (true) with clamped value
-        Assert.That(result.Result, Is.True);
-        Assert.That(result.Intent.Firepower, Is.EqualTo(3.0));
+        // Fire should fail (false) because energy (100.0) < Infinity
+        Assert.That(result.Result, Is.False);
+        Assert.That(result.Intent.Firepower, Is.Null);
     }
 
     [Test]
@@ -143,7 +161,7 @@ public class CommandsFireTest : AbstractBotTest
         var bot = StartAndPrepareForFire();
 
         // Execute fire with exact minimum
-        var result = ExecuteCommandAndGetIntent(() => bot.SetFire(0.1));
+        var result = SetFireAndGetIntent(bot, 0.1);
 
         // Fire should succeed (true)
         Assert.That(result.Result, Is.True);
@@ -157,7 +175,7 @@ public class CommandsFireTest : AbstractBotTest
         var bot = StartAndPrepareForFire();
 
         // Execute fire with exact maximum
-        var result = ExecuteCommandAndGetIntent(() => bot.SetFire(3.0));
+        var result = SetFireAndGetIntent(bot, 3.0);
 
         // Fire should succeed (true)
         Assert.That(result.Result, Is.True);

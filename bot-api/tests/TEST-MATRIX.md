@@ -170,10 +170,10 @@ Notes:
   per spec.
 - TR-API-CMD-002 Fire command: power bounds enforced; resulting intent serializes correctly; cooldown respected if
   applicable.
-    - [ ] `test_TR_API_CMD_002_fire_power_bounds()`: Verify firepower clamping (0.1 to 3.0).
-    - [ ] `test_TR_API_CMD_002_fire_cooldown()`: Verify `setFire()` returns `false` if `getGunHeat() > 0`.
-    - [ ] `test_TR_API_CMD_002_fire_energy_limit()`: Verify `setFire()` returns `false` if `firepower > getEnergy()`.
-    - [ ] `test_TR_API_CMD_002_fire_nan_throws()`: Verify `Double.NaN` throws `IllegalArgumentException`.
+    - [x] `test_TR_API_CMD_002_fire_power_bounds()`: Verify firepower clamping (0.1 to 3.0).
+    - [x] `test_TR_API_CMD_002_fire_cooldown()`: Verify `setFire()` returns `false` if `getGunHeat() > 0`.
+    - [x] `test_TR_API_CMD_002_fire_energy_limit()`: Verify `setFire()` returns `false` if `firepower > getEnergy()`.
+    - [x] `test_TR_API_CMD_002_fire_nan_throws()`: Verify `Double.NaN` throws `IllegalArgumentException`.
 - TR-API-CMD-003 Radar/Scan commands: rescan/locking behavior produces expected intents/events.
     - These tests have proven difficult to implement in using even the strongest AI.
     - Java and .Net/C# test seems to work

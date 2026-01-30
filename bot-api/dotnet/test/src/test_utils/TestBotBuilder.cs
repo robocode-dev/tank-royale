@@ -387,7 +387,7 @@ public class TestBotBuilder
 
                     case BotBehavior.Scanning:
                         // Spin radar continuously
-                        SetRadarTurnRate(Constants.MaxRadarTurnRate);
+                        RadarTurnRate = Constants.MaxRadarTurnRate;
                         break;
 
                     case BotBehavior.Custom:
@@ -410,8 +410,8 @@ public class TestBotBuilder
             if (_config.Behavior == BotBehavior.Aggressive)
             {
                 // Turn gun toward scanned bot and fire
-                var bearingFromGun = BearingFrom(scannedBotEvent.X, scannedBotEvent.Y) - GunDirection + Direction;
-                SetTurnGunLeft(bearingFromGun);
+                var bearingToTarget = GunBearingTo(scannedBotEvent.X, scannedBotEvent.Y);
+                SetTurnGunLeft(bearingToTarget);
                 SetFire(2);
             }
 

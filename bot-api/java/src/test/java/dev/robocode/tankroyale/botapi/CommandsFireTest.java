@@ -48,8 +48,8 @@ class CommandsFireTest extends AbstractBotTest {
     }
 
     @Test
-    @DisplayName("Firepower above 3.0 fails energy check if above energy")
-    void testFirepowerAboveMaxFailsIfAboveEnergy() {
+    @DisplayName("Firepower above 3.0 is sent as-is (server clamps)")
+    void testFirepowerAboveMaxSentAsIs() {
         var bot = startAndPrepareForFire();
 
         // Execute fire with value of 5.0 - this is above max but passes energy check (100 > 5)

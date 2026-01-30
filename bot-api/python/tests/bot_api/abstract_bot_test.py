@@ -1,11 +1,18 @@
 import threading
 import time
 import asyncio
-from typing import Optional, Callable, Any
+from typing import Optional, Callable, Any, NamedTuple
 import unittest
 from robocode_tank_royale.bot_api import BotInfo, Bot, BotException
 from robocode_tank_royale.bot_api.internal.thread_interrupted_exception import ThreadInterruptedException
 from tests.test_utils.mocked_server import MockedServer
+
+
+class CommandResult(NamedTuple):
+    """Wrapper that holds both a command's return value and the captured bot intent."""
+    result: Any
+    intent: dict
+
 
 class AbstractBotTest(unittest.TestCase):
     """
@@ -105,9 +112,16 @@ class AbstractBotTest(unittest.TestCase):
         Raises:
             TimeoutError: If bot fails to become ready within timeout.
         """
-        # Set initial state BEFORE starting the bot
-        self.server.set_initial_bot_state(energy=energy, gun_heat=0.0)
-        return self.start_bot(bot)
+        bot = self.start_bot(bot)
+        self.await_game_started(bot)
+        # Set gun heat to 0 and energy so bot can fire immediately
+        # Use set_bot_state_and_await_tick to actually send the state to the bot
+        tick_sent = self.server.set_bot_state_and_await_tick(energy=energy, gun_heat=0.0)
+        self.assertTrue(tick_sent, "set_bot_state_and_await_tick should send tick")
+        # Wait for bot to update its internal state by polling until energy matches
+        state_updated = self.await_condition(lambda: bot.energy == energy and bot.gun_heat == 0.0, 2000)
+        self.assertTrue(state_updated, f"Bot state should update to energy={energy}, gunHeat=0 (actual: energy={bot.energy}, gunHeat={bot.gun_heat})")
+        return bot
 
     def start_async(self, bot: Bot) -> threading.Thread:
         """
@@ -209,7 +223,7 @@ class AbstractBotTest(unittest.TestCase):
         action()
         self.await_bot_intent()
 
-    def execute_command_and_get_intent(self, command: Callable[[], Any]) -> tuple[Any, Any]:
+    def execute_command_and_get_intent(self, command: Callable[[], Any]) -> CommandResult:
         """
         Execute a command and capture both the result and the bot intent sent to the server.
         This is useful for verifying that commands produce the expected intent values.
@@ -218,13 +232,36 @@ class AbstractBotTest(unittest.TestCase):
             command: The command to execute
 
         Returns:
-            A tuple of (result, intent) where result is the command's return value
-            and intent is the captured BotIntent
+            A CommandResult containing the command's return value and captured BotIntent
         """
         self.server.reset_bot_intent_event()
         result = command()
         self.await_bot_intent()
-        return result, self.server.get_bot_intent()
+        return CommandResult(result, self.server.get_bot_intent())
+
+    def set_fire_and_get_intent(self, bot: Bot, firepower: float) -> CommandResult:
+        """
+        Helper to test set_fire and capture the resulting intent.
+        After calling set_fire, we need to trigger go() to actually send the intent.
+
+        Args:
+            bot: The bot to fire with
+            firepower: The firepower value to set
+
+        Returns:
+            A CommandResult containing the fire result and captured BotIntent
+        """
+        self.server.reset_bot_intent_event()
+        result = bot.set_fire(firepower)
+
+        # Fire command just sets the intent value; we need go() to send it.
+        # Use daemon thread since go() will throw ThreadInterruptedException
+        # when called from a non-bot thread, but the intent is sent first.
+        go_thread = threading.Thread(target=bot.go, daemon=True)
+        go_thread.start()
+
+        self.await_bot_intent()
+        return CommandResult(result, self.server.get_bot_intent())
 
     def await_condition(self, condition: Callable[[], bool], timeout_ms: int = 1000) -> bool:
         start_time = time.time()

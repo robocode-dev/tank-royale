@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -135,7 +135,7 @@ public class AbstractBotTest
         Assert.That(Server.AwaitBotHandshake(1000), Is.True);
     }
 
-    private void AwaitGameStarted(BaseBot bot)
+    protected void AwaitGameStarted(BaseBot bot)
     {
         Assert.That(Server.AwaitGameStarted(1000), Is.True);
 
@@ -233,4 +233,50 @@ public class AbstractBotTest
 
     protected static bool ExceptionContainsEnvVarName(BotException botException, string envVarName) =>
         botException != null && botException.Message.ToUpper().Contains(envVarName);
+
+    /// <summary>
+    /// Wait for a condition to become true, polling with a timeout.
+    /// </summary>
+    /// <param name="condition">The condition to check</param>
+    /// <param name="milliSeconds">Timeout in milliseconds</param>
+    /// <returns>True if condition became true, false if timeout</returns>
+    protected bool AwaitCondition(Func<bool> condition, int milliSeconds)
+    {
+        var startTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        do
+        {
+            try
+            {
+                if (condition())
+                {
+                    return true;
+                }
+            }
+            catch (BotException)
+            {
+                // Ignore exceptions during polling
+            }
+            Thread.Yield();
+        } while (DateTimeOffset.Now.ToUnixTimeMilliseconds() - startTime < milliSeconds);
+        return false;
+    }
+
+    /// <summary>
+    /// Start bot, wait for game started, and set gun heat to 0 for fire tests.
+    /// This convenience method prepares the bot to be able to fire immediately.
+    /// </summary>
+    /// <returns>The started bot with gun heat at 0</returns>
+    protected BaseBot StartAndPrepareForFire()
+    {
+        var bot = Start();
+        AwaitGameStarted(bot);
+        // Set gun heat to 0 and energy to 100 so bot can fire immediately
+        // Use SetBotStateAndAwaitTick to actually send the state to the bot
+        bool tickSent = Server.SetBotStateAndAwaitTick(100.0, 0.0, null, null, null, null);
+        Assert.That(tickSent, Is.True, "SetBotStateAndAwaitTick should send tick");
+        // Wait for bot to update its internal state by polling until energy matches
+        bool stateUpdated = AwaitCondition(() => bot.Energy == 100.0 && bot.GunHeat == 0.0, 2000);
+        Assert.That(stateUpdated, Is.True, $"Bot state should update to energy=100, gunHeat=0 (actual: energy={bot.Energy}, gunHeat={bot.GunHeat})");
+        return bot;
+    }
 }
