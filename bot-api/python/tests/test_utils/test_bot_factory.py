@@ -328,13 +328,14 @@ class TestBotBuilder:
         Build a bot using the specified server URL.
 
         Args:
-            server_url: The server URL to connect to. If None, uses MockedServer.SERVER_URL.
+            server_url: The server URL to connect to. If None, uses the URL from the
+                        currently active MockedServer instance (mimics Java behavior).
 
         Returns:
             A configured bot instance.
         """
         if server_url is None:
-            server_url = MockedServer.SERVER_URL
+            server_url = MockedServer.get_server_url()
 
         bot_info = BotInfo(
             name=self._name,
@@ -411,7 +412,7 @@ class _ConfigurableTestBot(Bot):
             self._on_run_callback()
 
         # Behavior-specific run logic
-        while self.is_running:
+        while self.running:
             if self._behavior == BotBehavior.PASSIVE:
                 # Do nothing, just wait for next turn
                 pass

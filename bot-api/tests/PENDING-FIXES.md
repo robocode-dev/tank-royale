@@ -89,43 +89,14 @@ dotnet build
 
 ---
 
-## Python Test Infrastructure (LOW PRIORITY)
-
-### Issue: test_bot_factory_test.py Failures
-
-**Status**: ⚠️ Pre-existing, not blocking fire tests  
-**Priority**: Low  
-**File**: `bot-api/python/tests/test_utils/test_bot_factory_test.py`
-
-**Failing Tests (9):**
-- `test_default_passive_behavior`
-- `test_custom_name`
-- `test_aggressive_behavior`
-- `test_scanning_behavior`
-- `test_on_tick_callback`
-- `test_on_run_callback`
-- `test_callback_chaining`
-- `test_custom_behavior`
-- `test_multiple_bots_from_same_builder`
-
-**Root Cause:**
-- TestBotBuilder tests require full bot lifecycle (run loop)
-- Callbacks (on_tick, on_run) may not trigger without proper event dispatching
-- These are infrastructure tests, not Bot API tests
-
-**Impact:**
-- Does NOT block fire command tests (those pass ✓)
-- Does NOT block other Bot API tests
-- Only affects TestBotBuilder utility class
-
-**Suggested Investigation:**
-1. Check if bot needs to be in run() loop for callbacks to fire
-2. Verify MockedServer sends proper events to trigger callbacks
-3. May need to run bot.start() in a way that allows callback execution
-
----
 
 ## Completed Items ✓
+
+### Python test_bot_factory_test.py - FIXED
+- **Issue**: Tests failing with `AttributeError: '_ConfigurableTestBot' object has no attribute 'is_running'`
+- **Root Cause**: Python Bot API uses `running` property, not `is_running()` method (differs from Java)
+- **Resolution**: Changed `while self.is_running():` to `while self.running:` in test_bot_factory.py line 415
+- **Status**: ✓ All 9 tests pass
 
 ### Python Fire Tests - FIXED
 - **Issue**: Intent capture returning stale firepower values
@@ -143,7 +114,6 @@ dotnet build
 
 1. **HIGH**: Fix Java TestBotBuilderTest hanging (blocking test suite)
 2. **HIGH**: Fix .NET TestBotBuilder.cs compilation errors
-3. **LOW**: Investigate Python test_bot_factory_test.py failures (optional)
 
 ---
 
@@ -154,6 +124,6 @@ dotnet build
 | Java | `CommandsFireTest.java` | ✓ PASS |
 | Java | `TestBotBuilderTest.java` | ⚠️ HANGING |
 | Python | `test_commands_fire.py` | ✓ PASS |
-| Python | `test_bot_factory_test.py` | ⚠️ 9 failures |
+| Python | `test_bot_factory_test.py` | ✓ PASS |
 | .NET | `CommandsFireTest.cs` | ⚠️ Blocked by build |
 | .NET | `TestBotBuilder.cs` | ⚠️ Compile errors |

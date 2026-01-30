@@ -35,6 +35,10 @@ class MockedServer:
     - Emits a ScannedBotEvent each tick; when firepower is set, also emits a BulletFiredEvent
     """
 
+    # Class-level tracking of the most recently started server instance
+    # This allows TestBotBuilder.build() to use the current test's server
+    _current_instance: Optional['MockedServer'] = None
+
     # Static defaults (keep in sync with Java/.NET values)
     session_id: str = "123abc"
     name: str = "MockedServer"
@@ -129,6 +133,22 @@ class MockedServer:
     def server_url(self) -> str:
         return self._server_url
 
+    @classmethod
+    def get_server_url(cls) -> str:
+        """
+        Get the server URL of the currently active MockedServer instance.
+        This mimics Java's static MockedServer.getServerUrl() method.
+
+        Returns:
+            The server URL of the current instance.
+
+        Raises:
+            RuntimeError: If no MockedServer instance has been started.
+        """
+        if cls._current_instance is None:
+            raise RuntimeError("No MockedServer instance is currently active. Call server.start() first.")
+        return cls._current_instance.server_url
+
     @staticmethod
     def _find_available_port() -> int:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -142,6 +162,8 @@ class MockedServer:
         self._thread.start()
         # Wait until the server is accepting connections to avoid race conditions
         self._server_started_event.wait(timeout=2.0)
+        # Track this as the current server instance for TestBotBuilder
+        MockedServer._current_instance = self
 
     def _run_loop(self) -> None:
         assert self._loop is not None
