@@ -9,7 +9,7 @@
 Robocode is a [programming game](https://en.wikipedia.org/wiki/Programming_game) where the goal is to code a bot in the
 form of a virtual tank that competes against other bots in a virtual battle arena.
 
-The player writes a program that controls the bot’s movement, scanning, firing and reactions to events during a battle.
+The player writes a program that controls the bot’s movement, scanning, firing, and reactions to events during a battle.
 All logic lives inside this program – you never control the bot directly.
 
 The name **Robocode** is short for “Robot code” and comes from the original version
@@ -28,6 +28,13 @@ and have fun while competing.
 Main page:  
 [Robocode Tank Royale Docs](https://robocode-dev.github.io/tank-royale/)
 
+### The Book of Robocode
+
+[**The Book of Robocode**](https://book.robocode.dev/) 📖 is a comprehensive guide covering Robocode as well as
+Robocode Tank Royale—from basics to advanced strategies like wave surfing, guess-factor targeting, and
+movement techniques. It builds on two decades of community knowledge and foundational research from RoboWiki
+contributors.
+
 ### Try it out
 
 If you are new to Robocode or just need a refresher, start with the
@@ -40,7 +47,7 @@ and includes sample bots for quick demos.
 
 ## Supported platforms
 
-Robocode runs on Java 11 or newer and supports Windows, macOS and Linux out of the box.  
+Robocode runs on Java 11 or newer and supports Windows, macOS, and Linux out of the box.  
 Bot APIs are available for:
 
 - **Python**

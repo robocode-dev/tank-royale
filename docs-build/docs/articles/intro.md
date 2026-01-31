@@ -12,10 +12,10 @@ running. Instead, the player ("Robocoder") must write a program that makes up th
 tells how the tank must behave and react to events occurring in the battle arena.
 
 The code should tell the tank how to move around on the battlefield and avoid getting shot by enemies while moving
-around in different situations. And in the same time the tank must scan for enemy tanks by turning its radar, and fire
+around in different situations. And at the same time, the tank must scan for enemy tanks by turning its radar and firing 
 its gun towards enemy tanks.
 
-All bots (tanks) gets a score and a placement depending on how well they performed on the battlefield. So the aim is to
+All bots (tanks) get a score and a placement depending on how well they performed on the battlefield. So the aim is to
 get as high score and placement as possible.
 
 ## Purpose
@@ -23,11 +23,18 @@ get as high score and placement as possible.
 The game is designed to help you learn how to program, improve your programming skills, and have fun while doing it.
 Robocode is also useful when studying or improving [AI] in a fast-running real-time game.
 
-Sometimes people lack something to get started with when learning how to code, or something to train AI skills
+Sometimes people lack something to get started with when learning how to code or something to train AI skills
 against. Robocode gives a clear purpose and goal to the programming. To develop a tank that can survive on the
-battlefield, and defeat other enemy tanks.
+battlefield and defeat other enemy tanks.
 
 Head over to [Getting Started](../tutorial/getting-started) to get started with Robocoding!
+
+## The Book of Robocode
+
+For a deeper dive into advanced strategies and techniques, check out 📖 [**The Book of Robocode**](https://book.robocode.dev/).
+This comprehensive guide covers both Robocode and Tank Royale—from basics to advanced strategies like wave surfing,
+guess-factor targeting, and movement techniques. It builds on two decades of community knowledge and foundational
+research from RoboWiki contributors.
 
 ## The name "Robocode"
 

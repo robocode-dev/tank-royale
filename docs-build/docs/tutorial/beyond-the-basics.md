@@ -7,12 +7,21 @@ In the following, it is assumed that you are already familiar with and use the o
 taking offset in the official Bot APIs. Also notice, that the class and method names take offset in the Java API, but
 should be similar in APIs for other platforms.
 
+## The Book of Robocode
+
+📖 [**The Book of Robocode**](https://book.robocode.dev/) is a comprehensive guide that serves as a supplement to the
+RoboWiki. It covers Robocode as well as Robocode Tank Royale—from basics to advanced strategies like wave surfing,
+guess-factor targeting, and movement techniques. The book builds on two decades of community knowledge and foundational
+research from RoboWiki contributors.
+
+This is an excellent resource for learning advanced topics and strategies in a structured format.
+
 ## The RoboWiki
 
 The [RoboWiki] is the best place to gain the most knowledge about Robocode. This site has been collecting lots of great
 expertise from Robocoders since 2003. On the RoboWiki you can benefit from learning a lot of different strategies for
-movement, targeting, efficient radar sweeps, etc. You can also get some pretty good hints with for example using various
-kinds of AIs.
+movement, targeting, efficient radar sweeps, etc. You can also get some pretty good hints with, for example, using
+various kinds of AIs.
 
 Note that the [RoboWiki] is primarily targeted at the [original version] of Robocode, so you should expect differences
 between the original version and the new version (Robocode Tank Royale). For example, the API is a bit different, and
@@ -20,21 +29,21 @@ the original version of Robocode did not use a booter or a server and was mostly
 You can read about some important differences [here](../articles/tank-royale). Nevertheless, the various strategies you
 would apply for Robocoding with the original version of Robocode should be easy to apply for the new version as well.
 And even when most code snippets are written for Java, it should be straightforward to port to a similar programming
-language e.g. C# or Typescript.
+language e.g. C# or TypeScript.
 
 Also note that the RoboWiki is driven by Robocoders, not by the author(s) of Robocode. So if the site is down, which
 happens sometimes, you can (and should) report this on e.g. the [Google Group] for Robocode. Then action will be taken
 to get it up and running as soon as possible.
 
 If the [RoboWiki] is down, you can use the [Web Archive] temporarily until the RoboWiki site is up and running again.
-But note that the link points to a snapshot of the site, and might be a bit outdated.
+But note that the link points to a snapshot of the site and might be a bit outdated.
 
 ## Event Queue
 
 An essential part of Robocoding is event handling. Hence, this is explained in more detail in the following along with some advice.
 
 All events received from the game server are immediately stored in an event queue. The events in the event queue will
-first and foremost be ordered by the _turn number_, and secondly events that belong to the same turn are ordered by
+first and foremost be ordered by the _turn number_, and secondly, events that belong to the same turn are ordered by
 their _event priority_. Events with higher priorities are handled before events with lower priorities.
 
 > Note that all events have a predefined event priority, but you can change this with the API if you want to change the
@@ -44,7 +53,7 @@ Note that you should expect multiple events to occur within the same turn and mo
 e.g. `ScannedRobotEvent` occurring in the same turn when more bots have been scanned.
 
 Events are dispatched from the event queue one event at a time. Each calls a synchronous blocking method call via a
-single dedicated event thread. When an event is dispatched its corresponding event handler method is being called.
+single dedicated event thread. When an event is dispatched, its corresponding event handler method is being called.
 When e.g. a `ScannedBotEvent` is triggered, the corresponding `onScannedBotEvent(ScannedBotEvent)` method will be
 called, blocking the event thread, until it has finished executing.
 
@@ -130,13 +139,13 @@ Here are a few examples of what advanced robots can do:
 
 All of the above requires a structured approach and "centralizing" the code into one place that is guaranteed to always run in each turn, and not rely on bits and pieces of code being run one or multiple times in a turn within event handlers that might or might not be triggered in a turn.
 
-So you should set up a central place in your bot that takes action based on the (new) data it gets from its "sensors", i.e. the events. The `run()` method of the bot is an excellent place to put this logic. Alternatively, you could start one to multiple threads for handling e.g. movement, scanning, targeting, etc.
+So you should set up a central place in your bot that takes action based on the (new) data it gets from its "sensors", i.e., the events. The `run()` method of the bot is an excellent place to put this logic. Alternatively, you could start one to multiple threads for handling e.g. movement, scanning, targeting, etc.
 
 ## Strategies
 
 With Robocode, successful bots use multiple strategies. Some bots are specialized for 1-versus-1 battle, where only 2 bots participate, and hence only have a single enemy to worry about. This makes things less complicated compared to e.g. a bot participating in a melee battle against 10 different enemy bots. And if the bot is a bot in a team, a team strategy should be applied as well. So you need to consider, which types of battles your bot is developed for.
 
-> Note that you can specify the game types your bot can handle, e.g. classic, 1v1, and melee.
+> Note that you can specify the game types your bot can handle, e.g., classic, 1v1, and melee.
 
 ### Strategy types
 
@@ -225,7 +234,7 @@ public void run() {
 
 The while-loop is called the _main loop_ of your bot, and here you should put the logic that needs to be run each turn.
 
-Here is some pseudo code of how the main loop could look like:
+Here is some pseudocode of what the main loop could look like:
 
 ```java
 
