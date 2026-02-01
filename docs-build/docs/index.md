@@ -7,17 +7,23 @@
 ## Welcome
 
 Welcome to the Robocode docs. These docs are meant for people who are new to Robocode, as well as a reference guide to
-various aspect of the Robocode Tank Royale programming game.
+various aspects of the Robocode Tank Royale programming game.
 
 ## Get Started
 
 On this page you can pick articles on the menu on the left side to read about various topics.
 
-If you are new to Robocode you should start with:
+If you are new to Robocode, you should start with:
 
 - the [Introduction](articles/intro) to Robocode, and
 - read the [Getting Started](tutorial/getting-started), and then
 - continue to [My First Bot](tutorial/my-first-bot) to create your first bot.
+
+## The Book of Robocode
+
+📖 [**The Book of Robocode**](https://book.robocode.dev/) is a comprehensive guide covering Robocode as well as
+Robocode Tank Royale—from basics to advanced strategies like wave surfing, guess-factor targeting, and movement
+techniques. It builds on two decades of community knowledge and foundational research from RoboWiki contributors.
 
 ## Thanks to the contributors
 

@@ -16,6 +16,9 @@ For detailed guidance, see the [Getting Started] guide and [My First Bot tutoria
 The complete Robocode Tank Royale documentation is available at:  
 **https://robocode-dev.github.io/tank-royale/**
 
+📖 **The Book of Robocode:** [book.robocode.dev](https://book.robocode.dev/) – Comprehensive guide with
+advanced strategies for Tank Royale like wave surfing, guess-factor targeting, and movement techniques.
+
 **Recommended reading order:**
 
 - [Getting Started] – Learn the basics
@@ -30,7 +33,7 @@ The complete Robocode Tank Royale documentation is available at:
 ### Requirements
 
 - **Java 11 or newer** is required to run Robocode Tank Royale
-- We recommend using the latest Java version for best performance
+- We recommend using the latest Java version for the best performance
 - Download Java from the [official Oracle website](https://www.oracle.com/java/technologies/downloads/) or use [OpenJDK]
 
 📖 See the [installation guide] for detailed instructions on installing Java and setting up Robocode.
