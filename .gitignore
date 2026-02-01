@@ -30,3 +30,8 @@ generated/
 /*.battle.gz
 
 /.kotlin
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
