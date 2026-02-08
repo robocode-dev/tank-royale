@@ -1,3 +1,16 @@
+## 📦 0.35.3 - Memory Leak Fixes – 08-Feb-2026
+
+### 🐞 Bug Fixes
+
+- Server:
+    - #180: Fixed critical memory leak where `NanoTimer` created a new thread for every turn (37M threads over 21 hours
+      at 500 TPS), causing `OutOfMemoryError`. Replaced with `ResettableTimer` that reuses a single thread via
+      `ScheduledExecutorService`.
+    - #180: Fixed the memory leak from unbounded game history accumulation. Now limits turn history to last 2 turns and
+      clears old rounds, reducing memory footprint from gigabytes to megabytes during long games.
+    - #180: Fixed memory leak from collections not being cleared after the game end (`participantIds`, `botIntents`,
+      `participantMap`, etc.), preventing garbage collection of game objects.
+
 ## 📦 0.35.2 - Windows Path Fix – 28-Jan-2026
 
 ### 🐞 Bug Fixes
