@@ -220,6 +220,8 @@ class GameServer(
 
         sendGameStartedToObservers()
         prepareModelUpdater()
+        // Create timer ONCE per game start, not per turn (fixes memory leak)
+        // The timer is then reused via resetTurnTimeout() which calls schedule(), not creating new threads
         turnTimeoutTimer = ResettableTimer { onNextTurn() }
         resetTurnTimeout()
     }
@@ -293,6 +295,9 @@ class GameServer(
         val minPeriodNanos = calculateTurnTimeoutMinPeriod().inWholeNanoseconds
         val maxPeriodNanos = calculateTurnTimeoutMaxPeriod().inWholeNanoseconds
 
+        // Important: This calls schedule() on the existing timer - it does NOT create a new thread.
+        // The timer reuses its single executor thread from the ScheduledExecutorService.
+        // This prevents the memory leak that occurred with NanoTimer which created a new thread per call.
         // Ensure maxDelayNanos is at least as large as minDelayNanos
         // This handles cases where turnTimeout < (1/TPS), which would be invalid
         turnTimeoutTimer?.schedule(

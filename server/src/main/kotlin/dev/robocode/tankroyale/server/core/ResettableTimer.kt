@@ -8,14 +8,40 @@ import java.util.concurrent.TimeUnit
 /**
  * A resettable timer that reuses a single scheduled executor thread.
  *
+ * **Thread Reuse Pattern (Memory Efficiency)**
+ *
+ * This class addresses a critical memory leak by reusing a single thread instead of creating new threads
+ * for each timer reset. The original NanoTimer created a new thread per call, causing:
+ * - At 500 TPS: 500 new threads/second
+ * - Over 21 hours: ~37 million thread objects allocated
+ * - Result: OutOfMemoryError as GC couldn't keep up with thread allocation pressure
+ *
+ * ResettableTimer uses a [ScheduledExecutorService] with a single daemon thread that persists for the
+ * lifetime of the timer. Multiple calls to [schedule] reschedule the same thread, not create new ones.
+ *
+ * **Timing Guarantees**
+ *
  * The timer guarantees that the job runs no earlier than the configured minimum delay and
  * no later than the maximum delay after scheduling. A call to [notifyReady] requests execution
  * as soon as the minimum delay has elapsed. Paused time is excluded from timing calculations.
+ *
+ * **Usage Example**
+ *
+ * ```kotlin
+ * // Create once per game (not per turn!)
+ * val timer = ResettableTimer { doWork() }
+ *
+ * // Reset/reschedule on each turn - reuses existing thread
+ * timer.schedule(minDelayNanos = 1000, maxDelayNanos = 5000)
+ * ```
  */
 class ResettableTimer(
     /** Job to execute when the timer triggers. */
     private val job: Runnable
 ) {
+    // Single-thread executor: REUSES the same thread for all scheduled tasks.
+    // This is the key to avoiding the memory leak. The thread name includes "Timer" for debugging visibility.
+    // Daemon thread flag ensures the JVM can shut down even if the timer is still active.
     private val executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor { runnable ->
         Thread(runnable, "TurnTimeoutTimer").apply { isDaemon = true }
     }
@@ -130,7 +156,7 @@ class ResettableTimer(
             if (!executor.awaitTermination(1, TimeUnit.SECONDS)) {
                 executor.shutdownNow()
             }
-        } catch (e: InterruptedException) {
+        } catch (_: InterruptedException) {
             executor.shutdownNow()
             Thread.currentThread().interrupt()
         }
