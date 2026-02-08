@@ -216,7 +216,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun widthVerifier(): Boolean {
         val width: Int? = try {
             widthTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = width != null && width in GameConstants.MIN_ARENA_SIZE..GameConstants.MAX_ARENA_SIZE
@@ -239,7 +239,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun heightVerifier(): Boolean {
         val height: Int? = try {
             heightTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = height != null && height in GameConstants.MIN_ARENA_SIZE..GameConstants.MAX_ARENA_SIZE
@@ -262,7 +262,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun minNumParticipantsVerifier(): Boolean {
         val minNum: Int? = try {
             minNumParticipantsTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = minNum != null && minNum in GameConstants.MIN_NUM_PARTICIPANTS..GameConstants.MAX_NUM_PARTICIPANTS
@@ -288,12 +288,12 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         }
         val minNum: Int? = try {
             minNumParticipantsTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val maxNum: Int? = try {
             maxNumParticipantsTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = minNum != null && maxNum != null &&
@@ -320,7 +320,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun numberOfRoundsVerifier(): Boolean {
         val numRounds: Int? = try {
             numberOfRoundsTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = numRounds != null && numRounds in 1..GameConstants.MAX_NUM_ROUNDS
@@ -337,7 +337,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun gunCoolingRateVerifier(): Boolean {
         val rate: Double? = try {
             gunCoolingRateTextField.text.trim().toDouble()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = rate != null && rate > 0 && rate <= GameConstants.MAX_GUN_COOLING
@@ -359,7 +359,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun inactivityTurnsVerifier(): Boolean {
         val turns: Int? = try {
             inactivityTurnsTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = turns != null && turns in 0..GameConstants.MAX_INACTIVITY_TURNS
@@ -381,7 +381,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun readyTimeoutVerifier(): Boolean {
         val timeout: Int? = try {
             readyTimeoutTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = timeout != null && timeout >= 0
@@ -403,7 +403,7 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun turnTimeoutVerifier(): Boolean {
         val timeout: Int? = try {
             turnTimeoutTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = timeout != null && timeout >= 0

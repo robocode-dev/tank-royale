@@ -338,7 +338,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
                     is TickEvent -> {
                         currentTick = message
                         // Update stdout/stderr state without firing events
-                        updateSavedStdOutputSilently(message)
+                        updateSavedStdOutput(message, fireEvent = false)
                     }
 
                     else -> {
@@ -349,23 +349,15 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         }
     }
 
-    private fun updateSavedStdOutput(tickEvent: TickEvent) {
+    private fun updateSavedStdOutput(tickEvent: TickEvent, fireEvent: Boolean = true) {
         tickEvent.apply {
             botStates.forEach { botState ->
                 val id = botState.id
                 botState.stdOut?.let { updateStandardOutput(savedStdOutput, id, roundNumber, turnNumber, it) }
                 botState.stdErr?.let { updateStandardOutput(savedStdError, id, roundNumber, turnNumber, it) }
             }
-            onStdOutputUpdated.fire(tickEvent)
-        }
-    }
-
-    private fun updateSavedStdOutputSilently(tickEvent: TickEvent) {
-        tickEvent.apply {
-            botStates.forEach { botState ->
-                val id = botState.id
-                botState.stdOut?.let { updateStandardOutput(savedStdOutput, id, roundNumber, turnNumber, it) }
-                botState.stdErr?.let { updateStandardOutput(savedStdError, id, roundNumber, turnNumber, it) }
+            if (fireEvent) {
+                onStdOutputUpdated.fire(tickEvent)
             }
         }
     }

@@ -246,7 +246,7 @@ class LiveBattlePlayer : BattlePlayer {
         val handshake = ControllerHandshake(
             sessionId = serverHandshake.sessionId,
             name = "Robocode Tank Royale UI",
-            version = "${Version.version}",
+            version = Version.version,
             author = "Flemming N. Larsen",
             secret = ServerSettings.controllerSecret()
         )
