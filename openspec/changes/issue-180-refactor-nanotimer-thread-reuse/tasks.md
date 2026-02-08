@@ -16,13 +16,13 @@
 
 ### Phase 2: Update GameServer Integration
 
-- [ ] Replace `turnTimeoutTimer: NanoTimer?` with `turnTimeoutTimer: ResettableTimer?`
-- [ ] Create timer once in `startGame()` instead of per-turn
-- [ ] Update `resetTurnTimeout()` to call `timer.schedule()` instead of creating new timer
-- [ ] Update `handlePauseGame()` to use `timer.pause()`
-- [ ] Update `handleResumeGame()` to use `timer.resume()`
-- [ ] Update `cleanupAfterGameStopped()` to call `timer.shutdown()`
-- [ ] Update `stop()` to ensure timer shutdown on server stop
+- [x] Replace `turnTimeoutTimer: NanoTimer?` with `turnTimeoutTimer: ResettableTimer?`
+- [x] Create timer once in `startGame()` instead of per-turn
+- [x] Update `resetTurnTimeout()` to call `timer.schedule()` instead of creating new timer
+- [x] Update `handlePauseGame()` to use `timer.pause()`
+- [x] Update `handleResumeGame()` to use `timer.resume()`
+- [x] Update `cleanupAfterGameStopped()` to call `timer.shutdown()`
+- [x] Update `stop()` to ensure timer shutdown on server stop
 
 ### Phase 3: Deprecate/Remove Old NanoTimer
 

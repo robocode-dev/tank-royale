@@ -66,7 +66,7 @@ class GameServer(
     private lateinit var readyTimeoutTimer: NanoTimer
 
     /** Timer for 'turn' timeout */
-    private var turnTimeoutTimer: NanoTimer? = null
+    private var turnTimeoutTimer: ResettableTimer? = null
 
     /** Current TPS setting (Turns Per Second) */
     private var tps = Server.tps
@@ -101,6 +101,8 @@ class GameServer(
     /** Stops this server */
     fun stop() {
         log.info("Stopping server")
+        turnTimeoutTimer?.shutdown()
+        turnTimeoutTimer = null
         connectionHandler.stop()
     }
 
@@ -120,7 +122,7 @@ class GameServer(
 
         debugGraphicsEnableMap.clear()
 
-        turnTimeoutTimer?.stop()
+        turnTimeoutTimer?.shutdown()
         turnTimeoutTimer = null
 
         prepareParticipantIds()
@@ -208,6 +210,7 @@ class GameServer(
 
         sendGameStartedToObservers()
         prepareModelUpdater()
+        turnTimeoutTimer = ResettableTimer { onNextTurn() }
         resetTurnTimeout()
     }
 
@@ -277,12 +280,10 @@ class GameServer(
 
     /** Resets turn timeout timer with min and max bounds */
     private fun resetTurnTimeout() {
-        turnTimeoutTimer?.stop()
-        turnTimeoutTimer = NanoTimer(
-            minPeriodInNanos = calculateTurnTimeoutMinPeriod().inWholeNanoseconds,
-            maxPeriodInNanos = calculateTurnTimeoutMaxPeriod().inWholeNanoseconds,
-            job = { onNextTurn() }
-        ).apply { start() }
+        turnTimeoutTimer?.schedule(
+            minDelayNanos = calculateTurnTimeoutMinPeriod().inWholeNanoseconds,
+            maxDelayNanos = calculateTurnTimeoutMaxPeriod().inWholeNanoseconds
+        )
     }
 
     private fun calculateTurnTimeoutMinPeriod(): Duration {
@@ -823,7 +824,8 @@ class GameServer(
     }
 
     private fun cleanupAfterGameStopped() {
-        turnTimeoutTimer?.stop()
+        turnTimeoutTimer?.shutdown()
+        turnTimeoutTimer = null
 
         modelUpdater = null
         System.gc()
