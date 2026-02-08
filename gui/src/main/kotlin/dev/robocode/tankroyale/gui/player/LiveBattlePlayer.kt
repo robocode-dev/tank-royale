@@ -114,7 +114,7 @@ class LiveBattlePlayer : BattlePlayer {
 
     override fun restart() {
         if (isRunning.get()) {
-            val eventOwner = Object()
+            val eventOwner = Any()
             onGameAborted.subscribe(eventOwner, true) {
                 startWithLastGameSetup()
             }
