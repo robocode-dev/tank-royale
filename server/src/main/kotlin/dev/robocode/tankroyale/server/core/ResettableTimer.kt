@@ -39,9 +39,12 @@ class ResettableTimer(
      * [maxDelayNanos], unless canceled.
      */
     fun schedule(minDelayNanos: Long, maxDelayNanos: Long) {
-        require(minDelayNanos >= 0L) { "minDelayNanos must be non-negative" }
-        require(maxDelayNanos >= 0L) { "maxDelayNanos must be non-negative" }
-        require(maxDelayNanos >= minDelayNanos) { "maxDelayNanos must be >= minDelayNanos" }
+        require(minDelayNanos >= 0L) { "minDelayNanos must be non-negative, got: $minDelayNanos" }
+        require(maxDelayNanos >= 0L) { "maxDelayNanos must be non-negative, got: $maxDelayNanos" }
+        require(maxDelayNanos >= minDelayNanos) {
+            "maxDelayNanos ($maxDelayNanos) must be >= minDelayNanos ($minDelayNanos). " +
+            "This may indicate turnTimeout is configured smaller than the minimum turn period (1/TPS)."
+        }
 
         synchronized(lock) {
             active = true

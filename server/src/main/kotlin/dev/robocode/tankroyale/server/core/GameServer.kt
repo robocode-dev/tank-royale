@@ -139,6 +139,7 @@ class GameServer(
 
     /** Starts the game if all participants are ready */
     private fun startGameIfParticipantsReady() {
+        var timerToShutdown: ResettableTimer? = null
         synchronized(startGameLock) {
             // Make a local copy of participant size to prevent race condition
             val currentParticipantSize = participants.size
@@ -146,12 +147,14 @@ class GameServer(
 
             if (currentReadyParticipantSize == currentParticipantSize && currentParticipantSize > 0) {
                 if (serverState != ServerState.WAIT_FOR_READY_PARTICIPANTS) return
-                readyTimeoutTimer?.shutdown()
+                timerToShutdown = readyTimeoutTimer
                 readyTimeoutTimer = null
 
                 startGame()
             }
         }
+        // Shutdown timer outside the synchronized block to prevent blocking other operations
+        timerToShutdown?.shutdown()
     }
 
     private fun prepareParticipantIds() {
@@ -287,9 +290,14 @@ class GameServer(
 
     /** Resets turn timeout timer with min and max bounds */
     private fun resetTurnTimeout() {
+        val minPeriodNanos = calculateTurnTimeoutMinPeriod().inWholeNanoseconds
+        val maxPeriodNanos = calculateTurnTimeoutMaxPeriod().inWholeNanoseconds
+
+        // Ensure maxDelayNanos is at least as large as minDelayNanos
+        // This handles cases where turnTimeout < (1/TPS), which would be invalid
         turnTimeoutTimer?.schedule(
-            minDelayNanos = calculateTurnTimeoutMinPeriod().inWholeNanoseconds,
-            maxDelayNanos = calculateTurnTimeoutMaxPeriod().inWholeNanoseconds
+            minDelayNanos = minPeriodNanos,
+            maxDelayNanos = maxOf(minPeriodNanos, maxPeriodNanos)
         )
     }
 
@@ -409,11 +417,12 @@ class GameServer(
 
     private fun onReadyTimeout() {
         log.debug("Ready timeout")
+        var timerToShutdown: ResettableTimer? = null
         synchronized(startGameLock) {
             // Check again in case state changed during timer
             if (serverState !== ServerState.WAIT_FOR_READY_PARTICIPANTS) return
 
-            readyTimeoutTimer?.shutdown()
+            timerToShutdown = readyTimeoutTimer
             readyTimeoutTimer = null
 
             if (readyParticipants.size >= gameSetup.minNumberOfParticipants) {
@@ -435,6 +444,8 @@ class GameServer(
                 broadcastGameAborted()
             }
         }
+        // Shutdown timer outside the synchronized block to prevent blocking other operations
+        timerToShutdown?.shutdown()
     }
 
     private fun onNextTurn() {

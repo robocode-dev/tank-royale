@@ -119,9 +119,18 @@ class ClientWebSocketsHandler(
                             )
                         }
                     } catch (ex: IllegalArgumentException) {
+                        log.error("Failed to parse message type '{}'. Raw message: {}. {} message types are defined.",
+                            jsonType.asString,
+                            message.take(200),
+                            Message.Type.entries.size)
+                        log.debug("Available message types: {}",
+                            Message.Type.entries.joinToString(", ") { it.value() })
                         handleException(
                             clientSocket,
-                            IllegalStateException("Unhandled message type: ${jsonType.asString}")
+                            IllegalStateException(
+                                "Unhandled message type: ${jsonType.asString}. This may indicate a schema generation issue or bot sending unexpected message format.",
+                                ex
+                            )
                         )
                     }
                 }
@@ -149,7 +158,7 @@ class ClientWebSocketsHandler(
                         log.warn("Pool did not terminate")
                     }
                 }
-            } catch (ex: InterruptedException) {
+            } catch (_: InterruptedException) {
                 shutdownNow()
                 Thread.currentThread().interrupt()
             }
@@ -162,7 +171,7 @@ class ClientWebSocketsHandler(
         executorService.submit {
             try {
                 clientSocket.send(message)
-            } catch (e: WebsocketNotConnectedException) {
+            } catch (_: WebsocketNotConnectedException) {
                 closeSocket(clientSocket)
             }
         }
@@ -286,6 +295,7 @@ class ClientWebSocketsHandler(
     }
 
     private fun handleBotReady(clientSocket: WebSocket) {
+        log.debug("Processing BotReady from {}", clientSocket.remoteSocketAddress)
         botHandshakes[clientSocket]?.let { botHandshake ->
             listener.onBotReady(clientSocket, botHandshake)
         }
