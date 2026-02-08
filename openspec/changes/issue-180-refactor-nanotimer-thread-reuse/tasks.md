@@ -33,16 +33,16 @@
 
 ### Phase 4: Testing
 
-- [ ] Add unit tests for `ResettableTimer`:
-  - [ ] Test max delay execution
-  - [ ] Test notifyReady() before min delay (should wait)
-  - [ ] Test notifyReady() after min delay (should execute immediately)
-  - [ ] Test cancel() prevents execution
-  - [ ] Test pause/resume timing
-  - [ ] Test shutdown cleanup
-- [ ] Add integration test: run 10000 turns, verify single thread
-- [ ] Add memory test: verify no thread count growth over time
-- [ ] Update any existing timing-related tests
+- [x] Add unit tests for `ResettableTimer`:
+  - [x] Test max delay execution
+  - [x] Test notifyReady() before min delay (should wait)
+  - [x] Test notifyReady() after min delay (should execute immediately)
+  - [x] Test cancel() prevents execution
+  - [x] Test pause/resume timing
+  - [x] Test shutdown cleanup
+- [x] Add integration test: run 10000 turns, verify single thread
+- [x] Add memory test: verify no thread count growth over time
+- [x] Update any existing timing-related tests (no other timing tests found)
 
 ### Phase 5: Validation
 
