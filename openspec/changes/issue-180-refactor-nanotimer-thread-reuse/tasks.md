@@ -4,15 +4,15 @@
 
 ### Phase 1: Create ResettableTimer Class
 
-- [ ] Create new `ResettableTimer.kt` in `server/src/main/kotlin/.../core/`
-- [ ] Implement using `ScheduledExecutorService` with single daemon thread
-- [ ] Thread name: `"TurnTimeoutTimer"`
-- [ ] Implement `schedule(minDelayNanos: Long, maxDelayNanos: Long)` method
-- [ ] Implement `notifyReady()` method with min-period check
-- [ ] Implement `cancel()` method
-- [ ] Implement `pause()` and `resume()` methods for game pause support
-- [ ] Implement `shutdown()` method with graceful termination
-- [ ] Add comprehensive KDoc documentation
+- [x] Create new `ResettableTimer.kt` in `server/src/main/kotlin/.../core/`
+- [x] Implement using `ScheduledExecutorService` with single daemon thread
+- [x] Thread name: `"TurnTimeoutTimer"`
+- [x] Implement `schedule(minDelayNanos: Long, maxDelayNanos: Long)` method
+- [x] Implement `notifyReady()` method with min-period check
+- [x] Implement `cancel()` method
+- [x] Implement `pause()` and `resume()` methods for game pause support
+- [x] Implement `shutdown()` method with graceful termination
+- [x] Add comprehensive KDoc documentation
 
 ### Phase 2: Update GameServer Integration
 
