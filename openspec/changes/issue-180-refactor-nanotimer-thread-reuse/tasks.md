@@ -26,10 +26,10 @@
 
 ### Phase 3: Deprecate/Remove Old NanoTimer
 
-- [ ] Mark `NanoTimer` as `@Deprecated` initially
-- [ ] Verify no other usages of `NanoTimer` exist (`readyTimeoutTimer` uses it too)
-- [ ] Decide: refactor `readyTimeoutTimer` to use `ResettableTimer` or keep `NanoTimer` for one-shot use
-- [ ] Remove or keep `NanoTimer` based on decision above
+- [x] Mark `NanoTimer` as `@Deprecated` initially
+- [x] Verify no other usages of `NanoTimer` exist (`readyTimeoutTimer` uses it too)
+- [x] Decide: refactor `readyTimeoutTimer` to use `ResettableTimer` or keep `NanoTimer` for one-shot use
+- [x] Remove or keep `NanoTimer` based on decision above
 
 ### Phase 4: Testing
 

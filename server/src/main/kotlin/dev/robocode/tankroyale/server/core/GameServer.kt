@@ -63,7 +63,7 @@ class GameServer(
     private var modelUpdater: ModelUpdater? = null
 
     /** Timer for 'ready' timeout */
-    private lateinit var readyTimeoutTimer: NanoTimer
+    private var readyTimeoutTimer: ResettableTimer? = null
 
     /** Timer for 'turn' timeout */
     private var turnTimeoutTimer: ResettableTimer? = null
@@ -101,6 +101,8 @@ class GameServer(
     /** Stops this server */
     fun stop() {
         log.info("Stopping server")
+        readyTimeoutTimer?.shutdown()
+        readyTimeoutTimer = null
         turnTimeoutTimer?.shutdown()
         turnTimeoutTimer = null
         connectionHandler.stop()
@@ -122,6 +124,8 @@ class GameServer(
 
         debugGraphicsEnableMap.clear()
 
+        readyTimeoutTimer?.shutdown()
+        readyTimeoutTimer = null
         turnTimeoutTimer?.shutdown()
         turnTimeoutTimer = null
 
@@ -141,8 +145,9 @@ class GameServer(
             val currentReadyParticipantSize = readyParticipants.size
 
             if (currentReadyParticipantSize == currentParticipantSize && currentParticipantSize > 0) {
-                // Try to stop the timer, but if we can't (already stopped), make sure we're in the right state
-                if (!readyTimeoutTimer.stop() && serverState != ServerState.WAIT_FOR_READY_PARTICIPANTS) return
+                if (serverState != ServerState.WAIT_FOR_READY_PARTICIPANTS) return
+                readyTimeoutTimer?.shutdown()
+                readyTimeoutTimer = null
 
                 startGame()
             }
@@ -193,11 +198,13 @@ class GameServer(
 
     /** Starts the 'ready' timer */
     private fun startReadyTimer() {
-        readyTimeoutTimer = NanoTimer(
-            minPeriodInNanos = 0,
-            maxPeriodInNanos = gameSetup.readyTimeout.inWholeNanoseconds,
-            job = { onReadyTimeout() }
-        ).apply { start() }
+        if (readyTimeoutTimer == null) {
+            readyTimeoutTimer = ResettableTimer { onReadyTimeout() }
+        }
+        readyTimeoutTimer?.schedule(
+            minDelayNanos = 0L,
+            maxDelayNanos = gameSetup.readyTimeout.inWholeNanoseconds
+        )
     }
 
     /** Starts a new game */
@@ -405,6 +412,9 @@ class GameServer(
         synchronized(startGameLock) {
             // Check again in case state changed during timer
             if (serverState !== ServerState.WAIT_FOR_READY_PARTICIPANTS) return
+
+            readyTimeoutTimer?.shutdown()
+            readyTimeoutTimer = null
 
             if (readyParticipants.size >= gameSetup.minNumberOfParticipants) {
                 // Start the game with the participants that are ready
