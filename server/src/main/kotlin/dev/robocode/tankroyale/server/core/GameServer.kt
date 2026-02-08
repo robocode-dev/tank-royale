@@ -848,6 +848,14 @@ class GameServer(
         turnTimeoutTimer?.shutdown()
         turnTimeoutTimer = null
 
+        // Clear all collections to prevent memory leaks
+        participantIds.clear()
+        readyParticipants.clear()
+        botIntents.clear()
+        participantMap.clear()
+        botsThatSentIntent.clear()
+        debugGraphicsEnableMap.clear()
+
         modelUpdater = null
         System.gc()
     }

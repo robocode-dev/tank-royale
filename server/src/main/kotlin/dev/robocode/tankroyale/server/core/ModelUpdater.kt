@@ -64,6 +64,9 @@ class ModelUpdater(
     /** Turn record */
     internal val turn = MutableTurn(0)
 
+    /** Counter to track the number of rounds played (memory leak fix) */
+    private var roundCounter = 0
+
     /** The id for the next bullet that comes into existence */
     private var nextBulletId = 0
 
@@ -74,7 +77,7 @@ class ModelUpdater(
     internal fun getResults() = accumulatedScoreCalculator.getScores()
 
     /** The number of rounds played so far */
-    internal val numberOfRounds: Int get() = gameState.rounds.size
+    internal val numberOfRounds: Int get() = roundCounter
 
     internal fun isAlive(botId: BotId) = botsMap[botId]?.isAlive ?: false
 
@@ -110,16 +113,25 @@ class ModelUpdater(
         round = round.copy(roundNumber = round.roundNumber).apply {
             roundEnded = false
             roundNumber++
+            turns.clear() // Memory leak fix: Clear turns from previous round
         }
         // Initialize to 0; nextTurn() will increment it to 1 before the first TickEvent is mapped/sent
         turn.turnNumber = 0
 
+        // Increment round counter for tracking (memory leak fix)
+        roundCounter++
+
         nextBulletId = 0
         botIntentsMap.clear()
+        botsCopies.clear()
         bullets.clear()
         botsMap.clear()
         scoreTracker.clear()
         inactivityCounter = 0
+
+        // Memory leak fix: Clear old rounds from gameState when starting a new round
+        // We only need the current round in memory
+        gameState.rounds.clear()
 
         initializeBotStates()
     }
@@ -181,6 +193,13 @@ class ModelUpdater(
      */
     private fun updateGameState(): GameState {
         round.turns += turn.toTurn()
+
+        // Memory leak fix: Keep only the last 2 turns (current + previous for collision detection)
+        // Remove older turns to prevent unbounded memory growth
+        if (round.turns.size > 2) {
+            round.turns.removeAt(0)
+        }
+
         if (gameState.rounds.size == 0 || gameState.rounds.last().roundNumber != round.roundNumber) {
             gameState.rounds += round
         }
