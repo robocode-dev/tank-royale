@@ -1,16 +1,16 @@
 [versions]
 
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 
 gson = "2.13.2"
 gson-extras = "3.3.0"
 java-websocket = "1.6.0"
 json = "20240303"
-jsonschema2pojo = "1.2.2"
+jsonschema2pojo = "1.3.3"
 jsvg = "2.0.0"
 kotlinx-serialization-json = "1.9.0"
 clikt = "5.0.3" # 5.1.0 gives problems with R8
-r8 = "8.13.19"
+r8 = "9.0.32"
 miglayout-swing = "11.4.2"
 nexus-publish = "2.0.0"
 node-gradle = "7.1.0"
