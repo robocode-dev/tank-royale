@@ -73,7 +73,7 @@ Both options require Java 11 or newer.
 Native installers provide the easiest installation experience. The GUI will be registered with your operating system,
 allowing you to launch it from your application menu or desktop shortcut.
 
-We provide native installer packages for the GUI application that are produced by CI and attached to the
+We provide native installer packages for the GUI that are produced by CI and attached to the
 project's [GitHub Releases](https://github.com/robocode-dev/tank-royale/releases). These installers are recommended for
 most end-users as they install the GUI in platform-native locations and register file associations where appropriate.
 
