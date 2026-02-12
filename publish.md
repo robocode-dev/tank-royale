@@ -28,6 +28,28 @@ Publish to staging, close, and release in one go:
 
 ## .NET archives (Nuget)
 
+### Using the automated script (recommended)
+
+The script reads the version from `gradle.properties` and the API key from `nuget-api-key` property.
+
+To preview the publish command (dry run):
+
+```shell
+.\scripts\release\publish-nuget.ps1
+```
+
+To actually publish to NuGet (requires confirmation):
+
+```shell
+.\scripts\release\publish-nuget.ps1 -Execute
+```
+
+Note: Make sure to set the real `nuget-api-key` in `~/.gradle/gradle.properties` before publishing.
+
+### Manual publishing
+
+Alternatively, you can publish manually:
+
 Enter the release folder:
 
 ```shell
@@ -36,11 +58,11 @@ cd bot-api\dotnet\api\bin\Release
 
 Publish to Nuget:
 
-```
+```shell
 dotnet nuget push robocode.tankroyale.botapi.«version».nupkg --api-key «nuget api key» --source https://api.nuget.org/v3/index.json
 ```
 
-Note: «version» and «nuget api key» must be prefilled with Robocode version and Nuget API key.
+Note: Replace «version» and «nuget api key» with the actual Robocode version and Nuget API key.
 
 ## Python package
 
