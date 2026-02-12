@@ -1,12 +1,28 @@
-## 📦 0.35.4 - Timing Fix for High TPS – 12-Feb-2026
+## 📦 0.35.5 - Critical Fix for TPS=-1 Re-entrancy Issue – 12-Feb-2026
 
 ### 🐞 Bug Fixes
 
 - Server:
-    - #180: Fixed timing regression introduced in 0.35.3 where `ResettableTimer` caused turn delays at high TPS 
+    - #180: Fixed critical reentrancy bug in 0.35.4 where `ResettableTimer` executed synchronously on the calling 
+      thread when delay was 0 (TPS=-1), causing recursive calls to `onNextTurn()`. This led to inconsistent bot 
+      behavior, event queue overflow ("max event queue size reached: 256"), timing issues, and potential memory 
+      problems during high-speed battles. The timer now uses `executor.execute()` instead of direct execution when 
+      delay is 0, maintaining proper thread separation while avoiding scheduling overhead. This preserves both the 
+      memory leak fix from 0.35.3 and timing precision at unlimited TPS.
+
+## 📦 0.35.4 - Timing Fix for High TPS (BROKEN - DO NOT USE) – 12-Feb-2026
+
+**⚠️ WARNING: This version introduced a critical bug. Use 0.35.5 instead.**
+
+### 🐞 Bug Fixes
+
+- Server:
+    - #180: ~~Fixed timing regression introduced in 0.35.3 where `ResettableTimer` caused turn delays at high TPS 
       (especially TPS=-1). The timer now executes immediately when delay is 0, instead of queueing tasks, restoring 
       the original NanoTimer behavior while preserving the memory leak fix. This resolves issues where bots experienced 
-      inconsistent results and missed events at unlimited TPS.
+      inconsistent results and missed events at unlimited TPS.~~
+      
+      **BUG**: This fix caused re-entrancy issues by executing on the calling thread instead of the executor thread.
 
 ## 📦 0.35.3 - Memory Leak Fixes – 08-Feb-2026
 

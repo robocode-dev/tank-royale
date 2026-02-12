@@ -195,6 +195,29 @@ class ResettableTimerTest : FunSpec({
         timer.shutdown()
     }
 
+    test("executes on executor thread not calling thread when delay is 0 (prevents re-entrancy)") {
+        val executorThreadName = AtomicReference<String>()
+        val latch = CountDownLatch(1)
+        val timer = ResettableTimer {
+            executorThreadName.set(Thread.currentThread().name)
+            latch.countDown()
+        }
+
+        val callingThreadName = Thread.currentThread().name
+
+        // Schedule with 0 delay - should execute on executor thread, not calling thread
+        timer.schedule(minDelayNanos = 0L, maxDelayNanos = TimeUnit.SECONDS.toNanos(1))
+        timer.notifyReady()
+
+        latch.await(100, TimeUnit.MILLISECONDS) shouldBe true
+
+        // Verify execution happened on the executor thread, not the calling thread
+        executorThreadName.get() shouldBe "TurnTimeoutTimer"
+        (executorThreadName.get() == callingThreadName) shouldBe false
+
+        timer.shutdown()
+    }
+
     test("rapid schedule with 0 delay does not queue tasks (TPS=-1 simulation)") {
         val executionCount = java.util.concurrent.atomic.AtomicInteger(0)
         val timer = ResettableTimer {
@@ -217,6 +240,38 @@ class ResettableTimerTest : FunSpec({
         // With immediate execution, this should complete quickly
         // With queueing, this would take much longer
         elapsed shouldBeLessThan TimeUnit.MILLISECONDS.toNanos(500)
+
+        timer.shutdown()
+    }
+
+    test("simulates game loop at TPS=-1 without re-entrancy") {
+        val executionThreads = mutableListOf<String>()
+        val latch = CountDownLatch(10)
+        var turnCounter = 0
+
+        val timer = ResettableTimer {
+            executionThreads.add(Thread.currentThread().name)
+            turnCounter++
+            latch.countDown()
+        }
+
+        // Simulate 10 turns at TPS=-1
+        repeat(10) {
+            timer.schedule(minDelayNanos = 0L, maxDelayNanos = TimeUnit.SECONDS.toNanos(30))
+            timer.notifyReady()
+            // Small delay to let executor thread process
+            Thread.sleep(2)
+        }
+
+        latch.await(1, TimeUnit.SECONDS) shouldBe true
+
+        // All executions should be on the executor thread
+        executionThreads.forEach { threadName ->
+            threadName shouldBe "TurnTimeoutTimer"
+        }
+
+        // Should complete all 10 turns
+        turnCounter shouldBe 10
 
         timer.shutdown()
     }
