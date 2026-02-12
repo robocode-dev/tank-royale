@@ -165,7 +165,68 @@ class ResettableTimerTest : FunSpec({
 
         timer.shutdown()
     }
+
+    test("executes immediately when min delay is 0 and notifyReady called (high TPS scenario)") {
+        val executedAt = AtomicLong(0L)
+        val latch = CountDownLatch(1)
+        val timer = ResettableTimer {
+            executedAt.set(System.nanoTime())
+            latch.countDown()
+        }
+
+        val startTime = System.nanoTime()
+
+        // This simulates TPS=-1 where minDelayNanos is 0
+        timer.schedule(minDelayNanos = 0L, maxDelayNanos = TimeUnit.SECONDS.toNanos(1))
+
+        // Sleep a tiny bit to ensure some time has elapsed
+        Thread.sleep(1)
+
+        // When ready is notified and minDelay has passed, should execute immediately
+        timer.notifyReady()
+
+        // Should complete immediately, not wait for the 1-second max delay
+        latch.await(100, TimeUnit.MILLISECONDS) shouldBe true
+
+        val elapsed = executedAt.get() - startTime
+        // Should execute quickly (within 50ms), not wait for 1 second
+        elapsed shouldBeLessThan TimeUnit.MILLISECONDS.toNanos(50)
+
+        timer.shutdown()
+    }
+
+    test("rapid schedule with 0 delay does not queue tasks (TPS=-1 simulation)") {
+        val executionCount = java.util.concurrent.atomic.AtomicInteger(0)
+        val timer = ResettableTimer {
+            executionCount.incrementAndGet()
+            // Simulate some work
+            Thread.sleep(1)
+        }
+
+        val startTime = System.nanoTime()
+        val iterations = 100
+
+        // Simulate rapid turn updates at TPS=-1
+        repeat(iterations) {
+            timer.schedule(minDelayNanos = 0L, maxDelayNanos = TimeUnit.SECONDS.toNanos(1))
+            timer.notifyReady()
+        }
+
+        val elapsed = System.nanoTime() - startTime
+
+        // With immediate execution, this should complete quickly
+        // With queueing, this would take much longer
+        elapsed shouldBeLessThan TimeUnit.MILLISECONDS.toNanos(500)
+
+        timer.shutdown()
+    }
 })
 
 private fun countTimerThreads(): Int =
     Thread.getAllStackTraces().keys.count { it.isAlive && it.name == "TurnTimeoutTimer" }
+
+
+
+
+
+

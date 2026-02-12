@@ -1,3 +1,13 @@
+## 📦 0.35.4 - Timing Fix for High TPS – 12-Feb-2026
+
+### 🐞 Bug Fixes
+
+- Server:
+    - #180: Fixed timing regression introduced in 0.35.3 where `ResettableTimer` caused turn delays at high TPS 
+      (especially TPS=-1). The timer now executes immediately when delay is 0, instead of queueing tasks, restoring 
+      the original NanoTimer behavior while preserving the memory leak fix. This resolves issues where bots experienced 
+      inconsistent results and missed events at unlimited TPS.
+
 ## 📦 0.35.3 - Memory Leak Fixes – 08-Feb-2026
 
 ### 🐞 Bug Fixes

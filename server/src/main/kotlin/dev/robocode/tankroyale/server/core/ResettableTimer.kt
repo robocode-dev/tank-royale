@@ -165,7 +165,15 @@ class ResettableTimer(
     private fun scheduleInternal(delayNanos: Long, generationId: Long) {
         cancelScheduled()
         if (delayNanos <= 0L) {
-            executor.execute { executeIfValid(generationId) }
+            // Execute immediately without queueing to maintain timing precision at high TPS.
+            // This matches the behavior of the original NanoTimer where delay ≤ 0 resulted in
+            // immediate execution. At high TPS (especially TPS=-1), using executor.execute()
+            // causes tasks to pile up in the queue faster than they can be processed, leading
+            // to timing drift and event delivery delays that affect bot behavior.
+            // The calling thread (typically GameServer) is already synchronized via tickLock,
+            // so direct execution is thread-safe. The single-threaded executor is still reused
+            // for all scheduled (delayed) tasks, preserving the memory leak fix.
+            executeIfValid(generationId)
         } else {
             scheduledFuture = executor.schedule({ executeIfValid(generationId) }, delayNanos, TimeUnit.NANOSECONDS)
         }
