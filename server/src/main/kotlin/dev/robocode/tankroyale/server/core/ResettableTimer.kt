@@ -118,6 +118,7 @@ class ResettableTimer(
         synchronized(lock) {
             if (!active || isPaused()) return
             pauseStartTimeNanos = System.nanoTime()
+            generation += 1
             cancelScheduled()
         }
     }
@@ -136,6 +137,8 @@ class ResettableTimer(
             val remainingMin = (minDelayNanos - elapsed).coerceAtLeast(0L)
 
             val delay = if (ready) remainingMin else remainingMax
+            // Note: generation was already incremented in pause(), so any tasks
+            // that fired during the pause are already ignored by executeIfValid()
             scheduleInternal(delay, generation)
         }
     }
