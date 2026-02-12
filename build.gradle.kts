@@ -9,7 +9,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Copy
 import org.gradle.api.Project
-import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 description = "Robocode: Build the best - destroy the rest!"
 
