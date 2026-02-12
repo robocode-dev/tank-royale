@@ -6,8 +6,8 @@
     - #180: Fixed critical reentrancy bug in 0.35.4 where `ResettableTimer` executed synchronously on the calling 
       thread when delay was 0 (TPS=-1), causing recursive calls to `onNextTurn()`. This led to inconsistent bot 
       behavior, event queue overflow ("max event queue size reached: 256"), timing issues, and potential memory 
-      problems during high-speed battles. The timer now uses `executor.execute()` instead of direct execution when 
-      delay is 0, maintaining proper thread separation while avoiding scheduling overhead. This preserves both the 
+      problems during high-speed battles. The timer now uses `executor.submit()` instead of direct execution when 
+      delay is 0, maintaining proper thread separation and allowing task cancellation. This preserves both the 
       memory leak fix from 0.35.3 and timing precision at unlimited TPS.
 
 ## 📦 0.35.4 - Timing Fix for High TPS (BROKEN - DO NOT USE) – 12-Feb-2026
