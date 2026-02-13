@@ -9,13 +9,10 @@
       high-speed battles. The timer now uses `executor.submit()` instead of direct execution when delay is 0,
       maintaining proper thread separation and allowing task cancellation. This preserves both the memory leak fix from
       0.35.3 and timing precision at unlimited TPS.
-    - Fixed bug where battle outcomes depended on TPS settings. Every turn now takes exactly the turn 
-      timeout duration, ensuring deterministic and reproducible battles. TPS now only controls 
-      visualization speed for observers. Thanks to Jan Durovec for reporting this issue! ❤️
-      
-      **Impact**: Battle outcomes will differ from previous versions (restores correct behavior). 
-      No bot code changes required.
-
+    - Fixed the issue where the bots turn timeout was not respected when TPS=-1. Turn now completes immediately when all
+      bots respond (or at the `turn timeout` deadline), and TPS controls only the visual delay for observers.
+    - Thanks to Jan Durovec for reporting these issues! ❤️ 
+ 
 ## 📦 0.35.4 - Timing Fix for High TPS (BROKEN - DO NOT USE) – 12-Feb-2026
 
 **⚠️ WARNING: This version introduced a critical bug. Use 0.35.5 instead.**
