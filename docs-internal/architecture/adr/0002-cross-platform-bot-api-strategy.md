@@ -2,7 +2,7 @@
 
 **Status:** Accepted
 
-**Date:** 2026-02-11 (documenting existing architecture)
+**Date:** day-1 (documenting existing architecture)
 
 **Decision Makers:** Architecture Team
 

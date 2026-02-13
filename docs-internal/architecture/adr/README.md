@@ -19,11 +19,12 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 
 ## Index of ADRs
 
-| ADR | Title | Status | Date |
-|-----|-------|--------|------|
-| [0001](./0001-websocket-communication-protocol.md) | WebSocket Communication Protocol | Accepted | 2026-02-11 |
-| [0002](./0002-cross-platform-bot-api-strategy.md) | Cross-Platform Bot API Strategy | Accepted | 2026-02-11 |
-| [0003](./0003-realtime-game-loop-architecture.md) | Real-Time Game Loop Architecture | Accepted | 2026-02-11 |
+| ADR | Title | Status | Date       |
+|-----|-------|--------|------------|
+| [0001](./0001-websocket-communication-protocol.md) | WebSocket Communication Protocol | Accepted | day-1      |
+| [0002](./0002-cross-platform-bot-api-strategy.md) | Cross-Platform Bot API Strategy | Accepted | day-1 |
+| [0003](./0003-realtime-game-loop-architecture.md) | Real-Time Game Loop Architecture | Accepted | day-1 |
+| [0004](./0004-turn-timing-semantics.md) | Turn Timing Semantics | Accepted | day-1 |
 
 ## Status Definitions
 
