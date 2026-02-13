@@ -1,8 +1,8 @@
 package dev.robocode.tankroyale.server.core
 
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
 /**
@@ -47,7 +47,7 @@ class ResettableTimer(
     }
 
     private val lock = Any()
-    private var scheduledFuture: ScheduledFuture<*>? = null
+    private var scheduledFuture: Future<*>? = null
     private var active = false
     private var ready = false
     private var jobExecuted = false
@@ -168,15 +168,14 @@ class ResettableTimer(
     private fun scheduleInternal(delayNanos: Long, generationId: Long) {
         cancelScheduled()
         if (delayNanos <= 0L) {
-            // Execute immediately without queueing to maintain timing precision at high TPS.
-            // This matches the behavior of the original NanoTimer where delay ≤ 0 resulted in
-            // immediate execution. At high TPS (especially TPS=-1), using executor.execute()
-            // causes tasks to pile up in the queue faster than they can be processed, leading
-            // to timing drift and event delivery delays that affect bot behavior.
-            // The calling thread (typically GameServer) is already synchronized via tickLock,
-            // so direct execution is thread-safe. The single-threaded executor is still reused
-            // for all scheduled (delayed) tasks, preserving the memory leak fix.
-            executeIfValid(generationId)
+            // Execute immediately via executor.submit() to maintain thread separation.
+            // This prevents re-entrancy issues where onNextTurn() would be called synchronously
+            // during resetTurnTimeout(), which would create recursive calls when TPS=-1.
+            // Using submit() instead of execute() returns a Future that can be cancelled,
+            // preventing queue buildup when schedule() is called repeatedly before tasks execute.
+            // This maintains timing precision at high TPS while preserving proper thread isolation
+            // and the memory leak fix.
+            scheduledFuture = executor.submit { executeIfValid(generationId) }
         } else {
             scheduledFuture = executor.schedule({ executeIfValid(generationId) }, delayNanos, TimeUnit.NANOSECONDS)
         }

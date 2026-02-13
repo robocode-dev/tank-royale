@@ -16,8 +16,6 @@ import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.nanoseconds
 
 
 /** Game server. */
@@ -70,6 +68,10 @@ class GameServer(
 
     /** Current TPS setting (Turns Per Second) */
     private var tps = Server.tps
+
+    /** Timestamp when the current turn started (for calculating bot processing duration) */
+    @Volatile
+    private var turnStartTimeNanos = 0L
 
     /** Logger */
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -290,28 +292,72 @@ class GameServer(
         return participantIds
     }
 
-    /** Resets turn timeout timer with min and max bounds */
+    /**
+     * Resets turn timeout timer using the two-phase timing model from ADR-0004.
+     *
+     * Phase 1 (Bot Processing): Turn completes when all bots respond OR turnTimeout expires.
+     * - minDelayNanos = 0: Turn can complete immediately when all bots respond
+     * - maxDelayNanos = turnTimeout: Hard deadline for bots
+     *
+     * Phase 2 (Visual Rendering): After turn processing, visual delay is applied based on TPS.
+     * This is handled in onNextTurn() after the turn logic completes.
+     */
     private fun resetTurnTimeout() {
-        val minPeriodNanos = calculateTurnTimeoutMinPeriod().inWholeNanoseconds
-        val maxPeriodNanos = calculateTurnTimeoutMaxPeriod().inWholeNanoseconds
+        val turnTimeoutNanos = gameSetup.turnTimeout.inWholeNanoseconds
+
+        // Record turn start time for calculating bot processing duration (used for visual delay)
+        turnStartTimeNanos = System.nanoTime()
 
         // Important: This calls schedule() on the existing timer - it does NOT create a new thread.
         // The timer reuses its single executor thread from the ScheduledExecutorService.
         // This prevents the memory leak that occurred with NanoTimer which created a new thread per call.
-        // Ensure maxDelayNanos is at least as large as minDelayNanos
-        // This handles cases where turnTimeout < (1/TPS), which would be invalid
+        //
+        // minDelayNanos = 0: Turn can complete immediately when all bots respond (via notifyReady())
+        // maxDelayNanos = turnTimeout: Hard deadline - bots that don't respond get SkippedTurnEvent
+        //
+        // The visual delay (Phase 2) is applied separately in onNextTurn() based on TPS.
         turnTimeoutTimer?.schedule(
-            minDelayNanos = minPeriodNanos,
-            maxDelayNanos = maxOf(minPeriodNanos, maxPeriodNanos)
+            minDelayNanos = 0L,
+            maxDelayNanos = turnTimeoutNanos
         )
     }
 
-    private fun calculateTurnTimeoutMinPeriod(): Duration {
-        return if (tps <= 0) Duration.ZERO else 1_000_000_000.nanoseconds / tps
+    /**
+     * Checks if all alive bots have sent their intents for the current turn.
+     * If so, notifies the timer that the turn can complete early (Phase 1 completion).
+     */
+    private fun checkAllBotsResponded() {
+        val aliveBots = participants.filter { conn ->
+            participantIds[conn]?.let { modelUpdater?.isAlive(it) == true } ?: false
+        }
+
+        // Check if all alive bots have sent their intent this turn
+        if (aliveBots.all { botsThatSentIntent.contains(it) }) {
+            turnTimeoutTimer?.notifyReady()
+        }
     }
 
-    private fun calculateTurnTimeoutMaxPeriod(): Duration {
-        return gameSetup.turnTimeout
+    /**
+     * Applies visual delay based on TPS after bot processing completes (Phase 2 of ADR-0004).
+     *
+     * @param botProcessingDurationNanos The time spent waiting for bot intents (Phase 1 duration)
+     */
+    private fun applyVisualDelay(botProcessingDurationNanos: Long) {
+        val requestedTurnDurationNanos = when {
+            tps == 0 -> return  // TPS=0 means paused, handled elsewhere
+            tps < 0 -> 0L  // TPS=-1 means unlimited (no delay)
+            else -> 1_000_000_000L / tps  // Convert TPS to nanoseconds per turn
+        }
+
+        val visualDelayNanos = maxOf(0L, requestedTurnDurationNanos - botProcessingDurationNanos)
+
+        if (visualDelayNanos > 0) {
+            try {
+                Thread.sleep(visualDelayNanos / 1_000_000L, (visualDelayNanos % 1_000_000L).toInt())
+            } catch (_: InterruptedException) {
+                Thread.currentThread().interrupt()
+            }
+        }
     }
 
     /** Broadcast game-aborted event to all observers and controllers */
@@ -456,6 +502,9 @@ class GameServer(
     private fun onNextTurn() {
         if (serverState !== ServerState.GAME_RUNNING) return
 
+        // Calculate bot processing duration (Phase 1 duration) for visual delay calculation
+        val botProcessingDurationNanos = System.nanoTime() - turnStartTimeNanos
+
         // Required as this method can be called again while already running.
         // This would give a race condition without the synchronized lock.
         synchronized(tickLock) {
@@ -471,6 +520,10 @@ class GameServer(
             // Clear inside synchronized block to prevent race condition
             botsThatSentIntent.clear()
         }
+
+        // Phase 2: Apply visual delay based on TPS (ADR-0004)
+        // This ensures smooth visualization at the requested TPS without affecting bot timing
+        applyVisualDelay(botProcessingDurationNanos)
 
         resetTurnTimeout()
     }
@@ -769,12 +822,12 @@ class GameServer(
                 }
             }
 
-            // If all bot intents have been received, we can start next turn
+            // Track that this bot has sent an intent for this turn
             botsThatSentIntent += conn
-            if (botIntents.size == botsThatSentIntent.size) {
-                turnTimeoutTimer?.notifyReady()
-            }
         }
+
+        // Check if all alive bots have responded - if so, turn can complete early (ADR-0004 Phase 1)
+        checkAllBotsResponded()
     }
 
     internal fun handleStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {

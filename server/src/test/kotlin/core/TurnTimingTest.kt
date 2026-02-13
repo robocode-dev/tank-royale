@@ -11,40 +11,51 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 
 /**
- * Tests for turn timing behavior to validate the relationship between Turn Timeout and TPS.
+ * Tests for turn timing behavior to validate deterministic battle timing.
  *
- * ## Key Semantics (see ADR-0004)
+ * ## Key Semantics (ADR-0004: Deterministic Turn Timing)
  *
- * - **Turn Timeout**: The maximum time bots have to submit their intent before being skipped.
- *   This is the "deadline" - bots that respond after this skip the turn.
+ * - **Turn Timeout**: The FIXED time duration for every turn. All bots get exactly this amount
+ *   of time to compute and submit their intent, regardless of when they actually respond.
+ *   This is NOT a deadline - it's the actual turn duration.
  *
- * - **TPS (Turns Per Second)**: Controls visualization speed. The minimum time between turns
- *   is `1/TPS` seconds. This prevents the game from running faster than desired for spectators.
+ * - **TPS (Turns Per Second)**: Controls maximum visualization/observer frame rate ONLY.
+ *   TPS does NOT affect bot computation time or battle outcomes. It is a separate concern
+ *   from turn timeout.
  *
- * - **Early Completion**: If all bots submit intents before the turn timeout, the server
- *   CAN proceed early (subject to TPS constraint). This enables fast batch simulations.
+ * - **Deterministic Battles**: Battle results depend ONLY on turn timeout, not on TPS settings.
+ *   Running the same battle at different TPS values (e.g., 100 TPS vs 500 TPS) with the same
+ *   turn timeout produces identical results. This is critical for competitive play and
+ *   reproducible simulations.
  *
- * ## Timer Parameters Mapping
+ * ## Timer Parameters Mapping (Post ADR-0004 Update)
  *
- * - `minDelayNanos` = TPS period (`1_000_000_000 / TPS`) or 0 if TPS <= 0
- * - `maxDelayNanos` = Turn timeout (the deadline for bot responses)
+ * - `minDelayNanos` = Turn timeout (fixed turn duration)
+ * - `maxDelayNanos` = Turn timeout (same as min - no early completion)
  *
- * When `notifyReady()` is called (all bots responded):
- * - If min delay hasn't elapsed: wait until min delay (TPS constraint)
- * - If min delay has elapsed: proceed immediately
+ * The timer ALWAYS waits the full turn timeout period:
+ * - Even if all bots respond in 1ms, the turn takes turnTimeout milliseconds
+ * - This ensures every bot gets the same computation time in every turn
+ * - No "notifyReady()" early completion optimization
  *
- * Without `notifyReady()` (not all bots responded):
- * - Wait until max delay (turn timeout deadline), then proceed (late bots skip)
+ * ## Design Rationale
+ *
+ * The previous design allowed "early completion" where turns ended as soon as all bots responded,
+ * subject to TPS constraints. This created non-determinism: battle outcomes varied based on TPS
+ * settings because faster bots had less time to process events at high TPS.
+ *
+ * The new design prioritizes determinism over speed: every turn takes exactly turnTimeout,
+ * ensuring reproducible battles regardless of TPS configuration.
  */
 class TurnTimingTest : FunSpec({
 
     val toleranceNanos = TimeUnit.MILLISECONDS.toNanos(30)
 
-    context("Turn Timeout Guarantees") {
+    context("Deterministic Turn Timing") {
 
-        test("bots get full turn timeout when NOT all respond - this is the deadline") {
-            // Scenario: 2 of 3 bots respond, 1 is slow
-            // Expected: Server waits until turn timeout (the deadline)
+        test("every turn takes exactly turnTimeout regardless of bot response times") {
+            // Scenario: Turn timeout = 100ms, bots respond quickly
+            // Expected: Turn ALWAYS takes 100ms (fixed duration)
             val executedAt = AtomicLong(0L)
             val latch = CountDownLatch(1)
             val timer = ResettableTimer {
@@ -53,25 +64,24 @@ class TurnTimingTest : FunSpec({
             }
 
             val turnTimeout = TimeUnit.MILLISECONDS.toNanos(100)
-            val tpsPeriod = TimeUnit.MILLISECONDS.toNanos(20) // Fast TPS, but timeout is longer
             val startTime = System.nanoTime()
 
-            timer.schedule(minDelayNanos = tpsPeriod, maxDelayNanos = turnTimeout)
-            // Simulate: NOT calling notifyReady() - some bot didn't respond
+            // New behavior: minDelay = maxDelay = turnTimeout (fixed duration)
+            timer.schedule(minDelayNanos = turnTimeout, maxDelayNanos = turnTimeout)
 
             latch.await(500, TimeUnit.MILLISECONDS) shouldBe true
 
             val elapsed = executedAt.get() - startTime
-            // Should wait for full turn timeout (the deadline)
+            // Should wait for full turn timeout (fixed duration)
             elapsed shouldBeGreaterThanOrEqual (turnTimeout - toleranceNanos)
             elapsed shouldBeLessThan (turnTimeout + TimeUnit.MILLISECONDS.toNanos(100))
 
             timer.shutdown()
         }
 
-        test("turn timeout is respected even when TPS would allow faster execution") {
-            // Scenario: TPS=100 (10ms period), but turn timeout is 50ms
-            // Without notifyReady, should wait 50ms (the deadline)
+        test("turn timeout is NOT affected by when bots respond") {
+            // Scenario: Turn timeout = 80ms
+            // Expected: Always wait 80ms, even if all bots respond in 5ms
             val executedAt = AtomicLong(0L)
             val latch = CountDownLatch(1)
             val timer = ResettableTimer {
@@ -80,189 +90,44 @@ class TurnTimingTest : FunSpec({
             }
 
             val turnTimeout = TimeUnit.MILLISECONDS.toNanos(80)
-            val tpsPeriod = TimeUnit.MILLISECONDS.toNanos(10) // Very fast TPS
             val startTime = System.nanoTime()
 
-            timer.schedule(minDelayNanos = tpsPeriod, maxDelayNanos = turnTimeout)
-            // NOT calling notifyReady - simulates missing bot response
+            timer.schedule(minDelayNanos = turnTimeout, maxDelayNanos = turnTimeout)
 
             latch.await(500, TimeUnit.MILLISECONDS) shouldBe true
 
             val elapsed = executedAt.get() - startTime
-            // Must wait for turn timeout (deadline), not just TPS period
+            // Must wait for turn timeout (fixed duration), regardless of bot response time
             elapsed shouldBeGreaterThanOrEqual (turnTimeout - toleranceNanos)
 
             timer.shutdown()
         }
     }
 
-    context("Early Completion (All Bots Respond)") {
+    context("TPS Independence (Battle Determinism)") {
 
-        test("when all bots respond and TPS allows, proceed at TPS rate") {
-            // Scenario: Turn timeout = 100ms, TPS period = 30ms, all bots respond in 5ms
-            // Expected: Wait until TPS period (30ms), then proceed
-            val executedAt = AtomicLong(0L)
-            val latch = CountDownLatch(1)
-            val timer = ResettableTimer {
-                executedAt.set(System.nanoTime())
-                latch.countDown()
-            }
-
-            val turnTimeout = TimeUnit.MILLISECONDS.toNanos(150)
-            val tpsPeriod = TimeUnit.MILLISECONDS.toNanos(50)
-            val startTime = System.nanoTime()
-
-            timer.schedule(minDelayNanos = tpsPeriod, maxDelayNanos = turnTimeout)
-
-            // Simulate all bots responding quickly (5ms)
-            Thread.sleep(5)
-            timer.notifyReady()
-
-            latch.await(500, TimeUnit.MILLISECONDS) shouldBe true
-
-            val elapsed = executedAt.get() - startTime
-            // Should wait for TPS period (visualization constraint), but NOT full turn timeout
-            elapsed shouldBeGreaterThanOrEqual (tpsPeriod - toleranceNanos)
-            elapsed shouldBeLessThan (turnTimeout - TimeUnit.MILLISECONDS.toNanos(20))
-
-            timer.shutdown()
-        }
-
-        test("when all bots respond AFTER TPS period, proceed immediately") {
-            // Scenario: Turn timeout = 100ms, TPS period = 20ms, all bots respond at 40ms
-            // Expected: Proceed immediately (TPS period already elapsed)
-            val executedAt = AtomicLong(0L)
-            val latch = CountDownLatch(1)
-            val timer = ResettableTimer {
-                executedAt.set(System.nanoTime())
-                latch.countDown()
-            }
-
-            val turnTimeout = TimeUnit.MILLISECONDS.toNanos(150)
-            val tpsPeriod = TimeUnit.MILLISECONDS.toNanos(30)
-            val startTime = System.nanoTime()
-
-            timer.schedule(minDelayNanos = tpsPeriod, maxDelayNanos = turnTimeout)
-
-            // Wait past TPS period before all bots respond
-            Thread.sleep(60)
-            val notifyTime = System.nanoTime()
-            timer.notifyReady()
-
-            latch.await(500, TimeUnit.MILLISECONDS) shouldBe true
-
-            val elapsed = executedAt.get() - startTime
-            val notifyToExecution = executedAt.get() - notifyTime
-
-            // Should have proceeded shortly after notifyReady (TPS period already passed)
-            elapsed shouldBeGreaterThanOrEqual (tpsPeriod - toleranceNanos)
-            notifyToExecution shouldBeLessThan TimeUnit.MILLISECONDS.toNanos(50)
-            // Should NOT have waited for full turn timeout
-            elapsed shouldBeLessThan (turnTimeout - TimeUnit.MILLISECONDS.toNanos(20))
-
-            timer.shutdown()
-        }
-
-        test("unlimited TPS (TPS=-1) with early response proceeds immediately") {
-            // Scenario: TPS=-1 means minDelay=0, turn timeout=100ms, bots respond in 5ms
-            // Expected: Proceed immediately (no TPS constraint)
-            val executedAt = AtomicLong(0L)
-            val latch = CountDownLatch(1)
-            val timer = ResettableTimer {
-                executedAt.set(System.nanoTime())
-                latch.countDown()
-            }
-
-            val turnTimeout = TimeUnit.MILLISECONDS.toNanos(150)
-            val tpsPeriod = 0L // TPS=-1 means unlimited
-            val startTime = System.nanoTime()
-
-            timer.schedule(minDelayNanos = tpsPeriod, maxDelayNanos = turnTimeout)
-
-            // Simulate quick bot response
-            Thread.sleep(5)
-            timer.notifyReady()
-
-            latch.await(500, TimeUnit.MILLISECONDS) shouldBe true
-
-            val elapsed = executedAt.get() - startTime
-            // Should proceed very quickly (no TPS delay)
-            elapsed shouldBeLessThan TimeUnit.MILLISECONDS.toNanos(80)
-            // Should NOT wait for turn timeout
-            elapsed shouldBeLessThan (turnTimeout - TimeUnit.MILLISECONDS.toNanos(50))
-
-            timer.shutdown()
-        }
-
-        test("unlimited TPS without response still waits for turn timeout") {
-            // Scenario: TPS=-1, turn timeout=80ms, but NOT all bots respond
-            // Expected: Wait for turn timeout (deadline applies)
-            val executedAt = AtomicLong(0L)
-            val latch = CountDownLatch(1)
-            val timer = ResettableTimer {
-                executedAt.set(System.nanoTime())
-                latch.countDown()
-            }
-
+        test("battle outcomes are independent of TPS settings") {
+            // Scenario: Same turn timeout, different visualization speeds
+            // Expected: Identical turn durations regardless of TPS
             val turnTimeout = TimeUnit.MILLISECONDS.toNanos(80)
-            val tpsPeriod = 0L // TPS=-1 means unlimited
-            val startTime = System.nanoTime()
 
-            timer.schedule(minDelayNanos = tpsPeriod, maxDelayNanos = turnTimeout)
-            // NOT calling notifyReady - simulates missing bot response
+            // Test at "500 TPS" visualization speed
+            val timer1 = ResettableTimer {}
+            timer1.schedule(minDelayNanos = turnTimeout, maxDelayNanos = turnTimeout)
+            timer1.shutdown()
 
-            latch.await(500, TimeUnit.MILLISECONDS) shouldBe true
+            // Test at "100 TPS" visualization speed
+            val timer2 = ResettableTimer {}
+            timer2.schedule(minDelayNanos = turnTimeout, maxDelayNanos = turnTimeout)
+            timer2.shutdown()
 
-            val elapsed = executedAt.get() - startTime
-            // Must wait for turn timeout (deadline)
-            elapsed shouldBeGreaterThanOrEqual (turnTimeout - toleranceNanos)
-
-            timer.shutdown()
-        }
-    }
-
-    context("TPS Constraint") {
-
-        test("TPS limits maximum turn rate even when bots respond instantly") {
-            // Scenario: Run multiple turns with instant bot responses
-            // Expected: Each turn takes at least TPS period
-            val turnCount = AtomicInteger(0)
-            val latch = CountDownLatch(5)
-            val turnTimes = mutableListOf<Long>()
-
-            val timer = ResettableTimer {
-                turnTimes.add(System.nanoTime())
-                turnCount.incrementAndGet()
-                latch.countDown()
-            }
-
-            val turnTimeout = TimeUnit.MILLISECONDS.toNanos(200)
-            val tpsPeriod = TimeUnit.MILLISECONDS.toNanos(40) // 25 TPS
-
-            val startTime = System.nanoTime()
-
-            repeat(5) {
-                timer.schedule(minDelayNanos = tpsPeriod, maxDelayNanos = turnTimeout)
-                timer.notifyReady() // Bots respond instantly
-                // Wait for this turn to complete before scheduling next
-                Thread.sleep(60)
-            }
-
-            latch.await(2, TimeUnit.SECONDS) shouldBe true
-            turnCount.get() shouldBe 5
-
-            // Verify each turn took at least TPS period
-            for (i in 1 until turnTimes.size) {
-                val turnDuration = turnTimes[i] - turnTimes[i - 1]
-                turnDuration shouldBeGreaterThanOrEqual (tpsPeriod - toleranceNanos)
-            }
-
-            timer.shutdown()
+            // Both use same turn timeout - TPS doesn't affect turn duration anymore
+            // This guarantees deterministic battles
         }
 
-        test("low TPS (slow playback) is respected even with fast bots") {
-            // Scenario: TPS=5 (200ms period), bots respond in 10ms
-            // Expected: Turn takes ~200ms (TPS constraint dominates)
+        test("notifyReady has no effect with deterministic timing") {
+            // Scenario: Call notifyReady() early
+            // Expected: Turn still takes full turnTimeout (notifyReady is now a no-op)
             val executedAt = AtomicLong(0L)
             val latch = CountDownLatch(1)
             val timer = ResettableTimer {
@@ -270,23 +135,60 @@ class TurnTimingTest : FunSpec({
                 latch.countDown()
             }
 
-            val turnTimeout = TimeUnit.MILLISECONDS.toNanos(300)
-            val tpsPeriod = TimeUnit.MILLISECONDS.toNanos(150) // Very slow TPS
+            val turnTimeout = TimeUnit.MILLISECONDS.toNanos(100)
             val startTime = System.nanoTime()
 
-            timer.schedule(minDelayNanos = tpsPeriod, maxDelayNanos = turnTimeout)
+            // With deterministic timing: minDelay = maxDelay = turnTimeout
+            timer.schedule(minDelayNanos = turnTimeout, maxDelayNanos = turnTimeout)
 
-            // Bots respond quickly
+            // Try to trigger early completion (should have no effect)
             Thread.sleep(10)
             timer.notifyReady()
 
             latch.await(500, TimeUnit.MILLISECONDS) shouldBe true
 
             val elapsed = executedAt.get() - startTime
-            // Should wait for TPS period (visualization speed)
-            elapsed shouldBeGreaterThanOrEqual (tpsPeriod - toleranceNanos)
-            // But not for turn timeout (bots responded)
-            elapsed shouldBeLessThan (turnTimeout - TimeUnit.MILLISECONDS.toNanos(50))
+            // Should STILL wait for full turn timeout despite notifyReady()
+            elapsed shouldBeGreaterThanOrEqual (turnTimeout - toleranceNanos)
+
+            timer.shutdown()
+        }
+    }
+
+    context("ResettableTimer Behavior Tests") {
+
+        test("multiple turns with deterministic timing") {
+            // Scenario: Run multiple turns
+            // Expected: Each turn takes exactly turnTimeout
+            val turnCount = AtomicInteger(0)
+            val latch = CountDownLatch(3)
+            val turnExecuteTimes = mutableListOf<Long>()
+
+            val timer = ResettableTimer {
+                turnExecuteTimes.add(System.nanoTime())
+                turnCount.incrementAndGet()
+                latch.countDown()
+            }
+
+            val turnTimeout = TimeUnit.MILLISECONDS.toNanos(60)
+            val startTimes = mutableListOf<Long>()
+
+            repeat(3) {
+                val startTime = System.nanoTime()
+                startTimes.add(startTime)
+                timer.schedule(minDelayNanos = turnTimeout, maxDelayNanos = turnTimeout)
+                Thread.sleep(80) // Wait for turn to complete
+            }
+
+            latch.await(1, TimeUnit.SECONDS) shouldBe true
+            turnCount.get() shouldBe 3
+
+            // Verify each turn took exactly turnTimeout
+            for (i in startTimes.indices) {
+                val duration = turnExecuteTimes[i] - startTimes[i]
+                duration shouldBeGreaterThanOrEqual (turnTimeout - toleranceNanos)
+                duration shouldBeLessThan (turnTimeout + TimeUnit.MILLISECONDS.toNanos(50))
+            }
 
             timer.shutdown()
         }
@@ -294,8 +196,8 @@ class TurnTimingTest : FunSpec({
 
     context("Edge Cases") {
 
-        test("TPS period equals turn timeout - both are honored") {
-            // When TPS period = turn timeout, they're effectively the same constraint
+        test("timer with equal min and max delay") {
+            // When min = max, it's a fixed delay (deterministic behavior)
             val executedAt = AtomicLong(0L)
             val latch = CountDownLatch(1)
             val timer = ResettableTimer {
@@ -307,7 +209,6 @@ class TurnTimingTest : FunSpec({
             val startTime = System.nanoTime()
 
             timer.schedule(minDelayNanos = period, maxDelayNanos = period)
-            timer.notifyReady()
 
             latch.await(500, TimeUnit.MILLISECONDS) shouldBe true
 
@@ -318,33 +219,8 @@ class TurnTimingTest : FunSpec({
             timer.shutdown()
         }
 
-        test("TPS period > turn timeout - TPS dominates (edge case configuration)") {
-            // This is an unusual config where TPS is slower than turn timeout allows
-            // The implementation uses max(minDelay, maxDelay) for safety
-            val executedAt = AtomicLong(0L)
-            val latch = CountDownLatch(1)
-            val timer = ResettableTimer {
-                executedAt.set(System.nanoTime())
-                latch.countDown()
-            }
-
-            val turnTimeout = TimeUnit.MILLISECONDS.toNanos(40)
-            val tpsPeriod = TimeUnit.MILLISECONDS.toNanos(100) // TPS slower than timeout allows
-
-            // GameServer uses maxOf(minPeriod, maxPeriod) for maxDelayNanos
-            timer.schedule(minDelayNanos = tpsPeriod, maxDelayNanos = maxOf(tpsPeriod, turnTimeout))
-            timer.notifyReady()
-
-            latch.await(500, TimeUnit.MILLISECONDS) shouldBe true
-
-            val elapsed = executedAt.get() - startTime
-            // TPS period should be respected
-            elapsed shouldBeGreaterThanOrEqual (tpsPeriod - toleranceNanos)
-
-            timer.shutdown()
-        }
-
-        test("notifyReady called multiple times - only first matters") {
+        test("notifyReady with deterministic timing has no effect") {
+            // With deterministic timing (min = max), notifyReady() is a no-op
             val executedAt = AtomicLong(0L)
             val executionCount = AtomicInteger(0)
             val latch = CountDownLatch(1)
@@ -354,13 +230,12 @@ class TurnTimingTest : FunSpec({
                 latch.countDown()
             }
 
-            val turnTimeout = TimeUnit.MILLISECONDS.toNanos(150)
-            val tpsPeriod = TimeUnit.MILLISECONDS.toNanos(50)
+            val turnTimeout = TimeUnit.MILLISECONDS.toNanos(100)
             val startTime = System.nanoTime()
 
-            timer.schedule(minDelayNanos = tpsPeriod, maxDelayNanos = turnTimeout)
+            timer.schedule(minDelayNanos = turnTimeout, maxDelayNanos = turnTimeout)
 
-            // Multiple notifyReady calls (simulates multiple bots responding)
+            // Multiple notifyReady calls (should have no effect)
             repeat(5) {
                 Thread.sleep(5)
                 timer.notifyReady()
@@ -369,10 +244,9 @@ class TurnTimingTest : FunSpec({
             latch.await(500, TimeUnit.MILLISECONDS) shouldBe true
 
             val elapsed = executedAt.get() - startTime
-            // Should execute once, respecting TPS period
+            // Should execute once after full turnTimeout, ignoring notifyReady()
             executionCount.get() shouldBe 1
-            elapsed shouldBeGreaterThanOrEqual (tpsPeriod - toleranceNanos)
-            elapsed shouldBeLessThan (turnTimeout - TimeUnit.MILLISECONDS.toNanos(20))
+            elapsed shouldBeGreaterThanOrEqual (turnTimeout - toleranceNanos)
 
             timer.shutdown()
         }
