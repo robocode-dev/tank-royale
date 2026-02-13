@@ -1,14 +1,28 @@
+## 📦 0.36.0 - Deterministic Battle Timing – 13-Feb-2026
+
+### 🐞 Bug Fixes
+
+- Server:
+    - Fixed bug where battle outcomes depended on TPS settings. Every turn now takes exactly the turn 
+      timeout duration, ensuring deterministic and reproducible battles. TPS now only controls 
+      visualization speed for observers.
+      
+      **Impact**: Battle outcomes will differ from previous versions (restores correct behavior). 
+      No bot code changes required.
+      
+      Thanks to Jan Durovec for reporting this issue! ❤️
+
 ## 📦 0.35.5 - Critical Fix for TPS=-1 Re-entrancy Issue – 12-Feb-2026
 
 ### 🐞 Bug Fixes
 
 - Server:
-    - #180: Fixed critical reentrancy bug in 0.35.4 where `ResettableTimer` executed synchronously on the calling 
-      thread when delay was 0 (TPS=-1), causing recursive calls to `onNextTurn()`. This led to inconsistent bot 
-      behavior, event queue overflow ("max event queue size reached: 256"), timing issues, and potential memory 
-      problems during high-speed battles. The timer now uses `executor.submit()` instead of direct execution when 
-      delay is 0, maintaining proper thread separation and allowing task cancellation. This preserves both the 
-      memory leak fix from 0.35.3 and timing precision at unlimited TPS.
+    - #180: Fixed critical reentrancy bug in 0.35.4 where `ResettableTimer` executed synchronously on the calling thread
+      when delay was 0 (TPS=-1), causing recursive calls to `onNextTurn()`. This led to inconsistent bot behavior, event
+      queue overflow ("max event queue size reached: 256"), timing issues, and potential memory problems during
+      high-speed battles. The timer now uses `executor.submit()` instead of direct execution when delay is 0,
+      maintaining proper thread separation and allowing task cancellation. This preserves both the memory leak fix from
+    - 0.35.3 and timing precision at unlimited TPS.
 
 ## 📦 0.35.4 - Timing Fix for High TPS (BROKEN - DO NOT USE) – 12-Feb-2026
 
@@ -17,11 +31,11 @@
 ### 🐞 Bug Fixes
 
 - Server:
-    - #180: ~~Fixed timing regression introduced in 0.35.3 where `ResettableTimer` caused turn delays at high TPS 
-      (especially TPS=-1). The timer now executes immediately when delay is 0, instead of queueing tasks, restoring 
-      the original NanoTimer behavior while preserving the memory leak fix. This resolves issues where bots experienced 
+    - #180: ~~Fixed timing regression introduced in 0.35.3 where `ResettableTimer` caused turn delays at high TPS
+      (especially TPS=-1). The timer now executes immediately when delay is 0, instead of queueing tasks, restoring
+      the original NanoTimer behavior while preserving the memory leak fix. This resolves issues where bots experienced
       inconsistent results and missed events at unlimited TPS.~~
-      
+
       **BUG**: This fix caused re-entrancy issues by executing on the calling thread instead of the executor thread.
 
 ## 📦 0.35.3 - Memory Leak Fixes – 08-Feb-2026
@@ -42,9 +56,9 @@
 ### 🐞 Bug Fixes
 
 - GUI:
-    - Fixed `InvalidPathException` on Windows when bot directories contained backslashes. Windows paths like 
-      `C:\robocode\bots\python` were being corrupted because backslash sequences (e.g., `\r`, `\b`) were interpreted 
-      as escape characters when saved to the properties file. Bot directory paths are now normalized to use forward 
+    - Fixed `InvalidPathException` on Windows when bot directories contained backslashes. Windows paths like
+      `C:\robocode\bots\python` were being corrupted because backslash sequences (e.g., `\r`, `\b`) were interpreted
+      as escape characters when saved to the properties file. Bot directory paths are now normalized to use forward
       slashes, which work correctly on all platforms.
 
 ## 📦 0.35.1 - Automatic User Data Migration – 27-Jan-2026
@@ -52,9 +66,9 @@
 ### 🚀 Improvements
 
 - GUI:
-    - Added automatic migration of user data files (`gui.properties`, `server.properties`, `game-setups.properties`, 
-      and `recordings/` directory) from the old location (current working directory or JAR location) to the new 
-      platform-specific user data directory. This removes the need for manual file migration when upgrading from 
+    - Added automatic migration of user data files (`gui.properties`, `server.properties`, `game-setups.properties`,
+      and `recordings/` directory) from the old location (current working directory or JAR location) to the new
+      platform-specific user data directory. This removes the need for manual file migration when upgrading from
       pre-0.35.0 versions.
 
 ## 📦 0.35.0 - **BREAKING**: Python Bot API Converted to Synchronous API & Refactored to Use Properties - 26-Jan-2026
@@ -135,13 +149,13 @@ You can still download the JAR version as usual, which works on all platforms wi
     - Added native installer packages for the GUI (Windows MSI, macOS PKG, Linux RPM, and DEB).
         - Note: Java 11+ is required and the runtime must be discoverable via the `JAVA_HOME` environment variable. See
           the installation documentation for platform-specific instructions.
-  - Settings are now stored in platform-specific user directories to avoid permission issues:
-      - Windows: `%LOCALAPPDATA%\Robocode Tank Royale` or `%APPDATA%\Robocode Tank Royale`
-      - macOS: `~/Library/Application Support/Robocode Tank Royale`
-      - Linux: `$XDG_CONFIG_HOME/robocode-tank-royale` or `~/.config/robocode-tank-royale`
-  - You need to move your `gui.properties`, `server.properties`, `game-setups.properties` and the `recordings`
-    directory into the new user data directory for the GUI.
-  - Added jlink runtime image creation for Windows installers to avoid "Failed to launch VM" issues on some machines.
+    - Settings are now stored in platform-specific user directories to avoid permission issues:
+        - Windows: `%LOCALAPPDATA%\Robocode Tank Royale` or `%APPDATA%\Robocode Tank Royale`
+        - macOS: `~/Library/Application Support/Robocode Tank Royale`
+        - Linux: `$XDG_CONFIG_HOME/robocode-tank-royale` or `~/.config/robocode-tank-royale`
+    - You need to move your `gui.properties`, `server.properties`, `game-setups.properties` and the `recordings`
+      directory into the new user data directory for the GUI.
+    - Added jlink runtime image creation for Windows installers to avoid "Failed to launch VM" issues on some machines.
 
 ## 📦 0.34.1 - Fixes on_death in Python Bot API and GUI improvements – 14-Nov-2025
 

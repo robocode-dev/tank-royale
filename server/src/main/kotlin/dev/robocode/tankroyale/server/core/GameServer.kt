@@ -16,8 +16,6 @@ import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.nanoseconds
 
 
 /** Game server. */
@@ -290,28 +288,22 @@ class GameServer(
         return participantIds
     }
 
-    /** Resets turn timeout timer with min and max bounds */
+    /** Resets turn timeout timer to always wait the full turn timeout for deterministic battles */
     private fun resetTurnTimeout() {
-        val minPeriodNanos = calculateTurnTimeoutMinPeriod().inWholeNanoseconds
-        val maxPeriodNanos = calculateTurnTimeoutMaxPeriod().inWholeNanoseconds
+        val turnTimeoutNanos = gameSetup.turnTimeout.inWholeNanoseconds
 
         // Important: This calls schedule() on the existing timer - it does NOT create a new thread.
         // The timer reuses its single executor thread from the ScheduledExecutorService.
         // This prevents the memory leak that occurred with NanoTimer which created a new thread per call.
-        // Ensure maxDelayNanos is at least as large as minDelayNanos
-        // This handles cases where turnTimeout < (1/TPS), which would be invalid
+        //
+        // Both minDelayNanos and maxDelayNanos are set to turnTimeout to ensure deterministic battles.
+        // Every turn takes exactly turnTimeout, regardless of when bots send their intents.
+        // This guarantees that battle results depend only on turnTimeout, not on TPS settings.
+        // TPS only controls the maximum visualization/observer frame rate.
         turnTimeoutTimer?.schedule(
-            minDelayNanos = minPeriodNanos,
-            maxDelayNanos = maxOf(minPeriodNanos, maxPeriodNanos)
+            minDelayNanos = turnTimeoutNanos,
+            maxDelayNanos = turnTimeoutNanos
         )
-    }
-
-    private fun calculateTurnTimeoutMinPeriod(): Duration {
-        return if (tps <= 0) Duration.ZERO else 1_000_000_000.nanoseconds / tps
-    }
-
-    private fun calculateTurnTimeoutMaxPeriod(): Duration {
-        return gameSetup.turnTimeout
     }
 
     /** Broadcast game-aborted event to all observers and controllers */
@@ -769,11 +761,8 @@ class GameServer(
                 }
             }
 
-            // If all bot intents have been received, we can start next turn
+            // Track that this bot has sent an intent for this turn
             botsThatSentIntent += conn
-            if (botIntents.size == botsThatSentIntent.size) {
-                turnTimeoutTimer?.notifyReady()
-            }
         }
     }
 
