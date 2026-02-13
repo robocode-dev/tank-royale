@@ -4,7 +4,7 @@
 
 **Date:** 2026-02-13
 
-**Decision Makers:** Architecture Team
+**Decision Makers:** Flemming N. Larsen
 
 ---
 
@@ -66,7 +66,7 @@ visual_delay = max(0, requested_turn_duration - bot_processing_duration)
 
 **Special TPS values:**
 - `TPS > 0`: Inject delay to match requested frame rate
-- `TPS = -1`: No delay (unlimited speed)
+- `TPS = -1`: No delay (as fast as possible, but bot-limited)
 - `TPS = 0`: Pause game (infinite delay)
 
 ### Combined Algorithm
@@ -129,7 +129,7 @@ This would mean:
 
 This means:
 - ✅ If all bots respond in 5ms, turn logic completes at 5ms
-- ✅ At TPS=-1, speed is `1000/max(bot_response_times)` (truly unlimited)
+- ✅ At TPS=-1, speed is `1000/max(bot_response_times)` (bot-limited, no artificial delay)
 - ✅ Fast batch simulations with responsive bots
 - ✅ Visual delay is added separately to respect TPS wishes
 
@@ -249,8 +249,8 @@ Time →
 0ms ──────── 8ms
 │            │
 Start        Turn logic completes AND visual advances
-             (no delay, truly unlimited)
-             Actual TPS = 125
+             (no delay, bot-limited)
+             Actual TPS = 125 (1000/8)
 
 
 Scenario 3: One bot times out
@@ -289,9 +289,9 @@ Start        │                                     Visual frame advances
   - Same `turnTimeout` + same bots = identical results at any TPS
   - Critical for competitive play and reproducible simulations
 
-- ✅ **True unlimited speed**: TPS=-1 runs as fast as bots can respond
+- ✅ **Maximum speed within bot constraints**: TPS=-1 runs as fast as bots can respond
   - No artificial waiting when all bots are done
-  - Batch simulations run at maximum speed
+  - Batch simulations run at maximum speed (bot-limited)
 
 - ✅ **Clean separation of concerns**: 
   - Phase 1 (bot processing) ensures fairness
@@ -472,7 +472,7 @@ See `server/src/test/kotlin/core/TurnTimingTest.kt` for comprehensive tests cove
 
 ### Edge Cases
 - TPS=0 (pause): bots still process, visual paused
-- TPS=-1 (unlimited): truly unlimited when bots are fast
+- TPS=-1 (unlimited): as fast as possible, but bot-limited by max(bot_response_times)
 - turnTimeout equals average response time
 - turnTimeout less than average response time (many SkippedTurnEvents)
 - Very high TPS (e.g., 1000) with slow bots
@@ -506,10 +506,3 @@ See `server/src/test/kotlin/core/TurnTimingTest.kt` for comprehensive tests cove
 - [ResettableTimer Implementation](/server/src/main/kotlin/dev/robocode/tankroyale/server/core/ResettableTimer.kt)
 - [GameServer Turn Handling](/server/src/main/kotlin/dev/robocode/tankroyale/server/core/GameServer.kt)
 - [TPS Documentation](/docs-build/docs/articles/tps.md)
-
-
-
-
-
-
-
