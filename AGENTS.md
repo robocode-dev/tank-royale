@@ -41,6 +41,15 @@ Load specific instruction files from `.ai/` based on your task:
 
 **Default Strategy:** If task is unclear, load `.ai/core-principles.md` + `.ai/cross-platform.md` first.
 
+## Task Completion
+
+When a task is complete, provide a **brief description of what changed** - not a summary. Example:
+
+✅ Good: "Updated GameServer.kt to use fixed turn timeout, removed notifyReady() call"  
+❌ Bad: Multi-paragraph summaries with background, rationale, testing details, etc.
+
+The user can see the changes in the diff. Just confirm what was done.
+
 ## AI Learning Loop
 
 **Capture feedback during chat to improve AI instructions permanently.**
