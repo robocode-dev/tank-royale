@@ -22,9 +22,9 @@ This decision documents the correct semantics that separate bot processing from 
 ### The Problem
 
 Consider this scenario:
-- Turn timeout: 10ms (bots have up to 10ms to respond)
+- Turn timeout: 10000µs (bots have up to 10ms to respond)
 - TPS: 30 (target ~33ms per turn for visualization)
-- All bots respond in 8ms
+- All bots respond in 8000µs (8ms)
 
 **What happens?**
 - When does the turn logic complete for bots?
@@ -48,7 +48,7 @@ We adopt a **two-phase timing model** that separates bot processing from visual 
 
 **Turn timeout is a HARD DEADLINE**, not a minimum wait time:
 
-1. Server waits for bot intents up to `turnTimeout` milliseconds
+1. Server waits for bot intents up to `turnTimeout` microseconds
 2. When **all bots respond** OR **turnTimeout expires**, turn logic immediately completes
 3. Bots that didn't respond within `turnTimeout` receive a **SkippedTurnEvent**
 4. The next turn begins for bots immediately (no artificial delay)
@@ -121,14 +121,14 @@ The two-phase model cleanly separates concerns:
 **Rejected interpretation:** "Wait the full turnTimeout even if all bots respond early"
 
 This would mean:
-- ❌ If all bots respond in 5ms but timeout=10ms, wait 10ms
+- ❌ If all bots respond in 5000µs (5ms) but timeout=10000µs (10ms), wait 10ms
 - ❌ At TPS=-1 (unlimited), maximum speed is `1000/turnTimeout` 
 - ❌ Slow batch simulations even with fast bots
 
 **Correct interpretation:** "Turn completes when all bots respond OR deadline hits"
 
 This means:
-- ✅ If all bots respond in 5ms, turn logic completes at 5ms
+- ✅ If all bots respond in 5000µs (5ms), turn logic completes at 5ms
 - ✅ At TPS=-1, speed is `1000/max(bot_response_times)` (bot-limited, no artificial delay)
 - ✅ Fast batch simulations with responsive bots
 - ✅ Visual delay is added separately to respect TPS wishes
@@ -147,21 +147,21 @@ This means:
 
 **Example scenarios:**
 
-1. **Development/Debugging (TPS=10, timeout=10ms)**
-   - Bots: Get up to 10ms per turn, then next turn starts
+1. **Development/Debugging (TPS=10, timeout=10000µs)**
+   - Bots: Get up to 10000µs (10ms) per turn, then next turn starts
    - Visual: Slow playback at 100ms per frame for observation
-   - If bots respond in 8ms: turn completes at 8ms, visual delay = 92ms
+   - If bots respond in 8000µs (8ms): turn completes at 8ms, visual delay = 92ms
 
-2. **Batch Simulation (TPS=-1, timeout=10ms)**
-   - Bots: Get up to 10ms per turn
+2. **Batch Simulation (TPS=-1, timeout=10000µs)**
+   - Bots: Get up to 10000µs (10ms) per turn
    - Visual: No delay (unlimited speed)
-   - If all bots respond in 5ms: turn completes at 5ms, visual advances immediately (200 TPS actual)
+   - If all bots respond in 5000µs (5ms): turn completes at 5ms, visual advances immediately (200 TPS actual)
    - If one bot doesn't respond: turn completes at 10ms deadline, bot gets SkippedTurnEvent
 
-3. **Competition (TPS=30, timeout=10ms)**
-   - Bots: Get up to 10ms per turn
+3. **Competition (TPS=30, timeout=10000µs)**
+   - Bots: Get up to 10000µs (10ms) per turn
    - Visual: 33.33ms per frame for smooth viewing
-   - If bots respond in 8ms: turn completes at 8ms, visual delay = 25.33ms
+   - If bots respond in 8000µs (8ms): turn completes at 8ms, visual delay = 25.33ms
    - Battle outcome identical to TPS=-1 with same bots (deterministic)
 
 ---
@@ -175,8 +175,8 @@ This means:
 private fun startTurn() {
     val startTime = System.currentTimeMillis()
     
-    // Wait up to turnTimeout for bot intents
-    waitForBotIntents(timeoutMs = gameSetup.turnTimeout.inWholeMilliseconds)
+    // Wait up to turnTimeout for bot intents (turnTimeout is in microseconds)
+    waitForBotIntents(timeoutMicros = gameSetup.turnTimeout)
     
     val processingDuration = System.currentTimeMillis() - startTime
     
@@ -187,18 +187,18 @@ private fun startTurn() {
     applyVisualDelay(processingDuration)
 }
 
-private fun waitForBotIntents(timeoutMs: Long) {
-    val deadline = System.currentTimeMillis() + timeoutMs
+private fun waitForBotIntents(timeoutMicros: Long) {
+    val deadline = System.nanoTime() + (timeoutMicros * 1000)  // Convert µs to ns
     
-    while (System.currentTimeMillis() < deadline) {
+    while (System.nanoTime() < deadline) {
         if (allBotsResponded()) {
             break  // Early completion
         }
-        Thread.sleep(1)  // Small polling interval
+        Thread.sleep(0, 100000)  // Small polling interval (100µs)
     }
     
     // Mark bots that didn't respond as skipped
-    val now = System.currentTimeMillis()
+    val now = System.nanoTime()
     bots.filter { !it.hasResponded && now >= deadline }.forEach { bot ->
         bot.sendSkippedTurnEvent()
     }
@@ -230,7 +230,7 @@ private fun applyVisualDelay(botProcessingDurationMs: Long) {
 
 ```
 Scenario 1: Fast bots, slow TPS
-turnTimeout=10ms, all bots respond in 8ms, TPS=30 (33.33ms period)
+turnTimeout=10000µs (10ms), all bots respond in 8000µs (8ms), TPS=30 (33.33ms period)
 
 Time →
 0ms ──────── 8ms ───────────────────── 33.33ms
@@ -243,7 +243,7 @@ Start        │                         Visual frame advances
 
 
 Scenario 2: Fast bots, unlimited TPS  
-turnTimeout=10ms, all bots respond in 8ms, TPS=-1
+turnTimeout=10000µs (10ms), all bots respond in 8000µs (8ms), TPS=-1
 
 Time →
 0ms ──────── 8ms
@@ -254,7 +254,7 @@ Start        Turn logic completes AND visual advances
 
 
 Scenario 3: One bot times out
-turnTimeout=10ms, Bot A=5ms, Bot B=7ms, Bot C=(no response), TPS=30
+turnTimeout=10000µs (10ms), Bot A=5000µs (5ms), Bot B=7000µs (7ms), Bot C=(no response), TPS=30
 
 Time →
 0ms ──────── 10ms ──────────────────── 33.33ms
@@ -267,7 +267,7 @@ Start        │                         Visual frame advances
 
 
 Scenario 4: Very slow TPS
-turnTimeout=10ms, all bots respond in 8ms, TPS=10 (100ms period)
+turnTimeout=10000µs (10ms), all bots respond in 8000µs (8ms), TPS=10 (100ms period)
 
 Time →
 0ms ──────── 8ms ──────────────────────────────── 100ms
@@ -312,7 +312,7 @@ Start        │                                     Visual frame advances
   - Mitigation: Bot APIs dispatch events before sending intent in `go()`
   - Mitigation: Document synchronous processing requirement
 
-- ❌ **Turn timeout cannot be zero**: Minimum 1ms required for bot communication
+- ❌ **Turn timeout cannot be zero**: Minimum 1µs required for bot communication
   - Mitigation: This is already a practical constraint
   - Mitigation: Document minimum turnTimeout value
 
@@ -483,12 +483,12 @@ See `server/src/test/kotlin/core/TurnTimingTest.kt` for comprehensive tests cove
 
 | Scenario | turnTimeout | Bot Responses | TPS | Bot Phase | Visual Phase | Total |
 |----------|-------------|---------------|-----|-----------|--------------|-------|
-| Fast bots, slow visual | 10ms | 8ms | 30 | 8ms | +25.33ms | 33.33ms |
-| Fast bots, unlimited | 10ms | 8ms | -1 | 8ms | +0ms | 8ms |
-| One timeout | 10ms | A=5, B=7, C=timeout | 30 | 10ms | +23.33ms | 33.33ms |
-| Very slow visual | 10ms | 8ms | 10 | 8ms | +92ms | 100ms |
-| All instant | 10ms | 0.1ms | -1 | 0.1ms | +0ms | 0.1ms |
-| Paused | 10ms | 8ms | 0 | 8ms | ∞ (paused) | ∞ |
+| Fast bots, slow visual | 10000µs | 8000µs (8ms) | 30 | 8ms | +25.33ms | 33.33ms |
+| Fast bots, unlimited | 10000µs | 8000µs (8ms) | -1 | 8ms | +0ms | 8ms |
+| One timeout | 10000µs | A=5000µs, B=7000µs, C=timeout | 30 | 10ms | +23.33ms | 33.33ms |
+| Very slow visual | 10000µs | 8000µs (8ms) | 10 | 8ms | +92ms | 100ms |
+| All instant | 10000µs | 100µs (0.1ms) | -1 | 0.1ms | +0ms | 0.1ms |
+| Paused | 10000µs | 8000µs (8ms) | 0 | 8ms | ∞ (paused) | ∞ |
 
 **Key Insight:** Bot processing duration and visual delay are completely independent. Battle determinism is guaranteed because only Phase 1 (bot processing) affects outcomes.
 
