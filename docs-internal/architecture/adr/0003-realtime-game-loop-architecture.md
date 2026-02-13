@@ -4,7 +4,7 @@
 
 **Date:** day-1 (documenting existing architecture)
 
-**Decision Makers:** Architecture Team
+**Decision Makers:** Flemming N. Larsen
 
 ---
 
