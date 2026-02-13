@@ -1,0 +1,15 @@
+# Ignore downloaded tools (these are downloaded on-demand)
+# Keep only the download scripts
+/plantuml.jar
+/structurizr-cli/
+/structurizr-dsl.jar
+
+# Ignore temporary files
+*.zip
+*.tar.gz
+*.log
+
+# Allow the download scripts
+!download-tools.sh
+!download-tools.ps1
+!download-tools.bat
