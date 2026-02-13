@@ -2,7 +2,7 @@
 
 **Status:** Accepted
 
-**Date:** 2026-02-13
+**Date:** 2026-02-13 (documenting existing architecture)
 
 **Decision Makers:** Flemming N. Larsen
 
