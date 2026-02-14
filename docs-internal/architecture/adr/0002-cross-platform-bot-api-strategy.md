@@ -1,364 +1,122 @@
 # ADR-0002: Cross-Platform Bot API Strategy
 
-**Status:** Accepted
-
-**Date:** 2026-02-11 (documenting existing architecture)
-
-**Decision Makers:** Flemming N. Larsen
+**Status:** Accepted  
+**Date:** 2026-02-11
 
 ---
 
 ## Context
 
-Robocode Tank Royale aims to be accessible to programmers using different languages and platforms. The original Robocode supported only Java, limiting its reach. We need a strategy to:
+Tank Royale needs to support multiple programming languages while ensuring fair competition and consistent bot behavior.
 
-- Support multiple programming languages (Java, .NET/C#, Python, and potentially others)
-- Maintain consistent bot behavior across platforms
-- Avoid API divergence between language implementations
-- Minimize maintenance burden of multiple codebases
-- Ensure fair competition (no language gives unfair advantage)
+**Problem:** How to implement bot APIs across Java, .NET/C#, and Python that maintain behavioral consistency without creating maintenance burden?
 
-### Options Considered
-
-1. **Identical API implementation across languages**
-2. **Single JVM-based API with language bindings**
-3. **Language-specific idiomatic APIs**
-4. **Code generation from shared specification**
-5. **Single reference implementation only**
+**Requirements:**
+- No language-specific advantages in competition
+- Consistent bot behavior across platforms  
+- Minimize API divergence over time
+- Fair competition (same game logic regardless of language)
 
 ---
 
 ## Decision
 
-We will implement **identical API structures across all supported languages**, with each API being a **symmetric translation** maintaining the same:
-- Class/interface names and hierarchy
-- Method signatures (adapted to language conventions)
-- Event model and lifecycle
-- Configuration and environment variables
-- WebSocket protocol implementation
+Implement **symmetric APIs** across all supported languages - identical structure with language-appropriate naming conventions.
 
-**Supported Languages:**
-- Java (bot-api/java)
-- .NET/C# (bot-api/dotnet)
-- Python (bot-api/python)
+**Supported languages:**
+- Java (`bot-api/java`)
+- .NET/C# (`bot-api/dotnet`) 
+- Python (`bot-api/python`)
+
+**Symmetry means:**
+- Same class/interface hierarchy
+- Identical method signatures (adapted to language conventions)
+- Same event model and lifecycle
+- Identical WebSocket protocol implementation
+- Same environment variables
 
 ---
 
 ## Rationale
 
-### Advantages of Symmetric APIs
+**Why symmetric APIs:**
+- ✅ **Fair competition**: No language gives gameplay advantage
+- ✅ **Schema-driven**: All APIs map to same protocol schemas
+- ✅ **Consistent behavior**: Same game logic across languages
+- ✅ **Unified docs**: Tutorial works for all languages
 
-#### 1. **Consistent Bot Behavior**
-- Same game logic across all languages
-- No language-specific advantages or bugs
-- Fair competition regardless of language choice
-- Identical semantics reduce confusion when switching languages
-
-#### 2. **Schema-Driven Design**
-- All APIs map to same protocol schemas (`/schema/schemas/*.yaml`)
-- Message format identical across languages
-- Server doesn't care which language bot uses
-- Guaranteed protocol compliance
-
-#### 3. **Shared Architecture Pattern**
-
-```mermaid
-flowchart TD
-    A[BaseBot<br/>abstract] --> B[BaseBotInternals<br/>connection management]
-    B --> C[WebSocketHandler<br/>language-specific implementation]
-    C --> D1[java.net.http.WebSocket]
-    C --> D2[System.Net.WebSockets]
-    C --> D3[websockets library]
-    
-    style A fill:#E1F5FF,color:#000
-    style B fill:#FFF4E1,color:#000
-    style C fill:#FFE1F5,color:#000
-    style D1 fill:#F0F0F0,color:#000
-    style D2 fill:#F0F0F0,color:#000
-    style D3 fill:#F0F0F0,color:#000
+**Architecture pattern (identical across languages):**
+```
+BaseBot (abstract class)
+├── BaseBotInternals (connection management)  
+└── WebSocketHandler (language-specific WebSocket library)
 ```
 
-Each language follows this exact pattern.
-
-#### 4. **Unified Event Model**
+**API examples:**
 ```java
-// Java
-public abstract class BaseBot {
-    public void onScannedBot(ScannedBotEvent e) {}
-    public void onHitByBullet(HitByBulletEvent e) {}
-    public void onBulletHit(BulletHitEvent e) {}
-    // ...
-}
+// Java - camelCase
+public void setTurnRate(double turnRate);
+public void onScannedBot(ScannedBotEvent e);
 ```
 
 ```csharp
-// C#
-public abstract class BaseBot {
-    public virtual void OnScannedBot(ScannedBotEvent e) {}
-    public virtual void OnHitByBullet(HitByBulletEvent e) {}
-    public virtual void OnBulletHit(BulletHitEvent e) {}
-    // ...
-}
+// C# - PascalCase
+public void SetTurnRate(double turnRate);
+public virtual void OnScannedBot(ScannedBotEvent e);
 ```
 
 ```python
-# Python
-class BaseBot:
-    def on_scanned_bot(self, event: ScannedBotEvent):
-        pass
-    def on_hit_by_bullet(self, event: HitByBulletEvent):
-        pass
-    def on_bullet_hit(self, event: BulletHitEvent):
-        pass
+# Python - snake_case
+def set_turn_rate(self, turn_rate: float):
+def on_scanned_bot(self, event: ScannedBotEvent):
 ```
 
-Method names adapted to language conventions (PascalCase → camelCase → snake_case) but signatures identical.
-
-#### 5. **Consistent Configuration**
-All APIs use identical environment variables:
-```bash
-BOT_NAME=MyBot
-BOT_VERSION=1.0
-BOT_AUTHOR=John Doe
-SERVER_URL=ws://localhost:7654
-SERVER_SECRET=my-secret
-```
-
-#### 6. **Parallel Documentation**
-- Single tutorial translates easily to all languages
-- Examples show equivalent code side-by-side
-- Reduces learning curve when switching languages
-
-### Disadvantages and Mitigations
-
-#### 1. **Not Idiomatic**
-- Java uses camelCase, Python prefers snake_case
-- **Mitigation:**
-  - Adapt naming to language conventions
-  - Java: `setTurnRate()`, Python: `set_turn_rate()`
-  - Core structure remains identical
-
-#### 2. **Maintenance Burden**
-- Changes must be replicated across 3+ codebases
-- **Mitigation:**
-  - Schema-driven development (change schema → update all APIs)
-  - Automated integration tests validate consistency
-  - Shared test scenarios across languages
-
-#### 3. **Language-Specific Features**
-- Can't leverage Python async/await, C# LINQ, Java streams optimally
-- **Mitigation:**
-  - Core API stays simple
-  - Advanced users can access underlying WebSocket if needed
-  - Focus on clarity over language-specific optimization
-
-#### 4. **Different Type Systems**
-- Java: strong static typing
-- C#: strong static typing with nullable reference types
-- Python: dynamic typing with optional type hints
-- **Mitigation:**
-  - Use explicit type definitions (Java/C# classes, Python dataclasses)
-  - Schema validation catches type mismatches
+**Alternatives rejected:**
+- **JVM + bindings**: JVM dependency too heavy
+- **Language-specific APIs**: APIs would diverge, unfair advantages
+- **Code generation**: Generated code hard to debug/customize
+- **Java-only**: Excludes non-Java developers
 
 ---
 
 ## Implementation
 
-### Common Interface: `IBaseBot`
-
-All implementations provide this contract:
-
+**Common interface contract:**
 ```java
-public interface IBaseBot {
-    // Lifecycle
-    void run();
-    
-    // Movement
-    void setTurnRate(double turnRate);
-    void setTargetSpeed(double targetSpeed);
-    
-    // Gun
-    void setGunTurnRate(double gunTurnRate);
-    void setFire(double firepower);
-    
-    // Radar
-    void setRadarTurnRate(double radarTurnRate);
-    
-    // Events
-    void onScannedBot(ScannedBotEvent e);
-    void onHitByBullet(HitByBulletEvent e);
-    void onBulletHit(BulletHitEvent e);
-    void onBulletMissed(BulletMissedEvent e);
-    void onHitWall(HitWallEvent e);
-    void onHitBot(HitBotEvent e);
-    void onDeath(DeathEvent e);
-    void onWon(WonEvent e);
-    // ... more events
-}
+// Movement
+void setTurnRate(double turnRate);
+void setTargetSpeed(double targetSpeed);
+
+// Weapons  
+void setGunTurnRate(double gunTurnRate);
+void setFire(double firepower);
+
+// Events (same across all languages)
+void onScannedBot(ScannedBotEvent e);
+void onHitByBullet(HitByBulletEvent e);
+void onBulletHit(BulletHitEvent e);
+// ... more events
 ```
 
-### WebSocket Abstraction
-
-Each language implements `WebSocketHandler`:
-
-**Java:**
-```java
-class WebSocketHandler {
-    private final WebSocket webSocket;
-    
-    WebSocketHandler(URI serverUri) {
-        this.webSocket = HttpClient.newHttpClient()
-            .newWebSocketBuilder()
-            .buildAsync(serverUri, new WebSocketListener())
-            .join();
-    }
-}
+**Environment variables (identical):**
+```bash
+BOT_NAME=MyBot
+BOT_VERSION=1.0  
+SERVER_URL=ws://localhost:7654
+SERVER_SECRET=my-secret
 ```
-
-**C#:**
-```csharp
-class WebSocketHandler {
-    private readonly ClientWebSocket webSocket;
-    
-    WebSocketHandler(Uri serverUri) {
-        webSocket = new ClientWebSocket();
-        await webSocket.ConnectAsync(serverUri, CancellationToken.None);
-    }
-}
-```
-
-**Python:**
-```python
-class WebSocketHandler:
-    def __init__(self, server_uri: str):
-        self.websocket = None
-        asyncio.run(self._connect(server_uri))
-    
-    async def _connect(self, uri: str):
-        self.websocket = await websockets.connect(uri)
-```
-
-### Dependency Management
-
-**Java:** `build.gradle`
-```gradle
-dependencies {
-    implementation 'com.google.code.gson:gson:2.10.1'
-    // WebSocket built into Java 11+
-}
-```
-
-**.NET:** `TankRoyale.BotApi.csproj`
-```xml
-<ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <!-- WebSocket built into .NET Core -->
-</ItemGroup>
-```
-
-**Python:** `requirements.txt`
-```
-websockets>=12.0
-```
-
----
-
-## Alternatives Considered
-
-### Single JVM-Based API with Bindings
-
-**Pros:**
-- Single codebase to maintain
-- Guaranteed identical behavior
-- Language bindings auto-generated
-
-**Cons:**
-- Requires JVM for all bots (huge dependency)
-- Performance overhead for bindings
-- Complex setup (JNI, P/Invoke)
-- Not truly native
-
-**Decision:** Rejected due to JVM dependency and complexity
-
----
-
-### Language-Specific Idiomatic APIs
-
-**Pros:**
-- Each API feels natural in its language
-- Leverage language-specific features
-- Better developer experience
-
-**Cons:**
-- APIs diverge over time
-- Difficult to maintain consistency
-- Different semantics cause confusion
-- Unfair advantages (async Python vs. sync Java)
-
-**Decision:** Rejected due to maintenance burden and fairness concerns
-
----
-
-### Code Generation from Specification
-
-**Pros:**
-- Single source of truth (schema)
-- Automatic API generation
-- Guaranteed consistency
-
-**Cons:**
-- Generated code is often ugly
-- Hard to customize
-- Tooling complexity
-- Debugging generated code is difficult
-
-**Decision:** Deferred; may revisit for future languages (Go, Rust)
-
----
-
-### Single Reference Implementation (Java Only)
-
-**Pros:**
-- Minimal maintenance
-- Focus on one language
-
-**Cons:**
-- Excludes non-Java developers
-- Misses opportunity for broader community
-- Less educational value
-
-**Decision:** Rejected; multi-language support is core goal
 
 ---
 
 ## Consequences
 
-### Positive
-
-- ✅ Consistent bot behavior across languages
-- ✅ Fair competition (no language advantage)
-- ✅ Same learning materials work for all languages
-- ✅ Schema-driven design prevents divergence
-- ✅ Accessible to more developers
-
-### Negative
-
-- ❌ Maintenance burden (3+ codebases)
-- ❌ Not fully idiomatic in each language
-- ❌ Can't leverage advanced language features optimally
-- ❌ Type system differences require careful handling
-
-### Neutral
-
-- Language-specific packaging (Maven, NuGet, PyPI)
-- Separate documentation per language (but structurally identical)
-
----
-
-## Related Decisions
-
-- **ADR-0001:** WebSocket Communication Protocol
-- **ADR-0003:** Real-Time Game Loop Architecture
+- ✅ Fair competition across languages
+- ✅ Schema-driven design prevents API divergence
+- ✅ Single tutorial/documentation works for all
+- ✅ Consistent bot behavior regardless of language choice
+- ❌ Not fully idiomatic (follows structure over language conventions)
+- ❌ Maintenance burden (changes replicated across 3+ codebases)
+- ❌ Cannot leverage advanced language-specific features optimally
 
 ---
 
@@ -367,13 +125,3 @@ websockets>=12.0
 - [Bot API Java](/bot-api/java/)
 - [Bot API .NET](/bot-api/dotnet/)
 - [Bot API Python](/bot-api/python/)
-- [Schema Definitions](/schema/schemas/)
-
----
-
-**Related Documentation:**
-- [Message Schema](../models/message-schema/README.md)
-- [Events](../models/message-schema/events.md)
-- [Intents](../models/message-schema/intents.md)
-- [Bot Connection Flow](../models/flows/bot-connection.md)
-- [Bot API Component Diagram](../c4-views/bot-api-component.md)

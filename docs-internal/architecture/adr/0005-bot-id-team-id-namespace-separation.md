@@ -12,6 +12,7 @@ All battle participants are treated as "teams" internally. A solo bot is a "team
 **Problem:** Real team IDs (from booter) and bot IDs (from server) could collide if both use positive integers.
 
 **Example collision:**
+
 - Booter assigns Team ID = 1
 - Server assigns Bot ID = 1 to a solo bot
 - Observer cannot distinguish them in results
@@ -22,12 +23,13 @@ All battle participants are treated as "teams" internally. A solo bot is a "team
 
 Use **negative bot IDs** for solo bots to avoid collision with real team IDs.
 
-| Participant Type | ID in Results |
-|------------------|---------------|
-| Real team | Positive (from booter: 1, 2, 3...) |
-| Solo bot | Negative (negated botId: -1, -2, -3...) |
+| Participant Type | ID in Results                           |
+|------------------|-----------------------------------------|
+| Real team        | Positive (from booter: 1, 2, 3...)      |
+| Solo bot         | Negative (negated botId: -1, -2, -3...) |
 
 **Implementation** (`ParticipantId.kt`):
+
 ```kotlin
 val id: Int = teamId?.id ?: -botId.value
 ```

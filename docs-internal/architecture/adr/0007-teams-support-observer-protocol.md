@@ -7,9 +7,11 @@
 
 ## Context
 
-Observers (web viewers, GUIs) cannot reliably distinguish team results from solo bot results in `game-ended-event-for-observer`.
+Observers (web viewers, GUIs) cannot reliably distinguish team results from solo bot results in
+`game-ended-event-for-observer`.
 
 **Issues reported:**
+
 1. No explicit field indicates if a result is for a team or bot
 2. `rank` values are inconsistent (sometimes 0 for teams, sometimes inherited)
 
@@ -23,8 +25,8 @@ Add `isTeam: boolean` to `results-for-observer.schema.yaml`:
 
 ```yaml
 isTeam:
-  description: True if this result represents a team, false for solo bot
-  type: boolean
+    description: True if this result represents a team, false for solo bot
+    type: boolean
 ```
 
 ### 2. Fix rank values
