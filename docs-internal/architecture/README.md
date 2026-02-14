@@ -23,7 +23,15 @@ Why key architectural decisions were made:
 - ✅ [**ADR-0009**](./adr/0009-schema-driven-protocol-contracts.md) — Schema-Driven Protocol Contracts
 - ✅ [**ADR-0010**](./adr/0010-client-role-separation.md) — Client Role Separation (Bot/Observer/Controller)
 - ✅ [**ADR-0011**](./adr/0011-independent-deployable-components.md) — Independent Deployable Components
-- 📝 [**ADR-0012**](./adr/0012-teams-support-observer-protocol.md) — Teams Support in Observer Protocol
+- ✅ [**ADR-0012**](./adr/0012-r8-code-shrinking.md) — R8 Code Shrinking
+- ✅ [**ADR-0013**](./adr/0013-recording-format.md) — Recording Format (ND-JSON + Gzip)
+- ✅ [**ADR-0014**](./adr/0014-bot-configuration-env-vars.md) — Bot Configuration via Environment Variables
+- ✅ [**ADR-0015**](./adr/0015-two-tier-authentication.md) — Two-Tier Shared-Secret Authentication
+- ✅ [**ADR-0016**](./adr/0016-server-authoritative-physics.md) — Server-Authoritative Deterministic Physics
+- ✅ [**ADR-0017**](./adr/0017-declarative-bot-intent-model.md) — Declarative Bot Intent Model
+- ✅ [**ADR-0018**](./adr/0018-custom-svg-rendering.md) — Custom SVG Rendering for Bot API Graphics
+- ✅ [**ADR-0019**](./adr/0019-standard-math-coordinate-system.md) — Standard Mathematical Coordinate System
+- 📝 [**ADR-0020**](./adr/0020-teams-support-observer-protocol.md) — Teams Support in Observer Protocol
 
 **Use When:** Understanding design rationale, trade-offs, alternatives
 
@@ -84,7 +92,15 @@ How entities interact through processes:
 | 0009 | Schema-Driven Protocol Contracts | ✅ |
 | 0010 | Client Role Separation (Bot/Observer/Controller) | ✅ |
 | 0011 | Independent Deployable Components | ✅ |
-| 0012 | Teams Support in Observer Protocol | 📝 |
+| 0012 | R8 Code Shrinking | ✅ |
+| 0013 | Recording Format (ND-JSON + Gzip) | ✅ |
+| 0014 | Bot Configuration via Environment Variables | ✅ |
+| 0015 | Two-Tier Shared-Secret Authentication | ✅ |
+| 0016 | Server-Authoritative Deterministic Physics | ✅ |
+| 0017 | Declarative Bot Intent Model | ✅ |
+| 0018 | Custom SVG Rendering for Bot API Graphics | ✅ |
+| 0019 | Standard Mathematical Coordinate System | ✅ |
+| 0020 | Teams Support in Observer Protocol | 📝 |
 
 ### Message Schema
 | Category | Coverage | Status |
@@ -168,9 +184,9 @@ Cross-References:         200+
 - ✅ C4 Views: 100% (4/4 complete)
 - ✅ Message Schema: 100% (5/5 complete)
 - ✅ Business Flows: 100% (3/3 complete)
-- ✅ ADRs: 100% (12/12 complete)
+- ✅ ADRs: 100% (20/20 complete)
 
-**Final Result: 100% Complete (24/24 items)** ✨
+**Final Result: 100% Complete (32/32 items)** ✨
 
 ---
 
@@ -248,7 +264,15 @@ docs-internal/architecture/
 │   ├── 0009-schema-driven-protocol-contracts.md
 │   ├── 0010-client-role-separation.md
 │   ├── 0011-independent-deployable-components.md
-│   └── 0012-teams-support-observer-protocol.md
+│   ├── 0012-r8-code-shrinking.md
+│   ├── 0013-recording-format.md
+│   ├── 0014-bot-configuration-env-vars.md
+│   ├── 0015-two-tier-authentication.md
+│   ├── 0016-server-authoritative-physics.md
+│   ├── 0017-declarative-bot-intent-model.md
+│   ├── 0018-custom-svg-rendering.md
+│   ├── 0019-standard-math-coordinate-system.md
+│   └── 0020-teams-support-observer-protocol.md
 ├── c4-views/                              (What - Visual)
 │   ├── README.md
 │   ├── system-context.md
@@ -270,4 +294,4 @@ docs-internal/architecture/
 
 ---
 
-**Last Updated:** 2026-02-14 | **Status:** ✅ 100% Complete (12 ADRs)
+**Last Updated:** 2026-02-14 | **Status:** ✅ 100% Complete (20 ADRs)

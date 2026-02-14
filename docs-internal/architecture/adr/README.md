@@ -32,7 +32,15 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0009](./0009-schema-driven-protocol-contracts.md) | Schema-Driven Protocol Contracts | Accepted | 2026-02-14 |
 | [0010](./0010-client-role-separation.md) | Client Role Separation (Bot / Observer / Controller) | Accepted | 2026-02-14 |
 | [0011](./0011-independent-deployable-components.md) | Independent Deployable Components | Accepted | 2026-02-14 |
-| [0012](./0012-teams-support-observer-protocol.md) | Teams Support in Observer Protocol | Proposed | 2026-02-14 |
+| [0012](./0012-r8-code-shrinking.md) | R8 Code Shrinking | Accepted | 2026-02-14 |
+| [0013](./0013-recording-format.md) | Recording Format (ND-JSON + Gzip) | Accepted | 2026-02-14 |
+| [0014](./0014-bot-configuration-env-vars.md) | Bot Configuration via Environment Variables | Accepted | 2026-02-14 |
+| [0015](./0015-two-tier-authentication.md) | Two-Tier Shared-Secret Authentication | Accepted | 2026-02-14 |
+| [0016](./0016-server-authoritative-physics.md) | Server-Authoritative Deterministic Physics | Accepted | 2026-02-14 |
+| [0017](./0017-declarative-bot-intent-model.md) | Declarative Bot Intent Model | Accepted | 2026-02-14 |
+| [0018](./0018-custom-svg-rendering.md) | Custom SVG Rendering for Bot API Graphics | Accepted | 2026-02-14 |
+| [0019](./0019-standard-math-coordinate-system.md) | Standard Mathematical Coordinate System | Accepted | 2026-02-14 |
+| [0020](./0020-teams-support-observer-protocol.md) | Teams Support in Observer Protocol | Proposed | 2026-02-14 |
 
 ## Status Definitions
 

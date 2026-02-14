@@ -1,4 +1,4 @@
-# ADR-0012: Teams Support in Observer Protocol
+# ADR-0020: Teams Support in Observer Protocol
 
 **Status:** Proposed  
 **Date:** 2026-02-14
