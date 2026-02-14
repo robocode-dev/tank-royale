@@ -25,6 +25,8 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0002](./0002-cross-platform-bot-api-strategy.md) | Cross-Platform Bot API Strategy | Accepted | 2026-02-11 |
 | [0003](./0003-realtime-game-loop-architecture.md) | Real-Time Game Loop Architecture | Accepted | 2026-02-11 |
 | [0004](./0004-turn-timing-semantics.md) | Turn Timing Semantics | Accepted | 2026-02-13 |
+| [0005](./0005-bot-id-team-id-namespace-separation.md) | Bot ID vs Team ID Namespace Separation | Accepted | 2026-02-14 |
+| [0006](./0006-teams-support-observer-protocol.md) | Teams Support in Observer Protocol | Proposed | 2026-02-14 |
 
 ## Status Definitions
 

@@ -15,6 +15,9 @@ Why key architectural decisions were made:
 - ✅ [**ADR-0001**](./adr/0001-websocket-communication-protocol.md) — WebSocket Protocol
 - ✅ [**ADR-0002**](./adr/0002-cross-platform-bot-api-strategy.md) — Cross-Platform Bot APIs
 - ✅ [**ADR-0003**](./adr/0003-realtime-game-loop-architecture.md) — Real-Time 30 TPS Game Loop
+- ✅ [**ADR-0004**](./adr/0004-turn-timing-semantics.md) — Turn Timing Semantics
+- ✅ [**ADR-0005**](./adr/0005-bot-id-team-id-namespace-separation.md) — Bot ID vs Team ID Namespace Separation
+- ✅ [**ADR-0006**](./adr/0006-teams-support-observer-protocol.md) — Teams Support in Observer Protocol
 
 **Use When:** Understanding design rationale, trade-offs, alternatives
 
@@ -67,6 +70,9 @@ How entities interact through processes:
 | 0001 | WebSocket Communication Protocol | ✅ |
 | 0002 | Cross-Platform Bot API Strategy | ✅ |
 | 0003 | Real-Time Game Loop Architecture | ✅ |
+| 0004 | Turn Timing Semantics | ✅ |
+| 0005 | Bot ID vs Team ID Namespace Separation | ✅ |
+| 0006 | Teams Support in Observer Protocol | ✅ |
 
 ### Message Schema
 | Category | Coverage | Status |
@@ -150,9 +156,9 @@ Cross-References:         200+
 - ✅ C4 Views: 100% (4/4 complete)
 - ✅ Message Schema: 100% (5/5 complete)
 - ✅ Business Flows: 100% (3/3 complete)
-- ✅ ADRs: 100% (3/3 complete)
+- ✅ ADRs: 100% (6/6 complete)
 
-**Final Result: 100% Complete (15/15 items)** ✨
+**Final Result: 100% Complete (18/18 items)** ✨
 
 ---
 
@@ -221,7 +227,10 @@ docs-internal/architecture/
 │   ├── README.md
 │   ├── 0001-websocket-communication-protocol.md
 │   ├── 0002-cross-platform-bot-api-strategy.md
-│   └── 0003-realtime-game-loop-architecture.md
+│   ├── 0003-realtime-game-loop-architecture.md
+│   ├── 0004-turn-timing-semantics.md
+│   ├── 0005-bot-id-team-id-namespace-separation.md
+│   └── 0006-teams-support-observer-protocol.md
 ├── c4-views/                              (What - Visual)
 │   ├── README.md
 │   ├── system-context.md
@@ -243,4 +252,4 @@ docs-internal/architecture/
 
 ---
 
-**Last Updated:** 2026-02-12 | **Status:** ✅ 100% Complete
+**Last Updated:** 2026-02-14 | **Status:** ✅ 100% Complete (6 ADRs)
