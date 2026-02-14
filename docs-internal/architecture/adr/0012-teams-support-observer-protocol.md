@@ -1,4 +1,4 @@
-# ADR-0007: Teams Support in Observer Protocol
+# ADR-0012: Teams Support in Observer Protocol
 
 **Status:** Proposed  
 **Date:** 2026-02-14
@@ -54,4 +54,3 @@ See [ADR-0005](./0005-bot-id-team-id-namespace-separation.md) for details.
 
 - [ADR-0005: Participant ID as Unified Team Identifier](./0005-bot-id-team-id-namespace-separation.md)
 - [results-for-observer.schema.yaml](/schema/schemas/results-for-observer.schema.yaml)
-

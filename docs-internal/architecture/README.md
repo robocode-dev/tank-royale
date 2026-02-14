@@ -17,7 +17,13 @@ Why key architectural decisions were made:
 - ✅ [**ADR-0003**](./adr/0003-realtime-game-loop-architecture.md) — Real-Time 30 TPS Game Loop
 - ✅ [**ADR-0004**](./adr/0004-turn-timing-semantics.md) — Turn Timing Semantics
 - ✅ [**ADR-0005**](./adr/0005-bot-id-team-id-namespace-separation.md) — Bot ID vs Team ID Namespace Separation
-- ✅ [**ADR-0006**](./adr/0006-teams-support-observer-protocol.md) — Teams Support in Observer Protocol
+- ✅ [**ADR-0006**](./adr/0006-session-id-bot-process-identification.md) — Session ID for Bot Process Identification
+- ✅ [**ADR-0007**](./adr/0007-java-reference-implementation.md) — Java as Authoritative Reference
+- ✅ [**ADR-0008**](./adr/0008-monorepo-build-strategy.md) — Monorepo Build Strategy
+- ✅ [**ADR-0009**](./adr/0009-schema-driven-protocol-contracts.md) — Schema-Driven Protocol Contracts
+- ✅ [**ADR-0010**](./adr/0010-client-role-separation.md) — Client Role Separation (Bot/Observer/Controller)
+- ✅ [**ADR-0011**](./adr/0011-independent-deployable-components.md) — Independent Deployable Components
+- 📝 [**ADR-0012**](./adr/0012-teams-support-observer-protocol.md) — Teams Support in Observer Protocol
 
 **Use When:** Understanding design rationale, trade-offs, alternatives
 
@@ -72,7 +78,13 @@ How entities interact through processes:
 | 0003 | Real-Time Game Loop Architecture | ✅ |
 | 0004 | Turn Timing Semantics | ✅ |
 | 0005 | Bot ID vs Team ID Namespace Separation | ✅ |
-| 0006 | Teams Support in Observer Protocol | ✅ |
+| 0006 | Session ID for Bot Process Identification | ✅ |
+| 0007 | Java as Authoritative Reference Implementation | ✅ |
+| 0008 | Monorepo Build Strategy | ✅ |
+| 0009 | Schema-Driven Protocol Contracts | ✅ |
+| 0010 | Client Role Separation (Bot/Observer/Controller) | ✅ |
+| 0011 | Independent Deployable Components | ✅ |
+| 0012 | Teams Support in Observer Protocol | 📝 |
 
 ### Message Schema
 | Category | Coverage | Status |
@@ -156,9 +168,9 @@ Cross-References:         200+
 - ✅ C4 Views: 100% (4/4 complete)
 - ✅ Message Schema: 100% (5/5 complete)
 - ✅ Business Flows: 100% (3/3 complete)
-- ✅ ADRs: 100% (6/6 complete)
+- ✅ ADRs: 100% (12/12 complete)
 
-**Final Result: 100% Complete (18/18 items)** ✨
+**Final Result: 100% Complete (24/24 items)** ✨
 
 ---
 
@@ -230,7 +242,13 @@ docs-internal/architecture/
 │   ├── 0003-realtime-game-loop-architecture.md
 │   ├── 0004-turn-timing-semantics.md
 │   ├── 0005-bot-id-team-id-namespace-separation.md
-│   └── 0006-teams-support-observer-protocol.md
+│   ├── 0006-session-id-bot-process-identification.md
+│   ├── 0007-java-reference-implementation.md
+│   ├── 0008-monorepo-build-strategy.md
+│   ├── 0009-schema-driven-protocol-contracts.md
+│   ├── 0010-client-role-separation.md
+│   ├── 0011-independent-deployable-components.md
+│   └── 0012-teams-support-observer-protocol.md
 ├── c4-views/                              (What - Visual)
 │   ├── README.md
 │   ├── system-context.md
@@ -252,4 +270,4 @@ docs-internal/architecture/
 
 ---
 
-**Last Updated:** 2026-02-14 | **Status:** ✅ 100% Complete (6 ADRs)
+**Last Updated:** 2026-02-14 | **Status:** ✅ 100% Complete (12 ADRs)

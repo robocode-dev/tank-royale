@@ -26,7 +26,13 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0003](./0003-realtime-game-loop-architecture.md) | Real-Time Game Loop Architecture | Accepted | 2026-02-11 |
 | [0004](./0004-turn-timing-semantics.md) | Turn Timing Semantics | Accepted | 2026-02-13 |
 | [0005](./0005-bot-id-team-id-namespace-separation.md) | Bot ID vs Team ID Namespace Separation | Accepted | 2026-02-14 |
-| [0006](./0006-teams-support-observer-protocol.md) | Teams Support in Observer Protocol | Proposed | 2026-02-14 |
+| [0006](./0006-session-id-bot-process-identification.md) | Session ID for Bot Process Identification | Accepted | 2026-02-14 |
+| [0007](./0007-java-reference-implementation.md) | Java as Authoritative Reference Implementation | Accepted | 2026-02-14 |
+| [0008](./0008-monorepo-build-strategy.md) | Monorepo Build Strategy | Accepted | 2026-02-14 |
+| [0009](./0009-schema-driven-protocol-contracts.md) | Schema-Driven Protocol Contracts | Accepted | 2026-02-14 |
+| [0010](./0010-client-role-separation.md) | Client Role Separation (Bot / Observer / Controller) | Accepted | 2026-02-14 |
+| [0011](./0011-independent-deployable-components.md) | Independent Deployable Components | Accepted | 2026-02-14 |
+| [0012](./0012-teams-support-observer-protocol.md) | Teams Support in Observer Protocol | Proposed | 2026-02-14 |
 
 ## Status Definitions
 

@@ -18,7 +18,7 @@ All architecture documentation lives in [`docs-internal/architecture/`](../docs-
 
 | Category | Location | Content |
 |----------|----------|---------|
-| **ADRs** | `docs-internal/architecture/adr/` | Why decisions were made (7 ADRs) |
+| **ADRs** | `docs-internal/architecture/adr/` | Why decisions were made (12 ADRs) |
 | **C4 Views** | `docs-internal/architecture/c4-views/` | Visual system diagrams (4 levels) |
 | **Message Schema** | `docs-internal/architecture/models/message-schema/` | WebSocket message contracts (53 types) |
 | **Flows** | `docs-internal/architecture/models/flows/` | Process documentation (3 flows) |
@@ -30,8 +30,13 @@ All architecture documentation lives in [`docs-internal/architecture/`](../docs-
 - **ADR-0003**: Real-Time Game Loop Architecture
 - **ADR-0004**: Turn Timing Semantics
 - **ADR-0005**: Bot ID vs Team ID Namespace Separation
-- **ADR-0006**: Session ID Bot Process Identification
-- **ADR-0007**: Teams Support in Observer Protocol
+- **ADR-0006**: Session ID for Bot Process Identification
+- **ADR-0007**: Java as Authoritative Reference Implementation
+- **ADR-0008**: Monorepo Build Strategy
+- **ADR-0009**: Schema-Driven Protocol Contracts
+- **ADR-0010**: Client Role Separation (Bot/Observer/Controller)
+- **ADR-0011**: Independent Deployable Components
+- **ADR-0012**: Teams Support in Observer Protocol (Proposed)
 
 ## Relationship to OpenSpec
 
