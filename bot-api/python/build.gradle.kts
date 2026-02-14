@@ -364,6 +364,7 @@ tasks {
                 "twine",
                 "upload",
                 "--non-interactive",
+                "--verbose",
                 "--repository",
                 "pypi",
                 *wheels.toTypedArray()
