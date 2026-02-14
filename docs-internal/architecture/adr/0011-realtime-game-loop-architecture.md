@@ -1,4 +1,4 @@
-# ADR-0003: Real-Time Game Loop Architecture
+# ADR-0011: Real-Time Game Loop Architecture
 
 **Status:** Accepted  
 **Date:** 2026-02-11

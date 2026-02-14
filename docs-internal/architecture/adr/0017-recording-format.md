@@ -1,4 +1,4 @@
-# ADR-0013: Recording Format (ND-JSON + Gzip)
+# ADR-0017: Recording Format (ND-JSON + Gzip)
 
 **Status:** Accepted  
 **Date:** 2026-02-14 (Documenting historical decision)
@@ -34,7 +34,6 @@ into a `GZIPOutputStream`. Recording is append-only and decoupled from the game 
 **Alternatives rejected:**
 
 - **Custom binary format:** Hard to debug, requires custom tooling
-- **SQLite / database:** Overkill for sequential event streams
 - **Uncompressed JSON:** Too large for real-time game data
 
 ---
@@ -42,4 +41,4 @@ into a `GZIPOutputStream`. Recording is append-only and decoupled from the game 
 ## References
 
 - [GameRecorder.kt](/recorder/src/main/kotlin/dev/robocode/tankroyale/recorder/core/GameRecorder.kt)
-- [ADR-0010: Client Role Separation](./0010-client-role-separation.md) (Recorder as Observer)
+- [ADR-0007: Client Role Separation](./0007-client-role-separation.md) (Recorder as Observer)

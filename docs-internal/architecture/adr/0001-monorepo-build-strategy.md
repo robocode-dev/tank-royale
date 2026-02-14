@@ -1,4 +1,4 @@
-# ADR-0008: Monorepo Build Strategy
+# ADR-0001: Monorepo Build Strategy
 
 **Status:** Accepted  
 **Date:** 2026-02-14 (Documenting historical decision)

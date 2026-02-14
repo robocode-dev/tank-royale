@@ -1,4 +1,4 @@
-# ADR-0007: Java as Authoritative Reference Implementation
+# ADR-0004: Java as Authoritative Reference Implementation
 
 **Status:** Accepted  
 **Date:** 2026-02-14 (Documenting historical decision)
@@ -41,5 +41,5 @@ semantically identical to Java.
 
 ## References
 
-- [ADR-0002: Cross-Platform Bot API Strategy](./0002-cross-platform-bot-api-strategy.md)
+- [ADR-0003: Cross-Platform Bot API Strategy](./0003-cross-platform-bot-api-strategy.md)
 - [Bot API Java](/bot-api/java/), [.NET](/bot-api/dotnet/), [Python](/bot-api/python/)

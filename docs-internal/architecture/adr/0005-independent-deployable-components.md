@@ -1,4 +1,4 @@
-# ADR-0011: Independent Deployable Components
+# ADR-0005: Independent Deployable Components
 
 **Status:** Accepted  
 **Date:** 2026-02-14 (Documenting historical decision)

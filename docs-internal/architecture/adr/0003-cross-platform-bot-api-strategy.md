@@ -1,4 +1,4 @@
-# ADR-0002: Cross-Platform Bot API Strategy
+# ADR-0003: Cross-Platform Bot API Strategy
 
 **Status:** Accepted  
 **Date:** 2026-02-11

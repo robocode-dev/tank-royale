@@ -1,4 +1,4 @@
-# ADR-0016: Server-Authoritative Deterministic Physics
+# ADR-0008: Server-Authoritative Deterministic Physics
 
 **Status:** Accepted  
 **Date:** 2026-02-14 (Documenting historical decision)
@@ -50,4 +50,4 @@ Uses **double-precision floating-point** with epsilon comparison (`1E-6`) for ne
 
 - [ModelUpdater.kt](/server/src/main/kotlin/dev/robocode/tankroyale/server/core/ModelUpdater.kt)
 - [math.kt](/server/src/main/kotlin/dev/robocode/tankroyale/server/model/math.kt)
-- [ADR-0003: Real-Time Game Loop Architecture](./0003-realtime-game-loop-architecture.md)
+- [ADR-0011: Real-Time Game Loop Architecture](./0011-realtime-game-loop-architecture.md)

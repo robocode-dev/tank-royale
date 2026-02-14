@@ -1,4 +1,4 @@
-# ADR-0001: WebSocket Communication Protocol
+# ADR-0009: WebSocket Communication Protocol
 
 **Status:** Accepted  
 **Date:** 2026-02-11

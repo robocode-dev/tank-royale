@@ -33,11 +33,11 @@ isTeam:
 
 Ensure `rank` is always 1..N (sequential placement). Current bug produces inconsistent values like `[0,0,3,0,8]`.
 
-### 3. Use ID sign convention (from ADR-0005)
+### 3. Use ID sign convention (from ADR-0015)
 
 Observers can also use: `id > 0` = real team, `id < 0` = solo bot.
 
-See [ADR-0005](./0005-bot-id-team-id-namespace-separation.md) for details.
+See [ADR-0015](./0015-bot-id-team-id-namespace-separation.md) for details.
 
 ---
 
@@ -52,5 +52,5 @@ See [ADR-0005](./0005-bot-id-team-id-namespace-separation.md) for details.
 
 ## References
 
-- [ADR-0005: Participant ID as Unified Team Identifier](./0005-bot-id-team-id-namespace-separation.md)
+- [ADR-0015: Participant ID as Unified Team Identifier](./0015-bot-id-team-id-namespace-separation.md)
 - [results-for-observer.schema.yaml](/schema/schemas/results-for-observer.schema.yaml)

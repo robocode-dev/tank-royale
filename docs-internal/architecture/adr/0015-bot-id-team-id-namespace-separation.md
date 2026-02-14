@@ -1,4 +1,4 @@
-# ADR-0005: Participant ID as Unified Team Identifier
+# ADR-0015: Participant ID as Unified Team Identifier
 
 **Status:** Accepted  
 **Date:** 2026-02-14
@@ -48,4 +48,4 @@ val id: Int = teamId?.id ?: -botId.value
 ## References
 
 - [ParticipantId.kt](/server/src/main/kotlin/dev/robocode/tankroyale/server/model/ParticipantId.kt)
-- [ADR-0007: Teams Support in Observer Protocol](./0007-teams-support-observer-protocol.md)
+- [ADR-0020: Teams Support in Observer Protocol](./0020-teams-support-observer-protocol.md)

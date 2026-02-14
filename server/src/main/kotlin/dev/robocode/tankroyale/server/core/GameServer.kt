@@ -293,7 +293,7 @@ class GameServer(
     }
 
     /**
-     * Resets turn timeout timer using the two-phase timing model from ADR-0004.
+     * Resets turn timeout timer using the two-phase timing model from ADR-0012.
      *
      * Phase 1 (Bot Processing): Turn completes when all bots respond OR turnTimeout expires.
      * - minDelayNanos = 0: Turn can complete immediately when all bots respond
@@ -338,7 +338,7 @@ class GameServer(
     }
 
     /**
-     * Applies visual delay based on TPS after bot processing completes (Phase 2 of ADR-0004).
+     * Applies visual delay based on TPS after bot processing completes (Phase 2 of ADR-0012).
      *
      * @param botProcessingDurationNanos The time spent waiting for bot intents (Phase 1 duration)
      */
@@ -521,7 +521,7 @@ class GameServer(
             botsThatSentIntent.clear()
         }
 
-        // Phase 2: Apply visual delay based on TPS (ADR-0004)
+        // Phase 2: Apply visual delay based on TPS (ADR-0012)
         // This ensures smooth visualization at the requested TPS without affecting bot timing
         applyVisualDelay(botProcessingDurationNanos)
 
@@ -826,7 +826,7 @@ class GameServer(
             botsThatSentIntent += conn
         }
 
-        // Check if all alive bots have responded - if so, turn can complete early (ADR-0004 Phase 1)
+        // Check if all alive bots have responded - if so, turn can complete early (ADR-0012 Phase 1)
         checkAllBotsResponded()
     }
 

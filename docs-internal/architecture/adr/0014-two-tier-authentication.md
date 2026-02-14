@@ -1,4 +1,4 @@
-# ADR-0015: Two-Tier Shared-Secret Authentication
+# ADR-0014: Two-Tier Shared-Secret Authentication
 
 **Status:** Accepted  
 **Date:** 2026-02-14 (Documenting historical decision)
@@ -39,5 +39,5 @@ their handshake. Security is **opt-in** — if no secrets configured, authentica
 ## References
 
 - [ClientWebSocketsHandler.kt](/server/src/main/kotlin/dev/robocode/tankroyale/server/connection/ClientWebSocketsHandler.kt)
-- [ADR-0006: Session ID for Bot Process Identification](./0006-session-id-bot-process-identification.md)
-- [ADR-0010: Client Role Separation](./0010-client-role-separation.md)
+- [ADR-0016: Session ID for Bot Process Identification](./0016-session-id-bot-process-identification.md)
+- [ADR-0007: Client Role Separation](./0007-client-role-separation.md)

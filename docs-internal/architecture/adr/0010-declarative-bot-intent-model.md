@@ -1,4 +1,4 @@
-# ADR-0017: Declarative Bot Intent Model
+# ADR-0010: Declarative Bot Intent Model
 
 **Status:** Accepted  
 **Date:** 2026-02-14 (Documenting historical decision)
@@ -43,5 +43,5 @@ imperative commands. One `bot-intent` message per turn.
 
 - [IBotIntent.kt](/server/src/main/kotlin/dev/robocode/tankroyale/server/model/IBotIntent.kt)
 - [BaseBotInternals.java](/bot-api/java/src/main/java/dev/robocode/tankroyale/botapi/internal/BaseBotInternals.java)
-- [ADR-0003: Real-Time Game Loop Architecture](./0003-realtime-game-loop-architecture.md)
+- [ADR-0011: Real-Time Game Loop Architecture](./0011-realtime-game-loop-architecture.md)
 - [Tank Royale vs Original Robocode](/docs-build/docs/articles/tank-royale.md)

@@ -41,5 +41,5 @@ by the GUI. This ensures all platforms produce identical output.
 
 ## References
 
-- [ADR-0002: Cross-Platform Bot API Strategy](./0002-cross-platform-bot-api-strategy.md)
-- [ADR-0007: Java as Authoritative Reference](./0007-java-reference-implementation.md)
+- [ADR-0003: Cross-Platform Bot API Strategy](./0003-cross-platform-bot-api-strategy.md)
+- [ADR-0004: Java as Authoritative Reference](./0004-java-reference-implementation.md)

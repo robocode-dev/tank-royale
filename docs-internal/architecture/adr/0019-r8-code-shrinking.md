@@ -1,4 +1,4 @@
-# ADR-0012: R8 Code Shrinking
+# ADR-0019: R8 Code Shrinking
 
 **Status:** Accepted  
 **Date:** 2026-02-14

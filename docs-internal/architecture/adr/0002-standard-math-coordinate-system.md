@@ -1,4 +1,4 @@
-# ADR-0019: Standard Mathematical Coordinate System
+# ADR-0002: Standard Mathematical Coordinate System
 
 **Status:** Accepted  
 **Date:** 2026-02-14 (Documenting historical decision)

@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong
 /**
  * Tests for turn timing behavior to validate deterministic battle timing.
  *
- * ## Key Semantics (ADR-0004: Deterministic Turn Timing)
+ * ## Key Semantics (ADR-0012: Deterministic Turn Timing)
  *
  * - **Turn Timeout**: The FIXED time duration for every turn. All bots get exactly this amount
  *   of time to compute and submit their intent, regardless of when they actually respond.
@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicLong
  *   turn timeout produces identical results. This is critical for competitive play and
  *   reproducible simulations.
  *
- * ## Timer Parameters Mapping (Post ADR-0004 Update)
+ * ## Timer Parameters Mapping (Post ADR-0012 Update)
  *
  * - `minDelayNanos` = Turn timeout (fixed turn duration)
  * - `maxDelayNanos` = Turn timeout (same as min - no early completion)

@@ -1,4 +1,4 @@
-# ADR-0010: Client Role Separation (Bot / Observer / Controller)
+# ADR-0007: Client Role Separation (Bot / Observer / Controller)
 
 **Status:** Accepted  
 **Date:** 2026-02-14 (Documenting historical decision)
@@ -47,4 +47,4 @@ Define three distinct **client roles** with separate handshakes, message permiss
 
 - [Handshake schemas](/schema/schemas/) (`bot-handshake`, `observer-handshake`, `controller-handshake`)
 - [Handshakes documentation](/docs-internal/architecture/models/message-schema/handshakes.md)
-- [ADR-0001: WebSocket Communication Protocol](./0001-websocket-communication-protocol.md)
+- [ADR-0009: WebSocket Communication Protocol](./0009-websocket-communication-protocol.md)

@@ -25,25 +25,25 @@ All architecture documentation lives in [`docs-internal/architecture/`](../docs-
 
 ### Key ADRs
 
-- **ADR-0001**: WebSocket Communication Protocol
-- **ADR-0002**: Cross-Platform Bot API Strategy
-- **ADR-0003**: Real-Time Game Loop Architecture
-- **ADR-0004**: Turn Timing Semantics
-- **ADR-0005**: Bot ID vs Team ID Namespace Separation
-- **ADR-0006**: Session ID for Bot Process Identification
-- **ADR-0007**: Java as Authoritative Reference Implementation
-- **ADR-0008**: Monorepo Build Strategy
-- **ADR-0009**: Schema-Driven Protocol Contracts
-- **ADR-0010**: Client Role Separation (Bot/Observer/Controller)
-- **ADR-0011**: Independent Deployable Components
-- **ADR-0012**: R8 Code Shrinking
-- **ADR-0013**: Recording Format (ND-JSON + Gzip)
-- **ADR-0014**: Bot Configuration via Environment Variables
-- **ADR-0015**: Two-Tier Shared-Secret Authentication
-- **ADR-0016**: Server-Authoritative Deterministic Physics
-- **ADR-0017**: Declarative Bot Intent Model
+- **ADR-0001**: Monorepo Build Strategy
+- **ADR-0002**: Standard Mathematical Coordinate System
+- **ADR-0003**: Cross-Platform Bot API Strategy
+- **ADR-0004**: Java as Authoritative Reference Implementation
+- **ADR-0005**: Independent Deployable Components
+- **ADR-0006**: Schema-Driven Protocol Contracts
+- **ADR-0007**: Client Role Separation (Bot/Observer/Controller)
+- **ADR-0008**: Server-Authoritative Deterministic Physics
+- **ADR-0009**: WebSocket Communication Protocol
+- **ADR-0010**: Declarative Bot Intent Model
+- **ADR-0011**: Real-Time Game Loop Architecture
+- **ADR-0012**: Turn Timing Semantics
+- **ADR-0013**: Bot Configuration via Environment Variables
+- **ADR-0014**: Two-Tier Shared-Secret Authentication
+- **ADR-0015**: Participant ID as Unified Team Identifier
+- **ADR-0016**: Session ID for Bot Process Identification
+- **ADR-0017**: Recording Format (ND-JSON + Gzip)
 - **ADR-0018**: Custom SVG Rendering for Bot API Graphics
-- **ADR-0019**: Standard Mathematical Coordinate System
+- **ADR-0019**: R8 Code Shrinking
 - **ADR-0020**: Teams Support in Observer Protocol (Proposed)
 
 ## Relationship to OpenSpec

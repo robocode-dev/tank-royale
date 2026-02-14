@@ -155,7 +155,7 @@ WebSocket + JSON protocol, schema-driven message contracts, cross-platform symme
 - Protocol changes affect all clients; coordinate via `schema/schemas/`
 - Keep documentation updated with code changes
 
-> See [ADR-0002](../docs-internal/architecture/adr/0002-cross-platform-bot-api-strategy.md) for cross-platform
+> See [ADR-0003](../docs-internal/architecture/adr/0003-cross-platform-bot-api-strategy.md) for cross-platform
 > design rationale and [architecture docs](../docs-internal/architecture/) for full architectural context.
 
 ### License

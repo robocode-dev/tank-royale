@@ -1,4 +1,4 @@
-# ADR-0014: Bot Configuration via Environment Variables
+# ADR-0013: Bot Configuration via Environment Variables
 
 **Status:** Accepted  
 **Date:** 2026-02-14 (Documenting historical decision)
@@ -38,4 +38,4 @@ fallback for `SERVER_URL` and `SERVER_SECRET`.
 ## References
 
 - [EnvVars.java](/bot-api/java/src/main/java/dev/robocode/tankroyale/botapi/internal/EnvVars.java)
-- [ADR-0011: Independent Deployable Components](./0011-independent-deployable-components.md) (Booter subprocess pattern)
+- [ADR-0005: Independent Deployable Components](./0005-independent-deployable-components.md) (Booter subprocess pattern)

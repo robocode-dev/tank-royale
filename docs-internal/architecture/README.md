@@ -12,25 +12,25 @@ Comprehensive architecture documentation for Robocode Tank Royale following the 
 **[👉 adr/](./adr/)**
 
 Why key architectural decisions were made:
-- ✅ [**ADR-0001**](./adr/0001-websocket-communication-protocol.md) — WebSocket Protocol
-- ✅ [**ADR-0002**](./adr/0002-cross-platform-bot-api-strategy.md) — Cross-Platform Bot APIs
-- ✅ [**ADR-0003**](./adr/0003-realtime-game-loop-architecture.md) — Real-Time 30 TPS Game Loop
-- ✅ [**ADR-0004**](./adr/0004-turn-timing-semantics.md) — Turn Timing Semantics
-- ✅ [**ADR-0005**](./adr/0005-bot-id-team-id-namespace-separation.md) — Bot ID vs Team ID Namespace Separation
-- ✅ [**ADR-0006**](./adr/0006-session-id-bot-process-identification.md) — Session ID for Bot Process Identification
-- ✅ [**ADR-0007**](./adr/0007-java-reference-implementation.md) — Java as Authoritative Reference
-- ✅ [**ADR-0008**](./adr/0008-monorepo-build-strategy.md) — Monorepo Build Strategy
-- ✅ [**ADR-0009**](./adr/0009-schema-driven-protocol-contracts.md) — Schema-Driven Protocol Contracts
-- ✅ [**ADR-0010**](./adr/0010-client-role-separation.md) — Client Role Separation (Bot/Observer/Controller)
-- ✅ [**ADR-0011**](./adr/0011-independent-deployable-components.md) — Independent Deployable Components
-- ✅ [**ADR-0012**](./adr/0012-r8-code-shrinking.md) — R8 Code Shrinking
-- ✅ [**ADR-0013**](./adr/0013-recording-format.md) — Recording Format (ND-JSON + Gzip)
-- ✅ [**ADR-0014**](./adr/0014-bot-configuration-env-vars.md) — Bot Configuration via Environment Variables
-- ✅ [**ADR-0015**](./adr/0015-two-tier-authentication.md) — Two-Tier Shared-Secret Authentication
-- ✅ [**ADR-0016**](./adr/0016-server-authoritative-physics.md) — Server-Authoritative Deterministic Physics
-- ✅ [**ADR-0017**](./adr/0017-declarative-bot-intent-model.md) — Declarative Bot Intent Model
+- ✅ [**ADR-0001**](./adr/0001-monorepo-build-strategy.md) — Monorepo Build Strategy
+- ✅ [**ADR-0002**](./adr/0002-standard-math-coordinate-system.md) — Standard Mathematical Coordinate System
+- ✅ [**ADR-0003**](./adr/0003-cross-platform-bot-api-strategy.md) — Cross-Platform Bot APIs
+- ✅ [**ADR-0004**](./adr/0004-java-reference-implementation.md) — Java as Authoritative Reference
+- ✅ [**ADR-0005**](./adr/0005-independent-deployable-components.md) — Independent Deployable Components
+- ✅ [**ADR-0006**](./adr/0006-schema-driven-protocol-contracts.md) — Schema-Driven Protocol Contracts
+- ✅ [**ADR-0007**](./adr/0007-client-role-separation.md) — Client Role Separation (Bot/Observer/Controller)
+- ✅ [**ADR-0008**](./adr/0008-server-authoritative-physics.md) — Server-Authoritative Deterministic Physics
+- ✅ [**ADR-0009**](./adr/0009-websocket-communication-protocol.md) — WebSocket Protocol
+- ✅ [**ADR-0010**](./adr/0010-declarative-bot-intent-model.md) — Declarative Bot Intent Model
+- ✅ [**ADR-0011**](./adr/0011-realtime-game-loop-architecture.md) — Real-Time 30 TPS Game Loop
+- ✅ [**ADR-0012**](./adr/0012-turn-timing-semantics.md) — Turn Timing Semantics
+- ✅ [**ADR-0013**](./adr/0013-bot-configuration-env-vars.md) — Bot Configuration via Environment Variables
+- ✅ [**ADR-0014**](./adr/0014-two-tier-authentication.md) — Two-Tier Shared-Secret Authentication
+- ✅ [**ADR-0015**](./adr/0015-bot-id-team-id-namespace-separation.md) — Participant ID as Unified Team Identifier
+- ✅ [**ADR-0016**](./adr/0016-session-id-bot-process-identification.md) — Session ID for Bot Process Identification
+- ✅ [**ADR-0017**](./adr/0017-recording-format.md) — Recording Format (ND-JSON + Gzip)
 - ✅ [**ADR-0018**](./adr/0018-custom-svg-rendering.md) — Custom SVG Rendering for Bot API Graphics
-- ✅ [**ADR-0019**](./adr/0019-standard-math-coordinate-system.md) — Standard Mathematical Coordinate System
+- ✅ [**ADR-0019**](./adr/0019-r8-code-shrinking.md) — R8 Code Shrinking
 - 📝 [**ADR-0020**](./adr/0020-teams-support-observer-protocol.md) — Teams Support in Observer Protocol
 
 **Use When:** Understanding design rationale, trade-offs, alternatives
@@ -81,25 +81,25 @@ How entities interact through processes:
 ### ADRs (Architecture Decision Records)
 | # | Title | Status |
 |---|-------|--------|
-| 0001 | WebSocket Communication Protocol | ✅ |
-| 0002 | Cross-Platform Bot API Strategy | ✅ |
-| 0003 | Real-Time Game Loop Architecture | ✅ |
-| 0004 | Turn Timing Semantics | ✅ |
-| 0005 | Bot ID vs Team ID Namespace Separation | ✅ |
-| 0006 | Session ID for Bot Process Identification | ✅ |
-| 0007 | Java as Authoritative Reference Implementation | ✅ |
-| 0008 | Monorepo Build Strategy | ✅ |
-| 0009 | Schema-Driven Protocol Contracts | ✅ |
-| 0010 | Client Role Separation (Bot/Observer/Controller) | ✅ |
-| 0011 | Independent Deployable Components | ✅ |
-| 0012 | R8 Code Shrinking | ✅ |
-| 0013 | Recording Format (ND-JSON + Gzip) | ✅ |
-| 0014 | Bot Configuration via Environment Variables | ✅ |
-| 0015 | Two-Tier Shared-Secret Authentication | ✅ |
-| 0016 | Server-Authoritative Deterministic Physics | ✅ |
-| 0017 | Declarative Bot Intent Model | ✅ |
+| 0001 | Monorepo Build Strategy | ✅ |
+| 0002 | Standard Mathematical Coordinate System | ✅ |
+| 0003 | Cross-Platform Bot API Strategy | ✅ |
+| 0004 | Java as Authoritative Reference Implementation | ✅ |
+| 0005 | Independent Deployable Components | ✅ |
+| 0006 | Schema-Driven Protocol Contracts | ✅ |
+| 0007 | Client Role Separation (Bot/Observer/Controller) | ✅ |
+| 0008 | Server-Authoritative Deterministic Physics | ✅ |
+| 0009 | WebSocket Communication Protocol | ✅ |
+| 0010 | Declarative Bot Intent Model | ✅ |
+| 0011 | Real-Time Game Loop Architecture | ✅ |
+| 0012 | Turn Timing Semantics | ✅ |
+| 0013 | Bot Configuration via Environment Variables | ✅ |
+| 0014 | Two-Tier Shared-Secret Authentication | ✅ |
+| 0015 | Participant ID as Unified Team Identifier | ✅ |
+| 0016 | Session ID for Bot Process Identification | ✅ |
+| 0017 | Recording Format (ND-JSON + Gzip) | ✅ |
 | 0018 | Custom SVG Rendering for Bot API Graphics | ✅ |
-| 0019 | Standard Mathematical Coordinate System | ✅ |
+| 0019 | R8 Code Shrinking | ✅ |
 | 0020 | Teams Support in Observer Protocol | 📝 |
 
 ### Message Schema
@@ -145,7 +145,7 @@ How entities interact through processes:
 
 ### For **Server Developers**
 1. All message schemas ([Handshakes](./models/message-schema/handshakes.md), [Commands](./models/message-schema/commands.md), [Events](./models/message-schema/events.md), [Intents](./models/message-schema/intents.md), [State](./models/message-schema/state.md))
-2. [ADR-0003: Game Loop](./adr/0003-realtime-game-loop-architecture.md) — Timing & determinism
+2. [ADR-0011: Game Loop](./adr/0011-realtime-game-loop-architecture.md) — Timing & determinism
 3. [Turn Execution Flow](./models/flows/turn-execution.md) — 15-step sequence
 4. [Battle Lifecycle Flow](./models/flows/battle-lifecycle.md) — State machine
 
@@ -253,25 +253,25 @@ docs-internal/architecture/
 ├── README.md                              (This file)
 ├── adr/                                   (Why)
 │   ├── README.md
-│   ├── 0001-websocket-communication-protocol.md
-│   ├── 0002-cross-platform-bot-api-strategy.md
-│   ├── 0003-realtime-game-loop-architecture.md
-│   ├── 0004-turn-timing-semantics.md
-│   ├── 0005-bot-id-team-id-namespace-separation.md
-│   ├── 0006-session-id-bot-process-identification.md
-│   ├── 0007-java-reference-implementation.md
-│   ├── 0008-monorepo-build-strategy.md
-│   ├── 0009-schema-driven-protocol-contracts.md
-│   ├── 0010-client-role-separation.md
-│   ├── 0011-independent-deployable-components.md
-│   ├── 0012-r8-code-shrinking.md
-│   ├── 0013-recording-format.md
-│   ├── 0014-bot-configuration-env-vars.md
-│   ├── 0015-two-tier-authentication.md
-│   ├── 0016-server-authoritative-physics.md
-│   ├── 0017-declarative-bot-intent-model.md
+│   ├── 0001-monorepo-build-strategy.md
+│   ├── 0002-standard-math-coordinate-system.md
+│   ├── 0003-cross-platform-bot-api-strategy.md
+│   ├── 0004-java-reference-implementation.md
+│   ├── 0005-independent-deployable-components.md
+│   ├── 0006-schema-driven-protocol-contracts.md
+│   ├── 0007-client-role-separation.md
+│   ├── 0008-server-authoritative-physics.md
+│   ├── 0009-websocket-communication-protocol.md
+│   ├── 0010-declarative-bot-intent-model.md
+│   ├── 0011-realtime-game-loop-architecture.md
+│   ├── 0012-turn-timing-semantics.md
+│   ├── 0013-bot-configuration-env-vars.md
+│   ├── 0014-two-tier-authentication.md
+│   ├── 0015-bot-id-team-id-namespace-separation.md
+│   ├── 0016-session-id-bot-process-identification.md
+│   ├── 0017-recording-format.md
 │   ├── 0018-custom-svg-rendering.md
-│   ├── 0019-standard-math-coordinate-system.md
+│   ├── 0019-r8-code-shrinking.md
 │   └── 0020-teams-support-observer-protocol.md
 ├── c4-views/                              (What - Visual)
 │   ├── README.md

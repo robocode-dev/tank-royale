@@ -1,4 +1,4 @@
-# ADR-0009: Schema-Driven Protocol Contracts
+# ADR-0006: Schema-Driven Protocol Contracts
 
 **Status:** Accepted  
 **Date:** 2026-02-14 (Documenting historical decision)
@@ -48,5 +48,5 @@ truth for all message contracts.
 ## References
 
 - [Schema definitions](/schema/schemas/)
-- [ADR-0001: WebSocket Communication Protocol](./0001-websocket-communication-protocol.md)
+- [ADR-0009: WebSocket Communication Protocol](./0009-websocket-communication-protocol.md)
 - [Message Schema docs](/docs-internal/architecture/models/message-schema/)

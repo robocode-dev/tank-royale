@@ -1,4 +1,4 @@
-# ADR-0004: Turn Timing Semantics
+# ADR-0012: Turn Timing Semantics
 
 **Status:** Accepted  
 **Date:** 2026-02-13
@@ -487,8 +487,8 @@ because only Phase 1 (bot processing) affects outcomes.
 
 ## Related Decisions
 
-- **ADR-0003:** Real-Time Game Loop Architecture
-- **ADR-0001:** WebSocket Communication Protocol
+- **ADR-0011:** Real-Time Game Loop Architecture
+- **ADR-0009:** WebSocket Communication Protocol
 
 ---
 
