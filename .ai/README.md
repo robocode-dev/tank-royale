@@ -17,7 +17,7 @@ current task.
 | `testing-and-build.md`  | ~40   | ~450        | test, build, Gradle, gradlew, compile, validation                               |
 | `documentation.md`      | ~30   | ~300        | docs, README, markdown, mermaid, VERSIONS.md, Javadoc, docstring, changelog     |
 | `standards.md`          | ~25   | ~250        | encoding, UTF-8, standards, file format, characters                             |
-| `architecture.md`       | ~60   | ~600        | architecture, ADR, design decision, adr-*, docs-internal                        |
+| `architecture.md`       | ~50   | ~500        | architecture, ADR, design decision, adr-*, docs-internal, C4, protocol design   |
 | `openspec.md`           | ~30   | ~300        | planning, proposal, spec, change, RFC, OpenSpec                                 |
 
 **Total if all loaded:** ~315 lines, ~3250 tokens

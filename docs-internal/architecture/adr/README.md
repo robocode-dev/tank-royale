@@ -65,4 +65,5 @@ When making a new architectural decision:
 - [C4 Views](../c4-views/) — Visual architecture diagrams
 - [Message Schema](../models/message-schema/) — WebSocket message contracts
 - [Business Flows](../models/flows/) — Process documentation
-- [OpenSpec](../../../openspec/) — Detailed specifications
+- [OpenSpec Specs](/openspec/specs/) — Requirements and scenarios (references ADRs for design rationale)
+- [AI Architecture Guide](/.ai/architecture.md) — AI agent routing to architecture docs

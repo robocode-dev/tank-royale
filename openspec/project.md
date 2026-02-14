@@ -71,14 +71,13 @@ Key goals:
 - Use `TODO`/`FIXME` comments where appropriate
 - Add code comments where decisions might be non-obvious
 
-### Architecture Patterns
+### Architecture
 
-- **Monorepo**: All components in a single Gradle multi-project build
-- **Authoritative server**: Server is the single source of truth for game state
-- **WebSocket protocol**: All bot-server communication via WebSocket using JSON messages
-- **Schema-driven**: Message contracts defined in `schema/schemas/`
-- **Cross-platform APIs**: All official Bot APIs (Java, .NET, Python) must offer equivalent features consistently
-- **Tick-based simulation**: Game advances in discrete ticks; bots submit actions per tick
+Full architecture documentation (ADRs, C4 views, message schemas, flows) lives in
+[`docs-internal/architecture/`](../docs-internal/architecture/README.md). Key patterns: monorepo, authoritative server,
+WebSocket + JSON protocol, schema-driven message contracts, cross-platform symmetric APIs, tick-based simulation.
+
+> **Do not duplicate architecture details here.** Reference the architecture docs instead.
 
 ### Testing Strategy
 
@@ -155,6 +154,9 @@ Key goals:
 - Bot API changes must sync across all platforms (Java, .NET, Python)
 - Protocol changes affect all clients; coordinate via `schema/schemas/`
 - Keep documentation updated with code changes
+
+> See [ADR-0002](../docs-internal/architecture/adr/0002-cross-platform-bot-api-strategy.md) for cross-platform
+> design rationale and [architecture docs](../docs-internal/architecture/) for full architectural context.
 
 ### License
 

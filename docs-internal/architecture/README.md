@@ -187,8 +187,8 @@ Real-time programming game where players code virtual tank bots that battle in a
 |----------|---------|--------------|
 | `/docs` | Public user docs | Domain models explain public APIs |
 | `/docs-internal/architecture` | **Architecture (this)** | Source of truth for system design |
-| `/openspec` | Specifications | References architectural entities |
-| `/.ai` | AI guidelines | Uses domain models for context |
+| `/openspec` | Spec-driven development | References architecture for design rationale (DRY) |
+| `/.ai` | AI guidelines | Routes to architecture docs via `.ai/architecture.md` |
 | `/schema` | WebSocket schemas | Referenced by ADRs and domain models |
 
 ---
