@@ -1,82 +1,68 @@
-<!-- OPENSPEC:START -->
-
-# OpenSpec Instructions
-
-These instructions are for AI assistants working in this project.
-
-Always open `@/openspec/AGENTS.md` when the request:
-
-- Mentions planning or proposals (words like proposal, spec, change, plan)
-- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
-- Sounds ambiguous and you need the authoritative spec before coding
-
-Use `@/openspec/AGENTS.md` to learn:
-
-- How to create and apply change proposals
-- Spec format and conventions
-- Project structure and guidelines
-
-Keep this managed block so 'openspec update' can refresh the instructions.
-
-<!-- OPENSPEC:END -->
-
 # Tank Royale AI Agent Instructions
 
-This file serves as the **routing hub** for AI coding assistants. Detailed instructions are modularized in the `.ai/`
-directory for token efficiency and focused context loading.
+This is the **main routing hub** for AI assistants. Detailed instructions are in modular files for token efficiency.
 
-## Quick Reference - What to Load
+**👉 Most tasks:** Load specific `.ai/*.md` file(s) based on your task below.  
+**👉 Architecture/ADRs:** Load `.ai/architecture.md`  
+**👉 Planning/specs:** Load `.ai/openspec.md` then `/openspec/AGENTS.md`
 
-Load specific instruction files from `.ai/` based on your task:
+## Quick Routing
 
-| **Task/Keywords**                  | **Load These Files**        |
-|------------------------------------|-----------------------------|
-| General guidelines, clean code     | `.ai/core-principles.md`    |
-| Bot API changes, Java/Python/.NET  | `.ai/cross-platform.md`     |
-| Java, Python, C# style conventions | `.ai/coding-conventions.md` |
-| Testing, building, Gradle          | `.ai/testing-and-build.md`  |
-| Docs, VERSIONS.md, Javadoc         | `.ai/documentation.md`      |
-| File encoding, standards           | `.ai/standards.md`          |
-| **Planning, specs, proposals**     | `@/openspec/AGENTS.md` ⚠️   |
+| Task Type | Load These |
+|-----------|-----------|
+| **Planning, proposals, specs** | `.ai/openspec.md` → `/openspec/AGENTS.md` ⚠️ |
+| **Architecture decisions, ADRs** | `.ai/architecture.md` |
+| **Bot API (Java/Python/.NET)** | `.ai/cross-platform.md` + `.ai/core-principles.md` |
+| **Testing, builds, Gradle** | `.ai/testing-and-build.md` |
+| **Documentation, README, Javadoc** | `.ai/documentation.md` |
+| **Code style, naming, conventions** | `.ai/coding-conventions.md` |
+| **File encoding, UTF-8, standards** | `.ai/standards.md` |
+| **General coding task** | `.ai/core-principles.md` (default) |
 
-**Default Strategy:** If task is unclear, load `.ai/core-principles.md` + `.ai/cross-platform.md` first.
+## Full Navigation
 
-## Task Completion
+See `.ai/README.md` for:
+- Detailed file descriptions
+- Complete routing decision tree
+- Token budgets and file sizes
+- AI learning loop process
+- Target files for feedback
 
-When a task is complete, provide a **brief description of what changed** - not a summary. Example:
+## Hub Rules (Critical)
 
-✅ Good: "Updated GameServer.kt to use fixed turn timeout, removed notifyReady() call"  
-❌ Bad: Multi-paragraph summaries with background, rationale, testing details, etc.
+**This file is a routing hub. Maintain it as such.**
 
-The user can see the changes in the diff. Just confirm what was done.
+1. **AGENTS.md is index only** – Routes to specific `.ai/*.md` pages (never add detailed content here)
+2. **Stay under 60 lines** – If it grows beyond that, move content to `.ai/`
+3. **Update Quick Routing table when:** Adding new major task types (not for every `.ai/` file)
+4. **Never embed:** OpenSpec blocks, ADR guidelines, or topic-specific instructions
+5. **Reference, don't duplicate:** If content exists in `.ai/README.md`, link to it, don't repeat it
+6. **Single purpose:** Route tasks to appropriate `.ai/*.md` files – that's it
 
-## AI Learning Loop
+**When to modify AGENTS.md:**
+- ✅ New major task area (add one row to Quick Routing)
+- ✅ Update "Last updated" date
+- ✅ Fix links or navigation
+- ❌ Don't add new instruction content
+- ❌ Don't grow beyond ~60 lines
+- ❌ Don't embed managed blocks (OpenSpec, etc.)
 
-**Capture feedback during chat to improve AI instructions permanently.**
+**For everything else:** Use/update `.ai/` files or `.ai/MAINTENANCE.md`
 
-When the user gives corrective feedback like:
+## Task Completion Notes
 
-- "Remember ..." or "Always ..." (preferred)
-- "@ai-learn: ..." (explicit trigger)
+**⚠️ CRITICAL: No summaries after task completion.**
 
-**Action:** Recognize this as a learning opportunity, propose an edit to the appropriate `.ai/*.md` file, and apply it.
+Provide a **one-sentence acknowledgment only**. Examples:
 
-**When in doubt:** Ask "Would you like me to add this to the AI instructions?"
+✅ "Updated GameServer.kt to use fixed turn timeout, removed notifyReady() call"  
+✅ "Created `.ai/architecture.md` with ADR guidelines"  
+❌ "This change improves performance by eliminating unnecessary notifications..."  
+❌ Multi-paragraph explanations with background, rationale, or justification
 
-See `.ai/README.md` for target file mapping and best practices.
-
-## Full Index
-
-See `.ai/README.md` for detailed routing guide, file metadata, and token budgets.
+**Why:** Users see the diff. Brief confirmation is all that's needed.
 
 ---
 
-<!-- 
-MAINTENANCE NOTE (for human developers):
-When updating agent instructions:
-1. Keep this file (AGENTS.md) as lightweight router only
-2. Add/modify content in specific `.ai/*.md` topic files
-3. Update keyword mappings in table above
-4. Run token count check: each .ai/*.md should be 50-150 lines (500-1500 tokens)
-5. Keep OpenSpec section (OPENSPEC:START/END) untouched for auto-updates
--->
+**Last updated:** 2026-02-14  
+**Maintenance:** When adding instructions, update `.ai/README.md` routing table + metadata

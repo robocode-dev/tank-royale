@@ -17,8 +17,10 @@ current task.
 | `testing-and-build.md`  | ~40   | ~450        | test, build, Gradle, gradlew, compile, validation                               |
 | `documentation.md`      | ~30   | ~300        | docs, README, markdown, mermaid, VERSIONS.md, Javadoc, docstring, changelog     |
 | `standards.md`          | ~25   | ~250        | encoding, UTF-8, standards, file format, characters                             |
+| `architecture.md`       | ~60   | ~600        | architecture, ADR, design decision, adr-*, docs-internal                        |
+| `openspec.md`           | ~30   | ~300        | planning, proposal, spec, change, RFC, OpenSpec                                 |
 
-**Total if all loaded:** ~225 lines, ~2350 tokens
+**Total if all loaded:** ~315 lines, ~3250 tokens
 
 ## Routing Decision Tree
 
@@ -35,9 +37,11 @@ Task involves...
 
 ## Cross-References
 
-- **OpenSpec workflow:** `/openspec/AGENTS.md` (508 lines - load separately when needed)
+- **OpenSpec workflow:** `/openspec/AGENTS.md` (load when user mentions planning/proposals)
 - **Project conventions:** `/openspec/project.md`
-- **Main router:** `/AGENTS.md` (this directory's parent)
+- **Main router:** `/AGENTS.md` (top-level index – links here)
+- **Architecture decisions:** `docs-internal/architecture/adr/` directory
+- **Architecture decisions:** `docs-internal/architecture/adr/` directory
 
 ## Update Guidelines
 
@@ -94,6 +98,8 @@ Note: A colon (e.g., "Remember: ...") makes it more command-like.
 | Tests, Gradle, build               | `testing-and-build.md`  |
 | README, VERSIONS.md, docs          | `documentation.md`      |
 | Encoding, file formats             | `standards.md`          |
+| Architecture, ADRs                 | `architecture.md`   |
+| Planning, specs, OpenSpec          | `openspec.md`           |
 
 ### Best Practices
 
@@ -126,3 +132,11 @@ Documentation standards: README updates, VERSIONS.md format, Javadoc/docstring a
 ### `standards.md`
 
 File and encoding standards: UTF-8, character restrictions, repository boundaries.
+
+### `architecture.md`
+
+Architecture Decision Records (ADRs): Format guidelines, structure, when to create new ADRs, style for keeping them concise.
+
+### `openspec.md`
+
+OpenSpec workflow integration: When to load `/openspec/AGENTS.md`, how proposals work, formal change process.
