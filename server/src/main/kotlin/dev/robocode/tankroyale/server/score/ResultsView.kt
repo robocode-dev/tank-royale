@@ -8,7 +8,7 @@ object ResultsView {
 
     fun getResults(botScores: Collection<Score>, participants: Collection<Participant>): Collection<Score> {
 
-        data class Participant(private val id: Int, private val name: String)
+        data class Participant(val id: Int, private val name: String)
 
         val rows = mutableMapOf<Participant, Score>()
 
@@ -27,8 +27,16 @@ object ResultsView {
                 }
             }
         }
-        val sortedRows = TreeMap<Participant, Score> { p1, p2 -> rows[p2]!!.totalScore.compareTo(rows[p1]!!.totalScore) }
+        // Sort by score descending, then by id ascending as tiebreaker to ensure stable ordering
+        val sortedRows = TreeMap<Participant, Score> { p1, p2 ->
+            val scoreComparison = rows[p2]!!.totalScore.compareTo(rows[p1]!!.totalScore)
+            if (scoreComparison != 0) scoreComparison else p1.id.compareTo(p2.id)
+        }
         sortedRows.putAll(rows)
+
+        // Apply competition ranking (1224 style) to aggregated scores
+        RankDecorator.updateRanks(sortedRows.values.toList())
+
         return sortedRows.values
     }
 }

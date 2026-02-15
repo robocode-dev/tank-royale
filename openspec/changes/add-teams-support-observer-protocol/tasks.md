@@ -1,16 +1,16 @@
 ## 1. Schema Updates
 
-- [ ] 1.1 Add `isTeam: boolean` field to `results-for-observer.schema.yaml`
-- [ ] 1.2 Mark field as optional for backward compatibility
-- [ ] 1.3 Add field description explaining team vs. bot distinction
-- [ ] 1.4 Validate schema changes with JSON schema tools
+- [x] 1.1 Add `isTeam: boolean` field to `results-for-observer.schema.yaml`
+- [x] 1.2 Mark field as optional for backward compatibility
+- [x] 1.3 Add field description explaining team vs. bot distinction
+- [x] 1.4 Validate schema changes with JSON schema tools
 
 ## 2. Server Implementation
 
-- [ ] 2.1 Update observer result generation to populate `isTeam` field
-- [ ] 2.2 Fix rank calculation algorithm to ensure sequential 1..N values
-- [ ] 2.3 Add unit tests for team vs. bot result generation
-- [ ] 2.4 Add unit tests for rank calculation edge cases
+- [x] 2.1 Update observer result generation to populate `isTeam` field
+- [x] 2.2 Fix rank calculation to use competition ranking (1224 style: tied scores share rank, subsequent ranks skip positions)
+- [x] 2.3 Add unit tests for team vs. bot result generation
+- [x] 2.4 Add unit tests for rank calculation edge cases (tied scores, multiple tie groups, all equal)
 
 ## 3. Client Updates
 
@@ -29,5 +29,5 @@
 
 - [ ] 5.1 Create integration test with mixed team/bot battle
 - [ ] 5.2 Verify observer receives correct `isTeam` values
-- [ ] 5.3 Verify rank values are sequential 1..N
+- [ ] 5.3 Verify rank values follow competition ranking (tied scores get same rank)
 - [ ] 5.4 Test backward compatibility with existing observers

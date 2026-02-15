@@ -31,7 +31,21 @@ isTeam:
 
 ### 2. Fix rank values
 
-Ensure `rank` is always 1..N (sequential placement). Current bug produces inconsistent values like `[0,0,3,0,8]`.
+Use **competition ranking** (also known as "1224" ranking) for consistency with classic Robocode:
+
+- Tied scores share the same rank
+- Subsequent ranks skip positions equal to the number of ties
+
+Example with 5 participants:
+| Rank | Score | Participant |
+|------|-------|-------------|
+| 1 | 370 | Bot1 |
+| 1 | 370 | Team1 |
+| 3 | 230 | Bot3 |
+| 3 | 230 | Bot4 |
+| 5 | 220 | Bot5 |
+
+This fixes the previous bug that produced inconsistent values like `[0,0,3,0,8]`.
 
 ### 3. Use ID sign convention (from ADR-0015)
 
