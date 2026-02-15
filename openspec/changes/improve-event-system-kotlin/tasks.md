@@ -1,0 +1,105 @@
+# Tasks: Improve Event System with Modern Kotlin Patterns
+
+## Phase 1: Core Implementation Improvements
+
+### 1.1 Atomic Copy-on-Write Thread Safety
+
+- [ ] 1.1.1 Replace `Collections.synchronizedMap(WeakHashMap)` with `AtomicReference<WeakHashMap>`
+- [ ] 1.1.2 Implement atomic `updateAndGet()` for subscribe operations
+- [ ] 1.1.3 Implement atomic `get()` for fire operations (lock-free reads)
+- [ ] 1.1.4 Add concurrent access stress tests for atomic operations
+- [ ] 1.1.5 Add memory leak tests (verify weak references still work)
+
+### 1.2 Inline Value Class for Handler
+
+- [ ] 1.2.1 Convert `Handler<T>` to `@JvmInline value class`
+- [ ] 1.2.2 Test that existing code compiles without changes
+- [ ] 1.2.3 Update KDoc to mention inline optimization
+
+## Phase 2: Operator Overloads
+
+### 2.1 Subscribe Operator
+
+- [ ] 2.1.1 Add `operator fun plusAssign(subscription: Pair<Any, (T) -> Unit>)` for `event += owner to handler`
+- [ ] 2.1.2 Add overload for once-flag: `event += Once(owner, handler)`
+- [ ] 2.1.3 Update KDoc with operator examples
+- [ ] 2.1.4 Add unit tests for operator syntax
+
+### 2.2 Unsubscribe Operator
+
+- [ ] 2.2.1 Add `operator fun minusAssign(owner: Any)` for `event -= owner`
+- [ ] 2.2.2 Update KDoc with operator examples
+- [ ] 2.2.3 Add unit tests for operator syntax
+
+### 2.3 Invoke Operator (Optional)
+
+- [ ] 2.3.1 Consider `operator fun invoke(event: T)` as alias for `fire(event)`
+- [ ] 2.3.2 Evaluate if `myEvent(data)` is clearer than `myEvent.fire(data)`
+- [ ] 2.3.3 Document decision if implemented
+
+## Phase 3: Property Delegation
+
+### 3.1 Event Delegate Implementation
+
+- [ ] 3.1.1 Create `EventDelegate<T>` class with `getValue()` operator
+- [ ] 3.1.2 Create `event()` factory function returning `EventDelegate<T>`
+- [ ] 3.1.3 Test property delegation in event object declarations
+- [ ] 3.1.4 Update KDoc with delegation examples
+
+### 3.2 Documentation Updates
+
+- [ ] 3.2.1 Document that delegation is optional (not required)
+- [ ] 3.2.2 Update Event.kt KDoc header with all usage patterns
+
+## Phase 4: Testing and Validation
+
+### 4.1 Existing Behavior Verification
+
+- [ ] 4.1.1 Run existing `EventTest.kt` without modifications
+- [ ] 4.1.2 Manual GUI smoke test — verify all event handlers work
+- [ ] 4.1.3 Verify `WebSocketClientEvents` work unchanged
+- [ ] 4.1.4 Test EDT.enqueue() extension function compatibility
+
+### 4.2 New Pattern Tests
+
+- [ ] 4.2.1 Add tests for operator `+=` and `-=` syntax
+- [ ] 4.2.2 Add tests for property delegation syntax
+
+## Phase 5: Documentation
+
+### 5.1 Code Documentation
+
+- [ ] 5.1.1 Update Event.kt KDoc with comprehensive examples (old + new syntax)
+- [ ] 5.1.2 Add KDoc for operator overloads
+- [ ] 5.1.3 Add KDoc for property delegation
+- [ ] 5.1.4 Document thread-safety guarantees with atomic operations
+
+### 5.2 ADR Updates
+
+- [ ] 5.2.1 Update ADR-0022 "Implementation Details" section
+- [ ] 5.2.2 Add "Modern Kotlin Improvements (2026-02-15)" subsection
+- [ ] 5.2.3 Document atomic copy-on-write pattern
+- [ ] 5.2.4 Document operator overload syntax
+- [ ] 5.2.5 Document property delegation syntax
+
+### 5.3 User-Facing Documentation
+
+- [ ] 5.3.1 Check if VERSIONS.md needs updating (likely not — internal refactoring only)
+
+## Phase 6: Rollout
+
+### 6.1 Deployment
+
+- [ ] 6.1.1 Merge Event.kt improvements (Phase 1-3)
+- [ ] 6.1.2 Keep existing usage patterns unchanged (backward compatible)
+- [ ] 6.1.3 Optionally update 1-2 event objects to demonstrate new syntax
+- [ ] 6.1.4 Build and test GitHub artifacts
+
+## Notes
+
+- **Backward compatibility is critical** — All existing code must work unchanged
+- **This is a refactoring/improvement** — No expected performance degradation
+- **Concurrency testing is essential** — Atomic operations must be verified under concurrent load
+- **Internal change only** — Users won't see behavioral differences, only developers benefit from cleaner syntax
+- **Released as GitHub artifacts** — If bugs occur, users report them
+- **No coroutines** — Flow/coroutine integration deferred to future change proposal
