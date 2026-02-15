@@ -141,7 +141,10 @@ class LiveBattlePlayer : BattlePlayer {
 
     override fun getJoinedBots(): Set<BotInfo> = bots
 
-    override fun getParticipant(botId: Int): Participant = participants.first { participant -> participant.id == botId }
+    override fun getParticipant(botId: Int): Participant {
+        return participants.firstOrNull { participant -> participant.id == botId }
+            ?: throw IllegalStateException("Participant with id $botId not found. Available participants: ${participants.map { it.id }}")
+    }
 
     override fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? =
         savedStdOutput[botId]
@@ -160,7 +163,7 @@ class LiveBattlePlayer : BattlePlayer {
             WebSocketClientEvents.apply {
                 websocket?.let { ws ->
                     onOpen.subscribe(ws) { onConnected.fire(Unit) }
-                    onMessage.subscribe(ws) { onMessage(it) }
+                    onMessage.subscribe(ws) { this@LiveBattlePlayer.onMessage(it) }
                     onError.subscribe(ws) {
                         System.err.println("WebSocket error: " + it.message)
                         ServerEvents.onStopped.fire(Unit)

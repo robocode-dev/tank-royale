@@ -211,7 +211,10 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         }.toSet()
     }
 
-    override fun getParticipant(botId: Int): Participant = participants.first { participant -> participant.id == botId }
+    override fun getParticipant(botId: Int): Participant {
+        return participants.firstOrNull { participant -> participant.id == botId }
+            ?: throw IllegalStateException("Participant with id $botId not found in replay. Available participants: ${participants.map { it.id }}")
+    }
 
     override fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? =
         savedStdOutput[botId]

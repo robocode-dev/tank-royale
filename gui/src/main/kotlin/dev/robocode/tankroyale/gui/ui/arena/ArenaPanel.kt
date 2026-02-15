@@ -89,10 +89,10 @@ object ArenaPanel : JPanel() {
         })
 
         ClientEvents.apply {
-            onGameEnded.subscribe(ArenaPanel) { onGameEnded(it) }
-            onTickEvent.subscribe(ArenaPanel) { onTick(it) }
-            onGameStarted.subscribe(ArenaPanel) { onGameStarted(it) }
-            onPlayerChanged.subscribe(ArenaPanel) { onPlayerChanged(it) }
+            onGameEnded.subscribe(ArenaPanel) { this@ArenaPanel.onGameEnded(it) }
+            onTickEvent.subscribe(ArenaPanel) { this@ArenaPanel.onTick(it) }
+            onGameStarted.subscribe(ArenaPanel) { this@ArenaPanel.onGameStarted(it) }
+            onPlayerChanged.subscribe(ArenaPanel) { this@ArenaPanel.onPlayerChanged(it) }
         }
     }
 
@@ -149,7 +149,7 @@ object ArenaPanel : JPanel() {
     }
 
     private fun onBotDeath(botDeathEvent: BotDeathEvent) {
-        val bot = bots.first { bot -> bot.id == botDeathEvent.victimId }
+        val bot = bots.firstOrNull { bot -> bot.id == botDeathEvent.victimId } ?: return
         val explosion = Explosion(bot.x, bot.y, 80, 50, 15, time)
         synchronized(explosions) {
             explosions.add(explosion)
@@ -158,7 +158,7 @@ object ArenaPanel : JPanel() {
 
     private fun onBulletHitBot(bulletHitBotEvent: BulletHitBotEvent) {
         val bullet = bulletHitBotEvent.bullet
-        val bot = bots.first { bot -> bot.id == bulletHitBotEvent.victimId }
+        val bot = bots.firstOrNull { bot -> bot.id == bulletHitBotEvent.victimId } ?: return
 
         val xOffset = bullet.x - bot.x
         val yOffset = bullet.y - bot.y
@@ -265,6 +265,9 @@ object ArenaPanel : JPanel() {
     }
 
     private fun drawBots(g: Graphics2D) {
+        // Guard: Don't draw if no bots loaded yet
+        if (bots.isEmpty()) return
+
         bots.forEach { bot ->
             Tank(bot).paint(g)
             drawScanArc(g, bot)
@@ -274,6 +277,9 @@ object ArenaPanel : JPanel() {
     }
 
     private fun drawBullets(g: Graphics2D) {
+        // Guard: Don't draw if no bullets yet
+        if (bullets.isEmpty()) return
+
         bullets.forEach { drawBullet(g, it) }
     }
 
@@ -494,8 +500,9 @@ object ArenaPanel : JPanel() {
                 }
             }
 
-        } catch (_: NoSuchElementException) {
-            // Do nothing
+        } catch (_: IllegalStateException) {
+            // Participant not found (e.g., during replay initialization)
+            // Skip drawing name/version until participants are loaded
         }
 
         oldState.restore(g)

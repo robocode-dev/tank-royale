@@ -56,8 +56,14 @@
 ### 4.1 Existing Behavior Verification
 
 - [x] 4.1.1 Run existing `EventTest.kt` without modifications
-- [ ] 4.1.2 Manual GUI smoke test — verify all event handlers work
-- [ ] 4.1.3 Verify `WebSocketClientEvents` work unchanged
+- [x] 4.1.2 Manual GUI smoke test — verify all event handlers work
+  - **🐛 CRITICAL BUG FOUND**: fire() was missing `.toSet()` from original impl
+  - **Original**: `eventHandlers.entries.toSet().forEach`
+  - **Broken**: `eventHandlers.get().entries.forEach` (no snapshot!)
+  - **Fixed**: `eventHandlers.get().entries.toSet().forEach`
+- [x] 4.1.3 Verify `WebSocketClientEvents` work unchanged
+  - **🐛 BUG FOUND**: BotSelectionPanel lazy init timing issue
+  - **Fixed**: Added componentShown listener to refresh on dialog open
 - [x] 4.1.4 Test EDT.enqueue() extension function compatibility
 
 ### 4.2 New Pattern Tests

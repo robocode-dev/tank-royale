@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.common
 
-import java.util.concurrent.atomic.AtomicReference
+import java.util.Collections
 import java.util.WeakHashMap
 
 /**
@@ -32,10 +32,10 @@ import java.util.WeakHashMap
  */
 open class Event<T> {
 
-    // An atomic copy-on-write map containing weak references to event handlers. The keys are event subscribers.
+    // A synchronized map containing weak references to event handlers. The keys are event subscribers.
     // When an owner to an event handler is being garbage collected (weak-references are always GCed),
     // the handler and its owner are automatically being removed from the map.
-    private val eventHandlers = AtomicReference(WeakHashMap<Any, Handler<T>>())
+    private val eventHandlers = Collections.synchronizedMap(WeakHashMap<Any, Handler<T>>())
 
     /**
      * Subscribe to an event and provide an event handler for handling the event.
@@ -44,11 +44,7 @@ open class Event<T> {
      * @param eventHandler is the event handler for handling the event.
      */
     fun subscribe(owner: Any, once: Boolean = false, eventHandler: (T) -> Unit) {
-        eventHandlers.updateAndGet { handlers ->
-            WeakHashMap(handlers).apply {
-                put(owner, Handler(eventHandler, once))
-            }
-        }
+        eventHandlers[owner] = Handler(eventHandler, once)
     }
 
     /**
@@ -71,11 +67,7 @@ open class Event<T> {
      * @param owner is the owner of the event handler, typically `this` instance.
      */
     fun unsubscribe(owner: Any) {
-        eventHandlers.updateAndGet { handlers ->
-            WeakHashMap(handlers).apply {
-                remove(owner)
-            }
-        }
+        eventHandlers.remove(owner)
     }
 
     /**
@@ -90,10 +82,9 @@ open class Event<T> {
      * @param event is the source event instance for the event handlers.
      */
     fun fire(event: T) {
-        // Work on a snapshot to prevent concurrent modification issues
-        eventHandlers.get().entries.forEach { (owner, handler) ->
-            handler.apply {
-                if (once) unsubscribe(owner)
+        eventHandlers.entries.toSet().forEach { entry ->
+            entry.value.apply {
+                if (once) unsubscribe(entry.key)
                 eventHandler.invoke(event)
             }
         }
@@ -104,24 +95,13 @@ open class Event<T> {
      */
     operator fun invoke(event: T) = fire(event)
 
-    data class HandlerData<T>(
-        val eventHandler: (T) -> Unit,
-        val once: Boolean
-    )
-
     /**
-     * Inline value class to avoid extra wrapper allocations for event handlers.
+     * Handler wrapper class for event handlers.
      */
-    @JvmInline
-    value class Handler<T>(private val data: HandlerData<T>) {
-        constructor(eventHandler: (T) -> Unit, once: Boolean = false) : this(HandlerData(eventHandler, once))
-
-        val eventHandler: (T) -> Unit
-            get() = data.eventHandler
-
-        val once: Boolean
-            get() = data.once
-    }
+    class Handler<T>(
+        val eventHandler: (T) -> Unit,
+        val once: Boolean = false
+    )
 }
 
 /**

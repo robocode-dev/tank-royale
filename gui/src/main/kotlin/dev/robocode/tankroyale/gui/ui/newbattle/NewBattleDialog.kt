@@ -31,7 +31,7 @@ object NewBattleDialog : RcDialog(MainFrame, "new_battle_dialog") {
     init {
         contentPane.add(selectBotsAndStartPanel)
         size = Dimension(950, 750)
-        setLocationRelativeTo(owner) // center on owner window
+        setLocationRelativeTo(owner) // center on the owner window
 
         ServerEvents.onStopped.subscribe(this) {
             MessageDialog.showError(Messages.get("battle_lost_server_connection"))

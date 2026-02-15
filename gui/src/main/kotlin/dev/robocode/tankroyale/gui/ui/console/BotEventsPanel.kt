@@ -198,8 +198,13 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
     }
 
     private fun botIdAndName(botId: Int): String {
-        val bot = Client.getParticipant(botId)
-        return "$botId (${bot.name} ${bot.version})"
+        return try {
+            val bot = Client.getParticipant(botId)
+            "$botId (${bot.name} ${bot.version})"
+        } catch (_: IllegalStateException) {
+            // Participant not found (might be during replay initialization or eliminated bot)
+            "$botId (unknown)"
+        }
     }
 
     private fun appendNewLine(ansiTextBuilder: AnsiTextBuilder, turnNumber: Int? = null) {

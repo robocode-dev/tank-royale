@@ -170,5 +170,50 @@ class EventTest : FunSpec({
             // Check that the key in the eventHandlers map is our subscriber object
             eventHandlers.keys.first() shouldBe subscriber
         }
+
+        test("re-subscription during fire") {
+            val event = Event<String>()
+            val result = mutableListOf<String>()
+
+            val subscriber = object {
+                fun handle(msg: String) {
+                    result.add(msg)
+                    if (msg == "first") {
+                        // Re-subscribe or subscribe another handler during fire
+                        event.subscribe(this) { result.add("second-$it") }
+                    }
+                }
+            }
+
+            event.subscribe(subscriber) { subscriber.handle(it) }
+            event.fire("first")
+
+            // Should have "first" from original handler.
+            // The new handler should NOT be called during the same fire.
+            result shouldBe listOf("first")
+
+            event.fire("third")
+            // Now both handlers should be called (or rather, the last one subscribed for this owner)
+            // Wait, Event.subscribe with same owner REPLACES the handler.
+            result shouldBe listOf("first", "second-third")
+        }
+
+        test("un-subscription during fire") {
+            val event = Event<String>()
+            val result = mutableListOf<String>()
+
+            val subscriber = object {
+                fun handle(msg: String) {
+                    result.add(msg)
+                    event.unsubscribe(this)
+                }
+            }
+
+            event.subscribe(subscriber) { subscriber.handle(it) }
+            event.fire("first")
+            event.fire("second")
+
+            result shouldBe listOf("first")
+        }
     }
 })

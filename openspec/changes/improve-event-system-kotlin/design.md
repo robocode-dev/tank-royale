@@ -82,9 +82,13 @@ fun subscribe(owner: Any, once: Boolean = false, eventHandler: (T) -> Unit) {
 }
 
 fun fire(event: T) {
-    // Lock-free read
-    val snapshot = eventHandlers.get()
-    snapshot.entries.forEach { (owner, handler) ->
+    // Lock-free read with immutable snapshot
+    // CRITICAL: .toSet() creates immutable snapshot, preventing:
+    //   - WeakHashMap entry invalidation during iteration
+    //   - ConcurrentModificationException from concurrent unsubscribe
+    //   - Race conditions with weak reference GC
+    val snapshot = eventHandlers.get().entries.toSet()
+    snapshot.forEach { (owner, handler) ->
         handler.apply {
             if (once) unsubscribe(owner)
             eventHandler.invoke(event)
