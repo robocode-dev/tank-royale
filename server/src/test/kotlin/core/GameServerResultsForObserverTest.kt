@@ -74,6 +74,37 @@ class GameServerResultsForObserverTest : FunSpec({
         }
     }
 
+    test("should keep observer IDs compatible with legacy clients") {
+        val gameServer = GameServer(setOf("classic"), emptySet(), emptySet())
+
+        val participantMapField = GameServer::class.java.getDeclaredField("participantMap").apply {
+            isAccessible = true
+        }
+        val participantMap =
+            participantMapField.get(gameServer) as ConcurrentHashMap<BotId, Participant>
+
+        participantMap[BotId(1)] = participant(botId = 1, name = "TeamBotA", teamId = 10, teamName = "Alpha")
+        participantMap[BotId(2)] = participant(botId = 2, name = "SoloBot")
+
+        val teamScore = Score(ParticipantId(BotId(1), TeamId(10))).apply { bulletDamageScore = 50.0 }
+        val soloScore = Score(ParticipantId(BotId(2))).apply { bulletDamageScore = 40.0 }
+
+        val modelUpdater = mockk<ModelUpdater>()
+        every { modelUpdater.getResults() } returns listOf(teamScore, soloScore)
+
+        val modelUpdaterField = GameServer::class.java.getDeclaredField("modelUpdater").apply {
+            isAccessible = true
+        }
+        modelUpdaterField.set(gameServer, modelUpdater)
+
+        val getResultsMethod = GameServer::class.java.getDeclaredMethod("getResultsForObservers").apply {
+            isAccessible = true
+        }
+        val results = getResultsMethod.invoke(gameServer) as List<ResultsForObserver>
+
+        results.map { it.id } shouldContainExactly listOf(10, 2)
+    }
+
     test("should assign same rank for tied scores (two 1st places)") {
         val gameServer = GameServer(setOf("classic"), emptySet(), emptySet())
 

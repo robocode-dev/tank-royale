@@ -27,7 +27,7 @@
 
 ## 5. Testing
 
-- [ ] 5.1 Create integration test with mixed team/bot battle
-- [ ] 5.2 Verify observer receives correct `isTeam` values
-- [ ] 5.3 Verify rank values follow competition ranking (tied scores get same rank)
-- [ ] 5.4 Test backward compatibility with existing observers
+- [x] 5.1 Create an integration test with mixed team/bot battle
+- [x] 5.2 Verify observer receives correct `isTeam` values
+- [x] 5.3 Verify rank values follow competition ranking (tied scores get same rank)
+- [x] 5.4 Test backward compatibility with existing observers
