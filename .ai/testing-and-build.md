@@ -3,6 +3,16 @@
 <!-- METADATA: ~45 lines, ~500 tokens -->
 <!-- KEYWORDS: test, build, Gradle, gradlew, compile, validation, sample bot, backward compatibility -->
 
+## Project Context
+
+**Solo Developer, Open Source Project**
+
+- Maintained by Flemming N. Larsen (single developer, not a team)
+- Released via **GitHub as artifacts** (also Maven Central, NuGet, PyPI)
+- Manual GUI smoke testing is acceptable and expected
+- No performance benchmarking overhead — refactorings shouldn't degrade performance, but formal measurement is optional
+- Users report bugs via GitHub issues
+
 ## Build Requirements
 
 Always run `./gradlew clean build` after ANY of these changes:

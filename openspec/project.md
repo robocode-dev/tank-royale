@@ -1,5 +1,30 @@
 # Project Context
 
+## Project Governance
+
+**Open Source, Single Maintainer**
+
+This is an **open source project on GitHub** (Apache License 2.0), primarily maintained by **Flemming N. Larsen** as a spare-time, non-profit effort. It is **NOT a corporate project**.
+
+- **Maintainer:** [@flemming-n-larsen](https://github.com/flemming-n-larsen)
+- **Contributors:** Welcome! See [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Repository:** https://github.com/robocode-dev/tank-royale
+- **License:** Apache License 2.0, Copyright © 2022 Flemming N. Larsen
+
+**Distribution Channels:**
+
+- **GitHub Releases:** Primary distribution as platform installers and JAR artifacts
+- **Maven Central:** Java/JVM Bot API (via nexus-publish)
+- **NuGet:** .NET Bot API
+- **PyPI:** Python Bot API
+
+**Development Reality:**
+
+- Solo developer — no team coordination or migration guides needed
+- Manual testing acceptable (automated where reasonable)
+- Users report bugs via GitHub issues
+- No enterprise overhead (performance SLAs, benchmarking requirements, etc.)
+
 ## Purpose
 
 Robocode Tank Royale is a programming game where players code autonomous tank-bots that compete against each other in a

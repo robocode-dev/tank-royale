@@ -1,5 +1,14 @@
 # OpenSpec Workflow
 
+## Project Context
+
+**Single Maintainer, Open Source**
+
+- Solo developer project (Flemming N. Larsen), not a team/corporate environment
+- No team coordination, migration guides, or enterprise overhead needed
+- Released via GitHub as artifacts (also Maven Central, NuGet, PyPI)
+- Users report bugs via GitHub issues
+
 ## When to Load This
 
 Load when task involves:

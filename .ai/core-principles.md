@@ -3,6 +3,29 @@
 <!-- METADATA: ~40 lines, ~400 tokens -->
 <!-- KEYWORDS: clean code, principles, minimal changes, atomic commits, SRP, DRY, YAGNI, design patterns -->
 
+## Project Governance
+
+**Open Source, Single Maintainer**
+
+- This is an **open source project on GitHub** (Apache License 2.0)
+- Primarily maintained by **Flemming N. Larsen** (solo developer, not a team)
+- Contributors are welcome (see `/CONTRIBUTING.md`)
+- **NOT a corporate project** — spare-time, non-profit effort
+
+**Distribution Channels**
+
+- **GitHub Releases:** Primary distribution as artifacts
+- **Maven Central:** Java/JVM Bot API
+- **NuGet:** .NET Bot API
+- **PyPI:** Python Bot API
+
+**Development Reality**
+
+- No team coordination needed — single maintainer
+- No enterprise processes (migration guides, performance SLAs, etc.)
+- Manual GUI smoke testing is acceptable
+- If bugs occur, users report them via GitHub issues
+
 ## Clean Code Philosophy
 
 **Readability over cleverness**

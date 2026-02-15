@@ -11,16 +11,16 @@ current task.
 
 | File                    | Lines | Est. Tokens | Load When Keywords Include                                                      |
 |-------------------------|-------|-------------|---------------------------------------------------------------------------------|
-| `core-principles.md`    | ~40   | ~400        | clean code, principles, refactor, design patterns                               |
+| `core-principles.md`    | ~125  | ~600        | clean code, principles, refactor, design patterns, governance, maintainer       |
 | `cross-platform.md`     | ~55   | ~600        | Bot API, Java, Python, .NET, C#, cross-platform, port, reference implementation |
 | `coding-conventions.md` | ~35   | ~350        | style, conventions, naming, format, PEP 8, immutability                         |
-| `testing-and-build.md`  | ~40   | ~450        | test, build, Gradle, gradlew, compile, validation                               |
+| `testing-and-build.md`  | ~100  | ~550        | test, build, Gradle, gradlew, compile, validation, smoke test                   |
 | `documentation.md`      | ~30   | ~300        | docs, README, markdown, mermaid, VERSIONS.md, Javadoc, docstring, changelog     |
 | `standards.md`          | ~25   | ~250        | encoding, UTF-8, standards, file format, characters                             |
 | `architecture.md`       | ~50   | ~500        | architecture, ADR, design decision, adr-*, docs-internal, C4, protocol design   |
-| `openspec.md`           | ~30   | ~300        | planning, proposal, spec, change, RFC, OpenSpec                                 |
+| `openspec.md`           | ~55   | ~350        | planning, proposal, spec, change, RFC, OpenSpec                                 |
 
-**Total if all loaded:** ~315 lines, ~3250 tokens
+**Total if all loaded:** ~475 lines, ~3500 tokens
 
 ## Routing Decision Tree
 
