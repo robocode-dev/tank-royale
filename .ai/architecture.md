@@ -45,6 +45,8 @@ All architecture documentation lives in [`docs-internal/architecture/`](../docs-
 - **ADR-0018**: Custom SVG Rendering for Bot API Graphics
 - **ADR-0019**: R8 Code Shrinking
 - **ADR-0020**: Teams Support in Observer Protocol (Proposed)
+- **ADR-0021**: Java Swing as GUI Reference Implementation
+- **ADR-0022**: Event System for GUI Decoupling
 
 ## Relationship to OpenSpec
 

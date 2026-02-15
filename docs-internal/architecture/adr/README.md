@@ -41,6 +41,8 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0018](./0018-custom-svg-rendering.md) | Custom SVG Rendering for Bot API Graphics | Accepted | 2026-02-14 |
 | [0019](./0019-r8-code-shrinking.md) | R8 Code Shrinking | Accepted | 2026-02-14 |
 | [0020](./0020-teams-support-observer-protocol.md) | Teams Support in Observer Protocol | Proposed | 2026-02-14 |
+| [0021](./0021-java-swing-gui-reference-implementation.md) | Java Swing as GUI Reference Implementation | Accepted | 2026-02-15 |
+| [0022](./0022-event-system-gui-decoupling.md) | Event System for GUI Decoupling | Accepted | 2026-02-15 |
 
 ## Status Definitions
 
