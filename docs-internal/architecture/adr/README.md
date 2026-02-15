@@ -43,6 +43,7 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0020](./0020-teams-support-observer-protocol.md) | Teams Support in Observer Protocol | Proposed | 2026-02-14 |
 | [0021](./0021-java-swing-gui-reference-implementation.md) | Java Swing as GUI Reference Implementation | Accepted | 2026-02-15 |
 | [0022](./0022-event-system-gui-decoupling.md) | Event System for GUI Decoupling | Accepted | 2026-02-15 |
+| [0023](./0023-robocode-tank-royale-platform-scope.md) | Robocode Tank Royale Platform Scope and Boundaries | Accepted | 2026-02-15 |
 
 ## Status Definitions
 
