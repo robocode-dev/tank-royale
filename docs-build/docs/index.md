@@ -19,6 +19,43 @@ If you are new to Robocode, you should start with:
 - read the [Getting Started](tutorial/getting-started), and then
 - continue to [My First Bot](tutorial/my-first-bot) to create your first bot.
 
+## Learning Roadmap
+
+Robocode mastery is a journey from fundamentals to advanced competitive strategies. We've organized documentation into a clear learning path:
+
+### 🎯 Foundation (Start Here)
+
+**Essential concepts everyone needs:**
+
+1. [Introduction](articles/intro) - What is Robocode?
+2. [Installation](articles/installation) - Set up your environment
+3. [Getting Started](tutorial/getting-started) - Core concepts (rounds, turns, energy)
+4. [My First Bot](tutorial/my-first-bot) - Create your first bot
+5. [Anatomy of a Bot](articles/anatomy) - Understanding body, gun, and radar
+6. [Coordinates and Angles](articles/coordinates-and-angles) - Arena coordinate system
+7. [Physics](articles/physics) - Movement, rotation, and bullet mechanics
+
+### 🔧 Intermediate Skills
+
+**Build competent bots with solid fundamentals:**
+
+- [Beyond the Basics](tutorial/beyond-the-basics) - Event handling and logic flow
+- [Collision Mechanics](articles/collision-mechanics) - Wall/bot collision handling
+- [Testing & Debugging Guide](articles/testing-guide) - Test strategies and debugging
+- [Performance Optimization](articles/performance-optimization) - Write efficient code
+- [Custom Game Setup](articles/custom-game-setup) - Configure battles and test scenarios
+- [Team Strategies](articles/team-strategies) - Team communication and coordination basics
+
+### 📚 Advanced Topics (The Book of Robocode)
+
+**Ready for advanced competitive strategies?** The Tank Royale documentation covers fundamentals; **[The Book of Robocode](https://book.robocode.dev/)** takes you to competition level:
+
+- **[Radar & Scanning](https://book.robocode.dev/radar/radar-basics)** - Perfect locks, spinning radar, melee strategies
+- **[Advanced Targeting](https://book.robocode.dev/targeting/simple-targeting/head-on-targeting)** - GuessFactor targeting, pattern matching, virtual guns
+- **[Movement & Evasion](https://book.robocode.dev/movement/basic/movement-fundamentals-goto)** - Wave surfing, anti-gravity, bullet dodging
+- **[Statistical Targeting](https://book.robocode.dev/targeting/statistical-targeting/guessfactor-targeting)** - Segmentation, statistics-based targeting
+- **[Energy & Scoring](https://book.robocode.dev/energy-and-scoring/energy-as-a-resource)** - Strategic resource management
+
 ## The Book of Robocode
 
 📖 [**The Book of Robocode**](https://book.robocode.dev/) is a comprehensive guide covering Robocode as well as

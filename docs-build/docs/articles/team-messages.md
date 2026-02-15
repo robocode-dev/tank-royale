@@ -505,3 +505,15 @@ Team messaging in Tank Royale enables powerful team coordination:
 - **Colors, positions, and custom commands** can all be shared via team messages
 
 Try running `MyFirstTeam` against other bots to see team coordination in action!
+
+## Advanced Team Strategies
+
+Ready to take your team coordination to the next level? Explore advanced strategies in **[The Book of Robocode](https://book.robocode.dev/)**:
+
+- **[Anti-Gravity Movement](https://book.robocode.dev/movement/strategic-movement/anti-gravity-movement)** - Position based on multiple threats (useful for team positioning)
+- **[GuessFactor Targeting](https://book.robocode.dev/targeting/statistical-targeting/guessfactor-targeting)** - Statistical targeting for coordinated attacks
+- **[Energy Management](https://book.robocode.dev/energy-and-scoring/energy-management-1v1-melee)** - Strategic resource allocation in team battles
+
+For a hands-on guide to implementing team messages in each language, see the [Team Messages Guide](https://github.com/robocode-dev/tank-royale/blob/master/bot-api/dotnet/TEAM_MESSAGES_GUIDE.md) in the Bot API repository.
+
+Also see [Team Strategies](/articles/team-strategies) for foundational team battle concepts and testing strategies.

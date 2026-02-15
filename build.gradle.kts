@@ -379,7 +379,7 @@ fun Project.registerJpackageTasks(
                 iconPath = iconLinux,
                 mainClass = (project.extra["jpackageMainClass"] as String),
                 extra = listOf(
-                    "--linux-deb-maintainer", "Flemming N. Larsen <flemming.n.larsen@gmail.com>"
+                    "--linux-deb-maintainer", "Flemming N. Larsen <contact@robocode.dev>"
                 )
             )
         }
