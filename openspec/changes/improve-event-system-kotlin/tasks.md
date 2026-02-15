@@ -41,29 +41,29 @@
 
 ### 3.1 Event Delegate Implementation
 
-- [ ] 3.1.1 Create `EventDelegate<T>` class with `getValue()` operator
-- [ ] 3.1.2 Create `event()` factory function returning `EventDelegate<T>`
-- [ ] 3.1.3 Test property delegation in event object declarations
-- [ ] 3.1.4 Update KDoc with delegation examples
+- [x] 3.1.1 Create `EventDelegate<T>` class with `getValue()` operator
+- [x] 3.1.2 Create `event()` factory function returning `EventDelegate<T>`
+- [x] 3.1.3 Test property delegation in event object declarations
+- [x] 3.1.4 Update KDoc with delegation examples
 
 ### 3.2 Documentation Updates
 
-- [ ] 3.2.1 Document that delegation is optional (not required)
-- [ ] 3.2.2 Update Event.kt KDoc header with all usage patterns
+- [x] 3.2.1 Document that delegation is optional (not required)
+- [x] 3.2.2 Update Event.kt KDoc header with all usage patterns
 
 ## Phase 4: Testing and Validation
 
 ### 4.1 Existing Behavior Verification
 
-- [ ] 4.1.1 Run existing `EventTest.kt` without modifications
+- [x] 4.1.1 Run existing `EventTest.kt` without modifications
 - [ ] 4.1.2 Manual GUI smoke test — verify all event handlers work
 - [ ] 4.1.3 Verify `WebSocketClientEvents` work unchanged
-- [ ] 4.1.4 Test EDT.enqueue() extension function compatibility
+- [x] 4.1.4 Test EDT.enqueue() extension function compatibility
 
 ### 4.2 New Pattern Tests
 
-- [ ] 4.2.1 Add tests for operator `+=` and `-=` syntax
-- [ ] 4.2.2 Add tests for property delegation syntax
+- [x] 4.2.1 Add tests for operator `+=` and `-=` syntax
+- [x] 4.2.2 Add tests for property delegation syntax
 
 ## Phase 5: Documentation
 

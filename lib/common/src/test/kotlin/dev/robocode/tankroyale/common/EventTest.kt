@@ -67,6 +67,20 @@ class EventTest : FunSpec({
             result shouldBe listOf("test1")
         }
 
+        test("property delegation") {
+            val events = object {
+                val onMessage by event<String>()
+            }
+
+            val result = mutableListOf<String>()
+
+            events.onMessage.subscribe(this) { result.add(it) }
+            events.onMessage.fire("test")
+
+            (events.onMessage === events.onMessage) shouldBe true
+            result shouldBe listOf("test")
+        }
+
         test("subscribe once") {
             val event = Event<String>()
             val result = mutableListOf<String>()

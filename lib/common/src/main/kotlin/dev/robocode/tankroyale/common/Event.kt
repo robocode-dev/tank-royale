@@ -12,6 +12,9 @@ import java.util.WeakHashMap
  * // Declare event
  * val onMyEvent = Event<MyEvent>()
  *
+ * // Declare event using property delegation (optional)
+ * val onMyDelegatedEvent by event<MyEvent>()
+ *
  * // Subscribe to event with an event handler to handle event when it occurs
  * onMyEvent.subscribe(this) { event -> handle(event) }
  *
@@ -120,6 +123,21 @@ open class Event<T> {
             get() = data.once
     }
 }
+
+/**
+ * Delegate for creating an [Event] instance using property delegation.
+ */
+class EventDelegate<T> {
+
+    private val event = Event<T>()
+
+    operator fun getValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>): Event<T> = event
+}
+
+/**
+ * Creates an [EventDelegate] for property delegation: `val onEvent by event<T>()`.
+ */
+fun <T> event() = EventDelegate<T>()
 
 /**
  * Wrapper for subscribing with the once-flag using operator syntax.
