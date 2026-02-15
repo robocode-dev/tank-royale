@@ -25,48 +25,48 @@ object MenuEventHandlers {
 
     init {
         MenuEventTriggers.apply {
-            onSetupRules.subscribe(this) {
+            onSetupRules += this to {
                 SetupRulesDialog.isVisible = true
             }
-            onStartBattle.subscribe(this) {
+            onStartBattle += this to {
                 startBattle()
             }
-            onReplayFromFile.subscribe(this) {
+            onReplayFromFile += this to {
                 startReplayFromFile()
             }
-            onShowServerLog.subscribe(this) {
+            onShowServerLog += this to {
                 ServerLogFrame.isVisible = true
             }
-            onBotDirConfig.subscribe(this) {
+            onBotDirConfig += this to {
                 BotRootDirectoriesConfigDialog.isVisible = true
             }
-            onStartServer.subscribe(this) {
+            onStartServer += this to {
                 ServerEventTriggers.onStartLocalServer.fire(Unit)
                 ServerLogFrame.isVisible = true
             }
-            onStopServer.subscribe(this) {
+            onStopServer += this to {
                 ServerEventTriggers.onStopLocalServer.fire(Unit)
                 ServerLogFrame.isVisible = false
             }
-            onRebootServer.subscribe(this) {
+            onRebootServer += this to {
                 ServerEventTriggers.onRebootLocalServer.fire(false /* user initiated */)
             }
-            onServerConfig.subscribe(this) {
+            onServerConfig += this to {
                 ServerConfigDialog().isVisible = true
             }
-            onDebugConfig.subscribe(this) {
+            onDebugConfig += this to {
                 DebugConfigDialog.isVisible = true
             }
-            onSoundConfig.subscribe(this) {
+            onSoundConfig += this to {
                 SoundConfigDialog.isVisible = true
             }
-            onGuiConfig.subscribe(this) {
+            onGuiConfig += this to {
                 GuiConfigDialog.isVisible = true
             }
-            onHelp.subscribe(this) {
+            onHelp += this to {
                 Browser.browse(HELP_URL)
             }
-            onAbout.subscribe(this) {
+            onAbout += this to {
                 AboutBox.isVisible = true
             }
         }

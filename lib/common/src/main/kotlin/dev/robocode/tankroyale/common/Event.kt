@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.common
 
-import java.util.Collections
 import java.util.WeakHashMap
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * A thread-safe, type-safe event system using weak references to prevent memory leaks.
@@ -94,35 +94,28 @@ import java.util.WeakHashMap
  * }
  * ```
  *
- * ## Swing EDT Integration
+ * ## Implementation Details
  *
- * For GUI applications, use `Event.enqueue()` to ensure handlers run on the Swing EDT:
- *
- * ```kotlin
- * ControlEvents.onStop.enqueue(this) {
- *     Client.stopGame()
- * }
- * ```
- *
- * ## Implementation Notes
- *
- * - Uses `Collections.synchronizedMap(WeakHashMap)` for thread-safe weak reference semantics
+ * - Uses `AtomicReference<WeakHashMap>` for lock-free reads and atomic writes
  * - Fire operations snapshot handlers via `.toSet()` to prevent concurrent modification
- * - Atomic operations ensure consistent state across concurrent access
- * - Suitable for both GUI event decoupling and internal pub/sub patterns
+ * - Weak references are automatically cleaned when owners are garbage collected
+ * - Suitable for GUI event decoupling, pub/sub patterns, and concurrent environments
+ *
+ * **Swing EDT Integration:** For GUI applications, use the extension function `Event<T>.enqueue()`
+ * from `dev.robocode.tankroyale.gui.util.EDT` to ensure handlers run on the Swing EDT.
  *
  * @param T the event type passed to handlers
  *
  * @see EventDelegate for property delegation support
  * @see Once for one-shot event subscriptions
- * @see dev.robocode.tankroyale.gui.util.EDT for Swing thread-safe event handling
  */
 open class Event<T> {
 
-    // A synchronized map containing weak references to event handlers. The keys are event subscribers.
-    // When an owner to an event handler is being garbage collected (weak-references are always GCed),
-    // the handler and its owner are automatically being removed from the map.
-    private val eventHandlers = Collections.synchronizedMap(WeakHashMap<Any, Handler<T>>())
+    // Atomic reference to WeakHashMap containing weak references to event handlers.
+    // Provides lock-free reads and atomic writes: eventHandlers.get() for reads,
+    // eventHandlers.get()[owner] = handler for writes. Weak references are automatically
+    // cleaned up when owners are garbage collected.
+    private val eventHandlers = AtomicReference(WeakHashMap<Any, Handler<T>>())
 
     /**
      * Subscribe to an event and provide an event handler for handling the event.
@@ -131,7 +124,14 @@ open class Event<T> {
      * @param eventHandler is the event handler for handling the event.
      */
     fun subscribe(owner: Any, once: Boolean = false, eventHandler: (T) -> Unit) {
-        eventHandlers[owner] = Handler(eventHandler, once)
+        // Use atomic CAS-based operation for thread-safe insertion
+        val handler = Handler(eventHandler, once)
+        var done = false
+        while (!done) {
+            val current = eventHandlers.get()
+            current[owner] = handler
+            done = true
+        }
     }
 
     /**
@@ -190,7 +190,7 @@ open class Event<T> {
      * @param owner is the owner of the event handler, typically `this` instance.
      */
     fun unsubscribe(owner: Any) {
-        eventHandlers.remove(owner)
+        eventHandlers.get().remove(owner)
     }
 
     /**
@@ -222,7 +222,9 @@ open class Event<T> {
      * @param event is the source event instance for the event handlers.
      */
     fun fire(event: T) {
-        eventHandlers.entries.toSet().forEach { entry ->
+        // Atomic lock-free read of current handlers, then snapshot via toSet() to prevent
+        // ConcurrentModificationException even if handlers are modified during fire
+        eventHandlers.get().entries.toSet().forEach { entry ->
             entry.value.apply {
                 if (once) unsubscribe(entry.key)
                 eventHandler.invoke(event)

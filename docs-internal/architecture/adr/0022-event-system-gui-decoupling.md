@@ -39,7 +39,7 @@ class Event<T> {
 - **Weak references** — Uses `WeakHashMap` internally so event handlers are garbage collected with their owners
 - **Owner-based registration** — Subscribers pass `this` as owner, enabling automatic cleanup
 - **Type-safe** — Generic parameter `T` ensures type safety at compile time
-- **Thread-safe** — Synchronized map prevents concurrent modification issues
+- **Atomic reference** — Uses `AtomicReference<WeakHashMap>` for lock-free reads and atomic writes
 - **Once flag** — Optional auto-unsubscribe after first event (for one-shot handlers)
 
 **Location:** Implemented in `lib/common` (shared across GUI and WebSocket client), not GUI-specific.

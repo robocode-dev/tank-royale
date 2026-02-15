@@ -1,11 +1,11 @@
 package dev.robocode.tankroyale.gui.ui.control
 
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event
 import javax.swing.JButton
 
 object ControlEvents {
-    val onStop = Event<JButton>()
-    val onRestart = Event<JButton>()
-    val onPauseResume = Event<JButton>()
-    val onNextTurn = Event<JButton>()
+    val onStop by event<JButton>()
+    val onRestart by event<JButton>()
+    val onPauseResume by event<JButton>()
+    val onNextTurn by event<JButton>()
 }

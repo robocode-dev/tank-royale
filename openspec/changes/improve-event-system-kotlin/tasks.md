@@ -96,10 +96,10 @@
 
 ### 6.1 Deployment
 
-- [ ] 6.1.1 Merge Event.kt improvements (Phase 1-3)
-- [ ] 6.1.2 Keep existing usage patterns unchanged (backward compatible)
-- [ ] 6.1.3 Optionally update 1-2 event objects to demonstrate new syntax
-- [ ] 6.1.4 Build and test GitHub artifacts
+- [x] 6.1.1 Merge Event.kt improvements (Phase 1-3)
+- [x] 6.1.2 Keep existing usage patterns unchanged (backward compatible)
+- [x] 6.1.3 Optionally update 1-2 event objects to demonstrate new syntax
+- [x] 6.1.4 Build and test GitHub artifacts
 
 ## Notes
 
