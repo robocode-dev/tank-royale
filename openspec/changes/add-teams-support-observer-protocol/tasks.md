@@ -20,10 +20,10 @@
 
 ## 4. Documentation
 
-- [ ] 4.1 Update protocol documentation to mention `isTeam` field
-- [ ] 4.2 Document ID sign convention as alternative identification method
-- [ ] 4.3 Reference ADR-0015 for ID namespace separation details
-- [ ] 4.4 Add examples showing both team and bot results
+- [x] 4.1 Update protocol documentation to mention `isTeam` field
+- [x] 4.2 Document ID sign convention as alternative identification method
+- [x] 4.3 Reference ADR-0015 for ID namespace separation details
+- [x] 4.4 Add examples showing both team and bot results
 
 ## 5. Testing
 
