@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.menu
 
+import dev.robocode.tankroyale.common.Subscribe
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.about.AboutBox
@@ -25,48 +26,48 @@ object MenuEventHandlers {
 
     init {
         MenuEventTriggers.apply {
-            onSetupRules += this to {
+            onSetupRules += Subscribe(this) {
                 SetupRulesDialog.isVisible = true
             }
-            onStartBattle += this to {
+            onStartBattle += Subscribe(this) {
                 startBattle()
             }
-            onReplayFromFile += this to {
+            onReplayFromFile += Subscribe(this) {
                 startReplayFromFile()
             }
-            onShowServerLog += this to {
+            onShowServerLog += Subscribe(this) {
                 ServerLogFrame.isVisible = true
             }
-            onBotDirConfig += this to {
+            onBotDirConfig += Subscribe(this) {
                 BotRootDirectoriesConfigDialog.isVisible = true
             }
-            onStartServer += this to {
+            onStartServer += Subscribe(this) {
                 ServerEventTriggers.onStartLocalServer.fire(Unit)
                 ServerLogFrame.isVisible = true
             }
-            onStopServer += this to {
+            onStopServer += Subscribe(this) {
                 ServerEventTriggers.onStopLocalServer.fire(Unit)
                 ServerLogFrame.isVisible = false
             }
-            onRebootServer += this to {
+            onRebootServer += Subscribe(this) {
                 ServerEventTriggers.onRebootLocalServer.fire(false /* user initiated */)
             }
-            onServerConfig += this to {
+            onServerConfig += Subscribe(this) {
                 ServerConfigDialog().isVisible = true
             }
-            onDebugConfig += this to {
+            onDebugConfig += Subscribe(this) {
                 DebugConfigDialog.isVisible = true
             }
-            onSoundConfig += this to {
+            onSoundConfig += Subscribe(this) {
                 SoundConfigDialog.isVisible = true
             }
-            onGuiConfig += this to {
+            onGuiConfig += Subscribe(this) {
                 GuiConfigDialog.isVisible = true
             }
-            onHelp += this to {
+            onHelp += Subscribe(this) {
                 Browser.browse(HELP_URL)
             }
-            onAbout += this to {
+            onAbout += Subscribe(this) {
                 AboutBox.isVisible = true
             }
         }

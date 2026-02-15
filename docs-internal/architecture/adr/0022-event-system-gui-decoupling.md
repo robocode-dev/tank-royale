@@ -31,7 +31,18 @@ class Event<T> {
     fun subscribe(owner: Any, once: Boolean = false, eventHandler: (T) -> Unit)
     fun unsubscribe(owner: Any)
     fun fire(event: T)
+    
+    // Operator overloads
+    operator fun plusAssign(subscription: Subscribe<T>)  // Recommended
+    operator fun plusAssign(subscription: Pair<Any, (T) -> Unit>)  // Alternative
+    operator fun plusAssign(subscription: Once<T>)  // One-shot delivery
+    operator fun minusAssign(owner: Any)
+    operator fun invoke(event: T)  // alias for fire()
 }
+
+// Wrapper classes for operator syntax
+data class Subscribe<T>(val owner: Any, val handler: (T) -> Unit)
+data class Once<T>(val owner: Any, val handler: (T) -> Unit)
 ```
 
 **Key design choices:**
@@ -48,11 +59,55 @@ class Event<T> {
 
 ## Usage Throughout Codebase
 
-The event system is used pervasively across the entire application:
+The event system is used pervasively across the entire application with **two primary operator syntaxes**:
 
-### GUI Event Objects
+### Recommended: Subscribe Wrapper
 
-All GUI event declarations follow the pattern: singleton `object` with `Event<T>` properties.
+The `Subscribe<T>` wrapper provides **explicit, clear syntax** that makes event subscriptions immediately obvious:
+
+```kotlin
+// In an event handler object
+object MenuEventHandlers {
+    init {
+        MenuEventTriggers.apply {
+            onStartBattle += Subscribe(this) {
+                startBattle()
+            }
+            onHelp += Subscribe(this) {
+                Browser.browse(HELP_URL)
+            }
+        }
+    }
+}
+```
+
+**Advantages:**
+- ✅ Explicit syntax (no implicit `to` operator)
+- ✅ Self-documenting at call sites
+- ✅ Clear ownership through wrapper name
+- ✅ Consistent with `Once<T>` wrapper for one-shot handlers
+
+### Alternative: Pair Syntax
+
+The `this to handler` pattern is still supported for backward compatibility:
+
+```kotlin
+// Less explicit than Subscribe, but valid
+onStartBattle += this to { startBattle() }
+```
+
+**Note:** While functional, this syntax is considered less clear and is **not recommended for new code**. Use `Subscribe` wrapper instead.
+
+### One-Shot Handlers
+
+The `Once<T>` wrapper auto-unsubscribes after the first event:
+
+```kotlin
+// Subscribe to receive exactly one event, then auto-unsubscribe
+GameEvents.onStarted += Once(this) { event ->
+    initializeUI()
+}
+```
 
 | Event Object | Location | Purpose | Events |
 |-------------|----------|---------|--------|
