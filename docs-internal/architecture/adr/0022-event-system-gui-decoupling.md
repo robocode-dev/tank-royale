@@ -103,32 +103,6 @@ This automatically:
 
 ---
 
-## Implementation Details
-
-**Weak reference memory management:**
-
-```kotlin
-private val eventHandlers = Collections.synchronizedMap(WeakHashMap<Any, Handler<T>>())
-```
-
-When an owner is garbage collected, its event handler is automatically removed. No explicit cleanup required.
-
-**Thread-safe event firing:**
-
-```kotlin
-fun fire(event: T) {
-    eventHandlers.entries.toSet().forEach { (owner, handler) ->
-        handler.apply {
-            if (once) unsubscribe(owner)
-            eventHandler.invoke(event)
-        }
-    }
-}
-```
-
-Works on a copy of the entry set to prevent `ConcurrentModificationException` even with `synchronizedMap()`.
-
----
 
 ## Rationale
 

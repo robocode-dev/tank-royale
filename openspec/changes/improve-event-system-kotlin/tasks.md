@@ -75,22 +75,22 @@
 
 ### 5.1 Code Documentation
 
-- [ ] 5.1.1 Update Event.kt KDoc with comprehensive examples (old + new syntax)
-- [ ] 5.1.2 Add KDoc for operator overloads
-- [ ] 5.1.3 Add KDoc for property delegation
-- [ ] 5.1.4 Document thread-safety guarantees with atomic operations
+- [x] 5.1.1 Update Event.kt KDoc with comprehensive examples (old + new syntax)
+- [x] 5.1.2 Add KDoc for operator overloads
+- [x] 5.1.3 Add KDoc for property delegation
+- [x] 5.1.4 Document thread-safety guarantees with atomic operations
 
 ### 5.2 ADR Updates
 
-- [ ] 5.2.1 Update ADR-0022 "Implementation Details" section
-- [ ] 5.2.2 Add "Modern Kotlin Improvements (2026-02-15)" subsection
-- [ ] 5.2.3 Document atomic copy-on-write pattern
-- [ ] 5.2.4 Document operator overload syntax
-- [ ] 5.2.5 Document property delegation syntax
+- [x] 5.2.1 Update ADR-0022 "Implementation Details" section
+- [x] 5.2.2 Add "Modern Kotlin Improvements (2026-02-15)" subsection
+- [x] 5.2.3 Document atomic copy-on-write pattern
+- [x] 5.2.4 Document operator overload syntax
+- [x] 5.2.5 Document property delegation syntax
 
 ### 5.3 User-Facing Documentation
 
-- [ ] 5.3.1 Check if VERSIONS.md needs updating (likely not — internal refactoring only)
+- [x] 5.3.1 Check if VERSIONS.md needs updating (likely not — internal refactoring only)
 
 ## Phase 6: Rollout
 
