@@ -14,9 +14,9 @@
 
 ## 3. Client Updates
 
-- [ ] 3.1 Update GUI observer result display to use `isTeam` field
-- [ ] 3.2 Add fallback logic for backward compatibility with older servers
-- [ ] 3.3 Ensure proper visual distinction between team and bot results
+- [x] 3.1 Update GUI observer result display to use `isTeam` field
+- [x] 3.2 Add fallback logic for backward compatibility with older servers
+- [x] 3.3 Ensure proper visual distinction between team and bot results
 
 ## 4. Documentation
 
