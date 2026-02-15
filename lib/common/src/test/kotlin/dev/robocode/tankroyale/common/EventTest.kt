@@ -5,6 +5,7 @@ import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import java.lang.ref.WeakReference
+import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.atomic.AtomicInteger
 
 class EventTest : FunSpec({
@@ -99,7 +100,8 @@ class EventTest : FunSpec({
             // Verify that the eventHandlers map is empty
             val eventHandlersField = Event::class.java.getDeclaredField("eventHandlers")
             eventHandlersField.isAccessible = true
-            val eventHandlers = eventHandlersField.get(event) as Map<*, *>
+            val eventHandlersRef = eventHandlersField.get(event) as AtomicReference<*>
+            val eventHandlers = eventHandlersRef.get() as Map<*, *>
             eventHandlers.shouldBeEmpty()
         }
 
@@ -112,7 +114,8 @@ class EventTest : FunSpec({
             // Use reflection to access the private eventHandlers field
             val eventHandlersField = Event::class.java.getDeclaredField("eventHandlers")
             eventHandlersField.isAccessible = true
-            val eventHandlers = eventHandlersField.get(event) as Map<*, *>
+            val eventHandlersRef = eventHandlersField.get(event) as AtomicReference<*>
+            val eventHandlers = eventHandlersRef.get() as Map<*, *>
 
             // Check that the value in the eventHandlers map is our Handler class
             eventHandlers.values.first().shouldBeInstanceOf<Event.Handler<String>>()

@@ -4,17 +4,17 @@
 
 ### 1.1 Atomic Copy-on-Write Thread Safety
 
-- [ ] 1.1.1 Replace `Collections.synchronizedMap(WeakHashMap)` with `AtomicReference<WeakHashMap>`
-- [ ] 1.1.2 Implement atomic `updateAndGet()` for subscribe operations
-- [ ] 1.1.3 Implement atomic `get()` for fire operations (lock-free reads)
-- [ ] 1.1.4 Add concurrent access stress tests for atomic operations
-- [ ] 1.1.5 Add memory leak tests (verify weak references still work)
+- [x] 1.1.1 Replace `Collections.synchronizedMap(WeakHashMap)` with `AtomicReference<WeakHashMap>`
+- [x] 1.1.2 Implement atomic `updateAndGet()` for subscribe operations
+- [x] 1.1.3 Implement atomic `get()` for fire operations (lock-free reads)
+- [x] 1.1.4 Add concurrent access stress tests for atomic operations
+- [x] 1.1.5 Add memory leak tests (verify weak references still work)
 
 ### 1.2 Inline Value Class for Handler
 
-- [ ] 1.2.1 Convert `Handler<T>` to `@JvmInline value class`
-- [ ] 1.2.2 Test that existing code compiles without changes
-- [ ] 1.2.3 Update KDoc to mention inline optimization
+- [x] 1.2.1 Convert `Handler<T>` to `@JvmInline value class`
+- [x] 1.2.2 Test that existing code compiles without changes
+- [x] 1.2.3 Update KDoc to mention inline optimization
 
 ## Phase 2: Operator Overloads
 
