@@ -20,22 +20,22 @@
 
 ### 2.1 Subscribe Operator
 
-- [ ] 2.1.1 Add `operator fun plusAssign(subscription: Pair<Any, (T) -> Unit>)` for `event += owner to handler`
-- [ ] 2.1.2 Add overload for once-flag: `event += Once(owner, handler)`
-- [ ] 2.1.3 Update KDoc with operator examples
-- [ ] 2.1.4 Add unit tests for operator syntax
+- [x] 2.1.1 Add `operator fun plusAssign(subscription: Pair<Any, (T) -> Unit>)` for `event += owner to handler`
+- [x] 2.1.2 Add overload for once-flag: `event += Once(owner, handler)`
+- [x] 2.1.3 Update KDoc with operator examples
+- [x] 2.1.4 Add unit tests for operator syntax
 
 ### 2.2 Unsubscribe Operator
 
-- [ ] 2.2.1 Add `operator fun minusAssign(owner: Any)` for `event -= owner`
-- [ ] 2.2.2 Update KDoc with operator examples
-- [ ] 2.2.3 Add unit tests for operator syntax
+- [x] 2.2.1 Add `operator fun minusAssign(owner: Any)` for `event -= owner`
+- [x] 2.2.2 Update KDoc with operator examples
+- [x] 2.2.3 Add unit tests for operator syntax
 
 ### 2.3 Invoke Operator (Optional)
 
-- [ ] 2.3.1 Consider `operator fun invoke(event: T)` as alias for `fire(event)`
-- [ ] 2.3.2 Evaluate if `myEvent(data)` is clearer than `myEvent.fire(data)`
-- [ ] 2.3.3 Document decision if implemented
+- [x] 2.3.1 Consider `operator fun invoke(event: T)` as alias for `fire(event)`
+- [x] 2.3.2 Evaluate if `myEvent(data)` is clearer than `myEvent.fire(data)`
+- [x] 2.3.3 Document decision if implemented
 
 ## Phase 3: Property Delegation
 

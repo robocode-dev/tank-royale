@@ -22,6 +22,16 @@ class EventTest : FunSpec({
             result shouldBe listOf("test")
         }
 
+        test("invoke operator fires event") {
+            val event = Event<String>()
+            val result = mutableListOf<String>()
+
+            event.subscribe(this) { result.add(it) }
+            event("test")
+
+            result shouldBe listOf("test")
+        }
+
         test("unsubscribe") {
             val event = Event<String>()
             val result = mutableListOf<String>()
@@ -29,6 +39,29 @@ class EventTest : FunSpec({
             event.subscribe(this) { result.add(it) }
             event.fire("test1")
             event.unsubscribe(this)
+            event.fire("test2")
+
+            result shouldBe listOf("test1")
+        }
+
+        test("operator subscribe and unsubscribe") {
+            val event = Event<String>()
+            val result = mutableListOf<String>()
+
+            event += this to { result.add(it) }
+            event.fire("test1")
+            event -= this
+            event.fire("test2")
+
+            result shouldBe listOf("test1")
+        }
+
+        test("operator subscribe once") {
+            val event = Event<String>()
+            val result = mutableListOf<String>()
+
+            event += Once(this) { result.add(it) }
+            event.fire("test1")
             event.fire("test2")
 
             result shouldBe listOf("test1")
