@@ -572,6 +572,11 @@ tasks {
         dependsOn(*docTasks.toTypedArray())
     }
 
+    register("upload-docs-vitepress-only") {
+        description = "Build and upload VitePress documentation only (without API generation)"
+        dependsOn("docs-build:copy-vitepress-docs")
+    }
+
     register("create-release") {
         description = "Creates a release (use 'upload-docs' separately to build and upload documentation)"
         dependsOn("build-release")

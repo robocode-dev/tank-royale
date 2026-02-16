@@ -21,7 +21,8 @@ If you are new to Robocode, you should start with:
 
 ## Learning Roadmap
 
-Robocode mastery is a journey from fundamentals to advanced competitive strategies. We've organized documentation into a clear learning path:
+Robocode mastery is a journey from fundamentals to advanced competitive strategies. We've organized documentation into a
+clear learning path:
 
 ### 🎯 Foundation (Start Here)
 
@@ -48,19 +49,40 @@ Robocode mastery is a journey from fundamentals to advanced competitive strategi
 
 ### 📚 Advanced Topics (The Book of Robocode)
 
-**Ready for advanced competitive strategies?** The Tank Royale documentation covers fundamentals; **[The Book of Robocode](https://book.robocode.dev/)** takes you to competition level:
+**Ready for advanced competitive strategies?** The Tank Royale documentation covers fundamentals; *
+*[The Book of Robocode](https://book.robocode.dev/)** takes you to competition level:
 
 - **[Radar & Scanning](https://book.robocode.dev/radar/radar-basics)** - Perfect locks, spinning radar, melee strategies
-- **[Advanced Targeting](https://book.robocode.dev/targeting/simple-targeting/head-on-targeting)** - GuessFactor targeting, pattern matching, virtual guns
-- **[Movement & Evasion](https://book.robocode.dev/movement/basic/movement-fundamentals-goto)** - Wave surfing, anti-gravity, bullet dodging
-- **[Statistical Targeting](https://book.robocode.dev/targeting/statistical-targeting/guessfactor-targeting)** - Segmentation, statistics-based targeting
-- **[Energy & Scoring](https://book.robocode.dev/energy-and-scoring/energy-as-a-resource)** - Strategic resource management
+- **[Advanced Targeting](https://book.robocode.dev/targeting/simple-targeting/head-on-targeting)** - GuessFactor
+  targeting, pattern matching, virtual guns
+- **[Movement & Evasion](https://book.robocode.dev/movement/basic/movement-fundamentals-goto)** - Wave surfing,
+  anti-gravity, bullet dodging
+- **[Statistical Targeting](https://book.robocode.dev/targeting/statistical-targeting/guessfactor-targeting)** -
+  Segmentation, statistics-based targeting
+- **[Energy & Scoring](https://book.robocode.dev/energy-and-scoring/energy-as-a-resource)** - Strategic resource
+  management
 
-## The Book of Robocode
+## 📖 The Book of Robocode
 
-📖 [**The Book of Robocode**](https://book.robocode.dev/) is a comprehensive guide covering Robocode as well as
+[**The Book of Robocode**](https://book.robocode.dev/) is a comprehensive guide covering Robocode as well as
 Robocode Tank Royale—from basics to advanced strategies like wave surfing, guess-factor targeting, and movement
 techniques. It builds on two decades of community knowledge and foundational research from RoboWiki contributors.
+
+## 🖥️ Tank Royale Viewer
+
+Want to **visualize battles in style**? Check out the
+**[Tank Royale Viewer](https://github.com/jandurovec/tank-royale-viewer)**—an amazing and beautiful web-based viewer for
+watching Robocode Tank Royale matches in real-time! Created by [Jan Durovec](https://github.com/jandurovec) (who also
+built the Recorder for Tank Royale's replay feature), this tool brings your battles to life with an interactive, modern
+interface.
+
+Perfect for:
+- 🏆 **Displaying live battles on big monitors** during competitions and tournaments
+- 📊 Understanding bot strategies and showcasing championship matches
+
+Ideal for spectators, broadcasters, and tournament organizers! ⚡
+
+**Give the Tank Royale Viewer a try!**
 
 ## Thanks to the contributors
 
