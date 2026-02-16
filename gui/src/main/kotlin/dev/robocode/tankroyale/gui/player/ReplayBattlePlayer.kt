@@ -67,6 +67,34 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
                 if (event is TickEvent) {
                     containsTickEvent = true
                 }
+                // Extract GameStartedEvent on first encounter
+                if (event is GameStartedEvent && currentGameSetup == null) {
+                    currentGameSetup = event.gameSetup
+                    participants = event.participants
+                }
+                // Extract participant info from the first TickEvent if no GameStartedEvent found
+                if (event is TickEvent && participants.isEmpty()) {
+                    participants = event.botStates.map { botState ->
+                        Participant(
+                            id = botState.id,
+                            name = botState.name ?: "Bot ${botState.id}",
+                            version = botState.version ?: "1.0",
+                            authors = emptyList(),
+                            description = "",
+                            homepage = null,
+                            countryCodes = emptyList(),
+                            gameTypes = emptySet(),
+                            platform = "UNKNOWN",
+                            programmingLang = "UNKNOWN",
+                            initialPosition = null,
+                            teamId = null,
+                            teamName = null,
+                            teamVersion = null,
+                            sessionId = botState.sessionId,
+                            isDroid = botState.isDroid
+                        )
+                    }
+                }
                 currentEventIndex++
             }
         } else {
@@ -102,57 +130,33 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
         onConnected.fire(Unit)
 
-        // Generate GameStartedEvent from first TickEvent if it wasn't in the file
-        if (currentGameSetup == null && turns.isNotEmpty()) {
-            val firstTickEvent = turns[0].firstOrNull { it is TickEvent } as TickEvent?
-            if (firstTickEvent != null) {
-                val syntheticParticipants = firstTickEvent.botStates.map { botState ->
-                    Participant(
-                        id = botState.id,
-                        name = "Bot ${botState.id}",
-                        version = "1.0",
-                        authors = emptyList(),
-                        description = "",
-                        homepage = null,
-                        countryCodes = emptyList(),
-                        gameTypes = emptySet(),
-                        platform = "UNKNOWN",
-                        programmingLang = "UNKNOWN",
-                        initialPosition = null,
-                        teamId = null,
-                        teamName = null,
-                        teamVersion = null,
-                        sessionId = botState.sessionId
-                    )
-                }.toList()
-
-                val setup = GameSetup(
-                    gameType = "CLASSIC",
-                    arenaWidth = 800,
-                    isArenaWidthLocked = false,
-                    arenaHeight = 600,
-                    isArenaHeightLocked = false,
-                    minNumberOfParticipants = 2,
-                    isMinNumberOfParticipantsLocked = false,
-                    maxNumberOfParticipants = null,
-                    isMaxNumberOfParticipantsLocked = false,
-                    numberOfRounds = 1,
-                    isNumberOfRoundsLocked = false,
-                    gunCoolingRate = 0.1,
-                    isGunCoolingRateLocked = false,
-                    maxInactivityTurns = 10000,
-                    isMaxInactivityTurnsLocked = false,
-                    turnTimeout = 30000,
-                    isTurnTimeoutLocked = false,
-                    readyTimeout = 30000,
-                    isReadyTimeoutLocked = false,
-                    defaultTurnsPerSecond = 30
-                )
-
-                currentGameSetup = setup
-                participants = syntheticParticipants
-                onGameStarted.fire(GameStartedEvent(setup, syntheticParticipants))
-            }
+        // Participants are extracted in init block from GameStartedEvent or first TickEvent
+        if (participants.isNotEmpty()) {
+            // If GameStartedEvent was found, use its setup; otherwise create a synthetic one
+            val setup = currentGameSetup ?: GameSetup(
+                gameType = "CLASSIC",
+                arenaWidth = 800,
+                isArenaWidthLocked = false,
+                arenaHeight = 600,
+                isArenaHeightLocked = false,
+                minNumberOfParticipants = 2,
+                isMinNumberOfParticipantsLocked = false,
+                maxNumberOfParticipants = null,
+                isMaxNumberOfParticipantsLocked = false,
+                numberOfRounds = 1,
+                isNumberOfRoundsLocked = false,
+                gunCoolingRate = 0.1,
+                isGunCoolingRateLocked = false,
+                maxInactivityTurns = 10000,
+                isMaxInactivityTurnsLocked = false,
+                turnTimeout = 30000,
+                isTurnTimeoutLocked = false,
+                readyTimeout = 30000,
+                isReadyTimeoutLocked = false,
+                defaultTurnsPerSecond = 30
+            )
+            currentGameSetup = setup
+            onGameStarted.fire(GameStartedEvent(setup, participants))
         }
 
         startPlayback()
@@ -374,6 +378,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         savedStdError.clear()
         currentGameSetup = null
         currentTick = null
+        val originalParticipants = participants // Preserve participants extracted in init
         participants = listOf()
 
         // Replay all messages up to target index to rebuild state
@@ -387,6 +392,29 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
                     is TickEvent -> {
                         currentTick = message
+                        // Extract participants from first TickEvent if not found from GameStartedEvent
+                        if (participants.isEmpty()) {
+                            participants = message.botStates.map { botState ->
+                                Participant(
+                                    id = botState.id,
+                                    name = botState.name ?: "Bot ${botState.id}",
+                                    version = botState.version ?: "1.0",
+                                    authors = emptyList(),
+                                    description = "",
+                                    homepage = null,
+                                    countryCodes = emptyList(),
+                                    gameTypes = emptySet(),
+                                    platform = "UNKNOWN",
+                                    programmingLang = "UNKNOWN",
+                                    initialPosition = null,
+                                    teamId = null,
+                                    teamName = null,
+                                    teamVersion = null,
+                                    sessionId = botState.sessionId,
+                                    isDroid = botState.isDroid
+                                )
+                            }
+                        }
                         // Update stdout/stderr state without firing events
                         updateSavedStdOutput(message, fireEvent = false)
                     }
@@ -396,6 +424,11 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
                     }
                 }
             }
+        }
+
+        // If we still don't have participants (empty replay or targetIndex is 0), restore the original
+        if (participants.isEmpty()) {
+            participants = originalParticipants
         }
     }
 

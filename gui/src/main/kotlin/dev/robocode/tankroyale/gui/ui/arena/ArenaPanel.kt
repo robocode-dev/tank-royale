@@ -502,8 +502,14 @@ object ArenaPanel : JPanel() {
             }
 
         } catch (_: IllegalStateException) {
-            // Participant not found (e.g., during replay initialization)
-            // Skip drawing name/version until participants are loaded
+            // Participant not found - fall back to bot state name/version if available
+            if (bot.name != null && bot.version != null) {
+                g.scale(1.0, -1.0)
+                g.color = Color.WHITE
+                "${bot.name} ${bot.version} (${bot.id})".apply {
+                    drawText(g, this, bot.x, -bot.y + 36)
+                }
+            }
         }
 
         oldState.restore(g)
