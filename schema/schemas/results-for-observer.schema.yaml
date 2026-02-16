@@ -13,6 +13,7 @@ properties:
   isTeam:
     description: True when the result represents a team; false when it represents an individual bot
     type: boolean
+    default: false
   version:
     description: version, e.g. 1.0
     type: string
