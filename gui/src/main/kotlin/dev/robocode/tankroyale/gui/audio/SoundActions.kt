@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.audio
 
 import dev.robocode.tankroyale.client.model.*
+import dev.robocode.tankroyale.common.On
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ConfigSettings.SOUNDS_DIR
@@ -15,7 +16,7 @@ object SoundActions {
     private val deathExplosion = Sound.fromFile("$SOUNDS_DIR/death.wav")
 
     init {
-        ClientEvents.onTickEvent.subscribe(this) { playEventSounds(it) }
+        ClientEvents.onTickEvent += On(this) { playEventSounds(it) }
     }
 
     private fun playEventSounds(tickEvent: TickEvent) {

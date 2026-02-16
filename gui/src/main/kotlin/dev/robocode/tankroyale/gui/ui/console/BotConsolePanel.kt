@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.client.model.BotDeathEvent
 import dev.robocode.tankroyale.client.model.Participant
+import dev.robocode.tankroyale.common.On
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.Strings
@@ -18,7 +19,7 @@ class BotConsolePanel(bot: Participant) : BaseBotConsolePanel(bot) {
             onStdOutputUpdated.subscribe(this@BotConsolePanel) { tickEvent ->
                 updateStandardOutput(tickEvent.roundNumber, tickEvent.turnNumber)
             }
-            onTickEvent.subscribe(this@BotConsolePanel) { tickEvent ->
+            ClientEvents.onTickEvent += On(this@BotConsolePanel) { tickEvent ->
                 if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
                     appendInfo(Strings.get("bot_console.bot_died"), tickEvent.turnNumber)
                 }

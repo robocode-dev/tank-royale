@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.client.model.*
+import dev.robocode.tankroyale.common.On
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
@@ -15,7 +16,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
 
     private fun subscribeToEvents() {
         ClientEvents.apply {
-            onTickEvent.subscribe(this@BotEventsPanel) { tickEvent ->
+            ClientEvents.onTickEvent += On(this@BotEventsPanel) { tickEvent ->
                 if (isAlive(tickEvent) || hasJustDied(tickEvent)) {
                     dump(tickEvent)
                     tickEvent.events
