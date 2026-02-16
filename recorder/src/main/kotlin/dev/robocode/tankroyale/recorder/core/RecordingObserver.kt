@@ -5,7 +5,8 @@ import dev.robocode.tankroyale.client.WebSocketClientEvents
 import dev.robocode.tankroyale.client.model.MessageConstants
 import dev.robocode.tankroyale.client.model.ObserverHandshake
 import dev.robocode.tankroyale.client.model.ServerHandshake
-import dev.robocode.tankroyale.common.Once
+import dev.robocode.tankroyale.common.event.On
+import dev.robocode.tankroyale.common.event.Once
 import dev.robocode.tankroyale.common.util.Version
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -41,10 +42,10 @@ class RecordingObserver(
     fun start() {
         log.info("Starting RecordingObserver, connecting to: $url")
         WebSocketClientEvents.apply {
-            onOpen += client to {
+            onOpen += On(client) {
                 log.info("Connection to server established")
             }
-            onMessage += client to { msg ->
+            onMessage += On(client) { msg ->
                 processMessage(msg)
             }
 

@@ -1,7 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.BotInfo
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
@@ -106,35 +107,35 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
         addToolTips()
 
-        onFilterDropdown.subscribe(this) { handleFilterChanged() }
+        onFilterDropdown+= On(this) { handleFilterChanged() }
 
-        onBootBots.subscribe(this) { handleBootBots() }
-        onUnbootBots.subscribe(this) { handleUnbootBots() }
-        onUnbootAllBots.subscribe(this) { handleUnbootAllBots() }
+        onBootBots+= On(this) { handleBootBots() }
+        onUnbootBots+= On(this) { handleUnbootBots() }
+        onUnbootAllBots+= On(this) { handleUnbootAllBots() }
 
-        onAdd.subscribe(this) { handleAdd() }
-        onAddAll.subscribe(this) { handleAddAll() }
-        onRemove.subscribe(this) { handleRemove() }
-        onRemoveAll.subscribe(this) { handleRemoveAll() }
+        onAdd+= On(this) { handleAdd() }
+        onAddAll+= On(this) { handleAddAll() }
+        onRemove+= On(this) { handleRemove() }
+        onRemoveAll+= On(this) { handleRemoveAll() }
 
         botsDirectoryList.onMultiClickedAtIndex { runFromBotDirectoryAtIndex(it) }
         joinedBotList.onMultiClickedAtIndex { addSelectedBotFromJoinedListAt(it) }
         selectedBotList.onMultiClickedAtIndex { removeSelectedBotAt(it) }
 
-        botsDirectoryList.onSelection { BotSelectionEvents.onBotDirectorySelected.fire(it) }
-        joinedBotList.onSelection { BotSelectionEvents.onJoinedBotSelected.fire(it) }
-        selectedBotList.onSelection { BotSelectionEvents.onBotSelected.fire(it) }
+        botsDirectoryList.onSelection { BotSelectionEvents.onBotDirectorySelected(it) }
+        joinedBotList.onSelection { BotSelectionEvents.onJoinedBotSelected(it) }
+        selectedBotList.onSelection { BotSelectionEvents.onBotSelected(it) }
 
-        selectedBotList.onChanged { BotSelectionEvents.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
+        selectedBotList.onChanged { BotSelectionEvents.onSelectedBotListUpdated(selectedBotListModel.list()) }
 
-        ClientEvents.onBotListUpdate.subscribe(this) { updateJoinedBots() }
+        ClientEvents.onBotListUpdate+= On(this) { updateJoinedBots() }
 
-        BootProcess.onBootBot.subscribe(this) { addBootingBot(it) }
-        BootProcess.onUnbootBot.subscribe(this) { removeUnbootingBot(it) }
+        BootProcess.onBootBot+= On(this) { addBootingBot(it) }
+        BootProcess.onUnbootBot+= On(this) { removeUnbootingBot(it) }
 
-        ConfigSettings.onSaved.subscribe(this) { updateBotsDirectoryEntries() }
+        ConfigSettings.onSaved+= On(this) { updateBotsDirectoryEntries() }
 
-        ServerEvents.onStopped.subscribe(this) { reset() }
+        ServerEvents.onStopped+= On(this) { reset() }
     }
 
     private fun reset() {
@@ -174,7 +175,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         BotList(bootedBotListModel, false).apply {
             cellRenderer = BootedBotCellRenderer()
 
-            onDeleteKeyTyped.subscribe(BotSelectionPanel) { dirAndPids ->
+            onDeleteKeyTyped+= On(BotSelectionPanel) { dirAndPids ->
                 BootProcess.stop(dirAndPids.map { it.pid })
             }
         }
@@ -238,7 +239,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private fun addFilterComboBox() {
         filterDropdown.apply {
             addActionListener {
-                onFilterDropdown.fire(this)
+                onFilterDropdown(this)
             }
             filterDropdownPanel.add(this, "cell 0 1")
         }

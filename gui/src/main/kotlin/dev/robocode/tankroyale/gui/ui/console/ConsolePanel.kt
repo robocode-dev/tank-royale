@@ -1,13 +1,13 @@
 package dev.robocode.tankroyale.gui.ui.console
 
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.ansi.AnsiEditorPane
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.util.Clipboard
-import dev.robocode.tankroyale.gui.util.EDT
 import java.awt.BorderLayout
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.swing.*
@@ -21,16 +21,16 @@ open class ConsolePanel : JPanel() {
     }
 
     private val onOk = Event<JButton>().apply {
-        subscribe(this) {
+        this += On(this@ConsolePanel) {
             val parentFrame = SwingUtilities.getAncestorOfClass(JFrame::class.java, ansiEditorPane) as JFrame
             parentFrame.dispose()
         }
     }
     private val onClear = Event<JButton>().apply {
-        subscribe(this) { clear() }
+        this += On(this@ConsolePanel) { clear() }
     }
     private val onCopyToClipboard = Event<JButton>().apply {
-        subscribe(this) { copyToClipboard() }
+        this += On(this@ConsolePanel) { copyToClipboard() }
     }
 
     protected val okButton = JPanel().addOkButton(onOk)

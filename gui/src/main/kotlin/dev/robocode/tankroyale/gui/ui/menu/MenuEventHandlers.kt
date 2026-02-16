@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.menu
 
-import dev.robocode.tankroyale.common.On
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.about.AboutBox
@@ -42,15 +42,15 @@ object MenuEventHandlers {
                 BotRootDirectoriesConfigDialog.isVisible = true
             }
             onStartServer += On(this) {
-                ServerEventTriggers.onStartLocalServer.fire(Unit)
+                ServerEventTriggers.onStartLocalServer(Unit)
                 ServerLogFrame.isVisible = true
             }
             onStopServer += On(this) {
-                ServerEventTriggers.onStopLocalServer.fire(Unit)
+                ServerEventTriggers.onStopLocalServer(Unit)
                 ServerLogFrame.isVisible = false
             }
             onRebootServer += On(this) {
-                ServerEventTriggers.onRebootLocalServer.fire(false /* user initiated */)
+                ServerEventTriggers.onRebootLocalServer(false /* user initiated */)
             }
             onServerConfig += On(this) {
                 ServerConfigDialog().isVisible = true

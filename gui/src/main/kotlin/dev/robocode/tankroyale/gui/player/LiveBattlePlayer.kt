@@ -1,9 +1,11 @@
 package dev.robocode.tankroyale.gui.player
 
+import dev.robocode.tankroyale.common.event.On
+import dev.robocode.tankroyale.common.event.Once
 import dev.robocode.tankroyale.client.WebSocketClient
 import dev.robocode.tankroyale.client.WebSocketClientEvents
 import dev.robocode.tankroyale.client.model.*
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GamesSettings
@@ -60,7 +62,7 @@ class LiveBattlePlayer : BattlePlayer {
     override val onSeekToTurn = Event<TickEvent>()
 
     init {
-        ServerEvents.onStopped.subscribe(this) {
+        ServerEvents.onStopped+= On(this) {
             if (isRunning.get()) {
                 stop()
             }
@@ -115,10 +117,10 @@ class LiveBattlePlayer : BattlePlayer {
     override fun restart() {
         if (isRunning.get()) {
             val eventOwner = Any()
-            onGameAborted.subscribe(eventOwner, true) {
+            onGameAborted += Once(eventOwner) {
                 startWithLastGameSetup()
             }
-            onGameEnded.subscribe(eventOwner, true) {
+            onGameEnded += Once(eventOwner) {
                 startWithLastGameSetup()
             }
             stop()
@@ -162,11 +164,11 @@ class LiveBattlePlayer : BattlePlayer {
 
             WebSocketClientEvents.apply {
                 websocket?.let { ws ->
-                    onOpen.subscribe(ws) { onConnected.fire(Unit) }
-                    onMessage.subscribe(ws) { this@LiveBattlePlayer.onMessage(it) }
-                    onError.subscribe(ws) {
+                    onOpen+= On(ws) { onConnected(Unit) }
+                    onMessage+= On(ws) { this@LiveBattlePlayer.onMessage(it) }
+                    onError+= On(ws) {
                         System.err.println("WebSocket error: " + it.message)
-                        ServerEvents.onStopped.fire(Unit)
+                        ServerEvents.onStopped(Unit)
                     }
                     try {
                         ws.open() // must be called AFTER onOpen.subscribe()
@@ -258,7 +260,7 @@ class LiveBattlePlayer : BattlePlayer {
 
     private fun handleBotListUpdate(botListUpdate: BotListUpdate) {
         bots = HashSet(botListUpdate.bots)
-        onBotListUpdate.fire(botListUpdate)
+        onBotListUpdate(botListUpdate)
     }
 
     private fun handleGameStarted(gameStartedEvent: GameStartedEvent) {
@@ -266,43 +268,43 @@ class LiveBattlePlayer : BattlePlayer {
         currentGameSetup = gameStartedEvent.gameSetup
         participants = gameStartedEvent.participants
 
-        onGameStarted.fire(gameStartedEvent)
+        onGameStarted(gameStartedEvent)
     }
 
     private fun handleGameEnded(gameEndedEvent: GameEndedEvent) {
         isRunning.set(false)
         isPaused.set(false)
-        onGameEnded.fire(gameEndedEvent)
+        onGameEnded(gameEndedEvent)
     }
 
     private fun handleGameAborted(gameAbortedEvent: GameAbortedEvent) {
         isRunning.set(false)
         isPaused.set(false)
-        onGameAborted.fire(gameAbortedEvent)
+        onGameAborted(gameAbortedEvent)
     }
 
     private fun handleGamePaused(gamePausedEvent: GamePausedEvent) {
         isPaused.set(true)
-        onGamePaused.fire(gamePausedEvent)
+        onGamePaused(gamePausedEvent)
     }
 
     private fun handleGameResumed(gameResumedEvent: GameResumedEvent) {
         isPaused.set(false)
-        onGameResumed.fire(gameResumedEvent)
+        onGameResumed(gameResumedEvent)
     }
 
     private fun handleRoundStarted(roundStartedEvent: RoundStartedEvent) {
-        onRoundStarted.fire(roundStartedEvent)
+        onRoundStarted(roundStartedEvent)
     }
 
     private fun handleRoundEnded(roundEndedEvent: RoundEndedEvent) {
-        onRoundEnded.fire(roundEndedEvent)
+        onRoundEnded(roundEndedEvent)
     }
 
     private fun handleTickEvent(tickEvent: TickEvent) {
         currentTick = tickEvent
 
-        onTickEvent.fire(tickEvent)
+        onTickEvent(tickEvent)
 
         updateSavedStdOutput(tickEvent)
     }
@@ -314,7 +316,7 @@ class LiveBattlePlayer : BattlePlayer {
                 botState.stdOut?.let { updateStandardOutput(savedStdOutput, id, roundNumber, turnNumber, it) }
                 botState.stdErr?.let { updateStandardOutput(savedStdError, id, roundNumber, turnNumber, it) }
             }
-            onStdOutputUpdated.fire(tickEvent)
+            onStdOutputUpdated(tickEvent)
         }
     }
 

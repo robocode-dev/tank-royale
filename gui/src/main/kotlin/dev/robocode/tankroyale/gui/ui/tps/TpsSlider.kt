@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.tps
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.TpsChangedEvent
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.components.RcSlider
@@ -37,7 +38,7 @@ object TpsSlider : RcSlider() {
 
         addChangeListener(TpsChangeListener())
 
-        TpsEvents.onTpsChanged.subscribe(TpsSlider) {
+        TpsEvents.onTpsChanged+= On(TpsSlider) {
             setTps(it.tps)
             ConfigSettings.tps = it.tps
         }
@@ -73,7 +74,7 @@ object TpsSlider : RcSlider() {
     private class TpsChangeListener : ChangeListener {
         override fun stateChanged(e: ChangeEvent?) {
             if (!valueIsAdjusting) { // avoid events while dragging
-                TpsEvents.onTpsChanged.fire(TpsChangedEvent(getTps()))
+                TpsEvents.onTpsChanged(TpsChangedEvent(getTps()))
             }
         }
     }

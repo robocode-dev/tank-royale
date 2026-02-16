@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.On
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.settings.BotDirectoryConfig
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
@@ -67,9 +68,9 @@ private object BotDirectoryConfigPanel : JPanel(MigLayout("fill")) {
 
         ConfigSettings.botDirectories.forEach { listModel.addElement(CheckListEntity(it.path, it.enabled)) }
 
-        onAdd.subscribe(BotRootDirectoriesConfigDialog) { addDirectory() }
-        onRemove.subscribe(BotRootDirectoriesConfigDialog) { removeDirectory() }
-        onOk.subscribe(BotRootDirectoriesConfigDialog) { BotRootDirectoriesConfigDialog.dispose() }
+        onAdd+= On(BotRootDirectoriesConfigDialog) { addDirectory() }
+        onRemove+= On(BotRootDirectoriesConfigDialog) { removeDirectory() }
+        onOk+= On(BotRootDirectoriesConfigDialog) { BotRootDirectoriesConfigDialog.dispose() }
 
         BotRootDirectoriesConfigDialog.onActivated {
             okButton.requestFocus()

@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.settings
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.ui.server.ServerEventTriggers
 import dev.robocode.tankroyale.gui.util.RegisterWsProtocol
 import dev.robocode.tankroyale.gui.util.WsUrl
@@ -28,7 +29,7 @@ object ServerSettings : PropertiesStore("Robocode Server Settings", "server.prop
         @Suppress("UnusedExpression")
         RegisterWsProtocol // work-around for ws:// with URI class
 
-        onSaved.subscribe(this) { ServerEventTriggers.onRebootLocalServer.fire(true /* setting changed */) }
+        onSaved+= On(this) { ServerEventTriggers.onRebootLocalServer(true /* setting changed */) }
     }
 
     fun serverUrl(): String = if (useRemoteServer) useRemoteServerUrl else localhostUrl()

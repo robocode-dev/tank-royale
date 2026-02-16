@@ -1,7 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.config
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.IGameSetup
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.MutableGameSetup
@@ -143,18 +144,18 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         readyTimeoutTextField.setInputVerifier { readyTimeoutVerifier() }
         turnTimeoutTextField.setInputVerifier { turnTimeoutVerifier() }
 
-        onOk.subscribe(this) {
+        onOk+= On(this) {
             apply()
             SetupRulesDialog.dispose()
         }
-        onApply.subscribe(this) {
+        onApply+= On(this) {
             apply()
         }
-        onCancel.subscribe(this) {
+        onCancel+= On(this) {
             lastGameSetup = gameSetup
             SetupRulesDialog.dispose()
         }
-        onResetToDefault.subscribe(this) {
+        onResetToDefault+= On(this) {
             val selectedGameType = gameTypeDropdown.getSelectedGameType().displayName
             val default: MutableGameSetup? = GamesSettings.defaultGameSetup[selectedGameType]?.toMutableGameSetup()
             if (default != null) {

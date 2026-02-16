@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.audio.SoundActions
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.client.Client
@@ -33,12 +34,12 @@ object MainFrame : RcFrame("main_frame") {
         BattlePanel // make sure the battle panel is initialized before being used the first time
 
         ClientEvents.apply {
-            onGameStarted.subscribe(MainFrame) { MainPanel.showArena() }
-            onGameEnded.subscribe(MainFrame) { MainPanel.showLogo() }
-            onGameAborted.subscribe(MainFrame) { MainPanel.showLogo() }
-            onPlayerChanged.subscribe(MainFrame) { MainPanel.showArena() }
+            onGameStarted+= On(MainFrame) { MainPanel.showArena() }
+            onGameEnded+= On(MainFrame) { MainPanel.showLogo() }
+            onGameAborted+= On(MainFrame) { MainPanel.showLogo() }
+            onPlayerChanged+= On(MainFrame) { MainPanel.showArena() }
         }
-        ServerEvents.onStopped.subscribe(MainFrame) { MainPanel.showLogo() }
+        ServerEvents.onStopped+= On(MainFrame) { MainPanel.showLogo() }
 
         onClosing { close() }
         Runtime.getRuntime().addShutdownHook(Thread { close() })

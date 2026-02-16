@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.tps
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.TpsChangedEvent
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.Messages
@@ -17,7 +18,7 @@ object TpsField : RcLimitedTextField(3) {
         setInputVerifier { tpsInputVerifier() }
         onChange { tpsInputVerifier() }
 
-        TpsEvents.onTpsChanged.subscribe(TpsField) {
+        TpsEvents.onTpsChanged+= On(TpsField) {
             if (it.tps != tps) {
                 tps = it.tps
                 updateText()
@@ -59,7 +60,7 @@ object TpsField : RcLimitedTextField(3) {
         if (valid) {
             if (tps != this.tps) {
                 this.tps = tps!!
-                TpsEvents.onTpsChanged.fire(TpsChangedEvent(tps))
+                TpsEvents.onTpsChanged(TpsChangedEvent(tps))
             }
         } else {
             showMessage(String.format(Messages.get("tps_range")))

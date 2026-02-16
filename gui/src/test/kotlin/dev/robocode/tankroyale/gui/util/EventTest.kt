@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.util
 
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.On
+import dev.robocode.tankroyale.common.event.Event
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,7 @@ class EventTest : FunSpec({
                 counter.incrementAndGet()
                 latch.countDown()
             }
-            event.fire(Unit)
+            event(Unit)
 
             // Wait for the EDT to process the event
             withContext(Dispatchers.Default) {
@@ -39,7 +40,7 @@ class EventTest : FunSpec({
             val counter = AtomicInteger(0)
             val fixedOwner = Any()
 
-            event.subscribe(fixedOwner) {
+            event+= On(fixedOwner) {
                 counter.incrementAndGet()
             }
 
@@ -55,7 +56,7 @@ class EventTest : FunSpec({
                     executor.execute {
                         startLatch.await()
                         repeat(firesPerThread) { iteration ->
-                            event.fire(iteration)
+                            event(iteration)
                         }
                         doneLatch.countDown()
                     }
@@ -66,7 +67,7 @@ class EventTest : FunSpec({
                         startLatch.await()
                         repeat(200) {
                             val owner = Any()
-                            event.subscribe(owner) { }
+                            event+= On(owner) { }
                             event -= owner
                         }
                         doneLatch.countDown()
@@ -89,7 +90,7 @@ class EventTest : FunSpec({
             var owner: Any? = Any()
             val weakOwner = WeakReference(owner)
 
-            event.subscribe(owner!!) {
+            event+= On(owner!!) {
                 counter.incrementAndGet()
             }
 
@@ -103,7 +104,7 @@ class EventTest : FunSpec({
 
             weakOwner.get() shouldBe null
 
-            event.fire(Unit)
+            event(Unit)
             counter.get() shouldBe 0
         }
     }

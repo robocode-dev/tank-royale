@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.player
 
 import dev.robocode.tankroyale.client.model.*
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.replay.ReplayFileReader
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import java.io.File
@@ -128,7 +128,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         savedStdOutput.clear()
         savedStdError.clear()
 
-        onConnected.fire(Unit)
+        onConnected(Unit)
 
         // Participants are extracted in init block from GameStartedEvent or first TickEvent
         if (participants.isNotEmpty()) {
@@ -156,7 +156,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
                 defaultTurnsPerSecond = 30
             )
             currentGameSetup = setup
-            onGameStarted.fire(GameStartedEvent(setup, participants))
+            onGameStarted(GameStartedEvent(setup, participants))
         }
 
         startPlayback()
@@ -170,16 +170,16 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
         // Fire game aborted if we were running
         if (currentGameSetup != null) {
-            onGameAborted.fire(GameAbortedEvent)
+            onGameAborted(GameAbortedEvent)
         }
-        onReplayEvent.fire(currentMessageIndex)
+        onReplayEvent(currentMessageIndex)
     }
 
     override fun pause() {
         if (isRunning.get() && !isPaused.get()) {
             isPaused.set(true)
             playbackTimer?.stop()
-            onGamePaused.fire(GamePausedEvent)
+            onGamePaused(GamePausedEvent)
         }
     }
 
@@ -187,7 +187,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         if (isRunning.get() && isPaused.get()) {
             isPaused.set(false)
             continuePlayback()
-            onGameResumed.fire(GameResumedEvent)
+            onGameResumed(GameResumedEvent)
         }
     }
 
@@ -225,7 +225,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
             }
 
             turns[turnNumber].firstOrNull { it is TickEvent }?.let {
-                onSeekToTurn.fire(it as TickEvent)
+                onSeekToTurn(it as TickEvent)
             }
         }
     }
@@ -327,7 +327,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
             messageList.forEach {
                 handleMessage(it)
             }
-            onReplayEvent.fire(currentMessageIndex)
+            onReplayEvent(currentMessageIndex)
             currentMessageIndex++
         }
     }
@@ -337,33 +337,33 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
             is GameStartedEvent -> {
                 currentGameSetup = message.gameSetup
                 participants = message.participants
-                onGameStarted.fire(message)
+                onGameStarted(message)
             }
 
             is GameEndedEvent -> {
-                onGameEnded.fire(message)
+                onGameEnded(message)
             }
 
             is GameAbortedEvent -> {
-                onGameAborted.fire(message)
+                onGameAborted(message)
             }
 
             is RoundStartedEvent -> {
-                onRoundStarted.fire(message)
+                onRoundStarted(message)
             }
 
             is RoundEndedEvent -> {
-                onRoundEnded.fire(message)
+                onRoundEnded(message)
             }
 
             is TickEvent -> {
                 currentTick = message
-                onTickEvent.fire(message)
+                onTickEvent(message)
                 updateSavedStdOutput(message)
             }
 
             is BotListUpdate -> {
-                onBotListUpdate.fire(message)
+                onBotListUpdate(message)
             }
 
             else -> {
@@ -440,7 +440,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
                 botState.stdErr?.let { updateStandardOutput(savedStdError, id, roundNumber, turnNumber, it) }
             }
             if (fireEvent) {
-                onStdOutputUpdated.fire(tickEvent)
+                onStdOutputUpdated(tickEvent)
             }
         }
     }

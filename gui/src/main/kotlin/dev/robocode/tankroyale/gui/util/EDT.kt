@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.util
 
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.ui.BusyCursor
 import java.awt.EventQueue
 
@@ -29,5 +30,5 @@ object EDT {
  * @param callable is used for providing the event handler function.
  */
 fun <T> Event<T>.enqueue(owner: Any, callable: () -> Unit) {
-    this.subscribe(owner) { EDT.enqueue { callable.invoke() } }
+    this += On(owner) { EDT.enqueue { callable.invoke() } }
 }

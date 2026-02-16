@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.player
 
 import dev.robocode.tankroyale.client.model.*
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 
 /**
  * Abstract interface for controlling battles in the GUI.

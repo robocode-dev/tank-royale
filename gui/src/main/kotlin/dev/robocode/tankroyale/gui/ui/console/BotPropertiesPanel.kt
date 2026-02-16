@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.console
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.BotPolicyUpdate
 import dev.robocode.tankroyale.client.model.Participant
 import dev.robocode.tankroyale.client.model.TickEvent
@@ -35,7 +36,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
             }
 
     private fun createDebugGraphicsToggleSwitch() = ToggleSwitch(false).apply {
-        addSwitchHandler { isSelected -> ClientEvents.onBotPolicyChanged.fire(BotPolicyUpdate(bot.id, isSelected)) }
+        addSwitchHandler { isSelected -> ClientEvents.onBotPolicyChanged(BotPolicyUpdate(bot.id, isSelected)) }
     }
 
     private val columns = arrayOf(
@@ -130,16 +131,16 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     }
 
     private fun subscribeToEvents() {
-        ClientEvents.onTickEvent.subscribe(this) { tickEvent ->
+        ClientEvents.onTickEvent+= On(this) { tickEvent ->
             updateBotState(tickEvent)
         }
-        ClientEvents.onGameStarted.subscribe(this) {
+        ClientEvents.onGameStarted+= On(this) {
             subscribeToEvents()
         }
-        ClientEvents.onGameEnded.subscribe(this) {
+        ClientEvents.onGameEnded+= On(this) {
             unsubscribeEvents()
         }
-        ClientEvents.onGameAborted.subscribe(this) {
+        ClientEvents.onGameAborted+= On(this) {
             unsubscribeEvents()
         }
     }

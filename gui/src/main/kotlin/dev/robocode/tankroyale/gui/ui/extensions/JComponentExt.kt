@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.extensions
 
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.RcToolTip
 import dev.robocode.tankroyale.gui.util.MessageDialog
@@ -29,7 +29,7 @@ object JComponentExt {
         object : JButton(Strings.get(stringResourceName)) {
             override fun createToolTip() = RcToolTip()
         }.apply {
-            addActionListener { event.fire(this) }
+            addActionListener { event(this) }
         }
 
     fun JComponent.addButton(
@@ -86,7 +86,7 @@ object JComponentExt {
         object : JCheckBox(Strings.get(stringResourceName)) {
             override fun createToolTip() = RcToolTip()
         }.apply {
-            addActionListener { event.fire(this) }
+            addActionListener { event(this) }
         }
 
     fun JComponent.addCheckBox(

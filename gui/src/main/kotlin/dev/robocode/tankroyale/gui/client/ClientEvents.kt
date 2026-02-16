@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.client
 
 import dev.robocode.tankroyale.client.model.*
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.player.BattlePlayer
 
 object ClientEvents {

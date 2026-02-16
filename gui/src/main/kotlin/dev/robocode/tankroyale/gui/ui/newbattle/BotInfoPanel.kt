@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.BotInfo
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import net.miginfocom.swing.MigLayout
@@ -58,9 +59,9 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         updateBotInfo(null)
 
         BotSelectionEvents.apply {
-            onBotDirectorySelected.subscribe(BotInfoPanel) { updateBotInfo(it) }
-            onJoinedBotSelected.subscribe(BotInfoPanel) { updateBotInfo(it) }
-            onBotSelected.subscribe(BotInfoPanel) { updateBotInfo(it) }
+            onBotDirectorySelected+= On(BotInfoPanel) { updateBotInfo(it) }
+            onJoinedBotSelected+= On(BotInfoPanel) { updateBotInfo(it) }
+            onBotSelected+= On(BotInfoPanel) { updateBotInfo(it) }
         }
     }
 

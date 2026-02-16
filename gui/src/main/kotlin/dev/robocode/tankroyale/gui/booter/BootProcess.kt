@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.booter
 
 import dev.robocode.tankroyale.client.model.MessageConstants
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.common.util.JavaExec
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
@@ -228,7 +228,7 @@ object BootProcess {
                     if (bootedBotsList.contains(dirAndPid)) {
                         bootedBotsList.remove(dirAndPid)
 
-                        onUnbootBot.fire(dirAndPid)
+                        onUnbootBot(dirAndPid)
                     }
                 }
             }
@@ -258,7 +258,7 @@ object BootProcess {
     }
 
     private fun notifyUnbootBotProcesses() {
-        pidAndDirs.forEach { onUnbootBot.fire(DirAndPid(it.value, it.key)) }
+        pidAndDirs.forEach { onUnbootBot(DirAndPid(it.value, it.key)) }
     }
 
     private fun getBooterJar(): String {
@@ -373,7 +373,7 @@ object BootProcess {
             val dirAndPid = DirAndPid(dir, pid)
             bootedBotsList.add(dirAndPid)
 
-            onBootBot.fire(dirAndPid)
+            onBootBot(dirAndPid)
         }
     }
 
@@ -389,7 +389,7 @@ object BootProcess {
                 val dirAndPid = DirAndPid(dir, pid)
                 bootedBotsList.remove(dirAndPid)
 
-                onUnbootBot.fire(dirAndPid)
+                onUnbootBot(dirAndPid)
             }
         }
     }

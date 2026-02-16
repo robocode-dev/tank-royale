@@ -1,7 +1,7 @@
 # ADR-0022: Event System for GUI Decoupling
 
 **Status:** Accepted  
-**Date:** 2026-02-15 (Documenting historical decision)
+**Date:** 2026-02-16 (Updated to reflect API simplification)
 
 ---
 
@@ -24,96 +24,44 @@ C#/.NET's delegate pattern provides a cleaner alternative: lightweight event sub
 
 Implement a **custom event system** (`dev.robocode.tankroyale.common.Event<T>`) inspired by C#/.NET delegates, using weak references to prevent memory leaks.
 
-**Core API:**
-
-```kotlin
-class Event<T> {
-    fun subscribe(owner: Any, once: Boolean = false, eventHandler: (T) -> Unit)
-    fun unsubscribe(owner: Any)
-    fun fire(event: T)
-    
-    // Operator overloads
-    operator fun plusAssign(subscription: On<T>)  // Recommended for continuous
-    operator fun plusAssign(subscription: Pair<Any, (T) -> Unit>)  // Alternative
-    operator fun plusAssign(subscription: Once<T>)  // One-shot delivery
-    operator fun minusAssign(owner: Any)
-    operator fun invoke(event: T)  // alias for fire()
-}
-
-// Wrapper classes for operator syntax
-data class On<T>(val owner: Any, val handler: (T) -> Unit)
-data class Once<T>(val owner: Any, val handler: (T) -> Unit)
-```
+See [Event.kt](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/Event.kt) for full API documentation.
 
 **Key design choices:**
 
-- **Weak references** — Uses `WeakHashMap` internally so event handlers are garbage collected with their owners
+- **Weak references** — `WeakHashMap` automatically cleans up handlers when owners are garbage collected
 - **Owner-based registration** — Subscribers pass `this` as owner, enabling automatic cleanup
-- **Type-safe** — Generic parameter `T` ensures type safety at compile time
-- **Atomic reference** — Uses `AtomicReference<WeakHashMap>` for lock-free reads and atomic writes
-- **Once flag** — Optional auto-unsubscribe after first event (for one-shot handlers)
+- **Type-safe** — Generic parameter `T` ensures compile-time type safety
+- **Atomic reference** — `AtomicReference<WeakHashMap>` provides lock-free reads and atomic writes
+- **Once flag** — Optional auto-unsubscribe after first event (via [Once] wrapper)
+- **Operator-only API** — Consistent syntax with no method-based alternatives
 
-**Location:** Implemented in `lib/common` (shared across GUI and WebSocket client), not GUI-specific.
+**Location:** `lib/common` (shared across GUI and WebSocket client), not GUI-specific.
 
 ---
 
 ## Usage Throughout Codebase
 
-The event system is used pervasively across the entire application with **two primary operator syntaxes**:
+The event system uses **operator-based syntax exclusively** for clean, consistent API.
 
-### Recommended: On Wrapper for Continuous Subscriptions
+### Subscription Patterns
 
-The `On<T>` wrapper provides **explicit, clear syntax** for continuous event subscriptions:
-
-```kotlin
-// In an event handler object
-object MenuEventHandlers {
-    init {
-        MenuEventTriggers.apply {
-            onStartBattle += On(this) {
-                startBattle()
-            }
-            onHelp += On(this) {
-                Browser.browse(HELP_URL)
-            }
-        }
-    }
-}
-```
-
-**Advantages:**
-- ✅ Explicit syntax (no implicit `to` operator)
-- ✅ Short, memorable name (`On` reads naturally: "listen on this event")
-- ✅ Clear ownership through wrapper name
-- ✅ Parallel naming with `Once<T>` for visual consistency (`On` for continuous, `Once` for one-shot)
-
-### Alternative: Pair Syntax
-
-The `this to handler` pattern is still supported for backward compatibility:
+See [On](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/Subscription.kt) and [Once](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/Subscription.kt) for detailed usage with priority handling.
 
 ```kotlin
-// Less explicit than On, but valid
-onStartBattle += this to { startBattle() }
+// Continuous subscription
+onMyEvent += On(this) { event -> handle(event) }
+onMyEvent += On(this, priority = 100) { event -> handleHighPriority(event) }
+
+// One-shot subscription
+onMyEvent += Once(this) { event -> handleOnce(event) }
+
+// Unsubscribe (optional—automatic on GC)
+onMyEvent -= this
+
+// Fire event
+onMyEvent(MyEvent("data"))
 ```
 
-**Note:** While functional, this syntax is considered less clear and is **not recommended for new code**. Use `On` wrapper instead.
-
-### One-Shot Handlers with Once Wrapper
-
-The `Once<T>` wrapper auto-unsubscribes after the first event:
-
-```kotlin
-// Subscribe to receive exactly one event, then auto-unsubscribe
-GameEvents.onStarted += Once(this) { event ->
-    initializeUI()
-}
-```
-
-**Naming Symmetry:**
-| Pattern | Use Case | Behavior |
-|---------|----------|----------|
-| `On(this) { ... }` | Continuous subscription | Handler receives all events |
-| `Once(this) { ... }` | One-shot subscription | Handler auto-unsubscribes after first event |
 
 | Event Object | Location | Purpose | Events |
 |-------------|----------|---------|--------|
@@ -145,7 +93,7 @@ The `EDT.enqueue()` extension function ensures Swing thread-safety:
 
 ```kotlin
 fun <T> Event<T>.enqueue(owner: Any, callable: () -> Unit) {
-    this.subscribe(owner) { EDT.enqueue { callable.invoke() } }
+    this += On(owner) { EDT.enqueue { callable.invoke() } }
 }
 ```
 
@@ -158,9 +106,9 @@ ControlEvents.onStop.enqueue(this) {
 ```
 
 This automatically:
-1. Subscribes to the event with weak reference
+1. Subscribes to the event with a weak reference
 2. Enqueues event handling on Swing EDT
-3. Activates/deactivates busy cursor during execution
+3. Activates/deactivates the busy cursor during execution
 
 ---
 
@@ -171,12 +119,28 @@ This automatically:
 
 - ✅ **No memory leaks** — Weak references eliminate need for manual unsubscribe
 - ✅ **Decoupled architecture** — Event producers don't know about subscribers
-- ✅ **Consistent API** — Same pattern across GUI, client, and protocol layers
+- ✅ **Consistent API** — Operator-only syntax across GUI, client, and protocol layers
 - ✅ **Type-safe** — Compile-time checking vs. raw listener interfaces
-- ✅ **Minimal boilerplate** — Single `subscribe()` call vs. multiple listener registrations
+- ✅ **Minimal boilerplate** — Single `+=` operator vs. multiple listener registrations
 - ✅ **C#-style ergonomics** — Familiar to developers from .NET background
 - ❌ **Custom implementation** — Not a standard Java pattern (requires documentation)
 - ❌ **Debugging complexity** — Weak references can make event flow less obvious
+
+**Why sealed class for subscription types:**
+
+- ✅ **Exhaustive matching** — Compiler ensures all subscription variants are handled
+- ✅ **Type safety** — Only `On` and `Once` can be subscription types
+- ✅ **Single operator overload** — Unified `operator fun plusAssign(subscription: Subscription<T>)` instead of two separate overloads
+- ✅ **Runtime discrimination** — Using `is Once<T>` check to distinguish subscription behavior
+- ✅ **No subclass surprises** — Prevents external code from creating invalid subscription types
+
+**Why operator-only API:**
+
+- ✅ **No confusion** — Single way to subscribe, unsubscribe, and fire events
+- ✅ **Discoverable** — IDE autocomplete shows `+=` operator immediately
+- ✅ **Concise** — `On(this) { ... }` is shorter and clearer than method calls
+- ✅ **Consistent** — Same pattern everywhere in the codebase
+- ❌ **Learning curve** — Requires understanding Kotlin operators (minimal for experienced Kotlin devs)
 
 **Alternatives rejected:**
 
@@ -193,7 +157,7 @@ This automatically:
 
 - GUI components are loosely coupled through events
 - No memory leaks from forgotten listener removals
-- Consistent event pattern across entire codebase
+- Consistent event pattern across the entire codebase
 - Easy to add new events without modifying existing code
 - EDT integration ensures Swing thread-safety by default
 - Similar to C#/.NET delegates (familiar to cross-platform developers)
@@ -204,30 +168,14 @@ This automatically:
 - Debugging event flow requires understanding weak reference semantics
 - No compile-time checking that events are subscribed (only type-safety)
 
-### Neutral
-
-- Event system is reusable beyond GUI (already used in WebSocket client)
-- Foundation for potential future technical article
-
 ---
 
 ## References
 
-- [Event.kt](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/Event.kt) — Core implementation
+- [Event.kt](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/Event.kt) — Core implementation
+- [Subscription.kt](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/Subscription.kt) — On/Once wrappers
+- [EventDelegate.kt](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/EventDelegate.kt) — Property delegation
 - [EDT.kt](/gui/src/main/kotlin/dev/robocode/tankroyale/gui/util/EDT.kt) — Swing EDT integration
-- [ControlEvents.kt](/gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/control/ControlEvents.kt) — Example event declarations
-- [ControlEventHandlers.kt](/gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/control/ControlEventHandlers.kt) — Example event subscriptions
-- [MenuEventHandlers.kt](/gui/src/main/kotlin/dev/robocode/tankroyale/gui/ui/menu/MenuEventHandlers.kt) — Complex event handling example
 - [ADR-0021: Java Swing GUI Reference Implementation](./0021-java-swing-gui-reference-implementation.md)
 
----
-
-## Future Article
-
-The implementation of C#/.NET-style delegates in Java/Kotlin using weak references and generics may warrant a technical article demonstrating:
-- How to implement type-safe delegates in Java/Kotlin
-- Weak reference memory management patterns
-- Thread-safe event firing
-- Swing EDT integration
-- Comparison with C#/.NET event system
 

@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.client.model.*
-import dev.robocode.tankroyale.common.On
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents

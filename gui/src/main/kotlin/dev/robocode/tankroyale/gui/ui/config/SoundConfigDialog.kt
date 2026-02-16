@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ConfigSettings.SOUNDS_DIR
 import dev.robocode.tankroyale.gui.ui.MainFrame
@@ -38,12 +39,12 @@ object SoundConfigPanel : JPanel(MigLayout("fill")) {
     private const val VOLUME_MINOR_TICK = 5
 
     private val onOk = Event<JButton>().apply {
-        subscribe(this@SoundConfigPanel) { SoundConfigDialog.dispose() }
+        this += On(this@SoundConfigPanel) { SoundConfigDialog.dispose() }
     }
 
     // Helper to wire a checkbox event to a settings setter
     private fun checkboxEvent(setter: (Boolean) -> Unit) = Event<JCheckBox>().apply {
-        subscribe(this@SoundConfigPanel) { setter(it.isSelected) }
+        this += On(this@SoundConfigPanel) { setter(it.isSelected) }
     }
 
     private val onEnableSounds = checkboxEvent { ConfigSettings.enableSounds = it }

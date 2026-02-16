@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.GameType.*
@@ -12,7 +13,7 @@ class GameTypeDropdown : RcComboBox<String>(
     init {
         setSelectedGameType(ConfigSettings.gameType)
 
-        ConfigSettings.onSaved.subscribe(this) {
+        ConfigSettings.onSaved+= On(this) {
             setSelectedGameType(ConfigSettings.gameType)
         }
     }

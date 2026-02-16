@@ -1,7 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.BotInfo
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GamesSettings
@@ -33,7 +34,7 @@ object NewBattleDialog : RcDialog(MainFrame, "new_battle_dialog") {
         size = Dimension(950, 750)
         setLocationRelativeTo(owner) // center on the owner window
 
-        ServerEvents.onStopped.subscribe(this) {
+        ServerEvents.onStopped+= On(this) {
             MessageDialog.showError(Messages.get("battle_lost_server_connection"))
             dispose()
         }
@@ -105,7 +106,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
         startBattleButton.isEnabled = false
         updateStartButtonHint()
 
-        BotSelectionEvents.onSelectedBotListUpdated.subscribe(this) {
+        BotSelectionEvents.onSelectedBotListUpdated+= On(this) {
             selectedBots = it
 
             val selectedCount = calcNumberOfParticipants(it)
@@ -115,9 +116,9 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
                     (maxParticipants == null || selectedCount <= maxParticipants)
         }
 
-        onStartBattle.subscribe(this) { startGame() }
-        onCancel.subscribe(this) { NewBattleDialog.dispose() }
-        onSetupRules.subscribe(this) { SetupRulesDialog.isVisible = true }
+        onStartBattle+= On(this) { startGame() }
+        onCancel+= On(this) { NewBattleDialog.dispose() }
+        onSetupRules+= On(this) { SetupRulesDialog.isVisible = true }
 
         gameTypeDropdown.apply {
             addActionListener {

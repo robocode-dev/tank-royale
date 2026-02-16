@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.recorder
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.common.RECORDINGS_DIR
 import dev.robocode.tankroyale.common.util.UserDataDirectory
 import dev.robocode.tankroyale.gui.client.ClientEvents
@@ -18,10 +19,10 @@ object AutoRecorder {
         get() = recording.get()
 
     init {
-        ClientEvents.onGameStarted.subscribe(AutoRecorder) { _ -> onGameStarted() }
-        ClientEvents.onGameEnded.subscribe(AutoRecorder) { _ -> onGameEndedOrAborted() }
-        ClientEvents.onGameAborted.subscribe(AutoRecorder) { _ -> onGameEndedOrAborted() }
-        ServerEvents.onStopped.subscribe(AutoRecorder) { onServerStopped() }
+        ClientEvents.onGameStarted+= On(AutoRecorder) { _ -> onGameStarted() }
+        ClientEvents.onGameEnded+= On(AutoRecorder) { _ -> onGameEndedOrAborted() }
+        ClientEvents.onGameAborted+= On(AutoRecorder) { _ -> onGameEndedOrAborted() }
+        ServerEvents.onStopped+= On(AutoRecorder) { onServerStopped() }
     }
 
     private fun onGameStarted() {

@@ -61,7 +61,7 @@ object ServerProcess {
 
         startLogThread()
 
-        ServerEvents.onStarted.fire(Unit)
+        ServerEvents.onStarted(Unit)
     }
 
     fun stop() {
@@ -75,7 +75,7 @@ object ServerProcess {
         // Now stop the log thread if still running
         stopLogThread()
 
-        ServerEvents.onStopped.fire(Unit)
+        ServerEvents.onStopped(Unit)
     }
 
     private fun getServerJar(): String {

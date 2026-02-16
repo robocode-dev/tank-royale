@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.On
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
@@ -86,27 +87,27 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
     }
 
     private fun setupEventHandlers() {
-        onToggleRemoteServer.subscribe(this) { isSelected ->
+        onToggleRemoteServer+= On(this) { isSelected ->
             toggleRemoteServer(isSelected)
         }
 
-        onPortUpdated.subscribe(this) { port ->
+        onPortUpdated+= On(this) { port ->
             ServerSettings.localPort = port
         }
 
-        onAdd.subscribe(this) { addRemoteServer() }
+        onAdd+= On(this) { addRemoteServer() }
 
-        onEdit.subscribe(this) { editRemoteServer() }
+        onEdit+= On(this) { editRemoteServer() }
 
-        onRemove.subscribe(this) { removeRemoteServer() }
+        onRemove+= On(this) { removeRemoteServer() }
 
-        onTest.subscribe(this) { testServerConnection() }
+        onTest+= On(this) { testServerConnection() }
 
-        onOk.subscribe(this) {
+        onOk+= On(this) {
             dispose()
         }
 
-        onCancel.subscribe(this) {
+        onCancel+= On(this) {
             dispose()
             ServerSettings.restore()
         }
@@ -127,7 +128,7 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
         }
 
     private fun createServerToggleSwitch() = ToggleSwitch(ServerSettings.useRemoteServer).apply {
-        addSwitchHandler { isSelected -> onToggleRemoteServer.fire(isSelected) }
+        addSwitchHandler { isSelected -> onToggleRemoteServer(isSelected) }
 
         toolTipText = Messages.get("switch_between_local_and_remote_server")
     }
@@ -137,7 +138,7 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
     }
 
     private fun createLocalPortInputField() = PortInputField(ServerSettings.localPort).apply {
-        addPortUpdatedHandler { port -> onPortUpdated.fire(port) }
+        addPortUpdatedHandler { port -> onPortUpdated(port) }
 
         toolTipText = Messages.get("port_used_for_local_server")
     }

@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.audio
 
 import dev.robocode.tankroyale.client.model.*
-import dev.robocode.tankroyale.common.On
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ConfigSettings.SOUNDS_DIR

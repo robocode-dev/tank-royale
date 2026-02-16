@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.server
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.server.ServerProcess
@@ -61,9 +62,9 @@ object Server {
 
         val connected = CountDownLatch(1)
 
-        ClientEvents.onConnected.subscribe(this) {
+        ClientEvents.onConnected+= On(this) {
             connected.countDown()
-            ServerEvents.onConnected.fire(Unit)
+            ServerEvents.onConnected(Unit)
         }
         // An exception can occur when trying to connect to the server.
         // Hence, we retry connecting, when it fails.
@@ -84,7 +85,7 @@ object Server {
 
     fun startLocal() {
         val latch = CountDownLatch(1)
-        ServerEvents.onStarted.subscribe(this) {
+        ServerEvents.onStarted+= On(this) {
             latch.countDown()
         }
         ServerProcess.start()

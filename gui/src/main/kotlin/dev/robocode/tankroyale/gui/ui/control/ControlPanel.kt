@@ -1,7 +1,8 @@
 package dev.robocode.tankroyale.gui.ui.control
 
+import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.TpsChangedEvent
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
 import dev.robocode.tankroyale.gui.settings.ConfigSettings.DEFAULT_TPS
@@ -69,39 +70,39 @@ object ControlPanel : JPanel() {
         TpsField.toolTipText = tpsHint
 
         ClientEvents.apply {
-            onGamePaused.subscribe(ControlPanel) {
+            onGamePaused+= On(ControlPanel) {
                 setResumedText()
 
                 nextButton.isEnabled = true
                 setDefaultButton(nextButton)
             }
-            onGameResumed.subscribe(ControlPanel) {
+            onGameResumed+= On(ControlPanel) {
                 setPausedText()
                 nextButton.isEnabled = false
             }
-            onGameStarted.subscribe(ControlPanel) {
+            onGameStarted+= On(ControlPanel) {
                 setPausedText()
             }
-            onGameAborted.subscribe(ControlPanel) {
+            onGameAborted+= On(ControlPanel) {
                 setPausedText()
                 nextButton.isEnabled = false
             }
         }
 
         ControlEvents.apply {
-            onStop.subscribe(ControlPanel) {
+            onStop+= On(ControlPanel) {
                 enablePauseResumeAndStopButtons(false)
             }
-            onRestart.subscribe(ControlPanel) {
+            onRestart+= On(ControlPanel) {
                 enablePauseResumeAndStopButtons()
             }
-            onGameStarted.subscribe(ControlPanel) {
+            onGameStarted+= On(ControlPanel) {
                 enablePauseResumeAndStopButtons()
             }
         }
 
-        onDefaultTps.subscribe(ControlPanel) {
-            TpsEvents.onTpsChanged.fire(TpsChangedEvent(DEFAULT_TPS))
+        onDefaultTps+= On(ControlPanel) {
+            TpsEvents.onTpsChanged(TpsChangedEvent(DEFAULT_TPS))
         }
 
         EventQueue.invokeLater {
