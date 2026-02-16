@@ -1,4 +1,4 @@
-## 📦 0.36.0 - Team Indicator in Results – TBD
+## 📦 0.36.0 - Team Indicator in Results – 16-Feb-2026
 
 ### ✨ Features
 

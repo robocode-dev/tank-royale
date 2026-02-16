@@ -1,3 +1,5 @@
+# Robocode Tank Royale {VERSION}
+
 ## 🚀 Quick Start
 
 **New to Robocode Tank Royale?**
