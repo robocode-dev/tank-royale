@@ -282,6 +282,43 @@ I highly recommend that you make use of version control like e.g. GitHub, BitBuc
 I also recommend that you find some challenging bots to battle against, which are more advanced than the sample bots
 coming with Robocode, so you can adjust and improve your bot(s) even more.
 
+## Next Steps: Advanced Strategies
+
+You've learned the fundamentals! To take your bots to competitive level, explore advanced topics in **[The Book of Robocode](https://book.robocode.dev/)**:
+
+### 🎯 Advanced Targeting
+
+Ready to hit moving targets reliably?
+
+- **[Linear Targeting](https://book.robocode.dev/targeting/simple-targeting/linear-targeting)** - Predict enemy movement at constant velocity
+- **[Circular Targeting](https://book.robocode.dev/targeting/simple-targeting/circular-targeting)** - Handle turning enemies
+- **[GuessFactor Targeting](https://book.robocode.dev/targeting/statistical-targeting/guessfactor-targeting)** - Statistical targeting with segmentation
+- **[Virtual Guns](https://book.robocode.dev/targeting/simple-targeting/virtual-guns-mean-targeting)** - Test multiple targeting systems simultaneously
+
+### 🎯 Movement & Evasion
+
+Make your bot harder to hit:
+
+- **[Wall Smoothing](https://book.robocode.dev/movement/basic/wall-avoidance-wall-smoothing)** - Avoid walls gracefully
+- **[Random Movement](https://book.robocode.dev/movement/simple-evasion/random-movement)** - Basic unpredictability
+- **[Stop and Go](https://book.robocode.dev/movement/simple-evasion/stop-and-go)** - Dodge bullets by timing movement
+- **[Wave Surfing](https://book.robocode.dev/movement/advanced-evasion/wave-surfing-introduction)** - Elite evasion technique
+- **[Anti-Gravity Movement](https://book.robocode.dev/movement/strategic-movement/anti-gravity-movement)** - Repulsion-based positioning
+
+### 🎯 Radar Optimization
+
+Master efficient scanning:
+
+- **[Perfect Locks](https://book.robocode.dev/radar/one-on-one-radar/perfect-locks)** - Perfect 1v1 radar lock
+- **[Melee Radar](https://book.robocode.dev/radar/melee-radar/spinning-and-corner-arc)** - Track multiple enemies efficiently
+
+### 🎯 Energy & Strategy
+
+Optimize your decision-making:
+
+- **[Bullet Power Selection](https://book.robocode.dev/energy-and-scoring/bullet-power-selection-strategy)** - When to use high/low firepower
+- **[Energy Management](https://book.robocode.dev/energy-and-scoring/energy-management-1v1-melee)** - Energy as a strategic resource
+
 Happy Robocoding! ❤️
 
 

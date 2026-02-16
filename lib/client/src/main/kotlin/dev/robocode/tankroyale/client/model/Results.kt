@@ -9,6 +9,7 @@ data class Results(
     val id: Int,
     val name: String,
     val version: String,
+    val isTeam: Boolean?,
     val rank: Int,
     val survival: Int,
     val lastSurvivorBonus: Int,

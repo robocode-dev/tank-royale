@@ -10,6 +10,9 @@ properties:
   name:
     description: Name of participant, e.g. Killer Bee (bot) or Killer Bees (team)
     type: string
+  isTeam:
+    description: True when the result represents a team; false when it represents an individual bot
+    type: boolean
   version:
     description: version, e.g. 1.0
     type: string

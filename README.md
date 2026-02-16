@@ -4,7 +4,7 @@
 
 **Build the best – destroy the rest!**
 
-## About
+## 🤖 About
 
 Robocode is a [programming game](https://en.wikipedia.org/wiki/Programming_game) where the goal is to code a bot in the
 form of a virtual tank that competes against other bots in a virtual battle arena.
@@ -19,11 +19,19 @@ The name **Robocode** is short for “Robot code” and comes from the original 
 This project aims to help you learn programming, improve AI skills in a fast‑running real‑time game,
 and have fun while competing.
 
-## Example of a battle
+## ⚔️ Example of a battle
 
 <img src="docs-build/docs/images/robocode-battle-anim.gif" alt="GIF animation of tanks battling each other on a 2D battlefield">
 
-## Documentation
+## 🖥️ Tank Royale Viewer
+
+Want to **visualize battles in style**? Check out the
+**[Tank Royale Viewer](https://github.com/jandurovec/tank-royale-viewer)**—a beautiful web-based viewer for
+watching Robocode Tank Royale matches in real-time! Created by [Jan Durovec](https://github.com/jandurovec), this tool
+is perfect for displaying live battles on big monitors during competitions, analyzing recorded battles, and showcasing
+championship matches.
+
+## 📚 Documentation
 
 Main page:  
 [Robocode Tank Royale Docs](https://robocode-dev.github.io/tank-royale/)
@@ -35,7 +43,7 @@ Robocode Tank Royale—from basics to advanced strategies like wave surfing, gue
 movement techniques. It builds on two decades of community knowledge and foundational research from RoboWiki
 contributors.
 
-### Try it out
+### 🚀 Try it out
 
 If you are new to Robocode or just need a refresher, start with the
 [Getting Started guide](https://robocode-dev.github.io/tank-royale/tutorial/getting-started).  
@@ -45,7 +53,7 @@ For hands‑on coding, continue to the
 The [Installation guide](https://robocode-dev.github.io/tank-royale/articles/installation.html) covers how to install the GUI,
 and includes sample bots for quick demos.
 
-## Supported platforms
+## 💻 Supported platforms
 
 Robocode runs on Java 11 or newer and supports Windows, macOS, and Linux out of the box.  
 Bot APIs are available for:
@@ -81,7 +89,7 @@ Supported .NET languages:
 - Visual Basic
 - IronPython
 
-## Work in progress
+## 🚧 Work in progress
 
 - **Bot API for WebAssembly (Wasm)**
     - JavaScript
@@ -93,16 +101,16 @@ Supported .NET languages:
 Huge thanks to every [contributor](https://github.com/robocode-dev/tank-royale/graphs/contributors) — you make this
 project shine! 🙌
 
-## Maintainer
+## 👨‍💻 Maintainer
 
 [@flemming-n-larsen](https://github.com/flemming-n-larsen)
 
 [![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/flemming.n.larsen)
 
-## License
+## 📄 License
 
 [Apache License 2.0](LICENSE)
 
-## Copyright
+## ©️ Copyright
 
 Copyright © 2022 [Flemming N. Larsen](https://github.com/flemming-n-larsen)

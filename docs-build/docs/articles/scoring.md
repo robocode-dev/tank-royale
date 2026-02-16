@@ -40,3 +40,15 @@ A bot will not necessarily win, just by being the last bot left on the arena as 
 fire much but "just" saves the energy is getting a lesser score than a bot that hits other bots with lots of bullets.
 So, do not save your bullets too long as an attempt to survive. But make sure you hit with as many of your bullets as
 possible. The better your bot is at hitting other bots, the better your score will become.
+
+## Further Reading
+
+For strategic guidance on optimizing your bot's scoring:
+
+- **[Bullet Power Selection Strategy](https://book.robocode.dev/energy-and-scoring/bullet-power-selection-strategy)** - When to use high vs. low firepower
+- **[Energy as a Resource](https://book.robocode.dev/energy-and-scoring/energy-as-a-resource)** - Strategic energy management
+- **[Scoring Systems & Battle Types](https://book.robocode.dev/energy-and-scoring/scoring-systems-battle-types)** - Detailed scoring mechanics for different battle formats
+- **[Competition Formats & Rankings](https://book.robocode.dev/energy-and-scoring/competition-formats-rankings)** - Tournament structures and rating systems
+- **[Energy Management in 1v1 and Melee](https://book.robocode.dev/energy-and-scoring/energy-management-1v1-melee)** - Advanced energy tactics
+
+Also see [Physics](physics) for damage calculations and [Team Strategies](team-strategies) for team scoring considerations.

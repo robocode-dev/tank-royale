@@ -52,11 +52,21 @@ export default withMermaid(defineConfig({
           { text: 'Anatomy of a Bot', link: '/articles/anatomy' },
           { text: 'Coordinates and Angles', link: '/articles/coordinates-and-angles' },
           { text: 'Physics', link: '/articles/physics' },
+          { text: 'Collision Mechanics', link: '/articles/collision-mechanics' },
           { text: 'Scoring', link: '/articles/scoring' },
           { text: 'Team Messages', link: '/articles/team-messages'},
           { text: 'Booter', link: '/articles/booter' },
           { text: 'Tank Royale', link: '/articles/tank-royale' },
           { text: 'History', link: '/articles/history' },
+        ]
+      },
+      {
+        text: 'Advanced Topics',
+        items: [
+          { text: 'Testing & Debugging Guide', link: '/articles/testing-guide' },
+          { text: 'Performance Optimization', link: '/articles/performance-optimization' },
+          { text: 'Custom Game Setup', link: '/articles/custom-game-setup' },
+          { text: 'Team Strategies', link: '/articles/team-strategies' },
         ]
       }
     ],

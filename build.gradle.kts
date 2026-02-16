@@ -379,7 +379,7 @@ fun Project.registerJpackageTasks(
                 iconPath = iconLinux,
                 mainClass = (project.extra["jpackageMainClass"] as String),
                 extra = listOf(
-                    "--linux-deb-maintainer", "Flemming N. Larsen <flemming.n.larsen@gmail.com>"
+                    "--linux-deb-maintainer", "Flemming N. Larsen <contact@robocode.dev>"
                 )
             )
         }
@@ -570,6 +570,11 @@ tasks {
     register("upload-docs") {
         description = "Generate and upload all documentation"
         dependsOn(*docTasks.toTypedArray())
+    }
+
+    register("upload-docs-vitepress-only") {
+        description = "Build and upload VitePress documentation only (without API generation)"
+        dependsOn("docs-build:copy-vitepress-docs")
     }
 
     register("create-release") {

@@ -33,11 +33,16 @@ class ResultsFrame(results: List<Results>) : RcFrame(getWindowTitle(), isTitlePr
         for (columnIndex in 0 until columnModel.columnCount) {
             val column = columnModel.getColumn(columnIndex)
             val title = "" + column.headerValue
-            column.minWidth = headerFontMetrics.stringWidth(title)
+            val headerWidth = headerFontMetrics.stringWidth(title)
+            column.minWidth = headerWidth
             column.cellRenderer = CellRendererWithToolTip
 
-            if (columnIndex == 1) {
-                column.minWidth = 120 // Name needs more width
+            when (columnIndex) {
+                1 -> column.minWidth = 120 // Name needs more width
+                2 -> {
+                    column.minWidth = headerWidth + 10
+                    column.maxWidth = headerWidth + 16
+                }
             }
         }
 
@@ -49,27 +54,37 @@ class ResultsFrame(results: List<Results>) : RcFrame(getWindowTitle(), isTitlePr
     }
 
     private fun getData(results: List<Results>): Array<Array<String>> {
-        val list = ArrayList<Array<String>>()
-        results.forEach {
-            val name = "${it.name} ${it.version}"
-            list.add(
-                arrayOf(
-                    "" + it.rank,
-                    "" + name,
-                    "" + it.totalScore,
-                    "" + it.survival,
-                    "" + it.lastSurvivorBonus,
-                    "" + it.bulletDamage,
-                    "" + it.bulletKillBonus,
-                    "" + it.ramDamage,
-                    "" + it.ramKillBonus,
-                    "" + it.firstPlaces,
-                    "" + it.secondPlaces,
-                    "" + it.thirdPlaces
-                )
-            )
-        }
-        return list.toArray(arrayOfNulls<Array<String>>(list.size))
+        return results.map { buildResultRow(it) }.toTypedArray()
+    }
+
+    private fun buildResultRow(result: Results): Array<String> {
+        return arrayOf(
+            result.rank.toString(),
+            buildParticipantName(result),
+            buildTeamIndicator(result),
+            result.totalScore.toString(),
+            result.survival.toString(),
+            result.lastSurvivorBonus.toString(),
+            result.bulletDamage.toString(),
+            result.bulletKillBonus.toString(),
+            result.ramDamage.toString(),
+            result.ramKillBonus.toString(),
+            result.firstPlaces.toString(),
+            result.secondPlaces.toString(),
+            result.thirdPlaces.toString()
+        )
+    }
+
+    private fun buildParticipantName(result: Results): String {
+        return "${result.name} ${result.version}".trim()
+    }
+
+    private fun buildTeamIndicator(result: Results): String {
+        return if (isTeamResult(result)) "✓" else ""
+    }
+
+    private fun isTeamResult(result: Results): Boolean {
+        return result.isTeam ?: (result.id > 0)
     }
 
     private fun getColumns(): Array<String> {
@@ -77,6 +92,7 @@ class ResultsFrame(results: List<Results>) : RcFrame(getWindowTitle(), isTitlePr
             return arrayOf(
                 get("results.rank"),
                 get("results.name"),
+                "\uD83D\uDC65", // `👥`
                 get("results.total_score"),
                 get("results.survival_score"),
                 get("results.last_survivor_bonus"),

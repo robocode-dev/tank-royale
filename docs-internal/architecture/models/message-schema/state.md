@@ -619,6 +619,7 @@ classDiagram
         +int id
         +string name
         +string version
+        +boolean isTeam
         +int rank
         +number survival
         +number lastSurvivorBonus
@@ -634,6 +635,56 @@ classDiagram
 ```
 
 **Extends ResultsForBot with identification fields.**
+
+**Identification details:**
+
+- `isTeam` explicitly marks team results (`true`) versus solo bot results (`false`).
+- Observers can also infer the participant type from `id` when `isTeam` is absent:
+  - `id > 0` = real team
+  - `id < 0` = solo bot (negated bot ID)
+  - See [ADR-0015: Participant ID as Unified Team Identifier](../adr/0015-bot-id-team-id-namespace-separation.md) for rationale.
+
+### Example (Mixed teams and solo bots)
+
+```json
+{
+  "id": 2,
+  "name": "Team Alpha",
+  "version": "1.0",
+  "isTeam": true,
+  "rank": 1,
+  "survival": 450,
+  "lastSurvivorBonus": 100,
+  "bulletDamage": 320.5,
+  "bulletKillBonus": 60,
+  "ramDamage": 12.0,
+  "ramKillBonus": 0,
+  "totalScore": 942.5,
+  "firstPlaces": 1,
+  "secondPlaces": 0,
+  "thirdPlaces": 0
+}
+```
+
+```json
+{
+  "id": -7,
+  "name": "SoloBot",
+  "version": "3.2",
+  "isTeam": false,
+  "rank": 3,
+  "survival": 240,
+  "lastSurvivorBonus": 0,
+  "bulletDamage": 180.0,
+  "bulletKillBonus": 30,
+  "ramDamage": 8.0,
+  "ramKillBonus": 0,
+  "totalScore": 458.0,
+  "firstPlaces": 0,
+  "secondPlaces": 0,
+  "thirdPlaces": 1
+}
+```
 
 ---
 

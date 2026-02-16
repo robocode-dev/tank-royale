@@ -47,6 +47,7 @@ All architecture documentation lives in [`docs-internal/architecture/`](../docs-
 - **ADR-0020**: Teams Support in Observer Protocol (Proposed)
 - **ADR-0021**: Java Swing as GUI Reference Implementation
 - **ADR-0022**: Event System for GUI Decoupling
+- **ADR-0023**: Robocode Tank Royale Platform Scope and Boundaries
 
 ## Relationship to OpenSpec
 

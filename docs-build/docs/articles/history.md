@@ -3,7 +3,7 @@
 ## Origin
 
 The Robocode game was originally started by Mathew A. Nelson as a personal endeavor in late 2000. Mathew got inspired
-from the game named [Robot Battle](https://en.wikipedia.org/wiki/Robot_Battle) and wanted to create a similar game using
+ by the game named [Robot Battle](https://en.wikipedia.org/wiki/Robot_Battle) and wanted to create a similar game using
 the Java programming language for the API.
 
 ## IBM AlphaWork
@@ -32,16 +32,8 @@ and contributions from the community.
 ## Robocode Tank Royale
 
 The original Robocode runs entirely on Java, where robots musts be made for the Java platform. At some point, a .NET
-plugin was available for supporting .NET bots. However, this plugin was hard to maintain, and used a .NET bridge to
+plugin was available for supporting .NET bots. However, this plugin was hard to maintain and used a .NET bridge to
 convert robot commands written in .NET into code executed in Java.
 
-In addition, a Java security manager is needed as bots runs in the same process inside the Java virtual machine, but
-should
-not be allowed to disturb each other. The Java security manager has been marked as deprecated for removal
-with [JEP-411](https://openjdk.org/jeps/411).
-
-Robocode Tank Royale is a new platform for Robocode that rewritten from fixes some of the flaws with the original game.
+Robocode Tank Royale is a new platform for Robocode that is rewritten from scratch and fixes some flaws with the original game.
 Read more about it [here](../articles/tank-royale.md)
-
-
-[JEP-411]: https://openjdk.org/jeps/411 "JEP 411: Deprecate the Security Manager for Remova"
