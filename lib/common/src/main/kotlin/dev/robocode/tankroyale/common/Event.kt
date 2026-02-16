@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicReference
  * - **Fire Operations**: Lock-free reads via atomic snapshot prevent `ConcurrentModificationException`
  * - **Weak References**: `WeakHashMap` automatically cleans up entries when owners are garbage collected
  * - **Once-Flag**: Atomic unsubscribe before handler invocation prevents double-fires
+ * - **Reentrancy Protection**: Thread-local guard prevents infinite recursion from recursive event firing
  *
  * ## Usage
  *
@@ -81,6 +82,9 @@ open class Event<T> {
     // Provides lock-free reads and atomic writes. Weak references are automatically
     // cleaned up when owners are garbage collected.
     private val eventHandlers = AtomicReference(WeakHashMap<Any, Handler<T>>())
+
+    // Thread-local flag to detect and prevent re-entrant event firing (infinite recursion)
+    private val isFiring = ThreadLocal.withInitial { false }
 
     /**
      * Subscribe to an event and provide an event handler for handling the event.
@@ -178,17 +182,29 @@ open class Event<T> {
      * @param event is the source event instance for the event handlers.
      */
     fun fire(event: T) {
-        // Atomic lock-free read of current handlers, then snapshot via toSet() to prevent
-        // ConcurrentModificationException even if handlers are modified during fire
-        // Sort by priority descending (higher priority executes first)
-        eventHandlers.get().entries.toSet()
-            .sortedByDescending { it.value.priority }
-            .forEach { entry ->
-                entry.value.apply {
-                    if (once) this@Event -= entry.key
-                    eventHandler.invoke(event)
+        // Prevent re-entrant firing on the same thread to avoid StackOverflowError
+        // This can happen if an event handler fires the same event recursively
+        // CRITICAL: Check BEFORE accessing WeakHashMap to prevent overflow during .toSet()
+        if (isFiring.get()) {
+            return // Silently ignore re-entrant calls
+        }
+
+        isFiring.set(true)
+        try {
+            // Atomic lock-free read of current handlers, then snapshot via toSet() to prevent
+            // ConcurrentModificationException even if handlers are modified during fire
+            // Sort by priority descending (higher priority executes first)
+            eventHandlers.get().entries.toSet()
+                .sortedByDescending { it.value.priority }
+                .forEach { entry ->
+                    entry.value.apply {
+                        if (once) this@Event -= entry.key
+                        eventHandler.invoke(event)
+                    }
                 }
-            }
+        } finally {
+            isFiring.set(false)
+        }
     }
 
     /**
