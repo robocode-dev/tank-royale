@@ -17,7 +17,7 @@ object BotsToBotsWithIdMapper {
             participantsMap[bot.id]?.let { participant ->
                 botStates += BotToBotStateWithIdMapper.map(
                     bot,
-                    participant.sessionId,
+                    participant,
                     enemyCountMap[bot.id] ?: 0,
                     debugGraphicsEnableMap[bot.id] ?: false
                 )

@@ -1,16 +1,19 @@
 package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.schema.BotStateWithId
+import dev.robocode.tankroyale.schema.Participant
 import dev.robocode.tankroyale.server.model.normalizeAbsoluteDegrees
 import dev.robocode.tankroyale.server.model.IBot
 
 object BotToBotStateWithIdMapper {
-    fun map(bot: IBot, sessionId: String, enemyCount: Int, isDebugGraphicsEnabled: Boolean): BotStateWithId {
+    fun map(bot: IBot, participant: Participant, enemyCount: Int, isDebugGraphicsEnabled: Boolean): BotStateWithId {
         val botState = BotStateWithId()
         bot.apply {
             botState.isDroid = isDroid
             botState.id = id.value
-            botState.sessionId = sessionId
+            botState.sessionId = participant.sessionId
+            botState.name = participant.name
+            botState.version = participant.version
             botState.energy = energy
             botState.x = x
             botState.y = y
