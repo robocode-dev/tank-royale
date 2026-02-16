@@ -1,3 +1,14 @@
+## 📦 0.36.0 - Team Indicator in Results – 15-Feb-2026
+
+### ✨ Features
+
+- GUI:
+    - Results window now displays an additional "team" column with a checkmark (✓) indicator showing whether each
+      participant is a team or an individual bot.
+
+- Schema:
+    - Added `isTeam` flag to `results-for-observer.schema` to support team classification in results data.
+
 ## 📦 0.35.5 - Critical Timing Fixes – 13-Feb-2026
 
 ### 🐞 Bug Fixes

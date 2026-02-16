@@ -395,7 +395,7 @@ class GameServer(
 
         val results = mutableListOf<ResultsForObserver>()
 
-        val scores = ResultsView.getResults(modelUpdater!!.getResults(), participantMap.values)
+        val scores = ResultsView.getResults(modelUpdater!!.getResults(), participantMap.values).toList()
         scores.forEach { score ->
             participantMap[score.participantId.botId]?.let { participant ->
 
@@ -410,6 +410,7 @@ class GameServer(
                     this.name = name
                     this.version = version
                     this.rank = score.rank
+                    isTeam = participant.teamId != null
                     survival = score.survivalScore.roundToInt()
                     lastSurvivorBonus = score.lastSurvivorBonus.roundToInt()
                     bulletDamage = score.bulletDamageScore.roundToInt()
