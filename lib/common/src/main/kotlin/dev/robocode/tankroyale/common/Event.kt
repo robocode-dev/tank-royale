@@ -83,8 +83,11 @@ open class Event<T> {
     // cleaned up when owners are garbage collected.
     private val eventHandlers = AtomicReference(WeakHashMap<Any, Handler<T>>())
 
-    // Thread-local flag to detect and prevent re-entrant event firing (infinite recursion)
-    private val isFiring = ThreadLocal.withInitial { false }
+    // Per-instance, per-thread flag to detect and prevent re-entrant event firing (infinite recursion)
+    // Using object() creates a unique ThreadLocal for each Event instance
+    private val isFiring = object : ThreadLocal<Boolean>() {
+        override fun initialValue() = false
+    }
 
     /**
      * Subscribe to an event and provide an event handler for handling the event.

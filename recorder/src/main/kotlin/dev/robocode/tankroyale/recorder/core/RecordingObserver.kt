@@ -39,34 +39,47 @@ class RecordingObserver(
     private var recorder: GameRecorder? = null
 
     fun start() {
+        log.info("Starting RecordingObserver, connecting to: $url")
         WebSocketClientEvents.apply {
-            onOpen.subscribe(client) { log.info("Connection to server established") }
-            onMessage.subscribe(client) { onMessage(it) }
-            // Use Once to auto-unsubscribe BEFORE the handler runs, preventing recursion
+            onOpen += client to {
+                log.info("Connection to server established")
+            }
+            onMessage += client to { msg ->
+                processMessage(msg)
+            }
+
             onError += Once(client) { error ->
                 log.error("WebSocket error: ${error.message}", error)
-                // Unsubscribe remaining handlers (onOpen, onMessage) - onError already unsubscribed by Once
-                onOpen -= client
-                onMessage -= client
+                cleanup()
                 latch.countDown()
             }
             onClose += Once(client) {
                 log.info("Connection to server closed")
-                onOpen -= client
-                onMessage -= client
-                onError -= client
+                cleanup()
                 latch.countDown()
             }
+
             try {
-                client.open() // must be called AFTER onOpen.subscribe()
+                log.info("Opening WebSocket connection...")
+                client.open()
+                log.info("WebSocket connection initiated")
             } catch (e: Exception) {
                 log.error(
                     "Failed to connect to server at $url. Please ensure the server is running and the URL is correct.",
                     e
                 )
-                unsubscribeAll()
+                cleanup()
                 latch.countDown()
             }
+        }
+    }
+
+    private fun cleanup() {
+        WebSocketClientEvents.apply {
+            onOpen -= client
+            onMessage -= client
+            onError -= client
+            onClose -= client
         }
     }
 
@@ -78,26 +91,31 @@ class RecordingObserver(
         return null
     }
 
-    private fun onMessage(msg: String) {
-        log.debug("Received message: {}", msg)
+    private fun processMessage(msg: String) {
         val jsonElement: JsonElement = Json.parseToJsonElement(msg)
         val type = extractType(jsonElement)
+
         if (type == "ServerHandshake") {
+            log.debug("Processing ServerHandshake")
             handleServerHandshake(jsonElement)
         } else {
             if (startRecordingEvents.contains(type)) {
+                log.info("Received start recording event: {}", type)
                 startRecording()
                 log.info("Starting recording to file: ${recorder?.file?.absolutePath}")
             }
             if (eventsToRecord.contains(type)) {
                 // If we joined late and missed GameStarted, start recording on first recordable event
                 if (recorder == null) {
+                    log.info("Received recordable event before recording started: {}", type)
                     startRecording()
                     log.info("Starting recording to file: ${recorder?.file?.absolutePath}")
                 }
+                log.debug("Recording event: {}", type)
                 recorder?.record(jsonElement)
             }
             if (endRecordingEvents.contains(type)) {
+                log.info("Received end recording event: {}", type)
                 stopRecording()
             }
         }
@@ -178,16 +196,8 @@ class RecordingObserver(
         }
     }
 
-    private fun unsubscribeAll() {
-        WebSocketClientEvents.apply {
-            onOpen -= client
-            onMessage -= client
-            onError -= client
-        }
-    }
-
     fun stop() {
-        unsubscribeAll()
+        cleanup()
         stopRecording()
         if (client.isOpen()) {
             client.close()
