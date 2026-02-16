@@ -33,7 +33,7 @@ class Event<T> {
     fun fire(event: T)
     
     // Operator overloads
-    operator fun plusAssign(subscription: Subscribe<T>)  // Recommended
+    operator fun plusAssign(subscription: On<T>)  // Recommended for continuous
     operator fun plusAssign(subscription: Pair<Any, (T) -> Unit>)  // Alternative
     operator fun plusAssign(subscription: Once<T>)  // One-shot delivery
     operator fun minusAssign(owner: Any)
@@ -41,7 +41,7 @@ class Event<T> {
 }
 
 // Wrapper classes for operator syntax
-data class Subscribe<T>(val owner: Any, val handler: (T) -> Unit)
+data class On<T>(val owner: Any, val handler: (T) -> Unit)
 data class Once<T>(val owner: Any, val handler: (T) -> Unit)
 ```
 
@@ -61,19 +61,19 @@ data class Once<T>(val owner: Any, val handler: (T) -> Unit)
 
 The event system is used pervasively across the entire application with **two primary operator syntaxes**:
 
-### Recommended: Subscribe Wrapper
+### Recommended: On Wrapper for Continuous Subscriptions
 
-The `Subscribe<T>` wrapper provides **explicit, clear syntax** that makes event subscriptions immediately obvious:
+The `On<T>` wrapper provides **explicit, clear syntax** for continuous event subscriptions:
 
 ```kotlin
 // In an event handler object
 object MenuEventHandlers {
     init {
         MenuEventTriggers.apply {
-            onStartBattle += Subscribe(this) {
+            onStartBattle += On(this) {
                 startBattle()
             }
-            onHelp += Subscribe(this) {
+            onHelp += On(this) {
                 Browser.browse(HELP_URL)
             }
         }
@@ -83,22 +83,22 @@ object MenuEventHandlers {
 
 **Advantages:**
 - ✅ Explicit syntax (no implicit `to` operator)
-- ✅ Self-documenting at call sites
+- ✅ Short, memorable name (`On` reads naturally: "listen on this event")
 - ✅ Clear ownership through wrapper name
-- ✅ Consistent with `Once<T>` wrapper for one-shot handlers
+- ✅ Parallel naming with `Once<T>` for visual consistency (`On` for continuous, `Once` for one-shot)
 
 ### Alternative: Pair Syntax
 
 The `this to handler` pattern is still supported for backward compatibility:
 
 ```kotlin
-// Less explicit than Subscribe, but valid
+// Less explicit than On, but valid
 onStartBattle += this to { startBattle() }
 ```
 
-**Note:** While functional, this syntax is considered less clear and is **not recommended for new code**. Use `Subscribe` wrapper instead.
+**Note:** While functional, this syntax is considered less clear and is **not recommended for new code**. Use `On` wrapper instead.
 
-### One-Shot Handlers
+### One-Shot Handlers with Once Wrapper
 
 The `Once<T>` wrapper auto-unsubscribes after the first event:
 
@@ -108,6 +108,12 @@ GameEvents.onStarted += Once(this) { event ->
     initializeUI()
 }
 ```
+
+**Naming Symmetry:**
+| Pattern | Use Case | Behavior |
+|---------|----------|----------|
+| `On(this) { ... }` | Continuous subscription | Handler receives all events |
+| `Once(this) { ... }` | One-shot subscription | Handler auto-unsubscribes after first event |
 
 | Event Object | Location | Purpose | Events |
 |-------------|----------|---------|--------|

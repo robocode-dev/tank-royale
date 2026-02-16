@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicReference
  * ### Operator-based Subscription (Concise)
  *
  * ```kotlin
- * onMyEvent += Subscribe(this) { event -> handle(event) }   // recommended
+ * onMyEvent += On(this) { event -> handle(event) }          // recommended, continuous
  * onMyEvent += Once(this) { event -> handleOnce(event) }    // one-shot
  * onMyEvent += this to { event -> handle(event) }           // alternative
  * onMyEvent -= this                                         // explicit unsubscribe
@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicReference
  *     val onStopped by event<StopEvent>()
  * }
  *
- * MyEvents.onStarted += Subscribe(this) { event -> println("Started: ${event.timestamp}") }
+ * MyEvents.onStarted += On(this) { event -> println("Started: ${event.timestamp}") }
  * MyEvents.onStarted(StartEvent(System.currentTimeMillis()))
  * ```
  *
@@ -100,14 +100,14 @@ open class Event<T> {
     }
 
     /**
-     * Subscribe using operator syntax with [Subscribe] wrapper (recommended).
+     * Subscribe using operator syntax with [On] wrapper (recommended for continuous subscriptions).
      *
-     * Example: `myEvent += Subscribe(this) { event -> println("Event: $event") }`
+     * Example: `myEvent += On(this) { event -> println("Event: $event") }`
      *
-     * @param subscription a [Subscribe] instance containing the owner and handler lambda
-     * @see Subscribe for wrapper details
+     * @param subscription an [On] instance containing the owner and handler lambda
+     * @see On for wrapper details
      */
-    operator fun plusAssign(subscription: Subscribe<T>) {
+    operator fun plusAssign(subscription: On<T>) {
         subscribe(subscription.owner, eventHandler = subscription.handler)
     }
 

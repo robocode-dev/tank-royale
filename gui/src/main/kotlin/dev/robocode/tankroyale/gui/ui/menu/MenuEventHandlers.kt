@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.menu
 
-import dev.robocode.tankroyale.common.Subscribe
+import dev.robocode.tankroyale.common.On
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.about.AboutBox
@@ -26,48 +26,48 @@ object MenuEventHandlers {
 
     init {
         MenuEventTriggers.apply {
-            onSetupRules += Subscribe(this) {
+            onSetupRules += On(this) {
                 SetupRulesDialog.isVisible = true
             }
-            onStartBattle += Subscribe(this) {
+            onStartBattle += On(this) {
                 startBattle()
             }
-            onReplayFromFile += Subscribe(this) {
+            onReplayFromFile += On(this) {
                 startReplayFromFile()
             }
-            onShowServerLog += Subscribe(this) {
+            onShowServerLog += On(this) {
                 ServerLogFrame.isVisible = true
             }
-            onBotDirConfig += Subscribe(this) {
+            onBotDirConfig += On(this) {
                 BotRootDirectoriesConfigDialog.isVisible = true
             }
-            onStartServer += Subscribe(this) {
+            onStartServer += On(this) {
                 ServerEventTriggers.onStartLocalServer.fire(Unit)
                 ServerLogFrame.isVisible = true
             }
-            onStopServer += Subscribe(this) {
+            onStopServer += On(this) {
                 ServerEventTriggers.onStopLocalServer.fire(Unit)
                 ServerLogFrame.isVisible = false
             }
-            onRebootServer += Subscribe(this) {
+            onRebootServer += On(this) {
                 ServerEventTriggers.onRebootLocalServer.fire(false /* user initiated */)
             }
-            onServerConfig += Subscribe(this) {
+            onServerConfig += On(this) {
                 ServerConfigDialog().isVisible = true
             }
-            onDebugConfig += Subscribe(this) {
+            onDebugConfig += On(this) {
                 DebugConfigDialog.isVisible = true
             }
-            onSoundConfig += Subscribe(this) {
+            onSoundConfig += On(this) {
                 SoundConfigDialog.isVisible = true
             }
-            onGuiConfig += Subscribe(this) {
+            onGuiConfig += On(this) {
                 GuiConfigDialog.isVisible = true
             }
-            onHelp += Subscribe(this) {
+            onHelp += On(this) {
                 Browser.browse(HELP_URL)
             }
-            onAbout += Subscribe(this) {
+            onAbout += On(this) {
                 AboutBox.isVisible = true
             }
         }

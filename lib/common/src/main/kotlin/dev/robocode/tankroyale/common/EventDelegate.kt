@@ -86,9 +86,9 @@ class EventDelegate<T> {
  * }
  *
  * // Subscribe to events
- * MyEvents.onStarted += Subscribe(this) { event -> println("Started: ${event.timestamp}") }
- * MyEvents.onProgress += Subscribe(this) { event -> println("Progress: ${event.percent}%") }
- * MyEvents.onStopped += Subscribe(this) { event -> println("Stopped") }
+ * MyEvents.onStarted += On(this) { event -> println("Started: ${event.timestamp}") }
+ * MyEvents.onProgress += On(this) { event -> println("Progress: ${event.percent}%") }
+ * MyEvents.onStopped += On(this) { event -> println("Stopped") }
  *
  * // Fire events
  * MyEvents.onStarted(StartEvent(System.currentTimeMillis()))

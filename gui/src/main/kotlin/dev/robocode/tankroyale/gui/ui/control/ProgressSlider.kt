@@ -8,12 +8,39 @@ import dev.robocode.tankroyale.gui.ui.components.SkullComponent
 import java.awt.EventQueue
 import java.util.*
 import javax.swing.JComponent
+import javax.swing.plaf.basic.BasicSliderUI
 
 /**
  * Slider component for showing battle progress. This component allows users to
- * seek to specific positions in a replay by dragging the slider.
+ * seek specific positions in a replay by dragging the slider.
  */
 object ProgressSlider : RcSlider() {
+    /**
+     * SafeSliderUI prevents NPE from BasicSliderUI when labelTable is null but paintLabels is true.
+     * This handles edge cases during UI updates where the state might be temporarily inconsistent.
+     */
+    private class SafeSliderUI : BasicSliderUI {
+        constructor(slider: ProgressSlider) : super(slider)
+
+        override fun calculateTrackBuffer() {
+            try {
+                super.calculateTrackBuffer()
+            } catch (_: NullPointerException) {
+                // Prevent crash if labelTable is null but we're trying to calculate label geometry
+                trackBuffer = 0
+            }
+        }
+
+        override fun calculateGeometry() {
+            try {
+                super.calculateGeometry()
+            } catch (_: NullPointerException) {
+                // Handle NPE during geometry recalculation by using default geometry
+                trackBuffer = 0
+            }
+        }
+    }
+
     /**
      * LinkedDictionary wraps LinkedHashMap to preserve insertion order
      * while implementing the Dictionary interface required by JSlider.
@@ -40,13 +67,18 @@ object ProgressSlider : RcSlider() {
     // Flag to prevent recursive updates when programmatically changing the slider value
     private var updatingProgrammatically = false
 
+    override fun updateUI() {
+        // Use our safe UI delegate that handles null labelTable gracefully
+        setUI(SafeSliderUI(this))
+    }
+
     init {
         minimum = 0
         maximum = DEFAULT_MAX_VALUE
         value = 0
 
         paintTicks = true
-        paintLabels = true
+        paintLabels = false  // Start with false to avoid NPE when labelTable is null
         toolTipText = Hints.get("control.progress")
 
         // Initially hide the progress slider until we know the player supports seeking
@@ -54,7 +86,7 @@ object ProgressSlider : RcSlider() {
 
         ClientEvents.onPlayerChanged.subscribe(ProgressSlider) { player ->
             EventQueue.invokeLater {
-                // Reset to default scale when player changes
+                // Reset to a default scale when player changes
                 value = 0
 
                 // If this is a replay player, subscribe to its events
@@ -70,12 +102,17 @@ object ProgressSlider : RcSlider() {
                         .sortedWith(compareBy<Pair<Int, Boolean>> { it.second }.thenBy { it.first })
                         .forEach { (pos, roundEnd) -> labelTable.put(pos, SkullComponent(if (roundEnd) 1.0f else 0.6f)) }
                     this.labelTable = labelTable
+                    paintLabels = true
                 } else {
                     isVisible = false
                     currentReplayPlayer = null
                     maximum = DEFAULT_MAX_VALUE
-                    labelTable = null
+                    paintLabels = false
+                    this.labelTable = null
                 }
+                // Revalidate and repaint to apply changes safely
+                revalidate()
+                repaint()
             }
         }
         ClientEvents.onConnected.subscribe(ProgressSlider) {
@@ -87,7 +124,6 @@ object ProgressSlider : RcSlider() {
         ClientEvents.onGameEnded.subscribe(ProgressSlider) {
             setEnabled(false)
         }
-
 
         // Add change listener to handle user interaction
         addChangeListener {
@@ -105,7 +141,7 @@ object ProgressSlider : RcSlider() {
     }
 
     /**
-     * Updates the progress value within min/max range
+     * Updates the progress value within the min / max range
      */
     fun setProgress(progress: Int) {
         // Set flag to prevent recursive updates
