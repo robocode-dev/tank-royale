@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.client.WebSocketClientEvents
 import dev.robocode.tankroyale.client.model.MessageConstants
 import dev.robocode.tankroyale.client.model.ObserverHandshake
 import dev.robocode.tankroyale.client.model.ServerHandshake
+import dev.robocode.tankroyale.common.Once
 import dev.robocode.tankroyale.common.util.Version
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -41,14 +42,19 @@ class RecordingObserver(
         WebSocketClientEvents.apply {
             onOpen.subscribe(client) { log.info("Connection to server established") }
             onMessage.subscribe(client) { onMessage(it) }
-            onError.subscribe(client) {
-                log.error("WebSocket error: ${it.message}", it)
-                unsubscribeAll()
+            // Use Once to auto-unsubscribe BEFORE the handler runs, preventing recursion
+            onError += Once(client) { error ->
+                log.error("WebSocket error: ${error.message}", error)
+                // Unsubscribe remaining handlers (onOpen, onMessage) - onError already unsubscribed by Once
+                onOpen -= client
+                onMessage -= client
                 latch.countDown()
             }
-            onClose.subscribe(client) {
+            onClose += Once(client) {
                 log.info("Connection to server closed")
-                unsubscribeAll()
+                onOpen -= client
+                onMessage -= client
+                onError -= client
                 latch.countDown()
             }
             try {
