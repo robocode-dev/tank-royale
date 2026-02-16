@@ -1,4 +1,4 @@
-## 📦 0.36.0 - Team Indicator in Results – 15-Feb-2026
+## 📦 0.36.0 - Team Indicator in Results – TBD
 
 ### ✨ Features
 
@@ -15,6 +15,7 @@
     - Fixed the ANSI color parsing bug where text following ANSI RESET escape code was rendered in black instead
       of the default white color in the server console window. The RESET handler now correctly sets the foreground color
       to the default color (brightWhite) and preserves font family/size settings.
+    - Fixed replaying recorded battles where bot buttons, bot names, and bot versions were not visualized correctly.
 
 ## 📦 0.35.5 - Critical Timing Fixes – 13-Feb-2026
 
