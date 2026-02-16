@@ -173,9 +173,9 @@ class LiveBattlePlayer : BattlePlayer {
                     } catch (_: Exception) {
                         // to prevent redundant subscriptions which are kept both on failure, and
                         // new attempt to open the web socket
-                        onOpen.unsubscribe(ws)
-                        onMessage.unsubscribe(ws)
-                        onError.unsubscribe(ws)
+                        onOpen -= ws
+                        onMessage -= ws
+                        onError -= ws
                     }
                 }
             }
@@ -186,9 +186,9 @@ class LiveBattlePlayer : BattlePlayer {
         if (isConnected()) {
             WebSocketClientEvents.apply {
                 websocket?.let { ws ->
-                    onOpen.unsubscribe(ws)
-                    onMessage.unsubscribe(ws)
-                    onError.unsubscribe(ws)
+                    onOpen -= ws
+                    onMessage -= ws
+                    onError -= ws
                     ws.close()
                 }
             }

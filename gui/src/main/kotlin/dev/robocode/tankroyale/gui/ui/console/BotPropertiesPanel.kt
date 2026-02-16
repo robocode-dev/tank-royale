@@ -145,7 +145,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     }
 
     private fun unsubscribeEvents() {
-        ClientEvents.onTickEvent.unsubscribe(this)
+        ClientEvents.onTickEvent -= this
     }
 
     private fun updateBotState(tickEvent: TickEvent) {

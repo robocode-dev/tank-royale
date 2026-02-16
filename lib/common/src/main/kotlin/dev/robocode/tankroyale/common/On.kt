@@ -11,14 +11,18 @@ package dev.robocode.tankroyale.common
  * ## Usage
  *
  * ```kotlin
- * // Recommended—continuous subscription with clear intent:
+ * // Basic subscription with default priority:
  * myEvent += On(this) { event -> println("Event: $event") }
+ *
+ * // Subscription with custom priority (higher = earlier execution):
+ * myEvent += On(this, priority = 100) { event -> println("Priority event: $event") }
  *
  * // Alternative (less clear):
  * myEvent += this to { event -> println("Event: $event") }
  *
  * // Equivalent method-based syntax:
  * myEvent.subscribe(this) { event -> println("Event: $event") }
+ * myEvent.subscribe(this, priority = 100) { event -> println("Event: $event") }
  * ```
  *
  * ## When to Use
@@ -26,7 +30,18 @@ package dev.robocode.tankroyale.common
  * - **Recommended** when subscription syntax is preferred over method calls
  * - **Clearer** than `this to` for developers unfamiliar with Kotlin infix functions
  * - **Consistent** with [Once] wrapper for visual symmetry (`On` for continuous, `Once` for one-shot)
+ * - Use `priority` parameter when handler execution order matters
  * - Use regular `.subscribe()` method when you don't need operator syntax
+ *
+ * ## Priority Handling
+ *
+ * Higher priority values execute first. Default priority is 0.
+ *
+ * ```kotlin
+ * myEvent += On(this, priority = 100) { ... }  // Executes first
+ * myEvent += On(this, priority = 50) { ... }   // Executes second
+ * myEvent += On(this) { ... }                  // Executes third (default priority 0)
+ * ```
  *
  * ## Example: Menu Event Handler
  *
@@ -47,11 +62,16 @@ package dev.robocode.tankroyale.common
  *
  * @param T the event type
  * @param owner the owner (typically `this`), used as the weak reference key
+ * @param priority optional priority for event handler execution order (higher = earlier). Default is 0.
  * @param handler the event handler lambda to invoke on each event
  *
  * @see Event.plusAssign for the operator that processes this wrapper
  * @see Event.subscribe for the method-based equivalent
  * @see Once for a one-shot subscription wrapper
  */
-data class On<T>(val owner: Any, val handler: (T) -> Unit)
+data class On<T>(
+    val owner: Any,
+    val priority: Int = 0,
+    val handler: (T) -> Unit
+)
 

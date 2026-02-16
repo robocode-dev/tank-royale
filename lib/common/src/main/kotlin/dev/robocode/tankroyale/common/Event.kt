@@ -71,7 +71,7 @@ import java.util.concurrent.atomic.AtomicReference
  *
  * @param T the event type passed to handlers
  *
- * @see Subscribe for explicit wrapper syntax
+ * @see On for continuous event subscriptions (recommended)
  * @see Once for one-shot subscriptions
  * @see event for property delegation support
  */
@@ -86,11 +86,12 @@ open class Event<T> {
      * Subscribe to an event and provide an event handler for handling the event.
      * @param owner is the owner of the event handler, typically `this` instance.
      * @param once is a flag indication if the owner should automatically be unsubscribed when receiving an event.
+     * @param priority optional priority for handler execution order (higher = earlier). Default is 0.
      * @param eventHandler is the event handler for handling the event.
      */
-    fun subscribe(owner: Any, once: Boolean = false, eventHandler: (T) -> Unit) {
+    fun subscribe(owner: Any, once: Boolean = false, priority: Int = 0, eventHandler: (T) -> Unit) {
         // Use atomic CAS-based operation for thread-safe insertion
-        val handler = Handler(eventHandler, once)
+        val handler = Handler(eventHandler, once, priority)
         var done = false
         while (!done) {
             val current = eventHandlers.get()
@@ -103,12 +104,13 @@ open class Event<T> {
      * Subscribe using operator syntax with [On] wrapper (recommended for continuous subscriptions).
      *
      * Example: `myEvent += On(this) { event -> println("Event: $event") }`
+     * Example: `myEvent += On(this, priority = 100) { event -> println("Priority event: $event") }`
      *
-     * @param subscription an [On] instance containing the owner and handler lambda
+     * @param subscription an [On] instance containing the owner, optional priority, and handler lambda
      * @see On for wrapper details
      */
     operator fun plusAssign(subscription: On<T>) {
-        subscribe(subscription.owner, eventHandler = subscription.handler)
+        subscribe(subscription.owner, priority = subscription.priority, eventHandler = subscription.handler)
     }
 
     /**
@@ -130,12 +132,13 @@ open class Event<T> {
      * The handler will be automatically unsubscribed after it receives the first event.
      *
      * Example: `myEvent += Once(this) { event -> println("Received once: $event") }`
+     * Example: `myEvent += Once(this, priority = 100) { event -> println("Priority once: $event") }`
      *
-     * @param subscription an [Once] instance containing the owner and handler lambda
+     * @param subscription an [Once] instance containing the owner, optional priority, and handler lambda
      * @see Once for wrapper details
      */
     operator fun plusAssign(subscription: Once<T>) {
-        subscribe(subscription.owner, once = true, eventHandler = subscription.handler)
+        subscribe(subscription.owner, once = true, priority = subscription.priority, eventHandler = subscription.handler)
     }
 
     /**
@@ -162,17 +165,21 @@ open class Event<T> {
 
     /**
      * Fires an event to all subscribed handlers.
+     * Handlers are executed in priority order (higher priority first).
      * @param event is the source event instance for the event handlers.
      */
     fun fire(event: T) {
         // Atomic lock-free read of current handlers, then snapshot via toSet() to prevent
         // ConcurrentModificationException even if handlers are modified during fire
-        eventHandlers.get().entries.toSet().forEach { entry ->
-            entry.value.apply {
-                if (once) unsubscribe(entry.key)
-                eventHandler.invoke(event)
+        // Sort by priority descending (higher priority executes first)
+        eventHandlers.get().entries.toSet()
+            .sortedByDescending { it.value.priority }
+            .forEach { entry ->
+                entry.value.apply {
+                    if (once) this@Event -= entry.key
+                    eventHandler.invoke(event)
+                }
             }
-        }
     }
 
     /**
@@ -189,7 +196,7 @@ open class Event<T> {
      */
     class Handler<T>(
         val eventHandler: (T) -> Unit,
-        val once: Boolean = false
+        val once: Boolean = false,
+        val priority: Int = 0
     )
 }
-

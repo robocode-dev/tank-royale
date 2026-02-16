@@ -143,17 +143,17 @@ object Client {
     }
 
     private fun unsubscribeFromPlayerEvents(player: BattlePlayer) {
-        player.onConnected.unsubscribe(Client)
-        player.onGameStarted.unsubscribe(Client)
-        player.onGameEnded.unsubscribe(Client)
-        player.onGameAborted.unsubscribe(Client)
-        player.onGamePaused.unsubscribe(Client)
-        player.onGameResumed.unsubscribe(Client)
-        player.onRoundStarted.unsubscribe(Client)
-        player.onRoundEnded.unsubscribe(Client)
-        player.onTickEvent.unsubscribe(Client)
-        player.onBotListUpdate.unsubscribe(Client)
-        player.onStdOutputUpdated.unsubscribe(Client)
-        player.onSeekToTurn.unsubscribe(Client)
+        player.onConnected -= Client
+        player.onGameStarted -= Client
+        player.onGameEnded -= Client
+        player.onGameAborted -= Client
+        player.onGamePaused -= Client
+        player.onGameResumed -= Client
+        player.onRoundStarted -= Client
+        player.onRoundEnded -= Client
+        player.onTickEvent -= Client
+        player.onBotListUpdate -= Client
+        player.onStdOutputUpdated -= Client
+        player.onSeekToTurn -= Client
     }
 }

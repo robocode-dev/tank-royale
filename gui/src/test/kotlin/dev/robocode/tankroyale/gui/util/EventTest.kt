@@ -67,7 +67,7 @@ class EventTest : FunSpec({
                         repeat(200) {
                             val owner = Any()
                             event.subscribe(owner) { }
-                            event.unsubscribe(owner)
+                            event -= owner
                         }
                         doneLatch.countDown()
                     }

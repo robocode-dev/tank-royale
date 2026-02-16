@@ -12,12 +12,16 @@ package dev.robocode.tankroyale.common
  * ```kotlin
  * // Subscribe to receive exactly one event, then auto-unsubscribe
  * myEvent += Once(this) { event -> println("Received once: $event") }
+ *
+ * // With custom priority (higher = earlier execution)
+ * myEvent += Once(this, priority = 100) { event -> println("Priority once: $event") }
  * ```
  *
  * Equivalent to:
  *
  * ```kotlin
  * myEvent.subscribe(this, once = true) { event -> println("Received once: $event") }
+ * myEvent.subscribe(this, once = true, priority = 100) { event -> println("Priority once: $event") }
  * ```
  *
  * ## How It Works
@@ -54,10 +58,15 @@ package dev.robocode.tankroyale.common
  *
  * @param T the event type
  * @param owner the owner (typically `this`), used as the weak reference key
+ * @param priority optional priority for handler execution order (higher = earlier). Default is 0.
  * @param handler the event handler lambda to invoke on the first event
  *
  * @see Event.plusAssign for the operator that processes this wrapper
  * @see Event.subscribe with `once=true` for the method-based equivalent
  */
-data class Once<T>(val owner: Any, val handler: (T) -> Unit)
+data class Once<T>(
+    val owner: Any,
+    val priority: Int = 0,
+    val handler: (T) -> Unit
+)
 

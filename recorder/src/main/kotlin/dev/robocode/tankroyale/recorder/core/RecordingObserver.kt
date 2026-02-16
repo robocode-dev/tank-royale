@@ -174,9 +174,9 @@ class RecordingObserver(
 
     private fun unsubscribeAll() {
         WebSocketClientEvents.apply {
-            onOpen.unsubscribe(client)
-            onMessage.unsubscribe(client)
-            onError.unsubscribe(client)
+            onOpen -= client
+            onMessage -= client
+            onError -= client
         }
     }
 

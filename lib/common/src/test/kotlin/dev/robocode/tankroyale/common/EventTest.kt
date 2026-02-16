@@ -38,7 +38,7 @@ class EventTest : FunSpec({
 
             event.subscribe(this) { result.add(it) }
             event.fire("test1")
-            event.unsubscribe(this)
+            event -= this
             event.fire("test2")
 
             result shouldBe listOf("test1")
@@ -205,7 +205,7 @@ class EventTest : FunSpec({
             val subscriber = object {
                 fun handle(msg: String) {
                     result.add(msg)
-                    event.unsubscribe(this)
+                    event -= this
                 }
             }
 
