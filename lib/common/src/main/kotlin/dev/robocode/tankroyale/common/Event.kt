@@ -92,11 +92,13 @@ open class Event<T> {
     fun subscribe(owner: Any, once: Boolean = false, priority: Int = 0, eventHandler: (T) -> Unit) {
         // Use atomic CAS-based operation for thread-safe insertion
         val handler = Handler(eventHandler, once, priority)
-        var done = false
-        while (!done) {
+        while (true) {
             val current = eventHandlers.get()
-            current[owner] = handler
-            done = true
+            val updated = WeakHashMap(current)
+            updated[owner] = handler
+            if (eventHandlers.compareAndSet(current, updated)) {
+                break
+            }
         }
     }
 
@@ -146,7 +148,14 @@ open class Event<T> {
      * @param owner is the owner of the event handler, typically `this` instance.
      */
     fun unsubscribe(owner: Any) {
-        eventHandlers.get().remove(owner)
+        while (true) {
+            val current = eventHandlers.get()
+            val updated = WeakHashMap(current)
+            updated.remove(owner)
+            if (eventHandlers.compareAndSet(current, updated)) {
+                break
+            }
+        }
     }
 
     /**
