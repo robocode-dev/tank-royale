@@ -86,8 +86,8 @@ object ReplayFileChooser {
 
             // Create and start the replay player
             val replayPlayer = ReplayBattlePlayer(file)
+            // setPlayer() internally calls player.start(), so don't call it again
             Client.setPlayer(replayPlayer)
-            Client.start()
 
             return true
 

@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.common.Event
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.ui.console.BotConsoleFrame
 import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
+import dev.robocode.tankroyale.gui.util.EDT
 import java.awt.Dimension
 import javax.swing.BoxLayout
 import javax.swing.JButton
@@ -32,19 +33,21 @@ object SidePanel : JPanel() {
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
-        removeAll()
+        EDT.enqueue {
+            removeAll()
+            buttonsMap.clear()
 
-        buttonsMap.clear()
-
-        gameStartedEvent.participants.forEach { bot ->
-            val button = BotButton(bot).apply {
-                addActionListener { buttonsEvent.fire(this) }
+            gameStartedEvent.participants.forEach { bot ->
+                val button = BotButton(bot).apply {
+                    addActionListener { buttonsEvent.fire(this) }
+                }
+                buttonsMap[bot.displayName] = button
+                add(button)
             }
-            buttonsMap[bot.displayName] = button
-
-            add(button)
 
             revalidate()
+            repaint()
+            parent?.revalidate()
         }
     }
 

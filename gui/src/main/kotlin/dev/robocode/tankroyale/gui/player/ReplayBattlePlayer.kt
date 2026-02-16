@@ -50,7 +50,6 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
     val onReplayEvent = Event<Int>()
 
     init {
-        // Load messages from the replay file
         val fileReader = ReplayFileReader(replayFile)
         if (fileReader.isValid()) {
             val events = fileReader.loadMessages()
@@ -73,8 +72,6 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         } else {
             throw IllegalArgumentException("Invalid replay file: ${replayFile.absolutePath}")
         }
-
-        // TPS changes are now handled by BattleManager calling changeTps()
     }
 
     fun getTotalRounds() = turns.size
@@ -100,14 +97,64 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         isRunning.set(true)
         isPaused.set(false)
 
-        // Clear stdout/stderr state
         savedStdOutput.clear()
         savedStdError.clear()
 
-        // Emit "connected" event to simulate connection
         onConnected.fire(Unit)
 
-        // Start processing messages
+        // Generate GameStartedEvent from first TickEvent if it wasn't in the file
+        if (currentGameSetup == null && turns.isNotEmpty()) {
+            val firstTickEvent = turns[0].firstOrNull { it is TickEvent } as TickEvent?
+            if (firstTickEvent != null) {
+                val syntheticParticipants = firstTickEvent.botStates.map { botState ->
+                    Participant(
+                        id = botState.id,
+                        name = "Bot ${botState.id}",
+                        version = "1.0",
+                        authors = emptyList(),
+                        description = "",
+                        homepage = null,
+                        countryCodes = emptyList(),
+                        gameTypes = emptySet(),
+                        platform = "UNKNOWN",
+                        programmingLang = "UNKNOWN",
+                        initialPosition = null,
+                        teamId = null,
+                        teamName = null,
+                        teamVersion = null,
+                        sessionId = botState.sessionId
+                    )
+                }.toList()
+
+                val setup = GameSetup(
+                    gameType = "CLASSIC",
+                    arenaWidth = 800,
+                    isArenaWidthLocked = false,
+                    arenaHeight = 600,
+                    isArenaHeightLocked = false,
+                    minNumberOfParticipants = 2,
+                    isMinNumberOfParticipantsLocked = false,
+                    maxNumberOfParticipants = null,
+                    isMaxNumberOfParticipantsLocked = false,
+                    numberOfRounds = 1,
+                    isNumberOfRoundsLocked = false,
+                    gunCoolingRate = 0.1,
+                    isGunCoolingRateLocked = false,
+                    maxInactivityTurns = 10000,
+                    isMaxInactivityTurnsLocked = false,
+                    turnTimeout = 30000,
+                    isTurnTimeoutLocked = false,
+                    readyTimeout = 30000,
+                    isReadyTimeoutLocked = false,
+                    defaultTurnsPerSecond = 30
+                )
+
+                currentGameSetup = setup
+                participants = syntheticParticipants
+                onGameStarted.fire(GameStartedEvent(setup, syntheticParticipants))
+            }
+        }
+
         startPlayback()
     }
 
