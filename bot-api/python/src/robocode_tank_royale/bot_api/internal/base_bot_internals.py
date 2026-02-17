@@ -4,6 +4,7 @@ import traceback
 import time
 import math
 import os
+import sys
 import threading
 from typing import Any, Optional, Set, Sequence
 
@@ -25,6 +26,7 @@ from .event_queue import EventQueue
 from .env_vars import EnvVars
 from .internal_event_handlers import InternalEventHandlers
 from .json_util import to_json
+from .recording_text_writer import RecordingTextWriter
 from .stop_resume_listener_abs import StopResumeListenerABC
 from .thread_interrupted_exception import ThreadInterruptedException
 from .websocket_handler import WebSocketHandler
@@ -96,6 +98,10 @@ class BaseBotInternals:
         self._ws_loop: Optional[asyncio.AbstractEventLoop] = None
         self._ws_loop_ready_event: threading.Event = threading.Event()
 
+        # Recording text writers for capturing stdout/stderr
+        self._recording_stdout: Optional[RecordingTextWriter] = None
+        self._recording_stderr: Optional[RecordingTextWriter] = None
+
         # Bot thread (runs bot.run() and bot.go())
         self.thread: Optional[threading.Thread] = None
         self.stop_resume_listener: Optional[StopResumeListenerABC] = None
@@ -123,8 +129,16 @@ class BaseBotInternals:
         return os.getenv("SERVER_SECRET", os.getenv("SERVER_SECRET"))
 
     def _init(self) -> None:
-        # Skipping redirectStdOutAndStdErr for now
+        self._redirect_stdout_and_stderr()
         self._subscribe_to_events()
+
+    def _redirect_stdout_and_stderr(self) -> None:
+        """Redirect stdout and stderr to recording writers for sending to server."""
+        self._recording_stdout = RecordingTextWriter(sys.stdout)
+        self._recording_stderr = RecordingTextWriter(sys.stderr)
+
+        sys.stdout = self._recording_stdout
+        sys.stderr = self._recording_stderr
 
     def _subscribe_to_events(self) -> None:
         self.internal_event_handlers.on_round_started.subscribe(
@@ -434,9 +448,20 @@ class BaseBotInternals:
 
 
     def _transfer_std_out_to_bot_intent(self) -> None:
-        # Stdout/stderr redirection and inclusion in intent might be handled differently in Python
-        # For now, this is a placeholder.
-        pass
+        """Transfer captured stdout/stderr to bot intent for sending to server."""
+        if self._recording_stdout:
+            output = self._recording_stdout.read_next()
+            if output:
+                self.data.bot_intent.std_out = output
+            else:
+                self.data.bot_intent.std_out = None
+
+        if self._recording_stderr:
+            error = self._recording_stderr.read_next()
+            if error:
+                self.data.bot_intent.std_err = error
+            else:
+                self.data.bot_intent.std_err = None
 
     def _render_graphics_to_bot_intent(self) -> None:
         current_tick = self.data.current_tick_or_null
