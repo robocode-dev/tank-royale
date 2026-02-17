@@ -1,3 +1,14 @@
+## 📦 0.36.1 - .NET Console Output Thread Safety – TBD
+
+### 🐞 Bug Fixes
+
+- Bot API (.NET):
+    - #188: Fixed thread-safety issue in `RecordingTextWriter` where concurrent `Console.WriteLine` calls from event 
+      handlers (e.g., `OnScannedBot`) could cause race conditions, leading to performance degradation, radar lock loss, 
+      and eventual event queue overflow ("Maximum event queue size has been reached: 256"). The fix adds proper locking 
+      around all write and read operations, matching the thread-safety pattern used in the Java implementation.
+    - Added thread-safety test to verify `RecordingTextWriter` handles concurrent writes correctly.
+
 ## 📦 0.36.0 - Team Indicator in Results – 16-Feb-2026
 
 ### ✨ Features
