@@ -1,0 +1,7 @@
+============================================================
+Testing stdout capture and transfer to BotIntent
+============================================================
+Creating bot info...
+Creating bot...
+Checking stdout type: <class 'robocode_tank_royale.bot_api.internal.recording_text_writer.RecordingTextWriter'>
+ERROR: 'charmap' codec can't encode character '\u2713' in position 0: character maps to <undefined>
