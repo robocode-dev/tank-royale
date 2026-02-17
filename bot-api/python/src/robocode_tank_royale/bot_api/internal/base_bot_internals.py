@@ -451,17 +451,13 @@ class BaseBotInternals:
         """Transfer captured stdout/stderr to bot intent for sending to server."""
         if self._recording_stdout:
             output = self._recording_stdout.read_next()
-            if output:
-                self.data.bot_intent.std_out = output
-            else:
-                self.data.bot_intent.std_out = None
+            # Always set the value, even if empty (matches Java implementation)
+            self.data.bot_intent.std_out = output if output else None
 
         if self._recording_stderr:
             error = self._recording_stderr.read_next()
-            if error:
-                self.data.bot_intent.std_err = error
-            else:
-                self.data.bot_intent.std_err = None
+            # Always set the value, even if empty (matches Java implementation)
+            self.data.bot_intent.std_err = error if error else None
 
     def _render_graphics_to_bot_intent(self) -> None:
         current_tick = self.data.current_tick_or_null
