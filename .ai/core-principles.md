@@ -44,6 +44,16 @@
 
 ## Commit and Communication Standards
 
+**Git workflow (CRITICAL)**
+
+- ✅ Create/edit files as requested
+- ✅ Stage changes with `git add` if requested  
+- ✅ Create branches if requested
+- ❌ **NEVER run `git commit` without explicit user approval**
+- ❌ **NEVER run `git push` without explicit user approval**
+- ⚠️ **ALWAYS ask before committing:** "Ready to commit these changes?"
+- The user controls what goes into git history
+
 **Atomic commits**
 
 - Small, focused commits that explain WHY, not just what
