@@ -207,7 +207,6 @@ class WebSocketHandler:
         """Handle a game started event from the server."""
         assert self.websocket is not None, "WebSocket connection is not established."
         game_started_event: GameStartedEventForBot = from_json(json_msg)  # type: ignore
-        print(game_started_event)
         self.base_bot_internal_data.my_id = game_started_event.my_id
 
         if game_started_event.teammate_ids is not None:

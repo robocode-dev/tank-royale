@@ -9,6 +9,14 @@
       around all write and read operations, matching the thread-safety pattern used in the Java implementation.
     - Added thread-safety test to verify `RecordingTextWriter` handles concurrent writes correctly.
 
+- Bot API (Python):
+    - Implemented missing stdout/stderr capture and redirection to server. Python bots can now use `print()` statements
+      and the output will be displayed in the Bot Console window, matching the functionality available in Java and .NET.
+      This feature was intended since v0.19.0 but was never implemented (placeholder only).
+    - Added `RecordingTextWriter` class with thread-safe output capture.
+    - Added comprehensive tests for stdout/stderr capture (unit and integration tests).
+    - Removed debug `print(game_started_event)` statement that was printing object representation to console.
+
 ## 📦 0.36.0 - Team Indicator in Results – 16-Feb-2026
 
 ### ✨ Features
