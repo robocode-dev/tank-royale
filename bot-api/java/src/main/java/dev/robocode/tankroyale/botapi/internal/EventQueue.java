@@ -215,7 +215,7 @@ final class EventQueue {
 
     private void addEvent(BotEvent botEvent) {
         synchronized (events) {
-            if (events.size() <= MAX_QUEUE_SIZE) {
+            if (events.size() < MAX_QUEUE_SIZE) {
                 events.add(botEvent);
             } else {
                 System.err.println("Maximum event queue size has been reached: " + MAX_QUEUE_SIZE);

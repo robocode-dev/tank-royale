@@ -176,7 +176,7 @@ class EventQueue:
 
     def add_event(self, bot_event: BotEvent):
         with self.events_lock:
-            if len(self.events) <= EventQueue.MAX_QUEUE_SIZE:
+            if len(self.events) < EventQueue.MAX_QUEUE_SIZE:
                 self.events.append(bot_event)
             else:
                 print(f"Maximum event queue size has been reached: {EventQueue.MAX_QUEUE_SIZE}")

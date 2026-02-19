@@ -280,7 +280,7 @@ sealed class EventQueue : IComparer<BotEvent>
     {
         lock (_events)
         {
-            if (_events.Count <= MaxQueueSize)
+            if (_events.Count < MaxQueueSize)
             {
                 _events.Add(botEvent);
             }
