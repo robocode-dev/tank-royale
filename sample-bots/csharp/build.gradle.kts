@@ -1,5 +1,4 @@
 import build.csproj.generateBotCsprojFile
-import java.io.PrintWriter
 import java.nio.file.Files.*
 import java.nio.file.Path
 
@@ -69,9 +68,13 @@ tasks {
         }
     }
 
-    named("build") {
+    val prepareArchive by registering {
         doLast {
             prepareBotFiles()
         }
+    }
+
+    named("build") {
+        dependsOn(prepareArchive)
     }
 }

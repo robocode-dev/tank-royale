@@ -82,12 +82,15 @@ tasks {
         into(libDir)
     }
 
-    named("build") {
+    val prepareArchive by registering {
         dependsOn(copyBotApiJar)
-
         doLast {
             prepareBotFiles()
         }
+    }
+
+    named("build") {
+        dependsOn(prepareArchive)
     }
 
     // Configure the maven publication to use the zip artifact
