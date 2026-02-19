@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿﻿using System.IO;
 using System.Text;
 
 namespace Robocode.TankRoyale.BotApi.Internal;
@@ -59,23 +59,6 @@ class RecordingTextWriter : TextWriter
         }
     }
 
-    public override void Write(string value)
-    {
-        _textWriter.Write(value);
-        _stringWriter.Write(value);
-    }
-
-    public override void Write(char[] buffer, int index, int count)
-    {
-        _textWriter.Write(buffer, index, count);
-        _stringWriter.Write(buffer, index, count);
-    }
-
-    public override void WriteLine(string value)
-    {
-        _textWriter.WriteLine(value);
-        _stringWriter.WriteLine(value);
-    }
 
     public override Encoding Encoding => _textWriter.Encoding;
 
