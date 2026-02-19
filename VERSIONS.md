@@ -17,6 +17,21 @@
     - Added comprehensive tests for stdout/stderr capture (unit and integration tests).
     - Removed debug `print(game_started_event)` statement that was printing object representation to console.
 
+## 📦 0.36.1 - Console Output Performance Fix – TBD
+
+### 🐞 Bug Fixes
+
+- Bot API (.NET):
+    - #188: Fixed event queue overflow issue when using `Console.WriteLine()` in event handlers. The `RecordingTextWriter`
+      now overrides `Write(string)`, `WriteLine(string)`, and `Write(char[], int, int)` methods to avoid slow
+      character-by-character writes that could block the bot thread and cause events to accumulate. This resolves the
+      "Maximum event queue size has been reached: 256" error that occurred when bots used console output for debugging.
+
+- Bot API (All platforms):
+    - Fixed off-by-one error in event queue size check. The queue now correctly enforces a maximum of 256 events
+      instead of allowing 257 events before showing the error message. Changed the boundary check from `<= MAX_QUEUE_SIZE`
+      to `< MAX_QUEUE_SIZE` in Java, .NET, and Python implementations.
+
 ## 📦 0.36.0 - Team Indicator in Results – 16-Feb-2026
 
 ### ✨ Features

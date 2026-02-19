@@ -170,4 +170,50 @@ public class RecordingTextWriterTest
                 $"Thread {i} should have all its writes captured");
         }
     }
+
+    [Test]
+    public void ShouldHandleWriteLineEfficiently()
+    {
+        // Arrange
+        using var stringWriter = new StringWriter();
+        var recordingWriter = new RecordingTextWriter(stringWriter);
+
+        // Act
+        recordingWriter.WriteLine("Test message");
+        var output = recordingWriter.ReadNext();
+
+        // Assert - WriteLine should write the string and newline
+        Assert.That(output, Is.EqualTo("Test message" + Environment.NewLine));
+    }
+
+    [Test]
+    public void ShouldHandleWriteStringEfficiently()
+    {
+        // Arrange
+        using var stringWriter = new StringWriter();
+        var recordingWriter = new RecordingTextWriter(stringWriter);
+
+        // Act
+        recordingWriter.Write("Test string");
+        var output = recordingWriter.ReadNext();
+
+        // Assert - Write(string) should write the entire string at once
+        Assert.That(output, Is.EqualTo("Test string"));
+    }
+
+    [Test]
+    public void ShouldHandleWriteCharArrayEfficiently()
+    {
+        // Arrange
+        using var stringWriter = new StringWriter();
+        var recordingWriter = new RecordingTextWriter(stringWriter);
+        var chars = new[] { 'T', 'e', 's', 't' };
+
+        // Act
+        recordingWriter.Write(chars, 0, chars.Length);
+        var output = recordingWriter.ReadNext();
+
+        // Assert - Write(char[], int, int) should write the char array efficiently
+        Assert.That(output, Is.EqualTo("Test"));
+    }
 }
