@@ -91,9 +91,11 @@ class EventQueue:
         self.add_custom_events()
         self.sort_events()
 
-        while self.is_bot_running():
+        while True:
             current_event = self.peek_next_event()
             if current_event is None:
+                break
+            if not self.is_bot_running() and not current_event.critical:
                 break
             if self.get_priority(current_event) < self.current_top_event_priority:
                 break
