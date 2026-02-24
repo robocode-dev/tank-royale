@@ -1,4 +1,4 @@
-## 📦 0.36.1 - WonRoundEvent and Python Console Output - TBD
+## 📦 0.36.1 - WonRoundEvent and Python Console Output - 24-Feb-2026
 
 ### 🐞 Bug Fixes
 
