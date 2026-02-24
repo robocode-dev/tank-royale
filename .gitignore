@@ -30,3 +30,5 @@ generated/
 /*.battle.gz
 
 /.kotlin
+
+/.claude/settings.local.json
