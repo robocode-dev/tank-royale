@@ -2,11 +2,6 @@
 
 ### 🐞 Bug Fixes
 
-- Bot APIs (Java, C#, Python):
-    - Fixed `WonRoundEvent` not being triggered when a bot wins a round. The `onWonRound()` handler is now invoked even
-      if the server doesn't send a separate `WonRoundEvent`, by checking the rank in `RoundEndedEvent` and publishing
-      `WonRoundEvent` when rank equals 1.
-
 - Bot API (.NET):
     - #188: Fixed thread-safety issue in `RecordingTextWriter` where concurrent `Console.WriteLine` calls from event
       handlers (e.g., `OnScannedBot`) could cause race conditions, leading to performance degradation, radar lock loss,
@@ -14,14 +9,19 @@
       around all write and read operations, matching the thread-safety pattern used in the Java implementation.
     - Added thread-safety test to verify `RecordingTextWriter` handles concurrent writes correctly.
 
+- Bot APIs (Java, C#, Python):
+    - #190: Fixed `WonRoundEvent` not being triggered when a bot wins a round. The `onWonRound()` handler is now invoked
+      even if the server doesn't send a separate `WonRoundEvent`, by checking the rank in `RoundEndedEvent` and
+      publishing `WonRoundEvent` when rank equals 1.
+
 - Bot API (Python):
     - Implemented missing stdout/stderr redirection to bot console. Python bots can now use `print()` statements and see
       output in the Bot Console, matching Java and C# functionality. This feature was missing since v0.19.0.
 
 - Bot API (All platforms):
-    - Fixed off-by-one error in event queue size check. The queue now correctly enforces a maximum of 256 events
-      instead of allowing 257 events before showing the error message. Changed the boundary check from `<= MAX_QUEUE_SIZE`
-      to `< MAX_QUEUE_SIZE` in Java, .NET, and Python implementations.
+    - Fixed the one-by-one error in the event queue size check. The queue now correctly enforces a maximum of 256 events
+      instead of allowing 257 events before showing the error message. Changed the boundary check from
+      `<= MAX_QUEUE_SIZE` to `< MAX_QUEUE_SIZE` in Java, .NET, and Python implementations.
 
 ## 📦 0.36.0 - Team Indicator in Results – 16-Feb-2026
 
