@@ -296,6 +296,13 @@ class ProcessManager {
             val processBuilder = createProcessBuilder(scriptPath.toString())
             processBuilder.directory(scriptPath.parent.toFile())
 
+            // Bug fix #188:
+            // Discard stdout from bot processes. Bot APIs (Java, .NET, Python) write to the OS stdout pipe
+            // AND capture to an in-memory buffer for delivery via WebSocket. If nothing reads the OS pipe,
+            // the pipe buffer fills up (~4 KB) and writes block, freezing the bot thread.
+            // The GUI already receives bot stdout via WebSocket (BotIntent.stdOut), so the raw pipe is redundant.
+            processBuilder.redirectOutput(ProcessBuilder.Redirect.DISCARD)
+
             // Set up environment variables
             val envMap = processBuilder.environment()
             setupBotEnvironment(envMap, botEntry, team)
