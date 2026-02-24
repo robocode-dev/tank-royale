@@ -1,3 +1,16 @@
+## 📦 0.36.1 - WonRoundEvent and Python Console Output - 24-Feb-2026
+
+### 🐞 Bug Fixes
+
+- Bot APIs (Java, C#, Python):
+    - Fixed `WonRoundEvent` not being triggered when a bot wins a round. The `onWonRound()` handler is now invoked even
+      if the server doesn't send a separate `WonRoundEvent`, by checking the rank in `RoundEndedEvent` and publishing
+      `WonRoundEvent` when rank equals 1.
+
+- Bot API (Python):
+    - Implemented missing stdout/stderr redirection to bot console. Python bots can now use `print()` statements and see
+      output in the Bot Console, matching Java and C# functionality. This feature was missing since v0.19.0.
+
 ## 📦 0.36.0 - Team Indicator in Results – 16-Feb-2026
 
 ### ✨ Features

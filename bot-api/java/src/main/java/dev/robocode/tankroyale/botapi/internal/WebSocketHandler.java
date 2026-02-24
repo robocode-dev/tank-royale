@@ -18,8 +18,8 @@ import dev.robocode.tankroyale.schema.BotReady;
 import dev.robocode.tankroyale.schema.GameEndedEventForBot;
 import dev.robocode.tankroyale.schema.GameStartedEventForBot;
 import dev.robocode.tankroyale.schema.Message;
-import dev.robocode.tankroyale.schema.ServerHandshake;
 import dev.robocode.tankroyale.schema.TickEventForBot;
+import dev.robocode.tankroyale.schema.ServerHandshake;
 
 import java.net.URI;
 import java.net.http.WebSocket;
@@ -172,6 +172,13 @@ final class WebSocketHandler implements WebSocket.Listener {
 
         botEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
         internalEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
+
+        // If the round results indicate this bot won (rank == 1), also publish a WonRoundEvent so
+        // the bot's onWonRound handler is invoked even if the server doesn't send a separate WonRoundEvent.
+        var results = mappedRoundEndedEvent.getResults();
+        if (results != null && results.getRank() == 1) {
+            botEventHandlers.onWonRound.publish(new dev.robocode.tankroyale.botapi.events.WonRoundEvent(mappedRoundEndedEvent.getTurnNumber()));
+        }
     }
 
     private void handleGameStarted(JsonObject jsonMsg) {
