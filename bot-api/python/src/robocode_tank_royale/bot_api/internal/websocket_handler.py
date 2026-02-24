@@ -203,6 +203,12 @@ class WebSocketHandler:
         self.bot_event_handlers.on_round_ended.publish(round_ended_event)
         self.internal_event_handlers.on_round_ended.publish(round_ended_event)
 
+        # If the round results indicate this bot won (rank == 1), also publish a WonRoundEvent so
+        # the bot's onWonRound handler is invoked even if the server doesn't send a separate WonRoundEvent.
+        if results is not None and results.rank == 1:
+            from ..events import WonRoundEvent
+            self.bot_event_handlers.on_won_round.publish(WonRoundEvent(schema_evt.turn_number))
+
     async def handle_game_started(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a game started event from the server."""
         assert self.websocket is not None, "WebSocket connection is not established."

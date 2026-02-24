@@ -98,10 +98,6 @@ class BaseBotInternals:
         self._ws_loop: Optional[asyncio.AbstractEventLoop] = None
         self._ws_loop_ready_event: threading.Event = threading.Event()
 
-        # Recording text writers for capturing stdout/stderr
-        self._recording_stdout: Optional[RecordingTextWriter] = None
-        self._recording_stderr: Optional[RecordingTextWriter] = None
-
         # Bot thread (runs bot.run() and bot.go())
         self.thread: Optional[threading.Thread] = None
         self.stop_resume_listener: Optional[StopResumeListenerABC] = None
@@ -116,6 +112,10 @@ class BaseBotInternals:
 
         # Movement reset deferral flag (mirrors Java/.NET movementResetPending)
         self._movement_reset_pending: bool = False
+
+        # Recording text writers for capturing stdout/stderr
+        self._recording_stdout: Optional[RecordingTextWriter] = None
+        self._recording_stderr: Optional[RecordingTextWriter] = None
 
         self._init()
 
@@ -451,13 +451,17 @@ class BaseBotInternals:
         """Transfer captured stdout/stderr to bot intent for sending to server."""
         if self._recording_stdout:
             output = self._recording_stdout.read_next()
-            # Always set the value, even if empty (matches Java implementation)
-            self.data.bot_intent.std_out = output if output else None
+            if output:
+                self.data.bot_intent.std_out = output
+            else:
+                self.data.bot_intent.std_out = None
 
         if self._recording_stderr:
             error = self._recording_stderr.read_next()
-            # Always set the value, even if empty (matches Java implementation)
-            self.data.bot_intent.std_err = error if error else None
+            if error:
+                self.data.bot_intent.std_err = error
+            else:
+                self.data.bot_intent.std_err = None
 
     def _render_graphics_to_bot_intent(self) -> None:
         current_tick = self.data.current_tick_or_null

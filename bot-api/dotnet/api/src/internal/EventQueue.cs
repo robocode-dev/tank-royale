@@ -121,8 +121,8 @@ sealed class EventQueue : IComparer<BotEvent>
         SortEvents();
 
         BotEvent currentEvent;
-        while (IsBotRunning
-               && (currentEvent = PeekNextEvent()) != null
+        while ((currentEvent = PeekNextEvent()) != null
+               && (IsBotRunning || currentEvent.IsCritical)
                && GetPriority(currentEvent) >= _currentTopEventPriority)
         {
             if (GetPriority(currentEvent) == _currentTopEventPriority)

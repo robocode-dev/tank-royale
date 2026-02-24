@@ -3,7 +3,7 @@
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "Updating sample bot archives for GitHub release 0.35.2" -ForegroundColor Cyan
+Write-Host "Updating sample bot archives for GitHub release 0.36.0" -ForegroundColor Cyan
 Write-Host "=" * 60 -ForegroundColor Cyan
 
 # Read token from gradle.properties
@@ -29,7 +29,7 @@ if ($content -match "tankRoyaleGitHubToken\s*=\s*(.+)") {
 
 # Build the sample bots first to ensure we have fresh archives
 Write-Host "`nBuilding sample bot archives..." -ForegroundColor Cyan
-$gradlewPath = Join-Path $PSScriptRoot "gradlew.bat"
+$gradlewPath = Join-Path $PSScriptRoot "..\..\gradlew.bat"
 & $gradlewPath sample-bots:zip
 
 if ($LASTEXITCODE -ne 0) {
@@ -41,7 +41,7 @@ Write-Host "`nSample bot archives built successfully!" -ForegroundColor Green
 
 # Call the upload script
 $uploadScript = Join-Path $PSScriptRoot "upload-sample-bots.ps1"
-& $uploadScript -Token $token -Version "0.35.2"
+& $uploadScript -Token $token -Version "0.36.0"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Failed to upload sample bot archives"
@@ -50,4 +50,4 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host "`n" + ("=" * 60) -ForegroundColor Cyan
 Write-Host "Sample bot archives updated successfully!" -ForegroundColor Green
-Write-Host "Please verify the release at: https://github.com/robocode-dev/tank-royale/releases/tag/v0.35.2" -ForegroundColor Cyan
+Write-Host "Please verify the release at: https://github.com/robocode-dev/tank-royale/releases/tag/v0.36.0" -ForegroundColor Cyan

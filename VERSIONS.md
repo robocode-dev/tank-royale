@@ -1,31 +1,22 @@
-## 📦 0.36.1 - .NET Console Output Thread Safety – TBD
+## 📦 0.36.1 - WonRoundEvent and Python Console Output - TBD
 
 ### 🐞 Bug Fixes
 
+- Bot APIs (Java, C#, Python):
+    - Fixed `WonRoundEvent` not being triggered when a bot wins a round. The `onWonRound()` handler is now invoked even
+      if the server doesn't send a separate `WonRoundEvent`, by checking the rank in `RoundEndedEvent` and publishing
+      `WonRoundEvent` when rank equals 1.
+
 - Bot API (.NET):
-    - #188: Fixed thread-safety issue in `RecordingTextWriter` where concurrent `Console.WriteLine` calls from event 
-      handlers (e.g., `OnScannedBot`) could cause race conditions, leading to performance degradation, radar lock loss, 
-      and eventual event queue overflow ("Maximum event queue size has been reached: 256"). The fix adds proper locking 
+    - #188: Fixed thread-safety issue in `RecordingTextWriter` where concurrent `Console.WriteLine` calls from event
+      handlers (e.g., `OnScannedBot`) could cause race conditions, leading to performance degradation, radar lock loss,
+      and eventual event queue overflow ("Maximum event queue size has been reached: 256"). The fix adds proper locking
       around all write and read operations, matching the thread-safety pattern used in the Java implementation.
     - Added thread-safety test to verify `RecordingTextWriter` handles concurrent writes correctly.
 
 - Bot API (Python):
-    - Implemented missing stdout/stderr capture and redirection to server. Python bots can now use `print()` statements
-      and the output will be displayed in the Bot Console window, matching the functionality available in Java and .NET.
-      This feature was intended since v0.19.0 but was never implemented (placeholder only).
-    - Added `RecordingTextWriter` class with thread-safe output capture.
-    - Added comprehensive tests for stdout/stderr capture (unit and integration tests).
-    - Removed debug `print(game_started_event)` statement that was printing object representation to console.
-
-## 📦 0.36.1 - Console Output Performance Fix – TBD
-
-### 🐞 Bug Fixes
-
-- Bot API (.NET):
-    - #188: Fixed event queue overflow issue when using `Console.WriteLine()` in event handlers. The `RecordingTextWriter`
-      now overrides `Write(string)`, `WriteLine(string)`, and `Write(char[], int, int)` methods to avoid slow
-      character-by-character writes that could block the bot thread and cause events to accumulate. This resolves the
-      "Maximum event queue size has been reached: 256" error that occurred when bots used console output for debugging.
+    - Implemented missing stdout/stderr redirection to bot console. Python bots can now use `print()` statements and see
+      output in the Bot Console, matching Java and C# functionality. This feature was missing since v0.19.0.
 
 - Bot API (All platforms):
     - Fixed off-by-one error in event queue size check. The queue now correctly enforces a maximum of 256 events

@@ -111,8 +111,8 @@ final class EventQueue {
         sortEvents();
 
         BotEvent currentEvent;
-        while (isBotRunning()
-                && (currentEvent = peekNextEvent()) != null
+        while ((currentEvent = peekNextEvent()) != null
+                && (isBotRunning() || currentEvent.isCritical())
                 && getPriority(currentEvent) >= currentTopEventPriority) {
 
             if (getPriority(currentEvent) == currentTopEventPriority) {

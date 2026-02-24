@@ -926,6 +926,13 @@ sealed class BaseBotInternals
 
         BotEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
         InternalEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
+
+        // If the round results indicate this bot won (rank == 1), also publish a WonRoundEvent so
+        // the bot's onWonRound handler is invoked even if the server doesn't send a separate WonRoundEvent.
+        if (botResults != null && botResults.Rank == 1)
+        {
+            BotEventHandlers.FireEvent(new E.WonRoundEvent(roundEndedEventForBot.TurnNumber));
+        }
     }
 
     private void HandleGameStarted(string json)

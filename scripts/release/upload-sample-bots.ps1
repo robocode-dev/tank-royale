@@ -62,7 +62,9 @@ $archives = @(
 
 # Process each archive
 foreach ($archive in $archives) {
-    $filePath = Join-Path $PSScriptRoot $archive.Path
+    # Use project root instead of script directory
+    $projectRoot = Join-Path $PSScriptRoot "..\..\"
+    $filePath = Join-Path $projectRoot $archive.Path
 
     if (-not (Test-Path $filePath)) {
         Write-Warning "File not found: $filePath. Skipping..."

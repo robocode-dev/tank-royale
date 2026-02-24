@@ -40,13 +40,13 @@ val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 private fun createShellScript(botName: String): String = """
     #!/bin/sh
     set -e
-    
+
     # Change to script directory
     cd -- "$(dirname -- "$0")"
-    
+
     # Install dependencies (relative to script dir)
     ../deps/install-dependencies.sh
-    
+
     # Try to use venv python first (correct path: ../deps/venv)
     if [ -x "../deps/venv/bin/python" ]; then
         exec "../deps/venv/bin/python" "$botName.py"
@@ -175,29 +175,43 @@ private fun copyWheelFile(depsDir: Path) {
     copy(wheelFile, depsDir.resolve(wheelFile.fileName.toString()), REPLACE_EXISTING)
 }
 
-tasks {
-    fun prepareBotFiles() {
-        list(projectDir.toPath()).forEach { botDir ->
-            if (isDirectory(botDir) && isBotProjectDir(botDir)) {
-                processIndividualBot(botDir)
-            }
+private fun prepareBotFiles() {
+    list(projectDir.toPath()).forEach { botDir ->
+        if (isDirectory(botDir) && isBotProjectDir(botDir)) {
+            processIndividualBot(botDir)
         }
     }
+}
 
-    fun prepareDependencies() {
-        val depsDir = archiveDirPath.resolve(depsFolder)
-        mkdir(depsDir)
+private fun prepareDependencies() {
+    val depsDir = archiveDirPath.resolve(depsFolder)
+    mkdir(depsDir)
 
-        copyInstallationScripts(depsDir)
-        copyRequirementsFile(depsDir)
-        copyWheelFile(depsDir)
-    }
+    copyInstallationScripts(depsDir)
+    copyRequirementsFile(depsDir)
+    copyWheelFile(depsDir)
+}
 
-    named("build") {
+tasks {
+    val prepareBotFilesTask by registering {
         dependsOn(":bot-api:python:build-dist")
         doLast {
             prepareBotFiles()
+        }
+    }
+
+    val prepareDepsTask by registering {
+        dependsOn(":bot-api:python:build-dist")
+        doLast {
             prepareDependencies()
         }
+    }
+
+    val prepareArchive by registering {
+        dependsOn(prepareBotFilesTask, prepareDepsTask)
+    }
+
+    named("build") {
+        dependsOn(prepareArchive)
     }
 }
