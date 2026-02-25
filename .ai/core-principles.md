@@ -64,6 +64,9 @@
 
 - Keep answers short and actionable
 - **Start responses with "AI Guidelines loaded."** to confirm you've read the instructions
+- **After completing any task:** One-sentence acknowledgment only — no summaries, no rationale, no multi-paragraph explanations. The user sees the diff.
+    - ✅ "Updated GameServer.kt to use fixed turn timeout"
+    - ❌ "This change improves performance by eliminating unnecessary notifications..."
 - **NEVER create summary/documentation files unless explicitly requested**
     - No `*_Resolution.md`, `*_Fix.md`, `*_Summary.md`, or similar files
     - Just fix the code and give a brief explanation
