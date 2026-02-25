@@ -1,67 +1,42 @@
 # Documentation Standards
 
-<!-- METADATA: ~30 lines, ~300 tokens -->
 <!-- KEYWORDS: docs, README, VERSIONS.md, Javadoc, docstring, changelog, user-visible -->
 
-## When to Update Documentation
+## When to Update
 
-**Always update for user-visible changes:**
-
-- New features or APIs
-- Breaking changes
-- Behavior modifications
-- Deprecated functionality
+Update for user-visible changes: new features, breaking changes, behavior modifications, deprecations.
 
 **Files to update:**
-
-- `/README.md` - Project overview and getting started
-- `/VERSIONS.md` - Version history and changelog
+- `/README.md` — project overview
+- `/VERSIONS.md` — changelog
 - Module-specific `README.md` files
-- API documentation (Javadoc/docstrings)
+- API docs: Javadoc (Java) · docstrings (Python) · XML comments (C#)
 
 ## VERSIONS.md Format
-
-**Follow existing format:**
 
 ```markdown
 ## Version X.Y.Z (YYYY-MM-DD)
 
 ### Added
-- New feature description
+- ...
 
 ### Changed
-- Modified behavior description
+- ...
 
 ### Fixed
-- Bug fix description
+- ...
 
 ### Deprecated
-- Deprecated feature (migration path)
+- ... (include migration path)
 ```
 
-## Cross-Platform Documentation Alignment
+## API Doc Alignment
 
-**Keep documentation synchronized:**
+Javadoc (Java) is authoritative. Python docstrings and C# XML comments must match Java semantics: same parameter descriptions, return values, and examples.
 
-1. **Javadoc** (Java) - Must match behavior exactly
-2. **Docstrings** (Python) - Must match Java semantics
-3. **XML comments** (C#/.NET) - Must match Java semantics
+## Checklist
 
-**Verification checklist:**
-
-- [ ] Java Javadoc updated
-- [ ] Python docstrings updated
-- [ ] .NET XML comments updated
-- [ ] Parameter descriptions identical
-- [ ] Return value documentation aligned
-- [ ] Example code consistent
-
-## Review Checklist
-
-**Before completing documentation task:**
-
-- [ ] Java reference documentation matches actual behavior
-- [ ] Backward compatibility noted for breaking changes
+- [ ] API docs match actual behavior
+- [ ] Breaking changes noted with migration path
 - [ ] Minimal diff (no unnecessary formatting changes)
-- [ ] Tests documented if behavior is complex
-- [ ] Cross-language naming consistency verified
+- [ ] Cross-language naming consistent
