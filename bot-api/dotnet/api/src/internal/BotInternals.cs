@@ -47,14 +47,9 @@ sealed class BotInternals : IStopResumeListener
         internalEventHandlers.OnRoundEnded.Subscribe(OnRoundEnded, 90);
         internalEventHandlers.OnGameEnded.Subscribe(OnGameEnded, 90);
         internalEventHandlers.OnDisconnected.Subscribe(OnDisconnected, 90);
+        internalEventHandlers.OnDeath.Subscribe(OnDeath, 90);
         internalEventHandlers.OnHitWall.Subscribe(OnHitWall, 90);
         internalEventHandlers.OnHitBot.Subscribe(OnHitBot, 90);
-
-        // Subscribe to public bot event handlers for OnDeath with priority 0 (lower than user's default of 1).
-        // This ensures user's OnDeath callback runs BEFORE we stop the thread, since DispatchEvents()
-        // checks IsRunning and would skip events if thread was already stopped.
-        var botEventHandlers = baseBotInternals.BotEventHandlers;
-        botEventHandlers.OnDeath.Subscribe(OnDeath, 0);
     }
 
     private void OnNextTurn(TickEvent evt)

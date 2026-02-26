@@ -57,14 +57,9 @@ public final class BotInternals implements IStopResumeListener {
         instantEventHandlers.onRoundEnded.subscribe(e -> onRoundEnded(), 90);
         instantEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
         instantEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
+        instantEventHandlers.onDeath.subscribe(e -> onDeath(), 90);
         instantEventHandlers.onHitWall.subscribe(e -> onHitWall(), 90);
         instantEventHandlers.onHitBot.subscribe(this::onHitBot, 90);
-
-        // Subscribe to public bot event handlers for onDeath with priority 0 (lower than user's default of 1).
-        // This ensures user's onDeath callback runs BEFORE we stop the thread, since dispatchEvents()
-        // checks isRunning() and would skip events if thread was already stopped.
-        var botEventHandlers = baseBotInternals.getBotEventHandlers();
-        botEventHandlers.onDeath.subscribe(this::onDeath, 0);
     }
 
     private void onNextTurn(TickEvent e) {
@@ -129,7 +124,7 @@ public final class BotInternals implements IStopResumeListener {
         }
     }
 
-    private void onDeath(DeathEvent e) {
+    private void onDeath() {
         baseBotInternals.stopThread();
     }
 

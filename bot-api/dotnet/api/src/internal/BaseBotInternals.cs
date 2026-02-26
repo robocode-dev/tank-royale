@@ -174,8 +174,9 @@ sealed class BaseBotInternals
             }
             catch (ThreadInterruptedException)
             {
-                return;
             }
+
+            DispatchFinalTurnEvents();
 
             // Skip every turn after the run method has exited
             while (IsRunning)
@@ -186,15 +187,26 @@ sealed class BaseBotInternals
                 }
                 catch (ThreadInterruptedException)
                 {
-                    return;
+                    break;
                 }
             }
+
+            DispatchFinalTurnEvents();
         }
         finally
         {
             EnableEventHandling(false); // prevent event queue max limit to be reached
         }
     }
+
+    private void DispatchFinalTurnEvents()
+    {
+        var tick = CurrentTickOrNull;
+        if (tick != null)
+            DispatchEvents(tick.TurnNumber);
+    }
+
+    internal void AddEvent(E.BotEvent botEvent) => _eventQueue.AddEvent(botEvent);
 
     internal void StopThread()
     {
@@ -926,13 +938,6 @@ sealed class BaseBotInternals
 
         BotEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
         InternalEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
-
-        // If the round results indicate this bot won (rank == 1), also publish a WonRoundEvent so
-        // the bot's onWonRound handler is invoked even if the server doesn't send a separate WonRoundEvent.
-        if (botResults != null && botResults.Rank == 1)
-        {
-            BotEventHandlers.FireEvent(new E.WonRoundEvent(roundEndedEventForBot.TurnNumber));
-        }
     }
 
     private void HandleGameStarted(string json)
@@ -982,11 +987,9 @@ sealed class BaseBotInternals
 
     private void HandleSkippedTurn(string json)
     {
-        if (IsEventHandlingDisabled()) return;
-
         var skippedTurnEvent = JsonConverter.FromJson<Schema.SkippedTurnEvent>(json);
 
-        BotEventHandlers.OnSkippedTurn.Publish(EventMapper.Map(skippedTurnEvent));
+        _eventQueue.AddEvent(EventMapper.Map(skippedTurnEvent));
     }
 
     private void HandleServerHandshake(string json)

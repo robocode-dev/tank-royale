@@ -160,22 +160,32 @@ public final class BaseBotInternals {
 
                 try {
                     bot.run();
-                } catch (ThreadInterruptedException e) {
-                    return;
+                } catch (ThreadInterruptedException ignored) {
                 }
+
+                dispatchFinalTurnEvents();
 
                 // Skip every turn after the run method has exited
                 while (isRunning()) {
                     try {
                         bot.go();
-                    } catch (ThreadInterruptedException e) {
-                        return;
+                    } catch (ThreadInterruptedException ignored) {
+                        break;
                     }
                 }
+
+                dispatchFinalTurnEvents();
             } finally {
                 enableEventHandling(false); // prevent event queue max limit to be reached
             }
         };
+    }
+
+    private void dispatchFinalTurnEvents() {
+        var tick = getCurrentTickOrNull();
+        if (tick != null) {
+            dispatchEvents(tick.getTurnNumber());
+        }
     }
 
     void stopThread() {
@@ -454,6 +464,10 @@ public final class BaseBotInternals {
 
     void addEventsFromTick(TickEvent event) {
         eventQueue.addEventsFromTick(event);
+    }
+
+    void addEvent(BotEvent event) {
+        eventQueue.addEvent(event);
     }
 
     public int getTimeLeft() {

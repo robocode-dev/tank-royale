@@ -284,6 +284,9 @@ class BaseBotInternals:
     def add_events_from_tick(self, event: TickEvent) -> None:
         self.event_queue.add_events_from_tick(event)
 
+    def add_event(self, event: BotEvent) -> None:
+        self.event_queue.add_event(event)
+
     def set_interruptible(self, interruptible: bool) -> None:
         self.event_queue.set_current_event_interruptible(interruptible)
 
@@ -311,17 +314,27 @@ class BaseBotInternals:
                 try:
                     bot.run()
                 except ThreadInterruptedException:
-                    return
+                    pass
+
+                self._dispatch_final_turn_events()
 
                 # Skip every turn after the run method has exited
                 while self.is_running():
                     try:
                         bot.go()
                     except ThreadInterruptedException:
-                        return
+                        break
+
+                self._dispatch_final_turn_events()
             finally:
                 self.enable_event_handling(False)
         return runnable
+
+    def _dispatch_final_turn_events(self) -> None:
+        """Dispatch any remaining events from the current tick before the thread exits."""
+        tick = self.data.current_tick_or_null
+        if tick is not None:
+            self.dispatch_events(tick.turn_number)
 
     def start_thread(self, bot: BotABC) -> None:
         """Start bot thread (matches Java's startThread)"""

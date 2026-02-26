@@ -203,12 +203,6 @@ class WebSocketHandler:
         self.bot_event_handlers.on_round_ended.publish(round_ended_event)
         self.internal_event_handlers.on_round_ended.publish(round_ended_event)
 
-        # If the round results indicate this bot won (rank == 1), also publish a WonRoundEvent so
-        # the bot's onWonRound handler is invoked even if the server doesn't send a separate WonRoundEvent.
-        if results is not None and results.rank == 1:
-            from ..events import WonRoundEvent
-            self.bot_event_handlers.on_won_round.publish(WonRoundEvent(schema_evt.turn_number))
-
     async def handle_game_started(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a game started event from the server."""
         assert self.websocket is not None, "WebSocket connection is not established."
@@ -260,13 +254,9 @@ class WebSocketHandler:
 
     async def handle_skipped_turn(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a skipped turn event from the server."""
-        turn_number = json_msg.get("turn_number") or json_msg.get("turnNumber")
-        if turn_number is not None and self._is_event_handling_disabled(int(turn_number)):
-            return
-
         schema_evt: SkippedTurnEvent = from_json(json_msg)  # type: ignore
         skipped_turn_event = EventMapper.map_skipped_turn_event(schema_evt)
-        self.bot_event_handlers.on_skipped_turn.publish(skipped_turn_event)
+        self.event_queue.add_event(skipped_turn_event)
 
     async def handle_server_handshake(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a server handshake from the server."""

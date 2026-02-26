@@ -95,8 +95,6 @@ class EventQueue:
             current_event = self.peek_next_event()
             if current_event is None:
                 break
-            if not self.is_bot_running() and not current_event.critical:
-                break
             if self.get_priority(current_event) < self.current_top_event_priority:
                 break
 
@@ -141,9 +139,6 @@ class EventQueue:
                 bot_event.turn_number,
                 -self.get_priority(bot_event)
             )))
-
-    def is_bot_running(self):
-        return self.base_bot_internal_data.is_running
 
     def peek_next_event(self):
         with self.events_lock:

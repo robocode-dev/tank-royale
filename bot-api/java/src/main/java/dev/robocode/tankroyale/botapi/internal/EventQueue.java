@@ -112,7 +112,6 @@ final class EventQueue {
 
         BotEvent currentEvent;
         while ((currentEvent = peekNextEvent()) != null
-                && (isBotRunning() || currentEvent.isCritical())
                 && getPriority(currentEvent) >= currentTopEventPriority) {
 
             if (getPriority(currentEvent) == currentTopEventPriority) {
@@ -169,10 +168,6 @@ final class EventQueue {
         });
     }
 
-    private boolean isBotRunning() {
-        return baseBotInternals.isRunning();
-    }
-
     private BotEvent peekNextEvent() {
         synchronized (events) {
             return events.isEmpty() ? null : events.get(0);
@@ -213,7 +208,7 @@ final class EventQueue {
         return isOld && !botEvent.isCritical();
     }
 
-    private void addEvent(BotEvent botEvent) {
+    void addEvent(BotEvent botEvent) {
         synchronized (events) {
             if (events.size() < MAX_QUEUE_SIZE) {
                 events.add(botEvent);

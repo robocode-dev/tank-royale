@@ -172,13 +172,6 @@ final class WebSocketHandler implements WebSocket.Listener {
 
         botEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
         internalEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
-
-        // If the round results indicate this bot won (rank == 1), also publish a WonRoundEvent so
-        // the bot's onWonRound handler is invoked even if the server doesn't send a separate WonRoundEvent.
-        var results = mappedRoundEndedEvent.getResults();
-        if (results != null && results.getRank() == 1) {
-            botEventHandlers.onWonRound.publish(new dev.robocode.tankroyale.botapi.events.WonRoundEvent(mappedRoundEndedEvent.getTurnNumber()));
-        }
     }
 
     private void handleGameStarted(JsonObject jsonMsg) {
@@ -227,11 +220,9 @@ final class WebSocketHandler implements WebSocket.Listener {
     }
 
     private void handleSkippedTurn(JsonObject jsonMsg) {
-        if (baseBotInternals.getEventHandlingDisabledTurn()) return;
-
         var skippedTurnEvent = JsonConverter.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
 
-        botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent, baseBot));
+        baseBotInternals.addEvent((SkippedTurnEvent) EventMapper.map(skippedTurnEvent, baseBot));
     }
 
     private void handleServerHandshake(JsonObject jsonMsg) {

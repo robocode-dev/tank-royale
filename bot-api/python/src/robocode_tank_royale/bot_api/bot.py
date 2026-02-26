@@ -35,14 +35,9 @@ class _BotInternals(StopResumeListenerABC):
         handlers.on_round_ended.subscribe(_stop_thread, 90)
         handlers.on_game_ended.subscribe(_stop_thread, 90)
         handlers.on_disconnected.subscribe(_stop_thread, 90)
+        handlers.on_death.subscribe(_stop_thread, 90)
         handlers.on_hit_wall.subscribe(lambda _: self.on_hit_wall(), 90)
         handlers.on_hit_bot.subscribe(self.on_hit_bot, 90)
-
-        # Subscribe to public bot event handlers for on_death with priority 0 (lower than user's default of 1).
-        # This ensures user's on_death callback runs BEFORE we stop the thread, since dispatch_events()
-        # checks is_running() and would skip events if thread was already stopped.
-        public_handlers = self._base_bot_internals.bot_event_handlers
-        public_handlers.on_death.subscribe(_stop_thread, 0)
 
         # Did we go over desired distance to travel
         self._is_over_driving = False

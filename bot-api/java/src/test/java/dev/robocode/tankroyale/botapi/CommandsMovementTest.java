@@ -47,14 +47,12 @@ class CommandsMovementTest extends AbstractBotTest {
         BotIntent intent = server.getBotIntent();
         System.out.println("Intent received: " + intent);
         assertThat(intent).isNotNull();
-        if (intent != null) {
-            System.out.printf("TurnRate: %s, GunTurnRate: %s, RadarTurnRate: %s, TargetSpeed: %s\n",
-                    intent.getTurnRate(), intent.getGunTurnRate(), intent.getRadarTurnRate(), intent.getTargetSpeed());
-        }
-        assertThat(intent.getTurnRate()).isEqualTo((double) MAX_TURN_RATE);
+        System.out.printf("TurnRate: %s, GunTurnRate: %s, RadarTurnRate: %s, TargetSpeed: %s\n",
+                intent.getTurnRate(), intent.getGunTurnRate(), intent.getRadarTurnRate(), intent.getTargetSpeed());
+        assertThat(intent.getTurnRate()).isEqualTo(MAX_TURN_RATE);
         assertThat(intent.getGunTurnRate()).isEqualTo(-(double) MAX_GUN_TURN_RATE);
-        assertThat(intent.getRadarTurnRate()).isEqualTo((double) MAX_RADAR_TURN_RATE);
-        assertThat(intent.getTargetSpeed()).isEqualTo((double) MAX_SPEED);
+        assertThat(intent.getRadarTurnRate()).isEqualTo(MAX_RADAR_TURN_RATE);
+        assertThat(intent.getTargetSpeed()).isEqualTo(MAX_SPEED);
     }
 
     @Test
