@@ -7,12 +7,13 @@ documentation under the `/docs` directory in the root directory.
 
 ## Prerequisites
 
-* node.js 16+
-* Java JDK 11+
-
-Check out the official prerequisite for
-VitePress [here](https://vitepress.dev/guide/getting-started#prerequisites)
-and for Gradle [here](https://gradle.org/install/#prerequisites).
+- **Node.js 22 (LTS)** — required by [VitePress] to build the documentation site.
+  Install via [NodeSource](https://github.com/nodesource/distributions):
+  ```bash
+  curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+  sudo apt-get install -y nodejs
+  ```
+- **JDK 17+** and the rest of the build tools — see [DEVELOPMENT.md](../DEVELOPMENT.md).
 
 ## Building the docs
 

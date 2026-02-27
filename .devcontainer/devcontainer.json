@@ -3,5 +3,10 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "remoteUser": "devuser"
+  "remoteUser": "devuser",
+  "remoteEnv": {
+    "JAVA_HOME": "/usr/lib/jvm/temurin-17-jdk",
+    "PATH": "${containerEnv:PATH}:/home/devuser/.dotnet/tools"
+  },
+  "postCreateCommand": "chmod +x scripts/setup.sh && scripts/setup.sh"
 }
