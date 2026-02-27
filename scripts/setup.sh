@@ -5,33 +5,34 @@
 set -euo pipefail
 
 ARCH="$(dpkg --print-architecture)"
-DOTNET_INSTALL_DIR="$HOME/.dotnet"
 
 # ---------------------------------------------------------------------------
-# .NET SDK 8.0  — user-level install, no sudo required for the SDK itself
+# .NET SDK 8.0 — installed via apt (system PATH, no manual env vars needed)
 # ---------------------------------------------------------------------------
 if ! command -v dotnet &>/dev/null; then
-    echo "==> Installing .NET SDK 8.0 to $DOTNET_INSTALL_DIR ..."
+    echo "==> Installing .NET SDK 8.0 ..."
     sudo apt-get update -q
-    # Install whichever libicu runtime version the distro provides (e.g. libicu72 on Debian 12, libicu74 on Ubuntu 24.04)
-    ICU_PKG=$(apt-cache search '^libicu[0-9]+$' | awk '{print $1}' | sort -V | tail -1)
-    sudo apt-get install -y --no-install-recommends ${ICU_PKG:-libicu-dev}
+
+    # Ubuntu 24.04+ ships dotnet-sdk-8.0 natively; other distros need Microsoft's feed
+    if ! apt-cache show dotnet-sdk-8.0 &>/dev/null 2>&1; then
+        . /etc/os-release
+        wget -q "https://packages.microsoft.com/config/${ID}/${VERSION_ID}/packages-microsoft-prod.deb" \
+            -O /tmp/packages-microsoft-prod.deb
+        sudo dpkg -i /tmp/packages-microsoft-prod.deb
+        rm /tmp/packages-microsoft-prod.deb
+        sudo apt-get update -q
+    fi
+
+    sudo apt-get install -y --no-install-recommends dotnet-sdk-8.0
     sudo rm -rf /var/lib/apt/lists/*
 
-    wget -q https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh
-    chmod +x /tmp/dotnet-install.sh
-    /tmp/dotnet-install.sh --channel 8.0 --install-dir "$DOTNET_INSTALL_DIR"
-    rm /tmp/dotnet-install.sh
-
-    # Persist env vars for interactive shells on the host
+    # dotnet global tools (e.g. docfx) install to ~/.dotnet/tools — persist to PATH
     for f in "$HOME/.bashrc" "$HOME/.profile"; do
-        if [ -f "$f" ] && ! grep -q 'DOTNET_ROOT' "$f"; then
-            printf '\nexport DOTNET_ROOT="%s"\nexport PATH="$PATH:$DOTNET_ROOT:$HOME/.dotnet/tools"\n' \
-                "$DOTNET_INSTALL_DIR" >> "$f"
+        if [ -f "$f" ] && ! grep -q '.dotnet/tools' "$f"; then
+            printf '\nexport PATH="$PATH:$HOME/.dotnet/tools"\n' >> "$f"
         fi
     done
-    export DOTNET_ROOT="$DOTNET_INSTALL_DIR"
-    export PATH="$PATH:$DOTNET_INSTALL_DIR:$HOME/.dotnet/tools"
+    export PATH="$PATH:$HOME/.dotnet/tools"
     echo "    .NET $(dotnet --version) installed."
 else
     echo "==> .NET already installed: $(dotnet --version)"

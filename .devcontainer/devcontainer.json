@@ -6,8 +6,7 @@
   "remoteUser": "devuser",
   "remoteEnv": {
     "JAVA_HOME": "/usr/lib/jvm/temurin-17-jdk",
-    "DOTNET_ROOT": "/home/devuser/.dotnet",
-    "PATH": "${containerEnv:PATH}:/home/devuser/.dotnet:/home/devuser/.dotnet/tools"
+    "PATH": "${containerEnv:PATH}:/home/devuser/.dotnet/tools"
   },
   "postCreateCommand": "chmod +x scripts/setup.sh && scripts/setup.sh"
 }

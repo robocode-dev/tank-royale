@@ -50,7 +50,7 @@ The script is **idempotent** — re-running it skips tools that are already pres
 
 What it installs (if missing):
 
-- **.NET 8.0 SDK** — to `~/.dotnet`, no sudo needed for the SDK itself
+- **.NET 8.0 SDK** — via `apt` (`dotnet-sdk-8.0`), placed on the system PATH automatically
 - **Java 17 + Java 11** — via Eclipse Temurin / Adoptium apt repository
 - **Python 3 + venv** — via apt, version-specific package detected automatically
 - **DocFX 2.78.4** — as a `dotnet` user tool
