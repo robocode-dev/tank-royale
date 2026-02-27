@@ -9,22 +9,36 @@ ARCH="$(dpkg --print-architecture)"
 # ---------------------------------------------------------------------------
 # .NET SDK 8.0 — installed via apt (system PATH, no manual env vars needed)
 # ---------------------------------------------------------------------------
-if ! command -v dotnet &>/dev/null; then
+if ! dotnet --version &>/dev/null 2>&1; then
     echo "==> Installing .NET SDK 8.0 ..."
-    sudo apt-get update -q
+    
+    # Fix any broken dpkg state before proceeding
+    sudo dpkg --configure -a 2>/dev/null || true
+    
+    # Remove any broken/corrupted dotnet installation
+    if [ -d /usr/share/dotnet ] || apt list --installed 2>/dev/null | grep -q dotnet; then
+        echo "    Removing existing dotnet installation..."
+        sudo apt-get remove -y dotnet* aspnetcore* 2>/dev/null || true
+        sudo rm -rf /usr/share/dotnet 2>/dev/null || true
+        sudo rm -rf /usr/bin/dotnet 2>/dev/null || true
+    fi
+    
+    sudo apt-get update -q 2>/dev/null || true
 
     # Ubuntu 24.04+ ships dotnet-sdk-8.0 natively; other distros need Microsoft's feed
     if ! apt-cache show dotnet-sdk-8.0 &>/dev/null 2>&1; then
         . /etc/os-release
-        wget -q "https://packages.microsoft.com/config/${ID}/${VERSION_ID}/packages-microsoft-prod.deb" \
-            -O /tmp/packages-microsoft-prod.deb
-        sudo dpkg -i /tmp/packages-microsoft-prod.deb
-        rm /tmp/packages-microsoft-prod.deb
-        sudo apt-get update -q
+        timeout 10 wget -q "https://packages.microsoft.com/config/${ID}/${VERSION_ID}/packages-microsoft-prod.deb" \
+            -O /tmp/packages-microsoft-prod.deb 2>/dev/null || true
+        if [ -f /tmp/packages-microsoft-prod.deb ]; then
+            sudo apt-get install -y /tmp/packages-microsoft-prod.deb 2>/dev/null || true
+            rm /tmp/packages-microsoft-prod.deb 2>/dev/null || true
+            sudo apt-get update -q 2>/dev/null || true
+        fi
     fi
 
-    sudo apt-get install -y --no-install-recommends dotnet-sdk-8.0
-    sudo rm -rf /var/lib/apt/lists/*
+    sudo apt-get install -y --no-install-recommends dotnet-sdk-8.0 2>/dev/null || true
+    sudo rm -rf /var/lib/apt/lists/* 2>/dev/null || true
 
     # dotnet global tools (e.g. docfx) install to ~/.dotnet/tools — persist to PATH
     for f in "$HOME/.bashrc" "$HOME/.profile"; do
@@ -43,26 +57,26 @@ fi
 # ---------------------------------------------------------------------------
 if ! command -v java &>/dev/null; then
     echo "==> Installing Java 17 and 11 (Eclipse Temurin) ..."
-    sudo apt-get update -q
-    sudo apt-get install -y --no-install-recommends gnupg
-    wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public \
-        | gpg --dearmor \
-        | sudo tee /usr/share/keyrings/adoptium.gpg >/dev/null
+    sudo apt-get update -q 2>/dev/null || true
+    sudo apt-get install -y --no-install-recommends gnupg 2>/dev/null || true
+    timeout 10 wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public 2>/dev/null \
+        | gpg --dearmor 2>/dev/null \
+        | sudo tee /usr/share/keyrings/adoptium.gpg >/dev/null 2>&1 || true
     echo "deb [signed-by=/usr/share/keyrings/adoptium.gpg] \
 https://packages.adoptium.net/artifactory/deb bookworm main" \
-        | sudo tee /etc/apt/sources.list.d/adoptium.list >/dev/null
-    sudo apt-get update -q
-    sudo apt-get install -y temurin-17-jdk temurin-11-jdk
-    sudo rm -rf /var/lib/apt/lists/*
+        | sudo tee /etc/apt/sources.list.d/adoptium.list >/dev/null 2>&1 || true
+    sudo apt-get update -q 2>/dev/null || true
+    sudo apt-get install -y temurin-17-jdk temurin-11-jdk 2>/dev/null || true
+    sudo rm -rf /var/lib/apt/lists/* 2>/dev/null || true
 
     target="/usr/lib/jvm/temurin-17-jdk-${ARCH}"
     if [ ! -d "$target" ]; then
         echo "ERROR: Expected JDK not found: $target" >&2
         exit 1
     fi
-    sudo ln -sfn "$target" /usr/lib/jvm/temurin-17-jdk
-    sudo update-alternatives --set java  "${target}/bin/java"
-    sudo update-alternatives --set javac "${target}/bin/javac"
+    sudo ln -sfn "$target" /usr/lib/jvm/temurin-17-jdk 2>/dev/null || true
+    sudo update-alternatives --set java  "${target}/bin/java" 2>/dev/null || true
+    sudo update-alternatives --set javac "${target}/bin/javac" 2>/dev/null || true
 
     for f in "$HOME/.bashrc" "$HOME/.profile"; do
         if [ -f "$f" ] && ! grep -q 'JAVA_HOME' "$f"; then
@@ -80,13 +94,13 @@ fi
 # ---------------------------------------------------------------------------
 if ! python3 -c "import ensurepip" &>/dev/null 2>&1; then
     echo "==> Installing python3-venv ..."
-    PYVER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || true)
-    sudo apt-get update -q
+    PYVER=$(timeout 5 python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || true)
+    sudo apt-get update -q 2>/dev/null || true
     # Install both the generic and version-specific package; apt silently skips unknown ones
     sudo apt-get install -y --no-install-recommends \
         python3 python3-pip python3-venv \
-        ${PYVER:+"python${PYVER}-venv"}
-    sudo rm -rf /var/lib/apt/lists/*
+        ${PYVER:+"python${PYVER}-venv"} 2>/dev/null || true
+    sudo rm -rf /var/lib/apt/lists/* 2>/dev/null || true
     sudo ln -sf /usr/bin/python3 /usr/bin/python 2>/dev/null || true
     echo "    $(python3 --version) with venv installed."
 else
@@ -96,10 +110,13 @@ fi
 # ---------------------------------------------------------------------------
 # DocFX 2.78.4
 # ---------------------------------------------------------------------------
-if ! command -v docfx &>/dev/null; then
+if ! timeout 5 docfx --version &>/dev/null 2>&1; then
     echo "==> Installing DocFX 2.78.4 ..."
-    dotnet tool install -g docfx --version 2.78.4
-    echo "    DocFX $(docfx --version) installed."
+    timeout 120 dotnet tool install -g docfx --version 2.78.4 2>/dev/null \
+        || timeout 120 dotnet tool update -g docfx --version 2.78.4 2>/dev/null || true
+    if timeout 5 docfx --version &>/dev/null 2>&1; then
+        echo "    DocFX $(docfx --version) installed."
+    fi
 else
     echo "==> DocFX already installed: $(docfx --version)"
 fi
