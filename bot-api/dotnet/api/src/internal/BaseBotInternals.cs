@@ -936,6 +936,10 @@ sealed class BaseBotInternals
         var mappedRoundEndedEvent = new E.RoundEndedEvent(roundEndedEventForBot.RoundNumber,
             roundEndedEventForBot.TurnNumber, botResults);
 
+        // Dispatch any queued events (e.g. WonRoundEvent from the last tick) before stopping the
+        // bot thread, as the subsequent RoundStartedEvent will clear the event queue.
+        DispatchEvents(mappedRoundEndedEvent.TurnNumber);
+
         BotEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
         InternalEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
     }

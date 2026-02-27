@@ -170,6 +170,10 @@ final class WebSocketHandler implements WebSocket.Listener {
         var mappedRoundEndedEvent = new RoundEndedEvent(
                 roundEndedEvent.getRoundNumber(), roundEndedEvent.getTurnNumber(), roundEndedEvent.getResults());
 
+        // Dispatch any queued events (e.g. WonRoundEvent from the last tick) before stopping the
+        // bot thread, as the subsequent RoundStartedEvent will clear the event queue.
+        baseBotInternals.dispatchEvents(mappedRoundEndedEvent.getTurnNumber());
+
         botEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
         internalEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
     }

@@ -200,6 +200,9 @@ class WebSocketHandler:
         round_ended_event = RoundEndedEvent(
             schema_evt.round_number, schema_evt.turn_number, results
         )
+        # Dispatch any queued events (e.g. WonRoundEvent from the last tick) before stopping the
+        # bot thread, as the subsequent RoundStartedEvent will clear the event queue.
+        self.event_queue.dispatch_events(schema_evt.turn_number)
         self.bot_event_handlers.on_round_ended.publish(round_ended_event)
         self.internal_event_handlers.on_round_ended.publish(round_ended_event)
 
