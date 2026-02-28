@@ -563,6 +563,7 @@ tasks {
             "bot-api:dotnet:assemble",   // Bot API for .NET
             "booter:assemble",           // Booter (for booting up bots locally)
             "server:assemble",           // Server
+            "runner:assemble",           // Battle Runner
             "gui:assemble",              // GUI
             "sample-bots:zip",           // Sample bots
         )

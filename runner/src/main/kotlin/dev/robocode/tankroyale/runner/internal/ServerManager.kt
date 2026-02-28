@@ -250,7 +250,10 @@ internal class ServerManager(private val serverMode: ServerMode) : AutoCloseable
                 "Could not extract embedded server JAR from classpath resource: $SERVER_JAR_RESOURCE"
             )
 
-        serverJarFile = file
+        // Only track temp files for cleanup; filesystem resources must not be deleted
+        if (file.absolutePath.startsWith(System.getProperty("java.io.tmpdir"))) {
+            serverJarFile = file
+        }
         return file.absolutePath
     }
 

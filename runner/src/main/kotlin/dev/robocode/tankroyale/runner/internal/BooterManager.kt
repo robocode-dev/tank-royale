@@ -258,7 +258,10 @@ internal class BooterManager(
                 "Could not extract embedded Booter JAR from classpath resource: $BOOTER_JAR_RESOURCE"
             )
 
-        booterJarFile = file
+        // Only track temp files for cleanup; filesystem resources must not be deleted
+        if (file.absolutePath.startsWith(System.getProperty("java.io.tmpdir"))) {
+            booterJarFile = file
+        }
         return file.absolutePath
     }
 

@@ -1,0 +1,289 @@
+package dev.robocode.tankroyale.runner
+
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.*
+import org.junit.jupiter.api.io.TempDir
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.nio.file.Path
+import java.util.zip.GZIPInputStream
+import kotlin.io.path.exists
+
+/**
+ * Integration tests that run real battles against the embedded server with sample bots.
+ *
+ * Each test creates its own [BattleRunner] to avoid inter-test state leaking (e.g. stale bot
+ * connections). Embedded server/booter JARs are filesystem resources during testing, so the
+ * [ServerManager]/[BooterManager] cleanup correctly leaves them intact for reuse.
+ *
+ * Run via `./gradlew :runner:integrationTest` — excluded from the default `test` task.
+ */
+@Tag("integration")
+class BattleRunnerIntegrationTest {
+
+    @TempDir
+    lateinit var tempDir: Path
+
+    companion object {
+        private val sampleBotsDir: Path by lazy {
+            val dir = System.getProperty("sampleBots.java.dir")
+                ?: error("System property 'sampleBots.java.dir' not set — run via :runner:integrationTest")
+            Path.of(dir)
+        }
+
+        private fun botDir(name: String): Path {
+            val dir = sampleBotsDir.resolve(name)
+            check(dir.exists()) { "Sample bot not found: $dir" }
+            return dir
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+    // 10.2 — Run a real battle with sample bots
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `runBattle with two sample bots returns valid results`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            val results = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            )
+            assertThat(results.numberOfRounds).isEqualTo(1)
+            assertThat(results.results).hasSize(2)
+
+            results.results.forEach { bot ->
+                assertThat(bot.name).isNotBlank()
+                assertThat(bot.version).isNotBlank()
+                assertThat(bot.rank).isIn(1, 2)
+                assertThat(bot.totalScore).isGreaterThanOrEqualTo(0)
+                assertThat(bot.survival).isGreaterThanOrEqualTo(0)
+                assertThat(bot.bulletDamage).isGreaterThanOrEqualTo(0)
+                assertThat(bot.ramDamage).isGreaterThanOrEqualTo(0)
+            }
+
+            assertThat(results.results.map { it.rank }.sorted()).containsExactly(1, 2)
+        }
+    }
+
+    @Test
+    fun `runBattle with multiple rounds produces results with scores`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            val results = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 3 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("Target")))
+            )
+            assertThat(results.numberOfRounds).isEqualTo(3)
+            assertThat(results.results).hasSize(2)
+
+            val winner = results.results.first { it.rank == 1 }
+            assertThat(winner.totalScore).isGreaterThan(0)
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+    // 10.3 — Server reuse across battles
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `server is reused across battles`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            val results1 = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            )
+            assertThat(results1.results).hasSize(2)
+
+            // Allow previous bots to fully disconnect before starting the next battle
+            Thread.sleep(2000)
+
+            val results2 = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("Target")))
+            )
+            assertThat(results2.results).hasSize(2)
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+    // 10.3 — External server mode
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `external server mode throws for unreachable server`() {
+        BattleRunner.create { externalServer("ws://localhost:1") }.use { extRunner ->
+            assertThatThrownBy {
+                extRunner.runBattle(
+                    setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                    bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+                )
+            }.isInstanceOf(BattleException::class.java)
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+    // 10.4 — Error scenarios
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `runBattle with too few bots throws BattleException`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            assertThatThrownBy {
+                runner.runBattle(
+                    setup = BattleSetup.oneVsOne(),
+                    bots = listOf(BotEntry.of(botDir("Walls")))
+                )
+            }.isInstanceOf(BattleException::class.java)
+                .hasMessageContaining("at least 2 bots")
+        }
+    }
+
+    @Test
+    fun `runBattle with too many bots for 1v1 throws BattleException`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            assertThatThrownBy {
+                runner.runBattle(
+                    setup = BattleSetup.oneVsOne(),
+                    bots = listOf(
+                        BotEntry.of(botDir("Walls")),
+                        BotEntry.of(botDir("SpinBot")),
+                        BotEntry.of(botDir("Target"))
+                    )
+                )
+            }.isInstanceOf(BattleException::class.java)
+                .hasMessageContaining("At most 2 bots")
+        }
+    }
+
+    @Test
+    fun `runBattle after close throws`() {
+        val disposableRunner = BattleRunner.create { externalServer("ws://localhost:1") }
+        disposableRunner.close()
+
+        assertThatThrownBy {
+            disposableRunner.runBattle(
+                setup = BattleSetup.classic(),
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            )
+        }.isInstanceOf(IllegalStateException::class.java)
+            .hasMessageContaining("closed")
+    }
+
+    @Test
+    fun `runBattle with invalid bot directory throws`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            val fakeBot = tempDir.resolve("FakeBot")
+            fakeBot.toFile().mkdirs()
+
+            assertThatThrownBy {
+                runner.runBattle(
+                    setup = BattleSetup.oneVsOne(),
+                    bots = listOf(BotEntry.of(fakeBot), BotEntry.of(botDir("Walls")))
+                )
+            }.isInstanceOf(BattleException::class.java)
+                .hasMessageContaining("configuration file")
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+    // 10.2 — Async battle (BattleHandle)
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `startBattleAsync returns handle with events and results`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            val handle = runner.startBattleAsync(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            )
+            handle.use {
+                val results = it.awaitResults()
+                assertThat(results.numberOfRounds).isEqualTo(1)
+                assertThat(results.results).hasSize(2)
+            }
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+    // 10.5 — Battle recording
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `recording produces valid gzip ND-JSON file`() {
+        val recordingDir = tempDir.resolve("recordings")
+        recordingDir.toFile().mkdirs()
+
+        BattleRunner.create {
+            embeddedServer()
+            enableRecording(recordingDir)
+        }.use { runner ->
+            runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            )
+        }
+
+        // Find the .battle.gz file
+        val recordings = recordingDir.toFile().listFiles { _, name -> name.endsWith(".battle.gz") }
+        assertThat(recordings).isNotNull().isNotEmpty()
+
+        val recordingFile = recordings!!.first()
+        assertThat(recordingFile.length()).isGreaterThan(0)
+
+        // Verify it's valid GZIP and contains ND-JSON lines
+        val lines = GZIPInputStream(recordingFile.inputStream()).use { gzis ->
+            BufferedReader(InputStreamReader(gzis)).readLines()
+        }
+        assertThat(lines).isNotEmpty()
+
+        lines.forEach { line ->
+            assertThat(line).contains("\"type\"")
+        }
+
+        // Should contain at least GameStartedEventForObserver and GameEndedEventForObserver
+        val types = lines.map { line ->
+            val match = Regex("\"type\"\\s*:\\s*\"([^\"]+)\"").find(line)
+            match?.groupValues?.get(1)
+        }.filterNotNull().toSet()
+
+        assertThat(types).contains("GameStartedEventForObserver")
+        assertThat(types).contains("GameEndedEventForObserver")
+    }
+
+    // -------------------------------------------------------------------------------------
+    // 10.6 — Intent diagnostics
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `intent diagnostics captures bot intents`() {
+        BattleRunner.create {
+            embeddedServer()
+            enableIntentDiagnostics()
+        }.use { runner ->
+            runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            )
+
+            val store = runner.intentDiagnostics
+            assertThat(store).isNotNull()
+
+            // Both bots should have captured intents
+            assertThat(store!!.botNames()).hasSize(2)
+            assertThat(store.size).isGreaterThan(0)
+
+            // Each bot should have at least one intent
+            store.botNames().forEach { botName ->
+                val intents = store.getIntentsForBot(botName)
+                assertThat(intents).isNotEmpty()
+
+                intents.forEach { intent ->
+                    assertThat(intent.roundNumber).isGreaterThanOrEqualTo(1)
+                    assertThat(intent.turnNumber).isGreaterThanOrEqualTo(1)
+                    assertThat(intent.botName).isEqualTo(botName)
+                }
+            }
+        }
+    }
+}

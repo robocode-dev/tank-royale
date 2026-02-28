@@ -76,8 +76,27 @@ tasks {
     }
 
     test {
-        useJUnitPlatform()
+        useJUnitPlatform {
+            excludeTags("integration")
+        }
         failFast = true
+    }
+
+    val integrationTest by registering(Test::class) {
+        description = "Runs integration tests that require a full build (embedded server, booter, sample bots)."
+        group = "verification"
+
+        testClassesDirs = sourceSets["test"].output.classesDirs
+        classpath = sourceSets["test"].runtimeClasspath
+
+        useJUnitPlatform {
+            includeTags("integration")
+        }
+        failFast = true
+
+        dependsOn(jar, ":sample-bots:java:build")
+
+        systemProperty("sampleBots.java.dir", project(":sample-bots:java").layout.buildDirectory.dir("archive").get().asFile.absolutePath)
     }
 
     withType<AbstractPublishToMaven> {
