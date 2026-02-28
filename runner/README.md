@@ -43,6 +43,9 @@ dependencies {
 
 ## Quick Start
 
+> **Runnable examples** — see [`examples/`](examples/) for complete Java programs you can run directly
+> with `java -cp lib/* Example.java` (no compilation needed).
+
 ### Kotlin
 
 ```kotlin

@@ -141,6 +141,17 @@ tasks {
     val javadocJar = named<Jar>("javadocJar") { dependsOn("copyJars") }
     val sourcesJar = named<Jar>("sourcesJar") { dependsOn("copyJars") }
 
+    val copyRunnerJar by registering(Copy::class) {
+        description = "Copies the runner fat JAR to examples/lib/ for source-file execution."
+        group = "examples"
+
+        dependsOn(fatJar)
+
+        from(file(fatJarPath))
+        into(file("examples/lib"))
+        rename(".*", "robocode-tankroyale-runner.jar")
+    }
+
     publishing {
         publications {
             named<MavenPublication>("maven") {

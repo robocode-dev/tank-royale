@@ -32,3 +32,7 @@ generated/
 /.kotlin
 
 /.claude/settings.local.json
+
+# Runner examples: JAR copied by :runner:copyRunnerJar
+runner/examples/lib/
+runner/examples/recordings/
