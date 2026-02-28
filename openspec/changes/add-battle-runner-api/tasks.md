@@ -99,10 +99,10 @@
         propagate meaningful exceptions to caller
 
 ## 9. Battle Recording
-- [ ] 9.1 Extract `GameRecorder` class from `recorder` module into `lib/common` (GZIP ND-JSON file writer)
-- [ ] 9.2 Update `recorder` module to depend on extracted `GameRecorder` from `lib/common`
-- [ ] 9.3 Wire Battle Runner's observer events to `GameRecorder` when recording is enabled
-- [ ] 9.4 Recording disabled by default; enabled via builder config with output path
+- [x] 9.1 Extract `GameRecorder` class from `recorder` module into `lib/common` (GZIP ND-JSON file writer)
+- [x] 9.2 Update `recorder` module to depend on extracted `GameRecorder` from `lib/common`
+- [x] 9.3 Wire Battle Runner's observer events to `GameRecorder` when recording is enabled
+- [x] 9.4 Recording disabled by default; enabled via builder config with output path
 
 ## 10. Testing
 - [ ] 10.1 Unit tests for configuration and result types

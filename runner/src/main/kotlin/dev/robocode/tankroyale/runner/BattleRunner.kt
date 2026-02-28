@@ -3,17 +3,23 @@ package dev.robocode.tankroyale.runner
 import dev.robocode.tankroyale.client.model.BotAddress
 import dev.robocode.tankroyale.client.model.GameSetup
 import dev.robocode.tankroyale.common.event.On
+import dev.robocode.tankroyale.common.recording.GameRecorder
 import dev.robocode.tankroyale.intent.IntentDiagnosticsProxy
 import dev.robocode.tankroyale.intent.IntentStore
 import dev.robocode.tankroyale.runner.internal.BooterManager
 import dev.robocode.tankroyale.runner.internal.ServerConnection
 import dev.robocode.tankroyale.runner.internal.ServerManager
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
+import java.util.logging.Level
+import java.util.logging.Logger
 
 /**
  * Entry point for running Tank Royale battles programmatically.
@@ -46,10 +52,13 @@ import java.util.function.Consumer
  */
 class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
+    private val logger = Logger.getLogger(BattleRunner::class.java.name)
+
     internal val serverManager = ServerManager(config.serverMode)
     internal var connection: ServerConnection? = null
     internal var booterManager: BooterManager? = null
     internal var intentProxy: IntentDiagnosticsProxy? = null
+    private var gameRecorder: GameRecorder? = null
 
     private val battleInProgress = AtomicBoolean(false)
     private val closed = AtomicBoolean(false)
@@ -188,6 +197,8 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
         booterManager?.close()
         booterManager = null
+        gameRecorder?.close()
+        gameRecorder = null
         intentProxy?.close()
         intentProxy = null
         connection?.close()
@@ -211,7 +222,44 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         connection?.close()
         val conn = ServerConnection(serverManager.serverUrl, serverManager.controllerSecret)
         conn.connect()
+
+        // Subscribe to raw observer messages for recording (9.3)
+        if (config.recordingPath != null) {
+            conn.onRawObserverMessage += On(this) { message -> handleRecordingMessage(message) }
+        }
+
         connection = conn
+    }
+
+    // -------------------------------------------------------------------------------------
+    // Recording (9.3)
+    // -------------------------------------------------------------------------------------
+
+    /** Handles raw observer messages for battle recording. */
+    private fun handleRecordingMessage(message: String) {
+        val type = extractMessageType(message) ?: return
+
+        if (type in GameRecorder.START_RECORDING_TYPES) {
+            gameRecorder?.close()
+            gameRecorder = GameRecorder(config.recordingPath?.toString())
+        }
+
+        if (type in GameRecorder.RECORDABLE_EVENT_TYPES) {
+            gameRecorder?.record(message)
+        }
+
+        if (type in GameRecorder.END_RECORDING_TYPES) {
+            gameRecorder?.close()
+            gameRecorder = null
+        }
+    }
+
+    private fun extractMessageType(message: String): String? {
+        return try {
+            Json.parseToJsonElement(message).jsonObject["type"]?.jsonPrimitive?.content
+        } catch (_: Exception) {
+            null
+        }
     }
 
     /** Waits for the expected number of new bots to appear in BotListUpdate. */

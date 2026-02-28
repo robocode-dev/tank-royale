@@ -54,6 +54,9 @@ internal class ServerConnection(
     val onTickEvent = Event<TickEvent>()
     val onTpsChanged = Event<TpsChangedEvent>()
 
+    /** Fires the raw JSON string for every message received on the Observer connection. */
+    val onRawObserverMessage = Event<String>()
+
     /** The most recently received set of bots from BotListUpdate. */
     val latestBotList = AtomicReference<Set<BotInfo>>(emptySet())
 
@@ -133,6 +136,9 @@ internal class ServerConnection(
     }
 
     private fun handleMessage(message: String, role: Role, ws: WebSocket, readyLatch: CountDownLatch) {
+        // Fire raw message for recording support (Observer only)
+        if (role == Role.OBSERVER) onRawObserverMessage(message)
+
         try {
             when (val msg = json.decodeFromString(PolymorphicSerializer(Message::class), message)) {
                 is ServerHandshake -> {

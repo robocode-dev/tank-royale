@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.client.model.ObserverHandshake
 import dev.robocode.tankroyale.client.model.ServerHandshake
 import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.common.event.Once
+import dev.robocode.tankroyale.common.recording.GameRecorder
 import dev.robocode.tankroyale.common.util.Version
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -113,7 +114,7 @@ class RecordingObserver(
                     log.info("Starting recording to file: ${recorder?.file?.absolutePath}")
                 }
                 log.debug("Recording event: {}", type)
-                recorder?.record(jsonElement)
+                recorder?.record(msg)
             }
             if (endRecordingEvents.contains(type)) {
                 log.info("Received end recording event: {}", type)
