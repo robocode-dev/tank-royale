@@ -1,7 +1,8 @@
 package dev.robocode.tankroyale.server.model
 
-import dev.robocode.tankroyale.server.rules.*
+import dev.robocode.tankroyale.common.rules.*
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.microseconds
 
 /** Game setup. */
 data class GameSetup(
@@ -30,10 +31,10 @@ data class GameSetup(
     val maxInactivityTurns: Int = DEFAULT_INACTIVITY_TURNS,
 
     /** Turn timeout */
-    val turnTimeout: Duration = DEFAULT_TURN_TIMEOUT,
+    val turnTimeout: Duration = DEFAULT_TURN_TIMEOUT_MICROS.microseconds,
 
     /** Ready timeout */
-    val readyTimeout: Duration = DEFAULT_READY_TIMEOUT,
+    val readyTimeout: Duration = DEFAULT_READY_TIMEOUT_MICROS.microseconds,
 
     /** Default turns per second (TPS) */
     val defaultTurnsPerSecond: Int = DEFAULT_TURNS_PER_SECOND,

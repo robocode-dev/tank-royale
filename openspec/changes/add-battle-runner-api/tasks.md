@@ -1,10 +1,10 @@
 ## 1. Extract Shared Rules to lib/common
-- [ ] 1.1 Move game rule default constants from `server/rules/setup.kt` to `lib/common`
-- [ ] 1.2 Create game type preset definitions in `lib/common` (currently only in `gui/settings/GamesSettings.kt`)
-- [ ] 1.3 Update server to import rule defaults from `lib/common` instead of its own `setup.kt`
-- [ ] 1.4 Update GUI (`GamesSettings.kt`) to use shared preset definitions from `lib/common`
-- [ ] 1.5 Ensure `lib/client` GameSetup remains compatible with shared definitions
-- [ ] 1.6 Verify server and GUI build and tests pass after extraction
+- [x] 1.1 Move game rule default constants from `server/rules/setup.kt` to `lib/common`
+- [x] 1.2 Create game type preset definitions in `lib/common` (currently only in `gui/settings/GamesSettings.kt`)
+- [x] 1.3 Update server to import rule defaults from `lib/common` instead of its own `setup.kt`
+- [x] 1.4 Update GUI (`GamesSettings.kt`) to use shared preset definitions from `lib/common`
+- [x] 1.5 Ensure `lib/client` GameSetup remains compatible with shared definitions
+- [x] 1.6 Verify server and GUI build and tests pass after extraction
 
 ## 2. Module Setup
 - [ ] 2.1 Create `runner/` directory with `build.gradle.kts`
