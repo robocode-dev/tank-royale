@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.runner
 
+import dev.robocode.tankroyale.runner.internal.BooterManager
 import dev.robocode.tankroyale.runner.internal.ServerManager
 import java.nio.file.Path
 import java.util.function.Consumer
@@ -36,6 +37,7 @@ import java.util.function.Consumer
 class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
     internal val serverManager = ServerManager(config.serverMode)
+    internal var booterManager: BooterManager? = null
 
     /**
      * Starts a battle, blocks until all rounds complete, and returns structured results.
@@ -51,6 +53,8 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
     /** Terminates all managed resources (bot processes, embedded server, WebSocket connections). */
     override fun close() {
+        booterManager?.close()
+        booterManager = null
         serverManager.close()
     }
 

@@ -40,16 +40,16 @@
 - [x] 4.8 Configure server for max-speed: always pass `--tps=-1` to embedded server (unlimited turns per second)
 
 ## 5. Booter Integration
-- [ ] 5.1 Implement Booter process startup: extract bundled booter JAR from classpath resource to temp file,
+- [x] 5.1 Implement Booter process startup: extract bundled booter JAR from classpath resource to temp file,
         launch via `java -Dserver.url=<url> -Dserver.secret=<secret> -jar <booter.jar> boot <bot_dirs...>`,
         set `SERVER_URL` to proxy address when intent diagnostics enabled (otherwise to server address)
-- [ ] 5.2 Implement stdout parsing: read `<pid>;<bot_directory>` lines to track booted bot processes,
+- [x] 5.2 Implement stdout parsing: read `<pid>;<bot_directory>` lines to track booted bot processes,
         detect `stopped <pid>` and `lost <pid>` status messages
-- [ ] 5.3 Implement stdin commands: send `boot <directory>` for additional bots, `stop <pid>` for individual
+- [x] 5.3 Implement stdin commands: send `boot <directory>` for additional bots, `stop <pid>` for individual
         bot termination, `quit` for full Booter shutdown
-- [ ] 5.4 Implement bot path resolution and validation: verify each bot directory contains a valid bot
+- [x] 5.4 Implement bot path resolution and validation: verify each bot directory contains a valid bot
         configuration file before passing to Booter
-- [ ] 5.5 Implement bot process cleanup on battle end or failure: send `quit` to Booter stdin, wait for
+- [x] 5.5 Implement bot process cleanup on battle end or failure: send `quit` to Booter stdin, wait for
         graceful shutdown, then `destroyForcibly()` if Booter process still alive; track PIDs for cleanup
 
 ## 6. WebSocket Client
@@ -117,4 +117,9 @@
 - [ ] 11.2 Add KDoc/Javadoc to all public API types
 - [ ] 11.3 Update root `README.md` to mention Battle Runner API
 - [ ] 11.4 Update `VERSIONS.md` when releasing
-- [ ] 11.5 Add VitePress documentation page (`docs-build/docs/api/battle-runner.md`) with dual Kotlin/Java examples and sidebar entry in `config.mts`
+- [ ] 11.5 Add API reference to generated Javadoc site
+- [ ] 11.6 Add VitePress documentation page (`docs-build/docs/api/battle-runner.md`) with dual Kotlin/Java examples and sidebar entry in `config.mts`
+- [ ] 11.7 Update C4 Container View (`docs-internal/architecture/c4-views/container.md`) to include Runner
+        in the containers table, Mermaid diagrams, and Embedded Mode section
+- [ ] 11.8 Add Runner Components (L3) view (`docs-internal/architecture/c4-views/runner-components.md`)
+        describing ServerManager, BooterManager, WebSocket client, and orchestration internals
