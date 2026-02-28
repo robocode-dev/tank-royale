@@ -348,7 +348,7 @@ sealed class BaseBotInternals
         BotIntent.TeamMessages.Clear();
     }
 
-    private void TransferStdOutToBotIntent()
+    internal void TransferStdOutToBotIntent()
     {
         if (_recordingStdOut != null)
         {
@@ -939,6 +939,9 @@ sealed class BaseBotInternals
         // Dispatch any queued events (e.g. WonRoundEvent from the last tick) before stopping the
         // bot thread, as the subsequent RoundStartedEvent will clear the event queue.
         DispatchEvents(mappedRoundEndedEvent.TurnNumber);
+
+        // Transfer any remaining stdout/stderr from event handlers (e.g. OnWonRound) before the round ends
+        TransferStdOutToBotIntent();
 
         BotEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
         InternalEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);

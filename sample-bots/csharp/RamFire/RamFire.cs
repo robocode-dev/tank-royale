@@ -78,4 +78,10 @@ public class RamFire : Bot
 
         TurnLeft(bearing);
     }
+
+    // We won the round
+    public override void OnWonRound(WonRoundEvent e)
+    {
+        System.Console.WriteLine("I won the round!");
+    }
 }

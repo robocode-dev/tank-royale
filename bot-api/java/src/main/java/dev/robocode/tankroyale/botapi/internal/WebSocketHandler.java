@@ -174,6 +174,9 @@ final class WebSocketHandler implements WebSocket.Listener {
         // bot thread, as the subsequent RoundStartedEvent will clear the event queue.
         baseBotInternals.dispatchEvents(mappedRoundEndedEvent.getTurnNumber());
 
+        // Transfer any remaining stdout/stderr from event handlers (e.g. onWonRound) before the round ends
+        baseBotInternals.transferStdOutToBotIntent();
+
         botEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
         internalEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
     }

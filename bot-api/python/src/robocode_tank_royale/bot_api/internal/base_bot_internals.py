@@ -137,6 +137,10 @@ class BaseBotInternals:
         self._recording_stdout = RecordingTextWriter(sys.stdout)
         self._recording_stderr = RecordingTextWriter(sys.stderr)
 
+        # Store in data so WebSocketHandler can access them
+        self.data.recording_stdout = self._recording_stdout
+        self.data.recording_stderr = self._recording_stderr
+
         sys.stdout = self._recording_stdout
         sys.stderr = self._recording_stderr
 

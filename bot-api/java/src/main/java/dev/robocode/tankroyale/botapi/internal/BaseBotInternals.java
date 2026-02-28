@@ -341,7 +341,7 @@ public final class BaseBotInternals {
         }
     }
 
-    private void transferStdOutToBotIntent() {
+    void transferStdOutToBotIntent() {
         if (recordedStdOut != null) {
             String output = recordedStdOut.readNext();
             botIntent.setStdOut(output);

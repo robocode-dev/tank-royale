@@ -42,6 +42,9 @@ class BaseBotInternalData:
         self.saved_radar_turn_rate: Optional[float] = None
         # Flag set when the current event handler was interrupted by a new event
         self.was_current_event_interrupted: bool = False
+        # Recording writers for capturing stdout/stderr (set by BaseBotInternals)
+        self.recording_stdout: Optional[object] = None
+        self.recording_stderr: Optional[object] = None
 
     @property
     def my_id(self) -> int:

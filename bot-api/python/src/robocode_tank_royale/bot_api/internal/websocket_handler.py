@@ -203,6 +203,11 @@ class WebSocketHandler:
         # Dispatch any queued events (e.g. WonRoundEvent from the last tick) before stopping the
         # bot thread, as the subsequent RoundStartedEvent will clear the event queue.
         self.event_queue.dispatch_events(schema_evt.turn_number)
+        
+        # Transfer any remaining stdout/stderr from event handlers (e.g. on_won_round) before the round ends
+        # This is needed to capture output from handlers that fire after the last turn's go() call
+        self._transfer_std_out_to_bot_intent()
+        
         self.bot_event_handlers.on_round_ended.publish(round_ended_event)
         self.internal_event_handlers.on_round_ended.publish(round_ended_event)
 
@@ -299,3 +304,19 @@ class WebSocketHandler:
         except Exception:
             # Fallback to original payload if any unexpected error occurs
             await self.websocket.send(payload_str)
+
+    def _transfer_std_out_to_bot_intent(self) -> None:
+        """Transfer captured stdout/stderr to bot intent for sending to server."""
+        if self.base_bot_internal_data.recording_stdout:
+            output = self.base_bot_internal_data.recording_stdout.read_next()
+            if output:
+                self.base_bot_internal_data.bot_intent.std_out = output
+            else:
+                self.base_bot_internal_data.bot_intent.std_out = None
+
+        if self.base_bot_internal_data.recording_stderr:
+            error = self.base_bot_internal_data.recording_stderr.read_next()
+            if error:
+                self.base_bot_internal_data.bot_intent.std_err = error
+            else:
+                self.base_bot_internal_data.bot_intent.std_err = None
