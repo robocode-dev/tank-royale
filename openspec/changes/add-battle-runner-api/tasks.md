@@ -22,20 +22,54 @@
 - [x] 3.4 Implement `BattleResults` structured result type
 
 ## 4. Server Management
-- [ ] 4.1 Implement embedded server startup (in-process)
-- [ ] 4.2 Implement external server connection mode
-- [ ] 4.3 Implement server lifecycle management (start, stop, health check)
+- [ ] 4.1 Implement embedded server startup: extract bundled server JAR from classpath resource to temp file,
+        launch via `java -jar <server.jar> --port=<port> --controller-secrets=<secret> --bot-secrets=<secret>`,
+        register `deleteOnExit()` for the temp file
+- [ ] 4.2 Support dynamic port allocation: when user specifies port 0 (or omits port), pick an available port
+        (e.g. bind a `ServerSocket(0)`, read its port, close it, then pass to server `--port`)
+- [ ] 4.3 Implement server readiness detection: after process start, attempt WebSocket connection with retries
+        (e.g. 10 attempts, 500ms interval) — server is ready when handshake (`server-handshake`) is received
+- [ ] 4.4 Implement external server connection mode: skip process startup, connect directly to user-provided URL,
+        validate reachability by completing the `server-handshake` exchange
+- [ ] 4.5 Implement server shutdown: send `quit` to process stdin, wait up to 2s for graceful exit, then
+        `destroyForcibly()` if still alive; clean up temp JAR file
+- [ ] 4.6 Implement server reuse across battles: keep server process alive between `runBattle()` calls on the
+        same `BattleRunner` instance; only stop server on `close()`
+- [ ] 4.7 Generate and manage controller secret: create random secret at startup, pass to server via
+        `--controller-secrets`, use same secret for Observer and Controller handshakes (`session-id` + `secret`)
+- [ ] 4.8 Configure server for max-speed: always pass `--tps=-1` to embedded server (unlimited turns per second)
 
 ## 5. Booter Integration
-- [ ] 5.1 Implement Booter process spawning via stdin/stdout protocol
-- [ ] 5.2 Implement bot path resolution and validation
-- [ ] 5.3 Implement bot process cleanup on battle end or failure
+- [ ] 5.1 Implement Booter process startup: extract bundled booter JAR from classpath resource to temp file,
+        launch via `java -Dserver.url=<url> -Dserver.secret=<secret> -jar <booter.jar> boot <bot_dirs...>`,
+        set `SERVER_URL` to proxy address when intent diagnostics enabled (otherwise to server address)
+- [ ] 5.2 Implement stdout parsing: read `<pid>;<bot_directory>` lines to track booted bot processes,
+        detect `stopped <pid>` and `lost <pid>` status messages
+- [ ] 5.3 Implement stdin commands: send `boot <directory>` for additional bots, `stop <pid>` for individual
+        bot termination, `quit` for full Booter shutdown
+- [ ] 5.4 Implement bot path resolution and validation: verify each bot directory contains a valid bot
+        configuration file before passing to Booter
+- [ ] 5.5 Implement bot process cleanup on battle end or failure: send `quit` to Booter stdin, wait for
+        graceful shutdown, then `destroyForcibly()` if Booter process still alive; track PIDs for cleanup
 
 ## 6. WebSocket Client
-- [ ] 6.1 Implement Observer connection and handshake
-- [ ] 6.2 Implement Controller connection and handshake
-- [ ] 6.3 Implement battle control commands (start, stop, pause, resume)
-- [ ] 6.4 Implement event deserialization and delivery via Event<T> system
+- [ ] 6.1 Implement Observer connection: open WebSocket to server, receive `server-handshake` (extract
+        `session-id`), send `observer-handshake` (with `session-id` + `secret`), receive `bot-list-update`
+- [ ] 6.2 Implement Controller connection: open WebSocket to server, receive `server-handshake` (extract
+        `session-id`), send `controller-handshake` (with `session-id` + `secret`), receive `bot-list-update`
+- [ ] 6.3 Implement `controller.startBattle()`: send `start-game` message with selected bot IDs and game setup,
+        wait for `game-started-event-for-observer` (confirms enough bots sent `bot-ready`), handle
+        `game-aborted-event` if insufficient participants
+- [ ] 6.4 Implement `controller.stop()`: send `stop-game`, await `game-aborted-event` confirmation
+- [ ] 6.5 Implement `controller.pause()`: send `pause-game`, await `game-paused-event-for-observers`
+- [ ] 6.6 Implement `controller.resume()`: send `resume-game`, await `game-resumed-event-for-observers`
+- [ ] 6.7 Implement `controller.nextTurn()`: send `next-turn` while paused (single-step debugging)
+- [ ] 6.8 Implement event deserialization and delivery via Event<T> system: deserialize
+        `tick-event-for-observer`, `round-started-event`, `round-ended-event`, `game-ended-event-for-observer`,
+        `game-aborted-event`, `game-paused-event-for-observers`, `game-resumed-event-for-observers`,
+        `tps-changed-event`, `bot-list-update` into typed Kotlin objects and fire via Event<T> listeners
+- [ ] 6.9 Implement `BattleResults` extraction from `game-ended-event-for-observer` results array:
+        map each entry to typed result object (rank, survival, bulletDamage, ramDamage, killBonuses, totalScore)
 
 ## 7. Intent Diagnostics (WebSocket Proxy)
 - [ ] 7.1 Implement transparent WebSocket proxy that forwards all messages between bots and server
@@ -45,10 +79,24 @@
 - [ ] 7.5 Ensure proxy is opt-in and not started when diagnostics are disabled
 
 ## 8. Battle Orchestration
-- [ ] 8.1 Implement synchronous `runBattle()` — block until results available
-- [ ] 8.2 Implement async battle execution with event callbacks
-- [ ] 8.3 Implement graceful shutdown (close server, kill bot processes, close WebSocket)
-- [ ] 8.4 Implement error handling and timeout management
+- [ ] 8.1 Implement synchronous `runBattle()` flow:
+        1. Ensure server is running and Observer+Controller are connected
+        2. Send bot directories to Booter, wait for all bots to connect (detected via `bot-list-update`)
+        3. Send `start-game` via Controller with selected bot IDs and `GameSetup`
+        4. Wait for `game-started-event-for-observer` (battle running) or `game-aborted-event` (failed)
+        5. Block until `game-ended-event-for-observer` — extract and return `BattleResults`
+        6. Send `quit` to Booter to stop bot processes; keep server alive for next battle
+- [ ] 8.2 Implement async battle execution: non-blocking variant that fires Event<T> callbacks for each
+        protocol event; user controls flow via `controller` object
+- [ ] 8.3 Implement multi-battle support: `runBattle()` can be called repeatedly on same `BattleRunner`;
+        between battles, stop bot processes via Booter, restart Booter with new bot selection if needed,
+        reuse server and WebSocket connections
+- [ ] 8.4 Implement graceful shutdown (`close()`): send `quit` to Booter, send `stop-game` if battle
+        running, close Observer and Controller WebSocket connections, stop embedded server process,
+        register JVM shutdown hook as fallback
+- [ ] 8.5 Implement error handling: timeout if `game-started-event-for-observer` not received within
+        configurable deadline, detect `game-aborted-event`, handle Booter/server process crashes,
+        propagate meaningful exceptions to caller
 
 ## 9. Battle Recording
 - [ ] 9.1 Extract `GameRecorder` class from `recorder` module into `lib/common` (GZIP ND-JSON file writer)

@@ -104,6 +104,13 @@ WebSocket + JSON protocol, schema-driven message contracts, cross-platform symme
 
 > **Do not duplicate architecture details here.** Reference the architecture docs instead.
 
+### Protocol & Sequence Diagrams
+
+The WebSocket game protocol — including handshakes, battle lifecycle, turn loop, and controller commands — is documented
+with Mermaid sequence diagrams in [`schema/schemas/README.md`](../schema/schemas/README.md). **Always consult these
+diagrams** when working on features that interact with the server protocol (Observer, Controller, Bot connections,
+battle orchestration). The individual message schemas (YAML) live alongside the README in `schema/schemas/`.
+
 ### Testing Strategy
 
 - Provide tests where reasonable

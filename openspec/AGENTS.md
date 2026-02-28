@@ -82,6 +82,7 @@ After deployment, create separate PR to:
 - [ ] Read relevant specs in `specs/[capability]/spec.md`
 - [ ] Check pending changes in `changes/` for conflicts
 - [ ] Read `openspec/project.md` for conventions
+- [ ] Consult `schema/schemas/README.md` for protocol sequence diagrams when working on server/protocol features
 - [ ] Run `openspec list` to see active changes
 - [ ] Run `openspec list --specs` to see existing capabilities
 
