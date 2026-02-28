@@ -192,3 +192,27 @@ The Battle Runner API SHALL be published to Maven Central as artifact `dev.roboc
 #### Scenario: Depend via Gradle
 - **WHEN** a user adds `implementation("dev.robocode.tankroyale:robocode-tankroyale-battle-runner:VERSION")` to their build
 - **THEN** the library and its transitive dependencies SHALL resolve correctly from Maven Central
+
+### Requirement: Java Client Compatibility
+
+The Battle Runner API SHALL be usable from pure Java 11+ code without requiring knowledge of Kotlin language features
+or the Kotlin standard library API.
+
+#### Scenario: Static factory access from Java
+- **WHEN** a Java client calls `BattleRunner.create()` or `BattleSetup.classic()`
+- **THEN** the methods SHALL be accessible as static methods (via `@JvmStatic`)
+- **AND** Java clients SHALL NOT need to go through `Companion` objects
+
+#### Scenario: Builder configuration from Java
+- **WHEN** a Java client configures a `BattleSetup` or `BattleRunner` via a builder
+- **THEN** `Consumer<Builder>` overloads SHALL be available alongside Kotlin DSL lambdas
+- **AND** Java clients SHALL NOT need to return `Unit.INSTANCE` from builder lambdas
+- **AND** Kotlin DSL lambda overloads SHALL be hidden from Java (via `@JvmSynthetic`) to prevent overload ambiguity
+
+#### Scenario: No-arg factory access from Java
+- **WHEN** a Java client calls `BattleRunner.create()`, `BattleSetup.classic()`, or similar factories without parameters
+- **THEN** explicit no-arg overloads SHALL be available that return default configurations
+
+#### Scenario: Default parameter overloads for Java
+- **WHEN** a builder method has Kotlin default parameters (e.g., `embeddedServer(port = 0)`)
+- **THEN** a no-arg overload SHALL be generated (via `@JvmOverloads`) for Java callers

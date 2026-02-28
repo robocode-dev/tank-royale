@@ -16,10 +16,10 @@
 - [x] 2.7 Reuse `ResourceUtil` extraction logic for runtime JAR extraction to temp files
 
 ## 3. Core API
-- [ ] 3.1 Implement `BattleRunner` main entry point (builder pattern)
-- [ ] 3.2 Implement `BattleSetup` configuration (game type presets from `lib/common`, with overrides)
-- [ ] 3.3 Implement `BotEntry` for selecting bots by path or class
-- [ ] 3.4 Implement `BattleResults` structured result type
+- [x] 3.1 Implement `BattleRunner` main entry point (builder pattern)
+- [x] 3.2 Implement `BattleSetup` configuration (game type presets from `lib/common`, with overrides)
+- [x] 3.3 Implement `BotEntry` for selecting bots by path or class
+- [x] 3.4 Implement `BattleResults` structured result type
 
 ## 4. Server Management
 - [ ] 4.1 Implement embedded server startup (in-process)
@@ -68,4 +68,5 @@
 - [ ] 11.1 Write `runner/README.md` with usage examples
 - [ ] 11.2 Add KDoc/Javadoc to all public API types
 - [ ] 11.3 Update root `README.md` to mention Battle Runner API
-- [ ] 10.4 Update `VERSIONS.md` when releasing
+- [ ] 11.4 Update `VERSIONS.md` when releasing
+- [ ] 11.5 Add VitePress documentation page (`docs-build/docs/api/battle-runner.md`) with dual Kotlin/Java examples and sidebar entry in `config.mts`

@@ -89,55 +89,54 @@ server. The proxy transparently forwards all messages while capturing `bot-inten
 
 ### API Surface (Conceptual)
 
+The API is implemented in Kotlin but designed to be equally ergonomic from Java. All public factory methods use
+`@JvmStatic` for direct static access, and `Consumer<Builder>` overloads are provided alongside Kotlin DSL lambdas
+to avoid `Unit.INSTANCE` boilerplate in Java (see Decision 15).
+
+**Kotlin:**
+
 ```kotlin
 // Create and configure a battle runner
-val runner = BattleRunner.create {
-    serverPort(7654)           // or useEmbeddedServer()
-    botPaths(listOf(           // directories containing bot entries
-        Path.of("bots/MyBot"),
-        Path.of("bots/SampleBot")
-    ))
-    enableRecording(Path.of("recordings/"))  // optional: save .battle.gz files
-    enableIntentDiagnostics()                // optional: capture bot intents via WS proxy
-}
+BattleRunner.create { embeddedServer() }.use { runner ->
+    val bots = listOf(BotEntry.of("bots/MyBot"), BotEntry.of("bots/SampleBot"))
 
-// Observer — receive battle events (mirrors the Observer WebSocket role)
-val observer = runner.observer
-observer.onTurnEnded { event ->
-    event.botStates.forEach { bot ->
-        println("${bot.name}: pos=(${bot.x}, ${bot.y}) energy=${bot.energy} speed=${bot.speed}")
+    // Run a battle synchronously — blocks until complete, returns results
+    val results = runner.runBattle(
+        setup = BattleSetup.classic { numberOfRounds = 5 },
+        bots  = bots
+    )
+    results.results.forEach { r -> println("${r.name}: rank=${r.rank} score=${r.totalScore}") }
+
+    // Run multiple battles on the same server instance (no restart between battles)
+    repeat(1000) { i ->
+        val r = runner.runBattle(BattleSetup.classic(), bots)
+        println("Battle $i: winner=${r.results.first().name}")
     }
 }
-observer.onRoundEnded { event -> println("Round ${event.roundNumber}: ${event.results}") }
-observer.onBattleEnded { event ->
-    event.results.forEach { r -> println("${r.name}: rank=${r.rank} score=${r.totalScore}") }
+```
+
+**Java:**
+
+```java
+// Create and configure a battle runner
+try (var runner = BattleRunner.create(b -> b.embeddedServer())) {
+    var bots = List.of(BotEntry.of("bots/MyBot"), BotEntry.of("bots/SampleBot"));
+
+    // Run a battle synchronously — blocks until complete, returns results
+    var results = runner.runBattle(
+        BattleSetup.classic(s -> s.setNumberOfRounds(5)),
+        bots
+    );
+    for (var r : results.getResults()) {
+        System.out.printf("%s: rank=%d score=%d%n", r.getName(), r.getRank(), r.getTotalScore());
+    }
+
+    // Run multiple battles on the same server instance (no restart between battles)
+    for (int i = 0; i < 1000; i++) {
+        var r = runner.runBattle(BattleSetup.classic(), bots);
+        System.out.printf("Battle %d: winner=%s%n", i, r.getResults().get(0).getName());
+    }
 }
-
-// Controller — manage battle lifecycle (mirrors the Controller WebSocket role)
-val controller = runner.controller
-controller.startBattle(GameType.CLASSIC)
-controller.pause()
-controller.resume()
-controller.stop()
-
-// Convenience: run a battle synchronously (blocks until complete, returns results)
-val results = runner.runBattle(GameType.CLASSIC)
-results.forEach { r -> println("${r.name}: rank=${r.rank} score=${r.totalScore}") }
-
-// Run multiple battles on the same server instance (no server restart between battles)
-repeat(1000) { battleNumber ->
-    val battleResults = runner.runBattle(GameType.CLASSIC)
-    println("Battle $battleNumber: winner=${battleResults.first().name}")
-}
-
-// Intent diagnostics — inspect what each bot actually sent (requires enableIntentDiagnostics)
-val intents = runner.intentDiagnostics
-intents.forBot("MyBot").forEach { turnIntent ->
-    println("Turn ${turnIntent.turn}: turnRate=${turnIntent.turnRate} " +
-            "targetSpeed=${turnIntent.targetSpeed} firepower=${turnIntent.firepower}")
-}
-
-runner.close()  // clean shutdown of server + bots
 ```
 
 The `BattleRunner` itself manages lifecycle (create, close, embedded server, booter). The `observer` and `controller`
@@ -217,6 +216,15 @@ to capture raw `bot-intent` messages — available after battle completion via `
 14. **Typed intent diagnostics** — Intent data is exposed as deserialized Kotlin/Java objects, not raw JSON strings.
     End users of the API should never deal with JSON. The intent model should reuse or extend existing types from
     `lib/common` (matching the server's `BotIntent` structure) to avoid duplication.
+
+15. **Java-friendly API surface** — Although the Battle Runner is implemented in Kotlin, it is a public Maven Central
+    library consumed by both Kotlin and Java clients (Java 11+). Each factory method uses a three-overload pattern:
+    (a) a `@JvmSynthetic` Kotlin DSL lambda-with-receiver (`Builder.() -> Unit`) — hidden from Java to prevent
+    ambiguity; (b) a `@JvmStatic` no-arg overload returning preset defaults; (c) a `@JvmStatic` overload accepting
+    `java.util.function.Consumer<Builder>` for Java callers. This avoids both `Companion` object access and
+    `return Unit.INSTANCE;` boilerplate in Java. Builder methods with Kotlin default parameters (e.g.,
+    `embeddedServer(port = 0)`) use `@JvmOverloads` to generate no-arg overloads. Kotlin `var` properties on builders
+    naturally compile to `getX()`/`setX()` accessors that Java callers use idiomatically.
 
 ---
 

@@ -16,6 +16,8 @@ connections.
 - **NEW module** `runner` — top-level Gradle module (artifact: `robocode-tankroyale-battle-runner`)
 - **NEW capability** `battle-runner` — OpenSpec spec defining requirements for programmatic battle execution
 - **NEW public API** published to Maven Central — Java/Kotlin library for running battles from code
+- Designed as a **Java-friendly API**: `@JvmStatic` on factory methods, `Consumer<Builder>` overloads alongside
+  Kotlin DSL lambdas, `@JvmOverloads` for default parameters (see ADR-0024, Decision 15)
 - Orchestrates existing Server (embedded or external) and Booter via their existing protocols
 - Connects as both Observer and Controller over WebSocket (per ADR-0007)
 - Provides typed configuration for battle rules, bot selection, and event handling

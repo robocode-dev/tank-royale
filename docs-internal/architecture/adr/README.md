@@ -81,8 +81,8 @@ When making a new architectural decision:
 ---
 
 **Related Documentation:**
-- [C4 Views](../c4-views/) — Visual architecture diagrams
-- [Message Schema](../models/message-schema/) — WebSocket message contracts
-- [Business Flows](../models/flows/) — Process documentation
+- [C4 Views](../c4-views/README.md) — Visual architecture diagrams
+- [Message Schema](../models/message-schema/README.md) — WebSocket message contracts
+- [Business Flows](../models/flows/README.md) — Process documentation
 - [OpenSpec Specs](/openspec/specs/) — Requirements and scenarios (references ADRs for design rationale)
 - [AI Architecture Guide](/.ai/architecture.md) — AI agent routing to architecture docs

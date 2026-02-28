@@ -25,6 +25,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation(testLibs.kotest.junit5)
+    testImplementation(testLibs.bundles.junit)
+    testImplementation(testLibs.assertj)
 }
 
 tasks {
