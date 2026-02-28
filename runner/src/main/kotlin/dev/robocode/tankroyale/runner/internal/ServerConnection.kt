@@ -54,6 +54,9 @@ internal class ServerConnection(
     val onTickEvent = Event<TickEvent>()
     val onTpsChanged = Event<TpsChangedEvent>()
 
+    /** The most recently received set of bots from BotListUpdate. */
+    val latestBotList = AtomicReference<Set<BotInfo>>(emptySet())
+
     /** True if both Observer and Controller connections are established. */
     val isConnected: Boolean get() = connected.get()
 
@@ -139,7 +142,10 @@ internal class ServerConnection(
                 }
 
                 // Route events only from Observer connection to avoid duplicates
-                is BotListUpdate -> if (role == Role.OBSERVER) onBotListUpdate(msg)
+                is BotListUpdate -> if (role == Role.OBSERVER) {
+                    latestBotList.set(msg.bots)
+                    onBotListUpdate(msg)
+                }
                 is GameStartedEvent -> if (role == Role.OBSERVER) onGameStarted(msg)
                 is GameEndedEvent -> if (role == Role.OBSERVER) onGameEnded(msg)
                 is GameAbortedEvent -> if (role == Role.OBSERVER) onGameAborted(msg)

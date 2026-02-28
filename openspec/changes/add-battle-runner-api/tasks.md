@@ -79,22 +79,22 @@
 - [x] 7.5 Ensure proxy is opt-in and not started when diagnostics are disabled
 
 ## 8. Battle Orchestration
-- [ ] 8.1 Implement synchronous `runBattle()` flow:
+- [x] 8.1 Implement synchronous `runBattle()` flow:
         1. Ensure server is running and Observer+Controller are connected
         2. Send bot directories to Booter, wait for all bots to connect (detected via `bot-list-update`)
         3. Send `start-game` via Controller with selected bot IDs and `GameSetup`
         4. Wait for `game-started-event-for-observer` (battle running) or `game-aborted-event` (failed)
         5. Block until `game-ended-event-for-observer` — extract and return `BattleResults`
         6. Send `quit` to Booter to stop bot processes; keep server alive for next battle
-- [ ] 8.2 Implement async battle execution: non-blocking variant that fires Event<T> callbacks for each
+- [x] 8.2 Implement async battle execution: non-blocking variant that fires Event<T> callbacks for each
         protocol event; user controls flow via `controller` object
-- [ ] 8.3 Implement multi-battle support: `runBattle()` can be called repeatedly on same `BattleRunner`;
+- [x] 8.3 Implement multi-battle support: `runBattle()` can be called repeatedly on same `BattleRunner`;
         between battles, stop bot processes via Booter, restart Booter with new bot selection if needed,
         reuse server and WebSocket connections
-- [ ] 8.4 Implement graceful shutdown (`close()`): send `quit` to Booter, send `stop-game` if battle
+- [x] 8.4 Implement graceful shutdown (`close()`): send `quit` to Booter, send `stop-game` if battle
         running, close Observer and Controller WebSocket connections, stop embedded server process,
         register JVM shutdown hook as fallback
-- [ ] 8.5 Implement error handling: timeout if `game-started-event-for-observer` not received within
+- [x] 8.5 Implement error handling: timeout if `game-started-event-for-observer` not received within
         configurable deadline, detect `game-aborted-event`, handle Booter/server process crashes,
         propagate meaningful exceptions to caller
 
