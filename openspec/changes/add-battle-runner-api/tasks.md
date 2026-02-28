@@ -72,11 +72,11 @@
         map each entry to typed result object (rank, survival, bulletDamage, ramDamage, killBonuses, totalScore)
 
 ## 7. Intent Diagnostics (WebSocket Proxy)
-- [ ] 7.1 Implement transparent WebSocket proxy that forwards all messages between bots and server
-- [ ] 7.2 Capture `bot-intent` messages per bot per turn in memory
-- [ ] 7.3 Set `SERVER_URL` env var to proxy address when diagnostics enabled
-- [ ] 7.4 Expose `intentDiagnostics` API for querying captured intents per bot after battle
-- [ ] 7.5 Ensure proxy is opt-in and not started when diagnostics are disabled
+- [x] 7.1 Implement transparent WebSocket proxy that forwards all messages between bots and server
+- [x] 7.2 Capture `bot-intent` messages per bot per turn in memory
+- [x] 7.3 Set `SERVER_URL` env var to proxy address when diagnostics enabled
+- [x] 7.4 Expose `intentDiagnostics` API for querying captured intents per bot after battle
+- [x] 7.5 Ensure proxy is opt-in and not started when diagnostics are disabled
 
 ## 8. Battle Orchestration
 - [ ] 8.1 Implement synchronous `runBattle()` flow:

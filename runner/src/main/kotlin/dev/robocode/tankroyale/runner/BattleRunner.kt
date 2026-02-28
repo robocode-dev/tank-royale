@@ -1,5 +1,7 @@
 package dev.robocode.tankroyale.runner
 
+import dev.robocode.tankroyale.intent.IntentDiagnosticsProxy
+import dev.robocode.tankroyale.intent.IntentStore
 import dev.robocode.tankroyale.runner.internal.BooterManager
 import dev.robocode.tankroyale.runner.internal.ServerManager
 import java.nio.file.Path
@@ -38,6 +40,16 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
     internal val serverManager = ServerManager(config.serverMode)
     internal var booterManager: BooterManager? = null
+    internal var intentProxy: IntentDiagnosticsProxy? = null
+
+    /**
+     * Returns the intent diagnostics store for querying captured bot intents.
+     * Only available when intent diagnostics are enabled via [Builder.enableIntentDiagnostics].
+     *
+     * @return the intent store, or `null` if diagnostics are disabled
+     */
+    val intentDiagnostics: IntentStore?
+        get() = intentProxy?.store
 
     /**
      * Starts a battle, blocks until all rounds complete, and returns structured results.
@@ -51,10 +63,12 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         TODO("Implemented in task 8: Battle Orchestration")
     }
 
-    /** Terminates all managed resources (bot processes, embedded server, WebSocket connections). */
+    /** Terminates all managed resources (bot processes, intent proxy, embedded server, WebSocket connections). */
     override fun close() {
         booterManager?.close()
         booterManager = null
+        intentProxy?.close()
+        intentProxy = null
         serverManager.close()
     }
 

@@ -5,6 +5,7 @@ val version: String = providers.gradleProperty("version").get()
 // Lib
 include("lib:common")
 include("lib:client")
+include("lib:intent-diagnostics")
 
 // Booter
 include("booter")

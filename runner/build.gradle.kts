@@ -22,6 +22,7 @@ plugins {
 
 dependencies {
     api(project(":lib:client"))
+    implementation(project(":lib:intent-diagnostics"))
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation(testLibs.kotest.junit5)
