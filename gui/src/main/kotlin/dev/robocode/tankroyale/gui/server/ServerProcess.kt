@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.server.ServerLogFrame
 import dev.robocode.tankroyale.gui.util.EDT
 import dev.robocode.tankroyale.gui.util.FileUtil
-import dev.robocode.tankroyale.gui.util.ResourceUtil
+import dev.robocode.tankroyale.common.util.ResourceUtil
 import dev.robocode.tankroyale.gui.util.ProcessUtil
 import dev.robocode.tankroyale.gui.util.LineReaderThread
 import java.io.FileNotFoundException

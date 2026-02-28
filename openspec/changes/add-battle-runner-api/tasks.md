@@ -7,13 +7,13 @@
 - [x] 1.6 Verify server and GUI build and tests pass after extraction
 
 ## 2. Module Setup
-- [ ] 2.1 Create `runner/` directory with `build.gradle.kts`
-- [ ] 2.2 Add `runner` to `settings.gradle.kts`
-- [ ] 2.3 Configure Maven Central publishing (nexus-publish)
-- [ ] 2.4 Add dependencies on server, booter, and common libraries
-- [ ] 2.5 Add `copyServerJar` and `copyBooterJar` Gradle tasks (same pattern as `gui/build.gradle.kts`)
-- [ ] 2.6 Configure fat JAR to include embedded server and booter JARs as classpath resources
-- [ ] 2.7 Reuse `ResourceUtil` extraction logic for runtime JAR extraction to temp files
+- [x] 2.1 Create `runner/` directory with `build.gradle.kts`
+- [x] 2.2 Add `runner` to `settings.gradle.kts`
+- [x] 2.3 Configure Maven Central publishing (nexus-publish)
+- [x] 2.4 Add dependencies on server, booter, and common libraries
+- [x] 2.5 Add `copyServerJar` and `copyBooterJar` Gradle tasks (same pattern as `gui/build.gradle.kts`)
+- [x] 2.6 Configure fat JAR to include embedded server and booter JARs as classpath resources
+- [x] 2.7 Reuse `ResourceUtil` extraction logic for runtime JAR extraction to temp files
 
 ## 3. Core API
 - [ ] 3.1 Implement `BattleRunner` main entry point (builder pattern)

@@ -1,6 +1,5 @@
-package dev.robocode.tankroyale.gui.util
+package dev.robocode.tankroyale.common.util
 
-import dev.robocode.tankroyale.gui.extensions.PathExt.getFileExtension
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -20,17 +19,19 @@ object ResourceUtil {
                 val inputStream = javaClass.classLoader.getResourceAsStream(resourceName)
                 if (inputStream != null) {
                     val filename = "${LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()}"
-                    val fileExt = Paths.get(resourceName).getFileExtension()
-                    val tempFilePath = Files.createTempFile(filename, ".$fileExt")
+                    val ext = Paths.get(resourceName).fileName?.toString()
+                        ?.substringAfterLast('.', "")
+                        ?.takeIf { it.isNotEmpty() }
+                    val tempFilePath = if (ext != null) Files.createTempFile(filename, ".$ext")
+                                       else Files.createTempFile(filename, "")
                     Files.copy(inputStream, tempFilePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING)
                     file = tempFilePath.toFile()
-                    file.deleteOnExit() // Delete temp file when JVM exists
+                    file.deleteOnExit()
                 }
             } catch (ex: IOException) {
                 ex.printStackTrace()
             }
         } else {
-            // this will probably work in your IDE, but not from a JAR
             file = File(resource.file)
         }
         return file

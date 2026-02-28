@@ -18,6 +18,9 @@ include("recorder")
 // GUI
 include("gui")
 
+// Bettle Runner
+include("runner")
+
 // Bot API
 include("bot-api:java")
 include("bot-api:dotnet")
