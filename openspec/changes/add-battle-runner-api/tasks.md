@@ -53,22 +53,22 @@
         graceful shutdown, then `destroyForcibly()` if Booter process still alive; track PIDs for cleanup
 
 ## 6. WebSocket Client
-- [ ] 6.1 Implement Observer connection: open WebSocket to server, receive `server-handshake` (extract
+- [x] 6.1 Implement Observer connection: open WebSocket to server, receive `server-handshake` (extract
         `session-id`), send `observer-handshake` (with `session-id` + `secret`), receive `bot-list-update`
-- [ ] 6.2 Implement Controller connection: open WebSocket to server, receive `server-handshake` (extract
+- [x] 6.2 Implement Controller connection: open WebSocket to server, receive `server-handshake` (extract
         `session-id`), send `controller-handshake` (with `session-id` + `secret`), receive `bot-list-update`
-- [ ] 6.3 Implement `controller.startBattle()`: send `start-game` message with selected bot IDs and game setup,
+- [x] 6.3 Implement `controller.startBattle()`: send `start-game` message with selected bot IDs and game setup,
         wait for `game-started-event-for-observer` (confirms enough bots sent `bot-ready`), handle
         `game-aborted-event` if insufficient participants
-- [ ] 6.4 Implement `controller.stop()`: send `stop-game`, await `game-aborted-event` confirmation
-- [ ] 6.5 Implement `controller.pause()`: send `pause-game`, await `game-paused-event-for-observers`
-- [ ] 6.6 Implement `controller.resume()`: send `resume-game`, await `game-resumed-event-for-observers`
-- [ ] 6.7 Implement `controller.nextTurn()`: send `next-turn` while paused (single-step debugging)
-- [ ] 6.8 Implement event deserialization and delivery via Event<T> system: deserialize
+- [x] 6.4 Implement `controller.stop()`: send `stop-game`, await `game-aborted-event` confirmation
+- [x] 6.5 Implement `controller.pause()`: send `pause-game`, await `game-paused-event-for-observers`
+- [x] 6.6 Implement `controller.resume()`: send `resume-game`, await `game-resumed-event-for-observers`
+- [x] 6.7 Implement `controller.nextTurn()`: send `next-turn` while paused (single-step debugging)
+- [x] 6.8 Implement event deserialization and delivery via Event<T> system: deserialize
         `tick-event-for-observer`, `round-started-event`, `round-ended-event`, `game-ended-event-for-observer`,
         `game-aborted-event`, `game-paused-event-for-observers`, `game-resumed-event-for-observers`,
         `tps-changed-event`, `bot-list-update` into typed Kotlin objects and fire via Event<T> listeners
-- [ ] 6.9 Implement `BattleResults` extraction from `game-ended-event-for-observer` results array:
+- [x] 6.9 Implement `BattleResults` extraction from `game-ended-event-for-observer` results array:
         map each entry to typed result object (rank, survival, bulletDamage, ramDamage, killBonuses, totalScore)
 
 ## 7. Intent Diagnostics (WebSocket Proxy)
