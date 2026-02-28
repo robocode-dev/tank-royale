@@ -22,22 +22,22 @@
 - [x] 3.4 Implement `BattleResults` structured result type
 
 ## 4. Server Management
-- [ ] 4.1 Implement embedded server startup: extract bundled server JAR from classpath resource to temp file,
+- [x] 4.1 Implement embedded server startup: extract bundled server JAR from classpath resource to temp file,
         launch via `java -jar <server.jar> --port=<port> --controller-secrets=<secret> --bot-secrets=<secret>`,
         register `deleteOnExit()` for the temp file
-- [ ] 4.2 Support dynamic port allocation: when user specifies port 0 (or omits port), pick an available port
+- [x] 4.2 Support dynamic port allocation: when user specifies port 0 (or omits port), pick an available port
         (e.g. bind a `ServerSocket(0)`, read its port, close it, then pass to server `--port`)
-- [ ] 4.3 Implement server readiness detection: after process start, attempt WebSocket connection with retries
+- [x] 4.3 Implement server readiness detection: after process start, attempt WebSocket connection with retries
         (e.g. 10 attempts, 500ms interval) — server is ready when handshake (`server-handshake`) is received
-- [ ] 4.4 Implement external server connection mode: skip process startup, connect directly to user-provided URL,
+- [x] 4.4 Implement external server connection mode: skip process startup, connect directly to user-provided URL,
         validate reachability by completing the `server-handshake` exchange
-- [ ] 4.5 Implement server shutdown: send `quit` to process stdin, wait up to 2s for graceful exit, then
+- [x] 4.5 Implement server shutdown: send `quit` to process stdin, wait up to 2s for graceful exit, then
         `destroyForcibly()` if still alive; clean up temp JAR file
-- [ ] 4.6 Implement server reuse across battles: keep server process alive between `runBattle()` calls on the
+- [x] 4.6 Implement server reuse across battles: keep server process alive between `runBattle()` calls on the
         same `BattleRunner` instance; only stop server on `close()`
-- [ ] 4.7 Generate and manage controller secret: create random secret at startup, pass to server via
+- [x] 4.7 Generate and manage controller secret: create random secret at startup, pass to server via
         `--controller-secrets`, use same secret for Observer and Controller handshakes (`session-id` + `secret`)
-- [ ] 4.8 Configure server for max-speed: always pass `--tps=-1` to embedded server (unlimited turns per second)
+- [x] 4.8 Configure server for max-speed: always pass `--tps=-1` to embedded server (unlimited turns per second)
 
 ## 5. Booter Integration
 - [ ] 5.1 Implement Booter process startup: extract bundled booter JAR from classpath resource to temp file,
