@@ -57,6 +57,20 @@ The per-turn sequence at 30 TPS (turns per second):
 
 ---
 
+### Event Handling Flow
+**[→ event-handling.md](./event-handling.md)**
+
+How events (WonRoundEvent, ScannedBotEvent, etc.) are generated, transmitted, queued, and dispatched:
+- **Lifecycle:** Server generation → WebSocket transmission → client queue → dispatch to handlers
+- **Platforms:** Java, Python, C# (cross-platform parity)
+- **Output Handling:** RecordingPrintStream/RecordingTextWriter buffering and transfer
+- **Critical Fix:** Proper stdout capture from round-end event handlers like onWonRound()
+- **Comparison:** Tank Royale vs Classic Robocode event architecture
+
+**Use When:** Debugging event handler issues, understanding cross-platform output capture, investigating event dispatch timing
+
+---
+
 ## Flow Diagram Format
 
 All flows use **Mermaid sequence diagrams**:
@@ -108,7 +122,8 @@ Critical for 30 TPS system. Flows include:
 | [Battle Lifecycle](./battle-lifecycle.md) | ✅ | Battle state progression |
 | [Bot Connection](./bot-connection.md) | ✅ | Bot initialization |
 | [Turn Execution](./turn-execution.md) | ✅ | Per-turn game loop (30 TPS) |
+| [Event Handling](./event-handling.md) | ✅ | Event generation, queuing, dispatch, and output capture |
 
 ---
 
-**Last Updated:** 2026-02-11
+**Last Updated:** 2026-02-28
