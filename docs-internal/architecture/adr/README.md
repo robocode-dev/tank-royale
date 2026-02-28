@@ -44,6 +44,8 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0021](./0021-java-swing-gui-reference-implementation.md) | Java Swing as GUI Reference Implementation | Accepted | 2026-02-15 |
 | [0022](./0022-event-system-gui-decoupling.md) | Event System for GUI Decoupling | Accepted | 2026-02-15 |
 | [0023](./0023-robocode-tank-royale-platform-scope.md) | Robocode Tank Royale Platform Scope and Boundaries | Accepted | 2026-02-15 |
+| [0024](./0024-battle-runner-api.md) | Battle Runner API | Proposed | 2026-02-28 |
+| [0025](./0025-game-type-presets-and-rule-configuration.md) | Game Type Presets and Rule Configuration | Accepted | 2026-02-28 |
 
 ## Status Definitions
 
