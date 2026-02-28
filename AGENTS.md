@@ -16,3 +16,26 @@ Routing hub — load `.ai/*.md` files based on task type below.
 | **General coding task** | `.ai/core-principles.md` (default) |
 
 **Full navigation & maintenance:** `.ai/README.md` · `.ai/MAINTENANCE.md`
+
+---
+
+## Critical Workflow Rules
+
+### Git Commits: Review-First Policy
+
+**Rule:** Never commit changes automatically. Always wait for user review.
+
+**Workflow:**
+1. Make code changes to files
+2. Show what changed (via `git diff` or describe changes)
+3. Wait for user review and approval
+4. Only commit when user explicitly requests it
+5. Include user-approved message in commit
+
+**Applies to:**
+- All code changes
+- All documentation changes  
+- All configuration changes
+- Every file modification
+
+**Why:** User must review all changes before they're locked in. Automatic commits prevent code review and make it impossible for users to request modifications before commit.

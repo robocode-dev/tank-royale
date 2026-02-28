@@ -7,7 +7,7 @@ This document explains how events (like `WonRoundEvent`, `ScannedBotEvent`, etc.
 **System:** Distributed multi-process event system  
 **Platforms:** Java (reference), Python, C# (.NET)  
 **Key Concept:** Events are generated server-side, transmitted via WebSocket, queued client-side, and dispatched to bot handlers  
-**Critical Issue:** Output from event handlers must be explicitly captured and transferred
+**Output Handling:** Handler output (print statements, log messages) is automatically captured and transmitted to the GUI console
 
 ---
 
@@ -167,38 +167,29 @@ sequenceDiagram
 
 ## Critical: Round End Event Dispatch
 
-### The Problem (Before Fix)
+### How Round End Events Work
 
-```mermaid
-graph TD
-    A["Final Tick<br/>Received<br/>WonRoundEvent queued"] --> B["Bot's go()<br/>Loop Iteration"]
-    B --> C["execute()"]
-    C --> D["sendIntent()<br/>STDOUT TRANSFERRED HERE"]
-    D --> E["waitForNextTurn()"]
-    E --> F["Server Sends<br/>RoundEndedEvent"]
-    F --> G["handleRoundEnded()"]
-    G --> H["dispatchEvents()"]
-    H --> I["onWonRound() FIRES<br/>Prints to buffer"]
-    I --> J["❌ sendIntent()<br/>Already Called!"]
-    J --> K["Captured Output<br/>LOST"]
-```
+At the end of a round, the server sends a `RoundEndedEventForBot` message. This triggers the client to:
 
-### The Solution (After Fix)
+1. **Dispatch any queued events** that arrived in the final tick (e.g., `WonRoundEvent`)
+2. **Transfer captured output** from those event handlers
+3. **Notify the bot** that the round has ended
+
+This two-step process (dispatch + output transfer) ensures that print statements and logs from event handlers appear in the GUI console.
 
 ```mermaid
 graph TD
     A["Final Tick<br/>Received<br/>WonRoundEvent queued"] --> B["Bot's go()<br/>Loop Iteration"]
     B --> C["execute()"]
     C --> D["sendIntent()"]
-    D --> E["waitForNextTurn()"]
+    D --> E["waitForNextTick()"]
     E --> F["Server Sends<br/>RoundEndedEvent"]
     F --> G["handleRoundEnded()"]
     G --> H["dispatchEvents()"]
-    H --> I["onWonRound() FIRES<br/>Prints to buffer"]
-    I --> J["✅ transferStdOutToBotIntent()"]
-    J --> K["Captured Output<br/>TRANSFERRED"]
-    K --> L["Sent with Final<br/>BotIntent"]
-    L --> M["GUI Displays<br/>Output"]
+    H --> I["onWonRound() FIRES<br/>Output captured"]
+    I --> J["transferStdOutToBotIntent()"]
+    J --> K["Output included in<br/>Final BotIntent"]
+    K --> L["GUI Displays<br/>Handler Output"]
 ```
 
 ### Implementation (All 3 Platforms)
@@ -208,7 +199,7 @@ graph TD
 private void handleRoundEnded(JsonObject jsonMsg) {
     ...
     baseBotInternals.dispatchEvents(turnNumber);        // Fire onWonRound
-    baseBotInternals.transferStdOutToBotIntent();       // ✅ Transfer captured output
+    baseBotInternals.transferStdOutToBotIntent();       // Transfer captured output
     ...
 }
 ```
@@ -218,7 +209,7 @@ private void handleRoundEnded(JsonObject jsonMsg) {
 async def handle_round_ended(self, json_msg: Dict[Any, Any]):
     ...
     self.event_queue.dispatch_events(turn_number)       # Fire on_won_round
-    self._transfer_std_out_to_bot_intent()             # ✅ Transfer captured output
+    self._transfer_std_out_to_bot_intent()             # Transfer captured output
     ...
 ```
 
@@ -228,7 +219,7 @@ private void HandleRoundEnded(string json)
 {
     ...
     DispatchEvents(turnNumber);                        // Fire OnWonRound
-    TransferStdOutToBotIntent();                       // ✅ Transfer captured output
+    TransferStdOutToBotIntent();                       // Transfer captured output
     ...
 }
 ```
@@ -419,19 +410,21 @@ baseBotInternals.dispatchEvents(turnNumber);
 
 ### Symptom: Output missing from GUI
 
-**Before Fix:** Output was lost because `transferStdOutToBotIntent()` wasn't called after event handlers fired.
+**Cause:** Output from event handlers must be explicitly transferred to the GUI via `transferStdOutToBotIntent()`.
 
-**After Fix:** Output should be transferred in `handleRoundEnded()`:
+**Solution:** Verify that `handleRoundEnded()` calls both:
 ```java
-dispatchEvents(turnNumber);                    // Fire handlers
-transferStdOutToBotIntent();                   // ← Transfer their output
+dispatchEvents(turnNumber);                    // Fire handlers (output captured)
+transferStdOutToBotIntent();                   // Transfer their output to BotIntent
 ```
+
+Both calls must happen in sequence for handler output to appear in the GUI.
 
 ### Symptom: Output appears in terminal but not GUI
 
-**Cause:** Terminal shows raw stdout (inherited from bot process), but GUI receives output via WebSocket BotIntent.
+**Cause:** Terminal shows raw stdout (inherited from bot process), but GUI receives output via WebSocket BotIntent messages.
 
-**Solution:** Ensure `transferStdOutToBotIntent()` captures RecordingStream buffer and includes it in BotIntent.
+**Solution:** Ensure `transferStdOutToBotIntent()` captures the RecordingStream buffer and includes it in BotIntent before the round ends.
 
 ---
 
@@ -452,10 +445,9 @@ transferStdOutToBotIntent();                   // ← Transfer their output
 2. **Client-side queue** handles ordering, priority, and interruption logic
 3. **Output is buffered** by RecordingPrintStream/RecordingTextWriter
 4. **Transfer happens per-turn** in `sendIntent()` during normal turns
-5. **Round-end requires special handling** — events fire after last `sendIntent()`
-6. **Fix ensures consistency** across Java, Python, and C#
+5. **Round-end has special handling** — events fire after last `sendIntent()`, so output must be explicitly transferred
+6. **Platform implementations are consistent** across Java, Python, and C#
 
 ---
 
-**Last Updated:** 2026-02-28  
-**Status:** ✅ Complete (includes WonRoundEvent stdout capture fix)
+**Last Updated:** 2026-02-28
