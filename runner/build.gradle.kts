@@ -95,6 +95,30 @@ tasks {
         }
     }
 
+    register<Copy>("copyRunnerApiDocs") {
+        dependsOn(javadoc)
+
+        onlyIf {
+            gradle.startParameter.taskNames.any {
+                it.contains("upload-docs") ||
+                it == "copyRunnerApiDocs" ||
+                it.endsWith(":copyRunnerApiDocs")
+            }
+        }
+
+        val javadocDir = layout.projectDirectory.dir("../docs/api/runner")
+
+        duplicatesStrategy = DuplicatesStrategy.FAIL
+
+        from(layout.buildDirectory.dir("docs/javadoc"))
+        into(javadocDir)
+
+        doFirst {
+            delete(javadocDir)
+            mkdir(javadocDir)
+        }
+    }
+
     val javadocJar = named<Jar>("javadocJar") { dependsOn("copyJars") }
     val sourcesJar = named<Jar>("sourcesJar") { dependsOn("copyJars") }
 

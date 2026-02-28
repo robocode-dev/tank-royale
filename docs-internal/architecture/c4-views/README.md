@@ -25,6 +25,7 @@ Think of it like Google Maps: zoom out to see the country, zoom in to see street
 | **L3** | [GUI Components](./gui-components.md) | GUI internals (battle arena, controls, replay viewer) |
 | **L3** | [Booter Components](./booter-components.md) | Booter internals (CLI, process manager, bot model) |
 | **L3** | [Recorder Components](./recorder-components.md) | Recorder internals (observer, ND-JSON writer) |
+| **L3** | [Runner Components](./runner-components.md) | Runner internals (server manager, booter manager, WebSocket client) |
 
 ---
 

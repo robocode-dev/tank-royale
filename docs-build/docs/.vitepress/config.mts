@@ -48,6 +48,7 @@ export default withMermaid(defineConfig({
         text: 'Reference',
         items: [
           { text: 'APIs', link: '/api/apis' },
+          { text: 'Battle Runner', link: '/api/battle-runner' },
           { text: 'Debugging', link: '/articles/debug' },
           { text: 'Anatomy of a Bot', link: '/articles/anatomy' },
           { text: 'Coordinates and Angles', link: '/articles/coordinates-and-angles' },

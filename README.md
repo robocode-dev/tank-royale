@@ -89,6 +89,24 @@ Supported .NET languages:
 - Visual Basic
 - IronPython
 
+## ⚙️ Battle Runner API
+
+The **Battle Runner API** lets you run battles programmatically from any JVM application — no GUI required.
+Use it for automated testing, benchmarking, or building tournament systems.
+
+```kotlin
+BattleRunner.create { embeddedServer() }.use { runner ->
+    val results = runner.runBattle(
+        setup = BattleSetup.classic { numberOfRounds = 10 },
+        bots  = listOf(BotEntry.of("/path/to/MyBot"), BotEntry.of("/path/to/EnemyBot"))
+    )
+    println("Winner: ${results.results.first().name}")
+}
+```
+
+Available on Maven Central as `dev.robocode.tankroyale:robocode-tankroyale-runner`.
+See the [Battle Runner README](runner/README.md) for full documentation.
+
 ## 🚧 Work in progress
 
 - **Bot API for WebAssembly (Wasm)**

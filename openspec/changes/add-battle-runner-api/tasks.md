@@ -105,21 +105,21 @@
 - [x] 9.4 Recording disabled by default; enabled via builder config with output path
 
 ## 10. Testing
-- [ ] 10.1 Unit tests for configuration and result types
-- [ ] 10.2 Integration tests — run a real battle with sample bots, assert on results
-- [ ] 10.3 Test embedded vs external server modes
-- [ ] 10.4 Test error scenarios (bot crash, server unavailable, timeout)
-- [ ] 10.5 Test battle recording produces valid .battle.gz files
-- [ ] 10.6 Test intent diagnostics captures correct bot-intent data
+- [x] 10.1 Unit tests for configuration and result types
+- [x] 10.2 Integration tests — run a real battle with sample bots, assert on results
+- [x] 10.3 Test embedded vs external server modes
+- [x] 10.4 Test error scenarios (bot crash, server unavailable, timeout)
+- [x] 10.5 Test battle recording produces valid .battle.gz files
+- [x] 10.6 Test intent diagnostics captures correct bot-intent data
 
 ## 11. Documentation
-- [ ] 11.1 Write `runner/README.md` with usage examples
-- [ ] 11.2 Add KDoc/Javadoc to all public API types
-- [ ] 11.3 Update root `README.md` to mention Battle Runner API
+- [x] 11.1 Write `runner/README.md` with usage examples
+- [x] 11.2 Add KDoc/Javadoc to all public API types
+- [x] 11.3 Update root `README.md` to mention Battle Runner API
 - [ ] 11.4 Update `VERSIONS.md` when releasing
-- [ ] 11.5 Add API reference to generated Javadoc site
-- [ ] 11.6 Add VitePress documentation page (`docs-build/docs/api/battle-runner.md`) with dual Kotlin/Java examples and sidebar entry in `config.mts`
-- [ ] 11.7 Update C4 Container View (`docs-internal/architecture/c4-views/container.md`) to include Runner
+- [x] 11.5 Add API reference to generated Javadoc site
+- [x] 11.6 Add VitePress documentation page (`docs-build/docs/api/battle-runner.md`) with dual Kotlin/Java examples and sidebar entry in `config.mts`
+- [x] 11.7 Update C4 Container View (`docs-internal/architecture/c4-views/container.md`) to include Runner
         in the containers table, Mermaid diagrams, and Embedded Mode section
-- [ ] 11.8 Add Runner Components (L3) view (`docs-internal/architecture/c4-views/runner-components.md`)
+- [x] 11.8 Add Runner Components (L3) view (`docs-internal/architecture/c4-views/runner-components.md`)
         describing ServerManager, BooterManager, WebSocket client, and orchestration internals
