@@ -403,6 +403,17 @@ The runner throws `BattleException` for all battle-related failures:
 - Timeout waiting for bots to connect or game to start
 - Connection lost during battle
 
+## Runnable Examples
+
+Ready-to-run Java examples are in [`runner/examples/`](https://github.com/robocode-dev/tank-royale/tree/main/runner/examples).
+See the [examples README](https://github.com/robocode-dev/tank-royale/tree/main/runner/examples/README.md) for setup instructions.
+
+| Example | Description |
+|---------|-------------|
+| `RunBattle.java` | Synchronous battle — blocks until done, prints a results table |
+| `AsyncBattle.java` | Asynchronous battle — streams round start/end events in real time |
+| `RecordBattle.java` | Records a battle to a `.battle.gz` replay file |
+
 ## API Reference
 
 - [Javadoc](https://robocode-dev.github.io/tank-royale/api/runner/index.html)
