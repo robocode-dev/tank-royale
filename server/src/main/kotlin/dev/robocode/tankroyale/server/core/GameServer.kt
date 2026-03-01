@@ -523,10 +523,13 @@ class GameServer(
         }
 
         // Phase 2: Apply visual delay based on TPS (ADR-0012)
-        // This ensures smooth visualization at the requested TPS without affecting bot timing
-        applyVisualDelay(botProcessingDurationNanos)
-
+        // resetTurnTimeout() MUST be called before applyVisualDelay() to avoid a race condition:
+        // the tick is broadcast inside the synchronized block above, so fast bots can respond and
+        // call notifyReady() during the visual delay sleep. If active=false at that point the signal
+        // is silently dropped and the timer then waits the full turnTimeout instead of firing early.
         resetTurnTimeout()
+
+        applyVisualDelay(botProcessingDurationNanos)
     }
 
     private fun onGameEnded() {
