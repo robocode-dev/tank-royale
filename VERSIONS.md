@@ -1,3 +1,20 @@
+## 📦 0.37.0 - Battle Runner API – TBD
+
+### ✨ Features
+
+- Battle Runner API ([documentation](https://robocode-dev.github.io/tank-royale/api/battle-runner)):
+    - New `runner` module providing a programmatic API for running battles without the GUI.
+    - Supports both embedded server (auto-managed lifecycle) and external server connection modes.
+    - Synchronous (`runBattle()`) and asynchronous (`startBattleAsync()`) battle execution.
+    - Game type presets (Classic, Melee, 1v1, Custom) with full parameter overrides via `BattleSetup`.
+    - Battle recording to `.battle.gz` replay files compatible with the Recorder module.
+    - Intent diagnostics for capturing raw bot-intent messages per bot per turn (opt-in).
+    - Battle control: pause, resume, single-step, and stop running battles.
+    - Real-time events: tick, round start/end, game start/end, abort, pause/resume.
+    - Structured `BattleResults` with per-bot rankings and detailed scores.
+    - Resource management via `AutoCloseable` for server lifecycle, bot processes, and graceful shutdown.
+    - Published to Maven Central as `dev.robocode.tankroyale:robocode-tankroyale-runner`.
+
 ## 📦 0.36.1 - WonRoundEvent and Python Console Output - 24-Feb-2026
 
 ### 🐞 Bug Fixes

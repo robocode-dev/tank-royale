@@ -4,8 +4,8 @@ import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.server.core.GameServer
 import dev.robocode.tankroyale.server.cli.SERVER_BANNER_LINES
 import dev.robocode.tankroyale.server.cli.convertPicocliMarkupToAnsi
-import dev.robocode.tankroyale.server.rules.DEFAULT_GAME_TYPE
-import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
+import dev.robocode.tankroyale.common.rules.DEFAULT_GAME_TYPE
+import dev.robocode.tankroyale.common.rules.DEFAULT_TURNS_PER_SECOND
 import org.slf4j.LoggerFactory
 import java.nio.channels.ServerSocketChannel
 import java.util.HashSet

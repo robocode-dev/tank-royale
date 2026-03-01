@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
@@ -87,27 +86,27 @@ private class ServerConfigPanel(val owner: RcDialog) : JPanel() {
     }
 
     private fun setupEventHandlers() {
-        onToggleRemoteServer+= On(this) { isSelected ->
+        onToggleRemoteServer.on(this) { isSelected ->
             toggleRemoteServer(isSelected)
         }
 
-        onPortUpdated+= On(this) { port ->
+        onPortUpdated.on(this) { port ->
             ServerSettings.localPort = port
         }
 
-        onAdd+= On(this) { addRemoteServer() }
+        onAdd.on(this) { addRemoteServer() }
 
-        onEdit+= On(this) { editRemoteServer() }
+        onEdit.on(this) { editRemoteServer() }
 
-        onRemove+= On(this) { removeRemoteServer() }
+        onRemove.on(this) { removeRemoteServer() }
 
-        onTest+= On(this) { testServerConnection() }
+        onTest.on(this) { testServerConnection() }
 
-        onOk+= On(this) {
+        onOk.on(this) {
             dispose()
         }
 
-        onCancel+= On(this) {
+        onCancel.on(this) {
             dispose()
             ServerSettings.restore()
         }

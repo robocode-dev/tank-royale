@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.control
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.player.ReplayBattlePlayer
 import dev.robocode.tankroyale.gui.ui.Hints
@@ -85,7 +84,7 @@ object ProgressSlider : RcSlider() {
         // Initially hide the progress slider until we know the player supports seeking
         isVisible = false
 
-        ClientEvents.onPlayerChanged+= On(ProgressSlider) { player ->
+        ClientEvents.onPlayerChanged.on(ProgressSlider) { player ->
             EventQueue.invokeLater {
                 // Reset to a default scale when player changes
                 value = 0
@@ -95,7 +94,7 @@ object ProgressSlider : RcSlider() {
                     isVisible = true
                     currentReplayPlayer = player
                     maximum = maxOf(player.getTotalRounds() - 1, 0)
-                    player.onReplayEvent+= On(ProgressSlider) { eventIndex ->
+                    player.onReplayEvent.on(ProgressSlider) { eventIndex ->
                         updateProgress(eventIndex)
                     }
                     val labelTable = LinkedDictionary<Int, JComponent>()
@@ -116,13 +115,13 @@ object ProgressSlider : RcSlider() {
                 repaint()
             }
         }
-        ClientEvents.onConnected+= On(ProgressSlider) {
+        ClientEvents.onConnected.on(ProgressSlider) {
             setEnabled(true)
         }
-        ClientEvents.onGameAborted+= On(ProgressSlider) {
+        ClientEvents.onGameAborted.on(ProgressSlider) {
             setEnabled(false)
         }
-        ClientEvents.onGameEnded+= On(ProgressSlider) {
+        ClientEvents.onGameEnded.on(ProgressSlider) {
             setEnabled(false)
         }
 

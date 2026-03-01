@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.BotInfo
 import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.booter.BootProcess
@@ -107,16 +106,16 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
         addToolTips()
 
-        onFilterDropdown+= On(this) { handleFilterChanged() }
+        onFilterDropdown.on(this) { handleFilterChanged() }
 
-        onBootBots+= On(this) { handleBootBots() }
-        onUnbootBots+= On(this) { handleUnbootBots() }
-        onUnbootAllBots+= On(this) { handleUnbootAllBots() }
+        onBootBots.on(this) { handleBootBots() }
+        onUnbootBots.on(this) { handleUnbootBots() }
+        onUnbootAllBots.on(this) { handleUnbootAllBots() }
 
-        onAdd+= On(this) { handleAdd() }
-        onAddAll+= On(this) { handleAddAll() }
-        onRemove+= On(this) { handleRemove() }
-        onRemoveAll+= On(this) { handleRemoveAll() }
+        onAdd.on(this) { handleAdd() }
+        onAddAll.on(this) { handleAddAll() }
+        onRemove.on(this) { handleRemove() }
+        onRemoveAll.on(this) { handleRemoveAll() }
 
         botsDirectoryList.onMultiClickedAtIndex { runFromBotDirectoryAtIndex(it) }
         joinedBotList.onMultiClickedAtIndex { addSelectedBotFromJoinedListAt(it) }
@@ -128,14 +127,14 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
         selectedBotList.onChanged { BotSelectionEvents.onSelectedBotListUpdated(selectedBotListModel.list()) }
 
-        ClientEvents.onBotListUpdate+= On(this) { updateJoinedBots() }
+        ClientEvents.onBotListUpdate.on(this) { updateJoinedBots() }
 
-        BootProcess.onBootBot+= On(this) { addBootingBot(it) }
-        BootProcess.onUnbootBot+= On(this) { removeUnbootingBot(it) }
+        BootProcess.onBootBot.on(this) { addBootingBot(it) }
+        BootProcess.onUnbootBot.on(this) { removeUnbootingBot(it) }
 
-        ConfigSettings.onSaved+= On(this) { updateBotsDirectoryEntries() }
+        ConfigSettings.onSaved.on(this) { updateBotsDirectoryEntries() }
 
-        ServerEvents.onStopped+= On(this) { reset() }
+        ServerEvents.onStopped.on(this) { reset() }
     }
 
     private fun reset() {
@@ -175,7 +174,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         BotList(bootedBotListModel, false).apply {
             cellRenderer = BootedBotCellRenderer()
 
-            onDeleteKeyTyped+= On(BotSelectionPanel) { dirAndPids ->
+            onDeleteKeyTyped.on(BotSelectionPanel) { dirAndPids ->
                 BootProcess.stop(dirAndPids.map { it.pid })
             }
         }

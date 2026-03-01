@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.menu
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onBotDirConfig
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onDebugConfig
 import dev.robocode.tankroyale.gui.ui.menu.MenuEventTriggers.onServerConfig
@@ -41,8 +40,8 @@ object Menu : JMenuBar() {
         setupHelpMenu()
 
         ServerEvents.apply {
-            onStarted+= On(Menu) { updateServerState() }
-            onStopped+= On(Menu) { updateServerState() }
+            onStarted.on(Menu) { updateServerState() }
+            onStopped.on(Menu) { updateServerState() }
         }
     }
 

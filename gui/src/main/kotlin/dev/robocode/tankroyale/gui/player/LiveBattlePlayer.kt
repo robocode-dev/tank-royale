@@ -1,7 +1,5 @@
 package dev.robocode.tankroyale.gui.player
 
-import dev.robocode.tankroyale.common.event.On
-import dev.robocode.tankroyale.common.event.Once
 import dev.robocode.tankroyale.client.WebSocketClient
 import dev.robocode.tankroyale.client.WebSocketClientEvents
 import dev.robocode.tankroyale.client.model.*
@@ -62,7 +60,7 @@ class LiveBattlePlayer : BattlePlayer {
     override val onSeekToTurn = Event<TickEvent>()
 
     init {
-        ServerEvents.onStopped+= On(this) {
+        ServerEvents.onStopped.on(this) {
             if (isRunning.get()) {
                 stop()
             }
@@ -117,10 +115,10 @@ class LiveBattlePlayer : BattlePlayer {
     override fun restart() {
         if (isRunning.get()) {
             val eventOwner = Any()
-            onGameAborted += Once(eventOwner) {
+            onGameAborted.once(eventOwner) {
                 startWithLastGameSetup()
             }
-            onGameEnded += Once(eventOwner) {
+            onGameEnded.once(eventOwner) {
                 startWithLastGameSetup()
             }
             stop()
@@ -164,9 +162,9 @@ class LiveBattlePlayer : BattlePlayer {
 
             WebSocketClientEvents.apply {
                 websocket?.let { ws ->
-                    onOpen+= On(ws) { onConnected(Unit) }
-                    onMessage+= On(ws) { this@LiveBattlePlayer.onMessage(it) }
-                    onError+= On(ws) {
+                    onOpen.on(ws) { onConnected(Unit) }
+                    onMessage.on(ws) { this@LiveBattlePlayer.onMessage(it) }
+                    onError.on(ws) {
                         System.err.println("WebSocket error: " + it.message)
                         ServerEvents.onStopped(Unit)
                     }
@@ -175,9 +173,9 @@ class LiveBattlePlayer : BattlePlayer {
                     } catch (_: Exception) {
                         // to prevent redundant subscriptions which are kept both on failure, and
                         // new attempt to open the web socket
-                        onOpen -= ws
-                        onMessage -= ws
-                        onError -= ws
+                        onOpen.off(ws)
+                        onMessage.off(ws)
+                        onError.off(ws)
                     }
                 }
             }
@@ -188,9 +186,9 @@ class LiveBattlePlayer : BattlePlayer {
         if (isConnected()) {
             WebSocketClientEvents.apply {
                 websocket?.let { ws ->
-                    onOpen -= ws
-                    onMessage -= ws
-                    onError -= ws
+                    onOpen.off(ws)
+                    onMessage.off(ws)
+                    onError.off(ws)
                     ws.close()
                 }
             }

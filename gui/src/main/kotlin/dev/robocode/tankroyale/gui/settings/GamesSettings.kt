@@ -2,101 +2,37 @@ package dev.robocode.tankroyale.gui.settings
 
 import dev.robocode.tankroyale.client.model.GameSetup
 import dev.robocode.tankroyale.client.model.IGameSetup
+import dev.robocode.tankroyale.common.rules.GAME_TYPE_PRESETS
+import dev.robocode.tankroyale.common.rules.GameTypePreset
 import java.util.*
 
 object GamesSettings : PropertiesStore("Robocode Games Setups", "game-setups.properties") {
 
+    private fun GameTypePreset.toClientGameSetup() = GameSetup(
+        gameType = gameType.displayName,
+        arenaWidth = arenaWidth,
+        isArenaWidthLocked = isArenaWidthLocked,
+        arenaHeight = arenaHeight,
+        isArenaHeightLocked = isArenaHeightLocked,
+        minNumberOfParticipants = minNumberOfParticipants,
+        isMinNumberOfParticipantsLocked = isMinNumberOfParticipantsLocked,
+        maxNumberOfParticipants = maxNumberOfParticipants,
+        isMaxNumberOfParticipantsLocked = isMaxNumberOfParticipantsLocked,
+        numberOfRounds = numberOfRounds,
+        isNumberOfRoundsLocked = isNumberOfRoundsLocked,
+        gunCoolingRate = gunCoolingRate,
+        isGunCoolingRateLocked = isGunCoolingRateLocked,
+        maxInactivityTurns = maxInactivityTurns,
+        isMaxInactivityTurnsLocked = isMaxInactivityTurnsLocked,
+        turnTimeout = turnTimeoutMicros,
+        isTurnTimeoutLocked = isTurnTimeoutLocked,
+        readyTimeout = readyTimeoutMicros,
+        isReadyTimeoutLocked = isReadyTimeoutLocked,
+        defaultTurnsPerSecond = defaultTurnsPerSecond,
+    )
+
     val defaultGameSetup: Map<String, GameSetup>
-        get() = mapOf(
-            GameType.CUSTOM.displayName to GameSetup(
-                gameType = GameType.CUSTOM.displayName,
-                arenaWidth = 800,
-                isArenaWidthLocked = false,
-                arenaHeight = 600,
-                isArenaHeightLocked = false,
-                minNumberOfParticipants = 2,
-                isMinNumberOfParticipantsLocked = false,
-                maxNumberOfParticipants = null,
-                isMaxNumberOfParticipantsLocked = false,
-                numberOfRounds = 10,
-                isNumberOfRoundsLocked = false,
-                gunCoolingRate = 0.1,
-                isGunCoolingRateLocked = false,
-                maxInactivityTurns = 450,
-                isMaxInactivityTurnsLocked = false,
-                turnTimeout = 30_000, // 30,000 microseconds = 30 milliseconds
-                isTurnTimeoutLocked = false,
-                readyTimeout = 1_000_000, // 1,000,000 microseconds = 1 second
-                isReadyTimeoutLocked = false,
-                defaultTurnsPerSecond = 30
-            ),
-            GameType.CLASSIC.displayName to GameSetup(
-                gameType = GameType.CLASSIC.displayName,
-                arenaWidth = 800,
-                isArenaWidthLocked = true,
-                arenaHeight = 600,
-                isArenaHeightLocked = true,
-                minNumberOfParticipants = 2,
-                isMinNumberOfParticipantsLocked = true,
-                maxNumberOfParticipants = null,
-                isMaxNumberOfParticipantsLocked = true,
-                numberOfRounds = 10,
-                isNumberOfRoundsLocked = true,
-                gunCoolingRate = 0.1,
-                isGunCoolingRateLocked = true,
-                maxInactivityTurns = 450,
-                isMaxInactivityTurnsLocked = true,
-                turnTimeout = 30_000, // 30,000 microseconds = 30 milliseconds
-                isTurnTimeoutLocked = false,
-                readyTimeout = 1_000_000, // 1,000,000 microseconds = 1 second
-                isReadyTimeoutLocked = false,
-                defaultTurnsPerSecond = 30
-            ),
-            GameType.MELEE.displayName to GameSetup(
-                gameType = GameType.MELEE.displayName,
-                arenaWidth = 1000,
-                isArenaWidthLocked = true,
-                arenaHeight = 1000,
-                isArenaHeightLocked = true,
-                minNumberOfParticipants = 10,
-                isMinNumberOfParticipantsLocked = true,
-                maxNumberOfParticipants = null,
-                isMaxNumberOfParticipantsLocked = false,
-                numberOfRounds = 10,
-                isNumberOfRoundsLocked = false,
-                gunCoolingRate = 0.1,
-                isGunCoolingRateLocked = false,
-                maxInactivityTurns = 450,
-                isMaxInactivityTurnsLocked = false,
-                turnTimeout = 30_000, // 30,000 microseconds = 30 milliseconds
-                isTurnTimeoutLocked = false,
-                readyTimeout = 1_000_000, // 1,000,000 microseconds = 1 second
-                isReadyTimeoutLocked = false,
-                defaultTurnsPerSecond = 30
-            ),
-            GameType.ONE_VS_ONE.displayName to GameSetup(
-                gameType = GameType.ONE_VS_ONE.displayName,
-                arenaWidth = 800,
-                isArenaWidthLocked = true,
-                arenaHeight = 600,
-                isArenaHeightLocked = true,
-                minNumberOfParticipants = 2,
-                isMinNumberOfParticipantsLocked = true,
-                maxNumberOfParticipants = 2,
-                isMaxNumberOfParticipantsLocked = true,
-                numberOfRounds = 10,
-                isNumberOfRoundsLocked = false,
-                gunCoolingRate = 0.1,
-                isGunCoolingRateLocked = false,
-                maxInactivityTurns = 450,
-                isMaxInactivityTurnsLocked = false,
-                turnTimeout = 30_000, // 30,000 microseconds = 30 milliseconds
-                isTurnTimeoutLocked = false,
-                readyTimeout = 1_000_000, // 1,000,000 microseconds = 1 second
-                isReadyTimeoutLocked = false,
-                defaultTurnsPerSecond = 30
-            )
-        )
+        get() = GAME_TYPE_PRESETS.values.associate { it.gameType.displayName to it.toClientGameSetup() }
 
     init {
         setProperties(defaultGameSetup)

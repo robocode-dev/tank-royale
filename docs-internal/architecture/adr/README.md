@@ -44,6 +44,8 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0021](./0021-java-swing-gui-reference-implementation.md) | Java Swing as GUI Reference Implementation | Accepted | 2026-02-15 |
 | [0022](./0022-event-system-gui-decoupling.md) | Event System for GUI Decoupling | Accepted | 2026-02-15 |
 | [0023](./0023-robocode-tank-royale-platform-scope.md) | Robocode Tank Royale Platform Scope and Boundaries | Accepted | 2026-02-15 |
+| [0024](./0024-battle-runner-api.md) | Battle Runner API | Proposed | 2026-02-28 |
+| [0025](./0025-game-type-presets-and-rule-configuration.md) | Game Type Presets and Rule Configuration | Accepted | 2026-02-28 |
 
 ## Status Definitions
 
@@ -79,8 +81,8 @@ When making a new architectural decision:
 ---
 
 **Related Documentation:**
-- [C4 Views](../c4-views/) — Visual architecture diagrams
-- [Message Schema](../models/message-schema/) — WebSocket message contracts
-- [Business Flows](../models/flows/) — Process documentation
+- [C4 Views](../c4-views/README.md) — Visual architecture diagrams
+- [Message Schema](../models/message-schema/README.md) — WebSocket message contracts
+- [Business Flows](../models/flows/README.md) — Process documentation
 - [OpenSpec Specs](/openspec/specs/) — Requirements and scenarios (references ADRs for design rationale)
 - [AI Architecture Guide](/.ai/architecture.md) — AI agent routing to architecture docs

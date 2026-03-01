@@ -5,7 +5,7 @@ import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.util.FileUtil
 import dev.robocode.tankroyale.gui.util.LineReaderThread
 import dev.robocode.tankroyale.gui.util.ProcessUtil
-import dev.robocode.tankroyale.gui.util.ResourceUtil
+import dev.robocode.tankroyale.common.util.ResourceUtil
 import java.io.FileNotFoundException
 import java.io.PrintStream
 import java.nio.file.Files

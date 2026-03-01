@@ -1,0 +1,30 @@
+description = "Robocode Tank Royale Intent Diagnostics"
+
+group = "dev.robocode.tankroyale"
+version = libs.versions.tankroyale.get()
+
+base {
+    archivesName = "robocode-tankroyale-intent-diagnostics"
+}
+
+plugins {
+    `java-library`
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
+}
+
+dependencies {
+    implementation(libs.java.websocket)
+    implementation(libs.kotlinx.serialization.json)
+
+    testImplementation(testLibs.kotest.junit5)
+    testImplementation(testLibs.bundles.junit)
+    testImplementation(testLibs.assertj)
+}
+
+tasks {
+    test {
+        useJUnitPlatform()
+        failFast = true
+    }
+}

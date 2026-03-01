@@ -22,11 +22,12 @@ The **Tank Royale Container View** illustrates the complete container architectu
 | **GUI** | Desktop Application | JAR (Maven Central) | Visualization, control, and configuration |
 | **Booter** | CLI Application | JAR (Maven Central) | Bot process launcher and manager |
 | **Recorder** | CLI Application | JAR (Maven Central) | Game event recorder for playback |
+| **Runner** | Library | JAR (Maven Central) | Headless battle orchestration API |
 | **Java Bot API** | Library | JAR (Maven Central) | Bot development library for Java |
 | **Python Bot API** | Library | PyPI Package | Bot development library for Python |
 | **.NET Bot API** | Library | NuGet Package | Bot development library for C# |
 
-> **Important:** Server, GUI, Booter, and Recorder are **independent artifacts** published to Maven Central. Each can be run standalone via CLI. The GUI embeds the other three for convenience, but they are separate deployable units.
+> **Important:** Server, GUI, Booter, and Recorder are **independent artifacts** published to Maven Central. Each can be run standalone via CLI. The GUI and Runner embed the other components for convenience, but they are separate deployable units.
 
 ---
 
@@ -38,6 +39,7 @@ graph TD
     APIs["📚 Bot APIs<br/>Java / Python / .NET<br/>Libraries for bot development"]
     Server["⚙️ Server<br/>Runs battles in real-time<br/>Manages game state"]
     GUI["🖥️ GUI<br/>Visualizes battles<br/>Control & Configuration"]
+    Runner["🏃 Runner<br/>Headless battle orchestration<br/>Programmatic API"]
     Booter["🚀 Booter<br/>Launches bots<br/>Process Manager"]
     Recorder["🎥 Recorder<br/>Records games<br/>ND-JSON Writer"]
     FileSystem["💾 File System<br/>Replays, configs, bot directories, recordings"]
@@ -45,17 +47,21 @@ graph TD
     BotDev -->|Uses| APIs
     APIs -->|WebSocket<br/>Bot intents & state| Server
     Server -->|WebSocket<br/>Control commands| GUI
+    Server -->|WebSocket<br/>Observer + Controller| Runner
     Server -->|WebSocket<br/>Bot handshake| Booter
     Server -->|WebSocket<br/>Game events| Recorder
+    Runner -->|Embeds & launches| Booter
     GUI -->|Read/Write| FileSystem
     Booter -->|Read| FileSystem
     Booter -->|Launch/Manage| FileSystem
     Recorder -->|Write| FileSystem
+    Runner -->|Write| FileSystem
     
     style BotDev fill:#08427b,color:#fff
     style APIs fill:#438dd5,color:#000
     style Server fill:#438dd5,color:#000
     style GUI fill:#438dd5,color:#000
+    style Runner fill:#438dd5,color:#000
     style Booter fill:#438dd5,color:#000
     style Recorder fill:#438dd5,color:#000
     style FileSystem fill:#1168bd,color:#fff
@@ -97,6 +103,15 @@ graph TD
 - **Responsibility:** Record game events to ND-JSON files for playback
 - **Communication:** WebSocket observer connection to Server
 - **Details:** [Recorder Components (L3)](./recorder-components.md)
+
+### Runner 🏃
+
+- **Technology:** Kotlin (JVM)
+- **Artifact:** `robocode-tankroyale-runner.jar` (Maven Central library)
+- **Responsibility:** Headless battle orchestration — runs battles programmatically without a GUI
+- **Communication:** Dual WebSocket client (Observer + Controller) to Server; embeds Server and Booter JARs
+- **Embedded Components:** Bundles Server and Booter for zero-config usage
+- **Details:** [Runner Components (L3)](./runner-components.md)
 
 ### Bot APIs 🤖
 
@@ -155,14 +170,39 @@ graph TB
 
 > The embedded components are the **same artifacts** with the same functionality—just loaded within the GUI process for convenience.
 
+### Embedded Mode (Runner)
+
+The Runner embeds Server and Booter for headless programmatic battle execution:
+
+```mermaid
+graph TB
+    Runner["🏃 Runner<br/>Battle Runner API"]
+    
+    subgraph Embedded["Embedded Components (same JAR artifacts)"]
+        Server["⚙️ Embedded Server<br/>Battle Orchestration<br/>in real-time"]
+        Booter["🚀 Embedded Booter<br/>Bot Launcher<br/>Process Manager"]
+    end
+    
+    Runner -->|Embeds| Embedded
+    
+    style Runner fill:#438DD5,color:#000
+    style Server fill:#85BBF0,color:#000
+    style Booter fill:#85BBF0,color:#000
+    style Embedded fill:#E8F4F8,color:#000
+```
+
+> The Runner can also connect to an external server instead of embedding one.
+
 
 | From | To | Protocol | Purpose |
 |------|----|----------|---------|
 | Bot API | Server | WebSocket | Bot intents, game state |
 | GUI | Server | WebSocket | Control commands, game state |
+| Runner | Server | WebSocket | Observer events + controller commands |
 | Recorder | Server | WebSocket | Observer events for recording |
 | Booter | File System | File I/O | Read bot directories |
 | Recorder | File System | File I/O | Write ND-JSON recordings |
+| Runner | File System | File I/O | Write ND-JSON recordings (optional) |
 
 ---
 
@@ -174,6 +214,7 @@ graph TB
 | **GUI** | Kotlin + Java Swing               |
 | **Booter** | Kotlin (JVM)                      |
 | **Recorder** | Kotlin (JVM)                      |
+| **Runner** | Kotlin (JVM)                      |
 | **Java Bot API** | Java 11+                          |
 | **Python Bot API** | Python 3.10+                      |
 | **.NET Bot API** | C# (.NET 6+)                      |
@@ -190,5 +231,6 @@ graph TB
 - **[GUI Components (L3)](./gui-components.md)** — Internal GUI architecture
 - **[Booter Components (L3)](./booter-components.md)** — Internal Booter architecture
 - **[Recorder Components (L3)](./recorder-components.md)** — Internal Recorder architecture
+- **[Runner Components (L3)](./runner-components.md)** — Internal Runner architecture
 - **[Bot API Components (L3)](./bot-api-components.md)** — Bot API structure
 

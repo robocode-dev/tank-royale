@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.control
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.TpsChangedEvent
 import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.client.ClientEvents
@@ -70,38 +69,38 @@ object ControlPanel : JPanel() {
         TpsField.toolTipText = tpsHint
 
         ClientEvents.apply {
-            onGamePaused+= On(ControlPanel) {
+            onGamePaused.on(ControlPanel) {
                 setResumedText()
 
                 nextButton.isEnabled = true
                 setDefaultButton(nextButton)
             }
-            onGameResumed+= On(ControlPanel) {
+            onGameResumed.on(ControlPanel) {
                 setPausedText()
                 nextButton.isEnabled = false
             }
-            onGameStarted+= On(ControlPanel) {
+            onGameStarted.on(ControlPanel) {
                 setPausedText()
             }
-            onGameAborted+= On(ControlPanel) {
+            onGameAborted.on(ControlPanel) {
                 setPausedText()
                 nextButton.isEnabled = false
             }
         }
 
         ControlEvents.apply {
-            onStop+= On(ControlPanel) {
+            onStop.on(ControlPanel) {
                 enablePauseResumeAndStopButtons(false)
             }
-            onRestart+= On(ControlPanel) {
+            onRestart.on(ControlPanel) {
                 enablePauseResumeAndStopButtons()
             }
-            onGameStarted+= On(ControlPanel) {
+            onGameStarted.on(ControlPanel) {
                 enablePauseResumeAndStopButtons()
             }
         }
 
-        onDefaultTps+= On(ControlPanel) {
+        onDefaultTps.on(ControlPanel) {
             TpsEvents.onTpsChanged(TpsChangedEvent(DEFAULT_TPS))
         }
 

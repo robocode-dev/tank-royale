@@ -5,6 +5,7 @@ val version: String = providers.gradleProperty("version").get()
 // Lib
 include("lib:common")
 include("lib:client")
+include("lib:intent-diagnostics")
 
 // Booter
 include("booter")
@@ -17,6 +18,9 @@ include("recorder")
 
 // GUI
 include("gui")
+
+// Bettle Runner
+include("runner")
 
 // Bot API
 include("bot-api:java")

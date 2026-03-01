@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.util
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.common.event.Event
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -40,7 +39,7 @@ class EventTest : FunSpec({
             val counter = AtomicInteger(0)
             val fixedOwner = Any()
 
-            event+= On(fixedOwner) {
+            event.on(fixedOwner) {
                 counter.incrementAndGet()
             }
 
@@ -67,8 +66,8 @@ class EventTest : FunSpec({
                         startLatch.await()
                         repeat(200) {
                             val owner = Any()
-                            event+= On(owner) { }
-                            event -= owner
+                            event.on(owner) { }
+                            event.off(owner)
                         }
                         doneLatch.countDown()
                     }
@@ -90,7 +89,7 @@ class EventTest : FunSpec({
             var owner: Any? = Any()
             val weakOwner = WeakReference(owner)
 
-            event+= On(owner!!) {
+            event.on(owner!!) {
                 counter.incrementAndGet()
             }
 

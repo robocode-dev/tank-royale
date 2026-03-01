@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.console
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.Participant
 import dev.robocode.tankroyale.client.model.TickEvent
 import dev.robocode.tankroyale.gui.client.ClientEvents
@@ -17,13 +16,13 @@ abstract class BaseBotConsolePanel(val bot: Participant) : ConsolePanel() {
 
     private fun subscribeToEvents() {
         ClientEvents.apply {
-            onGameStarted+= On(this@BaseBotConsolePanel) { gameStartedEvent ->
+            onGameStarted.on(this@BaseBotConsolePanel) { gameStartedEvent ->
                 numberOfRounds = gameStartedEvent.gameSetup.numberOfRounds
             }
-            onRoundStarted+= On(this@BaseBotConsolePanel) {
+            onRoundStarted.on(this@BaseBotConsolePanel) {
                 updateRoundInfo(it.roundNumber)
             }
-            onSeekToTurn+= On(this@BaseBotConsolePanel) {
+            onSeekToTurn.on(this@BaseBotConsolePanel) {
                 informAboutSeek(it)
             }
         }

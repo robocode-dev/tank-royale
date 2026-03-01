@@ -552,6 +552,7 @@ tasks {
         "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
         "bot-api:java:copyJavaApiDocs",     // Javadocs for Java Bot API
         "bot-api:python:copyPythonApiDocs", // Sphinx documentation for Python Bot API
+        "runner:copyRunnerApiDocs",         // Javadocs for Battle Runner API
         "docs-build:copy-generated-docs"    // VitePress documentation site
     )
 
@@ -562,6 +563,7 @@ tasks {
             "bot-api:dotnet:assemble",   // Bot API for .NET
             "booter:assemble",           // Booter (for booting up bots locally)
             "server:assemble",           // Server
+            "runner:assemble",           // Battle Runner
             "gui:assemble",              // GUI
             "sample-bots:zip",           // Sample bots
         )

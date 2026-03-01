@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.about
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
@@ -56,7 +55,7 @@ object AboutBox : RcDialog(MainFrame, "about_dialog") {
 
         isResizable = false
 
-        onOk+= On(this) {
+        onOk.on(this) {
             dispose()
         }
 

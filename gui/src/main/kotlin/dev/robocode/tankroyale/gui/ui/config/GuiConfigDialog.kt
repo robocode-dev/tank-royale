@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.common.event.Event
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
@@ -33,7 +32,7 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         override fun toString(): String = label
     }
 
-    private val onOk = Event<JButton>().apply { this += On(this@GuiConfigPanel) { onOkClicked() } }
+    private val onOk = Event<JButton>().apply { this.on(this@GuiConfigPanel) { onOkClicked() } }
 
     private val scaleOptions = arrayOf(100, 125, 150, 175, 200, 250, 300)
     private val scaleCombo = JComboBox(scaleOptions.map { "$it%" }.toTypedArray())

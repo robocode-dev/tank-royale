@@ -9,7 +9,7 @@ import dev.robocode.tankroyale.gui.ui.console.BooterErrorConsole
 import dev.robocode.tankroyale.gui.util.EDT
 import dev.robocode.tankroyale.gui.util.FileUtil
 import dev.robocode.tankroyale.gui.util.LineReaderThread
-import dev.robocode.tankroyale.gui.util.ResourceUtil
+import dev.robocode.tankroyale.common.util.ResourceUtil
 import dev.robocode.tankroyale.gui.util.ProcessUtil
 import java.io.FileNotFoundException
 import java.io.PrintStream

@@ -5,8 +5,7 @@ import dev.robocode.tankroyale.client.WebSocketClientEvents
 import dev.robocode.tankroyale.client.model.MessageConstants
 import dev.robocode.tankroyale.client.model.ObserverHandshake
 import dev.robocode.tankroyale.client.model.ServerHandshake
-import dev.robocode.tankroyale.common.event.On
-import dev.robocode.tankroyale.common.event.Once
+import dev.robocode.tankroyale.common.recording.GameRecorder
 import dev.robocode.tankroyale.common.util.Version
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -42,19 +41,19 @@ class RecordingObserver(
     fun start() {
         log.info("Starting RecordingObserver, connecting to: $url")
         WebSocketClientEvents.apply {
-            onOpen += On(client) {
+            onOpen.on(client) {
                 log.info("Connection to server established")
             }
-            onMessage += On(client) { msg ->
+            onMessage.on(client) { msg ->
                 processMessage(msg)
             }
 
-            onError += Once(client) { error ->
+            onError.once(client) { error ->
                 log.error("WebSocket error: ${error.message}", error)
                 cleanup()
                 latch.countDown()
             }
-            onClose += Once(client) {
+            onClose.once(client) {
                 log.info("Connection to server closed")
                 cleanup()
                 latch.countDown()
@@ -77,10 +76,10 @@ class RecordingObserver(
 
     private fun cleanup() {
         WebSocketClientEvents.apply {
-            onOpen -= client
-            onMessage -= client
-            onError -= client
-            onClose -= client
+            onOpen.off(client)
+            onMessage.off(client)
+            onError.off(client)
+            onClose.off(client)
         }
     }
 
@@ -113,7 +112,7 @@ class RecordingObserver(
                     log.info("Starting recording to file: ${recorder?.file?.absolutePath}")
                 }
                 log.debug("Recording event: {}", type)
-                recorder?.record(jsonElement)
+                recorder?.record(msg)
             }
             if (endRecordingEvents.contains(type)) {
                 log.info("Received end recording event: {}", type)
