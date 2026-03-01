@@ -10,13 +10,13 @@ execution.
 
 ```kotlin [Gradle (Kotlin DSL)]
 dependencies {
-    implementation("dev.robocode.tankroyale:robocode-tankroyale-runner:0.36.2")
+    implementation("dev.robocode.tankroyale:robocode-tankroyale-runner:0.37.0")
 }
 ```
 
 ```groovy [Gradle (Groovy)]
 dependencies {
-    implementation 'dev.robocode.tankroyale:robocode-tankroyale-runner:0.36.2'
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-runner:0.37.0'
 }
 ```
 
@@ -24,7 +24,7 @@ dependencies {
 <dependency>
     <groupId>dev.robocode.tankroyale</groupId>
     <artifactId>robocode-tankroyale-runner</artifactId>
-    <version>0.36.2</version>
+    <version>0.37.0</version>
 </dependency>
 ```
 
@@ -43,7 +43,7 @@ BattleRunner.create { embeddedServer() }.use { runner ->
         bots  = listOf(BotEntry.of("/path/to/MyBot"), BotEntry.of("/path/to/EnemyBot"))
     )
     results.results.forEach { bot ->
-        println("#${bot.rank} ${bot.name} — ${bot.totalScore} pts")
+        println("#${bot.rank} ${bot.name} - ${bot.totalScore} pts")
     }
 }
 ```
@@ -58,7 +58,7 @@ try (var runner = BattleRunner.create(b -> b.embeddedServer())) {
         List.of(BotEntry.of("/path/to/MyBot"), BotEntry.of("/path/to/EnemyBot"))
     );
     for (var bot : results.getResults()) {
-        System.out.printf("#%d %s — %d pts%n", bot.getRank(), bot.getName(), bot.getTotalScore());
+        System.out.printf("#%d %s - %d pts%n", bot.getRank(), bot.getName(), bot.getTotalScore());
     }
 }
 ```
@@ -226,25 +226,32 @@ For real-time event streaming and battle control:
 ::: code-group
 
 ```kotlin [Kotlin]
-val handle = runner.startBattleAsync(setup, bots)
+val owner = Any()
 
-handle.onTickEvent += On(this) { tick ->
-    println("Turn ${tick.turnNumber}: ${tick.botStates.size} bots alive")
-}
-handle.onRoundEnded += On(this) { round ->
-    println("Round ${round.roundNumber} ended")
-}
+runner.startBattleAsync(setup, bots).use { handle ->
+    handle.onTickEvent.on(owner) { tick ->
+        println("Turn ${tick.turnNumber}: ${tick.botStates.size} bots alive")
+    }
+    handle.onRoundEnded.on(owner) { round ->
+        println("Round ${round.roundNumber} ended")
+    }
 
-val results = handle.awaitResults()
-handle.close()
+    val results = handle.awaitResults()
+}
 ```
 
 ```java [Java]
-var handle = runner.startBattleAsync(setup, bots);
+var owner = new Object();
 
-// Subscribe to events...
-var results = handle.awaitResults();
-handle.close();
+try (var handle = runner.startBattleAsync(setup, bots)) {
+    handle.getOnRoundStarted().on(owner, event ->
+            System.out.printf("Round %d started%n", event.getRoundNumber()));
+    handle.getOnRoundEnded().on(owner, event ->
+            System.out.printf("Round %d ended (turn %d)%n",
+                    event.getRoundNumber(), event.getTurnNumber()));
+
+    var results = handle.awaitResults();
+}
 ```
 
 :::
@@ -260,6 +267,7 @@ handle.close();
 | `onGameEnded` | Fires when the game ends with final results |
 | `onGameAborted` | Fires when the game is aborted |
 | `onGamePaused` / `onGameResumed` | Fires on pause/resume |
+| `onBotListUpdate` | Fires when the connected bot list changes |
 
 ### Battle Handle Controls
 

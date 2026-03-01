@@ -359,6 +359,8 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         /**
          * Use an embedded server, binding it to [port] (default 0 = dynamic port assignment).
          * This is the default mode when no server configuration is supplied.
+         *
+         * @param port TCP port to bind (0 = let the OS assign a free port)
          */
         @JvmOverloads
         fun embeddedServer(port: Int = 0): Builder = apply {
@@ -368,6 +370,8 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         /**
          * Connect to a pre-started server at the given WebSocket [url]
          * (e.g. `ws://localhost:7654`).
+         *
+         * @param url WebSocket URL of the server (e.g. `ws://localhost:7654`)
          */
         fun externalServer(url: String): Builder = apply {
             serverMode = ServerMode.External(url)
@@ -385,6 +389,8 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         /**
          * Enable battle recording, writing a `.battle.gz` file to [outputPath].
          * Disabled by default.
+         *
+         * @param outputPath directory where `.battle.gz` recording files are written
          */
         fun enableRecording(outputPath: Path): Builder = apply {
             recordingPath = outputPath

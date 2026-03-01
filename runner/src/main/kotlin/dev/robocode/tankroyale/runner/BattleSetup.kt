@@ -118,7 +118,11 @@ data class BattleSetup(
             return Builder(preset).build()
         }
 
-        /** Creates a Classic game setup (800×600 arena, standard rules) with Kotlin DSL overrides. */
+        /**
+         * Creates a Classic game setup (800×600 arena, standard rules) with Kotlin DSL overrides.
+         *
+         * @param block DSL block to override preset values
+         */
         @JvmSynthetic
         fun classic(block: Builder.() -> Unit): BattleSetup =
             forPreset(GameType.CLASSIC, block)
@@ -127,12 +131,20 @@ data class BattleSetup(
         @JvmStatic
         fun classic(): BattleSetup = forPreset(GameType.CLASSIC)
 
-        /** Creates a Classic game setup (800×600 arena, standard rules) with optional Java consumer overrides. */
+        /**
+         * Creates a Classic game setup (800×600 arena, standard rules) with optional Java consumer overrides.
+         *
+         * @param configurer consumer that overrides preset values
+         */
         @JvmStatic
         fun classic(configurer: Consumer<Builder>): BattleSetup =
             forPreset(GameType.CLASSIC, configurer)
 
-        /** Creates a Melee game setup (1000×1000 arena, 10+ participants) with Kotlin DSL overrides. */
+        /**
+         * Creates a Melee game setup (1000×1000 arena, 10+ participants) with Kotlin DSL overrides.
+         *
+         * @param block DSL block to override preset values
+         */
         @JvmSynthetic
         fun melee(block: Builder.() -> Unit): BattleSetup =
             forPreset(GameType.MELEE, block)
@@ -141,12 +153,20 @@ data class BattleSetup(
         @JvmStatic
         fun melee(): BattleSetup = forPreset(GameType.MELEE)
 
-        /** Creates a Melee game setup (1000×1000 arena, 10+ participants) with optional Java consumer overrides. */
+        /**
+         * Creates a Melee game setup (1000×1000 arena, 10+ participants) with optional Java consumer overrides.
+         *
+         * @param configurer consumer that overrides preset values
+         */
         @JvmStatic
         fun melee(configurer: Consumer<Builder>): BattleSetup =
             forPreset(GameType.MELEE, configurer)
 
-        /** Creates a 1v1 game setup (800×600 arena, exactly 2 participants) with Kotlin DSL overrides. */
+        /**
+         * Creates a 1v1 game setup (800×600 arena, exactly 2 participants) with Kotlin DSL overrides.
+         *
+         * @param block DSL block to override preset values
+         */
         @JvmSynthetic
         fun oneVsOne(block: Builder.() -> Unit): BattleSetup =
             forPreset(GameType.ONE_VS_ONE, block)
@@ -155,12 +175,20 @@ data class BattleSetup(
         @JvmStatic
         fun oneVsOne(): BattleSetup = forPreset(GameType.ONE_VS_ONE)
 
-        /** Creates a 1v1 game setup (800×600 arena, exactly 2 participants) with optional Java consumer overrides. */
+        /**
+         * Creates a 1v1 game setup (800×600 arena, exactly 2 participants) with optional Java consumer overrides.
+         *
+         * @param configurer consumer that overrides preset values
+         */
         @JvmStatic
         fun oneVsOne(configurer: Consumer<Builder>): BattleSetup =
             forPreset(GameType.ONE_VS_ONE, configurer)
 
-        /** Creates a Custom game setup where all parameters are configurable, with Kotlin DSL overrides. */
+        /**
+         * Creates a Custom game setup where all parameters are configurable, with Kotlin DSL overrides.
+         *
+         * @param block DSL block to override preset values
+         */
         @JvmSynthetic
         fun custom(block: Builder.() -> Unit): BattleSetup =
             forPreset(GameType.CUSTOM, block)
@@ -169,7 +197,11 @@ data class BattleSetup(
         @JvmStatic
         fun custom(): BattleSetup = forPreset(GameType.CUSTOM)
 
-        /** Creates a Custom game setup where all parameters are configurable, with optional Java consumer overrides. */
+        /**
+         * Creates a Custom game setup where all parameters are configurable, with optional Java consumer overrides.
+         *
+         * @param configurer consumer that overrides preset values
+         */
         @JvmStatic
         fun custom(configurer: Consumer<Builder>): BattleSetup =
             forPreset(GameType.CUSTOM, configurer)
