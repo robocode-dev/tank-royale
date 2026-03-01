@@ -1,6 +1,6 @@
 # ADR-0024: Battle Runner API
 
-**Status:** Proposed  
+**Status:** Accepted
 **Date:** 2026-02-28
 
 ---
@@ -91,7 +91,7 @@ server. The proxy transparently forwards all messages while capturing `bot-inten
 
 The API is implemented in Kotlin but designed to be equally ergonomic from Java. All public factory methods use
 `@JvmStatic` for direct static access, and `Consumer<Builder>` overloads are provided alongside Kotlin DSL lambdas
-to avoid `Unit.INSTANCE` boilerplate in Java (see Decision 15).
+to avoid `Unit.INSTANCE` boilerplate in Java (see Decision 16).
 
 **Kotlin:**
 
@@ -139,11 +139,43 @@ try (var runner = BattleRunner.create(b -> b.embeddedServer())) {
 }
 ```
 
-The `BattleRunner` itself manages lifecycle (create, close, embedded server, booter). The `observer` and `controller`
-properties return focused objects that map directly to the Observer and Controller WebSocket roles (ADR-0007). The
-convenience method `runBattle()` combines both for the common "run and get results" use case. When
-`enableIntentDiagnostics()` is set, the Battle Runner inserts a transparent WebSocket proxy between bots and server
-to capture raw `bot-intent` messages — available after battle completion via `runner.intentDiagnostics`.
+The `BattleRunner` manages lifecycle (create, close, embedded server, booter). `runBattle()` is the synchronous
+convenience method — start battle, block until results, return. `startBattleAsync()` returns a `BattleHandle` that
+combines event subscriptions and control commands for the async case. When `enableIntentDiagnostics()` is set, the
+Battle Runner inserts a transparent WebSocket proxy between bots and server to capture raw `bot-intent` messages —
+available after battle completion via `runner.intentDiagnostics`.
+
+**Async control and intent diagnostics (Kotlin):**
+
+```kotlin
+// Async battle control — pause, step, resume
+val owner = Any()
+val controlled = AtomicBoolean()
+
+BattleRunner.create { embeddedServer() }.use { runner ->
+    runner.startBattleAsync(setup, bots).use { handle ->
+        handle.onTickEvent.on(owner) { tick ->
+            if (tick.turnNumber == 5 && controlled.compareAndSet(false, true)) handle.pause()
+        }
+        handle.onGamePaused.on(owner) { _ ->
+            repeat(3) { handle.nextTurn() }
+            handle.resume()
+        }
+        val results = handle.awaitResults()
+    }
+}
+
+// Intent diagnostics — query captured intents per bot per turn
+BattleRunner.create { embeddedServer(); enableIntentDiagnostics() }.use { runner ->
+    runner.runBattle(setup, bots)
+    val store = runner.intentDiagnostics ?: return
+    for (botName in store.botNames()) {
+        store.getIntentsForBot(botName).forEach { ci ->
+            println("${ci.botName} r=${ci.roundNumber} t=${ci.turnNumber} speed=${ci.intent.targetSpeed}")
+        }
+    }
+}
+```
 
 ### Key Design Choices
 
@@ -157,10 +189,13 @@ to capture raw `bot-intent` messages — available after battle completion via `
 3. **Java/Kotlin reference implementation first** — Follows ADR-0004 (Java as reference). Cross-platform ports
    (Python, .NET) can follow the same pattern as Bot API (ADR-0003).
 
-4. **Dual WebSocket roles as separate API objects** — `runner.observer` returns an Observer with event listeners;
-   `runner.controller` returns a Controller with battle commands. This maps directly to ADR-0007's role separation
-   at the API level — the `BattleRunner` manages lifecycle, while Observer and Controller have focused,
-   single-responsibility interfaces. The convenience `runBattle()` method combines both for the common use case.
+4. **Single `BattleHandle` combining observer and controller roles** — The async API exposes a single `BattleHandle`
+   that provides both event subscriptions (observer role) and control commands (controller role). This keeps the
+   async surface cohesive: callers subscribe to events and issue control commands on the same object, then call
+   `awaitResults()` to block until the battle completes. The handle maps directly to ADR-0007's role separation
+   at the connection level — internally, `BattleHandle` delegates to the same `ServerConnection` that acts as both
+   Observer and Controller — while exposing a unified, ergonomic API to callers. The convenience `runBattle()` method
+   handles the synchronous case without exposing a handle at all.
 
 5. **Embedded server and booter artifacts** — In embedded mode, the Battle Runner bundles the Server and Booter JAR
    artifacts inside its own JAR — the same approach used by the GUI module. At build time, the shrunken server and
@@ -172,22 +207,22 @@ to capture raw `bot-intent` messages — available after battle completion via `
 6. **Embedded + external server modes** — Embedded mode starts a server in-process for zero-config usage (testing,
    scripting). External mode connects to a running server for shared/remote scenarios.
 
-6. **Synchronous-first API** — `runBattle()` blocks until completion and returns results. Async variants available for
+7. **Synchronous-first API** — `runBattle()` blocks until completion and returns results. Async variants available for
    real-time event streaming. This matches the most common use case (run battle, get results).
 
-7. **Game type presets** — Battle configuration uses the existing game type preset system (see
+8. **Game type presets** — Battle configuration uses the existing game type preset system (see
    [ADR-0025](./0025-game-type-presets-and-rule-configuration.md)): `classic`, `melee`, `1v1`, and `custom`. Selecting
-   a preset provides sensible defaults; individual parameters can be overridden. The simplest API call is
-   `runBattle(GameType.CLASSIC)`.
+   a preset provides sensible defaults; individual parameters can be overridden. The simplest call is
+   `runner.runBattle(BattleSetup.classic(), bots)`.
 
-8. **Event delivery via Event\<T\> system** — Reuses the existing event infrastructure from ADR-0022, providing
+9. **Event delivery via Event\<T\> system** — Reuses the existing event infrastructure from ADR-0022, providing
    consistent patterns across the codebase.
 
-9. **Max-speed by default (TPS = -1)** — Programmatic battle execution should run as fast as possible. There is no
-   need for TPS throttling without a GUI rendering frames. The server's TPS is set to `-1` (unlimited) by default.
-   TPS control is intentionally omitted — if a user wants to observe battles visually, they should use the GUI.
+10. **Max-speed by default (TPS = -1)** — Programmatic battle execution should run as fast as possible. There is no
+    need for TPS throttling without a GUI rendering frames. The server's TPS is set to `-1` (unlimited) by default.
+    TPS control is intentionally omitted — if a user wants to observe battles visually, they should use the GUI.
 
-10. **Intent diagnostics via WebSocket proxy** — The observer protocol deliberately does NOT include raw bot intents,
+11. **Intent diagnostics via WebSocket proxy** — The observer protocol deliberately does NOT include raw bot intents,
     and we will not extend it for this purpose. Instead, the Battle Runner optionally interposes a lightweight
     **WebSocket proxy** between bots and the server. The Booter sets `SERVER_URL` to the proxy address; bots connect
     to the proxy; the proxy forwards all messages transparently to the real server while capturing `bot-intent`
@@ -198,26 +233,26 @@ to capture raw `bot-intent` messages — available after battle completion via `
     - Stores intents **in memory per bot** for the current battle, accessible like battle results
     - Is **opt-in** — disabled by default to avoid the proxy hop in performance-sensitive scenarios
 
-11. **Optional battle recording** — The core GZIP ND-JSON file writer (`GameRecorder`) is extracted from the `recorder`
+12. **Optional battle recording** — The core GZIP ND-JSON file writer (`GameRecorder`) is extracted from the `recorder`
     module into `lib/common`. The Battle Runner pipes its observer events through this shared writer when recording is
     enabled. This avoids depending on the full `recorder` module (which includes its own WebSocket client and CLI) while
     producing recordings identical to the standalone Recorder — playable in the GUI and compatible with existing tooling.
 
-12. **Server reuse across battles** — The embedded server stays running across multiple sequential battles by default.
+13. **Server reuse across battles** — The embedded server stays running across multiple sequential battles by default.
     Running 1000 battles of 10 rounds each does NOT restart the server between battles — only the bot processes and
     battle lifecycle are reset. This avoids unnecessary overhead and is the expected default for benchmarking and
     tournament scenarios.
 
-13. **Value-class configuration validation** — Configuration parameters use value classes (e.g. `ArenaSize`,
+14. **Value-class configuration validation** — Configuration parameters use value classes (e.g. `ArenaSize`,
     `RoundCount`, `GameType`) that validate invariants at construction time. Invalid configuration fails fast when
     building the runner or battle config — not when starting a battle. This eliminates the need for a separate
     "dry run" validation mode.
 
-14. **Typed intent diagnostics** — Intent data is exposed as deserialized Kotlin/Java objects, not raw JSON strings.
+15. **Typed intent diagnostics** — Intent data is exposed as deserialized Kotlin/Java objects, not raw JSON strings.
     End users of the API should never deal with JSON. The intent model should reuse or extend existing types from
     `lib/common` (matching the server's `BotIntent` structure) to avoid duplication.
 
-15. **Java-friendly API surface** — Although the Battle Runner is implemented in Kotlin, it is a public Maven Central
+16. **Java-friendly API surface** — Although the Battle Runner is implemented in Kotlin, it is a public Maven Central
     library consumed by both Kotlin and Java clients (Java 11+). Each factory method uses a three-overload pattern:
     (a) a `@JvmSynthetic` Kotlin DSL lambda-with-receiver (`Builder.() -> Unit`) — hidden from Java to prevent
     ambiguity; (b) a `@JvmStatic` no-arg overload returning preset defaults; (c) a `@JvmStatic` overload accepting
@@ -306,6 +341,8 @@ Create an API that runs the physics engine directly, bypassing WebSocket entirel
 - ✅ **Third-party enablement** — Tournament systems, educational tools, and analyzers can be built on top
 - ✅ **Developer experience** — Faster bot iteration without launching GUI
 - ✅ **Platform completeness** — Fills the gap between low-level protocol and high-level GUI
+- ✅ **Complete example coverage** — Five runnable Java examples covering sync, async, recording, intent diagnostics,
+  and battle control ship with the module (`runner/examples/`)
 
 ### Negative
 

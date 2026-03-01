@@ -4,6 +4,12 @@ The **Battle Runner API** lets you run Robocode Tank Royale battles programmatic
 required. Use it for automated testing, benchmarking, tournament systems, or any scenario where you need headless battle
 execution.
 
+::: info Java/JVM only
+The Battle Runner is currently available for **Java and Kotlin** (any JVM language) only. Python and C# ports do not
+exist yet. If you need support for another platform, please open a
+[feature request on GitHub](https://github.com/robocode-dev/tank-royale/issues).
+:::
+
 ## Installation
 
 ::: code-group
@@ -278,6 +284,67 @@ try (var handle = runner.startBattleAsync(setup, bots)) {
 | `stop()` | Stops the battle |
 | `nextTurn()` | Advances one turn while paused (single-step debugging) |
 
+Use the event-driven pattern to react to pause confirmation before stepping — this avoids sending
+`nextTurn` before the server has processed the pause:
+
+::: code-group
+
+```kotlin [Kotlin]
+val owner = Any()
+val controlled = AtomicBoolean()
+
+runner.startBattleAsync(setup, bots).use { handle ->
+    // Pause at turn 5 (once)
+    handle.onTickEvent.on(owner) { tick ->
+        if (tick.turnNumber == 5 && controlled.compareAndSet(false, true)) {
+            handle.pause()
+        }
+    }
+
+    // When paused: step 3 turns, then resume
+    handle.onGamePaused.on(owner) { _ ->
+        println("  Battle paused - stepping 3 turns manually...")
+        handle.nextTurn()
+        handle.nextTurn()
+        handle.nextTurn()
+        println("  Resuming...")
+        handle.resume()
+    }
+
+    val results = handle.awaitResults()
+}
+```
+
+```java [Java]
+var owner = new Object();
+var controlled = new AtomicBoolean();
+
+try (var handle = runner.startBattleAsync(setup, bots)) {
+    // Pause at turn 5 (once)
+    handle.getOnTickEvent().on(owner, tick -> {
+        if (tick.getTurnNumber() == 5 && controlled.compareAndSet(false, true)) {
+            handle.pause();
+        }
+    });
+
+    // When paused: step 3 turns, then resume
+    handle.getOnGamePaused().on(owner, event -> {
+        System.out.println("  Battle paused - stepping 3 turns manually...");
+        handle.nextTurn();
+        handle.nextTurn();
+        handle.nextTurn();
+        System.out.println("  Resuming...");
+        handle.resume();
+    });
+
+    var results = handle.awaitResults();
+}
+```
+
+:::
+
+
+
 ## Results
 
 `BattleResults` contains per-bot scores ordered by final ranking:
@@ -364,6 +431,38 @@ try (var runner = BattleRunner.create(b -> {
 
 :::
 
+After the battle completes, query the captured intents from the store:
+
+::: code-group
+
+```kotlin [Kotlin]
+val store = runner.intentDiagnostics ?: return
+for (botName in store.botNames()) {
+    val intents = store.getIntentsForBot(botName)
+    println("$botName — ${intents.size} intents")
+    for (ci in intents.take(5)) {
+        println("  round=${ci.roundNumber} turn=${ci.turnNumber}" +
+                " speed=${ci.intent.targetSpeed} fire=${ci.intent.firepower}")
+    }
+}
+```
+
+```java [Java]
+var store = runner.getIntentDiagnostics();
+if (store == null) return;
+for (var botName : store.botNames()) {
+    var intents = store.getIntentsForBot(botName);
+    System.out.printf("%s — %d intents%n", botName, intents.size());
+    for (var ci : intents.subList(0, Math.min(5, intents.size()))) {
+        System.out.printf("  round=%d turn=%d speed=%s fire=%s%n",
+                ci.getRoundNumber(), ci.getTurnNumber(),
+                ci.getIntent().getTargetSpeed(), ci.getIntent().getFirepower());
+    }
+}
+```
+
+:::
+
 ::: warning
 Intent diagnostics adds an extra network hop between bots and server. Only enable when needed for debugging.
 :::
@@ -421,6 +520,8 @@ See the [examples README](https://github.com/robocode-dev/tank-royale/tree/main/
 | `RunBattle.java` | Synchronous battle — blocks until done, prints a results table |
 | `AsyncBattle.java` | Asynchronous battle — streams round start/end events in real time |
 | `RecordBattle.java` | Records a battle to a `.battle.gz` replay file |
+| `IntentDiagnosticsBattle.java` | Captures per-turn bot intents and prints a turn-by-turn table |
+| `ControlBattle.java` | Pauses at turn 5, steps 3 turns manually, then resumes |
 
 ## API Reference
 

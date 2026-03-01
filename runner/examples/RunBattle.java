@@ -24,16 +24,9 @@ public class RunBattle {
             var results = runner.runBattle(setup, bots);
 
             System.out.printf("%nResults (%d rounds):%n", results.getNumberOfRounds());
-            System.out.println("-".repeat(60));
-            System.out.printf("%-6s %-20s %10s %10s %10s%n", "Rank", "Bot", "Total", "Bullet", "Ram");
-            System.out.println("-".repeat(60));
             for (var bot : results.getResults()) {
-                System.out.printf("%-6d %-20s %10d %10d %10d%n",
-                        bot.getRank(),
-                        bot.getName() + " " + bot.getVersion(),
-                        bot.getTotalScore(),
-                        bot.getBulletDamage(),
-                        bot.getRamDamage());
+                System.out.printf("  #%d  %-20s  %d pts%n",
+                        bot.getRank(), bot.getName(), bot.getTotalScore());
             }
         }
     }
@@ -41,10 +34,12 @@ public class RunBattle {
     private static String requireBotsDir() {
         var botsDir = System.getenv("BOTS_DIR");
         if (botsDir == null || botsDir.isBlank()) {
-            System.err.println("Error: BOTS_DIR environment variable is not set.");
-            System.err.println();
-            System.err.println("Set it to the directory containing your bot folders, e.g.:");
-            System.err.println("  export BOTS_DIR=/path/to/sample-bots/java/build/archive");
+            System.err.print("""
+                    Error: BOTS_DIR environment variable is not set.
+
+                    Set it to the directory containing your bot folders, e.g.:
+                      export BOTS_DIR=/path/to/sample-bots/java/build/archive
+                    """);
             System.exit(1);
         }
         return botsDir;

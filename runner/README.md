@@ -37,7 +37,7 @@ dependencies {
 <dependency>
     <groupId>dev.robocode.tankroyale</groupId>
     <artifactId>robocode-tankroyale-runner</artifactId>
-    <version>0.36.2</version>
+    <version>0.37.0</version>
 </dependency>
 ```
 
@@ -149,11 +149,12 @@ Returned after a battle completes, containing per-bot scores ordered by rank.
 Returned by `startBattleAsync()` for real-time event streaming and battle control.
 
 ```kotlin
-val handle = runner.startBattleAsync(setup, bots)
-handle.onTickEvent += On(this) { tick -> println("Turn ${tick.turnNumber}") }
-handle.onRoundEnded += On(this) { round -> println("Round ${round.roundNumber} ended") }
-val results = handle.awaitResults()
-handle.close()
+val owner = Any()
+runner.startBattleAsync(setup, bots).use { handle ->
+    handle.onTickEvent.on(owner) { tick -> println("Turn ${tick.turnNumber}") }
+    handle.onRoundEnded.on(owner) { round -> println("Round ${round.roundNumber} ended") }
+    val results = handle.awaitResults()
+}
 ```
 
 #### Events

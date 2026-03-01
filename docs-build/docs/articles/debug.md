@@ -30,19 +30,18 @@ This assumes you have your project file in the directory where you run the `dotn
 
 ## Supply a server secret
 
-The first time the server is running a battle, it creates a random secret (key) that all bots must supply to join the
-battle. The GUI handles this automatically in the background when starting up bots from the GUI via the booter.
+Server authentication is **disabled by default** — bots can connect without any secret when running the GUI locally.
+You only need to supply a secret if authentication has been explicitly enabled (via `enable-server-secrets=true` in
+`server.properties` or the Server Options dialog).
 
-The secret protects your server against external bots trying to join without (your) permission. They will need the
-secret from your server to join it.
+When secrets are enabled, the `server.properties` file contains the generated key your bot must supply. Look for the
+`bots-secrets` field:
 
-So to run your bot from the command line, you'll need to provide the secret for the server. The easiest way to do this
-is to set/export the `SERVER_SECRET` environment variable which the Bot API will read and send to the server (
-via the bot handshake).
+```
+bots-secrets=zDuQrkCLQU5VQgytofkNrQ
+```
 
-You'll find the generated secret for your server with the `server.properties` file in the same directory as the GUI
-application is run from. Copy and paste the value after the equal-sign (=) from the `bots-secrets` field and use it for
-defining the value of your `SERVER_SECRET` variable, e.g.:
+Set the `SERVER_SECRET` environment variable to that value before running your bot from the command line, e.g.:
 
 #### Bash:
 
@@ -78,6 +77,48 @@ the battle and add some other opponent bot(s) as well to start the battle.
 
 Your print or logging information should be written out to the command line. If not, make sure to put the logging
 information in the constructor or main method to make sure something is written out.
+
+## Headless debugging with the Battle Runner
+
+The GUI workflow above requires starting battles manually each test cycle. The
+**[Battle Runner API](../api/battle-runner)** offers an alternative: run battles entirely from code, no GUI
+needed. This is especially useful for repeated test cycles during bot development.
+
+```java
+try (var runner = BattleRunner.create(b -> b.embeddedServer())) {
+    var results = runner.runBattle(
+        BattleSetup.classic(s -> s.setNumberOfRounds(5)),
+        List.of(BotEntry.of(botsDir + "/MyBot"), BotEntry.of(botsDir + "/SpinBot"))
+    );
+    System.out.println("Winner: " + results.getResults().get(0).getName());
+}
+```
+
+The runner starts its own embedded server, manages bot processes, and returns results — no manual setup required.
+
+### Intent diagnostics
+
+When a bot misbehaves it can be hard to tell whether the bug is in your decision logic (what you _want_ to do)
+or in the execution (what you _tell_ the server to do). Intent diagnostics captures the raw `bot-intent` message
+your bot sends every turn — the exact `targetSpeed`, `turnRate`, `gunTurnRate`, and `firepower` values the
+server receives:
+
+```java
+try (var runner = BattleRunner.create(b -> b.embeddedServer().enableIntentDiagnostics())) {
+    runner.runBattle(setup, bots);
+    var store = runner.getIntentDiagnostics();
+    for (var ci : store.getIntentsForBot("MyBot")) {
+        System.out.printf("r=%d t=%d speed=%s fire=%s%n",
+                ci.getRoundNumber(), ci.getTurnNumber(),
+                ci.getIntent().getTargetSpeed(), ci.getIntent().getFirepower());
+    }
+}
+```
+
+If your bot is supposed to fire on turn 10 but `firepower` is always `null`, the bug is in your bot code.
+If `firepower` is set but the bullet never appears, the issue is elsewhere (e.g. gun heat).
+
+See the [Battle Runner API](../api/battle-runner) for setup instructions and all available options.
 
 ## Graphical Debugging
 

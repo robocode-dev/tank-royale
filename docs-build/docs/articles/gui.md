@@ -249,19 +249,20 @@ provide the secret either through:
 
 #### Local Server Secrets
 
-The server secrets are located in the `server.properties` file, which is automatically created when starting the
-server or GUI for the first time. This file contains the authentication secrets required for bots and controllers to
-access the server.
+Secret authentication is **disabled by default** (`enable-server-secrets=false`). Enable it in the Server Options
+dialog or by editing `server.properties` directly when you need to restrict access to your server.
 
-This is an example of a `server.properties` file containing the server secrets:
+When secrets are enabled, the `server.properties` file (automatically created on first run) contains the generated
+keys bots and controllers must present to connect:
 
 ```properties
+enable-server-secrets=true
 bots-secrets=/zWlsdEfhNX1YPggA9DJlw
 controller-secrets=Xcrw0ydtiscD7L7xAT/K4g
 ...
 ```
 
-You can change the server secrets by editing the `server.properties` file.
+You can change the secrets by editing the file manually or regenerating them through the Server Options dialog.
 
 The `bots-secrets` contains the secret for authenticating bots, while the `controller-secrets` contains the secret for
 authenticating GUI components and the battle recorder.

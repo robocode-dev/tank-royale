@@ -40,7 +40,7 @@ public class AsyncBattle {
 
                 System.out.printf("%nResults (%d rounds):%n", results.getNumberOfRounds());
                 for (var bot : results.getResults()) {
-                    System.out.printf("  #%d %s - %d pts%n",
+                    System.out.printf("  #%d  %-20s  %d pts%n",
                             bot.getRank(), bot.getName(), bot.getTotalScore());
                 }
             }
@@ -50,10 +50,12 @@ public class AsyncBattle {
     private static String requireBotsDir() {
         var botsDir = System.getenv("BOTS_DIR");
         if (botsDir == null || botsDir.isBlank()) {
-            System.err.println("Error: BOTS_DIR environment variable is not set.");
-            System.err.println();
-            System.err.println("Set it to the directory containing your bot folders, e.g.:");
-            System.err.println("  export BOTS_DIR=/path/to/sample-bots/java/build/archive");
+            System.err.print("""
+                    Error: BOTS_DIR environment variable is not set.
+
+                    Set it to the directory containing your bot folders, e.g.:
+                      export BOTS_DIR=/path/to/sample-bots/java/build/archive
+                    """);
             System.exit(1);
         }
         return botsDir;

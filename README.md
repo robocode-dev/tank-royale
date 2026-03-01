@@ -105,7 +105,8 @@ BattleRunner.create { embeddedServer() }.use { runner ->
 ```
 
 Available on Maven Central as `dev.robocode.tankroyale:robocode-tankroyale-runner`.
-See the [Battle Runner README](runner/README.md) for full documentation.
+See the [Battle Runner API docs](https://robocode-dev.github.io/tank-royale/api/battle-runner) or the
+[module README](runner/README.md) for full documentation.
 
 ## 🚧 Work in progress
 

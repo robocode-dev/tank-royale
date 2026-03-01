@@ -61,6 +61,24 @@ java -cp lib/* RecordBattle.java
 
 Runs a 3-round battle and writes a `.battle.gz` replay file to a `recordings/` directory.
 
+### IntentDiagnosticsBattle — Per-turn bot intent capture
+
+```sh
+java -cp lib/* IntentDiagnosticsBattle.java
+```
+
+Runs a 1-round battle with intent diagnostics enabled, then prints a turn-by-turn
+table of each bot's movement speed, turn rates, and firing decisions.
+
+### ControlBattle — Pause, step, and resume
+
+```sh
+java -cp lib/* ControlBattle.java
+```
+
+Runs an asynchronous battle, pauses at turn 5, steps through 3 turns manually,
+then resumes. Demonstrates `pause()`, `nextTurn()`, and `resume()` on a `BattleHandle`.
+
 ## Customizing
 
 Each example reads bot paths from the `BOTS_DIR` environment variable. To use different bots, either:
