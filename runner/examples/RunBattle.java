@@ -24,9 +24,9 @@ public class RunBattle {
             var results = runner.runBattle(setup, bots);
 
             System.out.printf("%nResults (%d rounds):%n", results.getNumberOfRounds());
-            System.out.println("─".repeat(60));
+            System.out.println("-".repeat(60));
             System.out.printf("%-6s %-20s %10s %10s %10s%n", "Rank", "Bot", "Total", "Bullet", "Ram");
-            System.out.println("─".repeat(60));
+            System.out.println("-".repeat(60));
             for (var bot : results.getResults()) {
                 System.out.printf("%-6d %-20s %10d %10d %10d%n",
                         bot.getRank(),

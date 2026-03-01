@@ -33,7 +33,7 @@ public class RecordBattle {
 
             System.out.printf("%nBattle complete (%d rounds).%n", results.getNumberOfRounds());
             for (var bot : results.getResults()) {
-                System.out.printf("  #%d %s — %d pts%n",
+                System.out.printf("  #%d %s - %d pts%n",
                         bot.getRank(), bot.getName(), bot.getTotalScore());
             }
 

@@ -21,8 +21,14 @@ compilation step required.
 
 3. **Set `BOTS_DIR`** to the directory containing your bot folders:
 
+   **bash/zsh:**
    ```sh
    export BOTS_DIR=../../sample-bots/java/build/archive
+   ```
+
+   **PowerShell:**
+   ```powershell
+   $env:BOTS_DIR = "../../sample-bots/java/build/archive"
    ```
 
    Each subdirectory under `BOTS_DIR` should contain a bot (with a matching `.json` config file).
