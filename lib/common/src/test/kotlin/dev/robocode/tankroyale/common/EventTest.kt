@@ -1,8 +1,6 @@
 package dev.robocode.tankroyale.common
 
 import dev.robocode.tankroyale.common.event.Event
-import dev.robocode.tankroyale.common.event.On
-import dev.robocode.tankroyale.common.event.Once
 import dev.robocode.tankroyale.common.event.event
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.maps.shouldBeEmpty
@@ -16,11 +14,11 @@ class EventTest : FunSpec({
 
     context("Event class") {
 
-        test("subscribe and fire using On wrapper") {
+        test("subscribe and fire") {
             val event = Event<String>()
             val result = mutableListOf<String>()
 
-            event += On(this) { result.add(it) }
+            event.on(this) { result.add(it) }
             event("test")
 
             result shouldBe listOf("test")
@@ -30,7 +28,7 @@ class EventTest : FunSpec({
             val event = Event<String>()
             val result = mutableListOf<String>()
 
-            event += On(this) { result.add(it) }
+            event.on(this) { result.add(it) }
             event("test")
 
             result shouldBe listOf("test")
@@ -40,31 +38,31 @@ class EventTest : FunSpec({
             val event = Event<String>()
             val result = mutableListOf<String>()
 
-            event += On(this) { result.add(it) }
+            event.on(this) { result.add(it) }
             event("test1")
-            event -= this
+            event.off(this)
             event("test2")
 
             result shouldBe listOf("test1")
         }
 
-        test("operator subscribe and unsubscribe") {
+        test("subscribe and unsubscribe") {
             val event = Event<String>()
             val result = mutableListOf<String>()
 
-            event += On(this) { result.add(it) }
+            event.on(this) { result.add(it) }
             event("test1")
-            event -= this
+            event.off(this)
             event("test2")
 
             result shouldBe listOf("test1")
         }
 
-        test("operator subscribe once") {
+        test("subscribe once") {
             val event = Event<String>()
             val result = mutableListOf<String>()
 
-            event += Once(this) { result.add(it) }
+            event.once(this) { result.add(it) }
             event("test1")
             event("test2")
 
@@ -78,18 +76,18 @@ class EventTest : FunSpec({
 
             val result = mutableListOf<String>()
 
-            events.onMessage += On(this) { result.add(it) }
+            events.onMessage.on(this) { result.add(it) }
             events.onMessage("test")
 
             (events.onMessage === events.onMessage) shouldBe true
             result shouldBe listOf("test")
         }
 
-        test("subscribe once using Once wrapper") {
+        test("subscribe once fires exactly once") {
             val event = Event<String>()
             val result = mutableListOf<String>()
 
-            event += Once(this) { result.add(it) }
+            event.once(this) { result.add(it) }
             event("test1")
             event("test2")
 
@@ -101,8 +99,8 @@ class EventTest : FunSpec({
             val result1 = mutableListOf<String>()
             val result2 = mutableListOf<String>()
 
-            event += On("subscriber1") { result1.add(it) }
-            event += On("subscriber2") { result2.add(it) }
+            event.on("subscriber1") { result1.add(it) }
+            event.on("subscriber2") { result2.add(it) }
             event("test")
 
             result1 shouldBe listOf("test")
@@ -129,7 +127,7 @@ class EventTest : FunSpec({
             var subscriber: Subscriber? = Subscriber()
             val weakRef = WeakReference(subscriber)
 
-            event += On(subscriber!!) { msg ->
+            event.on(subscriber!!) { msg ->
                 weakRef.get()?.handleEvent(msg)
             }
 
@@ -160,7 +158,7 @@ class EventTest : FunSpec({
             val event = Event<String>()
             val subscriber = object : Any() {}
 
-            event += On(subscriber) { }
+            event.on(subscriber) { }
 
             // Use reflection to access the private eventHandlers field
             val eventHandlersField = Event::class.java.getDeclaredField("eventHandlers")
@@ -184,12 +182,12 @@ class EventTest : FunSpec({
                     result.add(msg)
                     if (msg == "first") {
                         // Re-subscribe or subscribe another handler during fire
-                        event += On(this) { result.add("second-$it") }
+                        event.on(this) { result.add("second-$it") }
                     }
                 }
             }
 
-            event += On(subscriber) { subscriber.handle(it) }
+            event.on(subscriber) { subscriber.handle(it) }
             event("first")
 
             // Should have "first" from original handler.
@@ -198,7 +196,7 @@ class EventTest : FunSpec({
 
             event("third")
             // Now both handlers should be called (or rather, the last one subscribed for this owner)
-            // Wait, Event += On with same owner REPLACES the handler.
+            // Wait, Event.on with same owner REPLACES the handler.
             result shouldBe listOf("first", "second-third")
         }
 
@@ -209,11 +207,11 @@ class EventTest : FunSpec({
             val subscriber = object {
                 fun handle(msg: String) {
                     result.add(msg)
-                    event -= this
+                    event.off(this)
                 }
             }
 
-            event += On(subscriber) { subscriber.handle(it) }
+            event.on(subscriber) { subscriber.handle(it) }
             event("first")
             event("second")
 

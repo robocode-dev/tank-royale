@@ -4,7 +4,6 @@ import dev.robocode.tankroyale.client.WebSocketClient
 import dev.robocode.tankroyale.client.WebSocketClientEvents
 import dev.robocode.tankroyale.client.model.MessageConstants
 import dev.robocode.tankroyale.client.model.ServerHandshake
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.common.util.JavaExec
 import dev.robocode.tankroyale.common.util.ResourceUtil
 import dev.robocode.tankroyale.runner.BattleException
@@ -54,7 +53,7 @@ internal class ServerManager(private val serverMode: ServerMode) : AutoCloseable
             is ServerMode.External -> serverMode.url
         }
 
-    /** True if the embedded server process is running or external server is configured. */
+    /** True if the embedded server process is running or an external server is configured. */
     val isRunning: Boolean
         get() = when (serverMode) {
             is ServerMode.Embedded -> processRef.get()?.isAlive == true
@@ -130,10 +129,10 @@ internal class ServerManager(private val serverMode: ServerMode) : AutoCloseable
         val maxAttempts = 10
         val intervalMs = 500L
 
-        for (attempt in 1..maxAttempts) {
+        (1..maxAttempts).forEach { _ ->
             if (tryHandshake(url)) return
 
-            // Check if server process died
+            // Check if a server process died
             val process = processRef.get()
             if (process != null && !process.isAlive) {
                 throw BattleException(
@@ -158,7 +157,7 @@ internal class ServerManager(private val serverMode: ServerMode) : AutoCloseable
         val handshakeRef = AtomicReference<ServerHandshake?>()
         var wsClient: WebSocketClient? = null
 
-        val onMessage = On<String>(this) { message ->
+        WebSocketClientEvents.onMessage.on(this) { message ->
             if (isServerHandshake(message)) {
                 try {
                     val handshake = MessageConstants.json.decodeFromString<ServerHandshake>(message)
@@ -171,14 +170,13 @@ internal class ServerManager(private val serverMode: ServerMode) : AutoCloseable
         }
 
         return try {
-            WebSocketClientEvents.onMessage += onMessage
             wsClient = WebSocketClient(URI(url))
             wsClient.open()
             handshakeReceived.await(HANDSHAKE_TIMEOUT_MS, TimeUnit.MILLISECONDS)
         } catch (_: Exception) {
             false
         } finally {
-            WebSocketClientEvents.onMessage -= onMessage
+            WebSocketClientEvents.onMessage.off(this)
             try { wsClient?.close() } catch (_: Exception) {}
         }
     }

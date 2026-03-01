@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.console
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.BotPolicyUpdate
 import dev.robocode.tankroyale.client.model.Participant
 import dev.robocode.tankroyale.client.model.TickEvent
@@ -131,22 +130,22 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     }
 
     private fun subscribeToEvents() {
-        ClientEvents.onTickEvent+= On(this) { tickEvent ->
+        ClientEvents.onTickEvent.on(this) { tickEvent ->
             updateBotState(tickEvent)
         }
-        ClientEvents.onGameStarted+= On(this) {
+        ClientEvents.onGameStarted.on(this) {
             subscribeToEvents()
         }
-        ClientEvents.onGameEnded+= On(this) {
+        ClientEvents.onGameEnded.on(this) {
             unsubscribeEvents()
         }
-        ClientEvents.onGameAborted+= On(this) {
+        ClientEvents.onGameAborted.on(this) {
             unsubscribeEvents()
         }
     }
 
     private fun unsubscribeEvents() {
-        ClientEvents.onTickEvent -= this
+        ClientEvents.onTickEvent.off(this)
     }
 
     private fun updateBotState(tickEvent: TickEvent) {

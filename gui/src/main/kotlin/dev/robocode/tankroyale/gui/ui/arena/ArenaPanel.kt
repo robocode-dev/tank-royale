@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
 import dev.robocode.tankroyale.client.model.*
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.player.ReplayBattlePlayer
@@ -90,10 +89,10 @@ object ArenaPanel : JPanel() {
         })
 
         ClientEvents.apply {
-            onGameEnded+= On(ArenaPanel) { this@ArenaPanel.onGameEnded(it) }
-            ClientEvents.onTickEvent += On(ArenaPanel) { this@ArenaPanel.onTick(it) }
-            onGameStarted+= On(ArenaPanel) { this@ArenaPanel.onGameStarted(it) }
-            onPlayerChanged+= On(ArenaPanel) { this@ArenaPanel.onPlayerChanged(it) }
+            onGameEnded.on(ArenaPanel) { this@ArenaPanel.onGameEnded(it) }
+            ClientEvents.onTickEvent.on(ArenaPanel) { this@ArenaPanel.onTick(it) }
+            onGameStarted.on(ArenaPanel) { this@ArenaPanel.onGameStarted(it) }
+            onPlayerChanged.on(ArenaPanel) { this@ArenaPanel.onPlayerChanged(it) }
         }
     }
 

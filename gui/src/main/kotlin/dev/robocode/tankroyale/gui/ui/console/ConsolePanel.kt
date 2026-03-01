@@ -1,7 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.common.event.Event
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.ansi.AnsiEditorPane
 import dev.robocode.tankroyale.gui.ansi.AnsiTextBuilder
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
@@ -21,16 +20,16 @@ open class ConsolePanel : JPanel() {
     }
 
     private val onOk = Event<JButton>().apply {
-        this += On(this@ConsolePanel) {
+        this.on(this@ConsolePanel) {
             val parentFrame = SwingUtilities.getAncestorOfClass(JFrame::class.java, ansiEditorPane) as JFrame
             parentFrame.dispose()
         }
     }
     private val onClear = Event<JButton>().apply {
-        this += On(this@ConsolePanel) { clear() }
+        this.on(this@ConsolePanel) { clear() }
     }
     private val onCopyToClipboard = Event<JButton>().apply {
-        this += On(this@ConsolePanel) { copyToClipboard() }
+        this.on(this@ConsolePanel) { copyToClipboard() }
     }
 
     protected val okButton = JPanel().addOkButton(onOk)

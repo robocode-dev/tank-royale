@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.runner
 
 import dev.robocode.tankroyale.client.model.*
 import dev.robocode.tankroyale.common.event.Event
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.runner.internal.ServerConnection
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -28,11 +27,11 @@ class BattleHandle internal constructor(
     private val errorRef = AtomicReference<BattleException?>()
 
     init {
-        connection.onGameEnded += On(owner) { event ->
+        connection.onGameEnded.on(owner) { event ->
             resultsRef.set(ServerConnection.toBattleResults(event))
             gameEndedLatch.countDown()
         }
-        connection.onGameAborted += On(owner) { _ ->
+        connection.onGameAborted.on(owner) { _ ->
             errorRef.set(BattleException("Battle was aborted"))
             gameEndedLatch.countDown()
         }
@@ -108,8 +107,8 @@ class BattleHandle internal constructor(
 
     /** Unsubscribes internal event handlers and releases the battle slot. */
     override fun close() {
-        connection.onGameEnded -= owner
-        connection.onGameAborted -= owner
+        connection.onGameEnded.off(owner)
+        connection.onGameAborted.off(owner)
         onClose()
     }
 }

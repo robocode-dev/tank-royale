@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.common.event
 
 import java.util.WeakHashMap
 import java.util.concurrent.atomic.AtomicReference
+import java.util.function.Consumer
 
 /**
  * A thread-safe, type-safe event system using weak references to prevent memory leaks.
@@ -9,23 +10,40 @@ import java.util.concurrent.atomic.AtomicReference
  * Provides C#/.NET-style delegates for Java/Kotlin with automatic handler cleanup on garbage collection.
  * Handlers are registered as weak references, so they are automatically unsubscribed when their owners are GC'd.
  *
- * ## Basic Usage
+ * ## Basic Usage (Kotlin)
  *
  * ```kotlin
  * // Subscribe (continuous)
- * myEvent += On(this) { event -> handle(event) }
+ * myEvent.on(this) { event -> handle(event) }
  *
  * // Subscribe (one-shot)
- * myEvent += Once(this) { event -> handleOnce(event) }
+ * myEvent.once(this) { event -> handleOnce(event) }
+ *
+ * // Subscribe with priority (higher = earlier)
+ * myEvent.on(this, priority = 50) { event -> handle(event) }
  *
  * // Fire
  * myEvent(MyEvent("data"))
  *
  * // Unsubscribe (optional—automatic on GC)
- * myEvent -= this
+ * myEvent.off(this)
  * ```
  *
- * See [Subscription], [On], and [Once] for detailed usage and examples.
+ * ## Basic Usage (Java)
+ *
+ * ```java
+ * // Subscribe (continuous)
+ * myEvent.on(owner, event -> handle(event));
+ *
+ * // Subscribe (one-shot)
+ * myEvent.once(owner, event -> handleOnce(event));
+ *
+ * // Subscribe with priority
+ * myEvent.on(owner, 50, event -> handle(event));
+ *
+ * // Unsubscribe
+ * myEvent.off(owner);
+ * ```
  *
  * ## Thread-Safety
  *
@@ -39,7 +57,6 @@ import java.util.concurrent.atomic.AtomicReference
  * No explicit cleanup required.
  *
  * @param T the event type passed to handlers
- * @see Subscription for subscription type hierarchy ([On], [Once])
  */
 open class Event<T> {
 
@@ -79,18 +96,6 @@ open class Event<T> {
     }
 
     /**
-     * Subscribe using operator syntax with [Subscription] wrappers.
-     *
-     * @param subscription a [Subscription] instance ([On] for continuous, [Once] for one-shot)
-     * @see On
-     * @see Once
-     */
-    operator fun plusAssign(subscription: Subscription<T>) {
-        val once = subscription is Once<T>
-        subscribe(subscription.owner, once = once, priority = subscription.priority, eventHandler = subscription.handler)
-    }
-
-    /**
      * Unregister a handler subscription.
      *
      * Thread-safe removal with atomic compare-and-swap semantics.
@@ -108,19 +113,59 @@ open class Event<T> {
         }
     }
 
+    // -------------------------------------------------------------------------------------
+    // Kotlin API (trailing-lambda syntax, hidden from Java via @JvmSynthetic)
+    // -------------------------------------------------------------------------------------
+
+    /** Continuous subscription for Kotlin callers. */
+    @JvmSynthetic
+    fun on(owner: Any, handler: (T) -> Unit) =
+        subscribe(owner, once = false, priority = 0, eventHandler = handler)
+
+    /** Continuous subscription with priority for Kotlin callers. */
+    @JvmSynthetic
+    fun on(owner: Any, priority: Int, handler: (T) -> Unit) =
+        subscribe(owner, once = false, priority = priority, eventHandler = handler)
+
+    /** One-shot subscription for Kotlin callers. */
+    @JvmSynthetic
+    fun once(owner: Any, handler: (T) -> Unit) =
+        subscribe(owner, once = true, priority = 0, eventHandler = handler)
+
+    /** One-shot subscription with priority for Kotlin callers. */
+    @JvmSynthetic
+    fun once(owner: Any, priority: Int, handler: (T) -> Unit) =
+        subscribe(owner, once = true, priority = priority, eventHandler = handler)
+
+    // -------------------------------------------------------------------------------------
+    // Java API (Consumer<T> — no Unit.INSTANCE needed)
+    // -------------------------------------------------------------------------------------
+
+    /** Continuous subscription for Java callers. */
+    fun on(owner: Any, handler: Consumer<T>) =
+        subscribe(owner, once = false, priority = 0) { handler.accept(it) }
+
+    /** Continuous subscription with priority for Java callers. */
+    fun on(owner: Any, priority: Int, handler: Consumer<T>) =
+        subscribe(owner, once = false, priority = priority) { handler.accept(it) }
+
+    /** One-shot subscription for Java callers. */
+    fun once(owner: Any, handler: Consumer<T>) =
+        subscribe(owner, once = true, priority = 0) { handler.accept(it) }
+
+    /** One-shot subscription with priority for Java callers. */
+    fun once(owner: Any, priority: Int, handler: Consumer<T>) =
+        subscribe(owner, once = true, priority = priority) { handler.accept(it) }
+
     /**
-     * Unsubscribe using operator syntax.
+     * Unsubscribe the handler registered for [owner].
      *
      * **Note:** This is optional—handlers are automatically unsubscribed when their owners are
      * garbage collected. Explicit unsubscription is only needed for early cleanup.
      *
-     * Example: `myEvent -= this`
-     *
      * @param owner the owner passed during subscription (typically `this`)
      */
-    operator fun minusAssign(owner: Any) {
-        unsubscribe(owner)
-    }
+    fun off(owner: Any) = unsubscribe(owner)
 
     /**
      * Fire an event to all subscribed handlers.
@@ -147,7 +192,7 @@ open class Event<T> {
                 .sortedByDescending { it.value.priority }
                 .forEach { entry ->
                     entry.value.apply {
-                        if (once) this@Event -= entry.key
+                        if (once) unsubscribe(entry.key)
                         eventHandler.invoke(event)
                     }
                 }

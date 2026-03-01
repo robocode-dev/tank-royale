@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.runner
 
 import dev.robocode.tankroyale.client.model.BotAddress
 import dev.robocode.tankroyale.client.model.GameSetup
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.common.recording.GameRecorder
 import dev.robocode.tankroyale.intent.IntentDiagnosticsProxy
 import dev.robocode.tankroyale.intent.IntentStore
@@ -18,7 +17,6 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
-import java.util.logging.Level
 import java.util.logging.Logger
 
 /**
@@ -51,8 +49,6 @@ import java.util.logging.Logger
  * ```
  */
 class BattleRunner private constructor(val config: Config) : AutoCloseable {
-
-    private val logger = Logger.getLogger(BattleRunner::class.java.name)
 
     internal val serverManager = ServerManager(config.serverMode)
     internal var connection: ServerConnection? = null
@@ -225,7 +221,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
         // Subscribe to raw observer messages for recording (9.3)
         if (config.recordingPath != null) {
-            conn.onRawObserverMessage += On(this) { message -> handleRecordingMessage(message) }
+            conn.onRawObserverMessage.on(this) { message -> handleRecordingMessage(message) }
         }
 
         connection = conn
@@ -268,7 +264,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         val latestBots = ConcurrentHashMap.newKeySet<BotAddress>()
         val botOwner = Any()
 
-        conn.onBotListUpdate += On(botOwner) { update ->
+        conn.onBotListUpdate.on(botOwner) { update ->
             latestBots.clear()
             latestBots.addAll(update.bots.map { it.botAddress })
             if (update.bots.size - preExistingBots.size >= expectedCount) {
@@ -290,7 +286,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
             return latestBots.toSet() - preExistingBots
         } finally {
-            conn.onBotListUpdate -= botOwner
+            conn.onBotListUpdate.off(botOwner)
         }
     }
 
@@ -300,8 +296,8 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         val gameAbortedDuringStart = AtomicBoolean(false)
         val startOwner = Any()
 
-        conn.onGameStarted += On(startOwner) { _ -> gameStartedLatch.countDown() }
-        conn.onGameAborted += On(startOwner) { _ ->
+        conn.onGameStarted.on(startOwner) { _ -> gameStartedLatch.countDown() }
+        conn.onGameAborted.on(startOwner) { _ ->
             gameAbortedDuringStart.set(true)
             gameStartedLatch.countDown()
         }
@@ -314,8 +310,8 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
                 throw BattleException("Battle was aborted — not enough bots ready to start")
             }
         } finally {
-            conn.onGameStarted -= startOwner
-            conn.onGameAborted -= startOwner
+            conn.onGameStarted.off(startOwner)
+            conn.onGameAborted.off(startOwner)
         }
     }
 

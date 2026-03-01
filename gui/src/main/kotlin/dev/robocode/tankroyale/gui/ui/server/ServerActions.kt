@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.server
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.server.ServerProcess
 import dev.robocode.tankroyale.gui.settings.ServerSettings
@@ -12,19 +11,19 @@ import dev.robocode.tankroyale.gui.util.isRemoteEndpoint
 object ServerActions {
     init {
         ServerEventTriggers.apply {
-            onStartLocalServer+= On(this) {
+            onStartLocalServer.on(this) {
                 Server.startLocal()
             }
-            onStopLocalServer+= On(this) {
+            onStopLocalServer.on(this) {
                 Server.stopLocal()
                 BootProcess.stop()
             }
-            onRebootLocalServer+= On(this) {
+            onRebootLocalServer.on(this) {
                 handleRebootLocal(it)
             }
         }
 
-        ServerEvents.onStarted+= On(this) {
+        ServerEvents.onStarted.on(this) {
             ServerLogFrame.clear()
         }
     }

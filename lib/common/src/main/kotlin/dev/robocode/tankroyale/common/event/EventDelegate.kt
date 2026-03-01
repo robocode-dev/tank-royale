@@ -47,7 +47,7 @@ class EventDelegate<T> {
  *     val onStopped by event<StopEvent>()
  * }
  *
- * MyEvents.onStarted += On(this) { event -> println("Started: ${event.timestamp}") }
+ * MyEvents.onStarted.on(this) { event -> println("Started: ${event.timestamp}") }
  * MyEvents.onStarted(StartEvent(System.currentTimeMillis()))
  * ```
  *

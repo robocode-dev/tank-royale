@@ -1,11 +1,14 @@
 package dev.robocode.tankroyale.runner;
 
+import dev.robocode.tankroyale.common.event.Event;
 import dev.robocode.tankroyale.common.rules.GameType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -229,6 +232,63 @@ class JavaInteropTest {
         assertThat(r.getFirstPlaces()).isEqualTo(3);
         assertThat(r.getSecondPlaces()).isEqualTo(2);
         assertThat(r.getThirdPlaces()).isEqualTo(1);
+    }
+
+    // -------------------------------------------------------------------------------------
+    // Event<T> — Java-friendly on/once/off API
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    void eventOnMethodAcceptsConsumer() {
+        var event = new Event<String>();
+        var owner = new Object();
+        var received = new AtomicReference<String>();
+
+        event.on(owner, received::set);
+        event.invoke("hello");
+
+        assertThat(received.get()).isEqualTo("hello");
+    }
+
+    @Test
+    void eventOnceMethodFiresOnce() {
+        var event = new Event<String>();
+        var owner = new Object();
+        var count = new AtomicInteger();
+
+        event.once(owner, s -> count.incrementAndGet());
+        event.invoke("first");
+        event.invoke("second");
+
+        assertThat(count.get()).isEqualTo(1);
+    }
+
+    @Test
+    void eventOffUnsubscribes() {
+        var event = new Event<String>();
+        var owner = new Object();
+        var received = new AtomicReference<String>();
+
+        event.on(owner, received::set);
+        event.invoke("before");
+        event.off(owner);
+        event.invoke("after");
+
+        assertThat(received.get()).isEqualTo("before");
+    }
+
+    @Test
+    void eventOnWithPriorityOrdersHandlers() {
+        var event = new Event<String>();
+        var ownerLow = new Object();
+        var ownerHigh = new Object();
+        var order = new java.util.ArrayList<String>();
+
+        event.on(ownerLow, 10, s -> order.add("low"));
+        event.on(ownerHigh, 100, s -> order.add("high"));
+        event.invoke("x");
+
+        assertThat(order).containsExactly("high", "low");
     }
 
     // -------------------------------------------------------------------------------------

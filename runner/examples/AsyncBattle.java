@@ -1,6 +1,4 @@
 import dev.robocode.tankroyale.runner.*;
-import dev.robocode.tankroyale.common.event.On;
-import kotlin.Unit;
 import java.util.List;
 
 /**
@@ -27,21 +25,15 @@ public class AsyncBattle {
 
             try (var handle = runner.startBattleAsync(setup, bots)) {
                 // Subscribe to round events
-                handle.getOnRoundStarted().plusAssign(new On<>(owner, 0, event -> {
-                    System.out.printf("  Round %d started%n", event.getRoundNumber());
-                    return Unit.INSTANCE;
-                }));
+                handle.getOnRoundStarted().on(owner, event ->
+                        System.out.printf("  Round %d started%n", event.getRoundNumber()));
 
-                handle.getOnRoundEnded().plusAssign(new On<>(owner, 0, event -> {
-                    System.out.printf("  Round %d ended (turn %d)%n",
-                            event.getRoundNumber(), event.getTurnNumber());
-                    return Unit.INSTANCE;
-                }));
+                handle.getOnRoundEnded().on(owner, event ->
+                        System.out.printf("  Round %d ended (turn %d)%n",
+                                event.getRoundNumber(), event.getTurnNumber()));
 
-                handle.getOnGameStarted().plusAssign(new On<>(owner, 0, event -> {
-                    System.out.println("Game started!");
-                    return Unit.INSTANCE;
-                }));
+                handle.getOnGameStarted().on(owner, event ->
+                        System.out.println("Game started!"));
 
                 // Wait for the battle to finish
                 var results = handle.awaitResults();

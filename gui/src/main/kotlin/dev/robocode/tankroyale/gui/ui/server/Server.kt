@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.server
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.server.ServerProcess
@@ -62,7 +61,7 @@ object Server {
 
         val connected = CountDownLatch(1)
 
-        ClientEvents.onConnected+= On(this) {
+        ClientEvents.onConnected.on(this) {
             connected.countDown()
             ServerEvents.onConnected(Unit)
         }
@@ -85,7 +84,7 @@ object Server {
 
     fun startLocal() {
         val latch = CountDownLatch(1)
-        ServerEvents.onStarted+= On(this) {
+        ServerEvents.onStarted.on(this) {
             latch.countDown()
         }
         ServerProcess.start()

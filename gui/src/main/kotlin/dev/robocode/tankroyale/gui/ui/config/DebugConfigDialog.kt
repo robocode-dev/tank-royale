@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.config
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Hints
@@ -38,7 +37,7 @@ private class DebugConfigPanel : JPanel(MigLayout("fill, insets 20", "", "[]20[]
 
     @Suppress("UNCHECKED_CAST")
     private fun addOkButton() {
-        onOkButton+= On(this) { closeDialog() }
+        onOkButton.on(this) { closeDialog() }
         addOkButton(onOkButton, "cell 0 1, center").apply {
             setDefaultButton(this)
         }

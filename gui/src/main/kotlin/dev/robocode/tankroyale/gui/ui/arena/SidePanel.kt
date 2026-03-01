@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.GameStartedEvent
 import dev.robocode.tankroyale.client.model.Participant
 import dev.robocode.tankroyale.common.event.Event
@@ -28,9 +27,9 @@ object SidePanel : JPanel() {
 
         layout = BoxLayout(this, BoxLayout.Y_AXIS)
 
-        ClientEvents.onGameStarted+= On(SidePanel) { onGameStarted(it) }
+        ClientEvents.onGameStarted.on(SidePanel) { onGameStarted(it) }
 
-        buttonsEvent+= On(SidePanel) { onBotButtonAction(it.bot) }
+        buttonsEvent.on(SidePanel) { onBotButtonAction(it.bot) }
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {

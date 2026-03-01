@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.ui.menu
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.gui.settings.ServerSettings
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.about.AboutBox
@@ -26,48 +25,48 @@ object MenuEventHandlers {
 
     init {
         MenuEventTriggers.apply {
-            onSetupRules += On(this) {
+            onSetupRules.on(this) {
                 SetupRulesDialog.isVisible = true
             }
-            onStartBattle += On(this) {
+            onStartBattle.on(this) {
                 startBattle()
             }
-            onReplayFromFile += On(this) {
+            onReplayFromFile.on(this) {
                 startReplayFromFile()
             }
-            onShowServerLog += On(this) {
+            onShowServerLog.on(this) {
                 ServerLogFrame.isVisible = true
             }
-            onBotDirConfig += On(this) {
+            onBotDirConfig.on(this) {
                 BotRootDirectoriesConfigDialog.isVisible = true
             }
-            onStartServer += On(this) {
+            onStartServer.on(this) {
                 ServerEventTriggers.onStartLocalServer(Unit)
                 ServerLogFrame.isVisible = true
             }
-            onStopServer += On(this) {
+            onStopServer.on(this) {
                 ServerEventTriggers.onStopLocalServer(Unit)
                 ServerLogFrame.isVisible = false
             }
-            onRebootServer += On(this) {
+            onRebootServer.on(this) {
                 ServerEventTriggers.onRebootLocalServer(false /* user initiated */)
             }
-            onServerConfig += On(this) {
+            onServerConfig.on(this) {
                 ServerConfigDialog().isVisible = true
             }
-            onDebugConfig += On(this) {
+            onDebugConfig.on(this) {
                 DebugConfigDialog.isVisible = true
             }
-            onSoundConfig += On(this) {
+            onSoundConfig.on(this) {
                 SoundConfigDialog.isVisible = true
             }
-            onGuiConfig += On(this) {
+            onGuiConfig.on(this) {
                 GuiConfigDialog.isVisible = true
             }
-            onHelp += On(this) {
+            onHelp.on(this) {
                 Browser.browse(HELP_URL)
             }
-            onAbout += On(this) {
+            onAbout.on(this) {
                 AboutBox.isVisible = true
             }
         }

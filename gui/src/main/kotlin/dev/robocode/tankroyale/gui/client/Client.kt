@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.client
 
-import dev.robocode.tankroyale.common.event.On
 import dev.robocode.tankroyale.client.model.*
 import dev.robocode.tankroyale.gui.client.ClientEvents.onBotListUpdate
 import dev.robocode.tankroyale.gui.client.ClientEvents.onConnected
@@ -30,10 +29,10 @@ object Client {
 
     init {
         // Subscribe to bot policy changes
-        ClientEvents.onBotPolicyChanged+= On(Client) {
+        ClientEvents.onBotPolicyChanged.on(Client) {
             currentPlayer?.changeBotPolicy(it)
         }
-        TpsEvents.onTpsChanged+= On(Client) {
+        TpsEvents.onTpsChanged.on(Client) {
             currentPlayer?.changeTps(it.tps)
         }
     }
@@ -129,32 +128,32 @@ object Client {
     }
 
     private fun subscribeToPlayerEvents(player: BattlePlayer) {
-        player.onConnected+= On(Client) { onConnected(it) }
-        player.onGameStarted+= On(Client) { onGameStarted(it) }
-        player.onGameEnded+= On(Client) { onGameEnded(it) }
-        player.onGameAborted+= On(Client) { onGameAborted(it) }
-        player.onGamePaused+= On(Client) { onGamePaused(it) }
-        player.onGameResumed+= On(Client) { onGameResumed(it) }
-        player.onRoundStarted+= On(Client) { onRoundStarted(it) }
-        player.onRoundEnded+= On(Client) { onRoundEnded(it) }
-        player.onTickEvent+= On(Client) { onTickEvent(it) }
-        player.onBotListUpdate+= On(Client) { onBotListUpdate(it) }
-        player.onStdOutputUpdated+= On(Client) { onStdOutputUpdated(it) }
-        player.onSeekToTurn+= On(Client) { onSeekToTurn(it) }
+        player.onConnected.on(Client) { onConnected(it) }
+        player.onGameStarted.on(Client) { onGameStarted(it) }
+        player.onGameEnded.on(Client) { onGameEnded(it) }
+        player.onGameAborted.on(Client) { onGameAborted(it) }
+        player.onGamePaused.on(Client) { onGamePaused(it) }
+        player.onGameResumed.on(Client) { onGameResumed(it) }
+        player.onRoundStarted.on(Client) { onRoundStarted(it) }
+        player.onRoundEnded.on(Client) { onRoundEnded(it) }
+        player.onTickEvent.on(Client) { onTickEvent(it) }
+        player.onBotListUpdate.on(Client) { onBotListUpdate(it) }
+        player.onStdOutputUpdated.on(Client) { onStdOutputUpdated(it) }
+        player.onSeekToTurn.on(Client) { onSeekToTurn(it) }
     }
 
     private fun unsubscribeFromPlayerEvents(player: BattlePlayer) {
-        player.onConnected -= Client
-        player.onGameStarted -= Client
-        player.onGameEnded -= Client
-        player.onGameAborted -= Client
-        player.onGamePaused -= Client
-        player.onGameResumed -= Client
-        player.onRoundStarted -= Client
-        player.onRoundEnded -= Client
-        player.onTickEvent -= Client
-        player.onBotListUpdate -= Client
-        player.onStdOutputUpdated -= Client
-        player.onSeekToTurn -= Client
+        player.onConnected.off(Client)
+        player.onGameStarted.off(Client)
+        player.onGameEnded.off(Client)
+        player.onGameAborted.off(Client)
+        player.onGamePaused.off(Client)
+        player.onGameResumed.off(Client)
+        player.onRoundStarted.off(Client)
+        player.onRoundEnded.off(Client)
+        player.onTickEvent.off(Client)
+        player.onBotListUpdate.off(Client)
+        player.onStdOutputUpdated.off(Client)
+        player.onSeekToTurn.off(Client)
     }
 }
