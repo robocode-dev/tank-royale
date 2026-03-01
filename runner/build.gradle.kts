@@ -94,9 +94,12 @@ tasks {
         }
         failFast = true
 
-        dependsOn(jar, ":sample-bots:java:build")
+        dependsOn(jar, ":sample-bots:java:build", ":sample-bots:csharp:build", ":bot-api:tests:build")
 
         systemProperty("sampleBots.java.dir", project(":sample-bots:java").layout.buildDirectory.dir("archive").get().asFile.absolutePath)
+        systemProperty("sampleBots.csharp.dir", project(":sample-bots:csharp").layout.buildDirectory.dir("archive").get().asFile.absolutePath)
+        systemProperty("testBots.java.dir", project(":bot-api:tests").layout.buildDirectory.dir("archive/java").get().asFile.absolutePath)
+        systemProperty("testBots.csharp.dir", project(":bot-api:tests").layout.buildDirectory.dir("archive/csharp").get().asFile.absolutePath)
     }
 
     withType<AbstractPublishToMaven> {

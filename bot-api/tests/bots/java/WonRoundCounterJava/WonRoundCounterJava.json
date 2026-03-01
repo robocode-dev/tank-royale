@@ -1,0 +1,10 @@
+{
+  "name": "WonRoundCounterJava",
+  "version": "1.0",
+  "authors": [
+    "Test"
+  ],
+  "description": "Instrumented bot that counts WonRoundEvents for testing.",
+  "platform": "JVM",
+  "programmingLang": "Java 11"
+}

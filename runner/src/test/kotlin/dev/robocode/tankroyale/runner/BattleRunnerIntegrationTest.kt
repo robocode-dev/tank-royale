@@ -32,9 +32,45 @@ class BattleRunnerIntegrationTest {
             Path.of(dir)
         }
 
+        private val csharpBotsDir: Path by lazy {
+            val dir = System.getProperty("sampleBots.csharp.dir")
+                ?: error("System property 'sampleBots.csharp.dir' not set — run via :runner:integrationTest")
+            Path.of(dir)
+        }
+
+        private val testBotsJavaDir: Path by lazy {
+            val dir = System.getProperty("testBots.java.dir")
+                ?: error("System property 'testBots.java.dir' not set — run via :runner:integrationTest")
+            Path.of(dir)
+        }
+
+        private val testBotsCsharpDir: Path by lazy {
+            val dir = System.getProperty("testBots.csharp.dir")
+                ?: error("System property 'testBots.csharp.dir' not set — run via :runner:integrationTest")
+            Path.of(dir)
+        }
+
         private fun botDir(name: String): Path {
             val dir = sampleBotsDir.resolve(name)
             check(dir.exists()) { "Sample bot not found: $dir" }
+            return dir
+        }
+
+        private fun csharpBotDir(name: String): Path {
+            val dir = csharpBotsDir.resolve(name)
+            check(dir.exists()) { "C# sample bot not found: $dir" }
+            return dir
+        }
+
+        private fun testBotDir(name: String): Path {
+            val dir = testBotsJavaDir.resolve(name)
+            check(dir.exists()) { "Test bot not found: $dir" }
+            return dir
+        }
+
+        private fun testBotCsharpDir(name: String): Path {
+            val dir = testBotsCsharpDir.resolve(name)
+            check(dir.exists()) { "C# test bot not found: $dir" }
             return dir
         }
     }
@@ -284,6 +320,119 @@ class BattleRunnerIntegrationTest {
                     assertThat(intent.botName).isEqualTo(botName)
                 }
             }
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+    // WonRoundEvent delivery verification — 10-round battle
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `firstPlaces sum equals number of rounds in 10-round battle`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            val results = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 10 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            )
+            assertThat(results.numberOfRounds).isEqualTo(10)
+
+            val totalFirstPlaces = results.results.sumOf { it.firstPlaces }
+            assertThat(totalFirstPlaces)
+                .describedAs("Each of the 10 rounds must have exactly one winner: sum of firstPlaces should equal 10")
+                .isEqualTo(10)
+        }
+    }
+
+    @Test
+    fun `WonRoundCounterJava bot receives one WonRoundEvent per round it wins`() {
+        val countFile = Path.of(System.getProperty("java.io.tmpdir"), "won_round_java.txt")
+        countFile.toFile().delete()
+
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            val results = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 10 },
+                bots = listOf(
+                    BotEntry.of(testBotDir("WonRoundCounterJava")),
+                    BotEntry.of(botDir("SpinBot"))
+                )
+            )
+
+            val serverFirstPlaces = results.results
+                .first { it.name == "WonRoundCounterJava" }
+                .firstPlaces
+
+            val botSideCount = if (countFile.exists())
+                countFile.toFile().readText().trim().toIntOrNull() ?: 0
+            else 0
+
+            assertThat(botSideCount)
+                .describedAs(
+                    "WonRoundCounterJava should receive exactly as many WonRoundEvents " +
+                    "as the server recorded first-place finishes (got $botSideCount, server says $serverFirstPlaces)"
+                )
+                .isEqualTo(serverFirstPlaces)
+        }
+    }
+
+    @Test
+    fun `WonRoundCounterCSharp bot receives one WonRoundEvent per round it wins`() {
+        val countFile = Path.of(System.getProperty("java.io.tmpdir"), "won_round_csharp.txt")
+        countFile.toFile().delete()
+
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            val results = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 10 },
+                bots = listOf(
+                    BotEntry.of(testBotCsharpDir("WonRoundCounterCSharp")),
+                    BotEntry.of(botDir("SpinBot"))
+                )
+            )
+
+            val serverFirstPlaces = results.results
+                .first { it.name == "WonRoundCounterCSharp" }
+                .firstPlaces
+
+            val botSideCount = if (countFile.exists())
+                countFile.toFile().readText().trim().toIntOrNull() ?: 0
+            else 0
+
+            assertThat(botSideCount)
+                .describedAs(
+                    "WonRoundCounterCSharp should receive exactly as many WonRoundEvents " +
+                    "as the server recorded first-place finishes (got $botSideCount, server says $serverFirstPlaces)"
+                )
+                .isEqualTo(serverFirstPlaces)
+        }
+    }
+
+    @Test
+    fun `combined Java and CSharp WonRoundEvents sum to number of rounds`() {
+        val javaCountFile  = Path.of(System.getProperty("java.io.tmpdir"), "won_round_java.txt")
+        val csharpCountFile = Path.of(System.getProperty("java.io.tmpdir"), "won_round_csharp.txt")
+        javaCountFile.toFile().delete()
+        csharpCountFile.toFile().delete()
+
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            val results = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 10 },
+                bots = listOf(
+                    BotEntry.of(testBotDir("WonRoundCounterJava")),
+                    BotEntry.of(testBotCsharpDir("WonRoundCounterCSharp"))
+                )
+            )
+
+            assertThat(results.numberOfRounds).isEqualTo(10)
+
+            val javaCount  = javaCountFile.toFile().takeIf { it.exists() }?.readText()?.trim()?.toIntOrNull() ?: 0
+            val csharpCount = csharpCountFile.toFile().takeIf { it.exists() }?.readText()?.trim()?.toIntOrNull() ?: 0
+            val total = javaCount + csharpCount
+
+            assertThat(total)
+                .describedAs(
+                    "Across a 10-round battle, exactly 10 WonRoundEvents must be delivered in total " +
+                    "(Java got $javaCount, C# got $csharpCount, total = $total)"
+                )
+                .isEqualTo(10)
         }
     }
 }

@@ -24,17 +24,17 @@ tasks {
 
     fun generateShellScript(): String = """
         #!/bin/sh
-        if [ ! -d "bin" ]; then
-          dotnet build
+        if [ ! -d "bin/Release" ]; then
+          dotnet build -c Release
         fi
-        dotnet run --no-build
+        dotnet run -c Release --no-build
         """.trimIndent()
 
     fun generateBatchScript(): String = """
-        if not exist bin\ (
-            dotnet build
+        if not exist bin\Release\ (
+            dotnet build -c Release
         )
-        dotnet run --no-build
+        dotnet run -c Release --no-build
         """.trimIndent()
 
     fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
