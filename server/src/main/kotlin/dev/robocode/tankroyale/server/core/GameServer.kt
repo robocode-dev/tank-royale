@@ -635,7 +635,9 @@ class GameServer(
 
         for (conn in participants) {
             val participantId = participantIds[conn] ?: continue
-            if (modelUpdater?.isAlive(participantId) == false) continue
+            // Skip dead bots, unless they have events this turn (e.g. died this very turn and need
+            // their final tick delivered — it carries DeathEvent and possibly WonRoundEvent)
+            if (modelUpdater?.isAlive(participantId) == false && turn.getEvents(participantId).isEmpty()) continue
 
             val teamId = aliveBotTeamIds[participantId]
             val enemyCount = aliveBotTeamIds.filterValues { it != teamId }.count()

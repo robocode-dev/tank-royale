@@ -197,21 +197,12 @@ public final class BaseBotInternals {
     }
 
     public void enableEventHandling(boolean enable) {
-        int newValue = enable ? 0 : getCurrentTickOrThrow().getTurnNumber();
-        System.err.println("[TR-DBG] enableEventHandling(" + enable + "): disabledTurn " + eventHandlingDisabledTurn
-                + " -> " + newValue + " thread=" + Thread.currentThread().getName());
-        eventHandlingDisabledTurn = newValue;
+        eventHandlingDisabledTurn = enable ? 0 : getCurrentTickOrThrow().getTurnNumber();
     }
 
     public boolean getEventHandlingDisabledTurn() {
         // Important! Allow an additional turn so events like RoundStarted can be handled
-        boolean blocked = eventHandlingDisabledTurn != 0 && eventHandlingDisabledTurn < (getCurrentTickOrThrow().getTurnNumber() - 1);
-        if (blocked) {
-            System.err.println("[TR-DBG] getEventHandlingDisabledTurn=true: disabledTurn=" + eventHandlingDisabledTurn
-                    + " prevTickTurn=" + getCurrentTickOrThrow().getTurnNumber()
-                    + " thread=" + Thread.currentThread().getName());
-        }
-        return blocked;
+        return eventHandlingDisabledTurn != 0 && eventHandlingDisabledTurn < (getCurrentTickOrThrow().getTurnNumber() - 1);
     }
 
     int getEventHandlingDisabledTurnValue() {
