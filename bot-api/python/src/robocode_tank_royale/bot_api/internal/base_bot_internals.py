@@ -313,25 +313,20 @@ class BaseBotInternals:
         def runnable():
             self.set_running(True)
             try:
-                self.enable_event_handling(True)
+                bot.run()
+            except ThreadInterruptedException:
+                pass
 
+            self._dispatch_final_turn_events()
+
+            # Skip every turn after the run method has exited
+            while self.is_running():
                 try:
-                    bot.run()
+                    bot.go()
                 except ThreadInterruptedException:
-                    pass
+                    break
 
-                self._dispatch_final_turn_events()
-
-                # Skip every turn after the run method has exited
-                while self.is_running():
-                    try:
-                        bot.go()
-                    except ThreadInterruptedException:
-                        break
-
-                self._dispatch_final_turn_events()
-            finally:
-                self.enable_event_handling(False)
+            self._dispatch_final_turn_events()
         return runnable
 
     def _dispatch_final_turn_events(self) -> None:
@@ -342,6 +337,7 @@ class BaseBotInternals:
 
     def start_thread(self, bot: BotABC) -> None:
         """Start bot thread (matches Java's startThread)"""
+        self.enable_event_handling(True)  # reset on WebSocket thread — before new bot thread starts
         self.thread = threading.Thread(target=self._create_runnable(bot))
         self.thread.start()
 
@@ -351,16 +347,13 @@ class BaseBotInternals:
             return
 
         self.set_running(False)
+        self.enable_event_handling(False)  # disable on WebSocket thread — prevents new ticks from queuing after bot stops
 
         # Wake up any threads waiting on the next turn condition so they can see is_running=False
         with self._next_turn_condition:
             self._next_turn_condition.notify_all()
 
         if self.thread is not None:
-            # Python doesn't have thread.interrupt() like Java, but we set is_running to False
-            # The thread will exit when it checks is_running() or gets ThreadInterruptedException
-            # Wait for the thread to actually terminate to prevent race conditions when restarting
-            self.thread.join(timeout=5.0)  # Wait up to 5 seconds for thread to finish
             self.thread = None
 
     def _sanitize_url(self, uri: str) -> None:

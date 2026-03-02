@@ -157,6 +157,7 @@ sealed class BaseBotInternals
 
     internal void StartThread(IBot bot)
     {
+        EnableEventHandling(true); // reset on WebSocket thread — before new bot thread starts
         _thread = new Thread(() => CreateRunnable(bot));
         _thread.Start();
     }
@@ -166,37 +167,28 @@ sealed class BaseBotInternals
         IsRunning = true;
         try
         {
-            EnableEventHandling(true); // prevent event queue max limit to be reached
+            bot.Run();
+        }
+        catch (ThreadInterruptedException)
+        {
+        }
 
+        DispatchFinalTurnEvents();
+
+        // Skip every turn after the run method has exited
+        while (IsRunning)
+        {
             try
             {
-                bot.Run();
+                bot.Go();
             }
             catch (ThreadInterruptedException)
             {
+                break;
             }
-
-            DispatchFinalTurnEvents();
-
-            // Skip every turn after the run method has exited
-            while (IsRunning)
-            {
-                try
-                {
-                    bot.Go();
-                }
-                catch (ThreadInterruptedException)
-                {
-                    break;
-                }
-            }
-
-            DispatchFinalTurnEvents();
         }
-        finally
-        {
-            EnableEventHandling(false); // prevent event queue max limit to be reached
-        }
+
+        DispatchFinalTurnEvents();
     }
 
     private void DispatchFinalTurnEvents()
@@ -214,6 +206,7 @@ sealed class BaseBotInternals
             return;
 
         IsRunning = false;
+        EnableEventHandling(false); // disable on WebSocket thread — prevents new ticks from queuing after bot stops
 
         if (_thread != null)
         {

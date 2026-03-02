@@ -148,6 +148,7 @@ public final class BaseBotInternals {
     }
 
     void startThread(IBot bot) {
+        enableEventHandling(true); // reset on WebSocket thread — before new bot thread starts
         thread = new Thread(createRunnable(bot));
         thread.start();
     }
@@ -156,28 +157,22 @@ public final class BaseBotInternals {
         return () -> {
             setRunning(true);
             try {
-                enableEventHandling(true);
-
-                try {
-                    bot.run();
-                } catch (ThreadInterruptedException ignored) {
-                }
-
-                dispatchFinalTurnEvents();
-
-                // Skip every turn after the run method has exited
-                while (isRunning()) {
-                    try {
-                        bot.go();
-                    } catch (ThreadInterruptedException ignored) {
-                        break;
-                    }
-                }
-
-                dispatchFinalTurnEvents();
-            } finally {
-                enableEventHandling(false); // prevent event queue max limit to be reached
+                bot.run();
+            } catch (ThreadInterruptedException ignored) {
             }
+
+            dispatchFinalTurnEvents();
+
+            // Skip every turn after the run method has exited
+            while (isRunning()) {
+                try {
+                    bot.go();
+                } catch (ThreadInterruptedException ignored) {
+                    break;
+                }
+            }
+
+            dispatchFinalTurnEvents();
         };
     }
 
@@ -193,6 +188,7 @@ public final class BaseBotInternals {
             return;
 
         setRunning(false);
+        enableEventHandling(false); // disable on WebSocket thread — prevents new ticks from queuing after bot stops
 
         if (thread != null) {
             thread.interrupt();
@@ -201,12 +197,25 @@ public final class BaseBotInternals {
     }
 
     public void enableEventHandling(boolean enable) {
-        eventHandlingDisabledTurn = enable ? 0 : getCurrentTickOrThrow().getTurnNumber();
+        int newValue = enable ? 0 : getCurrentTickOrThrow().getTurnNumber();
+        System.err.println("[TR-DBG] enableEventHandling(" + enable + "): disabledTurn " + eventHandlingDisabledTurn
+                + " -> " + newValue + " thread=" + Thread.currentThread().getName());
+        eventHandlingDisabledTurn = newValue;
     }
 
     public boolean getEventHandlingDisabledTurn() {
         // Important! Allow an additional turn so events like RoundStarted can be handled
-        return eventHandlingDisabledTurn != 0 && eventHandlingDisabledTurn < (getCurrentTickOrThrow().getTurnNumber() - 1);
+        boolean blocked = eventHandlingDisabledTurn != 0 && eventHandlingDisabledTurn < (getCurrentTickOrThrow().getTurnNumber() - 1);
+        if (blocked) {
+            System.err.println("[TR-DBG] getEventHandlingDisabledTurn=true: disabledTurn=" + eventHandlingDisabledTurn
+                    + " prevTickTurn=" + getCurrentTickOrThrow().getTurnNumber()
+                    + " thread=" + Thread.currentThread().getName());
+        }
+        return blocked;
+    }
+
+    int getEventHandlingDisabledTurnValue() {
+        return eventHandlingDisabledTurn;
     }
 
     void setStopResumeHandler(IStopResumeListener listener) {
