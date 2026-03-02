@@ -200,16 +200,16 @@ class WebSocketHandler:
         round_ended_event = RoundEndedEvent(
             schema_evt.round_number, schema_evt.turn_number, results
         )
-        # Dispatch any queued events (e.g. WonRoundEvent from the last tick) before stopping the
-        # bot thread, as the subsequent RoundStartedEvent will clear the event queue.
-        self.event_queue.dispatch_events(schema_evt.turn_number)
-        
-        # Transfer any remaining stdout/stderr from event handlers (e.g. on_won_round) before the round ends
-        # This is needed to capture output from handlers that fire after the last turn's go() call
-        self._transfer_std_out_to_bot_intent()
-        
         self.bot_event_handlers.on_round_ended.publish(round_ended_event)
-        self.internal_event_handlers.on_round_ended.publish(round_ended_event)
+        self.internal_event_handlers.on_round_ended.publish(round_ended_event)  # triggers stop_thread()
+
+        # Dispatch any queued events (e.g. WonRoundEvent from the last tick). Bot thread is now
+        # stopped so there is no concurrent dispatch race. Must run before ROUND_STARTED clears
+        # the event queue.
+        self.event_queue.dispatch_events(schema_evt.turn_number)
+
+        # Transfer any remaining stdout/stderr from event handlers (e.g. on_won_round) before the round ends
+        self._transfer_std_out_to_bot_intent()
 
     async def handle_game_started(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a game started event from the server."""

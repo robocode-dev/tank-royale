@@ -141,6 +141,7 @@ final class WebSocketHandler implements WebSocket.Listener {
         var tickEventForBot = JsonConverter.fromJson(jsonMsg, TickEventForBot.class);
 
         var mappedTickEvent = EventMapper.map(tickEventForBot, baseBot);
+
         baseBotInternals.addEventsFromTick(mappedTickEvent);
 
         if (baseBotInternals.getBotIntent().getRescan() != null && baseBotInternals.getBotIntent().getRescan()) {
@@ -170,15 +171,16 @@ final class WebSocketHandler implements WebSocket.Listener {
         var mappedRoundEndedEvent = new RoundEndedEvent(
                 roundEndedEvent.getRoundNumber(), roundEndedEvent.getTurnNumber(), roundEndedEvent.getResults());
 
-        // Dispatch any queued events (e.g. WonRoundEvent from the last tick) before stopping the
-        // bot thread, as the subsequent RoundStartedEvent will clear the event queue.
+        botEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
+        internalEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent); // triggers stopThread()
+
+        // Dispatch any queued events (e.g. WonRoundEvent from the last tick). Bot thread is now
+        // stopped so there is no concurrent dispatch race. Must run before ROUND_STARTED clears
+        // the event queue.
         baseBotInternals.dispatchEvents(mappedRoundEndedEvent.getTurnNumber());
 
         // Transfer any remaining stdout/stderr from event handlers (e.g. onWonRound) before the round ends
         baseBotInternals.transferStdOutToBotIntent();
-
-        botEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
-        internalEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
     }
 
     private void handleGameStarted(JsonObject jsonMsg) {
