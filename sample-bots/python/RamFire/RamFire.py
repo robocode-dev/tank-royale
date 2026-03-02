@@ -66,9 +66,6 @@ class RamFire(Bot):
         # Turn towards target
         self.turn_left(bearing)
 
-    def on_won_round(self, e) -> None:
-        print("I won the round!")
-
 
 def main() -> None:
     bot = RamFire()

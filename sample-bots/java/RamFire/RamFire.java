@@ -64,12 +64,6 @@ public class RamFire extends Bot {
         forward(40); // Ram him again!
     }
 
-    // We won the round
-    @Override
-    public void onWonRound(WonRoundEvent e) {
-        System.out.println("I won the round!");
-    }
-
     // Method that turns the bot to face the target at coordinate x,y, but also sets the
     // default turn direction used if no bot is being scanned within in the run() method.
     private void turnToFaceTarget(double x, double y) {
