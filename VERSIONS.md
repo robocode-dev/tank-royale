@@ -15,6 +15,11 @@
     - Resource management via `AutoCloseable` for server lifecycle, bot processes, and graceful shutdown.
     - Published to Maven Central as `dev.robocode.tankroyale:robocode-tankroyale-runner`.
 
+### 🐞 Bug Fixes
+
+- GUI:
+    - #191: GUI freezes from time to time in 0.36.1
+
 ## 📦 0.36.1 - WonRoundEvent and Python Console Output - 24-Feb-2026
 
 ### 🐞 Bug Fixes
