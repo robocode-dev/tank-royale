@@ -11,7 +11,7 @@ base {
 }
 
 val artifactBasePath = "${base.libsDirectory.get()}/${base.archivesName.get()}-${project.version}"
-val fatJarPath = "$artifactBasePath-all.jar"
+val fatJarPath = "$artifactBasePath.jar"
 
 plugins {
     `java-library`

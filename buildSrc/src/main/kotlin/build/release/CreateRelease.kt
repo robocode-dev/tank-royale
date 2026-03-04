@@ -32,8 +32,8 @@ fun createRelease(projectDir: File, version: String, token: String) {
 
     // Runner
     uploadAsset(
-        projectDir, releaseId, token, "runner/build/libs/robocode-tankroyale-runner-$version-all.jar",
-        JAR_MIME_TYPE, "Runner (jar)"
+        projectDir, releaseId, token, "runner/build/libs/robocode-tankroyale-runner-$version.jar",
+        JAR_MIME_TYPE, "Battle Runner (jar)"
     )
 
 //    // Booter
