@@ -721,6 +721,9 @@ jobs:
               robocode-tankroyale-server-*.jar)
                 label="Server (jar)"
                 ;;
+              robocode-tankroyale-runner-*.jar)
+                label="Battle Runner (jar)"
+                ;;
               *)
                 # Detect sample-bots archives by name inspection
                 lower=$(echo "$base" | tr '[:upper:]' '[:lower:]')
