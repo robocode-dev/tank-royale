@@ -100,6 +100,14 @@ bot\_api.internal.json\_util module
    :show-inheritance:
    :undoc-members:
 
+bot\_api.internal.recording\_text\_writer module
+------------------------------------------------
+
+.. automodule:: bot_api.internal.recording_text_writer
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 bot\_api.internal.stop\_resume\_listener\_abs module
 ----------------------------------------------------
 

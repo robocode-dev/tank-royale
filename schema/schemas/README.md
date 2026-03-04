@@ -190,13 +190,16 @@ sequenceDiagram
 Note over Server: Server state = GAME_RUNNING
 Server->>Server: <<event>> next turn
 Note over Server: Reset turn timer
-opt if first turn of round
+alt if first round
     Server->>Bot: round-started-event
     Server->>Observer: round-started-event
     Server->>Controller: round-started-event
+else else if previous round has ended
+    Server->>Bot: round-ended-event
+    Server->>Observer: round-ended-event
+    Server->>Controller: round-ended-event
 end
 Server->>Bot: tick-event-for-bot
-Note over Bot: WonRoundEvent is embedded inside tick-event-for-bot when the bot wins the round
 Server->>Observer: tick-event-for-observer
 Server->>Controller: tick-event-for-observer
 Bot->>Server: bot-intent
@@ -204,11 +207,6 @@ Note over Server: Bot will not skip this turn
 Server->>Server: Turn timeout
 opt if bot did not send intent before timeout
     Server->>Bot: skipped-turn-event
-end
-opt if last turn of round
-    Server->>Bot: round-ended-event-for-bot
-    Server->>Observer: round-ended-event
-    Server->>Controller: round-ended-event
 end
 ```
 <!-- END:running-next-turn -->
@@ -229,7 +227,9 @@ Note: [won-round-event] is not a standalone message — it is embedded inside th
 sequenceDiagram
 Note over Server: Server state = GAME_RUNNING
 Server->>Server: <<event>> game ended
-Note over Bot: WonRoundEvent was already delivered inside the last tick-event-for-bot
+opt if bot won round
+    Server->>Bot: won-round-event
+end
 Server->>Bot: game-ended-event-for-bot
 Server->>Observer: game-ended-event-for-observer
 Server->>Controller: game-ended-event-for-observer
