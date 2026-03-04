@@ -112,6 +112,7 @@ final class EventQueue {
 
         BotEvent currentEvent;
         while ((currentEvent = peekNextEvent()) != null
+                && currentEvent.getTurnNumber() <= turnNumber
                 && getPriority(currentEvent) >= currentTopEventPriority) {
 
             if (getPriority(currentEvent) == currentTopEventPriority) {

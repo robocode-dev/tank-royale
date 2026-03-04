@@ -95,6 +95,8 @@ class EventQueue:
             current_event = self.peek_next_event()
             if current_event is None:
                 break
+            if current_event.turn_number > turn_number:
+                break
             if self.get_priority(current_event) < self.current_top_event_priority:
                 break
 

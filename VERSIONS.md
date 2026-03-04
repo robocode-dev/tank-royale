@@ -15,10 +15,20 @@
     - Resource management via `AutoCloseable` for server lifecycle, bot processes, and graceful shutdown.
     - Published to Maven Central as `dev.robocode.tankroyale:robocode-tankroyale-runner`.
 
-### 🐞 Bug Fixes
+## 🐞 Bug Fixes
 
 - GUI:
     - #191: GUI freezes from time to time in 0.36.1
+- 
+- Bot APIs (C#, Python):
+    - #192: Fixed `TimeLeft` / `time_left` returning incorrect (often negative) values on Windows. The start timestamp
+      for the turn timeout was being captured on the bot thread at dispatch time, which is after OS scheduling has
+      already consumed part of the turn budget. The fix aligns C# and Python with Java: the timestamp is now taken on
+      the WebSocket thread when the tick is first received (`_ticksStart` / `tick_start_nano_time`), so all time spent
+      scheduling and dispatching correctly counts against `TurnTimeout`.
+    - C# only: added `timeBeginPeriod(1)` (Windows Multimedia API) to set 1 ms timer resolution for the bot process,
+      matching the behavior of the JVM and CPython runtimes. This ensures `Thread.Sleep` durations are accurate to
+      ~1 ms instead of the default ~15.6 ms Windows timer granularity.
 
 ## 📦 0.36.1 - WonRoundEvent and Python Console Output - 24-Feb-2026
 

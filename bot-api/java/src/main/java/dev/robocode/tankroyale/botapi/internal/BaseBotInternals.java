@@ -63,6 +63,7 @@ public final class BaseBotInternals {
 
     private TickEvent tickEvent;
     private Long tickStartNanoTime;
+    private long dispatchTickStartNanoTime;
 
     private final EventQueue eventQueue;
 
@@ -387,6 +388,9 @@ public final class BaseBotInternals {
     }
 
     public void dispatchEvents(int turnNumber) {
+        if (tickStartNanoTime != null)
+            dispatchTickStartNanoTime = tickStartNanoTime;
+
         try {
             eventQueue.dispatchEvents(turnNumber);
         } catch (Exception e) {
@@ -471,7 +475,7 @@ public final class BaseBotInternals {
     }
 
     public int getTimeLeft() {
-        long passesMicroSeconds = (System.nanoTime() - getTicksStart()) / 1000;
+        long passesMicroSeconds = (System.nanoTime() - dispatchTickStartNanoTime) / 1000;
         return (int) (getGameSetup().getTurnTimeout() - passesMicroSeconds);
     }
 

@@ -1,6 +1,7 @@
 import asyncio
 import json
 import threading
+import time
 from typing import Any, Optional
 import websockets
 from typing import Dict
@@ -160,9 +161,7 @@ class WebSocketHandler:
         if turn_number is not None and self._is_event_handling_disabled(int(turn_number)):
             return
 
-        self.base_bot_internal_data.tick_start_nano_time = int(
-            asyncio.get_event_loop().time() * 1_000_000_000
-        )
+        self.base_bot_internal_data.tick_start_nano_time = time.monotonic_ns()
 
         tick_event_for_bot: TickEventForBot = from_json(json_msg)  # type: ignore
         mapped_tick_event = EventMapper.map_tick_event(

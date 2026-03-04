@@ -122,6 +122,7 @@ sealed class EventQueue : IComparer<BotEvent>
 
         BotEvent currentEvent;
         while ((currentEvent = PeekNextEvent()) != null
+               && currentEvent.TurnNumber <= turnNumber
                && GetPriority(currentEvent) >= _currentTopEventPriority)
         {
             if (GetPriority(currentEvent) == _currentTopEventPriority)

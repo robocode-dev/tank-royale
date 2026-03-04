@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using S = Robocode.TankRoyale.Schema;
 using E = Robocode.TankRoyale.BotApi.Events;
@@ -15,6 +17,9 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 
 sealed class BaseBotInternals
 {
+    [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+    private static extern uint TimeBeginPeriod(uint uPeriod);
+
     private const string DefaultServerUrl = "ws://localhost:7654";
 
     private const string NotConnectedToServerMsg =
@@ -40,6 +45,7 @@ sealed class BaseBotInternals
 
     private E.TickEvent _tickEvent;
     private long? _ticksStart;
+    private long _dispatchTicksStart;
 
     private readonly EventQueue _eventQueue;
 
@@ -79,6 +85,9 @@ sealed class BaseBotInternals
 
     internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, string serverSecret)
     {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            TimeBeginPeriod(1); // Set 1 ms timer resolution — matches JVM and CPython behaviour on Windows
+
         _baseBot = baseBot;
 
         if (botInfo == null)
@@ -395,6 +404,9 @@ sealed class BaseBotInternals
 
     internal void DispatchEvents(int turnNumber)
     {
+        if (_ticksStart.HasValue)
+            _dispatchTicksStart = _ticksStart.Value; // tick arrival time — matches Java's tickStartNanoTime
+
         try
         {
             _eventQueue.DispatchEvents(turnNumber);
@@ -424,21 +436,12 @@ sealed class BaseBotInternals
 
     internal E.TickEvent CurrentTickOrNull => _tickEvent;
 
-    private long TicksStart
-    {
-        get
-        {
-            if (_ticksStart == null) throw new BotException(TickNotAvailableMsg);
-            return (long)_ticksStart;
-        }
-    }
-
     internal int TimeLeft
     {
         get
         {
-            var passesMicroSeconds = (DateTime.Now.Ticks - TicksStart) / 10;
-            return (int)(_gameSetup.TurnTimeout - passesMicroSeconds);
+            var elapsedMicros = (Stopwatch.GetTimestamp() - _dispatchTicksStart) * 1_000_000L / Stopwatch.Frequency;
+            return (int)(_gameSetup.TurnTimeout - elapsedMicros);
         }
     }
 
@@ -889,7 +892,7 @@ sealed class BaseBotInternals
     {
         if (IsEventHandlingDisabled()) return;
 
-        _ticksStart = DateTime.Now.Ticks;
+        _ticksStart = Stopwatch.GetTimestamp();
 
         var mappedTickEvent = EventMapper.Map(json, _baseBot);
         _eventQueue.AddEventsFromTick(mappedTickEvent);
