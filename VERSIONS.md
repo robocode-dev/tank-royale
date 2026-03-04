@@ -1,4 +1,4 @@
-## 📦 0.37.0 - Battle Runner API – TBD
+## 📦 0.37.0 - Battle Runner API – 04-Mar-2026
 
 ### ✨ Features
 
