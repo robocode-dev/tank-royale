@@ -453,6 +453,11 @@ class GameServer(
     }
 
     private fun updateGameState(): GameState {
+        // CRITICAL: Lock required to capture atomic snapshot of bot intents before model update.
+        // This ensures deterministic turn outcomes and prevents race conditions where bot WebSocket
+        // handlers update botIntents concurrently with this snapshot read.
+        // See ADR-0012: Turn Timing Semantics (Phase 1: Bot Processing).
+        // DO NOT remove or replace with lock-free alternatives without understanding the implications.
         val botIntentsSnapshot = synchronized(tickLock) {
             botIntents.mapNotNull { (key, value) ->
                 participantIds[key]?.let { botId ->
@@ -471,7 +476,7 @@ class GameServer(
         log.debug("Ready timeout")
         var timerToShutdown: ResettableTimer? = null
         synchronized(startGameLock) {
-            // Check again in case state changed during timer
+            // Check again in case the state changed during the timer
             if (serverState !== ServerState.WAIT_FOR_READY_PARTICIPANTS) return
 
             timerToShutdown = readyTimeoutTimer
