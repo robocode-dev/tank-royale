@@ -1,0 +1,69 @@
+{
+  "findings": [
+    {
+      "severity": "LOW",
+      "principle_id": "CODE-DX-NAMING",
+      "title": "Package name contains duplicate hierarchy",
+      "file": "C:/Code/tank-royale/server/src/main/kotlin/dev/robocode/tankroyale/server/core/Server.kt",
+      "line": 1,
+      "description": "Package declaration contains redundant path: 'dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core' instead of just 'dev.robocode.tankroyale.server.core'.",
+      "fix": "Correct the package declaration to remove the duplicate 'dev.robocode.tankroyale.server' segment."
+    },
+    {
+      "severity": "LOW",
+      "principle_id": "CODE-DX-NAMING",
+      "title": "Package name contains duplicate hierarchy",
+      "file": "C:/Code/tank-royale/server/src/main/kotlin/dev/robocode/tankroyale/server/core/GameServer.kt",
+      "line": 7,
+      "description": "Package declaration contains redundant path: 'dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core' instead of just 'dev.robocode.tankroyale.server.core'.",
+      "fix": "Correct the package declaration to remove the duplicate 'dev.robocode.tankroyale.server' segment."
+    },
+    {
+      "severity": "LOW",
+      "principle_id": "CODE-DX-NAMING",
+      "title": "Package name contains duplicate hierarchy",
+      "file": "C:/Code/tank-royale/server/src/main/kotlin/dev/robocode/tankroyale/server/core/ModelUpdater.kt",
+      "line": 12,
+      "description": "Import statement references incorrect package path: 'dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.Server'.",
+      "fix": "Correct the import to use 'dev.robocode.tankroyale.server.core.Server'."
+    }
+  ],
+  "summary": {
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 2,
+    "active_principles": [
+      "CODE-SD-001",
+      "CODE-SD-006",
+      "CODE-SD-007",
+      "CODE-SD-029",
+      "CODE-SD-030",
+      "CODE-SD-031",
+      "CODE-SD-032",
+      "CODE-SEC-VALIDATE-INPUT",
+      "CODE-CS-DRY",
+      "CODE-CS-WET",
+      "CODE-CS-YAGNI",
+      "CODE-CS-KISS",
+      "CODE-CS-NIH",
+      "CODE-CS-NO-SILVER-BULLET",
+      "CODE-CS-CQS",
+      "CODE-CS-BOY-SCOUT",
+      "CODE-CS-BROKEN-WINDOWS",
+      "CODE-CS-POSTELS-LAW",
+      "CODE-CS-HYRUMS-LAW",
+      "ARCH-CONWAYS-LAW",
+      "CODE-DX-NAMING",
+      "CODE-DX-SMALL-FUNCTIONS",
+      "CODE-DX-CODE-FOR-READERS",
+      "CODE-DX-DELETE-DEAD-CODE",
+      "CODE-CS-FAIL-FAST",
+      "CODE-PF-PROFILE-FIRST",
+      "CODE-PF-MEASURE-REAL-OVERHEAD",
+      "CODE-PF-PREDICTABLE-LATENCY",
+      "CODE-CC-AVOID-LOCKS-IN-HOT-PATHS"
+    ],
+    "principle_source": ".principles hierarchy (2 files)"
+  }
+}
