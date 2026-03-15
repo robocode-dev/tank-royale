@@ -1,4 +1,4 @@
-package dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core
+package dev.robocode.tankroyale.server.core
 
 import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.server.core.GameServer
