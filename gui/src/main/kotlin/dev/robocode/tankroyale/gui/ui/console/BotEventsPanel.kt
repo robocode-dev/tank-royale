@@ -44,12 +44,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
             is BulletHitBulletEvent -> dumpBulletHitBulletEvent(event)
             is BulletHitWallEvent -> dumpBulletHitWallEvent(event)
             is ScannedBotEvent -> dumpScannedBotEvent(event)
-            else -> dumpUnknownEvent(event)
         }
-    }
-
-    private fun dumpUnknownEvent(event: Event) {
-        appendError("Unknown event: ${event.javaClass.simpleName}", event.turnNumber)
     }
 
     private fun createEventAndTurnNumberBuilder(event: Event) =
