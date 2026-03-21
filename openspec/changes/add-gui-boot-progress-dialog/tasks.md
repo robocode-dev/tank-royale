@@ -61,9 +61,17 @@
   - Slow bot (add artificial delay) → elapsed timer updates, timeout triggers error
   - External server with stray bots → stray bots ignored in progress display
 
-## 4. Update CHANGELOG.md
+## 4. Update documentation (human task)
 
-- [ ] 4.1 Add GUI section to the v0.38.0 changelog entry documenting:
+- [ ] 4.1 Capture screenshots of the boot progress dialog (connecting, partial progress,
+  timeout error, cancel flow) and add to GUI documentation.
+
+- [ ] 4.2 Update GUI documentation with screenshots showing the new dialog states and
+  user-facing behavior.
+
+## 5. Update CHANGELOG.md
+
+- [ ] 5.1 Add GUI section to the v0.38.0 changelog entry documenting:
   - Boot progress dialog showing per-bot identity status during battle start
   - Cancel button to abort boot and return to bot selection
   - Timeout error with list of pending bots
