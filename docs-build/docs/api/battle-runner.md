@@ -79,6 +79,10 @@ try (var runner = BattleRunner.create(b -> b.embeddedServer())) {
 - **Battle recording** — write `.battle.gz` replay files (same format as the Recorder module)
 - **Intent diagnostics** — capture raw `bot-intent` messages per bot per turn via an opt-in WebSocket proxy
 - **Multi-battle reuse** — run thousands of battles on the same `BattleRunner` instance without server restarts
+- **Identity-based bot matching** — bots are matched by `name`+`version` from their config files; stray bots and duplicate instances are handled correctly
+- **Team bot support** — team directories are expanded into one identity per member; member directories are validated at battle-start time
+- **Configurable boot timeout** — set how long to wait for bots to connect via `botConnectTimeout(Duration)`
+- **Boot progress events** — subscribe to `onBootProgress` on `BattleHandle` for real-time connection status
 
 ## Creating a BattleRunner
 
@@ -274,6 +278,7 @@ try (var handle = runner.startBattleAsync(setup, bots)) {
 | `onGameAborted` | Fires when the game is aborted |
 | `onGamePaused` / `onGameResumed` | Fires on pause/resume |
 | `onBotListUpdate` | Fires when the connected bot list changes |
+| `onBootProgress` | Fires during bot connection phase with identity-aware progress |
 
 ### Battle Handle Controls
 
@@ -467,6 +472,110 @@ for (var botName : store.botNames()) {
 Intent diagnostics adds an extra network hop between bots and server. Only enable when needed for debugging.
 :::
 
+## Identity-Based Bot Matching
+
+Bots are matched by `name` and `version` read from their `<dir>.json` config files. This means:
+- Stray bots that connect but were not requested are ignored
+- If the same bot directory is listed twice, two connections with that identity are required
+- Team directories are expanded: each `teamMembers` entry becomes one expected identity
+- Member directories are validated at battle-start time — a missing member directory throws `BattleException` immediately
+
+### Team Bot Entries
+
+A team directory contains a `<dir>.json` with a `teamMembers` array listing member bot names. Each member must have its own sibling directory with a matching config file. Add the team directory as a single `BotEntry` — the runner expands it automatically:
+
+:::: code-group
+
+```kotlin [Kotlin]
+val bots = listOf(
+    BotEntry.of("/path/to/MyTeam"),   // expands to one entry per team member
+    BotEntry.of("/path/to/EnemyBot")
+)
+```
+
+```java [Java]
+var bots = List.of(
+    BotEntry.of("/path/to/MyTeam"),   // expands to one entry per team member
+    BotEntry.of("/path/to/EnemyBot")
+);
+```
+
+::::
+
+## Configurable Boot Timeout
+
+By default the runner waits 30 seconds for all bots to connect. Override this with `botConnectTimeout(Duration)`:
+
+:::: code-group
+
+```kotlin [Kotlin]
+BattleRunner.create {
+    embeddedServer()
+    botConnectTimeout(Duration.ofSeconds(60))
+}.use { runner ->
+    runner.runBattle(BattleSetup.classic(), bots)
+}
+```
+
+```java [Java]
+try (var runner = BattleRunner.create(b -> {
+    b.embeddedServer();
+    b.botConnectTimeout(Duration.ofSeconds(60));
+})) {
+    runner.runBattle(BattleSetup.classic(), bots);
+}
+```
+
+::::
+
+## Boot Progress Reporting
+
+Subscribe to `onBootProgress` on the `BattleHandle` to receive real-time connection status while bots are starting up. The event fires on every bot-list update and every 500 ms:
+
+:::: code-group
+
+```kotlin [Kotlin]
+val owner = Any()
+runner.startBattleAsync(setup, bots).use { handle ->
+    handle.onBootProgress.on(owner) { progress ->
+        println("Connected ${progress.totalConnected}/${progress.totalExpected}" +
+                " (${progress.elapsedMs}ms / ${progress.timeoutMs}ms)")
+        if (progress.pending.isNotEmpty()) {
+            println("  Pending: ${progress.pending}")
+        }
+    }
+    handle.awaitResults()
+}
+```
+
+```java [Java]
+var owner = new Object();
+try (var handle = runner.startBattleAsync(setup, bots)) {
+    handle.getOnBootProgress().on(owner, progress -> {
+        System.out.printf("Connected %d/%d (%dms / %dms)%n",
+                progress.getTotalConnected(),
+                progress.getTotalExpected(),
+                progress.getElapsedMs(),
+                progress.getTimeoutMs());
+    });
+    handle.awaitResults();
+}
+```
+
+::::
+
+### BootProgress fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `expected` | `Map<BotIdentity, Int>` | Expected identities and their required counts |
+| `connected` | `Map<BotIdentity, Int>` | Currently connected identities and counts |
+| `pending` | `Map<BotIdentity, Int>` | Identities still waiting to connect |
+| `elapsedMs` | `Long` | Milliseconds elapsed since boot started |
+| `timeoutMs` | `Long` | Configured timeout in milliseconds |
+| `totalExpected` | `Int` | Total number of expected bot connections |
+| `totalConnected` | `Int` | Total number of connected bots so far |
+
 ## Multi-Battle Usage
 
 The runner reuses the server across battles — only bot processes are recycled:
@@ -504,10 +613,12 @@ try (var runner = BattleRunner.create(b -> b.embeddedServer())) {
 The runner throws `BattleException` for all battle-related failures:
 
 - Bot path does not contain a valid configuration file
+- Bot config file is missing required `name` or `version` fields
+- Team member directory not found (validated at battle-start time)
 - Not enough bots to meet the minimum participant count
 - Server unreachable (external mode) or failed to start (embedded mode)
 - Battle aborted (not enough bots ready)
-- Timeout waiting for bots to connect or game to start
+- Timeout waiting for bots to connect or game to start (message includes pending identities)
 - Connection lost during battle
 
 ## Runnable Examples
@@ -522,6 +633,8 @@ See the [examples README](https://github.com/robocode-dev/tank-royale/tree/main/
 | `RecordBattle.java` | Records a battle to a `.battle.gz` replay file |
 | `IntentDiagnosticsBattle.java` | Captures per-turn bot intents and prints a turn-by-turn table |
 | `ControlBattle.java` | Pauses at turn 5, steps 3 turns manually, then resumes |
+| `BootProgressBattle.java` | Demonstrates boot progress reporting via `onBootProgress` |
+| `TeamBattle.java` | Demonstrates running a battle with a team bot entry |
 
 ## API Reference
 

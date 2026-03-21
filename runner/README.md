@@ -12,6 +12,10 @@ provide bot paths and a game setup.
 - **Battle recording** — write `.battle.gz` replay files (same format as the Recorder module)
 - **Intent diagnostics** — capture raw `bot-intent` messages per bot per turn via an opt-in WebSocket proxy
 - **Multi-battle reuse** — run thousands of battles on the same `BattleRunner` instance without server restarts
+- **Identity-based bot matching** — bots are matched by `name`+`version` from their config files, not by connection order; stray bots and duplicate instances are handled correctly
+- **Team bot support** — team directories are expanded into one identity per member; member directories are validated at battle-start time
+- **Configurable boot timeout** — set how long to wait for bots to connect via `botConnectTimeout(Duration)`
+- **Boot progress events** — subscribe to `onBootProgress` on `BattleHandle` for real-time connection status
 
 ## Installation
 
@@ -101,6 +105,7 @@ Implements `AutoCloseable` — use with Kotlin `use {}` or Java try-with-resourc
 | `externalServer(url)` | Connect to a pre-started server |
 | `enableIntentDiagnostics()` | Capture bot intents via WebSocket proxy |
 | `enableRecording(outputPath)` | Write `.battle.gz` replay files |
+| `botConnectTimeout(Duration)` | How long to wait for bots to connect (default: 30 s) |
 
 ### BattleSetup
 
@@ -169,6 +174,7 @@ runner.startBattleAsync(setup, bots).use { handle ->
 | `onGameAborted` | Fires when the game is aborted |
 | `onGamePaused` | Fires when the game is paused |
 | `onGameResumed` | Fires when the game resumes |
+| `onBootProgress` | Fires during bot connection phase with identity-aware progress |
 
 #### Control Methods
 
@@ -218,6 +224,77 @@ BattleRunner.create {
     val store = runner.intentDiagnostics
     // Query captured intents per bot per turn
 }
+```
+
+### Identity-Based Bot Matching
+
+Bots are matched by `name` and `version` read from their `<dir>.json` config files. This means:
+- Stray bots that connect but were not requested are ignored
+- If the same bot directory is listed twice, two connections with that identity are required
+- Team directories are expanded: each `teamMembers` entry becomes one expected identity
+- Member directories are validated at battle-start time — a missing member directory throws `BattleException` immediately
+
+### Configurable Boot Timeout
+
+By default the runner waits 30 seconds for all bots to connect. Override this with `botConnectTimeout(Duration)`:
+
+```kotlin
+BattleRunner.create {
+    embeddedServer()
+    botConnectTimeout(Duration.ofSeconds(60))
+}.use { runner ->
+    runner.runBattle(BattleSetup.classic(), bots)
+}
+```
+
+```java
+try (var runner = BattleRunner.create(b -> {
+    b.embeddedServer();
+    b.botConnectTimeout(Duration.ofSeconds(60));
+})) {
+    runner.runBattle(BattleSetup.classic(), bots);
+}
+```
+
+### Boot Progress Reporting
+
+Subscribe to `onBootProgress` on the `BattleHandle` to receive real-time connection status while bots are starting up:
+
+```kotlin
+val owner = Any()
+runner.startBattleAsync(setup, bots).use { handle ->
+    handle.onBootProgress.on(owner) { progress ->
+        println("Connected ${progress.totalConnected}/${progress.totalExpected}" +
+                " (${progress.elapsedMs}ms elapsed)")
+        if (progress.pending.isNotEmpty()) {
+            println("  Pending: ${progress.pending}")
+        }
+    }
+    handle.awaitResults()
+}
+```
+
+```java
+var owner = new Object();
+try (var handle = runner.startBattleAsync(setup, bots)) {
+    handle.getOnBootProgress().on(owner, progress -> {
+        System.out.printf("Connected %d/%d (%dms elapsed)%n",
+                progress.getTotalConnected(), progress.getTotalExpected(),
+                progress.getElapsedMs());
+    });
+    handle.awaitResults();
+}
+```
+
+### Team Bot Entries
+
+A team directory contains a `<dir>.json` with a `teamMembers` array listing member bot names. Each member must have its own sibling directory with a matching config file. Add the team directory as a single `BotEntry` — the runner expands it automatically:
+
+```kotlin
+val bots = listOf(
+    BotEntry.of("/path/to/MyTeam"),   // expands to one entry per team member
+    BotEntry.of("/path/to/EnemyBot")
+)
 ```
 
 ### Multi-Battle Benchmarking

@@ -117,15 +117,15 @@
 
 ## 7. Update documentation
 
-- [ ] 7.1 Update `runner/README.md` to document identity-based bot matching, configurable boot
+- [x] 7.1 Update `runner/README.md` to document identity-based bot matching, configurable boot
   timeout (`botConnectTimeout(Duration)`), boot progress reporting (`onBootProgress`), and team
   member directory validation.
 
-- [ ] 7.2 Update `runner/examples/README.md` and add/update example code in `runner/examples/`
+- [x] 7.2 Update `runner/examples/README.md` and add/update example code in `runner/examples/`
   to demonstrate the new features (boot timeout configuration, progress event handling, team
   bot entries).
 
-- [ ] 7.3 Update `docs/api/battle-runner.html` to document the new public API surface:
+- [x] 7.3 Update `docs/api/battle-runner.html` to document the new public API surface:
   `BotIdentity`, `BootProgress`, `botConnectTimeout()` builder method, and `onBootProgress`
   event on `BattleHandle`.
 

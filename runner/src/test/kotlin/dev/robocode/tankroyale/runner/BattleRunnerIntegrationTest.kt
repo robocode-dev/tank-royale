@@ -414,7 +414,34 @@ class BattleRunnerIntegrationTest {
     // -------------------------------------------------------------------------------------
 
     @Test
-    fun `server and booter output is logged with SERVER and BOOTER prefixes by default`() {
+    fun `server and booter output is logged with SERVER and BOOTER prefixes when enableServerOutput is set`() {
+        val handler = CapturingHandler()
+        val rootLogger = Logger.getLogger("")
+        val savedLevel = rootLogger.level
+        rootLogger.level = Level.ALL
+        rootLogger.addHandler(handler)
+
+        try {
+            BattleRunner.create { embeddedServer(); enableServerOutput() }.use { runner ->
+                runner.runBattle(
+                    setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                    bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+                )
+            }
+            assertThat(handler.messages)
+                .describedAs("Expected [SERVER] prefixed lines when captureServerOutput is enabled")
+                .anyMatch { it.startsWith("[SERVER]") }
+            assertThat(handler.messages)
+                .describedAs("Expected [BOOTER] prefixed lines when captureServerOutput is enabled")
+                .anyMatch { it.startsWith("[BOOTER]") }
+        } finally {
+            rootLogger.removeHandler(handler)
+            rootLogger.level = savedLevel
+        }
+    }
+
+    @Test
+    fun `server and booter output is not logged by default`() {
         val handler = CapturingHandler()
         val rootLogger = Logger.getLogger("")
         val savedLevel = rootLogger.level
@@ -429,11 +456,11 @@ class BattleRunnerIntegrationTest {
                 )
             }
             assertThat(handler.messages)
-                .describedAs("Expected [SERVER] prefixed lines when captureServerOutput is enabled (default)")
-                .anyMatch { it.startsWith("[SERVER]") }
+                .describedAs("Expected no [SERVER] prefixed lines by default (captureServerOutput is disabled)")
+                .noneMatch { it.startsWith("[SERVER]") }
             assertThat(handler.messages)
-                .describedAs("Expected [BOOTER] prefixed lines when captureServerOutput is enabled (default)")
-                .anyMatch { it.startsWith("[BOOTER]") }
+                .describedAs("Expected no [BOOTER] prefixed lines by default (captureServerOutput is disabled)")
+                .noneMatch { it.startsWith("[BOOTER]") }
         } finally {
             rootLogger.removeHandler(handler)
             rootLogger.level = savedLevel

@@ -79,6 +79,26 @@ java -cp lib/* ControlBattle.java
 Runs an asynchronous battle, pauses at turn 5, steps through 3 turns manually,
 then resumes. Demonstrates `pause()`, `nextTurn()`, and `resume()` on a `BattleHandle`.
 
+### BootProgressBattle — Boot progress reporting
+
+```sh
+java -cp lib/* BootProgressBattle.java
+```
+
+Starts an asynchronous battle with a 60-second boot timeout and subscribes to the
+`onBootProgress` event. Prints connected/expected counts and any pending identities
+on each update until all bots have connected.
+
+### TeamBattle — Team bot entry
+
+```sh
+java -cp lib/* TeamBattle.java
+```
+
+Runs a Melee battle with `MyFirstTeam` as a team entry alongside two individual bots.
+The runner automatically expands the team directory into one expected identity per
+team member.
+
 ## Customizing
 
 Each example reads bot paths from the `BOTS_DIR` environment variable. To use different bots, either:

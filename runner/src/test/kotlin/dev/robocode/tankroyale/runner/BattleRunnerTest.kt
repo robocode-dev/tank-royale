@@ -98,8 +98,14 @@ class BattleRunnerTest {
     // -------------------------------------------------------------------------------------
 
     @Test
-    fun `default config has captureServerOutput true`() {
+    fun `default config has captureServerOutput false`() {
         runner = BattleRunner.create { embeddedServer() }
+        assertThat(runner!!.config.captureServerOutput).isFalse()
+    }
+
+    @Test
+    fun `enableServerOutput sets captureServerOutput to true`() {
+        runner = BattleRunner.create { embeddedServer(); enableServerOutput() }
         assertThat(runner!!.config.captureServerOutput).isTrue()
     }
 
@@ -117,9 +123,9 @@ class BattleRunnerTest {
     }
 
     @Test
-    fun `create with no arguments defaults captureServerOutput to true`() {
+    fun `create with no arguments defaults captureServerOutput to false`() {
         runner = BattleRunner.create()
-        assertThat(runner!!.config.captureServerOutput).isTrue()
+        assertThat(runner!!.config.captureServerOutput).isFalse()
     }
 
     // -------------------------------------------------------------------------------------
