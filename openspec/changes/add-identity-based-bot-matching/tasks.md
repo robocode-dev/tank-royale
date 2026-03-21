@@ -131,7 +131,7 @@
 
 ## 8. Update CHANGELOG.md
 
-- [ ] 8.1 Add a `[0.38.0]` version entry at the top of `CHANGELOG.md` (replacing the current
+- [x] 8.1 Add a `[0.38.0]` version entry at the top of `CHANGELOG.md` (replacing the current
   `[0.37.1]` entry which gets rolled into this release). Document under "Runner API":
   - Identity-based bot matching (fixes teams, stray bots, duplicate instances)
   - Configurable boot timeout via `botConnectTimeout(Duration)`

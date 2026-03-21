@@ -61,8 +61,14 @@ class JavaInteropTest {
     }
 
     @Test
-    void createWithDefaultsCaptureServerOutputIsTrue() {
+    void createWithDefaultsCaptureServerOutputIsFalse() {
         var runner = BattleRunner.create();
+        assertThat(runner.getConfig().getCaptureServerOutput()).isFalse();
+    }
+
+    @Test
+    void enableServerOutputSetsConfigToTrue() {
+        var runner = BattleRunner.create(b -> b.enableServerOutput());
         assertThat(runner.getConfig().getCaptureServerOutput()).isTrue();
     }
 

@@ -1,3 +1,20 @@
+## [0.38.0] - 2026-03-21 – Identity-Based Bot Matching
+
+### ✨ Features
+
+- Runner API:
+    - Identity-based bot matching: bots are now matched by `name` + `version` from their `bot.json`
+      rather than by count alone. This fixes incorrect matching when teams, stray bots, or duplicate
+      bot instances are present — only bots whose identity matches an expected slot are counted.
+    - Configurable boot timeout via `botConnectTimeout(java.time.Duration)` on `BattleRunner.Builder`.
+      Default remains 30 seconds. Replaces the previous hard-coded constant.
+    - Boot progress reporting: `BattleHandle.onBootProgress` fires on every `BotListUpdate` and every
+      500 ms during the wait loop, delivering a `BootProgress` snapshot with `expected`, `connected`,
+      `pending` identity maps, `elapsedMs`, and `timeoutMs`. Intended for GUI progress dialogs.
+    - Team member directory validation: `BooterManager.validateBotDir()` now checks that every
+      directory listed in `teamMembers` exists as a sibling directory at battle-start time, throwing
+      `BattleException` with the missing member name before any bot process is launched.
+
 ## [0.37.1] - 2026-03-21 – Runner Output Control
 
 ### ✨ Features

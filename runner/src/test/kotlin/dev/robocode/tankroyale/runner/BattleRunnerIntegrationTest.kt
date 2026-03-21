@@ -7,6 +7,7 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Path
+import java.time.Duration
 import java.util.logging.Handler
 import java.util.logging.Level
 import java.util.logging.LogRecord
@@ -493,6 +494,67 @@ class BattleRunnerIntegrationTest {
             rootLogger.level = savedLevel
         }
     }
+
+    // -------------------------------------------------------------------------------------
+    // Identity matching — successive battles reset matcher state
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `successive battles with different bot compositions both succeed`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            // Battle 1: Walls vs SpinBot
+            val results1 = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            )
+            assertThat(results1.results).hasSize(2)
+            assertThat(results1.results.map { it.name }.toSet())
+                .containsExactlyInAnyOrder("Walls", "SpinBot")
+
+            Thread.sleep(2000)
+
+            // Battle 2: completely different bots — matcher state must not leak
+            val results2 = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Target")), BotEntry.of(botDir("Crazy")))
+            )
+            assertThat(results2.results).hasSize(2)
+            assertThat(results2.results.map { it.name }.toSet())
+                .containsExactlyInAnyOrder("Target", "Crazy")
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+    // Identity matching — timeout error message contains pending identities
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `bot connect timeout produces identity-aware error message`() {
+        // Create a valid bot directory whose bot will never connect (booter is not started for it)
+        val ghostDir = tempDir.resolve("GhostBot")
+        ghostDir.toFile().mkdirs()
+        ghostDir.resolve("GhostBot.json").toFile().writeText(
+            """{"name":"GhostBot","version":"0.1","authors":["test"],"gameTypes":["1v1","classic"]}"""
+        )
+
+        BattleRunner.create {
+            embeddedServer()
+            botConnectTimeout(Duration.ofSeconds(3))
+        }.use { runner ->
+            assertThatThrownBy {
+                runner.runBattle(
+                    setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                    bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(ghostDir))
+                )
+            }.isInstanceOf(BattleException::class.java)
+                .hasMessageContaining("Bot connect timeout")
+                .hasMessageContaining("GhostBot 0.1")
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+    // WonRound cross-language tests
+    // -------------------------------------------------------------------------------------
 
     @Test
     fun `combined Java and CSharp WonRoundEvents sum to number of rounds`() {
