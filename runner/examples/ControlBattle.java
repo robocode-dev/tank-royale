@@ -1,6 +1,8 @@
 import dev.robocode.tankroyale.runner.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Runs an asynchronous battle, pauses at turn 5, steps through 3 turns manually,
@@ -13,9 +15,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ControlBattle {
 
     public static void main(String[] args) {
+        Logger.getLogger("dev.robocode.tankroyale").setLevel(Level.WARNING);
         var botsDir = requireBotsDir();
 
-        try (var runner = BattleRunner.create(b -> b.embeddedServer())) {
+        try (var runner = BattleRunner.create(b -> b.embeddedServer().suppressServerOutput())) {
             var setup = BattleSetup.classic(s -> s.setNumberOfRounds(3));
             var bots = List.of(
                     BotEntry.of(botsDir + "/Walls"),

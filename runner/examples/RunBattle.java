@@ -1,5 +1,7 @@
 import dev.robocode.tankroyale.runner.*;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Runs a synchronous battle with two sample bots and prints the results.
@@ -11,9 +13,10 @@ import java.util.List;
 public class RunBattle {
 
     public static void main(String[] args) {
+        Logger.getLogger("dev.robocode.tankroyale").setLevel(Level.WARNING);
         var botsDir = requireBotsDir();
 
-        try (var runner = BattleRunner.create(b -> b.embeddedServer())) {
+        try (var runner = BattleRunner.create(b -> b.embeddedServer().suppressServerOutput())) {
             var setup = BattleSetup.classic(s -> s.setNumberOfRounds(5));
             var bots = List.of(
                     BotEntry.of(botsDir + "/Walls"),

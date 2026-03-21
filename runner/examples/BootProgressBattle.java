@@ -2,6 +2,8 @@ import dev.robocode.tankroyale.runner.*;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Demonstrates boot progress reporting via the onBootProgress event.
@@ -13,9 +15,11 @@ import java.util.List;
 public class BootProgressBattle {
 
     public static void main(String[] args) {
+        Logger.getLogger("dev.robocode.tankroyale").setLevel(Level.WARNING);
         var botsDir = requireBotsDir();
         try (var runner = BattleRunner.create(b -> {
             b.embeddedServer();
+            b.suppressServerOutput();
             b.botConnectTimeout(Duration.ofSeconds(60));
         })) {
             var setup = BattleSetup.classic(s -> s.setNumberOfRounds(3));

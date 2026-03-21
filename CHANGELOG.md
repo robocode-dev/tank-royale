@@ -14,12 +14,6 @@
     - Team member directory validation: `BooterManager.validateBotDir()` now checks that every
       directory listed in `teamMembers` exists as a sibling directory at battle-start time, throwing
       `BattleException` with the missing member name before any bot process is launched.
-
-## [0.37.1] - 2026-03-21 – Runner Output Control
-
-### ✨ Features
-
-- Runner API:
     - Added `suppressServerOutput()` builder option to opt out of routing embedded server and booter
       stdout through JUL. By default, all output from the embedded server and booter processes is
       logged at INFO level with `[SERVER]` and `[BOOTER]` prefixes. Call `suppressServerOutput()` on
@@ -36,7 +30,7 @@
       `captureServerOutput` setting, preventing OS pipe buffer fill-up when output capture is
       suppressed.
 
-## [0.37.0] - 2026-03-04 – Battle Runner API
+## [0.37.0]- 2026-03-04 – Battle Runner API
 
 ### ✨ Features
 

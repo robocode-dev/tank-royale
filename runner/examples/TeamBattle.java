@@ -1,6 +1,8 @@
 import dev.robocode.tankroyale.runner.*;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Demonstrates running a battle with a team bot entry.
@@ -15,8 +17,9 @@ import java.util.List;
 public class TeamBattle {
 
     public static void main(String[] args) {
+        Logger.getLogger("dev.robocode.tankroyale").setLevel(Level.WARNING);
         var botsDir = requireBotsDir();
-        try (var runner = BattleRunner.create(b -> b.embeddedServer())) {
+        try (var runner = BattleRunner.create(b -> b.embeddedServer().suppressServerOutput())) {
             var setup = BattleSetup.classic(s -> s.setNumberOfRounds(3));
             var bots = List.of(
                     BotEntry.of(botsDir + "/MyFirstTeam"),  // team — expanded to one entry per member

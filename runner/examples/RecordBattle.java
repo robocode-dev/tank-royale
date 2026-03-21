@@ -1,6 +1,8 @@
 import dev.robocode.tankroyale.runner.*;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Runs a battle and records it to a .battle.gz replay file.
@@ -12,12 +14,14 @@ import java.util.List;
 public class RecordBattle {
 
     public static void main(String[] args) {
+        Logger.getLogger("dev.robocode.tankroyale").setLevel(Level.WARNING);
         var botsDir = requireBotsDir();
         var recordingDir = Path.of("recordings");
         recordingDir.toFile().mkdirs();
 
         try (var runner = BattleRunner.create(b -> b
                 .embeddedServer()
+                .suppressServerOutput()
                 .enableRecording(recordingDir))) {
 
             var setup = BattleSetup.classic(s -> s.setNumberOfRounds(3));

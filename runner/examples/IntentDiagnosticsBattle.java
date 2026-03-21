@@ -1,5 +1,7 @@
 import dev.robocode.tankroyale.runner.*;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Runs a battle with intent diagnostics enabled, then prints a turn-by-turn table
@@ -12,10 +14,12 @@ import java.util.List;
 public class IntentDiagnosticsBattle {
 
     public static void main(String[] args) {
+        Logger.getLogger("dev.robocode.tankroyale").setLevel(Level.WARNING);
         var botsDir = requireBotsDir();
 
         try (var runner = BattleRunner.create(b -> b
                 .embeddedServer()
+                .suppressServerOutput()
                 .enableIntentDiagnostics())) {
 
             var setup = BattleSetup.classic(s -> s.setNumberOfRounds(1));

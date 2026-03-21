@@ -411,7 +411,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         private var serverMode: ServerMode = ServerMode.Embedded()
         private var intentDiagnosticsEnabled: Boolean = false
         private var recordingPath: Path? = null
-        private var captureServerOutput: Boolean = false
+        private var captureServerOutput: Boolean = true
         private var botConnectTimeoutMs: Long = 30_000L
 
         /**
@@ -456,13 +456,14 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
         /**
          * Enable routing of embedded server and booter stdout through JUL at INFO level
-         * with `[SERVER]`/`[BOOTER]` prefixes. Disabled by default.
+         * with `[SERVER]`/`[BOOTER]` prefixes. This is the default behaviour.
          */
         fun enableServerOutput(): Builder = apply { captureServerOutput = true }
 
         /**
          * Suppress routing of embedded server and booter stdout through JUL.
-         * This is the default behaviour; call it explicitly only if you previously enabled output.
+         * By default, stdout from both processes is logged at INFO level with `[SERVER]`/`[BOOTER]` prefixes.
+         * Call this when you configure your own logging and do not want that noise.
          */
         fun suppressServerOutput(): Builder = apply { captureServerOutput = false }
 
