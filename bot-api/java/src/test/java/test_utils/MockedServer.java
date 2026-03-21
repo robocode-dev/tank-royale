@@ -74,6 +74,7 @@ public final class MockedServer {
 
     private final WebSocketServerImpl server = new WebSocketServerImpl();
 
+    private final CountDownLatch startedLatch = new CountDownLatch(1);
     private final CountDownLatch openedLatch = new CountDownLatch(1);
     private final CountDownLatch botHandshakeLatch = new CountDownLatch(1);
     private final CountDownLatch gameStartedLatch = new CountDownLatch(1);
@@ -96,6 +97,13 @@ public final class MockedServer {
 
     public void start() {
         server.start();
+        try {
+            if (!startedLatch.await(5, TimeUnit.SECONDS)) {
+                throw new RuntimeException("MockedServer failed to start within 5 seconds");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     public void stop() {
@@ -238,6 +246,7 @@ public final class MockedServer {
 
         @Override
         public void onStart() {
+            startedLatch.countDown();
         }
 
         @Override
