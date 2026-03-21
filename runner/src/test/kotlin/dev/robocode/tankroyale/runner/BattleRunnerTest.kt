@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.runner
 
 import dev.robocode.tankroyale.client.model.GameEndedEvent
+import java.time.Duration
 import dev.robocode.tankroyale.client.model.Results
 import dev.robocode.tankroyale.common.rules.GameType
 import dev.robocode.tankroyale.runner.internal.ServerConnection
@@ -119,6 +120,34 @@ class BattleRunnerTest {
     fun `create with no arguments defaults captureServerOutput to true`() {
         runner = BattleRunner.create()
         assertThat(runner!!.config.captureServerOutput).isTrue()
+    }
+
+    // -------------------------------------------------------------------------------------
+    // botConnectTimeout config (3.3)
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `default config has botConnectTimeoutMs of 30000`() {
+        runner = BattleRunner.create { embeddedServer() }
+        assertThat(runner!!.config.botConnectTimeoutMs).isEqualTo(30_000L)
+    }
+
+    @Test
+    fun `botConnectTimeout of 120 seconds sets botConnectTimeoutMs to 120000`() {
+        runner = BattleRunner.create { embeddedServer(); botConnectTimeout(Duration.ofSeconds(120)) }
+        assertThat(runner!!.config.botConnectTimeoutMs).isEqualTo(120_000L)
+    }
+
+    @Test
+    fun `botConnectTimeout of 500 milliseconds sets botConnectTimeoutMs to 500`() {
+        runner = BattleRunner.create { embeddedServer(); botConnectTimeout(Duration.ofMillis(500)) }
+        assertThat(runner!!.config.botConnectTimeoutMs).isEqualTo(500L)
+    }
+
+    @Test
+    fun `builder without botConnectTimeout preserves default of 30000`() {
+        runner = BattleRunner.create { embeddedServer().suppressServerOutput() }
+        assertThat(runner!!.config.botConnectTimeoutMs).isEqualTo(30_000L)
     }
 
     // -------------------------------------------------------------------------------------

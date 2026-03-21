@@ -43,15 +43,15 @@
 
 ## 3. Configurable boot timeout
 
-- [ ] 3.1 Add `botConnectTimeoutMs: Long` field to `BattleRunner.Config` (default: `30_000L`).
+- [x] 3.1 Add `botConnectTimeoutMs: Long` field to `BattleRunner.Config` (default: `30_000L`).
   Add `botConnectTimeout(timeout: java.time.Duration): Builder` method to `BattleRunner.Builder`
   that stores `timeout.toMillis()`. Add `@JvmOverloads` no-arg overload is not needed (Duration
   is required). Annotate with KDoc explaining the default and purpose.
 
-- [ ] 3.2 Replace `BOT_CONNECT_TIMEOUT_MS` constant usage in `waitForBots()` with
+- [x] 3.2 Replace `BOT_CONNECT_TIMEOUT_MS` constant usage in `waitForBots()` with
   `config.botConnectTimeoutMs`. Remove the constant.
 
-- [ ] 3.3 Write unit tests for timeout configuration:
+- [x] 3.3 Write unit tests for timeout configuration:
   - Default config has `botConnectTimeoutMs = 30_000`
   - `botConnectTimeout(Duration.ofSeconds(120))` → config has `120_000`
   - `botConnectTimeout(Duration.ofMillis(500))` → config has `500`

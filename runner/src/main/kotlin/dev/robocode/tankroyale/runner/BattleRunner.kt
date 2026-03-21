@@ -12,6 +12,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.nio.file.Path
+import java.time.Duration
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -275,6 +276,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
     /** Waits for the expected number of new bots to appear in BotListUpdate. */
     private fun waitForBots(conn: ServerConnection, preExistingBots: Set<BotAddress>, expectedCount: Int): Set<BotAddress> {
+        val timeoutMs = config.botConnectTimeoutMs
         val botsReadyLatch = CountDownLatch(1)
         val latestBots = ConcurrentHashMap.newKeySet<BotAddress>()
         val botOwner = Any()
@@ -292,10 +294,10 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
             val currentBots = conn.latestBotList.get()
             if (currentBots.size - preExistingBots.size >= expectedCount) {
                 latestBots.addAll(currentBots.map { it.botAddress })
-            } else if (!botsReadyLatch.await(BOT_CONNECT_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+            } else if (!botsReadyLatch.await(timeoutMs, TimeUnit.MILLISECONDS)) {
                 val connected = conn.latestBotList.get().size - preExistingBots.size
                 throw BattleException(
-                    "Only $connected of $expectedCount bots connected within ${BOT_CONNECT_TIMEOUT_MS}ms"
+                    "Only $connected of $expectedCount bots connected within ${timeoutMs}ms"
                 )
             }
 
@@ -340,6 +342,11 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         val intentDiagnosticsEnabled: Boolean,
         val recordingPath: Path?,
         val captureServerOutput: Boolean,
+        /**
+         * Maximum time in milliseconds to wait for all bots to connect before a battle starts.
+         * Defaults to 30 000 ms (30 seconds).
+         */
+        val botConnectTimeoutMs: Long = 30_000L,
     )
 
     /** Describes how the server is acquired for this runner instance. */
@@ -372,6 +379,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         private var intentDiagnosticsEnabled: Boolean = false
         private var recordingPath: Path? = null
         private var captureServerOutput: Boolean = true
+        private var botConnectTimeoutMs: Long = 30_000L
 
         /**
          * Use an embedded server, binding it to [port] (default 0 = dynamic port assignment).
@@ -420,18 +428,28 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
          */
         fun suppressServerOutput(): Builder = apply { captureServerOutput = false }
 
+        /**
+         * Sets the maximum time to wait for all bots to connect before a battle starts.
+         * Defaults to 30 seconds when not specified.
+         *
+         * @param timeout maximum wait duration; must be positive
+         */
+        fun botConnectTimeout(timeout: Duration): Builder = apply {
+            botConnectTimeoutMs = timeout.toMillis()
+        }
+
         internal fun build(): BattleRunner = BattleRunner(
             Config(
                 serverMode = serverMode,
                 intentDiagnosticsEnabled = intentDiagnosticsEnabled,
                 recordingPath = recordingPath,
                 captureServerOutput = captureServerOutput,
+                botConnectTimeoutMs = botConnectTimeoutMs,
             )
         )
     }
 
     companion object {
-        private const val BOT_CONNECT_TIMEOUT_MS = 30_000L
         private const val GAME_START_TIMEOUT_MS = 10_000L
 
         /** Converts a public [BattleSetup] to the client model [GameSetup] for the server protocol. */
