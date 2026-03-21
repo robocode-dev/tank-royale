@@ -21,7 +21,7 @@
 
 ## 2. Identity multiset matching logic
 
-- [ ] 2.1 Create `BotMatcher` internal class in `runner/src/main/kotlin/.../runner/internal/BotMatcher.kt`.
+- [x] 2.1 Create `BotMatcher` internal class in `runner/src/main/kotlin/.../runner/internal/BotMatcher.kt`.
   Constructor takes `expectedIdentities: List<BotIdentity>` and `preExistingBots: Set<BotAddress>`.
   Internally builds `expectedMultiset: Map<BotIdentity, Int>` by counting occurrences.
   Expose:
@@ -32,7 +32,7 @@
   When `isComplete`, `matched` contains exactly one `BotAddress` per expected identity slot.
   If more bots than expected connect for an identity, take only the needed count (first seen).
 
-- [ ] 2.2 Write unit tests for `BotMatcher`:
+- [x] 2.2 Write unit tests for `BotMatcher`:
   - 2 distinct bots, both connect → `isComplete = true`, `matched` has 2 addresses
   - Same bot directory twice (duplicate identity) → needs 2 connections with same name+version
   - Team with 4 droids (same identity) → needs 4 connections
