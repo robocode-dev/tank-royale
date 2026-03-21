@@ -68,6 +68,12 @@ class BattleHandle internal constructor(
     /** Fires when the connected bot list changes. */
     val onBotListUpdate: Event<BotListUpdate> get() = connection.onBotListUpdate
 
+    /**
+     * Fires periodically (every 500 ms) and on every [BotListUpdate] during the boot phase,
+     * reporting how many bots have connected versus how many are expected.
+     */
+    val onBootProgress: Event<BootProgress> = Event()
+
     // -------------------------------------------------------------------------------------
     // Control
     // -------------------------------------------------------------------------------------

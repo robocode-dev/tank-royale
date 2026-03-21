@@ -172,7 +172,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
             // Wait for bots to connect (detected via BotListUpdate)
             logger.fine("Waiting for bots to connect...")
-            val ourBotAddresses = waitForBots(conn, preExistingBots, expectedIdentities)
+            val ourBotAddresses = waitForBots(conn, preExistingBots, expectedIdentities, handle.onBootProgress)
 
             // 3. Start game
             logger.info("Starting game...")
@@ -280,15 +280,30 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         conn: ServerConnection,
         preExistingBots: Set<BotAddress>,
         expectedIdentities: List<BotIdentity>,
+        bootProgressEvent: dev.robocode.tankroyale.common.event.Event<BootProgress>? = null,
     ): Set<BotAddress> {
         val timeoutMs = config.botConnectTimeoutMs
+        val startMs = System.currentTimeMillis()
         val matcher = BotMatcher(expectedIdentities, preExistingBots)
         val botsReadyLatch = CountDownLatch(1)
         var latestResult = matcher.update(conn.latestBotList.get().toSet())
         val botOwner = Any()
 
+        fun fireProgress(result: BotMatcher.MatchResult) {
+            bootProgressEvent?.invoke(
+                BootProgress(
+                    expected = matcher.expectedMultiset,
+                    connected = result.connected,
+                    pending = result.pending,
+                    elapsedMs = System.currentTimeMillis() - startMs,
+                    timeoutMs = timeoutMs,
+                )
+            )
+        }
+
         conn.onBotListUpdate.on(botOwner) { update ->
             latestResult = matcher.update(update.bots.toSet())
+            fireProgress(latestResult)
             if (latestResult.isComplete) {
                 botsReadyLatch.countDown()
             }
@@ -297,20 +312,29 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         try {
             // Check if bots already appeared before we subscribed
             if (latestResult.isComplete) {
+                fireProgress(latestResult)
                 return latestResult.matched
             }
-            if (!botsReadyLatch.await(timeoutMs, TimeUnit.MILLISECONDS)) {
-                val totalExpected = matcher.expectedMultiset.values.sum()
-                val totalConnected = latestResult.connected.values.sum()
-                val pendingDesc = latestResult.pending.entries
-                    .joinToString(", ") { (id, count) ->
-                        if (count > 1) "$id (×$count)" else "$id"
-                    }
-                throw BattleException(
-                    "Bot connect timeout (${timeoutMs}ms): connected $totalConnected of $totalExpected. Pending: [$pendingDesc]"
-                )
+            // Poll every 500ms to fire periodic progress events
+            val pollMs = 500L
+            var remaining = timeoutMs
+            while (remaining > 0) {
+                val waited = pollMs.coerceAtMost(remaining)
+                if (botsReadyLatch.await(waited, TimeUnit.MILLISECONDS)) {
+                    return latestResult.matched
+                }
+                remaining -= waited
+                fireProgress(latestResult)
             }
-            return latestResult.matched
+            val totalExpected = matcher.expectedMultiset.values.sum()
+            val totalConnected = latestResult.connected.values.sum()
+            val pendingDesc = latestResult.pending.entries
+                .joinToString(", ") { (id, count) ->
+                    if (count > 1) "$id (×$count)" else "$id"
+                }
+            throw BattleException(
+                "Bot connect timeout (${timeoutMs}ms): connected $totalConnected of $totalExpected. Pending: [$pendingDesc]"
+            )
         } finally {
             conn.onBotListUpdate.off(botOwner)
         }

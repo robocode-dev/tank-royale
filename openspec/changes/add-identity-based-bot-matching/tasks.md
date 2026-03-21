@@ -82,7 +82,7 @@
 
 ## 5. Boot progress reporting
 
-- [ ] 5.1 Create `BootProgress` data class in `runner/src/main/kotlin/.../runner/BootProgress.kt`:
+- [x] 5.1 Create `BootProgress` data class in `runner/src/main/kotlin/.../runner/BootProgress.kt`:
   ```
   data class BootProgress(
       val expected: Map<BotIdentity, Int>,
@@ -94,11 +94,11 @@
   ```
   Include a `val totalExpected: Int` and `val totalConnected: Int` computed property.
 
-- [ ] 5.2 Add `val onBootProgress: Event<BootProgress>` to `BattleHandle`. Fire this event
+- [x] 5.2 Add `val onBootProgress: Event<BootProgress>` to `BattleHandle`. Fire this event
   from `waitForBots()` on every `BotListUpdate` and periodically (every 500ms via the latch
   await loop). Pass the `BotMatcher` result plus timing info.
 
-- [ ] 5.3 Write unit tests for `BootProgress`:
+- [x] 5.3 Write unit tests for `BootProgress`:
   - Verify `totalExpected` and `totalConnected` computed correctly
   - Verify `pending` = expected minus connected (clamped to 0)
   - Verify progress event fires on each `BotListUpdate`
