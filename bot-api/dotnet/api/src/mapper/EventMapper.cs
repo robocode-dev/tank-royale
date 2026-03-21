@@ -148,7 +148,7 @@ static class EventMapper
             // then deserialized into MyFirstDroid's own "RobotColors" class definition.
             // This is similar to how Java's ClassLoader.loadClass() works.
             var botAssembly = baseBot.GetType().Assembly;
-            Type? type = null;
+            Type type = null;
 
             // Strategy 1: Try to find the type directly in the bot's assembly
             // This works for types in the global namespace or with full namespace
