@@ -7,6 +7,10 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Path
+import java.util.logging.Handler
+import java.util.logging.Level
+import java.util.logging.LogRecord
+import java.util.logging.Logger
 import java.util.zip.GZIPInputStream
 import kotlin.io.path.exists
 
@@ -405,6 +409,64 @@ class BattleRunnerIntegrationTest {
         }
     }
 
+    // -------------------------------------------------------------------------------------
+    // captureServerOutput logging behavior — integration (real processes, real JUL capture)
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `server and booter output is logged with SERVER and BOOTER prefixes by default`() {
+        val handler = CapturingHandler()
+        val rootLogger = Logger.getLogger("")
+        val savedLevel = rootLogger.level
+        rootLogger.level = Level.ALL
+        rootLogger.addHandler(handler)
+
+        try {
+            BattleRunner.create { embeddedServer() }.use { runner ->
+                runner.runBattle(
+                    setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                    bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+                )
+            }
+            assertThat(handler.messages)
+                .describedAs("Expected [SERVER] prefixed lines when captureServerOutput is enabled (default)")
+                .anyMatch { it.startsWith("[SERVER]") }
+            assertThat(handler.messages)
+                .describedAs("Expected [BOOTER] prefixed lines when captureServerOutput is enabled (default)")
+                .anyMatch { it.startsWith("[BOOTER]") }
+        } finally {
+            rootLogger.removeHandler(handler)
+            rootLogger.level = savedLevel
+        }
+    }
+
+    @Test
+    fun `suppressServerOutput produces no SERVER or BOOTER prefixed log lines`() {
+        val handler = CapturingHandler()
+        val rootLogger = Logger.getLogger("")
+        val savedLevel = rootLogger.level
+        rootLogger.level = Level.ALL
+        rootLogger.addHandler(handler)
+
+        try {
+            BattleRunner.create { embeddedServer(); suppressServerOutput() }.use { runner ->
+                runner.runBattle(
+                    setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                    bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+                )
+            }
+            assertThat(handler.messages)
+                .describedAs("Expected no [SERVER] prefixed lines when suppressServerOutput() is set")
+                .noneMatch { it.startsWith("[SERVER]") }
+            assertThat(handler.messages)
+                .describedAs("Expected no [BOOTER] prefixed lines when suppressServerOutput() is set")
+                .noneMatch { it.startsWith("[BOOTER]") }
+        } finally {
+            rootLogger.removeHandler(handler)
+            rootLogger.level = savedLevel
+        }
+    }
+
     @Test
     fun `combined Java and CSharp WonRoundEvents sum to number of rounds`() {
         val javaCountFile  = Path.of(System.getProperty("java.io.tmpdir"), "won_round_java.txt")
@@ -435,4 +497,23 @@ class BattleRunnerIntegrationTest {
                 .isEqualTo(10)
         }
     }
+}
+
+/**
+ * JUL [Handler] that accumulates all published log messages in memory.
+ * Thread-safe: the reader thread (ServerManager/BooterManager) writes concurrently with the
+ * test thread reading [messages].
+ */
+private class CapturingHandler : Handler() {
+    private val _messages = mutableListOf<String>()
+    val messages: List<String> get() = synchronized(_messages) { _messages.toList() }
+
+    init { level = Level.ALL }
+
+    override fun publish(record: LogRecord) {
+        record.message?.let { synchronized(_messages) { _messages.add(it) } }
+    }
+
+    override fun flush() {}
+    override fun close() {}
 }

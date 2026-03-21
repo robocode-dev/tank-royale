@@ -29,12 +29,16 @@ import javax.crypto.KeyGenerator
  *
  * This class is internal to the runner module and is not part of the public API.
  */
-internal class ServerManager(private val serverMode: ServerMode) : AutoCloseable {
+internal class ServerManager(
+    private val serverMode: ServerMode,
+    private val captureOutput: Boolean = true,
+) : AutoCloseable {
 
     private val logger = Logger.getLogger(ServerManager::class.java.name)
 
     private val processRef = AtomicReference<Process?>()
     private var serverJarFile: File? = null
+    private var stdoutThread: Thread? = null
 
     /** The controller secret used for Observer and Controller handshakes. */
     val controllerSecret: String = generateSecret()
@@ -91,6 +95,12 @@ internal class ServerManager(private val serverMode: ServerMode) : AutoCloseable
         val resolvedPort = if (requestedPort == 0) allocateFreePort() else requestedPort
         port = resolvedPort
 
+        // Join any leftover stdout thread from a previously crashed process
+        stdoutThread?.let {
+            try { it.join(500) } catch (_: InterruptedException) { Thread.currentThread().interrupt() }
+            stdoutThread = null
+        }
+
         val jarPath = extractServerJar()
 
         val command = mutableListOf(
@@ -109,8 +119,32 @@ internal class ServerManager(private val serverMode: ServerMode) : AutoCloseable
 
         processRef.set(process)
 
+        // Start stdout reader thread to redirect server logs to java.util.logging
+        startStdoutReader(process)
+
         // Wait for the server to be ready (4.3)
         waitForServerReady("ws://localhost:$resolvedPort")
+    }
+
+    // -------------------------------------------------------------------------------------
+    // Stdout redirection
+    // -------------------------------------------------------------------------------------
+
+    private fun startStdoutReader(process: Process) {
+        val thread = Thread({
+            try {
+                process.inputStream.bufferedReader().use { reader ->
+                    reader.forEachLine { line ->
+                        if (captureOutput) logger.info("[SERVER] $line")
+                    }
+                }
+            } catch (_: Exception) {
+                // Stream closed — process exiting
+            }
+        }, "ServerManager-StdOut-Thread")
+        thread.isDaemon = true
+        thread.start()
+        stdoutThread = thread
     }
 
     // -------------------------------------------------------------------------------------
@@ -230,6 +264,14 @@ internal class ServerManager(private val serverMode: ServerMode) : AutoCloseable
             Thread.currentThread().interrupt()
             process.destroyForcibly()
         }
+
+        // Wait for stdout thread to finish
+        try {
+            stdoutThread?.join(1000)
+        } catch (_: InterruptedException) {
+            Thread.currentThread().interrupt()
+        }
+        stdoutThread = null
 
         // Clean up temp JAR file
         cleanupServerJar()

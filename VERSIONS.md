@@ -1,3 +1,24 @@
+## 📦 0.37.1 - Runner Output Control – 21-Mar-2026
+
+### ✨ Features
+
+- Runner API:
+    - Added `suppressServerOutput()` builder option to opt out of routing embedded server and booter
+      stdout through JUL. By default, all output from the embedded server and booter processes is
+      logged at INFO level with `[SERVER]` and `[BOOTER]` prefixes. Call `suppressServerOutput()` on
+      the builder to silence this when you configure your own logging.
+
+### 🐞 Bug Fixes
+
+- Runner API:
+    - Fixed orphaned stdout reader thread in `ServerManager`: if the embedded server process died
+      unexpectedly and `ensureStarted()` was called again, the previous reader thread was overwritten
+      without being joined. The thread is now joined (with a 500 ms timeout) before a new one is
+      started.
+    - Embedded server and booter stdout pipes are now always drained regardless of the
+      `captureServerOutput` setting, preventing OS pipe buffer fill-up when output capture is
+      suppressed.
+
 ## 📦 0.37.0 - Battle Runner API – 04-Mar-2026
 
 ### ✨ Features

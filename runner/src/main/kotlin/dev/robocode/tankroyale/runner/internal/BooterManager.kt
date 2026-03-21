@@ -23,6 +23,7 @@ import kotlin.io.path.exists
 internal class BooterManager(
     private val serverUrl: String,
     private val botSecret: String,
+    private val captureOutput: Boolean = true,
 ) : AutoCloseable {
 
     private val logger = Logger.getLogger(BooterManager::class.java.name)
@@ -98,6 +99,7 @@ internal class BooterManager(
             try {
                 process.inputStream.bufferedReader().use { reader ->
                     reader.forEachLine { line ->
+                        if (captureOutput) logger.info("[BOOTER] $line")
                         parseLine(line.trim(), botsReadyLatch)
                     }
                 }

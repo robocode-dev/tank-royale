@@ -67,6 +67,19 @@ class ServerManagerTest {
     }
 
     @Test
+    fun `captureOutput false is accepted without throwing`() {
+        val manager = ServerManager(ServerMode.Embedded(), captureOutput = false)
+        assertThat(manager.isRunning).isFalse()
+    }
+
+    @Test
+    fun `captureOutput true is the default`() {
+        // Constructed without explicit captureOutput — must not throw and behave normally
+        val manager = ServerManager(ServerMode.External("ws://localhost:9999"))
+        assertThat(manager.isRunning).isTrue()
+    }
+
+    @Test
     fun `ensureStarted with unreachable external server throws BattleException`() {
         val manager = ServerManager(ServerMode.External("ws://localhost:1"))
         assertThatThrownBy { manager.ensureStarted() }

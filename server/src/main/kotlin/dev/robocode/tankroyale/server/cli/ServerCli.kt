@@ -7,7 +7,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.int
 import dev.robocode.tankroyale.common.util.Version
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.Server
+import dev.robocode.tankroyale.server.core.Server
 import dev.robocode.tankroyale.common.rules.DEFAULT_GAME_TYPE
 import dev.robocode.tankroyale.common.rules.DEFAULT_TURNS_PER_SECOND
 

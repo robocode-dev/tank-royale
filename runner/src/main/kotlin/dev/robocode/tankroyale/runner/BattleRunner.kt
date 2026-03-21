@@ -17,6 +17,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
+import java.util.logging.Level
 import java.util.logging.Logger
 
 /**
@@ -50,7 +51,9 @@ import java.util.logging.Logger
  */
 class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
-    internal val serverManager = ServerManager(config.serverMode)
+    private val logger = Logger.getLogger(BattleRunner::class.java.name)
+
+    internal val serverManager = ServerManager(config.serverMode, config.captureServerOutput)
     internal var connection: ServerConnection? = null
     internal var booterManager: BooterManager? = null
     internal var intentProxy: IntentDiagnosticsProxy? = null
@@ -110,6 +113,8 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
      * @throws BattleException if the battle fails to start
      */
     fun startBattleAsync(setup: BattleSetup, bots: List<BotEntry>): BattleHandle {
+        logger.info("Starting battle: rounds=${setup.numberOfRounds}, bots=${bots.size}")
+
         check(battleInProgress.compareAndSet(false, true)) {
             "A battle is already in progress"
         }
@@ -130,16 +135,19 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
             bots.forEach { BooterManager.validateBotDir(it.path) }
 
             // 1. Ensure server is running
+            logger.fine("Ensuring server is started...")
             serverManager.ensureStarted()
 
             // Start intent diagnostics proxy if enabled
             if (config.intentDiagnosticsEnabled && intentProxy == null) {
+                logger.info("Starting intent diagnostics proxy...")
                 val proxy = IntentDiagnosticsProxy(serverManager.serverUrl)
                 proxy.start()
                 intentProxy = proxy
             }
 
             // Ensure Observer + Controller WebSocket connections (8.3: reuse across battles)
+            logger.fine("Connecting to server at ${serverManager.serverUrl}...")
             ensureConnected()
             val conn = connection!!
 
@@ -148,6 +156,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
             // Create handle BEFORE starting game to capture GameEndedEvent
             handle = BattleHandle(conn) {
+                logger.info("Battle finished, cleaning up...")
                 booterManager?.close()
                 booterManager = null
                 battleInProgress.set(false)
@@ -155,21 +164,27 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
             // 2. Boot bots
             val botUrl = if (config.intentDiagnosticsEnabled) intentProxy!!.proxyUrl else serverManager.serverUrl
-            booterManager = BooterManager(botUrl, serverManager.botSecret)
+            logger.info("Booting bots...")
+            booterManager = BooterManager(botUrl, serverManager.botSecret, config.captureServerOutput)
             booterManager!!.boot(bots.map { it.path })
 
             // Wait for bots to connect (detected via BotListUpdate)
+            logger.fine("Waiting for bots to connect...")
             val ourBotAddresses = waitForBots(conn, preExistingBots, bots.size)
 
             // 3. Start game
+            logger.info("Starting game...")
             conn.startBattle(toClientGameSetup(setup), ourBotAddresses)
 
             // 4. Wait for game started or aborted (8.5)
+            logger.fine("Waiting for game to start...")
             waitForGameStarted(conn)
 
+            logger.info("Battle started successfully")
             return handle
 
         } catch (e: Exception) {
+            logger.log(Level.SEVERE, "Failed to start battle", e)
             handle?.close() ?: run {
                 booterManager?.close()
                 booterManager = null
@@ -324,6 +339,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         val serverMode: ServerMode,
         val intentDiagnosticsEnabled: Boolean,
         val recordingPath: Path?,
+        val captureServerOutput: Boolean,
     )
 
     /** Describes how the server is acquired for this runner instance. */
@@ -355,6 +371,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         private var serverMode: ServerMode = ServerMode.Embedded()
         private var intentDiagnosticsEnabled: Boolean = false
         private var recordingPath: Path? = null
+        private var captureServerOutput: Boolean = true
 
         /**
          * Use an embedded server, binding it to [port] (default 0 = dynamic port assignment).
@@ -396,11 +413,19 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
             recordingPath = outputPath
         }
 
+        /**
+         * Suppress routing of embedded server and booter stdout through JUL.
+         * By default, stdout from both processes is logged at INFO level with `[SERVER]`/`[BOOTER]` prefixes.
+         * Call this when you configure your own logging and do not want that noise.
+         */
+        fun suppressServerOutput(): Builder = apply { captureServerOutput = false }
+
         internal fun build(): BattleRunner = BattleRunner(
             Config(
                 serverMode = serverMode,
                 intentDiagnosticsEnabled = intentDiagnosticsEnabled,
                 recordingPath = recordingPath,
+                captureServerOutput = captureServerOutput,
             )
         )
     }

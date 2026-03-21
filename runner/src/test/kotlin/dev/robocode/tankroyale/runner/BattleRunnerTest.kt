@@ -92,6 +92,36 @@ class BattleRunnerTest {
     }
 
     // -------------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------
+    // captureServerOutput config (Builder)
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `default config has captureServerOutput true`() {
+        runner = BattleRunner.create { embeddedServer() }
+        assertThat(runner!!.config.captureServerOutput).isTrue()
+    }
+
+    @Test
+    fun `suppressServerOutput sets captureServerOutput to false`() {
+        runner = BattleRunner.create { embeddedServer(); suppressServerOutput() }
+        assertThat(runner!!.config.captureServerOutput).isFalse()
+    }
+
+    @Test
+    fun `suppressServerOutput is chainable with other builder calls`() {
+        runner = BattleRunner.create { embeddedServer().suppressServerOutput().enableIntentDiagnostics() }
+        assertThat(runner!!.config.captureServerOutput).isFalse()
+        assertThat(runner!!.config.intentDiagnosticsEnabled).isTrue()
+    }
+
+    @Test
+    fun `create with no arguments defaults captureServerOutput to true`() {
+        runner = BattleRunner.create()
+        assertThat(runner!!.config.captureServerOutput).isTrue()
+    }
+
+    // -------------------------------------------------------------------------------------
     // Lifecycle (8.4)
     // -------------------------------------------------------------------------------------
 

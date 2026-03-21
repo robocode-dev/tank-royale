@@ -80,4 +80,21 @@ class BooterManagerTest {
         // Should not throw
         manager.close()
     }
+
+    // -------------------------------------------------------------------------------------
+    // captureOutput parameter
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `captureOutput false is accepted without throwing`() {
+        val manager = BooterManager("ws://localhost:7654", "secret", captureOutput = false)
+        assertThat(manager.isRunning).isFalse()
+        assertThat(manager.botPids).isEmpty()
+    }
+
+    @Test
+    fun `captureOutput true is the default`() {
+        val manager = BooterManager("ws://localhost:7654", "secret")
+        assertThat(manager.isRunning).isFalse()
+    }
 }

@@ -61,6 +61,25 @@ class JavaInteropTest {
     }
 
     @Test
+    void createWithDefaultsCaptureServerOutputIsTrue() {
+        var runner = BattleRunner.create();
+        assertThat(runner.getConfig().getCaptureServerOutput()).isTrue();
+    }
+
+    @Test
+    void suppressServerOutputSetsConfigToFalse() {
+        var runner = BattleRunner.create(b -> b.suppressServerOutput());
+        assertThat(runner.getConfig().getCaptureServerOutput()).isFalse();
+    }
+
+    @Test
+    void suppressServerOutputIsChainableWithOtherBuilderMethods() {
+        var runner = BattleRunner.create(b -> b.embeddedServer().suppressServerOutput());
+        assertThat(runner.getConfig().getCaptureServerOutput()).isFalse();
+        assertThat(runner.getConfig().getServerMode()).isInstanceOf(BattleRunner.ServerMode.Embedded.class);
+    }
+
+    @Test
     void createWithIntentDiagnosticsAndRecording() {
         Path recordingPath = tempDir.resolve("recording.battle.gz");
         var runner = BattleRunner.create(b -> b
