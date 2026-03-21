@@ -105,12 +105,12 @@
 
 ## 6. Team expansion in BotEntry validation
 
-- [ ] 6.1 Update `BooterManager.validateBotDir()` to also validate team member directories
+- [x] 6.1 Update `BooterManager.validateBotDir()` to also validate team member directories
   when the config file contains `teamMembers`. For each member, verify that
   `<parent>/<member>/<member>.json` exists. Throw `BattleException` with a message like
   `"Team member directory not found: <member> (expected at <path>)"`.
 
-- [ ] 6.2 Write unit tests for team validation:
+- [x] 6.2 Write unit tests for team validation:
   - Valid team with all member directories present → no exception
   - Team with missing member directory → throws `BattleException` naming the missing member
   - Non-team bot (no `teamMembers`) → existing validation unchanged

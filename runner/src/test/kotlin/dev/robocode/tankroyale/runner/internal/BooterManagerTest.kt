@@ -60,6 +60,44 @@ class BooterManagerTest {
             .hasMessageContaining("not a directory")
     }
 
+    @Test
+    fun `validateBotDir accepts valid team with all member directories present`() {
+        createBotDir(tempDir, "BotA", "Bot A", "1.0")
+        createBotDir(tempDir, "BotB", "Bot B", "1.0")
+
+        val teamDir = tempDir.resolve("MyTeam").createDirectory()
+        teamDir.resolve("MyTeam.json").writeText(
+            """{"name":"MyTeam","version":"1.0","teamMembers":["BotA","BotB"]}"""
+        )
+
+        // Should not throw
+        BooterManager.validateBotDir(teamDir)
+    }
+
+    @Test
+    fun `validateBotDir throws BattleException for team with missing member directory`() {
+        createBotDir(tempDir, "BotA", "Bot A", "1.0")
+
+        val teamDir = tempDir.resolve("BrokenTeam").createDirectory()
+        teamDir.resolve("BrokenTeam.json").writeText(
+            """{"name":"BrokenTeam","version":"1.0","teamMembers":["BotA","MissingBot"]}"""
+        )
+
+        assertThatThrownBy { BooterManager.validateBotDir(teamDir) }
+            .isInstanceOf(BattleException::class.java)
+            .hasMessageContaining("MissingBot")
+            .hasMessageContaining("Team member directory not found")
+    }
+
+    @Test
+    fun `validateBotDir non-team bot is unchanged by team validation`() {
+        val botDir = tempDir.resolve("SimpleBot").createDirectory()
+        botDir.resolve("SimpleBot.json").writeText("""{"name":"Simple Bot","version":"2.0"}""")
+
+        // Should not throw — no teamMembers field
+        BooterManager.validateBotDir(botDir)
+    }
+
     // -------------------------------------------------------------------------------------
     // Construction and initial state
     // -------------------------------------------------------------------------------------

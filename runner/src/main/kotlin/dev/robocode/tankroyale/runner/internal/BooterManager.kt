@@ -205,6 +205,27 @@ internal class BooterManager(
                     "Bot directory does not contain a configuration file: $configFile"
                 )
             }
+            // Validate team member directories if this is a team config
+            val json = try {
+                Json.parseToJsonElement(configFile.toFile().readText()).jsonObject
+            } catch (_: Exception) {
+                return // malformed JSON will be caught later by readBotIdentities
+            }
+            val teamMembers = json["teamMembers"]?.jsonArray ?: return
+            val parentDir = botDir.parent
+            for (memberElement in teamMembers) {
+                val memberName = try {
+                    memberElement.jsonPrimitive.content
+                } catch (_: Exception) {
+                    continue
+                }
+                val memberDir = parentDir.resolve(memberName)
+                if (!memberDir.toFile().isDirectory) {
+                    throw BattleException(
+                        "Team member directory not found: $memberName (expected at $memberDir)"
+                    )
+                }
+            }
         }
 
         /**
