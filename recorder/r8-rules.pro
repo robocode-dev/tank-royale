@@ -24,10 +24,12 @@
 # Clikt CLI library
 -keep class com.github.ajalt.clikt.** { *; }
 -dontwarn com.github.ajalt.clikt.**
+-dontnote com.github.ajalt.clikt.**
 
 # Mordant terminal library (used by Clikt)
 -keep class com.github.ajalt.mordant.** { *; }
 -dontwarn com.github.ajalt.mordant.**
+-dontnote com.github.ajalt.mordant.**
 
 # SLF4J logging
 -keep class org.slf4j.** { *; }
