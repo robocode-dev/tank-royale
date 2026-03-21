@@ -1,17 +1,17 @@
 ## 1. BotIdentity data class and bot.json parsing
 
-- [ ] 1.1 Create `BotIdentity` data class in `runner/src/main/kotlin/.../runner/BotIdentity.kt`
+- [x] 1.1 Create `BotIdentity` data class in `runner/src/main/kotlin/.../runner/BotIdentity.kt`
   with `name: String` and `version: String` properties. Override `toString()` for readable
   progress messages (e.g., `"My First Bot v1.0"`).
 
-- [ ] 1.2 Add `readBotIdentities(botDir: Path): List<BotIdentity>` to `BooterManager.Companion`.
+- [x] 1.2 Add `readBotIdentities(botDir: Path): List<BotIdentity>` to `BooterManager.Companion`.
   For a regular bot directory: parse `<dir>/<dir>.json`, extract `name` and `version` fields,
   return a single-element list. For a team directory (JSON contains `teamMembers` array): resolve
   each member name to a sibling directory `<parent>/<member>/<member>.json`, parse each, and
   return one `BotIdentity` per team member (preserving duplicates for the multiset).
   Throw `BattleException` with a clear message if any JSON file is missing or malformed.
 
-- [ ] 1.3 Write unit tests for `readBotIdentities()`:
+- [x] 1.3 Write unit tests for `readBotIdentities()`:
   - Regular bot directory → returns `[BotIdentity("My First Bot", "1.0")]`
   - Team directory with 5 members (including duplicates) → returns 5 identities
   - Missing bot.json → throws `BattleException`

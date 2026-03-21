@@ -3,6 +3,11 @@ package dev.robocode.tankroyale.runner.internal
 import dev.robocode.tankroyale.common.util.JavaExec
 import dev.robocode.tankroyale.common.util.ResourceUtil
 import dev.robocode.tankroyale.runner.BattleException
+import dev.robocode.tankroyale.runner.BotIdentity
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
 import java.io.PrintStream
 import java.nio.file.Path
@@ -200,6 +205,67 @@ internal class BooterManager(
                     "Bot directory does not contain a configuration file: $configFile"
                 )
             }
+        }
+
+        /**
+         * Reads the bot identities from a bot or team directory.
+         *
+         * For a regular bot directory, parses `<dir>/<dir>.json` and returns a single
+         * [BotIdentity]. For a team directory (JSON contains a `teamMembers` array), resolves
+         * each member to a sibling directory and returns one [BotIdentity] per member,
+         * preserving duplicates.
+         *
+         * @param botDir path to the bot or team directory
+         * @return list of [BotIdentity] instances (one per expected bot connection)
+         * @throws BattleException if any JSON file is missing or malformed
+         */
+        fun readBotIdentities(botDir: Path): List<BotIdentity> {
+            val configFile = botDir.resolve("${botDir.fileName}.json")
+            if (!configFile.exists()) {
+                throw BattleException("Bot configuration file not found: $configFile")
+            }
+            val json = try {
+                Json.parseToJsonElement(configFile.toFile().readText()).jsonObject
+            } catch (e: Exception) {
+                throw BattleException("Malformed bot configuration file: $configFile", e)
+            }
+
+            // Team directory: expand teamMembers into individual identities
+            val teamMembers = json["teamMembers"]?.jsonArray
+            if (teamMembers != null) {
+                val parentDir = botDir.parent
+                return teamMembers.map { memberElement ->
+                    val memberName = try {
+                        memberElement.jsonPrimitive.content
+                    } catch (e: Exception) {
+                        throw BattleException("Malformed teamMembers entry in: $configFile", e)
+                    }
+                    val memberDir = parentDir.resolve(memberName)
+                    val memberConfig = memberDir.resolve("$memberName.json")
+                    if (!memberConfig.exists()) {
+                        throw BattleException(
+                            "Team member configuration file not found: $memberConfig"
+                        )
+                    }
+                    parseBotIdentity(memberConfig.toFile().readText(), memberConfig.toString())
+                }
+            }
+
+            // Regular bot directory
+            return listOf(parseBotIdentity(configFile.toFile().readText(), configFile.toString()))
+        }
+
+        private fun parseBotIdentity(jsonText: String, sourcePath: String): BotIdentity {
+            val obj = try {
+                Json.parseToJsonElement(jsonText).jsonObject
+            } catch (e: Exception) {
+                throw BattleException("Malformed bot configuration file: $sourcePath", e)
+            }
+            val name = obj["name"]?.jsonPrimitive?.content
+                ?: throw BattleException("Missing 'name' field in bot configuration: $sourcePath")
+            val version = obj["version"]?.jsonPrimitive?.content
+                ?: throw BattleException("Missing 'version' field in bot configuration: $sourcePath")
+            return BotIdentity(name, version)
         }
     }
 
