@@ -46,6 +46,7 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0023](./0023-robocode-tank-royale-platform-scope.md) | Robocode Tank Royale Platform Scope and Boundaries | Accepted | 2026-02-15 |
 | [0024](./0024-battle-runner-api.md) | Battle Runner API | Proposed | 2026-02-28 |
 | [0025](./0025-game-type-presets-and-rule-configuration.md) | Game Type Presets and Rule Configuration | Accepted | 2026-02-28 |
+| [0026](./0026-identity-based-bot-matching.md) | Identity-Based Bot Matching in Battle Runner | Proposed | 2026-03-21 |
 
 ## Status Definitions
 
