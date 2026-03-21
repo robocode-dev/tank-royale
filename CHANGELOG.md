@@ -3,31 +3,30 @@
 ### ✨ Features
 
 - Runner API:
-    - Identity-based bot matching: bots are now matched by `name` + `version` from their `bot.json`
-      rather than by count alone. This fixes incorrect matching when teams, stray bots, or duplicate
-      bot instances are present — only bots whose identity matches an expected slot are counted.
-    - Configurable boot timeout via `botConnectTimeout(java.time.Duration)` on `BattleRunner.Builder`.
-      Default remains 30 seconds. Replaces the previous hard-coded constant.
-    - Boot progress reporting: `BattleHandle.onBootProgress` fires on every `BotListUpdate` and every
-      500 ms during the wait loop, delivering a `BootProgress` snapshot with `expected`, `connected`,
+    - Identity-based bot matching: bots are now matched by `name` + `version` from their `bot.json` rather than by count
+      alone. This fixes incorrect matching when teams, stray bots, or duplicate bot instances are present — only bots
+      whose identity matches an expected slot are counted.
+    - Configurable boot timeout via `botConnectTimeout(java.time.Duration)` on `BattleRunner.Builder`. Default remains
+      30 seconds. Replaces the previous hard-coded constant.
+    - Boot progress reporting: `BattleHandle.onBootProgress` fires on every `BotListUpdate` and every 500 ms during the
+      wait loop, delivering a `BootProgress` snapshot with `expected`, `connected`,
       `pending` identity maps, `elapsedMs`, and `timeoutMs`. Intended for GUI progress dialogs.
-    - Team member directory validation: `BooterManager.validateBotDir()` now checks that every
-      directory listed in `teamMembers` exists as a sibling directory at battle-start time, throwing
+    - Team member directory validation: `BooterManager.validateBotDir()` now checks that every directory listed in
+      `teamMembers` exists as a sibling directory at battle-start time, throwing
       `BattleException` with the missing member name before any bot process is launched.
-    - Added `suppressServerOutput()` builder option to opt out of routing embedded server and booter
-      stdout through JUL. By default, all output from the embedded server and booter processes is
-      logged at INFO level with `[SERVER]` and `[BOOTER]` prefixes. Call `suppressServerOutput()` on
-      the builder to silence this when you configure your own logging.
+    - Added `suppressServerOutput()` builder option to opt out of routing embedded server and booter stdout through JUL.
+      By default, all output from the embedded server and booter processes is logged at INFO level with `[SERVER]` and
+      `[BOOTER]` prefixes. Call `suppressServerOutput()` on the builder to silence this when you configure your own
+      logging.
 
 ### 🐞 Bug Fixes
 
 - Runner API:
-    - Fixed orphaned stdout reader thread in `ServerManager`: if the embedded server process died
-      unexpectedly and `ensureStarted()` was called again, the previous reader thread was overwritten
-      without being joined. The thread is now joined (with a 500 ms timeout) before a new one is
-      started.
-    - Embedded server and booter stdout pipes are now always drained regardless of the
-      `captureServerOutput` setting, preventing OS pipe buffer fill-up when output capture is
+    - Fixed orphaned stdout reader thread in `ServerManager`: if the embedded server process died unexpectedly and
+      `ensureStarted()` was called again, the previous reader thread was overwritten without being joined. The thread is
+      now joined (with a 500 ms timeout) before a new one is started.
+    - Embedded server and booter stdout pipes are now always drained regardless of the `captureServerOutput` setting,
+      preventing OS pipe buffer fill-up when output capture is
       suppressed.
 
 ## [0.37.0]- 2026-03-04 – Battle Runner API
@@ -119,8 +118,8 @@
       0.35.3 and timing precision at unlimited TPS.
     - Fixed the issue where the bots turn timeout was not respected when TPS=-1. Turn now completes immediately when all
       bots respond (or at the `turn timeout` deadline), and TPS controls only the visual delay for observers.
-    - Thanks to Jan Durovec for reporting these issues! ❤️ 
- 
+    - Thanks to Jan Durovec for reporting these issues! ❤️
+
 ## [0.35.4] - 2026-02-12 – Timing Fix for High TPS (BROKEN - DO NOT USE)
 
 **⚠️ WARNING: This version introduced a critical bug. Use 0.35.5 instead.**
