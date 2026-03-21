@@ -59,21 +59,21 @@
 
 ## 4. Integrate identity matching into BattleRunner.waitForBots()
 
-- [ ] 4.1 In `BattleRunner.startBattleAsync()`, after `validateBotDir()` and before `boot()`:
+- [x] 4.1 In `BattleRunner.startBattleAsync()`, after `validateBotDir()` and before `boot()`:
   call `BooterManager.readBotIdentities()` for each `BotEntry` and flatten into a single
   `List<BotIdentity>`. Pass this list to `waitForBots()`.
 
-- [ ] 4.2 Refactor `waitForBots()` signature from
+- [x] 4.2 Refactor `waitForBots()` signature from
   `(conn, preExistingBots: Set<BotAddress>, expectedCount: Int): Set<BotAddress>` to
   `(conn, preExistingBots: Set<BotAddress>, expectedIdentities: List<BotIdentity>): Set<BotAddress>`.
   Internally create a `BotMatcher` and use `matcher.update(update.bots)` on each
   `BotListUpdate` event. Count down the latch when `result.isComplete`. Return
   `result.matched`.
 
-- [ ] 4.3 Update the timeout error message to include identity-aware detail:
+- [x] 4.3 Update the timeout error message to include identity-aware detail:
   `"Bot connect timeout (${timeoutMs}ms): connected N of M. Pending: [BotName v1.0 (×2)]"`.
 
-- [ ] 4.4 Write integration-level tests for the refactored `waitForBots()`:
+- [x] 4.4 Write integration-level tests for the refactored `waitForBots()`:
   - Mock `ServerConnection.onBotListUpdate` to emit `BotListUpdate` with matching identities
     → returns correct `BotAddress` set
   - Emit partial updates → only completes when all identities matched

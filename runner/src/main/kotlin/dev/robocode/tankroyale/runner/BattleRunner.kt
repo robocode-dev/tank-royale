@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.client.model.GameSetup
 import dev.robocode.tankroyale.common.recording.GameRecorder
 import dev.robocode.tankroyale.intent.IntentDiagnosticsProxy
 import dev.robocode.tankroyale.intent.IntentStore
+import dev.robocode.tankroyale.runner.internal.BotMatcher
 import dev.robocode.tankroyale.runner.internal.BooterManager
 import dev.robocode.tankroyale.runner.internal.ServerConnection
 import dev.robocode.tankroyale.runner.internal.ServerManager
@@ -13,7 +14,6 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.nio.file.Path
 import java.time.Duration
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -134,6 +134,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
                 }
             }
             bots.forEach { BooterManager.validateBotDir(it.path) }
+            val expectedIdentities = bots.flatMap { BooterManager.readBotIdentities(it.path) }
 
             // 1. Ensure server is running
             logger.fine("Ensuring server is started...")
@@ -171,7 +172,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
             // Wait for bots to connect (detected via BotListUpdate)
             logger.fine("Waiting for bots to connect...")
-            val ourBotAddresses = waitForBots(conn, preExistingBots, bots.size)
+            val ourBotAddresses = waitForBots(conn, preExistingBots, expectedIdentities)
 
             // 3. Start game
             logger.info("Starting game...")
@@ -274,34 +275,42 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         }
     }
 
-    /** Waits for the expected number of new bots to appear in BotListUpdate. */
-    private fun waitForBots(conn: ServerConnection, preExistingBots: Set<BotAddress>, expectedCount: Int): Set<BotAddress> {
+    /** Waits for the expected bot identities to appear in BotListUpdate. */
+    internal fun waitForBots(
+        conn: ServerConnection,
+        preExistingBots: Set<BotAddress>,
+        expectedIdentities: List<BotIdentity>,
+    ): Set<BotAddress> {
         val timeoutMs = config.botConnectTimeoutMs
+        val matcher = BotMatcher(expectedIdentities, preExistingBots)
         val botsReadyLatch = CountDownLatch(1)
-        val latestBots = ConcurrentHashMap.newKeySet<BotAddress>()
+        var latestResult = matcher.update(conn.latestBotList.get().toSet())
         val botOwner = Any()
 
         conn.onBotListUpdate.on(botOwner) { update ->
-            latestBots.clear()
-            latestBots.addAll(update.bots.map { it.botAddress })
-            if (update.bots.size - preExistingBots.size >= expectedCount) {
+            latestResult = matcher.update(update.bots.toSet())
+            if (latestResult.isComplete) {
                 botsReadyLatch.countDown()
             }
         }
 
         try {
-            // Check if bots already appeared
-            val currentBots = conn.latestBotList.get()
-            if (currentBots.size - preExistingBots.size >= expectedCount) {
-                latestBots.addAll(currentBots.map { it.botAddress })
-            } else if (!botsReadyLatch.await(timeoutMs, TimeUnit.MILLISECONDS)) {
-                val connected = conn.latestBotList.get().size - preExistingBots.size
+            // Check if bots already appeared before we subscribed
+            if (latestResult.isComplete) {
+                return latestResult.matched
+            }
+            if (!botsReadyLatch.await(timeoutMs, TimeUnit.MILLISECONDS)) {
+                val totalExpected = matcher.expectedMultiset.values.sum()
+                val totalConnected = latestResult.connected.values.sum()
+                val pendingDesc = latestResult.pending.entries
+                    .joinToString(", ") { (id, count) ->
+                        if (count > 1) "$id (×$count)" else "$id"
+                    }
                 throw BattleException(
-                    "Only $connected of $expectedCount bots connected within ${timeoutMs}ms"
+                    "Bot connect timeout (${timeoutMs}ms): connected $totalConnected of $totalExpected. Pending: [$pendingDesc]"
                 )
             }
-
-            return latestBots.toSet() - preExistingBots
+            return latestResult.matched
         } finally {
             conn.onBotListUpdate.off(botOwner)
         }
