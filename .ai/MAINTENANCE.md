@@ -11,7 +11,7 @@
   ├─ cross-platform.md        ← Bot API cross-platform rules
   ├─ coding-conventions.md    ← Language-specific style
   ├─ testing-and-build.md     ← Gradle, tests, validation
-  ├─ documentation.md         ← Docs, VERSIONS.md, API docs
+  ├─ documentation.md         ← Docs, CHANGELOG.md, API docs
   ├─ standards.md             ← UTF-8, encoding, repo boundaries
   ├─ architecture.md          ← ADRs, C4, design decisions
   └─ openspec.md              ← Routes to /openspec/AGENTS.md

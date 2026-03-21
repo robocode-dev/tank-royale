@@ -116,7 +116,7 @@
 - [x] 11.1 Write `runner/README.md` with usage examples
 - [x] 11.2 Add KDoc/Javadoc to all public API types
 - [x] 11.3 Update root `README.md` to mention Battle Runner API
-- [ ] 11.4 Update `VERSIONS.md` when releasing
+- [ ] 11.4 Update `CHANGELOG.md` when releasing
 - [x] 11.5 Add API reference to generated Javadoc site
 - [x] 11.6 Add VitePress documentation page (`docs-build/docs/api/battle-runner.md`) with dual Kotlin/Java examples and sidebar entry in `config.mts`
 - [x] 11.7 Update C4 Container View (`docs-internal/architecture/c4-views/container.md`) to include Runner

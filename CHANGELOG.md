@@ -1,4 +1,4 @@
-## 📦 0.37.1 - Runner Output Control – 21-Mar-2026
+## [0.37.1] - 2026-03-21 – Runner Output Control
 
 ### ✨ Features
 
@@ -19,7 +19,7 @@
       `captureServerOutput` setting, preventing OS pipe buffer fill-up when output capture is
       suppressed.
 
-## 📦 0.37.0 - Battle Runner API – 04-Mar-2026
+## [0.37.0] - 2026-03-04 – Battle Runner API
 
 ### ✨ Features
 
@@ -40,7 +40,7 @@
 
 - GUI:
     - #191: GUI freezes from time to time in 0.36.1
-- 
+
 - Bot APIs (C#, Python):
     - #192: Fixed `TimeLeft` / `time_left` returning incorrect (often negative) values on Windows. The start timestamp
       for the turn timeout was being captured on the bot thread at dispatch time, which is after OS scheduling has
@@ -51,7 +51,7 @@
       matching the behavior of the JVM and CPython runtimes. This ensures `Thread.Sleep` durations are accurate to
       ~1 ms instead of the default ~15.6 ms Windows timer granularity.
 
-## 📦 0.36.1 - WonRoundEvent and Python Console Output - 24-Feb-2026
+## [0.36.1] - 2026-02-24 – WonRoundEvent and Python Console Output
 
 ### 🐞 Bug Fixes
 
@@ -76,7 +76,7 @@
       instead of allowing 257 events before showing the error message. Changed the boundary check from
       `<= MAX_QUEUE_SIZE` to `< MAX_QUEUE_SIZE` in Java, .NET, and Python implementations.
 
-## 📦 0.36.0 - Team Indicator in Results – 16-Feb-2026
+## [0.36.0] - 2026-02-16 – Team Indicator in Results
 
 ### ✨ Features
 
@@ -95,7 +95,7 @@
       to the default color (brightWhite) and preserves font family/size settings.
     - Fixed replaying recorded battles where bot buttons, bot names, and bot versions were not visualized correctly.
 
-## 📦 0.35.5 - Critical Timing Fixes – 13-Feb-2026
+## [0.35.5] - 2026-02-13 – Critical Timing Fixes
 
 ### 🐞 Bug Fixes
 
@@ -110,7 +110,7 @@
       bots respond (or at the `turn timeout` deadline), and TPS controls only the visual delay for observers.
     - Thanks to Jan Durovec for reporting these issues! ❤️ 
  
-## 📦 0.35.4 - Timing Fix for High TPS (BROKEN - DO NOT USE) – 12-Feb-2026
+## [0.35.4] - 2026-02-12 – Timing Fix for High TPS (BROKEN - DO NOT USE)
 
 **⚠️ WARNING: This version introduced a critical bug. Use 0.35.5 instead.**
 
@@ -124,7 +124,7 @@
 
       **BUG**: This fix caused re-entrancy issues by executing on the calling thread instead of the executor thread.
 
-## 📦 0.35.3 - Memory Leak Fixes – 08-Feb-2026
+## [0.35.3] - 2026-02-08 – Memory Leak Fixes
 
 ### 🐞 Bug Fixes
 
@@ -137,7 +137,7 @@
     - #180: Fixed memory leak from collections not being cleared after the game end (`participantIds`, `botIntents`,
       `participantMap`, etc.), preventing garbage collection of game objects.
 
-## 📦 0.35.2 - Windows Path Fix – 28-Jan-2026
+## [0.35.2] - 2026-01-28 – Windows Path Fix
 
 ### 🐞 Bug Fixes
 
@@ -147,7 +147,7 @@
       as escape characters when saved to the properties file. Bot directory paths are now normalized to use forward
       slashes, which work correctly on all platforms.
 
-## 📦 0.35.1 - Automatic User Data Migration – 27-Jan-2026
+## [0.35.1] - 2026-01-27 – Automatic User Data Migration
 
 ### 🚀 Improvements
 
@@ -157,7 +157,7 @@
       platform-specific user data directory. This removes the need for manual file migration when upgrading from
       pre-0.35.0 versions.
 
-## 📦 0.35.0 - **BREAKING**: Python Bot API Converted to Synchronous API & Refactored to Use Properties - 26-Jan-2026
+## [0.35.0] - 2026-01-26 – **BREAKING**: Python Bot API Converted to Synchronous API & Refactored to Use Properties
 
 ### 💥 Breaking Changes (Python Bot API)
 
@@ -207,7 +207,7 @@ The Python Bot API has been refactored to match Java and .NET:
             - Open the `Config` -> `GUI Options` menu in the GUI.
             - Adjust the `Console max characters` value and click `OK` to save.
 
-## 📦 0.34.2 - Added native installer packages for GUI – 25-Dec-2025
+## [0.34.2] - 2025-12-25 – Added native installer packages for GUI
 
 Native installer packages for the GUI have been added for Windows, Linux, and macOS. These packages might still be early
 days. If you find any issues, please report them on the
@@ -243,7 +243,7 @@ You can still download the JAR version as usual, which works on all platforms wi
       directory into the new user data directory for the GUI.
     - Added jlink runtime image creation for Windows installers to avoid "Failed to launch VM" issues on some machines.
 
-## 📦 0.34.1 - Fixes on_death in Python Bot API and GUI improvements – 14-Nov-2025
+## [0.34.1] - 2025-11-14 – Fixes on_death in Python Bot API and GUI improvements
 
 ### 🚀 Improvements
 
@@ -259,7 +259,7 @@ You can still download the JAR version as usual, which works on all platforms wi
 - Bot API for Python:
     - The on_death() event handler is now called when the bot dies.
 
-## 📦 0.34.0 – Python Support + GUI Improvements – 19-Oct-2025
+## [0.34.0] - 2025-10-19 – Python Support + GUI Improvements
 
 The Python Bot API, sample bots, and documentation are now complete. 🎉
 We also added Spanish, Catalan/Valencian, and Danish translations. New translations are always welcome!
@@ -284,7 +284,7 @@ Additionally, we introduced UI improvements such as UI scaling and a volume slid
     - Added Danish translations as well.
     - Added an option to switch between Spanish, English, and Danish in the GUI Options dialog.
 
-## 📦 0.33.1 - Fixes for Recording and Replays - 08-Sep-2025
+## [0.33.1] - 2025-09-08 – Fixes for Recording and Replays
 
 ### 🐞 Bug Fixes
 
@@ -302,7 +302,7 @@ Additionally, we introduced UI improvements such as UI scaling and a volume slid
     - #165: Enhanced "🔴REC" Indicator: Improved the visual design of the recording indicator for better clarity and
       user experience.
 
-## 📦 0.33.0 - Added Recording and Replays - 06-Sep-2025
+## [0.33.0] - 2025-09-06 – Added Recording and Replays
 
 This version adds support for recording and replaying battles (#55: Game replays). All credits go
 to [Jan Durovec](https://github.com/jandurovec) for implementing this cool feature! 🤩
@@ -352,7 +352,7 @@ This feature is particularly useful for:
 - Booter:
     - Bots could not be booted on Linux. Thanks goes to [Yang Li](https://github.com/yangli2) for fixing this. ❤️
 
-## 📦 0.32.1 - No need of default constructor - 01-Jul-2025
+## [0.32.1] - 2025-07-01 – No need of default constructor
 
 ### 🚀 Improvements
 
@@ -369,7 +369,7 @@ This feature is particularly useful for:
     - Fixed a bug in TrackFire.cs where the turret misaligned while attempting to lock onto a target, causing it to
       oscillate erratically during target acquisition.
 
-## 📦 0.32.0 - Added Booter Error Log - 24-Jun-2025
+## [0.32.0] - 2025-06-24 – Added Booter Error Log
 
 This version makes it easier to figure out why a bot will not boot from a bot directory.
 
@@ -388,7 +388,7 @@ This version makes it easier to figure out why a bot will not boot from a bot di
       environment variables if the config file could not be found.
         - Due to this change, the default constructor has been removed from all sample bots.
 
-## 📦 0.31.0 - Improved Graphical Debugging - 19-Jun-2025
+## [0.31.0] - 2025-06-19 – Improved Graphical Debugging
 
 ### ⚠️ Breaking Changes
 
@@ -433,7 +433,7 @@ If you are using `Color` and the `getGraphics()` method or `Graphics` property, 
 - GUI:
     - Fixed multiple issues with the "No bot directory root has been configured" error dialog.
 
-## 📦 0.30.2 - GUI auto-scales the Battle View - 02-Jun-2025
+## [0.30.2] - 2025-06-02 – GUI auto-scales the Battle View
 
 ### 🚀 Improvements
 
@@ -459,7 +459,7 @@ If you are using `Color` and the `getGraphics()` method or `Graphics` property, 
       **.
       1 millisecond = 1/1,000 of a second, where 1 microsecond = 1/1,000,000 of a second
 
-## 📦 0.30.1 - Fixes to sample bots - 08-Mar-2025
+## [0.30.1] - 2025-03-08 – Fixes to sample bots
 
 This version provides bug fixes to the sample bots only.
 
@@ -467,7 +467,7 @@ This version provides bug fixes to the sample bots only.
 
 - Sample Bots: Corners and Walls did not turn correctly towards the wall.
 
-## 📦 0.30.0 - Added Graphics Debugging - 07-Feb-2025
+## [0.30.0] - 2025-02-07 – Added Graphics Debugging
 
 ### 🚀 #116: Graphical Debugging Implemented Using SVG
 
@@ -519,7 +519,7 @@ A new sample bot, PaintingBot, has been introduced to showcase the use of debug 
 - GUI:
     - Fixed issue with the switch button in the Server Options for switching between using a local and remote server.
 
-## 📦 0.29.0 - All about colors - 19-Jan-2024
+## [0.29.0] - 2024-01-19 – All about colors
 
 This version causes a breaking change for the Color class. The Color class was removed and replaced with the Color class
 used with the used platform (Java or C#).
@@ -533,7 +533,7 @@ used with the used platform (Java or C#).
 - Sample Bots:
     - Updated to use the Color class from the used platform (Java or C#).
 
-## 📦 0.28.1 - Fixed Survival Scores - 01-Jan-2025
+## [0.28.1] - 2025-01-01 – Fixed Survival Scores
 
 ### 🐞 Bug Fixes
 
@@ -543,7 +543,7 @@ used with the used platform (Java or C#).
     - The server now only listens to the wildcard IP address (0.0.0.0), meaning it will listen on all available network
       interfaces for the specified port (IPv4 and IPv6) on the system.
 
-## 📦 0.28.0 - Inherited Socket Support - 21-Dec-2024
+## [0.28.0] - 2024-12-21 – Inherited Socket Support
 
 ### 🚀 Improvements
 
@@ -568,7 +568,7 @@ used with the used platform (Java or C#).
       Internal events are processed immediately, while bot events are eventually processed through the event queue,
       if at all.
 
-## 📦 0.27.0 - Lots of bug fixes - 02-Dec-2024
+## [0.27.0] - 2024-12-02 – Lots of bug fixes
 
 This version fixes various issues, some found when running legacy bots with the [Robocode API Bridge].
 
@@ -595,7 +595,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - Bridged bots could not be restarted as they got a connection error with the WebSocket when restarting.
     - .NET bots sometimes exited when running at max speed without any exceptions occurring.
 
-## 📦 0.26.1 - Various bug fixes - 03-Nov-2024
+## [0.26.1] - 2024-11-03 – Various bug fixes
 
 ### 🚀 Improvements
 
@@ -606,7 +606,7 @@ This version fixes various issues, some found when running legacy bots with the 
       provides an observer with the enemy count for each bot, which is useful for the UI to display the current enemy
       count for a specific bot. This also benefits the properties in the Bot Console.
 
-## 📦 0.26.0 - Support for remote servers - 20-Oct-2024
+## [0.26.0] - 2024-10-20 – Support for remote servers
 
 ### 🚀 Improvements
 
@@ -624,7 +624,7 @@ This version fixes various issues, some found when running legacy bots with the 
 - GUI:
     - Control Panel was shown when server was stopped or rebooted.
 
-## 📦 0.25.0 - Fix for Ranks and Event Queue improvements - 11-Oct-2024
+## [0.25.0] - 2024-10-11 – Fix for Ranks and Event Queue improvements
 
 ### 🐞 Bug Fixes
 
@@ -635,7 +635,7 @@ This version fixes various issues, some found when running legacy bots with the 
       more bot events than it should, due to this bug.
     - The event queue and dispatcher was improved so it is closer to the implementation for the original Robocode.
 
-## 📦 0.24.4 - Support for IPv6 endpoints - 19-Sep-2024
+## [0.24.4] - 2024-09-19 – Support for IPv6 endpoints
 
 ### 🚀 Improvements
 
@@ -650,7 +650,7 @@ This version fixes various issues, some found when running legacy bots with the 
 - Server
     - #85: Fixed edge case when crossing the speed of 0, when target speed is 0.
 
-## 📦 0.24.3 - bug fixes - 26-Aug-2024
+## [0.24.3] - 2024-08-26 – bug fixes
 
 ### 🐞 Bug Fixes
 
@@ -659,7 +659,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - #104: `ServerHandshake.version` was returning a string with the name of the server + version instead of just the
       version.
 
-## 📦 0.24.2 - bug fixes - 22-Aug-2024
+## [0.24.2] - 2024-08-22 – bug fixes
 
 ### 🚀 Improvements
 
@@ -672,7 +672,7 @@ This version fixes various issues, some found when running legacy bots with the 
 - Server
     - #102: Double events were sent to observers and controllers from the server.
 
-## 📦 0.24.1 - Support for local IP addresses - 13-Jul-2024
+## [0.24.1] - 2024-07-13 – Support for local IP addresses
 
 ### 🚀 Improvements
 
@@ -682,7 +682,7 @@ This version fixes various issues, some found when running legacy bots with the 
 - GUI:
     - Improved validation of URL when attempting to add new server URL.
 
-## 📦 0.24.0 - Minor bug fixes and code improvements - 14-Jun-2024
+## [0.24.0] - 2024-06-14 – Minor bug fixes and code improvements
 
 ### 🚀 Improvements
 
@@ -702,7 +702,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - The jar files containing javadoc documentation and source files was not given the correct name when they were
       built and published to the repositories.
 
-## 📦 0.23.2 - Bug fixed booting + enabling/disabling bot directories - 21-May-2024
+## [0.23.2] - 2024-05-21 – Bug fixed booting + enabling/disabling bot directories
 
 ### 🐞 Bug Fixes
 
@@ -716,7 +716,7 @@ This version fixes various issues, some found when running legacy bots with the 
       directories can be selected with the file dialog, and multiple files can be removed from the Bot Root Directories
       list.
 
-## 📦 0.23.1 - Fixing missing stdout and stderr messages - 18-May-2024
+## [0.23.1] - 2024-05-18 – Fixing missing stdout and stderr messages
 
 ### 🐞 Bug Fixes
 
@@ -725,7 +725,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - Fixed issue with the Java API, where some messages sent to stdout and stderr were not written out to the bot
       console.
 
-## 📦 0.23.0 - Fixing movement bugs in bot APIs - 29-Apr-2024
+## [0.23.0] - 2024-04-29 – Fixing movement bugs in bot APIs
 
 ### 🐞 Bug Fixes
 
@@ -743,7 +743,7 @@ This version fixes various issues, some found when running legacy bots with the 
       direction of the body, gun, and radar. This helped on fixing #80
     - Renamed the "Angle" property of InitialPosition to "Direction".
 
-## 📦 0.22.2 - Fixing issues with Bot Console - 29-Mar-2024
+## [0.22.2] - 2024-03-29 – Fixing issues with Bot Console
 
 ### 🚀 Improvements
 
@@ -758,7 +758,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - Bot Console: Turn numbers was sometimes written in the middle of the output, and newlines could occur in the wrong
       places.
 
-## 📦 0.22.1 - GUI improvements for Linux - 07-Jan-2024
+## [0.22.1] - 2024-01-07 – GUI improvements for Linux
 
 ### 🐞 Bug Fixes
 
@@ -772,7 +772,7 @@ This version fixes various issues, some found when running legacy bots with the 
 - GUI:
     - Improved the Bot Console and Server Console to use anti-aliased text.
 
-## 📦 0.22.0 - Improved ANSI support - 03-Dec-2023
+## [0.22.0] - 2023-12-03 – Improved ANSI support
 
 ### 🚀 Improvements
 
@@ -794,7 +794,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - The Properties tab of the Bot Console did not show any values when initialized, e.g. when game is paused.
     - Some stdout text from the bot were sometimes missing in the Bot Console. Solved by using the EDT.
 
-## 📦 0.21.0 - Improved scoring - 02-Oct-2023
+## [0.21.0] - 2023-10-02 – Improved scoring
 
 ### 🚀 Improvements
 
@@ -817,7 +817,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - Events are only printed out while the bot is alive or has just died.
     - The DeathEvent was missing.
 
-## 📦 0.20.1 - Added Events to bot console - 15-Sep-2023
+## [0.20.1] - 2023-09-15 – Added Events to bot console
 
 ### 🚀 Improvements
 
@@ -825,7 +825,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - Added an [Events tab] on the Bot Console that continuously dumps the bot events as they occur.
     - Bot property column values on bot consoles are now written in bold and with a monospace font.
 
-## 📦 0.20.0 - Added support for teams and droids - 23-Aug-2023
+## [0.20.0] - 2023-08-23 – Added support for teams and droids
 
 ### 🚀 Improvements
 
@@ -870,7 +870,7 @@ This version fixes various issues, some found when running legacy bots with the 
 - GUI:
     - The GUI could get stuck and become unresponsive when displaying the busy pointer.
 
-## 📦 0.19.3 - Maintenance - 04-Aug-2023
+## [0.19.3] - 2023-08-04 – Maintenance
 
 ### 🚀 Improvements
 
@@ -892,7 +892,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - Fixed issue, where the battle graphics was not displayed when starting the battle.
     - Fixed calculation of 1st, 2nd, and 3rd places.
 
-## 📦 0.19.2 - Added bot properties tab - 05-Apr-2023
+## [0.19.2] - 2023-04-05 – Added bot properties tab
 
 ### 🚀 Improvements
 
@@ -910,7 +910,7 @@ This version fixes various issues, some found when running legacy bots with the 
 - Server:
     - #66: The server is not accepting the full range of ports.
 
-## 📦 0.19.1 - Maintenance - 26-Feb-2023
+## [0.19.1] - 2023-02-26 – Maintenance
 
 ### 🚀 Improvements
 
@@ -934,7 +934,7 @@ This version fixes various issues, some found when running legacy bots with the 
 - Bot API for .NET:
     - Issue where the `Game Types` field was overwritten by `Country Codes` (could be seen on the UI).
 
-## 📦 0.19.0 - Added bot console windows - 28-Jan-2023
+## [0.19.0] - 2023-01-28 – Added bot console windows
 
 ### 🚀 Improvements
 
@@ -962,7 +962,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - Fixed issues with moving and turning, which could override the set target speed and turn rates, when these had
       been set explicitly on the API.
 
-## 📦 0.18.0 - Improvements to the Bot APIs - 18-Dec-2022
+## [0.18.0] - 2022-12-18 – Improvements to the Bot APIs
 
 ### 🐞 Bug Fixes
 
@@ -994,7 +994,7 @@ This version fixes various issues, some found when running legacy bots with the 
     - Added more test units, which did show bugs within the Bot API for both Java and .NET.
     - The event priority order was reversed to match the order used with the original Robocode.
 
-## 📦 0.17.4 - Maintenance - 16-Oct-2022
+## [0.17.4] - 2022-10-16 – Maintenance
 
 ### 🚀 Improvements
 
@@ -1019,7 +1019,7 @@ This version fixes various issues, some found when running legacy bots with the 
 
 - Bot API and GUI: Fixed various concurrency issues.
 
-## 📦 0.17.3 - Maintenance - 02-Oct-2022
+## [0.17.3] - 2022-10-02 – Maintenance
 
 #### ⚡ Changes
 
@@ -1039,7 +1039,7 @@ This version fixes various issues, some found when running legacy bots with the 
         - Timer used for turn timeout was not stopped, when a battle had ended/aborted.
         - Freeing heap memory used for storing game state when game is ended/aborted.
 
-## 📦 0.17.2 - Added sounds - 20-Sep-2022
+## [0.17.2] - 2022-09-20 – Added sounds
 
 ### 🚀 Improvements
 
@@ -1054,7 +1054,7 @@ This version fixes various issues, some found when running legacy bots with the 
 
 - GUI: When the Bot Directories on the Select Bots for Battle window is updated, all selections are now being cleared.
 
-## 📦 0.17.1 - Identifying a bot from Boot-up to Ticks - 15-Sep-2022
+## [0.17.1] - 2022-09-15 – Identifying a bot from Boot-up to Ticks
 
 ### 🚀 Improvements
 
@@ -1069,7 +1069,7 @@ This version fixes various issues, some found when running legacy bots with the 
       turn in "step" and take the double amount of time.
     - Some events already handled were not removed from the event queue.
 
-## 📦 0.17.0 - Introduction of process id - 06-Sep-2022
+## [0.17.0] - 2022-09-06 – Introduction of process id
 
 The _boot id_ concept introduced in release 0.16.0 has been rolled back and the _pid_ is used with the Booter again.
 However, a new concept is introduced to replace the _boot id_, which is the _process id_.
@@ -1091,7 +1091,7 @@ only be unique locally, but across multiple systems. With the _session id_, all 
 - Server:
     - The `server-handshake` was missing the name and version.
 
-## 📦 0.16.0 - Introduction of boot id - 31-Aug-2022
+## [0.16.0] - 2022-08-31 – Introduction of boot id
 
 ### 🐞 Bug Fixes
 
@@ -1103,7 +1103,7 @@ only be unique locally, but across multiple systems. With the _session id_, all 
 - GUI:
     - Issue with reading huge bot list from the booter when reading from stdin.
 
-## 📦 0.15.0 - Added fire assistance - 17-Aug-2022
+## [0.15.0] - 2022-08-17 – Added fire assistance
 
 ### 🚀 Improvements
 
@@ -1146,7 +1146,7 @@ Bot info:
 - Server:
     - TPS: When TPS was set to 0 and the battle was restarted, the battle ran in max TPS.
 
-## 📦 0.14.3 - Fixed setting adjustment turns - 07-Aug-2022
+## [0.14.3] - 2022-08-07 – Fixed setting adjustment turns
 
 ### 🐞 Bug Fixes
 
@@ -1159,7 +1159,7 @@ Bot info:
 - Sample bots
     - Updated Corners to start at random corner when a new battle is started.
 
-## 📦 0.14.2 - Added Velocity Bot - 29-Jul-2022
+## [0.14.2] - 2022-07-29 – Added Velocity Bot
 
 ### 🚀 Improvements
 
@@ -1184,7 +1184,7 @@ Bot info:
         - Setting the TPS to max could be reset to default TPS when restarting the battle or GUI.
     - GUI client was registered multiple times with the server.
 
-## 📦 0.14.1 - Added BotInfo builder - 14-Jul-2022
+## [0.14.1] - 2022-07-14 – Added BotInfo builder
 
 ### 🚀 Improvements
 
@@ -1196,7 +1196,7 @@ Bot info:
     - GameTypes:
         - Added missing game type for "classic" game + updated documentation.
 
-## 📦 0.14.0 - Adjustments for bot events - 03-Jul-2022
+## [0.14.0] - 2022-07-03 – Adjustments for bot events
 
 #### Changes
 
@@ -1212,7 +1212,7 @@ Bot info:
 - Schema:
     - Replaced `$type` with `type` to make it possible to use more code generators ([#31]).
 
-## 📦 0.13.4 - GUI improvements + bug fix - 06-Jun-2022
+## [0.13.4] - 2022-06-06 – GUI improvements + bug fix
 
 ### 🐞 Bug Fixes
 
@@ -1232,7 +1232,7 @@ Bot info:
         - Added a "Default TPS" button to reset the TPS to the default setting (30 TPS).
     - **Tool tips**: Added tool tip texts on the Control panel.
 
-## 📦 0.13.3 - Stabilization of Bot APIs - 01-Jun-2022
+## [0.13.3] - 2022-06-01 – Stabilization of Bot APIs
 
 ### 🐞 Bug Fixs
 
@@ -1253,7 +1253,7 @@ Bot info:
 - GUI:
     - When stopping a battle and starting a new one, the Pause/Resume and Stop buttons were disabled.
 
-## 📦 0.13.2 - Fixing issue #23 - 19-May-2022
+## [0.13.2] - 2022-05-19 – Fixing issue #23
 
 ### 🐞 Bug Fixes
 
@@ -1264,7 +1264,7 @@ Bot info:
 - Bot APIs:
     - Added missing documentation about using positive and negative infinity values when moving and turning.
 
-## 📦 0.13.1 - Fixing event queue + country codes - 18-May-2022
+## [0.13.1] - 2022-05-18 – Fixing event queue + country codes
 
 ### 🐞 Bug Fixes
 
@@ -1284,7 +1284,7 @@ Bot info:
 - Sample bots:
     - Optimized TrackFire after fixing rescanning issue.
 
-## 📦 0.13.0 - Bot API for .NET 6 - 03-May-2022
+## [0.13.0] - 2022-05-03 – Bot API for .NET 6
 
 #### Changes
 
@@ -1313,7 +1313,7 @@ Bot info:
 - GUI:
     - The 'Start game' button is now disabled when the minimum or maximum number of participants is not met.
 
-## 📦 0.12.0 - Single stepping battle - 17-Apr-2022
+## [0.12.0] - 2022-04-17 – Single stepping battle
 
 #### Changes
 
@@ -1336,7 +1336,7 @@ Bot info:
 - GUI:
     - When dragging the battle arena, the graphics were not updated while dragging.
 
-## 📦 0.11.2 - Fix restart issue - 12-Apr-2022
+## [0.11.2] - 2022-04-12 – Fix restart issue
 
 ### 🐞 Bug Fixes
 
@@ -1344,7 +1344,7 @@ Bot info:
 - Bot API did not stop thread when GameAbortedEvent occurred (when restarting).
 - When restarting, a two or more games could be started on the server.
 
-## 📦 0.11.1 - Patch for the GUI - 07-Apr-2022
+## [0.11.1] - 2022-04-07 – Patch for the GUI
 
 ### 🐞 Bug Fixes
 
@@ -1360,7 +1360,7 @@ Bot info:
   improvements were done to the control panel.
 - A busy cursor is now (automatically) shown when an operation takes some time to perform.
 
-## 📦 0.11.0 - Initial position feature - 02-Apr-2022
+## [0.11.0] - 2022-04-02 – Initial position feature
 
 ### 🐞 Bug Fixes
 
@@ -1385,7 +1385,7 @@ Bot info:
 - When the server settings are changed on the GUI, the user will be asked if the server should be rebooted to let the
   changes take effect.
 
-## 📦 0.10.0 - Bot API improvements - 24-Mar-2022
+## [0.10.0] - 2022-03-24 – Bot API improvements
 
 ### 🐞 Bug Fixes
 
@@ -1413,7 +1413,7 @@ Bot info:
 - Client is disconnected when sending a wrong secret to the server.
     - Bot API now writes out status-code and the reason for disconnecting when it is due to a wrong secret.
 
-## 📦 0.9.12 - 23-Jan-2022
+## [0.9.12] - 2022-01-23
 
 - First alpha version was released! 🚀😀
 

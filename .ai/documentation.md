@@ -1,6 +1,6 @@
 # Documentation Standards
 
-<!-- KEYWORDS: docs, README, VERSIONS.md, Javadoc, docstring, changelog, user-visible -->
+<!-- KEYWORDS: docs, README, CHANGELOG.md, Javadoc, docstring, changelog, user-visible -->
 
 ## When to Update
 
@@ -8,22 +8,24 @@ Update for user-visible changes: new features, breaking changes, behavior modifi
 
 **Files to update:**
 - `/README.md` — project overview
-- `/VERSIONS.md` — changelog
+- `/CHANGELOG.md` — changelog
 - Module-specific `README.md` files
 - API docs: Javadoc (Java) · docstrings (Python) · XML comments (C#)
 
-## VERSIONS.md Format
+## CHANGELOG.md Format
+
+Follows [Keep a Changelog](https://keepachangelog.com/) with project-specific emoji sub-sections.
 
 ```markdown
-## Version X.Y.Z (YYYY-MM-DD)
+## [X.Y.Z] - YYYY-MM-DD – Release Title
 
-### Added
+### ✨ Features
 - ...
 
-### Changed
+### 🐞 Bug Fixes
 - ...
 
-### Fixed
+### 🔧 Changes
 - ...
 
 ### Deprecated
