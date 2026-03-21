@@ -42,9 +42,7 @@
 # Gson (used for JSON schema classes)
 -keep class com.google.gson.** { *; }
 -dontwarn com.google.gson.**
-
-# Note: Gson's META-INF/proguard/gson.pro contains conditional rules that may show warnings
-# These are safe to ignore as the base Gson classes are kept above
+-dontnote com.google.gson.**
 
 # Keep all robocode classes
 -keep class dev.robocode.tankroyale.** { *; }

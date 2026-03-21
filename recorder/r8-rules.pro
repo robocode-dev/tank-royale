@@ -19,9 +19,7 @@
 
 # Kotlinx Serialization
 -dontwarn kotlinx.serialization.**
-
-# Note: Serialization keep rules are handled by kotlinx-serialization-common.pro in META-INF
-# Our broad -keep for dev.robocode.tankroyale.** ensures serialized classes are retained
+-dontnote kotlinx.serialization.**
 
 # Clikt CLI library
 -keep class com.github.ajalt.clikt.** { *; }
