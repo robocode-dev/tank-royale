@@ -60,11 +60,11 @@
   continues waiting. "Cancel" behaves as above.
 
 - [ ] 3.5 Manual test plan (human task):
-  - Boot 2 distinct bots → dialog shows both, auto-closes when connected, bots appear in joined list
-  - Boot a team → dialog shows expanded member identities with correct counts
-  - Cancel during boot → bots killed
-  - Slow bot (add artificial delay) → elapsed timer updates, timeout triggers error
-  - External server with stray bots → stray bots ignored in progress display
+  - [ ] 3.5.1 Boot 2 distinct bots → dialog shows both, auto-closes when connected, bots appear in joined list
+  - [ ] 3.5.2 Boot a team → dialog shows expanded member identities with correct counts
+  - [ ] 3.5.3 Cancel during boot → bots killed
+  - [ ] 3.5.4 Slow bot (add artificial delay) → elapsed timer updates, timeout triggers error
+  - [ ] 3.5.5External server with stray bots → stray bots ignored in progress display
 
 ## 4. Update documentation (human task)
 
