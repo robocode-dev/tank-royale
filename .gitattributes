@@ -11,3 +11,6 @@
 *.jar binary
 *.class binary
 *.pdf binary
+
+# Java .properties files use ISO-8859-1 encoding — prevent automatic charset conversion
+*.properties text eol=lf working-tree-encoding=ISO-8859-1

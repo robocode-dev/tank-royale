@@ -47,10 +47,15 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
 
     private val maxCharsSpinner = JSpinner(SpinnerNumberModel(10000, 1000, 1000000, 1000))
 
+    private val bootTimeoutSpinner = JSpinner(SpinnerNumberModel(30, 1, 600, 1)).apply {
+        (editor as? JSpinner.DefaultEditor)?.textField?.columns = 4
+    }
+
     init {
         addLanguageSelector()
         addUiScaleSelector()
         addConsoleMaxCharsSelector()
+        addBootTimeoutSelector()
         setInitialSelections()
         addOkButton(onOk, "span 2, alignx center, gaptop para, wrap").apply {
             setDefaultButton(this)
@@ -72,6 +77,11 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         add(maxCharsSpinner, "wrap")
     }
 
+    private fun addBootTimeoutSelector() {
+        addLabel("option.gui.boot_timeout")
+        add(bootTimeoutSpinner, "wrap")
+    }
+
     private fun setInitialSelections() {
         // Initialize UI scale
         val currentScale = ConfigSettings.uiScale
@@ -85,6 +95,9 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
 
         // Initialize console max characters
         maxCharsSpinner.value = ConfigSettings.consoleMaxCharacters
+
+        // Initialize boot timeout
+        bootTimeoutSpinner.value = ConfigSettings.bootTimeout
     }
 
     private fun onOkClicked() {
@@ -111,6 +124,9 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
 
         // Save console max characters
         ConfigSettings.consoleMaxCharacters = maxCharsSpinner.value as Int
+
+        // Save boot timeout
+        ConfigSettings.bootTimeout = bootTimeoutSpinner.value as Int
 
         GuiConfigDialog.dispose()
     }

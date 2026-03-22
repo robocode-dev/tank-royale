@@ -244,7 +244,8 @@ servers, not remote servers.
 
 The GUI options allow you to customize the language used across the entire interface.
 
-You can also adjust the UI scaling, which is especially useful for optimizing display on high-resolution screens.
+You can also adjust the UI scaling, which is especially useful for optimizing display on high-resolution screens, set
+the maximum number of characters in a console, and a boot timeout in seconds.
 
 ![GUI Options](../images/gui/gui-options.png)
 

@@ -8,8 +8,9 @@
       `MyFirstDroid v1.0 (2/4 connected)`.
     - Elapsed time label (`Elapsed: 12s / 30s`) updates every 500 ms during the wait.
     - The cancel button aborts the boot, kills booted bot processes, and returns to the bot selection dialog.
-    - Timeout error: after 30 s, the status area is replaced with a list of pending bots and "Retry" / "Cancel" buttons.
-      "Retry" resets the timer and continues waiting.
+    - Timeout error: after the configured timeout, the status area is replaced with a list of pending bots and
+      "Retry" / "Cancel" buttons. "Retry" resets the timer and continues waiting.
+    - Boot timeout is now configurable in GUI Options (default: 30 seconds).
 
 ## [0.38.0] - 2026-03-21 – Identity-Based Bot Matching
 

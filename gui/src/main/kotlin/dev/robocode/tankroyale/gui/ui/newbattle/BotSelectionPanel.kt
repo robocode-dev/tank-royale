@@ -180,6 +180,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         val dialog = BootProgressDialog(
             owner = SwingUtilities.getWindowAncestor(this),
             expectedIdentities = expectedIdentities,
+            timeoutSeconds = ConfigSettings.bootTimeout,
             onSuccess = { /* bots now visible in joined list */ },
             onCancel = { BootProcess.stop() },
         )
