@@ -1,4 +1,5 @@
 import build.tasks.FatJar
+import java.io.OutputStream
 
 description = "Robocode Tank Royale GUI"
 
@@ -108,6 +109,7 @@ tasks {
 
         mainClass.set("com.android.tools.r8.R8")
         classpath = buildscript.configurations["classpath"]
+        standardOutput = OutputStream.nullOutputStream() // suppress R8 info/diagnostic noise; errors surfaced via exit code
 
         args = listOf(
             "--release",

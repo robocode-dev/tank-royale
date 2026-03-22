@@ -1,5 +1,6 @@
 package build.tasks
 
+import org.gradle.api.file.ArchiveOperations
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -7,6 +8,7 @@ import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.bundling.Jar
+import javax.inject.Inject
 
 abstract class FatJar : Jar() {
     private val jarManifestVendor = "robocode.dev"
@@ -22,7 +24,10 @@ abstract class FatJar : Jar() {
     @get:Optional
     abstract val outputFilename: Property<String>
 
-    // Declare configurations as inputs
+    @get:Inject
+    abstract val archiveOperations: ArchiveOperations
+
+    // Declare configurations as inputs (accessed at configuration time — fine)
     @get:InputFiles
     protected val compileClasspath = project.configurations.getByName("compileClasspath")
 
@@ -30,12 +35,18 @@ abstract class FatJar : Jar() {
     protected val runtimeClasspath = project.configurations.getByName("runtimeClasspath")
 
     init {
-        // Move configuration to init block
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        // Register source directories at configuration time (project access at config time is fine)
+        from(
+            project.files("build/classes/kotlin/main"),
+            project.files("build/classes/java/main"), // Bot API is written in Java
+            project.files("build/resources/main"),
+        )
     }
 
     @TaskAction
-    override fun copy() {  // Change to override copy() instead of custom taskAction
+    override fun copy() {
         if (outputFilename.isPresent) {
             archiveFileName.set(outputFilename)
         }
@@ -51,13 +62,10 @@ abstract class FatJar : Jar() {
             }
         }
 
+        // Use injected ArchiveOperations instead of project.zipTree() to avoid project access at execution time
         from(
-            project.files("build/classes/kotlin/main"),
-            project.files("build/classes/java/main"), // Bot API is written in Java
-            project.files("build/resources/main"),
-
-            compileClasspath.filter { it.name.endsWith(".jar") }.map { project.zipTree(it) },
-            runtimeClasspath.filter { it.name.endsWith(".jar") }.map { project.zipTree(it) },
+            compileClasspath.filter { it.name.endsWith(".jar") }.map { archiveOperations.zipTree(it) },
+            runtimeClasspath.filter { it.name.endsWith(".jar") }.map { archiveOperations.zipTree(it) },
         )
         exclude("*.kotlin_metadata")
 

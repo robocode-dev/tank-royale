@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package core
 
 import dev.robocode.tankroyale.schema.Participant
