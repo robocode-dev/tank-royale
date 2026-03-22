@@ -170,11 +170,8 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
     }
 
     private fun startGame() {
-        isVisible = true
-
         val botAddresses = selectedBots.map { it.botAddress }
         Client.startGame(botAddresses.toSet())
-
         NewBattleDialog.dispose()
     }
 }

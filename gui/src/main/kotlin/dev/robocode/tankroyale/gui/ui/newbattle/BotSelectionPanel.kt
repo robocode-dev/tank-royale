@@ -2,6 +2,8 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.client.model.BotInfo
 import dev.robocode.tankroyale.common.event.Event
+import dev.robocode.tankroyale.gui.booter.BotIdentity
+import dev.robocode.tankroyale.gui.booter.BotIdentityReader
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
@@ -24,6 +26,7 @@ import net.miginfocom.swing.MigLayout
 import java.awt.EventQueue
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
+import java.nio.file.Paths
 import javax.swing.*
 
 @SuppressWarnings("kotlin:S1192") // allow duplicated string literals
@@ -160,9 +163,27 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
     private fun runFromBotDirectoryAtIndex(index: Int) {
         if (index >= 0 && index < botsDirectoryListModel.size) {
-            val botInfo = botsDirectoryListModel[index]
-            BootProcess.boot(listOf(botInfo.host))
+            bootAndShowProgress(listOf(botsDirectoryListModel[index]))
         }
+    }
+
+    private fun bootAndShowProgress(botInfoList: List<BotInfo>) {
+        val expectedIdentities = botInfoList.flatMap { botInfo ->
+            try {
+                BotIdentityReader.readIdentities(Paths.get(botInfo.host))
+            } catch (e: Exception) {
+                listOf(BotIdentity(botInfo.name, botInfo.version))
+            }
+        }
+        BootProcess.boot(botInfoList.map { it.host })
+
+        val dialog = BootProgressDialog(
+            owner = SwingUtilities.getWindowAncestor(this),
+            expectedIdentities = expectedIdentities,
+            onSuccess = { /* bots now visible in joined list */ },
+            onCancel = { BootProcess.stop() },
+        )
+        dialog.isVisible = true
     }
 
     private fun createBotDirectoryList() =
@@ -191,8 +212,9 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     }
 
     private fun handleBootBots() {
-        val botDirs = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].host }
-        BootProcess.boot(botDirs)
+        val selected = botsDirectoryList.selectedValuesList
+        if (selected.isEmpty()) return
+        bootAndShowProgress(selected)
     }
 
     private fun handleUnbootBots() {
