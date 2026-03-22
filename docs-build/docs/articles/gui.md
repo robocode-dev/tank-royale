@@ -80,7 +80,7 @@ while 'Unboot' terminates the selected bot's process.
 When booting bots from the **Bot Directories** list, a progress dialog appears and tracks each bot as it connects to
 the server:
 
-![Waiting for bots to connect](../images/gui/waiting-for-bot-to-connect.png)
+![Waiting for bots to connect](../images/gui/waiting-for-bots-to-connect.png)
 
 The dialog shows:
 
