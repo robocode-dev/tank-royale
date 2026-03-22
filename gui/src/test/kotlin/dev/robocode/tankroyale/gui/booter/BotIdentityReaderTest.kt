@@ -13,16 +13,18 @@ class BotIdentityReaderTest : FunSpec({
     context("BotIdentityReader") {
 
         test("regular bot directory returns single identity") {
-            val tempDir = Files.createTempDirectory("bot-test")
+            val tempRoot = Files.createTempDirectory("bot-test-root")
             try {
-                tempDir.resolve("bot.json").toFile().writeText(
+                val botDir = tempRoot.resolve("MyBot")
+                Files.createDirectory(botDir)
+                botDir.resolve("MyBot.json").toFile().writeText(
                     """{"name": "MyBot", "version": "1.0", "authors": ["Alice"]}"""
                 )
-                val identities = BotIdentityReader.readIdentities(tempDir)
+                val identities = BotIdentityReader.readIdentities(botDir)
                 identities shouldHaveSize 1
                 identities[0] shouldBe BotIdentity("MyBot", "1.0")
             } finally {
-                tempDir.toFile().deleteRecursively()
+                tempRoot.toFile().deleteRecursively()
             }
         }
 
@@ -31,12 +33,12 @@ class BotIdentityReaderTest : FunSpec({
             try {
                 val teamDir = tempRoot.resolve("MyTeam")
                 Files.createDirectory(teamDir)
-                teamDir.resolve("bot.json").toFile().writeText(
+                teamDir.resolve("MyTeam.json").toFile().writeText(
                     """{"name": "MyTeam", "version": "2.0", "authors": ["Bob"], "teamMembers": ["Droid", "Droid"]}"""
                 )
                 val droidDir = tempRoot.resolve("Droid")
                 Files.createDirectory(droidDir)
-                droidDir.resolve("bot.json").toFile().writeText(
+                droidDir.resolve("Droid.json").toFile().writeText(
                     """{"name": "MyFirstDroid", "version": "1.0", "authors": ["Bob"]}"""
                 )
 
@@ -56,17 +58,17 @@ class BotIdentityReaderTest : FunSpec({
             try {
                 val teamDir = tempRoot.resolve("MyTeam")
                 Files.createDirectory(teamDir)
-                teamDir.resolve("bot.json").toFile().writeText(
+                teamDir.resolve("MyTeam.json").toFile().writeText(
                     """{"name": "MyTeam", "version": "1.0", "authors": [], "teamMembers": ["BotA", "BotB"]}"""
                 )
                 val botADir = tempRoot.resolve("BotA")
                 Files.createDirectory(botADir)
-                botADir.resolve("bot.json").toFile().writeText(
+                botADir.resolve("BotA.json").toFile().writeText(
                     """{"name": "BotA", "version": "1.0", "authors": []}"""
                 )
                 val botBDir = tempRoot.resolve("BotB")
                 Files.createDirectory(botBDir)
-                botBDir.resolve("bot.json").toFile().writeText(
+                botBDir.resolve("BotB.json").toFile().writeText(
                     """{"name": "BotB", "version": "2.0", "authors": []}"""
                 )
 
@@ -81,54 +83,62 @@ class BotIdentityReaderTest : FunSpec({
             }
         }
 
-        test("missing bot.json throws with descriptive message") {
-            val tempDir = Files.createTempDirectory("missing-json-test")
+        test("missing JSON file throws with descriptive message") {
+            val tempRoot = Files.createTempDirectory("missing-json-test")
             try {
+                val botDir = tempRoot.resolve("MyBot")
+                Files.createDirectory(botDir)
                 val ex = shouldThrow<IllegalArgumentException> {
-                    BotIdentityReader.readIdentities(tempDir)
+                    BotIdentityReader.readIdentities(botDir)
                 }
-                ex.message shouldContain "Missing bot.json"
+                ex.message shouldContain "Missing MyBot.json"
             } finally {
-                tempDir.toFile().deleteRecursively()
+                tempRoot.toFile().deleteRecursively()
             }
         }
 
         test("malformed JSON throws with descriptive message") {
-            val tempDir = Files.createTempDirectory("malformed-json-test")
+            val tempRoot = Files.createTempDirectory("malformed-json-test")
             try {
-                tempDir.resolve("bot.json").toFile().writeText("{ not valid json }")
+                val botDir = tempRoot.resolve("MyBot")
+                Files.createDirectory(botDir)
+                botDir.resolve("MyBot.json").toFile().writeText("{ not valid json }")
                 val ex = shouldThrow<IllegalArgumentException> {
-                    BotIdentityReader.readIdentities(tempDir)
+                    BotIdentityReader.readIdentities(botDir)
                 }
-                ex.message shouldContain "Malformed bot.json"
+                ex.message shouldContain "Malformed MyBot.json"
             } finally {
-                tempDir.toFile().deleteRecursively()
+                tempRoot.toFile().deleteRecursively()
             }
         }
 
         test("missing name field throws with descriptive message") {
-            val tempDir = Files.createTempDirectory("missing-name-test")
+            val tempRoot = Files.createTempDirectory("missing-name-test")
             try {
-                tempDir.resolve("bot.json").toFile().writeText("""{"version": "1.0"}""")
+                val botDir = tempRoot.resolve("MyBot")
+                Files.createDirectory(botDir)
+                botDir.resolve("MyBot.json").toFile().writeText("""{"version": "1.0"}""")
                 val ex = shouldThrow<IllegalArgumentException> {
-                    BotIdentityReader.readIdentities(tempDir)
+                    BotIdentityReader.readIdentities(botDir)
                 }
                 ex.message shouldContain "Missing 'name'"
             } finally {
-                tempDir.toFile().deleteRecursively()
+                tempRoot.toFile().deleteRecursively()
             }
         }
 
         test("missing version field throws with descriptive message") {
-            val tempDir = Files.createTempDirectory("missing-version-test")
+            val tempRoot = Files.createTempDirectory("missing-version-test")
             try {
-                tempDir.resolve("bot.json").toFile().writeText("""{"name": "MyBot"}""")
+                val botDir = tempRoot.resolve("MyBot")
+                Files.createDirectory(botDir)
+                botDir.resolve("MyBot.json").toFile().writeText("""{"name": "MyBot"}""")
                 val ex = shouldThrow<IllegalArgumentException> {
-                    BotIdentityReader.readIdentities(tempDir)
+                    BotIdentityReader.readIdentities(botDir)
                 }
                 ex.message shouldContain "Missing 'version'"
             } finally {
-                tempDir.toFile().deleteRecursively()
+                tempRoot.toFile().deleteRecursively()
             }
         }
     }

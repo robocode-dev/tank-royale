@@ -59,19 +59,21 @@ object BotIdentityReader {
     }
 
     private fun readBotJson(dir: Path): BotJson {
-        val jsonFile = dir.resolve("bot.json")
+        val dirName = dir.fileName?.toString()
+            ?: throw IllegalArgumentException("Cannot determine directory name from '$dir'")
+        val jsonFile = dir.resolve("$dirName.json")
         if (!Files.exists(jsonFile)) {
-            throw IllegalArgumentException("Missing bot.json in directory '$dir'")
+            throw IllegalArgumentException("Missing $dirName.json in directory '$dir'")
         }
         val content = try {
             Files.readString(jsonFile)
         } catch (e: Exception) {
-            throw IllegalArgumentException("Cannot read bot.json at '$jsonFile': ${e.message}", e)
+            throw IllegalArgumentException("Cannot read $dirName.json at '$jsonFile': ${e.message}", e)
         }
         return try {
             json.decodeFromString<BotJson>(content)
         } catch (e: Exception) {
-            throw IllegalArgumentException("Malformed bot.json at '$jsonFile': ${e.message}", e)
+            throw IllegalArgumentException("Malformed $dirName.json at '$jsonFile': ${e.message}", e)
         }
     }
 }
