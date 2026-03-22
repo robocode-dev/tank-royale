@@ -75,6 +75,28 @@ other.
 Each entry displays the bot's file path and process ID (pid). The 'Boot' button launches individual bot processes,
 while 'Unboot' terminates the selected bot's process.
 
+### Boot Progress Dialog
+
+When booting bots from the **Bot Directories** list, a progress dialog appears and tracks each bot as it connects to
+the server:
+
+![Waiting for bots to connect](../images/gui/waiting-for-bot-to-connect.png)
+
+The dialog shows:
+
+- **Per-bot status** — each expected bot identity is listed with an icon indicating whether it is still pending
+  (⌛) or has connected (✔). For duplicate identities (e.g. two Corners bots), the count is shown in parentheses,
+  e.g. `Corners 1.0 (1/2 connected)`.
+- **Elapsed time** — a label in the bottom-left corner shows elapsed and maximum wait time, e.g. `Elapsed: 12s / 30s`.
+- **Cancel button** — aborts the boot process and kills all launched bot processes.
+
+When all expected bots have connected, the dialog closes automatically and the bots appear in the **Joined Bots** panel
+ready to be added to a battle.
+
+If the timeout is reached before all bots connect, the status area is replaced with an error listing the pending bots,
+and **Retry** / **Cancel** buttons are shown. **Retry** resets the timer and continues waiting; **Cancel** stops all
+booted processes.
+
 ### Joined Bots
 
 The **Joined Bots** section displays all bots connected to the server, whether local or remote, including those started
