@@ -23,9 +23,9 @@
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#030711" />
   
-  <title>bot_api.bot_info | Robocode Tank Royale Bot API (Python) 0.38.0 documentation</title>
-  <meta property="og:title" content="bot_api.bot_info | Robocode Tank Royale Bot API (Python) 0.38.0 documentation" />
-  <meta name="twitter:title" content="bot_api.bot_info | Robocode Tank Royale Bot API (Python) 0.38.0 documentation" />
+  <title>bot_api.bot_info | Robocode Tank Royale Bot API (Python) 0.38.1 documentation</title>
+  <meta property="og:title" content="bot_api.bot_info | Robocode Tank Royale Bot API (Python) 0.38.1 documentation" />
+  <meta name="twitter:title" content="bot_api.bot_info | Robocode Tank Royale Bot API (Python) 0.38.1 documentation" />
   <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e72c8e07" />
   <link rel="stylesheet" type="text/css" href="../../_static/theme.css?v=73505e79" />
   <link rel="search" title="Search" href="../../search.html" />
@@ -41,7 +41,7 @@
       Skip to content
     </a><header class="sticky top-0 z-40 w-full border-b shadow-xs border-border bg-background/90 backdrop-blur"><div class="container flex items-center h-14">
     <div class="hidden mr-4 md:flex">
-      <a href="../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.38.0 documentation</span>
+      <a href="../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.38.1 documentation</span>
       </a></div><button
       class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
       type="button" @click="showSidebar = true">
@@ -97,7 +97,7 @@
   class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full overflow-y-auto border-r border-border md:sticky"
   :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
 
-    <a href="../../index.html" class="justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.38.0 documentation</span>
+    <a href="../../index.html" class="justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.38.1 documentation</span>
     </a>
 
     <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0">
@@ -128,7 +128,7 @@
      class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
   <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
      href="../../index.html">
-    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.38.0 documentation</span>
+    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.38.1 documentation</span>
     <svg xmlns="http://www.w3.org/2000/svg"
          height="18"
          width="18"
@@ -486,225 +486,226 @@
 </span><span id="line-307"><span class="sd">                - Line-breaks (line-feed or newline) are supported, but expect up to 3 lines to be displayed on UI.</span>
 </span><span id="line-308">
 </span><span id="line-309"><span class="sd">            Example:</span>
-</span><span id="line-310"><span class="sd">                &quot;The rampage bot will try to ram bots that are very close.\n&quot;</span>
-</span><span id="line-311"><span class="sd">                &quot;Sneaks around corners and shoots at bots that come too near.&quot;</span>
-</span><span id="line-312">
-</span><span id="line-313"><span class="sd">            Args:</span>
-</span><span id="line-314"><span class="sd">                description (str): A short description of the bot.</span>
-</span><span id="line-315">
-</span><span id="line-316"><span class="sd">            Returns:</span>
-</span><span id="line-317"><span class="sd">                Self, for method chaining.</span>
-</span><span id="line-318"><span class="sd">            &quot;&quot;&quot;</span>
-</span><span id="line-319">            <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
-</span><span id="line-320">            <span class="k">return</span> <span class="bp">self</span></div>
+</span><span id="line-310"><span class="sd">                &quot;The rampage bot will try to ram bots that are very close.\\n&quot;</span>
+</span><span id="line-311">
+</span><span id="line-312"><span class="sd">                &quot;Sneaks around corners and shoots at bots that come too near.&quot;</span>
+</span><span id="line-313">
+</span><span id="line-314"><span class="sd">            Args:</span>
+</span><span id="line-315"><span class="sd">                description (str): A short description of the bot.</span>
+</span><span id="line-316">
+</span><span id="line-317"><span class="sd">            Returns:</span>
+</span><span id="line-318"><span class="sd">                Self, for method chaining.</span>
+</span><span id="line-319"><span class="sd">            &quot;&quot;&quot;</span>
+</span><span id="line-320">            <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+</span><span id="line-321">            <span class="k">return</span> <span class="bp">self</span></div>
 
-</span><span id="line-321">
+</span><span id="line-322">
 <div class="viewcode-block" id="BotInfo.Builder.set_homepage">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_info.BotInfo.Builder.set_homepage">[docs]</a>
-</span><span id="line-322">        <span class="k">def</span><span class="w"> </span><span class="nf">set_homepage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">homepage</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
-</span><span id="line-323"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-324"><span class="sd">            Sets a link to the homepage for the bot. (optional)</span>
-</span><span id="line-325">
-</span><span id="line-326"><span class="sd">            Note:</span>
-</span><span id="line-327"><span class="sd">                The maximum length of a link is 150 characters.</span>
-</span><span id="line-328">
-</span><span id="line-329"><span class="sd">            Example:</span>
-</span><span id="line-330"><span class="sd">                &quot;https://fictive-homepage.net/Rampage&quot;</span>
-</span><span id="line-331">
-</span><span id="line-332"><span class="sd">            Args:</span>
-</span><span id="line-333"><span class="sd">                homepage (str): A link to a homepage for the bot.</span>
-</span><span id="line-334">
-</span><span id="line-335"><span class="sd">            Returns:</span>
-</span><span id="line-336"><span class="sd">                Self, for method chaining.</span>
-</span><span id="line-337"><span class="sd">            &quot;&quot;&quot;</span>
-</span><span id="line-338">            <span class="bp">self</span><span class="o">.</span><span class="n">homepage</span> <span class="o">=</span> <span class="n">homepage</span>
-</span><span id="line-339">            <span class="k">return</span> <span class="bp">self</span></div>
+</span><span id="line-323">        <span class="k">def</span><span class="w"> </span><span class="nf">set_homepage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">homepage</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
+</span><span id="line-324"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-325"><span class="sd">            Sets a link to the homepage for the bot. (optional)</span>
+</span><span id="line-326">
+</span><span id="line-327"><span class="sd">            Note:</span>
+</span><span id="line-328"><span class="sd">                The maximum length of a link is 150 characters.</span>
+</span><span id="line-329">
+</span><span id="line-330"><span class="sd">            Example:</span>
+</span><span id="line-331"><span class="sd">                &quot;https://fictive-homepage.net/Rampage&quot;</span>
+</span><span id="line-332">
+</span><span id="line-333"><span class="sd">            Args:</span>
+</span><span id="line-334"><span class="sd">                homepage (str): A link to a homepage for the bot.</span>
+</span><span id="line-335">
+</span><span id="line-336"><span class="sd">            Returns:</span>
+</span><span id="line-337"><span class="sd">                Self, for method chaining.</span>
+</span><span id="line-338"><span class="sd">            &quot;&quot;&quot;</span>
+</span><span id="line-339">            <span class="bp">self</span><span class="o">.</span><span class="n">homepage</span> <span class="o">=</span> <span class="n">homepage</span>
+</span><span id="line-340">            <span class="k">return</span> <span class="bp">self</span></div>
 
-</span><span id="line-340">
+</span><span id="line-341">
 <div class="viewcode-block" id="BotInfo.Builder.set_country_codes">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_info.BotInfo.Builder.set_country_codes">[docs]</a>
-</span><span id="line-341">        <span class="k">def</span><span class="w"> </span><span class="nf">set_country_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">country_codes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
-</span><span id="line-342"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-343"><span class="sd">            Sets the country codes for the bot. (optional)</span>
-</span><span id="line-344">
-</span><span id="line-345"><span class="sd">            Notes:</span>
-</span><span id="line-346"><span class="sd">                - Each country code uses a 2-character alpha-2 format from the ISO 3166 standard.</span>
-</span><span id="line-347"><span class="sd">                - Maximum number of country codes is 5.</span>
-</span><span id="line-348"><span class="sd">                - Providing `None` removes all country codes.</span>
-</span><span id="line-349"><span class="sd">                - If no valid country code is specified, the default locale country code is used.</span>
-</span><span id="line-350">
-</span><span id="line-351"><span class="sd">            Example:</span>
-</span><span id="line-352"><span class="sd">                [&quot;dk&quot;]</span>
-</span><span id="line-353">
-</span><span id="line-354"><span class="sd">            Args:</span>
-</span><span id="line-355"><span class="sd">                country_codes (list): A list of country codes.</span>
-</span><span id="line-356">
-</span><span id="line-357"><span class="sd">            Returns:</span>
-</span><span id="line-358"><span class="sd">                Self, for method chaining.</span>
-</span><span id="line-359"><span class="sd">            &quot;&quot;&quot;</span>
-</span><span id="line-360">            <span class="bp">self</span><span class="o">.</span><span class="n">country_codes</span> <span class="o">=</span> <span class="n">country_codes</span>
-</span><span id="line-361">            <span class="k">return</span> <span class="bp">self</span></div>
+</span><span id="line-342">        <span class="k">def</span><span class="w"> </span><span class="nf">set_country_codes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">country_codes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
+</span><span id="line-343"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-344"><span class="sd">            Sets the country codes for the bot. (optional)</span>
+</span><span id="line-345">
+</span><span id="line-346"><span class="sd">            Notes:</span>
+</span><span id="line-347"><span class="sd">                - Each country code uses a 2-character alpha-2 format from the ISO 3166 standard.</span>
+</span><span id="line-348"><span class="sd">                - Maximum number of country codes is 5.</span>
+</span><span id="line-349"><span class="sd">                - Providing `None` removes all country codes.</span>
+</span><span id="line-350"><span class="sd">                - If no valid country code is specified, the default locale country code is used.</span>
+</span><span id="line-351">
+</span><span id="line-352"><span class="sd">            Example:</span>
+</span><span id="line-353"><span class="sd">                [&quot;dk&quot;]</span>
+</span><span id="line-354">
+</span><span id="line-355"><span class="sd">            Args:</span>
+</span><span id="line-356"><span class="sd">                country_codes (list): A list of country codes.</span>
+</span><span id="line-357">
+</span><span id="line-358"><span class="sd">            Returns:</span>
+</span><span id="line-359"><span class="sd">                Self, for method chaining.</span>
+</span><span id="line-360"><span class="sd">            &quot;&quot;&quot;</span>
+</span><span id="line-361">            <span class="bp">self</span><span class="o">.</span><span class="n">country_codes</span> <span class="o">=</span> <span class="n">country_codes</span>
+</span><span id="line-362">            <span class="k">return</span> <span class="bp">self</span></div>
 
-</span><span id="line-362">
+</span><span id="line-363">
 <div class="viewcode-block" id="BotInfo.Builder.add_country_code">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_info.BotInfo.Builder.add_country_code">[docs]</a>
-</span><span id="line-363">        <span class="k">def</span><span class="w"> </span><span class="nf">add_country_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">country_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
-</span><span id="line-364"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-365"><span class="sd">            Adds a country code for the bot. (optional)</span>
-</span><span id="line-366">
-</span><span id="line-367"><span class="sd">            See also:</span>
-</span><span id="line-368"><span class="sd">                set_country_codes()</span>
-</span><span id="line-369">
-</span><span id="line-370"><span class="sd">            Args:</span>
-</span><span id="line-371"><span class="sd">                country_code (str): The country code to add.</span>
-</span><span id="line-372">
-</span><span id="line-373"><span class="sd">            Returns:</span>
-</span><span id="line-374"><span class="sd">                Self, for method chaining.</span>
-</span><span id="line-375"><span class="sd">            &quot;&quot;&quot;</span>
-</span><span id="line-376">            <span class="bp">self</span><span class="o">.</span><span class="n">country_codes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">country_code</span><span class="p">)</span>
-</span><span id="line-377">            <span class="k">return</span> <span class="bp">self</span></div>
+</span><span id="line-364">        <span class="k">def</span><span class="w"> </span><span class="nf">add_country_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">country_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
+</span><span id="line-365"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-366"><span class="sd">            Adds a country code for the bot. (optional)</span>
+</span><span id="line-367">
+</span><span id="line-368"><span class="sd">            See also:</span>
+</span><span id="line-369"><span class="sd">                set_country_codes()</span>
+</span><span id="line-370">
+</span><span id="line-371"><span class="sd">            Args:</span>
+</span><span id="line-372"><span class="sd">                country_code (str): The country code to add.</span>
+</span><span id="line-373">
+</span><span id="line-374"><span class="sd">            Returns:</span>
+</span><span id="line-375"><span class="sd">                Self, for method chaining.</span>
+</span><span id="line-376"><span class="sd">            &quot;&quot;&quot;</span>
+</span><span id="line-377">            <span class="bp">self</span><span class="o">.</span><span class="n">country_codes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">country_code</span><span class="p">)</span>
+</span><span id="line-378">            <span class="k">return</span> <span class="bp">self</span></div>
 
-</span><span id="line-378">
+</span><span id="line-379">
 <div class="viewcode-block" id="BotInfo.Builder.set_game_types">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_info.BotInfo.Builder.set_game_types">[docs]</a>
-</span><span id="line-379">        <span class="k">def</span><span class="w"> </span><span class="nf">set_game_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
-</span><span id="line-380"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-381"><span class="sd">            Sets the game types that this bot is capable of participating in. (required)</span>
-</span><span id="line-382">
-</span><span id="line-383"><span class="sd">            Notes:</span>
-</span><span id="line-384"><span class="sd">                - Standard game types can be found at the referenced documentation or API spec.</span>
-</span><span id="line-385"><span class="sd">                - More types may be added in the future.</span>
-</span><span id="line-386"><span class="sd">                - Use the predefined strings from the GameType class when possible.</span>
-</span><span id="line-387"><span class="sd">                - Maximum game type length is 20 characters.</span>
-</span><span id="line-388"><span class="sd">                - Maximum number of game types is 10.</span>
-</span><span id="line-389"><span class="sd">                - Providing `None` removes all game types.</span>
-</span><span id="line-390">
-</span><span id="line-391"><span class="sd">            Example:</span>
-</span><span id="line-392"><span class="sd">                {&quot;classic&quot;, &quot;melee&quot;, &quot;future-type&quot;}</span>
-</span><span id="line-393">
-</span><span id="line-394"><span class="sd">            Args:</span>
-</span><span id="line-395"><span class="sd">                game_types (set): A set of game types that the bot is capable of participating in.</span>
-</span><span id="line-396">
-</span><span id="line-397"><span class="sd">            Returns:</span>
-</span><span id="line-398"><span class="sd">                Self, for method chaining.</span>
-</span><span id="line-399"><span class="sd">            &quot;&quot;&quot;</span>
-</span><span id="line-400">            <span class="bp">self</span><span class="o">.</span><span class="n">game_types</span> <span class="o">=</span> <span class="n">game_types</span>
-</span><span id="line-401">            <span class="k">return</span> <span class="bp">self</span></div>
+</span><span id="line-380">        <span class="k">def</span><span class="w"> </span><span class="nf">set_game_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game_types</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
+</span><span id="line-381"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-382"><span class="sd">            Sets the game types that this bot is capable of participating in. (required)</span>
+</span><span id="line-383">
+</span><span id="line-384"><span class="sd">            Notes:</span>
+</span><span id="line-385"><span class="sd">                - Standard game types can be found at the referenced documentation or API spec.</span>
+</span><span id="line-386"><span class="sd">                - More types may be added in the future.</span>
+</span><span id="line-387"><span class="sd">                - Use the predefined strings from the GameType class when possible.</span>
+</span><span id="line-388"><span class="sd">                - Maximum game type length is 20 characters.</span>
+</span><span id="line-389"><span class="sd">                - Maximum number of game types is 10.</span>
+</span><span id="line-390"><span class="sd">                - Providing `None` removes all game types.</span>
+</span><span id="line-391">
+</span><span id="line-392"><span class="sd">            Example:</span>
+</span><span id="line-393"><span class="sd">                {&quot;classic&quot;, &quot;melee&quot;, &quot;future-type&quot;}</span>
+</span><span id="line-394">
+</span><span id="line-395"><span class="sd">            Args:</span>
+</span><span id="line-396"><span class="sd">                game_types (set): A set of game types that the bot is capable of participating in.</span>
+</span><span id="line-397">
+</span><span id="line-398"><span class="sd">            Returns:</span>
+</span><span id="line-399"><span class="sd">                Self, for method chaining.</span>
+</span><span id="line-400"><span class="sd">            &quot;&quot;&quot;</span>
+</span><span id="line-401">            <span class="bp">self</span><span class="o">.</span><span class="n">game_types</span> <span class="o">=</span> <span class="n">game_types</span>
+</span><span id="line-402">            <span class="k">return</span> <span class="bp">self</span></div>
 
-</span><span id="line-402">
+</span><span id="line-403">
 <div class="viewcode-block" id="BotInfo.Builder.add_game_type">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_info.BotInfo.Builder.add_game_type">[docs]</a>
-</span><span id="line-403">        <span class="k">def</span><span class="w"> </span><span class="nf">add_game_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
-</span><span id="line-404"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-405"><span class="sd">            Adds a game type that this bot is capable of participating in. (required)</span>
-</span><span id="line-406">
-</span><span id="line-407"><span class="sd">            See also:</span>
-</span><span id="line-408"><span class="sd">                set_game_types()</span>
-</span><span id="line-409">
-</span><span id="line-410"><span class="sd">            Example:</span>
-</span><span id="line-411"><span class="sd">                &quot;classic&quot;</span>
-</span><span id="line-412">
-</span><span id="line-413"><span class="sd">            Args:</span>
-</span><span id="line-414"><span class="sd">                game_type (str): A game type that the bot can participate in.</span>
-</span><span id="line-415">
-</span><span id="line-416"><span class="sd">            Returns:</span>
-</span><span id="line-417"><span class="sd">                Self, for method chaining.</span>
-</span><span id="line-418"><span class="sd">            &quot;&quot;&quot;</span>
-</span><span id="line-419">            <span class="bp">self</span><span class="o">.</span><span class="n">game_types</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">game_type</span><span class="p">)</span>
-</span><span id="line-420">            <span class="k">return</span> <span class="bp">self</span></div>
+</span><span id="line-404">        <span class="k">def</span><span class="w"> </span><span class="nf">add_game_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
+</span><span id="line-405"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-406"><span class="sd">            Adds a game type that this bot is capable of participating in. (required)</span>
+</span><span id="line-407">
+</span><span id="line-408"><span class="sd">            See also:</span>
+</span><span id="line-409"><span class="sd">                set_game_types()</span>
+</span><span id="line-410">
+</span><span id="line-411"><span class="sd">            Example:</span>
+</span><span id="line-412"><span class="sd">                &quot;classic&quot;</span>
+</span><span id="line-413">
+</span><span id="line-414"><span class="sd">            Args:</span>
+</span><span id="line-415"><span class="sd">                game_type (str): A game type that the bot can participate in.</span>
+</span><span id="line-416">
+</span><span id="line-417"><span class="sd">            Returns:</span>
+</span><span id="line-418"><span class="sd">                Self, for method chaining.</span>
+</span><span id="line-419"><span class="sd">            &quot;&quot;&quot;</span>
+</span><span id="line-420">            <span class="bp">self</span><span class="o">.</span><span class="n">game_types</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">game_type</span><span class="p">)</span>
+</span><span id="line-421">            <span class="k">return</span> <span class="bp">self</span></div>
 
-</span><span id="line-421">
+</span><span id="line-422">
 <div class="viewcode-block" id="BotInfo.Builder.set_platform">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_info.BotInfo.Builder.set_platform">[docs]</a>
-</span><span id="line-422">        <span class="k">def</span><span class="w"> </span><span class="nf">set_platform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">platform</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
-</span><span id="line-423"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-424"><span class="sd">            Sets the name of the platform that this bot is built for. (optional)</span>
-</span><span id="line-425">
-</span><span id="line-426"><span class="sd">            Note:</span>
-</span><span id="line-427"><span class="sd">                - The maximum length of the platform name is 30 characters.</span>
-</span><span id="line-428"><span class="sd">                - If `None` or a blank string is provided, the default string (Java Runtime Environment) is used.</span>
-</span><span id="line-429">
-</span><span id="line-430"><span class="sd">            Example:</span>
-</span><span id="line-431"><span class="sd">                &quot;Java Runtime Environment (JRE) [version]&quot;</span>
-</span><span id="line-432">
-</span><span id="line-433"><span class="sd">            Args:</span>
-</span><span id="line-434"><span class="sd">                platform (str): The name of the platform for this bot.</span>
-</span><span id="line-435">
-</span><span id="line-436"><span class="sd">            Returns:</span>
-</span><span id="line-437"><span class="sd">                Self, for method chaining.</span>
-</span><span id="line-438"><span class="sd">            &quot;&quot;&quot;</span>
-</span><span id="line-439">            <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">platform</span>
-</span><span id="line-440">            <span class="k">return</span> <span class="bp">self</span></div>
+</span><span id="line-423">        <span class="k">def</span><span class="w"> </span><span class="nf">set_platform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">platform</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
+</span><span id="line-424"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-425"><span class="sd">            Sets the name of the platform that this bot is built for. (optional)</span>
+</span><span id="line-426">
+</span><span id="line-427"><span class="sd">            Note:</span>
+</span><span id="line-428"><span class="sd">                - The maximum length of the platform name is 30 characters.</span>
+</span><span id="line-429"><span class="sd">                - If `None` or a blank string is provided, the default string (Java Runtime Environment) is used.</span>
+</span><span id="line-430">
+</span><span id="line-431"><span class="sd">            Example:</span>
+</span><span id="line-432"><span class="sd">                &quot;Java Runtime Environment (JRE) [version]&quot;</span>
+</span><span id="line-433">
+</span><span id="line-434"><span class="sd">            Args:</span>
+</span><span id="line-435"><span class="sd">                platform (str): The name of the platform for this bot.</span>
+</span><span id="line-436">
+</span><span id="line-437"><span class="sd">            Returns:</span>
+</span><span id="line-438"><span class="sd">                Self, for method chaining.</span>
+</span><span id="line-439"><span class="sd">            &quot;&quot;&quot;</span>
+</span><span id="line-440">            <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">=</span> <span class="n">platform</span>
+</span><span id="line-441">            <span class="k">return</span> <span class="bp">self</span></div>
 
-</span><span id="line-441">
+</span><span id="line-442">
 <div class="viewcode-block" id="BotInfo.Builder.set_programming_lang">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_info.BotInfo.Builder.set_programming_lang">[docs]</a>
-</span><span id="line-442">        <span class="k">def</span><span class="w"> </span><span class="nf">set_programming_lang</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
-</span><span id="line-443"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-444"><span class="sd">            Sets the name of the programming language used for developing this bot. (optional)</span>
-</span><span id="line-445">
-</span><span id="line-446"><span class="sd">            Note:</span>
-</span><span id="line-447"><span class="sd">                The maximum length of the programming language&#39;s name is 30 characters.</span>
-</span><span id="line-448">
-</span><span id="line-449"><span class="sd">            Example:</span>
-</span><span id="line-450"><span class="sd">                Python 3.12</span>
-</span><span id="line-451">
-</span><span id="line-452"><span class="sd">            Args:</span>
-</span><span id="line-453"><span class="sd">                language (str): The name of the programming language.</span>
-</span><span id="line-454">
-</span><span id="line-455"><span class="sd">            Returns:</span>
-</span><span id="line-456"><span class="sd">                Self, for method chaining.</span>
-</span><span id="line-457"><span class="sd">            &quot;&quot;&quot;</span>
-</span><span id="line-458">            <span class="bp">self</span><span class="o">.</span><span class="n">programming_lang</span> <span class="o">=</span> <span class="n">language</span>
-</span><span id="line-459">            <span class="k">return</span> <span class="bp">self</span></div>
+</span><span id="line-443">        <span class="k">def</span><span class="w"> </span><span class="nf">set_programming_lang</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
+</span><span id="line-444"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-445"><span class="sd">            Sets the name of the programming language used for developing this bot. (optional)</span>
+</span><span id="line-446">
+</span><span id="line-447"><span class="sd">            Note:</span>
+</span><span id="line-448"><span class="sd">                The maximum length of the programming language&#39;s name is 30 characters.</span>
+</span><span id="line-449">
+</span><span id="line-450"><span class="sd">            Example:</span>
+</span><span id="line-451"><span class="sd">                Python 3.12</span>
+</span><span id="line-452">
+</span><span id="line-453"><span class="sd">            Args:</span>
+</span><span id="line-454"><span class="sd">                language (str): The name of the programming language.</span>
+</span><span id="line-455">
+</span><span id="line-456"><span class="sd">            Returns:</span>
+</span><span id="line-457"><span class="sd">                Self, for method chaining.</span>
+</span><span id="line-458"><span class="sd">            &quot;&quot;&quot;</span>
+</span><span id="line-459">            <span class="bp">self</span><span class="o">.</span><span class="n">programming_lang</span> <span class="o">=</span> <span class="n">language</span>
+</span><span id="line-460">            <span class="k">return</span> <span class="bp">self</span></div>
 
-</span><span id="line-460">
+</span><span id="line-461">
 <div class="viewcode-block" id="BotInfo.Builder.set_initial_position">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_info.BotInfo.Builder.set_initial_position">[docs]</a>
-</span><span id="line-461">        <span class="k">def</span><span class="w"> </span><span class="nf">set_initial_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_position</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
-</span><span id="line-462"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-463"><span class="sd">            Sets the initial position of the bot. (optional)</span>
-</span><span id="line-464">
-</span><span id="line-465"><span class="sd">            Note:</span>
-</span><span id="line-466"><span class="sd">                Initial positions must be enabled or allowed by the game (server) to take effect.</span>
-</span><span id="line-467">
-</span><span id="line-468"><span class="sd">            Args:</span>
-</span><span id="line-469"><span class="sd">                initial_position: The initial position of the bot.</span>
-</span><span id="line-470">
-</span><span id="line-471"><span class="sd">            Returns:</span>
-</span><span id="line-472"><span class="sd">                Self, for method chaining.</span>
-</span><span id="line-473"><span class="sd">            &quot;&quot;&quot;</span>
-</span><span id="line-474">            <span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span> <span class="o">=</span> <span class="n">initial_position</span>
-</span><span id="line-475">            <span class="k">return</span> <span class="bp">self</span></div>
+</span><span id="line-462">        <span class="k">def</span><span class="w"> </span><span class="nf">set_initial_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_position</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo.Builder&quot;</span><span class="p">:</span>
+</span><span id="line-463"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-464"><span class="sd">            Sets the initial position of the bot. (optional)</span>
+</span><span id="line-465">
+</span><span id="line-466"><span class="sd">            Note:</span>
+</span><span id="line-467"><span class="sd">                Initial positions must be enabled or allowed by the game (server) to take effect.</span>
+</span><span id="line-468">
+</span><span id="line-469"><span class="sd">            Args:</span>
+</span><span id="line-470"><span class="sd">                initial_position: The initial position of the bot.</span>
+</span><span id="line-471">
+</span><span id="line-472"><span class="sd">            Returns:</span>
+</span><span id="line-473"><span class="sd">                Self, for method chaining.</span>
+</span><span id="line-474"><span class="sd">            &quot;&quot;&quot;</span>
+</span><span id="line-475">            <span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span> <span class="o">=</span> <span class="n">initial_position</span>
+</span><span id="line-476">            <span class="k">return</span> <span class="bp">self</span></div>
 
-</span><span id="line-476">
+</span><span id="line-477">
 <div class="viewcode-block" id="BotInfo.Builder.build">
 <a class="viewcode-back" href="../../api/bot_api.html#bot_api.bot_info.BotInfo.Builder.build">[docs]</a>
-</span><span id="line-477">        <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo&quot;</span><span class="p">:</span>
-</span><span id="line-478"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-479"><span class="sd">            Builds and returns the BotInfo instance based on the data set added to this builder so far.</span>
-</span><span id="line-480">
-</span><span id="line-481"><span class="sd">            This method is typically the final step in the builder&#39;s workflow to extract the result</span>
-</span><span id="line-482"><span class="sd">            of the building process.</span>
-</span><span id="line-483">
-</span><span id="line-484"><span class="sd">            Returns:</span>
-</span><span id="line-485"><span class="sd">                BotInfo: The resulting BotInfo instance.</span>
-</span><span id="line-486"><span class="sd">            &quot;&quot;&quot;</span>
-</span><span id="line-487">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Name cannot be null&quot;</span>
-</span><span id="line-488">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Version cannot be null&quot;</span>
-</span><span id="line-489">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Initial position cannot be null&quot;</span>
-</span><span id="line-490">            <span class="k">return</span> <span class="n">BotInfo</span><span class="p">(</span>
-</span><span id="line-491">                <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-</span><span id="line-492">                <span class="n">version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
-</span><span id="line-493">                <span class="n">authors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">,</span>
-</span><span id="line-494">                <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
-</span><span id="line-495">                <span class="n">homepage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">homepage</span><span class="p">,</span>
-</span><span id="line-496">                <span class="n">country_codes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">country_codes</span><span class="p">,</span>
-</span><span id="line-497">                <span class="n">game_types</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">game_types</span><span class="p">,</span>
-</span><span id="line-498">                <span class="n">platform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="p">,</span>
-</span><span id="line-499">                <span class="n">programming_lang</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">programming_lang</span><span class="p">,</span>
-</span><span id="line-500">                <span class="n">initial_position</span><span class="o">=</span><span class="n">InitialPosition</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span><span class="p">),</span>
-</span><span id="line-501">            <span class="p">)</span></div>
+</span><span id="line-478">        <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BotInfo&quot;</span><span class="p">:</span>
+</span><span id="line-479"><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-480"><span class="sd">            Builds and returns the BotInfo instance based on the data set added to this builder so far.</span>
+</span><span id="line-481">
+</span><span id="line-482"><span class="sd">            This method is typically the final step in the builder&#39;s workflow to extract the result</span>
+</span><span id="line-483"><span class="sd">            of the building process.</span>
+</span><span id="line-484">
+</span><span id="line-485"><span class="sd">            Returns:</span>
+</span><span id="line-486"><span class="sd">                BotInfo: The resulting BotInfo instance.</span>
+</span><span id="line-487"><span class="sd">            &quot;&quot;&quot;</span>
+</span><span id="line-488">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Name cannot be null&quot;</span>
+</span><span id="line-489">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Version cannot be null&quot;</span>
+</span><span id="line-490">            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Initial position cannot be null&quot;</span>
+</span><span id="line-491">            <span class="k">return</span> <span class="n">BotInfo</span><span class="p">(</span>
+</span><span id="line-492">                <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+</span><span id="line-493">                <span class="n">version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+</span><span id="line-494">                <span class="n">authors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">,</span>
+</span><span id="line-495">                <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+</span><span id="line-496">                <span class="n">homepage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">homepage</span><span class="p">,</span>
+</span><span id="line-497">                <span class="n">country_codes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">country_codes</span><span class="p">,</span>
+</span><span id="line-498">                <span class="n">game_types</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">game_types</span><span class="p">,</span>
+</span><span id="line-499">                <span class="n">platform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">platform</span><span class="p">,</span>
+</span><span id="line-500">                <span class="n">programming_lang</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">programming_lang</span><span class="p">,</span>
+</span><span id="line-501">                <span class="n">initial_position</span><span class="o">=</span><span class="n">InitialPosition</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_position</span><span class="p">),</span>
+</span><span id="line-502">            <span class="p">)</span></div>
 </div>
 </div>
 
@@ -723,7 +724,7 @@
 </footer>
     </div>
     
-    <script src="../../_static/documentation_options.js?v=9fa2033d"></script>
+    <script src="../../_static/documentation_options.js?v=3bda8724"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script defer="defer" src="../../_static/theme.js?v=582b20c5"></script>

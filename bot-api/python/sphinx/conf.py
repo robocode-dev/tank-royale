@@ -54,6 +54,7 @@ extensions = [
 # are harmless for our docs but clutter the build output.
 suppress_warnings = [
     "ref.python",
+    "py.duplicate_object",
 ]
 
 # Have autodoc include members by default so method names are visible even if undocumented

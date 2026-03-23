@@ -307,7 +307,8 @@ class BotInfo:
                 - Line-breaks (line-feed or newline) are supported, but expect up to 3 lines to be displayed on UI.
 
             Example:
-                "The rampage bot will try to ram bots that are very close.\n"
+                "The rampage bot will try to ram bots that are very close.\\n"
+
                 "Sneaks around corners and shoots at bots that come too near."
 
             Args:

@@ -4,7 +4,8 @@ This module provides a registry mechanism for team message types, allowing bots 
 send and receive typed objects (like RobotColors, Point) instead of raw dictionaries.
 This matches the behavior of Java and C# Bot APIs.
 
-Usage:
+Usage::
+
     # Using decorator
     @team_message_type
     @dataclass
@@ -41,7 +42,8 @@ def team_message_type(cls: Type[Any]) -> Type[Any]:
     Returns:
         The same class, unmodified.
 
-    Example:
+    Example::
+
         @team_message_type
         @dataclass
         class RobotColors:

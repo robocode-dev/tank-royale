@@ -23,9 +23,9 @@
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#030711" />
   
-  <title>bot_api.internal.event_queue | Robocode Tank Royale Bot API (Python) 0.38.0 documentation</title>
-  <meta property="og:title" content="bot_api.internal.event_queue | Robocode Tank Royale Bot API (Python) 0.38.0 documentation" />
-  <meta name="twitter:title" content="bot_api.internal.event_queue | Robocode Tank Royale Bot API (Python) 0.38.0 documentation" />
+  <title>bot_api.internal.event_queue | Robocode Tank Royale Bot API (Python) 0.38.1 documentation</title>
+  <meta property="og:title" content="bot_api.internal.event_queue | Robocode Tank Royale Bot API (Python) 0.38.1 documentation" />
+  <meta name="twitter:title" content="bot_api.internal.event_queue | Robocode Tank Royale Bot API (Python) 0.38.1 documentation" />
   <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e72c8e07" />
   <link rel="stylesheet" type="text/css" href="../../../_static/theme.css?v=73505e79" />
   <link rel="search" title="Search" href="../../../search.html" />
@@ -41,7 +41,7 @@
       Skip to content
     </a><header class="sticky top-0 z-40 w-full border-b shadow-xs border-border bg-background/90 backdrop-blur"><div class="container flex items-center h-14">
     <div class="hidden mr-4 md:flex">
-      <a href="../../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.38.0 documentation</span>
+      <a href="../../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.38.1 documentation</span>
       </a></div><button
       class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
       type="button" @click="showSidebar = true">
@@ -97,7 +97,7 @@
   class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full overflow-y-auto border-r border-border md:sticky"
   :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
 
-    <a href="../../../index.html" class="justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.38.0 documentation</span>
+    <a href="../../../index.html" class="justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.38.1 documentation</span>
     </a>
 
     <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0">
@@ -128,7 +128,7 @@
      class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
   <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
      href="../../../index.html">
-    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.38.0 documentation</span>
+    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.38.1 documentation</span>
     <svg xmlns="http://www.w3.org/2000/svg"
          height="18"
          width="18"
@@ -275,7 +275,7 @@
 </span><span id="line-101">                <span class="k">break</span>
 </span><span id="line-102">
 </span><span id="line-103">            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="n">current_event</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span><span class="p">:</span>
-</span><span id="line-104">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span> <span class="o">&gt;</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;-inf&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_current_event_interruptible</span><span class="p">():</span>
+</span><span id="line-104">                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_top_event_priority</span> <span class="o">&gt;</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;-inf&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_current_event_interruptible</span><span class="p">():</span>
 </span><span id="line-105">                    <span class="n">EventInterruption</span><span class="o">.</span><span class="n">set_interruptible</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_top_event</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span>  <span class="c1"># clear interruptible flag</span>
 </span><span id="line-106">
 </span><span id="line-107">                    <span class="c1"># Mark that the current handler was interrupted so API methods can react accordingly</span>
@@ -415,7 +415,7 @@
 </footer>
     </div>
     
-    <script src="../../../_static/documentation_options.js?v=9fa2033d"></script>
+    <script src="../../../_static/documentation_options.js?v=3bda8724"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script defer="defer" src="../../../_static/theme.js?v=582b20c5"></script>
