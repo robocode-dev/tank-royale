@@ -1,4 +1,4 @@
-## [0.38.1] - 2026-03-22 – GUI Boot Progress Dialog
+## [0.38.1] - 2026-03-23 – GUI Boot Progress Dialog
 
 ### ✨ Features
 
@@ -11,6 +11,14 @@
     - Timeout error: after the configured timeout, the status area is replaced with a list of pending bots and
       "Retry" / "Cancel" buttons. "Retry" resets the timer and continues waiting.
     - Boot timeout is now configurable in GUI Options (default: 30 seconds).
+
+### 🐞 Bug Fixes
+
+- Python bot API:
+    - Fixed `AssertionError: No current event to check interruptibility for` causing bots to stall after ~200–300
+      rounds at high TPS (#196). Root causes: threading race between the bot thread and WebSocket thread in
+      `dispatch_events` (fixed by joining the bot thread in `stop_thread()`), and a missing `None` guard on
+      `current_top_event` after a `ThreadInterruptedException` in the event dispatch loop.
 
 ## [0.38.0] - 2026-03-21 – Identity-Based Bot Matching
 

@@ -355,8 +355,12 @@ class BaseBotInternals:
         with self._next_turn_condition:
             self._next_turn_condition.notify_all()
 
-        if self.thread is not None:
-            self.thread = None
+        thread = self.thread
+        self.thread = None
+        if thread is not None and thread is not threading.current_thread():
+            # Wait for the bot thread to finish so that handle_round_ended's
+            # dispatch_events call does not race with _dispatch_final_turn_events.
+            thread.join(timeout=5.0)
 
     def _sanitize_url(self, uri: str) -> None:
         parsed_url = urllib.parse.urlparse(uri)

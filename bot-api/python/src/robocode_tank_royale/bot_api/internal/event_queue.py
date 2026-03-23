@@ -101,7 +101,7 @@ class EventQueue:
                 break
 
             if self.get_priority(current_event) == self.current_top_event_priority:
-                if self.current_top_event_priority > float('-inf') and self.is_current_event_interruptible():
+                if self.current_top_event is not None and self.current_top_event_priority > float('-inf') and self.is_current_event_interruptible():
                     EventInterruption.set_interruptible(type(self.current_top_event), False)  # clear interruptible flag
 
                     # Mark that the current handler was interrupted so API methods can react accordingly
