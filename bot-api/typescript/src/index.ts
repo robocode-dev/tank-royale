@@ -10,3 +10,7 @@ export { GameSetup } from "./GameSetup.js";
 export { BotState } from "./BotState.js";
 export { BulletState } from "./BulletState.js";
 export { BotResults } from "./BotResults.js";
+export { Color } from "./graphics/Color.js";
+export { Point } from "./graphics/Point.js";
+export type { IGraphics } from "./graphics/IGraphics.js";
+export { SvgGraphics } from "./graphics/SvgGraphics.js";

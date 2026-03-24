@@ -26,12 +26,12 @@
 
 ## 4. Graphics
 
-- [ ] 4.1 Implement `Color` (factory methods: fromRgba, fromRgb, fromHexColor; toHexColor; 140+ named constants)
-- [ ] 4.2 Implement `Point` (x, y, equality, toString)
-- [ ] 4.3 Implement `IGraphics` interface (drawLine, drawRectangle, fillCircle, setStrokeColor, etc.)
-- [ ] 4.4 Implement `SvgGraphics` (SVG element generation, style state, text escaping, decimal formatting)
-- [ ] 4.5 Add tests for Color (factory methods, hex conversion, named colors)
-- [ ] 4.6 Add tests for SvgGraphics (canonical SVG output per drawing operation)
+- [x] 4.1 Implement `Color` (factory methods: fromRgba, fromRgb, fromHexColor; toHexColor; 140+ named constants)
+- [x] 4.2 Implement `Point` (x, y, equality, toString)
+- [x] 4.3 Implement `IGraphics` interface (drawLine, drawRectangle, fillCircle, setStrokeColor, etc.)
+- [x] 4.4 Implement `SvgGraphics` (SVG element generation, style state, text escaping, decimal formatting)
+- [x] 4.5 Add tests for Color (factory methods, hex conversion, named colors)
+- [x] 4.6 Add tests for SvgGraphics (canonical SVG output per drawing operation)
 
 ## 5. Utilities
 
