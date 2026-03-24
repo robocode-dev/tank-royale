@@ -16,13 +16,13 @@
 
 ## 3. Value Objects
 
-- [ ] 3.1 Implement `InitialPosition` (nullable x/y/direction, fromString parser)
-- [ ] 3.2 Implement `BotInfo` (builder pattern, validation: name/version/authors required, length limits, country code validation)
-- [ ] 3.3 Implement `GameSetup` (gameType, arenaWidth/Height, numberOfRounds, gunCoolingRate, timeouts)
-- [ ] 3.4 Implement `BotState` (all 22 fields: position, direction, speed, energy, colors, etc.)
-- [ ] 3.5 Implement `BulletState` (bulletId, ownerId, power, position, direction, color, computed speed)
-- [ ] 3.6 Implement `BotResults` (rank, scores, placements)
-- [ ] 3.7 Add tests for all value objects (construction, validation, edge cases)
+- [x] 3.1 Implement `InitialPosition` (nullable x/y/direction, fromString parser)
+- [x] 3.2 Implement `BotInfo` (builder pattern, validation: name/version/authors required, length limits, country code validation)
+- [x] 3.3 Implement `GameSetup` (gameType, arenaWidth/Height, numberOfRounds, gunCoolingRate, timeouts)
+- [x] 3.4 Implement `BotState` (all 22 fields: position, direction, speed, energy, colors, etc.)
+- [x] 3.5 Implement `BulletState` (bulletId, ownerId, power, position, direction, color, computed speed)
+- [x] 3.6 Implement `BotResults` (rank, scores, placements)
+- [x] 3.7 Add tests for all value objects (construction, validation, edge cases)
 
 ## 4. Graphics
 
