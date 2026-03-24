@@ -1,0 +1,52 @@
+## 1. Project Setup
+
+- [ ] 1.1 Create `bot-api/typescript/` directory structure (`src/`, `test/`)
+- [ ] 1.2 Create `build.gradle.kts` with Node.js Gradle plugin (download Node.js, wire npm tasks)
+- [ ] 1.3 Create `package.json` with `@robocode.dev/tank-royale-bot-api` package name
+- [ ] 1.4 Create `tsconfig.json` (strict mode, ESM + CJS dual output)
+- [ ] 1.5 Register module in root `settings.gradle.kts`
+- [ ] 1.6 Verify `./gradlew :bot-api:typescript:build` works
+
+## 2. Constants
+
+- [ ] 2.1 Implement `Constants` (BOUNDING_CIRCLE_RADIUS, SCAN_RADIUS, MAX_SPEED, etc.)
+- [ ] 2.2 Implement `GameType` (CLASSIC, MELEE, ONE_VS_ONE)
+- [ ] 2.3 Implement `DefaultEventPriority` (all 15 priority levels)
+- [ ] 2.4 Add tests verifying values match Java exactly
+
+## 3. Value Objects
+
+- [ ] 3.1 Implement `InitialPosition` (nullable x/y/direction, fromString parser)
+- [ ] 3.2 Implement `BotInfo` (builder pattern, validation: name/version/authors required, length limits, country code validation)
+- [ ] 3.3 Implement `GameSetup` (gameType, arenaWidth/Height, numberOfRounds, gunCoolingRate, timeouts)
+- [ ] 3.4 Implement `BotState` (all 22 fields: position, direction, speed, energy, colors, etc.)
+- [ ] 3.5 Implement `BulletState` (bulletId, ownerId, power, position, direction, color, computed speed)
+- [ ] 3.6 Implement `BotResults` (rank, scores, placements)
+- [ ] 3.7 Add tests for all value objects (construction, validation, edge cases)
+
+## 4. Graphics
+
+- [ ] 4.1 Implement `Color` (factory methods: fromRgba, fromRgb, fromHexColor; toHexColor; 140+ named constants)
+- [ ] 4.2 Implement `Point` (x, y, equality, toString)
+- [ ] 4.3 Implement `IGraphics` interface (drawLine, drawRectangle, fillCircle, setStrokeColor, etc.)
+- [ ] 4.4 Implement `SvgGraphics` (SVG element generation, style state, text escaping, decimal formatting)
+- [ ] 4.5 Add tests for Color (factory methods, hex conversion, named colors)
+- [ ] 4.6 Add tests for SvgGraphics (canonical SVG output per drawing operation)
+
+## 5. Utilities
+
+- [ ] 5.1 Implement `ColorUtil` (toHex, fromHexColor, fromHex — 3/6 digit support)
+- [ ] 5.2 Implement `MathUtil` (clamp)
+- [ ] 5.3 Add tests for utilities
+
+## 6. Marker Interface
+
+- [ ] 6.1 Implement `Droid` interface (empty marker)
+
+## 7. Verification
+
+- [ ] 7.1 `./gradlew :bot-api:typescript:test` passes
+- [ ] 7.2 All constant values match Java reference exactly
+- [ ] 7.3 BotInfo validation rules match Java (required fields, length limits, country codes)
+- [ ] 7.4 Color named constants match Java (140+ colors)
+- [ ] 7.5 SvgGraphics output matches Java canonical format
