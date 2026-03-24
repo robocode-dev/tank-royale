@@ -1,18 +1,18 @@
 ## 1. Project Setup
 
-- [ ] 1.1 Create `bot-api/typescript/` directory structure (`src/`, `test/`)
-- [ ] 1.2 Create `build.gradle.kts` with Node.js Gradle plugin (download Node.js, wire npm tasks)
-- [ ] 1.3 Create `package.json` with `@robocode.dev/tank-royale-bot-api` package name
-- [ ] 1.4 Create `tsconfig.json` (strict mode, ESM + CJS dual output)
-- [ ] 1.5 Register module in root `settings.gradle.kts`
-- [ ] 1.6 Verify `./gradlew :bot-api:typescript:build` works
+- [x] 1.1 Create `bot-api/typescript/` directory structure (`src/`, `test/`)
+- [x] 1.2 Create `build.gradle.kts` with Node.js Gradle plugin (download Node.js, wire npm tasks)
+- [x] 1.3 Create `package.json` with `@robocode.dev/tank-royale-bot-api` package name
+- [x] 1.4 Create `tsconfig.json` (strict mode, ESM + CJS dual output)
+- [x] 1.5 Register module in root `settings.gradle.kts`
+- [x] 1.6 Verify `./gradlew :bot-api:typescript:build` works
 
 ## 2. Constants
 
-- [ ] 2.1 Implement `Constants` (BOUNDING_CIRCLE_RADIUS, SCAN_RADIUS, MAX_SPEED, etc.)
-- [ ] 2.2 Implement `GameType` (CLASSIC, MELEE, ONE_VS_ONE)
-- [ ] 2.3 Implement `DefaultEventPriority` (all 15 priority levels)
-- [ ] 2.4 Add tests verifying values match Java exactly
+- [x] 2.1 Implement `Constants` (BOUNDING_CIRCLE_RADIUS, SCAN_RADIUS, MAX_SPEED, etc.)
+- [x] 2.2 Implement `GameType` (CLASSIC, MELEE, ONE_VS_ONE)
+- [x] 2.3 Implement `DefaultEventPriority` (all 15 priority levels)
+- [x] 2.4 Add tests verifying values match Java exactly
 
 ## 3. Value Objects
 
