@@ -14,3 +14,6 @@ export { Color } from "./graphics/Color.js";
 export { Point } from "./graphics/Point.js";
 export type { IGraphics } from "./graphics/IGraphics.js";
 export { SvgGraphics } from "./graphics/SvgGraphics.js";
+export { ColorUtil } from "./util/ColorUtil.js";
+export { MathUtil } from "./util/MathUtil.js";
+export type { Droid } from "./Droid.js";

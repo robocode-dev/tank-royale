@@ -35,13 +35,13 @@
 
 ## 5. Utilities
 
-- [ ] 5.1 Implement `ColorUtil` (toHex, fromHexColor, fromHex — 3/6 digit support)
-- [ ] 5.2 Implement `MathUtil` (clamp)
-- [ ] 5.3 Add tests for utilities
+- [x] 5.1 Implement `ColorUtil` (toHex, fromHexColor, fromHex — 3/6 digit support)
+- [x] 5.2 Implement `MathUtil` (clamp)
+- [x] 5.3 Add tests for utilities
 
 ## 6. Marker Interface
 
-- [ ] 6.1 Implement `Droid` interface (empty marker)
+- [x] 6.1 Implement `Droid` interface (empty marker)
 
 ## 7. Verification
 
