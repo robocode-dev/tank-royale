@@ -94,8 +94,10 @@ Currently, we provide Bot API implementations for:
 
 **Planned for future release:**
 
-- **WebAssembly (WASM)** — Will enable writing bots in web-based languages (JavaScript, TypeScript, Go, Rust, etc.),
-  opening Tank Royale to browser-based development and competitive environments
+- **TypeScript** — Will enable writing bots in JavaScript/TypeScript for Node.js and browser environments, opening Tank
+  Royale to browser-based development and competitive environments (see [ADR-0027](./0027-wasm-bot-api-architecture.md)).
+  Future language support (Rust, Go, etc.) would follow the same pattern as Java/C#/Python — standalone native
+  implementations, not WASM compilations
 
 **But:** If someone develops a **better** Bot API with a different philosophy (more functional, different naming,
 different abstractions), that's excellent! Those implementations should:

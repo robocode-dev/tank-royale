@@ -55,7 +55,7 @@ Key goals:
 - **Java 11+** – runtime target (JDK 17-21 required for building)
 - **Python** – bot API and sample bots
 - **.NET / C#** – bot API and sample bots
-- **WebAssembly (Wasm)** – work in progress for browser-based bots
+- **TypeScript** – bot API for web platform (Node.js and browser)
 
 ### Core Libraries
 
@@ -162,8 +162,8 @@ battle orchestration). The individual message schemas (YAML) live alongside the 
 
 ### Bot API Rules (Non-negotiable)
 
-- **1:1 semantic equivalence with Java**: All official Bot APIs (Python, .NET, Wasm) must be semantically identical to
-  the Java Bot API, which is the reference implementation
+- **1:1 semantic equivalence with Java**: All official Bot APIs (Python, .NET, TypeScript) must be semantically identical
+  to the Java Bot API, which is the reference implementation
 - **Java is the reference**: The classic Robocode API was originally written for Java, and Tank Royale remains loyal to
   this heritage. The Java Bot API is the most battle-tested implementation and serves as the authoritative source for
   all other platform implementations. When in doubt, Java's behavior is authoritative.
@@ -183,7 +183,7 @@ battle orchestration). The individual message schemas (YAML) live alongside the 
 
 ### Design Constraints
 
-- Bot API changes must sync across all platforms (Java, .NET, Python)
+- Bot API changes must sync across all platforms (Java, .NET, Python, TypeScript)
 - Protocol changes affect all clients; coordinate via `schema/schemas/`
 - Keep documentation updated with code changes
 

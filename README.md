@@ -110,7 +110,7 @@ See the [Battle Runner API docs](https://robocode-dev.github.io/tank-royale/api/
 
 ## 🚧 Work in progress
 
-- **Bot API for WebAssembly (Wasm)**
+- **Bot API for TypeScript** (Node.js and browser support)
     - JavaScript
     - TypeScript
 - **Robocode API bridge for Tank Royale** – see the [robocode-api-bridge](https://github.com/robocode-dev/robocode-api-bridge) project.

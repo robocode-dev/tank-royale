@@ -7,8 +7,8 @@
 
 ## Context
 
-Tank Royale supports Bot APIs in Java, .NET/C#, and Python, with WebAssembly (WASM) planned. When implementations
-diverge or ambiguity arises, a single authoritative source is needed.
+Tank Royale supports Bot APIs in Java, .NET/C#, Python, and TypeScript (planned). When implementations diverge or
+ambiguity arises, a single authoritative source is needed.
 
 **Problem:** Which platform's behavior is canonical when Bot APIs disagree?
 
@@ -16,8 +16,8 @@ diverge or ambiguity arises, a single authoritative source is needed.
 
 ## Decision
 
-The **Java Bot API is the authoritative reference implementation**. All other Bot APIs (Python, .NET, Wasm) must be
-semantically identical to Java.
+The **Java Bot API is the authoritative reference implementation**. All other Bot APIs (Python, .NET, TypeScript) must
+be semantically identical to Java.
 
 **Rules:**
 

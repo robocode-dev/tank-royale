@@ -17,7 +17,7 @@
 
 The **Bot API Components View** is the third level of the C4 model that zooms into the Bot API libraries to reveal their internal architecture. This view shows how bot developers write custom bots, how the API handles WebSocket communication, and how game events are mapped to bot callbacks.
 
-This diagram shows the structure common to all Bot API implementations (Java, Python, .NET, WASM):
+This diagram shows the structure common to all Bot API implementations (Java, Python, .NET, TypeScript):
 - **BaseBot** — Base class that developers extend
 - **BotInternals** — Hidden internal state management
 - **WebSocket Handler** — Network communication with a game server
@@ -46,7 +46,7 @@ The Bot API follows a **symmetric multi-language design** with **symmetric namin
   - **Java:** `public abstract class BaseBot`
   - **Python:** `class BaseBot` with abstract methods
   - **.NET:** `public abstract class BaseBot`
-  - **WASM:** `export class BaseBot`
+  - **TypeScript:** `export class BaseBot`
 - **Lifecycle Methods:**
   - `onReady()` — Called when battle is about to start
   - `run()` — Main turn loop (bot developers override)
@@ -354,8 +354,8 @@ graph TD
 
 All languages implement the **same interface** with **language-specific naming**:
 
-| Feature | Java | Python | .NET | WASM |
-|---------|------|--------|------|------|
+| Feature | Java | Python | .NET | TypeScript |
+|---------|------|--------|------|------------|
 | Base Class | `BaseBot` | `BaseBot` | `BaseBot` | `BaseBot` |
 | Turn Method | `run()` | `run()` | `Run()` | `run()` |
 | Move Forward | `setForwardSpeed()` | `set_forward_speed()` | `SetForwardSpeed()` | `setForwardSpeed()` |
@@ -370,7 +370,7 @@ All languages implement the **same interface** with **language-specific naming**
 ## Example Bot Implementation (Pseudo-code)
 
 ```java
-// Java example (similar in Python, .NET, WASM)
+// Java example (similar in Python, .NET, TypeScript)
 
 public class MyBot extends BaseBot {
     @Override
