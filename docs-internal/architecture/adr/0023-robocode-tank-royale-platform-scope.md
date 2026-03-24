@@ -23,7 +23,7 @@ versus extensions, and where responsibility boundaries lie.
 2. **GUI** — Desktop client for viewing and controlling battles
 3. **Bot APIs** — Language bindings for writing competitive bots:
    - **Current:** Java, Python, .NET
-   - **Planned:** WebAssembly (WASM) for web-based languages (JavaScript, TypeScript, etc.)
+   - **Planned:** TypeScript for web platform support (Node.js and browser — see [ADR-0027](./0027-typescript-bot-api-architecture.md))
 4. **Booter** — Launcher for running bots locally or in containers (required for GUI usage)
 5. **Recorder** — Battle recording utility for playback and analysis
 
@@ -95,7 +95,7 @@ Currently, we provide Bot API implementations for:
 **Planned for future release:**
 
 - **TypeScript** — Will enable writing bots in JavaScript/TypeScript for Node.js and browser environments, opening Tank
-  Royale to browser-based development and competitive environments (see [ADR-0027](./0027-wasm-bot-api-architecture.md)).
+  Royale to browser-based development and competitive environments (see [ADR-0027](./0027-typescript-bot-api-architecture.md)).
   Future language support (Rust, Go, etc.) would follow the same pattern as Java/C#/Python — standalone native
   implementations, not WASM compilations
 

@@ -47,6 +47,9 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0024](./0024-battle-runner-api.md) | Battle Runner API | Proposed | 2026-02-28 |
 | [0025](./0025-game-type-presets-and-rule-configuration.md) | Game Type Presets and Rule Configuration | Accepted | 2026-02-28 |
 | [0026](./0026-identity-based-bot-matching.md) | Identity-Based Bot Matching in Battle Runner | Proposed | 2026-03-21 |
+| [0027](./0027-typescript-bot-api-architecture.md) | TypeScript Bot API for Web Platform Support | Proposed | 2026-03-24 |
+| [0028](./0028-typescript-bot-api-threading-model.md) | TypeScript Bot API Threading Model | Proposed | 2026-03-24 |
+| [0029](./0029-typescript-bot-api-runtime-targets.md) | TypeScript Bot API Runtime Targets | Proposed | 2026-03-24 |
 
 ## Status Definitions
 
