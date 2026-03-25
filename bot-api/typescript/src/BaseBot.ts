@@ -58,21 +58,21 @@ export abstract class BaseBot implements IBaseBot {
    * @param botInfo the bot info.
    * @param serverUrl the server URL.
    */
-  constructor(botInfo: BotInfo, serverUrl: URL);
+  constructor(botInfo: BotInfo, serverUrl: string);
   /**
    * Creates a new BaseBot with the given bot info, server URL, and server secret.
    * @param botInfo the bot info.
    * @param serverUrl the server URL.
    * @param serverSecret the server secret.
    */
-  constructor(botInfo: BotInfo, serverUrl: URL, serverSecret: string);
-  constructor(botInfo?: BotInfo, serverUrl?: URL, serverSecret?: string) {
+  constructor(botInfo: BotInfo, serverUrl: string, serverSecret: string);
+  constructor(botInfo?: BotInfo, serverUrl?: string, serverSecret?: string) {
     const info = botInfo ?? new EnvVars(detectRuntime()).getBotInfo();
     this._internals = new BaseBotInternals(
       this,
       info,
       serverUrl ?? null,
-      serverSecret ?? null,
+      serverSecret,
     );
   }
 
@@ -150,7 +150,7 @@ export abstract class BaseBot implements IBaseBot {
   setStop(overwrite: boolean): void;
   setStop(overwrite?: boolean): void { this._internals.setStop(overwrite); }
   setResume(): void { this._internals.setResume(); }
-  isStopped(): boolean { return this._internals.isStopped(); }
+  isStopped(): boolean { return this._internals.isStopped_(); }
 
   getTeammateIds(): ReadonlySet<number> { return this._internals.getTeammateIds(); }
   isTeammate(botId: number): boolean { return this._internals.isTeammate(botId); }

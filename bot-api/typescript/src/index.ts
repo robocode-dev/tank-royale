@@ -20,3 +20,4 @@ export type { Droid } from "./Droid.js";
 export type { IBaseBot } from "./IBaseBot.js";
 export type { IBot } from "./IBot.js";
 export { BaseBot } from "./BaseBot.js";
+export { Bot } from "./Bot.js";
