@@ -42,17 +42,17 @@ const bot = new Bot(
 
 // Called at the start of each round
 bot.run = () => {
-  while (bot.isRunning()) {
-    bot.forward(100);
-    bot.turnGunRight(360);
-    bot.back(100);
-    bot.turnGunRight(360);
-  }
+    while (bot.isRunning()) {
+        bot.forward(100);
+        bot.turnGunRight(360);
+        bot.back(100);
+        bot.turnGunRight(360);
+    }
 };
 
 // Called when the bot scans another bot
 bot.onScannedBot = (event) => {
-  bot.fire(1);
+    bot.fire(1);
 };
 
 bot.start();
@@ -62,46 +62,142 @@ bot.start();
 
 The API closely mirrors the Java and .NET Bot APIs. Key classes and interfaces:
 
-| Export | Description |
-|--------|-------------|
-| `Bot` | Full bot with independent gun/radar movement |
-| `BaseBot` | Low-level bot with event-driven control |
-| `IBot` | Interface for `Bot` |
-| `IBaseBot` | Interface for `BaseBot` |
-| `Droid` | Marker interface for team droid bots |
-| `BotInfo` / `BotInfoBuilder` | Bot metadata for handshake |
-| `Constants` | Game constants (max speed, rates, etc.) |
-| `GameSetup` | Arena and game configuration |
-| `BotState` | Snapshot of bot state during a tick |
-| `BulletState` | Snapshot of bullet state during a tick |
-| `BotResults` | Final round/battle results |
-| `Color` / `ColorUtil` | Color representation utilities |
-| `IGraphics` / `SvgGraphics` | Graphics API for painting overlays |
-| `DefaultEventPriority` | Default priorities for bot events |
-| `EnvVars` | Environment variable names for configuration |
+| Export                       | Description                                  |
+|------------------------------|----------------------------------------------|
+| `Bot`                        | Full bot with independent gun/radar movement |
+| `BaseBot`                    | Low-level bot with event-driven control      |
+| `IBot`                       | Interface for `Bot`                          |
+| `IBaseBot`                   | Interface for `BaseBot`                      |
+| `Droid`                      | Marker interface for team droid bots         |
+| `BotInfo` / `BotInfoBuilder` | Bot metadata for handshake                   |
+| `Constants`                  | Game constants (max speed, rates, etc.)      |
+| `GameSetup`                  | Arena and game configuration                 |
+| `BotState`                   | Snapshot of bot state during a tick          |
+| `BulletState`                | Snapshot of bullet state during a tick       |
+| `BotResults`                 | Final round/battle results                   |
+| `Color` / `ColorUtil`        | Color representation utilities               |
+| `IGraphics` / `SvgGraphics`  | Graphics API for painting overlays           |
+| `DefaultEventPriority`       | Default priorities for bot events            |
+| `EnvVars`                    | Environment variable names for configuration |
+
+## Synchronous API Model
+
+Bot code is written in a **synchronous, sequential style** — identical to the Java, C#, and Python Bot APIs.
+There is no `async`/`await` in bot code:
+
+```typescript
+// ✅ Correct — sequential, blocking
+bot.run = () => {
+    while (bot.isRunning()) {
+        bot.forward(100);   // blocks until bot has moved 100 units
+        bot.turnRight(90);  // blocks until turn is complete
+        bot.fire(1);
+    }
+};
+
+// ❌ Wrong — do NOT use async/await in bot code
+bot.run = async () => {
+    await bot.forward(100); // incorrect — forward() is not a Promise
+};
+```
+
+**How it works internally:** The API uses a Web Worker (`worker_threads` in Node.js, `Worker` in browsers)
+with `SharedArrayBuffer` + `Atomics.wait()` to provide true blocking — the same two-thread model as Java.
+The WebSocket runs on the main thread; bot logic runs on the worker thread. When a tick arrives, the main
+thread calls `Atomics.notify()` to wake the bot worker, just like Java's `notifyAll()`.
+
+This means `forward(100)` genuinely blocks the bot thread — no Promises, no callbacks, no generator yields.
+See [ADR-0028](https://github.com/robocode-dev/tank-royale/blob/main/docs-internal/architecture/adr/0028-typescript-bot-api-threading-model.md) for the full rationale.
+
+## Browser vs Node.js Runtime
+
+The package auto-detects the runtime environment and selects the appropriate adapter:
+
+| Feature               | Node.js                            | Browser                           |
+|-----------------------|------------------------------------|-----------------------------------|
+| WebSocket             | `ws` npm package (peer dep)        | Native `WebSocket` API            |
+| Environment variables | `process.env`                      | ❌ Not available                   |
+| Bot configuration     | Env vars **or** constructor params | Constructor params only           |
+| Worker threads        | `worker_threads` module            | `Worker` API                      |
+| `SharedArrayBuffer`   | Available (Node.js 12+)            | Requires CORS headers (see below) |
+| Booter integration    | ✅ Full support                     | ❌ Not applicable                  |
+
+**Node.js setup** — install the `ws` peer dependency:
+
+```bash
+npm install ws
+```
+
+**Browser setup** — `SharedArrayBuffer` requires two HTTP response headers on the page serving the bot:
+
+```
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: require-corp
+```
+
+These are supported in all modern browsers and are a one-line configuration in most web servers.
+Browser bots must pass connection details via the constructor (env vars are not available):
+
+```typescript
+const bot = new Bot(botInfo, "ws://localhost:7654", "my-secret");
+bot.start();
+```
+
+See [ADR-0029](https://github.com/robocode-dev/tank-royale/blob/main/docs-internal/architecture/adr/0029-typescript-bot-api-runtime-targets.md) for the full rationale.
 
 ## Configuration via Environment Variables
 
-The bot reads connection settings from environment variables (matching the Java/Python/.NET APIs):
+In Node.js, the bot reads all settings from environment variables (matching the Java/Python/.NET APIs per [ADR-0013](https://github.com/robocode-dev/tank-royale/blob/main/docs-internal/architecture/adr/0013-bot-configuration-env-vars.md)):
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SERVER_URL` | `ws://localhost:7654` | WebSocket server URL |
-| `BOT_SECRET` | _(none)_ | Secret for server authentication |
+**Connection settings:**
+
+| Variable        | Default               | Description                      |
+|-----------------|-----------------------|----------------------------------|
+| `SERVER_URL`    | `ws://localhost:7654` | WebSocket server URL             |
+| `SERVER_SECRET` | _(none)_              | Secret for server authentication |
+
+**Bot identity (set by the booter; override manually for testing):**
+
+| Variable            | Required | Description                                      |
+|---------------------|----------|--------------------------------------------------|
+| `BOT_NAME`          | ✅        | Bot name                                         |
+| `BOT_VERSION`       | ✅        | Bot version string                               |
+| `BOT_AUTHORS`       | ✅        | Comma-separated list of authors                  |
+| `BOT_DESCRIPTION`   | —        | Short description                                |
+| `BOT_HOMEPAGE`      | —        | Homepage URL                                     |
+| `BOT_COUNTRY_CODES` | —        | Comma-separated ISO 3166-1 alpha-2 country codes |
+| `BOT_GAME_TYPES`    | —        | Comma-separated supported game types             |
+| `BOT_PLATFORM`      | —        | Platform name (e.g. `Node.js`)                   |
+| `BOT_PROG_LANG`     | —        | Programming language (e.g. `TypeScript`)         |
+| `BOT_INITIAL_POS`   | —        | Initial position override (`x,y,direction`)      |
+
+**Team settings (set by the booter for team bots):**
+
+| Variable       | Description         |
+|----------------|---------------------|
+| `TEAM_ID`      | Numeric team ID     |
+| `TEAM_NAME`    | Team name           |
+| `TEAM_VERSION` | Team version string |
+
+**Booter flag:**
+
+| Variable     | Description                                                |
+|--------------|------------------------------------------------------------|
+| `BOT_BOOTED` | Set to `true` by the booter when launching the bot process |
 
 Set them before starting:
 
 ```bash
-SERVER_URL=ws://localhost:7654 BOT_SECRET=abc123 node MyFirstBot.js
+SERVER_URL=ws://localhost:7654 SERVER_SECRET=abc123 node MyFirstBot.js
 ```
 
 ## Runtime Targets
 
-| Target | Notes |
-|--------|-------|
-| **Node.js 18+** | Full support. Requires `ws` peer dependency. |
-| **Browser** | Supported via native `WebSocket`. No `ws` needed. |
-| **Deno / Bun** | Should work with Node.js-compatible WebSocket. |
+| Target          | Notes                                             |
+|-----------------|---------------------------------------------------|
+| **Node.js 18+** | Full support. Requires `ws` peer dependency.      |
+| **Browser**     | Supported via native `WebSocket`. No `ws` needed. |
+| **Deno / Bun**  | Should work with Node.js-compatible WebSocket.    |
 
 ## Module Formats
 

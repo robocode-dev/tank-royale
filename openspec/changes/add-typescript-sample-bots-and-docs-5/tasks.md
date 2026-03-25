@@ -52,10 +52,10 @@
 
 ## 9. Documentation
 
-- [ ] 9.1 Create `bot-api/typescript/README.md` — installation (`npm install`), quick start, API overview, runtime targets
-- [ ] 9.2 Document synchronous API model (no async/await in bot code per ADR-0028)
-- [ ] 9.3 Document browser vs Node.js runtime differences (ADR-0029)
-- [ ] 9.4 Document environment variable configuration (matching Java/Python/C# env var names per ADR-0013)
+- [x] 9.1 Create `bot-api/typescript/README.md` — installation (`npm install`), quick start, API overview, runtime targets
+- [x] 9.2 Document synchronous API model (no async/await in bot code per ADR-0028)
+- [x] 9.3 Document browser vs Node.js runtime differences (ADR-0029)
+- [x] 9.4 Document environment variable configuration (matching Java/Python/C# env var names per ADR-0013)
 
 ## 10. Verification
 
@@ -76,6 +76,7 @@
 
 - [ ] 11.1 Update ADR-0003 supported languages list: add TypeScript alongside Java, C#, Python
 - [ ] 11.2 Update ADR-0003 symmetry section to reference `bot-api/typescript`
+
 
 
 
