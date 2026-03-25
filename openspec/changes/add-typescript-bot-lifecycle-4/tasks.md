@@ -1,38 +1,38 @@
 ## 1. IBaseBot Interface
 
-- [ ] 1.1 Define `IBaseBot` interface with all state accessors: `getMyId()`, `getVariant()`, `getVersion()`, `getGameType()`, `getArenaWidth()`, `getArenaHeight()`, `getNumberOfRounds()`, `getGunCoolingRate()`, `getMaxInactivityTurns()`, `getTurnTimeout()`, `getTimeLeft()`, `getRoundNumber()`, `getTurnNumber()`, `getEnemyCount()`, `getEnergy()`, `isDisabled()`, `getX()`, `getY()`, `getDirection()`, `getGunDirection()`, `getRadarDirection()`, `getSpeed()`, `getGunHeat()`, `getBulletStates()`, `getEvents()`, `clearEvents()`
-- [ ] 1.2 Define rate setters/getters: `getTurnRate()`/`setTurnRate()`, `getMaxTurnRate()`/`setMaxTurnRate()`, `getGunTurnRate()`/`setGunTurnRate()`, `getMaxGunTurnRate()`/`setMaxGunTurnRate()`, `getRadarTurnRate()`/`setRadarTurnRate()`, `getMaxRadarTurnRate()`/`setMaxRadarTurnRate()`, `getTargetSpeed()`/`setTargetSpeed()`, `getMaxSpeed()`/`setMaxSpeed()`
-- [ ] 1.3 Define fire methods: `setFire(firepower): boolean`, `getFirepower()`
-- [ ] 1.4 Define adjustment methods: `setAdjustGunForBodyTurn(adjust)`, `isAdjustGunForBodyTurn()`, `setAdjustRadarForBodyTurn(adjust)`, `isAdjustRadarForBodyTurn()`, `setAdjustRadarForGunTurn(adjust)`, `isAdjustRadarForGunTurn()`
-- [ ] 1.5 Define stop/resume: `setStop()`, `setStop(overwrite)`, `setResume()`, `isStopped()`
-- [ ] 1.6 Define scan: `setRescan()`
-- [ ] 1.7 Define custom events: `addCustomEvent(condition): boolean`, `removeCustomEvent(condition): boolean`
-- [ ] 1.8 Define interruptible: `setInterruptible(interruptible)`
-- [ ] 1.9 Define color getters/setters: `getBodyColor()`/`setBodyColor()`, `getTurretColor()`/`setTurretColor()`, `getRadarColor()`/`setRadarColor()`, `getBulletColor()`/`setBulletColor()`, `getScanColor()`/`setScanColor()`, `getTracksColor()`/`setTracksColor()`, `getGunColor()`/`setGunColor()`
-- [ ] 1.10 Define team methods: `getTeammateIds()`, `isTeammate(botId)`, `broadcastTeamMessage(message)`, `sendTeamMessage(teammateId, message)`
-- [ ] 1.11 Define fire assist: `setFireAssist(enable)`
-- [ ] 1.12 Define lifecycle: `start()`, `go()`
-- [ ] 1.13 Define constants: `TEAM_MESSAGE_MAX_SIZE`, `MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN`
+- [x] 1.1 Define `IBaseBot` interface with all state accessors: `getMyId()`, `getVariant()`, `getVersion()`, `getGameType()`, `getArenaWidth()`, `getArenaHeight()`, `getNumberOfRounds()`, `getGunCoolingRate()`, `getMaxInactivityTurns()`, `getTurnTimeout()`, `getTimeLeft()`, `getRoundNumber()`, `getTurnNumber()`, `getEnemyCount()`, `getEnergy()`, `isDisabled()`, `getX()`, `getY()`, `getDirection()`, `getGunDirection()`, `getRadarDirection()`, `getSpeed()`, `getGunHeat()`, `getBulletStates()`, `getEvents()`, `clearEvents()`
+- [x] 1.2 Define rate setters/getters: `getTurnRate()`/`setTurnRate()`, `getMaxTurnRate()`/`setMaxTurnRate()`, `getGunTurnRate()`/`setGunTurnRate()`, `getMaxGunTurnRate()`/`setMaxGunTurnRate()`, `getRadarTurnRate()`/`setRadarTurnRate()`, `getMaxRadarTurnRate()`/`setMaxRadarTurnRate()`, `getTargetSpeed()`/`setTargetSpeed()`, `getMaxSpeed()`/`setMaxSpeed()`
+- [x] 1.3 Define fire methods: `setFire(firepower): boolean`, `getFirepower()`
+- [x] 1.4 Define adjustment methods: `setAdjustGunForBodyTurn(adjust)`, `isAdjustGunForBodyTurn()`, `setAdjustRadarForBodyTurn(adjust)`, `isAdjustRadarForBodyTurn()`, `setAdjustRadarForGunTurn(adjust)`, `isAdjustRadarForGunTurn()`
+- [x] 1.5 Define stop/resume: `setStop()`, `setStop(overwrite)`, `setResume()`, `isStopped()`
+- [x] 1.6 Define scan: `setRescan()`
+- [x] 1.7 Define custom events: `addCustomEvent(condition): boolean`, `removeCustomEvent(condition): boolean`
+- [x] 1.8 Define interruptible: `setInterruptible(interruptible)`
+- [x] 1.9 Define color getters/setters: `getBodyColor()`/`setBodyColor()`, `getTurretColor()`/`setTurretColor()`, `getRadarColor()`/`setRadarColor()`, `getBulletColor()`/`setBulletColor()`, `getScanColor()`/`setScanColor()`, `getTracksColor()`/`setTracksColor()`, `getGunColor()`/`setGunColor()`
+- [x] 1.10 Define team methods: `getTeammateIds()`, `isTeammate(botId)`, `broadcastTeamMessage(message)`, `sendTeamMessage(teammateId, message)`
+- [x] 1.11 Define fire assist: `setFireAssist(enable)`
+- [x] 1.12 Define lifecycle: `start()`, `go()`
+- [x] 1.13 Define constants: `TEAM_MESSAGE_MAX_SIZE`, `MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN`
 
 ## 2. IBot Interface
 
-- [ ] 2.1 Define `IBot` interface extending `IBaseBot`
-- [ ] 2.2 Define `run()` (default empty), `isRunning(): boolean`
-- [ ] 2.3 Define setter movement methods: `setForward(distance)`, `setBack(distance)`, `setTurnLeft(degrees)`, `setTurnRight(degrees)`, `setTurnGunLeft(degrees)`, `setTurnGunRight(degrees)`, `setTurnRadarLeft(degrees)`, `setTurnRadarRight(degrees)`
-- [ ] 2.4 Define blocking movement methods: `forward(distance)`, `back(distance)`, `turnLeft(degrees)`, `turnRight(degrees)`, `turnGunLeft(degrees)`, `turnGunRight(degrees)`, `turnRadarLeft(degrees)`, `turnRadarRight(degrees)`
-- [ ] 2.5 Define remaining getters: `getDistanceRemaining()`, `getTurnRemaining()`, `getGunTurnRemaining()`, `getRadarTurnRemaining()`
-- [ ] 2.6 Define `fire(firepower)` (blocking), `stop()`, `stop(overwrite)`, `resume()`, `rescan()`, `waitFor(condition)`
+- [x] 2.1 Define `IBot` interface extending `IBaseBot`
+- [x] 2.2 Define `run()` (default empty), `isRunning(): boolean`
+- [x] 2.3 Define setter movement methods: `setForward(distance)`, `setBack(distance)`, `setTurnLeft(degrees)`, `setTurnRight(degrees)`, `setTurnGunLeft(degrees)`, `setTurnGunRight(degrees)`, `setTurnRadarLeft(degrees)`, `setTurnRadarRight(degrees)`
+- [x] 2.4 Define blocking movement methods: `forward(distance)`, `back(distance)`, `turnLeft(degrees)`, `turnRight(degrees)`, `turnGunLeft(degrees)`, `turnGunRight(degrees)`, `turnRadarLeft(degrees)`, `turnRadarRight(degrees)`
+- [x] 2.5 Define remaining getters: `getDistanceRemaining()`, `getTurnRemaining()`, `getGunTurnRemaining()`, `getRadarTurnRemaining()`
+- [x] 2.6 Define `fire(firepower)` (blocking), `stop()`, `stop(overwrite)`, `resume()`, `rescan()`, `waitFor(condition)`
 
 ## 3. BaseBot Implementation
 
-- [ ] 3.1 Implement `BaseBot` abstract class implementing `IBaseBot`
-- [ ] 3.2 Implement constructors: no-arg (auto-detect config file + env vars), `(botInfo)`, `(botInfo, serverUrl)`, `(botInfo, serverUrl, serverSecret)`
-- [ ] 3.3 Implement `start()` -- delegates to `BaseBotInternals.start()`
-- [ ] 3.4 Implement `go()` -- dispatch events for current tick, then call `BaseBotInternals.execute()`
-- [ ] 3.5 Delegate all state accessors to `BaseBotInternals`
-- [ ] 3.6 Delegate rate setters/getters, fire, adjustment, stop/resume, scan, color, team, custom event methods
-- [ ] 3.7 Implement overridable event handler methods: `onConnected()`, `onDisconnected()`, `onConnectionError()`, `onGameStarted()`, `onGameEnded()`, `onRoundStarted()`, `onRoundEnded()`, `onTick()`, `onBotDeath()`, `onDeath()`, `onHitBot()`, `onHitWall()`, `onBulletFired()`, `onHitByBullet()`, `onBulletHitBullet()`, `onBulletHitWall()`, `onScannedBot()`, `onSkippedTurn()`, `onCustomEvent()`, `onTeamMessage()`, `onWonRound()`
-- [ ] 3.8 Implement `calcBearing()`, `calcGunBearing()`, `calcRadarBearing()`, `calcDeltaAngle()`, `normalizeAbsoluteAngle()`, `normalizeRelativeAngle()`, `directionTo()`, `bearingTo()`, `gunBearingTo()`, `radarBearingTo()`, `distanceTo()`, `getGraphics()`
+- [x] 3.1 Implement `BaseBot` abstract class implementing `IBaseBot`
+- [x] 3.2 Implement constructors: no-arg (auto-detect config file + env vars), `(botInfo)`, `(botInfo, serverUrl)`, `(botInfo, serverUrl, serverSecret)`
+- [x] 3.3 Implement `start()` -- delegates to `BaseBotInternals.start()`
+- [x] 3.4 Implement `go()` -- dispatch events for current tick, then call `BaseBotInternals.execute()`
+- [x] 3.5 Delegate all state accessors to `BaseBotInternals`
+- [x] 3.6 Delegate rate setters/getters, fire, adjustment, stop/resume, scan, color, team, custom event methods
+- [x] 3.7 Implement overridable event handler methods: `onConnected()`, `onDisconnected()`, `onConnectionError()`, `onGameStarted()`, `onGameEnded()`, `onRoundStarted()`, `onRoundEnded()`, `onTick()`, `onBotDeath()`, `onDeath()`, `onHitBot()`, `onHitWall()`, `onBulletFired()`, `onHitByBullet()`, `onBulletHitBullet()`, `onBulletHitWall()`, `onScannedBot()`, `onSkippedTurn()`, `onCustomEvent()`, `onTeamMessage()`, `onWonRound()`
+- [x] 3.8 Implement `calcBearing()`, `calcGunBearing()`, `calcRadarBearing()`, `calcDeltaAngle()`, `normalizeAbsoluteAngle()`, `normalizeRelativeAngle()`, `directionTo()`, `bearingTo()`, `gunBearingTo()`, `radarBearingTo()`, `distanceTo()`, `getGraphics()`
 
 ## 4. BaseBotInternals
 

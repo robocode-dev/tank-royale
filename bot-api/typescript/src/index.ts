@@ -17,3 +17,6 @@ export { SvgGraphics } from "./graphics/SvgGraphics.js";
 export { ColorUtil } from "./util/ColorUtil.js";
 export { MathUtil } from "./util/MathUtil.js";
 export type { Droid } from "./Droid.js";
+export type { IBaseBot } from "./IBaseBot.js";
+export type { IBot } from "./IBot.js";
+export { BaseBot } from "./BaseBot.js";
