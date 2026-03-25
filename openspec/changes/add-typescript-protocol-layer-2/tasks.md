@@ -21,20 +21,20 @@
 
 ## 2. RuntimeAdapter
 
-- [ ] 2.1 Define `WebSocketLike` interface (onopen, onclose, onerror, onmessage, send, close, readyState)
-- [ ] 2.2 Define `RuntimeAdapter` interface (createWebSocket, getEnvVar, exit)
-- [ ] 2.3 Implement `NodeRuntimeAdapter` using `ws` library for WebSocket, `process.env` for env vars, `process.exit()` for exit
-- [ ] 2.4 Implement `BrowserRuntimeAdapter` using native `WebSocket`, no-op env vars (returns undefined), no-op exit
-- [ ] 2.5 Implement `detectRuntime()` auto-detection function (`typeof process !== 'undefined'` for Node.js)
-- [ ] 2.6 Add tests for runtime detection and adapter behavior
+- [x] 2.1 Define `WebSocketLike` interface (onopen, onclose, onerror, onmessage, send, close, readyState)
+- [x] 2.2 Define `RuntimeAdapter` interface (createWebSocket, getEnvVar, exit)
+- [x] 2.3 Implement `NodeRuntimeAdapter` using `ws` library for WebSocket, `process.env` for env vars, `process.exit()` for exit
+- [x] 2.4 Implement `BrowserRuntimeAdapter` using native `WebSocket`, no-op env vars (returns undefined), no-op exit
+- [x] 2.5 Implement `detectRuntime()` auto-detection function (`typeof process !== 'undefined'` for Node.js)
+- [x] 2.6 Add tests for runtime detection and adapter behavior
 
 ## 3. EnvVars
 
-- [ ] 3.1 Implement `EnvVars` utility class using `RuntimeAdapter.getEnvVar()` for all environment variable names matching Java: `SERVER_URL`, `SERVER_SECRET`, `BOT_NAME`, `BOT_VERSION`, `BOT_AUTHORS`, `BOT_DESCRIPTION`, `BOT_HOMEPAGE`, `BOT_COUNTRY_CODES`, `BOT_GAME_TYPES`, `BOT_PLATFORM`, `BOT_PROG_LANG`, `BOT_INITIAL_POS`, `TEAM_ID`, `TEAM_NAME`, `TEAM_VERSION`, `BOT_BOOTED`
-- [ ] 3.2 Implement `getBotInfo()` that constructs a `BotInfo` from env vars (throws BotException if name/version/authors missing)
-- [ ] 3.3 Implement comma-separated list parsing for `BOT_AUTHORS`, `BOT_COUNTRY_CODES`, `BOT_GAME_TYPES` (matching Java's `propertyAsList`)
-- [ ] 3.4 Implement `getTeamId()` with null/integer parsing matching Java behavior
-- [ ] 3.5 Add tests for all env var getters including missing/blank/comma-separated values
+- [x] 3.1 Implement `EnvVars` utility class using `RuntimeAdapter.getEnvVar()` for all environment variable names matching Java: `SERVER_URL`, `SERVER_SECRET`, `BOT_NAME`, `BOT_VERSION`, `BOT_AUTHORS`, `BOT_DESCRIPTION`, `BOT_HOMEPAGE`, `BOT_COUNTRY_CODES`, `BOT_GAME_TYPES`, `BOT_PLATFORM`, `BOT_PROG_LANG`, `BOT_INITIAL_POS`, `TEAM_ID`, `TEAM_NAME`, `TEAM_VERSION`, `BOT_BOOTED`
+- [x] 3.2 Implement `getBotInfo()` that constructs a `BotInfo` from env vars (throws BotException if name/version/authors missing)
+- [x] 3.3 Implement comma-separated list parsing for `BOT_AUTHORS`, `BOT_COUNTRY_CODES`, `BOT_GAME_TYPES` (matching Java's `propertyAsList`)
+- [x] 3.4 Implement `getTeamId()` with null/integer parsing matching Java behavior
+- [x] 3.5 Add tests for all env var getters including missing/blank/comma-separated values
 
 ## 4. WebSocket Handler
 
