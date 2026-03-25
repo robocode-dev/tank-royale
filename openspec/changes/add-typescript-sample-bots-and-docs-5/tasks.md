@@ -45,10 +45,10 @@
 
 ## 8. Booter Integration
 
-- [ ] 8.1 Add Node.js platform detection in booter's `ProcessManager` (recognize `"platform": "Node.js"`)
-- [ ] 8.2 Generate launch scripts for TypeScript bots (`.cmd` and `.sh` using `node` / `npx ts-node` or `tsx`)
-- [ ] 8.3 Set up `lib/` directory with bot API package for standalone bot execution (matching Java's `../lib/*` pattern)
-- [ ] 8.4 Verify booter can start, stop, and restart Node.js bot processes
+- [x] 8.1 Add Node.js platform detection in booter's `ProcessManager` (recognize `"platform": "Node.js"`)
+- [x] 8.2 Generate launch scripts for TypeScript bots (`.cmd` and `.sh` using `node` / `npx ts-node` or `tsx`)
+- [x] 8.3 Set up `lib/` directory with bot API package for standalone bot execution (matching Java's `../lib/*` pattern)
+- [x] 8.4 Verify booter can start, stop, and restart Node.js bot processes
 
 ## 9. Documentation
 
@@ -76,5 +76,6 @@
 
 - [ ] 11.1 Update ADR-0003 supported languages list: add TypeScript alongside Java, C#, Python
 - [ ] 11.2 Update ADR-0003 symmetry section to reference `bot-api/typescript`
+
 
 
