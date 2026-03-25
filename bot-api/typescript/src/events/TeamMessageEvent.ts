@@ -7,6 +7,9 @@ export class TeamMessageEvent extends BotEvent {
 
   constructor(turnNumber: number, message: unknown, senderId: number) {
     super(turnNumber);
+    if (message === null || message === undefined) {
+      throw new Error("message cannot be null");
+    }
     this.message = message;
     this.senderId = senderId;
   }

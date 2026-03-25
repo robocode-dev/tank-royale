@@ -5,4 +5,8 @@ export class WonRoundEvent extends BotEvent {
   constructor(turnNumber: number) {
     super(turnNumber);
   }
+
+  override get isCritical(): boolean {
+    return true;
+  }
 }
