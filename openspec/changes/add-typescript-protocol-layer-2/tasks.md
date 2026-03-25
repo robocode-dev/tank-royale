@@ -38,21 +38,21 @@
 
 ## 4. WebSocket Handler
 
-- [ ] 4.1 Implement `WebSocketHandler` class that accepts `RuntimeAdapter`, server URL, server secret, `BotInfo`, and event callback hooks
-- [ ] 4.2 Implement `connect()` using `RuntimeAdapter.createWebSocket()` with onopen/onclose/onerror/onmessage handlers
-- [ ] 4.3 Implement message routing by `type` field: `ServerHandshake`, `TickEventForBot`, `RoundStartedEvent`, `RoundEndedEventForBot`, `GameStartedEventForBot`, `GameEndedEventForBot`, `SkippedTurnEvent`, `GameAbortedEvent`
-- [ ] 4.4 Implement `handleServerHandshake()`: store handshake, reply with `BotHandshake` via `BotHandshakeFactory`
-- [ ] 4.5 Implement `handleGameStarted()`: extract myId, teammateIds, gameSetup, initialPosition; send `BotReady`
-- [ ] 4.6 Implement `handleTick()`: deserialize `TickEventForBot`, map events via `EventMapper`, fire internal callbacks
-- [ ] 4.7 Implement `handleRoundStarted()`, `handleRoundEnded()`, `handleGameEnded()`, `handleGameAborted()`, `handleSkippedTurn()` matching Java WebSocketHandler behavior
-- [ ] 4.8 Implement `sendBotIntent()` for sending `BotIntent` JSON to server
-- [ ] 4.9 Implement `disconnect()` to close WebSocket connection
-- [ ] 4.10 Add tests for message routing and handler callbacks (mock WebSocket)
+- [x] 4.1 Implement `WebSocketHandler` class that accepts `RuntimeAdapter`, server URL, server secret, `BotInfo`, and event callback hooks
+- [x] 4.2 Implement `connect()` using `RuntimeAdapter.createWebSocket()` with onopen/onclose/onerror/onmessage handlers
+- [x] 4.3 Implement message routing by `type` field: `ServerHandshake`, `TickEventForBot`, `RoundStartedEvent`, `RoundEndedEventForBot`, `GameStartedEventForBot`, `GameEndedEventForBot`, `SkippedTurnEvent`, `GameAbortedEvent`
+- [x] 4.4 Implement `handleServerHandshake()`: store handshake, reply with `BotHandshake` via `BotHandshakeFactory`
+- [x] 4.5 Implement `handleGameStarted()`: extract myId, teammateIds, gameSetup, initialPosition; send `BotReady`
+- [x] 4.6 Implement `handleTick()`: deserialize `TickEventForBot`, map events via `EventMapper`, fire internal callbacks
+- [x] 4.7 Implement `handleRoundStarted()`, `handleRoundEnded()`, `handleGameEnded()`, `handleGameAborted()`, `handleSkippedTurn()` matching Java WebSocketHandler behavior
+- [x] 4.8 Implement `sendBotIntent()` for sending `BotIntent` JSON to server
+- [x] 4.9 Implement `disconnect()` to close WebSocket connection
+- [x] 4.10 Add tests for message routing and handler callbacks (mock WebSocket)
 
 ## 5. BotHandshakeFactory
 
-- [ ] 5.1 Implement `BotHandshakeFactory.create()` matching Java: populate from BotInfo fields, isDroid flag, server secret, session ID, team env vars via EnvVars
-- [ ] 5.2 Add tests for handshake construction with full and minimal BotInfo
+- [x] 5.1 Implement `BotHandshakeFactory.create()` matching Java: populate from BotInfo fields, isDroid flag, server secret, session ID, team env vars via EnvVars
+- [x] 5.2 Add tests for handshake construction with full and minimal BotInfo
 
 ## 6. Mappers
 
