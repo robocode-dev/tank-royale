@@ -75,10 +75,10 @@
 
 ## 8. Verification
 
-- [ ] 8.1 All unit tests pass via `./gradlew :bot-api:typescript:test`
-- [ ] 8.2 Protocol DTO field names match server JSON schema exactly (camelCase wire format)
-- [ ] 8.3 MessageType enum values match Java's `Message.Type` string values exactly
-- [ ] 8.4 EnvVars environment variable names match Java exactly
-- [ ] 8.5 EventMapper correctly distinguishes self-events (DeathEvent, HitByBulletEvent) from opponent events using myBotId
-- [ ] 8.6 BotStateMapper applies ColorUtil.fromHexColor for all 7 color fields
-- [ ] 8.7 WebSocketHandler message routing handles all 8 server message types
+- [x] 8.1 All unit tests pass via `./gradlew :bot-api:typescript:test`
+- [x] 8.2 Protocol DTO field names match server JSON schema exactly (camelCase wire format)
+- [x] 8.3 MessageType enum values match Java's `Message.Type` string values exactly
+- [x] 8.4 EnvVars environment variable names match Java exactly
+- [x] 8.5 EventMapper correctly distinguishes self-events (DeathEvent, HitByBulletEvent) from opponent events using myBotId
+- [x] 8.6 BotStateMapper applies ColorUtil.fromHexColor for all 7 color fields
+- [x] 8.7 WebSocketHandler message routing handles all 8 server message types

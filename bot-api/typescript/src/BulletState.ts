@@ -1,3 +1,5 @@
+import { Color } from "./graphics/Color.js";
+
 /**
  * Represents the state of a bullet at a specific turn.
  */
@@ -8,7 +10,7 @@ export class BulletState {
   readonly x: number;
   readonly y: number;
   readonly direction: number;
-  readonly color: string | null;
+  readonly color: Color | null;
 
   constructor(
     bulletId: number,
@@ -17,7 +19,7 @@ export class BulletState {
     x: number,
     y: number,
     direction: number,
-    color: string | null,
+    color: Color | null,
   ) {
     this.bulletId = bulletId;
     this.ownerId = ownerId;

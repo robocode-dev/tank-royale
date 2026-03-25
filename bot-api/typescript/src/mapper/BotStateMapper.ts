@@ -1,5 +1,6 @@
 import { BotState as SchemaBotState } from "../protocol/schema.js";
 import { BotState } from "../BotState.js";
+import { ColorUtil } from "../util/ColorUtil.js";
 
 /** Maps schema BotState to API BotState. */
 export class BotStateMapper {
@@ -19,13 +20,13 @@ export class BotStateMapper {
       s.radarTurnRate,
       s.gunHeat,
       s.enemyCount,
-      s.bodyColor ?? null,
-      s.turretColor ?? null,
-      s.radarColor ?? null,
-      s.bulletColor ?? null,
-      s.scanColor ?? null,
-      s.tracksColor ?? null,
-      s.gunColor ?? null,
+      ColorUtil.fromHexColor(s.bodyColor ?? null),
+      ColorUtil.fromHexColor(s.turretColor ?? null),
+      ColorUtil.fromHexColor(s.radarColor ?? null),
+      ColorUtil.fromHexColor(s.bulletColor ?? null),
+      ColorUtil.fromHexColor(s.scanColor ?? null),
+      ColorUtil.fromHexColor(s.tracksColor ?? null),
+      ColorUtil.fromHexColor(s.gunColor ?? null),
       s.isDebuggingEnabled,
     );
   }

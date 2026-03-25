@@ -1,3 +1,5 @@
+import { Color } from "./graphics/Color.js";
+
 /**
  * Represents the state of a bot at a specific turn.
  */
@@ -16,13 +18,13 @@ export class BotState {
   readonly radarTurnRate: number;
   readonly gunHeat: number;
   readonly enemyCount: number;
-  readonly bodyColor: string | null;
-  readonly turretColor: string | null;
-  readonly radarColor: string | null;
-  readonly bulletColor: string | null;
-  readonly scanColor: string | null;
-  readonly tracksColor: string | null;
-  readonly gunColor: string | null;
+  readonly bodyColor: Color | null;
+  readonly turretColor: Color | null;
+  readonly radarColor: Color | null;
+  readonly bulletColor: Color | null;
+  readonly scanColor: Color | null;
+  readonly tracksColor: Color | null;
+  readonly gunColor: Color | null;
   readonly isDebuggingEnabled: boolean;
 
   constructor(
@@ -40,13 +42,13 @@ export class BotState {
     radarTurnRate: number,
     gunHeat: number,
     enemyCount: number,
-    bodyColor: string | null,
-    turretColor: string | null,
-    radarColor: string | null,
-    bulletColor: string | null,
-    scanColor: string | null,
-    tracksColor: string | null,
-    gunColor: string | null,
+    bodyColor: Color | null,
+    turretColor: Color | null,
+    radarColor: Color | null,
+    bulletColor: Color | null,
+    scanColor: Color | null,
+    tracksColor: Color | null,
+    gunColor: Color | null,
     isDebuggingEnabled: boolean,
   ) {
     this.isDroid = isDroid;

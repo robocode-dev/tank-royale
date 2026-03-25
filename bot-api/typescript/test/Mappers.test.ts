@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { ColorUtil } from "../src/util/ColorUtil.js";
 import { BulletStateMapper } from "../src/mapper/BulletStateMapper.js";
 import { BotStateMapper } from "../src/mapper/BotStateMapper.js";
 import { GameSetupMapper } from "../src/mapper/GameSetupMapper.js";
@@ -102,7 +103,7 @@ describe("BulletStateMapper", () => {
     expect(result.x).toBe(100);
     expect(result.y).toBe(200);
     expect(result.direction).toBe(45);
-    expect(result.color).toBe("#ff0000");
+    expect(result.color).toEqual(ColorUtil.fromHexColor("#ff0000"));
   });
 
   it("maps null color to null", () => {
@@ -138,13 +139,13 @@ describe("BotStateMapper", () => {
     expect(result.radarTurnRate).toBe(45);
     expect(result.gunHeat).toBe(0.5);
     expect(result.enemyCount).toBe(3);
-    expect(result.bodyColor).toBe("#aabbcc");
-    expect(result.turretColor).toBe("#112233");
-    expect(result.radarColor).toBe("#445566");
-    expect(result.bulletColor).toBe("#778899");
-    expect(result.scanColor).toBe("#aabbcc");
-    expect(result.tracksColor).toBe("#ddeeff");
-    expect(result.gunColor).toBe("#001122");
+    expect(result.bodyColor).toEqual(ColorUtil.fromHexColor("#aabbcc"));
+    expect(result.turretColor).toEqual(ColorUtil.fromHexColor("#112233"));
+    expect(result.radarColor).toEqual(ColorUtil.fromHexColor("#445566"));
+    expect(result.bulletColor).toEqual(ColorUtil.fromHexColor("#778899"));
+    expect(result.scanColor).toEqual(ColorUtil.fromHexColor("#aabbcc"));
+    expect(result.tracksColor).toEqual(ColorUtil.fromHexColor("#ddeeff"));
+    expect(result.gunColor).toEqual(ColorUtil.fromHexColor("#001122"));
     expect(result.isDebuggingEnabled).toBe(true);
   });
 
