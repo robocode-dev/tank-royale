@@ -56,22 +56,22 @@
 
 ## 6. Mappers
 
-- [ ] 6.1 Implement `EventMapper.map(tickEventForBot, myBotId)` returning mapped `TickEvent` with all sub-events
-- [ ] 6.2 Implement individual event mapping: `BotDeathEvent` to `DeathEvent` (when victimId == myBotId) or `BotDeathEvent`, `BotHitBotEvent` to `HitBotEvent`, `BotHitWallEvent` to `HitWallEvent`, `BulletFiredEvent` to `BulletFiredEvent`, `BulletHitBotEvent` to `HitByBulletEvent` (when victimId == myBotId) or `BulletHitBotEvent`, `BulletHitBulletEvent`, `BulletHitWallEvent`, `ScannedBotEvent`, `SkippedTurnEvent`, `WonRoundEvent`, `TeamMessageEvent`
-- [ ] 6.3 Implement `GameSetupMapper.map()` converting schema GameSetup to API GameSetup
-- [ ] 6.4 Implement `BotStateMapper.map()` converting schema BotState to API BotState (with color hex-to-Color conversion)
-- [ ] 6.5 Implement `BulletStateMapper.map()` for single and collection mapping (with color hex-to-Color conversion)
-- [ ] 6.6 Implement `ResultsMapper.map()` converting schema ResultsForBot to API BotResults
-- [ ] 6.7 Implement `InitialPositionMapper.map()` converting API InitialPosition to schema InitialPosition (for handshake)
-- [ ] 6.8 Add tests for all mappers verifying field-level correctness
+- [x] 6.1 Implement `EventMapper.map(tickEventForBot, myBotId)` returning mapped `TickEvent` with all sub-events
+- [x] 6.2 Implement individual event mapping: `BotDeathEvent` to `DeathEvent` (when victimId == myBotId) or `BotDeathEvent`, `BotHitBotEvent` to `HitBotEvent`, `BotHitWallEvent` to `HitWallEvent`, `BulletFiredEvent` to `BulletFiredEvent`, `BulletHitBotEvent` to `HitByBulletEvent` (when victimId == myBotId) or `BulletHitBotEvent`, `BulletHitBulletEvent`, `BulletHitWallEvent`, `ScannedBotEvent`, `SkippedTurnEvent`, `WonRoundEvent`, `TeamMessageEvent`
+- [x] 6.3 Implement `GameSetupMapper.map()` converting schema GameSetup to API GameSetup
+- [x] 6.4 Implement `BotStateMapper.map()` converting schema BotState to API BotState (with color hex-to-Color conversion)
+- [x] 6.5 Implement `BulletStateMapper.map()` for single and collection mapping (with color hex-to-Color conversion)
+- [x] 6.6 Implement `ResultsMapper.map()` converting schema ResultsForBot to API BotResults
+- [x] 6.7 Implement `InitialPositionMapper.map()` converting API InitialPosition to schema InitialPosition (for handshake)
+- [x] 6.8 Add tests for all mappers verifying field-level correctness
 
 ## 7. JSON Utilities
 
-- [ ] 7.1 Implement type-discriminated event deserialization (parse `type` field in event array to instantiate correct event subtype, matching Java's `RuntimeTypeAdapterFactory` behavior)
-- [ ] 7.2 Implement `toJson()` and `fromJson()` utility functions for protocol messages
-- [ ] 7.3 Implement Color serialization/deserialization (hex string format matching Java's `ColorTypeAdapter`)
-- [ ] 7.4 Add tests for JSON round-trip serialization of all protocol message types
-- [ ] 7.5 Add tests for type-discriminated event deserialization (BotDeathEvent, ScannedBotEvent, WonRoundEvent, etc.)
+- [x] 7.1 Implement type-discriminated event deserialization (parse `type` field in event array to instantiate correct event subtype, matching Java's `RuntimeTypeAdapterFactory` behavior)
+- [x] 7.2 Implement `toJson()` and `fromJson()` utility functions for protocol messages
+- [x] 7.3 Implement Color serialization/deserialization (hex string format matching Java's `ColorTypeAdapter`)
+- [x] 7.4 Add tests for JSON round-trip serialization of all protocol message types
+- [x] 7.5 Add tests for type-discriminated event deserialization (BotDeathEvent, ScannedBotEvent, WonRoundEvent, etc.)
 
 ## 8. Verification
 
