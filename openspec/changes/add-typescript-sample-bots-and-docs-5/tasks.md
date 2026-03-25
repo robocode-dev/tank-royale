@@ -36,12 +36,12 @@
 
 ## 7. npm Package Finalization
 
-- [ ] 7.1 **[HUMAN]** Reserve `@robocode.dev/tank-royale-bot-api` package name on npm (requires npm org admin)
-- [ ] 7.2 Finalize `package.json` exports: ESM (`./dist/esm/index.js`) and CJS (`./dist/cjs/index.js`)
-- [ ] 7.3 Include TypeScript declarations (`.d.ts`) in package
-- [ ] 7.4 Declare `ws` as optional peer dependency for Node.js runtime
-- [ ] 7.5 Set package metadata: name `@robocode.dev/tank-royale-bot-api`, license, repository, keywords
-- [ ] 7.6 Configure `files` field to include only `dist/`, `README.md`, and `LICENSE`
+- [x] 7.1 **[HUMAN]** Reserve `@robocode.dev/tank-royale-bot-api` package name on npm (requires npm org admin)
+- [x] 7.2 Finalize `package.json` exports: ESM (`./dist/esm/index.js`) and CJS (`./dist/cjs/index.js`)
+- [x] 7.3 Include TypeScript declarations (`.d.ts`) in package
+- [x] 7.4 Declare `ws` as optional peer dependency for Node.js runtime
+- [x] 7.5 Set package metadata: name `@robocode.dev/tank-royale-bot-api`, license, repository, keywords
+- [x] 7.6 Configure `files` field to include only `dist/`, `README.md`, and `LICENSE`
 
 ## 8. Booter Integration
 

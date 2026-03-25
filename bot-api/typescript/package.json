@@ -2,7 +2,24 @@
   "name": "@robocode.dev/tank-royale-bot-api",
   "version": "0.38.1",
   "description": "Tank Royale Bot API for TypeScript/JavaScript",
-  "license": "LGPL-3.0-or-later",
+  "license": "Apache-2.0",
+  "homepage": "https://robocode-dev.github.io/tank-royale/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robocode-dev/tank-royale.git",
+    "directory": "bot-api/typescript"
+  },
+  "keywords": [
+    "robocode",
+    "tank-royale",
+    "bot",
+    "bot-api",
+    "game",
+    "robot",
+    "typescript",
+    "javascript",
+    "websocket"
+  ],
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -20,10 +37,12 @@
     }
   },
   "files": [
-    "dist"
+    "dist/",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist/cjs/package.json', JSON.stringify({type:'commonjs'}, null, 2))\"",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "tsc --noEmit"
