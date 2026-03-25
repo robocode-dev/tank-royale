@@ -1,0 +1,14 @@
+{
+  "name": "VelocityBot",
+  "version": "1.0",
+  "authors": [
+    "Joshua Galecki"
+  ],
+  "description": "A sample bot that demonstrates how to use turn rates.",
+  "homepage": "",
+  "countryCodes": [
+    "us"
+  ],
+  "platform": "Node.js",
+  "programmingLang": "TypeScript"
+}

@@ -36,6 +36,7 @@ include("bot-api:tests")
 include("sample-bots:java")
 include("sample-bots:csharp")
 include("sample-bots:python")
+include("sample-bots:typescript")
 
 // Docs
 include("docs-build")
