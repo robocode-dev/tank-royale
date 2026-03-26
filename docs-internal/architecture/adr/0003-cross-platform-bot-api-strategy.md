@@ -9,7 +9,7 @@
 
 Tank Royale needs to support multiple programming languages while ensuring fair competition and consistent bot behavior.
 
-**Problem:** How to implement bot APIs across Java, .NET/C#, and Python that maintain behavioral consistency without creating maintenance burden?
+**Problem:** How to implement bot APIs across Java, .NET/C#, Python, and TypeScript that maintain behavioral consistency without creating maintenance burden?
 
 **Requirements:**
 - No language-specific advantages in competition
@@ -27,6 +27,7 @@ Implement **symmetric APIs** across all supported languages - identical structur
 - Java (`bot-api/java`)
 - .NET/C# (`bot-api/dotnet`) 
 - Python (`bot-api/python`)
+- TypeScript (`bot-api/typescript`)
 
 **Symmetry means:**
 - Same class/interface hierarchy
@@ -69,6 +70,12 @@ public virtual void OnScannedBot(ScannedBotEvent e);
 # Python - snake_case
 def set_turn_rate(self, turn_rate: float):
 def on_scanned_bot(self, event: ScannedBotEvent):
+```
+
+```typescript
+// TypeScript - camelCase (same as Java)
+setTurnRate(turnRate: number): void;
+onScannedBot(event: ScannedBotEvent): void;
 ```
 
 **Alternatives rejected:**
@@ -115,7 +122,7 @@ SERVER_SECRET=my-secret
 - ✅ Single tutorial/documentation works for all
 - ✅ Consistent bot behavior regardless of language choice
 - ❌ Not fully idiomatic (follows structure over language conventions)
-- ❌ Maintenance burden (changes replicated across 3+ codebases)
+- ❌ Maintenance burden (changes replicated across 4+ codebases)
 - ❌ Cannot leverage advanced language-specific features optimally
 
 ---
@@ -125,3 +132,4 @@ SERVER_SECRET=my-secret
 - [Bot API Java](/bot-api/java/)
 - [Bot API .NET](/bot-api/dotnet/)
 - [Bot API Python](/bot-api/python/)
+- [Bot API TypeScript](/bot-api/typescript/)

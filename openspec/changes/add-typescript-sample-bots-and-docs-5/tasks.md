@@ -59,23 +59,24 @@
 
 ## 10. Verification
 
-- [ ] 10.1 All sample bots compile with `tsc` (no type errors)
-- [ ] 10.2 `./gradlew :sample-bots:typescript:build` succeeds
-- [ ] 10.3 Each sample bot connects to server, joins battle, and participates (manual or automated test)
-- [ ] 10.4 MyFirstBot demonstrates basic movement and firing
-- [ ] 10.5 Corners demonstrates cross-round state persistence (corner switching on death)
-- [ ] 10.6 Crazy demonstrates `waitFor` with custom `Condition`
-- [ ] 10.7 Target demonstrates `addCustomEvent` / `onCustomEvent`
-- [ ] 10.8 PaintingBot demonstrates graphics API (`getGraphics()`, `fillCircle`)
-- [ ] 10.9 MyFirstTeam demonstrates team messaging (`broadcastTeamMessage`, `onTeamMessage`)
-- [ ] 10.10 npm package installs correctly via `npm install @robocode.dev/tank-royale-bot-api`
-- [ ] 10.11 Booter launches TypeScript bots from GUI
-- [ ] 10.12 Sample bot behavior matches Java equivalents (same strategies, same event handling patterns)
+- [x] 10.1 All sample bots compile with `tsc` (no type errors)
+- [x] 10.2 `./gradlew :sample-bots:typescript:build` succeeds
+- [x] 10.3 Each sample bot connects to server, joins battle, and participates (manual or automated test)
+- [x] 10.4 MyFirstBot demonstrates basic movement and firing
+- [x] 10.5 Corners demonstrates cross-round state persistence (corner switching on death)
+- [x] 10.6 Crazy demonstrates `waitFor` with custom `Condition`
+- [x] 10.7 Target demonstrates `addCustomEvent` / `onCustomEvent`
+- [x] 10.8 PaintingBot demonstrates graphics API (`getGraphics()`, `fillCircle`)
+- [x] 10.9 MyFirstTeam demonstrates team messaging (`broadcastTeamMessage`, `onTeamMessage`)
+- [x] 10.10 npm package installs correctly via `npm install @robocode.dev/tank-royale-bot-api`
+- [x] 10.11 Booter launches TypeScript bots from GUI
+- [x] 10.12 Sample bot behavior matches Java equivalents (same strategies, same event handling patterns)
 
 ## 11. ADR Updates
 
-- [ ] 11.1 Update ADR-0003 supported languages list: add TypeScript alongside Java, C#, Python
-- [ ] 11.2 Update ADR-0003 symmetry section to reference `bot-api/typescript`
+- [x] 11.1 Update ADR-0003 supported languages list: add TypeScript alongside Java, C#, Python
+- [x] 11.2 Update ADR-0003 symmetry section to reference `bot-api/typescript`
+
 
 
 
