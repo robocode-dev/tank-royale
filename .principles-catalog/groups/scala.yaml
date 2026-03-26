@@ -1,0 +1,21 @@
+name: scala
+description: "Scala — functional programming on the JVM, type safety, Akka, Spark"
+
+includes:
+  - source-code
+  - fp
+
+principles:
+  - SOLID-SRP
+  - SOLID-OCP
+  - SOLID-LSP
+  - SOLID-ISP
+  - SOLID-DIP
+  - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE
+  - CODE-TP-EXHAUSTIVE-PATTERN-MATCHING
+  - CODE-TP-PREFER-SUM-TYPES
+  - CODE-TP-TYPE-STATE-MACHINES
+  - CODE-CC-SYNC-SHARED-STATE
+  - CODE-CC-HIGHER-LEVEL-CONCURRENCY
+  - CODE-CC-TASK-BASED-CONCURRENCY
+  - CODE-CC-STRUCTURED-CONCURRENCY

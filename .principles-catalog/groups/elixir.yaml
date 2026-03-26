@@ -1,0 +1,11 @@
+name: elixir
+description: "Elixir — functional, actor model, fault tolerance, pipe operator, OTP"
+
+includes:
+  - source-code
+  - fp
+
+principles:
+  - CODE-CC-HIGHER-LEVEL-CONCURRENCY
+  - CODE-CC-STRUCTURED-CONCURRENCY
+  - ARCH-OBSERVABILITY-BY-DESIGN

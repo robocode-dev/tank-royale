@@ -1,0 +1,11 @@
+name: docs-as-code
+description: "Repos where documentation is written in Markdown/AsciiDoc, versioned alongside code, reviewed in PRs, and built in CI (e.g. MkDocs, Docusaurus, Antora)"
+
+principles:
+  - DOC-AS-CODE
+  - DOC-CLOSE-TO-CODE
+  - DOC-UNIQUE
+  - DOC-ADDRESSABLE
+  - ARCH-DECISION-RECORDS
+  - CODE-CS-DRY
+  - PIPELINE-REPRODUCIBLE-BUILDS

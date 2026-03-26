@@ -1,0 +1,199 @@
+# Code Stack — Layer 3: Risk-elevated principles
+# When risk signals are detected, these principles are elevated to higher priority.
+# Elevation means the reviewer should weight these principles more heavily
+# and flag violations with greater urgency.
+
+authentication:
+  description: "Code handling user authentication, sessions, or identity verification"
+  signals:
+    - "password"
+    - "login"
+    - "logout"
+    - "OAuth"
+    - "JWT"
+    - "token"
+    - "session"
+    - "authenticate"
+    - "credential"
+    - "sign_in"
+    - "sign_up"
+    - "bcrypt"
+    - "hash"
+    - "salt"
+    - "OIDC"
+    - "SAML"
+    - "bearer"
+    - "refresh_token"
+  elevate:
+    - OWASP-01-BROKEN-ACCESS-CONTROL
+    - CODE-SEC-STRONG-CRYPTOGRAPHY
+    - OWASP-07-AUTHENTICATION-FAILURES
+
+financial:
+  description: "Code processing payments, billing, currency, or financial transactions"
+  signals:
+    - "payment"
+    - "billing"
+    - "invoice"
+    - "currency"
+    - "transaction"
+    - "charge"
+    - "refund"
+    - "stripe"
+    - "paypal"
+    - "ledger"
+    - "account_balance"
+    - "decimal"
+    - "money"
+    - "price"
+    - "checkout"
+    - "subscription"
+  elevate:
+    - CODE-SEC-VALIDATE-INPUT
+    - OWASP-03-INJECTION
+    - CODE-RL-IDEMPOTENCY
+    - CODE-CC-SYNC-SHARED-STATE
+
+personal-data:
+  description: "Code handling personally identifiable information or privacy-sensitive data"
+  signals:
+    - "PII"
+    - "GDPR"
+    - "email"
+    - "SSN"
+    - "social_security"
+    - "address"
+    - "phone_number"
+    - "date_of_birth"
+    - "passport"
+    - "driver_license"
+    - "personal_data"
+    - "consent"
+    - "data_subject"
+    - "anonymize"
+    - "pseudonymize"
+    - "encryption"
+    - "CCPA"
+    - "HIPAA"
+  elevate:
+    - CODE-SEC-VALIDATE-INPUT
+    - CODE-SEC-STRONG-CRYPTOGRAPHY
+    - CODE-SEC-SECURITY-BY-DESIGN
+    - CODE-SEC-SECURITY-LOGGING
+
+public-api:
+  description: "Versioned or published APIs consumed by third-party clients"
+  signals:
+    - "versioned"
+    - "v1"
+    - "v2"
+    - "published"
+    - "third-party"
+    - "external"
+    - "consumer"
+    - "backward_compatible"
+    - "deprecat"
+    - "changelog"
+    - "breaking_change"
+    - "semver"
+    - "api_version"
+    - "public_api"
+  elevate:
+    - CODE-API-BACKWARD-COMPATIBILITY
+    - EFFECTIVE-JAVA-MINIMIZE-ACCESSIBILITY
+    - EFFECTIVE-JAVA-DESIGN-METHOD-SIGNATURES
+    - CODE-RL-SCHEMA-EVOLUTION
+
+high-throughput:
+  description: "Performance-critical code paths requiring low latency or high throughput"
+  signals:
+    - "hot_path"
+    - "hot path"
+    - "real-time"
+    - "realtime"
+    - "low-latency"
+    - "low_latency"
+    - "performance"
+    - "benchmark"
+    - "throughput"
+    - "cache"
+    - "pool"
+    - "buffer"
+    - "batch_size"
+    - "optimization"
+    - "critical_path"
+    - "microsecond"
+    - "nanosecond"
+  elevate:
+    - CODE-PF-PROFILE-FIRST
+    - CODE-PF-MECHANICAL-SYMPATHY
+    - CODE-PF-DATA-LOCALITY
+    - CODE-PF-MINIMIZE-ALLOCATION
+    - CODE-PF-PREDICTABLE-LATENCY
+    - CODE-CC-AVOID-LOCKS-IN-HOT-PATHS
+
+distributed-system:
+  description: "Distributed architectures with inter-service communication and eventual consistency"
+  signals:
+    - "microservice"
+    - "RPC"
+    - "gRPC"
+    - "event-driven"
+    - "event_bus"
+    - "saga"
+    - "choreography"
+    - "orchestration"
+    - "circuit_breaker"
+    - "retry"
+    - "timeout"
+    - "idempotent"
+    - "eventual_consistency"
+    - "distributed"
+    - "service_mesh"
+    - "message_broker"
+    - "outbox"
+    - "dead_letter"
+  elevate:
+    - CODE-RL-FAULT-TOLERANCE
+    - CODE-RL-IDEMPOTENCY
+    - CODE-CS-CIRCUIT-BREAKER
+    - CODE-RL-BACKPRESSURE
+    - CODE-RL-CONSISTENCY-MODELS
+    - CODE-OB-STRUCTURED-TELEMETRY
+    - CODE-OB-HIGH-CARDINALITY
+    - CODE-OB-DISTRIBUTED-TRACING
+    - CODE-AR-ASYNC-MESSAGING
+    - CODE-AR-PIPES-AND-FILTERS
+    - CODE-AR-MESSAGE-BROKER
+
+legacy-codebase:
+  description: "Refactoring, migration, or brownfield work on existing codebases"
+  signals:
+    - "refactor"
+    - "migration"
+    - "brownfield"
+    - "legacy"
+    - "technical_debt"
+    - "tech_debt"
+    - "deprecated"
+    - "backward_compat"
+    - "strangler"
+    - "anti-corruption"
+    - "modernize"
+    - "rewrite"
+    - "upgrade"
+  elevate:
+    - CODE-CS-DRY
+    - CODE-SMELLS-LONG-METHOD
+    - CODE-SMELLS-LARGE-CLASS
+    - CODE-SMELLS-FEATURE-ENVY
+    - CODE-SMELLS-DATA-CLUMPS
+    - CODE-SMELLS-PRIMITIVE-OBSESSION
+    - CODE-SMELLS-SWITCH-STATEMENTS
+    - CODE-SMELLS-SPECULATIVE-GENERALITY
+    - CODE-SMELLS-MESSAGE-CHAINS
+    - CODE-SMELLS-COMMENTS-AS-DEODORANT
+    - SIMPLE-DESIGN-PASSES-TESTS
+    - SIMPLE-DESIGN-REVEALS-INTENTION
+    - SIMPLE-DESIGN-NO-DUPLICATION
+    - SIMPLE-DESIGN-FEWEST-ELEMENTS

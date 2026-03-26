@@ -1,0 +1,15 @@
+name: spring-data-jpa
+description: "Spring Data JPA — repository pattern, aggregate design, transaction management"
+
+includes:
+  - spring-boot
+
+principles:
+  - DDD-ENTITY
+  - DDD-VALUE-OBJECT
+  - DDD-AGGREGATE
+  - DDD-AGGREGATE-ROOT
+  - DDD-DOMAIN-EVENT
+  - DDD-REPOSITORY
+  - CODE-RL-IDEMPOTENCY
+  - CODE-RL-CONSISTENCY-MODELS

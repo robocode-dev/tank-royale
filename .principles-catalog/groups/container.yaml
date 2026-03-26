@@ -1,0 +1,14 @@
+name: container
+description: "Container and Dockerfile security and quality principles. Activate for repos with Dockerfiles, docker-compose, or Kubernetes manifests. Sources: CIS Docker Benchmark v1.6.0, OWASP Docker Security Cheat Sheet, OpenSSF SLSA v1.0."
+
+principles:
+  - INFRA-NON-ROOT-CONTAINER
+  - INFRA-PIN-BASE-IMAGES
+  - INFRA-MINIMIZE-IMAGE-LAYERS
+  - INFRA-NO-SECRETS-IN-IMAGE
+  - INFRA-NO-SECRETS-IN-CODE
+  - INFRA-IMMUTABLE-INFRASTRUCTURE
+  - INFRA-INFRASTRUCTURE-AS-CODE
+  - PIPELINE-REPRODUCIBLE-BUILDS
+  - PIPELINE-MINIMAL-PERMISSIONS
+  - PIPELINE-NO-SECRETS-IN-LOGS

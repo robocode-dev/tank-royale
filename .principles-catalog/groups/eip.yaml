@@ -1,0 +1,16 @@
+name: eip
+description: "Enterprise Integration Patterns — messaging patterns for connecting applications and services"
+
+principles:
+  - EIP-CORRELATION-IDENTIFIER
+  - EIP-CONTENT-BASED-ROUTER
+  - EIP-DEAD-LETTER-CHANNEL
+  - EIP-MESSAGE-FILTER
+  - EIP-CLAIM-CHECK
+  - EIP-AGGREGATOR
+  - EIP-SPLITTER
+  - EIP-WIRE-TAP
+  - EIP-IDEMPOTENT-CONSUMER
+  - EIP-MESSAGE-TRANSLATOR
+  - EIP-CONTENT-ENRICHER
+  - EIP-RETURN-ADDRESS

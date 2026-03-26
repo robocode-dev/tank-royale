@@ -1,0 +1,22 @@
+name: php
+description: "PHP — web development, type safety, modern PHP 8+ patterns"
+
+includes:
+  - source-code
+
+principles:
+  - SOLID-SRP
+  - SOLID-OCP
+  - SOLID-LSP
+  - SOLID-ISP
+  - SOLID-DIP
+  # Input validation is especially critical in PHP web contexts
+  - CODE-SEC-VALIDATE-INPUT
+
+  # --- Functional programming (modern PHP 8+) ---
+  # Immutable value objects are best practice for domain modelling in PHP
+  - FP-IMMUTABILITY
+  # PHP 8 nullable types and match expressions enable safer absence modelling
+  - FP-OPTION-EITHER-TYPES
+  # First-class callable syntax and array_map/filter pipelines
+  - FP-HIGHER-ORDER-FUNCTIONS

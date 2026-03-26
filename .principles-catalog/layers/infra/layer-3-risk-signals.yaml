@@ -1,0 +1,38 @@
+# Infra Stack — Layer 3: Risk-elevated principles
+# When risk signals are detected, these principles are elevated to higher priority.
+# Elevation means the reviewer should weight these principles more heavily
+# and flag violations with greater urgency.
+
+production-infra:
+  description: "Infrastructure targeting production environments"
+  signals:
+    - "prod"
+    - "production"
+    - "prd"
+    - "live"
+    - "main-cluster"
+    - "env: prod"
+    - "environment: production"
+  elevate:
+    - CODE-AR-IMMUTABLE-INFRASTRUCTURE
+    - CODE-AR-TEST-INFRASTRUCTURE
+    - CODE-RL-IDEMPOTENCY
+
+iam-permissions:
+  description: "Identity and access management — roles, policies, and trust configurations"
+  signals:
+    - "iam"
+    - "role"
+    - "policy"
+    - "permission"
+    - "trust"
+    - "assume_role"
+    - "principalArn"
+    - "Effect: Allow"
+    - "Action: \"*\""
+    - "Resource: \"*\""
+    - "AdministratorAccess"
+    - "PowerUserAccess"
+  elevate:
+    - OWASP-01-BROKEN-ACCESS-CONTROL
+    - CODE-AR-INFRASTRUCTURE-AS-CODE

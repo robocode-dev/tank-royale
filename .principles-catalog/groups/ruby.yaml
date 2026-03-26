@@ -1,0 +1,18 @@
+name: ruby
+description: "Ruby — expressiveness, convention over configuration, Rubyist idioms"
+
+includes:
+  - source-code
+
+principles:
+  - SOLID-SRP
+  - CODE-SMELLS-LONG-METHOD
+  - CODE-SMELLS-LARGE-CLASS
+
+  # --- Functional programming (idiomatic in Ruby) ---
+  # Blocks, procs, and lambdas make HOF natural in Ruby
+  - FP-HIGHER-ORDER-FUNCTIONS
+  # Enumerable (map/select/reduce) pipelines are idiomatic Ruby
+  - FP-FUNCTION-COMPOSITION
+  # freeze and immutable value objects prevent unexpected mutation
+  - FP-IMMUTABILITY

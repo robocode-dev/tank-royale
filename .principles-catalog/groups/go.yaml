@@ -1,0 +1,12 @@
+name: go
+description: "Go — composition, interfaces, concurrency, explicit error handling"
+
+includes:
+  - source-code
+
+principles:
+  - CODE-CC-SYNC-SHARED-STATE
+  - CODE-CC-HIGHER-LEVEL-CONCURRENCY
+  - CODE-CC-TASK-BASED-CONCURRENCY
+  - CODE-CC-STRUCTURED-CONCURRENCY
+  - ARCH-OBSERVABILITY-BY-DESIGN

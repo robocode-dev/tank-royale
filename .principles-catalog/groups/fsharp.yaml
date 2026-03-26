@@ -1,0 +1,14 @@
+name: fsharp
+description: "F# — functional-first on .NET, discriminated unions, computation expressions, immutability by default"
+
+includes:
+  - source-code
+  - fp
+
+principles:
+  - SOLID-SRP
+  - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE
+  - CODE-TP-EXHAUSTIVE-PATTERN-MATCHING
+  - CODE-TP-PREFER-SUM-TYPES
+  - CODE-CC-TASK-BASED-CONCURRENCY
+  - CODE-CC-STRUCTURED-CONCURRENCY

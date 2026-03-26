@@ -1,0 +1,6 @@
+name: haskell
+description: "Haskell — pure functional programming, strong static typing, lazy evaluation, type classes"
+
+includes:
+  - source-code
+  - fp

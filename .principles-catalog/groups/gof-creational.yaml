@@ -1,0 +1,9 @@
+name: gof-creational
+description: "GoF creational patterns — Abstract Factory, Builder, Factory Method, Prototype, Singleton"
+
+principles:
+  - GOF-ABSTRACT-FACTORY
+  - GOF-BUILDER
+  - GOF-FACTORY-METHOD
+  - GOF-PROTOTYPE
+  - GOF-SINGLETON

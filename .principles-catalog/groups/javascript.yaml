@@ -1,0 +1,22 @@
+name: javascript
+description: "JavaScript — dynamic typing, async patterns, functional idioms, browser and Node.js"
+
+includes:
+  - source-code
+
+principles:
+  - CODE-CC-TASK-BASED-CONCURRENCY
+  - CODE-CC-STRUCTURED-CONCURRENCY
+  - CODE-SEC-VALIDATE-INPUT
+
+  # --- Functional programming (idiomatic in JS) ---
+  # map/filter/reduce and callbacks make HOF central to JS
+  - FP-HIGHER-ORDER-FUNCTIONS
+  # Pipelines via array methods are the dominant JS style
+  - FP-FUNCTION-COMPOSITION
+  # const, Object.freeze, spread — immutability requires discipline in JS
+  - FP-IMMUTABILITY
+  # Closures over shared state are a common JS bug source
+  - FP-AVOID-SHARED-MUTABLE-STATE
+  # Optional chaining (?.) and nullish coalescing (??) are partial Option support
+  - FP-OPTION-EITHER-TYPES

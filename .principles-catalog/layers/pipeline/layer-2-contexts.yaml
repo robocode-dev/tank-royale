@@ -1,0 +1,57 @@
+# Pipeline Stack — Layer 2: Context-activated principles
+# Activated when pipeline file content matches the listed signals.
+# Layer 1 principles are always active; these are additive.
+
+build:
+  description: "Build, test, and lint pipeline stages"
+  signals:
+    - "build:"
+    - "compile"
+    - "test:"
+    - "lint:"
+    - "npm run"
+    - "mvn"
+    - "gradle"
+    - "docker build"
+    - "push"
+    - "make"
+    - "cargo build"
+  activate:
+    - CD-TRUNK-BASED-DEVELOPMENT
+    - CD-FEATURE-FLAGS
+
+deploy:
+  description: "Deployment, release, and environment promotion stages"
+  signals:
+    - "deploy:"
+    - "release:"
+    - "helm upgrade"
+    - "kubectl apply"
+    - "terraform apply"
+    - "stage:"
+    - "environment:"
+    - "deploy_to"
+    - "promotion"
+  activate:
+    - CD-BLUE-GREEN-DEPLOYMENT
+    - CODE-RL-IDEMPOTENCY
+    - CD-PIPELINE-AS-CODE
+    - PIPELINE-DEPLOYMENT-GATES
+
+release:
+  description: "Version tagging, publishing, and changelog generation"
+  signals:
+    - "tag:"
+    - "version:"
+    - "publish:"
+    - "release:"
+    - "changelog"
+    - "semver"
+    - "bump version"
+    - "git tag"
+    - "npm publish"
+    - "cargo publish"
+  activate:
+    - CD-DEPLOY-ON-EVERY-COMMIT
+    - CD-SEMANTIC-VERSIONING
+    - CODE-API-BACKWARD-COMPATIBILITY

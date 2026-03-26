@@ -1,0 +1,163 @@
+# Artifact Types — Top-level type detection
+#
+# Each file being reviewed is matched against one of the artifact types below.
+# The matching type selects a stack from layers/<stack>/, which defines
+# the layers of principles active for that artifact.
+#
+# Universal principles (listed below) apply regardless of which stack is selected.
+
+# Principles active for EVERY artifact type, regardless of stack
+universal:
+  - SIMPLE-DESIGN-REVEALS-INTENTION
+  - CODE-CS-DRY
+  - CODE-CS-KISS
+  - CODE-DX-NAMING
+  - ARCH-DECISION-RECORDS
+  - CODE-CS-YAGNI
+
+# Artifact types — each selects a stack from layers/<stack>/
+# Precedence: more specific matches win (e.g. Chart.yaml → infra, not config)
+types:
+  code:
+    description: "Source code files in any programming language"
+    stack: code
+    signals:
+      extensions:
+        - .java
+        - .ts
+        - .tsx
+        - .js
+        - .jsx
+        - .mjs
+        - .cjs
+        - .py
+        - .go
+        - .rb
+        - .cs
+        - .rs
+        - .kt
+        - .scala
+        - .cpp
+        - .c
+        - .swift
+        - .dart
+        - .php
+        - .elm
+        - .ex
+        - .hs
+        - .fs
+        - .fsx
+        - .clj
+        - .lua
+        - .r
+        - .m
+        - .mm
+        - .html
+        - .htm
+        - .vue
+        - .svelte
+        - .css
+        - .scss
+        - .sass
+
+  docs:
+    description: "Prose documentation — READMEs, guides, how-tos, architecture docs"
+    stack: docs
+    signals:
+      filenames:
+        - README
+        - CHANGELOG
+        - CONTRIBUTING
+        - DESIGN
+        - LICENSE
+        - INSTALL
+        - SECURITY
+        - DISCLAIMER
+      extensions:
+        - .md
+        - .adoc
+        - .rst
+        - .txt
+      path_patterns:
+        - docs/
+        - ADR
+
+  config:
+    description: "Application and environment configuration files"
+    stack: config
+    signals:
+      filenames:
+        - application.yaml
+        - application.yml
+        - settings.json
+        - appsettings.json
+        - appsettings.Development.json
+        - appsettings.Production.json
+        - .env
+        - .env.example
+        - .env.local
+      extensions:
+        - .properties
+        - .conf
+        - .cfg
+        - .ini
+
+  infra:
+    description: "Infrastructure-as-code, containers, and provisioning"
+    stack: infra
+    # Evaluated BEFORE config to capture Chart.yaml, values.yaml
+    signals:
+      filenames:
+        - Dockerfile
+        - docker-compose.yml
+        - docker-compose.yaml
+        - Chart.yaml
+        - values.yaml
+        - serverless.yml
+        - cdk.json
+        - Pulumi.yaml
+      extensions:
+        - .tf
+        - .tfvars
+      path_patterns:
+        - .pulumi/
+        - charts/
+        - k8s/
+        - kubernetes/
+        - infra/
+        - terraform/
+
+  schema:
+    description: "API definitions, data contracts, and database schemas"
+    stack: schema
+    signals:
+      filenames:
+        - schema.sql
+        - openapi.yaml
+        - openapi.json
+        - swagger.yaml
+        - swagger.json
+      extensions:
+        - .proto
+        - .graphql
+        - .gql
+        - .avsc
+      path_patterns:
+        - openapi
+        - swagger
+        - proto/
+        - schema/
+
+  pipeline:
+    description: "CI/CD pipeline definitions and automation scripts"
+    stack: pipeline
+    signals:
+      filenames:
+        - Jenkinsfile
+        - .gitlab-ci.yml
+        - azure-pipelines.yml
+        - .travis.yml
+        - bitbucket-pipelines.yml
+      path_patterns:
+        - .github/workflows/
+        - .circleci/

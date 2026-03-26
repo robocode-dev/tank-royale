@@ -1,0 +1,34 @@
+name: swift
+description: "Swift — value semantics, optionals, protocol-oriented design, Swift Concurrency"
+
+includes:
+  - source-code
+
+principles:
+  - SOLID-SRP
+  - SOLID-OCP
+  - SOLID-LSP
+  - SOLID-ISP
+  - SOLID-DIP
+  - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE
+  - CODE-TP-EXHAUSTIVE-PATTERN-MATCHING
+  - CODE-TP-PREFER-SUM-TYPES
+  - CODE-TP-TYPE-STATE-MACHINES
+  - CODE-CC-TASK-BASED-CONCURRENCY
+  - CODE-CC-STRUCTURED-CONCURRENCY
+
+  # --- Functional programming (idiomatic in Swift) ---
+  # let/var and struct value semantics make immutability the default
+  - FP-IMMUTABILITY
+  # Swift Concurrency actors replace shared mutable state
+  - FP-AVOID-SHARED-MUTABLE-STATE
+  # Enums with associated values are Swift's sum types
+  - FP-ALGEBRAIC-DATA-TYPES
+  # switch statements on enums require exhaustiveness
+  - FP-PATTERN-MATCHING
+  # Closures and higher-order functions are idiomatic Swift
+  - FP-HIGHER-ORDER-FUNCTIONS
+  # Optional<T> is built-in; Result<T,E> is in stdlib
+  - FP-OPTION-EITHER-TYPES
+  # Keeps async/actor code thin; pure core tests without mocks
+  - FP-FUNCTIONAL-CORE-IMPERATIVE-SHELL

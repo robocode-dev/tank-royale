@@ -1,0 +1,9 @@
+name: schema
+description: "Schema and contract design principles (WCAG-level: backward compatibility, optionality, enum safety, self-describing types). Activate for repos with OpenAPI, Protobuf, GraphQL, Avro, or SQL schema files."
+
+principles:
+  - SCHEMA-SELF-DESCRIBING
+  - SCHEMA-FIELD-OPTIONALITY
+  - SCHEMA-NO-POLYMORPHIC-BLOBS
+  - SCHEMA-ENUM-EVOLUTION
+  - CODE-API-BACKWARD-COMPATIBILITY

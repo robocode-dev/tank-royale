@@ -1,0 +1,18 @@
+name: db
+description: "Database / persistence design — transactions, indexing, normalisation, distributed data patterns"
+
+principles:
+  - DB-ACID
+  - DB-SCHEMA-MIGRATIONS-AS-CODE
+  - DB-THIRD-NORMAL-FORM
+  - DB-AVOID-N-PLUS-ONE
+  - DB-INDEX-FOR-ACCESS-PATTERNS
+  - DB-DENORMALIZE-INTENTIONALLY
+  - DB-OPTIMISTIC-CONCURRENCY
+  - DB-TWO-PHASE-LOCKING
+  - DB-CAP-THEOREM
+  - DB-EVENTUAL-CONSISTENCY
+  - DB-CQRS
+  - DB-OUTBOX-PATTERN
+  - DB-EVENT-SOURCING
+  - DB-POLYGLOT-PERSISTENCE

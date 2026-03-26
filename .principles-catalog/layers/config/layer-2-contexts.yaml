@@ -1,0 +1,61 @@
+# Config Stack — Layer 2: Context-activated principles
+# Activated when configuration content matches the listed signals.
+# Layer 1 principles are always active; these are additive.
+
+feature-flags:
+  description: "Feature flag and experiment toggle configuration"
+  signals:
+    - "feature_flag"
+    - "feature.flag"
+    - "featureFlag"
+    - "toggle"
+    - "experiment"
+    - "enabled"
+    - "rollout"
+    - "canary"
+  activate:
+    - CD-FEATURE-FLAGS
+
+secrets-management:
+  description: "Secrets, credentials, and key management configuration"
+  signals:
+    - "vault"
+    - "secret"
+    - "aws_secrets"
+    - "azure_keyvault"
+    - "ssm"
+    - "encrypted"
+    - "kms"
+    - "keystore"
+    - "credentials"
+  activate:
+    - CONFIG-NO-HARDCODED-SECRETS
+    - CONFIG-CHANGE-TRACEABILITY
+    - CONFIG-MINIMAL-SURFACE
+
+version-controlled-config:
+  description: "Configuration tracked in version control (git, svn) or deployed via GitOps"
+  signals:
+    - ".git"
+    - "gitops"
+    - "argocd"
+    - "flux"
+    - "helm"
+    - "kustomize"
+    - "terraform"
+    - "ansible"
+  activate:
+    - CONFIG-CHANGE-TRACEABILITY
+
+large-config:
+  description: "Configuration files with many keys, sections, or imported framework templates"
+  signals:
+    - "spring"
+    - "application.yaml"
+    - "application.properties"
+    - "settings.py"
+    - "config.yaml"
+    - "values.yaml"
+  activate:
+    - CONFIG-MINIMAL-SURFACE
+    - CONFIG-EXPLICIT-DEFAULTS

@@ -1,0 +1,25 @@
+name: dart
+description: "Dart — Flutter, null safety, async/await, strong typing"
+
+includes:
+  - source-code
+
+principles:
+  - SOLID-SRP
+  - SOLID-OCP
+  - SOLID-LSP
+  - SOLID-ISP
+  - SOLID-DIP
+  - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE
+  - CODE-TP-PREFER-SUM-TYPES
+  - CODE-CC-TASK-BASED-CONCURRENCY
+
+  # --- Functional programming (idiomatic in Dart) ---
+  # final keyword and const constructors make immutability idiomatic
+  - FP-IMMUTABILITY
+  # Dart sound null safety makes absence modelling explicit
+  - FP-OPTION-EITHER-TYPES
+  # Dart supports first-class functions, map/where/fold on Iterable
+  - FP-HIGHER-ORDER-FUNCTIONS
+  # Function composition via method chaining and cascade notation
+  - FP-FUNCTION-COMPOSITION

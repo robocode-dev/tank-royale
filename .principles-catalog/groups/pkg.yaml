@@ -1,0 +1,10 @@
+name: pkg
+description: "Robert Martin's Package/Component Principles — cohesion (REP, CCP, CRP) and coupling (ADP, SDP, SAP) rules for component design"
+
+principles:
+  - PKG-REP
+  - PKG-CCP
+  - PKG-CRP
+  - PKG-ADP
+  - PKG-SDP
+  - PKG-SAP

@@ -1,0 +1,32 @@
+name: kotlin
+description: "Kotlin — null safety, sealed classes, coroutines, and functional idioms on the JVM"
+
+includes:
+  - java
+
+principles:
+  # --- Null safety & type modelling ---
+  - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE
+  - CODE-TP-EXHAUSTIVE-PATTERN-MATCHING
+  - CODE-TP-PREFER-SUM-TYPES
+  - CODE-TP-TYPE-STATE-MACHINES
+
+  # --- Functional programming (idiomatic in Kotlin) ---
+  # val/var discipline and data class copy() make immutability natural
+  - FP-IMMUTABILITY
+  # Coroutines make shared mutable state especially dangerous
+  - FP-AVOID-SHARED-MUTABLE-STATE
+  # sealed class + when expressions are a core Kotlin pattern
+  - FP-ALGEBRAIC-DATA-TYPES
+  # when expressions with sealed classes require exhaustiveness
+  - FP-PATTERN-MATCHING
+  # Kotlin lambdas and extension functions enable HOF naturally
+  - FP-HIGHER-ORDER-FUNCTIONS
+  # map/filter/flatMap pipelines are idiomatic Kotlin
+  - FP-FUNCTION-COMPOSITION
+  # Nullable types cover basic Option; Arrow adds Either/Result
+  - FP-OPTION-EITHER-TYPES
+  # Kotlin has the tailrec keyword for compile-verified tail recursion
+  - FP-TAIL-CALL-OPTIMISATION
+  # Keeps coroutine/IO code thin; pure core is easily unit-tested
+  - FP-FUNCTIONAL-CORE-IMPERATIVE-SHELL

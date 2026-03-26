@@ -1,0 +1,16 @@
+name: react
+description: "React — component design, state management, hooks, rendering"
+
+includes:
+  - typescript
+
+principles:
+  - SOLID-SRP
+  - GOF-COMPOSITION-OVER-INHERITANCE
+  - CODE-DX-SYSTEM-STATUS-VISIBILITY
+  - CODE-DX-RECOGNITION-OVER-RECALL
+  - CODE-DX-ERROR-PREVENTION
+  - CODE-DX-AFFORDANCES-AND-FEEDBACK
+  - CODE-CC-PREFER-IMMUTABLE
+  - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE
+  - CODE-TP-PREFER-SUM-TYPES

@@ -1,0 +1,352 @@
+# Code Stack — Layer 2: Context-activated principles
+# Activated when code context matches the listed signals.
+# Layer 1 principles are always active; these are additive.
+# Note: infrastructure context has moved to layers/infra/ stack.
+
+api-design:
+  description: "REST/HTTP API endpoints, controllers, and route handlers"
+  signals:
+    - "@RestController"
+    - "@GetMapping"
+    - "@PostMapping"
+    - "@RequestMapping"
+    - "app.get("
+    - "app.post("
+    - "router."
+    - "HttpResponse"
+    - "status_code"
+    - "REST"
+    - "endpoint"
+    - "controller"
+    - "FastAPI"
+    - "flask"
+    - "express"
+    - "OpenAPI"
+    - "swagger"
+  activate:
+    - CODE-API-STANDARD-HTTP-METHODS
+    - CODE-API-HATEOAS
+    - CODE-API-RESOURCE-NOUNS
+    - CODE-API-BACKWARD-COMPATIBILITY
+    - CODE-API-HTTP-STATUS-CODES
+    - CODE-SEC-VALIDATE-INPUT
+    - OWASP-03-INJECTION
+
+concurrency:
+  description: "Concurrent or parallel code using threads, async, or locks"
+  signals:
+    - "async"
+    - "await"
+    - "Thread"
+    - "Lock"
+    - "Mutex"
+    - "Semaphore"
+    - "synchronized"
+    - "concurrent"
+    - "parallel"
+    - "atomic"
+    - "volatile"
+    - "CompletableFuture"
+    - "Promise.all"
+    - "asyncio"
+    - "tokio"
+    - "goroutine"
+    - "channel"
+  activate:
+    - CODE-CC-SYNC-SHARED-STATE
+    - CODE-CC-PREFER-IMMUTABLE
+    - CODE-CC-SAFE-PUBLICATION
+    - CODE-CC-HIGHER-LEVEL-CONCURRENCY
+    - CODE-CC-DOCUMENT-THREAD-SAFETY
+    - CODE-CC-AVOID-LOCKS-IN-HOT-PATHS
+    - CODE-CC-TASK-BASED-CONCURRENCY
+    - CODE-CC-STRUCTURED-CONCURRENCY
+
+domain-modeling:
+  description: "Domain-driven design with entities, value objects, and aggregates"
+  signals:
+    - "Entity"
+    - "ValueObject"
+    - "Aggregate"
+    - "Repository"
+    - "DomainEvent"
+    - "BoundedContext"
+    - "domain"
+    - "aggregate_root"
+    - "repository"
+    - "specification"
+    - "factory"
+  activate:
+    - DDD-UBIQUITOUS-LANGUAGE
+    - DDD-BOUNDED-CONTEXT
+    - DDD-ENTITY
+    - DDD-VALUE-OBJECT
+    - DDD-AGGREGATE
+    - DDD-AGGREGATE-ROOT
+    - DDD-DOMAIN-EVENT
+    - DDD-REPOSITORY
+
+data-pipeline:
+  description: "Streaming, ETL, batch processing, and message-driven data flows"
+  signals:
+    - "stream"
+    - "pipeline"
+    - "ETL"
+    - "transform"
+    - "batch"
+    - "kafka"
+    - "rabbitmq"
+    - "message_queue"
+    - "producer"
+    - "consumer"
+    - "subscriber"
+    - "publisher"
+    - "spark"
+    - "flink"
+    - "airflow"
+    - "dag"
+  activate:
+    - CODE-AR-ASYNC-MESSAGING
+    - CODE-AR-PIPES-AND-FILTERS
+    - CODE-AR-MESSAGE-BROKER
+    - CODE-RL-IDEMPOTENCY
+    - CODE-RL-BACKPRESSURE
+    - CODE-RL-SCHEMA-EVOLUTION
+
+testing:
+  description: "Test files, test frameworks, and test utilities"
+  signals:
+    - "test_"
+    - "_test.go"
+    - ".test.ts"
+    - ".test.js"
+    - ".spec.ts"
+    - ".spec.js"
+    - "@Test"
+    - "describe("
+    - "it("
+    - "expect("
+    - "assert"
+    - "pytest"
+    - "unittest"
+    - "JUnit"
+    - "jest"
+    - "mocha"
+    - "vitest"
+    - "mock"
+    - "stub"
+    - "fixture"
+  activate:
+    - CODE-TS-TEST-FIRST
+    - CODE-TS-SINGLE-BEHAVIOR
+    - CODE-TS-TEST-INDEPENDENCE
+    - CODE-TS-TEST-BEHAVIOR
+    - CODE-TS-ARRANGE-ACT-ASSERT
+    - CODE-TS-FAST-TESTS
+    - CODE-TS-TEST-DOUBLES
+    - CODE-TS-TEST-NAMING
+
+object-oriented:
+  description: "Class hierarchies, interfaces, inheritance, and OOP design patterns"
+  signals:
+    - "class "
+    - "extends"
+    - "implements"
+    - "interface "
+    - "abstract"
+    - "override"
+    - "virtual"
+    - "protected"
+    - "super("
+    - "base."
+    - "inheritance"
+    - "polymorphism"
+  activate:
+    - SOLID-SRP
+    - SOLID-OCP
+    - SOLID-LSP
+    - SOLID-ISP
+    - SOLID-DIP
+    - GOF-COMPOSITION-OVER-INHERITANCE
+    - GOF-PROGRAM-TO-INTERFACE
+    - CODE-CS-DRY
+    - CODE-CS-YAGNI
+
+cloud-native:
+  description: "Cloud deployment, containers, and twelve-factor app patterns"
+  signals:
+    - "Dockerfile"
+    - "docker-compose"
+    - "kubernetes"
+    - "k8s"
+    - "helm"
+    - "env_var"
+    - "process.env"
+    - "os.environ"
+    - "ConfigMap"
+    - "Secret"
+    - "health_check"
+    - "readiness"
+    - "liveness"
+    - "twelve-factor"
+    - "12-factor"
+    - "container"
+    - "pod"
+    - "service mesh"
+  activate:
+    - 12FACTOR-01-CODEBASE
+    - 12FACTOR-02-DEPENDENCIES
+    - 12FACTOR-03-CONFIG
+    - 12FACTOR-04-BACKING-SERVICES
+    - 12FACTOR-05-BUILD-RELEASE-RUN
+    - 12FACTOR-06-PROCESSES
+    - 12FACTOR-07-PORT-BINDING
+    - 12FACTOR-08-CONCURRENCY
+    - 12FACTOR-09-DISPOSABILITY
+    - 12FACTOR-10-DEV-PROD-PARITY
+    - 12FACTOR-11-LOGS
+    - 12FACTOR-12-ADMIN-PROCESSES
+
+ui-interaction:
+  description: "User interface components, forms, navigation, and interaction patterns"
+  signals:
+    - "Component"
+    - "useState"
+    - "useEffect"
+    - "render"
+    - "onClick"
+    - "onChange"
+    - "form"
+    - "input"
+    - "button"
+    - "modal"
+    - "dialog"
+    - "navigation"
+    - "route"
+    - "template"
+    - "view"
+    - "directive"
+    - "v-model"
+    - "ngModel"
+    - "@Component"
+    - "JSX"
+    - "TSX"
+  activate:
+    - CODE-DX-SYSTEM-STATUS-VISIBILITY
+    - CODE-DX-RECOGNITION-OVER-RECALL
+    - CODE-DX-ERROR-PREVENTION
+    - CODE-DX-AFFORDANCES-AND-FEEDBACK
+    - CODE-DX-DATA-INK-RATIO
+
+library-api:
+  description: "Public libraries, SDKs, and packages consumed by external users"
+  signals:
+    - "export"
+    - "public API"
+    - "SDK"
+    - "package"
+    - "library"
+    - "@api"
+    - "@public"
+    - "module.exports"
+    - "__init__.py"
+    - "setup.py"
+    - "package.json"
+    - "Cargo.toml"
+    - "*.gemspec"
+    - "nuget"
+    - "npm publish"
+  activate:
+    - CODE-API-STANDARD-HTTP-METHODS
+    - CODE-API-HATEOAS
+    - CODE-API-RESOURCE-NOUNS
+    - CODE-API-HTTP-STATUS-CODES
+    - CODE-API-BACKWARD-COMPATIBILITY
+
+functional:
+  description: "Functional programming patterns with immutability and pure functions"
+  signals:
+    - "map("
+    - "filter("
+    - "reduce("
+    - "flatMap"
+    - "immutable"
+    - "readonly"
+    - "const "
+    - "val "
+    - "pure"
+    - "lambda"
+    - "fn "
+    - "pipe"
+    - "compose"
+    - "curry"
+    - "monad"
+    - "functor"
+    - "fold"
+    - "pattern match"
+  activate:
+    - GOF-COMPOSITION-OVER-INHERITANCE
+    - CODE-CC-PREFER-IMMUTABLE
+    - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE
+    - CODE-TP-EXHAUSTIVE-PATTERN-MATCHING
+    - CODE-TP-PREFER-SUM-TYPES
+    - CODE-TP-TYPE-STATE-MACHINES
+    - CODE-TP-BRANDED-TYPES
+
+typed-language:
+  description: "Statically typed languages with expressive type systems"
+  signals:
+    - "TypeScript"
+    - "Kotlin"
+    - "Rust"
+    - "Haskell"
+    - "C#"
+    - "Scala"
+    - "F#"
+    - ".ts"
+    - ".kt"
+    - ".rs"
+    - ".hs"
+    - ".cs"
+    - ".scala"
+    - "type "
+    - "interface "
+    - "generic"
+    - "enum "
+    - "struct "
+    - "trait "
+  activate:
+    - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE
+    - CODE-TP-EXHAUSTIVE-PATTERN-MATCHING
+    - CODE-TP-PREFER-SUM-TYPES
+    - CODE-TP-TYPE-STATE-MACHINES
+    - CODE-TP-BRANDED-TYPES
+
+accessibility:
+  description: "HTML templates, JSX/TSX components, and CSS — frontend UI code requiring WCAG conformance"
+  signals:
+    - "<img"
+    - "<button"
+    - "<form"
+    - "<input"
+    - "<a href"
+    - "onClick"
+    - "aria-"
+    - "role="
+    - "tabIndex"
+    - "className="
+    - "JSX"
+    - "TSX"
+    - ".html"
+    - ".jsx"
+    - ".tsx"
+    - ".vue"
+    - ".svelte"
+    - "color:"
+    - "background-color:"
+    - "alt="
+  activate:
+    - A11Y-ALT-TEXT
+    - A11Y-SEMANTIC-HTML
+    - A11Y-KEYBOARD-NAVIGATION
+    - A11Y-COLOR-CONTRAST

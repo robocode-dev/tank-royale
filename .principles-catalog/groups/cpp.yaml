@@ -1,0 +1,22 @@
+name: cpp
+description: "C++ — systems programming, const-correctness, RAII, performance"
+
+includes:
+  - source-code
+
+principles:
+  - CODE-CC-SYNC-SHARED-STATE
+  - CODE-CC-SAFE-PUBLICATION
+  - CODE-CC-AVOID-LOCKS-IN-HOT-PATHS
+  - CODE-PF-PROFILE-FIRST
+  - CODE-PF-MECHANICAL-SYMPATHY
+  - CODE-PF-DATA-LOCALITY
+  - CODE-SEC-VALIDATE-INPUT
+
+  # --- Functional programming (applicable in modern C++) ---
+  # const-correctness — mark everything const unless mutation is required
+  - FP-IMMUTABILITY
+  # Shared mutable state is the primary source of C++ concurrency bugs
+  - FP-AVOID-SHARED-MUTABLE-STATE
+  # std::optional and std::expected (C++23) encode absence/failure in types
+  - FP-OPTION-EITHER-TYPES
