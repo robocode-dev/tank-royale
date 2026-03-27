@@ -7,16 +7,14 @@ import kotlin.text.replace
 object Log {
 
     private fun printBotDir(botDir: Path?) {
-        val botDirPath = botDir?.absolutePathString()?.replace("\\", "\\")
+        val botDirPath = botDir?.absolutePathString()
         error("ERROR: Bot directory: ${botDirPath ?: "unknown"}")
     }
 
     fun error(ex: Exception, botDir: Path? = null) {
         printBotDir(botDir)
-        // Also print the stack trace for easier debugging.
         ex.stackTraceToString().let { if (it.isNotBlank()) error(it) }
         error(ex.message ?: "Unknown error")
-        ex.stackTrace?.firstOrNull()?.let { println(it.toString()) }
     }
 
     fun error(message: String, botDir: Path? = null) {

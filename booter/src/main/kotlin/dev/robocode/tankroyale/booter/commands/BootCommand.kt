@@ -14,7 +14,7 @@ class BootCommand : Command() {
     /**
      * Main entry point to boot bots from specified paths and process command line input.
      */
-    fun boot(bootPaths: Array<String>?) {
+    fun boot(bootPaths: Array<String>) {
         // Register cleanup hook for graceful shutdown
         processManager.registerShutdownHook()
 
@@ -62,14 +62,19 @@ class BootCommand : Command() {
     private fun handleCommand(command: String, arg: String) {
         when (command) {
             "boot" -> processManager.createBotProcess(Path(arg), this::getBootEntry)
-            "stop" -> processManager.stopBotProcess(arg.toLong())
+            "stop" -> {
+                val pid = arg.toLongOrNull()
+                if (pid != null) {
+                    processManager.stopBotProcess(pid)
+                }
+            }
         }
     }
 
     /**
      * Boot initial bots from provided paths.
      */
-    private fun bootInitialBots(bootPaths: Array<String>?) {
-        bootPaths?.forEach { processManager.createBotProcess(Path(it), this::getBootEntry) }
+    private fun bootInitialBots(bootPaths: Array<String>) {
+        bootPaths.forEach { processManager.createBotProcess(Path(it), this::getBootEntry) }
     }
 }

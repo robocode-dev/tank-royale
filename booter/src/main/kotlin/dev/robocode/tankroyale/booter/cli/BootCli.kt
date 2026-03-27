@@ -28,8 +28,7 @@ internal class BootCli : CliktCommand(name = "boot") {
     private val botDirs by argument("BOT_DIRS").multiple()
 
     override fun run() {
-        val arr: Array<String>? = if (botDirs.isEmpty()) null else botDirs.toTypedArray()
-        BootCommand().boot(arr)
+        BootCommand().boot(botDirs.toTypedArray())
     }
 }
 

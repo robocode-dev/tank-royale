@@ -152,7 +152,9 @@ class ProcessManager {
                 .redirectErrorStream(true)
                 .start()
                 .waitFor()
-        } catch (_: Exception) { }
+        } catch (ex: Exception) {
+            Log.error(ex)
+        }
     }
 
     // BOT BOOTING
@@ -170,9 +172,13 @@ class ProcessManager {
 
             // If this is a team entry, boot as a team
             if (isTeamEntry(bootEntry)) {
+                val team = createTeam(bootEntry) ?: run {
+                    Log.error("Team entry has no members", bootDir)
+                    return emptySet()
+                }
                 return bootTeam(
                     bootDir,
-                    createTeam(bootEntry),
+                    team,
                     getBootEntry
                 )
             }
@@ -195,8 +201,9 @@ class ProcessManager {
     /**
      * Creates a Team object from a boot entry
      */
-    private fun createTeam(bootEntry: BootEntry): Team {
-        return Team(teamId, bootEntry.name, bootEntry.version, bootEntry.teamMembers!!)
+    private fun createTeam(bootEntry: BootEntry): Team? {
+        val members = bootEntry.teamMembers ?: return null
+        return Team(teamId, bootEntry.name, bootEntry.version, members)
     }
 
     /**
