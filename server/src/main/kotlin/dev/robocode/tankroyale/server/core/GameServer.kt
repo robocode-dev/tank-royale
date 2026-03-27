@@ -16,7 +16,20 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
 
 
-/** Game server. */
+/**
+ * Game server responsible for managing the full lifecycle of a Tank Royale game session.
+ *
+ * ## Threading contract
+ * - The WebSocket I/O thread calls all `handle*` methods via [GameServerConnectionListener].
+ * - [onNextTurn] runs on the turn-timeout timer thread and is the only place the game model is
+ *   advanced; it acquires [tickLock] before touching [botIntents], [botsThatSentIntent], or
+ *   [modelUpdater].
+ * - [handleBotIntent] is called concurrently from WebSocket threads and also acquires [tickLock]
+ *   to merge intent updates safely.
+ * - All other `handle*` methods are called from the WebSocket thread and do not hold [tickLock].
+ * - [modelUpdater] is marked `@Volatile` so its nullability is visible across threads without
+ *   requiring [tickLock].
+ */
 class GameServer(private val config: ServerConfig) {
     companion object {
         const val TYPE_IS_REQUIRED_ON_MESSAGE = "'type' is required on the message"
@@ -445,11 +458,20 @@ class GameServer(private val config: ServerConfig) {
         broadcaster.sendBotListUpdate(conn)
     }
 
+    /**
+     * Called by [GameServerConnectionListener] on the WebSocket thread when a bot connects and completes its handshake.
+     * Precondition: the bot has already been registered in [connectionHandler].
+     */
     internal fun handleBotJoined() {
         broadcaster.updateBotListUpdateMessage()
         broadcaster.broadcastBotListUpdate()
     }
 
+    /**
+     * Called by [GameServerConnectionListener] on the WebSocket thread when a bot disconnects.
+     * Aborts the game if the last participant leaves while a game is running or paused.
+     * @param conn the WebSocket connection of the bot that left.
+     */
     internal fun handleBotLeft(conn: WebSocket) {
         val shouldAbortGame = synchronized(participantRegistry.participantsLock) {
             val wasRemoved = participantRegistry.participants.remove(conn)
@@ -468,6 +490,11 @@ class GameServer(private val config: ServerConfig) {
         }
     }
 
+    /**
+     * Called by [GameServerConnectionListener] on the WebSocket thread when a bot signals it is ready to start.
+     * Ignored if the server is not in [ServerState.WAIT_FOR_READY_PARTICIPANTS].
+     * @param conn the WebSocket connection of the bot that is ready.
+     */
     internal fun handleBotReady(conn: WebSocket) {
         if (lifecycleManager.serverState !== ServerState.WAIT_FOR_READY_PARTICIPANTS) return
 
@@ -475,6 +502,13 @@ class GameServer(private val config: ServerConfig) {
         startGameIfParticipantsReady()
     }
 
+    /**
+     * Called by [GameServerConnectionListener] on the WebSocket thread when a bot sends a turn intent.
+     * Acquires [tickLock] to safely merge the intent and track which bots have responded this turn.
+     * Ignored if the game is not running or paused.
+     * @param conn the WebSocket connection of the bot.
+     * @param intent the bot intent received from the bot.
+     */
     internal fun handleBotIntent(conn: WebSocket, intent: dev.robocode.tankroyale.schema.BotIntent) {
         if (lifecycleManager.serverState !== ServerState.GAME_RUNNING && lifecycleManager.serverState !== ServerState.GAME_PAUSED) return
 
@@ -521,6 +555,12 @@ class GameServer(private val config: ServerConfig) {
         }
     }
 
+    /**
+     * Called by [GameServerConnectionListener] on the WebSocket thread when a controller requests a game start.
+     * Maps the requested bot addresses to active WebSocket connections and initiates game preparation.
+     * @param gameSetup the game setup configuration sent by the controller.
+     * @param botAddresses the set of bot addresses that should participate.
+     */
     internal fun handleStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
         this.gameSetup = GameSetupMapper.map(gameSetup)
 
@@ -534,6 +574,11 @@ class GameServer(private val config: ServerConfig) {
         }
     }
 
+    /**
+     * Called by [GameServerConnectionListener] on the WebSocket thread when a controller requests a game abort.
+     * Acquires [GameLifecycleManager.startGameLock], transitions state to [ServerState.GAME_STOPPED],
+     * broadcasts the abort event, and cleans up all game state.
+     */
     internal fun handleAbortGame() {
         log.info("Aborting game")
         synchronized(lifecycleManager.startGameLock) {
@@ -543,6 +588,10 @@ class GameServer(private val config: ServerConfig) {
         }
     }
 
+    /**
+     * Called by [GameServerConnectionListener] on the WebSocket thread when a controller requests a game pause.
+     * Broadcasts the paused event to observers if the state transitions to [ServerState.GAME_PAUSED].
+     */
     internal fun handlePauseGame() {
         lifecycleManager.pauseGame()
         if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
@@ -550,6 +599,10 @@ class GameServer(private val config: ServerConfig) {
         }
     }
 
+    /**
+     * Called by [GameServerConnectionListener] on the WebSocket thread when a controller requests a game resume.
+     * Broadcasts the resumed event to observers if the state transitions to [ServerState.GAME_RUNNING].
+     */
     internal fun handleResumeGame() {
         lifecycleManager.resumeGame()
         if (lifecycleManager.serverState === ServerState.GAME_RUNNING) {
@@ -557,6 +610,10 @@ class GameServer(private val config: ServerConfig) {
         }
     }
 
+    /**
+     * Called by [GameServerConnectionListener] on the WebSocket thread when a controller requests a single turn advance.
+     * Only has effect when the game is paused: briefly resumes, executes one turn, then re-pauses.
+     */
     internal fun handleNextTurn() {
         if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
             handleResumeGame()
@@ -565,6 +622,12 @@ class GameServer(private val config: ServerConfig) {
         }
     }
 
+    /**
+     * Called by [GameServerConnectionListener] on the WebSocket thread when a controller changes the TPS setting.
+     * Broadcasts the new TPS to observers and controllers. A value of 0 pauses the game;
+     * any positive value resumes a paused game and resets the turn timeout.
+     * @param newTps the requested turns-per-second value.
+     */
     internal fun handleChangeTps(newTps: Int) {
         if (tps == newTps) return
         tps = newTps
@@ -584,6 +647,11 @@ class GameServer(private val config: ServerConfig) {
         }
     }
 
+    /**
+     * Called by [GameServerConnectionListener] on the WebSocket thread when a controller updates a bot's policy.
+     * Updates the debug-graphics enable flag in both the participant registry and the live model.
+     * @param botPolicyUpdate the policy update containing the bot id and the new debugging flag.
+     */
     internal fun handleBotPolicyUpdate(botPolicyUpdate: BotPolicyUpdate) {
         val botId = BotId(botPolicyUpdate.botId)
         participantRegistry.debugGraphicsEnableMap[botId] = botPolicyUpdate.debuggingEnabled
@@ -596,7 +664,6 @@ class GameServer(private val config: ServerConfig) {
         botIntents.clear()
         botsThatSentIntent.clear()
         modelUpdater = null
-        System.gc()
     }
 
     private fun transferDebugGraphicsFlagToModel() {

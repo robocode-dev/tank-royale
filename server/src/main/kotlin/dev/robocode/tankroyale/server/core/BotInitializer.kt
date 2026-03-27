@@ -12,6 +12,8 @@ class BotInitializer(
     private val droidFlags: Map<BotId, Boolean>
 ) {
 
+    private val random = Random()
+
     fun initializeBotStates(botsMap: MutableMap<BotId, MutableBot>, turn: MutableTurn) {
         val occupiedCells = mutableSetOf<Int>()
         for (teamOrBotId in participantIds) {
@@ -97,16 +99,16 @@ class BotInitializer(
         cellHeight: Int
     ): Point {
         while (true) {
-            val cell = Random().nextInt(cellCount)
+            val cell = random.nextInt(cellCount)
             if (!occupiedCells.contains(cell)) {
                 occupiedCells += cell
-                var y = (cell / gridWidth).toDouble()
-                var x = cell - y * gridWidth
-                x *= cellWidth.toDouble()
-                y *= cellHeight.toDouble()
-                x += BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (cellWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
-                y += BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (cellHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
-                return Point(x, y)
+                var cellY = (cell / gridWidth).toDouble()
+                var cellX = cell - cellY * gridWidth
+                cellX *= cellWidth.toDouble()
+                cellY *= cellHeight.toDouble()
+                cellX += BOT_BOUNDING_CIRCLE_RADIUS + random.nextDouble() * (cellWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
+                cellY += BOT_BOUNDING_CIRCLE_RADIUS + random.nextDouble() * (cellHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
+                return Point(cellX, cellY)
             }
         }
     }

@@ -16,7 +16,14 @@ private const val BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED: Double =
     BOT_BOUNDING_CIRCLE_DIAMETER.toDouble() * BOT_BOUNDING_CIRCLE_DIAMETER
 
 
-/** Model updater, which is used for keeping track of the model state for each turn and round of a game. */
+/**
+ * Model updater, which is used for keeping track of the model state for each turn and round of a game.
+ *
+ * ## Threading contract
+ * All public and internal methods on this class must be called exclusively while holding
+ * `GameServer.tickLock`. The class itself performs no synchronization; thread safety is the
+ * responsibility of the caller ([GameServer.onNextTurn]).
+ */
 class ModelUpdater(
     /** Game setup */
     private val setup: GameSetup,
@@ -51,7 +58,7 @@ class ModelUpdater(
     private var round = MutableRound(0)
 
     /** Turn record */
-    internal val turn = MutableTurn(0)
+    private val turn = MutableTurn(0)
 
     /** Counter to track the number of rounds played (memory leak fix) */
     private var roundCounter = 0
