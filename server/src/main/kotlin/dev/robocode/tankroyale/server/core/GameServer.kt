@@ -212,7 +212,8 @@ class GameServer(private val config: ServerConfig) {
             gameSetup,
             participantIds,
             initialPositions,
-            droidFlags
+            droidFlags,
+            config.initialPositionEnabled
         )
     }
 
@@ -234,16 +235,15 @@ class GameServer(private val config: ServerConfig) {
         }
     }
 
+    // Must be called while holding tickLock.
     private fun updateGameState(): GameState {
-        val botIntentsSnapshot = synchronized(tickLock) {
-            botIntents.mapNotNull { (key, value) ->
-                participantRegistry.participantIds[key]?.let { botId ->
-                    botId to dev.robocode.tankroyale.server.model.BotIntent().apply {
-                        update(value)
-                    }
+        val botIntentsSnapshot = botIntents.mapNotNull { (key, value) ->
+            participantRegistry.participantIds[key]?.let { botId ->
+                botId to dev.robocode.tankroyale.server.model.BotIntent().apply {
+                    update(value)
                 }
-            }.toMap()
-        }
+            }
+        }.toMap()
 
         return modelUpdater?.update(botIntentsSnapshot)
             ?: throw IllegalStateException("Model updater is null when trying to update game state")

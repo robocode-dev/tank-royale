@@ -138,6 +138,7 @@ class ClientWebSocketsHandler(
                 log.error("Invalid message: $message", exception)
             } catch (exception: Exception) {
                 log.error("Error when passing message: $message", exception)
+                handleException(clientSocket, exception)
             }
         }
     }

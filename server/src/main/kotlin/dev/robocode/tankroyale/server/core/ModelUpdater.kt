@@ -33,6 +33,8 @@ class ModelUpdater(
     private val initialPositions: Map<BotId, InitialPosition>,
     /** Droid flags */
     private val droidFlags: Map<BotId, Boolean /* isDroid */>,
+    /** Whether initial position overrides from bots are enabled */
+    private val initialPositionEnabled: Boolean,
 ) {
     /** Score tracking */
     private val scoreTracker = ScoreTracker(participantIds)
@@ -68,7 +70,7 @@ class ModelUpdater(
 
     /** Components */
     private val collisionDetector = CollisionDetector(setup, participantIds, scoreTracker)
-    private val botInitializer = BotInitializer(setup, participantIds, initialPositions, droidFlags)
+    private val botInitializer = BotInitializer(setup, participantIds, initialPositions, droidFlags, initialPositionEnabled)
     private val gunEngine = GunEngine(setup)
 
     /** The accumulated results ordered with higher total scores first */
@@ -131,7 +133,7 @@ class ModelUpdater(
 
     /** Proceed with the next round. */
     private fun nextRound() {
-        round = round.copy(roundNumber = round.roundNumber).apply {
+        round = round.copy().apply {
             roundEnded = false
             roundNumber++
             turns.clear() // Memory leak fix: Clear turns from previous round
@@ -262,7 +264,7 @@ class ModelUpdater(
      */
     private fun checkAndHandleInactivity() {
         if (inactivityCounter++ > setup.maxInactivityTurns) {
-            botsMap.values.forEach { it.addDamage(INACTIVITY_DAMAGE) }
+            botsMap.values.forEach { it.applyDamage(INACTIVITY_DAMAGE) }
         }
     }
 

@@ -105,7 +105,9 @@ class CollisionDetector(
         val victimTeamOrBotId = participantIds.first { it.botId == victimId }
 
         val damage = calcBulletDamage(bullet.power)
-        val isKilled = bot.addDamage(damage)
+        val wasAlive = bot.isAlive
+        bot.applyDamage(damage)
+        val isKilled = bot.isDead && wasAlive
 
         val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
         botsMap[botId]?.changeEnergy(energyBonus)
@@ -177,8 +179,12 @@ class CollisionDetector(
         isBot1RammingBot2: Boolean,
         isBot2RammingBot1: Boolean
     ) {
-        val bot1Killed = bot1.addDamage(RAM_DAMAGE)
-        val bot2Killed = bot2.addDamage(RAM_DAMAGE)
+        val bot1WasAlive = bot1.isAlive
+        val bot2WasAlive = bot2.isAlive
+        bot1.applyDamage(RAM_DAMAGE)
+        bot2.applyDamage(RAM_DAMAGE)
+        val bot1Killed = bot1.isDead && bot1WasAlive
+        val bot2Killed = bot2.isDead && bot2WasAlive
         if (isBot1RammingBot2) {
             scoreTracker.registerRamHit(
                 participantIds.first { it.botId == bot1.id },
@@ -209,7 +215,7 @@ class CollisionDetector(
                     turn.addPrivateBotEvent(bot.id, botHitWallEvent)
                     turn.addObserverEvent(botHitWallEvent)
 
-                    bot.addDamage(calcWallDamage(bot.speed))
+                    bot.applyDamage(calcWallDamage(bot.speed))
                 }
                 bot.speed = 0.0
             }

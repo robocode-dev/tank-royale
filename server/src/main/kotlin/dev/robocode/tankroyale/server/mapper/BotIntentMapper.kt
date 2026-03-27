@@ -10,33 +10,33 @@ object BotIntentMapper {
      */
     fun map(intent: BotIntent): dev.robocode.tankroyale.server.model.BotIntent {
         // Create a new BotIntent with default values
-        val result = dev.robocode.tankroyale.server.model.BotIntent()
-        
+        val botIntent = dev.robocode.tankroyale.server.model.BotIntent()
+
         intent.apply {
             // Apply values with defaults for nulls
-            result.targetSpeed = targetSpeed ?: 0.0
-            result.turnRate = turnRate ?: 0.0
-            result.gunTurnRate = gunTurnRate ?: 0.0
-            result.radarTurnRate = radarTurnRate ?: 0.0
-            result.firepower = firepower ?: 0.0
-            result.adjustGunForBodyTurn = adjustGunForBodyTurn ?: false
-            result.adjustRadarForBodyTurn = adjustRadarForBodyTurn ?: false
-            result.adjustRadarForGunTurn = adjustRadarForGunTurn ?: false
-            result.rescan = rescan ?: false 
-            result.fireAssist = fireAssist ?: true
-            result.bodyColor = bodyColor 
-            result.turretColor = turretColor
-            result.radarColor = radarColor
-            result.bulletColor = bulletColor
-            result.scanColor = scanColor
-            result.tracksColor = tracksColor
-            result.gunColor = gunColor
-            result.stdOut = stdOut
-            result.stdErr = stdErr
-            result.teamMessages = TeamMessageMapper.map(teamMessages)
-            result.debugGraphics = debugGraphics
+            botIntent.targetSpeed = targetSpeed ?: 0.0
+            botIntent.turnRate = turnRate ?: 0.0
+            botIntent.gunTurnRate = gunTurnRate ?: 0.0
+            botIntent.radarTurnRate = radarTurnRate ?: 0.0
+            botIntent.firepower = firepower ?: 0.0
+            botIntent.adjustGunForBodyTurn = adjustGunForBodyTurn ?: false
+            botIntent.adjustRadarForBodyTurn = adjustRadarForBodyTurn ?: false
+            botIntent.adjustRadarForGunTurn = adjustRadarForGunTurn ?: false
+            botIntent.rescan = rescan ?: false
+            botIntent.fireAssist = fireAssist ?: true
+            botIntent.bodyColor = bodyColor
+            botIntent.turretColor = turretColor
+            botIntent.radarColor = radarColor
+            botIntent.bulletColor = bulletColor
+            botIntent.scanColor = scanColor
+            botIntent.tracksColor = tracksColor
+            botIntent.gunColor = gunColor
+            botIntent.stdOut = stdOut
+            botIntent.stdErr = stdErr
+            botIntent.teamMessages = TeamMessageMapper.map(teamMessages)
+            botIntent.debugGraphics = debugGraphics
         }
-        
-        return result
+
+        return botIntent
     }
 }

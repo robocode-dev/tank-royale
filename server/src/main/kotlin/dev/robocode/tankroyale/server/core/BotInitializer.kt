@@ -9,7 +9,8 @@ class BotInitializer(
     private val setup: GameSetup,
     private val participantIds: Set<ParticipantId>,
     private val initialPositions: Map<BotId, InitialPosition>,
-    private val droidFlags: Map<BotId, Boolean>
+    private val droidFlags: Map<BotId, Boolean>,
+    private val initialPositionEnabled: Boolean,
 ) {
 
     private val random = Random()
@@ -48,7 +49,7 @@ class BotInitializer(
     }
 
     private fun adjustForInitialPosition(botId: BotId, point: Point): Point {
-        if (!Server.initialPositionEnabled) return point
+        if (!initialPositionEnabled) return point
         val initialPosition = initialPositions[botId]
         return if (initialPosition == null) {
             point

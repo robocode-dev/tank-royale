@@ -102,14 +102,11 @@ data class MutableBot(
         }
 
     /**
-     * Adds damage to the bot.
+     * Applies damage to the bot, reducing its energy.
      * @param damage is the damage done to this bot.
-     * @return `true` if the bot got killed due to the damage, `false` otherwise.
      */
-    fun addDamage(damage: Double): Boolean {
-        val aliveBefore = isAlive
+    fun applyDamage(damage: Double) {
         energy -= damage
-        return isDead && aliveBefore
     }
 
     /**

@@ -91,7 +91,7 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
         }
     }
 
-    fun createParticipantMap(): Map<BotId, Participant> {
+    private fun createParticipantMap(): Map<BotId, Participant> {
         val map = mutableMapOf<BotId, Participant>()
         for (conn in _participants) {
             val handshake = connectionHandler.getBotHandshakes()[conn]
@@ -110,6 +110,7 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
                 programmingLang = handshake.programmingLang
                 teamId = handshake.teamId
                 teamName = handshake.teamName
+                teamVersion = handshake.teamVersion
                 isDroid = handshake.isDroid
             }
             map[botId] = participant
