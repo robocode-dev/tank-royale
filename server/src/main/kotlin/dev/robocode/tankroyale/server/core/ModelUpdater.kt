@@ -43,7 +43,7 @@ class ModelUpdater(
     private val accumulatedScoreCalculator = AccumulatedScoreCalculator()
 
     /** Map over all bots */
-    internal val botsMap = mutableMapOf<BotId, MutableBot>()
+    private val botsMap = mutableMapOf<BotId, MutableBot>()
 
     /** Map over copied bots from previous turn */
     private val botsCopies = mutableMapOf<BotId, MutableBot>()
@@ -79,6 +79,29 @@ class ModelUpdater(
     internal val numberOfRounds: Int get() = roundCounter
 
     internal fun isAlive(botId: BotId) = botsMap[botId]?.isAlive ?: false
+
+    /**
+     * Returns a bot by its id.
+     * @param id is the bot id.
+     * @return a bot by its id.
+     */
+    internal fun getBot(id: BotId): MutableBot? = botsMap[id]
+
+    /**
+     * Sets the debug enabled flag for a bot.
+     * @param id is the bot id.
+     * @param enabled is the debug enabled flag.
+     */
+    internal fun setDebugEnabled(id: BotId, enabled: Boolean) {
+        botsMap[id]?.isDebuggingEnabled = enabled
+    }
+
+    /**
+     * Returns the initial positions of all bots.
+     * @return a map of bot id to initial position.
+     */
+    internal fun getBotInitialPositions(): Map<BotId, Point> =
+        botsMap.mapValues { (_, bot) -> Point(bot.x, bot.y) }
 
     /**
      * Updates game state.

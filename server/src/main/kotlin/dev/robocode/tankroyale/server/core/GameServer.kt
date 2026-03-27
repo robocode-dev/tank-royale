@@ -36,6 +36,7 @@ class GameServer(
         ConnectionHandler(ServerSetup(gameTypes), GameServerConnectionListener(this), controllerSecrets, botSecrets)
 
     /** Current server state */
+    @Volatile
     private var serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
 
     /** Current game setup */
@@ -57,6 +58,7 @@ class GameServer(
     private val participantMap = ConcurrentHashMap<BotId, Participant>()
 
     /** Model updater that keeps track of the game state/model */
+    @Volatile
     private var modelUpdater: ModelUpdater? = null
 
     /** Timer for 'ready' timeout */
@@ -88,9 +90,10 @@ class GameServer(
     private val debugGraphicsEnableMap = ConcurrentHashMap<BotId, Boolean /* isDebugEnabled */>()
 
 
+    @Volatile
     private var botListUpdateMessage = BotListUpdate().apply {
-        this.type = Message.Type.BOT_LIST_UPDATE
-        this.bots = listOf<BotInfo>()
+        type = Message.Type.BOT_LIST_UPDATE
+        bots = emptyList()
     }
 
     /** Starts this server */
@@ -192,10 +195,12 @@ class GameServer(
             teammateIds = getTeammateIds(botId, teamId).map { it.value }
             this.gameSetup = gameSetup
 
-            val botsMap: MutableMap<BotId, MutableBot> = modelUpdater?.botsMap!!
-            botsMap[botId]?.let {
+            val initialPositions = requireNotNull(modelUpdater) { "modelUpdater is null" }.getBotInitialPositions()
+            initialPositions[botId]?.let {
                 startX = it.x
                 startY = it.y
+            }
+            requireNotNull(modelUpdater) { "modelUpdater is null" }.getBot(botId)?.let {
                 startDirection = it.direction
             }
         }
@@ -542,10 +547,12 @@ class GameServer(
         broadcastGameEndedToParticipants()
         broadcastGameEndedToObservers()
 
-        // Must be done after the broadcasting
-        serverState = ServerState.GAME_STOPPED
+        synchronized(startGameLock) {
+            // Must be done after the broadcasting
+            serverState = ServerState.GAME_STOPPED
 
-        cleanupAfterGameStopped()
+            cleanupAfterGameStopped()
+        }
     }
 
     private fun onNextTick(lastRound: IRound?) {
@@ -635,13 +642,14 @@ class GameServer(
     }
 
     private fun sendTickToParticipants(roundNumber: Int, turn: ITurn) {
-        val aliveBotTeamIds = aliveBotToTeamIdMap()
+        val updater = modelUpdater ?: return
+        val aliveBotTeamIds = aliveBotToTeamIdMap(updater)
 
         for (conn in participants) {
             val participantId = participantIds[conn] ?: continue
             // Skip dead bots, unless they have events this turn (e.g. died this very turn and need
             // their final tick delivered — it carries DeathEvent and possibly WonRoundEvent)
-            if (modelUpdater?.isAlive(participantId) == false && turn.getEvents(participantId).isEmpty()) continue
+            if (updater.isAlive(participantId) == false && turn.getEvents(participantId).isEmpty()) continue
 
             val teamId = aliveBotTeamIds[participantId]
             val enemyCount = aliveBotTeamIds.filterValues { it != teamId }.count()
@@ -651,10 +659,12 @@ class GameServer(
         }
     }
 
-    private fun aliveBotToTeamIdMap(): Map<BotId, Int> =
-        participantMap.filterKeys { botId -> modelUpdater?.isAlive(botId) == true }.mapValues { (botId, participant) ->
+    private fun aliveBotToTeamIdMap(updater: ModelUpdater? = modelUpdater): Map<BotId, Int> {
+        val currentUpdater = updater ?: return emptyMap()
+        return participantMap.filterKeys { botId -> currentUpdater.isAlive(botId) == true }.mapValues { (botId, participant) ->
             participant.teamId ?: -botId.value
         }
+    }
 
     private fun broadcastGameTickToObservers(roundNumber: Int, turn: ITurn) {
         val enemyCountMap = HashMap<BotId, Int /* enemyCount */>()
@@ -713,8 +723,10 @@ class GameServer(
             }
         }
 
-        // Set the new list after it's fully populated to avoid race condition
-        botListUpdateMessage.bots = newBotsList
+        botListUpdateMessage = BotListUpdate().apply {
+            type = Message.Type.BOT_LIST_UPDATE
+            bots = newBotsList
+        }
     }
 
     private fun send(conn: WebSocket, msg: Message) {
@@ -742,21 +754,13 @@ class GameServer(
 
     // Note: Despite the name, this update is intended for both observers and controllers
     private fun sendBotListUpdateToObserversAndControllers() {
-        // Send a clone of the message to prevent race conditions if the message is updated during broadcast
-        broadcastToObserverAndControllers(cloneBotListUpdate(botListUpdateMessage))
+        broadcastToObserverAndControllers(botListUpdateMessage)
     }
 
     internal fun sendBotListUpdate(conn: WebSocket) {
-        // Send a clone of the message to prevent race conditions
-        send(conn, cloneBotListUpdate(botListUpdateMessage))
+        send(conn, botListUpdateMessage)
     }
 
-    private fun cloneBotListUpdate(original: BotListUpdate): BotListUpdate {
-        return BotListUpdate().apply {
-            type = Message.Type.BOT_LIST_UPDATE
-            bots = ArrayList(original.bots) // Create a new list with the same elements
-        }
-    }
 
     internal fun handleBotJoined() {
         updateBotListUpdateMessage()
@@ -855,9 +859,11 @@ class GameServer(
 
     internal fun handleAbortGame() {
         log.info("Aborting game")
-        serverState = ServerState.GAME_STOPPED
-        broadcastGameAborted()
-        cleanupAfterGameStopped()
+        synchronized(startGameLock) {
+            serverState = ServerState.GAME_STOPPED
+            broadcastGameAborted()
+            cleanupAfterGameStopped()
+        }
 
         // No score is generated for aborted games
     }
@@ -909,7 +915,7 @@ class GameServer(
         debugGraphicsEnableMap[botId] = botPolicyUpdate.debuggingEnabled
 
         // Update the current flag as well
-        modelUpdater?.botsMap?.get(botId)?.isDebuggingEnabled = botPolicyUpdate.debuggingEnabled
+        modelUpdater?.setDebugEnabled(botId, botPolicyUpdate.debuggingEnabled)
     }
 
     private fun cleanupAfterGameStopped() {
@@ -929,8 +935,8 @@ class GameServer(
     }
 
     private fun transferDebugGraphicsFlagToModel() {
-        modelUpdater?.botsMap?.forEach { (botId, bot) ->
-            bot.isDebuggingEnabled = debugGraphicsEnableMap[botId] ?: false
+        debugGraphicsEnableMap.forEach { (botId, isEnabled) ->
+            modelUpdater?.setDebugEnabled(botId, isEnabled)
         }
     }
 }

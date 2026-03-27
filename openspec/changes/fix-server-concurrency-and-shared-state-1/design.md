@@ -1,72 +1,45 @@
-# Design: Server Thread-Safety Contract
+# Design: Server Concurrency and Shared State Fixes
 
-## Context
+This document describes the thread-safety contract and synchronization mechanisms implemented in `GameServer.kt` and `ModelUpdater.kt`.
 
-`GameServer` is accessed from three concurrent thread sources with no documented contract:
+## Threading Model
 
-1. **WebSocket handler threads** — `ClientWebSocketsHandler.executorService` (cached thread pool) dispatches incoming
-   messages to `handleBotJoined`, `handleBotLeft`, `handleBotReady`, `handleBotIntent`, `handleStartGame`,
-   `handleAbortGame`, `handlePauseGame`, `handleResumeGame`, `handleChangeTps`, `handleBotPolicyUpdate`
-2. **Turn timer thread** — `ResettableTimer` callback fires `onNextTurn()` → `updateGameState()` →
-   `sendTickToParticipants()`
-3. **Ready timer thread** — `ResettableTimer` callback fires `onReadyTimeout()`
+The `GameServer` interacts with several types of threads:
+1.  **WebSocket Threads**: Created by `java-websocket` to handle incoming messages from bots, observers, and controllers.
+2.  **Timer Threads**: Created by `ResettableTimer` for 'ready' and 'turn' timeouts.
+3.  **Main/Control Thread**: Used to start and stop the server.
 
-## Goals
+## Synchronized Fields
 
-- Eliminate data races on shared mutable fields without introducing contention on the hot path (turn processing)
-- Make the threading contract explicit and auditable
-- Encapsulate `ModelUpdater` internals so `GameServer` cannot accidentally alias mutable state
+### GameServer.kt
 
-## Non-Goals
+| Field | Synchronization | Description |
+| :--- | :--- | :--- |
+| `serverState` | `@Volatile` + `startGameLock` | Controls the high-level state of the server. Changes to `GAME_STOPPED` or `WAIT_FOR_PARTICIPANTS_TO_JOIN` are guarded by `startGameLock` to prevent races with `startGameIfParticipantsReady`. |
+| `modelUpdater` | `@Volatile` | Holds the game logic state. Null when no game is running. Accesses are checked for nullability and captured in local variables to prevent NPEs during state transitions. |
+| `botListUpdateMessage` | `@Volatile` | An immutable snapshot of the current bot list. Replaced atomically when the list changes. |
+| `turnStartTimeNanos` | `@Volatile` | Used to calculate turn duration across threads. |
 
-- Full decomposition of `GameServer` (that is proposal 2)
-- Changing the threading model (e.g., moving to coroutines or single-threaded event loop)
+### Locks
 
-## Decisions
+| Lock | Description |
+| :--- | :--- |
+| `tickLock` | Guards the core game loop in `onNextTurn()` and prevents concurrent updates to `botIntents`. |
+| `startGameLock` | Synchronizes game start/stop/abort transitions to ensure consistent state and timer management. |
+| `participantsLock` | Guards access to the `participants` set and related structures (though many now use `ConcurrentHashMap`). |
 
-### D1: Use `@Volatile` for `serverState` and `modelUpdater`
+## Key Patterns
 
-Both fields follow a publish-subscribe pattern: one thread writes, others read. Java's `volatile` guarantees
-happens-before ordering, which is sufficient for these fields. An `AtomicReference` would also work but adds ceremony
-for no benefit since compound check-then-act on `serverState` is already guarded by `startGameLock`.
+1.  **Volatile for Visibility**: Simple fields like `serverState` and `modelUpdater` use `@Volatile` to ensure all threads see the latest value immediately.
+2.  **Local Capture**: When accessing volatile nullable fields (like `modelUpdater`), we capture the value in a local variable first:
+    ```kotlin
+    val updater = modelUpdater ?: return
+    updater.isAlive(botId) // Safe even if modelUpdater becomes null
+    ```
+3.  **Immutable Snapshots**: Instead of cloning objects under a lock, we replace volatile fields with entirely new immutable objects (e.g., `botListUpdateMessage`). This allows lock-free reads.
+4.  **Encapsulation**: `ModelUpdater.botsMap` is now private. All accesses from `GameServer` go through accessor methods on `ModelUpdater`, ensuring a cleaner API and better control over how bot state is accessed.
 
-### D2: Immutable-snapshot pattern for `botListUpdateMessage`
+## Verification Plan
 
-Current code mutates the `bots` list on the shared object, then clones it before sending. This is a TOCTOU race.
-Fix: build a new `BotListUpdate` object each time and assign to a `@Volatile` field. Readers capture the reference
-into a local variable and use it directly — no clone needed.
-
-### D3: Accessor methods on `ModelUpdater` instead of exposing `botsMap`
-
-`GameServer` currently reaches into `modelUpdater?.botsMap!!` for two purposes:
-1. Read bot positions for `createGameStartedEventForBot()` (line 195)
-2. Set `isDebuggingEnabled` flag (line 912)
-
-Both can be served by dedicated methods on `ModelUpdater`. This prevents `GameServer` from holding a reference to the
-mutable map and accidentally reading stale or partially-updated state.
-
-## Risks / Trade-offs
-
-- **Risk:** `@Volatile` on `serverState` does not protect compound operations (read state → decide → write state).
-  Mitigation: all state-machine transitions that depend on current state are already inside `startGameLock` or
-  `participantsLock`. The volatile ensures visibility for the reads that are not inside a lock (e.g., the guard in
-  `onNextTurn`).
-
-- **Risk:** Making `botsMap` private may surface hidden accesses not found during audit. Mitigation: compiler will
-  catch them; fix each one with an appropriate accessor.
-
-## Field-Level Threading Contract (Post-Fix)
-
-| Field | Annotation/Lock | Writer Thread(s) | Reader Thread(s) |
-|-------|----------------|-------------------|-------------------|
-| `serverState` | `@Volatile` | WebSocket handlers, ready timer | Turn timer, WebSocket handlers |
-| `modelUpdater` | `@Volatile` | WebSocket handlers (prepareGame, cleanup) | Turn timer, WebSocket handlers |
-| `botListUpdateMessage` | `@Volatile` (immutable snapshot) | WebSocket handlers | WebSocket handlers (broadcast) |
-| `gameSetup` | Written before game starts, read after | WebSocket handlers (handleStartGame) | Turn timer |
-| `tps` | `@Volatile` (add) | WebSocket handlers (handleChangeTps) | Turn timer |
-| `turnStartTimeNanos` | `@Volatile` (existing) | Turn timer | WebSocket handlers |
-| `participants` | `ConcurrentHashMap.keySet` | WebSocket handlers | Turn timer, ready timer |
-| `readyParticipants` | `ConcurrentHashMap.keySet` | WebSocket handlers | Ready timer |
-| `participantIds` | `ConcurrentHashMap` | WebSocket handlers | Turn timer |
-| `botIntents` | `ConcurrentHashMap` + `tickLock` for snapshot | WebSocket handlers | Turn timer (under tickLock) |
-| `botsThatSentIntent` | `tickLock` | WebSocket handlers (under tickLock) | Turn timer (under tickLock) |
+-   **Unit Tests**: Run `server` module tests to ensure no regressions in game logic or connection handling.
+-   **Concurrency Stress**: Manual verification by running multiple bots and observers to check for `ConcurrentModificationException` or `NullPointerException` during game transitions (start/stop/abort).
