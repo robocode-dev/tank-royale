@@ -14,7 +14,6 @@ These principles cannot produce a reliable finding from a codebase snapshot alon
 
 | Principle ID | File | Reason |
 |---|---|---|
-| CODE-CS-BOY-SCOUT | `principles/code/cs/boy-scout.md` | Violations require comparing code to a prior state (git history). A snapshot cannot show whether a contributor left the code cleaner than they found it. |
 | ARCH-CONWAYS-LAW | `principles/arch/conways-law.md` | Violations require knowing team and org structure. The codebase contains no authoritative record of ownership, reporting lines, or communication patterns. |
 | CODE-PF-PROFILE-FIRST | `principles/code/pf/profile-first.md` | The core violation — optimizing without profiling data — is a process event. No artifact in the codebase proves or disproves whether profiling occurred before a change was made. |
 | SEC-ARCH-THREAT-MODELLING | `principles/sec-arch/threat-modelling.md` | Threat modelling is a design-time process. Whether it was performed, and what it covered, cannot be determined from code alone. |
@@ -27,6 +26,7 @@ These principles have at least one code-detectable violation, but some aspects o
 
 | Principle ID | File | What is detectable | What is not detectable |
 |---|---|---|---|
+| CODE-CS-BOY-SCOUT | `principles/code/cs/boy-scout.md` | New/changed lines (via `$GIT_DIFF`) introducing TODO/FIXME markers or magic numbers in files that were touched | Whether the contributor made every possible cleanup improvement (subjective); no-diff cases where git history is unavailable |
 | CODE-TS-TEST-FIRST | `principles/code/ts/test-first.md` | Absence of corresponding tests for production code | Whether tests were written *before* production code (requires git history) |
 | 12FACTOR-10-DEV-PROD-PARITY | `principles/12factor/10-dev-prod-parity.md` | Env-conditional branches; hard-coded local connection strings | Whether dev and prod use different backing services (requires deployment config) |
 | 12FACTOR-09-DISPOSABILITY | `principles/12factor/09-disposability.md` | Missing SIGTERM handlers; ack-before-process patterns; startup migrations | Actual startup time (requires running the app) |

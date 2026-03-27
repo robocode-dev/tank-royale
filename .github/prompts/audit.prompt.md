@@ -7,13 +7,13 @@ mode: agent
 description: Review a file, directory, or inline code against its activated principles. Supports explicit principle override with --with / @group / on syntax. Use when the user runs /audit [target] to check code or docs against quality principles.
 argument-hint: "[file|directory|inline-code] | <spec> on <target> | <target> --with <spec> | @<group> <target>"
 allowed-tools: Read, Write, Glob, Grep, Bash
-version: 0.6.0
+version: 0.7.0
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 ---
 
 # Audit
 
-Review a file, directory, or inline code against its activated principles in seven phases. Optionally force specific principles using explicit spec syntax.
+Review a file, directory, or inline code against its activated principles. Core review runs in seven phases (1–7). Three optional gated phases (8–10) handle fix, commit, and PR — each requires explicit user approval before entry.
 
 ## Phase 1 — Parse Arguments, Resolve Input, and Detect Artifact Type
 
@@ -45,6 +45,22 @@ For the target file(s), detect the artifact type by reading `.principles-catalog
 Record the detected type: **`code`** | **`docs`** | **`config`** | **`infra`** | **`schema`** | **`pipeline`**
 
 If the target is a directory with mixed artifact types, note the mix; apply per-file type detection in Phase 6.
+
+### 1.4 — Load Git Context
+
+**Output nothing during this phase.**
+
+After the target is resolved, attempt to load recent git history for the target files. This context is used by git-aware principles in Phase 5 and Phase 6.
+
+1. Check whether a git repository is reachable (look for `.git/` walking up from the target, same logic as Phase 2's `.principles` walk).
+2. If reachable, run both commands against the target path:
+   - `git diff HEAD -- <target>` — staged + unstaged changes relative to HEAD (current work in progress)
+   - If the above produces no output: `git diff HEAD~1 HEAD -- <target>` — the most recently committed change
+   - `git log --oneline -5 -- <target>` — recent commit history for the target
+3. Store results:
+   - **`$GIT_DIFF`** — the diff output (whichever command produced content, preferring uncommitted; empty string if none)
+   - **`$GIT_LOG`** — the log lines (empty string if none)
+4. If git is unavailable, the target is inline code, or no history exists: set both to empty string. Do not fail or warn — graceful degradation means git-aware principles fall back to snapshot-only review.
 
 ## Phase 2 — Resolve Principles
 
@@ -154,7 +170,17 @@ Derive unique namespaces from the active principle ID prefixes. Use the longest-
 | `EFFECTIVE-JAVA-*` | `effective-java/` |
 | `12FACTOR-*` | `12factor/` |
 | `PIPELINE-*` | `pipeline/` |
-| `SEC-ARCH-*` | `sec-arch/` |
+| `CODE-API-*` | `code/api/` |
+| `CODE-AR-*` | `code/ar/` |
+| `CODE-CC-*` | `code/cc/` |
+| `CODE-CS-*` | `code/cs/` |
+| `CODE-DX-*` | `code/dx/` |
+| `CODE-OB-*` | `code/ob/` |
+| `CODE-PF-*` | `code/pf/` |
+| `CODE-RL-*` | `code/rl/` |
+| `CODE-SEC-*` | `code/sec/` |
+| `CODE-TP-*` | `code/tp/` |
+| `CODE-TS-*` | `code/ts/` |
 | `CODE-*` | `code/` |
 | `SOLID-*` | `solid/` |
 | `DDD-*` | `ddd/` |
@@ -173,21 +199,21 @@ Derive unique namespaces from the active principle ID prefixes. Use the longest-
 | `ARCH-*` | `arch/` |
 | `PKG-*` | `pkg/` |
 
-For each unique namespace, read `.principles-catalog/principles/<namespace>/.context-audit.md` and filter to entries whose `### ID` is in the active set. Use the **Principle** and **Violations to detect** content in Phase 6.
+For each unique namespace, use the **Read tool** to load `.principles-catalog/principles/<namespace>/.context-audit.md`, then filter entries whose `### ID` is in the active set. Do not use bash, grep, or any shell command for this step — read the file and filter in your reasoning. Use the **Principle** and **Violations to detect** content in Phase 6.
 
 If `.principles-catalog/` is not present, fall back to the standard loading below.
 
 **Standard loading (all other sources):**
 
-For each namespace in the active ID set, read one file:
+For each namespace in the active ID set, use the **Read tool** to load:
 
 ```
 .principles-catalog/principles/<namespace>/.context-audit.md
 ```
 
-Filter to entries whose `### ID` is in the final active set. Use the **Principle** and **Violations to detect** content in Phase 6.
+Filter entries whose `### ID` is in the final active set. Do not use bash, grep, or any shell command for this step — read the file and filter in your reasoning. Use the **Principle** and **Violations to detect** content in Phase 6.
 
-Namespace derivation: `CODE-CS-DRY` → namespace `code`, `SOLID-SRP` → namespace `solid`, `DOC-PURPOSE` → namespace `docs`, `CONFIG-NO-HARDCODED-SECRETS` → namespace `config`, `SCHEMA-SELF-DESCRIBING` → namespace `schema`, `PIPELINE-MINIMAL-PERMISSIONS` → namespace `pipeline`.
+Namespace derivation: `CODE-CS-DRY` → namespace `code/cs`, `CODE-API-HATEOAS` → namespace `code/api`, `SOLID-SRP` → namespace `solid`, `DOC-PURPOSE` → namespace `docs`, `CONFIG-NO-HARDCODED-SECRETS` → namespace `config`, `SCHEMA-SELF-DESCRIBING` → namespace `schema`, `PIPELINE-MINIMAL-PERMISSIONS` → namespace `pipeline`.
 
 ## Phase 5 — Pre-Scan
 
@@ -216,9 +242,9 @@ Principles with entries in `.context-inspect.md` are **"inspected"**. Principles
 For each inspection command:
 
 1. Replace `$TARGET` with the actual path from Phase 1.
-2. Run the command using bash.
+2. Run the command using bash. Commands may use git (e.g. `git diff HEAD -- $TARGET | grep …`) — this is valid; `$GIT_DIFF` from Phase 1.4 is pre-loaded context, but inspect commands run git directly against `$TARGET` as a pathspec.
 3. Collect hits as: `{principle_id, severity_hint, file, line, match_text, description}`.
-4. If a command produces no output or fails, skip silently.
+4. If a command produces no output or fails (including because `$GIT_DIFF` is empty), skip silently.
 
 ### 5.3 — Build Pre-Scan Manifest
 
@@ -246,6 +272,8 @@ For each file in the pre-scan manifest:
 **Read every file** collected in Phase 1. Apply only the **semantic-only principles** (those without inspection patterns). Do not substitute grep, search, or pattern-matching tools for reading — you must read and understand each file's logic, structure, and intent.
 
 For each file, evaluate it against the semantic-only principle set appropriate to its artifact type.
+
+For principles that are git-history-dependent (marked `Audit-scope: limited — git` in their principle file), include `$GIT_DIFF` and `$GIT_LOG` from Phase 1.4 as additional context alongside the file content. If both are empty, apply the principle as snapshot-only.
 
 ### Step 3 — Opportunistic Findings
 
@@ -323,3 +351,149 @@ Generated: {absolute path}/audit-output.json
 - Principle ID in brackets: `[DOC-PURPOSE]`.
 - One line per finding.
 - If no findings: output `Audit complete — 0 findings.` followed by the Summary and Generated lines.
+
+## GATED WORKFLOW — Mandatory Approval Checkpoints
+
+Phases 8–10 form a strict state machine. Each gate is a mandatory stop point — the **default is to stop and ask**, never to proceed.
+
+**Rules:**
+- Identifying issues does **not** grant permission to fix them.
+- Fixing does **not** grant permission to commit.
+- Committing does **not** grant permission to push or open a PR.
+- Silence, hints, context, or likely intent do **not** count as approval.
+- Never skip ahead. Never combine phases. Never infer permission.
+
+---
+
+## Phase 8 — Fix
+
+**GATE — Requires explicit user approval.**
+
+After Phase 7 output, if there are no findings, stop — skip remaining phases.
+
+Otherwise ask:
+
+> Would you like me to fix these findings?
+
+**Stop and wait for the user to respond.**
+
+- User declines → stop. Skip remaining phases.
+- User approves → proceed.
+
+### 8.1 — Create a fix branch
+
+```
+git checkout -b fix-<target-slug>
+```
+
+`<target-slug>` is a short kebab-case name derived from the audit target (e.g. `fix-data-fetcher`, `fix-auth-service`).
+
+### 8.2 — Implement fixes
+
+Fix every finding from `audit-output.json`, file by file:
+
+- Apply the concrete fix from each finding's `fix` field.
+- Do not change unrelated code.
+- Run existing tests after all fixes to confirm nothing is broken.
+
+---
+
+## Phase 9 — Commit
+
+**GATE — Requires explicit user approval.**
+
+Compose the commit message and PR body (see format below). Present both **in full inline** so the user can review before deciding.
+
+Then ask:
+
+> How would you like to proceed?
+> 1. **Commit only** — commit to the local branch
+> 2. **Commit and push** — commit and push to origin
+> 3. **Exit** — leave changes uncommitted
+
+**Stop and wait for the user to respond.**
+
+- User chooses **exit** → stop. Skip Phase 10.
+- User chooses **commit only** → run the commit commands below. Stop. Skip Phase 10.
+- User chooses **commit and push** → run the commit commands below, then push. Proceed to Phase 10.
+
+### 9.1 — Commit
+
+```
+git add -A
+git commit -m "<commit message>"
+```
+
+### 9.2 — Push (only if user chose "commit and push")
+
+```
+git push -u origin fix-<target-slug>
+```
+
+---
+
+## Phase 10 — Pull Request
+
+**GATE — Requires explicit user approval.**
+
+Ask:
+
+> Shall I open a pull request?
+
+**Stop and wait for the user to respond.**
+
+- User declines → stop.
+- User approves → create a PR targeting the default branch using the PR body from Phase 9, then stop.
+
+---
+
+## Commit Message & PR Body Format
+
+### Commit message
+
+```
+fix(<target>): resolve <N> audit findings (<severities>)
+
+- [PRINCIPLE-ID] one-line description (file:line)
+- ...
+```
+
+- Prepend any project-specific ticket prefix required by the repo's contributing guidelines (e.g. `PROJ-123: fix(...)`). Omit if no convention exists.
+- `<severities>` summarises the breakdown, e.g. `HIGH×3, MEDIUM×2, LOW×1`.
+
+### PR body
+
+```markdown
+## Summary
+
+Brief description of what was audited and what was fixed.
+
+---
+
+## Why each change was required
+
+### 🔴 HIGH — <finding title> (<PRINCIPLE-ID>)
+One paragraph: root cause and production impact of leaving it unfixed.
+
+### 🟡 MEDIUM — <finding title> (<PRINCIPLE-ID>)
+...
+
+### 🔵 LOW — <finding title> (<PRINCIPLE-ID>)
+...
+
+---
+
+## Changes
+
+| Severity | Finding | Change |
+|----------|---------|--------|
+| 🔴 HIGH  | <what was wrong> | <what was done> |
+| 🟡 MEDIUM| ...              | ...             |
+| 🔵 LOW   | ...              | ...             |
+
+---
+
+**Files changed:** N production + M test | **Tests:** X/X passing
+```
+
+Severity emoji: 🔴 CRITICAL/HIGH · 🟡 MEDIUM · 🔵 LOW
