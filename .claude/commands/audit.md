@@ -8,7 +8,7 @@ authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 
 # Audit
 
-Review a file, directory, or inline code against its activated principles in seven phases. Optionally force specific principles using explicit spec syntax.
+Review a file, directory, or inline code against its activated principles. Core review runs in seven phases (1–7). Three optional gated phases (8–10) handle fix, commit, and PR — each requires explicit user approval before entry.
 
 ## Phase 1 — Parse Arguments, Resolve Input, and Detect Artifact Type
 
@@ -318,3 +318,149 @@ Generated: {absolute path}/audit-output.json
 - Principle ID in brackets: `[DOC-PURPOSE]`.
 - One line per finding.
 - If no findings: output `Audit complete — 0 findings.` followed by the Summary and Generated lines.
+
+## GATED WORKFLOW — Mandatory Approval Checkpoints
+
+Phases 8–10 form a strict state machine. Each gate is a mandatory stop point — the **default is to stop and ask**, never to proceed.
+
+**Rules:**
+- Identifying issues does **not** grant permission to fix them.
+- Fixing does **not** grant permission to commit.
+- Committing does **not** grant permission to push or open a PR.
+- Silence, hints, context, or likely intent do **not** count as approval.
+- Never skip ahead. Never combine phases. Never infer permission.
+
+---
+
+## Phase 8 — Fix
+
+**GATE — Requires explicit user approval.**
+
+After Phase 7 output, if there are no findings, stop — skip remaining phases.
+
+Otherwise ask:
+
+> Would you like me to fix these findings?
+
+**Stop and wait for the user to respond.**
+
+- User declines → stop. Skip remaining phases.
+- User approves → proceed.
+
+### 8.1 — Create a fix branch
+
+```
+git checkout -b fix-<target-slug>
+```
+
+`<target-slug>` is a short kebab-case name derived from the audit target (e.g. `fix-data-fetcher`, `fix-auth-service`).
+
+### 8.2 — Implement fixes
+
+Fix every finding from `audit-output.json`, file by file:
+
+- Apply the concrete fix from each finding's `fix` field.
+- Do not change unrelated code.
+- Run existing tests after all fixes to confirm nothing is broken.
+
+---
+
+## Phase 9 — Commit
+
+**GATE — Requires explicit user approval.**
+
+Compose the commit message and PR body (see format below). Present both **in full inline** so the user can review before deciding.
+
+Then ask:
+
+> How would you like to proceed?
+> 1. **Commit only** — commit to the local branch
+> 2. **Commit and push** — commit and push to origin
+> 3. **Exit** — leave changes uncommitted
+
+**Stop and wait for the user to respond.**
+
+- User chooses **exit** → stop. Skip Phase 10.
+- User chooses **commit only** → run the commit commands below. Stop. Skip Phase 10.
+- User chooses **commit and push** → run the commit commands below, then push. Proceed to Phase 10.
+
+### 9.1 — Commit
+
+```
+git add -A
+git commit -m "<commit message>"
+```
+
+### 9.2 — Push (only if user chose "commit and push")
+
+```
+git push -u origin fix-<target-slug>
+```
+
+---
+
+## Phase 10 — Pull Request
+
+**GATE — Requires explicit user approval.**
+
+Ask:
+
+> Shall I open a pull request?
+
+**Stop and wait for the user to respond.**
+
+- User declines → stop.
+- User approves → create a PR targeting the default branch using the PR body from Phase 9, then stop.
+
+---
+
+## Commit Message & PR Body Format
+
+### Commit message
+
+```
+fix(<target>): resolve <N> audit findings (<severities>)
+
+- [PRINCIPLE-ID] one-line description (file:line)
+- ...
+```
+
+- Prepend any project-specific ticket prefix required by the repo's contributing guidelines (e.g. `PROJ-123: fix(...)`). Omit if no convention exists.
+- `<severities>` summarises the breakdown, e.g. `HIGH×3, MEDIUM×2, LOW×1`.
+
+### PR body
+
+```markdown
+## Summary
+
+Brief description of what was audited and what was fixed.
+
+---
+
+## Why each change was required
+
+### 🔴 HIGH — <finding title> (<PRINCIPLE-ID>)
+One paragraph: root cause and production impact of leaving it unfixed.
+
+### 🟡 MEDIUM — <finding title> (<PRINCIPLE-ID>)
+...
+
+### 🔵 LOW — <finding title> (<PRINCIPLE-ID>)
+...
+
+---
+
+## Changes
+
+| Severity | Finding | Change |
+|----------|---------|--------|
+| 🔴 HIGH  | <what was wrong> | <what was done> |
+| 🟡 MEDIUM| ...              | ...             |
+| 🔵 LOW   | ...              | ...             |
+
+---
+
+**Files changed:** N production + M test | **Tests:** X/X passing
+```
+
+Severity emoji: 🔴 CRITICAL/HIGH · 🟡 MEDIUM · 🔵 LOW
