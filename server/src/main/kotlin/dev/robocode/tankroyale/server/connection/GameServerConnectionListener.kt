@@ -91,18 +91,6 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
         gameServer.handleBotPolicyUpdate(botPolicyUpdate)
     }
 
-    private fun getDisplayName(name: String, version: String): String {
-        var displayName = ""
-        name.trim().apply {
-            if (isNotEmpty()) {
-                displayName = this
-            }
-        }
-        version.trim().apply {
-            if (isNotEmpty()) {
-                displayName += " $this"
-            }
-        }
-        return displayName
-    }
+    private fun getDisplayName(name: String, version: String): String =
+        "${name.trim()} ${version.trim()}".trim()
 }

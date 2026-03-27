@@ -9,42 +9,93 @@ import java.util.concurrent.ConcurrentHashMap
 /** Registry for tracking game participants (bots). */
 class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
 
-    /** Game participants (bots connections) */
-    val participants = ConcurrentHashMap.newKeySet<WebSocket>()
+    private val _participants = ConcurrentHashMap.newKeySet<WebSocket>()
+    private val _readyParticipants = ConcurrentHashMap.newKeySet<WebSocket>()
+    private val _participantIds = ConcurrentHashMap<WebSocket, BotId>()
+    private val _participantMap = ConcurrentHashMap<BotId, Participant>()
+    private val _debugGraphicsEnableMap = ConcurrentHashMap<BotId, Boolean /* isDebugEnabled */>()
 
-    /** Game participants that signalled 'ready' for battle */
-    val readyParticipants = ConcurrentHashMap.newKeySet<WebSocket>()
+    /** Read-only view of game participants (bot connections) */
+    val participants: Set<WebSocket> get() = _participants
 
-    /** Map over participant ids: bot connection -> bot id */
-    val participantIds = ConcurrentHashMap<WebSocket, BotId>()
+    /** Read-only view of participants that signalled 'ready' for battle */
+    val readyParticipants: Set<WebSocket> get() = _readyParticipants
 
-    /** Map over participants sent to clients */
-    val participantMap = ConcurrentHashMap<BotId, Participant>()
+    /** Read-only view of participant ids: bot connection -> bot id */
+    val participantIds: Map<WebSocket, BotId> get() = _participantIds
+
+    /** Read-only view of participants sent to clients */
+    val participantMap: Map<BotId, Participant> get() = _participantMap
+
+    /** Read-only view of debug graphics enable flags */
+    val debugGraphicsEnableMap: Map<BotId, Boolean> get() = _debugGraphicsEnableMap
 
     /** Lock for participant-related operations */
     val participantsLock = Any()
 
-    /** Map over debug graphics enable flags */
-    val debugGraphicsEnableMap = ConcurrentHashMap<BotId, Boolean /* isDebugEnabled */>()
+    fun addParticipant(conn: WebSocket) {
+        _participants += conn
+    }
+
+    fun removeParticipant(conn: WebSocket): Boolean = _participants.remove(conn)
+
+    fun setParticipants(conns: Collection<WebSocket>) {
+        _participants.clear()
+        _participants += conns
+    }
+
+    fun addReadyParticipant(conn: WebSocket) {
+        _readyParticipants += conn
+    }
+
+    fun removeParticipantId(conn: WebSocket) {
+        _participantIds.remove(conn)
+    }
+
+    fun removeNonReadyParticipants(): List<WebSocket> {
+        val removed = mutableListOf<WebSocket>()
+        val iterator = _participants.iterator()
+        while (iterator.hasNext()) {
+            val conn = iterator.next()
+            if (!_readyParticipants.contains(conn)) {
+                iterator.remove()
+                _participantIds.remove(conn)
+                removed += conn
+            }
+        }
+        return removed
+    }
+
+    fun populateParticipantMap() {
+        _participantMap.putAll(createParticipantMap())
+    }
+
+    fun clearReadyParticipants() {
+        _readyParticipants.clear()
+    }
+
+    fun setDebugGraphicsEnabled(botId: BotId, enabled: Boolean) {
+        _debugGraphicsEnableMap[botId] = enabled
+    }
 
     fun clear() {
-        participantIds.clear()
-        readyParticipants.clear()
-        participantMap.clear()
-        debugGraphicsEnableMap.clear()
+        _participantIds.clear()
+        _readyParticipants.clear()
+        _participantMap.clear()
+        _debugGraphicsEnableMap.clear()
     }
 
     fun prepareParticipantIds() {
-        participants.forEachIndexed { index, conn ->
-            participantIds[conn] = BotId(index + 1)
+        _participants.forEachIndexed { index, conn ->
+            _participantIds[conn] = BotId(index + 1)
         }
     }
 
     fun createParticipantMap(): Map<BotId, Participant> {
         val map = mutableMapOf<BotId, Participant>()
-        for (conn in participants) {
+        for (conn in _participants) {
             val handshake = connectionHandler.getBotHandshakes()[conn]
-            val botId = participantIds[conn] ?: continue
+            val botId = _participantIds[conn] ?: continue
             val participant = Participant().apply {
                 id = botId.value
                 sessionId = handshake!!.sessionId

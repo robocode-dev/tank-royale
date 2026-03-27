@@ -23,7 +23,8 @@ private const val BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED: Double =
 class CollisionDetector(
     private val setup: GameSetup,
     private val participantIds: Set<ParticipantId>,
-    private val scoreTracker: ScoreTracker
+    private val scoreTracker: ScoreTracker,
+    private val random: java.util.Random = java.util.Random()
 ) {
 
     fun checkAndHandleBulletHits(
@@ -143,9 +144,7 @@ class CollisionDetector(
 
         val lastTurn = lastRound?.lastTurn
         if (turn.turnNumber == 1 || lastTurn == null) {
-            val x = BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (setup.arenaWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
-            val y = BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (setup.arenaHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
-            bot2.position = Point(x, y)
+            bot2.position = randomSafePosition()
         } else {
             val oldPos1 = lastTurn.getBot(bot1.id)!!.position
             val oldPos2 = lastTurn.getBot(bot2.id)!!.position
@@ -164,6 +163,12 @@ class CollisionDetector(
             addObserverEvent(event1)
             addObserverEvent(event2)
         }
+    }
+
+    private fun randomSafePosition(): Point {
+        val x = BOT_BOUNDING_CIRCLE_RADIUS + random.nextDouble() * (setup.arenaWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
+        val y = BOT_BOUNDING_CIRCLE_RADIUS + random.nextDouble() * (setup.arenaHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
+        return Point(x, y)
     }
 
     private fun registerRamHit(

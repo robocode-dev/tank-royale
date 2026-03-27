@@ -15,9 +15,11 @@ class GameLifecycleManager {
     val startGameLock = Any()
 
     /** Timer for 'ready' timeout */
+    @Volatile
     var readyTimeoutTimer: ResettableTimer? = null
 
     /** Timer for 'turn' timeout */
+    @Volatile
     var turnTimeoutTimer: ResettableTimer? = null
 
     fun stopTimers() {

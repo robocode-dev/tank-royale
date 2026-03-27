@@ -37,7 +37,7 @@ class GameServerResultsForObserverTest : FunSpec({
             isAccessible = true
         }
         val participantRegistry = participantRegistryField.get(gameServer)
-        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("_participantMap").apply {
             isAccessible = true
         }
         val participantMap =
@@ -97,7 +97,7 @@ class GameServerResultsForObserverTest : FunSpec({
             isAccessible = true
         }
         val participantRegistry = participantRegistryField.get(gameServer)
-        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("_participantMap").apply {
             isAccessible = true
         }
         val participantMap =
@@ -132,7 +132,7 @@ class GameServerResultsForObserverTest : FunSpec({
             isAccessible = true
         }
         val participantRegistry = participantRegistryField.get(gameServer)
-        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("_participantMap").apply {
             isAccessible = true
         }
         val participantMap =
@@ -172,7 +172,7 @@ class GameServerResultsForObserverTest : FunSpec({
             isAccessible = true
         }
         val participantRegistry = participantRegistryField.get(gameServer)
-        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("_participantMap").apply {
             isAccessible = true
         }
         val participantMap =
@@ -214,7 +214,7 @@ class GameServerResultsForObserverTest : FunSpec({
             isAccessible = true
         }
         val participantRegistry = participantRegistryField.get(gameServer)
-        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("_participantMap").apply {
             isAccessible = true
         }
         val participantMap =
@@ -254,7 +254,7 @@ class GameServerResultsForObserverTest : FunSpec({
             isAccessible = true
         }
         val participantRegistry = participantRegistryField.get(gameServer)
-        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("_participantMap").apply {
             isAccessible = true
         }
         val participantMap =
@@ -294,7 +294,7 @@ class GameServerResultsForObserverTest : FunSpec({
             isAccessible = true
         }
         val participantRegistry = participantRegistryField.get(gameServer)
-        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("_participantMap").apply {
             isAccessible = true
         }
         val participantMap =
@@ -336,7 +336,7 @@ class GameServerResultsForObserverTest : FunSpec({
             isAccessible = true
         }
         val participantRegistry = participantRegistryField.get(gameServer)
-        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("_participantMap").apply {
             isAccessible = true
         }
         val participantMap =
