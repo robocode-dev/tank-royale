@@ -2,10 +2,10 @@ package dev.robocode.tankroyale.server.mapper
 
 import dev.robocode.tankroyale.schema.BulletState
 import dev.robocode.tankroyale.server.model.normalizeAbsoluteDegrees
-import dev.robocode.tankroyale.server.model.IBullet
+import dev.robocode.tankroyale.server.model.Bullet
 
 object BulletToBulletStateMapper {
-    fun map(bullet: IBullet): BulletState {
+    fun map(bullet: Bullet): BulletState {
         return BulletState().apply {
             ownerId = bullet.botId.value
             bulletId = bullet.id.value

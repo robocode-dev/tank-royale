@@ -68,7 +68,7 @@ fun Double.isNotNearTo(value: Double): Boolean {
  * @param radius is the radius of the circle.
  * @return `true` if the line is intersecting the circle; `false` otherwise.
  */
-fun isLineIntersectingCircle(line: Line, center: IPoint, radius: Double): Boolean {
+fun isLineIntersectingCircle(line: Line, center: Point, radius: Double): Boolean {
     val x1 = line.start.x
     val y1 = line.start.y
     val x2 = line.end.x
@@ -110,7 +110,7 @@ fun isLineIntersectingCircle(line: Line, center: IPoint, radius: Double): Boolea
  * @param radius is the radius of the circle.
  * @return `true` if the point is inside or on the circle; `false` otherwise.
  */
-fun isPointInsideCircle(point: Point, center: IPoint, radius: Double): Boolean {
+fun isPointInsideCircle(point: Point, center: Point, radius: Double): Boolean {
     val dx = point.x - center.x
     val dy = point.y - center.y
 
@@ -238,8 +238,8 @@ fun isLineIntersectingLine(line1: Line, line2: Line): Boolean {
  * @return `true` if the circle lines is intersecting/inside the circle segment; `false` otherwise.
  */
 fun isCircleIntersectingCircleSector(
-    circleCenter: IPoint, circleRadius: Double,
-    sectorCenter: IPoint, sectorRadius: Double,
+    circleCenter: Point, circleRadius: Double,
+    sectorCenter: Point, sectorRadius: Double,
     arcStartAngle: Double, arcEndAngle: Double
 ): Boolean {
     assert(arcEndAngle > arcStartAngle)

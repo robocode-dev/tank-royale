@@ -11,7 +11,7 @@ interface ITurn {
     val bots: Set<IBot>
 
     /** Bullets */
-    val bullets: Set<IBullet>
+    val bullets: Set<Bullet>
 
     /** Observer events  */
     val observerEvents: Set<Event>

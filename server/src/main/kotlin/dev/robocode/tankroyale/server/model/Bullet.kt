@@ -1,5 +1,9 @@
 package dev.robocode.tankroyale.server.model
 
+import dev.robocode.tankroyale.server.rules.calcBulletSpeed
+import kotlin.math.cos
+import kotlin.math.sin
+
 /**
  * An immutable bullet.
  * The [startPosition] and [tick] defines the current position of the bullet.
@@ -12,21 +16,47 @@ package dev.robocode.tankroyale.server.model
  * @param tick Tick, which is the number of turns since the bullet was fired.
  */
 data class Bullet(
-    override val id: BulletId,
-    override val botId: BotId,
-    override val power: Double,
-    override val direction: Double,
-    override val color: Color?,
-    override val startPosition: Point, // must be immutable as this point is used for calculating future positions
-    override val tick: Int = 0,
-
-    ) : IBullet {
+    val id: BulletId,
+    val botId: BotId,
+    val power: Double,
+    val direction: Double,
+    val color: Color?,
+    val startPosition: Point, // must be immutable as this point is used for calculating future positions
+    val tick: Int = 0,
+) {
+    /**
+     * Returns the speed of this bullet depending on the bullet power.
+     * @return the speed of this bullet based on [calcBulletSpeed].
+     * @see [calcBulletSpeed]
+     */
+    fun speed(): Double = calcBulletSpeed(power)
 
     /**
-     * Returns a mutable copy of this point.
-     * @return a [MutableBullet] instance that is a copy of this bullet.
+     * Returns the current position of this bullet based on [startPosition] and [tick].
+     * @return a [Point] with containing the current position.
      */
-    fun toMutableBullet() = MutableBullet(id, botId, power, direction, color, startPosition, tick)
+    fun position(): Point = calcPosition()
+
+    /**
+     * Returns the next position of this bullet based on [startPosition] and [tick] + 1.
+     * @return a [Point] with containing the next position.
+     */
+    fun nextPosition(): Point = calcPosition(true)
+
+    /**
+     * Calculates the current position of this bullet based on [startPosition] and [tick].
+     * @param calcNextPosition set to `true` to calc next position or `false` to calc current position.
+     * @return a [Point] with containing the current or next position.
+     */
+    private fun calcPosition(calcNextPosition: Boolean = false): Point {
+        val tick = if (calcNextPosition) tick + 1 else tick
+
+        val angle = Math.toRadians(direction)
+        val distance = speed() * tick
+        val x = startPosition.x + cos(angle) * distance
+        val y = startPosition.y + sin(angle) * distance
+        return Point(x, y)
+    }
 
     /**
      * Returns a hash code that is the (unique) id of this bullet making this call fast.
@@ -38,13 +68,13 @@ data class Bullet(
     }
 
     /**
-     * Compares this bullet another object by checking if the input object is a [IBullet] instance and share the same
+     * Compares this bullet another object by checking if the input object is a [Bullet] instance and share the same
      * bullet id.
      * @param other is any object.
      * @return `true` if the two bullets are equal; `false` otherwise.
      * @see [Object.equals]
      */
     override fun equals(other: Any?): Boolean {
-        return other is IBullet && other.id == id
+        return other is Bullet && other.id == id
     }
 }

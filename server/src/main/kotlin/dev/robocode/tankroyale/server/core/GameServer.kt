@@ -11,64 +11,45 @@ import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.InitialPosition
 import dev.robocode.tankroyale.server.score.ResultsView
 import org.java_websocket.WebSocket
-import org.java_websocket.exceptions.WebsocketNotConnectedException
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
 
 
 /** Game server. */
-class GameServer(
-    /** Supported game types */
-    private val gameTypes: Set<String>,
-    /** Optional controller secrets */
-    controllerSecrets: Set<String>,
-    /** Optional bot secrets */
-    botSecrets: Set<String>,
-) {
+class GameServer(private val config: ServerConfig) {
     companion object {
         const val TYPE_IS_REQUIRED_ON_MESSAGE = "'type' is required on the message"
     }
 
-    /** Connection handler for observers and bots */
-    /** Initializes connection handler */
-    private val connectionHandler: ConnectionHandler =
-        ConnectionHandler(ServerSetup(gameTypes), GameServerConnectionListener(this), controllerSecrets, botSecrets)
+    /** JSON handler */
+    private val gson = Gson()
 
-    /** Current server state */
-    @Volatile
-    private var serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
+    /** Connection handler for observers and bots */
+    private val connectionHandler =
+        ConnectionHandler(ServerSetup(config.gameTypes), GameServerConnectionListener(this), config.controllerSecrets, config.botSecrets)
+
+    /** Registry for tracking game participants (bots). */
+    private val participantRegistry = ParticipantRegistry(connectionHandler)
+
+    /** Manager for controlling the game lifecycle. */
+    private val lifecycleManager = GameLifecycleManager()
+
+    /** Broadcaster for sending messages to bots and observers. */
+    private val broadcaster = MessageBroadcaster(connectionHandler, gson)
 
     /** Current game setup */
     private lateinit var gameSetup: dev.robocode.tankroyale.server.model.GameSetup
 
-    /** Game participants (bots connections) */
-    private val participants = ConcurrentHashMap.newKeySet<WebSocket>()
-
-    /** Game participants that signalled 'ready' for battle */
-    private val readyParticipants = ConcurrentHashMap.newKeySet<WebSocket>()
-
-    /** Map over participant ids: bot connection -> bot id */
-    private val participantIds = ConcurrentHashMap<WebSocket, BotId>()
-
     /** Map over bot intents: bot connection -> bot intent */
     private val botIntents = ConcurrentHashMap<WebSocket, dev.robocode.tankroyale.server.model.BotIntent>()
-
-    /** Map over participants sent to clients */
-    private val participantMap = ConcurrentHashMap<BotId, Participant>()
 
     /** Model updater that keeps track of the game state/model */
     @Volatile
     private var modelUpdater: ModelUpdater? = null
 
-    /** Timer for 'ready' timeout */
-    private var readyTimeoutTimer: ResettableTimer? = null
-
-    /** Timer for 'turn' timeout */
-    private var turnTimeoutTimer: ResettableTimer? = null
-
     /** Current TPS setting (Turns Per Second) */
-    private var tps = Server.tps
+    private var tps = config.tps
 
     /** Timestamp when the current turn started (for calculating bot processing duration) */
     @Volatile
@@ -77,38 +58,22 @@ class GameServer(
     /** Logger */
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    /** JSON handler */
-    private val gson = Gson()
-
     /** Tick lock for onNextTurn() */
     private val tickLock = Any()
 
-    /** Lock for participant-related operations */
-    private val participantsLock = Any()
-
-    /** Map over debug graphics enable flags */
-    private val debugGraphicsEnableMap = ConcurrentHashMap<BotId, Boolean /* isDebugEnabled */>()
-
-
-    @Volatile
-    private var botListUpdateMessage = BotListUpdate().apply {
-        type = Message.Type.BOT_LIST_UPDATE
-        bots = emptyList()
-    }
+    /** Map over bots that sent their intent this turn */
+    private val botsThatSentIntent = ConcurrentHashMap.newKeySet<WebSocket>()
 
     /** Starts this server */
     fun start() {
-        log.info("Starting server on port ${Server.portNumber} with supporting game type(s): ${gameTypes.joinToString()}")
+        log.info("Starting server on port ${config.port} with supporting game type(s): ${config.gameTypes.joinToString()}")
         connectionHandler.start()
     }
 
     /** Stops this server */
     fun stop() {
         log.info("Stopping server")
-        readyTimeoutTimer?.shutdown()
-        readyTimeoutTimer = null
-        turnTimeoutTimer?.shutdown()
-        turnTimeoutTimer = null
+        lifecycleManager.stopTimers()
         connectionHandler.stop()
     }
 
@@ -116,55 +81,38 @@ class GameServer(
     private fun prepareGame() {
         log.debug("Preparing game")
 
-        serverState = ServerState.WAIT_FOR_READY_PARTICIPANTS
+        lifecycleManager.serverState = ServerState.WAIT_FOR_READY_PARTICIPANTS
 
-        participantIds.clear()
-        readyParticipants.clear()
+        participantRegistry.clear()
         botIntents.clear()
-        participantMap.clear()
         botsThatSentIntent.clear()
 
         modelUpdater = null
 
-        debugGraphicsEnableMap.clear()
+        lifecycleManager.stopTimers()
 
-        readyTimeoutTimer?.shutdown()
-        readyTimeoutTimer = null
-        turnTimeoutTimer?.shutdown()
-        turnTimeoutTimer = null
-
-        prepareParticipantIds()
+        participantRegistry.prepareParticipantIds()
         prepareModelUpdater()
         sendGameStartedToParticipants()
         startReadyTimer()
     }
 
-    private val startGameLock = Any()
-
     /** Starts the game if all participants are ready */
     private fun startGameIfParticipantsReady() {
         var timerToShutdown: ResettableTimer? = null
-        synchronized(startGameLock) {
-            // Make a local copy of participant size to prevent race condition
-            val currentParticipantSize = participants.size
-            val currentReadyParticipantSize = readyParticipants.size
+        synchronized(lifecycleManager.startGameLock) {
+            val currentParticipantSize = participantRegistry.participants.size
+            val currentReadyParticipantSize = participantRegistry.readyParticipants.size
 
             if (currentReadyParticipantSize == currentParticipantSize && currentParticipantSize > 0) {
-                if (serverState != ServerState.WAIT_FOR_READY_PARTICIPANTS) return
-                timerToShutdown = readyTimeoutTimer
-                readyTimeoutTimer = null
+                if (lifecycleManager.serverState != ServerState.WAIT_FOR_READY_PARTICIPANTS) return
+                timerToShutdown = lifecycleManager.readyTimeoutTimer
+                lifecycleManager.readyTimeoutTimer = null
 
                 startGame()
             }
         }
-        // Shutdown timer outside the synchronized block to prevent blocking other operations
         timerToShutdown?.shutdown()
-    }
-
-    private fun prepareParticipantIds() {
-        participants.forEachIndexed { index, conn ->
-            participantIds[conn] = BotId(index + 1)
-        }
     }
 
     /** Send game-started event to all participant bots to get them started */
@@ -172,10 +120,10 @@ class GameServer(
         val gameSetup = GameSetupMapper.map(gameSetup)
         val botHandshakes = connectionHandler.getBotHandshakes()
 
-        participantIds.forEach { (conn, botId) ->
+        participantRegistry.participantIds.forEach { (conn, botId) ->
             val teamId = botHandshakes[conn]?.teamId
             val gameStartedForBot = createGameStartedEventForBot(botId, teamId, gameSetup)
-            send(conn, gameStartedForBot)
+            broadcaster.send(conn, gameStartedForBot)
         }
     }
 
@@ -183,7 +131,7 @@ class GameServer(
         teamId?.let { getParticipantTeamIds().filterValues { it == teamId }.keys.toSet().minus(botId) }
             ?: emptySet()
 
-    private fun getParticipantTeamIds(): Map<BotId, Int?> = participantIds
+    private fun getParticipantTeamIds(): Map<BotId, Int?> = participantRegistry.participantIds
         .mapNotNull { (conn, botId) -> connectionHandler.getBotHandshakes()[conn]?.teamId?.let { botId to it } }
         .associateBy({ it.first }, { it.second })
 
@@ -207,171 +155,474 @@ class GameServer(
 
     /** Starts the 'ready' timer */
     private fun startReadyTimer() {
-        if (readyTimeoutTimer == null) {
-            readyTimeoutTimer = ResettableTimer { onReadyTimeout() }
-        }
-        readyTimeoutTimer?.schedule(
-            minDelayNanos = 0L,
-            maxDelayNanos = gameSetup.readyTimeout.inWholeNanoseconds
-        )
+        lifecycleManager.startReadyTimer(gameSetup.readyTimeout.inWholeNanoseconds) { onReadyTimeout() }
     }
 
     /** Starts a new game */
     private fun startGame() {
         log.info("Starting game")
-        readyParticipants.clear()
-        participantMap.putAll(createParticipantMap())
+        participantRegistry.readyParticipants.clear()
+        participantRegistry.participantMap.putAll(participantRegistry.createParticipantMap())
 
-        serverState = ServerState.GAME_RUNNING
+        lifecycleManager.serverState = ServerState.GAME_RUNNING
 
         sendGameStartedToObservers()
         prepareModelUpdater()
-        // Create timer ONCE per game start, not per turn (fixes memory leak)
-        // The timer is then reused via resetTurnTimeout() which calls schedule(), not creating new threads
-        turnTimeoutTimer = ResettableTimer { onNextTurn() }
+
+        lifecycleManager.createTurnTimeoutTimer { onNextTurn() }
         resetTurnTimeout()
     }
 
     /** Send GameStarted to all participant observers to get them started */
     private fun sendGameStartedToObservers() {
-        broadcastToObserverAndControllers(GameStartedEventForObserver().apply {
+        broadcaster.broadcastToObserverAndControllers(GameStartedEventForObserver().apply {
             type = Message.Type.GAME_STARTED_EVENT_FOR_OBSERVER
             gameSetup = GameSetupMapper.map(this@GameServer.gameSetup)
-            participants = participantMap.values.toList()
+            participants = participantRegistry.participantMap.values.toList()
         })
     }
 
-    /** Creates a map over participants from the bot connection handshakes */
-    private fun createParticipantMap(): Map<BotId, Participant> {
-        val participantMap = mutableMapOf<BotId, Participant>()
-        for (conn in participants) {
-            val handshake = connectionHandler.getBotHandshakes()[conn]
-            val botId = participantIds[conn] ?: continue
-            val participant = Participant().apply {
-                id = botId.value
-                sessionId = handshake!!.sessionId
-                name = handshake.name
-                version = handshake.version
-                description = handshake.description
-                authors = handshake.authors
-                homepage = handshake.homepage
-                countryCodes = handshake.countryCodes
-                gameTypes = handshake.gameTypes
-                platform = handshake.platform
-                programmingLang = handshake.programmingLang
-                initialPosition = handshake.initialPosition
-                teamId = handshake.teamId
-                teamName = handshake.teamName
-                teamVersion = handshake.teamVersion
-                isDroid = handshake.isDroid
-            }
-            participantMap[botId] = participant
-        }
-        return participantMap
-    }
-
-    /** Prepares model-updater */
     private fun prepareModelUpdater() {
-        val participantIds = createParticipantIds()
-
-        val initialPositions = participantMap.filter { it.value.initialPosition != null }.mapValues {
-            val p = it.value.initialPosition
-            InitialPosition(p.x, p.y, p.direction)
-        }
-        val droidFlags = participantMap.mapValues { it.value.isDroid == true }
-
-        modelUpdater = ModelUpdater(gameSetup, participantIds, initialPositions, droidFlags)
-    }
-
-    private fun createParticipantIds(): Set<ParticipantId> {
-
+        val botHandshakes = connectionHandler.getBotHandshakes()
         val participantIds = mutableSetOf<ParticipantId>()
+        val initialPositions = mutableMapOf<BotId, InitialPosition>()
+        val droidFlags = mutableMapOf<BotId, Boolean>()
 
-        connectionHandler.getBotHandshakes().forEach { (conn, botHandshake) ->
-            this.participantIds[conn]?.let { botId ->
-                val teamId = botHandshake.teamId?.let { TeamId(it) }
-                participantIds += ParticipantId(botId, teamId)
-            }
+        participantRegistry.participants.forEach { conn ->
+            val botId = participantRegistry.participantIds[conn]!!
+            val handshake = botHandshakes[conn]!!
+            val teamId = handshake.teamId?.let { TeamId(it) }
+
+            participantIds += ParticipantId(botId, teamId)
+            InitialPositionMapper.map(handshake.initialPosition)?.let { initialPositions[botId] = it }
+            droidFlags[botId] = handshake.isDroid
         }
-        return participantIds
-    }
 
-    /**
-     * Resets turn timeout timer using the two-phase timing model from ADR-0012.
-     *
-     * Phase 1 (Bot Processing): Turn completes when all bots respond OR turnTimeout expires.
-     * - minDelayNanos = 0: Turn can complete immediately when all bots respond
-     * - maxDelayNanos = turnTimeout: Hard deadline for bots
-     *
-     * Phase 2 (Visual Rendering): After turn processing, visual delay is applied based on TPS.
-     * This is handled in onNextTurn() after the turn logic completes.
-     */
-    private fun resetTurnTimeout() {
-        val turnTimeoutNanos = gameSetup.turnTimeout.inWholeNanoseconds
-
-        // Record turn start time for calculating bot processing duration (used for visual delay)
-        turnStartTimeNanos = System.nanoTime()
-
-        // Important: This calls schedule() on the existing timer - it does NOT create a new thread.
-        // The timer reuses its single executor thread from the ScheduledExecutorService.
-        // This prevents the memory leak that occurred with NanoTimer which created a new thread per call.
-        //
-        // minDelayNanos = 0: Turn can complete immediately when all bots respond (via notifyReady())
-        // maxDelayNanos = turnTimeout: Hard deadline - bots that don't respond get SkippedTurnEvent
-        //
-        // The visual delay (Phase 2) is applied separately in onNextTurn() based on TPS.
-        turnTimeoutTimer?.schedule(
-            minDelayNanos = 0L,
-            maxDelayNanos = turnTimeoutNanos
+        modelUpdater = ModelUpdater(
+            gameSetup,
+            participantIds,
+            initialPositions,
+            droidFlags
         )
     }
 
-    /**
-     * Checks if all alive bots have sent their intents for the current turn.
-     * If so, notifies the timer that the turn can complete early (Phase 1 completion).
-     */
-    private fun checkAllBotsResponded() {
-        val aliveBots = participants.filter { conn ->
-            participantIds[conn]?.let { modelUpdater?.isAlive(it) == true } ?: false
-        }
+    private fun resetTurnTimeout() {
+        lifecycleManager.turnTimeoutTimer?.schedule(
+            minDelayNanos = 0L,
+            maxDelayNanos = gameSetup.turnTimeout.inWholeNanoseconds
+        )
+        turnStartTimeNanos = System.nanoTime()
+    }
 
-        // Check if all alive bots have sent their intent this turn
-        if (aliveBots.all { botsThatSentIntent.contains(it) }) {
-            turnTimeoutTimer?.notifyReady()
+    private fun applyVisualDelay(botProcessingDurationNanos: Long) {
+        if (tps <= 0) return
+
+        val turnDurationNanos = 1_000_000_000L / tps
+        val sleepNanos = turnDurationNanos - botProcessingDurationNanos
+        if (sleepNanos > 0) {
+            Thread.sleep(sleepNanos / 1_000_000, (sleepNanos % 1_000_000).toInt())
         }
     }
 
-    /**
-     * Applies visual delay based on TPS after bot processing completes (Phase 2 of ADR-0012).
-     *
-     * @param botProcessingDurationNanos The time spent waiting for bot intents (Phase 1 duration)
-     */
-    private fun applyVisualDelay(botProcessingDurationNanos: Long) {
-        val requestedTurnDurationNanos = when {
-            tps == 0 -> return  // TPS=0 means paused, handled elsewhere
-            tps < 0 -> 0L  // TPS=-1 means unlimited (no delay)
-            else -> 1_000_000_000L / tps  // Convert TPS to nanoseconds per turn
+    private fun updateGameState(): GameState {
+        val botIntentsSnapshot = synchronized(tickLock) {
+            botIntents.mapNotNull { (key, value) ->
+                participantRegistry.participantIds[key]?.let { botId ->
+                    botId to dev.robocode.tankroyale.server.model.BotIntent().apply {
+                        update(value)
+                    }
+                }
+            }.toMap()
         }
 
-        val visualDelayNanos = maxOf(0L, requestedTurnDurationNanos - botProcessingDurationNanos)
+        return modelUpdater?.update(botIntentsSnapshot)
+            ?: throw IllegalStateException("Model updater is null when trying to update game state")
+    }
 
-        if (visualDelayNanos > 0) {
-            try {
-                Thread.sleep(visualDelayNanos / 1_000_000L, (visualDelayNanos % 1_000_000L).toInt())
-            } catch (_: InterruptedException) {
-                Thread.currentThread().interrupt()
+    private fun onReadyTimeout() {
+        log.debug("Ready timeout")
+        var timerToShutdown: ResettableTimer? = null
+        synchronized(lifecycleManager.startGameLock) {
+            if (lifecycleManager.serverState !== ServerState.WAIT_FOR_READY_PARTICIPANTS) return
+
+            timerToShutdown = lifecycleManager.readyTimeoutTimer
+            lifecycleManager.readyTimeoutTimer = null
+
+            if (participantRegistry.readyParticipants.size >= gameSetup.minNumberOfParticipants) {
+                log.warn("Starting game with ${participantRegistry.readyParticipants.size}/${participantRegistry.participants.size} participants ready because of timeout")
+                val participantIterator = participantRegistry.participants.iterator()
+                while (participantIterator.hasNext()) {
+                    val participantConn = participantIterator.next()
+                    if (!participantRegistry.readyParticipants.contains(participantConn)) {
+                        participantIterator.remove()
+                        participantRegistry.participantIds.remove(participantConn)
+                    }
+                }
+                startGame()
+            } else {
+                log.warn("Aborting the game as only ${participantRegistry.readyParticipants.size}/${participantRegistry.participants.size} participants are ready")
+                lifecycleManager.serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
+                broadcastGameAborted()
+            }
+        }
+        timerToShutdown?.shutdown()
+    }
+
+    private fun onNextTurn() {
+        if (lifecycleManager.serverState !== ServerState.GAME_RUNNING) return
+
+        val botProcessingDurationNanos = System.nanoTime() - turnStartTimeNanos
+
+        synchronized(tickLock) {
+            updateGameState().apply {
+                onNextTick(lastRound)
+
+                if (isGameEnded) {
+                    onGameEnded()
+                }
+            }
+            botsThatSentIntent.clear()
+        }
+
+        resetTurnTimeout()
+        applyVisualDelay(botProcessingDurationNanos)
+    }
+
+    private fun onGameEnded() {
+        log.info("Game ended")
+
+        broadcastGameEndedToParticipants()
+        broadcastGameEndedToObservers()
+
+        synchronized(lifecycleManager.startGameLock) {
+            lifecycleManager.serverState = ServerState.GAME_STOPPED
+            cleanupAfterGameStopped()
+        }
+    }
+
+    private fun onNextTick(lastRound: MutableRound?) {
+        lastRound?.apply {
+            lastTurn?.apply {
+                if (turnNumber == 1) {
+                    log.debug("Round started: $roundNumber")
+                    botIntents.clear()
+                    transferDebugGraphicsFlagToModel()
+                    broadcastRoundStartedToAll(roundNumber)
+                } else {
+                    checkForSkippedTurns(turnNumber)
+                    botIntents.clear()
+                }
+                sendTickToParticipants(roundNumber, this)
+                broadcastGameTickToObservers(roundNumber, this)
+
+                if (roundEnded) {
+                    log.debug("Round ended: $roundNumber")
+                    broadcastRoundEndedToParticipants(roundNumber, turnNumber)
+                    broadcastRoundEndedToObservers(roundNumber, turnNumber)
+                }
             }
         }
     }
 
-    /** Broadcast game-aborted event to all observers and controllers */
+    private fun broadcastGameEndedToParticipants() {
+        participantRegistry.participants.forEach { conn ->
+            participantRegistry.participantIds[conn]?.let { botId ->
+                GameEndedEventForBot().apply {
+                    type = Message.Type.GAME_ENDED_EVENT_FOR_BOT
+                    numberOfRounds = modelUpdater!!.numberOfRounds
+                    results = getResultsForBot(botId)
+
+                    broadcaster.send(conn, this)
+                }
+            }
+        }
+    }
+
+    private fun broadcastGameEndedToObservers() {
+        broadcaster.broadcastToObserverAndControllers(GameEndedEventForObserver().apply {
+            type = Message.Type.GAME_ENDED_EVENT_FOR_OBSERVER
+            numberOfRounds = modelUpdater!!.numberOfRounds
+            results = getResultsForObservers()
+        })
+    }
+
+    private fun broadcastRoundStartedToAll(roundNumber: Int) {
+        broadcaster.broadcastToAll(RoundStartedEvent().also {
+            it.type = Message.Type.ROUND_STARTED_EVENT
+            it.roundNumber = roundNumber
+        }, participantRegistry.participants)
+    }
+
+    private fun broadcastRoundEndedToParticipants(roundNumber: Int, turnNumber: Int) {
+        participantRegistry.participants.forEach { conn ->
+            participantRegistry.participantIds[conn]?.let { botId ->
+                RoundEndedEventForBot().apply {
+                    type = Message.Type.ROUND_ENDED_EVENT_FOR_BOT
+                    this.roundNumber = roundNumber
+                    this.turnNumber = turnNumber
+                    results = getResultsForBot(botId)
+
+                    broadcaster.send(conn, this)
+                }
+            }
+        }
+    }
+
+    private fun broadcastRoundEndedToObservers(roundNumber: Int, turnNumber: Int) {
+        broadcaster.broadcastToObserverAndControllers(RoundEndedEventForObserver().also {
+            it.type = Message.Type.ROUND_ENDED_EVENT_FOR_OBSERVER
+            it.roundNumber = roundNumber
+            it.turnNumber = turnNumber
+            it.results = getResultsForObservers()
+        })
+    }
+
+    private fun sendTickToParticipants(roundNumber: Int, turn: ITurn) {
+        val updater = modelUpdater ?: return
+        val aliveBotTeamIds = aliveBotToTeamIdMap(updater)
+
+        for (conn in participantRegistry.participants) {
+            val participantId = participantRegistry.participantIds[conn] ?: continue
+            if (updater.isAlive(participantId) == false && turn.getEvents(participantId).isEmpty()) continue
+
+            val teamId = aliveBotTeamIds[participantId]
+            val enemyCount = aliveBotTeamIds.filterValues { it != teamId }.count()
+
+            val event = TurnToTickEventForBotMapper.map(roundNumber, turn, participantId, enemyCount) ?: continue
+            broadcaster.send(conn, event)
+        }
+    }
+
+    private fun aliveBotToTeamIdMap(updater: ModelUpdater? = modelUpdater): Map<BotId, Int> {
+        val currentUpdater = updater ?: return emptyMap()
+        return participantRegistry.participantMap.filterKeys { botId -> currentUpdater.isAlive(botId) == true }.mapValues { (botId, participant) ->
+            participant.teamId ?: -botId.value
+        }
+    }
+
+    private fun broadcastGameTickToObservers(roundNumber: Int, turn: ITurn) {
+        val enemyCountMap = HashMap<BotId, Int /* enemyCount */>()
+
+        val aliveBotTeamIds = aliveBotToTeamIdMap()
+
+        participantRegistry.participantMap.keys.forEach { botId ->
+            val teamId = aliveBotTeamIds[botId]
+            enemyCountMap[botId] = aliveBotTeamIds.filterValues { it != teamId }.count()
+        }
+
+        broadcaster.broadcastToObserverAndControllers(
+            TurnToTickEventForObserverMapper
+                .map(roundNumber, turn, participantRegistry.participantMap, enemyCountMap, participantRegistry.debugGraphicsEnableMap)
+        )
+    }
+
+    private fun checkForSkippedTurns(currentTurnNumber: Int) {
+        val botsSkippingTurn = getParticipantsThatSkippedTurn()
+
+        if (botsSkippingTurn.isNotEmpty()) {
+            val skippedTurn = SkippedTurnEvent().apply {
+                type = Message.Type.SKIPPED_TURN_EVENT
+                turnNumber = currentTurnNumber - 1 // last turn number
+            }
+            val json = gson.toJson(skippedTurn)
+
+            botsSkippingTurn.forEach { bot -> connectionHandler.send(bot, json) }
+        }
+    }
+
+    private fun getParticipantsThatSkippedTurn(): Collection<WebSocket> =
+        mutableListOf<WebSocket>().apply {
+            participantRegistry.participants.forEach { participant ->
+                participantRegistry.participantIds[participant]?.let {
+                    if (modelUpdater?.isAlive(it) == true && botIntents[participant] == null) {
+                        this += participant
+                    }
+                }
+            }
+        }
+
+    internal fun sendBotListUpdate(conn: WebSocket) {
+        broadcaster.sendBotListUpdate(conn)
+    }
+
+    internal fun handleBotJoined() {
+        broadcaster.updateBotListUpdateMessage()
+        broadcaster.broadcastBotListUpdate()
+    }
+
+    internal fun handleBotLeft(conn: WebSocket) {
+        val shouldAbortGame = synchronized(participantRegistry.participantsLock) {
+            val wasRemoved = participantRegistry.participants.remove(conn)
+            wasRemoved && participantRegistry.participants.isEmpty() && lifecycleManager.isGameRunningOrPaused()
+        }
+
+        if (shouldAbortGame) {
+            handleAbortGame()
+        } else {
+            broadcaster.updateBotListUpdateMessage()
+            broadcaster.broadcastBotListUpdate()
+
+            if (lifecycleManager.serverState === ServerState.WAIT_FOR_READY_PARTICIPANTS) {
+                startGameIfParticipantsReady()
+            }
+        }
+    }
+
+    internal fun handleBotReady(conn: WebSocket) {
+        if (lifecycleManager.serverState !== ServerState.WAIT_FOR_READY_PARTICIPANTS) return
+
+        participantRegistry.readyParticipants += conn
+        startGameIfParticipantsReady()
+    }
+
+    internal fun handleBotIntent(conn: WebSocket, intent: dev.robocode.tankroyale.schema.BotIntent) {
+        if (lifecycleManager.serverState !== ServerState.GAME_RUNNING && lifecycleManager.serverState !== ServerState.GAME_PAUSED) return
+
+        synchronized(tickLock) {
+            val existingIntent = botIntents[conn]
+            if (existingIntent == null) {
+                botIntents[conn] = BotIntentMapper.map(intent)
+            } else {
+                intent.apply {
+                    targetSpeed?.let { existingIntent.targetSpeed = it }
+                    turnRate?.let { existingIntent.turnRate = it }
+                    gunTurnRate?.let { existingIntent.gunTurnRate = it }
+                    radarTurnRate?.let { existingIntent.radarTurnRate = it }
+                    firepower?.let { existingIntent.firepower = it }
+                    adjustGunForBodyTurn?.let { existingIntent.adjustGunForBodyTurn = it }
+                    adjustRadarForBodyTurn?.let { existingIntent.adjustRadarForBodyTurn = it }
+                    adjustRadarForGunTurn?.let { existingIntent.adjustRadarForGunTurn = it }
+                    rescan?.let { existingIntent.rescan = it }
+                    fireAssist?.let { existingIntent.fireAssist = it }
+                    bodyColor?.let { existingIntent.bodyColor = it.ifBlank { null } }
+                    turretColor?.let { existingIntent.turretColor = it.ifBlank { null } }
+                    radarColor?.let { existingIntent.radarColor = it.ifBlank { null } }
+                    bulletColor?.let { existingIntent.bulletColor = it.ifBlank { null } }
+                    scanColor?.let { existingIntent.scanColor = it.ifBlank { null } }
+                    tracksColor?.let { existingIntent.tracksColor = it.ifBlank { null } }
+                    gunColor?.let { existingIntent.gunColor = it.ifBlank { null } }
+                    stdOut?.let { existingIntent.stdOut = it.ifBlank { null } }
+                    stdErr?.let { existingIntent.stdErr = it.ifBlank { null } }
+                    teamMessages?.let { existingIntent.teamMessages = TeamMessageMapper.map(it) }
+                    debugGraphics?.let { existingIntent.debugGraphics = it.ifBlank { null } }
+                }
+            }
+            botsThatSentIntent += conn
+        }
+        checkAllBotsResponded()
+    }
+
+    private fun checkAllBotsResponded() {
+        val aliveParticipants = participantRegistry.participants.filter { conn ->
+            participantRegistry.participantIds[conn]?.let { botId -> modelUpdater?.isAlive(botId) == true } ?: false
+        }
+        if (botsThatSentIntent.containsAll(aliveParticipants)) {
+            lifecycleManager.turnTimeoutTimer?.notifyReady()
+        }
+    }
+
+    internal fun handleStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
+        this.gameSetup = GameSetupMapper.map(gameSetup)
+
+        participantRegistry.participants.apply {
+            clear()
+            this += connectionHandler.mapToBotSockets(botAddresses)
+
+            if (isNotEmpty()) {
+                prepareGame()
+            }
+        }
+    }
+
+    internal fun handleAbortGame() {
+        log.info("Aborting game")
+        synchronized(lifecycleManager.startGameLock) {
+            lifecycleManager.serverState = ServerState.GAME_STOPPED
+            broadcastGameAborted()
+            cleanupAfterGameStopped()
+        }
+    }
+
+    internal fun handlePauseGame() {
+        lifecycleManager.pauseGame()
+        if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
+            broadcastGamedPausedToObservers()
+        }
+    }
+
+    internal fun handleResumeGame() {
+        lifecycleManager.resumeGame()
+        if (lifecycleManager.serverState === ServerState.GAME_RUNNING) {
+            broadcastGameResumedToObservers()
+        }
+    }
+
+    internal fun handleNextTurn() {
+        if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
+            handleResumeGame()
+            onNextTurn()
+            handlePauseGame()
+        }
+    }
+
+    internal fun handleChangeTps(newTps: Int) {
+        if (tps == newTps) return
+        tps = newTps
+
+        broadcaster.broadcastToObserverAndControllers(TpsChangedEvent().apply {
+            type = Message.Type.TPS_CHANGED_EVENT
+            this.tps = tps
+        })
+
+        if (tps == 0) {
+            handlePauseGame()
+        } else {
+            if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
+                handleResumeGame()
+            }
+            resetTurnTimeout()
+        }
+    }
+
+    internal fun handleBotPolicyUpdate(botPolicyUpdate: BotPolicyUpdate) {
+        val botId = BotId(botPolicyUpdate.botId)
+        participantRegistry.debugGraphicsEnableMap[botId] = botPolicyUpdate.debuggingEnabled
+        modelUpdater?.setDebugEnabled(botId, botPolicyUpdate.debuggingEnabled)
+    }
+
+    private fun cleanupAfterGameStopped() {
+        lifecycleManager.stopTimers()
+        participantRegistry.clear()
+        botIntents.clear()
+        botsThatSentIntent.clear()
+        modelUpdater = null
+        System.gc()
+    }
+
+    private fun transferDebugGraphicsFlagToModel() {
+        participantRegistry.debugGraphicsEnableMap.forEach { (botId, isEnabled) ->
+            modelUpdater?.setDebugEnabled(botId, isEnabled)
+        }
+    }
+
     private fun broadcastGameAborted() {
-        broadcastToAll(GameAbortedEvent().apply {
+        broadcaster.broadcastToObserverAndControllers(GameAbortedEvent().apply {
             type = Message.Type.GAME_ABORTED_EVENT
         })
     }
 
-    /** Returns a list of bot results (for bots) ordered on the score ranks */
+    private fun broadcastGamedPausedToObservers() {
+        broadcaster.broadcastToObserverAndControllers(GamePausedEventForObserver().apply {
+            type = Message.Type.GAME_PAUSED_EVENT_FOR_OBSERVER
+        })
+    }
+
+    private fun broadcastGameResumedToObservers() {
+        broadcaster.broadcastToObserverAndControllers(GameResumedEventForObserver().apply {
+            type = Message.Type.GAME_RESUMED_EVENT_FOR_OBSERVER
+        })
+    }
+
     private fun getResultsForBot(botId: BotId): ResultsForBot {
         val results = modelUpdater!!.getResults()
 
@@ -394,14 +645,12 @@ class GameServer(
         }
     }
 
-    /** Returns a list of bot results (for observers and controllers) ordered on the score ranks */
     private fun getResultsForObservers(): List<ResultsForObserver> {
-
         val results = mutableListOf<ResultsForObserver>()
 
-        val scores = ResultsView.getResults(modelUpdater!!.getResults(), participantMap.values).toList()
+        val scores = ResultsView.getResults(modelUpdater!!.getResults(), participantRegistry.participantMap.values).toList()
         scores.forEach { score ->
-            participantMap[score.participantId.botId]?.let { participant ->
+            participantRegistry.participantMap[score.participantId.botId]?.let { participant ->
 
                 val (id, name, version) =
                     if (participant.teamId == null)
@@ -431,512 +680,5 @@ class GameServer(
             }
         }
         return results
-    }
-
-
-    /** Broadcast pause event to all observers */
-    private fun broadcastGamedPausedToObservers() {
-        broadcastToObserverAndControllers(GamePausedEventForObserver().apply {
-            type = Message.Type.GAME_PAUSED_EVENT_FOR_OBSERVER
-        })
-    }
-
-    /** Broadcast resume event to all observers */
-    private fun broadcastGameResumedToObservers() {
-        broadcastToObserverAndControllers(GameResumedEventForObserver().apply {
-            type = Message.Type.GAME_RESUMED_EVENT_FOR_OBSERVER
-        })
-    }
-
-    /** Broadcast TPS-changed event to all observers */
-    private fun broadcastTpsChangedToObservers(tps: Int) {
-        broadcastToObserverAndControllers(TpsChangedEvent().apply {
-            type = Message.Type.TPS_CHANGED_EVENT
-            this.tps = tps
-        })
-    }
-
-    private fun updateGameState(): GameState {
-        // CRITICAL: Lock required to capture atomic snapshot of bot intents before model update.
-        // This ensures deterministic turn outcomes and prevents race conditions where bot WebSocket
-        // handlers update botIntents concurrently with this snapshot read.
-        // See ADR-0012: Turn Timing Semantics (Phase 1: Bot Processing).
-        // DO NOT remove or replace with lock-free alternatives without understanding the implications.
-        val botIntentsSnapshot = synchronized(tickLock) {
-            botIntents.mapNotNull { (key, value) ->
-                participantIds[key]?.let { botId ->
-                    botId to dev.robocode.tankroyale.server.model.BotIntent().apply {
-                        update(value)
-                    }
-                }
-            }.toMap()
-        }
-
-        return modelUpdater?.update(botIntentsSnapshot)
-            ?: throw IllegalStateException("Model updater is null when trying to update game state")
-    }
-
-    private fun onReadyTimeout() {
-        log.debug("Ready timeout")
-        var timerToShutdown: ResettableTimer? = null
-        synchronized(startGameLock) {
-            // Check again in case the state changed during the timer
-            if (serverState !== ServerState.WAIT_FOR_READY_PARTICIPANTS) return
-
-            timerToShutdown = readyTimeoutTimer
-            readyTimeoutTimer = null
-
-            if (readyParticipants.size >= gameSetup.minNumberOfParticipants) {
-                // Start the game with the participants that are ready
-                log.warn("Starting game with ${readyParticipants.size}/${participants.size} participants ready because of timeout")
-                val participantIterator = participants.iterator()
-                while (participantIterator.hasNext()) {
-                    val participantConn = participantIterator.next()
-                    if (!readyParticipants.contains(participantConn)) {
-                        participantIterator.remove()
-                        participantIds.remove(participantConn)
-                    }
-                }
-                startGame()
-            } else {
-                // Not enough participants -> prepare another game
-                log.warn("Aborting the game as only ${readyParticipants.size}/${participants.size} participants are ready")
-                serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
-                broadcastGameAborted()
-            }
-        }
-        // Shutdown timer outside the synchronized block to prevent blocking other operations
-        timerToShutdown?.shutdown()
-    }
-
-    private fun onNextTurn() {
-        if (serverState !== ServerState.GAME_RUNNING) return
-
-        // Calculate bot processing duration (Phase 1 duration) for visual delay calculation
-        val botProcessingDurationNanos = System.nanoTime() - turnStartTimeNanos
-
-        // Required as this method can be called again while already running.
-        // This would give a race condition without the synchronized lock.
-        synchronized(tickLock) {
-            // Update game state
-            updateGameState().apply {
-                onNextTick(lastRound)
-
-                if (isGameEnded) {
-                    onGameEnded()
-                }
-            }
-
-            // Clear inside synchronized block to prevent race condition
-            botsThatSentIntent.clear()
-        }
-
-        // Phase 2: Apply visual delay based on TPS (ADR-0012)
-        // resetTurnTimeout() MUST be called before applyVisualDelay() to avoid a race condition:
-        // the tick is broadcast inside the synchronized block above, so fast bots can respond and
-        // call notifyReady() during the visual delay sleep. If active=false at that point the signal
-        // is silently dropped and the timer then waits the full turnTimeout instead of firing early.
-        resetTurnTimeout()
-
-        applyVisualDelay(botProcessingDurationNanos)
-    }
-
-    private fun onGameEnded() {
-        log.info("Game ended")
-
-        broadcastGameEndedToParticipants()
-        broadcastGameEndedToObservers()
-
-        synchronized(startGameLock) {
-            // Must be done after the broadcasting
-            serverState = ServerState.GAME_STOPPED
-
-            cleanupAfterGameStopped()
-        }
-    }
-
-    private fun onNextTick(lastRound: IRound?) {
-        lastRound?.apply {
-            lastTurn?.apply {
-                if (turnNumber == 1) {
-                    log.debug("Round started: $roundNumber")
-
-                    // Clear in first turn (left over from other round?), but BEFORE broadcasting round started event
-                    botIntents.clear()
-
-                    transferDebugGraphicsFlagToModel()
-
-                    broadcastRoundStartedToAll(roundNumber)
-
-                } else { // not turn 1
-                    // Send SkippedTurn, except in turn 1
-                    checkForSkippedTurns(turnNumber)
-
-                    // Clear bot intents after skipped turns have been handled, but BEFORE broadcasting tick event
-                    botIntents.clear()
-                }
-                sendTickToParticipants(roundNumber, this)
-                broadcastGameTickToObservers(roundNumber, this)
-
-                // Send round ended _after_ tick has been sent
-                if (roundEnded) {
-                    log.debug("Round ended: $roundNumber")
-                    broadcastRoundEndedToParticipants(roundNumber, turnNumber)
-                    broadcastRoundEndedToObservers(roundNumber, turnNumber)
-                }
-            }
-        }
-    }
-
-    private fun broadcastGameEndedToParticipants() {
-        participants.forEach { conn ->
-            participantIds[conn]?.let { botId ->
-                GameEndedEventForBot().apply {
-                    type = Message.Type.GAME_ENDED_EVENT_FOR_BOT
-                    numberOfRounds = modelUpdater!!.numberOfRounds
-                    results = getResultsForBot(botId)
-
-                    send(conn, this)
-                }
-            }
-        }
-    }
-
-    private fun broadcastGameEndedToObservers() {
-        broadcastToObserverAndControllers(GameEndedEventForObserver().apply {
-            type = Message.Type.GAME_ENDED_EVENT_FOR_OBSERVER
-            numberOfRounds = modelUpdater!!.numberOfRounds
-            results = getResultsForObservers() // Use the stored score!
-        })
-    }
-
-    private fun broadcastRoundStartedToAll(roundNumber: Int) {
-        broadcastToAll(RoundStartedEvent().also {
-            it.type = Message.Type.ROUND_STARTED_EVENT
-            it.roundNumber = roundNumber
-        })
-    }
-
-    private fun broadcastRoundEndedToParticipants(roundNumber: Int, turnNumber: Int) {
-        participants.forEach { conn ->
-            participantIds[conn]?.let { botId ->
-                RoundEndedEventForBot().apply {
-                    type = Message.Type.ROUND_ENDED_EVENT_FOR_BOT
-                    this.roundNumber = roundNumber
-                    this.turnNumber = turnNumber
-                    results = getResultsForBot(botId)
-
-                    send(conn, this)
-                }
-            }
-        }
-    }
-
-    private fun broadcastRoundEndedToObservers(roundNumber: Int, turnNumber: Int) {
-        broadcastToObserverAndControllers(RoundEndedEventForObserver().also {
-            it.type = Message.Type.ROUND_ENDED_EVENT_FOR_OBSERVER
-            it.roundNumber = roundNumber
-            it.turnNumber = turnNumber
-            it.results = getResultsForObservers()
-        })
-    }
-
-    private fun sendTickToParticipants(roundNumber: Int, turn: ITurn) {
-        val updater = modelUpdater ?: return
-        val aliveBotTeamIds = aliveBotToTeamIdMap(updater)
-
-        for (conn in participants) {
-            val participantId = participantIds[conn] ?: continue
-            // Skip dead bots, unless they have events this turn (e.g. died this very turn and need
-            // their final tick delivered — it carries DeathEvent and possibly WonRoundEvent)
-            if (updater.isAlive(participantId) == false && turn.getEvents(participantId).isEmpty()) continue
-
-            val teamId = aliveBotTeamIds[participantId]
-            val enemyCount = aliveBotTeamIds.filterValues { it != teamId }.count()
-
-            val event = TurnToTickEventForBotMapper.map(roundNumber, turn, participantId, enemyCount) ?: continue
-            send(conn, event)
-        }
-    }
-
-    private fun aliveBotToTeamIdMap(updater: ModelUpdater? = modelUpdater): Map<BotId, Int> {
-        val currentUpdater = updater ?: return emptyMap()
-        return participantMap.filterKeys { botId -> currentUpdater.isAlive(botId) == true }.mapValues { (botId, participant) ->
-            participant.teamId ?: -botId.value
-        }
-    }
-
-    private fun broadcastGameTickToObservers(roundNumber: Int, turn: ITurn) {
-        val enemyCountMap = HashMap<BotId, Int /* enemyCount */>()
-
-        val aliveBotTeamIds = aliveBotToTeamIdMap()
-
-        participantMap.keys.forEach { botId ->
-            val teamId = aliveBotTeamIds[botId]
-            enemyCountMap[botId] = aliveBotTeamIds.filterValues { it != teamId }.count()
-        }
-
-        broadcastToObserverAndControllers(
-            TurnToTickEventForObserverMapper
-                .map(roundNumber, turn, participantMap, enemyCountMap, debugGraphicsEnableMap)
-        )
-    }
-
-    private fun checkForSkippedTurns(currentTurnNumber: Int) {
-        val botsSkippingTurn = getParticipantsThatSkippedTurn()
-
-        if (botsSkippingTurn.isNotEmpty()) {
-            val skippedTurn = SkippedTurnEvent().apply {
-                type = Message.Type.SKIPPED_TURN_EVENT
-                turnNumber = currentTurnNumber - 1 // last turn number
-            }
-            val json = gson.toJson(skippedTurn)
-
-            botsSkippingTurn.forEach { bot -> connectionHandler.send(bot, json) }
-        }
-    }
-
-    private fun getParticipantsThatSkippedTurn(): Collection<WebSocket> =
-        mutableListOf<WebSocket>().apply {
-            participants.forEach { participant ->
-                participantIds[participant]?.let {
-                    // Check if no intent was received from the (alive) participant during the turn
-                    if (modelUpdater?.isAlive(it) == true && botIntents[participant] == null) {
-                        this += participant
-                    }
-                }
-            }
-        }
-
-    private val botsThatSentIntent = mutableSetOf<WebSocket>()
-
-    private fun updateBotListUpdateMessage() {
-        val newBotsList = mutableListOf<BotInfo>()
-
-        connectionHandler.apply {
-            mapToBotSockets().forEach { conn ->
-                getBotHandshakes()[conn]?.let { botHandshake ->
-                    conn.remoteSocketAddress.apply {
-                        newBotsList.add(BotHandshakeToBotInfoMapper.map(botHandshake, hostString, port))
-                    }
-                }
-            }
-        }
-
-        botListUpdateMessage = BotListUpdate().apply {
-            type = Message.Type.BOT_LIST_UPDATE
-            bots = newBotsList
-        }
-    }
-
-    private fun send(conn: WebSocket, msg: Message) {
-        requireNotNull(msg.type) { TYPE_IS_REQUIRED_ON_MESSAGE }
-        gson.toJson(msg).also {
-            try {
-                conn.send(it)
-            } catch (_: WebsocketNotConnectedException) {
-                // Bot cannot receive events and send new intents.
-            }
-        }
-    }
-
-    private fun broadcastToObserverAndControllers(msg: Message) {
-        requireNotNull(msg.type) { TYPE_IS_REQUIRED_ON_MESSAGE }
-        connectionHandler.broadcastToObserverAndControllers(gson.toJson(msg))
-    }
-
-    private fun broadcastToAll(msg: Message) {
-        requireNotNull(msg.type) { TYPE_IS_REQUIRED_ON_MESSAGE }
-        val json = gson.toJson(msg)
-        connectionHandler.broadcastToObserverAndControllers(json)
-        connectionHandler.broadcast(participants, json) // note: it is only participants, not all bots
-    }
-
-    // Note: Despite the name, this update is intended for both observers and controllers
-    private fun sendBotListUpdateToObserversAndControllers() {
-        broadcastToObserverAndControllers(botListUpdateMessage)
-    }
-
-    internal fun sendBotListUpdate(conn: WebSocket) {
-        send(conn, botListUpdateMessage)
-    }
-
-
-    internal fun handleBotJoined() {
-        updateBotListUpdateMessage()
-        sendBotListUpdateToObserversAndControllers()
-    }
-
-    internal fun handleBotLeft(conn: WebSocket) {
-        val shouldAbortGame = synchronized(participantsLock) {
-            val wasRemoved = participants.remove(conn)
-            wasRemoved && participants.isEmpty() &&
-                    (serverState === ServerState.GAME_RUNNING || serverState === ServerState.GAME_PAUSED)
-        }
-
-        if (shouldAbortGame) {
-            handleAbortGame() // Abort the battle when all bots left it!
-        }
-
-        synchronized(tickLock) {
-            // If a bot leaves while in a game, make sure to reset all intent values to zeroes
-            botIntents[conn]?.disableMovement()
-        }
-
-        updateBotListUpdateMessage()
-        sendBotListUpdateToObserversAndControllers()
-    }
-
-    internal fun handleBotReady(conn: WebSocket) {
-        synchronized(participantsLock) {
-            if (serverState === ServerState.WAIT_FOR_READY_PARTICIPANTS) {
-                readyParticipants += conn
-                // Start the game check from within the synchronized block
-                startGameIfParticipantsReady()
-            }
-        }
-    }
-
-    internal fun handleBotIntent(conn: WebSocket, intent: BotIntent) {
-        if (!participants.contains(conn)) return
-
-        // Update bot intent using a synchronized block to ensure atomic operation
-        synchronized(tickLock) {
-            // Get existing intent or null if it doesn't exist yet
-            val existingIntent = botIntents[conn]
-
-            if (existingIntent == null) {
-                // If there's no existing intent, create a new one with default values for null fields
-                botIntents[conn] = BotIntentMapper.map(intent)
-            } else {
-                // If intent exists, only update non-null values from new intent
-                intent.apply {
-                    // Only update fields that aren't null
-                    targetSpeed?.let { existingIntent.targetSpeed = it }
-                    turnRate?.let { existingIntent.turnRate = it }
-                    gunTurnRate?.let { existingIntent.gunTurnRate = it }
-                    radarTurnRate?.let { existingIntent.radarTurnRate = it }
-                    firepower?.let { existingIntent.firepower = it }
-                    adjustGunForBodyTurn?.let { existingIntent.adjustGunForBodyTurn = it }
-                    adjustRadarForBodyTurn?.let { existingIntent.adjustRadarForBodyTurn = it }
-                    adjustRadarForGunTurn?.let { existingIntent.adjustRadarForGunTurn = it }
-                    rescan?.let { existingIntent.rescan = it }
-                    fireAssist?.let { existingIntent.fireAssist = it }
-                    bodyColor?.let { existingIntent.bodyColor = it.ifBlank { null } }
-                    turretColor?.let { existingIntent.turretColor = it.ifBlank { null } }
-                    radarColor?.let { existingIntent.radarColor = it.ifBlank { null } }
-                    bulletColor?.let { existingIntent.bulletColor = it.ifBlank { null } }
-                    scanColor?.let { existingIntent.scanColor = it.ifBlank { null } }
-                    tracksColor?.let { existingIntent.tracksColor = it.ifBlank { null } }
-                    gunColor?.let { existingIntent.gunColor = it.ifBlank { null } }
-                    stdOut?.let { existingIntent.stdOut = it.ifBlank { null } }
-                    stdErr?.let { existingIntent.stdErr = it.ifBlank { null } }
-                    teamMessages?.let { existingIntent.teamMessages = TeamMessageMapper.map(it) }
-                    debugGraphics?.let { existingIntent.debugGraphics = it.ifBlank { null } }
-                }
-            }
-
-            // Track that this bot has sent an intent for this turn
-            botsThatSentIntent += conn
-        }
-
-        // Check if all alive bots have responded - if so, turn can complete early (ADR-0012 Phase 1)
-        checkAllBotsResponded()
-    }
-
-    internal fun handleStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
-        this.gameSetup = GameSetupMapper.map(gameSetup)
-
-        participants.apply {
-            clear()
-            this += connectionHandler.mapToBotSockets(botAddresses)
-
-            if (isNotEmpty()) {
-                prepareGame()
-            }
-        }
-    }
-
-    internal fun handleAbortGame() {
-        log.info("Aborting game")
-        synchronized(startGameLock) {
-            serverState = ServerState.GAME_STOPPED
-            broadcastGameAborted()
-            cleanupAfterGameStopped()
-        }
-
-        // No score is generated for aborted games
-    }
-
-    internal fun handlePauseGame() {
-        if (serverState === ServerState.GAME_RUNNING) {
-            log.info("Pausing game")
-            serverState = ServerState.GAME_PAUSED
-            turnTimeoutTimer?.pause()
-            broadcastGamedPausedToObservers()
-        }
-    }
-
-    internal fun handleResumeGame() {
-        if (serverState === ServerState.GAME_PAUSED) {
-            log.info("Resuming game")
-            serverState = ServerState.GAME_RUNNING
-            turnTimeoutTimer?.resume()
-            broadcastGameResumedToObservers()
-        }
-    }
-
-    internal fun handleNextTurn() {
-        if (serverState === ServerState.GAME_PAUSED) {
-            handleResumeGame()
-            onNextTurn()
-            handlePauseGame()
-        }
-    }
-
-    internal fun handleChangeTps(newTps: Int) {
-        if (tps == newTps) return
-        tps = newTps
-
-        broadcastTpsChangedToObservers(newTps)
-
-        if (tps == 0) {
-            handlePauseGame()
-        } else {
-            if (serverState === ServerState.GAME_PAUSED) {
-                handleResumeGame()
-            }
-            resetTurnTimeout()
-        }
-    }
-
-    internal fun handleBotPolicyUpdate(botPolicyUpdate: BotPolicyUpdate) {
-        val botId = BotId(botPolicyUpdate.botId)
-        debugGraphicsEnableMap[botId] = botPolicyUpdate.debuggingEnabled
-
-        // Update the current flag as well
-        modelUpdater?.setDebugEnabled(botId, botPolicyUpdate.debuggingEnabled)
-    }
-
-    private fun cleanupAfterGameStopped() {
-        turnTimeoutTimer?.shutdown()
-        turnTimeoutTimer = null
-
-        // Clear all collections to prevent memory leaks
-        participantIds.clear()
-        readyParticipants.clear()
-        botIntents.clear()
-        participantMap.clear()
-        botsThatSentIntent.clear()
-        debugGraphicsEnableMap.clear()
-
-        modelUpdater = null
-        System.gc()
-    }
-
-    private fun transferDebugGraphicsFlagToModel() {
-        debugGraphicsEnableMap.forEach { (botId, isEnabled) ->
-            modelUpdater?.setDebugEnabled(botId, isEnabled)
-        }
     }
 }

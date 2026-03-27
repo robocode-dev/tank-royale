@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.schema.Participant
 import dev.robocode.tankroyale.schema.ResultsForObserver
 import dev.robocode.tankroyale.server.core.GameServer
 import dev.robocode.tankroyale.server.core.ModelUpdater
+import dev.robocode.tankroyale.server.core.ServerConfig
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.ParticipantId
 import dev.robocode.tankroyale.server.model.Score
@@ -20,14 +21,27 @@ import java.util.concurrent.ConcurrentHashMap
 
 class GameServerResultsForObserverTest : FunSpec({
 
-    test("should include isTeam flag and competition ranks") {
-        val gameServer = GameServer(setOf("classic"), emptySet(), emptySet())
+    val config = ServerConfig(
+        port = 7654,
+        gameTypes = setOf("classic"),
+        controllerSecrets = emptySet(),
+        botSecrets = emptySet(),
+        initialPositionEnabled = false,
+        tps = 30
+    )
 
-        val participantMapField = GameServer::class.java.getDeclaredField("participantMap").apply {
+    test("should include isTeam flag and competition ranks") {
+        val gameServer = GameServer(config)
+
+        val participantRegistryField = GameServer::class.java.getDeclaredField("participantRegistry").apply {
+            isAccessible = true
+        }
+        val participantRegistry = participantRegistryField.get(gameServer)
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
             isAccessible = true
         }
         val participantMap =
-            participantMapField.get(gameServer) as ConcurrentHashMap<BotId, Participant>
+            participantMapField.get(participantRegistry) as ConcurrentHashMap<BotId, Participant>
 
         participantMap[BotId(1)] = participant(botId = 1, name = "TeamBotA", teamId = 10, teamName = "Alpha", teamVersion = "1.0")
         participantMap[BotId(2)] = participant(botId = 2, name = "TeamBotB", teamId = 10, teamName = "Alpha", teamVersion = "1.0")
@@ -77,13 +91,17 @@ class GameServerResultsForObserverTest : FunSpec({
     }
 
     test("should keep observer IDs compatible with legacy clients") {
-        val gameServer = GameServer(setOf("classic"), emptySet(), emptySet())
+        val gameServer = GameServer(config)
 
-        val participantMapField = GameServer::class.java.getDeclaredField("participantMap").apply {
+        val participantRegistryField = GameServer::class.java.getDeclaredField("participantRegistry").apply {
+            isAccessible = true
+        }
+        val participantRegistry = participantRegistryField.get(gameServer)
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
             isAccessible = true
         }
         val participantMap =
-            participantMapField.get(gameServer) as ConcurrentHashMap<BotId, Participant>
+            participantMapField.get(participantRegistry) as ConcurrentHashMap<BotId, Participant>
 
         participantMap[BotId(1)] = participant(botId = 1, name = "TeamBotA", teamId = 10, teamName = "Alpha")
         participantMap[BotId(2)] = participant(botId = 2, name = "SoloBot")
@@ -108,13 +126,17 @@ class GameServerResultsForObserverTest : FunSpec({
     }
 
     test("should assign same rank for tied scores (two 1st places)") {
-        val gameServer = GameServer(setOf("classic"), emptySet(), emptySet())
+        val gameServer = GameServer(config)
 
-        val participantMapField = GameServer::class.java.getDeclaredField("participantMap").apply {
+        val participantRegistryField = GameServer::class.java.getDeclaredField("participantRegistry").apply {
+            isAccessible = true
+        }
+        val participantRegistry = participantRegistryField.get(gameServer)
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
             isAccessible = true
         }
         val participantMap =
-            participantMapField.get(gameServer) as ConcurrentHashMap<BotId, Participant>
+            participantMapField.get(participantRegistry) as ConcurrentHashMap<BotId, Participant>
 
         participantMap[BotId(1)] = participant(botId = 1, name = "Bot1")
         participantMap[BotId(2)] = participant(botId = 2, name = "TeamBotA", teamId = 10, teamName = "Alpha", teamVersion = "1.0")
@@ -144,13 +166,17 @@ class GameServerResultsForObserverTest : FunSpec({
     }
 
     test("should handle multiple tie groups") {
-        val gameServer = GameServer(setOf("classic"), emptySet(), emptySet())
+        val gameServer = GameServer(config)
 
-        val participantMapField = GameServer::class.java.getDeclaredField("participantMap").apply {
+        val participantRegistryField = GameServer::class.java.getDeclaredField("participantRegistry").apply {
+            isAccessible = true
+        }
+        val participantRegistry = participantRegistryField.get(gameServer)
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
             isAccessible = true
         }
         val participantMap =
-            participantMapField.get(gameServer) as ConcurrentHashMap<BotId, Participant>
+            participantMapField.get(participantRegistry) as ConcurrentHashMap<BotId, Participant>
 
         participantMap[BotId(1)] = participant(botId = 1, name = "Bot1")
         participantMap[BotId(2)] = participant(botId = 2, name = "TeamBotA", teamId = 10, teamName = "Alpha", teamVersion = "1.0")
@@ -182,13 +208,17 @@ class GameServerResultsForObserverTest : FunSpec({
     }
 
     test("should assign all rank 1 when all scores are equal") {
-        val gameServer = GameServer(setOf("classic"), emptySet(), emptySet())
+        val gameServer = GameServer(config)
 
-        val participantMapField = GameServer::class.java.getDeclaredField("participantMap").apply {
+        val participantRegistryField = GameServer::class.java.getDeclaredField("participantRegistry").apply {
+            isAccessible = true
+        }
+        val participantRegistry = participantRegistryField.get(gameServer)
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
             isAccessible = true
         }
         val participantMap =
-            participantMapField.get(gameServer) as ConcurrentHashMap<BotId, Participant>
+            participantMapField.get(participantRegistry) as ConcurrentHashMap<BotId, Participant>
 
         participantMap[BotId(1)] = participant(botId = 1, name = "Bot1")
         participantMap[BotId(2)] = participant(botId = 2, name = "Bot2")
@@ -218,13 +248,17 @@ class GameServerResultsForObserverTest : FunSpec({
     }
 
     test("should assign sequential ranks when all scores are different") {
-        val gameServer = GameServer(setOf("classic"), emptySet(), emptySet())
+        val gameServer = GameServer(config)
 
-        val participantMapField = GameServer::class.java.getDeclaredField("participantMap").apply {
+        val participantRegistryField = GameServer::class.java.getDeclaredField("participantRegistry").apply {
+            isAccessible = true
+        }
+        val participantRegistry = participantRegistryField.get(gameServer)
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
             isAccessible = true
         }
         val participantMap =
-            participantMapField.get(gameServer) as ConcurrentHashMap<BotId, Participant>
+            participantMapField.get(participantRegistry) as ConcurrentHashMap<BotId, Participant>
 
         participantMap[BotId(1)] = participant(botId = 1, name = "Bot1")
         participantMap[BotId(2)] = participant(botId = 2, name = "Bot2")
@@ -254,13 +288,17 @@ class GameServerResultsForObserverTest : FunSpec({
     }
 
     test("should handle three-way tie for 1st place") {
-        val gameServer = GameServer(setOf("classic"), emptySet(), emptySet())
+        val gameServer = GameServer(config)
 
-        val participantMapField = GameServer::class.java.getDeclaredField("participantMap").apply {
+        val participantRegistryField = GameServer::class.java.getDeclaredField("participantRegistry").apply {
+            isAccessible = true
+        }
+        val participantRegistry = participantRegistryField.get(gameServer)
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
             isAccessible = true
         }
         val participantMap =
-            participantMapField.get(gameServer) as ConcurrentHashMap<BotId, Participant>
+            participantMapField.get(participantRegistry) as ConcurrentHashMap<BotId, Participant>
 
         participantMap[BotId(1)] = participant(botId = 1, name = "Bot1")
         participantMap[BotId(2)] = participant(botId = 2, name = "TeamBotA", teamId = 10, teamName = "Alpha", teamVersion = "1.0")
@@ -292,13 +330,17 @@ class GameServerResultsForObserverTest : FunSpec({
     }
 
     test("should handle tie for 2nd place") {
-        val gameServer = GameServer(setOf("classic"), emptySet(), emptySet())
+        val gameServer = GameServer(config)
 
-        val participantMapField = GameServer::class.java.getDeclaredField("participantMap").apply {
+        val participantRegistryField = GameServer::class.java.getDeclaredField("participantRegistry").apply {
+            isAccessible = true
+        }
+        val participantRegistry = participantRegistryField.get(gameServer)
+        val participantMapField = participantRegistry.javaClass.getDeclaredField("participantMap").apply {
             isAccessible = true
         }
         val participantMap =
-            participantMapField.get(gameServer) as ConcurrentHashMap<BotId, Participant>
+            participantMapField.get(participantRegistry) as ConcurrentHashMap<BotId, Participant>
 
         participantMap[BotId(1)] = participant(botId = 1, name = "Bot1")
         participantMap[BotId(2)] = participant(botId = 2, name = "TeamBotA", teamId = 10, teamName = "Alpha", teamVersion = "1.0")

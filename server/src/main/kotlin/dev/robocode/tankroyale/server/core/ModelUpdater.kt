@@ -9,17 +9,7 @@ import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.Color.Companion.from
 import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
-import java.lang.Math.toDegrees
-import java.util.*
 import kotlin.math.abs
-import kotlin.math.atan2
-
-/** Maximum bounding circle diameter of a bullet moving with max speed */
-private val bulletMaxBoundingCircleDiameter: Double = 2 * MAX_BULLET_SPEED
-
-/** Square of maximum bounding circle diameter of a bullet moving with max speed */
-private val bulletMaxBoundingCircleDiameterSquared: Double =
-    bulletMaxBoundingCircleDiameter * bulletMaxBoundingCircleDiameter
 
 /** Square of the bounding circle diameter of a bot */
 private const val BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED: Double =
@@ -52,7 +42,7 @@ class ModelUpdater(
     private val botIntentsMap = mutableMapOf<BotId, BotIntent>()
 
     /** Bullets */
-    private val bullets = mutableSetOf<MutableBullet>()
+    private var bullets = mutableSetOf<Bullet>()
 
     /** Game state */
     private var gameState = GameState(Arena(setup.arenaWidth, setup.arenaHeight))
@@ -66,11 +56,13 @@ class ModelUpdater(
     /** Counter to track the number of rounds played (memory leak fix) */
     private var roundCounter = 0
 
-    /** The id for the next bullet that comes into existence */
-    private var nextBulletId = 0
-
     /** Inactivity counter */
     private var inactivityCounter = 0
+
+    /** Components */
+    private val collisionDetector = CollisionDetector(setup, participantIds, scoreTracker)
+    private val botInitializer = BotInitializer(setup, participantIds, initialPositions, droidFlags)
+    private val gunEngine = GunEngine(setup)
 
     /** The accumulated results ordered with higher total scores first */
     internal fun getResults() = accumulatedScoreCalculator.getScores()
@@ -143,7 +135,7 @@ class ModelUpdater(
         // Increment round counter for tracking (memory leak fix)
         roundCounter++
 
-        nextBulletId = 0
+        gunEngine.reset()
         botIntentsMap.clear()
         botsCopies.clear()
         bullets.clear()
@@ -155,7 +147,7 @@ class ModelUpdater(
         // We only need the current round in memory
         gameState.rounds.clear()
 
-        initializeBotStates()
+        botInitializer.initializeBotStates(botsMap, turn)
     }
 
     /** Proceed with the next turn. */
@@ -166,19 +158,19 @@ class ModelUpdater(
 
         deepCopyBots()
 
-        coolDownAndFireGuns()
+        gunEngine.coolDownAndFireGuns(botsMap, botIntentsMap, botsCopies, round, bullets, turn)
 
         executeBotIntents()
 
-        checkAndHandleBotWallCollisions()
-        checkAndHandleBotCollisions()
-        constrainBotPositions()
+        collisionDetector.checkAndHandleBotWallCollisions(botsMap, botsCopies, round, turn)
+        collisionDetector.checkAndHandleBotCollisions(botsMap, round, turn)
+        collisionDetector.constrainBotPositions(botsMap, botsCopies)
 
         checkAndHandleScans()
 
         updateBulletPositions()
-        checkAndHandleBulletWallCollisions()
-        checkAndHandleBulletHits()
+        collisionDetector.checkAndHandleBulletWallCollisions(bullets, turn)
+        collisionDetector.checkAndHandleBulletHits(bullets, botsMap, turn) { inactivityCounter = 0 }
 
         checkAndHandleInactivity()
         checkForAndHandleDisabledBots()
@@ -203,7 +195,7 @@ class ModelUpdater(
     private fun deepCopy(bot: MutableBot) = MutableBot(
         id = bot.id,
         isDroid = bot.isDroid,
-        position = MutablePoint(bot.x, bot.y),
+        position = Point(bot.x, bot.y),
         direction = bot.direction,
         gunDirection = bot.gunDirection,
         radarDirection = bot.radarDirection,
@@ -226,91 +218,6 @@ class ModelUpdater(
             gameState.rounds += round
         }
         return gameState
-    }
-
-    /** Initializes bot states. */
-    private fun initializeBotStates() {
-        val occupiedCells = mutableSetOf<Int>()
-        for (teamOrBotId in participantIds) {
-            val botId = teamOrBotId.botId
-
-            val isDroid = droidFlags[botId] ?: false
-            val energy = if (isDroid) INITIAL_DROID_ENERGY else INITIAL_BOT_ENERGY
-
-            val randomPosition = randomBotPosition(occupiedCells)
-            val position = adjustForInitialPosition(botId, randomPosition)
-            // note: body, gun, and radar starts in the same direction
-            val randomDirection = randomDirection()
-            val direction = adjustForInitialAngle(botId, randomDirection)
-
-            val teammateIds: Set<BotId> =
-                teamOrBotId.teamId?.let {
-                    participantIds.filter { it.teamId == teamOrBotId.teamId }.map { it.botId }.toSet()
-                        .minus(botId)
-                } ?: emptySet()
-
-            botsMap[botId] = MutableBot(
-                id = botId,
-                isDroid = isDroid,
-                energy = energy,
-                teammateIds = teammateIds,
-                position = position.toMutablePoint(),
-                direction = direction,
-                gunDirection = direction,
-                radarDirection = direction,
-            )
-        }
-        // Store bot snapshots into the turn
-        turn.copyBots(botsMap.values)
-    }
-
-    private fun adjustForInitialPosition(botId: BotId, point: Point): Point {
-        if (!Server.initialPositionEnabled) return point
-        val initialPosition = initialPositions[botId]
-        return if (initialPosition == null) {
-            point
-        } else {
-            val x = clamp(
-                initialPosition.x ?: point.x,
-                BOT_BOUNDING_CIRCLE_RADIUS,
-                setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS
-            )
-            val y = clamp(
-                initialPosition.y ?: point.y,
-                BOT_BOUNDING_CIRCLE_RADIUS,
-                setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS
-            )
-            Point(x, y)
-        }
-    }
-
-    private fun adjustForInitialAngle(botId: BotId, direction: Double): Double {
-        if (!Server.initialPositionEnabled) return direction
-        val initialPosition = initialPositions[botId]
-        return if (initialPosition == null) {
-            direction
-        } else {
-            initialPosition.direction ?: direction
-        }
-    }
-
-    /**
-     * Calculates a random bot position.
-     * @param occupiedCells is the occupied cells, where other bots are already positioned.
-     * @return a random bot position
-     */
-    private fun randomBotPosition(occupiedCells: MutableSet<Int>): Point {
-        val gridWidth = setup.arenaWidth / 50
-        val gridHeight = setup.arenaHeight / 50
-        val cellCount = gridWidth * gridHeight
-        val numBots = participantIds.size
-        require(cellCount >= numBots) {
-            "Area size (${setup.arenaWidth},${setup.arenaHeight}) is too small to contain $numBots bots"
-        }
-        val cellWidth = setup.arenaWidth / gridWidth
-        val cellHeight = setup.arenaHeight / gridHeight
-
-        return randomBotPoint(occupiedCells, cellCount, gridWidth, cellWidth, cellHeight)
     }
 
     /** Execute bot intents for all bots that are not disabled */
@@ -337,344 +244,9 @@ class ModelUpdater(
         }
     }
 
-    /** Checks and handles bullet hits. */
-    private fun checkAndHandleBulletHits() {
-        val bulletCount = bullets.size
-        if (bulletCount > 0) {
-            // Create list of bullet line segments used for checking for bullet hits
-            val bulletLines = mutableListOf<BulletLine>()
-            bullets.forEach { bulletLines += BulletLine(it.toBullet()) }
-
-            // Check for bullet hits
-            for (i in 0 until bulletCount) {
-                for (j in i + 1 until bulletCount) {
-                    if (isColliding(bulletLines[i], bulletLines[j])) {
-                        handleBulletHitBullet(bulletLines[i].bullet, bulletLines[j].bullet)
-                    }
-                }
-                checkAndHandleBulletHitBot(bulletLines[i])
-            }
-        }
-    }
-
-    /**
-     * Handles when a bullet has hit another bullet.
-     * @param bullet1 is the first bullet.
-     * @param bullet2 is the second bullet.
-     */
-    private fun handleBulletHitBullet(bullet1: IBullet, bullet2: IBullet) {
-        val event1 = BulletHitBulletEvent(turn.turnNumber, bullet1, bullet2)
-        val event2 = BulletHitBulletEvent(turn.turnNumber, bullet2, bullet1)
-
-        turn.apply {
-            addPrivateBotEvent(bullet1.botId, event1)
-            addPrivateBotEvent(bullet2.botId, event2)
-            // Observers only need a single event
-            addObserverEvent(event1)
-        }
-        // Remove bullets from the arena
-        bullets -= (bullet1 as Bullet).toMutableBullet()
-        bullets -= (bullet2 as Bullet).toMutableBullet()
-    }
-
-    /**
-     * Checks if two bullet bullets are colliding, i.e. if their two line segments are intersecting.
-     * @return `true` if the two bullet line segments are intersection; `false` otherwise.
-     */
-    private fun isColliding(bulletLine1: BulletLine, bulletLine2: BulletLine): Boolean =
-        // Check if the bullets bounding circles intersects (is fast) before
-        isBulletsMaxBoundingCirclesColliding(bulletLine1.end, bulletLine2.end) &&
-                // checking if the bullets bounding lines intersect (is slower)
-                isLineIntersectingLine(bulletLine1.line, bulletLine2.line)
-
-    /**
-     * Checks and handles if a bullet hits a bot.
-     * @param bulletLine is the bullet line of the bullet.
-     */
-    private fun checkAndHandleBulletHitBot(bulletLine: BulletLine) {
-        // Check bullet-hit-bot collision (hit)
-        for (bot in botsMap.values) {
-            if (bulletLine.bullet.botId == bot.id) {
-                continue // A bot cannot shoot itself
-            }
-            if (isBulletHittingBot(bulletLine, bot)) {
-                handleBulletHittingBot(bulletLine.bullet, bot)
-
-                // Remove bullet from the arena
-                bullets.removeIf { bullet -> bullet.id == bulletLine.bullet.id }
-            }
-        }
-    }
-
-    /**
-     * Checks if a bullet is hitting a bot.
-     * @param bulletLine is the line of the bullet.
-     * @param bot is the bot that might be hit.
-     * @return `true` if the bot has been hit; `false` otherwise.
-     */
-    private fun isBulletHittingBot(bulletLine: BulletLine, bot: IBot): Boolean =
-        isLineIntersectingCircle(bulletLine.line, bot.position, BOT_BOUNDING_CIRCLE_RADIUS)
-
-    /**
-     * Handles when a bullet has hit a bot.
-     * @param bullet is the bullet that has hit.
-     * @param bot is the bot that have been hit.
-     */
-    private fun handleBulletHittingBot(bullet: IBullet, bot: MutableBot) {
-        val botId = bullet.botId
-        val teamOrBotId = participantIds.first { it.botId == botId }
-        val victimId = bot.id
-        val victimTeamOrBotId = participantIds.first { it.botId == victimId }
-
-        inactivityCounter = 0 // reset collective inactivity counter due to bot taking bullet damage
-
-        val damage = calcBulletDamage(bullet.power)
-        val isKilled = bot.addDamage(damage)
-
-        val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
-        botsMap[botId]?.changeEnergy(energyBonus)
-
-        scoreTracker.registerBulletHit(
-            teamOrBotId,
-            victimTeamOrBotId,
-            damage,
-            isKilled
-        )
-
-        val bulletHitBotEvent = BulletHitBotEvent(turn.turnNumber, bullet, victimId, damage, bot.energy)
-        turn.apply {
-            addPrivateBotEvent(bulletHitBotEvent.bullet.botId, bulletHitBotEvent) // Bot itself gets event
-            addPrivateBotEvent(bulletHitBotEvent.victimId, bulletHitBotEvent) // Victim bot gets event too
-            addObserverEvent(bulletHitBotEvent)
-        }
-    }
-
-    /** Check collisions between bots */
-    private fun checkAndHandleBotCollisions() {
-        val bots = botsMap.values.toList()
-        for (i in bots.indices) {
-            for (j in i + 1 until bots.size) {
-                if (isBotsBoundingCirclesColliding(bots[i], bots[j])) {
-                    handleBotHitBot(bots[i], bots[j])
-                }
-            }
-        }
-    }
-
-    /** Constrain all bot positions, so they are kept inside the battle arena. */
-    private fun constrainBotPositions() {
-        botsMap.values.forEach { bot ->
-            val (previousX, previousY) = botsCopies[bot.id]!!.position
-            val (x, y) = constrainBotPosition(previousX, previousY, bot.x, bot.y)
-            bot.x = x
-            bot.y = y
-        }
-    }
-
-    /**
-     * Constrain the bot position, so it is kept inside the battle arena.
-     *
-     * @param x is the current x coordinate of the bot position.
-     * @param y is the current y coordinate of the bot position.
-     * @return new (x, y) coordinates that has been constrained.
-     */
-    private fun constrainBotPosition(oldX: Double, oldY: Double, x: Double, y: Double): Pair<Double, Double> {
-        var newX = x
-        var newY = y
-
-        if (x - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
-            newX = BOT_BOUNDING_CIRCLE_RADIUS
-
-            val dx = x - oldX
-            if (dx != .0) {
-                val dy = y - oldY
-                val dx2 = newX - oldX
-                val dy2 = dy * dx2 / dx
-
-                newY = oldY + dy2
-            }
-        } else if (x + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaWidth) {
-            newX = setup.arenaWidth - BOT_BOUNDING_CIRCLE_RADIUS
-
-            val dx = x - oldX
-            if (dx != .0) {
-                val dy = y - oldY
-                val dx2 = newX - oldX
-                val dy2 = dy * dx2 / dx
-
-                newY = oldY + dy2
-            }
-        }
-
-        if (y - BOT_BOUNDING_CIRCLE_RADIUS < 0) {
-            newY = BOT_BOUNDING_CIRCLE_RADIUS
-
-            val dy = y - oldY
-            if (dy != .0) {
-                val dx = x - oldX
-                val dy2 = newY - oldY
-                val dx2 = dx * dy2 / dy
-
-                newX = oldX + dx2
-            }
-        } else if (y + BOT_BOUNDING_CIRCLE_RADIUS > setup.arenaHeight) {
-            newY = setup.arenaHeight - BOT_BOUNDING_CIRCLE_RADIUS
-
-            val dy = y - oldY
-            if (dy != .0) {
-                val dx = x - oldX
-                val dy2 = newY - oldY
-                val dx2 = dx * dy2 / dy
-
-                newX = oldX + dx2
-            }
-        }
-
-        return Pair(newX, newY)
-    }
-
-    /**
-     * Handles when a bot and hit another bot.
-     * @param bot1 is the first bot.
-     * @param bot2 is the second bot.
-     */
-    private fun handleBotHitBot(bot1: MutableBot, bot2: MutableBot) {
-        val isBot1RammingBot2 = isRamming(bot1, bot2)
-        val isBot2RammingBot1 = isRamming(bot2, bot1)
-
-        // Both bots take damage when hitting each other
-        registerRamHit(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
-
-        // Restore both bot's old position
-        val lastTurn = round.lastTurn
-        if (turn.turnNumber == 1 || lastTurn == null) {
-            // Same position on first turn? => Move the second bot to a random position
-            val x = BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (setup.arenaWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
-            val y = BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (setup.arenaHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
-            bot2.position = MutablePoint(x, y)
-        } else {
-            val oldPos1 = lastTurn.getBot(bot1.id)!!.position
-            val oldPos2 = lastTurn.getBot(bot2.id)!!.position
-            bot1.position = MutablePoint(oldPos1.x, oldPos1.y)
-            bot2.position = MutablePoint(oldPos2.x, oldPos2.y)
-        }
-
-        // Stop bots by setting speed to 0
-        if (isBot1RammingBot2) bot1.speed = 0.0
-        if (isBot2RammingBot1) bot2.speed = 0.0
-
-        // Create bot-hit-bot events
-        val event1 = BotHitBotEvent(turn.turnNumber, bot1.id, bot2.id, bot2.energy, bot2.x, bot2.y, isBot1RammingBot2)
-        val event2 = BotHitBotEvent(turn.turnNumber, bot2.id, bot1.id, bot1.energy, bot1.x, bot1.y, isBot2RammingBot1)
-        turn.apply {
-            addPrivateBotEvent(bot1.id, event1)
-            addPrivateBotEvent(bot2.id, event2)
-            addObserverEvent(event1)
-            addObserverEvent(event2)
-        }
-    }
-
-    /**
-     * Registers a ram hit.
-     * @param bot1 is the first bot.
-     * @param bot2 is the second bot.
-     * @param isBot1RammingBot2 is `true` if `bot1` has rammed `bot2`; `false` otherwise.
-     * @param isBot2RammingBot1 is `true` if `bot2` has rammed `bot1`; `false` otherwise.
-     */
-    private fun registerRamHit(
-        bot1: MutableBot,
-        bot2: MutableBot,
-        isBot1RammingBot2: Boolean,
-        isBot2RammingBot1: Boolean
-    ) {
-        // Both bots take damage when hitting each other
-        val bot1Killed = bot1.addDamage(RAM_DAMAGE)
-        val bot2Killed = bot2.addDamage(RAM_DAMAGE)
-        if (isBot1RammingBot2) {
-            scoreTracker.registerRamHit(
-                participantIds.first { it.botId == bot1.id },
-                participantIds.first { it.botId == bot2.id },
-                bot2Killed
-            )
-        }
-        if (isBot2RammingBot1) {
-            scoreTracker.registerRamHit(
-                participantIds.first { it.botId == bot2.id },
-                participantIds.first { it.botId == bot1.id },
-                bot1Killed
-            )
-        }
-    }
-
     /** Updates bullet positions */
     private fun updateBulletPositions() {
-        bullets.forEach { bullet -> bullet.incrementTick() }
-    }
-
-    /** Checks collisions between bots and the walls. */
-    private fun checkAndHandleBotWallCollisions() {
-        for (bot in botsMap.values) {
-            val hitWall = adjustBotCoordinatesIfHitWall(bot)
-            if (hitWall) {
-                // Omit sending hit-wall-event if the bot hit the wall in the previous turn
-                if (round.lastTurn!!.getEvents(bot.id).none { event -> event is BotHitWallEvent }) {
-
-                    val botHitWallEvent = BotHitWallEvent(turn.turnNumber, bot.id)
-                    turn.addPrivateBotEvent(bot.id, botHitWallEvent)
-                    turn.addObserverEvent(botHitWallEvent)
-
-                    bot.addDamage(calcWallDamage(bot.speed))
-                }
-                // Bot is stopped to zero speed regardless of its previous direction
-                bot.speed = 0.0
-            }
-        }
-    }
-
-    /**
-     * Adjust the coordinates of the bot, if it has hit the wall.
-     * If the (x,y) coordinate is adjusted, the direction of the bot is used for calculating the new (x,y).
-     */
-    private fun adjustBotCoordinatesIfHitWall(bot: MutableBot): Boolean {
-        var hitWall = false
-        if (round.lastTurn != null) {
-            val (previousX, previousY) = botsCopies[bot.id]!!.position
-            val (x, y) = constrainBotPosition(previousX, previousY, bot.x, bot.y)
-            hitWall = bot.x != x || bot.y != y
-            if (hitWall) {
-                bot.x = x
-                bot.y = y
-            }
-        }
-        return hitWall
-    }
-
-    /** Checks collisions between the bullets and the walls. */
-    private fun checkAndHandleBulletWallCollisions() {
-        val iterator = bullets.iterator() // due to removal
-        while (iterator.hasNext()) {
-            val bullet = iterator.next()
-            if (isPointOutsideArena(bullet.position())) {
-                // remove bullet from arena
-                iterator.remove()
-
-                val bulletHitWallEvent = BulletHitWallEvent(turn.turnNumber, bullet.copy())
-                turn.addPrivateBotEvent(bullet.botId, bulletHitWallEvent)
-                turn.addObserverEvent(bulletHitWallEvent)
-            }
-        }
-    }
-
-    /**
-     * Checks if a point is outside the arena.
-     * @param point is the point
-     * @return `true` if the point is outside the arena; `false` otherwise.
-     */
-    private fun isPointOutsideArena(point: IPoint): Boolean {
-        return point.x <= 0 ||
-                point.y <= 0 ||
-                point.x >= setup.arenaWidth ||
-                point.y >= setup.arenaHeight
+        bullets = bullets.map { it.copy(tick = it.tick + 1) }.toMutableSet()
     }
 
     /**
@@ -710,83 +282,6 @@ class ModelUpdater(
         }
 
         scoreTracker.registerDeaths(deadBotIds)
-    }
-
-    /** Cool down and fire guns. */
-    private fun coolDownAndFireGuns() {
-        botsMap.values.forEach { bot ->
-            // If gun heat is zero and the bot is enabled, it is able to fire
-            if (bot.gunHeat == 0.0 && bot.isEnabled) { // Gun can fire
-                checkIfGunMustFire(bot)
-            } else { // Gun is too hot => Cool down gun
-                coolDownGun(bot)
-            }
-        }
-    }
-
-    /**
-     * Checks and determines if the gun for a bot must be fired.
-     * @param bot is the bot.
-     */
-    private fun checkIfGunMustFire(bot: MutableBot) {
-        botIntentsMap[bot.id]?.let {
-            val firepower = it.firepower ?: 0.0
-            if (firepower >= MIN_FIREPOWER && bot.energy > firepower) {
-                fireBullet(bot, firepower)
-            }
-        }
-    }
-
-    /**
-     * Cools down gun for a bot.
-     * @param bot is the bot.
-     */
-    private fun coolDownGun(bot: MutableBot) {
-        bot.gunHeat = (bot.gunHeat - setup.gunCoolingRate).coerceAtLeast(0.0)
-    }
-
-    /**
-     * Fires a bullet for a bot.
-     * @param bot is the bot.
-     * @param firepower is the amount of firepower.
-     */
-    private fun fireBullet(bot: MutableBot, firepower: Double) {
-        val power = firepower.coerceAtMost(MAX_FIREPOWER)
-
-        val previousBotState = botsCopies[bot.id]!!
-        var fireDirection = bot.gunDirection
-
-        // fire assistance (fireAssist = true, bot is scanning other bot, and gun and radar angle must be the same
-        if (botIntentsMap[bot.id]?.fireAssist == true &&
-            bot.gunDirection == bot.radarDirection &&
-            previousBotState.gunDirection == previousBotState.radarDirection
-        ) {
-            round.lastTurn?.let { previousTurn ->
-                previousTurn.botEvents[bot.id]?.find { it is ScannedBotEvent }?.let {
-                    val scan = (it as ScannedBotEvent)
-                    fireDirection = angle(bot.x, bot.y, scan.x, scan.y) // fire assisted angle
-                }
-            }
-        }
-
-        bot.gunHeat = calcGunHeat(power)
-
-        val bullet = MutableBullet(
-            id = BulletId(++nextBulletId),
-            botId = bot.id,
-            startPosition = bot.position.toPoint(),
-            direction = fireDirection,
-            power = power,
-            color = bot.bulletColor,
-        )
-        bullets += bullet
-
-        val bulletFiredEvent = BulletFiredEvent(turn.turnNumber, bullet.copy())
-        turn.addPrivateBotEvent(bot.id, bulletFiredEvent)
-        turn.addObserverEvent(bulletFiredEvent)
-
-        // Firing a bullet cost energy
-        bot.changeEnergy(-firepower)
     }
 
     /** Checks the scan field for scanned bots. */
@@ -995,91 +490,6 @@ class ModelUpdater(
 
     /** for static methods */
     companion object {
-        /**
-         * Checks if the maximum bounding circles of two bullets are colliding.
-         * This is a pre-check if two bullets might be colliding.
-         * @param pos1 is the position of the 1st bullet.
-         * @param pos2 is the position of the 2nd bullet.
-         * @return `true` if the bounding circles are colliding; `false` otherwise.
-         */
-        private fun isBulletsMaxBoundingCirclesColliding(pos1: IPoint, pos2: IPoint): Boolean {
-            val dx = pos2.x - pos1.x
-            if (abs(dx) > bulletMaxBoundingCircleDiameter) {
-                return false
-            }
-            val dy = pos2.y - pos1.y
-            return abs(dy) <= bulletMaxBoundingCircleDiameter &&
-                    ((dx * dx) + (dy * dy) <= bulletMaxBoundingCircleDiameterSquared)
-        }
-
-        /**
-         * Checks if the bounding circles of two bots are colliding.
-         * @param bot1 is the first bot.
-         * @param bot2 is the second bot.
-         * @return `true` if the bounding circles are colliding; `false` otherwise.
-         */
-        private fun isBotsBoundingCirclesColliding(bot1: IBot, bot2: IBot): Boolean {
-            val dx = bot2.x - bot1.x
-            if (abs(dx) > BOT_BOUNDING_CIRCLE_DIAMETER) { // 2 x radius
-                return false
-            }
-            val dy = bot2.y - bot1.y
-            // 2 x radius
-            return abs(dy) <= BOT_BOUNDING_CIRCLE_DIAMETER &&
-                    ((dx * dx) + (dy * dy) <= BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED)
-        }
-
-        /**
-         * Checks if a bot is ramming another bot.
-         * @param bot is the potential ramming bot.
-         * @param victim is the potential bot being victim of ramming.
-         * @return `true` if the bot is ramming the victim bot; `false` otherwise.
-         */
-        private fun isRamming(bot: IBot, victim: IBot): Boolean {
-            val dx = victim.x - bot.x
-            val dy = victim.y - bot.y
-            val angle = atan2(dy, dx)
-            val bearing = normalizeRelativeDegrees(toDegrees(angle) - bot.direction)
-            return (((bot.speed > 0 && (bearing > -90 && bearing < 90))
-                    || (bot.speed < 0 && (bearing < -90 || bearing > 90))))
-        }
-
-        /**
-         * Returns a random point for an arena of split into x * y virtual and big square cells larger than the bot size.
-         * The idea is that only one bot can occupy a specific cell. So the number of cells limits how many bots that
-         * can be placed on the arena. Hence, the lesser the sizes of the cells are, the more bots can be placed on the
-         * arena.
-         * @param occupiedCells is a set of cell occupied indices. So if the arena is split into e.g. 3 x 2 cells,
-         * the total number of cells will be 6, and the indices 1, 2, 3 will be the indices of the cells for the first
-         * row, and the indices 4, 5, 6 will be the indices of the cells for the second row.
-         * @param cellCount is the total number of cells.
-         * @param gridWidth is the number cells per row.
-         * @param cellWidth is the width of each cell measured in virtual pixels.
-         * @param cellHeight is the height of each cell measured in virtual pixels.
-         * @return a random point on the arena in an unoccupied cell.
-         */
-        private fun randomBotPoint(
-            occupiedCells: MutableSet<Int>,
-            cellCount: Int,
-            gridWidth: Int,
-            cellWidth: Int,
-            cellHeight: Int
-        ): Point {
-            while (true) {
-                val cell = Random().nextInt(cellCount)
-                if (!occupiedCells.contains(cell)) {
-                    occupiedCells += cell
-                    var y = (cell / gridWidth).toDouble()
-                    var x = cell - y * gridWidth
-                    x *= cellWidth.toDouble()
-                    y *= cellHeight.toDouble()
-                    x += BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (cellWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
-                    y += BOT_BOUNDING_CIRCLE_RADIUS + Math.random() * (cellHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
-                    return Point(x, y)
-                }
-            }
-        }
-
         /**
          * Update bot turn rates and directions.
          * @param bot is the bot.

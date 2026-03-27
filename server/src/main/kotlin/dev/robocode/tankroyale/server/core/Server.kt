@@ -123,11 +123,16 @@ class Server : Runnable {
             log.info("Server secrets: ${ANSI_RED}DISABLED${ANSI_DEFAULT}")
         }
 
-        gameServer = GameServer(
-            gameTypes.toSetOfTrimmedStrings(),
-            controllerSecretsSet,
-            botSecretsSet
+        val config = ServerConfig(
+            port = portNumber,
+            gameTypes = gameTypes.toSetOfTrimmedStrings(),
+            controllerSecrets = controllerSecretsSet,
+            botSecrets = botSecretsSet,
+            initialPositionEnabled = initialPositionEnabled,
+            tps = tps
         )
+
+        gameServer = GameServer(config)
         gameServer.start()
     }
 

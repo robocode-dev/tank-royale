@@ -46,7 +46,7 @@ class ClientWebSocketsHandler(
     private val observerHandshakes = ConcurrentHashMap<WebSocket, ObserverHandshake>()
     private val controllerHandshakes = ConcurrentHashMap<WebSocket, ControllerHandshake>()
 
-    private val executorService = Executors.newCachedThreadPool()
+    private val executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
 
     private val gson = Gson()
 
