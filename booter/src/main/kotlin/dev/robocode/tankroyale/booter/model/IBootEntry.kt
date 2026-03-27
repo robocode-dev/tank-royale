@@ -1,5 +1,9 @@
 package dev.robocode.tankroyale.booter.model
 
+/**
+ * Common contract for both bot and team boot entries parsed from their respective JSON files.
+ * Optional fields are null when the entry omits them; callers should treat null as "unspecified".
+ */
 interface IBootEntry {
     val name: String
     val version: String

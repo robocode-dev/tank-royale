@@ -2,6 +2,11 @@ package dev.robocode.tankroyale.booter.model
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Deserialized representation of a bot or team JSON file.
+ * Bot-only fields ([platform], [programmingLang], [initialPosition]) are null for team entries.
+ * [teamMembers] is non-null and non-empty for team entries, null for individual bots.
+ */
 @Serializable
 data class BootEntry(
     // Shared bot and team fields

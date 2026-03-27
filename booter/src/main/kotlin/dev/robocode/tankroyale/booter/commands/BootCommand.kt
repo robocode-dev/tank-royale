@@ -7,9 +7,7 @@ import kotlin.io.path.Path
 /**
  * Command for running bots and managing their processes.
  */
-class BootCommand : Command() {
-
-    private val processManager = ProcessManager()
+internal class BootCommand(private val processManager: ProcessManager = ProcessManager()) : Command() {
 
     /**
      * Main entry point to boot bots from specified paths and process command line input.

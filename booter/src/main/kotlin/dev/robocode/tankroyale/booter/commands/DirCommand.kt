@@ -13,7 +13,7 @@ import kotlin.io.path.isDirectory
 /**
  * Command for managing bot directories and their boot entries.
  */
-class DirCommand(private val botRootPaths: List<Path>) : Command() {
+internal class DirCommand(private val botRootPaths: List<Path>) : Command() {
 
     /**
      * Lists boot entries with optional filtering by game types and entry type.
@@ -29,19 +29,16 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
         teamsOnly: Boolean
     ): List<DirBootEntry> {
         val gameTypes = parseGameTypes(gameTypesCsv)
-        val bootEntries = mutableSetOf<DirBootEntry>()
-
-        listBotDirectories().forEach { directoryPath ->
-            try {
-                processDirectory(directoryPath, gameTypes, botsOnly, teamsOnly)?.let {
-                    bootEntries.add(it)
+        return listBotDirectories()
+            .mapNotNull { directoryPath ->
+                try {
+                    processDirectory(directoryPath, gameTypes, botsOnly, teamsOnly)
+                } catch (ex: Exception) {
+                    Log.error(ex)
+                    null
                 }
-            } catch (ex: Exception) {
-                Log.error(ex)
             }
-        }
-
-        return bootEntries.toList()
+            .distinct()
     }
 
     /**
@@ -115,8 +112,8 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
     /**
      * Lists bot directories with optional filtering.
      */
-    fun listBotDirectories(gameTypesCSV: String?, botsOnly: Boolean, teamsOnly: Boolean): List<Path> =
-        listBootEntries(gameTypesCSV, botsOnly, teamsOnly)
+    fun listBotDirectories(gameTypesCsv: String?, botsOnly: Boolean, teamsOnly: Boolean): List<Path> =
+        listBootEntries(gameTypesCsv, botsOnly, teamsOnly)
             .map { entry -> Paths.get(entry.dir) }
             .toSet().toList()
             .sorted()

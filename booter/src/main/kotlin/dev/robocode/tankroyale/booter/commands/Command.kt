@@ -5,7 +5,7 @@ import kotlinx.serialization.json.Json
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-abstract class Command {
+internal abstract class Command {
 
     companion object {
         private val json = Json {

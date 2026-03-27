@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.booter.util
 
+/** Environment variable names used to pass server connection details and bot metadata to bot processes. */
 enum class Env {
     SERVER_URL,
     SERVER_SECRET,

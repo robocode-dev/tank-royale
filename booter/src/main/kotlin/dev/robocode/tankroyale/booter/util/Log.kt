@@ -14,7 +14,6 @@ object Log {
     fun error(ex: Throwable, botDir: Path? = null) {
         printBotDir(botDir)
         ex.stackTraceToString().let { if (it.isNotBlank()) writeError(it) }
-        writeError(ex.message ?: "Unknown error")
     }
 
     fun error(message: String, botDir: Path? = null) {

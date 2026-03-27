@@ -12,7 +12,12 @@ import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 
 /**
- * Manages processes for running bots.
+ * Manages the lifecycle of running bot processes.
+ *
+ * Thread-safety: [processes] is a [ConcurrentSkipListMap] and [teamId] is an [AtomicLong],
+ * so all public methods are safe to call from multiple threads concurrently — specifically
+ * the main thread, the JVM shutdown-hook thread registered in [registerShutdownHook], and
+ * [CompletableFuture] callbacks created by [captureProcessErrorOutput] and [registerProcessCleanup].
  */
 class ProcessManager {
 
@@ -268,7 +273,7 @@ class ProcessManager {
         team: Team?
     ): Process? {
         try {
-            val processBuilder = createProcessBuilder(scriptPath.toString())
+            val processBuilder = ProcessLauncher.createProcessBuilder(scriptPath.toString())
             processBuilder.directory(scriptPath.parent.toFile())
 
             // Bug fix #188:
@@ -339,39 +344,9 @@ class ProcessManager {
         }
         return scriptPath
     }
-
-    // PROCESS CREATION
-
-    /**
-     * Create a process builder for the given command, handling different script types.
-     */
-    private fun createProcessBuilder(command: String): ProcessBuilder {
-        return when (getScriptType(command)) {
-            ScriptType.WINDOWS_BATCH -> ProcessBuilder("cmd.exe", "/c", command)
-            ScriptType.SHELL_SCRIPT -> ProcessBuilder("bash", "-c", command)
-            ScriptType.PYTHON_SCRIPT -> ProcessBuilder("python", command)
-            ScriptType.OTHER -> ProcessBuilder(command)
-        }
-    }
-
-    private enum class ScriptType {
-        WINDOWS_BATCH,
-        SHELL_SCRIPT,
-        PYTHON_SCRIPT,
-        OTHER
-    }
-
-    private fun getScriptType(command: String): ScriptType {
-        val cmd = command.lowercase()
-        return when {
-            cmd.endsWith(".bat") || cmd.endsWith(".cmd") -> ScriptType.WINDOWS_BATCH
-            cmd.endsWith(".sh") -> ScriptType.SHELL_SCRIPT
-            cmd.endsWith(".py") -> ScriptType.PYTHON_SCRIPT
-            else -> ScriptType.OTHER
-        }
-    }
 }
 
 typealias Pid = Long
 typealias TeamId = Long
+
 
