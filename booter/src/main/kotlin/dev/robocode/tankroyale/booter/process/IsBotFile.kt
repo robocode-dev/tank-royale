@@ -12,8 +12,8 @@ import java.util.function.Predicate
 internal class IsBotFile(private val botName: String) : Predicate<Path> {
     override fun test(path: Path): Boolean {
         val filename = path.fileName.toString().lowercase()
-        val botName = botName.lowercase()
+        val lowerBotName = botName.lowercase()
 
-        return filename == botName || filename.startsWith("$botName.")
+        return filename == lowerBotName || filename.startsWith("$lowerBotName.")
     }
 }

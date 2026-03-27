@@ -8,21 +8,21 @@ object Log {
 
     private fun printBotDir(botDir: Path?) {
         val botDirPath = botDir?.absolutePathString()
-        error("ERROR: Bot directory: ${botDirPath ?: "unknown"}")
+        writeError("ERROR: Bot directory: ${botDirPath ?: "unknown"}")
     }
 
-    fun error(ex: Exception, botDir: Path? = null) {
+    fun error(ex: Throwable, botDir: Path? = null) {
         printBotDir(botDir)
-        ex.stackTraceToString().let { if (it.isNotBlank()) error(it) }
-        error(ex.message ?: "Unknown error")
+        ex.stackTraceToString().let { if (it.isNotBlank()) writeError(it) }
+        writeError(ex.message ?: "Unknown error")
     }
 
     fun error(message: String, botDir: Path? = null) {
         printBotDir(botDir)
-        error(message)
+        writeError(message)
     }
 
-    private fun error(message: String) {
+    private fun writeError(message: String) {
         System.err.println(message.replace("\\", "/"))
     }
 }

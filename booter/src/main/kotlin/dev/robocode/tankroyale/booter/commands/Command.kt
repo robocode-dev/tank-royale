@@ -8,7 +8,7 @@ import kotlin.io.path.exists
 abstract class Command {
 
     companion object {
-        val json = Json {
+        private val json = Json {
             ignoreUnknownKeys = true
         }
     }

@@ -105,7 +105,7 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
             description,
             homepage,
             countryCodes,
-            gameTypes,
+            this.gameTypes,
             platform,
             programmingLang,
             initialPosition,
@@ -128,12 +128,14 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
         val dirs = HashSet<Path>()
 
         botRootPaths.forEach { rootPath ->
-            list(rootPath).forEach { dirPath ->
-                if (dirPath.isDirectory()) {
-                    val botName = dirPath.fileName.toString()
-                    val jsonPath = dirPath.resolve("$botName.json")
-                    if (exists(jsonPath)) {
-                        dirs.add(dirPath)
+            list(rootPath).use { stream ->
+                stream.forEach { dirPath ->
+                    if (dirPath.isDirectory()) {
+                        val botName = dirPath.fileName.toString()
+                        val jsonPath = dirPath.resolve("$botName.json")
+                        if (exists(jsonPath)) {
+                            dirs.add(dirPath)
+                        }
                     }
                 }
             }
