@@ -53,8 +53,12 @@ internal object ScriptFinder {
     }
 
     private fun findScriptWithShebangOrMatchingName(botDir: Path, botName: String): Path? {
+        val lowerBotName = botName.lowercase()
         list(botDir).use { stream ->
-            return stream.filter(IsBotFile(botName))
+            return stream.filter { path ->
+                val filename = path.fileName.toString().lowercase()
+                filename == lowerBotName || filename.startsWith("$lowerBotName.")
+            }
                 .collect(toList())
                 .firstOrNull { filePath ->
                     isExactNameMatch(filePath, botName) || hasShebang(botDir, filePath)

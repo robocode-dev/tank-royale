@@ -7,8 +7,7 @@ import kotlin.text.replace
 object Log {
 
     private fun printBotDir(botDir: Path?) {
-        val botDirPath = botDir?.absolutePathString()
-        writeError("ERROR: Bot directory: ${botDirPath ?: "unknown"}")
+        botDir?.let { writeError("ERROR: Bot directory: ${it.absolutePathString()}") }
     }
 
     fun error(ex: Throwable, botDir: Path? = null) {
