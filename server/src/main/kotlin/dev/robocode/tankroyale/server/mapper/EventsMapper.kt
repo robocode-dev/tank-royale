@@ -22,7 +22,6 @@ object EventsMapper {
             is dev.robocode.tankroyale.server.event.SkippedTurnEvent -> map(event)
             is dev.robocode.tankroyale.server.event.TeamMessageEvent -> map(event)
             is dev.robocode.tankroyale.server.event.WonRoundEvent -> map(event)
-            else -> throw IllegalStateException("Event type not handled: ${event.javaClass.canonicalName}")
         }
     }
 

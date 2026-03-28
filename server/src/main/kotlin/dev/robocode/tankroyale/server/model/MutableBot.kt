@@ -23,7 +23,7 @@ data class MutableBot(
     override var energy: Double = INITIAL_BOT_ENERGY,
 
     /** Position (x, y) */
-    override var position: MutablePoint,
+    override var position: Point,
 
     /** Driving direction in degrees */
     override var direction: Double,
@@ -91,25 +91,22 @@ data class MutableBot(
     override var x: Double
         get() = position.x
         set(value) {
-            position.x = value
+            position = Point(value, position.y)
         }
 
     /** Y coordinate */
     override var y: Double
         get() = position.y
         set(value) {
-            position.y = value
+            position = Point(position.x, value)
         }
 
     /**
-     * Adds damage to the bot.
+     * Applies damage to the bot, reducing its energy.
      * @param damage is the damage done to this bot.
-     * @return `true` if the bot got killed due to the damage, `false` otherwise.
      */
-    fun addDamage(damage: Double): Boolean {
-        val aliveBefore = isAlive
+    fun applyDamage(damage: Double) {
         energy -= damage
-        return isDead && aliveBefore
     }
 
     /**
@@ -127,7 +124,9 @@ data class MutableBot(
     fun moveToNewPosition() {
         // Move to new position
         val angle = Math.toRadians(direction)
-        x += cos(angle) * speed
-        y += sin(angle) * speed
+        position = Point(
+            position.x + cos(angle) * speed,
+            position.y + sin(angle) * speed
+        )
     }
 }

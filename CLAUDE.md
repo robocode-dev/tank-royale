@@ -12,3 +12,5 @@ All AI instructions — governance, git workflow, cross-platform rules, conventi
 - Never commit changes without user review (see `/.ai/core-principles.md`)
 - Update AI instructions via `.ai/README.md` metadata table and `/AGENTS.md` routing table
 - Maintenance guide: `/.ai/MAINTENANCE.md`
+
+@.claude/rules/principles.md

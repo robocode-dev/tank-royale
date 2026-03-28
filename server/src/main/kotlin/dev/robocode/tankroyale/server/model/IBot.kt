@@ -18,7 +18,7 @@ interface IBot {
     val energy: Double
 
     /** Position (x, y) */
-    val position: IPoint
+    val position: Point
 
     /** X coordinate */
     val x: Double

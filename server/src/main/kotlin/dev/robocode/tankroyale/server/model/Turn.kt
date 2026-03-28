@@ -11,7 +11,7 @@ data class Turn(
     override val bots: Set<IBot>,
 
     /** Bullets */
-    override val bullets: Set<IBullet>,
+    override val bullets: Set<Bullet>,
 
     /** Observer events  */
     override val observerEvents: Set<Event>,

@@ -7,7 +7,7 @@ mode: agent
 description: Activate principles before working on a file or task. Use when the user runs /prime [target] to load the relevant principles into the active frame before writing or editing.
 argument-hint: "[file|directory|description]"
 allowed-tools: Read, Glob, Grep, Bash
-version: 0.6.0
+version: 0.7.0
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 ---
 
@@ -59,6 +59,17 @@ Determine the namespace for each active ID using this mapping:
 
 | ID Prefix | Directory |
 |-----------|-----------|
+| `CODE-API-*` | `code/api/` |
+| `CODE-AR-*`  | `code/ar/`  |
+| `CODE-CC-*`  | `code/cc/`  |
+| `CODE-CS-*`  | `code/cs/`  |
+| `CODE-DX-*`  | `code/dx/`  |
+| `CODE-OB-*`  | `code/ob/`  |
+| `CODE-PF-*`  | `code/pf/`  |
+| `CODE-RL-*`  | `code/rl/`  |
+| `CODE-SEC-*` | `code/sec/` |
+| `CODE-TP-*`  | `code/tp/`  |
+| `CODE-TS-*`  | `code/ts/`  |
 | `CODE-*` | `code/` |
 | `DDD-*` | `ddd/` |
 | `SOLID-*` | `solid/` |

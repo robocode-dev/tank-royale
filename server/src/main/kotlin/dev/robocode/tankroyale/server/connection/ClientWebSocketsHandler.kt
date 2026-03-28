@@ -46,7 +46,7 @@ class ClientWebSocketsHandler(
     private val observerHandshakes = ConcurrentHashMap<WebSocket, ObserverHandshake>()
     private val controllerHandshakes = ConcurrentHashMap<WebSocket, ControllerHandshake>()
 
-    private val executorService = Executors.newCachedThreadPool()
+    private val executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
 
     private val gson = Gson()
 
@@ -106,7 +106,7 @@ class ClientWebSocketsHandler(
                             Message.Type.OBSERVER_HANDSHAKE -> handleObserverHandshake(clientSocket, message)
                             Message.Type.CONTROLLER_HANDSHAKE -> handleControllerHandshake(clientSocket, message)
                             Message.Type.BOT_READY -> handleBotReady(clientSocket)
-                            Message.Type.START_GAME -> handleStartGame(message)
+                            Message.Type.START_GAME -> handleStartGame(clientSocket, message)
                             Message.Type.STOP_GAME -> handleStopGame()
                             Message.Type.PAUSE_GAME -> handlePauseGame()
                             Message.Type.RESUME_GAME -> handleResumeGame()
@@ -136,8 +136,10 @@ class ClientWebSocketsHandler(
                 }
             } catch (exception: JsonSyntaxException) {
                 log.error("Invalid message: $message", exception)
-            } catch (exception: Exception) {
-                log.error("Error when passing message: $message", exception)
+                handleException(clientSocket, exception)
+            } catch (exception: RuntimeException) {
+                log.error("Unexpected error processing message: $message", exception)
+                clientSocket.close(1011 /* RFC 6455 unexpected condition */, exception.message)
             }
         }
     }
@@ -301,11 +303,30 @@ class ClientWebSocketsHandler(
         }
     }
 
-    private fun handleStartGame(message: String) {
+    private fun handleStartGame(clientSocket: WebSocket, message: String) {
         gson.fromJson(message, StartGame::class.java).apply {
+            val validationError = validateStartGame(gameSetup, botAddresses)
+            if (validationError != null) {
+                log.warn("Rejecting start-game request: {}", validationError)
+                handleException(clientSocket, IllegalArgumentException(validationError))
+                return@apply
+            }
             currentGameSetup = gameSetup
             listener.onStartGame(gameSetup, botAddresses.toSet())
         }
+    }
+
+    private fun validateStartGame(gameSetup: GameSetup?, botAddresses: List<BotAddress>?): String? {
+        if (gameSetup == null) return "gameSetup is required"
+        if (botAddresses.isNullOrEmpty()) return "botAddresses must not be empty"
+        if ((gameSetup.numberOfRounds ?: 0) < 1) return "numberOfRounds must be >= 1"
+        if ((gameSetup.arenaWidth ?: 0) <= 0) return "arenaWidth must be > 0"
+        if ((gameSetup.arenaHeight ?: 0) <= 0) return "arenaHeight must be > 0"
+        if ((gameSetup.minNumberOfParticipants ?: 0) < 1) return "minNumberOfParticipants must be >= 1"
+        if ((gameSetup.turnTimeout ?: 0) <= 0) return "turnTimeout must be > 0"
+        if ((gameSetup.readyTimeout ?: 0) <= 0) return "readyTimeout must be > 0"
+        if (gameSetup.gameType !in setup.gameTypes) return "unsupported gameType: ${gameSetup.gameType}"
+        return null
     }
 
     private fun handleStopGame() {

@@ -61,7 +61,8 @@ data class Score(
         thirdPlaces + score.thirdPlaces,
     )
 
-    operator fun plusAssign(score: Score) {
+    /** Accumulates [score] into this record in-place. Prefer this over the `+` operator when mutation is intentional. */
+    fun accumulate(score: Score) {
         bulletDamageScore += score.bulletDamageScore
         bulletKillBonus += score.bulletKillBonus
         ramDamageScore += score.ramDamageScore

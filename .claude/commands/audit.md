@@ -2,7 +2,7 @@
 description: Review a file, directory, or inline code against its activated principles. Supports explicit principle override with --with / @group / on syntax. Use when the user runs /audit [target] to check code or docs against quality principles.
 argument-hint: "[file|directory|inline-code] | <spec> on <target> | <target> --with <spec> | @<group> <target>"
 allowed-tools: Read, Write, Glob, Grep, Bash
-version: 0.6.0
+version: 0.7.0
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 ---
 
@@ -40,6 +40,22 @@ For the target file(s), detect the artifact type by reading `.principles-catalog
 Record the detected type: **`code`** | **`docs`** | **`config`** | **`infra`** | **`schema`** | **`pipeline`**
 
 If the target is a directory with mixed artifact types, note the mix; apply per-file type detection in Phase 6.
+
+### 1.4 — Load Git Context
+
+**Output nothing during this phase.**
+
+After the target is resolved, attempt to load recent git history for the target files. This context is used by git-aware principles in Phase 5 and Phase 6.
+
+1. Check whether a git repository is reachable (look for `.git/` walking up from the target, same logic as Phase 2's `.principles` walk).
+2. If reachable, run both commands against the target path:
+   - `git diff HEAD -- <target>` — staged + unstaged changes relative to HEAD (current work in progress)
+   - If the above produces no output: `git diff HEAD~1 HEAD -- <target>` — the most recently committed change
+   - `git log --oneline -5 -- <target>` — recent commit history for the target
+3. Store results:
+   - **`$GIT_DIFF`** — the diff output (whichever command produced content, preferring uncommitted; empty string if none)
+   - **`$GIT_LOG`** — the log lines (empty string if none)
+4. If git is unavailable, the target is inline code, or no history exists: set both to empty string. Do not fail or warn — graceful degradation means git-aware principles fall back to snapshot-only review.
 
 ## Phase 2 — Resolve Principles
 
@@ -149,7 +165,17 @@ Derive unique namespaces from the active principle ID prefixes. Use the longest-
 | `EFFECTIVE-JAVA-*` | `effective-java/` |
 | `12FACTOR-*` | `12factor/` |
 | `PIPELINE-*` | `pipeline/` |
-| `SEC-ARCH-*` | `sec-arch/` |
+| `CODE-API-*` | `code/api/` |
+| `CODE-AR-*` | `code/ar/` |
+| `CODE-CC-*` | `code/cc/` |
+| `CODE-CS-*` | `code/cs/` |
+| `CODE-DX-*` | `code/dx/` |
+| `CODE-OB-*` | `code/ob/` |
+| `CODE-PF-*` | `code/pf/` |
+| `CODE-RL-*` | `code/rl/` |
+| `CODE-SEC-*` | `code/sec/` |
+| `CODE-TP-*` | `code/tp/` |
+| `CODE-TS-*` | `code/ts/` |
 | `CODE-*` | `code/` |
 | `SOLID-*` | `solid/` |
 | `DDD-*` | `ddd/` |
@@ -168,21 +194,21 @@ Derive unique namespaces from the active principle ID prefixes. Use the longest-
 | `ARCH-*` | `arch/` |
 | `PKG-*` | `pkg/` |
 
-For each unique namespace, read `.principles-catalog/principles/<namespace>/.context-audit.md` and filter to entries whose `### ID` is in the active set. Use the **Principle** and **Violations to detect** content in Phase 6.
+For each unique namespace, use the **Read tool** to load `.principles-catalog/principles/<namespace>/.context-audit.md`, then filter entries whose `### ID` is in the active set. Do not use bash, grep, or any shell command for this step — read the file and filter in your reasoning. Use the **Principle** and **Violations to detect** content in Phase 6.
 
 If `.principles-catalog/` is not present, fall back to the standard loading below.
 
 **Standard loading (all other sources):**
 
-For each namespace in the active ID set, read one file:
+For each namespace in the active ID set, use the **Read tool** to load:
 
 ```
 .principles-catalog/principles/<namespace>/.context-audit.md
 ```
 
-Filter to entries whose `### ID` is in the final active set. Use the **Principle** and **Violations to detect** content in Phase 6.
+Filter entries whose `### ID` is in the final active set. Do not use bash, grep, or any shell command for this step — read the file and filter in your reasoning. Use the **Principle** and **Violations to detect** content in Phase 6.
 
-Namespace derivation: `CODE-CS-DRY` → namespace `code`, `SOLID-SRP` → namespace `solid`, `DOC-PURPOSE` → namespace `docs`, `CONFIG-NO-HARDCODED-SECRETS` → namespace `config`, `SCHEMA-SELF-DESCRIBING` → namespace `schema`, `PIPELINE-MINIMAL-PERMISSIONS` → namespace `pipeline`.
+Namespace derivation: `CODE-CS-DRY` → namespace `code/cs`, `CODE-API-HATEOAS` → namespace `code/api`, `SOLID-SRP` → namespace `solid`, `DOC-PURPOSE` → namespace `docs`, `CONFIG-NO-HARDCODED-SECRETS` → namespace `config`, `SCHEMA-SELF-DESCRIBING` → namespace `schema`, `PIPELINE-MINIMAL-PERMISSIONS` → namespace `pipeline`.
 
 ## Phase 5 — Pre-Scan
 
@@ -211,9 +237,9 @@ Principles with entries in `.context-inspect.md` are **"inspected"**. Principles
 For each inspection command:
 
 1. Replace `$TARGET` with the actual path from Phase 1.
-2. Run the command using bash.
+2. Run the command using bash. Commands may use git (e.g. `git diff HEAD -- $TARGET | grep …`) — this is valid; `$GIT_DIFF` from Phase 1.4 is pre-loaded context, but inspect commands run git directly against `$TARGET` as a pathspec.
 3. Collect hits as: `{principle_id, severity_hint, file, line, match_text, description}`.
-4. If a command produces no output or fails, skip silently.
+4. If a command produces no output or fails (including because `$GIT_DIFF` is empty), skip silently.
 
 ### 5.3 — Build Pre-Scan Manifest
 
@@ -241,6 +267,8 @@ For each file in the pre-scan manifest:
 **Read every file** collected in Phase 1. Apply only the **semantic-only principles** (those without inspection patterns). Do not substitute grep, search, or pattern-matching tools for reading — you must read and understand each file's logic, structure, and intent.
 
 For each file, evaluate it against the semantic-only principle set appropriate to its artifact type.
+
+For principles that are git-history-dependent (marked `Audit-scope: limited — git` in their principle file), include `$GIT_DIFF` and `$GIT_LOG` from Phase 1.4 as additional context alongside the file content. If both are empty, apply the principle as snapshot-only.
 
 ### Step 3 — Opportunistic Findings
 

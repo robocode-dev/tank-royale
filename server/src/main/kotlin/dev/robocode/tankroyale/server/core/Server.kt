@@ -21,7 +21,11 @@ class Server : Runnable {
         private const val MAX_PORT = 65535
         const val INHERIT = "inherit"
 
-        // Set by CLI
+        // These vars are written ONCE by the CLI (picocli) before any game thread starts.
+        // After startup they are effectively read-only — no synchronisation needed for reads.
+        // @GuardedBy("written before game threads start; read-only thereafter")
+
+        /** Server port or "inherit" to use an inherited socket channel. */
         var port: String = DEFAULT_PORT.toString()
 
         val useInheritedChannel: Boolean
@@ -30,14 +34,19 @@ class Server : Runnable {
         val portNumber: Int
             get() = if (useInheritedChannel) getInheritedPort() else port.toIntOrNull() ?: DEFAULT_PORT
 
+        /** Comma-separated list of game types the server will accept. */
         var gameTypes: String = DEFAULT_GAME_TYPE
 
+        /** Secret tokens required for controller connections; null means any controller may connect. */
         var controllerSecrets: String? = null
 
+        /** Secret tokens required for bot connections; null means any bot may connect. */
         var botSecrets: String? = null
 
+        /** When true, bots may request specific initial positions and headings. */
         var initialPositionEnabled = false
 
+        /** Initial turns-per-second rate for new games. */
         var tps: Int = DEFAULT_TURNS_PER_SECOND
 
         private fun getInheritedPort(): Int {
@@ -123,11 +132,16 @@ class Server : Runnable {
             log.info("Server secrets: ${ANSI_RED}DISABLED${ANSI_DEFAULT}")
         }
 
-        gameServer = GameServer(
-            gameTypes.toSetOfTrimmedStrings(),
-            controllerSecretsSet,
-            botSecretsSet
+        val config = ServerConfig(
+            port = portNumber,
+            gameTypes = gameTypes.toSetOfTrimmedStrings(),
+            controllerSecrets = controllerSecretsSet,
+            botSecrets = botSecretsSet,
+            initialPositionEnabled = initialPositionEnabled,
+            tps = tps
         )
+
+        gameServer = GameServer(config)
         gameServer.start()
     }
 
