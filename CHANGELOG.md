@@ -1,5 +1,10 @@
 ## [pending]
 
+### 🔧 Changes
+
+- Bot API (Java, .NET, Python, TypeScript) + Schemas:
+    - Increased the maximum number of authors per bot from 5 to 20.
+
 ### ♻️ Refactoring
 
 - Server:
