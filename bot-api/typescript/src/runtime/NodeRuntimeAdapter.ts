@@ -1,5 +1,6 @@
 import { RuntimeAdapter } from "./RuntimeAdapter.js";
 import { WebSocketLike } from "./WebSocketLike.js";
+import type WsWebSocket from "ws";
 
 /**
  * RuntimeAdapter implementation for Node.js.
@@ -10,7 +11,7 @@ export class NodeRuntimeAdapter implements RuntimeAdapter {
   createWebSocket(url: string): WebSocketLike {
     // Dynamically require `ws` so the package stays an optional peer dependency.
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const WS = require("ws") as typeof import("ws");
+    const WS = require("ws") as new (url: string) => WsWebSocket;
     const ws = new WS(url);
     // The `ws` library emits events via EventEmitter; wrap it to match WebSocketLike.
     const wrapper: WebSocketLike = {

@@ -1,5 +1,5 @@
-import { Color } from "./Color";
-import { Point } from "./Point";
+import { Color } from "./Color.js";
+import { Point } from "./Point.js";
 
 /**
  * Interface for graphics context that provides methods for drawing graphics primitives.

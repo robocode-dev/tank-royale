@@ -9,7 +9,7 @@ export class DisconnectedEvent extends ConnectionEvent {
   constructor(serverUri: string, remote: boolean, statusCode?: number, reason?: string) {
     super(serverUri);
     this.remote = remote;
-    this.statusCode = statusCode;
-    this.reason = reason;
+    if (statusCode !== undefined) this.statusCode = statusCode;
+    if (reason !== undefined) this.reason = reason;
   }
 }

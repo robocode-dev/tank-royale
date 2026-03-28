@@ -10,8 +10,8 @@ export class Condition {
     if (typeof nameOrCallable === "function") {
       this.callable = nameOrCallable;
     } else {
-      this.name = nameOrCallable;
-      this.callable = callable;
+      if (nameOrCallable !== undefined) this.name = nameOrCallable;
+      if (callable !== undefined) this.callable = callable;
     }
   }
 

@@ -1,6 +1,6 @@
-import { Color } from "./Color";
-import { IGraphics } from "./IGraphics";
-import { Point } from "./Point";
+import { Color } from "./Color.js";
+import { IGraphics } from "./IGraphics.js";
+import { Point } from "./Point.js";
 
 /**
  * Implementation of IGraphics that generates SVG markup.

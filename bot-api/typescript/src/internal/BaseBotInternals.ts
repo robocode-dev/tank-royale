@@ -30,6 +30,7 @@ import { MathUtil } from "../util/MathUtil.js";
 import { detectRuntime } from "../runtime/index.js";
 import { GameSetup } from "../GameSetup.js";
 import { GameSetupMapper } from "../mapper/GameSetupMapper.js";
+import { InitialPosition } from "../InitialPosition.js";
 import { EventMapper } from "../mapper/EventMapper.js";
 import { toJson } from "../json/JsonUtil.js";
 import type { BotIntent as SchemaBotIntent } from "../protocol/schema.js";
@@ -214,7 +215,8 @@ export class BaseBotInternals {
     this.myId = msg.myId;
     this.gameSetup = GameSetupMapper.map(msg.gameSetup);
     this.teammateIds = new Set(msg.teammateIds ?? []);
-    const e = new GameStartedEvent(msg.myId, this.gameSetup);
+    const initialPosition = new InitialPosition(msg.startX ?? null, msg.startY ?? null, msg.startDirection ?? null);
+    const e = new GameStartedEvent(msg.myId, initialPosition, this.gameSetup);
     this.botEventHandlers.onGameStarted.publish(e);
   }
 
@@ -285,7 +287,7 @@ export class BaseBotInternals {
     if (this.wsHandler == null) return;
     const intent = { ...this.intent };
     this.wsHandler.sendBotIntent(intent as import("../protocol/schema.js").BotIntent);
-    this.intent.teamMessages = undefined;
+    this.intent.teamMessages = null;
   }
 
   private waitForNextTurn(turnNumber: number): void {
@@ -311,11 +313,11 @@ export class BaseBotInternals {
   }
 
   private resetMovement(): void {
-    this.intent.turnRate = undefined;
-    this.intent.gunTurnRate = undefined;
-    this.intent.radarTurnRate = undefined;
-    this.intent.targetSpeed = undefined;
-    this.intent.firepower = undefined;
+    this.intent.turnRate = null;
+    this.intent.gunTurnRate = null;
+    this.intent.radarTurnRate = null;
+    this.intent.targetSpeed = null;
+    this.intent.firepower = null;
   }
 
   // ---------------------------------------------------------------------------
@@ -575,10 +577,10 @@ export class BaseBotInternals {
   setResume(): void {
     if (this.isStopped) {
       this.isStopped = false;
-      this.intent.targetSpeed = this.savedTargetSpeed ?? undefined;
-      this.intent.turnRate = this.savedTurnRate ?? undefined;
-      this.intent.gunTurnRate = this.savedGunTurnRate ?? undefined;
-      this.intent.radarTurnRate = this.savedRadarTurnRate ?? undefined;
+      this.intent.targetSpeed = this.savedTargetSpeed;
+      this.intent.turnRate = this.savedTurnRate;
+      this.intent.gunTurnRate = this.savedGunTurnRate;
+      this.intent.radarTurnRate = this.savedRadarTurnRate;
       this.stopResumeListener?.onResume();
     }
   }
