@@ -1,3 +1,12 @@
+## [pending]
+
+### ♻️ Refactoring
+
+- Server:
+    - Improved thread-safety, model immutability, error handling, and game start validation.
+- Booter:
+    - Improved CLI structure and error logging.
+
 ## [0.38.1] - 2026-03-23 – GUI Boot Progress Dialog
 
 ### ✨ Features
