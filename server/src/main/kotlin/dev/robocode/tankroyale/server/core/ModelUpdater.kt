@@ -471,28 +471,22 @@ class ModelUpdater(
     }
 
     private fun processTeamMessages(bot: MutableBot, intent: BotIntent) {
-        intent.teamMessages?.let { teamMessages ->
-            for (index in 0 until (teamMessages.size).coerceAtMost(MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN)) {
-                teamMessages[index].let { teamMessage ->
-                    teamMessage.apply {
-                        if (message.length <= MAX_TEAM_MESSAGE_SIZE) { // ignore this and follower messages if one message is too big
-                            if (receiverId != null) {
-                                turn.addPrivateBotEvent(
-                                    receiverId, TeamMessageEvent(turn.turnNumber, message, messageType, bot.id)
-                                )
-                            } else {
-                                bot.teammateIds.forEach { teammateId ->
-                                    turn.addPrivateBotEvent(
-                                        teammateId, TeamMessageEvent(turn.turnNumber, message, messageType, bot.id)
-                                    )
-                                }
-                            }
-                        }
-                    }
+        val teamMessages = intent.teamMessages ?: return
+        for (index in 0 until teamMessages.size.coerceAtMost(MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN)) {
+            val msg = teamMessages[index]
+            if (msg.message.length > MAX_TEAM_MESSAGE_SIZE) continue
+            if (msg.receiverId != null) {
+                turn.addPrivateBotEvent(
+                    msg.receiverId, TeamMessageEvent(turn.turnNumber, msg.message, msg.messageType, bot.id)
+                )
+            } else {
+                bot.teammateIds.forEach { teammateId ->
+                    turn.addPrivateBotEvent(
+                        teammateId, TeamMessageEvent(turn.turnNumber, msg.message, msg.messageType, bot.id)
+                    )
                 }
             }
         }
-        // clear team messages
         intent.teamMessages = null
     }
 

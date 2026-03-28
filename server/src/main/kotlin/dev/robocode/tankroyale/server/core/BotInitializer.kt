@@ -69,7 +69,7 @@ class BotInitializer(
     }
 
     private fun adjustForInitialAngle(botId: BotId, direction: Double): Double {
-        if (!Server.initialPositionEnabled) return direction
+        if (!initialPositionEnabled) return direction
         val initialPosition = initialPositions[botId]
         return if (initialPosition == null) {
             direction

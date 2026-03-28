@@ -21,8 +21,9 @@ class Server : Runnable {
         private const val MAX_PORT = 65535
         const val INHERIT = "inherit"
 
-        // These vars are set once by the CLI (picocli) before the server starts accepting connections.
-        // After startup they are effectively read-only — no synchronization is needed for reads.
+        // These vars are written ONCE by the CLI (picocli) before any game thread starts.
+        // After startup they are effectively read-only — no synchronisation needed for reads.
+        // @GuardedBy("written before game threads start; read-only thereafter")
 
         /** Server port or "inherit" to use an inherited socket channel. */
         var port: String = DEFAULT_PORT.toString()

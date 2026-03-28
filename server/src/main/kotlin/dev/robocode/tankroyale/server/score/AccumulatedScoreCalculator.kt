@@ -13,7 +13,7 @@ class AccumulatedScoreCalculator {
             val scoreMap = accumulatedScores.associateBy { it.participantId }
             scores.forEach { score ->
                 val accScore = scoreMap[score.participantId]
-                accScore?.let { it += score }
+                accScore?.accumulate(score)
             }
 
             // Rank needs to be recalculated

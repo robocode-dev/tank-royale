@@ -8,7 +8,8 @@ import dev.robocode.tankroyale.server.rules.*
 /** Engine for handling gun cooling and firing. */
 class GunEngine(private val setup: GameSetup) {
 
-    // Only accessed while holding GameServer.tickLock (enforced by ModelUpdater's threading contract).
+    // Only accessed while holding GameServer.tickLock — enforced by ModelUpdater's threading contract.
+    // GunEngine performs no synchronisation of its own; callers are responsible.
     private var nextBulletId = 0
 
     fun coolDownAndFireGuns(

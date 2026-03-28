@@ -315,8 +315,9 @@ class GameServer(private val config: ServerConfig) {
                     checkForSkippedTurns(turnNumber)
                     botIntents.clear()
                 }
-                sendTickToParticipants(roundNumber, this)
-                broadcastGameTickToObservers(roundNumber, this)
+                val aliveBotTeamIds = aliveBotToTeamIdMap()
+                sendTickToParticipants(roundNumber, this, aliveBotTeamIds)
+                broadcastGameTickToObservers(roundNumber, this, aliveBotTeamIds)
 
                 if (roundEnded) {
                     log.debug("Round ended: $roundNumber")
@@ -380,9 +381,8 @@ class GameServer(private val config: ServerConfig) {
         })
     }
 
-    private fun sendTickToParticipants(roundNumber: Int, turn: ITurn) {
+    private fun sendTickToParticipants(roundNumber: Int, turn: ITurn, aliveBotTeamIds: Map<BotId, Int>) {
         val updater = modelUpdater ?: return
-        val aliveBotTeamIds = aliveBotToTeamIdMap(updater)
 
         for (conn in participantRegistry.participants) {
             val participantId = participantRegistry.participantIds[conn] ?: continue
@@ -403,10 +403,8 @@ class GameServer(private val config: ServerConfig) {
         }
     }
 
-    private fun broadcastGameTickToObservers(roundNumber: Int, turn: ITurn) {
+    private fun broadcastGameTickToObservers(roundNumber: Int, turn: ITurn, aliveBotTeamIds: Map<BotId, Int>) {
         val enemyCountMap = HashMap<BotId, Int /* enemyCount */>()
-
-        val aliveBotTeamIds = aliveBotToTeamIdMap()
 
         participantRegistry.participantMap.keys.forEach { botId ->
             val teamId = aliveBotTeamIds[botId]
@@ -434,14 +432,9 @@ class GameServer(private val config: ServerConfig) {
     }
 
     private fun getParticipantsThatSkippedTurn(): Collection<WebSocket> =
-        mutableListOf<WebSocket>().apply {
-            participantRegistry.participants.forEach { participant ->
-                participantRegistry.participantIds[participant]?.let {
-                    if (modelUpdater?.isAlive(it) == true && botIntents[participant] == null) {
-                        this += participant
-                    }
-                }
-            }
+        participantRegistry.participants.filter { conn ->
+            val botId = participantRegistry.participantIds[conn] ?: return@filter false
+            modelUpdater?.isAlive(botId) == true && botIntents[conn] == null
         }
 
     internal fun sendBotListUpdate(conn: WebSocket) {
