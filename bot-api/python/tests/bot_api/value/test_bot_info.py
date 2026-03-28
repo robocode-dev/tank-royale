@@ -53,8 +53,8 @@ class TestBotInfo:
         with pytest.raises(ValueError):
             BotInfo(name="Bot", version="1.0", authors=[" "])
 
-        # Too many authors (MAX_NUMBER_OF_AUTHORS = 5)
-        too_many = ["a1", "a2", "a3", "a4", "a5", "a6"]
+        # Too many authors (MAX_NUMBER_OF_AUTHORS = 20)
+        too_many = ["a" + str(i) for i in range(1, 22)]
         with pytest.raises(ValueError):
             BotInfo(name="Bot", version="1.0", authors=too_many)
 

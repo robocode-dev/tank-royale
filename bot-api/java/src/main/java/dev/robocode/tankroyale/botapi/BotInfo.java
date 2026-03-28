@@ -63,7 +63,7 @@ public final class BotInfo {
     /**
      * Maximum number of authors accepted.
      */
-    public static final int MAX_NUMBER_OF_AUTHORS = 5;
+    public static final int MAX_NUMBER_OF_AUTHORS = 20;
 
     /**
      * Maximum number of country codes accepted.

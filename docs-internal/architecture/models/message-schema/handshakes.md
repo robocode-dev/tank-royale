@@ -238,7 +238,7 @@ classDiagram
 | `sessionId` | string | ✅ | - | Must match sessionId from server-handshake |
 | `name` | string | ✅ | 30 | Bot name (displayed in UI) |
 | `version` | string | ✅ | 20 | Bot version (semver recommended) |
-| `authors` | string[] | ✅ | 5 items, 50 chars each | Author names/emails |
+| `authors` | string[] | ✅ | 20 items, 50 chars each | Author names/emails |
 | `description` | string | ❌ | 250 | Short bot description |
 | `homepage` | string | ❌ | 150 | Bot homepage URL |
 | `countryCodes` | string[] | ❌ | 2-letter ISO 3166-1 codes | Country codes (e.g., "US", "GB") |

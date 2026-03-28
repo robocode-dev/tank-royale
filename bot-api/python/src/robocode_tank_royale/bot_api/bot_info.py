@@ -34,7 +34,7 @@ class BotInfo:
     MAX_PROGRAMMING_LANG_LENGTH = 30
     """Maximum number of characters accepted for the programming language name."""
 
-    MAX_NUMBER_OF_AUTHORS = 5
+    MAX_NUMBER_OF_AUTHORS = 20
     """Maximum number of authors allowed."""
 
     MAX_NUMBER_OF_COUNTRY_CODES = 5

@@ -57,9 +57,9 @@ public sealed class BotInfo
     public const int MaxProgrammingLangLength = 30;
 
     /// <summary>
-    /// The maximum number of authors accepted is 5.
+    /// The maximum number of authors accepted is 20.
     /// </summary>
-    public const int MaxNumberOfAuthors = 5;
+    public const int MaxNumberOfAuthors = 20;
 
     /// <summary>
     /// The maximum number of country codes accepted is 5.
