@@ -21,7 +21,7 @@ package dev.robocode.tankroyale.server.model
  * @param gunColor Gun color string. If set to `null` the default body color will be used.
  * @param debugGraphics Debug graphics as an SVG string. If set to `null`, no debug graphics will be displayed.
  */
-class BotIntent(
+data class BotIntent(
     override var targetSpeed: Double? = 0.0,
     override var turnRate: Double? = 0.0,
     override var gunTurnRate: Double? = 0.0,
