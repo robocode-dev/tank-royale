@@ -30,13 +30,15 @@ class GameLifecycleManager {
     }
 
     fun startReadyTimer(readyTimeoutNanos: Long, onTimeout: () -> Unit) {
-        if (readyTimeoutTimer == null) {
-            readyTimeoutTimer = ResettableTimer(onTimeout)
+        synchronized(startGameLock) {
+            if (readyTimeoutTimer == null) {
+                readyTimeoutTimer = ResettableTimer(onTimeout)
+            }
+            readyTimeoutTimer?.schedule(
+                minDelayNanos = 0L,
+                maxDelayNanos = readyTimeoutNanos
+            )
         }
-        readyTimeoutTimer?.schedule(
-            minDelayNanos = 0L,
-            maxDelayNanos = readyTimeoutNanos
-        )
     }
 
     fun createTurnTimeoutTimer(onNextTurn: () -> Unit) {

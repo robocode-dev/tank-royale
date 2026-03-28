@@ -6,7 +6,15 @@ import dev.robocode.tankroyale.server.model.BotId
 import org.java_websocket.WebSocket
 import java.util.concurrent.ConcurrentHashMap
 
-/** Registry for tracking game participants (bots). */
+/**
+ * Registry for tracking game participants (bots).
+ *
+ * Thread-safety contract:
+ * - Individual read/write operations on the underlying [ConcurrentHashMap]-backed collections are
+ *   thread-safe in isolation.
+ * - Compound operations (e.g. check-then-act, iterate-then-remove) must be performed while holding
+ *   [participantsLock] to avoid TOCTOU races.
+ */
 class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
 
     private val _participants = ConcurrentHashMap.newKeySet<WebSocket>()
@@ -94,11 +102,11 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
     private fun createParticipantMap(): Map<BotId, Participant> {
         val map = mutableMapOf<BotId, Participant>()
         for (conn in _participants) {
-            val handshake = connectionHandler.getBotHandshakes()[conn]
+            val handshake = connectionHandler.getBotHandshakes()[conn] ?: continue
             val botId = _participantIds[conn] ?: continue
             val participant = Participant().apply {
                 id = botId.value
-                sessionId = handshake!!.sessionId
+                sessionId = handshake.sessionId
                 name = handshake.name
                 version = handshake.version
                 description = handshake.description

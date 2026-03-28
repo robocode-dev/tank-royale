@@ -226,9 +226,10 @@ class GameServer(private val config: ServerConfig) {
     }
 
     private fun applyVisualDelay(botProcessingDurationNanos: Long) {
-        if (tps <= 0) return
+        val currentTps = tps
+        if (currentTps <= 0) return
 
-        val turnDurationNanos = 1_000_000_000L / tps
+        val turnDurationNanos = 1_000_000_000L / currentTps
         val sleepNanos = turnDurationNanos - botProcessingDurationNanos
         if (sleepNanos > 0) {
             Thread.sleep(sleepNanos / 1_000_000, (sleepNanos % 1_000_000).toInt())
@@ -525,8 +526,8 @@ class GameServer(private val config: ServerConfig) {
                 }
             }
             botsThatSentIntent += conn
+            checkAllBotsResponded()
         }
-        checkAllBotsResponded()
     }
 
     private fun checkAllBotsResponded() {
