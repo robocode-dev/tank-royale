@@ -75,7 +75,63 @@ Print: `"📋 Platform: Windows"` or `"📋 Platform: Unix/macOS"`
 
 ---
 
-## Phase 2 — Publish Artifacts
+## Phase 2 — Validate Credentials
+
+Before publishing anything, verify that all required credentials are present. This avoids long builds that fail due to missing secrets. Check **all** credentials and report results together — do not stop at the first failure.
+
+Determine the user Gradle properties file path:
+- **Windows**: `%USERPROFILE%\.gradle\gradle.properties`
+- **Unix/macOS**: `~/.gradle/gradle.properties`
+
+Read both the **project** `gradle.properties` (in repo root) and the **user** file (above). User-level values override project-level values.
+
+### 2.1 — Maven Central credentials
+
+Look for these four properties (in user gradle.properties, falling back to project gradle.properties):
+- `ossrhUsername` — must be present and not empty
+- `ossrhPassword` — must be present and not empty
+- `signingKey` — must be present, not empty, and not the dummy value `-----BEGIN PGP PRIVATE KEY BLOCK-----...`
+- `signingPassword` — must be present and not `dummy`
+
+### 2.2 — NuGet credentials
+
+Look for `nuget-api-key` in the user gradle.properties (falling back to project gradle.properties).
+- Must be present, not empty, and not `dummy`
+
+### 2.3 — PyPI credentials
+
+PyPI credentials can come from **any one** of three sources. Check in order:
+1. Gradle property `pypiToken` (would be passed via `-PpypiToken=...` or in gradle.properties)
+2. Environment variable `PYPI_TOKEN`
+3. A `~/.pypirc` file containing a `[pypi]` section
+
+At least one of these must be available.
+
+### 2.4 — GitHub CLI authentication
+
+Run `gh auth status` and check the exit code.
+- If it succeeds (exit code 0): the user is authenticated.
+- If `gh` is not installed: note it (the release can still proceed with manual fallback in Phase 3).
+- If `gh` is installed but not authenticated: flag as missing.
+
+### 2.5 — Report results
+
+Print a credential summary:
+
+```
+🔑 Credential check:
+  ✅ Maven Central  — ossrhUsername, ossrhPassword, signingKey, signingPassword
+  ✅ NuGet          — nuget-api-key
+  ✅ PyPI           — pypiToken (or PYPI_TOKEN env var, or ~/.pypirc)
+  ✅ GitHub CLI     — authenticated as <username>
+```
+
+If **any** credential is missing or invalid, show ❌ for that line with a description of what's missing, then print:
+`"❌ ERROR: Missing credentials. See release.md → Credentials setup for details."` and **STOP**.
+
+---
+
+## Phase 3 — Publish Artifacts
 
 ### Step 1 of 3 — Publish Java artifacts to Maven Central
 
@@ -117,7 +173,7 @@ Run the Gradle command (use the platform-appropriate wrapper):
 
 ---
 
-## Phase 3 — Create GitHub Release
+## Phase 4 — Create GitHub Release
 
 Print: `"🚀 Step 4: Triggering create-release GitHub Actions workflow on main..."`
 
@@ -139,7 +195,7 @@ If `gh` is **not** available:
 
 ---
 
-## Phase 4 — Upload Documentation (Conditional)
+## Phase 5 — Upload Documentation (Conditional)
 
 Check the patch version from Phase 1.
 
@@ -161,7 +217,7 @@ Print: `"ℹ️ Step 5: Skipping documentation upload (patch release — patch v
 
 ---
 
-## Phase 5 — Release Summary
+## Phase 6 — Release Summary
 
 Print a summary of the release:
 
