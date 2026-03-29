@@ -250,7 +250,7 @@ export class BotInternals implements IStopResumeListener {
   }
 
   // ---------------------------------------------------------------------------
-  // Blocking movement helpers (called by Bot)
+  // Blocking movement helpers (called by Bot) — all synchronous via Atomics.wait()
   // ---------------------------------------------------------------------------
 
   forward(distance: number): void {

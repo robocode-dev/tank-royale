@@ -5,11 +5,8 @@ running on Node.js.
 
 ## Requirements for running the sample bots
 
-1. Node.js 18 (or newer) must be installed on your system. You can download it from here:
-   https://nodejs.org/en/download/
-
-2. You need to unpack the archive or copy the directories in the root of your `bots` directory to run these with
-   Robocode.
+Node.js 18 (or newer) must be installed on your system. You can download it from here:
+https://nodejs.org/en/download/
 
 ## Bot directories
 
@@ -18,14 +15,20 @@ Each bot has its own subdirectory (bot directory) that contains:
 * A JSON file (.json) that provides information about the bot.
 * Script files (.cmd and .sh) used for starting the bot.
 
+A shared `deps/` folder at the same level as the bot directories contains the bot API and runtime
+dependencies. The first time a bot is started, the script will automatically install these
+dependencies using `npm install`. Subsequent launches skip the install step.
+
 ## Running a bot
 
-A script file is used for running the bot, which runs `node <bot source file>` for the sample bots for TypeScript.
+Use the provided script file to run a bot. From a terminal, go into the bot directory and run:
 
-You can run a sample bot manually from the command line by going into the bot directory (using the `cd` command) and
-writing:
+- **Windows:** `MyFirstBot.cmd`
+- **macOS/Linux:** `./MyFirstBot.sh`
 
-    node <TypeScript source file>
+The script installs dependencies on first run, then starts the bot directly from its TypeScript
+source using `tsx`.
 
-Note: The bots are pre-compiled to JavaScript. If you want to modify and recompile them, you need to have TypeScript
-installed (`npm install -g typescript`) and run `tsc` in the bot directory.
+You can also start the bot manually once dependencies are installed:
+
+    ../node_modules/.bin/tsx MyFirstBot.ts

@@ -32,7 +32,7 @@ class Crazy extends Bot {
 
         // Loop while as long as the bot is running
         while (this.isRunning()) {
-            // Tell the game we will want to move ahead 40000 -- some large number
+            // Tell the game that when we take move, we'll also want to move ahead 40000 -- some large number
             this.setForward(40000);
             this.movingForward = true;
             // Tell the game we will want to turn left 90

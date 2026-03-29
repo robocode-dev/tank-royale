@@ -33,7 +33,11 @@ export class NodeRuntimeAdapter implements RuntimeAdapter {
     ws.on("close", (event: unknown) => wrapper.onclose?.(event));
     ws.on("error", (event: unknown) => wrapper.onerror?.(event));
     ws.on("message", (data: Buffer | string) => {
-      wrapper.onmessage?.({ data: data.toString() });
+      try {
+        wrapper.onmessage?.({ data: data.toString() });
+      } catch (err) {
+        console.error("[BOT-API] Error handling WebSocket message:", err);
+      }
     });
     return wrapper;
   }
@@ -44,5 +48,14 @@ export class NodeRuntimeAdapter implements RuntimeAdapter {
 
   exit(code: number): void {
     process.exit(code);
+  }
+
+  readFile(path: string): string | undefined {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      return require("fs").readFileSync(path, "utf8") as string;
+    } catch {
+      return undefined;
+    }
   }
 }

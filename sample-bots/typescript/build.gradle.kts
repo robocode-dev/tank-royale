@@ -16,7 +16,10 @@ private val batchExtension = "cmd"
 private val unixLineEnding = "\n"
 private val windowsLineEnding = "\r\n"
 private val teamSuffix = "Team"
+private val depsFolder = "deps"
 private val assetsFolder = "assets"
+private val tarballExtension = ".tgz"
+private val botApiTypescriptPath = "bot-api/typescript"
 
 val archiveDir = layout.buildDirectory.dir("archive")
 val archiveDirPath: Path = archiveDir.get().asFile.toPath()
@@ -31,51 +34,118 @@ val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
 private fun createShellScript(botName: String): String = """
     #!/bin/sh
-    cd "${'$'}(dirname "${'$'}0")"
-    node $botName.js
+    set -e
+    cd -- "${'$'}(dirname -- "${'$'}0")"
+    ../deps/install-dependencies.sh
+    exec "../node_modules/.bin/tsx" "$botName.ts"
     """.trimIndent()
 
 private fun createBatchScript(botName: String): String = """
     @echo off
     cd /d "%~dp0"
-    node $botName.js
+    call ..\deps\install-dependencies.cmd
+    ..\node_modules\.bin\tsx $botName.ts
     """.trimIndent()
 
-private fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
-    val botName = projectDir.botName()
-    val file = botArchivePath.resolve("$botName.$fileExt").toFile()
-    val printWriter = object : PrintWriter(file) {
+private fun writeScriptContent(writer: PrintWriter, scriptType: String, botName: String) {
+    val script = when (scriptType) {
+        shellExtension -> createShellScript(botName)
+        batchExtension -> createBatchScript(botName)
+        else -> throw IllegalArgumentException("Unsupported script type: $scriptType")
+    }
+    writer.print(script)
+}
+
+private fun createCustomPrintWriter(file: File, lineEnding: String): PrintWriter {
+    return object : PrintWriter(file) {
         override fun println() {
-            write(newLine)
+            write(lineEnding)
         }
     }
-    printWriter.use {
-        val content = when (fileExt) {
-            shellExtension -> createShellScript(botName)
-            else -> createBatchScript(botName)
-        }
-        content.lines().forEach { line ->
-            it.print(line)
-            it.println()
-        }
+}
+
+private fun createBotScriptFile(botDir: Path, archivePath: Path, extension: String, lineEnding: String) {
+    val botName = botDir.botName()
+    val scriptFile = archivePath.resolve("$botName.$extension").toFile()
+
+    createCustomPrintWriter(scriptFile, lineEnding).use { writer ->
+        writeScriptContent(writer, extension, botName)
     }
-    if (fileExt == shellExtension) {
-        file.setExecutable(true)
+
+    @Suppress("ResultOfMethodCallIgnored")
+    scriptFile.setExecutable(true, false)
+}
+
+private fun createBotScriptFiles(botDir: Path, archivePath: Path) {
+    createBotScriptFile(botDir, archivePath, batchExtension, windowsLineEnding)
+    createBotScriptFile(botDir, archivePath, shellExtension, unixLineEnding)
+}
+
+private fun isTeamBot(botDir: Path): Boolean = botDir.toString().endsWith(teamSuffix)
+
+private fun processIndividualBot(botDir: Path) {
+    val botArchivePath = archiveDirPath.resolve(botDir.botName())
+    mkdir(botArchivePath)
+    copyBotFiles(botDir, botArchivePath)
+
+    if (!isTeamBot(botDir)) {
+        createBotScriptFiles(botDir, botArchivePath)
     }
 }
 
 fun prepareBotFiles() {
     list(projectDir.toPath()).forEach { botDir ->
         if (isDirectory(botDir) && isBotProjectDir(botDir)) {
-            val botArchivePath: Path = archiveDirPath.resolve(botDir.botName())
-            mkdir(botArchivePath)
-            copyBotFiles(botDir, botArchivePath)
-            if (!botDir.toString().endsWith(teamSuffix)) {
-                createScriptFile(botDir, botArchivePath, batchExtension, windowsLineEnding)
-                createScriptFile(botDir, botArchivePath, shellExtension, unixLineEnding)
-            }
+            processIndividualBot(botDir)
         }
     }
+}
+
+private fun copyInstallationScripts(depsDir: Path) {
+    val assetsDir = project.projectDir.toPath().resolve(assetsFolder)
+    val installScriptCmd = "install-dependencies.$batchExtension"
+    val installScriptSh = "install-dependencies.$shellExtension"
+
+    copy(assetsDir.resolve(installScriptCmd), depsDir.resolve(installScriptCmd), REPLACE_EXISTING)
+    copy(assetsDir.resolve(installScriptSh), depsDir.resolve(installScriptSh), REPLACE_EXISTING)
+}
+
+private fun findTarball(): Path {
+    val botApiDir = rootProject.projectDir.toPath().resolve(botApiTypescriptPath)
+    return list(botApiDir).use { paths ->
+        paths.filter { it.fileName.toString().endsWith(tarballExtension) }
+            .findFirst()
+            .orElseThrow { GradleException("No $tarballExtension tarball found in $botApiDir. Run :bot-api:typescript:npmPack first.") }
+    }
+}
+
+private fun generatePackageJson(tarballName: String) {
+    // package.json lives at the archive root so node_modules/ is created there,
+    // making it visible to Node.js resolution from any bot subdirectory
+    val content = """
+        {
+          "private": true,
+          "dependencies": {
+            "@robocode.dev/tank-royale-bot-api": "file:./$depsFolder/$tarballName",
+            "tsx": "^4.19.2",
+            "ws": "^8.18.1"
+          }
+        }
+    """.trimIndent()
+    archiveDirPath.resolve("package.json").toFile().writeText(content)
+}
+
+private fun prepareDependencies() {
+    val depsDir = archiveDirPath.resolve(depsFolder)
+    createDirectories(depsDir)
+
+    copyInstallationScripts(depsDir)
+
+    val tarball = findTarball()
+    val tarballName = tarball.fileName.toString()
+    copy(tarball, depsDir.resolve(tarballName), REPLACE_EXISTING)
+
+    generatePackageJson(tarballName)
 }
 
 val prepareArchive by tasks.registering {
@@ -84,6 +154,13 @@ val prepareArchive by tasks.registering {
     }
 }
 
+val prepareDeps by tasks.registering {
+    dependsOn(":bot-api:typescript:npmPack")
+    doLast {
+        prepareDependencies()
+    }
+}
+
 tasks.named("build") {
-    dependsOn(prepareArchive)
+    dependsOn(prepareArchive, prepareDeps)
 }

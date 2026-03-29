@@ -72,6 +72,22 @@ export class BotInfo {
     return new BotInfoBuilder(name, version, authors);
   }
 
+  static fromJson(json: string): BotInfo {
+    const d = JSON.parse(json) as Record<string, unknown>;
+    return new BotInfo(
+      d["name"] as string,
+      d["version"] as string,
+      (d["authors"] as string[]) ?? [],
+      (d["description"] as string | null) ?? null,
+      (d["homepage"] as string | null) ?? null,
+      (d["countryCodes"] as string[]) ?? [],
+      (d["gameTypes"] as string[]) ?? [],
+      (d["platform"] as string | null) ?? null,
+      (d["programmingLang"] as string | null) ?? null,
+      null,
+    );
+  }
+
   private static validateName(name: string): string {
     if (name == null || name.trim() === "") {
       throw new Error("'name' cannot be null, empty or blank");

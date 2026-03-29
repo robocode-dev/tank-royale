@@ -25,6 +25,14 @@ tasks {
         outputs.dir("dist")
     }
 
+    register("npmPack", com.github.gradle.node.npm.task.NpmTask::class) {
+        dependsOn(npmBuild)
+        args = listOf("pack")
+        inputs.dir("dist")
+        inputs.file("package.json")
+        outputs.files(fileTree(projectDir) { include("*.tgz") })
+    }
+
     val npmTest by registering(com.github.gradle.node.npm.task.NpmTask::class) {
         dependsOn(npmInstall)
         args = listOf("run", "test")

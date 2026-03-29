@@ -17,6 +17,7 @@ export class EventHandler<T> {
     this.subscribers = this.subscribers.filter((s) => s.handler !== handler);
   }
 
+  /** Synchronous publish — subscribers are called in priority order. */
   publish(event: T): void {
     for (const sub of [...this.subscribers]) {
       sub.handler(event);

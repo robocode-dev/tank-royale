@@ -28,6 +28,8 @@ generated/
 *.lock
 *.sln.DotSettings.user
 
+*.tgz
+
 /*.battle.gz
 
 /.kotlin

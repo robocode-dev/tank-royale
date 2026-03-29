@@ -67,13 +67,27 @@ export abstract class BaseBot implements IBaseBot {
    */
   constructor(botInfo: BotInfo, serverUrl: string, serverSecret: string);
   constructor(botInfo?: BotInfo, serverUrl?: string, serverSecret?: string) {
-    const info = botInfo ?? new EnvVars(detectRuntime()).getBotInfo();
+    const info = botInfo ?? BaseBot._loadBotInfo(new.target.name);
     this._internals = new BaseBotInternals(
       this,
       info,
       serverUrl ?? null,
       serverSecret,
     );
+  }
+
+  private static _loadBotInfo(className: string): BotInfo {
+    const runtime = detectRuntime();
+    // Try <ClassName>.json in the current directory first (matches Python/Java behaviour)
+    const text = runtime.readFile(`./${className}.json`);
+    if (text) {
+      try {
+        return BotInfo.fromJson(text);
+      } catch {
+        // Fall through to env vars
+      }
+    }
+    return new EnvVars(runtime).getBotInfo();
   }
 
   start(): void {

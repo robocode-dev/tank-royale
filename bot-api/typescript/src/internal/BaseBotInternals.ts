@@ -54,6 +54,10 @@ const DECELERATION = -2;
 /**
  * Full internal implementation for BaseBot.
  * Manages WebSocket connection, event dispatching, bot intent, and worker thread synchronization.
+ *
+ * Architecture (ADR-0028):
+ * - Main thread: WebSocket only. Forwards all server messages to Worker via postMessage/Atomics.notify.
+ * - Worker thread: Runs bot.run() synchronously. Uses Atomics.wait() in go() to block between turns.
  */
 export class BaseBotInternals {
   readonly botInfo: BotInfo;
@@ -97,12 +101,23 @@ export class BaseBotInternals {
 
   // Thread/worker state
   private running = false;
-  private worker: Worker | null = null;
-  private sharedBuffer: SharedArrayBuffer | null = null;
-  private sharedView: Int32Array | null = null;
   private eventHandlingDisabledTurn = 0;
   private lastExecuteTurnNumber = -1;
   private movementResetPending = false;
+
+  // Worker architecture fields
+  private workerMode = false;          // true when running inside the Worker thread
+  private keepRunningGame = true;      // Worker bootstrap loop exit flag
+  private sharedBuffer: SharedArrayBuffer | null = null;
+  private sharedView: Int32Array | null = null;
+
+  // Main thread side: port to talk to Worker
+  private mainPort: any | null = null;
+
+  // Worker thread side: port to talk to main thread
+  private workerPort: any | null = null;
+  private workerParentPort: { postMessage(msg: any): void } | null = null;
+  private workerReceiveMessageOnPort: ((port: any) => { message: any } | undefined) | null = null;
 
   // Graphics
   private svgGraphics: SvgGraphics | null = null;
@@ -110,9 +125,9 @@ export class BaseBotInternals {
   constructor(baseBot: IBaseBot, botInfo: BotInfo, serverUrl: string | null, serverSecret: string | undefined) {
     this.baseBot = baseBot;
     this.botInfo = botInfo;
-    this.serverUrl = serverUrl ?? DEFAULT_SERVER_URL;
-    this.serverSecret = serverSecret;
     this.envVars = new EnvVars(detectRuntime());
+    this.serverUrl = serverUrl ?? this.envVars.getServerUrl() ?? DEFAULT_SERVER_URL;
+    this.serverSecret = serverSecret ?? this.envVars.getServerSecret();
     this.eventPriorities = new EventPriorities();
     this.eventInterruption = new EventInterruption();
     this.eventQueue = new EventQueue(this.eventPriorities, this.eventInterruption);
@@ -122,11 +137,50 @@ export class BaseBotInternals {
   }
 
   private subscribeToEvents(): void {
+    // Internal lifecycle subscriptions
     this.internalEventHandlers.onRoundStarted.subscribe((e) => this.onRoundStarted(e), 100);
     this.internalEventHandlers.onNextTurn.subscribe((e) => this.onNextTurn(e.tickEvent), 100);
     this.internalEventHandlers.onBulletFired.subscribe(() => {
       this.intent.firepower = 0; // stop firing continuously
     }, 100);
+
+    // Wire botEventHandlers to baseBot user-overridable methods.
+    // Internal handlers (distanceRemaining reset, stopThread) fire at priority 90 (before user code).
+    const beh = this.botEventHandlers;
+    const ih = this.internalEventHandlers;
+    const bot = this.baseBot;
+
+    beh.onConnected.subscribe((e) => bot.onConnected(e));
+    beh.onDisconnected.subscribe((e) => bot.onDisconnected(e));
+    beh.onConnectionError.subscribe((e) => bot.onConnectionError(e));
+    beh.onGameStarted.subscribe((e) => bot.onGameStarted(e));
+    beh.onGameEnded.subscribe((e) => bot.onGameEnded(e));
+    beh.onRoundStarted.subscribe((e) => bot.onRoundStarted(e));
+    beh.onRoundEnded.subscribe((e) => bot.onRoundEnded(e));
+    beh.onTick.subscribe((e) => bot.onTick(e));
+    beh.onBotDeath.subscribe((e) => bot.onBotDeath(e));
+    beh.onSkippedTurn.subscribe((e) => bot.onSkippedTurn(e));
+    beh.onWonRound.subscribe((e) => bot.onWonRound(e));
+    beh.onCustomEvent.subscribe((e) => bot.onCustomEvent(e));
+    beh.onTeamMessage.subscribe((e) => bot.onTeamMessage(e));
+    beh.onHitByBullet.subscribe((e) => bot.onHitByBullet(e));
+    beh.onBulletHitBot.subscribe((e) => bot.onBulletHitBot(e));
+    beh.onBulletHitBullet.subscribe((e) => bot.onBulletHitBullet(e));
+    beh.onBulletHitWall.subscribe((e) => bot.onBulletHitWall(e));
+    beh.onScannedBot.subscribe((e) => bot.onScannedBot(e));
+
+    // Events that also fire internal handlers (internal at priority 90, user at default 0)
+    beh.onDeath.subscribe((e) => ih.onDeath.publish(e), 90);
+    beh.onDeath.subscribe((e) => bot.onDeath(e));
+
+    beh.onHitWall.subscribe((e) => ih.onHitWall.publish(e), 90);
+    beh.onHitWall.subscribe((e) => bot.onHitWall(e));
+
+    beh.onHitBot.subscribe((e) => ih.onHitBot.publish(e), 90);
+    beh.onHitBot.subscribe((e) => bot.onHitBot(e));
+
+    beh.onBulletFired.subscribe((e) => ih.onBulletFired.publish(e), 90);
+    beh.onBulletFired.subscribe((e) => bot.onBulletFired(e));
   }
 
   private onRoundStarted(_e: InstanceType<typeof RoundStartedEventClass>): void {
@@ -138,27 +192,85 @@ export class BaseBotInternals {
   }
 
   private onNextTurn(_e: TickEvent): void {
-    // Signal the worker thread that a new turn has arrived
-    if (this.sharedView != null) {
+    // In worker mode: main thread already called Atomics.notify via forwardToWorker.
+    // In main thread (no Worker, legacy path): notify the shared view if present.
+    if (!this.workerMode && this.sharedView != null) {
       Atomics.add(this.sharedView, SAB_SLOT_TURN, 1);
       Atomics.notify(this.sharedView, SAB_SLOT_TURN);
     }
   }
 
   // ---------------------------------------------------------------------------
-  // start() / connect()
+  // start() — detects main vs worker mode and dispatches
   // ---------------------------------------------------------------------------
 
   start(): void {
-    this.connect();
-    // Block until WebSocket closes (Node.js: use Atomics.wait on a close latch)
-    const closeLatch = new Int32Array(new SharedArrayBuffer(4));
-    this._closeLatch = closeLatch;
-    Atomics.wait(closeLatch, 0, 0); // blocks until set to non-zero
+    const wt = this.getWorkerThreads();
+    if (wt != null && wt.workerData?.isWorker === true) {
+      // We are inside the spawned Worker
+      this.startAsWorker(wt);
+    } else {
+      // We are on the main thread — spawn a Worker
+      this.startAsMain(wt);
+    }
   }
 
-  /** @internal used by WebSocket close handler */
-  _closeLatch: Int32Array | null = null;
+  private startAsMain(wt: any | null): void {
+    if (wt == null) {
+      // No worker_threads available (browser or very old Node) — fall back to legacy connect
+      this.connect();
+      return;
+    }
+
+    // Create shared buffer for synchronization
+    this.sharedBuffer = new SharedArrayBuffer(SAB_LENGTH * 4);
+    this.sharedView = new Int32Array(this.sharedBuffer);
+
+    // Create a MessageChannel — port1 stays on main, port2 goes to Worker
+    const { port1, port2 } = new wt.MessageChannel();
+    this.mainPort = port1;
+
+    // Listen on port1 for intent messages from Worker
+    port1.on("message", (msg: any) => {
+      if (msg.type === "intent" && this.wsHandler != null) {
+        this.wsHandler.sendBotIntent(msg.intent);
+      }
+    });
+
+    // Spawn the Worker (re-running the same script with workerData.isWorker=true)
+    const worker = new wt.Worker(process.argv[1], {
+      workerData: {
+        isWorker: true,
+        sharedBuffer: this.sharedBuffer,
+        port: port2,
+      },
+      transferList: [port2],
+    });
+
+    worker.on("error", (err: Error) => {
+      console.error("[BOT-API] Worker error:", err);
+    });
+
+    // Connect WebSocket on main thread
+    this.connect();
+  }
+
+  private startAsWorker(wt: any): void {
+    this.workerMode = true;
+    this.sharedBuffer = wt.workerData.sharedBuffer;
+    this.sharedView = new Int32Array(this.sharedBuffer!);
+    this.workerPort = wt.workerData.port;
+    this.workerParentPort = wt.workerData.port;
+    this.workerReceiveMessageOnPort = wt.receiveMessageOnPort;
+
+    // The Worker doesn't run WebSocket — it receives forwarded messages from main.
+    // Bootstrap loop: wait for game messages and process them.
+    this.bootstrapWorker();
+  }
+
+  // ---------------------------------------------------------------------------
+  // connect() — sets up WebSocket (main thread only)
+  // ---------------------------------------------------------------------------
 
   private connect(): void {
     const adapter = detectRuntime();
@@ -186,32 +298,189 @@ export class BaseBotInternals {
   }
 
   // ---------------------------------------------------------------------------
+  // Main thread message forwarding to Worker
+  // ---------------------------------------------------------------------------
+
+  private forwardToWorker(type: string, data?: any): void {
+    if (this.mainPort != null) {
+      this.mainPort.postMessage({ type, data });
+    }
+    // Increment turn counter and notify Worker
+    if (this.sharedView != null) {
+      Atomics.add(this.sharedView, SAB_SLOT_TURN, 1);
+      Atomics.notify(this.sharedView, SAB_SLOT_TURN);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
   // WebSocket event handlers
   // ---------------------------------------------------------------------------
 
   private handleConnected(): void {
-    const e = new ConnectedEvent(this.serverUrl);
-    this.botEventHandlers.onConnected.publish(e);
-  }
-
-  private handleDisconnected(remote: boolean, code?: number, reason?: string): void {
-    const e = new DisconnectedEvent(this.serverUrl, remote, code, reason);
-    this.botEventHandlers.onDisconnected.publish(e);
-    this.internalEventHandlers.onDisconnected.publish(e);
-    this.stopThread();
-    // Unblock start()
-    if (this._closeLatch != null) {
-      Atomics.store(this._closeLatch, 0, 1);
-      Atomics.notify(this._closeLatch, 0);
+    if (this.workerMode) {
+      // Worker mode: process directly (shouldn't happen — connected fires on main)
+      const e = new ConnectedEvent(this.serverUrl);
+      this.botEventHandlers.onConnected.publish(e);
+    } else if (this.mainPort != null) {
+      // Forward to Worker
+      this.forwardToWorker("connected", { serverUrl: this.serverUrl });
+    } else {
+      // No Worker, handle directly
+      const e = new ConnectedEvent(this.serverUrl);
+      this.botEventHandlers.onConnected.publish(e);
     }
   }
 
+  private handleDisconnected(remote: boolean, code?: number, reason?: string): void {
+    if (this.mainPort != null) {
+      this.forwardToWorker("disconnected", { serverUrl: this.serverUrl, remote, code, reason });
+    } else {
+      const e = new DisconnectedEvent(this.serverUrl, remote, code, reason);
+      this.botEventHandlers.onDisconnected.publish(e);
+      this.internalEventHandlers.onDisconnected.publish(e);
+    }
+    this.stopThread();
+  }
+
   private handleConnectionError(err: unknown): void {
-    const e = new ConnectionErrorEvent(this.serverUrl, err instanceof Error ? err : new Error(String(err)));
-    this.botEventHandlers.onConnectionError.publish(e);
+    if (this.mainPort != null) {
+      this.forwardToWorker("connectionError", {
+        serverUrl: this.serverUrl,
+        message: err instanceof Error ? err.message : String(err),
+      });
+    } else {
+      const e = new ConnectionErrorEvent(this.serverUrl, err instanceof Error ? err : new Error(String(err)));
+      this.botEventHandlers.onConnectionError.publish(e);
+    }
   }
 
   private handleGameStarted(msg: import("../protocol/schema.js").GameStartedEventForBot): void {
+    if (this.mainPort != null) {
+      this.forwardToWorker("gameStarted", msg);
+    } else {
+      this.processGameStarted(msg);
+    }
+  }
+
+  private handleGameEnded(msg: import("../protocol/schema.js").GameEndedEventForBot): void {
+    this.stopThread();
+    if (this.mainPort != null) {
+      this.forwardToWorker("gameEnded", msg);
+    } else {
+      this.processGameEnded(msg);
+    }
+  }
+
+  private handleGameAborted(): void {
+    this.stopThread();
+    if (this.mainPort != null) {
+      this.forwardToWorker("gameAborted");
+    } else {
+      this.internalEventHandlers.fireGameAborted();
+    }
+  }
+
+  private handleRoundStarted(msg: import("../protocol/schema.js").RoundStartedEvent): void {
+    if (this.mainPort != null) {
+      this.forwardToWorker("roundStarted", msg);
+    } else {
+      this.processRoundStarted(msg);
+    }
+  }
+
+  private handleRoundEnded(msg: import("../protocol/schema.js").RoundEndedEventForBot): void {
+    this.stopThread();
+    if (this.mainPort != null) {
+      this.forwardToWorker("roundEnded", msg);
+    } else {
+      this.processRoundEnded(msg);
+    }
+  }
+
+  private handleTick(msg: import("../protocol/schema.js").TickEventForBot): void {
+    if (this.mainPort != null) {
+      this.forwardToWorker("tick", msg);
+    } else {
+      this.processTick(msg);
+    }
+  }
+
+  private handleSkippedTurn(turnNumber: number): void {
+    if (this.mainPort != null) {
+      this.forwardToWorker("skippedTurn", { turnNumber });
+    } else {
+      const e = new SkippedTurnEvent(turnNumber);
+      this.addEvent(e);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Worker message processing
+  // ---------------------------------------------------------------------------
+
+  private drainWorkerMessages(): void {
+    if (this.workerReceiveMessageOnPort == null || this.workerPort == null) return;
+    let msgWrapper: { message: any } | undefined;
+    while ((msgWrapper = this.workerReceiveMessageOnPort(this.workerPort)) != null) {
+      this.processWorkerMessage(msgWrapper.message);
+    }
+  }
+
+  private processWorkerMessage(msg: any): void {
+    switch (msg.type) {
+      case "connected":
+        {
+          const e = new ConnectedEvent(msg.data.serverUrl);
+          this.botEventHandlers.onConnected.publish(e);
+        }
+        break;
+      case "disconnected":
+        {
+          const e = new DisconnectedEvent(msg.data.serverUrl, msg.data.remote, msg.data.code, msg.data.reason);
+          this.botEventHandlers.onDisconnected.publish(e);
+          this.internalEventHandlers.onDisconnected.publish(e);
+        }
+        break;
+      case "connectionError":
+        {
+          const e = new ConnectionErrorEvent(msg.data.serverUrl, new Error(msg.data.message));
+          this.botEventHandlers.onConnectionError.publish(e);
+        }
+        break;
+      case "gameStarted":
+        this.processGameStarted(msg.data);
+        break;
+      case "gameEnded":
+        this.keepRunningGame = false;
+        this.processGameEnded(msg.data);
+        break;
+      case "gameAborted":
+        this.keepRunningGame = false;
+        this.internalEventHandlers.fireGameAborted();
+        break;
+      case "roundStarted":
+        this.processRoundStarted(msg.data);
+        break;
+      case "roundEnded":
+        this.processRoundEnded(msg.data);
+        break;
+      case "tick":
+        this.processTick(msg.data);
+        break;
+      case "skippedTurn":
+        {
+          const e = new SkippedTurnEvent(msg.data.turnNumber);
+          this.addEvent(e);
+        }
+        break;
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Shared processing logic (used by both main and worker paths)
+  // ---------------------------------------------------------------------------
+
+  private processGameStarted(msg: import("../protocol/schema.js").GameStartedEventForBot): void {
     this.myId = msg.myId;
     this.gameSetup = GameSetupMapper.map(msg.gameSetup);
     this.teammateIds = new Set(msg.teammateIds ?? []);
@@ -220,88 +489,123 @@ export class BaseBotInternals {
     this.botEventHandlers.onGameStarted.publish(e);
   }
 
-  private handleGameEnded(msg: import("../protocol/schema.js").GameEndedEventForBot): void {
-    this.stopThread();
+  private processGameEnded(msg: import("../protocol/schema.js").GameEndedEventForBot): void {
     const results = ResultsMapper.map(msg.results);
     const e = new GameEndedEvent(msg.numberOfRounds, results);
     this.botEventHandlers.onGameEnded.publish(e);
     this.internalEventHandlers.onGameEnded.publish(e);
   }
 
-  private handleGameAborted(): void {
-    this.stopThread();
-    this.internalEventHandlers.fireGameAborted();
-  }
-
-  private handleRoundStarted(msg: import("../protocol/schema.js").RoundStartedEvent): void {
+  private processRoundStarted(msg: import("../protocol/schema.js").RoundStartedEvent): void {
     const e = new RoundStartedEventClass(msg.roundNumber);
     this.botEventHandlers.onRoundStarted.publish(e);
     this.internalEventHandlers.onRoundStarted.publish(e);
   }
 
-  private handleRoundEnded(msg: import("../protocol/schema.js").RoundEndedEventForBot): void {
-    this.stopThread();
+  private processRoundEnded(msg: import("../protocol/schema.js").RoundEndedEventForBot): void {
     const results = ResultsMapper.map(msg.results);
     const e = new RoundEndedEvent(msg.roundNumber, msg.turnNumber, results);
     this.botEventHandlers.onRoundEnded.publish(e);
     this.internalEventHandlers.onRoundEnded.publish(e);
   }
 
-  private handleTick(msg: import("../protocol/schema.js").TickEventForBot): void {
+  private processTick(msg: import("../protocol/schema.js").TickEventForBot): void {
     this.tickStartTime = Date.now();
     const tick = EventMapper.map(msg, this.myId);
     this.tickEvent = tick;
     this.addEventsFromTick(tick);
     this.enableEventHandling(true);
-    this.dispatchEvents(tick.turnNumber);
+    // Internal handlers (processTurn, Atomics.notify) fire synchronously.
     this.internalEventHandlers.fireEvent(tick);
   }
 
-  private handleSkippedTurn(turnNumber: number): void {
-    const e = new SkippedTurnEvent(turnNumber);
-    this.addEvent(e);
+  // ---------------------------------------------------------------------------
+  // Worker bootstrap loop
+  // ---------------------------------------------------------------------------
+
+  private bootstrapWorker(): void {
+    while (this.keepRunningGame) {
+      if (this.sharedView == null) break;
+      const curVal = Atomics.load(this.sharedView, SAB_SLOT_TURN);
+      const msgWrapper = this.workerReceiveMessageOnPort != null && this.workerPort != null
+        ? this.workerReceiveMessageOnPort(this.workerPort)
+        : undefined;
+      if (msgWrapper != null) {
+        this.processWorkerMessage(msgWrapper.message);
+      } else {
+        Atomics.wait(this.sharedView, SAB_SLOT_TURN, curVal, 10);
+      }
+    }
   }
 
   // ---------------------------------------------------------------------------
-  // execute() / sendIntent() / waitForNextTurn()
+  // execute() / sendIntentToMain() / waitForNextTurnWorker()
   // ---------------------------------------------------------------------------
 
   execute(): void {
+    if (!this.workerMode) {
+      // Main thread (no Worker, legacy path): send intent directly
+      if (this.tickEvent == null) {
+        this.sendIntentDirect();
+        return;
+      }
+      const turnNumber = this.tickEvent.turnNumber;
+      if (turnNumber !== this.lastExecuteTurnNumber) {
+        this.lastExecuteTurnNumber = turnNumber;
+        this.sendIntentDirect();
+        if (this.movementResetPending) {
+          this.resetMovement();
+          this.movementResetPending = false;
+        }
+      }
+      return;
+    }
+
+    // Worker mode: send intent to main thread, then wait for next turn
     if (this.tickEvent == null) {
-      this.sendIntent();
+      this.sendIntentToMain();
       return;
     }
     const turnNumber = this.tickEvent.turnNumber;
     if (turnNumber !== this.lastExecuteTurnNumber) {
       this.lastExecuteTurnNumber = turnNumber;
-      this.sendIntent();
+      this.sendIntentToMain();
       if (this.movementResetPending) {
         this.resetMovement();
         this.movementResetPending = false;
       }
     }
-    this.waitForNextTurn(turnNumber);
+    this.waitForNextTurnWorker(turnNumber);
   }
 
-  private sendIntent(): void {
+  private sendIntentDirect(): void {
     if (this.wsHandler == null) return;
-    const intent = { ...this.intent };
-    this.wsHandler.sendBotIntent(intent as import("../protocol/schema.js").BotIntent);
+    const intent: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(this.intent)) {
+      if (v != null) intent[k] = v;
+    }
+    this.wsHandler.sendBotIntent(intent as unknown as import("../protocol/schema.js").BotIntent);
     this.intent.teamMessages = null;
   }
 
-  private waitForNextTurn(turnNumber: number): void {
+  private sendIntentToMain(): void {
+    if (this.workerParentPort == null) return;
+    const intent: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(this.intent)) {
+      if (v != null) intent[k] = v;
+    }
+    this.workerParentPort.postMessage({ type: "intent", intent });
+    this.intent.teamMessages = null;
+  }
+
+  private waitForNextTurnWorker(currentTurnNumber: number): void {
     this.stopRogueThread();
-    if (this.sharedView == null) return;
-    // Spin-wait: block until turn signal changes or stop flag is set
-    while (
-      this.running &&
-      this.tickEvent != null &&
-      this.tickEvent.turnNumber === turnNumber
-    ) {
-      const result = Atomics.wait(this.sharedView, SAB_SLOT_TURN, Atomics.load(this.sharedView, SAB_SLOT_TURN), 100);
-      if (result === "ok" || result === "not-equal") break;
-      // "timed-out" — loop again to check running flag
+    while (this.running && (this.tickEvent?.turnNumber ?? 0) === currentTurnNumber) {
+      this.stopRogueThread();
+      if (this.sharedView == null) break;
+      const curVal = Atomics.load(this.sharedView, SAB_SLOT_TURN);
+      Atomics.wait(this.sharedView, SAB_SLOT_TURN, curVal, 500);
+      this.drainWorkerMessages();
     }
     this.stopRogueThread();
   }
@@ -326,58 +630,34 @@ export class BaseBotInternals {
 
   startThread(bot: IBot): void {
     this.enableEventHandling(true);
-    this.sharedBuffer = new SharedArrayBuffer(SAB_LENGTH * 4);
-    this.sharedView = new Int32Array(this.sharedBuffer);
-    Atomics.store(this.sharedView, SAB_SLOT_STOP, 0);
-    Atomics.store(this.sharedView, SAB_SLOT_TURN, 0);
-
-    // In Node.js, use worker_threads; in browser, use Worker
-    const runtime = detectRuntime();
-    try {
-      // Try Node.js worker_threads
-      const { Worker: NodeWorker } = require("worker_threads");
-      const workerCode = `
-        const { workerData, parentPort } = require('worker_threads');
-        const { sharedBuffer } = workerData;
-        const view = new Int32Array(sharedBuffer);
-        parentPort.on('message', (msg) => {
-          if (msg.type === 'start') {
-            // The actual bot run loop is driven from the main thread via postMessage
-            // Worker just signals readiness
-            parentPort.postMessage({ type: 'ready' });
-          }
-        });
-      `;
-      // We run the bot loop on the main thread for simplicity in Node.js
-      // (true worker_threads blocking is complex; use async loop instead)
-      this.runBotLoop(bot);
-    } catch {
-      // Browser: use Web Worker
-      this.runBotLoop(bot);
+    if (!this.sharedView) {
+      this.sharedBuffer = new SharedArrayBuffer(SAB_LENGTH * 4);
+      this.sharedView = new Int32Array(this.sharedBuffer);
     }
+    Atomics.store(this.sharedView, SAB_SLOT_STOP, 0);
+    // In Worker mode, startThread is called from BotInternals.onFirstTurn() which runs on the
+    // Worker thread. runBotLoop blocks synchronously here — that is intentional.
+    this.runBotLoop(bot);
   }
 
   private runBotLoop(bot: IBot): void {
     this.setRunning(true);
-    // Run asynchronously to not block the main thread
-    Promise.resolve().then(async () => {
+    try {
+      bot.run();
+    } catch (e) {
+      if (!(e instanceof BotStoppedException)) {
+        // ignore unexpected errors from bot.run()
+      }
+    }
+    this.dispatchFinalTurnEvents();
+    while (this.running) {
       try {
-        bot.run();
+        bot.go();
       } catch (e) {
-        if (!(e instanceof BotStoppedException)) {
-          // ignore
-        }
+        if (e instanceof BotStoppedException) break;
       }
-      this.dispatchFinalTurnEvents();
-      while (this.running) {
-        try {
-          bot.go();
-        } catch (e) {
-          if (e instanceof BotStoppedException) break;
-        }
-      }
-      this.dispatchFinalTurnEvents();
-    });
+    }
+    this.dispatchFinalTurnEvents();
   }
 
   stopThread(): void {
@@ -388,7 +668,6 @@ export class BaseBotInternals {
       Atomics.store(this.sharedView, SAB_SLOT_STOP, 1);
       Atomics.notify(this.sharedView, SAB_SLOT_TURN);
     }
-    this.worker = null;
   }
 
   enableEventHandling(enable: boolean): void {
@@ -428,6 +707,19 @@ export class BaseBotInternals {
   dispatchFinalTurnEvents(): void {
     if (this.tickEvent != null) {
       this.dispatchEvents(this.tickEvent.turnNumber);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Worker threads helper
+  // ---------------------------------------------------------------------------
+
+  private getWorkerThreads(): any | null {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      return require("worker_threads");
+    } catch {
+      return null;
     }
   }
 

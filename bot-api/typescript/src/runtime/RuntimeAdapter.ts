@@ -11,4 +11,6 @@ export interface RuntimeAdapter {
   getEnvVar(name: string): string | undefined;
   /** Terminate the process / runtime with the given exit code. */
   exit(code: number): void;
+  /** Read a file by path and return its contents as a string, or undefined if not available. */
+  readFile(path: string): string | undefined;
 }

@@ -40,4 +40,8 @@ export class BrowserRuntimeAdapter implements RuntimeAdapter {
   exit(_code: number): void {
     // No-op in browser environments.
   }
+
+  readFile(_path: string): string | undefined {
+    return undefined;
+  }
 }
