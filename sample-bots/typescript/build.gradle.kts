@@ -125,6 +125,7 @@ private fun generatePackageJson(tarballName: String) {
     val content = """
         {
           "private": true,
+          "type": "module",
           "dependencies": {
             "@robocode.dev/tank-royale-bot-api": "file:./$depsFolder/$tarballName",
             "tsx": "^4.19.2",

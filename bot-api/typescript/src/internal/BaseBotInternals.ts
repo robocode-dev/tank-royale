@@ -28,6 +28,7 @@ import { EnvVars } from "../EnvVars.js";
 import { ColorUtil } from "../util/ColorUtil.js";
 import { MathUtil } from "../util/MathUtil.js";
 import { detectRuntime } from "../runtime/index.js";
+import { initNodeRuntime } from "../runtime/NodeRuntimeAdapter.js";
 import { GameSetup } from "../GameSetup.js";
 import { GameSetupMapper } from "../mapper/GameSetupMapper.js";
 import { InitialPosition } from "../InitialPosition.js";
@@ -205,7 +206,14 @@ export class BaseBotInternals {
   // ---------------------------------------------------------------------------
 
   start(): void {
-    const wt = this.getWorkerThreads();
+    this._startAsync().catch((err) => {
+      console.error("[BOT-API] Failed to start bot:", err);
+    });
+  }
+
+  private async _startAsync(): Promise<void> {
+    await initNodeRuntime();
+    const wt = await this._importWorkerThreads();
     if (wt != null && wt.workerData?.isWorker === true) {
       // We are inside the spawned Worker
       this.startAsWorker(wt);
@@ -714,10 +722,9 @@ export class BaseBotInternals {
   // Worker threads helper
   // ---------------------------------------------------------------------------
 
-  private getWorkerThreads(): any | null {
+  private async _importWorkerThreads(): Promise<any | null> {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      return require("worker_threads");
+      return await import("node:worker_threads");
     } catch {
       return null;
     }

@@ -2,6 +2,31 @@ import { RuntimeAdapter } from "./RuntimeAdapter.js";
 import { WebSocketLike } from "./WebSocketLike.js";
 import type WsWebSocket from "ws";
 
+// Cached require function that works in both CJS and ESM contexts.
+let _nodeRequire: ((id: string) => any) | null = null;
+
+/**
+ * Initialize the Node.js require function for ESM compatibility.
+ * In CJS, `require` is already available. In ESM, `createRequire` from
+ * `node:module` is used. Must be awaited before `createWebSocket()`.
+ */
+export async function initNodeRuntime(): Promise<void> {
+  if (_nodeRequire) return;
+  if (typeof require === "function") {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    _nodeRequire = require;
+    return;
+  }
+  if (typeof process === "undefined" || process.env === undefined) return;
+  try {
+    const mod = await import("node:module");
+    // @ts-ignore TS1343 – import.meta.url is ESM-only; in CJS builds, the require branch above is taken
+    _nodeRequire = mod.createRequire(import.meta.url);
+  } catch {
+    // Not in a Node.js environment
+  }
+}
+
 /**
  * RuntimeAdapter implementation for Node.js.
  * Uses the `ws` library for WebSocket, `process.env` for environment variables,
@@ -9,9 +34,10 @@ import type WsWebSocket from "ws";
  */
 export class NodeRuntimeAdapter implements RuntimeAdapter {
   createWebSocket(url: string): WebSocketLike {
-    // Dynamically require `ws` so the package stays an optional peer dependency.
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const WS = require("ws") as new (url: string) => WsWebSocket;
+    if (!_nodeRequire) {
+      throw new Error("[BOT-API] Node runtime not initialized. Ensure start() was called.");
+    }
+    const WS = _nodeRequire("ws") as new (url: string) => WsWebSocket;
     const ws = new WS(url);
     // The `ws` library emits events via EventEmitter; wrap it to match WebSocketLike.
     const wrapper: WebSocketLike = {
@@ -52,8 +78,9 @@ export class NodeRuntimeAdapter implements RuntimeAdapter {
 
   readFile(path: string): string | undefined {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      return require("fs").readFileSync(path, "utf8") as string;
+      const req = _nodeRequire ?? (typeof require === "function" ? require : null);
+      if (!req) return undefined;
+      return req("fs").readFileSync(path, "utf8") as string;
     } catch {
       return undefined;
     }

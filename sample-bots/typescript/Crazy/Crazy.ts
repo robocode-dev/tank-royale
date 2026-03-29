@@ -4,7 +4,7 @@ import {
     Condition,
     HitBotEvent,
     HitWallEvent,
-    IBot,
+    type IBot,
     ScannedBotEvent
 } from "@robocode.dev/tank-royale-bot-api";
 

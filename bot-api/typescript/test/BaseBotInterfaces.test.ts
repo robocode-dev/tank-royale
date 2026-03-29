@@ -179,9 +179,9 @@ describe("IBaseBot interface (task 1)", () => {
     expect(() => bot.setFireAssist(true)).not.toThrow();
   });
 
-  it("1.12 start() throws (not yet implemented)", () => {
+  it("1.12 start() does not throw synchronously (async internally)", () => {
     const bot = makeBot();
-    expect(() => bot.start()).toThrow();
+    expect(() => bot.start()).not.toThrow();
   });
 });
 
