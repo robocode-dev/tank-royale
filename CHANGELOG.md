@@ -1,5 +1,14 @@
 ## [pending]
 
+### 🐞 Bug Fixes
+
+- Server:
+    - #199: Fixed double-turn bugs when stepping at TPS=0, rapidly changing TPS, or switching between TPS values.
+      The turn-timeout timer is now rescheduled only after the visual delay completes, and nonzero→nonzero TPS
+      changes no longer reset the timer.
+    - Fixed game freeze on pause/resume and when resuming from TPS=0. Resume now calls `resetTurnTimeout()`
+      directly instead of relying on `turnTimeoutTimer.resume()`, which could be a no-op depending on timer state.
+
 ### 🔧 Changes
 
 - Bot API (Java, .NET, Python, TypeScript) + Schemas:
