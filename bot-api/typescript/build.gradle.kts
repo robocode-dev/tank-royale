@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.node.gradle)
 }
 
+version = libs.versions.tankroyale.get()
+
 node {
     download = true
     version = "22.14.0"
@@ -11,7 +13,26 @@ node {
 }
 
 tasks {
+    val syncVersion by registering {
+        group = "build"
+        description = "Synchronises package.json version with gradle.properties"
+        val pkgFile = file("package.json")
+        val newVersion = project.version.toString()
+        inputs.property("version", newVersion)
+        outputs.file(pkgFile)
+        doLast {
+            val content = pkgFile.readText()
+            val updated = content.replace(
+                Regex(""""version":\s*"[^"]+""""),
+                """"version": "$newVersion""""
+            )
+            pkgFile.writeText(updated)
+            logger.lifecycle("Updated package.json version to $newVersion")
+        }
+    }
+
     npmInstall {
+        dependsOn(syncVersion)
         inputs.file("package.json")
         outputs.dir("node_modules")
     }
