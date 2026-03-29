@@ -3,7 +3,8 @@
 # NOTE: This script does NOT actually push to NuGet - it only displays the command that would be executed
 
 param(
-    [switch]$Execute = $false
+    [switch]$Execute = $false,
+    [switch]$Force = $false
 )
 
 # Get the root directory (two levels up from scripts/release)
@@ -94,29 +95,37 @@ Write-Host "  dotnet nuget push $packageFile --api-key `"$apiKey`" --source http
 Write-Host ""
 
 if ($Execute) {
-    Write-Host "========================================" -ForegroundColor Red
-    Write-Host "EXECUTING NUGET PUSH (ARE YOU SURE?)" -ForegroundColor Red
-    Write-Host "========================================" -ForegroundColor Red
-    Write-Host ""
-    $confirmation = Read-Host "Type 'YES' to confirm"
-
-    if ($confirmation -eq "YES") {
-        Push-Location $releaseDir
-        try {
-            dotnet nuget push $packageFile --api-key "$apiKey" --source https://api.nuget.org/v3/index.json
-            Write-Host ""
-            Write-Host "Package published successfully!" -ForegroundColor Green
-        }
-        catch {
-            Write-Error "Failed to publish package: $_"
-            exit 1
-        }
-        finally {
-            Pop-Location
-        }
+    if ($Force) {
+        Write-Host "========================================" -ForegroundColor Red
+        Write-Host "EXECUTING NUGET PUSH (Force mode: skipping confirmation)" -ForegroundColor Red
+        Write-Host "========================================" -ForegroundColor Red
+        Write-Host ""
     }
     else {
-        Write-Host "Publish cancelled." -ForegroundColor Yellow
+        Write-Host "========================================" -ForegroundColor Red
+        Write-Host "EXECUTING NUGET PUSH (ARE YOU SURE?)" -ForegroundColor Red
+        Write-Host "========================================" -ForegroundColor Red
+        Write-Host ""
+        $confirmation = Read-Host "Type 'YES' to confirm"
+
+        if ($confirmation -ne "YES") {
+            Write-Host "Publish cancelled." -ForegroundColor Yellow
+            exit 0
+        }
+    }
+
+    Push-Location $releaseDir
+    try {
+        dotnet nuget push $packageFile --api-key "$apiKey" --source https://api.nuget.org/v3/index.json
+        Write-Host ""
+        Write-Host "Package published successfully!" -ForegroundColor Green
+    }
+    catch {
+        Write-Error "Failed to publish package: $_"
+        exit 1
+    }
+    finally {
+        Pop-Location
     }
 }
 else {
