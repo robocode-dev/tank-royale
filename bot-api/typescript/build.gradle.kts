@@ -31,6 +31,15 @@ tasks {
         inputs.dir("dist")
         inputs.file("package.json")
         outputs.files(fileTree(projectDir) { include("*.tgz") })
+        doFirst {
+            fileTree(projectDir) { include("*.tgz") }.forEach { it.delete() }
+        }
+    }
+
+    named("clean") {
+        doLast {
+            fileTree(projectDir) { include("*.tgz") }.forEach { it.delete() }
+        }
     }
 
     val npmTest by registering(com.github.gradle.node.npm.task.NpmTask::class) {
