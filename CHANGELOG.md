@@ -1,4 +1,4 @@
-## [pending]
+## [0.38.2] - 2026-03-29 – TPS Resume Dialog & Double-Turn Fixes
 
 ### 🐞 Bug Fixes
 
@@ -9,9 +9,15 @@
     - Fixed game freeze on pause/resume and when resuming from TPS=0. Resume now calls `resetTurnTimeout()`
       directly instead of relying on `turnTimeoutTimer.resume()`, which could be a no-op depending on timer state.
 
+### ✨ Features
+
+- GUI:
+    - Resume at TPS=0 now shows a confirmation dialog asking the user to resume at the default TPS instead of
+      silently resuming with no visual delay.
+
 ### 🔧 Changes
 
-- Bot API (Java, .NET, Python, TypeScript) + Schemas:
+- Bot API (Java, .NET, Python) + Schemas:
     - Increased the maximum number of authors per bot from 5 to 20.
 
 ### ♻️ Refactoring
