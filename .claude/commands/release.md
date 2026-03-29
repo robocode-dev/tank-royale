@@ -181,7 +181,7 @@ First check if the `gh` CLI is available by running `gh --version`.
 
 If `gh` is available, run:
 ```
-gh workflow run create-release.yml --ref main
+gh workflow run create-release.yml --ref main -R robocode-dev/tank-royale
 ```
 
 - If the command **succeeds**: print `"✅ Step 4: create-release workflow triggered successfully"`.
