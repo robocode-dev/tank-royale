@@ -1,7 +1,11 @@
-# Force LF line endings for all text files
+# All text files: LF in repo and working tree
 * text=auto eol=lf
 
-# Explicitly binary — no line-ending conversion
+# Windows batch/command files — keep CRLF for CMD compatibility on older Windows
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Explicitly binary — no line-ending or encoding conversion
 *.png binary
 *.jpg binary
 *.jpeg binary
@@ -11,6 +15,3 @@
 *.jar binary
 *.class binary
 *.pdf binary
-
-# Java .properties files use ISO-8859-1 encoding — prevent automatic charset conversion
-*.properties text eol=lf working-tree-encoding=ISO-8859-1
