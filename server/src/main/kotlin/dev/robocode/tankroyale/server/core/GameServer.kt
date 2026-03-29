@@ -288,8 +288,15 @@ class GameServer(private val config: ServerConfig) {
             botsThatSentIntent.clear()
         }
 
-        resetTurnTimeout()
         applyVisualDelay(botProcessingDurationNanos)
+        // Only reschedule the timer if the game is still running (not paused or stopped).
+        // If pauseGame() was called while we were sleeping in applyVisualDelay(), it paused the timer,
+        // but resetTurnTimeout() → schedule() would reset pauseStartTimeNanos=0, making isPaused()
+        // return false and leaving the timer active — so resume() would then be a no-op and the game
+        // would be stuck. Skipping resetTurnTimeout() here lets the paused state remain intact.
+        if (lifecycleManager.serverState === ServerState.GAME_RUNNING) {
+            resetTurnTimeout()
+        }
     }
 
     private fun onGameEnded() {
@@ -585,32 +592,37 @@ class GameServer(private val config: ServerConfig) {
      * Broadcasts the resumed event to observers if the state transitions to [ServerState.GAME_RUNNING].
      */
     internal fun handleResumeGame() {
-        lifecycleManager.resumeGame()
-        if (lifecycleManager.serverState === ServerState.GAME_RUNNING) {
-            broadcastGameResumedToObservers()
-        }
+        if (lifecycleManager.serverState !== ServerState.GAME_PAUSED) return
+        log.info("Resuming game")
+        lifecycleManager.serverState = ServerState.GAME_RUNNING
+        broadcastGameResumedToObservers()
+        resetTurnTimeout()
     }
 
     /**
      * Called by [GameServerConnectionListener] on the WebSocket thread when a controller requests a single turn advance.
-     * Only has effect when the game is paused: briefly resumes, executes one turn, then re-pauses.
+     * Only has effect when the game is paused: executes exactly one turn without touching the turn-timeout timer,
+     * so the timer cannot fire concurrently and cause a double-turn.
      */
     internal fun handleNextTurn() {
         if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
-            handleResumeGame()
+            lifecycleManager.serverState = ServerState.GAME_RUNNING
             onNextTurn()
-            handlePauseGame()
+            lifecycleManager.pauseGame()
         }
     }
 
     /**
      * Called by [GameServerConnectionListener] on the WebSocket thread when a controller changes the TPS setting.
      * Broadcasts the new TPS to observers and controllers. A value of 0 pauses the game;
-     * any positive value resumes a paused game and resets the turn timeout.
+     * resuming from pause (previously TPS=0) resumes the timer; changing between two nonzero TPS values
+     * does NOT reset the turn timeout — the timer reschedules itself naturally at the end of each turn,
+     * so calling resetTurnTimeout() here would queue an extra immediate turn and cause a double-turn bug.
      * @param newTps the requested turns-per-second value.
      */
     internal fun handleChangeTps(newTps: Int) {
         if (tps == newTps) return
+        val wasPaused = tps == 0
         tps = newTps
 
         broadcaster.broadcastToObserverAndControllers(TpsChangedEvent().also {
@@ -620,12 +632,18 @@ class GameServer(private val config: ServerConfig) {
 
         if (tps == 0) {
             handlePauseGame()
-        } else {
-            if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
-                handleResumeGame()
-            }
+        } else if (wasPaused) {
+            // Resuming from TPS=0: the timer may have been reset (schedule() called) after pauseGame(),
+            // which clears the paused state, so resume() would be a no-op. Use resetTurnTimeout() to
+            // unconditionally schedule the next turn, then update state to GAME_RUNNING.
+            lifecycleManager.serverState = ServerState.GAME_RUNNING
+            broadcastGameResumedToObservers()
             resetTurnTimeout()
         }
+        // If changing between two nonzero TPS values while already running, do nothing:
+        // onNextTurn() calls resetTurnTimeout() at the end of each turn, which picks up the new TPS
+        // via applyVisualDelay(). Calling resetTurnTimeout() here would schedule an extra immediate
+        // turn on the timer thread, racing with any in-progress turn and causing a double-turn.
     }
 
     /**
