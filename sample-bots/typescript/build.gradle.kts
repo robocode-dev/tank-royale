@@ -37,6 +37,7 @@ private fun createShellScript(botName: String): String = """
     set -e
     cd -- "${'$'}(dirname -- "${'$'}0")"
     ../deps/install-dependencies.sh
+    export NODE_OPTIONS="--disable-warning=ExperimentalWarning"
     exec "../node_modules/.bin/tsx" "$botName.ts"
     """.trimIndent()
 
@@ -44,6 +45,7 @@ private fun createBatchScript(botName: String): String = """
     @echo off
     cd /d "%~dp0"
     call ..\deps\install-dependencies.cmd
+    set NODE_OPTIONS=--disable-warning=ExperimentalWarning
     ..\node_modules\.bin\tsx $botName.ts
     """.trimIndent()
 
