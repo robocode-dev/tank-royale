@@ -13,6 +13,7 @@ import org.gradle.api.Project
 description = "Robocode: Build the best - destroy the rest!"
 
 group = "dev.robocode.tankroyale"
+version = libs.versions.tankroyale.get()
 
 val ossrhUsername: String? by project
 val ossrhPassword: String? by project
