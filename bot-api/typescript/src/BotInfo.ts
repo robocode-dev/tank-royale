@@ -30,7 +30,7 @@ export class BotInfo {
   static readonly MAX_PLATFORM_LENGTH = 30;
   static readonly MAX_PROGRAMMING_LANG_LENGTH = 30;
   static readonly MAX_NUMBER_OF_AUTHORS = 20;
-  static readonly MAX_NUMBER_OF_COUNTRY_CODES = 5;
+  static readonly MAX_NUMBER_OF_COUNTRY_CODES = 20;
   static readonly MAX_NUMBER_OF_GAME_TYPES = 10;
 
   readonly name: string;
