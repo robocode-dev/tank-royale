@@ -68,7 +68,7 @@ public final class BotInfo {
     /**
      * Maximum number of country codes accepted.
      */
-    public static final int MAX_NUMBER_OF_COUNTRY_CODES = 5;
+    public static final int MAX_NUMBER_OF_COUNTRY_CODES = 20;
 
     /**
      * Maximum number of game types accepted.

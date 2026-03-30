@@ -1,3 +1,10 @@
+## [0.38.3] - TBD
+
+### 🔧 Changes
+
+- Bot API (Java, .NET, Python, TypeScript) + Schemas:
+    - Increased the maximum number of country codes per bot from 5 to 20.
+
 ## [0.38.2] - 2026-03-29 – TPS Resume Dialog & Double-Turn Fixes
 
 ### 🐞 Bug Fixes

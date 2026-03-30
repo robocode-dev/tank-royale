@@ -37,7 +37,7 @@ class BotInfo:
     MAX_NUMBER_OF_AUTHORS = 20
     """Maximum number of authors allowed."""
 
-    MAX_NUMBER_OF_COUNTRY_CODES = 5
+    MAX_NUMBER_OF_COUNTRY_CODES = 20
     """Maximum number of country codes allowed."""
 
     MAX_NUMBER_OF_GAME_TYPES = 10

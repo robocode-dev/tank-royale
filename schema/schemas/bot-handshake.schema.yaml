@@ -36,6 +36,7 @@ properties:
   countryCodes:
     description: 2-letter country code(s) defined by ISO 3166-1, e.g. "GB"
     type: array
+    maxItems: 20
     items:
       type: string
       pattern: /^[a-z]{2}$/ig

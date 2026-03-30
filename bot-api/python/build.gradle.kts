@@ -55,19 +55,12 @@ tasks {
 
     val `generate-version` by registering {
         group = "build"
-        description = "Generates VERSION file from root gradle.properties"
-        inputs.file("../../gradle.properties")
+        description = "Copies VERSION file from project root"
+        inputs.file(rootProject.file("VERSION"))
         outputs.file("VERSION")
         doLast {
-            val propsFile = file("../../gradle.properties")
-            if (!propsFile.exists()) {
-                throw GradleException("version properties file not found: ${propsFile.absolutePath}")
-            }
-            val versionLine = propsFile.readLines().firstOrNull { it.trim().startsWith("version=") }
-                ?: throw GradleException("No 'version=' entry found in ${propsFile.absolutePath}")
-            val ver = versionLine.substringAfter("version=").trim()
-            file("VERSION").writeText(ver)
-            println("Wrote VERSION file with version $ver")
+            rootProject.file("VERSION").copyTo(file("VERSION"), overwrite = true)
+            println("Copied VERSION file (${rootProject.file("VERSION").readText().trim()})")
         }
     }
 
