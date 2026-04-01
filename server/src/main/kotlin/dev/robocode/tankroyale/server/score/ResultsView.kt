@@ -35,8 +35,6 @@ object ResultsView {
         sortedRows.putAll(rows)
 
         // Apply competition ranking (1224 style) to aggregated scores
-        RankDecorator.updateRanks(sortedRows.values.toList())
-
-        return sortedRows.values
+        return RankDecorator.updateRanks(sortedRows.values.toList())
     }
 }

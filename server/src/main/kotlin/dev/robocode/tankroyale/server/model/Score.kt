@@ -35,7 +35,7 @@ data class Score(
     var thirdPlaces: Int = 0,
 
     /** Rank */
-    var rank: Int = 0,
+    val rank: Int = 0,
 
 ) : Comparable<Score> {
 

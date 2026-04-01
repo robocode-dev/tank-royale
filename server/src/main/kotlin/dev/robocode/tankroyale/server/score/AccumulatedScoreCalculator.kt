@@ -12,12 +12,13 @@ class AccumulatedScoreCalculator {
         } else {
             val scoreMap = accumulatedScores.associateBy { it.participantId }
             scores.forEach { score ->
-                val accScore = scoreMap[score.participantId]
-                accScore?.accumulate(score)
+                scoreMap[score.participantId]?.accumulate(score)
             }
 
-            // Rank needs to be recalculated
-            RankDecorator.updateRanks(accumulatedScores)
+            // Rank needs to be recalculated; replace entries with newly ranked copies
+            val reranked = RankDecorator.updateRanks(accumulatedScores)
+            accumulatedScores.clear()
+            accumulatedScores.addAll(reranked)
         }
     }
 

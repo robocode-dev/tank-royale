@@ -25,9 +25,9 @@ class RankDecoratorTest : FunSpec({
 
             val scores = listOf(score1, score2, score3, score4) // "random" order
 
-            RankDecorator.updateRanks(scores)
+            val ranked = RankDecorator.updateRanks(scores)
 
-            scores.map { it.rank } shouldContainExactly listOf(1, 2, 3, 4)
+            ranked.map { it.rank } shouldContainExactly listOf(1, 2, 3, 4)
         }
 
         test("should assign correct ranks with equal scores") {
@@ -48,9 +48,9 @@ class RankDecoratorTest : FunSpec({
             every { score7.totalScore } returns 60.0
 
             val scores = listOf(score1, score2, score3, score4, score5, score6, score7)
-            RankDecorator.updateRanks(scores)
+            val ranked = RankDecorator.updateRanks(scores)
 
-            scores.map { it.rank } shouldContainExactly listOf(1, 2, 2, 4, 5, 5, 7)
+            ranked.map { it.rank } shouldContainExactly listOf(1, 2, 2, 4, 5, 5, 7)
         }
 
         test("should assign correct ranks with all equal scores") {
@@ -66,9 +66,9 @@ class RankDecoratorTest : FunSpec({
 
             val scores = listOf(score3, score4, score1, score2)
 
-            RankDecorator.updateRanks(scores)
+            val ranked = RankDecorator.updateRanks(scores)
 
-            scores.map { it.rank } shouldContainExactly listOf(1, 1, 1, 1)
+            ranked.map { it.rank } shouldContainExactly listOf(1, 1, 1, 1)
         }
     }
 })

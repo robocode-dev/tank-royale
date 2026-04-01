@@ -49,15 +49,12 @@ class GameServerResultsForObserverTest : FunSpec({
 
         val teamScore1 = Score(ParticipantId(BotId(1), TeamId(10))).apply {
             bulletDamageScore = 50.0
-            rank = 0
         }
         val teamScore2 = Score(ParticipantId(BotId(2), TeamId(10))).apply {
             bulletDamageScore = 30.0
-            rank = 8
         }
         val soloScore = Score(ParticipantId(BotId(3))).apply {
             bulletDamageScore = 60.0
-            rank = 3
         }
 
         val modelUpdater = mockk<ModelUpdater>()
