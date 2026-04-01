@@ -104,7 +104,7 @@ class ModelUpdater(
      * @param botIntents is the bot intents, which gives instructions to the game from the individual bots.
      * @return new game state when the game state has been updated.
      */
-    fun update(botIntents: Map<BotId, IBotIntent>): GameState {
+    fun update(botIntents: Map<BotId, IBotIntent>): GameStateSnapshot {
         updateBotIntents(botIntents)
         if (round.roundEnded || (round.roundNumber == 0 && turn.turnNumber == 0)) {
             nextRound()
@@ -156,44 +156,36 @@ class ModelUpdater(
 
     /** Proceed with the next turn. */
     private fun nextTurn() {
-        // Increment at the very start of a turn; the first turn becomes 1
         turn.turnNumber++
         turn.resetEvents()
-
         deepCopyBots()
 
-        // ── Compute phase ──────────────────────────────────────────────────────
-        // All game-logic steps read and write the working model (botsMap, bullets,
-        // turn). Terminal mutations to round / gameState are deferred to the apply
-        // phase below so that round/game decisions are visible at the call site.
-
+        // ── Physics pipeline (sequential — each step mutates state for the next) ───
         gunEngine.coolDownAndFireGuns(botsMap, botIntentsMap, botsCopies, round, bullets, turn)
-
         executeBotIntents()
-
         collisionDetector.checkAndHandleBotWallCollisions(botsMap, botsCopies, round, turn)
         collisionDetector.checkAndHandleBotCollisions(botsMap, round, turn)
         collisionDetector.constrainBotPositions(botsMap, botsCopies)
-
         checkAndHandleScans()
-
         updateBulletPositions()
         collisionDetector.checkAndHandleBulletWallCollisions(bullets, turn)
+        val bulletHitResults = collisionDetector.checkAndHandleBulletHits(bullets, botsMap, turn)
 
-        var bulletHitOccurred = false
-        collisionDetector.checkAndHandleBulletHits(bullets, botsMap, turn) { bulletHitOccurred = true }
-        if (bulletHitOccurred) inactivityCounter = 0
+        // ── Post-physics detect → apply (ordered: damage affects subsequent checks) ─
+        if (bulletHitResults.bulletHitBots.isNotEmpty()) inactivityCounter = 0
 
-        checkAndHandleInactivity()
-        checkForAndHandleDisabledBots()
-        checkAndHandleDefeatedBots()
+        val inactive = isInactive()
+        applyInactivity(inactive)
+
+        val disabledBotIds = detectDisabledBotIds()
+        applyDisabledBots(disabledBotIds)
+
+        val defeatedParticipants = detectDefeatedParticipants()
+        applyDefeatedBots(defeatedParticipants)
 
         val roundOutcome = computeRoundOutcome()
 
-        // ── Apply phase ────────────────────────────────────────────────────────
-        // Persist snapshots, remove dead bots, and write terminal round / game
-        // decisions returned by the compute phase.
-
+        // ── Snapshot + terminal state ──────────────────────────────────────────────
         turn.copyBots(botsMap.values)
         turn.copyBullets(bullets)
         botsMap.values.removeIf(IBot::isDead)
@@ -227,11 +219,10 @@ class ModelUpdater(
      * Updates the game state.
      * @return new game state.
      */
-    private fun updateGameState(): GameState {
+    private fun updateGameState(): GameStateSnapshot {
         round.turns += turn.toTurn()
 
         // Memory leak fix: Keep only the last 2 turns (current + previous for collision detection)
-        // Remove older turns to prevent unbounded memory growth
         if (round.turns.size > 2) {
             round.turns.removeAt(0)
         }
@@ -239,7 +230,10 @@ class ModelUpdater(
         if (gameState.rounds.size == 0 || gameState.rounds.last().roundNumber != round.roundNumber) {
             gameState.rounds += round
         }
-        return gameState
+        return GameStateSnapshot(
+            lastRound = gameState.lastRound,
+            isGameEnded = gameState.isGameEnded,
+        )
     }
 
     /** Execute bot intents for all bots that are not disabled */
@@ -271,39 +265,40 @@ class ModelUpdater(
         bullets = bullets.map { it.copy(tick = it.tick + 1) }.toMutableSet()
     }
 
-    /**
-     * Checks and handles if the bots are inactive collectively.
-     * That is when no bot have been hit by bullets for some time.
-     */
-    private fun checkAndHandleInactivity() {
-        if (inactivityCounter++ > setup.maxInactivityTurns) {
+    /** Pure: checks whether bots have been collectively inactive long enough to take damage. */
+    private fun isInactive(): Boolean = inactivityCounter > setup.maxInactivityTurns
+
+    /** Apply: increments inactivity counter and, if inactive, applies damage to all bots. */
+    private fun applyInactivity(inactive: Boolean) {
+        inactivityCounter++
+        if (inactive) {
             botsMap.values.forEach { it.applyDamage(INACTIVITY_DAMAGE) }
         }
     }
 
-    /** Check and handles if the bots have been disabled (when energy is zero or close to zero). */
-    private fun checkForAndHandleDisabledBots() {
-        botsMap.values.forEach { bot ->
+    /** Pure: returns the IDs of bots that are currently disabled (energy ≈ 0). */
+    private fun detectDisabledBotIds(): Set<BotId> =
+        botsMap.values.filter { it.isDisabled }.map { it.id }.toSet()
 
-            // If bot is disabled => Set then reset bot movement with the bot intent
-            if (bot.isDisabled) {
-                botIntentsMap[bot.id]?.disableMovement()
-            }
-        }
+    /** Apply: disables movement intents for the given bot IDs. */
+    private fun applyDisabledBots(disabledBotIds: Set<BotId>) {
+        disabledBotIds.forEach { botId -> botIntentsMap[botId]?.disableMovement() }
     }
 
-    /** Checks and handles if any bots have been defeated. */
-    private fun checkAndHandleDefeatedBots() {
-        val deadBotIds =
-            botsMap.values.filter { it.isDead }.map { bot -> participantIds.first { it.botId == bot.id } }.toSet()
+    /** Pure: returns participant IDs of bots that have been defeated (isDead). */
+    private fun detectDefeatedParticipants(): Set<ParticipantId> =
+        botsMap.values.filter { it.isDead }
+            .map { bot -> participantIds.first { it.botId == bot.id } }
+            .toSet()
 
-        deadBotIds.forEach {
+    /** Apply: emits death events and registers deaths for scoring. */
+    private fun applyDefeatedBots(deadParticipantIds: Set<ParticipantId>) {
+        deadParticipantIds.forEach {
             val botDeathEvent = BotDeathEvent(turn.turnNumber, it.botId)
             turn.addPublicBotEvent(botDeathEvent)
             turn.addObserverEvent(botDeathEvent)
         }
-
-        scoreTracker.registerDeaths(deadBotIds)
+        scoreTracker.registerDeaths(deadParticipantIds)
     }
 
     /** Checks the scan field for scanned bots. */

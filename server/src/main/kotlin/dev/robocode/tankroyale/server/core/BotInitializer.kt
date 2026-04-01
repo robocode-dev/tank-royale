@@ -99,18 +99,16 @@ class BotInitializer(
         cellWidth: Int,
         cellHeight: Int
     ): Point {
-        while (true) {
-            val cell = random.nextInt(cellCount)
-            if (!occupiedCells.contains(cell)) {
-                occupiedCells += cell
-                var cellY = (cell / gridWidth).toDouble()
-                var cellX = cell - cellY * gridWidth
-                cellX *= cellWidth.toDouble()
-                cellY *= cellHeight.toDouble()
-                cellX += BOT_BOUNDING_CIRCLE_RADIUS + random.nextDouble() * (cellWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
-                cellY += BOT_BOUNDING_CIRCLE_RADIUS + random.nextDouble() * (cellHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
-                return Point(cellX, cellY)
-            }
-        }
+        val availableCells = (0 until cellCount).filter { it !in occupiedCells }
+        val cell = availableCells[random.nextInt(availableCells.size)]
+        occupiedCells += cell
+
+        var cellY = (cell / gridWidth).toDouble()
+        var cellX = cell - cellY * gridWidth
+        cellX *= cellWidth.toDouble()
+        cellY *= cellHeight.toDouble()
+        cellX += BOT_BOUNDING_CIRCLE_RADIUS + random.nextDouble() * (cellWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
+        cellY += BOT_BOUNDING_CIRCLE_RADIUS + random.nextDouble() * (cellHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
+        return Point(cellX, cellY)
     }
 }

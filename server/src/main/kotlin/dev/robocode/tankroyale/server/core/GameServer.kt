@@ -237,7 +237,7 @@ class GameServer(private val config: ServerConfig) {
     }
 
     // Must be called while holding tickLock.
-    private fun updateGameState(): GameState {
+    private fun updateGameState(): GameStateSnapshot {
         val botIntentsSnapshot = botIntents.mapNotNull { (key, value) ->
             participantRegistry.participantIds[key]?.let { botId ->
                 botId to dev.robocode.tankroyale.server.model.BotIntent().apply {
@@ -278,12 +278,11 @@ class GameServer(private val config: ServerConfig) {
         val botProcessingDurationNanos = System.nanoTime() - turnStartTimeNanos
 
         synchronized(tickLock) {
-            updateGameState().apply {
-                onNextTick(lastRound)
+            val snapshot = updateGameState()
+            onNextTick(snapshot.lastRound)
 
-                if (isGameEnded) {
-                    onGameEnded()
-                }
+            if (snapshot.isGameEnded) {
+                onGameEnded()
             }
             botsThatSentIntent.clear()
         }

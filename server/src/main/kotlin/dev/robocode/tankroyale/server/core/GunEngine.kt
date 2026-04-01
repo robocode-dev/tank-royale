@@ -5,6 +5,17 @@ import dev.robocode.tankroyale.server.event.ScannedBotEvent
 import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.rules.*
 
+// ── Outcome data class ──────────────────────────────────────────────────────────
+
+data class FireOutcome(
+    val botId: BotId,
+    val bullet: Bullet,
+    val firepower: Double,
+    val gunHeat: Double,
+)
+
+// ── Gun Engine ──────────────────────────────────────────────────────────────────
+
 /** Engine for handling gun cooling and firing. */
 class GunEngine(private val setup: GameSetup) {
 
@@ -19,50 +30,36 @@ class GunEngine(private val setup: GameSetup) {
         lastRound: MutableRound?,
         bullets: MutableSet<Bullet>,
         turn: MutableTurn
-    ) {
+    ): List<FireOutcome> {
+        val outcomes = mutableListOf<FireOutcome>()
         botsMap.values.forEach { bot ->
             if (bot.gunHeat == 0.0 && bot.isEnabled) {
-                checkIfGunMustFire(bot, botIntentsMap, botsCopies, lastRound, bullets, turn)
+                computeFireOutcome(bot, botIntentsMap, botsCopies, lastRound)?.let { outcome ->
+                    applyFireOutcome(outcome, bot, bullets, turn)
+                    outcomes.add(outcome)
+                }
             } else {
                 coolDownGun(bot)
             }
         }
+        return outcomes
     }
 
-    private fun checkIfGunMustFire(
+    private fun computeFireOutcome(
         bot: MutableBot,
         botIntentsMap: Map<BotId, BotIntent>,
         botsCopies: Map<BotId, MutableBot>,
         lastRound: MutableRound?,
-        bullets: MutableSet<Bullet>,
-        turn: MutableTurn
-    ) {
-        botIntentsMap[bot.id]?.let {
-            val firepower = it.firepower ?: 0.0
-            if (firepower >= MIN_FIREPOWER && bot.energy > firepower) {
-                fireBullet(bot, firepower, botIntentsMap, botsCopies, lastRound, bullets, turn)
-            }
-        }
-    }
+    ): FireOutcome? {
+        val intent = botIntentsMap[bot.id] ?: return null
+        val firepower = intent.firepower ?: 0.0
+        if (firepower < MIN_FIREPOWER || bot.energy <= firepower) return null
 
-    private fun coolDownGun(bot: MutableBot) {
-        bot.gunHeat = (bot.gunHeat - setup.gunCoolingRate).coerceAtLeast(0.0)
-    }
-
-    private fun fireBullet(
-        bot: MutableBot,
-        firepower: Double,
-        botIntentsMap: Map<BotId, BotIntent>,
-        botsCopies: Map<BotId, MutableBot>,
-        lastRound: MutableRound?,
-        bullets: MutableSet<Bullet>,
-        turn: MutableTurn
-    ) {
         val power = firepower.coerceAtMost(MAX_FIREPOWER)
         val previousBotState = botsCopies[bot.id]!!
         var fireDirection = bot.gunDirection
 
-        if (botIntentsMap[bot.id]?.fireAssist == true &&
+        if (intent.fireAssist == true &&
             bot.gunDirection == bot.radarDirection &&
             previousBotState.gunDirection == previousBotState.radarDirection
         ) {
@@ -74,8 +71,6 @@ class GunEngine(private val setup: GameSetup) {
             }
         }
 
-        bot.gunHeat = calcGunHeat(power)
-
         val bullet = Bullet(
             id = BulletId(++nextBulletId),
             botId = bot.id,
@@ -84,13 +79,33 @@ class GunEngine(private val setup: GameSetup) {
             power = power,
             color = bot.bulletColor,
         )
-        bullets += bullet
 
-        val bulletFiredEvent = BulletFiredEvent(turn.turnNumber, bullet.copy())
+        return FireOutcome(
+            botId = bot.id,
+            bullet = bullet,
+            firepower = firepower,
+            gunHeat = calcGunHeat(power),
+        )
+    }
+
+    private fun applyFireOutcome(
+        outcome: FireOutcome,
+        bot: MutableBot,
+        bullets: MutableSet<Bullet>,
+        turn: MutableTurn,
+    ) {
+        bot.gunHeat = outcome.gunHeat
+        bullets += outcome.bullet
+
+        val bulletFiredEvent = BulletFiredEvent(turn.turnNumber, outcome.bullet.copy())
         turn.addPrivateBotEvent(bot.id, bulletFiredEvent)
         turn.addObserverEvent(bulletFiredEvent)
 
-        bot.changeEnergy(-firepower)
+        bot.changeEnergy(-outcome.firepower)
+    }
+
+    private fun coolDownGun(bot: MutableBot) {
+        bot.gunHeat = (bot.gunHeat - setup.gunCoolingRate).coerceAtLeast(0.0)
     }
 
     fun reset() {

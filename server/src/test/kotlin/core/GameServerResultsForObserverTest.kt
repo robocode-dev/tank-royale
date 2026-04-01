@@ -47,15 +47,9 @@ class GameServerResultsForObserverTest : FunSpec({
         participantMap[BotId(2)] = participant(botId = 2, name = "TeamBotB", teamId = 10, teamName = "Alpha", teamVersion = "1.0")
         participantMap[BotId(3)] = participant(botId = 3, name = "SoloBot")
 
-        val teamScore1 = Score(ParticipantId(BotId(1), TeamId(10))).apply {
-            bulletDamageScore = 50.0
-        }
-        val teamScore2 = Score(ParticipantId(BotId(2), TeamId(10))).apply {
-            bulletDamageScore = 30.0
-        }
-        val soloScore = Score(ParticipantId(BotId(3))).apply {
-            bulletDamageScore = 60.0
-        }
+        val teamScore1 = Score(ParticipantId(BotId(1), TeamId(10)), bulletDamageScore = 50.0)
+        val teamScore2 = Score(ParticipantId(BotId(2), TeamId(10)), bulletDamageScore = 30.0)
+        val soloScore = Score(ParticipantId(BotId(3)), bulletDamageScore = 60.0)
 
         val modelUpdater = mockk<ModelUpdater>()
         every { modelUpdater.getResults() } returns listOf(teamScore1, teamScore2, soloScore)
@@ -103,8 +97,8 @@ class GameServerResultsForObserverTest : FunSpec({
         participantMap[BotId(1)] = participant(botId = 1, name = "TeamBotA", teamId = 10, teamName = "Alpha")
         participantMap[BotId(2)] = participant(botId = 2, name = "SoloBot")
 
-        val teamScore = Score(ParticipantId(BotId(1), TeamId(10))).apply { bulletDamageScore = 50.0 }
-        val soloScore = Score(ParticipantId(BotId(2))).apply { bulletDamageScore = 40.0 }
+        val teamScore = Score(ParticipantId(BotId(1), TeamId(10)), bulletDamageScore = 50.0)
+        val soloScore = Score(ParticipantId(BotId(2)), bulletDamageScore = 40.0)
 
         val modelUpdater = mockk<ModelUpdater>()
         every { modelUpdater.getResults() } returns listOf(teamScore, soloScore)
@@ -140,10 +134,10 @@ class GameServerResultsForObserverTest : FunSpec({
         participantMap[BotId(3)] = participant(botId = 3, name = "Bot3")
         participantMap[BotId(4)] = participant(botId = 4, name = "Bot4")
 
-        val bot1Score = Score(ParticipantId(BotId(1))).apply { bulletDamageScore = 370.0 }
-        val teamScore = Score(ParticipantId(BotId(2), TeamId(10))).apply { bulletDamageScore = 370.0 }
-        val bot3Score = Score(ParticipantId(BotId(3))).apply { bulletDamageScore = 250.0 }
-        val bot4Score = Score(ParticipantId(BotId(4))).apply { bulletDamageScore = 150.0 }
+        val bot1Score = Score(ParticipantId(BotId(1)), bulletDamageScore = 370.0)
+        val teamScore = Score(ParticipantId(BotId(2), TeamId(10)), bulletDamageScore = 370.0)
+        val bot3Score = Score(ParticipantId(BotId(3)), bulletDamageScore = 250.0)
+        val bot4Score = Score(ParticipantId(BotId(4)), bulletDamageScore = 150.0)
 
         val modelUpdater = mockk<ModelUpdater>()
         every { modelUpdater.getResults() } returns listOf(bot1Score, teamScore, bot3Score, bot4Score)
@@ -181,11 +175,11 @@ class GameServerResultsForObserverTest : FunSpec({
         participantMap[BotId(4)] = participant(botId = 4, name = "Bot4")
         participantMap[BotId(5)] = participant(botId = 5, name = "Bot5")
 
-        val bot1Score = Score(ParticipantId(BotId(1))).apply { bulletDamageScore = 370.0 }
-        val teamScore = Score(ParticipantId(BotId(2), TeamId(10))).apply { bulletDamageScore = 370.0 }
-        val bot3Score = Score(ParticipantId(BotId(3))).apply { bulletDamageScore = 230.0 }
-        val bot4Score = Score(ParticipantId(BotId(4))).apply { bulletDamageScore = 230.0 }
-        val bot5Score = Score(ParticipantId(BotId(5))).apply { bulletDamageScore = 220.0 }
+        val bot1Score = Score(ParticipantId(BotId(1)), bulletDamageScore = 370.0)
+        val teamScore = Score(ParticipantId(BotId(2), TeamId(10)), bulletDamageScore = 370.0)
+        val bot3Score = Score(ParticipantId(BotId(3)), bulletDamageScore = 230.0)
+        val bot4Score = Score(ParticipantId(BotId(4)), bulletDamageScore = 230.0)
+        val bot5Score = Score(ParticipantId(BotId(5)), bulletDamageScore = 220.0)
 
         val modelUpdater = mockk<ModelUpdater>()
         every { modelUpdater.getResults() } returns listOf(bot1Score, teamScore, bot3Score, bot4Score, bot5Score)
@@ -222,10 +216,10 @@ class GameServerResultsForObserverTest : FunSpec({
         participantMap[BotId(3)] = participant(botId = 3, name = "Bot3")
         participantMap[BotId(4)] = participant(botId = 4, name = "Bot4")
 
-        val bot1Score = Score(ParticipantId(BotId(1))).apply { bulletDamageScore = 100.0 }
-        val bot2Score = Score(ParticipantId(BotId(2))).apply { bulletDamageScore = 100.0 }
-        val bot3Score = Score(ParticipantId(BotId(3))).apply { bulletDamageScore = 100.0 }
-        val bot4Score = Score(ParticipantId(BotId(4))).apply { bulletDamageScore = 100.0 }
+        val bot1Score = Score(ParticipantId(BotId(1)), bulletDamageScore = 100.0)
+        val bot2Score = Score(ParticipantId(BotId(2)), bulletDamageScore = 100.0)
+        val bot3Score = Score(ParticipantId(BotId(3)), bulletDamageScore = 100.0)
+        val bot4Score = Score(ParticipantId(BotId(4)), bulletDamageScore = 100.0)
 
         val modelUpdater = mockk<ModelUpdater>()
         every { modelUpdater.getResults() } returns listOf(bot1Score, bot2Score, bot3Score, bot4Score)
@@ -262,10 +256,10 @@ class GameServerResultsForObserverTest : FunSpec({
         participantMap[BotId(3)] = participant(botId = 3, name = "Bot3")
         participantMap[BotId(4)] = participant(botId = 4, name = "Bot4")
 
-        val bot1Score = Score(ParticipantId(BotId(1))).apply { bulletDamageScore = 400.0 }
-        val bot2Score = Score(ParticipantId(BotId(2))).apply { bulletDamageScore = 100.0 }
-        val bot3Score = Score(ParticipantId(BotId(3))).apply { bulletDamageScore = 300.0 }
-        val bot4Score = Score(ParticipantId(BotId(4))).apply { bulletDamageScore = 200.0 }
+        val bot1Score = Score(ParticipantId(BotId(1)), bulletDamageScore = 400.0)
+        val bot2Score = Score(ParticipantId(BotId(2)), bulletDamageScore = 100.0)
+        val bot3Score = Score(ParticipantId(BotId(3)), bulletDamageScore = 300.0)
+        val bot4Score = Score(ParticipantId(BotId(4)), bulletDamageScore = 200.0)
 
         val modelUpdater = mockk<ModelUpdater>()
         every { modelUpdater.getResults() } returns listOf(bot1Score, bot2Score, bot3Score, bot4Score)
@@ -303,11 +297,11 @@ class GameServerResultsForObserverTest : FunSpec({
         participantMap[BotId(4)] = participant(botId = 4, name = "Bot4")
         participantMap[BotId(5)] = participant(botId = 5, name = "Bot5")
 
-        val bot1Score = Score(ParticipantId(BotId(1))).apply { bulletDamageScore = 370.0 }
-        val teamScore = Score(ParticipantId(BotId(2), TeamId(10))).apply { bulletDamageScore = 370.0 }
-        val bot3Score = Score(ParticipantId(BotId(3))).apply { bulletDamageScore = 370.0 }
-        val bot4Score = Score(ParticipantId(BotId(4))).apply { bulletDamageScore = 230.0 }
-        val bot5Score = Score(ParticipantId(BotId(5))).apply { bulletDamageScore = 220.0 }
+        val bot1Score = Score(ParticipantId(BotId(1)), bulletDamageScore = 370.0)
+        val teamScore = Score(ParticipantId(BotId(2), TeamId(10)), bulletDamageScore = 370.0)
+        val bot3Score = Score(ParticipantId(BotId(3)), bulletDamageScore = 370.0)
+        val bot4Score = Score(ParticipantId(BotId(4)), bulletDamageScore = 230.0)
+        val bot5Score = Score(ParticipantId(BotId(5)), bulletDamageScore = 220.0)
 
         val modelUpdater = mockk<ModelUpdater>()
         every { modelUpdater.getResults() } returns listOf(bot1Score, teamScore, bot3Score, bot4Score, bot5Score)
@@ -345,11 +339,11 @@ class GameServerResultsForObserverTest : FunSpec({
         participantMap[BotId(4)] = participant(botId = 4, name = "Bot4")
         participantMap[BotId(5)] = participant(botId = 5, name = "Bot5")
 
-        val bot1Score = Score(ParticipantId(BotId(1))).apply { bulletDamageScore = 410.0 }
-        val teamScore = Score(ParticipantId(BotId(2), TeamId(10))).apply { bulletDamageScore = 370.0 }
-        val bot3Score = Score(ParticipantId(BotId(3))).apply { bulletDamageScore = 370.0 }
-        val bot4Score = Score(ParticipantId(BotId(4))).apply { bulletDamageScore = 210.0 }
-        val bot5Score = Score(ParticipantId(BotId(5))).apply { bulletDamageScore = 210.0 }
+        val bot1Score = Score(ParticipantId(BotId(1)), bulletDamageScore = 410.0)
+        val teamScore = Score(ParticipantId(BotId(2), TeamId(10)), bulletDamageScore = 370.0)
+        val bot3Score = Score(ParticipantId(BotId(3)), bulletDamageScore = 370.0)
+        val bot4Score = Score(ParticipantId(BotId(4)), bulletDamageScore = 210.0)
+        val bot5Score = Score(ParticipantId(BotId(5)), bulletDamageScore = 210.0)
 
         val modelUpdater = mockk<ModelUpdater>()
         every { modelUpdater.getResults() } returns listOf(bot1Score, teamScore, bot3Score, bot4Score, bot5Score)
