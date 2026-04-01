@@ -45,6 +45,7 @@ object RecorderProcess {
         val command = mutableListOf(
             JavaExec.java(),
             "-Dapp.processName=RobocodeTankRoyale-Recorder",
+            *JavaExec.nativeAccessArgs().toTypedArray(),
             "-jar",
             getRecorderJar(),
             "--url=$effectiveUrl"

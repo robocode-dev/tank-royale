@@ -1,5 +1,12 @@
 ## [0.38.3] - TBD
 
+### 🐞 Bug Fixes
+
+- GUI:
+    - Fixed JNA restricted native access warning (`java.lang.System::load`) on Java 16+ when starting the
+      booter, server, and recorder subprocesses. The `--enable-native-access=ALL-UNNAMED` JVM flag is now
+      passed automatically when running on Java 16 or later.
+
 ### 🔧 Changes
 
 - Bot API (Java, .NET, Python, TypeScript) + Schemas:
