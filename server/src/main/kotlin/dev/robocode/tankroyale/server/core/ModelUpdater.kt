@@ -11,11 +11,6 @@ import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
 import kotlin.math.abs
 
-/** Square of the bounding circle diameter of a bot */
-private const val BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED: Double =
-    BOT_BOUNDING_CIRCLE_DIAMETER.toDouble() * BOT_BOUNDING_CIRCLE_DIAMETER
-
-
 /**
  * Model updater, which is used for keeping track of the model state for each turn and round of a game.
  *
@@ -30,11 +25,11 @@ class ModelUpdater(
     /** Participant ids */
     private val participantIds: Set<ParticipantId>,
     /** Initial positions */
-    private val initialPositions: Map<BotId, InitialPosition>,
+    initialPositions: Map<BotId, InitialPosition>,
     /** Droid flags */
-    private val droidFlags: Map<BotId, Boolean /* isDroid */>,
+    droidFlags: Map<BotId, Boolean /* isDroid */>,
     /** Whether initial position overrides from bots are enabled */
-    private val initialPositionEnabled: Boolean,
+    initialPositionEnabled: Boolean,
 ) {
     /** Score tracking */
     private val scoreTracker = ScoreTracker(participantIds)
@@ -167,6 +162,11 @@ class ModelUpdater(
 
         deepCopyBots()
 
+        // ── Compute phase ──────────────────────────────────────────────────────
+        // All game-logic steps read and write the working model (botsMap, bullets,
+        // turn). Terminal mutations to round / gameState are deferred to the apply
+        // phase below so that round/game decisions are visible at the call site.
+
         gunEngine.coolDownAndFireGuns(botsMap, botIntentsMap, botsCopies, round, bullets, turn)
 
         executeBotIntents()
@@ -179,20 +179,33 @@ class ModelUpdater(
 
         updateBulletPositions()
         collisionDetector.checkAndHandleBulletWallCollisions(bullets, turn)
-        collisionDetector.checkAndHandleBulletHits(bullets, botsMap, turn) { inactivityCounter = 0 }
+
+        var bulletHitOccurred = false
+        collisionDetector.checkAndHandleBulletHits(bullets, botsMap, turn) { bulletHitOccurred = true }
+        if (bulletHitOccurred) inactivityCounter = 0
 
         checkAndHandleInactivity()
         checkForAndHandleDisabledBots()
         checkAndHandleDefeatedBots()
 
-        checkAndHandleRoundOrGameOver()
+        val roundOutcome = computeRoundOutcome()
 
-        // Store bot and bullet snapshots
+        // ── Apply phase ────────────────────────────────────────────────────────
+        // Persist snapshots, remove dead bots, and write terminal round / game
+        // decisions returned by the compute phase.
+
         turn.copyBots(botsMap.values)
         turn.copyBullets(bullets)
-
-        // Remove dead bots
         botsMap.values.removeIf(IBot::isDead)
+
+        if (roundOutcome != null) {
+            round.roundEnded = true
+            if (roundOutcome.gameEnded) gameState.isGameEnded = true
+            roundOutcome.winnerBotIds.forEach { botId ->
+                turn.addPrivateBotEvent(botId, WonRoundEvent(turn.turnNumber))
+            }
+            accumulatedScoreCalculator.addScores(roundOutcome.scores)
+        }
     }
 
     private fun deepCopyBots() {
@@ -426,26 +439,25 @@ class ModelUpdater(
         return Pair(startAngle, endAngle)
     }
 
-    /** Checks and handles if the round is ended or game is over. */
-    private fun checkAndHandleRoundOrGameOver() {
-        if (isRoundOver()) {
-            round.apply {
-                roundEnded = true
-                if (roundNumber >= setup.numberOfRounds) {
-                    gameState.isGameEnded = true // Game over
-                }
+    private data class RoundOutcome(
+        val gameEnded: Boolean,
+        val scores: List<Score>,
+        val winnerBotIds: List<BotId>,
+    )
 
-                val scores = scoreCalculator.getScores()
-                if (scores.isNotEmpty()) {
-                    val winners = scores.filter { it.rank == 1 }
-                    winners.forEach {
-                        val botId = it.participantId.botId
-                        turn.addPrivateBotEvent(botId, WonRoundEvent(turn.turnNumber))
-                    }
-                }
-                accumulatedScoreCalculator.addScores(scores)
-            }
-        }
+    /**
+     * Returns the outcome of the round if the round is over; `null` if still in progress.
+     * Pure: reads state only — no mutations to [round], [gameState], or [accumulatedScoreCalculator].
+     */
+    private fun computeRoundOutcome(): RoundOutcome? {
+        if (!isRoundOver()) return null
+        val scores = scoreCalculator.getScores()
+        val winnerBotIds = scores.filter { it.rank == 1 }.map { it.participantId.botId }
+        return RoundOutcome(
+            gameEnded = round.roundNumber >= setup.numberOfRounds,
+            scores = scores,
+            winnerBotIds = winnerBotIds,
+        )
     }
 
     private fun isRoundOver() = run {
