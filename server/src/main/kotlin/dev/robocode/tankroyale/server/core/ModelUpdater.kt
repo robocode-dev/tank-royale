@@ -54,8 +54,8 @@ class ModelUpdater(
     /** Round record */
     private var round = MutableRound(0)
 
-    /** Turn record */
-    private val turn = MutableTurn(0)
+    /** Turn record — fresh instance created each turn to avoid temporal coupling */
+    private var turn = MutableTurn(0)
 
     /** Counter to track the number of rounds played (memory leak fix) */
     private var roundCounter = 0
@@ -64,7 +64,7 @@ class ModelUpdater(
     private var inactivityCounter = 0
 
     /** Components */
-    private val collisionDetector = CollisionDetector(setup, participantIds, scoreTracker)
+    private val collisionDetector = CollisionDetector(setup, participantIds)
     private val botInitializer = BotInitializer(setup, participantIds, initialPositions, droidFlags, initialPositionEnabled)
     private val gunEngine = GunEngine(setup)
 
@@ -128,13 +128,9 @@ class ModelUpdater(
 
     /** Proceed with the next round. */
     private fun nextRound() {
-        round = round.copy().apply {
-            roundEnded = false
-            roundNumber++
-            turns.clear() // Memory leak fix: Clear turns from previous round
-        }
-        // Initialize to 0; nextTurn() will increment it to 1 before the first TickEvent is mapped/sent
-        turn.turnNumber = 0
+        round = MutableRound(round.roundNumber + 1)
+        // Initialize to 0; nextTurn() will create a fresh MutableTurn(1) before the first TickEvent
+        turn = MutableTurn(0)
 
         // Increment round counter for tracking (memory leak fix)
         roundCounter++
@@ -156,23 +152,31 @@ class ModelUpdater(
 
     /** Proceed with the next turn. */
     private fun nextTurn() {
-        turn.turnNumber++
-        turn.resetEvents()
+        turn = MutableTurn(turn.turnNumber + 1)
         deepCopyBots()
 
         // ── Physics pipeline (sequential — each step mutates state for the next) ───
         gunEngine.coolDownAndFireGuns(botsMap, botIntentsMap, botsCopies, round, bullets, turn)
         executeBotIntents()
         collisionDetector.checkAndHandleBotWallCollisions(botsMap, botsCopies, round, turn)
-        collisionDetector.checkAndHandleBotCollisions(botsMap, round, turn)
+
+        val botCollisionResult = collisionDetector.checkAndHandleBotCollisions(botsMap, round, turn)
+        botCollisionResult.scoringRecords.forEach {
+            scoreTracker.registerRamHit(it.rammerParticipantId, it.victimParticipantId, it.isKilled)
+        }
+
         collisionDetector.constrainBotPositions(botsMap, botsCopies)
         checkAndHandleScans()
         updateBulletPositions()
         collisionDetector.checkAndHandleBulletWallCollisions(bullets, turn)
-        val bulletHitResults = collisionDetector.checkAndHandleBulletHits(bullets, botsMap, turn)
+
+        val bulletPhaseResult = collisionDetector.checkAndHandleBulletHits(bullets, botsMap, turn)
+        bulletPhaseResult.scoringRecords.forEach {
+            scoreTracker.registerBulletHit(it.shooterParticipantId, it.victimParticipantId, it.damage, it.isKilled)
+        }
 
         // ── Post-physics detect → apply (ordered: damage affects subsequent checks) ─
-        if (bulletHitResults.bulletHitBots.isNotEmpty()) inactivityCounter = 0
+        if (bulletPhaseResult.hitResults.bulletHitBots.isNotEmpty()) inactivityCounter = 0
 
         val inactive = isInactive()
         applyInactivity(inactive)
@@ -255,7 +259,13 @@ class ModelUpdater(
             updateBotTurnRatesAndDirections(bot, this)
             updateBotColors(bot, this)
             updateDebugGraphics(bot, this)
-            processStdErrAndStdOut(bot, this)
+
+            // Transfer one-shot std streams from intent to bot, then clear
+            bot.stdOut = stdOut
+            bot.stdErr = stdErr
+            stdOut = null
+            stdErr = null
+
             processTeamMessages(bot, this)
         }
     }
@@ -561,23 +571,5 @@ class ModelUpdater(
         }
 
         private fun fromColor(color: String?) = color?.let { from(it) }
-
-        /**
-         * Updates last received data from standard output and standard error.
-         * @param bot is the bot.
-         * @param intent is the bot's intent.
-         */
-        private fun processStdErrAndStdOut(bot: MutableBot, intent: BotIntent) {
-            // transfer from intent to state
-            bot.apply {
-                stdOut = intent.stdOut
-                stdErr = intent.stdErr
-            }
-            // reset stdout and stderr
-            intent.apply {
-                stdOut = null
-                stdErr = null
-            }
-        }
     }
 }

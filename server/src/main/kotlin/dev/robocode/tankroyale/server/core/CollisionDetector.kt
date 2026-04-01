@@ -3,7 +3,6 @@ package dev.robocode.tankroyale.server.core
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.rules.*
-import dev.robocode.tankroyale.server.score.ScoreTracker
 import dev.robocode.tankroyale.server.util.forEachUniquePair
 import java.lang.Math.toDegrees
 import kotlin.math.abs
@@ -65,13 +64,35 @@ data class BulletWallHitOutcome(
     val bullet: Bullet,
 )
 
+data class BulletHitScoringRecord(
+    val shooterParticipantId: ParticipantId,
+    val victimParticipantId: ParticipantId,
+    val damage: Double,
+    val isKilled: Boolean,
+)
+
+data class RamScoringRecord(
+    val rammerParticipantId: ParticipantId,
+    val victimParticipantId: ParticipantId,
+    val isKilled: Boolean,
+)
+
+data class BulletPhaseResult(
+    val hitResults: BulletHitResults,
+    val scoringRecords: List<BulletHitScoringRecord>,
+)
+
+data class BotCollisionPhaseResult(
+    val outcomes: List<BotCollisionOutcome>,
+    val scoringRecords: List<RamScoringRecord>,
+)
+
 // ── Collision Detector ──────────────────────────────────────────────────────────
 
 /** Collision detector for bots and bullets. */
 class CollisionDetector(
     private val setup: GameSetup,
     private val participantIds: Set<ParticipantId>,
-    private val scoreTracker: ScoreTracker,
     private val random: java.util.Random = java.util.Random()
 ) {
 
@@ -81,20 +102,20 @@ class CollisionDetector(
         bullets: MutableSet<Bullet>,
         botsMap: Map<BotId, MutableBot>,
         turn: MutableTurn,
-    ): BulletHitResults {
+    ): BulletPhaseResult {
         val results = detectBulletHits(bullets, botsMap)
-        applyBulletHitResults(results, bullets, botsMap, turn)
-        return results
+        val scoringRecords = applyBulletHitResults(results, bullets, botsMap, turn)
+        return BulletPhaseResult(results, scoringRecords)
     }
 
     fun checkAndHandleBotCollisions(
         botsMap: Map<BotId, MutableBot>,
         lastRound: MutableRound?,
         turn: MutableTurn,
-    ): List<BotCollisionOutcome> {
+    ): BotCollisionPhaseResult {
         val outcomes = detectBotCollisions(botsMap, lastRound, turn)
-        applyBotCollisions(outcomes, botsMap, turn)
-        return outcomes
+        val scoringRecords = applyBotCollisions(outcomes, botsMap, turn)
+        return BotCollisionPhaseResult(outcomes, scoringRecords)
     }
 
     fun checkAndHandleBotWallCollisions(
@@ -256,7 +277,9 @@ class CollisionDetector(
         bullets: MutableSet<Bullet>,
         botsMap: Map<BotId, MutableBot>,
         turn: MutableTurn,
-    ) {
+    ): List<BulletHitScoringRecord> {
+        val scoringRecords = mutableListOf<BulletHitScoringRecord>()
+
         for (outcome in results.bulletHitBullets) {
             val event1 = BulletHitBulletEvent(turn.turnNumber, outcome.bullet1, outcome.bullet2)
             val event2 = BulletHitBulletEvent(turn.turnNumber, outcome.bullet2, outcome.bullet1)
@@ -275,7 +298,7 @@ class CollisionDetector(
             bot.applyDamage(outcome.damage)
             botsMap[outcome.shooterId]?.changeEnergy(outcome.energyBonus)
 
-            scoreTracker.registerBulletHit(
+            scoringRecords += BulletHitScoringRecord(
                 outcome.shooterParticipantId,
                 outcome.victimParticipantId,
                 outcome.damage,
@@ -291,13 +314,17 @@ class CollisionDetector(
 
             bullets.removeIf { it.id == outcome.bullet.id }
         }
+
+        return scoringRecords
     }
 
     private fun applyBotCollisions(
         outcomes: List<BotCollisionOutcome>,
         botsMap: Map<BotId, MutableBot>,
         turn: MutableTurn,
-    ) {
+    ): List<RamScoringRecord> {
+        val scoringRecords = mutableListOf<RamScoringRecord>()
+
         for (outcome in outcomes) {
             val bot1 = botsMap[outcome.bot1Id] ?: continue
             val bot2 = botsMap[outcome.bot2Id] ?: continue
@@ -310,12 +337,12 @@ class CollisionDetector(
             val bot1Killed = bot1.isDead && bot1WasAlive
             val bot2Killed = bot2.isDead && bot2WasAlive
 
-            // Register ram hits in score tracker
+            // Collect scoring records for ram hits
             if (outcome.isBot1Ramming) {
-                scoreTracker.registerRamHit(outcome.bot1ParticipantId, outcome.bot2ParticipantId, bot2Killed)
+                scoringRecords += RamScoringRecord(outcome.bot1ParticipantId, outcome.bot2ParticipantId, bot2Killed)
             }
             if (outcome.isBot2Ramming) {
-                scoreTracker.registerRamHit(outcome.bot2ParticipantId, outcome.bot1ParticipantId, bot1Killed)
+                scoringRecords += RamScoringRecord(outcome.bot2ParticipantId, outcome.bot1ParticipantId, bot1Killed)
             }
 
             // Set positions
@@ -338,6 +365,8 @@ class CollisionDetector(
             turn.addObserverEvent(event1)
             turn.addObserverEvent(event2)
         }
+
+        return scoringRecords
     }
 
     private fun applyBotWallCollisions(

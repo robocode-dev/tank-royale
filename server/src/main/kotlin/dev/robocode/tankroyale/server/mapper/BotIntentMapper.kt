@@ -39,4 +39,33 @@ object BotIntentMapper {
 
         return botIntent
     }
+
+    /**
+     * Maps a schema BotIntent to a server model BotIntent preserving nulls for unset fields.
+     * Used for merging into an existing intent — null fields will be skipped by [dev.robocode.tankroyale.server.model.BotIntent.update].
+     */
+    fun mapForMerge(intent: BotIntent): dev.robocode.tankroyale.server.model.BotIntent =
+        dev.robocode.tankroyale.server.model.BotIntent(
+            targetSpeed = intent.targetSpeed,
+            turnRate = intent.turnRate,
+            gunTurnRate = intent.gunTurnRate,
+            radarTurnRate = intent.radarTurnRate,
+            firepower = intent.firepower,
+            adjustGunForBodyTurn = intent.adjustGunForBodyTurn,
+            adjustRadarForBodyTurn = intent.adjustRadarForBodyTurn,
+            adjustRadarForGunTurn = intent.adjustRadarForGunTurn,
+            rescan = intent.rescan,
+            fireAssist = intent.fireAssist,
+            bodyColor = intent.bodyColor,
+            turretColor = intent.turretColor,
+            radarColor = intent.radarColor,
+            bulletColor = intent.bulletColor,
+            scanColor = intent.scanColor,
+            tracksColor = intent.tracksColor,
+            gunColor = intent.gunColor,
+            stdOut = intent.stdOut,
+            stdErr = intent.stdErr,
+            teamMessages = intent.teamMessages?.let { TeamMessageMapper.map(it) },
+            debugGraphics = intent.debugGraphics,
+        )
 }

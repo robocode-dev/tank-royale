@@ -507,29 +507,7 @@ class GameServer(private val config: ServerConfig) {
             if (existingIntent == null) {
                 botIntents[conn] = BotIntentMapper.map(intent)
             } else {
-                intent.apply {
-                    targetSpeed?.let { existingIntent.targetSpeed = it }
-                    turnRate?.let { existingIntent.turnRate = it }
-                    gunTurnRate?.let { existingIntent.gunTurnRate = it }
-                    radarTurnRate?.let { existingIntent.radarTurnRate = it }
-                    firepower?.let { existingIntent.firepower = it }
-                    adjustGunForBodyTurn?.let { existingIntent.adjustGunForBodyTurn = it }
-                    adjustRadarForBodyTurn?.let { existingIntent.adjustRadarForBodyTurn = it }
-                    adjustRadarForGunTurn?.let { existingIntent.adjustRadarForGunTurn = it }
-                    rescan?.let { existingIntent.rescan = it }
-                    fireAssist?.let { existingIntent.fireAssist = it }
-                    bodyColor?.let { existingIntent.bodyColor = it.ifBlank { null } }
-                    turretColor?.let { existingIntent.turretColor = it.ifBlank { null } }
-                    radarColor?.let { existingIntent.radarColor = it.ifBlank { null } }
-                    bulletColor?.let { existingIntent.bulletColor = it.ifBlank { null } }
-                    scanColor?.let { existingIntent.scanColor = it.ifBlank { null } }
-                    tracksColor?.let { existingIntent.tracksColor = it.ifBlank { null } }
-                    gunColor?.let { existingIntent.gunColor = it.ifBlank { null } }
-                    stdOut?.let { existingIntent.stdOut = it.ifBlank { null } }
-                    stdErr?.let { existingIntent.stdErr = it.ifBlank { null } }
-                    teamMessages?.let { existingIntent.teamMessages = TeamMessageMapper.map(it) }
-                    debugGraphics?.let { existingIntent.debugGraphics = it.ifBlank { null } }
-                }
+                existingIntent.update(BotIntentMapper.mapForMerge(intent))
             }
             botsThatSentIntent += conn
             checkAllBotsResponded()
