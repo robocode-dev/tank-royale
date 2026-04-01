@@ -1,6 +1,9 @@
 name: fastapi
 description: "FastAPI — async endpoints, Pydantic validation, OpenAPI"
 
+globs:
+  - "**/*.py"
+
 includes:
   - python
 

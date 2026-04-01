@@ -1,6 +1,17 @@
 name: schema
 description: "Schema and contract design principles (WCAG-level: backward compatibility, optionality, enum safety, self-describing types). Activate for repos with OpenAPI, Protobuf, GraphQL, Avro, or SQL schema files."
 
+globs:
+  - "**/*.proto"
+  - "**/*.graphql"
+  - "**/*.gql"
+  - "**/*.avsc"
+  - "**/openapi.yaml"
+  - "**/openapi.json"
+  - "**/swagger.yaml"
+  - "**/swagger.json"
+  - "**/*.sql"
+
 principles:
   - SCHEMA-SELF-DESCRIBING
   - SCHEMA-FIELD-OPTIONALITY

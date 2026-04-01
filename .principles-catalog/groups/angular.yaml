@@ -1,6 +1,10 @@
 name: angular
 description: "Angular — components, services, dependency injection, RxJS"
 
+globs:
+  - "**/*.ts"
+  - "**/*.html"
+
 includes:
   - typescript
 

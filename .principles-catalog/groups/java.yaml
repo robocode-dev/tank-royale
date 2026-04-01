@@ -1,6 +1,9 @@
 name: java
 description: "Java language fundamentals — OOP design, API design, concurrency"
 
+globs:
+  - "**/*.java"
+
 includes:
   - source-code
   - effective-java

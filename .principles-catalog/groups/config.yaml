@@ -1,6 +1,14 @@
 name: config
 description: "Structured configuration and data files — YAML, JSON, TOML, XML"
 
+globs:
+  - "**/*.properties"
+  - "**/*.yaml"
+  - "**/*.yml"
+  - "**/*.json"
+  - "**/*.toml"
+  - "**/*.env"
+
 principles:
   - 12FACTOR-03-CONFIG
   - CONFIG-NO-HARDCODED-SECRETS

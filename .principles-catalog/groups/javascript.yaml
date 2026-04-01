@@ -1,6 +1,12 @@
 name: javascript
 description: "JavaScript — dynamic typing, async patterns, functional idioms, browser and Node.js"
 
+globs:
+  - "**/*.js"
+  - "**/*.jsx"
+  - "**/*.mjs"
+  - "**/*.cjs"
+
 includes:
   - source-code
 

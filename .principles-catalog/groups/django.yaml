@@ -1,6 +1,9 @@
 name: django
 description: "Django — models, views, ORM, REST framework"
 
+globs:
+  - "**/*.py"
+
 includes:
   - python
 

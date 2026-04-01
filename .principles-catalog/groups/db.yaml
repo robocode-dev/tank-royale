@@ -1,6 +1,14 @@
 name: db
 description: "Database / persistence design — transactions, indexing, normalisation, distributed data patterns"
 
+globs:
+  - "**/*.sql"
+  - "**/*.java"
+  - "**/*.py"
+  - "**/*.ts"
+  - "**/*.go"
+  - "**/*.cs"
+
 principles:
   - DB-ACID
   - DB-SCHEMA-MIGRATIONS-AS-CODE

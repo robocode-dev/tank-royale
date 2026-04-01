@@ -1,6 +1,13 @@
 name: a11y
 description: "Web accessibility principles (WCAG 2.1 Level A/AA) for frontend codebases. Covers alternative text, semantic HTML, keyboard navigation, and colour contrast. Activate for any project serving a public UI or required to meet accessibility compliance."
 
+globs:
+  - "**/*.tsx"
+  - "**/*.jsx"
+  - "**/*.html"
+  - "**/*.vue"
+  - "**/*.svelte"
+
 principles:
   - A11Y-ALT-TEXT
   - A11Y-SEMANTIC-HTML

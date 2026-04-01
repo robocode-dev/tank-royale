@@ -1,16 +1,16 @@
 # Audit Scope
 
-**Summary:** Records which principles are fully excluded or partially limited in automated `/audit` scans, and why.
+**Summary:** Records which principles are fully excluded or partially limited in automated `/dot-audit` scans, and why.
 
-The `/audit` command reviews a codebase against active principles using LLM reasoning and, where available, grep pre-scans. Not every principle can be meaningfully verified by inspecting a codebase snapshot — some require runtime data, git history, org-structure knowledge, or are purely process-based activities. This document records which principles are excluded or limited, and why.
+The `/dot-audit` command reviews a codebase against active principles using LLM reasoning and, where available, grep pre-scans. Not every principle can be meaningfully verified by inspecting a codebase snapshot — some require runtime data, git history, org-structure knowledge, or are purely process-based activities. This document records which principles are excluded or limited, and why.
 
-Principles in either table remain fully valid for `/prime` (educational reference) and for human code review. Only `/audit` skips or partially applies them.
+Principles in either table remain fully valid for `/dot-prime` (educational reference) and for human code review. Only `/dot-audit` skips or partially applies them.
 
 ---
 
 ## Fully excluded
 
-These principles cannot produce a reliable finding from a codebase snapshot alone. The `/audit` command skips them entirely.
+These principles cannot produce a reliable finding from a codebase snapshot alone. The `/dot-audit` command skips them entirely.
 
 | Principle ID | File | Reason |
 |---|---|---|
@@ -22,7 +22,7 @@ These principles cannot produce a reliable finding from a codebase snapshot alon
 
 ## Partially limited
 
-These principles have at least one code-detectable violation, but some aspects of the principle require information that is not present in the codebase. The `/audit` command applies them with the restrictions noted.
+These principles have at least one code-detectable violation, but some aspects of the principle require information that is not present in the codebase. The `/dot-audit` command applies them with the restrictions noted.
 
 | Principle ID | File | What is detectable | What is not detectable |
 |---|---|---|---|

@@ -1,6 +1,10 @@
 name: kotlin
 description: "Kotlin — null safety, sealed classes, coroutines, and functional idioms on the JVM"
 
+globs:
+  - "**/*.kt"
+  - "**/*.kts"
+
 includes:
   - java
 

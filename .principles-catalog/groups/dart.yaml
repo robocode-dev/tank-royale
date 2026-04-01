@@ -1,6 +1,9 @@
 name: dart
 description: "Dart — Flutter, null safety, async/await, strong typing"
 
+globs:
+  - "**/*.dart"
+
 includes:
   - source-code
 
