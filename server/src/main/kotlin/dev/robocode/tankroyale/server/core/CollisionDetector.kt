@@ -93,33 +93,61 @@ class CollisionDetector(
     private fun isBulletHittingBot(bulletLine: BulletLine, bot: IBot): Boolean =
         isLineIntersectingCircle(bulletLine.line, bot.position, BOT_BOUNDING_CIRCLE_RADIUS)
 
+    private data class BulletHitOutcome(
+        val damage: Double,
+        val energyBonus: Double,
+        val isKilled: Boolean,
+        val victimEnergyAfterHit: Double,
+        val shooterParticipantId: ParticipantId,
+        val victimParticipantId: ParticipantId,
+        val shooterId: BotId,
+        val victimId: BotId,
+    )
+
+    private fun calcBulletHitOutcome(bullet: Bullet, bot: MutableBot): BulletHitOutcome {
+        val shooterId = bullet.botId
+        val shooterParticipantId = participantIds.first { it.botId == shooterId }
+        val victimId = bot.id
+        val victimParticipantId = participantIds.first { it.botId == victimId }
+
+        val damage = calcBulletDamage(bullet.power)
+        val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
+        val victimEnergyAfterHit = bot.energy - damage
+        val isKilled = bot.isAlive && victimEnergyAfterHit < 0
+
+        return BulletHitOutcome(
+            damage = damage,
+            energyBonus = energyBonus,
+            isKilled = isKilled,
+            victimEnergyAfterHit = victimEnergyAfterHit,
+            shooterParticipantId = shooterParticipantId,
+            victimParticipantId = victimParticipantId,
+            shooterId = shooterId,
+            victimId = victimId,
+        )
+    }
+
     private fun handleBulletHittingBot(
         bullet: Bullet,
         bot: MutableBot,
         botsMap: Map<BotId, MutableBot>,
         turn: MutableTurn
     ) {
-        val botId = bullet.botId
-        val teamOrBotId = participantIds.first { it.botId == botId }
-        val victimId = bot.id
-        val victimTeamOrBotId = participantIds.first { it.botId == victimId }
+        val outcome = calcBulletHitOutcome(bullet, bot)
 
-        val damage = calcBulletDamage(bullet.power)
-        val wasAlive = bot.isAlive
-        bot.applyDamage(damage)
-        val isKilled = bot.isDead && wasAlive
-
-        val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
-        botsMap[botId]?.changeEnergy(energyBonus)
+        bot.applyDamage(outcome.damage)
+        botsMap[outcome.shooterId]?.changeEnergy(outcome.energyBonus)
 
         scoreTracker.registerBulletHit(
-            teamOrBotId,
-            victimTeamOrBotId,
-            damage,
-            isKilled
+            outcome.shooterParticipantId,
+            outcome.victimParticipantId,
+            outcome.damage,
+            outcome.isKilled
         )
 
-        val bulletHitBotEvent = BulletHitBotEvent(turn.turnNumber, bullet, victimId, damage, bot.energy)
+        val bulletHitBotEvent = BulletHitBotEvent(
+            turn.turnNumber, bullet, outcome.victimId, outcome.damage, outcome.victimEnergyAfterHit
+        )
         turn.apply {
             addPrivateBotEvent(bulletHitBotEvent.bullet.botId, bulletHitBotEvent)
             addPrivateBotEvent(bulletHitBotEvent.victimId, bulletHitBotEvent)
