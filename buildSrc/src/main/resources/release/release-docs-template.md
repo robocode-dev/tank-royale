@@ -89,7 +89,7 @@ implementation 'dev.robocode.tankroyale:robocode-tankroyale-bot-api:{VERSION}'
 dotnet add package Robocode.TankRoyale.BotApi --version {VERSION}
 ```
 
-**More info:** [robocode.dev/bot-api](https://robocode.dev/api/) | [PyPI](https://pypi.org/project/robocode-tank-royale/{VERSION}) | [Maven Central](https://central.sonatype.com/artifact/dev.robocode.tankroyale/robocode-tankroyale-bot-api/{VERSION}) | [NuGet](https://www.nuget.org/packages/Robocode.TankRoyale.BotApi/{VERSION})
+**More info:** [robocode.dev/api](https://robocode.dev/api/) | [PyPI](https://pypi.org/project/robocode-tank-royale/{VERSION}) | [Maven Central](https://central.sonatype.com/artifact/dev.robocode.tankroyale/robocode-tankroyale-bot-api/{VERSION}) | [NuGet](https://www.nuget.org/packages/Robocode.TankRoyale.BotApi/{VERSION})
 
 ## 🔊 Sound Effects
 
