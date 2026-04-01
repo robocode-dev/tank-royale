@@ -1,6 +1,9 @@
 name: rust
 description: "Rust — ownership, type safety, fearless concurrency, zero-cost abstractions"
 
+globs:
+  - "**/*.rs"
+
 includes:
   - source-code
 

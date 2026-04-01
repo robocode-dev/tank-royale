@@ -1,6 +1,14 @@
 name: cpp
 description: "C++ — systems programming, const-correctness, RAII, performance"
 
+globs:
+  - "**/*.cpp"
+  - "**/*.hpp"
+  - "**/*.cc"
+  - "**/*.hh"
+  - "**/*.c"
+  - "**/*.h"
+
 includes:
   - source-code
 

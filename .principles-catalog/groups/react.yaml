@@ -1,6 +1,12 @@
 name: react
 description: "React — component design, state management, hooks, rendering"
 
+globs:
+  - "**/*.tsx"
+  - "**/*.jsx"
+  - "**/*.ts"
+  - "**/*.js"
+
 includes:
   - typescript
 

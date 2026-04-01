@@ -1,6 +1,9 @@
 name: effective-java
 description: "Effective Java best practices — API design, immutability, generics, and method design (Bloch, 3rd ed.)"
 
+globs:
+  - "**/*.java"
+
 principles:
   - EFFECTIVE-JAVA-STATIC-FACTORY
   - EFFECTIVE-JAVA-BUILDER

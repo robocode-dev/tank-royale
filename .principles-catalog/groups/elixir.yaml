@@ -1,6 +1,10 @@
 name: elixir
 description: "Elixir — functional, actor model, fault tolerance, pipe operator, OTP"
 
+globs:
+  - "**/*.ex"
+  - "**/*.exs"
+
 includes:
   - source-code
   - fp

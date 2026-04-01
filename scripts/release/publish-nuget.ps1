@@ -1,5 +1,6 @@
 # Publish .NET NuGet package script
-# This script reads the version and API key from gradle.properties and prepares the NuGet publish command
+# This script reads the version from the VERSION file and API key from gradle.properties,
+# and prepares the NuGet publish command.
 # NOTE: This script does NOT actually push to NuGet - it only displays the command that would be executed
 
 param(
@@ -9,26 +10,26 @@ param(
 
 # Get the root directory (two levels up from scripts/release)
 $rootDir = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+$versionFile = Join-Path $rootDir "VERSION"
 $projectGradleProps = Join-Path $rootDir "gradle.properties"
 $userGradleProps = Join-Path $env:USERPROFILE ".gradle\gradle.properties"
 
-# Check if project gradle.properties exists
-if (-not (Test-Path $projectGradleProps)) {
-    Write-Error "gradle.properties not found at: $projectGradleProps"
+# Read version from VERSION file
+if (-not (Test-Path $versionFile)) {
+    Write-Error "VERSION file not found at: $versionFile"
     exit 1
 }
+$version = (Get-Content $versionFile -Raw).Trim()
 
-# Read version from project gradle.properties
-$version = $null
+# Read API key from gradle.properties
 $apiKey = $null
 
-Get-Content $projectGradleProps | ForEach-Object {
-    $line = $_.Trim()
-    if ($line -match "^version=(.+)$") {
-        $version = $matches[1]
-    }
-    if ($line -match "^nuget-api-key=(.+)$") {
-        $apiKey = $matches[1]
+if (Test-Path $projectGradleProps) {
+    Get-Content $projectGradleProps | ForEach-Object {
+        $line = $_.Trim()
+        if ($line -match "^nuget-api-key=(.+)$") {
+            $apiKey = $matches[1]
+        }
     }
 }
 
@@ -49,7 +50,7 @@ else {
 
 # Validate that we found both values
 if (-not $version) {
-    Write-Error "Could not find 'version' in gradle.properties"
+    Write-Error "Could not read version from VERSION file"
     exit 1
 }
 

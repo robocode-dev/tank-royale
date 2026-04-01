@@ -1,6 +1,9 @@
 name: csharp
 description: "C# — OOP, type safety, async patterns, LINQ"
 
+globs:
+  - "**/*.cs"
+
 includes:
   - source-code
 

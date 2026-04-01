@@ -1,6 +1,13 @@
 name: container
 description: "Container and Dockerfile security and quality principles. Activate for repos with Dockerfiles, docker-compose, or Kubernetes manifests. Sources: CIS Docker Benchmark v1.6.0, OWASP Docker Security Cheat Sheet, OpenSSF SLSA v1.0."
 
+globs:
+  - "Dockerfile"
+  - "docker-compose.yml"
+  - "docker-compose.yaml"
+  - "**/*.yaml"
+  - "**/*.yml"
+
 principles:
   - INFRA-NON-ROOT-CONTAINER
   - INFRA-PIN-BASE-IMAGES

@@ -1,6 +1,9 @@
 name: spring-boot
 description: "Spring Boot REST APIs, dependency injection, and service layer"
 
+globs:
+  - "**/*.java"
+
 includes:
   - java
 

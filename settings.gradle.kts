@@ -1,6 +1,6 @@
 rootProject.name = "Robocode Tank Royale"
 
-val version: String = providers.gradleProperty("version").get()
+val version: String = file("VERSION").readText().trim()
 
 // Lib
 include("lib:common")

@@ -1,6 +1,9 @@
 name: haskell
 description: "Haskell — pure functional programming, strong static typing, lazy evaluation, type classes"
 
+globs:
+  - "**/*.hs"
+
 includes:
   - source-code
   - fp

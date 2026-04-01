@@ -1,6 +1,9 @@
 name: php
 description: "PHP — web development, type safety, modern PHP 8+ patterns"
 
+globs:
+  - "**/*.php"
+
 includes:
   - source-code
 

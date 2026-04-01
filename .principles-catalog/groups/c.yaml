@@ -1,6 +1,10 @@
 name: c
 description: "C — systems programming, manual memory management, embedded, OS development"
 
+globs:
+  - "**/*.c"
+  - "**/*.h"
+
 includes:
   - source-code
 

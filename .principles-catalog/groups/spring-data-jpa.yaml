@@ -1,6 +1,9 @@
 name: spring-data-jpa
 description: "Spring Data JPA — repository pattern, aggregate design, transaction management"
 
+globs:
+  - "**/*.java"
+
 includes:
   - spring-boot
 

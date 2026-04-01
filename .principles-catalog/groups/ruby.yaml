@@ -1,6 +1,9 @@
 name: ruby
 description: "Ruby — expressiveness, convention over configuration, Rubyist idioms"
 
+globs:
+  - "**/*.rb"
+
 includes:
   - source-code
 

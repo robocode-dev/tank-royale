@@ -1,6 +1,9 @@
 name: swift
 description: "Swift — value semantics, optionals, protocol-oriented design, Swift Concurrency"
 
+globs:
+  - "**/*.swift"
+
 includes:
   - source-code
 

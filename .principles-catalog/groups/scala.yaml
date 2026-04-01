@@ -1,6 +1,9 @@
 name: scala
 description: "Scala — functional programming on the JVM, type safety, Akka, Spark"
 
+globs:
+  - "**/*.scala"
+
 includes:
   - source-code
   - fp

@@ -182,11 +182,11 @@ jobs:
           set -e
           echo "=== Renaming macOS .pkg files ==="
 
-          # Use the version from workflow input or gradle.properties
+          # Use the version from workflow input or VERSION file
           VERSION="${{ inputs.version || github.event.inputs.version }}"
           if [ -z "$VERSION" ]; then
-            echo "No version from workflow input, reading from gradle.properties"
-            VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2 | tr -d '\r')
+            echo "No version from workflow input, reading from VERSION file"
+            VERSION=$(cat VERSION | tr -d '\r')
           fi
           if [ -z "$VERSION" ]; then
             echo "ERROR: Could not determine version for renaming!"

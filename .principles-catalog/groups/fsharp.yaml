@@ -1,6 +1,10 @@
 name: fsharp
 description: "F# — functional-first on .NET, discriminated unions, computation expressions, immutability by default"
 
+globs:
+  - "**/*.fs"
+  - "**/*.fsx"
+
 includes:
   - source-code
   - fp

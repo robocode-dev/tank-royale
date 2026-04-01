@@ -1,6 +1,9 @@
 name: python
 description: "Python — readability, simplicity, Pythonic patterns"
 
+globs:
+  - "**/*.py"
+
 includes:
   - source-code
 
