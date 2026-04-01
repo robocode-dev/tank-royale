@@ -110,7 +110,7 @@ Follow the repository instructions to install sounds in the correct location.
 [sample-bots-python-{VERSION}.zip]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-python-{VERSION}.zip "Sample bots for Python"
 [sample-bots-csharp-{VERSION}.zip]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-csharp-{VERSION}.zip "Sample bots for C#"
 [sample-bots-java-{VERSION}.zip]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-java-{VERSION}.zip "Sample bots for Java"
-[robocode-tankroyale-bot-api-{VERSION}.jar]: https://s01.oss.sonatype.org/service/local/repositories/releases/content/dev/robocode/tankroyale/robocode-tankroyale-bot-api/{VERSION}/robocode-tankroyale-bot-api-{VERSION}.jar "Bot API Java archive file"
+[robocode-tankroyale-bot-api-{VERSION}.jar]: https://central.sonatype.com/artifact/dev.robocode.tankroyale/robocode-tankroyale-bot-api/{VERSION} "Bot API Java archive file"
 [robocode-tankroyale-gui-{VERSION}.jar]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/robocode-tankroyale-gui-{VERSION}.jar "GUI Java archive file"
 [robocode-tank-royale-gui-{VERSION}.msi]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/robocode-tank-royale-gui-{VERSION}.msi "GUI for Windows (MSI)"
 [robocode-tank-royale-gui-{VERSION}.pkg]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/robocode-tank-royale-gui-{VERSION}.pkg "GUI for macOS (PKG)"
