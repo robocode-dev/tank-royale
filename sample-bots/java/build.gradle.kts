@@ -30,6 +30,14 @@ tasks {
     @Suppress("UNCHECKED_CAST")
     val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
+    fun hasBase(botDir: Path): Boolean {
+        val botName = botDir.botName()
+        val jsonPath = botDir.resolve("$botName.json")
+        if (!exists(jsonPath)) return false
+        val content = jsonPath.toFile().readText()
+        return content.contains("\"base\"")
+    }
+
     fun createScriptFile(projectDir: Path, botArchivePath: Path, fileExt: String, newLine: String) {
         val botName = projectDir.botName()
         val file = botArchivePath.resolve("$botName.$fileExt").toFile()
@@ -55,6 +63,14 @@ tasks {
         }
     }
 
+    fun isTeam(botDir: Path): Boolean {
+        val botName = botDir.botName()
+        val jsonPath = botDir.resolve("$botName.json")
+        if (!exists(jsonPath)) return false
+        val content = jsonPath.toFile().readText()
+        return content.contains("\"teamMembers\"")
+    }
+
     fun prepareBotFiles() {
         list(projectDir.toPath()).forEach { botDir ->
             if (isDirectory(botDir) && isBotProjectDir(botDir)) {
@@ -63,7 +79,7 @@ tasks {
                 mkdir(botArchivePath)
                 copyBotFiles(botDir, botArchivePath)
 
-                if (!botDir.toString().endsWith("Team")) {
+                if (isTeam(botDir)) {
                     createScriptFile(botDir, botArchivePath, "cmd", "\r\n")
                     createScriptFile(botDir, botArchivePath, "sh", "\n")
                 }

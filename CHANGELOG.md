@@ -1,10 +1,29 @@
-## [0.38.3] - 2026-04-05 - TPS Resume Dialog & TimeLeft Fix
+## [0.38.4] - TBD - Template-based Booting
 
-### AI Instructions
-- #202: Integrated commands and skills from `.claude/` into the `.ai/` instruction system.
-    - Added `.ai/commands.md` for `/dot-scout`, `/dot-prime`, and `/dot-audit`.
-    - Updated `.ai/openspec.md` with `/opsx:*` commands and specialized OpenSpec skills.
-    - Updated `AGENTS.md` and `.ai/README.md` for proper routing.
+### ✨ Features
+
+- Booter:
+    - Introduced template-based booting for common platforms (JVM, .NET, Python), reducing the need for
+      OS-specific scripts (`.sh`, `.bat`) in bot directories. The Booter now uses metadata (`platform`,
+      `programmingLang`, `base`) from the bot's JSON configuration to select an appropriate boot template.
+    - Added `TemplateManager` and `TemplateBooter` to handle template loading and command generation.
+    - Updated `BotBooter` to use template-based booting as a fallback when no script is found.
+    - Added a convention where the name of the bot's parent directory is used as the default `base` value if not
+      explicitly provided in the bot's JSON configuration. This enables "scriptless" bots that can be booted 
+      using a standard template without any configuration or OS-specific scripts.
+
+### 🔧 Changes
+
+- Sample Bots:
+    - Removed the redundant `base` property from Java, C#, and Python sample bot 
+      configurations, as it now defaults to the directory name by convention.
+    - Updated Gradle build scripts to skip generating `.cmd` and `.sh` files for all standard individual sample 
+      bots. These bots are now entirely scriptless in their distribution archives, relying on the new 
+      template-based booting and directory name convention.
+    - Added `NuGet.Config` to C# sample bot distributions to enable standalone source-based builds 
+      by pointing to the local Bot API NuGet package in the shared `lib` folder.
+
+## [0.38.3] - 2026-04-05 - TPS Resume Dialog & TimeLeft Fix
 
 ### 🐞 Bug Fixes
 

@@ -277,9 +277,10 @@ If you need to package your bot for distribution, you can do this by zip-packing
 should contain:
 
 - Source file (.cs, .fs, or .vb)
-- Project source file (.csproj, .fsproj, or .vbproj)
-- Script files (.cmd and .sh)
+- Project source file (.csproj, .fsproj, or .vbproj) — *Required for source-only distribution*
 - JSON config file (.json)
+- Script files (`.cmd` and `.sh`) — *Optional due to template-based booting (entry point defaults to the bot's parent directory name)*
+- `NuGet.Config` — *Required for scriptless distribution if using local dependencies*
 
 And then you might want to provide a [README] file to provide some information for other people about your bot. :)
 

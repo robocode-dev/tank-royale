@@ -14,10 +14,17 @@ internal abstract class Command {
     }
 
     protected fun getBootEntry(botDirPath: Path): BootEntry? {
-        val bootEntryJsonPath = botDirPath.resolve("${botDirPath.fileName}.json")
+        val botDirName = botDirPath.fileName.toString()
+        val bootEntryJsonPath = botDirPath.resolve("$botDirName.json")
         if (!bootEntryJsonPath.exists()) return null
 
         val bootEntryJsonContent = bootEntryJsonPath.toFile().readText(Charsets.UTF_8)
-        return json.decodeFromString(bootEntryJsonContent)
+        val bootEntry = json.decodeFromString<BootEntry>(bootEntryJsonContent)
+
+        return if (bootEntry.base == null && bootEntry.teamMembers == null) {
+            bootEntry.copy(base = botDirName)
+        } else {
+            bootEntry
+        }
     }
 }

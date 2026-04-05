@@ -9,17 +9,22 @@ being used.
 
 The intention of the booter is to allow booting up bots for any ecosystem and programming language.
 To make this possible, the booter uses script files that are responsible for starting up bots for specific programming
-languages and systems. Hence, the booter needs to locate these script files for each bot, and thus makes use of a
-filename convention to locate these.
+languages and systems. The booter needs to locate these script files for each bot, or use **boot templates** if metadata
+is provided in a [JSON config file]. Hence, the booter needs to locate these script files or metadata for each bot, and
+thus makes use of a filename convention to locate these. By default, the booter assumes that the main class or script
+file has the same name as the bot directory.
 
-Diagram showing how the booter boots up a bot:
+Diagram showing how the booter boots up a bot using either a script file or a boot template:
 
 ```mermaid
 flowchart TD
-    Booter -- locate and runs --> ScriptFile
+    Booter -- locates and runs --> ScriptFile
     ScriptFile -- boots up --> Bot
+    Booter -- selects --> Template
+    Template -- boots up --> Bot
 
     ScriptFile[Script file]
+    Template[Boot template]
 ```
 
 ## Root directories
@@ -48,8 +53,14 @@ etc. for the bot.
 
 As minimum these files _must_ be available in a bot directory:
 
-- Script for running the bot, i.e. a **sh** file (macOS and Linux) or **cmd** (Windows) file.
-- [JSON config file] that describes the bot, and specify which game types it was designed for.
+- A [JSON config file] that describes the bot, and specify which game types it was designed for.
+- EITHER a script for running the bot, i.e. a **sh** file (macOS and Linux) or **cmd** (Windows) file,
+- OR a **boot template** will be used if the [JSON config file] contains `platform` and `programmingLang` properties.
+  The `base` property can be specified to identify the main class or script, but it defaults to the bot directory name
+  if omitted.
+
+Note that the [JSON config file] itself can be omitted if the bot sets all its properties programmatically in its code.
+However, in that case, the bot directory must still contain the script file(s) for the booter to know how to start the bot.
 
 ### Base filename
 
@@ -59,7 +70,7 @@ matching the filename of the bot directory. All other files are ignored by the b
 
 ### Example of bot files
 
-Here is an example of files contained in a bot directory. In this case the Java version of MyFirstBot:
+Here is an example of files contained in a bot directory for the Java version of MyFirstBot:
 
 * `MyFirstBot.java` is the Java source file containing the bot program.
 * `MyFirstBot.json` is the JSON config file.
@@ -67,11 +78,24 @@ Here is an example of files contained in a bot directory. In this case the Java 
 * `MyFirstBot.sh` used for running the bot on macOS and Linux.
 * `ReadMe.md` is a ReadMe file used for instructions for how to run the bot.
 
+For a C# (.NET) bot, the files might look like this:
+
+* `MyFirstBot.cs` is the C# source file.
+* `MyFirstBot.csproj` is the project file, which is required if the bot is distributed as source-only.
+* `MyFirstBot.json` is the JSON config file.
+* `NuGet.Config` is used to specify where to find dependencies (like the Bot API).
+
 ## Script files
 
 The booter will look for script files and look for some that match the OS it is running on. So for macOS and Linux the
 booter will try to locate a shell script file (.sh file) with the name _BotName_.sh and with Windows the booter will try
 to locate a command script file (.cmd file) with the name _BotName_.cmd.
+
+If no such script file exists, the booter will attempt to use a built-in **boot template** for the platform and
+programming language specified in the [JSON config file].
+
+By default, the booter assumes that the `base` property (the entry point) matches the name of the bot directory.
+If the entry point is different, it can be explicitly specified using the `base` property in the JSON file.
 
 The script should contain the necessary command for running a bot. For Java-based bots, the `java` command can be used
 for running a bot, and for a .NET-based bot the `dotnet` command can be used for running the bot.
@@ -82,7 +106,8 @@ script for a bot if other people should be able to run the bot on their system.
 
 ## JSON config file
 
-All bot directories must contain a [JSON] file, which is basically a description of the bot (or team).
+All bot directories must contain a [JSON] file, which is basically a description of the bot (or team),
+unless the bot sets all its properties programmatically.
 
 For example, the bot MyFirstBot is accompanied by a **MyFirstBot.json** file.
 
@@ -132,7 +157,11 @@ Meaning of each field in the JSON file:
   in any type of game.
 - `initialPosition`: is a comma-separated string containing the starting x and y coordinate, and direction
   (body, gun, and radar) when the game begins in the format: x, y, direction. [^initial-start-position]
-
+- `base`: is the entry point for the bot (e.g. the main class name for Java or the script name for Python). This property
+  is optional and defaults to the name of the bot's parent directory if omitted. Providing either an explicit `base`
+  property or relying on the directory name convention allows you to use **boot templates** and omit the OS-specific
+  script files (.cmd and .sh).
+ 
 Note that `initialPosition` should only be used for debugging purposes where using the same starting position and
 direction of the body, gun, and radar is convenient. You need to enable initial starting position using
 the `--enable-initial-position` option with the [server].

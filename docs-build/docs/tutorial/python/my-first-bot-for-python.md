@@ -250,8 +250,8 @@ will fail with an error because it cannot find the server. The server can be sta
 If you need to package your bot for distribution, you can zip the bot directory. The zip archive should contain:
 
 - Source file (.py)
-- Script files (.cmd and .sh)
 - JSON config file (.json)
+- Script files (`.cmd` and `.sh`) — *Optional due to template-based booting (entry point defaults to the bot's parent directory name)*
 - Optional: A `requirements.txt` or instructions for installing `robocode-tankroyale-bot-api`
 
 And then you might want to provide a [README] file to provide some information for other people about your bot. :)

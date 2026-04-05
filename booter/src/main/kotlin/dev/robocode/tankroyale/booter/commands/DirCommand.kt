@@ -95,18 +95,19 @@ internal class DirCommand(private val botRootPaths: List<Path>) : Command() {
      */
     private fun BootEntry.dirBootEntry(dirPath: Path, gameTypes: List<String>) =
         DirBootEntry(
-            dirPath.toAbsolutePath().toString(),
-            name,
-            version,
-            authors,
-            description,
-            homepage,
-            countryCodes,
-            this.gameTypes,
-            platform,
-            programmingLang,
-            initialPosition,
-            teamMembers,
+            base = base,
+            dir = dirPath.toAbsolutePath().toString(),
+            name = name,
+            version = version,
+            authors = authors,
+            description = description,
+            homepage = homepage,
+            countryCodes = countryCodes,
+            gameTypes = this.gameTypes,
+            platform = platform,
+            programmingLang = programmingLang,
+            initialPosition = initialPosition,
+            teamMembers = teamMembers,
         )
 
     /**

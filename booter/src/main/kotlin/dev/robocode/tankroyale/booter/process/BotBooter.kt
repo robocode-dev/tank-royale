@@ -24,6 +24,7 @@ internal class BotBooter(
     private val launchProcess: (String) -> ProcessBuilder = ProcessLauncher::createProcessBuilder,
     private val setupEnvironment: (MutableMap<String, String?>, BootEntry, Team?) -> Unit = BotEnvironment::setup,
     private val findScript: (Path) -> Path? = ScriptFinder::findScript,
+    private val templateBooter: TemplateBooter = TemplateBooter(setupEnvironment)
 ) {
 
     private val teamId = AtomicLong(1)
@@ -97,8 +98,6 @@ internal class BotBooter(
     ) {
         val botDir = parentPath.resolve(botName)
         try {
-            if (!isValidBotDirectory(botDir)) return
-            findBootScriptOrNull(botDir) ?: return
             val process = bootBot(botDir, team, getBootEntry) ?: run {
                 Log.error("Failed to boot team member bot", botDir)
                 return
@@ -119,8 +118,12 @@ internal class BotBooter(
                 Log.error("Failed to get boot entry for bot", botDir)
                 return null
             }
-            val scriptPath = findBootScriptOrNull(botDir) ?: return null
-            createAndStartProcess(scriptPath, botDir, botEntry, team)
+            val scriptPath = findBootScriptOrNull(botDir)
+            if (scriptPath != null) {
+                createAndStartProcess(scriptPath, botDir, botEntry, team)
+            } else {
+                templateBooter.boot(botDir, botEntry, team)
+            }
         } catch (ex: Exception) {
             Log.error(ex, botDir)
             null
@@ -156,11 +159,7 @@ internal class BotBooter(
      */
     private fun findBootScriptOrNull(botDir: Path): Path? {
         if (!isValidBotDirectory(botDir)) return null
-        val scriptPath = findScript(botDir)
-        if (scriptPath == null) {
-            Log.error("No script found within the bot directory", botDir)
-        }
-        return scriptPath
+        return findScript(botDir)
     }
 
     /**

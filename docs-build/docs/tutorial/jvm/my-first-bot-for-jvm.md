@@ -244,8 +244,8 @@ If you need to package your bot for distribution, you can do this by zip-packing
 should contain:
 
 - Source file (.java, .kt, .groovy, .clj, or .scala)
-- Script files (.cmd and .sh)
 - JSON config file (.json)
+- Script files (`.cmd` and `.sh`) — *Optional due to template-based booting (entry point defaults to the bot's parent directory name)*
 
 And then you might want to provide a [README] file to provide some information for other people about your bot. :)
 

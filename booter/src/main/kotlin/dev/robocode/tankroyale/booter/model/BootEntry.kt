@@ -9,6 +9,9 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class BootEntry(
+    // Base name of bot
+    override val base: String? = null,
+
     // Shared bot and team fields
     override val name: String,
     override val version: String,

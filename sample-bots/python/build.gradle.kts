@@ -37,6 +37,14 @@ val isBotProjectDir = rootProject.extra["isBotProjectDir"] as (Path) -> Boolean
 @Suppress("UNCHECKED_CAST")
 val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
+private fun hasBase(botDir: Path): Boolean {
+    val botName = botDir.botName()
+    val jsonPath = botDir.resolve("$botName.json")
+    if (!exists(jsonPath)) return false
+    val content = jsonPath.toFile().readText()
+    return content.contains("\"base\"")
+}
+
 private fun createShellScript(botName: String): String = """
     #!/bin/sh
     set -e
@@ -122,14 +130,20 @@ private fun createBotScriptFiles(botDir: Path, archivePath: Path) {
     createBotScriptFile(botDir, archivePath, shellExtension, unixLineEnding)
 }
 
-private fun isTeamBot(botDir: Path): Boolean = botDir.toString().endsWith(teamSuffix)
+private fun isTeam(botDir: Path): Boolean {
+    val botName = botDir.botName()
+    val jsonPath = botDir.resolve("$botName.json")
+    if (!exists(jsonPath)) return false
+    val content = jsonPath.toFile().readText()
+    return content.contains("\"teamMembers\"")
+}
 
 private fun processIndividualBot(botDir: Path) {
     val botArchivePath = archiveDirPath.resolve(botDir.botName())
     mkdir(botArchivePath)
     copyBotFiles(botDir, botArchivePath)
 
-    if (!isTeamBot(botDir)) {
+    if (isTeam(botDir)) {
         createBotScriptFiles(botDir, botArchivePath)
     }
 }
