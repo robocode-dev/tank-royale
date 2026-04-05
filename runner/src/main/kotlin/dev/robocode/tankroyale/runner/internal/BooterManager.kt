@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.common.util.ResourceUtil
 import dev.robocode.tankroyale.runner.BattleException
 import dev.robocode.tankroyale.runner.BotIdentity
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -201,9 +202,7 @@ internal class BooterManager(
             }
             val configFile = botDir.resolve("${botDir.fileName}.json")
             if (!configFile.exists()) {
-                throw BattleException(
-                    "Bot directory does not contain a configuration file: $configFile"
-                )
+                return // Optional .json is fine for non-teams
             }
             // Validate team member directories if this is a team config
             val json = try {
@@ -243,7 +242,10 @@ internal class BooterManager(
         fun readBotIdentities(botDir: Path): List<BotIdentity> {
             val configFile = botDir.resolve("${botDir.fileName}.json")
             if (!configFile.exists()) {
-                throw BattleException("Bot configuration file not found: $configFile")
+                // If no .json is present, we assume it's a config-less bot.
+                // We return an empty identity list because we can't know the name/version yet.
+                // The BattleRunner will wait for ANY bot to connect instead of matching identities.
+                return emptyList()
             }
             val json = try {
                 Json.parseToJsonElement(configFile.toFile().readText()).jsonObject
@@ -286,7 +288,15 @@ internal class BooterManager(
                 ?: throw BattleException("Missing 'name' field in bot configuration: $sourcePath")
             val version = obj["version"]?.jsonPrimitive?.content
                 ?: throw BattleException("Missing 'version' field in bot configuration: $sourcePath")
-            return BotIdentity(name, version)
+
+            val authorsElement = obj["authors"]
+            val authors = when {
+                authorsElement == null -> throw BattleException("Missing 'authors' field in bot configuration: $sourcePath")
+                authorsElement is JsonArray -> authorsElement.joinToString(", ") { it.jsonPrimitive.content }
+                else -> authorsElement.jsonPrimitive.content
+            }
+
+            return BotIdentity(name, version, authors)
         }
     }
 

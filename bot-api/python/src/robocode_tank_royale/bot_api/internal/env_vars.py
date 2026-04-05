@@ -65,26 +65,11 @@ class EnvVars:
 
         Returns:
             BotInfo: An object containing the bot's information.
-
-        Raises:
-            Exception: If any of the required environment variables are missing.
         """
-        bot_name = EnvVars.get_bot_name()
-        if not bot_name:
-            raise Exception(EnvVars.MissingEnvValue + EnvVars.BotName)
-
-        bot_version = EnvVars.get_bot_version()
-        if not bot_version:
-            raise Exception(EnvVars.MissingEnvValue + EnvVars.BotVersion)
-
-        authors = EnvVars.get_bot_authors()
-        if not authors or all(not s.strip() for s in authors):
-            raise Exception(EnvVars.MissingEnvValue + EnvVars.BotAuthors)
-
         return BotInfo(
-            bot_name,
-            bot_version,
-            authors,
+            EnvVars.get_bot_name(),
+            EnvVars.get_bot_version(),
+            EnvVars.get_bot_authors(),
             EnvVars.get_bot_description(),
             EnvVars.get_bot_homepage(),
             EnvVars.get_bot_country_codes(),
@@ -274,4 +259,6 @@ class EnvVars:
             List[str]: A list of strings or an empty list if the variable is not set.
         """
         value = os.getenv(env_var_name)
-        return re.split(r'\s*,\s*', value.strip()) if value and value.strip() else []
+        if value is None:
+            return []
+        return re.split(r'\s*,\s*', value.strip()) if value.strip() else []

@@ -70,21 +70,6 @@ static class EnvVars
     /// <returns>The bot info.</returns>
     internal static BotInfo GetBotInfo()
     {
-        if (string.IsNullOrWhiteSpace(GetBotName()))
-        {
-            throw new BotException(MissingEnvValue + BotName);
-        }
-
-        if (string.IsNullOrWhiteSpace(GetBotVersion()))
-        {
-            throw new BotException(MissingEnvValue + BotVersion);
-        }
-
-        if (GetBotAuthors().IsNullOrEmptyOrContainsOnlyBlanks())
-        {
-            throw new BotException(MissingEnvValue + BotAuthors);
-        }
-
         return new BotInfo(
             GetBotName(),
             GetBotVersion(),

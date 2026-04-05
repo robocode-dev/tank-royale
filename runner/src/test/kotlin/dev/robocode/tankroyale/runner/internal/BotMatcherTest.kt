@@ -12,18 +12,18 @@ class BotMatcherTest {
     // Helpers
     // -------------------------------------------------------------------------------------
 
-    private fun botInfo(name: String, version: String, host: String, port: Int = 7654) =
+    private fun botInfo(name: String, version: String, host: String, port: Int = 7654, authors: String = "Author") =
         BotInfo(
             name = name,
             version = version,
-            authors = listOf("Author"),
+            authors = listOf(authors),
             countryCodes = listOf("US"),
             gameTypes = setOf("classic"),
             host = host,
             port = port,
         )
 
-    private fun identity(name: String, version: String = "1.0") = BotIdentity(name, version)
+    private fun identity(name: String, version: String = "1.0", authors: String = "Author") = BotIdentity(name, version, authors)
     private fun address(host: String, port: Int = 7654) = BotAddress(host, port)
 
     // -------------------------------------------------------------------------------------

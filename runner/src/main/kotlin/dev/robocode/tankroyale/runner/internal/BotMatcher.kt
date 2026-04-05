@@ -17,6 +17,7 @@ import dev.robocode.tankroyale.runner.BotIdentity
 internal class BotMatcher(
     expectedIdentities: List<BotIdentity>,
     private val preExistingBots: Set<BotAddress>,
+    private val expectedBotCount: Int = expectedIdentities.size,
 ) {
     /** Expected identity counts (multiset). */
     val expectedMultiset: Map<BotIdentity, Int> = expectedIdentities
@@ -45,12 +46,26 @@ internal class BotMatcher(
      * and compares against the expected multiset. If more bots than expected connect for an identity,
      * only the needed count (first seen) is taken.
      *
+     * If [expectedMultiset] is empty, it falls back to count-based matching.
+     *
      * @param bots the full set of currently connected bots reported by the server
      * @return a [MatchResult] describing the current match state
      */
     fun update(bots: Set<BotInfo>): MatchResult {
         // Filter out pre-existing bots
         val candidates = bots.filter { it.botAddress !in preExistingBots }
+
+        if (expectedMultiset.isEmpty()) {
+            // Fallback for config-less bots: wait for the expected number of new bots
+            val matched = candidates.take(expectedBotCount).map { it.botAddress }.toSet()
+            val isComplete = matched.size >= expectedBotCount
+            return MatchResult(
+                matched = matched,
+                isComplete = isComplete,
+                connected = emptyMap(),
+                pending = if (isComplete) emptyMap() else mapOf(BotIdentity("Unknown", "Unknown", "Unknown") to (expectedBotCount - matched.size))
+            )
+        }
 
         val matched = mutableSetOf<BotAddress>()
         val connected = mutableMapOf<BotIdentity, Int>()
@@ -59,7 +74,7 @@ internal class BotMatcher(
         for ((identity, needed) in expectedMultiset) {
             // Find candidate bots matching this identity
             val matchingBots = candidates.filter { bot ->
-                bot.name == identity.name && bot.version == identity.version
+                bot.name == identity.name && bot.version == identity.version && bot.authors.joinToString(", ") == identity.authors
             }
             val taken = minOf(matchingBots.size, needed)
             matchingBots.take(taken).forEach { matched.add(it.botAddress) }

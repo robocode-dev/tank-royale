@@ -50,13 +50,32 @@ and hence the [Main] method is the entry point of the bot.
     }
 ```
 
-The [Main] method in this example simply calls the [Start] method of the bot, which will let the bot startup reading
-configuration and start communicating with the server.
+The [Main] method in this example simply calls the [Start] method of the bot, which will let the bot startup,
+read configuration (from a `.json` file or environment variables), and start communicating with the server.
 
-The bot will attempt to _join_ the server and wait for a signal to engage in a new battle, where one or multiple
-instances of this bot must participate.
+If you don't want to use a `.json` configuration file, you can provide the bot information directly in the constructor:
 
-Note that it is also possible to provide all the necessary configuration fields programmatically without a file.
+```csharp
+using System.Collections.Generic;
+
+public MyFirstBot() : base(new BotInfo(
+    "My First Bot",
+    "1.0",
+    new List<string> { "Your Name" },
+    "My first bot",
+    null,
+    new List<string> { "US" },
+    new HashSet<string> { "classic" },
+    "dotnet",
+    "csharp",
+    null
+))
+{
+}
+```
+
+When providing `BotInfo` in the constructor, the `.json` file is no longer required, and the booter will use
+**heuristic platform detection** to find your `.csproj` or `.dll` file and start the bot.
 
 ### The Run method
 

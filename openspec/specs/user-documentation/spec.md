@@ -61,3 +61,13 @@ become available.
 - **AND** they SHALL see which platforms are supported (Windows, macOS, Linux)
 - **AND** they SHALL see which package formats are available (msi, pkg, rpm, deb)
 
+### Requirement: Bot Configuration Documentation
+
+The user documentation SHALL explicitly mention that `.json` configuration files are optional for bot development and how to configure bots using code or environment variables.
+
+#### Scenario: User reads bot development guide
+
+- **WHEN** a user reads the bot development guide
+- **THEN** they SHALL find a section explaining how to configure a bot through code (setting name, version, and authors)
+- **AND** they SHALL be informed that a `.json` file is only a fallback mechanism
+- **AND** they SHALL find a list of required properties and the consequences of missing them (runtime exception)

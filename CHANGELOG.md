@@ -1,4 +1,4 @@
-## [0.38.4] - TBD - Template-based Booting
+## [0.39.0] - TBD - Convention-over-Configuration & Scriptless Bots
 
 ### ✨ Features
 
@@ -11,12 +11,26 @@
     - Added a convention where the name of the bot's parent directory is used as the default `base` value if not
       explicitly provided in the bot's JSON configuration. This enables "scriptless" bots that can be booted 
       using a standard template without any configuration or OS-specific scripts.
+    - **Convention-over-Configuration**: Bots can now be discovered and booted even without a `.json` configuration 
+      file. The Booter heuristically detects the platform (JVM, Python, .NET) based on files in the directory.
+    - Source files (`.java`, `.py`, `.cs`) are now recognized as valid platform indicators for bot discovery,
+      enabling single-file source bots to be detected and booted directly (e.g. via Java 11+ single-file launch).
+
+- GUI:
+    - Boot progress dialog now works correctly for no-JSON bots. Instead of waiting for a specific name/version
+      that is unknown at boot time, it uses a baseline snapshot of already-connected bots and waits for the
+      expected number of new connections. Handles multiple instances of the same bot correctly via count-based
+      baseline tracking.
+
+- Bot API (Java, .NET, Python):
+    - Added runtime property validation. Required properties (`name`, `version`, `authors`) must now be set 
+      either in the `.json` file, via environment variables, or directly in the bot code. 
+    - If required properties are missing when connecting to the server, a `BotException` is thrown with a 
+      descriptive error message.
 
 ### 🔧 Changes
 
 - Sample Bots:
-    - Removed the redundant `base` property from Java, C#, and Python sample bot 
-      configurations, as it now defaults to the directory name by convention.
     - Updated Gradle build scripts to skip generating `.cmd` and `.sh` files for all standard individual sample 
       bots. These bots are now entirely scriptless in their distribution archives, relying on the new 
       template-based booting and directory name convention.

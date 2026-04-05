@@ -238,11 +238,49 @@ final class WebSocketHandler implements WebSocket.Listener {
         var serverHandshake = JsonConverter.fromJson(jsonMsg, ServerHandshake.class);
         baseBotInternals.setServerHandshake(serverHandshake);
 
+        // Validate bot info before sending bot handshake
+        validateBotInfo();
+
         // Reply by sending bot handshake
         var isDroid = baseBot instanceof Droid;
         var botHandshake = BotHandshakeFactory.create(serverHandshake.getSessionId(), botInfo, isDroid, serverSecret);
         String msg = JsonConverter.toJson(botHandshake);
 
         socket.sendText(msg, true);
+    }
+
+    private void validateBotInfo() {
+        // If the bot is booted, botInfo might be partially filled by the booter
+        // but the bot code must ensure name, version, and authors are present.
+        if (isBlank(botInfo.getName())) {
+            throwMissingPropertyException("name");
+        }
+        if (isBlank(botInfo.getVersion())) {
+            throwMissingPropertyException("version");
+        }
+        if (botInfo.getAuthors() == null || botInfo.getAuthors().isEmpty() || isAllBlank(botInfo.getAuthors())) {
+            throwMissingPropertyException("authors");
+        }
+    }
+
+    private void throwMissingPropertyException(String propertyName) {
+        throw new BotException(
+                String.format("Required bot property '%s' is missing. " +
+                        "This property is required in order for the bot to be recognized when booting it up and " +
+                        "when it needs to join the game. You must set this property in your bot code " +
+                        "or provide a .json configuration file.", propertyName));
+    }
+
+    private static boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    private static boolean isAllBlank(Iterable<String> iterable) {
+        for (String s : iterable) {
+            if (!isBlank(s)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

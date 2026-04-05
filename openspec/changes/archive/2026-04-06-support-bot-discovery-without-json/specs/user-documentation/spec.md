@@ -1,0 +1,58 @@
+## MODIFIED Requirements
+
+### Requirement: GUI Installer Documentation
+The user documentation SHALL provide comprehensive instructions for installing the Robocode Tank Royale GUI using native
+installer packages on Windows, macOS, and Linux platforms.
+
+#### Scenario: User wants to install GUI on Windows
+- **WHEN** a user reads the installation documentation
+- **THEN** they SHALL find clear instructions for installing the Windows MSI package
+- **AND** they SHALL be informed that Java 11+ must be installed and available via JAVA_HOME
+- **AND** they SHALL be provided with a link to JAVA_HOME setup instructions
+
+#### Scenario: User wants to install GUI on macOS
+- **WHEN** a user reads the installation documentation
+- **THEN** they SHALL find clear instructions for installing the macOS PKG package
+- **AND** they SHALL be informed that Java 11+ must be installed and available via JAVA_HOME
+
+#### Scenario: User wants to install GUI on Linux with RPM
+- **WHEN** a user reads the installation documentation
+- **THEN** they SHALL find clear instructions for installing the Linux RPM package
+- **AND** they SHALL be informed that Java 11+ must be installed and available via JAVA_HOME
+
+#### Scenario: User wants to install GUI on Linux with DEB
+- **WHEN** a user reads the installation documentation
+- **THEN** they SHALL find clear instructions for installing the Linux DEB package
+- **AND** they SHALL be informed that Java 11+ must be installed and available via JAVA_HOME
+
+### Requirement: Release Documentation Updates
+The release documentation template SHALL include information about available native installer packages for each GitHub
+release.
+
+#### Scenario: User views a GitHub release
+- **WHEN** a user views the release notes on GitHub
+- **THEN** they SHALL see a table of available installer formats (Windows MSI, macOS PKG, Linux RPM, Linux DEB)
+- **AND** they SHALL see download links for each installer format
+- **AND** they SHALL be informed about the Java 11+ requirement
+- **AND** they SHALL be provided with a link to JAVA_HOME setup instructions
+
+### Requirement: Version History Documentation
+The version history documentation SHALL document the addition of native installer packages in the release where they
+become available.
+
+#### Scenario: User checks version history
+- **WHEN** a user reads the CHANGELOG.md file
+- **THEN** they SHALL find an entry documenting the availability of native GUI installer packages
+- **AND** they SHALL see which platforms are supported (Windows, macOS, Linux)
+- **AND** they SHALL see which package formats are available (msi, pkg, rpm, deb)
+
+## ADDED Requirements
+
+### Requirement: Bot Configuration Documentation
+The user documentation SHALL explicitly mention that `.json` configuration files are optional for bot development and how to configure bots using code or environment variables.
+
+#### Scenario: User reads bot development guide
+- **WHEN** a user reads the bot development guide
+- **THEN** they SHALL find a section explaining how to configure a bot through code (setting name, version, and authors)
+- **AND** they SHALL be informed that a `.json` file is only a fallback mechanism
+- **AND** they SHALL find a list of required properties and the consequences of missing them (runtime exception)

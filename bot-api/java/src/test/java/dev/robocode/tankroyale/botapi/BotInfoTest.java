@@ -67,24 +67,10 @@ class BotInfoTest {
     @Tag("VAL")
     @Tag("TR-API-VAL-002")
     void test_TR_API_VAL_002_invalid_fields_validation() {
-        // Required non-blank name
-        var builder = prefilledBuilder().setName("   ");
-        var e1 = assertThrows(IllegalArgumentException.class, builder::build);
-        assertThat(e1.getMessage()).containsIgnoringCase("'name' cannot be null, empty or blank");
-
-        // Required non-blank version
-        var builder2 = prefilledBuilder().setVersion("\t ");
-        var e2 = assertThrows(IllegalArgumentException.class, builder2::build);
-        assertThat(e2.getMessage()).containsIgnoringCase("'version' cannot be null, empty or blank");
-
         // Max lengths
         var builder3 = prefilledBuilder().setName(stringOfLength(MAX_NAME_LENGTH + 1));
         var e3 = assertThrows(IllegalArgumentException.class, builder3::build);
         assertThat(e3.getMessage()).containsIgnoringCase("'name' length exceeds");
-
-        // Authors rules: empty list
-        var builder4 = prefilledBuilder().setAuthors(List.of());
-        assertThrows(IllegalArgumentException.class, builder4::build);
 
         // Game type too long
         var tooLongGameType = stringOfLength(MAX_GAME_TYPE_LENGTH + 1);
@@ -104,10 +90,9 @@ class BotInfoTest {
         @ParameterizedTest
         @NullAndEmptySource
         @ValueSource(strings = {"  ", "\t ", "\n"})
-        void givenNameIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(String name) {
+        void givenNameIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenReturnNull(String name) {
             var builder = prefilledBuilder().setName(name);
-            var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("'name' cannot be null, empty or blank");
+            assertThat(builder.build().getName()).isNull();
         }
 
         @Test
@@ -136,10 +121,9 @@ class BotInfoTest {
         @ParameterizedTest
         @NullAndEmptySource
         @ValueSource(strings = {"  ", "\t ", "\n"})
-        void givenVersionIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(String version) {
+        void givenVersionIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenReturnNull(String version) {
             var builder = prefilledBuilder().setVersion(version);
-            var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("'version' cannot be null, empty or blank");
+            assertThat(builder.build().getVersion()).isNull();
         }
 
         @Test
@@ -168,10 +152,9 @@ class BotInfoTest {
         @ParameterizedTest
         @NullAndEmptySource
         @MethodSource("dev.robocode.tankroyale.botapi.BotInfoTest#listOfEmptyOrBlanks")
-        void givenEmptyOrBlankAuthors_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(List<String> authors) {
+        void givenEmptyOrBlankAuthors_whenConstructingBotInfo_thenReturnEmptyList(List<String> authors) {
             var builder = prefilledBuilder().setAuthors(authors);
-            var exception = assertThrows(IllegalArgumentException.class, builder::build);
-            assertThat(exception.getMessage()).containsIgnoringCase("'authors' cannot be null or empty or contain blanks");
+            assertThat(builder.build().getAuthors()).isEmpty();
         }
 
         @Test

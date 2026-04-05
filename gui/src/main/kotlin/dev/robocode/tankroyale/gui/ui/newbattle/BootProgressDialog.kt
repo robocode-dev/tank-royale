@@ -21,12 +21,14 @@ import javax.swing.*
 class BootProgressDialog(
     owner: Window?,
     expectedIdentities: List<BotIdentity>,
+    unknownCount: Int = 0,
+    baseline: Map<BotIdentity, Int> = emptyMap(),
     private val timeoutSeconds: Int = 30,
     private val onSuccess: () -> Unit,
     private val onCancel: () -> Unit,
 ) : JDialog(owner, "Waiting for bots to connect...", ModalityType.APPLICATION_MODAL) {
 
-    private val matcher = BotMatcher(expectedIdentities)
+    private val matcher = BotMatcher(expectedIdentities, unknownCount, baseline)
 
     private var elapsedHalfSeconds = 0
     private var timedOut = false
@@ -146,7 +148,7 @@ class BootProgressDialog(
             timer.stop()
             val pendingLines = matcher.pending.map { (identity, count) ->
                 "\u23F3 ${identity.name} ${identity.version} ($count pending)"
-            }
+            } + List(matcher.unknownPending) { "\u23F3 Unknown bot (pending)" }
             buildTimeoutLayout(pendingLines)
         }
     }
@@ -186,6 +188,10 @@ class BootProgressDialog(
                 "$icon ${identity.name} ${identity.version}"
             }
             statusListModel.addElement(label)
+        }
+        repeat(matcher.unknownCount) { i ->
+            val icon = if (i < matcher.unknownConnected) "\u2705" else "\u23F3"
+            statusListModel.addElement("$icon Unknown bot")
         }
     }
 }

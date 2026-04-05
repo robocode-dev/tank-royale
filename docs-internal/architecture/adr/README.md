@@ -50,7 +50,8 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0027](./0027-typescript-bot-api-architecture.md)                | TypeScript Bot API for Web Platform Support          | Proposed | 2026-03-24 |
 | [0028](./0028-typescript-bot-api-threading-model.md)             | TypeScript Bot API Threading Model                   | Proposed | 2026-03-24 |
 | [0029](./0029-typescript-bot-api-runtime-targets.md)             | TypeScript Bot API Runtime Targets                   | Proposed | 2026-03-24 |
-| [0030](./0030-convention-over-configuration-bot-entry-points.md) | Template-based Booting and Base Convention           | Proposed | 2026-04-05 |
+| [0030](./0030-convention-over-configuration-bot-entry-points.md) | Template-based Booting and Base Convention           | Accepted | 2026-04-05 |
+| [0031](./0031-optional-bot-config-and-runtime-validation.md)    | Optional Bot Config and Runtime Validation           | Accepted | 2026-04-05 |
 
 ## Status Definitions
 

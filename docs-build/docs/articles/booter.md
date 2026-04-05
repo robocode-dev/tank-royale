@@ -10,9 +10,11 @@ being used.
 The intention of the booter is to allow booting up bots for any ecosystem and programming language.
 To make this possible, the booter uses script files that are responsible for starting up bots for specific programming
 languages and systems. The booter needs to locate these script files for each bot, or use **boot templates** if metadata
-is provided in a [JSON config file]. Hence, the booter needs to locate these script files or metadata for each bot, and
-thus makes use of a filename convention to locate these. By default, the booter assumes that the main class or script
-file has the same name as the bot directory.
+is provided in a [JSON config file] or if the platform can be detected automatically.
+
+By default, the booter assumes that the main class or script file has the same name as the bot directory.
+If no script or JSON file is found, the booter uses **heuristic platform detection** to identify the bot type
+(e.g., `.jar` for Java, `.py` for Python, `.csproj` for .NET) and boots it using a default template.
 
 Diagram showing how the booter boots up a bot using either a script file or a boot template:
 
@@ -51,16 +53,18 @@ programming languages like for example Java and C#.
 A **bot directory** contains all files required to run a specific bot type and perhaps some metadata like a ReadMe file
 etc. for the bot.
 
-As minimum these files _must_ be available in a bot directory:
+To be discoverable by the booter, a bot directory should contain one of the following:
 
-- A [JSON config file] that describes the bot, and specify which game types it was designed for.
-- EITHER a script for running the bot, i.e. a **sh** file (macOS and Linux) or **cmd** (Windows) file,
-- OR a **boot template** will be used if the [JSON config file] contains `platform` and `programmingLang` properties.
-  The `base` property can be specified to identify the main class or script, but it defaults to the bot directory name
-  if omitted.
+- A [JSON config file] (e.g., `MyBot.json`) that describes the bot.
+- A script for running the bot: `MyBot.sh` (macOS/Linux) or `MyBot.cmd` (Windows).
+- A platform-specific project or binary file: `MyBot.jar` (Java), `MyBot.py` (Python), or `MyBot.csproj` (C#).
 
-Note that the [JSON config file] itself can be omitted if the bot sets all its properties programmatically in its code.
-However, in that case, the bot directory must still contain the script file(s) for the booter to know how to start the bot.
+If only a project or binary file is present, the booter will use **heuristic platform detection** to select a
+**boot template** and start the bot with default metadata. In this case, the bot **must** set its required
+properties (`name`, `version`, `authors`) programmatically in its code.
+
+If the bot does not provide these properties at runtime and no JSON file is present, a `BotException`
+will be thrown when the bot tries to connect to the server.
 
 ### Base filename
 
@@ -107,7 +111,8 @@ script for a bot if other people should be able to run the bot on their system.
 ## JSON config file
 
 All bot directories must contain a [JSON] file, which is basically a description of the bot (or team),
-unless the bot sets all its properties programmatically.
+unless the bot sets all its properties programmatically in its code and provides enough files (like `.jar`, `.py`,
+or OS-specific scripts) for the booter to identify the platform.
 
 For example, the bot MyFirstBot is accompanied by a **MyFirstBot.json** file.
 

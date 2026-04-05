@@ -28,11 +28,11 @@ class WaitForBotsTest {
 
     private fun conn(): ServerConnection = ServerConnection("ws://localhost:9999", "secret")
 
-    private fun botInfo(name: String, version: String, host: String, port: Int = 0): BotInfo =
+    private fun botInfo(name: String, version: String, authors: String, host: String, port: Int = 0): BotInfo =
         BotInfo(
             name = name,
             version = version,
-            authors = emptyList(),
+            authors = listOf(authors),
             countryCodes = emptyList(),
             gameTypes = emptySet(),
             host = host,
@@ -51,12 +51,12 @@ class WaitForBotsTest {
     fun `matching identities emitted via BotListUpdate returns correct BotAddress set`() {
         val conn = conn()
         val identities = listOf(
-            BotIdentity("Alpha", "1.0"),
-            BotIdentity("Beta", "2.0"),
+            BotIdentity("Alpha", "1.0", "Author"),
+            BotIdentity("Beta", "2.0", "Author"),
         )
 
-        val alphaInfo = botInfo("Alpha", "1.0", "localhost", 7001)
-        val betaInfo  = botInfo("Beta",  "2.0", "localhost", 7002)
+        val alphaInfo = botInfo("Alpha", "1.0", "Author", "localhost", 7001)
+        val betaInfo  = botInfo("Beta",  "2.0", "Author", "localhost", 7002)
 
         // Emit matching bots on a background thread after a short delay
         Thread {
@@ -65,7 +65,7 @@ class WaitForBotsTest {
         }.start()
 
         runner().use { r ->
-            val result = r.waitForBots(conn, emptySet(), identities)
+            val result = r.waitForBots(conn, emptySet(), identities, 2)
             assertThat(result).containsExactlyInAnyOrder(
                 BotAddress("localhost", 7001),
                 BotAddress("localhost", 7002),
@@ -77,12 +77,12 @@ class WaitForBotsTest {
     fun `partial updates complete only when all identities matched`() {
         val conn = conn()
         val identities = listOf(
-            BotIdentity("Alpha", "1.0"),
-            BotIdentity("Beta", "2.0"),
+            BotIdentity("Alpha", "1.0", "Author"),
+            BotIdentity("Beta", "2.0", "Author"),
         )
 
-        val alphaInfo = botInfo("Alpha", "1.0", "localhost", 7001)
-        val betaInfo  = botInfo("Beta",  "2.0", "localhost", 7002)
+        val alphaInfo = botInfo("Alpha", "1.0", "Author", "localhost", 7001)
+        val betaInfo  = botInfo("Beta",  "2.0", "Author", "localhost", 7002)
 
         Thread {
             Thread.sleep(50)
@@ -94,7 +94,7 @@ class WaitForBotsTest {
         }.start()
 
         runner().use { r ->
-            val result = r.waitForBots(conn, emptySet(), identities)
+            val result = r.waitForBots(conn, emptySet(), identities, 2)
             assertThat(result).containsExactlyInAnyOrder(
                 BotAddress("localhost", 7001),
                 BotAddress("localhost", 7002),
@@ -106,11 +106,11 @@ class WaitForBotsTest {
     fun `timeout throws BattleException with identity-aware message`() {
         val conn = conn()
         val identities = listOf(
-            BotIdentity("Alpha", "1.0"),
-            BotIdentity("Beta", "2.0"),
+            BotIdentity("Alpha", "1.0", "Author"),
+            BotIdentity("Beta", "2.0", "Author"),
         )
 
-        val alphaInfo = botInfo("Alpha", "1.0", "localhost", 7001)
+        val alphaInfo = botInfo("Alpha", "1.0", "Author", "localhost", 7001)
 
         Thread {
             Thread.sleep(20)
@@ -120,7 +120,7 @@ class WaitForBotsTest {
 
         runner(timeoutMs = 200L).use { r ->
             assertThatThrownBy {
-                r.waitForBots(conn, emptySet(), identities)
+                r.waitForBots(conn, emptySet(), identities, 2)
             }.isInstanceOf(BattleException::class.java)
                 .hasMessageContaining("Bot connect timeout")
                 .hasMessageContaining("connected 1 of 2")
@@ -131,10 +131,10 @@ class WaitForBotsTest {
     @Test
     fun `pre-existing bots are excluded from matching`() {
         val conn = conn()
-        val identities = listOf(BotIdentity("Alpha", "1.0"))
+        val identities = listOf(BotIdentity("Alpha", "1.0", "Author"))
 
-        val preExisting = botInfo("Alpha", "1.0", "localhost", 7000)
-        val newBot      = botInfo("Alpha", "1.0", "localhost", 7001)
+        val preExisting = botInfo("Alpha", "1.0", "Author", "localhost", 7000)
+        val newBot      = botInfo("Alpha", "1.0", "Author", "localhost", 7001)
 
         val preExistingAddresses = setOf(BotAddress("localhost", 7000))
 
@@ -145,7 +145,7 @@ class WaitForBotsTest {
         }.start()
 
         runner().use { r ->
-            val result = r.waitForBots(conn, preExistingAddresses, identities)
+            val result = r.waitForBots(conn, preExistingAddresses, identities, 1)
             assertThat(result).containsExactly(BotAddress("localhost", 7001))
             assertThat(result).doesNotContain(BotAddress("localhost", 7000))
         }

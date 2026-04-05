@@ -168,18 +168,23 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     }
 
     private fun bootAndShowProgress(botInfoList: List<BotInfo>) {
+        var unknownCount = 0
         val expectedIdentities = botInfoList.flatMap { botInfo ->
             try {
                 BotIdentityReader.readIdentities(Paths.get(botInfo.host))
             } catch (e: Exception) {
-                listOf(BotIdentity(botInfo.name, botInfo.version))
+                unknownCount++ // No JSON → runtime identity unknown
+                emptyList()
             }
         }
+        val baseline = Client.joinedBots.map { BotIdentity(it.name, it.version) }.groupingBy { it }.eachCount()
         BootProcess.boot(botInfoList.map { it.host })
 
         val dialog = BootProgressDialog(
             owner = SwingUtilities.getWindowAncestor(this),
             expectedIdentities = expectedIdentities,
+            unknownCount = unknownCount,
+            baseline = baseline,
             timeoutSeconds = ConfigSettings.bootTimeout,
             onSuccess = { /* bots now visible in joined list */ },
             onCancel = { BootProcess.stop() },

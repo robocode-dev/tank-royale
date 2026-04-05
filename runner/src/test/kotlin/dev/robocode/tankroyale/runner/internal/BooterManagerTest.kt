@@ -43,12 +43,11 @@ class BooterManagerTest {
     }
 
     @Test
-    fun `validateBotDir rejects directory without config file`() {
-        val botDir = tempDir.resolve("EmptyBot").createDirectory()
+    fun `validateBotDir accepts directory without config file`() {
+        val botDir = tempDir.resolve("ConfigLessBot").createDirectory()
 
-        assertThatThrownBy { BooterManager.validateBotDir(botDir) }
-            .isInstanceOf(BattleException::class.java)
-            .hasMessageContaining("configuration file")
+        // Should not throw — .json is now optional for non-teams
+        BooterManager.validateBotDir(botDir)
     }
 
     @Test
@@ -62,12 +61,12 @@ class BooterManagerTest {
 
     @Test
     fun `validateBotDir accepts valid team with all member directories present`() {
-        createBotDir(tempDir, "BotA", "Bot A", "1.0")
-        createBotDir(tempDir, "BotB", "Bot B", "1.0")
+        createBotDir(tempDir, "BotA", "Bot A", "1.0", "Author")
+        createBotDir(tempDir, "BotB", "Bot B", "1.0", "Author")
 
         val teamDir = tempDir.resolve("MyTeam").createDirectory()
         teamDir.resolve("MyTeam.json").writeText(
-            """{"name":"MyTeam","version":"1.0","teamMembers":["BotA","BotB"]}"""
+            """{"name":"MyTeam","version":"1.0","authors":"Author","teamMembers":["BotA","BotB"]}"""
         )
 
         // Should not throw
@@ -76,11 +75,11 @@ class BooterManagerTest {
 
     @Test
     fun `validateBotDir throws BattleException for team with missing member directory`() {
-        createBotDir(tempDir, "BotA", "Bot A", "1.0")
+        createBotDir(tempDir, "BotA", "Bot A", "1.0", "Author")
 
         val teamDir = tempDir.resolve("BrokenTeam").createDirectory()
         teamDir.resolve("BrokenTeam.json").writeText(
-            """{"name":"BrokenTeam","version":"1.0","teamMembers":["BotA","MissingBot"]}"""
+            """{"name":"BrokenTeam","version":"1.0","authors":"Author","teamMembers":["BotA","MissingBot"]}"""
         )
 
         assertThatThrownBy { BooterManager.validateBotDir(teamDir) }
@@ -92,7 +91,7 @@ class BooterManagerTest {
     @Test
     fun `validateBotDir non-team bot is unchanged by team validation`() {
         val botDir = tempDir.resolve("SimpleBot").createDirectory()
-        botDir.resolve("SimpleBot.json").writeText("""{"name":"Simple Bot","version":"2.0"}""")
+        botDir.resolve("SimpleBot.json").writeText("""{"name":"Simple Bot","version":"2.0","authors":"Author"}""")
 
         // Should not throw — no teamMembers field
         BooterManager.validateBotDir(botDir)
@@ -142,32 +141,32 @@ class BooterManagerTest {
     // readBotIdentities (1.2 / 1.3)
     // -------------------------------------------------------------------------------------
 
-    private fun createBotDir(parent: Path, dirName: String, name: String, version: String): Path {
+    private fun createBotDir(parent: Path, dirName: String, name: String, version: String, authors: String): Path {
         val botDir = parent.resolve(dirName).createDirectory()
-        botDir.resolve("$dirName.json").writeText("""{"name":"$name","version":"$version"}""")
+        botDir.resolve("$dirName.json").writeText("""{"name":"$name","version":"$version","authors":"$authors"}""")
         return botDir
     }
 
     @Test
     fun `readBotIdentities returns single identity for regular bot directory`() {
-        val botDir = createBotDir(tempDir, "MyFirstBot", "My First Bot", "1.0")
+        val botDir = createBotDir(tempDir, "MyFirstBot", "My First Bot", "1.0", "Author")
 
         val identities = BooterManager.readBotIdentities(botDir)
 
-        assertThat(identities).containsExactly(BotIdentity("My First Bot", "1.0"))
+        assertThat(identities).containsExactly(BotIdentity("My First Bot", "1.0", "Author"))
     }
 
     @Test
     fun `readBotIdentities returns one identity per team member including duplicates`() {
         // Create 4 distinct member bots plus 1 duplicate (Drone appears twice)
-        createBotDir(tempDir, "Drone", "Drone", "1.0")
-        createBotDir(tempDir, "Scout", "Scout", "1.0")
-        createBotDir(tempDir, "Tank", "Tank", "1.0")
-        createBotDir(tempDir, "Support", "Support", "1.0")
+        createBotDir(tempDir, "Drone", "Drone", "1.0", "Author")
+        createBotDir(tempDir, "Scout", "Scout", "1.0", "Author")
+        createBotDir(tempDir, "Tank", "Tank", "1.0", "Author")
+        createBotDir(tempDir, "Support", "Support", "1.0", "Author")
 
         val teamDir = tempDir.resolve("MyTeam").createDirectory()
         teamDir.resolve("MyTeam.json").writeText(
-            """{"name":"MyTeam","version":"1.0","teamMembers":["Drone","Scout","Tank","Support","Drone"]}"""
+            """{"name":"MyTeam","version":"1.0","authors":"Author","teamMembers":["Drone","Scout","Tank","Support","Drone"]}"""
         )
 
         val identities = BooterManager.readBotIdentities(teamDir)
@@ -177,19 +176,18 @@ class BooterManagerTest {
     }
 
     @Test
-    fun `readBotIdentities throws BattleException when bot json is missing`() {
+    fun `readBotIdentities returns empty list when bot json is missing`() {
         val botDir = tempDir.resolve("MissingBot").createDirectory()
         // No JSON file created
 
-        assertThatThrownBy { BooterManager.readBotIdentities(botDir) }
-            .isInstanceOf(BattleException::class.java)
-            .hasMessageContaining("not found")
+        val identities = BooterManager.readBotIdentities(botDir)
+        assertThat(identities).isEmpty()
     }
 
     @Test
     fun `readBotIdentities throws BattleException when name field is missing`() {
         val botDir = tempDir.resolve("NoNameBot").createDirectory()
-        botDir.resolve("NoNameBot.json").writeText("""{"version":"1.0"}""")
+        botDir.resolve("NoNameBot.json").writeText("""{"version":"1.0","authors":"Author"}""")
 
         assertThatThrownBy { BooterManager.readBotIdentities(botDir) }
             .isInstanceOf(BattleException::class.java)
@@ -197,12 +195,22 @@ class BooterManagerTest {
     }
 
     @Test
+    fun `readBotIdentities throws BattleException when authors field is missing`() {
+        val botDir = tempDir.resolve("NoAuthorsBot").createDirectory()
+        botDir.resolve("NoAuthorsBot.json").writeText("""{"name":"No Authors","version":"1.0"}""")
+
+        assertThatThrownBy { BooterManager.readBotIdentities(botDir) }
+            .isInstanceOf(BattleException::class.java)
+            .hasMessageContaining("authors")
+    }
+
+    @Test
     fun `readBotIdentities throws BattleException when team member directory is missing`() {
-        createBotDir(tempDir, "PresentBot", "Present Bot", "1.0")
+        createBotDir(tempDir, "PresentBot", "Present Bot", "1.0", "Author")
 
         val teamDir = tempDir.resolve("BrokenTeam").createDirectory()
         teamDir.resolve("BrokenTeam.json").writeText(
-            """{"name":"BrokenTeam","version":"1.0","teamMembers":["PresentBot","MissingBot"]}"""
+            """{"name":"BrokenTeam","version":"1.0","authors":"Author","teamMembers":["PresentBot","MissingBot"]}"""
         )
 
         assertThatThrownBy { BooterManager.readBotIdentities(teamDir) }

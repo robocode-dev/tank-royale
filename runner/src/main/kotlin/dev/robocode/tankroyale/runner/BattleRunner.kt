@@ -172,7 +172,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
             // Wait for bots to connect (detected via BotListUpdate)
             logger.fine("Waiting for bots to connect...")
-            val ourBotAddresses = waitForBots(conn, preExistingBots, expectedIdentities, handle.onBootProgress)
+            val ourBotAddresses = waitForBots(conn, preExistingBots, expectedIdentities, bots.size, handle.onBootProgress)
 
             // 3. Start game
             logger.info("Starting game...")
@@ -280,11 +280,12 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         conn: ServerConnection,
         preExistingBots: Set<BotAddress>,
         expectedIdentities: List<BotIdentity>,
+        expectedBotCount: Int = expectedIdentities.size,
         bootProgressEvent: dev.robocode.tankroyale.common.event.Event<BootProgress>? = null,
     ): Set<BotAddress> {
         val timeoutMs = config.botConnectTimeoutMs
         val startMs = System.currentTimeMillis()
-        val matcher = BotMatcher(expectedIdentities, preExistingBots)
+        val matcher = BotMatcher(expectedIdentities, preExistingBots, expectedBotCount)
         val botsReadyLatch = CountDownLatch(1)
         var latestResult = matcher.update(conn.latestBotList.get().toSet())
         val botOwner = Any()

@@ -121,51 +121,91 @@ def test_TR_API_BOT_001a_default_server_url_is_used_when_env_absent():
         assert sent["authors"] == ["Tester"]
 
 
-def test_TR_API_BOT_001a_missing_required_env_raises_exception():
-    """TR-API-BOT-001a ENV read & defaults: missing required vars cause a clear error."""
+def test_TR_API_BOT_001a_missing_required_env_does_not_raise_exception_at_construction():
+    """TR-API-BOT-001a ENV read & defaults: missing required vars do not cause error during construction."""
     # Ensure missing required BOT_NAME
     os.environ.pop(EnvVars.BotName, None)
     os.environ[EnvVars.BotVersion] = "1.0"
     os.environ[EnvVars.BotAuthors] = "A"
 
-    with pytest.raises(Exception) as exc:
-        # BaseBot will attempt to read env-based BotInfo via BaseBotInternals
-        _ = BaseBot()
-    assert EnvVars.MissingEnvValue in str(exc.value)
-    assert EnvVars.BotName in str(exc.value)
+    # BaseBot will attempt to read env-based BotInfo via BaseBotInternals
+    # It should not raise an exception now (deferred validation)
+    bot = BaseBot()
+    assert bot._internals.bot_info.name is None
 
 
-
-def test_TR_API_BOT_001b_missing_required_env_vars_raise_clear_error():
-    """TR-API-BOT-001b ENV validation: missing/blank required values raise clear errors"""
+def test_TR_API_BOT_001b_missing_required_env_vars_defer_validation():
+    """TR-API-BOT-001b ENV validation: missing/blank required values do not raise error during construction"""
     # Missing BOT_NAME
     os.environ.pop(EnvVars.BotName, None)
     os.environ[EnvVars.BotVersion] = "1.0"
     os.environ[EnvVars.BotAuthors] = "A,B"
-    with pytest.raises(Exception) as exc1:
-        _ = BaseBot()
-    assert EnvVars.MissingEnvValue in str(exc1.value)
-    assert EnvVars.BotName in str(exc1.value)
+    bot1 = BaseBot()
+    assert bot1._internals.bot_info.name is None
 
     # Blank BOT_VERSION
     os.environ[EnvVars.BotName] = "Name"
     os.environ[EnvVars.BotVersion] = "   "
     os.environ[EnvVars.BotAuthors] = "A,B"
-    with pytest.raises(Exception) as exc2:
-        _ = BaseBot()
-    msg2 = str(exc2.value)
-    assert (EnvVars.MissingEnvValue in msg2 and EnvVars.BotVersion in msg2) or ("version" in msg2 and "blank" in msg2)
+    bot2 = BaseBot()
+    assert bot2._internals.bot_info.version is None
 
-    # Authors empty/blank -> error
+    # Authors empty/blank -> No error
     os.environ[EnvVars.BotName] = "Name"
     os.environ[EnvVars.BotVersion] = "1.0"
     os.environ[EnvVars.BotAuthors] = "   "
-    with pytest.raises(Exception) as exc3:
-        _ = BaseBot()
-    assert EnvVars.MissingEnvValue in str(exc3.value)
-    assert EnvVars.BotAuthors in str(exc3.value)
+    bot3 = BaseBot()
+    assert not bot3._internals.bot_info.authors
 
 
+
+
+def test_TR_API_BOT_001a_missing_required_env_raises_connection_error_at_handshake():
+    """TR-API-BOT-001a: missing required env vars fire on_connection_error with BotException at handshake time."""
+    from robocode_tank_royale.bot_api.events.connection_error_event import ConnectionErrorEvent
+
+    class TestBotWithErrorCapture(BaseBot):
+        def __init__(self):
+            super().__init__()
+            self.captured_error = None
+
+        def on_connection_error(self, event: ConnectionErrorEvent) -> None:
+            self.captured_error = event.error
+
+    os.environ.pop(EnvVars.BotName, None)
+    os.environ[EnvVars.BotVersion] = "1.0"
+    os.environ[EnvVars.BotAuthors] = "A"
+
+    server_handshake = {
+        "type": "ServerHandshake",
+        "sessionId": "sess-xyz",
+        "variant": "RobocodeTankRoyale",
+        "version": "1.0",
+        "gameTypes": ["classic"],
+    }
+    messages = [json.dumps(server_handshake)]
+
+    async def message_iterator(*_):
+        for m in messages:
+            yield m
+        import websockets
+        raise websockets.exceptions.ConnectionClosed(
+            rcvd=websockets.frames.Close(code=1000, reason="Normal Closure"),
+            sent=None,
+        )
+
+    with patch("websockets.connect", new_callable=AsyncMock) as mock_connect:
+        mock_ws = AsyncMock()
+        mock_ws.__aiter__ = message_iterator
+        mock_ws.send = AsyncMock()
+        mock_ws.close = AsyncMock()
+        mock_connect.return_value = mock_ws
+
+        bot = TestBotWithErrorCapture()
+        bot.start()
+
+    assert bot.captured_error is not None
+    assert "Required bot property 'name' is missing" in str(bot.captured_error)
 
 
 def test_TR_API_BOT_001b_invalid_server_url_scheme_raises_bot_exception():

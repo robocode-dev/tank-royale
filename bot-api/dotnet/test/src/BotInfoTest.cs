@@ -60,30 +60,31 @@ public class BotInfoTest
     [Description("TR-API-VAL-002 BotInfo validation: invalid fields raise/throw")]
     public void Test_TR_API_VAL_002_Invalid_Fields_Validation()
     {
-        // Required non-blank name
+        // Required blank name -> No error (deferred validation)
         var builder1 = PrefilledBuilder().SetName("   ");
-        var ex1 = Assert.Throws<ArgumentException>(() => builder1.Build());
-        Assert.That(ex1?.Message.ToLower().Contains("'name' cannot be null, empty or blank"), Is.True);
+        var info1 = builder1.Build();
+        Assert.That(info1.Name, Is.Null);
 
-        // Required non-blank version
+        // Required blank version -> No error (deferred validation)
         var builder2 = PrefilledBuilder().SetVersion("\t ");
-        var ex2 = Assert.Throws<ArgumentException>(() => builder2.Build());
-        Assert.That(ex2?.Message.ToLower().Contains("'version' cannot be null, empty or blank"), Is.True);
+        var info2 = builder2.Build();
+        Assert.That(info2.Version, Is.Null);
 
         // Max length name
         var builder3 = PrefilledBuilder().SetName(StringOfLength(MaxNameLength + 1));
         var ex3 = Assert.Throws<ArgumentException>(() => builder3.Build());
         Assert.That(ex3?.Message.ToLower().Contains("'name' length exceeds"), Is.True);
 
-        // Authors rules: empty list
+        // Authors rules: empty list -> No error (deferred validation)
         var builder4 = PrefilledBuilder().SetAuthors(new List<string>());
-        Assert.Throws<ArgumentException>(() => builder4.Build());
+        var info4 = builder4.Build();
+        Assert.That(info4.Authors.Count, Is.EqualTo(0));
 
         // Game type too long
         var tooLongGameType = StringOfLength(MaxGameTypeLength + 1);
         var builder5 = PrefilledBuilder().SetGameTypes(new HashSet<string> { tooLongGameType });
         var ex5 = Assert.Throws<ArgumentException>(() => builder5.Build());
-        Assert.That(ex5?.Message.ToLower().Contains("'gameTypes".ToLower()), Is.True);
+        Assert.That(ex5?.Message.ToLower().Contains("gametypes"), Is.True);
     }
 
     [TestFixture]
@@ -102,11 +103,10 @@ public class BotInfoTest
         [TestCase("  ")]
         [TestCase("\t ")]
         [TestCase("\n")]
-        public void GivenNameIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(string name)
+        public void GivenNameIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenNoExceptionIsThrown(string name)
         {
-            var builder = PrefilledBuilder().SetName(name);
-            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower(), Is.EqualTo("'name' cannot be null, empty or blank"));
+            var info = PrefilledBuilder().SetName(name).Build();
+            Assert.That(info.Name, Is.Null);
         }
 
         [Test]
@@ -140,11 +140,10 @@ public class BotInfoTest
         [TestCase("  ")]
         [TestCase("\t ")]
         [TestCase("\n")]
-        public void GivenVersionIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(string version)
+        public void GivenVersionIsNullOrEmptyOrBlank_whenConstructingBotInfo_thenNoExceptionIsThrown(string version)
         {
-            var builder = PrefilledBuilder().SetVersion(version);
-            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower(), Is.EqualTo("'version' cannot be null, empty or blank"));
+            var info = PrefilledBuilder().SetVersion(version).Build();
+            Assert.That(info.Version, Is.Null);
         }
     
         [Test]
@@ -174,11 +173,10 @@ public class BotInfoTest
         
         [Test]
         [TestCaseSource(nameof(ListOfEmptyOrBlanks))]
-        public void GivenEmptyOrBlankAuthors_whenConstructingBotInfo_thenThrowIllegalArgumentExceptionWithErrorInfo(List<string> authors)
+        public void GivenEmptyOrBlankAuthors_whenConstructingBotInfo_thenNoExceptionIsThrown(List<string> authors)
         {
-            var builder = PrefilledBuilder().SetAuthors(authors);
-            var exception = Assert.Throws<ArgumentException>(() => builder.Build());
-            Assert.That(exception?.Message.ToLower(), Is.EqualTo("'authors' cannot be null or empty or contain blanks"));
+            var info = PrefilledBuilder().SetAuthors(authors).Build();
+            Assert.That(info.Authors.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -545,9 +543,10 @@ public class BotInfoTest
         }
 
         [Test]
-        public void GivenEmptyConfiguration_whenCallingConfigurationBuilder_thenThrowException()
+        public void GivenEmptyConfiguration_whenCallingConfigurationBuilder_thenNoExceptionIsThrown()
         {
-            Assert.That(() => FromConfiguration(new ConfigurationBuilder().Build()), Throws.Exception);
+            var info = FromConfiguration(new ConfigurationBuilder().Build());
+            Assert.That(info.Name, Is.Null);
         }
     }
 

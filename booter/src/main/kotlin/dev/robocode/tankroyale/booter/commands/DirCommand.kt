@@ -2,13 +2,14 @@ package dev.robocode.tankroyale.booter.commands
 
 import dev.robocode.tankroyale.booter.model.DirBootEntry
 import dev.robocode.tankroyale.booter.model.BootEntry
+import dev.robocode.tankroyale.booter.process.ScriptFinder
 import dev.robocode.tankroyale.booter.util.Log
 import java.nio.file.Files.exists
-import java.nio.file.Files.list
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 import kotlin.io.path.isDirectory
+import kotlin.io.path.listDirectoryEntries
 
 /**
  * Command for managing bot directories and their boot entries.
@@ -126,19 +127,40 @@ internal class DirCommand(private val botRootPaths: List<Path>) : Command() {
         val dirs = HashSet<Path>()
 
         botRootPaths.forEach { rootPath ->
-            list(rootPath).use { stream ->
-                stream.forEach { dirPath ->
-                    if (dirPath.isDirectory()) {
-                        val botName = dirPath.fileName.toString()
-                        val jsonPath = dirPath.resolve("$botName.json")
-                        if (exists(jsonPath)) {
-                            dirs.add(dirPath)
-                        }
+            rootPath.listDirectoryEntries().forEach { dirPath ->
+                if (dirPath.isDirectory()) {
+                    if (isBotDirectory(dirPath)) {
+                        dirs.add(dirPath)
                     }
                 }
             }
         }
         return dirs
+    }
+
+    private fun isBotDirectory(dirPath: Path): Boolean {
+        val botName = dirPath.fileName.toString()
+        val jsonPath = dirPath.resolve("$botName.json")
+        if (exists(jsonPath)) {
+            return true
+        }
+
+        // Fallback: Check if there is a script or a main file matching the platform convention
+        if (ScriptFinder.findScript(dirPath) != null) {
+            return true
+        }
+
+        // Platform-specific file detection
+        val platformFiles = listOf(
+            "$botName.jar", // JVM
+            "$botName.class", // JVM
+            "$botName.java", // JVM (single-file source)
+            "$botName.py", // Python
+            "$botName.cs", // .NET (single-file source)
+            "$botName.csproj", // .NET
+            "$botName.dll", // .NET
+        )
+        return platformFiles.any { exists(dirPath.resolve(it)) }
     }
 
     /**
