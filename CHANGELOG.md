@@ -1,6 +1,11 @@
-## [0.38.3] - TBD
+## [0.38.3] - 2026-04-05 - TPS Resume Dialog & TimeLeft Fix
 
 ### 🐞 Bug Fixes
+
+- Bot API (Java, .NET, Python):
+    - #202: Fixed `getTimeLeft()` returning negative values when turns were skipped or the bot was busy.
+      The timing now uses the arrival time of the latest tick received by the bot to ensure accurate
+      reporting of the time remaining for the current turn.
 
 - GUI:
     - Fixed JNA restricted native access warning (`java.lang.System::load`) on Java 16+ when starting the
