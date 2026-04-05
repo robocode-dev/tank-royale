@@ -38,7 +38,7 @@ object BootProcess {
 
     private val json = MessageConstants.json
 
-    private val bootedBotsList = mutableListOf<DirAndPid>()
+    private val bootedBotsList = Collections.synchronizedList(mutableListOf<DirAndPid>())
 
     private val pidAndDirs = ConcurrentHashMap<Long, String>() // pid, dir
 
