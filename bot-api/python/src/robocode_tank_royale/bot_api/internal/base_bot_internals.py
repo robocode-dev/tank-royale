@@ -243,11 +243,13 @@ class BaseBotInternals:
         self.data.tick_start_nano_time = tick_start_nano_time
 
     def get_time_left(self) -> int:
+        if self.data.current_tick_or_null is None:
+            return self.data.game_setup.turn_timeout
+
         passed_microseconds = (
-            time.monotonic_ns() - self.data._dispatch_tick_start_nano_time
+            time.monotonic_ns() - self.data.tick_start_nano_time
         ) // 1000
-        game_setup = self.data.game_setup
-        return game_setup.turn_timeout - passed_microseconds
+        return max(0, self.data.game_setup.turn_timeout - passed_microseconds)
 
     def enable_event_handling(self, enable: bool) -> None:
         if enable:
@@ -295,9 +297,6 @@ class BaseBotInternals:
         self.event_queue.set_current_event_interruptible(interruptible)
 
     def dispatch_events(self, turn_number: int) -> None:
-        if self.data.tick_start_nano_time is not None:
-            self.data._dispatch_tick_start_nano_time = self.data.tick_start_nano_time  # tick arrival time — matches Java
-
         try:
             self.event_queue.dispatch_events(turn_number)
         except Exception:

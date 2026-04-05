@@ -45,7 +45,6 @@ sealed class BaseBotInternals
 
     private E.TickEvent _tickEvent;
     private long? _ticksStart;
-    private long _dispatchTicksStart;
 
     private readonly EventQueue _eventQueue;
 
@@ -404,9 +403,6 @@ sealed class BaseBotInternals
 
     internal void DispatchEvents(int turnNumber)
     {
-        if (_ticksStart.HasValue)
-            _dispatchTicksStart = _ticksStart.Value; // tick arrival time — matches Java's tickStartNanoTime
-
         try
         {
             _eventQueue.DispatchEvents(turnNumber);
@@ -440,8 +436,11 @@ sealed class BaseBotInternals
     {
         get
         {
-            var elapsedMicros = (Stopwatch.GetTimestamp() - _dispatchTicksStart) * 1_000_000L / Stopwatch.Frequency;
-            return (int)(_gameSetup.TurnTimeout - elapsedMicros);
+            if (_tickEvent == null)
+                return GameSetup.TurnTimeout;
+
+            var elapsedMicros = (Stopwatch.GetTimestamp() - _ticksStart.Value) * 1_000_000L / Stopwatch.Frequency;
+            return Math.Max(0, (int)(_gameSetup.TurnTimeout - elapsedMicros));
         }
     }
 

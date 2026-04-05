@@ -62,8 +62,7 @@ public final class BaseBotInternals {
     private InitialPosition initialPosition;
 
     private TickEvent tickEvent;
-    private Long tickStartNanoTime;
-    private long dispatchTickStartNanoTime;
+    private long tickStartNanoTime;
 
     private final EventQueue eventQueue;
 
@@ -388,9 +387,6 @@ public final class BaseBotInternals {
     }
 
     public void dispatchEvents(int turnNumber) {
-        if (tickStartNanoTime != null)
-            dispatchTickStartNanoTime = tickStartNanoTime;
-
         try {
             eventQueue.dispatchEvents(turnNumber);
         } catch (Exception e) {
@@ -456,13 +452,13 @@ public final class BaseBotInternals {
     }
 
     private long getTicksStart() {
-        if (tickStartNanoTime == null) {
+        if (tickEvent == null) {
             throw new BotException(TICK_NOT_AVAILABLE_MSG);
         }
         return tickStartNanoTime;
     }
 
-    void setTickStartNanoTime(Long tickStartNanoTime) {
+    void setTickStartNanoTime(long tickStartNanoTime) {
         this.tickStartNanoTime = tickStartNanoTime;
     }
 
@@ -475,8 +471,11 @@ public final class BaseBotInternals {
     }
 
     public int getTimeLeft() {
-        long passesMicroSeconds = (System.nanoTime() - dispatchTickStartNanoTime) / 1000;
-        return (int) (getGameSetup().getTurnTimeout() - passesMicroSeconds);
+        if (tickEvent == null) {
+            return getGameSetup().getTurnTimeout();
+        }
+        long passesMicroSeconds = (System.nanoTime() - tickStartNanoTime) / 1000;
+        return (int) Math.max(0, getGameSetup().getTurnTimeout() - passesMicroSeconds);
     }
 
     public boolean setFire(double firepower) {

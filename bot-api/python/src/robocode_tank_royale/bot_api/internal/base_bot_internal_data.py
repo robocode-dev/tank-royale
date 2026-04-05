@@ -28,8 +28,7 @@ class BaseBotInternalData:
         self._game_setup: Optional[GameSetup] = None
         self._initial_position: Optional[InitialPosition] = None
         self._tick_event: Optional[TickEvent] = None
-        self._tick_start_nano_time: Optional[int] = None
-        self._dispatch_tick_start_nano_time: int = 0
+        self._tick_start_nano_time: int = 0
         self._server_handshake: Optional[ServerHandshake] = None
         self._conditions: Set[Condition] = set()
         self._is_running_atomic: bool = False
@@ -105,8 +104,6 @@ class BaseBotInternalData:
 
     @property
     def tick_start_nano_time(self) -> int:
-        if self._tick_start_nano_time is None:
-            raise BotException(TICK_NOT_AVAILABLE_MSG)
         return self._tick_start_nano_time
 
     @tick_start_nano_time.setter
