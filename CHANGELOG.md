@@ -1,5 +1,11 @@
 ## [0.38.3] - 2026-04-05 - TPS Resume Dialog & TimeLeft Fix
 
+### AI Instructions
+- #202: Integrated commands and skills from `.claude/` into the `.ai/` instruction system.
+    - Added `.ai/commands.md` for `/dot-scout`, `/dot-prime`, and `/dot-audit`.
+    - Updated `.ai/openspec.md` with `/opsx:*` commands and specialized OpenSpec skills.
+    - Updated `AGENTS.md` and `.ai/README.md` for proper routing.
+
 ### 🐞 Bug Fixes
 
 - Bot API (Java, .NET, Python):
