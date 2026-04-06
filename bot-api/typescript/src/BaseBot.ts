@@ -31,6 +31,7 @@ import { BaseBotInternals } from "./internal/BaseBotInternals.js";
 import { EnvVars } from "./EnvVars.js";
 import { detectRuntime } from "./runtime/index.js";
 import { Constants } from "./Constants.js";
+import { MathUtil } from "./util/MathUtil.js";
 
 /**
  * Abstract base class for bots implementing the IBaseBot interface.
@@ -187,15 +188,15 @@ export abstract class BaseBot implements IBaseBot {
   setGunColor(color: Color | null): void { this._internals.setGunColor(color); }
 
   calcMaxTurnRate(speed: number): number {
-    return Constants.MAX_TURN_RATE - 0.75 * Math.abs(speed);
+    return Constants.MAX_TURN_RATE - 0.75 * Math.abs(MathUtil.clamp(speed, -Constants.MAX_SPEED, Constants.MAX_SPEED));
   }
 
   calcBulletSpeed(firepower: number): number {
-    return 20 - 3 * firepower;
+    return 20 - 3 * MathUtil.clamp(firepower, Constants.MIN_FIREPOWER, Constants.MAX_FIREPOWER);
   }
 
   calcGunHeat(firepower: number): number {
-    return 1 + firepower / 5;
+    return 1 + MathUtil.clamp(firepower, Constants.MIN_FIREPOWER, Constants.MAX_FIREPOWER) / 5;
   }
 
   getEventPriority(eventType: string): number { return this._internals.getEventPriority(eventType); }
@@ -249,7 +250,7 @@ export abstract class BaseBot implements IBaseBot {
 
   directionTo(x: number, y: number): number {
     return this.normalizeAbsoluteAngle(
-      (Math.atan2(x - this.getX(), y - this.getY()) * 180) / Math.PI,
+      (Math.atan2(y - this.getY(), x - this.getX()) * 180) / Math.PI,
     );
   }
 

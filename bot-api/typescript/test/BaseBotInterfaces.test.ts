@@ -299,10 +299,11 @@ describe("BaseBot implementation (task 3)", () => {
 
   it("3.8 directionTo computes correct direction", () => {
     const bot = makeBot();
-    // bot at (0,0), target at (0,100) => direction 0 (north)
-    expect(bot.directionTo(0, 100)).toBeCloseTo(0);
-    // target at (100,0) => direction 90 (east)
-    expect(bot.directionTo(100, 0)).toBeCloseTo(90);
+    // Math convention: 0° = east, 90° = north (CCW positive)
+    // bot at (0,0), target at (0,100) => 90° (north in math convention)
+    expect(bot.directionTo(0, 100)).toBeCloseTo(90);
+    // target at (100,0) => 0° (east in math convention)
+    expect(bot.directionTo(100, 0)).toBeCloseTo(0);
   });
 
   it("3.8 distanceTo computes Euclidean distance", () => {
