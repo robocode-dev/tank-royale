@@ -55,14 +55,14 @@ Guided onboarding tutorial.
 
 ## ⛔ Approval Gate
 
-**Never start implementing a change proposal without explicit human approval.**
+**Never start implementing a change proposal without explicit human approval of the Proposal, Design, and Specs.**
 
-After scaffolding `proposal.md`, `tasks.md`, and spec deltas:
-- Present the proposal to the user
-- Wait for a clear "yes", "approved", "go ahead", or equivalent confirmation
-- Only then move to Stage 2 (implementation)
+After scaffolding `proposal.md`, `design.md`, and `specs/`:
+- Present the proposal, design, and specs to the user.
+- Wait for a clear "yes", "approved", "go ahead", or equivalent confirmation for the entire plan and design.
+- Only then move to Stage 2 (Implementation Tasks and Coding).
 
-This applies even when the user phrases the request as "plan and implement" — create the proposal first, present it, and wait.
+This applies even when the user phrases the request as "plan and implement" — create the proposal, design, and specs first, present them, and wait.
 
 ## Important
 
