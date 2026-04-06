@@ -4,7 +4,6 @@ description = "Robocode Tank Royale Recorder"
 
 val title = "Robocode Tank Royale Recorder"
 group = "dev.robocode.tankroyale"
-version = libs.versions.tankroyale.get()
 
 val jarManifestMainClass = "dev.robocode.tankroyale.recorder.MainKt"
 

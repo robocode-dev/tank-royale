@@ -271,6 +271,9 @@ class WebSocketHandler:
         server_handshake: ServerHandshake = from_json(json_msg)  # type: ignore
         self.base_bot_internal_data.server_handshake = server_handshake
 
+        # Validate bot info before sending bot handshake
+        self._validate_bot_info()
+
         # Reply by sending bot handshake
         # Infer droid status by marker interface inheritance (Java parity), with fallback to explicit flag for backward compatibility
         try:
@@ -319,3 +322,29 @@ class WebSocketHandler:
                 self.base_bot_internal_data.bot_intent.std_err = error
             else:
                 self.base_bot_internal_data.bot_intent.std_err = None
+
+    def _validate_bot_info(self) -> None:
+        """Validate bot info before sending handshake to server."""
+        if self._is_blank(self.bot_info.name):
+            self._throw_missing_property_exception("name")
+        if self._is_blank(self.bot_info.version):
+            self._throw_missing_property_exception("version")
+        if not self.bot_info.authors or self._is_all_blank(self.bot_info.authors):
+            self._throw_missing_property_exception("authors")
+
+    def _throw_missing_property_exception(self, property_name: str) -> None:
+        """Throw a BotException for a missing required property."""
+        raise BotException(
+            f"Required bot property '{property_name}' is missing. "
+            f"This property is required in order for the bot to be recognized when booting it up and "
+            f"when it needs to join the game. You must set this property in your bot code "
+            f"or provide a .json configuration file."
+        )
+
+    def _is_blank(self, s: Optional[str]) -> bool:
+        """Check if a string is None or whitespace-only."""
+        return s is None or not s.strip()
+
+    def _is_all_blank(self, strings: list[str]) -> bool:
+        """Check if all strings in a list are blank."""
+        return all(self._is_blank(s) for s in strings)

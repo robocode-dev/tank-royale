@@ -61,13 +61,31 @@ if __name__ == "__main__":
     main()
 ```
 
-The `main` function in this example simply creates the bot and calls its [start] method, which will let the bot start up
-reading configuration and start communicating with the server.
+The `main` function in this example simply creates the bot and calls its [start] method, which will let the bot start up,
+read configuration (from a `.json` file or environment variables), and start communicating with the server.
 
-The bot will attempt to join the server and wait for a signal to engage in a new battle, where one or multiple instances
-of this bot may participate.
+If you don't want to use a `.json` configuration file, you can provide the bot information directly in the constructor:
 
-Note that it is also possible to provide all the necessary configuration fields programmatically without a file.
+```python
+from robocode_tank_royale.bot_api import Bot, BotInfo
+
+class MyFirstBot(Bot):
+    def __init__(self):
+        bot_info = BotInfo(
+            name="My First Bot",
+            version="1.0",
+            authors=["Your Name"],
+            description="My first bot",
+            country_codes=["US"],
+            game_types={"classic"},
+            platform="Python 3.10",
+            programming_lang="Python",
+        )
+        super().__init__(bot_info)
+```
+
+When providing `BotInfo` in the constructor, the `.json` file is no longer required, and the booter will use
+**heuristic platform detection** to find your `.py` file and start the bot.
 
 ### The run method
 
@@ -250,8 +268,8 @@ will fail with an error because it cannot find the server. The server can be sta
 If you need to package your bot for distribution, you can zip the bot directory. The zip archive should contain:
 
 - Source file (.py)
-- Script files (.cmd and .sh)
 - JSON config file (.json)
+- Script files (`.cmd` and `.sh`) — *Optional due to template-based booting (entry point defaults to the bot's parent directory name)*
 - Optional: A `requirements.txt` or instructions for installing `robocode-tankroyale-bot-api`
 
 And then you might want to provide a [README] file to provide some information for other people about your bot. :)

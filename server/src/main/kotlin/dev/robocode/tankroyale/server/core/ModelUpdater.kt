@@ -11,11 +11,6 @@ import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
 import kotlin.math.abs
 
-/** Square of the bounding circle diameter of a bot */
-private const val BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED: Double =
-    BOT_BOUNDING_CIRCLE_DIAMETER.toDouble() * BOT_BOUNDING_CIRCLE_DIAMETER
-
-
 /**
  * Model updater, which is used for keeping track of the model state for each turn and round of a game.
  *
@@ -30,11 +25,11 @@ class ModelUpdater(
     /** Participant ids */
     private val participantIds: Set<ParticipantId>,
     /** Initial positions */
-    private val initialPositions: Map<BotId, InitialPosition>,
+    initialPositions: Map<BotId, InitialPosition>,
     /** Droid flags */
-    private val droidFlags: Map<BotId, Boolean /* isDroid */>,
+    droidFlags: Map<BotId, Boolean /* isDroid */>,
     /** Whether initial position overrides from bots are enabled */
-    private val initialPositionEnabled: Boolean,
+    initialPositionEnabled: Boolean,
 ) {
     /** Score tracking */
     private val scoreTracker = ScoreTracker(participantIds)
@@ -59,8 +54,8 @@ class ModelUpdater(
     /** Round record */
     private var round = MutableRound(0)
 
-    /** Turn record */
-    private val turn = MutableTurn(0)
+    /** Turn record — fresh instance created each turn to avoid temporal coupling */
+    private var turn = MutableTurn(0)
 
     /** Counter to track the number of rounds played (memory leak fix) */
     private var roundCounter = 0
@@ -69,7 +64,7 @@ class ModelUpdater(
     private var inactivityCounter = 0
 
     /** Components */
-    private val collisionDetector = CollisionDetector(setup, participantIds, scoreTracker)
+    private val collisionDetector = CollisionDetector(setup, participantIds)
     private val botInitializer = BotInitializer(setup, participantIds, initialPositions, droidFlags, initialPositionEnabled)
     private val gunEngine = GunEngine(setup)
 
@@ -109,7 +104,7 @@ class ModelUpdater(
      * @param botIntents is the bot intents, which gives instructions to the game from the individual bots.
      * @return new game state when the game state has been updated.
      */
-    fun update(botIntents: Map<BotId, IBotIntent>): GameState {
+    fun update(botIntents: Map<BotId, IBotIntent>): GameStateSnapshot {
         updateBotIntents(botIntents)
         if (round.roundEnded || (round.roundNumber == 0 && turn.turnNumber == 0)) {
             nextRound()
@@ -133,13 +128,9 @@ class ModelUpdater(
 
     /** Proceed with the next round. */
     private fun nextRound() {
-        round = round.copy().apply {
-            roundEnded = false
-            roundNumber++
-            turns.clear() // Memory leak fix: Clear turns from previous round
-        }
-        // Initialize to 0; nextTurn() will increment it to 1 before the first TickEvent is mapped/sent
-        turn.turnNumber = 0
+        round = MutableRound(round.roundNumber + 1)
+        // Initialize to 0; nextTurn() will create a fresh MutableTurn(1) before the first TickEvent
+        turn = MutableTurn(0)
 
         // Increment round counter for tracking (memory leak fix)
         roundCounter++
@@ -161,38 +152,56 @@ class ModelUpdater(
 
     /** Proceed with the next turn. */
     private fun nextTurn() {
-        // Increment at the very start of a turn; the first turn becomes 1
-        turn.turnNumber++
-        turn.resetEvents()
-
+        turn = MutableTurn(turn.turnNumber + 1)
         deepCopyBots()
 
+        // ── Physics pipeline (sequential — each step mutates state for the next) ───
         gunEngine.coolDownAndFireGuns(botsMap, botIntentsMap, botsCopies, round, bullets, turn)
-
         executeBotIntents()
-
         collisionDetector.checkAndHandleBotWallCollisions(botsMap, botsCopies, round, turn)
-        collisionDetector.checkAndHandleBotCollisions(botsMap, round, turn)
+
+        val botCollisionResult = collisionDetector.checkAndHandleBotCollisions(botsMap, round, turn)
+        botCollisionResult.scoringRecords.forEach {
+            scoreTracker.registerRamHit(it.rammerParticipantId, it.victimParticipantId, it.isKilled)
+        }
+
         collisionDetector.constrainBotPositions(botsMap, botsCopies)
-
         checkAndHandleScans()
-
         updateBulletPositions()
         collisionDetector.checkAndHandleBulletWallCollisions(bullets, turn)
-        collisionDetector.checkAndHandleBulletHits(bullets, botsMap, turn) { inactivityCounter = 0 }
 
-        checkAndHandleInactivity()
-        checkForAndHandleDisabledBots()
-        checkAndHandleDefeatedBots()
+        val bulletPhaseResult = collisionDetector.checkAndHandleBulletHits(bullets, botsMap, turn)
+        bulletPhaseResult.scoringRecords.forEach {
+            scoreTracker.registerBulletHit(it.shooterParticipantId, it.victimParticipantId, it.damage, it.isKilled)
+        }
 
-        checkAndHandleRoundOrGameOver()
+        // ── Post-physics detect → apply (ordered: damage affects subsequent checks) ─
+        if (bulletPhaseResult.hitResults.bulletHitBots.isNotEmpty()) inactivityCounter = 0
 
-        // Store bot and bullet snapshots
+        val inactive = isInactive()
+        applyInactivity(inactive)
+
+        val disabledBotIds = detectDisabledBotIds()
+        applyDisabledBots(disabledBotIds)
+
+        val defeatedParticipants = detectDefeatedParticipants()
+        applyDefeatedBots(defeatedParticipants)
+
+        val roundOutcome = computeRoundOutcome()
+
+        // ── Snapshot + terminal state ──────────────────────────────────────────────
         turn.copyBots(botsMap.values)
         turn.copyBullets(bullets)
-
-        // Remove dead bots
         botsMap.values.removeIf(IBot::isDead)
+
+        if (roundOutcome != null) {
+            round.roundEnded = true
+            if (roundOutcome.gameEnded) gameState.isGameEnded = true
+            roundOutcome.winnerBotIds.forEach { botId ->
+                turn.addPrivateBotEvent(botId, WonRoundEvent(turn.turnNumber))
+            }
+            accumulatedScoreCalculator.addScores(roundOutcome.scores)
+        }
     }
 
     private fun deepCopyBots() {
@@ -214,11 +223,10 @@ class ModelUpdater(
      * Updates the game state.
      * @return new game state.
      */
-    private fun updateGameState(): GameState {
+    private fun updateGameState(): GameStateSnapshot {
         round.turns += turn.toTurn()
 
         // Memory leak fix: Keep only the last 2 turns (current + previous for collision detection)
-        // Remove older turns to prevent unbounded memory growth
         if (round.turns.size > 2) {
             round.turns.removeAt(0)
         }
@@ -226,7 +234,10 @@ class ModelUpdater(
         if (gameState.rounds.size == 0 || gameState.rounds.last().roundNumber != round.roundNumber) {
             gameState.rounds += round
         }
-        return gameState
+        return GameStateSnapshot(
+            lastRound = gameState.lastRound,
+            isGameEnded = gameState.isGameEnded,
+        )
     }
 
     /** Execute bot intents for all bots that are not disabled */
@@ -248,7 +259,13 @@ class ModelUpdater(
             updateBotTurnRatesAndDirections(bot, this)
             updateBotColors(bot, this)
             updateDebugGraphics(bot, this)
-            processStdErrAndStdOut(bot, this)
+
+            // Transfer one-shot std streams from intent to bot, then clear
+            bot.stdOut = stdOut
+            bot.stdErr = stdErr
+            stdOut = null
+            stdErr = null
+
             processTeamMessages(bot, this)
         }
     }
@@ -258,39 +275,40 @@ class ModelUpdater(
         bullets = bullets.map { it.copy(tick = it.tick + 1) }.toMutableSet()
     }
 
-    /**
-     * Checks and handles if the bots are inactive collectively.
-     * That is when no bot have been hit by bullets for some time.
-     */
-    private fun checkAndHandleInactivity() {
-        if (inactivityCounter++ > setup.maxInactivityTurns) {
+    /** Pure: checks whether bots have been collectively inactive long enough to take damage. */
+    private fun isInactive(): Boolean = inactivityCounter > setup.maxInactivityTurns
+
+    /** Apply: increments inactivity counter and, if inactive, applies damage to all bots. */
+    private fun applyInactivity(inactive: Boolean) {
+        inactivityCounter++
+        if (inactive) {
             botsMap.values.forEach { it.applyDamage(INACTIVITY_DAMAGE) }
         }
     }
 
-    /** Check and handles if the bots have been disabled (when energy is zero or close to zero). */
-    private fun checkForAndHandleDisabledBots() {
-        botsMap.values.forEach { bot ->
+    /** Pure: returns the IDs of bots that are currently disabled (energy ≈ 0). */
+    private fun detectDisabledBotIds(): Set<BotId> =
+        botsMap.values.filter { it.isDisabled }.map { it.id }.toSet()
 
-            // If bot is disabled => Set then reset bot movement with the bot intent
-            if (bot.isDisabled) {
-                botIntentsMap[bot.id]?.disableMovement()
-            }
-        }
+    /** Apply: disables movement intents for the given bot IDs. */
+    private fun applyDisabledBots(disabledBotIds: Set<BotId>) {
+        disabledBotIds.forEach { botId -> botIntentsMap[botId]?.disableMovement() }
     }
 
-    /** Checks and handles if any bots have been defeated. */
-    private fun checkAndHandleDefeatedBots() {
-        val deadBotIds =
-            botsMap.values.filter { it.isDead }.map { bot -> participantIds.first { it.botId == bot.id } }.toSet()
+    /** Pure: returns participant IDs of bots that have been defeated (isDead). */
+    private fun detectDefeatedParticipants(): Set<ParticipantId> =
+        botsMap.values.filter { it.isDead }
+            .map { bot -> participantIds.first { it.botId == bot.id } }
+            .toSet()
 
-        deadBotIds.forEach {
+    /** Apply: emits death events and registers deaths for scoring. */
+    private fun applyDefeatedBots(deadParticipantIds: Set<ParticipantId>) {
+        deadParticipantIds.forEach {
             val botDeathEvent = BotDeathEvent(turn.turnNumber, it.botId)
             turn.addPublicBotEvent(botDeathEvent)
             turn.addObserverEvent(botDeathEvent)
         }
-
-        scoreTracker.registerDeaths(deadBotIds)
+        scoreTracker.registerDeaths(deadParticipantIds)
     }
 
     /** Checks the scan field for scanned bots. */
@@ -426,26 +444,25 @@ class ModelUpdater(
         return Pair(startAngle, endAngle)
     }
 
-    /** Checks and handles if the round is ended or game is over. */
-    private fun checkAndHandleRoundOrGameOver() {
-        if (isRoundOver()) {
-            round.apply {
-                roundEnded = true
-                if (roundNumber >= setup.numberOfRounds) {
-                    gameState.isGameEnded = true // Game over
-                }
+    private data class RoundOutcome(
+        val gameEnded: Boolean,
+        val scores: List<Score>,
+        val winnerBotIds: List<BotId>,
+    )
 
-                val scores = scoreCalculator.getScores()
-                if (scores.isNotEmpty()) {
-                    val winners = scores.filter { it.rank == 1 }
-                    winners.forEach {
-                        val botId = it.participantId.botId
-                        turn.addPrivateBotEvent(botId, WonRoundEvent(turn.turnNumber))
-                    }
-                }
-                accumulatedScoreCalculator.addScores(scores)
-            }
-        }
+    /**
+     * Returns the outcome of the round if the round is over; `null` if still in progress.
+     * Pure: reads state only — no mutations to [round], [gameState], or [accumulatedScoreCalculator].
+     */
+    private fun computeRoundOutcome(): RoundOutcome? {
+        if (!isRoundOver()) return null
+        val scores = scoreCalculator.getScores()
+        val winnerBotIds = scores.filter { it.rank == 1 }.map { it.participantId.botId }
+        return RoundOutcome(
+            gameEnded = round.roundNumber >= setup.numberOfRounds,
+            scores = scores,
+            winnerBotIds = winnerBotIds,
+        )
     }
 
     private fun isRoundOver() = run {
@@ -554,23 +571,5 @@ class ModelUpdater(
         }
 
         private fun fromColor(color: String?) = color?.let { from(it) }
-
-        /**
-         * Updates last received data from standard output and standard error.
-         * @param bot is the bot.
-         * @param intent is the bot's intent.
-         */
-        private fun processStdErrAndStdOut(bot: MutableBot, intent: BotIntent) {
-            // transfer from intent to state
-            bot.apply {
-                stdOut = intent.stdOut
-                stdErr = intent.stdErr
-            }
-            // reset stdout and stderr
-            intent.apply {
-                stdOut = null
-                stdErr = null
-            }
-        }
     }
 }

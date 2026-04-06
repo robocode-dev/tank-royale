@@ -4,7 +4,6 @@ description = "Robocode Tank Royale Battle Runner API"
 
 val archiveTitle = "Robocode Tank Royale Battle Runner"
 group = "dev.robocode.tankroyale"
-version = libs.versions.tankroyale.get()
 
 base {
     archivesName = "robocode-tankroyale-runner"

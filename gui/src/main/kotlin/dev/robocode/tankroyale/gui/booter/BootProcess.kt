@@ -38,7 +38,7 @@ object BootProcess {
 
     private val json = MessageConstants.json
 
-    private val bootedBotsList = mutableListOf<DirAndPid>()
+    private val bootedBotsList = Collections.synchronizedList(mutableListOf<DirAndPid>())
 
     private val pidAndDirs = ConcurrentHashMap<Long, String>() // pid, dir
 
@@ -48,6 +48,7 @@ object BootProcess {
         val args = mutableListOf(
             JavaExec.java(),
             "-Dapp.processName=RobocodeTankRoyale-Booter",
+            *JavaExec.nativeAccessArgs().toTypedArray(),
             "-jar",
             getBooterJar(),
             "info",
@@ -196,6 +197,7 @@ object BootProcess {
             "-Dapp.processName=RobocodeTankRoyale-Booter",
             "-Dserver.url=${ServerSettings.serverUrl()}",
             "-Dserver.secret=${ServerSettings.botSecret()}",
+            *JavaExec.nativeAccessArgs().toTypedArray(),
             "-jar",
             getBooterJar(),
             "boot"

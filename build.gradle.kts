@@ -13,7 +13,11 @@ import org.gradle.api.Project
 description = "Robocode: Build the best - destroy the rest!"
 
 group = "dev.robocode.tankroyale"
-version = libs.versions.tankroyale.get()
+version = file("VERSION").readText().trim()
+
+allprojects {
+    version = rootProject.version
+}
 
 val ossrhUsername: String? by project
 val ossrhPassword: String? by project
@@ -585,7 +589,7 @@ tasks {
         dependsOn("build-release")
 
         doLast {
-            val version = libs.versions.tankroyale.get()
+            val version = project.version.toString()
             if (tankRoyaleGitHubToken.isNullOrBlank()) {
                 throw IllegalStateException("'token' is null or blank meaning that it is missing")
             }

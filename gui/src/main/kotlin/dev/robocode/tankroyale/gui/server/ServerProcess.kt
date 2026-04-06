@@ -41,6 +41,7 @@ object ServerProcess {
             command = mutableListOf(
                 JavaExec.java(),
                 "-Dapp.processName=RobocodeTankRoyale-Server",
+                *JavaExec.nativeAccessArgs().toTypedArray(),
                 "-jar",
                 getServerJar(),
                 "--port=${localPort}",

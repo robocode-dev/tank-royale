@@ -1,7 +1,6 @@
 description = "Robocode Tank Royale Intent Diagnostics"
 
 group = "dev.robocode.tankroyale"
-version = libs.versions.tankroyale.get()
 
 base {
     archivesName = "robocode-tankroyale-intent-diagnostics"

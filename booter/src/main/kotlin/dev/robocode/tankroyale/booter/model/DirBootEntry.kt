@@ -4,6 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DirBootEntry(
+    // Base name of bot
+    override val base: String? = null,
+
     // File path of the bot or team directory
     val dir: String, // Extra field compared to BootEntry
 

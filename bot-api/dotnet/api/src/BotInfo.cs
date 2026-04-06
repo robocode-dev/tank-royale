@@ -153,7 +153,10 @@ public sealed class BotInfo
         private init
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException("'Name' cannot be null, empty or blank");
+            {
+                _name = null;
+                return;
+            }
             if (value.Length > MaxNameLength)
                 throw new ArgumentException("'Name' length exceeds the maximum of " + MaxNameLength + " characters");
             _name = value.Trim();
@@ -172,7 +175,10 @@ public sealed class BotInfo
         private init
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException("'Version' cannot be null, empty or blank");
+            {
+                _version = null;
+                return;
+            }
             if (value.Length > MaxVersionLength)
                 throw new ArgumentException("'Version' length exceeds the maximum of " + MaxVersionLength + " characters");
             _version = value.Trim();
@@ -194,7 +200,10 @@ public sealed class BotInfo
         private init
         {
             if (value.IsNullOrEmptyOrContainsOnlyBlanks())
-                throw new ArgumentException("'Authors' cannot be null or empty or contain blanks");
+            {
+                _authors = new List<string>();
+                return;
+            }
             if (value.Count > MaxNumberOfAuthors)
                 throw new ArgumentException("Size of 'Authors' exceeds the maximum of " + MaxNumberOfAuthors);
 
@@ -419,13 +428,8 @@ public sealed class BotInfo
     public static BotInfo FromConfiguration(IConfiguration configuration)
     {
         var name = configuration["name"];
-        ThrowExceptionIfFieldIsBlank("name" , name);
-
         var version = configuration["version"];
-        ThrowExceptionIfFieldIsBlank("version", version);
-
         var authors = configuration.GetSection("authors").Get<string[]>();
-        ThrowExceptionIfJsonFieldIsNullOrEmpty("authors", authors);
 
         return new BotInfo(
             name,
@@ -444,22 +448,6 @@ public sealed class BotInfo
     private static string ToNullIfBlankElseTrim(string value)
     {
         return value == null || string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-    }
-
-    private static void ThrowExceptionIfFieldIsBlank(string fieldName, string value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            throw new ArgumentException($"The required JSON field '{fieldName}' is missing or blank");
-        }
-    }
-
-    private static void ThrowExceptionIfJsonFieldIsNullOrEmpty(string fieldName, IList<string> value)
-    {
-        if (value == null || value.IsNullOrEmptyOrContainsOnlyBlanks())
-        {
-            throw new ArgumentException($"The required JSON field '{fieldName}' is missing or empty");
-        }
     }
 
 

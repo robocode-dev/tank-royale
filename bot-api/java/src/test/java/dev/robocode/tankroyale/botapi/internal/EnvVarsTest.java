@@ -44,25 +44,15 @@ class EnvVarsTest {
             }
 
             @Test
-            void givenMissingEnvVar_whenCallingGetName_thenThrowBotExceptionWithMissingEnvInfo() {
+            void givenMissingEnvVar_whenCallingGetName_thenReturnNull() {
                 envVars.set(BOT_NAME, null);
-                // when
-                var thrown = catchThrowable(EnvVars::getBotInfo);
-                // then
-                assertThat(thrown)
-                        .isInstanceOf(BotException.class)
-                        .hasMessageContaining(MISSING_ENV_VAR_TEXT + BOT_NAME);
+                assertThat(EnvVars.getBotInfo().getName()).isNull();
             }
 
             @Test
-            void givenBlankEnvVar_whenCallingGetName_thenThrowBotExceptionWithMissingEnvInfo() {
+            void givenBlankEnvVar_whenCallingGetName_thenReturnNull() {
                 envVars.set(BOT_NAME, "  \t");
-                // when
-                var thrown = catchThrowable(EnvVars::getBotInfo);
-                // then
-                assertThat(thrown)
-                        .isInstanceOf(BotException.class)
-                        .hasMessageContaining(MISSING_ENV_VAR_TEXT + BOT_NAME);
+                assertThat(EnvVars.getBotInfo().getName()).isNull();
             }
         }
 
@@ -79,25 +69,15 @@ class EnvVarsTest {
             }
 
             @Test
-            void givenMissingEnvVar_whenCallingGetVersion_thenThrowBotExceptionWithMissingEnvInfo() {
+            void givenMissingEnvVar_whenCallingGetVersion_thenReturnNull() {
                 envVars.set(BOT_VERSION, null);
-                // when
-                var thrown = catchThrowable(EnvVars::getBotInfo);
-                // then
-                assertThat(thrown)
-                        .isInstanceOf(BotException.class)
-                        .hasMessageContaining(MISSING_ENV_VAR_TEXT + BOT_VERSION);
+                assertThat(EnvVars.getBotInfo().getVersion()).isNull();
             }
 
             @Test
-            void givenBlankEnvVar_whenCallingGetVersion_thenThrowBotExceptionWithMissingEnvInfo() {
+            void givenBlankEnvVar_whenCallingGetVersion_thenReturnNull() {
                 envVars.set(BOT_VERSION, "  \t");
-                // when
-                var thrown = catchThrowable(EnvVars::getBotInfo);
-                // then
-                assertThat(thrown)
-                        .isInstanceOf(BotException.class)
-                        .hasMessageContaining(MISSING_ENV_VAR_TEXT + BOT_VERSION);
+                assertThat(EnvVars.getBotInfo().getVersion()).isNull();
             }
         }
 
@@ -114,25 +94,15 @@ class EnvVarsTest {
             }
 
             @Test
-            void givenMissingEnvVar_whenCallingGetAuthors_thenThrowBotExceptionWithMissingEnvInfo() {
+            void givenMissingEnvVar_whenCallingAuthors_thenReturnEmpty() {
                 envVars.set(BOT_AUTHORS, null);
-                // when
-                var thrown = catchThrowable(EnvVars::getBotInfo);
-                // then
-                assertThat(thrown)
-                        .isInstanceOf(BotException.class)
-                        .hasMessageContaining(MISSING_ENV_VAR_TEXT + BOT_AUTHORS);
+                assertThat(EnvVars.getBotInfo().getAuthors()).isEmpty();
             }
 
             @Test
-            void givenBlankEnvVar_whenCallingGetAuthors_thenThrowBotExceptionWithMissingEnvInfo() {
+            void givenBlankEnvVar_whenCallingAuthors_thenReturnEmpty() {
                 envVars.set(BOT_AUTHORS, "  \t");
-                // when
-                var thrown = catchThrowable(EnvVars::getBotInfo);
-                // then
-                assertThat(thrown)
-                        .isInstanceOf(BotException.class)
-                        .hasMessageContaining(MISSING_ENV_VAR_TEXT + BOT_AUTHORS);
+                assertThat(EnvVars.getBotInfo().getAuthors()).isEmpty();
             }
         }
 

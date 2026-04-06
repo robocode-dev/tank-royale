@@ -1,6 +1,5 @@
 rootProject.name = "Robocode Tank Royale"
 
-val version: String = file("VERSION").readText().trim()
 
 // Lib
 include("lib:common")
@@ -44,9 +43,6 @@ include("docs-build")
 // Check dependencies with this command: gradlew dependencyUpdates
 dependencyResolutionManagement {
     versionCatalogs {
-        create("libs") {
-            version("tankroyale", version)
-        }
         create("testLibs") {
             from(files("gradle/test-libs.versions.toml"))
         }

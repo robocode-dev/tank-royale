@@ -5,6 +5,7 @@ package dev.robocode.tankroyale.booter.model
  * Optional fields are null when the entry omits them; callers should treat null as "unspecified".
  */
 interface IBootEntry {
+    val base: String?
     val name: String
     val version: String
     val authors: List<String>

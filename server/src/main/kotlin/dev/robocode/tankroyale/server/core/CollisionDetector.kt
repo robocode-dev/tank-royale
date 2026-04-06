@@ -3,7 +3,7 @@ package dev.robocode.tankroyale.server.core
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.rules.*
-import dev.robocode.tankroyale.server.score.ScoreTracker
+import dev.robocode.tankroyale.server.util.forEachUniquePair
 import java.lang.Math.toDegrees
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -19,225 +19,123 @@ private val bulletMaxBoundingCircleDiameterSquared: Double =
 private const val BOT_BOUNDING_CIRCLE_DIAMETER_SQUARED: Double =
     BOT_BOUNDING_CIRCLE_DIAMETER.toDouble() * BOT_BOUNDING_CIRCLE_DIAMETER
 
+// ── Outcome data classes ────────────────────────────────────────────────────────
+
+data class BulletHitBulletOutcome(
+    val bullet1: Bullet,
+    val bullet2: Bullet,
+)
+
+data class BulletHitBotOutcome(
+    val bullet: Bullet,
+    val damage: Double,
+    val energyBonus: Double,
+    val shooterParticipantId: ParticipantId,
+    val victimParticipantId: ParticipantId,
+    val shooterId: BotId,
+    val victimId: BotId,
+)
+
+data class BulletHitResults(
+    val bulletHitBullets: List<BulletHitBulletOutcome>,
+    val bulletHitBots: List<BulletHitBotOutcome>,
+)
+
+data class BotCollisionOutcome(
+    val bot1Id: BotId,
+    val bot2Id: BotId,
+    val isBot1Ramming: Boolean,
+    val isBot2Ramming: Boolean,
+    val bot1NewPosition: Point,
+    val bot2NewPosition: Point,
+    val bot1ParticipantId: ParticipantId,
+    val bot2ParticipantId: ParticipantId,
+)
+
+data class BotWallHitOutcome(
+    val botId: BotId,
+    val newX: Double,
+    val newY: Double,
+    val wallDamage: Double,
+    val isFirstHit: Boolean,
+)
+
+data class BulletWallHitOutcome(
+    val bullet: Bullet,
+)
+
+data class BulletHitScoringRecord(
+    val shooterParticipantId: ParticipantId,
+    val victimParticipantId: ParticipantId,
+    val damage: Double,
+    val isKilled: Boolean,
+)
+
+data class RamScoringRecord(
+    val rammerParticipantId: ParticipantId,
+    val victimParticipantId: ParticipantId,
+    val isKilled: Boolean,
+)
+
+data class BulletPhaseResult(
+    val hitResults: BulletHitResults,
+    val scoringRecords: List<BulletHitScoringRecord>,
+)
+
+data class BotCollisionPhaseResult(
+    val outcomes: List<BotCollisionOutcome>,
+    val scoringRecords: List<RamScoringRecord>,
+)
+
+// ── Collision Detector ──────────────────────────────────────────────────────────
+
 /** Collision detector for bots and bullets. */
 class CollisionDetector(
     private val setup: GameSetup,
     private val participantIds: Set<ParticipantId>,
-    private val scoreTracker: ScoreTracker,
     private val random: java.util.Random = java.util.Random()
 ) {
+
+    // ── Public methods (detect → apply → return outcome) ────────────────────
 
     fun checkAndHandleBulletHits(
         bullets: MutableSet<Bullet>,
         botsMap: Map<BotId, MutableBot>,
         turn: MutableTurn,
-        onInactivityReset: () -> Unit
-    ) {
-        val bulletList = bullets.toList()
-        val bulletCount = bulletList.size
-        if (bulletCount > 0) {
-            val bulletLines = bulletList.map { BulletLine(it) }
-
-            for (i in 0 until bulletCount) {
-                for (j in i + 1 until bulletCount) {
-                    if (isColliding(bulletLines[i], bulletLines[j])) {
-                        handleBulletHitBullet(bulletLines[i].bullet, bulletLines[j].bullet, bullets, turn)
-                    }
-                }
-                checkAndHandleBulletHitBot(bulletLines[i], bullets, botsMap, turn, onInactivityReset)
-            }
-        }
+    ): BulletPhaseResult {
+        val results = detectBulletHits(bullets, botsMap)
+        val scoringRecords = applyBulletHitResults(results, bullets, botsMap, turn)
+        return BulletPhaseResult(results, scoringRecords)
     }
 
-    private fun handleBulletHitBullet(
-        bullet1: Bullet,
-        bullet2: Bullet,
-        bullets: MutableSet<Bullet>,
-        turn: MutableTurn
-    ) {
-        val event1 = BulletHitBulletEvent(turn.turnNumber, bullet1, bullet2)
-        val event2 = BulletHitBulletEvent(turn.turnNumber, bullet2, bullet1)
-
-        turn.apply {
-            addPrivateBotEvent(bullet1.botId, event1)
-            addPrivateBotEvent(bullet2.botId, event2)
-            addObserverEvent(event1)
-        }
-        bullets -= bullet1
-        bullets -= bullet2
-    }
-
-    private fun isColliding(bulletLine1: BulletLine, bulletLine2: BulletLine): Boolean =
-        isBulletsMaxBoundingCirclesColliding(bulletLine1.end, bulletLine2.end) &&
-                isLineIntersectingLine(bulletLine1.line, bulletLine2.line)
-
-    private fun checkAndHandleBulletHitBot(
-        bulletLine: BulletLine,
-        bullets: MutableSet<Bullet>,
+    fun checkAndHandleBotCollisions(
         botsMap: Map<BotId, MutableBot>,
+        lastRound: MutableRound?,
         turn: MutableTurn,
-        onInactivityReset: () -> Unit
-    ) {
-        for (bot in botsMap.values) {
-            if (bulletLine.bullet.botId == bot.id) {
-                continue
-            }
-            if (isBulletHittingBot(bulletLine, bot)) {
-                onInactivityReset()
-                handleBulletHittingBot(bulletLine.bullet, bot, botsMap, turn)
-                bullets.removeIf { bullet -> bullet.id == bulletLine.bullet.id }
-            }
-        }
-    }
-
-    private fun isBulletHittingBot(bulletLine: BulletLine, bot: IBot): Boolean =
-        isLineIntersectingCircle(bulletLine.line, bot.position, BOT_BOUNDING_CIRCLE_RADIUS)
-
-    private fun handleBulletHittingBot(
-        bullet: Bullet,
-        bot: MutableBot,
-        botsMap: Map<BotId, MutableBot>,
-        turn: MutableTurn
-    ) {
-        val botId = bullet.botId
-        val teamOrBotId = participantIds.first { it.botId == botId }
-        val victimId = bot.id
-        val victimTeamOrBotId = participantIds.first { it.botId == victimId }
-
-        val damage = calcBulletDamage(bullet.power)
-        val wasAlive = bot.isAlive
-        bot.applyDamage(damage)
-        val isKilled = bot.isDead && wasAlive
-
-        val energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power
-        botsMap[botId]?.changeEnergy(energyBonus)
-
-        scoreTracker.registerBulletHit(
-            teamOrBotId,
-            victimTeamOrBotId,
-            damage,
-            isKilled
-        )
-
-        val bulletHitBotEvent = BulletHitBotEvent(turn.turnNumber, bullet, victimId, damage, bot.energy)
-        turn.apply {
-            addPrivateBotEvent(bulletHitBotEvent.bullet.botId, bulletHitBotEvent)
-            addPrivateBotEvent(bulletHitBotEvent.victimId, bulletHitBotEvent)
-            addObserverEvent(bulletHitBotEvent)
-        }
-    }
-
-    fun checkAndHandleBotCollisions(botsMap: Map<BotId, MutableBot>, lastRound: MutableRound?, turn: MutableTurn) {
-        val bots = botsMap.values.toList()
-        for (i in bots.indices) {
-            for (j in i + 1 until bots.size) {
-                if (isBotsBoundingCirclesColliding(bots[i], bots[j])) {
-                    handleBotHitBot(bots[i], bots[j], lastRound, turn)
-                }
-            }
-        }
-    }
-
-    private fun handleBotHitBot(bot1: MutableBot, bot2: MutableBot, lastRound: MutableRound?, turn: MutableTurn) {
-        val isBot1RammingBot2 = isRamming(bot1, bot2)
-        val isBot2RammingBot1 = isRamming(bot2, bot1)
-
-        registerRamHit(bot1, bot2, isBot1RammingBot2, isBot2RammingBot1)
-
-        val lastTurn = lastRound?.lastTurn
-        if (turn.turnNumber == 1 || lastTurn == null) {
-            bot2.position = randomSafePosition()
-        } else {
-            val oldPos1 = lastTurn.getBot(bot1.id)!!.position
-            val oldPos2 = lastTurn.getBot(bot2.id)!!.position
-            bot1.position = Point(oldPos1.x, oldPos1.y)
-            bot2.position = Point(oldPos2.x, oldPos2.y)
-        }
-
-        if (isBot1RammingBot2) bot1.speed = 0.0
-        if (isBot2RammingBot1) bot2.speed = 0.0
-
-        val event1 = BotHitBotEvent(turn.turnNumber, bot1.id, bot2.id, bot2.energy, bot2.x, bot2.y, isBot1RammingBot2)
-        val event2 = BotHitBotEvent(turn.turnNumber, bot2.id, bot1.id, bot1.energy, bot1.x, bot1.y, isBot2RammingBot1)
-        turn.apply {
-            addPrivateBotEvent(bot1.id, event1)
-            addPrivateBotEvent(bot2.id, event2)
-            addObserverEvent(event1)
-            addObserverEvent(event2)
-        }
-    }
-
-    private fun randomSafePosition(): Point {
-        val x = BOT_BOUNDING_CIRCLE_RADIUS + random.nextDouble() * (setup.arenaWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
-        val y = BOT_BOUNDING_CIRCLE_RADIUS + random.nextDouble() * (setup.arenaHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
-        return Point(x, y)
-    }
-
-    private fun registerRamHit(
-        bot1: MutableBot,
-        bot2: MutableBot,
-        isBot1RammingBot2: Boolean,
-        isBot2RammingBot1: Boolean
-    ) {
-        val bot1WasAlive = bot1.isAlive
-        val bot2WasAlive = bot2.isAlive
-        bot1.applyDamage(RAM_DAMAGE)
-        bot2.applyDamage(RAM_DAMAGE)
-        val bot1Killed = bot1.isDead && bot1WasAlive
-        val bot2Killed = bot2.isDead && bot2WasAlive
-        if (isBot1RammingBot2) {
-            scoreTracker.registerRamHit(
-                participantIds.first { it.botId == bot1.id },
-                participantIds.first { it.botId == bot2.id },
-                bot2Killed
-            )
-        }
-        if (isBot2RammingBot1) {
-            scoreTracker.registerRamHit(
-                participantIds.first { it.botId == bot2.id },
-                participantIds.first { it.botId == bot1.id },
-                bot1Killed
-            )
-        }
+    ): BotCollisionPhaseResult {
+        val outcomes = detectBotCollisions(botsMap, lastRound, turn)
+        val scoringRecords = applyBotCollisions(outcomes, botsMap, turn)
+        return BotCollisionPhaseResult(outcomes, scoringRecords)
     }
 
     fun checkAndHandleBotWallCollisions(
         botsMap: Map<BotId, MutableBot>,
         botsCopies: Map<BotId, MutableBot>,
         lastRound: MutableRound?,
-        turn: MutableTurn
-    ) {
-        for (bot in botsMap.values) {
-            val hitWall = adjustBotCoordinatesIfHitWall(bot, botsCopies, lastRound)
-            if (hitWall) {
-                if (lastRound?.lastTurn?.getEvents(bot.id)?.none { event -> event is BotHitWallEvent } != false) {
-                    val botHitWallEvent = BotHitWallEvent(turn.turnNumber, bot.id)
-                    turn.addPrivateBotEvent(bot.id, botHitWallEvent)
-                    turn.addObserverEvent(botHitWallEvent)
-
-                    bot.applyDamage(calcWallDamage(bot.speed))
-                }
-                bot.speed = 0.0
-            }
-        }
+        turn: MutableTurn,
+    ): List<BotWallHitOutcome> {
+        val outcomes = detectBotWallCollisions(botsMap, botsCopies, lastRound)
+        applyBotWallCollisions(outcomes, botsMap, turn)
+        return outcomes
     }
 
-    private fun adjustBotCoordinatesIfHitWall(
-        bot: MutableBot,
-        botsCopies: Map<BotId, MutableBot>,
-        lastRound: MutableRound?
-    ): Boolean {
-        var hitWall = false
-        if (lastRound?.lastTurn != null) {
-            val (previousX, previousY) = botsCopies[bot.id]!!.position
-            val (x, y) = constrainBotPosition(previousX, previousY, bot.x, bot.y)
-            hitWall = bot.x != x || bot.y != y
-            if (hitWall) {
-                bot.x = x
-                bot.y = y
-            }
-        }
-        return hitWall
+    fun checkAndHandleBulletWallCollisions(
+        bullets: MutableSet<Bullet>,
+        turn: MutableTurn,
+    ): List<BulletWallHitOutcome> {
+        val outcomes = detectBulletWallCollisions(bullets)
+        applyBulletWallCollisions(outcomes, bullets, turn)
+        return outcomes
     }
 
     fun constrainBotPositions(botsMap: Map<BotId, MutableBot>, botsCopies: Map<BotId, MutableBot>) {
@@ -247,6 +145,269 @@ class CollisionDetector(
             bot.x = x
             bot.y = y
         }
+    }
+
+    // ── Detection (pure — no mutations to bots, bullets, turn, or scores) ───
+
+    private fun detectBulletHits(
+        bullets: Set<Bullet>,
+        botsMap: Map<BotId, MutableBot>,
+    ): BulletHitResults {
+        val bulletBulletOutcomes = mutableListOf<BulletHitBulletOutcome>()
+        val bulletBotOutcomes = mutableListOf<BulletHitBotOutcome>()
+
+        val bulletList = bullets.toList()
+        if (bulletList.isNotEmpty()) {
+            val bulletLines = bulletList.map { BulletLine(it) }
+
+            forEachUniquePair(bulletLines) { bl1, bl2 ->
+                if (isColliding(bl1, bl2)) {
+                    bulletBulletOutcomes.add(BulletHitBulletOutcome(bl1.bullet, bl2.bullet))
+                }
+            }
+
+            for (bulletLine in bulletLines) {
+                for (bot in botsMap.values) {
+                    if (bulletLine.bullet.botId == bot.id) continue
+                    if (isBulletHittingBot(bulletLine, bot)) {
+                        bulletBotOutcomes.add(computeBulletHitBotOutcome(bulletLine.bullet, bot))
+                    }
+                }
+            }
+        }
+
+        return BulletHitResults(bulletBulletOutcomes, bulletBotOutcomes)
+    }
+
+    private fun computeBulletHitBotOutcome(bullet: Bullet, bot: MutableBot): BulletHitBotOutcome {
+        val shooterId = bullet.botId
+        val victimId = bot.id
+        return BulletHitBotOutcome(
+            bullet = bullet,
+            damage = calcBulletDamage(bullet.power),
+            energyBonus = BULLET_HIT_ENERGY_GAIN_FACTOR * bullet.power,
+            shooterParticipantId = participantIds.first { it.botId == shooterId },
+            victimParticipantId = participantIds.first { it.botId == victimId },
+            shooterId = shooterId,
+            victimId = victimId,
+        )
+    }
+
+    private fun detectBotCollisions(
+        botsMap: Map<BotId, MutableBot>,
+        lastRound: MutableRound?,
+        turn: MutableTurn,
+    ): List<BotCollisionOutcome> {
+        val outcomes = mutableListOf<BotCollisionOutcome>()
+        val bots = botsMap.values.toList()
+
+        forEachUniquePair(bots) { bot1, bot2 ->
+            if (isBotsBoundingCirclesColliding(bot1, bot2)) {
+                outcomes.add(computeBotCollisionOutcome(bot1, bot2, lastRound, turn.turnNumber))
+            }
+        }
+
+        return outcomes
+    }
+
+    private fun computeBotCollisionOutcome(
+        bot1: MutableBot,
+        bot2: MutableBot,
+        lastRound: MutableRound?,
+        turnNumber: Int,
+    ): BotCollisionOutcome {
+        val lastTurn = lastRound?.lastTurn
+        val (bot1NewPos, bot2NewPos) = if (turnNumber == 1 || lastTurn == null) {
+            Pair(bot1.position, randomSafePosition())
+        } else {
+            val oldPos1 = lastTurn.getBot(bot1.id)!!.position
+            val oldPos2 = lastTurn.getBot(bot2.id)!!.position
+            Pair(Point(oldPos1.x, oldPos1.y), Point(oldPos2.x, oldPos2.y))
+        }
+
+        return BotCollisionOutcome(
+            bot1Id = bot1.id,
+            bot2Id = bot2.id,
+            isBot1Ramming = isRamming(bot1, bot2),
+            isBot2Ramming = isRamming(bot2, bot1),
+            bot1NewPosition = bot1NewPos,
+            bot2NewPosition = bot2NewPos,
+            bot1ParticipantId = participantIds.first { it.botId == bot1.id },
+            bot2ParticipantId = participantIds.first { it.botId == bot2.id },
+        )
+    }
+
+    private fun detectBotWallCollisions(
+        botsMap: Map<BotId, MutableBot>,
+        botsCopies: Map<BotId, MutableBot>,
+        lastRound: MutableRound?,
+    ): List<BotWallHitOutcome> {
+        if (lastRound?.lastTurn == null) return emptyList()
+
+        val outcomes = mutableListOf<BotWallHitOutcome>()
+        for (bot in botsMap.values) {
+            val (previousX, previousY) = botsCopies[bot.id]!!.position
+            val (newX, newY) = constrainBotPosition(previousX, previousY, bot.x, bot.y)
+            val hitWall = bot.x != newX || bot.y != newY
+            if (hitWall) {
+                val isFirstHit =
+                    lastRound.lastTurn?.getEvents(bot.id)?.none { it is BotHitWallEvent } != false
+                outcomes.add(
+                    BotWallHitOutcome(
+                        botId = bot.id,
+                        newX = newX,
+                        newY = newY,
+                        wallDamage = if (isFirstHit) calcWallDamage(bot.speed) else 0.0,
+                        isFirstHit = isFirstHit,
+                    )
+                )
+            }
+        }
+        return outcomes
+    }
+
+    private fun detectBulletWallCollisions(bullets: Set<Bullet>): List<BulletWallHitOutcome> =
+        bullets.filter { isPointOutsideArena(it.position()) }
+            .map { BulletWallHitOutcome(it.copy()) }
+
+    // ── Apply (mutation — writes to bots, bullets, turn, and scores) ────────
+
+    private fun applyBulletHitResults(
+        results: BulletHitResults,
+        bullets: MutableSet<Bullet>,
+        botsMap: Map<BotId, MutableBot>,
+        turn: MutableTurn,
+    ): List<BulletHitScoringRecord> {
+        val scoringRecords = mutableListOf<BulletHitScoringRecord>()
+
+        for (outcome in results.bulletHitBullets) {
+            val event1 = BulletHitBulletEvent(turn.turnNumber, outcome.bullet1, outcome.bullet2)
+            val event2 = BulletHitBulletEvent(turn.turnNumber, outcome.bullet2, outcome.bullet1)
+            turn.addPrivateBotEvent(outcome.bullet1.botId, event1)
+            turn.addPrivateBotEvent(outcome.bullet2.botId, event2)
+            turn.addObserverEvent(event1)
+            bullets -= outcome.bullet1
+            bullets -= outcome.bullet2
+        }
+
+        for (outcome in results.bulletHitBots) {
+            val bot = botsMap[outcome.victimId] ?: continue
+            val victimEnergyAfterHit = bot.energy - outcome.damage
+            val isKilled = bot.isAlive && victimEnergyAfterHit < 0
+
+            bot.applyDamage(outcome.damage)
+            botsMap[outcome.shooterId]?.changeEnergy(outcome.energyBonus)
+
+            scoringRecords += BulletHitScoringRecord(
+                outcome.shooterParticipantId,
+                outcome.victimParticipantId,
+                outcome.damage,
+                isKilled,
+            )
+
+            val event = BulletHitBotEvent(
+                turn.turnNumber, outcome.bullet, outcome.victimId, outcome.damage, victimEnergyAfterHit
+            )
+            turn.addPrivateBotEvent(outcome.bullet.botId, event)
+            turn.addPrivateBotEvent(outcome.victimId, event)
+            turn.addObserverEvent(event)
+
+            bullets.removeIf { it.id == outcome.bullet.id }
+        }
+
+        return scoringRecords
+    }
+
+    private fun applyBotCollisions(
+        outcomes: List<BotCollisionOutcome>,
+        botsMap: Map<BotId, MutableBot>,
+        turn: MutableTurn,
+    ): List<RamScoringRecord> {
+        val scoringRecords = mutableListOf<RamScoringRecord>()
+
+        for (outcome in outcomes) {
+            val bot1 = botsMap[outcome.bot1Id] ?: continue
+            val bot2 = botsMap[outcome.bot2Id] ?: continue
+
+            // Apply ram damage and determine kills
+            val bot1WasAlive = bot1.isAlive
+            val bot2WasAlive = bot2.isAlive
+            bot1.applyDamage(RAM_DAMAGE)
+            bot2.applyDamage(RAM_DAMAGE)
+            val bot1Killed = bot1.isDead && bot1WasAlive
+            val bot2Killed = bot2.isDead && bot2WasAlive
+
+            // Collect scoring records for ram hits
+            if (outcome.isBot1Ramming) {
+                scoringRecords += RamScoringRecord(outcome.bot1ParticipantId, outcome.bot2ParticipantId, bot2Killed)
+            }
+            if (outcome.isBot2Ramming) {
+                scoringRecords += RamScoringRecord(outcome.bot2ParticipantId, outcome.bot1ParticipantId, bot1Killed)
+            }
+
+            // Set positions
+            bot1.position = outcome.bot1NewPosition
+            bot2.position = outcome.bot2NewPosition
+
+            // Stop ramming bots
+            if (outcome.isBot1Ramming) bot1.speed = 0.0
+            if (outcome.isBot2Ramming) bot2.speed = 0.0
+
+            // Create events (using post-mutation state for energy/position)
+            val event1 = BotHitBotEvent(
+                turn.turnNumber, bot1.id, bot2.id, bot2.energy, bot2.x, bot2.y, outcome.isBot1Ramming
+            )
+            val event2 = BotHitBotEvent(
+                turn.turnNumber, bot2.id, bot1.id, bot1.energy, bot1.x, bot1.y, outcome.isBot2Ramming
+            )
+            turn.addPrivateBotEvent(bot1.id, event1)
+            turn.addPrivateBotEvent(bot2.id, event2)
+            turn.addObserverEvent(event1)
+            turn.addObserverEvent(event2)
+        }
+
+        return scoringRecords
+    }
+
+    private fun applyBotWallCollisions(
+        outcomes: List<BotWallHitOutcome>,
+        botsMap: Map<BotId, MutableBot>,
+        turn: MutableTurn,
+    ) {
+        for (outcome in outcomes) {
+            val bot = botsMap[outcome.botId] ?: continue
+            bot.x = outcome.newX
+            bot.y = outcome.newY
+            if (outcome.isFirstHit) {
+                val event = BotHitWallEvent(turn.turnNumber, bot.id)
+                turn.addPrivateBotEvent(bot.id, event)
+                turn.addObserverEvent(event)
+                bot.applyDamage(outcome.wallDamage)
+            }
+            bot.speed = 0.0
+        }
+    }
+
+    private fun applyBulletWallCollisions(
+        outcomes: List<BulletWallHitOutcome>,
+        bullets: MutableSet<Bullet>,
+        turn: MutableTurn,
+    ) {
+        val removedBulletIds = outcomes.map { it.bullet.id }.toSet()
+        bullets.removeIf { it.id in removedBulletIds }
+        for (outcome in outcomes) {
+            val event = BulletHitWallEvent(turn.turnNumber, outcome.bullet)
+            turn.addPrivateBotEvent(outcome.bullet.botId, event)
+            turn.addObserverEvent(event)
+        }
+    }
+
+    // ── Geometry helpers (unchanged) ────────────────────────────────────────
+
+    private fun randomSafePosition(): Point {
+        val x = BOT_BOUNDING_CIRCLE_RADIUS + random.nextDouble() * (setup.arenaWidth - BOT_BOUNDING_CIRCLE_DIAMETER)
+        val y = BOT_BOUNDING_CIRCLE_RADIUS + random.nextDouble() * (setup.arenaHeight - BOT_BOUNDING_CIRCLE_DIAMETER)
+        return Point(x, y)
     }
 
     private fun constrainBotPosition(oldX: Double, oldY: Double, x: Double, y: Double): Pair<Double, Double> {
@@ -296,18 +457,12 @@ class CollisionDetector(
         return Pair(newX, newY)
     }
 
-    fun checkAndHandleBulletWallCollisions(bullets: MutableSet<Bullet>, turn: MutableTurn) {
-        val iterator = bullets.iterator()
-        while (iterator.hasNext()) {
-            val bullet = iterator.next()
-            if (isPointOutsideArena(bullet.position())) {
-                iterator.remove()
-                val bulletHitWallEvent = BulletHitWallEvent(turn.turnNumber, bullet.copy())
-                turn.addPrivateBotEvent(bullet.botId, bulletHitWallEvent)
-                turn.addObserverEvent(bulletHitWallEvent)
-            }
-        }
-    }
+    private fun isColliding(bulletLine1: BulletLine, bulletLine2: BulletLine): Boolean =
+        isBulletsMaxBoundingCirclesColliding(bulletLine1.end, bulletLine2.end) &&
+                isLineIntersectingLine(bulletLine1.line, bulletLine2.line)
+
+    private fun isBulletHittingBot(bulletLine: BulletLine, bot: IBot): Boolean =
+        isLineIntersectingCircle(bulletLine.line, bot.position, BOT_BOUNDING_CIRCLE_RADIUS)
 
     private fun isPointOutsideArena(point: Point): Boolean {
         return point.x <= 0 ||

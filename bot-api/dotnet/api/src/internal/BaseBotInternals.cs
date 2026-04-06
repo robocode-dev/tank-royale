@@ -45,7 +45,6 @@ sealed class BaseBotInternals
 
     private E.TickEvent _tickEvent;
     private long? _ticksStart;
-    private long _dispatchTicksStart;
 
     private readonly EventQueue _eventQueue;
 
@@ -404,9 +403,6 @@ sealed class BaseBotInternals
 
     internal void DispatchEvents(int turnNumber)
     {
-        if (_ticksStart.HasValue)
-            _dispatchTicksStart = _ticksStart.Value; // tick arrival time — matches Java's tickStartNanoTime
-
         try
         {
             _eventQueue.DispatchEvents(turnNumber);
@@ -440,8 +436,11 @@ sealed class BaseBotInternals
     {
         get
         {
-            var elapsedMicros = (Stopwatch.GetTimestamp() - _dispatchTicksStart) * 1_000_000L / Stopwatch.Frequency;
-            return (int)(_gameSetup.TurnTimeout - elapsedMicros);
+            if (_tickEvent == null)
+                return GameSetup.TurnTimeout;
+
+            var elapsedMicros = (Stopwatch.GetTimestamp() - _ticksStart.Value) * 1_000_000L / Stopwatch.Frequency;
+            return Math.Max(0, (int)(_gameSetup.TurnTimeout - elapsedMicros));
         }
     }
 
@@ -1000,6 +999,9 @@ sealed class BaseBotInternals
     {
         _serverHandshake = JsonConverter.FromJson<S.ServerHandshake>(json);
 
+        // Validate bot info before sending bot handshake
+        ValidateBotInfo();
+
         // Reply by sending bot handshake
         var isDroid = _baseBot is Droid;
         var botHandshake = BotHandshakeFactory.Create(_serverHandshake?.SessionId, _botInfo, isDroid, _serverSecret);
@@ -1007,6 +1009,31 @@ sealed class BaseBotInternals
         var text = JsonConverter.ToJson(botHandshake);
 
         _socket.SendTextMessage(text);
+    }
+
+    private void ValidateBotInfo()
+    {
+        if (string.IsNullOrWhiteSpace(_botInfo.Name))
+        {
+            ThrowMissingPropertyException("name");
+        }
+        if (string.IsNullOrWhiteSpace(_botInfo.Version))
+        {
+            ThrowMissingPropertyException("version");
+        }
+        if (_botInfo.Authors.IsNullOrEmptyOrContainsOnlyBlanks())
+        {
+            ThrowMissingPropertyException("authors");
+        }
+    }
+
+    private void ThrowMissingPropertyException(string propertyName)
+    {
+        throw new BotException(
+            $"Required bot property '{propertyName}' is missing. " +
+            "This property is required in order for the bot to be recognized when booting it up and " +
+            "when it needs to join the game. You must set this property in your bot code " +
+            "or provide a .json configuration file.");
     }
 
     private static void VerifyNotNull(Object iEvent, Type eventType)

@@ -151,6 +151,30 @@ Build the wheel, then upload:
 
 ---
 
+## Verify publication
+
+After publishing, a `verify-publish` workflow checks all three registries automatically.
+It runs as three parallel jobs in the Actions UI — each shows a green ✅ or red ❌ badge
+as soon as the version becomes available (or times out).
+
+No credentials are needed — all checks use public registry HTTP APIs.
+
+| Job | Registry checked | Retry strategy |
+|-----|-----------------|----------------|
+| check-nuget | `api.nuget.org` | Every 30s, up to 3 min |
+| check-pypi | `pypi.org` | Every 30s, up to 3 min |
+| check-maven | `repo1.maven.org` | Every 5 min, up to 120 min |
+
+The release skill triggers this automatically after publishing. To run manually:
+
+```shell
+gh workflow run verify-publish.yml --ref main -R robocode-dev/tank-royale -f version=0.39.0
+```
+
+Or via GitHub → Actions → **Verify Publish** → Run workflow.
+
+---
+
 ## GitHub release creation
 
 The `create-release` workflow creates a draft pre-release on GitHub with tag `v<version>`, builds the project artifacts

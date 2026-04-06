@@ -26,11 +26,11 @@ class BootProgressTest {
 
     private fun conn(): ServerConnection = ServerConnection("ws://localhost:9999", "secret")
 
-    private fun botInfo(name: String, version: String, host: String, port: Int = 0): BotInfo =
+    private fun botInfo(name: String, version: String, authors: String, host: String, port: Int = 0): BotInfo =
         BotInfo(
             name = name,
             version = version,
-            authors = emptyList(),
+            authors = listOf(authors),
             countryCodes = emptyList(),
             gameTypes = emptySet(),
             host = host,
@@ -48,9 +48,9 @@ class BootProgressTest {
     @Test
     fun `totalExpected and totalConnected computed correctly`() {
         val progress = BootProgress(
-            expected = mapOf(BotIdentity("Alpha", "1.0") to 2, BotIdentity("Beta", "2.0") to 3),
-            connected = mapOf(BotIdentity("Alpha", "1.0") to 1),
-            pending = mapOf(BotIdentity("Alpha", "1.0") to 1, BotIdentity("Beta", "2.0") to 3),
+            expected = mapOf(BotIdentity("Alpha", "1.0", "Author") to 2, BotIdentity("Beta", "2.0", "Author") to 3),
+            connected = mapOf(BotIdentity("Alpha", "1.0", "Author") to 1),
+            pending = mapOf(BotIdentity("Alpha", "1.0", "Author") to 1, BotIdentity("Beta", "2.0", "Author") to 3),
             elapsedMs = 100L,
             timeoutMs = 5_000L,
         )
@@ -61,8 +61,8 @@ class BootProgressTest {
 
     @Test
     fun `pending equals expected minus connected clamped to zero`() {
-        val alpha = BotIdentity("Alpha", "1.0")
-        val beta = BotIdentity("Beta", "2.0")
+        val alpha = BotIdentity("Alpha", "1.0", "Author")
+        val beta = BotIdentity("Beta", "2.0", "Author")
 
         val expected = mapOf(alpha to 2, beta to 1)
         val connected = mapOf(alpha to 1)
@@ -87,12 +87,12 @@ class BootProgressTest {
     fun `progress event fires on each BotListUpdate`() {
         val conn = conn()
         val identities = listOf(
-            BotIdentity("Alpha", "1.0"),
-            BotIdentity("Beta", "2.0"),
+            BotIdentity("Alpha", "1.0", "Author"),
+            BotIdentity("Beta", "2.0", "Author"),
         )
 
-        val alphaInfo = botInfo("Alpha", "1.0", "localhost", 7001)
-        val betaInfo  = botInfo("Beta",  "2.0", "localhost", 7002)
+        val alphaInfo = botInfo("Alpha", "1.0", "Author", "localhost", 7001)
+        val betaInfo  = botInfo("Beta",  "2.0", "Author", "localhost", 7002)
 
         val progressEvents = CopyOnWriteArrayList<BootProgress>()
 
@@ -107,7 +107,7 @@ class BootProgressTest {
         progressEvent.on(this) { progress -> progressEvents.add(progress) }
 
         runner().use { r ->
-            r.waitForBots(conn, emptySet(), identities, progressEvent)
+            r.waitForBots(conn, emptySet(), identities, identities.size, progressEvent)
         }
 
         // At least 2 progress events fired (one per BotListUpdate)

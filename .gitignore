@@ -45,3 +45,9 @@ audit-output.json
 
 # Ignore node_modules, but not the ones in sample-bots, which are needed for the samples to work
 node_modules/
+
+/.junie/memory/errors.md
+/.junie/memory/feedback.md
+/.junie/memory/language.json
+/.junie/memory/memory.version
+/.junie/memory/tasks.md

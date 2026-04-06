@@ -4,7 +4,6 @@ description = "Robocode Tank Royale Client Lib for Java"
 
 val javadocTitle = "Robocode Tank Royale Client"
 group = "dev.robocode.tankroyale"
-version = libs.versions.tankroyale.get()
 
 base {
     archivesName = "robocode-tankroyale-client" // renames _all_ archive names

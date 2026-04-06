@@ -13,6 +13,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -26,6 +28,8 @@ class BaseBotConstructorTest extends AbstractBotTest {
     private static final String SERVER_URL_PROPERTY_KEY = "server.url";
 
     static class TestBot extends BaseBot {
+        private Throwable capturedError;
+        private final CountDownLatch errorLatch = new CountDownLatch(1);
 
         TestBot() {
             super();
@@ -41,6 +45,19 @@ class BaseBotConstructorTest extends AbstractBotTest {
 
         TestBot(BotInfo botInfo, URI serverUrl, String serverSecret) {
             super(botInfo, serverUrl, serverSecret);
+        }
+
+        @Override
+        public void onConnectionError(dev.robocode.tankroyale.botapi.events.ConnectionErrorEvent e) {
+            capturedError = e.getError();
+            errorLatch.countDown();
+        }
+
+        public Throwable awaitError() throws InterruptedException {
+            if (errorLatch.await(10, TimeUnit.SECONDS)) {
+                return capturedError;
+            }
+            return null;
         }
     }
 
@@ -65,36 +82,54 @@ class BaseBotConstructorTest extends AbstractBotTest {
     }
 
     @Test
-    void givenMissingBotNameEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo() {
-        var botName = envVars.getVariables().get(BOT_NAME);
-
+    void givenMissingBotNameEnvVar_whenCallingDefaultConstructor_thenBotIsCreatedButHandshakeWillFail() throws InterruptedException {
         envVars.set(BOT_NAME, null);
-        var botException = assertThrows(BotException.class, TestBot::new);
-        assertThat(exceptionContainsEnvVarName(botException, BOT_NAME)).isTrue();
+        envVars.set(SERVER_URL, "ws://localhost:" + MockedServer.PORT);
+        try {
+            var bot = new TestBot();
+            startAsync(bot);
+            assertThat(server.awaitConnection(5000)).isTrue();
 
-        envVars.set(BOT_NAME, botName); // restore
+            var error = bot.awaitError();
+            assertThat(error).isInstanceOf(BotException.class);
+            assertThat(error.getMessage()).contains("Required bot property 'name' is missing");
+        } finally {
+            envVars.set(BOT_NAME, "TestBot");
+        }
     }
 
     @Test
-    void givenMissingBotVersionEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo() {
-        var version = envVars.getVariables().get(BOT_VERSION);
-
+    void givenMissingBotVersionEnvVar_whenCallingDefaultConstructor_thenBotIsCreatedButHandshakeWillFail() throws InterruptedException {
         envVars.set(BOT_VERSION, null);
-        var botException = assertThrows(BotException.class, TestBot::new);
-        assertThat(exceptionContainsEnvVarName(botException, BOT_VERSION)).isTrue();
+        envVars.set(SERVER_URL, "ws://localhost:" + MockedServer.PORT);
+        try {
+            var bot = new TestBot();
+            startAsync(bot);
+            assertThat(server.awaitConnection(5000)).isTrue();
 
-        envVars.set(BOT_VERSION, version); // restore
+            var error = bot.awaitError();
+            assertThat(error).isInstanceOf(BotException.class);
+            assertThat(error.getMessage()).contains("Required bot property 'version' is missing");
+        } finally {
+            envVars.set(BOT_VERSION, "1.0");
+        }
     }
 
     @Test
-    void givenMissingBotAuthorsEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo() {
-        var authors = envVars.getVariables().get(BOT_AUTHORS);
-
+    void givenMissingBotAuthorsEnvVar_whenCallingDefaultConstructor_thenBotIsCreatedButHandshakeWillFail() throws InterruptedException {
         envVars.set(BOT_AUTHORS, null);
-        var botException = assertThrows(BotException.class, TestBot::new);
-        assertThat(exceptionContainsEnvVarName(botException, BOT_AUTHORS)).isTrue();
+        envVars.set(SERVER_URL, "ws://localhost:" + MockedServer.PORT);
+        try {
+            var bot = new TestBot();
+            startAsync(bot);
+            assertThat(server.awaitConnection(5000)).isTrue();
 
-        envVars.set(BOT_AUTHORS, authors); // restore
+            var error = bot.awaitError();
+            assertThat(error).isInstanceOf(BotException.class);
+            assertThat(error.getMessage()).contains("Required bot property 'authors' is missing");
+        } finally {
+            envVars.set(BOT_AUTHORS, "Author 1, Author 2");
+        }
     }
 
     @Test

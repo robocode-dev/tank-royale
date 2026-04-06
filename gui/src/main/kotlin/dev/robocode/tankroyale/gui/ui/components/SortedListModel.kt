@@ -14,23 +14,26 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     }
 
     override fun getElementAt(index: Int): T {
-        return list[index]
+        return synchronized(list) {
+            if (index < list.size) list[index] else null
+        } as T
     }
 
     fun addElement(element: T) {
-        list.add(element)
+        synchronized(list) {
+            list.add(element)
+            list.sortWith { o1, o2 ->
+                when (element) {
+                    is BotInfo -> {
+                        val b1 = o1 as BotInfo
+                        val b2 = o2 as BotInfo
+                        b1.host.lowercase(Locale.getDefault()).compareTo(b2.host.lowercase(Locale.getDefault()))
+                    }
 
-        list.sortWith { o1, o2 ->
-            when (element) {
-                is BotInfo -> {
-                    val b1 = o1 as BotInfo
-                    val b2 = o2 as BotInfo
-                    b1.host.lowercase(Locale.getDefault()).compareTo(b2.host.lowercase(Locale.getDefault()))
-                }
-
-                else -> {
-                    o1.toString().lowercase(Locale.getDefault())
-                        .compareTo(o2.toString().lowercase(Locale.getDefault()))
+                    else -> {
+                        o1.toString().lowercase(Locale.getDefault())
+                            .compareTo(o2.toString().lowercase(Locale.getDefault()))
+                    }
                 }
             }
         }
@@ -38,7 +41,9 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     }
 
     fun clear() {
-        list.clear()
+        synchronized(list) {
+            list.clear()
+        }
         notifyChanged()
     }
 
@@ -47,7 +52,9 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     }
 
     fun removeElement(element: T): Boolean {
-        val removed = list.remove(element)
+        val removed = synchronized(list) {
+            list.remove(element)
+        }
         if (removed) {
             notifyChanged()
         }
@@ -63,9 +70,13 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
     }
 
     private fun notifyChanged() {
-        EventQueue.invokeLater { // if omitted, the JList might not update correctly?!
-            EventQueue.invokeLater { // if omitted, the JList might not update correctly?!
-                fireContentsChanged(this, 0, size)
+        EventQueue.invokeLater {
+            synchronized(list) {
+                if (list.size > 0) {
+                    fireContentsChanged(this, 0, list.size - 1)
+                } else {
+                    fireContentsChanged(this, 0, 0)
+                }
             }
         }
     }

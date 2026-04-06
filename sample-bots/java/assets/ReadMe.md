@@ -18,11 +18,15 @@ Each bot has its own subdirectory (bot directory) that contains:
 
 * A Java source file (.java) that provides the program logic of the bot.
 * A JSON file (.json) that provides information about the bot.
-* Script files (.cmd and .sh) used for starting the bot.
+* Script files (.cmd and .sh) are optional for starting the bot.
 
 ## Running a bot
 
-A script file is used for running the bot, which is `java -cp ../lib/* <Java source file>` for the sample bots for Java.
+The bot can be run by Robocode without any script file by using the information in the bot's JSON file.
+By default, the booter assumes that the base Java class has the same name as the bot directory.
+If the base class has a different name, it must be specified using the `base` property in the JSON file.
+However, a script file can still be used for running the bot, which is `java -cp ../lib/* <Java source file>` for the
+sample bots for Java.
 The `java` command will automatically compile the bot and run it afterward as an executable.
 
 You can run a sample bot manually from the command line by going into the bot directory (using the `cd` command) and

@@ -1,4 +1,63 @@
-## [0.38.3] - TBD
+## [0.39.0] - 2026-04-06 - Convention-over-Configuration & Scriptless Bots
+
+### ✨ Features
+
+- Booter:
+    - Template-based booting for JVM, .NET, and Python — bots no longer need `.sh`/`.bat` scripts.
+      The Booter selects a template from `platform`, `programmingLang`, and `base` in the bot's JSON.
+    - Bots without a `.json` file are now supported: the Booter heuristically detects the platform
+      from files in the directory (`.java`, `.py`, `.cs`, JARs, etc.) and boots accordingly.
+    - The bot's parent-directory name is used as the default `base` when not set in JSON.
+
+- GUI:
+    - Boot progress dialog handles no-JSON bots via baseline-snapshot tracking — waits for the right
+      number of new connections rather than a specific name/version.
+    - #201: Added **Tank Color Mode** to the config dialog (persisted in `gui.properties`):
+        - **Bot Colors** (default) — bot-defined colors apply freely.
+        - **Bot Colors (Once)** — the first color set per component is locked for the entire battle.
+        - **Default Colors** — system defaults always used; bot colors ignored.
+        - **Bot Colors (Debug Only)** — bot colors visible only when Graphical Debugging is active.
+
+- Bot API (Java, .NET, Python):
+    - Runtime validation of required properties (`name`, `version`, `authors`). A `BotException` with
+      a descriptive message is thrown on connection if any are missing.
+
+### 🔧 Changes
+
+- Build:
+    - #203: Updated `release-docs-template.md` to use the direct JAR link for the Java Bot API on Maven Central.
+
+- Sample Bots:
+    - Removed generated `.cmd`/`.sh` scripts from all standard sample bots — they now rely on template-based booting.
+    - Added `NuGet.Config` to C# sample bot distributions for standalone source-based builds.
+
+### 🐞 Bug Fixes
+
+- GUI:
+    - Fixed double-clicking in the **New Battle** dialog. The boot-progress dialog was `APPLICATION_MODAL`,
+      blocking the window and stealing focus between clicks. It is now modeless with `setAutoRequestFocus(false)`,
+      so the bot list keeps focus and additional double-clicks accumulate in the same dialog.
+
+## [0.38.3] - 2026-04-05 - TPS Resume Dialog & TimeLeft Fix
+
+### 🐞 Bug Fixes
+
+- Build:
+    - #203: Fixed Maven Central artifacts being published with version "unspecified" instead of the correct
+      version number. The `create("libs")` call in `settings.gradle.kts` silently lost to Gradle's auto-loaded
+      `libs.versions.toml` catalog, so the `tankroyale` version entry was never registered. Fixed by reading
+      the `VERSION` file in the root `build.gradle.kts` and propagating via `allprojects` instead of the
+      version catalog.
+
+- Bot API (Java, .NET, Python):
+    - #202: Fixed `getTimeLeft()` returning negative values when turns were skipped or the bot was busy.
+      The timing now uses the arrival time of the latest tick received by the bot to ensure accurate
+      reporting of the time remaining for the current turn.
+
+- GUI:
+    - Fixed JNA restricted native access warning (`java.lang.System::load`) on Java 16+ when starting the
+      booter, server, and recorder subprocesses. The `--enable-native-access=ALL-UNNAMED` JVM flag is now
+      passed automatically when running on Java 16 or later.
 
 ### 🔧 Changes
 

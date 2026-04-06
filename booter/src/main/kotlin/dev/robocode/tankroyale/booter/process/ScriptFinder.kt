@@ -73,5 +73,9 @@ internal object ScriptFinder {
         readFirstLine(botDir.resolve(filePath)).trim().startsWith("#!")
 
     private fun readFirstLine(path: Path): String =
-        Files.newInputStream(path).bufferedReader().use { it.readLine() ?: "" }
+        try {
+            Files.newInputStream(path).bufferedReader().use { it.readLine() ?: "" }
+        } catch (_: Exception) {
+            ""
+        }
 }

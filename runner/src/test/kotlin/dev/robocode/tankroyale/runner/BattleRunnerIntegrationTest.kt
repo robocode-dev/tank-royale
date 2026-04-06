@@ -109,6 +109,40 @@ class BattleRunnerIntegrationTest {
     }
 
     @Test
+    fun `runBattle with config-less Java bot succeeds`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            val results = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(
+                    BotEntry.of(testBotDir("ConfigLessJavaBot")),
+                    BotEntry.of(botDir("SpinBot"))
+                )
+            )
+            assertThat(results.results).hasSize(2)
+            assertThat(results.results.map { it.name }).contains("ConfigLessJavaBot")
+        }
+    }
+
+    @Test
+    fun `runBattle with bot missing required properties fails with BotException`() {
+        BattleRunner.create {
+            embeddedServer()
+            botConnectTimeout(Duration.ofSeconds(10))
+        }.use { runner ->
+            assertThatThrownBy {
+                runner.runBattle(
+                    setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                    bots = listOf(
+                        BotEntry.of(testBotDir("MissingPropertiesJavaBot")),
+                        BotEntry.of(botDir("SpinBot"))
+                    )
+                )
+            }.isInstanceOf(BattleException::class.java)
+                .hasMessageContaining("Bot connect timeout") // Booter might exit, but runner sees timeout
+        }
+    }
+
+    @Test
     fun `runBattle with multiple rounds produces results with scores`() {
         BattleRunner.create { embeddedServer() }.use { runner ->
             val results = runner.runBattle(
@@ -507,7 +541,7 @@ class BattleRunnerIntegrationTest {
         val ghostDir = tempDir.resolve("GhostBot")
         ghostDir.toFile().mkdirs()
         ghostDir.resolve("GhostBot.json").toFile().writeText(
-            """{"name":"GhostBot","version":"0.1","authors":["test"],"gameTypes":["1v1","classic"]}"""
+            """{"name":"GhostBot","version":"0.1","authors":"test","gameTypes":["1v1","classic"]}"""
         )
 
         BattleRunner.create {
