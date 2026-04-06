@@ -310,17 +310,18 @@ public final class BaseBotInternals {
         }
     }
 
-    public void execute() {
-        // Allow execute() to be called outside the bot run thread (e.g., tests invoking go())
-        // If no tick has been received yet (e.g., immediately after GameStarted), send current intent once
-        // so the server can proceed to the first tick. This mirrors test scaffolding that calls go() proactively.
-        if (getCurrentTickOrNull() == null) {
+    /**
+     * @param capturedTurnNumber the turn number captured by go() at the time events were dispatched,
+     *                           or -1 if no tick was available
+     */
+    public void execute(int capturedTurnNumber) {
+        // If no tick has been received yet, send current intent once so the server can proceed.
+        if (capturedTurnNumber < 0) {
             sendIntent();
             return;
         }
-        final var turnNumber = getCurrentTickOrThrow().getTurnNumber();
-        if (turnNumber != lastExecuteTurnNumber) {
-            lastExecuteTurnNumber = turnNumber;
+        if (capturedTurnNumber != lastExecuteTurnNumber) {
+            lastExecuteTurnNumber = capturedTurnNumber;
 
             sendIntent();
 
@@ -329,7 +330,7 @@ public final class BaseBotInternals {
                 movementResetPending = false;
             }
         }
-        waitForNextTurn(turnNumber);
+        waitForNextTurn(capturedTurnNumber);
     }
 
     private void sendIntent() {

@@ -314,21 +314,21 @@ sealed class BaseBotInternals
         }
     }
 
-    internal void Execute()
+    /// <param name="capturedTurnNumber">
+    /// The turn number captured by Go() at the time events were dispatched, or -1 if no tick was available.
+    /// </param>
+    internal void Execute(int capturedTurnNumber)
     {
-        // Allow Execute() to be called outside the bot run thread (e.g., tests invoking Go())
-        // If no tick has been received yet (e.g., immediately after GameStarted), send current intent once
-        // so the server can proceed to the first tick. This mirrors Java behavior.
-        if (CurrentTickOrNull == null)
+        // If no tick has been received yet, send current intent once so the server can proceed.
+        if (capturedTurnNumber < 0)
         {
             SendIntent();
             return;
         }
 
-        var turnNumber = CurrentTickOrThrow.TurnNumber;
-        if (turnNumber != _lastExecuteTurnNumber)
+        if (capturedTurnNumber != _lastExecuteTurnNumber)
         {
-            _lastExecuteTurnNumber = turnNumber;
+            _lastExecuteTurnNumber = capturedTurnNumber;
             SendIntent();
 
             if (_movementResetPending)
@@ -338,7 +338,7 @@ sealed class BaseBotInternals
             }
         }
 
-        WaitForNextTurn(turnNumber);
+        WaitForNextTurn(capturedTurnNumber);
     }
 
     private void SendIntent()

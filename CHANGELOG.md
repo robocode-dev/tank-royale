@@ -1,3 +1,14 @@
+## [0.39.1] - TBD
+
+### 🐞 Bug Fixes
+
+- Bot API (Java, .NET, Python):
+    - #202: Fixed race condition in `go()` / `execute()` where the WebSocket thread could deliver a new
+      tick between event dispatch and intent sending, causing the bot to skip a turn. This produced early
+      `SkippedTurnEvent` at tick 1, prevented the bot from acting at tick 2, and delayed `ScannedBotEvent`
+      delivery by one tick. The fix passes the captured turn number from `go()` into `execute()` so both
+      use the same consistent tick throughout the call.
+
 ## [0.39.0] - 2026-04-06 - Convention-over-Configuration & Scriptless Bots
 
 ### ✨ Features

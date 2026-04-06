@@ -422,17 +422,20 @@ class BaseBotInternals:
                 self._ws_loop
             )
 
-    def execute(self) -> None:
-        """Execute bot intent and wait for next turn (matches Java's execute)"""
-        current_tick = self.data.current_tick_or_null
+    def execute(self, captured_turn_number: int) -> None:
+        """Execute bot intent and wait for next turn.
+
+        Args:
+            captured_turn_number: The turn number captured by go() at the time events were
+                dispatched, or -1 if no tick was available.
+        """
         # If no tick has been received yet, send current intent once to allow the server to progress
-        if current_tick is None:
+        if captured_turn_number < 0:
             self._send_intent()
             return
 
-        turn_number = current_tick.turn_number
-        if turn_number != self.last_execute_turn_number:
-            self.last_execute_turn_number = turn_number
+        if captured_turn_number != self.last_execute_turn_number:
+            self.last_execute_turn_number = captured_turn_number
             # Events are dispatched from BaseBot.go(); staging happens on tick reception
             self._send_intent()
 
@@ -440,7 +443,7 @@ class BaseBotInternals:
                 self._reset_movement()
                 self._movement_reset_pending = False
 
-        self._wait_for_next_turn(turn_number)
+        self._wait_for_next_turn(captured_turn_number)
 
     def _send_intent(self) -> None:
         """Send bot intent to server (synchronous)"""

@@ -125,7 +125,10 @@ public abstract class BaseBot : IBaseBot
             BaseBotInternals.DispatchEvents(currentTick.TurnNumber);
         }
 
-        BaseBotInternals.Execute();
+        // Pass captured turn number to Execute() so it uses the same tick we dispatched events for.
+        // Without this, Execute() re-reads the live tick which may have been updated by the
+        // WebSocket thread between DispatchEvents() and Execute(), causing skipped turns.
+        BaseBotInternals.Execute(currentTick?.TurnNumber ?? -1);
     }
 
     /// <inheritdoc/>
