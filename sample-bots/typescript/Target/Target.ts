@@ -1,41 +1,49 @@
-import {Bot, Condition, CustomEvent} from "@robocode.dev/tank-royale-bot-api";
+import {Bot, Color, Condition, CustomEvent} from "@robocode.dev/tank-royale-bot-api";
 
 // ------------------------------------------------------------------
 // Target
 // ------------------------------------------------------------------
 // A sample bot originally made for Robocode by Mathew Nelson.
 //
-// A stationary robot that moves when its energy drops below a
-// certain threshold. Demonstrates how to use custom events.
+// A stationary robot that moves when its energy drops below a certain
+// threshold. This robot demonstrates how to use custom events.
 // ------------------------------------------------------------------
 class Target extends Bot {
-    // The energy level at which the bot will start moving
-    static readonly ENERGY_THRESHOLD = 50;
+    trigger = 0; // Keeps track of when to move
 
     static main() {
         new Target().start();
     }
 
+    // Called when a new round is started -> initialize and do some movement
     override run() {
-        // Add a custom event that triggers when energy drops below threshold
-        this.addCustomEvent(
-            new Condition("lowEnergy", () => this.getEnergy() <= Target.ENERGY_THRESHOLD),
-        );
+        // Set colors
+        this.setBodyColor(Color.WHITE);
+        this.setTurretColor(Color.WHITE);
+        this.setRadarColor(Color.WHITE);
 
-        // Just sit still until the custom event fires
-        while (this.isRunning()) {
-            this.go();
-        }
+        // Initially, we'll move when energy passes 80
+        this.trigger = 80;
+
+        // Add a custom event named "trigger-hit"
+        this.addCustomEvent(
+            new Condition("trigger-hit", () => this.getEnergy() <= this.trigger),
+        );
     }
 
-    // Custom event handler: move when energy drops below threshold
+    // A custom event occurred
     override onCustomEvent(e: CustomEvent) {
-        if (e.condition.name === "lowEnergy") {
-            // Remove the condition so it doesn't fire again
-            this.removeCustomEvent(e.condition);
-            // Move forward to avoid being a sitting duck
-            this.setTurnLeft(180);
-            this.setForward(100);
+        // Check if our custom event "trigger-hit" went off
+        if (e.condition.name === "trigger-hit") {
+            // Adjust the trigger value, or else the event will fire again and again and again...
+            this.trigger -= 20;
+
+            // Print out energy level
+            console.log(`Ouch, down to ${Math.round(this.getEnergy())} energy.`);
+
+            // Move around a bit
+            this.turnRight(65);
+            this.forward(100);
         }
     }
 }
