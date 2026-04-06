@@ -14,7 +14,7 @@
     - **Convention-over-Configuration**: Bots can now be discovered and booted even without a `.json` configuration 
       file. The Booter heuristically detects the platform (JVM, Python, .NET) based on files in the directory.
     - Source files (`.java`, `.py`, `.cs`) are now recognized as valid platform indicators for bot discovery,
-      enabling single-file source bots to be detected and booted directly (e.g. via Java 11+ single-file launch).
+      enabling single-file source bots to be detected and booted directly (e.g., via Java 11+ single-file launch).
 
 - GUI:
     - Boot progress dialog now works correctly for no-JSON bots. Instead of waiting for a specific name/version
@@ -30,6 +30,9 @@
 
 ### 🔧 Changes
 
+- Build:
+    - #203: Updated `release-docs-template.md` to use the direct JAR file link for the Java Bot API on Maven Central.
+
 - Sample Bots:
     - Updated Gradle build scripts to skip generating `.cmd` and `.sh` files for all standard individual sample 
       bots. These bots are now entirely scriptless in their distribution archives, relying on the new 
@@ -40,6 +43,12 @@
 ## [0.38.3] - 2026-04-05 - TPS Resume Dialog & TimeLeft Fix
 
 ### 🐞 Bug Fixes
+
+- Build:
+    - #203: Fixed Maven Central artifacts being published with version "unspecified" instead of the correct
+      version number. Caused by switching from `gradle.properties` to a `VERSION` file for version resolution,
+      which did not work reliably in all Gradle execution contexts. Restored `version` property in
+      `gradle.properties` and reverted `settings.gradle.kts` to use `providers.gradleProperty("version")`.
 
 - Bot API (Java, .NET, Python):
     - #202: Fixed `getTimeLeft()` returning negative values when turns were skipped or the bot was busy.
