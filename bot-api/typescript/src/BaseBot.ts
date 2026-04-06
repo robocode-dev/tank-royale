@@ -96,9 +96,15 @@ export abstract class BaseBot implements IBaseBot {
   }
 
   go(): void {
-    const turnNumber = this._internals.getTurnNumber();
-    this._internals.dispatchEvents(turnNumber);
-    this._internals.execute();
+    const currentTick = this._internals.getCurrentTickOrNull();
+    const capturedTurnNumber = currentTick?.turnNumber ?? -1;
+    if (currentTick != null) {
+      this._internals.dispatchEvents(capturedTurnNumber);
+    }
+    // Pass captured turn number to execute() so it uses the same tick we dispatched events for.
+    // Without this, execute() re-reads the live tickEvent which may have been updated by the
+    // message handler between dispatchEvents() and execute(), causing skipped turns.
+    this._internals.execute(capturedTurnNumber);
   }
 
   getMyId(): number { return this._internals.getMyId(); }

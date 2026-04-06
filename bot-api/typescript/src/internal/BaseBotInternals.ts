@@ -562,16 +562,19 @@ export class BaseBotInternals {
   // execute() / sendIntentToMain() / waitForNextTurnWorker()
   // ---------------------------------------------------------------------------
 
-  execute(): void {
+  /**
+   * @param capturedTurnNumber the turn number captured by go() at the time events were dispatched,
+   *                           or -1 if no tick was available
+   */
+  execute(capturedTurnNumber: number): void {
     if (!this.workerMode) {
       // Main thread (no Worker, legacy path): send intent directly
-      if (this.tickEvent == null) {
+      if (capturedTurnNumber < 0) {
         this.sendIntentDirect();
         return;
       }
-      const turnNumber = this.tickEvent.turnNumber;
-      if (turnNumber !== this.lastExecuteTurnNumber) {
-        this.lastExecuteTurnNumber = turnNumber;
+      if (capturedTurnNumber !== this.lastExecuteTurnNumber) {
+        this.lastExecuteTurnNumber = capturedTurnNumber;
         this.sendIntentDirect();
         if (this.movementResetPending) {
           this.resetMovement();
@@ -582,20 +585,19 @@ export class BaseBotInternals {
     }
 
     // Worker mode: send intent to main thread, then wait for next turn
-    if (this.tickEvent == null) {
+    if (capturedTurnNumber < 0) {
       this.sendIntentToMain();
       return;
     }
-    const turnNumber = this.tickEvent.turnNumber;
-    if (turnNumber !== this.lastExecuteTurnNumber) {
-      this.lastExecuteTurnNumber = turnNumber;
+    if (capturedTurnNumber !== this.lastExecuteTurnNumber) {
+      this.lastExecuteTurnNumber = capturedTurnNumber;
       this.sendIntentToMain();
       if (this.movementResetPending) {
         this.resetMovement();
         this.movementResetPending = false;
       }
     }
-    this.waitForNextTurnWorker(turnNumber);
+    this.waitForNextTurnWorker(capturedTurnNumber);
   }
 
   private sendIntentDirect(): void {
@@ -770,6 +772,7 @@ export class BaseBotInternals {
     return Math.max(0, this.getTurnTimeout() - elapsed);
   }
 
+  getCurrentTickOrNull(): TickEvent | null { return this.tickEvent; }
   getRoundNumber(): number { return this.tickEvent?.roundNumber ?? 0; }
   getTurnNumber(): number { return this.tickEvent?.turnNumber ?? 0; }
   getEnemyCount(): number { return this.tickEvent?.botState.enemyCount ?? 0; }
