@@ -52,6 +52,7 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0029](./0029-typescript-bot-api-runtime-targets.md)             | TypeScript Bot API Runtime Targets                   | Proposed | 2026-03-24 |
 | [0030](./0030-convention-over-configuration-bot-entry-points.md) | Template-based Booting and Base Convention           | Accepted | 2026-04-05 |
 | [0031](./0031-optional-bot-config-and-runtime-validation.md)    | Optional Bot Config and Runtime Validation           | Accepted | 2026-04-05 |
+| [0032](./0032-user-defined-visual-overrides-for-tanks.md) | Tank Color Display Mode                              | Accepted | 2026-04-06 |
 
 ## Status Definitions
 
