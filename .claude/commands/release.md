@@ -173,6 +173,34 @@ Run the Gradle command (use the platform-appropriate wrapper):
 
 ---
 
+## Phase 3.5 — Trigger Publish Verification
+
+Print: `"🔍 Step 3.5: Triggering verify-publish workflow to monitor artifact availability..."`
+
+Read the version from `VERSION` file (same value used in Phase 1).
+
+If `gh` is available, run:
+```
+gh workflow run verify-publish.yml --ref main -R robocode-dev/tank-royale -f version=X.Y.Z
+```
+
+- If the command **succeeds**: print:
+  ```
+  ✅ Step 3.5: verify-publish workflow triggered — monitor registry availability at:
+     https://github.com/robocode-dev/tank-royale/actions/workflows/verify-publish.yml
+  ```
+- If the command **fails**: print a warning but **do not stop** — this step is informational only:
+  ```
+  ⚠️ Step 3.5: Could not trigger verify-publish workflow. You can trigger it manually at:
+     https://github.com/robocode-dev/tank-royale/actions/workflows/verify-publish.yml
+  ```
+
+If `gh` is **not** available: print the manual URL as a warning and continue.
+
+Note: The workflow runs in the background on GitHub — you do not wait for it here. It shows three parallel jobs (NuGet, PyPI, Maven Central) as green/red badges in the Actions UI.
+
+---
+
 ## Phase 4 — Create GitHub Release
 
 Print: `"🚀 Step 4: Triggering create-release GitHub Actions workflow on main..."`
@@ -233,6 +261,10 @@ Published artifacts:
 
 GitHub release:
   ✅ create-release workflow triggered (or manual fallback)
+
+Publish verification:
+  ✅ verify-publish workflow running — https://github.com/robocode-dev/tank-royale/actions/workflows/verify-publish.yml
+     (NuGet and PyPI: ~seconds to minutes | Maven Central: up to 2 hours)
 
 Documentation:
   ✅ Uploaded (or ℹ️ Skipped for patch release)
