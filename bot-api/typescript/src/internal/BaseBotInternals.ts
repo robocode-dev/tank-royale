@@ -537,6 +537,11 @@ export class BaseBotInternals {
     this.enableEventHandling(true);
     // Internal handlers (processTurn, Atomics.notify) fire synchronously.
     this.internalEventHandlers.fireEvent(tick);
+    // In the legacy (browser/no-worker) path the worker loop never runs, so we must dispatch
+    // bot events — including onTick — directly from the WebSocket callback.
+    if (!this.workerMode) {
+      this.dispatchEvents(tick.turnNumber);
+    }
   }
 
   // ---------------------------------------------------------------------------

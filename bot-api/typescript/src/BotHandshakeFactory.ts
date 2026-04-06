@@ -24,9 +24,9 @@ export class BotHandshakeFactory {
     const handshake: BotHandshake = {
       type: MessageType.BotHandshake,
       sessionId,
-      name: botInfo.name,
-      version: botInfo.version,
-      authors: [...botInfo.authors],
+      name: botInfo.name ?? "",
+      version: botInfo.version ?? "",
+      authors: [...(botInfo.authors ?? [])],
     };
     if (botInfo.description != null) handshake.description = botInfo.description;
     if (botInfo.homepage != null) handshake.homepage = botInfo.homepage;

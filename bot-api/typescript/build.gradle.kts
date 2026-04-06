@@ -3,8 +3,6 @@ plugins {
     alias(libs.plugins.node.gradle)
 }
 
-version = libs.versions.tankroyale.get()
-
 node {
     download = true
     version = "22.14.0"
