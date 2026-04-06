@@ -72,11 +72,64 @@ tasks {
         inputs.file("package.json")
     }
 
+    val generateTypescriptApiDocs by registering(com.github.gradle.node.npm.task.NpmTask::class) {
+        dependsOn(npmInstall)
+        args = listOf("run", "docs")
+        inputs.dir("src")
+        inputs.file("tsconfig.json")
+        inputs.file("package.json")
+        inputs.file("typedoc.json")
+        outputs.dir("build/docs/typedoc")
+
+        onlyIf {
+            gradle.startParameter.taskNames.any {
+                it.contains("upload-docs") ||
+                it == "generateTypescriptApiDocs" ||
+                it.endsWith(":generateTypescriptApiDocs")
+            }
+        }
+    }
+
+    register<Copy>("copyTypescriptApiDocs") {
+        dependsOn(generateTypescriptApiDocs)
+
+        // Only copy docs when explicitly asked for via upload-docs task or this task itself
+        onlyIf {
+            gradle.startParameter.taskNames.any {
+                it.contains("upload-docs") ||
+                it == "copyTypescriptApiDocs" ||
+                it.endsWith(":copyTypescriptApiDocs")
+            }
+        }
+
+        val typescriptApiDir = layout.projectDirectory.dir("../../docs/api/typescript")
+
+        duplicatesStrategy = DuplicatesStrategy.FAIL
+
+        from(layout.buildDirectory.dir("docs/typedoc"))
+        into(typescriptApiDir)
+
+        doFirst {
+            // Clean target directory only when task actually runs
+            delete(typescriptApiDir)
+            mkdir(typescriptApiDir)
+        }
+    }
+
     named("build") {
         dependsOn(npmBuild)
     }
 
     register("test") {
         dependsOn(npmTest)
+    }
+
+    // Make sure documentation tasks are not part of the build task
+    afterEvaluate {
+        tasks.named("build").configure {
+            setDependsOn(dependsOn.filterNot {
+                it.toString().contains("generateTypescriptApiDocs") || it.toString().contains("copyTypescriptApiDocs")
+            })
+        }
     }
 }

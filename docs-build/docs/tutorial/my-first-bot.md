@@ -80,5 +80,6 @@ The rest of the tutorial is split up based on the available APIs for different p
 - [.NET](dotnet/my-first-bot-for-dotnet.md)
 - [Java / JVM](jvm/my-first-bot-for-jvm.md)
 - [Python](python/my-first-bot-for-python.md)
+- [TypeScript / JavaScript](typescript/my-first-bot-for-typescript.md)
 
 [sample bots]: ../articles/installation#sample-bots "Sample bots"

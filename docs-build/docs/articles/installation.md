@@ -332,11 +332,12 @@ programming styles, and are perfect for learning how the game works.
 
 **Available sample bots:**
 
-| Language      | Archive File                   | Requirements         |
-|---------------|--------------------------------|----------------------|
-| 🐍 **Python** | `sample-bots-python-x.y.z.zip` | Python 3.10 or newer |
-| 🔷 **C#**     | `sample-bots-csharp-x.y.z.zip` | .NET SDK 8 or newer  |
-| ☕ **Java**    | `sample-bots-java-x.y.z.zip`   | Java SDK 11 or newer |
+| Language               | Archive File                          | Requirements           |
+|------------------------|---------------------------------------|------------------------|
+| 🐍 **Python**          | `sample-bots-python-x.y.z.zip`        | Python 3.10 or newer   |
+| 🔷 **C#**              | `sample-bots-csharp-x.y.z.zip`        | .NET SDK 8 or newer    |
+| ☕ **Java**             | `sample-bots-java-x.y.z.zip`          | Java SDK 11 or newer   |
+| 🟦 **TypeScript / JS** | `sample-bots-typescript-x.y.z.zip`    | Node.js 22 (LTS) or newer |
 
 📝 Each archive contains a `README.md` file with platform-specific instructions.
 

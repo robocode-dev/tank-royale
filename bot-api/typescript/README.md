@@ -7,7 +7,7 @@ TypeScript/JavaScript Bot API for [Robocode Tank Royale](https://robocode-dev.gi
 
 ## Requirements
 
-- **Node.js 18+** (for running bots via WebSocket)
+- **Node.js 22 (LTS) or newer** (for running bots via WebSocket)
 - **TypeScript 5+** (for writing bots in TypeScript)
 
 ## Installation
@@ -25,38 +25,39 @@ npm install ws
 ## Quick Start
 
 ```typescript
-import { Bot, BotInfo } from "@robocode.dev/tank-royale-bot-api";
+import { Bot, BotInfo, HitByBulletEvent, ScannedBotEvent } from "@robocode.dev/tank-royale-bot-api";
 
-const bot = new Bot(
-  new BotInfo(
-    "MyFirstBot",
-    "1.0",
-    ["Author Name"],
-    "My first bot",
-    "en",
-    [],
-    [],
-    "3"
-  )
-);
-
-// Called at the start of each round
-bot.run = () => {
-    while (bot.isRunning()) {
-        bot.forward(100);
-        bot.turnGunRight(360);
-        bot.back(100);
-        bot.turnGunRight(360);
+class MyFirstBot extends Bot {
+    static main() {
+        new MyFirstBot().start();
     }
-};
 
-// Called when the bot scans another bot
-bot.onScannedBot = (event) => {
-    bot.fire(1);
-};
+    override run() {
+        while (this.isRunning()) {
+            this.forward(100);
+            this.turnGunRight(360);
+            this.back(100);
+            this.turnGunRight(360);
+        }
+    }
 
-bot.start();
+    override onScannedBot(e: ScannedBotEvent) {
+        this.fire(1);
+    }
+
+    override onHitByBullet(e: HitByBulletEvent) {
+        const bearing = this.calcBearing(e.bullet.direction);
+        this.turnRight(90 - bearing);
+    }
+}
+
+MyFirstBot.main();
 ```
+
+The bot reads its name, version, and authors from a `MyFirstBot.json` file placed alongside the source, or from
+environment variables set by the Robocode booter. You can also supply them programmatically via the `BotInfo`
+constructor — see the [tutorial](https://robocode-dev.github.io/tank-royale/tutorial/typescript/my-first-bot-for-typescript)
+for the full walkthrough.
 
 ## API Overview
 
@@ -87,18 +88,18 @@ There is no `async`/`await` in bot code:
 
 ```typescript
 // ✅ Correct — sequential, blocking
-bot.run = () => {
-    while (bot.isRunning()) {
-        bot.forward(100);   // blocks until bot has moved 100 units
-        bot.turnRight(90);  // blocks until turn is complete
-        bot.fire(1);
+override run() {
+    while (this.isRunning()) {
+        this.forward(100);   // blocks until bot has moved 100 units
+        this.turnRight(90);  // blocks until turn is complete
+        this.fire(1);
     }
-};
+}
 
 // ❌ Wrong — do NOT use async/await in bot code
-bot.run = async () => {
-    await bot.forward(100); // incorrect — forward() is not a Promise
-};
+async run() {
+    await this.forward(100); // incorrect — forward() is not a Promise
+}
 ```
 
 **How it works internally:** The API uses a Web Worker (`worker_threads` in Node.js, `Worker` in browsers)
@@ -193,11 +194,11 @@ SERVER_URL=ws://localhost:7654 SERVER_SECRET=abc123 node MyFirstBot.js
 
 ## Runtime Targets
 
-| Target          | Notes                                             |
-|-----------------|---------------------------------------------------|
-| **Node.js 18+** | Full support. Requires `ws` peer dependency.      |
-| **Browser**     | Supported via native `WebSocket`. No `ws` needed. |
-| **Deno / Bun**  | Should work with Node.js-compatible WebSocket.    |
+| Target           | Notes                                             |
+|------------------|---------------------------------------------------|
+| **Node.js 22+**  | Full support. Requires `ws` peer dependency.      |
+| **Browser**      | Supported via native `WebSocket`. No `ws` needed. |
+| **Deno / Bun**   | Should work with Node.js-compatible WebSocket.    |
 
 ## Module Formats
 
