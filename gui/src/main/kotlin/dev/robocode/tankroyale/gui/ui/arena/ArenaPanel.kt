@@ -5,6 +5,8 @@ import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.player.ReplayBattlePlayer
 import dev.robocode.tankroyale.gui.recorder.AutoRecorder
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
+import dev.robocode.tankroyale.gui.settings.TankColorMode
 import dev.robocode.tankroyale.gui.ui.ResultsFrame
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.hsl
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
@@ -103,6 +105,41 @@ object ArenaPanel : JPanel() {
     private fun onPlayerChanged(player: dev.robocode.tankroyale.gui.player.BattlePlayer) {
         isLiveMode = player !is ReplayBattlePlayer // Default to LIVE mode for other player types
         repaint() // Refresh the display to show correct indicator
+    }
+
+    private fun resolveBulletColor(bullet: BulletState): Color {
+        val botColor = bullet.color
+        val default = ColorConstant.DEFAULT_BULLET_COLOR
+        return when (ConfigSettings.tankColorMode) {
+            TankColorMode.BOT_COLORS -> fromString(botColor ?: default)
+            TankColorMode.BOT_COLORS_ONCE -> fromString(botColor ?: default) // Bullets don't last across rounds, so Once behaves like Bot
+            TankColorMode.DEFAULT_COLORS -> fromString(default)
+            TankColorMode.BOT_COLORS_WHEN_DEBUGGING -> {
+                val bot = bots.find { it.id == bullet.ownerId }
+                if (bot?.isDebuggingEnabled == true) {
+                    fromString(botColor ?: default)
+                } else {
+                    fromString(default)
+                }
+            }
+        }
+    }
+
+    private fun resolveScanColor(bot: BotState): Color {
+        val botColor = bot.scanColor
+        val default = ColorConstant.DEFAULT_SCAN_COLOR
+        return when (ConfigSettings.tankColorMode) {
+            TankColorMode.BOT_COLORS -> fromString(botColor ?: default)
+            TankColorMode.BOT_COLORS_ONCE -> fromString(botColor ?: default) // Scan arcs are per-tick, so Once behaves like Bot
+            TankColorMode.DEFAULT_COLORS -> fromString(default)
+            TankColorMode.BOT_COLORS_WHEN_DEBUGGING -> {
+                if (bot.isDebuggingEnabled) {
+                    fromString(botColor ?: default)
+                } else {
+                    fromString(default)
+                }
+            }
+        }
     }
 
     private fun onTick(tickEvent: TickEvent) {
@@ -322,7 +359,7 @@ object ArenaPanel : JPanel() {
 
     private fun drawBullet(g: Graphics2D, bullet: BulletState) {
         val size = 2 * sqrt(2.5 * bullet.power)
-        val bulletColor = fromString(bullet.color ?: ColorConstant.DEFAULT_BULLET_COLOR)
+        val bulletColor = resolveBulletColor(bullet)
         g.color = visibleDark(bulletColor)
         g.fillCircle(bullet.x, bullet.y, size)
     }
@@ -332,7 +369,7 @@ object ArenaPanel : JPanel() {
 
         val oldState = Graphics2DState(g)
 
-        val scanColor = fromString(bot.scanColor ?: ColorConstant.DEFAULT_SCAN_COLOR)
+        val scanColor = resolveScanColor(bot)
         g.color = visibleDark(scanColor)
         g.stroke = BasicStroke(1f)
         g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)

@@ -33,7 +33,7 @@ bullet, scan).
 | Mode | Enum Value | Rendering Behavior |
 |------|-----------|-------------------|
 | **Bot Colors** | `BOT_COLORS` | Bot-defined colors are used as supplied, and may change freely throughout the battle. Falls back to system defaults when a bot provides no color. This is the default and preserves existing behavior. |
-| **Bot Colors (Once)** | `BOT_COLORS_LOCKED` | The first color a bot provides for each component is recorded and locked for the entire battle, including between rounds. Subsequent color changes from the bot are ignored. Falls back to system defaults until a bot provides an initial color. |
+| **Bot Colors (Once)** | `BOT_COLORS_ONCE` | The first color a bot provides for each component is recorded and locked for the entire battle, including between rounds. Subsequent color changes from the bot are ignored. Falls back to system defaults until a bot provides an initial color. |
 | **Default Colors** | `DEFAULT_COLORS` | All tanks always render with the hardcoded system-default colors from `ColorConstant`. Bot-defined colors are completely ignored. |
 | **Bot Colors (Debug Only)** | `BOT_COLORS_WHEN_DEBUGGING` | A bot's colors are shown only while its Graphical Debugging flag is enabled in the Bot Console. When debugging is off, that bot renders with system-default colors. |
 
@@ -86,7 +86,7 @@ right to express a visual identity, without introducing the complexity and user-
 free-form color picker. The four discrete modes cover the full range of practical use cases
 identified in Issue #201.
 
-The `BOT_COLORS_LOCKED` mode directly addresses the core concern in Issue #201 (flickering bots)
+The `BOT_COLORS_ONCE` mode directly addresses the core concern in Issue #201 (flickering bots)
 while still respecting the bot's intended color.
 
 The `BOT_COLORS_WHEN_DEBUGGING` mode is a natural extension of the existing Graphical Debugging
@@ -97,7 +97,7 @@ the bot's intended colors simultaneously — the same workflow, zero new concept
 
 * A `TankColorMode` enum is introduced in the `gui/settings` package with four values.
 * `ConfigSettings` gains a single new property `tankColorMode`.
-* `Tank.kt` introduces a per-bot first-color cache (used by `BOT_COLORS_LOCKED`) and a
+* `Tank.kt` introduces a per-bot first-color cache (used by `BOT_COLORS_ONCE`) and a
   mode-aware color resolution helper replacing all raw `bot.xColor ?: DEFAULT_X_COLOR` expressions.
 * `ArenaPanel.kt` receives the same treatment for bullet and scan colors.
 * The first-color cache is reset when a new battle starts (not between rounds).

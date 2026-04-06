@@ -2,20 +2,18 @@ package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
+import dev.robocode.tankroyale.gui.settings.TankColorMode
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
+import javax.swing.BorderFactory
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.Strings
 import net.miginfocom.swing.MigLayout
 import java.util.Locale
-import javax.swing.JButton
-import javax.swing.JComboBox
-import javax.swing.JPanel
-import javax.swing.JSpinner
-import javax.swing.SpinnerNumberModel
+import javax.swing.*
 
 object GuiConfigDialog : RcDialog(MainFrame, "gui_config_dialog") {
 
@@ -51,11 +49,24 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         (editor as? JSpinner.DefaultEditor)?.textField?.columns = 4
     }
 
+    private val botColorsRadio = JRadioButton(Strings.get("option.gui.tank_color_mode.bot_colors"))
+    private val botColorsOnceRadio = JRadioButton(Strings.get("option.gui.tank_color_mode.bot_colors_once"))
+    private val defaultColorsRadio = JRadioButton(Strings.get("option.gui.tank_color_mode.default_colors"))
+    private val botColorsDebugRadio = JRadioButton(Strings.get("option.gui.tank_color_mode.bot_colors_when_debugging"))
+
+    private val tankColorModeGroup = ButtonGroup().apply {
+        add(botColorsRadio)
+        add(botColorsOnceRadio)
+        add(defaultColorsRadio)
+        add(botColorsDebugRadio)
+    }
+
     init {
         addLanguageSelector()
         addUiScaleSelector()
         addConsoleMaxCharsSelector()
         addBootTimeoutSelector()
+        addTankColorModeSelector()
         setInitialSelections()
         addOkButton(onOk, "span 2, alignx center, gaptop para, wrap").apply {
             setDefaultButton(this)
@@ -82,6 +93,17 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         add(bootTimeoutSpinner, "wrap")
     }
 
+    private fun addTankColorModeSelector() {
+        val panel = JPanel(MigLayout("insets 6")).apply {
+            border = BorderFactory.createTitledBorder(Strings.get("option.gui.tank_color_mode"))
+            add(botColorsRadio, "wrap")
+            add(botColorsOnceRadio, "wrap")
+            add(defaultColorsRadio, "wrap")
+            add(botColorsDebugRadio, "wrap")
+        }
+        add(panel, "span 2, growx, wrap")
+    }
+
     private fun setInitialSelections() {
         // Initialize UI scale
         val currentScale = ConfigSettings.uiScale
@@ -98,6 +120,14 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
 
         // Initialize boot timeout
         bootTimeoutSpinner.value = ConfigSettings.bootTimeout
+
+        // Initialize tank color mode
+        when (ConfigSettings.tankColorMode) {
+            TankColorMode.BOT_COLORS -> botColorsRadio.isSelected = true
+            TankColorMode.BOT_COLORS_ONCE -> botColorsOnceRadio.isSelected = true
+            TankColorMode.DEFAULT_COLORS -> defaultColorsRadio.isSelected = true
+            TankColorMode.BOT_COLORS_WHEN_DEBUGGING -> botColorsDebugRadio.isSelected = true
+        }
     }
 
     private fun onOkClicked() {
@@ -127,6 +157,15 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
 
         // Save boot timeout
         ConfigSettings.bootTimeout = bootTimeoutSpinner.value as Int
+
+        // Save tank color mode
+        ConfigSettings.tankColorMode = when {
+            botColorsRadio.isSelected -> TankColorMode.BOT_COLORS
+            botColorsOnceRadio.isSelected -> TankColorMode.BOT_COLORS_ONCE
+            defaultColorsRadio.isSelected -> TankColorMode.DEFAULT_COLORS
+            botColorsDebugRadio.isSelected -> TankColorMode.BOT_COLORS_WHEN_DEBUGGING
+            else -> TankColorMode.BOT_COLORS
+        }
 
         GuiConfigDialog.dispose()
     }

@@ -11,13 +11,13 @@ colors.** The three modes below are the only configuration surface.
 ## Goals / Non-Goals
 
 **Goals:**
-- Introduce a `TankColorMode` enum with values `BOT_COLORS`, `BOT_COLORS_LOCKED`,
+- Introduce a `TankColorMode` enum with values `BOT_COLORS`, `BOT_COLORS_ONCE`,
   `DEFAULT_COLORS`, and `BOT_COLORS_WHEN_DEBUGGING`.
 - Add a radio-button group to the existing `GuiConfigDialog` for mode selection.
 - Persist the selected mode in `ConfigSettings` (key: `tank-color-mode`, default: `BOT_COLORS`).
 - Update `Tank.kt` and `ArenaPanel.kt` to resolve colors through a mode-aware helper instead of
   inline `bot.xColor ?: DEFAULT_X_COLOR` expressions.
-- For `BOT_COLORS_LOCKED`: maintain a per-bot, per-component first-color cache in the rendering
+- For `BOT_COLORS_ONCE`: maintain a per-bot, per-component first-color cache in the rendering
   layer. The cache is reset when a new battle starts, but persists between rounds.
 
 **Non-Goals:**
@@ -33,7 +33,7 @@ A new Kotlin enum `TankColorMode` in `gui/settings/`:
 
 ```
 BOT_COLORS                  // bot-defined colors, change freely (default, current behaviour)
-BOT_COLORS_LOCKED           // first color per component locks for the entire battle
+BOT_COLORS_ONCE             // first color per component locks for the entire battle
 DEFAULT_COLORS              // always use ColorConstant defaults
 BOT_COLORS_WHEN_DEBUGGING   // bot colors only when isDebuggingEnabled == true
 ```
@@ -72,7 +72,7 @@ Replace every inline `bot.xColor ?: DEFAULT_X_COLOR` expression with calls to a 
 private fun resolveColor(botColor: String?, default: String): Color {
     val useBot = when (ConfigSettings.tankColorMode) {
         TankColorMode.BOT_COLORS -> true
-        TankColorMode.BOT_COLORS_LOCKED -> true   // actual locking handled by firstColorCache
+        TankColorMode.BOT_COLORS_ONCE -> true   // actual locking handled by firstColorCache
         TankColorMode.DEFAULT_COLORS -> false
         TankColorMode.BOT_COLORS_WHEN_DEBUGGING -> bot.isDebuggingEnabled
     }
@@ -80,7 +80,7 @@ private fun resolveColor(botColor: String?, default: String): Color {
 }
 ```
 
-For `BOT_COLORS_LOCKED`, `Tank` maintains a `firstColorCache: MutableMap<String, String>` — keyed
+For `BOT_COLORS_ONCE`, `Tank` maintains a `firstColorCache: MutableMap<String, String>` — keyed
 by component name — populated on the first non-null color received. The cache is cleared via a
 `reset()` call when a new battle starts. `resolveColor` reads from the cache in this mode rather
 than from the live `botColor`.

@@ -21,6 +21,16 @@
       that is unknown at boot time, it uses a baseline snapshot of already-connected bots and waits for the
       expected number of new connections. Handles multiple instances of the same bot correctly via count-based
       baseline tracking.
+    - #201: Added **Tank Color Mode** setting to the GUI configuration dialog. A radio-button group lets the
+      user choose one of four modes governing how tank colors are displayed during a battle:
+        - **Bot Colors** (default) — bot-defined colors may change freely; preserves existing behavior.
+        - **Bot Colors (Once)** — the first color a bot sets per component is locked for the entire battle,
+          including between rounds; later changes are ignored.
+        - **Default Colors** — all tanks always render with the hardcoded system-default colors; bot-defined
+          colors are ignored entirely.
+        - **Bot Colors (Debug Only)** — bot colors are shown only while Graphical Debugging is enabled for
+          that bot in the Bot Console; otherwise system defaults are used.
+      The selected mode is persisted in `gui.properties` and survives application restarts.
 
 - Bot API (Java, .NET, Python):
     - Added runtime property validation. Required properties (`name`, `version`, `authors`) must now be set 
