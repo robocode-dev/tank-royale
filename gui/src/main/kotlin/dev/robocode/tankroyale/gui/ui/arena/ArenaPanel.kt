@@ -29,6 +29,8 @@ import kotlin.math.sqrt
 
 object ArenaPanel : JPanel() {
 
+    private val lockedColors = mutableMapOf<Int, MutableMap<String, String>>()
+
     private val circleShape = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
 
     // Game status indicator constants
@@ -112,7 +114,11 @@ object ArenaPanel : JPanel() {
         val default = ColorConstant.DEFAULT_BULLET_COLOR
         return when (ConfigSettings.tankColorMode) {
             TankColorMode.BOT_COLORS -> fromString(botColor ?: default)
-            TankColorMode.BOT_COLORS_ONCE -> fromString(botColor ?: default) // Bullets don't last across rounds, so Once behaves like Bot
+            TankColorMode.BOT_COLORS_ONCE -> {
+                val botLockedColors = lockedColors.getOrPut(bullet.ownerId) { mutableMapOf() }
+                val lockedColor = botLockedColors.getOrPut(default) { botColor ?: "" }
+                fromString(if (lockedColor.isEmpty()) default else lockedColor)
+            }
             TankColorMode.DEFAULT_COLORS -> fromString(default)
             TankColorMode.BOT_COLORS_WHEN_DEBUGGING -> {
                 val bot = bots.find { it.id == bullet.ownerId }
@@ -130,7 +136,11 @@ object ArenaPanel : JPanel() {
         val default = ColorConstant.DEFAULT_SCAN_COLOR
         return when (ConfigSettings.tankColorMode) {
             TankColorMode.BOT_COLORS -> fromString(botColor ?: default)
-            TankColorMode.BOT_COLORS_ONCE -> fromString(botColor ?: default) // Scan arcs are per-tick, so Once behaves like Bot
+            TankColorMode.BOT_COLORS_ONCE -> {
+                val botLockedColors = lockedColors.getOrPut(bot.id) { mutableMapOf() }
+                val lockedColor = botLockedColors.getOrPut(default) { botColor ?: "" }
+                fromString(if (lockedColor.isEmpty()) default else lockedColor)
+            }
             TankColorMode.DEFAULT_COLORS -> fromString(default)
             TankColorMode.BOT_COLORS_WHEN_DEBUGGING -> {
                 if (bot.isDebuggingEnabled) {
@@ -176,6 +186,7 @@ object ArenaPanel : JPanel() {
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
+        lockedColors.clear()
         gameStartedEvent.gameSetup.apply {
             ArenaPanel.arenaWidth = arenaWidth
             ArenaPanel.arenaHeight = arenaHeight
