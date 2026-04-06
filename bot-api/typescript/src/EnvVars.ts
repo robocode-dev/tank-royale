@@ -34,21 +34,12 @@ export class EnvVars {
     this.adapter = adapter;
   }
 
-  /** Constructs a {@link BotInfo} from environment variables. Throws {@link BotException} if name, version, or authors are missing. */
+  /** Constructs a {@link BotInfo} from environment variables. Required field validation is deferred to connection time. */
   getBotInfo(): BotInfo {
-    if (this.isBlankStr(this.getBotName())) {
-      throw new BotException(EnvVars.MISSING_ENV_VALUE + EnvVars.BOT_NAME);
-    }
-    if (this.isBlankStr(this.getBotVersion())) {
-      throw new BotException(EnvVars.MISSING_ENV_VALUE + EnvVars.BOT_VERSION);
-    }
-    if (this.isBlankList(this.getBotAuthors())) {
-      throw new BotException(EnvVars.MISSING_ENV_VALUE + EnvVars.BOT_AUTHORS);
-    }
     return new BotInfo(
-      this.getBotName()!,
-      this.getBotVersion()!,
-      this.getBotAuthors(),
+      this.getBotName() ?? null,
+      this.getBotVersion() ?? null,
+      this.getBotAuthors().length > 0 ? this.getBotAuthors() : null,
       this.getBotDescription(),
       this.getBotHomepage(),
       this.getBotCountryCodes(),
@@ -141,14 +132,6 @@ export class EnvVars {
   /** Returns true if the bot is being booted (env var is set). */
   isBotBooted(): boolean {
     return this.adapter.getEnvVar(EnvVars.BOT_BOOTED) !== undefined;
-  }
-
-  private isBlankStr(s: string | undefined | null): boolean {
-    return s === undefined || s === null || s.trim() === "";
-  }
-
-  private isBlankList(list: string[]): boolean {
-    return list.length === 0;
   }
 
   /** Splits a comma-separated env var value into a trimmed string array. */

@@ -560,6 +560,9 @@ describe("Task 8: Integration tests", () => {
     let tickFired = false;
     internals.botEventHandlers.onTick.subscribe(() => { tickFired = true; });
     simulateTick(1);
+    // onTick is dispatched through the event queue; must call dispatchEvents explicitly
+    // (in normal operation, BaseBot.go() calls dispatchEvents before execute()).
+    internals.dispatchEvents(1);
     expect(tickFired).toBe(true);
   });
 

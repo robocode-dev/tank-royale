@@ -15,8 +15,8 @@ describe("BotInfo constants", () => {
     expect(BotInfo.MAX_GAME_TYPE_LENGTH).toBe(20);
     expect(BotInfo.MAX_PLATFORM_LENGTH).toBe(30);
     expect(BotInfo.MAX_PROGRAMMING_LANG_LENGTH).toBe(30);
-    expect(BotInfo.MAX_NUMBER_OF_AUTHORS).toBe(5);
-    expect(BotInfo.MAX_NUMBER_OF_COUNTRY_CODES).toBe(5);
+    expect(BotInfo.MAX_NUMBER_OF_AUTHORS).toBe(20);
+    expect(BotInfo.MAX_NUMBER_OF_COUNTRY_CODES).toBe(20);
     expect(BotInfo.MAX_NUMBER_OF_GAME_TYPES).toBe(10);
   });
 });
@@ -49,9 +49,11 @@ describe("BotInfo construction", () => {
 });
 
 describe("BotInfo validation", () => {
-  it("throws if name is blank", () => {
-    expect(() => new BotInfo("", VERSION, AUTHORS, null, null, [], [], null, null, null)).toThrow("'name'");
-    expect(() => new BotInfo("   ", VERSION, AUTHORS, null, null, [], [], null, null, null)).toThrow("'name'");
+  it("stores null for blank name (convention-over-config: validated at connection time)", () => {
+    const bot1 = new BotInfo("", VERSION, AUTHORS, null, null, [], [], null, null, null);
+    expect(bot1.name).toBeNull();
+    const bot2 = new BotInfo("   ", VERSION, AUTHORS, null, null, [], [], null, null, null);
+    expect(bot2.name).toBeNull();
   });
 
   it("throws if name exceeds max length", () => {
@@ -59,8 +61,9 @@ describe("BotInfo validation", () => {
     expect(() => new BotInfo(longName, VERSION, AUTHORS, null, null, [], [], null, null, null)).toThrow("'name' length");
   });
 
-  it("throws if version is blank", () => {
-    expect(() => new BotInfo(NAME, "", AUTHORS, null, null, [], [], null, null, null)).toThrow("'version'");
+  it("stores null for blank version (convention-over-config: validated at connection time)", () => {
+    const bot = new BotInfo(NAME, "", AUTHORS, null, null, [], [], null, null, null);
+    expect(bot.version).toBeNull();
   });
 
   it("throws if version exceeds max length", () => {
@@ -68,12 +71,13 @@ describe("BotInfo validation", () => {
     expect(() => new BotInfo(NAME, longVersion, AUTHORS, null, null, [], [], null, null, null)).toThrow("'version' length");
   });
 
-  it("throws if authors is empty", () => {
-    expect(() => new BotInfo(NAME, VERSION, [], null, null, [], [], null, null, null)).toThrow("'authors'");
+  it("stores null for empty authors (convention-over-config: validated at connection time)", () => {
+    const bot = new BotInfo(NAME, VERSION, [], null, null, [], [], null, null, null);
+    expect(bot.authors).toBeNull();
   });
 
   it("throws if authors exceeds max count", () => {
-    const tooMany = ["a", "b", "c", "d", "e", "f"];
+    const tooMany = Array.from({ length: 21 }, (_, i) => `Author${i}`);
     expect(() => new BotInfo(NAME, VERSION, tooMany, null, null, [], [], null, null, null)).toThrow("'authors'");
   });
 
@@ -93,7 +97,7 @@ describe("BotInfo validation", () => {
   });
 
   it("throws if country codes exceed max count", () => {
-    const codes = ["US", "GB", "DE", "FR", "JP", "AU"];
+    const codes = ["US","GB","DE","FR","JP","AU","CA","BR","IN","CN","RU","MX","KR","IT","ES","PL","SE","NO","DK","NL","CH"];
     expect(() => new BotInfo(NAME, VERSION, AUTHORS, null, null, codes, [], null, null, null)).toThrow("'countryCodes'");
   });
 

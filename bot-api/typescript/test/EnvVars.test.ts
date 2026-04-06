@@ -186,37 +186,34 @@ describe("EnvVars — getBotInfo", () => {
     expect(info.programmingLang).toBe("TypeScript");
   });
 
-  it("throws BotException when BOT_NAME is missing", () => {
+  it("returns BotInfo with null name when BOT_NAME is missing (convention-over-config)", () => {
     const env = { ...fullEnv };
     delete (env as Record<string, string | undefined>)["BOT_NAME"];
     const ev = new EnvVars(makeAdapter(env));
-    expect(() => ev.getBotInfo()).toThrow(BotException);
-    expect(() => ev.getBotInfo()).toThrow("Missing environment variable: BOT_NAME");
+    expect(ev.getBotInfo().name).toBeNull();
   });
 
-  it("throws BotException when BOT_NAME is blank", () => {
+  it("returns BotInfo with null name when BOT_NAME is blank (convention-over-config)", () => {
     const ev = new EnvVars(makeAdapter({ ...fullEnv, BOT_NAME: "  " }));
-    expect(() => ev.getBotInfo()).toThrow(BotException);
+    expect(ev.getBotInfo().name).toBeNull();
   });
 
-  it("throws BotException when BOT_VERSION is missing", () => {
+  it("returns BotInfo with null version when BOT_VERSION is missing (convention-over-config)", () => {
     const env = { ...fullEnv };
     delete (env as Record<string, string | undefined>)["BOT_VERSION"];
     const ev = new EnvVars(makeAdapter(env));
-    expect(() => ev.getBotInfo()).toThrow(BotException);
-    expect(() => ev.getBotInfo()).toThrow("Missing environment variable: BOT_VERSION");
+    expect(ev.getBotInfo().version).toBeNull();
   });
 
-  it("throws BotException when BOT_AUTHORS is missing", () => {
+  it("returns BotInfo with null authors when BOT_AUTHORS is missing (convention-over-config)", () => {
     const env = { ...fullEnv };
     delete (env as Record<string, string | undefined>)["BOT_AUTHORS"];
     const ev = new EnvVars(makeAdapter(env));
-    expect(() => ev.getBotInfo()).toThrow(BotException);
-    expect(() => ev.getBotInfo()).toThrow("Missing environment variable: BOT_AUTHORS");
+    expect(ev.getBotInfo().authors).toBeNull();
   });
 
-  it("throws BotException when BOT_AUTHORS is blank", () => {
+  it("returns BotInfo with null authors when BOT_AUTHORS is blank (convention-over-config)", () => {
     const ev = new EnvVars(makeAdapter({ ...fullEnv, BOT_AUTHORS: "  " }));
-    expect(() => ev.getBotInfo()).toThrow(BotException);
+    expect(ev.getBotInfo().authors).toBeNull();
   });
 });

@@ -33,9 +33,9 @@ export class BotInfo {
   static readonly MAX_NUMBER_OF_COUNTRY_CODES = 20;
   static readonly MAX_NUMBER_OF_GAME_TYPES = 10;
 
-  readonly name: string;
-  readonly version: string;
-  readonly authors: string[];
+  readonly name: string | null;
+  readonly version: string | null;
+  readonly authors: string[] | null;
   readonly description: string | null;
   readonly homepage: string | null;
   readonly countryCodes: string[];
@@ -45,9 +45,9 @@ export class BotInfo {
   readonly initialPosition: InitialPosition | null;
 
   constructor(
-    name: string,
-    version: string,
-    authors: string[],
+    name: string | null | undefined,
+    version: string | null | undefined,
+    authors: string[] | null | undefined,
     description: string | null,
     homepage: string | null,
     countryCodes: string[],
@@ -56,9 +56,9 @@ export class BotInfo {
     programmingLang: string | null,
     initialPosition: InitialPosition | null,
   ) {
-    this.name = BotInfo.validateName(name);
-    this.version = BotInfo.validateVersion(version);
-    this.authors = BotInfo.validateAuthors(authors);
+    this.name = BotInfo.processName(name);
+    this.version = BotInfo.processVersion(version);
+    this.authors = BotInfo.processAuthors(authors);
     this.description = BotInfo.validateDescription(description);
     this.homepage = BotInfo.validateHomepage(homepage);
     this.countryCodes = BotInfo.processCountryCodes(countryCodes);
@@ -68,7 +68,7 @@ export class BotInfo {
     this.initialPosition = initialPosition ?? null;
   }
 
-  static builder(name: string, version: string, authors: string[]): BotInfoBuilder {
+  static builder(name: string | null, version: string | null, authors: string[] | null): BotInfoBuilder {
     return new BotInfoBuilder(name, version, authors);
   }
 
@@ -88,39 +88,35 @@ export class BotInfo {
     );
   }
 
-  private static validateName(name: string): string {
-    if (name == null || name.trim() === "") {
-      throw new Error("'name' cannot be null, empty or blank");
-    }
+  private static processName(name: string | null | undefined): string | null {
+    if (name == null || name.trim() === "") return null;
     if (name.length > BotInfo.MAX_NAME_LENGTH) {
-      throw new Error(`'name' length exceeds the maximum of ${BotInfo.MAX_NAME_LENGTH} characters`);
+      throw new Error(`'name' length exceeds ${BotInfo.MAX_NAME_LENGTH} characters: ${name.length}`);
     }
-    return name;
+    return name.trim();
   }
 
-  private static validateVersion(version: string): string {
-    if (version == null || version.trim() === "") {
-      throw new Error("'version' cannot be null, empty or blank");
-    }
+  private static processVersion(version: string | null | undefined): string | null {
+    if (version == null || version.trim() === "") return null;
     if (version.length > BotInfo.MAX_VERSION_LENGTH) {
-      throw new Error(`'version' length exceeds the maximum of ${BotInfo.MAX_VERSION_LENGTH} characters`);
+      throw new Error(`'version' length exceeds ${BotInfo.MAX_VERSION_LENGTH} characters: ${version.length}`);
     }
-    return version;
+    return version.trim();
   }
 
-  private static validateAuthors(authors: string[]): string[] {
-    if (authors == null || authors.length === 0 || authors.every((a) => a == null || a.trim() === "")) {
-      throw new Error("'authors' cannot be null or empty or contain blanks");
+  private static processAuthors(authors: string[] | null | undefined): string[] | null {
+    if (authors == null || authors.length === 0) return null;
+    const trimmed = authors.map((a) => a?.trim() ?? "").filter((a) => a !== "");
+    if (trimmed.length === 0) return null;
+    if (trimmed.length > BotInfo.MAX_NUMBER_OF_AUTHORS) {
+      throw new Error(`Size of 'authors' exceeds the maximum: ${BotInfo.MAX_NUMBER_OF_AUTHORS}`);
     }
-    if (authors.length > BotInfo.MAX_NUMBER_OF_AUTHORS) {
-      throw new Error(`Size of 'authors' exceeds the maximum of ${BotInfo.MAX_NUMBER_OF_AUTHORS}`);
-    }
-    for (const author of authors) {
+    for (const author of trimmed) {
       if (author.length > BotInfo.MAX_AUTHOR_LENGTH) {
-        throw new Error(`'author' length exceeds the maximum of ${BotInfo.MAX_AUTHOR_LENGTH} characters`);
+        throw new Error(`'author' length exceeds ${BotInfo.MAX_AUTHOR_LENGTH} characters: ${author.length}`);
       }
     }
-    return authors.filter((a) => a != null && a.trim() !== "");
+    return trimmed;
   }
 
   private static validateDescription(description: string | null | undefined): string | null {
@@ -189,9 +185,9 @@ export class BotInfo {
 }
 
 export class BotInfoBuilder {
-  private _name: string;
-  private _version: string;
-  private _authors: string[];
+  private _name: string | null;
+  private _version: string | null;
+  private _authors: string[] | null;
   private _description: string | null = null;
   private _homepage: string | null = null;
   private _countryCodes: string[] = [];
@@ -200,7 +196,7 @@ export class BotInfoBuilder {
   private _programmingLang: string | null = null;
   private _initialPosition: InitialPosition | null = null;
 
-  constructor(name: string, version: string, authors: string[]) {
+  constructor(name: string | null, version: string | null, authors: string[] | null) {
     this._name = name;
     this._version = version;
     this._authors = authors;

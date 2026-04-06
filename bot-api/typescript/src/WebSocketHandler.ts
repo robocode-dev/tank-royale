@@ -150,6 +150,9 @@ export class WebSocketHandler {
     this.serverHandshake = msg;
     this.callbacks.onServerHandshake?.(msg);
 
+    // Validate required bot info before sending the bot handshake
+    this.validateBotInfo();
+
     const isDroid = false; // Droid detection handled by caller via BotInfo/callbacks
     const handshake = BotHandshakeFactory.create(
       msg.sessionId,
@@ -195,6 +198,33 @@ export class WebSocketHandler {
   // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
+
+  /** Validates that required bot info fields are set before sending the bot handshake. */
+  private validateBotInfo(): void {
+    if (this.isBlank(this.botInfo.name)) {
+      this.throwMissingPropertyException("name");
+    }
+    if (this.isBlank(this.botInfo.version)) {
+      this.throwMissingPropertyException("version");
+    }
+    const authors = this.botInfo.authors;
+    if (authors == null || authors.length === 0 || authors.every((a) => this.isBlank(a))) {
+      this.throwMissingPropertyException("authors");
+    }
+  }
+
+  private throwMissingPropertyException(propertyName: string): never {
+    throw new BotException(
+      `Required bot property '${propertyName}' is missing. ` +
+        `This property is required in order for the bot to be recognized when booting it up and ` +
+        `when it needs to join the game. You must set this property in your bot code ` +
+        `or provide a .json configuration file.`,
+    );
+  }
+
+  private isBlank(s: string | null | undefined): boolean {
+    return s == null || s.trim() === "";
+  }
 
   private send(obj: object): void {
     if (this.socket == null) {

@@ -12,6 +12,7 @@ import { BotEventHandlers } from "../events/BotEventHandlers.js";
 import { TickEvent } from "../events/TickEvent.js";
 import { RoundStartedEvent as RoundStartedEventClass } from "../events/RoundStartedEvent.js";
 import { BulletFiredEvent } from "../events/BulletFiredEvent.js";
+import { WonRoundEvent } from "../events/WonRoundEvent.js";
 import { SkippedTurnEvent } from "../events/SkippedTurnEvent.js";
 import { ConnectedEvent } from "../events/ConnectedEvent.js";
 import { DisconnectedEvent } from "../events/DisconnectedEvent.js";
@@ -151,37 +152,37 @@ export class BaseBotInternals {
     const ih = this.internalEventHandlers;
     const bot = this.baseBot;
 
-    beh.onConnected.subscribe((e) => bot.onConnected(e));
-    beh.onDisconnected.subscribe((e) => bot.onDisconnected(e));
-    beh.onConnectionError.subscribe((e) => bot.onConnectionError(e));
-    beh.onGameStarted.subscribe((e) => bot.onGameStarted(e));
-    beh.onGameEnded.subscribe((e) => bot.onGameEnded(e));
-    beh.onRoundStarted.subscribe((e) => bot.onRoundStarted(e));
-    beh.onRoundEnded.subscribe((e) => bot.onRoundEnded(e));
-    beh.onTick.subscribe((e) => bot.onTick(e));
-    beh.onBotDeath.subscribe((e) => bot.onBotDeath(e));
-    beh.onSkippedTurn.subscribe((e) => bot.onSkippedTurn(e));
-    beh.onWonRound.subscribe((e) => bot.onWonRound(e));
-    beh.onCustomEvent.subscribe((e) => bot.onCustomEvent(e));
-    beh.onTeamMessage.subscribe((e) => bot.onTeamMessage(e));
-    beh.onHitByBullet.subscribe((e) => bot.onHitByBullet(e));
-    beh.onBulletHitBot.subscribe((e) => bot.onBulletHitBot(e));
-    beh.onBulletHitBullet.subscribe((e) => bot.onBulletHitBullet(e));
-    beh.onBulletHitWall.subscribe((e) => bot.onBulletHitWall(e));
-    beh.onScannedBot.subscribe((e) => bot.onScannedBot(e));
+    beh.onConnected.subscribe((e) => bot.onConnected?.(e));
+    beh.onDisconnected.subscribe((e) => bot.onDisconnected?.(e));
+    beh.onConnectionError.subscribe((e) => bot.onConnectionError?.(e));
+    beh.onGameStarted.subscribe((e) => bot.onGameStarted?.(e));
+    beh.onGameEnded.subscribe((e) => bot.onGameEnded?.(e));
+    beh.onRoundStarted.subscribe((e) => bot.onRoundStarted?.(e));
+    beh.onRoundEnded.subscribe((e) => bot.onRoundEnded?.(e));
+    beh.onTick.subscribe((e) => bot.onTick?.(e));
+    beh.onBotDeath.subscribe((e) => bot.onBotDeath?.(e));
+    beh.onSkippedTurn.subscribe((e) => bot.onSkippedTurn?.(e));
+    beh.onWonRound.subscribe((e) => bot.onWonRound?.(e));
+    beh.onCustomEvent.subscribe((e) => bot.onCustomEvent?.(e));
+    beh.onTeamMessage.subscribe((e) => bot.onTeamMessage?.(e));
+    beh.onHitByBullet.subscribe((e) => bot.onHitByBullet?.(e));
+    beh.onBulletHitBot.subscribe((e) => bot.onBulletHitBot?.(e));
+    beh.onBulletHitBullet.subscribe((e) => bot.onBulletHitBullet?.(e));
+    beh.onBulletHitWall.subscribe((e) => bot.onBulletHitWall?.(e));
+    beh.onScannedBot.subscribe((e) => bot.onScannedBot?.(e));
 
     // Events that also fire internal handlers (internal at priority 90, user at default 0)
     beh.onDeath.subscribe((e) => ih.onDeath.publish(e), 90);
-    beh.onDeath.subscribe((e) => bot.onDeath(e));
+    beh.onDeath.subscribe((e) => bot.onDeath?.(e));
 
     beh.onHitWall.subscribe((e) => ih.onHitWall.publish(e), 90);
-    beh.onHitWall.subscribe((e) => bot.onHitWall(e));
+    beh.onHitWall.subscribe((e) => bot.onHitWall?.(e));
 
     beh.onHitBot.subscribe((e) => ih.onHitBot.publish(e), 90);
-    beh.onHitBot.subscribe((e) => bot.onHitBot(e));
+    beh.onHitBot.subscribe((e) => bot.onHitBot?.(e));
 
     beh.onBulletFired.subscribe((e) => ih.onBulletFired.publish(e), 90);
-    beh.onBulletFired.subscribe((e) => bot.onBulletFired(e));
+    beh.onBulletFired.subscribe((e) => bot.onBulletFired?.(e));
   }
 
   private onRoundStarted(_e: InstanceType<typeof RoundStartedEventClass>): void {
@@ -513,8 +514,19 @@ export class BaseBotInternals {
   private processRoundEnded(msg: import("../protocol/schema.js").RoundEndedEventForBot): void {
     const results = ResultsMapper.map(msg.results);
     const e = new RoundEndedEvent(msg.roundNumber, msg.turnNumber, results);
+
+    // Publish onRoundEnded and stop the bot thread first, so dispatchEvents runs uncontested
     this.botEventHandlers.onRoundEnded.publish(e);
-    this.internalEventHandlers.onRoundEnded.publish(e);
+    this.internalEventHandlers.onRoundEnded.publish(e); // triggers stopThread()
+
+    // Flush any queued events from the last tick (e.g. WonRoundEvent) before the next
+    // RoundStartedEvent clears the event queue.
+    this.dispatchEvents(msg.turnNumber);
+
+    // If the bot won this round (rank == 1), ensure onWonRound is triggered.
+    if (results != null && results.rank === 1) {
+      this.botEventHandlers.onWonRound.publish(new WonRoundEvent(msg.turnNumber));
+    }
   }
 
   private processTick(msg: import("../protocol/schema.js").TickEventForBot): void {
