@@ -4,10 +4,10 @@ import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.TankColorMode
 import dev.robocode.tankroyale.gui.ui.MainFrame
+import dev.robocode.tankroyale.gui.ui.arena.ArenaPanel
 import dev.robocode.tankroyale.gui.ui.components.RcDialog
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
-import javax.swing.BorderFactory
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.Strings
@@ -62,6 +62,11 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
     }
 
     init {
+        botColorsRadio.addActionListener { applyTankColorMode(TankColorMode.BOT_COLORS) }
+        botColorsOnceRadio.addActionListener { applyTankColorMode(TankColorMode.BOT_COLORS_ONCE) }
+        defaultColorsRadio.addActionListener { applyTankColorMode(TankColorMode.DEFAULT_COLORS) }
+        botColorsDebugRadio.addActionListener { applyTankColorMode(TankColorMode.BOT_COLORS_WHEN_DEBUGGING) }
+
         addLanguageSelector()
         addUiScaleSelector()
         addConsoleMaxCharsSelector()
@@ -91,6 +96,11 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
     private fun addBootTimeoutSelector() {
         addLabel("option.gui.boot_timeout")
         add(bootTimeoutSpinner, "wrap")
+    }
+
+    private fun applyTankColorMode(mode: TankColorMode) {
+        ConfigSettings.tankColorMode = mode
+        ArenaPanel.repaint()
     }
 
     private fun addTankColorModeSelector() {
