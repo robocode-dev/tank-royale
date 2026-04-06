@@ -818,30 +818,43 @@ export class BaseBotInternals {
   getMaxSpeed(): number { return this.maxSpeed; }
   setMaxSpeed(maxSpeed: number): void { this.maxSpeed = maxSpeed; }
 
+  // Credits for this algorithm go to Patrick Cupka (aka Voidious),
+  // Julian Kent (aka Skilgannon), and Positive for the original version:
+  // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
   getNewTargetSpeed(speed: number, distance: number): number {
     if (distance < 0) return -this.getNewTargetSpeed(-speed, -distance);
-    const targetSpeed = distance === 0 ? 0 : (distance > 0 ? this.maxSpeed : -this.maxSpeed);
-    if (speed >= 0) {
-      const maxSpeedForDist = this.getMaxSpeedForDistance(distance);
-      return MathUtil.clamp(targetSpeed, speed + DECELERATION, Math.min(maxSpeedForDist, speed + 1));
-    } else {
-      return MathUtil.clamp(targetSpeed, speed - 1, speed - DECELERATION);
-    }
+    const targetSpeed = !isFinite(distance) ? this.maxSpeed : Math.min(this.maxSpeed, this.getMaxSpeedForDistance(distance));
+    return speed >= 0
+      ? MathUtil.clamp(targetSpeed, speed + DECELERATION, speed + 1)
+      : MathUtil.clamp(targetSpeed, speed - 1, speed + this.getMaxDeceleration(-speed));
   }
 
+  // Returns the maximum speed achievable such that the bot can decelerate to 0 within the given distance.
+  // Mirrors Java's BaseBotInternals.getMaxSpeed(distance) exactly (ceiling-based discrete model).
   private getMaxSpeedForDistance(distance: number): number {
     const absDecel = Math.abs(DECELERATION);
-    const sqrt = Math.sqrt(absDecel * (absDecel + 2 * distance) + 1) - 1;
-    return Math.min(this.maxSpeed, sqrt / 2 + absDecel / 2);
+    const decelerationTime = Math.max(1, Math.ceil((Math.sqrt((4 * 2 / absDecel) * distance + 1) - 1) / 2));
+    if (!isFinite(decelerationTime)) return MAX_SPEED;
+    const decelerationDistance = (decelerationTime / 2) * (decelerationTime - 1) * absDecel;
+    return (decelerationTime - 1) * absDecel + (distance - decelerationDistance) / decelerationTime;
+  }
+
+  // Returns the maximum deceleration achievable in one turn for the given positive speed.
+  // Mirrors Java's BaseBotInternals.getMaxDeceleration(speed).
+  private getMaxDeceleration(speed: number): number {
+    const absDecel = Math.abs(DECELERATION);
+    const decelerationTime = speed / absDecel;
+    const accelerationTime = 1 - decelerationTime;
+    return Math.min(1, decelerationTime) * absDecel + Math.max(0, accelerationTime) * 1;
   }
 
   getDistanceTraveledUntilStop(speed: number): number {
+    speed = Math.abs(speed);
     let distance = 0;
-    while (Math.abs(speed) > 0.001) {
-      speed = this.getNewTargetSpeed(speed, 0);
-      distance += speed;
+    while (speed > 0) {
+      distance += (speed = this.getNewTargetSpeed(speed, 0));
     }
-    return Math.abs(distance);
+    return distance;
   }
 
   // ---------------------------------------------------------------------------

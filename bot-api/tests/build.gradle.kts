@@ -13,6 +13,7 @@ plugins {
 tasks {
     val javaArchiveDir: Path = layout.buildDirectory.dir("archive/java").get().asFile.toPath()
     val csharpArchiveDir: Path = layout.buildDirectory.dir("archive/csharp").get().asFile.toPath()
+    val typescriptArchiveDir: Path = layout.buildDirectory.dir("archive/typescript").get().asFile.toPath()
     val botsSourceDir: Path = projectDir.toPath().resolve("bots")
 
     // --- Java test bot preparation ---
@@ -74,13 +75,82 @@ tasks {
             "if not exist bin\\Release\\ (\r\n    dotnet build -c Release\r\n)\r\ndotnet run -c Release --no-build\r\n")
     }
 
+    // --- TypeScript test bot preparation ---
+
+    fun createTsShellScript(botName: String): String = """
+        #!/bin/sh
+        set -e
+        cd -- "${'$'}(dirname -- "${'$'}0")"
+        ../deps/install-dependencies.sh
+        export NODE_OPTIONS="--disable-warning=ExperimentalWarning"
+        exec "../node_modules/.bin/tsx" "$botName.ts"
+        """.trimIndent()
+
+    fun createTsBatchScript(botName: String): String = """
+        @echo off
+        cd /d "%~dp0"
+        call ..\deps\install-dependencies.cmd
+        set NODE_OPTIONS=--disable-warning=ExperimentalWarning
+        ..\node_modules\.bin\tsx $botName.ts
+        """.trimIndent()
+
+    fun writeTsLaunchScript(botDir: Path, botName: String, ext: String, lineEnding: String) {
+        val content = if (ext == "sh") createTsShellScript(botName) else createTsBatchScript(botName)
+        val file = botDir.resolve("$botName.$ext").toFile()
+        val pw = object : PrintWriter(file) { override fun println() { write(lineEnding) } }
+        pw.use { it.print(content) }
+        if (ext == "sh") file.setExecutable(true, false)
+    }
+
+    fun prepareTypescriptBot(botName: String) {
+        val srcDir = botsSourceDir.resolve("typescript/$botName")
+        val dstDir = typescriptArchiveDir.resolve(botName)
+        createDirectories(dstDir)
+        list(srcDir).forEach { f -> copy(f, dstDir.resolve(f.fileName), REPLACE_EXISTING) }
+        writeTsLaunchScript(dstDir, botName, "sh", "\n")
+        writeTsLaunchScript(dstDir, botName, "cmd", "\r\n")
+    }
+
+    fun prepareTsDependencies() {
+        val depsDir = typescriptArchiveDir.resolve("deps")
+        createDirectories(depsDir)
+
+        val assetsDir = rootProject.projectDir.toPath().resolve("sample-bots/typescript/assets")
+        copy(assetsDir.resolve("install-dependencies.sh"), depsDir.resolve("install-dependencies.sh"), REPLACE_EXISTING)
+        copy(assetsDir.resolve("install-dependencies.cmd"), depsDir.resolve("install-dependencies.cmd"), REPLACE_EXISTING)
+
+        val botApiDir = rootProject.projectDir.toPath().resolve("bot-api/typescript")
+        val tarball = list(botApiDir).use { paths ->
+            paths.filter { it.fileName.toString().endsWith(".tgz") }
+                .findFirst()
+                .orElseThrow { GradleException("No .tgz tarball found in $botApiDir. Run :bot-api:typescript:npmPack first.") }
+        }
+        val tarballName = tarball.fileName.toString()
+        copy(tarball, depsDir.resolve(tarballName), REPLACE_EXISTING)
+
+        typescriptArchiveDir.resolve("package.json").toFile().writeText(
+            """{
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@robocode.dev/tank-royale-bot-api": "file:./deps/$tarballName",
+    "tsx": "^4.19.2",
+    "ws": "^8.18.1"
+  }
+}
+""")
+    }
+
     val prepareArchive by registering {
-        dependsOn(copyBotApiJar)
+        dependsOn(copyBotApiJar, ":bot-api:typescript:npmPack")
         doLast {
             mkdir(javaArchiveDir)
             mkdir(csharpArchiveDir)
+            mkdir(typescriptArchiveDir)
             prepareJavaBot("WonRoundCounterJava")
             prepareCsharpBot("WonRoundCounterCSharp")
+            prepareTsDependencies()
+            prepareTypescriptBot("WonRoundCounterTs")
         }
     }
 

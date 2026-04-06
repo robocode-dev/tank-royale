@@ -55,6 +55,12 @@ class BattleRunnerIntegrationTest {
             Path.of(dir)
         }
 
+        private val testBotsTypescriptDir: Path by lazy {
+            val dir = System.getProperty("testBots.typescript.dir")
+                ?: error("System property 'testBots.typescript.dir' not set — run via :runner:integrationTest")
+            Path.of(dir)
+        }
+
         private fun botDir(name: String): Path {
             val dir = sampleBotsDir.resolve(name)
             check(dir.exists()) { "Sample bot not found: $dir" }
@@ -76,6 +82,12 @@ class BattleRunnerIntegrationTest {
         private fun testBotCsharpDir(name: String): Path {
             val dir = testBotsCsharpDir.resolve(name)
             check(dir.exists()) { "C# test bot not found: $dir" }
+            return dir
+        }
+
+        private fun testBotTsDir(name: String): Path {
+            val dir = testBotsTypescriptDir.resolve(name)
+            check(dir.exists()) { "TypeScript test bot not found: $dir" }
             return dir
         }
     }
@@ -438,6 +450,41 @@ class BattleRunnerIntegrationTest {
             assertThat(botSideCount)
                 .describedAs(
                     "WonRoundCounterCSharp should receive exactly as many WonRoundEvents " +
+                    "as the server recorded first-place finishes (got $botSideCount, server says $serverFirstPlaces)"
+                )
+                .isEqualTo(serverFirstPlaces)
+        }
+    }
+
+    @Test
+    fun `WonRoundCounterTs bot receives one WonRoundEvent per round it wins`() {
+        val countFile = Path.of(System.getProperty("java.io.tmpdir"), "won_round_ts.txt")
+        countFile.toFile().delete()
+
+        // Use a longer connect timeout: npm install may run on the first test invocation.
+        BattleRunner.create {
+            embeddedServer()
+            botConnectTimeout(java.time.Duration.ofSeconds(120))
+        }.use { runner ->
+            val results = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 10 },
+                bots = listOf(
+                    BotEntry.of(testBotTsDir("WonRoundCounterTs")),
+                    BotEntry.of(botDir("SpinBot"))
+                )
+            )
+
+            val serverFirstPlaces = results.results
+                .first { it.name == "WonRoundCounterTs" }
+                .firstPlaces
+
+            val botSideCount = if (countFile.exists())
+                countFile.toFile().readText().trim().toIntOrNull() ?: 0
+            else 0
+
+            assertThat(botSideCount)
+                .describedAs(
+                    "WonRoundCounterTs should receive exactly as many WonRoundEvents " +
                     "as the server recorded first-place finishes (got $botSideCount, server says $serverFirstPlaces)"
                 )
                 .isEqualTo(serverFirstPlaces)
