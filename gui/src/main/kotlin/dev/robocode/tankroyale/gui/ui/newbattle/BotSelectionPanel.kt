@@ -141,6 +141,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     }
 
     private fun reset() {
+        activeProgressDialog = null
         selectedBotListModel.clear()
         joinedBotListModel.clear()
         update()
@@ -167,6 +168,8 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         }
     }
 
+    private var activeProgressDialog: BootProgressDialog? = null
+
     private fun bootAndShowProgress(botInfoList: List<BotInfo>) {
         var unknownCount = 0
         val expectedIdentities = botInfoList.flatMap { botInfo ->
@@ -177,19 +180,30 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
                 emptyList()
             }
         }
-        val baseline = Client.joinedBots.map { BotIdentity(it.name, it.version) }.groupingBy { it }.eachCount()
+
         BootProcess.boot(botInfoList.map { it.host })
 
-        val dialog = BootProgressDialog(
-            owner = SwingUtilities.getWindowAncestor(this),
-            expectedIdentities = expectedIdentities,
-            unknownCount = unknownCount,
-            baseline = baseline,
-            timeoutSeconds = ConfigSettings.bootTimeout,
-            onSuccess = { /* bots now visible in joined list */ },
-            onCancel = { BootProcess.stop() },
-        )
-        dialog.isVisible = true
+        val existing = activeProgressDialog
+        if (existing != null && existing.isVisible) {
+            // Add the new bots to the already-open dialog instead of opening a second one.
+            existing.addExpectedBots(expectedIdentities, unknownCount)
+        } else {
+            val baseline = Client.joinedBots.map { BotIdentity(it.name, it.version) }.groupingBy { it }.eachCount()
+            val dialog = BootProgressDialog(
+                owner = SwingUtilities.getWindowAncestor(this),
+                expectedIdentities = expectedIdentities,
+                unknownCount = unknownCount,
+                baseline = baseline,
+                timeoutSeconds = ConfigSettings.bootTimeout,
+                onSuccess = { activeProgressDialog = null },
+                onCancel = {
+                    activeProgressDialog = null
+                    BootProcess.stop()
+                },
+            )
+            activeProgressDialog = dialog
+            dialog.isVisible = true
+        }
     }
 
     private fun createBotDirectoryList() =

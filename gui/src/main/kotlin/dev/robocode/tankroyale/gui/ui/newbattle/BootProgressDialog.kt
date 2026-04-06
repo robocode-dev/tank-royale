@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
+import dev.robocode.tankroyale.client.model.BotInfo
 import dev.robocode.tankroyale.gui.booter.BotIdentity
 import dev.robocode.tankroyale.gui.booter.BotMatcher
 import dev.robocode.tankroyale.gui.client.ClientEvents
@@ -10,7 +11,8 @@ import java.awt.Window
 import javax.swing.*
 
 /**
- * Modal dialog shown while waiting for expected bots to connect to the server.
+ * Non-modal dialog shown while waiting for expected bots to connect to the server.
+ * Additional bots can be added to the same dialog via [addExpectedBots] while it is visible.
  *
  * @param owner the parent window
  * @param expectedIdentities the list of expected bot identities (may contain duplicates)
@@ -22,13 +24,16 @@ class BootProgressDialog(
     owner: Window?,
     expectedIdentities: List<BotIdentity>,
     unknownCount: Int = 0,
-    baseline: Map<BotIdentity, Int> = emptyMap(),
+    private val baseline: Map<BotIdentity, Int> = emptyMap(),
     private val timeoutSeconds: Int = 30,
     private val onSuccess: () -> Unit,
     private val onCancel: () -> Unit,
-) : JDialog(owner, "Waiting for bots to connect...", ModalityType.APPLICATION_MODAL) {
+) : JDialog(owner, "Waiting for bots to connect...", ModalityType.MODELESS) {
 
-    private val matcher = BotMatcher(expectedIdentities, unknownCount, baseline)
+    private var matcher = BotMatcher(expectedIdentities, unknownCount, baseline)
+
+    /** Latest snapshot of connected bots — kept so the matcher can be re-evaluated after [addExpectedBots]. */
+    private var lastKnownBots: Collection<BotInfo> = emptyList()
 
     private var elapsedHalfSeconds = 0
     private var timedOut = false
@@ -48,6 +53,7 @@ class BootProgressDialog(
     init {
         defaultCloseOperation = DO_NOTHING_ON_CLOSE
         isResizable = false
+        setAutoRequestFocus(false)  // keep focus on the bot directory list so double-clicks keep working
         size = Dimension(420, 320)
         setLocationRelativeTo(owner)
 
@@ -119,6 +125,7 @@ class BootProgressDialog(
     private fun subscribeToEvents() {
         ClientEvents.onBotListUpdate.on(this) { update ->
             SwingUtilities.invokeLater {
+                lastKnownBots = update.bots
                 matcher.update(update.bots)
                 updateStatusList()
                 if (matcher.isComplete) {
@@ -171,6 +178,36 @@ class BootProgressDialog(
         buildNormalLayout()
         updateStatusList()
         timer.start()
+    }
+
+    // -------------------------------------------------------------------------
+    // Add expected bots while the dialog is already visible
+    // -------------------------------------------------------------------------
+
+    /**
+     * Extends the set of bots being waited for.
+     * Calling this while the dialog is visible adds [identities] to the expected list
+     * so additional double-clicks on the bot directory list are tracked in the same dialog.
+     */
+    fun addExpectedBots(identities: List<BotIdentity>, additionalUnknownCount: Int = 0) {
+        val allExpected = matcher.expected.flatMap { (id, count) -> List(count) { id } } + identities
+        matcher = BotMatcher(allExpected, matcher.unknownCount + additionalUnknownCount, baseline)
+        matcher.update(lastKnownBots)
+        updateStatusList()
+
+        if (timedOut) {
+            timedOut = false
+            elapsedHalfSeconds = 0
+            buildNormalLayout()
+            timer.start()
+        }
+
+        if (matcher.isComplete) {
+            timer.stop()
+            unsubscribeFromEvents()
+            dispose()
+            onSuccess()
+        }
     }
 
     // -------------------------------------------------------------------------

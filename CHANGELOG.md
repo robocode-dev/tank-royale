@@ -50,6 +50,16 @@
     - Added `NuGet.Config` to C# sample bot distributions to enable standalone source-based builds 
       by pointing to the local Bot API NuGet package in the shared `lib` folder.
 
+### 🐞 Bug Fixes
+
+- GUI:
+    - Fixed double-clicking bots in the **New Battle** dialog. The boot-progress dialog was `APPLICATION_MODAL`,
+      blocking all interaction with the New Battle window and stealing keyboard focus — making it impossible to
+      double-click additional bots while waiting for the first one to connect. The dialog is now modeless and
+      no longer steals focus (`setAutoRequestFocus(false)`), so the bot directory list keeps focus throughout.
+      Double-clicking the same or another bot while the dialog is open extends the expected list in the same
+      dialog rather than opening a second one.
+
 ## [0.38.3] - 2026-04-05 - TPS Resume Dialog & TimeLeft Fix
 
 ### 🐞 Bug Fixes
