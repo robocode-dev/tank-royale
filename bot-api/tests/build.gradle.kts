@@ -6,8 +6,6 @@ import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
 description = "Test bots used by runner integration tests to verify event delivery"
 
-version = libs.versions.tankroyale.get()
-
 plugins {
     base
 }

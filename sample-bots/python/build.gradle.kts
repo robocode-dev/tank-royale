@@ -5,8 +5,6 @@ import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
 description = "Robocode Tank Royale sample bots for Python"
 
-version = libs.versions.tankroyale.get()
-
 plugins {
     base // for the clean and build task
 }

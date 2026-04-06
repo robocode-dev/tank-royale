@@ -5,7 +5,6 @@ import java.nio.file.Path
 description = "Robocode Tank Royale sample bots for Java"
 
 group = "dev.robocode.tankroyale"
-version = libs.versions.tankroyale.get()
 
 base {
     archivesName = "sample-bots-java"

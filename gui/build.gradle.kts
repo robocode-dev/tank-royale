@@ -6,7 +6,6 @@ description = "Robocode Tank Royale GUI"
 val archiveTitle = "Robocode Tank Royale GUI"
 val packageName = "robocode-tank-royale-gui" // Used for installer filenames (lowercase with hyphens)
 group = "dev.robocode.tankroyale"
-version = libs.versions.tankroyale.get()
 
 val jarManifestMainClass = "dev.robocode.tankroyale.gui.GuiAppKt"
 

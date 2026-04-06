@@ -46,9 +46,10 @@
 
 - Build:
     - #203: Fixed Maven Central artifacts being published with version "unspecified" instead of the correct
-      version number. Caused by switching from `gradle.properties` to a `VERSION` file for version resolution,
-      which did not work reliably in all Gradle execution contexts. Restored `version` property in
-      `gradle.properties` and reverted `settings.gradle.kts` to use `providers.gradleProperty("version")`.
+      version number. The `create("libs")` call in `settings.gradle.kts` silently lost to Gradle's auto-loaded
+      `libs.versions.toml` catalog, so the `tankroyale` version entry was never registered. Fixed by reading
+      the `VERSION` file in the root `build.gradle.kts` and propagating via `allprojects` instead of the
+      version catalog.
 
 - Bot API (Java, .NET, Python):
     - #202: Fixed `getTimeLeft()` returning negative values when turns were skipped or the bot was busy.
