@@ -23,9 +23,9 @@
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#030711" />
   
-  <title>bot_api.internal.websocket_handler | Robocode Tank Royale Bot API (Python) 0.38.1 documentation</title>
-  <meta property="og:title" content="bot_api.internal.websocket_handler | Robocode Tank Royale Bot API (Python) 0.38.1 documentation" />
-  <meta name="twitter:title" content="bot_api.internal.websocket_handler | Robocode Tank Royale Bot API (Python) 0.38.1 documentation" />
+  <title>bot_api.internal.websocket_handler | Robocode Tank Royale Bot API (Python) 0.39.0 documentation</title>
+  <meta property="og:title" content="bot_api.internal.websocket_handler | Robocode Tank Royale Bot API (Python) 0.39.0 documentation" />
+  <meta name="twitter:title" content="bot_api.internal.websocket_handler | Robocode Tank Royale Bot API (Python) 0.39.0 documentation" />
   <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e72c8e07" />
   <link rel="stylesheet" type="text/css" href="../../../_static/theme.css?v=73505e79" />
   <link rel="search" title="Search" href="../../../search.html" />
@@ -41,7 +41,7 @@
       Skip to content
     </a><header class="sticky top-0 z-40 w-full border-b shadow-xs border-border bg-background/90 backdrop-blur"><div class="container flex items-center h-14">
     <div class="hidden mr-4 md:flex">
-      <a href="../../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.38.1 documentation</span>
+      <a href="../../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.39.0 documentation</span>
       </a></div><button
       class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
       type="button" @click="showSidebar = true">
@@ -97,7 +97,7 @@
   class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full overflow-y-auto border-r border-border md:sticky"
   :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
 
-    <a href="../../../index.html" class="justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.38.1 documentation</span>
+    <a href="../../../index.html" class="justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.39.0 documentation</span>
     </a>
 
     <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0">
@@ -128,7 +128,7 @@
      class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
   <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
      href="../../../index.html">
-    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.38.1 documentation</span>
+    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.39.0 documentation</span>
     <svg xmlns="http://www.w3.org/2000/svg"
          height="18"
          width="18"
@@ -469,55 +469,84 @@
 </span><span id="line-271">        <span class="n">server_handshake</span><span class="p">:</span> <span class="n">ServerHandshake</span> <span class="o">=</span> <span class="n">from_json</span><span class="p">(</span><span class="n">json_msg</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 </span><span id="line-272">        <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">server_handshake</span> <span class="o">=</span> <span class="n">server_handshake</span>
 </span><span id="line-273">
-</span><span id="line-274">        <span class="c1"># Reply by sending bot handshake</span>
-</span><span id="line-275">        <span class="c1"># Infer droid status by marker interface inheritance (Java parity), with fallback to explicit flag for backward compatibility</span>
-</span><span id="line-276">        <span class="k">try</span><span class="p">:</span>
-</span><span id="line-277">            <span class="kn">from</span><span class="w"> </span><span class="nn">..droid_abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">DroidABC</span>  <span class="c1"># type: ignore</span>
-</span><span id="line-278">        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-</span><span id="line-279">            <span class="n">DroidABC</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
-</span><span id="line-280">        <span class="n">is_droid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="line-281">        <span class="k">if</span> <span class="s1">&#39;DroidABC&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span> <span class="ow">and</span> <span class="n">DroidABC</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span><span class="p">,</span> <span class="n">DroidABC</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
-</span><span id="line-282">            <span class="n">is_droid</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="line-283">        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span><span class="p">,</span> <span class="s2">&quot;is_droid&quot;</span><span class="p">):</span>
-</span><span id="line-284">            <span class="c1"># Allow legacy bots explicitly setting the flag</span>
-</span><span id="line-285">            <span class="n">is_droid</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span><span class="p">,</span> <span class="s2">&quot;is_droid&quot;</span><span class="p">))</span>
-</span><span id="line-286">        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">is_droid</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span> <span class="s2">&quot;is_droid must be a boolean value&quot;</span>
-</span><span id="line-287">
-</span><span id="line-288">        <span class="c1"># Create bot handshake message</span>
-</span><span id="line-289">        <span class="kn">from</span><span class="w"> </span><span class="nn">..internal.bot_handshake_factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">BotHandshakeFactory</span>
+</span><span id="line-274">        <span class="c1"># Validate bot info before sending bot handshake</span>
+</span><span id="line-275">        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_bot_info</span><span class="p">()</span>
+</span><span id="line-276">
+</span><span id="line-277">        <span class="c1"># Reply by sending bot handshake</span>
+</span><span id="line-278">        <span class="c1"># Infer droid status by marker interface inheritance (Java parity), with fallback to explicit flag for backward compatibility</span>
+</span><span id="line-279">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-280">            <span class="kn">from</span><span class="w"> </span><span class="nn">..droid_abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">DroidABC</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-281">        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span><span id="line-282">            <span class="n">DroidABC</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-283">        <span class="n">is_droid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="line-284">        <span class="k">if</span> <span class="s1">&#39;DroidABC&#39;</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span> <span class="ow">and</span> <span class="n">DroidABC</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span><span class="p">,</span> <span class="n">DroidABC</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-285">            <span class="n">is_droid</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="line-286">        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span><span class="p">,</span> <span class="s2">&quot;is_droid&quot;</span><span class="p">):</span>
+</span><span id="line-287">            <span class="c1"># Allow legacy bots explicitly setting the flag</span>
+</span><span id="line-288">            <span class="n">is_droid</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_bot</span><span class="p">,</span> <span class="s2">&quot;is_droid&quot;</span><span class="p">))</span>
+</span><span id="line-289">        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">is_droid</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span> <span class="s2">&quot;is_droid must be a boolean value&quot;</span>
 </span><span id="line-290">
-</span><span id="line-291">        <span class="n">bot_handshake</span> <span class="o">=</span> <span class="n">BotHandshakeFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-</span><span id="line-292">            <span class="n">server_handshake</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_info</span><span class="p">,</span> <span class="n">is_droid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_secret</span>
-</span><span id="line-293">        <span class="p">)</span>
-</span><span id="line-294">
-</span><span id="line-295">        <span class="c1"># Send handshake message</span>
-</span><span id="line-296">        <span class="c1"># Ensure backward compatibility for tests expecting &#39;session_id&#39; (snake_case)</span>
-</span><span id="line-297">        <span class="n">payload_str</span> <span class="o">=</span> <span class="n">to_json</span><span class="p">(</span><span class="n">bot_handshake</span><span class="p">)</span>
-</span><span id="line-298">        <span class="k">try</span><span class="p">:</span>
-</span><span id="line-299">            <span class="n">payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">payload_str</span><span class="p">)</span>
-</span><span id="line-300">            <span class="k">if</span> <span class="s2">&quot;sessionId&quot;</span> <span class="ow">in</span> <span class="n">payload</span> <span class="ow">and</span> <span class="s2">&quot;session_id&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">:</span>
-</span><span id="line-301">                <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;session_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;sessionId&quot;</span><span class="p">]</span>
-</span><span id="line-302">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
-</span><span id="line-303">        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-</span><span id="line-304">            <span class="c1"># Fallback to original payload if any unexpected error occurs</span>
-</span><span id="line-305">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">payload_str</span><span class="p">)</span></div>
+</span><span id="line-291">        <span class="c1"># Create bot handshake message</span>
+</span><span id="line-292">        <span class="kn">from</span><span class="w"> </span><span class="nn">..internal.bot_handshake_factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">BotHandshakeFactory</span>
+</span><span id="line-293">
+</span><span id="line-294">        <span class="n">bot_handshake</span> <span class="o">=</span> <span class="n">BotHandshakeFactory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+</span><span id="line-295">            <span class="n">server_handshake</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_info</span><span class="p">,</span> <span class="n">is_droid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_secret</span>
+</span><span id="line-296">        <span class="p">)</span>
+</span><span id="line-297">
+</span><span id="line-298">        <span class="c1"># Send handshake message</span>
+</span><span id="line-299">        <span class="c1"># Ensure backward compatibility for tests expecting &#39;session_id&#39; (snake_case)</span>
+</span><span id="line-300">        <span class="n">payload_str</span> <span class="o">=</span> <span class="n">to_json</span><span class="p">(</span><span class="n">bot_handshake</span><span class="p">)</span>
+</span><span id="line-301">        <span class="k">try</span><span class="p">:</span>
+</span><span id="line-302">            <span class="n">payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">payload_str</span><span class="p">)</span>
+</span><span id="line-303">            <span class="k">if</span> <span class="s2">&quot;sessionId&quot;</span> <span class="ow">in</span> <span class="n">payload</span> <span class="ow">and</span> <span class="s2">&quot;session_id&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">:</span>
+</span><span id="line-304">                <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;session_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;sessionId&quot;</span><span class="p">]</span>
+</span><span id="line-305">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+</span><span id="line-306">        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span><span id="line-307">            <span class="c1"># Fallback to original payload if any unexpected error occurs</span>
+</span><span id="line-308">            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">websocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">payload_str</span><span class="p">)</span></div>
 
-</span><span id="line-306">
-</span><span id="line-307">    <span class="k">def</span><span class="w"> </span><span class="nf">_transfer_std_out_to_bot_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-308"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Transfer captured stdout/stderr to bot intent for sending to server.&quot;&quot;&quot;</span>
-</span><span id="line-309">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">recording_stdout</span><span class="p">:</span>
-</span><span id="line-310">            <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">recording_stdout</span><span class="o">.</span><span class="n">read_next</span><span class="p">()</span>
-</span><span id="line-311">            <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
-</span><span id="line-312">                <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">std_out</span> <span class="o">=</span> <span class="n">output</span>
-</span><span id="line-313">            <span class="k">else</span><span class="p">:</span>
-</span><span id="line-314">                <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">std_out</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="line-315">
-</span><span id="line-316">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">recording_stderr</span><span class="p">:</span>
-</span><span id="line-317">            <span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">recording_stderr</span><span class="o">.</span><span class="n">read_next</span><span class="p">()</span>
-</span><span id="line-318">            <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
-</span><span id="line-319">                <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">std_err</span> <span class="o">=</span> <span class="n">error</span>
-</span><span id="line-320">            <span class="k">else</span><span class="p">:</span>
-</span><span id="line-321">                <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">std_err</span> <span class="o">=</span> <span class="kc">None</span></div>
+</span><span id="line-309">
+</span><span id="line-310">    <span class="k">def</span><span class="w"> </span><span class="nf">_transfer_std_out_to_bot_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-311"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Transfer captured stdout/stderr to bot intent for sending to server.&quot;&quot;&quot;</span>
+</span><span id="line-312">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">recording_stdout</span><span class="p">:</span>
+</span><span id="line-313">            <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">recording_stdout</span><span class="o">.</span><span class="n">read_next</span><span class="p">()</span>
+</span><span id="line-314">            <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
+</span><span id="line-315">                <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">std_out</span> <span class="o">=</span> <span class="n">output</span>
+</span><span id="line-316">            <span class="k">else</span><span class="p">:</span>
+</span><span id="line-317">                <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">std_out</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-318">
+</span><span id="line-319">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">recording_stderr</span><span class="p">:</span>
+</span><span id="line-320">            <span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">recording_stderr</span><span class="o">.</span><span class="n">read_next</span><span class="p">()</span>
+</span><span id="line-321">            <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+</span><span id="line-322">                <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">std_err</span> <span class="o">=</span> <span class="n">error</span>
+</span><span id="line-323">            <span class="k">else</span><span class="p">:</span>
+</span><span id="line-324">                <span class="bp">self</span><span class="o">.</span><span class="n">base_bot_internal_data</span><span class="o">.</span><span class="n">bot_intent</span><span class="o">.</span><span class="n">std_err</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-325">
+</span><span id="line-326">    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_bot_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-327"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate bot info before sending handshake to server.&quot;&quot;&quot;</span>
+</span><span id="line-328">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_blank</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bot_info</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+</span><span id="line-329">            <span class="bp">self</span><span class="o">.</span><span class="n">_throw_missing_property_exception</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+</span><span id="line-330">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_blank</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bot_info</span><span class="o">.</span><span class="n">version</span><span class="p">):</span>
+</span><span id="line-331">            <span class="bp">self</span><span class="o">.</span><span class="n">_throw_missing_property_exception</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">)</span>
+</span><span id="line-332">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_info</span><span class="o">.</span><span class="n">authors</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_all_blank</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bot_info</span><span class="o">.</span><span class="n">authors</span><span class="p">):</span>
+</span><span id="line-333">            <span class="bp">self</span><span class="o">.</span><span class="n">_throw_missing_property_exception</span><span class="p">(</span><span class="s2">&quot;authors&quot;</span><span class="p">)</span>
+</span><span id="line-334">
+</span><span id="line-335">    <span class="k">def</span><span class="w"> </span><span class="nf">_throw_missing_property_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">property_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-336"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Throw a BotException for a missing required property.&quot;&quot;&quot;</span>
+</span><span id="line-337">        <span class="k">raise</span> <span class="n">BotException</span><span class="p">(</span>
+</span><span id="line-338">            <span class="sa">f</span><span class="s2">&quot;Required bot property &#39;</span><span class="si">{</span><span class="n">property_name</span><span class="si">}</span><span class="s2">&#39; is missing. &quot;</span>
+</span><span id="line-339">            <span class="sa">f</span><span class="s2">&quot;This property is required in order for the bot to be recognized when booting it up and &quot;</span>
+</span><span id="line-340">            <span class="sa">f</span><span class="s2">&quot;when it needs to join the game. You must set this property in your bot code &quot;</span>
+</span><span id="line-341">            <span class="sa">f</span><span class="s2">&quot;or provide a .json configuration file.&quot;</span>
+</span><span id="line-342">        <span class="p">)</span>
+</span><span id="line-343">
+</span><span id="line-344">    <span class="k">def</span><span class="w"> </span><span class="nf">_is_blank</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-345"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a string is None or whitespace-only.&quot;&quot;&quot;</span>
+</span><span id="line-346">        <span class="k">return</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span id="line-347">
+</span><span id="line-348">    <span class="k">def</span><span class="w"> </span><span class="nf">_is_all_blank</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="line-349"><span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if all strings in a list are blank.&quot;&quot;&quot;</span>
+</span><span id="line-350">        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_blank</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">)</span></div>
 
 </span></code></pre></div>
     </div></div>
@@ -534,7 +563,7 @@
 </footer>
     </div>
     
-    <script src="../../../_static/documentation_options.js?v=3bda8724"></script>
+    <script src="../../../_static/documentation_options.js?v=ee774964"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script defer="defer" src="../../../_static/theme.js?v=582b20c5"></script>
