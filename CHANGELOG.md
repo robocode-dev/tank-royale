@@ -1,64 +1,42 @@
-## [0.39.0] - TBD - Convention-over-Configuration & Scriptless Bots
+## [0.39.0] - 2026-04-06 - Convention-over-Configuration & Scriptless Bots
 
 ### ✨ Features
 
 - Booter:
-    - Introduced template-based booting for common platforms (JVM, .NET, Python), reducing the need for
-      OS-specific scripts (`.sh`, `.bat`) in bot directories. The Booter now uses metadata (`platform`,
-      `programmingLang`, `base`) from the bot's JSON configuration to select an appropriate boot template.
-    - Added `TemplateManager` and `TemplateBooter` to handle template loading and command generation.
-    - Updated `BotBooter` to use template-based booting as a fallback when no script is found.
-    - Added a convention where the name of the bot's parent directory is used as the default `base` value if not
-      explicitly provided in the bot's JSON configuration. This enables "scriptless" bots that can be booted 
-      using a standard template without any configuration or OS-specific scripts.
-    - **Convention-over-Configuration**: Bots can now be discovered and booted even without a `.json` configuration 
-      file. The Booter heuristically detects the platform (JVM, Python, .NET) based on files in the directory.
-    - Source files (`.java`, `.py`, `.cs`) are now recognized as valid platform indicators for bot discovery,
-      enabling single-file source bots to be detected and booted directly (e.g., via Java 11+ single-file launch).
+    - Template-based booting for JVM, .NET, and Python — bots no longer need `.sh`/`.bat` scripts.
+      The Booter selects a template from `platform`, `programmingLang`, and `base` in the bot's JSON.
+    - Bots without a `.json` file are now supported: the Booter heuristically detects the platform
+      from files in the directory (`.java`, `.py`, `.cs`, JARs, etc.) and boots accordingly.
+    - The bot's parent-directory name is used as the default `base` when not set in JSON.
 
 - GUI:
-    - Boot progress dialog now works correctly for no-JSON bots. Instead of waiting for a specific name/version
-      that is unknown at boot time, it uses a baseline snapshot of already-connected bots and waits for the
-      expected number of new connections. Handles multiple instances of the same bot correctly via count-based
-      baseline tracking.
-    - #201: Added **Tank Color Mode** setting to the GUI configuration dialog. A radio-button group lets the
-      user choose one of four modes governing how tank colors are displayed during a battle:
-        - **Bot Colors** (default) — bot-defined colors may change freely; preserves existing behavior.
-        - **Bot Colors (Once)** — the first color a bot sets per component is locked for the entire battle,
-          including between rounds; later changes are ignored.
-        - **Default Colors** — all tanks always render with the hardcoded system-default colors; bot-defined
-          colors are ignored entirely.
-        - **Bot Colors (Debug Only)** — bot colors are shown only while Graphical Debugging is enabled for
-          that bot in the Bot Console; otherwise system defaults are used.
-      The selected mode is persisted in `gui.properties` and survives application restarts.
+    - Boot progress dialog handles no-JSON bots via baseline-snapshot tracking — waits for the right
+      number of new connections rather than a specific name/version.
+    - #201: Added **Tank Color Mode** to the config dialog (persisted in `gui.properties`):
+        - **Bot Colors** (default) — bot-defined colors apply freely.
+        - **Bot Colors (Once)** — the first color set per component is locked for the entire battle.
+        - **Default Colors** — system defaults always used; bot colors ignored.
+        - **Bot Colors (Debug Only)** — bot colors visible only when Graphical Debugging is active.
 
 - Bot API (Java, .NET, Python):
-    - Added runtime property validation. Required properties (`name`, `version`, `authors`) must now be set 
-      either in the `.json` file, via environment variables, or directly in the bot code. 
-    - If required properties are missing when connecting to the server, a `BotException` is thrown with a 
-      descriptive error message.
+    - Runtime validation of required properties (`name`, `version`, `authors`). A `BotException` with
+      a descriptive message is thrown on connection if any are missing.
 
 ### 🔧 Changes
 
 - Build:
-    - #203: Updated `release-docs-template.md` to use the direct JAR file link for the Java Bot API on Maven Central.
+    - #203: Updated `release-docs-template.md` to use the direct JAR link for the Java Bot API on Maven Central.
 
 - Sample Bots:
-    - Updated Gradle build scripts to skip generating `.cmd` and `.sh` files for all standard individual sample 
-      bots. These bots are now entirely scriptless in their distribution archives, relying on the new 
-      template-based booting and directory name convention.
-    - Added `NuGet.Config` to C# sample bot distributions to enable standalone source-based builds 
-      by pointing to the local Bot API NuGet package in the shared `lib` folder.
+    - Removed generated `.cmd`/`.sh` scripts from all standard sample bots — they now rely on template-based booting.
+    - Added `NuGet.Config` to C# sample bot distributions for standalone source-based builds.
 
 ### 🐞 Bug Fixes
 
 - GUI:
-    - Fixed double-clicking bots in the **New Battle** dialog. The boot-progress dialog was `APPLICATION_MODAL`,
-      blocking all interaction with the New Battle window and stealing keyboard focus — making it impossible to
-      double-click additional bots while waiting for the first one to connect. The dialog is now modeless and
-      no longer steals focus (`setAutoRequestFocus(false)`), so the bot directory list keeps focus throughout.
-      Double-clicking the same or another bot while the dialog is open extends the expected list in the same
-      dialog rather than opening a second one.
+    - Fixed double-clicking in the **New Battle** dialog. The boot-progress dialog was `APPLICATION_MODAL`,
+      blocking the window and stealing focus between clicks. It is now modeless with `setAutoRequestFocus(false)`,
+      so the bot list keeps focus and additional double-clicks accumulate in the same dialog.
 
 ## [0.38.3] - 2026-04-05 - TPS Resume Dialog & TimeLeft Fix
 
