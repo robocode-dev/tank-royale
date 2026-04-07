@@ -133,11 +133,31 @@ extends:
   $ref: message.schema.yaml
 ```
 
-### 4. Existing messages — no changes
+### 4. `game-paused-event-for-observer` — Add `pauseCause` field
+
+```yaml
+pauseCause:
+  description: >
+    The reason the game was paused.
+    "pause" — a controller sent pause-game explicitly.
+    "debug-step" — the server paused after completing a turn in debug mode.
+    "breakpoint" — the server paused waiting for a bot's intent in breakpoint mode (ADR-0034).
+  type: string
+  enum:
+    - pause
+    - debug-step
+    - breakpoint
+```
+
+Both debug mode and breakpoint mode (ADR-0034) reuse `game-paused-event-for-observer`. The `pauseCause` field lets controllers display the correct UI state (e.g. "Paused — debug step" vs. "Paused — waiting for bot X").
+
+**Backwards compatibility:** Optional field. Old controllers ignore it.
+
+### 5. Existing messages — no other changes
 
 - `next-turn` — already exists, already means "advance one turn". In debug mode, the server pauses again after that turn.
 - `pause-game` / `resume-game` — unchanged. `resume-game` implicitly disables debug mode.
-- `game-paused-event-for-observer` / `game-resumed-event-for-observer` — unchanged, reused for debug pauses.
+- `game-resumed-event-for-observer` — unchanged.
 - `skipped-turn-event` — unchanged, still fires when bots miss the timeout.
 
 ---
@@ -207,7 +227,7 @@ Pause and debug mode have different semantics (see table above). Overloading `pa
 
 Bot detects debugger (JDWP, `Debugger.IsAttached`, `sys.gettrace()`) and declares `debugMode: true` in handshake. Server suspends timeouts for that bot.
 
-**Rejected** — Mixes bot and controller roles. The bot doesn't control the server. The controller does.
+**Rejected** — Mixes bot and controller roles. The bot doesn't control the server. The controller does. Additionally, [issue #204](https://github.com/robocode-dev/tank-royale/issues/204) proposed that the bot be informed if its request was accepted — this is not applicable under the chosen architecture. The bot never requests anything; it only reports facts (see ADR-0035). Informing the bot of server state it didn't ask for would violate the same role boundary.
 
 ### B. TPS = 0 as debug mode
 
@@ -235,7 +255,7 @@ Remove the turn timeout when debug mode is active so bots can take as long as th
 
 ### Negative
 
-- **Breakpoints still cause skipped turns** — if a bot hits a breakpoint and misses the turn timeout, it gets `SkippedTurnEvent`. Debug mode doesn't protect against this. The developer should set breakpoints *after* pausing, and step one turn at a time.
+- **Breakpoints still cause skipped turns without ADR-0034** — debug mode alone does not protect a bot that hits a breakpoint mid-turn. The turn timeout still fires, and the bot receives `SkippedTurnEvent`. This is addressed by ADR-0034 (Breakpoint Mode), which adds per-bot breakpoint protection on top of debug mode.
 - **New messages** — two new message types (`enable-debug-mode`, `disable-debug-mode`) added to the protocol.
 
 ### Neutral

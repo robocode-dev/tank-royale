@@ -1,6 +1,17 @@
 $id: game-paused-event-for-observer.schema.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: Event occurring when a game has been paused
-type: object # needed here when there is no properties defined (for code generation)
 extends:
   $ref: message.schema.yaml
+properties:
+  pauseCause:
+    description: >
+      The reason the game was paused.
+      "pause" — a controller sent pause-game explicitly.
+      "debug-step" — the server paused after completing a turn in debug mode (ADR-0033).
+      "breakpoint" — the server paused waiting for a bot's intent in breakpoint mode (ADR-0034).
+    type: string
+    enum:
+      - pause
+      - debug-step
+      - breakpoint

@@ -10,6 +10,12 @@ properties:
   debuggingEnabled:
     description: Flag specifying if debugging is enabled for the bot
     type: boolean
+  breakpointEnabled:
+    description: >
+      Flag specifying if breakpoint mode is enabled for the bot.
+      When enabled, the server pauses instead of issuing a SkippedTurnEvent
+      if this bot misses the turn timeout. The server waits for the bot's
+      intent before processing the turn.
+    type: boolean
 required:
   - botId
-  - debuggingEnabled

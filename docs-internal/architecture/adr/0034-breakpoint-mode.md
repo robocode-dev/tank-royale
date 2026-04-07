@@ -107,11 +107,49 @@ Breakpoint mode and debug mode are independent and composable:
 
 The typical debugging workflow uses both: debug mode for turn-by-turn stepping, breakpoint mode for the bot being debugged so mid-turn breakpoints don't cause skips.
 
+The sequence below illustrates the combined `debugMode=ON, breakpointMode=ON` case — the most realistic debugging workflow:
+
+```mermaid
+sequenceDiagram
+    participant Controller as Controller
+    participant Server
+    participant BotX as Bot X (breakpoint mode)
+    participant BotY as Bot Y (normal)
+
+    Controller->>Server: enable-debug-mode
+    Controller->>Server: bot-policy-update (botId: X, breakpointEnabled: true)
+
+    Note over Server: Turn N
+    Server->>BotX: tick-event-for-bot (turn N)
+    Server->>BotY: tick-event-for-bot (turn N)
+
+    BotY->>Server: bot-intent
+    Note over BotX: Breakpoint hit — thread frozen
+
+    Note over Server: Turn timeout expires
+    Note over Server: Bot X didn't respond — breakpoint mode → wait for intent
+    Server->>Controller: game-paused-event (pauseCause: breakpoint)
+
+    Note over Controller: Developer steps through code in IDE
+    Note over BotX: Developer resumes bot from breakpoint
+
+    BotX->>Server: bot-intent
+
+    Note over Server: Bot X responded → process turn
+    Note over Server: Debug mode active → pause after turn
+    Server->>Controller: game-paused-event (pauseCause: debug-step)
+
+    Note over Controller: Developer inspects completed turn state
+
+    Controller->>Server: next-turn
+    Note over Server: Turn N+1 begins
+```
+
 ---
 
 ## Protocol Changes
 
-### 1. `bot-policy-update` — Add `breakpointEnabled` field
+### 1. `bot-policy-update` — Add `breakpointEnabled` field; relax `debuggingEnabled` to optional
 
 ```yaml
 # bot-policy-update.yaml — new optional field
@@ -126,7 +164,12 @@ breakpointEnabled:
 
 This extends the existing message alongside `debuggingEnabled` (debug graphics). The controller already sends per-bot policy updates — breakpoint mode is another policy.
 
-**Backwards compatibility:** The field is optional. Old controllers don't send it (server defaults to `false`). Old servers ignore unknown fields.
+`debuggingEnabled` is also relaxed from **required** to **optional** in this ADR. Previously a controller had to send both `botId` and `debuggingEnabled` on every update, making it impossible to send a `breakpointEnabled`-only update without also asserting the debug graphics state. Making both fields optional (with `botId` as the only required field) lets controllers set policies independently.
+
+**Backwards compatibility:**
+- `breakpointEnabled` is new and optional. Old controllers don't send it; server defaults to `false`.
+- Relaxing `debuggingEnabled` to optional is a schema loosening: old controllers that always send it remain valid. New controllers that omit it leave the field unchanged on the server.
+- Old servers ignore unknown fields.
 
 ### 2. `server-handshake` `features` — Add `breakpointMode`
 
@@ -142,9 +185,13 @@ breakpointMode:
 
 Controllers check this before showing breakpoint UI controls.
 
-### 3. Existing messages — no changes
+### 3. `game-paused-event-for-observer` — Reuses `pauseCause` from ADR-0033
 
-- `game-paused-event-for-observer` / `game-resumed-event-for-observer` — reused for breakpoint pauses.
+ADR-0033 adds a `pauseCause` field (`"pause"`, `"debug-step"`, `"breakpoint"`) to `game-paused-event-for-observer`. Breakpoint pauses use `pauseCause: "breakpoint"`, letting the controller display "Paused — waiting for *BotName* (breakpoint)" instead of a generic pause message.
+
+### 4. Existing messages — no other changes
+
+- `game-resumed-event-for-observer` — reused for breakpoint resume (auto-resume when bot intent arrives, or when breakpoint mode is disabled while paused).
 - `skipped-turn-event` — still fires for non-breakpoint bots that miss the timeout.
 - `bot-intent` — unchanged. The bot just sends its intent when it resumes from the breakpoint.
 
@@ -243,7 +290,8 @@ Bot API detects debugger (JDWP, `Debugger.IsAttached`, `sys.gettrace()`) and aut
 ### Negative
 
 - **One bot can block the game** — a bot with breakpoint mode enabled that crashes (instead of hitting a breakpoint) will pause the game indefinitely. Mitigation: the controller can disable breakpoint mode or stop the game.
-- **Protocol extension** — new field in `bot-policy-update`, new feature flag in server handshake. Backwards compatible but increases protocol surface.
+- **Java late-attach not auto-detected** — if a developer starts a Java bot without a debugger and attaches one after the bot has already connected, the `bot-handshake` will have reported `debuggerAttached: false` (see ADR-0035). The controller won't auto-enable breakpoint mode. The developer must either restart the bot in debug mode or set `ROBOCODE_DEBUG=true` and restart.
+- **Protocol extension** — new field in `bot-policy-update`, new feature flag in server handshake, `pauseCause` field in `game-paused-event`. All backwards compatible but increases protocol surface.
 
 ### Neutral
 
