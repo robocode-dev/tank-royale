@@ -21,4 +21,6 @@ interface IConnectionListener {
     fun onNextTurn()
     fun onChangeTps(tps: Int)
     fun onBotPolicyUpdated(botPolicyUpdate: BotPolicyUpdate)
+    fun onEnableDebugMode()
+    fun onDisableDebugMode()
 }

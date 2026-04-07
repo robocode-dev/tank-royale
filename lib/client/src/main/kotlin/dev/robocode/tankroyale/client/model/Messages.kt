@@ -134,7 +134,9 @@ data class GameEndedEvent(
 
 @Serializable
 @SerialName("GamePausedEventForObserver")
-data object GamePausedEvent : Message()
+data class GamePausedEvent(
+    val pauseCause: String? = null
+) : Message()
 
 @Serializable
 @SerialName("GameResumedEventForObserver")
@@ -188,8 +190,14 @@ data class ServerHandshake(
     val version: String,
     val variant: String,
     val gameTypes: Set<String>,
-    val gameSetup: GameSetup? = null
+    val gameSetup: GameSetup? = null,
+    val features: Features? = null
 ) : Message()
+
+@Serializable
+data class Features(
+    val debugMode: Boolean = false
+)
 
 @Serializable
 @SerialName("StartGame")
@@ -213,6 +221,14 @@ data object ResumeGame : Message()
 @Serializable
 @SerialName("NextTurn")
 data object NextTurn : Message()
+
+@Serializable
+@SerialName("EnableDebugMode")
+data object EnableDebugMode : Message()
+
+@Serializable
+@SerialName("DisableDebugMode")
+data object DisableDebugMode : Message()
 
 @Serializable
 @SerialName("ChangeTps")
@@ -250,6 +266,8 @@ val messageModule = SerializersModule {
         subclass(PauseGame::class)
         subclass(ResumeGame::class)
         subclass(NextTurn::class)
+        subclass(EnableDebugMode::class)
+        subclass(DisableDebugMode::class)
         subclass(RoundEndedEvent::class)
         subclass(RoundStartedEvent::class)
         subclass(GamePausedEvent::class)

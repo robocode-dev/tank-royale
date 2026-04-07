@@ -288,6 +288,14 @@ class GameServer(private val config: ServerConfig) {
         }
 
         applyVisualDelay(botProcessingDurationNanos)
+
+        // In debug mode, pause after each turn instead of auto-advancing (ADR-0033).
+        if (lifecycleManager.debugMode && lifecycleManager.serverState === ServerState.GAME_RUNNING) {
+            lifecycleManager.pauseGame()
+            broadcastGamePausedToObservers(GamePausedEventForObserver.PauseCause.DEBUG_STEP)
+            return
+        }
+
         // Only reschedule the timer if the game is still running (not paused or stopped).
         // If pauseGame() was called while we were sleeping in applyVisualDelay(), it paused the timer,
         // but resetTurnTimeout() → schedule() would reset pauseStartTimeNanos=0, making isPaused()
@@ -560,7 +568,7 @@ class GameServer(private val config: ServerConfig) {
     internal fun handlePauseGame() {
         lifecycleManager.pauseGame()
         if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
-            broadcastGamedPausedToObservers()
+            broadcastGamePausedToObservers(GamePausedEventForObserver.PauseCause.PAUSE)
         }
     }
 
@@ -571,6 +579,7 @@ class GameServer(private val config: ServerConfig) {
     internal fun handleResumeGame() {
         if (lifecycleManager.serverState !== ServerState.GAME_PAUSED) return
         log.info("Resuming game")
+        lifecycleManager.debugMode = false
         lifecycleManager.serverState = ServerState.GAME_RUNNING
         broadcastGameResumedToObservers()
         resetTurnTimeout()
@@ -580,12 +589,19 @@ class GameServer(private val config: ServerConfig) {
      * Called by [GameServerConnectionListener] on the WebSocket thread when a controller requests a single turn advance.
      * Only has effect when the game is paused: executes exactly one turn without touching the turn-timeout timer,
      * so the timer cannot fire concurrently and cause a double-turn.
+     *
+     * In debug mode, [onNextTurn] handles the pause-after-turn and broadcast internally.
+     * In normal mode, we pause explicitly after the turn.
      */
     internal fun handleNextTurn() {
         if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
             lifecycleManager.serverState = ServerState.GAME_RUNNING
             onNextTurn()
-            lifecycleManager.pauseGame()
+            // In debug mode, onNextTurn() already paused and broadcast debug_step.
+            // In normal mode, re-pause explicitly (no broadcast — client stays in paused state).
+            if (lifecycleManager.serverState === ServerState.GAME_RUNNING) {
+                lifecycleManager.pauseGame()
+            }
         }
     }
 
@@ -648,15 +664,34 @@ class GameServer(private val config: ServerConfig) {
         }
     }
 
+    /**
+     * Called by [GameServerConnectionListener] when a controller enables debug mode (ADR-0033).
+     * In debug mode, the server pauses after each turn instead of auto-advancing.
+     */
+    internal fun handleEnableDebugMode() {
+        log.info("Enabling debug mode")
+        lifecycleManager.debugMode = true
+    }
+
+    /**
+     * Called by [GameServerConnectionListener] when a controller disables debug mode.
+     * The server returns to normal auto-advancing behavior.
+     */
+    internal fun handleDisableDebugMode() {
+        log.info("Disabling debug mode")
+        lifecycleManager.debugMode = false
+    }
+
     private fun broadcastGameAborted() {
         broadcaster.broadcastToObserverAndControllers(GameAbortedEvent().also {
             it.type = Message.Type.GAME_ABORTED_EVENT
         })
     }
 
-    private fun broadcastGamedPausedToObservers() {
+    private fun broadcastGamePausedToObservers(pauseCause: GamePausedEventForObserver.PauseCause) {
         broadcaster.broadcastToObserverAndControllers(GamePausedEventForObserver().also {
             it.type = Message.Type.GAME_PAUSED_EVENT_FOR_OBSERVER
+            it.pauseCause = pauseCause
         })
     }
 

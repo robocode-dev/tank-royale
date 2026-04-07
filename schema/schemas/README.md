@@ -365,6 +365,41 @@ Note over Server: Observers learn permissions through the next tick state
 ```
 <!-- END:debug-graphics -->
 
+### Debug mode
+
+A controller can enable or disable **debug mode** on the server (see [ADR-0033]). When debug mode is active, the server
+pauses automatically after each turn instead of auto-advancing, allowing the controller to step through the battle
+turn by turn using `next-turn`.
+
+- [enable-debug-mode]
+- [disable-debug-mode]
+- [game-paused-event-for-observer] (with `pauseCause: "debug_step"`)
+
+Enabling debug mode does not immediately pause the game — the pause happens after the next turn completes.
+Sending `resume-game` while in debug mode exits debug mode and returns to normal auto-advancing.
+
+<!-- BEGIN:debug-mode -->
+```mermaid
+sequenceDiagram
+Controller->>Server: enable-debug-mode
+Note over Server: Server sets debugMode flag
+
+Note over Server: Turn completes
+Server->>Server: Auto-pause after turn
+Server->>Observer: game-paused-event-for-observers (pauseCause: debug_step)
+Server->>Controller: game-paused-event-for-observers (pauseCause: debug_step)
+
+Controller->>Server: next-turn
+Note over Server: Process next turn
+Server->>Server: Auto-pause after turn
+Server->>Observer: game-paused-event-for-observers (pauseCause: debug_step)
+Server->>Controller: game-paused-event-for-observers (pauseCause: debug_step)
+
+Controller->>Server: disable-debug-mode
+Note over Server: Server clears debugMode flag, game continues normally
+```
+<!-- END:debug-mode -->
+
 ### In-game events
 
 Here are the events that a bot receives during a game:
@@ -464,3 +499,9 @@ Here are the events that a bot receives during a game:
 [won-round-event]: won-round-event.schema.yaml
 
 [team-message-event]: team-message-event.schema.yaml
+
+[enable-debug-mode]: enable-debug-mode.schema.yaml
+
+[disable-debug-mode]: disable-debug-mode.schema.yaml
+
+[ADR-0033]: ../../docs-internal/architecture/adr/0033-bot-debug-mode.md

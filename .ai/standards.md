@@ -8,6 +8,13 @@
 - Emojis OK in comments and documentation
 - **Forbidden:** escape sequences, ANSI color codes, non-printable characters, terminal control sequences
 
+### Java `.properties` files
+
+Store all `.properties` files as **UTF-8**. Since Java 9, `ResourceBundle.getBundle()` reads `.properties`
+files as UTF-8 by default. Write non-ASCII characters directly (e.g. `å`, `ö`, `é`) — do **not** use
+`\uXXXX` escape sequences for readable text. The `\uXXXX` syntax is still valid for symbols and emoji
+(e.g. `\u2192` for →, `\uD83D\uDC1B` for 🐛) where the raw character would be harder to read.
+
 ## File Handling
 
 - Strip terminal sequences from output before writing to files

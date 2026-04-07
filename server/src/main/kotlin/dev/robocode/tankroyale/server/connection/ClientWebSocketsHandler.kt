@@ -83,6 +83,9 @@ class ClientWebSocketsHandler(
             version = Version.version
             gameTypes = setup.gameTypes
             gameSetup = currentGameSetup
+            features = Features().apply {
+                debugMode = true
+            }
         }.also {
             send(clientSocket, Gson().toJson(it))
         }
@@ -113,6 +116,8 @@ class ClientWebSocketsHandler(
                             Message.Type.NEXT_TURN -> handleNextTurn()
                             Message.Type.CHANGE_TPS -> handleChangeTps(message)
                             Message.Type.BOT_POLICY_UPDATE -> handleBotPolicyUpdated(message)
+                            Message.Type.ENABLE_DEBUG_MODE -> handleEnableDebugMode()
+                            Message.Type.DISABLE_DEBUG_MODE -> handleDisableDebugMode()
                             else -> handleException(
                                 clientSocket,
                                 IllegalStateException("Unhandled message type: $type")
@@ -359,6 +364,14 @@ class ClientWebSocketsHandler(
                 listener.onBotPolicyUpdated(this)
             }
         }
+    }
+
+    private fun handleEnableDebugMode() {
+        executorService.submit(listener::onEnableDebugMode)
+    }
+
+    private fun handleDisableDebugMode() {
+        executorService.submit(listener::onDisableDebugMode)
     }
 
     private fun handleException(clientSocket: WebSocket?, exception: Exception) {

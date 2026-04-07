@@ -111,6 +111,16 @@ object Client {
 
     fun isGamePaused(): Boolean = currentPlayer?.isPaused() ?: false
 
+    fun enableDebugMode() {
+        currentPlayer?.enableDebugMode()
+    }
+
+    fun disableDebugMode() {
+        currentPlayer?.disableDebugMode()
+    }
+
+    fun isDebugModeSupported(): Boolean = currentPlayer?.isDebugModeSupported() ?: false
+
     val joinedBots: Set<BotInfo>
         get() = currentPlayer?.getJoinedBots() ?: emptySet()
 

@@ -11,6 +11,13 @@ class GameLifecycleManager {
     @Volatile
     var serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
 
+    /**
+     * Whether debug mode is active. In debug mode the server pauses after
+     * each turn instead of auto-advancing (ADR-0033).
+     */
+    @Volatile
+    var debugMode = false
+
     /** Lock for starting the game */
     val startGameLock = Any()
 

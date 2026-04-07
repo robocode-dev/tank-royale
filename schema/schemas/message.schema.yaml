@@ -51,5 +51,7 @@ properties:
       - PauseGame
       - ResumeGame
       - NextTurn
+      - EnableDebugMode
+      - DisableDebugMode
 required:
   - type

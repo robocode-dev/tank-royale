@@ -91,6 +91,16 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
         gameServer.handleBotPolicyUpdate(botPolicyUpdate)
     }
 
+    override fun onEnableDebugMode() {
+        log.info("Debug mode is requested to be enabled")
+        gameServer.handleEnableDebugMode()
+    }
+
+    override fun onDisableDebugMode() {
+        log.info("Debug mode is requested to be disabled")
+        gameServer.handleDisableDebugMode()
+    }
+
     private fun getDisplayName(name: String, version: String): String =
         "${name.trim()} ${version.trim()}".trim()
 }

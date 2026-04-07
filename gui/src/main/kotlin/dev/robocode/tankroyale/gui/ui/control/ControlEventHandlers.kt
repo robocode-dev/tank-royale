@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.gui.settings.ConfigSettings.DEFAULT_TPS
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.tps.TpsEvents
 import dev.robocode.tankroyale.gui.ui.tps.TpsField
+import dev.robocode.tankroyale.gui.util.EDT
 import dev.robocode.tankroyale.gui.util.MessageDialog
 import dev.robocode.tankroyale.gui.util.enqueue
 
@@ -41,6 +42,16 @@ object ControlEventHandlers {
 
             onNextTurn.enqueue(this) {
                 Client.doNextTurn()
+            }
+
+            onDebugModeToggle.on(this) { enabled ->
+                EDT.enqueue {
+                    if (enabled) {
+                        Client.enableDebugMode()
+                    } else {
+                        Client.disableDebugMode()
+                    }
+                }
             }
         }
     }

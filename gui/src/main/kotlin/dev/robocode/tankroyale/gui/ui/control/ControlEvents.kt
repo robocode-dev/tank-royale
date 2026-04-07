@@ -8,4 +8,5 @@ object ControlEvents {
     val onRestart by event<JButton>()
     val onPauseResume by event<JButton>()
     val onNextTurn by event<JButton>()
+    val onDebugModeToggle by event<Boolean>()
 }

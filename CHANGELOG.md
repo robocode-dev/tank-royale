@@ -1,5 +1,24 @@
 ## [0.39.1] - TBD
 
+### ✨ Features
+
+- Server:
+    - Added **debug mode**: a controller can enable turn-by-turn stepping via `EnableDebugMode`.
+    - Unlike **Pause** (which freezes the game immediately), debug mode lets each turn complete
+      fully — bots deliver intents normally, turn timeout is enforced — then pauses *between*
+      turns so the controller sees a consistent, completed game state before stepping forward.
+    - `next-turn` advances one turn and pauses again automatically in debug mode.
+    - `ResumeGame` exits debug mode and returns to normal auto-advancing.
+    - `DisableDebugMode` exits debug mode without advancing.
+    - `GamePaused` now includes a `pauseCause` field (`pause` vs. `debug_step`) so controllers
+      can distinguish the two.
+
+- GUI:
+    - Added a **Debug 🐛** toggle button to the control panel. When active, the battle steps one
+      turn at a time — each click of **Next Turn** executes a complete turn and then pauses,
+      letting the user inspect the full game state before the next turn begins. Regular **Pause**
+      freezes the battle immediately; debug mode always completes the current turn first.
+
 ### 🐞 Bug Fixes
 
 - Bot API (Java, .NET, Python):

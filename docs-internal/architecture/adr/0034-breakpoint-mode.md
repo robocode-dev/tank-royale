@@ -137,7 +137,7 @@ sequenceDiagram
 
     Note over Server: Bot X responded → process turn
     Note over Server: Debug mode active → pause after turn
-    Server->>Controller: game-paused-event (pauseCause: debug-step)
+    Server->>Controller: game-paused-event (pauseCause: debug_step)
 
     Note over Controller: Developer inspects completed turn state
 
@@ -187,7 +187,7 @@ Controllers check this before showing breakpoint UI controls.
 
 ### 3. `game-paused-event-for-observer` — Reuses `pauseCause` from ADR-0033
 
-ADR-0033 adds a `pauseCause` field (`"pause"`, `"debug-step"`, `"breakpoint"`) to `game-paused-event-for-observer`. Breakpoint pauses use `pauseCause: "breakpoint"`, letting the controller display "Paused — waiting for *BotName* (breakpoint)" instead of a generic pause message.
+ADR-0033 adds a `pauseCause` field (`"pause"`, `"debug_step"`, `"breakpoint"`) to `game-paused-event-for-observer`. Breakpoint pauses use `pauseCause: "breakpoint"`, letting the controller display "Paused — waiting for *BotName* (breakpoint)" instead of a generic pause message.
 
 ### 4. Existing messages — no other changes
 

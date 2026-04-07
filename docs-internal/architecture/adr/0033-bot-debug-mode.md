@@ -1,6 +1,6 @@
 # ADR-0033: Server Debug Mode
 
-**Status:** Proposed  
+**Status:** Accepted  
 **Date:** 2026-04-07
 
 ---
@@ -140,12 +140,12 @@ pauseCause:
   description: >
     The reason the game was paused.
     "pause" — a controller sent pause-game explicitly.
-    "debug-step" — the server paused after completing a turn in debug mode.
+    "debug_step" — the server paused after completing a turn in debug mode.
     "breakpoint" — the server paused waiting for a bot's intent in breakpoint mode (ADR-0034).
   type: string
   enum:
     - pause
-    - debug-step
+    - debug_step
     - breakpoint
 ```
 
