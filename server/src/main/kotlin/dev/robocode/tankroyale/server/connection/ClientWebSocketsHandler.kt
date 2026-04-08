@@ -83,9 +83,10 @@ class ClientWebSocketsHandler(
             version = Version.version
             gameTypes = setup.gameTypes
             gameSetup = currentGameSetup
-            features = Features().apply {
-                debugMode = true
-            }
+features = Features().apply {
+                 debugMode = true
+                 breakpointMode = true
+             }
         }.also {
             send(clientSocket, Gson().toJson(it))
         }

@@ -184,8 +184,81 @@ runner.startBattleAsync(setup, bots).use { handle ->
 | `resume()` | Resumes a paused battle |
 | `stop()` | Stops the battle |
 | `nextTurn()` | Advances one turn while paused (single-step debugging) |
+| `setBotPolicy(botId, breakpointEnabled, debuggingEnabled)` | Sets per-bot policy flags (breakpoint mode, debug graphics) |
+| `enableDebugMode()` | Puts the server into debug mode — pauses after every turn |
+| `disableDebugMode()` | Exits debug mode, returning to normal auto-advancing |
+
+#### Properties
+
+| Property | Description |
+|----------|-------------|
+| `serverFeatures` | Server capabilities advertised during handshake (e.g. `breakpointMode`) |
 
 ## Advanced Usage
+
+### Debug Mode
+
+Enable debug mode to step through a battle one turn at a time. The server pauses after each
+turn completes — bots still deliver intents normally and the turn timeout is enforced — then
+waits for `nextTurn()` before advancing.
+
+```kotlin
+val owner = Any()
+runner.startBattleAsync(setup, bots).use { handle ->
+
+    if (handle.serverFeatures?.debugMode == true) {
+        handle.enableDebugMode()
+    }
+
+    handle.onGamePaused.on(owner) { event ->
+        println("Paused after turn (cause: ${event.pauseCause})")
+        // inspect state here, then step
+        handle.nextTurn()
+    }
+
+    handle.awaitResults()
+}
+```
+
+> **Note:** `resume()` implicitly disables debug mode and returns to normal auto-advancing.
+> Use `disableDebugMode()` if you want to exit debug mode without resuming.
+
+### Breakpoint Mode
+
+Enable breakpoint mode for a bot so the server waits for its intent instead of issuing a
+`SkippedTurnEvent` when the turn timeout expires. This mirrors what a developer's debugger
+would trigger when a breakpoint freezes the bot thread.
+
+```kotlin
+val owner = Any()
+runner.startBattleAsync(setup, bots).use { handle ->
+
+    // Enable breakpoint mode on connection once we know bot IDs
+    handle.onBotListUpdate.on(owner) { update ->
+        if (handle.serverFeatures?.breakpointMode == true) {
+            update.bots.forEach { bot ->
+                handle.setBotPolicy(bot.id, breakpointEnabled = true)
+            }
+        }
+    }
+
+    // Observe breakpoint pauses — pauseCause == "breakpoint"
+    handle.onGamePaused.on(owner) { event ->
+        println("Game paused: ${event.pauseCause}")
+        // The server is waiting for the bot's intent; call resume() to unblock manually
+        // or disable breakpoint mode to trigger a skip+resume
+    }
+
+    handle.onGameResumed.on(owner) { _ -> println("Game resumed") }
+
+    handle.awaitResults()
+}
+```
+
+> **Tip:** To simulate a bot with a debugger attached without launching an actual debugger,
+> set the `ROBOCODE_DEBUG=true` environment variable when starting the bot process.
+> The bot will include `debuggerAttached: true` in its handshake, which the GUI uses to
+> auto-enable breakpoint mode.
 
 ### External Server
 

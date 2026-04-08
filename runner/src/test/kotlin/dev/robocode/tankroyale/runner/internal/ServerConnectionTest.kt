@@ -60,6 +60,36 @@ class ServerConnectionTest {
             .hasMessageContaining("Not connected")
     }
 
+    @Test
+    fun `enableDebugMode throws when not connected`() {
+        val conn = ServerConnection("ws://localhost:7654", "secret")
+        assertThatThrownBy { conn.enableDebugMode() }
+            .isInstanceOf(BattleException::class.java)
+            .hasMessageContaining("Not connected")
+    }
+
+    @Test
+    fun `disableDebugMode throws when not connected`() {
+        val conn = ServerConnection("ws://localhost:7654", "secret")
+        assertThatThrownBy { conn.disableDebugMode() }
+            .isInstanceOf(BattleException::class.java)
+            .hasMessageContaining("Not connected")
+    }
+
+    @Test
+    fun `setBotPolicy throws when not connected`() {
+        val conn = ServerConnection("ws://localhost:7654", "secret")
+        assertThatThrownBy { conn.setBotPolicy(1, breakpointEnabled = true) }
+            .isInstanceOf(BattleException::class.java)
+            .hasMessageContaining("Not connected")
+    }
+
+    @Test
+    fun `serverFeatures is null before connect`() {
+        val conn = ServerConnection("ws://localhost:7654", "secret")
+        assertThat(conn.serverFeatures.get()).isNull()
+    }
+
     // -------------------------------------------------------------------------------------
     // 6.9 — BattleResults extraction
     // -------------------------------------------------------------------------------------

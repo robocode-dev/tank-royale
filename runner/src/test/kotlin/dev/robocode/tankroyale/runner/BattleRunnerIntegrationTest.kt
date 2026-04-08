@@ -8,6 +8,8 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Path
 import java.time.Duration
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import java.util.logging.Handler
 import java.util.logging.Level
 import java.util.logging.LogRecord
@@ -556,6 +558,83 @@ class BattleRunnerIntegrationTest {
             }.isInstanceOf(BattleException::class.java)
                 .hasMessageContaining("Bot connect timeout")
                 .hasMessageContaining("GhostBot 0.1")
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+    // 10.7 — Debug mode and breakpoint mode
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `serverFeatures advertises debugMode and breakpointMode`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            runner.startBattleAsync(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            ).use { handle ->
+                assertThat(handle.serverFeatures).isNotNull()
+                assertThat(handle.serverFeatures?.debugMode).isTrue()
+                assertThat(handle.serverFeatures?.breakpointMode).isTrue()
+                handle.awaitResults()
+            }
+        }
+    }
+
+    @Test
+    fun `enableDebugMode pauses after each turn with debug_step pauseCause`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            runner.startBattleAsync(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            ).use { handle ->
+                val owner = Any()
+                val firstPauseLatch = CountDownLatch(1)
+                val receivedCauses = mutableListOf<String?>()
+
+                handle.onGamePaused.on(owner) { event ->
+                    synchronized(receivedCauses) { receivedCauses.add(event.pauseCause) }
+                    firstPauseLatch.countDown()
+                }
+
+                handle.onGameStarted.on(owner) { handle.enableDebugMode() }
+
+                assertThat(firstPauseLatch.await(30, TimeUnit.SECONDS))
+                    .describedAs("Expected at least one debug_step pause within 30 seconds")
+                    .isTrue()
+
+                synchronized(receivedCauses) {
+                    assertThat(receivedCauses).isNotEmpty()
+                    assertThat(receivedCauses).allMatch { it == "debug_step" }
+                }
+
+                handle.resume()
+                handle.awaitResults()
+            }
+        }
+    }
+
+    @Test
+    fun `disableDebugMode exits debug mode and battle completes normally`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            runner.startBattleAsync(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            ).use { handle ->
+                val owner = Any()
+                val pausedLatch = CountDownLatch(1)
+
+                handle.onGamePaused.on(owner) { pausedLatch.countDown() }
+                handle.onGameStarted.on(owner) { handle.enableDebugMode() }
+
+                assertThat(pausedLatch.await(30, TimeUnit.SECONDS))
+                    .describedAs("Expected debug_step pause before disableDebugMode()")
+                    .isTrue()
+
+                handle.disableDebugMode()
+
+                val results = handle.awaitResults()
+                assertThat(results.results).hasSize(2)
+            }
         }
     }
 

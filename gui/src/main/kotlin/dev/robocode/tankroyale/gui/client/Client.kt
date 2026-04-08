@@ -43,6 +43,9 @@ object Client {
     val currentTick: TickEvent?
         get() = currentPlayer?.getCurrentTick()
 
+    val serverFeatures: Features?
+        get() = liveBattlePlayer.serverFeatures
+
     fun switchToLiveBattlePlayer() {
         setPlayer(liveBattlePlayer)
     }

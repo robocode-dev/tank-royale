@@ -35,7 +35,7 @@ class LiveBattlePlayer : BattlePlayer {
     private val json = MessageConstants.json
 
     private var gameTypes = setOf<String>()
-    private var serverFeatures: Features? = null
+    internal var serverFeatures: Features? = null
 
     private lateinit var lastStartGame: StartGame
 
@@ -300,6 +300,10 @@ class LiveBattlePlayer : BattlePlayer {
     private fun handleGamePaused(gamePausedEvent: GamePausedEvent) {
         isPaused.set(true)
         onGamePaused(gamePausedEvent)
+        // Display breakpoint pause message in console
+        if (gamePausedEvent.pauseCause == "breakpoint") {
+            System.out.println("Paused — waiting for bot to respond (breakpoint)")
+        }
     }
 
     private fun handleGameResumed(gameResumedEvent: GameResumedEvent) {

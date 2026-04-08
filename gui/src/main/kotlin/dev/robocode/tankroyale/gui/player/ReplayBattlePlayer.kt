@@ -366,6 +366,14 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
                 onRoundEnded(message)
             }
 
+            is GamePausedEvent -> {
+                onGamePaused(message)
+                // Display breakpoint pause message in console
+                if (message.pauseCause == "breakpoint") {
+                    System.out.println("Paused — waiting for bot to respond (breakpoint)")
+                }
+            }
+
             is TickEvent -> {
                 currentTick = message
                 onTickEvent(message)

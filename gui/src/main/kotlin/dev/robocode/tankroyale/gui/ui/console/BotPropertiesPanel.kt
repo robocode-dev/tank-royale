@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.client.model.Participant
 import dev.robocode.tankroyale.client.model.TickEvent
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
+import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.components.ToggleSwitch
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
@@ -21,6 +22,8 @@ import javax.swing.table.DefaultTableModel
 
 class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     private val debugGraphicsToggleSwitch = createDebugGraphicsToggleSwitch()
+    private val breakpointToggleSwitch = createBreakpointToggleSwitch()
+    private val debuggerAttachedLabel = createDebuggerAttachedLabel()
 
     override val buttonPanel: JPanel
         get() =
@@ -32,10 +35,32 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
                 add(spacer)
                 addLabel("toggle_graphical_debugging")
                 add(createDebugGraphicsToggleSwitch())
+                addLabel("breakpoint_mode")
+                add(createBreakpointToggleSwitch())
+                add(createDebuggerAttachedLabel())
             }
 
     private fun createDebugGraphicsToggleSwitch() = ToggleSwitch(false).apply {
-        addSwitchHandler { isSelected -> ClientEvents.onBotPolicyChanged(BotPolicyUpdate(bot.id, isSelected)) }
+        addSwitchHandler { isSelected ->
+            ClientEvents.onBotPolicyChanged(BotPolicyUpdate(bot.id, debuggingEnabled = isSelected))
+        }
+    }
+
+    private fun createBreakpointToggleSwitch() = ToggleSwitch(false).apply {
+        isEnabled = Client.serverFeatures?.breakpointMode == true
+        addSwitchHandler { isSelected ->
+            ClientEvents.onBotPolicyChanged(BotPolicyUpdate(bot.id, breakpointEnabled = isSelected))
+        }
+    }
+
+    private fun createDebuggerAttachedLabel() = JLabel().apply {
+        text = "🐛"
+        toolTipText = Hints.get("bot_properties.debugger_attached")
+        isVisible = bot.debuggerAttached == true
+        // Auto-enable breakpoint mode when debugger is attached and server supports it
+        if (bot.debuggerAttached == true && Client.serverFeatures?.breakpointMode == true) {
+            ClientEvents.onBotPolicyChanged(BotPolicyUpdate(bot.id, breakpointEnabled = true))
+        }
     }
 
     private val columns = arrayOf(

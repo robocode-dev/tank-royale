@@ -196,7 +196,8 @@ data class ServerHandshake(
 
 @Serializable
 data class Features(
-    val debugMode: Boolean = false
+    val debugMode: Boolean = false,
+    val breakpointMode: Boolean = false,
 )
 
 @Serializable
@@ -241,7 +242,8 @@ data class ChangeTps(
 @SerialName("BotPolicyUpdate")
 data class BotPolicyUpdate(
     val botId: Int,
-    val debuggingEnabled: Boolean
+    val debuggingEnabled: Boolean? = null,
+    val breakpointEnabled: Boolean? = null
 ) : Message()
 
 val messageModule = SerializersModule {

@@ -22,6 +22,7 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
     private val _participantIds = ConcurrentHashMap<WebSocket, BotId>()
     private val _participantMap = ConcurrentHashMap<BotId, Participant>()
     private val _debugGraphicsEnableMap = ConcurrentHashMap<BotId, Boolean /* isDebugEnabled */>()
+    private val _breakpointEnabledMap = ConcurrentHashMap<BotId, Boolean /* isBreakpointEnabled */>()
 
     /** Read-only view of game participants (bot connections) */
     val participants: Set<WebSocket> get() = _participants
@@ -86,11 +87,18 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
         _debugGraphicsEnableMap[botId] = enabled
     }
 
+    fun setBreakpointEnabled(botId: BotId, enabled: Boolean) {
+        _breakpointEnabledMap[botId] = enabled
+    }
+
+    val breakpointEnabledMap: Map<BotId, Boolean> get() = _breakpointEnabledMap
+
     fun clear() {
         _participantIds.clear()
         _readyParticipants.clear()
         _participantMap.clear()
         _debugGraphicsEnableMap.clear()
+        _breakpointEnabledMap.clear()
     }
 
     fun prepareParticipantIds() {

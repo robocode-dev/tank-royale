@@ -10,8 +10,14 @@
     - `next-turn` advances one turn and pauses again automatically in debug mode.
     - `ResumeGame` exits debug mode and returns to normal auto-advancing.
     - `DisableDebugMode` exits debug mode without advancing.
-    - `GamePaused` now includes a `pauseCause` field (`pause` vs. `debug_step`) so controllers
-      can distinguish the two.
+    - `GamePaused` now includes a `pauseCause` field (`pause`, `debug_step`, or `breakpoint`)
+      so controllers can distinguish the reason.
+    - #204: Added **breakpoint mode**: a controller can mark a specific bot as being in
+      breakpoint mode. When that bot misses the turn timeout, the server pauses and waits for
+      the bot's intent instead of issuing a `SkippedTurnEvent`. The server auto-resumes when the
+      intent arrives. Disabling breakpoint mode while the server is waiting for the bot causes an
+      immediate skip + resume (recovery for crashed bots). The server advertises this capability
+      via `features.breakpointMode` in the server handshake.
 
 - GUI:
     - Added a **Debug 🐛** toggle button to the control panel. When active, the battle steps one
@@ -21,6 +27,17 @@
     - #205: Added a **Start paused** toggle to the New Battle dialog (under a new *Debugging* group).
       When enabled, the battle starts in debug mode immediately from turn 1 — no need to enable
       debug mode manually after the battle has already started running.
+    - #204: Added a **Breakpoint Mode** toggle to the Bot Properties panel (alongside the existing debug
+      graphics toggle). Only shown when the server supports breakpoint mode. When a bot connects
+      with a debugger attached (`debuggerAttached = true`), breakpoint mode is auto-enabled and a
+      🐛 indicator is shown.
+
+- Bot APIs (Java, .NET, Python):
+    - #204: Added **debugger detection**: each Bot API auto-detects whether a debugger is
+      attached at startup and includes `debuggerAttached: true` in the bot handshake. The server
+      forwards this flag to controllers via `bot-list-update`. Detection uses JDWP arguments
+      (Java), `System.Diagnostics.Debugger.IsAttached` (.NET), and `sys.gettrace()` / module
+      presence (Python). Can be overridden with the `ROBOCODE_DEBUG` environment variable.
 
 ### 🐞 Bug Fixes
 

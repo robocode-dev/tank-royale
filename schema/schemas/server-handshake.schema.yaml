@@ -36,6 +36,12 @@ properties:
           If false or absent, the server will ignore enable/disable debug
           mode requests.
         type: boolean
+      breakpointMode:
+        description: >
+          Whether the server supports breakpoint mode (pause-on-intent-timeout).
+          If false or absent, the server will ignore enable/disable breakpoint
+          mode requests.
+        type: boolean
 required:
   - sessionId
   - variant

@@ -87,7 +87,7 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
 
     override fun onBotPolicyUpdated(botPolicyUpdate: BotPolicyUpdate) {
         log.debug("Bot policy updated for botId {}: debugGraphics is {}", botPolicyUpdate.botId,
-            if (botPolicyUpdate.debuggingEnabled) "enabled" else "disabled")
+            if (botPolicyUpdate.debuggingEnabled == true) "enabled" else if (botPolicyUpdate.debuggingEnabled == false) "disabled" else "unchanged")
         gameServer.handleBotPolicyUpdate(botPolicyUpdate)
     }
 

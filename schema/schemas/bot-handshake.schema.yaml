@@ -77,6 +77,11 @@ properties:
   secret:
     description: Secret used for access control with the server
     type: string
+  debuggerAttached:
+    description: >
+      Whether a debugger is attached to the bot process when connecting to
+      the server. This is informational only and does not affect gameplay.
+    type: boolean
 required:
   - sessionId
   - name
