@@ -317,7 +317,7 @@ class ClientWebSocketsHandler(
                 return@apply
             }
             currentGameSetup = gameSetup
-            listener.onStartGame(gameSetup, botAddresses.toSet())
+            listener.onStartGame(gameSetup, botAddresses.toSet(), debugMode == true)
         }
     }
 

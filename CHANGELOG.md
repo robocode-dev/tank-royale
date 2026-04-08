@@ -18,6 +18,9 @@
       turn at a time — each click of **Next Turn** executes a complete turn and then pauses,
       letting the user inspect the full game state before the next turn begins. Regular **Pause**
       freezes the battle immediately; debug mode always completes the current turn first.
+    - #205: Added a **Start paused** toggle to the New Battle dialog (under a new *Debugging* group).
+      When enabled, the battle starts in debug mode immediately from turn 1 — no need to enable
+      debug mode manually after the battle has already started running.
 
 ### 🐞 Bug Fixes
 

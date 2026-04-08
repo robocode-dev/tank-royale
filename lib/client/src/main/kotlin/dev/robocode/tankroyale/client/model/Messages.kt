@@ -203,7 +203,8 @@ data class Features(
 @SerialName("StartGame")
 data class StartGame(
     val gameSetup: GameSetup,
-    val botAddresses: Set<BotAddress>
+    val botAddresses: Set<BotAddress>,
+    val debugMode: Boolean = false
 ) : Message()
 
 @Serializable

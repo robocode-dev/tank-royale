@@ -14,7 +14,7 @@ interface IConnectionListener {
     fun onObserverLeft(clientSocket: WebSocket, handshake: ObserverHandshake)
     fun onControllerJoined(clientSocket: WebSocket, handshake: ControllerHandshake)
     fun onControllerLeft(clientSocket: WebSocket, handshake: ControllerHandshake)
-    fun onStartGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>)
+    fun onStartGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>, debugMode: Boolean)
     fun onAbortGame()
     fun onPauseGame()
     fun onResumeGame()

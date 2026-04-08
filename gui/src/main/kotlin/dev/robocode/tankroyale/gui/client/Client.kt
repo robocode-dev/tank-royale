@@ -79,9 +79,9 @@ object Client {
         currentPlayer?.start() ?: throw IllegalStateException("No active battle player")
     }
 
-    fun startGame(botAddresses: Set<BotAddress>) {
+    fun startGame(botAddresses: Set<BotAddress>, debugMode: Boolean = false) {
         if (currentPlayer == liveBattlePlayer) {
-            liveBattlePlayer.startGame(botAddresses)
+            liveBattlePlayer.startGame(botAddresses, debugMode)
         } else {
             throw IllegalStateException("Trying to start game with websocket bots without server connection")
         }

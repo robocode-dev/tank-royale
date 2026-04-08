@@ -537,8 +537,9 @@ class GameServer(private val config: ServerConfig) {
      * @param gameSetup the game setup configuration sent by the controller.
      * @param botAddresses the set of bot addresses that should participate.
      */
-    internal fun handleStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
+    internal fun handleStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>, debugMode: Boolean = false) {
         this.gameSetup = GameSetupMapper.map(gameSetup)
+        lifecycleManager.debugMode = debugMode
 
         val sockets = connectionHandler.mapToBotSockets(botAddresses)
         participantRegistry.setParticipants(sockets)

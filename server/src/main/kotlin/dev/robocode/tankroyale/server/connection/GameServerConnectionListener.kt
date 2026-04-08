@@ -55,9 +55,9 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
         log.info("Controller left: {}", getDisplayName(handshake.name, handshake.version))
     }
 
-    override fun onStartGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>) {
+    override fun onStartGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>, debugMode: Boolean) {
         log.debug("Game is requested to start")
-        gameServer.handleStartGame(gameSetup, botAddresses)
+        gameServer.handleStartGame(gameSetup, botAddresses, debugMode)
     }
 
     override fun onAbortGame() {

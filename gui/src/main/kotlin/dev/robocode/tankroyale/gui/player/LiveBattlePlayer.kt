@@ -73,7 +73,7 @@ class LiveBattlePlayer : BattlePlayer {
         connect()
     }
 
-    fun startGame(botAddresses: Set<BotAddress>) {
+    fun startGame(botAddresses: Set<BotAddress>, debugMode: Boolean = false) {
         savedStdOutput.clear()
         savedStdError.clear()
 
@@ -84,7 +84,7 @@ class LiveBattlePlayer : BattlePlayer {
         val displayName = ConfigSettings.gameType.displayName
         val gameSetup = GamesSettings.games[displayName]!!
 
-        lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses)
+        lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses, debugMode)
         send(lastStartGame)
     }
 
