@@ -134,6 +134,7 @@ state where it waits for more bots to join the battle, and a controller will nee
 
 - [start-game]
 - [game-started-event-for-bot]
+- [game-started-event-for-observer]
 - [bot-ready]
 
 <!-- BEGIN:starting-game -->
@@ -179,6 +180,7 @@ This is the crucial part for the bots, and these need to sent their _bot intent_
 
 - [round-started-event]
 - [round-ended-event-for-bot]
+- [round-ended-event-for-observer]
 - [tick-event-for-bot]
 - [tick-event-for-observer]
 - [bot-intent]
@@ -349,7 +351,7 @@ end
 A controller can permit or forbid any bot from sending graphical debugging information that will be drawn by the GUI. By
 default, no bots are permitted to show debugging information.
 
-No event is emitted in response to thing configuration, but the information which bots are permitted to show debug
+No event is emitted in response to this configuration, but the information which bots are permitted to show debug
 information is included in the bot states.
 
 The server will silently drop any debugging graphics it receives from bots that are not permitted to show them.
@@ -358,7 +360,6 @@ The server will silently drop any debugging graphics it receives from bots that 
 ```mermaid
 sequenceDiagram
 Controller->>Server: bot-policy-update
-Server->>Bot: debug-policy-applied
 Note over Server: Server updates the bot's debug flag
 Note over Bot: Bot may only send debug graphics when permitted
 Note over Server: Observers learn permissions through the next tick state
@@ -410,7 +411,7 @@ Here are the events that a bot receives during a game:
 | [bot-hit-bot-event]       | When our bot collides with another bot                                                              |
 | [bot-hit-wall-event]      | When our bot collides with a wall                                                                   |
 | [bullet-fired-event]      | When our bot fires a bullet                                                                         |
-| [bullet-hit-bot-event]    | When our bullet collided with another bullet                                                        |
+| [bullet-hit-bot-event]    | When our bullet hit a bot                                                                           |
 | [bullet-hit-bullet-event] | When our bullet collided with another bullet                                                        |
 | [bullet-hit-wall-event]   | When our bullet has hit the wall                                                                    |
 | [hit-by-bullet-event]     | When our bot has been hit by a bullet                                                               |
@@ -436,11 +437,15 @@ Here are the events that a bot receives during a game:
 
 [game-started-event-for-bot]: game-started-event-for-bot.schema.yaml
 
+[game-started-event-for-observer]: game-started-event-for-observer.schema.yaml
+
 [bot-ready]: bot-ready.schema.yaml
 
 [round-started-event]: round-started-event.schema.yaml
 
 [round-ended-event-for-bot]: round-ended-event-for-bot.schema.yaml
+
+[round-ended-event-for-observer]: round-ended-event-for-observer.schema.yaml
 
 [tick-event-for-bot]: tick-event-for-bot.schema.yaml
 
@@ -492,13 +497,9 @@ Here are the events that a bot receives during a game:
 
 [scanned-bot-event]: scanned-bot-event.schema.yaml
 
-[skipped-turn-event]: skipped-turn-event.schema.yaml
-
-[tick-event-for-bot]: tick-event-for-bot.schema.yaml
-
-[won-round-event]: won-round-event.schema.yaml
-
 [team-message-event]: team-message-event.schema.yaml
+
+[bot-policy-update]: bot-policy-update.schema.yaml
 
 [enable-debug-mode]: enable-debug-mode.schema.yaml
 

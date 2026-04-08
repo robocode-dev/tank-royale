@@ -26,7 +26,7 @@ detection feeds directly into ADR-0034's UI flow (detect → indicate → offer 
 ## What Changes
 
 ### Protocol / Schema
-- **`bot-policy-update.yaml`** — `breakpointEnabled` field already present (schema-only work done)
+- **`bot-policy-update.schema.yaml`** — `breakpointEnabled` field already present (schema-only work done)
 - **`game-paused-event-for-observer`** — `pauseCause: "breakpoint"` value already present
 - **`server-handshake.schema.yaml`** — add `features.breakpointMode: boolean` to advertise capability
 - **`bot-handshake.schema.yaml`** — add `debuggerAttached: boolean` (optional, informational)

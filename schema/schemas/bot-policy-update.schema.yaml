@@ -1,4 +1,4 @@
-$id: bot-policy-update.yaml
+$id: bot-policy-update.schema.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 description: One or more bot policies have been updated
 extends:

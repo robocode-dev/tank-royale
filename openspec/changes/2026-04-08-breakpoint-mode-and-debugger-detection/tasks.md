@@ -6,7 +6,7 @@
        (alongside the existing `features.debugMode` field added for ADR-0033)
 - [x] 1.2 Add `debuggerAttached: boolean` (optional) to `schema/schemas/bot-handshake.schema.yaml`
 
-Note: `breakpointEnabled` in `bot-policy-update.yaml` and `pauseCause: "breakpoint"` in
+Note: `breakpointEnabled` in `bot-policy-update.schema.yaml` and `pauseCause: "breakpoint"` in
 `game-paused-event-for-observer.schema.yaml` are **already present** — no changes needed.
 
 ---

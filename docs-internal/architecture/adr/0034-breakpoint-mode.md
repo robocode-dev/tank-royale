@@ -152,7 +152,7 @@ sequenceDiagram
 ### 1. `bot-policy-update` — Add `breakpointEnabled` field; relax `debuggingEnabled` to optional
 
 ```yaml
-# bot-policy-update.yaml — new optional field
+# bot-policy-update.schema.yaml — new optional field
 breakpointEnabled:
   description: >
     Flag specifying if breakpoint mode is enabled for the bot.
@@ -309,4 +309,4 @@ Bot API detects debugger (JDWP, `Debugger.IsAttached`, `sys.gettrace()`) and aut
 ## References
 
 - [GitHub Issue #204](https://github.com/robocode-dev/tank-royale/issues/204) — Original feature request
-- [`bot-policy-update` schema](../../schema/schemas/bot-policy-update.yaml) — Existing per-bot policy message
+- [`bot-policy-update` schema](../../schema/schemas/bot-policy-update.schema.yaml) — Existing per-bot policy message
