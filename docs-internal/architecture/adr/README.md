@@ -56,6 +56,7 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0033](./0033-bot-debug-mode.md)                                 | Server Debug Mode                                    | Proposed | 2026-04-07 |
 | [0034](./0034-breakpoint-mode.md)                                | Breakpoint Mode                                      | Proposed | 2026-04-07 |
 | [0035](./0035-bot-debugger-detection.md)                         | Bot API Debugger Detection                           | Proposed | 2026-04-07 |
+| [0036](./0036-start-game-debug-options.md)                       | Start-Game Debug Options                             | Proposed | 2026-04-08 |
 
 ## Status Definitions
 
