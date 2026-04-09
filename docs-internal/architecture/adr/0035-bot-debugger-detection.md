@@ -17,7 +17,9 @@ ADR-0033 and ADR-0034 add server-side debug mode and per-bot breakpoint mode, co
 
 ## Decision
 
-Each Bot API detects debugger attachment using the **de facto standard mechanism for its language** and includes a `debuggerAttached: true` flag in the `bot-handshake`. The server forwards this to controllers via `bot-list-update` (since `bot-info` extends `bot-handshake`). Controllers can use it to surface UI hints or auto-enable breakpoint mode.
+Each Bot API detects debugger attachment using the **de facto standard mechanism for its language** and includes a `debuggerAttached: true` flag in the `bot-handshake`. The server forwards this to controllers via `bot-list-update` (since `bot-info` extends `bot-handshake`).
+
+Additionally, when `breakpointModeSupported` is true (see ADR-0034), the **server auto-enables breakpoint mode** for bots that report `debuggerAttached: true`. This provides a seamless debugging experience: the developer launches their bot in the IDE debugger, and breakpoint mode is enabled automatically without any manual steps.
 
 ### Detection Mechanisms
 
@@ -117,7 +119,8 @@ sequenceDiagram
 
     Server->>Controller: bot-list-update (bot X: debuggerAttached: true)
     Note over Controller: Shows debugger icon next to bot X
-    Note over Controller: Optionally auto-enables breakpoint mode (ADR-0034)
+
+    Note over Server: If breakpointModeSupported: auto-enable breakpoint mode for bot X (ADR-0034)
 ```
 
 ---
@@ -131,9 +134,9 @@ sequenceDiagram
 debuggerAttached:
   description: >
     Indicates that a debugger is attached to the bot process.
-    Auto-detected by the Bot API. Informational only — does not change
-    server behavior. Controllers may use this to surface UI hints or
-    auto-enable breakpoint mode (ADR-0034).
+    Auto-detected by the Bot API. When breakpointModeSupported is true
+    (ADR-0034), the server auto-enables breakpoint mode for this bot.
+    Controllers may also use this to surface UI hints.
   type: boolean
 ```
 
@@ -153,11 +156,11 @@ Since `bot-info` extends `bot-handshake`, the `debuggerAttached` field automatic
 - Per-turn reporting (in `bot-intent`) would add overhead for a signal that rarely changes.
 - If late-attach detection is needed in the future, a separate `bot-status-update` message could be added without changing the handshake.
 
-### Why informational only (bot doesn't request behavior changes)?
+### Why informational only at the protocol level?
 
-- **Role separation (ADR-0007):** The bot plays the game. The controller controls the server. The bot reports facts; the controller acts on them.
-- **Security:** A malicious bot claiming `debuggerAttached: true` has no effect on server behavior. The controller still decides whether to enable breakpoint mode.
-- **Simplicity:** No negotiation, no accept/reject, no server-side configuration needed.
+- **Role separation (ADR-0007):** The bot plays the game. The bot reports facts; the server acts on them. The bot never requests specific server behavior — it only reports debugger attachment status.
+- **Security:** A malicious bot claiming `debuggerAttached: true` only triggers breakpoint mode if `breakpointModeSupported` is enabled by the server operator. Tournament servers should set `breakpointModeSupported=false` to prevent any auto-enable.
+- **Server-side configuration:** The server operator controls whether `debuggerAttached` triggers auto-enable via `breakpointModeSupported`. This provides a secure default (enabled for development, disabled for tournaments).
 
 ### Why per-language detection (not just the environment variable)?
 
@@ -181,13 +184,14 @@ Each Bot API adds:
 ### Server
 
 - Add `debuggerAttached` field to the `BotHandshake` model. Store it alongside other bot info.
-- No behavior changes — the field is stored and forwarded, nothing more.
+- When `breakpointModeSupported` is true (ADR-0034), auto-enable breakpoint mode for bots that report `debuggerAttached: true` at game start.
+- The GUI no longer needs to auto-enable breakpoint mode — the server handles it.
 
 ### GUI (Controller)
 
 - Read `debuggerAttached` from `bot-list-update`.
 - Show a visual indicator (e.g., bug icon) next to bots with debugger attached.
-- Optionally: auto-enable breakpoint mode (ADR-0034) for those bots, or show a prompt.
+- No need to auto-enable breakpoint mode — the server does this automatically when `breakpointModeSupported` is true.
 
 ### Schema
 
@@ -221,29 +225,29 @@ Bot sends `requestBreakpointMode: true` and server enables it.
 
 ### Positive
 
-- **Zero-configuration debugging** — developer launches in debug mode, GUI detects it and can auto-enable breakpoint mode.
+- **Zero-configuration debugging** — developer launches in debug mode, breakpoint mode is auto-enabled on the server without any manual steps.
 - **Cross-platform** — each Bot API uses its language's standard mechanism, plus a universal env var fallback.
-- **Informational only** — no server behavior changes, no security implications, no negotiation.
+- **Server-controlled** — the server operator decides whether auto-enable is active (`breakpointModeSupported`), providing security for tournaments.
 - **Minimal protocol change** — one optional field in an existing message.
 - **Composable** — feeds into ADR-0034 (breakpoint mode) naturally.
 
 ### Negative
 
 - **Java and Deno don't detect late-attach** — if the debugger is attached after the bot connects, the handshake already said `false`. Mitigation: this covers the primary workflow (launch in debug mode); env var override handles edge cases.
-- **Python false positives** — coverage tools may trigger detection. Mitigation: informational only, no behavioral consequence. The controller can always disable breakpoint mode.
+- **Python false positives** — coverage tools may trigger detection. Mitigation: informational only, no behavioral consequence unless `breakpointModeSupported` is explicitly enabled by the server operator.
 
 ### Neutral
 
-- The `debuggerAttached` flag has no effect without a controller acting on it. Standalone servers or headless runners simply ignore it.
+- When `breakpointModeSupported=false` (tournaments), the `debuggerAttached` flag has no effect — the server ignores it and breakpoint mode cannot be auto-enabled.
 - Future Bot APIs for new languages add their platform's detection mechanism and get the same behavior.
 
 ---
 
 ## Related Decisions
 
-- **ADR-0034:** Breakpoint Mode — per-bot timeout suspension, controlled by controller
+- **ADR-0034:** Breakpoint Mode — per-bot timeout suspension, server-side `breakpointModeSupported` configuration
 - **ADR-0033:** Server Debug Mode — pause-after-every-turn
-- **ADR-0007:** Client Role Separation — bot reports, controller decides
+- **ADR-0007:** Client Role Separation — bot reports, server acts
 
 ## References
 

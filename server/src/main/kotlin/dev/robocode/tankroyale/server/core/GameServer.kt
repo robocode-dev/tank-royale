@@ -33,7 +33,7 @@ class GameServer(private val config: ServerConfig) {
 
     /** Connection handler for observers and bots */
     private val connectionHandler =
-        ConnectionHandler(ServerSetup(config.gameTypes), GameServerConnectionListener(this), config.controllerSecrets, config.botSecrets)
+        ConnectionHandler(ServerSetup(config.gameTypes), GameServerConnectionListener(this), config.controllerSecrets, config.botSecrets, config.debugModeSupported, config.breakpointModeSupported)
 
     /** Registry for tracking game participants (bots). */
     private val participantRegistry = ParticipantRegistry(connectionHandler)
@@ -178,6 +178,8 @@ class GameServer(private val config: ServerConfig) {
         participantRegistry.clearReadyParticipants()
         participantRegistry.populateParticipantMap()
 
+        autoEnableBreakpointModeForDebugBots()
+
         lifecycleManager.serverState = ServerState.GAME_RUNNING
 
         sendGameStartedToObservers()
@@ -185,6 +187,20 @@ class GameServer(private val config: ServerConfig) {
 
         lifecycleManager.createTurnTimeoutTimer { onNextTurn() }
         resetTurnTimeout()
+    }
+
+    /**
+     * Auto-enables breakpoint mode for bots with a debugger attached (ADR-0035).
+     * This allows developers to debug bots immediately when they hit a breakpoint,
+     * without needing to manually enable breakpoint mode in the controller.
+     */
+    private fun autoEnableBreakpointModeForDebugBots() {
+        if (!config.breakpointModeSupported) return
+        participantRegistry.participantMap.forEach { (botId, participant) ->
+            if (participant.debuggerAttached == true) {
+                participantRegistry.setBreakpointEnabled(botId, true)
+            }
+        }
     }
 
     /** Send GameStarted to all participant observers to get them started */

@@ -236,6 +236,26 @@ Manual resume would require the developer to switch from their IDE to the contro
    - Auto-resume (or stay paused if debug mode from ADR-0033 is active).
 5. **Multiple breakpoint bots** — If several bots have breakpoint mode enabled and multiple miss the timeout, the server waits for all of them before processing the turn.
 
+#### Server Configuration
+
+Breakpoint mode support can be disabled for tournaments via configuration:
+
+**Configuration file** (`server.properties`):
+```
+# Enable/disable breakpoint mode support (default: true)
+# Set to false for tournaments
+breakpointModeSupported=false
+```
+
+**CLI flags:**
+- `--breakpoint-mode` — enable breakpoint mode (default)
+- `--no-breakpoint-mode` — disable breakpoint mode
+
+When `breakpointModeSupported` is false:
+- `features.breakpointMode` is set to `false` in the server handshake
+- The server ignores `breakpointEnabled` in `bot-policy-update` messages
+- Auto-enable for bots with debugger attached (ADR-0035) is skipped
+
 ### GUI (Controller)
 
 - Read `features.breakpointMode` from server handshake → show/hide breakpoint controls.

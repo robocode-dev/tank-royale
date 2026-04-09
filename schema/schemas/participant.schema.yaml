@@ -75,6 +75,11 @@ properties:
   isDroid:
     description: Flag specifying if the bot is a Droid (team bot with 120 energy, but no scanner)
     type: boolean
+  debuggerAttached:
+    description: >
+      Whether a debugger is attached to the bot process when connecting to
+      the server. This is informational only and does not affect gameplay.
+    type: boolean
 required:
   - id
   - sessionId

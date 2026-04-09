@@ -24,6 +24,8 @@ class ClientWebSocketsHandler(
     private val listener: IConnectionListener,
     private val controllerSecrets: Set<String>,
     private val botSecrets: Set<String>,
+    private val debugModeSupported: Boolean,
+    private val breakpointModeSupported: Boolean,
     private val broadcastFunction: (clientSockets: Collection<WebSocket>, message: String) -> Unit
 ) : IClientWebSocketObserver, Closeable {
 
@@ -83,9 +85,9 @@ class ClientWebSocketsHandler(
             version = Version.version
             gameTypes = setup.gameTypes
             gameSetup = currentGameSetup
-features = Features().apply {
-                 debugMode = true
-                 breakpointMode = true
+            features = Features().apply {
+                 debugMode = debugModeSupported
+                 breakpointMode = breakpointModeSupported
              }
         }.also {
             send(clientSocket, Gson().toJson(it))

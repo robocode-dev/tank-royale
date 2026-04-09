@@ -128,6 +128,7 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
                 teamName = handshake.teamName
                 teamVersion = handshake.teamVersion
                 isDroid = handshake.isDroid
+                debuggerAttached = handshake.debuggerAttached
             }
             map[botId] = participant
         }

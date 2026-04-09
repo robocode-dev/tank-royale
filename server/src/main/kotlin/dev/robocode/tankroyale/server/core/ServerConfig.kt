@@ -13,5 +13,9 @@ data class ServerConfig(
     /** Flag specifying if initial position is enabled */
     val initialPositionEnabled: Boolean,
     /** Default turns per second (TPS) */
-    val tps: Int
+    val tps: Int,
+    /** Flag specifying if debug mode is supported */
+    val debugModeSupported: Boolean = true,
+    /** Flag specifying if breakpoint mode is supported */
+    val breakpointModeSupported: Boolean = true
 )

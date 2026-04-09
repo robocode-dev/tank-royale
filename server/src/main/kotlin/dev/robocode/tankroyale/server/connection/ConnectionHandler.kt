@@ -13,10 +13,12 @@ class ConnectionHandler(
     listener: IConnectionListener,
     controllerSecrets: Set<String>,
     botSecrets: Set<String>,
+    debugModeSupported: Boolean = true,
+    breakpointModeSupported: Boolean = true,
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    private val clientHandler = ClientWebSocketsHandler(setup, listener, controllerSecrets, botSecrets, ::broadcast)
+    private val clientHandler = ClientWebSocketsHandler(setup, listener, controllerSecrets, botSecrets, debugModeSupported, breakpointModeSupported, ::broadcast)
 
     private val webSocketObserver = WebSocketObserver(clientHandler)
 
