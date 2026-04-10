@@ -1,43 +1,37 @@
-## [0.39.1] - TBD
+## [0.40.0] - TBD - Debug Mode, Breakpoints & Debugger Detection
+
+This release makes Tank Royale a first-class environment for bot development and debugging. The three
+new capabilities work together as a system: each Bot API now **auto-detects a connected debugger** and
+advertises it to the server; the server uses that signal to **auto-enable breakpoint mode** for that
+bot, suspending the turn clock whenever the bot hits a breakpoint rather than issuing a
+`SkippedTurnEvent`; and a new **debug mode** lets any controller (or the GUI) step through the battle
+one completed turn at a time, inspecting the full game state before advancing. Together these remove
+the friction of debugging a bot under real game conditions — no manual setup, no missed turns, no
+racing the clock.
 
 ### ✨ Features
 
 - Server:
-    - Added **debug mode**: a controller can enable turn-by-turn stepping via `EnableDebugMode`.
-    - Unlike **Pause** (which freezes the game immediately), debug mode lets each turn complete
-      fully — bots deliver intents normally, turn timeout is enforced — then pauses *between*
-      turns so the controller sees a consistent, completed game state before stepping forward.
-    - `next-turn` advances one turn and pauses again automatically in debug mode.
-    - `ResumeGame` exits debug mode and returns to normal auto-advancing.
-    - `DisableDebugMode` exits debug mode without advancing.
-    - `GamePaused` now includes a `pauseCause` field (`pause`, `debug_step`, or `breakpoint`)
-      so controllers can distinguish the reason.
-    - #204: Added **breakpoint mode**: a controller can mark a specific bot as being in
-      breakpoint mode. When that bot misses the turn timeout, the server pauses and waits for
-      the bot's intent instead of issuing a `SkippedTurnEvent`. The server auto-resumes when the
-      intent arrives. Disabling breakpoint mode while the server is waiting for the bot causes an
-      immediate skip + resume (recovery for crashed bots). The server advertises this capability
-      via `features.breakpointMode` in the server handshake.
+    - Added **debug mode** (`EnableDebugMode` / `DisableDebugMode`): turns complete fully before
+      pausing; `next-turn` steps one turn, `ResumeGame` exits. `GamePaused` gains a `pauseCause`
+      field (`pause`, `debug_step`, or `breakpoint`).
+    - #204: Added **breakpoint mode**: server waits for a late bot intent instead of issuing
+      `SkippedTurnEvent`; auto-resumes on arrival. Advertised via `features.breakpointMode`.
+      Auto-enabled for bots with `debuggerAttached = true`.
+    - Added `server.properties` (`debugModeSupported`, `breakpointModeSupported`) with CLI
+      overrides (`--[no-]debug-mode`, `--[no-]breakpoint-mode`). `breakpointModeSupported = false`
+      silently ignores breakpoint requests (tournament safety).
 
 - GUI:
-    - Added a **Debug 🐛** toggle button to the control panel. When active, the battle steps one
-      turn at a time — each click of **Next Turn** executes a complete turn and then pauses,
-      letting the user inspect the full game state before the next turn begins. Regular **Pause**
-      freezes the battle immediately; debug mode always completes the current turn first.
-    - #205: Added a **Start paused** toggle to the New Battle dialog (under a new *Debugging* group).
-      When enabled, the battle starts in debug mode immediately from turn 1 — no need to enable
-      debug mode manually after the battle has already started running.
-    - #204: Added a **Breakpoint Mode** toggle to the Bot Properties panel (alongside the existing debug
-      graphics toggle). Only shown when the server supports breakpoint mode. When a bot connects
-      with a debugger attached (`debuggerAttached = true`), breakpoint mode is auto-enabled and a
-      🐛 indicator is shown.
+    - Added a **Debug 🐛** toggle to the control panel — steps one complete turn per **Next Turn** click.
+    - #205: Added **Start paused** to the New Battle dialog — enters debug mode from turn 1.
+    - #204: Added **Breakpoint Mode** toggle to the Bot Properties panel; auto-enabled and 🐛-labelled
+      when `debuggerAttached = true`. Hidden when the server doesn't support breakpoint mode.
 
 - Bot APIs (Java, .NET, Python):
-    - #204: Added **debugger detection**: each Bot API auto-detects whether a debugger is
-      attached at startup and includes `debuggerAttached: true` in the bot handshake. The server
-      forwards this flag to controllers via `bot-list-update`. Detection uses JDWP arguments
-      (Java), `System.Diagnostics.Debugger.IsAttached` (.NET), and `sys.gettrace()` / module
-      presence (Python). Can be overridden with the `ROBOCODE_DEBUG` environment variable.
+    - #204: Added **debugger detection**: `debuggerAttached: true` is included in the bot handshake
+      when a debugger is found (JDWP args / `Debugger.IsAttached` / `sys.gettrace()`). Overridable
+      via `ROBOCODE_DEBUG`.
 
 ### 🐞 Bug Fixes
 
