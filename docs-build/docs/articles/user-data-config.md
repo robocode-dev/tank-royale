@@ -165,20 +165,26 @@ bots-secrets=/zWlsdEfhNX1YPggA9DJlw
 controller-secrets=Xcrw0ydtiscD7L7xAT/K4g
 # Enable server secrets authentication
 enable-server-secrets=false
+# Allow turn-by-turn debug stepping (set false for tournaments)
+# debugModeSupported=true
+# Allow breakpoint mode for debugged bots (set false for tournaments)
+# breakpointModeSupported=true
 ```
 
 **Common settings:**
 
-| Property                | Description                              | Default        |
-|:------------------------|:-----------------------------------------|:---------------|
-| `port`                  | WebSocket port for the local server      | `7654`         |
-| `bots-secrets`          | Secret for bot authentication            | Auto-generated |
-| `controller-secrets`    | Secret for controller/GUI authentication | Auto-generated |
-| `enable-server-secrets` | Enable/disable secret authentication     | `false`        |
+| Property                  | Description                                                                 | Default        |
+|:--------------------------|:----------------------------------------------------------------------------|:---------------|
+| `port`                    | WebSocket port for the local server                                         | `7654`         |
+| `bots-secrets`            | Secret for bot authentication                                               | Auto-generated |
+| `controller-secrets`      | Secret for controller/GUI authentication                                    | Auto-generated |
+| `enable-server-secrets`   | Enable/disable secret authentication                                        | `false`        |
+| `debugModeSupported`      | Allow debug mode (turn-by-turn stepping); set `false` for tournaments       | `true`         |
+| `breakpointModeSupported` | Allow breakpoint mode (wait for debugged bots); set `false` for tournaments | `true`         |
 
 **Security considerations:**
 
-- The secrets are randomly generated on first run
+- The secrets are randomly generated on the first run
 - Keep these secrets confidential if running a public server
 - Bots can provide secrets via the Bot API or the `SERVER_SECRET` environment variable
 - Change secrets by editing this file manually or regenerating them through the Server Options dialog

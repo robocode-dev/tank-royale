@@ -22,5 +22,7 @@ data class Participant(
     val isDroid: Boolean = false,
     val debuggerAttached: Boolean? = null,
 ) {
-    val displayName = "$name $version ($id)" + (teamName?.let { " / $teamName $teamVersion ($teamId)" } ?: "")
+    val displayName = "$name $version ($id)" +
+            (teamName?.let { " / $teamName $teamVersion ($teamId)" } ?: "") +
+            (if (debuggerAttached == true) " 🐛" else "")
 }

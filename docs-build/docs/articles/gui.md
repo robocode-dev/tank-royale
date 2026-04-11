@@ -43,6 +43,12 @@ Next to the game type selection is the 'Recording' toggle for battle recording:
 
 When enabled, battles are automatically recorded and saved to individual files in the `recordings` directory.
 
+A **Debugging** group at the top of the dialog contains the **Start paused** toggle. When enabled,
+the battle enters debug mode immediately from turn 1 — useful when you want to step through the very
+first turns without having to enable debug mode manually after the battle has started.
+
+![Debugging - Start Paused](../images/gui/debugging-start-paused.png)
+
 The bottom panel displays detailed bot information when selecting entries from the 'Bot Directories' list:
 
 ![Bot Info](../images/gui/bot-info.png)
@@ -135,12 +141,23 @@ Controls include:
 - Single-step through turns while paused
 - Stop/Restart battle
 - Adjust TPS (Turns per second) via slider, input field, or default button
+- Debug toggle — enables debug mode; each **Next Turn** click executes one complete turn and
+  then pauses, letting you inspect the full game state before advancing. Unlike regular Pause (which
+  freezes the battle immediately), debug mode always finishes the current turn first.
 
 ### Viewing the bot console
 
 The left side panel contains buttons for each participating bot:
 
 ![Side Panel](../images/gui/side-panel.png)
+
+If a bot is connected with a debugger attached, its button shows a 🐛 indicator:
+
+![Bot button with debugger indicator](../images/gui/debug-on-bot-button.png)
+
+This signals that breakpoint mode has been auto-enabled for that bot — the turn clock will suspend
+whenever the bot is late delivering intent, so stepping through code in an IDE no longer causes
+missed turns.
 
 Clicking a bot button opens its console window:
 
@@ -161,6 +178,13 @@ Output includes:
 The **Properties** tab displays real-time bot state information for debugging:
 
 ![Bot Console](../images/gui/bot-properties.png)
+
+When the server supports breakpoint mode, a **Breakpoint Mode** 🐛 toggle is shown alongside the
+existing debug-graphics toggle. Breakpoint mode suspends the turn clock for that bot whenever it is
+late delivering intent — useful when stepping through code in an IDE. When a bot connects with a
+debugger attached, breakpoint mode is auto-enabled.
+
+![Breakpoint Mode](../images/gui/bot-properties-breakpoint.png) 
 
 ### Viewing the bot events
 
@@ -248,6 +272,18 @@ You can also adjust the UI scaling, which is especially useful for optimizing di
 the maximum number of characters in a console, and a boot timeout in seconds.
 
 ![GUI Options](../images/gui/gui-options.png)
+
+### Tank color mode
+
+The **Tank color mode** group controls how tank colors are resolved during rendering. Four modes are
+available:
+
+| Mode | Description |
+|:-----|:------------|
+| **Bot Colors** | Bot-defined colors are used and update freely as the bot changes them. This is the default. |
+| **Bot Colors (Once)** | The first color reported by each bot component is locked for the entire battle. Colors do not change between rounds. Useful when visual consistency matters more than live updates. |
+| **Default Colors** | Bot-defined colors are ignored entirely; all tanks are drawn with the standard default colors. |
+| **Bot Colors (Debug Only)** | Bot-defined colors are shown only while debug mode is active (the 🐛 Debug toggle in the battle control panel). When debug mode is off, tanks are drawn with the default colors. This is useful for visually distinguishing a debugging session from normal battles. |
 
 ## Server Options
 
