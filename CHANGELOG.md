@@ -35,6 +35,9 @@ racing the clock.
 
 ### 🐞 Bug Fixes
 
+- Sample bots (C#):
+    - Fixed `PaintingBot.cs` with a broken .json file.
+
 - Bot API (Java, .NET, Python):
     - #202: Fixed race condition in `go()` / `execute()` where the WebSocket thread could deliver a new
       tick between event dispatch and intent sending, causing the bot to skip a turn. This produced early

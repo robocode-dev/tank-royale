@@ -11,6 +11,6 @@
     "cz",
     "dk"
   ],
-  "platform": "JVM",
-  "programmingLang": "Java 11"
+  "platform": ".NET 6.0",
+  "programmingLang": "C# 10.0"
 }
