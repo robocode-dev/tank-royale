@@ -12,17 +12,19 @@ exist yet. If you need support for another platform, please open a
 
 ## Installation
 
+Use the current release version from the repository `VERSION` file in the dependency coordinates below.
+
 ::: code-group
 
 ```kotlin [Gradle (Kotlin DSL)]
 dependencies {
-    implementation("dev.robocode.tankroyale:robocode-tankroyale-runner:0.37.0")
+    implementation("dev.robocode.tankroyale:robocode-tankroyale-runner:{VERSION}")
 }
 ```
 
 ```groovy [Gradle (Groovy)]
 dependencies {
-    implementation 'dev.robocode.tankroyale:robocode-tankroyale-runner:0.37.0'
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-runner:{VERSION}'
 }
 ```
 
@@ -30,7 +32,7 @@ dependencies {
 <dependency>
     <groupId>dev.robocode.tankroyale</groupId>
     <artifactId>robocode-tankroyale-runner</artifactId>
-    <version>0.37.0</version>
+    <version>{VERSION}</version>
 </dependency>
 ```
 

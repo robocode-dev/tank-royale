@@ -19,11 +19,13 @@ provide bot paths and a game setup.
 
 ## Installation
 
+Use the current release version from the repository root [`VERSION`](../VERSION) file in the dependency coordinates below.
+
 ### Gradle (Kotlin DSL)
 
 ```kotlin
 dependencies {
-    implementation("dev.robocode.tankroyale:robocode-tankroyale-runner:0.37.0")
+    implementation("dev.robocode.tankroyale:robocode-tankroyale-runner:{VERSION}")
 }
 ```
 
@@ -31,7 +33,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'dev.robocode.tankroyale:robocode-tankroyale-runner:0.37.0'
+    implementation 'dev.robocode.tankroyale:robocode-tankroyale-runner:{VERSION}'
 }
 ```
 
@@ -41,7 +43,7 @@ dependencies {
 <dependency>
     <groupId>dev.robocode.tankroyale</groupId>
     <artifactId>robocode-tankroyale-runner</artifactId>
-    <version>0.37.0</version>
+    <version>{VERSION}</version>
 </dependency>
 ```
 
