@@ -25,20 +25,19 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     private val breakpointToggleSwitch = createBreakpointToggleSwitch()
     private val debuggerAttachedLabel = createDebuggerAttachedLabel()
 
-    override val buttonPanel: JPanel
-        get() =
-            JPanel().apply {
-                val spacer = JLabel().apply {
-                    preferredSize = Dimension(20, 1)
-                }
-                add(okButton)
-                add(spacer)
-                addLabel("toggle_graphical_debugging")
-                add(createDebugGraphicsToggleSwitch())
-                addLabel("breakpoint_mode")
-                add(createBreakpointToggleSwitch())
-                add(createDebuggerAttachedLabel())
+    private fun createBotButtonPanel() =
+        JPanel().apply {
+            val spacer = JLabel().apply {
+                preferredSize = Dimension(20, 1)
             }
+            add(okButton)
+            add(spacer)
+            addLabel("toggle_graphical_debugging")
+            add(createDebugGraphicsToggleSwitch())
+            addLabel("breakpoint_mode")
+            add(createBreakpointToggleSwitch())
+            add(createDebuggerAttachedLabel())
+        }
 
     private fun createDebugGraphicsToggleSwitch() = ToggleSwitch(false).apply {
         addSwitchHandler { isSelected ->
@@ -129,7 +128,7 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
         layout = BorderLayout()
         add(table.tableHeader, BorderLayout.PAGE_START)
         add(table, BorderLayout.CENTER)
-        add(buttonPanel, BorderLayout.SOUTH)
+        add(createBotButtonPanel(), BorderLayout.SOUTH)
 
         table.columnModel.getColumn(0).apply {
             minWidth = 120
