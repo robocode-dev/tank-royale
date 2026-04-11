@@ -1,4 +1,4 @@
-## [0.40.0] - TBD - Debug Mode, Breakpoints & Debugger Detection
+## [0.40.0] - 2026-04-11 - Debug Mode, Breakpoints & Debugger Detection
 
 This release makes Tank Royale a first-class environment for bot development and debugging. The three
 new capabilities work together as a system: each Bot API now **auto-detects a connected debugger** and
