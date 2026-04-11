@@ -236,8 +236,18 @@ Run the Gradle command (use the platform-appropriate wrapper):
 ./gradlew upload-docs
 ```
 
-- If the command **succeeds**: print `"✅ Step 5: Documentation uploaded successfully"`.
 - If the command **fails**: print `"❌ ERROR: Step 5 failed — documentation upload failed"` and **STOP**.
+
+After a successful `upload-docs`, commit and push the generated documentation to GitHub Pages:
+
+1. Run `git add docs/` to stage all changes under the `docs/` directory.
+2. Run `git commit -m "chore(docs): upload documentation for vX.Y.Z"` (substituting the actual version).
+   - If git reports `nothing to commit`, skip the push and print `"ℹ️ Step 5: No documentation changes to commit"`.
+   - If the commit **fails**: print `"❌ ERROR: Step 5 failed — could not commit documentation changes"` and **STOP**.
+3. Run `git push origin main`.
+   - If the push **fails**: print `"❌ ERROR: Step 5 failed — could not push documentation changes to origin/main"` and **STOP**.
+
+- If all sub-steps succeed: print `"✅ Step 5: Documentation uploaded and pushed to GitHub Pages"`.
 
 ### If patch > 0 (patch release):
 
