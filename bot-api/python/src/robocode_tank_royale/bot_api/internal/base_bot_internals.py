@@ -309,11 +309,23 @@ class BaseBotInternals:
     def is_running(self) -> bool:
         return self.data.is_running
 
+    def _wait_until_first_tick_arrived(self) -> None:
+        """Block the pre-warmed bot thread until the first tick of the round arrives.
+        The thread is started at round-started (before any tick), so it must wait here
+        before run() can safely read bot state.
+        Notified by _on_next_turn() (priority 100) after BotInternals._on_first_turn()
+        (priority 110) has already captured initial directions via _clear_remaining().
+        """
+        with self._next_turn_condition:
+            while self.is_running() and self.data.current_tick_or_null is None:
+                self._next_turn_condition.wait()
+
     def _create_runnable(self, bot: BotABC):
         """Create runnable function for bot thread (matches Java's createRunnable)"""
         def runnable():
             self.set_running(True)
             try:
+                self._wait_until_first_tick_arrived()
                 bot.run()
             except ThreadInterruptedException:
                 pass

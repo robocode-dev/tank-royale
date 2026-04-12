@@ -82,6 +82,8 @@ public final class MockedServer {
     private final CountDownLatch botIntentLatch = new CountDownLatch(1);
 
     private CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
+    private volatile boolean holdTickEnabled = false;
+    private CountDownLatch tickHoldLatch = new CountDownLatch(1);
 
     private BotHandshake botHandshake;
     private BotIntent botIntent;
@@ -113,6 +115,20 @@ public final class MockedServer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Call before starting the bot to make the server hold tick 1 after sending ROUND_STARTED.
+     * The tick is not sent until {@link #releaseTick()} is called.
+     * Use this to inspect bot state (e.g. isRunning()) between ROUND_STARTED and tick 1.
+     */
+    public void holdTick() {
+        holdTickEnabled = true;
+    }
+
+    /** Releases the held tick, allowing the server to send tick 1 to the bot. */
+    public void releaseTick() {
+        tickHoldLatch.countDown();
     }
 
     public void setEnergy(double energy) {
@@ -257,6 +273,10 @@ public final class MockedServer {
 
         @Override
         public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+            System.out.println("[DBG-SERVER] onClose code=" + code + " reason=" + reason + " remote=" + remote);
+            if (!remote) {
+                new RuntimeException("[DBG-SERVER] local close initiated here").printStackTrace(System.out);
+            }
         }
 
         @Override
@@ -277,6 +297,14 @@ public final class MockedServer {
                     System.out.println("BOT_READY");
 
                     sendRoundStarted(conn);
+
+                    if (holdTickEnabled) {
+                        try {
+                            tickHoldLatch.await(5, TimeUnit.SECONDS);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
 
                     sendTickEventForBot(conn, turnNumber++);
                     tickEventLatch.countDown();
@@ -321,6 +349,8 @@ public final class MockedServer {
 
         @Override
         public void onError(WebSocket conn, Exception ex) {
+            System.out.println("[DBG-SERVER] onError: " + ex);
+            ex.printStackTrace(System.out);
             throw new IllegalStateException("MockedServer error", ex);
         }
 

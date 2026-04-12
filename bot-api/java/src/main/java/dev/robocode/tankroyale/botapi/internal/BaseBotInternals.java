@@ -31,6 +31,7 @@ import static java.lang.Math.*;
 import static java.net.http.WebSocket.Builder;
 
 public final class BaseBotInternals {
+
     private static final String DEFAULT_SERVER_URL = "ws://localhost:7654";
 
     private static final String SERVER_URL_PROPERTY_KEY = "server.url";
@@ -61,7 +62,7 @@ public final class BaseBotInternals {
 
     private InitialPosition initialPosition;
 
-    private TickEvent tickEvent;
+    private volatile TickEvent tickEvent;
     private long tickStartNanoTime;
 
     private final EventQueue eventQueue;
@@ -157,8 +158,11 @@ public final class BaseBotInternals {
         return () -> {
             setRunning(true);
             try {
+                waitUntilFirstTickArrived();
                 bot.run();
-            } catch (ThreadInterruptedException ignored) {
+            } catch (ThreadInterruptedException e) {
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
 
             dispatchFinalTurnEvents();
@@ -197,7 +201,12 @@ public final class BaseBotInternals {
     }
 
     public void enableEventHandling(boolean enable) {
-        eventHandlingDisabledTurn = enable ? 0 : getCurrentTickOrThrow().getTurnNumber();
+        if (enable) {
+            eventHandlingDisabledTurn = 0;
+        } else {
+            var tick = getCurrentTickOrNull();
+            eventHandlingDisabledTurn = (tick != null) ? tick.getTurnNumber() : 0;
+        }
     }
 
     public boolean isEventHandlingDisabled() {
@@ -322,8 +331,7 @@ public final class BaseBotInternals {
         }
         if (capturedTurnNumber != lastExecuteTurnNumber) {
             lastExecuteTurnNumber = capturedTurnNumber;
-
-            sendIntent();
+            sendIntent(capturedTurnNumber);
 
             if (movementResetPending) {
                 resetMovement();
@@ -334,6 +342,10 @@ public final class BaseBotInternals {
     }
 
     private void sendIntent() {
+        sendIntent(-1);
+    }
+
+    private void sendIntent(int turnNumber) {
         synchronized (this) {
             renderGraphicsToBotIntent();
             transferStdOutToBotIntent();
@@ -374,6 +386,23 @@ public final class BaseBotInternals {
             ) {
                 try {
                     nextTurnMonitor.wait(); // Wait for the next turn
+                } catch (InterruptedException ex) {
+                    throw new ThreadInterruptedException();
+                }
+            }
+        }
+    }
+
+    // Blocks the pre-warmed bot thread until the first tick of the round arrives.
+    // The thread is started at round-started (before any tick), so it must wait here
+    // before run() can safely read bot state (radar direction, etc.).
+    // notifyAll() is called by onNextTurn() (priority 100) after BotInternals.onFirstTurn()
+    // (priority 110) has already captured the initial directions via clearRemaining().
+    private void waitUntilFirstTickArrived() {
+        synchronized (nextTurnMonitor) {
+            while (isRunning() && getCurrentTickOrNull() == null) {
+                try {
+                    nextTurnMonitor.wait();
                 } catch (InterruptedException ex) {
                     throw new ThreadInterruptedException();
                 }
