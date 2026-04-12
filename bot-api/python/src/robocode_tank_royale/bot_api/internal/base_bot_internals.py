@@ -266,7 +266,7 @@ class BaseBotInternals:
                     0  # Or some other default like -1 or 1
                 )
 
-    def get_event_handling_disabled_turn(self) -> bool:
+    def is_event_handling_disabled(self) -> bool:
         # Important! Allow an additional turn so events like RoundStarted can be handled
         current_tick = self.data.current_tick_or_null
         if not current_tick:

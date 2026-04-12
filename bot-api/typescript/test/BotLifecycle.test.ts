@@ -222,7 +222,7 @@ describe("Task 4: BaseBotInternals", () => {
     const stub = {} as import("../src/IBaseBot.js").IBaseBot;
     const internals = new BaseBotInternals(stub, makeBotInfo(), null, undefined);
     internals.enableEventHandling(true);
-    expect(internals.getEventHandlingDisabled()).toBe(false);
+    expect(internals.isEventHandlingDisabled()).toBe(false);
   });
 
   it("4.12 state accessors return defaults before game starts", () => {

@@ -705,7 +705,7 @@ export class BaseBotInternals {
     }
   }
 
-  getEventHandlingDisabled(): boolean {
+  isEventHandlingDisabled(): boolean {
     if (this.eventHandlingDisabledTurn === 0) return false;
     if (this.tickEvent == null) return false;
     return this.eventHandlingDisabledTurn < this.tickEvent.turnNumber - 1;
