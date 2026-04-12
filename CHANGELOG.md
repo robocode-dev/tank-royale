@@ -1,3 +1,27 @@
+## [0.40.2] - 2026-04-12 - Breakpoint disconnect fix
+
+### 🐞 Bug Fixes
+
+- Server:
+    - #206: Fixed bots disconnecting from the server after ~80 seconds while paused at a debugger
+      breakpoint. When a bot's JVM is fully suspended by a debugger, all threads — including the
+      WebSocket client's I/O thread — are frozen, so the bot cannot respond to the server's
+      periodic WebSocket ping frames. The server's connection-lost detection (60-second timeout)
+      then closes the connection. The fix disables connection-lost detection for the duration of
+      a breakpoint pause and restores it the moment the bot resumes.
+
+### 🧪 Tests
+
+- Runner:
+    - Added a positive slow-soak integration test: `BreakpointStallBot` (a raw WebSocket bot that
+      deliberately ignores ping frames, simulating a frozen JVM) remains connected for 3 minutes
+      while the game is paused at a breakpoint.
+    - Added a negative counterpart: the same bot is disconnected by the server's connection-lost
+      detection within 4 minutes when breakpoint mode is not active — confirming the fix is scoped
+      to breakpoint pauses only, not a global disable.
+    - Both tests are tagged `@Tag("slow")` and excluded from the default `integrationTest` task;
+      run via `./gradlew :runner:slowIntegrationTest`.
+
 ## [0.40.1] - 2026-04-12 - First-turn skip fix (Java, .NET, Python)
 
 ### 🐞 Bug Fixes

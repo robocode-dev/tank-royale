@@ -28,6 +28,12 @@ import java.util.concurrent.ConcurrentHashMap
  *   requiring [tickLock].
  */
 class GameServer(private val config: ServerConfig) {
+
+    companion object {
+        /** Default WebSocket connection-lost detection timeout (seconds), matching java-websocket's own default. */
+        private const val DEFAULT_CONNECTION_LOST_TIMEOUT_SECS = 60
+    }
+
     /** JSON handler */
     private val gson = Gson()
 
@@ -313,6 +319,9 @@ class GameServer(private val config: ServerConfig) {
             lifecycleManager.breakpointPausedForBots.addAll(breakpointBotIds)
             lifecycleManager.pauseGame()
             broadcastGamePausedToObservers(GamePausedEventForObserver.PauseCause.BREAKPOINT)
+            // Disable connection-lost detection: the bot's JVM is fully suspended by the debugger
+            // and cannot respond to WebSocket pings. Re-enabled when the breakpoint is cleared.
+            connectionHandler.setConnectionLostTimeout(0)
             return
         }
 
@@ -573,6 +582,8 @@ class GameServer(private val config: ServerConfig) {
         // All breakpoint bots responded: resume game and schedule an immediate turn.
         // Called outside tickLock to avoid holding the lock during state transitions.
         if (shouldProcessBreakpointTurn) {
+            // Re-enable connection-lost detection now that the bot's JVM is running again.
+            connectionHandler.setConnectionLostTimeout(DEFAULT_CONNECTION_LOST_TIMEOUT_SECS)
             lifecycleManager.resumeGame()
             broadcastGameResumedToObservers()
             resetTurnTimeout()
@@ -730,6 +741,8 @@ class GameServer(private val config: ServerConfig) {
                 }
 
                 if (lifecycleManager.breakpointPausedForBots.isEmpty()) {
+                    // Re-enable connection-lost detection now that the bot's JVM is running again.
+                    connectionHandler.setConnectionLostTimeout(DEFAULT_CONNECTION_LOST_TIMEOUT_SECS)
                     lifecycleManager.resumeGame()
                     broadcastGameResumedToObservers()
                     resetTurnTimeout()
@@ -745,6 +758,9 @@ class GameServer(private val config: ServerConfig) {
         botIntents.clear()
         botsThatSentIntent.clear()
         modelUpdater = null
+        // Restore connection-lost detection in case the game ended while paused at a breakpoint.
+        connectionHandler.setConnectionLostTimeout(DEFAULT_CONNECTION_LOST_TIMEOUT_SECS)
+        lifecycleManager.breakpointPausedForBots.clear()
     }
 
     private fun transferDebugGraphicsFlagToModel() {

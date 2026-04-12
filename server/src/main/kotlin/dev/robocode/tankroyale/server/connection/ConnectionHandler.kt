@@ -79,4 +79,13 @@ class ConnectionHandler(
         log.debug("Broadcast message: $message")
         webSocketObserver.broadcast(clientSockets, message)
     }
+
+    /**
+     * Sets the WebSocket connection-lost detection timeout (in seconds).
+     * Pass 0 to disable it (required during debugger breakpoints, where all bot JVM threads
+     * are suspended and cannot respond to pings).
+     */
+    fun setConnectionLostTimeout(seconds: Int) {
+        webSocketObserver.setConnectionLostTimeout(seconds)
+    }
 }

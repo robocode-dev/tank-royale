@@ -90,8 +90,34 @@ tasks {
 
         useJUnitPlatform {
             includeTags("integration")
+            excludeTags("slow") // slow soak tests are run via :runner:slowIntegrationTest
         }
         failFast = true
+
+        dependsOn(jar, ":sample-bots:java:build", ":sample-bots:csharp:build", ":bot-api:tests:build")
+
+        systemProperty("sampleBots.java.dir", project(":sample-bots:java").layout.buildDirectory.dir("archive").get().asFile.absolutePath)
+        systemProperty("sampleBots.csharp.dir", project(":sample-bots:csharp").layout.buildDirectory.dir("archive").get().asFile.absolutePath)
+        systemProperty("testBots.java.dir", project(":bot-api:tests").layout.buildDirectory.dir("archive/java").get().asFile.absolutePath)
+        systemProperty("testBots.csharp.dir", project(":bot-api:tests").layout.buildDirectory.dir("archive/csharp").get().asFile.absolutePath)
+    }
+
+    /**
+     * Runs slow soak tests tagged with both "integration" and "slow".
+     * These are excluded from the default :runner:integrationTest run because they take several minutes.
+     *
+     * Run explicitly: ./gradlew :runner:slowIntegrationTest
+     */
+    val slowIntegrationTest by registering(Test::class) {
+        description = "Runs slow soak integration tests (multi-minute, excluded from normal CI)."
+        group = "verification"
+
+        testClassesDirs = sourceSets["test"].output.classesDirs
+        classpath = sourceSets["test"].runtimeClasspath
+
+        useJUnitPlatform {
+            includeTags("integration & slow")
+        }
 
         dependsOn(jar, ":sample-bots:java:build", ":sample-bots:csharp:build", ":bot-api:tests:build")
 

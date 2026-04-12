@@ -81,6 +81,7 @@ tasks {
             mkdir(csharpArchiveDir)
             prepareJavaBot("WonRoundCounterJava")
             prepareCsharpBot("WonRoundCounterCSharp")
+            prepareJavaBot("BreakpointStallBot")
         }
     }
 

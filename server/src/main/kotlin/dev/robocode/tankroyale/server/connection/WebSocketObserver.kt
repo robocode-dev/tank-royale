@@ -27,6 +27,10 @@ class WebSocketObserver(observer: IClientWebSocketObserver) {
         webSocketServer.broadcast(message, clientSockets)
     }
 
+    fun setConnectionLostTimeout(seconds: Int) {
+        webSocketServer.connectionLostTimeout = seconds
+    }
+
     private fun validateInheritedChannel() {
         val inheritedChannel = System.inheritedChannel()
         if (inheritedChannel == null) {
