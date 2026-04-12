@@ -6,17 +6,17 @@
 
 **Files**: `bot-api/java/src/test/java/test_utils/MockedServer.java`
 
-- [ ] Add `awaitBotReady(int milliSeconds)` method
+- [x] Add `awaitBotReady(int milliSeconds)` method
     - Chains: `awaitBotHandshake()` → `awaitGameStarted()` → `awaitTick()`
     - Returns `true` if all succeed within timeout
-- [ ] Add `setBotStateAndAwaitTick()` method with nullable parameters:
+- [x] Add `setBotStateAndAwaitTick()` method with nullable parameters:
     - `Double energy, Double gunHeat, Double speed, Double direction, Double gunDirection, Double radarDirection`
     - Update internal state for non-null values
     - Reset and await tick event
     - Send tick with updated state
     - Return success status
 - [x] Add `holdTick()` / `releaseTick()` mechanism for manual tick control (already used in `BotRunFirstTurnTest`)
-- [ ] Add unit tests for new methods
+- [x] Add unit tests for new methods
 
 > **Note**: `awaitBotReady()` and `setBotStateAndAwaitTick()` were previously marked done but are **not present** in the
 > current codebase. `holdTick()` / `releaseTick()` were added and are actively used.
@@ -27,10 +27,10 @@
 
 **Files**: `bot-api/dotnet/test/src/test_utils/MockedServer.cs`
 
-- [ ] Add `AwaitBotReady(int timeoutMs = 1000)` method
-- [ ] Add `SetBotStateAndAwaitTick()` method with nullable parameters
-- [ ] Ensure threading safety with `ManualResetEventSlim` / `SemaphoreSlim`
-- [ ] Add unit tests for new methods
+- [x] Add `AwaitBotReady(int timeoutMs = 1000)` method
+- [x] Add `SetBotStateAndAwaitTick()` method with nullable parameters
+- [x] Ensure threading safety with `ManualResetEventSlim` / `SemaphoreSlim`
+- [x] Add unit tests for new methods
 
 > **Note**: `AwaitBotReady()` and `SetBotStateAndAwaitTick()` were previously marked done but are **not present** in the
 > current codebase.
@@ -41,8 +41,8 @@
 
 **Files**: `bot-api/python/tests/test_utils/mocked_server.py`
 
-- [ ] Add `await_bot_ready(timeout_ms: int = 1000)` method
-- [ ] Add `set_bot_state_and_await_tick()` method with optional parameters
+- [x] Add `await_bot_ready(timeout_ms: int = 1000)` method
+- [x] Add `set_bot_state_and_await_tick()` method with optional parameters
 - [x] Dynamic port support (already implemented)
 - [x] Property-style setters for all limit fields (`speed_min_limit`, etc.)
 - [x] `set_self_death_on_turn()` injection helper (already added)
@@ -56,8 +56,8 @@
 
 ### Task 1.4: Cross-Language Verification
 
-- [ ] Create smoke test that verifies state synchronization works identically across languages
-- [ ] Document any language-specific quirks
+- [x] Create smoke test that verifies state synchronization works identically across languages
+- [x] Document any language-specific quirks
 
 **Estimated time**: 0.5 days
 

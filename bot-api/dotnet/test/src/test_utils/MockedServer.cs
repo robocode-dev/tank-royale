@@ -56,7 +56,7 @@ public class MockedServer
     private double _turnIncrement;
     private double _gunTurnIncrement;
     private double _radarTurnIncrement;
-    
+
     private double? _speedMinLimit;
     private double? _speedMaxLimit;
     private double? _directionMinLimit;
@@ -72,15 +72,15 @@ public class MockedServer
     private readonly EventWaitHandle _openedEvent = new AutoResetEvent(false);
     private readonly EventWaitHandle _botHandshakeEvent = new AutoResetEvent(false);
     private readonly EventWaitHandle _gameStartedEvent = new AutoResetEvent(false);
-    private readonly EventWaitHandle _tickEvent = new AutoResetEvent(false);
     private readonly EventWaitHandle _botIntentEvent = new AutoResetEvent(false);
 
+    private readonly EventWaitHandle _tickEvent = new ManualResetEvent(false);
     private readonly EventWaitHandle _botIntentContinueEvent = new AutoResetEvent(false);
 
     private BotIntent _botIntent;
-    
+
     public BotIntent BotIntent => _botIntent;
-    
+
 
     public void Start()
     {
@@ -135,7 +135,7 @@ public class MockedServer
     public void SetSpeedMaxLimit(double maxLimit) {
         _speedMaxLimit = maxLimit;
     }
-    
+
     public void SetDirectionMinLimit(double minLimit) {
         _directionMinLimit = minLimit;
     }
@@ -158,6 +158,27 @@ public class MockedServer
 
     public void SetRadarDirectionMaxLimit(double maxLimit) {
         _radarDirectionMaxLimit = maxLimit;
+    }
+
+    public bool AwaitBotReady(int milliSeconds = 1000)
+    {
+        return AwaitBotHandshake(milliSeconds) && AwaitGameStarted(milliSeconds) && AwaitTick(milliSeconds);
+    }
+
+    public bool SetBotStateAndAwaitTick(
+        double? energy = null, double? gunHeat = null, double? speed = null,
+        double? direction = null, double? gunDirection = null, double? radarDirection = null)
+    {
+        if (energy != null) _energy = energy.Value;
+        if (gunHeat != null) _gunHeat = gunHeat.Value;
+        if (speed != null) _speed = speed.Value;
+        if (direction != null) _direction = direction.Value;
+        if (gunDirection != null) _gunDirection = gunDirection.Value;
+        if (radarDirection != null) _radarDirection = radarDirection.Value;
+
+        _tickEvent.Reset();
+        _botIntentContinueEvent.Set();
+        return AwaitTick(5000);
     }
 
     public bool AwaitConnection(int milliSeconds)
@@ -237,11 +258,11 @@ public class MockedServer
     private void OnOpen(IWebSocketConnection conn)
     {
 //        _clients.Add(conn);
-        
+
         _openedEvent.Set();
         SendServerHandshake(conn);
     }
-    
+
     private void OnClose(IWebSocketConnection conn)
     {
 //        _clients.Remove(conn);
@@ -289,14 +310,24 @@ public class MockedServer
                 _botIntent = JsonConverter.FromJson<BotIntent>(messageJson);
                 _botIntentEvent.Set();
 
-                SendTickEventForBot(conn, _turnNumber++);
-                _tickEvent.Set();
-
                 // Update states
                 _speed += _speedIncrement;
                 _direction += _turnIncrement;
                 _gunDirection += _gunTurnIncrement;
                 _radarDirection += _radarTurnIncrement;
+
+                // Apply bot intent changes
+                if (_botIntent != null)
+                {
+                    if (_botIntent.Firepower > 0)
+                    {
+                        _gunHeat += 1.0 + _botIntent.Firepower.Value / 5.0;
+                        _energy -= _botIntent.Firepower.Value;
+                    }
+                }
+
+                SendTickEventForBot(conn, _turnNumber++);
+                _tickEvent.Set();
                 break;
         }
     }

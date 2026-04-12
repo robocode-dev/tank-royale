@@ -78,10 +78,10 @@ public final class MockedServer {
     private final CountDownLatch openedLatch = new CountDownLatch(1);
     private final CountDownLatch botHandshakeLatch = new CountDownLatch(1);
     private final CountDownLatch gameStartedLatch = new CountDownLatch(1);
-    private final CountDownLatch tickEventLatch = new CountDownLatch(1);
     private final CountDownLatch botIntentLatch = new CountDownLatch(1);
 
-    private CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
+    private volatile CountDownLatch tickEventLatch = new CountDownLatch(1);
+    private volatile CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
     private volatile boolean holdTickEnabled = false;
     private CountDownLatch tickHoldLatch = new CountDownLatch(1);
 
@@ -191,6 +191,26 @@ public final class MockedServer {
         this.radarDirectionMaxLimit = maxLimit;
     }
 
+    public boolean awaitBotReady(int milliSeconds) {
+        return awaitBotHandshake(milliSeconds) && awaitGameStarted(milliSeconds) && awaitTick(milliSeconds);
+    }
+
+    public boolean setBotStateAndAwaitTick(
+            Double energy, Double gunHeat, Double speed, Double direction, Double gunDirection, Double radarDirection) {
+        if (energy != null) {
+            this.energy = energy;
+        }
+        if (gunHeat != null) this.gunHeat = gunHeat;
+        if (speed != null) this.speed = speed;
+        if (direction != null) this.direction = direction;
+        if (gunDirection != null) this.gunDirection = gunDirection;
+        if (radarDirection != null) this.radarDirection = radarDirection;
+
+        tickEventLatch = new CountDownLatch(1);
+        botIntentContinueLatch.countDown();
+        return awaitTick(5000);
+    }
+
     public boolean awaitConnection(int milliSeconds) {
         try {
             return openedLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
@@ -243,6 +263,14 @@ public final class MockedServer {
 
     public BotIntent getBotIntent() {
         return botIntent;
+    }
+
+    public Double getEnergy() {
+        return energy;
+    }
+
+    public Double getGunHeat() {
+        return gunHeat;
     }
 
     private static int findAvailablePort() {
@@ -335,14 +363,22 @@ public final class MockedServer {
                     botIntent = JsonConverter.fromJson(text, BotIntent.class);
                     botIntentLatch.countDown();
 
-                    sendTickEventForBot(conn, turnNumber++);
-                    tickEventLatch.countDown();
-
                     // Update states
                     speed += speedIncrement;
                     direction += turnIncrement;
                     gunDirection += gunTurnIncrement;
                     radarDirection += radarTurnIncrement;
+
+                    // Apply bot intent changes
+                    if (botIntent != null) {
+                        if (botIntent.getFirepower() != null && botIntent.getFirepower() > 0) {
+                            gunHeat += 1.0 + botIntent.getFirepower() / 5.0;
+                            energy -= botIntent.getFirepower();
+                        }
+                    }
+
+                    sendTickEventForBot(conn, turnNumber++);
+                    tickEventLatch.countDown();
                     break;
             }
         }
