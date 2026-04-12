@@ -46,7 +46,7 @@
 - [ ] 4.8 Implement `startThread()` / `stopThread()` -- post messages to start/stop bot Worker; `enableEventHandling()` called on WebSocket (main) thread to prevent race conditions
 - [ ] 4.9 Implement `createRunnable()` logic in Worker -- run bot.run(), catch BotStoppedException, call `dispatchFinalTurnEvents()`, idle loop with go() until stopped, call `dispatchFinalTurnEvents()` again
 - [ ] 4.10 Implement `dispatchEvents(turnNumber)` and `dispatchFinalTurnEvents()`
-- [ ] 4.11 Implement `enableEventHandling(enable)` and `getEventHandlingDisabledTurn()` -- manages `eventHandlingDisabledTurn` to prevent stale event dispatch
+- [ ] 4.11 Implement `enableEventHandling(enable)` and `isEventHandlingDisabled()` -- manages `eventHandlingDisabledTurn` to prevent stale event dispatch
 - [ ] 4.12 Implement state accessors: `getMyId()`, `getGameSetup()`, `getCurrentTickOrThrow()`, `getCurrentTickOrNull()`, `isRunning()`, `setRunning()`
 - [ ] 4.13 Implement rate/speed management: `setTurnRate()`, `setGunTurnRate()`, `setRadarTurnRate()`, `setTargetSpeed()`, `getNewTargetSpeed()`, `getDistanceTraveledUntilStop()`, max rate fields and clamping
 - [ ] 4.14 Implement stop/resume: `setStop(overwrite)`, `setResume()`, `isStopped()`, `IStopResumeListener` callback

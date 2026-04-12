@@ -134,7 +134,7 @@ final class WebSocketHandler implements WebSocket.Listener {
     }
 
     private void handleTick(JsonObject jsonMsg) {
-        if (baseBotInternals.getEventHandlingDisabledTurn()) return;
+        if (baseBotInternals.isEventHandlingDisabled()) return;
 
         baseBotInternals.setTickStartNanoTime(System.nanoTime());
 

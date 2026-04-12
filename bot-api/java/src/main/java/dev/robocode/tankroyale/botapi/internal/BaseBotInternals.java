@@ -200,12 +200,12 @@ public final class BaseBotInternals {
         eventHandlingDisabledTurn = enable ? 0 : getCurrentTickOrThrow().getTurnNumber();
     }
 
-    public boolean getEventHandlingDisabledTurn() {
+    public boolean isEventHandlingDisabled() {
         // Important! Allow an additional turn so events like RoundStarted can be handled
         return eventHandlingDisabledTurn != 0 && eventHandlingDisabledTurn < (getCurrentTickOrThrow().getTurnNumber() - 1);
     }
 
-    int getEventHandlingDisabledTurnValue() {
+    int getEventHandlingDisabledTurn() {
         return eventHandlingDisabledTurn;
     }
 
