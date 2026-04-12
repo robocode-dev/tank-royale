@@ -1,34 +1,14 @@
-## [0.40.1] - 2026-04-12 - First-turn skip fix + breakpoint disconnect fix (Java, .NET, Python)
+## [0.40.1] - 2026-04-12 - First-turn skip fix + breakpoint disconnect fix
 
 ### 🐞 Bug Fixes
 
 - Server:
-    - #206: Fixed bots disconnecting from the server after ~80 seconds while paused at a debugger
-      breakpoint. When a bot's JVM is fully suspended by a debugger, all threads — including the
-      WebSocket client's I/O thread — are frozen, so the bot cannot respond to the server's
-      periodic WebSocket ping frames. The server's connection-lost detection (60-second timeout)
-      then closes the connection. The fix disables connection-lost detection for the duration of
-      a breakpoint pause and restores it the moment the bot resumes.
+    - #206: Fixed bots disconnecting from the server after ~80 seconds while paused at a
+      debugger breakpoint.
 
 - Bot API (Java, .NET, Python):
-    - #202: Fixed first-turn skip — bots no longer receive a `SkippedTurnEvent` on turn 1 or miss
-      their chance to act. The root cause was thread startup cost eating into the 30 ms turn budget
-      before `run()`/`Run()` could execute. The bot thread is now started before the first tick
-      arrives, so it is ready and waiting the moment turn 1 begins.
-    - #202: Fixed several internal errors in the Java bot API that were uncovered while diagnosing
-      the first-turn skip and causing test failures.
-
-### 🧪 Tests
-
-- Runner:
-    - Added a positive slow-soak integration test: `BreakpointStallBot` (a raw WebSocket bot that
-      deliberately ignores ping frames, simulating a frozen JVM) remains connected for 3 minutes
-      while the game is paused at a breakpoint.
-    - Added a negative counterpart: the same bot is disconnected by the server's connection-lost
-      detection within 4 minutes when breakpoint mode is not active — confirming the fix is scoped
-      to breakpoint pauses only, not a global disable.
-    - Both tests are tagged `@Tag("slow")` and excluded from the default `integrationTest` task;
-      run via `./gradlew :runner:slowIntegrationTest`.
+    - #202: Fixed bots receiving a `SkippedTurnEvent` on turn 1 and missing their first chance
+      to act.
 
 ## [0.40.0] - 2026-04-11 - Debug Mode, Breakpoints & Debugger Detection
 

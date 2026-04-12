@@ -14,6 +14,7 @@ Routing hub — load `.ai/*.md` files based on task type below.
 | **Protocol, WebSocket, server comms** | `schema/schemas/README.md` (sequence diagrams + message schemas) |
 | **Testing, builds, Gradle** | `.ai/testing-and-build.md` |
 | **Documentation, README, Javadoc** | `.ai/documentation.md` |
+| **Changelog, release notes** | `.ai/changelog.md` |
 | **Code style, naming, conventions** | `.ai/coding-conventions.md` |
 | **File encoding, UTF-8, standards** | `.ai/standards.md` |
 | **General coding task** | `.ai/core-principles.md` (default) |
