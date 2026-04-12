@@ -53,9 +53,6 @@ TICK_NOT_AVAILABLE_MSG = "Game is not running or tick has not occurred yet. Make
 NOT_CONNECTED_TO_SERVER_MSG = "Not connected to a game server. Make sure onConnected() event handler has been called first"
 
 
-# TODO: This class does not work yet - esp., figure out the asyncio integration and how to handle the bot's main loop.
-
-
 class BaseBotInternals:
     def __init__(
         self,
