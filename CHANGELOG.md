@@ -1,15 +1,14 @@
-## [0.40.1] - 2026-04-12 - First-turn skip fix for .NET
+## [0.40.1] - 2026-04-12 - First-turn skip fix (Java, .NET, Python)
 
 ### 🐞 Bug Fixes
 
-- Bot API (.NET):
-    - #202: Fixed first-turn skip in `.NET` bots caused by the bot thread starting too late.
-      The bot thread is now pre-warmed at `RoundStarted` (before tick 1) so `Run()` can safely
-      access bot state from the very first turn. Without this fix, `.NET` bots skipped turn 1,
-      causing `SkippedTurnEvent` at tick 1 and delaying `ScannedBotEvent` delivery by one tick.
-    - #202: `MockedServer` (test utility) now follows the real server protocol: `GameStarted` is
-      sent on `BotHandshake`, and `RoundStarted + Tick(1)` are sent on `BotReady`. Previously it
-      sent a spurious tick during handshake, masking the first-turn timing bug in tests.
+- Bot API (Java, .NET, Python):
+    - #202: Fixed first-turn skip — bots no longer receive a `SkippedTurnEvent` on turn 1 or miss
+      their chance to act. The root cause was thread startup cost eating into the 30 ms turn budget
+      before `run()`/`Run()` could execute. The bot thread is now started before the first tick
+      arrives, so it is ready and waiting the moment turn 1 begins.
+    - #202: Fixed several internal errors in the Java bot API that were uncovered while diagnosing
+      the first-turn skip and causing test failures.
 
 ## [0.40.0] - 2026-04-11 - Debug Mode, Breakpoints & Debugger Detection
 

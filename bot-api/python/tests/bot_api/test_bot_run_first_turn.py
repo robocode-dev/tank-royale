@@ -48,7 +48,7 @@ class BotRunFirstTurnTest(unittest.TestCase):
 
             def run(self_bot) -> None:
                 self_bot.radar_direction_on_first_run = self_bot.radar_direction
-                while self_bot.is_running:
+                while self_bot.running:
                     self_bot.set_turn_radar_left(MAX_RADAR_TURN_RATE)
                     self_bot.go()
 
@@ -96,7 +96,7 @@ class BotRunFirstTurnTest(unittest.TestCase):
         )
         self.assertAlmostEqual(
             intent.radar_turn_rate,
-            -float(MAX_RADAR_TURN_RATE),
+            float(MAX_RADAR_TURN_RATE),
             places=5,
             msg="First intent must include the radar turn rate set in run() (regression: issue #202)",
         )
