@@ -1,3 +1,16 @@
+## [0.40.1] - 2026-04-12 - First-turn skip fix for .NET
+
+### 🐞 Bug Fixes
+
+- Bot API (.NET):
+    - #202: Fixed first-turn skip in `.NET` bots caused by the bot thread starting too late.
+      The bot thread is now pre-warmed at `RoundStarted` (before tick 1) so `Run()` can safely
+      access bot state from the very first turn. Without this fix, `.NET` bots skipped turn 1,
+      causing `SkippedTurnEvent` at tick 1 and delaying `ScannedBotEvent` delivery by one tick.
+    - #202: `MockedServer` (test utility) now follows the real server protocol: `GameStarted` is
+      sent on `BotHandshake`, and `RoundStarted + Tick(1)` are sent on `BotReady`. Previously it
+      sent a spurious tick during handshake, masking the first-turn timing bug in tests.
+
 ## [0.40.0] - 2026-04-11 - Debug Mode, Breakpoints & Debugger Detection
 
 This release makes Tank Royale a first-class environment for bot development and debugging. The three

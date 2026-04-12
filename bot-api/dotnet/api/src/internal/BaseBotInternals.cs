@@ -175,10 +175,19 @@ sealed class BaseBotInternals
         IsRunning = true;
         try
         {
+            // Block until the first tick arrives so Run() can safely access bot state
+            // (e.g. RadarDirection). By the time PulseAll() fires we are guaranteed
+            // that BotInternals.OnFirstTurn() (priority 110) has already called
+            // ClearRemaining(), capturing the initial directions from the tick state.
+            WaitUntilFirstTickArrived();
             bot.Run();
         }
         catch (ThreadInterruptedException)
         {
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
         }
 
         DispatchFinalTurnEvents();
@@ -398,6 +407,22 @@ sealed class BaseBotInternals
         if (Thread.CurrentThread != _thread)
         {
             Thread.CurrentThread.Interrupt();
+        }
+    }
+
+    // Blocks the pre-warmed bot thread until the first tick of the round arrives.
+    // The thread is started at round-started (before any tick), so it must wait here
+    // before Run() can safely read bot state (radar direction, etc.).
+    // PulseAll() is called by OnNextTurn() (priority 100) after BotInternals.OnFirstTurn()
+    // (priority 110) has already captured the initial directions via ClearRemaining().
+    private void WaitUntilFirstTickArrived()
+    {
+        lock (_nextTurnMonitor)
+        {
+            while (IsRunning && CurrentTickOrNull == null)
+            {
+                Monitor.Wait(_nextTurnMonitor);
+            }
         }
     }
 
