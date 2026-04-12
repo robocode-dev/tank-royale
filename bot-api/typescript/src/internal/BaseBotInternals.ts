@@ -662,14 +662,13 @@ export class BaseBotInternals {
       this.sharedView = new Int32Array(this.sharedBuffer);
     }
     Atomics.store(this.sharedView, SAB_SLOT_STOP, 0);
-    // In Worker mode, startThread is called from BotInternals.onFirstTurn() which runs on the
-    // Worker thread. runBotLoop blocks synchronously here — that is intentional.
     this.runBotLoop(bot);
   }
 
   private runBotLoop(bot: IBot): void {
     this.setRunning(true);
     try {
+      this.waitUntilFirstTickArrived();
       bot.run();
     } catch (e) {
       if (!(e instanceof BotStoppedException)) {
@@ -685,6 +684,22 @@ export class BaseBotInternals {
       }
     }
     this.dispatchFinalTurnEvents();
+  }
+
+  isWorkerMode(): boolean { return this.workerMode; }
+
+  // Blocks the pre-warmed bot thread until the first tick of the round arrives.
+  // The thread is started at round-started (before any tick), so it must wait here
+  // before run() can safely read bot state (radar direction, etc.).
+  // Only applicable in worker mode — in legacy (non-worker) mode, returns immediately.
+  private waitUntilFirstTickArrived(): void {
+    if (!this.workerMode || this.sharedView == null) return;
+    while (this.tickEvent == null && this.running) {
+      const curVal = Atomics.load(this.sharedView, SAB_SLOT_TURN);
+      Atomics.wait(this.sharedView, SAB_SLOT_TURN, curVal, 500);
+      this.drainWorkerMessages();
+      this.stopRogueThread();
+    }
   }
 
   stopThread(): void {
