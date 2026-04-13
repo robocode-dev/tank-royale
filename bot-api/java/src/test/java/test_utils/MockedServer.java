@@ -79,10 +79,10 @@ public final class MockedServer {
     private final CountDownLatch openedLatch = new CountDownLatch(1);
     private final CountDownLatch botHandshakeLatch = new CountDownLatch(1);
     private final CountDownLatch gameStartedLatch = new CountDownLatch(1);
-    private CountDownLatch tickEventLatch = new CountDownLatch(1);
-    private CountDownLatch botIntentLatch = new CountDownLatch(1);
+    private volatile CountDownLatch tickEventLatch = new CountDownLatch(1);
+    private volatile CountDownLatch botIntentLatch = new CountDownLatch(1);
 
-    private CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
+    private volatile CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
 
     private volatile BotHandshake botHandshake;
     private volatile BotIntent botIntent;
@@ -286,12 +286,15 @@ public final class MockedServer {
 
     public boolean awaitBotIntent(int milliSeconds) {
         try {
-            botIntentContinueLatch.countDown();
             return botIntentLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             System.err.println("awaitBotIntent() was interrupted");
         }
         return false;
+    }
+
+    public void continueBotIntent() {
+        botIntentContinueLatch.countDown();
     }
 
     public BotHandshake getBotHandshake() {

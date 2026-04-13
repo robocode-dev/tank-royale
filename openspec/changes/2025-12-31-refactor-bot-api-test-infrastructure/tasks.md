@@ -465,15 +465,15 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 ### Task 5.1: Refactor Java CommandsRadarTest
 
-**Files**: `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/CommandsRadarTest.java` (if exists, create if not)
+**Files**: `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/CommandsRadarTest.java`
 
-- [ ] Convert to extend `AbstractBotTest`
-- [ ] Refactor `test_rescan_intent()` to use `executeCommand()`
-- [ ] Refactor `test_blocking_rescan()` to use `executeBlocking()`
-- [ ] Refactor `test_adjust_radar_body()` to use new patterns
-- [ ] Refactor `test_adjust_radar_gun()` to use new patterns
-- [ ] Remove manual thread spawning and sleep calls
-- [ ] Verify tests pass and are stable
+- [x] Convert to extend `AbstractBotTest`
+- [x] Implement `testRescanIntent()` (using aligned `awaitExpectedIntent` pattern)
+- [x] Implement `testBlockingRescan()`
+- [x] Implement `testAdjustRadarBody()`
+- [x] Implement `testAdjustRadarGun()`
+- [x] Remove manual thread spawning and sleep calls
+- [x] Verify tests pass and are stable
 
 **Estimated time**: 1 day
 
@@ -481,32 +481,33 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 **Files**: `bot-api/dotnet/test/src/CommandsRadarTest.cs`
 
-- [ ] Refactor `Test_Rescan_Intent()` to use `ExecuteCommand()`
-- [ ] Refactor `Test_Blocking_Rescan()` to use `ExecuteBlocking()`
-- [ ] Refactor `Test_Adjust_Radar_Body()` to use new patterns
-- [ ] Refactor `Test_Adjust_Radar_Gun()` to use new patterns
-- [ ] Remove `Task.Run()` and `Thread.Sleep()` patterns
-- [ ] Verify tests pass and are stable
+- [x] Implement `TestRescanIntent()`
+- [x] Implement `TestBlockingRescan()`
+- [x] Implement `TestAdjustRadarBody()`
+- [x] Implement `TestAdjustRadarGun()`
+- [x] Remove `Task.Run()` and `Thread.Sleep()` patterns
+- [x] Verify tests pass and are stable
 
 **Estimated time**: 1 day
 
 ### Task 5.3: Implement Python CommandsRadarTest
 
-**Files**: `bot-api/python/tests/bot_api/commands/test_commands_radar.py` (new)
+**Files**: `bot-api/python/tests/bot_api/test_commands_radar.py`
 
-- [ ] Create test module extending `AbstractBotTest`
-- [ ] Implement `test_TR_API_CMD_003_rescan_intent()`
-- [ ] Implement `test_TR_API_CMD_003_blocking_rescan()`
-- [ ] Implement `test_TR_API_CMD_003_adjust_radar_body()`
-- [ ] Implement `test_TR_API_CMD_003_adjust_radar_gun()`
-- [ ] Verify tests pass and are stable
+- [x] Create test module extending `AbstractBotTest`
+- [x] Implement `test_rescan_intent()`
+- [x] Implement `test_blocking_rescan()`
+- [x] Implement `test_adjust_radar_body()`
+- [x] Implement `test_adjust_radar_gun()`
+- [x] Verify tests pass and are stable
 
 **Estimated time**: 1.5 days
 
 ### Task 5.4: Update Documentation
 
-- [ ] Update TEST-MATRIX.md to mark CMD-003 as complete
-- [ ] Document any Python-specific considerations
+- [x] Update TEST-MATRIX.md to mark CMD-003 as complete
+- [x] Document alignment fix in CROSS-LANGUAGE-VERIFICATION.md
+- [x] All 3 languages now use explicit `continueBotIntent()` signal
 
 **Estimated time**: 0.5 days
 

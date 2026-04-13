@@ -168,16 +168,16 @@ Notes:
 
 - TR-API-CMD-001 Movement commands: setting target speed/turn rates updates the next tick’s intent payload exactly as
   per spec.
-- TR-API-CMD-002 Fire command: power bounds enforced; resulting intent serializes correctly; cooldown respected if
-  applicable.
-    - [x] `test_TR_API_CMD_002_fire_power_bounds()`: Verify firepower clamping (0.1 to 3.0).
-    - [x] `test_TR_API_CMD_002_fire_cooldown()`: Verify `setFire()` returns `false` if `getGunHeat() > 0`.
-    - [x] `test_TR_API_CMD_002_fire_energy_limit()`: Verify `setFire()` returns `false` if `firepower > getEnergy()`.
-    - [x] `test_TR_API_CMD_002_fire_nan_throws()`: Verify `Double.NaN` throws `IllegalArgumentException`.
-- TR-API-CMD-003 Radar/Scan commands: rescan/locking behavior produces expected intents/events.
-    - These tests have proven difficult to implement in using even the strongest AI.
-    - Java and .Net/C# test seems to work
-    - Python: needs to be implemented.
+- ✅ TR-API-CMD-002 Fire command: power bounds enforced; resulting intent serializes correctly; cooldown respected. [Parity: Java/.NET/Python]
+    - ✅ `test_TR_API_CMD_002_fire_power_bounds()`: Verify firepower clamping (0.1 to 3.0).
+    - ✅ `test_TR_API_CMD_002_fire_cooldown()`: Verify `setFire()` returns `false` if `getGunHeat() > 0`.
+    - ✅ `test_TR_API_CMD_002_fire_energy_limit()`: Verify `setFire()` returns `false` if `firepower > getEnergy()`.
+    - ✅ `test_TR_API_CMD_002_fire_nan_throws()`: Verify `Double.NaN` / `float('nan')` throws appropriate exception.
+- ✅ TR-API-CMD-003 Radar/Scan commands: rescan/locking behavior produces expected intents/events. [Parity: Java/.NET/Python]
+    - ✅ `test_TR_API_CMD_003_rescan_intent()`: Verify `setRescan()` sets the flag in the next intent.
+    - ✅ `test_TR_API_CMD_003_blocking_rescan()`: Verify `rescan()` blocking call sets the flag.
+    - ✅ `test_TR_API_CMD_003_adjust_radar_body()`: Verify `setAdjustRadarForBodyTurn()` flag in intent.
+    - ✅ `test_TR_API_CMD_003_adjust_radar_gun()`: Verify `setAdjustRadarForGunTurn()` flag in intent.
 - TR-API-CMD-004 Graphics frame emission: drawings are emitted in the tick where added and cleared/reset according to
   API semantics.
 

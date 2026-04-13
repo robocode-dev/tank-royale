@@ -125,6 +125,13 @@ abstract class AbstractBotTest {
         thread.start();
     }
 
+    protected void goAsync(Runnable runnable) {
+        var thread = new Thread(runnable);
+        thread.setName("TestBot-action-" + System.currentTimeMillis());
+        trackedThreads.add(thread);
+        thread.start();
+    }
+
     protected BaseBot startAndAwaitHandshake() {
         var bot = start();
         awaitBotHandshake();
@@ -133,7 +140,11 @@ abstract class AbstractBotTest {
 
     protected BaseBot startAndAwaitTick() {
         var bot = start();
+        awaitGameStarted(bot);
         awaitTick(bot);
+        // Drain the automatic intent sent upon receiving the first tick
+        server.continueBotIntent();
+        awaitBotIntent();
         return bot;
     }
 
@@ -156,6 +167,9 @@ abstract class AbstractBotTest {
         // Use setBotStateAndAwaitTick to actually send the state to the bot
         boolean tickSent = server.setBotStateAndAwaitTick(100.0, 0.0, null, null, null, null);
         assertThat(tickSent).as("setBotStateAndAwaitTick should send tick").isTrue();
+        // Drain the automatic intent sent upon receiving the manual tick
+        server.continueBotIntent();
+        awaitBotIntent();
         // Wait for bot to update its internal state by polling until energy matches
         boolean stateUpdated = awaitCondition(() -> bot.getEnergy() == 100.0 && bot.getGunHeat() == 0.0, 2000);
         assertThat(stateUpdated).as("Bot state should update to energy=100, gunHeat=0 (actual: energy=" + bot.getEnergy() + ", gunHeat=" + bot.getGunHeat() + ")").isTrue();
@@ -163,11 +177,11 @@ abstract class AbstractBotTest {
     }
 
     protected void awaitBotHandshake() {
-        assertThat(server.awaitBotHandshake(1000)).isTrue();
+        assertThat(server.awaitBotHandshake(5000)).isTrue();
     }
 
     protected void awaitGameStarted(BaseBot bot) {
-        assertThat(server.awaitGameStarted(1000)).isTrue();
+        assertThat(server.awaitGameStarted(5000)).isTrue();
 
         long startMillis = System.currentTimeMillis();
         boolean noException = false;
@@ -182,7 +196,7 @@ abstract class AbstractBotTest {
     }
 
     protected void awaitTick(BaseBot bot) {
-        assertThat(server.awaitTick(1000)).isTrue();
+        assertThat(server.awaitTick(5000)).isTrue();
 
         long startMillis = System.currentTimeMillis();
         boolean noException = false;
@@ -197,7 +211,7 @@ abstract class AbstractBotTest {
     }
 
     protected void awaitBotIntent() {
-        assertThat(server.awaitBotIntent(1000)).isTrue();
+        assertThat(server.awaitBotIntent(5000)).isTrue();
     }
 
     /**
@@ -211,6 +225,7 @@ abstract class AbstractBotTest {
     protected <T> T executeCommand(java.util.function.Supplier<T> command) {
         server.resetBotIntentLatch();
         T result = command.get();
+        server.continueBotIntent();
         awaitBotIntent();
         return result;
     }
@@ -224,6 +239,7 @@ abstract class AbstractBotTest {
     protected void executeBlocking(Runnable action) {
         server.resetBotIntentLatch();
         action.run();
+        server.continueBotIntent();
         awaitBotIntent();
     }
 
@@ -238,6 +254,7 @@ abstract class AbstractBotTest {
     protected <T> CommandResult<T> executeCommandAndGetIntent(java.util.function.Supplier<T> command) {
         server.resetBotIntentLatch();
         T result = command.get();
+        server.continueBotIntent();
         awaitBotIntent();
         return new CommandResult<>(result, server.getBotIntent());
     }

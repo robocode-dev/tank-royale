@@ -119,7 +119,11 @@ public class AbstractBotTest
     protected BaseBot StartAndAwaitTick()
     {
         var bot = Start();
+        AwaitGameStarted(bot);
         AwaitTick(bot);
+        // Drain the automatic intent sent upon receiving the first tick
+        Server.ContinueBotIntent();
+        AwaitBotIntent();
         return bot;
     }
 
@@ -185,6 +189,7 @@ public class AbstractBotTest
     {
         Server.ResetBotIntentEvent();
         var result = command();
+        Server.ContinueBotIntent();
         AwaitBotIntent();
         return result;
     }
@@ -198,6 +203,7 @@ public class AbstractBotTest
     {
         Server.ResetBotIntentEvent();
         action();
+        Server.ContinueBotIntent();
         AwaitBotIntent();
     }
 
@@ -212,6 +218,7 @@ public class AbstractBotTest
     {
         Server.ResetBotIntentEvent();
         var result = command();
+        Server.ContinueBotIntent();
         AwaitBotIntent();
         return new CommandResult<T>(result, Server.BotIntent);
     }
@@ -274,6 +281,9 @@ public class AbstractBotTest
         // Use SetBotStateAndAwaitTick to actually send the state to the bot
         bool tickSent = Server.SetBotStateAndAwaitTick(100.0, 0.0, null, null, null, null);
         Assert.That(tickSent, Is.True, "SetBotStateAndAwaitTick should send tick");
+        // Drain the automatic intent sent upon receiving the manual tick
+        Server.ContinueBotIntent();
+        AwaitBotIntent();
         // Wait for bot to update its internal state by polling until energy matches
         bool stateUpdated = AwaitCondition(() => bot.Energy == 100.0 && bot.GunHeat == 0.0, 2000);
         Assert.That(stateUpdated, Is.True, $"Bot state should update to energy=100, gunHeat=0 (actual: energy={bot.Energy}, gunHeat={bot.GunHeat})");

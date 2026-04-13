@@ -110,10 +110,10 @@ class MockedServer:
         self._bot_ready_event = threading.Event()  # Set when bot sends BotReady
         self._tick_event = threading.Event()
         self._bot_intent_event = threading.Event()
-        # Initialize continue event to SET so intents flow through by default
-        # Tests call reset_bot_intent_latch() to clear it and set up for capture
+        # Initialize continue event to CLEAR so intents are blocked by default
+        # Tests call continue_bot_intent() to release it
         self._bot_intent_continue_event = threading.Event()
-        self._bot_intent_continue_event.set()  # Allow intents through by default
+        self._bot_intent_continue_event.clear()  # Block intents by default
 
         # state captured
         # These are accessed from multiple threads and must be protected by _lock
@@ -349,14 +349,15 @@ class MockedServer:
 
     def await_bot_intent(self, timeout_ms: int) -> bool:
         """Wait for bot intent with timeout. Matches Java's awaitBotIntent().
-
-        First releases the continue event to allow the handler to proceed,
-        then waits for the intent event to be signaled.
+        
+        Does NOT release the continue event. Call continue_bot_intent() first if needed.
         """
-        # Release the continue event (like Java: botIntentContinueLatch.countDown())
-        self._bot_intent_continue_event.set()
         # Then wait for the intent event (like Java: botIntentLatch.await())
         return self._bot_intent_event.wait(timeout_ms / 1000.0)
+
+    def continue_bot_intent(self) -> None:
+        """Release the continue event (like Java: botIntentContinueLatch.countDown())"""
+        self._bot_intent_continue_event.set()
 
     def reset_bot_intent_latch(self) -> None:
         """Reset the bot intent event. Call before triggering an intent you want to capture."""
@@ -667,15 +668,14 @@ class MockedServer:
         Bridge threading.Event into asyncio loop using polling.
         CRITICAL: Do NOT use run_in_executor(None, ...) as it creates a default
         ThreadPoolExecutor that never shuts down and causes pytest to hang!
-
-        Note: We do NOT clear the event here. The event stays set until
-        reset_bot_intent_latch() is called. This allows intents to flow
-        through during setup, and only blocks when test explicitly resets.
         """
         # Poll with small sleep instead of blocking executor
         while not self._bot_intent_continue_event.wait(timeout=0.01):
             await asyncio.sleep(0)  # Yield to event loop
-        # Do NOT clear here - let reset_bot_intent_latch() control blocking
+        
+        # Clear the event immediately after unblocking to ensure the next intent blocks.
+        # This matches Java's CountDownLatch(1) behavior which is "one-time release".
+        self._bot_intent_continue_event.clear()
 
     async def _send_server_handshake(self, websocket) -> None:
         # Build ServerHandshake using required constructor args per generated schema

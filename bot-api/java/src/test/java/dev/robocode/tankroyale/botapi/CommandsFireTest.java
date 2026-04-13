@@ -30,6 +30,7 @@ class CommandsFireTest extends AbstractBotTest {
         boolean result = bot.setFire(firepower);
         // Fire command just sets the intent value; we need go() to send it
         goAsync(bot);
+        server.continueBotIntent();
         awaitBotIntent();
         return new CommandResult<>(result, server.getBotIntent());
     }

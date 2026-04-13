@@ -339,8 +339,6 @@ public class MockedServer
     {
         try
         {
-            // Signal handler to proceed (matches Java's botIntentContinueLatch.countDown())
-            _botIntentContinueEvent.Set();
             // Wait for handler to process intent and signal back
             return _botIntentEvent.WaitOne(milliSeconds);
         }
@@ -350,6 +348,12 @@ public class MockedServer
         }
 
         return false;
+    }
+
+    public void ContinueBotIntent()
+    {
+        // Signal handler to proceed (matches Java's botIntentContinueLatch.countDown())
+        _botIntentContinueEvent.Set();
     }
 
     public BotHandshake Handshake { get; private set; }

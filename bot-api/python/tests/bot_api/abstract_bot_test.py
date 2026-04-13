@@ -95,6 +95,10 @@ class AbstractBotTest(unittest.TestCase):
         self.start_async(bot)
         if not self.server.await_bot_ready(2000):
             raise TimeoutError("Bot failed to become ready")
+        
+        # Drain the automatic intent sent upon receiving the first tick
+        self.server.continue_bot_intent()
+        self.await_bot_intent()
         return bot
 
     def start_and_prepare_for_fire(self, bot: Optional[Bot] = None, energy: float = 100.0) -> Bot:
@@ -115,11 +119,15 @@ class AbstractBotTest(unittest.TestCase):
             TimeoutError: If bot fails to become ready within timeout.
         """
         bot = self.start_bot(bot)
+        # Drain of first tick intent is now handled in start_bot()
         self.await_game_started(bot)
         # Set gun heat to 0 and energy so bot can fire immediately
         # Use set_bot_state_and_await_tick to actually send the state to the bot
         tick_sent = self.server.set_bot_state_and_await_tick(energy=energy, gun_heat=0.0)
         self.assertTrue(tick_sent, "set_bot_state_and_await_tick should send tick")
+        # Drain the automatic intent sent upon receiving the manual tick
+        self.server.continue_bot_intent()
+        self.await_bot_intent()
         # Wait for bot to update its internal state by polling until energy matches
         state_updated = self.await_condition(lambda: bot.energy == energy and bot.gun_heat == 0.0, 2000)
         if not state_updated:
@@ -228,6 +236,7 @@ class AbstractBotTest(unittest.TestCase):
         """
         self.server.reset_bot_intent_event()
         result = command()
+        self.server.continue_bot_intent()
         self.await_bot_intent()
         return result
 
@@ -241,6 +250,7 @@ class AbstractBotTest(unittest.TestCase):
         """
         self.server.reset_bot_intent_event()
         action()
+        self.server.continue_bot_intent()
         self.await_bot_intent()
 
     def execute_command_and_get_intent(self, command: Callable[[], Any]) -> CommandResult:
@@ -256,6 +266,7 @@ class AbstractBotTest(unittest.TestCase):
         """
         self.server.reset_bot_intent_event()
         result = command()
+        self.server.continue_bot_intent()
         self.await_bot_intent()
         return CommandResult(result, self.server.get_bot_intent())
 
@@ -285,6 +296,7 @@ class AbstractBotTest(unittest.TestCase):
 
         # Wait for intent with timeout - this also sets the continue event
         # which allows the server to store the intent
+        self.server.continue_bot_intent()
         intent_received = self.server.await_bot_intent(int(TEST_TIMEOUT_SECONDS * 1000))
 
         # Wait for go thread to complete

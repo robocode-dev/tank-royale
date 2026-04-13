@@ -17,6 +17,7 @@ The following table shows the test infrastructure components and their status ac
 | awaitBotReady() | ✅ | ✅ | ✅ | Waits for full handshake + tick |
 | setBotStateAndAwaitTick() | ✅ | ✅ | ✅ | Updates state and sends tick |
 | setInitialBotState() | ✅ | ✅ | ✅ | Sets state before bot runs |
+| continueBotIntent() | ✅ | ✅ | ✅ | Explicit unblock of server intent processing |
 | executeCommand() | ✅ | ✅ | ✅ | Non-blocking command execution |
 | executeBlocking() | ✅ | ✅ | ✅ | Blocking action execution |
 | executeCommandAndGetIntent() | ✅ | ✅ | ✅ | Captures intent after command |
@@ -41,13 +42,11 @@ All three languages pass the following state synchronization tests:
 | .NET | MockedServerTest.cs | 2 | ✅ PASS |
 | Python | test_mocked_server.py | 7 | ✅ PASS |
 
-### Intent Capture Tests (Python-Only)
+### Intent Capture Alignment
 
-Python has additional intent capture tests (`test_execute_command_and_get_intent`, `test_reset_bot_intent_event_synchronization`)
-that are NOT implemented in Java/.NET. This is documented as a language-specific quirk:
+All languages now use an explicit `continueBotIntent` signal to unblock the server. This ensures consistent "stale intent" draining across all platforms and allows for reliable capture of specific intents triggered by bot commands.
 
-- **Python**: Intent capture after property setting works due to asyncio's cooperative scheduling
-- **Java/.NET**: Intent capture requires explicit tick triggering due to blocking synchronization primitives
+- **Java/ .NET / Python**: Intent capture is synchronized by explicitly unblocking the server after a command is issued, ensuring the next received intent is the one containing the command's effect.
 
 The core state synchronization tests (`TestAwaitBotReady`, `TestSetBotStateAndAwaitTick`) verify cross-language parity.
 Advanced intent capture patterns may be added to Java/.NET in future iterations.
