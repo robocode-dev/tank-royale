@@ -54,6 +54,27 @@
 
 **Estimated time**: 1-2 days
 
+### Task 1.3b: TypeScript MockedServer Enhancement
+
+**Files**: `bot-api/typescript/test/test_utils/MockedServer.ts`
+
+> **Status**: ✅ COMPLETED. `awaitBotReady()`, `setBotStateAndAwaitTick()`, and the `botIntentContinueLatch`
+> hold/release mechanism are all present and tested in `MockedServerEnhancement.test.ts`.
+>
+> **Note on Worker threads**: The TypeScript Bot API runs its `run()` loop in a Worker thread (ADR-0028).
+> Integration tests therefore use a `MinimalBotClient` (raw WebSocket client) rather than a full `Bot`
+> instance, mirroring how Java/Python/.NET tests drive the bot through MockedServer. This is intentional.
+
+- [x] Add `awaitBotReady(timeoutMs: number)` method
+- [x] Add `setBotStateAndAwaitTick()` method with optional parameters
+- [x] Implement hold/release tick mechanism (`botIntentContinueLatch`)
+- [x] Add unit tests in `MockedServerEnhancement.test.ts`
+
+> **Remaining**: `setEnergy()`, `setGunHeat()`, `setSpeed()` are the TypeScript equivalents of the
+> bad-practice methods listed in Task 6.6 and should be removed once all tests are migrated.
+
+**Estimated time**: already done
+
 ### Task 1.4: Cross-Language Verification
 
 - [x] Create smoke test that verifies state synchronization works identically across languages
@@ -244,6 +265,7 @@ as a workaround. All AI coding assistants have struggled with this issue.
 - Java: MockedServerTest (2 tests) ✅ PASS
 - .NET: MockedServerTest (2 tests) ✅ PASS  
 - Python: test_mocked_server.py (7 tests) ✅ PASS
+- TypeScript: MockedServerEnhancement.test.ts (2 tests) ✅ PASS
 
 **Estimated time**: 0.5 days → **Actual: 0.25 hours**
 
@@ -305,6 +327,24 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 **Estimated time**: 0.25 days (remaining items only) → **Actual: 0.25 hours**
 
+### Task 2.3b: TypeScript AbstractBotTest Base Class
+
+**Files**: `bot-api/typescript/test/test_utils/AbstractBotTest.ts` (TO CREATE)
+
+> **Worker-thread constraint**: Because the TypeScript Bot API runs its `run()` loop in a Worker thread
+> (ADR-0028), instantiating a real `Bot` in-process is impractical for integration tests. The base class
+> should instead start a `MockedServer` and a `MinimalBotClient` (raw WS client) for protocol-level
+> command tests, mirroring the approach already used in `MockedServerEnhancement.test.ts`.
+
+- [ ] Create `AbstractBotTest` base class with `beforeEach`/`afterEach` using `MockedServer` lifecycle
+- [ ] Add `startBot()` that starts a `MinimalBotClient` and awaits `awaitBotReady()`
+- [ ] Implement `executeCommand<T>(fn: () => T)` — resolves after next `awaitBotIntent()`
+- [ ] Implement `executeCommandAndGetIntent<T>(fn: () => T)` — returns `[result, BotIntent]`
+- [ ] Implement `executeBlocking(fn: () => void)` for blocking command pattern
+- [ ] Add JSDoc for all public members
+
+**Estimated time**: 0.5 days
+
 ### Task 2.4: Integration Testing
 
 > **Status (2026-01-29)**: COMPLETED. Core state sync tests verified across all languages.
@@ -321,6 +361,7 @@ as a workaround. All AI coding assistants have struggled with this issue.
 **Language-Specific Differences**:
 - Python supports `execute_command_and_get_intent` tests due to asyncio's cooperative scheduling
 - Java/.NET have different timing semantics for intent capture after property setting
+- TypeScript uses a `MinimalBotClient` (raw WS) instead of a real `Bot` instance due to Worker threads (ADR-0028)
 - Core state sync behavior is identical across all languages (verified)
 
 **Estimated time**: 0.5 days → **Actual: 0.5 hours**
@@ -393,6 +434,21 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 **Estimated time**: 1-2 days → **Actual: 0.25 days**
 
+### Task 3.4: TypeScript Test Bot Builder
+
+**Files**: `bot-api/typescript/test/test_utils/TestBotBuilder.ts` (TO CREATE)
+
+> **Worker-thread constraint**: Because a real `Bot` instance runs its `run()` loop in a Worker thread
+> (ADR-0028), the TypeScript builder produces a `MinimalBotClient`-backed stub rather than a full `Bot`
+> subclass. This is sufficient for testing protocol-level command semantics (fire, radar, movement).
+
+- [ ] Create `TestBotBuilder` class with fluent builder pattern
+- [ ] Support `BotBehavior` enum: `Passive`, `Aggressive`, `Scanning`, `Custom`
+- [ ] Allow callbacks for `onTick`, `onIntent`, and lifecycle events
+- [ ] Add unit tests in `TestBotBuilderTest.test.ts`
+
+**Estimated time**: 1 day
+
 ---
 
 ## Phase 4: Implement TR-API-CMD-002 Fire Command Tests
@@ -455,6 +511,25 @@ as a workaround. All AI coding assistants have struggled with this issue.
 - [x] Add proper docstrings
 
 **Estimated time**: 2 days → **Actual: 0.25 days**
+
+### Task 4.3b: TypeScript CommandsFireTest
+
+**Files**: `bot-api/typescript/test/CommandsFireTest.test.ts` (TO CREATE)
+
+- [ ] Create test file using `AbstractBotTest` helpers (Task 2.3b)
+- [ ] Test: Firepower below 0.1 is clamped to 0.1
+- [ ] Test: Firepower above 3.0 is clamped to 3.0
+- [ ] Test: Valid firepower (1.0) is preserved in intent
+- [ ] Test: Fire fails when gun is hot (gunHeat > 0)
+- [ ] Test: Fire fails when energy is too low
+- [ ] Test: Fire with NaN throws `BotException`
+- [ ] Test: Fire with negative value throws `BotException`
+- [ ] Test: Fire with Infinity throws `BotException`
+- [ ] Test: Fire with exact minimum (0.1) succeeds
+- [ ] Test: Fire with exact maximum (3.0) succeeds
+- [ ] Add `describe`/`it` blocks with descriptive names (Vitest)
+
+**Estimated time**: 1 day
 
 ### Task 4.4: Verify Test Coverage
 
@@ -520,6 +595,19 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 **Estimated time**: 1.5 days
 
+### Task 5.3b: TypeScript CommandsRadarTest
+
+**Files**: `bot-api/typescript/test/CommandsRadarTest.test.ts` (TO CREATE)
+
+- [ ] Create test file using `AbstractBotTest` helpers (Task 2.3b)
+- [ ] Implement `testRescanIntent()` (rescan flag set in intent)
+- [ ] Implement `testBlockingRescan()` (awaits next tick)
+- [ ] Implement `testAdjustRadarBody()` (adjust radar for body turn flag)
+- [ ] Implement `testAdjustRadarGun()` (adjust radar for gun turn flag)
+- [ ] Verify tests pass and are stable
+
+**Estimated time**: 1 day
+
 ### Task 5.4: Update Documentation
 
 - [x] Update TEST-MATRIX.md to mark CMD-003 as complete
@@ -582,6 +670,21 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 **Estimated time**: 1-2 days (test file exists; main blocker is Task 1.5.4)
 
+### Task 6.4b: TypeScript Tests
+
+**Files**: `bot-api/typescript/test/`
+
+> **Note**: `BotLifecycle.test.ts` uses internal class instantiation (not `MockedServer`) and covers much
+> of the lifecycle. Additional tests using `MockedServer` + `AbstractBotTest` will focus on command
+> semantics (CMD-001, CMD-002, CMD-003, CMD-004).
+
+- [ ] Implement movement tests (`CommandsMovementTest.test.ts`, TR-API-CMD-001) using `AbstractBotTest`
+- [ ] Verify graphics tests (TR-API-CMD-004) are in scope or document why skipped
+- [ ] Verify lifecycle tests (`BotLifecycle.test.ts`) are migrated or confirmed up-to-date
+- [ ] Verify all tests pass after changes
+
+**Estimated time**: 1-2 days
+
 ### Task 6.5: Remove Dead Code
 
 - [ ] Remove old test-specific helper methods no longer needed (in test classes, NOT MockedServer)
@@ -600,12 +703,12 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 **Methods to DELETE completely** (all languages):
 
-| Java                 | .NET                 | Python                |
-|----------------------|----------------------|-----------------------|
-| `setEnergy(double)`  | `SetEnergy(double)`  | `set_energy(float)`   |
-| `setGunHeat(double)` | `SetGunHeat(double)` | `set_gun_heat(float)` |
-| `setSpeed(double)`   | `SetSpeed(double)`   | `set_speed(float)`    |
-| `sendTick()`         | `SendTick()`         | `send_tick()`         |
+| Java                 | .NET                 | Python                | TypeScript            |
+|----------------------|----------------------|-----------------------|-----------------------|
+| `setEnergy(double)`  | `SetEnergy(double)`  | `set_energy(float)`   | `setEnergy(number)`   |
+| `setGunHeat(double)` | `SetGunHeat(double)` | `set_gun_heat(float)` | `setGunHeat(number)`  |
+| `setSpeed(double)`   | `SetSpeed(double)`   | `set_speed(float)`    | `setSpeed(number)`    |
+| `sendTick()`         | `SendTick()`         | `send_tick()`         | N/A (private)         |
 
 **Rationale**: These methods encourage flaky, timing-dependent tests. By removing them entirely:
 
@@ -625,6 +728,7 @@ as a workaround. All AI coding assistants have struggled with this issue.
 - [ ] Delete methods from Java MockedServer
 - [ ] Delete methods from .NET MockedServer
 - [ ] Delete methods from Python MockedServer
+- [ ] Delete methods from TypeScript MockedServer (`setEnergy`, `setGunHeat`, `setSpeed`)
 - [ ] Run all tests to confirm nothing breaks
 - [ ] Update any documentation referencing old methods
 
@@ -671,6 +775,7 @@ as a workaround. All AI coding assistants have struggled with this issue.
 - [ ] Add JavaDoc to Java test utilities
 - [ ] Add XML doc comments to .NET test utilities
 - [ ] Add docstrings to Python test utilities
+- [ ] Add JSDoc/TSDoc to TypeScript test utilities
 - [ ] Add comments to complex test examples
 
 **Estimated time**: 1 day
@@ -684,6 +789,7 @@ as a workaround. All AI coding assistants have struggled with this issue.
 - [ ] Run all Java tests: `./gradlew :bot-api:java:test`
 - [ ] Run all .NET tests: `./gradlew :bot-api:dotnet:test`
 - [ ] Run all Python tests: `./gradlew :bot-api:python:test`
+- [ ] Run all TypeScript tests: `./gradlew :bot-api:typescript:test` (or `cd bot-api/typescript && npm test`)
 - [ ] Document any failures
 - [ ] Fix any issues found
 
@@ -704,6 +810,7 @@ as a workaround. All AI coding assistants have struggled with this issue.
 - [ ] Verify CMD-002 tests are equivalent across languages
 - [ ] Verify CMD-003 tests are equivalent across languages
 - [ ] Verify CMD-004 tests are equivalent across languages (if applicable)
+- [ ] Verify TypeScript tests cover the same cases as Java/Python/.NET (noting MinimalBotClient pattern)
 - [ ] Verify test behavior is identical (not just names)
 - [ ] Document any intentional differences
 
