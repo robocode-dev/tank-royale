@@ -1,0 +1,13 @@
+{
+  "name": "BreakpointStallBot",
+  "version": "1.0",
+  "authors": [
+    "Test"
+  ],
+  "description": "Simulates a bot frozen at a debugger breakpoint: no pong responses, no intents. Used to verify issue #206.",
+  "gameTypes": [
+    "1v1",
+    "classic",
+    "melee"
+  ]
+}

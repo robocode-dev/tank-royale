@@ -7,6 +7,8 @@ data class BotState(
     val isDroid: Boolean,
     val id: Int,
     val sessionId: String,
+    val name: String? = null,
+    val version: String? = null,
     val energy: Double,
     val x: Double,
     val y: Double,

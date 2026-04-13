@@ -1,0 +1,85 @@
+name: Verify Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version to verify (e.g. 0.39.0)"
+        required: true
+        type: string
+
+# No secrets needed — all checks use public registry APIs.
+permissions:
+  contents: read
+
+jobs:
+
+  check-nuget:
+    name: "NuGet — Robocode.TankRoyale.BotApi"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for NuGet availability
+        run: |
+          VERSION="${{ inputs.version }}"
+          # NuGet flat-container index lists all published versions — no auth required.
+          URL="https://api.nuget.org/v3-flatcontainer/robocode.tankroyale.botapi/index.json"
+          MAX=6
+          for i in $(seq 1 $MAX); do
+            VERSIONS=$(curl -sf "$URL" | python3 -c "import sys,json; print(' '.join(json.load(sys.stdin)['versions']))" 2>/dev/null || true)
+            if echo "$VERSIONS" | grep -qw "$VERSION"; then
+              echo "✅ NuGet: Robocode.TankRoyale.BotApi ${VERSION} is available"
+              exit 0
+            fi
+            echo "⏳ Attempt $i/$MAX: ${VERSION} not yet listed. Waiting 30s..."
+            sleep 30
+          done
+          echo "❌ NuGet: Robocode.TankRoyale.BotApi ${VERSION} not available after 3 minutes"
+          exit 1
+
+  check-pypi:
+    name: "PyPI — robocode-tank-royale"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for PyPI availability
+        run: |
+          VERSION="${{ inputs.version }}"
+          # PyPI JSON API returns 200 when the version exists — no auth required.
+          URL="https://pypi.org/pypi/robocode-tank-royale/${VERSION}/json"
+          MAX=6
+          for i in $(seq 1 $MAX); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ PyPI: robocode-tank-royale ${VERSION} is available"
+              exit 0
+            fi
+            echo "⏳ Attempt $i/$MAX: HTTP $STATUS. Waiting 30s..."
+            sleep 30
+          done
+          echo "❌ PyPI: robocode-tank-royale ${VERSION} not available after 3 minutes"
+          exit 1
+
+  check-maven:
+    name: "Maven Central — dev.robocode.tankroyale"
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Wait for Maven Central availability
+        run: |
+          VERSION="${{ inputs.version }}"
+          # HEAD request against the central repo — returns 200 once the artifact is synced.
+          # Using the bot-api JAR as the representative artifact for the whole deployment.
+          URL="https://repo1.maven.org/maven2/dev/robocode/tankroyale/robocode-tankroyale-bot-api/${VERSION}/robocode-tankroyale-bot-api-${VERSION}.jar"
+          MAX=24  # 24 × 5 min = 120 min
+          ATTEMPT=0
+          while [ $ATTEMPT -lt $MAX ]; do
+            ATTEMPT=$((ATTEMPT + 1))
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --head "$URL")
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ Maven Central: dev.robocode.tankroyale:robocode-tankroyale-bot-api:${VERSION} is available"
+              exit 0
+            fi
+            echo "⏳ Attempt $ATTEMPT/$MAX: HTTP $STATUS. Waiting 5 min..."
+            sleep 300
+          done
+          echo "❌ Maven Central: robocode-tankroyale-bot-api:${VERSION} not available after 120 minutes"
+          exit 1

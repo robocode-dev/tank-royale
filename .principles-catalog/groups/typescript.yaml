@@ -1,0 +1,16 @@
+name: typescript
+description: "TypeScript — type safety, functional patterns, modern JS"
+
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
+
+includes:
+  - source-code
+
+principles:
+  - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE
+  - CODE-TP-EXHAUSTIVE-PATTERN-MATCHING
+  - CODE-TP-PREFER-SUM-TYPES
+  - CODE-TP-TYPE-STATE-MACHINES
+  - CODE-TP-BRANDED-TYPES

@@ -1,0 +1,16 @@
+{
+  "name": "TrackFire",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "A sample bot that sits still while tracking and firing at the nearest robot it detects.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "platform": "Node.js",
+  "programmingLang": "TypeScript"
+}

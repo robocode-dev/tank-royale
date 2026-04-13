@@ -1,0 +1,21 @@
+name: angular
+description: "Angular — components, services, dependency injection, RxJS"
+
+globs:
+  - "**/*.ts"
+  - "**/*.html"
+
+includes:
+  - typescript
+
+principles:
+  - SOLID-SRP
+  - SOLID-DIP
+  - GOF-COMPOSITION-OVER-INHERITANCE
+  - GOF-PROGRAM-TO-INTERFACE
+  - CODE-DX-SYSTEM-STATUS-VISIBILITY
+  - CODE-DX-RECOGNITION-OVER-RECALL
+  - CODE-DX-ERROR-PREVENTION
+  - CODE-DX-AFFORDANCES-AND-FEEDBACK
+  - CODE-CC-PREFER-IMMUTABLE
+  - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE

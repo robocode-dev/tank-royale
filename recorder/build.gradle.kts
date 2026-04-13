@@ -1,8 +1,9 @@
+import java.io.OutputStream
+
 description = "Robocode Tank Royale Recorder"
 
 val title = "Robocode Tank Royale Recorder"
 group = "dev.robocode.tankroyale"
-version = libs.versions.tankroyale.get()
 
 val jarManifestMainClass = "dev.robocode.tankroyale.recorder.MainKt"
 
@@ -75,6 +76,7 @@ tasks {
 
         mainClass.set("com.android.tools.r8.R8")
         classpath = buildscript.configurations["classpath"]
+        standardOutput = OutputStream.nullOutputStream() // suppress R8 info/diagnostic noise; errors surfaced via exit code
 
         args = listOf(
             "--release",

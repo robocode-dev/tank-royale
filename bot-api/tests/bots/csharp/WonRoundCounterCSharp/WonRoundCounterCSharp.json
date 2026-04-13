@@ -1,0 +1,10 @@
+{
+  "name": "WonRoundCounterCSharp",
+  "version": "1.0",
+  "authors": [
+    "Test"
+  ],
+  "description": "Instrumented bot that counts WonRoundEvents for testing.",
+  "platform": ".Net 8",
+  "programmingLang": "C# 12"
+}

@@ -1,7 +1,9 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.client.model.BotInfo
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
+import dev.robocode.tankroyale.gui.booter.BotIdentity
+import dev.robocode.tankroyale.gui.booter.BotIdentityReader
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
@@ -24,6 +26,7 @@ import net.miginfocom.swing.MigLayout
 import java.awt.EventQueue
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
+import java.nio.file.Paths
 import javax.swing.*
 
 @SuppressWarnings("kotlin:S1192") // allow duplicated string literals
@@ -106,38 +109,39 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
         addToolTips()
 
-        onFilterDropdown.subscribe(this) { handleFilterChanged() }
+        onFilterDropdown.on(this) { handleFilterChanged() }
 
-        onBootBots.subscribe(this) { handleBootBots() }
-        onUnbootBots.subscribe(this) { handleUnbootBots() }
-        onUnbootAllBots.subscribe(this) { handleUnbootAllBots() }
+        onBootBots.on(this) { handleBootBots() }
+        onUnbootBots.on(this) { handleUnbootBots() }
+        onUnbootAllBots.on(this) { handleUnbootAllBots() }
 
-        onAdd.subscribe(this) { handleAdd() }
-        onAddAll.subscribe(this) { handleAddAll() }
-        onRemove.subscribe(this) { handleRemove() }
-        onRemoveAll.subscribe(this) { handleRemoveAll() }
+        onAdd.on(this) { handleAdd() }
+        onAddAll.on(this) { handleAddAll() }
+        onRemove.on(this) { handleRemove() }
+        onRemoveAll.on(this) { handleRemoveAll() }
 
         botsDirectoryList.onMultiClickedAtIndex { runFromBotDirectoryAtIndex(it) }
         joinedBotList.onMultiClickedAtIndex { addSelectedBotFromJoinedListAt(it) }
         selectedBotList.onMultiClickedAtIndex { removeSelectedBotAt(it) }
 
-        botsDirectoryList.onSelection { BotSelectionEvents.onBotDirectorySelected.fire(it) }
-        joinedBotList.onSelection { BotSelectionEvents.onJoinedBotSelected.fire(it) }
-        selectedBotList.onSelection { BotSelectionEvents.onBotSelected.fire(it) }
+        botsDirectoryList.onSelection { BotSelectionEvents.onBotDirectorySelected(it) }
+        joinedBotList.onSelection { BotSelectionEvents.onJoinedBotSelected(it) }
+        selectedBotList.onSelection { BotSelectionEvents.onBotSelected(it) }
 
-        selectedBotList.onChanged { BotSelectionEvents.onSelectedBotListUpdated.fire(selectedBotListModel.list()) }
+        selectedBotList.onChanged { BotSelectionEvents.onSelectedBotListUpdated(selectedBotListModel.list()) }
 
-        ClientEvents.onBotListUpdate.subscribe(this) { updateJoinedBots() }
+        ClientEvents.onBotListUpdate.on(this) { updateJoinedBots() }
 
-        BootProcess.onBootBot.subscribe(this) { addBootingBot(it) }
-        BootProcess.onUnbootBot.subscribe(this) { removeUnbootingBot(it) }
+        BootProcess.onBootBot.on(this) { addBootingBot(it) }
+        BootProcess.onUnbootBot.on(this) { removeUnbootingBot(it) }
 
-        ConfigSettings.onSaved.subscribe(this) { updateBotsDirectoryEntries() }
+        ConfigSettings.onSaved.on(this) { updateBotsDirectoryEntries() }
 
-        ServerEvents.onStopped.subscribe(this) { reset() }
+        ServerEvents.onStopped.on(this) { reset() }
     }
 
     private fun reset() {
+        activeProgressDialog = null
         selectedBotListModel.clear()
         joinedBotListModel.clear()
         update()
@@ -160,8 +164,45 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
     private fun runFromBotDirectoryAtIndex(index: Int) {
         if (index >= 0 && index < botsDirectoryListModel.size) {
-            val botInfo = botsDirectoryListModel[index]
-            BootProcess.boot(listOf(botInfo.host))
+            bootAndShowProgress(listOf(botsDirectoryListModel[index]))
+        }
+    }
+
+    private var activeProgressDialog: BootProgressDialog? = null
+
+    private fun bootAndShowProgress(botInfoList: List<BotInfo>) {
+        var unknownCount = 0
+        val expectedIdentities = botInfoList.flatMap { botInfo ->
+            try {
+                BotIdentityReader.readIdentities(Paths.get(botInfo.host))
+            } catch (e: Exception) {
+                unknownCount++ // No JSON → runtime identity unknown
+                emptyList()
+            }
+        }
+
+        BootProcess.boot(botInfoList.map { it.host })
+
+        val existing = activeProgressDialog
+        if (existing != null && existing.isVisible) {
+            // Add the new bots to the already-open dialog instead of opening a second one.
+            existing.addExpectedBots(expectedIdentities, unknownCount)
+        } else {
+            val baseline = Client.joinedBots.map { BotIdentity(it.name, it.version) }.groupingBy { it }.eachCount()
+            val dialog = BootProgressDialog(
+                owner = SwingUtilities.getWindowAncestor(this),
+                expectedIdentities = expectedIdentities,
+                unknownCount = unknownCount,
+                baseline = baseline,
+                timeoutSeconds = ConfigSettings.bootTimeout,
+                onSuccess = { activeProgressDialog = null },
+                onCancel = {
+                    activeProgressDialog = null
+                    BootProcess.stop()
+                },
+            )
+            activeProgressDialog = dialog
+            dialog.isVisible = true
         }
     }
 
@@ -174,7 +215,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         BotList(bootedBotListModel, false).apply {
             cellRenderer = BootedBotCellRenderer()
 
-            onDeleteKeyTyped.subscribe(BotSelectionPanel) { dirAndPids ->
+            onDeleteKeyTyped.on(BotSelectionPanel) { dirAndPids ->
                 BootProcess.stop(dirAndPids.map { it.pid })
             }
         }
@@ -191,8 +232,9 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     }
 
     private fun handleBootBots() {
-        val botDirs = botsDirectoryList.selectedIndices.map { botsDirectoryListModel[it].host }
-        BootProcess.boot(botDirs)
+        val selected = botsDirectoryList.selectedValuesList
+        if (selected.isEmpty()) return
+        bootAndShowProgress(selected)
     }
 
     private fun handleUnbootBots() {
@@ -238,7 +280,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     private fun addFilterComboBox() {
         filterDropdown.apply {
             addActionListener {
-                onFilterDropdown.fire(this)
+                onFilterDropdown(this)
             }
             filterDropdownPanel.add(this, "cell 0 1")
         }

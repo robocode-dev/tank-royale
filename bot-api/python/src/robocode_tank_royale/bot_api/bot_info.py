@@ -34,10 +34,10 @@ class BotInfo:
     MAX_PROGRAMMING_LANG_LENGTH = 30
     """Maximum number of characters accepted for the programming language name."""
 
-    MAX_NUMBER_OF_AUTHORS = 5
+    MAX_NUMBER_OF_AUTHORS = 20
     """Maximum number of authors allowed."""
 
-    MAX_NUMBER_OF_COUNTRY_CODES = 5
+    MAX_NUMBER_OF_COUNTRY_CODES = 20
     """Maximum number of country codes allowed."""
 
     MAX_NUMBER_OF_GAME_TYPES = 10
@@ -45,9 +45,9 @@ class BotInfo:
 
     def __init__(
             self,
-            name: str,
-            version: str,
-            authors: List[str],
+            name: Optional[str] = None,
+            version: Optional[str] = None,
+            authors: Optional[List[str]] = None,
             description: Optional[str] = None,
             homepage: Optional[str] = None,
             country_codes: Optional[List[str]] = None,
@@ -64,9 +64,9 @@ class BotInfo:
             provided with the `BotInfo.builder()` static method.
 
         Attributes:
-            name (str): The name of the bot (required).
-            version (str): The version of the bot (required).
-            authors (list): The author(s) of the bot (required).
+            name (str): The name of the bot (optional).
+            version (str): The version of the bot (optional).
+            authors (list): The author(s) of the bot (optional).
             description (str): A short description of the bot (optional).
             homepage (str): A link to a homepage for the bot (optional).
             country_codes (list): The country code(s) for the bot (optional).
@@ -92,33 +92,39 @@ class BotInfo:
 
     # Validation and processing methods
     @staticmethod
-    def _process_name(name: str) -> str:
-        if not name or len(name.strip()) == 0:
-            raise ValueError("'name' cannot be null, empty, or blank")
+    def _process_name(name: Optional[str]) -> Optional[str]:
+        if name is None:
+            return None
+        if len(name.strip()) == 0:
+            return None
         name = name.strip()
         if len(name) > BotInfo.MAX_NAME_LENGTH:
             raise ValueError(f"'name' length exceeds {BotInfo.MAX_NAME_LENGTH} characters")
         return name
 
     @staticmethod
-    def _process_version(version: str) -> str:
-        if not version or len(version.strip()) == 0:
-            raise ValueError("'version' cannot be null, empty, or blank")
+    def _process_version(version: Optional[str]) -> Optional[str]:
+        if version is None:
+            return None
+        if len(version.strip()) == 0:
+            return None
         version = version.strip()
         if len(version) > BotInfo.MAX_VERSION_LENGTH:
             raise ValueError(f"'version' length exceeds {BotInfo.MAX_VERSION_LENGTH} characters")
         return version
 
     @classmethod
-    def _process_authors(cls, authors: List[str]) -> List[str]:
-        if not authors or len(authors) == 0:
-            raise ValueError("'authors' cannot be null or empty")
+    def _process_authors(cls, authors: Optional[List[str]]) -> List[str]:
+        if authors is None:
+            return []
+        if len(authors) == 0:
+            return []
         if len(authors) > cls.MAX_NUMBER_OF_AUTHORS:
             raise ValueError(f"Number of 'authors' exceeds {cls.MAX_NUMBER_OF_AUTHORS}")
         processed_authors: List[str] = []
         for author in authors:
             if not author or not author.strip():
-                raise ValueError("'authors' cannot contain blank values")
+                continue
             author = author.strip()
             if len(author) > cls.MAX_AUTHOR_LENGTH:
                 raise ValueError(f"'author' length exceeds {cls.MAX_AUTHOR_LENGTH} characters")
@@ -307,7 +313,8 @@ class BotInfo:
                 - Line-breaks (line-feed or newline) are supported, but expect up to 3 lines to be displayed on UI.
 
             Example:
-                "The rampage bot will try to ram bots that are very close.\n"
+                "The rampage bot will try to ram bots that are very close.\\n"
+
                 "Sneaks around corners and shoots at bots that come too near."
 
             Args:
@@ -484,9 +491,6 @@ class BotInfo:
             Returns:
                 BotInfo: The resulting BotInfo instance.
             """
-            assert self.name is not None, "Name cannot be null"
-            assert self.version is not None, "Version cannot be null"
-            assert self.initial_position is not None, "Initial position cannot be null"
             return BotInfo(
                 name=self.name,
                 version=self.version,
@@ -497,5 +501,5 @@ class BotInfo:
                 game_types=self.game_types,
                 platform=self.platform,
                 programming_lang=self.programming_lang,
-                initial_position=InitialPosition.from_string(self.initial_position),
+                initial_position=InitialPosition.from_string(self.initial_position) if self.initial_position else None,
             )

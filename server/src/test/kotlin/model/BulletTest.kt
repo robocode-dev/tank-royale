@@ -6,19 +6,6 @@ import model.factory.BulletFactory
 
 class BulletTest : StringSpec({
 
-    "toMutableBullet() should return a MutableBullet that is a copy of the Bullet instance" {
-        val bullet = BulletFactory.createBullet()
-        val mutableBullet = bullet.toMutableBullet()
-
-        mutableBullet.id shouldBe bullet.id
-        mutableBullet.botId shouldBe bullet.botId
-        mutableBullet.power shouldBe bullet.power
-        mutableBullet.direction shouldBe bullet.direction
-        mutableBullet.color shouldBe bullet.color
-        mutableBullet.startPosition shouldBe bullet.startPosition
-        mutableBullet.tick shouldBe bullet.tick
-    }
-
     "hashCode() must return the bullet id value" {
         val bullet = BulletFactory.createBullet()
 

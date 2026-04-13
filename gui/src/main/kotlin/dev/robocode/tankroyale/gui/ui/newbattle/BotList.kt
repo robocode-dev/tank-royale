@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.ui.components.RcList
 import dev.robocode.tankroyale.gui.ui.components.SortedListModel
 import java.awt.event.KeyAdapter
@@ -27,7 +27,7 @@ class BotList<T : Comparable<T>>(sortedListModel: SortedListModel<T>, readOnly: 
                     }
                     revalidate()
                     repaint()
-                    onDeleteKeyTyped.fire(elements)
+                    onDeleteKeyTyped(elements)
                 }
             }
         })

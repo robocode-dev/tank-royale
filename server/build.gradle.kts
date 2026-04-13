@@ -1,3 +1,4 @@
+import java.io.OutputStream
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.SourceType
 
@@ -5,7 +6,6 @@ description = "Robocode Tank Royale Server"
 
 val title = "Robocode Tank Royale Server"
 group = "dev.robocode.tankroyale"
-version = libs.versions.tankroyale.get()
 
 val jarManifestMainClass = "dev.robocode.tankroyale.server.MainKt"
 
@@ -122,6 +122,7 @@ tasks {
 
         mainClass.set("com.android.tools.r8.R8")
         classpath = buildscript.configurations["classpath"]
+        standardOutput = OutputStream.nullOutputStream() // suppress R8 info/diagnostic noise; errors surfaced via exit code
 
         args = listOf(
             "--release",

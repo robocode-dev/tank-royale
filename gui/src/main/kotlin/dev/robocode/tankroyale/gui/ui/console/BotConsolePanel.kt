@@ -15,18 +15,18 @@ class BotConsolePanel(bot: Participant) : BaseBotConsolePanel(bot) {
 
     private fun subscribeToEvents() {
         ClientEvents.apply {
-            onStdOutputUpdated.subscribe(this@BotConsolePanel) { tickEvent ->
+            onStdOutputUpdated.on(this@BotConsolePanel) { tickEvent ->
                 updateStandardOutput(tickEvent.roundNumber, tickEvent.turnNumber)
             }
-            onTickEvent.subscribe(this@BotConsolePanel) { tickEvent ->
+            ClientEvents.onTickEvent.on(this@BotConsolePanel) { tickEvent ->
                 if (tickEvent.events.any { it is BotDeathEvent && it.victimId == bot.id }) {
                     appendInfo(Strings.get("bot_console.bot_died"), tickEvent.turnNumber)
                 }
             }
-            onGameEnded.subscribe(this@BotConsolePanel) {
+            onGameEnded.on(this@BotConsolePanel) {
                 appendInfo(Strings.get("bot_console.game_has_ended"))
             }
-            onGameAborted.subscribe(this@BotConsolePanel) {
+            onGameAborted.on(this@BotConsolePanel) {
                 appendInfo(Strings.get("bot_console.game_was_aborted"))
             }
         }

@@ -1,0 +1,16 @@
+{
+  "name": "Target",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "A stationary robot that moves when its energy drops below a certain threshold. This robot demonstrates how to use custom events.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "platform": "Node.js",
+  "programmingLang": "TypeScript"
+}

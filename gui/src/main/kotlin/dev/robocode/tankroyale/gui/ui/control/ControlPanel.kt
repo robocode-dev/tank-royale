@@ -1,9 +1,10 @@
 package dev.robocode.tankroyale.gui.ui.control
 
 import dev.robocode.tankroyale.client.model.TpsChangedEvent
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.client.ClientEvents.onGameStarted
+import dev.robocode.tankroyale.gui.player.LiveBattlePlayer
 import dev.robocode.tankroyale.gui.settings.ConfigSettings.DEFAULT_TPS
 import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.Strings
@@ -19,6 +20,7 @@ import java.awt.EventQueue
 import java.awt.FlowLayout
 import javax.swing.JButton
 import javax.swing.JPanel
+import javax.swing.JToggleButton
 
 object ControlPanel : JPanel() {
 
@@ -32,6 +34,16 @@ object ControlPanel : JPanel() {
         toolTipText = Hints.get("control.next_turn")
         isEnabled = false
     }
+
+    private val debugToggleButton = JToggleButton(Strings.get("debug_mode")).apply {
+        toolTipText = Hints.get("control.debug_mode")
+        isVisible = false
+        isEnabled = false
+        addActionListener {
+            ControlEvents.onDebugModeToggle(isSelected)
+        }
+    }.also { controlsPanel.add(it) }
+
     private val stopButton = controlsPanel.addButton("stop", ControlEvents.onStop).apply {
         toolTipText = Hints.get("control.stop")
     }
@@ -69,39 +81,48 @@ object ControlPanel : JPanel() {
         TpsField.toolTipText = tpsHint
 
         ClientEvents.apply {
-            onGamePaused.subscribe(ControlPanel) {
+            onGamePaused.on(ControlPanel) {
                 setResumedText()
 
                 nextButton.isEnabled = true
                 setDefaultButton(nextButton)
             }
-            onGameResumed.subscribe(ControlPanel) {
+            onGameResumed.on(ControlPanel) {
                 setPausedText()
                 nextButton.isEnabled = false
             }
-            onGameStarted.subscribe(ControlPanel) {
+            onGameStarted.on(ControlPanel) {
                 setPausedText()
             }
-            onGameAborted.subscribe(ControlPanel) {
+            onGameAborted.on(ControlPanel) {
                 setPausedText()
                 nextButton.isEnabled = false
+                resetDebugToggle()
+            }
+            onPlayerChanged.on(ControlPanel) { player ->
+                EventQueue.invokeLater {
+                    debugToggleButton.isVisible = player is LiveBattlePlayer
+                    controlsPanel.revalidate()
+                    controlsPanel.repaint()
+                }
             }
         }
 
         ControlEvents.apply {
-            onStop.subscribe(ControlPanel) {
+            onStop.on(ControlPanel) {
                 enablePauseResumeAndStopButtons(false)
+                resetDebugToggle()
             }
-            onRestart.subscribe(ControlPanel) {
+            onRestart.on(ControlPanel) {
                 enablePauseResumeAndStopButtons()
             }
-            onGameStarted.subscribe(ControlPanel) {
+            onGameStarted.on(ControlPanel) {
                 enablePauseResumeAndStopButtons()
             }
         }
 
-        onDefaultTps.subscribe(ControlPanel) {
-            TpsEvents.onTpsChanged.fire(TpsChangedEvent(DEFAULT_TPS))
+        onDefaultTps.on(ControlPanel) {
+            TpsEvents.onTpsChanged(TpsChangedEvent(DEFAULT_TPS))
         }
 
         EventQueue.invokeLater {
@@ -112,6 +133,7 @@ object ControlPanel : JPanel() {
     private fun enablePauseResumeAndStopButtons(enable: Boolean = true) {
         pauseResumeButton.isEnabled = enable
         stopButton.isEnabled = enable
+        debugToggleButton.isEnabled = enable
     }
 
     private fun setPausedText() {
@@ -126,5 +148,10 @@ object ControlPanel : JPanel() {
             text = Strings.get("resume")
             toolTipText = Hints.get("control.resume")
         }
+    }
+
+    private fun resetDebugToggle() {
+        debugToggleButton.isSelected = false
+        debugToggleButton.isEnabled = false
     }
 }

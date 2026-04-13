@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Robocode.TankRoyale.BotApi.Mapper;
 using Robocode.TankRoyale.BotApi.Util;
 using Robocode.TankRoyale.Schema;
@@ -31,6 +33,34 @@ static class BotHandshakeFactory
             IsDroid = isDroid,
             Secret = serverSecret,
         };
+
+        // Set DebuggerAttached field
+        bool debuggerAttached = IsDebuggerAttached();
+        handshake.DebuggerAttached = debuggerAttached;
+
+        // Log hint if debugger is detected
+        if (debuggerAttached)
+        {
+            System.Console.WriteLine("Debugger detected. Consider enabling breakpoint mode for this bot in the controller.");
+        }
+
         return handshake;
+    }
+
+    /// <summary>
+    /// Detects if a debugger is attached to the process.
+    /// </summary>
+    /// <returns>true if a debugger is attached, false otherwise</returns>
+    private static bool IsDebuggerAttached()
+    {
+        // Check for ROBOCODE_DEBUG environment variable override
+        var env = Environment.GetEnvironmentVariable("ROBOCODE_DEBUG");
+        if ("true".Equals(env, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ("false".Equals(env, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        // Check if a managed debugger is attached
+        return Debugger.IsAttached;
     }
 }

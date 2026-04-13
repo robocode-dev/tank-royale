@@ -1,0 +1,19 @@
+name: fastapi
+description: "FastAPI — async endpoints, Pydantic validation, OpenAPI"
+
+globs:
+  - "**/*.py"
+
+includes:
+  - python
+
+principles:
+  - CODE-API-STANDARD-HTTP-METHODS
+  - CODE-API-RESOURCE-NOUNS
+  - CODE-API-BACKWARD-COMPATIBILITY
+  - CODE-API-HTTP-STATUS-CODES
+  - CODE-SEC-VALIDATE-INPUT
+  - OWASP-03-INJECTION
+  - CODE-CC-TASK-BASED-CONCURRENCY
+  - CODE-CC-STRUCTURED-CONCURRENCY
+  - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE

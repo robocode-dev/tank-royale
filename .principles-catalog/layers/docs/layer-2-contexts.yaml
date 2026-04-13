@@ -1,0 +1,78 @@
+# Docs Stack — Layer 2: Context-activated principles
+# Activated when documentation content matches the listed signals.
+# Layer 1 principles are always active; these are additive.
+
+api-docs:
+  description: "API reference documentation, endpoint descriptions, parameter tables"
+  signals:
+    - "endpoint"
+    - "parameter"
+    - "request"
+    - "response"
+    - "curl"
+    - "HTTP"
+    - "status code"
+    - "authentication"
+    - "OpenAPI"
+    - "Swagger"
+    - "REST"
+  activate:
+    - DOC-AUDIENCE
+    - DOC-EXAMPLES
+    - DOC-ACCURACY
+
+architecture-docs:
+  description: "Architecture decision records, design docs, system overviews"
+  signals:
+    - "ADR"
+    - "architecture"
+    - "decision"
+    - "trade-off"
+    - "tradeoff"
+    - "component"
+    - "diagram"
+    - "bounded context"
+    - "consequences"
+    - "status"
+    - "context"
+  activate:
+    - DOC-AUDIENCE
+    - DOC-PROGRESSIVE-DISCLOSURE
+    - DOC-ACCURACY
+    - ARCH-DECISION-RECORDS
+
+tutorial:
+  description: "Step-by-step guides for new users"
+  signals:
+    - "step"
+    - "follow"
+    - "install"
+    - "getting started"
+    - "prerequisite"
+    - "before you begin"
+    - "first"
+    - "run this"
+    - "execute"
+    - "walkthrough"
+  activate:
+    - DOC-AUDIENCE
+    - DOC-EXAMPLES
+    - DOC-PROGRESSIVE-DISCLOSURE
+
+reference:
+  description: "Exhaustive reference docs — options, APIs, config keys"
+  signals:
+    - "table"
+    - "field"
+    - "option"
+    - "flag"
+    - "parameter"
+    - "default"
+    - "type"
+    - "required"
+    - "optional"
+    - "environment variable"
+    - "property"
+  activate:
+    - DOC-ACCURACY
+    - DOC-EXAMPLES

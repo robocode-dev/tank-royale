@@ -121,8 +121,8 @@ sealed class EventQueue : IComparer<BotEvent>
         SortEvents();
 
         BotEvent currentEvent;
-        while (IsBotRunning
-               && (currentEvent = PeekNextEvent()) != null
+        while ((currentEvent = PeekNextEvent()) != null
+               && currentEvent.TurnNumber <= turnNumber
                && GetPriority(currentEvent) >= _currentTopEventPriority)
         {
             if (GetPriority(currentEvent) == _currentTopEventPriority)
@@ -184,8 +184,6 @@ sealed class EventQueue : IComparer<BotEvent>
             _events.Sort(this);
         }
     }
-
-    private bool IsBotRunning => _baseBotInternals.IsRunning;
 
     private BotEvent PeekNextEvent()
     {
@@ -276,11 +274,11 @@ sealed class EventQueue : IComparer<BotEvent>
         return isOld && !botEvent.IsCritical;
     }
 
-    private void AddEvent(BotEvent botEvent)
+    internal void AddEvent(BotEvent botEvent)
     {
         lock (_events)
         {
-            if (_events.Count <= MaxQueueSize)
+            if (_events.Count < MaxQueueSize)
             {
                 _events.Add(botEvent);
             }

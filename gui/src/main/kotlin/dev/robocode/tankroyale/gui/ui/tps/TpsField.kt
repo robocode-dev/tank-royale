@@ -17,7 +17,7 @@ object TpsField : RcLimitedTextField(3) {
         setInputVerifier { tpsInputVerifier() }
         onChange { tpsInputVerifier() }
 
-        TpsEvents.onTpsChanged.subscribe(TpsField) {
+        TpsEvents.onTpsChanged.on(TpsField) {
             if (it.tps != tps) {
                 tps = it.tps
                 updateText()
@@ -59,7 +59,7 @@ object TpsField : RcLimitedTextField(3) {
         if (valid) {
             if (tps != this.tps) {
                 this.tps = tps!!
-                TpsEvents.onTpsChanged.fire(TpsChangedEvent(tps))
+                TpsEvents.onTpsChanged(TpsChangedEvent(tps))
             }
         } else {
             showMessage(String.format(Messages.get("tps_range")))

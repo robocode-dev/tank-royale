@@ -25,48 +25,48 @@ object MenuEventHandlers {
 
     init {
         MenuEventTriggers.apply {
-            onSetupRules.subscribe(this) {
+            onSetupRules.on(this) {
                 SetupRulesDialog.isVisible = true
             }
-            onStartBattle.subscribe(this) {
+            onStartBattle.on(this) {
                 startBattle()
             }
-            onReplayFromFile.subscribe(this) {
+            onReplayFromFile.on(this) {
                 startReplayFromFile()
             }
-            onShowServerLog.subscribe(this) {
+            onShowServerLog.on(this) {
                 ServerLogFrame.isVisible = true
             }
-            onBotDirConfig.subscribe(this) {
+            onBotDirConfig.on(this) {
                 BotRootDirectoriesConfigDialog.isVisible = true
             }
-            onStartServer.subscribe(this) {
-                ServerEventTriggers.onStartLocalServer.fire(Unit)
+            onStartServer.on(this) {
+                ServerEventTriggers.onStartLocalServer(Unit)
                 ServerLogFrame.isVisible = true
             }
-            onStopServer.subscribe(this) {
-                ServerEventTriggers.onStopLocalServer.fire(Unit)
+            onStopServer.on(this) {
+                ServerEventTriggers.onStopLocalServer(Unit)
                 ServerLogFrame.isVisible = false
             }
-            onRebootServer.subscribe(this) {
-                ServerEventTriggers.onRebootLocalServer.fire(false /* user initiated */)
+            onRebootServer.on(this) {
+                ServerEventTriggers.onRebootLocalServer(false /* user initiated */)
             }
-            onServerConfig.subscribe(this) {
+            onServerConfig.on(this) {
                 ServerConfigDialog().isVisible = true
             }
-            onDebugConfig.subscribe(this) {
+            onDebugConfig.on(this) {
                 DebugConfigDialog.isVisible = true
             }
-            onSoundConfig.subscribe(this) {
+            onSoundConfig.on(this) {
                 SoundConfigDialog.isVisible = true
             }
-            onGuiConfig.subscribe(this) {
+            onGuiConfig.on(this) {
                 GuiConfigDialog.isVisible = true
             }
-            onHelp.subscribe(this) {
+            onHelp.on(this) {
                 Browser.browse(HELP_URL)
             }
-            onAbout.subscribe(this) {
+            onAbout.on(this) {
                 AboutBox.isVisible = true
             }
         }

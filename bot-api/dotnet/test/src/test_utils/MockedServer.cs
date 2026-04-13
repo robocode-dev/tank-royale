@@ -398,7 +398,6 @@ public class MockedServer
 
             case MessageType.BotReady:
                 SendRoundStarted(conn);
-
                 lock (_stateLock)
                 {
                     SendTickEventForBot(conn, _turnNumber++);
@@ -438,6 +437,16 @@ public class MockedServer
                     _direction += _turnIncrement;
                     _gunDirection += _gunTurnIncrement;
                     _radarDirection += _radarTurnIncrement;
+
+                    // Apply bot intent changes
+                    if (_botIntent != null)
+                    {
+                        if (_botIntent.Firepower > 0)
+                        {
+                            _gunHeat += 1.0 + _botIntent.Firepower.Value / 5.0;
+                            _energy -= _botIntent.Firepower.Value;
+                        }
+                    }
                 }
                 break;
         }

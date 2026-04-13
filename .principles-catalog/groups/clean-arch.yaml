@@ -1,0 +1,10 @@
+name: clean-arch
+description: "Clean Architecture principles — separating business rules from infrastructure, the Dependency Rule, architectural boundaries, and deferring decisions"
+
+principles:
+  - CLEAN-ARCH-SEPARATE-BUSINESS-RULES
+  - CLEAN-ARCH-DEPENDENCY-RULE
+  - CLEAN-ARCH-ARCHITECTURAL-BOUNDARIES
+  - CLEAN-ARCH-KEEP-OPTIONS-OPEN
+  - ARCH-DECISION-RECORDS
+  - ARCH-REPLACEABILITY

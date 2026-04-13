@@ -2,6 +2,102 @@
     --vp-c-brand-1: #090;
     --vp-c-brand-2: #0C0;
 }
+
+.book-spotlight {
+    margin: 24px 0 32px;
+    padding: 24px;
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 20px;
+    background:
+        radial-gradient(circle at top right, rgba(0, 170, 0, 0.14), transparent 35%),
+        linear-gradient(135deg, rgba(0, 128, 0, 0.08), rgba(0, 0, 0, 0));
+}
+
+.book-spotlight__eyebrow {
+    margin-bottom: 8px;
+    color: var(--vp-c-brand-1);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.book-spotlight__title {
+    margin: 0 0 12px;
+}
+
+.book-spotlight__lead {
+    margin: 0 0 20px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.book-spotlight__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.book-spotlight__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 999px;
+    color: var(--vp-c-text-1);
+    font-weight: 600;
+    text-decoration: none;
+    background: var(--vp-c-bg-soft);
+    transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+}
+
+.book-spotlight__button:hover {
+    border-color: var(--vp-c-brand-1);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.book-spotlight__button--primary {
+    border-color: var(--vp-c-divider);
+    color: var(--vp-c-text-1);
+    background: var(--vp-c-default-soft);
+}
+
+.book-spotlight__button--primary:hover {
+    color: var(--vp-c-text-1);
+    background: var(--vp-c-bg-soft);
+}
+
+.book-spotlight__topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.book-spotlight__topics a {
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: var(--vp-c-text-2);
+    text-decoration: none;
+    background: var(--vp-c-default-soft);
+}
+
+.book-spotlight__topics a:hover {
+    color: var(--vp-c-brand-1);
+    text-decoration: none;
+}
+
+@media (max-width: 640px) {
+    .book-spotlight {
+        padding: 20px;
+    }
+
+    .book-spotlight__button {
+        width: 100%;
+    }
+}
 /*
 .dark {
     --vp-c-brand-1: #090;

@@ -18,10 +18,10 @@ object AutoRecorder {
         get() = recording.get()
 
     init {
-        ClientEvents.onGameStarted.subscribe(AutoRecorder) { _ -> onGameStarted() }
-        ClientEvents.onGameEnded.subscribe(AutoRecorder) { _ -> onGameEndedOrAborted() }
-        ClientEvents.onGameAborted.subscribe(AutoRecorder) { _ -> onGameEndedOrAborted() }
-        ServerEvents.onStopped.subscribe(AutoRecorder) { onServerStopped() }
+        ClientEvents.onGameStarted.on(AutoRecorder) { _ -> onGameStarted() }
+        ClientEvents.onGameEnded.on(AutoRecorder) { _ -> onGameEndedOrAborted() }
+        ClientEvents.onGameAborted.on(AutoRecorder) { _ -> onGameEndedOrAborted() }
+        ServerEvents.onStopped.on(AutoRecorder) { onServerStopped() }
     }
 
     private fun onGameStarted() {

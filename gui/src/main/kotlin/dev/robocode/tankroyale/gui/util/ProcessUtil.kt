@@ -1,6 +1,5 @@
 package dev.robocode.tankroyale.gui.util
 
-import dev.robocode.tankroyale.common.util.Platform
 import dev.robocode.tankroyale.common.util.Platform.isWindows
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit

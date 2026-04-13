@@ -1,6 +1,7 @@
 import asyncio
 import json
 import threading
+import time
 from typing import Any, Optional
 import websockets
 from typing import Dict
@@ -160,9 +161,7 @@ class WebSocketHandler:
         if turn_number is not None and self._is_event_handling_disabled(int(turn_number)):
             return
 
-        self.base_bot_internal_data.tick_start_nano_time = int(
-            asyncio.get_event_loop().time() * 1_000_000_000
-        )
+        self.base_bot_internal_data.tick_start_nano_time = time.monotonic_ns()
 
         tick_event_for_bot: TickEventForBot = from_json(json_msg)  # type: ignore
         mapped_tick_event = EventMapper.map_tick_event(
@@ -190,8 +189,8 @@ class WebSocketHandler:
         schema_evt: RoundStartedEventForBot = from_json(json_msg)  # type: ignore
         round_started_event = RoundStartedEvent(schema_evt.round_number)
 
-        self.bot_event_handlers.on_round_started.publish(round_started_event)
         self.internal_event_handlers.on_round_started.publish(round_started_event)
+        self.bot_event_handlers.on_round_started.publish(round_started_event)
 
     async def handle_round_ended(self, json_msg: Dict[Any, Any]):
         """Handle a round ended event from the server."""
@@ -201,13 +200,20 @@ class WebSocketHandler:
             schema_evt.round_number, schema_evt.turn_number, results
         )
         self.bot_event_handlers.on_round_ended.publish(round_ended_event)
-        self.internal_event_handlers.on_round_ended.publish(round_ended_event)
+        self.internal_event_handlers.on_round_ended.publish(round_ended_event)  # triggers stop_thread()
+
+        # Dispatch any queued events (e.g. WonRoundEvent from the last tick). Bot thread is now
+        # stopped so there is no concurrent dispatch race. Must run before ROUND_STARTED clears
+        # the event queue.
+        self.event_queue.dispatch_events(schema_evt.turn_number)
+
+        # Transfer any remaining stdout/stderr from event handlers (e.g. on_won_round) before the round ends
+        self._transfer_std_out_to_bot_intent()
 
     async def handle_game_started(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a game started event from the server."""
         assert self.websocket is not None, "WebSocket connection is not established."
         game_started_event: GameStartedEventForBot = from_json(json_msg)  # type: ignore
-        print(game_started_event)
         self.base_bot_internal_data.my_id = game_started_event.my_id
 
         if game_started_event.teammate_ids is not None:
@@ -226,9 +232,6 @@ class WebSocketHandler:
         )
         self.base_bot_internal_data.initial_position = initial_position
 
-        # Send ready signal
-        await self.websocket.send(to_json(BotReady(type=Message.Type.BOT_READY)))
-
         self.bot_event_handlers.on_game_started.publish(
             GameStartedEvent(
                 game_started_event.my_id,
@@ -236,6 +239,9 @@ class WebSocketHandler:
                 self.base_bot_internal_data.game_setup,
             )
         )
+
+        # Send ready signal
+        await self.websocket.send(to_json(BotReady(type=Message.Type.BOT_READY)))
 
     async def handle_game_ended(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a game ended event from the server."""
@@ -255,19 +261,18 @@ class WebSocketHandler:
 
     async def handle_skipped_turn(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a skipped turn event from the server."""
-        turn_number = json_msg.get("turn_number") or json_msg.get("turnNumber")
-        if turn_number is not None and self._is_event_handling_disabled(int(turn_number)):
-            return
-
         schema_evt: SkippedTurnEvent = from_json(json_msg)  # type: ignore
         skipped_turn_event = EventMapper.map_skipped_turn_event(schema_evt)
-        self.bot_event_handlers.on_skipped_turn.publish(skipped_turn_event)
+        self.event_queue.add_event(skipped_turn_event)
 
     async def handle_server_handshake(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a server handshake from the server."""
         assert self.websocket is not None, "WebSocket connection is not established."
         server_handshake: ServerHandshake = from_json(json_msg)  # type: ignore
         self.base_bot_internal_data.server_handshake = server_handshake
+
+        # Validate bot info before sending bot handshake
+        self._validate_bot_info()
 
         # Reply by sending bot handshake
         # Infer droid status by marker interface inheritance (Java parity), with fallback to explicit flag for backward compatibility
@@ -301,3 +306,45 @@ class WebSocketHandler:
         except Exception:
             # Fallback to original payload if any unexpected error occurs
             await self.websocket.send(payload_str)
+
+    def _transfer_std_out_to_bot_intent(self) -> None:
+        """Transfer captured stdout/stderr to bot intent for sending to server."""
+        if self.base_bot_internal_data.recording_stdout:
+            output = self.base_bot_internal_data.recording_stdout.read_next()
+            if output:
+                self.base_bot_internal_data.bot_intent.std_out = output
+            else:
+                self.base_bot_internal_data.bot_intent.std_out = None
+
+        if self.base_bot_internal_data.recording_stderr:
+            error = self.base_bot_internal_data.recording_stderr.read_next()
+            if error:
+                self.base_bot_internal_data.bot_intent.std_err = error
+            else:
+                self.base_bot_internal_data.bot_intent.std_err = None
+
+    def _validate_bot_info(self) -> None:
+        """Validate bot info before sending handshake to server."""
+        if self._is_blank(self.bot_info.name):
+            self._throw_missing_property_exception("name")
+        if self._is_blank(self.bot_info.version):
+            self._throw_missing_property_exception("version")
+        if not self.bot_info.authors or self._is_all_blank(self.bot_info.authors):
+            self._throw_missing_property_exception("authors")
+
+    def _throw_missing_property_exception(self, property_name: str) -> None:
+        """Throw a BotException for a missing required property."""
+        raise BotException(
+            f"Required bot property '{property_name}' is missing. "
+            f"This property is required in order for the bot to be recognized when booting it up and "
+            f"when it needs to join the game. You must set this property in your bot code "
+            f"or provide a .json configuration file."
+        )
+
+    def _is_blank(self, s: Optional[str]) -> bool:
+        """Check if a string is None or whitespace-only."""
+        return s is None or not s.strip()
+
+    def _is_all_blank(self, strings: list[str]) -> bool:
+        """Check if all strings in a list are blank."""
+        return all(self._is_blank(s) for s in strings)

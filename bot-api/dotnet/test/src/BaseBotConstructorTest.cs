@@ -28,6 +28,23 @@ public class BaseBotConstructorTest : AbstractBotTest
         }
     }
 
+    private class TestBotWithErrorCapture : BaseBot
+    {
+        private volatile Exception _capturedError;
+        private readonly System.Threading.SemaphoreSlim _errorLatch = new System.Threading.SemaphoreSlim(0, 1);
+
+        public override void OnConnectionError(Events.ConnectionErrorEvent e)
+        {
+            _capturedError = e.Exception;
+            _errorLatch.Release();
+        }
+
+        public Exception AwaitError(int timeoutMs = 10_000)
+        {
+            return _errorLatch.Wait(timeoutMs) ? _capturedError : null;
+        }
+    }
+
     [SetUp]
     public new void SetUp()
     {
@@ -50,29 +67,39 @@ public class BaseBotConstructorTest : AbstractBotTest
     }
 
     [Test]
-    public void GivenMissingBotNameEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo()
+    public void GivenMissingBotNameEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownDuringHandshake()
     {
         ClearEnvVar(BotName);
-        var botException = Assert.Throws<BotException>(() => new TestBot());
-        Assert.That(ExceptionContainsEnvVarName(botException, BotName));
+        var bot = new TestBotWithErrorCapture();
+        StartAsync(bot);
+        Assert.That(Server.AwaitConnection(5_000), Is.True);
+        var error = bot.AwaitError();
+        Assert.That(error, Is.Not.Null);
+        Assert.That(error?.Message, Does.Contain("Required bot property 'name' is missing"));
     }
 
     [Test]
-    public void
-        GivenMissingBotVersionEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo()
+    public void GivenMissingBotVersionEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownDuringHandshake()
     {
         ClearEnvVar(BotVersion);
-        var botException = Assert.Throws<BotException>(() => new TestBot());
-        Assert.That(ExceptionContainsEnvVarName(botException, BotVersion));
+        var bot = new TestBotWithErrorCapture();
+        StartAsync(bot);
+        Assert.That(Server.AwaitConnection(5_000), Is.True);
+        var error = bot.AwaitError();
+        Assert.That(error, Is.Not.Null);
+        Assert.That(error?.Message, Does.Contain("Required bot property 'version' is missing"));
     }
 
     [Test]
-    public void
-        GivenMissingBotAuthorsEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownWithMissingEnvVarInfo()
+    public void GivenMissingBotAuthorsEnvVar_whenCallingDefaultConstructor_thenBotExceptionIsThrownDuringHandshake()
     {
         ClearEnvVar(BotAuthors);
-        var botException = Assert.Throws<BotException>(() => new TestBot());
-        Assert.That(ExceptionContainsEnvVarName(botException, BotAuthors));
+        var bot = new TestBotWithErrorCapture();
+        StartAsync(bot);
+        Assert.That(Server.AwaitConnection(5_000), Is.True);
+        var error = bot.AwaitError();
+        Assert.That(error, Is.Not.Null);
+        Assert.That(error?.Message, Does.Contain("Required bot property 'authors' is missing"));
     }
 
     [Test]

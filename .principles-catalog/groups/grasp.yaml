@@ -1,0 +1,13 @@
+name: grasp
+description: "GRASP responsibility-assignment patterns — nine patterns for assigning responsibilities to objects"
+
+principles:
+  - GRASP-INFORMATION-EXPERT
+  - GRASP-CREATOR
+  - GRASP-CONTROLLER
+  - GRASP-LOW-COUPLING
+  - GRASP-HIGH-COHESION
+  - GRASP-POLYMORPHISM
+  - GRASP-INDIRECTION
+  - GRASP-PROTECTED-VARIATIONS
+  - GRASP-PURE-FABRICATION

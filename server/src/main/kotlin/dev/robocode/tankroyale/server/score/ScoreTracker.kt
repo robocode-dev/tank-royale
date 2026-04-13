@@ -39,11 +39,10 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
      * @return a [Score] record.
      */
     fun calculateScore(participantId: ParticipantId): Score {
-        getScoreAndDamage(participantId).apply {
-            val scoreAndDamage = scoreAndDamages[participantId]
-
-            val survivalCount = scoreAndDamage?.survivalCount ?: 0
-            val lastSurvivorCount = scoreAndDamage?.lastSurvivorCount ?: 0
+        val scoreAndDamage = getScoreAndDamage(participantId) ?: return Score(participantId = participantId)
+        scoreAndDamage.apply {
+            val survivalCount = scoreAndDamage.survivalCount
+            val lastSurvivorCount = scoreAndDamage.lastSurvivorCount
 
             return Score(
                 participantId = participantId,
@@ -65,7 +64,7 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
      * @param kill is `true` if the bot got killed by the bullet; `false` otherwise.
      */
     fun registerBulletHit(offenderId: ParticipantId, victimId: ParticipantId, damage: Double, kill: Boolean) {
-        getScoreAndDamage(offenderId).apply {
+        getScoreAndDamage(offenderId)?.apply {
             addBulletDamage(victimId, damage)
             if (kill) {
                 addBulletKillEnemyId(victimId)
@@ -80,7 +79,7 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
      * @param kill is `true` if the bot got killed by the ramming; `false` otherwise.
      */
     fun registerRamHit(offenderId: ParticipantId, victimId: ParticipantId, kill: Boolean) {
-        getScoreAndDamage(offenderId).apply {
+        getScoreAndDamage(offenderId)?.apply {
             incrementRamHit(victimId)
             if (kill) {
                 addRamKillEnemyId(victimId)
@@ -113,7 +112,5 @@ class ScoreTracker(private val participantIds: Set<ParticipantId>) {
         }
     }
 
-    private fun getScoreAndDamage(participantId: ParticipantId): ScoreAndDamage =
-        (scoreAndDamages[participantId]
-            ?: throw IllegalStateException("No score record for teamOrBotId: $participantId)"))
-}
+    private fun getScoreAndDamage(participantId: ParticipantId): ScoreAndDamage? =
+        scoreAndDamages[participantId]}

@@ -1,0 +1,11 @@
+name: gof-structural
+description: "GoF structural patterns — Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy"
+
+principles:
+  - GOF-ADAPTER
+  - GOF-BRIDGE
+  - GOF-COMPOSITE
+  - GOF-DECORATOR
+  - GOF-FACADE
+  - GOF-FLYWEIGHT
+  - GOF-PROXY

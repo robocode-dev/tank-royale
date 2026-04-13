@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.settings
 
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.common.util.UserDataDirectory
 import java.io.File
 import java.io.FileInputStream
@@ -63,7 +63,7 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
         backedUpProperties.clear()
         backedUpProperties.putAll(properties)
 
-        onSaved.fire(Unit)
+        onSaved(Unit)
     }
 
     fun propertyNames(): Set<String> = properties.stringPropertyNames()

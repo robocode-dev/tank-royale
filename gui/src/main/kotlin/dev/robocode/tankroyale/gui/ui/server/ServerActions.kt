@@ -11,19 +11,19 @@ import dev.robocode.tankroyale.gui.util.isRemoteEndpoint
 object ServerActions {
     init {
         ServerEventTriggers.apply {
-            onStartLocalServer.subscribe(this) {
+            onStartLocalServer.on(this) {
                 Server.startLocal()
             }
-            onStopLocalServer.subscribe(this) {
+            onStopLocalServer.on(this) {
                 Server.stopLocal()
                 BootProcess.stop()
             }
-            onRebootLocalServer.subscribe(this) {
+            onRebootLocalServer.on(this) {
                 handleRebootLocal(it)
             }
         }
 
-        ServerEvents.onStarted.subscribe(this) {
+        ServerEvents.onStarted.on(this) {
             ServerLogFrame.clear()
         }
     }

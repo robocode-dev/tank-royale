@@ -1,11 +1,11 @@
 import build.tasks.FatJar
+import java.io.OutputStream
 
 description = "Robocode Tank Royale GUI"
 
 val archiveTitle = "Robocode Tank Royale GUI"
 val packageName = "robocode-tank-royale-gui" // Used for installer filenames (lowercase with hyphens)
 group = "dev.robocode.tankroyale"
-version = libs.versions.tankroyale.get()
 
 val jarManifestMainClass = "dev.robocode.tankroyale.gui.GuiAppKt"
 
@@ -108,6 +108,7 @@ tasks {
 
         mainClass.set("com.android.tools.r8.R8")
         classpath = buildscript.configurations["classpath"]
+        standardOutput = OutputStream.nullOutputStream() // suppress R8 info/diagnostic noise; errors surfaced via exit code
 
         args = listOf(
             "--release",

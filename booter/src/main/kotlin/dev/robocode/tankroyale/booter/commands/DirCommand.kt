@@ -2,18 +2,19 @@ package dev.robocode.tankroyale.booter.commands
 
 import dev.robocode.tankroyale.booter.model.DirBootEntry
 import dev.robocode.tankroyale.booter.model.BootEntry
+import dev.robocode.tankroyale.booter.process.ScriptFinder
 import dev.robocode.tankroyale.booter.util.Log
 import java.nio.file.Files.exists
-import java.nio.file.Files.list
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
 import kotlin.io.path.isDirectory
+import kotlin.io.path.listDirectoryEntries
 
 /**
  * Command for managing bot directories and their boot entries.
  */
-class DirCommand(private val botRootPaths: List<Path>) : Command() {
+internal class DirCommand(private val botRootPaths: List<Path>) : Command() {
 
     /**
      * Lists boot entries with optional filtering by game types and entry type.
@@ -29,19 +30,16 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
         teamsOnly: Boolean
     ): List<DirBootEntry> {
         val gameTypes = parseGameTypes(gameTypesCsv)
-        val bootEntries = mutableSetOf<DirBootEntry>()
-
-        listBotDirectories().forEach { directoryPath ->
-            try {
-                processDirectory(directoryPath, gameTypes, botsOnly, teamsOnly)?.let {
-                    bootEntries.add(it)
+        return listBotDirectories()
+            .mapNotNull { directoryPath ->
+                try {
+                    processDirectory(directoryPath, gameTypes, botsOnly, teamsOnly)
+                } catch (ex: Exception) {
+                    Log.error(ex)
+                    null
                 }
-            } catch (ex: Exception) {
-                Log.error(ex)
             }
-        }
-
-        return bootEntries.toList()
+            .distinct()
     }
 
     /**
@@ -98,25 +96,26 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
      */
     private fun BootEntry.dirBootEntry(dirPath: Path, gameTypes: List<String>) =
         DirBootEntry(
-            dirPath.toAbsolutePath().toString(),
-            name,
-            version,
-            authors,
-            description,
-            homepage,
-            countryCodes,
-            gameTypes,
-            platform,
-            programmingLang,
-            initialPosition,
-            teamMembers,
+            base = base,
+            dir = dirPath.toAbsolutePath().toString(),
+            name = name,
+            version = version,
+            authors = authors,
+            description = description,
+            homepage = homepage,
+            countryCodes = countryCodes,
+            gameTypes = this.gameTypes,
+            platform = platform,
+            programmingLang = programmingLang,
+            initialPosition = initialPosition,
+            teamMembers = teamMembers,
         )
 
     /**
      * Lists bot directories with optional filtering.
      */
-    fun listBotDirectories(gameTypesCSV: String?, botsOnly: Boolean, teamsOnly: Boolean): List<Path> =
-        listBootEntries(gameTypesCSV, botsOnly, teamsOnly)
+    fun listBotDirectories(gameTypesCsv: String?, botsOnly: Boolean, teamsOnly: Boolean): List<Path> =
+        listBootEntries(gameTypesCsv, botsOnly, teamsOnly)
             .map { entry -> Paths.get(entry.dir) }
             .toSet().toList()
             .sorted()
@@ -128,17 +127,40 @@ class DirCommand(private val botRootPaths: List<Path>) : Command() {
         val dirs = HashSet<Path>()
 
         botRootPaths.forEach { rootPath ->
-            list(rootPath).forEach { dirPath ->
+            rootPath.listDirectoryEntries().forEach { dirPath ->
                 if (dirPath.isDirectory()) {
-                    val botName = dirPath.fileName.toString()
-                    val jsonPath = dirPath.resolve("$botName.json")
-                    if (exists(jsonPath)) {
+                    if (isBotDirectory(dirPath)) {
                         dirs.add(dirPath)
                     }
                 }
             }
         }
         return dirs
+    }
+
+    private fun isBotDirectory(dirPath: Path): Boolean {
+        val botName = dirPath.fileName.toString()
+        val jsonPath = dirPath.resolve("$botName.json")
+        if (exists(jsonPath)) {
+            return true
+        }
+
+        // Fallback: Check if there is a script or a main file matching the platform convention
+        if (ScriptFinder.findScript(dirPath) != null) {
+            return true
+        }
+
+        // Platform-specific file detection
+        val platformFiles = listOf(
+            "$botName.jar", // JVM
+            "$botName.class", // JVM
+            "$botName.java", // JVM (single-file source)
+            "$botName.py", // Python
+            "$botName.cs", // .NET (single-file source)
+            "$botName.csproj", // .NET
+            "$botName.dll", // .NET
+        )
+        return platformFiles.any { exists(dirPath.resolve(it)) }
     }
 
     /**

@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.config
 
 import dev.robocode.tankroyale.client.model.IGameSetup
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.MutableGameSetup
@@ -143,18 +143,18 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         readyTimeoutTextField.setInputVerifier { readyTimeoutVerifier() }
         turnTimeoutTextField.setInputVerifier { turnTimeoutVerifier() }
 
-        onOk.subscribe(this) {
+        onOk.on(this) {
             apply()
             SetupRulesDialog.dispose()
         }
-        onApply.subscribe(this) {
+        onApply.on(this) {
             apply()
         }
-        onCancel.subscribe(this) {
+        onCancel.on(this) {
             lastGameSetup = gameSetup
             SetupRulesDialog.dispose()
         }
-        onResetToDefault.subscribe(this) {
+        onResetToDefault.on(this) {
             val selectedGameType = gameTypeDropdown.getSelectedGameType().displayName
             val default: MutableGameSetup? = GamesSettings.defaultGameSetup[selectedGameType]?.toMutableGameSetup()
             if (default != null) {
@@ -216,12 +216,12 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun widthVerifier(): Boolean {
         val width: Int? = try {
             widthTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = width != null && width in GameConstants.MIN_ARENA_SIZE..GameConstants.MAX_ARENA_SIZE
         if (valid) {
-            gameSetup.arenaWidth = width!!
+            gameSetup.arenaWidth = width
         } else {
             showMessage(
                 String.format(
@@ -239,12 +239,12 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun heightVerifier(): Boolean {
         val height: Int? = try {
             heightTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = height != null && height in GameConstants.MIN_ARENA_SIZE..GameConstants.MAX_ARENA_SIZE
         if (valid) {
-            gameSetup.arenaHeight = height!!
+            gameSetup.arenaHeight = height
         } else {
             showMessage(
                 String.format(
@@ -262,12 +262,12 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun minNumParticipantsVerifier(): Boolean {
         val minNum: Int? = try {
             minNumParticipantsTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = minNum != null && minNum in GameConstants.MIN_NUM_PARTICIPANTS..GameConstants.MAX_NUM_PARTICIPANTS
         if (valid) {
-            gameSetup.minNumberOfParticipants = minNum!!
+            gameSetup.minNumberOfParticipants = minNum
         } else {
             showMessage(
                 String.format(
@@ -288,18 +288,18 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
         }
         val minNum: Int? = try {
             minNumParticipantsTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val maxNum: Int? = try {
             maxNumParticipantsTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = minNum != null && maxNum != null &&
                 (minNum in GameConstants.MIN_NUM_PARTICIPANTS..GameConstants.MAX_NUM_PARTICIPANTS) && (maxNum in minNum..GameConstants.MAX_NUM_PARTICIPANTS)
         if (valid) {
-            gameSetup.maxNumberOfParticipants = maxNum!!
+            gameSetup.maxNumberOfParticipants = maxNum
         } else {
             if (maxNum == null || maxNum > GameConstants.MAX_NUM_PARTICIPANTS) {
                 showMessage(
@@ -320,12 +320,12 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun numberOfRoundsVerifier(): Boolean {
         val numRounds: Int? = try {
             numberOfRoundsTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = numRounds != null && numRounds in 1..GameConstants.MAX_NUM_ROUNDS
         if (valid) {
-            gameSetup.numberOfRounds = numRounds!!
+            gameSetup.numberOfRounds = numRounds
         } else {
             showMessage(String.format(Messages.get("num_rounds_range"), GameConstants.MAX_NUM_ROUNDS))
 
@@ -337,12 +337,12 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun gunCoolingRateVerifier(): Boolean {
         val rate: Double? = try {
             gunCoolingRateTextField.text.trim().toDouble()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = rate != null && rate > 0 && rate <= GameConstants.MAX_GUN_COOLING
         if (valid) {
-            gameSetup.gunCoolingRate = rate!!
+            gameSetup.gunCoolingRate = rate
         } else {
             showMessage(
                 String.format(
@@ -359,12 +359,12 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun inactivityTurnsVerifier(): Boolean {
         val turns: Int? = try {
             inactivityTurnsTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = turns != null && turns in 0..GameConstants.MAX_INACTIVITY_TURNS
         if (valid) {
-            gameSetup.maxInactivityTurns = turns!!
+            gameSetup.maxInactivityTurns = turns
         } else {
             showMessage(
                 String.format(
@@ -381,12 +381,12 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun readyTimeoutVerifier(): Boolean {
         val timeout: Int? = try {
             readyTimeoutTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = timeout != null && timeout >= 0
         if (valid) {
-            gameSetup.readyTimeout = timeout!!
+            gameSetup.readyTimeout = timeout
         } else {
             showMessage(
                 String.format(
@@ -403,12 +403,12 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private fun turnTimeoutVerifier(): Boolean {
         val timeout: Int? = try {
             turnTimeoutTextField.text.trim().toInt()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             null
         }
         val valid = timeout != null && timeout >= 0
         if (valid) {
-            gameSetup.turnTimeout = timeout!!
+            gameSetup.turnTimeout = timeout
         } else {
             showMessage(
                 String.format(

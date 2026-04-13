@@ -12,7 +12,7 @@ class GameTypeDropdown : RcComboBox<String>(
     init {
         setSelectedGameType(ConfigSettings.gameType)
 
-        ConfigSettings.onSaved.subscribe(this) {
+        ConfigSettings.onSaved.on(this) {
             setSelectedGameType(ConfigSettings.gameType)
         }
     }

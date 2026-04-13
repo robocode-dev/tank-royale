@@ -21,6 +21,7 @@ data class BotInfo(
     val host: String, // bot directory name, when running locally
     val port: Int = -1,
     val sessionId: String? = null,
+    val debuggerAttached: Boolean? = null,
 ) : Comparable<BotInfo> {
 
     val botAddress: BotAddress = BotAddress(host, port)

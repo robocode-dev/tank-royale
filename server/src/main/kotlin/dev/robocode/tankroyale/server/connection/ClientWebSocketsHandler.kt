@@ -24,6 +24,8 @@ class ClientWebSocketsHandler(
     private val listener: IConnectionListener,
     private val controllerSecrets: Set<String>,
     private val botSecrets: Set<String>,
+    private val debugModeSupported: Boolean,
+    private val breakpointModeSupported: Boolean,
     private val broadcastFunction: (clientSockets: Collection<WebSocket>, message: String) -> Unit
 ) : IClientWebSocketObserver, Closeable {
 
@@ -46,7 +48,7 @@ class ClientWebSocketsHandler(
     private val observerHandshakes = ConcurrentHashMap<WebSocket, ObserverHandshake>()
     private val controllerHandshakes = ConcurrentHashMap<WebSocket, ControllerHandshake>()
 
-    private val executorService = Executors.newCachedThreadPool()
+    private val executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
 
     private val gson = Gson()
 
@@ -83,6 +85,10 @@ class ClientWebSocketsHandler(
             version = Version.version
             gameTypes = setup.gameTypes
             gameSetup = currentGameSetup
+            features = Features().apply {
+                 debugMode = debugModeSupported
+                 breakpointMode = breakpointModeSupported
+             }
         }.also {
             send(clientSocket, Gson().toJson(it))
         }
@@ -106,29 +112,42 @@ class ClientWebSocketsHandler(
                             Message.Type.OBSERVER_HANDSHAKE -> handleObserverHandshake(clientSocket, message)
                             Message.Type.CONTROLLER_HANDSHAKE -> handleControllerHandshake(clientSocket, message)
                             Message.Type.BOT_READY -> handleBotReady(clientSocket)
-                            Message.Type.START_GAME -> handleStartGame(message)
+                            Message.Type.START_GAME -> handleStartGame(clientSocket, message)
                             Message.Type.STOP_GAME -> handleStopGame()
                             Message.Type.PAUSE_GAME -> handlePauseGame()
                             Message.Type.RESUME_GAME -> handleResumeGame()
                             Message.Type.NEXT_TURN -> handleNextTurn()
                             Message.Type.CHANGE_TPS -> handleChangeTps(message)
                             Message.Type.BOT_POLICY_UPDATE -> handleBotPolicyUpdated(message)
+                            Message.Type.ENABLE_DEBUG_MODE -> handleEnableDebugMode()
+                            Message.Type.DISABLE_DEBUG_MODE -> handleDisableDebugMode()
                             else -> handleException(
                                 clientSocket,
                                 IllegalStateException("Unhandled message type: $type")
                             )
                         }
                     } catch (ex: IllegalArgumentException) {
+                        log.error("Failed to parse message type '{}'. Raw message: {}. {} message types are defined.",
+                            jsonType.asString,
+                            message.take(200),
+                            Message.Type.entries.size)
+                        log.debug("Available message types: {}",
+                            Message.Type.entries.joinToString(", ") { it.value() })
                         handleException(
                             clientSocket,
-                            IllegalStateException("Unhandled message type: ${jsonType.asString}")
+                            IllegalStateException(
+                                "Unhandled message type: ${jsonType.asString}. This may indicate a schema generation issue or bot sending unexpected message format.",
+                                ex
+                            )
                         )
                     }
                 }
             } catch (exception: JsonSyntaxException) {
                 log.error("Invalid message: $message", exception)
-            } catch (exception: Exception) {
-                log.error("Error when passing message: $message", exception)
+                handleException(clientSocket, exception)
+            } catch (exception: RuntimeException) {
+                log.error("Unexpected error processing message: $message", exception)
+                clientSocket.close(1011 /* RFC 6455 unexpected condition */, exception.message)
             }
         }
     }
@@ -149,7 +168,7 @@ class ClientWebSocketsHandler(
                         log.warn("Pool did not terminate")
                     }
                 }
-            } catch (ex: InterruptedException) {
+            } catch (_: InterruptedException) {
                 shutdownNow()
                 Thread.currentThread().interrupt()
             }
@@ -162,7 +181,7 @@ class ClientWebSocketsHandler(
         executorService.submit {
             try {
                 clientSocket.send(message)
-            } catch (e: WebsocketNotConnectedException) {
+            } catch (_: WebsocketNotConnectedException) {
                 closeSocket(clientSocket)
             }
         }
@@ -286,16 +305,36 @@ class ClientWebSocketsHandler(
     }
 
     private fun handleBotReady(clientSocket: WebSocket) {
+        log.debug("Processing BotReady from {}", clientSocket.remoteSocketAddress)
         botHandshakes[clientSocket]?.let { botHandshake ->
             listener.onBotReady(clientSocket, botHandshake)
         }
     }
 
-    private fun handleStartGame(message: String) {
+    private fun handleStartGame(clientSocket: WebSocket, message: String) {
         gson.fromJson(message, StartGame::class.java).apply {
+            val validationError = validateStartGame(gameSetup, botAddresses)
+            if (validationError != null) {
+                log.warn("Rejecting start-game request: {}", validationError)
+                handleException(clientSocket, IllegalArgumentException(validationError))
+                return@apply
+            }
             currentGameSetup = gameSetup
-            listener.onStartGame(gameSetup, botAddresses.toSet())
+            listener.onStartGame(gameSetup, botAddresses.toSet(), debugMode == true)
         }
+    }
+
+    private fun validateStartGame(gameSetup: GameSetup?, botAddresses: List<BotAddress>?): String? {
+        if (gameSetup == null) return "gameSetup is required"
+        if (botAddresses.isNullOrEmpty()) return "botAddresses must not be empty"
+        if ((gameSetup.numberOfRounds ?: 0) < 1) return "numberOfRounds must be >= 1"
+        if ((gameSetup.arenaWidth ?: 0) <= 0) return "arenaWidth must be > 0"
+        if ((gameSetup.arenaHeight ?: 0) <= 0) return "arenaHeight must be > 0"
+        if ((gameSetup.minNumberOfParticipants ?: 0) < 1) return "minNumberOfParticipants must be >= 1"
+        if ((gameSetup.turnTimeout ?: 0) <= 0) return "turnTimeout must be > 0"
+        if ((gameSetup.readyTimeout ?: 0) <= 0) return "readyTimeout must be > 0"
+        if (gameSetup.gameType !in setup.gameTypes) return "unsupported gameType: ${gameSetup.gameType}"
+        return null
     }
 
     private fun handleStopGame() {
@@ -328,6 +367,14 @@ class ClientWebSocketsHandler(
                 listener.onBotPolicyUpdated(this)
             }
         }
+    }
+
+    private fun handleEnableDebugMode() {
+        executorService.submit(listener::onEnableDebugMode)
+    }
+
+    private fun handleDisableDebugMode() {
+        executorService.submit(listener::onDisableDebugMode)
     }
 
     private fun handleException(clientSocket: WebSocket?, exception: Exception) {

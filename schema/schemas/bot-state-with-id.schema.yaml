@@ -10,6 +10,12 @@ properties:
   sessionId:
     description: Unique session id used for identifying the bot.
     type: string
+  name:
+    description: Name of the bot, e.g. Killer Bee
+    type: string
+  version:
+    description: Bot version, e.g. 1.0
+    type: string
   stdOut:
     description: Last data received for standard out (stdout)
     type: string

@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.player
 
 import dev.robocode.tankroyale.client.model.*
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 
 /**
  * Abstract interface for controlling battles in the GUI.
@@ -89,6 +89,23 @@ interface BattlePlayer {
      * Changes the TPS (Turns Per Second) for this battle player.
      */
     fun changeTps(tps: Int)
+
+    /**
+     * Enables debug mode on the server (ADR-0033).
+     * In debug mode, the server pauses after each turn instead of auto-advancing.
+     */
+    fun enableDebugMode()
+
+    /**
+     * Disables debug mode on the server.
+     * The server returns to normal auto-advancing behavior.
+     */
+    fun disableDebugMode()
+
+    /**
+     * Returns true if the server supports debug mode.
+     */
+    fun isDebugModeSupported(): Boolean
 
     // Events that can be fired by battle players
 

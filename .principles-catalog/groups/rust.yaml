@@ -1,0 +1,20 @@
+name: rust
+description: "Rust — ownership, type safety, fearless concurrency, zero-cost abstractions"
+
+globs:
+  - "**/*.rs"
+
+includes:
+  - source-code
+
+principles:
+  - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE
+  - CODE-TP-EXHAUSTIVE-PATTERN-MATCHING
+  - CODE-TP-PREFER-SUM-TYPES
+  - CODE-TP-TYPE-STATE-MACHINES
+  - CODE-TP-BRANDED-TYPES
+  - CODE-CC-SYNC-SHARED-STATE
+  - CODE-CC-SAFE-PUBLICATION
+  - CODE-PF-PROFILE-FIRST
+  - CODE-PF-MECHANICAL-SYMPATHY
+  - CODE-PF-DATA-LOCALITY

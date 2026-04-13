@@ -8,7 +8,7 @@ This module contains the schema of the protocol used by Robocode Tank Royale for
 - controllers
 
 The component overviews and sequence diagrams that illustrate the game communication flow are
-provided [here](schemas/README.md). They show how each schema-backed message participates in the lifecycle of a battle.
+provided in the [architecture flow docs](../docs-internal/architecture/models/flows/README.md). They show how each schema-backed message participates in the lifecycle of a battle.
 
 ## Intention and purpose of the protocol
 

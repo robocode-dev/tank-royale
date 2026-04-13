@@ -1,0 +1,61 @@
+# Infra Stack — Layer 2: Context-activated principles
+# Activated when infrastructure file content matches the listed signals.
+# Layer 1 principles are always active; these are additive.
+
+kubernetes:
+  description: "Kubernetes manifests and Helm charts"
+  signals:
+    - "apiVersion"
+    - "kind"
+    - "namespace"
+    - "Pod"
+    - "Deployment"
+    - "Service"
+    - "ConfigMap"
+    - "Secret"
+    - "Ingress"
+    - "helm"
+    - "chart"
+    - "values.yaml"
+  activate:
+    - 12FACTOR-06-PROCESSES
+    - 12FACTOR-09-DISPOSABILITY
+    - CODE-AR-TEST-INFRASTRUCTURE
+
+terraform:
+  description: "Terraform and OpenTofu infrastructure definitions"
+  signals:
+    - "resource"
+    - "provider"
+    - "variable"
+    - "output"
+    - "module"
+    - "data"
+    - "terraform"
+    - "backend"
+    - "tfvars"
+    - "local."
+  activate:
+    - CODE-AR-PIPELINE-CHANGES
+    - CODE-AR-TEST-INFRASTRUCTURE
+
+containers:
+  description: "Container images and Docker Compose service definitions"
+  signals:
+    - "FROM"
+    - "RUN"
+    - "COPY"
+    - "ENTRYPOINT"
+    - "CMD"
+    - "docker-compose"
+    - "build:"
+    - "image:"
+    - "WORKDIR"
+    - "EXPOSE"
+  activate:
+    - 12FACTOR-06-PROCESSES
+    - CODE-AR-IMMUTABLE-INFRASTRUCTURE
+    - INFRA-NON-ROOT-CONTAINER
+    - INFRA-PIN-BASE-IMAGES
+    - INFRA-MINIMIZE-IMAGE-LAYERS
+    - INFRA-NO-SECRETS-IN-IMAGE

@@ -5,37 +5,37 @@ package dev.robocode.tankroyale.server.model
  */
 data class Score(
     /** Participant id */
-    var participantId: ParticipantId,
+    val participantId: ParticipantId,
 
     /** Bullet damage score */
-    var bulletDamageScore: Double = 0.0,
+    val bulletDamageScore: Double = 0.0,
 
     /** Bullet kill bonus (accumulated from killed opponents) */
-    var bulletKillBonus: Double = 0.0,
+    val bulletKillBonus: Double = 0.0,
 
     /** Ram damage score */
-    var ramDamageScore: Double = 0.0,
+    val ramDamageScore: Double = 0.0,
 
     /** Ram kill bonus (accumulated from killed opponents) */
-    var ramKillBonus: Double = 0.0,
+    val ramKillBonus: Double = 0.0,
 
     /** Survival score (whenever another participant is defeated) */
-    var survivalScore: Double = 0.0,
+    val survivalScore: Double = 0.0,
 
     /** Last survivor bonus (the last survivor) */
-    var lastSurvivorBonus: Double = 0.0,
+    val lastSurvivorBonus: Double = 0.0,
 
     /** Number of 1st places */
-    var firstPlaces: Int = 0,
+    val firstPlaces: Int = 0,
 
     /** Number of 2nd places */
-    var secondPlaces: Int = 0,
+    val secondPlaces: Int = 0,
 
     /** Number of 3rd places */
-    var thirdPlaces: Int = 0,
+    val thirdPlaces: Int = 0,
 
     /** Rank */
-    var rank: Int = 0,
+    val rank: Int = 0,
 
 ) : Comparable<Score> {
 
@@ -60,16 +60,4 @@ data class Score(
         secondPlaces + score.secondPlaces,
         thirdPlaces + score.thirdPlaces,
     )
-
-    operator fun plusAssign(score: Score) {
-        bulletDamageScore += score.bulletDamageScore
-        bulletKillBonus += score.bulletKillBonus
-        ramDamageScore += score.ramDamageScore
-        ramKillBonus += score.ramKillBonus
-        survivalScore += score.survivalScore
-        lastSurvivorBonus += score.lastSurvivorBonus
-        firstPlaces += score.firstPlaces
-        secondPlaces += score.secondPlaces
-        thirdPlaces += score.thirdPlaces
-    }
 }

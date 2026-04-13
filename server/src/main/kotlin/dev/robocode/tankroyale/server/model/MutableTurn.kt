@@ -11,7 +11,7 @@ data class MutableTurn(
     override val bots: MutableSet<IBot> = mutableSetOf(),
 
     /** Bullets */
-    override val bullets: MutableSet<IBullet> = mutableSetOf(),
+    override val bullets: MutableSet<Bullet> = mutableSetOf(),
 
     /** Map over bot events  */
     override val botEvents: MutableMap<BotId, MutableSet<Event>> = mutableMapOf(),
@@ -61,8 +61,8 @@ data class MutableTurn(
     }
 
     /** Returns a deep copy of the bullets */
-    private fun copyBullets(): Set<IBullet> {
-        return bullets.map { copyBullet(it) }.toSet()
+    private fun copyBullets(): Set<Bullet> {
+        return bullets.toSet()
     }
 
     /** Returns a deep copy of the bot events */
@@ -74,9 +74,9 @@ data class MutableTurn(
      * Replaces all bullets with a collection of bullet copies.
      * @param srcBullets is the collection of bullets to copy.
      */
-    fun copyBullets(srcBullets: Collection<IBullet>) {
+    fun copyBullets(srcBullets: Collection<Bullet>) {
         bullets.clear()
-        srcBullets.forEach { bullet -> bullets += copyBullet(bullet) }
+        bullets += srcBullets
     }
 
     /**
@@ -97,7 +97,7 @@ data class MutableTurn(
                 bot.isDroid,
                 bot.sessionId,
                 bot.energy,
-                Point(bot.position.x, bot.position.y),
+                bot.position,
                 bot.direction,
                 bot.gunDirection,
                 bot.radarDirection,
@@ -120,16 +120,5 @@ data class MutableTurn(
                 bot.debugGraphics,
             )
 
-        /** Deep copies a bullet */
-        private fun copyBullet(bullet: IBullet): IBullet =
-            Bullet(
-                bullet.id,
-                bullet.botId,
-                bullet.power,
-                bullet.direction,
-                bullet.color,
-                bullet.startPosition,
-                bullet.tick,
-            )
     }
 }

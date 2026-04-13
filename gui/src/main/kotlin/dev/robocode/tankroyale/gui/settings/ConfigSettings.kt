@@ -13,8 +13,11 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private const val UI_SCALE = "ui-scale"
     private const val LANGUAGE = "language"
     private const val CONSOLE_MAX_CHARACTERS = "console-max-characters"
+    private const val BOOT_TIMEOUT = "boot-timeout"
+    private const val TANK_COLOR_MODE = "tank-color-mode"
 
     private const val DEFAULT_CONSOLE_MAX_CHARACTERS = 10000
+    const val DEFAULT_BOOT_TIMEOUT = 30
 
     private const val ENABLE_SOUNDS = "enable-sounds"
     private const val ENABLE_GUNSHOT_SOUND = "enable-gunshot-sound"
@@ -116,6 +119,12 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
             save(LANGUAGE, v)
         }
 
+    var tankColorMode: TankColorMode
+        get() = TankColorMode.fromString(load(TANK_COLOR_MODE, TankColorMode.BOT_COLORS.value))
+        set(value) {
+            save(TANK_COLOR_MODE, value.value)
+        }
+
     var consoleMaxCharacters: Int
         get() = try {
             load(CONSOLE_MAX_CHARACTERS, DEFAULT_CONSOLE_MAX_CHARACTERS.toString()).toInt()
@@ -124,6 +133,16 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         }
         set(value) {
             save(CONSOLE_MAX_CHARACTERS, value.toString())
+        }
+
+    var bootTimeout: Int
+        get() = try {
+            load(BOOT_TIMEOUT, DEFAULT_BOOT_TIMEOUT.toString()).toInt().coerceAtLeast(1)
+        } catch (_: NumberFormatException) {
+            DEFAULT_BOOT_TIMEOUT
+        }
+        set(value) {
+            save(BOOT_TIMEOUT, value.coerceAtLeast(1).toString())
         }
 
     var enableGunshotSound: Boolean

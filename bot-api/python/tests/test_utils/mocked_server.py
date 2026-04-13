@@ -124,6 +124,9 @@ class MockedServer:
         # optional injections
         self._self_death_turn: Optional[int] = None
 
+        # shutdown flag
+        self._stopping: bool = False
+
         # server/loop/thread
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._thread: Optional[threading.Thread] = None
@@ -672,7 +675,7 @@ class MockedServer:
         # Poll with small sleep instead of blocking executor
         while not self._bot_intent_continue_event.wait(timeout=0.01):
             await asyncio.sleep(0)  # Yield to event loop
-        
+
         # Clear the event immediately after unblocking to ensure the next intent blocks.
         # This matches Java's CountDownLatch(1) behavior which is "one-time release".
         self._bot_intent_continue_event.clear()

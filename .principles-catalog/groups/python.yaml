@@ -1,0 +1,13 @@
+name: python
+description: "Python — readability, simplicity, Pythonic patterns"
+
+globs:
+  - "**/*.py"
+
+includes:
+  - source-code
+
+principles:
+  - SOLID-SRP
+  - CODE-SMELLS-LONG-METHOD
+  - CODE-SMELLS-LARGE-CLASS

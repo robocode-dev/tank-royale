@@ -15,7 +15,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
 
     private fun subscribeToEvents() {
         ClientEvents.apply {
-            onTickEvent.subscribe(this@BotEventsPanel) { tickEvent ->
+            ClientEvents.onTickEvent.on(this@BotEventsPanel) { tickEvent ->
                 if (isAlive(tickEvent) || hasJustDied(tickEvent)) {
                     dump(tickEvent)
                     tickEvent.events
@@ -44,12 +44,7 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
             is BulletHitBulletEvent -> dumpBulletHitBulletEvent(event)
             is BulletHitWallEvent -> dumpBulletHitWallEvent(event)
             is ScannedBotEvent -> dumpScannedBotEvent(event)
-            else -> dumpUnknownEvent(event)
         }
-    }
-
-    private fun dumpUnknownEvent(event: Event) {
-        appendError("Unknown event: ${event.javaClass.simpleName}", event.turnNumber)
     }
 
     private fun createEventAndTurnNumberBuilder(event: Event) =
@@ -198,8 +193,13 @@ class BotEventsPanel(bot: Participant) : BaseBotConsolePanel(bot) {
     }
 
     private fun botIdAndName(botId: Int): String {
-        val bot = Client.getParticipant(botId)
-        return "$botId (${bot.name} ${bot.version})"
+        return try {
+            val bot = Client.getParticipant(botId)
+            "$botId (${bot.name} ${bot.version})"
+        } catch (_: IllegalStateException) {
+            // Participant not found (might be during replay initialization or eliminated bot)
+            "$botId (unknown)"
+        }
     }
 
     private fun appendNewLine(ansiTextBuilder: AnsiTextBuilder, turnNumber: Int? = null) {

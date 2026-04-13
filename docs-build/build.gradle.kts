@@ -56,18 +56,9 @@ tasks {
         )
     }
 
-    register<Copy>("copy-generated-docs") {
-        // Only run when explicitly requested by upload-docs task or this task itself
-        onlyIf {
-            gradle.startParameter.taskNames.any {
-                it.contains("upload-docs") ||
-                it == "copy-generated-docs" ||
-                it.endsWith(":copy-generated-docs")
-            }
-        }
-
+    register<Copy>("copy-vitepress-docs") {
+        description = "Copy VitePress docs to /docs folder (without API generation)"
         dependsOn(build)
-        dependsOn(updateDocfx)
 
         doLast {
             // Ensure GitHub Pages won't try to apply Jekyll processing
@@ -82,5 +73,11 @@ tasks {
 
         from("./docs/.vitepress/dist")
         into("../docs")
+    }
+
+    register("copy-generated-docs") {
+        description = "Copy all generated docs including API docs to /docs folder"
+        dependsOn("copy-vitepress-docs")
+        dependsOn(updateDocfx)
     }
 }

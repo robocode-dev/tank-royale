@@ -9,11 +9,15 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Copy
 import org.gradle.api.Project
-import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 description = "Robocode: Build the best - destroy the rest!"
 
 group = "dev.robocode.tankroyale"
+version = file("VERSION").readText().trim()
+
+allprojects {
+    version = rootProject.version
+}
 
 val ossrhUsername: String? by project
 val ossrhPassword: String? by project
@@ -380,7 +384,7 @@ fun Project.registerJpackageTasks(
                 iconPath = iconLinux,
                 mainClass = (project.extra["jpackageMainClass"] as String),
                 extra = listOf(
-                    "--linux-deb-maintainer", "Flemming N. Larsen <flemming.n.larsen@gmail.com>"
+                    "--linux-deb-maintainer", "Flemming N. Larsen <contact@robocode.dev>"
                 )
             )
         }
@@ -549,11 +553,13 @@ val generateSchemaDiagrams by tasks.registering {
 
 tasks {
     val docTasks = listOf(
-        generateSchemaDiagrams.name,        // Update mermaid diagrams in schema/schemas/README.md
-        "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
-        "bot-api:java:copyJavaApiDocs",     // Javadocs for Java Bot API
-        "bot-api:python:copyPythonApiDocs", // Sphinx documentation for Python Bot API
-        "docs-build:copy-generated-docs"    // VitePress documentation site
+        generateSchemaDiagrams.name,                    // Update mermaid diagrams in schema/schemas/README.md
+        "bot-api:dotnet:copyDotnetApiDocs",             // Docfx documentation for .NET Bot API
+        "bot-api:java:copyJavaApiDocs",                 // Javadocs for Java Bot API
+        "bot-api:python:copyPythonApiDocs",             // Sphinx documentation for Python Bot API
+        "bot-api:typescript:copyTypescriptApiDocs",     // TypeDoc documentation for TypeScript Bot API
+        "runner:copyRunnerApiDocs",                     // Javadocs for Battle Runner API
+        "docs-build:copy-generated-docs"                // VitePress documentation site
     )
 
     register("build-release") {
@@ -563,6 +569,7 @@ tasks {
             "bot-api:dotnet:assemble",   // Bot API for .NET
             "booter:assemble",           // Booter (for booting up bots locally)
             "server:assemble",           // Server
+            "runner:assemble",           // Battle Runner
             "gui:assemble",              // GUI
             "sample-bots:zip",           // Sample bots
         )
@@ -573,12 +580,17 @@ tasks {
         dependsOn(*docTasks.toTypedArray())
     }
 
+    register("upload-docs-vitepress-only") {
+        description = "Build and upload VitePress documentation only (without API generation)"
+        dependsOn("docs-build:copy-vitepress-docs")
+    }
+
     register("create-release") {
         description = "Creates a release (use 'upload-docs' separately to build and upload documentation)"
         dependsOn("build-release")
 
         doLast {
-            val version = libs.versions.tankroyale.get()
+            val version = project.version.toString()
             if (tankRoyaleGitHubToken.isNullOrBlank()) {
                 throw IllegalStateException("'token' is null or blank meaning that it is missing")
             }

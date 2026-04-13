@@ -1,0 +1,22 @@
+name: cd
+description: "Continuous delivery principles — pipeline design, deployment strategies, and release practices for shipping software safely and frequently"
+
+globs:
+  - ".github/workflows/**"
+  - "Jenkinsfile"
+  - ".gitlab-ci.yml"
+  - "azure-pipelines.yml"
+
+principles:
+  - CD-TRUNK-BASED-DEVELOPMENT
+  - CD-KEEP-BUILD-GREEN
+  - CD-DEPLOY-ON-EVERY-COMMIT
+  - CD-FEATURE-FLAGS
+  - CD-FAST-FEEDBACK-LOOPS
+  - CD-GITOPS
+  - CD-BLUE-GREEN-DEPLOYMENT
+  - CD-CANARY-RELEASE
+  - CD-DEPLOYMENT-SMOKE-TESTS
+  - CD-PIPELINE-AS-CODE
+  - CD-BUILD-ONCE-DEPLOY-MANY
+  - CD-SEMANTIC-VERSIONING

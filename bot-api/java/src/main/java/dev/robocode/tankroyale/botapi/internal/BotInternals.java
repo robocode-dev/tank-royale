@@ -53,18 +53,17 @@ public final class BotInternals implements IStopResumeListener {
         // where the bot thread wakes up before turnRemaining/distanceRemaining are updated.
         instantEventHandlers.onNextTurn.subscribe(this::onNextTurn, 110);
 
+        // Priority 90 ensures BaseBotInternals.onRoundStarted (priority 100) resets state first,
+        // then we pre-warm the bot thread so it is alive and waiting before turn 1 arrives.
+        instantEventHandlers.onRoundStarted.subscribe(e -> onRoundStarted(), 90);
+
         instantEventHandlers.onGameAborted.subscribe(e -> onGameAborted(), 100);
         instantEventHandlers.onRoundEnded.subscribe(e -> onRoundEnded(), 90);
         instantEventHandlers.onGameEnded.subscribe(this::onGameEnded, 90);
         instantEventHandlers.onDisconnected.subscribe(this::onDisconnected, 90);
+        instantEventHandlers.onDeath.subscribe(e -> onDeath(), 90);
         instantEventHandlers.onHitWall.subscribe(e -> onHitWall(), 90);
         instantEventHandlers.onHitBot.subscribe(this::onHitBot, 90);
-
-        // Subscribe to public bot event handlers for onDeath with priority 0 (lower than user's default of 1).
-        // This ensures user's onDeath callback runs BEFORE we stop the thread, since dispatchEvents()
-        // checks isRunning() and would skip events if thread was already stopped.
-        var botEventHandlers = baseBotInternals.getBotEventHandlers();
-        botEventHandlers.onDeath.subscribe(this::onDeath, 0);
     }
 
     private void onNextTurn(TickEvent e) {
@@ -74,10 +73,13 @@ public final class BotInternals implements IStopResumeListener {
         processTurn();
     }
 
-    private void onFirstTurn() {
-        baseBotInternals.stopThread(); // sanity before starting a new thread (later)
-        clearRemaining();
+    private void onRoundStarted() {
+        baseBotInternals.stopThread();
         baseBotInternals.startThread(bot);
+    }
+
+    private void onFirstTurn() {
+        clearRemaining();
     }
 
     private void clearRemaining() {
@@ -129,7 +131,7 @@ public final class BotInternals implements IStopResumeListener {
         }
     }
 
-    private void onDeath(DeathEvent e) {
+    private void onDeath() {
         baseBotInternals.stopThread();
     }
 

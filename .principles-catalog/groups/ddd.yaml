@@ -1,0 +1,17 @@
+name: ddd
+description: "Domain-Driven Design building blocks — Ubiquitous Language, Bounded Context, Entity, Value Object, Aggregate, Aggregate Root, Domain Event, Repository"
+
+principles:
+  - DDD-UBIQUITOUS-LANGUAGE
+  - DDD-BOUNDED-CONTEXT
+  - DDD-ENTITY
+  - DDD-VALUE-OBJECT
+  - DDD-AGGREGATE
+  - DDD-AGGREGATE-ROOT
+  - DDD-DOMAIN-EVENT
+  - DDD-REPOSITORY
+  - DDD-SPECIFICATION
+  - DDD-CONTEXT-MAP
+  - DDD-SHARED-KERNEL
+  - DDD-OPEN-HOST-SERVICE
+  - DDD-PUBLISHED-LANGUAGE

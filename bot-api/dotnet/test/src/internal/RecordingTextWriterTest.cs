@@ -1,5 +1,8 @@
 using System;
 using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using Robocode.TankRoyale.BotApi.Internal;
 
@@ -129,5 +132,88 @@ public class RecordingTextWriterTest
 
         // Assert - the underlying writer should also receive the output
         Assert.That(stringWriter.ToString(), Is.EqualTo("Test"));
+    }
+
+    [Test]
+    public void ShouldHandleConcurrentWrites()
+    {
+        // Arrange
+        using var stringWriter = new StringWriter();
+        var recordingWriter = new RecordingTextWriter(stringWriter);
+        const int threadCount = 10;
+        const int writesPerThread = 100;
+
+        // Act - multiple threads writing concurrently
+        var tasks = Enumerable.Range(0, threadCount).Select(i => Task.Run(() =>
+        {
+            for (int j = 0; j < writesPerThread; j++)
+            {
+                recordingWriter.WriteLine($"Thread{i}-Write{j}");
+            }
+        })).ToArray();
+
+        Task.WaitAll(tasks);
+        recordingWriter.Flush();
+
+        var output = recordingWriter.ReadNext();
+
+        // Assert - all lines should be present (order may vary due to concurrency)
+        var lines = output.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+        Assert.That(lines.Length, Is.EqualTo(threadCount * writesPerThread),
+            "All writes should be captured without corruption");
+
+        // Each thread should have contributed its writes
+        for (int i = 0; i < threadCount; i++)
+        {
+            var threadLines = lines.Where(l => l.StartsWith($"Thread{i}-")).ToArray();
+            Assert.That(threadLines.Length, Is.EqualTo(writesPerThread),
+                $"Thread {i} should have all its writes captured");
+        }
+    }
+
+    [Test]
+    public void ShouldHandleWriteLineEfficiently()
+    {
+        // Arrange
+        using var stringWriter = new StringWriter();
+        var recordingWriter = new RecordingTextWriter(stringWriter);
+
+        // Act
+        recordingWriter.WriteLine("Test message");
+        var output = recordingWriter.ReadNext();
+
+        // Assert - WriteLine should write the string and newline
+        Assert.That(output, Is.EqualTo("Test message" + Environment.NewLine));
+    }
+
+    [Test]
+    public void ShouldHandleWriteStringEfficiently()
+    {
+        // Arrange
+        using var stringWriter = new StringWriter();
+        var recordingWriter = new RecordingTextWriter(stringWriter);
+
+        // Act
+        recordingWriter.Write("Test string");
+        var output = recordingWriter.ReadNext();
+
+        // Assert - Write(string) should write the entire string at once
+        Assert.That(output, Is.EqualTo("Test string"));
+    }
+
+    [Test]
+    public void ShouldHandleWriteCharArrayEfficiently()
+    {
+        // Arrange
+        using var stringWriter = new StringWriter();
+        var recordingWriter = new RecordingTextWriter(stringWriter);
+        var chars = new[] { 'T', 'e', 's', 't' };
+
+        // Act
+        recordingWriter.Write(chars, 0, chars.Length);
+        var output = recordingWriter.ReadNext();
+
+        // Assert - Write(char[], int, int) should write the char array efficiently
+        Assert.That(output, Is.EqualTo("Test"));
     }
 }

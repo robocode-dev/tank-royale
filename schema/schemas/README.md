@@ -1,464 +1,144 @@
 # Schemas
 
-This directory contains the schema of the game protocol used by Robocode Tank Royale for network communication.
-
-## Joining and leaving the server
-
-Handshakes are used between a client (bot, observer, controller) and the server to exchange metadata about the clients
-and server and to notify the server when a client wants to join the server.
-
-When a client opens a WebSocket connection with the server, the server will send a _server-handshake_ message to the
-client with information about the server. Then, if the client wants to join the server, it must send a handshake to the
-server. The handshake from the client depends on the client type.
-
-### Bot joining
-
-The bot handshake must be sent by a bot to join the server.
-
-- [server-handshake]
-- [bot-handshake]
-- [bot-list-update]
-
-<!-- BEGIN:bot-joining -->
-```mermaid
-sequenceDiagram
-Note over Bot: WebSocket connection is opened
-Bot->>+Server: <<event>> connection established
-Server->>-Bot: server-handshake (session-id)
-Bot->>Server: bot-handshake (session-id, secret, boot-id)
-alt if session-id or secret is invalid
-    Server->>Bot: disconnect
-else else
-    Note over Server: Produces: <<event>> Bot joined
-    Server->>Observer: bot-list-update
-    Server->>Controller: bot-list-update
-    Note over Server: New bot is considered for future start-game requests
-end
-```
-<!-- END:bot-joining -->
-
-Note that the session-id sent to the bot via the `server-handshake` must be sent back to the server as identification.
-If the server requires a secret, this must be passed as well. A `boot-id` might be provided by the bot (via a Bot API)
-if it was booted from the Booter.
-
-### Bot leaving
-
-A bot will be leaving a server when it closes its connection to the server.
-
-- [bot-list-update]
-
-<!-- BEGIN:bot-leaving -->
-```mermaid
-sequenceDiagram
-Bot->>Server: <<event>> disconnected
-Note over Server: Produces: <<event>> Bot left
-Server->>Observer: bot-list-update
-Server->>Controller: bot-list-update
-opt if no bots remain while game running
-    Note over Server: Server aborts game
-    Server->>Bot: game-aborted-event
-    Server->>Observer: game-aborted-event
-    Server->>Controller: game-aborted-event
-end
-```
-<!-- END:bot-leaving -->
-
-### Observer joining
-
-The observer handshake must be sent by an observer to join the server.
-
-- [server-handshake]
-- [observer-handshake]
-
-<!-- BEGIN:observer-joining -->
-```mermaid
-sequenceDiagram
-Note over Observer: WebSocket connection is opened
-Observer->>+Server: <<event>> connection established
-Server->>-Observer: server-handshake (session-id)
-Observer->>Server: observer-handshake (session-id, secret)
-alt if session-id or secret is invalid
-    Server->>Observer: disconnect
-else else
-    Note over Server: Produces: <<event>> Observer joined
-    Server->>Observer: bot-list-update
-end
-```
-<!-- END:observer-joining -->
-
-Note that the session-id sent to the observer via the `server-handshake` must be sent back to the server as
-identification. If the server requires a secret, this must be passed as well.
-
-### Controller joining
-
-The controller handshake must be sent by a controller to join the server.
-
-- [server-handshake]
-- [controller-handshake]
-
-<!-- BEGIN:controller-joining -->
-```mermaid
-sequenceDiagram
-Note over Controller: WebSocket connection is opened
-Controller->>+Server: <<event>> connection established
-Server->>-Controller: server-handshake (session-id)
-Controller->>Server: controller-handshake (session-id, secret)
-alt if session-id or secret is invalid
-    Server->>Controller: disconnect
-else else
-    Note over Server: Produces: <<event>> Controller joined
-    Server->>Controller: bot-list-update
-end
-```
-<!-- END:controller-joining -->
-
-Note that the session-id sent to the controller via the `server-handshake` must be sent back to the server as
-identification. If the server requires a secret, this must be passed as well.
-
-## Starting a game
-
-The game is started from a controller, which sends a `start-game` message. The `start-game` message contains information
-about which bots, selected by the controller, should participate in the battle. The server sends a
-`game-started-event-for-bot` message to all selected bots and waits for a `bot-ready` message from each bot. If the bot
-manages to respond with a `bot-ready` message, it will be a _participant_ of the battle.
-
-Two things can happen. Either enough bot sends back a `bot-ready` event to reach the minimum number of required
-participants for a battle (determined by the game rules), and the game will be started. Or the _Ready timer_ times out
-and the game will check if there are enough participants to start the game.
-
-When there are enough participants to start the battle, the server sends a `game-started-for-observer` message to all
-observers and controllers and the game will be in _running_ state.
-
-If there are not enough participants for the battle, the _Ready timer_ will time out, and the server returns to the
-state where it waits for more bots to join the battle, and a controller will need to make a new attempt to start a game.
-
-- [start-game]
-- [game-started-event-for-bot]
-- [bot-ready]
-
-<!-- BEGIN:starting-game -->
-```mermaid
-sequenceDiagram
-Note over Server: Server state = WAIT_FOR_PARTICIPANTS_TO_JOIN
-Controller->>Server: start-game
-Note over Server: Server state = WAIT_FOR_READY_PARTICIPANTS
-Server->>Bot: game-started-event-for-bot
-alt if bot is ready
-    Bot->>Server: bot-ready
-    Note over Server: Bot becomes a participant
-    opt if ready participants >= min participants
-        Note over Server: Server state = GAME_RUNNING
-        Server->>Observer: game-started-event-for-observer
-        Server->>Controller: game-started-event-for-observer
-        Note over Server: Start turn timeout timer
-    end
-else else Ready timer time-out
-    Server->>Server: <<event>> Ready timer time-out
-    opt if ready participants >= min participants
-        Note over Server: Server state = GAME_RUNNING
-        Server->>Observer: game-started-event-for-observer
-        Server->>Controller: game-started-event-for-observer
-        Note over Server: Start turn timeout timer
-    end
-    opt else the game is not started
-        Note over Server: Server state = WAIT_FOR_PARTICIPANTS_TO_JOIN
-        Server->>Observer: game-aborted-event
-        Server->>Bot: game-aborted-event
-        Server->>Controller: game-aborted-event
-    end
-end
-```
-<!-- END:starting-game -->
-
-## Running next turn
-
-Running the next turn is the main loop in the game. The server sends _tick events_ for all clients which contain the
-current game state for the observers, and the bot state for the bots.
-
-This is the crucial part for the bots, and these need to sent their _bot intent_ before the turn timeout occurs.
-
-- [round-started-event]
-- [round-ended-event-for-bot]
-- [tick-event-for-bot]
-- [tick-event-for-observer]
-- [bot-intent]
-- [skipped-turn-event]
-
-<!-- BEGIN:running-next-turn -->
-```mermaid
-sequenceDiagram
-Note over Server: Server state = GAME_RUNNING
-Server->>Server: <<event>> next turn
-Note over Server: Reset turn timer
-alt if first round
-    Server->>Bot: round-started-event
-    Server->>Observer: round-started-event
-    Server->>Controller: round-started-event
-else else if previous round has ended
-    Server->>Bot: round-ended-event
-    Server->>Observer: round-ended-event
-    Server->>Controller: round-ended-event
-end
-Server->>Bot: tick-event-for-bot
-Server->>Observer: tick-event-for-observer
-Server->>Controller: tick-event-for-observer
-Bot->>Server: bot-intent
-Note over Server: Bot will not skip this turn
-Server->>Server: Turn timeout
-opt if bot did not send intent before timeout
-    Server->>Bot: skipped-turn-event
-end
-```
-<!-- END:running-next-turn -->
-
-## Game is ending
-
-The game is ended because a winner has been found, and results are available. An event is sent to the clients with the
-results of the game.
-
-- [game-ended-event-for-bot]
-- [game-ended-event-for-observer]
-- [won-round-event]
-
-<!-- BEGIN:game-ending -->
-```mermaid
-sequenceDiagram
-Note over Server: Server state = GAME_RUNNING
-Server->>Server: <<event>> game ended
-opt if bot won round
-    Server->>Bot: won-round-event
-end
-Server->>Bot: game-ended-event-for-bot
-Server->>Observer: game-ended-event-for-observer
-Server->>Controller: game-ended-event-for-observer
-Note over Server: Server state = GAME_STOPPED
-```
-<!-- END:game-ending -->
-
-## Controlling the game
-
-### Aborting a game
-
-A controller can stop the game while it is running. No results will be available when the game was aborted.
-
-- [stop-game]
-- [game-aborted-event]
-
-<!-- BEGIN:abort-game -->
-```mermaid
-sequenceDiagram
-Note over Server: Server state = GAME_RUNNING
-Controller->>Server: stop-game
-Server->>Bot: game-aborted-event
-Server->>Observer: game-aborted-event
-Server->>Controller: game-aborted-event
-Note over Server: Server state = GAME_STOPPED
-```
-<!-- END:abort-game -->
-
-### Pausing a game
-
-A controller can pause the game while it is running. The game will need to be resumed to continue. Note that the bots
-are not being notified that the game is paused, but should see the game as running and the next turn to occur as usual.
-
-- [pause-game]
-- [game-paused-event-for-observer]
-
-<!-- BEGIN:pause-game -->
-```mermaid
-sequenceDiagram
-Note over Server: Server state = GAME_RUNNING
-Controller->>Server: pause-game
-Server->>Observer: game-paused-event-for-observers
-Server->>Controller: game-paused-event-for-observers
-Note over Server: Server state = GAME_PAUSED
-Note over Server: Bots keep sending intents even if paused
-```
-<!-- END:pause-game -->
-
-### Step to the next turn while being paused
-
-A controller can tell the game to make the next turn while being paused. That is the next turn will be played as normal,
-but the game will immediately be paused again after playing the next turn. This is used for single stepping while
-debugging a bot, or just observe the game one turn/step at a time.
-
-- [next-turn]
-
-<!-- BEGIN:step-next-turn -->
-```mermaid
-sequenceDiagram
-Note over Server: Server state = GAME_PAUSED
-Controller->>Server: next-turn
-Note over Server: Server temporarily resumes
-Server->>Server: Process next turn
-Note over Server: Server pauses immediately after turn
-Server->>Observer: game-paused-event-for-observers
-Server->>Controller: game-paused-event-for-observers
-```
-<!-- END:step-next-turn -->
-
-### Resuming a paused game
-
-A controller can resume the game from being paused.
-
-- [resume-game]
-- [game-resumed-event-for-observer]
-
-<!-- BEGIN:resume-game -->
-```mermaid
-sequenceDiagram
-Note over Server: Server state = GAME_PAUSED
-Controller->>Server: resume-game
-Server->>Observer: game-resumed-event-for-observers
-Server->>Controller: game-resumed-event-for-observers
-Note over Server: Server state = GAME_RUNNING
-```
-<!-- END:resume-game -->
-
-### Changing the TPS
-
-A controller can change the [TPS] (Turns Per Second) for a battle.
-
-- [change-tps]
-- [tps-changed-event]
-
-<!-- BEGIN:change-tps -->
-```mermaid
-sequenceDiagram
-Controller->>Server: change-tps
-Note over Server: Server updates turn timer and state
-Server->>Observer: tps-changed-event
-Server->>Controller: tps-changed-event
-opt if new TPS = 0
-    Note over Server: Server state becomes GAME_PAUSED
-    Server->>Observer: game-paused-event-for-observers
-    Server->>Controller: game-paused-event-for-observers
-end
-opt if TPS becomes non-zero while paused
-    Note over Server: Server resumes and restarts turn timer
-    Server->>Observer: game-resumed-event-for-observers
-    Server->>Controller: game-resumed-event-for-observers
-end
-```
-<!-- END:change-tps -->
-
-### Enable or disable graphical debugging
-
-A controller can permit or forbid any bot from sending graphical debugging information that will be drawn by the GUI. By
-default, no bots are permitted to show debugging information.
-
-No event is emitted in response to thing configuration, but the information which bots are permitted to show debug
-information is included in the bot states.
-
-The server will silently drop any debugging graphics it receives from bots that are not permitted to show them.
-
-<!-- BEGIN:debug-graphics -->
-```mermaid
-sequenceDiagram
-Controller->>Server: bot-policy-update
-Server->>Bot: debug-policy-applied
-Note over Server: Server updates the bot's debug flag
-Note over Bot: Bot may only send debug graphics when permitted
-Note over Server: Observers learn permissions through the next tick state
-```
-<!-- END:debug-graphics -->
-
-### In-game events
-
-Here are the events that a bot receives during a game:
-
-| Event                     | Description                                                                                         |
-|---------------------------|-----------------------------------------------------------------------------------------------------|
-| [bot-death-event]         | When a bot dies                                                                                     |
-| [bot-hit-bot-event]       | When our bot collides with another bot                                                              |
-| [bot-hit-wall-event]      | When our bot collides with a wall                                                                   |
-| [bullet-fired-event]      | When our bot fires a bullet                                                                         |
-| [bullet-hit-bot-event]    | When our bullet collided with another bullet                                                        |
-| [bullet-hit-bullet-event] | When our bullet collided with another bullet                                                        |
-| [bullet-hit-wall-event]   | When our bullet has hit the wall                                                                    |
-| [hit-by-bullet-event]     | When our bot has been hit by a bullet                                                               |
-| [scanned-bot-event]       | When our bot has scanned another bot                                                                |
-| [skipped-turn-event]      | When our bot skipped a turn meaning that the bot intent was not received at the server-side in time |
-| [tick-event-for-bot]      | When a new turn is about to begin                                                                   |
-| [won-round-event]         | When our bot won the round                                                                          |
-| [team-message-event]      | When our bot receives a message from a teammate                                                     |
-
-[TPS]: ../../docs/articles/tps.html "TPS (Turns Per Second)"
-
-[server-handshake]: server-handshake.schema.yaml
-
-[bot-handshake]: bot-handshake.schema.yaml
-
-[observer-handshake]: observer-handshake.schema.yaml
-
-[controller-handshake]: controller-handshake.schema.yaml
-
-[bot-list-update]: bot-list-update.schema.yaml
-
-[start-game]: start-game.schema.yaml
-
-[game-started-event-for-bot]: game-started-event-for-bot.schema.yaml
-
-[bot-ready]: bot-ready.schema.yaml
-
-[round-started-event]: round-started-event.schema.yaml
-
-[round-ended-event-for-bot]: round-ended-event-for-bot.schema.yaml
-
-[tick-event-for-bot]: tick-event-for-bot.schema.yaml
-
-[tick-event-for-observer]: tick-event-for-observer.schema.yaml
-
-[bot-intent]: bot-intent.schema.yaml
-
-[skipped-turn-event]: skipped-turn-event.schema.yaml
-
-[game-ended-event-for-bot]: game-ended-event-for-bot.schema.yaml
-
-[game-ended-event-for-observer]: game-ended-event-for-observer.schema.yaml
-
-[won-round-event]: won-round-event.schema.yaml
-
-[stop-game]: stop-game.schema.yaml
-
-[game-aborted-event]: game-aborted-event.schema.yaml
-
-[pause-game]: pause-game.schema.yaml
-
-[next-turn]: next-turn.schema.yaml
-
-[game-paused-event-for-observer]: game-paused-event-for-observer.schema.yaml
-
-[resume-game]: resume-game.schema.yaml
-
-[game-resumed-event-for-observer]: game-resumed-event-for-observer.schema.yaml
-
-[change-tps]: change-tps.schema.yaml
-
-[tps-changed-event]: tps-changed-event.schema.yaml
-
-[bot-death-event]: bot-death-event.schema.yaml
-
-[bot-hit-bot-event]: bot-hit-bot-event.schema.yaml
-
-[bot-hit-wall-event]: bot-hit-wall-event.schema.yaml
-
-[bullet-fired-event]: bullet-fired-event.schema.yaml
-
-[bullet-hit-bot-event]: bullet-hit-bot-event.schema.yaml
-
-[bullet-hit-bullet-event]: bullet-hit-bullet-event.schema.yaml
-
-[bullet-hit-wall-event]: bullet-hit-wall-event.schema.yaml
-
-[hit-by-bullet-event]: hit-by-bullet-event.schema.yaml
-
-[scanned-bot-event]: scanned-bot-event.schema.yaml
-
-[skipped-turn-event]: skipped-turn-event.schema.yaml
-
-[tick-event-for-bot]: tick-event-for-bot.schema.yaml
-
-[won-round-event]: won-round-event.schema.yaml
-
-[team-message-event]: team-message-event.schema.yaml
+This directory contains the YAML schema files that define the WebSocket message protocol used by Robocode Tank Royale for network communication between the server, bots, observers, and controllers.
+
+Each `.schema.yaml` file is a [JSON Schema Draft 2020-12](https://json-schema.org/) definition. They are the authoritative contract for every message exchanged on the wire.
+
+> **For sequence diagrams and flow documentation** — how these messages participate in the battle lifecycle, connection handshake, turn loop, and controller commands — see:
+> **[`docs-internal/architecture/models/flows/`](../../docs-internal/architecture/models/flows/README.md)**
+
+---
+
+## Handshakes — Connection Establishment
+
+Initial messages exchanged when clients connect to the server.
+
+| Schema | Direction | Purpose |
+|--------|-----------|---------|
+| [server-handshake.schema.yaml](server-handshake.schema.yaml) | Server → Client | Server identity + sessionId assignment |
+| [bot-handshake.schema.yaml](bot-handshake.schema.yaml) | Bot → Server | Bot registration with metadata |
+| [observer-handshake.schema.yaml](observer-handshake.schema.yaml) | Observer → Server | Observer registration |
+| [controller-handshake.schema.yaml](controller-handshake.schema.yaml) | Controller → Server | Controller registration |
+| [bot-ready.schema.yaml](bot-ready.schema.yaml) | Bot → Server | Bot ready to start battle |
+
+---
+
+## Commands — Controller Operations
+
+Commands sent by controllers to manage game state.
+
+| Schema | Direction | Purpose |
+|--------|-----------|---------|
+| [start-game.schema.yaml](start-game.schema.yaml) | Controller → Server | Initiate battle with selected bots |
+| [stop-game.schema.yaml](stop-game.schema.yaml) | Controller → Server | Terminate current battle |
+| [pause-game.schema.yaml](pause-game.schema.yaml) | Controller → Server | Pause battle execution |
+| [resume-game.schema.yaml](resume-game.schema.yaml) | Controller → Server | Resume paused battle |
+| [next-turn.schema.yaml](next-turn.schema.yaml) | Controller → Server | Execute single turn (debug stepping) |
+| [change-tps.schema.yaml](change-tps.schema.yaml) | Controller → Server | Change turns per second |
+| [bot-policy-update.schema.yaml](bot-policy-update.schema.yaml) | Controller → Server | Update per-bot policy (debug graphics, breakpoint mode) |
+| [enable-debug-mode.schema.yaml](enable-debug-mode.schema.yaml) | Controller → Server | Enable turn-by-turn debug stepping |
+| [disable-debug-mode.schema.yaml](disable-debug-mode.schema.yaml) | Controller → Server | Disable debug stepping |
+
+---
+
+## Events — Server Notifications
+
+Events broadcast by the server to inform clients of state changes.
+
+### Game Lifecycle
+
+| Schema | Recipients | Purpose |
+|--------|------------|---------|
+| [game-started-event-for-bot.schema.yaml](game-started-event-for-bot.schema.yaml) | Bots | Battle started, includes initial state |
+| [game-started-event-for-observer.schema.yaml](game-started-event-for-observer.schema.yaml) | Observers, Controllers | Battle started, full state |
+| [game-ended-event-for-bot.schema.yaml](game-ended-event-for-bot.schema.yaml) | Bots | Battle ended, personal results |
+| [game-ended-event-for-observer.schema.yaml](game-ended-event-for-observer.schema.yaml) | Observers, Controllers | Battle ended, complete results |
+| [game-aborted-event.schema.yaml](game-aborted-event.schema.yaml) | All | Battle cancelled/aborted |
+| [game-paused-event-for-observer.schema.yaml](game-paused-event-for-observer.schema.yaml) | Observers, Controllers | Battle paused |
+| [game-resumed-event-for-observer.schema.yaml](game-resumed-event-for-observer.schema.yaml) | Observers, Controllers | Battle resumed |
+
+### Round Events
+
+| Schema | Recipients | Purpose |
+|--------|------------|---------|
+| [round-started-event.schema.yaml](round-started-event.schema.yaml) | All | New round began |
+| [round-ended-event-for-bot.schema.yaml](round-ended-event-for-bot.schema.yaml) | Bots | Round ended, personal stats |
+| [round-ended-event-for-observer.schema.yaml](round-ended-event-for-observer.schema.yaml) | Observers, Controllers | Round ended, full stats |
+
+### Turn Events
+
+| Schema | Recipients | Purpose |
+|--------|------------|---------|
+| [tick-event-for-bot.schema.yaml](tick-event-for-bot.schema.yaml) | Bots | Turn state, events, bot own state |
+| [tick-event-for-observer.schema.yaml](tick-event-for-observer.schema.yaml) | Observers, Controllers | Turn state, all bots' states |
+| [skipped-turn-event.schema.yaml](skipped-turn-event.schema.yaml) | Bot | Bot failed to send intent in time |
+
+### Bot Gameplay Events
+
+| Schema | Recipients | Purpose |
+|--------|------------|---------|
+| [scanned-bot-event.schema.yaml](scanned-bot-event.schema.yaml) | Bot | Radar detected another bot |
+| [hit-by-bullet-event.schema.yaml](hit-by-bullet-event.schema.yaml) | Bot | Bot took damage from bullet |
+| [bullet-fired-event.schema.yaml](bullet-fired-event.schema.yaml) | Bot | Bot fired a bullet |
+| [bullet-hit-bot-event.schema.yaml](bullet-hit-bot-event.schema.yaml) | Bot | Bot's bullet hit target |
+| [bullet-hit-bullet-event.schema.yaml](bullet-hit-bullet-event.schema.yaml) | Bot | Bot's bullet hit another bullet |
+| [bullet-hit-wall-event.schema.yaml](bullet-hit-wall-event.schema.yaml) | Bot | Bot's bullet hit wall |
+| [bot-hit-bot-event.schema.yaml](bot-hit-bot-event.schema.yaml) | Bot | Bot collided with another bot |
+| [bot-hit-wall-event.schema.yaml](bot-hit-wall-event.schema.yaml) | Bot | Bot collided with wall |
+| [bot-death-event.schema.yaml](bot-death-event.schema.yaml) | Bot | Bot destroyed |
+| [won-round-event.schema.yaml](won-round-event.schema.yaml) | Bot | Bot won the round |
+
+### Team Events
+
+| Schema | Recipients | Purpose |
+|--------|------------|---------|
+| [team-message-event.schema.yaml](team-message-event.schema.yaml) | Team Bot | Message from teammate |
+
+### Meta Events
+
+| Schema | Recipients | Purpose |
+|--------|------------|---------|
+| [bot-list-update.schema.yaml](bot-list-update.schema.yaml) | Observers, Controllers | Available bots changed |
+| [tps-changed-event.schema.yaml](tps-changed-event.schema.yaml) | Observers, Controllers | Turns per second changed |
+
+---
+
+## Intents — Bot Actions
+
+Messages sent by bots to declare their desired actions for the next turn.
+
+| Schema | Direction | Purpose |
+|--------|-----------|---------|
+| [bot-intent.schema.yaml](bot-intent.schema.yaml) | Bot → Server | Bot's desired movement, rotation, firing |
+| [team-message.schema.yaml](team-message.schema.yaml) | Bot → Server | Message to a teammate |
+
+---
+
+## State Objects — Data Transfer Objects
+
+Reusable data structures embedded in events and commands.
+
+| Schema | Purpose |
+|--------|---------|
+| [bot-state.schema.yaml](bot-state.schema.yaml) | Bot position, energy, direction (no ID) |
+| [bot-state-with-id.schema.yaml](bot-state-with-id.schema.yaml) | Bot state including bot ID |
+| [bot-info.schema.yaml](bot-info.schema.yaml) | Bot metadata (name, version, authors) |
+| [bot-address.schema.yaml](bot-address.schema.yaml) | Bot network address |
+| [bullet-state.schema.yaml](bullet-state.schema.yaml) | Bullet position, direction, power |
+| [participant.schema.yaml](participant.schema.yaml) | Bot participating in battle |
+| [game-setup.schema.yaml](game-setup.schema.yaml) | Battle configuration (arena, rules) |
+| [initial-position.schema.yaml](initial-position.schema.yaml) | Starting position for a bot |
+| [results-for-bot.schema.yaml](results-for-bot.schema.yaml) | Personal battle results |
+| [results-for-observer.schema.yaml](results-for-observer.schema.yaml) | Complete battle results |
+| [color.schema.yaml](color.schema.yaml) | RGB color value |
+| [event.schema.yaml](event.schema.yaml) | Base event structure |
+| [message.schema.yaml](message.schema.yaml) | Base message structure |
+
+---
+
+## Related Documentation
+
+- **[Protocol Flow Diagrams](../../docs-internal/architecture/models/flows/README.md)** — Sequence diagrams for all protocol flows
+- **[Message Schema Reference](../../docs-internal/architecture/models/message-schema/README.md)** — Detailed message contracts with examples
+- **[ADR-0006: Schema-Driven Contracts](../../docs-internal/architecture/adr/0006-schema-driven-protocol-contracts.md)** — Design rationale
+- **[ADR-0009: WebSocket Protocol](../../docs-internal/architecture/adr/0009-websocket-communication-protocol.md)** — Protocol design

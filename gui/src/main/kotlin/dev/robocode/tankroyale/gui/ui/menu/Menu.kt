@@ -40,8 +40,8 @@ object Menu : JMenuBar() {
         setupHelpMenu()
 
         ServerEvents.apply {
-            onStarted.subscribe(Menu) { updateServerState() }
-            onStopped.subscribe(Menu) { updateServerState() }
+            onStarted.on(Menu) { updateServerState() }
+            onStopped.on(Menu) { updateServerState() }
         }
     }
 

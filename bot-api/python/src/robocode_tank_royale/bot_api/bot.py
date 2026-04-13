@@ -31,18 +31,17 @@ class _BotInternals(StopResumeListenerABC):
         # where the bot thread wakes up before turn_remaining/distance_remaining are updated.
         handlers.on_next_turn.subscribe(self.on_next_turn, 110)
 
+        # Priority 90 ensures BaseBotInternals.on_round_started (priority 100) resets state first,
+        # then we pre-warm the bot thread so it is alive and waiting before turn 1 arrives.
+        handlers.on_round_started.subscribe(lambda _: self._on_round_started_prewarm(), 90)
+
         handlers.on_game_aborted.subscribe(_stop_thread, 100)
         handlers.on_round_ended.subscribe(_stop_thread, 90)
         handlers.on_game_ended.subscribe(_stop_thread, 90)
         handlers.on_disconnected.subscribe(_stop_thread, 90)
+        handlers.on_death.subscribe(_stop_thread, 90)
         handlers.on_hit_wall.subscribe(lambda _: self.on_hit_wall(), 90)
         handlers.on_hit_bot.subscribe(self.on_hit_bot, 90)
-
-        # Subscribe to public bot event handlers for on_death with priority 0 (lower than user's default of 1).
-        # This ensures user's on_death callback runs BEFORE we stop the thread, since dispatch_events()
-        # checks is_running() and would skip events if thread was already stopped.
-        public_handlers = self._base_bot_internals.bot_event_handlers
-        public_handlers.on_death.subscribe(_stop_thread, 0)
 
         # Did we go over desired distance to travel
         self._is_over_driving = False
@@ -55,14 +54,18 @@ class _BotInternals(StopResumeListenerABC):
     def on_next_turn(self, e: TickEvent) -> None:
         """Handle the next turn event."""
         if e.turn_number == 1:
-            self.on_first_turn()
+            self._on_first_turn()
         self._process_turn()
 
-    def on_first_turn(self) -> None:
-        """Handle the first turn of the bot."""
-        self._base_bot_internals.stop_thread()  # sanity before starting a new thread (later)
+    def _on_round_started_prewarm(self) -> None:
+        """Pre-warm bot thread at RoundStarted (P90) so thread is alive before turn 1 arrives."""
+        self._base_bot_internals.stop_thread()
         self._clear_remaining()
         self._base_bot_internals.start_thread(self._bot)
+
+    def _on_first_turn(self) -> None:
+        """Handle the first turn — capture initial directions for delta tracking."""
+        self._clear_remaining()
 
     def _clear_remaining(self) -> None:
         """Clear the remaining movement and turn values."""

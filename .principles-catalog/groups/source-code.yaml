@@ -1,0 +1,16 @@
+name: source-code
+description: "Universal principles for all source code, regardless of language — the baseline every language group includes"
+
+principles:
+  - INFRA-NO-SECRETS-IN-CODE
+  - CODE-DX-NAMING
+  - CODE-DX-SMALL-FUNCTIONS
+  - CODE-DX-CODE-FOR-READERS
+  - CODE-DX-REDUCE-COGNITIVE-LOAD
+  - CODE-CS-DRY
+  - CODE-CS-YAGNI
+  - CODE-CS-KISS
+  - CODE-CS-FAIL-FAST
+  - CODE-CC-PREFER-IMMUTABLE
+  - GOF-COMPOSITION-OVER-INHERITANCE
+  - GOF-PROGRAM-TO-INTERFACE

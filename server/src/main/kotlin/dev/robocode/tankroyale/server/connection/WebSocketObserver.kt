@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.server.connection
 
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.Server
+import dev.robocode.tankroyale.server.core.Server
 import org.java_websocket.WebSocket
 import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
@@ -25,6 +25,10 @@ class WebSocketObserver(observer: IClientWebSocketObserver) {
 
     fun broadcast(clientSockets: Collection<WebSocket>, message: String) {
         webSocketServer.broadcast(message, clientSockets)
+    }
+
+    fun setConnectionLostTimeout(seconds: Int) {
+        webSocketServer.connectionLostTimeout = seconds
     }
 
     private fun validateInheritedChannel() {

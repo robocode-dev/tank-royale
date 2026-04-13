@@ -58,9 +58,9 @@ object BotInfoPanel : JPanel(MigLayout("", "[][sg,grow][10][][sg,grow]")) {
         updateBotInfo(null)
 
         BotSelectionEvents.apply {
-            onBotDirectorySelected.subscribe(BotInfoPanel) { updateBotInfo(it) }
-            onJoinedBotSelected.subscribe(BotInfoPanel) { updateBotInfo(it) }
-            onBotSelected.subscribe(BotInfoPanel) { updateBotInfo(it) }
+            onBotDirectorySelected.on(BotInfoPanel) { updateBotInfo(it) }
+            onJoinedBotSelected.on(BotInfoPanel) { updateBotInfo(it) }
+            onBotSelected.on(BotInfoPanel) { updateBotInfo(it) }
         }
     }
 

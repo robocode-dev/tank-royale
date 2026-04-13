@@ -1,10 +1,10 @@
 rootProject.name = "Robocode Tank Royale"
 
-val version: String = providers.gradleProperty("version").get()
 
 // Lib
 include("lib:common")
 include("lib:client")
+include("lib:intent-diagnostics")
 
 // Booter
 include("booter")
@@ -18,16 +18,24 @@ include("recorder")
 // GUI
 include("gui")
 
+// Bettle Runner
+include("runner")
+
 // Bot API
 include("bot-api:java")
 include("bot-api:dotnet")
 include("bot-api:dotnet:schema")
 include("bot-api:python")
+include("bot-api:typescript")
+
+// Bot API test bots (instrumented bots used by runner integration tests)
+include("bot-api:tests")
 
 // Sample Bots archives
 include("sample-bots:java")
 include("sample-bots:csharp")
 include("sample-bots:python")
+include("sample-bots:typescript")
 
 // Docs
 include("docs-build")
@@ -35,9 +43,6 @@ include("docs-build")
 // Check dependencies with this command: gradlew dependencyUpdates
 dependencyResolutionManagement {
     versionCatalogs {
-        create("libs") {
-            version("tankroyale", version)
-        }
         create("testLibs") {
             from(files("gradle/test-libs.versions.toml"))
         }

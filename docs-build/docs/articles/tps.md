@@ -2,54 +2,73 @@
 
 ## Introduction
 
-_Turns Per Second_ is a term used in Robocode that can be compared to [FPS] (Frames Per Second). So TPS is the _turn
-rate_ defined as the number of turns in a battle that the server can execute per second.
+_Turns Per Second_ is a term used in Robocode that can be compared to [FPS] (Frames Per Second). TPS is the _visualization
+speed_ for observers watching a battle. It does **not** affect how much time bots have to compute or the outcome of battles.
 
-## Turn timeout
+## Turn Timeout
 
 The game has a _turn timeout_ defined as a part of the game rules. The turn timeout is specified in microseconds (µs),
-where a microsecond (µs) is a millionth of a second. The turn timeout is the amount of time that each bot is allowed to
-use for a single turn.
+where a microsecond (µs) is a millionth of a second. The turn timeout is the **fixed duration** of every turn in a battle.
 
-### Skipped turns
+### Important: Deterministic Battles
 
-If the bot spends more time than allowed by the turn timeout, then the bot will be _skipping the turn_, and have missed
-the opportunity to send its _intent_ to the server. This means that the bot cannot fire the cannot, turn or change the
-speed, etc. in that turn. This happens because the server receives a _turn timeout_ event, and hence concludes the turn,
-and starts processing the next turn.
+**Every turn takes exactly the turn timeout duration**, regardless of when bots send their intents. This ensures that:
 
-### Intents sent within the timeout time
+- Battle outcomes depend **only** on turn timeout, not on TPS settings
+- Running the same battle at different TPS values produces **identical results**
+- All bots get the **same computation time** in every turn
 
-A well-functioning bot will make sure to send its _intent_ before the turn timeout occurs. So as soon as all bots have
-sent their _intent_ in time, the server can conclude the turn. This will happen when the server receives the intent from
-the last and "slowest" bot sending the last intent. But this will still be faster than the turnout time.
+This deterministic behavior is critical for competitive play and reproducible simulations.
 
-## Turn rate is limited by the turn timeout
+### Skipped Turns
 
-So why is the turn timeout influencing the turn rate?
+If a bot fails to send its _intent_ before the turn timeout expires, the bot will be _skipping the turn_, meaning it
+missed the opportunity to update its actions. This means that the bot cannot fire its cannon, turn, or change its
+speed, etc. in that turn. The server will use the bot's previous intent (or default values) and proceed to the next turn.
 
-This is because the turn rate is constrained by how fast the turns are being processed. The faster the turns are
-processed, the higher the turn rate can go. So if a high turn rate is wanted, this will require a turn timeout that is
-low enough to allow it.
+## TPS as Visualization Speed Only
 
-## Maximum turn rate
+TPS controls the **maximum rate at which turns are displayed** to observers. It does not affect bot computation time:
 
-The maximum turn rate can be calculated from the turn timeout:
+- **Low TPS** (e.g., 30 TPS): Slow-motion visualization for detailed observation
+- **High TPS** (e.g., 500 TPS): Fast-forward visualization for quick battles
+- **TPS = -1**: Unlimited speed (as fast as hardware allows)
 
-$TPS_{max} >= \frac{1,000,000}{timeout_{turn}}$
+Regardless of TPS setting, every turn gives bots the full turn timeout to compute.
 
-So if the turn timeout is set to 30,000 µs, the maximum turn rate will be:
+## Maximum Turn Rate
 
-$TPS_{max} >= \frac{1,000,000}{30,000} = 33.33333$
+The maximum turn rate is determined by the turn timeout:
 
-The maximum turn rate, TPS<sub>max</sub> might be slightly higher due to the bots, all sending their intents before the
-timeout occurs.
+$TPS_{max} = \frac{1,000,000}{timeout_{turn}}$
 
-## Note about maximum turn rate
+So if the turn timeout is set to 30,000 µs (30 ms), the maximum turn rate will be:
 
-Be careful when setting the maximum turn rate! Setting the turn rate below 1 ms (1000 µs) is currently causing issues on
-some systems, meaning that the bots might not behave the same way as usual and seem to skip turns etc.
-This can be caused by both hardware limitations and OS limitations.
+$TPS_{max} = \frac{1,000,000}{30,000} = 33.33$ TPS
+
+**You cannot run faster than this maximum rate** because each turn requires the full timeout duration.
+
+### Example Configurations
+
+| Turn Timeout | Max TPS | Description |
+|--------------|---------|-------------|
+| 10,000 µs (10 ms) | 100 TPS | Fast bots, limited visualization speed |
+| 30,000 µs (30 ms) | 33.33 TPS | Standard competitive play |
+| 100,000 µs (100 ms) | 10 TPS | Slower bots, more thinking time |
+
+## Choosing TPS Settings
+
+When setting TPS, remember:
+
+1. **TPS ≤ Max TPS**: You can set TPS lower than the maximum for slower visualization
+2. **TPS > Max TPS**: Has no effect - turns still take turn timeout duration
+3. **Battle outcomes**: Are **always** determined by turn timeout, **never** by TPS
+4. **For competitive battles**: Use the same turn timeout. TPS is a viewer preference.
+
+## Note About Performance
+
+Be careful when setting very low turn timeouts (< 1000 µs)! This can cause issues on some systems, meaning that bots
+might skip turns due to hardware or OS limitations, not because of their code.
 
 
 [FPS]: https://en.wikipedia.org/wiki/Frame_rate "Frame Rate and frames per second (FPS)"

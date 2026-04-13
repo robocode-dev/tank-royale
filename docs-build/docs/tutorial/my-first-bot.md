@@ -37,13 +37,16 @@ Next, you should create a bot directory inside the *bots* directory for your fir
 it will be located under `../bots/MyFirstBot`. All your bot files must be put into this folder and share the same file
 name as the bot directory (more info in the [booter](../articles/booter.md) article).
 
-## Create a JSON file for bot info
+## Create a JSON file or set properties in code
 
-A [JSON](https://fileinfo.com/extension/json) file is used for providing the game with information about your bot. You
-must create a MyFirstBot.json file and put this into your bot directory, i.e. into
-`../bots/MyFirstBot/MyFirstBot.json`.
+To provide the game with information about your bot (like its name and version), you have two options:
 
-This is the content of the JSON file, which you can copy and paste into the file:
+1. **Create a JSON file**: Create a `MyFirstBot.json` file in your bot directory (`../bots/MyFirstBot/MyFirstBot.json`).
+2. **Set properties in code**: You can skip the JSON file and set these properties directly in your bot's source code.
+
+### Using a JSON file
+
+This is the recommended approach for beginners. Copy the following into `MyFirstBot.json`:
 
 ```json{2-4}
 {
@@ -57,12 +60,16 @@ This is the content of the JSON file, which you can copy and paste into the file
   "programmingLang": "«enter programming language, e.g. Java or C#»"
 }
 ```
-The fields `name`, `version` and `authors` are required, and the rest of the fields are optional.
+The fields `name`, `version` and `authors` are required.
 
-Note that the `authors` field should contain your full name, nickname, or handle, which identifies you.
-The `platform` and `programmingLang` depends on your choice of programming language and platform. For example, the
-platform could be Java 17, and the programming Language Kotlin 1.8.20 or Java 17.
-Or the platform could be .NET 8, and the programming language C# 12 or F# 8.
+### Setting properties in code
+
+If you prefer to keep everything in your source code, you can skip the JSON file. However, you must then ensure that your
+bot directory contains a file that the booter can recognize (like `MyFirstBot.jar`, `MyFirstBot.py`, or `MyFirstBot.csproj`)
+so it knows how to start your bot.
+
+Regardless of which method you choose, the fields `name`, `version`, and `authors` **must** be provided, or your bot will
+fail to connect.
 
 This concludes the common part of the tutorial, and the following depends on the platform of your choice.
 
@@ -73,5 +80,6 @@ The rest of the tutorial is split up based on the available APIs for different p
 - [.NET](dotnet/my-first-bot-for-dotnet.md)
 - [Java / JVM](jvm/my-first-bot-for-jvm.md)
 - [Python](python/my-first-bot-for-python.md)
+- [TypeScript / JavaScript](typescript/my-first-bot-for-typescript.md)
 
 [sample bots]: ../articles/installation#sample-bots "Sample bots"

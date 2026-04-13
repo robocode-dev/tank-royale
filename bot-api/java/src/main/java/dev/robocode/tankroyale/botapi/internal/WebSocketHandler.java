@@ -18,8 +18,8 @@ import dev.robocode.tankroyale.schema.BotReady;
 import dev.robocode.tankroyale.schema.GameEndedEventForBot;
 import dev.robocode.tankroyale.schema.GameStartedEventForBot;
 import dev.robocode.tankroyale.schema.Message;
-import dev.robocode.tankroyale.schema.ServerHandshake;
 import dev.robocode.tankroyale.schema.TickEventForBot;
+import dev.robocode.tankroyale.schema.ServerHandshake;
 
 import java.net.URI;
 import java.net.http.WebSocket;
@@ -85,7 +85,6 @@ final class WebSocketHandler implements WebSocket.Listener {
     @Override
     public void onError(WebSocket websocket, Throwable error) {
         botEventHandlers.onConnectionError.publish(new ConnectionErrorEvent(serverUrl, error));
-
         closedLatch.countDown();
     }
 
@@ -99,7 +98,6 @@ final class WebSocketHandler implements WebSocket.Listener {
             JsonElement jsonType = jsonMsg.get("type");
             if (jsonType != null) {
                 String type = jsonType.getAsString();
-
                 switch (dev.robocode.tankroyale.schema.Message.Type.fromValue(type)) {
                     case TICK_EVENT_FOR_BOT:
                         handleTick(jsonMsg);
@@ -134,13 +132,15 @@ final class WebSocketHandler implements WebSocket.Listener {
     }
 
     private void handleTick(JsonObject jsonMsg) {
-        if (baseBotInternals.getEventHandlingDisabledTurn()) return;
+        boolean disabled = baseBotInternals.isEventHandlingDisabled();
+        if (disabled) return;
 
         baseBotInternals.setTickStartNanoTime(System.nanoTime());
 
         var tickEventForBot = JsonConverter.fromJson(jsonMsg, TickEventForBot.class);
 
         var mappedTickEvent = EventMapper.map(tickEventForBot, baseBot);
+
         baseBotInternals.addEventsFromTick(mappedTickEvent);
 
         if (baseBotInternals.getBotIntent().getRescan() != null && baseBotInternals.getBotIntent().getRescan()) {
@@ -160,8 +160,8 @@ final class WebSocketHandler implements WebSocket.Listener {
 
         var mappedRoundStartedEvent = new RoundStartedEvent(roundStartedEvent.getRoundNumber());
 
-        botEventHandlers.onRoundStarted.publish(mappedRoundStartedEvent);
         internalEventHandlers.onRoundStarted.publish(mappedRoundStartedEvent);
+        botEventHandlers.onRoundStarted.publish(mappedRoundStartedEvent);
     }
 
     private void handleRoundEnded(JsonObject jsonMsg) {
@@ -171,7 +171,15 @@ final class WebSocketHandler implements WebSocket.Listener {
                 roundEndedEvent.getRoundNumber(), roundEndedEvent.getTurnNumber(), roundEndedEvent.getResults());
 
         botEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
-        internalEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
+        internalEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent); // triggers stopThread()
+
+        // Dispatch any queued events (e.g. WonRoundEvent from the last tick). Bot thread is now
+        // stopped so there is no concurrent dispatch race. Must run before ROUND_STARTED clears
+        // the event queue.
+        baseBotInternals.dispatchEvents(mappedRoundEndedEvent.getTurnNumber());
+
+        // Transfer any remaining stdout/stderr from event handlers (e.g. onWonRound) before the round ends
+        baseBotInternals.transferStdOutToBotIntent();
     }
 
     private void handleGameStarted(JsonObject jsonMsg) {
@@ -191,15 +199,15 @@ final class WebSocketHandler implements WebSocket.Listener {
                 gameStartedEventForBot.getStartDirection());
         baseBotInternals.setInitialPosition(initialPosition);
 
+        botEventHandlers.onGameStarted.publish(
+                new GameStartedEvent(gameStartedEventForBot.getMyId(), initialPosition, baseBotInternals.getGameSetup()));
+
         // Send ready signal
         var ready = new BotReady();
         ready.setType(Message.Type.BOT_READY);
 
         String msg = JsonConverter.toJson(ready);
         socket.sendText(msg, true);
-
-        botEventHandlers.onGameStarted.publish(
-                new GameStartedEvent(gameStartedEventForBot.getMyId(), initialPosition, baseBotInternals.getGameSetup()));
     }
 
     private void handleGameEnded(JsonObject jsonMsg) {
@@ -220,16 +228,17 @@ final class WebSocketHandler implements WebSocket.Listener {
     }
 
     private void handleSkippedTurn(JsonObject jsonMsg) {
-        if (baseBotInternals.getEventHandlingDisabledTurn()) return;
-
         var skippedTurnEvent = JsonConverter.fromJson(jsonMsg, dev.robocode.tankroyale.schema.SkippedTurnEvent.class);
 
-        botEventHandlers.onSkippedTurn.publish((SkippedTurnEvent) EventMapper.map(skippedTurnEvent, baseBot));
+        baseBotInternals.addEvent((SkippedTurnEvent) EventMapper.map(skippedTurnEvent, baseBot));
     }
 
     private void handleServerHandshake(JsonObject jsonMsg) {
         var serverHandshake = JsonConverter.fromJson(jsonMsg, ServerHandshake.class);
         baseBotInternals.setServerHandshake(serverHandshake);
+
+        // Validate bot info before sending bot handshake
+        validateBotInfo();
 
         // Reply by sending bot handshake
         var isDroid = baseBot instanceof Droid;
@@ -237,5 +246,40 @@ final class WebSocketHandler implements WebSocket.Listener {
         String msg = JsonConverter.toJson(botHandshake);
 
         socket.sendText(msg, true);
+    }
+
+    private void validateBotInfo() {
+        // If the bot is booted, botInfo might be partially filled by the booter
+        // but the bot code must ensure name, version, and authors are present.
+        if (isBlank(botInfo.getName())) {
+            throwMissingPropertyException("name");
+        }
+        if (isBlank(botInfo.getVersion())) {
+            throwMissingPropertyException("version");
+        }
+        if (botInfo.getAuthors() == null || botInfo.getAuthors().isEmpty() || isAllBlank(botInfo.getAuthors())) {
+            throwMissingPropertyException("authors");
+        }
+    }
+
+    private void throwMissingPropertyException(String propertyName) {
+        throw new BotException(
+                String.format("Required bot property '%s' is missing. " +
+                        "This property is required in order for the bot to be recognized when booting it up and " +
+                        "when it needs to join the game. You must set this property in your bot code " +
+                        "or provide a .json configuration file.", propertyName));
+    }
+
+    private static boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    private static boolean isAllBlank(Iterable<String> iterable) {
+        for (String s : iterable) {
+            if (!isBlank(s)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -26,6 +26,22 @@ properties:
   gameSetup:
     description: Current game setup, if a game has been started and is running on the server.
     $ref: game-setup.schema.yaml
+  features:
+    description: Server capabilities advertised to clients.
+    type: object
+    properties:
+      debugMode:
+        description: >
+          Whether the server supports debug mode (pause-after-every-turn).
+          If false or absent, the server will ignore enable/disable debug
+          mode requests.
+        type: boolean
+      breakpointMode:
+        description: >
+          Whether the server supports breakpoint mode (pause-on-intent-timeout).
+          If false or absent, the server will ignore enable/disable breakpoint
+          mode requests.
+        type: boolean
 required:
   - sessionId
   - variant

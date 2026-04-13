@@ -1,0 +1,22 @@
+name: pipeline
+description: "CI/CD pipeline principles — build correctness, deployment safety, secrets hygiene, and environment isolation. Activate for any project with a pipeline definition file (.github/workflows/, Jenkinsfile, .gitlab-ci.yml, etc.)."
+
+globs:
+  - ".github/workflows/**"
+  - "Jenkinsfile"
+  - ".gitlab-ci.yml"
+  - "azure-pipelines.yml"
+
+principles:
+  - PIPELINE-REPRODUCIBLE-BUILDS
+  - PIPELINE-ENVIRONMENT-ISOLATION
+  - PIPELINE-FAIL-FAST-PIPELINE
+  - PIPELINE-DEPLOYMENT-GATES
+  - PIPELINE-MINIMAL-PERMISSIONS
+  - PIPELINE-NO-SECRETS-IN-LOGS
+  - CD-TRUNK-BASED-DEVELOPMENT
+  - CD-KEEP-BUILD-GREEN
+  - CD-DEPLOY-ON-EVERY-COMMIT
+  - CD-FAST-FEEDBACK-LOOPS
+  - CD-PIPELINE-AS-CODE
+  - CD-BUILD-ONCE-DEPLOY-MANY

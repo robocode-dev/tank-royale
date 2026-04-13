@@ -17,11 +17,15 @@ Each bot has its own subdirectory (bot directory) that contains:
 
 * A Python source file (.py) that provides the program logic of the bot.
 * A JSON file (.json) that provides information about the bot.
-* Script files (.cmd and .sh) used for starting the bot.
+* Script files (.cmd and .sh) are optional for starting the bot.
 
 ## Running a bot
 
-A script file is used for running the bot, which is `python <Python source file>` for the sample bots for Python.
+The bot can be run by Robocode without any script file by using the information in the bot's JSON file.
+By default, the booter assumes that the base Python script has the same name as the bot directory.
+If the base script has a different name, it must be specified using the `base` property in the JSON file.
+However, a script file can still be used for running the bot, which is `python <Python source file>` for the sample bots
+for Python.
 
 You can run a sample bot manually from the command line by going into the bot directory (using the `cd` command) and
 writing:

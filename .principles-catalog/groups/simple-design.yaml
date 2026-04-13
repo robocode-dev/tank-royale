@@ -1,0 +1,8 @@
+name: simple-design
+description: "Kent Beck's Four Rules of Simple Design — in priority order"
+
+principles:
+  - SIMPLE-DESIGN-PASSES-TESTS
+  - SIMPLE-DESIGN-REVEALS-INTENTION
+  - SIMPLE-DESIGN-NO-DUPLICATION
+  - SIMPLE-DESIGN-FEWEST-ELEMENTS

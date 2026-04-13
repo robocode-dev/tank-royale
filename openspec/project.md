@@ -1,5 +1,30 @@
 # Project Context
 
+## Project Governance
+
+**Open Source, Single Maintainer**
+
+This is an **open source project on GitHub** (Apache License 2.0), primarily maintained by **Flemming N. Larsen** as a spare-time, non-profit effort. It is **NOT a corporate project**.
+
+- **Maintainer:** [@flemming-n-larsen](https://github.com/flemming-n-larsen)
+- **Contributors:** Welcome! See [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Repository:** https://github.com/robocode-dev/tank-royale
+- **License:** Apache License 2.0, Copyright © 2022 Flemming N. Larsen
+
+**Distribution Channels:**
+
+- **GitHub Releases:** Primary distribution as platform installers and JAR artifacts
+- **Maven Central:** Java/JVM Bot API (via nexus-publish)
+- **NuGet:** .NET Bot API
+- **PyPI:** Python Bot API
+
+**Development Reality:**
+
+- Solo developer — no team coordination or migration guides needed
+- Manual testing acceptable (automated where reasonable)
+- Users report bugs via GitHub issues
+- No enterprise overhead (performance SLAs, benchmarking requirements, etc.)
+
 ## Purpose
 
 Robocode Tank Royale is a programming game where players code autonomous tank-bots that compete against each other in a
@@ -30,7 +55,7 @@ Key goals:
 - **Java 11+** – runtime target (JDK 17-21 required for building)
 - **Python** – bot API and sample bots
 - **.NET / C#** – bot API and sample bots
-- **WebAssembly (Wasm)** – work in progress for browser-based bots
+- **TypeScript** – bot API for web platform (Node.js and browser)
 
 ### Core Libraries
 
@@ -71,14 +96,20 @@ Key goals:
 - Use `TODO`/`FIXME` comments where appropriate
 - Add code comments where decisions might be non-obvious
 
-### Architecture Patterns
+### Architecture
 
-- **Monorepo**: All components in a single Gradle multi-project build
-- **Authoritative server**: Server is the single source of truth for game state
-- **WebSocket protocol**: All bot-server communication via WebSocket using JSON messages
-- **Schema-driven**: Message contracts defined in `schema/schemas/`
-- **Cross-platform APIs**: All official Bot APIs (Java, .NET, Python) must offer equivalent features consistently
-- **Tick-based simulation**: Game advances in discrete ticks; bots submit actions per tick
+Full architecture documentation (ADRs, C4 views, message schemas, flows) lives in
+[`docs-internal/architecture/`](../docs-internal/architecture/README.md). Key patterns: monorepo, authoritative server,
+WebSocket + JSON protocol, schema-driven message contracts, cross-platform symmetric APIs, tick-based simulation.
+
+> **Do not duplicate architecture details here.** Reference the architecture docs instead.
+
+### Protocol & Sequence Diagrams
+
+The WebSocket game protocol — including handshakes, battle lifecycle, turn loop, and controller commands — is documented
+with Mermaid sequence diagrams in [`docs-internal/architecture/models/flows/`](../docs-internal/architecture/models/flows/README.md). **Always consult these
+diagrams** when working on features that interact with the server protocol (Observer, Controller, Bot connections,
+battle orchestration). The individual message schemas (YAML) live in `schema/schemas/`.
 
 ### Testing Strategy
 
@@ -131,8 +162,8 @@ Key goals:
 
 ### Bot API Rules (Non-negotiable)
 
-- **1:1 semantic equivalence with Java**: All official Bot APIs (Python, .NET, Wasm) must be semantically identical to
-  the Java Bot API, which is the reference implementation
+- **1:1 semantic equivalence with Java**: All official Bot APIs (Python, .NET, TypeScript) must be semantically identical
+  to the Java Bot API, which is the reference implementation
 - **Java is the reference**: The classic Robocode API was originally written for Java, and Tank Royale remains loyal to
   this heritage. The Java Bot API is the most battle-tested implementation and serves as the authoritative source for
   all other platform implementations. When in doubt, Java's behavior is authoritative.
@@ -152,9 +183,12 @@ Key goals:
 
 ### Design Constraints
 
-- Bot API changes must sync across all platforms (Java, .NET, Python)
+- Bot API changes must sync across all platforms (Java, .NET, Python, TypeScript)
 - Protocol changes affect all clients; coordinate via `schema/schemas/`
 - Keep documentation updated with code changes
+
+> See [ADR-0003](../docs-internal/architecture/adr/0003-cross-platform-bot-api-strategy.md) for cross-platform
+> design rationale and [architecture docs](../docs-internal/architecture/) for full architectural context.
 
 ### License
 

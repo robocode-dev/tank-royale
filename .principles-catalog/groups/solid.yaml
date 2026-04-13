@@ -1,0 +1,9 @@
+name: solid
+description: "SOLID object-oriented design principles — SRP, OCP, LSP, ISP, DIP"
+
+principles:
+  - SOLID-SRP
+  - SOLID-OCP
+  - SOLID-LSP
+  - SOLID-ISP
+  - SOLID-DIP

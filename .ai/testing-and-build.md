@@ -1,4 +1,4 @@
-# Testing and Build Procedures
+# Testing and Build
 
 <!-- METADATA: ~160 lines, ~1400 tokens -->
 <!-- KEYWORDS: test, build, Gradle, gradlew, compile, validation, sample bot, backward compatibility, asyncio, python, hanging, sequence diagram, protocol -->
@@ -38,87 +38,26 @@ This means: tick is sent first, bot responds with intent, then turn timeout occu
 
 ## Build Requirements
 
-Always run `./gradlew clean build` after ANY of these changes:
+Run `./gradlew clean build` after any code, config, or build system change.
 
-- Code changes (Java, Kotlin, Python, C#)
-- Configuration changes (build files, Gradle scripts)
-- Build system changes (dependencies, plugins)
+**Skip for:** pure markdown, README, or comment-only changes.
 
-**Exception - skip build for:**
-
-- Pure text/markdown documentation
-- README updates (unless they affect build)
-- Comment-only changes
-
-**Build command:**
+**Module builds (faster iteration):**
 
 ```bash
-./gradlew clean build
-```
-
-## Testing Standards
-
-Always add regression tests for bug fixes.
-
-Always add tests covering new behavior for new features.
-
-Always run tests on ALL platforms (Java, Python, .NET) for Bot API changes.
-
-Always validate JSON schema compliance for protocol changes.
-
-**Test execution:**
-
-Always ensure all tests pass before completing task.
-
-Remember the build system runs tests automatically.
-
-If tests fail, fix or explain why failure is expected.
-
-## Protocol Change Validation
-
-Always follow this sequence when modifying JSON/WebSocket protocol:
-
-1. Update JSON schema in `/schema`
-2. Update documentation
-3. Verify backward compatibility
-4. Add JSON examples demonstrating new behavior
-5. Test with existing bots to ensure no breakage
-
-## Sample Bot Validation
-
-Always test with sample bots when making:
-
-- Timing changes (turn order, event sequencing)
-- State management changes
-- User-visible Bot API changes
-- Event handling modifications
-
-**How to validate:**
-
-Always run at least one sample bot from each language.
-
-Always verify expected behavior matches.
-
-Always check console output for errors.
-
-Always ensure cross-platform consistency.
-
-## Module-Specific Builds
-
-**Building individual modules:**
-
-```bash
-# Build specific module
 ./gradlew :bot-api:java:build
 ./gradlew :server:build
 ./gradlew :gui:build
 ```
 
-**When to use:**
+## Testing Standards
 
-- Faster iteration during focused work
+- Add regression tests for bug fixes; add tests for new behavior
+- Run tests on ALL platforms (Java, Python, .NET) for Bot API changes
+- Validate JSON schema compliance for protocol changes
+- Fix test failures before completing a task (or explain if expected)
+- Faster iteration during focused work by using module builds
 - Isolating build issues
-- Testing single-platform changes
 
 ## Python Asyncio Testing (CRITICAL)
 
@@ -168,3 +107,15 @@ after completion due to asyncio's default ThreadPoolExecutor never shutting down
 python -m pytest tests/ --timeout=15
 ```
 
+## Protocol Change Sequence
+
+1. Update JSON schema in `/schema`
+2. Update documentation
+3. Verify backward compatibility
+4. Add JSON examples
+5. Test with existing bots
+
+## Sample Bot Validation
+
+Test with sample bots when making timing, state, user-visible API, or event handling changes.
+Run at least one bot per language; verify expected behavior and check console output for errors.

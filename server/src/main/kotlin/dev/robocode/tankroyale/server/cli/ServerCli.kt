@@ -7,9 +7,9 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.int
 import dev.robocode.tankroyale.common.util.Version
-import dev.robocode.tankroyale.server.dev.robocode.tankroyale.server.core.Server
-import dev.robocode.tankroyale.server.rules.DEFAULT_GAME_TYPE
-import dev.robocode.tankroyale.server.rules.DEFAULT_TURNS_PER_SECOND
+import dev.robocode.tankroyale.server.core.Server
+import dev.robocode.tankroyale.common.rules.DEFAULT_GAME_TYPE
+import dev.robocode.tankroyale.common.rules.DEFAULT_TURNS_PER_SECOND
 
 internal class ServerCli : CliktCommand() {
     override fun help(context: Context): String = "Runs a Robocode Tank Royale server"
@@ -43,6 +43,14 @@ internal class ServerCli : CliktCommand() {
         "--tps",
         help = "Initial Turns Per Second (TPS) (default: $DEFAULT_TURNS_PER_SECOND) in the range [-1..999], where -1 means maximum TPS, and 0 means paused."
     ).int()
+    private val enableDebugMode by option(
+        "--debug-mode",
+        help = "Enable/disable debug mode support (default: enabled)"
+    ).flag("--no-debug-mode", default = true)
+    private val enableBreakpointMode by option(
+        "--breakpoint-mode",
+        help = "Enable/disable breakpoint mode support (default: enabled)"
+    ).flag("--no-breakpoint-mode", default = true)
 
     init {
         versionOption("Robocode Tank Royale Server ${Version.version}", names = setOf("-v", "--version"))
@@ -55,6 +63,8 @@ internal class ServerCli : CliktCommand() {
         Server.botSecrets = botSecrets
         Server.initialPositionEnabled = enableInitialPosition
         tps?.let { Server.tps = it }
+        Server.debugModeSupported = enableDebugMode
+        Server.breakpointModeSupported = enableBreakpointMode
 
         Server().run()
     }

@@ -7,18 +7,20 @@ class AccumulatedScoreCalculator {
     private val accumulatedScores: ArrayList<Score> = ArrayList()
 
     fun addScores(scores: List<Score>) {
-        if (accumulatedScores.isEmpty()) {
-            accumulatedScores.addAll(scores)
-        } else {
-            val scoreMap = accumulatedScores.associateBy { it.participantId }
-            scores.forEach { score ->
-                val accScore = scoreMap[score.participantId]
-                accScore?.let { it += score }
-            }
+        val newScoreMap = scores.associateBy { it.participantId }
 
-            // Rank needs to be recalculated
-            RankDecorator.updateRanks(accumulatedScores)
+        val merged = if (accumulatedScores.isEmpty()) {
+            scores
+        } else {
+            accumulatedScores.map { existing ->
+                val incoming = newScoreMap[existing.participantId]
+                if (incoming != null) existing + incoming else existing
+            }
         }
+
+        val reranked = RankDecorator.updateRanks(merged)
+        accumulatedScores.clear()
+        accumulatedScores.addAll(reranked)
     }
 
     fun getScores(): List<Score> = accumulatedScores

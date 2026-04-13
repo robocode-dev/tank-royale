@@ -21,7 +21,7 @@ properties:
   authors:
     description: Name of authors, e.g. John Doe (john_doe@somewhere.net)
     type: array
-    maxItems: 5
+    maxItems: 20
     items:
       type: string
       minLength: 1
@@ -37,6 +37,7 @@ properties:
   countryCodes:
     description: 2-letter country code(s) defined by ISO 3166-1, e.g. "GB"
     type: array
+    maxItems: 20
     items:
       type: string
       pattern: /^[a-z]{2}$/ig
@@ -73,6 +74,11 @@ properties:
     maxLength: 20
   isDroid:
     description: Flag specifying if the bot is a Droid (team bot with 120 energy, but no scanner)
+    type: boolean
+  debuggerAttached:
+    description: >
+      Whether a debugger is attached to the bot process when connecting to
+      the server. This is informational only and does not affect gameplay.
     type: boolean
 required:
   - id

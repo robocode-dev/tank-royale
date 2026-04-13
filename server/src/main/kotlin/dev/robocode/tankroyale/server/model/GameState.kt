@@ -6,11 +6,11 @@ data class GameState(
     val arenaSize: Arena,
 
     /** List of rounds */
-    val rounds: MutableList<IRound> = mutableListOf(),
+    val rounds: MutableList<MutableRound> = mutableListOf(),
 
-    /** Flag specifying if game has ended yet */
+    /** Flag specifying if the game has ended yet */
     var isGameEnded: Boolean = false,
 ) {
     /** Last round */
-    val lastRound: IRound? get() = if (rounds.isNotEmpty()) rounds[rounds.size - 1] else null
+    val lastRound: MutableRound? get() = if (rounds.isNotEmpty()) rounds[rounds.size - 1] else null
 }

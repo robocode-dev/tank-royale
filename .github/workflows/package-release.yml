@@ -99,7 +99,7 @@ jobs:
           architecture: 'arm64'
 
       - name: Set up Gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Ensure WiX 3.x available (Windows)
         if: matrix.os == 'windows-latest'
@@ -182,11 +182,11 @@ jobs:
           set -e
           echo "=== Renaming macOS .pkg files ==="
 
-          # Use the version from workflow input or gradle.properties
+          # Use the version from workflow input or VERSION file
           VERSION="${{ inputs.version || github.event.inputs.version }}"
           if [ -z "$VERSION" ]; then
-            echo "No version from workflow input, reading from gradle.properties"
-            VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2 | tr -d '\r')
+            echo "No version from workflow input, reading from VERSION file"
+            VERSION=$(cat VERSION | tr -d '\r')
           fi
           if [ -z "$VERSION" ]; then
             echo "ERROR: Could not determine version for renaming!"
@@ -720,6 +720,9 @@ jobs:
                 ;;
               robocode-tankroyale-server-*.jar)
                 label="Server (jar)"
+                ;;
+              robocode-tankroyale-runner-*.jar)
+                label="Battle Runner (jar)"
                 ;;
               *)
                 # Detect sample-bots archives by name inspection

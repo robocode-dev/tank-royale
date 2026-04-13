@@ -44,24 +44,24 @@ class WebSocketClient(private val uri: URI) {
 
         override fun onOpen(webSocket: WebSocket) {
             this.websocket = webSocket
-            WebSocketClientEvents.onOpen.fire(Unit)
+            WebSocketClientEvents.onOpen(Unit)
             super.onOpen(webSocket)
         }
 
         override fun onClose(webSocket: WebSocket?, statusCode: Int, reason: String?): CompletionStage<*>? {
             this.websocket = null
-            WebSocketClientEvents.onClose.fire(Unit)
+            WebSocketClientEvents.onClose(Unit)
             return null
         }
 
         override fun onError(webSocket: WebSocket?, error: Throwable) {
-            WebSocketClientEvents.onError.fire(error)
+            WebSocketClientEvents.onError(error)
         }
 
         override fun onText(webSocket: WebSocket, data: CharSequence?, last: Boolean): CompletionStage<*>? {
             payload.append(data)
             if (last) {
-                WebSocketClientEvents.onMessage.fire(payload.toString())
+                WebSocketClientEvents.onMessage(payload.toString())
                 payload.delete(0, payload.length) // clear payload buffer
             }
             return super.onText(webSocket, data, last)

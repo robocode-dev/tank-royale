@@ -15,7 +15,7 @@ object SoundActions {
     private val deathExplosion = Sound.fromFile("$SOUNDS_DIR/death.wav")
 
     init {
-        ClientEvents.onTickEvent.subscribe(this) { playEventSounds(it) }
+        ClientEvents.onTickEvent.on(this) { playEventSounds(it) }
     }
 
     private fun playEventSounds(tickEvent: TickEvent) {

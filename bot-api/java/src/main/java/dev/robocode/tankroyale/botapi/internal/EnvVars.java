@@ -86,15 +86,6 @@ final class EnvVars {
      * Bot Info
      */
     static BotInfo getBotInfo() {
-        if (isBlank(getBotName())) {
-            throw new BotException(MISSING_ENV_VALUE + BOT_NAME);
-        }
-        if (isBlank(getBotVersion())) {
-            throw new BotException(MISSING_ENV_VALUE + BOT_VERSION);
-        }
-        if (isBlank(getBotAuthors())) {
-            throw new BotException(MISSING_ENV_VALUE + BOT_AUTHORS);
-        }
         return new BotInfo(
                 getBotName(),
                 getBotVersion(),
@@ -130,14 +121,16 @@ final class EnvVars {
      * Bot name
      */
     static String getBotName() {
-        return System.getenv(BOT_NAME);
+        String name = System.getenv(BOT_NAME);
+        return isBlank(name) ? null : name;
     }
 
     /**
      * Bot version
      */
     static String getBotVersion() {
-        return System.getenv(BOT_VERSION);
+        String version = System.getenv(BOT_VERSION);
+        return isBlank(version) ? null : version;
     }
 
     /**
@@ -172,7 +165,8 @@ final class EnvVars {
      * Set of game type(s), which the bot supports
      */
     static Set<String> getBotGameTypes() {
-        return new HashSet<>(propertyAsList(BOT_GAME_TYPES));
+        List<String> gameTypes = propertyAsList(BOT_GAME_TYPES);
+        return gameTypes == null ? null : new HashSet<>(gameTypes);
     }
 
     /**
@@ -238,7 +232,7 @@ final class EnvVars {
     private static List<String> propertyAsList(String propertyName) {
         String value = System.getenv(propertyName);
         if (value == null || value.trim().isEmpty()) {
-            return Collections.emptyList();
+            return null;
         }
         return Arrays.asList(value.split("\\s*,\\s*"));
     }

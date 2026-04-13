@@ -21,9 +21,9 @@
 <meta content="#ffffff" media="(prefers-color-scheme: light)" name="theme-color"/>
 <meta content="#030711" media="(prefers-color-scheme: dark)" name="theme-color"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>bot_api.internal package | Robocode Tank Royale Bot API (Python) 0.35.0 documentation</title>
-<meta content="bot_api.internal package | Robocode Tank Royale Bot API (Python) 0.35.0 documentation" property="og:title"/>
-<meta content="bot_api.internal package | Robocode Tank Royale Bot API (Python) 0.35.0 documentation" name="twitter:title"/>
+<title>bot_api.internal package | Robocode Tank Royale Bot API (Python) 0.40.0 documentation</title>
+<meta content="bot_api.internal package | Robocode Tank Royale Bot API (Python) 0.40.0 documentation" property="og:title"/>
+<meta content="bot_api.internal package | Robocode Tank Royale Bot API (Python) 0.40.0 documentation" name="twitter:title"/>
 <link href="../_static/pygments.css?v=e72c8e07" rel="stylesheet" type="text/css"/>
 <link href="../_static/theme.css?v=73505e79" rel="stylesheet" type="text/css"/>
 <link href="../search.html" rel="search" title="Search"/>
@@ -36,7 +36,7 @@
       Skip to content
     </a><header class="sticky top-0 z-40 w-full border-b shadow-xs border-border bg-background/90 backdrop-blur"><div class="container flex items-center h-14">
 <div class="hidden mr-4 md:flex">
-<a class="flex items-center mr-6" href="../index.html"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
+<a class="flex items-center mr-6" href="../index.html"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.40.0 documentation</span>
 </a></div><button @click="showSidebar = true" class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden" type="button">
 <svg aria-hidden="true" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
 <path d="M152.587 825.087q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440Zm0-203.587q-19.152 0-32.326-13.174T107.087 576q0-19.152 13.174-32.326t32.326-13.174h320q19.152 0 32.326 13.174T518.087 576q0 19.152-13.174 32.326T472.587 621.5h-320Zm0-203.587q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440ZM708.913 576l112.174 112.174q12.674 12.674 12.674 31.826t-12.674 31.826Q808.413 764.5 789.261 764.5t-31.826-12.674l-144-144Q600 594.391 600 576t13.435-31.826l144-144q12.674-12.674 31.826-12.674t31.826 12.674q12.674 12.674 12.674 31.826t-12.674 31.826L708.913 576Z"></path>
@@ -66,7 +66,7 @@
 </div>
 </header>
 <div class="flex-1"><div class="container md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }" class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full overflow-y-auto border-r border-border md:sticky" id="left-sidebar">
-<a class="justify-start text-sm md:!hidden bg-background" href="../index.html"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
+<a class="justify-start text-sm md:!hidden bg-background" href="../index.html"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.40.0 documentation</span>
 </a>
 <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0">
 <div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
@@ -90,7 +90,7 @@
 <div class="w-full min-w-0 mx-auto">
 <nav aria-label="breadcrumbs" class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
 <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground" href="../index.html">
-<span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.35.0 documentation</span>
+<span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.40.0 documentation</span>
 <svg aria-label="Home" class="md:hidden" fill="currentColor" height="18" stroke="none" viewbox="0 96 960 960" width="18" xmlns="http://www.w3.org/2000/svg">
 <path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z"></path>
 </svg>
@@ -233,6 +233,10 @@
 <span class="sig-name descname"><span class="pre">add_events_from_tick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bot_api.events.html#bot_api.events.tick_event.TickEvent" title="bot_api.events.tick_event.TickEvent"><span class="pre">TickEvent</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/bot_api/internal/base_bot_internals.html#BaseBotInternals.add_events_from_tick"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.base_bot_internals.BaseBotInternals.add_events_from_tick" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.base_bot_internals.BaseBotInternals.add_events_from_tick'">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="bot_api.internal.base_bot_internals.BaseBotInternals.add_event">
+<span class="sig-name descname"><span class="pre">add_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bot_api.events.html#bot_api.events.bot_event.BotEvent" title="bot_api.events.bot_event.BotEvent"><span class="pre">BotEvent</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/bot_api/internal/base_bot_internals.html#BaseBotInternals.add_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.base_bot_internals.BaseBotInternals.add_event" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.base_bot_internals.BaseBotInternals.add_event'">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
 <dt class="sig sig-object py" id="bot_api.internal.base_bot_internals.BaseBotInternals.set_interruptible">
 <span class="sig-name descname"><span class="pre">set_interruptible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interruptible</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/bot_api/internal/base_bot_internals.html#BaseBotInternals.set_interruptible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.base_bot_internals.BaseBotInternals.set_interruptible" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.base_bot_internals.BaseBotInternals.set_interruptible'">¶</a></dt>
 <dd></dd></dl>
@@ -265,8 +269,14 @@
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="bot_api.internal.base_bot_internals.BaseBotInternals.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/bot_api/internal/base_bot_internals.html#BaseBotInternals.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.base_bot_internals.BaseBotInternals.execute" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.base_bot_internals.BaseBotInternals.execute'">¶</a></dt>
-<dd><p>Execute bot intent and wait for next turn (matches Java’s execute)</p>
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">captured_turn_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/bot_api/internal/base_bot_internals.html#BaseBotInternals.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.base_bot_internals.BaseBotInternals.execute" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.base_bot_internals.BaseBotInternals.execute'">¶</a></dt>
+<dd><p>Execute bot intent and wait for next turn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>captured_turn_number</strong> – The turn number captured by go() at the time events were
+dispatched, or -1 if no tick was available.</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="bot_api.internal.base_bot_internals.BaseBotInternals.set_fire">
@@ -467,6 +477,12 @@ not be handled immediately by the bot logic.</p>
 <dt class="sig sig-object py" id="bot_api.internal.bot_handshake_factory.BotHandshakeFactory.create">
 <span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bot_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bot_api.html#bot_api.bot_info.BotInfo" title="bot_api.bot_info.BotInfo"><span class="pre">BotInfo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_droid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">BotHandshake</span></span></span><a class="reference internal" href="../_modules/bot_api/internal/bot_handshake_factory.html#BotHandshakeFactory.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.bot_handshake_factory.BotHandshakeFactory.create" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.bot_handshake_factory.BotHandshakeFactory.create'">¶</a></dt>
 <dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="bot_api.internal.bot_handshake_factory.BotHandshakeFactory.is_debugger_attached">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_debugger_attached</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/bot_api/internal/bot_handshake_factory.html#BotHandshakeFactory.is_debugger_attached"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.bot_handshake_factory.BotHandshakeFactory.is_debugger_attached" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.bot_handshake_factory.BotHandshakeFactory.is_debugger_attached'">¶</a></dt>
+<dd><p>Detects if a debugger is attached to the process.
+@return true if a debugger is attached, false otherwise</p>
+</dd></dl>
 </dd></dl>
 </section>
 <section id="module-bot_api.internal.env_vars">
@@ -570,9 +586,6 @@ not be handled immediately by the bot logic.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="bot_api.html#bot_api.bot_info.BotInfo" title="bot_api.bot_info.BotInfo">BotInfo</a></p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Exception</strong> – If any of the required environment variables are missing.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1100,10 +1113,6 @@ queue.</p>
 <span class="sig-name descname"><span class="pre">sort_events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/bot_api/internal/event_queue.html#EventQueue.sort_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.event_queue.EventQueue.sort_events" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.event_queue.EventQueue.sort_events'">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="bot_api.internal.event_queue.EventQueue.is_bot_running">
-<span class="sig-name descname"><span class="pre">is_bot_running</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bot_api/internal/event_queue.html#EventQueue.is_bot_running"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.event_queue.EventQueue.is_bot_running" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.event_queue.EventQueue.is_bot_running'">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
 <dt class="sig sig-object py" id="bot_api.internal.event_queue.EventQueue.peek_next_event">
 <span class="sig-name descname"><span class="pre">peek_next_event</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bot_api/internal/event_queue.html#EventQueue.peek_next_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.event_queue.EventQueue.peek_next_event" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.event_queue.EventQueue.peek_next_event'">¶</a></dt>
 <dd></dd></dl>
@@ -1319,6 +1328,73 @@ representation as available.</p>
 <dd><p>Serializes a Message object into a JSON string.</p>
 </dd></dl>
 </section>
+<section id="module-bot_api.internal.recording_text_writer">
+<span id="bot-api-internal-recording-text-writer-module"></span><h2>bot_api.internal.recording_text_writer module<a class="headerlink" href="#module-bot_api.internal.recording_text_writer" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#module-bot_api.internal.recording_text_writer'">¶</a></h2>
+<p>RecordingTextWriter - Captures stdout/stderr output for sending to server.
+This matches the functionality of RecordingPrintStream (Java) and RecordingTextWriter (C#/.NET).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="bot_api.internal.recording_text_writer.RecordingTextWriter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">RecordingTextWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_writer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bot_api/internal/recording_text_writer.html#RecordingTextWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.recording_text_writer.RecordingTextWriter" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.recording_text_writer.RecordingTextWriter'">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A text writer wrapper that records all written text and forwards it to an underlying writer.
+Thread-safe for concurrent writes (e.g., from print statements in event handlers).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bot_api.internal.recording_text_writer.RecordingTextWriter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_writer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bot_api/internal/recording_text_writer.html#RecordingTextWriter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.__init__" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.recording_text_writer.RecordingTextWriter.__init__'">¶</a></dt>
+<dd><p>Initialize the recording text writer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text_writer</strong> – The underlying text writer to forward output to (e.g., sys.stdout)</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="bot_api.internal.recording_text_writer.RecordingTextWriter.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/bot_api/internal/recording_text_writer.html#RecordingTextWriter.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.write" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.recording_text_writer.RecordingTextWriter.write'">¶</a></dt>
+<dd><p>Write text to both the underlying writer and the recording buffer.
+Thread-safe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – The text to write</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The number of characters written</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="bot_api.internal.recording_text_writer.RecordingTextWriter.flush">
+<span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/bot_api/internal/recording_text_writer.html#RecordingTextWriter.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.flush" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.recording_text_writer.RecordingTextWriter.flush'">¶</a></dt>
+<dd><p>Flush both the underlying writer and the recording buffer. Thread-safe.</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="bot_api.internal.recording_text_writer.RecordingTextWriter.read_next">
+<span class="sig-name descname"><span class="pre">read_next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/bot_api/internal/recording_text_writer.html#RecordingTextWriter.read_next"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.read_next" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.recording_text_writer.RecordingTextWriter.read_next'">¶</a></dt>
+<dd><p>Read and clear the recorded output since the last read.
+Thread-safe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The recorded output as a string</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="bot_api.internal.recording_text_writer.RecordingTextWriter.isatty">
+<span class="sig-name descname"><span class="pre">isatty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/bot_api/internal/recording_text_writer.html#RecordingTextWriter.isatty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.isatty" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.recording_text_writer.RecordingTextWriter.isatty'">¶</a></dt>
+<dd><p>Return whether the underlying writer is a TTY.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="bot_api.internal.recording_text_writer.RecordingTextWriter.encoding">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">encoding</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.encoding" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.recording_text_writer.RecordingTextWriter.encoding'">¶</a></dt>
+<dd><p>Return the encoding of the underlying writer.</p>
+</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="bot_api.internal.recording_text_writer.RecordingTextWriter.errors">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">errors</span></span><a class="headerlink" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.errors" title="Link to this definition" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#bot_api.internal.recording_text_writer.RecordingTextWriter.errors'">¶</a></dt>
+<dd><p>Return the error handling mode of the underlying writer.</p>
+</dd></dl>
+</dd></dl>
+</section>
 <section id="module-bot_api.internal.stop_resume_listener_abs">
 <span id="bot-api-internal-stop-resume-listener-abs-module"></span><h2>bot_api.internal.stop_resume_listener_abs module<a class="headerlink" href="#module-bot_api.internal.stop_resume_listener_abs" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#module-bot_api.internal.stop_resume_listener_abs'">¶</a></h2>
 <dl class="py class">
@@ -1490,6 +1566,7 @@ and messages from the server.</p>
 <li><a :data-current="activeSection === '#bot_api.internal.base_bot_internals.BaseBotInternals.get_events'" class="reference internal" href="#bot_api.internal.base_bot_internals.BaseBotInternals.get_events"><code class="docutils literal notranslate"><span class="pre">BaseBotInternals.get_events()</span></code></a></li>
 <li><a :data-current="activeSection === '#bot_api.internal.base_bot_internals.BaseBotInternals.clear_events'" class="reference internal" href="#bot_api.internal.base_bot_internals.BaseBotInternals.clear_events"><code class="docutils literal notranslate"><span class="pre">BaseBotInternals.clear_events()</span></code></a></li>
 <li><a :data-current="activeSection === '#bot_api.internal.base_bot_internals.BaseBotInternals.add_events_from_tick'" class="reference internal" href="#bot_api.internal.base_bot_internals.BaseBotInternals.add_events_from_tick"><code class="docutils literal notranslate"><span class="pre">BaseBotInternals.add_events_from_tick()</span></code></a></li>
+<li><a :data-current="activeSection === '#bot_api.internal.base_bot_internals.BaseBotInternals.add_event'" class="reference internal" href="#bot_api.internal.base_bot_internals.BaseBotInternals.add_event"><code class="docutils literal notranslate"><span class="pre">BaseBotInternals.add_event()</span></code></a></li>
 <li><a :data-current="activeSection === '#bot_api.internal.base_bot_internals.BaseBotInternals.set_interruptible'" class="reference internal" href="#bot_api.internal.base_bot_internals.BaseBotInternals.set_interruptible"><code class="docutils literal notranslate"><span class="pre">BaseBotInternals.set_interruptible()</span></code></a></li>
 <li><a :data-current="activeSection === '#bot_api.internal.base_bot_internals.BaseBotInternals.dispatch_events'" class="reference internal" href="#bot_api.internal.base_bot_internals.BaseBotInternals.dispatch_events"><code class="docutils literal notranslate"><span class="pre">BaseBotInternals.dispatch_events()</span></code></a></li>
 <li><a :data-current="activeSection === '#bot_api.internal.base_bot_internals.BaseBotInternals.set_running'" class="reference internal" href="#bot_api.internal.base_bot_internals.BaseBotInternals.set_running"><code class="docutils literal notranslate"><span class="pre">BaseBotInternals.set_running()</span></code></a></li>
@@ -1550,6 +1627,7 @@ and messages from the server.</p>
 <li><a :data-current="activeSection === '#module-bot_api.internal.bot_handshake_factory'" class="reference internal" href="#module-bot_api.internal.bot_handshake_factory">bot_api.internal.bot_handshake_factory module</a><ul>
 <li><a :data-current="activeSection === '#bot_api.internal.bot_handshake_factory.BotHandshakeFactory'" class="reference internal" href="#bot_api.internal.bot_handshake_factory.BotHandshakeFactory"><code class="docutils literal notranslate"><span class="pre">BotHandshakeFactory</span></code></a><ul>
 <li><a :data-current="activeSection === '#bot_api.internal.bot_handshake_factory.BotHandshakeFactory.create'" class="reference internal" href="#bot_api.internal.bot_handshake_factory.BotHandshakeFactory.create"><code class="docutils literal notranslate"><span class="pre">BotHandshakeFactory.create()</span></code></a></li>
+<li><a :data-current="activeSection === '#bot_api.internal.bot_handshake_factory.BotHandshakeFactory.is_debugger_attached'" class="reference internal" href="#bot_api.internal.bot_handshake_factory.BotHandshakeFactory.is_debugger_attached"><code class="docutils literal notranslate"><span class="pre">BotHandshakeFactory.is_debugger_attached()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -1643,7 +1721,6 @@ and messages from the server.</p>
 <li><a :data-current="activeSection === '#bot_api.internal.event_queue.EventQueue.dispatch_events'" class="reference internal" href="#bot_api.internal.event_queue.EventQueue.dispatch_events"><code class="docutils literal notranslate"><span class="pre">EventQueue.dispatch_events()</span></code></a></li>
 <li><a :data-current="activeSection === '#bot_api.internal.event_queue.EventQueue.remove_old_events'" class="reference internal" href="#bot_api.internal.event_queue.EventQueue.remove_old_events"><code class="docutils literal notranslate"><span class="pre">EventQueue.remove_old_events()</span></code></a></li>
 <li><a :data-current="activeSection === '#bot_api.internal.event_queue.EventQueue.sort_events'" class="reference internal" href="#bot_api.internal.event_queue.EventQueue.sort_events"><code class="docutils literal notranslate"><span class="pre">EventQueue.sort_events()</span></code></a></li>
-<li><a :data-current="activeSection === '#bot_api.internal.event_queue.EventQueue.is_bot_running'" class="reference internal" href="#bot_api.internal.event_queue.EventQueue.is_bot_running"><code class="docutils literal notranslate"><span class="pre">EventQueue.is_bot_running()</span></code></a></li>
 <li><a :data-current="activeSection === '#bot_api.internal.event_queue.EventQueue.peek_next_event'" class="reference internal" href="#bot_api.internal.event_queue.EventQueue.peek_next_event"><code class="docutils literal notranslate"><span class="pre">EventQueue.peek_next_event()</span></code></a></li>
 <li><a :data-current="activeSection === '#bot_api.internal.event_queue.EventQueue.remove_next_event'" class="reference internal" href="#bot_api.internal.event_queue.EventQueue.remove_next_event"><code class="docutils literal notranslate"><span class="pre">EventQueue.remove_next_event()</span></code></a></li>
 <li><a :data-current="activeSection === '#bot_api.internal.event_queue.EventQueue.get_priority'" class="reference internal" href="#bot_api.internal.event_queue.EventQueue.get_priority"><code class="docutils literal notranslate"><span class="pre">EventQueue.get_priority()</span></code></a></li>
@@ -1690,6 +1767,19 @@ and messages from the server.</p>
 </li>
 <li><a :data-current="activeSection === '#bot_api.internal.json_util.from_json'" class="reference internal" href="#bot_api.internal.json_util.from_json"><code class="docutils literal notranslate"><span class="pre">from_json()</span></code></a></li>
 <li><a :data-current="activeSection === '#bot_api.internal.json_util.to_json'" class="reference internal" href="#bot_api.internal.json_util.to_json"><code class="docutils literal notranslate"><span class="pre">to_json()</span></code></a></li>
+</ul>
+</li>
+<li><a :data-current="activeSection === '#module-bot_api.internal.recording_text_writer'" class="reference internal" href="#module-bot_api.internal.recording_text_writer">bot_api.internal.recording_text_writer module</a><ul>
+<li><a :data-current="activeSection === '#bot_api.internal.recording_text_writer.RecordingTextWriter'" class="reference internal" href="#bot_api.internal.recording_text_writer.RecordingTextWriter"><code class="docutils literal notranslate"><span class="pre">RecordingTextWriter</span></code></a><ul>
+<li><a :data-current="activeSection === '#bot_api.internal.recording_text_writer.RecordingTextWriter.__init__'" class="reference internal" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.__init__"><code class="docutils literal notranslate"><span class="pre">RecordingTextWriter.__init__()</span></code></a></li>
+<li><a :data-current="activeSection === '#bot_api.internal.recording_text_writer.RecordingTextWriter.write'" class="reference internal" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.write"><code class="docutils literal notranslate"><span class="pre">RecordingTextWriter.write()</span></code></a></li>
+<li><a :data-current="activeSection === '#bot_api.internal.recording_text_writer.RecordingTextWriter.flush'" class="reference internal" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.flush"><code class="docutils literal notranslate"><span class="pre">RecordingTextWriter.flush()</span></code></a></li>
+<li><a :data-current="activeSection === '#bot_api.internal.recording_text_writer.RecordingTextWriter.read_next'" class="reference internal" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.read_next"><code class="docutils literal notranslate"><span class="pre">RecordingTextWriter.read_next()</span></code></a></li>
+<li><a :data-current="activeSection === '#bot_api.internal.recording_text_writer.RecordingTextWriter.isatty'" class="reference internal" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.isatty"><code class="docutils literal notranslate"><span class="pre">RecordingTextWriter.isatty()</span></code></a></li>
+<li><a :data-current="activeSection === '#bot_api.internal.recording_text_writer.RecordingTextWriter.encoding'" class="reference internal" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.encoding"><code class="docutils literal notranslate"><span class="pre">RecordingTextWriter.encoding</span></code></a></li>
+<li><a :data-current="activeSection === '#bot_api.internal.recording_text_writer.RecordingTextWriter.errors'" class="reference internal" href="#bot_api.internal.recording_text_writer.RecordingTextWriter.errors"><code class="docutils literal notranslate"><span class="pre">RecordingTextWriter.errors</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a :data-current="activeSection === '#module-bot_api.internal.stop_resume_listener_abs'" class="reference internal" href="#module-bot_api.internal.stop_resume_listener_abs">bot_api.internal.stop_resume_listener_abs module</a><ul>
@@ -1744,7 +1834,7 @@ and messages from the server.</p>
 </div>
 </footer>
 </div>
-<script src="../_static/documentation_options.js?v=ca1b380b"></script>
+<script src="../_static/documentation_options.js?v=dbb8e931"></script>
 <script src="../_static/doctools.js?v=fd6eb6e6"></script>
 <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
 <script defer="defer" src="../_static/theme.js?v=582b20c5"></script>

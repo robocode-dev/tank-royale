@@ -5,8 +5,6 @@ import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
 description = "Robocode Tank Royale sample bots for Python"
 
-version = libs.versions.tankroyale.get()
-
 plugins {
     base // for the clean and build task
 }
@@ -37,16 +35,24 @@ val isBotProjectDir = rootProject.extra["isBotProjectDir"] as (Path) -> Boolean
 @Suppress("UNCHECKED_CAST")
 val copyBotFiles = rootProject.extra["copyBotFiles"] as (Path, Path) -> Unit
 
+private fun hasBase(botDir: Path): Boolean {
+    val botName = botDir.botName()
+    val jsonPath = botDir.resolve("$botName.json")
+    if (!exists(jsonPath)) return false
+    val content = jsonPath.toFile().readText()
+    return content.contains("\"base\"")
+}
+
 private fun createShellScript(botName: String): String = """
     #!/bin/sh
     set -e
-    
+
     # Change to script directory
     cd -- "$(dirname -- "$0")"
-    
+
     # Install dependencies (relative to script dir)
     ../deps/install-dependencies.sh
-    
+
     # Try to use venv python first (correct path: ../deps/venv)
     if [ -x "../deps/venv/bin/python" ]; then
         exec "../deps/venv/bin/python" "$botName.py"
@@ -122,14 +128,20 @@ private fun createBotScriptFiles(botDir: Path, archivePath: Path) {
     createBotScriptFile(botDir, archivePath, shellExtension, unixLineEnding)
 }
 
-private fun isTeamBot(botDir: Path): Boolean = botDir.toString().endsWith(teamSuffix)
+private fun isTeam(botDir: Path): Boolean {
+    val botName = botDir.botName()
+    val jsonPath = botDir.resolve("$botName.json")
+    if (!exists(jsonPath)) return false
+    val content = jsonPath.toFile().readText()
+    return content.contains("\"teamMembers\"")
+}
 
 private fun processIndividualBot(botDir: Path) {
     val botArchivePath = archiveDirPath.resolve(botDir.botName())
     mkdir(botArchivePath)
     copyBotFiles(botDir, botArchivePath)
 
-    if (!isTeamBot(botDir)) {
+    if (isTeam(botDir)) {
         createBotScriptFiles(botDir, botArchivePath)
     }
 }
@@ -175,29 +187,43 @@ private fun copyWheelFile(depsDir: Path) {
     copy(wheelFile, depsDir.resolve(wheelFile.fileName.toString()), REPLACE_EXISTING)
 }
 
-tasks {
-    fun prepareBotFiles() {
-        list(projectDir.toPath()).forEach { botDir ->
-            if (isDirectory(botDir) && isBotProjectDir(botDir)) {
-                processIndividualBot(botDir)
-            }
+private fun prepareBotFiles() {
+    list(projectDir.toPath()).forEach { botDir ->
+        if (isDirectory(botDir) && isBotProjectDir(botDir)) {
+            processIndividualBot(botDir)
         }
     }
+}
 
-    fun prepareDependencies() {
-        val depsDir = archiveDirPath.resolve(depsFolder)
-        mkdir(depsDir)
+private fun prepareDependencies() {
+    val depsDir = archiveDirPath.resolve(depsFolder)
+    mkdir(depsDir)
 
-        copyInstallationScripts(depsDir)
-        copyRequirementsFile(depsDir)
-        copyWheelFile(depsDir)
-    }
+    copyInstallationScripts(depsDir)
+    copyRequirementsFile(depsDir)
+    copyWheelFile(depsDir)
+}
 
-    named("build") {
+tasks {
+    val prepareBotFilesTask by registering {
         dependsOn(":bot-api:python:build-dist")
         doLast {
             prepareBotFiles()
+        }
+    }
+
+    val prepareDepsTask by registering {
+        dependsOn(":bot-api:python:build-dist")
+        doLast {
             prepareDependencies()
         }
+    }
+
+    val prepareArchive by registering {
+        dependsOn(prepareBotFilesTask, prepareDepsTask)
+    }
+
+    named("build") {
+        dependsOn(prepareArchive)
     }
 }

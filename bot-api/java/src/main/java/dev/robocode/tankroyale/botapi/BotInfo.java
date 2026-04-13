@@ -6,6 +6,7 @@ import com.neovisionaries.i18n.CountryCode;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static dev.robocode.tankroyale.botapi.util.CollectionUtil.toMutableList;
 import static dev.robocode.tankroyale.botapi.util.CollectionUtil.toMutableSet;
@@ -63,12 +64,12 @@ public final class BotInfo {
     /**
      * Maximum number of authors accepted.
      */
-    public static final int MAX_NUMBER_OF_AUTHORS = 5;
+    public static final int MAX_NUMBER_OF_AUTHORS = 20;
 
     /**
      * Maximum number of country codes accepted.
      */
-    public static final int MAX_NUMBER_OF_COUNTRY_CODES = 5;
+    public static final int MAX_NUMBER_OF_COUNTRY_CODES = 20;
 
     /**
      * Maximum number of game types accepted.
@@ -178,7 +179,7 @@ public final class BotInfo {
      * @return The name(s) of the author(s) of the bot.
      */
     public List<String> getAuthors() {
-        return authors;
+        return authors == null ? Collections.emptyList() : authors;
     }
 
     /**
@@ -210,7 +211,7 @@ public final class BotInfo {
      * @return The country code(s) for the bot.
      */
     public List<String> getCountryCodes() {
-        return countryCodes;
+        return countryCodes == null ? Collections.emptyList() : countryCodes;
     }
 
     /**
@@ -222,7 +223,7 @@ public final class BotInfo {
      * @return The game type(s) that this bot can handle.
      */
     public Set<String> getGameTypes() {
-        return gameTypes;
+        return gameTypes == null ? Collections.emptySet() : gameTypes;
     }
 
     /**
@@ -369,44 +370,48 @@ public final class BotInfo {
 
     private static String processName(String name) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("'name' cannot be null, empty or blank");
+            return null;
         }
         name = name.trim();
         if (name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("'name' length exceeds the maximum of " + MAX_NAME_LENGTH + " characters");
+            throw new IllegalArgumentException("'name' length exceeds " + MAX_NAME_LENGTH + " characters: " + name.length());
         }
         return name;
     }
 
     private static String processVersion(String version) {
         if (version == null || version.isBlank()) {
-            throw new IllegalArgumentException("'version' cannot be null, empty or blank");
+            return null;
         }
         version = version.trim();
         if (version.length() > MAX_VERSION_LENGTH) {
-            throw new IllegalArgumentException("'version' length exceeds the maximum of " + MAX_VERSION_LENGTH + " characters");
+            throw new IllegalArgumentException("'version' length exceeds " + MAX_VERSION_LENGTH + " characters: " + version.length());
         }
         return version;
     }
 
     private static List<String> processAuthors(List<String> authors) {
-        if (isNullOrEmptyOrContainsOnlyBlanks(authors)) {
-            throw new IllegalArgumentException("'authors' cannot be null or empty or contain blanks");
+        if (authors == null || authors.isEmpty()) {
+            return null;
         }
-        if (authors.size() > MAX_NUMBER_OF_AUTHORS) {
-            throw new IllegalArgumentException("Size of 'authors' exceeds the maximum of " + MAX_NUMBER_OF_AUTHORS);
-        }
-        List<String> authorsCopy = new ArrayList<>();
-        authors.stream().filter(Objects::nonNull).forEach(author -> {
-            author = author.trim();
-            if (author.length() > MAX_AUTHOR_LENGTH) {
-                throw new IllegalArgumentException("'author' length exceeds the maximum of " + MAX_AUTHOR_LENGTH + " characters");
-            }
-            authorsCopy.add(author);
-        });
-        authorsCopy.removeIf(String::isBlank);
+        List<String> trimmedAuthors = authors.stream()
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(author -> !author.isEmpty())
+                .collect(Collectors.toList());
 
-        return authorsCopy;
+        if (trimmedAuthors.isEmpty()) {
+            return null;
+        }
+        if (trimmedAuthors.size() > MAX_NUMBER_OF_AUTHORS) {
+            throw new IllegalArgumentException("Size of 'authors' exceeds the maximum: " + MAX_NUMBER_OF_AUTHORS);
+        }
+        for (String author : trimmedAuthors) {
+            if (author.length() > MAX_AUTHOR_LENGTH) {
+                throw new IllegalArgumentException("'author' length exceeds " + MAX_AUTHOR_LENGTH + " characters: " + author.length());
+            }
+        }
+        return trimmedAuthors;
     }
 
     private static String processDescription(String description) {

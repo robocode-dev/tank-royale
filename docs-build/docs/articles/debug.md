@@ -30,19 +30,18 @@ This assumes you have your project file in the directory where you run the `dotn
 
 ## Supply a server secret
 
-The first time the server is running a battle, it creates a random secret (key) that all bots must supply to join the
-battle. The GUI handles this automatically in the background when starting up bots from the GUI via the booter.
+Server authentication is **disabled by default** — bots can connect without any secret when running the GUI locally.
+You only need to supply a secret if authentication has been explicitly enabled (via `enable-server-secrets=true` in
+`server.properties` or the Server Options dialog).
 
-The secret protects your server against external bots trying to join without (your) permission. They will need the
-secret from your server to join it.
+When secrets are enabled, the `server.properties` file contains the generated key your bot must supply. Look for the
+`bots-secrets` field:
 
-So to run your bot from the command line, you'll need to provide the secret for the server. The easiest way to do this
-is to set/export the `SERVER_SECRET` environment variable which the Bot API will read and send to the server (
-via the bot handshake).
+```
+bots-secrets=zDuQrkCLQU5VQgytofkNrQ
+```
 
-You'll find the generated secret for your server with the `server.properties` file in the same directory as the GUI
-application is run from. Copy and paste the value after the equal-sign (=) from the `bots-secrets` field and use it for
-defining the value of your `SERVER_SECRET` variable, e.g.:
+Set the `SERVER_SECRET` environment variable to that value before running your bot from the command line, e.g.:
 
 #### Bash:
 
@@ -78,6 +77,104 @@ the battle and add some other opponent bot(s) as well to start the battle.
 
 Your print or logging information should be written out to the command line. If not, make sure to put the logging
 information in the constructor or main method to make sure something is written out.
+
+## Headless debugging with the Battle Runner
+
+The GUI workflow above requires starting battles manually each test cycle. The
+**[Battle Runner API](../api/battle-runner)** offers an alternative: run battles entirely from code, no GUI
+needed. This is especially useful for repeated test cycles during bot development.
+
+```java
+try (var runner = BattleRunner.create(b -> b.embeddedServer())) {
+    var results = runner.runBattle(
+        BattleSetup.classic(s -> s.setNumberOfRounds(5)),
+        List.of(BotEntry.of(botsDir + "/MyBot"), BotEntry.of(botsDir + "/SpinBot"))
+    );
+    System.out.println("Winner: " + results.getResults().get(0).getName());
+}
+```
+
+The runner starts its own embedded server, manages bot processes, and returns results — no manual setup required.
+
+### Intent diagnostics
+
+When a bot misbehaves it can be hard to tell whether the bug is in your decision logic (what you _want_ to do)
+or in the execution (what you _tell_ the server to do). Intent diagnostics captures the raw `bot-intent` message
+your bot sends every turn — the exact `targetSpeed`, `turnRate`, `gunTurnRate`, and `firepower` values the
+server receives:
+
+```java
+try (var runner = BattleRunner.create(b -> b.embeddedServer().enableIntentDiagnostics())) {
+    runner.runBattle(setup, bots);
+    var store = runner.getIntentDiagnostics();
+    for (var ci : store.getIntentsForBot("MyBot")) {
+        System.out.printf("r=%d t=%d speed=%s fire=%s%n",
+                ci.getRoundNumber(), ci.getTurnNumber(),
+                ci.getIntent().getTargetSpeed(), ci.getIntent().getFirepower());
+    }
+}
+```
+
+If your bot is supposed to fire on turn 10 but `firepower` is always `null`, the bug is in your bot code.
+If `firepower` is set but the bullet never appears, the issue is elsewhere (e.g. gun heat).
+
+See the [Battle Runner API](../api/battle-runner) for setup instructions and all available options.
+
+## Debugging with an IDE
+
+Tank Royale has first-class support for attaching an IDE debugger to your bot while it runs in a real
+battle. The bot API, server, and GUI cooperate automatically — no manual setup is required.
+
+### Debugger detection
+
+Each Bot API detects at startup whether a debugger is attached:
+
+- **Java**: inspects JVM arguments for a JDWP agent (`-agentlib:jdwp` / `-Xrunjdwp`)
+- **.NET**: reads `System.Diagnostics.Debugger.IsAttached`
+- **Python**: checks `sys.gettrace()` and the presence of known debugger modules
+
+When a debugger is detected, the bot includes `debuggerAttached: true` in its server handshake. You
+can override detection with the `ROBOCODE_DEBUG` environment variable — set it to `true` to
+force-enable or `false` to force-disable regardless of what the API detects.
+
+### Breakpoint mode
+
+When the server sees `debuggerAttached: true` it automatically enables **breakpoint mode** for that
+bot. In breakpoint mode the server suspends the turn clock whenever the bot is late delivering its
+intent — instead of issuing a `SkippedTurnEvent` it waits for the intent to arrive, then auto-resumes
+the battle. Stepping through your bot code in the IDE no longer causes missed turns or desyncs.
+
+Breakpoint mode can also be toggled manually in the **Bot Properties** panel (the 🐛 toggle in the
+**Properties** tab). The server must advertise support via `features.breakpointMode`; see
+[Server configuration for debugging](#server-configuration-for-debugging) below.
+
+### Debug mode
+
+**Debug mode** gives you turn-by-turn control over the battle — independently of whether any bot has a
+debugger attached. Enable it with the **Debug 🐛** toggle in the control panel. Each click of
+**Next Turn** executes one complete turn (bots deliver intents normally, the turn timeout is enforced)
+and then pauses, letting you inspect the full game state before advancing.
+
+To start the battle already in debug mode from turn 1, use the **Start paused** toggle in the New
+Battle dialog. From the [Battle Runner API](../api/battle-runner), the same effect is achieved with
+`handle.pause()`, `handle.nextTurn()`, and `handle.resume()`.
+
+### Server configuration for debugging
+
+By default, both debug mode and breakpoint mode are enabled. For tournament or production servers where
+these features should be unavailable, edit `server.properties`:
+
+```properties
+# Disable turn-by-turn stepping (tournament safety)
+debugModeSupported=false
+
+# Disable breakpoint mode (tournament safety)
+breakpointModeSupported=false
+```
+
+Or pass CLI flags when starting the server standalone: `--no-debug-mode` / `--no-breakpoint-mode`.
+When `breakpointModeSupported=false` the server silently ignores any `breakpointEnabled` requests, so
+it is safe to leave debugger detection enabled in bots even when connecting to a tournament server.
 
 ## Graphical Debugging
 

@@ -16,13 +16,13 @@ abstract class BaseBotConsolePanel(val bot: Participant) : ConsolePanel() {
 
     private fun subscribeToEvents() {
         ClientEvents.apply {
-            onGameStarted.subscribe(this@BaseBotConsolePanel) { gameStartedEvent ->
+            onGameStarted.on(this@BaseBotConsolePanel) { gameStartedEvent ->
                 numberOfRounds = gameStartedEvent.gameSetup.numberOfRounds
             }
-            onRoundStarted.subscribe(this@BaseBotConsolePanel) {
+            onRoundStarted.on(this@BaseBotConsolePanel) {
                 updateRoundInfo(it.roundNumber)
             }
-            onSeekToTurn.subscribe(this@BaseBotConsolePanel) {
+            onSeekToTurn.on(this@BaseBotConsolePanel) {
                 informAboutSeek(it)
             }
         }

@@ -4,7 +4,7 @@
 
 **Build the best – destroy the rest!**
 
-## About
+## 🤖 About
 
 Robocode is a [programming game](https://en.wikipedia.org/wiki/Programming_game) where the goal is to code a bot in the
 form of a virtual tank that competes against other bots in a virtual battle arena.
@@ -19,33 +19,58 @@ The name **Robocode** is short for “Robot code” and comes from the original 
 This project aims to help you learn programming, improve AI skills in a fast‑running real‑time game,
 and have fun while competing.
 
-## Example of a battle
+## ⚔️ Example of a battle
 
 <img src="docs-build/docs/images/robocode-battle-anim.gif" alt="GIF animation of tanks battling each other on a 2D battlefield">
 
-## Documentation
+## 🌟 Explore More
 
-Main page:  
-[Robocode Tank Royale Docs](https://robocode-dev.github.io/tank-royale/)
+| Resource | Why it matters | Link |
+|----------|----------------|------|
+| 📘 **The Book of Robocode** | The advanced companion to Tank Royale docs with deeper strategy content on movement, targeting, radar control, energy management, and competition-level tactics. | [Open the Book](https://book.robocode.dev/) |
+| 🖥️ **Tank Royale Viewer** | A dedicated web-based viewer for showing live battles, analyzing recordings, and putting matches on big screens during competitions. | [Open the Viewer](https://github.com/jandurovec/tank-royale-viewer) |
 
-### The Book of Robocode
+### 📘 The Book of Robocode
 
-[**The Book of Robocode**](https://book.robocode.dev/) 📖 is a comprehensive guide covering Robocode as well as
-Robocode Tank Royale—from basics to advanced strategies like wave surfing, guess-factor targeting, and
-movement techniques. It builds on two decades of community knowledge and foundational research from RoboWiki
-contributors.
+Want to go beyond the fundamentals? [**The Book of Robocode**](https://book.robocode.dev/) is the advanced companion to
+these docs and covers both Robocode and Robocode Tank Royale.
 
-### Try it out
+**Start here:**
 
-If you are new to Robocode or just need a refresher, start with the
-[Getting Started guide](https://robocode-dev.github.io/tank-royale/tutorial/getting-started).  
-For hands‑on coding, continue to the
-[My First Bot tutorial](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html).
+- [Your First Bot](https://book.robocode.dev/getting-started/your-first-bot.html)
+- [Radar & Scanning](https://book.robocode.dev/radar/radar-basics)
+- [Targeting](https://book.robocode.dev/targeting/simple-targeting/head-on-targeting)
+- [Movement & Evasion](https://book.robocode.dev/movement/basic/movement-fundamentals-goto)
+- [Energy & Scoring](https://book.robocode.dev/energy-and-scoring/energy-as-a-resource)
 
-The [Installation guide](https://robocode-dev.github.io/tank-royale/articles/installation.html) covers how to install the GUI,
-and includes sample bots for quick demos.
+### 🖥️ Tank Royale Viewer
 
-## Supported platforms
+Want to **visualize battles in style**? Check out the
+**[Tank Royale Viewer](https://github.com/jandurovec/tank-royale-viewer)** — a web-based viewer for watching Robocode
+Tank Royale matches in real time.
+
+Created by [Jan Durovec](https://github.com/jandurovec), it is especially useful for:
+
+- displaying live battles on big monitors during competitions
+- analyzing recorded battles
+- showcasing tournament and championship matches
+
+## 📚 Documentation
+
+Main page: [Robocode Tank Royale Docs](https://robocode-dev.github.io/tank-royale/)
+
+### 🚀 Start here
+
+| If you want to... | Start here |
+|-------------------|------------|
+| Install and run Tank Royale | [Installation guide](https://robocode-dev.github.io/tank-royale/articles/installation) |
+| Learn the basics | [Getting Started](https://robocode-dev.github.io/tank-royale/tutorial/getting-started) |
+| Build your first bot | [My First Bot](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot) |
+| Learn advanced strategy | [The Book of Robocode](https://book.robocode.dev/) |
+| Watch battles in a dedicated viewer | [Tank Royale Viewer](https://github.com/jandurovec/tank-royale-viewer) |
+| Run battles headlessly from code | [Battle Runner API docs](https://robocode-dev.github.io/tank-royale/api/battle-runner) |
+
+## 💻 Supported platforms
 
 Robocode runs on Java 11 or newer and supports Windows, macOS, and Linux out of the box.  
 Bot APIs are available for:
@@ -81,11 +106,28 @@ Supported .NET languages:
 - Visual Basic
 - IronPython
 
-## Work in progress
+## ⚙️ Battle Runner API
 
-- **Bot API for WebAssembly (Wasm)**
-    - JavaScript
-    - TypeScript
+The **Battle Runner API** lets you run battles programmatically from any JVM application — no GUI required.
+Use it for automated testing, benchmarking, or building tournament systems.
+
+```kotlin
+BattleRunner.create { embeddedServer() }.use { runner ->
+    val results = runner.runBattle(
+        setup = BattleSetup.classic { numberOfRounds = 10 },
+        bots  = listOf(BotEntry.of("/path/to/MyBot"), BotEntry.of("/path/to/EnemyBot"))
+    )
+    println("Winner: ${results.results.first().name}")
+}
+```
+
+Available on Maven Central as `dev.robocode.tankroyale:robocode-tankroyale-runner`.
+See the [Battle Runner API docs](https://robocode-dev.github.io/tank-royale/api/battle-runner) or the
+[module README](runner/README.md) for full documentation.
+
+## 🚧 Work in progress
+
+- **Bot API for TypeScript** (Node.js and browser support for JavaScript and TypeScript runtimes)
 - **Robocode API bridge for Tank Royale** – see the [robocode-api-bridge](https://github.com/robocode-dev/robocode-api-bridge) project.
 
 ## Thanks to the contributors
@@ -93,16 +135,16 @@ Supported .NET languages:
 Huge thanks to every [contributor](https://github.com/robocode-dev/tank-royale/graphs/contributors) — you make this
 project shine! 🙌
 
-## Maintainer
+## 👨‍💻 Maintainer
 
 [@flemming-n-larsen](https://github.com/flemming-n-larsen)
 
 [![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/flemming.n.larsen)
 
-## License
+## 📄 License
 
 [Apache License 2.0](LICENSE)
 
-## Copyright
+## ©️ Copyright
 
 Copyright © 2022 [Flemming N. Larsen](https://github.com/flemming-n-larsen)

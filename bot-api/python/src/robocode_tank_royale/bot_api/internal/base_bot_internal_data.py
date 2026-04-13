@@ -28,7 +28,7 @@ class BaseBotInternalData:
         self._game_setup: Optional[GameSetup] = None
         self._initial_position: Optional[InitialPosition] = None
         self._tick_event: Optional[TickEvent] = None
-        self._tick_start_nano_time: Optional[int] = None
+        self._tick_start_nano_time: int = 0
         self._server_handshake: Optional[ServerHandshake] = None
         self._conditions: Set[Condition] = set()
         self._is_running_atomic: bool = False
@@ -42,6 +42,9 @@ class BaseBotInternalData:
         self.saved_radar_turn_rate: Optional[float] = None
         # Flag set when the current event handler was interrupted by a new event
         self.was_current_event_interrupted: bool = False
+        # Recording writers for capturing stdout/stderr (set by BaseBotInternals)
+        self.recording_stdout: Optional[object] = None
+        self.recording_stderr: Optional[object] = None
 
     @property
     def my_id(self) -> int:
@@ -101,8 +104,6 @@ class BaseBotInternalData:
 
     @property
     def tick_start_nano_time(self) -> int:
-        if self._tick_start_nano_time is None:
-            raise BotException(TICK_NOT_AVAILABLE_MSG)
         return self._tick_start_nano_time
 
     @tick_start_nano_time.setter

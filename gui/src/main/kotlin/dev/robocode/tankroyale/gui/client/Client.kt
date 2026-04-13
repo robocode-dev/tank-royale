@@ -29,10 +29,10 @@ object Client {
 
     init {
         // Subscribe to bot policy changes
-        ClientEvents.onBotPolicyChanged.subscribe(Client) {
+        ClientEvents.onBotPolicyChanged.on(Client) {
             currentPlayer?.changeBotPolicy(it)
         }
-        TpsEvents.onTpsChanged.subscribe(Client) {
+        TpsEvents.onTpsChanged.on(Client) {
             currentPlayer?.changeTps(it.tps)
         }
     }
@@ -42,6 +42,9 @@ object Client {
 
     val currentTick: TickEvent?
         get() = currentPlayer?.getCurrentTick()
+
+    val serverFeatures: Features?
+        get() = liveBattlePlayer.serverFeatures
 
     fun switchToLiveBattlePlayer() {
         setPlayer(liveBattlePlayer)
@@ -65,7 +68,7 @@ object Client {
         player.start()
 
         // Fire event that player has changed
-        onPlayerChanged.fire(player)
+        onPlayerChanged(player)
     }
 
     fun isLivePlayerConnected(): Boolean =
@@ -79,9 +82,9 @@ object Client {
         currentPlayer?.start() ?: throw IllegalStateException("No active battle player")
     }
 
-    fun startGame(botAddresses: Set<BotAddress>) {
+    fun startGame(botAddresses: Set<BotAddress>, debugMode: Boolean = false) {
         if (currentPlayer == liveBattlePlayer) {
-            liveBattlePlayer.startGame(botAddresses)
+            liveBattlePlayer.startGame(botAddresses, debugMode)
         } else {
             throw IllegalStateException("Trying to start game with websocket bots without server connection")
         }
@@ -111,6 +114,16 @@ object Client {
 
     fun isGamePaused(): Boolean = currentPlayer?.isPaused() ?: false
 
+    fun enableDebugMode() {
+        currentPlayer?.enableDebugMode()
+    }
+
+    fun disableDebugMode() {
+        currentPlayer?.disableDebugMode()
+    }
+
+    fun isDebugModeSupported(): Boolean = currentPlayer?.isDebugModeSupported() ?: false
+
     val joinedBots: Set<BotInfo>
         get() = currentPlayer?.getJoinedBots() ?: emptySet()
 
@@ -128,32 +141,32 @@ object Client {
     }
 
     private fun subscribeToPlayerEvents(player: BattlePlayer) {
-        player.onConnected.subscribe(Client) { onConnected.fire(it) }
-        player.onGameStarted.subscribe(Client) { onGameStarted.fire(it) }
-        player.onGameEnded.subscribe(Client) { onGameEnded.fire(it) }
-        player.onGameAborted.subscribe(Client) { onGameAborted.fire(it) }
-        player.onGamePaused.subscribe(Client) { onGamePaused.fire(it) }
-        player.onGameResumed.subscribe(Client) { onGameResumed.fire(it) }
-        player.onRoundStarted.subscribe(Client) { onRoundStarted.fire(it) }
-        player.onRoundEnded.subscribe(Client) { onRoundEnded.fire(it) }
-        player.onTickEvent.subscribe(Client) { onTickEvent.fire(it) }
-        player.onBotListUpdate.subscribe(Client) { onBotListUpdate.fire(it) }
-        player.onStdOutputUpdated.subscribe(Client) { onStdOutputUpdated.fire(it) }
-        player.onSeekToTurn.subscribe(Client) { onSeekToTurn.fire(it) }
+        player.onConnected.on(Client) { onConnected(it) }
+        player.onGameStarted.on(Client) { onGameStarted(it) }
+        player.onGameEnded.on(Client) { onGameEnded(it) }
+        player.onGameAborted.on(Client) { onGameAborted(it) }
+        player.onGamePaused.on(Client) { onGamePaused(it) }
+        player.onGameResumed.on(Client) { onGameResumed(it) }
+        player.onRoundStarted.on(Client) { onRoundStarted(it) }
+        player.onRoundEnded.on(Client) { onRoundEnded(it) }
+        player.onTickEvent.on(Client) { onTickEvent(it) }
+        player.onBotListUpdate.on(Client) { onBotListUpdate(it) }
+        player.onStdOutputUpdated.on(Client) { onStdOutputUpdated(it) }
+        player.onSeekToTurn.on(Client) { onSeekToTurn(it) }
     }
 
     private fun unsubscribeFromPlayerEvents(player: BattlePlayer) {
-        player.onConnected.unsubscribe(Client)
-        player.onGameStarted.unsubscribe(Client)
-        player.onGameEnded.unsubscribe(Client)
-        player.onGameAborted.unsubscribe(Client)
-        player.onGamePaused.unsubscribe(Client)
-        player.onGameResumed.unsubscribe(Client)
-        player.onRoundStarted.unsubscribe(Client)
-        player.onRoundEnded.unsubscribe(Client)
-        player.onTickEvent.unsubscribe(Client)
-        player.onBotListUpdate.unsubscribe(Client)
-        player.onStdOutputUpdated.unsubscribe(Client)
-        player.onSeekToTurn.unsubscribe(Client)
+        player.onConnected.off(Client)
+        player.onGameStarted.off(Client)
+        player.onGameEnded.off(Client)
+        player.onGameAborted.off(Client)
+        player.onGamePaused.off(Client)
+        player.onGameResumed.off(Client)
+        player.onRoundStarted.off(Client)
+        player.onRoundEnded.off(Client)
+        player.onTickEvent.off(Client)
+        player.onBotListUpdate.off(Client)
+        player.onStdOutputUpdated.off(Client)
+        player.onSeekToTurn.off(Client)
     }
 }

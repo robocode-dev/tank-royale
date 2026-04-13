@@ -1,5 +1,3 @@
-import build.isWindows
-
 description = "Robocode Tank Royale schema for .NET"
 
 plugins {
@@ -25,17 +23,15 @@ tasks {
             mkdir(generatedOutputDir)
 
             val releaseDir = "${layout.projectDirectory}/bin/Release"
-            var codeGeneratorPath = file("$releaseDir/net8.0/CodeGeneratorApp").absolutePath
-            if (isWindows()) {
-                codeGeneratorPath += ".exe"
-            }
+            val codeGeneratorDll = file("$releaseDir/net8.0/CodeGeneratorApp.dll").absolutePath
 
-            println("codeGeneratorPath: $codeGeneratorPath")
+            println("codeGeneratorDll: $codeGeneratorDll")
             println(inputSchemaDir)
             println(generatedOutputDir)
 
             commandLine(
-                codeGeneratorPath,
+                "dotnet",
+                codeGeneratorDll,
                 inputSchemaDir,
                 generatedOutputDir,
                 "Robocode.TankRoyale.Schema"

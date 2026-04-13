@@ -43,18 +43,17 @@ sealed class BotInternals : IStopResumeListener
         // where the bot thread wakes up before TurnRemaining/DistanceRemaining are updated.
         internalEventHandlers.OnNextTurn.Subscribe(OnNextTurn, 110);
 
+        // Priority 90 ensures BaseBotInternals.OnRoundStarted (priority 100) resets state first,
+        // then we pre-warm the bot thread so it is alive and waiting before turn 1 arrives.
+        internalEventHandlers.OnRoundStarted.Subscribe(OnRoundStarted, 90);
+
         internalEventHandlers.OnGameAborted.Subscribe(OnGameAborted, 100);
         internalEventHandlers.OnRoundEnded.Subscribe(OnRoundEnded, 90);
         internalEventHandlers.OnGameEnded.Subscribe(OnGameEnded, 90);
         internalEventHandlers.OnDisconnected.Subscribe(OnDisconnected, 90);
+        internalEventHandlers.OnDeath.Subscribe(OnDeath, 90);
         internalEventHandlers.OnHitWall.Subscribe(OnHitWall, 90);
         internalEventHandlers.OnHitBot.Subscribe(OnHitBot, 90);
-
-        // Subscribe to public bot event handlers for OnDeath with priority 0 (lower than user's default of 1).
-        // This ensures user's OnDeath callback runs BEFORE we stop the thread, since DispatchEvents()
-        // checks IsRunning and would skip events if thread was already stopped.
-        var botEventHandlers = baseBotInternals.BotEventHandlers;
-        botEventHandlers.OnDeath.Subscribe(OnDeath, 0);
     }
 
     private void OnNextTurn(TickEvent evt)
@@ -65,11 +64,15 @@ sealed class BotInternals : IStopResumeListener
         ProcessTurn();
     }
 
+    private void OnRoundStarted(RoundStartedEvent evt)
+    {
+        _baseBotInternals.StopThread();
+        _baseBotInternals.StartThread(_bot);
+    }
+
     private void OnFirstTurn()
     {
-        _baseBotInternals.StopThread(); // sanity before starting a new thread (later)
         ClearRemaining();
-        _baseBotInternals.StartThread(_bot);
     }
 
     private void ClearRemaining()

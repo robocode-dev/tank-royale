@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.client.model.BotInfo
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 
 object BotSelectionEvents {
     val onBotDirectorySelected = Event<BotInfo>()

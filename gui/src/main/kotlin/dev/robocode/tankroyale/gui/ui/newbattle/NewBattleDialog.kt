@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.client.model.BotInfo
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.GamesSettings
@@ -31,9 +31,9 @@ object NewBattleDialog : RcDialog(MainFrame, "new_battle_dialog") {
     init {
         contentPane.add(selectBotsAndStartPanel)
         size = Dimension(950, 750)
-        setLocationRelativeTo(owner) // center on owner window
+        setLocationRelativeTo(owner) // center on the owner window
 
-        ServerEvents.onStopped.subscribe(this) {
+        ServerEvents.onStopped.on(this) {
             MessageDialog.showError(Messages.get("battle_lost_server_connection"))
             dispose()
         }
@@ -50,6 +50,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
 
     private var selectedBots = emptyList<BotInfo>()
     private var gameTypeDropdown = GameTypeDropdown()
+    private var startPaused = false
 
     init {
         // Left: Select game type group
@@ -66,6 +67,23 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
             addButton("setup_rules", onSetupRules).apply {
                 toolTipText = Hints.get("new_battle.setup_rules")
             }
+        }
+
+        // Middle: Debugging group
+        val topMiddlePanel = JPanel(MigLayout("left, insets 5")).apply {
+            border = BorderFactory.createTitledBorder(Strings.get("debugging"))
+
+            val startPausedHint = Hints.get("new_battle.start_paused")
+            addLabel("start_paused").apply {
+                toolTipText = startPausedHint
+            }
+            val startPausedSwitch = ToggleSwitch(false).apply {
+                toolTipText = startPausedHint
+                addSwitchHandler { isSelected ->
+                    startPaused = isSelected
+                }
+            }
+            add(startPausedSwitch)
         }
 
         // Right: Recording group
@@ -85,9 +103,10 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
             add(autoRecordSwitch)
         }
 
-        // Row container for placing both groups side-by-side with minimal widths and equal heights
-        val topRow = JPanel(MigLayout("insets 0", "[pref!][pref!]", "[]")).apply {
+        // Row container for placing all groups side-by-side with minimal widths and equal heights
+        val topRow = JPanel(MigLayout("insets 0", "[pref!][pref!][pref!]", "[]")).apply {
             add(topLeftPanel, "growy")
+            add(topMiddlePanel, "growy")
             add(topRightPanel, "growy, wrap")
         }
 
@@ -105,7 +124,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
         startBattleButton.isEnabled = false
         updateStartButtonHint()
 
-        BotSelectionEvents.onSelectedBotListUpdated.subscribe(this) {
+        BotSelectionEvents.onSelectedBotListUpdated.on(this) {
             selectedBots = it
 
             val selectedCount = calcNumberOfParticipants(it)
@@ -115,9 +134,9 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
                     (maxParticipants == null || selectedCount <= maxParticipants)
         }
 
-        onStartBattle.subscribe(this) { startGame() }
-        onCancel.subscribe(this) { NewBattleDialog.dispose() }
-        onSetupRules.subscribe(this) { SetupRulesDialog.isVisible = true }
+        onStartBattle.on(this) { startGame() }
+        onCancel.on(this) { NewBattleDialog.dispose() }
+        onSetupRules.on(this) { SetupRulesDialog.isVisible = true }
 
         gameTypeDropdown.apply {
             addActionListener {
@@ -170,11 +189,8 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
     }
 
     private fun startGame() {
-        isVisible = true
-
         val botAddresses = selectedBots.map { it.botAddress }
-        Client.startGame(botAddresses.toSet())
-
+        Client.startGame(botAddresses.toSet(), startPaused)
         NewBattleDialog.dispose()
     }
 }

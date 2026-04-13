@@ -1,0 +1,16 @@
+{
+  "name": "PaintingBot",
+  "version": "1.0",
+  "authors": [
+    "Pavel Savara",
+    "Flemming N. Larsen"
+  ],
+  "description": "A sample bot that demonstrates how to paint stuff on the battlefield. Remember to enable Graphical Debugging for the bot when running a battle.",
+  "homepage": "",
+  "countryCodes": [
+    "cz",
+    "dk"
+  ],
+  "platform": "Node.js",
+  "programmingLang": "TypeScript"
+}

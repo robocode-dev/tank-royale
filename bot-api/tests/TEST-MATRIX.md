@@ -198,6 +198,15 @@ Notes:
 - TR-API-TCK-001 Tick progression: per-tick state snapshots are immutable/read-only to consumer.
 - TR-API-TCK-002 Intent apply/reset: intents apply for the next tick and reset according to spec.
 - TR-API-TCK-003 Timeouts: command submission after deadline triggers skipped turn and no partial effects.
+- ✅ TR-API-TCK-004 First-turn state availability: `run()` receives valid bot state on turn 1 and the first intent
+  reflects commands set in `run()`; regression for issue #202 (first-turn skip caused by bot thread starting during
+  turn 1 and consuming JVM startup latency from the turn budget). [Parity: Java/.NET/Python]
+    - ✅ TR-API-TCK-004a `run()` sees first-tick state: the bot's field values inside `run()` match the tick-1 bot
+      state delivered by the server (radar direction, energy, etc.). Verifies the thread blocks until tick state is
+      available before calling `run()`.
+    - ✅ TR-API-TCK-004b First intent contains commands from `run()`: the first `BotIntent` sent to the server includes
+      the radar turn rate set by `run()`, confirming that `run()` completes at least one `go()` call within the first
+      turn's time budget.
 
 ### H. Protocol and schema (PRT)
 

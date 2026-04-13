@@ -1,0 +1,22 @@
+name: csharp
+description: "C# — OOP, type safety, async patterns, LINQ"
+
+globs:
+  - "**/*.cs"
+
+includes:
+  - source-code
+
+principles:
+  - SOLID-SRP
+  - SOLID-OCP
+  - SOLID-LSP
+  - SOLID-ISP
+  - SOLID-DIP
+  - CODE-TP-MAKE-ILLEGAL-STATES-UNREPRESENTABLE
+  - CODE-TP-EXHAUSTIVE-PATTERN-MATCHING
+  - CODE-TP-PREFER-SUM-TYPES
+  - CODE-TP-TYPE-STATE-MACHINES
+  - CODE-TP-BRANDED-TYPES
+  - CODE-CC-TASK-BASED-CONCURRENCY
+  - CODE-CC-STRUCTURED-CONCURRENCY

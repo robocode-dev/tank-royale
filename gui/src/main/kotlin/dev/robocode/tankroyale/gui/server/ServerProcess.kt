@@ -8,7 +8,7 @@ import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.ui.server.ServerLogFrame
 import dev.robocode.tankroyale.gui.util.EDT
 import dev.robocode.tankroyale.gui.util.FileUtil
-import dev.robocode.tankroyale.gui.util.ResourceUtil
+import dev.robocode.tankroyale.common.util.ResourceUtil
 import dev.robocode.tankroyale.gui.util.ProcessUtil
 import dev.robocode.tankroyale.gui.util.LineReaderThread
 import java.io.FileNotFoundException
@@ -41,6 +41,7 @@ object ServerProcess {
             command = mutableListOf(
                 JavaExec.java(),
                 "-Dapp.processName=RobocodeTankRoyale-Server",
+                *JavaExec.nativeAccessArgs().toTypedArray(),
                 "-jar",
                 getServerJar(),
                 "--port=${localPort}",
@@ -61,7 +62,7 @@ object ServerProcess {
 
         startLogThread()
 
-        ServerEvents.onStarted.fire(Unit)
+        ServerEvents.onStarted(Unit)
     }
 
     fun stop() {
@@ -75,7 +76,7 @@ object ServerProcess {
         // Now stop the log thread if still running
         stopLogThread()
 
-        ServerEvents.onStopped.fire(Unit)
+        ServerEvents.onStopped(Unit)
     }
 
     private fun getServerJar(): String {

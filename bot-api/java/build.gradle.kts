@@ -6,7 +6,6 @@ description = "Robocode Tank Royale Bot API for Java"
 
 val javadocTitle = "Robocode Tank Royale Bot API"
 group = "dev.robocode.tankroyale"
-version = libs.versions.tankroyale.get()
 
 val schemaPackage = "$group.schema"
 

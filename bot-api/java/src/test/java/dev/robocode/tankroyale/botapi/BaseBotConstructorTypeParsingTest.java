@@ -31,14 +31,19 @@ class BaseBotConstructorTypeParsingTest extends AbstractBotTest {
     @DisplayName("TR-API-BOT-001d Type parsing/normalization: ints/bools parsed consistently; trimming/whitespace handling")
     @Tag("BOT")
     @Tag("TR-API-BOT-001d")
-    void test_TR_API_BOT_001d_type_parsing_normalization() {
+    void test_TR_API_BOT_001d_type_parsing_normalization() throws InterruptedException {
         // Arrange: TEAM_ID and BOT_INITIAL_POS with extra whitespace
+        envVars.set(BOT_NAME, "TypeParseBot");
+        envVars.set(BOT_VERSION, "1.0");
+        envVars.set(BOT_AUTHORS, "Alice, Bob");
+        envVars.set(SERVER_URL, "ws://localhost:" + MockedServer.PORT);
         envVars.set("TEAM_ID", "  42  ");
         envVars.set(BOT_INITIAL_POS, "  10, 20, 30  ");
 
         // Act
         var bot = new TestBot();
         startAsync(bot);
+        assertThat(server.awaitConnection(5000)).isTrue();
         awaitBotHandshake();
         var handshake = server.getBotHandshake();
 

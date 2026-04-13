@@ -5,6 +5,8 @@ import dev.robocode.tankroyale.gui.client.Client
 import dev.robocode.tankroyale.gui.client.ClientEvents
 import dev.robocode.tankroyale.gui.player.ReplayBattlePlayer
 import dev.robocode.tankroyale.gui.recorder.AutoRecorder
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
+import dev.robocode.tankroyale.gui.settings.TankColorMode
 import dev.robocode.tankroyale.gui.ui.ResultsFrame
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.hsl
 import dev.robocode.tankroyale.gui.ui.extensions.ColorExt.lightness
@@ -26,6 +28,8 @@ import kotlin.math.sqrt
 
 
 object ArenaPanel : JPanel() {
+
+    private val lockedColors = mutableMapOf<Int, MutableMap<String, String>>()
 
     private val circleShape = Area(Ellipse2D.Double(-0.5, -0.5, 1.0, 1.0))
 
@@ -89,10 +93,10 @@ object ArenaPanel : JPanel() {
         })
 
         ClientEvents.apply {
-            onGameEnded.subscribe(ArenaPanel) { onGameEnded(it) }
-            onTickEvent.subscribe(ArenaPanel) { onTick(it) }
-            onGameStarted.subscribe(ArenaPanel) { onGameStarted(it) }
-            onPlayerChanged.subscribe(ArenaPanel) { onPlayerChanged(it) }
+            onGameEnded.on(ArenaPanel) { this@ArenaPanel.onGameEnded(it) }
+            ClientEvents.onTickEvent.on(ArenaPanel) { this@ArenaPanel.onTick(it) }
+            onGameStarted.on(ArenaPanel) { this@ArenaPanel.onGameStarted(it) }
+            onPlayerChanged.on(ArenaPanel) { this@ArenaPanel.onPlayerChanged(it) }
         }
     }
 
@@ -103,6 +107,49 @@ object ArenaPanel : JPanel() {
     private fun onPlayerChanged(player: dev.robocode.tankroyale.gui.player.BattlePlayer) {
         isLiveMode = player !is ReplayBattlePlayer // Default to LIVE mode for other player types
         repaint() // Refresh the display to show correct indicator
+    }
+
+    private fun resolveBulletColor(bullet: BulletState): Color {
+        val botColor = bullet.color
+        val default = ColorConstant.DEFAULT_BULLET_COLOR
+        return when (ConfigSettings.tankColorMode) {
+            TankColorMode.BOT_COLORS -> fromString(botColor ?: default)
+            TankColorMode.BOT_COLORS_ONCE -> {
+                val botLockedColors = lockedColors.getOrPut(bullet.ownerId) { mutableMapOf() }
+                val lockedColor = botLockedColors.getOrPut(default) { botColor ?: "" }
+                fromString(if (lockedColor.isEmpty()) default else lockedColor)
+            }
+            TankColorMode.DEFAULT_COLORS -> fromString(default)
+            TankColorMode.BOT_COLORS_WHEN_DEBUGGING -> {
+                val bot = bots.find { it.id == bullet.ownerId }
+                if (bot?.isDebuggingEnabled == true) {
+                    fromString(botColor ?: default)
+                } else {
+                    fromString(default)
+                }
+            }
+        }
+    }
+
+    private fun resolveScanColor(bot: BotState): Color {
+        val botColor = bot.scanColor
+        val default = ColorConstant.DEFAULT_SCAN_COLOR
+        return when (ConfigSettings.tankColorMode) {
+            TankColorMode.BOT_COLORS -> fromString(botColor ?: default)
+            TankColorMode.BOT_COLORS_ONCE -> {
+                val botLockedColors = lockedColors.getOrPut(bot.id) { mutableMapOf() }
+                val lockedColor = botLockedColors.getOrPut(default) { botColor ?: "" }
+                fromString(if (lockedColor.isEmpty()) default else lockedColor)
+            }
+            TankColorMode.DEFAULT_COLORS -> fromString(default)
+            TankColorMode.BOT_COLORS_WHEN_DEBUGGING -> {
+                if (bot.isDebuggingEnabled) {
+                    fromString(botColor ?: default)
+                } else {
+                    fromString(default)
+                }
+            }
+        }
     }
 
     private fun onTick(tickEvent: TickEvent) {
@@ -139,6 +186,7 @@ object ArenaPanel : JPanel() {
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
+        lockedColors.clear()
         gameStartedEvent.gameSetup.apply {
             ArenaPanel.arenaWidth = arenaWidth
             ArenaPanel.arenaHeight = arenaHeight
@@ -149,7 +197,7 @@ object ArenaPanel : JPanel() {
     }
 
     private fun onBotDeath(botDeathEvent: BotDeathEvent) {
-        val bot = bots.first { bot -> bot.id == botDeathEvent.victimId }
+        val bot = bots.firstOrNull { bot -> bot.id == botDeathEvent.victimId } ?: return
         val explosion = Explosion(bot.x, bot.y, 80, 50, 15, time)
         synchronized(explosions) {
             explosions.add(explosion)
@@ -158,7 +206,7 @@ object ArenaPanel : JPanel() {
 
     private fun onBulletHitBot(bulletHitBotEvent: BulletHitBotEvent) {
         val bullet = bulletHitBotEvent.bullet
-        val bot = bots.first { bot -> bot.id == bulletHitBotEvent.victimId }
+        val bot = bots.firstOrNull { bot -> bot.id == bulletHitBotEvent.victimId } ?: return
 
         val xOffset = bullet.x - bot.x
         val yOffset = bullet.y - bot.y
@@ -265,6 +313,9 @@ object ArenaPanel : JPanel() {
     }
 
     private fun drawBots(g: Graphics2D) {
+        // Guard: Don't draw if no bots loaded yet
+        if (bots.isEmpty()) return
+
         bots.forEach { bot ->
             Tank(bot).paint(g)
             drawScanArc(g, bot)
@@ -274,6 +325,9 @@ object ArenaPanel : JPanel() {
     }
 
     private fun drawBullets(g: Graphics2D) {
+        // Guard: Don't draw if no bullets yet
+        if (bullets.isEmpty()) return
+
         bullets.forEach { drawBullet(g, it) }
     }
 
@@ -316,7 +370,7 @@ object ArenaPanel : JPanel() {
 
     private fun drawBullet(g: Graphics2D, bullet: BulletState) {
         val size = 2 * sqrt(2.5 * bullet.power)
-        val bulletColor = fromString(bullet.color ?: ColorConstant.DEFAULT_BULLET_COLOR)
+        val bulletColor = resolveBulletColor(bullet)
         g.color = visibleDark(bulletColor)
         g.fillCircle(bullet.x, bullet.y, size)
     }
@@ -326,7 +380,7 @@ object ArenaPanel : JPanel() {
 
         val oldState = Graphics2DState(g)
 
-        val scanColor = fromString(bot.scanColor ?: ColorConstant.DEFAULT_SCAN_COLOR)
+        val scanColor = resolveScanColor(bot)
         g.color = visibleDark(scanColor)
         g.stroke = BasicStroke(1f)
         g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)
@@ -494,8 +548,15 @@ object ArenaPanel : JPanel() {
                 }
             }
 
-        } catch (_: NoSuchElementException) {
-            // Do nothing
+        } catch (_: IllegalStateException) {
+            // Participant not found - fall back to bot state name/version if available
+            if (bot.name != null && bot.version != null) {
+                g.scale(1.0, -1.0)
+                g.color = Color.WHITE
+                "${bot.name} ${bot.version} (${bot.id})".apply {
+                    drawText(g, this, bot.x, -bot.y + 36)
+                }
+            }
         }
 
         oldState.restore(g)

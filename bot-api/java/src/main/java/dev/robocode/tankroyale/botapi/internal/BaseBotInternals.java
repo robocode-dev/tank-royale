@@ -31,6 +31,7 @@ import static java.lang.Math.*;
 import static java.net.http.WebSocket.Builder;
 
 public final class BaseBotInternals {
+
     private static final String DEFAULT_SERVER_URL = "ws://localhost:7654";
 
     private static final String SERVER_URL_PROPERTY_KEY = "server.url";
@@ -61,8 +62,8 @@ public final class BaseBotInternals {
 
     private InitialPosition initialPosition;
 
-    private TickEvent tickEvent;
-    private Long tickStartNanoTime;
+    private volatile TickEvent tickEvent;
+    private long tickStartNanoTime;
 
     private final EventQueue eventQueue;
 
@@ -148,6 +149,7 @@ public final class BaseBotInternals {
     }
 
     void startThread(IBot bot) {
+        enableEventHandling(true); // reset on WebSocket thread — before new bot thread starts
         thread = new Thread(createRunnable(bot));
         thread.start();
     }
@@ -156,26 +158,36 @@ public final class BaseBotInternals {
         return () -> {
             setRunning(true);
             try {
-                enableEventHandling(true);
-
-                try {
-                    bot.run();
-                } catch (ThreadInterruptedException e) {
-                    return;
-                }
-
-                // Skip every turn after the run method has exited
-                while (isRunning()) {
-                    try {
-                        bot.go();
-                    } catch (ThreadInterruptedException e) {
-                        return;
-                    }
-                }
-            } finally {
-                enableEventHandling(false); // prevent event queue max limit to be reached
+                waitUntilFirstTickArrived();
+                // Send default intent immediately so the server doesn't mark turn 1 as skipped
+                // due to OS scheduling latency between the thread wakeup and the first go() call.
+                sendIntent();
+                bot.run();
+            } catch (ThreadInterruptedException e) {
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
+
+            dispatchFinalTurnEvents();
+
+            // Skip every turn after the run method has exited
+            while (isRunning()) {
+                try {
+                    bot.go();
+                } catch (ThreadInterruptedException ignored) {
+                    break;
+                }
+            }
+
+            dispatchFinalTurnEvents();
         };
+    }
+
+    private void dispatchFinalTurnEvents() {
+        var tick = getCurrentTickOrNull();
+        if (tick != null) {
+            dispatchEvents(tick.getTurnNumber());
+        }
     }
 
     void stopThread() {
@@ -183,6 +195,7 @@ public final class BaseBotInternals {
             return;
 
         setRunning(false);
+        enableEventHandling(false); // disable on WebSocket thread — prevents new ticks from queuing after bot stops
 
         if (thread != null) {
             thread.interrupt();
@@ -191,12 +204,21 @@ public final class BaseBotInternals {
     }
 
     public void enableEventHandling(boolean enable) {
-        eventHandlingDisabledTurn = enable ? 0 : getCurrentTickOrThrow().getTurnNumber();
+        if (enable) {
+            eventHandlingDisabledTurn = 0;
+        } else {
+            var tick = getCurrentTickOrNull();
+            eventHandlingDisabledTurn = (tick != null) ? tick.getTurnNumber() : 0;
+        }
     }
 
-    public boolean getEventHandlingDisabledTurn() {
+    public boolean isEventHandlingDisabled() {
         // Important! Allow an additional turn so events like RoundStarted can be handled
         return eventHandlingDisabledTurn != 0 && eventHandlingDisabledTurn < (getCurrentTickOrThrow().getTurnNumber() - 1);
+    }
+
+    int getEventHandlingDisabledTurn() {
+        return eventHandlingDisabledTurn;
     }
 
     void setStopResumeHandler(IStopResumeListener listener) {
@@ -245,6 +267,7 @@ public final class BaseBotInternals {
     private boolean movementResetPending = false;
 
     private void onRoundStarted(RoundStartedEvent e) {
+        tickEvent = null;
         eventQueue.clear();
         isStopped = false;
         eventHandlingDisabledTurn = 0;
@@ -300,29 +323,33 @@ public final class BaseBotInternals {
         }
     }
 
-    public void execute() {
-        // Allow execute() to be called outside the bot run thread (e.g., tests invoking go())
-        // If no tick has been received yet (e.g., immediately after GameStarted), send current intent once
-        // so the server can proceed to the first tick. This mirrors test scaffolding that calls go() proactively.
-        if (getCurrentTickOrNull() == null) {
+    /**
+     * @param capturedTurnNumber the turn number captured by go() at the time events were dispatched,
+     *                           or -1 if no tick was available
+     */
+    public void execute(int capturedTurnNumber) {
+        // If no tick has been received yet, send current intent once so the server can proceed.
+        if (capturedTurnNumber < 0) {
             sendIntent();
             return;
         }
-        final var turnNumber = getCurrentTickOrThrow().getTurnNumber();
-        if (turnNumber != lastExecuteTurnNumber) {
-            lastExecuteTurnNumber = turnNumber;
-
-            sendIntent();
+        if (capturedTurnNumber != lastExecuteTurnNumber) {
+            lastExecuteTurnNumber = capturedTurnNumber;
+            sendIntent(capturedTurnNumber);
 
             if (movementResetPending) {
                 resetMovement();
                 movementResetPending = false;
             }
         }
-        waitForNextTurn(turnNumber);
+        waitForNextTurn(capturedTurnNumber);
     }
 
     private void sendIntent() {
+        sendIntent(-1);
+    }
+
+    private void sendIntent(int turnNumber) {
         synchronized (this) {
             renderGraphicsToBotIntent();
             transferStdOutToBotIntent();
@@ -331,7 +358,7 @@ public final class BaseBotInternals {
         }
     }
 
-    private void transferStdOutToBotIntent() {
+    void transferStdOutToBotIntent() {
         if (recordedStdOut != null) {
             String output = recordedStdOut.readNext();
             botIntent.setStdOut(output);
@@ -363,6 +390,23 @@ public final class BaseBotInternals {
             ) {
                 try {
                     nextTurnMonitor.wait(); // Wait for the next turn
+                } catch (InterruptedException ex) {
+                    throw new ThreadInterruptedException();
+                }
+            }
+        }
+    }
+
+    // Blocks the pre-warmed bot thread until the first tick of the round arrives.
+    // The thread is started at round-started (before any tick), so it must wait here
+    // before run() can safely read bot state (radar direction, etc.).
+    // notifyAll() is called by onNextTurn() (priority 100) after BotInternals.onFirstTurn()
+    // (priority 110) has already captured the initial directions via clearRemaining().
+    private void waitUntilFirstTickArrived() {
+        synchronized (nextTurnMonitor) {
+            while (isRunning() && getCurrentTickOrNull() == null) {
+                try {
+                    nextTurnMonitor.wait();
                 } catch (InterruptedException ex) {
                     throw new ThreadInterruptedException();
                 }
@@ -442,13 +486,13 @@ public final class BaseBotInternals {
     }
 
     private long getTicksStart() {
-        if (tickStartNanoTime == null) {
+        if (tickEvent == null) {
             throw new BotException(TICK_NOT_AVAILABLE_MSG);
         }
         return tickStartNanoTime;
     }
 
-    void setTickStartNanoTime(Long tickStartNanoTime) {
+    void setTickStartNanoTime(long tickStartNanoTime) {
         this.tickStartNanoTime = tickStartNanoTime;
     }
 
@@ -456,9 +500,16 @@ public final class BaseBotInternals {
         eventQueue.addEventsFromTick(event);
     }
 
+    void addEvent(BotEvent event) {
+        eventQueue.addEvent(event);
+    }
+
     public int getTimeLeft() {
-        long passesMicroSeconds = (System.nanoTime() - getTicksStart()) / 1000;
-        return (int) (getGameSetup().getTurnTimeout() - passesMicroSeconds);
+        if (tickEvent == null) {
+            return getGameSetup().getTurnTimeout();
+        }
+        long passesMicroSeconds = (System.nanoTime() - tickStartNanoTime) / 1000;
+        return (int) Math.max(0, getGameSetup().getTurnTimeout() - passesMicroSeconds);
     }
 
     public boolean setFire(double firepower) {

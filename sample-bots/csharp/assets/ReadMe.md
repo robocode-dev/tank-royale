@@ -18,13 +18,18 @@ Each bot has its own subdirectory (bot directory) that contains:
 * A C-sharp source file (.cs) that provides the program logic of the bot.
 * A JSON file (.json) that provides information about the bot.
 * A C-sharp project source file (.csproj) used for compiling and running the bot with the `dotnet` command.
-* Script files (.cmd and .sh) used for starting the bot.
+* A `NuGet.Config` file for managing NuGet package sources.
+* Script files (.cmd and .sh) are optional for starting the bot.
 
 ## Running a bot
 
-A script file is used for running the bot, which is `dotnet run` for the sample bots for .NET. The project source file
-for C# (.csproj) provide the `dotnet` command with information about how to run the bot, e.g. using the NuGet package
-for the bot API. The `dotnet` command will automatically compile the bot and run it afterward as an executable.
+The bot can be run by Robocode without any script file by using the information in the bot's JSON file.
+By default, the booter assumes that the base C# class has the same name as the bot directory.
+If the base class has a different name, it must be specified using the `base` property in the JSON file.
+However, a script file can still be used for running the bot, which is `dotnet run` for the sample bots for .NET.
+The project source file for C# (.csproj) provides the `dotnet` command with information about how to run the bot,
+e.g. using the NuGet package for the bot API.
+The `dotnet` command will automatically compile the bot and run it afterward as an executable.
 
 You can run a sample bot manually from the command line by going into the bot directory (using the `cd` command) and
 writing:

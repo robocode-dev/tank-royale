@@ -61,9 +61,9 @@ object Server {
 
         val connected = CountDownLatch(1)
 
-        ClientEvents.onConnected.subscribe(this) {
+        ClientEvents.onConnected.on(this) {
             connected.countDown()
-            ServerEvents.onConnected.fire(Unit)
+            ServerEvents.onConnected(Unit)
         }
         // An exception can occur when trying to connect to the server.
         // Hence, we retry connecting, when it fails.
@@ -84,7 +84,7 @@ object Server {
 
     fun startLocal() {
         val latch = CountDownLatch(1)
-        ServerEvents.onStarted.subscribe(this) {
+        ServerEvents.onStarted.on(this) {
             latch.countDown()
         }
         ServerProcess.start()

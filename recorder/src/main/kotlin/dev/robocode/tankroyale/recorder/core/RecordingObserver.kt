@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.client.WebSocketClientEvents
 import dev.robocode.tankroyale.client.model.MessageConstants
 import dev.robocode.tankroyale.client.model.ObserverHandshake
 import dev.robocode.tankroyale.client.model.ServerHandshake
+import dev.robocode.tankroyale.common.recording.GameRecorder
 import dev.robocode.tankroyale.common.util.Version
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -38,29 +39,47 @@ class RecordingObserver(
     private var recorder: GameRecorder? = null
 
     fun start() {
+        log.info("Starting RecordingObserver, connecting to: $url")
         WebSocketClientEvents.apply {
-            onOpen.subscribe(client) { log.info("Connection to server established") }
-            onMessage.subscribe(client) { onMessage(it) }
-            onError.subscribe(client) {
-                log.error("WebSocket error: ${it.message}", it)
-                unsubscribeAll()
+            onOpen.on(client) {
+                log.info("Connection to server established")
+            }
+            onMessage.on(client) { msg ->
+                processMessage(msg)
+            }
+
+            onError.once(client) { error ->
+                log.error("WebSocket error: ${error.message}", error)
+                cleanup()
                 latch.countDown()
             }
-            onClose.subscribe(client) {
+            onClose.once(client) {
                 log.info("Connection to server closed")
-                unsubscribeAll()
+                cleanup()
                 latch.countDown()
             }
+
             try {
-                client.open() // must be called AFTER onOpen.subscribe()
+                log.info("Opening WebSocket connection...")
+                client.open()
+                log.info("WebSocket connection initiated")
             } catch (e: Exception) {
                 log.error(
                     "Failed to connect to server at $url. Please ensure the server is running and the URL is correct.",
                     e
                 )
-                unsubscribeAll()
+                cleanup()
                 latch.countDown()
             }
+        }
+    }
+
+    private fun cleanup() {
+        WebSocketClientEvents.apply {
+            onOpen.off(client)
+            onMessage.off(client)
+            onError.off(client)
+            onClose.off(client)
         }
     }
 
@@ -72,26 +91,31 @@ class RecordingObserver(
         return null
     }
 
-    private fun onMessage(msg: String) {
-        log.debug("Received message: {}", msg)
+    private fun processMessage(msg: String) {
         val jsonElement: JsonElement = Json.parseToJsonElement(msg)
         val type = extractType(jsonElement)
+
         if (type == "ServerHandshake") {
+            log.debug("Processing ServerHandshake")
             handleServerHandshake(jsonElement)
         } else {
             if (startRecordingEvents.contains(type)) {
+                log.info("Received start recording event: {}", type)
                 startRecording()
                 log.info("Starting recording to file: ${recorder?.file?.absolutePath}")
             }
             if (eventsToRecord.contains(type)) {
                 // If we joined late and missed GameStarted, start recording on first recordable event
                 if (recorder == null) {
+                    log.info("Received recordable event before recording started: {}", type)
                     startRecording()
                     log.info("Starting recording to file: ${recorder?.file?.absolutePath}")
                 }
-                recorder?.record(jsonElement)
+                log.debug("Recording event: {}", type)
+                recorder?.record(msg)
             }
             if (endRecordingEvents.contains(type)) {
+                log.info("Received end recording event: {}", type)
                 stopRecording()
             }
         }
@@ -172,16 +196,8 @@ class RecordingObserver(
         }
     }
 
-    private fun unsubscribeAll() {
-        WebSocketClientEvents.apply {
-            onOpen.unsubscribe(client)
-            onMessage.unsubscribe(client)
-            onError.unsubscribe(client)
-        }
-    }
-
     fun stop() {
-        unsubscribeAll()
+        cleanup()
         stopRecording()
         if (client.isOpen()) {
             client.close()

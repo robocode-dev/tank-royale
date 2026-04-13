@@ -1,0 +1,52 @@
+# AI Agent Quick Reference - Structurizr Skill
+
+## ⚠️ CRITICAL INFORMATION
+
+**ALL TOOLS ARE ALREADY EMBEDDED - DO NOT DOWNLOAD ANYTHING**
+
+## Tool Locations (Relative to Skill Root)
+
+- Structurizr CLI: `.tools/structurizr-cli/structurizr.sh`
+- PlantUML JAR: `.tools/plantuml.jar`
+- Generation Script: `generate.sh`
+
+## Usage Pattern
+
+```bash
+cd /path/to/project
+bash .github/skills/structurizr/generate.sh '<workspace_dsl_content>'
+```
+
+## What the Script Does
+
+1. Pre-checks: Verifies Java and bundled tools exist
+2. Processes: Uses bundled Structurizr CLI to generate PlantUML
+3. Converts: Uses bundled PlantUML JAR to generate SVG
+4. Outputs: Saves SVG files to /docs-internal/architecture/c4-views/images/
+
+## What NOT to Do
+
+- ❌ DO NOT download Structurizr CLI
+- ❌ DO NOT download PlantUML
+- ❌ DO NOT use Docker
+- ❌ DO NOT use npm packages
+- ❌ DO NOT install system packages
+
+## What TO Do
+
+- ✅ Use the generate.sh script
+- ✅ Trust the embedded tools
+- ✅ Verify Java is available (only requirement)
+
+## Documentation Files
+
+- README.md - Main skill documentation
+- AI_INSTRUCTIONS.md - Detailed AI agent instructions
+- tools/README.md - Bundled tools information
+- .ai-context (this file) - Quick reference
+
+## Success Indicators
+
+- Script outputs: "✅ All pre-checks passed!"
+- Script outputs: "📸 Created SVG: [filename]"
+- SVG files appear in /docs-internal/architecture/c4-views/images/

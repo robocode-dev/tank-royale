@@ -1,6 +1,9 @@
 package dev.robocode.tankroyale.gui.ui.arena
 
 import dev.robocode.tankroyale.client.model.BotState
+import dev.robocode.tankroyale.gui.client.ClientEvents
+import dev.robocode.tankroyale.gui.settings.ConfigSettings
+import dev.robocode.tankroyale.gui.settings.TankColorMode
 import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_BODY_COLOR
 import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_GUN_COLOR
 import dev.robocode.tankroyale.gui.ui.arena.ColorConstant.DEFAULT_RADAR_COLOR
@@ -21,10 +24,20 @@ import kotlin.math.hypot
 
 class Tank(private val bot: BotState) {
 
+    companion object {
+        private val lockedColors = mutableMapOf<Int, MutableMap<String, String>>()
+
+        init {
+            ClientEvents.onGameStarted.on(Tank) {
+                lockedColors.clear()
+            }
+        }
+    }
+
     var oldX = 0.0
     var oldY = 0.0
 
-    private val tracksColor: Color = fromString(bot.tracksColor ?: DEFAULT_TRACKS_COLOR)
+    private val tracksColor: Color = resolveColor(bot.tracksColor, DEFAULT_TRACKS_COLOR)
 
     fun paint(g: Graphics2D) {
         val oldTransform = g.transform
@@ -58,7 +71,7 @@ class Tank(private val bot: BotState) {
         g.transform = localTransform
 
         // Body rect
-        val bodyColor = fromString(bot.bodyColor ?: DEFAULT_BODY_COLOR)
+        val bodyColor = resolveColor(bot.bodyColor, DEFAULT_BODY_COLOR)
         g.color = bodyColor
         g.fillRect(-210, -160, 420, 320)
 
@@ -194,7 +207,7 @@ class Tank(private val bot: BotState) {
 
         // Cannon thick part
 
-        val gunColor = fromString(bot.gunColor ?: DEFAULT_GUN_COLOR)
+        val gunColor = resolveColor(bot.gunColor, DEFAULT_GUN_COLOR)
 
         val cannonLight = gunColor.hsl.addLight(0.1f).toColor()
         val cannonDark = gunColor.hsl.addLight(-0.3f).toColor()
@@ -223,7 +236,7 @@ class Tank(private val bot: BotState) {
         g.drawRect(x2.toInt(), y2.toInt(), 170, 50)
 
         // Turret rect
-        val turretColor = fromString(bot.turretColor ?: DEFAULT_TURRET_COLOR)
+        val turretColor = resolveColor(bot.turretColor, DEFAULT_TURRET_COLOR)
         g.color = turretColor
         g.fillRect(-80, -100, 200, 200)
 
@@ -246,7 +259,7 @@ class Tank(private val bot: BotState) {
 
         val oldTransform = g.transform
 
-        val color = fromString(bot.radarColor ?: DEFAULT_RADAR_COLOR)
+        val color = resolveColor(bot.radarColor, DEFAULT_RADAR_COLOR)
         val borderColor = borderColor(color)
 
         // Circle
@@ -273,5 +286,27 @@ class Tank(private val bot: BotState) {
 
     private fun borderColor(color: Color): Color {
         return if (color.lightness < 0.15) Color.DARK_GRAY else BLACK
+    }
+
+    private fun resolveColor(botColor: String?, default: String): Color {
+        return when (ConfigSettings.tankColorMode) {
+            TankColorMode.BOT_COLORS -> fromString(botColor ?: default)
+
+            TankColorMode.BOT_COLORS_ONCE -> {
+                val botLockedColors = lockedColors.getOrPut(bot.id) { mutableMapOf() }
+                val lockedColor = botLockedColors.getOrPut(default) { botColor ?: "" }
+                fromString(if (lockedColor.isEmpty()) default else lockedColor)
+            }
+
+            TankColorMode.DEFAULT_COLORS -> fromString(default)
+
+            TankColorMode.BOT_COLORS_WHEN_DEBUGGING -> {
+                if (bot.isDebuggingEnabled) {
+                    fromString(botColor ?: default)
+                } else {
+                    fromString(default)
+                }
+            }
+        }
     }
 }

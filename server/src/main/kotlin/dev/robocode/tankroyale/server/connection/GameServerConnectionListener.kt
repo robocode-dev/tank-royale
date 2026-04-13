@@ -18,46 +18,46 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
     }
 
     override fun onBotJoined(clientSocket: WebSocket, handshake: BotHandshake) {
-        log.info("Bot joined: {}", getDisplayName(handshake))
+        log.info("Bot joined: {}", getDisplayName(handshake.name, handshake.version))
         gameServer.handleBotJoined()
     }
 
     override fun onBotLeft(clientSocket: WebSocket, handshake: BotHandshake) {
-        log.info("Bot left: {}", getDisplayName(handshake))
+        log.info("Bot left: {}", getDisplayName(handshake.name, handshake.version))
         gameServer.handleBotLeft(clientSocket)
     }
 
     override fun onBotReady(clientSocket: WebSocket, handshake: BotHandshake) {
-        log.info("Bot ready: {}", getDisplayName(handshake))
+        log.info("Bot ready: {}", getDisplayName(handshake.name, handshake.version))
         gameServer.handleBotReady(clientSocket)
     }
 
     override fun onBotIntent(clientSocket: WebSocket, handshake: BotHandshake, intent: BotIntent) {
-        log.debug("Bot intent: {}: {}", getDisplayName(handshake), intent)
+        log.debug("Bot intent: {}: {}", getDisplayName(handshake.name, handshake.version), intent)
         gameServer.handleBotIntent(clientSocket, intent)
     }
 
     override fun onObserverJoined(clientSocket: WebSocket, handshake: ObserverHandshake) {
-        log.info("Observer joined: {}", getDisplayName(handshake))
+        log.info("Observer joined: {}", getDisplayName(handshake.name, handshake.version))
         gameServer.sendBotListUpdate(clientSocket)
     }
 
     override fun onObserverLeft(clientSocket: WebSocket, handshake: ObserverHandshake) {
-        log.info("Observer left: {}", getDisplayName(handshake))
+        log.info("Observer left: {}", getDisplayName(handshake.name, handshake.version))
     }
 
     override fun onControllerJoined(clientSocket: WebSocket, handshake: ControllerHandshake) {
-        log.info("Controller joined: {}", getDisplayName(handshake))
+        log.info("Controller joined: {}", getDisplayName(handshake.name, handshake.version))
         gameServer.sendBotListUpdate(clientSocket)
     }
 
     override fun onControllerLeft(clientSocket: WebSocket, handshake: ControllerHandshake) {
-        log.info("Controller left: {}", getDisplayName(handshake))
+        log.info("Controller left: {}", getDisplayName(handshake.name, handshake.version))
     }
 
-    override fun onStartGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>) {
+    override fun onStartGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>, debugMode: Boolean) {
         log.debug("Game is requested to start")
-        gameServer.handleStartGame(gameSetup, botAddresses)
+        gameServer.handleStartGame(gameSetup, botAddresses, debugMode)
     }
 
     override fun onAbortGame() {
@@ -87,31 +87,20 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
 
     override fun onBotPolicyUpdated(botPolicyUpdate: BotPolicyUpdate) {
         log.debug("Bot policy updated for botId {}: debugGraphics is {}", botPolicyUpdate.botId,
-            if (botPolicyUpdate.debuggingEnabled) "enabled" else "disabled")
+            if (botPolicyUpdate.debuggingEnabled == true) "enabled" else if (botPolicyUpdate.debuggingEnabled == false) "disabled" else "unchanged")
         gameServer.handleBotPolicyUpdate(botPolicyUpdate)
     }
 
-    private fun getDisplayName(handshake: BotHandshake): String =
-        getDisplayName(handshake.name, handshake.version)
-
-    private fun getDisplayName(handshake: ObserverHandshake): String =
-        getDisplayName(handshake.name, handshake.version)
-
-    private fun getDisplayName(handshake: ControllerHandshake): String =
-        getDisplayName(handshake.name, handshake.version)
-
-    private fun getDisplayName(name: String, version: String): String {
-        var displayName = ""
-        name.trim().apply {
-            if (isNotEmpty()) {
-                displayName = this
-            }
-        }
-        version.trim().apply {
-            if (isNotEmpty()) {
-                displayName += " $this"
-            }
-        }
-        return displayName
+    override fun onEnableDebugMode() {
+        log.info("Debug mode is requested to be enabled")
+        gameServer.handleEnableDebugMode()
     }
+
+    override fun onDisableDebugMode() {
+        log.info("Debug mode is requested to be disabled")
+        gameServer.handleDisableDebugMode()
+    }
+
+    private fun getDisplayName(name: String, version: String): String =
+        "${name.trim()} ${version.trim()}".trim()
 }

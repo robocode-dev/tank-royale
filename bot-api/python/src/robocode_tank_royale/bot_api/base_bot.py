@@ -80,7 +80,10 @@ class BaseBot(BaseBotABC):
         if current_tick is not None:
             # Align with Java: only dispatch events here; staging happens when the tick is received
             self._internals.dispatch_events(current_tick.turn_number)
-        self._internals.execute()
+        # Pass captured turn number to execute() so it uses the same tick we dispatched events for.
+        # Without this, execute() re-reads the live tick which may have been updated by the
+        # WebSocket thread between dispatch_events() and execute(), causing skipped turns.
+        self._internals.execute(current_tick.turn_number if current_tick is not None else -1)
 
     @property
     def my_id(self) -> int:

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using S = Robocode.TankRoyale.Schema;
 using E = Robocode.TankRoyale.BotApi.Events;
@@ -15,6 +17,9 @@ namespace Robocode.TankRoyale.BotApi.Internal;
 
 sealed class BaseBotInternals
 {
+    [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+    private static extern uint TimeBeginPeriod(uint uPeriod);
+
     private const string DefaultServerUrl = "ws://localhost:7654";
 
     private const string NotConnectedToServerMsg =
@@ -79,6 +84,9 @@ sealed class BaseBotInternals
 
     internal BaseBotInternals(IBaseBot baseBot, BotInfo botInfo, Uri serverUrl, string serverSecret)
     {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            TimeBeginPeriod(1); // Set 1 ms timer resolution — matches JVM and CPython behaviour on Windows
+
         _baseBot = baseBot;
 
         if (botInfo == null)
@@ -157,6 +165,7 @@ sealed class BaseBotInternals
 
     internal void StartThread(IBot bot)
     {
+        EnableEventHandling(true); // reset on WebSocket thread — before new bot thread starts
         _thread = new Thread(() => CreateRunnable(bot));
         _thread.Start();
     }
@@ -166,35 +175,50 @@ sealed class BaseBotInternals
         IsRunning = true;
         try
         {
-            EnableEventHandling(true); // prevent event queue max limit to be reached
+            // Block until the first tick arrives so Run() can safely access bot state
+            // (e.g. RadarDirection). By the time PulseAll() fires we are guaranteed
+            // that BotInternals.OnFirstTurn() (priority 110) has already called
+            // ClearRemaining(), capturing the initial directions from the tick state.
+            WaitUntilFirstTickArrived();
+            // Send default intent immediately so the server doesn't mark turn 1 as skipped
+            // due to OS scheduling latency between the thread wakeup and the first Go() call.
+            SendIntent();
+            bot.Run();
+        }
+        catch (ThreadInterruptedException)
+        {
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
+        }
 
+        DispatchFinalTurnEvents();
+
+        // Skip every turn after the run method has exited
+        while (IsRunning)
+        {
             try
             {
-                bot.Run();
+                bot.Go();
             }
             catch (ThreadInterruptedException)
             {
-                return;
+                break;
             }
+        }
 
-            // Skip every turn after the run method has exited
-            while (IsRunning)
-            {
-                try
-                {
-                    bot.Go();
-                }
-                catch (ThreadInterruptedException)
-                {
-                    return;
-                }
-            }
-        }
-        finally
-        {
-            EnableEventHandling(false); // prevent event queue max limit to be reached
-        }
+        DispatchFinalTurnEvents();
     }
+
+    private void DispatchFinalTurnEvents()
+    {
+        var tick = CurrentTickOrNull;
+        if (tick != null)
+            DispatchEvents(tick.TurnNumber);
+    }
+
+    internal void AddEvent(E.BotEvent botEvent) => _eventQueue.AddEvent(botEvent);
 
     internal void StopThread()
     {
@@ -202,6 +226,7 @@ sealed class BaseBotInternals
             return;
 
         IsRunning = false;
+        EnableEventHandling(false); // disable on WebSocket thread — prevents new ticks from queuing after bot stops
 
         if (_thread != null)
         {
@@ -253,6 +278,7 @@ sealed class BaseBotInternals
 
     private void OnRoundStarted(E.RoundStartedEvent e)
     {
+        _tickEvent = null;
         _eventQueue.Clear();
         IsStopped = false;
         _eventHandlingDisabledTurn = 0;
@@ -301,21 +327,21 @@ sealed class BaseBotInternals
         }
     }
 
-    internal void Execute()
+    /// <param name="capturedTurnNumber">
+    /// The turn number captured by Go() at the time events were dispatched, or -1 if no tick was available.
+    /// </param>
+    internal void Execute(int capturedTurnNumber)
     {
-        // Allow Execute() to be called outside the bot run thread (e.g., tests invoking Go())
-        // If no tick has been received yet (e.g., immediately after GameStarted), send current intent once
-        // so the server can proceed to the first tick. This mirrors Java behavior.
-        if (CurrentTickOrNull == null)
+        // If no tick has been received yet, send current intent once so the server can proceed.
+        if (capturedTurnNumber < 0)
         {
             SendIntent();
             return;
         }
 
-        var turnNumber = CurrentTickOrThrow.TurnNumber;
-        if (turnNumber != _lastExecuteTurnNumber)
+        if (capturedTurnNumber != _lastExecuteTurnNumber)
         {
-            _lastExecuteTurnNumber = turnNumber;
+            _lastExecuteTurnNumber = capturedTurnNumber;
             SendIntent();
 
             if (_movementResetPending)
@@ -325,7 +351,7 @@ sealed class BaseBotInternals
             }
         }
 
-        WaitForNextTurn(turnNumber);
+        WaitForNextTurn(capturedTurnNumber);
     }
 
     private void SendIntent()
@@ -336,7 +362,7 @@ sealed class BaseBotInternals
         BotIntent.TeamMessages.Clear();
     }
 
-    private void TransferStdOutToBotIntent()
+    internal void TransferStdOutToBotIntent()
     {
         if (_recordingStdOut != null)
         {
@@ -388,6 +414,22 @@ sealed class BaseBotInternals
         }
     }
 
+    // Blocks the pre-warmed bot thread until the first tick of the round arrives.
+    // The thread is started at round-started (before any tick), so it must wait here
+    // before Run() can safely read bot state (radar direction, etc.).
+    // PulseAll() is called by OnNextTurn() (priority 100) after BotInternals.OnFirstTurn()
+    // (priority 110) has already captured the initial directions via ClearRemaining().
+    private void WaitUntilFirstTickArrived()
+    {
+        lock (_nextTurnMonitor)
+        {
+            while (IsRunning && CurrentTickOrNull == null)
+            {
+                Monitor.Wait(_nextTurnMonitor);
+            }
+        }
+    }
+
     internal void DispatchEvents(int turnNumber)
     {
         try
@@ -419,21 +461,15 @@ sealed class BaseBotInternals
 
     internal E.TickEvent CurrentTickOrNull => _tickEvent;
 
-    private long TicksStart
-    {
-        get
-        {
-            if (_ticksStart == null) throw new BotException(TickNotAvailableMsg);
-            return (long)_ticksStart;
-        }
-    }
-
     internal int TimeLeft
     {
         get
         {
-            var passesMicroSeconds = (DateTime.Now.Ticks - TicksStart) / 10;
-            return (int)(_gameSetup.TurnTimeout - passesMicroSeconds);
+            if (_tickEvent == null)
+                return GameSetup.TurnTimeout;
+
+            var elapsedMicros = (Stopwatch.GetTimestamp() - _ticksStart.Value) * 1_000_000L / Stopwatch.Frequency;
+            return Math.Max(0, (int)(_gameSetup.TurnTimeout - elapsedMicros));
         }
     }
 
@@ -884,7 +920,7 @@ sealed class BaseBotInternals
     {
         if (IsEventHandlingDisabled()) return;
 
-        _ticksStart = DateTime.Now.Ticks;
+        _ticksStart = Stopwatch.GetTimestamp();
 
         var mappedTickEvent = EventMapper.Map(json, _baseBot);
         _eventQueue.AddEventsFromTick(mappedTickEvent);
@@ -910,8 +946,8 @@ sealed class BaseBotInternals
 
         var mappedRoundStartedEvent = new E.RoundStartedEvent(roundStartedEvent.RoundNumber);
 
-        BotEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
         InternalEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
+        BotEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
     }
 
     private void HandleRoundEnded(string json)
@@ -925,7 +961,15 @@ sealed class BaseBotInternals
             roundEndedEventForBot.TurnNumber, botResults);
 
         BotEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
-        InternalEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent);
+        InternalEventHandlers.OnRoundEnded.Publish(mappedRoundEndedEvent); // triggers StopThread()
+
+        // Dispatch any queued events (e.g. WonRoundEvent from the last tick). Bot thread is now
+        // stopped so there is no concurrent dispatch race. Must run before ROUND_STARTED clears
+        // the event queue.
+        DispatchEvents(mappedRoundEndedEvent.TurnNumber);
+
+        // Transfer any remaining stdout/stderr from event handlers (e.g. OnWonRound) before the round ends
+        TransferStdOutToBotIntent();
     }
 
     private void HandleGameStarted(string json)
@@ -942,6 +986,8 @@ sealed class BaseBotInternals
             gameStartedEventForBot.StartY,
             gameStartedEventForBot.StartDirection);
 
+        BotEventHandlers.OnGameStarted.Publish(new E.GameStartedEvent(MyId, _initialPosition, _gameSetup));
+
         // Send ready signal
         var ready = new S.BotReady
         {
@@ -950,8 +996,6 @@ sealed class BaseBotInternals
 
         var msg = JsonConverter.ToJson(ready);
         _socket.SendTextMessage(msg);
-
-        BotEventHandlers.OnGameStarted.Publish(new E.GameStartedEvent(MyId, _initialPosition, _gameSetup));
     }
 
     private void HandleGameEnded(string json)
@@ -975,16 +1019,17 @@ sealed class BaseBotInternals
 
     private void HandleSkippedTurn(string json)
     {
-        if (IsEventHandlingDisabled()) return;
-
         var skippedTurnEvent = JsonConverter.FromJson<Schema.SkippedTurnEvent>(json);
 
-        BotEventHandlers.OnSkippedTurn.Publish(EventMapper.Map(skippedTurnEvent));
+        _eventQueue.AddEvent(EventMapper.Map(skippedTurnEvent));
     }
 
     private void HandleServerHandshake(string json)
     {
         _serverHandshake = JsonConverter.FromJson<S.ServerHandshake>(json);
+
+        // Validate bot info before sending bot handshake
+        ValidateBotInfo();
 
         // Reply by sending bot handshake
         var isDroid = _baseBot is Droid;
@@ -993,6 +1038,31 @@ sealed class BaseBotInternals
         var text = JsonConverter.ToJson(botHandshake);
 
         _socket.SendTextMessage(text);
+    }
+
+    private void ValidateBotInfo()
+    {
+        if (string.IsNullOrWhiteSpace(_botInfo.Name))
+        {
+            ThrowMissingPropertyException("name");
+        }
+        if (string.IsNullOrWhiteSpace(_botInfo.Version))
+        {
+            ThrowMissingPropertyException("version");
+        }
+        if (_botInfo.Authors.IsNullOrEmptyOrContainsOnlyBlanks())
+        {
+            ThrowMissingPropertyException("authors");
+        }
+    }
+
+    private void ThrowMissingPropertyException(string propertyName)
+    {
+        throw new BotException(
+            $"Required bot property '{propertyName}' is missing. " +
+            "This property is required in order for the bot to be recognized when booting it up and " +
+            "when it needs to join the game. You must set this property in your bot code " +
+            "or provide a .json configuration file.");
     }
 
     private static void VerifyNotNull(Object iEvent, Type eventType)

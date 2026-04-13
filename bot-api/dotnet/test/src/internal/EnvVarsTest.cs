@@ -30,19 +30,17 @@ class EnvVarsTest
             }
 
             [Test]
-            public void GivenMissingEnvVar_whenCallingGetName_thenThrowBotExceptionWithMissingEnvInfo()
+            public void GivenMissingEnvVar_whenCallingGetName_thenReturnNull()
             {
                 ClearEnvVar(BotName);
-                var exception = Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
-                Assert.That(exception?.Message, Is.EqualTo(MissingEnvVarText + BotName));
+                Assert.That(EnvVars.GetBotInfo().Name, Is.Null);
             }
 
             [Test]
-            public void GivenBlankEnvVar_whenCallingGetName_thenThrowBotExceptionWithMissingEnvInfo()
+            public void GivenBlankEnvVar_whenCallingGetName_thenReturnNull()
             {
                 SetEnvVar(BotName, "  \t");
-                var exception = Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
-                Assert.That(exception?.Message, Is.EqualTo(MissingEnvVarText + BotName));
+                Assert.That(EnvVars.GetBotInfo().Name, Is.Null);
             }
         }
 
@@ -57,19 +55,17 @@ class EnvVarsTest
             }
 
             [Test]
-            public void GivenMissingEnvVar_whenCallingGetVersion_thenThrowBotExceptionWithMissingEnvInfo()
+            public void GivenMissingEnvVar_whenCallingGetVersion_thenReturnNull()
             {
                 ClearEnvVar(BotVersion);
-                var exception = Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
-                Assert.That(exception?.Message, Is.EqualTo(MissingEnvVarText + BotVersion));
+                Assert.That(EnvVars.GetBotInfo().Version, Is.Null);
             }
 
             [Test]
-            public void GivenBlankEnvVar_whenCallingGetVersion_thenThrowBotExceptionWithMissingEnvInfo()
+            public void GivenBlankEnvVar_whenCallingGetVersion_thenReturnNull()
             {
                 SetEnvVar(BotVersion, "  \t");
-                var exception = Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
-                Assert.That(exception?.Message, Is.EqualTo(MissingEnvVarText + BotVersion));
+                Assert.That(EnvVars.GetBotInfo().Version, Is.Null);
             }
         }
 
@@ -84,19 +80,17 @@ class EnvVarsTest
             }
 
             [Test]
-            public void GivenMissingEnvVar_whenCallingGetAuthors_thenThrowBotExceptionWithMissingEnvInfo()
+            public void GivenMissingEnvVar_whenCallingGetAuthors_thenReturnEmptyList()
             {
                 ClearEnvVar(BotAuthors);
-                var exception = Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
-                Assert.That(exception?.Message, Is.EqualTo(MissingEnvVarText + BotAuthors));
+                Assert.That(EnvVars.GetBotInfo().Authors, Is.Empty);
             }
 
             [Test]
-            public void GivenBlankEnvVar_whenCallingGetAuthors_thenThrowBotExceptionWithMissingEnvInfo()
+            public void GivenBlankEnvVar_whenCallingGetAuthors_thenReturnEmptyList()
             {
                 SetEnvVar(BotAuthors, "  \t");
-                var exception = Assert.Throws<BotException>(() => EnvVars.GetBotInfo());
-                Assert.That(exception?.Message, Is.EqualTo(MissingEnvVarText + BotAuthors));
+                Assert.That(EnvVars.GetBotInfo().Authors, Is.Empty);
             }
         }
 

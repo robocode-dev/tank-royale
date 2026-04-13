@@ -25,7 +25,7 @@ object AnsiAttributesExt {
 
         when (escapeSequence.commandCode()) {
             CommandCode.RESET ->
-                attributes = SimpleAttributeSet()
+                attributes = handleReset(attributes, ansiColors)
 
             CommandCode.BOLD ->
                 StyleConstants.setBold(attributes, true)
@@ -164,102 +164,6 @@ object AnsiAttributesExt {
         return attributes
     }
 
-    /**
-     * Updates styling by processing a full SGR parameter list, e.g., [1, 38, 5, 21],
-     * applying each command in sequence (bold, then 256-color foreground blue in this example).
-     */
-    fun MutableAttributeSet.updateAnsiParams(params: List<Int>, ansiColors: IAnsiColors): MutableAttributeSet {
-        var attributes: MutableAttributeSet = SimpleAttributeSet(this)
-        var i = 0
-        while (i < params.size) {
-            when (val code = params[i]) {
-                0 -> {
-                    attributes = SimpleAttributeSet()
-                }
-
-                1 -> StyleConstants.setBold(attributes, true)
-                2 -> StyleConstants.setBold(attributes, false) // faint -> approximate as not bold
-                3 -> StyleConstants.setItalic(attributes, true)
-                4 -> StyleConstants.setUnderline(attributes, true)
-                21, 22 -> StyleConstants.setBold(attributes, false)
-                23 -> StyleConstants.setItalic(attributes, false)
-                24 -> StyleConstants.setUnderline(attributes, false)
-                30 -> StyleConstants.setForeground(attributes, ansiColors.black)
-                31 -> StyleConstants.setForeground(attributes, ansiColors.red)
-                32 -> StyleConstants.setForeground(attributes, ansiColors.green)
-                33 -> StyleConstants.setForeground(attributes, ansiColors.yellow)
-                34 -> StyleConstants.setForeground(attributes, ansiColors.blue)
-                35 -> StyleConstants.setForeground(attributes, ansiColors.magenta)
-                36 -> StyleConstants.setForeground(attributes, ansiColors.cyan)
-                37 -> StyleConstants.setForeground(attributes, ansiColors.white)
-                39 -> StyleConstants.setForeground(attributes, ansiColors.default)
-                40 -> StyleConstants.setBackground(attributes, ansiColors.black)
-                41 -> StyleConstants.setBackground(attributes, ansiColors.red)
-                42 -> StyleConstants.setBackground(attributes, ansiColors.green)
-                43 -> StyleConstants.setBackground(attributes, ansiColors.yellow)
-                44 -> StyleConstants.setBackground(attributes, ansiColors.blue)
-                45 -> StyleConstants.setBackground(attributes, ansiColors.magenta)
-                46 -> StyleConstants.setBackground(attributes, ansiColors.cyan)
-                47 -> StyleConstants.setBackground(attributes, ansiColors.white)
-                49 -> StyleConstants.setBackground(attributes, ansiColors.default)
-                in 90..97 -> { // bright foreground
-                    val color = when (code) {
-                        90 -> ansiColors.brightBlack
-                        91 -> ansiColors.brightRed
-                        92 -> ansiColors.brightGreen
-                        93 -> ansiColors.brightYellow
-                        94 -> ansiColors.brightBlue
-                        95 -> ansiColors.brightMagenta
-                        96 -> ansiColors.brightCyan
-                        else -> ansiColors.brightWhite
-                    }
-                    StyleConstants.setForeground(attributes, color)
-                }
-
-                in 100..107 -> { // bright background
-                    val color = when (code) {
-                        100 -> ansiColors.brightBlack
-                        101 -> ansiColors.brightRed
-                        102 -> ansiColors.brightGreen
-                        103 -> ansiColors.brightYellow
-                        104 -> ansiColors.brightBlue
-                        105 -> ansiColors.brightMagenta
-                        106 -> ansiColors.brightCyan
-                        else -> ansiColors.brightWhite
-                    }
-                    StyleConstants.setBackground(attributes, color)
-                }
-
-                38 -> { // extended foreground color
-                    if (i + 1 < params.size) {
-                        val mode = params[i + 1]
-                        if (mode == 5 && i + 2 < params.size) {
-                            StyleConstants.setForeground(attributes, get8BitColor(params[i + 2], ansiColors))
-                            i += 2
-                        } else if (mode == 2 && i + 4 < params.size) {
-                            StyleConstants.setForeground(attributes, Color(params[i + 2], params[i + 3], params[i + 4]))
-                            i += 4
-                        }
-                    }
-                }
-
-                48 -> { // extended background color
-                    if (i + 1 < params.size) {
-                        val mode = params[i + 1]
-                        if (mode == 5 && i + 2 < params.size) {
-                            StyleConstants.setBackground(attributes, get8BitColor(params[i + 2], ansiColors))
-                            i += 2
-                        } else if (mode == 2 && i + 4 < params.size) {
-                            StyleConstants.setBackground(attributes, Color(params[i + 2], params[i + 3], params[i + 4]))
-                            i += 4
-                        }
-                    }
-                }
-            }
-            i++
-        }
-        return attributes
-    }
 
     private fun setForegroundColor(attributes: MutableAttributeSet, parameters: List<Int>, ansiColors: IAnsiColors) {
         if (parameters.isNotEmpty()) {
@@ -323,5 +227,19 @@ object AnsiAttributesExt {
             b = parameters[3]
         }
         return Color(r, g, b)
+    }
+
+    /**
+     * Handles ANSI RESET command (\u001B[0m) by creating a new attribute set while preserving
+     * font family/size and setting the foreground color to the default color.
+     */
+    private fun handleReset(attributes: MutableAttributeSet, ansiColors: IAnsiColors): MutableAttributeSet {
+        val fontFamily = StyleConstants.getFontFamily(attributes)
+        val fontSize = StyleConstants.getFontSize(attributes)
+        val resetAttributes = SimpleAttributeSet()
+        StyleConstants.setFontFamily(resetAttributes, fontFamily)
+        StyleConstants.setFontSize(resetAttributes, fontSize)
+        StyleConstants.setForeground(resetAttributes, ansiColors.default)
+        return resetAttributes
     }
 }

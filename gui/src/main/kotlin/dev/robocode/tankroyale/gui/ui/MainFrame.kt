@@ -33,12 +33,12 @@ object MainFrame : RcFrame("main_frame") {
         BattlePanel // make sure the battle panel is initialized before being used the first time
 
         ClientEvents.apply {
-            onGameStarted.subscribe(MainFrame) { MainPanel.showArena() }
-            onGameEnded.subscribe(MainFrame) { MainPanel.showLogo() }
-            onGameAborted.subscribe(MainFrame) { MainPanel.showLogo() }
-            onPlayerChanged.subscribe(MainFrame) { MainPanel.showArena() }
+            onGameStarted.on(MainFrame) { MainPanel.showArena() }
+            onGameEnded.on(MainFrame) { MainPanel.showLogo() }
+            onGameAborted.on(MainFrame) { MainPanel.showLogo() }
+            onPlayerChanged.on(MainFrame) { MainPanel.showArena() }
         }
-        ServerEvents.onStopped.subscribe(MainFrame) { MainPanel.showLogo() }
+        ServerEvents.onStopped.on(MainFrame) { MainPanel.showLogo() }
 
         onClosing { close() }
         Runtime.getRuntime().addShutdownHook(Thread { close() })

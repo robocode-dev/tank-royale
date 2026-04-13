@@ -13,10 +13,12 @@ class ConnectionHandler(
     listener: IConnectionListener,
     controllerSecrets: Set<String>,
     botSecrets: Set<String>,
+    debugModeSupported: Boolean = true,
+    breakpointModeSupported: Boolean = true,
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    private val clientHandler = ClientWebSocketsHandler(setup, listener, controllerSecrets, botSecrets, ::broadcast)
+    private val clientHandler = ClientWebSocketsHandler(setup, listener, controllerSecrets, botSecrets, debugModeSupported, breakpointModeSupported, ::broadcast)
 
     private val webSocketObserver = WebSocketObserver(clientHandler)
 
@@ -76,5 +78,14 @@ class ConnectionHandler(
     fun broadcast(clientSockets: Collection<WebSocket>, message: String) {
         log.debug("Broadcast message: $message")
         webSocketObserver.broadcast(clientSockets, message)
+    }
+
+    /**
+     * Sets the WebSocket connection-lost detection timeout (in seconds).
+     * Pass 0 to disable it (required during debugger breakpoints, where all bot JVM threads
+     * are suspended and cannot respond to pings).
+     */
+    fun setConnectionLostTimeout(seconds: Int) {
+        webSocketObserver.setConnectionLostTimeout(seconds)
     }
 }

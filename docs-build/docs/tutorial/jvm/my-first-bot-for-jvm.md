@@ -49,13 +49,32 @@ public static void main(String[] args) {
 }
 ```
 
-The [main] method in this example simply calls the [start] method of the bot, which will let the bot startup reading
-configuration and start communicating with the server.
+The [main] method in this example simply calls the [start] method of the bot, which will let the bot startup,
+read configuration (from a `.json` file or environment variables), and start communicating with the server.
 
-The bot will attempt to _join_ the server and wait for a signal to engage in a new battle, where one or multiple
-instances of this bot must participate.
+If you don't want to use a `.json` configuration file, you can provide the bot information directly in the constructor:
 
-Note that it is also possible to provide all the necessary configuration fields programmatically without a file.
+```java
+import java.util.Collections;
+
+public MyFirstBot() {
+    super(new BotInfo(
+        "My First Bot",
+        "1.0",
+        Collections.singletonList("Your Name"),
+        "My first bot",
+        null,
+        Collections.singletonList("US"),
+        Collections.singleton("classic"),
+        "jvm",
+        "java",
+        null
+    ));
+}
+```
+
+When providing `BotInfo` in the constructor, the `.json` file is no longer required, and the booter will use
+**heuristic platform detection** to find your `.java` or `.jar` file and start the bot.
 
 ### The Run method
 
@@ -244,8 +263,8 @@ If you need to package your bot for distribution, you can do this by zip-packing
 should contain:
 
 - Source file (.java, .kt, .groovy, .clj, or .scala)
-- Script files (.cmd and .sh)
 - JSON config file (.json)
+- Script files (`.cmd` and `.sh`) — *Optional due to template-based booting (entry point defaults to the bot's parent directory name)*
 
 And then you might want to provide a [README] file to provide some information for other people about your bot. :)
 

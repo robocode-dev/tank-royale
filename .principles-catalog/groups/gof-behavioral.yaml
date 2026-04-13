@@ -1,0 +1,15 @@
+name: gof-behavioral
+description: "GoF behavioral patterns — Chain of Responsibility, Command, Interpreter, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method, Visitor"
+
+principles:
+  - GOF-CHAIN-OF-RESPONSIBILITY
+  - GOF-COMMAND
+  - GOF-INTERPRETER
+  - GOF-ITERATOR
+  - GOF-MEDIATOR
+  - GOF-MEMENTO
+  - GOF-OBSERVER
+  - GOF-STATE
+  - GOF-STRATEGY
+  - GOF-TEMPLATE-METHOD
+  - GOF-VISITOR

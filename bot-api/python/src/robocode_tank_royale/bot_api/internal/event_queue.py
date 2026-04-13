@@ -91,15 +91,17 @@ class EventQueue:
         self.add_custom_events()
         self.sort_events()
 
-        while self.is_bot_running():
+        while True:
             current_event = self.peek_next_event()
             if current_event is None:
+                break
+            if current_event.turn_number > turn_number:
                 break
             if self.get_priority(current_event) < self.current_top_event_priority:
                 break
 
             if self.get_priority(current_event) == self.current_top_event_priority:
-                if self.current_top_event_priority > float('-inf') and self.is_current_event_interruptible():
+                if self.current_top_event is not None and self.current_top_event_priority > float('-inf') and self.is_current_event_interruptible():
                     EventInterruption.set_interruptible(type(self.current_top_event), False)  # clear interruptible flag
 
                     # Mark that the current handler was interrupted so API methods can react accordingly
@@ -140,9 +142,6 @@ class EventQueue:
                 -self.get_priority(bot_event)
             )))
 
-    def is_bot_running(self):
-        return self.base_bot_internal_data.is_running
-
     def peek_next_event(self):
         with self.events_lock:
             return self.events[0] if self.events else None
@@ -176,7 +175,7 @@ class EventQueue:
 
     def add_event(self, bot_event: BotEvent):
         with self.events_lock:
-            if len(self.events) <= EventQueue.MAX_QUEUE_SIZE:
+            if len(self.events) < EventQueue.MAX_QUEUE_SIZE:
                 self.events.append(bot_event)
             else:
                 print(f"Maximum event queue size has been reached: {EventQueue.MAX_QUEUE_SIZE}")

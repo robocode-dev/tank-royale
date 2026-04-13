@@ -1,0 +1,16 @@
+{
+  "name": "SpinBot",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "A sample bot that continuously moves in a circle while firing at maximum power when detecting enemies.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "platform": "Node.js",
+  "programmingLang": "TypeScript"
+}

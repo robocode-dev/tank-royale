@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.gui.ui.server
 
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 
 object ServerEventTriggers {
     val onStartLocalServer = Event<Unit>()

@@ -76,6 +76,7 @@ public final class MockedServer {
 
     private final WebSocketServerImpl server = new WebSocketServerImpl();
 
+    private final CountDownLatch startedLatch = new CountDownLatch(1);
     private final CountDownLatch openedLatch = new CountDownLatch(1);
     private final CountDownLatch botHandshakeLatch = new CountDownLatch(1);
     private final CountDownLatch gameStartedLatch = new CountDownLatch(1);
@@ -83,6 +84,8 @@ public final class MockedServer {
     private volatile CountDownLatch botIntentLatch = new CountDownLatch(1);
 
     private volatile CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
+    private volatile boolean holdTickEnabled = false;
+    private CountDownLatch tickHoldLatch = new CountDownLatch(1);
 
     private volatile BotHandshake botHandshake;
     private volatile BotIntent botIntent;
@@ -98,6 +101,13 @@ public final class MockedServer {
 
     public void start() {
         server.start();
+        try {
+            if (!startedLatch.await(5, TimeUnit.SECONDS)) {
+                throw new RuntimeException("MockedServer failed to start within 5 seconds");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     public void stop() {
@@ -121,6 +131,20 @@ public final class MockedServer {
         for (WebSocket conn : server.getConnections()) {
             conn.send(text);
         }
+    }
+
+    /**
+     * Call before starting the bot to make the server hold tick 1 after sending ROUND_STARTED.
+     * The tick is not sent until {@link #releaseTick()} is called.
+     * Use this to inspect bot state (e.g. isRunning()) between ROUND_STARTED and tick 1.
+     */
+    public void holdTick() {
+        holdTickEnabled = true;
+    }
+
+    /** Releases the held tick, allowing the server to send tick 1 to the bot. */
+    public void releaseTick() {
+        tickHoldLatch.countDown();
     }
 
     /**
@@ -419,6 +443,14 @@ public final class MockedServer {
         return setBotStateAndAwaitTick(Double.valueOf(energy), Double.valueOf(gunHeat), Double.valueOf(speed), Double.valueOf(direction), Double.valueOf(gunDirection), Double.valueOf(radarDirection));
     }
 
+    public Double getEnergy() {
+        return energy;
+    }
+
+    public Double getGunHeat() {
+        return gunHeat;
+    }
+
     private static int findAvailablePort() {
         try (java.net.ServerSocket socket = new java.net.ServerSocket(0)) {
             return socket.getLocalPort();
@@ -522,6 +554,7 @@ public final class MockedServer {
 
         @Override
         public void onStart() {
+            startedLatch.countDown();
         }
 
         @Override
@@ -532,6 +565,10 @@ public final class MockedServer {
 
         @Override
         public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+            System.out.println("[DBG-SERVER] onClose code=" + code + " reason=" + reason + " remote=" + remote);
+            if (!remote) {
+                new RuntimeException("[DBG-SERVER] local close initiated here").printStackTrace(System.out);
+            }
         }
 
         @Override
@@ -558,6 +595,8 @@ public final class MockedServer {
 
         @Override
         public void onError(WebSocket conn, Exception ex) {
+            System.out.println("[DBG-SERVER] onError: " + ex);
+            ex.printStackTrace(System.out);
             throw new IllegalStateException("MockedServer error", ex);
         }
 
@@ -618,6 +657,14 @@ public final class MockedServer {
             System.out.println("BOT_READY");
 
             sendRoundStarted(conn);
+
+            if (holdTickEnabled) {
+                try {
+                    tickHoldLatch.await(5, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
 
             sendTickEventForBotToConn(conn, turnNumber++);
             tickEventLatch.countDown();

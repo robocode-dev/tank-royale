@@ -1,0 +1,21 @@
+$id: bot-policy-update.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: One or more bot policies have been updated
+extends:
+  $ref: message.schema.yaml
+properties:
+  botId:
+    description: Unique display id of bot in the battle (like an index).
+    type: integer
+  debuggingEnabled:
+    description: Flag specifying if debugging is enabled for the bot
+    type: boolean
+  breakpointEnabled:
+    description: >
+      Flag specifying if breakpoint mode is enabled for the bot.
+      When enabled, the server pauses instead of issuing a SkippedTurnEvent
+      if this bot misses the turn timeout. The server waits for the bot's
+      intent before processing the turn.
+    type: boolean
+required:
+  - botId

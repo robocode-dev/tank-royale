@@ -1,0 +1,28 @@
+name: docs
+description: "Documentation files — READMEs, architecture docs, how-to guides, tutorials, and API documentation"
+
+globs:
+  - "**/*.md"
+  - "**/*.adoc"
+  - "**/*.rst"
+
+principles:
+  - DOC-AS-CODE
+  - DOC-CLOSE-TO-CODE
+  - DOC-UNIQUE
+  - DOC-TASK-ORIENTED
+  - DOC-SCANNABLE
+  - DOC-OBJECTIVE
+  - DOC-SELF-CONTAINED
+  - DOC-ADDRESSABLE
+  - DOC-PURPOSE
+  - DOC-MINIMAL
+  - DOC-AUDIENCE
+  - DOC-ACCURACY
+  - DOC-EXAMPLES
+  - DOC-PROGRESSIVE-DISCLOSURE
+  - CODE-DX-CODE-FOR-READERS
+  - CODE-DX-REDUCE-COGNITIVE-LOAD
+  - CODE-CS-DRY
+  - CODE-CS-YAGNI
+  - ARCH-DECISION-RECORDS

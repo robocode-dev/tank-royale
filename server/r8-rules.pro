@@ -26,10 +26,12 @@
 # Clikt CLI library
 -keep class com.github.ajalt.clikt.** { *; }
 -dontwarn com.github.ajalt.clikt.**
+-dontnote com.github.ajalt.clikt.**
 
 # Mordant terminal library (used by Clikt)
 -keep class com.github.ajalt.mordant.** { *; }
 -dontwarn com.github.ajalt.mordant.**
+-dontnote com.github.ajalt.mordant.**
 
 # SLF4J logging
 -keep class org.slf4j.** { *; }
@@ -42,9 +44,7 @@
 # Gson (used for JSON schema classes)
 -keep class com.google.gson.** { *; }
 -dontwarn com.google.gson.**
-
-# Note: Gson's META-INF/proguard/gson.pro contains conditional rules that may show warnings
-# These are safe to ignore as the base Gson classes are kept above
+-dontnote com.google.gson.**
 
 # Keep all robocode classes
 -keep class dev.robocode.tankroyale.** { *; }

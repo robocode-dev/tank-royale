@@ -4,7 +4,6 @@ import kotlin.text.lowercase
 description = "Robocode Tank Royale Bot API for .NET"
 
 val artifactName = "Robocode.TankRoyale.BotApi"
-version = libs.versions.tankroyale.get()
 
 plugins {
     base

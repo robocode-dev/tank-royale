@@ -144,7 +144,10 @@ public abstract class BaseBot implements IBaseBot {
             baseBotInternals.dispatchEvents(currentTick.getTurnNumber());
         }
 
-        baseBotInternals.execute();
+        // Pass captured turn number to execute() so it uses the same tick we dispatched events for.
+        // Without this, execute() re-reads the live tickEvent which may have been updated by the
+        // WebSocket thread between dispatchEvents() and execute(), causing skipped turns.
+        baseBotInternals.execute(currentTick != null ? currentTick.getTurnNumber() : -1);
     }
 
     /**

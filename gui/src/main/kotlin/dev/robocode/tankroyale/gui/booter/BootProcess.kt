@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.booter
 
 import dev.robocode.tankroyale.client.model.MessageConstants
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.common.util.JavaExec
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.settings.ServerSettings
@@ -9,7 +9,7 @@ import dev.robocode.tankroyale.gui.ui.console.BooterErrorConsole
 import dev.robocode.tankroyale.gui.util.EDT
 import dev.robocode.tankroyale.gui.util.FileUtil
 import dev.robocode.tankroyale.gui.util.LineReaderThread
-import dev.robocode.tankroyale.gui.util.ResourceUtil
+import dev.robocode.tankroyale.common.util.ResourceUtil
 import dev.robocode.tankroyale.gui.util.ProcessUtil
 import java.io.FileNotFoundException
 import java.io.PrintStream
@@ -38,7 +38,7 @@ object BootProcess {
 
     private val json = MessageConstants.json
 
-    private val bootedBotsList = mutableListOf<DirAndPid>()
+    private val bootedBotsList = Collections.synchronizedList(mutableListOf<DirAndPid>())
 
     private val pidAndDirs = ConcurrentHashMap<Long, String>() // pid, dir
 
@@ -48,6 +48,7 @@ object BootProcess {
         val args = mutableListOf(
             JavaExec.java(),
             "-Dapp.processName=RobocodeTankRoyale-Booter",
+            *JavaExec.nativeAccessArgs().toTypedArray(),
             "-jar",
             getBooterJar(),
             "info",
@@ -196,6 +197,7 @@ object BootProcess {
             "-Dapp.processName=RobocodeTankRoyale-Booter",
             "-Dserver.url=${ServerSettings.serverUrl()}",
             "-Dserver.secret=${ServerSettings.botSecret()}",
+            *JavaExec.nativeAccessArgs().toTypedArray(),
             "-jar",
             getBooterJar(),
             "boot"
@@ -228,7 +230,7 @@ object BootProcess {
                     if (bootedBotsList.contains(dirAndPid)) {
                         bootedBotsList.remove(dirAndPid)
 
-                        onUnbootBot.fire(dirAndPid)
+                        onUnbootBot(dirAndPid)
                     }
                 }
             }
@@ -258,7 +260,7 @@ object BootProcess {
     }
 
     private fun notifyUnbootBotProcesses() {
-        pidAndDirs.forEach { onUnbootBot.fire(DirAndPid(it.value, it.key)) }
+        pidAndDirs.forEach { onUnbootBot(DirAndPid(it.value, it.key)) }
     }
 
     private fun getBooterJar(): String {
@@ -373,7 +375,7 @@ object BootProcess {
             val dirAndPid = DirAndPid(dir, pid)
             bootedBotsList.add(dirAndPid)
 
-            onBootBot.fire(dirAndPid)
+            onBootBot(dirAndPid)
         }
     }
 
@@ -389,7 +391,7 @@ object BootProcess {
                 val dirAndPid = DirAndPid(dir, pid)
                 bootedBotsList.remove(dirAndPid)
 
-                onUnbootBot.fire(dirAndPid)
+                onUnbootBot(dirAndPid)
             }
         }
     }

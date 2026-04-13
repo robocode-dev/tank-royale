@@ -4,6 +4,7 @@ import traceback
 import time
 import math
 import os
+import sys
 import threading
 from typing import Any, Optional, Set, Sequence
 
@@ -25,6 +26,7 @@ from .event_queue import EventQueue
 from .env_vars import EnvVars
 from .internal_event_handlers import InternalEventHandlers
 from .json_util import to_json
+from .recording_text_writer import RecordingTextWriter
 from .stop_resume_listener_abs import StopResumeListenerABC
 from .thread_interrupted_exception import ThreadInterruptedException
 from .websocket_handler import WebSocketHandler
@@ -49,9 +51,6 @@ GAME_NOT_RUNNING_MSG = (
 )
 TICK_NOT_AVAILABLE_MSG = "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first"
 NOT_CONNECTED_TO_SERVER_MSG = "Not connected to a game server. Make sure onConnected() event handler has been called first"
-
-
-# TODO: This class does not work yet - esp., figure out the asyncio integration and how to handle the bot's main loop.
 
 
 class BaseBotInternals:
@@ -111,6 +110,10 @@ class BaseBotInternals:
         # Movement reset deferral flag (mirrors Java/.NET movementResetPending)
         self._movement_reset_pending: bool = False
 
+        # Recording text writers for capturing stdout/stderr
+        self._recording_stdout: Optional[RecordingTextWriter] = None
+        self._recording_stderr: Optional[RecordingTextWriter] = None
+
         self._init()
 
     def _get_server_url_from_setting(self) -> str:
@@ -123,8 +126,20 @@ class BaseBotInternals:
         return os.getenv("SERVER_SECRET", os.getenv("SERVER_SECRET"))
 
     def _init(self) -> None:
-        # Skipping redirectStdOutAndStdErr for now
+        self._redirect_stdout_and_stderr()
         self._subscribe_to_events()
+
+    def _redirect_stdout_and_stderr(self) -> None:
+        """Redirect stdout and stderr to recording writers for sending to server."""
+        self._recording_stdout = RecordingTextWriter(sys.stdout)
+        self._recording_stderr = RecordingTextWriter(sys.stderr)
+
+        # Store in data so WebSocketHandler can access them
+        self.data.recording_stdout = self._recording_stdout
+        self.data.recording_stderr = self._recording_stderr
+
+        sys.stdout = self._recording_stdout
+        sys.stderr = self._recording_stderr
 
     def _subscribe_to_events(self) -> None:
         self.internal_event_handlers.on_round_started.subscribe(
@@ -137,6 +152,7 @@ class BaseBotInternals:
 
     def _on_round_started(self, event: RoundStartedEvent) -> None:
         """Handle round started event (matches Java's onRoundStarted)"""
+        self.data.tick_event = None
         # Defer movement reset until after first intent has been sent, mirroring Java/.NET behavior
         if not hasattr(self, "_movement_reset_pending"):
             self._movement_reset_pending = False
@@ -225,11 +241,13 @@ class BaseBotInternals:
         self.data.tick_start_nano_time = tick_start_nano_time
 
     def get_time_left(self) -> int:
+        if self.data.current_tick_or_null is None:
+            return self.data.game_setup.turn_timeout
+
         passed_microseconds = (
             time.monotonic_ns() - self.data.tick_start_nano_time
         ) // 1000
-        game_setup = self.data.game_setup
-        return game_setup.turn_timeout - passed_microseconds
+        return max(0, self.data.game_setup.turn_timeout - passed_microseconds)
 
     def enable_event_handling(self, enable: bool) -> None:
         if enable:
@@ -246,7 +264,7 @@ class BaseBotInternals:
                     0  # Or some other default like -1 or 1
                 )
 
-    def get_event_handling_disabled_turn(self) -> bool:
+    def is_event_handling_disabled(self) -> bool:
         # Important! Allow an additional turn so events like RoundStarted can be handled
         current_tick = self.data.current_tick_or_null
         if not current_tick:
@@ -270,11 +288,13 @@ class BaseBotInternals:
     def add_events_from_tick(self, event: TickEvent) -> None:
         self.event_queue.add_events_from_tick(event)
 
+    def add_event(self, event: BotEvent) -> None:
+        self.event_queue.add_event(event)
+
     def set_interruptible(self, interruptible: bool) -> None:
         self.event_queue.set_current_event_interruptible(interruptible)
 
     def dispatch_events(self, turn_number: int) -> None:
-
         try:
             self.event_queue.dispatch_events(turn_number)
         except Exception:
@@ -287,30 +307,51 @@ class BaseBotInternals:
     def is_running(self) -> bool:
         return self.data.is_running
 
+    def _wait_until_first_tick_arrived(self) -> None:
+        """Block the pre-warmed bot thread until the first tick of the round arrives.
+        The thread is started at round-started (before any tick), so it must wait here
+        before run() can safely read bot state.
+        Notified by _on_next_turn() (priority 100) after BotInternals._on_first_turn()
+        (priority 110) has already captured initial directions via _clear_remaining().
+        """
+        with self._next_turn_condition:
+            while self.is_running() and self.data.current_tick_or_null is None:
+                self._next_turn_condition.wait()
+
     def _create_runnable(self, bot: BotABC):
         """Create runnable function for bot thread (matches Java's createRunnable)"""
         def runnable():
             self.set_running(True)
             try:
-                self.enable_event_handling(True)
+                self._wait_until_first_tick_arrived()
+                # Send default intent immediately so the server doesn't mark turn 1 as skipped
+                # due to OS scheduling latency between the thread wakeup and the first go() call.
+                self._send_intent()
+                bot.run()
+            except ThreadInterruptedException:
+                pass
 
+            self._dispatch_final_turn_events()
+
+            # Skip every turn after the run method has exited
+            while self.is_running():
                 try:
-                    bot.run()
+                    bot.go()
                 except ThreadInterruptedException:
-                    return
+                    break
 
-                # Skip every turn after the run method has exited
-                while self.is_running():
-                    try:
-                        bot.go()
-                    except ThreadInterruptedException:
-                        return
-            finally:
-                self.enable_event_handling(False)
+            self._dispatch_final_turn_events()
         return runnable
+
+    def _dispatch_final_turn_events(self) -> None:
+        """Dispatch any remaining events from the current tick before the thread exits."""
+        tick = self.data.current_tick_or_null
+        if tick is not None:
+            self.dispatch_events(tick.turn_number)
 
     def start_thread(self, bot: BotABC) -> None:
         """Start bot thread (matches Java's startThread)"""
+        self.enable_event_handling(True)  # reset on WebSocket thread — before new bot thread starts
         self.thread = threading.Thread(target=self._create_runnable(bot))
         self.thread.start()
 
@@ -320,17 +361,18 @@ class BaseBotInternals:
             return
 
         self.set_running(False)
+        self.enable_event_handling(False)  # disable on WebSocket thread — prevents new ticks from queuing after bot stops
 
         # Wake up any threads waiting on the next turn condition so they can see is_running=False
         with self._next_turn_condition:
             self._next_turn_condition.notify_all()
 
-        if self.thread is not None:
-            # Python doesn't have thread.interrupt() like Java, but we set is_running to False
-            # The thread will exit when it checks is_running() or gets ThreadInterruptedException
-            # Wait for the thread to actually terminate to prevent race conditions when restarting
-            self.thread.join(timeout=5.0)  # Wait up to 5 seconds for thread to finish
-            self.thread = None
+        thread = self.thread
+        self.thread = None
+        if thread is not None and thread is not threading.current_thread():
+            # Wait for the bot thread to finish so that handle_round_ended's
+            # dispatch_events call does not race with _dispatch_final_turn_events.
+            thread.join(timeout=5.0)
 
     def _sanitize_url(self, uri: str) -> None:
         parsed_url = urllib.parse.urlparse(uri)
@@ -429,17 +471,20 @@ class BaseBotInternals:
                 self._ws_loop
             )
 
-    def execute(self) -> None:
-        """Execute bot intent and wait for next turn (matches Java's execute)"""
-        current_tick = self.data.current_tick_or_null
+    def execute(self, captured_turn_number: int) -> None:
+        """Execute bot intent and wait for next turn.
+
+        Args:
+            captured_turn_number: The turn number captured by go() at the time events were
+                dispatched, or -1 if no tick was available.
+        """
         # If no tick has been received yet, send current intent once to allow the server to progress
-        if current_tick is None:
+        if captured_turn_number < 0:
             self._send_intent()
             return
 
-        turn_number = current_tick.turn_number
-        if turn_number != self.last_execute_turn_number:
-            self.last_execute_turn_number = turn_number
+        if captured_turn_number != self.last_execute_turn_number:
+            self.last_execute_turn_number = captured_turn_number
             # Events are dispatched from BaseBot.go(); staging happens on tick reception
             self._send_intent()
 
@@ -447,7 +492,7 @@ class BaseBotInternals:
                 self._reset_movement()
                 self._movement_reset_pending = False
 
-        self._wait_for_next_turn(turn_number)
+        self._wait_for_next_turn(captured_turn_number)
 
     def _send_intent(self) -> None:
         """Send bot intent to server (synchronous)"""
@@ -470,9 +515,20 @@ class BaseBotInternals:
 
 
     def _transfer_std_out_to_bot_intent(self) -> None:
-        # Stdout/stderr redirection and inclusion in intent might be handled differently in Python
-        # For now, this is a placeholder.
-        pass
+        """Transfer captured stdout/stderr to bot intent for sending to server."""
+        if self._recording_stdout:
+            output = self._recording_stdout.read_next()
+            if output:
+                self.data.bot_intent.std_out = output
+            else:
+                self.data.bot_intent.std_out = None
+
+        if self._recording_stderr:
+            error = self._recording_stderr.read_next()
+            if error:
+                self.data.bot_intent.std_err = error
+            else:
+                self.data.bot_intent.std_err = None
 
     def _render_graphics_to_bot_intent(self) -> None:
         current_tick = self.data.current_tick_or_null

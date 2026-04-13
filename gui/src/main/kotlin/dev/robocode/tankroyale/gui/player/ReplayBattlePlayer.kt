@@ -1,7 +1,7 @@
 package dev.robocode.tankroyale.gui.player
 
 import dev.robocode.tankroyale.client.model.*
-import dev.robocode.tankroyale.common.Event
+import dev.robocode.tankroyale.common.event.Event
 import dev.robocode.tankroyale.gui.replay.ReplayFileReader
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import java.io.File
@@ -50,7 +50,6 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
     val onReplayEvent = Event<Int>()
 
     init {
-        // Load messages from the replay file
         val fileReader = ReplayFileReader(replayFile)
         if (fileReader.isValid()) {
             val events = fileReader.loadMessages()
@@ -68,13 +67,39 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
                 if (event is TickEvent) {
                     containsTickEvent = true
                 }
+                // Extract GameStartedEvent on first encounter
+                if (event is GameStartedEvent && currentGameSetup == null) {
+                    currentGameSetup = event.gameSetup
+                    participants = event.participants
+                }
+                // Extract participant info from the first TickEvent if no GameStartedEvent found
+                if (event is TickEvent && participants.isEmpty()) {
+                    participants = event.botStates.map { botState ->
+                        Participant(
+                            id = botState.id,
+                            name = botState.name ?: "Bot ${botState.id}",
+                            version = botState.version ?: "1.0",
+                            authors = emptyList(),
+                            description = "",
+                            homepage = null,
+                            countryCodes = emptyList(),
+                            gameTypes = emptySet(),
+                            platform = "UNKNOWN",
+                            programmingLang = "UNKNOWN",
+                            initialPosition = null,
+                            teamId = null,
+                            teamName = null,
+                            teamVersion = null,
+                            sessionId = botState.sessionId,
+                            isDroid = botState.isDroid
+                        )
+                    }
+                }
                 currentEventIndex++
             }
         } else {
             throw IllegalArgumentException("Invalid replay file: ${replayFile.absolutePath}")
         }
-
-        // TPS changes are now handled by BattleManager calling changeTps()
     }
 
     fun getTotalRounds() = turns.size
@@ -100,14 +125,40 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         isRunning.set(true)
         isPaused.set(false)
 
-        // Clear stdout/stderr state
         savedStdOutput.clear()
         savedStdError.clear()
 
-        // Emit "connected" event to simulate connection
-        onConnected.fire(Unit)
+        onConnected(Unit)
 
-        // Start processing messages
+        // Participants are extracted in init block from GameStartedEvent or first TickEvent
+        if (participants.isNotEmpty()) {
+            // If GameStartedEvent was found, use its setup; otherwise create a synthetic one
+            val setup = currentGameSetup ?: GameSetup(
+                gameType = "CLASSIC",
+                arenaWidth = 800,
+                isArenaWidthLocked = false,
+                arenaHeight = 600,
+                isArenaHeightLocked = false,
+                minNumberOfParticipants = 2,
+                isMinNumberOfParticipantsLocked = false,
+                maxNumberOfParticipants = null,
+                isMaxNumberOfParticipantsLocked = false,
+                numberOfRounds = 1,
+                isNumberOfRoundsLocked = false,
+                gunCoolingRate = 0.1,
+                isGunCoolingRateLocked = false,
+                maxInactivityTurns = 10000,
+                isMaxInactivityTurnsLocked = false,
+                turnTimeout = 30000,
+                isTurnTimeoutLocked = false,
+                readyTimeout = 30000,
+                isReadyTimeoutLocked = false,
+                defaultTurnsPerSecond = 30
+            )
+            currentGameSetup = setup
+            onGameStarted(GameStartedEvent(setup, participants))
+        }
+
         startPlayback()
     }
 
@@ -119,16 +170,16 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
         // Fire game aborted if we were running
         if (currentGameSetup != null) {
-            onGameAborted.fire(GameAbortedEvent)
+            onGameAborted(GameAbortedEvent)
         }
-        onReplayEvent.fire(currentMessageIndex)
+        onReplayEvent(currentMessageIndex)
     }
 
     override fun pause() {
         if (isRunning.get() && !isPaused.get()) {
             isPaused.set(true)
             playbackTimer?.stop()
-            onGamePaused.fire(GamePausedEvent)
+            onGamePaused(GamePausedEvent())
         }
     }
 
@@ -136,7 +187,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         if (isRunning.get() && isPaused.get()) {
             isPaused.set(false)
             continuePlayback()
-            onGameResumed.fire(GameResumedEvent)
+            onGameResumed(GameResumedEvent)
         }
     }
 
@@ -174,7 +225,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
             }
 
             turns[turnNumber].firstOrNull { it is TickEvent }?.let {
-                onSeekToTurn.fire(it as TickEvent)
+                onSeekToTurn(it as TickEvent)
             }
         }
     }
@@ -211,7 +262,10 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         }.toSet()
     }
 
-    override fun getParticipant(botId: Int): Participant = participants.first { participant -> participant.id == botId }
+    override fun getParticipant(botId: Int): Participant {
+        return participants.firstOrNull { participant -> participant.id == botId }
+            ?: throw IllegalStateException("Participant with id $botId not found in replay. Available participants: ${participants.map { it.id }}")
+    }
 
     override fun getStandardOutput(botId: Int): Map<Int /* round */, Map<Int /* turn */, String>>? =
         savedStdOutput[botId]
@@ -226,6 +280,16 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         currentTps = tps
         // No need to update timer immediately - it will use the new TPS on next tick
     }
+
+    override fun enableDebugMode() {
+        // Debug mode is not supported when running replay
+    }
+
+    override fun disableDebugMode() {
+        // Debug mode is not supported when running replay
+    }
+
+    override fun isDebugModeSupported(): Boolean = false
 
     private fun startPlayback() {
         // Process all non-tick messages immediately until we hit a tick
@@ -273,7 +337,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
             messageList.forEach {
                 handleMessage(it)
             }
-            onReplayEvent.fire(currentMessageIndex)
+            onReplayEvent(currentMessageIndex)
             currentMessageIndex++
         }
     }
@@ -283,33 +347,41 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
             is GameStartedEvent -> {
                 currentGameSetup = message.gameSetup
                 participants = message.participants
-                onGameStarted.fire(message)
+                onGameStarted(message)
             }
 
             is GameEndedEvent -> {
-                onGameEnded.fire(message)
+                onGameEnded(message)
             }
 
             is GameAbortedEvent -> {
-                onGameAborted.fire(message)
+                onGameAborted(message)
             }
 
             is RoundStartedEvent -> {
-                onRoundStarted.fire(message)
+                onRoundStarted(message)
             }
 
             is RoundEndedEvent -> {
-                onRoundEnded.fire(message)
+                onRoundEnded(message)
+            }
+
+            is GamePausedEvent -> {
+                onGamePaused(message)
+                // Display breakpoint pause message in console
+                if (message.pauseCause == "breakpoint") {
+                    System.out.println("Paused — waiting for bot to respond (breakpoint)")
+                }
             }
 
             is TickEvent -> {
                 currentTick = message
-                onTickEvent.fire(message)
+                onTickEvent(message)
                 updateSavedStdOutput(message)
             }
 
             is BotListUpdate -> {
-                onBotListUpdate.fire(message)
+                onBotListUpdate(message)
             }
 
             else -> {
@@ -324,6 +396,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         savedStdError.clear()
         currentGameSetup = null
         currentTick = null
+        val originalParticipants = participants // Preserve participants extracted in init
         participants = listOf()
 
         // Replay all messages up to target index to rebuild state
@@ -337,8 +410,31 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
                     is TickEvent -> {
                         currentTick = message
+                        // Extract participants from first TickEvent if not found from GameStartedEvent
+                        if (participants.isEmpty()) {
+                            participants = message.botStates.map { botState ->
+                                Participant(
+                                    id = botState.id,
+                                    name = botState.name ?: "Bot ${botState.id}",
+                                    version = botState.version ?: "1.0",
+                                    authors = emptyList(),
+                                    description = "",
+                                    homepage = null,
+                                    countryCodes = emptyList(),
+                                    gameTypes = emptySet(),
+                                    platform = "UNKNOWN",
+                                    programmingLang = "UNKNOWN",
+                                    initialPosition = null,
+                                    teamId = null,
+                                    teamName = null,
+                                    teamVersion = null,
+                                    sessionId = botState.sessionId,
+                                    isDroid = botState.isDroid
+                                )
+                            }
+                        }
                         // Update stdout/stderr state without firing events
-                        updateSavedStdOutputSilently(message)
+                        updateSavedStdOutput(message, fireEvent = false)
                     }
 
                     else -> {
@@ -347,25 +443,22 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
                 }
             }
         }
+
+        // If we still don't have participants (empty replay or targetIndex is 0), restore the original
+        if (participants.isEmpty()) {
+            participants = originalParticipants
+        }
     }
 
-    private fun updateSavedStdOutput(tickEvent: TickEvent) {
+    private fun updateSavedStdOutput(tickEvent: TickEvent, fireEvent: Boolean = true) {
         tickEvent.apply {
             botStates.forEach { botState ->
                 val id = botState.id
                 botState.stdOut?.let { updateStandardOutput(savedStdOutput, id, roundNumber, turnNumber, it) }
                 botState.stdErr?.let { updateStandardOutput(savedStdError, id, roundNumber, turnNumber, it) }
             }
-            onStdOutputUpdated.fire(tickEvent)
-        }
-    }
-
-    private fun updateSavedStdOutputSilently(tickEvent: TickEvent) {
-        tickEvent.apply {
-            botStates.forEach { botState ->
-                val id = botState.id
-                botState.stdOut?.let { updateStandardOutput(savedStdOutput, id, roundNumber, turnNumber, it) }
-                botState.stdErr?.let { updateStandardOutput(savedStdError, id, roundNumber, turnNumber, it) }
+            if (fireEvent) {
+                onStdOutputUpdated(tickEvent)
             }
         }
     }

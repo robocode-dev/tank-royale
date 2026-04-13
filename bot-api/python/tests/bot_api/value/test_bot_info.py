@@ -29,32 +29,30 @@ class TestBotInfo:
         assert info.programming_lang is None
         assert info.initial_position is None
 
-    @pytest.mark.parametrize("field,value,err_contains", [
-        ("name", "", "name"),
-        ("name", "   ", "name"),
-        ("version", "", "version"),
-        ("version", "   ", "version"),
+    @pytest.mark.parametrize("field,expected_field", [
+        ("name", "name"),
+        ("version", "version"),
     ])
-    def test_TR_API_VAL_002_invalid_fields_validation_required_non_blank(self, field, value, err_contains):
-        """TR-API-VAL-002 BotInfo validation: invalid fields raise/throw"""
+    @pytest.mark.parametrize("value", ["", "   "])
+    def test_TR_API_VAL_002_invalid_fields_validation_required_non_blank(self, field, value, expected_field):
+        """TR-API-VAL-002 BotInfo validation: blank required fields return None (deferred validation)"""
         kwargs = dict(name="Bot", version="1.0", authors=["A"])  # valid base
         kwargs[field] = value
-        with pytest.raises(ValueError) as exc:
-            BotInfo(**kwargs)
-        assert err_contains in str(exc.value)
+        info = BotInfo(**kwargs)
+        assert getattr(info, expected_field) is None
 
     def test_TR_API_VAL_002_invalid_fields_validation_authors_rules(self):
         """TR-API-VAL-002 BotInfo validation: authors list rules"""
-        # Empty authors list
-        with pytest.raises(ValueError):
-            BotInfo(name="Bot", version="1.0", authors=[])
+        # Empty authors list returns empty list (deferred validation)
+        info = BotInfo(name="Bot", version="1.0", authors=[])
+        assert info.authors == []
 
-        # Blank author element
-        with pytest.raises(ValueError):
-            BotInfo(name="Bot", version="1.0", authors=[" "])
+        # Blank author element is filtered out silently, resulting in empty list
+        info = BotInfo(name="Bot", version="1.0", authors=[" "])
+        assert info.authors == []
 
-        # Too many authors (MAX_NUMBER_OF_AUTHORS = 5)
-        too_many = ["a1", "a2", "a3", "a4", "a5", "a6"]
+        # Too many authors (MAX_NUMBER_OF_AUTHORS = 20) still raises
+        too_many = ["a" + str(i) for i in range(1, 22)]
         with pytest.raises(ValueError):
             BotInfo(name="Bot", version="1.0", authors=too_many)
 
