@@ -180,6 +180,9 @@ sealed class BaseBotInternals
             // that BotInternals.OnFirstTurn() (priority 110) has already called
             // ClearRemaining(), capturing the initial directions from the tick state.
             WaitUntilFirstTickArrived();
+            // Send default intent immediately so the server doesn't mark turn 1 as skipped
+            // due to OS scheduling latency between the thread wakeup and the first Go() call.
+            SendIntent();
             bot.Run();
         }
         catch (ThreadInterruptedException)
@@ -275,6 +278,7 @@ sealed class BaseBotInternals
 
     private void OnRoundStarted(E.RoundStartedEvent e)
     {
+        _tickEvent = null;
         _eventQueue.Clear();
         IsStopped = false;
         _eventHandlingDisabledTurn = 0;
@@ -942,8 +946,8 @@ sealed class BaseBotInternals
 
         var mappedRoundStartedEvent = new E.RoundStartedEvent(roundStartedEvent.RoundNumber);
 
-        BotEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
         InternalEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
+        BotEventHandlers.OnRoundStarted.Publish(mappedRoundStartedEvent);
     }
 
     private void HandleRoundEnded(string json)
@@ -982,6 +986,8 @@ sealed class BaseBotInternals
             gameStartedEventForBot.StartY,
             gameStartedEventForBot.StartDirection);
 
+        BotEventHandlers.OnGameStarted.Publish(new E.GameStartedEvent(MyId, _initialPosition, _gameSetup));
+
         // Send ready signal
         var ready = new S.BotReady
         {
@@ -990,8 +996,6 @@ sealed class BaseBotInternals
 
         var msg = JsonConverter.ToJson(ready);
         _socket.SendTextMessage(msg);
-
-        BotEventHandlers.OnGameStarted.Publish(new E.GameStartedEvent(MyId, _initialPosition, _gameSetup));
     }
 
     private void HandleGameEnded(string json)

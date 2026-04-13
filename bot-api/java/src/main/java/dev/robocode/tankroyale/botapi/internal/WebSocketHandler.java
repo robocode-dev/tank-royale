@@ -160,8 +160,8 @@ final class WebSocketHandler implements WebSocket.Listener {
 
         var mappedRoundStartedEvent = new RoundStartedEvent(roundStartedEvent.getRoundNumber());
 
-        botEventHandlers.onRoundStarted.publish(mappedRoundStartedEvent);
         internalEventHandlers.onRoundStarted.publish(mappedRoundStartedEvent);
+        botEventHandlers.onRoundStarted.publish(mappedRoundStartedEvent);
     }
 
     private void handleRoundEnded(JsonObject jsonMsg) {
@@ -199,15 +199,15 @@ final class WebSocketHandler implements WebSocket.Listener {
                 gameStartedEventForBot.getStartDirection());
         baseBotInternals.setInitialPosition(initialPosition);
 
+        botEventHandlers.onGameStarted.publish(
+                new GameStartedEvent(gameStartedEventForBot.getMyId(), initialPosition, baseBotInternals.getGameSetup()));
+
         // Send ready signal
         var ready = new BotReady();
         ready.setType(Message.Type.BOT_READY);
 
         String msg = JsonConverter.toJson(ready);
         socket.sendText(msg, true);
-
-        botEventHandlers.onGameStarted.publish(
-                new GameStartedEvent(gameStartedEventForBot.getMyId(), initialPosition, baseBotInternals.getGameSetup()));
     }
 
     private void handleGameEnded(JsonObject jsonMsg) {

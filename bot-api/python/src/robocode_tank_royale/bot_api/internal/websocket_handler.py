@@ -189,8 +189,8 @@ class WebSocketHandler:
         schema_evt: RoundStartedEventForBot = from_json(json_msg)  # type: ignore
         round_started_event = RoundStartedEvent(schema_evt.round_number)
 
-        self.bot_event_handlers.on_round_started.publish(round_started_event)
         self.internal_event_handlers.on_round_started.publish(round_started_event)
+        self.bot_event_handlers.on_round_started.publish(round_started_event)
 
     async def handle_round_ended(self, json_msg: Dict[Any, Any]):
         """Handle a round ended event from the server."""
@@ -232,9 +232,6 @@ class WebSocketHandler:
         )
         self.base_bot_internal_data.initial_position = initial_position
 
-        # Send ready signal
-        await self.websocket.send(to_json(BotReady(type=Message.Type.BOT_READY)))
-
         self.bot_event_handlers.on_game_started.publish(
             GameStartedEvent(
                 game_started_event.my_id,
@@ -242,6 +239,9 @@ class WebSocketHandler:
                 self.base_bot_internal_data.game_setup,
             )
         )
+
+        # Send ready signal
+        await self.websocket.send(to_json(BotReady(type=Message.Type.BOT_READY)))
 
     async def handle_game_ended(self, json_msg: Dict[Any, Any]) -> None:
         """Handle a game ended event from the server."""

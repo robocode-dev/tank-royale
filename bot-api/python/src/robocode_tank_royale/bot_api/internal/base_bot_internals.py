@@ -152,6 +152,7 @@ class BaseBotInternals:
 
     def _on_round_started(self, event: RoundStartedEvent) -> None:
         """Handle round started event (matches Java's onRoundStarted)"""
+        self.data.tick_event = None
         # Defer movement reset until after first intent has been sent, mirroring Java/.NET behavior
         if not hasattr(self, "_movement_reset_pending"):
             self._movement_reset_pending = False
@@ -323,6 +324,9 @@ class BaseBotInternals:
             self.set_running(True)
             try:
                 self._wait_until_first_tick_arrived()
+                # Send default intent immediately so the server doesn't mark turn 1 as skipped
+                # due to OS scheduling latency between the thread wakeup and the first go() call.
+                self._send_intent()
                 bot.run()
             except ThreadInterruptedException:
                 pass

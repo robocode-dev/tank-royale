@@ -1,3 +1,15 @@
+## [0.40.2] - 2026-04-13 - Turn-1 skip fix
+
+### 🐞 Bug Fixes
+
+- Bot API (Java, .NET, Python, TypeScript):
+    - #202: Fixed bots receiving a `SkippedTurnEvent` on turn 1 when the OS scheduler delayed
+      the bot thread's first time slice by more than the turn timeout. The bot API now sends a
+      default intent immediately after the bot thread wakes up for the first turn, ensuring turn 1
+      is never skipped due to scheduling latency.
+    - #202: Fixed an edge case where the pre-warmed bot thread could bypass the tick-arrival
+      wait at the start of rounds 2+ if the previous round's tick state was still set.
+
 ## [0.40.1] - 2026-04-12 - First-turn skip fix + breakpoint disconnect fix
 
 ### 🐞 Bug Fixes

@@ -186,6 +186,7 @@ export class BaseBotInternals {
   }
 
   private onRoundStarted(_e: InstanceType<typeof RoundStartedEventClass>): void {
+    this.tickEvent = null;
     this.eventQueue.clear();
     this.isStopped = false;
     this.eventHandlingDisabledTurn = 0;
@@ -507,8 +508,8 @@ export class BaseBotInternals {
 
   private processRoundStarted(msg: import("../protocol/schema.js").RoundStartedEvent): void {
     const e = new RoundStartedEventClass(msg.roundNumber);
-    this.botEventHandlers.onRoundStarted.publish(e);
     this.internalEventHandlers.onRoundStarted.publish(e);
+    this.botEventHandlers.onRoundStarted.publish(e);
   }
 
   private processRoundEnded(msg: import("../protocol/schema.js").RoundEndedEventForBot): void {
@@ -669,6 +670,11 @@ export class BaseBotInternals {
     this.setRunning(true);
     try {
       this.waitUntilFirstTickArrived();
+      // Send default intent immediately so the server doesn't mark turn 1 as skipped
+      // due to OS scheduling latency between the worker thread wakeup and the first go() call.
+      if (this.workerMode) {
+        this.sendIntentToMain();
+      }
       bot.run();
     } catch (e) {
       if (!(e instanceof BotStoppedException)) {

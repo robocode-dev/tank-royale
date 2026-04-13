@@ -159,6 +159,9 @@ public final class BaseBotInternals {
             setRunning(true);
             try {
                 waitUntilFirstTickArrived();
+                // Send default intent immediately so the server doesn't mark turn 1 as skipped
+                // due to OS scheduling latency between the thread wakeup and the first go() call.
+                sendIntent();
                 bot.run();
             } catch (ThreadInterruptedException e) {
             } catch (Throwable t) {
@@ -264,6 +267,7 @@ public final class BaseBotInternals {
     private boolean movementResetPending = false;
 
     private void onRoundStarted(RoundStartedEvent e) {
+        tickEvent = null;
         eventQueue.clear();
         isStopped = false;
         eventHandlingDisabledTurn = 0;
