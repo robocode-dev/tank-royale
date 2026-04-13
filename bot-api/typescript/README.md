@@ -182,9 +182,15 @@ In Node.js, the bot reads all settings from environment variables (matching the 
 
 **Booter flag:**
 
-| Variable     | Description                                                |
-|--------------|------------------------------------------------------------|
-| `BOT_BOOTED` | Set to `true` by the booter when launching the bot process |
+| Variable        | Description                                                                                        |
+|-----------------|----------------------------------------------------------------------------------------------------|
+| `BOT_BOOTED`    | Set to `true` by the booter when launching the bot process                                         |
+| `ROBOCODE_DEBUG`| Override debugger detection: set to `true` to force debugger-attached reporting, `false` to suppress |
+
+> **Debugger detection:** In Node.js, the bot automatically detects an attached debugger by inspecting
+> `process.execArgv` for `--inspect` or `--inspect-brk` flags. When detected, it reports `debuggerAttached: true`
+> in the server handshake so the GUI can offer **breakpoint mode** for this bot — pausing the game whenever
+> the bot misses its turn deadline (useful when stepping through code in an IDE).
 
 Set them before starting:
 

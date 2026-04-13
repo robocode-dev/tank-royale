@@ -43,6 +43,37 @@ export class BotHandshakeFactory {
     if (teamVersion != null) handshake.teamVersion = teamVersion;
     handshake.isDroid = isDroid;
     if (secret != null) handshake.secret = secret;
+
+    // Set debuggerAttached field (ADR-0035)
+    const debuggerAttached = BotHandshakeFactory.isDebuggerAttached(envVars);
+    handshake.debuggerAttached = debuggerAttached;
+
+    // Log hint if debugger is detected
+    if (debuggerAttached) {
+      console.log("Debugger detected. Consider enabling breakpoint mode for this bot in the controller.");
+    }
+
     return handshake;
+  }
+
+  /**
+   * Detects if a debugger is attached to the process.
+   * Checks the ROBOCODE_DEBUG env var first; falls back to inspecting Node.js
+   * process arguments for --inspect / --debug flags. Returns false in
+   * browser environments where process is not available.
+   */
+  private static isDebuggerAttached(envVars: EnvVars): boolean {
+    const envFlag = envVars.getRobocodeDebug();
+    if (envFlag?.toLowerCase() === "true") return true;
+    if (envFlag?.toLowerCase() === "false") return false;
+
+    // Node.js native check — safe to call in browser (process is undefined there)
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const args: string[] = (globalThis as any).process?.execArgv ?? [];
+      return args.some((a: string) => /--inspect|--debug/.test(a));
+    } catch {
+      return false;
+    }
   }
 }

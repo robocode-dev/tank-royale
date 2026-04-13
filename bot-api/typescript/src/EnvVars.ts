@@ -25,6 +25,7 @@ export class EnvVars {
   static readonly TEAM_NAME = "TEAM_NAME";
   static readonly TEAM_VERSION = "TEAM_VERSION";
   static readonly BOT_BOOTED = "BOT_BOOTED";
+  static readonly ROBOCODE_DEBUG = "ROBOCODE_DEBUG";
 
   private static readonly MISSING_ENV_VALUE = "Missing environment variable: ";
 
@@ -132,6 +133,11 @@ export class EnvVars {
   /** Returns true if the bot is being booted (env var is set). */
   isBotBooted(): boolean {
     return this.adapter.getEnvVar(EnvVars.BOT_BOOTED) !== undefined;
+  }
+
+  /** ROBOCODE_DEBUG override — "true", "false", or undefined if not set */
+  getRobocodeDebug(): string | undefined {
+    return this.adapter.getEnvVar(EnvVars.ROBOCODE_DEBUG);
   }
 
   /** Splits a comma-separated env var value into a trimmed string array. */

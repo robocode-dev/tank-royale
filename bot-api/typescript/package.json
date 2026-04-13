@@ -1,6 +1,6 @@
 {
   "name": "@robocode.dev/tank-royale-bot-api",
-  "version": "0.40.0",
+  "version": "0.40.2",
   "description": "Tank Royale Bot API for TypeScript/JavaScript",
   "license": "Apache-2.0",
   "homepage": "https://robocode-dev.github.io/tank-royale/",
@@ -53,7 +53,8 @@
     "@types/ws": "^8.5.14",
     "typedoc": "^0.28.0",
     "typescript": "^5.8.2",
-    "vitest": "^3.1.1"
+    "vitest": "^3.1.1",
+    "ws": "^8.18.1"
   },
   "peerDependencies": {
     "ws": "^8.18.1"

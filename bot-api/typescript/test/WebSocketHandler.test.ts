@@ -430,4 +430,22 @@ describe("BotHandshakeFactory.create()", () => {
     expect(handshake.teamName).toBe("Alpha");
     expect(handshake.teamVersion).toBe("1.0");
   });
+
+  it("debuggerAttached is false when ROBOCODE_DEBUG is not set", () => {
+    const envVars = makeEnvVars();
+    const handshake = BotHandshakeFactory.create("s", makeBotInfo(), false, undefined, envVars);
+    expect(handshake.debuggerAttached).toBe(false);
+  });
+
+  it("debuggerAttached is true when ROBOCODE_DEBUG=true", () => {
+    const envVars = makeEnvVars({ ROBOCODE_DEBUG: "true" });
+    const handshake = BotHandshakeFactory.create("s", makeBotInfo(), false, undefined, envVars);
+    expect(handshake.debuggerAttached).toBe(true);
+  });
+
+  it("debuggerAttached is false when ROBOCODE_DEBUG=false", () => {
+    const envVars = makeEnvVars({ ROBOCODE_DEBUG: "false" });
+    const handshake = BotHandshakeFactory.create("s", makeBotInfo(), false, undefined, envVars);
+    expect(handshake.debuggerAttached).toBe(false);
+  });
 });
