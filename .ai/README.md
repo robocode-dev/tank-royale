@@ -10,7 +10,7 @@ Load only files relevant to your task.
 | `cross-platform.md`     | ~50   | Bot API, Java, Python, .NET, C#, cross-platform, port, reference implementation |
 | `coding-conventions.md` | ~30   | style, conventions, naming, format, PEP 8, immutability, type hints             |
 | `testing-and-build.md`  | ~35   | test, build, Gradle, gradlew, compile, validation, sample bot                   |
-| `documentation.md`      | ~35   | docs, README, Javadoc, docstring                                                 |
+| `documentation.md`      | ~80   | docs, README, Javadoc, docstring, mermaid, diagram, flowchart                   |
 | `changelog.md`          | ~45   | changelog, CHANGELOG.md, release notes, version, user-visible                   |
 | `standards.md`          | ~25   | encoding, UTF-8, file format, characters, ANSI, properties                      |
 | `architecture.md`       | ~30   | architecture, ADR, design decision, C4, protocol design                         |
