@@ -374,8 +374,7 @@ Create an API that runs the physics engine directly, bypassing WebSocket entirel
   built on top (analogous to the `RobocodeEngine` / Control API in classic Robocode)
 - [ADR-0025: Game Type Presets](./0025-game-type-presets-and-rule-configuration.md) — Preset system used for battle
   configuration
-- [Protocol Sequence Diagrams](../../../schema/schemas/README.md) — Mermaid diagrams covering handshakes (bot, observer,
-  controller), game startup, turn loop, game ending, and controller commands (pause, resume, stop, next-turn, change-tps)
+- [Protocol Flow Diagrams](../models/flows/README.md) — Sequence diagrams covering bot/observer/controller connection, game startup, turn loop, game ending, and controller commands (pause, resume, stop, next-turn, change-tps)
 - Classic Robocode [`robocode.control`](https://robocode.sourceforge.io/docs/robocode/robocode/control/package-summary.html) — Inspiration for this API
 - [Robocode API Bridge](https://github.com/robocode-dev/robocode-api-bridge) — Legacy bot compatibility layer, key
   consumer for automated testing

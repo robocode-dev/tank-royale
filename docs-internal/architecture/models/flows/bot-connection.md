@@ -341,6 +341,82 @@ flowchart TD
 
 ---
 
+## Bot Leaving
+
+When a bot closes its WebSocket connection the server removes it from the lobby and notifies observers and controllers.
+
+```mermaid
+sequenceDiagram
+    participant Bot
+    participant Server
+    participant Observer
+    participant Controller
+
+    Bot->>Server: <<event>> disconnected
+    Note over Server: Produces: <<event>> Bot left
+    Server->>Observer: bot-list-update
+    Server->>Controller: bot-list-update
+
+    opt if no bots remain while game running
+        Note over Server: Server aborts game
+        Server->>Bot: game-aborted-event
+        Server->>Observer: game-aborted-event
+        Server->>Controller: game-aborted-event
+    end
+```
+
+---
+
+## Observer Joining
+
+An observer connects to watch a battle without participating.
+
+```mermaid
+sequenceDiagram
+    participant Observer
+    participant Server
+
+    Note over Observer: WebSocket connection opened
+    Observer->>+Server: <<event>> connection established
+    Server->>-Observer: server-handshake {sessionId}
+    Observer->>Server: observer-handshake {sessionId, secret}
+
+    alt if sessionId or secret is invalid
+        Server->>Observer: disconnect
+    else valid
+        Note over Server: Produces: <<event>> Observer joined
+        Server->>Observer: bot-list-update
+    end
+```
+
+The `sessionId` from `server-handshake` must be echoed back. If the server requires a secret, it must be provided too.
+
+---
+
+## Controller Joining
+
+A controller connects to manage a battle (start, pause, resume, stop).
+
+```mermaid
+sequenceDiagram
+    participant Controller
+    participant Server
+
+    Note over Controller: WebSocket connection opened
+    Controller->>+Server: <<event>> connection established
+    Server->>-Controller: server-handshake {sessionId}
+    Controller->>Server: controller-handshake {sessionId, secret}
+
+    alt if sessionId or secret is invalid
+        Server->>Controller: disconnect
+    else valid
+        Note over Server: Produces: <<event>> Controller joined
+        Server->>Controller: bot-list-update
+    end
+```
+
+---
+
 ## Security Considerations
 
 ### Optional Secret Authentication
@@ -497,4 +573,4 @@ netstat -an | grep 7654
 
 ---
 
-**Last Updated:** 2026-05-11
+**Last Updated:** 2026-04-13

@@ -106,12 +106,35 @@ Critical for 30 TPS system. Flows include:
 
 ---
 
+## Keeping Diagrams in Sync
+
+These flow diagrams are the **single canonical source** for all protocol sequence documentation. The YAML schema definitions live in `schema/schemas/` — whenever those change, the relevant flow document must be updated.
+
+| If you change… | Update this flow |
+|----------------|-----------------|
+| `bot-handshake`, `server-handshake`, `bot-list-update` | `bot-connection.md` — Bot Joining / Leaving |
+| `observer-handshake` | `bot-connection.md` — Observer Joining |
+| `controller-handshake` | `bot-connection.md` — Controller Joining |
+| `start-game`, `game-started-event-*`, `bot-ready` | `battle-lifecycle.md` — Phase 2 |
+| `tick-event-for-bot`, `bot-intent`, `skipped-turn-event` | `turn-execution.md` — Steps 4–15 |
+| `game-ended-event-*` | `battle-lifecycle.md` — Phase 4 |
+| `stop-game`, `game-aborted-event` | `battle-lifecycle.md` — Aborting a Game |
+| `pause-game`, `resume-game`, `game-paused-event-*`, `game-resumed-event-*` | `battle-lifecycle.md` — Pause/Resume |
+| `next-turn`, `enable-debug-mode`, `disable-debug-mode` | `battle-lifecycle.md` — Debug Mode |
+| `bot-policy-update` | `battle-lifecycle.md` — Breakpoint Mode / Debug Graphics |
+| `change-tps`, `tps-changed-event` | `battle-lifecycle.md` — Changing TPS |
+| Any bot gameplay event schema | `event-handling.md` |
+
+> AI agents: also see the Schema ↔ Flow Mapping table in `.ai/documentation.md`.
+
+---
+
 ## Related Documentation
 
 - **[Message Schema](../message-schema/)** — WebSocket message contracts
+- **[Schema YAML Definitions](/schema/schemas/)** — Actual message format definitions
 - **[ADRs](../../adr/)** — Design decisions about flow architecture
 - **[C4 Views](../../c4-views/)** — Component interactions
-- **[Schema Definitions](/schema/schemas/)** — Actual message formats (YAML)
 
 ---
 
@@ -126,4 +149,4 @@ Critical for 30 TPS system. Flows include:
 
 ---
 
-**Last Updated:** 2026-05-11
+**Last Updated:** 2026-04-13

@@ -275,4 +275,4 @@ Remove the turn timeout when debug mode is active so bots can take as long as th
 ## References
 
 - [GitHub Issue #204](https://github.com/robocode-dev/tank-royale/issues/204) — Original feature request
-- [Existing pause/resume/step protocol](../../schema/schemas/README.md#pausing-a-game)
+- [Battle Lifecycle Flow](../models/flows/battle-lifecycle.md#manual-pause) — Pause/resume/step sequences

@@ -385,6 +385,70 @@ sequenceDiagram
 
 **Disabling breakpoint mode while paused:** If the bot is stuck and not actually at a breakpoint, the controller can send `bot-policy-update { breakpointEnabled: false }`. The server stops waiting, issues `SkippedTurnEvent` for the bot, and resumes.
 
+#### Aborting a Game
+
+A controller can terminate the battle at any time with `stop-game`. No results are produced.
+
+```mermaid
+sequenceDiagram
+    participant Controller
+    participant Server
+    participant Bot
+    participant Observer
+
+    Note over Server: Server state = GAME_RUNNING
+    Controller->>Server: stop-game
+    Server->>Bot: game-aborted-event
+    Server->>Observer: game-aborted-event
+    Server->>Controller: game-aborted-event
+    Note over Server: Server state = GAME_STOPPED
+```
+
+#### Changing TPS
+
+A controller can change the turns-per-second rate during a battle. Setting TPS to 0 pauses the game; setting it back to a non-zero value resumes it.
+
+```mermaid
+sequenceDiagram
+    participant Controller
+    participant Server
+    participant Observer
+
+    Controller->>Server: change-tps {tps: 15}
+    Note over Server: Update turn timer
+    Server->>Observer: tps-changed-event {tps: 15}
+    Server->>Controller: tps-changed-event {tps: 15}
+
+    opt if new TPS = 0
+        Note over Server: Server state = GAME_PAUSED
+        Server->>Observer: game-paused-event {pauseCause: PAUSED}
+        Server->>Controller: game-paused-event {pauseCause: PAUSED}
+    end
+
+    opt if TPS becomes non-zero while paused
+        Note over Server: Server state = GAME_RUNNING
+        Server->>Observer: game-resumed-event
+        Server->>Controller: game-resumed-event
+    end
+```
+
+#### Debug Graphics Policy
+
+A controller can permit or forbid a specific bot from sending graphical debugging information. The setting takes effect on the next tick; no confirmation event is emitted.
+
+```mermaid
+sequenceDiagram
+    participant Controller
+    participant Server
+    participant Bot
+    participant Observer
+
+    Controller->>Server: bot-policy-update {botId: X, debugGraphicsEnabled: true}
+    Note over Server: Update bot's debug-graphics flag
+    Note over Bot: Bot may now send debug-graphics messages
+    Note over Observer: Learns about permission via next tick-event-for-observer
+```
+
 ---
 
 ## Phase 4: GAME_ENDED
@@ -568,4 +632,4 @@ gantt
 
 ---
 
-**Last Updated:** 2026-05-11
+**Last Updated:** 2026-04-13

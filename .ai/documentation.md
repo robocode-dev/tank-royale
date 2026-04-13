@@ -91,3 +91,29 @@ flowchart TD
 GitHub renders Mermaid with `theme: default` (light mode) and `theme: dark`
 (dark mode) depending on user preference. Do **not** use `%%{init: ...}%%` to
 force a theme — let GitHub handle it; the palette above works for both.
+
+---
+
+## Schema ↔ Architecture Flow Mapping
+
+**Rule:** When any `.schema.yaml` file in `schema/schemas/` changes (new fields, new message types, changed behaviour), check the table below and update the corresponding architecture flow document.
+
+Canonical home for all sequence diagrams: `docs-internal/architecture/models/flows/`
+
+| Schema category | When it changes, update… |
+|-----------------|--------------------------|
+| `server-handshake`, `bot-handshake`, `bot-ready`, `bot-list-update` | `bot-connection.md` — Bot Joining / Bot Leaving sections |
+| `observer-handshake` | `bot-connection.md` — Observer Joining section |
+| `controller-handshake` | `bot-connection.md` — Controller Joining section |
+| `start-game`, `game-started-event-for-bot`, `game-started-event-for-observer` | `battle-lifecycle.md` — Phase 2 (WAIT_FOR_READY) |
+| `round-started-event`, `round-ended-event-*`, `tick-event-for-bot`, `tick-event-for-observer`, `bot-intent`, `skipped-turn-event` | `turn-execution.md` — Steps 4–15 |
+| `game-ended-event-*` | `battle-lifecycle.md` — Phase 4 (GAME_ENDED) |
+| `game-aborted-event`, `stop-game` | `battle-lifecycle.md` — Aborting a Game |
+| `pause-game`, `resume-game`, `game-paused-event-*`, `game-resumed-event-*` | `battle-lifecycle.md` — Manual Pause |
+| `next-turn` | `battle-lifecycle.md` — Debug Mode (ADR-0033) |
+| `enable-debug-mode`, `disable-debug-mode` | `battle-lifecycle.md` — Debug Mode (ADR-0033) |
+| `bot-policy-update` | `battle-lifecycle.md` — Breakpoint Mode (ADR-0034) and Debug Graphics Policy |
+| `change-tps`, `tps-changed-event` | `battle-lifecycle.md` — Changing TPS |
+| All bot gameplay events (`scanned-bot-event`, `hit-by-bullet-event`, etc.) | `event-handling.md` — Key event list |
+| `team-message`, `team-message-event` | `event-handling.md` — Team Events section |
+| Any state object (`bot-state`, `bullet-state`, `game-setup`, etc.) | `docs-internal/architecture/models/message-schema/state.md` |

@@ -76,7 +76,7 @@
 - [ ] Fix memory visibility issues in `MockedServer` (volatile fields for intent/state)
 - [ ] Ensure `botIntentLatch` is only counted down AFTER the intent is fully parsed
 - [ ] Add `executeCommandAndGetIntent` helper to `AbstractBotTest`
-- [ ] **Audit**: Verify `MockedServer.java` logic against sequence diagrams in `schema/schemas/README.md`
+- [ ] **Audit**: Verify `MockedServer.java` logic against sequence diagrams in `docs-internal/architecture/models/flows/`
 - [ ] **State Setup**: Refine `setBotStateAndAwaitTick` or add `setInitialBotState` to handle non-running bots (
   Mitigation for "Non-running Bots" obstacle)
 - [ ] **Verify**: Fix `CommandsFireTest` failures by ensuring proper state setup (addressing default GunHeat)
@@ -86,7 +86,7 @@
 - [ ] Port thread/task tracking to .NET base test class
 - [ ] Ensure thread-safe state updates in `MockedServer.cs`
 - [ ] Add equivalent `ExecuteCommand` helpers
-- [ ] **Audit**: Verify `MockedServer.cs` logic against sequence diagrams in `schema/schemas/README.md`
+- [ ] **Audit**: Verify `MockedServer.cs` logic against sequence diagrams in `docs-internal/architecture/models/flows/`
 - [ ] **State Setup**: Handle non-running bot state synchronization equivalent to Java
 - [ ] **Verify**: Create a simple test that would previously have been flaky
 
@@ -95,7 +95,7 @@
 - [ ] Implement clean async cleanup in Python base test
 - [ ] Fix race conditions in `mocked_server.py` state updates
 - [ ] Add equivalent `execute_command` helpers
-- [ ] **Audit**: Verify `mocked_server.py` logic against sequence diagrams in `schema/schemas/README.md`
+- [ ] **Audit**: Verify `mocked_server.py` logic against sequence diagrams in `docs-internal/architecture/models/flows/`
 - [ ] **State Setup**: Handle non-running bot state synchronization equivalent to Java
 - [ ] **Verify**: Create a simple test that would previously have been flaky
 
@@ -475,7 +475,7 @@ as a workaround. All AI coding assistants have struggled with this issue.
 **Files**: `bot-api/tests/TESTING-GUIDE.md` (new)
 
 - [ ] Introduction: Why these patterns exist
-- [ ] Protocol Alignment: Explicitly link test utilities to sequence diagrams in `schema/schemas/README.md`
+- [ ] Protocol Alignment: Explicitly link test utilities to sequence diagrams in `docs-internal/architecture/models/flows/`
 - [ ] MockedServer overview and capabilities
 - [ ] Removed methods and why they were deleted (setEnergy, sendTick, etc.)
 - [ ] AbstractBotTest patterns and best practices

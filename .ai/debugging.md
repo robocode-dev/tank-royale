@@ -27,7 +27,7 @@ server to reproduce bot-API bugs in isolation without needing sample bots or the
 For message ordering and timing guarantees, always consult:
 
 ```
-schema/schemas/README.md   ← Mermaid sequence diagrams for every protocol flow
+docs-internal/architecture/models/flows/README.md   ← Index of all protocol flow diagrams
 ```
 
-Key flows: `bot-joining`, `starting-game`, `running-next-turn`.
+Key flows: `bot-connection`, `battle-lifecycle`, `turn-execution`, `event-handling`.

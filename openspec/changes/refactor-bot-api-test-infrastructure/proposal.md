@@ -253,7 +253,7 @@ Detailed tracking of these issues can be found in [design.md](./design.md).
 ## Alignment with Sequence Diagrams
 
 The `MockedServer` and the test infrastructure are designed as a deterministic simulator of the authoritative sequence
-diagrams found in `schema/schemas/README.md`.
+diagrams found in [`docs-internal/architecture/models/flows/`](../../../../docs-internal/architecture/models/flows/README.md).
 
 1. **Deterministic Turn Advancment**: The **"Running next turn"** diagram shows that `bot-intent` is a reactive response
    to `tick-event-for-bot`. Our `executeCommand` pattern and `setBotStateAndAwaitTick` method directly implement this
