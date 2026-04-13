@@ -383,7 +383,61 @@ graph LR
 
 ---
 
-## Troubleshooting Guide
+## Round Start Initialization (v0.40.1 / v0.40.2)
+
+### Correct Event Ordering for Round Start
+
+When `RoundStartedEvent` is received by the bot, **internal handlers must fire before bot-facing handlers**. This ensures internal state is fresh before any user code runs.
+
+```mermaid
+sequenceDiagram
+    participant WebSocket as WebSocket Thread
+    participant Internal as Internal Handlers<br/>(P100)
+    participant BotHandlers as Bot Handlers<br/>(user code)
+    participant BotThread as Bot Thread
+
+    Note over WebSocket: RoundStartedEvent received
+
+    WebSocket->>Internal: 1. internalEventHandlers.onRoundStarted()
+    Internal->>Internal: Reset tickEvent = null<br/>(stale state from previous round cleared)
+    Internal->>BotThread: Start / restart bot thread<br/>(pre-warm: ready before first tick)
+
+    WebSocket->>BotHandlers: 2. botEventHandlers.onRoundStarted()
+    BotHandlers->>BotHandlers: User onRoundStarted() fires<br/>(internal state already fresh)
+```
+
+**Why ordering matters:** If the bot handler fired first, user code could call `go()` or inspect state while `tickEvent` still holds the stale last-tick from the previous round — bypassing `waitUntilFirstTickArrived()` and potentially sending an intent for the wrong round.
+
+### Pre-Warm Thread and First-Tick Intent (Fix for Issue #202)
+
+```mermaid
+sequenceDiagram
+    participant Internal as Internal Handler
+    participant BotThread as Bot Thread
+    participant WebSocket as WebSocket Thread
+    participant Server
+
+    Internal->>BotThread: Start thread (pre-warm on round start)
+    Note over BotThread: Blocks in waitUntilFirstTickArrived()
+
+    Server->>WebSocket: tick-event-for-bot (turn 1)
+    WebSocket->>BotThread: tickEvent set, notifyAll()
+
+    Note over BotThread: Unblocks
+
+    BotThread->>Server: sendIntent() ← default intent sent BEFORE bot.run()
+    Note over BotThread: Ensures turn 1 intent arrives even under<br/>OS scheduling pressure (e.g., 50ms+ delay)
+
+    BotThread->>BotThread: bot.run() called
+    loop Each turn
+        BotThread->>BotThread: go() → dispatchEvents() → user logic
+        BotThread->>Server: sendIntent()
+    end
+```
+
+See [Turn Execution Flow: Turn 1 Initialization](./turn-execution.md#turn-1-initialization-pre-warm-thread) for the complete sequence.
+
+---
 
 ### Symptom: Event handler not called
 
@@ -446,8 +500,10 @@ Both calls must happen in sequence for handler output to appear in the GUI.
 3. **Output is buffered** by RecordingPrintStream/RecordingTextWriter
 4. **Transfer happens per-turn** in `sendIntent()` during normal turns
 5. **Round-end has special handling** — events fire after last `sendIntent()`, so output must be explicitly transferred
-6. **Platform implementations are consistent** across Java, Python, and C#
+6. **Platform implementations are consistent** across Java, Python, C#, and TypeScript
+7. **Internal handlers fire before bot handlers** for `onRoundStarted` — ensures `tickEvent = null` is reset before user code runs
+8. **Default intent is sent before `run()`** on round start — prevents turn-1 skip under OS scheduling pressure (fix for issue #202)
 
 ---
 
-**Last Updated:** 2026-02-28
+**Last Updated:** 2026-05-11

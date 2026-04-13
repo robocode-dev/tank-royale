@@ -259,12 +259,15 @@ for (Bot bot : bots) {
         Intent intent = bot.receiveIntent(timeoutMs);
         storeIntent(bot, intent);
     } catch (TimeoutException e) {
-        // Bot didn't respond in time
-        bot.markSkippedTurn();
-        bot.sendSkippedTurnEvent();
-        
-        // Use last known intent or default (zero)
-        useDefaultIntent(bot);
+        if (bot.isBreakpointModeEnabled()) {
+            // Breakpoint mode: pause and wait for bot's intent (ADR-0034)
+            pauseAndWaitForIntent(bot);
+        } else {
+            // Normal mode: mark skip and use default intent
+            bot.markSkippedTurn();
+            bot.sendSkippedTurnEvent();
+            useDefaultIntent(bot);
+        }
     }
 }
 ```
@@ -272,7 +275,11 @@ for (Bot bot : bots) {
 **Timeout Enforcement:**
 - Per-bot timeout: ~30ms (configurable)
 - Server waits max 30ms for all intents
-- After timeout: use default intent (move=0, turn=0, fire=0)
+- After timeout (normal mode): use default intent (move=0, turn=0, fire=0)
+- After timeout (breakpoint mode): pause and wait indefinitely for the bot's intent
+
+**Breakpoint Mode Exception (ADR-0034):**
+When a bot has breakpoint mode enabled (set by controller), a missed timeout causes the server to pause (`GAME_PAUSED, pauseCause: BREAKPOINT`) and wait for that bot's intent. Other bots that miss the timeout still receive `SkippedTurnEvent`. See [Battle Lifecycle Flow](./battle-lifecycle.md) for full breakpoint mode sequence.
 
 ### Step 7: Handle Late/Missing Intents
 
@@ -280,16 +287,21 @@ for (Bot bot : bots) {
 
 ```mermaid
 flowchart TD
-    A[Bot missed timeout] --> B[1. Send skipped-turn-event]
+    A[Bot missed timeout] --> BP{Breakpoint mode<br/>enabled for this bot?}
+    BP -->|Yes| BPW[Server pauses<br/>waitForIntent indefinitely]
+    BPW --> BPR[Bot resumes from breakpoint<br/>sends intent]
+    BPR --> G[Continue]
+    BP -->|No| B[1. Send skipped-turn-event]
     B --> C[2. Apply default intent<br/>no movement, no fire]
     C --> D[3. Increment consecutive skip counter]
     D --> E{Consecutive skips >= 10?}
     E -->|Yes| F[4. Disqualify bot]
     E -->|No| G[Continue]
     
-    style A fill:#FFCCCC
-    style F fill:#FF9999
-    style G fill:#CCFFCC
+    style A fill:#D9534F,color:#fff
+    style F fill:#C0392B,color:#fff
+    style G fill:#27AE60,color:#fff
+    style BPW fill:#2980B9,color:#fff
 ```
 
 **Skipped Turn Event**
@@ -550,7 +562,50 @@ gantt
 
 ---
 
-## Timing Constraints
+## Turn 1 Initialization (Pre-Warm Thread)
+
+Turn 1 has special handling to prevent the first-turn skip described in [issue #202](https://github.com/robocode-dev/tank-royale/issues/202).
+
+### The Problem
+
+The 30ms turn timeout is the same for turn 1 as for every other turn. However, bots need time to start their `run()` loop before they can respond with an intent. On a loaded OS, the scheduler may not grant the bot thread CPU time within the window — causing a spurious `SkippedTurnEvent` on turn 1.
+
+### The Fix: Pre-Warm + Immediate sendIntent (v0.40.2)
+
+```mermaid
+sequenceDiagram
+    participant WebSocket as WebSocket Thread
+    participant BotThread as Bot Thread
+    participant Server
+
+    Note over WebSocket: onRoundStarted received
+
+    WebSocket->>BotThread: 1. Reset tickEvent = null<br/>(internal handler fires first)
+    WebSocket->>BotThread: 2. Start / restart bot thread<br/>(pre-warm: thread is ready before tick 1 arrives)
+
+    Note over BotThread: Thread blocks in<br/>waitUntilFirstTickArrived()
+
+    Server->>WebSocket: tick-event-for-bot (turn 1)
+
+    WebSocket->>BotThread: 3. Set tickEvent, notifyAll()
+
+    Note over BotThread: waitUntilFirstTickArrived() unblocks
+
+    BotThread->>Server: 4. sendIntent() immediately<br/>(default intent — before bot.run())
+    Note over BotThread: Default: no movement, no fire
+    Note over BotThread: Intent arrives within ~1ms of tick 1
+
+    BotThread->>BotThread: 5. call bot.run()
+    BotThread->>Server: 6. Normal go() / sendIntent() loop continues
+```
+
+**Why this works:** The default intent is sent on the WebSocket thread immediately after the first tick arrives — before any user code runs. Even if the OS takes 50ms to schedule the `run()` thread, turn 1's intent is already delivered.
+
+**`tickEvent = null` on round start:** Prevents a pre-warmed thread (carrying stale tick state from the previous round) from bypassing `waitUntilFirstTickArrived()` on rounds 2+. Internal handlers set this before any user `onRoundStarted` handler runs.
+
+**Event ordering (internal before bot):** `internalEventHandlers.onRoundStarted` fires before `botEventHandlers.onRoundStarted` — ensuring internal state is reset before user code sees the new round.
+
+---
 
 ### Per-Bot Response Time
 
@@ -611,8 +666,8 @@ flowchart LR
     C --> D
     D --> E[Same results<br/>every time]
     
-    style A fill:#E1F5FF
-    style E fill:#CCFFCC
+    style A fill:#2980B9,color:#fff
+    style E fill:#27AE60,color:#fff
 ```
 
 ### Replay System
@@ -647,8 +702,8 @@ flowchart TD
     B --> C["Skip collision<br/>for this turn"]
     C --> D["Continue turn<br/>execution"]
     D --> E["Log issue<br/>for debugging"]
-    style A fill:#FFCCCC
-    style D fill:#CCFFCC
+    style A fill:#D9534F,color:#fff
+    style D fill:#27AE60,color:#fff
 ```
 
 ---
@@ -694,8 +749,10 @@ for (Bot other : nearby) {
 - **[Events](../message-schema/events.md)** — Tick events and bot gameplay events
 - **[Intents](../message-schema/intents.md)** — Bot intent message schema
 - **[ADR-0003: Game Loop](../../adr/0003-realtime-game-loop-architecture.md)** — Design rationale
+- **[ADR-0033: Server Debug Mode](../../adr/0033-bot-debug-mode.md)** — Turn-by-turn stepping
+- **[ADR-0034: Breakpoint Mode](../../adr/0034-breakpoint-mode.md)** — Per-bot breakpoint pause
 - **[Schema Definitions](/schema/schemas/README.md)** — YAML message format specifications
 
 ---
 
-**Last Updated:** 2026-02-11
+**Last Updated:** 2026-05-11

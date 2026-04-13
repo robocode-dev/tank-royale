@@ -4,7 +4,7 @@
 
 - Bot API (Java, .NET, Python, TypeScript):
     - #202: Fixed bots receiving a `SkippedTurnEvent` on turn 1 when the OS scheduler delayed
-      the bot thread's first time slice by more than the turn timeout. The bot API now sends a
+      the bot thread's first time slice by more than the turn timeout. The bot API now sends 
       default intent immediately after the bot thread wakes up for the first turn, ensuring turn 1
       is never skipped due to scheduling latency.
     - #202: Fixed an edge case where the pre-warmed bot thread could bypass the tick-arrival

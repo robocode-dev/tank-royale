@@ -11,8 +11,9 @@ stateDiagram-v2
     [*] --> WAIT_FOR_PARTICIPANTS: Battle created
     WAIT_FOR_PARTICIPANTS --> WAIT_FOR_READY: All bots connected
     WAIT_FOR_READY --> GAME_RUNNING: start-game command
-    GAME_RUNNING --> GAME_PAUSED: pause-game (optional)
-    GAME_PAUSED --> GAME_RUNNING: resume-game (optional)
+    GAME_RUNNING --> GAME_PAUSED: pause-game / debug-mode turn complete
+    GAME_PAUSED --> GAME_RUNNING: resume-game
+    GAME_PAUSED --> GAME_RUNNING: next-turn (one step, then re-pauses)
     GAME_RUNNING --> GAME_ENDED: Victory or max turns
     GAME_PAUSED --> GAME_ENDED: stop-game
     GAME_ENDED --> [*]: Cleanup
@@ -20,6 +21,13 @@ stateDiagram-v2
     note right of GAME_RUNNING
         30 TPS turn loop
         ~33ms per turn
+    end note
+    
+    note right of GAME_PAUSED
+        pauseCause: PAUSED | DEBUG | BREAKPOINT
+        PAUSED: manual pause-game
+        DEBUG: debug mode step complete
+        BREAKPOINT: waiting for bot with breakpoint
     end note
 ```
 
@@ -126,8 +134,10 @@ sequenceDiagram
     Server->>Bot2: game-started-event-for-bot {battleId, arena, opponents}
     Server->>Observer: game-started-event-for-observer {battleId, arena, bots}
     
-    Bot1->>Bot1: Initialize internal state
-    Bot2->>Bot2: Initialize internal state
+    Bot1->>Bot1: Fire onGameStarted handler
+    Bot2->>Bot2: Fire onGameStarted handler
+    
+    Note over Bot1,Bot2: onGameStarted fires BEFORE<br/>bot-ready is sent (fix: issue #202)<br/>Ensures user init runs first
     
     Bot1->>Server: bot-ready
     Bot2->>Server: bot-ready
@@ -188,8 +198,8 @@ sequenceDiagram
 
 4. **Bot Initialization**
    - Bot receives game-started-event
-   - Initializes strategy, state, variables
-   - Prepares sensors and weapons
+   - Fires `onGameStarted` user handler (strategy init, state setup, etc.)
+   - **`onGameStarted` runs BEFORE `bot-ready` is sent** — ensures user initialization completes first (fix for issue #202)
 
 5. **Bot Ready Notification**
    ```json
@@ -279,7 +289,11 @@ if turn_number >= max_turns:
   transition to GAME_ENDED
 ```
 
-### Optional: Pause/Resume
+### Optional: Pause / Debug / Breakpoint
+
+Three related mechanisms all transition to `GAME_PAUSED`, distinguished by `pauseCause`:
+
+#### Manual Pause
 
 ```mermaid
 sequenceDiagram
@@ -292,21 +306,84 @@ sequenceDiagram
     
     Note over Server: Pause turn loop<br/>Stop sending tick events
     
-    Server->>Observer: game-paused-event-for-observer {reason}
+    Server->>Observer: game-paused-event {pauseCause: PAUSED}
     
-    Note over Bots: Continue waiting for ticks<br/>(unaware of pause)
-    
-    Controller->>Server: next-turn
-    
-    Note over Server: Execute one turn<br/>Pause again
-    
-    Server->>Observer: game-resumed-event-for-observer
+    Note over Bots: Waiting for next tick<br/>(unaware of pause)
     
     Controller->>Server: resume-game
     
     Note over Server: Resume turn loop
     Server->>Bots: tick-event (resumes as normal)
+    Server->>Observer: game-resumed-event
 ```
+
+#### Debug Mode (ADR-0033) — Turn-by-Turn Stepping
+
+Debug mode causes the server to **pause after each turn** instead of auto-advancing. The controller drives each step.
+
+```mermaid
+sequenceDiagram
+    participant Controller
+    participant Server
+    participant Bot
+    participant Observer
+    
+    Controller->>Server: enable-debug-mode
+    Note over Server: Debug mode = ON
+    
+    Note over Server: Turn N
+    Server->>Bot: tick-event-for-bot (turn N)
+    Bot->>Server: bot-intent
+    Note over Server: Process turn → PAUSE
+    Server->>Observer: game-paused-event {pauseCause: DEBUG}
+    
+    Note over Controller: Developer inspects state
+    
+    Controller->>Server: next-turn
+    Note over Server: Turn N+1
+    Server->>Bot: tick-event-for-bot (turn N+1)
+    Bot->>Server: bot-intent
+    Note over Server: Process turn → PAUSE
+    Server->>Observer: game-paused-event {pauseCause: DEBUG}
+    
+    Controller->>Server: resume-game
+    Note over Server: Debug mode = OFF, auto-advance resumes
+    Server->>Observer: game-resumed-event
+```
+
+#### Breakpoint Mode (ADR-0034) — Wait for Debugged Bot
+
+Breakpoint mode is a **per-bot** policy. When a bot with breakpoint mode enabled misses the turn timeout, the server pauses and waits for that bot's intent instead of issuing `SkippedTurnEvent`.
+
+```mermaid
+sequenceDiagram
+    participant Controller
+    participant Server
+    participant BotX as Bot X (breakpoint mode)
+    participant BotY as Bot Y (normal)
+    participant Observer
+    
+    Controller->>Server: bot-policy-update {botId: X, breakpointEnabled: true}
+    Note over Server: Bot X → breakpoint mode ON
+    
+    Note over Server: Turn N
+    Server->>BotX: tick-event-for-bot (turn N)
+    Server->>BotY: tick-event-for-bot (turn N)
+    
+    BotY->>Server: bot-intent
+    Note over BotX: Breakpoint hit — thread frozen
+    
+    Note over Server: Turn timeout expires<br/>Bot Y responded ✓<br/>Bot X missing → breakpoint mode → PAUSE
+    Server->>Observer: game-paused-event {pauseCause: BREAKPOINT}
+    
+    Note over Controller: Developer steps through Bot X in IDE
+    BotX->>Server: bot-intent (after resume)
+    
+    Note over Server: Bot X responded → process turn → continue
+    Server->>Observer: game-resumed-event
+```
+
+**Disabling breakpoint mode while paused:** If the bot is stuck and not actually at a breakpoint, the controller can send `bot-policy-update { breakpointEnabled: false }`. The server stops waiting, issues `SkippedTurnEvent` for the bot, and resumes.
 
 ---
 
@@ -423,9 +500,9 @@ flowchart TD
     D -->|Yes| E[End battle]
     D -->|No| F[Continue battle]
     
-    style A fill:#FFCCCC
-    style B fill:#FFE1F5
-    style E fill:#CCFFCC
+    style A fill:#D9534F,color:#fff
+    style B fill:#E67E22,color:#fff
+    style E fill:#27AE60,color:#fff
 ```
 
 ### Server Issues
@@ -439,8 +516,8 @@ flowchart TD
     E -->|Yes| F[Attempt reconnection]
     E -->|No| G[Bot exits]
     
-    style A fill:#FFCCCC
-    style C fill:#FFE1F5
+    style A fill:#D9534F,color:#fff
+    style C fill:#E67E22,color:#fff
 ```
 
 ---
@@ -486,7 +563,9 @@ gantt
 - **[Events](../message-schema/events.md)** — Event message definitions
 - **[Commands](../message-schema/commands.md)** — Controller command definitions
 - **[ADR-0003: Game Loop](../../adr/0003-realtime-game-loop-architecture.md)** — Design rationale
+- **[ADR-0033: Server Debug Mode](../../adr/0033-bot-debug-mode.md)** — Turn-by-turn stepping
+- **[ADR-0034: Breakpoint Mode](../../adr/0034-breakpoint-mode.md)** — Per-bot breakpoint pause
 
 ---
 
-**Last Updated:** 2026-02-11
+**Last Updated:** 2026-05-11

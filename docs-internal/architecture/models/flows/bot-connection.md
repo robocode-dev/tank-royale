@@ -142,7 +142,8 @@ flowchart TD
   "authors": ["John Doe", "Jane Smith"],
   "secret": "optional-secret-token",
   "gameTypes": ["1v1", "melee", "team"],
-  "variant": "default"
+  "variant": "default",
+  "debuggerAttached": false
 }
 ```
 
@@ -157,6 +158,7 @@ flowchart TD
 | `secret` | string | ❌ | Optional secret for auth |
 | `gameTypes` | array | ✅ | Supported game types |
 | `variant` | string | ❌ | Bot variant (for variants) |
+| `debuggerAttached` | bool | ❌ | `true` if a debugger is attached to the bot process (ADR-0035); server auto-enables breakpoint mode when `true` |
 
 **Timing:** Should happen within 1-5 seconds
 
@@ -170,9 +172,9 @@ flowchart TD
     D -->|Yes| E[Connected]
     D -->|No| F[Connection failed]
     
-    style A fill:#FFCCCC
-    style E fill:#CCFFCC
-    style F fill:#FF9999
+    style A fill:#D9534F,color:#fff
+    style E fill:#27AE60,color:#fff
+    style F fill:#C0392B,color:#fff
 ```
 
 ---
@@ -301,9 +303,9 @@ flowchart TD
     F -->|No| B
     F -->|Yes| G[Bot exits with error]
     
-    style A fill:#FFCCCC
-    style E fill:#CCFFCC
-    style G fill:#FF9999
+    style A fill:#D9534F,color:#fff
+    style E fill:#27AE60,color:#fff
+    style G fill:#C0392B,color:#fff
 ```
 
 ### Server-Side Timeout
@@ -317,9 +319,9 @@ flowchart TD
     E -->|Yes| F[Bot rejoins]
     E -->|No| G[Bot fails]
     
-    style A fill:#FFCCCC
-    style F fill:#CCFFCC
-    style G fill:#FF9999
+    style A fill:#D9534F,color:#fff
+    style F fill:#27AE60,color:#fff
+    style G fill:#C0392B,color:#fff
 ```
 
 ### Mid-Battle Disconnection
@@ -332,9 +334,9 @@ flowchart TD
     D -->|Yes| E[Battle ends]
     D -->|No| F[Battle continues]
     
-    style A fill:#FFCCCC
-    style E fill:#CCFFCC
-    style F fill:#E1F5FF
+    style A fill:#D9534F,color:#fff
+    style E fill:#27AE60,color:#fff
+    style F fill:#2980B9,color:#fff
 ```
 
 ---
@@ -491,7 +493,8 @@ netstat -an | grep 7654
 - **[Events](../message-schema/events.md)** — Event message schemas
 - **[ADR-0001: WebSocket Protocol](../../adr/0001-websocket-communication-protocol.md)** — Protocol design
 - **[ADR-0002: Cross-Platform Bot APIs](../../adr/0002-cross-platform-bot-api-strategy.md)** — API design
+- **[ADR-0035: Bot Debugger Detection](../../adr/0035-bot-debugger-detection.md)** — `debuggerAttached` field
 
 ---
 
-**Last Updated:** 2026-02-11
+**Last Updated:** 2026-05-11
