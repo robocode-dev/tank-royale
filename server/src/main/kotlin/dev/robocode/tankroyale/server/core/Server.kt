@@ -49,6 +49,12 @@ class Server : Runnable {
         /** Initial turns-per-second rate for new games. */
         var tps: Int = DEFAULT_TURNS_PER_SECOND
 
+        /** Flag specifying if debug mode is supported. */
+        var debugModeSupported: Boolean = true
+
+        /** Flag specifying if breakpoint mode is supported. */
+        var breakpointModeSupported: Boolean = true
+
         private fun getInheritedPort(): Int {
             val channel = System.inheritedChannel() as? ServerSocketChannel
             return channel?.socket()?.localPort ?: -1
@@ -117,6 +123,9 @@ class Server : Runnable {
     }
 
     private fun startGameServer() {
+        // Load server.properties from file system (if exists)
+        ServerProperties.load()
+
         val controllerSecretsSet = controllerSecrets.toSetOfTrimmedStrings()
         val botSecretsSet = botSecrets.toSetOfTrimmedStrings()
         val secretsEnabled = controllerSecretsSet.isNotEmpty() || botSecretsSet.isNotEmpty()
@@ -138,7 +147,9 @@ class Server : Runnable {
             controllerSecrets = controllerSecretsSet,
             botSecrets = botSecretsSet,
             initialPositionEnabled = initialPositionEnabled,
-            tps = tps
+            tps = tps,
+            debugModeSupported = debugModeSupported,
+            breakpointModeSupported = breakpointModeSupported
         )
 
         gameServer = GameServer(config)

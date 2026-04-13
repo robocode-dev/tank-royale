@@ -31,9 +31,35 @@ export default withMermaid(defineConfig({
         text: 'Guide',
         items: [
           { text: 'Introduction', link: '/articles/intro' },
-          { text: 'Installation', link: '/articles/installation' },
-          { text: 'GUI', link: '/articles/gui' },
-            {text: 'User Data & Config Files', link: '/articles/user-data-config'},
+        ]
+      },
+      {
+        text: 'Installation',
+        items: [
+          { text: 'Overview', link: '/articles/installation' },
+          { text: 'Installing Robocode', link: '/articles/installing-robocode' },
+          { text: 'Running the GUI', link: '/articles/running-the-gui' },
+          { text: 'Installing Sample Bots', link: '/articles/installing-sample-bots' },
+          { text: 'Installing Sounds', link: '/articles/installing-sounds' },
+        ]
+      },
+      {
+        text: 'GUI',
+        items: [
+          { text: 'Overview', link: '/articles/gui' },
+          { text: 'Setting up and Starting a Battle', link: '/articles/gui-battle-setup' },
+          { text: 'Viewing Battles and Bot State', link: '/articles/gui-battle-view' },
+          { text: 'Recording and Replaying Battles', link: '/articles/gui-recording-and-replay' },
+          { text: 'Configuring the GUI', link: '/articles/gui-configuration' },
+        ]
+      },
+      {
+        text: 'Configuration',
+        items: [
+          { text: 'User Data & Config Files', link: '/articles/user-data-config' },
+          { text: 'User Data Locations', link: '/articles/user-data-locations' },
+          { text: 'Configuration Files', link: '/articles/configuration-files' },
+          { text: 'Backing Up and Resetting', link: '/articles/backing-up-and-resetting' },
         ]
       },
       {

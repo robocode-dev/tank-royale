@@ -120,6 +120,62 @@ If `firepower` is set but the bullet never appears, the issue is elsewhere (e.g.
 
 See the [Battle Runner API](../api/battle-runner) for setup instructions and all available options.
 
+## Debugging with an IDE
+
+Tank Royale has first-class support for attaching an IDE debugger to your bot while it runs in a real
+battle. The bot API, server, and GUI cooperate automatically — no manual setup is required.
+
+### Debugger detection
+
+Each Bot API detects at startup whether a debugger is attached:
+
+- **Java**: inspects JVM arguments for a JDWP agent (`-agentlib:jdwp` / `-Xrunjdwp`)
+- **.NET**: reads `System.Diagnostics.Debugger.IsAttached`
+- **Python**: checks `sys.gettrace()` and the presence of known debugger modules
+
+When a debugger is detected, the bot includes `debuggerAttached: true` in its server handshake. You
+can override detection with the `ROBOCODE_DEBUG` environment variable — set it to `true` to
+force-enable or `false` to force-disable regardless of what the API detects.
+
+### Breakpoint mode
+
+When the server sees `debuggerAttached: true` it automatically enables **breakpoint mode** for that
+bot. In breakpoint mode the server suspends the turn clock whenever the bot is late delivering its
+intent — instead of issuing a `SkippedTurnEvent` it waits for the intent to arrive, then auto-resumes
+the battle. Stepping through your bot code in the IDE no longer causes missed turns or desyncs.
+
+Breakpoint mode can also be toggled manually in the **Bot Properties** panel (the 🐛 toggle in the
+**Properties** tab). The server must advertise support via `features.breakpointMode`; see
+[Server configuration for debugging](#server-configuration-for-debugging) below.
+
+### Debug mode
+
+**Debug mode** gives you turn-by-turn control over the battle — independently of whether any bot has a
+debugger attached. Enable it with the **Debug 🐛** toggle in the control panel. Each click of
+**Next Turn** executes one complete turn (bots deliver intents normally, the turn timeout is enforced)
+and then pauses, letting you inspect the full game state before advancing.
+
+To start the battle already in debug mode from turn 1, use the **Start paused** toggle in the New
+Battle dialog. From the [Battle Runner API](../api/battle-runner), the same effect is achieved with
+`handle.pause()`, `handle.nextTurn()`, and `handle.resume()`.
+
+### Server configuration for debugging
+
+By default, both debug mode and breakpoint mode are enabled. For tournament or production servers where
+these features should be unavailable, edit `server.properties`:
+
+```properties
+# Disable turn-by-turn stepping (tournament safety)
+debugModeSupported=false
+
+# Disable breakpoint mode (tournament safety)
+breakpointModeSupported=false
+```
+
+Or pass CLI flags when starting the server standalone: `--no-debug-mode` / `--no-breakpoint-mode`.
+When `breakpointModeSupported=false` the server silently ignores any `breakpointEnabled` requests, so
+it is safe to leave debugger detection enabled in bots even when connecting to a tournament server.
+
 ## Graphical Debugging
 
 Robocode features a Graphical Debugging tool that allows bots to draw objects on the battlefield. This is particularly

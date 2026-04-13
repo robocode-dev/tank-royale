@@ -1,6 +1,9 @@
 # All text files: LF in repo and working tree
 * text=auto eol=lf
 
+# Java .properties files: UTF-8 (Java 9+ ResourceBundle reads as UTF-8 by default)
+*.properties text eol=lf working-tree-encoding=UTF-8
+
 # Windows batch/command files — keep CRLF for CMD compatibility on older Windows
 *.bat text eol=crlf
 *.cmd text eol=crlf

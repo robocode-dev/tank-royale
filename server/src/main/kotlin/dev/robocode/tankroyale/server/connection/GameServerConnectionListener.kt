@@ -55,9 +55,9 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
         log.info("Controller left: {}", getDisplayName(handshake.name, handshake.version))
     }
 
-    override fun onStartGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>) {
+    override fun onStartGame(gameSetup: GameSetup, botAddresses: Set<BotAddress>, debugMode: Boolean) {
         log.debug("Game is requested to start")
-        gameServer.handleStartGame(gameSetup, botAddresses)
+        gameServer.handleStartGame(gameSetup, botAddresses, debugMode)
     }
 
     override fun onAbortGame() {
@@ -87,8 +87,18 @@ class GameServerConnectionListener(private val gameServer: GameServer) : IConnec
 
     override fun onBotPolicyUpdated(botPolicyUpdate: BotPolicyUpdate) {
         log.debug("Bot policy updated for botId {}: debugGraphics is {}", botPolicyUpdate.botId,
-            if (botPolicyUpdate.debuggingEnabled) "enabled" else "disabled")
+            if (botPolicyUpdate.debuggingEnabled == true) "enabled" else if (botPolicyUpdate.debuggingEnabled == false) "disabled" else "unchanged")
         gameServer.handleBotPolicyUpdate(botPolicyUpdate)
+    }
+
+    override fun onEnableDebugMode() {
+        log.info("Debug mode is requested to be enabled")
+        gameServer.handleEnableDebugMode()
+    }
+
+    override fun onDisableDebugMode() {
+        log.info("Debug mode is requested to be disabled")
+        gameServer.handleDisableDebugMode()
     }
 
     private fun getDisplayName(name: String, version: String): String =

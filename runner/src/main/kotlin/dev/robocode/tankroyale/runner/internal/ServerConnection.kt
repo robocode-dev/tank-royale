@@ -60,6 +60,9 @@ internal class ServerConnection(
     /** The most recently received set of bots from BotListUpdate. */
     val latestBotList = AtomicReference<Set<BotInfo>>(emptySet())
 
+    /** Server features advertised in the ServerHandshake (available after connect). */
+    val serverFeatures = AtomicReference<Features?>(null)
+
     /** True if both Observer and Controller connections are established. */
     val isConnected: Boolean get() = connected.get()
 
@@ -142,6 +145,7 @@ internal class ServerConnection(
         try {
             when (val msg = json.decodeFromString(PolymorphicSerializer(Message::class), message)) {
                 is ServerHandshake -> {
+                    serverFeatures.set(msg.features)
                     sendHandshakeResponse(msg, role, ws)
                     // Handshake complete after we send our response — server will reply with BotListUpdate
                     readyLatch.countDown()
@@ -246,6 +250,47 @@ internal class ServerConnection(
     fun nextTurn() {
         requireConnected()
         sendControllerMessage(NextTurn)
+    }
+
+    // -------------------------------------------------------------------------------------
+    // 6.8 — Bot policy update
+    // -------------------------------------------------------------------------------------
+
+    /**
+     * Sends a `bot-policy-update` to the server to change per-bot behaviour flags.
+     *
+     * @param botId           the id of the target bot
+     * @param breakpointEnabled enable or disable breakpoint mode for this bot;
+     *                          `null` leaves the current setting unchanged
+     * @param debuggingEnabled  enable or disable debug graphics for this bot;
+     *                          `null` leaves the current setting unchanged
+     */
+    fun setBotPolicy(botId: Int, breakpointEnabled: Boolean? = null, debuggingEnabled: Boolean? = null) {
+        requireConnected()
+        sendControllerMessage(BotPolicyUpdate(botId, debuggingEnabled = debuggingEnabled, breakpointEnabled = breakpointEnabled))
+    }
+
+    // -------------------------------------------------------------------------------------
+    // 6.9 — Debug mode
+    // -------------------------------------------------------------------------------------
+
+    /**
+     * Sends `enable-debug-mode` to the server.
+     * In debug mode the server pauses after each turn instead of auto-advancing,
+     * letting the controller step turn-by-turn via [nextTurn].
+     */
+    fun enableDebugMode() {
+        requireConnected()
+        sendControllerMessage(EnableDebugMode)
+    }
+
+    /**
+     * Sends `disable-debug-mode` to the server, returning to normal auto-advancing.
+     * Equivalent to [resumeBattle], which also implicitly disables debug mode.
+     */
+    fun disableDebugMode() {
+        requireConnected()
+        sendControllerMessage(DisableDebugMode)
     }
 
     // -------------------------------------------------------------------------------------

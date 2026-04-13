@@ -78,10 +78,12 @@ public final class MockedServer {
     private final CountDownLatch openedLatch = new CountDownLatch(1);
     private final CountDownLatch botHandshakeLatch = new CountDownLatch(1);
     private final CountDownLatch gameStartedLatch = new CountDownLatch(1);
-    private final CountDownLatch tickEventLatch = new CountDownLatch(1);
     private final CountDownLatch botIntentLatch = new CountDownLatch(1);
 
-    private CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
+    private volatile CountDownLatch tickEventLatch = new CountDownLatch(1);
+    private volatile CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
+    private volatile boolean holdTickEnabled = false;
+    private CountDownLatch tickHoldLatch = new CountDownLatch(1);
 
     private BotHandshake botHandshake;
     private BotIntent botIntent;
@@ -113,6 +115,20 @@ public final class MockedServer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Call before starting the bot to make the server hold tick 1 after sending ROUND_STARTED.
+     * The tick is not sent until {@link #releaseTick()} is called.
+     * Use this to inspect bot state (e.g. isRunning()) between ROUND_STARTED and tick 1.
+     */
+    public void holdTick() {
+        holdTickEnabled = true;
+    }
+
+    /** Releases the held tick, allowing the server to send tick 1 to the bot. */
+    public void releaseTick() {
+        tickHoldLatch.countDown();
     }
 
     public void setEnergy(double energy) {
@@ -175,6 +191,26 @@ public final class MockedServer {
         this.radarDirectionMaxLimit = maxLimit;
     }
 
+    public boolean awaitBotReady(int milliSeconds) {
+        return awaitBotHandshake(milliSeconds) && awaitGameStarted(milliSeconds) && awaitTick(milliSeconds);
+    }
+
+    public boolean setBotStateAndAwaitTick(
+            Double energy, Double gunHeat, Double speed, Double direction, Double gunDirection, Double radarDirection) {
+        if (energy != null) {
+            this.energy = energy;
+        }
+        if (gunHeat != null) this.gunHeat = gunHeat;
+        if (speed != null) this.speed = speed;
+        if (direction != null) this.direction = direction;
+        if (gunDirection != null) this.gunDirection = gunDirection;
+        if (radarDirection != null) this.radarDirection = radarDirection;
+
+        tickEventLatch = new CountDownLatch(1);
+        botIntentContinueLatch.countDown();
+        return awaitTick(5000);
+    }
+
     public boolean awaitConnection(int milliSeconds) {
         try {
             return openedLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
@@ -229,6 +265,14 @@ public final class MockedServer {
         return botIntent;
     }
 
+    public Double getEnergy() {
+        return energy;
+    }
+
+    public Double getGunHeat() {
+        return gunHeat;
+    }
+
     private static int findAvailablePort() {
         try (java.net.ServerSocket socket = new java.net.ServerSocket(0)) {
             return socket.getLocalPort();
@@ -257,6 +301,10 @@ public final class MockedServer {
 
         @Override
         public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+            System.out.println("[DBG-SERVER] onClose code=" + code + " reason=" + reason + " remote=" + remote);
+            if (!remote) {
+                new RuntimeException("[DBG-SERVER] local close initiated here").printStackTrace(System.out);
+            }
         }
 
         @Override
@@ -277,6 +325,14 @@ public final class MockedServer {
                     System.out.println("BOT_READY");
 
                     sendRoundStarted(conn);
+
+                    if (holdTickEnabled) {
+                        try {
+                            tickHoldLatch.await(5, TimeUnit.SECONDS);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
 
                     sendTickEventForBot(conn, turnNumber++);
                     tickEventLatch.countDown();
@@ -307,20 +363,30 @@ public final class MockedServer {
                     botIntent = JsonConverter.fromJson(text, BotIntent.class);
                     botIntentLatch.countDown();
 
-                    sendTickEventForBot(conn, turnNumber++);
-                    tickEventLatch.countDown();
-
                     // Update states
                     speed += speedIncrement;
                     direction += turnIncrement;
                     gunDirection += gunTurnIncrement;
                     radarDirection += radarTurnIncrement;
+
+                    // Apply bot intent changes
+                    if (botIntent != null) {
+                        if (botIntent.getFirepower() != null && botIntent.getFirepower() > 0) {
+                            gunHeat += 1.0 + botIntent.getFirepower() / 5.0;
+                            energy -= botIntent.getFirepower();
+                        }
+                    }
+
+                    sendTickEventForBot(conn, turnNumber++);
+                    tickEventLatch.countDown();
                     break;
             }
         }
 
         @Override
         public void onError(WebSocket conn, Exception ex) {
+            System.out.println("[DBG-SERVER] onError: " + ex);
+            ex.printStackTrace(System.out);
             throw new IllegalStateException("MockedServer error", ex);
         }
 

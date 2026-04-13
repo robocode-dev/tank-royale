@@ -4,15 +4,19 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.io.TempDir
+import org.junit.jupiter.api.Timeout
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Path
 import java.time.Duration
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import java.util.logging.Handler
 import java.util.logging.Level
 import java.util.logging.LogRecord
 import java.util.logging.Logger
 import java.util.zip.GZIPInputStream
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.io.path.exists
 
 /**
@@ -607,6 +611,83 @@ class BattleRunnerIntegrationTest {
     }
 
     // -------------------------------------------------------------------------------------
+    // 10.7 — Debug mode and breakpoint mode
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `serverFeatures advertises debugMode and breakpointMode`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            runner.startBattleAsync(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            ).use { handle ->
+                assertThat(handle.serverFeatures).isNotNull()
+                assertThat(handle.serverFeatures?.debugMode).isTrue()
+                assertThat(handle.serverFeatures?.breakpointMode).isTrue()
+                handle.awaitResults()
+            }
+        }
+    }
+
+    @Test
+    fun `enableDebugMode pauses after each turn with debug_step pauseCause`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            runner.startBattleAsync(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            ).use { handle ->
+                val owner = Any()
+                val firstPauseLatch = CountDownLatch(1)
+                val receivedCauses = mutableListOf<String?>()
+
+                handle.onGamePaused.on(owner) { event ->
+                    synchronized(receivedCauses) { receivedCauses.add(event.pauseCause) }
+                    firstPauseLatch.countDown()
+                }
+
+                handle.onGameStarted.on(owner) { handle.enableDebugMode() }
+
+                assertThat(firstPauseLatch.await(30, TimeUnit.SECONDS))
+                    .describedAs("Expected at least one debug_step pause within 30 seconds")
+                    .isTrue()
+
+                synchronized(receivedCauses) {
+                    assertThat(receivedCauses).isNotEmpty()
+                    assertThat(receivedCauses).allMatch { it == "debug_step" }
+                }
+
+                handle.resume()
+                handle.awaitResults()
+            }
+        }
+    }
+
+    @Test
+    fun `disableDebugMode exits debug mode and battle completes normally`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            runner.startBattleAsync(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            ).use { handle ->
+                val owner = Any()
+                val pausedLatch = CountDownLatch(1)
+
+                handle.onGamePaused.on(owner) { pausedLatch.countDown() }
+                handle.onGameStarted.on(owner) { handle.enableDebugMode() }
+
+                assertThat(pausedLatch.await(30, TimeUnit.SECONDS))
+                    .describedAs("Expected debug_step pause before disableDebugMode()")
+                    .isTrue()
+
+                handle.disableDebugMode()
+
+                val results = handle.awaitResults()
+                assertThat(results.results).hasSize(2)
+            }
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
     // WonRound cross-language tests
     // -------------------------------------------------------------------------------------
 
@@ -638,6 +719,147 @@ class BattleRunnerIntegrationTest {
                     "(Java got $javaCount, C# got $csharpCount, total = $total)"
                 )
                 .isEqualTo(10)
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+    // Breakpoint disconnect regression (issue #206) — slow soak, excluded from normal CI
+    // -------------------------------------------------------------------------------------
+
+    /**
+     * Verifies that a bot paused at a debugger breakpoint does **not** disconnect from the
+     * server within 3 minutes (well past the 60-second WebSocket connection-lost timeout).
+     *
+     * The bot used here ([BreakpointStallBot]) simulates a frozen JVM:
+     *   - It connects and completes the handshake, but never sends [BotIntent] messages.
+     *   - It deliberately does **not** respond to WebSocket ping frames, so the server's
+     *     connection-lost detection would normally disconnect it after ~60 seconds.
+     *
+     * With the fix (GameServer disables connection-lost detection on breakpoint pause),
+     * the bot must remain connected for the full 3-minute soak period.
+     *
+     * Tagged [Tag("slow")] — excluded from the default `integrationTest` Gradle task.
+     * Run explicitly with `./gradlew :runner:slowIntegrationTest`.
+     */
+    @Test
+    @Tag("slow")
+    @Timeout(value = 6, unit = TimeUnit.MINUTES)
+    fun `bot in breakpoint pause stays connected for 3 minutes (issue 206 regression)`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            runner.startBattleAsync(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(
+                    BotEntry.of(testBotDir("BreakpointStallBot")),
+                    BotEntry.of(botDir("SpinBot"))
+                )
+            ).use { handle ->
+                val owner = Any()
+                val breakpointPauseLatch = CountDownLatch(1)
+                val botDisconnected = AtomicBoolean(false)
+
+                // Count bots present when the game starts; any BotListUpdate with fewer bots
+                // after the breakpoint pause means BreakpointStallBot was disconnected.
+                var botCountAtStart = 0
+                handle.onGameStarted.on(owner) { event ->
+                    botCountAtStart = event.participants.size
+                    val stallBotId = event.participants.first { it.name == "BreakpointStallBot" }.id
+                    handle.setBotPolicy(stallBotId, breakpointEnabled = true)
+                }
+
+                // Track bot disconnections that happen AFTER the breakpoint pause has been confirmed.
+                var watchingForDisconnect = false
+                handle.onBotListUpdate.on(owner) { update ->
+                    if (watchingForDisconnect && update.bots.size < botCountAtStart) {
+                        botDisconnected.set(true)
+                    }
+                }
+
+                handle.onGamePaused.on(owner) { event ->
+                    if (event.pauseCause == "breakpoint" && !watchingForDisconnect) {
+                        watchingForDisconnect = true
+                        breakpointPauseLatch.countDown()
+                    }
+                }
+
+                // Wait up to 60 s for the game to pause at the breakpoint.
+                assertThat(breakpointPauseLatch.await(60, TimeUnit.SECONDS))
+                    .describedAs("Game must pause at breakpoint within 60 seconds")
+                    .isTrue()
+
+                // Soak for 3 minutes — longer than the 60-second connection-lost timeout.
+                // Without the fix the server would disconnect the bot after ~60–80 s.
+                Thread.sleep(TimeUnit.MINUTES.toMillis(3))
+
+                assertThat(botDisconnected.get())
+                    .describedAs(
+                        "BreakpointStallBot must NOT be disconnected by the server during a 3-minute " +
+                        "breakpoint pause (regression: issue #206 — connection-lost detection must be " +
+                        "disabled while the game is paused for a breakpoint)"
+                    )
+                    .isFalse()
+
+                // Clean up: stop the battle so the runner can shut down cleanly.
+                handle.stop()
+            }
+        }
+    }
+
+    /**
+     * Negative counterpart to the positive test above.
+     *
+     * Verifies that [BreakpointStallBot] **is** disconnected by the server when breakpoint
+     * mode is NOT enabled — confirming that the connection-lost detection is only suppressed
+     * during a breakpoint pause, not globally.
+     *
+     * Without breakpoint mode the server keeps its default 60-second connection-lost timeout.
+     * [BreakpointStallBot] never sends pong responses, so the server closes its connection
+     * after ~120 seconds (one 60-second cycle to send the ping, another to detect no pong).
+     *
+     * Tagged [Tag("slow")] — excluded from the default `integrationTest` Gradle task.
+     * Run explicitly with `./gradlew :runner:slowIntegrationTest`.
+     */
+    @Test
+    @Tag("slow")
+    @Timeout(value = 6, unit = TimeUnit.MINUTES)
+    fun `bot without breakpoint mode is disconnected by connection-lost detection (issue 206 negative)`() {
+        BattleRunner.create { embeddedServer() }.use { runner ->
+            runner.startBattleAsync(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(
+                    BotEntry.of(testBotDir("BreakpointStallBot")),
+                    BotEntry.of(botDir("SpinBot"))
+                )
+            ).use { handle ->
+                val owner = Any()
+                val botDisconnectLatch = CountDownLatch(1)
+
+                var botCountAtStart = 0
+                var watchingForDisconnect = false
+
+                handle.onGameStarted.on(owner) { event ->
+                    botCountAtStart = event.participants.size
+                    // Breakpoint mode deliberately NOT enabled — fix must not suppress the timeout.
+                    watchingForDisconnect = true
+                }
+
+                handle.onBotListUpdate.on(owner) { update ->
+                    if (watchingForDisconnect && update.bots.size < botCountAtStart) {
+                        botDisconnectLatch.countDown()
+                    }
+                }
+
+                // Wait up to 4 minutes: server pings at ~60 s, closes at ~120 s if no pong.
+                // The bot never sends pongs, so it must be disconnected well within this window.
+                assertThat(botDisconnectLatch.await(4, TimeUnit.MINUTES))
+                    .describedAs(
+                        "BreakpointStallBot must be disconnected by connection-lost detection within " +
+                        "4 minutes when breakpoint mode is not active (fix must not suppress the " +
+                        "timeout globally — only during a breakpoint pause)"
+                    )
+                    .isTrue()
+
+                handle.stop()
+            }
         }
     }
 }

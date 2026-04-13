@@ -43,6 +43,9 @@ object Client {
     val currentTick: TickEvent?
         get() = currentPlayer?.getCurrentTick()
 
+    val serverFeatures: Features?
+        get() = liveBattlePlayer.serverFeatures
+
     fun switchToLiveBattlePlayer() {
         setPlayer(liveBattlePlayer)
     }
@@ -79,9 +82,9 @@ object Client {
         currentPlayer?.start() ?: throw IllegalStateException("No active battle player")
     }
 
-    fun startGame(botAddresses: Set<BotAddress>) {
+    fun startGame(botAddresses: Set<BotAddress>, debugMode: Boolean = false) {
         if (currentPlayer == liveBattlePlayer) {
-            liveBattlePlayer.startGame(botAddresses)
+            liveBattlePlayer.startGame(botAddresses, debugMode)
         } else {
             throw IllegalStateException("Trying to start game with websocket bots without server connection")
         }
@@ -110,6 +113,16 @@ object Client {
     fun isGameRunning(): Boolean = currentPlayer?.isRunning() ?: false
 
     fun isGamePaused(): Boolean = currentPlayer?.isPaused() ?: false
+
+    fun enableDebugMode() {
+        currentPlayer?.enableDebugMode()
+    }
+
+    fun disableDebugMode() {
+        currentPlayer?.disableDebugMode()
+    }
+
+    fun isDebugModeSupported(): Boolean = currentPlayer?.isDebugModeSupported() ?: false
 
     val joinedBots: Set<BotInfo>
         get() = currentPlayer?.getJoinedBots() ?: emptySet()

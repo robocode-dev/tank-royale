@@ -111,6 +111,9 @@ class MockedServer:
         # optional injections
         self._self_death_turn: Optional[int] = None
 
+        # shutdown flag
+        self._stopping: bool = False
+
         # server/loop/thread
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._thread: Optional[threading.Thread] = None
@@ -149,18 +152,26 @@ class MockedServer:
         self._loop.run_forever()
 
     def stop(self) -> None:
+        # Signal handlers to stop blocking and exit quickly.
+        self._stopping = True
+        self._bot_intent_continue_event.set()
+
         if self._loop and self._server is not None:
             async def _close_server() -> None:
                 self._server.close()
-                await self._server.wait_closed()
+                # wait_closed() resolves quickly because the _stopping check at
+                # the top of each handler's message loop closes the connection
+                # gracefully as soon as the next message arrives.
+                try:
+                    await asyncio.wait_for(self._server.wait_closed(), timeout=1.0)
+                except asyncio.TimeoutError:
+                    pass
 
             if self._loop.is_running():
                 future = asyncio.run_coroutine_threadsafe(_close_server(), self._loop)
                 try:
-                    future.result(timeout=2.0)
-                except FuturesTimeoutError:
-                    future.cancel()
-                except Exception:
+                    future.result(timeout=0.5)
+                except (FuturesTimeoutError, Exception):
                     future.cancel()
             else:
                 self._server.close()
@@ -170,6 +181,32 @@ class MockedServer:
             self._thread.join(timeout=1.0)
 
     # Await helpers
+    def await_bot_ready(self, timeout_ms: int = 2000) -> bool:
+        """Blocks until handshake, game started, and initial tick are all seen."""
+        return (self.await_bot_handshake(timeout_ms) and
+                self.await_game_started(timeout_ms) and
+                self.await_tick(timeout_ms))
+
+    def set_bot_state_and_await_tick(self,
+                                    energy: Optional[float] = None,
+                                    gun_heat: Optional[float] = None,
+                                    speed: Optional[float] = None,
+                                    direction: Optional[float] = None,
+                                    gun_direction: Optional[float] = None,
+                                    radar_direction: Optional[float] = None,
+                                    timeout_ms: int = 5000) -> bool:
+        """Updates internal state and awaits next tick event."""
+        if energy is not None: self._energy = energy
+        if gun_heat is not None: self._gun_heat = gun_heat
+        if speed is not None: self._speed = speed
+        if direction is not None: self._direction = direction
+        if gun_direction is not None: self._gun_direction = gun_direction
+        if radar_direction is not None: self._radar_direction = radar_direction
+
+        self._tick_event.clear()
+        self._bot_intent_continue_event.set()
+        return self.await_tick(timeout_ms)
+
     def await_connection(self, timeout_ms: int) -> bool:
         return self._opened_event.wait(timeout_ms / 1000.0)
 
@@ -180,8 +217,6 @@ class MockedServer:
         return self._game_started_event.wait(timeout_ms / 1000.0)
 
     def await_tick(self, timeout_ms: int) -> bool:
-        # Reset the event for this wait
-        self._tick_event.clear()
         return self._tick_event.wait(timeout_ms / 1000.0)
 
     def await_bot_intent(self, timeout_ms: int) -> bool:
@@ -309,6 +344,15 @@ class MockedServer:
 
         try:
             async for msg in websocket:
+                # Detect shutdown first so the connection is closed gracefully,
+                # allowing wait_closed() and the bot's closed_event to resolve fast.
+                if self._stopping:
+                    try:
+                        await websocket.close(1001, "Server stopping")
+                    except Exception:
+                        pass
+                    break
+
                 message: Message = from_json(msg)  # type: ignore
                 msg_type = getattr(message, "type", None)
 
@@ -350,15 +394,22 @@ class MockedServer:
                     self._bot_intent = message
                     self._bot_intent_event.set()
 
-                    await self._send_tick(websocket, self._turn_number)
-                    self._turn_number += 1
-                    self._tick_event.set()
-
-                    # Advance state after sending tick
+                    # Advance state before sending tick
                     self._speed += self._speed_increment
                     self._direction += self._turn_increment
                     self._gun_direction += self._gun_turn_increment
                     self._radar_direction += self._radar_turn_increment
+
+                    # Apply bot intent changes
+                    if self._bot_intent:
+                        firepower = self._bot_intent.firepower
+                        if firepower and firepower > 0:
+                            self._gun_heat += 1.0 + firepower / 5.0
+                            self._energy -= firepower
+
+                    await self._send_tick(websocket, self._turn_number)
+                    self._turn_number += 1
+                    self._tick_event.set()
 
                     # Only reset movement after first intent following round start
                     if movement_reset_pending:
@@ -380,11 +431,10 @@ class MockedServer:
 
     async def _wait_for_intent_continue(self) -> None:
         # Bridge threading.Event into asyncio loop
-        loop = asyncio.get_running_loop()
-        if self._bot_intent_continue_event.is_set():
-            # Reset for next await
+        if self._stopping or self._bot_intent_continue_event.is_set():
             self._bot_intent_continue_event.clear()
             return
+        loop = asyncio.get_running_loop()
         await loop.run_in_executor(None, self._bot_intent_continue_event.wait)
         self._bot_intent_continue_event.clear()
 

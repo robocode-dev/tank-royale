@@ -53,9 +53,6 @@ TICK_NOT_AVAILABLE_MSG = "Game is not running or tick has not occurred yet. Make
 NOT_CONNECTED_TO_SERVER_MSG = "Not connected to a game server. Make sure onConnected() event handler has been called first"
 
 
-# TODO: This class does not work yet - esp., figure out the asyncio integration and how to handle the bot's main loop.
-
-
 class BaseBotInternals:
     def __init__(
         self,
@@ -309,11 +306,23 @@ class BaseBotInternals:
     def is_running(self) -> bool:
         return self.data.is_running
 
+    def _wait_until_first_tick_arrived(self) -> None:
+        """Block the pre-warmed bot thread until the first tick of the round arrives.
+        The thread is started at round-started (before any tick), so it must wait here
+        before run() can safely read bot state.
+        Notified by _on_next_turn() (priority 100) after BotInternals._on_first_turn()
+        (priority 110) has already captured initial directions via _clear_remaining().
+        """
+        with self._next_turn_condition:
+            while self.is_running() and self.data.current_tick_or_null is None:
+                self._next_turn_condition.wait()
+
     def _create_runnable(self, bot: BotABC):
         """Create runnable function for bot thread (matches Java's createRunnable)"""
         def runnable():
             self.set_running(True)
             try:
+                self._wait_until_first_tick_arrived()
                 bot.run()
             except ThreadInterruptedException:
                 pass
@@ -422,17 +431,20 @@ class BaseBotInternals:
                 self._ws_loop
             )
 
-    def execute(self) -> None:
-        """Execute bot intent and wait for next turn (matches Java's execute)"""
-        current_tick = self.data.current_tick_or_null
+    def execute(self, captured_turn_number: int) -> None:
+        """Execute bot intent and wait for next turn.
+
+        Args:
+            captured_turn_number: The turn number captured by go() at the time events were
+                dispatched, or -1 if no tick was available.
+        """
         # If no tick has been received yet, send current intent once to allow the server to progress
-        if current_tick is None:
+        if captured_turn_number < 0:
             self._send_intent()
             return
 
-        turn_number = current_tick.turn_number
-        if turn_number != self.last_execute_turn_number:
-            self.last_execute_turn_number = turn_number
+        if captured_turn_number != self.last_execute_turn_number:
+            self.last_execute_turn_number = captured_turn_number
             # Events are dispatched from BaseBot.go(); staging happens on tick reception
             self._send_intent()
 
@@ -440,7 +452,7 @@ class BaseBotInternals:
                 self._reset_movement()
                 self._movement_reset_pending = False
 
-        self._wait_for_next_turn(turn_number)
+        self._wait_for_next_turn(captured_turn_number)
 
     def _send_intent(self) -> None:
         """Send bot intent to server (synchronous)"""

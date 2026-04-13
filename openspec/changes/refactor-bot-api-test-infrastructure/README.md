@@ -106,16 +106,21 @@ Apply the same patterns across **all three languages** (Java, .NET, Python) to e
 
 **New Files**:
 
-- Java: `AbstractBotTest.java`, `CommandsFireTest.java`
+- Java: `CommandsFireTest.java`
 - .NET: `CommandsFireTest.cs`
 - Python: `abstract_bot_test.py`, `test_commands_fire.py`, `test_commands_radar.py`
 - Documentation: `TESTING-GUIDE.md`
 
+**Already Exist (partial — need enhancement)**:
+
+- Java: `AbstractBotTest.java` (exists in `botapi` package; lacks Phase 2 helpers)
+- .NET: `AbstractBotTest.cs` (exists; lacks Phase 2 helpers)
+- Python: `test_commands_movement.py` (exists; currently skipped pending go() fix)
+
 **Enhanced Files**:
 
-- All three `MockedServer` implementations
-- .NET `AbstractBotTest.cs`
-- Existing command test files (refactored)
+- All three `MockedServer` implementations (Phase 1 enhancements pending)
+- Existing command test files (refactored to use new utilities)
 
 **Updated Files**:
 
@@ -207,6 +212,7 @@ After completion:
 ## History
 
 - **2025-12-31**: Initial specification created
-- **[Future]**: Implementation begins
+- **2026-04-12**: Spec updated — corrected Phase 1 task status, reflected actual file locations and partial implementations
+- **[Future]**: Implementation completes
 - **[Future]**: Change completed and archived
 

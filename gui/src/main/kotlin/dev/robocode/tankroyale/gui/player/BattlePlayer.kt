@@ -90,6 +90,23 @@ interface BattlePlayer {
      */
     fun changeTps(tps: Int)
 
+    /**
+     * Enables debug mode on the server (ADR-0033).
+     * In debug mode, the server pauses after each turn instead of auto-advancing.
+     */
+    fun enableDebugMode()
+
+    /**
+     * Disables debug mode on the server.
+     * The server returns to normal auto-advancing behavior.
+     */
+    fun disableDebugMode()
+
+    /**
+     * Returns true if the server supports debug mode.
+     */
+    fun isDebugModeSupported(): Boolean
+
     // Events that can be fired by battle players
 
     /** Fired when connected to battle source */

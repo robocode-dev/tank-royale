@@ -301,31 +301,29 @@ Add helper utilities to create configurable mock/stub test bots:
 **Java**:
 
 - `bot-api/java/src/test/java/test_utils/MockedServer.java` (enhanced)
-- `bot-api/java/src/test/java/test_utils/AbstractBotTest.java` (new)
+- `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/AbstractBotTest.java` (exists — needs Phase 2 helpers)
 - `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/CommandsFireTest.java` (new)
-- `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/CommandsRadarTest.java` (refactored)
-- `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/CommandsMovementTest.java` (refactored if exists)
+- `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/CommandsMovementTest.java` (exists — refactor to use new utilities)
 
 **.NET**:
 
 - `bot-api/dotnet/test/src/test_utils/MockedServer.cs` (enhanced)
-- `bot-api/dotnet/test/src/AbstractBotTest.cs` (enhanced)
+- `bot-api/dotnet/test/src/AbstractBotTest.cs` (exists — needs Phase 2 helpers)
 - `bot-api/dotnet/test/src/CommandsFireTest.cs` (new)
-- `bot-api/dotnet/test/src/CommandsRadarTest.cs` (refactored)
-- `bot-api/dotnet/test/src/CommandsMovementTest.cs` (refactored)
+- `bot-api/dotnet/test/src/CommandsMovementTest.cs` (exists — refactor to use new utilities)
 
 **Python**:
 
 - `bot-api/python/tests/test_utils/mocked_server.py` (enhanced)
 - `bot-api/python/tests/test_utils/abstract_bot_test.py` (new)
+- `bot-api/python/tests/bot_api/test_commands_movement.py` (exists — currently skipped; unblock after go() fix)
 - `bot-api/python/tests/bot_api/commands/test_commands_fire.py` (new)
 - `bot-api/python/tests/bot_api/commands/test_commands_radar.py` (new)
-- `bot-api/python/tests/bot_api/commands/test_commands_movement.py` (refactored if exists)
 
 **Documentation**:
 
 - `bot-api/tests/TEST-MATRIX.md` (update CMD-002 and CMD-003 status)
-- `bot-api/tests/TESTING-GUIDE.md` (new - document testing patterns and utilities)
+- `bot-api/tests/TESTING-GUIDE.md` (new — document testing patterns and utilities)
 
 ### Affected Specs
 

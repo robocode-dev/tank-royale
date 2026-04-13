@@ -149,6 +149,7 @@ tasks {
             mkdir(typescriptArchiveDir)
             prepareJavaBot("WonRoundCounterJava")
             prepareCsharpBot("WonRoundCounterCSharp")
+            prepareJavaBot("BreakpointStallBot")
             prepareTsDependencies()
             prepareTypescriptBot("WonRoundCounterTs")
         }

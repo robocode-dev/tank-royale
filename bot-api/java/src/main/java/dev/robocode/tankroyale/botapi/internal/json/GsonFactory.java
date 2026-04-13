@@ -44,7 +44,7 @@ final class GsonFactory {
     }
 
     private static RuntimeTypeAdapterFactory<Event> getEventTypeFactory() {
-        return RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "type")
+        return RuntimeTypeAdapterFactory.of(dev.robocode.tankroyale.schema.Event.class, "type", true)
                 .registerSubtype(dev.robocode.tankroyale.schema.BotDeathEvent.class, "BotDeathEvent")
                 .registerSubtype(dev.robocode.tankroyale.schema.BotHitBotEvent.class, "BotHitBotEvent")
                 .registerSubtype(dev.robocode.tankroyale.schema.BotHitWallEvent.class, "BotHitWallEvent")

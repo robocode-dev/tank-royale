@@ -23,35 +23,52 @@ and have fun while competing.
 
 <img src="docs-build/docs/images/robocode-battle-anim.gif" alt="GIF animation of tanks battling each other on a 2D battlefield">
 
-## 🖥️ Tank Royale Viewer
+## 🌟 Explore More
+
+| Resource | Why it matters | Link |
+|----------|----------------|------|
+| 📘 **The Book of Robocode** | The advanced companion to Tank Royale docs with deeper strategy content on movement, targeting, radar control, energy management, and competition-level tactics. | [Open the Book](https://book.robocode.dev/) |
+| 🖥️ **Tank Royale Viewer** | A dedicated web-based viewer for showing live battles, analyzing recordings, and putting matches on big screens during competitions. | [Open the Viewer](https://github.com/jandurovec/tank-royale-viewer) |
+
+### 📘 The Book of Robocode
+
+Want to go beyond the fundamentals? [**The Book of Robocode**](https://book.robocode.dev/) is the advanced companion to
+these docs and covers both Robocode and Robocode Tank Royale.
+
+**Start here:**
+
+- [Your First Bot](https://book.robocode.dev/getting-started/your-first-bot.html)
+- [Radar & Scanning](https://book.robocode.dev/radar/radar-basics)
+- [Targeting](https://book.robocode.dev/targeting/simple-targeting/head-on-targeting)
+- [Movement & Evasion](https://book.robocode.dev/movement/basic/movement-fundamentals-goto)
+- [Energy & Scoring](https://book.robocode.dev/energy-and-scoring/energy-as-a-resource)
+
+### 🖥️ Tank Royale Viewer
 
 Want to **visualize battles in style**? Check out the
-**[Tank Royale Viewer](https://github.com/jandurovec/tank-royale-viewer)**—a beautiful web-based viewer for
-watching Robocode Tank Royale matches in real-time! Created by [Jan Durovec](https://github.com/jandurovec), this tool
-is perfect for displaying live battles on big monitors during competitions, analyzing recorded battles, and showcasing
-championship matches.
+**[Tank Royale Viewer](https://github.com/jandurovec/tank-royale-viewer)** — a web-based viewer for watching Robocode
+Tank Royale matches in real time.
+
+Created by [Jan Durovec](https://github.com/jandurovec), it is especially useful for:
+
+- displaying live battles on big monitors during competitions
+- analyzing recorded battles
+- showcasing tournament and championship matches
 
 ## 📚 Documentation
 
-Main page:  
-[Robocode Tank Royale Docs](https://robocode-dev.github.io/tank-royale/)
+Main page: [Robocode Tank Royale Docs](https://robocode-dev.github.io/tank-royale/)
 
-### The Book of Robocode
+### 🚀 Start here
 
-[**The Book of Robocode**](https://book.robocode.dev/) 📖 is a comprehensive guide covering Robocode as well as
-Robocode Tank Royale—from basics to advanced strategies like wave surfing, guess-factor targeting, and
-movement techniques. It builds on two decades of community knowledge and foundational research from RoboWiki
-contributors.
-
-### 🚀 Try it out
-
-If you are new to Robocode or just need a refresher, start with the
-[Getting Started guide](https://robocode-dev.github.io/tank-royale/tutorial/getting-started).  
-For hands‑on coding, continue to the
-[My First Bot tutorial](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot.html).
-
-The [Installation guide](https://robocode-dev.github.io/tank-royale/articles/installation.html) covers how to install the GUI,
-and includes sample bots for quick demos.
+| If you want to... | Start here |
+|-------------------|------------|
+| Install and run Tank Royale | [Installation guide](https://robocode-dev.github.io/tank-royale/articles/installation) |
+| Learn the basics | [Getting Started](https://robocode-dev.github.io/tank-royale/tutorial/getting-started) |
+| Build your first bot | [My First Bot](https://robocode-dev.github.io/tank-royale/tutorial/my-first-bot) |
+| Learn advanced strategy | [The Book of Robocode](https://book.robocode.dev/) |
+| Watch battles in a dedicated viewer | [Tank Royale Viewer](https://github.com/jandurovec/tank-royale-viewer) |
+| Run battles headlessly from code | [Battle Runner API docs](https://robocode-dev.github.io/tank-royale/api/battle-runner) |
 
 ## 💻 Supported platforms
 
@@ -110,9 +127,7 @@ See the [Battle Runner API docs](https://robocode-dev.github.io/tank-royale/api/
 
 ## 🚧 Work in progress
 
-- **Bot API for TypeScript** (Node.js and browser support)
-    - JavaScript
-    - TypeScript
+- **Bot API for TypeScript** (Node.js and browser support for JavaScript and TypeScript runtimes)
 - **Robocode API bridge for Tank Royale** – see the [robocode-api-bridge](https://github.com/robocode-dev/robocode-api-bridge) project.
 
 ## Thanks to the contributors

@@ -179,7 +179,7 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         if (isRunning.get() && !isPaused.get()) {
             isPaused.set(true)
             playbackTimer?.stop()
-            onGamePaused(GamePausedEvent)
+            onGamePaused(GamePausedEvent())
         }
     }
 
@@ -281,6 +281,16 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
         // No need to update timer immediately - it will use the new TPS on next tick
     }
 
+    override fun enableDebugMode() {
+        // Debug mode is not supported when running replay
+    }
+
+    override fun disableDebugMode() {
+        // Debug mode is not supported when running replay
+    }
+
+    override fun isDebugModeSupported(): Boolean = false
+
     private fun startPlayback() {
         // Process all non-tick messages immediately until we hit a tick
         processUntilNextChunk()
@@ -354,6 +364,14 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
 
             is RoundEndedEvent -> {
                 onRoundEnded(message)
+            }
+
+            is GamePausedEvent -> {
+                onGamePaused(message)
+                // Display breakpoint pause message in console
+                if (message.pauseCause == "breakpoint") {
+                    System.out.println("Paused — waiting for bot to respond (breakpoint)")
+                }
             }
 
             is TickEvent -> {

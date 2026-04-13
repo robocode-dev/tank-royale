@@ -1,3 +1,62 @@
+## [0.40.1] - 2026-04-12 - First-turn skip fix + breakpoint disconnect fix
+
+### 🐞 Bug Fixes
+
+- Server:
+    - #206: Fixed bots disconnecting from the server after ~80 seconds while paused at a
+      debugger breakpoint.
+
+- Bot API (Java, .NET, Python):
+    - #202: Fixed bots receiving a `SkippedTurnEvent` on turn 1 and missing their first chance
+      to act.
+
+## [0.40.0] - 2026-04-11 - Debug Mode, Breakpoints & Debugger Detection
+
+This release makes Tank Royale a first-class environment for bot development and debugging. The three
+new capabilities work together as a system: each Bot API now **auto-detects a connected debugger** and
+advertises it to the server; the server uses that signal to **auto-enable breakpoint mode** for that
+bot, suspending the turn clock whenever the bot hits a breakpoint rather than issuing a
+`SkippedTurnEvent`; and a new **debug mode** lets any controller (or the GUI) step through the battle
+one completed turn at a time, inspecting the full game state before advancing. Together these remove
+the friction of debugging a bot under real game conditions — no manual setup, no missed turns, no
+racing the clock.
+
+### ✨ Features
+
+- Server:
+    - Added **debug mode** (`EnableDebugMode` / `DisableDebugMode`): turns complete fully before
+      pausing; `next-turn` steps one turn, `ResumeGame` exits. `GamePaused` gains a `pauseCause`
+      field (`pause`, `debug_step`, or `breakpoint`).
+    - #204: Added **breakpoint mode**: server waits for a late bot intent instead of issuing
+      `SkippedTurnEvent`; auto-resumes on arrival. Advertised via `features.breakpointMode`.
+      Auto-enabled for bots with `debuggerAttached = true`.
+    - Added `server.properties` (`debugModeSupported`, `breakpointModeSupported`) with CLI
+      overrides (`--[no-]debug-mode`, `--[no-]breakpoint-mode`). `breakpointModeSupported = false`
+      silently ignores breakpoint requests (tournament safety).
+
+- GUI:
+    - Added a **Debug 🐛** toggle to the control panel — steps one complete turn per **Next Turn** click.
+    - #205: Added **Start paused** to the New Battle dialog — enters debug mode from turn 1.
+    - #204: Added **Breakpoint Mode** toggle to the Bot Properties panel; auto-enabled and 🐛-labelled
+      when `debuggerAttached = true`. Hidden when the server doesn't support breakpoint mode.
+
+- Bot APIs (Java, .NET, Python):
+    - #204: Added **debugger detection**: `debuggerAttached: true` is included in the bot handshake
+      when a debugger is found (JDWP args / `Debugger.IsAttached` / `sys.gettrace()`). Overridable
+      via `ROBOCODE_DEBUG`.
+
+### 🐞 Bug Fixes
+
+- Sample bots (C#):
+    - Fixed `PaintingBot.cs` with a broken .json file.
+
+- Bot API (Java, .NET, Python):
+    - #202: Fixed race condition in `go()` / `execute()` where the WebSocket thread could deliver a new
+      tick between event dispatch and intent sending, causing the bot to skip a turn. This produced early
+      `SkippedTurnEvent` at tick 1, prevented the bot from acting at tick 2, and delayed `ScannedBotEvent`
+      delivery by one tick. The fix passes the captured turn number from `go()` into `execute()` so both
+      use the same consistent tick throughout the call.
+
 ## [0.39.0] - 2026-04-06 - Convention-over-Configuration & Scriptless Bots
 
 ### ✨ Features

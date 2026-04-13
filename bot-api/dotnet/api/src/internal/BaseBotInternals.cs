@@ -175,10 +175,19 @@ sealed class BaseBotInternals
         IsRunning = true;
         try
         {
+            // Block until the first tick arrives so Run() can safely access bot state
+            // (e.g. RadarDirection). By the time PulseAll() fires we are guaranteed
+            // that BotInternals.OnFirstTurn() (priority 110) has already called
+            // ClearRemaining(), capturing the initial directions from the tick state.
+            WaitUntilFirstTickArrived();
             bot.Run();
         }
         catch (ThreadInterruptedException)
         {
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
         }
 
         DispatchFinalTurnEvents();
@@ -314,21 +323,21 @@ sealed class BaseBotInternals
         }
     }
 
-    internal void Execute()
+    /// <param name="capturedTurnNumber">
+    /// The turn number captured by Go() at the time events were dispatched, or -1 if no tick was available.
+    /// </param>
+    internal void Execute(int capturedTurnNumber)
     {
-        // Allow Execute() to be called outside the bot run thread (e.g., tests invoking Go())
-        // If no tick has been received yet (e.g., immediately after GameStarted), send current intent once
-        // so the server can proceed to the first tick. This mirrors Java behavior.
-        if (CurrentTickOrNull == null)
+        // If no tick has been received yet, send current intent once so the server can proceed.
+        if (capturedTurnNumber < 0)
         {
             SendIntent();
             return;
         }
 
-        var turnNumber = CurrentTickOrThrow.TurnNumber;
-        if (turnNumber != _lastExecuteTurnNumber)
+        if (capturedTurnNumber != _lastExecuteTurnNumber)
         {
-            _lastExecuteTurnNumber = turnNumber;
+            _lastExecuteTurnNumber = capturedTurnNumber;
             SendIntent();
 
             if (_movementResetPending)
@@ -338,7 +347,7 @@ sealed class BaseBotInternals
             }
         }
 
-        WaitForNextTurn(turnNumber);
+        WaitForNextTurn(capturedTurnNumber);
     }
 
     private void SendIntent()
@@ -398,6 +407,22 @@ sealed class BaseBotInternals
         if (Thread.CurrentThread != _thread)
         {
             Thread.CurrentThread.Interrupt();
+        }
+    }
+
+    // Blocks the pre-warmed bot thread until the first tick of the round arrives.
+    // The thread is started at round-started (before any tick), so it must wait here
+    // before Run() can safely read bot state (radar direction, etc.).
+    // PulseAll() is called by OnNextTurn() (priority 100) after BotInternals.OnFirstTurn()
+    // (priority 110) has already captured the initial directions via ClearRemaining().
+    private void WaitUntilFirstTickArrived()
+    {
+        lock (_nextTurnMonitor)
+        {
+            while (IsRunning && CurrentTickOrNull == null)
+            {
+                Monitor.Wait(_nextTurnMonitor);
+            }
         }
     }
 

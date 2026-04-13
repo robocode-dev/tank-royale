@@ -1,8 +1,10 @@
 package dev.robocode.tankroyale.runner
 
+import dev.robocode.tankroyale.client.model.Features
 import dev.robocode.tankroyale.client.model.GameEndedEvent
-import java.time.Duration
+import dev.robocode.tankroyale.client.model.GamePausedEvent
 import dev.robocode.tankroyale.client.model.Results
+import java.time.Duration
 import dev.robocode.tankroyale.common.rules.GameType
 import dev.robocode.tankroyale.runner.internal.ServerConnection
 import org.assertj.core.api.Assertions.assertThat
@@ -254,5 +256,52 @@ class BattleRunnerTest {
             )
         )
         // No assertion needed — just verifying no exceptions
+    }
+
+    // -------------------------------------------------------------------------------------
+    // BattleHandle — serverFeatures and debug/breakpoint control (6.8 / 6.9)
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `BattleHandle serverFeatures returns null when no handshake received`() {
+        val conn = ServerConnection("ws://localhost:9999", "secret")
+        val handle = BattleHandle(conn) {}
+
+        assertThat(handle.serverFeatures).isNull()
+
+        handle.close()
+    }
+
+    @Test
+    fun `BattleHandle serverFeatures reflects Features set on connection`() {
+        val conn = ServerConnection("ws://localhost:9999", "secret")
+        conn.serverFeatures.set(Features(debugMode = true, breakpointMode = true))
+        val handle = BattleHandle(conn) {}
+
+        assertThat(handle.serverFeatures?.debugMode).isTrue()
+        assertThat(handle.serverFeatures?.breakpointMode).isTrue()
+
+        handle.close()
+    }
+
+    @Test
+    fun `BattleHandle onGamePaused delivers pauseCause from event`() {
+        val conn = ServerConnection("ws://localhost:9999", "secret")
+        val handle = BattleHandle(conn) {}
+        val owner = Any()
+        var receivedCause: String? = "not-set"
+        val latch = CountDownLatch(1)
+
+        handle.onGamePaused.on(owner) { event ->
+            receivedCause = event.pauseCause
+            latch.countDown()
+        }
+
+        conn.onGamePaused(GamePausedEvent(pauseCause = "debug_step"))
+
+        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue()
+        assertThat(receivedCause).isEqualTo("debug_step")
+
+        handle.close()
     }
 }

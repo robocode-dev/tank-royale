@@ -19,6 +19,26 @@ If you are new to Robocode, you should start with:
 - read the [Getting Started](tutorial/getting-started), and then
 - continue to [My First Bot](tutorial/my-first-bot) to create your first bot.
 
+<div class="book-spotlight">
+  <div class="book-spotlight__eyebrow">Advanced strategies</div>
+  <h2 class="book-spotlight__title">📘 The Book of Robocode</h2>
+  <p class="book-spotlight__lead">
+    Want to go beyond the fundamentals? <a href="https://book.robocode.dev/"><strong>The Book of Robocode</strong></a>
+    is the advanced companion to these docs, covering movement, targeting, radar control, energy management, and
+    competition-level tactics for both Robocode and Tank Royale.
+  </p>
+  <div class="book-spotlight__actions">
+    <a class="book-spotlight__button book-spotlight__button--primary" href="https://book.robocode.dev/">Open the Book</a>
+    <a class="book-spotlight__button" href="https://book.robocode.dev/getting-started/your-first-bot.html">Start with the tutorial</a>
+  </div>
+  <div class="book-spotlight__topics">
+    <a href="https://book.robocode.dev/radar/radar-basics">Radar &amp; Scanning</a>
+    <a href="https://book.robocode.dev/targeting/simple-targeting/head-on-targeting">Targeting</a>
+    <a href="https://book.robocode.dev/movement/basic/movement-fundamentals-goto">Movement &amp; Evasion</a>
+    <a href="https://book.robocode.dev/energy-and-scoring/energy-as-a-resource">Energy &amp; Scoring</a>
+  </div>
+</div>
+
 ## 🗺️ Learning Roadmap
 
 Robocode mastery is a journey from fundamentals to advanced competitive strategies. We've organized documentation into a
@@ -49,8 +69,8 @@ clear learning path:
 
 ### 📚 Advanced Topics (The Book of Robocode)
 
-**Ready for advanced competitive strategies?** The Tank Royale documentation covers fundamentals; *
-*[The Book of Robocode](https://book.robocode.dev/)** takes you to competition level:
+**Ready for advanced competitive strategies?** These docs cover the fundamentals, while
+[**The Book of Robocode**](https://book.robocode.dev/) takes you further into competition-level tactics:
 
 - **[Radar & Scanning](https://book.robocode.dev/radar/radar-basics)** - Perfect locks, spinning radar, melee strategies
 - **[Advanced Targeting](https://book.robocode.dev/targeting/simple-targeting/head-on-targeting)** - GuessFactor
@@ -61,12 +81,6 @@ clear learning path:
   Segmentation, statistics-based targeting
 - **[Energy & Scoring](https://book.robocode.dev/energy-and-scoring/energy-as-a-resource)** - Strategic resource
   management
-
-## 📖 The Book of Robocode
-
-[**The Book of Robocode**](https://book.robocode.dev/) is a comprehensive guide covering Robocode as well as
-Robocode Tank Royale—from basics to advanced strategies like wave surfing, guess-factor targeting, and movement
-techniques. It builds on two decades of community knowledge and foundational research from RoboWiki contributors.
 
 ## 🖥️ Tank Royale Viewer
 

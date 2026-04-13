@@ -28,12 +28,18 @@ import java.util.concurrent.ConcurrentHashMap
  *   requiring [tickLock].
  */
 class GameServer(private val config: ServerConfig) {
+
+    companion object {
+        /** Default WebSocket connection-lost detection timeout (seconds), matching java-websocket's own default. */
+        private const val DEFAULT_CONNECTION_LOST_TIMEOUT_SECS = 60
+    }
+
     /** JSON handler */
     private val gson = Gson()
 
     /** Connection handler for observers and bots */
     private val connectionHandler =
-        ConnectionHandler(ServerSetup(config.gameTypes), GameServerConnectionListener(this), config.controllerSecrets, config.botSecrets)
+        ConnectionHandler(ServerSetup(config.gameTypes), GameServerConnectionListener(this), config.controllerSecrets, config.botSecrets, config.debugModeSupported, config.breakpointModeSupported)
 
     /** Registry for tracking game participants (bots). */
     private val participantRegistry = ParticipantRegistry(connectionHandler)
@@ -73,6 +79,10 @@ class GameServer(private val config: ServerConfig) {
 
     /** Map over bots that sent their intent this turn */
     private val botsThatSentIntent = ConcurrentHashMap.newKeySet<WebSocket>()
+
+    /** Turn number of the last processed tick — used to construct SkippedTurnEvent during breakpoint disable */
+    @Volatile
+    private var lastTickTurnNumber: Int = 0
 
     /** Starts this server */
     fun start() {
@@ -174,6 +184,8 @@ class GameServer(private val config: ServerConfig) {
         participantRegistry.clearReadyParticipants()
         participantRegistry.populateParticipantMap()
 
+        autoEnableBreakpointModeForDebugBots()
+
         lifecycleManager.serverState = ServerState.GAME_RUNNING
 
         sendGameStartedToObservers()
@@ -181,6 +193,20 @@ class GameServer(private val config: ServerConfig) {
 
         lifecycleManager.createTurnTimeoutTimer { onNextTurn() }
         resetTurnTimeout()
+    }
+
+    /**
+     * Auto-enables breakpoint mode for bots with a debugger attached (ADR-0035).
+     * This allows developers to debug bots immediately when they hit a breakpoint,
+     * without needing to manually enable breakpoint mode in the controller.
+     */
+    private fun autoEnableBreakpointModeForDebugBots() {
+        if (!config.breakpointModeSupported) return
+        participantRegistry.participantMap.forEach { (botId, participant) ->
+            if (participant.debuggerAttached == true) {
+                participantRegistry.setBreakpointEnabled(botId, true)
+            }
+        }
     }
 
     /** Send GameStarted to all participant observers to get them started */
@@ -277,6 +303,28 @@ class GameServer(private val config: ServerConfig) {
 
         val botProcessingDurationNanos = System.nanoTime() - turnStartTimeNanos
 
+        // Check for alive bots that have breakpoint mode enabled and have NOT sent an intent yet.
+        // This must be done inside tickLock to get a consistent snapshot of botsThatSentIntent.
+        // If any such bots exist, pause and wait for them BEFORE processing the turn.
+        val breakpointBotIds = synchronized(tickLock) {
+            participantRegistry.participants.mapNotNull { conn ->
+                val botId = participantRegistry.participantIds[conn] ?: return@mapNotNull null
+                if (modelUpdater?.isAlive(botId) == true &&
+                    !botsThatSentIntent.contains(conn) &&
+                    participantRegistry.breakpointEnabledMap[botId] == true) botId else null
+            }
+        }
+
+        if (breakpointBotIds.isNotEmpty()) {
+            lifecycleManager.breakpointPausedForBots.addAll(breakpointBotIds)
+            lifecycleManager.pauseGame()
+            broadcastGamePausedToObservers(GamePausedEventForObserver.PauseCause.BREAKPOINT)
+            // Disable connection-lost detection: the bot's JVM is fully suspended by the debugger
+            // and cannot respond to WebSocket pings. Re-enabled when the breakpoint is cleared.
+            connectionHandler.setConnectionLostTimeout(0)
+            return
+        }
+
         synchronized(tickLock) {
             val snapshot = updateGameState()
             onNextTick(snapshot.lastRound)
@@ -288,6 +336,14 @@ class GameServer(private val config: ServerConfig) {
         }
 
         applyVisualDelay(botProcessingDurationNanos)
+
+        // In debug mode, pause after each turn instead of auto-advancing (ADR-0033).
+        if (lifecycleManager.debugMode && lifecycleManager.serverState === ServerState.GAME_RUNNING) {
+            lifecycleManager.pauseGame()
+            broadcastGamePausedToObservers(GamePausedEventForObserver.PauseCause.DEBUG_STEP)
+            return
+        }
+
         // Only reschedule the timer if the game is still running (not paused or stopped).
         // If pauseGame() was called while we were sleeping in applyVisualDelay(), it paused the timer,
         // but resetTurnTimeout() → schedule() would reset pauseStartTimeNanos=0, making isPaused()
@@ -313,6 +369,7 @@ class GameServer(private val config: ServerConfig) {
     private fun onNextTick(lastRound: MutableRound?) {
         lastRound?.apply {
             lastTurn?.apply {
+                lastTickTurnNumber = turnNumber
                 if (turnNumber == 1) {
                     log.debug("Round started: $roundNumber")
                     botIntents.clear()
@@ -502,6 +559,7 @@ class GameServer(private val config: ServerConfig) {
     internal fun handleBotIntent(conn: WebSocket, intent: dev.robocode.tankroyale.schema.BotIntent) {
         if (lifecycleManager.serverState !== ServerState.GAME_RUNNING && lifecycleManager.serverState !== ServerState.GAME_PAUSED) return
 
+        var shouldProcessBreakpointTurn = false
         synchronized(tickLock) {
             val existingIntent = botIntents[conn]
             if (existingIntent == null) {
@@ -510,7 +568,26 @@ class GameServer(private val config: ServerConfig) {
                 existingIntent.update(BotIntentMapper.mapForMerge(intent))
             }
             botsThatSentIntent += conn
-            checkAllBotsResponded()
+
+            val botId = participantRegistry.participantIds[conn]
+            if (botId != null && lifecycleManager.breakpointPausedForBots.remove(botId)) {
+                if (lifecycleManager.breakpointPausedForBots.isEmpty()) {
+                    shouldProcessBreakpointTurn = true
+                }
+            } else {
+                checkAllBotsResponded()
+            }
+        }
+
+        // All breakpoint bots responded: resume game and schedule an immediate turn.
+        // Called outside tickLock to avoid holding the lock during state transitions.
+        if (shouldProcessBreakpointTurn) {
+            // Re-enable connection-lost detection now that the bot's JVM is running again.
+            connectionHandler.setConnectionLostTimeout(DEFAULT_CONNECTION_LOST_TIMEOUT_SECS)
+            lifecycleManager.resumeGame()
+            broadcastGameResumedToObservers()
+            resetTurnTimeout()
+            lifecycleManager.turnTimeoutTimer?.notifyReady()
         }
     }
 
@@ -529,8 +606,9 @@ class GameServer(private val config: ServerConfig) {
      * @param gameSetup the game setup configuration sent by the controller.
      * @param botAddresses the set of bot addresses that should participate.
      */
-    internal fun handleStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>) {
+    internal fun handleStartGame(gameSetup: GameSetup, botAddresses: Collection<BotAddress>, debugMode: Boolean = false) {
         this.gameSetup = GameSetupMapper.map(gameSetup)
+        lifecycleManager.debugMode = debugMode
 
         val sockets = connectionHandler.mapToBotSockets(botAddresses)
         participantRegistry.setParticipants(sockets)
@@ -560,7 +638,7 @@ class GameServer(private val config: ServerConfig) {
     internal fun handlePauseGame() {
         lifecycleManager.pauseGame()
         if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
-            broadcastGamedPausedToObservers()
+            broadcastGamePausedToObservers(GamePausedEventForObserver.PauseCause.PAUSE)
         }
     }
 
@@ -571,6 +649,7 @@ class GameServer(private val config: ServerConfig) {
     internal fun handleResumeGame() {
         if (lifecycleManager.serverState !== ServerState.GAME_PAUSED) return
         log.info("Resuming game")
+        lifecycleManager.debugMode = false
         lifecycleManager.serverState = ServerState.GAME_RUNNING
         broadcastGameResumedToObservers()
         resetTurnTimeout()
@@ -580,12 +659,19 @@ class GameServer(private val config: ServerConfig) {
      * Called by [GameServerConnectionListener] on the WebSocket thread when a controller requests a single turn advance.
      * Only has effect when the game is paused: executes exactly one turn without touching the turn-timeout timer,
      * so the timer cannot fire concurrently and cause a double-turn.
+     *
+     * In debug mode, [onNextTurn] handles the pause-after-turn and broadcast internally.
+     * In normal mode, we pause explicitly after the turn.
      */
     internal fun handleNextTurn() {
         if (lifecycleManager.serverState === ServerState.GAME_PAUSED) {
             lifecycleManager.serverState = ServerState.GAME_RUNNING
             onNextTurn()
-            lifecycleManager.pauseGame()
+            // In debug mode, onNextTurn() already paused and broadcast debug_step.
+            // In normal mode, re-pause explicitly (no broadcast — client stays in paused state).
+            if (lifecycleManager.serverState === ServerState.GAME_RUNNING) {
+                lifecycleManager.pauseGame()
+            }
         }
     }
 
@@ -630,8 +716,40 @@ class GameServer(private val config: ServerConfig) {
      */
     internal fun handleBotPolicyUpdate(botPolicyUpdate: BotPolicyUpdate) {
         val botId = BotId(botPolicyUpdate.botId)
-        participantRegistry.setDebugGraphicsEnabled(botId, botPolicyUpdate.debuggingEnabled)
-        modelUpdater?.setDebugEnabled(botId, botPolicyUpdate.debuggingEnabled)
+
+        // Treat null as "no change" for each field (ADR-0034: both fields are optional).
+        botPolicyUpdate.debuggingEnabled?.let { enabled ->
+            participantRegistry.setDebugGraphicsEnabled(botId, enabled)
+            modelUpdater?.setDebugEnabled(botId, enabled)
+        }
+
+        botPolicyUpdate.breakpointEnabled?.let { enabled ->
+            participantRegistry.setBreakpointEnabled(botId, enabled)
+
+            // If breakpoint mode is being disabled while the server is paused waiting for this bot:
+            // issue a SkippedTurnEvent, remove the bot from the waiting set, and if the set is now
+            // empty, resume and process the turn.
+            if (!enabled && lifecycleManager.breakpointPausedForBots.remove(botId)) {
+                val skippedTurn = SkippedTurnEvent().also {
+                    it.type = Message.Type.SKIPPED_TURN_EVENT
+                    it.turnNumber = lastTickTurnNumber + 1
+                }
+                val json = gson.toJson(skippedTurn)
+                val conn = participantRegistry.participantIds.entries.firstOrNull { it.value == botId }?.key
+                if (conn != null) {
+                    connectionHandler.send(conn, json)
+                }
+
+                if (lifecycleManager.breakpointPausedForBots.isEmpty()) {
+                    // Re-enable connection-lost detection now that the bot's JVM is running again.
+                    connectionHandler.setConnectionLostTimeout(DEFAULT_CONNECTION_LOST_TIMEOUT_SECS)
+                    lifecycleManager.resumeGame()
+                    broadcastGameResumedToObservers()
+                    resetTurnTimeout()
+                    lifecycleManager.turnTimeoutTimer?.notifyReady()
+                }
+            }
+        }
     }
 
     private fun cleanupAfterGameStopped() {
@@ -640,6 +758,9 @@ class GameServer(private val config: ServerConfig) {
         botIntents.clear()
         botsThatSentIntent.clear()
         modelUpdater = null
+        // Restore connection-lost detection in case the game ended while paused at a breakpoint.
+        connectionHandler.setConnectionLostTimeout(DEFAULT_CONNECTION_LOST_TIMEOUT_SECS)
+        lifecycleManager.breakpointPausedForBots.clear()
     }
 
     private fun transferDebugGraphicsFlagToModel() {
@@ -648,15 +769,34 @@ class GameServer(private val config: ServerConfig) {
         }
     }
 
+    /**
+     * Called by [GameServerConnectionListener] when a controller enables debug mode (ADR-0033).
+     * In debug mode, the server pauses after each turn instead of auto-advancing.
+     */
+    internal fun handleEnableDebugMode() {
+        log.info("Enabling debug mode")
+        lifecycleManager.debugMode = true
+    }
+
+    /**
+     * Called by [GameServerConnectionListener] when a controller disables debug mode.
+     * The server returns to normal auto-advancing behavior.
+     */
+    internal fun handleDisableDebugMode() {
+        log.info("Disabling debug mode")
+        lifecycleManager.debugMode = false
+    }
+
     private fun broadcastGameAborted() {
         broadcaster.broadcastToObserverAndControllers(GameAbortedEvent().also {
             it.type = Message.Type.GAME_ABORTED_EVENT
         })
     }
 
-    private fun broadcastGamedPausedToObservers() {
+    private fun broadcastGamePausedToObservers(pauseCause: GamePausedEventForObserver.PauseCause) {
         broadcaster.broadcastToObserverAndControllers(GamePausedEventForObserver().also {
             it.type = Message.Type.GAME_PAUSED_EVENT_FOR_OBSERVER
+            it.pauseCause = pauseCause
         })
     }
 

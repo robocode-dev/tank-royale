@@ -50,6 +50,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
 
     private var selectedBots = emptyList<BotInfo>()
     private var gameTypeDropdown = GameTypeDropdown()
+    private var startPaused = false
 
     init {
         // Left: Select game type group
@@ -66,6 +67,23 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
             addButton("setup_rules", onSetupRules).apply {
                 toolTipText = Hints.get("new_battle.setup_rules")
             }
+        }
+
+        // Middle: Debugging group
+        val topMiddlePanel = JPanel(MigLayout("left, insets 5")).apply {
+            border = BorderFactory.createTitledBorder(Strings.get("debugging"))
+
+            val startPausedHint = Hints.get("new_battle.start_paused")
+            addLabel("start_paused").apply {
+                toolTipText = startPausedHint
+            }
+            val startPausedSwitch = ToggleSwitch(false).apply {
+                toolTipText = startPausedHint
+                addSwitchHandler { isSelected ->
+                    startPaused = isSelected
+                }
+            }
+            add(startPausedSwitch)
         }
 
         // Right: Recording group
@@ -85,9 +103,10 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
             add(autoRecordSwitch)
         }
 
-        // Row container for placing both groups side-by-side with minimal widths and equal heights
-        val topRow = JPanel(MigLayout("insets 0", "[pref!][pref!]", "[]")).apply {
+        // Row container for placing all groups side-by-side with minimal widths and equal heights
+        val topRow = JPanel(MigLayout("insets 0", "[pref!][pref!][pref!]", "[]")).apply {
             add(topLeftPanel, "growy")
+            add(topMiddlePanel, "growy")
             add(topRightPanel, "growy, wrap")
         }
 
@@ -171,7 +190,7 @@ class NewBattlePanel : JPanel(MigLayout("fill", "[]", "[][grow][][]")) {
 
     private fun startGame() {
         val botAddresses = selectedBots.map { it.botAddress }
-        Client.startGame(botAddresses.toSet())
+        Client.startGame(botAddresses.toSet(), startPaused)
         NewBattleDialog.dispose()
     }
 }

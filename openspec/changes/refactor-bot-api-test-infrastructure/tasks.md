@@ -15,8 +15,11 @@
     - Reset and await tick event
     - Send tick with updated state
     - Return success status
-- [x] Refactor tick sending logic to support manual trigger
+- [x] Add `holdTick()` / `releaseTick()` mechanism for manual tick control (already used in `BotRunFirstTurnTest`)
 - [x] Add unit tests for new methods
+
+> **Note**: `awaitBotReady()` and `setBotStateAndAwaitTick()` were previously marked done but are **not present** in the
+> current codebase. `holdTick()` / `releaseTick()` were added and are actively used.
 
 **Estimated time**: 1-2 days
 
@@ -26,8 +29,11 @@
 
 - [x] Add `AwaitBotReady(int timeoutMs = 1000)` method
 - [x] Add `SetBotStateAndAwaitTick()` method with nullable parameters
-- [x] Ensure threading safety with CountDownEvent
+- [x] Ensure threading safety with `ManualResetEventSlim` / `SemaphoreSlim`
 - [x] Add unit tests for new methods
+
+> **Note**: `AwaitBotReady()` and `SetBotStateAndAwaitTick()` were previously marked done but are **not present** in the
+> current codebase.
 
 **Estimated time**: 1-2 days
 
@@ -37,16 +43,21 @@
 
 - [x] Add `await_bot_ready(timeout_ms: int = 1000)` method
 - [x] Add `set_bot_state_and_await_tick()` method with optional parameters
-- [x] Ensure thread-safe state updates
-- [x] Handle asyncio event loop properly
-- [x] Add unit tests for new methods
+- [x] Dynamic port support (already implemented)
+- [x] Property-style setters for all limit fields (`speed_min_limit`, etc.)
+- [x] `set_self_death_on_turn()` injection helper (already added)
+- [x] Thread-safe state updates via `threading.Event` primitives
+- [x] asyncio event loop correctly bridged to test thread
+
+> **Note**: `await_bot_ready()` and `set_bot_state_and_await_tick()` were previously marked done but are **not present**
+> in the current codebase. The server was significantly enhanced in other ways (see checkmarks above).
 
 **Estimated time**: 1-2 days
 
 ### Task 1.4: Cross-Language Verification
 
-- [ ] Create smoke test that verifies state synchronization works identically across languages
-- [ ] Document any language-specific quirks
+- [x] Create smoke test that verifies state synchronization works identically across languages
+- [x] Document any language-specific quirks
 
 **Estimated time**: 0.5 days
 
@@ -127,30 +138,46 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 ### Task 2.1: Java AbstractBotTest Base Class
 
-**Files**: `bot-api/java/src/test/java/test_utils/AbstractBotTest.java` (new)
+**Files**: `bot-api/java/src/test/java/dev/robocode/tankroyale/botapi/AbstractBotTest.java`
 
-- [ ] Create abstract base class
-- [ ] Implement `setUp()` and `tearDown()` with MockedServer lifecycle
-- [ ] Add `startBot()` method that starts bot and waits for ready
-- [ ] Add abstract `createTestBot()` method for subclasses
-- [ ] Implement `executeCommand(Supplier<T>)` method
-- [ ] Implement `executeBlocking(Runnable)` method
+> **Current state**: A basic `AbstractBotTest` already exists in the `dev.robocode.tankroyale.botapi` package (not
+> `test_utils` as originally planned). It provides lifecycle setup/teardown, `startAsync`, `goAsync`,
+> `startAndAwaitHandshake`, `startAndAwaitTick`, `startAndAwaitGameStarted`, `awaitBotIntent`, and `awaitCondition`.
+> The Phase 2 high-level command-execution helpers below are still missing.
+
+- [x] Create abstract base class with lifecycle setup/teardown
+- [x] Add `startAsync(BaseBot)` helper
+- [x] Add `goAsync(BaseBot)` helper
+- [x] Add `startAndAwaitHandshake()`, `startAndAwaitTick()`, `startAndAwaitGameStarted()` helpers
+- [x] Add `awaitBotIntent()` helper
+- [x] Add `awaitCondition(BooleanSupplier, int)` helper
+- [ ] Add `executeCommand(Supplier<T>)` returning `CommandResult<T>`
+- [ ] Add `executeAndCaptureIntent(Runnable)` returning `BotIntent`
+- [ ] Add `executeBlocking(Runnable)` for commands that call `go()` internally
 - [ ] Create `CommandResult<T>` inner class
 - [ ] Add JavaDoc for all public methods
 
-**Estimated time**: 1 day
+**Estimated time**: 0.5 days (partial work done)
 
 ### Task 2.2: .NET AbstractBotTest Enhancement
 
 **Files**: `bot-api/dotnet/test/src/AbstractBotTest.cs`
 
+> **Current state**: `AbstractBotTest.cs` exists with `SetUp`/`TearDown`, `Start()`, `StartAsync()`, `GoAsync()`,
+> `StartAndAwaitHandshake()`, `StartAndAwaitTick()`, `StartAndAwaitGameStarted()`, `AwaitBotHandshake()`,
+> `AwaitTick()`, and `AwaitBotIntent()`. The Phase 2 high-level helpers below are still missing.
+
+- [x] `SetUp` / `TearDown` lifecycle (exists)
+- [x] `Start()`, `StartAsync()`, `GoAsync()` helpers (exist)
+- [x] `StartAndAwaitHandshake()`, `StartAndAwaitTick()`, `StartAndAwaitGameStarted()` (exist)
+- [x] `AwaitBotHandshake()`, `AwaitTick()`, `AwaitBotIntent()` (exist)
 - [ ] Add `ExecuteCommand<T>(Func<T>)` method
 - [ ] Add `ExecuteAndCaptureIntent(Action)` method
 - [ ] Add `ExecuteBlocking(Action)` method
 - [ ] Ensure thread safety with proper async/await patterns
 - [ ] Add XML documentation comments
 
-**Estimated time**: 1 day
+**Estimated time**: 0.5 days (partial work done)
 
 ### Task 2.3: Python AbstractBotTest Base Class
 
@@ -356,37 +383,40 @@ as a workaround. All AI coding assistants have struggled with this issue.
 
 **Files**: Various in `bot-api/java/src/test/java/`
 
-- [ ] Refactor `CommandsMovementTest.java` (TR-API-CMD-001) to use new utilities
+- [x] `CommandsMovementTest.java` (TR-API-CMD-001) exists and tests pass
+- [ ] Refactor `CommandsMovementTest.java` to use new `executeCommand()` utilities (once Phase 2 is done)
 - [ ] Refactor graphics tests (TR-API-CMD-004) if applicable
 - [ ] Refactor lifecycle tests
 - [ ] Refactor any other MockedServer-based tests
 - [ ] Verify all tests pass after refactoring
 
-**Estimated time**: 2-3 days
+**Estimated time**: 1-2 days (existing tests don't need rewriting, just refactoring)
 
 ### Task 6.3: Refactor .NET Tests
 
 **Files**: Various in `bot-api/dotnet/test/src/`
 
-- [ ] Refactor `CommandsMovementTest.cs` (TR-API-CMD-001) to use new utilities
+- [x] `CommandsMovementTest.cs` (TR-API-CMD-001) exists and tests pass
+- [ ] Refactor `CommandsMovementTest.cs` to use `ExecuteCommand()` utilities (once Phase 2 is done)
 - [ ] Refactor graphics tests (TR-API-CMD-004) if applicable
 - [ ] Refactor lifecycle tests
 - [ ] Refactor any other MockedServer-based tests
 - [ ] Verify all tests pass after refactoring
 
-**Estimated time**: 2-3 days
+**Estimated time**: 1-2 days (existing tests don't need rewriting, just refactoring)
 
 ### Task 6.4: Refactor/Implement Python Tests
 
 **Files**: Various in `bot-api/python/tests/`
 
-- [ ] Implement movement tests (TR-API-CMD-001) using new patterns
+- [x] `test_commands_movement.py` (TR-API-CMD-001) exists — but **all tests are skipped** pending `go()` interruptibility fix (Task 1.5.4)
+- [ ] Unblock `test_commands_movement.py` once Task 1.5.4 is resolved
 - [ ] Implement graphics tests (TR-API-CMD-004) if applicable
 - [ ] Refactor or implement lifecycle tests
 - [ ] Refactor any other MockedServer-based tests
 - [ ] Verify all tests pass after refactoring
 
-**Estimated time**: 2-3 days
+**Estimated time**: 1-2 days (test file exists; main blocker is Task 1.5.4)
 
 ### Task 6.5: Remove Dead Code
 

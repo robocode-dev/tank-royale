@@ -24,6 +24,8 @@ class ClientWebSocketsHandler(
     private val listener: IConnectionListener,
     private val controllerSecrets: Set<String>,
     private val botSecrets: Set<String>,
+    private val debugModeSupported: Boolean,
+    private val breakpointModeSupported: Boolean,
     private val broadcastFunction: (clientSockets: Collection<WebSocket>, message: String) -> Unit
 ) : IClientWebSocketObserver, Closeable {
 
@@ -83,6 +85,10 @@ class ClientWebSocketsHandler(
             version = Version.version
             gameTypes = setup.gameTypes
             gameSetup = currentGameSetup
+            features = Features().apply {
+                 debugMode = debugModeSupported
+                 breakpointMode = breakpointModeSupported
+             }
         }.also {
             send(clientSocket, Gson().toJson(it))
         }
@@ -113,6 +119,8 @@ class ClientWebSocketsHandler(
                             Message.Type.NEXT_TURN -> handleNextTurn()
                             Message.Type.CHANGE_TPS -> handleChangeTps(message)
                             Message.Type.BOT_POLICY_UPDATE -> handleBotPolicyUpdated(message)
+                            Message.Type.ENABLE_DEBUG_MODE -> handleEnableDebugMode()
+                            Message.Type.DISABLE_DEBUG_MODE -> handleDisableDebugMode()
                             else -> handleException(
                                 clientSocket,
                                 IllegalStateException("Unhandled message type: $type")
@@ -312,7 +320,7 @@ class ClientWebSocketsHandler(
                 return@apply
             }
             currentGameSetup = gameSetup
-            listener.onStartGame(gameSetup, botAddresses.toSet())
+            listener.onStartGame(gameSetup, botAddresses.toSet(), debugMode == true)
         }
     }
 
@@ -359,6 +367,14 @@ class ClientWebSocketsHandler(
                 listener.onBotPolicyUpdated(this)
             }
         }
+    }
+
+    private fun handleEnableDebugMode() {
+        executorService.submit(listener::onEnableDebugMode)
+    }
+
+    private fun handleDisableDebugMode() {
+        executorService.submit(listener::onDisableDebugMode)
     }
 
     private fun handleException(clientSocket: WebSocket?, exception: Exception) {

@@ -85,7 +85,6 @@ final class WebSocketHandler implements WebSocket.Listener {
     @Override
     public void onError(WebSocket websocket, Throwable error) {
         botEventHandlers.onConnectionError.publish(new ConnectionErrorEvent(serverUrl, error));
-
         closedLatch.countDown();
     }
 
@@ -99,7 +98,6 @@ final class WebSocketHandler implements WebSocket.Listener {
             JsonElement jsonType = jsonMsg.get("type");
             if (jsonType != null) {
                 String type = jsonType.getAsString();
-
                 switch (dev.robocode.tankroyale.schema.Message.Type.fromValue(type)) {
                     case TICK_EVENT_FOR_BOT:
                         handleTick(jsonMsg);
@@ -134,7 +132,8 @@ final class WebSocketHandler implements WebSocket.Listener {
     }
 
     private void handleTick(JsonObject jsonMsg) {
-        if (baseBotInternals.isEventHandlingDisabled()) return;
+        boolean disabled = baseBotInternals.isEventHandlingDisabled();
+        if (disabled) return;
 
         baseBotInternals.setTickStartNanoTime(System.nanoTime());
 

@@ -90,6 +90,47 @@ class BattleHandle internal constructor(
     /** Advances one turn while paused (single-step debugging). */
     fun nextTurn() = connection.nextTurn()
 
+    /**
+     * Sends a `bot-policy-update` for the given bot.
+     *
+     * Set [breakpointEnabled] to `true` to make the server wait for this bot's intent instead of
+     * issuing a `SkippedTurnEvent` when the turn timeout expires. Set to `false` to disable; the
+     * server will immediately skip and resume if it is currently waiting for this bot.
+     *
+     * Requires the server to support breakpoint mode — check [serverFeatures]`.breakpointMode`
+     * before calling.
+     *
+     * @param botId             the id of the target bot (from [BotInfo.id] in [onBotListUpdate])
+     * @param breakpointEnabled enable or disable breakpoint mode; `null` leaves unchanged
+     * @param debuggingEnabled  enable or disable debug graphics; `null` leaves unchanged
+     */
+    fun setBotPolicy(botId: Int, breakpointEnabled: Boolean? = null, debuggingEnabled: Boolean? = null) =
+        connection.setBotPolicy(botId, breakpointEnabled = breakpointEnabled, debuggingEnabled = debuggingEnabled)
+
+    /**
+     * Puts the server into debug mode: after each turn is processed the server pauses
+     * and waits for [nextTurn] before advancing. Use [disableDebugMode] or [resume] to exit.
+     *
+     * Requires the server to support debug mode — check [serverFeatures]`.debugMode` before calling.
+     */
+    fun enableDebugMode() = connection.enableDebugMode()
+
+    /**
+     * Takes the server out of debug mode, returning to normal auto-advancing.
+     * Equivalent to calling [resume], which also implicitly disables debug mode.
+     */
+    fun disableDebugMode() = connection.disableDebugMode()
+
+    /**
+     * Server features advertised during the handshake.
+     * Available immediately after the battle handle is obtained from [BattleRunner.startBattleAsync].
+     *
+     * Use [dev.robocode.tankroyale.client.model.Features.breakpointMode] to check whether
+     * the server supports breakpoint mode before calling [setBotPolicy].
+     */
+    val serverFeatures: dev.robocode.tankroyale.client.model.Features?
+        get() = connection.serverFeatures.get()
+
     // -------------------------------------------------------------------------------------
     // Await completion
     // -------------------------------------------------------------------------------------

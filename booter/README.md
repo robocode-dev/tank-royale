@@ -162,7 +162,7 @@ with the command `quit`.
 The `run` command is used like this to run bots:
 
 ```
-java -jar .\robocode-tankroyale-booter-0.10.0.jar run c:\bots-java\Corners c:\bots-java\Target
+java -jar .\robocode-tankroyale-booter-x.y.z.jar run c:\bots-java\Corners c:\bots-java\Target
 ```
 
 This will run the two bots located in `c:\bots-java\Corners` and `c:\bots-java\Target`, and write something like this

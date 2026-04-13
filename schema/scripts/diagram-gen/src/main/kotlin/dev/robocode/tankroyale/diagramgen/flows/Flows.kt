@@ -271,7 +271,6 @@ object Flows {
             participants = listOf("Controller", "Server", "Bot"),
             steps = listOf(
                 MessageStep("Controller", "Server", "bot-policy-update"),
-                MessageStep("Server", "Bot", "debug-policy-applied"),
                 NoteStep(listOf("Server"), "Server updates the bot's debug flag"),
                 NoteStep(listOf("Bot"), "Bot may only send debug graphics when permitted"),
                 NoteStep(listOf("Server"), "Observers learn permissions through the next tick state")

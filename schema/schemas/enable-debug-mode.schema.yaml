@@ -1,0 +1,8 @@
+$id: enable-debug-mode.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: >
+  Sent by a controller to put the server into debug mode.
+  In debug mode, the server pauses after each turn instead of
+  auto-advancing to the next turn.
+extends:
+  $ref: message.schema.yaml

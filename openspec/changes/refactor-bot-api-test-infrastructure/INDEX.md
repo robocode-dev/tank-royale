@@ -105,9 +105,9 @@
 
 ### TR-API-CMD-001: Movement Commands (Refactor Existing)
 
-| Test              | Java | .NET | Python | Description                                     |
-|-------------------|------|------|--------|-------------------------------------------------|
-| movement_commands | ✅    | ✅    | ☐      | Needs refactor (Java/.NET) / implement (Python) |
+| Test              | Java | .NET | Python | Description                                                    |
+|-------------------|------|------|--------|----------------------------------------------------------------|
+| movement_commands | ✅    | ✅    | ⚠️     | Java/.NET tests pass; Python test exists but skipped (go() fix pending) |
 
 ### TR-API-CMD-002: Fire Command (New)
 
@@ -277,6 +277,13 @@ After this change completes:
 **Change History:**
 
 - 2025-12-31: Initial specification created
-- [Future]: Implementation begins
+- 2026-04-12: Spec updated to reflect current codebase state:
+    - Corrected Phase 1.1–1.3 task checkboxes (`awaitBotReady`, `setBotStateAndAwaitTick` not yet implemented)
+    - Noted Java `holdTick()`/`releaseTick()` as implemented (used in `BotRunFirstTurnTest`)
+    - Noted Java `AbstractBotTest` exists in `botapi` package with basic helpers
+    - Noted .NET `AbstractBotTest` exists with basic helpers
+    - Noted Python `MockedServer` enhanced with property setters and `set_self_death_on_turn()`
+    - Updated CMD-001 coverage: Java ✅ / .NET ✅ / Python ⚠️ (exists but skipped)
+- [Future]: Implementation completes
 - [Future]: Change completed and archived
 

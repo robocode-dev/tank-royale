@@ -1,6 +1,8 @@
 package dev.robocode.tankroyale.server.core
 
+import dev.robocode.tankroyale.server.model.BotId
 import org.slf4j.LoggerFactory
+import java.util.concurrent.CopyOnWriteArraySet
 
 /** Manager for controlling the game lifecycle. */
 class GameLifecycleManager {
@@ -10,6 +12,20 @@ class GameLifecycleManager {
     /** Current server state */
     @Volatile
     var serverState = ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
+
+    /**
+     * Whether debug mode is active. In debug mode the server pauses after
+     * each turn instead of auto-advancing (ADR-0033).
+     */
+    @Volatile
+    var debugMode = false
+
+    /**
+     * Set of bot IDs that the server is currently waiting for in a breakpoint pause.
+     * This set is populated when the server pauses for a breakpoint and cleared on resume or skip.
+     */
+    @Volatile
+    var breakpointPausedForBots: MutableSet<BotId> = CopyOnWriteArraySet()
 
     /** Lock for starting the game */
     val startGameLock = Any()

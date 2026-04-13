@@ -15,7 +15,7 @@ public final class BotStateMapper {
 
     public static BotState map(final dev.robocode.tankroyale.schema.BotState source) {
         return new BotState(
-                source.getIsDroid(),
+                Boolean.TRUE.equals(source.getIsDroid()),
                 source.getEnergy(),
                 source.getX(),
                 source.getY(),
@@ -36,7 +36,7 @@ public final class BotStateMapper {
                 fromHexColor(source.getScanColor()),
                 fromHexColor(source.getTracksColor()),
                 fromHexColor(source.getGunColor()),
-                source.getIsDebuggingEnabled()
+                Boolean.TRUE.equals(source.getIsDebuggingEnabled())
         );
     }
 }

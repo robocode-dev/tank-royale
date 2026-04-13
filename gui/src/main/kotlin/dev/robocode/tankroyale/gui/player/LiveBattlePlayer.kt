@@ -35,6 +35,7 @@ class LiveBattlePlayer : BattlePlayer {
     private val json = MessageConstants.json
 
     private var gameTypes = setOf<String>()
+    internal var serverFeatures: Features? = null
 
     private lateinit var lastStartGame: StartGame
 
@@ -72,7 +73,7 @@ class LiveBattlePlayer : BattlePlayer {
         connect()
     }
 
-    fun startGame(botAddresses: Set<BotAddress>) {
+    fun startGame(botAddresses: Set<BotAddress>, debugMode: Boolean = false) {
         savedStdOutput.clear()
         savedStdError.clear()
 
@@ -83,7 +84,7 @@ class LiveBattlePlayer : BattlePlayer {
         val displayName = ConfigSettings.gameType.displayName
         val gameSetup = GamesSettings.games[displayName]!!
 
-        lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses)
+        lastStartGame = StartGame(gameSetup.toGameSetup(), botAddresses, debugMode)
         send(lastStartGame)
     }
 
@@ -223,6 +224,20 @@ class LiveBattlePlayer : BattlePlayer {
         send(botPolicyUpdate)
     }
 
+    override fun enableDebugMode() {
+        if (isConnected()) {
+            send(EnableDebugMode)
+        }
+    }
+
+    override fun disableDebugMode() {
+        if (isConnected()) {
+            send(DisableDebugMode)
+        }
+    }
+
+    override fun isDebugModeSupported(): Boolean = serverFeatures?.debugMode == true
+
     private fun onMessage(msg: String) {
         when (val type = json.decodeFromString(PolymorphicSerializer(Message::class), msg)) {
             is TickEvent -> handleTickEvent(type)
@@ -245,6 +260,7 @@ class LiveBattlePlayer : BattlePlayer {
 
     private fun handleServerHandshake(serverHandshake: ServerHandshake) {
         gameTypes = serverHandshake.gameTypes
+        serverFeatures = serverHandshake.features
 
         val handshake = ControllerHandshake(
             sessionId = serverHandshake.sessionId,
@@ -284,6 +300,10 @@ class LiveBattlePlayer : BattlePlayer {
     private fun handleGamePaused(gamePausedEvent: GamePausedEvent) {
         isPaused.set(true)
         onGamePaused(gamePausedEvent)
+        // Display breakpoint pause message in console
+        if (gamePausedEvent.pauseCause == "breakpoint") {
+            System.out.println("Paused — waiting for bot to respond (breakpoint)")
+        }
     }
 
     private fun handleGameResumed(gameResumedEvent: GameResumedEvent) {

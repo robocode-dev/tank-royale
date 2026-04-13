@@ -1,0 +1,8 @@
+$id: disable-debug-mode.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: >
+  Sent by a controller to take the server out of debug mode.
+  The server returns to normal auto-advancing behavior.
+  Also triggered implicitly by resume-game.
+extends:
+  $ref: message.schema.yaml
