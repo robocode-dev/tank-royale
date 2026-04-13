@@ -100,6 +100,7 @@ tasks {
         systemProperty("sampleBots.csharp.dir", project(":sample-bots:csharp").layout.buildDirectory.dir("archive").get().asFile.absolutePath)
         systemProperty("testBots.java.dir", project(":bot-api:tests").layout.buildDirectory.dir("archive/java").get().asFile.absolutePath)
         systemProperty("testBots.csharp.dir", project(":bot-api:tests").layout.buildDirectory.dir("archive/csharp").get().asFile.absolutePath)
+        systemProperty("testBots.typescript.dir", project(":bot-api:tests").layout.buildDirectory.dir("archive/typescript").get().asFile.absolutePath)
     }
 
     /**

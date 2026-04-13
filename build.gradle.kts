@@ -553,12 +553,13 @@ val generateSchemaDiagrams by tasks.registering {
 
 tasks {
     val docTasks = listOf(
-        generateSchemaDiagrams.name,        // Update mermaid diagrams in schema/schemas/README.md
-        "bot-api:dotnet:copyDotnetApiDocs", // Docfx documentation for .NET Bot API
-        "bot-api:java:copyJavaApiDocs",     // Javadocs for Java Bot API
-        "bot-api:python:copyPythonApiDocs", // Sphinx documentation for Python Bot API
-        "runner:copyRunnerApiDocs",         // Javadocs for Battle Runner API
-        "docs-build:copy-generated-docs"    // VitePress documentation site
+        generateSchemaDiagrams.name,                    // Update mermaid diagrams in schema/schemas/README.md
+        "bot-api:dotnet:copyDotnetApiDocs",             // Docfx documentation for .NET Bot API
+        "bot-api:java:copyJavaApiDocs",                 // Javadocs for Java Bot API
+        "bot-api:python:copyPythonApiDocs",             // Sphinx documentation for Python Bot API
+        "bot-api:typescript:copyTypescriptApiDocs",     // TypeDoc documentation for TypeScript Bot API
+        "runner:copyRunnerApiDocs",                     // Javadocs for Battle Runner API
+        "docs-build:copy-generated-docs"                // VitePress documentation site
     )
 
     register("build-release") {

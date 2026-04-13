@@ -67,6 +67,10 @@ export default withMermaid(defineConfig({
         items: [
           { text: 'Getting Started', link: '/tutorial/getting-started' },
           { text: 'My First Bot', link: '/tutorial/my-first-bot' },
+          { text: 'My First Bot for .NET', link: '/tutorial/dotnet/my-first-bot-for-dotnet' },
+          { text: 'My First Bot for JVM', link: '/tutorial/jvm/my-first-bot-for-jvm' },
+          { text: 'My First Bot for Python', link: '/tutorial/python/my-first-bot-for-python' },
+          { text: 'My First Bot for TypeScript', link: '/tutorial/typescript/my-first-bot-for-typescript' },
           { text: 'Beyond the Basics', link: '/tutorial/beyond-the-basics' },
         ]
       },

@@ -1,0 +1,21 @@
+{
+  "name": "MyFirstTeam",
+  "version": "1.0",
+  "authors": [
+    "Mathew Nelson",
+    "Flemming N. Larsen"
+  ],
+  "description": "A sample team.\nMyFirstLeader scans for enemies,\nand orders the droids to fire.",
+  "homepage": "",
+  "countryCodes": [
+    "us",
+    "dk"
+  ],
+  "teamMembers": [
+    "MyFirstLeader",
+    "MyFirstDroid",
+    "MyFirstDroid",
+    "MyFirstDroid",
+    "MyFirstDroid"
+  ]
+}

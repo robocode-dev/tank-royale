@@ -89,6 +89,17 @@ For a C# (.NET) bot, the files might look like this:
 * `MyFirstBot.json` is the JSON config file.
 * `NuGet.Config` is used to specify where to find dependencies (like the Bot API).
 
+For a TypeScript bot, the files might look like this:
+
+* `MyFirstBot.ts` is the TypeScript source file containing the bot program.
+* `MyFirstBot.json` is the JSON config file.
+* `MyFirstBot.cmd` used for running the bot on Windows.
+* `MyFirstBot.sh` used for running the bot on macOS and Linux.
+
+> **Note for TypeScript bots:** Unlike Java, Python, and .NET, the booter has no automatic platform detection
+> for TypeScript (`.ts`) files. TypeScript bots must always provide a JSON config file **or** `.cmd`/`.sh` script
+> files so the booter can locate and start them.
+
 ## Script files
 
 The booter will look for script files and look for some that match the OS it is running on. So for macOS and Linux the

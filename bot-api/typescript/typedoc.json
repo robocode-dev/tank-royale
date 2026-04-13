@@ -1,0 +1,22 @@
+{
+  "entryPoints": ["src/index.ts"],
+  "out": "build/docs/typedoc",
+  "name": "Robocode Tank Royale Bot API",
+  "readme": "README.md",
+  "tsconfig": "tsconfig.json",
+  "skipErrorChecking": true,
+  "excludeInternal": true,
+  "excludePrivate": true,
+  "excludeProtected": false,
+  "exclude": [
+    "src/internal/**",
+    "src/mapper/**",
+    "src/json/**",
+    "src/protocol/**",
+    "src/runtime/**"
+  ],
+  "navigationLinks": {
+    "GitHub": "https://github.com/robocode-dev/tank-royale"
+  },
+  "hideGenerator": true
+}

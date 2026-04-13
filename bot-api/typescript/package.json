@@ -1,0 +1,67 @@
+{
+  "name": "@robocode.dev/tank-royale-bot-api",
+  "version": "0.40.2",
+  "description": "Tank Royale Bot API for TypeScript/JavaScript",
+  "license": "Apache-2.0",
+  "homepage": "https://robocode-dev.github.io/tank-royale/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robocode-dev/tank-royale.git",
+    "directory": "bot-api/typescript"
+  },
+  "keywords": [
+    "robocode",
+    "tank-royale",
+    "bot",
+    "bot-api",
+    "game",
+    "robot",
+    "typescript",
+    "javascript",
+    "websocket"
+  ],
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json && node -e \"require('fs').writeFileSync('dist/cjs/package.json', JSON.stringify({type:'commonjs'}, null, 2))\"",
+    "docs": "typedoc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.5.14",
+    "typedoc": "^0.28.0",
+    "typescript": "^5.8.2",
+    "vitest": "^3.1.1",
+    "ws": "^8.18.1"
+  },
+  "peerDependencies": {
+    "ws": "^8.18.1"
+  },
+  "peerDependenciesMeta": {
+    "ws": {
+      "optional": true
+    }
+  }
+}

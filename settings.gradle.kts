@@ -26,6 +26,7 @@ include("bot-api:java")
 include("bot-api:dotnet")
 include("bot-api:dotnet:schema")
 include("bot-api:python")
+include("bot-api:typescript")
 
 // Bot API test bots (instrumented bots used by runner integration tests)
 include("bot-api:tests")
@@ -34,6 +35,7 @@ include("bot-api:tests")
 include("sample-bots:java")
 include("sample-bots:csharp")
 include("sample-bots:python")
+include("sample-bots:typescript")
 
 // Docs
 include("docs-build")

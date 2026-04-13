@@ -1,0 +1,10 @@
+{
+  "name": "WonRoundCounterTs",
+  "version": "1.0",
+  "authors": [
+    "Test"
+  ],
+  "description": "Instrumented bot that counts WonRoundEvents for testing.",
+  "platform": "Node.js",
+  "programmingLang": "TypeScript"
+}
