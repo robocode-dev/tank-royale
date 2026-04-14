@@ -1,6 +1,17 @@
 # Bot API Test Registry
 
-Cross-platform acceptance test registry per [ADR-0038](../../docs-internal/architecture/adr/0038-shared-cross-platform-test-definitions.md).
+The single source of truth for **what must be tested** across all Bot API platforms (Java, C#, Python, TypeScript). Each row is an acceptance criterion identified by a `TR-API-xxx` ID. If a platform cell is ❌, that test is missing and must be written.
+
+Use this registry to:
+- See which tests exist and where gaps are
+- Find the acceptance ID to tag a new test with
+- Track migration from LEGACY tests to shared definitions
+
+Governed by [ADR-0038](../../docs-internal/architecture/adr/0038-shared-cross-platform-test-definitions.md).
+
+---
+
+## Rules
 
 Every `TR-API-xxx` test listed here **must** have an implementation on all 4 platforms.
 Status: ✅ = implemented, ❌ = missing, 🔶 = partial.

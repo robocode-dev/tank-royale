@@ -9,7 +9,7 @@ Routing hub — load `.ai/*.md` files based on task type below.
 | **Planning, proposals, specs** | `.ai/openspec.md` ⚠️ **STOP after proposal — wait for human approval before implementing** |
 | **Audit, Scout, Prime** | `.ai/commands.md` |
 | **Architecture decisions, ADRs** | `.ai/architecture.md` |
-| **Debugging, bug hunting, timing issues** | `.ai/debugging.md` |
+| **Debugging, bug hunting, timing issues** | `.ai/debugging.md` + `docs-internal/DEBUGGING-GUIDE.md` |
 | **Bot API (Java/Python/.NET)** | `.ai/cross-platform.md` + `.ai/core-principles.md` |
 | **Protocol, WebSocket, server comms** | `docs-internal/architecture/models/flows/README.md` (sequence diagrams) + `docs-internal/architecture/models/message-schema/README.md` (message schemas) |
 | **Testing, builds, Gradle** | `.ai/testing-and-build.md` |

@@ -58,6 +58,10 @@ Run `./gradlew clean build` after any code, config, or build system change.
 - Fix test failures before completing a task (or explain if expected)
 - Faster iteration during focused work by using module builds
 - Isolating build issues
+- Every acceptance ID (TR-API-xxx, TR-SRV-xxx) must have both positive and negative tests
+- See `bot-api/tests/TEST-REGISTRY.md` for cross-platform acceptance IDs
+- See `bot-api/tests/TESTING-GUIDE.md` for intent-capture protocol
+- See `docs-internal/DEBUGGING-GUIDE.md` for the three-layer debugging strategy
 
 ## Python Asyncio Testing (CRITICAL)
 
