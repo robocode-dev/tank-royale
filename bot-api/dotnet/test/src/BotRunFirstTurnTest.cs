@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -27,7 +28,7 @@ public class BotRunFirstTurnTest : AbstractBotTest
         public double? RadarDirectionOnFirstRun { get; private set; }
         public bool SkippedFirstTurn { get; private set; }
 
-        public RadarSpinBot() : base(BotInfo, MockedServer.ServerUrl) { }
+        public RadarSpinBot(Uri serverUrl) : base(BotInfo, serverUrl) { }
 
         public override void Run()
         {
@@ -52,13 +53,19 @@ public class BotRunFirstTurnTest : AbstractBotTest
     [Description("TR-API-TCK-004a run() receives valid bot state on turn 1")]
     public void Test_TR_API_TCK_004a_Run_Sees_First_Tick_State()
     {
-        var bot = new RadarSpinBot();
+        var bot = new RadarSpinBot(Server.ServerUrl);
         StartAsync(bot);
-        AwaitBotHandshake();
+
+        Assert.That(Server.AwaitBotReady(2000), Is.True, "Bot failed to become ready");
+
+        // Drain the pre-warm initial intent so the bot can progress through Run()
+        Server.ContinueBotIntent();
         AwaitBotIntent();
 
+        Assert.That(bot.RadarDirectionOnFirstRun, Is.Not.Null,
+            "Run() must have executed before Go() on turn 1 (regression: issue #202)");
         Assert.That(bot.RadarDirectionOnFirstRun,
-            Is.EqualTo(MockedServer.BotRadarDirection),
+            Is.EqualTo(MockedServer.BotRadarDirection).Within(0.00001),
             "Run() must not execute before first-tick state is available (regression: issue #202)");
     }
 
@@ -68,15 +75,25 @@ public class BotRunFirstTurnTest : AbstractBotTest
     [Description("TR-API-TCK-004b first intent contains radar turn rate set in Run()")]
     public void Test_TR_API_TCK_004b_First_Intent_Contains_Radar_Turn_Rate()
     {
-        var bot = new RadarSpinBot();
+        var bot = new RadarSpinBot(Server.ServerUrl);
         StartAsync(bot);
-        AwaitBotHandshake();
+
+        Assert.That(Server.AwaitBotReady(2000), Is.True, "Bot failed to become ready");
+
+        // Drain the pre-warm initial intent (empty default sent to prevent turn-1 skip)
+        Server.ContinueBotIntent();
+        AwaitBotIntent();
+
+        // Now capture the intent from Run() which carries the radar turn rate
+        Server.ResetBotIntentEvent();
+        Server.ContinueBotIntent();
         AwaitBotIntent();
 
         var intent = Server.BotIntent;
-        Assert.That(intent, Is.Not.Null);
+        Assert.That(intent, Is.Not.Null,
+            "MockedServer must have received a BotIntent (regression: issue #202)");
         Assert.That(intent.RadarTurnRate,
             Is.EqualTo((double)MaxRadarTurnRate),
-            "First intent must include the radar turn rate set in Run() (regression: issue #202)");
+            "Intent from Run() must include the radar turn rate (regression: issue #202)");
     }
 }

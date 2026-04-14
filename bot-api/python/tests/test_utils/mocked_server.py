@@ -191,6 +191,10 @@ class MockedServer:
         in conftest.py, we only need to stop the event loop. The daemon thread
         will be killed automatically when Python exits.
         """
+        # Release any thread blocked in _await_bot_intent_continue so the server
+        # handler can exit cleanly instead of hanging during teardown.
+        self._bot_intent_continue_event.set()
+
         if not self._loop or self._loop.is_closed():
             return
 

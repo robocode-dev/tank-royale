@@ -119,9 +119,9 @@ public class MockedServer
 
     public void Stop()
     {
-//        foreach (var client in _clients) client.Close();
-//        _clients.Clear();
-
+        // Release any thread blocked in the intent continue wait so the server
+        // handler can exit cleanly instead of hanging during teardown.
+        _botIntentContinueEvent.Set();
         _server.Dispose();
     }
 

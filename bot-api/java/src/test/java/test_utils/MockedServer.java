@@ -113,6 +113,9 @@ public final class MockedServer {
 
     public void stop() {
         try {
+            // Release any thread blocked in awaitBotIntentContinueOrFail so the server
+            // worker can exit cleanly instead of waiting for a WebSocket pong timeout.
+            botIntentContinue.release();
             server.stop();
             Thread.sleep(100);
         } catch (InterruptedException e) {

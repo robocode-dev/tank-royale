@@ -63,8 +63,11 @@ class BotRunFirstTurnTest(unittest.TestCase):
         bot = self._make_radar_spin_bot()
         self._start_bot(bot)
 
-        if not self.server.await_bot_handshake(2000):
-            self.fail("Timeout waiting for bot handshake")
+        if not self.server.await_bot_ready(2000):
+            self.fail("Bot failed to become ready")
+
+        # Drain the pre-warm initial intent so the bot can progress through run()
+        self.server.continue_bot_intent()
         if not self.server.await_bot_intent(2000):
             self.fail("Timeout waiting for bot intent")
 
@@ -80,16 +83,25 @@ class BotRunFirstTurnTest(unittest.TestCase):
         )
 
     def test_TR_API_TCK_004b_first_intent_contains_radar_turn_rate(self):
-        """TR-API-TCK-004b first intent contains radar turn rate set in run()"""
+        """TR-API-TCK-004b intent from run() contains radar turn rate set in run()"""
         bot = self._make_radar_spin_bot()
         self._start_bot(bot)
 
-        if not self.server.await_bot_handshake(2000):
-            self.fail("Timeout waiting for bot handshake")
-        if not self.server.await_bot_intent(2000):
-            self.fail("Timeout waiting for bot intent")
+        if not self.server.await_bot_ready(2000):
+            self.fail("Bot failed to become ready")
 
-        intent = self.server._bot_intent  # noqa: SLF001
+        # Drain the pre-warm initial intent (empty default sent to prevent turn-1 skip)
+        self.server.continue_bot_intent()
+        if not self.server.await_bot_intent(2000):
+            self.fail("Timeout waiting for pre-warm intent")
+
+        # Now capture the intent from run() which carries the radar turn rate
+        self.server.reset_bot_intent_latch()
+        self.server.continue_bot_intent()
+        if not self.server.await_bot_intent(2000):
+            self.fail("Timeout waiting for run() intent")
+
+        intent = self.server.get_bot_intent()
         self.assertIsNotNone(
             intent,
             "MockedServer must have received a BotIntent (regression: issue #202)",
@@ -98,7 +110,7 @@ class BotRunFirstTurnTest(unittest.TestCase):
             intent.radar_turn_rate,
             float(MAX_RADAR_TURN_RATE),
             places=5,
-            msg="First intent must include the radar turn rate set in run() (regression: issue #202)",
+            msg="Intent from run() must include the radar turn rate (regression: issue #202)",
         )
 
 

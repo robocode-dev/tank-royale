@@ -84,11 +84,16 @@ class BotRunFirstTurnTest extends AbstractBotTest {
                 .isTrue();
 
         server.releaseTick(); // unblock server so bot can finish the turn
+        server.continueBotIntent();
         awaitBotIntent();
     }
 
     /**
-     * TR-API-TCK-004b — correctness: first intent contains the radar turn rate set in run().
+     * TR-API-TCK-004b — correctness: intent from run() contains the radar turn rate.
+     *
+     * <p>The pre-warm fix sends an initial empty intent before run() executes
+     * (to prevent turn-1 skip). The intent carrying values set in run() is the
+     * second one the server receives.
      */
     @Test
     @Tag("TCK")
@@ -97,11 +102,20 @@ class BotRunFirstTurnTest extends AbstractBotTest {
     void test_TR_API_TCK_004b_first_intent_contains_radar_turn_rate() {
         var bot = new RadarSpinBot();
         startAsync(bot);
-        awaitBotHandshake();
+        awaitGameStarted(bot);
+        awaitTick(bot);
+
+        // Drain the pre-warm initial intent (empty default sent to prevent turn-1 skip)
+        server.continueBotIntent();
+        awaitBotIntent();
+
+        // Now capture the intent from run() which carries the radar turn rate
+        server.resetBotIntentLatch();
+        server.continueBotIntent();
         awaitBotIntent();
 
         assertThat(server.getBotIntent().getRadarTurnRate())
-                .as("first intent must include the radar turn rate set in run() (regression: issue #202)")
+                .as("intent from run() must include the radar turn rate (regression: issue #202)")
                 .isEqualTo((double) MAX_RADAR_TURN_RATE);
     }
 }
