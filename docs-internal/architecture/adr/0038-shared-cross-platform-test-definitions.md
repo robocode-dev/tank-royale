@@ -83,6 +83,111 @@ The registry is reviewed when adding or modifying tests. CI may optionally valid
 
 ### Shared JSON Test Definition Format (Tier 1)
 
+#### JSON Schema
+
+The schema below defines the structure for all shared test definition files in `bot-api/tests/shared/`.
+Store the schema at `bot-api/tests/shared/test-definition.schema.json`.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://robocode-dev.github.io/tank-royale/schemas/test-definition.schema.json",
+  "title": "Shared Cross-Platform Test Definition",
+  "description": "Defines acceptance test cases that must pass identically on all Bot API platforms (Java, C#, Python, TypeScript).",
+  "type": "object",
+  "required": ["suite", "tests"],
+  "additionalProperties": false,
+  "properties": {
+    "suite": {
+      "type": "string",
+      "description": "Unique suite identifier matching the file name (e.g., 'intent-validation')."
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable summary of what this suite covers."
+    },
+    "tests": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/testCase" }
+    }
+  },
+  "$defs": {
+    "testCase": {
+      "type": "object",
+      "required": ["id", "description", "method", "expected"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^TR-API-[A-Z]+-\\d{3}",
+          "description": "Acceptance ID from TEST-REGISTRY.md. Append a short suffix for the specific scenario (e.g., 'TR-API-CMD-002-fire-valid')."
+        },
+        "description": {
+          "type": "string",
+          "description": "What this test case verifies. Include whether it is a positive or negative test."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["positive", "negative"],
+          "description": "Whether this is a happy-path (positive) or rejection/edge (negative) test case."
+        },
+        "method": {
+          "type": "string",
+          "description": "The API method under test, using the Java name (e.g., 'setFire', 'setTurnRate'). Platform runners map to the local convention."
+        },
+        "setup": {
+          "type": "object",
+          "description": "Pre-conditions to establish before calling the method. Keys are state field names (e.g., 'energy', 'gunHeat', 'maxTurnRate'). Platform runners translate to local setup.",
+          "additionalProperties": true
+        },
+        "args": {
+          "type": "array",
+          "description": "Positional arguments to pass to the method. Use the string 'NaN' for IEEE NaN, 'Infinity'/'-Infinity' for infinities, and null for absent/null arguments.",
+          "items": {}
+        },
+        "expected": {
+          "type": "object",
+          "description": "Expected outcome. At least one of 'returns', field assertions, or 'throws' must be present.",
+          "properties": {
+            "returns": {
+              "description": "Expected return value from the method call. Use true/false for booleans, numbers for numeric returns."
+            },
+            "throws": {
+              "type": "string",
+              "description": "Expected exception type using the Java name. Platform runners map to local exception names (e.g., 'IllegalArgumentException' → 'ArgumentException' in C#, 'ValueError' in Python)."
+            }
+          },
+          "additionalProperties": {
+            "description": "Additional keys are state field assertions checked after the method call (e.g., 'firepower': 1.5, 'turnRate': 10.0)."
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+#### Exception name mapping
+
+Platform runners must map Java exception names from `expected.throws` to local equivalents:
+
+| JSON value (Java name) | C# | Python | TypeScript |
+|------------------------|-----|--------|------------|
+| `IllegalArgumentException` | `ArgumentException` | `ValueError` | `Error` (message match) |
+| `IllegalStateException` | `InvalidOperationException` | `RuntimeError` | `Error` (message match) |
+
+#### Special values
+
+| JSON value | Meaning | Platform mapping |
+|-----------|---------|-----------------|
+| `"NaN"` | IEEE 754 Not-a-Number | `Double.NaN` / `float('nan')` / `Number.NaN` |
+| `"Infinity"` | Positive infinity | `Double.POSITIVE_INFINITY` / `float('inf')` / `Infinity` |
+| `"-Infinity"` | Negative infinity | `Double.NEGATIVE_INFINITY` / `float('-inf')` / `-Infinity` |
+| `null` | Absent or null value | Language-native null/None/undefined |
+
+#### Example
+
 ```json
 {
   "suite": "intent-validation",
@@ -91,6 +196,7 @@ The registry is reviewed when adding or modifying tests. CI may optionally valid
     {
       "id": "TR-API-CMD-002-fire-valid",
       "description": "setFire with sufficient energy and cold gun sets firepower",
+      "type": "positive",
       "method": "setFire",
       "setup": { "energy": 100.0, "gunHeat": 0.0 },
       "args": [1.5],
@@ -99,14 +205,25 @@ The registry is reviewed when adding or modifying tests. CI may optionally valid
     {
       "id": "TR-API-CMD-002-fire-nan-throws",
       "description": "setFire with NaN throws IllegalArgumentException",
+      "type": "negative",
       "method": "setFire",
       "setup": { "energy": 100.0, "gunHeat": 0.0 },
       "args": ["NaN"],
       "expected": { "throws": "IllegalArgumentException" }
     },
     {
+      "id": "TR-API-CMD-002-fire-insufficient-energy",
+      "description": "setFire when energy is below firepower threshold returns false",
+      "type": "negative",
+      "method": "setFire",
+      "setup": { "energy": 0.05, "gunHeat": 0.0 },
+      "args": [1.0],
+      "expected": { "firepower": 0, "returns": false }
+    },
+    {
       "id": "TR-API-CMD-001-turnrate-clamping",
       "description": "setTurnRate above max is clamped to max",
+      "type": "negative",
       "method": "setTurnRate",
       "setup": { "maxTurnRate": 10.0 },
       "args": [999.0],
