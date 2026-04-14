@@ -10,15 +10,15 @@
 
 ## Phase 1: Pure Physics Tests (no refactoring needed)
 
-- [ ] **1.1** `CollisionDetectorTest` — bullet-bot collisions: hit ✅, miss ❌, edge, diagonal
-- [ ] **1.2** `CollisionDetectorTest` — bullet-bullet collisions: hit ✅, near-miss ❌
-- [ ] **1.3** `CollisionDetectorTest` — bot-wall collisions: impact ✅, safe distance ❌
-- [ ] **1.4** `CollisionDetectorTest` — bot-bot collisions: overlap ✅, clear spacing ❌
-- [ ] **1.5** `GunEngineTest` — fire: cold gun ✅, hot gun ❌, sufficient energy ✅, insufficient energy ❌
-- [ ] **1.6** `LineTest` — intersection: crossing ✅, parallel ❌, coincident, endpoint edge cases
-- [ ] **1.7** `EventsMapperTest` — valid event ✅, unknown/malformed event ❌
-- [ ] **1.8** `ScoreTrackerTest` — damage applied ✅, zero-damage hit ❌, overkill capping
-- [ ] **1.9** Verify all Phase 1 tests pass alongside LEGACY tests
+- [x] **1.1** `CollisionDetectorTest` — bullet-bot collisions: hit ✅, miss ❌, edge, diagonal
+- [x] **1.2** `CollisionDetectorTest` — bullet-bullet collisions: hit ✅, near-miss ❌
+- [x] **1.3** `CollisionDetectorTest` — bot-wall collisions: impact ✅, safe distance ❌
+- [x] **1.4** `CollisionDetectorTest` — bot-bot collisions: overlap ✅, clear spacing ❌
+- [x] **1.5** `GunEngineTest` — fire: cold gun ✅, hot gun ❌, sufficient energy ✅, insufficient energy ❌
+- [x] **1.6** `LineTest` — intersection: crossing ✅, parallel ❌, coincident, endpoint edge cases
+- [x] **1.7** `EventsMapperTest` — valid event ✅, unknown/malformed event ❌
+- [x] **1.8** `ScoreTrackerTest` — damage applied ✅, zero-damage hit ❌, overkill capping
+- [x] **1.9** Verify all Phase 1 tests pass alongside LEGACY tests
 
 ## Phase 2: Extract and Inject
 

@@ -26,29 +26,29 @@ Every `TR-SRV-xxx` test listed here **must** include both **positive** (happy-pa
 
 | ID | Description | Status |
 |----|-------------|--------|
-| TR-SRV-PHY-001 | Bullet-bot collisions (hit, miss, edge, diagonal) | ❌ |
-| TR-SRV-PHY-002 | Bullet-bullet collisions (hit, near-miss) | ❌ |
-| TR-SRV-PHY-003 | Bot-wall collisions (impact, safe distance) | ❌ |
-| TR-SRV-PHY-004 | Bot-bot collisions (overlap, clear spacing) | ❌ |
-| TR-SRV-PHY-005 | Line intersection (crossing, parallel, coincident, endpoints) | ❌ |
+| TR-SRV-PHY-001 | Bullet-bot collisions (hit, miss, edge, diagonal) | ✅ |
+| TR-SRV-PHY-002 | Bullet-bullet collisions (hit, near-miss) | ✅ |
+| TR-SRV-PHY-003 | Bot-wall collisions (impact, safe distance) | ✅ |
+| TR-SRV-PHY-004 | Bot-bot collisions (overlap, clear spacing) | ✅ |
+| TR-SRV-PHY-005 | Line intersection (crossing, parallel, coincident, endpoints) | ✅ |
 
 ## ENG — Engine
 
 | ID | Description | Status |
 |----|-------------|--------|
-| TR-SRV-ENG-001 | Gun firing (cold/hot gun, energy levels) | ❌ |
+| TR-SRV-ENG-001 | Gun firing (cold/hot gun, energy levels) | ✅ |
 
 ## MAP — Mapping & Events
 
 | ID | Description | Status |
 |----|-------------|--------|
-| TR-SRV-MAP-001 | Events mapping (valid/unknown/malformed events) | ❌ |
+| TR-SRV-MAP-001 | Events mapping (valid/unknown/malformed events) | ✅ |
 
 ## SCR — Scoring
 
 | ID | Description | Status |
 |----|-------------|--------|
-| TR-SRV-SCR-001 | Damage tracking (applied, zero-damage, overkill capping) | ❌ |
+| TR-SRV-SCR-001 | Damage tracking (applied, zero-damage, overkill capping) | ✅ |
 
 ---
 
@@ -56,11 +56,11 @@ Every `TR-SRV-xxx` test listed here **must** include both **positive** (happy-pa
 
 | Category | Total IDs | Completed |
 |----------|-----------|-----------|
-| PHY | 5 | 0 |
-| ENG | 1 | 0 |
-| MAP | 1 | 0 |
-| SCR | 1 | 0 |
-| **Total** | **8** | **0** |
+| PHY | 5 | 5 |
+| ENG | 1 | 1 |
+| MAP | 1 | 1 |
+| SCR | 1 | 1 |
+| **Total** | **8** | **8** |
 
 ---
 

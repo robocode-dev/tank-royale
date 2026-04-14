@@ -295,13 +295,15 @@ class CollisionDetector(
             val victimEnergyAfterHit = bot.energy - outcome.damage
             val isKilled = bot.isAlive && victimEnergyAfterHit < 0
 
+            val cappedDamage = if (bot.energy < outcome.damage) bot.energy.coerceAtLeast(0.0) else outcome.damage
+
             bot.applyDamage(outcome.damage)
             botsMap[outcome.shooterId]?.changeEnergy(outcome.energyBonus)
 
             scoringRecords += BulletHitScoringRecord(
                 outcome.shooterParticipantId,
                 outcome.victimParticipantId,
-                outcome.damage,
+                cappedDamage,
                 isKilled,
             )
 
