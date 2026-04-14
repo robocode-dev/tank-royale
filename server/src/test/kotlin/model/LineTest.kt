@@ -1,3 +1,5 @@
+@file:OptIn(io.kotest.common.ExperimentalKotest::class)
+
 package model
 
 import dev.robocode.tankroyale.server.model.Line

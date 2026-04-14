@@ -1,3 +1,5 @@
+@file:OptIn(io.kotest.common.ExperimentalKotest::class)
+
 package core
 
 import dev.robocode.tankroyale.server.core.GunEngine

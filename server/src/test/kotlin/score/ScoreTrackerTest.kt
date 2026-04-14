@@ -1,3 +1,5 @@
+@file:OptIn(io.kotest.common.ExperimentalKotest::class)
+
 package score
 
 import dev.robocode.tankroyale.server.model.BotId

@@ -22,11 +22,11 @@
 
 ## Phase 2: Extract and Inject
 
-- [ ] **2.1** Extract `TurnProcessor` from `ModelUpdater` (pure turn-step pipeline)
-- [ ] **2.2** `TurnProcessorTest` — full turn with known inputs, verify outputs
-- [ ] **2.3** Refactor `GameServer` to accept dependencies via constructor injection
-- [ ] **2.4** Migrate reflection-based GameServer tests to injection-based tests
-- [ ] **2.5** Verify all existing tests still pass after refactoring
+- [x] **2.1** Extract `TurnProcessor` from `ModelUpdater` (pure turn-step pipeline)
+- [x] **2.2** `TurnProcessorTest` — full turn with known inputs, verify outputs
+- [x] **2.3** Refactor `GameServer` to accept dependencies via constructor injection
+- [x] **2.4** Migrate reflection-based GameServer tests to injection-based tests
+- [x] **2.5** Verify all existing tests still pass after refactoring
 
 ## Phase 3: Integration Tests
 

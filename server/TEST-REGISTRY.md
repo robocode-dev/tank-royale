@@ -50,6 +50,12 @@ Every `TR-SRV-xxx` test listed here **must** include both **positive** (happy-pa
 |----|-------------|--------|
 | TR-SRV-SCR-001 | Damage tracking (applied, zero-damage, overkill capping) | ✅ |
 
+## PLN — Pipeline & Turn Processing
+
+| ID | Description | Status |
+|----|-------------|--------|
+| TR-SRV-PLN-001 | Turn-step pipeline (sequential steps, state mutations) | ✅ |
+
 ---
 
 ## Coverage Summary
@@ -60,7 +66,8 @@ Every `TR-SRV-xxx` test listed here **must** include both **positive** (happy-pa
 | ENG | 1 | 1 |
 | MAP | 1 | 1 |
 | SCR | 1 | 1 |
-| **Total** | **8** | **8** |
+| PLN | 1 | 1 |
+| **Total** | **9** | **9** |
 
 ---
 

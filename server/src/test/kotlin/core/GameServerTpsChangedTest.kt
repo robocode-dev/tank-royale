@@ -1,10 +1,7 @@
 package core
 
-import dev.robocode.tankroyale.schema.Message
-import dev.robocode.tankroyale.schema.TpsChangedEvent
-import dev.robocode.tankroyale.server.core.GameServer
-import dev.robocode.tankroyale.server.core.MessageBroadcaster
-import dev.robocode.tankroyale.server.core.ServerConfig
+import dev.robocode.tankroyale.schema.*
+import dev.robocode.tankroyale.server.core.*
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.Tag
 import io.kotest.matchers.shouldBe
@@ -25,25 +22,23 @@ class GameServerTpsChangedTest : FunSpec({
         tps = 30
     )
 
-    fun GameServer.replaceBroadcaster(mock: MessageBroadcaster) {
-        GameServer::class.java.getDeclaredField("broadcaster").apply {
-            isAccessible = true
-        }.set(this, mock)
-    }
-
-    fun GameServer.callHandleChangeTps(newTps: Int) {
-        GameServer::class.java.declaredMethods
-            .first { it.name.startsWith("handleChangeTps") }
-            .apply { isAccessible = true }
-            .invoke(this, newTps)
+    fun createGameServer(broadcaster: MessageBroadcaster): GameServer {
+        return GameServer(
+            config = config,
+            connectionHandler = mockk(),
+            participantRegistry = mockk(),
+            lifecycleManager = mockk(relaxed = true),
+            broadcaster = broadcaster,
+            resultsBuilder = mockk(),
+            gson = mockk()
+        )
     }
 
     test("handleChangeTps broadcasts TpsChangedEvent with the correct tps value") {
-        val gameServer = GameServer(config)
         val mockBroadcaster = mockk<MessageBroadcaster>(relaxed = true)
-        gameServer.replaceBroadcaster(mockBroadcaster)
+        val gameServer = createGameServer(mockBroadcaster)
 
-        gameServer.callHandleChangeTps(60)
+        gameServer.handleChangeTps(60)
 
         val slot = slot<Message>()
         verify { mockBroadcaster.broadcastToObserverAndControllers(capture(slot)) }
@@ -53,21 +48,19 @@ class GameServerTpsChangedTest : FunSpec({
     }
 
     test("handleChangeTps does not broadcast when tps is unchanged") {
-        val gameServer = GameServer(config) // config.tps = 30
         val mockBroadcaster = mockk<MessageBroadcaster>(relaxed = true)
-        gameServer.replaceBroadcaster(mockBroadcaster)
+        val gameServer = createGameServer(mockBroadcaster) // config.tps = 30
 
-        gameServer.callHandleChangeTps(30) // same as current tps
+        gameServer.handleChangeTps(30) // same as current tps
 
         verify(exactly = 0) { mockBroadcaster.broadcastToObserverAndControllers(any()) }
     }
 
     test("handleChangeTps broadcasts different tps values correctly") {
-        val gameServer = GameServer(config)
         val mockBroadcaster = mockk<MessageBroadcaster>(relaxed = true)
-        gameServer.replaceBroadcaster(mockBroadcaster)
+        val gameServer = createGameServer(mockBroadcaster)
 
-        gameServer.callHandleChangeTps(10)
+        gameServer.handleChangeTps(10)
 
         val slot = slot<Message>()
         verify { mockBroadcaster.broadcastToObserverAndControllers(capture(slot)) }

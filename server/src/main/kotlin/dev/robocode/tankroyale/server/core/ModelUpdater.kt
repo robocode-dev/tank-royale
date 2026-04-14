@@ -68,6 +68,15 @@ class ModelUpdater(
     private val botInitializer = BotInitializer(setup, participantIds, initialPositions, droidFlags, initialPositionEnabled)
     private val gunEngine = GunEngine(setup)
 
+    private val turnProcessor = TurnProcessor(
+        setup,
+        gunEngine,
+        collisionDetector,
+        scoreTracker,
+        scoreCalculator,
+        participantIds
+    )
+
     /** The accumulated results ordered with higher total scores first */
     internal fun getResults() = accumulatedScoreCalculator.getScores()
 
@@ -114,6 +123,27 @@ class ModelUpdater(
     }
 
     /**
+     * Updates the game state.
+     * @return new game state.
+     */
+    private fun updateGameState(): GameStateSnapshot {
+        round.turns += turn.toTurn()
+
+        // Memory leak fix: Keep only the last 2 turns (current + previous for collision detection)
+        if (round.turns.size > 2) {
+            round.turns.removeAt(0)
+        }
+
+        if (gameState.rounds.size == 0 || gameState.rounds.last().roundNumber != round.roundNumber) {
+            gameState.rounds += round
+        }
+        return GameStateSnapshot(
+            lastRound = gameState.lastRound,
+            isGameEnded = gameState.isGameEnded,
+        )
+    }
+
+    /**
      * Updates the current bot intents with the new bot intents.
      * @param botIntents is a map of new bot intents.
      */
@@ -153,423 +183,26 @@ class ModelUpdater(
     /** Proceed with the next turn. */
     private fun nextTurn() {
         turn = MutableTurn(turn.turnNumber + 1)
-        deepCopyBots()
 
-        // ── Physics pipeline (sequential — each step mutates state for the next) ───
-        gunEngine.coolDownAndFireGuns(botsMap, botIntentsMap, botsCopies, round, bullets, turn)
-        executeBotIntents()
-        collisionDetector.checkAndHandleBotWallCollisions(botsMap, botsCopies, round, turn)
+        val result = turnProcessor.processTurn(
+            turn,
+            botsMap,
+            botIntentsMap,
+            botsCopies,
+            round,
+            bullets,
+            inactivityCounter
+        )
 
-        val botCollisionResult = collisionDetector.checkAndHandleBotCollisions(botsMap, round, turn)
-        botCollisionResult.scoringRecords.forEach {
-            scoreTracker.registerRamHit(it.rammerParticipantId, it.victimParticipantId, it.isKilled)
-        }
+        inactivityCounter = result.inactivityCounter
 
-        collisionDetector.constrainBotPositions(botsMap, botsCopies)
-        checkAndHandleScans()
-        updateBulletPositions()
-        collisionDetector.checkAndHandleBulletWallCollisions(bullets, turn)
-
-        val bulletPhaseResult = collisionDetector.checkAndHandleBulletHits(bullets, botsMap, turn)
-        bulletPhaseResult.scoringRecords.forEach {
-            scoreTracker.registerBulletHit(it.shooterParticipantId, it.victimParticipantId, it.damage, it.isKilled)
-        }
-
-        // ── Post-physics detect → apply (ordered: damage affects subsequent checks) ─
-        if (bulletPhaseResult.hitResults.bulletHitBots.isNotEmpty()) inactivityCounter = 0
-
-        val inactive = isInactive()
-        applyInactivity(inactive)
-
-        val disabledBotIds = detectDisabledBotIds()
-        applyDisabledBots(disabledBotIds)
-
-        val defeatedParticipants = detectDefeatedParticipants()
-        applyDefeatedBots(defeatedParticipants)
-
-        val roundOutcome = computeRoundOutcome()
-
-        // ── Snapshot + terminal state ──────────────────────────────────────────────
-        turn.copyBots(botsMap.values)
-        turn.copyBullets(bullets)
-        botsMap.values.removeIf(IBot::isDead)
-
-        if (roundOutcome != null) {
+        if (result.roundOutcome != null) {
             round.roundEnded = true
-            if (roundOutcome.gameEnded) gameState.isGameEnded = true
-            roundOutcome.winnerBotIds.forEach { botId ->
+            if (result.roundOutcome.gameEnded) gameState.isGameEnded = true
+            result.roundOutcome.winnerBotIds.forEach { botId ->
                 turn.addPrivateBotEvent(botId, WonRoundEvent(turn.turnNumber))
             }
-            accumulatedScoreCalculator.addScores(roundOutcome.scores)
+            accumulatedScoreCalculator.addScores(result.roundOutcome.scores)
         }
-    }
-
-    private fun deepCopyBots() {
-        botsMap.forEach {
-            botsCopies[it.key] = deepCopy(it.value)
-        }
-    }
-
-    private fun deepCopy(bot: MutableBot) = MutableBot(
-        id = bot.id,
-        isDroid = bot.isDroid,
-        position = Point(bot.x, bot.y),
-        direction = bot.direction,
-        gunDirection = bot.gunDirection,
-        radarDirection = bot.radarDirection,
-    )
-
-    /**
-     * Updates the game state.
-     * @return new game state.
-     */
-    private fun updateGameState(): GameStateSnapshot {
-        round.turns += turn.toTurn()
-
-        // Memory leak fix: Keep only the last 2 turns (current + previous for collision detection)
-        if (round.turns.size > 2) {
-            round.turns.removeAt(0)
-        }
-
-        if (gameState.rounds.size == 0 || gameState.rounds.last().roundNumber != round.roundNumber) {
-            gameState.rounds += round
-        }
-        return GameStateSnapshot(
-            lastRound = gameState.lastRound,
-            isGameEnded = gameState.isGameEnded,
-        )
-    }
-
-    /** Execute bot intents for all bots that are not disabled */
-    private fun executeBotIntents() {
-        botsMap.values.forEach { bot ->
-            if (bot.isEnabled) executeBotIntent(bot)
-        }
-    }
-
-    /**
-     * Executes the bot states intent.
-     * @param bot is the bot top execute the bot intent for.
-     */
-    private fun executeBotIntent(bot: MutableBot) {
-        botIntentsMap[bot.id]?.apply {
-            bot.speed = calcNewBotSpeed(bot.speed, targetSpeed ?: 0.0)
-            bot.moveToNewPosition()
-
-            updateBotTurnRatesAndDirections(bot, this)
-            updateBotColors(bot, this)
-            updateDebugGraphics(bot, this)
-
-            // Transfer one-shot std streams from intent to bot, then clear
-            bot.stdOut = stdOut
-            bot.stdErr = stdErr
-            stdOut = null
-            stdErr = null
-
-            processTeamMessages(bot, this)
-        }
-    }
-
-    /** Updates bullet positions */
-    private fun updateBulletPositions() {
-        bullets = bullets.map { it.copy(tick = it.tick + 1) }.toMutableSet()
-    }
-
-    /** Pure: checks whether bots have been collectively inactive long enough to take damage. */
-    private fun isInactive(): Boolean = inactivityCounter > setup.maxInactivityTurns
-
-    /** Apply: increments inactivity counter and, if inactive, applies damage to all bots. */
-    private fun applyInactivity(inactive: Boolean) {
-        inactivityCounter++
-        if (inactive) {
-            botsMap.values.forEach { it.applyDamage(INACTIVITY_DAMAGE) }
-        }
-    }
-
-    /** Pure: returns the IDs of bots that are currently disabled (energy ≈ 0). */
-    private fun detectDisabledBotIds(): Set<BotId> =
-        botsMap.values.filter { it.isDisabled }.map { it.id }.toSet()
-
-    /** Apply: disables movement intents for the given bot IDs. */
-    private fun applyDisabledBots(disabledBotIds: Set<BotId>) {
-        disabledBotIds.forEach { botId -> botIntentsMap[botId]?.disableMovement() }
-    }
-
-    /** Pure: returns participant IDs of bots that have been defeated (isDead). */
-    private fun detectDefeatedParticipants(): Set<ParticipantId> =
-        botsMap.values.filter { it.isDead }
-            .map { bot -> participantIds.first { it.botId == bot.id } }
-            .toSet()
-
-    /** Apply: emits death events and registers deaths for scoring. */
-    private fun applyDefeatedBots(deadParticipantIds: Set<ParticipantId>) {
-        deadParticipantIds.forEach {
-            val botDeathEvent = BotDeathEvent(turn.turnNumber, it.botId)
-            turn.addPublicBotEvent(botDeathEvent)
-            turn.addObserverEvent(botDeathEvent)
-        }
-        scoreTracker.registerDeaths(deadParticipantIds)
-    }
-
-    /** Checks the scan field for scanned bots. */
-    private fun checkAndHandleScans() {
-        val bots = botsMap.values.toList()
-        for (i in bots.indices) {
-            val scanningBot = bots[i]
-
-            if (scanningBot.isDroid) continue // droids cannot use scanning
-
-            val (startAngle, endAngle) = getScanAngles(scanningBot)
-
-            for (j in bots.indices) {
-                if (i != j) {
-                    val botBeingScanned = bots[j]
-                    if (isBotScanned(scanningBot, botBeingScanned, startAngle, endAngle)) {
-                        handleScannedBot(scanningBot, botBeingScanned)
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Handle scanned bot.
-     * @param scanningBot the bot scanning an opponent bot.
-     * @param botBeingScanned the bot being scanned.
-     */
-    private fun handleScannedBot(scanningBot: MutableBot, botBeingScanned: IBot) {
-        createAndAddScannedBotEventToTurn(scanningBot.id, botBeingScanned)
-    }
-
-    /**
-     * Checks if a bot is scanning another bot.
-     * @param scanningBot is the bot performing the scanning.
-     * @param scannedBot is the bot exposed for scanning.
-     * @param scanStartAngle is the start angle of the scan arc.
-     * @param scanEndAngle is the end angle of the scan arc.
-     * @return `true` if the scannedBot was scanned; `false` otherwise.
-     */
-    private fun isBotScanned(
-        scanningBot: IBot,
-        scannedBot: IBot,
-        scanStartAngle: Double,
-        scanEndAngle: Double
-
-    ) = isScanningOrMoving(scanningBot.id) &&
-            isCircleIntersectingCircleSector(
-                scannedBot.position, BOT_BOUNDING_CIRCLE_RADIUS,
-                scanningBot.position, RADAR_RADIUS,
-                scanStartAngle, scanEndAngle
-            )
-
-    /**
-     * Checks if a bot is scanning, meaning that it must be either rescanning or moving.
-     * @param botId is the id of the bot.
-     * @return `true` if the bot is scanning; `false` otherwise.
-     */
-    private fun isScanningOrMoving(botId: BotId): Boolean {
-        return isRescanning(botId) || isMoving(botId)
-    }
-
-    /**
-     * Checks if a bot is rescanning.
-     * @param botId is the id of the bot.
-     * @return `true` if the bot is scanning; `false` otherwise.
-     */
-    private fun isRescanning(botId: BotId): Boolean {
-        return botIntentsMap[botId]?.rescan ?: false
-    }
-
-    /**
-     * Checks if a bot is moving, meaning that the x,y position or a direction has changed.
-     * @param botId is the id of the bot.
-     * @return `true` if the bot is moving; `false` otherwise.
-     */
-    private fun isMoving(botId: BotId): Boolean {
-        val currentState = botsMap[botId]!!
-        val previousState = botsCopies[botId]!!
-
-        return currentState.x != previousState.x
-                || currentState.y != previousState.y
-                || currentState.direction != previousState.direction
-                || currentState.gunDirection != previousState.gunDirection
-                || currentState.radarDirection != previousState.radarDirection
-    }
-
-    /**
-     * Creates and adds scanned-bot-events to the turn.
-     * @param scanningBotId is the id of the bot performing the scanning.
-     * @param scannedBot is the bot exposed for scanning.
-     */
-    private fun createAndAddScannedBotEventToTurn(scanningBotId: BotId, scannedBot: IBot) {
-        val scannedBotEvent = ScannedBotEvent(
-            turn.turnNumber,
-            scanningBotId,
-            scannedBot.id,
-            scannedBot.energy,
-            scannedBot.x,
-            scannedBot.y,
-            scannedBot.direction,
-            scannedBot.speed
-        )
-        turn.addPrivateBotEvent(scanningBotId, scannedBotEvent)
-        turn.addObserverEvent(scannedBotEvent)
-    }
-
-    /**
-     * Returns the scan angles for a bot.
-     * @param bot is the bot.
-     * @return a pair of doubles, where the first double is the start angle, and the second double is the end angle.
-     */
-    private fun getScanAngles(bot: IBot): Pair<Double, Double> {
-        val spreadAngle = bot.radarSpreadAngle
-        val absSpreadAngle = abs(spreadAngle)
-
-        // Always use the radar direction as the reference point
-        val radarDirection = bot.radarDirection
-
-        // Calculate start and end based on the sign of the spread angle
-        val (startAngle, endAngle) = if (spreadAngle >= 0) {
-            Pair(
-                normalizeAbsoluteDegrees(radarDirection - absSpreadAngle),
-                radarDirection
-            )
-        } else {
-            Pair(
-                radarDirection,
-                normalizeAbsoluteDegrees(radarDirection + absSpreadAngle)
-            )
-        }
-
-        return Pair(startAngle, endAngle)
-    }
-
-    private data class RoundOutcome(
-        val gameEnded: Boolean,
-        val scores: List<Score>,
-        val winnerBotIds: List<BotId>,
-    )
-
-    /**
-     * Returns the outcome of the round if the round is over; `null` if still in progress.
-     * Pure: reads state only — no mutations to [round], [gameState], or [accumulatedScoreCalculator].
-     */
-    private fun computeRoundOutcome(): RoundOutcome? {
-        if (!isRoundOver()) return null
-        val scores = scoreCalculator.getScores()
-        val winnerBotIds = scores.filter { it.rank == 1 }.map { it.participantId.botId }
-        return RoundOutcome(
-            gameEnded = round.roundNumber >= setup.numberOfRounds,
-            scores = scores,
-            winnerBotIds = winnerBotIds,
-        )
-    }
-
-    private fun isRoundOver() = run {
-        // distinctBy(id) is necessary to take account for both bots and teams
-        val aliveCount = getBotsOrTeams(MutableBot::isAlive).distinctBy { it.id }.count()
-        if (aliveCount <= 1) {
-            true
-        } else {
-            if (bullets.size > 0) {
-                false
-            } else {
-                // When no bullets or functioning bots remain, the round ends immediately as a draw to speed things up
-                val disabledCount = getBotsOrTeams(MutableBot::isDisabled).distinctBy { it.id }.count()
-                disabledCount == aliveCount
-            }
-        }
-    }
-
-    private fun getBotsOrTeams(filter: (MutableBot) -> Boolean): Collection<ParticipantId> {
-        val botIds = botsMap.values.filter { filter.invoke(it) }.map { it.id }
-
-        return participantIds.filter { botIds.contains(it.botId) }.distinct()
-    }
-
-    private fun processTeamMessages(bot: MutableBot, intent: BotIntent) {
-        val teamMessages = intent.teamMessages ?: return
-        for (index in 0 until teamMessages.size.coerceAtMost(MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN)) {
-            val msg = teamMessages[index]
-            if (msg.message.length > MAX_TEAM_MESSAGE_SIZE) continue
-            if (msg.receiverId != null) {
-                turn.addPrivateBotEvent(
-                    msg.receiverId, TeamMessageEvent(turn.turnNumber, msg.message, msg.messageType, bot.id)
-                )
-            } else {
-                bot.teammateIds.forEach { teammateId ->
-                    turn.addPrivateBotEvent(
-                        teammateId, TeamMessageEvent(turn.turnNumber, msg.message, msg.messageType, bot.id)
-                    )
-                }
-            }
-        }
-        intent.teamMessages = null
-    }
-
-
-    /** for static methods */
-    companion object {
-        /**
-         * Update bot turn rates and directions.
-         * @param bot is the bot.
-         * @param intent is the bot's intent.
-         */
-        private fun updateBotTurnRatesAndDirections(bot: MutableBot, intent: BotIntent) {
-            val turnRate = limitTurnRate(intent.turnRate ?: 0.0, bot.speed)
-            val gunTurnRate = limitGunTurnRate(intent.gunTurnRate ?: 0.0)
-            val radarTurnRate = limitRadarTurnRate(intent.radarTurnRate ?: 0.0)
-
-            bot.turnRate = turnRate
-            bot.gunTurnRate = gunTurnRate
-            bot.radarTurnRate = radarTurnRate
-
-            // -- Gun adjustment
-            var gunAdjustment = turnRate + gunTurnRate
-            if (intent.adjustGunForBodyTurn == true) {
-                gunAdjustment -= turnRate
-            }
-
-            // -- Radar adjustment
-            var radarAdjustment = gunAdjustment + radarTurnRate
-            if (intent.adjustRadarForGunTurn == true) {
-                radarAdjustment -= gunTurnRate
-
-                if (intent.adjustGunForBodyTurn == true) {  // orig. Robocode compatibility
-                    radarAdjustment += turnRate
-                }
-            }
-            if (intent.adjustRadarForBodyTurn == true) {
-                radarAdjustment -= turnRate
-            }
-
-            bot.direction = normalizeAbsoluteDegrees(bot.direction + turnRate)
-            bot.gunDirection = normalizeAbsoluteDegrees(bot.gunDirection + gunAdjustment)
-            bot.radarDirection = normalizeAbsoluteDegrees(bot.radarDirection + radarAdjustment)
-            bot.radarSpreadAngle = radarAdjustment
-        }
-
-        /**
-         * Updates the bot colors.
-         * @param bot is the bot.
-         * @param intent is the bot's intent.
-         */
-        private fun updateBotColors(bot: MutableBot, intent: BotIntent) {
-            bot.apply {
-                bodyColor = fromColor(intent.bodyColor)
-                turretColor = fromColor(intent.turretColor)
-                radarColor = fromColor(intent.radarColor)
-                bulletColor = fromColor(intent.bulletColor)
-                scanColor = fromColor(intent.scanColor)
-                tracksColor = fromColor(intent.tracksColor)
-                gunColor = fromColor(intent.gunColor)
-            }
-        }
-
-        private fun updateDebugGraphics(bot: MutableBot, intent: BotIntent) {
-            bot.debugGraphics = intent.debugGraphics
-        }
-
-        private fun fromColor(color: String?) = color?.let { from(it) }
     }
 }

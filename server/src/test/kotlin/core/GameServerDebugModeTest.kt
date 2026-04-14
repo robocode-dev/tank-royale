@@ -1,11 +1,10 @@
 package core
 
-import dev.robocode.tankroyale.server.core.GameServer
-import dev.robocode.tankroyale.server.core.GameLifecycleManager
-import dev.robocode.tankroyale.server.core.ServerConfig
+import dev.robocode.tankroyale.server.core.*
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.Tag
 import io.kotest.matchers.shouldBe
+import io.mockk.mockk
 
 class GameServerDebugModeTest : FunSpec({
 
@@ -20,63 +19,55 @@ class GameServerDebugModeTest : FunSpec({
         tps = 30
     )
 
-    fun GameServer.getLifecycleManager(): GameLifecycleManager {
-        return GameServer::class.java.getDeclaredField("lifecycleManager").apply {
-            isAccessible = true
-        }.get(this) as GameLifecycleManager
-    }
-
-    fun GameServer.callHandleEnableDebugMode() {
-        GameServer::class.java.declaredMethods
-            .first { it.name.startsWith("handleEnableDebugMode") }
-            .apply { isAccessible = true }
-            .invoke(this)
-    }
-
-    fun GameServer.callHandleDisableDebugMode() {
-        GameServer::class.java.declaredMethods
-            .first { it.name.startsWith("handleDisableDebugMode") }
-            .apply { isAccessible = true }
-            .invoke(this)
+    fun createGameServer(lifecycleManager: GameLifecycleManager): GameServer {
+        return GameServer(
+            config = config,
+            connectionHandler = mockk(),
+            participantRegistry = mockk(),
+            lifecycleManager = lifecycleManager,
+            broadcaster = mockk(),
+            resultsBuilder = mockk(),
+            gson = mockk()
+        )
     }
 
     test("handleEnableDebugMode sets debugMode to true") {
-        val gameServer = GameServer(config)
-        val lifecycle = gameServer.getLifecycleManager()
+        val lifecycle = GameLifecycleManager()
+        val gameServer = createGameServer(lifecycle)
 
         lifecycle.debugMode shouldBe false
 
-        gameServer.callHandleEnableDebugMode()
+        gameServer.handleEnableDebugMode()
 
         lifecycle.debugMode shouldBe true
     }
 
     test("handleDisableDebugMode sets debugMode to false") {
-        val gameServer = GameServer(config)
-        val lifecycle = gameServer.getLifecycleManager()
+        val lifecycle = GameLifecycleManager()
+        val gameServer = createGameServer(lifecycle)
 
         lifecycle.debugMode = true
-        gameServer.callHandleDisableDebugMode()
+        gameServer.handleDisableDebugMode()
 
         lifecycle.debugMode shouldBe false
     }
 
     test("handleEnableDebugMode is idempotent") {
-        val gameServer = GameServer(config)
-        val lifecycle = gameServer.getLifecycleManager()
+        val lifecycle = GameLifecycleManager()
+        val gameServer = createGameServer(lifecycle)
 
-        gameServer.callHandleEnableDebugMode()
-        gameServer.callHandleEnableDebugMode()
+        gameServer.handleEnableDebugMode()
+        gameServer.handleEnableDebugMode()
 
         lifecycle.debugMode shouldBe true
     }
 
     test("handleDisableDebugMode is idempotent") {
-        val gameServer = GameServer(config)
-        val lifecycle = gameServer.getLifecycleManager()
+        val lifecycle = GameLifecycleManager()
+        val gameServer = createGameServer(lifecycle)
 
         lifecycle.debugMode = false
-        gameServer.callHandleDisableDebugMode()
+        gameServer.handleDisableDebugMode()
 
         lifecycle.debugMode shouldBe false
     }
