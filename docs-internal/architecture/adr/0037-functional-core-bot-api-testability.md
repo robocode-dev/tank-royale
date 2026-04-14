@@ -65,6 +65,18 @@ Extract pure validation and intent-building logic from `BaseBotInternals` into a
 | Python | `intent_validator` | `bot_api/internal/intent_validator.py` |
 | TypeScript | `intentValidator` | `bot-api/internal/intentValidator.ts` |
 
+### Known Structural Divergence: Python
+
+Python's internal architecture differs structurally from Java/C#/TypeScript while remaining **behaviorally identical**:
+
+| Aspect | Java / C# / TypeScript | Python |
+|--------|----------------------|--------|
+| Movement tracking | Public `BotInternals` class | Private `_BotInternals` inner class inside `Bot` |
+| State fields | Direct fields in `BaseBotInternals` | Extracted into separate `BaseBotInternalData` dataclass |
+| BotInternals visibility | Package-private / internal | Name-mangled private (`_BotInternals`) |
+
+The validation and intent-building logic targeted for extraction into `IntentValidator` lives in `base_bot_internals.py` — the same location as the other platforms. The extraction is unaffected by these differences. However, when implementing `intent_validator.py`, be aware that Python accesses intent state via `self.data.bot_intent` rather than `self.botIntent` directly.
+
 ### Example: Before and After
 
 **Before (Java):**

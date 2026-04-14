@@ -36,6 +36,16 @@ where = ["src", "generated"]
 timeout = 30
 # Use thread method for cross-platform compatibility (works on Windows)
 timeout_method = "thread"
+markers = [
+    "VAL: Validation tests (BotInfo, constants, initial position)",
+    "CMD: Command tests (fire, movement, radar)",
+    "TCK: Protocol conformance / tick lifecycle tests",
+    "BOT: Bot constructor and lifecycle tests",
+    "UTL: Utility tests (color util, country code, JSON)",
+    "GFX: Graphics tests (color, SVG, point)",
+    "Reliability: Stress and thread-safety tests",
+    "LEGACY: Legacy tests to be replaced by shared definitions (ADR-0038)",
+]
 
 [project.urls]
 Homepage = "https://robocode-dev.github.io/tank-royale"
