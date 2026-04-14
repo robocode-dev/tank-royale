@@ -12,6 +12,15 @@ The Bot API internals are tightly coupled, making testing unnecessarily difficul
 
 This change addresses the root causes rather than symptoms, superseding the archived `refactor-bot-api-test-infrastructure` change.
 
+## Prerequisite
+
+**This change depends on `testable-server-architecture`** (ADR-0039). The server is the source of truth for all game physics (ADR-0008). Server physics tests must be in place first — if collision detection or gun mechanics are wrong at the server level, Bot API tests will validate against incorrect behavior.
+
+Execution order:
+1. Server physics tests (ground truth) → `testable-server-architecture`
+2. Bot API functional core extraction → this change
+3. Shared cross-platform Bot API tests → this change
+
 ## What Changes
 
 ### Phase 1: Extract Functional Core (ADR-0037)

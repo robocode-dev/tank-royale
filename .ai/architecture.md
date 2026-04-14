@@ -12,7 +12,7 @@ All architecture docs in [`docs-internal/architecture/`](../docs-internal/archit
 
 | Category | Location |
 |----------|----------|
-| ADRs (38) | `docs-internal/architecture/adr/` |
+| ADRs (39) | `docs-internal/architecture/adr/` |
 | C4 Views | `docs-internal/architecture/c4-views/` |
 | Message Schema (53 types) | `docs-internal/architecture/models/message-schema/` |
 | Flows | `docs-internal/architecture/models/flows/` |
