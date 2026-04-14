@@ -20,11 +20,34 @@ class AbstractBotTest(unittest.TestCase):
     """
     Abstract base class for bot API tests.
 
-    Provides common test infrastructure including:
-    - MockedServer lifecycle management
-    - Bot thread tracking for clean shutdown
-    - Command execution utilities with intent capture
-    - Synchronization helpers
+    Bot Type:
+        Tests use Bot (not BaseBot — Python has no BaseBot). Bot HAS an internal thread
+        and sends automatic intents after each tick. The start_bot() method drains the
+        first automatic "pre-warm" intent so subsequent captures are clean.
+
+    Intent-Capture Protocol:
+        To capture what the bot sends to the server, tests follow this 5-step sequence:
+
+        1. server.reset_bot_intent_event()  — clear stale event signals
+        2. bot.set_some_value(...)          — set command values on the bot
+        3. go_async(bot)                   — trigger bot.go() in a tracked thread
+        4. server.continue_bot_intent()    — release the MockedServer gate
+        5. await_bot_intent()              — block until intent is captured
+
+        The execute_command_and_get_intent() helper encapsulates steps 1, 4, 5.
+
+    Why continue_bot_intent() is required:
+        MockedServer's handler blocks on a threading.Event BEFORE parsing the intent
+        JSON. If continue_bot_intent() is never called, the handler blocks forever,
+        the bot thread blocks waiting for the next tick, and the test hangs.
+
+    Auto-Intent Draining (Python-specific):
+        Because Python uses Bot (with automatic intents), any action that causes the bot
+        to receive a tick will trigger an automatic intent. start_bot() drains the first
+        one. start_and_prepare_for_fire() drains a second one after sending the state
+        update tick. You must drain these before capturing the intent you care about.
+
+    See also: bot-api/tests/TESTING-GUIDE.md
     """
     bot_info = BotInfo(
         name="TestBot",

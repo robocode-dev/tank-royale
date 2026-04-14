@@ -208,6 +208,13 @@ public class MockedServer
         }
     }
 
+    /// <summary>
+    /// Reset the intent-capture gate by clearing both event signals.
+    /// Must be called before each intent-capture cycle to ensure the test
+    /// captures a fresh intent rather than a stale one from a previous cycle.
+    /// </summary>
+    /// <seealso cref="ContinueBotIntent"/>
+    /// <seealso cref="AwaitBotIntent"/>
     public void ResetBotIntentEvent()
     {
         _botIntentEvent.Reset();
@@ -335,6 +342,13 @@ public class MockedServer
         return false;
     }
 
+    /// <summary>
+    /// Wait for the bot to send its intent and for the handler to finish processing it.
+    /// After this returns true, the captured intent is available via <see cref="BotIntent"/>.
+    /// Prerequisite: <see cref="ContinueBotIntent"/> must have been called first.
+    /// </summary>
+    /// <param name="milliSeconds">Timeout in milliseconds</param>
+    /// <returns>True if intent was captured, false if timeout</returns>
     public bool AwaitBotIntent(int milliSeconds)
     {
         try
@@ -350,6 +364,14 @@ public class MockedServer
         return false;
     }
 
+    /// <summary>
+    /// Release the intent-capture gate, allowing the MockedServer handler to proceed.
+    /// The handler blocks on <c>_botIntentContinueEvent</c> BEFORE parsing the intent JSON.
+    /// If this method is never called, the handler blocks forever, the bot task blocks
+    /// in WaitForNextTurn(), and the test hangs.
+    /// </summary>
+    /// <seealso cref="ResetBotIntentEvent"/>
+    /// <seealso cref="AwaitBotIntent"/>
     public void ContinueBotIntent()
     {
         // Signal handler to proceed (matches Java's botIntentContinueLatch.countDown())

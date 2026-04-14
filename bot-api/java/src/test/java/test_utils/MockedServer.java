@@ -271,6 +271,17 @@ public final class MockedServer {
         this.radarDirectionMaxLimit = maxLimit;
     }
 
+    /**
+     * Reset the intent-capture gate by draining all stale semaphore permits.
+     *
+     * <p>Must be called before each intent-capture cycle to ensure the test
+     * captures a fresh intent rather than a stale one from a previous cycle.
+     * Drains both the "continue" gate (which controls when the handler parses
+     * the intent) and the "ready" signal (which tells the test the intent is available).
+     *
+     * @see #continueBotIntent()
+     * @see #awaitBotIntent(int)
+     */
     public void resetBotIntentLatch() {
         botIntentReady.drainPermits();
         botIntentContinue.drainPermits();
@@ -312,6 +323,22 @@ public final class MockedServer {
         return false;
     }
 
+    /**
+     * Wait for the bot to send its intent and for the handler to finish processing it.
+     *
+     * <p>This blocks until the handler has parsed the intent JSON and released
+     * the "ready" signal, or until the timeout expires. After this method returns
+     * {@code true}, the captured intent is available via {@link #getBotIntent()}.
+     *
+     * <p><strong>Prerequisite:</strong> {@link #continueBotIntent()} must have been
+     * called first, or the handler will never reach the point where it releases
+     * the ready signal.
+     *
+     * @param milliSeconds timeout in milliseconds
+     * @return {@code true} if the intent was captured, {@code false} if timeout
+     * @see #continueBotIntent()
+     * @see #resetBotIntentLatch()
+     */
     public boolean awaitBotIntent(int milliSeconds) {
         try {
             return botIntentReady.tryAcquire(milliSeconds, TimeUnit.MILLISECONDS);
@@ -321,6 +348,25 @@ public final class MockedServer {
         return false;
     }
 
+    /**
+     * Release the intent-capture gate, allowing the MockedServer handler to proceed.
+     *
+     * <p>The handler's {@code handleBotIntent()} method blocks on the
+     * {@code botIntentContinue} semaphore BEFORE parsing the intent JSON.
+     * Calling this method releases that gate, allowing the handler to:
+     * <ol>
+     *   <li>Parse the bot intent JSON</li>
+     *   <li>Store the intent (readable via {@link #getBotIntent()})</li>
+     *   <li>Release the "ready" signal (unblocking {@link #awaitBotIntent(int)})</li>
+     *   <li>Send the next tick event to the bot</li>
+     * </ol>
+     *
+     * <p><strong>If this method is never called, the handler blocks forever,
+     * the bot thread blocks in {@code waitForNextTurn()}, and the test hangs.</strong>
+     *
+     * @see #resetBotIntentLatch()
+     * @see #awaitBotIntent(int)
+     */
     public void continueBotIntent() {
         botIntentContinue.release();
     }

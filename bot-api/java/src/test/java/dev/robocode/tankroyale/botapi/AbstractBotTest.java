@@ -14,19 +14,29 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  * Abstract base class for bot API tests.
- * Provides common test infrastructure including MockedServer lifecycle management,
- * bot thread tracking, and command execution utilities.
  *
- * <p>This class handles:
- * <ul>
- *   <li>MockedServer setup and teardown</li>
- *   <li>Bot thread lifecycle and clean shutdown</li>
- *   <li>Synchronous command execution with intent capture</li>
- *   <li>Await helpers for synchronization</li>
- * </ul>
+ * <h3>Bot Type</h3>
+ * Tests use {@link BaseBot} (not {@code Bot}). BaseBot has NO internal thread and
+ * never sends automatic intents — the test controls exactly when intents are sent
+ * via {@link #goAsync(BaseBot)}.
  *
- * <p>All tests inheriting from this class have a global timeout of 10 seconds
- * to prevent hangs.
+ * <h3>Intent-Capture Protocol</h3>
+ * To capture what the bot sends to the server, tests follow this 5-step sequence:
+ * <pre>
+ * 1. server.resetBotIntentLatch()   — clear stale semaphore permits
+ * 2. bot.setSomeValue(...)          — set command values on the bot
+ * 3. goAsync(bot)                   — trigger bot.go() in a tracked thread
+ * 4. server.continueBotIntent()     — release the MockedServer gate
+ * 5. awaitBotIntent()               — block until intent is captured
+ * </pre>
+ * The {@link #executeCommandAndGetIntent} helper encapsulates steps 1, 4, 5.
+ *
+ * <h3>Why continueBotIntent() is Required</h3>
+ * MockedServer's handler blocks on a semaphore BEFORE parsing the intent JSON.
+ * If {@code continueBotIntent()} is never called, the handler blocks forever,
+ * the bot thread blocks in {@code waitForNextTurn()}, and the test hangs.
+ *
+ * @see <a href="../../../../../../tests/TESTING-GUIDE.md">TESTING-GUIDE.md</a>
  */
 @Timeout(value = 10, unit = TimeUnit.SECONDS)
 abstract class AbstractBotTest {

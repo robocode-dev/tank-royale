@@ -10,11 +10,29 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 
 /// <summary>
 /// Abstract base class for bot API tests.
-/// Provides common test infrastructure including MockedServer lifecycle management,
-/// bot task tracking, and command execution utilities.
 ///
-/// All tests inheriting from this class have a global timeout of 10 seconds
-/// to prevent hangs.
+/// <para><b>Bot Type:</b> Tests use <see cref="BaseBot"/> (not <c>Bot</c>). BaseBot has NO internal
+/// thread and never sends automatic intents — the test controls exactly when intents are sent
+/// via <see cref="GoAsync"/>.</para>
+///
+/// <para><b>Intent-Capture Protocol:</b> To capture what the bot sends to the server,
+/// tests follow this 5-step sequence:</para>
+/// <list type="number">
+///   <item>Server.ResetBotIntentEvent() — clear stale event signals</item>
+///   <item>bot.SetSomeValue(...) — set command values on the bot</item>
+///   <item>GoAsync(bot) — trigger bot.Go() in a tracked task</item>
+///   <item>Server.ContinueBotIntent() — release the MockedServer gate</item>
+///   <item>AwaitBotIntent() — block until intent is captured</item>
+/// </list>
+///
+/// <para>The <see cref="ExecuteCommandAndGetIntent{T}"/> helper encapsulates steps 1, 4, 5.</para>
+///
+/// <para><b>Why ContinueBotIntent() is required:</b> MockedServer's handler blocks on
+/// a ManualResetEventSlim BEFORE parsing the intent JSON. If ContinueBotIntent() is never
+/// called, the handler blocks forever, the bot task blocks in WaitForNextTurn(), and the
+/// test hangs.</para>
+///
+/// <para>See also: bot-api/tests/TESTING-GUIDE.md</para>
 /// </summary>
 [Timeout(10000)] // 10 seconds timeout for all tests
 public class AbstractBotTest

@@ -355,19 +355,47 @@ class MockedServer:
         self._tick_event.clear()
 
     def await_bot_intent(self, timeout_ms: int) -> bool:
-        """Wait for bot intent with timeout. Matches Java's awaitBotIntent().
-        
-        Does NOT release the continue event. Call continue_bot_intent() first if needed.
+        """Wait for the bot to send its intent and for the handler to finish processing it.
+
+        Blocks until the handler has parsed the intent JSON and released the
+        "ready" signal, or until the timeout expires. After this returns
+        ``True``, the captured intent is available via ``get_bot_intent()``.
+
+        Prerequisite: ``continue_bot_intent()`` must have been called first,
+        or the handler will never reach the point where it releases the ready
+        signal.
+
+        Args:
+            timeout_ms: Timeout in milliseconds.
+
+        Returns:
+            True if the intent was captured, False if timeout.
+
+        See also: continue_bot_intent(), reset_bot_intent_latch()
         """
         # Then wait for the intent event (like Java: botIntentLatch.await())
         return self._bot_intent_event.wait(timeout_ms / 1000.0)
 
     def continue_bot_intent(self) -> None:
-        """Release the continue event (like Java: botIntentContinueLatch.countDown())"""
+        """Release the intent-capture gate, allowing the handler to proceed.
+
+        The handler blocks on ``_bot_intent_continue_event`` BEFORE parsing the
+        intent JSON. If this method is never called, the handler blocks forever,
+        the bot thread blocks waiting for the next tick, and the test hangs.
+
+        See also: reset_bot_intent_latch(), await_bot_intent()
+        """
         self._bot_intent_continue_event.set()
 
     def reset_bot_intent_latch(self) -> None:
-        """Reset the bot intent event. Call before triggering an intent you want to capture."""
+        """Reset the intent-capture gate by clearing both event signals.
+
+        Must be called before each intent-capture cycle to ensure the test
+        captures a fresh intent rather than a stale one from a previous cycle.
+        Clears both the "continue" gate and the "ready" signal.
+
+        See also: continue_bot_intent(), await_bot_intent()
+        """
         self._bot_intent_event.clear()
         self._bot_intent_continue_event.clear()
         with self._bot_intent_lock:
