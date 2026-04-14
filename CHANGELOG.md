@@ -1,6 +1,12 @@
-## [0.40.2] - TBD
+## [0.40.2] - 2026-04-14 - Bot API stability and intent fixes
 
 ### 🐞 Bug Fixes
+
+- Bot API (Java):
+    - #207: Fixed Java 26 warning about mutating `final` fields via reflection during
+      deserialization of `RoundStartedEvent` and `RoundEndedEvent`. Gson now deserializes
+      into the mutable schema classes first, then constructs the immutable bot API event
+      objects via their constructors.
 
 - Bot API (Java, .NET, Python, TypeScript):
     - #202: Fixed bots receiving a `SkippedTurnEvent` on turn 1 when the OS scheduler delayed
@@ -9,11 +15,13 @@
       is never skipped due to scheduling latency.
     - #202: Fixed an edge case where the pre-warmed bot thread could bypass the tick-arrival
       wait at the start of rounds 2+ if the previous round's tick state was still set.
+
 - Bot API (.NET):
     - Fixed console output is becoming corrupted after a bot reconnects to the server in a
       multi-game session.
     - Fixed a rare crash where an interrupted thread flag could leak into unrelated operations
       after a bot disconnects.
+
 - Bot API (Java, .NET, Python):
     - Fixed `rescan()` / `setRescan()` having no effect. The rescan flag was cleared internally
       before the intent was sent to the server, so the server never received it.

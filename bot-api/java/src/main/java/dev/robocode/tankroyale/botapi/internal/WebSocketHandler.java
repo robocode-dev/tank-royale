@@ -9,7 +9,6 @@ import dev.robocode.tankroyale.botapi.events.DisconnectedEvent;
 import dev.robocode.tankroyale.botapi.events.GameEndedEvent;
 import dev.robocode.tankroyale.botapi.events.GameStartedEvent;
 import dev.robocode.tankroyale.botapi.events.RoundEndedEvent;
-import dev.robocode.tankroyale.botapi.events.RoundStartedEvent;
 import dev.robocode.tankroyale.botapi.events.SkippedTurnEvent;
 import dev.robocode.tankroyale.botapi.internal.json.JsonConverter;
 import dev.robocode.tankroyale.botapi.mapper.EventMapper;
@@ -18,6 +17,8 @@ import dev.robocode.tankroyale.schema.BotReady;
 import dev.robocode.tankroyale.schema.GameEndedEventForBot;
 import dev.robocode.tankroyale.schema.GameStartedEventForBot;
 import dev.robocode.tankroyale.schema.Message;
+import dev.robocode.tankroyale.schema.RoundEndedEventForBot;
+import dev.robocode.tankroyale.schema.RoundStartedEvent;
 import dev.robocode.tankroyale.schema.TickEventForBot;
 import dev.robocode.tankroyale.schema.ServerHandshake;
 
@@ -152,19 +153,20 @@ final class WebSocketHandler implements WebSocket.Listener {
     }
 
     private void handleRoundStarted(JsonObject jsonMsg) {
-        var roundStartedEvent = JsonConverter.fromJson(jsonMsg, RoundStartedEvent.class);
+        var schemaEvent = JsonConverter.fromJson(jsonMsg, RoundStartedEvent.class);
 
-        var mappedRoundStartedEvent = new RoundStartedEvent(roundStartedEvent.getRoundNumber());
+        var mappedRoundStartedEvent = new dev.robocode.tankroyale.botapi.events.RoundStartedEvent(schemaEvent.getRoundNumber());
 
         internalEventHandlers.onRoundStarted.publish(mappedRoundStartedEvent);
         botEventHandlers.onRoundStarted.publish(mappedRoundStartedEvent);
     }
 
     private void handleRoundEnded(JsonObject jsonMsg) {
-        var roundEndedEvent = JsonConverter.fromJson(jsonMsg, RoundEndedEvent.class);
+        var schemaEvent = JsonConverter.fromJson(jsonMsg, RoundEndedEventForBot.class);
 
         var mappedRoundEndedEvent = new RoundEndedEvent(
-                roundEndedEvent.getRoundNumber(), roundEndedEvent.getTurnNumber(), roundEndedEvent.getResults());
+                schemaEvent.getRoundNumber(), schemaEvent.getTurnNumber(),
+                schemaEvent.getResults() != null ? map(schemaEvent.getResults()) : null);
 
         botEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent);
         internalEventHandlers.onRoundEnded.publish(mappedRoundEndedEvent); // triggers stopThread()
