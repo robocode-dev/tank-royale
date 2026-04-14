@@ -9,6 +9,11 @@
       is never skipped due to scheduling latency.
     - #202: Fixed an edge case where the pre-warmed bot thread could bypass the tick-arrival
       wait at the start of rounds 2+ if the previous round's tick state was still set.
+- Bot API (.NET):
+    - Fixed console output becoming corrupted after a bot reconnects to the server in a
+      multi-game session.
+    - Fixed a rare crash where an interrupted thread flag could leak into unrelated operations
+      after a bot disconnects.
 - Bot API (Java, .NET, Python):
     - Fixed `rescan()` / `setRescan()` having no effect. The rescan flag was cleared internally
       before the intent was sent to the server, so the server never received it.
