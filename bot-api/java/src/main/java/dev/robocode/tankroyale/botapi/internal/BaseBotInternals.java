@@ -354,6 +354,10 @@ public final class BaseBotInternals {
             renderGraphicsToBotIntent();
             transferStdOutToBotIntent();
             socket.sendText(JsonConverter.toJson(botIntent), true);
+            // Clear rescan flag after serializing — consumed by this intent
+            if (Boolean.TRUE.equals(botIntent.getRescan())) {
+                botIntent.setRescan(false);
+            }
             botIntent.getTeamMessages().clear();
         }
     }

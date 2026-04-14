@@ -143,10 +143,6 @@ final class WebSocketHandler implements WebSocket.Listener {
 
         baseBotInternals.addEventsFromTick(mappedTickEvent);
 
-        if (baseBotInternals.getBotIntent().getRescan() != null && baseBotInternals.getBotIntent().getRescan()) {
-            baseBotInternals.getBotIntent().setRescan(false);
-        }
-
         baseBotInternals.setTickEvent(mappedTickEvent);
 
         mappedTickEvent.getEvents().forEach(internalEventHandlers::fireEvent);

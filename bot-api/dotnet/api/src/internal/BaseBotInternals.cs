@@ -359,6 +359,9 @@ sealed class BaseBotInternals
         RenderGraphicsToBotIntent();
         TransferStdOutToBotIntent();
         _socket.SendTextMessage(JsonConverter.ToJson(BotIntent));
+        // Clear rescan after serialization — consumed by this intent
+        if (BotIntent.Rescan == true)
+            BotIntent.Rescan = false;
         BotIntent.TeamMessages.Clear();
     }
 
@@ -924,9 +927,6 @@ sealed class BaseBotInternals
 
         var mappedTickEvent = EventMapper.Map(json, _baseBot);
         _eventQueue.AddEventsFromTick(mappedTickEvent);
-
-        if (BotIntent.Rescan == true)
-            BotIntent.Rescan = false;
 
         _tickEvent = mappedTickEvent;
 

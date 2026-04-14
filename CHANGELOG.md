@@ -1,4 +1,4 @@
-## [0.40.2] - 2026-04-13 - Turn-1 skip fix
+## [0.40.2] - TBD
 
 ### 🐞 Bug Fixes
 
@@ -9,6 +9,9 @@
       is never skipped due to scheduling latency.
     - #202: Fixed an edge case where the pre-warmed bot thread could bypass the tick-arrival
       wait at the start of rounds 2+ if the previous round's tick state was still set.
+- Bot API (Java, .NET, Python):
+    - Fixed `rescan()` / `setRescan()` having no effect. The rescan flag was cleared internally
+      before the intent was sent to the server, so the server never received it.
 
 ## [0.40.1] - 2026-04-12 - First-turn skip fix + breakpoint disconnect fix
 

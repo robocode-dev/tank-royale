@@ -173,10 +173,6 @@ class WebSocketHandler:
         # Stage events from this tick into the event queue (Java parity)
         self.event_queue.add_events_from_tick(mapped_tick_event)
 
-        bot_intent = self.base_bot_internal_data.bot_intent
-        if bot_intent.rescan is not None and bot_intent.rescan:
-            bot_intent.rescan = False
-
         # mapped_tick_event.events should still be iterable
         for event in mapped_tick_event.events:
             self.internal_event_handlers.fire_event(event)

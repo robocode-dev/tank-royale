@@ -507,6 +507,9 @@ class BaseBotInternals:
                     self.socket.send(json_intent),
                     self._ws_loop
                 )
+                # Clear rescan flag after serializing — consumed by this intent
+                if self.data.bot_intent.rescan:
+                    self.data.bot_intent.rescan = False
                 # Clear team messages after sending intent (matches Java implementation)
                 if self.data.bot_intent.team_messages:
                     self.data.bot_intent.team_messages.clear()

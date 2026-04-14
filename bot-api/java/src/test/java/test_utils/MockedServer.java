@@ -14,6 +14,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import static dev.robocode.tankroyale.schema.Message.Type.*;
@@ -81,9 +82,9 @@ public final class MockedServer {
     private final CountDownLatch botHandshakeLatch = new CountDownLatch(1);
     private final CountDownLatch gameStartedLatch = new CountDownLatch(1);
     private volatile CountDownLatch tickEventLatch = new CountDownLatch(1);
-    private volatile CountDownLatch botIntentLatch = new CountDownLatch(1);
+    private final Semaphore botIntentReady = new Semaphore(0);
 
-    private volatile CountDownLatch botIntentContinueLatch = new CountDownLatch(1);
+    private final Semaphore botIntentContinue = new Semaphore(0);
     private volatile boolean holdTickEnabled = false;
     private CountDownLatch tickHoldLatch = new CountDownLatch(1);
 
@@ -268,8 +269,8 @@ public final class MockedServer {
     }
 
     public void resetBotIntentLatch() {
-        botIntentLatch = new CountDownLatch(1);
-        botIntentContinueLatch = new CountDownLatch(1);
+        botIntentReady.drainPermits();
+        botIntentContinue.drainPermits();
     }
 
     public boolean awaitConnection(int milliSeconds) {
@@ -310,7 +311,7 @@ public final class MockedServer {
 
     public boolean awaitBotIntent(int milliSeconds) {
         try {
-            return botIntentLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
+            return botIntentReady.tryAcquire(milliSeconds, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             System.err.println("awaitBotIntent() was interrupted");
         }
@@ -318,7 +319,7 @@ public final class MockedServer {
     }
 
     public void continueBotIntent() {
-        botIntentContinueLatch.countDown();
+        botIntentContinue.release();
     }
 
     public BotHandshake getBotHandshake() {
@@ -682,10 +683,10 @@ public final class MockedServer {
             // Parse the intent and assign to volatile field (ensures visibility)
             botIntent = JsonConverter.fromJson(text, BotIntent.class);
 
-            // Count down latch AFTER intent is fully parsed and assigned
-            // The volatile write to botIntent happens-before this countdown,
-            // ensuring test threads see the parsed intent when latch releases
-            botIntentLatch.countDown();
+            // Release permit AFTER intent is fully parsed and assigned
+            // The volatile write to botIntent happens-before this release,
+            // ensuring test threads see the parsed intent when permit is acquired
+            botIntentReady.release();
 
             sendTickEventForBotToConn(conn, turnNumber++);
             tickEventLatch.countDown();
@@ -710,14 +711,12 @@ public final class MockedServer {
 
         private void awaitBotIntentContinueOrFail() {
             try {
-                botIntentContinueLatch.await();
+                botIntentContinue.acquire();
             } catch (InterruptedException e) {
                 // Restore interrupt status and surface as runtime exception to preserve previous behaviour
                 Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }
-            // Reset latch so subsequent intents will wait again
-            botIntentContinueLatch = new CountDownLatch(1);
         }
 
         /**

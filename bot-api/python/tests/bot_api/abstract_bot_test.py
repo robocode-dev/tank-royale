@@ -163,30 +163,40 @@ class AbstractBotTest(unittest.TestCase):
         self._threads.append(t)
         return t
 
-    def go_async(self, bot: Bot) -> threading.Thread:
+    def go_async(self, bot_or_callable) -> threading.Thread:
         """
-        Execute bot.go() asynchronously in a tracked thread.
+        Execute bot.go() or a callable asynchronously in a tracked thread.
         The thread is registered for cleanup during teardown.
 
         Args:
-            bot: The bot to run.
+            bot_or_callable: A Bot instance (calls bot.go()) or a Callable (runs it directly).
+                             Mirrors Java's goAsync(BaseBot) and goAsync(Runnable) overloads.
 
         Returns:
-            The thread running bot.go().
+            The thread running the action.
         """
-        if bot not in self._bots:
-            self._bots.append(bot)  # Ensure bot is tracked
+        if isinstance(bot_or_callable, Bot):
+            bot = bot_or_callable
+            if bot not in self._bots:
+                self._bots.append(bot)
 
-        def run_go():
-            try:
-                bot.go()
-            except ThreadInterruptedException:
-                # Expected when calling go() from test thread after bot has started its own thread
-                # The intent is sent before the exception, so we can safely return
-                return
-            except Exception:
-                # Catch any other exceptions to prevent thread from hanging
-                return
+            def run_go():
+                try:
+                    bot.go()
+                except ThreadInterruptedException:
+                    return
+                except Exception:
+                    return
+        else:
+            callable_fn = bot_or_callable
+
+            def run_go():
+                try:
+                    callable_fn()
+                except ThreadInterruptedException:
+                    return
+                except Exception:
+                    return
 
         t = threading.Thread(target=run_go)
         t.start()
