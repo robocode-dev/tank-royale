@@ -31,24 +31,19 @@ class CommandsMovementTest extends AbstractBotTest {
         awaitBotHandshake();
         awaitGameStarted(bot);
         // Act: set values beyond limits to verify clamping
-        System.out.println("Setting movement commands...");
         bot.setTurnRate(999); // > MAX_TURN_RATE
         bot.setGunTurnRate(-999); // < -MAX_GUN_TURN_RATE
         bot.setRadarTurnRate(1000); // > MAX_RADAR_TURN_RATE
         bot.setTargetSpeed(123); // > MAX_SPEED
 
         // Trigger sending of intent on next go after settings
-        System.out.println("Calling goAsync(bot)...");
         goAsync(bot);
-        System.out.println("Waiting for bot intent...");
+        server.continueBotIntent();
         awaitBotIntent();
 
         // Assert
         BotIntent intent = server.getBotIntent();
-        System.out.println("Intent received: " + intent);
         assertThat(intent).isNotNull();
-        System.out.printf("TurnRate: %s, GunTurnRate: %s, RadarTurnRate: %s, TargetSpeed: %s\n",
-                intent.getTurnRate(), intent.getGunTurnRate(), intent.getRadarTurnRate(), intent.getTargetSpeed());
         assertThat(intent.getTurnRate()).isEqualTo(MAX_TURN_RATE);
         assertThat(intent.getGunTurnRate()).isEqualTo(-(double) MAX_GUN_TURN_RATE);
         assertThat(intent.getRadarTurnRate()).isEqualTo(MAX_RADAR_TURN_RATE);

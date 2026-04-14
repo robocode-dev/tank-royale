@@ -27,6 +27,7 @@ public class CommandsFireTest : AbstractBotTest
         bool result = bot.SetFire(firepower);
         // Fire command just sets the intent value; we need Go() to send it
         GoAsync(bot);
+        Server.ContinueBotIntent();
         AwaitBotIntent();
         return new CommandResult<bool>(result, Server.BotIntent);
     }

@@ -57,6 +57,7 @@ class TestCommandsMovement(unittest.TestCase):
         go_thread = threading.Thread(target=bot.go, daemon=True)
         go_thread.start()
 
+        self.server.continue_bot_intent()
         if not self.server.await_bot_intent(2000):
             self.fail("Timeout waiting for bot intent")
 

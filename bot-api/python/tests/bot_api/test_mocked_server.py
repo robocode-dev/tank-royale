@@ -1,6 +1,7 @@
 import unittest
 import time
 from tests.bot_api.abstract_bot_test import AbstractBotTest
+from robocode_tank_royale.bot_api import Bot
 
 class MockedServerTest(AbstractBotTest):
 
@@ -43,18 +44,22 @@ class MockedServerTest(AbstractBotTest):
         self.assertTrue(reflected_gun_heat, f"Expected gun_heat {initial_gun_heat}, got {bot.gun_heat}")
 
     def test_execute_command_and_get_intent(self):
-        """Test that execute_command_and_get_intent properly captures bot intent without race conditions."""
-        bot = self.start_bot()
+        """Test that property assignment is reflected in the captured bot intent."""
+        bot = Bot(self.bot_info, self.server.server_url)
+        self._bots.append(bot)
+        self.start_async(bot)
+        if not self.server.await_game_started(2000):
+            self.fail("Timeout waiting for game started")
 
-        # Execute a command and capture the intent using property assignment
-        def set_turn():
-            bot.turn_rate = -5.0  # Use realistic value within max turn rate
-        result, intent = self.execute_command_and_get_intent(set_turn)
+        # Set property BEFORE triggering go() so it is included in the serialised intent
+        bot.turn_rate = -5.0
 
-        # Verify the command returned the expected result
-        self.assertIsNone(result)  # property assignment returns None
+        # go_async sends intent via rogue thread then raises ThreadInterruptedException
+        self.go_async(bot)
+        self.server.continue_bot_intent()
+        self.await_bot_intent()
 
-        # Verify the intent was captured
+        intent = self.server.get_bot_intent()
         self.assertIsNotNone(intent, "Intent should be captured")
         self.assertIsNotNone(intent.turn_rate, "Intent should have turn_rate set")
         self.assertAlmostEqual(intent.turn_rate, -5.0, places=5)
@@ -63,10 +68,13 @@ class MockedServerTest(AbstractBotTest):
         """Test that reset_bot_intent_event properly synchronizes intent capture."""
         bot = self.start_bot()
 
-        # Execute multiple commands in sequence to verify proper synchronization
+        # Execute multiple commands in sequence to verify proper synchronization.
+        # After start_bot(), tick 2's intent is pending at the gate.
+        # Each iteration: reset → set property → release gate → await.
         for i in range(3):
             self.server.reset_bot_intent_event()
-            bot.turn_rate = -10.0 * i  # Use property assignment
+            bot.turn_rate = -10.0 * i
+            self.server.continue_bot_intent()
             self.await_bot_intent()
             intent = self.server.get_bot_intent()
             self.assertIsNotNone(intent, f"Intent {i} should be captured")

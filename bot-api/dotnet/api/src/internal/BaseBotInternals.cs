@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -73,6 +74,8 @@ sealed class BaseBotInternals
 
     private int _eventHandlingDisabledTurn;
 
+    private TextWriter _originalStdOut;
+    private TextWriter _originalStdErr;
     private RecordingTextWriter _recordingStdOut;
     private RecordingTextWriter _recordingStdErr;
 
@@ -122,11 +125,19 @@ sealed class BaseBotInternals
 
     private void RedirectStdOutAndStdErr()
     {
-        _recordingStdOut = new RecordingTextWriter(Console.Out);
-        _recordingStdErr = new RecordingTextWriter(Console.Error);
+        _originalStdOut = Console.Out;
+        _originalStdErr = Console.Error;
+        _recordingStdOut = new RecordingTextWriter(_originalStdOut);
+        _recordingStdErr = new RecordingTextWriter(_originalStdErr);
 
         Console.SetOut(_recordingStdOut);
         Console.SetError(_recordingStdErr);
+    }
+
+    private void RestoreStdOutAndStdErr()
+    {
+        if (_originalStdOut != null) Console.SetOut(_originalStdOut);
+        if (_originalStdErr != null) Console.SetError(_originalStdErr);
     }
 
     private void InitializeWebSocketClient(Uri serverUrl)
@@ -413,7 +424,7 @@ sealed class BaseBotInternals
     {
         if (Thread.CurrentThread != _thread)
         {
-            Thread.CurrentThread.Interrupt();
+            throw new ThreadInterruptedException();
         }
     }
 
@@ -861,6 +872,7 @@ sealed class BaseBotInternals
         BotEventHandlers.OnDisconnected.Publish(disconnectedEvent);
         InternalEventHandlers.OnDisconnected.Publish(disconnectedEvent);
 
+        RestoreStdOutAndStdErr();
         _closedEvent.Set();
     }
 
@@ -869,6 +881,7 @@ sealed class BaseBotInternals
         BotEventHandlers.OnConnectionError.Publish(new E.ConnectionErrorEvent(_socket.ServerUri,
             new Exception(cause.Message)));
 
+        RestoreStdOutAndStdErr();
         _closedEvent.Set();
     }
 

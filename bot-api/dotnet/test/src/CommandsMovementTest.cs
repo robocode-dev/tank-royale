@@ -34,6 +34,7 @@ public class CommandsMovementTest : AbstractBotTest
 
         // Trigger sending of intent on next go
         GoAsync(bot);
+        Server.ContinueBotIntent();
         AwaitBotIntent();
 
         // Assert
@@ -50,22 +51,11 @@ public class CommandsMovementTest : AbstractBotTest
     [Property("ID", "TR-API-CMD-001")]
     public void GivenNaNValues_whenSettingMovementCommands_thenThrowArgumentException()
     {
-    TestContext.WriteLine("Starting NaN movement command test");
-    var bot = Start();
-    TestContext.WriteLine("Bot started");
-    var handshake = Server.AwaitBotHandshake(1000);
-    TestContext.WriteLine($"AwaitBotHandshake: {handshake}");
-    var gameStarted = Server.AwaitGameStarted(1000);
-    TestContext.WriteLine($"AwaitGameStarted: {gameStarted}");
-    var tick = Server.AwaitTick(1000);
-    TestContext.WriteLine($"AwaitTick: {tick}");
-    Assert.That(handshake, Is.True, "Bot handshake not received");
-    Assert.That(gameStarted, Is.True, "Game did not start in time");
-    Assert.That(tick, Is.True, "Tick not received in time");
+        var bot = StartAndAwaitGameStarted();
 
-    Assert.Throws<System.ArgumentException>(() => bot.TurnRate = double.NaN);
-    Assert.Throws<System.ArgumentException>(() => bot.GunTurnRate = double.NaN);
-    Assert.Throws<System.ArgumentException>(() => bot.RadarTurnRate = double.NaN);
-    Assert.Throws<System.ArgumentException>(() => bot.TargetSpeed = double.NaN);
+        Assert.Throws<System.ArgumentException>(() => bot.TurnRate = double.NaN);
+        Assert.Throws<System.ArgumentException>(() => bot.GunTurnRate = double.NaN);
+        Assert.Throws<System.ArgumentException>(() => bot.RadarTurnRate = double.NaN);
+        Assert.Throws<System.ArgumentException>(() => bot.TargetSpeed = double.NaN);
     }
 }
