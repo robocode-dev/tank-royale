@@ -8,6 +8,17 @@ Status: ✅ = implemented, ❌ = missing, 🔶 = partial.
 **Tier 1** = shared JSON definition in `bot-api/tests/shared/` (pure functions, no I/O)
 **Tier 2** = platform-specific implementation with parity tracking (integration, I/O)
 
+### Positive and negative tests required
+
+Every acceptance criterion must include **both** positive (happy-path) and negative (rejection/edge) test cases under the same TR-API ID. A test ID is only ✅ when both sides are covered.
+
+| Type | Verifies | Example |
+|------|----------|---------|
+| **Positive** | Correct behavior with valid input | `setFire(1.5)` with sufficient energy → firepower set to 1.5 |
+| **Negative** | Correct rejection of invalid input | `setFire(1.5)` with insufficient energy → returns false, no firepower set |
+
+This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
+
 ---
 
 ## VAL — Validation

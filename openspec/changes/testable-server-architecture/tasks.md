@@ -1,5 +1,7 @@
 # Tasks: Testable Server Architecture
 
+**Policy:** Every task producing tests must include both **positive** (happy-path) and **negative** (rejection/edge) test cases under the same TR-SRV ID. A task is only done when both sides are covered.
+
 ## Phase 0: Tag and Baseline
 
 - [ ] **0.1** Tag all existing server tests as `LEGACY` using Kotest `Tag()` mechanism
@@ -8,14 +10,14 @@
 
 ## Phase 1: Pure Physics Tests (no refactoring needed)
 
-- [ ] **1.1** `CollisionDetectorTest` — bullet-bot collisions (direct hit, miss, edge, diagonal)
-- [ ] **1.2** `CollisionDetectorTest` — bullet-bullet collisions
-- [ ] **1.3** `CollisionDetectorTest` — bot-wall collisions (corners, edges, at speed)
-- [ ] **1.4** `CollisionDetectorTest` — bot-bot collisions (head-on, glancing, stationary)
-- [ ] **1.5** `GunEngineTest` — fire conditions, gun cooling rate, bullet creation
-- [ ] **1.6** `LineTest` — ray/segment intersection, parallel lines, coincident, edge cases
-- [ ] **1.7** `EventsMapperTest` — internal event → protocol message mapping
-- [ ] **1.8** `ScoreTrackerTest` — damage tracking, kill accounting, survival
+- [ ] **1.1** `CollisionDetectorTest` — bullet-bot collisions: hit ✅, miss ❌, edge, diagonal
+- [ ] **1.2** `CollisionDetectorTest` — bullet-bullet collisions: hit ✅, near-miss ❌
+- [ ] **1.3** `CollisionDetectorTest` — bot-wall collisions: impact ✅, safe distance ❌
+- [ ] **1.4** `CollisionDetectorTest` — bot-bot collisions: overlap ✅, clear spacing ❌
+- [ ] **1.5** `GunEngineTest` — fire: cold gun ✅, hot gun ❌, sufficient energy ✅, insufficient energy ❌
+- [ ] **1.6** `LineTest` — intersection: crossing ✅, parallel ❌, coincident, endpoint edge cases
+- [ ] **1.7** `EventsMapperTest` — valid event ✅, unknown/malformed event ❌
+- [ ] **1.8** `ScoreTrackerTest` — damage applied ✅, zero-damage hit ❌, overkill capping
 - [ ] **1.9** Verify all Phase 1 tests pass alongside LEGACY tests
 
 ## Phase 2: Extract and Inject

@@ -1,5 +1,7 @@
 # Tasks: Testable Bot API Architecture
 
+**Policy:** Every task producing tests must include both **positive** (happy-path) and **negative** (rejection/edge) test cases under the same TR-API ID. A task is only done when both sides are covered.
+
 ## Phase 0: Tag and Baseline
 
 - [ ] **0.1** Tag all existing tests as `LEGACY` on all 4 platforms (Java `@Tag`, C# `[Category]`, Python `@pytest.mark`, TypeScript `describe`)

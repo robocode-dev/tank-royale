@@ -30,7 +30,16 @@ A deep audit (April 2026) of ~900 test cases across all platforms confirmed iden
 
 Each test identified by a `TR-API-xxx` acceptance ID must have an implementation on every platform. The **test registry** (`bot-api/tests/TEST-REGISTRY.md`) is the single source of truth for what must be tested and where coverage stands.
 
-### 2. Test tagging via native framework mechanisms
+### 2. Every acceptance ID must have positive and negative tests
+
+Each `TR-API-xxx` ID must include both:
+
+- **Positive tests** — verify correct behavior with valid inputs and preconditions.
+- **Negative tests** — verify correct rejection/handling of invalid inputs, insufficient preconditions, and edge cases.
+
+A test ID is only considered complete (✅) when both positive and negative cases are covered on all platforms. This applies equally to Tier 1 (shared JSON) and Tier 2 (platform-specific) tests.
+
+### 3. Test tagging via native framework mechanisms
 
 All tests must be tagged using each platform's native tagging mechanism:
 
@@ -46,7 +55,7 @@ All tests must be tagged using each platform's native tagging mechanism:
 **Lifecycle tags** (for migration):
 - `LEGACY` — old test that will be replaced by a new shared-definition test. Keep running until the replacement is green on all platforms, then delete.
 
-### 3. Two-tier test architecture
+### 4. Two-tier test architecture
 
 Tests fall into two tiers based on what they exercise:
 
@@ -62,7 +71,7 @@ Tests fall into two tiers based on what they exercise:
 - Test registry tracks parity status
 - Covers: MockedServer interactions, WebSocket, events, constructors
 
-### 4. Test registry as living document
+### 5. Test registry as living document
 
 `bot-api/tests/TEST-REGISTRY.md` lists every TR-API-xxx acceptance criterion with:
 - Description of the expected behavior

@@ -135,6 +135,32 @@ Extend the test registry scheme to server:
 | `TR-SRV-TRN-xxx` | Turn processing | `TR-SRV-TRN-001` Intent application |
 | `TR-SRV-LCM-xxx` | Lifecycle (game/round) | `TR-SRV-LCM-001` Game start |
 
+### 7. Every acceptance ID must have positive and negative tests
+
+Each `TR-SRV-xxx` ID must include both:
+
+- **Positive tests** — verify correct behavior with valid inputs and preconditions (e.g., bullet hits bot → damage applied, gun cold → bullet created).
+- **Negative tests** — verify correct handling of invalid inputs, boundary conditions, and rejection scenarios (e.g., bullet misses bot → no damage, gun hot → no bullet created).
+
+A test ID is only considered complete when both positive and negative cases are covered. This produces a natural test structure:
+
+```kotlin
+class GunEngineTest : FunSpec({
+    context("TR-SRV-GUN-001: Fire with cold gun") {
+        // Positive
+        test("fires bullet when gun is cold and energy is sufficient") { /* ... */ }
+        test("bullet power matches requested firepower") { /* ... */ }
+
+        // Negative
+        test("does not fire when gun is still hot") { /* ... */ }
+        test("does not fire when energy is insufficient") { /* ... */ }
+        test("does not fire when firepower is zero") { /* ... */ }
+    }
+})
+```
+
+This applies to both Tier 1 (pure unit) and Tier 2 (integration) tests.
+
 ---
 
 ## Rationale
