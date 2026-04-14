@@ -12,6 +12,7 @@ import dev.robocode.tankroyale.server.model.ParticipantId
 import dev.robocode.tankroyale.server.model.Score
 import dev.robocode.tankroyale.server.model.TeamId
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.Tag
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -20,6 +21,8 @@ import java.util.concurrent.ConcurrentHashMap
 
 
 class GameServerResultsForObserverTest : FunSpec({
+
+    tags(Tag("Legacy"))
 
     val config = ServerConfig(
         port = 7654,

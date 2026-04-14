@@ -7,11 +7,14 @@ import dev.robocode.tankroyale.server.score.ScoreCalculator
 import dev.robocode.tankroyale.server.score.ScoreTracker
 import io.kotest.common.KotestInternal
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.Tag
 import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.shouldBe
 
 @KotestInternal
 class ScoreCalculatorTest : FunSpec({
+
+    tags(Tag("Legacy"))
 
     context("Score calculation") {
         var teamsOrBotIds: Set<ParticipantId> = setOf(

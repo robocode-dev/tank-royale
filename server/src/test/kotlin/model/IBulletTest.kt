@@ -3,6 +3,7 @@ package model
 import dev.robocode.tankroyale.server.model.Point
 import dev.robocode.tankroyale.server.rules.calcBulletSpeed
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.Tag
 import io.kotest.data.blocking.forAll
 import io.kotest.data.row
 import io.kotest.matchers.shouldBe
@@ -12,6 +13,8 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class IBulletTest : StringSpec({
+
+    tags(Tag("Legacy"))
 
     "speed() must be based on calcBulletSpeed()" {
         forAll(

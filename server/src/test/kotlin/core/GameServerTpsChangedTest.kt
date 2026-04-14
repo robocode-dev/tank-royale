@@ -6,12 +6,15 @@ import dev.robocode.tankroyale.server.core.GameServer
 import dev.robocode.tankroyale.server.core.MessageBroadcaster
 import dev.robocode.tankroyale.server.core.ServerConfig
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.Tag
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 
 class GameServerTpsChangedTest : FunSpec({
+
+    tags(Tag("Legacy"))
 
     val config = ServerConfig(
         port = 7654,

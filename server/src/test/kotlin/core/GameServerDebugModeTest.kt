@@ -4,9 +4,12 @@ import dev.robocode.tankroyale.server.core.GameServer
 import dev.robocode.tankroyale.server.core.GameLifecycleManager
 import dev.robocode.tankroyale.server.core.ServerConfig
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.Tag
 import io.kotest.matchers.shouldBe
 
 class GameServerDebugModeTest : FunSpec({
+
+    tags(Tag("Legacy"))
 
     val config = ServerConfig(
         port = 7654,

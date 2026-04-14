@@ -3,9 +3,12 @@ package model
 import dev.robocode.tankroyale.server.model.Color
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.Tag
 import io.kotest.matchers.shouldBe
 
 class ColorTest : StringSpec({
+
+    tags(Tag("Legacy"))
     "#09F is valid" {
         Color.from("#09F")?.value shouldBe "#0099FF"
     }

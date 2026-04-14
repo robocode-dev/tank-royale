@@ -2,11 +2,14 @@ package model
 
 import dev.robocode.tankroyale.server.model.BotIntent
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.Tag
 import io.kotest.matchers.shouldBe
 import model.factory.BotUpdate
 
 
 class BotIntentTest : StringSpec({
+
+    tags(Tag("Legacy"))
 
     "targetSpeed must be updated" {
         val botIntent = BotIntent(targetSpeed = 1.2)

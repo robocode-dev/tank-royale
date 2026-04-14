@@ -4,10 +4,13 @@ import dev.robocode.tankroyale.server.model.Bot
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.Point
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.Tag
 import io.kotest.matchers.shouldBe
 
 
 class BotTest : StringSpec({
+
+    tags(Tag("Legacy"))
 
     "x and y coordinate must match the position coordinates" {
         val bot = Bot(

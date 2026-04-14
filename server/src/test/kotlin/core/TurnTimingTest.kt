@@ -2,6 +2,7 @@ package core
 
 import dev.robocode.tankroyale.server.core.ResettableTimer
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.Tag
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.longs.shouldBeLessThan
 import io.kotest.matchers.shouldBe
@@ -48,6 +49,8 @@ import java.util.concurrent.atomic.AtomicLong
  * ensuring reproducible battles regardless of TPS configuration.
  */
 class TurnTimingTest : FunSpec({
+
+    tags(Tag("Legacy"))
 
     val toleranceNanos = TimeUnit.MILLISECONDS.toNanos(30)
 

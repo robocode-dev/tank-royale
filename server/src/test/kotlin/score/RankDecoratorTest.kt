@@ -5,11 +5,14 @@ import dev.robocode.tankroyale.server.model.ParticipantId
 import dev.robocode.tankroyale.server.model.Score
 import dev.robocode.tankroyale.server.score.RankDecorator
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.Tag
 import io.kotest.matchers.collections.shouldContainExactly
 import io.mockk.every
 import io.mockk.spyk
 
 class RankDecoratorTest : FunSpec({
+
+    tags(Tag("Legacy"))
     context("ScoreCalculator.updateRanks") {
 
         test("should assign correct ranks with different scores") {

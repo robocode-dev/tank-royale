@@ -84,6 +84,10 @@ tasks {
 
     test {
         useJUnitPlatform()
+        val tags = System.getProperty("kotest.tags") ?: project.findProperty("kotest.tags") as? String
+        tags?.let {
+            systemProperty("kotest.tags", it)
+        }
     }
 
     jar {

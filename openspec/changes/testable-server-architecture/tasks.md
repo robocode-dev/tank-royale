@@ -4,9 +4,9 @@
 
 ## Phase 0: Tag and Baseline
 
-- [ ] **0.1** Tag all existing server tests as `LEGACY` using Kotest `Tag()` mechanism
-- [ ] **0.2** Create server section in TEST-REGISTRY.md with TR-SRV-xxx IDs
-- [ ] **0.3** Verify LEGACY tag filtering works (`-Dkotest.tags="!Legacy"`)
+- [x] **0.1** Tag all existing server tests as `LEGACY` using Kotest `Tag()` mechanism
+- [x] **0.2** Create server section in TEST-REGISTRY.md with TR-SRV-xxx IDs
+- [x] **0.3** Verify LEGACY tag filtering works (`-Dkotest.tags="!Legacy"`)
 
 ## Phase 1: Pure Physics Tests (no refactoring needed)
 

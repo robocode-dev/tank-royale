@@ -1,10 +1,13 @@
 package model
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.Tag
 import io.kotest.matchers.shouldBe
 import model.factory.BulletFactory
 
 class BulletTest : StringSpec({
+
+    tags(Tag("Legacy"))
 
     "hashCode() must return the bullet id value" {
         val bullet = BulletFactory.createBullet()

@@ -2,11 +2,14 @@ package rules
 
 import dev.robocode.tankroyale.server.rules.calcNewBotSpeed
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.Tag
 import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 
 class mathTest : FunSpec({
+
+    tags(Tag("Legacy"))
     context("calcNewBotSpeed") {
         forAll(
             // Zero speeds
