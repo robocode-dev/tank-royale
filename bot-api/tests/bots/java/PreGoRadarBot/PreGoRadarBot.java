@@ -17,9 +17,9 @@ import java.util.logging.Logger;
  * This avoids any race condition on onGameStarted.
  *
  * Usage:
- *   java -cp lib/* TimingBugTest.java
+ *   java -cp lib/* PreGoRadarBot.java
  */
-public class TimingBugTest {
+public class PreGoRadarBot {
 
     private static final int NUM_ROUNDS = 5;
     private static final double MAX_RADAR_TURN_RATE = 45.0;
