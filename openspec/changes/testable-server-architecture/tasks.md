@@ -30,12 +30,12 @@
 
 ## Phase 3: Integration Tests
 
-- [ ] **3.1** `GameLifecycleTest` — game/round state machine transitions
-- [ ] **3.2** `GameScoringTest` — end-to-end scoring through multiple rounds
-- [ ] **3.3** `ConnectionLifecycleTest` — bot connect/disconnect/reconnect
+- [x] **3.1** `GameLifecycleTest` — game/round state machine transitions
+- [x] **3.2** `GameScoringTest` — end-to-end scoring through multiple rounds
+- [x] **3.3** `ConnectionLifecycleTest` — bot connect/disconnect/reconnect
 
 ## Phase 4: Cleanup
 
-- [ ] **4.1** Remove LEGACY tag from migrated tests (or delete superseded ones)
-- [ ] **4.2** Update TEST-REGISTRY.md — all TR-SRV-xxx cells should be ✅
-- [ ] **4.3** Document server test patterns in a server TESTING-GUIDE.md
+- [x] **4.1** Remove LEGACY tag from migrated tests (or delete superseded ones)
+- [x] **4.2** Update TEST-REGISTRY.md — all TR-SRV-xxx cells should be ✅
+- [x] **4.3** Document server test patterns in a server TESTING-GUIDE.md

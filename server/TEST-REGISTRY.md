@@ -49,12 +49,22 @@ Every `TR-SRV-xxx` test listed here **must** include both **positive** (happy-pa
 | ID | Description | Status |
 |----|-------------|--------|
 | TR-SRV-SCR-001 | Damage tracking (applied, zero-damage, overkill capping) | ✅ |
+| TR-SRV-SCR-002 | End-to-end scoring (multiple rounds, survival/kill bonus) | ✅ |
 
 ## PLN — Pipeline & Turn Processing
-
 | ID | Description | Status |
 |----|-------------|--------|
 | TR-SRV-PLN-001 | Turn-step pipeline (sequential steps, state mutations) | ✅ |
+
+## LIF — Lifecycle
+| ID | Description | Status |
+|----|-------------|--------|
+| TR-SRV-LIF-001 | Game/round state machine transitions | ✅ |
+
+## CON — Connection
+| ID | Description | Status |
+|----|-------------|--------|
+| TR-SRV-CON-001 | Bot connect/disconnect/reconnect | ✅ |
 
 ---
 
@@ -65,9 +75,11 @@ Every `TR-SRV-xxx` test listed here **must** include both **positive** (happy-pa
 | PHY | 5 | 5 |
 | ENG | 1 | 1 |
 | MAP | 1 | 1 |
-| SCR | 1 | 1 |
+| SCR | 2 | 2 |
 | PLN | 1 | 1 |
-| **Total** | **9** | **9** |
+| LIF | 1 | 1 |
+| CON | 1 | 1 |
+| **Total** | **12** | **12** |
 
 ---
 
