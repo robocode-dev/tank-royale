@@ -670,11 +670,6 @@ export class BaseBotInternals {
     this.setRunning(true);
     try {
       this.waitUntilFirstTickArrived();
-      // Send default intent immediately so the server doesn't mark turn 1 as skipped
-      // due to OS scheduling latency between the worker thread wakeup and the first go() call.
-      if (this.workerMode) {
-        this.sendIntentToMain();
-      }
       bot.run();
     } catch (e) {
       if (!(e instanceof BotStoppedException)) {

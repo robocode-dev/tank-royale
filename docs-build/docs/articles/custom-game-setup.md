@@ -28,6 +28,12 @@ The fundamental battle parameters include:
 - Controls how long each bot has to process each turn
 - Lower values increase game speed but may penalize complex bots
 
+**Ready timeout:**
+- Default: 10,000,000 microseconds (10 seconds)
+- Time window bots have to signal ready after receiving the game-started event
+- Increase this value when using runtimes that need extra startup time (JVM, Python, .NET)
+- If a bot misses the window it is excluded from the battle silently
+
 **Battlefield dimensions:**
 - Default: 800 × 600 units
 - Minimum: 200 × 200 units
@@ -145,6 +151,7 @@ For bot development, create standardized test configurations:
   "gunCoolingRate": 0.1,
   "maxInactivityTurns": 450,
   "turnTimeout": 30000,
+  "readyTimeout": 10000000,
   "bots": [
     {"name": "MyBot", "version": "1.0"},
     {"name": "TargetBot", "version": "1.0"}

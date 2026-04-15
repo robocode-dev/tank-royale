@@ -71,6 +71,54 @@ Use **only** when Layers 1–2 cannot reproduce the issue.
 
 **Full API:** `runner/README.md`
 
+### Battle Runner test gotchas
+
+#### `onGameStarted` race condition
+`startBattleAsync()` calls `waitForGameStarted()` internally and **unsubscribes before returning**.
+Any subscription to `handle.getOnGameStarted()` in test code is too late — the event is already gone.
+
+**Workaround:** collect bot state data for *all* IDs during the battle via `onTickEvent`, then call
+`handle.awaitResults()` and use `BattleResults.getResults()` to identify bots by name post-battle.
+
+```java
+// Correct: subscribe before awaitResults, look up name after
+handle.getOnTickEvent().on(owner, tick -> { /* record by id */ });
+BattleResults results = handle.awaitResults();
+int botId = results.getResults().stream()
+    .filter(r -> "MyBot".equals(r.getName()))
+    .mapToInt(BotResult::getId).findFirst().orElse(-1);
+```
+
+#### `BotState.name` is nullable — never match bots by name in tick events
+`BotState.name` (`String? = null` in Kotlin) is absent from tick data. Always track bots by their
+numeric `BotState.id`, which is stable for the lifetime of the game.
+
+#### `BotResult.id` is the same as `BotState.id`
+`BotResult.id` (from `BattleResults.getResults()`) is the same participant ID as `BotState.id` in
+tick events. Use this to build a name→id mapping after the battle ends.
+
+#### readyTimeout for JVM source-file bots
+The default `readyTimeoutMicros = 1_000_000` (1 second) is too tight for bots launched via Java
+source-file mode (`java -cp "../lib/*" MyBot.java`), which must compile before connecting.
+**Always increase it in tests that boot external JVM bots:**
+
+```java
+var setup = BattleSetup.classic(s -> {
+    s.setNumberOfRounds(NUM_ROUNDS);
+    s.setReadyTimeoutMicros(10_000_000); // 10 s — JVM compile+start
+});
+```
+
+#### JAR sync after bot-api changes
+Two locations must be kept in sync with the freshly built `bot-api-*.jar`:
+- `C:\Code\bots\java\lib\` — classpath for external test bots (e.g. TimingBugBot)
+- `sample-bots/java/build/archive/lib/` — classpath for SpinBot et al.
+
+Rebuild and copy with:
+```powershell
+.\gradlew :bot-api:java:jar :runner:copyRunnerJar
+```
+
 ---
 
 ## Protocol Sequence Reference

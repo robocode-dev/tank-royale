@@ -604,9 +604,9 @@ gantt
     
     section Battle Phase
     Game starts, first tick  :20, 3s
-    Turn 0 executes         :23, 33ms
-    Turn 1 executes         :milestone, 56
-    Turn 2 executes         :milestone, 90
+    Turn 1 executes         :23, 33ms
+    Turn 2 executes         :milestone, 56
+    Turn 3 executes         :milestone, 90
     Battle continues        :90, 4930s
     
     section End Phase

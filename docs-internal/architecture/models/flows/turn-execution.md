@@ -570,7 +570,7 @@ Turn 1 has special handling to prevent the first-turn skip described in [issue #
 
 The 30ms turn timeout is the same for turn 1 as for every other turn. However, bots need time to start their `run()` loop before they can respond with an intent. On a loaded OS, the scheduler may not grant the bot thread CPU time within the window — causing a spurious `SkippedTurnEvent` on turn 1.
 
-### The Fix: Pre-Warm + Immediate sendIntent (v0.40.2)
+### The Fix: Pre-Warm Thread on RoundStarted
 
 ```mermaid
 sequenceDiagram
@@ -581,7 +581,7 @@ sequenceDiagram
     Note over WebSocket: onRoundStarted received
 
     WebSocket->>BotThread: 1. Reset tickEvent = null<br/>(internal handler fires first)
-    WebSocket->>BotThread: 2. Start / restart bot thread<br/>(pre-warm: thread is ready before tick 1 arrives)
+    WebSocket->>BotThread: 2. Start / restart bot thread<br/>(pre-warm: thread is alive before tick 1 arrives)
 
     Note over BotThread: Thread blocks in<br/>waitUntilFirstTickArrived()
 
@@ -591,15 +591,13 @@ sequenceDiagram
 
     Note over BotThread: waitUntilFirstTickArrived() unblocks
 
-    BotThread->>Server: 4. sendIntent() immediately<br/>(default intent — before bot.run())
-    Note over BotThread: Default: no movement, no fire
-    Note over BotThread: Intent arrives within ~1ms of tick 1
-
-    BotThread->>BotThread: 5. call bot.run()
+    BotThread->>BotThread: 4. call bot.run()
+    Note over BotThread: User sets commands (radar, movement, etc.)
+    BotThread->>Server: 5. go() → sendIntent() with turn 1 commands
     BotThread->>Server: 6. Normal go() / sendIntent() loop continues
 ```
 
-**Why this works:** The default intent is sent on the WebSocket thread immediately after the first tick arrives — before any user code runs. Even if the OS takes 50ms to schedule the `run()` thread, turn 1's intent is already delivered.
+**Why this works:** The bot thread is already alive and blocked in `waitUntilFirstTickArrived()` when turn 1 arrives. The wakeup is a simple `notifyAll()` — no OS thread-creation latency. The bot can set commands in `run()` before calling `go()`, and those commands are sent as turn 1's intent. This matches classic Robocode behavior where commands set before the first `execute()` call are applied to turn 1.
 
 **`tickEvent = null` on round start:** Prevents a pre-warmed thread (carrying stale tick state from the previous round) from bypassing `waitUntilFirstTickArrived()` on rounds 2+. Internal handlers set this before any user `onRoundStarted` handler runs.
 
