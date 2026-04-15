@@ -25,7 +25,7 @@ class BattleSetupTest {
         assertThat(setup.gunCoolingRate).isEqualTo(0.1)
         assertThat(setup.maxInactivityTurns).isEqualTo(450)
         assertThat(setup.turnTimeoutMicros).isEqualTo(30_000)
-        assertThat(setup.readyTimeoutMicros).isEqualTo(1_000_000)
+        assertThat(setup.readyTimeoutMicros).isEqualTo(10_000_000)
     }
 
     @Test
@@ -62,7 +62,7 @@ class BattleSetupTest {
         assertThat(setup.gunCoolingRate).isEqualTo(0.1)
         assertThat(setup.maxInactivityTurns).isEqualTo(450)
         assertThat(setup.turnTimeoutMicros).isEqualTo(30_000)
-        assertThat(setup.readyTimeoutMicros).isEqualTo(1_000_000)
+        assertThat(setup.readyTimeoutMicros).isEqualTo(10_000_000)
     }
 
     // -------------------------------------------------------------------------------------

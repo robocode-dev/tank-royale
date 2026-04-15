@@ -36,3 +36,4 @@
 
 - Never make git commits directly — suggest messages, leave execution to the human
 - **Never start implementing tasks.md after creating an OpenSpec proposal** — wait for human to branch and assign model
+- **Never start fixing or implementing anything without asking the user first** — always confirm scope and approach before touching code, config, or docs

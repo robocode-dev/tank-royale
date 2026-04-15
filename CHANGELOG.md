@@ -1,3 +1,20 @@
+## [0.40.3] - TBD - Turn 1 radar/gun fix and ready timeout improvement
+
+### 🐞 Bug Fixes
+
+- Bot API (Java):
+    - #202: Fixed radar and gun commands set in `run()` before the first `go()` being silently
+      dropped on turn 1. Commands such as `setTurnRadarRight(Double.MAX_VALUE)` in `run()` now
+      take effect from turn 1 as expected.
+
+### 🔧 Changes
+
+- Server / GUI:
+    - Raised the default **ready timeout** from 1 second to 10 seconds. This prevents bots using
+      runtimes that need startup time (JVM, Python, .NET) from being silently excluded from a
+      battle when the server starts before they have finished loading. The setting remains
+      adjustable in the Setup Rules dialog.
+
 ## [0.40.2] - 2026-04-14 - Bot API stability and intent fixes
 
 ### 🐞 Bug Fixes

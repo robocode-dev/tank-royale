@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.gui.settings.GamesSettings
 import dev.robocode.tankroyale.gui.settings.MutableGameSetup
 import dev.robocode.tankroyale.gui.settings.toMutableGameSetup
 import dev.robocode.tankroyale.gui.ui.GameConstants
+import dev.robocode.tankroyale.gui.ui.Hints
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.Messages
 import dev.robocode.tankroyale.gui.ui.Strings
@@ -90,8 +91,10 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
             addLabel("max_inactivity_turns")
             add(inactivityTurnsTextField, "wrap")
 
-            addLabel("ready_timeout")
-            add(readyTimeoutTextField, "wrap")
+            addLabel("ready_timeout").toolTipText = Hints.get("setup_rules.ready_timeout")
+            add(readyTimeoutTextField.apply {
+                toolTipText = Hints.get("setup_rules.ready_timeout")
+            }, "wrap")
 
             addLabel("turn_timeout")
             add(turnTimeoutTextField, "wrap")

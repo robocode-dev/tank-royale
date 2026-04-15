@@ -169,7 +169,7 @@ class JavaInteropTest {
         assertThat(setup.getGameType()).isEqualTo(GameType.CUSTOM);
         assertThat(setup.getArenaWidth()).isEqualTo(800);
         assertThat(setup.getMaxInactivityTurns()).isEqualTo(450);
-        assertThat(setup.getReadyTimeoutMicros()).isEqualTo(1_000_000);
+        assertThat(setup.getReadyTimeoutMicros()).isEqualTo(10_000_000);
     }
 
     @Test

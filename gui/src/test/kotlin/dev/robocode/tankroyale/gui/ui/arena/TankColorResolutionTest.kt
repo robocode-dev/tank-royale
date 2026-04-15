@@ -33,7 +33,7 @@ class TankColorResolutionTest : StringSpec({
         isMaxInactivityTurnsLocked = true,
         turnTimeout = 30000,
         isTurnTimeoutLocked = true,
-        readyTimeout = 1000000,
+        readyTimeout = 10_000_000,
         isReadyTimeoutLocked = true,
         defaultTurnsPerSecond = 30
     )
