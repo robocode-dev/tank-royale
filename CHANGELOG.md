@@ -2,7 +2,7 @@
 
 ### 🐞 Bug Fixes
 
-- Bot API (Java):
+- Bot API (Java, .NET, Python, TypeScript):
     - #202: Fixed radar and gun commands set in `run()` before the first `go()` being silently
       dropped on turn 1. Commands such as `setTurnRadarRight(Double.MAX_VALUE)` in `run()` now
       take effect from turn 1 as expected.

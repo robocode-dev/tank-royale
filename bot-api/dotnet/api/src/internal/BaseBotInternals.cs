@@ -191,9 +191,6 @@ sealed class BaseBotInternals
             // that BotInternals.OnFirstTurn() (priority 110) has already called
             // ClearRemaining(), capturing the initial directions from the tick state.
             WaitUntilFirstTickArrived();
-            // Send default intent immediately so the server doesn't mark turn 1 as skipped
-            // due to OS scheduling latency between the thread wakeup and the first Go() call.
-            SendIntent();
             bot.Run();
         }
         catch (ThreadInterruptedException)

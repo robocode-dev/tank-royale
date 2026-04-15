@@ -324,9 +324,6 @@ class BaseBotInternals:
             self.set_running(True)
             try:
                 self._wait_until_first_tick_arrived()
-                # Send default intent immediately so the server doesn't mark turn 1 as skipped
-                # due to OS scheduling latency between the thread wakeup and the first go() call.
-                self._send_intent()
                 bot.run()
             except ThreadInterruptedException:
                 pass
