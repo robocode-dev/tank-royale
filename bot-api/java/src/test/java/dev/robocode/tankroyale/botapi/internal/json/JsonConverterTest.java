@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("LEGACY")
 @DisplayName("TR-API-UTL-002 JsonUtil serialization + schema compliance")
 class JsonConverterTest {
 

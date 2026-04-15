@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.internal.json.JsonConverter;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,7 +10,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Test to simulate team message serialization/deserialization between MyFirstLeader and MyFirstDroid.
  * This test reproduces the exact scenario where colors are sent from leader to droid.
+ * (TR-API-TCK-006)
  */
+@Tag("LEGACY")
+@Tag("TCK")
+@Tag("TR-API-TCK-006")
 class TeamMessageSerializationTest {
 
     // Simulated message classes from MyFirstLeader

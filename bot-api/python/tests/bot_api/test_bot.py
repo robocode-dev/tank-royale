@@ -1,3 +1,5 @@
+import pytest
+pytestmark = pytest.mark.LEGACY
 from typing import Any
 
 import unittest

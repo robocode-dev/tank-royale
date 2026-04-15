@@ -36,11 +36,11 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 
 | ID | Description | Tier | Java | C# | Python | TypeScript |
 |----|-------------|------|------|----|--------|------------|
-| TR-API-VAL-001 | BotInfo required fields validated | 1 | ✅ | ✅ | ✅ | ❌ |
-| TR-API-VAL-002 | BotInfo invalid fields rejected | 1 | ✅ | ✅ | ✅ | ❌ |
-| TR-API-VAL-003 | InitialPosition defaults | 1 | ❌ | ❌ | ✅ | ❌ |
-| TR-API-VAL-004 | InitialPosition mapping round-trip | 1 | ✅ | ✅ | ✅ | ❌ |
-| TR-API-VAL-005 | API constants integrity | 1 | ❌ | ❌ | ✅ | ✅ |
+| TR-API-VAL-001 | BotInfo required fields validated | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-VAL-002 | BotInfo invalid fields rejected | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-VAL-003 | InitialPosition defaults | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-VAL-004 | InitialPosition mapping round-trip | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-VAL-005 | API constants integrity | 1 | ✅ | ✅ | ✅ | ✅ |
 
 ## CMD — Commands
 
@@ -55,6 +55,8 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 | ID | Description | Tier | Java | C# | Python | TypeScript |
 |----|-------------|------|------|----|--------|------------|
 | TR-API-TCK-004 | Bot sees first tick state and sends initial intent | 2 | ✅ | ✅ | ✅ | ❌ |
+| TR-API-TCK-005 | WonRoundEvent delivery | 2 | ✅ | ❌ | ❌ | ❌ |
+| TR-API-TCK-006 | Team message delivery | 2 | ✅ | ✅ | ✅ | ❌ |
 
 ## BOT — Constructor & Lifecycle
 
@@ -88,13 +90,13 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 
 | Category | Total IDs | Java | C# | Python | TypeScript |
 |----------|-----------|------|----|--------|------------|
-| VAL | 5 | 3 | 3 | 5 | 1 |
+| VAL | 5 | 5 | 5 | 5 | 5 |
 | CMD | 3 | 3 | 3 | 3 | 0 |
-| TCK | 1 | 1 | 1 | 1 | 0 |
+| TCK | 3 | 3 | 2 | 2 | 0 |
 | BOT | 4 | 4 | 4 | 4 | 0 |
 | UTL | 3 | 2 | 2 | 2 | 2 |
 | GFX | 4 | 1 | 1 | 4 | 1 |
-| **Total** | **20** | **14** | **14** | **19** | **4** |
+| **Total** | **22** | **18** | **17** | **20** | **8** |
 
 ---
 

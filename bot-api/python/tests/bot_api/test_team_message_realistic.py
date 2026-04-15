@@ -1,7 +1,10 @@
 """
 Simulates RobotColors and Point message handling as they would appear in actual bot source files.
 Tests the real-world scenario of team message passing between MyFirstLeader and MyFirstDroid.
+(TR-API-TCK-006)
 """
+import pytest
+pytestmark = [pytest.mark.LEGACY, pytest.mark.TCK]
 import unittest
 
 from robocode_tank_royale.bot_api.color import Color

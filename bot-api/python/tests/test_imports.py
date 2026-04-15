@@ -1,4 +1,6 @@
 """Ensures that the main modules can be imported correctly."""
+import pytest
+pytestmark = pytest.mark.LEGACY
 
 import sys
 import os

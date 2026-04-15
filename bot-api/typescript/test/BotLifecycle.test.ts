@@ -23,6 +23,8 @@ import type {
   ServerHandshake,
 } from "../src/protocol/schema.js";
 
+describe("LEGACY", () => {
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -621,4 +623,5 @@ describe("Task 8: Integration tests", () => {
     internals.setAdjustRadarForBodyTurn(true);
     expect(internals.isAdjustRadarForBodyTurn()).toBe(true);
   });
+});
 });

@@ -5,6 +5,7 @@ const NAME = "MyBot";
 const VERSION = "1.0";
 const AUTHORS = ["John Doe"];
 
+describe("LEGACY", () => {
 describe("BotInfo constants", () => {
   it("has correct max lengths", () => {
     expect(BotInfo.MAX_NAME_LENGTH).toBe(30);
@@ -146,4 +147,5 @@ describe("BotInfo validation", () => {
     expect(bot.platform).toBeNull();
     expect(bot.programmingLang).toBeNull();
   });
+});
 });

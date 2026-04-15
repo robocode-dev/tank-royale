@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { InitialPosition } from "../src/InitialPosition.js";
 
+describe("LEGACY", () => {
+
 describe("InitialPosition", () => {
   it("stores x, y, direction", () => {
     const pos = new InitialPosition(10, 20, 90);
@@ -65,4 +67,5 @@ describe("InitialPosition", () => {
     expect(pos?.x).toBeNull();
     expect(pos?.y).toBe(20);
   });
+});
 });

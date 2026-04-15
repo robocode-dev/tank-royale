@@ -6,6 +6,7 @@ import dev.robocode.tankroyale.schema.*;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.net.InetSocketAddress;
@@ -21,7 +22,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests that WonRoundEvent is delivered to the bot when the server includes it
  * in the final tick's event list and then sends RoundEndedEventForBot.
+ * (TR-API-TCK-005)
  */
+@Tag("LEGACY")
+@Tag("TCK")
+@Tag("TR-API-TCK-005")
 class WonRoundEventTest {
 
     /**

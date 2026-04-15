@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { Constants } from "../src/Constants.js";
 
+describe("LEGACY", () => {
+
 describe("Constants", () => {
   it("BOUNDING_CIRCLE_RADIUS is 18", () => {
     expect(Constants.BOUNDING_CIRCLE_RADIUS).toBe(18);
@@ -49,4 +51,5 @@ describe("Constants", () => {
   it("DECELERATION is -2", () => {
     expect(Constants.DECELERATION).toBe(-2);
   });
+});
 });

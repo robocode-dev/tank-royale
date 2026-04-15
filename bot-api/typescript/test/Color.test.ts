@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { Color } from "../src/graphics/Color";
 
+describe("LEGACY", () => {
+
 describe("Color", () => {
   describe("fromRgb", () => {
     it("stores r, g, b with alpha=255", () => {
@@ -148,4 +150,5 @@ describe("Color", () => {
       expect(Color.MEDIUM_VIOLET_RED.getB()).toBe(133);
     });
   });
+});
 });

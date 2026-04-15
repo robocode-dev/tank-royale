@@ -4,6 +4,7 @@ using Robocode.TankRoyale.BotApi;
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 [TestFixture]
+[Category("LEGACY")]
 [Description("TR-API-VAL-005 Constants integrity")]
 public class ConstantsTest
 {

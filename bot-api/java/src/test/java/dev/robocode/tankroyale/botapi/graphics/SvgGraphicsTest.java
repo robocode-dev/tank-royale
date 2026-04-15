@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.botapi.graphics;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests for the {@link SvgGraphics} class.
  */
+@Tag("LEGACY")
 public class SvgGraphicsTest {
     private SvgGraphics graphics;
 

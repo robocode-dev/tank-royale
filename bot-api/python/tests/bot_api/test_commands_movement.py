@@ -1,3 +1,5 @@
+import pytest
+pytestmark = pytest.mark.LEGACY
 import math
 import threading
 import unittest

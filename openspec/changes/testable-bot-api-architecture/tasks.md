@@ -4,9 +4,9 @@
 
 ## Phase 0: Tag and Baseline
 
-- [ ] **0.1** Tag all existing tests as `LEGACY` on all 4 platforms (Java `@Tag`, C# `[Category]`, Python `@pytest.mark`, TypeScript `describe`)
-- [ ] **0.2** Fill coverage gaps in TEST-REGISTRY.md — assign TR-API IDs to untagged tests
-- [ ] **0.3** Verify `LEGACY` tag filtering works per platform (run with/without filter)
+- [x] **0.1** Tag all existing tests as `LEGACY` on all 4 platforms (Java `@Tag`, C# `[Category]`, Python `@pytest.mark`, TypeScript `describe`)
+- [x] **0.2** Fill coverage gaps in TEST-REGISTRY.md — assign TR-API IDs to untagged tests
+- [x] **0.3** Verify `LEGACY` tag filtering works per platform (run with/without filter)
 
 ## Phase 1: Extract Functional Core
 

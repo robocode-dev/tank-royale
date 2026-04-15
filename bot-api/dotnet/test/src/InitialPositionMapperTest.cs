@@ -4,6 +4,7 @@ using Robocode.TankRoyale.BotApi.Mapper;
 
 namespace Robocode.TankRoyale.BotApi.Tests;
 
+[Category("LEGACY")]
 public class InitialPositionMapperTest
 {
     [Test]

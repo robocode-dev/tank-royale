@@ -1,12 +1,14 @@
 package dev.robocode.tankroyale.botapi.internal;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("LEGACY")
 @DisplayName("TR-API-INT-001 RecordingPrintStream")
 class RecordingPrintStreamTest {
 

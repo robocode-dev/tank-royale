@@ -4,6 +4,8 @@ import { BotException } from "../src/BotException.js";
 import { RuntimeAdapter } from "../src/runtime/RuntimeAdapter.js";
 import { WebSocketLike } from "../src/runtime/WebSocketLike.js";
 
+describe("LEGACY", () => {
+
 /** Creates a mock RuntimeAdapter backed by a plain object map. */
 function makeAdapter(env: Record<string, string | undefined>): RuntimeAdapter {
   return {
@@ -216,4 +218,5 @@ describe("EnvVars — getBotInfo", () => {
     const ev = new EnvVars(makeAdapter({ ...fullEnv, BOT_AUTHORS: "  " }));
     expect(ev.getBotInfo().authors).toBeNull();
   });
+});
 });

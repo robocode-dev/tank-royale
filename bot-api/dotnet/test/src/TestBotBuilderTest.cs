@@ -9,6 +9,7 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 /// Unit tests for TestBotBuilder.
 /// </summary>
 [TestFixture]
+[Category("LEGACY")]
 public class TestBotBuilderTest
 {
     private MockedServer _server = null!;

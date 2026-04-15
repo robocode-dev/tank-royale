@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.botapi.internal;
 
 import dev.robocode.tankroyale.botapi.BotException;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
@@ -15,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static test_utils.EnvironmentVariables.*;
 
+@Tag("LEGACY")
 @ExtendWith(SystemStubsExtension.class)
 class EnvVarsTest {
 

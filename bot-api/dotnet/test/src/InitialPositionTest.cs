@@ -2,6 +2,7 @@
 
 namespace Robocode.TankRoyale.BotApi.Tests;
 
+[Category("LEGACY")]
 public class InitialPositionTest
 {
     private const double Tolerance = 0.000000000000005;

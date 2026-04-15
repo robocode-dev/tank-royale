@@ -1,3 +1,5 @@
+import pytest
+pytestmark = pytest.mark.LEGACY
 import unittest
 
 from robocode_tank_royale.bot_api.graphics import Point

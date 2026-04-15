@@ -30,7 +30,12 @@ class Point
     public double Y { get; set; }
 }
 
+/// (TR-API-TCK-006)
+/// </summary>
 [TestFixture]
+[Category("LEGACY")]
+[Category("TCK")]
+[Property("ID", "TR-API-TCK-006")]
 public class TeamMessageRealisticTest
 {
     [Test]

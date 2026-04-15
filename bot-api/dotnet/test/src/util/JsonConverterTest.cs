@@ -6,6 +6,7 @@ using Robocode.TankRoyale.Schema;
 
 namespace Robocode.TankRoyale.BotApi.Tests.Util;
 
+[Category("LEGACY")]
 [Description("TR-API-UTL-002 JsonUtil serialization + schema compliance")]
 public class JsonConverterTest
 {

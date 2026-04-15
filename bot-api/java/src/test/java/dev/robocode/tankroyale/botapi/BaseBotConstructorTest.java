@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.botapi;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static test_utils.EnvironmentVariables.*;
 
+@Tag("LEGACY")
 @ExtendWith(SystemStubsExtension.class)
 class BaseBotConstructorTest extends AbstractBotTest {
 

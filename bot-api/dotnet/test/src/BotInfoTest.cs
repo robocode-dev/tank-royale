@@ -11,6 +11,7 @@ using static Robocode.TankRoyale.BotApi.Util.CountryCode;
 
 namespace Robocode.TankRoyale.BotApi.Tests;
 
+[Category("LEGACY")]
 public class BotInfoTest
 {
     static readonly string Name = "  TestBot  ";

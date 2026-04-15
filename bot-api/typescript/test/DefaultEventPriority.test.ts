@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { DefaultEventPriority } from "../src/DefaultEventPriority.js";
 
+describe("LEGACY", () => {
+
 describe("DefaultEventPriority", () => {
   it("WON_ROUND is 150", () => {
     expect(DefaultEventPriority.WON_ROUND).toBe(150);
@@ -84,4 +86,5 @@ describe("DefaultEventPriority", () => {
       expect(priorities[i]).toBeLessThan(priorities[i - 1]!);
     }
   });
+});
 });

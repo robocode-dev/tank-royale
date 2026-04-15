@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import { ColorUtil } from "../src/util/ColorUtil.js";
 import { Color } from "../src/graphics/Color.js";
 
+describe("LEGACY", () => {
+
 describe("ColorUtil", () => {
   describe("toHex", () => {
     it("returns null for null input", () => {
@@ -84,4 +86,5 @@ describe("ColorUtil", () => {
       expect(() => ColorUtil.fromHex("GGGGGG")).toThrow();
     });
   });
+});
 });

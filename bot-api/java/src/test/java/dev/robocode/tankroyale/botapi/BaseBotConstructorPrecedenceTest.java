@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.botapi;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import test_utils.MockedServer;
@@ -18,6 +19,7 @@ import static test_utils.EnvironmentVariables.*;
  */
 import org.junit.jupiter.api.Disabled;
 
+@Tag("LEGACY")
 @ExtendWith(SystemStubsExtension.class)
 @Disabled("Superseded by precedence test integrated into BaseBotConstructorTest; disabling to avoid server conflicts")
 class BaseBotConstructorPrecedenceTest extends AbstractBotTest {

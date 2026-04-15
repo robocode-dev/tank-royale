@@ -5,6 +5,7 @@ using Robocode.TankRoyale.BotApi.Util;
 
 namespace Robocode.TankRoyale.BotApi.Tests.Util;
 
+[Category("LEGACY")]
 [Description("TR-API-UTL-001 ColorUtil conversions")]
 public class ColorUtilTest
 {

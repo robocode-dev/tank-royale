@@ -1,3 +1,5 @@
+import pytest
+pytestmark = pytest.mark.LEGACY
 import math
 
 from robocode_tank_royale.bot_api import constants as C

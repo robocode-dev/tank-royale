@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.*;
  *
  * @see <a href="https://github.com/robocode-dev/tank-royale/issues/XXX">TR-API-CMD-002</a>
  */
+@Tag("LEGACY")
 @Tag("TR-API-CMD-002")
 @DisplayName("Fire Commands (TR-API-CMD-002)")
 class CommandsFireTest extends AbstractBotTest {

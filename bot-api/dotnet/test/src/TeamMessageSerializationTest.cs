@@ -12,7 +12,12 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 /// Test to simulate team message serialization/deserialization between MyFirstLeader and MyFirstDroid.
 /// This test reproduces the exact scenario where colors are sent from leader to droid.
 /// </summary>
+/// (TR-API-TCK-006)
+/// </summary>
 [TestFixture]
+[Category("LEGACY")]
+[Category("TCK")]
+[Property("ID", "TR-API-TCK-006")]
 public class TeamMessageSerializationTest
 {
     // Simulated message classes from MyFirstLeader

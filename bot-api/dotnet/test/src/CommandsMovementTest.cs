@@ -6,7 +6,8 @@ using static Robocode.TankRoyale.BotApi.Constants;
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 [TestFixture]
-[Description("TR-API-CMD-001 Movement commands")] 
+[Category("LEGACY")]
+[Description("TR-API-CMD-001 Movement commands")]
 public class CommandsMovementTest : AbstractBotTest
 {
     [Test]

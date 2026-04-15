@@ -9,6 +9,7 @@ using Robocode.TankRoyale.BotApi.Internal;
 namespace Robocode.TankRoyale.BotApi.Tests.Internal;
 
 [TestFixture]
+[Category("LEGACY")]
 public class RecordingTextWriterTest
 {
     [Test]

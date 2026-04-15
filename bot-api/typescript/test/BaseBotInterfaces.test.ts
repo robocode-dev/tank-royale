@@ -16,6 +16,7 @@ const makeBotInfo = () =>
 
 const makeBot = () => new TestBot(makeBotInfo());
 
+describe("LEGACY", () => {
 // ---------------------------------------------------------------------------
 // Task 1: IBaseBot interface
 // ---------------------------------------------------------------------------
@@ -340,4 +341,5 @@ describe("BaseBot implementation (task 3)", () => {
     const bot = makeBot();
     expect(bot.isDebuggingEnabled()).toBe(false);
   });
+});
 });

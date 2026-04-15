@@ -1,3 +1,5 @@
+import pytest
+pytestmark = pytest.mark.LEGACY
 import json
 import os
 from typing import Any

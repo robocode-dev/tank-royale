@@ -4,6 +4,7 @@ using NUnit.Framework;
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 [TestFixture]
+[Category("LEGACY")]
 public class MockedServerTest : AbstractBotTest
 {
     [Test]

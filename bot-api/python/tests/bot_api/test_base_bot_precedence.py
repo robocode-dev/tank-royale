@@ -1,3 +1,5 @@
+import pytest
+pytestmark = pytest.mark.LEGACY
 import os
 import json
 from unittest.mock import AsyncMock, patch

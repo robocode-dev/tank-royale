@@ -16,6 +16,8 @@ import type {
   BotHandshake,
 } from "../src/protocol/schema.js";
 
+describe("LEGACY", () => {
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -448,4 +450,5 @@ describe("BotHandshakeFactory.create()", () => {
     const handshake = BotHandshakeFactory.create("s", makeBotInfo(), false, undefined, envVars);
     expect(handshake.debuggerAttached).toBe(false);
   });
+});
 });

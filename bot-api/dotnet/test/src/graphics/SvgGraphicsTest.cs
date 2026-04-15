@@ -7,6 +7,7 @@ using Robocode.TankRoyale.BotApi.Graphics;
 using System.Text.RegularExpressions;
 
 [TestFixture]
+[Category("LEGACY")]
 public class SvgGraphicsTest
 {
     private SvgGraphics _graphics;

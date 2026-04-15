@@ -10,6 +10,7 @@ import static dev.robocode.tankroyale.botapi.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("LEGACY")
 @DisplayName("TR-API-CMD-001 Movement commands")
 class CommandsMovementTest extends AbstractBotTest {
 

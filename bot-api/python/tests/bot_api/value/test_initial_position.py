@@ -1,4 +1,5 @@
 import pytest
+pytestmark = pytest.mark.LEGACY
 
 from robocode_tank_royale.bot_api import InitialPosition
 from robocode_tank_royale.bot_api.mapper import InitialPositionMapper

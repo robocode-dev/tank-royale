@@ -6,6 +6,7 @@ using static Robocode.TankRoyale.BotApi.Tests.Test_utils.EnvironmentVariables;
 namespace Robocode.TankRoyale.BotApi.Tests;
 
 [TestFixture]
+[Category("LEGACY")]
 public class BaseBotConstructorPrecedenceTest : AbstractBotTest
 {
     private class TestBot : BaseBot

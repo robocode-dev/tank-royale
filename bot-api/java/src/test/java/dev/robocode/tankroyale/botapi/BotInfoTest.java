@@ -20,6 +20,7 @@ import static dev.robocode.tankroyale.botapi.util.CountryCodeUtil.getLocalCountr
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("LEGACY")
 class BotInfoTest {
 
     static final String NAME = "  TestBot  ";

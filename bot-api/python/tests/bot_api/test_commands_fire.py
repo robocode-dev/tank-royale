@@ -8,6 +8,8 @@ These tests verify the behavior of fire-related methods:
 - NaN firepower throws ValueError
 """
 
+import pytest
+pytestmark = pytest.mark.LEGACY
 import math
 import unittest
 

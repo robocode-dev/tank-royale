@@ -26,6 +26,8 @@ import { BulletHitBotEvent } from "../src/events/BulletHitBotEvent.js";
 import { ScannedBotEvent } from "../src/events/ScannedBotEvent.js";
 import { WonRoundEvent } from "../src/events/WonRoundEvent.js";
 
+describe("LEGACY", () => {
+
 // ---------------------------------------------------------------------------
 // Shared fixtures
 // ---------------------------------------------------------------------------
@@ -323,4 +325,5 @@ describe("EventMapper", () => {
     const tick = EventMapper.map(makeTick([ev]), myBotId);
     expect(tick.events[0]).toBeInstanceOf(WonRoundEvent);
   });
+});
 });

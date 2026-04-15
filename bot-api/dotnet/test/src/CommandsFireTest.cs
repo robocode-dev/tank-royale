@@ -13,6 +13,7 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 /// - NaN firepower throws ArgumentException
 /// </summary>
 [TestFixture]
+[Category("LEGACY")]
 [Category("TR-API-CMD-002")]
 [Description("Fire Commands (TR-API-CMD-002)")]
 public class CommandsFireTest : AbstractBotTest

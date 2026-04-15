@@ -3,6 +3,8 @@ import { toJson, fromJson, parseTickEventForBot } from "../src/json/JsonUtil.js"
 import { MessageType } from "../src/protocol/MessageType.js";
 import { TickEventForBot, BotDeathEvent, ScannedBotEvent, WonRoundEvent } from "../src/protocol/schema.js";
 
+describe("LEGACY", () => {
+
 const baseBotState = {
   isDroid: false,
   energy: 100,
@@ -128,4 +130,5 @@ describe("parseTickEventForBot", () => {
     const ev = { type: "UnknownEvent", turnNumber: 3 };
     expect(() => parseTickEventForBot(makeTickJson([ev]))).toThrow("Unknown tick event type: UnknownEvent");
   });
+});
 });

@@ -3,6 +3,8 @@ import { SvgGraphics } from "../src/graphics/SvgGraphics";
 import { Color } from "../src/graphics/Color";
 import { Point } from "../src/graphics/Point";
 
+describe("LEGACY", () => {
+
 describe("SvgGraphics", () => {
   let g: SvgGraphics;
 
@@ -142,4 +144,5 @@ describe("SvgGraphics", () => {
       expect(g.toSvg()).toContain('x1="1.123"');
     });
   });
+});
 });
