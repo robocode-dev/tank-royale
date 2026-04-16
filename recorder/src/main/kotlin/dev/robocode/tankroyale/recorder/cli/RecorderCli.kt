@@ -6,6 +6,11 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.versionOption
 import dev.robocode.tankroyale.common.util.Version
 
+/**
+ * CLI entry point for the Tank Royale recorder.
+ *
+ * Parses command-line options and delegates execution to [RecorderRuntime].
+ */
 class RecorderCli : CliktCommand() {
     override fun help(context: Context): String = "Tool for recording Robocode Tank Royale battles."
     private val urlOpt by option("-u", "--url", help = "Server URL (default: ws://localhost:7654)")
