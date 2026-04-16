@@ -61,6 +61,7 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0038](./0038-shared-cross-platform-test-definitions.md)         | Cross-Platform Test Parity and Shared Test Definitions | Proposed | 2026-04-14 |
 | [0039](./0039-server-testability.md)                             | Server Testability — Physics Core and Test Framework | Proposed | 2026-04-14 |
 | [0040](./0040-ready-timeout-default.md)                          | Raise Default readyTimeout from 1s to 10s            | Accepted | 2026-04-15 |
+| [0041](./0041-bot-api-library-version-management.md)             | Bot API Library Version Management in the GUI        | Proposed | 2026-04-16 |
 
 ## Status Definitions
 
