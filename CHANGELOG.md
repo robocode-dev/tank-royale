@@ -1,5 +1,12 @@
 ## [0.40.3] - TBD - Turn 1 radar/gun fix and ready timeout improvement
 
+### ✨ Features
+
+- Bot API (Java, .NET, Python, TypeScript):
+    - #208: Added missing rules constants to the `Constants` class: `INACTIVITY_ZAP` (0.1),
+      `RAM_DAMAGE` (0.6), `STARTING_GUN_HEAT` (3.0), `TEAM_MESSAGE_MAX_SIZE` (32768), and
+      `MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN` (10).
+
 ### 🐞 Bug Fixes
 
 - Bot API (Java, .NET, Python, TypeScript):

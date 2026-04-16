@@ -25,3 +25,12 @@ def test_TR_API_VAL_005_constants_integrity():
     # Acceleration / deceleration
     assert C.ACCELERATION == 1
     assert C.DECELERATION == -2
+
+    # Damage and heat constants
+    assert math.isclose(C.INACTIVITY_ZAP, 0.1, rel_tol=0, abs_tol=1e-10)
+    assert math.isclose(C.RAM_DAMAGE, 0.6, rel_tol=0, abs_tol=1e-10)
+    assert math.isclose(C.STARTING_GUN_HEAT, 3.0, rel_tol=0, abs_tol=1e-10)
+
+    # Team messaging
+    assert C.TEAM_MESSAGE_MAX_SIZE == 32768
+    assert C.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN == 10

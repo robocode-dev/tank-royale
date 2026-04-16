@@ -49,4 +49,24 @@ describe("Constants", () => {
   it("DECELERATION is -2", () => {
     expect(Constants.DECELERATION).toBe(-2);
   });
+
+  it("INACTIVITY_ZAP is 0.1", () => {
+    expect(Constants.INACTIVITY_ZAP).toBe(0.1);
+  });
+
+  it("RAM_DAMAGE is 0.6", () => {
+    expect(Constants.RAM_DAMAGE).toBe(0.6);
+  });
+
+  it("STARTING_GUN_HEAT is 3.0", () => {
+    expect(Constants.STARTING_GUN_HEAT).toBe(3.0);
+  });
+
+  it("TEAM_MESSAGE_MAX_SIZE is 32768", () => {
+    expect(Constants.TEAM_MESSAGE_MAX_SIZE).toBe(32768);
+  });
+
+  it("MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN is 10", () => {
+    expect(Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN).toBe(10);
+  });
 });

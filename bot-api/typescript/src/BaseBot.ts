@@ -39,8 +39,8 @@ import { MathUtil } from "./util/MathUtil.js";
  * Subclasses should override the event handler methods to implement bot behavior.
  */
 export abstract class BaseBot implements IBaseBot {
-  readonly TEAM_MESSAGE_MAX_SIZE = 32768 as const;
-  readonly MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 10 as const;
+  readonly TEAM_MESSAGE_MAX_SIZE = Constants.TEAM_MESSAGE_MAX_SIZE;
+  readonly MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN;
 
   /** @internal */
   readonly _internals: BaseBotInternals;

@@ -8,6 +8,7 @@ from .graphics import GraphicsABC
 from .events import *
 from .bullet_state import BulletState
 from .graphics import Color
+from . import constants as _C
 
 
 class BaseBotABC(ABC):
@@ -15,10 +16,10 @@ class BaseBotABC(ABC):
     Interface containing the core API for a bot.
     """
 
-    TEAM_MESSAGE_MAX_SIZE: int = 32768  # bytes
+    TEAM_MESSAGE_MAX_SIZE: int = _C.TEAM_MESSAGE_MAX_SIZE
     """Maximum size of a team message, which is 32 KB."""
 
-    MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: int = 10
+    MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN: int = _C.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN
     """The maximum number of team messages that can be sent per turn, which is 10 messages."""
 
     @abstractmethod

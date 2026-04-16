@@ -31,5 +31,12 @@ public class ConstantsTest
 
         Assert.That(Constants.Acceleration, Is.EqualTo(1));
         Assert.That(Constants.Deceleration, Is.EqualTo(-2));
+
+        Assert.That(Constants.InactivityZap, Is.EqualTo(0.1).Within(Eps));
+        Assert.That(Constants.RamDamage, Is.EqualTo(0.6).Within(Eps));
+        Assert.That(Constants.StartingGunHeat, Is.EqualTo(3.0).Within(Eps));
+
+        Assert.That(Constants.TeamMessageMaxSize, Is.EqualTo(32768));
+        Assert.That(Constants.MaxNumberOfTeamMessagesPerTurn, Is.EqualTo(10));
     }
 }

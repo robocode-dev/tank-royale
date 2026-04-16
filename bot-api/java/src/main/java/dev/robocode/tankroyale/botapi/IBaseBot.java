@@ -16,16 +16,6 @@ import java.util.Set;
 public interface IBaseBot {
 
     /**
-     * The maximum size of a team message, which is 32 KB (32.786 bytes).
-     */
-    int TEAM_MESSAGE_MAX_SIZE = 32768; // bytes
-
-    /**
-     * The maximum number of team messages that can be sent per turn, which is 10 messages.
-     */
-    int MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 10;
-
-    /**
      * The method used to start running the bot. You should call this method from the main method or
      * similar.
      *
@@ -857,12 +847,12 @@ public interface IBaseBot {
      * When the message is send, it is serialized into a JSON representation, meaning that all public fields, and only
      * public fields, are being serialized into a JSON representation as a DTO (data transfer object).<br>
      * <br>
-     * The maximum team message size limit is defined by {@link #TEAM_MESSAGE_MAX_SIZE}, which is set to
-     * {@value #TEAM_MESSAGE_MAX_SIZE} bytes. This size is the size of the message when it is serialized into a
+     * The maximum team message size limit is defined by {@link Constants#TEAM_MESSAGE_MAX_SIZE}, which is set to
+     * {@value Constants#TEAM_MESSAGE_MAX_SIZE} bytes. This size is the size of the message when it is serialized into a
      * JSON representation.<br>
      * <br>
      * The maximum number of messages that can be send/broadcast per turn is limited to
-     * {@value #MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}.
+     * {@value Constants#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}.
      *
      * @param message is the message to broadcast.
      * @throws IllegalArgumentException if the size of the message exceeds the size limit.
@@ -877,12 +867,12 @@ public interface IBaseBot {
      * When the message is sent, it is serialized into a JSON representation, meaning that all public fields, and only
      * public fields, are being serialized into a JSON representation as a DTO (data transfer object).<br>
      * <br>
-     * The maximum team message size limit is defined by {@link #TEAM_MESSAGE_MAX_SIZE}, which is set to
-     * {@value #TEAM_MESSAGE_MAX_SIZE} bytes. This size is the size of the message when it is serialized into a
+     * The maximum team message size limit is defined by {@link Constants#TEAM_MESSAGE_MAX_SIZE}, which is set to
+     * {@value Constants#TEAM_MESSAGE_MAX_SIZE} bytes. This size is the size of the message when it is serialized into a
      * JSON representation.<br>
      * <br>
      * The maximum number of messages that can be sent/broadcast per turn is limited to
-     * {@value #MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}.
+     * {@value Constants#MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}.
      *
      * @param teammateId is the id of the teammate to send the message to.
      * @param message    is the message to send.

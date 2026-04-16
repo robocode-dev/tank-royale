@@ -73,6 +73,25 @@ Incremental decrease in speed when moving backward.
 The bot brakes faster than it accelerates forward.
 """
 
+INACTIVITY_ZAP = 0.1
+"""
+The amount of damage a bot receives per turn when the game's inactivity time limit is exceeded.
+A bot that has not fired or been hit by a bullet for `max_inactivity_turns` consecutive turns
+will lose this much energy every turn until it acts again.
+"""
+
+RAM_DAMAGE = 0.6
+"""
+The amount of damage dealt to each bot involved in a collision when two bots ram into each
+other, which is 0.6 energy points per collision.
+"""
+
+STARTING_GUN_HEAT = 3.0
+"""
+The gun heat at the start of a round, which is 3.0. The gun cannot fire until its heat drops
+to zero, cooling at the rate defined by the game setup's gun cooling rate.
+"""
+
 MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN = 10
 """
 Maximum number of team messages that can be sent per turn.

@@ -35,6 +35,7 @@ import { GameSetupMapper } from "../mapper/GameSetupMapper.js";
 import { InitialPosition } from "../InitialPosition.js";
 import { EventMapper } from "../mapper/EventMapper.js";
 import { toJson } from "../json/JsonUtil.js";
+import { Constants } from "../Constants.js";
 import type { BotIntent as SchemaBotIntent } from "../protocol/schema.js";
 import { MessageType } from "../protocol/MessageType.js";
 import type { IBaseBot } from "../IBaseBot.js";
@@ -971,9 +972,9 @@ export class BaseBotInternals {
 
   sendTeamMessage(teammateId: number | undefined, message: unknown): void {
     const json = toJson(message);
-    if (json.length > 32768) return; // TEAM_MESSAGE_MAX_SIZE
+    if (json.length > Constants.TEAM_MESSAGE_MAX_SIZE) return; // message too large
     if (!this.intent.teamMessages) this.intent.teamMessages = [];
-    if (this.intent.teamMessages.length >= 10) return; // MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN
+    if (this.intent.teamMessages.length >= Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN) return; // per-turn limit reached
     this.intent.teamMessages.push({
       message: json,
       messageType: typeof message === "object" && message !== null ? message.constructor.name : "string",

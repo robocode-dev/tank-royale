@@ -15,12 +15,12 @@ public interface IBaseBot
     /// <summary>
     /// The maximum size of a team message, which is 32 KB (32.786 bytes).
     /// </summary>
-    const int TeamMessageMaxSize = 32768; // bytes
+    const int TeamMessageMaxSize = Constants.TeamMessageMaxSize; // bytes
 
     /// <summary>
     /// The maximum number of team messages that can be sent per turn, which is 10 messages.
     /// </summary>
-    const int MaxNumberOfTeamMessagesPerTurn = 10;
+    const int MaxNumberOfTeamMessagesPerTurn = Constants.MaxNumberOfTeamMessagesPerTurn;
 
     /// <summary>
     /// The method used to start running the bot. You should call this method from the main

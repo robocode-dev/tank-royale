@@ -125,4 +125,39 @@ public static class Constants
     /// </summary>
     /// <value>The deceleration is 2 units less per turn.</value>
     public const int Deceleration = -2;
+
+    /// <summary>
+    /// The amount of damage a bot receives per turn when the game's inactivity time limit is
+    /// exceeded. A bot that has not fired or been hit by a bullet for <c>maxInactivityTurns</c>
+    /// consecutive turns will lose this much energy every turn until it acts again.
+    /// </summary>
+    /// <value>The inactivity zap damage per turn, which is 0.1 energy points.</value>
+    public const double InactivityZap = 0.1;
+
+    /// <summary>
+    /// The amount of damage dealt to each bot involved in a collision when two bots ram into each
+    /// other, which is 0.6 energy points per collision.
+    /// </summary>
+    /// <value>The ram damage per collision, which is 0.6 energy points.</value>
+    public const double RamDamage = 0.6;
+
+    /// <summary>
+    /// The gun heat at the start of a round, which is 3.0. The gun cannot fire until its heat
+    /// drops to zero, cooling at the rate defined by the game setup's gun cooling rate.
+    /// </summary>
+    /// <value>The starting gun heat, which is 3.0.</value>
+    public const double StartingGunHeat = 3.0;
+
+    /// <summary>
+    /// The maximum size of a team message in bytes (32 KB), which is the serialized (compact JSON)
+    /// size of the message object. Messages exceeding this size are rejected.
+    /// </summary>
+    /// <value>The maximum team message size in bytes, which is 32768.</value>
+    public const int TeamMessageMaxSize = 32768;
+
+    /// <summary>
+    /// The maximum number of team messages that can be sent per turn, which is 10 messages.
+    /// </summary>
+    /// <value>The maximum number of team messages per turn, which is 10.</value>
+    public const int MaxNumberOfTeamMessagesPerTurn = 10;
 }

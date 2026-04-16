@@ -30,5 +30,12 @@ public class ConstantsTest {
 
         assertEquals(1, Constants.ACCELERATION);
         assertEquals(-2, Constants.DECELERATION);
+
+        assertEquals(0.1, Constants.INACTIVITY_ZAP, EPS);
+        assertEquals(0.6, Constants.RAM_DAMAGE, EPS);
+        assertEquals(3.0, Constants.STARTING_GUN_HEAT, EPS);
+
+        assertEquals(32768, Constants.TEAM_MESSAGE_MAX_SIZE);
+        assertEquals(10, Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN);
     }
 }

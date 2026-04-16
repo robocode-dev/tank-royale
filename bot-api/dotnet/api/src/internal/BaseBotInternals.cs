@@ -762,19 +762,19 @@ sealed class BaseBotInternals
             throw new ArgumentException("No teammate was found with the specified 'teammateId': " + teammateId);
         }
 
-        if (BotIntent.TeamMessages is { Count: IBaseBot.MaxNumberOfTeamMessagesPerTurn })
+        if (BotIntent.TeamMessages is { Count: Constants.MaxNumberOfTeamMessagesPerTurn })
             throw new InvalidOperationException(
                 "The maximum number team massages has already been reached: " +
-                IBaseBot.MaxNumberOfTeamMessagesPerTurn);
+                Constants.MaxNumberOfTeamMessagesPerTurn);
 
         if (message == null)
             throw new ArgumentException("The 'message' of a team message cannot be null");
 
         var json = JsonConverter.ToJson(message);
         var bytes = System.Text.Encoding.UTF8.GetBytes(json);
-        if (bytes.Length > IBaseBot.TeamMessageMaxSize)
+        if (bytes.Length > Constants.TeamMessageMaxSize)
             throw new ArgumentException(
-                $"The team message is larger than the limit of {IBaseBot.TeamMessageMaxSize} bytes (compact JSON format)");
+                $"The team message is larger than the limit of {Constants.TeamMessageMaxSize} bytes (compact JSON format)");
 
         BotIntent.TeamMessages.Add(new S.TeamMessage
         {
