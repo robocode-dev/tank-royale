@@ -34,6 +34,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Robocode.TankRoyale.BotApi.Tests" />
     <Compile Include="../schema/generated/*.cs" />
 
     <!-- For [PublicAPI] -->

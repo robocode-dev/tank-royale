@@ -30,11 +30,11 @@
 
 ## Phase 3: Per-Platform Test Runners
 
-- [ ] **3.1** Java: parameterized shared test runner
-- [ ] **3.2** C#: parameterized shared test runner
-- [ ] **3.3** Python: parameterized shared test runner
-- [ ] **3.4** TypeScript: parameterized shared test runner
-- [ ] **3.5** Verify all shared tests pass on all platforms
+- [x] **3.1** Java: parameterized shared test runner
+- [x] **3.2** C#: parameterized shared test runner
+- [x] **3.3** Python: parameterized shared test runner
+- [x] **3.4** TypeScript: parameterized shared test runner
+- [x] **3.5** Verify all shared tests pass on all platforms
 
 ## Phase 4: Parity — Fill Platform Gaps (Tier 2)
 
