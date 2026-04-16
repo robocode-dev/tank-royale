@@ -15,6 +15,12 @@ import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.CountDownLatch
 
+/**
+ * WebSocket observer that connects to a Tank Royale server and records game events to a file.
+ *
+ * This class is not thread-safe. All public methods are intended to be called from the
+ * main thread only, except [stop] which may safely be called from any thread.
+ */
 class RecordingObserver(
     private val url: String,
     private val secret: String? = null,
@@ -38,6 +44,7 @@ class RecordingObserver(
     private val latch = CountDownLatch(1)
     private var recorder: GameRecorder? = null
 
+    /** Connects to the server and begins processing incoming messages. Blocks until closed or an error occurs. */
     fun start() {
         log.info("Starting RecordingObserver, connecting to: $url")
         WebSocketClientEvents.apply {
@@ -121,7 +128,7 @@ class RecordingObserver(
         }
     }
 
-    fun handleServerHandshake(jsonElement: JsonElement) {
+    private fun handleServerHandshake(jsonElement: JsonElement) {
         val serverHandshake = MessageConstants.json.decodeFromJsonElement(ServerHandshake.serializer(), jsonElement)
         log.info("Connected to server: ${serverHandshake.name} (version: ${serverHandshake.version})")
 
@@ -135,15 +142,18 @@ class RecordingObserver(
         client.send(handshake)
     }
 
+    /** Blocks the calling thread until the WebSocket connection is closed. */
     fun awaitClose() {
         latch.await()
     }
 
+    /** Starts a new recording, stopping any recording already in progress. */
     fun startRecording() {
         stopRecording()
         recorder = GameRecorder(dir)
     }
 
+    /** Stops the current recording and keeps the output file. Does nothing if not recording. */
     fun stopRecordingKeepFile() {
         recorder?.let {
             it.close()
@@ -156,15 +166,17 @@ class RecordingObserver(
         stopRecordingKeepFile()
     }
 
+    /** Returns `true` if a recording is currently in progress. */
     fun isRecording(): Boolean = recorder != null
 
+    /** Stops the current recording and deletes the output file. Does nothing if not recording. */
     fun stopAndDeleteRecording() {
         recorder?.let {
             val f = it.file
             try {
                 it.close()
-            } catch (_: Exception) {
-                // ignore
+            } catch (e: Exception) {
+                log.warn("Failed to close recorder before deleting file: ${f.absolutePath}", e)
             }
             val existedBeforeDelete = f.exists()
             var deleted = false
@@ -196,6 +208,10 @@ class RecordingObserver(
         }
     }
 
+    /**
+     * Stops the current recording, closes the WebSocket connection, and releases the [awaitClose] latch.
+     * Safe to call from any thread.
+     */
     fun stop() {
         cleanup()
         stopRecording()

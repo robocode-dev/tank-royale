@@ -63,7 +63,8 @@ class SetupRulesPanel : JPanel(MigLayout("fill")) {
     private val gameSetup: MutableGameSetup
         get() {
             val displayName = gameTypeDropdown.getSelectedGameType().displayName
-            return GamesSettings.games[displayName]!!
+            return GamesSettings.games[displayName]
+                ?: throw IllegalStateException("No game setup found for game type '$displayName'")
         }
 
     private var lastGameSetup: IGameSetup = gameSetup.copy()

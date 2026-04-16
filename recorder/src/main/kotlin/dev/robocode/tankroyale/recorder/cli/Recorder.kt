@@ -1,16 +1,21 @@
 package dev.robocode.tankroyale.recorder.cli
 
-import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.versionOption
-import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.recorder.core.RecordingObserver
 import dev.robocode.tankroyale.recorder.util.VersionFileProvider
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.*
+import java.util.concurrent.Executors
 import kotlin.system.exitProcess
 
+/**
+ * Runtime controller for the Robocode Tank Royale recorder.
+ *
+ * Thread model: [run] executes on the calling (main) thread and blocks until the WebSocket
+ * connection closes. A separate stdin monitor thread reads commands from standard input.
+ * The [recordingObserver] field is declared `@Volatile` to guarantee visibility across both
+ * threads without requiring explicit locking.
+ */
 class RecorderRuntime(
     private val url: String = DEFAULT_URL,
     private val secret: String? = null,
@@ -29,22 +34,24 @@ class RecorderRuntime(
     }
 
     private val log = LoggerFactory.getLogger(this::class.java)
-    private lateinit var recordingObserver: RecordingObserver
 
-    override fun run() {
-        println(VersionFileProvider.getVersion())
-        startExitInputMonitorThread()
-        val canonicalDir = File(dir, ".").canonicalPath
-        log.info("Recordings will be stored in $canonicalDir")
-        startRecorder()
+    @Volatile
+    private var recordingObserver: RecordingObserver? = null
+
+    private val stdinMonitorExecutor = Executors.newSingleThreadExecutor { r ->
+        Thread(r, "stdin-monitor").apply { isDaemon = true }
     }
 
-    private fun startExitInputMonitorThread() {
-        Thread {
-            monitorStandardInputForExit()
-        }.apply {
-            isDaemon = true
-            start()
+    /** Starts the recorder, blocks until the server connection closes, then shuts down the stdin monitor. */
+    override fun run() {
+        println(VersionFileProvider.getVersion())
+        stdinMonitorExecutor.submit { monitorStandardInputForExit() }
+        val canonicalDir = File(dir, ".").canonicalPath
+        log.info("Recordings will be stored in $canonicalDir")
+        try {
+            startRecorder()
+        } finally {
+            stdinMonitorExecutor.shutdownNow()
         }
     }
 
@@ -67,25 +74,24 @@ class RecorderRuntime(
     }
 
     private fun handleExit() {
-        if (this::recordingObserver.isInitialized) {
-            recordingObserver.stop()
-        }
-        exitProcess(1)
+        recordingObserver?.stop()
+        exitProcess(0)
     }
 
     private fun startRecorder() {
-        recordingObserver = RecordingObserver(url, secret, dir)
-        recordingObserver.start()
-        recordingObserver.awaitClose()
+        val observer = RecordingObserver(url, secret, dir)
+        recordingObserver = observer
+        observer.start()
+        observer.awaitClose()
     }
 
     private fun handleStart() {
-        if (!this::recordingObserver.isInitialized) {
+        val observer = recordingObserver ?: run {
             log.warn(NOT_INITIALIZED_WARNING)
             return
         }
-        if (!recordingObserver.isRecording()) {
-            recordingObserver.startRecording()
+        if (!observer.isRecording()) {
+            observer.startRecording()
             log.info("Recording started.")
         } else {
             log.info("Recording is already started.")
@@ -93,24 +99,24 @@ class RecorderRuntime(
     }
 
     private fun handleStop() {
-        if (!this::recordingObserver.isInitialized) {
+        val observer = recordingObserver ?: run {
             log.warn(NOT_INITIALIZED_WARNING)
             return
         }
-        if (recordingObserver.isRecording()) {
-            recordingObserver.stopRecordingKeepFile()
+        if (observer.isRecording()) {
+            observer.stopRecordingKeepFile()
         } else {
             log.info("No active recording to stop.")
         }
     }
 
     private fun handleAbort() {
-        if (!this::recordingObserver.isInitialized) {
+        val observer = recordingObserver ?: run {
             log.warn(NOT_INITIALIZED_WARNING)
             return
         }
-        if (recordingObserver.isRecording()) {
-            recordingObserver.stopAndDeleteRecording()
+        if (observer.isRecording()) {
+            observer.stopAndDeleteRecording()
         } else {
             log.info("No active recording to abort.")
         }
