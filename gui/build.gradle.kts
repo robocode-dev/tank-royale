@@ -74,8 +74,52 @@ tasks {
         rename(".*", "robocode-tankroyale-recorder.jar")
     }
 
+    val copyBotApiJavaJar by registering(Copy::class) {
+        dependsOn(":bot-api:java:shadowJar")
+
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        from(project(":bot-api:java").file("./build/libs"))
+        into(file("./build/classes/kotlin/main"))
+        include("robocode-tankroyale-bot-api-*.jar")
+        exclude("*-javadoc.jar", "*-sources.jar", "*-all.jar")
+        rename(".*", "robocode-tankroyale-bot-api-java.jar")
+    }
+
+    val copyBotApiDotnetNupkg by registering(Copy::class) {
+        dependsOn(":bot-api:dotnet:build")
+
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        from(project(":bot-api:dotnet").file("./api/bin/Release"))
+        into(file("./build/classes/kotlin/main"))
+        include("Robocode.TankRoyale.BotApi.*.nupkg")
+        rename(".*", "Robocode.TankRoyale.BotApi.nupkg")
+    }
+
+    val copyBotApiPythonWhl by registering(Copy::class) {
+        dependsOn(":bot-api:python:build-dist")
+
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        from(project(":bot-api:python").file("./dist"))
+        into(file("./build/classes/kotlin/main"))
+        include("robocode_tank_royale-*-py3-none-any.whl")
+        rename(".*", "robocode-tank-royale-bot-api-python.whl")
+    }
+
+    val copyBotApiTypescriptTgz by registering(Copy::class) {
+        dependsOn(":bot-api:typescript:npmPack")
+
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        from(project(":bot-api:typescript").projectDir)
+        into(file("./build/classes/kotlin/main"))
+        include("robocode-tank-royale-bot-api-*.tgz")
+        rename(".*", "robocode-tank-royale-bot-api-typescript.tgz")
+    }
+
     val copyJars = register("copyJars") {
-        dependsOn(copyBooterJar, copyServerJar, copyRecorderJar)
+        dependsOn(
+            copyBooterJar, copyServerJar, copyRecorderJar,
+            copyBotApiJavaJar, copyBotApiDotnetNupkg, copyBotApiPythonWhl, copyBotApiTypescriptTgz
+        )
 
         // Make copyJars properly declare its outputs
         outputs.dir(file("./build/classes/kotlin/main"))

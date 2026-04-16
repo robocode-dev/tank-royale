@@ -29,6 +29,7 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private const val SOUND_VOLUME = "sound-volume"
 
     private const val ENABLE_AUTO_RECORDING = "enable-auto-recording"
+    private const val CHECK_BOT_API_UPDATES = "check-bot-api-updates"
 
     private const val BOT_DIRS_SEPARATOR = ','
 
@@ -36,6 +37,12 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         get() = load(ENABLE_AUTO_RECORDING)?.lowercase() == "true"
         set(value) {
             save(ENABLE_AUTO_RECORDING, if (value) "true" else "false")
+        }
+
+    var checkBotApiUpdates: Boolean
+        get() = load(CHECK_BOT_API_UPDATES)?.lowercase() != "false"
+        set(value) {
+            save(CHECK_BOT_API_UPDATES, if (value) "true" else "false")
         }
 
     var botDirectories: List<BotDirectoryConfig>

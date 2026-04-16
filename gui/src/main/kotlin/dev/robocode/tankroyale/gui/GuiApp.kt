@@ -2,8 +2,10 @@ package dev.robocode.tankroyale.gui
 
 import dev.robocode.tankroyale.common.util.Platform.isWindows
 import dev.robocode.tankroyale.common.util.Version
+import dev.robocode.tankroyale.gui.botapi.BotApiScanner
 import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
+import dev.robocode.tankroyale.gui.ui.botapi.BotApiUpdateDialog
 import dev.robocode.tankroyale.gui.ui.components.RcImages
 import dev.robocode.tankroyale.gui.util.UserDataMigration
 import java.awt.Taskbar
@@ -39,6 +41,15 @@ fun main(args: Array<String>) {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
 
     MainFrame.isVisible = true
+
+    if (ConfigSettings.checkBotApiUpdates) {
+        javax.swing.SwingUtilities.invokeLater {
+            val entries = BotApiScanner.scan()
+            if (entries.isNotEmpty()) {
+                BotApiUpdateDialog(entries).isVisible = true
+            }
+        }
+    }
 }
 
 private fun applyGlobalUiScaleFromSettings() {
