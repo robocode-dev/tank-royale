@@ -1,6 +1,12 @@
-## [0.40.3] - TBD - Turn 1 radar/gun fix and ready timeout improvement
+## [0.41.0] - TBD - Bot API library updater and stability improvements
 
 ### ✨ Features
+
+- GUI:
+    - #207: Added bot API library updater. On startup, the GUI scans all configured bot
+      directories for outdated or missing library files (Java `.jar`, .NET `.nupkg`,
+      Python `.whl`, TypeScript `.tgz`) and offers to update them in one click.
+      A "Don't ask again" option is available for users who manage libraries manually.
 
 - Bot API (Java, .NET, Python, TypeScript):
     - #208: Added missing rules constants to the `Constants` class: `INACTIVITY_ZAP` (0.1),

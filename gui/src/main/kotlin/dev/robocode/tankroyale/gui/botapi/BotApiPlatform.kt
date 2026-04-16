@@ -33,9 +33,9 @@ enum class BotApiPlatform(
     TYPESCRIPT(
         displayName = "TypeScript",
         subDir = "deps",
-        filenameRegex = Regex("""robocode-tank-royale-bot-api-(.+)\.tgz"""),
+        filenameRegex = Regex("""robocode\.dev-tank-royale-bot-api-(.+)\.tgz"""),
         resourceName = "robocode-tank-royale-bot-api-typescript.tgz",
-        newFileNameTemplate = "robocode-tank-royale-bot-api-{version}.tgz",
+        newFileNameTemplate = "robocode.dev-tank-royale-bot-api-{version}.tgz",
     );
 
     fun newFileName(): String = newFileNameTemplate.replace("{version}", Version.version)

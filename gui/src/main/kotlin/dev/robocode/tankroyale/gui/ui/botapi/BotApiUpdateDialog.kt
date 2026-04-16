@@ -55,7 +55,7 @@ class BotApiUpdateDialog(private val entries: List<BotApiLibEntry>) : JDialog(Ma
         return JTable(model).apply {
             setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
             autoResizeMode = JTable.AUTO_RESIZE_LAST_COLUMN
-            columnModel.getColumn(0).preferredWidth = 280
+            columnModel.getColumn(0).apply { minWidth = 280; preferredWidth = 280 }
             columnModel.getColumn(1).preferredWidth = 80
             columnModel.getColumn(2).preferredWidth = 100
             columnModel.getColumn(3).preferredWidth = 100

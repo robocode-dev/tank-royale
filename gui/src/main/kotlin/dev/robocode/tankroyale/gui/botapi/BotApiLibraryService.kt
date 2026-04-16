@@ -52,7 +52,7 @@ object BotApiLibraryService {
 
         val content = Files.readString(packageJson)
         val patched = content.replace(
-            Regex(""""@robocode\.dev/tank-royale-bot-api":\s*"file:\./deps/robocode-tank-royale-bot-api-.+?\.tgz""""),
+            Regex(""""@robocode\.dev/tank-royale-bot-api":\s*"file:\./deps/robocode\.dev-tank-royale-bot-api-.+?\.tgz""""),
             """"@robocode.dev/tank-royale-bot-api": "file:./deps/$newTgzFileName""""
         )
         if (patched != content) {

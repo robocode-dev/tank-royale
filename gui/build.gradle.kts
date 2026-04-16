@@ -111,7 +111,7 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
         from(project(":bot-api:typescript").projectDir)
         into(file("./build/classes/kotlin/main"))
-        include("robocode-tank-royale-bot-api-*.tgz")
+        include("robocode.dev-tank-royale-bot-api-*.tgz")
         rename(".*", "robocode-tank-royale-bot-api-typescript.tgz")
     }
 
