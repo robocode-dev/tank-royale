@@ -110,79 +110,55 @@ object ArenaPanel : JPanel() {
     }
 
     private fun resolveBulletColor(bullet: BulletState): Color {
-        val botColor = bullet.color
-        val default = ColorConstant.DEFAULT_BULLET_COLOR
-        return when (ConfigSettings.tankColorMode) {
-            TankColorMode.BOT_COLORS -> fromString(botColor ?: default)
-            TankColorMode.BOT_COLORS_ONCE -> {
-                val botLockedColors = lockedColors.getOrPut(bullet.ownerId) { mutableMapOf() }
-                val lockedColor = botLockedColors.getOrPut(default) { botColor ?: "" }
-                fromString(if (lockedColor.isEmpty()) default else lockedColor)
-            }
-            TankColorMode.DEFAULT_COLORS -> fromString(default)
-            TankColorMode.BOT_COLORS_WHEN_DEBUGGING -> {
-                val bot = bots.find { it.id == bullet.ownerId }
-                if (bot?.isDebuggingEnabled == true) {
-                    fromString(botColor ?: default)
-                } else {
-                    fromString(default)
-                }
-            }
-        }
+        val bot = bots.find { it.id == bullet.ownerId }
+        return resolveColor(bullet.ownerId, bullet.color, ColorConstant.DEFAULT_BULLET_COLOR, bot?.isDebuggingEnabled == true)
     }
 
-    private fun resolveScanColor(bot: BotState): Color {
-        val botColor = bot.scanColor
-        val default = ColorConstant.DEFAULT_SCAN_COLOR
-        return when (ConfigSettings.tankColorMode) {
+    private fun resolveScanColor(bot: BotState): Color =
+        resolveColor(bot.id, bot.scanColor, ColorConstant.DEFAULT_SCAN_COLOR, bot.isDebuggingEnabled)
+
+    private fun resolveColor(ownerId: Int, botColor: String?, default: String, isDebuggingEnabled: Boolean): Color =
+        when (ConfigSettings.tankColorMode) {
             TankColorMode.BOT_COLORS -> fromString(botColor ?: default)
             TankColorMode.BOT_COLORS_ONCE -> {
-                val botLockedColors = lockedColors.getOrPut(bot.id) { mutableMapOf() }
+                val botLockedColors = lockedColors.getOrPut(ownerId) { mutableMapOf() }
                 val lockedColor = botLockedColors.getOrPut(default) { botColor ?: "" }
                 fromString(if (lockedColor.isEmpty()) default else lockedColor)
             }
             TankColorMode.DEFAULT_COLORS -> fromString(default)
-            TankColorMode.BOT_COLORS_WHEN_DEBUGGING -> {
-                if (bot.isDebuggingEnabled) {
-                    fromString(botColor ?: default)
-                } else {
-                    fromString(default)
-                }
-            }
+            TankColorMode.BOT_COLORS_WHEN_DEBUGGING ->
+                if (isDebuggingEnabled) fromString(botColor ?: default) else fromString(default)
         }
-    }
 
     private fun onTick(tickEvent: TickEvent) {
         if (tick.get()) return
         tick.set(true)
 
-        if (tickEvent.turnNumber == 1) {
-            // Make sure to remove any explosion left from earlier battle
-            synchronized(explosions) {
-                explosions.clear()
+        EventQueue.invokeLater {
+            if (tickEvent.turnNumber == 1) {
+                synchronized(explosions) { explosions.clear() }
             }
-        }
 
-        round = tickEvent.roundNumber
-        time = tickEvent.turnNumber
-        bots = tickEvent.botStates
-        bullets = tickEvent.bulletStates
+            round = tickEvent.roundNumber
+            time = tickEvent.turnNumber
+            bots = tickEvent.botStates
+            bullets = tickEvent.bulletStates
 
-        tickEvent.events.forEach {
-            when (it) {
-                is BotDeathEvent -> onBotDeath(it)
-                is BulletHitBotEvent -> onBulletHitBot(it)
-                is BulletHitWallEvent -> onBulletHitWall(it)
-                is BulletHitBulletEvent -> onBulletHitBullet(it)
-                else -> {
-                    // ignore other events
+            tickEvent.events.forEach {
+                when (it) {
+                    is BotDeathEvent -> onBotDeath(it)
+                    is BulletHitBotEvent -> onBulletHitBot(it)
+                    is BulletHitWallEvent -> onBulletHitWall(it)
+                    is BulletHitBulletEvent -> onBulletHitBullet(it)
+                    else -> {
+                        // ignore other events
+                    }
                 }
             }
+
+            repaint()
+            tick.set(false)
         }
-
-        repaint()
-
-        tick.set(false)
     }
 
     private fun onGameStarted(gameStartedEvent: GameStartedEvent) {
@@ -414,7 +390,6 @@ object ArenaPanel : JPanel() {
         val y = INDICATOR_Y_OFFSET
         val drawRecIndicator = AutoRecorder.isRecording
 
-        // Calculate section widths
         val recText = "REC"
         val statusText = if (isLiveMode) "LIVE" else "REPLAY"
         val roundText = "ROUND $round"
@@ -422,96 +397,85 @@ object ArenaPanel : JPanel() {
 
         g.font = INDICATOR_STATUS_FONT
         val statusFontMetrics = g.fontMetrics
-        val statusBounds = statusFontMetrics.getStringBounds(statusText, g)
-        val statusWidth = (statusBounds.width + 2 * INDICATOR_TEXT_PADDING).toInt()
+        val statusWidth = (statusFontMetrics.getStringBounds(statusText, g).width + 2 * INDICATOR_TEXT_PADDING).toInt()
 
         g.font = INDICATOR_INFO_FONT
         val infoFontMetrics = g.fontMetrics
-        val recBounds = infoFontMetrics.getStringBounds(recText, g)
-        val roundBounds = infoFontMetrics.getStringBounds(roundText, g)
-        val turnBounds = infoFontMetrics.getStringBounds(turnText, g)
         val recDotSize = infoFontMetrics.ascent
-        val recWidth = if (drawRecIndicator) (recBounds.width + 2.5 * INDICATOR_TEXT_PADDING + recDotSize).toInt() else 0
-        val roundWidth = (roundBounds.width + 2 * INDICATOR_TEXT_PADDING).toInt()
-        val turnWidth = (turnBounds.width + 2 * INDICATOR_TEXT_PADDING).toInt()
+        val recWidth = if (drawRecIndicator) (infoFontMetrics.getStringBounds(recText, g).width + 2.5 * INDICATOR_TEXT_PADDING + recDotSize).toInt() else 0
+        val roundWidth = (infoFontMetrics.getStringBounds(roundText, g).width + 2 * INDICATOR_TEXT_PADDING).toInt()
+        val turnWidth = (infoFontMetrics.getStringBounds(turnText, g).width + 2 * INDICATOR_TEXT_PADDING).toInt()
 
         val totalWidth = recWidth + statusWidth + roundWidth + turnWidth
 
-        // Draw drop shadow
+        val recX = x
+        val statusX = x + recWidth
+        val roundX = statusX + statusWidth
+        val turnX = roundX + roundWidth
+
+        val pulsatingAlpha = (255 * (0.6 + 0.4 * sin(System.currentTimeMillis() * 0.004))).toInt()
+
+        drawIndicatorShadow(g, x, y, totalWidth)
+        drawIndicatorTurnSection(g, turnX, y, turnWidth)
+        drawIndicatorRoundSection(g, roundX, y, roundWidth)
+        if (drawRecIndicator) drawIndicatorRecSection(g, recX, y, recWidth, recDotSize, pulsatingAlpha)
+        drawIndicatorStatusSection(g, statusX, y, statusWidth, statusText, statusFontMetrics, pulsatingAlpha)
+        drawIndicatorInfoTexts(g, y, recX, roundX, turnX, recText, roundText, turnText, recDotSize, infoFontMetrics, pulsatingAlpha, drawRecIndicator)
+
+        oldState.restore(g)
+    }
+
+    private fun drawIndicatorShadow(g: Graphics2D, x: Double, y: Double, totalWidth: Int) {
         g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, INDICATOR_SHADOW_OPACITY)
         g.color = INDICATOR_SHADOW_COLOR
         val shadow = Area(RoundRectangle2D.Double((x + 2), (y + 2), totalWidth.toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble(), INDICATOR_CORNER_RADIUS.toDouble()))
         shadow.subtract(Area(RoundRectangle2D.Double(x, y, totalWidth.toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble(), INDICATOR_CORNER_RADIUS.toDouble())))
         g.fill(shadow)
         g.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f)
+    }
 
-        // Draw all sections pixel-perfect without overlaps
-        val recX = x
-        val statusX = x + recWidth
-        val roundX = statusX + statusWidth
-        val turnX = roundX + roundWidth
-
-        // Draw stackable blocks from right
-
-        // Draw TURN section - right side rounded, left side inversely rounded for ROUND to fit in
+    private fun drawIndicatorTurnSection(g: Graphics2D, turnX: Double, y: Double, turnWidth: Int) {
         g.color = INDICATOR_TURN_BG_COLOR
         g.fill(createStackableRoundedCornersShape(turnX - INDICATOR_CORNER_RADIUS, y, (turnWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble()))
+    }
 
-        // Draw ROUND section - right side rounded, left side inversely rounded for STATUS to fit in
+    private fun drawIndicatorRoundSection(g: Graphics2D, roundX: Double, y: Double, roundWidth: Int) {
         g.color = INDICATOR_ROUND_BG_COLOR
         g.fill(createStackableRoundedCornersShape(roundX - INDICATOR_CORNER_RADIUS, y, (roundWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble()))
+    }
 
-        // Pulsating effect for REPLAY text or REC indicator (opacity between 60% and 100%)
-        val pulsatingAlpha = (255 * (0.6 + 0.4 * sin(System.currentTimeMillis() * 0.004))).toInt()
+    private fun drawIndicatorRecSection(g: Graphics2D, recX: Double, y: Double, recWidth: Int, recDotSize: Int, pulsatingAlpha: Int) {
+        val area = Area(RoundRectangle2D.Double(recX, y, (recWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble(), INDICATOR_CORNER_RADIUS.toDouble()))
+        area.subtract(Area(RoundRectangle2D.Double(recX + recWidth, y, 2.0 * INDICATOR_CORNER_RADIUS, INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble(), INDICATOR_CORNER_RADIUS.toDouble())))
+        g.fill(area)
+        g.color = Color(INDICATOR_LIVE_REC_BG_COLOR.red, INDICATOR_LIVE_REC_BG_COLOR.green, INDICATOR_LIVE_REC_BG_COLOR.blue, pulsatingAlpha)
+        g.fillCircle(recX + INDICATOR_TEXT_PADDING + recDotSize / 2, y + INDICATOR_HEIGHT / 2, recDotSize.toDouble())
+    }
 
-        // Draw REC section
-        if (drawRecIndicator) {
-            val area = Area(RoundRectangle2D.Double(recX, y, (recWidth + INDICATOR_CORNER_RADIUS).toDouble(), INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble(), INDICATOR_CORNER_RADIUS.toDouble()))
-            area.subtract(Area(RoundRectangle2D.Double(recX + recWidth, y, 2.0 * INDICATOR_CORNER_RADIUS, INDICATOR_HEIGHT, INDICATOR_CORNER_RADIUS.toDouble(), INDICATOR_CORNER_RADIUS.toDouble())))
-            g.fill(area)
-            g.color = Color(INDICATOR_LIVE_REC_BG_COLOR.red, INDICATOR_LIVE_REC_BG_COLOR.green, INDICATOR_LIVE_REC_BG_COLOR.blue, pulsatingAlpha)
-            g.fillCircle(recX + INDICATOR_TEXT_PADDING + recDotSize / 2, y + INDICATOR_HEIGHT / 2, recDotSize.toDouble())
-        }
-
-        // Draw status section (LIVE/REPLAY) - both sides rounded
+    private fun drawIndicatorStatusSection(g: Graphics2D, statusX: Double, y: Double, statusWidth: Int, statusText: String, statusFontMetrics: FontMetrics, pulsatingAlpha: Int) {
         val statusColor = if (isLiveMode) (if (AutoRecorder.isRecording) INDICATOR_LIVE_REC_BG_COLOR else INDICATOR_LIVE_BG_COLOR) else INDICATOR_REPLAY_BG_COLOR
         g.color = statusColor
         g.fillRoundRect(statusX.toInt(), y.toInt(), statusWidth, INDICATOR_HEIGHT.toInt(), INDICATOR_CORNER_RADIUS, INDICATOR_CORNER_RADIUS)
 
-        // Draw status text (LIVE/REPLAY) (properly centered)
         g.font = INDICATOR_STATUS_FONT
-
-        if (isLiveMode) {
-            g.color = INDICATOR_STATUS_COLOR
-        } else {
-            g.color = Color(INDICATOR_STATUS_COLOR.red, INDICATOR_STATUS_COLOR.green, INDICATOR_STATUS_COLOR.blue, pulsatingAlpha)
-        }
-
+        g.color = if (isLiveMode) INDICATOR_STATUS_COLOR else Color(INDICATOR_STATUS_COLOR.red, INDICATOR_STATUS_COLOR.green, INDICATOR_STATUS_COLOR.blue, pulsatingAlpha)
         val statusTextX = statusX + INDICATOR_TEXT_PADDING
         val statusTextY = y + (INDICATOR_HEIGHT - statusFontMetrics.height) / 2 + statusFontMetrics.ascent
         g.drawString(statusText, statusTextX.toInt(), statusTextY.toInt())
+    }
 
-        // Draw info texts
+    private fun drawIndicatorInfoTexts(g: Graphics2D, y: Double, recX: Double, roundX: Double, turnX: Double, recText: String, roundText: String, turnText: String, recDotSize: Int, infoFontMetrics: FontMetrics, pulsatingAlpha: Int, drawRecIndicator: Boolean) {
         g.font = INDICATOR_INFO_FONT
         g.color = INDICATOR_TEXT_COLOR
         val infoTextY = (y + (INDICATOR_HEIGHT - infoFontMetrics.height) / 2 + infoFontMetrics.ascent).toInt()
 
-        // Draw REC text
         if (drawRecIndicator) {
             val recTextX = recX + 1.5 * INDICATOR_TEXT_PADDING + recDotSize
             g.drawString(recText, recTextX.toInt(), infoTextY)
         }
 
-        // Draw round text (properly centered)
-        val roundTextX = roundX + INDICATOR_TEXT_PADDING
-        g.drawString(roundText, roundTextX.toInt(), infoTextY)
-
-        // Draw turn text (properly centered)
-        g.color = INDICATOR_TEXT_COLOR
-        val turnTextX = turnX + INDICATOR_TEXT_PADDING
-        g.drawString(turnText, turnTextX.toInt(), infoTextY)
-
-        oldState.restore(g)
+        g.drawString(roundText, (roundX + INDICATOR_TEXT_PADDING).toInt(), infoTextY)
+        g.drawString(turnText, (turnX + INDICATOR_TEXT_PADDING).toInt(), infoTextY)
     }
 
     private fun drawEnergy(g: Graphics2D, bot: BotState) {

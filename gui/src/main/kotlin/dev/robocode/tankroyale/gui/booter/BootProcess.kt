@@ -18,6 +18,9 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
 object BootProcess {
@@ -42,7 +45,7 @@ object BootProcess {
 
     private val pidAndDirs = ConcurrentHashMap<Long, String>() // pid, dir
 
-    private var pingTimer: Timer? = null
+    private var pingExecutor: ScheduledExecutorService? = null
 
     fun info(botsOnly: Boolean? = false, teamsOnly: Boolean? = false): List<BootEntry> {
         val args = mutableListOf(
@@ -182,9 +185,7 @@ object BootProcess {
     }
 
     val bootedBots: List<DirAndPid>
-        get() {
-            return bootedBotsList
-        }
+        get() = bootedBotsList.toList()
 
     val botDirs: List<String>
         get() {
@@ -346,22 +347,16 @@ object BootProcess {
                 (stderrReaderRef.get()?.isRunning() ?: false)
 
     private fun startPinging() {
-        val pingTask = object : TimerTask() {
-            override fun run() {
-                ping(pidAndDirs.keys)
-            }
-        }
-        // Use a daemon Timer so it cannot keep the JVM alive on shutdown
-        pingTimer = Timer(true).apply {
-            scheduleAtFixedRate(pingTask, Date(), 1000L)
+        pingExecutor = Executors.newSingleThreadScheduledExecutor { r ->
+            Thread(r).apply { isDaemon = true }
+        }.also {
+            it.scheduleAtFixedRate({ ping(pidAndDirs.keys) }, 0L, 1000L, TimeUnit.MILLISECONDS)
         }
     }
 
     private fun stopPinging() {
-        pingTimer?.cancel()
-        // Remove canceled tasks and drop reference to allow GC
-        pingTimer?.purge()
-        pingTimer = null
+        pingExecutor?.shutdownNow()
+        pingExecutor = null
     }
 
     private fun addPid(line: String) {

@@ -2,8 +2,6 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.client.model.BotInfo
 import dev.robocode.tankroyale.common.event.Event
-import dev.robocode.tankroyale.gui.booter.BotIdentity
-import dev.robocode.tankroyale.gui.booter.BotIdentityReader
 import dev.robocode.tankroyale.gui.booter.BootProcess
 import dev.robocode.tankroyale.gui.booter.DirAndPid
 import dev.robocode.tankroyale.gui.client.Client
@@ -26,12 +24,13 @@ import net.miginfocom.swing.MigLayout
 import java.awt.EventQueue
 import java.awt.event.FocusEvent
 import java.awt.event.FocusListener
-import java.nio.file.Paths
 import javax.swing.*
 
 @SuppressWarnings("kotlin:S1192") // allow duplicated string literals
 object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,grow]", "[grow][grow]")), FocusListener {
     private fun readResolve(): Any = BotSelectionPanel
+
+    private val bootCoordinator = BotBootCoordinator { SwingUtilities.getWindowAncestor(this) }
 
     private val onFilterDropdown = Event<JComboBox<String>>()
 
@@ -141,7 +140,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
     }
 
     private fun reset() {
-        activeProgressDialog = null
+        bootCoordinator.reset()
         selectedBotListModel.clear()
         joinedBotListModel.clear()
         update()
@@ -164,46 +163,12 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
 
     private fun runFromBotDirectoryAtIndex(index: Int) {
         if (index >= 0 && index < botsDirectoryListModel.size) {
-            bootAndShowProgress(listOf(botsDirectoryListModel[index]))
+            bootCoordinator.bootBots(listOf(botsDirectoryListModel[index]))
         }
     }
 
-    private var activeProgressDialog: BootProgressDialog? = null
-
     private fun bootAndShowProgress(botInfoList: List<BotInfo>) {
-        var unknownCount = 0
-        val expectedIdentities = botInfoList.flatMap { botInfo ->
-            try {
-                BotIdentityReader.readIdentities(Paths.get(botInfo.host))
-            } catch (e: Exception) {
-                unknownCount++ // No JSON → runtime identity unknown
-                emptyList()
-            }
-        }
-
-        BootProcess.boot(botInfoList.map { it.host })
-
-        val existing = activeProgressDialog
-        if (existing != null && existing.isVisible) {
-            // Add the new bots to the already-open dialog instead of opening a second one.
-            existing.addExpectedBots(expectedIdentities, unknownCount)
-        } else {
-            val baseline = Client.joinedBots.map { BotIdentity(it.name, it.version) }.groupingBy { it }.eachCount()
-            val dialog = BootProgressDialog(
-                owner = SwingUtilities.getWindowAncestor(this),
-                expectedIdentities = expectedIdentities,
-                unknownCount = unknownCount,
-                baseline = baseline,
-                timeoutSeconds = ConfigSettings.bootTimeout,
-                onSuccess = { activeProgressDialog = null },
-                onCancel = {
-                    activeProgressDialog = null
-                    BootProcess.stop()
-                },
-            )
-            activeProgressDialog = dialog
-            dialog.isVisible = true
-        }
+        bootCoordinator.bootBots(botInfoList)
     }
 
     private fun createBotDirectoryList() =
@@ -458,7 +423,7 @@ object BotSelectionPanel : JPanel(MigLayout("insets 0", "[sg,grow][center][sg,gr
         }
     }
 
-    var isShowingNoNotDirectoriesFoundError = false
+    private var isShowingNoNotDirectoriesFoundError = false
 
     private fun showNoNotDirectoriesFoundErrorAndShowBotRootDirectoriesConfig() {
         EventQueue.invokeLater {
