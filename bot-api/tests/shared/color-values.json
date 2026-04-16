@@ -1,0 +1,38 @@
+{
+  "suite": "color-values",
+  "description": "Validates Color construction, hex conversion, and named constants",
+  "tests": [
+    {
+      "id": "TR-API-GFX-001-color-rgb",
+      "description": "Color.fromRgb creates opaque color",
+      "type": "positive",
+      "method": "fromRgb",
+      "args": [0, 128, 255],
+      "expected": { "r": 0, "g": 128, "b": 255, "a": 255 }
+    },
+    {
+      "id": "TR-API-GFX-001-color-rgba",
+      "description": "Color.fromRgba creates transparent color",
+      "type": "positive",
+      "method": "fromRgba",
+      "args": [255, 100, 50, 128],
+      "expected": { "r": 255, "g": 100, "b": 50, "a": 128 }
+    },
+    {
+      "id": "TR-API-GFX-001-color-to-hex",
+      "description": "colorToHex converts color to #RRGGBB format",
+      "type": "positive",
+      "method": "colorToHex",
+      "args": [{ "r": 0, "g": 128, "b": 255 }],
+      "expected": { "returns": "#0080FF" }
+    },
+    {
+      "id": "TR-API-GFX-001-color-white-constant",
+      "description": "Color.WHITE constant value",
+      "type": "positive",
+      "method": "getColorConstant",
+      "args": ["WHITE"],
+      "expected": { "r": 255, "g": 255, "b": 255, "a": 255 }
+    }
+  ]
+}

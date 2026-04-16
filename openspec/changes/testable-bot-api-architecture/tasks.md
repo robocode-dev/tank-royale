@@ -22,11 +22,11 @@
 
 ## Phase 2: Shared Test Definitions (Tier 1)
 
-- [ ] **2.1** Create `bot-api/tests/shared/intent-validation.json`
-- [ ] **2.2** Create `bot-api/tests/shared/movement-physics.json`
-- [ ] **2.3** Create `bot-api/tests/shared/botinfo-validation.json`
-- [ ] **2.4** Create `bot-api/tests/shared/color-values.json`
-- [ ] **2.5** Create `bot-api/tests/shared/constants.json`
+- [x] **2.1** Create `bot-api/tests/shared/intent-validation.json`
+- [x] **2.2** Create `bot-api/tests/shared/movement-physics.json`
+- [x] **2.3** Create `bot-api/tests/shared/botinfo-validation.json`
+- [x] **2.4** Create `bot-api/tests/shared/color-values.json`
+- [x] **2.5** Create `bot-api/tests/shared/constants.json`
 
 ## Phase 3: Per-Platform Test Runners
 

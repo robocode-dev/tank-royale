@@ -1,0 +1,48 @@
+{
+  "suite": "botinfo-validation",
+  "description": "Validates BotInfo fields, trimming, and length limits",
+  "tests": [
+    {
+      "id": "TR-API-VAL-001-botinfo-required",
+      "description": "BotInfo constructor with only required fields",
+      "type": "positive",
+      "method": "BotInfo",
+      "args": ["MyBot", "1.0", ["Author 1"]],
+      "expected": {
+        "name": "MyBot",
+        "version": "1.0",
+        "authors": ["Author 1"]
+      }
+    },
+    {
+      "id": "TR-API-VAL-001-botinfo-trimming",
+      "description": "BotInfo fields are trimmed",
+      "type": "positive",
+      "method": "BotInfo",
+      "args": ["  MyBot  ", "  1.0  ", [" Author 1 "]],
+      "expected": {
+        "name": "MyBot",
+        "version": "1.0",
+        "authors": ["Author 1"]
+      }
+    },
+    {
+      "id": "TR-API-VAL-002-botinfo-name-too-long",
+      "description": "BotInfo name exceeding max length throws IllegalArgumentException",
+      "type": "negative",
+      "method": "BotInfo",
+      "args": ["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "1.0", ["Author"]],
+      "expected": { "throws": "IllegalArgumentException" }
+    },
+    {
+      "id": "TR-API-VAL-002-botinfo-country-normalization",
+      "description": "Country codes are normalized to upper case",
+      "type": "positive",
+      "method": "BotInfo",
+      "args": ["Bot", "1.0", ["Author"], null, null, ["gb", " us "]],
+      "expected": {
+        "countryCodes": ["GB", "US"]
+      }
+    }
+  ]
+}

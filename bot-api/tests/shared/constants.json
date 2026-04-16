@@ -1,0 +1,54 @@
+{
+  "suite": "constants",
+  "description": "Validates that API constants match across all platforms",
+  "tests": [
+    {
+      "id": "TR-API-VAL-005-constants-physics",
+      "description": "Core physics constants",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MAX_SPEED"],
+      "expected": { "returns": 8 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-accel",
+      "description": "Acceleration and deceleration",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["ACCELERATION"],
+      "expected": { "returns": 1 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-decel",
+      "description": "Deceleration",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["DECELERATION"],
+      "expected": { "returns": -2 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-turn-rates",
+      "description": "Max turn rates",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MAX_TURN_RATE"],
+      "expected": { "returns": 10 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-gun-turn-rate",
+      "description": "Max gun turn rate",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MAX_GUN_TURN_RATE"],
+      "expected": { "returns": 20 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-radar-turn-rate",
+      "description": "Max radar turn rate",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MAX_RADAR_TURN_RATE"],
+      "expected": { "returns": 45 }
+    }
+  ]
+}
