@@ -1,16 +1,11 @@
 ---
-name: dot-scout
 description: Analyse a project to detect which principles apply and create or update .principles files encoding that analysis. Use when the user runs /dot-scout [path] to map principles to a codebase.
 argument-hint: "[directory-path]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: 0.9.0
+version: 0.10.2
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
-license: MIT
+generated-by: .principles
 ---
-
-Codex note:
-- Treat `$ARGUMENTS` below as the user's request text after invoking this skill.
-- References to `/dot-scout`, `/dot-prime`, and `/dot-audit` map to `$dot-scout`, `$dot-prime`, and `$dot-audit` in Codex.
 
 
 # Scout
@@ -360,4 +355,4 @@ Tip: commit .principles-catalog/ so CI and PR bots can use it without local inst
 
 Append `scout` to `.principles-catalog/install.cfg` (create the file if it does not exist). Use one target per line; do not add a duplicate if `scout` is already present.
 
-This marker tells `/dot-prime` and `/dot-audit` that scout has been run and its output files are available.
+This marker is kept for compatibility, and `/dot-prime` and `/dot-audit` accept both the legacy `/scout` and current `/dot-scout` generated files.
