@@ -35,6 +35,8 @@ import { GameSetupMapper } from "../mapper/GameSetupMapper.js";
 import { InitialPosition } from "../InitialPosition.js";
 import { EventMapper } from "../mapper/EventMapper.js";
 import { toJson } from "../json/JsonUtil.js";
+import { IntentValidator } from "./intentValidator.js";
+import { Constants } from "../Constants.js";
 import type { BotIntent as SchemaBotIntent } from "../protocol/schema.js";
 import { MessageType } from "../protocol/MessageType.js";
 import type { IBaseBot } from "../IBaseBot.js";
@@ -47,11 +49,6 @@ export interface IStopResumeListener {
 }
 
 const DEFAULT_SERVER_URL = "ws://localhost:7654";
-const MAX_SPEED = 8;
-const MAX_TURN_RATE = 10;
-const MAX_GUN_TURN_RATE = 20;
-const MAX_RADAR_TURN_RATE = 45;
-const DECELERATION = -2;
 
 /**
  * Full internal implementation for BaseBot.
@@ -88,10 +85,10 @@ export class BaseBotInternals {
   private intent: SchemaBotIntent = { type: MessageType.BotIntent };
 
   // Rate/speed limits
-  private maxSpeed = MAX_SPEED;
-  private maxTurnRate = MAX_TURN_RATE;
-  private maxGunTurnRate = MAX_GUN_TURN_RATE;
-  private maxRadarTurnRate = MAX_RADAR_TURN_RATE;
+  private maxSpeed: number = Constants.MAX_SPEED;
+  private maxTurnRate: number = Constants.MAX_TURN_RATE;
+  private maxGunTurnRate: number = Constants.MAX_GUN_TURN_RATE;
+  private maxRadarTurnRate: number = Constants.MAX_RADAR_TURN_RATE;
 
   // Stop/resume saved state
   private isStopped = false;
@@ -816,69 +813,38 @@ export class BaseBotInternals {
 
   getTurnRate(): number { return this.intent.turnRate ?? 0; }
   setTurnRate(turnRate: number): void {
-    this.intent.turnRate = MathUtil.clamp(turnRate, -this.maxTurnRate, this.maxTurnRate);
+    this.intent.turnRate = IntentValidator.validateTurnRate(turnRate, this.maxTurnRate);
   }
   getMaxTurnRate(): number { return this.maxTurnRate; }
-  setMaxTurnRate(maxTurnRate: number): void { this.maxTurnRate = maxTurnRate; }
+  setMaxTurnRate(maxTurnRate: number): void { this.maxTurnRate = IntentValidator.validateMaxTurnRate(maxTurnRate); }
 
   getGunTurnRate(): number { return this.intent.gunTurnRate ?? 0; }
   setGunTurnRate(gunTurnRate: number): void {
-    this.intent.gunTurnRate = MathUtil.clamp(gunTurnRate, -this.maxGunTurnRate, this.maxGunTurnRate);
+    this.intent.gunTurnRate = IntentValidator.validateGunTurnRate(gunTurnRate, this.maxGunTurnRate);
   }
   getMaxGunTurnRate(): number { return this.maxGunTurnRate; }
-  setMaxGunTurnRate(maxGunTurnRate: number): void { this.maxGunTurnRate = maxGunTurnRate; }
+  setMaxGunTurnRate(maxGunTurnRate: number): void { this.maxGunTurnRate = IntentValidator.validateMaxGunTurnRate(maxGunTurnRate); }
 
   getRadarTurnRate(): number { return this.intent.radarTurnRate ?? 0; }
   setRadarTurnRate(radarTurnRate: number): void {
-    this.intent.radarTurnRate = MathUtil.clamp(radarTurnRate, -this.maxRadarTurnRate, this.maxRadarTurnRate);
+    this.intent.radarTurnRate = IntentValidator.validateRadarTurnRate(radarTurnRate, this.maxRadarTurnRate);
   }
   getMaxRadarTurnRate(): number { return this.maxRadarTurnRate; }
-  setMaxRadarTurnRate(maxRadarTurnRate: number): void { this.maxRadarTurnRate = maxRadarTurnRate; }
+  setMaxRadarTurnRate(maxRadarTurnRate: number): void { this.maxRadarTurnRate = IntentValidator.validateMaxRadarTurnRate(maxRadarTurnRate); }
 
   getTargetSpeed(): number { return this.intent.targetSpeed ?? 0; }
   setTargetSpeed(targetSpeed: number): void {
-    this.intent.targetSpeed = MathUtil.clamp(targetSpeed, -this.maxSpeed, this.maxSpeed);
+    this.intent.targetSpeed = IntentValidator.validateTargetSpeed(targetSpeed, this.maxSpeed);
   }
   getMaxSpeed(): number { return this.maxSpeed; }
-  setMaxSpeed(maxSpeed: number): void { this.maxSpeed = maxSpeed; }
+  setMaxSpeed(maxSpeed: number): void { this.maxSpeed = IntentValidator.validateMaxSpeed(maxSpeed); }
 
-  // Credits for this algorithm go to Patrick Cupka (aka Voidious),
-  // Julian Kent (aka Skilgannon), and Positive for the original version:
-  // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
   getNewTargetSpeed(speed: number, distance: number): number {
-    if (distance < 0) return -this.getNewTargetSpeed(-speed, -distance);
-    const targetSpeed = !isFinite(distance) ? this.maxSpeed : Math.min(this.maxSpeed, this.getMaxSpeedForDistance(distance));
-    return speed >= 0
-      ? MathUtil.clamp(targetSpeed, speed + DECELERATION, speed + 1)
-      : MathUtil.clamp(targetSpeed, speed - 1, speed + this.getMaxDeceleration(-speed));
-  }
-
-  // Returns the maximum speed achievable such that the bot can decelerate to 0 within the given distance.
-  // Mirrors Java's BaseBotInternals.getMaxSpeed(distance) exactly (ceiling-based discrete model).
-  private getMaxSpeedForDistance(distance: number): number {
-    const absDecel = Math.abs(DECELERATION);
-    const decelerationTime = Math.max(1, Math.ceil((Math.sqrt((4 * 2 / absDecel) * distance + 1) - 1) / 2));
-    if (!isFinite(decelerationTime)) return MAX_SPEED;
-    const decelerationDistance = (decelerationTime / 2) * (decelerationTime - 1) * absDecel;
-    return (decelerationTime - 1) * absDecel + (distance - decelerationDistance) / decelerationTime;
-  }
-
-  // Returns the maximum deceleration achievable in one turn for the given positive speed.
-  // Mirrors Java's BaseBotInternals.getMaxDeceleration(speed).
-  private getMaxDeceleration(speed: number): number {
-    const absDecel = Math.abs(DECELERATION);
-    const decelerationTime = speed / absDecel;
-    const accelerationTime = 1 - decelerationTime;
-    return Math.min(1, decelerationTime) * absDecel + Math.max(0, accelerationTime) * 1;
+    return IntentValidator.getNewTargetSpeed(speed, distance, this.maxSpeed);
   }
 
   getDistanceTraveledUntilStop(speed: number): number {
-    speed = Math.abs(speed);
-    let distance = 0;
-    while (speed > 0) {
-      distance += (speed = this.getNewTargetSpeed(speed, 0));
-    }
-    return distance;
+    return IntentValidator.getDistanceTraveledUntilStop(speed, this.maxSpeed);
   }
 
   // ---------------------------------------------------------------------------
@@ -886,7 +852,9 @@ export class BaseBotInternals {
   // ---------------------------------------------------------------------------
 
   setFire(firepower: number): boolean {
-    if ((this.tickEvent?.botState.gunHeat ?? 0) > 0 || firepower < 0.1 || firepower > 3) return false;
+    IntentValidator.validateFirepower(firepower);
+    if ((this.tickEvent?.botState.gunHeat ?? 0) > 0 ||
+        (this.tickEvent?.botState.energy ?? 0) < firepower) return false;
     this.intent.firepower = firepower;
     return true;
   }
@@ -971,9 +939,11 @@ export class BaseBotInternals {
 
   sendTeamMessage(teammateId: number | undefined, message: unknown): void {
     const json = toJson(message);
-    if (json.length > 32768) return; // TEAM_MESSAGE_MAX_SIZE
+    IntentValidator.validateTeamMessageSize(json);
+
     if (!this.intent.teamMessages) this.intent.teamMessages = [];
-    if (this.intent.teamMessages.length >= 10) return; // MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN
+    IntentValidator.validateTeamMessage(message, this.intent.teamMessages.length);
+
     this.intent.teamMessages.push({
       message: json,
       messageType: typeof message === "object" && message !== null ? message.constructor.name : "string",
@@ -986,19 +956,19 @@ export class BaseBotInternals {
   // ---------------------------------------------------------------------------
 
   getBodyColor(): Color | null { return this.intent.bodyColor ? ColorUtil.fromHexColor(this.intent.bodyColor) : null; }
-  setBodyColor(color: Color | null): void { this.intent.bodyColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setBodyColor(color: Color | null): void { this.intent.bodyColor = IntentValidator.colorToHex(color); }
   getTurretColor(): Color | null { return this.intent.turretColor ? ColorUtil.fromHexColor(this.intent.turretColor) : null; }
-  setTurretColor(color: Color | null): void { this.intent.turretColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setTurretColor(color: Color | null): void { this.intent.turretColor = IntentValidator.colorToHex(color); }
   getRadarColor(): Color | null { return this.intent.radarColor ? ColorUtil.fromHexColor(this.intent.radarColor) : null; }
-  setRadarColor(color: Color | null): void { this.intent.radarColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setRadarColor(color: Color | null): void { this.intent.radarColor = IntentValidator.colorToHex(color); }
   getBulletColor(): Color | null { return this.intent.bulletColor ? ColorUtil.fromHexColor(this.intent.bulletColor) : null; }
-  setBulletColor(color: Color | null): void { this.intent.bulletColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setBulletColor(color: Color | null): void { this.intent.bulletColor = IntentValidator.colorToHex(color); }
   getScanColor(): Color | null { return this.intent.scanColor ? ColorUtil.fromHexColor(this.intent.scanColor) : null; }
-  setScanColor(color: Color | null): void { this.intent.scanColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setScanColor(color: Color | null): void { this.intent.scanColor = IntentValidator.colorToHex(color); }
   getTracksColor(): Color | null { return this.intent.tracksColor ? ColorUtil.fromHexColor(this.intent.tracksColor) : null; }
-  setTracksColor(color: Color | null): void { this.intent.tracksColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setTracksColor(color: Color | null): void { this.intent.tracksColor = IntentValidator.colorToHex(color); }
   getGunColor(): Color | null { return this.intent.gunColor ? ColorUtil.fromHexColor(this.intent.gunColor) : null; }
-  setGunColor(color: Color | null): void { this.intent.gunColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setGunColor(color: Color | null): void { this.intent.gunColor = IntentValidator.colorToHex(color); }
 
   // ---------------------------------------------------------------------------
   // Running state

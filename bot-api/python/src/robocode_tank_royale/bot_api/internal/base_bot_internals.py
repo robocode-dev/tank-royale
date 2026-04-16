@@ -24,6 +24,7 @@ from .base_bot_internal_data import BaseBotInternalData
 from .bot_event_handlers import BotEventHandlers
 from .event_queue import EventQueue
 from .env_vars import EnvVars
+from .intent_validator import IntentValidator
 from .internal_event_handlers import InternalEventHandlers
 from .json_util import to_json
 from .recording_text_writer import RecordingTextWriter
@@ -104,7 +105,6 @@ class BaseBotInternals:
         self.max_gun_turn_rate: float = MAX_GUN_TURN_RATE
         self.max_radar_turn_rate: float = MAX_RADAR_TURN_RATE
 
-        self.abs_deceleration: float = abs(DECELERATION)
         self.last_execute_turn_number: int = -1
 
         # Movement reset deferral flag (mirrors Java/.NET movementResetPending)
@@ -578,8 +578,7 @@ class BaseBotInternals:
 
     def set_fire(self, firepower: float) -> bool:
         """Set fire with given firepower. Matches Java's setFire() semantics exactly."""
-        if math.isnan(firepower):
-            raise ValueError("'firepower' cannot be NaN")
+        IntentValidator.validate_firepower(firepower)
 
         # Match Java: use base_bot.energy and base_bot.gun_heat (which return 0 when no tick received)
         if self.base_bot.energy < firepower or self.base_bot.gun_heat > 0:
@@ -605,10 +604,8 @@ class BaseBotInternals:
 
     @turn_rate.setter
     def turn_rate(self, turn_rate: float) -> None:
-        if math.isnan(turn_rate):
-            raise ValueError("'turn_rate' cannot be NaN")
-        self.data.bot_intent.turn_rate = MathUtil.clamp(
-            turn_rate, -self.max_turn_rate, self.max_turn_rate
+        self.data.bot_intent.turn_rate = IntentValidator.validate_turn_rate(
+            turn_rate, self.max_turn_rate
         )
 
     @property
@@ -620,10 +617,8 @@ class BaseBotInternals:
 
     @gun_turn_rate.setter
     def gun_turn_rate(self, gun_turn_rate: float) -> None:
-        if math.isnan(gun_turn_rate):
-            raise ValueError("'gun_turn_rate' cannot be NaN")
-        self.data.bot_intent.gun_turn_rate = MathUtil.clamp(
-            gun_turn_rate, -self.max_gun_turn_rate, self.max_gun_turn_rate
+        self.data.bot_intent.gun_turn_rate = IntentValidator.validate_gun_turn_rate(
+            gun_turn_rate, self.max_gun_turn_rate
         )
 
     @property
@@ -635,10 +630,8 @@ class BaseBotInternals:
 
     @radar_turn_rate.setter
     def radar_turn_rate(self, radar_turn_rate: float) -> None:
-        if math.isnan(radar_turn_rate):
-            raise ValueError("'radar_turn_rate' cannot be NaN")
-        self.data.bot_intent.radar_turn_rate = MathUtil.clamp(
-            radar_turn_rate, -self.max_radar_turn_rate, self.max_radar_turn_rate
+        self.data.bot_intent.radar_turn_rate = IntentValidator.validate_radar_turn_rate(
+            radar_turn_rate, self.max_radar_turn_rate
         )
 
     @property
@@ -647,10 +640,8 @@ class BaseBotInternals:
 
     @target_speed.setter
     def target_speed(self, target_speed: float) -> None:
-        if math.isnan(target_speed):
-            raise ValueError("'target_speed' cannot be NaN")
-        self.data.bot_intent.target_speed = MathUtil.clamp(
-            target_speed, -self.max_speed, self.max_speed
+        self.data.bot_intent.target_speed = IntentValidator.validate_target_speed(
+            target_speed, self.max_speed
         )
 
     def get_max_speed(self) -> float:
@@ -659,7 +650,7 @@ class BaseBotInternals:
 
     def set_max_speed(self, max_speed: float) -> None:
         # Max speed is part of bot's own limits
-        self.max_speed = MathUtil.clamp(max_speed, 0, MAX_SPEED)
+        self.max_speed = IntentValidator.validate_max_speed(max_speed)
 
     def get_max_turn_rate(self) -> float:
         # Max turn rate is part of bot's own limits
@@ -667,7 +658,7 @@ class BaseBotInternals:
 
     def set_max_turn_rate(self, max_turn_rate: float) -> None:
         # Max turn rate is part of bot's own limits
-        self.max_turn_rate = MathUtil.clamp(max_turn_rate, 0, MAX_TURN_RATE)
+        self.max_turn_rate = IntentValidator.validate_max_turn_rate(max_turn_rate)
 
     def get_max_gun_turn_rate(self) -> float:
         # Max gun turn rate is part of bot's own limits
@@ -675,7 +666,7 @@ class BaseBotInternals:
 
     def set_max_gun_turn_rate(self, max_gun_turn_rate: float) -> None:
         # Max gun turn rate is part of bot's own limits
-        self.max_gun_turn_rate = MathUtil.clamp(max_gun_turn_rate, 0, MAX_GUN_TURN_RATE)
+        self.max_gun_turn_rate = IntentValidator.validate_max_gun_turn_rate(max_gun_turn_rate)
 
     def get_max_radar_turn_rate(self) -> float:
         # Max radar turn rate is part of bot's own limits
@@ -683,71 +674,13 @@ class BaseBotInternals:
 
     def set_max_radar_turn_rate(self, max_radar_turn_rate: float) -> None:
         # Max radar turn rate is part of bot's own limits
-        self.max_radar_turn_rate = MathUtil.clamp(
-            max_radar_turn_rate, 0, MAX_RADAR_TURN_RATE
-        )
+        self.max_radar_turn_rate = IntentValidator.validate_max_radar_turn_rate(max_radar_turn_rate)
 
     def get_new_target_speed(self, speed: float, distance: float) -> float:
-        if distance < 0:
-            return -self.get_new_target_speed(-speed, -distance)
-
-        target_speed: float
-        if math.isinf(distance):
-            target_speed = self.max_speed
-        else:
-            target_speed = min(
-                self.max_speed, self._get_max_speed_for_distance(distance)
-            )
-
-        if speed >= 0:
-            return MathUtil.clamp(
-                target_speed, speed - self.abs_deceleration, speed + ACCELERATION
-            )
-        else:  # speed < 0
-            return MathUtil.clamp(
-                target_speed,
-                speed - ACCELERATION,
-                speed + self._get_max_deceleration(-speed),
-            )
-
-    def _get_max_speed_for_distance(
-        self, distance: float
-    ) -> float:  # Corresponds to Java's getMaxSpeed(distance)
-        deceleration_time = max(
-            1,
-            math.ceil(
-                (math.sqrt((4 * 2 / self.abs_deceleration) * distance + 1) - 1) / 2
-            ),
-        )
-        if math.isinf(deceleration_time):
-            return MAX_SPEED
-
-        deceleration_distance = (
-            (deceleration_time / 2) * (deceleration_time - 1) * self.abs_deceleration
-        )
-        return ((deceleration_time - 1) * self.abs_deceleration) + (
-            (distance - deceleration_distance) / deceleration_time
-        )
-
-    def _get_max_deceleration(
-        self, speed: float
-    ) -> float:  # Corresponds to Java's getMaxDeceleration(speed)
-        deceleration_time = speed / self.abs_deceleration
-        acceleration_time = 1 - deceleration_time
-        return (
-            min(1, deceleration_time) * self.abs_deceleration
-            + max(0, acceleration_time) * ACCELERATION
-        )
+        return IntentValidator.get_new_target_speed(speed, distance, self.max_speed)
 
     def get_distance_traveled_until_stop(self, speed: float) -> float:
-        speed = math.fabs(speed)
-        distance = 0.0
-        while speed > 0:
-            # This uses the current bot's max_speed and deceleration properties.
-            # It simulates deceleration to zero under ideal conditions.
-            speed = self.get_new_target_speed(speed, 0)
-            distance += speed
-        return distance
+        return IntentValidator.get_distance_traveled_until_stop(speed, self.max_speed)
 
     # Conditions - Delegated to self.data.conditions
     def add_condition(self, condition: Condition) -> bool:
@@ -805,30 +738,18 @@ class BaseBotInternals:
     def send_team_message(self, teammate_id: Optional[int], message: Any) -> None:
         from ..team_message import serialize_team_message
 
-        if (
-            teammate_id is not None and teammate_id not in self.data.teammate_ids
-        ):  # Uses property getter
-            raise ValueError("No teammate was found with the specified 'teammate_id'")
+        IntentValidator.validate_teammate_id(teammate_id, self.data.teammate_ids)
 
         team_messages_list = self.data.bot_intent.team_messages
         if team_messages_list is None:
             team_messages_list = []
             self.data.bot_intent.team_messages = team_messages_list
 
-        if len(team_messages_list) >= MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN:
-            raise BotException(
-                f"The maximum number team messages has already been reached: {MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN}"
-            )
-
-        if message is None:
-            raise ValueError("The 'message' of a team message cannot be null")
+        IntentValidator.validate_team_message(message, len(team_messages_list))
 
         # Serialize the message using team_message module which handles Color objects
         json_message_str = serialize_team_message(message)
-        if len(json_message_str.encode("utf-8")) > TEAM_MESSAGE_MAX_SIZE:
-            raise ValueError(
-                f"The team message is larger than the limit of {TEAM_MESSAGE_MAX_SIZE} bytes (compact JSON format)"
-            )
+        IntentValidator.validate_team_message_size(json_message_str)
 
         team_message = TeamMessage(
             message_type=type(message).__name__,
@@ -845,7 +766,7 @@ class BaseBotInternals:
 
     @body_color.setter
     def body_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent.body_color = color.to_color_schema() if color else None
+        self.data.bot_intent.body_color = IntentValidator.color_to_schema(color)
 
     @property
     def turret_color(self) -> Optional[Color]:
@@ -854,7 +775,7 @@ class BaseBotInternals:
 
     @turret_color.setter
     def turret_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent.turret_color = color.to_color_schema() if color else None
+        self.data.bot_intent.turret_color = IntentValidator.color_to_schema(color)
 
     @property
     def radar_color(self) -> Optional[Color]:
@@ -863,7 +784,7 @@ class BaseBotInternals:
 
     @radar_color.setter
     def radar_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent.radar_color = color.to_color_schema() if color else None
+        self.data.bot_intent.radar_color = IntentValidator.color_to_schema(color)
 
     @property
     def bullet_color(self) -> Optional[Color]:
@@ -872,7 +793,7 @@ class BaseBotInternals:
 
     @bullet_color.setter
     def bullet_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent.bullet_color = color.to_color_schema() if color else None
+        self.data.bot_intent.bullet_color = IntentValidator.color_to_schema(color)
 
     @property
     def scan_color(self) -> Optional[Color]:
@@ -881,7 +802,7 @@ class BaseBotInternals:
 
     @scan_color.setter
     def scan_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent.scan_color = color.to_color_schema() if color else None
+        self.data.bot_intent.scan_color = IntentValidator.color_to_schema(color)
 
     @property
     def tracks_color(self) -> Optional[Color]:
@@ -890,7 +811,7 @@ class BaseBotInternals:
 
     @tracks_color.setter
     def tracks_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent.tracks_color = color.to_color_schema() if color else None
+        self.data.bot_intent.tracks_color = IntentValidator.color_to_schema(color)
 
     @property
     def gun_color(self) -> Optional[Color]:
@@ -899,7 +820,7 @@ class BaseBotInternals:
 
     @gun_color.setter
     def gun_color(self, color: Optional[Color]) -> None:
-        self.data.bot_intent.gun_color = color.to_color_schema() if color else None
+        self.data.bot_intent.gun_color = IntentValidator.color_to_schema(color)
 
     def get_graphics(self) -> GraphicsABC:
         return self.data.graphics_state

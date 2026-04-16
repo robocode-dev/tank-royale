@@ -5,7 +5,6 @@ import dev.robocode.tankroyale.botapi.events.*;
 import dev.robocode.tankroyale.botapi.graphics.Color;
 import dev.robocode.tankroyale.botapi.graphics.IGraphics;
 import dev.robocode.tankroyale.botapi.internal.json.JsonConverter;
-import dev.robocode.tankroyale.botapi.util.ColorUtil;
 import dev.robocode.tankroyale.schema.BotIntent;
 import dev.robocode.tankroyale.schema.Message;
 import dev.robocode.tankroyale.schema.ServerHandshake;
@@ -24,9 +23,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static dev.robocode.tankroyale.botapi.Constants.*;
-import static dev.robocode.tankroyale.botapi.IBaseBot.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN;
-import static dev.robocode.tankroyale.botapi.IBaseBot.TEAM_MESSAGE_MAX_SIZE;
-import static dev.robocode.tankroyale.botapi.util.MathUtil.clamp;
 import static java.lang.Math.*;
 import static java.net.http.WebSocket.Builder;
 
@@ -89,8 +85,6 @@ public final class BaseBotInternals {
     private Double savedTurnRate;
     private Double savedGunTurnRate;
     private Double savedRadarTurnRate;
-
-    private final double absDeceleration = abs(DECELERATION);
 
     private int eventHandlingDisabledTurn;
 
@@ -514,9 +508,7 @@ public final class BaseBotInternals {
     }
 
     public boolean setFire(double firepower) {
-        if (Double.isNaN(firepower)) {
-            throw new IllegalArgumentException("'firepower' cannot be NaN");
-        }
+        IntentValidator.validateFirepower(firepower);
         if (baseBot.getEnergy() < firepower || baseBot.getGunHeat() > 0) {
             return false; // cannot fire yet
         }
@@ -533,31 +525,19 @@ public final class BaseBotInternals {
     }
 
     public void setTurnRate(double turnRate) {
-        if (Double.isNaN(turnRate)) {
-            throw new IllegalArgumentException("'turnRate' cannot be NaN");
-        }
-        botIntent.setTurnRate(clamp(turnRate, -maxTurnRate, maxTurnRate));
+        botIntent.setTurnRate(IntentValidator.validateTurnRate(turnRate, maxTurnRate));
     }
 
     public void setGunTurnRate(double gunTurnRate) {
-        if (Double.isNaN(gunTurnRate)) {
-            throw new IllegalArgumentException("'gunTurnRate' cannot be NaN");
-        }
-        botIntent.setGunTurnRate(clamp(gunTurnRate, -maxGunTurnRate, maxGunTurnRate));
+        botIntent.setGunTurnRate(IntentValidator.validateGunTurnRate(gunTurnRate, maxGunTurnRate));
     }
 
     public void setRadarTurnRate(double radarTurnRate) {
-        if (Double.isNaN(radarTurnRate)) {
-            throw new IllegalArgumentException("'radarTurnRate' cannot be NaN");
-        }
-        botIntent.setRadarTurnRate(clamp(radarTurnRate, -maxRadarTurnRate, maxRadarTurnRate));
+        botIntent.setRadarTurnRate(IntentValidator.validateRadarTurnRate(radarTurnRate, maxRadarTurnRate));
     }
 
     public void setTargetSpeed(double targetSpeed) {
-        if (Double.isNaN(targetSpeed)) {
-            throw new IllegalArgumentException("'targetSpeed' cannot be NaN");
-        }
-        botIntent.setTargetSpeed(clamp(targetSpeed, -maxSpeed, maxSpeed));
+        botIntent.setTargetSpeed(IntentValidator.validateTargetSpeed(targetSpeed, maxSpeed));
     }
 
     public double getTurnRate() {
@@ -586,7 +566,7 @@ public final class BaseBotInternals {
     }
 
     public void setMaxSpeed(double maxSpeed) {
-        this.maxSpeed = clamp(maxSpeed, 0, MAX_SPEED);
+        this.maxSpeed = IntentValidator.validateMaxSpeed(maxSpeed);
     }
 
     public double getMaxTurnRate() {
@@ -594,7 +574,7 @@ public final class BaseBotInternals {
     }
 
     public void setMaxTurnRate(double maxTurnRate) {
-        this.maxTurnRate = clamp(maxTurnRate, 0, MAX_TURN_RATE);
+        this.maxTurnRate = IntentValidator.validateMaxTurnRate(maxTurnRate);
     }
 
     public double getMaxGunTurnRate() {
@@ -602,7 +582,7 @@ public final class BaseBotInternals {
     }
 
     public void setMaxGunTurnRate(double maxGunTurnRate) {
-        this.maxGunTurnRate = clamp(maxGunTurnRate, 0, MAX_GUN_TURN_RATE);
+        this.maxGunTurnRate = IntentValidator.validateMaxGunTurnRate(maxGunTurnRate);
     }
 
     public double getMaxRadarTurnRate() {
@@ -610,55 +590,15 @@ public final class BaseBotInternals {
     }
 
     public void setMaxRadarTurnRate(double maxRadarTurnRate) {
-        this.maxRadarTurnRate = clamp(maxRadarTurnRate, 0, MAX_RADAR_TURN_RATE);
+        this.maxRadarTurnRate = IntentValidator.validateMaxRadarTurnRate(maxRadarTurnRate);
     }
 
-    /**
-     * Returns the new speed based on the current speed and distance to move.
-     *
-     * @param speed    is the current speed
-     * @param distance is the move distance
-     * @return The new speed
-     */
-    // Credits for this algorithm go to Patrick Cupka (aka Voidious),
-    // Julian Kent (aka Skilgannon), and Positive for the original version:
-    // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
     double getNewTargetSpeed(double speed, double distance) {
-        if (distance < 0) {
-            return -getNewTargetSpeed(-speed, -distance);
-        }
-        var targetSpeed = (distance == Double.POSITIVE_INFINITY) ?
-                maxSpeed : min(maxSpeed, getMaxSpeed(distance));
-
-        return (speed >= 0) ?
-                clamp(targetSpeed, speed - absDeceleration, speed + ACCELERATION) :
-                clamp(targetSpeed, speed - ACCELERATION, speed + getMaxDeceleration(-speed));
-    }
-
-    private double getMaxSpeed(double distance) {
-        double decelerationTime =
-                max(1, Math.ceil((Math.sqrt((4 * 2 / absDeceleration) * distance + 1) - 1) / 2));
-        if (decelerationTime == Double.POSITIVE_INFINITY) {
-            return MAX_SPEED;
-        }
-        double decelerationDistance = (decelerationTime / 2) * (decelerationTime - 1) * absDeceleration;
-        return ((decelerationTime - 1) * absDeceleration) + ((distance - decelerationDistance) / decelerationTime);
-    }
-
-    private double getMaxDeceleration(double speed) {
-        double decelerationTime = speed / absDeceleration;
-        double accelerationTime = 1 - decelerationTime;
-
-        return min(1, decelerationTime) * absDeceleration + max(0, accelerationTime) * ACCELERATION;
+        return IntentValidator.getNewTargetSpeed(speed, distance, maxSpeed);
     }
 
     double getDistanceTraveledUntilStop(double speed) {
-        speed = abs(speed);
-        double distance = 0;
-        while (speed > 0) {
-            distance += (speed = getNewTargetSpeed(speed, 0));
-        }
-        return distance;
+        return IntentValidator.getDistanceTraveledUntilStop(speed, maxSpeed);
     }
 
     public boolean addCondition(Condition condition) {
@@ -727,22 +667,12 @@ public final class BaseBotInternals {
     }
 
     public void sendTeamMessage(Integer teammateId, Object message) {
-        if (teammateId != null && !getTeammateIds().contains(teammateId)) {
-            throw new IllegalArgumentException("No teammate was found with the specified 'teammateId': " + teammateId);
-        }
-        if (botIntent.getTeamMessages().size() == MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN) {
-            throw new BotException(
-                    "The maximum number team massages has already been reached: " + MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN);
-        }
-        if (message == null) {
-            throw new IllegalArgumentException("The 'message' of a team message cannot be null");
-        }
+        IntentValidator.validateTeammateId(teammateId, getTeammateIds());
+        IntentValidator.validateTeamMessage(message, botIntent.getTeamMessages().size());
 
         var json = JsonConverter.toJson(message);
-        if (json.getBytes().length > TEAM_MESSAGE_MAX_SIZE) {
-            throw new IllegalArgumentException(
-                    "The team message is larger than the limit of " + TEAM_MESSAGE_MAX_SIZE + " bytes (compact JSON format)");
-        }
+        IntentValidator.validateTeamMessageSize(json);
+
         var teamMessage = new TeamMessage();
         teamMessage.setMessageType(message.getClass().getName());
         teamMessage.setReceiverId(teammateId);
@@ -780,39 +710,35 @@ public final class BaseBotInternals {
     }
 
     public void setBodyColor(Color color) {
-        botIntent.setBodyColor(toIntentColor(color));
+        botIntent.setBodyColor(IntentValidator.colorToHex(color));
     }
 
     public void setTurretColor(Color color) {
-        botIntent.setTurretColor(toIntentColor(color));
+        botIntent.setTurretColor(IntentValidator.colorToHex(color));
     }
 
     public void setRadarColor(Color color) {
-        botIntent.setRadarColor(toIntentColor(color));
+        botIntent.setRadarColor(IntentValidator.colorToHex(color));
     }
 
     public void setBulletColor(Color color) {
-        botIntent.setBulletColor(toIntentColor(color));
+        botIntent.setBulletColor(IntentValidator.colorToHex(color));
     }
 
     public void setScanColor(Color color) {
-        botIntent.setScanColor(toIntentColor(color));
+        botIntent.setScanColor(IntentValidator.colorToHex(color));
     }
 
     public void setTracksColor(Color color) {
-        botIntent.setTracksColor(toIntentColor(color));
+        botIntent.setTracksColor(IntentValidator.colorToHex(color));
     }
 
     public void setGunColor(Color color) {
-        botIntent.setGunColor(toIntentColor(color));
+        botIntent.setGunColor(IntentValidator.colorToHex(color));
     }
 
     public IGraphics getGraphics() {
         return graphicsState.getGraphics();
-    }
-
-    private static String toIntentColor(Color color) {
-        return color == null ? null : "#" + ColorUtil.toHex(color);
     }
 
     public Collection<BulletState> getBulletStates() {
