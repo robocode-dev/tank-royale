@@ -2,7 +2,6 @@ package dev.robocode.tankroyale.booter.process
 
 import dev.robocode.tankroyale.booter.model.BootEntry
 import dev.robocode.tankroyale.booter.util.Log
-import java.nio.file.Files.exists
 import java.nio.file.Path
 import java.util.*
 
@@ -13,7 +12,7 @@ internal class TemplateBooter(
         val base = botEntry.base ?: return null
         val botName = botEntry.name
 
-        val platform = botEntry.platform ?: detectPlatform(botDir) ?: return null
+        val platform = botEntry.platform ?: PlatformDetector.detectPlatform(botDir) ?: return null
 
         val template = TemplateManager.getTemplate(platform) ?: return null
         val command = parseTemplate(template) ?: return null
@@ -83,11 +82,4 @@ internal class TemplateBooter(
         return result
     }
 
-    private fun detectPlatform(botDirPath: Path): String? {
-        val botName = botDirPath.fileName.toString()
-        if (exists(botDirPath.resolve("$botName.jar")) || exists(botDirPath.resolve("$botName.class")) || exists(botDirPath.resolve("$botName.java"))) return "jvm"
-        if (exists(botDirPath.resolve("$botName.py"))) return "python"
-        if (exists(botDirPath.resolve("$botName.cs")) || exists(botDirPath.resolve("$botName.csproj")) || exists(botDirPath.resolve("$botName.dll"))) return "dotnet"
-        return null
-    }
 }

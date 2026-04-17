@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.booter.commands
 
 import dev.robocode.tankroyale.booter.model.BootEntry
+import dev.robocode.tankroyale.booter.process.PlatformDetector
 import kotlinx.serialization.json.Json
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -26,7 +27,7 @@ internal abstract class Command {
                 name = botDirName,
                 version = "0.0.1",
                 authors = listOf("unknown"),
-                platform = detectPlatform(botDirPath)
+                platform = PlatformDetector.detectPlatform(botDirPath)
             )
         }
 
@@ -35,13 +36,5 @@ internal abstract class Command {
         } else {
             bootEntry
         }
-    }
-
-    private fun detectPlatform(botDirPath: Path): String? {
-        val botName = botDirPath.fileName.toString()
-        if (botDirPath.resolve("$botName.jar").exists() || botDirPath.resolve("$botName.class").exists() || botDirPath.resolve("$botName.java").exists()) return "jvm"
-        if (botDirPath.resolve("$botName.py").exists()) return "python"
-        if (botDirPath.resolve("$botName.cs").exists() || botDirPath.resolve("$botName.csproj").exists() || botDirPath.resolve("$botName.dll").exists()) return "dotnet"
-        return null
     }
 }

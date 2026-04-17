@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.booter.commands
 
 import dev.robocode.tankroyale.booter.model.DirBootEntry
 import dev.robocode.tankroyale.booter.model.BootEntry
+import dev.robocode.tankroyale.booter.process.PlatformDetector
 import dev.robocode.tankroyale.booter.process.ScriptFinder
 import dev.robocode.tankroyale.booter.util.Log
 import java.nio.file.Files.exists
@@ -30,7 +31,7 @@ internal class DirCommand(private val botRootPaths: List<Path>) : Command() {
         teamsOnly: Boolean
     ): List<DirBootEntry> {
         val gameTypes = parseGameTypes(gameTypesCsv)
-        return listBotDirectories()
+        return scanRawBotDirectories()
             .mapNotNull { directoryPath ->
                 try {
                     processDirectory(directoryPath, gameTypes, botsOnly, teamsOnly)
@@ -123,7 +124,7 @@ internal class DirCommand(private val botRootPaths: List<Path>) : Command() {
     /**
      * Lists all bot directories in the configured root paths.
      */
-    private fun listBotDirectories(): Set<Path> {
+    private fun scanRawBotDirectories(): Set<Path> {
         val dirs = HashSet<Path>()
 
         botRootPaths.forEach { rootPath ->
@@ -151,16 +152,7 @@ internal class DirCommand(private val botRootPaths: List<Path>) : Command() {
         }
 
         // Platform-specific file detection
-        val platformFiles = listOf(
-            "$botName.jar", // JVM
-            "$botName.class", // JVM
-            "$botName.java", // JVM (single-file source)
-            "$botName.py", // Python
-            "$botName.cs", // .NET (single-file source)
-            "$botName.csproj", // .NET
-            "$botName.dll", // .NET
-        )
-        return platformFiles.any { exists(dirPath.resolve(it)) }
+        return PlatformDetector.detectPlatform(dirPath) != null
     }
 
     /**
