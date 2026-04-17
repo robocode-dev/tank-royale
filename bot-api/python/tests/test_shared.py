@@ -126,7 +126,7 @@ def test_shared(suite_name, test_case):
             else:
                 assert last_action_value[0] == exp_ret
 
-        intent = internals.data.bot_intent
+        intent = internals.bot_intent
         for key, val in expected.items():
             if key in ('returns', 'throws'):
                 continue

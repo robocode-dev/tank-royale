@@ -48,12 +48,6 @@ class ImportTestCase(unittest.TestCase):
 
             print("Imported robocode_tank_royale.schema.ServerHandshake successfully.")
 
-            # Test robocode_tank_royale.bot_api modules can be imported.
-            from robocode_tank_royale.bot_api.internal import base_bot_internal_data  # type: ignore
-
-            print(
-                "Imported robocode_tank_royale.bot_api.internal.base_bot_internal_data successfully."
-            )
             from robocode_tank_royale.bot_api.internal import event_queue  # type: ignore
 
             print(

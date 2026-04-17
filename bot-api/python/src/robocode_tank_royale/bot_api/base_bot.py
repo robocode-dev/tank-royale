@@ -574,12 +574,12 @@ class BaseBot(BaseBotABC):
         Returns:
             The firepower.
         """
-        firepower = self._internals.data.bot_intent.firepower
+        firepower = self._internals.bot_intent.firepower
         return 0.0 if firepower is None else firepower
 
     def set_rescan(self) -> None:
         """Sets the radar to rescan with the radar."""
-        self._internals.data.bot_intent.rescan = True
+        self._internals.bot_intent.rescan = True
 
     def set_fire_assist(self, enable: bool) -> None:
         """Enables or disables fire assistance.
@@ -587,7 +587,7 @@ class BaseBot(BaseBotABC):
         Args:
             enable: True to enable fire assist; False to disable.
         """
-        self._internals.data.bot_intent.fire_assist = enable
+        self._internals.bot_intent.fire_assist = enable
 
     def set_interruptible(self, interruptible: bool) -> None:
         """
@@ -604,10 +604,10 @@ class BaseBot(BaseBotABC):
     @property
     def adjust_gun_for_body_turn(self) -> bool:
         """Returns whether the gun adjusts for the bot's body turn."""
-        assert self._internals.data.bot_intent.adjust_gun_for_body_turn is not None, (
+        assert self._internals.bot_intent.adjust_gun_for_body_turn is not None, (
             "Adjust gun for body turn must be set before accessing it."
         )
-        return self._internals.data.bot_intent.adjust_gun_for_body_turn
+        return self._internals.bot_intent.adjust_gun_for_body_turn
 
     @adjust_gun_for_body_turn.setter
     def adjust_gun_for_body_turn(self, adjust: bool) -> None:
@@ -620,28 +620,28 @@ class BaseBot(BaseBotABC):
         Args:
             adjust (bool): If True, gun direction is adjusted for body turn.
         """
-        self._internals.data.bot_intent.adjust_gun_for_body_turn = adjust
+        self._internals.bot_intent.adjust_gun_for_body_turn = adjust
 
     @property
     def adjust_radar_for_body_turn(self) -> bool:
         """Returns whether the radar adjusts for the bot's body turn."""
-        assert self._internals.data.bot_intent.adjust_radar_for_body_turn is not None, (
+        assert self._internals.bot_intent.adjust_radar_for_body_turn is not None, (
             "Adjust radar for body turn must be set before accessing it."
         )
-        return self._internals.data.bot_intent.adjust_radar_for_body_turn
+        return self._internals.bot_intent.adjust_radar_for_body_turn
 
     @adjust_radar_for_body_turn.setter
     def adjust_radar_for_body_turn(self, adjust: bool) -> None:
         """Sets whether the radar adjusts for the bot's body turn."""
-        self._internals.data.bot_intent.adjust_radar_for_body_turn = adjust
+        self._internals.bot_intent.adjust_radar_for_body_turn = adjust
 
     @property
     def adjust_radar_for_gun_turn(self) -> bool:
         """Returns whether the radar adjusts for the gun's turn."""
-        assert self._internals.data.bot_intent.adjust_radar_for_gun_turn is not None, (
+        assert self._internals.bot_intent.adjust_radar_for_gun_turn is not None, (
             "Adjust radar for gun turn must be set before accessing it."
         )
-        return self._internals.data.bot_intent.adjust_radar_for_gun_turn
+        return self._internals.bot_intent.adjust_radar_for_gun_turn
 
     @adjust_radar_for_gun_turn.setter
     def adjust_radar_for_gun_turn(self, adjust: bool) -> None:
@@ -654,8 +654,8 @@ class BaseBot(BaseBotABC):
         Args:
             adjust (bool): If True, radar direction is adjusted for gun turn.
         """
-        self._internals.data.bot_intent.adjust_radar_for_gun_turn = adjust
-        self._internals.data.bot_intent.fire_assist = not adjust
+        self._internals.bot_intent.adjust_radar_for_gun_turn = adjust
+        self._internals.bot_intent.fire_assist = not adjust
 
 
     def add_custom_event(self, condition: Condition) -> bool:
@@ -741,7 +741,7 @@ class BaseBot(BaseBotABC):
         Returns:
             True if the bot is stopped; False otherwise.
         """
-        return self._internals.data.is_stopped
+        return self._internals.is_stopped
 
     @property
     def body_color(self) -> Optional[Color]:

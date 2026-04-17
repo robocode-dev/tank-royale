@@ -321,7 +321,7 @@ class AbstractBotTest(unittest.TestCase):
 
         # Capture the local intent's firepower BEFORE go() sends it
         # This is what the bot will send to the server
-        local_firepower = bot._internals.data.bot_intent.firepower
+        local_firepower = bot._internals.bot_intent.firepower
 
         # Fire command just sets the intent value; we need go() to send it.
         # Call go_async to run in the bot's own thread (tracked for cleanup)
