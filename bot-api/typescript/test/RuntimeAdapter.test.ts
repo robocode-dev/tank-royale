@@ -3,8 +3,6 @@ import { detectRuntime } from "../src/runtime/detectRuntime.js";
 import { NodeRuntimeAdapter } from "../src/runtime/NodeRuntimeAdapter.js";
 import { BrowserRuntimeAdapter } from "../src/runtime/BrowserRuntimeAdapter.js";
 
-describe("LEGACY", () => {
-
 describe("detectRuntime()", () => {
   it("returns NodeRuntimeAdapter when process.env is available", () => {
     // In the vitest/Node.js test environment, process is always defined.
@@ -67,5 +65,4 @@ describe("BrowserRuntimeAdapter", () => {
     expect(() => adapter.exit(0)).not.toThrow();
     expect(() => adapter.exit(1)).not.toThrow();
   });
-});
 });

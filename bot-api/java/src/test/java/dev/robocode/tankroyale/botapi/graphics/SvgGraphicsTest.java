@@ -14,7 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests for the {@link SvgGraphics} class.
  */
-@Tag("LEGACY")
+@Tag("GFX")
+@Tag("TR-API-GFX-001")
+@Tag("TR-API-GFX-002")
+@Tag("TR-API-GFX-003")
+@Tag("TR-API-GFX-004")
 public class SvgGraphicsTest {
     private SvgGraphics graphics;
 

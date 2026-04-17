@@ -9,6 +9,10 @@ export class IntentValidator {
     return firepower;
   }
 
+  static isValidFirepower(firepower: number): boolean {
+    return !isNaN(firepower) && firepower >= Constants.MIN_FIREPOWER && firepower <= Constants.MAX_FIREPOWER;
+  }
+
   static validateTurnRate(turnRate: number, maxTurnRate: number): number {
     if (isNaN(turnRate)) throw new Error("'turnRate' cannot be NaN");
     return MathUtil.clamp(turnRate, -maxTurnRate, maxTurnRate);

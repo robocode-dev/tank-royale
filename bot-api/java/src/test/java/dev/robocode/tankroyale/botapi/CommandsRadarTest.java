@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests for radar commands (TR-API-CMD-003).
  */
-@Tag("LEGACY")
+@Tag("CMD")
 @Tag("TR-API-CMD-003")
 @DisplayName("Radar Commands (TR-API-CMD-003)")
 class CommandsRadarTest extends AbstractBotTest {

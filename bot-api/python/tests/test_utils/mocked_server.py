@@ -123,6 +123,7 @@ class MockedServer:
 
         # optional injections
         self._self_death_turn: Optional[int] = None
+        self._additional_events: List[object] = []
 
         # shutdown flag
         self._stopping: bool = False
@@ -841,6 +842,12 @@ class MockedServer:
                 )
             )
 
+        # Inject additional events
+        with self._lock:
+            for evt in self._additional_events:
+                events.append(evt)
+            self._additional_events.clear()
+
         fp = getattr(bot_intent, "firepower", None) if bot_intent is not None else None
         if fp is not None:
             bullet_evt = SchemaBulletFiredEvent(
@@ -874,5 +881,10 @@ class MockedServer:
         )
 
     # Test helpers (API)
+    def add_event(self, event: object) -> None:
+        """Add an event to be sent with the next tick."""
+        with self._lock:
+            self._additional_events.append(event)
+
     def set_self_death_on_turn(self, turn_number: int | None) -> None:
         self._self_death_turn = turn_number

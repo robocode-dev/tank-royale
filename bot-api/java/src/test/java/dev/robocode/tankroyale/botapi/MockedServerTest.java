@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Tag("LEGACY")
+@Tag("UTL")
+@Tag("TR-API-UTL-003")
 class MockedServerTest extends AbstractBotTest {
 
     @Test

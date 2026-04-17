@@ -38,15 +38,15 @@
 
 ## Phase 4: Parity — Fill Platform Gaps (Tier 2)
 
-- [ ] **4.1** TypeScript: add fire/movement/radar command tests (TR-API-CMD-001/002/003)
-- [ ] **4.2** TypeScript: add bot constructor/lifecycle tests (TR-API-BOT-001a-d)
-- [ ] **4.3** TypeScript: add protocol conformance test (TR-API-TCK-004)
-- [ ] **4.4** Fill remaining ❌ entries in TEST-REGISTRY.md across all platforms
-- [ ] **4.5** Update TEST-REGISTRY.md — all cells should be ✅
+- [x] **4.1** TypeScript: add fire/movement/radar command tests (TR-API-CMD-001/002/003)
+- [x] **4.2** TypeScript: add bot constructor/lifecycle tests (TR-API-BOT-001a-d)
+- [x] **4.3** TypeScript: add protocol conformance test (TR-API-TCK-004)
+- [x] **4.4** Fill remaining ❌ entries in TEST-REGISTRY.md across all platforms
+- [x] **4.5** Update TEST-REGISTRY.md — all cells should be ✅
 
 ## Phase 5: Cleanup and Documentation
 
-- [ ] **5.1** Delete `LEGACY`-tagged tests that are superseded by new tests
-- [ ] **5.2** Update TESTING-GUIDE.md with IntentValidator architecture
-- [ ] **5.3** Document how to add shared test cases
+- [x] **5.1** Delete `LEGACY`-tagged tests that are superseded by new tests
+- [x] **5.2** Update TESTING-GUIDE.md with IntentValidator architecture
+- [x] **5.3** Document how to add shared test cases
 

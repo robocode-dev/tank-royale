@@ -23,7 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static test_utils.EnvironmentVariables.*;
 
-@Tag("LEGACY")
+@Tag("BOT")
+@Tag("TR-API-BOT-001")
 @ExtendWith(SystemStubsExtension.class)
 class BaseBotConstructorTest extends AbstractBotTest {
 

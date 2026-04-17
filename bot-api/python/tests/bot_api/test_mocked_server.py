@@ -1,5 +1,4 @@
 import pytest
-pytestmark = pytest.mark.LEGACY
 import unittest
 import time
 from tests.bot_api.abstract_bot_test import AbstractBotTest

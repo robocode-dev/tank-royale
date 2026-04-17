@@ -1,5 +1,4 @@
 import pytest
-pytestmark = pytest.mark.LEGACY
 
 from robocode_tank_royale.bot_api.util import CountryCodeUtil
 

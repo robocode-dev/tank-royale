@@ -16,7 +16,19 @@ using ApiBotIntent = Robocode.TankRoyale.Schema.BotIntent;
 [TestFixture]
 public class SharedTestRunner
 {
-    private static readonly string SharedTestsDir = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../../tests/shared"));
+    private static string FindSharedTestsDir()
+    {
+        var current = AppDomain.CurrentDomain.BaseDirectory;
+        while (current != null)
+        {
+            var path = Path.Combine(current, "bot-api/tests/shared");
+            if (Directory.Exists(path)) return path;
+            path = Path.Combine(current, "tests/shared"); // if we are already in bot-api
+            if (Directory.Exists(path)) return path;
+            current = Path.GetDirectoryName(current);
+        }
+        return null;
+    }
 
     public class TestSuite
     {
@@ -40,13 +52,8 @@ public class SharedTestRunner
 
     public static IEnumerable<TestCaseData> GetSharedTestCases()
     {
-        var dir = SharedTestsDir;
-        if (!Directory.Exists(dir))
-        {
-            dir = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "bot-api/tests/shared"));
-        }
-
-        if (!Directory.Exists(dir)) yield break;
+        var dir = FindSharedTestsDir();
+        if (dir == null || !Directory.Exists(dir)) yield break;
 
         foreach (var file in Directory.GetFiles(dir, "*.json"))
         {
@@ -75,6 +82,13 @@ public class SharedTestRunner
             if (testCase.Setup.TryGetValue("maxRadarTurnRate", out var maxRadarTurnRate)) internals.MaxRadarTurnRate = Convert.ToDouble(maxRadarTurnRate);
         }
 
+        // Mock a tick event so methods that depend on it (like SetFire) don't throw
+        var tickEvent = new Robocode.TankRoyale.BotApi.Events.TickEvent(
+            0, 0, new Robocode.TankRoyale.BotApi.BotState(
+                false, mockBot.Energy, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, mockBot.GunHeat, 0, null, null, null, null, null, null, null, false),
+            new List<Robocode.TankRoyale.BotApi.BulletState>(), new List<Robocode.TankRoyale.BotApi.Events.BotEvent>());
+        typeof(BaseBotInternals).GetField("_tickEvent", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(internals, tickEvent);
+
         object lastActionValue = null;
 
         Action action = () =>
@@ -93,14 +107,14 @@ public class SharedTestRunner
                 case "getDistanceTraveledUntilStop": lastActionValue = IntentValidator.GetDistanceTraveledUntilStop((double)args[0], (double)args[1]); break;
                 case "BotInfo":
                     lastActionValue = new ApiBotInfo(
-                        (string)args[0], (string)args[1], ((Newtonsoft.Json.Linq.JArray)args[2]).ToObject<List<string>>(),
+                        (string)args[0], (string)args[1], (List<string>)args[2],
                         args.Length > 3 ? (string)args[3] : null, args.Length > 4 ? (string)args[4] : null,
-                        args.Length > 5 ? ((Newtonsoft.Json.Linq.JArray)args[5]).ToObject<List<string>>() : null,
-                        args.Length > 6 ? ((Newtonsoft.Json.Linq.JArray)args[6]).ToObject<HashSet<string>>() : null,
+                        args.Length > 5 ? (List<string>)args[5] : null,
+                        args.Length > 6 ? (args[6] != null ? new HashSet<string>((List<string>)args[6]) : null) : null,
                         args.Length > 7 ? (string)args[7] : null, args.Length > 8 ? (string)args[8] : null, null);
                     break;
-                case "fromRgb": lastActionValue = Color.FromRgb(Convert.ToInt32(args[0]), Convert.ToInt32(args[1]), Convert.ToInt32(args[2])); break;
-                case "fromRgba": lastActionValue = Color.FromRgba(Convert.ToInt32(args[0]), Convert.ToInt32(args[1]), Convert.ToInt32(args[2]), Convert.ToInt32(args[3])); break;
+                case "fromRgb": lastActionValue = Color.FromRgb(Convert.ToUInt32(args[0]), Convert.ToUInt32(args[1]), Convert.ToUInt32(args[2])); break;
+                case "fromRgba": lastActionValue = Color.FromRgba(Convert.ToUInt32(args[0]), Convert.ToUInt32(args[1]), Convert.ToUInt32(args[2]), Convert.ToUInt32(args[3])); break;
                 case "colorToHex": lastActionValue = IntentValidator.ColorToHex((Color)args[0]); break;
                 case "getColorConstant": lastActionValue = GetStaticField(typeof(Color), (string)args[0]); break;
                 case "getConstant": lastActionValue = GetStaticField(typeof(Constants), (string)args[0]); break;
@@ -118,9 +132,11 @@ public class SharedTestRunner
             if (testCase.Expected.TryGetValue("returns", out var expected))
             {
                 var parsed = ParseArg(expected);
-                if (parsed is double d1 && lastActionValue is double d2) Assert.That(d2, Is.EqualTo(d1).Within(1e-6));
-                else if (parsed is string s1 && lastActionValue is string s2 && s1.StartsWith("#")) Assert.That(s2, Is.EqualTo(s1).IgnoreCase);
-                else Assert.That(lastActionValue, Is.EqualTo(parsed));
+                var actual = lastActionValue;
+                if (parsed is double d1 && actual is int i1) actual = (double)i1;
+                if (parsed is double d2 && actual is double d3) Assert.That(d3, Is.EqualTo(d2).Within(1e-6));
+                else if (parsed is string s1 && actual is string s2 && s1.StartsWith("#")) Assert.That(s2, Is.EqualTo(s1).IgnoreCase);
+                else Assert.That(actual, Is.EqualTo(parsed));
             }
             foreach (var entry in testCase.Expected)
             {
@@ -145,9 +161,14 @@ public class SharedTestRunner
         }
         if (arg is Newtonsoft.Json.Linq.JObject jobj && jobj["r"] != null)
         {
-            return Color.FromRgba(jobj["r"].Value<int>(), jobj["g"].Value<int>(), jobj["b"].Value<int>(), jobj["a"]?.Value<int>() ?? 255);
+            return Color.FromRgba((uint)jobj["r"], (uint)jobj["g"], (uint)jobj["b"], (uint?)jobj["a"] ?? 255u);
         }
-        return arg is long l ? (double)l : arg;
+        if (arg is Newtonsoft.Json.Linq.JArray jarr)
+        {
+            return jarr.ToObject<List<string>>();
+        }
+        if (arg is long l) return (double)l;
+        return arg;
     }
 
     private object GetActualValue(string key, object lastActionValue, ApiBotIntent intent, BaseBotInternals internals)
@@ -181,7 +202,8 @@ public class SharedTestRunner
 
     private object GetStaticField(Type type, string fieldName)
     {
+        var normalized = fieldName.Replace("_", "");
         var flags = BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase;
-        return (object)type.GetField(fieldName, flags)?.GetValue(null) ?? type.GetProperty(fieldName, flags)?.GetValue(null);
+        return type.GetField(normalized, flags)?.GetValue(null) ?? type.GetProperty(normalized, flags)?.GetValue(null);
     }
 }

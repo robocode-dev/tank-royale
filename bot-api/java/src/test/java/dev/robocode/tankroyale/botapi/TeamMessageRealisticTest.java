@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests the real-world scenario of team message passing between MyFirstLeader and MyFirstDroid.
  * (TR-API-TCK-006)
  */
-@Tag("LEGACY")
 @Tag("TCK")
 @Tag("TR-API-TCK-006")
 class TeamMessageRealisticTest {

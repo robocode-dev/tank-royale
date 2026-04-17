@@ -5,7 +5,7 @@ The pre-warm fix starts the bot thread at round-started (before any tick).
 The thread blocks until tick 1 arrives, after which run() executes with valid bot state.
 """
 import pytest
-pytestmark = pytest.mark.LEGACY
+pytestmark = [pytest.mark.TCK, pytest.mark.TR_API_TCK_004]
 import threading
 import unittest
 

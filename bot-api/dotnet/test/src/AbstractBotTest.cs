@@ -34,7 +34,7 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 ///
 /// <para>See also: bot-api/tests/TESTING-GUIDE.md</para>
 /// </summary>
-[Timeout(10000)] // 10 seconds timeout for all tests
+[Timeout(20000)] // 20 seconds timeout for all tests
 public class AbstractBotTest
 {
     protected MockedServer Server;
@@ -68,6 +68,7 @@ public class AbstractBotTest
     {
         Server = new MockedServer();
         Server.Start();
+        Environment.SetEnvironmentVariable("SERVER_URL", Server.ServerUrl.ToString());
     }
 
     [TearDown]

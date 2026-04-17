@@ -10,8 +10,8 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 /// Tests for radar commands (TR-API-CMD-003).
 /// </summary>
 [TestFixture]
-[Category("LEGACY")]
-[Category("TR-API-CMD-003")]
+[Category("CMD")]
+[Property("ID", "TR-API-CMD-003")]
 [Description("Radar Commands (TR-API-CMD-003)")]
 public class CommandsRadarTest : AbstractBotTest
 {

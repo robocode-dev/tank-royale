@@ -1,5 +1,5 @@
 import pytest
-pytestmark = pytest.mark.LEGACY
+pytestmark = [pytest.mark.GFX, pytest.mark.TR_API_GFX_001, pytest.mark.TR_API_GFX_002, pytest.mark.TR_API_GFX_003, pytest.mark.TR_API_GFX_004]
 import unittest
 
 from robocode_tank_royale.bot_api.graphics import SvgGraphics, Point

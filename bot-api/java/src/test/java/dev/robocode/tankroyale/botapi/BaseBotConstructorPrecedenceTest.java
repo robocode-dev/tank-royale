@@ -19,7 +19,6 @@ import static test_utils.EnvironmentVariables.*;
  */
 import org.junit.jupiter.api.Disabled;
 
-@Tag("LEGACY")
 @ExtendWith(SystemStubsExtension.class)
 @Disabled("Superseded by precedence test integrated into BaseBotConstructorTest; disabling to avoid server conflicts")
 class BaseBotConstructorPrecedenceTest extends AbstractBotTest {

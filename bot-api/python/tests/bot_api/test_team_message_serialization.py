@@ -4,7 +4,7 @@ This test reproduces the exact scenario where colors are sent from leader to dro
 (TR-API-TCK-006)
 """
 import pytest
-pytestmark = [pytest.mark.LEGACY, pytest.mark.TCK]
+pytestmark = [pytest.mark.TCK, pytest.mark.TR_API_TCK_006]
 import unittest
 from dataclasses import dataclass
 

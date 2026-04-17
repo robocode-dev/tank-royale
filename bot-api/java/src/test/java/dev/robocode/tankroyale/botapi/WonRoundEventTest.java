@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * in the final tick's event list and then sends RoundEndedEventForBot.
  * (TR-API-TCK-005)
  */
-@Tag("LEGACY")
 @Tag("TCK")
 @Tag("TR-API-TCK-005")
 class WonRoundEventTest {

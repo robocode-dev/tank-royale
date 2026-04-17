@@ -4,7 +4,7 @@ from robocode_tank_royale.bot_api.bot import Bot
 from robocode_tank_royale.schema.bot_intent import BotIntent
 from tests.bot_api.abstract_bot_test import AbstractBotTest
 import pytest
-pytestmark = pytest.mark.LEGACY
+pytestmark = [pytest.mark.CMD, pytest.mark.TR_API_CMD_003]
 import time
 
 class CommandsRadarTest(AbstractBotTest):

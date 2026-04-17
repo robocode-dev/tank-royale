@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { MathUtil } from "../src/util/MathUtil.js";
 
-describe("LEGACY", () => {
-
 describe("MathUtil", () => {
   describe("clamp", () => {
     it("returns value when within range", () => {
@@ -33,5 +31,4 @@ describe("MathUtil", () => {
       expect(MathUtil.clamp(1.5, 1.0, 2.0)).toBe(1.5);
     });
   });
-});
 });

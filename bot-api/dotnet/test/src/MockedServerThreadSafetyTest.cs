@@ -11,7 +11,8 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 /// </summary>
 [TestFixture]
 [Description("Thread-safety tests for MockedServer")]
-[Category("LEGACY")]
+[Category("UTL")]
+[Property("ID", "TR-API-UTL-004")]
 public class MockedServerThreadSafetyTest : AbstractBotTest
 {
     [Test]

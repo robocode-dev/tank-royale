@@ -16,7 +16,6 @@ import type {
   BotHandshake,
 } from "../src/protocol/schema.js";
 
-describe("LEGACY", () => {
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -361,11 +360,15 @@ describe("WebSocketHandler.sendBotIntent()", () => {
 // ---------------------------------------------------------------------------
 
 describe("WebSocketHandler — unknown message type", () => {
-  it("throws BotException for unknown type", () => {
+  it("throws BotException (reported via onConnectionError) for unknown type", () => {
     const { ws } = makeMockWs();
-    const handler = makeHandler(ws);
+    const onConnectionError = vi.fn();
+    const handler = makeHandler(ws, { onConnectionError });
     handler.connect();
-    expect(() => simulateMessage(ws, { type: "UnknownType" })).toThrow("Unsupported WebSocket message type");
+    simulateMessage(ws, { type: "UnknownType" });
+    expect(onConnectionError).toHaveBeenCalled();
+    const err = onConnectionError.mock.calls[0][0];
+    expect(err.message).toContain("Unsupported WebSocket message type: UnknownType");
   });
 });
 
@@ -450,5 +453,4 @@ describe("BotHandshakeFactory.create()", () => {
     const handshake = BotHandshakeFactory.create("s", makeBotInfo(), false, undefined, envVars);
     expect(handshake.debuggerAttached).toBe(false);
   });
-});
 });

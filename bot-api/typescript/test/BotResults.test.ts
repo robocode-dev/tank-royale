@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { BotResults } from "../src/BotResults.js";
 
-describe("LEGACY", () => {
-
 describe("BotResults", () => {
   it("stores all fields", () => {
     const results = new BotResults(1, 200, 50, 300, 100, 10, 5, 665, 3, 1, 2);
@@ -18,5 +16,4 @@ describe("BotResults", () => {
     expect(results.secondPlaces).toBe(1);
     expect(results.thirdPlaces).toBe(2);
   });
-});
 });

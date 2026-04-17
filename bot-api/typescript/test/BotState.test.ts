@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { BotState } from "../src/BotState.js";
 
-describe("LEGACY", () => {
-
 describe("BotState", () => {
   it("stores all 22 fields", () => {
     const state = new BotState(
@@ -43,5 +41,4 @@ describe("BotState", () => {
     expect(state.bodyColor).toBeNull();
     expect(state.gunColor).toBeNull();
   });
-});
 });

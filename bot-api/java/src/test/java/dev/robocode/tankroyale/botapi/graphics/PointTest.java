@@ -8,7 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests for the {@link Point} class.
  */
-@Tag("LEGACY")
+@Tag("VAL")
+@Tag("TR-API-VAL-007")
 @DisplayName("TR-API-VAL-007 Graphics Point")
 public class PointTest {
 

@@ -16,7 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static test_utils.EnvironmentVariables.*;
 
-@Tag("LEGACY")
 @ExtendWith(SystemStubsExtension.class)
 class EnvVarsTest {
 

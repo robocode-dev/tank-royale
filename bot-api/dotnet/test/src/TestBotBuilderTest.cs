@@ -9,7 +9,8 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 /// Unit tests for TestBotBuilder.
 /// </summary>
 [TestFixture]
-[Category("LEGACY")]
+[Category("UTL")]
+[Property("ID", "TR-API-UTL-005")]
 public class TestBotBuilderTest
 {
     private MockedServer _server = null!;
@@ -82,7 +83,7 @@ public class TestBotBuilderTest
 
         var bot = TestBotBuilder.Create()
             .OnTick(_ => tickCalled = true)
-            .Build();
+            .Build(_server.ServerUrl);
 
         // Start bot in separate thread
         var botThread = new Thread(() => bot.Start());
@@ -115,7 +116,7 @@ public class TestBotBuilderTest
 
         var bot = TestBotBuilder.Create()
             .OnRun(() => runCalled = true)
-            .Build();
+            .Build(_server.ServerUrl);
 
         // Start bot in separate thread
         var botThread = new Thread(() => bot.Start());
@@ -168,7 +169,7 @@ public class TestBotBuilderTest
         var bot = TestBotBuilder.Create()
             .WithBehavior(TestBotBuilder.BotBehavior.Custom)
             .OnTick(_ => customTickHandled = true)
-            .Build();
+            .Build(_server.ServerUrl);
 
         // Start bot in separate thread
         var botThread = new Thread(() => bot.Start());

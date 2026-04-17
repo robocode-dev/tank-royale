@@ -1,8 +1,8 @@
 # Bot API Testing Guide
 
-This guide covers the Tank Royale Bot API test infrastructure across all three
-platforms (Java, C#, Python). After reading it you will be able to write
-intent-capture tests from scratch.
+This guide covers the Tank Royale Bot API test infrastructure across all four
+platforms (Java, C#, Python, TypeScript). After reading it you will be able to write
+intent-capture tests from scratch and add shared cross-platform test cases.
 
 ---
 
@@ -10,9 +10,9 @@ intent-capture tests from scratch.
 
 | Concept | Where it lives |
 |---------|---------------|
-| MockedServer | `bot-api/java/src/test/.../MockedServer.java`, `bot-api/dotnet/.../MockedServer.cs`, `bot-api/python/.../mocked_server.py` |
-| AbstractBotTest | `bot-api/java/src/test/.../AbstractBotTest.java`, `bot-api/dotnet/.../AbstractBotTest.cs`, `bot-api/python/.../abstract_bot_test.py` |
-| TestBot | Platform-specific inner class or helper created by `start()` / `Start()` / `start_bot()` |
+| MockedServer | `bot-api/java/src/test/.../MockedServer.java`, `bot-api/dotnet/.../MockedServer.cs`, `bot-api/python/.../mocked_server.py`, `bot-api/typescript/test/test_utils/MockedServer.ts` |
+| AbstractBotTest | `bot-api/java/src/test/.../AbstractBotTest.java`, `bot-api/dotnet/.../AbstractBotTest.cs`, `bot-api/python/.../abstract_bot_test.py`, `bot-api/typescript/test/test_utils/AbstractBotTest.ts` |
+| TestBot | Platform-specific inner class or helper created by `start()` / `Start()` / `start_bot()` / `MinimalBotClient` |
 
 Every Bot API test answers one question: **"When I call method X on the bot,
 does the BotIntent JSON sent to the server contain value Y?"** The test
@@ -81,10 +81,10 @@ capturing the intent you care about.
 
 The MockedServer uses two synchronisation primitives per platform:
 
-| Purpose | Java | C# | Python |
-|---------|------|-----|--------|
-| **Continue gate** | `botIntentContinue` (Semaphore) | `_botIntentContinueEvent` (ManualResetEventSlim) | `_bot_intent_continue_event` (threading.Event) |
-| **Ready signal** | `botIntentReady` (Semaphore) | `_botIntentEvent` (ManualResetEventSlim) | `_bot_intent_event` (threading.Event) |
+| Purpose | Java | C# | Python | TypeScript |
+|---------|------|-----|--------|------------|
+| **Continue gate** | `botIntentContinue` (Semaphore) | `_botIntentContinueEvent` (AutoResetEvent) | `_bot_intent_continue_event` (threading.Event) | `continueEvent` (deferred) |
+| **Ready signal** | `botIntentReady` (Semaphore) | `_botIntentEvent` (AutoResetEvent) | `_bot_intent_event` (threading.Event) | `readyEvent` (deferred) |
 
 ### Flow when a bot sends an intent
 
@@ -191,7 +191,36 @@ def test_set_fire_sets_firepower(self):
 
 ---
 
-## 7. Architecture Overview
+## 7. IntentValidator and Shared Tests (Tier 1)
+
+To ensure consistency across platforms, pure validation logic and physics calculations are extracted into `IntentValidator` (e.g., `IntentValidator.java`, `intent_validator.py`). This allows us to define test cases in shared JSON files that are executed by a `SharedTestRunner` on every platform.
+
+### How to add a shared test case
+
+1.  **Locate shared tests:** Go to `bot-api/tests/shared/`.
+2.  **Choose a suite:**
+    - `intent-validation.json`: For `setFire`, `setTurnRate`, etc.
+    - `movement-physics.json`: For speed and distance calculations.
+    - `botinfo-validation.json`: For `BotInfo` constructor checks.
+    - `color-values.json`: For color parsing and constants.
+3.  **Add a test definition:**
+    ```json
+    {
+      "id": "TR-API-VAL-001x",
+      "description": "Verify my new validation rule",
+      "method": "setSomeValue",
+      "args": [123],
+      "expected": {
+        "returns": true,
+        "someField": 123
+      }
+    }
+    ```
+4.  **Run tests:** Run the `SharedTestRunner` (e.g., `SharedTestRunner.java` in Java or `test_shared.py` in Python) to verify your changes across all platforms simultaneously.
+
+---
+
+## 8. Component Architecture Overview
 
 The following sequence diagram shows the interaction between the test thread,
 the bot thread, and the MockedServer handler during a single intent-capture
@@ -225,7 +254,7 @@ sequenceDiagram
 
 ---
 
-## 8. Writing a New Test — Step by Step
+## 9. Writing a New Test — Step by Step
 
 1. **Choose the right base class.** Extend `AbstractBotTest` (Java/C#) or
    `AbstractBotTest` (Python). This gives you the MockedServer instance and all
@@ -275,7 +304,7 @@ def test_set_turn_rate_sets_turn_rate(self):
 
 ---
 
-## 9. Debugging Hanging Tests
+## 10. Debugging Hanging Tests
 
 When a test hangs it almost always means one of the two gates was not released.
 Use this checklist:

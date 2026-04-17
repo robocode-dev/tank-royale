@@ -37,7 +37,6 @@ import type {
   BotIntent,
 } from "../src/protocol/schema.js";
 
-describe("LEGACY", () => {
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -191,5 +190,4 @@ describe("MockedServer Enhancement Tests", () => {
     expect(updatedGunHeatReceived)
       .toBe(true);
   });
-});
 });

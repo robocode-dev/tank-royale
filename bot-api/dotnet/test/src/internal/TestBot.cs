@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Robocode.TankRoyale.BotApi.Events;
 
 namespace Robocode.TankRoyale.BotApi.Tests.Internal;
 
@@ -86,9 +87,11 @@ public class TestBot : Robocode.TankRoyale.BotApi.IBaseBot
     public void OnBulletHitWall(Robocode.TankRoyale.BotApi.Events.BulletHitWallEvent e) {}
     public void OnScannedBot(Robocode.TankRoyale.BotApi.Events.ScannedBotEvent e) {}
     public void OnSkippedTurn(Robocode.TankRoyale.BotApi.Events.SkippedTurnEvent e) {}
-    public void OnWonRound(Robocode.TankRoyale.BotApi.Events.WonRoundEvent e) {}
-    public void OnCustomEvent(Robocode.TankRoyale.BotApi.Events.CustomEvent e) {}
-    public void OnTeamMessage(Robocode.TankRoyale.BotApi.Events.TeamMessageEvent e) {}
+    public void OnWonRound(WonRoundEvent e) {}
+    public void OnCustomEvent(CustomEvent e) {}
+    public void OnTeamMessage(TeamMessageEvent e) {}
+    public bool AddCustomEvent(Condition condition) => false;
+    public bool RemoveCustomEvent(Condition condition) => false;
     public int GetEventPriority(Type t) => 0;
     public void SetEventPriority(Type t, int p) {}
     public double CalcMaxTurnRate(double s) => 0;

@@ -12,7 +12,6 @@ import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static test_utils.EnvironmentVariables.*;
 
-@Tag("LEGACY")
 @ExtendWith(SystemStubsExtension.class)
 class BaseBotConstructorTypeParsingTest extends AbstractBotTest {
 

@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { BulletState } from "../src/BulletState.js";
 
-describe("LEGACY", () => {
-
 describe("BulletState", () => {
   it("stores all fields", () => {
     const bullet = new BulletState(1, 2, 3.0, 100, 200, 45, "#FF0000");
@@ -26,5 +24,4 @@ describe("BulletState", () => {
     const bullet = new BulletState(1, 1, 1.0, 0, 0, 0, null);
     expect(bullet.color).toBeNull();
   });
-});
 });

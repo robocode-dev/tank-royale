@@ -46,43 +46,43 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 
 | ID | Description | Tier | Java | C# | Python | TypeScript |
 |----|-------------|------|------|----|--------|------------|
-| TR-API-CMD-001 | Movement commands clamped correctly | 1 | ✅ | ✅ | ✅ | ❌ |
-| TR-API-CMD-002 | Fire commands validated (energy, gunHeat, NaN, boundaries) | 1 | ✅ | ✅ | ✅ | ❌ |
-| TR-API-CMD-003 | Radar commands (rescan, adjust) | 2 | ✅ | ✅ | ✅ | ❌ |
+| TR-API-CMD-001 | Movement commands clamped correctly | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-CMD-002 | Fire commands validated (energy, gunHeat, NaN, boundaries) | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-CMD-003 | Radar commands (rescan, adjust) | 2 | ✅ | ✅ | ✅ | ✅ |
 
 ## TCK — Protocol Conformance
 
 | ID | Description | Tier | Java | C# | Python | TypeScript |
 |----|-------------|------|------|----|--------|------------|
-| TR-API-TCK-004 | Bot sees first tick state and sends initial intent | 2 | ✅ | ✅ | ✅ | ❌ |
-| TR-API-TCK-005 | WonRoundEvent delivery | 2 | ✅ | ❌ | ❌ | ❌ |
-| TR-API-TCK-006 | Team message delivery | 2 | ✅ | ✅ | ✅ | ❌ |
+| TR-API-TCK-004 | Bot sees first tick state and sends initial intent | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-005 | WonRoundEvent delivery | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-006 | Team message delivery | 2 | ✅ | ✅ | ✅ | ✅ |
 
 ## BOT — Constructor & Lifecycle
 
 | ID | Description | Tier | Java | C# | Python | TypeScript |
 |----|-------------|------|------|----|--------|------------|
-| TR-API-BOT-001a | Constructor reads env vars and applies defaults | 2 | ✅ | ✅ | ✅ | ❌ |
-| TR-API-BOT-001b | Missing required env defers validation to handshake | 2 | ✅ | ✅ | ✅ | ❌ |
-| TR-API-BOT-001c | Explicit args take precedence over env vars | 2 | ✅ | ✅ | ✅ | ❌ |
-| TR-API-BOT-001d | Bot type string parsing and normalization | 1 | ✅ | ✅ | ✅ | ❌ |
+| TR-API-BOT-001a | Constructor reads env vars and applies defaults | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-BOT-001b | Missing required env defers validation to handshake | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-BOT-001c | Explicit args take precedence over env vars | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-BOT-001d | Bot type string parsing and normalization | 1 | ✅ | ✅ | ✅ | ✅ |
 
 ## UTL — Utilities
 
 | ID | Description | Tier | Java | C# | Python | TypeScript |
 |----|-------------|------|------|----|--------|------------|
-| TR-API-UTL-001 | ColorUtil hex round-trip and string parsing | 1 | ❌ | ✅ | ✅ | ✅ |
-| TR-API-UTL-002 | JSON converter serialization/deserialization | 1 | ✅ | ✅ | ❌ | ✅ |
-| TR-API-UTL-003 | Country code validation and local detection | 1 | ✅ | ❌ | ✅ | ❌ |
+| TR-API-UTL-001 | ColorUtil hex round-trip and string parsing | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-UTL-002 | JSON converter serialization/deserialization | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-UTL-003 | Country code validation and local detection | 1 | ✅ | ✅ | ✅ | ✅ |
 
 ## GFX — Graphics
 
 | ID | Description | Tier | Java | C# | Python | TypeScript |
 |----|-------------|------|------|----|--------|------------|
 | TR-API-GFX-001 | Color RGBA construction and named constants | 1 | ✅ | ✅ | ✅ | ✅ |
-| TR-API-GFX-002 | Alpha applied to stroke and fill in SVG | 1 | ❌ | ❌ | ✅ | ❌ |
-| TR-API-GFX-003 | Text is escaped in SVG output | 1 | ❌ | ❌ | ✅ | ❌ |
-| TR-API-GFX-004 | Identical draw sequences produce identical SVG | 1 | ❌ | ❌ | ✅ | ❌ |
+| TR-API-GFX-002 | Alpha applied to stroke and fill in SVG | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-GFX-003 | Text is escaped in SVG output | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-GFX-004 | Identical draw sequences produce identical SVG | 1 | ✅ | ✅ | ✅ | ✅ |
 
 ---
 
@@ -91,12 +91,12 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 | Category | Total IDs | Java | C# | Python | TypeScript |
 |----------|-----------|------|----|--------|------------|
 | VAL | 5 | 5 | 5 | 5 | 5 |
-| CMD | 3 | 3 | 3 | 3 | 0 |
-| TCK | 3 | 3 | 2 | 2 | 0 |
-| BOT | 4 | 4 | 4 | 4 | 0 |
-| UTL | 3 | 2 | 2 | 2 | 2 |
-| GFX | 4 | 1 | 1 | 4 | 1 |
-| **Total** | **22** | **18** | **17** | **20** | **8** |
+| CMD | 3 | 3 | 3 | 3 | 3 |
+| TCK | 3 | 3 | 3 | 3 | 3 |
+| BOT | 4 | 4 | 4 | 4 | 4 |
+| UTL | 3 | 3 | 3 | 3 | 3 |
+| GFX | 4 | 4 | 4 | 4 | 4 |
+| **Total** | **22** | **22** | **22** | **22** | **22** |
 
 ---
 

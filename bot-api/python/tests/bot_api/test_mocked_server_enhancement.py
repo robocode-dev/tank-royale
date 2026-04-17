@@ -1,7 +1,6 @@
 import threading
 import time
 import pytest
-pytestmark = pytest.mark.LEGACY
 import unittest
 from robocode_tank_royale.bot_api import BotInfo, Bot
 from test_utils.mocked_server import MockedServer

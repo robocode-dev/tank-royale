@@ -8,7 +8,8 @@ import java.io.ByteArrayOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Tag("LEGACY")
+@Tag("INT")
+@Tag("TR-API-INT-001")
 @DisplayName("TR-API-INT-001 RecordingPrintStream")
 class RecordingPrintStreamTest {
 

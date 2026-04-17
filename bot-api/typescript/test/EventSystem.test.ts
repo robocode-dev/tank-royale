@@ -39,7 +39,6 @@ import {
   EventQueue,
 } from "../src/events/index.js";
 
-describe("LEGACY", () => {
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -577,5 +576,4 @@ describe("9.15 DisconnectedEvent optional fields", () => {
     expect(e.statusCode).toBe(1001);
     expect(e.reason).toBe("Going away");
   });
-});
 });

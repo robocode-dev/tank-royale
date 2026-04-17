@@ -1,8 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { BaseBot } from "../src/BaseBot.js";
 import { BotInfo } from "../src/BotInfo.js";
 import { Color } from "../src/graphics/Color.js";
 import { Condition } from "../src/events/Condition.js";
+import { BaseBotInternals } from "../src/internal/BaseBotInternals.js";
 
 // Minimal concrete subclass for testing
 class TestBot extends BaseBot {
@@ -16,12 +17,21 @@ const makeBotInfo = () =>
 
 const makeBot = () => new TestBot(makeBotInfo());
 
-describe("LEGACY", () => {
+
 // ---------------------------------------------------------------------------
 // Task 1: IBaseBot interface
 // ---------------------------------------------------------------------------
 
 describe("IBaseBot interface (task 1)", () => {
+  beforeEach(() => {
+    // Mock worker_threads to null to force main-thread mode in tests
+    vi.spyOn(BaseBotInternals.prototype as any, "_importWorkerThreads").mockResolvedValue(null);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("1.13 TEAM_MESSAGE_MAX_SIZE constant is 32768", () => {
     const bot = makeBot();
     expect(bot.TEAM_MESSAGE_MAX_SIZE).toBe(32768);
@@ -99,6 +109,8 @@ describe("IBaseBot interface (task 1)", () => {
 
   it("1.3 setFire returns true for valid firepower when gun is cold", () => {
     const bot = makeBot();
+    // Set mock energy so setFire passes energy check
+    (bot as any)._internals.tickEvent = { botState: { energy: 100, gunHeat: 0 } };
     expect(bot.setFire(1)).toBe(true);
     expect(bot.getFirepower()).toBe(1);
   });
@@ -341,5 +353,4 @@ describe("BaseBot implementation (task 3)", () => {
     const bot = makeBot();
     expect(bot.isDebuggingEnabled()).toBe(false);
   });
-});
 });

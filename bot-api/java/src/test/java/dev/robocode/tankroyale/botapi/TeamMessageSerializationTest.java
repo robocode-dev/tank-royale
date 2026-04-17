@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * This test reproduces the exact scenario where colors are sent from leader to droid.
  * (TR-API-TCK-006)
  */
-@Tag("LEGACY")
 @Tag("TCK")
 @Tag("TR-API-TCK-006")
 class TeamMessageSerializationTest {

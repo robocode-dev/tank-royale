@@ -210,8 +210,7 @@ public sealed class BotInfo
             _authors = value.ToListWithNoBlanks();
 
             if (_authors.Any(author => author.Length > MaxAuthorLength))
-                throw new ArgumentException("'Authors' length exceeds the maximum of " + MaxAuthorLength +
-                                            " characters");
+                throw new ArgumentException("Size of an author exceeds the maximum of " + MaxAuthorLength + " characters");
         }
     }
 
@@ -262,15 +261,20 @@ public sealed class BotInfo
         get => _countryCodes;
         private init
         {
+            if (value == null)
+            {
+                _countryCodes = CreateDefaultCountryCodesList();
+                return;
+            }
             if (value.Count > MaxNumberOfCountryCodes)
-                throw new ArgumentException($"Size of 'CountryCodes' exceeds the maximum of {MaxNumberOfCountryCodes}");
+                throw new ArgumentException("Size of 'CountryCodes' exceeds the maximum of " + MaxNumberOfCountryCodes);
 
             // Convert to uppercase and remove blanks
             var validCodes = value.ToListWithNoBlanks().ConvertAll(cc => cc.ToUpper());
-        
+
             // Check if all country codes are valid
             bool allValid = validCodes.Count > 0 && validCodes.All(CountryCode.IsCountryCodeValid);
-        
+
             // If all valid, use them; otherwise fallback to local country code
             _countryCodes = allValid
                 ? validCodes
@@ -311,8 +315,7 @@ public sealed class BotInfo
                     throw new ArgumentException("Size of 'GameTypes' exceeds the maximum of " + MaxNumberOfGameTypes);
 
                 if (value.Any(gameType => gameType.Length > MaxGameTypeLength))
-                    throw new ArgumentException("'GameTypes' length exceeds the maximum of " + MaxGameTypeLength +
-                                                " characters");
+                    throw new ArgumentException("Size of a game type exceeds the maximum of " + MaxGameTypeLength + " characters");
 
                 _gameTypes = value.ToListWithNoBlanks().ToHashSet();
             }

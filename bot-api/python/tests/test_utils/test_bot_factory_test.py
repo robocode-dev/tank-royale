@@ -1,7 +1,6 @@
 """Unit tests for TestBotBuilder."""
 
 import pytest
-pytestmark = pytest.mark.LEGACY
 import threading
 import time
 import unittest

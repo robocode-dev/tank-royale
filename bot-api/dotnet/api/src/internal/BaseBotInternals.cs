@@ -819,11 +819,9 @@ sealed class BaseBotInternals
                     throw new BotException($"Unsupported WebSocket message type: {type}");
             }
         }
-        catch (KeyNotFoundException)
+        catch (Exception e)
         {
-            Console.Error.WriteLine(jsonMsg);
-
-            throw new BotException($"'type' is missing on the JSON message: {json}");
+            HandleConnectionError(e);
         }
     }
 

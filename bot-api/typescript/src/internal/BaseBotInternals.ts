@@ -853,7 +853,8 @@ export class BaseBotInternals {
 
   setFire(firepower: number): boolean {
     IntentValidator.validateFirepower(firepower);
-    if ((this.tickEvent?.botState.gunHeat ?? 0) > 0 ||
+    if (!IntentValidator.isValidFirepower(firepower) ||
+        (this.tickEvent?.botState.gunHeat ?? 0) > 0 ||
         (this.tickEvent?.botState.energy ?? 0) < firepower) return false;
     this.intent.firepower = firepower;
     return true;
