@@ -1,6 +1,6 @@
 # Tank Royale AI Agent Instructions
 
-Routing hub — load `.ai/*.md` files based on task type below.
+Routing hub — load `.ai/*.md` files based on the task type below.
 
 ## Quick Routing
 
@@ -33,13 +33,31 @@ Routing hub — load `.ai/*.md` files based on task type below.
 1. Make code changes to files
 2. Show what changed (via `git diff` or describe changes)
 3. Wait for user review and approval
-4. Only commit when user explicitly requests it
-5. Include user-approved message in commit
+4. Only commit when a user explicitly requests it
+5. Include a user-approved message in the commit
 
 **Applies to:**
 - All code changes
-- All documentation changes  
+- All documentation changes
 - All configuration changes
 - Every file modification
 
 **Why:** User must review all changes before they're locked in. Automatic commits prevent code review and make it impossible for users to request modifications before commit.
+
+---
+
+### Validation Gate (mandatory)
+
+**Rule:** After every file modification, run the project validation command before proceeding to the next step.
+
+**Workflow:**
+1. Modify file(s)
+2. Run a validation command for the affected module
+3. If non-zero exit → STOP, fix all errors, re-run validation
+4. Only proceed to the next step when validation exits clean
+5. Never mark a task complete while validation is failing
+
+**Validation commands:**
+- `./gradlew clean build`
+
+**Why:** Catches discrepancies between spec and implementation immediately, before they compound. Mirrors the static analysis feedback loop that would otherwise require a JetBrains-native agent.

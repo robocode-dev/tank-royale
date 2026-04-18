@@ -283,9 +283,9 @@ export abstract class BaseBot implements IBaseBot {
   }
 
   normalizeRelativeAngle(angle: number): number {
-    let a = ((angle % 360) + 360) % 360;
-    if (a > 180) a -= 360;
-    return a;
+    const a = angle % 360;
+    if (a >= 0) return a < 180 ? a : a - 360;
+    else return a >= -180 ? a : a + 360;
   }
 
   calcDeltaAngle(targetAngle: number, sourceAngle: number): number {

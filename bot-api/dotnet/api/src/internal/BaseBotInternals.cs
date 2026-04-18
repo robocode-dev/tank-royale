@@ -458,7 +458,19 @@ sealed class BaseBotInternals
 
     internal string Version => ServerHandshake.Version;
 
-    internal int MyId { get; private set; }
+    private int _myId;
+    internal int MyId
+    {
+        get
+        {
+            if (_myId == 0)
+            {
+                throw new BotException(GameNotRunningMsg);
+            }
+            return _myId;
+        }
+        private set => _myId = value;
+    }
 
     internal GameSetup GameSetup => _gameSetup ?? throw new BotException(GameNotRunningMsg);
 

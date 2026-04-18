@@ -25,11 +25,11 @@ public class TestBot : Robocode.TankRoyale.BotApi.IBaseBot
     public int EnemyCount => 0;
     public double Energy { get; set; } = 100;
     public bool IsDisabled => Energy <= 0;
-    public double X => 0;
-    public double Y => 0;
-    public double Direction => 0;
-    public double GunDirection => 0;
-    public double RadarDirection => 0;
+    public double X { get; set; } = 0;
+    public double Y { get; set; } = 0;
+    public double Direction { get; set; } = 0;
+    public double GunDirection { get; set; } = 0;
+    public double RadarDirection { get; set; } = 0;
     public double Speed => 0;
     public double GunHeat { get; set; } = 0;
     public IEnumerable<Robocode.TankRoyale.BotApi.BulletState> BulletStates => Enumerable.Empty<Robocode.TankRoyale.BotApi.BulletState>();
@@ -94,18 +94,25 @@ public class TestBot : Robocode.TankRoyale.BotApi.IBaseBot
     public bool RemoveCustomEvent(Condition condition) => false;
     public int GetEventPriority(Type t) => 0;
     public void SetEventPriority(Type t, int p) {}
-    public double CalcMaxTurnRate(double s) => 0;
-    public double CalcBulletSpeed(double f) => 0;
-    public double CalcGunHeat(double f) => 0;
-    public double CalcBearing(double d) => 0;
-    public double CalcGunBearing(double d) => 0;
-    public double CalcRadarBearing(double d) => 0;
-    public double DirectionTo(double x, double y) => 0;
-    public double BearingTo(double x, double y) => 0;
-    public double GunBearingTo(double x, double y) => 0;
-    public double RadarBearingTo(double x, double y) => 0;
-    public double DistanceTo(double x, double y) => 0;
-    public double NormalizeAbsoluteAngle(double a) => 0;
-    public double NormalizeRelativeAngle(double a) => 0;
-    public double CalcDeltaAngle(double t, double s) => 0;
+    public double CalcMaxTurnRate(double s) => 10 - 0.75 * Math.Abs(Math.Clamp(s, -8, 8));
+    public double CalcBulletSpeed(double f) => 20 - 3 * Math.Clamp(f, 0.1, 3.0);
+    public double CalcGunHeat(double f) => 1 + Math.Clamp(f, 0.1, 3.0) / 5;
+    public double CalcBearing(double d) => NormalizeRelativeAngle(d - Direction);
+    public double CalcGunBearing(double d) => NormalizeRelativeAngle(d - GunDirection);
+    public double CalcRadarBearing(double d) => NormalizeRelativeAngle(d - RadarDirection);
+    public double DirectionTo(double x, double y) => NormalizeAbsoluteAngle(180 * Math.Atan2(y - Y, x - X) / Math.PI);
+    public double BearingTo(double x, double y) => NormalizeRelativeAngle(DirectionTo(x, y) - Direction);
+    public double GunBearingTo(double x, double y) => NormalizeRelativeAngle(DirectionTo(x, y) - GunDirection);
+    public double RadarBearingTo(double x, double y) => NormalizeRelativeAngle(DirectionTo(x, y) - RadarDirection);
+    public double DistanceTo(double x, double y) => Math.Sqrt(Math.Pow(x - X, 2) + Math.Pow(y - Y, 2));
+    public double NormalizeAbsoluteAngle(double a) => (a %= 360) >= 0 ? a : (a + 360);
+    public double NormalizeRelativeAngle(double a) => (a %= 360) >= 0
+        ? ((a < 180) ? a : (a - 360))
+        : ((a >= -180) ? a : (a + 360));
+    public double CalcDeltaAngle(double t, double s)
+    {
+        var angle = t - s;
+        angle += (angle > 180) ? -360 : (angle < -180) ? 360 : 0;
+        return angle;
+    }
 }

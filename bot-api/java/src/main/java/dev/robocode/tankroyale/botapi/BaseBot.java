@@ -287,7 +287,11 @@ public abstract class BaseBot implements IBaseBot {
         if (tick != null) {
             return tick.getBotState().getX();
         }
-        return baseBotInternals.getInitialPosition().getX();
+        var initialPosition = baseBotInternals.getInitialPosition();
+        if (initialPosition != null) {
+            return initialPosition.getX();
+        }
+        throw new BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first");
     }
 
     /**
@@ -299,7 +303,11 @@ public abstract class BaseBot implements IBaseBot {
         if (tick != null) {
             return tick.getBotState().getY();
         }
-        return baseBotInternals.getInitialPosition().getY();
+        var initialPosition = baseBotInternals.getInitialPosition();
+        if (initialPosition != null) {
+            return initialPosition.getY();
+        }
+        throw new BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first");
     }
 
     /**
@@ -311,7 +319,11 @@ public abstract class BaseBot implements IBaseBot {
         if (tick != null) {
             return tick.getBotState().getDirection();
         }
-        return baseBotInternals.getInitialPosition().getDirection();
+        var initialPosition = baseBotInternals.getInitialPosition();
+        if (initialPosition != null) {
+            return initialPosition.getDirection();
+        }
+        throw new BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first");
     }
 
     /**
@@ -323,7 +335,11 @@ public abstract class BaseBot implements IBaseBot {
         if (tick != null) {
             return tick.getBotState().getGunDirection();
         }
-        return baseBotInternals.getInitialPosition().getDirection();
+        var initialPosition = baseBotInternals.getInitialPosition();
+        if (initialPosition != null) {
+            return initialPosition.getDirection();
+        }
+        throw new BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first");
     }
 
     /**
@@ -335,7 +351,11 @@ public abstract class BaseBot implements IBaseBot {
         if (tick != null) {
             return tick.getBotState().getRadarDirection();
         }
-        return baseBotInternals.getInitialPosition().getDirection();
+        var initialPosition = baseBotInternals.getInitialPosition();
+        if (initialPosition != null) {
+            return initialPosition.getDirection();
+        }
+        throw new BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first");
     }
 
     /**

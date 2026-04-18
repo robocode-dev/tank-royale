@@ -9,6 +9,9 @@ import { BotStoppedException } from "../src/internal/BotStoppedException.js";
 import { Bot } from "../src/Bot.js";
 import { BaseBot } from "../src/BaseBot.js";
 import { BotInfo } from "../src/BotInfo.js";
+import { BotException } from "../src/BotException.js";
+import { TickEvent } from "../src/events/TickEvent.js";
+import { BotState } from "../src/BotState.js";
 import { Condition } from "../src/events/Condition.js";
 import { SkippedTurnEvent } from "../src/events/SkippedTurnEvent.js";
 import { GameSetup } from "../src/GameSetup.js";
@@ -229,10 +232,10 @@ describe("Task 4: BaseBotInternals", () => {
   it("4.12 state accessors return defaults before game starts", () => {
     const stub = {} as import("../src/IBaseBot.js").IBaseBot;
     const internals = new BaseBotInternals(stub, makeBotInfo(), null, undefined);
-    expect(internals.getMyId()).toBe(0);
-    expect(internals.getRoundNumber()).toBe(0);
-    expect(internals.getTurnNumber()).toBe(0);
-    expect(internals.getEnergy()).toBe(0);
+    expect(() => internals.getMyId()).toThrow(BotException);
+    expect(() => internals.getRoundNumber()).toThrow(BotException);
+    expect(() => internals.getTurnNumber()).toThrow(BotException);
+    expect(() => internals.getEnergy()).toThrow(BotException);
     expect(internals.isDisabled()).toBe(false);
     expect(internals.isRunning()).toBe(false);
   });
@@ -323,7 +326,11 @@ describe("Task 4: BaseBotInternals", () => {
     const internals = new BaseBotInternals(stub, makeBotInfo(), null, undefined);
     const e = new SkippedTurnEvent(5);
     internals.addEvent(e);
-    // getEvents() returns the raw queue array — event should be present before dispatch
+    
+    // Provide a mock tick so getEvents() can be called
+    const botState: any = { energy: 100, x: 0, y: 0, direction: 0, gunDirection: 0, radarDirection: 0, speed: 0, gunHeat: 0, enemyCount: 0 };
+    (internals as any).tickEvent = new TickEvent(1, 1, botState as BotState, [], []);
+
     const events = internals.getEvents();
     expect(events.length).toBeGreaterThan(0);
     expect(events.some((ev) => ev === e)).toBe(true);

@@ -604,10 +604,7 @@ class BaseBot(BaseBotABC):
     @property
     def adjust_gun_for_body_turn(self) -> bool:
         """Returns whether the gun adjusts for the bot's body turn."""
-        assert self._internals.bot_intent.adjust_gun_for_body_turn is not None, (
-            "Adjust gun for body turn must be set before accessing it."
-        )
-        return self._internals.bot_intent.adjust_gun_for_body_turn
+        return self._internals.bot_intent.adjust_gun_for_body_turn or False
 
     @adjust_gun_for_body_turn.setter
     def adjust_gun_for_body_turn(self, adjust: bool) -> None:
@@ -625,10 +622,7 @@ class BaseBot(BaseBotABC):
     @property
     def adjust_radar_for_body_turn(self) -> bool:
         """Returns whether the radar adjusts for the bot's body turn."""
-        assert self._internals.bot_intent.adjust_radar_for_body_turn is not None, (
-            "Adjust radar for body turn must be set before accessing it."
-        )
-        return self._internals.bot_intent.adjust_radar_for_body_turn
+        return self._internals.bot_intent.adjust_radar_for_body_turn or False
 
     @adjust_radar_for_body_turn.setter
     def adjust_radar_for_body_turn(self, adjust: bool) -> None:
@@ -638,10 +632,7 @@ class BaseBot(BaseBotABC):
     @property
     def adjust_radar_for_gun_turn(self) -> bool:
         """Returns whether the radar adjusts for the gun's turn."""
-        assert self._internals.bot_intent.adjust_radar_for_gun_turn is not None, (
-            "Adjust radar for gun turn must be set before accessing it."
-        )
-        return self._internals.bot_intent.adjust_radar_for_gun_turn
+        return self._internals.bot_intent.adjust_radar_for_gun_turn or False
 
     @adjust_radar_for_gun_turn.setter
     def adjust_radar_for_gun_turn(self, adjust: bool) -> None:

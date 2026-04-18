@@ -49,6 +49,30 @@
       "method": "getConstant",
       "args": ["MAX_RADAR_TURN_RATE"],
       "expected": { "returns": 45 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-gametype-classic",
+      "description": "GameType CLASSIC",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["CLASSIC"],
+      "expected": { "returns": "classic" }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-gametype-melee",
+      "description": "GameType MELEE",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MELEE"],
+      "expected": { "returns": "melee" }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-gametype-1v1",
+      "description": "GameType ONE_VS_ONE",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["ONE_VS_ONE"],
+      "expected": { "returns": "1v1" }
     }
   ]
 }

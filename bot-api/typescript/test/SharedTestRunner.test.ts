@@ -8,6 +8,12 @@ import { Color } from '../src/graphics/Color.js';
 import { Constants } from '../src/Constants.js';
 import { TickEvent } from '../src/events/TickEvent.js';
 import { BotState } from '../src/BotState.js';
+import { DefaultEventPriority } from '../src/DefaultEventPriority.js';
+import { GameType } from '../src/GameType.js';
+import { BulletState } from '../src/BulletState.js';
+import * as Events from '../src/events/index.js';
+import { Condition } from '../src/events/Condition.js';
+import { BaseBot } from '../src/BaseBot.js';
 
 const sharedTestsDir = path.resolve(__dirname, '../../tests/shared');
 
@@ -58,11 +64,12 @@ describe('Shared Cross-Platform Tests', () => {
     describe(suite.suite, () => {
       for (const testCase of suite.tests) {
         it(testCase.id + ': ' + testCase.description, () => {
-          const mockBot: any = {
-            energy: 100,
-            gunHeat: 0,
-          };
-          const internals = new BaseBotInternals(mockBot, null, "ws://localhost", null);
+          const botInfo = new BotInfo("TestBot", "1.0", ["Author"], null, null, null, ["classic"], null, null);
+          const mockBot: any = new (class extends BaseBot {
+            constructor() { super(botInfo); }
+            run() {}
+          })();
+          const internals = (mockBot as any)._internals;
 
           if (testCase.setup) {
             const setup = testCase.setup;
@@ -87,6 +94,7 @@ describe('Shared Cross-Platform Tests', () => {
           const args = (testCase.args || []).map(parseArg);
 
           const runAction = () => {
+            console.log(`Running method: ${testCase.method} with args: ${JSON.stringify(args)}`);
             switch (testCase.method) {
               case 'setFire': lastActionValue = internals.setFire(args[0]); break;
               case 'setTurnRate': internals.setTurnRate(args[0]); break;
@@ -106,7 +114,30 @@ describe('Shared Cross-Platform Tests', () => {
               case 'fromRgba': lastActionValue = Color.fromRgba(args[0], args[1], args[2], args[3]); break;
               case 'colorToHex': lastActionValue = IntentValidator.colorToHex(args[0]); break;
               case 'getColorConstant': lastActionValue = (Color as any)[args[0].toUpperCase()]; break;
-              case 'getConstant': lastActionValue = (Constants as any)[args[0]]; break;
+              case 'getConstant':
+                lastActionValue = (Constants as any)[args[0]] ?? (DefaultEventPriority as any)[args[0]] ?? (GameType as any)[args[0]];
+                break;
+              case 'isCritical': lastActionValue = createEvent(args[0]).isCritical; break;
+              case 'getDefaultPriority': lastActionValue = getDefaultPriority(args[0]); break;
+              case 'calcBulletSpeed': lastActionValue = mockBot.calcBulletSpeed(args[0]); break;
+              case 'calcMaxTurnRate': lastActionValue = mockBot.calcMaxTurnRate(args[0]); break;
+              case 'calcGunHeat': lastActionValue = mockBot.calcGunHeat(args[0]); break;
+              case 'calcBearing':
+                if (args.length === 2) {
+                  mockBot.getDirection = () => args[0];
+                  lastActionValue = mockBot.calcBearing(args[1]);
+                } else {
+                  lastActionValue = mockBot.calcBearing(args[0]);
+                }
+                break;
+              case 'normalizeAbsoluteAngle':
+                lastActionValue = mockBot.normalizeAbsoluteAngle(args[0]);
+                console.log(`normalizeAbsoluteAngle(${args[0]}) = ${lastActionValue}`);
+                break;
+              case 'normalizeRelativeAngle':
+                lastActionValue = mockBot.normalizeRelativeAngle(args[0]);
+                console.log(`normalizeRelativeAngle(${args[0]}) = ${lastActionValue}`);
+                break;
               default: throw new Error(`Method ${testCase.method} not implemented in runner`);
             }
           };
@@ -167,6 +198,34 @@ describe('Shared Cross-Platform Tests', () => {
     });
   }
 });
+
+function getDefaultPriority(eventName: string): number {
+  const normalized = eventName.replace("Event", "").replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase();
+  return (DefaultEventPriority as any)[normalized];
+}
+
+function createEvent(eventName: string): any {
+  switch (eventName) {
+    case "BotDeathEvent": return new Events.BotDeathEvent(0, 0);
+    case "WonRoundEvent": return new Events.WonRoundEvent(0);
+    case "SkippedTurnEvent": return new Events.SkippedTurnEvent(0);
+    case "BotHitBotEvent": return new Events.HitBotEvent(0, 0, 0, 0, 0, false);
+    case "BotHitWallEvent": return new Events.HitWallEvent(0);
+    case "BulletFiredEvent": return new Events.BulletFiredEvent(0, new BulletState(0, 0, 0, 0, 0, 0, "#000000"));
+    case "BulletHitBotEvent": return new Events.BulletHitBotEvent(0, 0, new BulletState(0, 0, 0, 0, 0, 0, "#000000"), 0, 0);
+    case "BulletHitBulletEvent": return new Events.BulletHitBulletEvent(0, new BulletState(0, 0, 0, 0, 0, 0, "#000000"), new BulletState(0, 0, 0, 0, 0, 0, "#000000"));
+    case "BulletHitWallEvent": return new Events.BulletHitWallEvent(0, new BulletState(0, 0, 0, 0, 0, 0, "#000000"));
+    case "HitByBulletEvent": return new Events.HitByBulletEvent(0, new BulletState(0, 0, 0, 0, 0, 0, "#000000"), 0, 0);
+    case "ScannedBotEvent": return new Events.ScannedBotEvent(0, 0, 0, 0, 0, 0, 0, 0);
+    case "CustomEvent": return new Events.CustomEvent(0, new (class extends Condition { test() { return true; } })("test"));
+    case "TeamMessageEvent": return new Events.TeamMessageEvent(0, "test", 0);
+    case "TickEvent": return new TickEvent(0, 0, null as any, [], []);
+    case "DeathEvent": return new Events.DeathEvent(0);
+    case "HitWallEvent": return new Events.HitWallEvent(0);
+    case "HitBotEvent": return new Events.HitBotEvent(0, 0, 0, 0, 0, false);
+    default: throw new Error(`Unknown event: ${eventName}`);
+  }
+}
 
 // Custom matcher for case-insensitive hex comparison
 expect.extend({

@@ -6,6 +6,8 @@ using System.Reflection;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Robocode.TankRoyale.BotApi.Internal;
+using Robocode.TankRoyale.BotApi.Events;
+using Robocode.TankRoyale.BotApi.Util;
 using Color = Robocode.TankRoyale.BotApi.Graphics.Color;
 
 namespace Robocode.TankRoyale.BotApi.Tests.Internal;
@@ -118,6 +120,21 @@ public class SharedTestRunner
                 case "colorToHex": lastActionValue = IntentValidator.ColorToHex((Color)args[0]); break;
                 case "getColorConstant": lastActionValue = GetStaticField(typeof(Color), (string)args[0]); break;
                 case "getConstant": lastActionValue = GetStaticField(typeof(Constants), (string)args[0]); break;
+                case "isCritical": lastActionValue = CreateEvent((string)args[0]).IsCritical; break;
+                case "getDefaultPriority": lastActionValue = GetStaticField(typeof(DefaultEventPriority), (string)args[0]); break;
+                case "calcBulletSpeed": lastActionValue = mockBot.CalcBulletSpeed(Convert.ToDouble(args[0])); break;
+                case "calcMaxTurnRate": lastActionValue = mockBot.CalcMaxTurnRate(Convert.ToDouble(args[0])); break;
+                case "calcGunHeat": lastActionValue = mockBot.CalcGunHeat(Convert.ToDouble(args[0])); break;
+                case "calcBearing":
+                    if (args.Length == 2) {
+                        mockBot.Direction = Convert.ToDouble(args[0]);
+                        lastActionValue = mockBot.CalcBearing(Convert.ToDouble(args[1]));
+                    } else {
+                        lastActionValue = mockBot.CalcBearing(Convert.ToDouble(args[0]));
+                    }
+                    break;
+                case "normalizeAbsoluteAngle": lastActionValue = mockBot.NormalizeAbsoluteAngle(Convert.ToDouble(args[0])); break;
+                case "normalizeRelativeAngle": lastActionValue = mockBot.NormalizeRelativeAngle(Convert.ToDouble(args[0])); break;
                 default: throw new NotSupportedException($"Method {testCase.Method} not implemented");
             }
         };
@@ -205,5 +222,36 @@ public class SharedTestRunner
         var normalized = fieldName.Replace("_", "");
         var flags = BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase;
         return type.GetField(normalized, flags)?.GetValue(null) ?? type.GetProperty(normalized, flags)?.GetValue(null);
+    }
+
+    private BotEvent CreateEvent(string eventName)
+    {
+        return eventName switch
+        {
+            "BotDeathEvent" => new BotDeathEvent(0, 0),
+            "WonRoundEvent" => new WonRoundEvent(0),
+            "SkippedTurnEvent" => new SkippedTurnEvent(0),
+            "BotHitBotEvent" => new HitBotEvent(0, 0, 0, 0, 0, false),
+            "BotHitWallEvent" => new HitWallEvent(0),
+            "BulletFiredEvent" => new BulletFiredEvent(0, new BulletState(0, 0, 0, 0, 0, 0, null)),
+            "BulletHitBotEvent" => new BulletHitBotEvent(0, 0, new BulletState(0, 0, 0, 0, 0, 0, null), 0, 0),
+            "BulletHitBulletEvent" => new BulletHitBulletEvent(0, new BulletState(0, 0, 0, 0, 0, 0, null), new BulletState(0, 0, 0, 0, 0, 0, null)),
+            "BulletHitWallEvent" => new BulletHitWallEvent(0, new BulletState(0, 0, 0, 0, 0, 0, null)),
+            "HitByBulletEvent" => new HitByBulletEvent(0, new BulletState(0, 0, 0, 0, 0, 0, null), 0, 0),
+            "ScannedBotEvent" => new ScannedBotEvent(0, 0, 0, 0, 0, 0, 0, 0),
+            "CustomEvent" => new CustomEvent(0, new TestCondition()),
+            "TeamMessageEvent" => new TeamMessageEvent(0, "test", 0),
+            "TickEvent" => new TickEvent(0, 0, null, new List<BulletState>(), new List<BotEvent>()),
+            "DeathEvent" => new DeathEvent(0),
+            "HitWallEvent" => new HitWallEvent(0),
+            "HitBotEvent" => new HitBotEvent(0, 0, 0, 0, 0, false),
+            _ => throw new ArgumentException($"Unknown event: {eventName}")
+        };
+    }
+
+    private class TestCondition : Condition
+    {
+        public TestCondition() : base("test") {}
+        public override bool Test() => true;
     }
 }

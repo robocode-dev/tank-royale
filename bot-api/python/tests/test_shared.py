@@ -14,6 +14,10 @@ from robocode_tank_royale.bot_api.internal.intent_validator import IntentValidat
 from robocode_tank_royale.bot_api.bot_info import BotInfo
 from robocode_tank_royale.bot_api.graphics import Color
 from robocode_tank_royale.bot_api import constants
+from robocode_tank_royale.bot_api.game_type import GameType
+from robocode_tank_royale.bot_api.default_event_priority import DefaultEventPriority
+from robocode_tank_royale.bot_api.events import *
+from robocode_tank_royale.bot_api.bullet_state import BulletState
 
 SHARED_TESTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../tests/shared"))
 
@@ -40,6 +44,44 @@ def parse_arg(arg: Any) -> Any:
     if isinstance(arg, dict) and 'r' in arg:
         return Color.from_rgba(arg['r'], arg['g'], arg['b'], arg.get('a', 255))
     return arg
+
+def get_constant(name):
+    # Try constants module
+    if hasattr(constants, name):
+        return getattr(constants, name)
+    # Try GameType
+    if hasattr(GameType, name):
+        return getattr(GameType, name)
+    # Try DefaultEventPriority (with normalization)
+    normalized = name.replace("Event", "")
+    import re
+    normalized = re.sub(r'([a-z])([A-Z])', r'\1_\2', normalized).upper()
+    if hasattr(DefaultEventPriority, normalized):
+        return getattr(DefaultEventPriority, normalized)
+    # Fallback to direct name in DefaultEventPriority
+    if hasattr(DefaultEventPriority, name):
+        return getattr(DefaultEventPriority, name)
+    return None
+
+def create_event(event_name):
+    if event_name == "BotDeathEvent": return BotDeathEvent(turn_number=0, victim_id=0)
+    if event_name == "WonRoundEvent": return WonRoundEvent(turn_number=0)
+    if event_name == "SkippedTurnEvent": return SkippedTurnEvent(turn_number=0)
+    if event_name == "BotHitBotEvent": return HitBotEvent(turn_number=0, victim_id=0, energy=0, x=0, y=0, rammed=False)
+    if event_name == "BotHitWallEvent": return HitWallEvent(turn_number=0)
+    if event_name == "BulletFiredEvent": return BulletFiredEvent(turn_number=0, bullet=MagicMock(spec=BulletState))
+    if event_name == "BulletHitBotEvent": return BulletHitBotEvent(turn_number=0, victim_id=0, bullet=MagicMock(spec=BulletState), damage=0, energy=0)
+    if event_name == "BulletHitBulletEvent": return BulletHitBulletEvent(turn_number=0, bullet=MagicMock(spec=BulletState), hit_bullet=MagicMock(spec=BulletState))
+    if event_name == "BulletHitWallEvent": return BulletHitWallEvent(turn_number=0, bullet=MagicMock(spec=BulletState))
+    if event_name == "HitByBulletEvent": return HitByBulletEvent(turn_number=0, bullet=MagicMock(spec=BulletState), damage=0, energy=0)
+    if event_name == "ScannedBotEvent": return ScannedBotEvent(turn_number=0, scanned_by_bot_id=0, scanned_bot_id=0, energy=0, x=0, y=0, direction=0, speed=0)
+    if event_name == "CustomEvent": return CustomEvent(turn_number=0, condition=Condition(name="test", callable=lambda: True))
+    if event_name == "TeamMessageEvent": return TeamMessageEvent(turn_number=0, message="test", sender_id=0)
+    if event_name == "TickEvent": return TickEvent(turn_number=0, round_number=0, bot_state=None, bullet_states=[], events=[])
+    if event_name == "DeathEvent": return DeathEvent(turn_number=0)
+    if event_name == "HitWallEvent": return HitWallEvent(turn_number=0)
+    if event_name == "HitBotEvent": return HitBotEvent(turn_number=0, victim_id=0, energy=0, x=0, y=0, rammed=False)
+    raise ValueError(f"Unknown event: {event_name}")
 
 @pytest.mark.parametrize("suite_name, test_case", get_shared_test_cases(), ids=lambda x: f"{x[0]} | {x[1]['id']}" if isinstance(x, tuple) else x)
 def test_shared(suite_name, test_case):
@@ -100,8 +142,27 @@ def test_shared(suite_name, test_case):
         elif method == "getColorConstant":
             last_action_value[0] = getattr(Color, args[0].upper())
         elif method == "getConstant":
-            # Python constants are at module level in constants.py
-            last_action_value[0] = getattr(constants, args[0])
+            last_action_value[0] = get_constant(args[0])
+        elif method == "isCritical":
+            last_action_value[0] = create_event(args[0]).critical
+        elif method == "getDefaultPriority":
+            last_action_value[0] = getattr(DefaultEventPriority, args[0])
+        elif method == "calcBulletSpeed":
+            last_action_value[0] = mock_bot.calc_bullet_speed(args[0])
+        elif method == "calcMaxTurnRate":
+            last_action_value[0] = mock_bot.calc_max_turn_rate(args[0])
+        elif method == "calcGunHeat":
+            last_action_value[0] = mock_bot.calc_gun_heat(args[0])
+        elif method == "calcBearing":
+            if len(args) == 2:
+                mock_bot.direction = args[0]
+                last_action_value[0] = mock_bot.calc_bearing(args[1])
+            else:
+                last_action_value[0] = mock_bot.calc_bearing(args[0])
+        elif method == "normalizeAbsoluteAngle":
+            last_action_value[0] = mock_bot.normalize_absolute_angle(args[0])
+        elif method == "normalizeRelativeAngle":
+            last_action_value[0] = mock_bot.normalize_relative_angle(args[0])
         else:
             pytest.fail(f"Method {method} not implemented in runner")
 

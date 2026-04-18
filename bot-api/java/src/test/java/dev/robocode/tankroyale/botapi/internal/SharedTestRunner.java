@@ -3,12 +3,14 @@ package dev.robocode.tankroyale.botapi.internal;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dev.robocode.tankroyale.botapi.IBaseBot;
+import dev.robocode.tankroyale.botapi.BulletState;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.Constants;
 import dev.robocode.tankroyale.botapi.graphics.Color;
 import dev.robocode.tankroyale.schema.BotIntent;
 import dev.robocode.tankroyale.botapi.events.Condition;
 import dev.robocode.tankroyale.botapi.events.BotEvent;
+import dev.robocode.tankroyale.botapi.util.MathUtil;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
@@ -21,8 +23,12 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 
+import dev.robocode.tankroyale.botapi.events.*;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SharedTestRunner {
 
@@ -170,6 +176,41 @@ public class SharedTestRunner {
                     break;
                 case "getConstant":
                     lastActionValue[0] = getStaticField(Constants.class, (String) args[0]);
+                    if (lastActionValue[0] == null) {
+                        lastActionValue[0] = getStaticField(dev.robocode.tankroyale.botapi.GameType.class, (String) args[0]);
+                    }
+                    if (lastActionValue[0] == null) {
+                        lastActionValue[0] = getStaticField(dev.robocode.tankroyale.botapi.DefaultEventPriority.class, (String) args[0]);
+                    }
+                    break;
+                case "isCritical":
+                    lastActionValue[0] = createEvent((String) args[0]).isCritical();
+                    break;
+                case "getDefaultPriority":
+                    lastActionValue[0] = getStaticField(dev.robocode.tankroyale.botapi.DefaultEventPriority.class, (String) args[0]);
+                    break;
+                case "calcBulletSpeed":
+                    lastActionValue[0] = mockBot.calcBulletSpeed((Double) args[0]);
+                    break;
+                case "calcMaxTurnRate":
+                    lastActionValue[0] = mockBot.calcMaxTurnRate((Double) args[0]);
+                    break;
+                case "calcGunHeat":
+                    lastActionValue[0] = mockBot.calcGunHeat((Double) args[0]);
+                    break;
+                case "calcBearing":
+                    if (args.length == 2) {
+                        mockBot.setDirection((Double) args[0]);
+                        lastActionValue[0] = mockBot.calcBearing((Double) args[1]);
+                    } else {
+                        lastActionValue[0] = mockBot.calcBearing((Double) args[0]);
+                    }
+                    break;
+                case "normalizeAbsoluteAngle":
+                    lastActionValue[0] = mockBot.normalizeAbsoluteAngle((Double) args[0]);
+                    break;
+                case "normalizeRelativeAngle":
+                    lastActionValue[0] = mockBot.normalizeRelativeAngle((Double) args[0]);
                     break;
                 default:
                     throw new UnsupportedOperationException("Method not implemented in runner: " + testCase.method);
@@ -273,23 +314,68 @@ public class SharedTestRunner {
     }
 
     private Object getStaticField(Class<?> clazz, String fieldName) {
+        String normalized = fieldName.replace("Event", "").replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase();
         try {
-            Field field = clazz.getField(fieldName);
+            Field field = clazz.getField(normalized);
             return field.get(null);
+        } catch (NoSuchFieldException e) {
+            try {
+                Field field = clazz.getField(fieldName);
+                return field.get(null);
+            } catch (Exception e2) {
+                return null;
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private BotEvent createEvent(String eventName) {
+        switch (eventName) {
+            case "BotDeathEvent": return new BotDeathEvent(0, 0);
+            case "WonRoundEvent": return new WonRoundEvent(0);
+            case "SkippedTurnEvent": return new SkippedTurnEvent(0);
+            case "BotHitBotEvent": return new HitBotEvent(0, 0, 0, 0, 0, false);
+            case "BotHitWallEvent": return new HitWallEvent(0);
+            case "BulletFiredEvent": return new BulletFiredEvent(0, new BulletState(0, 0, 0, 0, 0, 0, null));
+            case "BulletHitBotEvent": return new BulletHitBotEvent(0, 0, new BulletState(0, 0, 0, 0, 0, 0, null), 0, 0);
+            case "BulletHitBulletEvent": return new BulletHitBulletEvent(0, new BulletState(0, 0, 0, 0, 0, 0, null), new BulletState(0, 0, 0, 0, 0, 0, null));
+            case "BulletHitWallEvent": return new BulletHitWallEvent(0, new BulletState(0, 0, 0, 0, 0, 0, null));
+            case "HitByBulletEvent": return new HitByBulletEvent(0, new BulletState(0, 0, 0, 0, 0, 0, null), 0, 0);
+            case "ScannedBotEvent": return new ScannedBotEvent(0, 0, 0, 0, 0, 0, 0, 0);
+            case "CustomEvent": return new CustomEvent(0, new Condition("test") { @Override public boolean test() { return true; } });
+            case "TeamMessageEvent": return new TeamMessageEvent(0, "test", 0);
+            case "TickEvent": return new TickEvent(0, 0, null, Collections.emptyList(), Collections.emptyList());
+            case "DeathEvent": return new DeathEvent(0);
+            case "HitWallEvent": return new HitWallEvent(0);
+            case "HitBotEvent": return new HitBotEvent(0, 0, 0, 0, 0, false);
+            default: throw new IllegalArgumentException("Unknown event: " + eventName);
         }
     }
 
     private static class TestBot implements IBaseBot {
         private double energy = 100.0;
         private double gunHeat = 0.0;
+        private double direction = 0.0;
 
         void setEnergy(double energy) { this.energy = energy; }
         void setGunHeat(double gunHeat) { this.gunHeat = gunHeat; }
+        void setDirection(double direction) { this.direction = direction; }
 
         @Override public double getEnergy() { return energy; }
         @Override public double getGunHeat() { return gunHeat; }
+        @Override public double getDirection() { return direction; }
+        
+        // Math implementation from BaseBot
+        @Override public double calcMaxTurnRate(double speed) {
+            return Constants.MAX_TURN_RATE - 0.75 * Math.abs(MathUtil.clamp(speed, -Constants.MAX_SPEED, Constants.MAX_SPEED));
+        }
+        @Override public double calcBulletSpeed(double firepower) {
+            return 20 - 3 * MathUtil.clamp(firepower, Constants.MIN_FIREPOWER, Constants.MAX_FIREPOWER);
+        }
+        @Override public double calcGunHeat(double firepower) {
+            return 1 + (MathUtil.clamp(firepower, Constants.MIN_FIREPOWER, Constants.MAX_FIREPOWER) / 5);
+        }
         
         // Dummy implementations for the rest
         @Override public void start() {}
@@ -311,11 +397,10 @@ public class SharedTestRunner {
         @Override public boolean isDisabled() { return false; }
         @Override public double getX() { return 0; }
         @Override public double getY() { return 0; }
-        @Override public double getDirection() { return 0; }
         @Override public double getGunDirection() { return 0; }
         @Override public double getRadarDirection() { return 0; }
         @Override public double getSpeed() { return 0; }
-        @Override public Collection<dev.robocode.tankroyale.botapi.BulletState> getBulletStates() { return Collections.emptyList(); }
+        @Override public Collection<BulletState> getBulletStates() { return Collections.emptyList(); }
         @Override public List<dev.robocode.tankroyale.botapi.events.BotEvent> getEvents() { return Collections.emptyList(); }
         @Override public void clearEvents() {}
         @Override public double getTurnRate() { return 0; }
@@ -349,9 +434,6 @@ public class SharedTestRunner {
         @Override public boolean removeCustomEvent(Condition condition) { return false; }
         @Override public void setEventPriority(Class<BotEvent> eventClass, int priority) {}
         @Override public int getEventPriority(Class<BotEvent> eventClass) { return 0; }
-        @Override public double calcMaxTurnRate(double speed) { return 0; }
-        @Override public double calcBulletSpeed(double firepower) { return 0; }
-        @Override public double calcGunHeat(double firepower) { return 0; }
         @Override public void setStop() {}
         @Override public void setStop(boolean overwrite) {}
         @Override public void setResume() {}

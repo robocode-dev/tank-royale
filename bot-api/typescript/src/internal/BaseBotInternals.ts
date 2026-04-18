@@ -1,3 +1,4 @@
+import { BotException } from "../BotException.js";
 import { BotInfo } from "../BotInfo.js";
 import { BulletState } from "../BulletState.js";
 import { Color } from "../graphics/Color.js";
@@ -50,6 +51,10 @@ export interface IStopResumeListener {
 
 const DEFAULT_SERVER_URL = "ws://localhost:7654";
 
+const GAME_NOT_RUNNING_MSG = "Game is not running. Make sure onGameStarted() event handler has been called first";
+const TICK_NOT_AVAILABLE_MSG = "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
+const NOT_CONNECTED_TO_SERVER_MSG = "Not connected to a game server. Make sure onConnected() event handler has been called first";
+
 /**
  * Full internal implementation for BaseBot.
  * Manages WebSocket connection, event dispatching, bot intent, and worker thread synchronization.
@@ -74,7 +79,7 @@ export class BaseBotInternals {
 
   // Game state
   private myId = 0;
-  private variant = "Tank Royale";
+  private variant = "";
   private version = "";
   private gameSetup: GameSetup | null = null;
   private tickEvent: TickEvent | null = null;
@@ -766,45 +771,101 @@ export class BaseBotInternals {
   // State accessors
   // ---------------------------------------------------------------------------
 
-  getMyId(): number { return this.myId; }
+  getMyId(): number {
+    if (this.myId === 0) {
+      throw new BotException(GAME_NOT_RUNNING_MSG);
+    }
+    return this.myId;
+  }
 
   getVariant(): string {
-    return this.wsHandler?.getServerHandshake()?.variant ?? this.variant;
+    const variant = this.wsHandler?.getServerHandshake()?.variant ?? this.variant;
+    if (!variant) {
+      throw new BotException(NOT_CONNECTED_TO_SERVER_MSG);
+    }
+    return variant;
   }
 
   getVersion(): string {
-    return this.wsHandler?.getServerHandshake()?.version ?? this.version;
+    const version = this.wsHandler?.getServerHandshake()?.version ?? this.version;
+    if (!version) {
+      throw new BotException(NOT_CONNECTED_TO_SERVER_MSG);
+    }
+    return version;
   }
 
-  getGameType(): string { return this.gameSetup?.gameType ?? ""; }
-  getArenaWidth(): number { return this.gameSetup?.arenaWidth ?? 0; }
-  getArenaHeight(): number { return this.gameSetup?.arenaHeight ?? 0; }
-  getNumberOfRounds(): number { return this.gameSetup?.numberOfRounds ?? 0; }
-  getGunCoolingRate(): number { return this.gameSetup?.gunCoolingRate ?? 0; }
-  getMaxInactivityTurns(): number { return this.gameSetup?.maxInactivityTurns ?? 0; }
-  getTurnTimeout(): number { return this.gameSetup?.turnTimeout ?? 0; }
+  getGameSetup(): GameSetup {
+    if (this.gameSetup == null) {
+      throw new BotException(GAME_NOT_RUNNING_MSG);
+    }
+    return this.gameSetup;
+  }
+
+  getGameType(): string { return this.getGameSetup().gameType; }
+  getArenaWidth(): number { return this.getGameSetup().arenaWidth; }
+  getArenaHeight(): number { return this.getGameSetup().arenaHeight; }
+  getNumberOfRounds(): number { return this.getGameSetup().numberOfRounds; }
+  getGunCoolingRate(): number { return this.getGameSetup().gunCoolingRate; }
+  getMaxInactivityTurns(): number { return this.getGameSetup().maxInactivityTurns ?? 0; }
+  getTurnTimeout(): number { return this.getGameSetup().turnTimeout; }
 
   getTimeLeft(): number {
-    if (this.tickEvent == null) return 0;
+    if (this.tickEvent == null) return this.getTurnTimeout();
     const elapsed = Date.now() - this.tickStartTime;
     return Math.max(0, this.getTurnTimeout() - elapsed);
   }
 
   getCurrentTickOrNull(): TickEvent | null { return this.tickEvent; }
-  getRoundNumber(): number { return this.tickEvent?.roundNumber ?? 0; }
-  getTurnNumber(): number { return this.tickEvent?.turnNumber ?? 0; }
-  getEnemyCount(): number { return this.tickEvent?.botState.enemyCount ?? 0; }
-  getEnergy(): number { return this.tickEvent?.botState.energy ?? 0; }
+  getRoundNumber(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.roundNumber;
+  }
+  getTurnNumber(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.turnNumber;
+  }
+  getEnemyCount(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.enemyCount;
+  }
+  getEnergy(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.energy;
+  }
   isDisabled(): boolean { return this.tickEvent != null && this.getEnergy() === 0; }
-  getX(): number { return this.tickEvent?.botState.x ?? 0; }
-  getY(): number { return this.tickEvent?.botState.y ?? 0; }
-  getDirection(): number { return this.tickEvent?.botState.direction ?? 0; }
-  getGunDirection(): number { return this.tickEvent?.botState.gunDirection ?? 0; }
-  getRadarDirection(): number { return this.tickEvent?.botState.radarDirection ?? 0; }
-  getSpeed(): number { return this.tickEvent?.botState.speed ?? 0; }
-  getGunHeat(): number { return this.tickEvent?.botState.gunHeat ?? 0; }
-  getBulletStates(): ReadonlySet<BulletState> { return new Set(this.tickEvent?.bulletStates ?? []); }
-  getEvents(): readonly BotEvent[] { return this.eventQueue.getEvents(); }
+  getX(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.x;
+  }
+  getY(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.y;
+  }
+  getDirection(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.direction;
+  }
+  getGunDirection(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.gunDirection;
+  }
+  getRadarDirection(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.radarDirection;
+  }
+  getSpeed(): number {
+    return this.tickEvent?.botState.speed ?? 0;
+  }
+  getGunHeat(): number {
+    return this.tickEvent?.botState.gunHeat ?? 0;
+  }
+  getBulletStates(): ReadonlySet<BulletState> {
+    return new Set(this.tickEvent?.bulletStates ?? []);
+  }
+  getEvents(): readonly BotEvent[] {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.eventQueue.getEvents();
+  }
   clearEvents(): void { this.eventQueue.clear(); }
 
   // ---------------------------------------------------------------------------
