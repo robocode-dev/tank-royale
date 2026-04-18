@@ -3,7 +3,7 @@ name: dot-prime
 description: Activate principles before working on a file or task. Supports explicit group and ID overrides. Use when the user runs /dot-prime [target] to load the relevant principles into the active frame before writing or editing.
 argument-hint: "[@group...] [ID...] | [file|directory|description]"
 allowed-tools: Read, Glob, Grep, Bash
-version: 0.10.2
+version: 0.10.3
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 license: MIT
 generated-by: .principles
@@ -105,4 +105,4 @@ Format:
 
 End with this line, on its own:
 
-> Apply these rules to all code you generate. Proceed.
+> These are your focus principles for this task. Your full rule set from `.claude/rules/` remains active. Proceed.

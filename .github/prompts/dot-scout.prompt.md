@@ -2,7 +2,7 @@
 description: Analyse a project to detect which principles apply and create or update .principles files encoding that analysis. Use when the user runs /dot-scout [path] to map principles to a codebase.
 argument-hint: "[directory-path]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: 0.10.2
+version: 0.10.3
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 mode: agent
 generated-by: .principles
