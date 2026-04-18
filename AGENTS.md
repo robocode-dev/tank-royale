@@ -1,5 +1,7 @@
 # Tank Royale AI Agent Instructions
 
+> ⚠️ **AI Agent:** You are reading this file as part of the startup sequence. Confirm to the user with `✓ Read AGENTS.md.` before proceeding with any task.
+
 Routing hub — load `.ai/*.md` files based on the task type below.
 
 ## Quick Routing
