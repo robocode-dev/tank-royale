@@ -72,57 +72,6 @@ describe("EventSystem Tier 2", () => {
     expect(ce.condition).toBe(condition);
   });
 
-  it("TR-API-EVT-005: EventQueue priority ordering", () => {
-    const queue = new EventQueue(priorities, interruption);
-    const fireSpy = vi.spyOn(handlers, "fireEvent");
-
-    const wre = new Events.WonRoundEvent(1); // Critical, Priority 150
-    const de = new Events.DeathEvent(1);     // Critical, Priority 10
-    const sbe = new Events.ScannedBotEvent(1, 1, 2, 100, 100, 100, 0, 0); // Non-critical, Priority 20
-
-    queue.addEvent(de);
-    queue.addEvent(wre);
-    queue.addEvent(sbe);
-
-    queue.dispatchEvents(1, handlers);
-
-    expect(fireSpy).toHaveBeenCalledTimes(3);
-    expect(fireSpy.mock.calls[0][0]).toBeInstanceOf(Events.WonRoundEvent);
-    expect(fireSpy.mock.calls[1][0]).toBeInstanceOf(Events.DeathEvent);
-    expect(fireSpy.mock.calls[2][0]).toBeInstanceOf(Events.ScannedBotEvent);
-    
-    fireSpy.mockRestore();
-  });
-
-  it("TR-API-EVT-006: EventQueue age culling (non-critical)", () => {
-    const queue = new EventQueue(priorities, interruption);
-    const fireSpy = vi.spyOn(handlers, "fireEvent");
-
-    const oldEvent = new Events.ScannedBotEvent(7, 1, 2, 100, 100, 100, 0, 0);
-    const fineEvent = new Events.ScannedBotEvent(8, 1, 2, 100, 100, 100, 0, 0);
-    const oldCritical = new Events.WonRoundEvent(7);
-
-    queue.addEvent(oldEvent);
-    queue.addEvent(fineEvent);
-    queue.addEvent(oldCritical);
-
-    queue.dispatchEvents(10, handlers);
-
-    expect(fireSpy).toHaveBeenCalledTimes(2);
-    expect(fireSpy.mock.calls[0][0]).toBeInstanceOf(Events.WonRoundEvent);
-    expect(fireSpy.mock.calls[1][0]).toBeInstanceOf(Events.ScannedBotEvent);
-    
-    fireSpy.mockRestore();
-  });
-
-  it("TR-API-EVT-007: EventQueue size cap (MAX_QUEUE_SIZE = 256)", () => {
-    const queue = new EventQueue(priorities, interruption);
-    for (let i = 0; i < 266; i++) {
-      queue.addEvent(new Events.SkippedTurnEvent(i));
-    }
-    expect(queue.getEvents().length).toBe(256);
-  });
-
   it("TR-API-EVT-008: Condition.test() callable and overridable", () => {
     const c1 = new (class extends Condition { test() { return true; } })("true");
     expect(c1.test()).toBe(true);

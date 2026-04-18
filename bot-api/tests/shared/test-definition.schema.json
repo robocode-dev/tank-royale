@@ -24,7 +24,7 @@
   "$defs": {
     "testCase": {
       "type": "object",
-      "required": ["id", "description", "method", "expected"],
+      "required": ["id", "description"],
       "additionalProperties": false,
       "properties": {
         "id": {
@@ -38,12 +38,12 @@
         },
         "type": {
           "type": "string",
-          "enum": ["positive", "negative"],
-          "description": "Whether this is a happy-path (positive) or rejection/edge (negative) test case."
+          "enum": ["positive", "negative", "scenario", "botDefault"],
+          "description": "Test kind: 'positive' (happy path), 'negative' (rejection/edge), 'scenario' (stateful step-sequence), or 'botDefault' (BaseBot accessor default-value contract)."
         },
         "method": {
           "type": "string",
-          "description": "The API method under test, using the Java name (e.g., 'setFire', 'setTurnRate'). Platform runners map to the local convention."
+          "description": "The API method under test, using the Java name (e.g., 'setFire', 'setTurnRate'). Required for positive/negative tests; unused for scenario tests."
         },
         "setup": {
           "type": "object",
@@ -57,7 +57,7 @@
         },
         "expected": {
           "type": "object",
-          "description": "Expected outcome. At least one of 'returns', field assertions, or 'throws' must be present.",
+          "description": "Expected outcome for positive/negative tests. At least one of 'returns', field assertions, or 'throws' must be present.",
           "properties": {
             "returns": {
               "description": "Expected return value from the method call. Use true/false for booleans, numbers for numeric returns."
@@ -65,11 +65,79 @@
             "throws": {
               "type": "string",
               "description": "Expected exception type using the Java name. Platform runners map to local exception names (e.g., 'IllegalArgumentException' → 'ArgumentException' in C#, 'ValueError' in Python)."
+            },
+            "returnsEmpty": {
+              "type": "boolean",
+              "description": "When true, the method must return an empty collection (e.g., getBulletStates() → empty Set/List)."
             }
           },
           "additionalProperties": {
             "description": "Additional keys are state field assertions checked after the method call (e.g., 'firepower': 1.5, 'turnRate': 10.0)."
           }
+        },
+        "steps": {
+          "type": "array",
+          "description": "Ordered sequence of operations for scenario tests. Each step is either an addEvent or dispatchEvents action.",
+          "items": { "$ref": "#/$defs/step" }
+        },
+        "expectAfter": {
+          "$ref": "#/$defs/expectAfter"
+        }
+      },
+      "if": {
+        "properties": { "type": { "const": "scenario" } },
+        "required": ["type"]
+      },
+      "then": {
+        "required": ["id", "description", "type", "steps", "expectAfter"]
+      },
+      "else": {
+        "required": ["id", "description", "method", "expected"]
+      }
+    },
+    "step": {
+      "type": "object",
+      "required": ["action"],
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["addEvent", "dispatchEvents"],
+          "description": "The operation to perform."
+        },
+        "eventType": {
+          "type": "string",
+          "description": "Event class simple name for addEvent (e.g., 'WonRoundEvent', 'DeathEvent')."
+        },
+        "turnNumber": {
+          "type": "integer",
+          "description": "Turn number stamped on the event (for addEvent)."
+        },
+        "repeat": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "How many times to repeat this step. Defaults to 1."
+        },
+        "atTurn": {
+          "type": "integer",
+          "description": "Current turn number argument passed to dispatchEvents."
+        }
+      }
+    },
+    "expectAfter": {
+      "type": "object",
+      "description": "Expected outcome after all steps have been executed.",
+      "additionalProperties": false,
+      "properties": {
+        "dispatchOrder": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Expected sequence of dispatched event type names (simple class names) in order."
+        },
+        "queueSize": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Expected number of events remaining in the queue after all steps."
         }
       }
     }

@@ -15,6 +15,7 @@ class TestBot(BaseBot):
         pass
 
 @pytest.mark.BOT
+@pytest.mark.LEGACY
 def test_TR_API_BOT_007_base_bot_accessor_defaults():
     bot = TestBot()
     
@@ -39,12 +40,9 @@ def test_TR_API_BOT_007_base_bot_accessor_defaults():
         _ = bot.gun_direction
     with pytest.raises(BotException):
         _ = bot.radar_direction
-    with pytest.raises(BotException):
-        _ = bot.speed
-    with pytest.raises(BotException):
-        _ = bot.gun_heat
-    with pytest.raises(BotException):
-        _ = bot.bullet_states
+    assert bot.speed == pytest.approx(0.0)
+    assert bot.gun_heat == pytest.approx(0.0)
+    assert bot.bullet_states == []
     with pytest.raises(BotException):
         _ = bot.events
         
@@ -57,6 +55,7 @@ def test_TR_API_BOT_007_base_bot_accessor_defaults():
         _ = bot.game_type
 
 @pytest.mark.BOT
+@pytest.mark.LEGACY
 def test_TR_API_BOT_008_adjustment_flags_default_false():
     bot = TestBot()
     

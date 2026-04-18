@@ -66,9 +66,9 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 | TR-API-EVT-002 | Critical events have isCritical = true | 1 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-EVT-003 | Non-critical events have isCritical = false | 1 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-EVT-004 | Default event priorities match constants | 1 | ✅ | ✅ | ✅ | ✅ |
-| TR-API-EVT-005 | EventQueue priority ordering | 2 | ✅ | ✅ | ✅ | ✅ |
-| TR-API-EVT-006 | EventQueue age culling (non-critical) | 2 | ✅ | ✅ | ✅ | ✅ |
-| TR-API-EVT-007 | EventQueue size cap (MAX_QUEUE_SIZE = 256) | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-EVT-005 | EventQueue priority ordering | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-EVT-006 | EventQueue age culling (non-critical) | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-EVT-007 | EventQueue size cap (MAX_QUEUE_SIZE = 256) | 1 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-EVT-008 | Condition.test() callable and overridable | 2 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-EVT-009 | CustomEvent dispatches when Condition.test() is true | 2 | ✅ | ✅ | ✅ | ✅ |
 
@@ -94,8 +94,8 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 | TR-API-BOT-004 | Math: calcBulletSpeed calculation | 1 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-BOT-005 | Math: calcGunHeat calculation | 1 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-BOT-006 | Math: calcMaxTurnRate at various speeds | 1 | ✅ | ✅ | ✅ | ✅ |
-| TR-API-BOT-007 | BaseBot state accessor defaults | 2 | ✅ | ✅ | ✅ | ✅ |
-| TR-API-BOT-008 | BaseBot adjustment flags default false | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-BOT-007 | BaseBot state accessor defaults | 1 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-BOT-008 | BaseBot adjustment flags default false | 1 | ✅ | ✅ | ✅ | ✅ |
 
 ## UTL — Utilities
 

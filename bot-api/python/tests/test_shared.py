@@ -11,6 +11,10 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../src'))
 
 from robocode_tank_royale.bot_api.internal.base_bot_internals import BaseBotInternals
 from robocode_tank_royale.bot_api.internal.intent_validator import IntentValidator
+from robocode_tank_royale.bot_api.internal.event_queue import EventQueue
+from robocode_tank_royale.bot_api.internal.bot_event_handlers import BotEventHandlers
+from robocode_tank_royale.bot_api.base_bot import BaseBot as BaseBotClass
+from robocode_tank_royale.bot_api.bot_exception import BotException
 from robocode_tank_royale.bot_api.bot_info import BotInfo
 from robocode_tank_royale.bot_api.graphics import Color
 from robocode_tank_royale.bot_api import constants
@@ -83,8 +87,23 @@ def create_event(event_name):
     if event_name == "HitBotEvent": return HitBotEvent(turn_number=0, victim_id=0, energy=0, x=0, y=0, rammed=False)
     raise ValueError(f"Unknown event: {event_name}")
 
+def create_event_at(event_name, turn_number):
+    if event_name == "WonRoundEvent":   return WonRoundEvent(turn_number=turn_number)
+    if event_name == "DeathEvent":      return DeathEvent(turn_number=turn_number)
+    if event_name == "ScannedBotEvent": return ScannedBotEvent(turn_number=turn_number, scanned_by_bot_id=0, scanned_bot_id=0, energy=0, x=0, y=0, direction=0, speed=0)
+    if event_name == "SkippedTurnEvent":return SkippedTurnEvent(turn_number=turn_number)
+    if event_name == "BotDeathEvent":   return BotDeathEvent(turn_number=turn_number, victim_id=0)
+    raise ValueError(f"Unknown event for scenario: {event_name}")
+
 @pytest.mark.parametrize("suite_name, test_case", get_shared_test_cases(), ids=lambda x: f"{x[0]} | {x[1]['id']}" if isinstance(x, tuple) else x)
 def test_shared(suite_name, test_case):
+    if test_case.get('type') == 'scenario':
+        _run_scenario(test_case)
+        return
+    if test_case.get('type') == 'botDefault':
+        _run_bot_default(test_case)
+        return
+
     mock_bot = MagicMock()
     mock_bot.energy = 100.0
     mock_bot.gun_heat = 0.0
@@ -218,3 +237,87 @@ def test_shared(suite_name, test_case):
                     assert actual == pytest.approx(val)
                 else:
                     assert actual == val
+
+
+def _run_scenario(test_case):
+    mock_internals = MagicMock()
+    mock_internals.conditions = []
+    tick = MagicMock()
+    tick.turn_number = 1
+    mock_internals.current_tick_or_throw = tick
+    handlers = MagicMock(spec=BotEventHandlers)
+    queue = EventQueue(mock_internals, handlers)
+
+    for step in test_case.get('steps', []):
+        action = step.get('action')
+        if action == 'addEvent':
+            event_type = step['eventType']
+            turn_number = step['turnNumber']
+            repeat = step.get('repeat', 1)
+            for _ in range(repeat):
+                queue.add_event(create_event_at(event_type, turn_number))
+        elif action == 'dispatchEvents':
+            at_turn = step['atTurn']
+            queue.dispatch_events(at_turn)
+
+    expect_after = test_case.get('expectAfter', {})
+    if 'dispatchOrder' in expect_after:
+        expected_order = expect_after['dispatchOrder']
+        fired_calls = handlers.fire_event.call_args_list
+        assert len(fired_calls) == len(expected_order), f"Dispatch count mismatch: got {len(fired_calls)}, expected {len(expected_order)}"
+        for i, expected_type in enumerate(expected_order):
+            actual = fired_calls[i][0][0]
+            assert type(actual).__name__ == expected_type, f"Event at index {i}: got {type(actual).__name__}, expected {expected_type}"
+    if 'queueSize' in expect_after:
+        expected_size = expect_after['queueSize']
+        assert len(queue.events) == expected_size, f"Queue size mismatch: got {len(queue.events)}, expected {expected_size}"
+
+
+def _run_bot_default(test_case):
+    class BotDefaultStub(BaseBotClass):
+        def __init__(self):
+            super().__init__(BotInfo(name="StubBot", version="1.0", authors=["Author"]))
+        def run(self): pass
+
+    bot = BotDefaultStub()
+
+    method_map = {
+        "getMyId":                  lambda: bot.my_id,
+        "getVariant":               lambda: bot.variant,
+        "getVersion":               lambda: bot.version,
+        "getEnergy":                lambda: bot.energy,
+        "getX":                     lambda: bot.x,
+        "getY":                     lambda: bot.y,
+        "getDirection":             lambda: bot.direction,
+        "getGunDirection":          lambda: bot.gun_direction,
+        "getRadarDirection":        lambda: bot.radar_direction,
+        "getSpeed":                 lambda: bot.speed,
+        "getGunHeat":               lambda: bot.gun_heat,
+        "getBulletStates":          lambda: bot.bullet_states,
+        "getEvents":                lambda: bot.events,
+        "getArenaWidth":            lambda: bot.arena_width,
+        "getArenaHeight":           lambda: bot.arena_height,
+        "getGameType":              lambda: bot.game_type,
+        "isAdjustGunForBodyTurn":   lambda: bot.adjust_gun_for_body_turn,
+        "isAdjustRadarForBodyTurn": lambda: bot.adjust_radar_for_body_turn,
+        "isAdjustRadarForGunTurn":  lambda: bot.adjust_radar_for_gun_turn,
+    }
+
+    call = method_map.get(test_case['method'])
+    if call is None:
+        pytest.fail(f"Unknown botDefault method: {test_case['method']}")
+
+    expected = test_case['expected']
+    if 'throws' in expected:
+        with pytest.raises(BotException):
+            call()
+    elif 'returns' in expected:
+        result = call()
+        exp = expected['returns']
+        if isinstance(exp, (int, float)):
+            assert result == pytest.approx(exp)
+        else:
+            assert result == exp
+    elif 'returnsEmpty' in expected:
+        result = call()
+        assert len(result) == 0, f"Expected empty collection but got {len(result)} items"

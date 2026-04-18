@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using Robocode.TankRoyale.BotApi;
 using Robocode.TankRoyale.BotApi.Internal;
 using Robocode.TankRoyale.BotApi.Events;
 using Robocode.TankRoyale.BotApi.Util;
@@ -48,6 +49,8 @@ public class SharedTestRunner
         [JsonProperty("setup")] public Dictionary<string, object> Setup { get; set; }
         [JsonProperty("args")] public List<object> Args { get; set; }
         [JsonProperty("expected")] public Dictionary<string, object> Expected { get; set; }
+        [JsonProperty("steps")] public List<Dictionary<string, object>> Steps { get; set; }
+        [JsonProperty("expectAfter")] public Dictionary<string, object> ExpectAfter { get; set; }
 
         public override string ToString() => $"{Id}: {Description}";
     }
@@ -71,6 +74,17 @@ public class SharedTestRunner
     [TestCaseSource(nameof(GetSharedTestCases))]
     public void RunSharedTest(string suiteName, TestCase testCase)
     {
+        if (testCase.Type == "scenario")
+        {
+            ExecuteScenario(testCase);
+            return;
+        }
+        if (testCase.Type == "botDefault")
+        {
+            ExecuteBotDefault(testCase);
+            return;
+        }
+
         var mockBot = new TestBot();
         var internals = new BaseBotInternals(mockBot, null, null, null);
 
@@ -247,6 +261,220 @@ public class SharedTestRunner
             "HitBotEvent" => new HitBotEvent(0, 0, 0, 0, 0, false),
             _ => throw new ArgumentException($"Unknown event: {eventName}")
         };
+    }
+
+    private BotEvent CreateEventAt(string eventName, int turnNumber) => eventName switch
+    {
+        "WonRoundEvent"    => new WonRoundEvent(turnNumber),
+        "DeathEvent"       => new DeathEvent(turnNumber),
+        "ScannedBotEvent"  => new ScannedBotEvent(turnNumber, 0, 0, 0, 0, 0, 0, 0),
+        "SkippedTurnEvent" => new SkippedTurnEvent(turnNumber),
+        "BotDeathEvent"    => new BotDeathEvent(turnNumber, 0),
+        _ => throw new ArgumentException($"Unknown event for scenario: {eventName}")
+    };
+
+    private void ExecuteBotDefault(TestCase testCase)
+    {
+        var bot = new BotDefaultStub();
+        Func<object> callMethod = testCase.Method switch
+        {
+            "getMyId"                  => () => bot.MyId,
+            "getVariant"               => () => bot.Variant,
+            "getVersion"               => () => bot.Version,
+            "getEnergy"                => () => bot.Energy,
+            "getX"                     => () => bot.X,
+            "getY"                     => () => bot.Y,
+            "getDirection"             => () => bot.Direction,
+            "getGunDirection"          => () => bot.GunDirection,
+            "getRadarDirection"        => () => bot.RadarDirection,
+            "getSpeed"                 => () => (object)bot.Speed,
+            "getGunHeat"               => () => (object)bot.GunHeat,
+            "getBulletStates"          => () => bot.BulletStates,
+            "getEvents"                => () => bot.Events,
+            "getArenaWidth"            => () => (object)bot.ArenaWidth,
+            "getArenaHeight"           => () => (object)bot.ArenaHeight,
+            "getGameType"              => () => bot.GameType,
+            "isAdjustGunForBodyTurn"   => () => (object)bot.AdjustGunForBodyTurn,
+            "isAdjustRadarForBodyTurn" => () => (object)bot.AdjustRadarForBodyTurn,
+            "isAdjustRadarForGunTurn"  => () => (object)bot.AdjustRadarForGunTurn,
+            _ => throw new NotSupportedException($"Unknown botDefault method: {testCase.Method}")
+        };
+
+        if (testCase.Expected.ContainsKey("throws"))
+        {
+            Assert.Throws<BotException>(() => callMethod());
+        }
+        else
+        {
+            var result = callMethod();
+            if (testCase.Expected.TryGetValue("returns", out var expected))
+            {
+                var parsed = ParseArg(expected);
+                if (parsed is double d && result is double rd)
+                    Assert.That(rd, Is.EqualTo(d).Within(1e-6));
+                else
+                    Assert.That(result, Is.EqualTo(parsed));
+            }
+            else if (testCase.Expected.ContainsKey("returnsEmpty"))
+            {
+                var enumerable = result as System.Collections.IEnumerable;
+                Assert.That(enumerable?.Cast<object>(), Is.Empty);
+            }
+        }
+    }
+
+    private class BotDefaultStub : BaseBot
+    {
+        public BotDefaultStub() : base(new ApiBotInfo(
+            "StubBot", "1.0", new List<string> { "Author" },
+            null, null, null, null, null, null, null))
+        { }
+    }
+
+    private void ExecuteScenario(TestCase testCase)
+    {
+        var botStub = new ScenarioBotStub();
+        var botInfo = new ApiBotInfo("dummy", "1.0", new List<string> { "dummy" }, null, null, null, null, null, null, null);
+        var internals = new BaseBotInternals(botStub, botInfo, new Uri("ws://localhost:7654"), null);
+        var queue = new EventQueue(internals, internals.BotEventHandlers);
+
+        foreach (var step in testCase.Steps)
+        {
+            var action = (string)step["action"];
+            if (action == "addEvent")
+            {
+                var eventType = (string)step["eventType"];
+                var turnNumber = Convert.ToInt32(step["turnNumber"]);
+                var repeat = step.ContainsKey("repeat") ? Convert.ToInt32(step["repeat"]) : 1;
+                for (int i = 0; i < repeat; i++)
+                    queue.AddEvent(CreateEventAt(eventType, turnNumber));
+            }
+            else if (action == "dispatchEvents")
+            {
+                var atTurn = Convert.ToInt32(step["atTurn"]);
+                queue.DispatchEvents(atTurn);
+            }
+        }
+
+        if (testCase.ExpectAfter.TryGetValue("dispatchOrder", out var dispatchOrderRaw))
+        {
+            var expectedOrder = ((Newtonsoft.Json.Linq.JArray)dispatchOrderRaw).ToObject<List<string>>();
+            var fired = botStub.FiredEvents;
+            Assert.That(fired, Has.Count.EqualTo(expectedOrder.Count), "Dispatch count mismatch");
+            for (int i = 0; i < expectedOrder.Count; i++)
+                Assert.That(fired[i].GetType().Name, Is.EqualTo(expectedOrder[i]), $"Event at index {i} mismatch");
+        }
+        if (testCase.ExpectAfter.TryGetValue("queueSize", out var queueSizeRaw))
+        {
+            var expectedSize = Convert.ToInt32(queueSizeRaw);
+            Assert.That(queue.Events(999), Has.Count.EqualTo(expectedSize), "Queue size mismatch");
+        }
+    }
+
+    private class ScenarioBotStub : IBaseBot
+    {
+        public List<BotEvent> FiredEvents { get; } = new();
+        public void Start() {}
+        public void Go() {}
+        public int MyId => 1;
+        public string Variant => "";
+        public string Version => "";
+        public string GameType => "";
+        public int ArenaWidth => 800;
+        public int ArenaHeight => 600;
+        public int NumberOfRounds => 1;
+        public double GunCoolingRate => 0.1;
+        public int? MaxInactivityTurns => 450;
+        public int TurnTimeout => 30000;
+        public int TimeLeft => 0;
+        public int RoundNumber => 1;
+        public int TurnNumber => 1;
+        public int EnemyCount => 0;
+        public double Energy { get; set; } = 100;
+        public bool IsDisabled => Energy <= 0;
+        public double X => 0;
+        public double Y => 0;
+        public double Direction => 0;
+        public double GunDirection => 0;
+        public double RadarDirection => 0;
+        public double Speed => 0;
+        public double GunHeat { get; set; } = 0;
+        public IEnumerable<Robocode.TankRoyale.BotApi.BulletState> BulletStates => new List<Robocode.TankRoyale.BotApi.BulletState>();
+        public IList<BotEvent> Events => new List<BotEvent>();
+        public void ClearEvents() {}
+        public double TurnRate { get; set; }
+        public double MaxTurnRate { get; set; } = 10;
+        public double GunTurnRate { get; set; }
+        public double MaxGunTurnRate { get; set; } = 20;
+        public double RadarTurnRate { get; set; }
+        public double MaxRadarTurnRate { get; set; } = 45;
+        public double TargetSpeed { get; set; }
+        public double MaxSpeed { get; set; } = 8;
+        public bool SetFire(double fp) => false;
+        public double Firepower => 0;
+        public void SetRescan() {}
+        public void SetFireAssist(bool e) {}
+        public bool Interruptible { set {} }
+        public bool AdjustGunForBodyTurn { get; set; }
+        public bool AdjustRadarForBodyTurn { get; set; }
+        public bool AdjustRadarForGunTurn { get; set; }
+        public void SetStop() {}
+        public void SetStop(bool o) {}
+        public void SetResume() {}
+        public bool IsStopped => false;
+        public ICollection<int> TeammateIds => new List<int>();
+        public bool IsTeammate(int id) => false;
+        public void BroadcastTeamMessage(object m) {}
+        public void SendTeamMessage(int id, object m) {}
+        public Robocode.TankRoyale.BotApi.Graphics.Color? BodyColor { get; set; }
+        public Robocode.TankRoyale.BotApi.Graphics.Color? TurretColor { get; set; }
+        public Robocode.TankRoyale.BotApi.Graphics.Color? RadarColor { get; set; }
+        public Robocode.TankRoyale.BotApi.Graphics.Color? BulletColor { get; set; }
+        public Robocode.TankRoyale.BotApi.Graphics.Color? ScanColor { get; set; }
+        public Robocode.TankRoyale.BotApi.Graphics.Color? TracksColor { get; set; }
+        public Robocode.TankRoyale.BotApi.Graphics.Color? GunColor { get; set; }
+        public bool IsDebuggingEnabled => false;
+        public Robocode.TankRoyale.BotApi.Graphics.IGraphics Graphics => null;
+        public void OnConnected(ConnectedEvent e) {}
+        public void OnDisconnected(DisconnectedEvent e) {}
+        public void OnConnectionError(ConnectionErrorEvent e) {}
+        public void OnGameStarted(GameStartedEvent e) {}
+        public void OnGameEnded(GameEndedEvent e) {}
+        public void OnRoundStarted(RoundStartedEvent e) {}
+        public void OnRoundEnded(RoundEndedEvent e) {}
+        public void OnTick(TickEvent e)                      { FiredEvents.Add(e); }
+        public void OnBotDeath(BotDeathEvent e)              { FiredEvents.Add(e); }
+        public void OnDeath(DeathEvent e)                    { FiredEvents.Add(e); }
+        public void OnHitBot(HitBotEvent e)                  { FiredEvents.Add(e); }
+        public void OnHitWall(HitWallEvent e)                { FiredEvents.Add(e); }
+        public void OnBulletFired(BulletFiredEvent e)        { FiredEvents.Add(e); }
+        public void OnHitByBullet(HitByBulletEvent e)       { FiredEvents.Add(e); }
+        public void OnBulletHit(BulletHitBotEvent e)        { FiredEvents.Add(e); }
+        public void OnBulletHitBullet(BulletHitBulletEvent e){ FiredEvents.Add(e); }
+        public void OnBulletHitWall(BulletHitWallEvent e)   { FiredEvents.Add(e); }
+        public void OnScannedBot(ScannedBotEvent e)         { FiredEvents.Add(e); }
+        public void OnSkippedTurn(SkippedTurnEvent e)       { FiredEvents.Add(e); }
+        public void OnWonRound(WonRoundEvent e)             { FiredEvents.Add(e); }
+        public void OnCustomEvent(CustomEvent e)            { FiredEvents.Add(e); }
+        public void OnTeamMessage(TeamMessageEvent e)       { FiredEvents.Add(e); }
+        public bool AddCustomEvent(Condition c) => false;
+        public bool RemoveCustomEvent(Condition c) => false;
+        public int GetEventPriority(Type t) => 0;
+        public void SetEventPriority(Type t, int p) {}
+        public double CalcMaxTurnRate(double s) => 10 - 0.75 * Math.Abs(Math.Clamp(s, -8, 8));
+        public double CalcBulletSpeed(double f) => 20 - 3 * Math.Clamp(f, 0.1, 3.0);
+        public double CalcGunHeat(double f) => 1 + Math.Clamp(f, 0.1, 3.0) / 5;
+        public double CalcBearing(double d) => NormalizeRelativeAngle(d - Direction);
+        public double CalcGunBearing(double d) => NormalizeRelativeAngle(d - GunDirection);
+        public double CalcRadarBearing(double d) => NormalizeRelativeAngle(d - RadarDirection);
+        public double DirectionTo(double x, double y) => NormalizeAbsoluteAngle(180 * Math.Atan2(y - Y, x - X) / Math.PI);
+        public double BearingTo(double x, double y) => NormalizeRelativeAngle(DirectionTo(x, y) - Direction);
+        public double GunBearingTo(double x, double y) => NormalizeRelativeAngle(DirectionTo(x, y) - GunDirection);
+        public double RadarBearingTo(double x, double y) => NormalizeRelativeAngle(DirectionTo(x, y) - RadarDirection);
+        public double DistanceTo(double x, double y) => Math.Sqrt(Math.Pow(x - X, 2) + Math.Pow(y - Y, 2));
+        public double NormalizeAbsoluteAngle(double a) => (a %= 360) >= 0 ? a : (a + 360);
+        public double NormalizeRelativeAngle(double a) => (a %= 360) >= 0 ? ((a < 180) ? a : (a - 360)) : ((a >= -180) ? a : (a + 360));
+        public double CalcDeltaAngle(double t, double s) { var a = t - s; a += (a > 180) ? -360 : (a < -180) ? 360 : 0; return a; }
     }
 
     private class TestCondition : Condition

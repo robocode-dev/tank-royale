@@ -231,56 +231,6 @@ public class EventSystemTest
     }
 
     [Test]
-    [Property("ID", "TR-API-EVT-005")]
-    public void Test_TR_API_EVT_005_Event_Queue_Priority()
-    {
-        var wre = new WonRoundEvent(1); // Critical, Priority 150
-        var de = new DeathEvent(1);     // Critical, Priority 10
-        var sbe = new ScannedBotEvent(1, 1, 2, 100, 100, 100, 0, 0); // Non-critical, Priority 20
-
-        queue.AddEvent(de);
-        queue.AddEvent(wre);
-        queue.AddEvent(sbe);
-
-        queue.DispatchEvents(1);
-
-        Assert.That(botStub.FiredEvents, Has.Count.EqualTo(3));
-        Assert.That(botStub.FiredEvents[0], Is.InstanceOf<WonRoundEvent>());
-        Assert.That(botStub.FiredEvents[1], Is.InstanceOf<DeathEvent>());
-        Assert.That(botStub.FiredEvents[2], Is.InstanceOf<ScannedBotEvent>());
-    }
-
-    [Test]
-    [Property("ID", "TR-API-EVT-006")]
-    public void Test_TR_API_EVT_006_Event_Queue_Age_Culling()
-    {
-        var oldEvent = new ScannedBotEvent(7, 1, 2, 100, 100, 100, 0, 0);
-        var fineEvent = new ScannedBotEvent(8, 1, 2, 100, 100, 100, 0, 0);
-        var oldCritical = new WonRoundEvent(7);
-
-        queue.AddEvent(oldEvent);
-        queue.AddEvent(fineEvent);
-        queue.AddEvent(oldCritical);
-
-        queue.DispatchEvents(10);
-
-        Assert.That(botStub.FiredEvents, Has.Count.EqualTo(2));
-        Assert.That(botStub.FiredEvents[0], Is.InstanceOf<WonRoundEvent>());
-        Assert.That(botStub.FiredEvents[1], Is.InstanceOf<ScannedBotEvent>());
-    }
-
-    [Test]
-    [Property("ID", "TR-API-EVT-007")]
-    public void Test_TR_API_EVT_007_Event_Queue_Size_Cap()
-    {
-        for (int i = 0; i < 266; i++)
-        {
-            queue.AddEvent(new SkippedTurnEvent(i));
-        }
-        Assert.That(queue.Events(300), Has.Count.EqualTo(256));
-    }
-
-    [Test]
     [Property("ID", "TR-API-EVT-008")]
     public void Test_TR_API_EVT_008_Condition_Test_Callable()
     {

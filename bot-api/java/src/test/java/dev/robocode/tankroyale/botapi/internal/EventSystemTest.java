@@ -240,52 +240,6 @@ class EventSystemTest {
     }
 
     @Test
-    @Tag("TR-API-EVT-005")
-    void test_TR_API_EVT_005_event_queue_priority() {
-        WonRoundEvent wre = new WonRoundEvent(1); // Critical, Priority 150
-        DeathEvent de = new DeathEvent(1);     // Critical, Priority 10
-        ScannedBotEvent sbe = new ScannedBotEvent(1, 1, 2, 100, 100, 100, 0, 0); // Non-critical, Priority 20
-
-        queue.addEvent(de);
-        queue.addEvent(wre);
-        queue.addEvent(sbe);
-
-        queue.dispatchEvents(1);
-
-        assertThat(botStub.firedEvents).hasSize(3);
-        assertThat(botStub.firedEvents.get(0)).isInstanceOf(WonRoundEvent.class);
-        assertThat(botStub.firedEvents.get(1)).isInstanceOf(DeathEvent.class);
-        assertThat(botStub.firedEvents.get(2)).isInstanceOf(ScannedBotEvent.class);
-    }
-
-    @Test
-    @Tag("TR-API-EVT-006")
-    void test_TR_API_EVT_006_event_queue_age_culling() {
-        ScannedBotEvent oldEvent = new ScannedBotEvent(7, 1, 2, 100, 100, 100, 0, 0);
-        ScannedBotEvent fineEvent = new ScannedBotEvent(8, 1, 2, 100, 100, 100, 0, 0);
-        WonRoundEvent oldCritical = new WonRoundEvent(7);
-
-        queue.addEvent(oldEvent);
-        queue.addEvent(fineEvent);
-        queue.addEvent(oldCritical);
-
-        queue.dispatchEvents(10);
-
-        assertThat(botStub.firedEvents).hasSize(2);
-        assertThat(botStub.firedEvents.get(0)).isInstanceOf(WonRoundEvent.class);
-        assertThat(botStub.firedEvents.get(1)).isInstanceOf(ScannedBotEvent.class);
-    }
-
-    @Test
-    @Tag("TR-API-EVT-007")
-    void test_TR_API_EVT_007_event_queue_size_cap() {
-        for (int i = 0; i < 266; i++) {
-            queue.addEvent(new SkippedTurnEvent(i));
-        }
-        assertEquals(256, queue.getEvents(300).size());
-    }
-
-    @Test
     @Tag("TR-API-EVT-008")
     void test_TR_API_EVT_008_condition_test_callable() {
         Condition c1 = new Condition("true") {

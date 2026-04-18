@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import { BaseBotInternals } from '../src/internal/BaseBotInternals.js';
@@ -14,8 +14,25 @@ import { BulletState } from '../src/BulletState.js';
 import * as Events from '../src/events/index.js';
 import { Condition } from '../src/events/Condition.js';
 import { BaseBot } from '../src/BaseBot.js';
+import { EventQueue } from '../src/events/EventQueue.js';
+import { EventPriorities } from '../src/events/EventPriorities.js';
+import { EventInterruption } from '../src/events/EventInterruption.js';
+import { BotEventHandlers } from '../src/events/BotEventHandlers.js';
 
 const sharedTestsDir = path.resolve(__dirname, '../../tests/shared');
+
+interface Step {
+  action: string;
+  eventType?: string;
+  turnNumber?: number;
+  repeat?: number;
+  atTurn?: number;
+}
+
+interface ExpectAfter {
+  dispatchOrder?: string[];
+  queueSize?: number;
+}
 
 interface TestCase {
   id: string;
@@ -24,7 +41,9 @@ interface TestCase {
   method: string;
   setup?: Record<string, any>;
   args?: any[];
-  expected: Record<string, any>;
+  expected?: Record<string, any>;
+  steps?: Step[];
+  expectAfter?: ExpectAfter;
 }
 
 interface TestSuite {
@@ -64,6 +83,15 @@ describe('Shared Cross-Platform Tests', () => {
     describe(suite.suite, () => {
       for (const testCase of suite.tests) {
         it(testCase.id + ': ' + testCase.description, () => {
+          if (testCase.type === 'scenario') {
+            executeScenario(testCase);
+            return;
+          }
+          if (testCase.type === 'botDefault') {
+            executeBotDefault(testCase);
+            return;
+          }
+
           const botInfo = new BotInfo("TestBot", "1.0", ["Author"], null, null, null, ["classic"], null, null);
           const mockBot: any = new (class extends BaseBot {
             constructor() { super(botInfo); }
@@ -142,13 +170,13 @@ describe('Shared Cross-Platform Tests', () => {
             }
           };
 
-          if (testCase.expected.throws) {
+          if (testCase.expected!.throws) {
             expect(runAction).toThrow();
           } else {
             runAction();
 
-            if (testCase.expected.returns !== undefined) {
-              const expectedRet = parseArg(testCase.expected.returns);
+            if (testCase.expected!.returns !== undefined) {
+              const expectedRet = parseArg(testCase.expected!.returns);
               if (typeof expectedRet === 'number' && isNaN(expectedRet)) {
                 expect(lastActionValue).toBeNaN();
               } else if (typeof expectedRet === 'string' && expectedRet.startsWith('#')) {
@@ -161,7 +189,7 @@ describe('Shared Cross-Platform Tests', () => {
             }
 
             const intent = (internals as any).intent;
-            for (const [key, val] of Object.entries(testCase.expected)) {
+            for (const [key, val] of Object.entries(testCase.expected!)) {
               if (key === 'returns' || key === 'throws') continue;
 
               let actual: any = null;
@@ -199,9 +227,108 @@ describe('Shared Cross-Platform Tests', () => {
   }
 });
 
+function executeBotDefault(testCase: TestCase): void {
+  class BotDefaultStub extends BaseBot {
+    constructor() {
+      super(new BotInfo("StubBot", "1.0", ["Author"], null, null, null, ["classic"], null, null));
+    }
+    run() {}
+  }
+  const bot = new BotDefaultStub();
+
+  const methodMap: Record<string, () => any> = {
+    'getMyId':                  () => bot.getMyId(),
+    'getVariant':               () => bot.getVariant(),
+    'getVersion':               () => bot.getVersion(),
+    'getEnergy':                () => bot.getEnergy(),
+    'getX':                     () => bot.getX(),
+    'getY':                     () => bot.getY(),
+    'getDirection':             () => bot.getDirection(),
+    'getGunDirection':          () => bot.getGunDirection(),
+    'getRadarDirection':        () => bot.getRadarDirection(),
+    'getSpeed':                 () => bot.getSpeed(),
+    'getGunHeat':               () => bot.getGunHeat(),
+    'getBulletStates':          () => bot.getBulletStates(),
+    'getEvents':                () => bot.getEvents(),
+    'getArenaWidth':            () => bot.getArenaWidth(),
+    'getArenaHeight':           () => bot.getArenaHeight(),
+    'getGameType':              () => bot.getGameType(),
+    'isAdjustGunForBodyTurn':   () => bot.isAdjustGunForBodyTurn(),
+    'isAdjustRadarForBodyTurn': () => bot.isAdjustRadarForBodyTurn(),
+    'isAdjustRadarForGunTurn':  () => bot.isAdjustRadarForGunTurn(),
+  };
+
+  const call = methodMap[testCase.method];
+  if (!call) throw new Error(`Unknown botDefault method: ${testCase.method}`);
+
+  const expected = testCase.expected!;
+
+  if (expected.throws) {
+    expect(call).toThrow();
+  } else if (expected.returns !== undefined) {
+    const result = call();
+    if (typeof expected.returns === 'number') {
+      expect(result).toBeCloseTo(expected.returns, 6);
+    } else {
+      expect(result).toBe(expected.returns);
+    }
+  } else if (expected.returnsEmpty) {
+    const result = call();
+    if (result instanceof Set) {
+      expect(result.size).toBe(0);
+    } else if (Array.isArray(result)) {
+      expect(result.length).toBe(0);
+    }
+  }
+}
+
 function getDefaultPriority(eventName: string): number {
   const normalized = eventName.replace("Event", "").replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase();
   return (DefaultEventPriority as any)[normalized];
+}
+
+function createEventAt(name: string, turn: number): Events.BotEvent {
+  switch (name) {
+    case "WonRoundEvent":    return new Events.WonRoundEvent(turn);
+    case "DeathEvent":       return new Events.DeathEvent(turn);
+    case "ScannedBotEvent":  return new Events.ScannedBotEvent(turn, 0, 0, 0, 0, 0, 0, 0);
+    case "SkippedTurnEvent": return new Events.SkippedTurnEvent(turn);
+    case "BotDeathEvent":    return new Events.BotDeathEvent(turn, 0);
+    default: throw new Error(`Unknown event for scenario: ${name}`);
+  }
+}
+
+function executeScenario(testCase: TestCase): void {
+  const priorities = new EventPriorities();
+  const interruption = new EventInterruption();
+  const queue = new EventQueue(priorities, interruption);
+  const handlers = new BotEventHandlers();
+  const fireSpy = vi.spyOn(handlers, 'fireEvent');
+
+  for (const step of testCase.steps ?? []) {
+    if (step.action === 'addEvent') {
+      const repeat = step.repeat ?? 1;
+      for (let i = 0; i < repeat; i++) {
+        queue.addEvent(createEventAt(step.eventType!, step.turnNumber!));
+      }
+    } else if (step.action === 'dispatchEvents') {
+      queue.dispatchEvents(step.atTurn!, handlers);
+    }
+  }
+
+  const expectAfter = testCase.expectAfter;
+  if (expectAfter?.dispatchOrder) {
+    const fired = fireSpy.mock.calls;
+    expect(fired).toHaveLength(expectAfter.dispatchOrder.length);
+    for (let i = 0; i < expectAfter.dispatchOrder.length; i++) {
+      expect(fired[i][0].constructor.name).toBe(expectAfter.dispatchOrder[i]);
+    }
+  }
+  if (expectAfter?.queueSize !== undefined) {
+    expect(queue.getEvents()).toHaveLength(expectAfter.queueSize);
+  }
+
+  fireSpy.mockRestore();
 }
 
 function createEvent(eventName: string): any {

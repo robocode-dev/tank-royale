@@ -2,6 +2,7 @@ import math
 from typing import Any, Optional, Sequence
 
 from .base_bot_abc import BaseBotABC
+from .bot_exception import BotException
 from .bot_info import BotInfo
 from .constants import *
 from .internal.base_bot_internals import BaseBotInternals
@@ -274,14 +275,12 @@ class BaseBot(BaseBotABC):
             The current X coordinate of the bot.
         """
         tick = self._internals.get_current_tick_or_null()
-        if not tick:
-            assert self._internals.initial_position is not None
-            x = self._internals.initial_position.x
-            assert x is not None
-            return x
-        bot_state = tick.bot_state
-        assert bot_state is not None
-        return bot_state.x
+        if tick is not None:
+            return tick.bot_state.x
+        initial_position = self._internals.initial_position
+        if initial_position is not None:
+            return initial_position.x
+        raise BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first")
 
     @property
     def y(self) -> float:
@@ -291,14 +290,12 @@ class BaseBot(BaseBotABC):
             The current Y coordinate of the bot.
         """
         tick = self._internals.get_current_tick_or_null()
-        if not tick:
-            assert self._internals.initial_position is not None
-            y = self._internals.initial_position.y
-            assert y is not None
-            return y
-        bot_state = tick.bot_state
-        assert bot_state is not None
-        return bot_state.y
+        if tick is not None:
+            return tick.bot_state.y
+        initial_position = self._internals.initial_position
+        if initial_position is not None:
+            return initial_position.y
+        raise BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first")
 
     @property
     def direction(self) -> float:
@@ -308,14 +305,12 @@ class BaseBot(BaseBotABC):
             The current driving direction of the bot.
         """
         tick = self._internals.get_current_tick_or_null()
-        if not tick:
-            assert self._internals.initial_position is not None
-            direction = self._internals.initial_position.direction
-            assert direction is not None
-            return direction
-        bot_state = tick.bot_state
-        assert bot_state is not None
-        return bot_state.direction
+        if tick is not None:
+            return tick.bot_state.direction
+        initial_position = self._internals.initial_position
+        if initial_position is not None:
+            return initial_position.direction
+        raise BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first")
 
     @property
     def gun_direction(self) -> float:
@@ -325,14 +320,12 @@ class BaseBot(BaseBotABC):
             The current gun direction of the bot.
         """
         tick = self._internals.get_current_tick_or_null()
-        if not tick:
-            assert self._internals.initial_position is not None
-            gun_direction = self._internals.initial_position.direction
-            assert gun_direction is not None
-            return gun_direction
-        bot_state = tick.bot_state
-        assert bot_state is not None
-        return bot_state.gun_direction
+        if tick is not None:
+            return tick.bot_state.gun_direction
+        initial_position = self._internals.initial_position
+        if initial_position is not None:
+            return initial_position.direction
+        raise BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first")
 
     @property
     def radar_direction(self) -> float:
@@ -342,14 +335,12 @@ class BaseBot(BaseBotABC):
             The current radar direction of the bot.
         """
         tick = self._internals.get_current_tick_or_null()
-        if not tick:
-            assert self._internals.initial_position is not None
-            radar_direction = self._internals.initial_position.direction
-            assert radar_direction is not None
-            return radar_direction
-        bot_state = tick.bot_state
-        assert bot_state is not None
-        return bot_state.radar_direction
+        if tick is not None:
+            return tick.bot_state.radar_direction
+        initial_position = self._internals.initial_position
+        if initial_position is not None:
+            return initial_position.direction
+        raise BotException("Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first")
 
     @property
     def speed(self) -> float:

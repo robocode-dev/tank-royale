@@ -3,6 +3,8 @@ package dev.robocode.tankroyale.botapi.internal;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dev.robocode.tankroyale.botapi.IBaseBot;
+import dev.robocode.tankroyale.botapi.BaseBot;
+import dev.robocode.tankroyale.botapi.BotException;
 import dev.robocode.tankroyale.botapi.BulletState;
 import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.Constants;
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.TestFactory;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,6 +51,8 @@ public class SharedTestRunner {
         Map<String, Object> setup;
         List<Object> args;
         Map<String, Object> expected;
+        List<Map<String, Object>> steps;
+        Map<String, Object> expectAfter;
 
         @Override
         public String toString() {
@@ -86,6 +91,14 @@ public class SharedTestRunner {
     }
 
     private void executeTest(TestCase testCase) {
+        if ("scenario".equals(testCase.type)) {
+            executeScenario(testCase);
+            return;
+        }
+        if ("botDefault".equals(testCase.type)) {
+            executeBotDefault(testCase);
+            return;
+        }
         // Mocking IBaseBot to provide state for BaseBotInternals
         TestBot mockBot = new TestBot();
         BaseBotInternals internals = new BaseBotInternals(mockBot, null, null, null);
@@ -351,6 +364,124 @@ public class SharedTestRunner {
             case "HitBotEvent": return new HitBotEvent(0, 0, 0, 0, 0, false);
             default: throw new IllegalArgumentException("Unknown event: " + eventName);
         }
+    }
+
+    private BotEvent createEventAt(String eventName, int turnNumber) {
+        switch (eventName) {
+            case "WonRoundEvent":   return new WonRoundEvent(turnNumber);
+            case "DeathEvent":      return new DeathEvent(turnNumber);
+            case "ScannedBotEvent": return new ScannedBotEvent(turnNumber, 0, 0, 0, 0, 0, 0, 0);
+            case "SkippedTurnEvent":return new SkippedTurnEvent(turnNumber);
+            case "BotDeathEvent":   return new BotDeathEvent(turnNumber, 0);
+            default: throw new IllegalArgumentException("Unknown event for scenario: " + eventName);
+        }
+    }
+
+    private void executeBotDefault(TestCase testCase) {
+        BaseBot bot = new BotDefaultStub();
+        if (testCase.expected.containsKey("throws")) {
+            assertThrows(BotException.class, () -> callBotDefaultMethod(bot, testCase.method));
+        } else {
+            Object result = callBotDefaultMethod(bot, testCase.method);
+            if (testCase.expected.containsKey("returns")) {
+                Object expected = parseArg(testCase.expected.get("returns"));
+                if (expected instanceof Number && result instanceof Number) {
+                    assertThat(((Number) result).doubleValue()).isEqualTo(((Number) expected).doubleValue());
+                } else {
+                    assertThat(result).isEqualTo(expected);
+                }
+            } else if (testCase.expected.containsKey("returnsEmpty")) {
+                assertThat((Collection<?>) result).isEmpty();
+            }
+        }
+    }
+
+    private static Object callBotDefaultMethod(BaseBot bot, String method) {
+        switch (method) {
+            case "getMyId":                  return bot.getMyId();
+            case "getVariant":               return bot.getVariant();
+            case "getVersion":               return bot.getVersion();
+            case "getEnergy":                return bot.getEnergy();
+            case "getX":                     return bot.getX();
+            case "getY":                     return bot.getY();
+            case "getDirection":             return bot.getDirection();
+            case "getGunDirection":          return bot.getGunDirection();
+            case "getRadarDirection":        return bot.getRadarDirection();
+            case "getSpeed":                 return bot.getSpeed();
+            case "getGunHeat":               return bot.getGunHeat();
+            case "getBulletStates":          return bot.getBulletStates();
+            case "getEvents":                return bot.getEvents();
+            case "getArenaWidth":            return bot.getArenaWidth();
+            case "getArenaHeight":           return bot.getArenaHeight();
+            case "getGameType":              return bot.getGameType();
+            case "isAdjustGunForBodyTurn":   return bot.isAdjustGunForBodyTurn();
+            case "isAdjustRadarForBodyTurn": return bot.isAdjustRadarForBodyTurn();
+            case "isAdjustRadarForGunTurn":  return bot.isAdjustRadarForGunTurn();
+            default: throw new UnsupportedOperationException("Unknown botDefault method: " + method);
+        }
+    }
+
+    private static class BotDefaultStub extends BaseBot {
+        BotDefaultStub() {
+            super(BotInfo.builder()
+                .setName("StubBot").setVersion("1.0").addAuthor("Author").addGameType("classic").build());
+        }
+    }
+
+    private void executeScenario(TestCase testCase) {
+        ScenarioBotStub botStub = new ScenarioBotStub();
+        BotInfo botInfo = new BotInfo("dummy", "1.0", List.of("dummy"), null, null, null, null, null, null, null);
+        BaseBotInternals internals = new BaseBotInternals(botStub, botInfo, URI.create("ws://localhost:7654"), null);
+        EventQueue queue = new EventQueue(internals, internals.getBotEventHandlers());
+
+        for (Map<String, Object> step : testCase.steps) {
+            String action = (String) step.get("action");
+            if ("addEvent".equals(action)) {
+                String eventType = (String) step.get("eventType");
+                int turnNumber = ((Number) step.get("turnNumber")).intValue();
+                int repeat = step.containsKey("repeat") ? ((Number) step.get("repeat")).intValue() : 1;
+                for (int i = 0; i < repeat; i++) {
+                    queue.addEvent(createEventAt(eventType, turnNumber));
+                }
+            } else if ("dispatchEvents".equals(action)) {
+                int atTurn = ((Number) step.get("atTurn")).intValue();
+                queue.dispatchEvents(atTurn);
+            }
+        }
+
+        Map<String, Object> expectAfter = testCase.expectAfter;
+        if (expectAfter.containsKey("dispatchOrder")) {
+            @SuppressWarnings("unchecked")
+            List<String> expectedOrder = (List<String>) expectAfter.get("dispatchOrder");
+            List<BotEvent> fired = botStub.firedEvents;
+            assertEquals(expectedOrder.size(), fired.size(), "Dispatch count mismatch");
+            for (int i = 0; i < expectedOrder.size(); i++) {
+                assertEquals(expectedOrder.get(i), fired.get(i).getClass().getSimpleName(),
+                        "Event at index " + i + " mismatch");
+            }
+        }
+        if (expectAfter.containsKey("queueSize")) {
+            int expectedSize = ((Number) expectAfter.get("queueSize")).intValue();
+            assertEquals(expectedSize, queue.getEvents(999).size(), "Queue size mismatch");
+        }
+    }
+
+    private static class ScenarioBotStub extends TestBot {
+        final List<BotEvent> firedEvents = new ArrayList<>();
+        @Override public void onDeath(DeathEvent e)                       { firedEvents.add(e); }
+        @Override public void onBotDeath(BotDeathEvent e)                 { firedEvents.add(e); }
+        @Override public void onHitBot(HitBotEvent e)                     { firedEvents.add(e); }
+        @Override public void onHitWall(HitWallEvent e)                   { firedEvents.add(e); }
+        @Override public void onBulletFired(BulletFiredEvent e)           { firedEvents.add(e); }
+        @Override public void onHitByBullet(HitByBulletEvent e)           { firedEvents.add(e); }
+        @Override public void onBulletHit(BulletHitBotEvent e)            { firedEvents.add(e); }
+        @Override public void onBulletHitBullet(BulletHitBulletEvent e)   { firedEvents.add(e); }
+        @Override public void onBulletHitWall(BulletHitWallEvent e)       { firedEvents.add(e); }
+        @Override public void onScannedBot(ScannedBotEvent e)             { firedEvents.add(e); }
+        @Override public void onWonRound(WonRoundEvent e)                 { firedEvents.add(e); }
+        @Override public void onSkippedTurn(SkippedTurnEvent e)           { firedEvents.add(e); }
+        @Override public void onCustomEvent(CustomEvent e)                { firedEvents.add(e); }
+        @Override public void onTeamMessage(TeamMessageEvent e)           { firedEvents.add(e); }
     }
 
     private static class TestBot implements IBaseBot {

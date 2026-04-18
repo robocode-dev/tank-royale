@@ -29,11 +29,11 @@ these areas would go undetected.
 Add three new TR-API categories with 20 new test IDs. Mark them ❌ for platforms where they do
 not yet have tests, ✅ only where they do.
 
-| Category | IDs | Description |
-|----------|-----|-------------|
-| TR-API-EVT | 001–009 | Event system — constructors, critical flags, default priorities, EventQueue, Condition, CustomEvent |
-| TR-API-MDL | 001–004 | Data models — BulletState speed formula, BotState/BotResults/GameSetup field storage |
-| TR-API-BOT (additions) | 002–008 | BaseBot math utilities, state accessor defaults, adjustment flag defaults |
+| Category               | IDs     | Description                                                                                         |
+|------------------------|---------|-----------------------------------------------------------------------------------------------------|
+| TR-API-EVT             | 001–009 | Event system — constructors, critical flags, default priorities, EventQueue, Condition, CustomEvent |
+| TR-API-MDL             | 001–004 | Data models — BulletState speed formula, BotState/BotResults/GameSetup field storage                |
+| TR-API-BOT (additions) | 002–008 | BaseBot math utilities, state accessor defaults, adjustment flag defaults                           |
 
 ### TypeScript tests marked LEGACY → deleted
 
@@ -52,23 +52,23 @@ has no equivalent on other platforms. They stay.
 
 ### New shared JSON test definitions (Tier 1)
 
-| File | TR-API IDs | Content |
-|------|-----------|---------|
-| `bot-api/tests/shared/event-priorities.json` | EVT-002, EVT-003, EVT-004 | isCritical flags for all event types + 15 default priority values |
-| `bot-api/tests/shared/bullet-state.json` | MDL-001 | BulletState speed = 20 − 3×power (positive cases + edge cases) |
-| `bot-api/tests/shared/bot-math.json` | BOT-002 thru BOT-006 | calcBearing, angle normalization, bullet speed, gun heat, max turn rate |
-| `bot-api/tests/shared/constants.json` (extend) | — | GameType enum constants (CLASSIC, MELEE, ONE_VS_ONE) |
+| File                                           | TR-API IDs                | Content                                                                 |
+|------------------------------------------------|---------------------------|-------------------------------------------------------------------------|
+| `bot-api/tests/shared/event-priorities.json`   | EVT-002, EVT-003, EVT-004 | isCritical flags for all event types + 15 default priority values       |
+| `bot-api/tests/shared/bullet-state.json`       | MDL-001                   | BulletState speed = 20 − 3×power (positive cases + edge cases)          |
+| `bot-api/tests/shared/bot-math.json`           | BOT-002 thru BOT-006      | calcBearing, angle normalization, bullet speed, gun heat, max turn rate |
+| `bot-api/tests/shared/constants.json` (extend) | —                         | GameType enum constants (CLASSIC, MELEE, ONE_VS_ONE)                    |
 
 ### New platform tests (Tier 2)
 
-| Platform | New test files | TR-API IDs |
-|----------|---------------|-----------|
-| Python | `tests/bot_api/test_env_vars.py` (new) | TR-API-ENV-001–N (existing, now on Python) |
-| Python | `tests/bot_api/events/test_events.py` (fill empty file) | TR-API-EVT-001, 005–009 |
-| Java | `EventSystemTest.java` | TR-API-EVT-001, 005–009 |
-| C# | `EventSystemTest.cs` | TR-API-EVT-001, 005–009 |
-| Java + C# + Python | BaseBot math test (new) | TR-API-BOT-002–008 |
-| Java + C# + Python | Data model test (new) | TR-API-MDL-002–004 |
+| Platform           | New test files                                          | TR-API IDs                                 |
+|--------------------|---------------------------------------------------------|--------------------------------------------|
+| Python             | `tests/bot_api/test_env_vars.py` (new)                  | TR-API-ENV-001–N (existing, now on Python) |
+| Python             | `tests/bot_api/events/test_events.py` (fill empty file) | TR-API-EVT-001, 005–009                    |
+| Java               | `EventSystemTest.java`                                  | TR-API-EVT-001, 005–009                    |
+| C#                 | `EventSystemTest.cs`                                    | TR-API-EVT-001, 005–009                    |
+| Java + C# + Python | BaseBot math test (new)                                 | TR-API-BOT-002–008                         |
+| Java + C# + Python | Data model test (new)                                   | TR-API-MDL-002–004                         |
 
 ### ADR-0038 updated
 

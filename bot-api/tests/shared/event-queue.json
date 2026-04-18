@@ -1,0 +1,45 @@
+{
+  "suite": "event-queue",
+  "description": "EventQueue priority ordering, age culling, and size cap",
+  "tests": [
+    {
+      "id": "TR-API-EVT-005",
+      "type": "scenario",
+      "description": "Critical events (DeathEvent, WonRoundEvent) are dispatched before non-critical events (ScannedBotEvent) regardless of insertion order",
+      "steps": [
+        { "action": "addEvent", "eventType": "DeathEvent",       "turnNumber": 1 },
+        { "action": "addEvent", "eventType": "WonRoundEvent",    "turnNumber": 1 },
+        { "action": "addEvent", "eventType": "ScannedBotEvent",  "turnNumber": 1 },
+        { "action": "dispatchEvents", "atTurn": 1 }
+      ],
+      "expectAfter": {
+        "dispatchOrder": ["WonRoundEvent", "DeathEvent", "ScannedBotEvent"]
+      }
+    },
+    {
+      "id": "TR-API-EVT-006",
+      "type": "scenario",
+      "description": "Non-critical events older than MAX_EVENT_AGE turns are culled; critical events are always kept",
+      "steps": [
+        { "action": "addEvent", "eventType": "ScannedBotEvent", "turnNumber": 7 },
+        { "action": "addEvent", "eventType": "ScannedBotEvent", "turnNumber": 8 },
+        { "action": "addEvent", "eventType": "WonRoundEvent",   "turnNumber": 7 },
+        { "action": "dispatchEvents", "atTurn": 10 }
+      ],
+      "expectAfter": {
+        "dispatchOrder": ["WonRoundEvent", "ScannedBotEvent"]
+      }
+    },
+    {
+      "id": "TR-API-EVT-007",
+      "type": "scenario",
+      "description": "EventQueue silently discards events beyond the 256-event cap",
+      "steps": [
+        { "action": "addEvent", "eventType": "SkippedTurnEvent", "turnNumber": 0, "repeat": 266 }
+      ],
+      "expectAfter": {
+        "queueSize": 256
+      }
+    }
+  ]
+}

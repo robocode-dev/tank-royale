@@ -17,6 +17,7 @@ public class BaseBotStateTest
 
     [Test]
     [Property("ID", "TR-API-BOT-007")]
+    [Category("LEGACY")]
     public void Test_TR_API_BOT_007_Base_Bot_Accessor_Defaults()
     {
         var bot = new TestBot();
@@ -46,6 +47,7 @@ public class BaseBotStateTest
 
     [Test]
     [Property("ID", "TR-API-BOT-008")]
+    [Category("LEGACY")]
     public void Test_TR_API_BOT_008_Adjustment_Flags_Default_False()
     {
         var bot = new TestBot();

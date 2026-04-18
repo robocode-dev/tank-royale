@@ -22,6 +22,7 @@ class BaseBotStateTest {
 
     @Test
     @Tag("TR-API-BOT-007")
+    @Tag("LEGACY")
     void test_TR_API_BOT_007_base_bot_accessor_defaults() {
         var bot = new TestBot();
         
@@ -50,6 +51,7 @@ class BaseBotStateTest {
 
     @Test
     @Tag("TR-API-BOT-008")
+    @Tag("LEGACY")
     void test_TR_API_BOT_008_adjustment_flags_default_false() {
         var bot = new TestBot();
         

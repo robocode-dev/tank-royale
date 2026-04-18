@@ -12,6 +12,7 @@ class TestBot extends BaseBot {
 
 describe("TR-API-BOT-007: BaseBot accessor defaults", () => {
   it("should throw BotException for state-dependent accessors when no state is available", () => {
+    // LEGACY: Superseded by cross-platform basebot-defaults.json TR-API-BOT-007 JSON tests. Delete once all platforms are ✅.
     const bot = new TestBot();
 
     // Metadata accessors should throw BotException when not connected
@@ -40,6 +41,7 @@ describe("TR-API-BOT-007: BaseBot accessor defaults", () => {
 
 describe("TR-API-BOT-008: Adjustment flags default false", () => {
   it("should have adjustment flags defaulting to false", () => {
+    // LEGACY: Superseded by cross-platform basebot-defaults.json TR-API-BOT-008 JSON tests. Delete once all platforms are ✅.
     const bot = new TestBot();
 
     expect(bot.isAdjustGunForBodyTurn()).toBe(false);
