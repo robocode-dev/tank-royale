@@ -82,8 +82,11 @@ def _from_json_object(obj: dict[str, Any], klass: Type[Any]) -> Any:
 
         if isinstance(value, dict):
             param = sig.parameters[key]
-            param_type = schema.CLASS_MAP[_sanitize_type_str(str(param.annotation))]
-            kwargs[key] = _from_json_object(value, param_type)  # type: ignore
+            param_type = schema.CLASS_MAP.get(_sanitize_type_str(str(param.annotation)))
+            if param_type is not None:
+                kwargs[key] = _from_json_object(value, param_type)  # type: ignore
+            else:
+                kwargs[key] = value
         elif isinstance(value, list):
             param = sig.parameters[key]
             param_type = schema.CLASS_MAP.get(_sanitize_type_str(str(param.annotation)), None)

@@ -297,6 +297,10 @@ class BaseBotInternals:
     def dispatch_events(self, turn_number: int) -> None:
         try:
             self.event_queue.dispatch_events(turn_number)
+        except BotException:
+            # Suppress tick-unavailable errors during round transitions (bot is shutting down)
+            if self.is_running():
+                traceback.print_exc()
         except Exception:
             # Align with Java: do not propagate interruptions from event handling
             traceback.print_exc()
@@ -559,10 +563,10 @@ class BaseBotInternals:
 
         # Only wait if we're in the correct bot thread and bot is running
         with self._next_turn_condition:
-            while (
-                self.is_running()
-                and turn_number == self.data.current_tick_or_throw.turn_number
-            ):
+            while self.is_running():
+                current_tick = self.data.current_tick_or_null
+                if current_tick is None or current_tick.turn_number != turn_number:
+                    break
                 try:
                     # Use timeout to allow periodic check of is_running() flag
                     # This makes the bot thread interruptible for clean shutdown

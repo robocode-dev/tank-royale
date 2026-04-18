@@ -15,6 +15,14 @@
 
 ### 🐞 Bug Fixes
 
+- Bot API (Python):
+    - Fixed Python bots failing to connect to the server when the server's handshake included
+      a `features` field — the JSON deserializer crashed with `KeyError: 'dict'` and the bot
+      never joined the game.
+    - Fixed Python bots throwing `BotException: Tick event is not available` at round
+      boundaries, which could cause the bot thread to terminate unexpectedly or silently skip
+      event handlers (e.g. `on_scanned_bot`) between rounds.
+
 - Bot API (Java, .NET, Python, TypeScript):
     - #202: Fixed radar and gun commands set in `run()` before the first `go()` being silently
       dropped on turn 1. Commands such as `setTurnRadarRight(Double.MAX_VALUE)` in `run()` now
