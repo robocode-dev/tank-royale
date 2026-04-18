@@ -112,6 +112,12 @@ open class ConsolePanel : JPanel() {
         append(AnsiTextBuilder().brightRed().text(error).defaultColor().newline().build(), turnNumber)
     }
 
+    /** Forces an immediate flush of the log queue. Must be called on the EDT. */
+    internal fun flushNow() {
+        require(SwingUtilities.isEventDispatchThread()) { "flushNow() must be called on the EDT" }
+        flushLogQueue()
+    }
+
     fun scrollToBottom() {
         scrollPane.verticalScrollBar.apply { value = maximum }
     }
