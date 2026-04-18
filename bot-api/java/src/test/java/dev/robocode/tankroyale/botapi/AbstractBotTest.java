@@ -214,6 +214,23 @@ abstract class AbstractBotTest {
         } while (!noException && System.currentTimeMillis() - startMillis < 1000);
     }
 
+    protected void awaitTurnNumber(BaseBot bot, int turnNumber) {
+        long startMillis = System.currentTimeMillis();
+        boolean reached = false;
+        do {
+            try {
+                if (bot.getTurnNumber() >= turnNumber) {
+                    reached = true;
+                } else {
+                    Thread.yield();
+                }
+            } catch (BotException ex) {
+                Thread.yield();
+            }
+        } while (!reached && System.currentTimeMillis() - startMillis < 3000);
+        assertThat(reached).as("bot.getTurnNumber() should reach " + turnNumber + " within 3 seconds").isTrue();
+    }
+
     protected void awaitBotIntent() {
         assertThat(server.awaitBotIntent(5000)).isTrue();
     }

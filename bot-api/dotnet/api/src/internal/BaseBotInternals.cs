@@ -800,7 +800,15 @@ sealed class BaseBotInternals
             var type = (string)jsonMsg?["type"];
             if (string.IsNullOrWhiteSpace(type)) return;
 
-            var msgType = (S.MessageType)Enum.Parse(typeof(S.MessageType), type);
+            S.MessageType msgType;
+            try
+            {
+                msgType = (S.MessageType)Enum.Parse(typeof(S.MessageType), type);
+            }
+            catch (ArgumentException)
+            {
+                throw new BotException($"Unsupported WebSocket message type: {type}");
+            }
             switch (msgType)
             {
                 case S.MessageType.TickEventForBot:

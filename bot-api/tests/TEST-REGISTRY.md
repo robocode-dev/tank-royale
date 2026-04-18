@@ -57,6 +57,17 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 | TR-API-TCK-004 | Bot sees first tick state and sends initial intent | 2 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-TCK-005 | WonRoundEvent delivery | 2 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-TCK-006 | Team message delivery | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-007 | BotHandshake contains correct sessionId, name, version, authors, isDroid | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-008 | Bot sends BotReady after GameStarted | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-009 | onRoundStarted fires with roundNumber==1 | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-010 | onRoundEnded fires with roundNumber==1, turnNumber==5 | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-011 | onGameEnded fires with numberOfRounds==10 | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-012 | onSkippedTurn fires with turnNumber==7 | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-013 | Unknown server message type triggers onConnectionError with descriptive message | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-014 | BotDeathEvent(victimId==myId) triggers onDeath (isCritical=true) | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-015 | BotDeathEvent(victimId!=myId) triggers onBotDeath | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-016 | BulletHitBotEvent(victimId==myId) triggers onHitByBullet | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-017 | BulletHitBotEvent(victimId!=myId) triggers onBulletHit | 2 | ✅ | ✅ | ✅ | ✅ |
 
 ## EVT — Events
 
@@ -122,13 +133,13 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 |----------|-----------|------|----|--------|------------|
 | VAL | 5 | 5 | 5 | 5 | 5 |
 | CMD | 3 | 3 | 3 | 3 | 3 |
-| TCK | 3 | 3 | 3 | 3 | 3 |
+| TCK | 14 | 14 | 14 | 14 | 14 |
 | EVT | 9 | 9 | 9 | 9 | 9 |
 | MDL | 4 | 4 | 4 | 4 | 4 |
 | BOT | 11 | 11 | 11 | 11 | 11 |
 | UTL | 3 | 3 | 3 | 3 | 3 |
 | GFX | 4 | 4 | 4 | 4 | 4 |
-| **Total** | **42** | **42** | **42** | **42** | **42** |
+| **Total** | **53** | **53** | **53** | **53** | **53** |
 
 ---
 

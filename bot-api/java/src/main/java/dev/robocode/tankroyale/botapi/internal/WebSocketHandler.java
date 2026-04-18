@@ -99,7 +99,13 @@ final class WebSocketHandler implements WebSocket.Listener {
             JsonElement jsonType = jsonMsg.get("type");
             if (jsonType != null) {
                 String type = jsonType.getAsString();
-                switch (dev.robocode.tankroyale.schema.Message.Type.fromValue(type)) {
+                dev.robocode.tankroyale.schema.Message.Type messageType;
+                try {
+                    messageType = dev.robocode.tankroyale.schema.Message.Type.fromValue(type);
+                } catch (IllegalArgumentException ex) {
+                    throw new BotException("Unsupported WebSocket message type: " + type);
+                }
+                switch (messageType) {
                     case TICK_EVENT_FOR_BOT:
                         handleTick(jsonMsg);
                         break;

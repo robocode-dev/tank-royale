@@ -183,27 +183,27 @@ close the coverage gap on Java, C#, and Python.
 `RuntimeAdapter.test.ts` (Node-vs-browser detection) is TypeScript-architecture-specific
 and needs no counterpart on other platforms.
 
-- [ ] 8.1 Catalogue `WebSocketHandler.test.ts` — classify each `describe` block as one of:
+- [x] 8.1 Catalogue `WebSocketHandler.test.ts` — classify each `describe` block as one of:
     - **cross-platform requirement** (e.g., "ServerHandshake triggers BotHandshake reply
       containing the bot's name and secret", "GameStarted triggers onGameStarted callback")
     - **TypeScript-architecture-specific** (e.g., createWebSocket injection, ws.close proxy)
-- [ ] 8.2 For each cross-platform requirement identified in 8.1, add a new TR-API-TCK ID
+- [x] 8.2 For each cross-platform requirement identified in 8.1, add a new TR-API-TCK ID
   to `TEST-REGISTRY.md` (marked ❌ for every platform that lacks equivalent coverage)
-- [ ] 8.3 Catalogue `Mappers.test.ts` — classify each mapper scenario as:
+- [x] 8.3 Catalogue `Mappers.test.ts` — classify each mapper scenario as:
     - **cross-platform requirement** (the correctness of deserializing protocol JSON into a
       domain object is required everywhere, even if done via Gson/Jackson/Pydantic)
     - **TypeScript-architecture-specific** (the Mapper class itself has no equivalent)
     - For cross-platform requirements, determine whether they are already covered under
       existing TR-API-MDL or TR-API-TCK IDs; add new IDs only for genuine gaps
-- [ ] 8.4 Tag all TypeScript test blocks confirmed as cross-platform requirements in 8.1 and
+- [x] 8.4 Tag all TypeScript test blocks confirmed as cross-platform requirements in 8.1 and
   8.3 as LEGACY — they will be deleted once Java/C#/Python implement the new TR-API-TCK IDs:
     - `WebSocketHandler.test.ts` — add `// LEGACY: Superseded by TR-API-TCK-xxx. Delete once
     all platforms are ✅.` banner comment to each qualifying `describe` block
     - `Mappers.test.ts` — same banner on each qualifying `describe` block
-- [ ] 8.5 Implement all newly-added ❌ TR-API-TCK IDs on Java, C#, and Python
-- [ ] 8.6 Document `RuntimeAdapter.test.ts` as a TypeScript-architecture-specific exception
+- [x] 8.5 Implement all newly-added ❌ TR-API-TCK IDs on Java, C#, and Python
+- [x] 8.6 Document `RuntimeAdapter.test.ts` as a TypeScript-architecture-specific exception
   in ADR-0038 (alongside the existing Mappers/WebSocketHandler note)
-- [ ] 8.7 Run full test suite and confirm all platforms pass the new TR-API-TCK tests
-- [ ] 8.8 **Delete** all LEGACY-tagged `describe` blocks in `WebSocketHandler.test.ts` and
+- [x] 8.7 Run full test suite and confirm all platforms pass the new TR-API-TCK tests
+- [x] 8.8 **Delete** all LEGACY-tagged `describe` blocks in `WebSocketHandler.test.ts` and
   `Mappers.test.ts` (confirmed ✅ on all platforms)
-- [ ] 8.9 Run full test suite and confirm no regressions
+- [x] 8.9 Run full test suite and confirm no regressions

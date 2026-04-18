@@ -254,47 +254,6 @@ describe("EventMapper", () => {
     expect(tick.events).toHaveLength(0);
   });
 
-  it("maps BotDeathEvent with victimId == myBotId to DeathEvent", () => {
-    const ev: SchemaBotDeathEvent = { type: MessageType.BotDeathEvent, turnNumber: 5, victimId: myBotId };
-    const tick = EventMapper.map(makeTick([ev]), myBotId);
-    expect(tick.events[0]).toBeInstanceOf(DeathEvent);
-    expect((tick.events[0] as DeathEvent).isCritical).toBe(true);
-  });
-
-  it("maps BotDeathEvent with other victimId to BotDeathEvent", () => {
-    const ev: SchemaBotDeathEvent = { type: MessageType.BotDeathEvent, turnNumber: 5, victimId: 99 };
-    const tick = EventMapper.map(makeTick([ev]), myBotId);
-    expect(tick.events[0]).toBeInstanceOf(BotDeathEvent);
-    expect((tick.events[0] as BotDeathEvent).victimId).toBe(99);
-  });
-
-  it("maps BulletHitBotEvent with victimId == myBotId to HitByBulletEvent", () => {
-    const ev: SchemaBulletHitBotEvent = {
-      type: MessageType.BulletHitBotEvent,
-      turnNumber: 5,
-      victimId: myBotId,
-      bullet: schemaBullet,
-      damage: 10,
-      energy: 90,
-    };
-    const tick = EventMapper.map(makeTick([ev]), myBotId);
-    expect(tick.events[0]).toBeInstanceOf(HitByBulletEvent);
-  });
-
-  it("maps BulletHitBotEvent with other victimId to BulletHitBotEvent", () => {
-    const ev: SchemaBulletHitBotEvent = {
-      type: MessageType.BulletHitBotEvent,
-      turnNumber: 5,
-      victimId: 99,
-      bullet: schemaBullet,
-      damage: 10,
-      energy: 90,
-    };
-    const tick = EventMapper.map(makeTick([ev]), myBotId);
-    expect(tick.events[0]).toBeInstanceOf(BulletHitBotEvent);
-    expect((tick.events[0] as BulletHitBotEvent).victimId).toBe(99);
-  });
-
   it("maps ScannedBotEvent correctly", () => {
     const ev: SchemaScannedBotEvent = {
       type: MessageType.ScannedBotEvent,

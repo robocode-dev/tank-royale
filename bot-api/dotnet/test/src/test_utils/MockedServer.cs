@@ -87,6 +87,7 @@ public class MockedServer
 
     private readonly EventWaitHandle _openedEvent = new ManualResetEvent(false);
     private readonly EventWaitHandle _botHandshakeEvent = new ManualResetEvent(false);
+    private readonly EventWaitHandle _botReadyEvent = new ManualResetEvent(false);
     private readonly EventWaitHandle _gameStartedEvent = new ManualResetEvent(false);
     private readonly EventWaitHandle _tickEvent = new ManualResetEvent(false);
 
@@ -332,6 +333,20 @@ public class MockedServer
         return false;
     }
 
+    public bool AwaitBotReadyMessage(int milliSeconds)
+    {
+        try
+        {
+            return _botReadyEvent.WaitOne(milliSeconds);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine("AwaitBotReadyMessage: Exception occurred: " + ex);
+        }
+
+        return false;
+    }
+
     public bool AwaitTick(int milliSeconds)
     {
         try
@@ -425,6 +440,7 @@ public class MockedServer
                 break;
 
             case MessageType.BotReady:
+                _botReadyEvent.Set();
                 SendRoundStarted(conn);
                 lock (_stateLock)
                 {
@@ -657,6 +673,11 @@ public class MockedServer
     private static void Send(IWebSocketConnection conn, Object obj)
     {
         conn.Send(JsonConverter.ToJson(obj));
+    }
+
+    public void SendRaw(string json)
+    {
+        _conn?.Send(json);
     }
 
     private static Schema.BulletState CreateBulletState(int id)

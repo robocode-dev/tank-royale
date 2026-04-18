@@ -31,7 +31,8 @@ A deep audit (April 2026) of ~900 test cases across all platforms confirmed iden
 Each test identified by a `TR-API-xxx` acceptance ID must have an implementation on every platform. The **test registry** (`bot-api/tests/TEST-REGISTRY.md`) is the single source of truth for what must be tested and where coverage stands.
 
 **Exceptions and Gaps:**
-- **Language-layer exceptions:** TypeScript-specific internal components (Mappers, RuntimeAdapter, WebSocketHandler) are exempt from cross-platform parity requirements as they represent language-specific implementation details.
+- **Language-layer exceptions:** TypeScript-specific internal components (Mappers, WebSocketHandler) are exempt from cross-platform parity requirements as they represent language-specific implementation details. Their cross-platform semantics are covered by TR-API-TCK IDs.
+- **`RuntimeAdapter.test.ts`:** Tests Node.js/browser runtime detection (TypeScript-architecture-specific; no equivalent on other platforms).
 - **Python EnvVars gap:** The existing gap in Python environment variable validation (TR-API-BOT-001) will be resolved as part of this implementation cycle (Phase 2).
 
 ### 2. Every acceptance ID must have positive and negative tests
