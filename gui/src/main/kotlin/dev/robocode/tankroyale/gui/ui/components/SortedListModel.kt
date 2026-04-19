@@ -15,8 +15,9 @@ class SortedListModel<T : Comparable<T>> : AbstractListModel<T>() {
 
     override fun getElementAt(index: Int): T {
         return synchronized(list) {
-            if (index < list.size) list[index] else null
-        } as T
+            if (index < list.size) list[index]
+            else throw IndexOutOfBoundsException("Index $index out of bounds for size ${list.size}")
+        }
     }
 
     fun addElement(element: T) {
