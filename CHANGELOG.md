@@ -1,5 +1,11 @@
 ## [0.41.0] - TBD - Bot API library updater and stability improvements
 
+This release lays the groundwork for an upcoming TypeScript Bot API. The TypeScript API is
+functional but still under test and lacks documentation, so it is not included in this release.
+The cross-platform test infrastructure, semantic alignment across all Bot APIs, and Python internals
+refactoring introduced here were all necessary steps to make the TypeScript API a first-class
+member of the Bot API family — that work is already done and waiting.
+
 ### ✨ Features
 
 - GUI:
@@ -35,6 +41,15 @@
       runtimes that need startup time (JVM, Python, .NET) from being silently excluded from a
       battle when the server starts before they have finished loading. The setting remains
       adjustable in the Setup Rules dialog.
+
+- Bot API (Java, .NET, Python, TypeScript) / Server:
+    - Significantly expanded the test bed for both the server and all Bot API implementations,
+      adding cross-platform conformance tests that verify all four Bot APIs behave identically for
+      the same inputs — making it easier to catch regressions and keep the APIs in sync across
+      languages. As part of this work, the Python Bot API internals were refactored to align more
+      closely with the Java, .NET, and TypeScript implementations, achieving true 1-to-1 semantic
+      parity across all platforms and making the codebase easier to maintain and debug going
+      forward.
 
 ## [0.40.2] - 2026-04-14 - Bot API stability and intent fixes
 
