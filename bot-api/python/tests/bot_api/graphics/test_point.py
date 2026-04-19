@@ -1,3 +1,5 @@
+import pytest
+pytestmark = [pytest.mark.VAL, pytest.mark.TR_API_VAL_007]
 import unittest
 
 from robocode_tank_royale.bot_api.graphics import Point

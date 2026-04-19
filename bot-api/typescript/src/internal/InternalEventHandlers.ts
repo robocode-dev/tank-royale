@@ -8,6 +8,7 @@ import { DeathEvent } from "../events/DeathEvent.js";
 import { HitBotEvent } from "../events/HitBotEvent.js";
 import { HitWallEvent } from "../events/HitWallEvent.js";
 import { BulletFiredEvent } from "../events/BulletFiredEvent.js";
+import { WonRoundEvent } from "../events/WonRoundEvent.js";
 import { BotEvent } from "../events/BotEvent.js";
 
 /** Minimal marker for internal-only virtual events */
@@ -56,6 +57,8 @@ export class InternalEventHandlers {
       this.onHitWall.publish(event);
     } else if (event instanceof BulletFiredEvent) {
       this.onBulletFired.publish(event);
+    } else if (event instanceof WonRoundEvent) {
+        // Handled by BaseBotInternals directly
     }
   }
 

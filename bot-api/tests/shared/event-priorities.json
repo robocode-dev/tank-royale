@@ -1,0 +1,238 @@
+{
+  "suite": "event-priorities",
+  "description": "Verifies event criticality and default priorities across all platforms",
+  "tests": [
+    {
+      "id": "TR-API-EVT-002-death",
+      "description": "DeathEvent is critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["DeathEvent"],
+      "expected": { "returns": true }
+    },
+    {
+      "id": "TR-API-EVT-002-won-round",
+      "description": "WonRoundEvent is critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["WonRoundEvent"],
+      "expected": { "returns": true }
+    },
+    {
+      "id": "TR-API-EVT-002-skipped-turn",
+      "description": "SkippedTurnEvent is critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["SkippedTurnEvent"],
+      "expected": { "returns": true }
+    },
+    {
+      "id": "TR-API-EVT-003-bot-death",
+      "description": "BotDeathEvent is non-critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["BotDeathEvent"],
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-EVT-003-bot-hit-bot",
+      "description": "BotHitBotEvent is non-critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["BotHitBotEvent"],
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-EVT-003-bot-hit-wall",
+      "description": "BotHitWallEvent is non-critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["BotHitWallEvent"],
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-EVT-003-bullet-fired",
+      "description": "BulletFiredEvent is non-critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["BulletFiredEvent"],
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-EVT-003-bullet-hit-bot",
+      "description": "BulletHitBotEvent is non-critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["BulletHitBotEvent"],
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-EVT-003-bullet-hit-bullet",
+      "description": "BulletHitBulletEvent is non-critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["BulletHitBulletEvent"],
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-EVT-003-bullet-hit-wall",
+      "description": "BulletHitWallEvent is non-critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["BulletHitWallEvent"],
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-EVT-003-hit-by-bullet",
+      "description": "HitByBulletEvent is non-critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["HitByBulletEvent"],
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-EVT-003-scanned-bot",
+      "description": "ScannedBotEvent is non-critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["ScannedBotEvent"],
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-EVT-003-custom",
+      "description": "CustomEvent is non-critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["CustomEvent"],
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-EVT-003-team-message",
+      "description": "TeamMessageEvent is non-critical",
+      "type": "positive",
+      "method": "isCritical",
+      "args": ["TeamMessageEvent"],
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-EVT-004-won-round",
+      "description": "Default priority for WonRoundEvent is 150",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["WonRoundEvent"],
+      "expected": { "returns": 150 }
+    },
+    {
+      "id": "TR-API-EVT-004-skipped-turn",
+      "description": "Default priority for SkippedTurnEvent is 140",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["SkippedTurnEvent"],
+      "expected": { "returns": 140 }
+    },
+    {
+      "id": "TR-API-EVT-004-tick",
+      "description": "Default priority for TickEvent is 130",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["TickEvent"],
+      "expected": { "returns": 130 }
+    },
+    {
+      "id": "TR-API-EVT-004-custom",
+      "description": "Default priority for CustomEvent is 120",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["CustomEvent"],
+      "expected": { "returns": 120 }
+    },
+    {
+      "id": "TR-API-EVT-004-team-message",
+      "description": "Default priority for TeamMessageEvent is 110",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["TeamMessageEvent"],
+      "expected": { "returns": 110 }
+    },
+    {
+      "id": "TR-API-EVT-004-bot-death",
+      "description": "Default priority for BotDeathEvent is 100",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["BotDeathEvent"],
+      "expected": { "returns": 100 }
+    },
+    {
+      "id": "TR-API-EVT-004-bullet-hit-wall",
+      "description": "Default priority for BulletHitWallEvent is 90",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["BulletHitWallEvent"],
+      "expected": { "returns": 90 }
+    },
+    {
+      "id": "TR-API-EVT-004-bullet-hit-bullet",
+      "description": "Default priority for BulletHitBulletEvent is 80",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["BulletHitBulletEvent"],
+      "expected": { "returns": 80 }
+    },
+    {
+      "id": "TR-API-EVT-004-bullet-hit-bot",
+      "description": "Default priority for BulletHitBotEvent is 70",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["BulletHitBotEvent"],
+      "expected": { "returns": 70 }
+    },
+    {
+      "id": "TR-API-EVT-004-bullet-fired",
+      "description": "Default priority for BulletFiredEvent is 60",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["BulletFiredEvent"],
+      "expected": { "returns": 60 }
+    },
+    {
+      "id": "TR-API-EVT-004-hit-by-bullet",
+      "description": "Default priority for HitByBulletEvent is 50",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["HitByBulletEvent"],
+      "expected": { "returns": 50 }
+    },
+    {
+      "id": "TR-API-EVT-004-hit-wall",
+      "description": "Default priority for HitWallEvent is 40",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["HitWallEvent"],
+      "expected": { "returns": 40 }
+    },
+    {
+      "id": "TR-API-EVT-004-hit-bot",
+      "description": "Default priority for HitBotEvent is 30",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["HitBotEvent"],
+      "expected": { "returns": 30 }
+    },
+    {
+      "id": "TR-API-EVT-004-scanned-bot",
+      "description": "Default priority for ScannedBotEvent is 20",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["ScannedBotEvent"],
+      "expected": { "returns": 20 }
+    },
+    {
+      "id": "TR-API-EVT-004-death",
+      "description": "Default priority for DeathEvent is 10",
+      "type": "positive",
+      "method": "getDefaultPriority",
+      "args": ["DeathEvent"],
+      "expected": { "returns": 10 }
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+import pytest
+pytestmark = [pytest.mark.BOT, pytest.mark.TR_API_BOT_001]
 import json
 import os
 from typing import Any

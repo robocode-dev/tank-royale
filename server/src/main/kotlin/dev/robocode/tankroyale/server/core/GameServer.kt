@@ -27,31 +27,20 @@ import java.util.concurrent.ConcurrentHashMap
  * - [modelUpdater] is marked `@Volatile` so its nullability is visible across threads without
  *   requiring [tickLock].
  */
-class GameServer(private val config: ServerConfig) {
+class GameServer(
+    private val config: ServerConfig,
+    private val connectionHandler: ConnectionHandler,
+    private val participantRegistry: ParticipantRegistry,
+    private val lifecycleManager: GameLifecycleManager,
+    private val broadcaster: MessageBroadcaster,
+    private val resultsBuilder: ResultsBuilder,
+    private val gson: Gson = Gson()
+) {
 
     companion object {
         /** Default WebSocket connection-lost detection timeout (seconds), matching java-websocket's own default. */
         private const val DEFAULT_CONNECTION_LOST_TIMEOUT_SECS = 60
     }
-
-    /** JSON handler */
-    private val gson = Gson()
-
-    /** Connection handler for observers and bots */
-    private val connectionHandler =
-        ConnectionHandler(ServerSetup(config.gameTypes), GameServerConnectionListener(this), config.controllerSecrets, config.botSecrets, config.debugModeSupported, config.breakpointModeSupported)
-
-    /** Registry for tracking game participants (bots). */
-    private val participantRegistry = ParticipantRegistry(connectionHandler)
-
-    /** Manager for controlling the game lifecycle. */
-    private val lifecycleManager = GameLifecycleManager()
-
-    /** Broadcaster for sending messages to bots and observers. */
-    private val broadcaster = MessageBroadcaster(connectionHandler, gson)
-
-    /** Builder for result objects sent at game/round end. */
-    private val resultsBuilder = ResultsBuilder({ modelUpdater }, participantRegistry)
 
     /** Current game setup */
     private lateinit var gameSetup: dev.robocode.tankroyale.server.model.GameSetup
@@ -61,7 +50,7 @@ class GameServer(private val config: ServerConfig) {
 
     /** Model updater that keeps track of the game state/model */
     @Volatile
-    private var modelUpdater: ModelUpdater? = null
+    internal var modelUpdater: ModelUpdater? = null
 
     /** Current TPS setting (Turns Per Second) */
     @Volatile
@@ -808,5 +797,5 @@ class GameServer(private val config: ServerConfig) {
 
     private fun getResultsForBot(botId: BotId): ResultsForBot = resultsBuilder.buildResultsForBot(botId)
 
-    private fun getResultsForObservers(): List<ResultsForObserver> = resultsBuilder.buildResultsForObservers()
+    internal fun getResultsForObservers(): List<ResultsForObserver> = resultsBuilder.buildResultsForObservers()
 }

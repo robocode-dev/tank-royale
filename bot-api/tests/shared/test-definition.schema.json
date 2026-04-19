@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://robocode-dev.github.io/tank-royale/schemas/test-definition.schema.json",
+  "title": "Shared Cross-Platform Test Definition",
+  "description": "Defines acceptance test cases that must pass identically on all Bot API platforms (Java, C#, Python, TypeScript).",
+  "type": "object",
+  "required": ["suite", "tests"],
+  "additionalProperties": false,
+  "properties": {
+    "suite": {
+      "type": "string",
+      "description": "Unique suite identifier matching the file name (e.g., 'intent-validation')."
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable summary of what this suite covers."
+    },
+    "tests": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/testCase" }
+    }
+  },
+  "$defs": {
+    "testCase": {
+      "type": "object",
+      "required": ["id", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^TR-API-[A-Z]+-\\d{3}",
+          "description": "Acceptance ID from TEST-REGISTRY.md. Append a short suffix for the specific scenario (e.g., 'TR-API-CMD-002-fire-valid')."
+        },
+        "description": {
+          "type": "string",
+          "description": "What this test case verifies. Include whether it is a positive or negative test."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["positive", "negative", "scenario", "botDefault"],
+          "description": "Test kind: 'positive' (happy path), 'negative' (rejection/edge), 'scenario' (stateful step-sequence), or 'botDefault' (BaseBot accessor default-value contract)."
+        },
+        "method": {
+          "type": "string",
+          "description": "The API method under test, using the Java name (e.g., 'setFire', 'setTurnRate'). Required for positive/negative tests; unused for scenario tests."
+        },
+        "setup": {
+          "type": "object",
+          "description": "Pre-conditions to establish before calling the method. Keys are state field names (e.g., 'energy', 'gunHeat', 'maxTurnRate'). Platform runners translate to local setup.",
+          "additionalProperties": true
+        },
+        "args": {
+          "type": "array",
+          "description": "Positional arguments to pass to the method. Use the string 'NaN' for IEEE NaN, 'Infinity'/'-Infinity' for infinities, and null for absent/null arguments.",
+          "items": {}
+        },
+        "expected": {
+          "type": "object",
+          "description": "Expected outcome for positive/negative tests. At least one of 'returns', field assertions, or 'throws' must be present.",
+          "properties": {
+            "returns": {
+              "description": "Expected return value from the method call. Use true/false for booleans, numbers for numeric returns."
+            },
+            "throws": {
+              "type": "string",
+              "description": "Expected exception type using the Java name. Platform runners map to local exception names (e.g., 'IllegalArgumentException' → 'ArgumentException' in C#, 'ValueError' in Python)."
+            },
+            "returnsEmpty": {
+              "type": "boolean",
+              "description": "When true, the method must return an empty collection (e.g., getBulletStates() → empty Set/List)."
+            }
+          },
+          "additionalProperties": {
+            "description": "Additional keys are state field assertions checked after the method call (e.g., 'firepower': 1.5, 'turnRate': 10.0)."
+          }
+        },
+        "steps": {
+          "type": "array",
+          "description": "Ordered sequence of operations for scenario tests. Each step is either an addEvent or dispatchEvents action.",
+          "items": { "$ref": "#/$defs/step" }
+        },
+        "expectAfter": {
+          "$ref": "#/$defs/expectAfter"
+        }
+      },
+      "if": {
+        "properties": { "type": { "const": "scenario" } },
+        "required": ["type"]
+      },
+      "then": {
+        "required": ["id", "description", "type", "steps", "expectAfter"]
+      },
+      "else": {
+        "required": ["id", "description", "method", "expected"]
+      }
+    },
+    "step": {
+      "type": "object",
+      "required": ["action"],
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["addEvent", "dispatchEvents"],
+          "description": "The operation to perform."
+        },
+        "eventType": {
+          "type": "string",
+          "description": "Event class simple name for addEvent (e.g., 'WonRoundEvent', 'DeathEvent')."
+        },
+        "turnNumber": {
+          "type": "integer",
+          "description": "Turn number stamped on the event (for addEvent)."
+        },
+        "repeat": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "How many times to repeat this step. Defaults to 1."
+        },
+        "atTurn": {
+          "type": "integer",
+          "description": "Current turn number argument passed to dispatchEvents."
+        }
+      }
+    },
+    "expectAfter": {
+      "type": "object",
+      "description": "Expected outcome after all steps have been executed.",
+      "additionalProperties": false,
+      "properties": {
+        "dispatchOrder": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Expected sequence of dispatched event type names (simple class names) in order."
+        },
+        "queueSize": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Expected number of events remaining in the queue after all steps."
+        }
+      }
+    }
+  }
+}

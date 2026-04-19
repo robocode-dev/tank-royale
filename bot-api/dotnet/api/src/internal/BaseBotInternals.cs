@@ -68,8 +68,6 @@ sealed class BaseBotInternals
     private double? _savedGunTurnRate;
     private double? _savedRadarTurnRate;
 
-    private readonly double _absDeceleration;
-
     private readonly HashSet<Events.Condition> _conditions = new();
 
     private int _eventHandlingDisabledTurn;
@@ -103,8 +101,6 @@ sealed class BaseBotInternals
         BotEventHandlers = new BotEventHandlers(baseBot);
         InternalEventHandlers = new InternalEventHandlers();
         _eventQueue = new EventQueue(this, BotEventHandlers);
-
-        _absDeceleration = Math.Abs(Constants.Deceleration);
 
         _maxSpeed = Constants.MaxSpeed;
         _maxTurnRate = Constants.MaxTurnRate;
@@ -462,7 +458,19 @@ sealed class BaseBotInternals
 
     internal string Version => ServerHandshake.Version;
 
-    internal int MyId { get; private set; }
+    private int _myId;
+    internal int MyId
+    {
+        get
+        {
+            if (_myId == 0)
+            {
+                throw new BotException(GameNotRunningMsg);
+            }
+            return _myId;
+        }
+        private set => _myId = value;
+    }
 
     internal GameSetup GameSetup => _gameSetup ?? throw new BotException(GameNotRunningMsg);
 
@@ -486,7 +494,7 @@ sealed class BaseBotInternals
 
     internal bool SetFire(double firepower)
     {
-        if (IsNaN(firepower)) throw new ArgumentException("'firepower' cannot be NaN");
+        IntentValidator.ValidateFirepower(firepower);
 
         if (_baseBot.Energy < firepower || CurrentTickOrThrow.BotState.GunHeat > 0)
             return false; // cannot fire yet
@@ -512,12 +520,7 @@ sealed class BaseBotInternals
         }
         set
         {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("'TurnRate' cannot be NaN");
-            }
-
-            BotIntent.TurnRate = Math.Clamp(value, -_maxTurnRate, _maxTurnRate);
+            BotIntent.TurnRate = IntentValidator.ValidateTurnRate(value, _maxTurnRate);
         }
     }
 
@@ -535,12 +538,7 @@ sealed class BaseBotInternals
         }
         set
         {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("'GunTurnRate' cannot be NaN");
-            }
-
-            BotIntent.GunTurnRate = Math.Clamp(value, -_maxGunTurnRate, _maxGunTurnRate);
+            BotIntent.GunTurnRate = IntentValidator.ValidateGunTurnRate(value, _maxGunTurnRate);
         }
     }
 
@@ -558,12 +556,7 @@ sealed class BaseBotInternals
         }
         set
         {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("'RadarTurnRate' cannot be NaN");
-            }
-
-            BotIntent.RadarTurnRate = Math.Clamp(value, -_maxRadarTurnRate, _maxRadarTurnRate);
+            BotIntent.RadarTurnRate = IntentValidator.ValidateRadarTurnRate(value, _maxRadarTurnRate);
         }
     }
 
@@ -572,12 +565,7 @@ sealed class BaseBotInternals
         get => BotIntent.TargetSpeed ?? 0d;
         set
         {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("'TargetSpeed' cannot be NaN");
-            }
-
-            BotIntent.TargetSpeed = Math.Clamp(value, -_maxSpeed, _maxSpeed);
+            BotIntent.TargetSpeed = IntentValidator.ValidateTargetSpeed(value, _maxSpeed);
         }
     }
 
@@ -586,12 +574,7 @@ sealed class BaseBotInternals
         get => _maxTurnRate;
         set
         {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("'MaxTurnRate' cannot be NaN");
-            }
-
-            _maxTurnRate = Math.Clamp(value, 0, Constants.MaxTurnRate);
+            _maxTurnRate = IntentValidator.ValidateMaxTurnRate(value);
         }
     }
 
@@ -600,12 +583,7 @@ sealed class BaseBotInternals
         get => _maxGunTurnRate;
         set
         {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("'MaxGunTurnRate' cannot be NaN");
-            }
-
-            _maxGunTurnRate = Math.Clamp(value, 0, Constants.MaxGunTurnRate);
+            _maxGunTurnRate = IntentValidator.ValidateMaxGunTurnRate(value);
         }
     }
 
@@ -614,12 +592,7 @@ sealed class BaseBotInternals
         get => _maxRadarTurnRate;
         set
         {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("'MaxRadarTurnRate' cannot be NaN");
-            }
-
-            _maxRadarTurnRate = Math.Clamp(value, 0, Constants.MaxRadarTurnRate);
+            _maxRadarTurnRate = IntentValidator.ValidateMaxRadarTurnRate(value);
         }
     }
 
@@ -628,66 +601,18 @@ sealed class BaseBotInternals
         get => _maxSpeed;
         set
         {
-            if (IsNaN(value))
-            {
-                throw new ArgumentException("'MaxSpeed' cannot be NaN");
-            }
-
-            _maxSpeed = Math.Clamp(value, 0, Constants.MaxSpeed);
+            _maxSpeed = IntentValidator.ValidateMaxSpeed(value);
         }
     }
 
-    /// <summary>
-    /// Returns the new speed based on the current speed and distance to move.
-    ///
-    /// <param name="speed">Is the current speed</param>
-    /// <param name="distance">Is the distance to move</param>
-    /// <return>The new speed</return>
-    /// </summary>
-
-    // Credits for this algorithm goes to Patrick Cupka (aka Voidious),
-    // Julian Kent (aka Skilgannon), and Positive for the original version:
-    // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
     internal double GetNewTargetSpeed(double speed, double distance)
     {
-        if (distance < 0)
-            return -GetNewTargetSpeed(-speed, -distance);
-
-        var targetSpeed = IsPositiveInfinity(distance) ? _maxSpeed : Math.Min(GetMaxSpeed(distance), _maxSpeed);
-
-        return speed >= 0
-            ? Math.Clamp(targetSpeed, speed - _absDeceleration, speed + Constants.Acceleration)
-            : Math.Clamp(targetSpeed, speed - Constants.Acceleration, speed + GetMaxDeceleration(-speed));
-    }
-
-    private double GetMaxSpeed(double distance)
-    {
-        var decelerationTime =
-            Math.Max(1, Math.Ceiling((Math.Sqrt((4 * 2 / _absDeceleration) * distance + 1) - 1) / 2));
-        if (IsPositiveInfinity(decelerationTime))
-            return Constants.MaxSpeed;
-
-        var decelerationDistance = (decelerationTime / 2) * (decelerationTime - 1) * _absDeceleration;
-        return ((decelerationTime - 1) * _absDeceleration) + ((distance - decelerationDistance) / decelerationTime);
-    }
-
-    private double GetMaxDeceleration(double speed)
-    {
-        var decelerationTime = speed / _absDeceleration;
-        var accelerationTime = 1 - decelerationTime;
-
-        return Math.Min(1, decelerationTime) * _absDeceleration +
-               Math.Max(0, accelerationTime) * Constants.Acceleration;
+        return IntentValidator.GetNewTargetSpeed(speed, distance, _maxSpeed);
     }
 
     internal double GetDistanceTraveledUntilStop(double speed)
     {
-        speed = Math.Abs(speed);
-        double distance = 0;
-        while (speed > 0)
-            distance += (speed = GetNewTargetSpeed(speed, 0));
-
-        return distance;
+        return IntentValidator.GetDistanceTraveledUntilStop(speed, _maxSpeed);
     }
 
     internal void ClearConditions()
@@ -757,24 +682,11 @@ sealed class BaseBotInternals
 
     internal void SendTeamMessage(int? teammateId, object message)
     {
-        if (teammateId != null && !TeammateIds.Contains((int)teammateId))
-        {
-            throw new ArgumentException("No teammate was found with the specified 'teammateId': " + teammateId);
-        }
-
-        if (BotIntent.TeamMessages is { Count: Constants.MaxNumberOfTeamMessagesPerTurn })
-            throw new InvalidOperationException(
-                "The maximum number team massages has already been reached: " +
-                Constants.MaxNumberOfTeamMessagesPerTurn);
-
-        if (message == null)
-            throw new ArgumentException("The 'message' of a team message cannot be null");
+        IntentValidator.ValidateTeammateId(teammateId, TeammateIds);
+        IntentValidator.ValidateTeamMessage(message, BotIntent.TeamMessages?.Count ?? 0);
 
         var json = JsonConverter.ToJson(message);
-        var bytes = System.Text.Encoding.UTF8.GetBytes(json);
-        if (bytes.Length > Constants.TeamMessageMaxSize)
-            throw new ArgumentException(
-                $"The team message is larger than the limit of {Constants.TeamMessageMaxSize} bytes (compact JSON format)");
+        IntentValidator.ValidateTeamMessageSize(json);
 
         BotIntent.TeamMessages.Add(new S.TeamMessage
         {
@@ -787,48 +699,46 @@ sealed class BaseBotInternals
     internal Color? BodyColor
     {
         get => _tickEvent?.BotState.BodyColor;
-        set => BotIntent.BodyColor = ToIntentColor(value);
+        set => BotIntent.BodyColor = IntentValidator.ColorToHex(value);
     }
 
     internal Color? TurretColor
     {
         get => _tickEvent?.BotState.TurretColor;
-        set => BotIntent.TurretColor = ToIntentColor(value);
+        set => BotIntent.TurretColor = IntentValidator.ColorToHex(value);
     }
 
     internal Color? RadarColor
     {
         get => _tickEvent?.BotState.RadarColor;
-        set => BotIntent.RadarColor = ToIntentColor(value);
+        set => BotIntent.RadarColor = IntentValidator.ColorToHex(value);
     }
 
     internal Color? BulletColor
     {
         get => _tickEvent?.BotState.BulletColor;
-        set => BotIntent.BulletColor = ToIntentColor(value);
+        set => BotIntent.BulletColor = IntentValidator.ColorToHex(value);
     }
 
     internal Color? ScanColor
     {
         get => _tickEvent?.BotState.ScanColor;
-        set => BotIntent.ScanColor = ToIntentColor(value);
+        set => BotIntent.ScanColor = IntentValidator.ColorToHex(value);
     }
 
     internal Color? TracksColor
     {
         get => _tickEvent?.BotState.TracksColor;
-        set => BotIntent.TracksColor = ToIntentColor(value);
+        set => BotIntent.TracksColor = IntentValidator.ColorToHex(value);
     }
 
     internal Color? GunColor
     {
         get => _tickEvent?.BotState.GunColor;
-        set => BotIntent.GunColor = ToIntentColor(value);
+        set => BotIntent.GunColor = IntentValidator.ColorToHex(value);
     }
 
     internal IGraphics Graphics => _graphicsState.Graphics;
-
-    private static string ToIntentColor(Color? color) => color == null ? null : "#" + ColorUtil.ToHex(color);
 
     internal IEnumerable<BulletState> BulletStates => _tickEvent?.BulletStates ?? ImmutableHashSet<BulletState>.Empty;
 
@@ -890,7 +800,15 @@ sealed class BaseBotInternals
             var type = (string)jsonMsg?["type"];
             if (string.IsNullOrWhiteSpace(type)) return;
 
-            var msgType = (S.MessageType)Enum.Parse(typeof(S.MessageType), type);
+            S.MessageType msgType;
+            try
+            {
+                msgType = (S.MessageType)Enum.Parse(typeof(S.MessageType), type);
+            }
+            catch (ArgumentException)
+            {
+                throw new BotException($"Unsupported WebSocket message type: {type}");
+            }
             switch (msgType)
             {
                 case S.MessageType.TickEventForBot:
@@ -921,11 +839,9 @@ sealed class BaseBotInternals
                     throw new BotException($"Unsupported WebSocket message type: {type}");
             }
         }
-        catch (KeyNotFoundException)
+        catch (Exception e)
         {
-            Console.Error.WriteLine(jsonMsg);
-
-            throw new BotException($"'type' is missing on the JSON message: {json}");
+            HandleConnectionError(e);
         }
     }
 

@@ -1,0 +1,246 @@
+{
+  "suite": "bot-math",
+  "description": "Verifies shared math utilities across all platforms",
+  "tests": [
+    {
+      "id": "TR-API-BOT-002-bearing-0",
+      "description": "calcBearing(0, 0) is 0",
+      "type": "positive",
+      "method": "calcBearing",
+      "args": [0, 0],
+      "expected": { "returns": 0 }
+    },
+    {
+      "id": "TR-API-BOT-002-bearing-90",
+      "description": "calcBearing(0, 90) is 90",
+      "type": "positive",
+      "method": "calcBearing",
+      "args": [0, 90],
+      "expected": { "returns": 90 }
+    },
+    {
+      "id": "TR-API-BOT-002-bearing-180",
+      "description": "calcBearing(0, 180) is -180",
+      "type": "positive",
+      "method": "calcBearing",
+      "args": [0, 180],
+      "expected": { "returns": -180.0 }
+    },
+    {
+      "id": "TR-API-BOT-002-bearing-neg90",
+      "description": "calcBearing(0, -90) is -90",
+      "type": "positive",
+      "method": "calcBearing",
+      "args": [0, -90],
+      "expected": { "returns": -90 }
+    },
+    {
+      "id": "TR-API-BOT-003-norm-abs-0",
+      "description": "normalizeAbsoluteAngle(0) is 0",
+      "type": "positive",
+      "method": "normalizeAbsoluteAngle",
+      "args": [0],
+      "expected": { "returns": 0.0 }
+    },
+    {
+      "id": "TR-API-BOT-003-norm-abs-360",
+      "description": "normalizeAbsoluteAngle(360) is 0",
+      "type": "positive",
+      "method": "normalizeAbsoluteAngle",
+      "args": [360],
+      "expected": { "returns": 0.0 }
+    },
+    {
+      "id": "TR-API-BOT-003-norm-abs-neg1",
+      "description": "normalizeAbsoluteAngle(-1) is 359",
+      "type": "positive",
+      "method": "normalizeAbsoluteAngle",
+      "args": [-1],
+      "expected": { "returns": 359.0 }
+    },
+    {
+      "id": "TR-API-BOT-003-norm-abs-361",
+      "description": "normalizeAbsoluteAngle(361) is 1",
+      "type": "positive",
+      "method": "normalizeAbsoluteAngle",
+      "args": [361],
+      "expected": { "returns": 1.0 }
+    },
+    {
+      "id": "TR-API-BOT-003-norm-abs-neg361",
+      "description": "normalizeAbsoluteAngle(-361) is 359",
+      "type": "positive",
+      "method": "normalizeAbsoluteAngle",
+      "args": [-361],
+      "expected": { "returns": 359.0 }
+    },
+    {
+      "id": "TR-API-BOT-003-norm-abs-180",
+      "description": "normalizeAbsoluteAngle(180) is 180",
+      "type": "positive",
+      "method": "normalizeAbsoluteAngle",
+      "args": [180],
+      "expected": { "returns": 180.0 }
+    },
+    {
+      "id": "TR-API-BOT-003-norm-rel-0",
+      "description": "normalizeRelativeAngle(0) is 0",
+      "type": "positive",
+      "method": "normalizeRelativeAngle",
+      "args": [0],
+      "expected": { "returns": 0.0 }
+    },
+    {
+      "id": "TR-API-BOT-003-norm-rel-180",
+      "description": "normalizeRelativeAngle(180) is -180",
+      "type": "positive",
+      "method": "normalizeRelativeAngle",
+      "args": [180],
+      "expected": { "returns": -180.0 }
+    },
+    {
+      "id": "TR-API-BOT-003-norm-rel-neg180",
+      "description": "normalizeRelativeAngle(-180) is -180",
+      "type": "positive",
+      "method": "normalizeRelativeAngle",
+      "args": [-180],
+      "expected": { "returns": -180.0 }
+    },
+    {
+      "id": "TR-API-BOT-003-norm-rel-181",
+      "description": "normalizeRelativeAngle(181) is -179",
+      "type": "positive",
+      "method": "normalizeRelativeAngle",
+      "args": [181],
+      "expected": { "returns": -179.0 }
+    },
+    {
+      "id": "TR-API-BOT-003-norm-rel-neg181",
+      "description": "normalizeRelativeAngle(-181) is 179",
+      "type": "positive",
+      "method": "normalizeRelativeAngle",
+      "args": [-181],
+      "expected": { "returns": 179.0 }
+    },
+    {
+      "id": "TR-API-BOT-003-norm-rel-360",
+      "description": "normalizeRelativeAngle(360) is 0",
+      "type": "positive",
+      "method": "normalizeRelativeAngle",
+      "args": [360],
+      "expected": { "returns": 0.0 }
+    },
+    {
+      "id": "TR-API-BOT-004-speed-0.0",
+      "description": "Bullet speed for power 0.0 is 19.7 (clamped)",
+      "type": "positive",
+      "method": "calcBulletSpeed",
+      "args": [0.0],
+      "expected": { "returns": 19.7 }
+    },
+    {
+      "id": "TR-API-BOT-004-speed-0.1",
+      "description": "Bullet speed for power 0.1 is 19.7",
+      "type": "positive",
+      "method": "calcBulletSpeed",
+      "args": [0.1],
+      "expected": { "returns": 19.7 }
+    },
+    {
+      "id": "TR-API-BOT-004-speed-0.5",
+      "description": "Bullet speed for power 0.5 is 18.5",
+      "type": "positive",
+      "method": "calcBulletSpeed",
+      "args": [0.5],
+      "expected": { "returns": 18.5 }
+    },
+    {
+      "id": "TR-API-BOT-004-speed-1.0",
+      "description": "Bullet speed for power 1.0 is 17.0",
+      "type": "positive",
+      "method": "calcBulletSpeed",
+      "args": [1.0],
+      "expected": { "returns": 17.0 }
+    },
+    {
+      "id": "TR-API-BOT-004-speed-2.0",
+      "description": "Bullet speed for power 2.0 is 14.0",
+      "type": "positive",
+      "method": "calcBulletSpeed",
+      "args": [2.0],
+      "expected": { "returns": 14.0 }
+    },
+    {
+      "id": "TR-API-BOT-004-speed-3.0",
+      "description": "Bullet speed for power 3.0 is 11.0",
+      "type": "positive",
+      "method": "calcBulletSpeed",
+      "args": [3.0],
+      "expected": { "returns": 11.0 }
+    },
+    {
+      "id": "TR-API-BOT-005-heat-0.1",
+      "description": "Gun heat for power 0.1 is 1.02",
+      "type": "positive",
+      "method": "calcGunHeat",
+      "args": [0.1],
+      "expected": { "returns": 1.02 }
+    },
+    {
+      "id": "TR-API-BOT-005-heat-1.0",
+      "description": "Gun heat for power 1.0 is 1.2",
+      "type": "positive",
+      "method": "calcGunHeat",
+      "args": [1.0],
+      "expected": { "returns": 1.2 }
+    },
+    {
+      "id": "TR-API-BOT-005-heat-2.0",
+      "description": "Gun heat for power 2.0 is 1.4",
+      "type": "positive",
+      "method": "calcGunHeat",
+      "args": [2.0],
+      "expected": { "returns": 1.4 }
+    },
+    {
+      "id": "TR-API-BOT-005-heat-3.0",
+      "description": "Gun heat for power 3.0 is 1.6",
+      "type": "positive",
+      "method": "calcGunHeat",
+      "args": [3.0],
+      "expected": { "returns": 1.6 }
+    },
+    {
+      "id": "TR-API-BOT-006-turnrate-0",
+      "description": "Max turn rate at speed 0 is 10.0",
+      "type": "positive",
+      "method": "calcMaxTurnRate",
+      "args": [0],
+      "expected": { "returns": 10.0 }
+    },
+    {
+      "id": "TR-API-BOT-006-turnrate-5",
+      "description": "Max turn rate at speed 5 is 6.25",
+      "type": "positive",
+      "method": "calcMaxTurnRate",
+      "args": [5],
+      "expected": { "returns": 6.25 }
+    },
+    {
+      "id": "TR-API-BOT-006-turnrate-8",
+      "description": "Max turn rate at speed 8 is 4.0",
+      "type": "positive",
+      "method": "calcMaxTurnRate",
+      "args": [8],
+      "expected": { "returns": 4.0 }
+    },
+    {
+      "id": "TR-API-BOT-006-turnrate-10",
+      "description": "Max turn rate at speed 10 is 4.0 (clamped)",
+      "type": "positive",
+      "method": "calcMaxTurnRate",
+      "args": [10],
+      "expected": { "returns": 4.0 }
+    }
+  ]
+}

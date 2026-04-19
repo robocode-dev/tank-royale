@@ -4,6 +4,8 @@ using Robocode.TankRoyale.BotApi.Util;
 namespace Robocode.TankRoyale.BotApi.Tests.Util;
 
 [Description("TR-API-UTL-003 CountryCode utility")]
+[Category("UTL")]
+[Property("ID", "TR-API-UTL-003")]
 public class CountryCodeTest
 {
     [Test]

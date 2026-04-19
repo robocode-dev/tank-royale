@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.botapi;
 
 import dev.robocode.tankroyale.botapi.internal.json.JsonConverter;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,7 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Simulates RobotColors and Point classes as they would appear in actual bot source files.
  * Tests the real-world scenario of team message passing between MyFirstLeader and MyFirstDroid.
+ * (TR-API-TCK-006)
  */
+@Tag("TCK")
+@Tag("TR-API-TCK-006")
 class TeamMessageRealisticTest {
 
     // These classes simulate what's in MyFirstLeader.java and MyFirstDroid.java

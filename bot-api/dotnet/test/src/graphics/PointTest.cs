@@ -4,6 +4,8 @@ using NUnit.Framework;
 using Robocode.TankRoyale.BotApi.Graphics;
 
 [TestFixture]
+[Category("VAL")]
+[Property("ID", "TR-API-VAL-007")]
 [Description("TR-API-VAL-007 Graphics Point")]
 public class PointTest
 {

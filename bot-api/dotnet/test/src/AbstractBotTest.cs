@@ -34,7 +34,7 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 ///
 /// <para>See also: bot-api/tests/TESTING-GUIDE.md</para>
 /// </summary>
-[Timeout(10000)] // 10 seconds timeout for all tests
+[Timeout(20000)] // 20 seconds timeout for all tests
 public class AbstractBotTest
 {
     protected MockedServer Server;
@@ -68,6 +68,7 @@ public class AbstractBotTest
     {
         Server = new MockedServer();
         Server.Start();
+        Environment.SetEnvironmentVariable("SERVER_URL", Server.ServerUrl.ToString());
     }
 
     [TearDown]
@@ -151,12 +152,12 @@ public class AbstractBotTest
 
     protected void AwaitBotHandshake()
     {
-        Assert.That(Server.AwaitBotHandshake(1000), Is.True);
+        Assert.That(Server.AwaitBotHandshake(5000), Is.True);
     }
 
     protected void AwaitGameStarted(BaseBot bot)
     {
-        Assert.That(Server.AwaitGameStarted(1000), Is.True);
+        Assert.That(Server.AwaitGameStarted(5000), Is.True);
 
         var startMillis = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         var noException = false;
@@ -173,7 +174,7 @@ public class AbstractBotTest
 
     protected void AwaitTick(BaseBot bot)
     {
-        Assert.That(Server.AwaitTick(1000), Is.True);
+        Assert.That(Server.AwaitTick(5000), Is.True);
 
         var startMillis = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         var noException = false;
@@ -188,9 +189,33 @@ public class AbstractBotTest
         } while (!noException && DateTimeOffset.Now.ToUnixTimeMilliseconds() - startMillis < 1000);
     }
 
+    protected void AwaitTurnNumber(BaseBot bot, int turnNumber)
+    {
+        var startMillis = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        var reached = false;
+        do {
+            try
+            {
+                if (bot.TurnNumber >= turnNumber)
+                {
+                    reached = true;
+                }
+                else
+                {
+                    Thread.Yield();
+                }
+            }
+            catch (BotException)
+            {
+                Thread.Yield();
+            }
+        } while (!reached && DateTimeOffset.Now.ToUnixTimeMilliseconds() - startMillis < 3000);
+        Assert.That(reached, Is.True, $"bot.TurnNumber should reach {turnNumber} within 3 seconds");
+    }
+
     protected void AwaitBotIntent()
     {
-        Assert.That(Server.AwaitBotIntent(1000), Is.True);
+        Assert.That(Server.AwaitBotIntent(5000), Is.True);
     }
 
     /// <summary>

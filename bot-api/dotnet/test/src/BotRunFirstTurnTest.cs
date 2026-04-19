@@ -15,6 +15,8 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 /// The thread blocks until tick 1 arrives, after which <c>Run()</c> executes with valid bot state.
 /// </summary>
 [TestFixture]
+[Category("TCK")]
+[Property("ID", "TR-API-TCK-004")]
 [Description("TR-API-TCK-004 First-turn state availability (regression: issue #202)")]
 public class BotRunFirstTurnTest : AbstractBotTest
 {

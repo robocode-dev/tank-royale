@@ -6,7 +6,10 @@ using static Robocode.TankRoyale.BotApi.Tests.Test_utils.EnvironmentVariables;
 
 namespace Robocode.TankRoyale.BotApi.Tests.Internal;
 
-class EnvVarsTest
+[TestFixture]
+[Category("BOT")]
+[Property("ID", "TR-API-BOT-001d")]
+public class EnvVarsTest
 {
     const string MissingEnvVarText = "Missing environment variable: ";
 

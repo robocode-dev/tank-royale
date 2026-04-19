@@ -1,7 +1,9 @@
 package dev.robocode.tankroyale.server.core
 
 import dev.robocode.tankroyale.common.util.Version
-import dev.robocode.tankroyale.server.core.GameServer
+import dev.robocode.tankroyale.server.connection.ConnectionHandler
+import dev.robocode.tankroyale.server.connection.GameServerConnectionListener
+import com.google.gson.Gson
 import dev.robocode.tankroyale.server.cli.SERVER_BANNER_LINES
 import dev.robocode.tankroyale.server.cli.convertPicocliMarkupToAnsi
 import dev.robocode.tankroyale.common.rules.DEFAULT_GAME_TYPE
@@ -22,7 +24,7 @@ class Server : Runnable {
         const val INHERIT = "inherit"
 
         // These vars are written ONCE by the CLI (picocli) before any game thread starts.
-        // After startup they are effectively read-only — no synchronisation needed for reads.
+        // After startup, they are effectively read-only — no synchronisation needed for reads.
         // @GuardedBy("written before game threads start; read-only thereafter")
 
         /** Server port or "inherit" to use an inherited socket channel. */
@@ -152,7 +154,32 @@ class Server : Runnable {
             breakpointModeSupported = breakpointModeSupported
         )
 
-        gameServer = GameServer(config)
+        val gson = Gson()
+        var gameServerPtr: GameServer? = null
+        val connectionHandler = ConnectionHandler(
+            ServerSetup(config.gameTypes),
+            GameServerConnectionListener { gameServerPtr!! },
+            config.controllerSecrets,
+            config.botSecrets,
+            config.debugModeSupported,
+            config.breakpointModeSupported
+        )
+        val participantRegistry = ParticipantRegistry(connectionHandler)
+        val broadcaster = MessageBroadcaster(connectionHandler, gson)
+        val lifecycleManager = GameLifecycleManager()
+        val resultsBuilder = ResultsBuilder({ gameServerPtr?.modelUpdater }, participantRegistry)
+
+        gameServer = GameServer(
+            config,
+            connectionHandler,
+            participantRegistry,
+            lifecycleManager,
+            broadcaster,
+            resultsBuilder,
+            gson
+        )
+        gameServerPtr = gameServer
+
         gameServer.start()
     }
 

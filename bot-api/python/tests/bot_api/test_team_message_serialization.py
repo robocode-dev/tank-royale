@@ -1,7 +1,10 @@
 """
 Test to simulate team message serialization/deserialization between MyFirstLeader and MyFirstDroid.
 This test reproduces the exact scenario where colors are sent from leader to droid.
+(TR-API-TCK-006)
 """
+import pytest
+pytestmark = [pytest.mark.TCK, pytest.mark.TR_API_TCK_006]
 import unittest
 from dataclasses import dataclass
 

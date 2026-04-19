@@ -1,6 +1,6 @@
 # ADR-0038: Cross-Platform Test Parity and Shared Test Definitions
 
-**Status:** Proposed  
+**Status:** Accepted  
 **Date:** 2026-04-14
 
 ---
@@ -30,6 +30,11 @@ A deep audit (April 2026) of ~900 test cases across all platforms confirmed iden
 
 Each test identified by a `TR-API-xxx` acceptance ID must have an implementation on every platform. The **test registry** (`bot-api/tests/TEST-REGISTRY.md`) is the single source of truth for what must be tested and where coverage stands.
 
+**Exceptions and Gaps:**
+- **Language-layer exceptions:** TypeScript-specific internal components (Mappers, WebSocketHandler) are exempt from cross-platform parity requirements as they represent language-specific implementation details. Their cross-platform semantics are covered by TR-API-TCK IDs.
+- **`RuntimeAdapter.test.ts`:** Tests Node.js/browser runtime detection (TypeScript-architecture-specific; no equivalent on other platforms).
+- **Python EnvVars gap:** The existing gap in Python environment variable validation (TR-API-BOT-001) will be resolved as part of this implementation cycle (Phase 2).
+
 ### 2. Every acceptance ID must have positive and negative tests
 
 Each `TR-API-xxx` ID must include both:
@@ -50,7 +55,7 @@ All tests must be tagged using each platform's native tagging mechanism:
 | Python | `@pytest.mark.CMD` | pytest marker | Test function name contains `TR_API_CMD_001` |
 | TypeScript | `describe("TR-API-CMD-001: ...")` | File-level grouping | describe block name prefix |
 
-**Category tags** (for filtering by area): `VAL`, `CMD`, `TCK`, `BOT`, `UTL`, `GFX`, `Reliability`
+**Category tags** (for filtering by area): `VAL`, `CMD`, `TCK`, `EVT`, `MDL`, `BOT`, `UTL`, `GFX`, `Reliability`
 
 **Lifecycle tags** (for migration):
 - `LEGACY` — old test that will be replaced by a new shared-definition test. Keep running until the replacement is green on all platforms, then delete.
@@ -242,6 +247,9 @@ Platform runners must map Java exception names from `expected.throws` to local e
 | `botinfo-validation.json` | VAL | Required fields, field length limits, invalid inputs |
 | `color-values.json` | GFX | RGBA construction, hex conversion, named constants |
 | `constants.json` | VAL | API constant values match across platforms |
+| `event-priorities.json` | EVT | Critical flags, default event priorities (TR-API-EVT-002..004) |
+| `bullet-state.json` | MDL | Bullet speed calculation based on power (TR-API-MDL-001) |
+| `bot-math.json` | BOT | Math: calcBearing, angle normalization, gun heat, turn rates (TR-API-BOT-002..006) |
 
 ### Per-Platform Runner (Tier 1)
 

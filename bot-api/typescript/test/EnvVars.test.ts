@@ -4,6 +4,7 @@ import { BotException } from "../src/BotException.js";
 import { RuntimeAdapter } from "../src/runtime/RuntimeAdapter.js";
 import { WebSocketLike } from "../src/runtime/WebSocketLike.js";
 
+
 /** Creates a mock RuntimeAdapter backed by a plain object map. */
 function makeAdapter(env: Record<string, string | undefined>): RuntimeAdapter {
   return {

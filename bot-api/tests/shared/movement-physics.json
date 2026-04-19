@@ -1,0 +1,62 @@
+{
+  "suite": "movement-physics",
+  "description": "Validates movement physics (optimal velocity and stopping distance calculations)",
+  "tests": [
+    {
+      "id": "TR-API-CMD-001-newtargetspeed-acceleration",
+      "description": "getNewTargetSpeed accelerates when distance is large",
+      "type": "positive",
+      "method": "getNewTargetSpeed",
+      "args": [0.0, 100.0, 8.0],
+      "expected": { "returns": 1.0 }
+    },
+    {
+      "id": "TR-API-CMD-001-newtargetspeed-deceleration",
+      "description": "getNewTargetSpeed decelerates to stop at distance 0",
+      "type": "positive",
+      "method": "getNewTargetSpeed",
+      "args": [8.0, 0.0, 8.0],
+      "expected": { "returns": 6.0 }
+    },
+    {
+      "id": "TR-API-CMD-001-newtargetspeed-maxspeed",
+      "description": "getNewTargetSpeed respects maxSpeed (via deceleration)",
+      "type": "positive",
+      "method": "getNewTargetSpeed",
+      "args": [8.0, 100.0, 4.0],
+      "expected": { "returns": 6.0 }
+    },
+    {
+      "id": "TR-API-CMD-001-newtargetspeed-negative-distance",
+      "description": "getNewTargetSpeed handles negative distance (moving backward)",
+      "type": "positive",
+      "method": "getNewTargetSpeed",
+      "args": [0.0, -100.0, 8.0],
+      "expected": { "returns": -1.0 }
+    },
+    {
+      "id": "TR-API-CMD-001-distancetostop-8",
+      "description": "getDistanceTraveledUntilStop for speed 8.0 is 12.0",
+      "type": "positive",
+      "method": "getDistanceTraveledUntilStop",
+      "args": [8.0, 8.0],
+      "expected": { "returns": 12.0 }
+    },
+    {
+      "id": "TR-API-CMD-001-distancetostop-2",
+      "description": "getDistanceTraveledUntilStop for speed 2.0 is 0.0",
+      "type": "positive",
+      "method": "getDistanceTraveledUntilStop",
+      "args": [2.0, 8.0],
+      "expected": { "returns": 0.0 }
+    },
+    {
+      "id": "TR-API-CMD-001-distancetostop-negative",
+      "description": "getDistanceTraveledUntilStop for negative speed (returns absolute distance)",
+      "type": "positive",
+      "method": "getDistanceTraveledUntilStop",
+      "args": [-8.0, 8.0],
+      "expected": { "returns": 12.0 }
+    }
+  ]
+}

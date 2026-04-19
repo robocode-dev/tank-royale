@@ -1,0 +1,54 @@
+{
+  "suite": "bullet-state",
+  "description": "Verifies data model logic for bullets across all platforms",
+  "tests": [
+    {
+      "id": "TR-API-MDL-001-speed-0.0",
+      "description": "Bullet speed for power 0.0 is 19.7 (clamped)",
+      "type": "positive",
+      "method": "calcBulletSpeed",
+      "args": [0.0],
+      "expected": { "returns": 19.7 }
+    },
+    {
+      "id": "TR-API-MDL-001-speed-0.1",
+      "description": "Bullet speed for power 0.1 is 19.7",
+      "type": "positive",
+      "method": "calcBulletSpeed",
+      "args": [0.1],
+      "expected": { "returns": 19.7 }
+    },
+    {
+      "id": "TR-API-MDL-001-speed-0.5",
+      "description": "Bullet speed for power 0.5 is 18.5",
+      "type": "positive",
+      "method": "calcBulletSpeed",
+      "args": [0.5],
+      "expected": { "returns": 18.5 }
+    },
+    {
+      "id": "TR-API-MDL-001-speed-1.0",
+      "description": "Bullet speed for power 1.0 is 17.0",
+      "type": "positive",
+      "method": "calcBulletSpeed",
+      "args": [1.0],
+      "expected": { "returns": 17.0 }
+    },
+    {
+      "id": "TR-API-MDL-001-speed-2.0",
+      "description": "Bullet speed for power 2.0 is 14.0",
+      "type": "positive",
+      "method": "calcBulletSpeed",
+      "args": [2.0],
+      "expected": { "returns": 14.0 }
+    },
+    {
+      "id": "TR-API-MDL-001-speed-3.0",
+      "description": "Bullet speed for power 3.0 is 11.0",
+      "type": "positive",
+      "method": "calcBulletSpeed",
+      "args": [3.0],
+      "expected": { "returns": 11.0 }
+    }
+  ]
+}

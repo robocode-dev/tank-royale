@@ -1,0 +1,118 @@
+{
+  "suite": "constants",
+  "description": "Validates that API constants match across all platforms",
+  "tests": [
+    {
+      "id": "TR-API-VAL-005-constants-physics",
+      "description": "Core physics constants",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MAX_SPEED"],
+      "expected": { "returns": 8 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-accel",
+      "description": "Acceleration and deceleration",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["ACCELERATION"],
+      "expected": { "returns": 1 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-decel",
+      "description": "Deceleration",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["DECELERATION"],
+      "expected": { "returns": -2 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-turn-rates",
+      "description": "Max turn rates",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MAX_TURN_RATE"],
+      "expected": { "returns": 10 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-gun-turn-rate",
+      "description": "Max gun turn rate",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MAX_GUN_TURN_RATE"],
+      "expected": { "returns": 20 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-radar-turn-rate",
+      "description": "Max radar turn rate",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MAX_RADAR_TURN_RATE"],
+      "expected": { "returns": 45 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-gametype-classic",
+      "description": "GameType CLASSIC",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["CLASSIC"],
+      "expected": { "returns": "classic" }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-gametype-melee",
+      "description": "GameType MELEE",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MELEE"],
+      "expected": { "returns": "melee" }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-gametype-1v1",
+      "description": "GameType ONE_VS_ONE",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["ONE_VS_ONE"],
+      "expected": { "returns": "1v1" }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-inactivity-zap",
+      "description": "Inactivity zap damage per turn",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["INACTIVITY_ZAP"],
+      "expected": { "returns": 0.1 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-ram-damage",
+      "description": "Ram damage per collision",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["RAM_DAMAGE"],
+      "expected": { "returns": 0.6 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-starting-gun-heat",
+      "description": "Starting gun heat",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["STARTING_GUN_HEAT"],
+      "expected": { "returns": 3.0 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-team-message-max-size",
+      "description": "Maximum team message size in bytes",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["TEAM_MESSAGE_MAX_SIZE"],
+      "expected": { "returns": 32768 }
+    },
+    {
+      "id": "TR-API-VAL-005-constants-max-team-messages-per-turn",
+      "description": "Maximum team messages per turn",
+      "type": "positive",
+      "method": "getConstant",
+      "args": ["MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN"],
+      "expected": { "returns": 10 }
+    }
+  ]
+}

@@ -1,9 +1,11 @@
+from typing import TYPE_CHECKING, List, Sequence, Optional
 from collections import deque
 from threading import Lock
 
+if TYPE_CHECKING:
+    from .base_bot_internals import BaseBotInternals
 
 from ..events import CustomEvent, BotEvent, TickEvent
-from .base_bot_internal_data import BaseBotInternalData
 from .bot_event_handlers import BotEventHandlers
 from .event_interruption import EventInterruption
 from .event_priorities import EventPriorities
@@ -20,8 +22,8 @@ class EventQueue:
     MAX_QUEUE_SIZE = 256
     MAX_EVENT_AGE = 2
 
-    def __init__(self, base_bot_internal_data: BaseBotInternalData, bot_event_handlers: BotEventHandlers):
-        self.base_bot_internal_data = base_bot_internal_data
+    def __init__(self, base_bot_internals: "BaseBotInternals", bot_event_handlers: BotEventHandlers):
+        self.base_bot_internals = base_bot_internals
         self.bot_event_handlers = bot_event_handlers
         self.events: deque[BotEvent] = deque()
         self.events_lock = Lock()
@@ -31,7 +33,7 @@ class EventQueue:
     def clear(self) -> None:
         """Clears all events in the queue and custom event conditions."""
         self.clear_events()
-        self.base_bot_internal_data.conditions.clear()  # conditions might be added in the bots run() method each round
+        self.base_bot_internals.conditions.clear()  # conditions might be added in the bots run() method each round
         self.current_top_event_priority = float('-inf')
 
     def get_events(self, turn_number: int) -> list[BotEvent]:
@@ -105,7 +107,7 @@ class EventQueue:
                     EventInterruption.set_interruptible(type(self.current_top_event), False)  # clear interruptible flag
 
                     # Mark that the current handler was interrupted so API methods can react accordingly
-                    self.base_bot_internal_data.was_current_event_interrupted = True
+                    self.base_bot_internals.was_current_event_interrupted = True
 
                     # We are already in an event handler, took action, and a new event was generated.
                     # So we want to break out of the old handler to process the new event here.
@@ -181,10 +183,10 @@ class EventQueue:
                 print(f"Maximum event queue size has been reached: {EventQueue.MAX_QUEUE_SIZE}")
 
     def add_custom_events(self):
-        for condition in self.base_bot_internal_data.conditions:
+        for condition in self.base_bot_internals.conditions:
             if condition.test():
                 self.add_event(
-                    CustomEvent(self.base_bot_internal_data.current_tick_or_throw.turn_number, condition))
+                    CustomEvent(self.base_bot_internals.current_tick_or_throw.turn_number, condition))
 
     def dump_events(self, turn_number: int):
         string_joiner = ", ".join(

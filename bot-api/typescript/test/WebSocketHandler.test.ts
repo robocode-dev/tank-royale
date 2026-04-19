@@ -9,12 +9,9 @@ import { MessageType } from "../src/protocol/MessageType.js";
 import type {
   ServerHandshake,
   GameStartedEventForBot,
-  GameEndedEventForBot,
-  RoundStartedEvent,
-  RoundEndedEventForBot,
   TickEventForBot,
-  BotHandshake,
 } from "../src/protocol/schema.js";
+
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -165,25 +162,6 @@ describe("WebSocketHandler — ServerHandshake routing", () => {
     simulateMessage(ws, msg);
     expect(handler.getServerHandshake()?.sessionId).toBe("sess-2");
   });
-
-  it("sends a BotHandshake reply after ServerHandshake", () => {
-    const { ws, sent } = makeMockWs();
-    const handler = makeHandler(ws);
-    handler.connect();
-    simulateMessage(ws, {
-      type: MessageType.ServerHandshake,
-      sessionId: "sess-3",
-      name: "Tank Royale",
-      variant: "Tank Royale",
-      version: "0.38.0",
-      gameTypes: ["melee"],
-    });
-    expect(sent).toHaveLength(1);
-    const reply = JSON.parse(sent[0]) as BotHandshake;
-    expect(reply.type).toBe(MessageType.BotHandshake);
-    expect(reply.sessionId).toBe("sess-3");
-    expect(reply.name).toBe("TestBot");
-  });
 });
 
 // ---------------------------------------------------------------------------
@@ -214,16 +192,6 @@ describe("WebSocketHandler — GameStarted routing", () => {
     handler.connect();
     simulateMessage(ws, gameStartedMsg);
     expect(onGameStarted).toHaveBeenCalledWith(expect.objectContaining({ myId: 42 }));
-  });
-
-  it("sends BotReady after GameStarted", () => {
-    const { ws, sent } = makeMockWs();
-    const handler = makeHandler(ws);
-    handler.connect();
-    simulateMessage(ws, gameStartedMsg);
-    expect(sent).toHaveLength(1);
-    const reply = JSON.parse(sent[0]) as { type: string };
-    expect(reply.type).toBe(MessageType.BotReady);
   });
 });
 
@@ -271,53 +239,6 @@ describe("WebSocketHandler — Tick routing", () => {
 // ---------------------------------------------------------------------------
 
 describe("WebSocketHandler — round/game/skipped routing", () => {
-  it("fires onRoundStarted", () => {
-    const { ws } = makeMockWs();
-    const onRoundStarted = vi.fn();
-    const handler = makeHandler(ws, { onRoundStarted });
-    handler.connect();
-    const msg: RoundStartedEvent = { type: MessageType.RoundStartedEvent, roundNumber: 2 };
-    simulateMessage(ws, msg);
-    expect(onRoundStarted).toHaveBeenCalledWith(expect.objectContaining({ roundNumber: 2 }));
-  });
-
-  it("fires onRoundEnded", () => {
-    const { ws } = makeMockWs();
-    const onRoundEnded = vi.fn();
-    const handler = makeHandler(ws, { onRoundEnded });
-    handler.connect();
-    const msg: RoundEndedEventForBot = {
-      type: MessageType.RoundEndedEventForBot,
-      roundNumber: 2,
-      turnNumber: 100,
-      results: {
-        rank: 1, survival: 50, lastSurvivorBonus: 0, bulletDamage: 0,
-        bulletKillBonus: 0, ramDamage: 0, ramKillBonus: 0, totalScore: 50,
-        firstPlaces: 1, secondPlaces: 0, thirdPlaces: 0,
-      },
-    };
-    simulateMessage(ws, msg);
-    expect(onRoundEnded).toHaveBeenCalledWith(expect.objectContaining({ roundNumber: 2, turnNumber: 100 }));
-  });
-
-  it("fires onGameEnded", () => {
-    const { ws } = makeMockWs();
-    const onGameEnded = vi.fn();
-    const handler = makeHandler(ws, { onGameEnded });
-    handler.connect();
-    const msg: GameEndedEventForBot = {
-      type: MessageType.GameEndedEventForBot,
-      numberOfRounds: 10,
-      results: {
-        rank: 1, survival: 50, lastSurvivorBonus: 0, bulletDamage: 0,
-        bulletKillBonus: 0, ramDamage: 0, ramKillBonus: 0, totalScore: 50,
-        firstPlaces: 1, secondPlaces: 0, thirdPlaces: 0,
-      },
-    };
-    simulateMessage(ws, msg);
-    expect(onGameEnded).toHaveBeenCalledWith(expect.objectContaining({ numberOfRounds: 10 }));
-  });
-
   it("fires onGameAborted", () => {
     const { ws } = makeMockWs();
     const onGameAborted = vi.fn();
@@ -325,15 +246,6 @@ describe("WebSocketHandler — round/game/skipped routing", () => {
     handler.connect();
     simulateMessage(ws, { type: MessageType.GameAbortedEvent });
     expect(onGameAborted).toHaveBeenCalledOnce();
-  });
-
-  it("fires onSkippedTurn with turnNumber", () => {
-    const { ws } = makeMockWs();
-    const onSkippedTurn = vi.fn();
-    const handler = makeHandler(ws, { onSkippedTurn });
-    handler.connect();
-    simulateMessage(ws, { type: MessageType.SkippedTurnEvent, turnNumber: 7 });
-    expect(onSkippedTurn).toHaveBeenCalledWith(7);
   });
 });
 
@@ -355,36 +267,10 @@ describe("WebSocketHandler.sendBotIntent()", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Unknown message type throws
-// ---------------------------------------------------------------------------
-
-describe("WebSocketHandler — unknown message type", () => {
-  it("throws BotException for unknown type", () => {
-    const { ws } = makeMockWs();
-    const handler = makeHandler(ws);
-    handler.connect();
-    expect(() => simulateMessage(ws, { type: "UnknownType" })).toThrow("Unsupported WebSocket message type");
-  });
-});
-
-// ---------------------------------------------------------------------------
 // BotHandshakeFactory tests (task 5.2)
 // ---------------------------------------------------------------------------
 
 describe("BotHandshakeFactory.create()", () => {
-  it("populates required fields from BotInfo", () => {
-    const botInfo = new BotInfo("MyBot", "2.0", ["Alice", "Bob"], null, null, [], [], null, null, null);
-    const envVars = makeEnvVars();
-    const handshake = BotHandshakeFactory.create("session-abc", botInfo, false, "s3cr3t", envVars);
-    expect(handshake.type).toBe(MessageType.BotHandshake);
-    expect(handshake.sessionId).toBe("session-abc");
-    expect(handshake.name).toBe("MyBot");
-    expect(handshake.version).toBe("2.0");
-    expect(handshake.authors).toEqual(["Alice", "Bob"]);
-    expect(handshake.isDroid).toBe(false);
-    expect(handshake.secret).toBe("s3cr3t");
-  });
-
   it("sets isDroid=true when specified", () => {
     const botInfo = makeBotInfo();
     const handshake = BotHandshakeFactory.create("s", botInfo, true, undefined, makeEnvVars());

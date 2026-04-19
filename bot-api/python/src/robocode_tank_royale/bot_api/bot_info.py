@@ -147,7 +147,7 @@ class BotInfo:
     def _process_country_codes(cls, country_codes: List[str]) -> List[str]:
         if len(country_codes) > cls.MAX_NUMBER_OF_COUNTRY_CODES:
             raise ValueError(f"'country_codes' must not exceed {cls.MAX_NUMBER_OF_COUNTRY_CODES}")
-        return [code.strip() for code in country_codes if code.strip()]
+        return [code.strip().upper() for code in country_codes if code.strip()]
 
     @classmethod
     def _process_game_types(cls, game_types: Set[str]) -> Set[str]:

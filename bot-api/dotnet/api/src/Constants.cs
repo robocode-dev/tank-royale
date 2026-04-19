@@ -56,32 +56,32 @@ public static class Constants
     /// degrees per turn when the bot is at max speed (which is 8 units per turn).
     /// </summary>
     /// <value>The maximum possible driving turn rate, which is max. 10 degrees per turn.</value>
-    public const int MaxTurnRate = 10;
+    public const double MaxTurnRate = 10;
 
     /// <summary>
     /// The maximum gun turn rate, which is a constant of 20 degrees per turn.
     /// </summary>
-    public const int MaxGunTurnRate = 20;
+    public const double MaxGunTurnRate = 20;
 
     /// <summary>
     /// The maximum radar turn rate, which is a constant of 45 degrees per turn.
     /// </summary>
-    public const int MaxRadarTurnRate = 45;
+    public const double MaxRadarTurnRate = 45;
 
     /// <summary>
     /// The maximum absolute speed, which is 8 units per turn.
     /// </summary>
-    public const int MaxSpeed = 8;
+    public const double MaxSpeed = 8;
 
     /// <summary>
     /// The maximum forward speed, which is 8 units per turn.
     /// </summary>
-    public const int MaxForwardSpeed = 8;
+    public const double MaxForwardSpeed = 8;
 
     /// <summary>
     /// The maximum backward speed, which is -8 units per turn.
     /// </summary>
-    public const int MaxBackwardSpeed = -8;
+    public const double MaxBackwardSpeed = -8;
 
     /// <summary>
     /// The gun will not fire with a power that is less than the minimum firepower, which is 0.1.
@@ -116,7 +116,7 @@ public static class Constants
     /// when the bot is increasing its speed moving forward.
     /// </summary>
     /// <value>The acceleration is 1 additional unit per turn.</value>
-    public const int Acceleration = 1;
+    public const double Acceleration = 1;
 
     /// <summary>
     /// Deceleration is the decrease in speed per turn, which subtracts 2 units to the speed
@@ -124,7 +124,7 @@ public static class Constants
     /// is faster at braking than accelerating forward.
     /// </summary>
     /// <value>The deceleration is 2 units less per turn.</value>
-    public const int Deceleration = -2;
+    public const double Deceleration = -2;
 
     /// <summary>
     /// The amount of damage a bot receives per turn when the game's inactivity time limit is

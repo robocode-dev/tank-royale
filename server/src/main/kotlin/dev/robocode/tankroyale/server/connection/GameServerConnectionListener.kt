@@ -5,7 +5,10 @@ import dev.robocode.tankroyale.server.core.GameServer
 import org.java_websocket.WebSocket
 import org.slf4j.LoggerFactory
 
-class GameServerConnectionListener(private val gameServer: GameServer) : IConnectionListener {
+
+class GameServerConnectionListener(private val gameServerProvider: () -> GameServer) : IConnectionListener {
+
+    private val gameServer get() = gameServerProvider()
 
     private val log = LoggerFactory.getLogger(this::class.java)
 

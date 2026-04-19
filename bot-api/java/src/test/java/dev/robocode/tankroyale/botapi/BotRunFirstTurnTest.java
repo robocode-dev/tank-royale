@@ -23,6 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * With the pre-warm fix the bot thread is already alive (isRunning=true) at that moment.
  * Without the fix the thread has not started yet (isRunning=false), so the assertion fails.
  */
+@Tag("TCK")
+@Tag("TR-API-TCK-004")
 @DisplayName("TR-API-TCK-004 First-turn state availability (regression: issue #202)")
 class BotRunFirstTurnTest extends AbstractBotTest {
 

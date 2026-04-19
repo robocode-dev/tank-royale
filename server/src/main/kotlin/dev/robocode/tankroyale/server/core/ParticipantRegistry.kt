@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap
  * Thread-safety contract:
  * - Individual read/write operations on the underlying [ConcurrentHashMap]-backed collections are
  *   thread-safe in isolation.
- * - Compound operations (e.g. check-then-act, iterate-then-remove) must be performed while holding
+ * - Compound operations (e.g., check-then-act, iterate-then-remove) must be performed while holding
  *   [participantsLock] to avoid TOCTOU races.
  */
 class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
@@ -20,7 +20,7 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
     private val _participants = ConcurrentHashMap.newKeySet<WebSocket>()
     private val _readyParticipants = ConcurrentHashMap.newKeySet<WebSocket>()
     private val _participantIds = ConcurrentHashMap<WebSocket, BotId>()
-    private val _participantMap = ConcurrentHashMap<BotId, Participant>()
+    internal val _participantMap = ConcurrentHashMap<BotId, Participant>()
     private val _debugGraphicsEnableMap = ConcurrentHashMap<BotId, Boolean /* isDebugEnabled */>()
     private val _breakpointEnabledMap = ConcurrentHashMap<BotId, Boolean /* isBreakpointEnabled */>()
 
@@ -36,7 +36,7 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
     /** Read-only view of participants sent to clients */
     val participantMap: Map<BotId, Participant> get() = _participantMap
 
-    /** Read-only view of debug graphics enable flags */
+    /** Read-only view of debug graphics enables flags */
     val debugGraphicsEnableMap: Map<BotId, Boolean> get() = _debugGraphicsEnableMap
 
     /** Lock for participant-related operations */
@@ -55,10 +55,6 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
 
     fun addReadyParticipant(conn: WebSocket) {
         _readyParticipants += conn
-    }
-
-    fun removeParticipantId(conn: WebSocket) {
-        _participantIds.remove(conn)
     }
 
     fun removeNonReadyParticipants(): List<WebSocket> {

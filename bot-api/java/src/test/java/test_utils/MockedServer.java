@@ -81,6 +81,7 @@ public final class MockedServer {
     private final CountDownLatch openedLatch = new CountDownLatch(1);
     private final CountDownLatch botHandshakeLatch = new CountDownLatch(1);
     private final CountDownLatch gameStartedLatch = new CountDownLatch(1);
+    private final CountDownLatch botReadyLatch = new CountDownLatch(1);
     private volatile CountDownLatch tickEventLatch = new CountDownLatch(1);
     private final Semaphore botIntentReady = new Semaphore(0);
 
@@ -319,6 +320,15 @@ public final class MockedServer {
             return tickEventLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             System.err.println("awaitTickEvent() was interrupted");
+        }
+        return false;
+    }
+
+    public boolean awaitBotReadyMessage(int milliSeconds) {
+        try {
+            return botReadyLatch.await(milliSeconds, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            System.err.println("awaitBotReadyMessage() was interrupted");
         }
         return false;
     }
@@ -706,6 +716,7 @@ public final class MockedServer {
         private void handleBotReady(WebSocket conn) {
             System.out.println("BOT_READY");
 
+            botReadyLatch.countDown();
             sendRoundStarted(conn);
 
             if (holdTickEnabled) {

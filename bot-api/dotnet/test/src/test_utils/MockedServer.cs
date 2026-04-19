@@ -20,11 +20,13 @@ public class MockedServer
     /// </summary>
     public Uri ServerUrl { get; }
 
+    private static int _lastPort = FindAvailablePort();
+
     /// <summary>
-    /// Static port for backward compatibility. Note: This finds a new port each time it's called.
-    /// Prefer using instance ServerUrl property instead.
+    /// Static port for backward compatibility.
+    /// Returns the port of the most recently created MockedServer instance.
     /// </summary>
-    public static int Port => FindAvailablePort();
+    public static int Port => _lastPort;
 
     public static string SessionId = "123abc";
     public static string Name = nameof(MockedServer);
@@ -81,9 +83,11 @@ public class MockedServer
 
     private WebSocketServer _server;
     private readonly ISet<IWebSocketConnection> _clients = new HashSet<IWebSocketConnection>();
+    private IWebSocketConnection _conn;
 
     private readonly EventWaitHandle _openedEvent = new ManualResetEvent(false);
     private readonly EventWaitHandle _botHandshakeEvent = new ManualResetEvent(false);
+    private readonly EventWaitHandle _botReadyEvent = new ManualResetEvent(false);
     private readonly EventWaitHandle _gameStartedEvent = new ManualResetEvent(false);
     private readonly EventWaitHandle _tickEvent = new ManualResetEvent(false);
 
@@ -99,6 +103,7 @@ public class MockedServer
     public MockedServer()
     {
         _port = FindAvailablePort();
+        _lastPort = _port;
         ServerUrl = new Uri($"ws://127.0.0.1:{_port}");
     }
 
@@ -113,7 +118,7 @@ public class MockedServer
             conn.OnError = OnError;
         });
         // Small delay to ensure server is fully listening
-        Thread.Sleep(100);
+        Thread.Sleep(500);
         Console.WriteLine($"[Info] Server started at {ServerUrl} (actual port {_port})");
     }
 
@@ -328,6 +333,20 @@ public class MockedServer
         return false;
     }
 
+    public bool AwaitBotReadyMessage(int milliSeconds)
+    {
+        try
+        {
+            return _botReadyEvent.WaitOne(milliSeconds);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine("AwaitBotReadyMessage: Exception occurred: " + ex);
+        }
+
+        return false;
+    }
+
     public bool AwaitTick(int milliSeconds)
     {
         try
@@ -387,6 +406,7 @@ public class MockedServer
         {
             _clients.Add(conn);
         }
+        _conn = conn;
 
         _openedEvent.Set();
         SendServerHandshake(conn);
@@ -398,6 +418,7 @@ public class MockedServer
         {
             _clients.Remove(conn);
         }
+        if (_conn == conn) _conn = null;
     }
 
     private void OnMessage(IWebSocketConnection conn, string messageJson)
@@ -419,6 +440,7 @@ public class MockedServer
                 break;
 
             case MessageType.BotReady:
+                _botReadyEvent.Set();
                 SendRoundStarted(conn);
                 lock (_stateLock)
                 {
@@ -429,7 +451,12 @@ public class MockedServer
 
             case MessageType.BotIntent:
                 // Wait for test to signal it's ready (matches Java's awaitBotIntentContinueOrFail)
-                _botIntentContinueEvent.WaitOne();
+                // Use a timeout to avoid hanging the entire test run if a test fails to signal
+                if (!_botIntentContinueEvent.WaitOne(5000))
+                {
+                    Console.Error.WriteLine("[Error] MockedServer: Timeout waiting for bot intent continue signal");
+                    return;
+                }
                 // AutoResetEvent auto-resets after WaitOne, so next intent will wait again
 
                 lock (_stateLock)
@@ -503,6 +530,18 @@ public class MockedServer
         Send(conn, serverHandshake);
     }
 
+    public void SendGameStarted()
+    {
+        if (_conn == null) throw new InvalidOperationException("No connection");
+        SendGameStartedForBot(_conn);
+    }
+
+    public void SendRoundStarted()
+    {
+        if (_conn == null) throw new InvalidOperationException("No connection");
+        SendRoundStarted(_conn);
+    }
+
     private static void SendGameStartedForBot(IWebSocketConnection conn)
     {
         var gameStarted = new GameStartedEventForBot
@@ -533,6 +572,16 @@ public class MockedServer
             RoundNumber = 1
         };
         Send(conn, roundStarted);
+    }
+
+    private readonly HashSet<Event> _additionalEvents = new HashSet<Event>();
+
+    public void AddEvent(Event e)
+    {
+        lock (_stateLock)
+        {
+            _additionalEvents.Add(e);
+        }
     }
 
     private void SendTickEventForBot(IWebSocketConnection conn, int turnNumber)
@@ -606,6 +655,15 @@ public class MockedServer
             events.Add(bulletEvt);
         }
 
+        lock (_stateLock)
+        {
+            foreach (var e in _additionalEvents)
+            {
+                events.Add(e);
+            }
+            _additionalEvents.Clear();
+        }
+
         tickEvent.Events = events;
 
         Send(conn, tickEvent);
@@ -615,6 +673,11 @@ public class MockedServer
     private static void Send(IWebSocketConnection conn, Object obj)
     {
         conn.Send(JsonConverter.ToJson(obj));
+    }
+
+    public void SendRaw(string json)
+    {
+        _conn?.Send(json);
     }
 
     private static Schema.BulletState CreateBulletState(int id)

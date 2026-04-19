@@ -7,6 +7,11 @@ using Robocode.TankRoyale.BotApi.Graphics;
 using System.Text.RegularExpressions;
 
 [TestFixture]
+[Category("GFX")]
+[Property("ID", "TR-API-GFX-001")]
+[Property("ID", "TR-API-GFX-002")]
+[Property("ID", "TR-API-GFX-003")]
+[Property("ID", "TR-API-GFX-004")]
 public class SvgGraphicsTest
 {
     private SvgGraphics _graphics;

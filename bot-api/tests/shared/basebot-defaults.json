@@ -1,0 +1,139 @@
+{
+  "suite": "basebot-defaults",
+  "description": "TR-API-BOT-007/008: BaseBot accessor defaults when constructed without a server connection or tick state.",
+  "tests": [
+    {
+      "id": "TR-API-BOT-007-getMyId-throws",
+      "description": "getMyId() throws BotException when not connected to server",
+      "type": "botDefault",
+      "method": "getMyId",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-007-getVariant-throws",
+      "description": "getVariant() throws BotException when not connected to server",
+      "type": "botDefault",
+      "method": "getVariant",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-007-getVersion-throws",
+      "description": "getVersion() throws BotException when not connected to server",
+      "type": "botDefault",
+      "method": "getVersion",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-007-getEnergy-throws",
+      "description": "getEnergy() throws BotException when no tick state is available",
+      "type": "botDefault",
+      "method": "getEnergy",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-007-getX-throws",
+      "description": "getX() throws BotException when no tick state is available",
+      "type": "botDefault",
+      "method": "getX",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-007-getY-throws",
+      "description": "getY() throws BotException when no tick state is available",
+      "type": "botDefault",
+      "method": "getY",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-007-getDirection-throws",
+      "description": "getDirection() throws BotException when no tick state is available",
+      "type": "botDefault",
+      "method": "getDirection",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-007-getGunDirection-throws",
+      "description": "getGunDirection() throws BotException when no tick state is available",
+      "type": "botDefault",
+      "method": "getGunDirection",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-007-getRadarDirection-throws",
+      "description": "getRadarDirection() throws BotException when no tick state is available",
+      "type": "botDefault",
+      "method": "getRadarDirection",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-007-getSpeed-returns-zero",
+      "description": "getSpeed() returns 0 when no tick state is available (safe default)",
+      "type": "botDefault",
+      "method": "getSpeed",
+      "expected": { "returns": 0 }
+    },
+    {
+      "id": "TR-API-BOT-007-getGunHeat-returns-zero",
+      "description": "getGunHeat() returns 0 when no tick state is available (safe default)",
+      "type": "botDefault",
+      "method": "getGunHeat",
+      "expected": { "returns": 0 }
+    },
+    {
+      "id": "TR-API-BOT-007-getBulletStates-returns-empty",
+      "description": "getBulletStates() returns an empty collection when no tick state is available",
+      "type": "botDefault",
+      "method": "getBulletStates",
+      "expected": { "returnsEmpty": true }
+    },
+    {
+      "id": "TR-API-BOT-007-getEvents-throws",
+      "description": "getEvents() throws BotException when no tick state is available",
+      "type": "botDefault",
+      "method": "getEvents",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-007-getArenaWidth-throws",
+      "description": "getArenaWidth() throws BotException when no game setup is available",
+      "type": "botDefault",
+      "method": "getArenaWidth",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-007-getArenaHeight-throws",
+      "description": "getArenaHeight() throws BotException when no game setup is available",
+      "type": "botDefault",
+      "method": "getArenaHeight",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-007-getGameType-throws",
+      "description": "getGameType() throws BotException when no game setup is available",
+      "type": "botDefault",
+      "method": "getGameType",
+      "expected": { "throws": "BotException" }
+    },
+    {
+      "id": "TR-API-BOT-008-isAdjustGunForBodyTurn-returns-false",
+      "description": "isAdjustGunForBodyTurn() returns false by default",
+      "type": "botDefault",
+      "method": "isAdjustGunForBodyTurn",
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-BOT-008-isAdjustRadarForBodyTurn-returns-false",
+      "description": "isAdjustRadarForBodyTurn() returns false by default",
+      "type": "botDefault",
+      "method": "isAdjustRadarForBodyTurn",
+      "expected": { "returns": false }
+    },
+    {
+      "id": "TR-API-BOT-008-isAdjustRadarForGunTurn-returns-false",
+      "description": "isAdjustRadarForGunTurn() returns false by default",
+      "type": "botDefault",
+      "method": "isAdjustRadarForGunTurn",
+      "expected": { "returns": false }
+    }
+  ]
+}

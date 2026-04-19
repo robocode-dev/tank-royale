@@ -104,6 +104,12 @@ export class MockedServer {
   private gunDirection = BOT_GUN_DIRECTION;
   private radarDirection = BOT_RADAR_DIRECTION;
 
+  private additionalEvents: any[] = [];
+
+  public addEvent(event: any): void {
+    this.additionalEvents.push(event);
+  }
+
   // Increments
   private speedIncrement = 0;
   private turnIncrement = 0;
@@ -419,8 +425,10 @@ export class MockedServer {
           direction: 45.0,
           speed: 9.6,
         },
+        ...this.additionalEvents,
       ] as unknown as TickEventForBot["events"],
     };
+    this.additionalEvents = [];
     this.send(msg);
   }
 

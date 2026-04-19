@@ -4,6 +4,8 @@ Comprehensive tests for stdout/stderr capture in Python Bot API.
 Tests RecordingTextWriter class and integration with bot workflow.
 """
 
+import pytest
+
 import sys
 import threading
 from io import StringIO

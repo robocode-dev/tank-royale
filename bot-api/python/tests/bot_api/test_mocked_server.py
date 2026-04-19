@@ -1,3 +1,4 @@
+import pytest
 import unittest
 import time
 from tests.bot_api.abstract_bot_test import AbstractBotTest

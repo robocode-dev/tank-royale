@@ -123,6 +123,7 @@ class MockedServer:
 
         # optional injections
         self._self_death_turn: Optional[int] = None
+        self._additional_events: List[object] = []
 
         # shutdown flag
         self._stopping: bool = False
@@ -345,6 +346,21 @@ class MockedServer:
 
     def await_game_started(self, timeout_ms: int) -> bool:
         return self._game_started_event.wait(timeout_ms / 1000.0)
+
+    def await_bot_ready_message(self, timeout_ms: int) -> bool:
+        """Wait for the bot to send BotReady, without sending a tick.
+
+        Unlike await_bot_ready(), this method ONLY waits for the BotReady message
+        and does not send a tick event afterwards. Useful for TCK tests that need
+        to verify the handshake sequence and then send raw messages.
+
+        Args:
+            timeout_ms: Timeout in milliseconds.
+
+        Returns:
+            True if BotReady was received, False if timeout.
+        """
+        return self._bot_ready_event.wait(timeout_ms / 1000.0)
 
     def await_tick(self, timeout_ms: int) -> bool:
         """Wait for the next tick event to be signaled."""
@@ -841,6 +857,12 @@ class MockedServer:
                 )
             )
 
+        # Inject additional events
+        with self._lock:
+            for evt in self._additional_events:
+                events.append(evt)
+            self._additional_events.clear()
+
         fp = getattr(bot_intent, "firepower", None) if bot_intent is not None else None
         if fp is not None:
             bullet_evt = SchemaBulletFiredEvent(
@@ -874,5 +896,21 @@ class MockedServer:
         )
 
     # Test helpers (API)
+    def add_event(self, event: object) -> None:
+        """Add an event to be sent with the next tick."""
+        with self._lock:
+            self._additional_events.append(event)
+
+    def send_raw(self, text: str) -> None:
+        """Send a raw text message to all connected bots."""
+        loop = self._loop
+        if loop and loop.is_running():
+            async def do_send():
+                with self._lock:
+                    connections = list(self._connections)
+                for conn in connections:
+                    await conn.send(text)
+            asyncio.run_coroutine_threadsafe(do_send(), loop)
+
     def set_self_death_on_turn(self, turn_number: int | None) -> None:
         self._self_death_turn = turn_number

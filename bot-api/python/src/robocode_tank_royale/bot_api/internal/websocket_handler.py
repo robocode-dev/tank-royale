@@ -2,9 +2,11 @@ import asyncio
 import json
 import threading
 import time
-from typing import Any, Optional
+from typing import Any, Optional, Dict, TYPE_CHECKING
 import websockets
-from typing import Dict
+
+if TYPE_CHECKING:
+    from .base_bot_internals import BaseBotInternals
 
 from ..base_bot_abc import BaseBotABC
 from ..bot_info import BotInfo
@@ -17,7 +19,6 @@ from ..events import (
     RoundStartedEvent,
     RoundEndedEvent,
 )
-from .base_bot_internal_data import BaseBotInternalData
 from .bot_event_handlers import BotEventHandlers
 from .internal_event_handlers import InternalEventHandlers
 from .json_util import to_json, from_json
@@ -47,7 +48,7 @@ class WebSocketHandler:
 
     def __init__(
         self,
-        base_bot_internal_data: BaseBotInternalData,
+        base_bot_internals: "BaseBotInternals",
         server_url: str,
         server_secret: Optional[str],
         base_bot: BaseBotABC,
@@ -58,7 +59,7 @@ class WebSocketHandler:
         event_queue: 'EventQueue',
     ):
         """Initialize the websocket handler."""
-        self.base_bot_internal_data = base_bot_internal_data
+        self.base_bot_internals = base_bot_internals
         self.server_url = server_url
         self.server_secret: Optional[str] = server_secret
         self.base_bot = base_bot
@@ -151,7 +152,7 @@ class WebSocketHandler:
                 raise BotException(f"Unsupported WebSocket message type: {msg_type}")
 
     def _is_event_handling_disabled(self, current_turn: int) -> bool:
-        disabled_turn = self.base_bot_internal_data.event_handling_disabled_turn
+        disabled_turn = self.base_bot_internals.event_handling_disabled_turn
         return disabled_turn != 0 and disabled_turn < (int(current_turn) - 1)
 
     async def handle_tick(self, json_msg: Dict[Any, Any]) -> None:
@@ -161,14 +162,14 @@ class WebSocketHandler:
         if turn_number is not None and self._is_event_handling_disabled(int(turn_number)):
             return
 
-        self.base_bot_internal_data.tick_start_nano_time = time.monotonic_ns()
+        self.base_bot_internals.tick_start_nano_time = time.monotonic_ns()
 
         tick_event_for_bot: TickEventForBot = from_json(json_msg)  # type: ignore
         mapped_tick_event = EventMapper.map_tick_event(
             tick_event_for_bot, self.base_bot
         )
 
-        self.base_bot_internal_data.tick_event = mapped_tick_event
+        self.base_bot_internals.tick_event = mapped_tick_event
 
         # Stage events from this tick into the event queue (Java parity)
         self.event_queue.add_events_from_tick(mapped_tick_event)
@@ -210,14 +211,14 @@ class WebSocketHandler:
         """Handle a game started event from the server."""
         assert self.websocket is not None, "WebSocket connection is not established."
         game_started_event: GameStartedEventForBot = from_json(json_msg)  # type: ignore
-        self.base_bot_internal_data.my_id = game_started_event.my_id
+        self.base_bot_internals.my_id = game_started_event.my_id
 
         if game_started_event.teammate_ids is not None:
-            self.base_bot_internal_data.teammate_ids = set(
+            self.base_bot_internals.teammate_ids = set(
                 id for id in game_started_event.teammate_ids if id is not None
             )
 
-        self.base_bot_internal_data.game_setup = GameSetupMapper.map(
+        self.base_bot_internals.game_setup = GameSetupMapper.map(
             game_started_event.game_setup
         )
 
@@ -226,13 +227,13 @@ class WebSocketHandler:
             game_started_event.start_y,
             game_started_event.start_direction,
         )
-        self.base_bot_internal_data.initial_position = initial_position
+        self.base_bot_internals.initial_position = initial_position
 
         self.bot_event_handlers.on_game_started.publish(
             GameStartedEvent(
                 game_started_event.my_id,
                 initial_position,
-                self.base_bot_internal_data.game_setup,
+                self.base_bot_internals.game_setup,
             )
         )
 
@@ -265,7 +266,7 @@ class WebSocketHandler:
         """Handle a server handshake from the server."""
         assert self.websocket is not None, "WebSocket connection is not established."
         server_handshake: ServerHandshake = from_json(json_msg)  # type: ignore
-        self.base_bot_internal_data.server_handshake = server_handshake
+        self.base_bot_internals.server_handshake = server_handshake
 
         # Validate bot info before sending bot handshake
         self._validate_bot_info()
@@ -305,19 +306,19 @@ class WebSocketHandler:
 
     def _transfer_std_out_to_bot_intent(self) -> None:
         """Transfer captured stdout/stderr to bot intent for sending to server."""
-        if self.base_bot_internal_data.recording_stdout:
-            output = self.base_bot_internal_data.recording_stdout.read_next()
+        if self.base_bot_internals.recording_stdout:
+            output = self.base_bot_internals.recording_stdout.read_next()
             if output:
-                self.base_bot_internal_data.bot_intent.std_out = output
+                self.base_bot_internals.bot_intent.std_out = output
             else:
-                self.base_bot_internal_data.bot_intent.std_out = None
+                self.base_bot_internals.bot_intent.std_out = None
 
-        if self.base_bot_internal_data.recording_stderr:
-            error = self.base_bot_internal_data.recording_stderr.read_next()
+        if self.base_bot_internals.recording_stderr:
+            error = self.base_bot_internals.recording_stderr.read_next()
             if error:
-                self.base_bot_internal_data.bot_intent.std_err = error
+                self.base_bot_internals.bot_intent.std_err = error
             else:
-                self.base_bot_internal_data.bot_intent.std_err = None
+                self.base_bot_internals.bot_intent.std_err = None
 
     def _validate_bot_info(self) -> None:
         """Validate bot info before sending handshake to server."""

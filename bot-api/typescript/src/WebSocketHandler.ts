@@ -106,43 +106,47 @@ export class WebSocketHandler {
   // ---------------------------------------------------------------------------
 
   private handleMessage(json: string): void {
-    let msg: { type?: string };
     try {
-      msg = JSON.parse(json) as { type?: string };
-    } catch {
-      throw new BotException("Failed to parse WebSocket message: " + json);
-    }
+      let msg: { type?: string };
+      try {
+        msg = JSON.parse(json) as { type?: string };
+      } catch {
+        throw new BotException("Failed to parse WebSocket message: " + json);
+      }
 
-    const type = msg.type;
-    if (type == null) return;
+      const type = msg.type;
+      if (type == null) return;
 
-    switch (type as MessageType) {
-      case MessageType.ServerHandshake:
-        this.handleServerHandshake(msg as unknown as ServerHandshake);
-        break;
-      case MessageType.TickEventForBot:
-        this.handleTick(msg as unknown as TickEventForBot);
-        break;
-      case MessageType.RoundStartedEvent:
-        this.handleRoundStarted(msg as unknown as RoundStartedEvent);
-        break;
-      case MessageType.RoundEndedEventForBot:
-        this.handleRoundEnded(msg as unknown as RoundEndedEventForBot);
-        break;
-      case MessageType.GameStartedEventForBot:
-        this.handleGameStarted(msg as unknown as GameStartedEventForBot);
-        break;
-      case MessageType.GameEndedEventForBot:
-        this.handleGameEnded(msg as unknown as GameEndedEventForBot);
-        break;
-      case MessageType.SkippedTurnEvent:
-        this.handleSkippedTurn(msg as unknown as { turnNumber: number });
-        break;
-      case MessageType.GameAbortedEvent:
-        this.handleGameAborted();
-        break;
-      default:
-        throw new BotException("Unsupported WebSocket message type: " + type);
+      switch (type as MessageType) {
+        case MessageType.ServerHandshake:
+          this.handleServerHandshake(msg as unknown as ServerHandshake);
+          break;
+        case MessageType.TickEventForBot:
+          this.handleTick(msg as unknown as TickEventForBot);
+          break;
+        case MessageType.RoundStartedEvent:
+          this.handleRoundStarted(msg as unknown as RoundStartedEvent);
+          break;
+        case MessageType.RoundEndedEventForBot:
+          this.handleRoundEnded(msg as unknown as RoundEndedEventForBot);
+          break;
+        case MessageType.GameStartedEventForBot:
+          this.handleGameStarted(msg as unknown as GameStartedEventForBot);
+          break;
+        case MessageType.GameEndedEventForBot:
+          this.handleGameEnded(msg as unknown as GameEndedEventForBot);
+          break;
+        case MessageType.SkippedTurnEvent:
+          this.handleSkippedTurn(msg as unknown as { turnNumber: number });
+          break;
+        case MessageType.GameAbortedEvent:
+          this.handleGameAborted();
+          break;
+        default:
+          throw new BotException("Unsupported WebSocket message type: " + type);
+      }
+    } catch (err) {
+      this.callbacks.onConnectionError?.(err);
     }
   }
 

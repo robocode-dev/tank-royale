@@ -1,3 +1,4 @@
+import { BotException } from "../BotException.js";
 import { BotInfo } from "../BotInfo.js";
 import { BulletState } from "../BulletState.js";
 import { Color } from "../graphics/Color.js";
@@ -35,6 +36,7 @@ import { GameSetupMapper } from "../mapper/GameSetupMapper.js";
 import { InitialPosition } from "../InitialPosition.js";
 import { EventMapper } from "../mapper/EventMapper.js";
 import { toJson } from "../json/JsonUtil.js";
+import { IntentValidator } from "./intentValidator.js";
 import { Constants } from "../Constants.js";
 import type { BotIntent as SchemaBotIntent } from "../protocol/schema.js";
 import { MessageType } from "../protocol/MessageType.js";
@@ -48,11 +50,10 @@ export interface IStopResumeListener {
 }
 
 const DEFAULT_SERVER_URL = "ws://localhost:7654";
-const MAX_SPEED = 8;
-const MAX_TURN_RATE = 10;
-const MAX_GUN_TURN_RATE = 20;
-const MAX_RADAR_TURN_RATE = 45;
-const DECELERATION = -2;
+
+const GAME_NOT_RUNNING_MSG = "Game is not running. Make sure onGameStarted() event handler has been called first";
+const TICK_NOT_AVAILABLE_MSG = "Game is not running or tick has not occurred yet. Make sure onTick() event handler has been called first";
+const NOT_CONNECTED_TO_SERVER_MSG = "Not connected to a game server. Make sure onConnected() event handler has been called first";
 
 /**
  * Full internal implementation for BaseBot.
@@ -78,7 +79,7 @@ export class BaseBotInternals {
 
   // Game state
   private myId = 0;
-  private variant = "Tank Royale";
+  private variant = "";
   private version = "";
   private gameSetup: GameSetup | null = null;
   private tickEvent: TickEvent | null = null;
@@ -89,10 +90,10 @@ export class BaseBotInternals {
   private intent: SchemaBotIntent = { type: MessageType.BotIntent };
 
   // Rate/speed limits
-  private maxSpeed = MAX_SPEED;
-  private maxTurnRate = MAX_TURN_RATE;
-  private maxGunTurnRate = MAX_GUN_TURN_RATE;
-  private maxRadarTurnRate = MAX_RADAR_TURN_RATE;
+  private maxSpeed: number = Constants.MAX_SPEED;
+  private maxTurnRate: number = Constants.MAX_TURN_RATE;
+  private maxGunTurnRate: number = Constants.MAX_GUN_TURN_RATE;
+  private maxRadarTurnRate: number = Constants.MAX_RADAR_TURN_RATE;
 
   // Stop/resume saved state
   private isStopped = false;
@@ -770,45 +771,101 @@ export class BaseBotInternals {
   // State accessors
   // ---------------------------------------------------------------------------
 
-  getMyId(): number { return this.myId; }
+  getMyId(): number {
+    if (this.myId === 0) {
+      throw new BotException(GAME_NOT_RUNNING_MSG);
+    }
+    return this.myId;
+  }
 
   getVariant(): string {
-    return this.wsHandler?.getServerHandshake()?.variant ?? this.variant;
+    const variant = this.wsHandler?.getServerHandshake()?.variant ?? this.variant;
+    if (!variant) {
+      throw new BotException(NOT_CONNECTED_TO_SERVER_MSG);
+    }
+    return variant;
   }
 
   getVersion(): string {
-    return this.wsHandler?.getServerHandshake()?.version ?? this.version;
+    const version = this.wsHandler?.getServerHandshake()?.version ?? this.version;
+    if (!version) {
+      throw new BotException(NOT_CONNECTED_TO_SERVER_MSG);
+    }
+    return version;
   }
 
-  getGameType(): string { return this.gameSetup?.gameType ?? ""; }
-  getArenaWidth(): number { return this.gameSetup?.arenaWidth ?? 0; }
-  getArenaHeight(): number { return this.gameSetup?.arenaHeight ?? 0; }
-  getNumberOfRounds(): number { return this.gameSetup?.numberOfRounds ?? 0; }
-  getGunCoolingRate(): number { return this.gameSetup?.gunCoolingRate ?? 0; }
-  getMaxInactivityTurns(): number { return this.gameSetup?.maxInactivityTurns ?? 0; }
-  getTurnTimeout(): number { return this.gameSetup?.turnTimeout ?? 0; }
+  getGameSetup(): GameSetup {
+    if (this.gameSetup == null) {
+      throw new BotException(GAME_NOT_RUNNING_MSG);
+    }
+    return this.gameSetup;
+  }
+
+  getGameType(): string { return this.getGameSetup().gameType; }
+  getArenaWidth(): number { return this.getGameSetup().arenaWidth; }
+  getArenaHeight(): number { return this.getGameSetup().arenaHeight; }
+  getNumberOfRounds(): number { return this.getGameSetup().numberOfRounds; }
+  getGunCoolingRate(): number { return this.getGameSetup().gunCoolingRate; }
+  getMaxInactivityTurns(): number { return this.getGameSetup().maxInactivityTurns ?? 0; }
+  getTurnTimeout(): number { return this.getGameSetup().turnTimeout; }
 
   getTimeLeft(): number {
-    if (this.tickEvent == null) return 0;
+    if (this.tickEvent == null) return this.getTurnTimeout();
     const elapsed = Date.now() - this.tickStartTime;
     return Math.max(0, this.getTurnTimeout() - elapsed);
   }
 
   getCurrentTickOrNull(): TickEvent | null { return this.tickEvent; }
-  getRoundNumber(): number { return this.tickEvent?.roundNumber ?? 0; }
-  getTurnNumber(): number { return this.tickEvent?.turnNumber ?? 0; }
-  getEnemyCount(): number { return this.tickEvent?.botState.enemyCount ?? 0; }
-  getEnergy(): number { return this.tickEvent?.botState.energy ?? 0; }
+  getRoundNumber(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.roundNumber;
+  }
+  getTurnNumber(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.turnNumber;
+  }
+  getEnemyCount(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.enemyCount;
+  }
+  getEnergy(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.energy;
+  }
   isDisabled(): boolean { return this.tickEvent != null && this.getEnergy() === 0; }
-  getX(): number { return this.tickEvent?.botState.x ?? 0; }
-  getY(): number { return this.tickEvent?.botState.y ?? 0; }
-  getDirection(): number { return this.tickEvent?.botState.direction ?? 0; }
-  getGunDirection(): number { return this.tickEvent?.botState.gunDirection ?? 0; }
-  getRadarDirection(): number { return this.tickEvent?.botState.radarDirection ?? 0; }
-  getSpeed(): number { return this.tickEvent?.botState.speed ?? 0; }
-  getGunHeat(): number { return this.tickEvent?.botState.gunHeat ?? 0; }
-  getBulletStates(): ReadonlySet<BulletState> { return new Set(this.tickEvent?.bulletStates ?? []); }
-  getEvents(): readonly BotEvent[] { return this.eventQueue.getEvents(); }
+  getX(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.x;
+  }
+  getY(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.y;
+  }
+  getDirection(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.direction;
+  }
+  getGunDirection(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.gunDirection;
+  }
+  getRadarDirection(): number {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.tickEvent.botState.radarDirection;
+  }
+  getSpeed(): number {
+    return this.tickEvent?.botState.speed ?? 0;
+  }
+  getGunHeat(): number {
+    return this.tickEvent?.botState.gunHeat ?? 0;
+  }
+  getBulletStates(): ReadonlySet<BulletState> {
+    return new Set(this.tickEvent?.bulletStates ?? []);
+  }
+  getEvents(): readonly BotEvent[] {
+    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
+    return this.eventQueue.getEvents();
+  }
   clearEvents(): void { this.eventQueue.clear(); }
 
   // ---------------------------------------------------------------------------
@@ -817,69 +874,38 @@ export class BaseBotInternals {
 
   getTurnRate(): number { return this.intent.turnRate ?? 0; }
   setTurnRate(turnRate: number): void {
-    this.intent.turnRate = MathUtil.clamp(turnRate, -this.maxTurnRate, this.maxTurnRate);
+    this.intent.turnRate = IntentValidator.validateTurnRate(turnRate, this.maxTurnRate);
   }
   getMaxTurnRate(): number { return this.maxTurnRate; }
-  setMaxTurnRate(maxTurnRate: number): void { this.maxTurnRate = maxTurnRate; }
+  setMaxTurnRate(maxTurnRate: number): void { this.maxTurnRate = IntentValidator.validateMaxTurnRate(maxTurnRate); }
 
   getGunTurnRate(): number { return this.intent.gunTurnRate ?? 0; }
   setGunTurnRate(gunTurnRate: number): void {
-    this.intent.gunTurnRate = MathUtil.clamp(gunTurnRate, -this.maxGunTurnRate, this.maxGunTurnRate);
+    this.intent.gunTurnRate = IntentValidator.validateGunTurnRate(gunTurnRate, this.maxGunTurnRate);
   }
   getMaxGunTurnRate(): number { return this.maxGunTurnRate; }
-  setMaxGunTurnRate(maxGunTurnRate: number): void { this.maxGunTurnRate = maxGunTurnRate; }
+  setMaxGunTurnRate(maxGunTurnRate: number): void { this.maxGunTurnRate = IntentValidator.validateMaxGunTurnRate(maxGunTurnRate); }
 
   getRadarTurnRate(): number { return this.intent.radarTurnRate ?? 0; }
   setRadarTurnRate(radarTurnRate: number): void {
-    this.intent.radarTurnRate = MathUtil.clamp(radarTurnRate, -this.maxRadarTurnRate, this.maxRadarTurnRate);
+    this.intent.radarTurnRate = IntentValidator.validateRadarTurnRate(radarTurnRate, this.maxRadarTurnRate);
   }
   getMaxRadarTurnRate(): number { return this.maxRadarTurnRate; }
-  setMaxRadarTurnRate(maxRadarTurnRate: number): void { this.maxRadarTurnRate = maxRadarTurnRate; }
+  setMaxRadarTurnRate(maxRadarTurnRate: number): void { this.maxRadarTurnRate = IntentValidator.validateMaxRadarTurnRate(maxRadarTurnRate); }
 
   getTargetSpeed(): number { return this.intent.targetSpeed ?? 0; }
   setTargetSpeed(targetSpeed: number): void {
-    this.intent.targetSpeed = MathUtil.clamp(targetSpeed, -this.maxSpeed, this.maxSpeed);
+    this.intent.targetSpeed = IntentValidator.validateTargetSpeed(targetSpeed, this.maxSpeed);
   }
   getMaxSpeed(): number { return this.maxSpeed; }
-  setMaxSpeed(maxSpeed: number): void { this.maxSpeed = maxSpeed; }
+  setMaxSpeed(maxSpeed: number): void { this.maxSpeed = IntentValidator.validateMaxSpeed(maxSpeed); }
 
-  // Credits for this algorithm go to Patrick Cupka (aka Voidious),
-  // Julian Kent (aka Skilgannon), and Positive for the original version:
-  // https://robowiki.net/wiki/User:Voidious/Optimal_Velocity#Hijack_2
   getNewTargetSpeed(speed: number, distance: number): number {
-    if (distance < 0) return -this.getNewTargetSpeed(-speed, -distance);
-    const targetSpeed = !isFinite(distance) ? this.maxSpeed : Math.min(this.maxSpeed, this.getMaxSpeedForDistance(distance));
-    return speed >= 0
-      ? MathUtil.clamp(targetSpeed, speed + DECELERATION, speed + 1)
-      : MathUtil.clamp(targetSpeed, speed - 1, speed + this.getMaxDeceleration(-speed));
-  }
-
-  // Returns the maximum speed achievable such that the bot can decelerate to 0 within the given distance.
-  // Mirrors Java's BaseBotInternals.getMaxSpeed(distance) exactly (ceiling-based discrete model).
-  private getMaxSpeedForDistance(distance: number): number {
-    const absDecel = Math.abs(DECELERATION);
-    const decelerationTime = Math.max(1, Math.ceil((Math.sqrt((4 * 2 / absDecel) * distance + 1) - 1) / 2));
-    if (!isFinite(decelerationTime)) return MAX_SPEED;
-    const decelerationDistance = (decelerationTime / 2) * (decelerationTime - 1) * absDecel;
-    return (decelerationTime - 1) * absDecel + (distance - decelerationDistance) / decelerationTime;
-  }
-
-  // Returns the maximum deceleration achievable in one turn for the given positive speed.
-  // Mirrors Java's BaseBotInternals.getMaxDeceleration(speed).
-  private getMaxDeceleration(speed: number): number {
-    const absDecel = Math.abs(DECELERATION);
-    const decelerationTime = speed / absDecel;
-    const accelerationTime = 1 - decelerationTime;
-    return Math.min(1, decelerationTime) * absDecel + Math.max(0, accelerationTime) * 1;
+    return IntentValidator.getNewTargetSpeed(speed, distance, this.maxSpeed);
   }
 
   getDistanceTraveledUntilStop(speed: number): number {
-    speed = Math.abs(speed);
-    let distance = 0;
-    while (speed > 0) {
-      distance += (speed = this.getNewTargetSpeed(speed, 0));
-    }
-    return distance;
+    return IntentValidator.getDistanceTraveledUntilStop(speed, this.maxSpeed);
   }
 
   // ---------------------------------------------------------------------------
@@ -887,7 +913,10 @@ export class BaseBotInternals {
   // ---------------------------------------------------------------------------
 
   setFire(firepower: number): boolean {
-    if ((this.tickEvent?.botState.gunHeat ?? 0) > 0 || firepower < 0.1 || firepower > 3) return false;
+    IntentValidator.validateFirepower(firepower);
+    if (!IntentValidator.isValidFirepower(firepower) ||
+        (this.tickEvent?.botState.gunHeat ?? 0) > 0 ||
+        (this.tickEvent?.botState.energy ?? 0) < firepower) return false;
     this.intent.firepower = firepower;
     return true;
   }
@@ -972,9 +1001,12 @@ export class BaseBotInternals {
 
   sendTeamMessage(teammateId: number | undefined, message: unknown): void {
     const json = toJson(message);
-    if (json.length > Constants.TEAM_MESSAGE_MAX_SIZE) return; // message too large
+    IntentValidator.validateTeamMessageSize(json);
+
     if (!this.intent.teamMessages) this.intent.teamMessages = [];
-    if (this.intent.teamMessages.length >= Constants.MAX_NUMBER_OF_TEAM_MESSAGES_PER_TURN) return; // per-turn limit reached
+    IntentValidator.validateTeamMessage(message, this.intent.teamMessages.length);
+
+
     this.intent.teamMessages.push({
       message: json,
       messageType: typeof message === "object" && message !== null ? message.constructor.name : "string",
@@ -987,19 +1019,19 @@ export class BaseBotInternals {
   // ---------------------------------------------------------------------------
 
   getBodyColor(): Color | null { return this.intent.bodyColor ? ColorUtil.fromHexColor(this.intent.bodyColor) : null; }
-  setBodyColor(color: Color | null): void { this.intent.bodyColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setBodyColor(color: Color | null): void { this.intent.bodyColor = IntentValidator.colorToHex(color); }
   getTurretColor(): Color | null { return this.intent.turretColor ? ColorUtil.fromHexColor(this.intent.turretColor) : null; }
-  setTurretColor(color: Color | null): void { this.intent.turretColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setTurretColor(color: Color | null): void { this.intent.turretColor = IntentValidator.colorToHex(color); }
   getRadarColor(): Color | null { return this.intent.radarColor ? ColorUtil.fromHexColor(this.intent.radarColor) : null; }
-  setRadarColor(color: Color | null): void { this.intent.radarColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setRadarColor(color: Color | null): void { this.intent.radarColor = IntentValidator.colorToHex(color); }
   getBulletColor(): Color | null { return this.intent.bulletColor ? ColorUtil.fromHexColor(this.intent.bulletColor) : null; }
-  setBulletColor(color: Color | null): void { this.intent.bulletColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setBulletColor(color: Color | null): void { this.intent.bulletColor = IntentValidator.colorToHex(color); }
   getScanColor(): Color | null { return this.intent.scanColor ? ColorUtil.fromHexColor(this.intent.scanColor) : null; }
-  setScanColor(color: Color | null): void { this.intent.scanColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setScanColor(color: Color | null): void { this.intent.scanColor = IntentValidator.colorToHex(color); }
   getTracksColor(): Color | null { return this.intent.tracksColor ? ColorUtil.fromHexColor(this.intent.tracksColor) : null; }
-  setTracksColor(color: Color | null): void { this.intent.tracksColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setTracksColor(color: Color | null): void { this.intent.tracksColor = IntentValidator.colorToHex(color); }
   getGunColor(): Color | null { return this.intent.gunColor ? ColorUtil.fromHexColor(this.intent.gunColor) : null; }
-  setGunColor(color: Color | null): void { this.intent.gunColor = color ? "#" + ColorUtil.toHex(color) : null; }
+  setGunColor(color: Color | null): void { this.intent.gunColor = IntentValidator.colorToHex(color); }
 
   // ---------------------------------------------------------------------------
   // Running state

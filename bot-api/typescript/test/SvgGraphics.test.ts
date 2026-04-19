@@ -3,7 +3,7 @@ import { SvgGraphics } from "../src/graphics/SvgGraphics";
 import { Color } from "../src/graphics/Color";
 import { Point } from "../src/graphics/Point";
 
-describe("SvgGraphics", () => {
+describe("TR-API-GFX: SvgGraphics", () => {
   let g: SvgGraphics;
 
   beforeEach(() => {

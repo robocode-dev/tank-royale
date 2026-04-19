@@ -1,0 +1,103 @@
+{
+  "suite": "intent-validation",
+  "description": "Validates intent-building logic across all platforms (fire, turn rates, target speed)",
+  "tests": [
+    {
+      "id": "TR-API-CMD-002-fire-valid",
+      "description": "setFire with sufficient energy and cold gun sets firepower",
+      "type": "positive",
+      "method": "setFire",
+      "setup": { "energy": 100.0, "gunHeat": 0.0 },
+      "args": [1.5],
+      "expected": { "firepower": 1.5, "returns": true }
+    },
+    {
+      "id": "TR-API-CMD-002-fire-nan-throws",
+      "description": "setFire with NaN throws IllegalArgumentException",
+      "type": "negative",
+      "method": "setFire",
+      "setup": { "energy": 100.0, "gunHeat": 0.0 },
+      "args": ["NaN"],
+      "expected": { "throws": "IllegalArgumentException" }
+    },
+    {
+      "id": "TR-API-CMD-002-fire-insufficient-energy",
+      "description": "setFire when energy is below firepower threshold returns false",
+      "type": "negative",
+      "method": "setFire",
+      "setup": { "energy": 0.05, "gunHeat": 0.0 },
+      "args": [1.0],
+      "expected": { "firepower": 0.0, "returns": false }
+    },
+    {
+      "id": "TR-API-CMD-002-fire-gun-hot",
+      "description": "setFire when gun is hot returns false",
+      "type": "negative",
+      "method": "setFire",
+      "setup": { "energy": 100.0, "gunHeat": 0.1 },
+      "args": [1.0],
+      "expected": { "firepower": 0.0, "returns": false }
+    },
+    {
+      "id": "TR-API-CMD-001-turnrate-clamping-high",
+      "description": "setTurnRate above max is clamped to max",
+      "type": "negative",
+      "method": "setTurnRate",
+      "setup": { "maxTurnRate": 10.0 },
+      "args": [999.0],
+      "expected": { "turnRate": 10.0 }
+    },
+    {
+      "id": "TR-API-CMD-001-turnrate-clamping-low",
+      "description": "setTurnRate below -max is clamped to -max",
+      "type": "negative",
+      "method": "setTurnRate",
+      "setup": { "maxTurnRate": 10.0 },
+      "args": [-999.0],
+      "expected": { "turnRate": -10.0 }
+    },
+    {
+      "id": "TR-API-CMD-001-gunturnrate-clamping",
+      "description": "setGunTurnRate above max is clamped to max",
+      "type": "negative",
+      "method": "setGunTurnRate",
+      "setup": { "maxGunTurnRate": 20.0 },
+      "args": [999.0],
+      "expected": { "gunTurnRate": 20.0 }
+    },
+    {
+      "id": "TR-API-CMD-001-radarturnrate-clamping",
+      "description": "setRadarTurnRate above max is clamped to max",
+      "type": "negative",
+      "method": "setRadarTurnRate",
+      "setup": { "maxRadarTurnRate": 45.0 },
+      "args": [999.0],
+      "expected": { "radarTurnRate": 45.0 }
+    },
+    {
+      "id": "TR-API-CMD-001-targetspeed-clamping",
+      "description": "setTargetSpeed above max is clamped to max",
+      "type": "negative",
+      "method": "setTargetSpeed",
+      "setup": { "maxSpeed": 8.0 },
+      "args": [999.0],
+      "expected": { "targetSpeed": 8.0 }
+    },
+    {
+      "id": "TR-API-CMD-001-maxspeed-clamping",
+      "description": "setMaxSpeed above 8.0 is clamped to 8.0",
+      "type": "negative",
+      "method": "setMaxSpeed",
+      "args": [10.0],
+      "expected": { "maxSpeed": 8.0 }
+    },
+    {
+      "id": "TR-API-CMD-001-maxturnrate-clamping",
+      "description": "setMaxTurnRate above 10.0 is clamped to 10.0",
+      "type": "negative",
+      "method": "setMaxTurnRate",
+      "args": [15.0],
+      "expected": { "maxTurnRate": 10.0 }
+    }
+  ]
+}
