@@ -22,6 +22,11 @@ object GuiConfigDialog : RcDialog(MainFrame, "gui_config_dialog") {
         pack()
         setLocationRelativeTo(owner) // center on owner window
     }
+
+    override fun setVisible(visible: Boolean) {
+        if (visible) GuiConfigPanel.syncFromSettings()
+        super.setVisible(visible)
+    }
 }
 
 object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
@@ -72,7 +77,6 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         addConsoleMaxCharsSelector()
         addBootTimeoutSelector()
         addTankColorModeSelector()
-        setInitialSelections()
         addOkButton(onOk, "span 2, alignx center, gaptop para, wrap").apply {
             setDefaultButton(this)
         }
@@ -114,7 +118,7 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         add(panel, "span 2, growx, wrap")
     }
 
-    private fun setInitialSelections() {
+    internal fun syncFromSettings() {
         // Initialize UI scale
         val currentScale = ConfigSettings.uiScale
         val idxScale = scaleOptions.indexOfFirst { it == currentScale }.let { if (it >= 0) it else 0 }
