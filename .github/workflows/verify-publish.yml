@@ -23,7 +23,7 @@ jobs:
           VERSION="${{ inputs.version }}"
           # NuGet flat-container index lists all published versions — no auth required.
           URL="https://api.nuget.org/v3-flatcontainer/robocode.tankroyale.botapi/index.json"
-          MAX=12
+          MAX=30
           for i in $(seq 1 $MAX); do
             VERSIONS=$(curl -sf "$URL" | python3 -c "import sys,json; print(' '.join(json.load(sys.stdin)['versions']))" 2>/dev/null || true)
             if echo "$VERSIONS" | grep -qw "$VERSION"; then
@@ -33,7 +33,7 @@ jobs:
             echo "⏳ Attempt $i/$MAX: ${VERSION} not yet listed. Waiting 30s..."
             sleep 30
           done
-          echo "❌ NuGet: Robocode.TankRoyale.BotApi ${VERSION} not available after 6 minutes"
+          echo "❌ NuGet: Robocode.TankRoyale.BotApi ${VERSION} not available after 15 minutes"
           exit 1
 
   check-pypi:

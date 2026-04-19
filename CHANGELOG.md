@@ -1,4 +1,4 @@
-## [0.41.0] - TBD - Bot API library updater and stability improvements
+## [0.41.0] - 2026-04-19 - Bot API library updater and stability improvements
 
 This release lays the groundwork for an upcoming TypeScript Bot API. The TypeScript API is
 functional but still under test and lacks documentation, so it is not included in this release.
