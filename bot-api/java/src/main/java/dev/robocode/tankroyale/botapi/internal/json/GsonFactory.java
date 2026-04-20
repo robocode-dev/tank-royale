@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import dev.robocode.tankroyale.botapi.graphics.Color;
+import dev.robocode.tankroyale.botapi.graphics.Point;
 import dev.robocode.tankroyale.botapi.util.ColorUtil;
 import dev.robocode.tankroyale.schema.Event;
 
@@ -35,7 +37,8 @@ final class GsonFactory {
         if (gson == null) {
             gson = new GsonBuilder()
                     .registerTypeAdapterFactory(getEventTypeFactory())
-                    .registerTypeAdapter(Color.class, new ColorTypeAdapter()) // support for Color
+                    .registerTypeAdapter(Color.class, new ColorTypeAdapter())
+                    .registerTypeAdapter(Point.class, new PointTypeAdapter())
                     // to avoid IllegalArgumentException: -Infinity is not a valid double value as per JSON specification
                     .serializeSpecialFloatingPointValues()
                     .create();
@@ -72,6 +75,43 @@ final class GsonFactory {
         public Color read(JsonReader in) throws IOException {
             String webColor = in.nextString();
             return ColorUtil.fromHexColor(webColor);
+        }
+    }
+
+    // Avoids Gson's reflective mutation of Point's final fields (blocked in future JDKs).
+    private static final class PointTypeAdapter extends TypeAdapter<Point> {
+        @Override
+        public void write(JsonWriter out, Point point) throws IOException {
+            if (point == null) {
+                out.nullValue();
+                return;
+            }
+            out.beginObject();
+            out.name("x").value(point.getX());
+            out.name("y").value(point.getY());
+            out.endObject();
+        }
+
+        @Override
+        public Point read(JsonReader in) throws IOException {
+            if (in.peek() == JsonToken.NULL) {
+                in.nextNull();
+                return null;
+            }
+            double x = 0, y = 0;
+            in.beginObject();
+            while (in.hasNext()) {
+                String name = in.nextName();
+                if ("x".equals(name)) {
+                    x = in.nextDouble();
+                } else if ("y".equals(name)) {
+                    y = in.nextDouble();
+                } else {
+                    in.skipValue();
+                }
+            }
+            in.endObject();
+            return new Point(x, y);
         }
     }
 }
