@@ -150,7 +150,7 @@ internal class ProcessManager(private val bootMaker: BotBooter = BotBooter()) {
     private fun captureProcessErrorOutput(process: Process, botDir: Path) {
         CompletableFuture.runAsync {
             process.errorStream.bufferedReader().use { reader ->
-                reader.forEachLine { line -> Log.error(line, botDir) }
+                reader.forEachLine { line -> Log.error(line) }
             }
         }.exceptionally { Log.error(it, botDir); null }
     }

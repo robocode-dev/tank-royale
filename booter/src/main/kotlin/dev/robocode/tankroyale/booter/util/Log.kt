@@ -6,18 +6,15 @@ import kotlin.text.replace
 
 object Log {
 
-    private fun printBotDir(botDir: Path?) {
-        botDir?.let { writeError("ERROR: Bot directory: ${it.absolutePathString()}") }
-    }
+    private fun botDirPrefix(botDir: Path?) =
+        botDir?.let { "ERROR: Bot directory: ${it.absolutePathString()}\n" } ?: ""
 
     fun error(ex: Throwable, botDir: Path? = null) {
-        printBotDir(botDir)
-        ex.stackTraceToString().let { if (it.isNotBlank()) writeError(it) }
+        ex.stackTraceToString().let { if (it.isNotBlank()) writeError("${botDirPrefix(botDir)}$it") }
     }
 
     fun error(message: String, botDir: Path? = null) {
-        printBotDir(botDir)
-        writeError(message)
+        writeError("${botDirPrefix(botDir)}$message")
     }
 
     private fun writeError(message: String) {
