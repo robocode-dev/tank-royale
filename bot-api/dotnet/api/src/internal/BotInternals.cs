@@ -14,6 +14,11 @@ sealed class BotInternals : IStopResumeListener
     private bool _overrideRadarTurnRate;
     private bool _overrideTargetSpeed;
 
+    private double _continuousTurnRate;
+    private double _continuousGunTurnRate;
+    private double _continuousRadarTurnRate;
+    private double _continuousTargetSpeed;
+
     private double _previousDirection;
     private double _previousGunDirection;
     private double _previousRadarDirection;
@@ -82,6 +87,11 @@ sealed class BotInternals : IStopResumeListener
         GunTurnRemaining = 0;
         RadarTurnRemaining = 0;
 
+        _continuousTurnRate = 0;
+        _continuousGunTurnRate = 0;
+        _continuousRadarTurnRate = 0;
+        _continuousTargetSpeed = 0;
+
         _previousDirection = _bot.Direction;
         _previousGunDirection = _bot.GunDirection;
         _previousRadarDirection = _bot.RadarDirection;
@@ -142,6 +152,7 @@ sealed class BotInternals : IStopResumeListener
     public void SetTurnRate(double turnRate)
     {
         _overrideTurnRate = false;
+        _continuousTurnRate = turnRate;
         TurnRemaining = ToInfiniteValue(turnRate);
         _baseBotInternals.TurnRate = turnRate;
     }
@@ -149,6 +160,7 @@ sealed class BotInternals : IStopResumeListener
     public void SetGunTurnRate(double gunTurnRate)
     {
         _overrideGunTurnRate = false;
+        _continuousGunTurnRate = gunTurnRate;
         GunTurnRemaining = ToInfiniteValue(gunTurnRate);
         _baseBotInternals.GunTurnRate = gunTurnRate;
     }
@@ -156,6 +168,7 @@ sealed class BotInternals : IStopResumeListener
     public void SetRadarTurnRate(double radarTurnRate)
     {
         _overrideRadarTurnRate = false;
+        _continuousRadarTurnRate = radarTurnRate;
         RadarTurnRemaining = ToInfiniteValue(radarTurnRate);
         _baseBotInternals.RadarTurnRate = radarTurnRate;
     }
@@ -181,6 +194,7 @@ sealed class BotInternals : IStopResumeListener
     internal void SetTargetSpeed(double targetSpeed)
     {
         _overrideTargetSpeed = false;
+        _continuousTargetSpeed = targetSpeed;
         DistanceRemaining = targetSpeed switch
         {
             NaN => throw new ArgumentException("'targetSpeed' cannot be NaN"),
@@ -331,7 +345,10 @@ sealed class BotInternals : IStopResumeListener
         _previousDirection = _bot.Direction;
 
         if (!_overrideTurnRate)
-            return; // called after previous direction has been calculated and stored!
+        {
+            _baseBotInternals.TurnRate = _continuousTurnRate;
+            return;
+        }
 
         if (Math.Abs(TurnRemaining) <= Math.Abs(delta))
             TurnRemaining = 0;
@@ -351,7 +368,10 @@ sealed class BotInternals : IStopResumeListener
         _previousGunDirection = _bot.GunDirection;
 
         if (!_overrideGunTurnRate)
-            return; // called after previous direction has been calculated and stored!
+        {
+            _baseBotInternals.GunTurnRate = _continuousGunTurnRate;
+            return;
+        }
 
         if (Math.Abs(GunTurnRemaining) <= Math.Abs(delta))
             GunTurnRemaining = 0;
@@ -371,7 +391,10 @@ sealed class BotInternals : IStopResumeListener
         _previousRadarDirection = _bot.RadarDirection;
 
         if (!_overrideRadarTurnRate)
-            return; // called after previous direction has been calculated and stored!
+        {
+            _baseBotInternals.RadarTurnRate = _continuousRadarTurnRate;
+            return;
+        }
 
         if (Math.Abs(RadarTurnRemaining) <= Math.Abs(delta))
             RadarTurnRemaining = 0;
@@ -389,6 +412,7 @@ sealed class BotInternals : IStopResumeListener
     {
         if (!_overrideTargetSpeed)
         {
+            _baseBotInternals.TargetSpeed = _continuousTargetSpeed;
             if (Math.Abs(DistanceRemaining) < Math.Abs(_bot.Speed))
             {
                 DistanceRemaining = 0;

@@ -17,6 +17,21 @@
 - TypeScript Bot API:
     - Fixed debug graphics not appearing in `PaintingBot`.
 
+- Bot API (Java, .NET, Python, TypeScript):
+    - Fixed `setGunTurnRate()`, `setRadarTurnRate()`, `setTurnRate()`, and `setTargetSpeed()`
+      values being silently reset to zero after the first turn when using the continuous
+      (rate-based) movement API on `Bot`. Bots that set a turn or speed rate in `run()` and
+      relied on it persisting across turns now behave correctly for the full round.
+
+- Sample bots:
+    - Renamed `VelocityBot` → `VelociBot` on all platforms (Java, .NET, Python, TypeScript),
+      matching the original classic Robocode `VelociRobot` name more closely.
+    - Fixed `VelociBot` not shooting at scanned bots. An erroneous `setRadarTurnRate(15)` call
+      caused the radar to spin at 30°/turn while the gun spun at 15°/turn, so the gun was never
+      aimed at the enemy when a scan event fired. Removed the redundant radar rate — the radar
+      already follows the gun automatically since the radar turn rate is cumulative on top of
+      the gun turn rate.
+
 ## [0.41.0] - 2026-04-19 - Bot API library updater and stability improvements
 
 This release lays the groundwork for an upcoming TypeScript Bot API. The TypeScript API is

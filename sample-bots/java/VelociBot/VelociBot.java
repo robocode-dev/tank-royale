@@ -1,63 +1,64 @@
-using System;
-using Robocode.TankRoyale.BotApi;
-using Robocode.TankRoyale.BotApi.Events;
+import dev.robocode.tankroyale.botapi.*;
+import dev.robocode.tankroyale.botapi.events.*;
 
 // ------------------------------------------------------------------
-// VelocityBot
+// VelociBot
 // ------------------------------------------------------------------
 // A sample bot originally made for Robocode by Joshua Galecki.
 //
 // Example bot of how to use turn rates.
 // ------------------------------------------------------------------
-public class VelocityBot : Bot {
+public class VelociBot extends Bot {
 
     int turnCounter;
 
     // The main method starts our bot
-    static void Main(string[] args)
-    {
-        new VelocityBot().Start();
+    public static void main(String[] args) {
+        new VelociBot().start();
     }
 
     // Called when a new round is started -> initialize and do some movement
-    public override void Run()
-    {
+    @Override
+    public void run() {
 		turnCounter = 0;
 
-		GunTurnRate = 15;
+		setGunTurnRate(15);
 		
-		while (IsRunning) {
+		while (isRunning()) {
 			if (turnCounter % 64 == 0) {
 				// Straighten out, if we were hit by a bullet (ends turning)
-				TurnRate = 0;
+				setTurnRate(0);
 
                 // Go forward with a target speed of 4
-				TargetSpeed = 4;
+				setTargetSpeed(4);
 			}
 			if (turnCounter % 64 == 32) {
 				// Go backwards, faster
-                TargetSpeed = -6;
+                setTargetSpeed(-6);
 			}
 			turnCounter++;
-			Go(); // execute turn
+			go(); // execute turn
 		}
 	}
 
     // We scanned another bot -> fire!
-	public override void OnScannedBot(ScannedBotEvent e) {
-		Fire(1);
+    @Override
+	public void onScannedBot(ScannedBotEvent e) {
+		fire(1);
 	}
 
     // We were hit by a bullet -> set turn rate
-	public override void OnHitByBullet(HitByBulletEvent e) {
+    @Override
+	public void onHitByBullet(HitByBulletEvent e) {
 		// Turn to confuse the other bots
-		TurnRate = 5;
+		setTurnRate(5);
 	}
 	
     // We hit a wall -> move in the opposite direction
-	public override void OnHitWall(HitWallEvent e) {
+    @Override
+	public void onHitWall(HitWallEvent e) {
 		// Move away from the wall by reversing the target speed.
 		// Note that current speed is 0 as the bot just hit the wall.
-		TargetSpeed = -1 * TargetSpeed;
+		setTargetSpeed(-1 * getTargetSpeed());
 	}
 }

@@ -1,5 +1,5 @@
 {
-  "name": "Velocity Bot",
+  "name": "Veloci Bot",
   "version": "1.0",
   "authors": [
     "Joshua Galecki",
@@ -11,6 +11,6 @@
     "ie",
     "dk"
   ],
-  "platform": "JVM",
-  "programmingLang": "Java 11"
+  "platform": ".NET 6.0",
+  "programmingLang": "C# 10.0"
 }

@@ -46,7 +46,7 @@ Sample bots:
 - SpinBot
 - Target
 - TrackFire
-- VelocityBot
+- VelociBot
 - Walls
 
 ## ReadMe.md file

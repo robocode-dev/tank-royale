@@ -137,3 +137,40 @@ Key flows: `bot-connection`, `battle-lifecycle`, `turn-execution`, `event-handli
 
 Minimal bots (Java, C#, Python) live in `bot-api/tests/bots/`. Connect any of them to a running
 server to reproduce bot-API bugs in isolation without needing sample bots or the GUI.
+
+---
+
+## Known Bug Pattern: Continuous rate reset after turn 1
+
+**Symptom:** A bot calls `setGunTurnRate(15)` (or `setRadarTurnRate`, `setTurnRate`,
+`setTargetSpeed`) in `run()`, the effect is visible on turn 1, then silently stops working from
+turn 2 onwards.
+
+**Root cause:** `BaseBotInternals.resetMovement()` nullifies all intent fields once per round
+(after the first `sendIntent()`). In continuous mode (`!overrideGunTurnRate`), the old
+`update*Remaining()` returned early without re-calling `baseBotInternals.setGunTurnRate()`,
+so turns 2+ sent `null` to the server, which the server treats as 0.
+
+**Fix location:** `BotInternals` (all 4 platforms). Store the continuous value in a
+`continuousGunTurnRate` field; re-apply it via `baseBotInternals.setGunTurnRate()` at the top
+of every `updateGunTurnRemaining()` call when `!overrideGunTurnRate`.
+
+**Diagnostic:** Use Battle Runner intent diagnostics to print `gunTurnRate` per turn.
+Turn 1 shows `15.0`, turns 2+ show `null` → confirms this bug.
+
+---
+
+## Known Pitfall: Radar turn rate is cumulative
+
+**Rule:** In Tank Royale, the radar's absolute turn = bodyTurnRate + gunTurnRate + radarTurnRate.
+Setting `setRadarTurnRate(X)` adds X *on top of* the gun's rotation — it does **not** set an
+absolute rate.
+
+**Consequence:** Calling `setGunTurnRate(15)` + `setRadarTurnRate(15)` makes the radar spin at
+30°/turn while the gun spins at 15°/turn. They drift apart; `fire()` in `onScannedBot` will miss
+because the gun is no longer pointing where the radar scanned.
+
+**Correct pattern:** To scan and fire in the same direction as the gun, set only
+`setGunTurnRate(rate)` and leave `setRadarTurnRate` at 0 (default). This mirrors classic
+Robocode's `RateControlRobot`, where the radar follows the gun when `setRadarRotationRate` is
+not called.

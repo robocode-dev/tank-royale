@@ -3,13 +3,13 @@ from robocode_tank_royale.bot_api.events import ScannedBotEvent, HitByBulletEven
 
 
 # ------------------------------------------------------------------
-# VelocityBot
+# VelociBot
 # ------------------------------------------------------------------
 # A sample bot originally made for Robocode by Joshua Galecki.
 #
 # Example bot of how to use turn rates and target speeds.
 # ------------------------------------------------------------------
-class VelocityBot(Bot):
+class VelociBot(Bot):
     def __init__(self) -> None:
         super().__init__()
         self._turn_counter: int = 0
@@ -19,7 +19,8 @@ class VelocityBot(Bot):
 
         self._turn_counter = 0
 
-        # Set the gun (turret) turn rate to rotate slowly all the time
+        # Set the gun (turret) turn rate to rotate slowly all the time.
+        # The radar is mounted on the gun, so it follows automatically.
         self.gun_turn_rate = 15
 
         # Main control loop: one go() per iteration to represent a turn
@@ -62,7 +63,7 @@ class VelocityBot(Bot):
 
 
 def main() -> None:
-    bot = VelocityBot()
+    bot = VelociBot()
     bot.start()
 
 

@@ -73,6 +73,10 @@ class BotInternals(StopResumeListenerABC):
         self.turn_remaining: float = 0.0
         self.gun_turn_remaining: float = 0.0
         self.radar_turn_remaining: float = 0.0
+        self._continuous_turn_rate: float = 0.0
+        self._continuous_gun_turn_rate: float = 0.0
+        self._continuous_radar_turn_rate: float = 0.0
+        self._continuous_target_speed: float = 0.0
         try:
             self._previous_direction: float = self._bot.direction
             self._previous_gun_direction: float = self._bot.gun_direction
@@ -106,6 +110,7 @@ class BotInternals(StopResumeListenerABC):
     @turn_rate.setter
     def turn_rate(self, x: float) -> None:
         self._override_turn_rate = False
+        self._continuous_turn_rate = x
         # Match Java semantics: remaining is based on the new requested turn rate
         self.turn_remaining = self._to_infinite_value(x)
         self._base_bot_internals.turn_rate = x
@@ -117,6 +122,7 @@ class BotInternals(StopResumeListenerABC):
     @gun_turn_rate.setter
     def gun_turn_rate(self, x: float) -> None:
         self._override_gun_turn_rate = False
+        self._continuous_gun_turn_rate = x
         # Match Java semantics: remaining is based on the new requested gun turn rate
         self.gun_turn_remaining = self._to_infinite_value(x)
         self._base_bot_internals.gun_turn_rate = x
@@ -128,6 +134,7 @@ class BotInternals(StopResumeListenerABC):
     @radar_turn_rate.setter
     def radar_turn_rate(self, x: float) -> None:
         self._override_radar_turn_rate = False
+        self._continuous_radar_turn_rate = x
         # Match Java semantics: remaining is based on the new requested radar turn rate
         self.radar_turn_remaining = self._to_infinite_value(x)
         self._base_bot_internals.radar_turn_rate = x
@@ -147,6 +154,7 @@ class BotInternals(StopResumeListenerABC):
     @target_speed.setter
     def target_speed(self, speed: float) -> None:
         self._override_target_speed = False
+        self._continuous_target_speed = speed
         self.distance_remaining = self._to_infinite_value(speed)
         self._base_bot_internals.target_speed = speed
 
@@ -254,7 +262,7 @@ class BotInternals(StopResumeListenerABC):
         self._previous_direction = self._bot.direction
 
         if not self._override_turn_rate:
-            # called after a previous direction has been calculated and stored!
+            self._base_bot_internals.turn_rate = self._continuous_turn_rate
             return
 
         if abs(self.turn_remaining) <= abs(delta):
@@ -274,6 +282,7 @@ class BotInternals(StopResumeListenerABC):
         self._previous_gun_direction = self._bot.gun_direction
 
         if not self._override_gun_turn_rate:
+            self._base_bot_internals.gun_turn_rate = self._continuous_gun_turn_rate
             return
 
         if abs(self.gun_turn_remaining) <= abs(delta):
@@ -293,6 +302,7 @@ class BotInternals(StopResumeListenerABC):
         self._previous_radar_direction = self._bot.radar_direction
 
         if not self._override_radar_turn_rate:
+            self._base_bot_internals.radar_turn_rate = self._continuous_radar_turn_rate
             return
 
         if abs(self.radar_turn_remaining) <= abs(delta):
@@ -306,6 +316,7 @@ class BotInternals(StopResumeListenerABC):
 
     def _update_movement(self):
         if not self._override_target_speed:
+            self._base_bot_internals.target_speed = self._continuous_target_speed
             if abs(self.distance_remaining) < abs(self._bot.speed):
                 self.distance_remaining = 0
             else:

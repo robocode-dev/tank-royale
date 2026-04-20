@@ -19,6 +19,11 @@ public final class BotInternals implements IStopResumeListener {
     private boolean overrideRadarTurnRate;
     private boolean overrideTargetSpeed;
 
+    private double continuousTurnRate;
+    private double continuousGunTurnRate;
+    private double continuousRadarTurnRate;
+    private double continuousTargetSpeed;
+
     private double previousDirection;
     private double previousGunDirection;
     private double previousRadarDirection;
@@ -88,6 +93,11 @@ public final class BotInternals implements IStopResumeListener {
         gunTurnRemaining = 0;
         radarTurnRemaining = 0;
 
+        continuousTurnRate = 0;
+        continuousGunTurnRate = 0;
+        continuousRadarTurnRate = 0;
+        continuousTargetSpeed = 0;
+
         previousDirection = bot.getDirection();
         previousGunDirection = bot.getGunDirection();
         previousRadarDirection = bot.getRadarDirection();
@@ -137,18 +147,21 @@ public final class BotInternals implements IStopResumeListener {
 
     public void setTurnRate(double turnRate) {
         overrideTurnRate = false;
+        continuousTurnRate = turnRate;
         turnRemaining = toInfiniteValue(turnRate);
         baseBotInternals.setTurnRate(turnRate);
     }
 
     public void setGunTurnRate(double gunTurnRate) {
         overrideGunTurnRate = false;
+        continuousGunTurnRate = gunTurnRate;
         gunTurnRemaining = toInfiniteValue(gunTurnRate);
         baseBotInternals.setGunTurnRate(gunTurnRate);
     }
 
     public void setRadarTurnRate(double radarTurnRate) {
         overrideRadarTurnRate = false;
+        continuousRadarTurnRate = radarTurnRate;
         radarTurnRemaining = toInfiniteValue(radarTurnRate);
         baseBotInternals.setRadarTurnRate(radarTurnRate);
     }
@@ -181,6 +194,7 @@ public final class BotInternals implements IStopResumeListener {
 
     public void setTargetSpeed(double targetSpeed) {
         overrideTargetSpeed = false;
+        continuousTargetSpeed = targetSpeed;
         if (targetSpeed > 0) {
             distanceRemaining = Double.POSITIVE_INFINITY;
         } else if (targetSpeed < 0) {
@@ -316,7 +330,8 @@ public final class BotInternals implements IStopResumeListener {
         previousDirection = bot.getDirection();
 
         if (!overrideTurnRate) {
-            return; // called after a previous direction has been calculated and stored!
+            baseBotInternals.setTurnRate(continuousTurnRate);
+            return;
         }
 
         if (abs(turnRemaining) <= abs(delta)) {
@@ -335,7 +350,8 @@ public final class BotInternals implements IStopResumeListener {
         previousGunDirection = bot.getGunDirection();
 
         if (!overrideGunTurnRate) {
-            return; // called after a previous direction has been calculated and stored!
+            baseBotInternals.setGunTurnRate(continuousGunTurnRate);
+            return;
         }
 
         if (abs(gunTurnRemaining) <= abs(delta)) {
@@ -354,7 +370,8 @@ public final class BotInternals implements IStopResumeListener {
         previousRadarDirection = bot.getRadarDirection();
 
         if (!overrideRadarTurnRate) {
-            return; // called after a previous direction has been calculated and stored!
+            baseBotInternals.setRadarTurnRate(continuousRadarTurnRate);
+            return;
         }
 
         if (abs(radarTurnRemaining) <= abs(delta)) {
@@ -370,6 +387,7 @@ public final class BotInternals implements IStopResumeListener {
 
     private void updateMovement() {
         if (!overrideTargetSpeed) {
+            baseBotInternals.setTargetSpeed(continuousTargetSpeed);
             if (abs(distanceRemaining) < abs(bot.getSpeed())) {
                 distanceRemaining = 0;
             } else {

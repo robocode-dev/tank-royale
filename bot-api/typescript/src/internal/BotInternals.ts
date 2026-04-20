@@ -42,6 +42,11 @@ export class BotInternals implements IStopResumeListener {
   overrideRadarTurnRate = false;
   overrideTargetSpeed = false;
 
+  private continuousTurnRate = 0;
+  private continuousGunTurnRate = 0;
+  private continuousRadarTurnRate = 0;
+  private continuousTargetSpeed = 0;
+
   private isOverDriving = false;
 
   constructor(bot: IBot, base: BaseBotInternals) {
@@ -97,6 +102,10 @@ export class BotInternals implements IStopResumeListener {
     this.turnRemaining = 0;
     this.gunTurnRemaining = 0;
     this.radarTurnRemaining = 0;
+    this.continuousTurnRate = 0;
+    this.continuousGunTurnRate = 0;
+    this.continuousRadarTurnRate = 0;
+    this.continuousTargetSpeed = 0;
     // tickEvent may be null when called from onRoundStartedPrewarm (before turn 1 tick arrives)
     if (this.base.getCurrentTickOrNull() != null) {
       this.previousDirection = this.bot.getDirection();
@@ -123,7 +132,10 @@ export class BotInternals implements IStopResumeListener {
   private updateTurnRemaining(): void {
     const delta = this.bot.calcDeltaAngle(this.bot.getDirection(), this.previousDirection);
     this.previousDirection = this.bot.getDirection();
-    if (!this.overrideTurnRate) return;
+    if (!this.overrideTurnRate) {
+      this.base.setTurnRate(this.continuousTurnRate);
+      return;
+    }
     if (Math.abs(this.turnRemaining) <= Math.abs(delta)) {
       this.turnRemaining = 0;
     } else {
@@ -136,7 +148,10 @@ export class BotInternals implements IStopResumeListener {
   private updateGunTurnRemaining(): void {
     const delta = this.bot.calcDeltaAngle(this.bot.getGunDirection(), this.previousGunDirection);
     this.previousGunDirection = this.bot.getGunDirection();
-    if (!this.overrideGunTurnRate) return;
+    if (!this.overrideGunTurnRate) {
+      this.base.setGunTurnRate(this.continuousGunTurnRate);
+      return;
+    }
     if (Math.abs(this.gunTurnRemaining) <= Math.abs(delta)) {
       this.gunTurnRemaining = 0;
     } else {
@@ -149,7 +164,10 @@ export class BotInternals implements IStopResumeListener {
   private updateRadarTurnRemaining(): void {
     const delta = this.bot.calcDeltaAngle(this.bot.getRadarDirection(), this.previousRadarDirection);
     this.previousRadarDirection = this.bot.getRadarDirection();
-    if (!this.overrideRadarTurnRate) return;
+    if (!this.overrideRadarTurnRate) {
+      this.base.setRadarTurnRate(this.continuousRadarTurnRate);
+      return;
+    }
     if (Math.abs(this.radarTurnRemaining) <= Math.abs(delta)) {
       this.radarTurnRemaining = 0;
     } else {
@@ -161,6 +179,7 @@ export class BotInternals implements IStopResumeListener {
 
   private updateMovement(): void {
     if (!this.overrideTargetSpeed) {
+      this.base.setTargetSpeed(this.continuousTargetSpeed);
       if (Math.abs(this.distanceRemaining) < Math.abs(this.bot.getSpeed())) {
         this.distanceRemaining = 0;
       } else {
@@ -195,24 +214,28 @@ export class BotInternals implements IStopResumeListener {
 
   setTurnRate(turnRate: number): void {
     this.overrideTurnRate = false;
+    this.continuousTurnRate = turnRate;
     this.turnRemaining = toInfiniteValue(turnRate);
     this.base.setTurnRate(turnRate);
   }
 
   setGunTurnRate(gunTurnRate: number): void {
     this.overrideGunTurnRate = false;
+    this.continuousGunTurnRate = gunTurnRate;
     this.gunTurnRemaining = toInfiniteValue(gunTurnRate);
     this.base.setGunTurnRate(gunTurnRate);
   }
 
   setRadarTurnRate(radarTurnRate: number): void {
     this.overrideRadarTurnRate = false;
+    this.continuousRadarTurnRate = radarTurnRate;
     this.radarTurnRemaining = toInfiniteValue(radarTurnRate);
     this.base.setRadarTurnRate(radarTurnRate);
   }
 
   setTargetSpeed(targetSpeed: number): void {
     this.overrideTargetSpeed = false;
+    this.continuousTargetSpeed = targetSpeed;
     if (targetSpeed > 0) {
       this.distanceRemaining = Infinity;
     } else if (targetSpeed < 0) {

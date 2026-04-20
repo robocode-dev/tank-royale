@@ -1,17 +1,17 @@
 import {Bot, HitByBulletEvent, HitWallEvent, ScannedBotEvent} from "@robocode.dev/tank-royale-bot-api";
 
 // ------------------------------------------------------------------
-// VelocityBot
+// VelociBot
 // ------------------------------------------------------------------
 // A sample bot originally made for Robocode by Joshua Galecki.
 //
 // Example bot of how to use turn rates.
 // ------------------------------------------------------------------
-class VelocityBot extends Bot {
+class VelociBot extends Bot {
     turnCounter = 0;
 
     static main() {
-        new VelocityBot().start();
+        new VelociBot().start();
     }
 
     override run() {
@@ -53,4 +53,4 @@ class VelocityBot extends Bot {
     }
 }
 
-VelocityBot.main();
+VelociBot.main();
