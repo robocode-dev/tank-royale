@@ -103,6 +103,7 @@ export class MockedServer {
   private direction = BOT_DIRECTION;
   private gunDirection = BOT_GUN_DIRECTION;
   private radarDirection = BOT_RADAR_DIRECTION;
+  private debuggingEnabled = false;
 
   private additionalEvents: any[] = [];
 
@@ -252,6 +253,7 @@ export class MockedServer {
   setEnergy(energy: number): void { this.energy = energy; }
   setGunHeat(gunHeat: number): void { this.gunHeat = gunHeat; }
   setSpeed(speed: number): void { this.speed = speed; }
+  setDebuggingEnabled(enabled: boolean): void { this.debuggingEnabled = enabled; }
   setSpeedIncrement(increment: number): void { this.speedIncrement = increment; }
   setTurnIncrement(increment: number): void { this.turnIncrement = increment; }
   setGunTurnIncrement(increment: number): void { this.gunTurnIncrement = increment; }
@@ -407,7 +409,7 @@ export class MockedServer {
         radarTurnRate: BOT_RADAR_TURN_RATE,
         gunHeat: this.gunHeat,
         enemyCount: BOT_ENEMY_COUNT,
-        isDebuggingEnabled: false,
+        isDebuggingEnabled: this.debuggingEnabled,
       },
       bulletStates: [
         { bulletId: 1, ownerId: 0, power: 0, x: 0, y: 0, direction: 0 },

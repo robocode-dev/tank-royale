@@ -8,5 +8,5 @@
  * A team of droids plus at least one non-droid team robot can have an edge over another team without droids (and the
  * same number of robots) due to the additional 20 energy points.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Droid {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export abstract class Droid {}

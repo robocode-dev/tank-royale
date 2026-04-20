@@ -97,9 +97,16 @@ export class BotInternals implements IStopResumeListener {
     this.turnRemaining = 0;
     this.gunTurnRemaining = 0;
     this.radarTurnRemaining = 0;
-    this.previousDirection = this.bot.getDirection();
-    this.previousGunDirection = this.bot.getGunDirection();
-    this.previousRadarDirection = this.bot.getRadarDirection();
+    // tickEvent may be null when called from onRoundStartedPrewarm (before turn 1 tick arrives)
+    if (this.base.getCurrentTickOrNull() != null) {
+      this.previousDirection = this.bot.getDirection();
+      this.previousGunDirection = this.bot.getGunDirection();
+      this.previousRadarDirection = this.bot.getRadarDirection();
+    } else {
+      this.previousDirection = 0;
+      this.previousGunDirection = 0;
+      this.previousRadarDirection = 0;
+    }
   }
 
   private processTurn(): void {

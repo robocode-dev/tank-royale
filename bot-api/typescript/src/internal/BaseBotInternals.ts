@@ -608,24 +608,35 @@ export class BaseBotInternals {
     this.waitForNextTurnWorker(capturedTurnNumber);
   }
 
+  private renderGraphicsToIntent(): void {
+    if (this.isDebuggingEnabled() && this.svgGraphics != null) {
+      this.intent.debugGraphics = this.svgGraphics.toSvg();
+      this.svgGraphics.clear();
+    }
+  }
+
   private sendIntentDirect(): void {
     if (this.wsHandler == null) return;
+    this.renderGraphicsToIntent();
     const intent: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(this.intent)) {
       if (v != null) intent[k] = v;
     }
     this.wsHandler.sendBotIntent(intent as unknown as import("../protocol/schema.js").BotIntent);
     this.intent.teamMessages = null;
+    this.intent.debugGraphics = null;
   }
 
   private sendIntentToMain(): void {
     if (this.workerParentPort == null) return;
+    this.renderGraphicsToIntent();
     const intent: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(this.intent)) {
       if (v != null) intent[k] = v;
     }
     this.workerParentPort.postMessage({ type: "intent", intent });
     this.intent.teamMessages = null;
+    this.intent.debugGraphics = null;
   }
 
   private waitForNextTurnWorker(currentTurnNumber: number): void {

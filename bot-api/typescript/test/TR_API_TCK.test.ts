@@ -1,9 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { BaseBot } from "../src/BaseBot.js";
+import { Bot } from "../src/Bot.js";
 import { MockedServer } from "./test_utils/MockedServer.js";
 import { BotInfo } from "../src/BotInfo.js";
 import { BaseBotInternals } from "../src/internal/BaseBotInternals.js";
 import { MessageType } from "../src/protocol/MessageType.js";
+import { TickEvent } from "../src/events/TickEvent.js";
 
 describe("TR-API-TCK: Protocol Conformance", () => {
   let server: MockedServer;
@@ -92,5 +94,33 @@ describe("TR-API-TCK: Protocol Conformance", () => {
     await new Promise(resolve => setTimeout(resolve, 100));
     
     expect(wonRoundFired).toBe(true);
+  });
+
+  it("TR-API-TCK-007: debugGraphics is populated in intent when isDebuggingEnabled=true", async () => {
+    class PaintBot extends BaseBot {
+      override onTick(_e: TickEvent) {
+        const g = this.getGraphics();
+        g.fillCircle(100, 200, 20);
+        this.go();
+      }
+    }
+
+    server.setDebuggingEnabled(true);
+
+    const bot = new PaintBot(info, server.serverUrl);
+    bot.start();
+
+    await server.awaitBotHandshake(5000);
+    server.sendGameStarted();
+    server.sendRoundStarted();
+    server.sendTick(1);
+
+    await server.awaitBotIntent(5000);
+    const intent = server.getBotIntent();
+    expect(intent).toBeDefined();
+    expect(intent!.debugGraphics).toBeDefined();
+    expect(intent!.debugGraphics).not.toBeNull();
+    expect(intent!.debugGraphics).toContain("<svg");
+    expect(intent!.debugGraphics).toContain("circle");
   });
 });
