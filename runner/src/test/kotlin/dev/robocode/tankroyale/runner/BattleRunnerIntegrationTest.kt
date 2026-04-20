@@ -17,6 +17,8 @@ import java.util.logging.LogRecord
 import java.util.logging.Logger
 import java.util.zip.GZIPInputStream
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
+import java.util.Collections
 import kotlin.io.path.exists
 
 /**
@@ -860,6 +862,66 @@ class BattleRunnerIntegrationTest {
 
                 handle.stop()
             }
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+    // Bot color regression — verifies Corners bot colors reach observer tick data
+    // -------------------------------------------------------------------------------------
+
+    @Test
+    fun `Corners bot colors appear in tick event bot states and intent diagnostics`() {
+        // Corners sets: body=RED(#ff0000), turret=BLACK(#000000), radar=YELLOW(#ffff00),
+        //               bullet=GREEN(#00ff00), scan=GREEN(#00ff00)
+        val collectedColors = Collections.synchronizedList(mutableListOf<Map<String, String?>>())
+
+        BattleRunner.create {
+            embeddedServer()
+            enableIntentDiagnostics()
+        }.use { runner ->
+            runner.startBattleAsync(
+                setup = BattleSetup.classic { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Corners")), BotEntry.of(botDir("SpinBot")))
+            ).use { handle ->
+                val owner = Any()
+                handle.onTickEvent.on(owner) { tick ->
+                    tick.botStates.forEach { state ->
+                        val map = mapOf(
+                            "bodyColor"   to state.bodyColor,
+                            "turretColor" to state.turretColor,
+                            "radarColor"  to state.radarColor,
+                            "bulletColor" to state.bulletColor,
+                            "scanColor"   to state.scanColor,
+                        )
+                        if (map.values.any { it != null }) collectedColors.add(map)
+                    }
+                }
+                handle.awaitResults()
+            }
+
+            // --- Observer tick assertion: at least one tick must carry Corners' RED body color ---
+            val cornersRedTick = collectedColors.firstOrNull {
+                it["bodyColor"]?.equals("#ff0000", ignoreCase = true) == true
+            }
+            assertThat(cornersRedTick)
+                .describedAs(
+                    "No tick with bodyColor=#ff0000 found. " +
+                    "Distinct bodyColors seen: ${collectedColors.map { it["bodyColor"] }.toSet()}"
+                )
+                .isNotNull()
+
+            // --- Intent diagnostics: Corners' intents must carry bodyColor ---
+            val store = runner.intentDiagnostics!!
+            val cornersIntents = store.getIntentsForBot("Corners")
+            assertThat(cornersIntents).isNotEmpty()
+
+            val firstColorIntent = cornersIntents.firstOrNull { it.intent.bodyColor != null }
+            assertThat(firstColorIntent)
+                .describedAs("Corners never sent a bodyColor in any BotIntent — color not serialized")
+                .isNotNull()
+            assertThat(firstColorIntent!!.intent.bodyColor)
+                .describedAs("Expected Corners bodyColor #ff0000 in BotIntent")
+                .isEqualToIgnoringCase("#ff0000")
         }
     }
 }
