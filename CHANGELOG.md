@@ -1,3 +1,22 @@
+## [0.42.0] - 2026-04-20 - Bug fixes
+
+### 🐞 Bug Fixes
+
+- Bot API (Java):
+    - Fixed JDK reflection warning about Gson mutating `final` fields in `Point` during
+      deserialization. Gson now constructs `Point` via its constructor instead of reflective
+      field mutation, which will be blocked in a future JDK release.
+
+- GUI:
+    - Fixed `ArrayIndexOutOfBoundsException` in `BasicListUI` caused by `SortedListModel`
+      returning inconsistent sizes during concurrent updates.
+
+- Booter:
+    - Removed misleading bot-dir prefix from per-line stderr output; fixed `Log` atomicity.
+
+- TypeScript Bot API:
+    - Fixed debug graphics not appearing in `PaintingBot`.
+
 ## [0.41.0] - 2026-04-19 - Bot API library updater and stability improvements
 
 This release lays the groundwork for an upcoming TypeScript Bot API. The TypeScript API is
