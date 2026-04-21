@@ -316,8 +316,12 @@ public final class BaseBotInternals {
     }
 
     /**
-     * @param capturedTurnNumber the turn number captured by go() at the time events were dispatched,
-     *                           or -1 if no tick was available
+     * Sends the bot intent and waits for the next turn. Events for the new turn are dispatched
+     * after waiting, so when {@code run()} reads bot state it is always in sync with the events
+     * that just fired (matching Classic Robocode semantics).
+     *
+     * @param capturedTurnNumber the turn number at the time {@code go()} was called,
+     *                           or -1 if no tick was available yet
      */
     public void execute(int capturedTurnNumber) {
         // If no tick has been received yet, send current intent once so the server can proceed.
@@ -335,6 +339,13 @@ public final class BaseBotInternals {
             }
         }
         waitForNextTurn(capturedTurnNumber);
+
+        // Dispatch events for the new turn *after* waiting, so that run() always reads state
+        // that matches the events that just fired — matching Classic Robocode semantics.
+        var newTick = getCurrentTickOrNull();
+        if (newTick != null) {
+            dispatchEvents(newTick.getTurnNumber());
+        }
     }
 
     private void sendIntent() {
@@ -407,6 +418,12 @@ public final class BaseBotInternals {
                     throw new ThreadInterruptedException();
                 }
             }
+        }
+        // Dispatch tick 1 events before run() starts, so the first run() iteration reads state
+        // that already has events fired — matching Classic Robocode semantics.
+        var firstTick = getCurrentTickOrNull();
+        if (firstTick != null) {
+            dispatchEvents(firstTick.getTurnNumber());
         }
     }
 

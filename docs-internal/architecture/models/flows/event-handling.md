@@ -1,11 +1,11 @@
 # Event Handling Flow
 
-This document explains how events (like `WonRoundEvent`, `ScannedBotEvent`, etc.) are generated, queued, dispatched, and handled in Tank Royale Bot APIs across Java, Python, and C#.
+This document explains how events (like `WonRoundEvent`, `ScannedBotEvent`, etc.) are generated, queued, dispatched, and handled in Tank Royale Bot APIs across Java, Python, C# (.NET), and TypeScript.
 
 ## Overview
 
 **System:** Distributed multi-process event system  
-**Platforms:** Java (reference), Python, C# (.NET)  
+**Platforms:** Java (reference), Python, C# (.NET), TypeScript  
 **Key Concept:** Events are generated server-side, transmitted via WebSocket, queued client-side, and dispatched to bot handlers  
 **Output Handling:** Handler output (print statements, log messages) is automatically captured and transmitted to the GUI console
 
@@ -133,35 +133,199 @@ graph LR
 
 ### Standard Turn Dispatch
 
+Events are dispatched **after the previous tick's wait completes, before `run()` continues** — ensuring bot code always reads state that already matches the events that just fired. This matches Classic Robocode semantics. See [Event Dispatch Timing Semantics](#event-dispatch-timing-semantics) below for the full story.
+
+There are two execution paths depending on whether the bot uses a managed thread (`Bot`) or drives the loop itself (`BaseBot`):
+
+#### Path A — `Bot` (managed thread, `run()` loop)
+
 ```mermaid
 sequenceDiagram
-    participant BotThread as Bot Thread
-    participant EventQueue as Event Queue
-    participant Handler as Event Handler
+    participant WS as WebSocket Thread
+    participant EQ as Event Queue
+    participant BT as Bot Thread
     participant Recording as RecordingPrintStream
-    
-    BotThread->>BotThread: go() called
-    BotThread->>EventQueue: dispatchEvents(turnNumber)
-    
+
+    Note over BT: blocked inside execute(N-1) → waitForNextTurn(N-1)
+
+    WS->>EQ: addEventsFromTick(tick N)  [TickEvent(N), ScannedBotEvent(N), ...]
+    WS->>WS: setTickEvent(tick N)
+    WS->>BT: notifyAll()
+
+    Note over BT: wakes — still inside execute(N-1)
+    BT->>EQ: dispatchEvents(N)   ← fired INSIDE execute(), before it returns
+
     loop For each queued event (by priority)
-        EventQueue->>EventQueue: peekNextEvent()
-        EventQueue->>EventQueue: Check: not too old?<br/>Check: priority >= current?
-        
-        opt Event is ready to dispatch
-            EventQueue->>Recording: Clear previous output
-            EventQueue->>Handler: fire(event)
-            Handler->>Recording: System.out.println()
-            Recording->>Recording: Store in ByteArrayOutputStream
+        EQ->>EQ: Check: not too old? priority >= current?
+        opt Ready
+            EQ->>Recording: Clear previous output
+            EQ->>BT: fire(event) → onTick / onScannedBot / etc.
+            BT->>Recording: System.out.println()
         end
     end
-    
-    EventQueue-->>BotThread: All events dispatched
-    BotThread->>BotThread: execute() → sendIntent()
-    BotThread->>Recording: readNext()
-    Recording-->>BotThread: Captured output
-    BotThread->>BotThread: botIntent.setStdOut(output)
-    BotThread->>WebSocket: Send BotIntent
+
+    Note over BT: execute(N-1) returns → go() returns
+    Note over BT: run() reads state (events for N already fired ✓)
+    BT->>BT: run() logic → go() → execute(N)
+    BT->>BT: sendIntent(N)
+    BT->>Recording: readNext()
+    Recording-->>BT: Captured output
+    BT->>BT: botIntent.setStdOut(output)
+    BT->>WS: Send BotIntent
+    Note over BT: waitForNextTurn(N) — blocks until tick N+1
 ```
+
+#### Path B — `BaseBot` (no managed thread, user calls `go()`)
+
+```mermaid
+sequenceDiagram
+    participant WS as WebSocket Thread
+    participant EQ as Event Queue
+    participant User as User Code
+    participant Recording as RecordingPrintStream
+
+    WS->>EQ: addEventsFromTick(tick N)
+    WS->>WS: setTickEvent(tick N)
+
+    User->>User: go() called (e.g. from onTick handler)
+    User->>EQ: dispatchEvents(N)   ← in go(), before execute()
+
+    loop For each queued event (by priority)
+        EQ->>User: fire(event) → onTick / onScannedBot / etc.
+        User->>Recording: System.out.println()
+    end
+
+    User->>User: execute(N) → sendIntent(N)
+    User->>Recording: readNext()
+    Recording-->>User: Captured output
+    User->>User: botIntent.setStdOut(output)
+    User->>WS: Send BotIntent
+    Note over User: execute() returns immediately (no managed thread)
+```
+
+---
+
+## Event Dispatch Timing Semantics
+
+This section explains *when* events fire relative to bot state, why Tank Royale requires extra care, and how the implementation matches Classic Robocode behavior.
+
+### Classic Robocode — Reference Model
+
+Classic Robocode uses a two-thread model where the **Battle Thread owns the game loop and blocks until the robot finishes its turn**. This guarantees that the robot always wakes to process exactly the turn it was woken for — there is no race.
+
+```mermaid
+sequenceDiagram
+    participant BT as Battle Thread
+    participant RQ as RobotPeer EventQueue
+    participant RT as Robot Thread
+
+    Note over RT: sleeping in waitForNextTurn()
+
+    Note over BT: ── Turn N ──
+    BT->>BT: currentTime = N
+    BT->>BT: loadCommands()   [reads robot's intent from turn N-1]
+    BT->>BT: performMove()    [moves all robots]
+    BT->>BT: performScan()    [radar sweeps enemy at turn N]
+    BT->>RQ: addEvent(ScannedRobotEvent(time=N))
+    BT->>RT: wakeupRobots()   [notifyAll on isSleeping]
+    BT->>BT: waitSleeping()   [BLOCKS — cannot advance until robot sleeps again]
+
+    Note over RT: wakes inside executeImpl()
+    RT->>RQ: readoutEvents() → [ScannedRobotEvent(time=N), ...]
+    RT->>RT: EventManager.processEvents()
+    RT->>RT: onScannedRobot fires  [getTurnNumber() == N ✓]
+    RT->>RT: bot reacts: setFire(), setTurnRadarLeft(), etc.
+    RT->>RT: go() → executeImpl() → stores new commands
+    RT->>BT: waitForNextTurn()  [signals isSleeping=true, unblocks Battle Thread]
+
+    Note over BT: ── Turn N+1 ──
+    BT->>BT: loadCommands()  [reads bot's reaction from turn N ✓]
+```
+
+**Key constraint:** `waitSleeping()` on the Battle Thread means turn N+1 **cannot start** until the robot finishes turn N. The robot always processes exactly the turn it was woken for.
+
+---
+
+### Tank Royale — The Race Condition (pre-fix)
+
+Tank Royale has no equivalent lock. The server sends ticks independently via WebSocket. If the bot thread is delayed by the OS scheduler, the WebSocket thread may have already delivered tick N+1 by the time the bot calls `go()`.
+
+```mermaid
+sequenceDiagram
+    participant S  as Server
+    participant WS as WebSocket Thread
+    participant EQ as EventQueue
+    participant BT as Bot Thread
+
+    Note over BT: sleeping in waitForNextTurn(1)
+
+    Note over S: ── Server Turn 2 ──
+    S->>WS: TickEvent(2, [ScannedBotEvent(2)])
+    WS->>EQ: addEventsFromTick → TickEvent(2) + ScannedBotEvent(2)
+    WS->>WS: setTickEvent(tick 2)
+    WS->>BT: notifyAll()
+
+    Note over BT: wakes — but OS scheduling delay...
+
+    Note over S: ── Server Turn 3 ──
+    S->>WS: TickEvent(3, [])
+    WS->>EQ: addEventsFromTick → TickEvent(3)
+    WS->>WS: setTickEvent(tick 3)  ⚠ tickEvent is now 3
+    WS->>BT: notifyAll()
+
+    Note over BT: FINALLY runs → go()
+    BT->>BT: currentTick = getCurrentTickOrNull() → returns tick 3 ⚠ WRONG TICK
+    BT->>EQ: dispatchEvents(3)
+    EQ->>BT: TickEvent(3) → onTick(3) "Tick 3"
+    EQ->>BT: ScannedBotEvent(2) — 2≤3 ✓ → onScannedBot fires at turn 3 ✗
+```
+
+**Why Classic Robocode doesn't have this:** `waitSleeping()` prevents turn N+1 from starting until the robot finishes turn N. Tank Royale has no such coordination — server and bot run fully independently.
+
+---
+
+### Tank Royale — Fixed Flow (post-fix, matches Classic Robocode semantics)
+
+The fix captures the turn number **from the newly arrived tick inside `execute()`**, not from `go()`. Events fire before `execute()` returns, so `run()` always reads state that already has the corresponding events fired.
+
+```mermaid
+sequenceDiagram
+    participant S  as Server
+    participant WS as WebSocket Thread
+    participant EQ as EventQueue
+    participant BT as Bot Thread
+
+    Note over BT: blocked in waitForNextTurn(N-1) inside execute(N-1)
+
+    Note over S: ── Server Turn N ──
+    S->>S: performScan() → ScannedBotEvent(turnNumber=N)
+    S->>WS: TickEvent(turnNumber=N, events=[ScannedBotEvent(N)])
+
+    WS->>EQ: addEventsFromTick → TickEvent(N) + ScannedBotEvent(N)
+    WS->>WS: setTickEvent(tick N)
+    WS->>BT: notifyAll()
+
+    Note over BT: wakes — still inside execute(N-1)
+    BT->>EQ: dispatchEvents(N)  ← turn number from newly arrived tick — no race
+    EQ->>BT: TickEvent(N, pri=130) → onTick(N) fires
+    EQ->>BT: ScannedBotEvent(N, pri=20) → onScannedBot(N) fires  [turnNumber=N ✓]
+    Note over BT: execute(N-1) returns → go() returns
+    Note over BT: run() reads radar/gun state = tick N ✓  (events already fired)
+    BT->>BT: run() reacts: setFire(), setTurnRadarLeft(), etc.
+    BT->>BT: go() → dispatchEvents(N) [no-op] → execute(N) → sendIntent(N)
+    BT->>BT: waitForNextTurn(N)
+```
+
+### Timing comparison
+
+| Aspect | Classic Robocode | Tank Royale (fixed) |
+|--------|-----------------|---------------------|
+| Events fire | Before bot reads new state ✓ | Before bot reads new state ✓ |
+| Turn number in handler | Always correct ✓ | Always correct ✓ |
+| Race on tick advance | Impossible (waitSleeping blocks) | Eliminated (turn# from tick, not go()) |
+| `ScannedBotEvent(N)` visible in `run()` at turn N | ✓ | ✓ |
+
+> **Investigation log:** Full root cause analysis (theses A–D, measurement data, bug #210 log reconstruction) is in [`/scan-event-timing.md`](/scan-event-timing.md) at the repository root.
 
 ---
 
@@ -227,6 +391,9 @@ private void HandleRoundEnded(string json)
 ---
 
 ## Comparison: Tank Royale vs Classic Robocode
+
+> **Note:** This section covers **output capture** semantics (how `System.out.println()` reaches the GUI).  
+> For **event dispatch timing** (when events fire relative to turn state), see [Event Dispatch Timing Semantics](#event-dispatch-timing-semantics) above.
 
 ### Classic Robocode (Single Process)
 

@@ -137,17 +137,16 @@ public abstract class BaseBot implements IBaseBot {
     // We allow override of go() here to let the Robocode Bridge hook into this method
     @Override
     public void go() {
-        // Process all events before executing the turn commands to mimic classic Robocode behavior where
-        // events are handled before the next turn's execution from the run() method.
         var currentTick = baseBotInternals.getCurrentTickOrNull();
-        if (currentTick != null) {
-            baseBotInternals.dispatchEvents(currentTick.getTurnNumber());
+        int capturedTurnNumber = currentTick != null ? currentTick.getTurnNumber() : -1;
+        // Dispatch pending events for the current turn before sending the intent.
+        // For Bot, this is a no-op (events were dispatched inside the previous execute()).
+        // For BaseBot (no managed thread), this is the only place events can fire, since
+        // execute() throws via stopRogueThread() before reaching its own dispatch call.
+        if (capturedTurnNumber >= 0) {
+            baseBotInternals.dispatchEvents(capturedTurnNumber);
         }
-
-        // Pass captured turn number to execute() so it uses the same tick we dispatched events for.
-        // Without this, execute() re-reads the live tickEvent which may have been updated by the
-        // WebSocket thread between dispatchEvents() and execute(), causing skipped turns.
-        baseBotInternals.execute(currentTick != null ? currentTick.getTurnNumber() : -1);
+        baseBotInternals.execute(capturedTurnNumber);
     }
 
     /**

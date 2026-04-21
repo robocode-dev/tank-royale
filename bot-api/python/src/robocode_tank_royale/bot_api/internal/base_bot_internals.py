@@ -374,6 +374,11 @@ class BaseBotInternals:
         with self._next_turn_condition:
             while self.is_running() and self.current_tick_or_null is None:
                 self._next_turn_condition.wait()
+        # Dispatch tick 1 events before run() starts, so the first run() iteration reads state
+        # that already has events fired — matching Classic Robocode semantics.
+        first_tick = self.current_tick_or_null
+        if first_tick is not None:
+            self.dispatch_events(first_tick.turn_number)
 
     def _create_runnable(self, bot: BotABC):
         """Create runnable function for bot thread (matches Java's createRunnable)"""
@@ -547,6 +552,12 @@ class BaseBotInternals:
                 self._movement_reset_pending = False
 
         self._wait_for_next_turn(captured_turn_number)
+
+        # Dispatch events for the new turn *after* waiting, so that run() always reads state
+        # that matches the events that just fired — matching Classic Robocode semantics.
+        new_tick = self.current_tick_or_null
+        if new_tick is not None:
+            self.dispatch_events(new_tick.turn_number)
 
     def _send_intent(self) -> None:
         """Send bot intent to server (synchronous)"""

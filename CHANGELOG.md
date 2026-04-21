@@ -7,6 +7,13 @@
       deserialization. Gson now constructs `Point` via its constructor instead of reflective
       field mutation, which will be blocked in a future JDK release.
 
+- Bot API (Java, .NET, Python, TypeScript):
+    - #202, #210: Fixed events (`ScannedBotEvent`, `TickEvent`, etc.) firing one turn late.
+      The bot API dispatched events **after** `go()` returned, so `run()` loop code could read
+      the new tick state before the corresponding events had fired. Events now fire **before**
+      `execute()` returns, matching Classic Robocode semantics: events for turn N always fire
+      before the bot reads turn N state in `run()`.
+
 - GUI:
     - Fixed `ArrayIndexOutOfBoundsException` in `BasicListUI` caused by `SortedListModel`
       returning inconsistent sizes during concurrent updates.

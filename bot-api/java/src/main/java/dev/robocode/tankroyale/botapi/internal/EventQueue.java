@@ -104,8 +104,6 @@ final class EventQueue {
      * @param turnNumber the current turn number
      */
     void dispatchEvents(int turnNumber) {
-//        dumpEvents(turnNumber); // for debugging purposes
-
         removeOldEvents(turnNumber);
         addCustomEvents();
         sortEvents();
@@ -118,12 +116,9 @@ final class EventQueue {
             if (getPriority(currentEvent) == currentTopEventPriority) {
                 if (currentTopEventPriority > Integer.MIN_VALUE && isCurrentEventInterruptible()) {
                     EventInterruption.setInterruptible(currentTopEvent.getClass(), false); // clear interruptible flag
-
-                    // We are already in an event handler, took action, and a new event was generated.
-                    // So we want to break out of the old handler to process the new event here.
                     throw new ThreadInterruptedException();
                 }
-                break; // Same priority but not interruptible - Loss of event is intentional in original Robocode
+                break;
             }
 
             int oldTopEventPriority = currentTopEventPriority;
@@ -131,14 +126,14 @@ final class EventQueue {
             currentTopEventPriority = getPriority(currentEvent);
             currentTopEvent = currentEvent;
 
-            removeNextEvent(); // Remove only after we've decided to dispatch
+            removeNextEvent();
 
             try {
                 dispatch(currentEvent, turnNumber);
             } catch (ThreadInterruptedException ignore) {
-                currentTopEvent = null; // Match original Robocode behavior
+                currentTopEvent = null;
             } catch (RuntimeException | Error e) {
-                currentTopEvent = null; // Match original Robocode behavior
+                currentTopEvent = null;
                 throw e;
             } finally {
                 currentTopEventPriority = oldTopEventPriority;

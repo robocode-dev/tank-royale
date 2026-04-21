@@ -606,6 +606,11 @@ export class BaseBotInternals {
       }
     }
     this.waitForNextTurnWorker(capturedTurnNumber);
+    // Dispatch events for the new turn *after* waiting, so that run() always reads state
+    // that matches the events that just fired — matching Classic Robocode semantics.
+    if (this.tickEvent != null) {
+      this.dispatchEvents(this.tickEvent.turnNumber);
+    }
   }
 
   private renderGraphicsToIntent(): void {
@@ -713,6 +718,11 @@ export class BaseBotInternals {
       Atomics.wait(this.sharedView, SAB_SLOT_TURN, curVal, 500);
       this.drainWorkerMessages();
       this.stopRogueThread();
+    }
+    // Dispatch tick 1 events before run() starts, so the first run() iteration reads state
+    // that already has events fired — matching Classic Robocode semantics.
+    if (this.tickEvent != null) {
+      this.dispatchEvents(this.tickEvent.turnNumber);
     }
   }
 

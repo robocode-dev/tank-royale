@@ -96,6 +96,26 @@ describe("TR-API-TCK: Protocol Conformance", () => {
     expect(wonRoundFired).toBe(true);
   });
 
+  it("TR-API-TCK-012: SkippedTurnEvent fires with correct turnNumber", async () => {
+    let capturedTurn: number | null = null;
+
+    const bot = new BaseBot(info, server.serverUrl);
+    bot.onSkippedTurn = (e) => { capturedTurn = e.turnNumber; };
+    bot.onTick = () => { bot.go(); };
+
+    // Inject SkippedTurnEvent(1) into tick 1's events payload before the bot starts
+    server.addEvent({ type: MessageType.SkippedTurnEvent, turnNumber: 1 });
+
+    bot.start();
+
+    await server.awaitBotHandshake(5000);
+    // Tick 1 (containing SkippedTurnEvent) is auto-sent on BotReady.
+    // awaitBotIntent waits for go() → sendIntent to confirm tick 1 was fully processed.
+    await server.awaitBotIntent(5000);
+
+    expect(capturedTurn).toBe(1);
+  });
+
   it("TR-API-TCK-007: debugGraphics is populated in intent when isDebuggingEnabled=true", async () => {
     class PaintBot extends BaseBot {
       override onTick(_e: TickEvent) {

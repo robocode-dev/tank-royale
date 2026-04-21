@@ -356,6 +356,14 @@ sealed class BaseBotInternals
         }
 
         WaitForNextTurn(capturedTurnNumber);
+
+        // Dispatch events for the new turn *after* waiting, so that Run() always reads state
+        // that matches the events that just fired — matching Classic Robocode semantics.
+        var newTick = CurrentTickOrNull;
+        if (newTick != null)
+        {
+            DispatchEvents(newTick.TurnNumber);
+        }
     }
 
     private void SendIntent()
@@ -434,6 +442,13 @@ sealed class BaseBotInternals
             {
                 Monitor.Wait(_nextTurnMonitor);
             }
+        }
+        // Dispatch tick 1 events before Run() starts, so the first Run() iteration reads state
+        // that already has events fired — matching Classic Robocode semantics.
+        var firstTick = CurrentTickOrNull;
+        if (firstTick != null)
+        {
+            DispatchEvents(firstTick.TurnNumber);
         }
     }
 
