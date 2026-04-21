@@ -325,8 +325,6 @@ sequenceDiagram
 | Race on tick advance | Impossible (waitSleeping blocks) | Eliminated (turn# from tick, not go()) |
 | `ScannedBotEvent(N)` visible in `run()` at turn N | ✓ | ✓ |
 
-> **Investigation log:** Full root cause analysis (theses A–D, measurement data, bug #210 log reconstruction) is in [`/scan-event-timing.md`](/scan-event-timing.md) at the repository root.
-
 ---
 
 ## Critical: Round End Event Dispatch
