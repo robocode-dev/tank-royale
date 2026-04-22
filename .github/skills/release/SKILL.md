@@ -1,5 +1,5 @@
 ---
-description: Release Tank Royale artifacts to Maven Central, NuGet, and PyPI, then trigger the GitHub Actions create-release workflow. Use when the user runs /release to publish a new version.
+description: Release Tank Royale artifacts to Maven Central, NuGet, PyPI, and npmjs, then trigger the GitHub Actions create-release workflow. Use when the user runs /release to publish a new version.
 argument-hint: ""
 allowed-tools: Read, Bash
 version: 1.0.0
@@ -107,14 +107,19 @@ PyPI credentials can come from **any one** of three sources. Check in order:
 
 At least one of these must be available.
 
-### 2.4 — GitHub CLI authentication
+### 2.4 — npmjs credentials
+
+Look for `npmjs-api-key` in the user gradle.properties (falling back to project gradle.properties).
+- Must be present, not empty, and not `dummy`
+
+### 2.5 — GitHub CLI authentication
 
 Run `gh auth status` and check the exit code.
 - If it succeeds (exit code 0): the user is authenticated.
 - If `gh` is not installed: note it (the release can still proceed with manual fallback in Phase 3).
 - If `gh` is installed but not authenticated: flag as missing.
 
-### 2.5 — Report results
+### 2.6 — Report results
 
 Print a credential summary:
 
@@ -123,6 +128,7 @@ Print a credential summary:
   ✅ Maven Central  — ossrhUsername, ossrhPassword, signingKey, signingPassword
   ✅ NuGet          — nuget-api-key
   ✅ PyPI           — pypiToken (or PYPI_TOKEN env var, or ~/.pypirc)
+  ✅ npmjs          — npmjs-api-key
   ✅ GitHub CLI     — authenticated as <username>
 ```
 
@@ -133,21 +139,21 @@ If **any** credential is missing or invalid, show ❌ for that line with a descr
 
 ## Phase 3 — Publish Artifacts
 
-### Step 1 of 3 — Publish Java artifacts to Maven Central
+### Step 1 of 4 — Publish Java artifacts to Maven Central
 
-Print: `"📦 Step 1/3: Publishing Java artifacts to Maven Central..."`
+Print: `"📦 Step 1/4: Publishing Java artifacts to Maven Central..."`
 
 Run the Gradle command (use the platform-appropriate wrapper):
 ```
 ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
 ```
 
-- If the command **succeeds**: print `"✅ Step 1/3: Java artifacts published to Maven Central"`.
-- If the command **fails**: print `"❌ ERROR: Step 1/3 failed — Java publish to Maven Central failed"` and **STOP**.
+- If the command **succeeds**: print `"✅ Step 1/4: Java artifacts published to Maven Central"`.
+- If the command **fails**: print `"❌ ERROR: Step 1/4 failed — Java publish to Maven Central failed"` and **STOP**.
 
-### Step 2 of 3 — Publish .NET package to NuGet
+### Step 2 of 4 — Publish .NET package to NuGet
 
-Print: `"📦 Step 2/3: Publishing .NET package to NuGet..."`
+Print: `"📦 Step 2/4: Publishing .NET package to NuGet..."`
 
 Run:
 ```
@@ -156,20 +162,32 @@ Run:
 
 Note: The `-Force` flag skips the interactive YES confirmation prompt.
 
-- If the command **succeeds**: print `"✅ Step 2/3: .NET package published to NuGet"`.
-- If the command **fails**: print `"❌ ERROR: Step 2/3 failed — .NET publish to NuGet failed"` and **STOP**.
+- If the command **succeeds**: print `"✅ Step 2/4: .NET package published to NuGet"`.
+- If the command **fails**: print `"❌ ERROR: Step 2/4 failed — .NET publish to NuGet failed"` and **STOP**.
 
-### Step 3 of 3 — Publish Python package to PyPI
+### Step 3 of 4 — Publish Python package to PyPI
 
-Print: `"📦 Step 3/3: Publishing Python package to PyPI..."`
+Print: `"📦 Step 3/4: Publishing Python package to PyPI..."`
 
 Run the Gradle command (use the platform-appropriate wrapper):
 ```
 ./gradlew :bot-api:python:upload-pypi
 ```
 
-- If the command **succeeds**: print `"✅ Step 3/3: Python package published to PyPI"`.
-- If the command **fails**: print `"❌ ERROR: Step 3/3 failed — Python publish to PyPI failed"` and **STOP**.
+- If the command **succeeds**: print `"✅ Step 3/4: Python package published to PyPI"`.
+- If the command **fails**: print `"❌ ERROR: Step 3/4 failed — Python publish to PyPI failed"` and **STOP**.
+
+### Step 4 of 4 — Publish TypeScript package to npmjs
+
+Print: `"📦 Step 4/4: Publishing TypeScript package to npmjs..."`
+
+Run the Gradle command (use the platform-appropriate wrapper):
+```
+./gradlew :bot-api:typescript:npmPublish
+```
+
+- If the command **succeeds**: print `"✅ Step 4/4: TypeScript package published to npmjs"`.
+- If the command **fails**: print `"❌ ERROR: Step 4/4 failed — TypeScript publish to npmjs failed"` and **STOP**.
 
 ---
 
@@ -197,7 +215,7 @@ gh workflow run verify-publish.yml --ref main -R robocode-dev/tank-royale -f ver
 
 If `gh` is **not** available: print the manual URL as a warning and continue.
 
-Note: The workflow runs in the background on GitHub — you do not wait for it here. It shows three parallel jobs (NuGet, PyPI, Maven Central) as green/red badges in the Actions UI.
+Note: The workflow runs in the background on GitHub — you do not wait for it here. It shows four parallel jobs (NuGet, PyPI, npmjs, Maven Central) as green/red badges in the Actions UI.
 
 ---
 
@@ -268,13 +286,14 @@ Published artifacts:
   ✅ Maven Central  — Java artifacts
   ✅ NuGet          — .NET package
   ✅ PyPI           — Python package
+  ✅ npmjs          — TypeScript package
 
 GitHub release:
   ✅ create-release workflow triggered (or manual fallback)
 
 Publish verification:
   ✅ verify-publish workflow running — https://github.com/robocode-dev/tank-royale/actions/workflows/verify-publish.yml
-     (NuGet and PyPI: ~seconds to minutes | Maven Central: up to 2 hours)
+     (NuGet, PyPI, and npmjs: ~seconds to minutes | Maven Central: up to 2 hours)
 
 Documentation:
   ✅ Uploaded (or ℹ️ Skipped for patch release)

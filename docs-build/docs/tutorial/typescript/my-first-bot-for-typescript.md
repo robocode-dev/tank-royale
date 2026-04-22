@@ -76,9 +76,9 @@ class MyFirstBot extends Bot {
 }
 ```
 
-When providing `BotInfo` in the constructor, the `.json` file is not required. However, the booter still needs
-`.cmd` and `.sh` script files (see [Running the bot](#running-the-bot)) to locate and start your TypeScript bot,
-since the booter does not have automatic platform detection for TypeScript (unlike Java, Python, and .NET).
+When providing `BotInfo` in the constructor, the `.json` file is not required. The booter will use
+**heuristic platform detection** together with the script files (see [Running the bot](#running-the-bot)) to
+locate and start your TypeScript bot.
 
 > **Tip:** The simplest approach is to always provide a `MyFirstBot.json` file alongside your source — it gives
 > the booter everything it needs and lets you skip writing a constructor.
