@@ -1,4 +1,4 @@
-## [0.42.0] - 2026-04-20 - First release of the TypeScript Bot API
+## [0.42.0] - 2026-04-22 - First release of the TypeScript Bot API
 
 This is the first official release of the TypeScript Bot API, making TypeScript a first-class
 member of the Bot API family alongside Java, .NET, and Python. The groundwork was laid in 0.41.0;
@@ -22,7 +22,7 @@ this release ships the TypeScript API as a fully supported platform for writing 
     - Fixed `ArrayIndexOutOfBoundsException` in `BasicListUI` caused by `SortedListModel`
       returning inconsistent sizes during concurrent updates.
 
-- Booter:
+**- Booter:**
     - Removed misleading bot-dir prefix from per-line stderr output; fixed `Log` atomicity.
 
 - TypeScript Bot API:
