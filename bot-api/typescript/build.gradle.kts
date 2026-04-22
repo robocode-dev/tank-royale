@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     base
     alias(libs.plugins.node.gradle)
@@ -11,6 +13,13 @@ node {
 }
 
 tasks {
+    val prepareNpmjsReadme by registering(Copy::class) {
+        from("npmjs-readme-template") {
+            filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
+        }
+        into(".")
+    }
+
     val syncVersion by registering {
         group = "build"
         description = "Synchronises package.json version with gradle.properties"
@@ -30,13 +39,13 @@ tasks {
     }
 
     npmInstall {
-        dependsOn(syncVersion)
+        dependsOn(syncVersion, prepareNpmjsReadme)
         inputs.file("package.json")
         outputs.dir("node_modules")
     }
 
     val npmBuild by registering(com.github.gradle.node.npm.task.NpmTask::class) {
-        dependsOn(npmInstall)
+        dependsOn(npmInstall, prepareNpmjsReadme)
         args = listOf("run", "build")
         inputs.dir("src")
         inputs.file("tsconfig.json")
@@ -45,7 +54,7 @@ tasks {
     }
 
     register("npmPack", com.github.gradle.node.npm.task.NpmTask::class) {
-        dependsOn(npmBuild)
+        dependsOn(npmBuild, prepareNpmjsReadme)
         args = listOf("pack")
         inputs.dir("dist")
         inputs.file("package.json")
@@ -56,7 +65,7 @@ tasks {
     }
 
     register("npmPublish", com.github.gradle.node.npm.task.NpmTask::class) {
-        dependsOn(npmBuild)
+        dependsOn(npmBuild, prepareNpmjsReadme)
         val token = project.findProperty("npmjs-api-key") as String?
         args = listOf("publish", "--access", "public")
         inputs.dir("dist")

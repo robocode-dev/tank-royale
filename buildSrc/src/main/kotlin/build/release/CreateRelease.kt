@@ -57,6 +57,12 @@ fun createRelease(projectDir: File, version: String, token: String) {
         projectDir, releaseId, token, "sample-bots/java/build/sample-bots-java-$version.zip",
         ZIP_MIME_TYPE, "Sample bots for Java (zip)"
     )
+
+    // Sample Bots for TypeScript
+    uploadAsset(
+        projectDir, releaseId, token, "sample-bots/typescript/build/sample-bots-typescript-$version.zip",
+        ZIP_MIME_TYPE, "Sample bots for TypeScript (zip)"
+    )
 }
 
 /**

@@ -26,7 +26,7 @@ npm install @robocode.dev/tank-royale-bot-api
 To install a specific version:
 
 ```bash
-npm install @robocode.dev/tank-royale-bot-api@0.42.0
+npm install @robocode.dev/tank-royale-bot-api@@VERSION@
 ```
 
 The `ws` package is required at runtime in a Node.js environment:
@@ -130,7 +130,7 @@ override run() {
     }
 }
 
-// �?� Wrong — do NOT use async/await in bot code
+// ❌ Wrong — do NOT use async/await in bot code
 async run() {
     await this.forward(100); // incorrect — forward() is not a Promise
 }
