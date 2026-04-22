@@ -64,6 +64,15 @@ Configure via **one** of these (checked in order):
    password: pypi-AgEIcH...
    ```
 
+### npmjs
+
+Create an API token at [npmjs.com](https://www.npmjs.com/) → Access Tokens → Generate New Token
+(type: **Automation**; scope: `@robocode.dev/tank-royale-bot-api`).
+
+| Property | Description | Where to get it |
+|----------|-------------|-----------------|
+| `npmjs-api-key` | npmjs Automation token | [npmjs.com](https://www.npmjs.com/) → Access Tokens |
+
 ### GitHub CLI
 
 Authenticate with `gh auth login`. If `gh` is not installed, the release skill provides a manual fallback URL.
@@ -90,6 +99,9 @@ nuget-api-key=oy2abc123...
 
 # PyPI
 pypiToken=pypi-AgEIcH...
+
+# npmjs
+npmjs-api-key=npm_abc123...
 
 # GitHub (for local create-release Gradle task)
 tankRoyaleGitHubToken=ghp_abc123...
@@ -146,15 +158,23 @@ Build the wheel, then upload:
 
 ```shell
 ./gradlew :bot-api:python:upload-testpypi   # test first
-./gradlew :bot-api:python:upload-pypi        # production
+./gradlew :bot-api:python:upload-pypi       # production
+```
+
+### TypeScript (npmjs)
+
+Build and publish:
+
+```shell
+./gradlew :bot-api:typescript:npmPublish
 ```
 
 ---
 
 ## Verify publication
 
-After publishing, a `verify-publish` workflow checks all three registries automatically.
-It runs as three parallel jobs in the Actions UI — each shows a green ✅ or red ❌ badge
+After publishing, a `verify-publish` workflow checks all four registries automatically.
+It runs as four parallel jobs in the Actions UI — each shows a green ✅ or red ❌ badge
 as soon as the version becomes available (or times out).
 
 No credentials are needed — all checks use public registry HTTP APIs.
@@ -163,6 +183,7 @@ No credentials are needed — all checks use public registry HTTP APIs.
 |-----|-----------------|----------------|
 | check-nuget | `api.nuget.org` | Every 30s, up to 3 min |
 | check-pypi | `pypi.org` | Every 30s, up to 3 min |
+| check-npm | `registry.npmjs.org` | Every 30s, up to 3 min |
 | check-maven | `repo1.maven.org` | Every 5 min, up to 120 min |
 
 The release skill triggers this automatically after publishing. To run manually:

@@ -58,6 +58,28 @@ jobs:
           echo "❌ PyPI: robocode-tank-royale ${VERSION} not available after 3 minutes"
           exit 1
 
+  check-npm:
+    name: "npmjs — @robocode.dev/tank-royale-bot-api"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for npmjs availability
+        run: |
+          VERSION="${{ inputs.version }}"
+          # npmjs registry returns 200 for a specific scoped version endpoint — no auth required.
+          URL="https://registry.npmjs.org/@robocode.dev%2Ftank-royale-bot-api/${VERSION}"
+          MAX=6
+          for i in $(seq 1 $MAX); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ npmjs: @robocode.dev/tank-royale-bot-api ${VERSION} is available"
+              exit 0
+            fi
+            echo "⏳ Attempt $i/$MAX: HTTP $STATUS. Waiting 30s..."
+            sleep 30
+          done
+          echo "❌ npmjs: @robocode.dev/tank-royale-bot-api ${VERSION} not available after 3 minutes"
+          exit 1
+
   check-maven:
     name: "Maven Central — dev.robocode.tankroyale"
     runs-on: ubuntu-latest

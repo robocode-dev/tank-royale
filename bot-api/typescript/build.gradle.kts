@@ -55,6 +55,21 @@ tasks {
         }
     }
 
+    register("npmPublish", com.github.gradle.node.npm.task.NpmTask::class) {
+        dependsOn(npmBuild)
+        val token = project.findProperty("npmjs-api-key") as String?
+        args = listOf("publish", "--access", "public")
+        inputs.dir("dist")
+        inputs.file("package.json")
+        doFirst {
+            if (token.isNullOrBlank()) error("npmjs-api-key is not set in gradle.properties")
+            file(".npmrc").writeText("//registry.npmjs.org/:_authToken=$token\n")
+        }
+        doLast {
+            file(".npmrc").delete()
+        }
+    }
+
     named("clean") {
         doLast {
             fileTree(projectDir) { include("*.tgz") }.forEach { it.delete() }
