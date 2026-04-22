@@ -22,7 +22,7 @@ this release ships the TypeScript API as a fully supported platform for writing 
     - Fixed `ArrayIndexOutOfBoundsException` in `BasicListUI` caused by `SortedListModel`
       returning inconsistent sizes during concurrent updates.
 
-**- Booter:**
+- Booter:
     - Removed misleading bot-dir prefix from per-line stderr output; fixed `Log` atomicity.
 
 - TypeScript Bot API:
