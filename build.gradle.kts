@@ -519,10 +519,14 @@ val generateSchemaDiagrams by tasks.registering {
     description = "Regenerates Mermaid diagrams in schema/schemas/README.md (non-critical - won't fail build)"
 
     val readmeFile = schemaReadmeFile
-    inputs.dir("schema/scripts/diagram-gen/src")
-    inputs.file("schema/scripts/diagram-gen/build.gradle.kts")
-    inputs.file("schema/scripts/diagram-gen/settings.gradle.kts")
+    inputs.dir("schema/scripts/diagram-gen/src").optional(true)
+    inputs.file("schema/scripts/diagram-gen/build.gradle.kts").optional(true)
+    inputs.file("schema/scripts/diagram-gen/settings.gradle.kts").optional(true)
     outputs.file(readmeFile)
+
+    onlyIf("Schema diagram-gen scripts exist") {
+        file("schema/scripts/diagram-gen/build.gradle.kts").exists()
+    }
 
     doLast {
         try {

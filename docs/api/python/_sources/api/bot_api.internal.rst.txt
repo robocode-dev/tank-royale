@@ -4,14 +4,6 @@ bot\_api.internal package
 Submodules
 ----------
 
-bot\_api.internal.base\_bot\_internal\_data module
---------------------------------------------------
-
-.. automodule:: bot_api.internal.base_bot_internal_data
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
 bot\_api.internal.base\_bot\_internals module
 ---------------------------------------------
 
@@ -32,6 +24,14 @@ bot\_api.internal.bot\_handshake\_factory module
 ------------------------------------------------
 
 .. automodule:: bot_api.internal.bot_handshake_factory
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.bot\_internals module
+---------------------------------------
+
+.. automodule:: bot_api.internal.bot_internals
    :members:
    :show-inheritance:
    :undoc-members:
@@ -80,6 +80,14 @@ bot\_api.internal.graphics\_state module
 ----------------------------------------
 
 .. automodule:: bot_api.internal.graphics_state
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+bot\_api.internal.intent\_validator module
+------------------------------------------
+
+.. automodule:: bot_api.internal.intent_validator
    :members:
    :show-inheritance:
    :undoc-members:

@@ -23,11 +23,11 @@
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#030711" />
   
-  <title>bot_api.internal.json_util | Robocode Tank Royale Bot API (Python) 0.40.0 documentation</title>
-  <meta property="og:title" content="bot_api.internal.json_util | Robocode Tank Royale Bot API (Python) 0.40.0 documentation" />
-  <meta name="twitter:title" content="bot_api.internal.json_util | Robocode Tank Royale Bot API (Python) 0.40.0 documentation" />
+  <title>bot_api.internal.json_util | Robocode Tank Royale Bot API (Python) 0.42.0 documentation</title>
+  <meta property="og:title" content="bot_api.internal.json_util | Robocode Tank Royale Bot API (Python) 0.42.0 documentation" />
+  <meta name="twitter:title" content="bot_api.internal.json_util | Robocode Tank Royale Bot API (Python) 0.42.0 documentation" />
   <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e72c8e07" />
-  <link rel="stylesheet" type="text/css" href="../../../_static/theme.css?v=73505e79" />
+  <link rel="stylesheet" type="text/css" href="../../../_static/theme.css?v=979577e3" />
   <link rel="search" title="Search" href="../../../search.html" />
   <link rel="index" title="Index" href="../../../genindex.html" />
 </head>
@@ -41,7 +41,7 @@
       Skip to content
     </a><header class="sticky top-0 z-40 w-full border-b shadow-xs border-border bg-background/90 backdrop-blur"><div class="container flex items-center h-14">
     <div class="hidden mr-4 md:flex">
-      <a href="../../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.40.0 documentation</span>
+      <a href="../../../index.html" class="flex items-center mr-6"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.42.0 documentation</span>
       </a></div><button
       class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden"
       type="button" @click="showSidebar = true">
@@ -97,7 +97,7 @@
   class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full overflow-y-auto border-r border-border md:sticky"
   :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }">
 
-    <a href="../../../index.html" class="justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.40.0 documentation</span>
+    <a href="../../../index.html" class="justify-start text-sm md:!hidden bg-background"><span class="font-bold text-clip whitespace-nowrap">Robocode Tank Royale Bot API (Python) 0.42.0 documentation</span>
     </a>
 
     <div class="relative overflow-hidden md:overflow-auto my-4 md:my-0">
@@ -128,7 +128,7 @@
      class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
   <a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground"
      href="../../../index.html">
-    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.40.0 documentation</span>
+    <span class="hidden md:inline">Robocode Tank Royale Bot API (Python) 0.42.0 documentation</span>
     <svg xmlns="http://www.w3.org/2000/svg"
          height="18"
          width="18"
@@ -249,43 +249,46 @@
 </span><span id="line-82">
 </span><span id="line-83">        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
 </span><span id="line-84">            <span class="n">param</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-</span><span id="line-85">            <span class="n">param_type</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="p">[</span><span class="n">_sanitize_type_str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">))]</span>
-</span><span id="line-86">            <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_from_json_object</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">param_type</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
-</span><span id="line-87">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-</span><span id="line-88">            <span class="n">param</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-</span><span id="line-89">            <span class="n">param_type</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_sanitize_type_str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
-</span><span id="line-90">            <span class="k">if</span> <span class="n">param_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="line-91">                <span class="n">deserialized_items</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="line-92">                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
-</span><span id="line-93">                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
-</span><span id="line-94">                    <span class="n">item_type</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]]</span> <span class="k">if</span> <span class="s1">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">item</span> <span class="k">else</span> <span class="n">param_type</span>
-</span><span id="line-95">                    <span class="n">deserialized_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_from_json_object</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">item_type</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
-</span><span id="line-96">                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">deserialized_items</span>
-</span><span id="line-97">            <span class="k">else</span><span class="p">:</span>
-</span><span id="line-98">                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</span><span id="line-99">        <span class="k">elif</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">):</span>
-</span><span id="line-100">            <span class="n">annotation</span> <span class="o">=</span> <span class="n">_sanitize_type_str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">annotation</span><span class="p">))</span>
-</span><span id="line-101">            <span class="k">if</span> <span class="n">annotation</span> <span class="o">==</span> <span class="s2">&quot;Color&quot;</span><span class="p">:</span>
-</span><span id="line-102">                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-</span><span id="line-103">                    <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
-</span><span id="line-104">                <span class="k">else</span><span class="p">:</span>
-</span><span id="line-105">                    <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="line-106">            <span class="k">else</span><span class="p">:</span>
-</span><span id="line-107">                <span class="c1"># Not actually a Color type, just a field ending with &quot;color&quot;</span>
-</span><span id="line-108">                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</span><span id="line-109">        <span class="k">else</span><span class="p">:</span>
-</span><span id="line-110">            <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-</span><span id="line-111">    <span class="n">result</span> <span class="o">=</span> <span class="n">klass</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="line-112">    <span class="k">return</span> <span class="n">result</span>
-</span><span id="line-113">
-</span><span id="line-114">
+</span><span id="line-85">            <span class="n">param_type</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_sanitize_type_str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">)))</span>
+</span><span id="line-86">            <span class="k">if</span> <span class="n">param_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-87">                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_from_json_object</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">param_type</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-88">            <span class="k">else</span><span class="p">:</span>
+</span><span id="line-89">                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span id="line-90">        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span id="line-91">            <span class="n">param</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+</span><span id="line-92">            <span class="n">param_type</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_sanitize_type_str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="line-93">            <span class="k">if</span> <span class="n">param_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="line-94">                <span class="n">deserialized_items</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="line-95">                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-96">                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+</span><span id="line-97">                    <span class="n">item_type</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">CLASS_MAP</span><span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]]</span> <span class="k">if</span> <span class="s1">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">item</span> <span class="k">else</span> <span class="n">param_type</span>
+</span><span id="line-98">                    <span class="n">deserialized_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_from_json_object</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">item_type</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+</span><span id="line-99">                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">deserialized_items</span>
+</span><span id="line-100">            <span class="k">else</span><span class="p">:</span>
+</span><span id="line-101">                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span id="line-102">        <span class="k">elif</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">):</span>
+</span><span id="line-103">            <span class="n">annotation</span> <span class="o">=</span> <span class="n">_sanitize_type_str</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">annotation</span><span class="p">))</span>
+</span><span id="line-104">            <span class="k">if</span> <span class="n">annotation</span> <span class="o">==</span> <span class="s2">&quot;Color&quot;</span><span class="p">:</span>
+</span><span id="line-105">                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="line-106">                    <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+</span><span id="line-107">                <span class="k">else</span><span class="p">:</span>
+</span><span id="line-108">                    <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="line-109">            <span class="k">else</span><span class="p">:</span>
+</span><span id="line-110">                <span class="c1"># Not actually a Color type, just a field ending with &quot;color&quot;</span>
+</span><span id="line-111">                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span id="line-112">        <span class="k">else</span><span class="p">:</span>
+</span><span id="line-113">            <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</span><span id="line-114">    <span class="n">result</span> <span class="o">=</span> <span class="n">klass</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="line-115">    <span class="k">return</span> <span class="n">result</span>
+</span><span id="line-116">
+</span><span id="line-117">
 <div class="viewcode-block" id="to_json">
 <a class="viewcode-back" href="../../../api/bot_api.internal.html#bot_api.internal.json_util.to_json">[docs]</a>
-</span><span id="line-115"><span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">schema</span><span class="o">.</span><span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="line-116"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="line-117"><span class="sd">    Serializes a Message object into a JSON string.</span>
-</span><span id="line-118"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="line-119">    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">MessageEncoder</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+</span><span id="line-118"><span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">schema</span><span class="o">.</span><span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="line-119"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="line-120"><span class="sd">    Serializes a Message object into a JSON string.</span>
+</span><span id="line-121"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="line-122">    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">MessageEncoder</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
 </span></code></pre></div>
     </div></div>
@@ -302,10 +305,10 @@
 </footer>
     </div>
     
-    <script src="../../../_static/documentation_options.js?v=dbb8e931"></script>
+    <script src="../../../_static/documentation_options.js?v=38127d83"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script defer="defer" src="../../../_static/theme.js?v=582b20c5"></script>
+    <script defer="defer" src="../../../_static/theme.js?v=d6a9845b"></script>
     
 </body>
 

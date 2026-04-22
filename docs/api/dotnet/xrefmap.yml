@@ -3096,6 +3096,12 @@ references:
   commentId: F:Robocode.TankRoyale.BotApi.Constants.Deceleration
   fullName: Robocode.TankRoyale.BotApi.Constants.Deceleration
   nameWithType: Constants.Deceleration
+- uid: Robocode.TankRoyale.BotApi.Constants.InactivityZap
+  name: InactivityZap
+  href: api/Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_InactivityZap
+  commentId: F:Robocode.TankRoyale.BotApi.Constants.InactivityZap
+  fullName: Robocode.TankRoyale.BotApi.Constants.InactivityZap
+  nameWithType: Constants.InactivityZap
 - uid: Robocode.TankRoyale.BotApi.Constants.MaxBackwardSpeed
   name: MaxBackwardSpeed
   href: api/Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxBackwardSpeed
@@ -3126,6 +3132,12 @@ references:
   commentId: F:Robocode.TankRoyale.BotApi.Constants.MaxGunTurnRate
   fullName: Robocode.TankRoyale.BotApi.Constants.MaxGunTurnRate
   nameWithType: Constants.MaxGunTurnRate
+- uid: Robocode.TankRoyale.BotApi.Constants.MaxNumberOfTeamMessagesPerTurn
+  name: MaxNumberOfTeamMessagesPerTurn
+  href: api/Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxNumberOfTeamMessagesPerTurn
+  commentId: F:Robocode.TankRoyale.BotApi.Constants.MaxNumberOfTeamMessagesPerTurn
+  fullName: Robocode.TankRoyale.BotApi.Constants.MaxNumberOfTeamMessagesPerTurn
+  nameWithType: Constants.MaxNumberOfTeamMessagesPerTurn
 - uid: Robocode.TankRoyale.BotApi.Constants.MaxRadarTurnRate
   name: MaxRadarTurnRate
   href: api/Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_MaxRadarTurnRate
@@ -3156,12 +3168,30 @@ references:
   commentId: F:Robocode.TankRoyale.BotApi.Constants.MinFirepower
   fullName: Robocode.TankRoyale.BotApi.Constants.MinFirepower
   nameWithType: Constants.MinFirepower
+- uid: Robocode.TankRoyale.BotApi.Constants.RamDamage
+  name: RamDamage
+  href: api/Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_RamDamage
+  commentId: F:Robocode.TankRoyale.BotApi.Constants.RamDamage
+  fullName: Robocode.TankRoyale.BotApi.Constants.RamDamage
+  nameWithType: Constants.RamDamage
 - uid: Robocode.TankRoyale.BotApi.Constants.ScanRadius
   name: ScanRadius
   href: api/Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_ScanRadius
   commentId: F:Robocode.TankRoyale.BotApi.Constants.ScanRadius
   fullName: Robocode.TankRoyale.BotApi.Constants.ScanRadius
   nameWithType: Constants.ScanRadius
+- uid: Robocode.TankRoyale.BotApi.Constants.StartingGunHeat
+  name: StartingGunHeat
+  href: api/Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_StartingGunHeat
+  commentId: F:Robocode.TankRoyale.BotApi.Constants.StartingGunHeat
+  fullName: Robocode.TankRoyale.BotApi.Constants.StartingGunHeat
+  nameWithType: Constants.StartingGunHeat
+- uid: Robocode.TankRoyale.BotApi.Constants.TeamMessageMaxSize
+  name: TeamMessageMaxSize
+  href: api/Robocode.TankRoyale.BotApi.Constants.html#Robocode_TankRoyale_BotApi_Constants_TeamMessageMaxSize
+  commentId: F:Robocode.TankRoyale.BotApi.Constants.TeamMessageMaxSize
+  fullName: Robocode.TankRoyale.BotApi.Constants.TeamMessageMaxSize
+  nameWithType: Constants.TeamMessageMaxSize
 - uid: Robocode.TankRoyale.BotApi.DefaultEventPriority
   name: DefaultEventPriority
   href: api/Robocode.TankRoyale.BotApi.DefaultEventPriority.html

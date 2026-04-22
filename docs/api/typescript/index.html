@@ -1,0 +1,265 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="./"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Robocode Tank Royale Bot API</title><meta name="description" content="Documentation for Robocode Tank Royale Bot API"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script><script async src="assets/hierarchy.js" id="tsd-hierarchy-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="index.html" class="title">Robocode Tank Royale Bot API</a><div id="tsd-toolbar-links"><a href="https://github.com/robocode-dev/tank-royale">GitHub</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>Robocode Tank Royale Bot API</h1></div><div class="tsd-panel tsd-typography"><h1 id="robocode-tank-royale-typescriptjavascript-bot-api" class="tsd-anchor-link">Robocode Tank Royale — TypeScript/JavaScript Bot API<a href="#robocode-tank-royale-typescriptjavascript-bot-api" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1>
+<img src="https://raw.githubusercontent.com/robocode-dev/tank-royale/refs/heads/main/gfx/Tank/Tank-logo.svg" width="150" alt="Robocode logo">
+<p><strong>Build the best — destroy the rest!</strong></p>
+<p>The <strong>TypeScript/JavaScript Bot API</strong> for <a href="https://robocode-dev.github.io/tank-royale/">Robocode Tank Royale</a> — the next evolution of the classic Robocode programming game where you code virtual tanks (bots) to battle in a virtual arena.</p>
+<h2 id="about-robocode-tank-royale" class="tsd-anchor-link">About Robocode Tank Royale<a href="#about-robocode-tank-royale" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>Robocode is a programming game where your task is to code a bot (a virtual tank) that competes against other bots in a real-time battle arena. You are the programmer — the bot acts entirely on your code.</p>
+<p><strong>Tank Royale</strong> brings Robocode to the next level with:</p>
+<ul>
+<li>Network-based battles via WebSocket connections</li>
+<li>Multiple programming languages and platforms</li>
+<li>Real-time battles with multiple bots</li>
+</ul>
+<h2 id="installation" class="tsd-anchor-link">Installation<a href="#installation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>Install the TypeScript/JavaScript Bot API using npm:</p>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">@robocode.dev/tank-royale-bot-api</span>
+</code><button type="button">Copy</button></pre>
+
+<p>To install a specific version:</p>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">@robocode.dev/tank-royale-bot-api@0.42.0</span>
+</code><button type="button">Copy</button></pre>
+
+<p>The <code>ws</code> package is required at runtime in a Node.js environment:</p>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">ws</span>
+</code><button type="button">Copy</button></pre>
+
+<h2 id="requirements" class="tsd-anchor-link">Requirements<a href="#requirements" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<ul>
+<li><strong>Node.js 22 (LTS) or higher</strong></li>
+<li><strong>TypeScript 5+</strong> (for writing bots in TypeScript)</li>
+</ul>
+<h2 id="quick-start" class="tsd-anchor-link">Quick Start<a href="#quick-start" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<pre><code class="typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Bot</span><span class="hl-1">, </span><span class="hl-4">HitByBulletEvent</span><span class="hl-1">, </span><span class="hl-4">ScannedBotEvent</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;@robocode.dev/tank-royale-bot-api&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-5">class</span><span class="hl-1"> </span><span class="hl-6">MyFirstBot</span><span class="hl-1"> </span><span class="hl-5">extends</span><span class="hl-1"> </span><span class="hl-6">Bot</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">static</span><span class="hl-1"> </span><span class="hl-0">main</span><span class="hl-1">() {</span><br/><span class="hl-1">        </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">MyFirstBot</span><span class="hl-1">().</span><span class="hl-0">start</span><span class="hl-1">();</span><br/><span class="hl-1">    }</span><br/><br/><span class="hl-1">    </span><span class="hl-5">override</span><span class="hl-1"> </span><span class="hl-0">run</span><span class="hl-1">() {</span><br/><span class="hl-1">        </span><span class="hl-3">while</span><span class="hl-1"> (</span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">isRunning</span><span class="hl-1">()) {</span><br/><span class="hl-1">            </span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">forward</span><span class="hl-1">(</span><span class="hl-7">100</span><span class="hl-1">);</span><br/><span class="hl-1">            </span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">turnGunRight</span><span class="hl-1">(</span><span class="hl-7">360</span><span class="hl-1">);</span><br/><span class="hl-1">            </span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">back</span><span class="hl-1">(</span><span class="hl-7">100</span><span class="hl-1">);</span><br/><span class="hl-1">            </span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">turnGunRight</span><span class="hl-1">(</span><span class="hl-7">360</span><span class="hl-1">);</span><br/><span class="hl-1">        }</span><br/><span class="hl-1">    }</span><br/><br/><span class="hl-1">    </span><span class="hl-5">override</span><span class="hl-1"> </span><span class="hl-0">onScannedBot</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">: </span><span class="hl-6">ScannedBotEvent</span><span class="hl-1">) {</span><br/><span class="hl-1">        </span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">fire</span><span class="hl-1">(</span><span class="hl-7">1</span><span class="hl-1">);</span><br/><span class="hl-1">    }</span><br/><br/><span class="hl-1">    </span><span class="hl-5">override</span><span class="hl-1"> </span><span class="hl-0">onHitByBullet</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">: </span><span class="hl-6">HitByBulletEvent</span><span class="hl-1">) {</span><br/><span class="hl-1">        </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-8">bearing</span><span class="hl-1"> = </span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">calcBearing</span><span class="hl-1">(</span><span class="hl-4">e</span><span class="hl-1">.</span><span class="hl-4">bullet</span><span class="hl-1">.</span><span class="hl-4">direction</span><span class="hl-1">);</span><br/><span class="hl-1">        </span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">turnRight</span><span class="hl-1">(</span><span class="hl-7">90</span><span class="hl-1"> - </span><span class="hl-4">bearing</span><span class="hl-1">);</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-4">MyFirstBot</span><span class="hl-1">.</span><span class="hl-0">main</span><span class="hl-1">();</span>
+</code><button type="button">Copy</button></pre>
+
+<p>The bot reads its name, version, and authors from a <code>MyFirstBot.json</code> file placed alongside the source,
+or from environment variables set by the Robocode booter.</p>
+<h2 id="getting-started" class="tsd-anchor-link">Getting Started<a href="#getting-started" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<ol>
+<li><strong>Install the package</strong>: <code>npm install @robocode.dev/tank-royale-bot-api</code></li>
+<li><strong>Download Robocode Tank Royale</strong>: Get the game GUI and server from the <a href="https://github.com/robocode-dev/tank-royale/releases">official releases</a></li>
+<li><strong>Create your bot</strong>: Follow the <a href="https://robocode-dev.github.io/tank-royale/tutorial/typescript/my-first-bot-for-typescript">TypeScript tutorial</a> or copy the <a href="https://github.com/robocode-dev/tank-royale/tree/main/sample-bots/typescript/MyFirstBot">MyFirstBot sample</a></li>
+<li><strong>Run battles</strong>: Start the GUI, add your bot process, and watch the fight</li>
+</ol>
+<h2 id="features" class="tsd-anchor-link">Features<a href="#features" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>The TypeScript/JavaScript Bot API provides:</p>
+<ul>
+<li><strong>Full Bot Control</strong>: Move your tank, rotate gun and radar, fire bullets</li>
+<li><strong>Event Handling</strong>: Respond to hits, bot scanned, bullet impacts, and more</li>
+<li><strong>Battle Information</strong>: Access to battle state, opponent positions, and game rules</li>
+<li><strong>Synchronous API</strong>: Sequential, blocking style — no <code>async</code>/<code>await</code> in bot logic</li>
+<li><strong>Dual Module Formats</strong>: Ships both ESM and CommonJS outputs with TypeScript declarations</li>
+<li><strong>Debugging Support</strong>: Built-in debugging and logging capabilities</li>
+</ul>
+<h2 id="api-overview" class="tsd-anchor-link">API Overview<a href="#api-overview" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>The API closely mirrors the Java, .NET, and Python Bot APIs. Key classes and interfaces:</p>
+<table>
+<thead>
+<tr>
+<th>Export</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bot</code></td>
+<td>Full bot with independent gun/radar movement</td>
+</tr>
+<tr>
+<td><code>BaseBot</code></td>
+<td>Low-level bot with event-driven control</td>
+</tr>
+<tr>
+<td><code>IBot</code></td>
+<td>Interface for <code>Bot</code></td>
+</tr>
+<tr>
+<td><code>IBaseBot</code></td>
+<td>Interface for <code>BaseBot</code></td>
+</tr>
+<tr>
+<td><code>Droid</code></td>
+<td>Marker interface for team droid bots</td>
+</tr>
+<tr>
+<td><code>BotInfo</code> / <code>BotInfoBuilder</code></td>
+<td>Bot metadata for handshake</td>
+</tr>
+<tr>
+<td><code>Constants</code></td>
+<td>Game constants (max speed, rates, etc.)</td>
+</tr>
+<tr>
+<td><code>GameSetup</code></td>
+<td>Arena and game configuration</td>
+</tr>
+<tr>
+<td><code>BotState</code></td>
+<td>Snapshot of bot state during a tick</td>
+</tr>
+<tr>
+<td><code>BulletState</code></td>
+<td>Snapshot of bullet state during a tick</td>
+</tr>
+<tr>
+<td><code>BotResults</code></td>
+<td>Final round/battle results</td>
+</tr>
+<tr>
+<td><code>Color</code> / <code>ColorUtil</code></td>
+<td>Color representation utilities</td>
+</tr>
+<tr>
+<td><code>IGraphics</code> / <code>SvgGraphics</code></td>
+<td>Graphics API for painting overlays</td>
+</tr>
+<tr>
+<td><code>DefaultEventPriority</code></td>
+<td>Default priorities for bot events</td>
+</tr>
+<tr>
+<td><code>EnvVars</code></td>
+<td>Environment variable names for configuration</td>
+</tr>
+</tbody>
+</table>
+<h2 id="synchronous-api-model" class="tsd-anchor-link">Synchronous API Model<a href="#synchronous-api-model" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>Bot code is written in a <strong>synchronous, sequential style</strong> — identical to the Java, C#, and Python Bot APIs.
+There is no <code>async</code>/<code>await</code> in bot code:</p>
+<pre><code class="typescript"><span class="hl-9">// ✅ Correct — sequential, blocking</span><br/><span class="hl-4">override</span><span class="hl-1"> </span><span class="hl-0">run</span><span class="hl-1">() {</span><br/><span class="hl-1">    </span><span class="hl-3">while</span><span class="hl-1"> (</span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">isRunning</span><span class="hl-1">()) {</span><br/><span class="hl-1">        </span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">forward</span><span class="hl-1">(</span><span class="hl-7">100</span><span class="hl-1">);   </span><span class="hl-9">// blocks until bot has moved 100 units</span><br/><span class="hl-1">        </span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">turnRight</span><span class="hl-1">(</span><span class="hl-7">90</span><span class="hl-1">);  </span><span class="hl-9">// blocks until turn is complete</span><br/><span class="hl-1">        </span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">fire</span><span class="hl-1">(</span><span class="hl-7">1</span><span class="hl-1">);</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-9">// �?� Wrong — do NOT use async/await in bot code</span><br/><span class="hl-4">async</span><span class="hl-1"> </span><span class="hl-0">run</span><span class="hl-1">() {</span><br/><span class="hl-1">    </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">forward</span><span class="hl-1">(</span><span class="hl-7">100</span><span class="hl-1">); </span><span class="hl-9">// incorrect — forward() is not a Promise</span><br/><span class="hl-1">}</span>
+</code><button type="button">Copy</button></pre>
+
+<p><strong>How it works internally:</strong> The API uses a Worker thread (<code>worker_threads</code> in Node.js) with
+<code>SharedArrayBuffer</code> + <code>Atomics.wait()</code> to provide true blocking. The WebSocket runs on the main thread;
+bot logic runs on the worker thread. When a tick arrives, the main thread calls <code>Atomics.notify()</code> to
+wake the bot, just like Java's <code>notifyAll()</code>. This means <code>forward(100)</code> genuinely blocks the bot thread —
+no Promises, no callbacks, no generator yields.</p>
+<h2 id="configuration-via-environment-variables" class="tsd-anchor-link">Configuration via Environment Variables<a href="#configuration-via-environment-variables" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>The bot reads all settings from environment variables (matching the Java, .NET, and Python APIs):</p>
+<p><strong>Connection settings:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SERVER_URL</code></td>
+<td><code>ws://localhost:7654</code></td>
+<td>WebSocket server URL</td>
+</tr>
+<tr>
+<td><code>SERVER_SECRET</code></td>
+<td><em>(none)</em></td>
+<td>Secret for server authentication</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bot identity (set by the booter; override manually for testing):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BOT_NAME</code></td>
+<td>✅</td>
+<td>Bot name</td>
+</tr>
+<tr>
+<td><code>BOT_VERSION</code></td>
+<td>✅</td>
+<td>Bot version string</td>
+</tr>
+<tr>
+<td><code>BOT_AUTHORS</code></td>
+<td>✅</td>
+<td>Comma-separated list of authors</td>
+</tr>
+<tr>
+<td><code>BOT_DESCRIPTION</code></td>
+<td>—</td>
+<td>Short description</td>
+</tr>
+<tr>
+<td><code>BOT_HOMEPAGE</code></td>
+<td>—</td>
+<td>Homepage URL</td>
+</tr>
+<tr>
+<td><code>BOT_COUNTRY_CODES</code></td>
+<td>—</td>
+<td>Comma-separated ISO 3166-1 alpha-2 country codes</td>
+</tr>
+<tr>
+<td><code>BOT_GAME_TYPES</code></td>
+<td>—</td>
+<td>Comma-separated supported game types</td>
+</tr>
+<tr>
+<td><code>BOT_PLATFORM</code></td>
+<td>—</td>
+<td>Platform name (e.g. <code>Node.js</code>)</td>
+</tr>
+<tr>
+<td><code>BOT_PROG_LANG</code></td>
+<td>—</td>
+<td>Programming language (e.g. <code>TypeScript</code>)</td>
+</tr>
+<tr>
+<td><code>BOT_INITIAL_POS</code></td>
+<td>—</td>
+<td>Initial position override (<code>x,y,direction</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Set them before starting:</p>
+<pre><code class="bash"><span class="hl-4">SERVER_URL</span><span class="hl-1">=</span><span class="hl-2">ws://localhost:7654</span><span class="hl-1"> </span><span class="hl-4">SERVER_SECRET</span><span class="hl-1">=</span><span class="hl-2">abc123</span><span class="hl-1"> </span><span class="hl-0">node</span><span class="hl-1"> </span><span class="hl-2">MyFirstBot.js</span>
+</code><button type="button">Copy</button></pre>
+
+<h2 id="module-formats" class="tsd-anchor-link">Module Formats<a href="#module-formats" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>The package ships both <strong>ESM</strong> and <strong>CommonJS</strong> outputs:</p>
+<pre><code class="js"><span class="hl-9">// ESM (recommended)</span><br/><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Bot</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;@robocode.dev/tank-royale-bot-api&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-9">// CommonJS</span><br/><span class="hl-5">const</span><span class="hl-1"> { </span><span class="hl-8">Bot</span><span class="hl-1"> } = </span><span class="hl-0">require</span><span class="hl-1">(</span><span class="hl-2">&quot;@robocode.dev/tank-royale-bot-api&quot;</span><span class="hl-1">);</span>
+</code><button type="button">Copy</button></pre>
+
+<p>TypeScript declarations (<code>.d.ts</code>) are included for both formats.</p>
+<h2 id="documentation-resources" class="tsd-anchor-link">Documentation &amp; Resources<a href="#documentation-resources" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<ul>
+<li><strong>📖 Official Documentation</strong>: <a href="https://robocode-dev.github.io/tank-royale/">robocode-dev.github.io/tank-royale</a></li>
+<li><strong>TypeScript API Reference</strong>: <a href="https://robocode-dev.github.io/tank-royale/api/typescript/">https://robocode-dev.github.io/tank-royale/api/typescript/</a></li>
+<li><strong>Getting Started</strong>: <a href="https://robocode-dev.github.io/tank-royale/tutorial/getting-started.html">https://robocode-dev.github.io/tank-royale/tutorial/getting-started.html</a></li>
+<li><strong>🤖 My First Bot (TypeScript)</strong>: <a href="https://robocode-dev.github.io/tank-royale/tutorial/typescript/my-first-bot-for-typescript">https://robocode-dev.github.io/tank-royale/tutorial/typescript/my-first-bot-for-typescript</a></li>
+<li><strong>Sample Bots</strong>: <a href="https://github.com/robocode-dev/tank-royale/tree/main/sample-bots/typescript">https://github.com/robocode-dev/tank-royale/tree/main/sample-bots/typescript</a></li>
+<li><strong>Source Code</strong>: <a href="https://github.com/robocode-dev/tank-royale/tree/main/bot-api/typescript">https://github.com/robocode-dev/tank-royale/tree/main/bot-api/typescript</a></li>
+</ul>
+<h2 id="supported-platforms" class="tsd-anchor-link">Supported Platforms<a href="#supported-platforms" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>Robocode Tank Royale runs on:</p>
+<ul>
+<li><strong>Windows</strong></li>
+<li><strong>macOS</strong></li>
+<li><strong>Linux</strong></li>
+</ul>
+<p>The TypeScript/JavaScript Bot API works with <strong>Node.js 22 (LTS)</strong> or higher on all supported platforms.</p>
+<h2 id="community-support" class="tsd-anchor-link">Community &amp; Support<a href="#community-support" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<ul>
+<li><strong>GitHub Issues</strong>: <a href="https://github.com/robocode-dev/tank-royale/issues">Report bugs and request features</a></li>
+<li><strong>Discussions</strong>: <a href="https://github.com/robocode-dev/tank-royale/discussions">Community discussions and help</a></li>
+<li><strong>Contributing</strong>: Check out our <a href="https://github.com/robocode-dev/tank-royale/blob/master/CONTRIBUTING.md">Contributing Guide</a></li>
+</ul>
+<h2 id="development-status" class="tsd-anchor-link">Development Status<a href="#development-status" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>🚧 <strong>Work in Progress</strong>: The TypeScript/JavaScript Bot API is currently under active development.
+Features and APIs may change before the stable release.</p>
+<h2 id="license" class="tsd-anchor-link">License<a href="#license" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>Licensed under the <a href="https://github.com/robocode-dev/tank-royale/blob/main/LICENSE">Apache License 2.0</a></p>
+<h2 id="copyright" class="tsd-anchor-link">Copyright<a href="#copyright" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>Copyright © 2022 <a href="https://github.com/flemming-n-larsen">Flemming N. Larsen</a></p>
+<hr>
+<p>Ready to build the best tank and destroy the rest? Start coding your bot today! 🚀🎯</p>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#robocode-tank-royale-typescriptjavascript-bot-api"><span>Robocode <wbr/>Tank <wbr/>Royale — <wbr/>Type<wbr/>Script/<wbr/>Java<wbr/>Script <wbr/>Bot <wbr/>API</span></a><ul><li><a href="#about-robocode-tank-royale"><span>About <wbr/>Robocode <wbr/>Tank <wbr/>Royale</span></a></li><li><a href="#installation"><span>Installation</span></a></li><li><a href="#requirements"><span>Requirements</span></a></li><li><a href="#quick-start"><span>Quick <wbr/>Start</span></a></li><li><a href="#getting-started"><span>Getting <wbr/>Started</span></a></li><li><a href="#features"><span>Features</span></a></li><li><a href="#api-overview"><span>API <wbr/>Overview</span></a></li><li><a href="#synchronous-api-model"><span>Synchronous <wbr/>API <wbr/>Model</span></a></li><li><a href="#configuration-via-environment-variables"><span>Configuration via <wbr/>Environment <wbr/>Variables</span></a></li><li><a href="#module-formats"><span>Module <wbr/>Formats</span></a></li><li><a href="#documentation-resources"><span>Documentation &amp; <wbr/>Resources</span></a></li><li><a href="#supported-platforms"><span>Supported <wbr/>Platforms</span></a></li><li><a href="#community-support"><span>Community &amp; <wbr/>Support</span></a></li><li><a href="#development-status"><span>Development <wbr/>Status</span></a></li><li><a href="#license"><span>License</span></a></li><li><a href="#copyright"><span>Copyright</span></a></li></ul></div></details></div><div class="site-menu"><nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/robocode-dev/tank-royale" class="tsd-nav-link">GitHub</a></nav><nav class="tsd-navigation"><a href="modules.html">Robocode Tank Royale Bot API</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer></footer><div class="overlay"></div></body></html>
