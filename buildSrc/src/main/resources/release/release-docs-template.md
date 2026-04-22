@@ -56,6 +56,7 @@ Download pre-built bots to start battling immediately:
 | 🐍 **Python** | [sample-bots-python-{VERSION}.zip] | [Python] 3.10 or newer          |
 | 🔷 **C#**     | [sample-bots-csharp-{VERSION}.zip] | Microsoft [.NET SDK] 8 or newer |
 | ☕ **Java**    | [sample-bots-java-{VERSION}.zip]   | Any [Java SDK] 11 or newer      |
+| 🟦 **TypeScript** | [sample-bots-typescript-{VERSION}.zip] | [Node.js] 22 or newer   |
 
 
 ## 📦 Bot API
@@ -89,7 +90,12 @@ implementation 'dev.robocode.tankroyale:robocode-tankroyale-bot-api:{VERSION}'
 dotnet add package Robocode.TankRoyale.BotApi --version {VERSION}
 ```
 
-**More info:** [robocode.dev/api](https://robocode.dev/api/) | [PyPI](https://pypi.org/project/robocode-tank-royale/{VERSION}) | [Maven Central](https://central.sonatype.com/artifact/dev.robocode.tankroyale/robocode-tankroyale-bot-api/{VERSION}) | [NuGet](https://www.nuget.org/packages/Robocode.TankRoyale.BotApi/{VERSION})
+### 🟦 TypeScript / JavaScript
+```bash
+npm install @robocode.dev/tank-royale-bot-api
+```
+
+**More info:** [robocode.dev/api](https://robocode.dev/api/) | [PyPI](https://pypi.org/project/robocode-tank-royale/{VERSION}) | [Maven Central](https://central.sonatype.com/artifact/dev.robocode.tankroyale/robocode-tankroyale-bot-api/{VERSION}) | [NuGet](https://www.nuget.org/packages/Robocode.TankRoyale.BotApi/{VERSION}) | [npm](https://www.npmjs.com/package/@robocode.dev/tank-royale-bot-api)
 
 ## 🔊 Sound Effects
 
@@ -110,6 +116,7 @@ Follow the repository instructions to install sounds in the correct location.
 [sample-bots-python-{VERSION}.zip]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-python-{VERSION}.zip "Sample bots for Python"
 [sample-bots-csharp-{VERSION}.zip]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-csharp-{VERSION}.zip "Sample bots for C#"
 [sample-bots-java-{VERSION}.zip]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-java-{VERSION}.zip "Sample bots for Java"
+[sample-bots-typescript-{VERSION}.zip]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/sample-bots-typescript-{VERSION}.zip "Sample bots for TypeScript"
 [robocode-tankroyale-bot-api-{VERSION}.jar]: https://repo1.maven.org/maven2/dev/robocode/tankroyale/robocode-tankroyale-bot-api/{VERSION}/robocode-tankroyale-bot-api-{VERSION}.jar "Bot API Java archive file"
 [robocode-tankroyale-gui-{VERSION}.jar]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/robocode-tankroyale-gui-{VERSION}.jar "GUI Java archive file"
 [robocode-tank-royale-gui-{VERSION}.msi]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/robocode-tank-royale-gui-{VERSION}.msi "GUI for Windows (MSI)"
@@ -120,6 +127,7 @@ Follow the repository instructions to install sounds in the correct location.
 [Python]: https://www.python.org/downloads/ "Python downloads"
 [.NET SDK]: https://dotnet.microsoft.com/en-us/download/dotnet ".NET SDK"
 [Java SDK]: https://robocode-dev.github.io/tank-royale/articles/installation.html#java-11-or-newer "Java SDK"
+[Node.js]: https://nodejs.org/en/download "Node.js downloads"
 [SHA256SUMS]: https://github.com/robocode-dev/tank-royale/releases/download/v{VERSION}/SHA256SUMS "SHA256 checksums for verifying installer integrity"
 
 

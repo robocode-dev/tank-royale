@@ -6,7 +6,8 @@ Here follows some information about [print debugging] your bot using print state
 
 One easy way to debug your bot is to run it from the command line and put some print statements into your code to write
 out debugging information into the command line via stdin and/or stderr. With Java/JVM, you will typically use
-[System.out.println()], [SLF4J] or [Log4j], and for .NET you'll typically use [Console.WriteLine()] or use [Logging].
+[System.out.println()], [SLF4J] or [Log4j]; for .NET you'll typically use [Console.WriteLine()] or use [Logging];
+for Python use [print()]; and for TypeScript/JavaScript use [console.log()].
 
 To see how a bot is started up you can have a look at the sample bots and examine the script files. How your robot is
 started depends on the programming language and platform you are using. But here follows some examples of what to write
@@ -27,6 +28,20 @@ dotnet run
 ```
 
 This assumes you have your project file in the directory where you run the `dotnet` command.
+
+#### Python
+
+```shell
+python MyFirstBot.py
+```
+
+#### TypeScript / JavaScript
+
+```shell
+node MyFirstBot.js
+```
+
+This assumes the TypeScript source has been compiled to JavaScript first.
 
 ## Supply a server secret
 
@@ -184,8 +199,10 @@ determine if a virtual bullet would have hit an enemy if it were real, which hel
 
 For drawing objects in Robocode, the methods differ depending on the Bot API variant you're using:
 
-- Java: Use the `getGraphics()` method, which returns a `java.awt.Graphics2D` instance for painting objects.
-- .NET: Use the `Graphics` property, which provides a `System.Drawing.Graphics` compatible instance for drawing.
+- **Java**: Use the `getGraphics()` method, which returns a `java.awt.Graphics2D` instance for painting objects.
+- **.NET**: Use the `Graphics` property, which provides a `System.Drawing.Graphics` compatible instance for drawing.
+- **Python**: Use the `graphics` property, which provides an SVG-based graphics context for drawing objects.
+- **TypeScript**: Use the `getGraphics()` method, which returns an `IGraphics` instance for drawing SVG-based graphics.
 
 The sample bot, **PaintingBot**, showcases how to effectively use debugging graphics. Every tick, it paints a red circle
 at the most recent location where it scanned another bot.
@@ -204,6 +221,10 @@ at the most recent location where it scanned another bot.
 [System.out.println()]: https://www.geeksforgeeks.org/system-out-println-in-java/ "Print debugging in Java"
 
 [Console.WriteLine()]: https://docs.microsoft.com/en-us/dotnet/api/system.console.writeline?view=net-6.0 "Print debugging in .NET"
+
+[print()]: https://docs.python.org/3/library/functions.html#print "Print debugging in Python"
+
+[console.log()]: https://developer.mozilla.org/en-US/docs/Web/API/console/log_static "Print debugging in TypeScript/JavaScript"
 
 [SLF4J]: https://www.slf4j.org/ "Simple Logging Facade for Java (SLF4J)"
 

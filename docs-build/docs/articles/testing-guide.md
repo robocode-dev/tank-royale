@@ -70,6 +70,11 @@ print(f"Debug: currentHeading={self.direction}")
 Console.WriteLine($"Debug: currentHeading={Direction}");
 ```
 
+**TypeScript:**
+```typescript
+console.log(`Debug: currentHeading=${this.getDirection()}`);
+```
+
 ### Conditional Debug Output
 
 Avoid excessive logging by using debug flags:
@@ -129,6 +134,22 @@ start_time = time.perf_counter()
 # Your algorithm here
 duration = time.perf_counter() - start_time
 print(f"Algorithm took: {duration*1000:.3f} ms")
+```
+
+**C#:**
+```csharp
+var startTime = System.Diagnostics.Stopwatch.GetTimestamp();
+// Your algorithm here
+var duration = System.Diagnostics.Stopwatch.GetElapsedTime(startTime);
+Console.WriteLine($"Algorithm took: {duration.TotalMilliseconds:F3} ms");
+```
+
+**TypeScript:**
+```typescript
+const startTime = performance.now();
+// Your algorithm here
+const duration = performance.now() - startTime;
+console.log(`Algorithm took: ${duration.toFixed(3)} ms`);
 ```
 
 ### Turn Timeout Considerations

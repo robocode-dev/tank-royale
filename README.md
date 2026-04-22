@@ -78,17 +78,19 @@ Bot APIs are available for:
 - **Python**
 - **Java (JVM)**
 - **.NET**
+- **TypeScript / JavaScript**
 
 Bots can be written in any language that can access a WebSocket API and follows the
 [protocol](https://github.com/robocode-dev/tank-royale/tree/master/schema/schemas#readme).
 
 The following Bot APIs provide full client implementations:
 
-| Language       | API                                                                                   |
-|----------------|---------------------------------------------------------------------------------------|
-| **Python**     | [Python Bot API](https://robocode-dev.github.io/tank-royale/api/python/)              |
-| **Java (JVM)** | [Java/JVM Bot API](https://robocode-dev.github.io/tank-royale/api/apis.html#java-jvm) |
-| **.NET**       | [.NET Bot API](https://robocode-dev.github.io/tank-royale/api/apis.html#net)          |
+| Language              | API                                                                                        |
+|-----------------------|--------------------------------------------------------------------------------------------|
+| **Python**            | [Python Bot API](https://robocode-dev.github.io/tank-royale/api/python/)                   |
+| **Java (JVM)**        | [Java/JVM Bot API](https://robocode-dev.github.io/tank-royale/api/apis.html#java-jvm)      |
+| **.NET**              | [.NET Bot API](https://robocode-dev.github.io/tank-royale/api/apis.html#net)               |
+| **TypeScript / JavaScript** | [TypeScript Bot API](https://robocode-dev.github.io/tank-royale/api/apis.html#typescript--javascript) |
 
 Additional languages supported by the Java/JVM API:
 
@@ -127,7 +129,6 @@ See the [Battle Runner API docs](https://robocode-dev.github.io/tank-royale/api/
 
 ## 🚧 Work in progress
 
-- **Bot API for TypeScript** (Node.js and browser support for JavaScript and TypeScript runtimes)
 - **Robocode API bridge for Tank Royale** – see the [robocode-api-bridge](https://github.com/robocode-dev/robocode-api-bridge) project.
 
 ## Thanks to the contributors

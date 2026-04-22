@@ -271,6 +271,12 @@ if (enemy.getEnergy() <= 0) {
 - Use `List<T>` and `Dictionary<TKey, TValue>` for performance
 - LINQ convenient but adds overhead in tight loops
 
+### TypeScript / JavaScript
+
+- V8 JIT is very fast; avoid `eval()` and dynamic property access in hot loops
+- Use `Map` for lookups (faster than plain object property access for frequent updates)
+- Avoid `Array` spread (`[...arr]`) and rest parameters in tight loops (heap pressure)
+
 ## Testing Performance
 
 ### Benchmarking Improvements

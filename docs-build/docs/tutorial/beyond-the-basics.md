@@ -9,12 +9,25 @@ should be similar in APIs for other platforms.
 
 ## The Book of Robocode
 
-📖 [**The Book of Robocode**](https://book.robocode.dev/) is a comprehensive guide that serves as a supplement to the
-RoboWiki. It covers Robocode as well as Robocode Tank Royale—from basics to advanced strategies like wave surfing,
-guess-factor targeting, and movement techniques. The book builds on two decades of community knowledge and foundational
-research from RoboWiki contributors.
-
-This is an excellent resource for learning advanced topics and strategies in a structured format.
+<div class="book-spotlight">
+  <div class="book-spotlight__eyebrow">Go beyond the fundamentals</div>
+  <h2 class="book-spotlight__title">📘 The Book of Robocode</h2>
+  <p class="book-spotlight__lead">
+    <a href="https://book.robocode.dev/"><strong>The Book of Robocode</strong></a> is the advanced companion to
+    these docs. It covers movement, targeting, radar control, energy management, and competition-level tactics for
+    both Robocode and Robocode Tank Royale — built on two decades of community knowledge from RoboWiki contributors.
+  </p>
+  <div class="book-spotlight__actions">
+    <a class="book-spotlight__button book-spotlight__button--primary" href="https://book.robocode.dev/">Open the Book</a>
+    <a class="book-spotlight__button" href="https://book.robocode.dev/getting-started/your-first-bot.html">Start with the tutorial</a>
+  </div>
+  <div class="book-spotlight__topics">
+    <a href="https://book.robocode.dev/radar/radar-basics">Radar &amp; Scanning</a>
+    <a href="https://book.robocode.dev/targeting/simple-targeting/head-on-targeting">Targeting</a>
+    <a href="https://book.robocode.dev/movement/basic/movement-fundamentals-goto">Movement &amp; Evasion</a>
+    <a href="https://book.robocode.dev/energy-and-scoring/energy-as-a-resource">Energy &amp; Scoring</a>
+  </div>
+</div>
 
 ## The RoboWiki
 

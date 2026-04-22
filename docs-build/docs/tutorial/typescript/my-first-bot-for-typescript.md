@@ -145,8 +145,10 @@ The [Bot API] provides helper methods like [calcBearing] to ease calculating ang
 
 ### Putting it all together
 
-```typescript
-import { Bot, BotInfo, HitByBulletEvent, ScannedBotEvent } from "@robocode.dev/tank-royale-bot-api";
+::: code-group
+
+```typescript [TypeScript]
+import { Bot, HitByBulletEvent, ScannedBotEvent } from "@robocode.dev/tank-royale-bot-api";
 
 class MyFirstBot extends Bot {
     // The main method starts our bot
@@ -181,6 +183,49 @@ class MyFirstBot extends Bot {
 
 MyFirstBot.main();
 ```
+
+```javascript [JavaScript]
+import { Bot } from "@robocode.dev/tank-royale-bot-api";
+
+class MyFirstBot extends Bot {
+    // The main method starts our bot
+    static main() {
+        new MyFirstBot().start();
+    }
+
+    // Called when a new round is started -> initialize and do some movement
+    run() {
+        // Repeat while the bot is running
+        while (this.isRunning()) {
+            this.forward(100);
+            this.turnGunLeft(360);
+            this.back(100);
+            this.turnGunLeft(360);
+        }
+    }
+
+    // We saw another bot -> fire!
+    onScannedBot(e) {
+        this.fire(1);
+    }
+
+    // We were hit by a bullet -> turn perpendicular to the bullet
+    onHitByBullet(e) {
+        // Calculate the bearing to the direction of the bullet
+        const bearing = this.calcBearing(e.bullet.direction);
+        // Turn 90 degrees to the bullet direction based on the bearing
+        this.turnRight(90 - bearing);
+    }
+}
+
+MyFirstBot.main();
+```
+
+:::
+
+> **JavaScript differences:** Drop all type annotations and the `override` keyword. Name your source file
+> `MyFirstBot.js` and add `"type": "module"` to your `package.json` (required for ES module imports).
+> Use `node MyFirstBot.js` directly in your scripts instead of `tsx MyFirstBot.ts`.
 
 ## Running the bot
 

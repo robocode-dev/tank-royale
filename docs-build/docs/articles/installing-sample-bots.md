@@ -15,11 +15,12 @@ The bots will then appear in the **Bot Directories** list when you start a battl
 
 ## Available sample bots
 
-| Language      | Archive File                   | Requirements         |
-|---------------|--------------------------------|----------------------|
-| 🐍 **Python** | `sample-bots-python-x.y.z.zip` | Python 3.10 or newer |
-| 🔷 **C#**     | `sample-bots-csharp-x.y.z.zip` | .NET SDK 8 or newer  |
-| ☕ **Java**   | `sample-bots-java-x.y.z.zip`   | Java SDK 11 or newer |
+| Language           | Archive File                      | Requirements          |
+|--------------------|-----------------------------------|-----------------------|
+| 🐍 **Python**      | `sample-bots-python-x.y.z.zip`    | Python 3.10 or newer  |
+| 🔷 **C#**          | `sample-bots-csharp-x.y.z.zip`    | .NET SDK 8 or newer   |
+| ☕ **Java**        | `sample-bots-java-x.y.z.zip`      | Java SDK 11 or newer  |
+| 🟦 **TypeScript**  | `sample-bots-typescript-x.y.z.zip`| Node.js 22 or newer   |
 
 Each archive contains its own `README.md` with platform-specific instructions.
 

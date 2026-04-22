@@ -118,10 +118,37 @@ class RobotColors:
     bullet_color: Optional[Color] = None
 ```
 
+```typescript [TypeScript]
+// Point (x,y) interface
+interface Point {
+    type: "Point";
+    x: number;
+    y: number;
+}
+
+// Robot colors interface
+interface RobotColors {
+    type: "RobotColors";
+    bodyColor: string;
+    tracksColor: string;
+    turretColor: string;
+    gunColor: string;
+    radarColor: string;
+    scanColor: string;
+    bulletColor: string;
+}
+
+type TeamMessage = Point | RobotColors;
+```
+
 :::
 
 > **Python Note:** In Python, you must use the `@team_message_type` decorator to register message classes for automatic
 > serialization and deserialization. The decorator enables typed team messages that work like Java and C#.
+
+> **TypeScript Note:** In TypeScript, team messages are plain JSON objects. Use `JSON.stringify()` when sending and
+> `JSON.parse()` when receiving. A discriminated union with a `type` field is the recommended pattern for handling
+> multiple message types.
 
 ## The Leader Bot: Sending Messages
 
@@ -234,6 +261,41 @@ async def run(self) -> None:
         await self.back(100)
 ```
 
+```typescript [TypeScript]
+override run() {
+    // Prepare robot colors to send to teammates
+    const colors: RobotColors = {
+        type: "RobotColors",
+        bodyColor: ColorUtil.toHex(Color.RED),
+        tracksColor: ColorUtil.toHex(Color.CYAN),
+        turretColor: ColorUtil.toHex(Color.RED),
+        gunColor: ColorUtil.toHex(Color.YELLOW),
+        radarColor: ColorUtil.toHex(Color.RED),
+        scanColor: ColorUtil.toHex(Color.YELLOW),
+        bulletColor: ColorUtil.toHex(Color.YELLOW),
+    };
+
+    // Set our own colors
+    this.setBodyColor(Color.RED);
+    this.setTracksColor(Color.CYAN);
+    this.setTurretColor(Color.RED);
+    this.setGunColor(Color.YELLOW);
+    this.setRadarColor(Color.RED);
+    this.setScanColor(Color.YELLOW);
+    this.setBulletColor(Color.YELLOW);
+
+    // Send RobotColors object to every member in the team
+    this.broadcastTeamMessage(JSON.stringify(colors));
+
+    // Set radar to turn forever and start moving
+    this.setTurnRadarLeft(Number.POSITIVE_INFINITY);
+    while (this.isRunning()) {
+        this.forward(100);
+        this.back(100);
+    }
+}
+```
+
 :::
 
 ### Sending Enemy Positions
@@ -275,6 +337,18 @@ async def on_scanned_bot(self, e: ScannedBotEvent) -> None:
         return
     # Send enemy position to teammates
     self.broadcast_team_message(Point(x=e.x, y=e.y))
+```
+
+```typescript [TypeScript]
+override onScannedBot(e: ScannedBotEvent) {
+    // Ignore teammates
+    if (this.isTeammate(e.scannedBotId)) {
+        return;
+    }
+    // Send enemy position to teammates
+    const point: Point = { type: "Point", x: e.x, y: e.y };
+    this.broadcastTeamMessage(JSON.stringify(point));
+}
 ```
 
 :::
@@ -372,6 +446,28 @@ async def on_team_message(self, e: TeamMessageEvent) -> None:
         self.bullet_color = message.bullet_color
 ```
 
+```typescript [TypeScript]
+override onTeamMessage(e: TeamMessageEvent) {
+    const message = JSON.parse(e.message) as TeamMessage;
+
+    if (message.type === "Point") {
+        // Message is a point towards a target
+        this.turnRight(this.bearingTo(message.x, message.y));
+        this.fire(3);
+
+    } else if (message.type === "RobotColors") {
+        // Message contains new robot colors
+        this.setBodyColor(ColorUtil.fromHexColor(message.bodyColor));
+        this.setTracksColor(ColorUtil.fromHexColor(message.tracksColor));
+        this.setTurretColor(ColorUtil.fromHexColor(message.turretColor));
+        this.setGunColor(ColorUtil.fromHexColor(message.gunColor));
+        this.setRadarColor(ColorUtil.fromHexColor(message.radarColor));
+        this.setScanColor(ColorUtil.fromHexColor(message.scanColor));
+        this.setBulletColor(ColorUtil.fromHexColor(message.bulletColor));
+    }
+}
+```
+
 :::
 
 ### The Droid Run Loop
@@ -410,6 +506,16 @@ async def run(self) -> None:
 
     while self.running:
         await self.go()  # Execute next turn, team messages drive the logic
+```
+
+```typescript [TypeScript]
+override run() {
+    console.log("MyFirstDroid ready");
+
+    while (this.isRunning()) {
+        this.go(); // Execute next turn, team messages drive the logic
+    }
+}
 ```
 
 :::
@@ -464,6 +570,12 @@ from robocode_tank_royale.bot_api.droid_abc import DroidABC
 
 class MyFirstDroid(Bot, DroidABC):
     # ... bot implementation
+```
+
+```typescript [TypeScript]
+class MyFirstDroid extends Bot implements Droid {
+    // ... bot implementation
+}
 ```
 
 :::
