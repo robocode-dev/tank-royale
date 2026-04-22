@@ -130,7 +130,7 @@ override run() {
     }
 }
 
-// �?� Wrong — do NOT use async/await in bot code
+// ❌ Wrong — do NOT use async/await in bot code
 async run() {
     await this.forward(100); // incorrect — forward() is not a Promise
 }

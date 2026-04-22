@@ -14,6 +14,7 @@ node {
 
 tasks {
     val prepareNpmjsReadme by registering(Copy::class) {
+        filteringCharset = "UTF-8"
         from("npmjs-readme-template") {
             filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
         }

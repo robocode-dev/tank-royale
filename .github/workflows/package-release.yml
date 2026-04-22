@@ -733,6 +733,8 @@ jobs:
                   label="Sample bots for Java (zip)"
                 elif [[ "$lower" == *sample* && ( "$lower" == *python* || "$lower" == *py* ) ]]; then
                   label="Sample bots for Python (zip)"
+                elif [[ "$lower" == *sample* && ( "$lower" == *typescript* || "$lower" == *ts* ) ]]; then
+                  label="Sample bots for TypeScript (zip)"
                 fi
                 ;;
             esac
