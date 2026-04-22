@@ -1,4 +1,8 @@
-## [0.42.0] - 2026-04-20 - Bug fixes
+## [0.42.0] - 2026-04-20 - First release of the TypeScript Bot API
+
+This is the first official release of the TypeScript Bot API, making TypeScript a first-class
+member of the Bot API family alongside Java, .NET, and Python. The groundwork was laid in 0.41.0;
+this release ships the TypeScript API as a fully supported platform for writing bots.
 
 ### 🐞 Bug Fixes
 
