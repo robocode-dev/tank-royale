@@ -1,6 +1,6 @@
 [versions]
 
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 
 gson = "2.13.2"
 gson-extras = "3.3.0"
