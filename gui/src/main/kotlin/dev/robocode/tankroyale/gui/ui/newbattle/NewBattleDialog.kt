@@ -16,6 +16,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addCancelButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addLabel
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import dev.robocode.tankroyale.gui.util.MessageDialog
+import dev.robocode.tankroyale.gui.util.enqueue
 import dev.robocode.tankroyale.gui.ui.components.ToggleSwitch
 import net.miginfocom.swing.MigLayout
 import java.awt.Dimension
@@ -33,7 +34,7 @@ object NewBattleDialog : RcDialog(MainFrame, "new_battle_dialog") {
         size = Dimension(950, 750)
         setLocationRelativeTo(owner) // center on the owner window
 
-        ServerEvents.onStopped.on(this) {
+        ServerEvents.onStopped.enqueue(this) {
             MessageDialog.showError(Messages.get("battle_lost_server_connection"))
             dispose()
         }
