@@ -15,6 +15,7 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
     private const val CONSOLE_MAX_CHARACTERS = "console-max-characters"
     private const val BOOT_TIMEOUT = "boot-timeout"
     private const val TANK_COLOR_MODE = "tank-color-mode"
+    private const val THEME = "theme"
 
     private const val DEFAULT_CONSOLE_MAX_CHARACTERS = 10000
     const val DEFAULT_BOOT_TIMEOUT = 30
@@ -130,6 +131,15 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         get() = TankColorMode.fromString(load(TANK_COLOR_MODE, TankColorMode.BOT_COLORS.value))
         set(value) {
             save(TANK_COLOR_MODE, value.value)
+        }
+
+    var theme: String
+        get() {
+            val t = load(THEME, "dark").lowercase()
+            return if (t == "light") "light" else "dark"
+        }
+        set(value) {
+            save(THEME, if (value == "light") "light" else "dark")
         }
 
     var consoleMaxCharacters: Int

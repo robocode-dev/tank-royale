@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JComponent
 import javax.swing.Timer
+import javax.swing.UIManager
 
 // Improved version of the java-swing-switch-button from DJ-Raven:
 // https://github.com/DJ-Raven/java-swing-switch-button/blob/main/src/swing/SwitchButton.java
@@ -30,7 +31,6 @@ class ToggleSwitch(initiallyOn: Boolean) : JComponent() {
     private val eventHandlers: MutableList<SwitchEvent> = mutableListOf()
 
     init {
-        background = Color(0x3f, 0x3f, 0xff)
         preferredSize = Dimension(32, 16)
         foreground = Color.WHITE
         cursor = Cursor(Cursor.HAND_CURSOR)
@@ -81,7 +81,7 @@ class ToggleSwitch(initiallyOn: Boolean) : JComponent() {
         }
 
         g2.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha)
-        g2.color = background
+        g2.color = UIManager.getColor("ToggleSwitch.onColor") ?: Color(0x3f, 0x3f, 0xff)
         g2.fillRoundRect(0, 0, width, height, preferredSize.height, preferredSize.height)
 
         g2.color = foreground

@@ -11,7 +11,11 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.addOkButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.setDefaultButton
 import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.Strings
+import dev.robocode.tankroyale.gui.ui.theme.RobocodeFlatDark
+import dev.robocode.tankroyale.gui.ui.theme.RobocodeFlatLight
+import com.formdev.flatlaf.FlatLaf
 import net.miginfocom.swing.MigLayout
+import java.awt.Window
 import java.util.Locale
 import javax.swing.*
 
@@ -35,6 +39,10 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         override fun toString(): String = label
     }
 
+    private data class ThemeOption(val code: String, val label: String) {
+        override fun toString(): String = label
+    }
+
     private val onOk = Event<JButton>().apply { this.on(this@GuiConfigPanel) { onOkClicked() } }
 
     private val scaleOptions = arrayOf(100, 125, 150, 175, 200, 250, 300)
@@ -47,6 +55,12 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         LanguageOption("da", Strings.get("language.danish", Locale("da"))),
     )
     private val languageCombo = JComboBox(languageOptions)
+
+    private val themeOptions = arrayOf(
+        ThemeOption("dark", Strings.get("option.gui.theme.dark")),
+        ThemeOption("light", Strings.get("option.gui.theme.light")),
+    )
+    private val themeCombo = JComboBox(themeOptions)
 
     private val maxCharsSpinner = JSpinner(SpinnerNumberModel(10000, 1000, 1000000, 1000))
 
@@ -72,11 +86,14 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         defaultColorsRadio.addActionListener { applyTankColorMode(TankColorMode.DEFAULT_COLORS) }
         botColorsDebugRadio.addActionListener { applyTankColorMode(TankColorMode.BOT_COLORS_WHEN_DEBUGGING) }
 
+        themeCombo.addActionListener { applyThemeLive() }
+
         addLanguageSelector()
         addUiScaleSelector()
         addConsoleMaxCharsSelector()
         addBootTimeoutSelector()
         addTankColorModeSelector()
+        addThemeSelector()
         addOkButton(onOk, "span 2, alignx center, gaptop para, wrap").apply {
             setDefaultButton(this)
         }
@@ -105,6 +122,20 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
     private fun applyTankColorMode(mode: TankColorMode) {
         ConfigSettings.tankColorMode = mode
         ArenaPanel.repaint()
+    }
+
+    private fun addThemeSelector() {
+        addLabel("option.gui.theme")
+        add(themeCombo, "wrap")
+    }
+
+    private fun applyThemeLive() {
+        val newCode = (themeCombo.selectedItem as? ThemeOption)?.code ?: return
+        if (newCode == ConfigSettings.theme) return
+        ConfigSettings.theme = newCode
+        if (newCode == "light") RobocodeFlatLight.setup() else RobocodeFlatDark.setup()
+        FlatLaf.updateUI()
+        Window.getWindows().forEach { SwingUtilities.updateComponentTreeUI(it) }
     }
 
     private fun addTankColorModeSelector() {
@@ -142,6 +173,11 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
             TankColorMode.DEFAULT_COLORS -> defaultColorsRadio.isSelected = true
             TankColorMode.BOT_COLORS_WHEN_DEBUGGING -> botColorsDebugRadio.isSelected = true
         }
+
+        // Initialize theme
+        val currentTheme = ConfigSettings.theme
+        val idxTheme = themeOptions.indexOfFirst { it.code == currentTheme }.let { if (it >= 0) it else 0 }
+        themeCombo.selectedIndex = idxTheme
     }
 
     private fun onOkClicked() {

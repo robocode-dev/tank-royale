@@ -7,9 +7,10 @@ import dev.robocode.tankroyale.gui.settings.ConfigSettings
 import dev.robocode.tankroyale.gui.ui.MainFrame
 import dev.robocode.tankroyale.gui.ui.botapi.BotApiUpdateDialog
 import dev.robocode.tankroyale.gui.ui.components.RcImages
+import dev.robocode.tankroyale.gui.ui.theme.RobocodeFlatDark
+import dev.robocode.tankroyale.gui.ui.theme.RobocodeFlatLight
 import dev.robocode.tankroyale.gui.util.UserDataMigration
 import java.awt.Taskbar
-import javax.swing.UIManager
 import java.util.Locale
 
 fun main(args: Array<String>) {
@@ -38,7 +39,7 @@ fun main(args: Array<String>) {
 
     applyDefaultLocaleFromSettings() // Ensure JVM default locale follows GUI language
 
-    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+    if (ConfigSettings.theme == "light") RobocodeFlatLight.setup() else RobocodeFlatDark.setup()
 
     MainFrame.isVisible = true
 

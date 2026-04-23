@@ -8,14 +8,14 @@ import javax.swing.text.html.StyleSheet
 
 class BotInfoStyleSheet : StyleSheet() {
 
-    private val backgroundColor: Color = UIManager.getColor("Label.background") ?: Color.red
-    private val foregroundColor: Color = UIManager.getColor("Label.foreground") ?: Color.red
+    private val foregroundColor: Color = UIManager.getColor("Label.foreground") ?: Color.WHITE
     private val font: Font = UIManager.getFont("Label.font")
 
     init {
+        // No background-color here — Swing's BlockView paints nothing when unset,
+        // letting the component's own background (set in JNonEditableHtmlPane) show through.
         addRule("""
             body {
-                    background-color: ${backgroundColor.web};
                     color: ${foregroundColor.web};
                     font-family: sans-serif;
                     font-size: ${font.size};

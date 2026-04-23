@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.gui.ui.arena
 import dev.robocode.tankroyale.gui.ui.components.RcImages
 import java.awt.*
 import javax.swing.JPanel
+import javax.swing.UIManager
 
 object LogoPanel : JPanel() {
     private fun readResolve(): Any = LogoPanel
@@ -14,12 +15,6 @@ object LogoPanel : JPanel() {
     private const val MOTTO_TEXT_SIZE = 20
 
     private const val TEXT_SPACING = 10
-
-    private val textColor = Color(0x377B37)
-
-    init {
-        background = Color(0x282828)
-    }
 
     override fun paintComponent(g: Graphics) {
         val g2 = g as Graphics2D
@@ -45,7 +40,7 @@ object LogoPanel : JPanel() {
         g2.fillRect(0, 0, width, height)
         g2.drawImage(logo, logoX, logoY, logoWidth, logoHeight, background, null)
 
-        g2.color = textColor
+        g2.color = UIManager.getColor("Label.foreground") ?: Color(0xe0, 0xe8, 0xff)
         g2.font = Font(Font.SANS_SERIF, Font.PLAIN, ROBOCODE_TEXT_SIZE)
 
         val robocodeTextX = (width - g2.fontMetrics.stringWidth(ROBOCODE_TEXT)) / 2

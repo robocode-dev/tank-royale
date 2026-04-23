@@ -44,6 +44,10 @@
 # MigLayout (Swing layout manager)
 -keep class net.miginfocom.** { *; }
 
+# FlatLaf (Swing Look and Feel library)
+-keep class com.formdev.flatlaf.** { *; }
+-dontwarn com.formdev.flatlaf.**
+
 # Keep enum methods that may be accessed reflectively
 -keepclassmembers class * extends java.lang.Enum {
     <fields>;
