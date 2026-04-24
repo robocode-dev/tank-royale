@@ -1,0 +1,14 @@
+name: xac
+description: "X-as-Code — everything that can be versioned and reviewed should be expressed as code in version control"
+
+globs:
+  - "**/*"
+
+principles:
+  - INFRA-INFRASTRUCTURE-AS-CODE
+  - CD-PIPELINE-AS-CODE
+  - DB-SCHEMA-MIGRATIONS-AS-CODE
+  - DOC-AS-CODE
+  - DOC-DIAGRAMS-AS-CODE
+  - ARCH-DECISION-RECORDS
+  - ARCH-ARCHITECTURE-AS-CODE
