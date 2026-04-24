@@ -103,49 +103,8 @@ How entities interact through processes:
 ## 📚 Complete Index
 
 ### ADRs (Architecture Decision Records)
-| # | Title | Status |
-|---|-------|--------|
-| 0001 | Monorepo Build Strategy | ✅ Accepted |
-| 0002 | Standard Mathematical Coordinate System | ✅ Accepted |
-| 0003 | Cross-Platform Bot API Strategy | ✅ Accepted |
-| 0004 | Java as Authoritative Reference Implementation | ✅ Accepted |
-| 0005 | Independent Deployable Components | ✅ Accepted |
-| 0006 | Schema-Driven Protocol Contracts | ✅ Accepted |
-| 0007 | Client Role Separation (Bot/Observer/Controller) | ✅ Accepted |
-| 0008 | Server-Authoritative Deterministic Physics | ✅ Accepted |
-| 0009 | WebSocket Communication Protocol | ✅ Accepted |
-| 0010 | Declarative Bot Intent Model | ✅ Accepted |
-| 0011 | Real-Time Game Loop Architecture | ✅ Accepted |
-| 0012 | Turn Timing Semantics | ✅ Accepted |
-| 0013 | Bot Configuration via Environment Variables | ✅ Accepted |
-| 0014 | Two-Tier Shared-Secret Authentication | ✅ Accepted |
-| 0015 | Participant ID as Unified Team Identifier | ✅ Accepted |
-| 0016 | Session ID for Bot Process Identification | ✅ Accepted |
-| 0017 | Recording Format (ND-JSON + Gzip) | ✅ Accepted |
-| 0018 | Custom SVG Rendering for Bot API Graphics | ✅ Accepted |
-| 0019 | R8 Code Shrinking | ✅ Accepted |
-| 0020 | Teams Support in Observer Protocol | 📝 Proposed |
-| 0021 | Java Swing as GUI Reference Implementation | ✅ Accepted |
-| 0022 | Event System for GUI Decoupling | ✅ Accepted |
-| 0023 | Robocode Tank Royale Platform Scope and Boundaries | ✅ Accepted |
-| 0024 | Battle Runner API | 📝 Proposed |
-| 0025 | Game Type Presets and Rule Configuration | ✅ Accepted |
-| 0026 | Identity-Based Bot Matching in Battle Runner | 📝 Proposed |
-| 0027 | TypeScript Bot API for Web Platform Support | 📝 Proposed |
-| 0028 | TypeScript Bot API Threading Model | 📝 Proposed |
-| 0029 | TypeScript Bot API Runtime Targets | 📝 Proposed |
-| 0030 | Template-Based Booting and Base Convention | ✅ Accepted |
-| 0031 | Optional Bot Config and Runtime Validation | ✅ Accepted |
-| 0032 | Tank Color Display Mode | ✅ Accepted |
-| 0033 | Server Debug Mode | 📝 Proposed |
-| 0034 | Breakpoint Mode | 📝 Proposed |
-| 0035 | Bot API Debugger Detection | 📝 Proposed |
-| 0036 | Start-Game Debug Options | 📝 Proposed |
-| 0037 | Functional Core Extraction for Bot API Testability | 📝 Proposed |
-| 0038 | Cross-Platform Test Parity and Shared Test Definitions | 📝 Proposed |
-| 0039 | Server Testability — Physics Core and Test Framework | 📝 Proposed |
-| 0040 | Raise Default readyTimeout from 1s to 10s | ✅ Accepted |
-| 0041 | Bot API Library Version Management in the GUI | 📝 Proposed |
+
+See **[adr/README.md](./adr/README.md)** for the full canonical ADR index with dates and statuses.
 
 ### Message Schema
 | Category | Coverage | Status |
