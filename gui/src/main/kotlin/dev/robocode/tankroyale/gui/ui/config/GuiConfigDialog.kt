@@ -172,15 +172,6 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         // Save boot timeout
         ConfigSettings.bootTimeout = bootTimeoutSpinner.value as Int
 
-        // Save tank color mode
-        ConfigSettings.tankColorMode = when {
-            botColorsRadio.isSelected -> TankColorMode.BOT_COLORS
-            botColorsOnceRadio.isSelected -> TankColorMode.BOT_COLORS_ONCE
-            defaultColorsRadio.isSelected -> TankColorMode.DEFAULT_COLORS
-            botColorsDebugRadio.isSelected -> TankColorMode.BOT_COLORS_WHEN_DEBUGGING
-            else -> TankColorMode.BOT_COLORS
-        }
-
         GuiConfigDialog.dispose()
     }
 
