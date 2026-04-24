@@ -62,6 +62,9 @@ Commands sent by controllers to manage game state.
 | [resume-game](../../../../schema/schemas/resume-game.schema.yaml) | Controller → Server | Resume paused battle |
 | [next-turn](../../../../schema/schemas/next-turn.schema.yaml) | Controller → Server | Execute single turn (debug mode) |
 | [change-tps](../../../../schema/schemas/change-tps.schema.yaml) | Controller → Server | Change turns per second |
+| [enable-debug-mode](../../../../schema/schemas/enable-debug-mode.schema.yaml) | Controller → Server | Enable server debug mode (ADR-0033) |
+| [disable-debug-mode](../../../../schema/schemas/disable-debug-mode.schema.yaml) | Controller → Server | Disable server debug mode (ADR-0033) |
+| [bot-policy-update](../../../../schema/schemas/bot-policy-update.schema.yaml) | Controller → Server | Update bot policy for breakpoint/graphics mode (ADR-0034) |
 
 ### 3. Events (Server Notifications)
 
@@ -340,5 +343,5 @@ Use schemas to generate test fixtures and validate responses.
 
 ---
 
-**Last Updated:** 2026-02-12
+**Last Updated:** 2026-04-24
 

@@ -7,7 +7,7 @@
 
 ## Context
 
-Tank Royale supports Bot APIs in Java, .NET/C#, Python, and TypeScript (planned). When implementations diverge or
+Tank Royale supports Bot APIs in Java, .NET/C#, Python, and TypeScript. When implementations diverge or
 ambiguity arises, a single authoritative source is needed.
 
 **Problem:** Which platform's behavior is canonical when Bot APIs disagree?

@@ -40,25 +40,25 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0017](./0017-recording-format.md)                               | Recording Format (ND-JSON + Gzip)                    | Accepted | 2026-02-14 |
 | [0018](./0018-custom-svg-rendering.md)                           | Custom SVG Rendering for Bot API Graphics            | Accepted | 2026-02-14 |
 | [0019](./0019-r8-code-shrinking.md)                              | R8 Code Shrinking                                    | Accepted | 2026-02-14 |
-| [0020](./0020-teams-support-observer-protocol.md)                | Teams Support in Observer Protocol                   | Proposed | 2026-02-14 |
+| [0020](./0020-teams-support-observer-protocol.md)                | Teams Support in Observer Protocol                   | Accepted | 2026-02-14 |
 | [0021](./0021-java-swing-gui-reference-implementation.md)        | Java Swing as GUI Reference Implementation           | Accepted | 2026-02-15 |
 | [0022](./0022-event-system-gui-decoupling.md)                    | Event System for GUI Decoupling                      | Accepted | 2026-02-15 |
 | [0023](./0023-robocode-tank-royale-platform-scope.md)            | Robocode Tank Royale Platform Scope and Boundaries   | Accepted | 2026-02-15 |
-| [0024](./0024-battle-runner-api.md)                              | Battle Runner API                                    | Proposed | 2026-02-28 |
+| [0024](./0024-battle-runner-api.md)                              | Battle Runner API                                    | Accepted | 2026-02-28 |
 | [0025](./0025-game-type-presets-and-rule-configuration.md)       | Game Type Presets and Rule Configuration             | Accepted | 2026-02-28 |
-| [0026](./0026-identity-based-bot-matching.md)                    | Identity-Based Bot Matching in Battle Runner         | Proposed | 2026-03-21 |
-| [0027](./0027-typescript-bot-api-architecture.md)                | TypeScript Bot API for Web Platform Support          | Proposed | 2026-03-24 |
-| [0028](./0028-typescript-bot-api-threading-model.md)             | TypeScript Bot API Threading Model                   | Proposed | 2026-03-24 |
-| [0029](./0029-typescript-bot-api-runtime-targets.md)             | TypeScript Bot API Runtime Targets                   | Proposed | 2026-03-24 |
+| [0026](./0026-identity-based-bot-matching.md)                    | Identity-Based Bot Matching in Battle Runner         | Accepted | 2026-03-21 |
+| [0027](./0027-typescript-bot-api-architecture.md)                | TypeScript Bot API for Web Platform Support          | Accepted | 2026-03-24 |
+| [0028](./0028-typescript-bot-api-threading-model.md)             | TypeScript Bot API Threading Model                   | Accepted | 2026-03-24 |
+| [0029](./0029-typescript-bot-api-runtime-targets.md)             | TypeScript Bot API Runtime Targets                   | Accepted | 2026-03-24 |
 | [0030](./0030-convention-over-configuration-bot-entry-points.md) | Template-based Booting and Base Convention           | Accepted | 2026-04-05 |
 | [0031](./0031-optional-bot-config-and-runtime-validation.md)    | Optional Bot Config and Runtime Validation           | Accepted | 2026-04-05 |
 | [0032](./0032-user-defined-visual-overrides-for-tanks.md) | Tank Color Display Mode                              | Accepted | 2026-04-06 |
-| [0033](./0033-bot-debug-mode.md)                                 | Server Debug Mode                                    | Proposed | 2026-04-07 |
+| [0033](./0033-bot-debug-mode.md)                                 | Server Debug Mode                                    | Accepted | 2026-04-07 |
 | [0034](./0034-breakpoint-mode.md)                                | Breakpoint Mode                                      | Proposed | 2026-04-07 |
 | [0035](./0035-bot-debugger-detection.md)                         | Bot API Debugger Detection                           | Proposed | 2026-04-07 |
 | [0036](./0036-start-game-debug-options.md)                       | Start-Game Debug Options                             | Proposed | 2026-04-08 |
 | [0037](./0037-functional-core-bot-api-testability.md)            | Functional Core Extraction for Bot API Testability   | Proposed | 2026-04-14 |
-| [0038](./0038-shared-cross-platform-test-definitions.md)         | Cross-Platform Test Parity and Shared Test Definitions | Proposed | 2026-04-14 |
+| [0038](./0038-shared-cross-platform-test-definitions.md)         | Cross-Platform Test Parity and Shared Test Definitions | Accepted | 2026-04-14 |
 | [0039](./0039-server-testability.md)                             | Server Testability — Physics Core and Test Framework | Proposed | 2026-04-14 |
 | [0040](./0040-ready-timeout-default.md)                          | Raise Default readyTimeout from 1s to 10s            | Accepted | 2026-04-15 |
 | [0041](./0041-bot-api-library-version-management.md)             | Bot API Library Version Management in the GUI        | Proposed | 2026-04-16 |

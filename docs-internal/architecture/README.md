@@ -1,7 +1,5 @@
 # 🏗️ Architecture as Code — Tank Royale
 
-**Status:** ✅ **100% Complete** (14 of 14 items) | All documentation delivered
-
 Comprehensive architecture documentation for Robocode Tank Royale following the **"Architecture as Code"** pattern with a three-pillar approach: **ADRs** (Why), **C4 Views** (What), and **Domain Models + Flows** (How).
 
 ---
@@ -31,7 +29,28 @@ Why key architectural decisions were made:
 - ✅ [**ADR-0017**](./adr/0017-recording-format.md) — Recording Format (ND-JSON + Gzip)
 - ✅ [**ADR-0018**](./adr/0018-custom-svg-rendering.md) — Custom SVG Rendering for Bot API Graphics
 - ✅ [**ADR-0019**](./adr/0019-r8-code-shrinking.md) — R8 Code Shrinking
-- 📝 [**ADR-0020**](./adr/0020-teams-support-observer-protocol.md) — Teams Support in Observer Protocol
+- ✅ [**ADR-0020**](./adr/0020-teams-support-observer-protocol.md) — Teams Support in Observer Protocol
+- ✅ [**ADR-0021**](./adr/0021-java-swing-gui-reference-implementation.md) — Java Swing as GUI Reference Implementation
+- ✅ [**ADR-0022**](./adr/0022-event-system-gui-decoupling.md) — Event System for GUI Decoupling
+- ✅ [**ADR-0023**](./adr/0023-robocode-tank-royale-platform-scope.md) — Platform Scope and Boundaries
+- ✅ [**ADR-0024**](./adr/0024-battle-runner-api.md) — Battle Runner API
+- ✅ [**ADR-0025**](./adr/0025-game-type-presets-and-rule-configuration.md) — Game Type Presets and Rule Configuration
+- ✅ [**ADR-0026**](./adr/0026-identity-based-bot-matching.md) — Identity-Based Bot Matching in Battle Runner
+- ✅ [**ADR-0027**](./adr/0027-typescript-bot-api-architecture.md) — TypeScript Bot API for Web Platform Support
+- ✅ [**ADR-0028**](./adr/0028-typescript-bot-api-threading-model.md) — TypeScript Bot API Threading Model
+- ✅ [**ADR-0029**](./adr/0029-typescript-bot-api-runtime-targets.md) — TypeScript Bot API Runtime Targets
+- ✅ [**ADR-0030**](./adr/0030-convention-over-configuration-bot-entry-points.md) — Template-Based Booting and Base Convention
+- ✅ [**ADR-0031**](./adr/0031-optional-bot-config-and-runtime-validation.md) — Optional Bot Config and Runtime Validation
+- ✅ [**ADR-0032**](./adr/0032-user-defined-visual-overrides-for-tanks.md) — Tank Color Display Mode
+- ✅ [**ADR-0033**](./adr/0033-bot-debug-mode.md) — Server Debug Mode
+- 📝 [**ADR-0034**](./adr/0034-breakpoint-mode.md) — Breakpoint Mode
+- 📝 [**ADR-0035**](./adr/0035-bot-debugger-detection.md) — Bot API Debugger Detection
+- 📝 [**ADR-0036**](./adr/0036-start-game-debug-options.md) — Start-Game Debug Options
+- 📝 [**ADR-0037**](./adr/0037-functional-core-bot-api-testability.md) — Functional Core Extraction for Bot API Testability
+- ✅ [**ADR-0038**](./adr/0038-shared-cross-platform-test-definitions.md) — Cross-Platform Test Parity and Shared Test Definitions
+- 📝 [**ADR-0039**](./adr/0039-server-testability.md) — Server Testability — Physics Core and Test Framework
+- ✅ [**ADR-0040**](./adr/0040-ready-timeout-default.md) — Raise Default readyTimeout from 1s to 10s
+- 📝 [**ADR-0041**](./adr/0041-bot-api-library-version-management.md) — Bot API Library Version Management in the GUI
 
 **Use When:** Understanding design rationale, trade-offs, alternatives
 
@@ -42,9 +61,13 @@ Why key architectural decisions were made:
 
 Hierarchical system visualization at multiple zoom levels:
 - ✅ [**System Context**](./c4-views/system-context.md) — High-level 10,000-foot view
-- ✅ [**Container**](./c4-views/container.md) — Components & deployment
+- ✅ [**Container**](./c4-views/container.md) — Major containers and deployment
 - ✅ [**Server Components**](./c4-views/server-components.md) — Server internals
-- ✅ [**Bot API Components**](./c4-views/bot-api-components.md) — API structure
+- ✅ [**Bot API Components**](./c4-views/bot-api-components.md) — Bot API structure
+- ✅ [**GUI Components**](./c4-views/gui-components.md) — GUI internals
+- ✅ [**Booter Components**](./c4-views/booter-components.md) — Booter internals
+- ✅ [**Recorder Components**](./c4-views/recorder-components.md) — Recorder internals
+- ✅ [**Runner Components**](./c4-views/runner-components.md) — Runner internals
 
 **Use When:** Understanding system structure, data flow, components
 
@@ -55,10 +78,10 @@ Hierarchical system visualization at multiple zoom levels:
 
 WebSocket message contracts and data exchange objects:
 - ✅ [**Handshakes**](./models/message-schema/handshakes.md) — Connection establishment (5 message types)
-- ✅ [**Commands**](./models/message-schema/commands.md) — Controller operations (6 commands)
-- ✅ [**Events**](./models/message-schema/events.md) — Server notifications (21 event types)
+- ✅ [**Commands**](./models/message-schema/commands.md) — Controller operations (9 commands)
+- ✅ [**Events**](./models/message-schema/events.md) — Server notifications (26 event types)
 - ✅ [**Intents**](./models/message-schema/intents.md) — Bot actions (bot-intent, team-message)
-- ✅ [**State Objects**](./models/message-schema/state.md) — Data transfer objects (12 schemas)
+- ✅ [**State Objects**](./models/message-schema/state.md) — Data transfer objects (13 schemas)
 
 **Use When:** Understanding message formats, wire protocol, API contracts
 
@@ -71,6 +94,7 @@ How entities interact through processes:
 - ✅ [**Battle Lifecycle**](./models/flows/battle-lifecycle.md) — 4-phase state progression
 - ✅ [**Bot Connection**](./models/flows/bot-connection.md) — WebSocket handshake & setup
 - ✅ [**Turn Execution**](./models/flows/turn-execution.md) — 30 TPS game loop (15-step sequence)
+- ✅ [**Event Handling**](./models/flows/event-handling.md) — Event generation, queuing, and dispatch
 
 **Use When:** Understanding processes, sequences, error handling, timing
 
@@ -81,35 +105,56 @@ How entities interact through processes:
 ### ADRs (Architecture Decision Records)
 | # | Title | Status |
 |---|-------|--------|
-| 0001 | Monorepo Build Strategy | ✅ |
-| 0002 | Standard Mathematical Coordinate System | ✅ |
-| 0003 | Cross-Platform Bot API Strategy | ✅ |
-| 0004 | Java as Authoritative Reference Implementation | ✅ |
-| 0005 | Independent Deployable Components | ✅ |
-| 0006 | Schema-Driven Protocol Contracts | ✅ |
-| 0007 | Client Role Separation (Bot/Observer/Controller) | ✅ |
-| 0008 | Server-Authoritative Deterministic Physics | ✅ |
-| 0009 | WebSocket Communication Protocol | ✅ |
-| 0010 | Declarative Bot Intent Model | ✅ |
-| 0011 | Real-Time Game Loop Architecture | ✅ |
-| 0012 | Turn Timing Semantics | ✅ |
-| 0013 | Bot Configuration via Environment Variables | ✅ |
-| 0014 | Two-Tier Shared-Secret Authentication | ✅ |
-| 0015 | Participant ID as Unified Team Identifier | ✅ |
-| 0016 | Session ID for Bot Process Identification | ✅ |
-| 0017 | Recording Format (ND-JSON + Gzip) | ✅ |
-| 0018 | Custom SVG Rendering for Bot API Graphics | ✅ |
-| 0019 | R8 Code Shrinking | ✅ |
-| 0020 | Teams Support in Observer Protocol | 📝 |
+| 0001 | Monorepo Build Strategy | ✅ Accepted |
+| 0002 | Standard Mathematical Coordinate System | ✅ Accepted |
+| 0003 | Cross-Platform Bot API Strategy | ✅ Accepted |
+| 0004 | Java as Authoritative Reference Implementation | ✅ Accepted |
+| 0005 | Independent Deployable Components | ✅ Accepted |
+| 0006 | Schema-Driven Protocol Contracts | ✅ Accepted |
+| 0007 | Client Role Separation (Bot/Observer/Controller) | ✅ Accepted |
+| 0008 | Server-Authoritative Deterministic Physics | ✅ Accepted |
+| 0009 | WebSocket Communication Protocol | ✅ Accepted |
+| 0010 | Declarative Bot Intent Model | ✅ Accepted |
+| 0011 | Real-Time Game Loop Architecture | ✅ Accepted |
+| 0012 | Turn Timing Semantics | ✅ Accepted |
+| 0013 | Bot Configuration via Environment Variables | ✅ Accepted |
+| 0014 | Two-Tier Shared-Secret Authentication | ✅ Accepted |
+| 0015 | Participant ID as Unified Team Identifier | ✅ Accepted |
+| 0016 | Session ID for Bot Process Identification | ✅ Accepted |
+| 0017 | Recording Format (ND-JSON + Gzip) | ✅ Accepted |
+| 0018 | Custom SVG Rendering for Bot API Graphics | ✅ Accepted |
+| 0019 | R8 Code Shrinking | ✅ Accepted |
+| 0020 | Teams Support in Observer Protocol | 📝 Proposed |
+| 0021 | Java Swing as GUI Reference Implementation | ✅ Accepted |
+| 0022 | Event System for GUI Decoupling | ✅ Accepted |
+| 0023 | Robocode Tank Royale Platform Scope and Boundaries | ✅ Accepted |
+| 0024 | Battle Runner API | 📝 Proposed |
+| 0025 | Game Type Presets and Rule Configuration | ✅ Accepted |
+| 0026 | Identity-Based Bot Matching in Battle Runner | 📝 Proposed |
+| 0027 | TypeScript Bot API for Web Platform Support | 📝 Proposed |
+| 0028 | TypeScript Bot API Threading Model | 📝 Proposed |
+| 0029 | TypeScript Bot API Runtime Targets | 📝 Proposed |
+| 0030 | Template-Based Booting and Base Convention | ✅ Accepted |
+| 0031 | Optional Bot Config and Runtime Validation | ✅ Accepted |
+| 0032 | Tank Color Display Mode | ✅ Accepted |
+| 0033 | Server Debug Mode | 📝 Proposed |
+| 0034 | Breakpoint Mode | 📝 Proposed |
+| 0035 | Bot API Debugger Detection | 📝 Proposed |
+| 0036 | Start-Game Debug Options | 📝 Proposed |
+| 0037 | Functional Core Extraction for Bot API Testability | 📝 Proposed |
+| 0038 | Cross-Platform Test Parity and Shared Test Definitions | 📝 Proposed |
+| 0039 | Server Testability — Physics Core and Test Framework | 📝 Proposed |
+| 0040 | Raise Default readyTimeout from 1s to 10s | ✅ Accepted |
+| 0041 | Bot API Library Version Management in the GUI | 📝 Proposed |
 
 ### Message Schema
 | Category | Coverage | Status |
 |----------|----------|--------|
 | Handshakes | 5 message types | ✅ |
-| Commands | 6 command types | ✅ |
-| Events | 21 event types | ✅ |
+| Commands | 9 command types | ✅ |
+| Events | 26 event types | ✅ |
 | Intents | 2 intent types | ✅ |
-| State Objects | 12 DTO schemas | ✅ |
+| State Objects | 13 DTO schemas | ✅ |
 
 ### Business Flows
 | Flow | Purpose | Status |
@@ -117,6 +162,7 @@ How entities interact through processes:
 | Battle Lifecycle | State progression over battle | ✅ |
 | Bot Connection | WebSocket handshake sequence | ✅ |
 | Turn Execution | 30 TPS game loop mechanics | ✅ |
+| Event Handling | Event generation, queuing, and dispatch | ✅ |
 
 ### C4 Views
 | Level | Name | Status |
@@ -125,6 +171,10 @@ How entities interact through processes:
 | 2 | Container | ✅ |
 | 3 | Server Components | ✅ |
 | 3 | Bot API Components | ✅ |
+| 3 | GUI Components | ✅ |
+| 3 | Booter Components | ✅ |
+| 3 | Recorder Components | ✅ |
+| 3 | Runner Components | ✅ |
 
 ---
 
@@ -150,8 +200,8 @@ How entities interact through processes:
 4. [Battle Lifecycle Flow](./models/flows/battle-lifecycle.md) — State machine
 
 ### For **System Designers**
-1. All three ADRs
-2. System Context diagram
+1. [ADR index](./adr/) — All architectural decisions and their rationale
+2. System Context and Container diagrams
 3. All message schemas and state objects
 4. Flow state machines
 
@@ -167,26 +217,16 @@ How entities interact through processes:
 ## 📊 Statistics
 
 ```
-Total Files:              22 files
-Total Size:               ~250 KB
-Structurizr DSL Diagrams: 4 views (C4 L1-L3)
-SVG Diagrams:             4 generated
-Message Schema Categories: 5
-WebSocket Message Types:  53
-Mermaid Diagrams:         60+
-JSON Examples:            30+
-Code Examples:            10+
-Cross-References:         200+
+Total ADRs:               41 (27 Accepted, 14 Proposed)
+C4 Views:                 8 (L1: 1, L2: 1, L3: 6)
+WebSocket Schema Files:   55 total
+  Handshakes:             5
+  Commands:               9
+  Events:                 26
+  Intents:                2
+  State Objects:          13
+Business Flows:           4
 ```
-
-**Completion Status:**
-- ✅ Phases 1-6 (All): 100%
-- ✅ C4 Views: 100% (4/4 complete)
-- ✅ Message Schema: 100% (5/5 complete)
-- ✅ Business Flows: 100% (3/3 complete)
-- ✅ ADRs: 100% (20/20 complete)
-
-**Final Result: 100% Complete (32/32 items)** ✨
 
 ---
 
@@ -255,28 +295,34 @@ docs-internal/architecture/
 │   ├── README.md
 │   ├── 0001-monorepo-build-strategy.md
 │   ├── 0002-standard-math-coordinate-system.md
-│   ├── 0003-cross-platform-bot-api-strategy.md
-│   ├── 0004-java-reference-implementation.md
-│   ├── 0005-independent-deployable-components.md
-│   ├── 0006-schema-driven-protocol-contracts.md
-│   ├── 0007-client-role-separation.md
-│   ├── 0008-server-authoritative-physics.md
-│   ├── 0009-websocket-communication-protocol.md
-│   ├── 0010-declarative-bot-intent-model.md
-│   ├── 0011-realtime-game-loop-architecture.md
-│   ├── 0012-turn-timing-semantics.md
-│   ├── 0013-bot-configuration-env-vars.md
-│   ├── 0014-two-tier-authentication.md
-│   ├── 0015-bot-id-team-id-namespace-separation.md
-│   ├── 0016-session-id-bot-process-identification.md
-│   ├── 0017-recording-format.md
-│   ├── 0018-custom-svg-rendering.md
-│   ├── 0019-r8-code-shrinking.md
-│   └── 0020-teams-support-observer-protocol.md
+│   ├── ...
+│   └── 0041-bot-api-library-version-management.md
 ├── c4-views/                              (What - Visual)
 │   ├── README.md
 │   ├── system-context.md
+│   ├── container.md
+│   ├── server-components.md
+│   ├── bot-api-components.md
+│   ├── gui-components.md
+│   ├── booter-components.md
+│   ├── recorder-components.md
+│   ├── runner-components.md
+│   ├── structurizr-dsl/
+│   │   ├── system-context.dsl
+│   │   ├── container.dsl
+│   │   ├── server-components.dsl
+│   │   ├── bot-api-components.dsl
+│   │   ├── gui-components.dsl
+│   │   ├── booter-components.dsl
+│   │   └── recorder-components.dsl
 │   └── images/
+│       ├── system-context.svg
+│       ├── container.svg
+│       ├── component-Server.svg
+│       ├── component-BotAPI.svg
+│       ├── component-GUI.svg
+│       ├── component-Booter.svg
+│       └── component-Recorder.svg
 └── models/                                (What/How - Detailed)
     ├── message-schema/                    (WebSocket Contracts)
     │   ├── README.md
@@ -289,9 +335,10 @@ docs-internal/architecture/
         ├── README.md
         ├── battle-lifecycle.md
         ├── bot-connection.md
-        └── turn-execution.md
+        ├── turn-execution.md
+        └── event-handling.md
 ```
 
 ---
 
-**Last Updated:** 2026-02-14 | **Status:** ✅ 100% Complete (20 ADRs)
+**Last Updated:** 2026-04-24 | **ADRs:** 41 (27 Accepted, 14 Proposed)

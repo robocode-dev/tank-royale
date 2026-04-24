@@ -53,7 +53,7 @@ parameters with per-field "locked" flags.
 > since users may want larger melees outside competition contexts.
 
 All presets share common defaults: `gunCoolingRate=0.1`, `maxInactivityTurns=450`, `turnTimeout=5ms` (server) /
-`30ms` (GUI), `readyTimeout=1s`, `defaultTurnsPerSecond=30`.
+`30ms` (GUI), `readyTimeout=10s`, `defaultTurnsPerSecond=30`.
 
 ### GameSetup Data Class
 
@@ -74,9 +74,11 @@ DEFAULT_NUMBER_OF_ROUNDS = 35
 DEFAULT_GUN_COOLING_RATE = 0.1
 DEFAULT_INACTIVITY_TURNS = 450
 DEFAULT_TURN_TIMEOUT = 5.milliseconds
-DEFAULT_READY_TIMEOUT = 1.seconds
+DEFAULT_READY_TIMEOUT = 10.seconds
 DEFAULT_TURNS_PER_SECOND = 30
 ```
+
+> **Note:** `DEFAULT_READY_TIMEOUT` was raised from 1 second to 10 seconds. See [ADR-0040](./0040-ready-timeout-default.md).
 
 ### Preset Definitions
 

@@ -22,8 +22,7 @@ versus extensions, and where responsibility boundaries lie.
 1. **Server** — Battle orchestrator (local or containerized deployment)
 2. **GUI** — Desktop client for viewing and controlling battles
 3. **Bot APIs** — Language bindings for writing competitive bots:
-   - **Current:** Java, Python, .NET
-   - **Planned:** TypeScript for web platform support (Node.js and browser — see [ADR-0027](./0027-typescript-bot-api-architecture.md))
+   - **Current:** Java, Python, .NET, TypeScript (Node.js and browser — see [ADR-0027](./0027-typescript-bot-api-architecture.md))
 4. **Booter** — Launcher for running bots locally or in containers (required for GUI usage)
 5. **Recorder** — Battle recording utility for playback and analysis
 
@@ -40,7 +39,7 @@ core platform.
 The Tank Royale repository provides:
 
 - ✅ **Platform architecture** — How components interact (WebSocket protocol, schema contracts)
-- ✅ **Reference implementations** — Proof that the platform works (Java/Kotlin server, Java Swing GUI, Python/Java/.NET
+- ✅ **Reference implementations** — Proof that the platform works (Java/Kotlin server, Java Swing GUI, Java/.NET/Python/TypeScript
   Bot APIs)
 - ✅ **Authoritative schema** — Message contracts and protocols all implementations must follow
 - ✅ **Common libraries** — Shared utilities for building components
@@ -67,7 +66,7 @@ The Tank Royale repository intentionally **excludes**:
 
 ❌ **Language-Specific Extensions** beyond the core Bot API pattern
 
-- Java, Python, and .NET Bot APIs follow the same pattern
+- Java, Python, .NET, and TypeScript Bot APIs follow the same pattern
 - Additional languages should be developed **outside this repository** if they follow the same API design
 - The pattern is clear and well-documented for others to replicate
 
@@ -84,20 +83,17 @@ The Bot APIs in this repository were specifically designed to be **familiar to c
 
 **This is intentional.** We want to make migration from classic Robocode seamless.
 
-### Current and Planned APIs
+### Current Bot APIs
 
 Currently, we provide Bot API implementations for:
 
 - **Java** (canonical implementation, part of the core platform)
 - **Python** (stable, part of core platform)
 - **.NET** (stable, part of core platform)
+- **TypeScript** (stable, Node.js and browser — see [ADR-0027](./0027-typescript-bot-api-architecture.md))
 
-**Planned for future release:**
-
-- **TypeScript** — Will enable writing bots in JavaScript/TypeScript for Node.js and browser environments, opening Tank
-  Royale to browser-based development and competitive environments (see [ADR-0027](./0027-typescript-bot-api-architecture.md)).
-  Future language support (Rust, Go, etc.) would follow the same pattern as Java/C#/Python — standalone native
-  implementations, not WASM compilations
+**Future languages (Rust, Go, etc.):** Would follow the same standalone-native-implementation pattern as Java,
+C#, Python, and TypeScript — each written idiomatically in the target language, using the same wire protocol.
 
 **But:** If someone develops a **better** Bot API with a different philosophy (more functional, different naming,
 different abstractions), that's excellent! Those implementations should:

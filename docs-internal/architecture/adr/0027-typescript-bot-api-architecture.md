@@ -116,7 +116,7 @@ WASM was considered as the implementation technology (Kotlin/Wasm and Rust-to-WA
 
 ### Impact on ADR-0003
 
-ADR-0003 should be amended to list TypeScript as a 4th supported language alongside Java, C#, and Python.
+ADR-0003 it has been amended to list TypeScript as the 4th supported language alongside Java, C#, and Python.
 
 ---
 
