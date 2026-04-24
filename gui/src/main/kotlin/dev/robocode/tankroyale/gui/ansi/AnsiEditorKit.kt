@@ -17,7 +17,7 @@ import javax.swing.text.*
  */
 class AnsiEditorKit(
     private val fontSize: Int = 14,
-    private val ansiColors: IAnsiColors = DefaultAnsiColors
+    var ansiColors: IAnsiColors = DefaultAnsiColors
 ) : StyledEditorKit() {
 
     private val ansiEscCodeRegex = Regex("\u001b\\[\\d+(;\\d+)*m")

@@ -55,6 +55,14 @@
 - [x] 8.3 Add `import javax.swing.UIManager` to `ToggleSwitch.kt`
 - [x] 8.4 Verify ToggleSwitch renders cyan track in dark theme and blue track in light theme
 
+## 11. Theme-Aware ANSI Console Colors
+
+- [x] 11.1 Create `LightAnsiColors.kt` — light-optimized ANSI palette implementing `IAnsiColors` (darkened yellow/cyan, golden amber/turquoise for bright variants, near-black default)
+- [x] 11.2 Change `private val ansiColors` → `var ansiColors` in `AnsiEditorKit.kt` so it can be swapped on theme change
+- [x] 11.3 Override `updateUI()` in `AnsiEditorPane.kt` — call `applyThemeColors()` on theme switch; use luminance-based LAF detection (no FlatLaf API dependency); call `applyThemeColors()` directly from `init` (not `updateUI()`) to avoid `super.updateUI()` interference during construction
+- [x] 11.4 Verify dark theme console — white default text on dark (#282828) background
+- [x] 11.5 Verify light theme console — near-black default text on light (#dce4f5) background
+
 ## 9. R8 Keep Rules
 
 - [x] 9.1 Add to `gui/r8-rules.pro` after the MigLayout block: `-keep class com.formdev.flatlaf.** { *; }` and `-dontwarn com.formdev.flatlaf.**`
@@ -67,3 +75,11 @@
 - [x] 10.3 Verify arena rendering (canvas, tank colors, explosions) is unaffected when switching themes during a battle
 - [x] 10.4 Verify the ANSI bot console keeps its dark background regardless of active theme
 - [x] 10.5 Restart the GUI after selecting light theme — confirm light theme is restored from `gui.properties`
+
+## 11. Theme-Aware ANSI Console Colors
+
+- [ ] 11.1 Create `gui/src/main/kotlin/dev/robocode/tankroyale/gui/ansi/LightAnsiColors.kt` implementing `IAnsiColors` with a palette tuned for light backgrounds: darkened yellow (`#b7950b`), darkened cyan (`#1a8a8a`), golden-amber brightYellow (`#d4a017`), turquoise brightCyan (`#1abc9c`), medium-gray brightWhite (`#9e9e9e`), near-black default (`#1a1a2e`)
+- [ ] 11.2 In `AnsiEditorKit.kt`, change `private val ansiColors` to `var ansiColors` so the color scheme can be swapped at runtime without recreating the document
+- [ ] 11.3 In `AnsiEditorPane.kt`, add a `private var ready = false` guard; move background init out of `init {}` into a new `updateUI()` override that calls `FlatLaf.isLafDark()` to select background (`Color(0x28,0x28,0x28)` for dark; `UIManager.getColor("Panel.background")` for light) and swaps `ansiKit.ansiColors` to the matching scheme
+- [ ] 11.4 Launch in dark theme, open bot/server console — verify white default text on `#282828` background
+- [ ] 11.5 Switch to light theme, open bot/server console — verify near-black default text on `#dce4f5` background with no invisible colors (yellow, cyan, white all readable)

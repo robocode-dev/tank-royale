@@ -17,6 +17,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.WindowExt.onClosing
 import dev.robocode.tankroyale.gui.ui.server.ServerEvents
 import java.awt.BorderLayout
 import javax.swing.JPanel
+import javax.swing.SwingUtilities
 
 object MainFrame : RcFrame("main_frame") {
 
@@ -77,8 +78,8 @@ object MainFrame : RcFrame("main_frame") {
         fun showArena() {
             remove(LogoPanel)
             add(BattlePanel, BorderLayout.CENTER)
-
             ControlPanel.isVisible = true
+            SwingUtilities.updateComponentTreeUI(BattlePanel) // re-sync theme (BattlePanel may have been detached during a theme switch)
             refresh()
         }
 
