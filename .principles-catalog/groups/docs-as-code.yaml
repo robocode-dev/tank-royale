@@ -8,6 +8,7 @@ globs:
 
 principles:
   - DOC-AS-CODE
+  - DOC-DIAGRAMS-AS-CODE
   - DOC-CLOSE-TO-CODE
   - DOC-UNIQUE
   - DOC-ADDRESSABLE

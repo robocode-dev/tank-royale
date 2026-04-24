@@ -17,6 +17,7 @@ A11Y-SEMANTIC-HTML|2|Use native HTML elements for their semantic meaning; never 
 ARCH-ACTIVE-RECORD|2|Use Active Record only for simple CRUD domains where the data model and domain model are closely aligned.
 ARCH-ANTI-CORRUPTION-LAYER|2|Introduce a translation layer at every external integration boundary to protect your domain model from leakage.
 ARCH-API-GATEWAY|2|Route all external traffic through a single API gateway that enforces authentication, rate limiting, and routing.
+ARCH-ARCHITECTURE-AS-CODE|1|Define the architecture model in version-controlled code so it stays in sync with the system it describes.
 ARCH-BACKENDS-FOR-FRONTENDS|2|Create a dedicated backend service per client type; never build one general-purpose API for all clients.
 ARCH-BULKHEAD|2|Isolate subsystem resources into separate pools so one failure cannot exhaust resources needed by others.
 ARCH-CONWAYS-LAW|2|Align team structure with desired system architecture; design teams to produce the communication boundaries you want.
@@ -226,6 +227,7 @@ DOC-ADDRESSABLE|2|Give every meaningful document section a stable, direct link u
 DOC-AS-CODE|1|Store documentation in version control alongside code and apply the same review and CI workflow.
 DOC-AUDIENCE|2|Write every document for a specific reader with a known background and a concrete goal in mind.
 DOC-CLOSE-TO-CODE|1|Store documentation in the same directory as the artifact it describes to prevent drift.
+DOC-DIAGRAMS-AS-CODE|1|Store diagrams as plain-text source files and render them at build or view time.
 DOC-EXAMPLES|2|Accompany every abstract description with a concrete, runnable example that readers can try immediately.
 DOC-MINIMAL|1|Omit speculative, derivable, or duplicated content; every sentence must earn its place by serving the reader.
 DOC-OBJECTIVE|1|Use only factual, demonstrable claims and omit marketing adjectives like "easy", "simple", or "powerful".
@@ -350,6 +352,11 @@ PKG-CRP|2|Never bundle classes into a component unless all consumers of the comp
 PKG-REP|2|Group into a component only classes cohesive enough to be released, versioned, and maintained together.
 PKG-SAP|2|Stable components must consist primarily of abstract types so they remain extensible without modification.
 PKG-SDP|2|Depend only on components more stable than yourself; keep volatile components at the system's edges.
+PTAC-COMPOSABLE-FILES|1|Keep files small, focused, and composable rather than large and monolithic.
+PTAC-LEAN-CONTENT|1|Keep plain-text content DRY and front-loaded; every line must earn its place.
+PTAC-NAVIGABLE-DIRS|2|Every plain-text directory must contain an INDEX.md listing its contents and a README.md describing its purpose.
+PTAC-NO-GENERATED-BLOBS|2|Commit source and generation instructions, not generated or binary output blobs.
+PTAC-PLAIN-TEXT-FIRST|1|Prefer plain text formats over binary; keep every artifact diffable and human-readable.
 SCHEMA-ENUM-EVOLUTION|1|Every enum must include an UNSPECIFIED sentinel and all consumers must handle unknown values without crashing.
 SCHEMA-FIELD-OPTIONALITY|1|Every new schema field must be optional with a sensible default; never add required fields to published schemas.
 SCHEMA-NO-POLYMORPHIC-BLOBS|1|Never use untyped blobs or Any fields; define an explicit, validated schema for every structured payload.
