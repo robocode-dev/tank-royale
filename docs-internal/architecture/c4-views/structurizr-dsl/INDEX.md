@@ -1,9 +1,10 @@
-# structurizr-dsl/
+# INDEX — structurizr-dsl/
 
-Structurizr DSL source files for all C4 architecture diagrams. These are the authoritative sources; the SVG files in `../images/` are generated from these.
+> These are the authoritative DSL sources. The SVG files in `../images/` are generated from these. See [README.md](./README.md) for regeneration instructions.
 
 | File | Diagram |
 |------|---------|
+| [README.md](./README.md) | Directory description and regeneration instructions |
 | [system-context.dsl](./system-context.dsl) | C4 Level 1 — System Context |
 | [container.dsl](./container.dsl) | C4 Level 2 — Container |
 | [server-components.dsl](./server-components.dsl) | C4 Level 3 — Server Components |
@@ -12,5 +13,3 @@ Structurizr DSL source files for all C4 architecture diagrams. These are the aut
 | [booter-components.dsl](./booter-components.dsl) | C4 Level 3 — Booter Components |
 | [recorder-components.dsl](./recorder-components.dsl) | C4 Level 3 — Recorder Components |
 | [runner-components.dsl](./runner-components.dsl) | C4 Level 3 — Runner Components |
-
-To regenerate SVGs from these sources, run `../images/regenerate-all-svgs.ps1`.

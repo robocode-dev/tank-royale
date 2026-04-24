@@ -84,7 +84,7 @@ When making a new architectural decision:
    - Rationale
    - Consequences (positive and negative)
 5. **Link to related docs** (domain models, flows, requirements, code)
-6. **Update this index** when adding new ADRs
+6. **Update the Index of ADRs table** in this file and add the filename row to `INDEX.md`
 
 ## Guidelines
 

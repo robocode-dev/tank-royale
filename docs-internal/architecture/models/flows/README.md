@@ -138,15 +138,4 @@ These flow diagrams are the **single canonical source** for all protocol sequenc
 
 ---
 
-## Index
-
-| Flow | Status | Purpose |
-|------|--------|---------|
-| [Battle Lifecycle](./battle-lifecycle.md) | ✅ | Battle state progression |
-| [Bot Connection](./bot-connection.md) | ✅ | Bot initialization |
-| [Turn Execution](./turn-execution.md) | ✅ | Per-turn game loop (30 TPS) |
-| [Event Handling](./event-handling.md) | ✅ | Event generation, queuing, dispatch, and output capture |
-
----
-
 **Last Updated:** 2026-04-13

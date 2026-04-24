@@ -208,7 +208,7 @@ Tank Royale is designed to be **zero-dependency** in terms of external services:
 - ✅ Runs fully offline (localhost)
 
 This design choice ensures:
-- Easy setup for beginners
+- No cloud account or external service required — all components run on localhost
 - No operational complexity
 - Privacy (no data leaves the local network)
 - Game reliability (no internet required)
