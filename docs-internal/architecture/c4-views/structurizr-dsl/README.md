@@ -1,16 +1,7 @@
 # structurizr-dsl/
 
-Structurizr DSL source files for all C4 architecture diagrams. These are the authoritative sources; the SVG files in `../images/` are generated from these.
+Structurizr DSL source files for all C4 architecture diagrams. These are the authoritative sources — the SVG files in `../images/` are generated from these and must never be edited directly.
 
-| File | Diagram |
-|------|---------|
-| [system-context.dsl](./system-context.dsl) | C4 Level 1 — System Context |
-| [container.dsl](./container.dsl) | C4 Level 2 — Container |
-| [server-components.dsl](./server-components.dsl) | C4 Level 3 — Server Components |
-| [bot-api-components.dsl](./bot-api-components.dsl) | C4 Level 3 — Bot API Components |
-| [gui-components.dsl](./gui-components.dsl) | C4 Level 3 — GUI Components |
-| [booter-components.dsl](./booter-components.dsl) | C4 Level 3 — Booter Components |
-| [recorder-components.dsl](./recorder-components.dsl) | C4 Level 3 — Recorder Components |
-| [runner-components.dsl](./runner-components.dsl) | C4 Level 3 — Runner Components |
+Each `.dsl` file maps to one C4 view level (System Context, Container, or Component). To add or modify a diagram, edit the corresponding `.dsl` file and regenerate: run `../images/regenerate-all-svgs.ps1`.
 
-To regenerate SVGs from these sources, run `../images/regenerate-all-svgs.ps1`.
+See [INDEX.md](./INDEX.md) for the full file listing.

@@ -222,7 +222,8 @@ docs-internal/architecture/
 │       ├── component-BotAPI.svg
 │       ├── component-GUI.svg
 │       ├── component-Booter.svg
-│       └── component-Recorder.svg
+│       ├── component-Recorder.svg
+│       └── component-Runner.svg _(pending — run regenerate-all-svgs.ps1)_
 └── models/                                (What/How - Detailed)
     ├── message-schema/                    (WebSocket Contracts)
     │   ├── README.md
