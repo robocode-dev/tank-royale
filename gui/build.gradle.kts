@@ -37,7 +37,8 @@ dependencies {
     implementation(libs.miglayout.swing)
     implementation(libs.jsvg)
 
-    testImplementation(testLibs.kotest.junit5)
+    testImplementation(platform(testLibs.junit.bom))
+    testImplementation(testLibs.kotest.junit6)
 }
 
 tasks {

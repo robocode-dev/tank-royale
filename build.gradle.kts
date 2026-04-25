@@ -4,6 +4,7 @@ import build.isWindows
 import build.isMacOS
 import build.isLinux
 import org.gradle.kotlin.dsl.withType
+import org.gradle.api.attributes.java.TargetJvmVersion
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.gradle.api.tasks.Exec
@@ -110,6 +111,31 @@ subprojects {
     tasks.withType<JavaCompile> {
         options.release.set(11) // Java 11
         options.encoding = "UTF-8"
+    }
+
+    // Test classpaths, JVMs, and Java compilation use Java 17 so JUnit 6 (requires Java 17+)
+    // can resolve, compile against, and run. Main source compilation stays at Java 11 for
+    // bot API consumer compatibility.
+    plugins.withId("java") {
+        configurations.configureEach {
+            if (name == "testCompileClasspath" || name == "testRuntimeClasspath") {
+                attributes {
+                    attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 17)
+                }
+            }
+        }
+        tasks.withType<Test>().configureEach {
+            javaLauncher.set(javaToolchains.launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(17))
+            })
+        }
+        tasks.withType<JavaCompile>().configureEach {
+            if (name.startsWith("compileTest")) {
+                javaCompiler.set(javaToolchains.compilerFor {
+                    languageVersion.set(JavaLanguageVersion.of(17))
+                })
+            }
+        }
     }
 
     // Common publishing configuration for all subprojects with maven-publish plugin

@@ -46,3 +46,5 @@
 | [0039-server-testability.md](./0039-server-testability.md) | ADR-0039: Server Testability — Physics Core and Test Framework |
 | [0040-ready-timeout-default.md](./0040-ready-timeout-default.md) | ADR-0040: Raise Default readyTimeout from 1s to 10s |
 | [0041-bot-api-library-version-management.md](./0041-bot-api-library-version-management.md) | ADR-0041: Bot API Library Version Management in the GUI |
+| [0042-gui-test-automation-and-screenshot-framework.md](./0042-gui-test-automation-and-screenshot-framework.md) | ADR-0042: GUI Test Automation and Screenshot Framework |
+| [0043-sample-bots-as-gui-test-fixtures.md](./0043-sample-bots-as-gui-test-fixtures.md) | ADR-0043: Java Sample Bots as Ephemeral GUI Test Fixtures |
