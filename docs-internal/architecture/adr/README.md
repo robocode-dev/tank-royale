@@ -62,8 +62,6 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0039](./0039-server-testability.md)                             | Server Testability — Physics Core and Test Framework | Proposed | 2026-04-14 |
 | [0040](./0040-ready-timeout-default.md)                          | Raise Default readyTimeout from 1s to 10s            | Accepted | 2026-04-15 |
 | [0041](./0041-bot-api-library-version-management.md)             | Bot API Library Version Management in the GUI        | Proposed | 2026-04-16 |
-| [0042](./0042-gui-test-automation-and-screenshot-framework.md)   | GUI Test Automation and Screenshot Framework         | Proposed | 2026-04-25 |
-| [0043](./0043-sample-bots-as-gui-test-fixtures.md)               | Java Sample Bots as Ephemeral GUI Test Fixtures      | Proposed | 2026-04-25 |
 
 ## Status Definitions
 
