@@ -134,12 +134,17 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         }
 
     var theme: String
-        get() {
-            val t = load(THEME, "dark").lowercase()
-            return if (t == "light") "light" else "dark"
+        get() = when (load(THEME, "system").lowercase()) {
+            "light" -> "light"
+            "dark" -> "dark"
+            else -> "system"
         }
         set(value) {
-            save(THEME, if (value == "light") "light" else "dark")
+            save(THEME, when (value) {
+                "light" -> "light"
+                "dark" -> "dark"
+                else -> "system"
+            })
         }
 
     var consoleMaxCharacters: Int

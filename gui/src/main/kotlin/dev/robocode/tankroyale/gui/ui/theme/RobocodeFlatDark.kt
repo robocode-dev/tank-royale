@@ -39,6 +39,9 @@ class RobocodeFlatDark : FlatDarkLaf() {
     }
 
     companion object {
-        fun setup() = FlatLaf.setup(RobocodeFlatDark())
+        fun setup() {
+            FlatLaf.setGlobalExtraDefaults(mapOf("@accentColor" to "#00CC00"))
+            FlatLaf.setup(RobocodeFlatDark())
+        }
     }
 }

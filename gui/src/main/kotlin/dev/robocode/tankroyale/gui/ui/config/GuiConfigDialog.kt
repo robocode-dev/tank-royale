@@ -13,6 +13,7 @@ import dev.robocode.tankroyale.gui.ui.extensions.JComponentExt.showMessage
 import dev.robocode.tankroyale.gui.ui.Strings
 import dev.robocode.tankroyale.gui.ui.theme.RobocodeFlatDark
 import dev.robocode.tankroyale.gui.ui.theme.RobocodeFlatLight
+import dev.robocode.tankroyale.gui.resolveTheme
 import com.formdev.flatlaf.FlatLaf
 import net.miginfocom.swing.MigLayout
 import java.awt.Window
@@ -57,6 +58,7 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
     private val languageCombo = JComboBox(languageOptions)
 
     private val themeOptions = arrayOf(
+        ThemeOption("system", Strings.get("option.gui.theme.system")),
         ThemeOption("dark", Strings.get("option.gui.theme.dark")),
         ThemeOption("light", Strings.get("option.gui.theme.light")),
     )
@@ -133,7 +135,7 @@ object GuiConfigPanel : JPanel(MigLayout("fill, insets 10", "[][grow]", "")) {
         val newCode = (themeCombo.selectedItem as? ThemeOption)?.code ?: return
         if (newCode == ConfigSettings.theme) return
         ConfigSettings.theme = newCode
-        if (newCode == "light") RobocodeFlatLight.setup() else RobocodeFlatDark.setup()
+        if (resolveTheme(newCode) == "light") RobocodeFlatLight.setup() else RobocodeFlatDark.setup()
         FlatLaf.updateUI()
         Window.getWindows().forEach { SwingUtilities.updateComponentTreeUI(it) }
     }
