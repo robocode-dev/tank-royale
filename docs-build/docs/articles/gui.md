@@ -19,7 +19,11 @@ Use this page as the entry point for the GUI documentation:
 
 When launching the GUI, you are greeted by the start window:
 
-![Start window](../images/gui/start-window.png)
+<ThemeImage
+  dark-src="../images/gui/dark/start-window.png"
+  light-src="../images/gui/light/start-window.png"
+  alt="Start window"
+/>
 
 The menu bar at the top provides quick access to the main tasks, such as starting a new battle with `Ctrl+B`.
 

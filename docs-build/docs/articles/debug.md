@@ -207,7 +207,11 @@ For drawing objects in Robocode, the methods differ depending on the Bot API var
 The sample bot, **PaintingBot**, showcases how to effectively use debugging graphics. Every tick, it paints a red circle
 at the most recent location where it scanned another bot.
 
-![PaintingBot screenshot](../images/gui/paint-bot.png)
+<ThemeImage
+  dark-src="../images/gui/dark/paint-bot.png"
+  light-src="../images/gui/light/paint-bot.png"
+  alt="PaintingBot screenshot"
+/>
 
 **Note:** Graphics are not painted immediately, but rather in the next turn. This delay occurs because:
 

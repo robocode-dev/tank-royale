@@ -6,7 +6,11 @@ The GUI can record battles automatically and replay saved recordings later.
 
 Enable auto-recording with the **Recording** toggle in the **Start Battle** dialog:
 
-![Recording](../images/gui/recording.png)
+<ThemeImage
+  dark-src="../images/gui/dark/recording.png"
+  light-src="../images/gui/light/recording.png"
+  alt="Recording"
+/>
 
 When enabled, each battle is saved to its own recording file in the `recordings` directory under your user data
 directory.
@@ -22,15 +26,27 @@ For more about user data locations and the recordings directory, see
 
 Open recorded battles with **Battle → Replay from File...**:
 
-![Replay from File](../images/gui/replay-from-file.png)
+<ThemeImage
+  dark-src="../images/gui/dark/replay-from-file.png"
+  light-src="../images/gui/light/replay-from-file.png"
+  alt="Replay from File"
+/>
 
 The file dialog opens in the recordings directory within your user data folder.
 
-![Select replay file](../images/gui/select-replay-file.png)
+<ThemeImage
+  dark-src="../images/gui/dark/select-replay-file.png"
+  light-src="../images/gui/light/select-replay-file.png"
+  alt="Select replay file"
+/>
 
 Click **Open** to start playback:
 
-![Replaying](../images/gui/replay.png)
+<ThemeImage
+  dark-src="../images/gui/dark/replay.png"
+  light-src="../images/gui/light/replay.png"
+  alt="Replaying"
+/>
 
 The timeline shows battle progress and bot deaths, marked by skulls. Click anywhere on the timeline to jump directly to
 that turn.

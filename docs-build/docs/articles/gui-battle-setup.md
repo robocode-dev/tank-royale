@@ -12,7 +12,11 @@ This guide covers the parts of the GUI you use before a battle starts:
 
 The primary function of the GUI is battle creation and bot selection:
 
-![Start battle](../images/gui/start-battle.png)
+<ThemeImage
+  dark-src="../images/gui/dark/start-battle.png"
+  light-src="../images/gui/light/start-battle.png"
+  alt="Start battle"
+/>
 
 The window is organized into four key lists:
 
@@ -24,11 +28,19 @@ The window is organized into four key lists:
 At the top, the **Select game type** dropdown lets you choose the [game type], and the **Setup Rules** button opens the
 rule configuration dialog.
 
-![Setup rules and game type](../images/gui/setup-rules-and-game-type.png)
+<ThemeImage
+  dark-src="../images/gui/dark/setup-rules-and-game-type.png"
+  light-src="../images/gui/light/setup-rules-and-game-type.png"
+  alt="Setup rules and game type"
+/>
 
 Next to the game type selector is the **Recording** toggle for automatic battle recording.
 
-![Auto-recording](../images/gui/auto-record.png)
+<ThemeImage
+  dark-src="../images/gui/dark/auto-record.png"
+  light-src="../images/gui/light/auto-record.png"
+  alt="Auto-recording"
+/>
 
 When enabled, each battle is recorded automatically. For details, see
 [Recording and replaying battles](gui-recording-and-replay.md).
@@ -37,27 +49,47 @@ The **Debugging** group contains the **Start paused** toggle. When enabled, the 
 turn 1, which is useful when you want to step through the first turns without enabling debug mode manually after the
 battle has started.
 
-![Debugging - Start Paused](../images/gui/debugging-start-paused.png)
+<ThemeImage
+  dark-src="../images/gui/dark/debugging-start-paused.png"
+  light-src="../images/gui/light/debugging-start-paused.png"
+  alt="Debugging - Start Paused"
+/>
 
 The bottom panel displays detailed bot information when you select entries from the **Bot Directories** list:
 
-![Bot Info](../images/gui/bot-info.png)
+<ThemeImage
+  dark-src="../images/gui/dark/bot-info.png"
+  light-src="../images/gui/light/bot-info.png"
+  alt="Bot Info"
+/>
 
 ## Bot Directories
 
 The **Bot Directories** section lists all detected bot types from your configured local directories and shows the
 absolute file path for each bot.
 
-![Bot Directories](../images/gui/bot-directories.png)
+<ThemeImage
+  dark-src="../images/gui/dark/bot-directories.png"
+  light-src="../images/gui/light/bot-directories.png"
+  alt="Bot Directories"
+/>
 
 If no directories are configured, the GUI prompts you to add at least one bot root directory:
 
-![No bot directory root](../images/gui/no-bot-directory-found.png)
+<ThemeImage
+  dark-src="../images/gui/dark/no-bot-directory-found.png"
+  light-src="../images/gui/light/no-bot-directory-found.png"
+  alt="No bot directory root"
+/>
 
 To get started quickly, download and extract the sample bot packages, then add their parent directory through
 **Config → Bot Root Directories**.
 
-![Bot Root Directories Config](../images/gui/bot-root-dir-config.png)
+<ThemeImage
+  dark-src="../images/gui/dark/bot-root-dir-config.png"
+  light-src="../images/gui/light/bot-root-dir-config.png"
+  alt="Bot Root Directories Config"
+/>
 
 For sample bot setup, see [Installing sample bots](installing-sample-bots.md).
 
@@ -65,7 +97,11 @@ For sample bot setup, see [Installing sample bots](installing-sample-bots.md).
 
 The **Booted Bots** section shows bots launched through the GUI's built-in [booter]:
 
-![Booted Bots](../images/gui/booted-bots.png)
+<ThemeImage
+  dark-src="../images/gui/dark/booted-bots.png"
+  light-src="../images/gui/light/booted-bots.png"
+  alt="Booted Bots"
+/>
 
 Multiple instances of the same bot type can be booted, which makes it easy to run battles with duplicate bot entries.
 
@@ -76,7 +112,11 @@ selected process.
 
 When booting bots from **Bot Directories**, the GUI shows a progress dialog while each bot connects to the server:
 
-![Waiting for bots to connect](../images/gui/waiting-for-bots-to-connect.png)
+<ThemeImage
+  dark-src="../images/gui/dark/waiting-for-bots-to-connect.png"
+  light-src="../images/gui/light/waiting-for-bots-to-connect.png"
+  alt="Waiting for bots to connect"
+/>
 
 The dialog shows:
 
@@ -94,7 +134,11 @@ booted processes.
 
 The **Joined Bots** section lists every bot connected to the server, whether local or remote:
 
-![Joined Bots](../images/gui/joined-bots.png)
+<ThemeImage
+  dark-src="../images/gui/dark/joined-bots.png"
+  light-src="../images/gui/light/joined-bots.png"
+  alt="Joined Bots"
+/>
 
 Each entry shows the bot IP address and port, which helps distinguish between multiple instances. File paths are not
 shown because the server tracks WebSocket connections and bot handshake information rather than local filesystem paths.
@@ -103,7 +147,11 @@ shown because the server tracks WebSocket connections and bot handshake informat
 
 The **Selected Bots** section lists the bots chosen for the upcoming battle:
 
-![Selected Bots](../images/gui/selected-bots.png)
+<ThemeImage
+  dark-src="../images/gui/dark/selected-bots.png"
+  light-src="../images/gui/light/selected-bots.png"
+  alt="Selected Bots"
+/>
 
 The **Start Battle** button becomes available once the selected bots satisfy the minimum participant count defined by the
 current [game type].
@@ -112,7 +160,11 @@ current [game type].
 
 Customize rules for each [game type] with the **Setup Rules** dialog:
 
-![Setup Rules](../images/gui/setup-rules.png)
+<ThemeImage
+  dark-src="../images/gui/dark/setup-rules.png"
+  light-src="../images/gui/light/setup-rules.png"
+  alt="Setup Rules"
+/>
 
 Available game types include `classic`, `melee`, `1v1`, and `custom`.
 

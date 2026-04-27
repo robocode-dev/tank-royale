@@ -6,7 +6,11 @@ This guide covers the dialogs used to configure the GUI, the local server, debug
 
 The GUI provides a built-in server log viewer when running a local server:
 
-![Local Server Log](../images/gui/server-log.png)
+<ThemeImage
+  dark-src="../images/gui/dark/server-log.png"
+  light-src="../images/gui/light/server-log.png"
+  alt="Local Server Log"
+/>
 
 Use it to monitor server activity, debug connection issues, and follow battle events in real time. Log viewing is only
 available for local servers, not remote ones.
@@ -15,7 +19,11 @@ available for local servers, not remote ones.
 
 The **GUI Options** dialog controls language, UI scaling, console limits, and other general GUI preferences:
 
-![GUI Options](../images/gui/gui-options.png)
+<ThemeImage
+  dark-src="../images/gui/dark/gui-options.png"
+  light-src="../images/gui/light/gui-options.png"
+  alt="GUI Options"
+/>
 
 You can use it to:
 
@@ -56,7 +64,11 @@ provide the secret through either:
 - the Bot API
 - the `SERVER_SECRET` environment variable
 
-![Local Server Options](../images/gui/server-options-local.png)
+<ThemeImage
+  dark-src="../images/gui/dark/server-options-local.png"
+  light-src="../images/gui/light/server-options-local.png"
+  alt="Local Server Options"
+/>
 
 #### Local Server Secrets
 
@@ -83,7 +95,11 @@ To connect to a remote server:
 
 Without the correct secrets, neither the GUI nor bots can authenticate and connect to the remote server.
 
-![Remote Server Options](../images/gui/server-options-remote.png)
+<ThemeImage
+  dark-src="../images/gui/dark/server-options-remote.png"
+  light-src="../images/gui/light/server-options-remote.png"
+  alt="Remote Server Options"
+/>
 
 ## Debug Options
 
@@ -102,7 +118,11 @@ The **Sound Options** dialog controls the game audio:
 - individual toggles for each sound effect type
 - a volume control
 
-![Sound Options](../images/gui/sound-options.png)
+<ThemeImage
+  dark-src="../images/gui/dark/sound-options.png"
+  light-src="../images/gui/light/sound-options.png"
+  alt="Sound Options"
+/>
 
 For installing the optional sound files, see [Installing sounds](installing-sounds.md).
 
@@ -117,7 +137,11 @@ The About dialog shows system and support information:
 
 This information is useful when reporting bugs or compatibility issues.
 
-![About box](../images/gui/about-box.png)
+<ThemeImage
+  dark-src="../images/gui/dark/about-box.png"
+  light-src="../images/gui/light/about-box.png"
+  alt="About box"
+/>
 
 [new issue]: https://github.com/robocode-dev/tank-royale/issues/new/choose "Create new issue"
 [contributors]: https://github.com/robocode-dev/tank-royale/graphs/contributors "Contributors"
