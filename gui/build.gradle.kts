@@ -198,6 +198,10 @@ tasks {
         dependsOn(r8ShrinkTask)
     }
 
+    withType<JavaExec>().configureEach {
+        jvmArgs("--enable-native-access=ALL-UNNAMED")
+    }
+
     test {
         useJUnitPlatform()
     }
