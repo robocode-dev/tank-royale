@@ -1,3 +1,13 @@
+## [0.42.1] - 2026-04-24 - GUI bug fix
+
+### 🐞 Bug Fixes
+
+- GUI:
+    - Fixed the Tank Color Mode setting ("Bot Colors (default)") reverting to "Bot Colors
+      (Debug Only)" after restarting the GUI. The Options dialog was re-saving the color mode
+      from the radio button state on OK, which could override the immediately-saved selection
+      if the dialog state had been refreshed in between.
+
 ## [0.42.0] - 2026-04-22 - First release of the TypeScript Bot API
 
 This is the first official release of the TypeScript Bot API, making TypeScript a first-class

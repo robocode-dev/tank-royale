@@ -125,7 +125,7 @@ These flow diagrams are the **single canonical source** for all protocol sequenc
 | `change-tps`, `tps-changed-event` | `battle-lifecycle.md` — Changing TPS |
 | Any bot gameplay event schema | `event-handling.md` |
 
-> AI agents: also see the Schema ↔ Flow Mapping table in `.ai/documentation.md`.
+> AI agents: also see the Schema ↔ Flow Mapping table in `.agents/instructions/documentation.md`.
 
 ---
 
@@ -135,17 +135,6 @@ These flow diagrams are the **single canonical source** for all protocol sequenc
 - **[Schema YAML Definitions](/schema/schemas/)** — Actual message format definitions
 - **[ADRs](../../adr/)** — Design decisions about flow architecture
 - **[C4 Views](../../c4-views/)** — Component interactions
-
----
-
-## Index
-
-| Flow | Status | Purpose |
-|------|--------|---------|
-| [Battle Lifecycle](./battle-lifecycle.md) | ✅ | Battle state progression |
-| [Bot Connection](./bot-connection.md) | ✅ | Bot initialization |
-| [Turn Execution](./turn-execution.md) | ✅ | Per-turn game loop (30 TPS) |
-| [Event Handling](./event-handling.md) | ✅ | Event generation, queuing, dispatch, and output capture |
 
 ---
 

@@ -47,7 +47,7 @@ To regenerate diagrams after modifying C4 DSL:
 bash .github/skills/structurizr/generate.sh 'workspace { ... }'
 
 # Or on Windows:
-.\github\structurizr\generate.ps1 'workspace { ... }'
+.github\skills\structurizr\generate.ps1 'workspace { ... }'
 ```
 
 The script will:

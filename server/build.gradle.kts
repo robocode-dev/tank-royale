@@ -41,8 +41,8 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.slf4j.api)
 
-    testImplementation(testLibs.kotest.junit5)
-    testImplementation(testLibs.kotest.datatest)
+    testImplementation(platform(testLibs.junit.bom))
+    testImplementation(testLibs.kotest.junit6)
     testImplementation(testLibs.mockk)
 }
 

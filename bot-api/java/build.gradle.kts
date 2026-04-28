@@ -25,6 +25,7 @@ dependencies {
     implementation(libs.gson.extras)
     implementation(libs.nv.i18n)
 
+    testImplementation(platform(testLibs.junit.bom))
     testImplementation(testLibs.bundles.junit)
     testImplementation(testLibs.assertj)
     testImplementation(testLibs.system.stubs)

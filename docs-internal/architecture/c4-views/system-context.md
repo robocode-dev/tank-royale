@@ -208,7 +208,7 @@ Tank Royale is designed to be **zero-dependency** in terms of external services:
 - ✅ Runs fully offline (localhost)
 
 This design choice ensures:
-- Easy setup for beginners
+- No cloud account or external service required — all components run on localhost
 - No operational complexity
 - Privacy (no data leaves the local network)
 - Game reliability (no internet required)
@@ -219,16 +219,16 @@ This design choice ensures:
 
 **Ready to dive deeper?**
 - **[👉 Container View](./container.md)** — Explore internal components and their relationships
-- **[👉 Server Component View](./server-component.md)** — Understand server internals
-- **[👉 Bot API Component View](./bot-api-component.md)** — Learn bot API structure
+- **[👉 Server Component View](./server-components.md)** — Understand server internals
+- **[👉 Bot API Component View](./bot-api-components.md)** — Learn bot API structure
 
 ---
 
 ## Related Documentation
 
-- **[ADR-0001: WebSocket Protocol](../adr/0001-websocket-communication-protocol.md)** — Why WebSocket was chosen
-- **[ADR-0002: Cross-Platform Bot APIs](../adr/0002-cross-platform-bot-api-strategy.md)** — Multi-language support strategy
-- **[ADR-0003: Game Loop Architecture](../adr/0003-realtime-game-loop-architecture.md)** — Real-time tick system
+- **[ADR-0009: WebSocket Protocol](../adr/0009-websocket-communication-protocol.md)** — Why WebSocket was chosen
+- **[ADR-0003: Cross-Platform Bot APIs](../adr/0003-cross-platform-bot-api-strategy.md)** — Multi-language support strategy
+- **[ADR-0011: Real-Time Game Loop](../adr/0011-realtime-game-loop-architecture.md)** — Real-time 30 TPS tick system
 - **[Battle Lifecycle Flow](../models/flows/battle-lifecycle.md)** — How battles progress
 - **[Bot Connection Flow](../models/flows/bot-connection.md)** — Bot connection sequence
 

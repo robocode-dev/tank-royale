@@ -626,7 +626,7 @@ gantt
 - **[Message Schema](../message-schema/README.md)** — WebSocket message contracts
 - **[Events](../message-schema/events.md)** — Event message definitions
 - **[Commands](../message-schema/commands.md)** — Controller command definitions
-- **[ADR-0003: Game Loop](../../adr/0003-realtime-game-loop-architecture.md)** — Design rationale
+- **[ADR-0011: Real-Time Game Loop Architecture](../../adr/0011-realtime-game-loop-architecture.md)** — Design rationale
 - **[ADR-0033: Server Debug Mode](../../adr/0033-bot-debug-mode.md)** — Turn-by-turn stepping
 - **[ADR-0034: Breakpoint Mode](../../adr/0034-breakpoint-mode.md)** — Per-bot breakpoint pause
 

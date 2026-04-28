@@ -1,26 +1,24 @@
 [versions]
 
-assertj = "3.27.3"
-junit = "5.14.1" # update junit-platform as well. Cannot update to junit 6 as it requires Java 17
-junit-platform = "1.14.1" # Subversion must match junit version!
+assertj = "3.27.7"
+junit = "6.0.3"
 system-stubs = "2.1.8"
-kotest = "5.9.1"
-kotest-datatest = "5.9.1"
+kotest = "6.1.11"
 mockk = "1.14.9"
 
 [libraries]
 
 # Java testing
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit" }
 system-stubs = { module = "uk.org.webcompere:system-stubs-jupiter", version.ref = "system-stubs" }
 
 # Kotlin testing
-kotest-junit5 = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
-kotest-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest-datatest" }
+kotest-junit6 = { module = "io.kotest:kotest-runner-junit6", version.ref = "kotest" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [bundles]
@@ -28,3 +26,4 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 junit = ["junit-api", "junit-engine", "junit-params", "junit-platform-launcher"]
 
 [plugins]
+# (no plugin aliases defined)

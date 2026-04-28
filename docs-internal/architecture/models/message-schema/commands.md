@@ -18,6 +18,9 @@ graph LR
     Controller -- "stop-game" --> Server
     Controller -- "next-turn" --> Server
     Controller -- "change-tps" --> Server
+    Controller -- "enable-debug-mode" --> Server
+    Controller -- "disable-debug-mode" --> Server
+    Controller -- "bot-policy-update" --> Server
 ```
 
 **Key Characteristics:**
@@ -64,12 +67,29 @@ classDiagram
         +int tps
     }
     
+    class EnableDebugMode {
+        +string type = "enable-debug-mode"
+    }
+    
+    class DisableDebugMode {
+        +string type = "disable-debug-mode"
+    }
+    
+    class BotPolicyUpdate {
+        +string type = "bot-policy-update"
+        +int botId
+        +BotPolicy policy
+    }
+    
     Message <|-- StartGame
     Message <|-- StopGame
     Message <|-- PauseGame
     Message <|-- ResumeGame
     Message <|-- NextTurn
     Message <|-- ChangeTps
+    Message <|-- EnableDebugMode
+    Message <|-- DisableDebugMode
+    Message <|-- BotPolicyUpdate
 ```
 
 ---
@@ -417,6 +437,110 @@ classDiagram
 
 ---
 
+## 7. Enable Debug Mode
+
+**Schema:** [`enable-debug-mode.schema.yaml`](../../../../schema/schemas/enable-debug-mode.schema.yaml)
+
+**Direction:** Controller → Server
+
+**Purpose:** Enable server debug mode, allowing step-through execution and breakpoints (see [ADR-0033](../../adr/0033-bot-debug-mode.md))
+
+### Structure
+
+```mermaid
+classDiagram
+    class EnableDebugMode {
+        +string type
+    }
+```
+
+### Example
+
+```json
+{
+  "type": "enable-debug-mode"
+}
+```
+
+### Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | ✅ | Always `"enable-debug-mode"` |
+
+### Server Response
+
+1. Server enters debug mode
+2. Step-through execution and bot breakpoints become available
+
+---
+
+## 8. Disable Debug Mode
+
+**Schema:** [`disable-debug-mode.schema.yaml`](../../../../schema/schemas/disable-debug-mode.schema.yaml)
+
+**Direction:** Controller → Server
+
+**Purpose:** Disable server debug mode and return to normal real-time execution (see [ADR-0033](../../adr/0033-bot-debug-mode.md))
+
+### Structure
+
+```mermaid
+classDiagram
+    class DisableDebugMode {
+        +string type
+    }
+```
+
+### Example
+
+```json
+{
+  "type": "disable-debug-mode"
+}
+```
+
+### Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | ✅ | Always `"disable-debug-mode"` |
+
+### Server Response
+
+1. Server exits debug mode
+2. Normal real-time turn execution resumes
+
+---
+
+## 9. Bot Policy Update
+
+**Schema:** [`bot-policy-update.schema.yaml`](../../../../schema/schemas/bot-policy-update.schema.yaml)
+
+**Direction:** Controller → Server
+
+**Purpose:** Update the policy for a specific bot — used for breakpoint mode and debug graphics visibility (see [ADR-0034](../../adr/0034-breakpoint-mode.md))
+
+### Example
+
+```json
+{
+  "type": "bot-policy-update",
+  "botId": 3,
+  "policy": { ... }
+}
+```
+
+### Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `type` | string | ✅ | Always `"bot-policy-update"` |
+| `botId` | integer | ✅ | ID of the bot whose policy is being updated |
+| `policy` | object | ✅ | Policy settings (breakpoint enabled, graphics visibility, etc.) |
+
+---
+
 ## Command Flow Examples
 
 ### Starting a Battle
@@ -585,6 +709,9 @@ Server ignores message (no response)
 - [resume-game.schema.yaml](../../../../schema/schemas/resume-game.schema.yaml)
 - [next-turn.schema.yaml](../../../../schema/schemas/next-turn.schema.yaml)
 - [change-tps.schema.yaml](../../../../schema/schemas/change-tps.schema.yaml)
+- [enable-debug-mode.schema.yaml](../../../../schema/schemas/enable-debug-mode.schema.yaml)
+- [disable-debug-mode.schema.yaml](../../../../schema/schemas/disable-debug-mode.schema.yaml)
+- [bot-policy-update.schema.yaml](../../../../schema/schemas/bot-policy-update.schema.yaml)
 - [game-setup.schema.yaml](../../../../schema/schemas/game-setup.schema.yaml)
 - [bot-address.schema.yaml](../../../../schema/schemas/bot-address.schema.yaml)
 
@@ -596,8 +723,10 @@ Server ignores message (no response)
 - [Handshakes](./handshakes.md)
 - [Events](./events.md)
 - [Battle Lifecycle Flow](../flows/battle-lifecycle.md)
+- [ADR-0033: Server Debug Mode](../../adr/0033-bot-debug-mode.md)
+- [ADR-0034: Breakpoint Mode](../../adr/0034-breakpoint-mode.md)
 
 ---
 
-**Last Updated:** 2026-02-12
+**Last Updated:** 2026-04-24
 

@@ -16,7 +16,8 @@ dependencies {
     implementation(libs.java.websocket)
     implementation(libs.kotlinx.serialization.json)
 
-    testImplementation(testLibs.kotest.junit5)
+    testImplementation(platform(testLibs.junit.bom))
+    testImplementation(testLibs.kotest.junit6)
     testImplementation(testLibs.bundles.junit)
     testImplementation(testLibs.assertj)
 }
