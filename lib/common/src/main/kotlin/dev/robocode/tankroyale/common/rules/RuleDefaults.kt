@@ -3,6 +3,9 @@ package dev.robocode.tankroyale.common.rules
 /** Default game type. */
 const val DEFAULT_GAME_TYPE = "classic"
 
+/** Default comma-separated list of game types supported by the server. */
+const val DEFAULT_GAME_TYPES = "classic,1v1,melee,custom"
+
 /** Default arena width. */
 const val DEFAULT_ARENA_WIDTH = 800
 

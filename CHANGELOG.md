@@ -1,4 +1,4 @@
-## [0.42.1] - 2026-04-24 - GUI bug fix
+## [0.42.1] - TBD
 
 ### 🐞 Bug Fixes
 
@@ -7,6 +7,12 @@
       (Debug Only)" after restarting the GUI. The Options dialog was re-saving the color mode
       from the radio button state on OK, which could override the immediately-saved selection
       if the dialog state had been refreshed in between.
+
+- Server:
+    - Fixed `"unsupported gameType: custom"` error when starting a game with the Custom game type
+      preset. The server now accepts all four built-in game types (`classic`, `1v1`, `melee`,
+      `custom`) by default instead of only `classic`. Use the `--games` flag to restrict the
+      server to specific game types when needed (e.g., for competition servers).
 
 ## [0.42.0] - 2026-04-22 - First release of the TypeScript Bot API
 

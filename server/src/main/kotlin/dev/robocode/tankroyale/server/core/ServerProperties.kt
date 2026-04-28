@@ -1,6 +1,6 @@
 package dev.robocode.tankroyale.server.core
 
-import dev.robocode.tankroyale.common.rules.DEFAULT_GAME_TYPE
+import dev.robocode.tankroyale.common.rules.DEFAULT_GAME_TYPES
 import dev.robocode.tankroyale.common.rules.DEFAULT_TURNS_PER_SECOND
 import dev.robocode.tankroyale.common.util.UserDataDirectory
 import java.io.File
@@ -46,7 +46,7 @@ object ServerProperties {
         get() = props.getProperty("port", "7654").toInt()
 
     val gameTypes: Set<String>
-        get() = props.getProperty("games", DEFAULT_GAME_TYPE)
+        get() = props.getProperty("games", DEFAULT_GAME_TYPES)
             .split(",")
             .map { it.trim() }
             .filter { it.isNotBlank() }

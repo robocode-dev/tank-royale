@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.server.connection.GameServerConnectionListener
 import com.google.gson.Gson
 import dev.robocode.tankroyale.server.cli.SERVER_BANNER_LINES
 import dev.robocode.tankroyale.server.cli.convertPicocliMarkupToAnsi
-import dev.robocode.tankroyale.common.rules.DEFAULT_GAME_TYPE
+import dev.robocode.tankroyale.common.rules.DEFAULT_GAME_TYPES
 import dev.robocode.tankroyale.common.rules.DEFAULT_TURNS_PER_SECOND
 import org.slf4j.LoggerFactory
 import java.nio.channels.ServerSocketChannel
@@ -37,7 +37,7 @@ class Server : Runnable {
             get() = if (useInheritedChannel) getInheritedPort() else port.toIntOrNull() ?: DEFAULT_PORT
 
         /** Comma-separated list of game types the server will accept. */
-        var gameTypes: String = DEFAULT_GAME_TYPE
+        var gameTypes: String = DEFAULT_GAME_TYPES
 
         /** Secret tokens required for controller connections; null means any controller may connect. */
         var controllerSecrets: String? = null
