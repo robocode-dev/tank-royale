@@ -8,7 +8,7 @@ import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.int
 import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.server.core.Server
-import dev.robocode.tankroyale.common.rules.DEFAULT_GAME_TYPE
+import dev.robocode.tankroyale.common.rules.DEFAULT_GAME_TYPES
 import dev.robocode.tankroyale.common.rules.DEFAULT_TURNS_PER_SECOND
 
 internal class ServerCli : CliktCommand() {
@@ -21,7 +21,7 @@ internal class ServerCli : CliktCommand() {
     private val games by option(
         "-g",
         "--games",
-        help = "Comma-separated list of game types (default: $DEFAULT_GAME_TYPE)"
+        help = "Comma-separated list of game types (default: $DEFAULT_GAME_TYPES)"
     )
     private val controllerSecrets by option(
         "-c",
@@ -58,7 +58,7 @@ internal class ServerCli : CliktCommand() {
 
     override fun run() {
         Server.port = portOpt ?: Server.DEFAULT_PORT.toString()
-        Server.gameTypes = games ?: DEFAULT_GAME_TYPE
+        Server.gameTypes = games ?: DEFAULT_GAME_TYPES
         Server.controllerSecrets = controllerSecrets
         Server.botSecrets = botSecrets
         Server.initialPositionEnabled = enableInitialPosition
