@@ -31,7 +31,7 @@ class ToggleSwitch(initiallyOn: Boolean) : JComponent() {
     private val eventHandlers: MutableList<SwitchEvent> = mutableListOf()
 
     init {
-        preferredSize = Dimension(32, 16)
+        preferredSize = Dimension(28, 16)
         foreground = Color.WHITE
         cursor = Cursor(Cursor.HAND_CURSOR)
 
