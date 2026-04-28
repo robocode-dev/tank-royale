@@ -101,4 +101,4 @@ When making a new architectural decision:
 - [Message Schema](../models/message-schema/README.md) — WebSocket message contracts
 - [Business Flows](../models/flows/README.md) — Process documentation
 - [OpenSpec Specs](/openspec/specs/) — Requirements and scenarios (references ADRs for design rationale)
-- [AI Architecture Guide](/.ai/architecture.md) — AI agent routing to architecture docs
+- [AI Architecture Guide](/.agents/instructions/architecture.md) — AI agent routing to architecture docs

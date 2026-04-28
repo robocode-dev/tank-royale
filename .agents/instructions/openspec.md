@@ -33,7 +33,7 @@ Load when task involves: planning, proposals, new capabilities, breaking changes
 
 1. **User mentions planning/proposal keywords**
 2. **Load relevant instructions**
-   - Open `/openspec/AGENTS.md` (if exists) or follow `.ai/openspec.md`.
+   - Open `/openspec/AGENTS.md` (if exists) or follow `.agents/instructions/openspec.md`.
 3. **Follow OpenSpec process for formal proposals**
 4. **STOP after creating the proposal — wait for explicit human approval before implementing**
 5. **Apply changes only after the user has reviewed and approved the proposal**

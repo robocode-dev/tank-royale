@@ -125,7 +125,7 @@ These flow diagrams are the **single canonical source** for all protocol sequenc
 | `change-tps`, `tps-changed-event` | `battle-lifecycle.md` — Changing TPS |
 | Any bot gameplay event schema | `event-handling.md` |
 
-> AI agents: also see the Schema ↔ Flow Mapping table in `.ai/documentation.md`.
+> AI agents: also see the Schema ↔ Flow Mapping table in `.agents/instructions/documentation.md`.
 
 ---
 

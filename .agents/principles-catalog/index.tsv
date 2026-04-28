@@ -352,11 +352,6 @@ PKG-CRP|2|Never bundle classes into a component unless all consumers of the comp
 PKG-REP|2|Group into a component only classes cohesive enough to be released, versioned, and maintained together.
 PKG-SAP|2|Stable components must consist primarily of abstract types so they remain extensible without modification.
 PKG-SDP|2|Depend only on components more stable than yourself; keep volatile components at the system's edges.
-PTAC-COMPOSABLE-FILES|1|Keep files small, focused, and composable rather than large and monolithic.
-PTAC-LEAN-CONTENT|1|Keep plain-text content DRY and front-loaded; every line must earn its place.
-PTAC-NAVIGABLE-DIRS|2|Every plain-text directory must contain an INDEX.md listing its contents and a README.md describing its purpose.
-PTAC-NO-GENERATED-BLOBS|2|Commit source and generation instructions, not generated or binary output blobs.
-PTAC-PLAIN-TEXT-FIRST|1|Prefer plain text formats over binary; keep every artifact diffable and human-readable.
 SCHEMA-ENUM-EVOLUTION|1|Every enum must include an UNSPECIFIED sentinel and all consumers must handle unknown values without crashing.
 SCHEMA-FIELD-OPTIONALITY|1|Every new schema field must be optional with a sensible default; never add required fields to published schemas.
 SCHEMA-NO-POLYMORPHIC-BLOBS|1|Never use untyped blobs or Any fields; define an explicit, validated schema for every structured payload.

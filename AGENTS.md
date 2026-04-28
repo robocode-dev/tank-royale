@@ -2,26 +2,26 @@
 
 > ⚠️ **AI Agent:** You are reading this file as part of the startup sequence. Confirm to the user with `✓ Read AGENTS.md.` before proceeding with any task.
 
-Routing hub — load `.ai/*.md` files based on the task type below.
+Routing hub — load `.agents/instructions/*.md` files based on the task type below.
 
 ## Quick Routing
 
 | Task Type | Load These |
 |-----------|-----------|
-| **Planning, proposals, specs** | `.ai/openspec.md` ⚠️ **STOP after proposal — wait for human approval before implementing** |
-| **Audit, Scout, Prime** | `.ai/commands.md` |
-| **Architecture decisions, ADRs** | `.ai/architecture.md` |
-| **Debugging, bug hunting, timing issues** | `.ai/debugging.md` + `docs-internal/DEBUGGING-GUIDE.md` |
-| **Bot API (Java/Python/.NET)** | `.ai/cross-platform.md` + `.ai/core-principles.md` |
+| **Planning, proposals, specs** | `.agents/instructions/openspec.md` ⚠️ **STOP after proposal — wait for human approval before implementing** |
+| **Audit, Scout, Prime** | `.agents/instructions/commands.md` |
+| **Architecture decisions, ADRs** | `.agents/instructions/architecture.md` |
+| **Debugging, bug hunting, timing issues** | `.agents/instructions/debugging.md` + `docs-internal/DEBUGGING-GUIDE.md` |
+| **Bot API (Java/Python/.NET)** | `.agents/instructions/cross-platform.md` + `.agents/instructions/core-principles.md` |
 | **Protocol, WebSocket, server comms** | `docs-internal/architecture/models/flows/README.md` (sequence diagrams) + `docs-internal/architecture/models/message-schema/README.md` (message schemas) |
-| **Testing, builds, Gradle** | `.ai/testing-and-build.md` |
-| **Documentation, README, Javadoc** | `.ai/documentation.md` |
-| **Changelog, release notes** | `.ai/changelog.md` |
-| **Code style, naming, conventions** | `.ai/coding-conventions.md` |
-| **File encoding, UTF-8, standards** | `.ai/standards.md` |
-| **General coding task** | `.ai/core-principles.md` (default) |
+| **Testing, builds, Gradle** | `.agents/instructions/testing-and-build.md` |
+| **Documentation, README, Javadoc** | `.agents/instructions/documentation.md` |
+| **Changelog, release notes** | `.agents/instructions/changelog.md` |
+| **Code style, naming, conventions** | `.agents/instructions/coding-conventions.md` |
+| **File encoding, UTF-8, standards** | `.agents/instructions/standards.md` |
+| **General coding task** | `.agents/instructions/core-principles.md` (default) |
 
-**Full navigation & maintenance:** `.ai/README.md` · `.ai/MAINTENANCE.md`
+**Full navigation & maintenance:** `.agents/instructions/README.md` · `.agents/instructions/MAINTENANCE.md`
 
 ---
 

@@ -155,7 +155,7 @@ Business Flows:           4
 | `/docs` | Public user docs | Domain models explain public APIs |
 | `/docs-internal/architecture` | **Architecture (this)** | Source of truth for system design |
 | `/openspec` | Spec-driven development | References architecture for design rationale (DRY) |
-| `/.ai` | AI guidelines | Routes to architecture docs via `.ai/architecture.md` |
+| `/.agents/instructions` | AI guidelines | Routes to architecture docs via `.agents/instructions/architecture.md` |
 | `/schema` | WebSocket schemas | Referenced by ADRs and domain models |
 
 ---
