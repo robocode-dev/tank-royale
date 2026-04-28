@@ -2,18 +2,19 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 TARGET_DIR="${1:-C:/Code/bots}"
 
 # Detect platform for Gradle wrapper
 if [[ "${OSTYPE:-}" == msys* ]] || [[ "${OSTYPE:-}" == cygwin* ]] || [[ -n "${WINDIR:-}" ]]; then
-    GRADLEW="$SCRIPT_DIR/gradlew.bat"
+    GRADLEW="$REPO_ROOT/gradlew.bat"
 else
-    GRADLEW="$SCRIPT_DIR/gradlew"
+    GRADLEW="$REPO_ROOT/gradlew"
 fi
 
 # Pre-flight checks
-if [[ ! -d "$SCRIPT_DIR/sample-bots" ]]; then
-    echo "❌ ERROR: sample-bots/ directory not found. Run from the Tank Royale repository root."
+if [[ ! -d "$REPO_ROOT/sample-bots" ]]; then
+    echo "❌ ERROR: sample-bots/ directory not found at $REPO_ROOT"
     exit 1
 fi
 if [[ ! -f "$GRADLEW" ]]; then
@@ -27,7 +28,7 @@ echo ""
 
 # Build all sample-bot zips
 echo "🔨 Building sample bots..."
-cd "$SCRIPT_DIR"
+cd "$REPO_ROOT"
 "$GRADLEW" sample-bots:clean sample-bots:zip
 echo ""
 
@@ -38,7 +39,7 @@ deploy_lang() {
     local TARGET_LANG_DIR="$TARGET_DIR/$LANG_DST"
 
     local ZIP_FILE
-    ZIP_FILE=$(ls "$SCRIPT_DIR/sample-bots/$LANG_SRC/build/sample-bots-$LANG_SRC-"*.zip 2>/dev/null | head -1)
+    ZIP_FILE=$(ls "$REPO_ROOT/sample-bots/$LANG_SRC/build/sample-bots-$LANG_SRC-"*.zip 2>/dev/null | head -1)
 
     if [[ -z "$ZIP_FILE" ]]; then
         echo "❌ ERROR: No zip file found at sample-bots/$LANG_SRC/build/sample-bots-$LANG_SRC-*.zip"
