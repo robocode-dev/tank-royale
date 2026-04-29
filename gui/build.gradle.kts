@@ -199,7 +199,9 @@ tasks {
     }
 
     withType<JavaExec>().configureEach {
-        jvmArgs("--enable-native-access=ALL-UNNAMED")
+        if (name != "r8ShrinkTask") {
+            jvmArgs("--enable-native-access=ALL-UNNAMED")
+        }
     }
 
     test {

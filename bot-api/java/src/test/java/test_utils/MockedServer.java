@@ -619,8 +619,8 @@ public final class MockedServer {
 
         @Override
         public void onOpen(WebSocket conn, ClientHandshake handshake) {
-            openedLatch.countDown();
             sendServerHandshake(conn);
+            openedLatch.countDown();
         }
 
         @Override
@@ -657,7 +657,8 @@ public final class MockedServer {
         public void onError(WebSocket conn, Exception ex) {
             System.out.println("[DBG-SERVER] onError: " + ex);
             ex.printStackTrace(System.out);
-            throw new IllegalStateException("MockedServer error", ex);
+            // Do NOT throw here — throwing from onError crashes the WebSocket server thread,
+            // which causes server.stop() to hang indefinitely and triggers @Timeout failures.
         }
 
         private void sendServerHandshake(WebSocket conn) {
