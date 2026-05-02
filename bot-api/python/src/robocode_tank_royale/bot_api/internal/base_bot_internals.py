@@ -374,11 +374,10 @@ class BaseBotInternals:
         with self._next_turn_condition:
             while self.is_running() and self.current_tick_or_null is None:
                 self._next_turn_condition.wait()
-        # Dispatch tick 1 events before run() starts, so the first run() iteration reads state
-        # that already has events fired — matching Classic Robocode semantics.
-        first_tick = self.current_tick_or_null
-        if first_tick is not None:
-            self.dispatch_events(first_tick.turn_number)
+        # NOTE: Do NOT dispatch events here. Events are dispatched in go() → dispatch_events()
+        # which is called from the first blocking bot method (forward, turn_left, etc.) in run().
+        # Pre-dispatching causes event handlers that call go() to send intents before run() has
+        # set up state (colors, movement), and corrupts last_execute_turn_number for turn 1.
 
     def _create_runnable(self, bot: BotABC):
         """Create runnable function for bot thread (matches Java's createRunnable)"""

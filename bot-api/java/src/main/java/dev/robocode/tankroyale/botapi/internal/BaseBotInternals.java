@@ -421,12 +421,10 @@ public final class BaseBotInternals {
                 }
             }
         }
-        // Dispatch tick 1 events before run() starts, so the first run() iteration reads state
-        // that already has events fired — matching Classic Robocode semantics.
-        var firstTick = getCurrentTickOrNull();
-        if (firstTick != null) {
-            dispatchEvents(firstTick.getTurnNumber());
-        }
+        // NOTE: Do NOT dispatch events here. Events are dispatched in go() → dispatchEvents()
+        // which is called from the first blocking bot method (forward, turnLeft, etc.) in run().
+        // Pre-dispatching causes event handlers that call go() to send intents before run() has
+        // set up state (colors, movement), and corrupts lastExecuteTurnNumber for turn 1.
     }
 
     private void stopRogueThread() {

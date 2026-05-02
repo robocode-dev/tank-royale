@@ -26,6 +26,8 @@
 - Bot API (Java, Python, TypeScript):
     - Fixed stale debug graphics being resent after debugging was disabled, which could make old
       debug painting reappear on later turns or restarts.
+    - Fixed turn-1 event handlers running before `run()` had initialized bot state, which could
+      corrupt movement or colors set at the start of a round.
 
 - Sample Bots (Java, .NET, Python, TypeScript):
     - Fixed `PaintingBot` drawing ghost circles at the previous round's last-known target position
