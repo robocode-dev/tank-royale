@@ -21,6 +21,10 @@
       `custom`) by default instead of only `classic`. Use the `--games` flag to restrict the
       server to specific game types when needed (e.g., for competition servers).
 
+- Runner:
+    - Fixed `BattleRunner` ignoring `BattleSetup.defaultTurnsPerSecond` and always starting
+      battles at max speed instead.
+
 - Bot API (.NET):
     - Fixed C# bots sometimes losing turn-1 movement, colors, and debug painting when a battle
       was restarted from the GUI, which could show up on every second restart.

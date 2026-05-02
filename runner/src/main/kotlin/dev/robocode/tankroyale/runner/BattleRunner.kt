@@ -513,7 +513,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
             isTurnTimeoutLocked = false,
             readyTimeout = setup.readyTimeoutMicros,
             isReadyTimeoutLocked = false,
-            defaultTurnsPerSecond = -1, // max-speed (Decision 7)
+            defaultTurnsPerSecond = setup.defaultTurnsPerSecond,
         )
 
         /**
