@@ -1,6 +1,7 @@
 package dev.robocode.tankroyale.gui.ui.console
 
 import dev.robocode.tankroyale.client.model.BotPolicyUpdate
+import dev.robocode.tankroyale.client.model.GameStartedEvent
 import dev.robocode.tankroyale.client.model.Participant
 import dev.robocode.tankroyale.client.model.TickEvent
 import dev.robocode.tankroyale.gui.client.Client
@@ -13,6 +14,7 @@ import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.Font
+import java.util.concurrent.ConcurrentHashMap
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTable
@@ -20,7 +22,7 @@ import javax.swing.plaf.FontUIResource
 import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
 
-class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
+class BotPropertiesPanel(var bot: Participant) : ConsolePanel() {
     private val debugGraphicsToggleSwitch = createDebugGraphicsToggleSwitch()
     private val breakpointToggleSwitch = createBreakpointToggleSwitch()
     private val debuggerAttachedLabel = createDebuggerAttachedLabel()
@@ -33,21 +35,23 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
             add(okButton)
             add(spacer)
             addLabel("toggle_graphical_debugging")
-            add(createDebugGraphicsToggleSwitch())
+            add(debugGraphicsToggleSwitch)
             addLabel("breakpoint_mode")
-            add(createBreakpointToggleSwitch())
-            add(createDebuggerAttachedLabel())
+            add(breakpointToggleSwitch)
+            add(debuggerAttachedLabel)
         }
 
-    private fun createDebugGraphicsToggleSwitch() = ToggleSwitch(false).apply {
+    private fun createDebugGraphicsToggleSwitch() = ToggleSwitch(debugPrefs[bot.sessionId] ?: false).apply {
         addSwitchHandler { isSelected ->
+            debugPrefs[bot.sessionId] = isSelected
             ClientEvents.onBotPolicyChanged(BotPolicyUpdate(bot.id, debuggingEnabled = isSelected))
         }
     }
 
-    private fun createBreakpointToggleSwitch() = ToggleSwitch(false).apply {
+    private fun createBreakpointToggleSwitch() = ToggleSwitch(breakpointPrefs[bot.sessionId] ?: false).apply {
         isEnabled = Client.serverFeatures?.breakpointMode == true
         addSwitchHandler { isSelected ->
+            breakpointPrefs[bot.sessionId] = isSelected
             ClientEvents.onBotPolicyChanged(BotPolicyUpdate(bot.id, breakpointEnabled = isSelected))
         }
     }
@@ -108,6 +112,8 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
     init {
         setupTable()
         subscribeToEvents()
+        // Re-apply stored preferences for a running game (handles console being closed and reopened)
+        restorePreferences()
 
         Client.currentTick?.let {
             updateBotState(it)
@@ -157,8 +163,8 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
         ClientEvents.onTickEvent.on(this) { tickEvent ->
             updateBotState(tickEvent)
         }
-        ClientEvents.onGameStarted.on(this) {
-            subscribeToEvents()
+        ClientEvents.onGameStarted.on(this) { event ->
+            onNewGameStarted(event)
         }
         ClientEvents.onGameEnded.on(this) {
             unsubscribeEvents()
@@ -168,14 +174,40 @@ class BotPropertiesPanel(val bot: Participant) : ConsolePanel() {
         }
     }
 
+    private fun onNewGameStarted(event: GameStartedEvent) {
+        // Update bot reference: same connection (stable sessionId) but ID may have been reassigned
+        event.participants.firstOrNull { it.sessionId == bot.sessionId }?.let { bot = it }
+        // Re-subscribe for the new game (replaces existing subscriptions)
+        subscribeToEvents()
+        // Re-apply stored preferences — server resets all policies on game restart
+        restorePreferences()
+    }
+
+    /** Sends the stored policy preferences to the server for this bot. */
+    private fun restorePreferences() {
+        if (debugPrefs[bot.sessionId] == true) {
+            ClientEvents.onBotPolicyChanged(BotPolicyUpdate(bot.id, debuggingEnabled = true))
+        }
+        if (breakpointPrefs[bot.sessionId] == true) {
+            ClientEvents.onBotPolicyChanged(BotPolicyUpdate(bot.id, breakpointEnabled = true))
+        }
+    }
+
+    companion object {
+        // Persistent per-bot policy preferences, keyed by sessionId (stable WebSocket UUID).
+        // Survive frame recreation and console close/reopen.
+        private val debugPrefs = ConcurrentHashMap<String, Boolean>()
+        private val breakpointPrefs = ConcurrentHashMap<String, Boolean>()
+    }
+
     private fun unsubscribeEvents() {
         ClientEvents.onTickEvent.off(this)
     }
 
     private fun updateBotState(tickEvent: TickEvent) {
-        val botState = tickEvent.botStates.firstOrNull { it.id == bot.id } ?: return
+        val botState = tickEvent.botStates.firstOrNull { it.sessionId == bot.sessionId } ?: return
 
-        debugGraphicsToggleSwitch.isOn = botState.isDebuggingEnabled
+        debugGraphicsToggleSwitch.setIsOnSilent(botState.isDebuggingEnabled)
 
         model.apply {
             // Column 1

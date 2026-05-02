@@ -7,6 +7,11 @@
       (Debug Only)" after restarting the GUI. The Options dialog was re-saving the color mode
       from the radio button state on OK, which could override the immediately-saved selection
       if the dialog state had been refreshed in between.
+    - Fixed graphical debugging toggle and breakpoint mode toggle resetting to off when a
+      battle is restarted. Both toggles now retain their state and re-apply the policy to the
+      new game automatically. Toggle preferences are stored in persistent in-memory maps keyed
+      by the bot's stable WebSocket session ID, so they survive frame recreation, console
+      close/reopen, and bot ID reassignment across restarts.
 
 - Server:
     - Fixed `"unsupported gameType: custom"` error when starting a game with the Custom game type

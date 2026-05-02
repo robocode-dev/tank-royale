@@ -17,6 +17,8 @@ class ToggleSwitch(initiallyOn: Boolean) : JComponent() {
     private var knobLocation: Float = 2f
     private val animationTimer = createAnimationTimer()
 
+    private var suppressEvents = false
+
     var isOn = initiallyOn
         set(value) {
             if (field == value) {
@@ -24,8 +26,21 @@ class ToggleSwitch(initiallyOn: Boolean) : JComponent() {
             }
             field = value
             animationTimer.start()
-            fireSwitchEvent()
+            if (!suppressEvents) fireSwitchEvent()
         }
+
+    /**
+     * Updates the toggle state without firing switch event handlers.
+     * Use this when reflecting server-side state to avoid feedback loops.
+     */
+    fun setIsOnSilent(value: Boolean) {
+        suppressEvents = true
+        try {
+            isOn = value
+        } finally {
+            suppressEvents = false
+        }
+    }
 
     private val eventHandlers: MutableList<SwitchEvent> = mutableListOf()
 

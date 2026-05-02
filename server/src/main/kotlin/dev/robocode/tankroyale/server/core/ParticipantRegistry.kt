@@ -98,9 +98,12 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
     }
 
     fun prepareParticipantIds() {
-        _participants.forEachIndexed { index, conn ->
-            _participantIds[conn] = BotId(index + 1)
-        }
+        val handshakes = connectionHandler.getBotHandshakes()
+        _participants
+            .sortedBy { conn -> handshakes[conn]?.sessionId ?: "" }
+            .forEachIndexed { index, conn ->
+                _participantIds[conn] = BotId(index + 1)
+            }
     }
 
     private fun createParticipantMap(): Map<BotId, Participant> {

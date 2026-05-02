@@ -52,13 +52,15 @@ object SidePanel : JPanel() {
     }
 
     private fun onBotButtonAction(bot: Participant) {
-        var console = consoleMap[bot.displayName]
+        // Key by sessionId (stable WebSocket UUID) rather than displayName (which includes bot ID
+        // that may change between restarts), so the console frame — and its toggle states — survive.
+        var console = consoleMap[bot.sessionId]
         if (console == null) {
             console = BotConsoleFrame(bot, consoleMap.size)
-            consoleMap[bot.displayName] = console
+            consoleMap[bot.sessionId] = console
 
             console.onClosing {
-                consoleMap.remove(bot.displayName)
+                consoleMap.remove(bot.sessionId)
             }
         }
         console.isVisible = true
