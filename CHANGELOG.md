@@ -19,6 +19,12 @@
       `custom`) by default instead of only `classic`. Use the `--games` flag to restrict the
       server to specific game types when needed (e.g., for competition servers).
 
+- Sample Bots (Java, .NET, Python, TypeScript):
+    - Fixed `PaintingBot` drawing ghost circles at the previous round's last-known target position
+      at the start of each new round. The scanned-bot state was not reset between rounds, causing
+      `onTick` to draw a stale circle until a new scan occurred. Fixed by resetting `scannedTime`
+      to 0 at the start of `run()`.
+
 ## [0.42.0] - 2026-04-22 - First release of the TypeScript Bot API
 
 This is the first official release of the TypeScript Bot API, making TypeScript a first-class
