@@ -172,6 +172,7 @@ class GameServer(
         log.info("Starting game")
         participantRegistry.clearReadyParticipants()
         participantRegistry.populateParticipantMap()
+        participantRegistry.restorePersistedPolicies()
 
         autoEnableBreakpointModeForDebugBots()
 
@@ -179,6 +180,7 @@ class GameServer(
 
         sendGameStartedToObservers()
         prepareModelUpdater()
+        transferDebugGraphicsFlagToModel()
 
         lifecycleManager.createTurnTimeoutTimer { onNextTurn() }
         resetTurnTimeout()
@@ -509,10 +511,14 @@ class GameServer(
      * @param conn the WebSocket connection of the bot that left.
      */
     internal fun handleBotLeft(conn: WebSocket) {
+        val sessionId = connectionHandler.getBotHandshakes()[conn]?.sessionId
+
         val shouldAbortGame = synchronized(participantRegistry.participantsLock) {
             val wasRemoved = participantRegistry.removeParticipant(conn)
             wasRemoved && participantRegistry.participants.isEmpty() && lifecycleManager.isGameRunningOrPaused()
         }
+
+        sessionId?.let { participantRegistry.clearPersistedPoliciesForSession(it) }
 
         if (shouldAbortGame) {
             handleAbortGame()
