@@ -50,6 +50,7 @@ sealed class BaseBotInternals
     private readonly EventQueue _eventQueue;
 
     private readonly object _nextTurnMonitor = new();
+    private readonly object _threadControlMonitor = new();
 
     private Thread _thread;
 
@@ -172,13 +173,17 @@ sealed class BaseBotInternals
 
     internal void StartThread(IBot bot)
     {
-        EnableEventHandling(true); // reset on WebSocket thread — before new bot thread starts
-        _thread = new Thread(() => CreateRunnable(bot));
-        _thread.Start();
+        lock (_threadControlMonitor)
+        {
+            EnableEventHandling(true); // reset on WebSocket thread — before new bot thread starts
+            _thread = new Thread(() => CreateRunnable(bot));
+            _thread.Start();
+        }
     }
 
     private void CreateRunnable(IBot bot)
     {
+        var botThread = Thread.CurrentThread;
         IsRunning = true;
         try
         {
@@ -187,6 +192,8 @@ sealed class BaseBotInternals
             // that BotInternals.OnFirstTurn() (priority 110) has already called
             // ClearRemaining(), capturing the initial directions from the tick state.
             WaitUntilFirstTickArrived();
+            if (botThread != _thread)
+                return;
             bot.Run();
         }
         catch (ThreadInterruptedException)
@@ -197,10 +204,13 @@ sealed class BaseBotInternals
             Console.Error.WriteLine(e);
         }
 
+        if (botThread != _thread)
+            return;
+
         DispatchFinalTurnEvents();
 
         // Skip every turn after the run method has exited
-        while (IsRunning)
+        while (IsRunning && botThread == _thread)
         {
             try
             {
@@ -212,11 +222,15 @@ sealed class BaseBotInternals
             }
         }
 
-        DispatchFinalTurnEvents();
+        if (botThread == _thread)
+            DispatchFinalTurnEvents();
     }
 
     private void DispatchFinalTurnEvents()
     {
+        if (Thread.CurrentThread != _thread)
+            return;
+
         var tick = CurrentTickOrNull;
         if (tick != null)
             DispatchEvents(tick.TurnNumber);
@@ -226,16 +240,29 @@ sealed class BaseBotInternals
 
     internal void StopThread()
     {
-        if (!IsRunning)
-            return;
-
-        IsRunning = false;
-        EnableEventHandling(false); // disable on WebSocket thread — prevents new ticks from queuing after bot stops
-
-        if (_thread != null)
+        Thread currentThread;
+        lock (_threadControlMonitor)
         {
-            _thread.Interrupt();
-            _thread = null;
+            if (!IsRunning && _thread == null)
+                return;
+
+            IsRunning = false;
+            EnableEventHandling(false); // disable on WebSocket thread — prevents new ticks from queuing after bot stops
+
+            currentThread = _thread;
+            if (currentThread != null)
+            {
+                _thread = null; // invalidate ownership immediately so the old thread cannot send another intent
+                currentThread.Interrupt();
+            }
+        }
+
+        if (currentThread != null && currentThread != Thread.CurrentThread)
+        {
+            // Wait for the old bot thread to exit before a new round starts. Without this, a stale
+            // thread can survive a connected restart long enough to send one last turn-1 intent into
+            // the next game before the replacement thread takes over.
+            currentThread.Join(1000);
         }
     }
 
@@ -368,13 +395,16 @@ sealed class BaseBotInternals
 
     private void SendIntent()
     {
-        RenderGraphicsToBotIntent();
-        TransferStdOutToBotIntent();
-        _socket.SendTextMessage(JsonConverter.ToJson(BotIntent));
-        // Clear rescan after serialization — consumed by this intent
-        if (BotIntent.Rescan == true)
-            BotIntent.Rescan = false;
-        BotIntent.TeamMessages.Clear();
+        lock (_threadControlMonitor)
+        {
+            RenderGraphicsToBotIntent();
+            TransferStdOutToBotIntent();
+            _socket.SendTextMessage(JsonConverter.ToJson(BotIntent));
+            // Clear rescan after serialization — consumed by this intent
+            if (BotIntent.Rescan == true)
+                BotIntent.Rescan = false;
+            BotIntent.TeamMessages.Clear();
+        }
     }
 
     internal void TransferStdOutToBotIntent()
@@ -398,8 +428,12 @@ sealed class BaseBotInternals
         if (currentTick != null && currentTick.BotState.IsDebuggingEnabled)
         {
             BotIntent.DebugGraphics = _graphicsState.GetSvgOutput();
-            _graphicsState.Clear();
         }
+        else
+        {
+            BotIntent.DebugGraphics = null; // clear stale SVG so it is not re-sent when debugging is off
+        }
+        _graphicsState.Clear();
     }
 
     private void WaitForNextTurn(int turnNumber)
@@ -443,13 +477,10 @@ sealed class BaseBotInternals
                 Monitor.Wait(_nextTurnMonitor);
             }
         }
-        // Dispatch tick 1 events before Run() starts, so the first Run() iteration reads state
-        // that already has events fired — matching Classic Robocode semantics.
-        var firstTick = CurrentTickOrNull;
-        if (firstTick != null)
-        {
-            DispatchEvents(firstTick.TurnNumber);
-        }
+        // NOTE: Do NOT dispatch events here. Events are dispatched in Go() → DispatchEvents()
+        // which is called from the first blocking bot method (Forward, TurnLeft, etc.) in Run().
+        // Pre-dispatching causes event handlers that call Go() to send intents before Run() has
+        // set up state (colors, movement), and corrupts _lastExecuteTurnNumber for turn 1.
     }
 
     internal void DispatchEvents(int turnNumber)
@@ -917,6 +948,14 @@ sealed class BaseBotInternals
     {
         var gameStartedEventForBot = JsonConverter.FromJson<S.GameStartedEventForBot>(json);
         VerifyNotNull(gameStartedEventForBot, typeof(S.GameStartedEventForBot));
+
+        StopThread();
+        _tickEvent = null;
+        _eventQueue.Clear();
+        IsStopped = false;
+        _eventHandlingDisabledTurn = 0;
+        _lastExecuteTurnNumber = -1;
+        _movementResetPending = true;
 
         MyId = gameStartedEventForBot.MyId;
         _teammateIds = gameStartedEventForBot.TeammateIds;

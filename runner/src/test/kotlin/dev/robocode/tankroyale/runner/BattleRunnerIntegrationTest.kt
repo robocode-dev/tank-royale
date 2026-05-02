@@ -924,6 +924,143 @@ class BattleRunnerIntegrationTest {
                 .isEqualToIgnoringCase("#ff0000")
         }
     }
+
+    @Test
+    @Timeout(180)
+    fun `CSharp repeated connected restarts preserve turn 1 run state and debug graphics`() {
+        BattleRunner.create {
+            embeddedServer()
+            enableIntentDiagnostics()
+        }.use { runner ->
+            val botEntries = listOf(
+                BotEntry.of(csharpBotDir("PaintingBot")),
+                BotEntry.of(csharpBotDir("Target"))
+            )
+            val setup = BattleSetup.oneVsOne {
+                numberOfRounds = 50
+                defaultTurnsPerSecond = 5
+            }
+
+            val handle = runner.startBattleAsync(setup, botEntries)
+            val conn = runner.connection!!
+            val store = runner.intentDiagnostics!!
+            val botAddresses = conn.latestBotList.get().map { it.botAddress }.toSet()
+
+            val game1TickLatch = CountDownLatch(1)
+            val policyActiveLatch = CountDownLatch(1)
+            val paintingBotId = AtomicReference<Int?>()
+            val primeOwner = Any()
+            conn.onTickEvent.on(primeOwner) { tick ->
+                if (paintingBotId.get() == null) {
+                    tick.botStates.firstOrNull { it.name == "Painting Bot" }?.id?.let { id ->
+                        paintingBotId.set(id)
+                        game1TickLatch.countDown()
+                    }
+                }
+                val id = paintingBotId.get()
+                if (id != null && tick.botStates.firstOrNull { it.id == id }?.isDebuggingEnabled == true) {
+                    policyActiveLatch.countDown()
+                }
+            }
+            assertThat(game1TickLatch.await(30, TimeUnit.SECONDS))
+                .describedAs("Game 1 must produce a PaintingBot tick so the debug policy can be enabled")
+                .isTrue()
+            handle.setBotPolicy(paintingBotId.get()!!, debuggingEnabled = true)
+            assertThat(policyActiveLatch.await(30, TimeUnit.SECONDS))
+                .describedAs("Game 1 must observe debug graphics enabled before restarting")
+                .isTrue()
+            conn.onTickEvent.off(primeOwner)
+
+            val initialStopLatch = CountDownLatch(1)
+            val initialStopOwner = Any()
+            conn.onGameAborted.once(initialStopOwner) { initialStopLatch.countDown() }
+            conn.onGameEnded.once(initialStopOwner) { initialStopLatch.countDown() }
+            handle.stop()
+            assertThat(initialStopLatch.await(30, TimeUnit.SECONDS))
+                .describedAs("Initial game must stop before repeated restarts begin")
+                .isTrue()
+
+            for (cycle in 2..6) {
+                store.clear()
+
+                val startedLatch = CountDownLatch(1)
+                val firstTickLatch = CountDownLatch(1)
+                val stopLatch = CountDownLatch(1)
+                val cyclePaintingBotId = AtomicReference<Int?>()
+                val debugOnTurn1 = AtomicBoolean(false)
+
+                val startOwner = Any()
+                conn.onGameStarted.on(startOwner) { event ->
+                    cyclePaintingBotId.set(event.participants.firstOrNull { it.name == "Painting Bot" }?.id)
+                    handle.setBotPolicy(cyclePaintingBotId.get()!!, debuggingEnabled = true)
+                    startedLatch.countDown()
+                }
+
+                val tickOwner = Any()
+                conn.onTickEvent.on(tickOwner) { tick ->
+                    val id = cyclePaintingBotId.get() ?: return@on
+                    val botState = tick.botStates.firstOrNull { it.id == id } ?: return@on
+                    if (firstTickLatch.count > 0L) {
+                        debugOnTurn1.set(botState.isDebuggingEnabled)
+                        firstTickLatch.countDown()
+                    }
+                }
+
+                val stopOwner = Any()
+                conn.onGameAborted.once(stopOwner) { stopLatch.countDown() }
+                conn.onGameEnded.once(stopOwner) { stopLatch.countDown() }
+
+                conn.startBattle(BattleRunner.toClientGameSetup(setup), botAddresses)
+
+                assertThat(startedLatch.await(30, TimeUnit.SECONDS))
+                    .describedAs("Restart cycle $cycle must produce GameStarted")
+                    .isTrue()
+                assertThat(firstTickLatch.await(30, TimeUnit.SECONDS))
+                    .describedAs("Restart cycle $cycle must produce a first tick")
+                    .isTrue()
+
+                Thread.sleep(1200)
+
+                val paintingTurn1 = store.getIntentsForBot("Painting Bot")
+                    .firstOrNull { it.roundNumber == 1 && it.turnNumber == 1 }
+                val targetTurn1 = store.getIntentsForBot("Target")
+                    .firstOrNull { it.roundNumber == 1 && it.turnNumber == 1 }
+
+                assertThat(debugOnTurn1.get())
+                    .describedAs("C# restart cycle $cycle must keep debug graphics enabled on turn 1")
+                    .isTrue()
+                assertThat(paintingTurn1)
+                    .describedAs("C# restart cycle $cycle must capture PaintingBot turn-1 intent")
+                    .isNotNull()
+                assertThat(paintingTurn1!!.intent.targetSpeed)
+                    .describedAs(
+                        "PaintingBot.Run() starts with Forward(100), so cycle $cycle must send targetSpeed=1.0 " +
+                            "on turn 1. Regression: turn-1 events were dispatched before Run(), letting " +
+                            "OnScannedBot() call Go() before movement was initialized."
+                    )
+                    .isEqualTo(1.0)
+                assertThat(targetTurn1)
+                    .describedAs("C# restart cycle $cycle must capture Target turn-1 intent")
+                    .isNotNull()
+                assertThat(targetTurn1!!.intent.bodyColor)
+                    .describedAs(
+                        "Target.Run() sets BodyColor white before the first turn. Regression: turn-1 events were " +
+                            "dispatched before Run(), producing a default turn-1 intent with no color."
+                    )
+                    .isEqualToIgnoringCase("#ffffff")
+
+                conn.onGameStarted.off(startOwner)
+                conn.onTickEvent.off(tickOwner)
+
+                handle.stop()
+                assertThat(stopLatch.await(30, TimeUnit.SECONDS))
+                    .describedAs("Restart cycle $cycle must stop cleanly before the next restart")
+                    .isTrue()
+            }
+
+            handle.close()
+        }
+    }
 }
 
 /**
