@@ -380,8 +380,10 @@ public final class BaseBotInternals {
         var currentTick = getCurrentTickOrNull();
         if (currentTick != null && currentTick.getBotState().isDebuggingEnabled()) {
             botIntent.setDebugGraphics(graphicsState.getSvgOutput());
-            graphicsState.clear();
+        } else {
+            botIntent.setDebugGraphics(null); // clear stale SVG so it is not re-sent when debugging is off
         }
+        graphicsState.clear();
     }
 
     private void waitForNextTurn(int turnNumber) {

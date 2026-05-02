@@ -23,6 +23,10 @@
     - Fixed C# bots sometimes losing turn-1 movement, colors, and debug painting when a battle
       was restarted from the GUI, which could show up on every second restart.
 
+- Bot API (Java, Python, TypeScript):
+    - Fixed stale debug graphics being resent after debugging was disabled, which could make old
+      debug painting reappear on later turns or restarts.
+
 - Sample Bots (Java, .NET, Python, TypeScript):
     - Fixed `PaintingBot` drawing ghost circles at the previous round's last-known target position
       at the start of each new round. The scanned-bot state was not reset between rounds, causing

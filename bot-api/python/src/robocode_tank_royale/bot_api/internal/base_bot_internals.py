@@ -610,10 +610,11 @@ class BaseBotInternals:
         ):
             svg_output = self.graphics_state.to_svg()
             self.bot_intent.debug_graphics = svg_output
-            self.graphics_state.clear()
         else:
             # Ensure it's not set if debugging is off or tick not available
             self.bot_intent.debug_graphics = None
+        # Always clear the graphics state so previous frames don't accumulate
+        self.graphics_state.clear()
 
     def _wait_for_next_turn(self, turn_number: int) -> None:
         """Wait for next turn (matches Java's waitForNextTurn)"""

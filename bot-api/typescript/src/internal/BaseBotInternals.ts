@@ -616,6 +616,10 @@ export class BaseBotInternals {
   private renderGraphicsToIntent(): void {
     if (this.isDebuggingEnabled() && this.svgGraphics != null) {
       this.intent.debugGraphics = this.svgGraphics.toSvg();
+    } else {
+      this.intent.debugGraphics = null; // clear stale SVG so it is not re-sent when debugging is off
+    }
+    if (this.svgGraphics != null) {
       this.svgGraphics.clear();
     }
   }
