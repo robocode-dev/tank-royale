@@ -34,6 +34,7 @@ import java.util.function.Consumer
  * @property maxInactivityTurns maximum consecutive turns allowed without bot activity
  * @property turnTimeoutMicros per-turn deadline for bots to submit their intent, in microseconds
  * @property readyTimeoutMicros deadline for bots to signal ready at round start, in microseconds
+ * @property defaultTurnsPerSecond default TPS for the battle; -1 means max speed (default)
  */
 data class BattleSetup(
     val gameType: GameType,
@@ -46,6 +47,7 @@ data class BattleSetup(
     val maxInactivityTurns: Int,
     val turnTimeoutMicros: Int,
     val readyTimeoutMicros: Int,
+    val defaultTurnsPerSecond: Int = -1,
 ) {
     /**
      * Builder for creating a [BattleSetup] from a preset with optional field overrides.
@@ -82,6 +84,9 @@ data class BattleSetup(
         /** Deadline for bots to signal ready at round start, in microseconds. */
         var readyTimeoutMicros: Int = preset.readyTimeoutMicros
 
+        /** Default TPS for the battle; -1 means max speed (no throttle). */
+        var defaultTurnsPerSecond: Int = -1
+
         internal fun build(): BattleSetup = BattleSetup(
             gameType = gameType,
             arenaWidth = arenaWidth,
@@ -93,6 +98,7 @@ data class BattleSetup(
             maxInactivityTurns = maxInactivityTurns,
             turnTimeoutMicros = turnTimeoutMicros,
             readyTimeoutMicros = readyTimeoutMicros,
+            defaultTurnsPerSecond = defaultTurnsPerSecond,
         )
     }
 

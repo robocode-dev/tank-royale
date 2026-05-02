@@ -26,6 +26,7 @@ public class PaintingBot : Bot
     // Called when a new round is started -> initialize and do some movement
     public override void Run()
     {
+        scannedTime = 0; // reset so no ghost circle is drawn from a previous round
         // Continuous forward and backward movement repeating forever
         while (IsRunning)
         {

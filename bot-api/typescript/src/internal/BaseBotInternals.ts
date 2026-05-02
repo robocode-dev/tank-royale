@@ -616,6 +616,10 @@ export class BaseBotInternals {
   private renderGraphicsToIntent(): void {
     if (this.isDebuggingEnabled() && this.svgGraphics != null) {
       this.intent.debugGraphics = this.svgGraphics.toSvg();
+    } else {
+      this.intent.debugGraphics = null; // clear stale SVG so it is not re-sent when debugging is off
+    }
+    if (this.svgGraphics != null) {
       this.svgGraphics.clear();
     }
   }
@@ -719,11 +723,10 @@ export class BaseBotInternals {
       this.drainWorkerMessages();
       this.stopRogueThread();
     }
-    // Dispatch tick 1 events before run() starts, so the first run() iteration reads state
-    // that already has events fired — matching Classic Robocode semantics.
-    if (this.tickEvent != null) {
-      this.dispatchEvents(this.tickEvent.turnNumber);
-    }
+    // NOTE: Do NOT dispatch events here. Events are dispatched in go() → dispatchEvents()
+    // which is called from the first blocking bot method (forward, turnLeft, etc.) in run().
+    // Pre-dispatching causes event handlers that call go() to send intents before run() has
+    // set up state (colors, movement), and corrupts lastExecuteTurnNumber for turn 1.
   }
 
   stopThread(): void {

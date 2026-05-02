@@ -2,9 +2,11 @@ package core
 
 import dev.robocode.tankroyale.schema.BotAddress
 import dev.robocode.tankroyale.schema.BotHandshake
+import dev.robocode.tankroyale.schema.BotPolicyUpdate
 import dev.robocode.tankroyale.schema.GameSetup
 import dev.robocode.tankroyale.server.connection.ConnectionHandler
 import dev.robocode.tankroyale.server.core.*
+import dev.robocode.tankroyale.server.model.BotId
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.Tag
 import io.kotest.matchers.shouldBe
@@ -145,5 +147,52 @@ class GameLifecycleTest : FunSpec({
         gameServer.handleStartGame(gameSetup, emptyList())
 
         lifecycleManager.serverState shouldBe ServerState.WAIT_FOR_PARTICIPANTS_TO_JOIN
+    }
+
+    test("TR-SRV-DBG-001: Positive: debug policy survives game restart and is restored after clear") {
+        val connectionHandler = mockk<ConnectionHandler>(relaxed = true)
+        val participantRegistry = ParticipantRegistry(connectionHandler)
+        val lifecycleManager = GameLifecycleManager()
+        val gameServer = createGameServer(connectionHandler, participantRegistry, lifecycleManager)
+
+        val bot1 = mockk<WebSocket>()
+        val bot2 = mockk<WebSocket>()
+        val botAddresses = listOf(mockk<BotAddress>(), mockk<BotAddress>())
+
+        every { connectionHandler.mapToBotSockets(any()) } returns setOf(bot1, bot2)
+        every { connectionHandler.getBotHandshakes() } returns mapOf(
+            bot1 to createBotHandshake("Bot1").apply { sessionId = "session-bot1" },
+            bot2 to createBotHandshake("Bot2").apply { sessionId = "session-bot2" }
+        )
+
+        val gameSetup = createValidGameSetup()
+
+        // ── Game 1 ───────────────────────────────────────────────────────────────────────
+        gameServer.handleStartGame(gameSetup, botAddresses)
+        gameServer.handleBotReady(bot1)
+        gameServer.handleBotReady(bot2)
+        lifecycleManager.serverState shouldBe ServerState.GAME_RUNNING
+
+        // Enable debug graphics for bot 1
+        val policyUpdate = BotPolicyUpdate().apply {
+            botId = 1
+            debuggingEnabled = true
+        }
+        gameServer.handleBotPolicyUpdate(policyUpdate)
+
+        participantRegistry.debugGraphicsEnableMap[BotId(1)] shouldBe true
+
+        // Abort game 1 — this calls clear() which wipes the per-game maps but keeps persisted maps
+        gameServer.handleAbortGame()
+        participantRegistry.debugGraphicsEnableMap.containsKey(BotId(1)) shouldBe false
+
+        // ── Game 2 (restart with same connected bots) ───────────────────────────────────
+        gameServer.handleStartGame(gameSetup, botAddresses)
+        gameServer.handleBotReady(bot1)
+        gameServer.handleBotReady(bot2)
+        lifecycleManager.serverState shouldBe ServerState.GAME_RUNNING
+
+        // Debug policy must be restored — verifies restorePersistedPolicies() + transferDebugGraphicsFlagToModel()
+        participantRegistry.debugGraphicsEnableMap[BotId(1)] shouldBe true
     }
 })

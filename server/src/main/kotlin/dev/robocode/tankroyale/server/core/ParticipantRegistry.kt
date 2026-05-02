@@ -24,6 +24,10 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
     private val _debugGraphicsEnableMap = ConcurrentHashMap<BotId, Boolean /* isDebugEnabled */>()
     private val _breakpointEnabledMap = ConcurrentHashMap<BotId, Boolean /* isBreakpointEnabled */>()
 
+    // Persisted across game restarts, keyed by stable sessionId (survives clear())
+    private val _persistedDebugGraphicsEnableMap = ConcurrentHashMap<String /* sessionId */, Boolean>()
+    private val _persistedBreakpointEnabledMap = ConcurrentHashMap<String /* sessionId */, Boolean>()
+
     /** Read-only view of game participants (bot connections) */
     val participants: Set<WebSocket> get() = _participants
 
@@ -81,10 +85,38 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
 
     fun setDebugGraphicsEnabled(botId: BotId, enabled: Boolean) {
         _debugGraphicsEnableMap[botId] = enabled
+        _participantMap[botId]?.sessionId?.let { sessionId ->
+            _persistedDebugGraphicsEnableMap[sessionId] = enabled
+        }
     }
 
     fun setBreakpointEnabled(botId: BotId, enabled: Boolean) {
         _breakpointEnabledMap[botId] = enabled
+        _participantMap[botId]?.sessionId?.let { sessionId ->
+            _persistedBreakpointEnabledMap[sessionId] = enabled
+        }
+    }
+
+    /**
+     * Restores bot policies (debug graphics, breakpoint) from the persisted sessionId-keyed maps.
+     * Must be called after [populateParticipantMap] so that [_participantMap] is up-to-date.
+     */
+    fun restorePersistedPolicies() {
+        _participantMap.forEach { (botId, participant) ->
+            val sessionId = participant.sessionId ?: return@forEach
+            _persistedDebugGraphicsEnableMap[sessionId]?.let { enabled ->
+                _debugGraphicsEnableMap[botId] = enabled
+            }
+            _persistedBreakpointEnabledMap[sessionId]?.let { enabled ->
+                _breakpointEnabledMap[botId] = enabled
+            }
+        }
+    }
+
+    /** Removes persisted policies for a session. Call when a bot disconnects permanently. */
+    fun clearPersistedPoliciesForSession(sessionId: String) {
+        _persistedDebugGraphicsEnableMap.remove(sessionId)
+        _persistedBreakpointEnabledMap.remove(sessionId)
     }
 
     val breakpointEnabledMap: Map<BotId, Boolean> get() = _breakpointEnabledMap
@@ -95,12 +127,17 @@ class ParticipantRegistry(private val connectionHandler: ConnectionHandler) {
         _participantMap.clear()
         _debugGraphicsEnableMap.clear()
         _breakpointEnabledMap.clear()
+        // _persistedDebugGraphicsEnableMap and _persistedBreakpointEnabledMap are intentionally NOT
+        // cleared here — they survive game restarts so policies can be restored for the new game.
     }
 
     fun prepareParticipantIds() {
-        _participants.forEachIndexed { index, conn ->
-            _participantIds[conn] = BotId(index + 1)
-        }
+        val handshakes = connectionHandler.getBotHandshakes()
+        _participants
+            .sortedBy { conn -> handshakes[conn]?.sessionId ?: "" }
+            .forEachIndexed { index, conn ->
+                _participantIds[conn] = BotId(index + 1)
+            }
     }
 
     private fun createParticipantMap(): Map<BotId, Participant> {

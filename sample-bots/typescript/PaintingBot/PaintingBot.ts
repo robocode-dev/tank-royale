@@ -18,6 +18,7 @@ class PaintingBot extends Bot {
     }
 
     override run() {
+        this.scannedTime = 0; // reset so no ghost circle is drawn from a previous round
         // Continuous forward and backward movement repeating forever
         while (this.isRunning()) {
             this.forward(100);

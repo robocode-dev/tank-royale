@@ -17,6 +17,7 @@ class PaintingBot(Bot):
 
     # The main method starts our bot
     def run(self) -> None:
+        self.scanned_time = 0  # reset so no ghost circle is drawn from a previous round
         # Continuous forward and backward movement repeating forever
         while self.running:
             self.forward(100)

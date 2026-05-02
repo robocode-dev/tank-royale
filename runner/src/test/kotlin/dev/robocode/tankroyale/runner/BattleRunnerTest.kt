@@ -46,7 +46,15 @@ class BattleRunnerTest {
         assertThat(gs.maxInactivityTurns).isEqualTo(setup.maxInactivityTurns)
         assertThat(gs.turnTimeout).isEqualTo(setup.turnTimeoutMicros)
         assertThat(gs.readyTimeout).isEqualTo(setup.readyTimeoutMicros)
-        assertThat(gs.defaultTurnsPerSecond).isEqualTo(-1)
+        assertThat(gs.defaultTurnsPerSecond).isEqualTo(setup.defaultTurnsPerSecond)
+    }
+
+    @Test
+    fun `toClientGameSetup forwards custom defaultTurnsPerSecond`() {
+        val setup = BattleSetup.classic { defaultTurnsPerSecond = 5 }
+        val gs = BattleRunner.toClientGameSetup(setup)
+
+        assertThat(gs.defaultTurnsPerSecond).isEqualTo(5)
     }
 
     @Test

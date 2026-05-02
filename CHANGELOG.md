@@ -7,12 +7,39 @@
       (Debug Only)" after restarting the GUI. The Options dialog was re-saving the color mode
       from the radio button state on OK, which could override the immediately-saved selection
       if the dialog state had been refreshed in between.
+    - Fixed `Bot Colors (Once)` not reliably locking the first bot-defined color for each tank
+      part, causing late color updates to fall back to default colors instead.
+    - Fixed graphical debugging toggle and breakpoint mode toggle resetting to off when a
+      battle is restarted. Both toggles now retain their state and re-apply the policy to the
+      new game automatically. Toggle preferences are stored in persistent in-memory maps keyed
+      by the bot's stable WebSocket session ID, so they survive frame recreation, console
+      close/reopen, and bot ID reassignment across restarts.
 
 - Server:
     - Fixed `"unsupported gameType: custom"` error when starting a game with the Custom game type
       preset. The server now accepts all four built-in game types (`classic`, `1v1`, `melee`,
       `custom`) by default instead of only `classic`. Use the `--games` flag to restrict the
       server to specific game types when needed (e.g., for competition servers).
+
+- Runner:
+    - Fixed `BattleRunner` ignoring `BattleSetup.defaultTurnsPerSecond` and always starting
+      battles at max speed instead.
+
+- Bot API (.NET):
+    - Fixed C# bots sometimes losing turn-1 movement, colors, and debug painting when a battle
+      was restarted from the GUI, which could show up on every second restart.
+
+- Bot API (Java, Python, TypeScript):
+    - Fixed stale debug graphics being resent after debugging was disabled, which could make old
+      debug painting reappear on later turns or restarts.
+    - Fixed turn-1 event handlers running before `run()` had initialized bot state, which could
+      corrupt movement or colors set at the start of a round.
+
+- Sample Bots (Java, .NET, Python, TypeScript):
+    - Fixed `PaintingBot` drawing ghost circles at the previous round's last-known target position
+      at the start of each new round. The scanned-bot state was not reset between rounds, causing
+      `onTick` to draw a stale circle until a new scan occurred. Fixed by resetting `scannedTime`
+      to 0 at the start of `run()`.
 
 ## [0.42.0] - 2026-04-22 - First release of the TypeScript Bot API
 
