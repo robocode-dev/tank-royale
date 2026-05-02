@@ -165,23 +165,21 @@ def test_shared(suite_name, test_case):
         elif method == "isCritical":
             last_action_value[0] = create_event(args[0]).critical
         elif method == "getDefaultPriority":
-            last_action_value[0] = getattr(DefaultEventPriority, args[0])
+            last_action_value[0] = get_constant(args[0])
         elif method == "calcBulletSpeed":
-            last_action_value[0] = mock_bot.calc_bullet_speed(args[0])
+            last_action_value[0] = BaseBotClass.calc_bullet_speed(None, args[0])
         elif method == "calcMaxTurnRate":
-            last_action_value[0] = mock_bot.calc_max_turn_rate(args[0])
+            last_action_value[0] = BaseBotClass.calc_max_turn_rate(None, args[0])
         elif method == "calcGunHeat":
-            last_action_value[0] = mock_bot.calc_gun_heat(args[0])
+            last_action_value[0] = BaseBotClass.calc_gun_heat(None, args[0])
         elif method == "calcBearing":
-            if len(args) == 2:
-                mock_bot.direction = args[0]
-                last_action_value[0] = mock_bot.calc_bearing(args[1])
-            else:
-                last_action_value[0] = mock_bot.calc_bearing(args[0])
+            self_direction = args[0] if len(args) == 2 else 0.0
+            target_direction = args[1] if len(args) == 2 else args[0]
+            last_action_value[0] = BaseBotClass.normalize_relative_angle(None, target_direction - self_direction)
         elif method == "normalizeAbsoluteAngle":
-            last_action_value[0] = mock_bot.normalize_absolute_angle(args[0])
+            last_action_value[0] = BaseBotClass.normalize_absolute_angle(None, args[0])
         elif method == "normalizeRelativeAngle":
-            last_action_value[0] = mock_bot.normalize_relative_angle(args[0])
+            last_action_value[0] = BaseBotClass.normalize_relative_angle(None, args[0])
         else:
             pytest.fail(f"Method {method} not implemented in runner")
 
