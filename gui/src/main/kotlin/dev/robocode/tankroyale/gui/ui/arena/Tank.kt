@@ -294,8 +294,10 @@ class Tank(private val bot: BotState) {
 
             TankColorMode.BOT_COLORS_ONCE -> {
                 val botLockedColors = lockedColors.getOrPut(bot.id) { mutableMapOf() }
-                val lockedColor = botLockedColors.getOrPut(default) { botColor ?: "" }
-                fromString(if (lockedColor.isEmpty()) default else lockedColor)
+                if (!botLockedColors.containsKey(default) && botColor != null) {
+                    botLockedColors[default] = botColor
+                }
+                fromString(botLockedColors[default] ?: botColor ?: default)
             }
 
             TankColorMode.DEFAULT_COLORS -> fromString(default)
