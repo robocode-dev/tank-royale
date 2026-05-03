@@ -51,7 +51,7 @@ like a Battle Royale Game. Hence, the name _Tank Royale_.
 
 ### Example of a Robocode battle
 
-![Battle screenshot](../images/robocode-battle-anim.gif)
+![Battle screenshot](../images/robocode-battle-anim.webp)
 
 [programming game]: https://en.wikipedia.org/wiki/Programming_game "Programming Game"
 

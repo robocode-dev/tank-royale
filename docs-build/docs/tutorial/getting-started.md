@@ -11,7 +11,7 @@ The best introduction to Robocode is to see some battles between existing bots t
 
 This GIF animation can give you a glimpse, but not the full picture:
 
-![Robocode battle](../images/robocode-battle-anim.gif)
+![Robocode battle](../images/robocode-battle-anim.webp)
 
 So if you have not seen the battles already, you should:
 
