@@ -7,8 +7,8 @@ This guide covers the dialogs used to configure the GUI, the local server, debug
 The GUI provides a built-in server log viewer when running a local server:
 
 <ThemeImage
-  dark-src="../images/gui/dark/server-log.png"
-  light-src="../images/gui/light/server-log.png"
+  dark-src="/images/gui/dark/server-log.png"
+  light-src="/images/gui/light/server-log.png"
   alt="Local Server Log"
 />
 
@@ -20,8 +20,8 @@ available for local servers, not remote ones.
 The **GUI Options** dialog controls language, UI scaling, console limits, and other general GUI preferences:
 
 <ThemeImage
-  dark-src="../images/gui/dark/gui-options.png"
-  light-src="../images/gui/light/gui-options.png"
+  dark-src="/images/gui/dark/gui-options.png"
+  light-src="/images/gui/light/gui-options.png"
   alt="GUI Options"
 />
 
@@ -65,8 +65,8 @@ provide the secret through either:
 - the `SERVER_SECRET` environment variable
 
 <ThemeImage
-  dark-src="../images/gui/dark/server-options-local.png"
-  light-src="../images/gui/light/server-options-local.png"
+  dark-src="/images/gui/dark/server-options-local.png"
+  light-src="/images/gui/light/server-options-local.png"
   alt="Local Server Options"
 />
 
@@ -96,8 +96,8 @@ To connect to a remote server:
 Without the correct secrets, neither the GUI nor bots can authenticate and connect to the remote server.
 
 <ThemeImage
-  dark-src="../images/gui/dark/server-options-remote.png"
-  light-src="../images/gui/light/server-options-remote.png"
+  dark-src="/images/gui/dark/server-options-remote.png"
+  light-src="/images/gui/light/server-options-remote.png"
   alt="Remote Server Options"
 />
 
@@ -119,8 +119,8 @@ The **Sound Options** dialog controls the game audio:
 - a volume control
 
 <ThemeImage
-  dark-src="../images/gui/dark/sound-options.png"
-  light-src="../images/gui/light/sound-options.png"
+  dark-src="/images/gui/dark/sound-options.png"
+  light-src="/images/gui/light/sound-options.png"
   alt="Sound Options"
 />
 
@@ -138,8 +138,8 @@ The About dialog shows system and support information:
 This information is useful when reporting bugs or compatibility issues.
 
 <ThemeImage
-  dark-src="../images/gui/dark/about-box.png"
-  light-src="../images/gui/light/about-box.png"
+  dark-src="/images/gui/dark/about-box.png"
+  light-src="/images/gui/light/about-box.png"
   alt="About box"
 />
 

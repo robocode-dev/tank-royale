@@ -1,0 +1,60 @@
+<svg version="1.1" width="100" height="100" viewBox="0 0 800 800"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <g>
+    <use xlink:href="#body" transform="rotate(10,400,400)" />
+  </g>
+
+  <defs>
+    <symbol id="link0">
+      <rect x="5" y="55" width="125" height="25" fill="#aaaaaa" />
+      <rect x="10" y="70" width="116" height="35" fill="#666666" rx="10" ry="10" />
+      <rect x="5" y="55" width="125" height="50" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
+    </symbol>
+
+    <symbol id="link30">
+      <rect x="5" y="55" width="125" height="25" fill="#939393" />
+      <rect x="10" y="70" width="116" height="30" fill="#585858" rx="10" ry="10" />
+      <rect x="5" y="55" width="125" height="42" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
+    </symbol>
+
+    <symbol id="link60">
+      <rect x="5" y="55" width="125" height="20" fill="#555555" />
+      <rect x="5" y="55" width="125" height="20" fill="none" stroke="black" stroke-width="10" rx="10" ry="10" />
+    </symbol>
+
+    <symbol id="main-track">
+      <rect x="20" y="75" width="95" height="450" fill="#333333" stroke="black" stroke-width="10" />
+    </symbol>
+
+    <symbol id="track2">
+      <use xlink:href="#main-track" x="0" y="0" />
+      <use xlink:href="#link60" x="0" y="0" />
+      <use xlink:href="#link0" x="0" y="33" />
+      <use xlink:href="#link0" x="0" y="113" />
+      <use xlink:href="#link0" x="0" y="193" />
+      <use xlink:href="#link0" x="0" y="273" />
+      <use xlink:href="#link0" x="0" y="353" />
+      <use xlink:href="#link0" x="0" y="433" />
+    </symbol>
+
+    <symbol id="track3">
+      <use xlink:href="#main-track" x="0" y="0" />
+      <use xlink:href="#link0" x="0" y="7" />
+      <use xlink:href="#link0" x="0" y="87" />
+      <use xlink:href="#link0" x="0" y="167" />
+      <use xlink:href="#link0" x="0" y="247" />
+      <use xlink:href="#link0" x="0" y="327" />
+      <use xlink:href="#link0" x="0" y="407" />
+      <use xlink:href="#link60" x="0" y="470" />
+    </symbol>
+
+    <symbol id="body">
+      <use xlink:href="#track2" x="150" y="100" />
+      <use xlink:href="#track3" x="515" y="100" />
+
+      <rect x="240" y="190" width="320" height="420" fill="#019" stroke="black" stroke-width="20" rx="10" ry="10" />
+      <rect x="250" y="520" width="300" height="80" fill="black" opacity="0.5" />
+    </symbol>
+  </defs>
+</svg>

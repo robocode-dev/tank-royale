@@ -11,7 +11,7 @@ The best introduction to Robocode is to see some battles between existing bots t
 
 This GIF animation can give you a glimpse, but not the full picture:
 
-![Robocode battle](../images/robocode-battle-anim.webp)
+![Robocode battle](/images/robocode-battle-anim.webp)
 
 So if you have not seen the battles already, you should:
 
@@ -130,7 +130,7 @@ A bot in Robocode is a tank that consists of 3 parts:
 2) Turret and gun
 3) Radar
 
-![Tank anatomy](../images/anatomy.svg)
+![Tank anatomy](/images/anatomy.svg)
 
 The _body_ is the main and the bottom part of the tank is used for moving the tank around on the battlefield.
 
@@ -171,12 +171,12 @@ of 1200 pixels. So enemies more than 1200 pixels away from the bot cannot be det
 It is important to notice a bot will only be able to scan bots that are within its scan arc. The scan arc is the "radar
 sweep" from its previous radar direction to its current direction in the turn.
 
-![Radar sweep](../images/radar.svg)
+![Radar sweep](/images/radar.svg)
 
 If the radar is not being turned in a round, meaning it is pointing in the same direction as the previous turn, then the
 scan arc will be zero degrees, and the bot will not be able to scan enemies.
 
-![Scan arc](../images/radar-no-sweep.svg)
+![Scan arc](/images/radar-no-sweep.svg)
 
 Hence, it is highly recommended to ensure the radar is always shifting its direction to keep scanning enemies.
 

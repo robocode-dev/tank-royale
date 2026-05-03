@@ -13,8 +13,8 @@ This guide covers the parts of the GUI you use before a battle starts:
 The primary function of the GUI is battle creation and bot selection:
 
 <ThemeImage
-  dark-src="../images/gui/dark/start-battle.png"
-  light-src="../images/gui/light/start-battle.png"
+  dark-src="/images/gui/dark/start-battle.png"
+  light-src="/images/gui/light/start-battle.png"
   alt="Start battle"
 />
 
@@ -29,16 +29,16 @@ At the top, the **Select game type** dropdown lets you choose the [game type], a
 rule configuration dialog.
 
 <ThemeImage
-  dark-src="../images/gui/dark/setup-rules-and-game-type.png"
-  light-src="../images/gui/light/setup-rules-and-game-type.png"
+  dark-src="/images/gui/dark/setup-rules-and-game-type.png"
+  light-src="/images/gui/light/setup-rules-and-game-type.png"
   alt="Setup rules and game type"
 />
 
 Next to the game type selector is the **Recording** toggle for automatic battle recording.
 
 <ThemeImage
-  dark-src="../images/gui/dark/auto-record.png"
-  light-src="../images/gui/light/auto-record.png"
+  dark-src="/images/gui/dark/auto-record.png"
+  light-src="/images/gui/light/auto-record.png"
   alt="Auto-recording"
 />
 
@@ -50,16 +50,16 @@ turn 1, which is useful when you want to step through the first turns without en
 battle has started.
 
 <ThemeImage
-  dark-src="../images/gui/dark/debugging-start-paused.png"
-  light-src="../images/gui/light/debugging-start-paused.png"
+  dark-src="/images/gui/dark/debugging-start-paused.png"
+  light-src="/images/gui/light/debugging-start-paused.png"
   alt="Debugging - Start Paused"
 />
 
 The bottom panel displays detailed bot information when you select entries from the **Bot Directories** list:
 
 <ThemeImage
-  dark-src="../images/gui/dark/bot-info.png"
-  light-src="../images/gui/light/bot-info.png"
+  dark-src="/images/gui/dark/bot-info.png"
+  light-src="/images/gui/light/bot-info.png"
   alt="Bot Info"
 />
 
@@ -69,16 +69,16 @@ The **Bot Directories** section lists all detected bot types from your configure
 absolute file path for each bot.
 
 <ThemeImage
-  dark-src="../images/gui/dark/bot-directories.png"
-  light-src="../images/gui/light/bot-directories.png"
+  dark-src="/images/gui/dark/bot-directories.png"
+  light-src="/images/gui/light/bot-directories.png"
   alt="Bot Directories"
 />
 
 If no directories are configured, the GUI prompts you to add at least one bot root directory:
 
 <ThemeImage
-  dark-src="../images/gui/dark/no-bot-directory-found.png"
-  light-src="../images/gui/light/no-bot-directory-found.png"
+  dark-src="/images/gui/dark/no-bot-directory-found.png"
+  light-src="/images/gui/light/no-bot-directory-found.png"
   alt="No bot directory root"
 />
 
@@ -86,8 +86,8 @@ To get started quickly, download and extract the sample bot packages, then add t
 **Config → Bot Root Directories**.
 
 <ThemeImage
-  dark-src="../images/gui/dark/bot-root-dir-config.png"
-  light-src="../images/gui/light/bot-root-dir-config.png"
+  dark-src="/images/gui/dark/bot-root-dir-config.png"
+  light-src="/images/gui/light/bot-root-dir-config.png"
   alt="Bot Root Directories Config"
 />
 
@@ -98,8 +98,8 @@ For sample bot setup, see [Installing sample bots](installing-sample-bots.md).
 The **Booted Bots** section shows bots launched through the GUI's built-in [booter]:
 
 <ThemeImage
-  dark-src="../images/gui/dark/booted-bots.png"
-  light-src="../images/gui/light/booted-bots.png"
+  dark-src="/images/gui/dark/booted-bots.png"
+  light-src="/images/gui/light/booted-bots.png"
   alt="Booted Bots"
 />
 
@@ -113,8 +113,8 @@ selected process.
 When booting bots from **Bot Directories**, the GUI shows a progress dialog while each bot connects to the server:
 
 <ThemeImage
-  dark-src="../images/gui/dark/waiting-for-bots-to-connect.png"
-  light-src="../images/gui/light/waiting-for-bots-to-connect.png"
+  dark-src="/images/gui/dark/waiting-for-bots-to-connect.png"
+  light-src="/images/gui/light/waiting-for-bots-to-connect.png"
   alt="Waiting for bots to connect"
 />
 
@@ -135,8 +135,8 @@ booted processes.
 The **Joined Bots** section lists every bot connected to the server, whether local or remote:
 
 <ThemeImage
-  dark-src="../images/gui/dark/joined-bots.png"
-  light-src="../images/gui/light/joined-bots.png"
+  dark-src="/images/gui/dark/joined-bots.png"
+  light-src="/images/gui/light/joined-bots.png"
   alt="Joined Bots"
 />
 
@@ -148,8 +148,8 @@ shown because the server tracks WebSocket connections and bot handshake informat
 The **Selected Bots** section lists the bots chosen for the upcoming battle:
 
 <ThemeImage
-  dark-src="../images/gui/dark/selected-bots.png"
-  light-src="../images/gui/light/selected-bots.png"
+  dark-src="/images/gui/dark/selected-bots.png"
+  light-src="/images/gui/light/selected-bots.png"
   alt="Selected Bots"
 />
 
@@ -161,8 +161,8 @@ current [game type].
 Customize rules for each [game type] with the **Setup Rules** dialog:
 
 <ThemeImage
-  dark-src="../images/gui/dark/setup-rules.png"
-  light-src="../images/gui/light/setup-rules.png"
+  dark-src="/images/gui/dark/setup-rules.png"
+  light-src="/images/gui/light/setup-rules.png"
   alt="Setup Rules"
 />
 

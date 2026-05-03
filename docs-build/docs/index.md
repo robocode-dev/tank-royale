@@ -1,4 +1,4 @@
-![Robocode logo](./images/robocode-logo.svg)
+![Robocode logo](/images/robocode-logo.svg)
 
 # Robocode Tank Royale
 

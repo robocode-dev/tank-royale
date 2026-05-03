@@ -1,0 +1,19 @@
+<svg version="1.1" width="125" height="125" viewBox="0 0 700 700"
+  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <g>
+    <use xlink:href="#tank" />
+  </g>
+
+  <defs>
+    <symbol id="radar">
+      <circle cx="170" cy="550" r="30" fill="#AAF" stroke="black" stroke-width="20" />
+      <path d="M 60 570 q 110 100 220 0 z" fill="#AAF" stroke="black" stroke-width="20" />
+      <path d="M 170 550 l 0,0 0,-600 z" stroke="grey" stroke-width="5" opacity="0.75"/>
+    </symbol>
+
+    <symbol id="tank">
+      <use xlink:href="#radar" transform="rotate(35,170,550)" />
+    </symbol>
+  </defs>
+</svg>

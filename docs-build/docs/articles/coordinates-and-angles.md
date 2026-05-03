@@ -5,7 +5,7 @@
 Robocode uses the Cartesian coordinate system, which means that the (0, 0) coordinate is in the bottom-left corner of
 the arena.
 
-![Coordinate System and Rotational Direction System](../images/coordinate-system-and-unit-circle.svg)
+![Coordinate System and Rotational Direction System](/images/coordinate-system-and-unit-circle.svg)
 
 ## Rotational direction system
 

@@ -7,8 +7,8 @@ The GUI can record battles automatically and replay saved recordings later.
 Enable auto-recording with the **Recording** toggle in the **Start Battle** dialog:
 
 <ThemeImage
-  dark-src="../images/gui/dark/recording.png"
-  light-src="../images/gui/light/recording.png"
+  dark-src="/images/gui/dark/recording.png"
+  light-src="/images/gui/light/recording.png"
   alt="Recording"
 />
 
@@ -27,24 +27,24 @@ For more about user data locations and the recordings directory, see
 Open recorded battles with **Battle → Replay from File...**:
 
 <ThemeImage
-  dark-src="../images/gui/dark/replay-from-file.png"
-  light-src="../images/gui/light/replay-from-file.png"
+  dark-src="/images/gui/dark/replay-from-file.png"
+  light-src="/images/gui/light/replay-from-file.png"
   alt="Replay from File"
 />
 
 The file dialog opens in the recordings directory within your user data folder.
 
 <ThemeImage
-  dark-src="../images/gui/dark/select-replay-file.png"
-  light-src="../images/gui/light/select-replay-file.png"
+  dark-src="/images/gui/dark/select-replay-file.png"
+  light-src="/images/gui/light/select-replay-file.png"
   alt="Select replay file"
 />
 
 Click **Open** to start playback:
 
 <ThemeImage
-  dark-src="../images/gui/dark/replay.png"
-  light-src="../images/gui/light/replay.png"
+  dark-src="/images/gui/dark/replay.png"
+  light-src="/images/gui/light/replay.png"
   alt="Replaying"
 />
 

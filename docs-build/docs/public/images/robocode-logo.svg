@@ -1,0 +1,81 @@
+<!--
+Main logo for Robocode Tank Royale
+Copyright 2022 Flemming Nørnberg Larsen
+-->
+<svg version="1.1" width="435" height="165" viewBox="0 0 870 330"
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <g>
+        <use xlink:href="#robocode-logo"/>
+    </g>
+
+    <defs>
+        <symbol id="robocode-logo">
+            <!-- Turret -->
+            <polygon fill="#006" stroke-width="10" stroke="#009" points="225,120 225,80 325,20 500,20 500,120"/>
+            <!-- Cannon -->
+            <polygon fill="#333" stroke-width="10" stroke="#666" points="515,105 515,45 600,45 600,105"/>
+            <polygon fill="#333" stroke-width="10" stroke="#666" points="615,90 615,60 850,60 850,90"/>
+
+            <!-- Over Wheels -->
+            <polygon fill="#006" stroke-width="10" stroke="#009"
+                     points="95,135 70,160 170,210 630,210 730,160 705,135"/>
+
+            <!-- Wheels / letters -->
+            <use transform="translate(10, 170)" xlink:href="#letter-r"/>
+            <use transform="translate(100, 220)" xlink:href="#letter-o"/>
+            <use transform="translate(200, 220)" xlink:href="#letter-b"/>
+            <use transform="translate(300, 220)" xlink:href="#letter-o"/>
+            <use transform="translate(400, 220)" xlink:href="#letter-c"/>
+            <use transform="translate(500, 220)" xlink:href="#letter-o"/>
+            <use transform="translate(600, 220)" xlink:href="#letter-d"/>
+            <use transform="translate(690, 170)" xlink:href="#letter-e"/>
+        </symbol>
+
+        <symbol id="letter-r">
+            <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
+            <polygon stroke="#666" stroke-width="10" points="60,50 90,50 82,80" stroke-linejoin="round"/>
+            <rect x="20" y="0" width="10" height="100" fill="#222" mask="url(#wheel_hole)"/>
+            <rect x="30" y="10" width="10" height="80" fill="#666"/>
+            <polygon points="70,55 100,55 110,110" fill="#222" mask="url(#wheel_hole)"/>
+            <polygon points="40,110 40,40, 70,110" fill="#222" mask="url(#wheel_hole)"/>
+        </symbol>
+
+        <mask id="wheel_hole">
+            <circle cx="50" cy="50" r="50" fill="white"/>
+        </mask>
+
+        <symbol id="letter-o">
+            <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
+            <circle cx="50" cy="50" r="5" stroke="#666" stroke-width="10"/>
+        </symbol>
+
+        <symbol id="letter-b">
+            <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
+            <polygon stroke="#666" stroke-width="10" points="68,50 88,25 88,75" stroke-linejoin="round"/>
+            <rect x="20" y="0" width="10" height="100" fill="#222" mask="url(#wheel_hole)"/>
+            <rect x="30" y="10" width="10" height="80" fill="#666"/>
+            <polygon points="73,50 110,10 110,90" fill="#222" mask="url(#wheel_hole)"/>
+        </symbol>
+
+        <symbol id="letter-c">
+            <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
+            <polygon points="50,50 110,25 110,75" fill="#222" mask="url(#wheel_hole)"/>
+            <circle cx="50" cy="50" r="5" stroke="#666" stroke-width="10"/>
+        </symbol>
+
+        <symbol id="letter-d">
+            <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
+            <rect x="20" y="0" width="10" height="100" fill="#222" mask="url(#wheel_hole)"/>
+            <rect x="30" y="10" width="10" height="80" fill="#666"/>
+            <circle cx="50" cy="50" r="5" stroke="#666" stroke-width="10"/>
+        </symbol>
+
+        <symbol id="letter-e">
+            <circle cx="50" cy="50" r="45" stroke="#666" stroke-width="10" fill="#222"/>
+            <polygon points="50,50 110,25 110,75" fill="#222" mask="url(#wheel_hole)"/>
+            <line x1="5" y1="50" x2="50" y2="50" stroke="#666" stroke-width="10"/>
+            <circle cx="50" cy="50" r="5" stroke="#666" stroke-width="10"/>
+        </symbol>
+    </defs>
+</svg>

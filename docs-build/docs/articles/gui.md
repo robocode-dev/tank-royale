@@ -20,8 +20,8 @@ Use this page as the entry point for the GUI documentation:
 When launching the GUI, you are greeted by the start window:
 
 <ThemeImage
-  dark-src="../images/gui/dark/start-window.png"
-  light-src="../images/gui/light/start-window.png"
+  dark-src="/images/gui/dark/start-window.png"
+  light-src="/images/gui/light/start-window.png"
   alt="Start window"
 />
 

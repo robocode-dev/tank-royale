@@ -12,8 +12,8 @@ This guide covers the GUI features you use after a battle has started:
 When a battle begins, the GUI switches to the battle arena:
 
 <ThemeImage
-  dark-src="../images/gui/dark/battle-view.png"
-  light-src="../images/gui/light/battle-view.png"
+  dark-src="/images/gui/dark/battle-view.png"
+  light-src="/images/gui/light/battle-view.png"
   alt="Battle View"
 />
 
@@ -22,8 +22,8 @@ When a battle begins, the GUI switches to the battle arena:
 When the configured number of rounds has been played, the GUI shows the final ranking for each bot:
 
 <ThemeImage
-  dark-src="../images/gui/dark/results.png"
-  light-src="../images/gui/light/results.png"
+  dark-src="/images/gui/dark/results.png"
+  light-src="/images/gui/light/results.png"
   alt="Battle Results"
 />
 
@@ -32,8 +32,8 @@ See [Scoring](scoring.md) for how ranks and score fields are calculated.
 Use the control panel at the bottom to manage the battle:
 
 <ThemeImage
-  dark-src="../images/gui/dark/control-panel.png"
-  light-src="../images/gui/light/control-panel.png"
+  dark-src="/images/gui/dark/control-panel.png"
+  light-src="/images/gui/light/control-panel.png"
   alt="Control Panel"
 />
 
@@ -52,16 +52,16 @@ Unlike regular pause, debug mode always lets the current turn finish before paus
 The left side panel contains one button for each participating bot:
 
 <ThemeImage
-  dark-src="../images/gui/dark/side-panel.png"
-  light-src="../images/gui/light/side-panel.png"
+  dark-src="/images/gui/dark/side-panel.png"
+  light-src="/images/gui/light/side-panel.png"
   alt="Side Panel"
 />
 
 If a bot is connected with a debugger attached, its button shows a 🐛 indicator:
 
 <ThemeImage
-  dark-src="../images/gui/dark/debug-on-bot-button.png"
-  light-src="../images/gui/light/debug-on-bot-button.png"
+  dark-src="/images/gui/dark/debug-on-bot-button.png"
+  light-src="/images/gui/light/debug-on-bot-button.png"
   alt="Bot button with debugger indicator"
 />
 
@@ -71,8 +71,8 @@ late delivering intent, which prevents missed turns while you step through code 
 Clicking a bot button opens its console window:
 
 <ThemeImage
-  dark-src="../images/gui/dark/bot-console.png"
-  light-src="../images/gui/light/bot-console.png"
+  dark-src="/images/gui/dark/bot-console.png"
+  light-src="/images/gui/light/bot-console.png"
   alt="Bot Console"
 />
 
@@ -91,8 +91,8 @@ Output includes:
 The **Properties** tab displays real-time bot state information:
 
 <ThemeImage
-  dark-src="../images/gui/dark/bot-properties.png"
-  light-src="../images/gui/light/bot-properties.png"
+  dark-src="/images/gui/dark/bot-properties.png"
+  light-src="/images/gui/light/bot-properties.png"
   alt="Bot properties"
 />
 
@@ -100,8 +100,8 @@ When the server supports breakpoint mode, a **Breakpoint Mode** 🐛 toggle appe
 Breakpoint mode suspends the turn clock for that bot whenever it is late delivering intent.
 
 <ThemeImage
-  dark-src="../images/gui/dark/bot-properties-breakpoint.png"
-  light-src="../images/gui/light/bot-properties-breakpoint.png"
+  dark-src="/images/gui/dark/bot-properties-breakpoint.png"
+  light-src="/images/gui/light/bot-properties-breakpoint.png"
   alt="Breakpoint Mode"
 />
 
@@ -110,8 +110,8 @@ Breakpoint mode suspends the turn clock for that bot whenever it is late deliver
 The **Events** tab shows all bot events for debugging:
 
 <ThemeImage
-  dark-src="../images/gui/dark/bot-events.png"
-  light-src="../images/gui/light/bot-events.png"
+  dark-src="/images/gui/dark/bot-events.png"
+  light-src="/images/gui/light/bot-events.png"
   alt="Bot events"
 />
 

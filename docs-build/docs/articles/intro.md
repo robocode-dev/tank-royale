@@ -5,7 +5,7 @@
 Robocode is a [programming game] where the goal is to code a bot. The bot is a tank that must compete against other
 tanks in a virtual battle arena.
 
-![Tank image](../images/tank.svg)
+![Tank image](/images/tank.svg)
 
 The "player" of the game is the programmer (coder) of the bot, who will have no direct influence on the game while it is
 running. Instead, the player ("Robocoder") must write a program that makes up the brain of the tank. The program (code)
@@ -51,7 +51,7 @@ like a Battle Royale Game. Hence, the name _Tank Royale_.
 
 ### Example of a Robocode battle
 
-![Battle screenshot](../images/robocode-battle-anim.webp)
+![Battle screenshot](/images/robocode-battle-anim.webp)
 
 [programming game]: https://en.wikipedia.org/wiki/Programming_game "Programming Game"
 
