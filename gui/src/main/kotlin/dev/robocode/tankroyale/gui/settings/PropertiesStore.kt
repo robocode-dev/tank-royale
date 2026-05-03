@@ -30,6 +30,7 @@ open class PropertiesStore(private val title: String, private val fileName: Stri
         input.use {
             val tmp = Properties()
             tmp.load(input)
+            properties.clear()
             properties.putAll(tmp)
         }
         return alreadyExists
