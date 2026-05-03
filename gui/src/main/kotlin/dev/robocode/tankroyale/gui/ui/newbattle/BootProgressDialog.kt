@@ -4,11 +4,13 @@ import dev.robocode.tankroyale.client.model.BotInfo
 import dev.robocode.tankroyale.gui.booter.BotIdentity
 import dev.robocode.tankroyale.gui.booter.BotMatcher
 import dev.robocode.tankroyale.gui.client.ClientEvents
+import dev.robocode.tankroyale.gui.ui.theme.RobocodeFlatDark
 import net.miginfocom.swing.MigLayout
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.Window
 import javax.swing.*
+import kotlin.system.exitProcess
 
 /**
  * Non-modal dialog shown while waiting for expected bots to connect to the server.
@@ -229,6 +231,34 @@ class BootProgressDialog(
         repeat(matcher.unknownCount) { i ->
             val icon = if (i < matcher.unknownConnected) "\u2705" else "\u23F3"
             statusListModel.addElement("$icon Unknown bot")
+        }
+    }
+
+    // HACK: Standalone entry point for taking screenshots of this dialog.
+    // Run with dark theme and a fixed bot list \u2014 no server connection needed.
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            RobocodeFlatDark.setup()
+            val bots = listOf(
+                BotIdentity("Corners", "1.0"),
+                BotIdentity("Corners", "1.0"),
+                BotIdentity("Crazy", "1.0"),
+                BotIdentity("Fire", "1.0"),
+                BotIdentity("Painting Bot", "1.0"),
+                BotIdentity("Ram Fire", "1.0"),
+                BotIdentity("SpinBot", "1.0"),
+                BotIdentity("Target", "1.0"),
+                BotIdentity("Track Fire", "1.0"),
+            )
+            SwingUtilities.invokeLater {
+                BootProgressDialog(
+                    owner = null,
+                    expectedIdentities = bots,
+                    onSuccess = {},
+                    onCancel = { exitProcess(0) },
+                ).isVisible = true
+            }
         }
     }
 }
