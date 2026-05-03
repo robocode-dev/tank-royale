@@ -1,15 +1,21 @@
-## [0.42.1] - TBD
+## [1.0.0] - 2026-05-03 - Version 1: Stable release with dark and light themes
+
+This is a major milestone: **version 1.0.0** marks Robocode Tank Royale as a stable, production-ready
+game. The 1.0 release introduces full dark and light theme support in the GUI, powered by the
+FlatLaf look-and-feel library, making the interface polished and visually consistent across
+platforms. From this release onward, the project follows semantic versioning with a commitment to
+API stability.
 
 ### 🐞 Bug Fixes
 
 - GUI:
     - Fixed the Tank Color Mode setting ("Bot Colors (default)") reverting to "Bot Colors
       (Debug Only)" after restarting the GUI. The Options dialog was re-saving the color mode
-      from the radio button state on OK, which could override the immediately-saved selection
+      from the radio button state on OK, which could override the immediately saved selection
       if the dialog state had been refreshed in between.
     - Fixed `Bot Colors (Once)` not reliably locking the first bot-defined color for each tank
       part, causing late color updates to fall back to default colors instead.
-    - Fixed graphical debugging toggle and breakpoint mode toggle resetting to off when a
+    - Fixed the graphical debugging toggle and breakpoint mode toggle resetting to off when a
       battle is restarted. Both toggles now retain their state and re-apply the policy to the
       new game automatically. Toggle preferences are stored in persistent in-memory maps keyed
       by the bot's stable WebSocket session ID, so they survive frame recreation, console
