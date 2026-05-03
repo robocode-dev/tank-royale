@@ -195,7 +195,7 @@ it is safe to leave debugger detection enabled in bots even when connecting to a
 
 Robocode features a Graphical Debugging tool that allows bots to draw objects on the battlefield. This is particularly
 useful for visualizing scanned bot positions, enemy movement patterns, and virtual bullets. For instance, you can
-determine if a virtual bullet would have hit an enemy if it were real, which helps in refining your targeting strategy.
+determine if a virtual bullet had hit an enemy if it were real, which helps in refining your targeting strategy.
 
 For drawing objects in Robocode, the methods differ depending on the Bot API variant you're using:
 
@@ -207,11 +207,7 @@ For drawing objects in Robocode, the methods differ depending on the Bot API var
 The sample bot, **PaintingBot**, showcases how to effectively use debugging graphics. Every tick, it paints a red circle
 at the most recent location where it scanned another bot.
 
-<ThemeImage
-  dark-src="../images/gui/dark/paint-bot.png"
-  light-src="../images/gui/light/paint-bot.png"
-  alt="PaintingBot screenshot"
-/>
+<img alt="PaintingBot screenshot" src="../images/gui/dark/paint-bot.png"/>
 
 **Note:** Graphics are not painted immediately, but rather in the next turn. This delay occurs because:
 
