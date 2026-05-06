@@ -10,21 +10,22 @@ plugins {
 }
 
 tasks {
+    register<Exec>("restoreApiBeforeClean") {
+        workingDir = File(projectDir, "api")
+        commandLine("dotnet", "restore")
+        isIgnoreExitValue = true
+    }
+
+    register<Exec>("restoreTestBeforeClean") {
+        workingDir = File(projectDir, "test")
+        commandLine("dotnet", "restore")
+        isIgnoreExitValue = true
+    }
+
     named("clean") {
         dependsOn(":bot-api:dotnet:schema:clean")
-
-        doFirst {
-            logger.info("Restoring NuGet packages in api/ before clean...")
-            project.exec {
-                workingDir = File(projectDir, "api")
-                commandLine("dotnet", "restore")
-            }
-            logger.info("Restoring NuGet packages in test/ before clean...")
-            project.exec {
-                workingDir = File(projectDir, "test")
-                commandLine("dotnet", "restore")
-            }
-        }
+        dependsOn("restoreApiBeforeClean")
+        dependsOn("restoreTestBeforeClean")
 
         doLast {
             delete(
@@ -47,36 +48,32 @@ tasks {
         into("docs")
     }
 
+    register<Exec>("restoreApiBeforeBuild") {
+        workingDir = File(projectDir, "api")
+        commandLine("dotnet", "restore")
+        isIgnoreExitValue = true
+    }
+
     val buildDotnetBotApi by registering(Exec::class) {
         dependsOn(prepareNugetDocs)
         dependsOn(":bot-api:dotnet:schema:build")
+        dependsOn("restoreApiBeforeBuild")
 
         workingDir = File(projectDir, "api")
-
-        doFirst {
-            logger.info("Restoring NuGet packages in api/...")
-            project.exec {
-                workingDir = File(projectDir, "api")
-                commandLine("dotnet", "restore")
-            }
-        }
-
         commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
+    }
+
+    register<Exec>("restoreTestBeforeBuild") {
+        workingDir = File(projectDir, "test")
+        commandLine("dotnet", "restore")
+        isIgnoreExitValue = true
     }
 
     register<Exec>("test") {
         dependsOn(":bot-api:dotnet:schema:build")
+        dependsOn("restoreTestBeforeBuild")
 
         workingDir = File(projectDir, "test")
-
-        doFirst {
-            logger.info("Restoring NuGet packages in test/...")
-            project.exec {
-                workingDir = File(projectDir, "test")
-                commandLine("dotnet", "restore")
-            }
-        }
-
         commandLine("dotnet", "test")
     }
 
