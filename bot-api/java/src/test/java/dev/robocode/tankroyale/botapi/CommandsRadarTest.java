@@ -31,7 +31,12 @@ class CommandsRadarTest extends AbstractBotTest {
         awaitGameStarted(bot);
         awaitTick(bot);
 
-        // No need to drain Turn 1 here, we'll do it in awaitExpectedIntent if needed.
+        // Ensure the bot thread has entered go() loop by draining the first intent
+        server.resetBotIntentLatch();
+        server.continueBotIntent();
+        awaitBotIntent();
+        server.resetBotIntentLatch();
+
         return bot;
     }
 
