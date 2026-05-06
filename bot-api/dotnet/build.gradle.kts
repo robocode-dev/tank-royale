@@ -15,13 +15,13 @@ tasks {
 
         doFirst {
             logger.info("Restoring NuGet packages in api/ before clean...")
-            exec {
-                workingDir("api")
+            project.exec {
+                workingDir = File(projectDir, "api")
                 commandLine("dotnet", "restore")
             }
             logger.info("Restoring NuGet packages in test/ before clean...")
-            exec {
-                workingDir("test")
+            project.exec {
+                workingDir = File(projectDir, "test")
                 commandLine("dotnet", "restore")
             }
         }
@@ -51,12 +51,12 @@ tasks {
         dependsOn(prepareNugetDocs)
         dependsOn(":bot-api:dotnet:schema:build")
 
-        workingDir("api")
+        workingDir = File(projectDir, "api")
 
         doFirst {
             logger.info("Restoring NuGet packages in api/...")
-            exec {
-                workingDir("api")
+            project.exec {
+                workingDir = File(projectDir, "api")
                 commandLine("dotnet", "restore")
             }
         }
@@ -67,12 +67,12 @@ tasks {
     register<Exec>("test") {
         dependsOn(":bot-api:dotnet:schema:build")
 
-        workingDir("test")
+        workingDir = File(projectDir, "test")
 
         doFirst {
             logger.info("Restoring NuGet packages in test/...")
-            exec {
-                workingDir("test")
+            project.exec {
+                workingDir = File(projectDir, "test")
                 commandLine("dotnet", "restore")
             }
         }

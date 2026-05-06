@@ -11,7 +11,7 @@ tasks {
     val dotnetClean by registering(Exec::class) {
         doFirst {
             logger.info("Restoring NuGet packages before clean...")
-            exec {
+            project.exec {
                 commandLine("dotnet", "restore")
             }
         }
@@ -24,7 +24,7 @@ tasks {
     val dotnetBuild by registering(Exec::class) {
         doFirst {
             logger.info("Restoring NuGet packages before build...")
-            exec {
+            project.exec {
                 commandLine("dotnet", "restore")
             }
         }
