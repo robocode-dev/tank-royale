@@ -8,6 +8,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 /**
  * Unit tests for [BootProgress] data class and [BattleHandle.onBootProgress] event (task 5.3).
@@ -95,24 +97,29 @@ class BootProgressTest {
         val betaInfo  = botInfo("Beta",  "2.0", "Author", "localhost", 7002)
 
         val progressEvents = CopyOnWriteArrayList<BootProgress>()
-
-        val emitThread = Thread {
-            Thread.sleep(50)
-            emitBots(conn, alphaInfo)          // partial update
-            Thread.sleep(50)
-            emitBots(conn, alphaInfo, betaInfo) // complete update
-        }
-        emitThread.start()
+        val secondUpdateReceived = CountDownLatch(1)
 
         val progressEvent = Event<BootProgress>()
-        progressEvent.on(this) { progress -> progressEvents.add(progress) }
+        progressEvent.on(this) { progress ->
+            progressEvents.add(progress)
+            // Signal when we receive the "both bots connected" event
+            if (progress.totalConnected == 2) {
+                secondUpdateReceived.countDown()
+            }
+        }
+
+        // Emit bots immediately (no delays)
+        emitBots(conn, alphaInfo)
+        emitBots(conn, alphaInfo, betaInfo)
 
         runner().use { r ->
             r.waitForBots(conn, emptySet(), identities, identities.size, progressEvent)
         }
 
-        // Wait for emit thread to complete (with timeout)
-        emitThread.join(3000)
+        // Wait for second progress event or timeout
+        assertThat(secondUpdateReceived.await(5, TimeUnit.SECONDS))
+            .as("Should receive progress event when both bots connected")
+            .isTrue()
 
         // At least 2 progress events fired (one per BotListUpdate)
         assertThat(progressEvents).hasSizeGreaterThanOrEqualTo(2)
