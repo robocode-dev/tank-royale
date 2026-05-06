@@ -104,15 +104,14 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# Python 3.12 + venv  (ensurepip is what Gradle's setupVenv task requires)
+# Python 3 + venv  (ensurepip is what Gradle's setupVenv task requires)
 # ---------------------------------------------------------------------------
 if ! python3 -c "import ensurepip" &>/dev/null 2>&1; then
-    echo "==> Installing Python 3.12 with venv ..."
+    echo "==> Installing Python 3 with venv ..."
     sudo apt-get update -q 2>/dev/null || true
     sudo apt-get install -y --no-install-recommends \
-        python3.12 python3.12-venv python3-pip 2>/dev/null || true
+        python3 python3-venv python3-pip 2>/dev/null || true
     sudo rm -rf /var/lib/apt/lists/* 2>/dev/null || true
-    sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 2>/dev/null || true
     sudo ln -sf /usr/bin/python3 /usr/bin/python 2>/dev/null || true
     echo "    $(python3 --version) with venv installed."
 else

@@ -1,6 +1,6 @@
 {
   "name": "Multi-SDK Development for Robocode Tank Royale",
-  "description": "Development container with .NET 8.0, Java 17, Node.js 22 LTS, Python 3.12, and DocFX 2.78.4",
+  "description": "Development container with .NET 8.0, Java 17, Node.js 22 LTS, Python 3.11+, and DocFX 2.78.4",
   "build": {
     "dockerfile": "Dockerfile"
   },
