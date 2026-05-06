@@ -90,17 +90,29 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# Python 3 + venv  (ensurepip is what Gradle's setupVenv task requires)
+# Node.js v22 (LTS) — needed for TypeScript Bot API, web docs, and sample bots
+# ---------------------------------------------------------------------------
+if ! command -v node &>/dev/null; then
+    echo "==> Installing Node.js 22 LTS ..."
+    sudo apt-get update -q 2>/dev/null || true
+    timeout 10 wget -qO - https://deb.nodesource.com/setup_22.x 2>/dev/null | sudo bash - 2>/dev/null || true
+    sudo apt-get install -y --no-install-recommends nodejs 2>/dev/null || true
+    sudo rm -rf /var/lib/apt/lists/* 2>/dev/null || true
+    echo "    $(node --version) and $(npm --version) installed."
+else
+    echo "==> Node.js already installed: $(node --version) with npm $(npm --version)"
+fi
+
+# ---------------------------------------------------------------------------
+# Python 3.12 + venv  (ensurepip is what Gradle's setupVenv task requires)
 # ---------------------------------------------------------------------------
 if ! python3 -c "import ensurepip" &>/dev/null 2>&1; then
-    echo "==> Installing python3-venv ..."
-    PYVER=$(timeout 5 python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || true)
+    echo "==> Installing Python 3.12 with venv ..."
     sudo apt-get update -q 2>/dev/null || true
-    # Install both the generic and version-specific package; apt silently skips unknown ones
     sudo apt-get install -y --no-install-recommends \
-        python3 python3-pip python3-venv \
-        ${PYVER:+"python${PYVER}-venv"} 2>/dev/null || true
+        python3.12 python3.12-venv python3-pip 2>/dev/null || true
     sudo rm -rf /var/lib/apt/lists/* 2>/dev/null || true
+    sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 2>/dev/null || true
     sudo ln -sf /usr/bin/python3 /usr/bin/python 2>/dev/null || true
     echo "    $(python3 --version) with venv installed."
 else
@@ -125,5 +137,6 @@ echo ""
 echo "Setup complete."
 echo "  .NET   : $(dotnet --version)"
 echo "  Java   : $(java -version 2>&1 | head -1)"
+echo "  Node   : $(node --version) / npm $(npm --version)"
 echo "  Python : $(python3 --version)"
 echo "  DocFX  : $(docfx --version)"
