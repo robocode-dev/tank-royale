@@ -8,21 +8,27 @@ val inputSchemaDir = "${layout.projectDirectory}/../../../schema/schemas"
 val generatedOutputDir = "${layout.projectDirectory}/generated"
 
 tasks {
-    val dotnetRestore by registering(Exec::class) {
-        commandLine("dotnet", "restore")
-        // Restore must succeed even if packages are missing (for first-time setup)
-        isIgnoreExitValue = true
-    }
-
     val dotnetClean by registering(Exec::class) {
-        dependsOn(dotnetRestore)
+        doFirst {
+            logger.info("Restoring NuGet packages before clean...")
+            exec {
+                commandLine("dotnet", "restore")
+            }
+        }
+
         commandLine("dotnet", "clean")
-        // Clean may fail if project is in bad state, that's okay
+        // Ignore clean failures since project may be in bad state initially
         isIgnoreExitValue = true
     }
 
     val dotnetBuild by registering(Exec::class) {
-        dependsOn(dotnetRestore)
+        doFirst {
+            logger.info("Restoring NuGet packages before build...")
+            exec {
+                commandLine("dotnet", "restore")
+            }
+        }
+
         commandLine("dotnet", "build", "--configuration", "Release")
     }
 

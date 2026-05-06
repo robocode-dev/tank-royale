@@ -10,22 +10,21 @@ plugins {
 }
 
 tasks {
-    val restoreApiForClean by registering(Exec::class) {
-        workingDir("api")
-        commandLine("dotnet", "restore")
-        isIgnoreExitValue = true
-    }
-
-    val restoreTestForClean by registering(Exec::class) {
-        workingDir("test")
-        commandLine("dotnet", "restore")
-        isIgnoreExitValue = true
-    }
-
     named("clean") {
         dependsOn(":bot-api:dotnet:schema:clean")
-        dependsOn(restoreApiForClean)
-        dependsOn(restoreTestForClean)
+
+        doFirst {
+            logger.info("Restoring NuGet packages in api/ before clean...")
+            exec {
+                workingDir("api")
+                commandLine("dotnet", "restore")
+            }
+            logger.info("Restoring NuGet packages in test/ before clean...")
+            exec {
+                workingDir("test")
+                commandLine("dotnet", "restore")
+            }
+        }
 
         doLast {
             delete(
@@ -48,29 +47,36 @@ tasks {
         into("docs")
     }
 
-    val restoreDotnetBotApi by registering(Exec::class) {
-        workingDir("api")
-        commandLine("dotnet", "restore")
-    }
-
     val buildDotnetBotApi by registering(Exec::class) {
         dependsOn(prepareNugetDocs)
         dependsOn(":bot-api:dotnet:schema:build")
-        dependsOn(restoreDotnetBotApi)
 
         workingDir("api")
-        commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
-    }
 
-    val restoreDotnetTests by registering(Exec::class) {
-        workingDir("test")
-        commandLine("dotnet", "restore")
+        doFirst {
+            logger.info("Restoring NuGet packages in api/...")
+            exec {
+                workingDir("api")
+                commandLine("dotnet", "restore")
+            }
+        }
+
+        commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
     }
 
     register<Exec>("test") {
         dependsOn(":bot-api:dotnet:schema:build")
-        dependsOn(restoreDotnetTests)
+
         workingDir("test")
+
+        doFirst {
+            logger.info("Restoring NuGet packages in test/...")
+            exec {
+                workingDir("test")
+                commandLine("dotnet", "restore")
+            }
+        }
+
         commandLine("dotnet", "test")
     }
 
