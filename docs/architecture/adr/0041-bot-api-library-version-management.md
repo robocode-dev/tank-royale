@@ -1,6 +1,6 @@
 # ADR-0041: Bot API Library Version Management in the GUI
 
-**Status:** Proposed  
+**Status:** Accepted  
 **Date:** 2026-04-16
 
 ---

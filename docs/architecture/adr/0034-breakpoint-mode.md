@@ -1,6 +1,6 @@
 # ADR-0034: Breakpoint Mode
 
-**Status:** Proposed  
+**Status:** Accepted  
 **Date:** 2026-04-07
 
 ---

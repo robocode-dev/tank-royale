@@ -1,6 +1,6 @@
 # ADR-0039: Server Testability — Physics Core Extraction and Test Framework
 
-**Status:** Proposed
+**Status:** Accepted  
 **Date:** 2026-04-14
 
 ---

@@ -1,6 +1,6 @@
 # ADR-0036: Start-Game Debug Options
 
-**Status:** Proposed  
+**Status:** Accepted  
 **Date:** 2026-04-08
 
 ---

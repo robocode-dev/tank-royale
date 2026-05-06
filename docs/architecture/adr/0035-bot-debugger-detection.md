@@ -1,6 +1,6 @@
 # ADR-0035: Bot API Debugger Detection
 
-**Status:** Proposed  
+**Status:** Accepted  
 **Date:** 2026-04-07
 
 ---
