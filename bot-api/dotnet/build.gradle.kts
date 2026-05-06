@@ -10,8 +10,22 @@ plugins {
 }
 
 tasks {
+    val restoreApiForClean by registering(Exec::class) {
+        workingDir("api")
+        commandLine("dotnet", "restore")
+        isIgnoreExitValue = true
+    }
+
+    val restoreTestForClean by registering(Exec::class) {
+        workingDir("test")
+        commandLine("dotnet", "restore")
+        isIgnoreExitValue = true
+    }
+
     named("clean") {
         dependsOn(":bot-api:dotnet:schema:clean")
+        dependsOn(restoreApiForClean)
+        dependsOn(restoreTestForClean)
 
         doLast {
             delete(
