@@ -117,9 +117,8 @@ class BootProgressTest {
         }
 
         // Wait for second progress event or timeout
-        assertThat(secondUpdateReceived.await(5, TimeUnit.SECONDS))
-            .as("Should receive progress event when both bots connected")
-            .isTrue()
+        val received = secondUpdateReceived.await(5, TimeUnit.SECONDS)
+        assertThat(received).as("Should receive progress event when both bots connected").isTrue()
 
         // At least 2 progress events fired (one per BotListUpdate)
         assertThat(progressEvents).hasSizeGreaterThanOrEqualTo(2)
