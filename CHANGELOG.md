@@ -1,3 +1,12 @@
+## [1.0.1] - TBD
+
+### 🐞 Bug Fixes
+
+- GUI:
+    - Fixed NullPointerException on Nix OS when starting a battle. Game setup defaults were not
+      being properly initialized if the properties file was empty or corrupted, causing the
+      application to crash when attempting to start a game.
+
 ## [1.0.0] - 2026-05-03 - Version 1: Stable release with dark and light themes
 
 This is a major milestone: **version 1.0.0** marks Robocode Tank Royale as a stable, production-ready
