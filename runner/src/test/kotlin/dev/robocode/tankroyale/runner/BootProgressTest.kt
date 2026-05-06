@@ -108,16 +108,20 @@ class BootProgressTest {
             }
         }
 
-        // Emit bots immediately (no delays)
-        emitBots(conn, alphaInfo)
-        emitBots(conn, alphaInfo, betaInfo)
+        // Emit bots from a thread that starts after subscription is ready
+        val emitThread = Thread {
+            emitBots(conn, alphaInfo)
+            emitBots(conn, alphaInfo, betaInfo)
+        }
 
         runner().use { r ->
+            emitThread.start()
             r.waitForBots(conn, emptySet(), identities, identities.size, progressEvent)
         }
 
         // Wait for second progress event or timeout
-        val received = secondUpdateReceived.await(5, TimeUnit.SECONDS)
+        emitThread.join(5000)
+        val received = secondUpdateReceived.await(2, TimeUnit.SECONDS)
         assertThat(received).isTrue()
 
         // At least 2 progress events fired (one per BotListUpdate)
