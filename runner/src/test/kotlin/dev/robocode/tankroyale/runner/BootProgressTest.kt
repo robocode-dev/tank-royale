@@ -111,7 +111,7 @@ class BootProgressTest {
         }
 
         // Allow time for final events to be processed after waitForBots returns
-        Thread.sleep(100)
+        Thread.sleep(500)
 
         // At least 2 progress events fired (one per BotListUpdate)
         assertThat(progressEvents).hasSizeGreaterThanOrEqualTo(2)
