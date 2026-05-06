@@ -19,6 +19,7 @@ tasks {
             filter<ReplaceTokens>("tokens" to mapOf("VERSION" to version))
         }
         into(".")
+        doNotTrackState("node-gradle binary files not regular files on Windows")
     }
 
     val syncVersion by registering {
