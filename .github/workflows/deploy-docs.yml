@@ -33,8 +33,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-          cache-dependency-path: '**/web/package-lock.json'
 
       - name: Setup .NET 8 (for Docfx)
         uses: actions/setup-dotnet@v4
