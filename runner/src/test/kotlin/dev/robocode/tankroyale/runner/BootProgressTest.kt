@@ -11,6 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
+
 /**
  * Unit tests for [BootProgress] data class and [BattleHandle.onBootProgress] event (task 5.3).
  */
@@ -108,20 +109,15 @@ class BootProgressTest {
             }
         }
 
-        // Emit bots from a thread that starts after subscription is ready
-        val emitThread = Thread {
-            emitBots(conn, alphaInfo)
-            emitBots(conn, alphaInfo, betaInfo)
-        }
-
         runner().use { r ->
-            emitThread.start()
-            r.waitForBots(conn, emptySet(), identities, identities.size, progressEvent)
+            r.waitForBots(conn, emptySet(), identities, identities.size, progressEvent) {
+                // Called immediately after subscription is set up — safe to emit now
+                emitBots(conn, alphaInfo)
+                emitBots(conn, alphaInfo, betaInfo)
+            }
         }
 
-        // Wait for second progress event or timeout
-        emitThread.join(5000)
-        val received = secondUpdateReceived.await(2, TimeUnit.SECONDS)
+        val received = secondUpdateReceived.await(5, TimeUnit.SECONDS)
         assertThat(received).isTrue()
 
         // At least 2 progress events fired (one per BotListUpdate)

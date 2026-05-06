@@ -282,6 +282,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         expectedIdentities: List<BotIdentity>,
         expectedBotCount: Int = expectedIdentities.size,
         bootProgressEvent: dev.robocode.tankroyale.common.event.Event<BootProgress>? = null,
+        onSubscribed: () -> Unit = {},
     ): Set<BotAddress> {
         val timeoutMs = config.botConnectTimeoutMs
         val startMs = System.currentTimeMillis()
@@ -309,6 +310,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
                 botsReadyLatch.countDown()
             }
         }
+        onSubscribed()
 
         try {
             // Check if bots already appeared before we subscribed
