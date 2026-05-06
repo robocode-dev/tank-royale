@@ -96,12 +96,13 @@ class BootProgressTest {
 
         val progressEvents = CopyOnWriteArrayList<BootProgress>()
 
-        Thread {
+        val emitThread = Thread {
             Thread.sleep(50)
             emitBots(conn, alphaInfo)          // partial update
             Thread.sleep(50)
             emitBots(conn, alphaInfo, betaInfo) // complete update
-        }.start()
+        }
+        emitThread.start()
 
         val progressEvent = Event<BootProgress>()
         progressEvent.on(this) { progress -> progressEvents.add(progress) }
@@ -110,11 +111,12 @@ class BootProgressTest {
             r.waitForBots(conn, emptySet(), identities, identities.size, progressEvent)
         }
 
-        // Allow time for final events to be processed after waitForBots returns
-        Thread.sleep(500)
+        // Wait for emit thread to complete (with timeout)
+        emitThread.join(3000)
 
         // At least 2 progress events fired (one per BotListUpdate)
         assertThat(progressEvents).hasSizeGreaterThanOrEqualTo(2)
+            .withFailMessage("Expected at least 2 progress events, got ${progressEvents.size}: ${progressEvents.map { "connected=${it.totalConnected}/expected=${it.totalExpected}" }}")
 
         // First event: only Alpha connected
         val first = progressEvents.first()
