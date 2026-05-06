@@ -7,7 +7,7 @@ Use this registry to:
 - Find the acceptance ID to tag a new test with
 - Track migration from LEGACY tests to shared definitions
 
-Governed by [ADR-0038](../../docs-internal/architecture/adr/0038-shared-cross-platform-test-definitions.md).
+Governed by [ADR-0038](../../docs/architecture/adr/0038-shared-cross-platform-test-definitions.md).
 
 ---
 

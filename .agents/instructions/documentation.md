@@ -98,7 +98,7 @@ force a theme — let GitHub handle it; the palette above works for both.
 
 **Rule:** When any `.schema.yaml` file in `schema/schemas/` changes (new fields, new message types, changed behaviour), check the table below and update the corresponding architecture flow document.
 
-Canonical home for all sequence diagrams: `docs-internal/architecture/models/flows/`
+Canonical home for all sequence diagrams: `docs/architecture/models/flows/`
 
 | Schema category | When it changes, update… |
 |-----------------|--------------------------|
@@ -116,4 +116,4 @@ Canonical home for all sequence diagrams: `docs-internal/architecture/models/flo
 | `change-tps`, `tps-changed-event` | `battle-lifecycle.md` — Changing TPS |
 | All bot gameplay events (`scanned-bot-event`, `hit-by-bullet-event`, etc.) | `event-handling.md` — Key event list |
 | `team-message`, `team-message-event` | `event-handling.md` — Team Events section |
-| Any state object (`bot-state`, `bullet-state`, `game-setup`, etc.) | `docs-internal/architecture/models/message-schema/state.md` |
+| Any state object (`bot-state`, `bullet-state`, `game-setup`, etc.) | `docs/architecture/models/message-schema/state.md` |

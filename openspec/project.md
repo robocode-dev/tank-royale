@@ -82,7 +82,7 @@ Key goals:
 | `bot-api:dotnet` | .NET Bot API                    |
 | `bot-api:python` | Python Bot API                  |
 | `sample-bots:*`  | Example bots (Java, C#, Python) |
-| `docs-build`     | Documentation site              |
+| `web`     | Documentation site              |
 
 ## Project Conventions
 
@@ -99,7 +99,7 @@ Key goals:
 ### Architecture
 
 Full architecture documentation (ADRs, C4 views, message schemas, flows) lives in
-[`docs-internal/architecture/`](../docs-internal/architecture/README.md). Key patterns: monorepo, authoritative server,
+[`docs/architecture/`](../docs/architecture/README.md). Key patterns: monorepo, authoritative server,
 WebSocket + JSON protocol, schema-driven message contracts, cross-platform symmetric APIs, tick-based simulation.
 
 > **Do not duplicate architecture details here.** Reference the architecture docs instead.
@@ -107,7 +107,7 @@ WebSocket + JSON protocol, schema-driven message contracts, cross-platform symme
 ### Protocol & Sequence Diagrams
 
 The WebSocket game protocol — including handshakes, battle lifecycle, turn loop, and controller commands — is documented
-with Mermaid sequence diagrams in [`docs-internal/architecture/models/flows/`](../docs-internal/architecture/models/flows/README.md). **Always consult these
+with Mermaid sequence diagrams in [`docs/architecture/models/flows/`](../docs/architecture/models/flows/README.md). **Always consult these
 diagrams** when working on features that interact with the server protocol (Observer, Controller, Bot connections,
 battle orchestration). The individual message schemas (YAML) live in `schema/schemas/`.
 
@@ -187,8 +187,8 @@ battle orchestration). The individual message schemas (YAML) live in `schema/sch
 - Protocol changes affect all clients; coordinate via `schema/schemas/`
 - Keep documentation updated with code changes
 
-> See [ADR-0003](../docs-internal/architecture/adr/0003-cross-platform-bot-api-strategy.md) for cross-platform
-> design rationale and [architecture docs](../docs-internal/architecture/) for full architectural context.
+> See [ADR-0003](../docs/architecture/adr/0003-cross-platform-bot-api-strategy.md) for cross-platform
+> design rationale and [architecture docs](../docs/architecture/) for full architectural context.
 
 ### License
 
@@ -221,6 +221,6 @@ battle orchestration). The individual message schemas (YAML) live in `schema/sch
 - Main docs: https://robocode-dev.github.io/tank-royale/
 - [Getting Started](https://robocode-dev.github.io/tank-royale/tutorial/getting-started)
 - [Bot API docs](https://robocode-dev.github.io/tank-royale/api/apis.html)
-- [Build tools](../docs-build/docs/dev/tools.md)
+- [Build tools](../web/docs/dev/tools.md)
 - [Roadmap](https://github.com/robocode-dev/tank-royale/wiki/Roadmap)
 

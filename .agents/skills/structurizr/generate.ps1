@@ -13,7 +13,7 @@ $ErrorActionPreference = "Stop"
 # Paths
 $SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
 $PROJECT_ROOT = Resolve-Path (Join-Path $SCRIPT_DIR "..\..\..") -ErrorAction Stop
-$ARCHITECTURE_DIR = Join-Path $PROJECT_ROOT "docs-internal" "architecture"
+$ARCHITECTURE_DIR = Join-Path $PROJECT_ROOT "docs" "architecture"
 $C4_VIEWS_DIR = Join-Path $ARCHITECTURE_DIR "c4-views"
 $IMAGES_DIR = Join-Path $C4_VIEWS_DIR "images"
 $TOOLS_DIR = Join-Path $PROJECT_ROOT ".tools"
@@ -210,7 +210,7 @@ function process_workspace {
                 $output_svg = Join-Path $IMAGES_DIR "$output_name.svg"
                 Copy-Item -Path $svg_file -Destination $output_svg -Force
                 Write-Host "${GREEN}[+] Created SVG: $output_name.svg${NC}"
-                Write-Host "${BLUE}    Reference: ![${output_name}](/docs-internal/architecture/c4-views/images/${output_name}.svg)${NC}"
+                Write-Host "${BLUE}    Reference: ![${output_name}](/docs/architecture/c4-views/images/${output_name}.svg)${NC}"
                 $svg_count++
             }
             else {
@@ -243,7 +243,7 @@ if (-not $WorkspaceDSL) {
     Write-Host "${BLUE}Usage: $($MyInvocation.MyCommand.Name) '<workspace_dsl_content>'${NC}"
     Write-Host ""
     Write-Host "Requirements: Java 11+ (all tools bundled)"
-    Write-Host "Output: SVG files saved to /docs-internal/architecture/c4-views/images/"
+    Write-Host "Output: SVG files saved to /docs/architecture/c4-views/images/"
     Write-Host ""
     Write-Host "Example:"
     Write-Host '  .\generate.ps1 ''workspace "Tank Royale" { model { user = person "Developer" } }'''

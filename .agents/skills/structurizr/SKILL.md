@@ -16,7 +16,7 @@ Generate SVG diagrams from C4 DSL. Java 11+ is the only system requirement — a
 bash .github/skills/structurizr/generate.sh '<workspace_dsl_content>'
 ```
 
-The script auto-downloads Structurizr CLI and PlantUML if missing, then outputs SVG files to `docs-internal/architecture/c4-views/images/`.
+The script auto-downloads Structurizr CLI and PlantUML if missing, then outputs SVG files to `docs/architecture/c4-views/images/`.
 
 ## Rules
 

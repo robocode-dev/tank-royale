@@ -118,8 +118,8 @@
 - [x] 11.3 Update root `README.md` to mention Battle Runner API
 - [ ] 11.4 Update `CHANGELOG.md` when releasing
 - [x] 11.5 Add API reference to generated Javadoc site
-- [x] 11.6 Add VitePress documentation page (`docs-build/docs/api/battle-runner.md`) with dual Kotlin/Java examples and sidebar entry in `config.mts`
-- [x] 11.7 Update C4 Container View (`docs-internal/architecture/c4-views/container.md`) to include Runner
+- [x] 11.6 Add VitePress documentation page (`web/docs/api/battle-runner.md`) with dual Kotlin/Java examples and sidebar entry in `config.mts`
+- [x] 11.7 Update C4 Container View (`docs/architecture/c4-views/container.md`) to include Runner
         in the containers table, Mermaid diagrams, and Embedded Mode section
-- [x] 11.8 Add Runner Components (L3) view (`docs-internal/architecture/c4-views/runner-components.md`)
+- [x] 11.8 Add Runner Components (L3) view (`docs/architecture/c4-views/runner-components.md`)
         describing ServerManager, BooterManager, WebSocket client, and orchestration internals

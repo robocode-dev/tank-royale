@@ -61,7 +61,7 @@ Run `./gradlew clean build` after any code, config, or build system change.
 - Every acceptance ID (TR-API-xxx, TR-SRV-xxx) must have both positive and negative tests
 - See `bot-api/tests/TEST-REGISTRY.md` for cross-platform acceptance IDs
 - See `bot-api/tests/TESTING-GUIDE.md` for intent-capture protocol
-- See `docs-internal/DEBUGGING-GUIDE.md` for the three-layer debugging strategy
+- See `docs/DEBUGGING-GUIDE.md` for the three-layer debugging strategy
 
 ## Python Asyncio Testing (CRITICAL)
 

@@ -27,5 +27,5 @@ The project currently uses JUnit 5.14.1, Kotest 5.9.1, and AssertJ Core 3.27.3. 
 - `gradle/libs.versions.toml` — verify no JUnit references bleed in from main deps
 - Every `build.gradle.kts` that references `testLibs.kotest.runner` or `testLibs.junit.*` — update artifact names
 - Modules with tests: `gui`, `server`, `booter`, `lib:common`, `lib:client`, `bot-api/java`, `bot-api/tests`, `runner`
-- `docs-internal/architecture/adr/0042-gui-test-automation-and-screenshot-framework.md` — update dependency block and add AssertJ Swing risk note
+- `docs/architecture/adr/0042-gui-test-automation-and-screenshot-framework.md` — update dependency block and add AssertJ Swing risk note
 - All work done on a dedicated branch (`upgrade-junit6`); merged to `main` once all module test suites pass

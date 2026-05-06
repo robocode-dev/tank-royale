@@ -24,7 +24,7 @@ potentially leading to confusion and support issues.
     - Information about native installer packages for Windows, macOS, and Linux
     - Java 11+ requirement and JAVA_HOME setup instructions
     - Link to Baeldung article: https://www.baeldung.com/java-home-on-windows-mac-os-x-linux
-- Update `docs-build/docs/articles/installation.md` to include:
+- Update `web/docs/articles/installation.md` to include:
     - Section on installing GUI using native installer packages
     - Platform-specific installation instructions for Windows (msi), macOS (pkg), and Linux (rpm/deb)
     - Java 11+ runtime requirement for installers
@@ -34,7 +34,7 @@ potentially leading to confusion and support issues.
 - **Affected documentation files**:
     - `VERSIONS.md` - Add note about new installer packages in the latest version section
     - `buildSrc/src/main/resources/release/release-docs-template.md` - Add installer section before "Running Robocode"
-    - `docs-build/docs/articles/installation.md` - Add new section for native installers
+    - `web/docs/articles/installation.md` - Add new section for native installers
 
 - **Affected systems**: None - this is purely documentation changes
 

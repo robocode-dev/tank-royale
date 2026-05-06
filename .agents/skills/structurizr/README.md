@@ -16,7 +16,7 @@ Convert C4 DSL workspace blocks to SVG diagrams automatically.
 
 1. Call the generation script: `bash .github/skills/structurizr/generate.sh '<workspace_dsl_content>'`
 2. The script automatically uses the embedded tools in the `.tools/` directory
-3. SVG files are generated in `/docs-internal/architecture/c4-views/images/`
+3. SVG files are generated in `/docs/architecture/c4-views/images/`
 
 The script performs pre-checks to verify Java availability and confirms the embedded tools are present before processing.
 
@@ -36,7 +36,7 @@ The script performs pre-checks to verify Java availability and confirms the embe
 
 2. **Ask GitHub Copilot**: *"Use the Structurizr skill to generate diagrams"*
 
-3. **Get SVG files** in `/docs-internal/architecture/c4-views/images/` with simplified, predictable names:
+3. **Get SVG files** in `/docs/architecture/c4-views/images/` with simplified, predictable names:
    - `system-context.svg` - System context diagram
    - `container.svg` - Container diagram
    - `component-<name>.svg` - Component diagrams (e.g., `component-GameServer.svg`)

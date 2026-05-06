@@ -31,7 +31,7 @@
 - [x] 4.2 Document how to set required properties in code for each supported language
 - [x] 4.3 Add a note about runtime validation and `BotException`
 
-## 5. VitePress Documentation Updates (docs-build)
+## 5. VitePress Documentation Updates (web)
 
 - [x] 5.1 Update `booter.md` to explain `.json` and script optionality
 - [x] 5.2 Update `my-first-bot.md` tutorials for Java, Python, and .NET

@@ -17,7 +17,7 @@
 
 ## 3. Update Installation Guide
 
-- [x] 3.1 Update `docs-build/docs/articles/installation.md`
+- [x] 3.1 Update `web/docs/articles/installation.md`
 - [x] 3.2 Add new section "Installing with Native Installers" after Java section
 - [x] 3.3 Add Windows (msi) installation instructions
 - [x] 3.4 Add macOS (pkg) installation instructions
@@ -39,7 +39,7 @@
 Notes:
 
 - The release docs template (`buildSrc/.../release-docs-template.md`) and the installation guide (
-  `docs-build/.../installation.md`) were updated and aligned. Filenames and download links now use the `{VERSION}`
+  `web/.../installation.md`) were updated and aligned. Filenames and download links now use the `{VERSION}`
   placeholder and include platform-specific installer guidance and `JAVA_HOME` setup instructions.
 - Remaining work: update `VERSIONS.md` to document the new GUI installer packages (see section 1). Also consider
   gradually replacing remaining `x.y.z` occurrences across other docs (some tutorials and READMEs still reference

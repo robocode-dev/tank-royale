@@ -5,7 +5,7 @@ classpath resources (copied and renamed by Gradle during the build). This
 change extends that pattern to include the four bot API artifacts and adds
 a startup scan-and-update flow.
 
-**ADR reference:** [ADR-0041](/docs-internal/architecture/adr/0041-bot-api-library-version-management.md)
+**ADR reference:** [ADR-0041](/docs/architecture/adr/0041-bot-api-library-version-management.md)
 
 ## Goals / Non-Goals
 

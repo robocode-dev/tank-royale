@@ -38,7 +38,7 @@ include("sample-bots:python")
 include("sample-bots:typescript")
 
 // Docs
-include("docs-build")
+include("web")
 
 // Check dependencies with this command: gradlew dependencyUpdates
 dependencyResolutionManagement {

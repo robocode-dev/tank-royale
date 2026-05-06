@@ -589,7 +589,7 @@ tasks {
         "bot-api:python:copyPythonApiDocs",             // Sphinx documentation for Python Bot API
         "bot-api:typescript:copyTypescriptApiDocs",     // TypeDoc documentation for TypeScript Bot API
         "runner:copyRunnerApiDocs",                     // Javadocs for Battle Runner API
-        "docs-build:copy-generated-docs"                // VitePress documentation site
+        "web:copy-generated-docs"                       // VitePress documentation site
     )
 
     register("build-release") {
@@ -612,7 +612,7 @@ tasks {
 
     register("upload-docs-vitepress-only") {
         description = "Build and upload VitePress documentation only (without API generation)"
-        dependsOn("docs-build:copy-vitepress-docs")
+        dependsOn("web:copy-vitepress-docs")
     }
 
     register("create-release") {

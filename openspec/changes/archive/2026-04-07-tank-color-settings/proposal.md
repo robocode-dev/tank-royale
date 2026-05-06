@@ -44,4 +44,4 @@ low-contrast colors.
 ## References
 
 - [Issue #201: UI settings to define the rules for changing the colors of the tanks](https://github.com/robocode-dev/tank-royale/issues/201)
-- [ADR-0032: Tank Color Display Mode](/docs-internal/architecture/adr/0032-user-defined-visual-overrides-for-tanks.md)
+- [ADR-0032: Tank Color Display Mode](/docs/architecture/adr/0032-user-defined-visual-overrides-for-tanks.md)

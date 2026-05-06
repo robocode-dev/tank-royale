@@ -65,5 +65,5 @@ missing the library file entirely, leading to silent runtime failures.
 ## References
 
 - [Issue #207 — Java 26 final-field reflection warning](https://github.com/robocode-dev/tank-royale/issues/207)
-- [ADR-0041: Bot API Library Version Management in the GUI](/docs-internal/architecture/adr/0041-bot-api-library-version-management.md)
+- [ADR-0041: Bot API Library Version Management in the GUI](/docs/architecture/adr/0041-bot-api-library-version-management.md)
 - [gui/build.gradle.kts](/gui/build.gradle.kts) — existing resource-copy pattern

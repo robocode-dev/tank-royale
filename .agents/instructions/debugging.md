@@ -12,7 +12,7 @@ Always start at the lowest layer that can reproduce the bug:
 | **2 — Bot API unit tests** | Validation, intent, events | MockedServer + JUnit/NUnit/pytest/Vitest | API contract bugs |
 | **3 — Battle Runner** | Full game end-to-end | BattleRunner API (programmatic) | Timing, multi-bot, visual |
 
-**Full guide:** `docs-internal/DEBUGGING-GUIDE.md`
+**Full guide:** `docs/DEBUGGING-GUIDE.md`
 
 ---
 
@@ -126,7 +126,7 @@ Rebuild and copy with:
 For message ordering and timing guarantees, always consult:
 
 ```
-docs-internal/architecture/models/flows/README.md   ← Index of all protocol flow diagrams
+docs/architecture/models/flows/README.md   ← Index of all protocol flow diagrams
 ```
 
 Key flows: `bot-connection`, `battle-lifecycle`, `turn-execution`, `event-handling`.

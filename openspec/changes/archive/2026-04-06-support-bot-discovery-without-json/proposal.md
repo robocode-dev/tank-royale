@@ -9,7 +9,7 @@ The current bot discovery logic in the `booter` strictly requires a `.json` file
 - **Default Boot Entry**: Update `Command.getBootEntry` to provide a fallback `BootEntry` when the `.json` file is missing. The default name will be derived from the directory name.
 - **Platform Detection**: Enhance `TemplateBooter` or `BotBooter` to detect the bot's platform (JVM, .NET, Python) by inspecting files in the directory if not specified in a `.json` file.
 - **Runtime Validation**: Ensure that all Bot APIs (Java, Python, .NET) strictly enforce that required properties (`name`, `version`, `authors`) are set before a connection is established, throwing a `BotException` otherwise.
-- **VitePress Documentation**: Update the documentation in `docs-build` (VitePress) to reflect that `.json`, `.sh`, and `.cmd` files are optional and explain the new discovery/validation rules.
+- **VitePress Documentation**: Update the documentation in `web` (VitePress) to reflect that `.json`, `.sh`, and `.cmd` files are optional and explain the new discovery/validation rules.
 - **Example Updates**: Update `MyFirstBot` examples for Java, Python, and C# across all repositories and documentation to demonstrate how to run without external configuration files, by setting required properties in code.
 - **Test Bots**: Create minimal test bots for Java, Python, and C# in `bot-api/tests/bots` that demonstrate running without any external `.sh`, `.cmd`, or `.json` files. Use the existing `BattleRunner` as-is for automated verification of these bots.
 - **Negative Testing**: Implement automated tests to verify that `BotException` is correctly thrown with a helpful message when required properties are missing at runtime.
@@ -23,7 +23,7 @@ The current bot discovery logic in the `booter` strictly requires a `.json` file
 - `scriptless-example-bots`: Standardized `MyFirstBot` examples that function without `.sh`, `.cmd`, or `.json` files.
 
 ### Modified Capabilities
-- `user-documentation`: Update documentation in `docs-build` (VitePress) to reflect that `.json` files are optional and explain how to configure bots via code or environment variables.
+- `user-documentation`: Update documentation in `web` (VitePress) to reflect that `.json` files are optional and explain how to configure bots via code or environment variables.
 - `bot-api-handshake`: Update the handshake process in all APIs to include runtime property validation.
 
 ## Impact
@@ -32,5 +32,5 @@ The current bot discovery logic in the `booter` strictly requires a `.json` file
 - `bot-api` (Java, Python, .NET): Ensure `BaseBot` and `EnvVars` consistently enforce required fields and update `MyFirstBot` examples.
 - `bot-api/tests/bots`: New test bots for verification.
 - `testing`: Integration of `BattleRunner` for testing the new discovery logic.
-- `docs-build`: Updates to the VitePress documentation and bot development tutorials.
+- `web`: Updates to the VitePress documentation and bot development tutorials.
 - `docs`: Updates to bot development guides.

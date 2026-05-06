@@ -5,7 +5,7 @@
 set -e
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
-ARCHITECTURE_DIR="$PROJECT_ROOT/docs-internal/architecture"
+ARCHITECTURE_DIR="$PROJECT_ROOT/docs/architecture"
 C4_VIEWS_DIR="$ARCHITECTURE_DIR/c4-views"
 IMAGES_DIR="${IMAGES_DIR:-$C4_VIEWS_DIR/images}"
 SKILL_DIR="$(dirname "${BASH_SOURCE[0]}")"
@@ -190,7 +190,7 @@ process_workspace() {
                 local output_svg="$IMAGES_DIR/$output_name.svg"
                 cp "$svg_file" "$output_svg"
                 echo -e "${GREEN}[+] Created SVG: $output_name.svg${NC}"
-                echo -e "${BLUE}    Reference: ![${output_name}](/docs-internal/architecture/c4-views/images/${output_name}.svg)${NC}"
+                echo -e "${BLUE}    Reference: ![${output_name}](/docs/architecture/c4-views/images/${output_name}.svg)${NC}"
                 ((svg_count++))
             else
                 echo -e "${RED}   [x] SVG file not created: $svg_file${NC}"
@@ -221,7 +221,7 @@ if [ -z "$1" ]; then
     echo -e "${BLUE}Usage: $(basename "$0") '<workspace_dsl_content>'${NC}"
     echo ""
     echo "Requirements: Java 11+ (all tools bundled)"
-    echo "Output: SVG files saved to /docs-internal/architecture/c4-views/images/"
+    echo "Output: SVG files saved to /docs/architecture/c4-views/images/"
     echo ""
     echo "Example:"
     echo '  bash generate.sh '"'"'workspace "Tank Royale" { model { user = person "Developer" } }'"'"

@@ -54,7 +54,7 @@ Furthermore, while Bot APIs have fallback mechanisms for some properties (e.g., 
 
 ## MyFirstBot & Documentation Updates
 
-### 1. VitePress Documentation (docs-build)
+### 1. VitePress Documentation (web)
 - **Rules**: If `.json` is present, its properties are used. If missing, properties set in code are used. If properties are missing, throw `BotException` listing missing fields. The documentation should explicitly state that `.json` is now a fallback/optional mechanism.
 - **Boot Templates**: Clarify that script files (`.sh`/`.cmd`) are optional due to template-based booting. The `base` property (entry point) defaults to the directory name.
 - **Discovery**: Update the explanation of how the booter finds bots to include directory-based discovery without `.json` for version 0.39.0+.

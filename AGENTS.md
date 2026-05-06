@@ -11,9 +11,9 @@ Routing hub — load `.agents/instructions/*.md` files based on the task type be
 | **Planning, proposals, specs** | `.agents/instructions/openspec.md` ⚠️ **STOP after proposal — wait for human approval before implementing** |
 | **Audit, Scout, Prime** | `.agents/instructions/commands.md` |
 | **Architecture decisions, ADRs** | `.agents/instructions/architecture.md` |
-| **Debugging, bug hunting, timing issues** | `.agents/instructions/debugging.md` + `docs-internal/DEBUGGING-GUIDE.md` |
+| **Debugging, bug hunting, timing issues** | `.agents/instructions/debugging.md` + `docs/DEBUGGING-GUIDE.md` |
 | **Bot API (Java/Python/.NET)** | `.agents/instructions/cross-platform.md` + `.agents/instructions/core-principles.md` |
-| **Protocol, WebSocket, server comms** | `docs-internal/architecture/models/flows/README.md` (sequence diagrams) + `docs-internal/architecture/models/message-schema/README.md` (message schemas) |
+| **Protocol, WebSocket, server comms** | `docs/architecture/models/flows/README.md` (sequence diagrams) + `docs/architecture/models/message-schema/README.md` (message schemas) |
 | **Testing, builds, Gradle** | `.agents/instructions/testing-and-build.md` |
 | **Documentation, README, Javadoc** | `.agents/instructions/documentation.md` |
 | **Changelog, release notes** | `.agents/instructions/changelog.md` |

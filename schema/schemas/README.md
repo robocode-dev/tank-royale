@@ -5,7 +5,7 @@ This directory contains the YAML schema files that define the WebSocket message 
 Each `.schema.yaml` file is a [JSON Schema Draft 2020-12](https://json-schema.org/) definition. They are the authoritative contract for every message exchanged on the wire.
 
 > **For sequence diagrams and flow documentation** — how these messages participate in the battle lifecycle, connection handshake, turn loop, and controller commands — see:
-> **[`docs-internal/architecture/models/flows/`](../../docs-internal/architecture/models/flows/README.md)**
+> **[`docs/architecture/models/flows/`](../../docs/architecture/models/flows/README.md)**
 
 ---
 
@@ -138,7 +138,7 @@ Reusable data structures embedded in events and commands.
 
 ## Related Documentation
 
-- **[Protocol Flow Diagrams](../../docs-internal/architecture/models/flows/README.md)** — Sequence diagrams for all protocol flows
-- **[Message Schema Reference](../../docs-internal/architecture/models/message-schema/README.md)** — Detailed message contracts with examples
-- **[ADR-0006: Schema-Driven Contracts](../../docs-internal/architecture/adr/0006-schema-driven-protocol-contracts.md)** — Design rationale
-- **[ADR-0009: WebSocket Protocol](../../docs-internal/architecture/adr/0009-websocket-communication-protocol.md)** — Protocol design
+- **[Protocol Flow Diagrams](../../docs/architecture/models/flows/README.md)** — Sequence diagrams for all protocol flows
+- **[Message Schema Reference](../../docs/architecture/models/message-schema/README.md)** — Detailed message contracts with examples
+- **[ADR-0006: Schema-Driven Contracts](../../docs/architecture/adr/0006-schema-driven-protocol-contracts.md)** — Design rationale
+- **[ADR-0009: WebSocket Protocol](../../docs/architecture/adr/0009-websocket-communication-protocol.md)** — Protocol design

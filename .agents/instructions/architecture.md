@@ -8,18 +8,18 @@ Load for: architecture decisions, design rationale, system structure, protocol d
 
 ## Architecture Location
 
-All architecture docs in [`docs-internal/architecture/`](../docs-internal/architecture/README.md).
+All architecture docs in [`docs/architecture/`](../docs/architecture/README.md).
 
 | Category | Location |
 |----------|----------|
-| ADRs (41) | `docs-internal/architecture/adr/` |
-| C4 Views | `docs-internal/architecture/c4-views/` |
-| Message Schema (53 types) | `docs-internal/architecture/models/message-schema/` |
-| Flows | `docs-internal/architecture/models/flows/` |
+| ADRs (41) | `docs/architecture/adr/` |
+| C4 Views | `docs/architecture/c4-views/` |
+| Message Schema (53 types) | `docs/architecture/models/message-schema/` |
+| Flows | `docs/architecture/models/flows/` |
 
 ## Creating New ADRs
 
-See [`docs-internal/architecture/adr/README.md`](../docs-internal/architecture/adr/README.md) for format (MADR), numbering, and required sections.
+See [`docs/architecture/adr/README.md`](../docs/architecture/adr/README.md) for format (MADR), numbering, and required sections.
 
 ## ⛔ ADR Review Gate
 

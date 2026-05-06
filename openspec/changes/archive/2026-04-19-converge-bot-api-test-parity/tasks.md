@@ -17,7 +17,7 @@
     - `bot-api/typescript/test/GameSetup.test.ts`
     - `bot-api/typescript/test/GameType.test.ts`
     - `bot-api/typescript/test/BaseBotInterfaces.test.ts`
-- [x] 0.3 Update `docs-internal/architecture/adr/0038-shared-cross-platform-test-definitions.md`:
+- [x] 0.3 Update `docs/architecture/adr/0038-shared-cross-platform-test-definitions.md`:
     - Add TR-API-EVT and TR-API-MDL to the planned categories table
     - Add TR-API-BOT-002 thru 008 to the BOT category
     - Add note about TypeScript-specific tests (Mappers/RuntimeAdapter/WebSocketHandler) as

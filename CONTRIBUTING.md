@@ -156,7 +156,7 @@ of it (e.g., controllers for scheduling, ranking, analytics) in a separate repos
 
 ## Tools used for building all modules of Robocode
 
-[Here](docs-build/docs/dev/tools.md) you can find a list of all the tools required for building all parts of Robocode.
+[Here](web/docs/dev/tools.md) you can find a list of all the tools required for building all parts of Robocode.
 
 [programming game]: https://www.makeuseof.com/tag/best-programming-games/
 

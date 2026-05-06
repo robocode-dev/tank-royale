@@ -743,7 +743,7 @@ as a workaround. All AI coding assistants have struggled with this issue.
 **Files**: `bot-api/tests/TESTING-GUIDE.md` (new)
 
 - [ ] Introduction: Why these patterns exist
-- [ ] Protocol Alignment: Explicitly link test utilities to sequence diagrams in `docs-internal/architecture/models/flows/`
+- [ ] Protocol Alignment: Explicitly link test utilities to sequence diagrams in `docs/architecture/models/flows/`
 - [ ] MockedServer overview and capabilities
 - [ ] Removed methods and why they were deleted (setEnergy, sendTick, etc.)
 - [ ] AbstractBotTest patterns and best practices
