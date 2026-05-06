@@ -34,23 +34,25 @@ tasks {
     val copyBooterJar by registering(Copy::class) {
         dependsOn(":booter:r8ShrinkTask")
 
-        duplicatesStrategy = DuplicatesStrategy.FAIL
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
         from(project(":booter").file("./build/libs"))
         into(file("./build/classes/kotlin/main"))
         include("robocode-tankroyale-booter-*.jar")
         exclude("*-javadoc.jar", "*-sources.jar", "*-all.jar")
         rename(".*", "robocode-tankroyale-booter.jar")
+        outputs.file(file("./build/classes/kotlin/main/robocode-tankroyale-booter.jar"))
     }
 
     val copyServerJar by registering(Copy::class) {
         dependsOn(":server:r8ShrinkTask")
 
-        duplicatesStrategy = DuplicatesStrategy.FAIL
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
         from(project(":server").file("./build/libs"))
         into(file("./build/classes/kotlin/main"))
         include("robocode-tankroyale-server-*.jar")
         exclude("*-javadoc.jar", "*-sources.jar", "*-all.jar")
         rename(".*", "robocode-tankroyale-server.jar")
+        outputs.file(file("./build/classes/kotlin/main/robocode-tankroyale-server.jar"))
     }
 
     val copyJars = register("copyJars") {
