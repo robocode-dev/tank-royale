@@ -34,40 +34,52 @@ object GamesSettings : PropertiesStore("Robocode Games Setups", "game-setups.pro
     val defaultGameSetup: Map<String, GameSetup>
         get() = GAME_TYPE_PRESETS.values.associate { it.gameType.displayName to it.toClientGameSetup() }
 
-    init {
-        setProperties(defaultGameSetup)
-        load()
-    }
-
     private val gameSetups = HashMap<String, MutableGameSetup?>()
 
     init {
+        load()
+
+        // Initialize all game types with their defaults
+        for ((gameTypeName, preset) in GAME_TYPE_PRESETS) {
+            gameSetups[gameTypeName.displayName] = preset.toClientGameSetup().toMutableGameSetup()
+        }
+
+        // Load saved settings from file, overriding defaults
         for (propName in propertyNames()) {
             val strings = propName.split(".", limit = 2)
+            if (strings.size != 2) continue
+
             val gameName = strings[0]
             val fieldName = strings[1]
-
             val value = load(propName) as String
 
             if (gameSetups[gameName] == null) {
                 gameSetups[gameName] = defaultGameSetup[GameType.CUSTOM.displayName]?.toMutableGameSetup()
             }
-            val gameType = games[gameName] as MutableGameSetup
-            val theField = MutableGameSetup::class.java.getDeclaredField(fieldName)
-            theField.isAccessible = true
-            when (theField.type.name) {
-                "boolean" -> theField.setBoolean(gameType, value.toBoolean())
-                "int" -> theField.setInt(gameType, value.toInt())
-                "double" -> theField.setDouble(gameType, value.toDouble())
-                "java.lang.Integer" -> theField[gameType] = try {
-                    Integer.parseInt(value)
-                } catch (_: NumberFormatException) {
-                    null
+
+            val gameType = gameSetups[gameName] ?: continue
+            try {
+                val theField = MutableGameSetup::class.java.getDeclaredField(fieldName)
+                theField.isAccessible = true
+                when (theField.type.name) {
+                    "boolean" -> theField.setBoolean(gameType, value.toBoolean())
+                    "int" -> theField.setInt(gameType, value.toInt())
+                    "double" -> theField.setDouble(gameType, value.toDouble())
+                    "java.lang.Integer" -> theField[gameType] = try {
+                        Integer.parseInt(value)
+                    } catch (_: NumberFormatException) {
+                        null
+                    }
+                    "java.lang.String" -> theField[gameType] = value
+                    else -> throw RuntimeException("Type is missing implementation: ${theField.type.name}")
                 }
-                "java.lang.String" -> theField[gameType] = value
-                else -> throw RuntimeException("Type is missing implementation: ${theField.type.name}")
+            } catch (e: NoSuchFieldException) {
+                // Field doesn't exist (possibly schema version mismatch), skip it
             }
         }
+
+        // Ensure all properties are saved to file
+        setProperties(gameSetups as Map<String, IGameSetup?>)
     }
 
     val games: MutableMap<String, MutableGameSetup?>
@@ -100,7 +112,7 @@ object GamesSettings : PropertiesStore("Robocode Games Setups", "game-setups.pro
     }
 
     override fun save() {
-        setProperties(gameSetups)
+        setProperties(gameSetups as Map<String, IGameSetup?>)
         super.save()
     }
 }
