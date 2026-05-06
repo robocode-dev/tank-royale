@@ -12,7 +12,12 @@ tasks {
         commandLine("dotnet", "clean")
     }
 
+    val dotnetRestore by registering(Exec::class) {
+        commandLine("dotnet", "restore")
+    }
+
     val dotnetBuild by registering(Exec::class) {
+        dependsOn(dotnetRestore)
         commandLine("dotnet", "build", "--configuration", "Release")
     }
 

@@ -34,16 +34,28 @@ tasks {
         into("docs")
     }
 
+    val restoreDotnetBotApi by registering(Exec::class) {
+        workingDir("api")
+        commandLine("dotnet", "restore")
+    }
+
     val buildDotnetBotApi by registering(Exec::class) {
         dependsOn(prepareNugetDocs)
         dependsOn(":bot-api:dotnet:schema:build")
+        dependsOn(restoreDotnetBotApi)
 
         workingDir("api")
         commandLine("dotnet", "build", "--configuration", "Release", "-p:Version=$version")
     }
 
+    val restoreDotnetTests by registering(Exec::class) {
+        workingDir("test")
+        commandLine("dotnet", "restore")
+    }
+
     register<Exec>("test") {
         dependsOn(":bot-api:dotnet:schema:build")
+        dependsOn(restoreDotnetTests)
         workingDir("test")
         commandLine("dotnet", "test")
     }
