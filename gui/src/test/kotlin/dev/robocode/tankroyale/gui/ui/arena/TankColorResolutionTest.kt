@@ -11,6 +11,11 @@ import java.awt.Color
 
 class TankColorResolutionTest : StringSpec({
 
+    afterTest {
+        ConfigSettings.tankColorMode = TankColorMode.BOT_COLORS
+    }
+
+
     val botId = 1
     val defaultColor = "#000000"
     val botColor1 = "#FF0000"

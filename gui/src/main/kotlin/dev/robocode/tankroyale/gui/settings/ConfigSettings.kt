@@ -128,7 +128,11 @@ object ConfigSettings : PropertiesStore("Robocode Misc Settings", "gui.propertie
         }
 
     var tankColorMode: TankColorMode
-        get() = TankColorMode.fromString(load(TANK_COLOR_MODE, TankColorMode.BOT_COLORS.value))
+        get() = try {
+            TankColorMode.fromString(load(TANK_COLOR_MODE))
+        } catch (_: Exception) {
+            TankColorMode.BOT_COLORS
+        }
         set(value) {
             save(TANK_COLOR_MODE, value.value)
         }
