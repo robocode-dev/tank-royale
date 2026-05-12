@@ -653,8 +653,8 @@ Both calls must happen in sequence for handler output to appear in the GUI.
 - **[Battle Lifecycle Flow](./battle-lifecycle.md)** — When round ends and events fire
 - **[Bot Connection Flow](./bot-connection.md)** — Event handler setup during initialization
 - **[Message Schema: Events](../message-schema/events.md)** — Event message contracts
-- **[ADR-0011: Realtime Game Loop](../../adr/0011-realtime-game-loop-architecture.md)** — Design decisions about event timing
-- **[ADR-0012: Turn Timing Semantics](../../adr/0012-turn-timing-semantics.md)** — Exact timing semantics
+- **[ADR-0011: Realtime Game Loop](/docs/decisions/0011-realtime-game-loop-architecture.md)** — Design decisions about event timing
+- **[ADR-0012: Turn Timing Semantics](/docs/decisions/0012-turn-timing-semantics.md)** — Exact timing semantics
 
 ---
 

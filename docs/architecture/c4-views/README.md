@@ -31,10 +31,10 @@ Think of it like Google Maps: zoom out to see the country, zoom in to see street
 
 ## Related Documentation
 
-- **[ADRs](../adr/)** — Why architectural decisions were made
-- **[Message Schema](../models/message-schema/)** — WebSocket message contracts
-- **[Business Flows](../models/flows/)** — Process documentation
-- **[OpenSpec](../../../openspec/)** — Detailed specifications
+- **[ADRs](/docs/decisions/README.md)** — Why architectural decisions were made
+- **[Message Schema](../models/message-schema/README.md)** — WebSocket message contracts
+- **[Business Flows](../models/flows/README.md)** — Process documentation
+- **[OpenSpec](/openspec/project.md)** — Detailed specifications
 
 ---
 

@@ -443,7 +443,7 @@ classDiagram
 
 **Direction:** Controller → Server
 
-**Purpose:** Enable server debug mode, allowing step-through execution and breakpoints (see [ADR-0033](../../adr/0033-bot-debug-mode.md))
+**Purpose:** Enable server debug mode, allowing step-through execution and breakpoints (see [ADR-0033](/docs/decisions/0033-bot-debug-mode.md))
 
 ### Structure
 
@@ -481,7 +481,7 @@ classDiagram
 
 **Direction:** Controller → Server
 
-**Purpose:** Disable server debug mode and return to normal real-time execution (see [ADR-0033](../../adr/0033-bot-debug-mode.md))
+**Purpose:** Disable server debug mode and return to normal real-time execution (see [ADR-0033](/docs/decisions/0033-bot-debug-mode.md))
 
 ### Structure
 
@@ -519,7 +519,7 @@ classDiagram
 
 **Direction:** Controller → Server
 
-**Purpose:** Update the policy for a specific bot — used for breakpoint mode and debug graphics visibility (see [ADR-0034](../../adr/0034-breakpoint-mode.md))
+**Purpose:** Update the policy for a specific bot — used for breakpoint mode and debug graphics visibility (see [ADR-0034](/docs/decisions/0034-breakpoint-mode.md))
 
 ### Example
 
@@ -703,17 +703,17 @@ Server ignores message (no response)
 
 ## Related Schemas
 
-- [start-game.schema.yaml](../../../../schema/schemas/start-game.schema.yaml)
-- [stop-game.schema.yaml](../../../../schema/schemas/stop-game.schema.yaml)
-- [pause-game.schema.yaml](../../../../schema/schemas/pause-game.schema.yaml)
-- [resume-game.schema.yaml](../../../../schema/schemas/resume-game.schema.yaml)
-- [next-turn.schema.yaml](../../../../schema/schemas/next-turn.schema.yaml)
-- [change-tps.schema.yaml](../../../../schema/schemas/change-tps.schema.yaml)
-- [enable-debug-mode.schema.yaml](../../../../schema/schemas/enable-debug-mode.schema.yaml)
-- [disable-debug-mode.schema.yaml](../../../../schema/schemas/disable-debug-mode.schema.yaml)
-- [bot-policy-update.schema.yaml](../../../../schema/schemas/bot-policy-update.schema.yaml)
-- [game-setup.schema.yaml](../../../../schema/schemas/game-setup.schema.yaml)
-- [bot-address.schema.yaml](../../../../schema/schemas/bot-address.schema.yaml)
+- [start-game.schema.yaml](/schema/schemas/start-game.schema.yaml)
+- [stop-game.schema.yaml](/schema/schemas/stop-game.schema.yaml)
+- [pause-game.schema.yaml](/schema/schemas/pause-game.schema.yaml)
+- [resume-game.schema.yaml](/schema/schemas/resume-game.schema.yaml)
+- [next-turn.schema.yaml](/schema/schemas/next-turn.schema.yaml)
+- [change-tps.schema.yaml](/schema/schemas/change-tps.schema.yaml)
+- [enable-debug-mode.schema.yaml](/schema/schemas/enable-debug-mode.schema.yaml)
+- [disable-debug-mode.schema.yaml](/schema/schemas/disable-debug-mode.schema.yaml)
+- [bot-policy-update.schema.yaml](/schema/schemas/bot-policy-update.schema.yaml)
+- [game-setup.schema.yaml](/schema/schemas/game-setup.schema.yaml)
+- [bot-address.schema.yaml](/schema/schemas/bot-address.schema.yaml)
 
 ---
 
@@ -723,8 +723,8 @@ Server ignores message (no response)
 - [Handshakes](./handshakes.md)
 - [Events](./events.md)
 - [Battle Lifecycle Flow](../flows/battle-lifecycle.md)
-- [ADR-0033: Server Debug Mode](../../adr/0033-bot-debug-mode.md)
-- [ADR-0034: Breakpoint Mode](../../adr/0034-breakpoint-mode.md)
+- [ADR-0033: Server Debug Mode](/docs/decisions/0033-bot-debug-mode.md)
+- [ADR-0034: Breakpoint Mode](/docs/decisions/0034-breakpoint-mode.md)
 
 ---
 

@@ -131,10 +131,10 @@ These flow diagrams are the **single canonical source** for all protocol sequenc
 
 ## Related Documentation
 
-- **[Message Schema](../message-schema/)** — WebSocket message contracts
-- **[Schema YAML Definitions](/schema/schemas/)** — Actual message format definitions
-- **[ADRs](../../adr/)** — Design decisions about flow architecture
-- **[C4 Views](../../c4-views/)** — Component interactions
+- **[Message Schema](../message-schema/README.md)** — WebSocket message contracts
+- **[Schema YAML Definitions](/schema/schemas/README.md)** — Actual message format definitions
+- **[ADRs](../../../decisions/README.md)** — Design decisions about flow architecture
+- **[C4 Views](../../c4-views/README.md)** — Component interactions
 
 ---
 

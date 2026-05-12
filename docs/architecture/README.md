@@ -7,16 +7,16 @@ Comprehensive architecture documentation for Robocode Tank Royale following the 
 ## 🎯 Quick Navigation
 
 ### **Architecture Decision Records (ADRs)** — The "Why"
-**[👉 adr/](./adr/)**
+**[👉 Decisions](/docs/decisions/README.md)**
 
-Why key architectural decisions were made. See **[adr/README.md](./adr/README.md)** for the full index with statuses and dates.
+Why key architectural decisions were made. See **[Decisions](/docs/decisions/README.md)** for the full index with statuses and dates.
 
 **Use When:** Understanding design rationale, trade-offs, alternatives
 
 ---
 
 ### **C4 Architecture Diagrams** — The "What" (Visual)
-**[👉 c4-views/](./c4-views/)**
+**[👉 C4-views/](./c4-views/)**
 
 Hierarchical system visualization at multiple zoom levels:
 - ✅ [**System Context**](./c4-views/system-context.md) — High-level 10,000-foot view
@@ -63,7 +63,7 @@ How entities interact through processes:
 
 ### ADRs (Architecture Decision Records)
 
-See **[adr/README.md](./adr/README.md)** for the full canonical ADR index with dates and statuses.
+See **[Decisions](/docs/decisions/README.md)** for the full canonical ADR index with dates and statuses.
 
 ### Message Schema
 | Category | Coverage | Status |
@@ -113,12 +113,12 @@ See **[adr/README.md](./adr/README.md)** for the full canonical ADR index with d
 
 ### For **Server Developers**
 1. All message schemas ([Handshakes](./models/message-schema/handshakes.md), [Commands](./models/message-schema/commands.md), [Events](./models/message-schema/events.md), [Intents](./models/message-schema/intents.md), [State](./models/message-schema/state.md))
-2. [ADR-0011: Game Loop](./adr/0011-realtime-game-loop-architecture.md) — Timing & determinism
+2. [ADR-0011: Game Loop](/docs/decisions/0011-realtime-game-loop-architecture.md) — Timing & determinism
 3. [Turn Execution Flow](./models/flows/turn-execution.md) — 15-step sequence
 4. [Battle Lifecycle Flow](./models/flows/battle-lifecycle.md) — State machine
 
 ### For **System Designers**
-1. [ADR index](./adr/) — All architectural decisions and their rationale
+1. [Decisions](/docs/decisions/README.md) — All architectural decisions and their rationale
 2. System Context and Container diagrams
 3. All message schemas and state objects
 4. Flow state machines
@@ -165,7 +165,7 @@ Business Flows:           4
 | Question | Answer |
 |----------|--------|
 | **New to Tank Royale?** | Start with [System Context](./c4-views/system-context.md) |
-| **Why this architecture?** | Check the [ADRs](./adr/) |
+| **Why this architecture?** | Check the [Decisions](/docs/decisions/README.md) |
 | **What messages are exchanged?** | Browse [Message Schema](./models/message-schema/) |
 | **How do processes work?** | See [Business Flows](./models/flows/) |
 | **Building bot code?** | Reference [Handshakes](./models/message-schema/handshakes.md) + [Events](./models/message-schema/events.md) + [Intents](./models/message-schema/intents.md) |

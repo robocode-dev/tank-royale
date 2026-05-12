@@ -226,9 +226,9 @@ This design choice ensures:
 
 ## Related Documentation
 
-- **[ADR-0009: WebSocket Protocol](../adr/0009-websocket-communication-protocol.md)** — Why WebSocket was chosen
-- **[ADR-0003: Cross-Platform Bot APIs](../adr/0003-cross-platform-bot-api-strategy.md)** — Multi-language support strategy
-- **[ADR-0011: Real-Time Game Loop](../adr/0011-realtime-game-loop-architecture.md)** — Real-time 30 TPS tick system
+- **[ADR-0009: WebSocket Protocol](/docs/decisions/0009-websocket-communication-protocol.md)** — Why WebSocket was chosen
+- **[ADR-0003: Cross-Platform Bot APIs](/docs/decisions/0003-cross-platform-bot-api-strategy.md)** — Multi-language support strategy
+- **[ADR-0011: Real-Time Game Loop](/docs/decisions/0011-realtime-game-loop-architecture.md)** — Real-time 30 TPS tick system
 - **[Battle Lifecycle Flow](../models/flows/battle-lifecycle.md)** — How battles progress
 - **[Bot Connection Flow](../models/flows/bot-connection.md)** — Bot connection sequence
 

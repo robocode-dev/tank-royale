@@ -17,7 +17,7 @@ Message schemas answer: **"What messages are exchanged over the network?"**
 
 ## Schema Categories
 
-All schemas are defined in [`/schema/schemas/`](../../../../schema/schemas/) as YAML files using JSON Schema Draft 2020-12.
+All schemas are defined in [`/schema/schemas/`](/schema/schemas/README.md) as YAML files using JSON Schema Draft 2020-12.
 
 ```mermaid
 graph TD
@@ -339,7 +339,7 @@ Use schemas to generate test fixtures and validate responses.
 - **[State Objects](./state.md)** — Data transfer objects
 - **[Battle Lifecycle Flow](../flows/battle-lifecycle.md)** — How messages flow through battle
 - **[Turn Execution Flow](../flows/turn-execution.md)** — Per-turn message sequence
-- **[Schema Source](../../../../schema/schemas/)** — YAML schema definitions
+- **[Schema Source](/schema/schemas/README.md)** — YAML schema definitions
 
 ---
 
