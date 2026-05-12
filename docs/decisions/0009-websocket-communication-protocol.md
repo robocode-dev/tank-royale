@@ -1,11 +1,17 @@
-# ADR-0009: WebSocket Communication Protocol
+---
+status: accepted
+date: 2026-02-11
+title: WebSocket Communication Protocol
+decision-makers:
+consulted:
+informed:
+---
 
-**Status:** Accepted  
-**Date:** 2026-02-11
+# WebSocket Communication Protocol
 
 ---
 
-## Context
+## Context and Problem Statement
 
 Tank Royale needs real-time bidirectional communication between server and clients (bots, observers) that supports:
 
@@ -18,7 +24,7 @@ Tank Royale needs real-time bidirectional communication between server and clien
 
 ---
 
-## Decision
+## Decision Outcome
 
 Use **WebSocket protocol with JSON messages** for all server-client communication.
 
@@ -30,7 +36,46 @@ Use **WebSocket protocol with JSON messages** for all server-client communicatio
 
 ---
 
-## Rationale
+### Consequences
+
+- ✅ Real-time communication at 30 TPS
+- ✅ Cross-platform bot development
+- ✅ Browser-based clients possible
+- ✅ Simple deployment (no broker required)
+- ❌ JSON parsing overhead vs binary protocols
+- ❌ Schema evolution requires coordination
+
+## Considered Options
+
+- WebSocket + JSON (chosen)
+- HTTP REST + polling
+- gRPC
+- Custom TCP/UDP protocol
+- Message Queue (brokered)
+
+## Pros and Cons of the Options
+
+### WebSocket + JSON (chosen)
+
+Good, because real-time bidirectional communication, browser support, language-agnostic JSON, schema validation.
+
+Bad, because JSON overhead versus binary formats; schema evolution coordination required.
+
+### HTTP REST + polling
+
+Bad, because too much latency for 30 TPS; server push awkward.
+
+### gRPC
+
+Good, because strong contracts and streaming; Bad, because poor browser support and higher deployment complexity.
+
+### Custom TCP/UDP
+
+Good, because low overhead; Bad, because reinvents protocol features; no browser support; higher maintenance burden.
+
+### Message Queue
+
+Good, decoupling via broker; Bad, unnecessary operational complexity for this use case.
 
 **Why WebSocket:**
 
@@ -55,57 +100,8 @@ Use **WebSocket protocol with JSON messages** for all server-client communicatio
 
 ---
 
-## Implementation
+## More Information
 
-**Connection flow:**
-
-```
-Bot → Server: WebSocket Connect
-Server → Bot: server-handshake {sessionId}
-Bot → Server: bot-handshake {sessionId, name}
-Server → Bot: game-started-event
-Loop: Server → Bot: tick-event, Bot → Server: bot-intent
-```
-
-**Example messages:**
-
-```json
-// Server → Bot
-{
-    "type": "tick-event-for-bot",
-    "turnNumber": 42,
-    "botState": {
-        ...
-    },
-    "events": [
-        ...
-    ]
-}
-
-// Bot → Server  
-{
-    "type": "bot-intent",
-    "turnRate": 5,
-    "targetSpeed": 8,
-    "firepower": 3
-}
-```
-
----
-
-## Consequences
-
-- ✅ Real-time communication at 30 TPS
-- ✅ Cross-platform bot development
-- ✅ Browser-based clients possible
-- ✅ Simple deployment (no broker required)
-- ❌ JSON parsing overhead vs binary protocols
-- ❌ Schema evolution requires coordination
-
----
-
-## References
-
-- [WebSocket RFC 6455](https://tools.ietf.org/html/rfc6455)
-- [Schema YAML Definitions](/schema/schemas/README.md) — Raw YAML schema files
-- [Protocol Flow Diagrams](/docs/architecture/models/flows/README.md) — Sequence diagrams for all protocol flows
+- Detailed protocol design, flows, and examples: `/docs/design/websocket-protocol.md`
+- Schema YAML Definitions: `/schema/schemas/README.md`
+- Protocol Flow Diagrams: `/docs/architecture/models/flows/README.md`

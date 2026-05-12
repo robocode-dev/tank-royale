@@ -1,26 +1,32 @@
-# ADR-0011: Real-Time Game Loop Architecture
+---
+status: accepted
+date: 2026-02-11
+title: Real-Time Game Loop Architecture
+decision-makers:
+consulted:
+informed:
+---
 
-**Status:** Accepted  
-**Date:** 2026-02-11
+# Real-Time Game Loop Architecture
 
 ---
 
-## Context
+## Context and Problem Statement
 
 Tank Royale is a real-time programming game where multiple bots battle simultaneously.
 
 **Problem:** How to synchronize actions of multiple bots while ensuring deterministic, fair gameplay?
 
-**Requirements:**
+## Decision Drivers
 - Consistent frame rate (30 TPS target)
 - Deterministic physics (reproducible results)
 - Fair synchronization (all bots see same state)
-- Handle bot timeouts gracefully
-- Support pause/resume for debugging
+- Graceful handling of bot timeouts
+- Support for pause/resume for debugging
 
 ---
 
-## Decision
+## Decision Outcome
 
 Use a **turn-based discrete tick loop** at **30 TPS** with:
 - Server as authoritative game state manager
@@ -30,14 +36,31 @@ Use a **turn-based discrete tick loop** at **30 TPS** with:
 
 ---
 
-## Rationale
+## Considered Options
+- Discrete tick-based loop at fixed 30 TPS (chosen)
+- Continuous real-time loop
+- Event-driven async processing
+- Client-side lockstep synchronization
+- Hybrid tick + event approach
 
-**Why tick-based loop:**
-- ✅ **Deterministic**: Same inputs → same outputs (reproducible)
-- ✅ **Fair synchronization**: All bots receive identical game state simultaneously
-- ✅ **Timeout handling**: Bots can't stall the game (fixed deadline)
-- ✅ **Predictable performance**: 30 TPS = ~33ms per turn budget
-- ✅ **Network-friendly**: 30 TPS matches typical latency constraints
+## Pros and Cons of the Options
+
+### Discrete tick-based loop at 30 TPS (chosen)
+Good, because deterministic, fair synchronization, predictable performance, and robust timeout handling.
+
+Bad, because fixed frame rate and quantized movement.
+
+### Continuous real-time
+Bad, because non-deterministic and synchronization issues.
+
+### Event-driven async
+Bad, because race conditions and unfair network advantages.
+
+### Client-side lockstep
+Bad, because slow clients can stall the entire game.
+
+### Hybrid tick + event
+Bad, because added complexity without clear benefit in this context.
 
 ### Synchronization Pattern
 
@@ -75,60 +98,13 @@ sequenceDiagram
 
 ---
 
-## Implementation
+## More Information
 
-### Game Loop State Machine
-
-```mermaid
-stateDiagram-v2
-    [*] --> WAIT_FOR_PARTICIPANTS: Server starts
-    WAIT_FOR_PARTICIPANTS --> WAIT_FOR_READY: All bots connected
-    WAIT_FOR_READY --> GAME_RUNNING: All bots ready
-    GAME_RUNNING --> GAME_PAUSED: Pause requested
-    GAME_PAUSED --> GAME_RUNNING: Resume requested
-    GAME_RUNNING --> GAME_STOPPED: Battle ends
-    GAME_STOPPED --> [*]
-    
-    note right of GAME_RUNNING
-        Main tick loop: 30 iterations/sec
-    end note
-```
-
-### Per-Tick Execution
-
-```kotlin
-fun executeTurn() {
-    // 1. Send tick events to all bots (same game state)
-    bots.forEach { it.sendTickEvent(gameState) }
-    
-    // 2. Collect intents with timeout (~30ms)
-    val intents = bots.associateWith { bot ->
-        try {
-            bot.receiveIntent(timeout = botTimeoutMs)
-        } catch (e: TimeoutException) {
-            bot.sendSkippedTurnEvent()
-            null // Late response
-        }
-    }
-    
-    // 3. Apply all valid intents to physics
-    applyIntents(intents.filterNotNull())
-    updatePhysics()
-    checkCollisions()
-    
-    // 4. Maintain 30 TPS
-    sleepToMaintainTPS()
-}
-```
-
-**Configuration:**
-```bash
-java -jar server.jar --tps=30 --turn-timeout=30 --max-inactivity=30
-```
+- Detailed design, diagrams, and pseudo-code: `/docs/design/game-loop-architecture.md`
 
 ---
 
-## Consequences
+### Consequences
 
 - ✅ Deterministic physics (fair competition)  
 - ✅ Timeout enforcement prevents game stalling
@@ -141,8 +117,8 @@ java -jar server.jar --tps=30 --turn-timeout=30 --max-inactivity=30
 
 ---
 
-## References
+## More Information
 
-- [Game Loop Patterns](https://gameprogrammingpatterns.com/game-loop.html)
-- [Server Implementation](/server/README.md)
+- Game Loop Patterns: https://gameprogrammingpatterns.com/game-loop.html
+- Server Implementation: `/server/README.md`
 
