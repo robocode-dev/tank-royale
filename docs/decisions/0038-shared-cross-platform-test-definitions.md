@@ -320,4 +320,4 @@ Deleting old tests before new ones are verified is risky. Running both in parall
 - [ADR-0004: Java as Reference Implementation](./0004-java-reference-implementation.md)
 - [ADR-0037: Functional Core Extraction](./0037-functional-core-bot-api-testability.md)
 - [ADR-0006: Schema-Driven Protocol Contracts](./0006-schema-driven-protocol-contracts.md)
-- [Test Registry](../../../bot-api/tests/TEST-REGISTRY.md)
+- [Test Registry](/bot-api/tests/TEST-REGISTRY.md)

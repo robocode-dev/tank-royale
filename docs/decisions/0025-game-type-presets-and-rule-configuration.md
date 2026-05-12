@@ -124,7 +124,7 @@ final `GameSetup` values — it does not have built-in knowledge of presets. Thi
 
 ## References
 
-- [Server rules constants](/server/src/main/kotlin/dev/robocode/tankroyale/server/rules/setup.kt)
+- [Server rules constants](/server/src/main/kotlin/dev/robocode/tankroyale/server/rules/rules.kt)
 - [Server GameSetup model](/server/src/main/kotlin/dev/robocode/tankroyale/server/model/GameSetup.kt)
 - [GUI preset definitions](/gui/src/main/kotlin/dev/robocode/tankroyale/gui/settings/GamesSettings.kt)
 - [ADR-0008: Server-Authoritative Physics](./0008-server-authoritative-physics.md) — Server owns physics rules

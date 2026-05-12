@@ -144,5 +144,5 @@ java -jar server.jar --tps=30 --turn-timeout=30 --max-inactivity=30
 ## References
 
 - [Game Loop Patterns](https://gameprogrammingpatterns.com/game-loop.html)
-- [Server Implementation](/server/)
+- [Server Implementation](/server/README.md)
 

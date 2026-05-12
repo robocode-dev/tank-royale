@@ -392,12 +392,12 @@ Each finding has a severity, root cause, and impact. Findings are the factual ba
 **Impact:** Minimal — the implementations are done and the ADR statuses are now accurate. The initial false finding in this report highlights the importance of cross-referencing openspec archives when assessing ADR status.
 
 **Evidence:**
-- `docs/architecture/adr/0034-breakpoint-mode.md` — status: Proposed
-- `docs/architecture/adr/0035-bot-debugger-detection.md` — status: Proposed
-- `docs/architecture/adr/0036-start-game-debug-options.md` — status: Proposed
-- `docs/architecture/adr/0037-functional-core-bot-api-testability.md` — status: Proposed
-- `docs/architecture/adr/0039-server-testability.md` — status: Proposed
-- `docs/architecture/adr/0041-bot-api-library-version-management.md` — status: Proposed
+- `docs/decisions/0034-breakpoint-mode.md` — status: Proposed
+- `docs/decisions/0035-bot-debugger-detection.md` — status: Proposed
+- `docs/decisions/0036-start-game-debug-options.md` — status: Proposed
+- `docs/decisions/0037-functional-core-bot-api-testability.md` — status: Proposed
+- `docs/decisions/0039-server-testability.md` — status: Proposed
+- `docs/decisions/0041-bot-api-library-version-management.md` — status: Proposed
 - `openspec/changes/archive/` — all six archived implementations present
 
 ---

@@ -187,8 +187,8 @@ battle orchestration). The individual message schemas (YAML) live in `schema/sch
 - Protocol changes affect all clients; coordinate via `schema/schemas/`
 - Keep documentation updated with code changes
 
-> See [ADR-0003](../docs/architecture/adr/0003-cross-platform-bot-api-strategy.md) for cross-platform
-> design rationale and [architecture docs](../docs/architecture/) for full architectural context.
+> See [ADR-0003](../docs/decisions/0003-cross-platform-bot-api-strategy.md) for cross-platform
+> design rationale and [architecture docs](/docs/architecture/README.md) for full architectural context.
 
 ### License
 

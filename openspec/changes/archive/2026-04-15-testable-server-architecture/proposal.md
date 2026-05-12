@@ -2,7 +2,7 @@
 
 **Status:** Proposed
 **Date:** 2026-04-14
-**ADR:** [ADR-0039](../../../docs/architecture/adr/0039-server-testability.md)
+**ADR:** [ADR-0039](../../../docs/decisions/0039-server-testability.md)
 
 ---
 

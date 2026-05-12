@@ -12,14 +12,14 @@ All architecture docs in [`docs/architecture/`](../docs/architecture/README.md).
 
 | Category | Location |
 |----------|----------|
-| ADRs (41) | `docs/architecture/adr/` |
+| ADRs (41) | `docs/decisions/` |
 | C4 Views | `docs/architecture/c4-views/` |
 | Message Schema (53 types) | `docs/architecture/models/message-schema/` |
 | Flows | `docs/architecture/models/flows/` |
 
 ## Creating New ADRs
 
-See [`docs/architecture/adr/README.md`](../docs/architecture/adr/README.md) for format (MADR), numbering, and required sections.
+See [`docs/decisions/README.md`](../docs/decisions/README.md) for format (MADR), numbering, and required sections.
 
 ## ⛔ ADR Review Gate
 

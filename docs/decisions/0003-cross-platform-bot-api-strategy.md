@@ -129,7 +129,7 @@ SERVER_SECRET=my-secret
 
 ## References
 
-- [Bot API Java](/bot-api/java/)
-- [Bot API .NET](/bot-api/dotnet/)
-- [Bot API Python](/bot-api/python/)
-- [Bot API TypeScript](/bot-api/typescript/)
+- [Bot API Java](/bot-api/java/README.md)
+- [Bot API .NET](/bot-api/dotnet/README.md)
+- [Bot API Python](/bot-api/python/README.md)
+- [Bot API TypeScript](/bot-api/typescript/README.md)

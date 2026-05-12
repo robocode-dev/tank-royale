@@ -49,5 +49,5 @@ Shadow JAR → R8 shrinking → native installers (jpackage).
 
 ## References
 
-- [Server](/server/), [GUI](/gui/), [Booter](/booter/), [Recorder](/recorder/)
-- [Container diagram](/docs-internal/architecture/c4-views/container.md)
+- [Server](/server/README.md), [GUI](/gui/README.md), [Booter](/booter/README.md), [Recorder](/recorder/README.md)
+- [Container diagram](/docs/architecture/c4-views/container.md)

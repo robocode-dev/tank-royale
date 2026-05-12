@@ -140,5 +140,5 @@ Reusable data structures embedded in events and commands.
 
 - **[Protocol Flow Diagrams](../../docs/architecture/models/flows/README.md)** — Sequence diagrams for all protocol flows
 - **[Message Schema Reference](../../docs/architecture/models/message-schema/README.md)** — Detailed message contracts with examples
-- **[ADR-0006: Schema-Driven Contracts](../../docs/architecture/adr/0006-schema-driven-protocol-contracts.md)** — Design rationale
-- **[ADR-0009: WebSocket Protocol](../../docs/architecture/adr/0009-websocket-communication-protocol.md)** — Protocol design
+- **[ADR-0006: Schema-Driven Contracts](../../docs/decisions/0006-schema-driven-protocol-contracts.md)** — Design rationale
+- **[ADR-0009: WebSocket Protocol](../../docs/decisions/0009-websocket-communication-protocol.md)** — Protocol design

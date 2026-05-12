@@ -47,6 +47,6 @@ truth for all message contracts.
 
 ## References
 
-- [Schema definitions](/schema/schemas/)
+- [Schema definitions](/schema/schemas/README.md)
 - [ADR-0009: WebSocket Communication Protocol](./0009-websocket-communication-protocol.md)
-- [Message Schema docs](/docs-internal/architecture/models/message-schema/)
+- [Message Schema docs](/docs/architecture/models/message-schema/README.md)

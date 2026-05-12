@@ -89,5 +89,5 @@ has no equivalent on other platforms. They stay.
 - All four Bot API implementations (Java, C#, Python, TypeScript)
 - `bot-api/tests/shared/` (new JSON files)
 - `bot-api/tests/TEST-REGISTRY.md`
-- `docs/architecture/adr/0038-shared-cross-platform-test-definitions.md`
+- `docs/decisions/0038-shared-cross-platform-test-definitions.md`
 - TypeScript: 8 LEGACY test files deleted after phase 5

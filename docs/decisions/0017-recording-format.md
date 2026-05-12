@@ -40,5 +40,5 @@ into a `GZIPOutputStream`. Recording is append-only and decoupled from the game 
 
 ## References
 
-- [GameRecorder.kt](/recorder/src/main/kotlin/dev/robocode/tankroyale/recorder/core/GameRecorder.kt)
+- [GameRecorder.kt](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/recording/GameRecorder.kt)
 - [ADR-0007: Client Role Separation](./0007-client-role-separation.md) (Recorder as Observer)

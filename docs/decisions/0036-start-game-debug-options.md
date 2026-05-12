@@ -177,4 +177,4 @@ Add `debuggingEnabled` or a bot-address-keyed policy map to `start-game`.
 
 - [GitHub Issue #205](https://github.com/robocode-dev/tank-royale/issues/205) — Feature request: start battle paused / graphical debugging toggle
 - [ADR-0033](./0033-bot-debug-mode.md) — Server Debug Mode
-- [start-game schema](../../../schema/schemas/start-game.schema.yaml)
+- [start-game schema](/schema/schemas/start-game.schema.yaml)

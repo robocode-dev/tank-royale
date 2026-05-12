@@ -60,4 +60,4 @@ The requirement for `name`, `version`, and `authors` is maintained even for conf
 ## References
 
 *   [ADR-0030: Template-based Booting and Base Convention](0030-convention-over-configuration-bot-entry-points.md)
-*   [Support Bot Discovery Without JSON](/openspec/changes/support-bot-discovery-without-json/proposal.md) (Feature proposal)
+*   [Support Bot Discovery Without JSON](/openspec/changes/archive/2026-04-06-support-bot-discovery-without-json/proposal.md) (Feature proposal)

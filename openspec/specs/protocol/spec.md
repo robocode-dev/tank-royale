@@ -5,9 +5,9 @@ server. It is a schema-driven, asynchronous protocol.
 
 > **Architecture Reference:** For design rationale, alternatives considered, and architectural decisions behind this
 > protocol, see:
-> - [ADR-0009: WebSocket Communication Protocol](../../../docs/architecture/adr/0009-websocket-communication-protocol.md)
-> - [ADR-0003: Cross-Platform Bot API Strategy](../../../docs/architecture/adr/0003-cross-platform-bot-api-strategy.md)
-> - [ADR-0011: Real-Time Game Loop Architecture](../../../docs/architecture/adr/0011-realtime-game-loop-architecture.md)
+> - [ADR-0009: WebSocket Communication Protocol](../../../docs/decisions/0009-websocket-communication-protocol.md)
+> - [ADR-0003: Cross-Platform Bot API Strategy](../../../docs/decisions/0003-cross-platform-bot-api-strategy.md)
+> - [ADR-0011: Real-Time Game Loop Architecture](../../../docs/decisions/0011-realtime-game-loop-architecture.md)
 > - [Message Schema Reference](../../../docs/architecture/models/message-schema/)
 > - [Protocol Flows](../../../docs/architecture/models/flows/)
 

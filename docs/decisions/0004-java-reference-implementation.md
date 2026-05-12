@@ -42,4 +42,4 @@ be semantically identical to Java.
 ## References
 
 - [ADR-0003: Cross-Platform Bot API Strategy](./0003-cross-platform-bot-api-strategy.md)
-- [Bot API Java](/bot-api/java/), [.NET](/bot-api/dotnet/), [Python](/bot-api/python/)
+- [Bot API Java](/bot-api/java/README.md), [.NET](/bot-api/dotnet/README.md), [Python](/bot-api/python/README.md)

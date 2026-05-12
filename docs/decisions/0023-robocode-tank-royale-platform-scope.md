@@ -190,8 +190,8 @@ This ADR clarifies the maintainer's vision so that:
 
 **Related Documentation:**
 
-- [System Architecture (C4 Views)](../c4-views/README.md) — How components interact
-- [Message Schema](../models/message-schema/README.md) — Wire protocol specifications
+- [System Architecture (C4 Views)](/docs/architecture/c4-views/README.md) — How components interact
+- [Message Schema](/docs/architecture/models/message-schema/README.md) — Wire protocol specifications
 - [Cross-Platform Bot API Strategy (ADR-0003)](./0003-cross-platform-bot-api-strategy.md)
 - [The Book of Robocode](https://book.robocode.dev)
 - [RoboWiki](https://robowiki.net)

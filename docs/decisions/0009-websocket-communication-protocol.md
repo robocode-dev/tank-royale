@@ -107,5 +107,5 @@ Loop: Server → Bot: tick-event, Bot → Server: bot-intent
 ## References
 
 - [WebSocket RFC 6455](https://tools.ietf.org/html/rfc6455)
-- [Schema YAML Definitions](/schema/schemas/) — Raw YAML schema files
-- [Protocol Flow Diagrams](../models/flows/README.md) — Sequence diagrams for all protocol flows
+- [Schema YAML Definitions](/schema/schemas/README.md) — Raw YAML schema files
+- [Protocol Flow Diagrams](/docs/architecture/models/flows/README.md) — Sequence diagrams for all protocol flows

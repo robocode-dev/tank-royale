@@ -45,7 +45,7 @@ The event system uses **operator-based syntax exclusively** for clean, consisten
 
 ### Subscription Patterns
 
-See [On](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/Subscription.kt) and [Once](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/Subscription.kt) for detailed usage with priority handling.
+See [on](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/Event.kt) and [once](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/Event.kt) for detailed usage with priority handling.
 
 ```kotlin
 // Continuous subscription
@@ -173,7 +173,6 @@ This automatically:
 ## References
 
 - [Event.kt](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/Event.kt) — Core implementation
-- [Subscription.kt](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/Subscription.kt) — On/Once wrappers
 - [EventDelegate.kt](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/EventDelegate.kt) — Property delegation
 - [EDT.kt](/gui/src/main/kotlin/dev/robocode/tankroyale/gui/util/EDT.kt) — Swing EDT integration
 - [ADR-0021: Java Swing GUI Reference Implementation](./0021-java-swing-gui-reference-implementation.md)

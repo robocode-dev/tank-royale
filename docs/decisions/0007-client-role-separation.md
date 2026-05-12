@@ -45,6 +45,6 @@ Define three distinct **client roles** with separate handshakes, message permiss
 
 ## References
 
-- [Handshake schemas](/schema/schemas/) (`bot-handshake`, `observer-handshake`, `controller-handshake`)
-- [Handshakes documentation](/docs-internal/architecture/models/message-schema/handshakes.md)
+- [Handshake schemas](/schema/schemas/README.md) (`bot-handshake`, `observer-handshake`, `controller-handshake`)
+- [Handshakes documentation](/docs/architecture/models/message-schema/handshakes.md)
 - [ADR-0009: WebSocket Communication Protocol](./0009-websocket-communication-protocol.md)

@@ -209,4 +209,4 @@ ADR-0037 addresses Bot API testability (client-side, cross-platform). Server tes
 - [ADR-0012: Turn Timing Semantics](./0012-turn-timing-semantics.md)
 - [ADR-0037: Functional Core Extraction (Bot API)](./0037-functional-core-bot-api-testability.md)
 - [ADR-0038: Cross-Platform Test Parity](./0038-shared-cross-platform-test-definitions.md)
-- [Server Components C4 View](../c4-views/server-components.md)
+- [Server Components C4 View](/docs/architecture/c4-views/server-components.md)

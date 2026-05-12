@@ -109,4 +109,4 @@ the bot's intended colors simultaneously — the same workflow, zero new concept
 
 * [Issue #201: UI settings to define the rules for changing the colors of the tanks](https://github.com/robocode-dev/tank-royale/issues/201)
 * [ADR-0018: Custom SVG Rendering](0018-custom-svg-rendering.md)
-* [Tank Color Settings Proposal](/openspec/changes/tank-color-settings/proposal.md)
+* [Tank Color Settings Proposal](/openspec/changes/archive/2026-04-07-tank-color-settings/proposal.md)

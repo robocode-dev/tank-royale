@@ -50,4 +50,4 @@ The decision to move towards template-based booting and a "convention-over-confi
 
 *   [TemplateBooter.kt](/booter/src/main/kotlin/dev/robocode/tankroyale/booter/process/TemplateBooter.kt) (Implementation of template parsing)
 *   [Command.kt](/booter/src/main/kotlin/dev/robocode/tankroyale/booter/commands/Command.kt) (Implementation of the `base` fallback logic)
-*   [improve-booter-with-templates](/openspec/changes/archive/improve-booter-with-templates/) (Original feature proposal)
+*   [improve-booter-with-templates](/openspec/changes/archive/2026-04-05-improve-booter-with-templates/proposal.md) (Original feature proposal)

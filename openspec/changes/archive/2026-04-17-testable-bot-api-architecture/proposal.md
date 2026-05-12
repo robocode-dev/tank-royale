@@ -104,9 +104,9 @@ These tests run WITHOUT WebSocket, MockedServer, or threads — pure function in
 
 ## References
 
-- [ADR-0037: Functional Core Extraction](../../docs/architecture/adr/0037-functional-core-bot-api-testability.md)
-- [ADR-0038: Shared Cross-Platform Test Definitions](../../docs/architecture/adr/0038-shared-cross-platform-test-definitions.md)
-- [ADR-0003: Cross-Platform Bot API Strategy](../../docs/architecture/adr/0003-cross-platform-bot-api-strategy.md)
-- [ADR-0004: Java as Reference Implementation](../../docs/architecture/adr/0004-java-reference-implementation.md)
+- [ADR-0037: Functional Core Extraction](../../docs/decisions/0037-functional-core-bot-api-testability.md)
+- [ADR-0038: Shared Cross-Platform Test Definitions](../../docs/decisions/0038-shared-cross-platform-test-definitions.md)
+- [ADR-0003: Cross-Platform Bot API Strategy](../../docs/decisions/0003-cross-platform-bot-api-strategy.md)
+- [ADR-0004: Java as Reference Implementation](../../docs/decisions/0004-java-reference-implementation.md)
 - [Archived: refactor-bot-api-test-infrastructure](../archive/refactor-bot-api-test-infrastructure/proposal.md)
 - [TESTING-GUIDE.md](../../bot-api/tests/TESTING-GUIDE.md)

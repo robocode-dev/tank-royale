@@ -33,5 +33,5 @@ reference implementation.
   - `sample-bots/typescript/assets/ReadMe.md` (new)
   - `sample-bots/build.gradle.kts` (include TypeScript in build)
   - `booter/` (Node.js process launching support)
-  - `docs/architecture/adr/0003-cross-platform-bot-api-strategy.md` (add TypeScript)
+  - `docs/decisions/0003-cross-platform-bot-api-strategy.md` (add TypeScript)
 - No impact on existing Bot APIs (Java, C#, Python)
