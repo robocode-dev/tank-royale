@@ -549,7 +549,7 @@ The Python Bot API has been refactored to match Java and .NET:
 | `self.set_adjust_gun_for_body_turn(True)` | `self.adjust_gun_for_body_turn = True` |
 
 > **Full migration guide**: See the `MyFirstBot` sample bots
-> and [Team Messages](docs-build/docs/articles/team-messages.md) article.
+> and [Team Messages](web/docs/articles/team-messages.md) article.
 
 ### 🚀 Improvements
 

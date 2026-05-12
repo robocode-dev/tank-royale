@@ -746,7 +746,7 @@ for (Bot other : nearby) {
 - **[State Objects](../message-schema/state.md)** — Bot state and bullet state schemas
 - **[Events](../message-schema/events.md)** — Tick events and bot gameplay events
 - **[Intents](../message-schema/intents.md)** — Bot intent message schema
-- **[ADR-0003: Game Loop](../../adr/0003-realtime-game-loop-architecture.md)** — Design rationale
+- **[ADR-0011: Game Loop](../../adr/0011-realtime-game-loop-architecture.md)** — Design rationale
 - **[ADR-0033: Server Debug Mode](../../adr/0033-bot-debug-mode.md)** — Turn-by-turn stepping
 - **[ADR-0034: Breakpoint Mode](../../adr/0034-breakpoint-mode.md)** — Per-bot breakpoint pause
 - **[Schema YAML Definitions](/schema/schemas/)** — Raw YAML message format specifications

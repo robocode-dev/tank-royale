@@ -567,8 +567,8 @@ netstat -an | grep 7654
 - **[Turn Execution Flow](./turn-execution.md)** — What happens after game starts
 - **[Handshakes](../message-schema/handshakes.md)** — Handshake message schemas
 - **[Events](../message-schema/events.md)** — Event message schemas
-- **[ADR-0001: WebSocket Protocol](../../adr/0001-websocket-communication-protocol.md)** — Protocol design
-- **[ADR-0002: Cross-Platform Bot APIs](../../adr/0002-cross-platform-bot-api-strategy.md)** — API design
+- **[ADR-0009: WebSocket Protocol](../../adr/0009-websocket-communication-protocol.md)** — Protocol design
+- **[ADR-0003: Cross-Platform Bot APIs](../../adr/0003-cross-platform-bot-api-strategy.md)** — API design
 - **[ADR-0035: Bot Debugger Detection](../../adr/0035-bot-debugger-detection.md)** — `debuggerAttached` field
 
 ---

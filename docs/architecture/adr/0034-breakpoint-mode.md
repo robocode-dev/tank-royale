@@ -329,4 +329,4 @@ Bot API detects debugger (JDWP, `Debugger.IsAttached`, `sys.gettrace()`) and aut
 ## References
 
 - [GitHub Issue #204](https://github.com/robocode-dev/tank-royale/issues/204) — Original feature request
-- [`bot-policy-update` schema](../../schema/schemas/bot-policy-update.schema.yaml) — Existing per-bot policy message
+- [`bot-policy-update` schema](../../../schema/schemas/bot-policy-update.schema.yaml) — Existing per-bot policy message

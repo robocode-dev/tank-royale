@@ -8,7 +8,7 @@
 
 ## Architecture Diagram
 
-![Booter Components](/docs-internal/architecture/c4-views/images/component-Booter.svg)
+![Booter Components](./images/component-Booter.svg)
 
 ---
 

@@ -213,8 +213,7 @@ docs-internal/architecture/
 │   │   ├── bot-api-components.dsl
 │   │   ├── gui-components.dsl
 │   │   ├── booter-components.dsl
-│   │   ├── recorder-components.dsl
-│   │   └── runner-components.dsl
+│   │   └── recorder-components.dsl
 │   └── images/
 │       ├── system-context.svg
 │       ├── container.svg

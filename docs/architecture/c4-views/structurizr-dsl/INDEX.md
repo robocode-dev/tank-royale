@@ -12,4 +12,3 @@
 | [gui-components.dsl](./gui-components.dsl) | C4 Level 3 — GUI Components |
 | [booter-components.dsl](./booter-components.dsl) | C4 Level 3 — Booter Components |
 | [recorder-components.dsl](./recorder-components.dsl) | C4 Level 3 — Recorder Components |
-| [runner-components.dsl](./runner-components.dsl) | C4 Level 3 — Runner Components |
