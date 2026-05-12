@@ -21,7 +21,7 @@ and have fun while competing.
 
 ## ⚔️ Example of a battle
 
-<img src="web/docs/images/robocode-battle-anim.webp" alt="Animated battle between tanks on a 2D battlefield">
+<img src="web/docs/public/images/robocode-battle-anim.webp" alt="Animated battle between tanks on a 2D battlefield">
 
 ## 🌟 Explore More
 
