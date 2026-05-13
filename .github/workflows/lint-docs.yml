@@ -13,6 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install markdown-link-check
+        run: npm install -g markdown-link-check
+
       - name: Check local links in markdown files
         run: |
           find . -name "*.md" \
@@ -23,4 +30,4 @@ jobs:
             -not -path "*/.gradle/*" \
             -not -path "*/.venv/*" \
             -not -path "*/build/archive/*" \
-            | xargs -P4 -n1 npx --yes markdown-link-check --config .markdown-link-check.json
+            | xargs -P4 -n1 markdown-link-check --config .markdown-link-check.json
