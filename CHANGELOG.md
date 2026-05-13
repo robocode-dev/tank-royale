@@ -1,3 +1,13 @@
+## [1.0.2] - TBD - Minor bug fix for GUI
+
+### 🐞 Bug Fixes
+
+- GUI:
+    - #214: Fixed crash when playing sound effects on Linux systems where the audio format of the
+      sound files (PCM 24000 Hz) is not supported by the system's audio mixer. The error was
+      propagating uncaught from the audio playback path and crashing the WebSocket thread. Sound
+      playback failures are now silently ignored so the game continues normally without sound.
+
 ## [1.0.1] - 2026-05-08 - Minor bug fix for GUI
 
 ### 🐞 Bug Fixes

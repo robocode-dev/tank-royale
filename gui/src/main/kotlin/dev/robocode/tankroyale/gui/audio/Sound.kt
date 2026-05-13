@@ -28,23 +28,27 @@ class Sound(private val audioData: ByteArray) {
     fun play() {
         if (audioData.isEmpty()) return
 
-        val inputStream = BufferedInputStream(ByteArrayInputStream(audioData))
-        val audioStream = AudioSystem.getAudioInputStream(inputStream)
-        AudioSystem.getClip().apply {
-            addLineListener {
-                if (it.type == LineEvent.Type.STOP) {
-                    close()
-                    audioStream.close()
+        try {
+            val inputStream = BufferedInputStream(ByteArrayInputStream(audioData))
+            val audioStream = AudioSystem.getAudioInputStream(inputStream)
+            AudioSystem.getClip().apply {
+                addLineListener {
+                    if (it.type == LineEvent.Type.STOP) {
+                        close()
+                        audioStream.close()
+                    }
                 }
+                open(audioStream)
+                try {
+                    val volume = ConfigSettings.soundVolume.coerceIn(MIN_VOLUME, MAX_VOLUME) / 100f
+                    applyVolume(volume)
+                } catch (_: Exception) {
+                    // Ignore if volume control is not supported or fails
+                }
+                start()
             }
-            open(audioStream)
-            try {
-                val volume = ConfigSettings.soundVolume.coerceIn(MIN_VOLUME, MAX_VOLUME) / 100f
-                applyVolume(volume)
-            } catch (_: Exception) {
-                // Ignore if volume control is not supported or fails
-            }
-            start()
+        } catch (_: Exception) {
+            // Ignore if the audio format is not supported by the system or playback fails
         }
     }
 
