@@ -33,6 +33,15 @@ See the [roadmap] for upcoming ideas and directions.
 
 Note: There's no timeline or ETA. Robocode is a spare-time project, not a full-time product.
 
+## Project documentation
+
+For background before contributing larger changes, see:
+
+- [`docs/decisions/`](docs/decisions/) — Architecture Decision Records (the *why* behind major choices).
+- [`docs/architecture/`](docs/architecture/) — C4 views, message schemas, and protocol/event flows.
+- [`docs/design/`](docs/design/) — Design specifications (WebSocket protocol, game loop, etc.).
+- [`docs/DEBUGGING-GUIDE.md`](docs/DEBUGGING-GUIDE.md) — Multi-layer debugging strategies (server, Bot API, live game).
+
 ## Developer Requirements
 
 Before you start contributing code to Robocode Tank Royale, please note:
@@ -78,6 +87,26 @@ End users running Robocode only need Java 11 or newer, but developers building f
   - Provide tests where reasonable; manual testing is acceptable when automation isn’t practical.
   - Changes to a [Bot API] are non-trivial: all official APIs (JVM, .NET, web, etc.) must stay in sync, not just one
     platform.
+
+## Agent-assisted contributions
+
+Robocode Tank Royale uses **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** as its
+spec-driven development framework. If you contribute with AI coding agents
+(tested with Claude Code, Codex, GitHub Copilot, and OpenCode), please follow
+this workflow for any non-trivial change:
+
+1. Create an OpenSpec proposal first (`proposal.md`, `tasks.md`, spec deltas).
+2. **Stop and wait for maintainer approval** before implementing.
+3. Apply the change only after the proposal is approved.
+
+This keeps proposals reviewable and prevents large unsolicited diffs.
+
+Agent instructions for this repo live in [`AGENTS.md`](AGENTS.md) and the
+[`.agents/`](.agents/) directory — they tell the agent which conventions,
+ADRs, and instruction files to load for each task type. See
+[DEVELOPMENT.md](DEVELOPMENT.md#agent-assisted-development) for the full
+setup, the list of slash-command skills (`/release`, `/update-deps`,
+`/dot-audit`, etc.), and how OpenSpec is wired in.
 
 ## Regarding pull requests
 
@@ -153,10 +182,6 @@ Alternative booters or GUIs are welcome in separate repositories. Please link th
 
 The official server is the heart of the game; drop-in replacements are a no-go. You can, however, build services on top
 of it (e.g., controllers for scheduling, ranking, analytics) in a separate repository.
-
-## Tools used for building all modules of Robocode
-
-[Here](web/docs/dev/tools.md) you can find a list of all the tools required for building all parts of Robocode.
 
 [programming game]: https://www.makeuseof.com/tag/best-programming-games/
 

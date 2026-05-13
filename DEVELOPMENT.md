@@ -97,3 +97,65 @@ All build commands are run from the repo root via the Gradle wrapper.
 ```
 
 The first build downloads Gradle and all dependencies automatically.
+
+---
+
+## Agent-assisted development
+
+This repo supports AI coding agents via the [`AGENTS.md`](AGENTS.md) convention
+(tested with Claude Code, Codex, GitHub Copilot, and OpenCode). `CLAUDE.md`
+simply re-exports `AGENTS.md`.
+
+### Instruction files
+
+`AGENTS.md` maps each task type to the instruction file the agent should load
+before working. Files live in [`.agents/instructions/`](.agents/instructions/):
+
+| Task | Instruction file |
+|------|------------------|
+| Planning, proposals, specs | `openspec.md` |
+| Architecture, ADRs | `architecture.md` |
+| Debugging, timing, race conditions | `debugging.md` (+ `docs/DEBUGGING-GUIDE.md`) |
+| Bot API (Java / Python / .NET) | `cross-platform.md` + `core-principles.md` |
+| Testing, builds, Gradle | `testing-and-build.md` |
+| Documentation | `documentation.md` |
+| Changelog, release notes | `changelog.md` |
+| Code style, naming | `coding-conventions.md` |
+| File encoding, UTF-8 | `standards.md` |
+| General (default) | `core-principles.md` |
+
+### Skills (slash commands)
+
+Skills live under [`.agents/skills/`](.agents/skills/). On Claude Code they are
+exposed as slash commands via the `.claude/commands` and `.claude/skills`
+symlinks (see [Setup](#setup) for Windows symlink prerequisites):
+
+| Command | Purpose |
+|---------|---------|
+| `/release` | Release to Maven Central, NuGet, PyPI, npmjs |
+| `/update-deps` | Check and upgrade dependency versions |
+| `/deploy-sample-bots [dir]` | Build and deploy sample-bot zips |
+| `/structurizr` | Generate C4 SVGs from DSL workspaces |
+| `/dot-scout [path]` | Detect applicable code-quality principles |
+| `/dot-prime [target]` | Activate principles before editing |
+| `/dot-audit [target]` | Audit code/docs against principles |
+
+### OpenSpec workflow
+
+The [`openspec/`](openspec/) directory holds change proposals
+(`changes/` → in-progress and `changes/archive/` → completed) and shared
+specs (`specs/`). The workflow is:
+
+1. `/opsx:propose` (or manually create `openspec/changes/<name>/proposal.md`,
+   `tasks.md`, and `specs/`)
+2. Present the proposal — **stop and wait for maintainer approval.**
+3. `/opsx:apply` to implement once approved.
+4. `/opsx:archive` when done.
+
+Full instructions: [`.agents/instructions/openspec.md`](.agents/instructions/openspec.md).
+
+### Repo rules for agents
+
+- **Never commit without explicit maintainer instruction.**
+- After every file modification, run `./gradlew clean build`; stop and fix on
+  non-zero exit.
