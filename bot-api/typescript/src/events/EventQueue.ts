@@ -82,10 +82,12 @@ export class EventQueue {
       this.currentEventPriority = priority;
       this.currentEventInterruptible = this.interruption.isInterruptible(event.constructor.name);
 
-      handlers.fireEvent(event);
-
-      this.currentEventPriority = prevPriority;
-      this.currentEventInterruptible = prevInterruptible;
+      try {
+        handlers.fireEvent(event);
+      } finally {
+        this.currentEventPriority = prevPriority;
+        this.currentEventInterruptible = prevInterruptible;
+      }
     }
   }
 

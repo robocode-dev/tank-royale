@@ -8,6 +8,10 @@
       propagating uncaught from the audio playback path and crashing the WebSocket thread. Sound
       playback failures are now silently ignored so the game continues normally without sound.
 
+- Bot API (Java, .NET, Python, TypeScript):
+    - #215: Fixed a `NullPointerException` that could occur randomly when a bot called a blocking
+      method (e.g. `turnGunLeft`) from inside an event handler that triggered a nested dispatch.
+
 ## [1.0.1] - 2026-05-08 - Minor bug fix for GUI
 
 ### 🐞 Bug Fixes

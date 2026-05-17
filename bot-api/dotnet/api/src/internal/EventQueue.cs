@@ -127,7 +127,7 @@ sealed class EventQueue : IComparer<BotEvent>
         {
             if (GetPriority(currentEvent) == _currentTopEventPriority)
             {
-                if (_currentTopEventPriority > MinValue && IsCurrentEventInterruptible)
+                if (_currentTopEvent != null && _currentTopEventPriority > MinValue && IsCurrentEventInterruptible)
                 {
                     EventInterruption.SetInterruptible(_currentTopEvent.GetType(), false); // clear interruptible flag
 

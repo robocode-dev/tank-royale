@@ -114,7 +114,7 @@ final class EventQueue {
                 && getPriority(currentEvent) >= currentTopEventPriority) {
 
             if (getPriority(currentEvent) == currentTopEventPriority) {
-                if (currentTopEventPriority > Integer.MIN_VALUE && isCurrentEventInterruptible()) {
+                if (currentTopEvent != null && currentTopEventPriority > Integer.MIN_VALUE && isCurrentEventInterruptible()) {
                     EventInterruption.setInterruptible(currentTopEvent.getClass(), false); // clear interruptible flag
                     throw new ThreadInterruptedException();
                 }
