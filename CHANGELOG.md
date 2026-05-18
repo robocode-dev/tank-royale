@@ -1,4 +1,4 @@
-## [1.0.2] - TBD - Minor bug fix for GUI
+## [1.0.2] - 2026-05-18 - Minor bug fix for GUI
 
 ### 🐞 Bug Fixes
 
