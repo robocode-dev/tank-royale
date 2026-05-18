@@ -26,7 +26,7 @@ npm install @robocode.dev/tank-royale-bot-api
 To install a specific version:
 
 ```bash
-npm install @robocode.dev/tank-royale-bot-api@1.0.1
+npm install @robocode.dev/tank-royale-bot-api@1.0.2
 ```
 
 The `ws` package is required at runtime in a Node.js environment:
