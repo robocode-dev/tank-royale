@@ -1,9 +1,9 @@
-# ADR-0010: Declarative Bot Intent Model
-
-**Status:** Accepted  
-**Date:** 2026-02-14 (Documenting historical decision)
-
+﻿---
+status: accepted
+date: 2026-02-14
 ---
+
+# ADR-0010: Declarative Bot Intent Model
 
 ## Context
 

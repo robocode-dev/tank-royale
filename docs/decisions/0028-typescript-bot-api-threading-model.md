@@ -1,9 +1,9 @@
-# ADR-0028: TypeScript Bot API Threading Model
-
-**Status:** Accepted
-**Date:** 2026-03-24
-
+﻿---
+status: accepted
+date: 2026-03-24
 ---
+
+# ADR-0028: TypeScript Bot API Threading Model
 
 ## Context
 

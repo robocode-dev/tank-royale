@@ -1,9 +1,9 @@
-# ADR-0020: Teams Support in Observer Protocol
-
-**Status:** Accepted  
-**Date:** 2026-02-14
-
+﻿---
+status: accepted
+date: 2026-02-14
 ---
+
+# ADR-0020: Teams Support in Observer Protocol
 
 ## Context
 

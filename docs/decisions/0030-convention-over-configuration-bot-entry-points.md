@@ -1,7 +1,9 @@
-# ADR-0030: Template-based Booting and Base Convention
+---
+status: accepted
+date: 2026-04-05
+---
 
-**Status:** Accepted
-**Date:** 2026-04-05
+# ADR-0030: Template-based Booting and Base Convention
 
 ## Context and Problem Statement
 

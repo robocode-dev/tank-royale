@@ -1,10 +1,6 @@
----
+﻿---
 status: accepted
 date: 2026-02-11
-title: Real-Time Game Loop Architecture
-decision-makers:
-consulted:
-informed:
 ---
 
 # Real-Time Game Loop Architecture

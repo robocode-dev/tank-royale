@@ -1,9 +1,9 @@
-# ADR-0035: Bot API Debugger Detection
-
-**Status:** Accepted  
-**Date:** 2026-04-07
-
+﻿---
+status: accepted
+date: 2026-04-07
 ---
+
+# ADR-0035: Bot API Debugger Detection
 
 ## Context
 

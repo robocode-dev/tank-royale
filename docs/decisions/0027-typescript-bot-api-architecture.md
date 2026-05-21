@@ -1,9 +1,9 @@
-# ADR-0027: TypeScript Bot API for Web Platform Support
-
-**Status:** Accepted
-**Date:** 2026-03-24
-
+﻿---
+status: accepted
+date: 2026-03-24
 ---
+
+# ADR-0027: TypeScript Bot API for Web Platform Support
 
 ## Context
 

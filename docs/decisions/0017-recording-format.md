@@ -1,9 +1,9 @@
-# ADR-0017: Recording Format (ND-JSON + Gzip)
-
-**Status:** Accepted  
-**Date:** 2026-02-14 (Documenting historical decision)
-
+﻿---
+status: accepted
+date: 2026-02-14
 ---
+
+# ADR-0017: Recording Format (ND-JSON + Gzip)
 
 ## Context
 

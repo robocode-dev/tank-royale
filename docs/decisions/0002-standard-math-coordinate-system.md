@@ -1,9 +1,9 @@
-# ADR-0002: Standard Mathematical Coordinate System
-
-**Status:** Accepted  
-**Date:** 2026-02-14 (Documenting historical decision)
-
+﻿---
+status: accepted
+date: 2026-02-14
 ---
+
+# ADR-0002: Standard Mathematical Coordinate System
 
 ## Context
 

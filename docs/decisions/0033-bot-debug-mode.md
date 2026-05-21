@@ -1,9 +1,9 @@
-# ADR-0033: Server Debug Mode
-
-**Status:** Accepted  
-**Date:** 2026-04-07
-
+﻿---
+status: accepted
+date: 2026-04-07
 ---
+
+# ADR-0033: Server Debug Mode
 
 ## Context
 

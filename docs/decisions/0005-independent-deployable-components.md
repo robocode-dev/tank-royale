@@ -1,9 +1,9 @@
-# ADR-0005: Independent Deployable Components
-
-**Status:** Accepted  
-**Date:** 2026-02-14 (Documenting historical decision)
-
+﻿---
+status: accepted
+date: 2026-02-14
 ---
+
+# ADR-0005: Independent Deployable Components
 
 ## Context
 

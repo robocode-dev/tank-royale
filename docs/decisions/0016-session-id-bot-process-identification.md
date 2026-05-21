@@ -1,9 +1,9 @@
-# ADR-0016: Session ID for Bot Process Identification
-
-**Status:** Accepted (Implemented in v0.17.1)  
-**Date:** 2026-02-14 (Documenting historical decision from 2022)
-
+﻿---
+status: accepted
+date: 2026-02-14
 ---
+
+# ADR-0016: Session ID for Bot Process Identification
 
 ## Context
 

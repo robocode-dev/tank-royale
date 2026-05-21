@@ -1,9 +1,9 @@
-# ADR-0024: Battle Runner API
-
-**Status:** Accepted
-**Date:** 2026-02-28
-
+﻿---
+status: accepted
+date: 2026-02-28
 ---
+
+# ADR-0024: Battle Runner API
 
 ## Context
 

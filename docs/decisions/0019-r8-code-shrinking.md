@@ -1,9 +1,9 @@
-# ADR-0019: R8 Code Shrinking
-
-**Status:** Accepted  
-**Date:** 2026-02-14
-
+﻿---
+status: accepted
+date: 2026-02-14
 ---
+
+# ADR-0019: R8 Code Shrinking
 
 ## Context
 

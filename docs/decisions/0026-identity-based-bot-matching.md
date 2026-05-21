@@ -1,10 +1,10 @@
-# ADR-0026: Identity-Based Bot Matching in Battle Runner
-
-**Status:** Accepted
-**Date:** 2026-03-21
-**Updated:** 2026-04-06
-
 ---
+status: accepted
+date: 2026-03-21
+updated: 2026-04-06
+---
+
+# ADR-0026: Identity-Based Bot Matching in Battle Runner
 
 ## Context
 

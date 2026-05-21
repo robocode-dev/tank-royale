@@ -1,9 +1,9 @@
-# ADR-0022: Event System for GUI Decoupling
-
-**Status:** Accepted  
-**Date:** 2026-02-16 (Updated to reflect API simplification)
-
+﻿---
+status: accepted
+date: 2026-02-16
 ---
+
+# ADR-0022: Event System for GUI Decoupling
 
 ## Context
 

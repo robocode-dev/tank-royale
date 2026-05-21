@@ -1,7 +1,9 @@
-# ADR-0032: Tank Color Display Mode
+---
+status: accepted
+date: 2026-04-06
+---
 
-**Status:** Accepted
-**Date:** 2026-04-06
+# ADR-0032: Tank Color Display Mode
 
 ## Context and Problem Statement
 

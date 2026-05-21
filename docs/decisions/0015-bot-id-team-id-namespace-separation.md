@@ -1,9 +1,9 @@
-# ADR-0015: Participant ID as Unified Team Identifier
-
-**Status:** Accepted  
-**Date:** 2026-02-14
-
+﻿---
+status: accepted
+date: 2026-02-14
 ---
+
+# ADR-0015: Participant ID as Unified Team Identifier
 
 ## Context
 

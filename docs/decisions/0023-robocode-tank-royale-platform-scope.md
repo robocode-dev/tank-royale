@@ -1,9 +1,9 @@
-# ADR-0023: Robocode Tank Royale Platform Scope and Boundaries
-
-**Status:** Accepted  
-**Date:** 2026-02-15
-
+﻿---
+status: accepted
+date: 2026-02-15
 ---
+
+# ADR-0023: Robocode Tank Royale Platform Scope and Boundaries
 
 ## Context
 

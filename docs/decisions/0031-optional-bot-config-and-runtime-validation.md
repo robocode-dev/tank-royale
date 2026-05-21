@@ -1,7 +1,9 @@
-# ADR-0031: Optional Bot Configuration Files and Runtime Property Validation
+---
+status: accepted
+date: 2026-04-05
+---
 
-**Status:** Accepted
-**Date:** 2026-04-05
+# ADR-0031: Optional Bot Configuration Files and Runtime Property Validation
 
 ## Context and Problem Statement
 

@@ -15,7 +15,9 @@ Each ADR includes:
 
 ## Format
 
-We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency and AI-readability.
+Each ADR extends the format introduced by [Michael Nygard](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions) — keeping his core **Context**, **Decision**, and **Consequences** sections and adding **Rationale**, **Alternatives Considered**, **Future Work**, and **References**. YAML frontmatter for `status` and `date` is borrowed from [MADR](https://adr.github.io/madr/).
+
+See [`template.md`](./template.md) for the canonical structure.
 
 ## Index of ADRs
 
@@ -54,14 +56,14 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 | [0031](./0031-optional-bot-config-and-runtime-validation.md)    | Optional Bot Config and Runtime Validation           | Accepted | 2026-04-05 |
 | [0032](./0032-user-defined-visual-overrides-for-tanks.md) | Tank Color Display Mode                              | Accepted | 2026-04-06 |
 | [0033](./0033-bot-debug-mode.md)                                 | Server Debug Mode                                    | Accepted | 2026-04-07 |
-| [0034](./0034-breakpoint-mode.md)                                | Breakpoint Mode                                      | Proposed | 2026-04-07 |
-| [0035](./0035-bot-debugger-detection.md)                         | Bot API Debugger Detection                           | Proposed | 2026-04-07 |
-| [0036](./0036-start-game-debug-options.md)                       | Start-Game Debug Options                             | Proposed | 2026-04-08 |
-| [0037](./0037-functional-core-bot-api-testability.md)            | Functional Core Extraction for Bot API Testability   | Proposed | 2026-04-14 |
+| [0034](./0034-breakpoint-mode.md)                                | Breakpoint Mode                                      | Accepted | 2026-04-07 |
+| [0035](./0035-bot-debugger-detection.md)                         | Bot API Debugger Detection                           | Accepted | 2026-04-07 |
+| [0036](./0036-start-game-debug-options.md)                       | Start-Game Debug Options                             | Accepted | 2026-04-08 |
+| [0037](./0037-functional-core-bot-api-testability.md)            | Functional Core Extraction for Bot API Testability   | Accepted | 2026-04-14 |
 | [0038](./0038-shared-cross-platform-test-definitions.md)         | Cross-Platform Test Parity and Shared Test Definitions | Accepted | 2026-04-14 |
-| [0039](./0039-server-testability.md)                             | Server Testability — Physics Core and Test Framework | Proposed | 2026-04-14 |
+| [0039](./0039-server-testability.md)                             | Server Testability — Physics Core and Test Framework | Accepted | 2026-04-14 |
 | [0040](./0040-ready-timeout-default.md)                          | Raise Default readyTimeout from 1s to 10s            | Accepted | 2026-04-15 |
-| [0041](./0041-bot-api-library-version-management.md)             | Bot API Library Version Management in the GUI        | Proposed | 2026-04-16 |
+| [0041](./0041-bot-api-library-version-management.md)             | Bot API Library Version Management in the GUI        | Accepted | 2026-04-16 |
 
 ## Status Definitions
 
@@ -74,7 +76,7 @@ We use [MADR (Markdown ADR)](https://adr.github.io/madr/) format for consistency
 
 When making a new architectural decision:
 
-1. **Copy the template** from an existing ADR
+1. **Copy [`template.md`](./template.md)** and rename it with the next sequential number
 2. **Number sequentially** (e.g., 0004, 0005)
 3. **Use descriptive title** that summarizes the decision
 4. **Include all sections**:

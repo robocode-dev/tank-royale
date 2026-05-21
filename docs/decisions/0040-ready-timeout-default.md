@@ -1,9 +1,9 @@
-# ADR-0040: Raise Default readyTimeout from 1 Second to 10 Seconds
-
-**Status:** Accepted  
-**Date:** 2026-04-15
-
+﻿---
+status: accepted
+date: 2026-04-15
 ---
+
+# ADR-0040: Raise Default readyTimeout from 1 Second to 10 Seconds
 
 ## Context
 

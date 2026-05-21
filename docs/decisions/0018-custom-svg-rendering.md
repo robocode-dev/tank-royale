@@ -1,9 +1,9 @@
-# ADR-0018: Custom SVG Rendering for Bot API Graphics
-
-**Status:** Accepted  
-**Date:** 2026-02-14 (Documenting historical decision)
-
+﻿---
+status: accepted
+date: 2026-02-14
 ---
+
+# ADR-0018: Custom SVG Rendering for Bot API Graphics
 
 ## Context
 

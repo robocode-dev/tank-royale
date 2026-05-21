@@ -1,9 +1,9 @@
-# ADR-0037: Functional Core Extraction for Bot API Testability
-
-**Status:** Accepted  
-**Date:** 2026-04-14
-
+﻿---
+status: accepted
+date: 2026-04-14
 ---
+
+# ADR-0037: Functional Core Extraction for Bot API Testability
 
 ## Context
 

@@ -1,9 +1,9 @@
-# ADR-0012: Turn Timing Semantics
-
-**Status:** Accepted  
-**Date:** 2026-02-13
-
+﻿---
+status: accepted
+date: 2026-02-13
 ---
+
+# ADR-0012: Turn Timing Semantics
 
 ## Context
 

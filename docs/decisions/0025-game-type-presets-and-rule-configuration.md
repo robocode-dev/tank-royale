@@ -1,9 +1,9 @@
-# ADR-0025: Game Type Presets and Rule Configuration
-
-**Status:** Accepted  
-**Date:** 2026-02-28 (Documenting historical decision)
-
+﻿---
+status: accepted
+date: 2026-02-28
 ---
+
+# ADR-0025: Game Type Presets and Rule Configuration
 
 ## Context
 

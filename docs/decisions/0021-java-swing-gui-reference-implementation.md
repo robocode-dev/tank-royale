@@ -1,9 +1,9 @@
-# ADR-0021: Java Swing as GUI Reference Implementation
-
-**Status:** Accepted  
-**Date:** 2026-02-15 (Documenting historical decision)
-
+﻿---
+status: accepted
+date: 2026-02-15
 ---
+
+# ADR-0021: Java Swing as GUI Reference Implementation
 
 ## Context
 

@@ -1,9 +1,9 @@
-# ADR-0039: Server Testability — Physics Core Extraction and Test Framework
-
-**Status:** Accepted  
-**Date:** 2026-04-14
-
+﻿---
+status: accepted
+date: 2026-04-14
 ---
+
+# ADR-0039: Server Testability — Physics Core Extraction and Test Framework
 
 ## Context
 
