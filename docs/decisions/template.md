@@ -53,4 +53,4 @@ date: YYYY-MM-DD
 
 ## References
 
-- [{Link text}]({url-or-repo-path})
+- [Link text](https://example.com)
