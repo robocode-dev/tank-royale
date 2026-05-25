@@ -40,29 +40,25 @@ fun createRelease(projectDir: File, version: String, token: String) {
 //    uploadAsset(projectDir, releaseId, token, "booter/build/libs/robocode-tankroyale-booter-$version.jar",
 //        JAR_MIME_TYPE, "Booter (jar)")
 
-    // Sample Bots for Python
-    uploadAsset(
-        projectDir, releaseId, token, "sample-bots/python/build/sample-bots-python-$version.zip",
-        ZIP_MIME_TYPE, "Sample bots for Python (zip)"
-    )
-
-    // Sample Bots for C#
-    uploadAsset(
-        projectDir, releaseId, token, "sample-bots/csharp/build/sample-bots-csharp-$version.zip",
-        ZIP_MIME_TYPE, "Sample bots for C# (zip)"
-    )
-
-    // Sample Bots for Java
-    uploadAsset(
-        projectDir, releaseId, token, "sample-bots/java/build/sample-bots-java-$version.zip",
-        ZIP_MIME_TYPE, "Sample bots for Java (zip)"
-    )
-
-    // Sample Bots for TypeScript
-    uploadAsset(
-        projectDir, releaseId, token, "sample-bots/typescript/build/sample-bots-typescript-$version.zip",
-        ZIP_MIME_TYPE, "Sample bots for TypeScript (zip)"
-    )
+    // Sample Bots
+    val sampleBotsDir = File(projectDir, "sample-bots")
+    sampleBotsDir.listFiles { f -> f.isDirectory }?.forEach { subprojectDir ->
+        val lang = subprojectDir.name
+        val readableName = when (lang) {
+            "csharp" -> "CSharp"
+            "java" -> "Java"
+            "python" -> "Python"
+            "typescript" -> "TypeScript"
+            else -> lang.replaceFirstChar { it.uppercase() }
+        }
+        val zipFile = File(subprojectDir, "build/sample-bots-$readableName-$version.zip")
+        if (zipFile.exists()) {
+            uploadAsset(
+                projectDir, releaseId, token, "sample-bots/$lang/build/sample-bots-$readableName-$version.zip",
+                ZIP_MIME_TYPE, "Sample bots for $readableName (zip)"
+            )
+        }
+    }
 }
 
 /**
@@ -168,11 +164,13 @@ private fun uploadAsset(
     val filePath = Path.of("$projectDir/$filepath")
     val name = filePath.fileName.toString()
 
+    deleteExistingAsset(releaseId, name, token)
+
     val uploadUrl = "https://uploads.github.com/repos/robocode-dev/tank-royale/releases/$releaseId/assets" +
             pathParam("?name", name) +
             pathParam("&label", label)
 
-    println(uploadUrl)
+    println("Uploading $name to $uploadUrl")
 
     val request = HttpRequest.newBuilder()
         .uri(URI(uploadUrl))
@@ -189,7 +187,42 @@ private fun uploadAsset(
 
     println("statusCode: ${response.statusCode()}, body: ${response.body()}")
 
-    check(response.statusCode() == 201) { "Could not upload release asset" }
+    if (response.statusCode() != 201) {
+        println("WARNING: Could not upload release asset '$name'. status=${response.statusCode()}, body=${response.body()}")
+    }
+}
+
+private fun deleteExistingAsset(releaseId: Int, name: String, token: String) {
+    val client = HttpClient.newBuilder().build()
+    val listRequest = HttpRequest.newBuilder()
+        .uri(URI("https://api.github.com/repos/robocode-dev/tank-royale/releases/$releaseId/assets"))
+        .header("Accept", "application/vnd.github+json")
+        .header("Authorization", "Bearer $token")
+        .GET()
+        .build()
+
+    val response = client.send(listRequest, HttpResponse.BodyHandlers.ofString())
+    if (response.statusCode() == 200) {
+        val assets = org.json.JSONArray(response.body())
+        for (i in 0 until assets.length()) {
+            val asset = assets.getJSONObject(i)
+            val assetName = asset.getString("name")
+            if (assetName.equals(name, ignoreCase = true)) {
+                val assetId = asset.getInt("id")
+                println("Deleting existing asset '$assetName' (ID: $assetId)")
+                val deleteRequest = HttpRequest.newBuilder()
+                    .uri(URI("https://api.github.com/repos/robocode-dev/tank-royale/releases/assets/$assetId"))
+                    .header("Accept", "application/vnd.github+json")
+                    .header("Authorization", "Bearer $token")
+                    .DELETE()
+                    .build()
+                val deleteResponse = client.send(deleteRequest, HttpResponse.BodyHandlers.ofString())
+                if (deleteResponse.statusCode() != 204) {
+                    println("WARNING: Could not delete asset '$assetName'. status=${deleteResponse.statusCode()}")
+                }
+            }
+        }
+    }
 }
 
 private fun pathParam(label: String, value: String?) = if (value == null) "" else "$label=${urlEncode(value)}"
