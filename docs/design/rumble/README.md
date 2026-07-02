@@ -112,7 +112,7 @@ tracks them so sub-documents stay consistent:
 |-----------|----------------|
 | **Ruleset and scoring = RoboRumble/LiteRumble, unchanged** (APS primary; Win%, Survival, Vote, NPP/ANPP, KNNPBI, Glicko-2). Battle tested for two decades; do not reinvent. | Aggregation doc |
 | **Own-bot priority: yes**, with the self-reported-only marker plus independent confirmation for trust. | Client doc |
-| **Engine pinning at minor granularity, patch range allowed.** Requires an engine release-policy commitment: patch releases (1.1.x) must never change game-observable behavior; anything that could alter outcomes is at least a minor bump. A minor bump obsoletes all clients at once and opens a new result **epoch**. | Client + aggregation docs |
+| **Engine pinning by `behaviorVersion`.** Release versions stay lockstep across all Tank Royale artifacts (the right model for the product); a separate integer `behaviorVersion`, owned by the server and bumped only on game-observable changes (server physics/scoring/turn processing/RNG plus Bot API behavior), is the compatibility contract. Compatibility, client rollout, and result **epochs** all key on it; releases that do not bump it (e.g. GUI-only) cause no rollout and no epoch reset. Supersedes the earlier patch-vs-minor rule. | Client + aggregation docs |
 | **One active version per bot** (version bump supersedes the old one, RoboRumble style), plus a per-owner **bot slot** budget. | Submission doc |
 | **Owner (forge account) is distinct from authors (display names)**; ownership drives permissions, slots, bans, and self-report detection. | Submission doc |
 | **Banning** of owners/bots via an auditable list; enforced automatically in submission CI and result validation. | Submission + aggregation docs |
@@ -148,9 +148,12 @@ Questions that span more than one sub-document. Per-document questions live in t
 2. **Game types.** Start with 1v1 only, or 1v1 and melee from day one? Melee multiplies the pairing
    space and the matchmaking math.
 3. **Working name.** "Tank Royale Rumble" is used throughout as a placeholder.
-4. **Enforcing patch behavior-invariance.** The epoch model leans on "patches never change game
-   behavior". How is that guarded in the engine's release process (deterministic replay regression
-   tests against recorded battles would be the strong version)?
+4. **Guarding `behaviorVersion` bumps.** The epoch model leans on the behavior version being
+   bumped exactly when game-observable behavior changes. The strong guard is a deterministic
+   replay regression test in the engine's CI: replay recorded battles and compare outcomes; an
+   unintended difference fails the build, an intended one requires bumping `behaviorVersion` in
+   the same change. The concrete test design (which battles, how many, where recordings live) is
+   open.
 
 ## Glossary
 
@@ -163,6 +166,7 @@ Questions that span more than one sub-document. Per-document questions live in t
 | Issue-ops | Using forge issues as a write-free submission inbox, drained by CI. |
 | Single writer | The rule that only the aggregation CI commits to `rumble-data`. |
 | Owner | The forge account that submitted a bot; drives permissions, slots, bans. Distinct from the display `authors` in the bot config. |
-| Epoch | The result partition for one engine minor version. Patches stay in the epoch; a minor bump opens a new one and the ranked table restarts sampling. |
+| Behavior version | Server-owned integer bumped only on game-observable changes (physics, scoring, turn processing, RNG, Bot API behavior). The compatibility contract between engine, clients, and results; independent of the lockstep release version. |
+| Epoch | The result partition for one `behaviorVersion`. Releases that keep the behavior version stay in the epoch; a bump opens a new one and the ranked table restarts sampling. |
 | Practice mode | Client mode for private tuning battles; results are never submitted. Ranked mode auto-submits everything. |
 | Journal | The client's local append-only file of ranked results, submitted in batches. |

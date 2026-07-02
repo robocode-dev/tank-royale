@@ -20,7 +20,7 @@ rumble-data/
 ├── matchmaking/matches_needed.json      (projection: advice for clients)
 ├── matchmaking/pairings.json            (projection: per-pairing stats)
 ├── clients.json                         (projection: per-client stats + flags)
-├── engine.json                          (pinned server/runner versions)
+├── engine.json                          (pinned behaviorVersion + release/image)
 ├── wellknown/rumble.json                (canonical-location pointer)
 ├── scripts/validate.py                  (payload validation)
 ├── scripts/aggregate.py                 (facts → all projections, pure function)
@@ -45,7 +45,7 @@ sequenceDiagram
     Cl->>Ib: result payloads (all day)
     CI->>Ib: drain all open items
     loop each payload (a batch of 1..N results)
-        CI->>CI: validate.py per result<br/>(schema, engine pin, plausibility,<br/>known active bots, ban list,<br/>duplicate battleId / payload hash)
+        CI->>CI: validate.py per result<br/>(schema, behaviorVersion pin, plausibility,<br/>known active bots, ban list,<br/>duplicate battleId / payload hash)
         alt valid
             CI->>Raw: stage file (content-addressed name)
         else invalid
@@ -188,13 +188,15 @@ batch for the rest) if full recompute proves slow.
   `bots/index.json`, see the submission document). Superseded, retired, and disqualified versions
   keep their facts and per-version detail shards but leave the ranked table, exactly like a
   RoboRumble version bump.
-- Results are partitioned into **epochs by engine minor version** (`1.1`, `1.2`, ...). Patch
-  releases do not open a new epoch (the engine release policy guarantees patches are
-  behavior-neutral; see the client document). A minor/major bump opens a new epoch: the ranked
-  leaderboard is computed from the current epoch only, while old epochs remain browsable archives.
-  This is the honest consequence of "mixed engine versions corrupt comparability": rather than
-  pretending results across minors are comparable, the rumble restarts sampling and lets
-  matchmaking (everything is suddenly under-sampled) rebuild the table quickly.
+- Results are partitioned into **epochs by `behaviorVersion`** (the server-owned integer that
+  bumps only on game-observable changes; see the client document's Engine Pinning section). The
+  release version is irrelevant here: a GUI-only release, whatever its semver bump, keeps the
+  behavior version and therefore the epoch. A `behaviorVersion` bump opens a new epoch: the
+  ranked leaderboard is computed from the current epoch only, while old epochs remain browsable
+  archives. This is the honest consequence of "mixed game behavior corrupts comparability":
+  rather than pretending results across behavior versions are comparable, the rumble restarts
+  sampling and lets matchmaking (everything is suddenly under-sampled) rebuild the table
+  quickly.
 
 ### Matchmaking output
 
@@ -240,7 +242,7 @@ as the classic rumble; per-pairing averaging makes extra samples harmless.
       "aps": 78.42, "winPct": 91.4, "survival": 84.1, "vote": 3.2,
       "anpp": 81.7, "knnpbi": -0.4, "glicko2": 1834,
       "battles": 412, "pairings": 148, "pairingsTotal": 152, "unconfirmedPairings": 2,
-      "epoch": "1.1", "firstSeen": "2026-05-01" }
+      "epoch": 7, "firstSeen": "2026-05-01" }
   ]
 }
 ```

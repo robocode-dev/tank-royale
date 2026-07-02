@@ -152,7 +152,7 @@ or corrupted results, which is a bigger practical risk than malicious bot code.
 | Layer | Mechanism | Cost |
 |-------|-----------|------|
 | Identity | The forge account that opens the result issue / fork-PR **is** the identity. No extra key management in v1. | Free |
-| Plausibility | Server-side validation: schema, engine version matches the pin, scores consistent with rounds and ranks, known bot versions, duplicate hash detection. | Script |
+| Plausibility | Server-side validation: schema, `behaviorVersion` matches the pin, scores consistent with rounds and ranks, known bot versions, duplicate hash detection. | Script |
 | Consensus | With dozens of clients, most pairings get samples from several submitters. Per-client deviation from pairing consensus is computed; outliers are flagged in a report for moderators, and a client can be quarantined (its results excluded by the pure recompute, since facts are never deleted). | Script |
 | Self-report marker | Pairings sampled only by a participant's owner stay "unconfirmed" until an independent client contributes (see above). | Script |
 | Evidence | Each battle has a `battleId` (UUID) binding the result record to a locally kept, read-only `.battle.gz` replay whose SHA-256 is in the record. Moderators can request the replay for a disputed result. Spot-check, not universal verification. See "Replay evidence store" below. | Optional |
@@ -170,7 +170,7 @@ One immutable JSON file per battle. Participant fields map 1:1 onto the existing
   "gameType": "classic-1v1",
   "timestamp": "2026-07-02T14:03:22Z",
   "client": { "id": "flemming-desktop-01", "version": "0.3.0" },
-  "engine": { "serverVersion": "1.0.2", "runnerVersion": "1.0.2" },
+  "engine": { "behaviorVersion": 7, "serverVersion": "1.1.4", "runnerVersion": "1.1.4" },
   "botsRepoCommit": "08940d5",
   "rounds": 35,
   "participants": [
@@ -232,32 +232,47 @@ Conflict-freedom comes from content-addressed filenames, never coordination:
 
 ## Engine Pinning and Version Rollout
 
-`rumble-data/engine.json` pins the engine at **minor-version granularity with a patch range**:
+Tank Royale releases all artifacts in **lockstep** (one release version for server, booter, GUI,
+recorder, runner, Bot APIs). That is the right model for the product, but it means a release
+version bump signals "something in the suite changed", not "the game changed": a GUI-only
+feature release must not obsolete rumble clients or reset rankings. The rumble therefore pins a
+second, dedicated axis:
+
+**`behaviorVersion`**: a plain integer owned by the server, bumped **only** when game-observable
+behavior changes, i.e. anything that could alter the outcome of a battle: server physics,
+scoring, turn processing, RNG behavior, and Bot API changes that affect what bots do (event
+dispatch fixes are the canonical example: patch-sized code changes that absolutely change battle
+outcomes). It is reported in the server handshake, stamped into every result record, and pinned
+in `rumble-data/engine.json`:
 
 ```json
 {
   "schemaVersion": 1,
-  "engine": "1.1",
-  "minPatch": 2,
-  "clientImage": "ghcr.io/<org>/rumble-client:1.1",
-  "behaviorNote": "Patch releases (1.1.x) must not change game behavior; see release policy."
+  "behaviorVersion": 7,
+  "release": "1.1.4",
+  "clientImage": "ghcr.io/<org>/rumble-client:1.1.4"
 }
 ```
 
 Semantics:
 
-- **Patch releases (`1.1.x`) are accepted interchangeably.** This relies on a release-policy
-  commitment in Tank Royale itself: a patch must never change physics, scoring, or any
-  game-observable behavior. Anything that could alter battle outcomes is at least a minor bump.
-  This is a policy the rumble imposes back onto the engine's release process, and it should be
-  stated in the engine's release documentation and guarded by regression tests where possible.
-- **A minor/major bump (`1.x.0`) is a rollout event.** All clients become obsolete at that
-  moment, by design: mixed engine minors would silently corrupt result comparability. On its next
+- **Compatibility is decided by `behaviorVersion`, never by the release version.** Any release
+  that carries the pinned behavior version is acceptable; the client and the validator both
+  compare the behavior version reported by the running server against the pin. A GUI-only
+  release 1.2.0 with unchanged `behaviorVersion 7` causes no rollout, no client obsolescence,
+  and no epoch reset. `release`/`clientImage` in the pin are convenience ("which build to
+  install"), not the compatibility contract.
+- **A `behaviorVersion` bump is the rollout event.** All clients become obsolete at that moment,
+  by design: mixed behavior versions would silently corrupt result comparability. On its next
   sync the client sees the new pin, refuses ranked mode, and prints exactly how to upgrade.
-  Results produced on the old version are rejected by the validator (and the client will not
-  submit them). Whether a minor bump also resets or partitions the rankings is handled in the
-  aggregation document (result epochs).
-- Upgrading must be **one step**: `docker pull ghcr.io/<org>/rumble-client:1.2` for container
+  Results produced on the old behavior version are rejected by the validator (and the client
+  will not submit them). Each behavior version is its own result **epoch** (aggregation
+  document).
+- **Bump discipline is guarded, not trusted.** The engine's CI replays recorded battles
+  deterministically and compares outcomes: an unintended outcome difference fails the build, and
+  an intended one requires bumping `behaviorVersion` in the same change (umbrella open question
+  on the concrete test design).
+- Upgrading must be **one step**: `docker pull` the image named in the new pin for container
   users, or re-running the platform install script for bare-metal users.
 
 ## Runtimes: the Client Container and Install Scripts
@@ -268,7 +283,9 @@ participation killer, so the primary distribution is a container image:
 
 - **`rumble-client` image**: bundles the pinned server, booter, runner, the rumble client itself,
   plus the exact runtime versions (JRE, .NET SDK, Python, Node.js/npm) matching the engine pin.
-  Tagged by engine version (`rumble-client:1.1`), so upgrading engine and runtimes is one pull.
+  Tagged by release version (`rumble-client:1.1.4`, the image named in `engine.json`), so
+  upgrading engine and runtimes is one pull; the pinned image implies the pinned
+  `behaviorVersion`.
 - The image doubles as the **sandbox**: run with no outbound network (localhost WebSocket only)
   except the submission endpoint, and CPU/memory/time limits via container flags. Review reduces
   malice (submission document), the container contains it; no one pretends there is a central
@@ -294,9 +311,10 @@ participation killer, so the primary distribution is a container image:
 2. **`myBots` is purely a local scheduling hint.** No verification in the client. Ownership is
    verified where it matters: at bot upload time, where the bot name is bound to the owner
    account (see the submission document). The server-side self-report marker handles trust.
-3. **Journal staleness is bounded by the engine pin.** Queued results produced on an engine
-   version older than the current pin are incompatible and are dropped (with a message telling
-   the user what was discarded and why). No separate staleness clock is needed.
+3. **Journal staleness is bounded by the engine pin.** Queued results produced on a
+   `behaviorVersion` other than the currently pinned one are incompatible and are dropped (with
+   a message telling the user what was discarded and why). No separate staleness clock is
+   needed.
 4. **Submission happens at battle boundaries.** A result exists only when a battle has completed
    its game type's full round count (e.g. 35 rounds); nothing is ever submitted mid-battle. The
    default is to submit after each completed battle; the journal batches multiple battles into
