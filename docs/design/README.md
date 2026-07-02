@@ -12,3 +12,4 @@ Conventions:
 Index:
 - [WebSocket Protocol](./websocket-protocol.md)
 - [Real-Time Game Loop](./game-loop-architecture.md)
+- [Tank Royale Rumble (DRAFT)](./rumble/README.md): umbrella design for a serverless, community-driven tournament system, with sub-designs for [bot submission](./rumble/bot-submission.md), [client battles and result upload](./rumble/client-battles-and-results.md), [aggregation and dashboard](./rumble/aggregation-and-dashboard.md), and [user documentation and onboarding](./rumble/user-documentation.md)
