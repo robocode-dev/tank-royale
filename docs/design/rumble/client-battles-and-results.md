@@ -1,6 +1,6 @@
 # Rumble Design: Client Battles and Result Upload
 
-> **Status: DRAFT** - exploration phase, no decisions made.
+> **Status: DRAFT** - design direction captured.
 > Part of the [Tank Royale Rumble umbrella design](./README.md).
 
 ## Scope
@@ -26,7 +26,7 @@ Configured by a single `rumble-client.json`:
   "dataRepo": "https://github.com/<org>/rumble-data",
   "clientId": "flemming-desktop-01",
   "myBots": ["Raven"],
-  "gameTypes": ["classic-1v1"],
+  "gameTypes": ["1v1", "twinduel", "melee"],
   "battlesPerSession": 50,
   "mode": "ranked"
 }
@@ -67,13 +67,13 @@ sequenceDiagram
     C->>BR: pull pinned commit (bots/index.json)
     C->>C: select battles<br/>(own bots first, then global priority)
     loop battlesPerSession
-        C->>C: build/cache bots by sourceHash
+        C->>C: prepare/cache bot sources by sourceHash
         C->>Run: run battle (pinned server version)
         Run-->>C: BattleResults + replay
         C->>C: append result record to local journal<br/>(auto, no human filter)<br/>store replay in evidence store
     end
     C->>Inbox: submit journal batch<br/>(one payload, N results)
-    Note over C,Inbox: client never holds write access to any repo
+    Note over C,Inbox: client never holds code or Git-history write access
 ```
 
 In ranked mode, every finished battle is appended to a local **journal** automatically; the user
@@ -97,12 +97,9 @@ commit (see the aggregation document).
 
 ## Battle Selection and Own-Bot Priority
 
-**Question from the umbrella doc: should the user's own bots get higher priority, to motivate
-people to run a client?**
-
-Proposed answer: **yes, own bots first.** This is the classic RoboRumble incentive and it worked
-for two decades: the fastest way to get *your* new bot ranked is to run a client yourself. The
-selection algorithm:
+The client prioritizes the user's own bots first. This is the classic RoboRumble incentive and it
+worked for two decades: the fastest way to get *your* new bot ranked is to run a client yourself.
+The selection algorithm:
 
 ```mermaid
 flowchart TD
@@ -151,12 +148,12 @@ or corrupted results, which is a bigger practical risk than malicious bot code.
 
 | Layer | Mechanism | Cost |
 |-------|-----------|------|
-| Identity | The forge account that opens the result issue / fork-PR **is** the identity. No extra key management in v1. | Free |
+| Identity | The forge account that opens the result issue / fork-PR **is** the identity. Client signing is deferred from v1. | Free |
 | Plausibility | Server-side validation: schema, `behaviorVersion` matches the pin, scores consistent with rounds and ranks, known bot versions, duplicate hash detection. | Script |
 | Consensus | With dozens of clients, most pairings get samples from several submitters. Per-client deviation from pairing consensus is computed; outliers are flagged in a report for moderators, and a client can be quarantined (its results excluded by the pure recompute, since facts are never deleted). | Script |
 | Self-report marker | Pairings sampled only by a participant's owner stay "unconfirmed" until an independent client contributes (see above). | Script |
 | Evidence | Each battle has a `battleId` (UUID) binding the result record to a locally kept, read-only `.battle.gz` replay whose SHA-256 is in the record. Moderators can request the replay for a disputed result. Spot-check, not universal verification. See "Replay evidence store" below. | Optional |
-| Signing | Client keypairs and signed results. **Deferred**: adds onboarding friction; the layers above reproduce the RoboRumble trust model that historically sufficed. Revisit if abuse appears. | Deferred |
+| Signing | Client keypairs and signed results are deferred: they add onboarding friction, while the layers above reproduce the RoboRumble trust model that historically sufficed. Revisit if abuse appears. | Deferred |
 
 ## The Result Record
 
@@ -167,7 +164,7 @@ One immutable JSON file per battle. Participant fields map 1:1 onto the existing
 {
   "schemaVersion": 1,
   "battleId": "8f14e45f-ea0a-4c1d-9b3a-2d7c6a1e5b09",
-  "gameType": "classic-1v1",
+  "gameType": "1v1",
   "timestamp": "2026-07-02T14:03:22Z",
   "client": { "id": "flemming-desktop-01", "version": "0.3.0" },
   "engine": { "behaviorVersion": 7, "serverVersion": "1.1.4", "runnerVersion": "1.1.4" },
@@ -213,14 +210,15 @@ not). Binding and handling:
   aggregation document), with a suggested minimum of 90 days. The client prunes expired replays
   and reports what it pruned.
 
-## Submission Transports (No Write Access)
+## Submission Transports (No Repository Write Access)
 
-The client must not hold a token that can write to any repo (P3, P4). Two transports, both
-funneling into the same server-side validator:
+The client must not hold a token that can write code, branches, releases, packages, Pages
+content, or result projections in any repo (P3, P4). Two transports, both funneling into the same
+server-side validator:
 
 | Transport | How | Trade-offs |
 |-----------|-----|-----------|
-| **Issue-ops (primary)** | Client opens an issue on `rumble-data` with the result JSON in the body, using a fine-grained token scoped to "create issues" only. A scheduled workflow drains all open result issues in one pass and commits them in a single batch. | Lowest friction; issues exist on GitHub, GitLab, and Forgejo/Gitea; the token cannot tamper with code or leaderboard. Issue bodies are transport, not state (fine to lose on fork). |
+| **Issue-ops (primary)** | Client opens an issue on `rumble-data` with the result JSON in the body, using a fine-grained token with Issues write permission limited to that repository. GitHub does not expose a narrower create-issue-only permission. A scheduled workflow drains all open result issues in one pass and commits them in a single batch. | Lowest friction; issues exist on GitHub, GitLab, and Forgejo/Gitea; the token cannot tamper with code or leaderboard. Issue bodies are transport, not state (fine to lose on fork). |
 | **Fork-PR (fallback)** | Client pushes result files to its own fork and opens a PR; CI validates and auto-merges on green. | Pure Git, survives any forge unchanged; heavier per submission; useful as the portability escape hatch. |
 
 Rejected: `repository_dispatch` (needs a repo-scoped token on every client, exactly the credential
@@ -270,8 +268,9 @@ Semantics:
   document).
 - **Bump discipline is guarded, not trusted.** The engine's CI replays recorded battles
   deterministically and compares outcomes: an unintended outcome difference fails the build, and
-  an intended one requires bumping `behaviorVersion` in the same change (umbrella open question
-  on the concrete test design).
+  an intended one requires bumping `behaviorVersion` in the same change. The Tank Royale
+  preparation proposal defines the hook for this guard; the replay corpus can be expanded in a
+  later proposal.
 - Upgrading must be **one step**: `docker pull` the image named in the new pin for container
   users, or re-running the platform install script for bare-metal users.
 
@@ -297,33 +296,22 @@ participation killer, so the primary distribution is a container image:
   for and install the required runtime versions and the pinned engine artifacts. Bare-metal users
   knowingly accept the residual risk of running reviewed-but-untrusted code outside a container.
 
-## Resolved in Review (2026-07-02)
+## Client Policy Details
 
-1. **Battles per pairing per client cap: none, matching the classic rumble.** Researched on the
-   RoboWiki: RoboRumble/LiteRumble have **no per-client contribution cap**. Saturation is handled
-   by the priority mechanism alone: the server always requests a priority battle for a pairing
-   with fewer than 2 battles, otherwise sends a low-battle-count pairing request 50% of the time,
-   and the client-side `BATTLESPERBOT` threshold prioritizes bots whose total battle count is
-   still low. Once everything is saturated, extra battles are harmless by design (per-pairing
-   averaging just refines the mean). The rumble adopts the same model: no cap, and
-   `matches_needed.json` generation mirrors the classic priorities (see the aggregation
-   document).
-2. **`myBots` is purely a local scheduling hint.** No verification in the client. Ownership is
-   verified where it matters: at bot upload time, where the bot name is bound to the owner
-   account (see the submission document). The server-side self-report marker handles trust.
-3. **Journal staleness is bounded by the engine pin.** Queued results produced on a
-   `behaviorVersion` other than the currently pinned one are incompatible and are dropped (with
-   a message telling the user what was discarded and why). No separate staleness clock is
-   needed.
-4. **Submission happens at battle boundaries.** A result exists only when a battle has completed
-   its game type's full round count (e.g. 35 rounds); nothing is ever submitted mid-battle. The
-   default is to submit after each completed battle; the journal batches multiple battles into
-   one payload only when submissions back up (retry queue) or rate limits require it.
-5. **Container network policy: egress allowlist.** The container may reach the forge (to sync
-   repos and submit results) and nothing else; bot processes get no network beyond the localhost
-   WebSocket to the server. One container with an egress allowlist is the direction, rather than
-   a two-container split.
-
-## Open Questions
-
-None currently.
+- **Battles per pairing per client cap: none, matching the classic rumble.** Saturation is
+  handled by the priority mechanism alone. Once everything is saturated, extra battles are
+  harmless by design because per-pairing averaging refines the mean without changing the pairing
+  weight.
+- **`myBots` is purely a local scheduling hint.** No verification happens in the client.
+  Ownership is verified where it matters: at bot upload time, where the bot name is bound to the
+  owner account. The server-side self-report marker handles trust.
+- **Journal staleness is bounded by the engine pin.** Queued results produced on a
+  `behaviorVersion` other than the currently pinned one are incompatible and are dropped with a
+  clear message. No separate staleness clock is needed.
+- **Submission happens at battle boundaries.** A result exists only when a battle has completed
+  its game type's full round count; nothing is submitted mid-battle. The
+  default is to submit after each completed battle, with batching used when submissions back up or
+  rate limits require it.
+- **Container network policy: egress allowlist.** The container may reach the forge for repo sync
+  and result submission and nothing else. Bot processes get no network beyond the localhost
+  WebSocket to the server.

@@ -1,6 +1,6 @@
 # Rumble Design: Result Aggregation and Dashboard
 
-> **Status: DRAFT** - exploration phase, no decisions made.
+> **Status: DRAFT** - design direction captured.
 > Part of the [Tank Royale Rumble umbrella design](./README.md).
 
 ## Scope
@@ -83,7 +83,8 @@ Nothing custom is deployed. On GitHub, a submission from the client looks like t
 
 - The client creates it with one API call (`gh issue create --label result-submission
   --title ... --body-file batch.json` or the REST equivalent), authenticated as the user's forge
-  account with a fine-grained token that can only create issues on this one repo.
+  account with a fine-grained token with Issues write permission limited to this repository.
+  GitHub does not expose a narrower create-issue-only permission.
 - A GitHub issue body holds ~65k characters, roughly 40-60 result records per issue at our record
   size; the client splits larger journals across issues.
 - The drain workflow lists open `result-submission` issues, parses each body, validates each
@@ -147,13 +148,18 @@ fork-restartable without permission from anyone.
 unchanged.** These rules have been battle tested for two decades; the design contribution here is
 the delivery mechanism, not new game math.
 
-Battle parameters (to be transcribed exactly from the classic rumble configuration and frozen in
-`engine.json`):
+Battle parameters are frozen in `engine.json` per ranked game type:
 
 | Game type | Rounds | Battlefield | Participants |
 |-----------|--------|-------------|--------------|
-| 1v1 | 35 | 800 x 600 | 2 |
-| Melee | 35 | 1000 x 1000 | 10 |
+| `1v1` | 35 | 800 x 600 | 2 bots |
+| `twinduel` | 75 | 800 x 800 | 2 teams, 2 bots per team |
+| `melee` | 35 | 1000 x 1000 | 10 bots |
+
+These names intentionally follow the popular LiteRumble/RoboRumble categories for the original
+game: 1v1, TwinDuel, and Melee. Mini, micro, nano, and giga categories are not part of v1 because
+they depend on bytecode-size limits. Tank Royale Rumble distributes source code across multiple
+programming languages, so any size-class system needs a separate source-size design per language.
 
 Scoring metrics, matching the LiteRumble columns (all except Glicko-2 are per-pairing statistics
 and therefore order-independent):
@@ -162,7 +168,7 @@ and therefore order-independent):
 |--------|---------|
 | **APS** (primary) | Average Percentage Score: mean over pairings of the mean score share per pairing (formula below) |
 | **Win%** | Fraction of pairings won (LiteRumble's replacement for PL, so it does not fluctuate with the number of bots) |
-| **Survival** | Survival percentage (1v1: per pairing; melee: out of total rounds, per LiteRumble) |
+| **Survival** | Survival percentage (`1v1` and `twinduel`: per pairing; `melee`: out of total rounds, per LiteRumble) |
 | **Vote** | Percentage of bots that score worst against you ("percentage you are best against") |
 | **NPP / ANPP** | (Average) Normalised Percentage Pairs, computed in the batch pass |
 | **KNNPBI** | K-Nearest-Neighbours Problem Bot Index, computed in the batch pass |
@@ -207,7 +213,7 @@ batch for the rest) if full recompute proves slow.
   "schemaVersion": 1,
   "generatedAt": "2026-07-02T15:00:00Z",
   "sourceCommit": "abc1234",
-  "gameType": "classic-1v1",
+  "gameType": "1v1",
   "targetSamplesPerPairing": 6,
   "priorityPairs": [
     { "bots": ["NewBot 1.0", "Raven 2.1"], "have": 0, "reason": "new-bot" },
@@ -236,7 +242,7 @@ as the classic rumble; per-pairing averaging makes extra samples harmless.
   "schemaVersion": 1,
   "computedAt": "2026-07-02T15:00:00Z",
   "computedFromCommit": "abc1234",
-  "gameType": "classic-1v1",
+  "gameType": "1v1",
   "entries": [
     { "bot": "Raven 2.2", "platform": "JVM", "owner": "flemming", "authors": ["..."],
       "aps": 78.42, "winPct": 91.4, "survival": 84.1, "vote": 3.2,
@@ -259,11 +265,11 @@ lever alongside own-bot priority).
 
 ## Static Dashboard
 
-Plain `site/index.html` plus vanilla JS on Pages, fetching `leaderboard.json` at runtime. No build
+Plain `site/index.html` plus vanilla JS on Pages, fetching leaderboard JSON at runtime. No build
 step: the aggregator already produced the JSON, so the "site generator" is nothing. Client-side
-sort/search over ~200 rows is trivial. A bot row links to its detail shard. Pages exists on
-GitHub, GitLab, and Codeberg, and since the site is static files reading sibling JSON, it also
-works from any web server or locally from a checkout.
+sort/search over a few hundred rows per game type is trivial. A bot or team row links to its
+detail shard. Pages exists on GitHub, GitLab, and Codeberg, and since the site is static files
+reading sibling JSON, it also works from any web server or locally from a checkout.
 
 ## Forge Terms of Service
 
@@ -301,24 +307,5 @@ at this scale and shape**, but the design should stay deliberately inside the sp
 | Maintainer unavailable | No secrets anywhere (P3): workflows use only the built-in CI token. Org with 3+ owners. `GOVERNANCE.md` and the runbook live in the repo. Quarterly fork drill verifies P2. |
 | Forge migration | All logic in `scripts/*.py`; CI YAML is a thin wrapper. Forgejo Actions is GitHub-Actions-compatible; a GitLab CI wrapper is a page of YAML. The single seam: how a payload reaches `validate.py`. |
 | Disputed leaderboard | Anyone recomputes locally from facts. Quarantine is a reviewable exclusion list, not deletion, so every governance action is auditable in Git history. |
-
-## Resolved in Review (2026-07-02)
-
-1. **Prototype `aggregate.py` early.** Confirmed as a required next step: full recompute on
-   every drain is the preferred model (simplest, purest), and the prototype must measure whether
-   it holds at 200 bots x ~20k pairings or whether the LiteRumble-style split (light metrics per
-   drain, heavy batch metrics daily) is needed from the start.
-2. **Issue-ops made explicit** (section above), and yes, spam must be prevented (section above).
-3. **Rejected payloads: keep a 30-day `rejected/` log** on the archive branch, then prune.
-4. **GitHub Pages confirmed** as the dashboard host, and the compaction policy is settled (see
-   the Operations table): monthly rollups to the archive branch after three full months, working
-   branch stays small, published site serves only projections and stays far under the ~1 GB
-   Pages cap.
-5. **Onboarding PR required from day one** for result submitters (see Spam prevention). This
-   replaces account-age heuristics with an explicit, moderated registration step and gives a
-   client keypair a natural home if signing is ever adopted.
-
-## Open Questions
-
-None currently; the `aggregate.py` prototype (Resolved item 1) is the active next step, and its
-measurements will decide the recompute cadence.
+| Rejected payloads | Keep a 30-day `rejected/` log on the archive branch, then prune. |
+| Aggregation cadence | Full recompute on every drain is the preferred model. Prototype `aggregate.py` early and measure whether it holds at the expected scale or whether the LiteRumble-style split (light metrics per drain, heavy batch metrics daily) is needed from launch. |

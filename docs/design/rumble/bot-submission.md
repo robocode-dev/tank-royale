@@ -1,6 +1,6 @@
 # Rumble Design: Bot Submission and Handling
 
-> **Status: DRAFT** - exploration phase, no decisions made.
+> **Status: DRAFT** - design direction captured.
 > Part of the [Tank Royale Rumble umbrella design](./README.md).
 
 ## Scope
@@ -95,6 +95,19 @@ rely on all game interaction going through one known, audited surface, so review
 bot's logic rather than re-auditing protocol plumbing per bot. It also resolves the dependency
 allowlist per platform: the official bot API package plus the standard library, nothing else
 (for TypeScript: the official npm bot API package with a committed lockfile).
+
+### Ranked formats in v1
+
+The submission repository accepts entries for the three v1 ranked formats: **1v1**,
+**TwinDuel**, and **Melee**. TwinDuel is the 2v2 twin-team format: a team entry has exactly two
+`teamMembers`, the booter starts both member bots, and ranking is based on the team result
+reported by the server. Broader team formats can be added later, but v1 keeps team eligibility
+to TwinDuel.
+
+Mini, micro, nano, and giga categories from classic RoboRumble/LiteRumble are not v1 formats.
+Those categories depend on bytecode-size rules that do not translate cleanly to source-code bots
+written in different languages. A future source-size class system can be designed per language,
+but it must not block launch.
 
 ### Run from source, never call a compiler
 
@@ -191,11 +204,12 @@ with one or more forge accounts, kept in a generated `owners.json`:
 
 ### Bot slots per owner
 
-Each owner has a budget of **X active bots** (exact number to be decided; slots, not submissions).
-Version bumps are free (the new version replaces the old in the same slot); a new bot name
-consumes a slot; retiring a bot frees one. This bounds review load and the quadratic growth of
-the pairing space, and makes "flooding the rumble" structurally impossible rather than a
-moderation judgment call.
+Each owner has a configurable budget of active bot entries. The launch default is 5 active
+entries per owner, held in one validation/governance constant so moderators can adjust it without
+changing the policy text. Version bumps are free (the new version replaces the old in the same
+slot); a new bot or TwinDuel team name consumes a slot; retiring an entry frees one. This bounds
+review load and the quadratic growth of the pairing space, and makes "flooding the rumble"
+structurally impossible rather than a moderation judgment call.
 
 ### The generated catalog
 
@@ -263,6 +277,26 @@ Enforcement, all automatic:
 - Bans can be temporary (`until`) or permanent; appeals go through `GOVERNANCE.md`. Facts are
   never deleted, so lifting a ban restores everything by recompute.
 
+### Confusable-name check
+
+Goal: catch imitations like `F4i1` vs. `FAil` mechanically, so moderators see a flag instead of
+having to notice it. The check compares a **skeleton** of the new name against the skeletons of
+all existing names:
+
+1. **Unicode confusable folding** per Unicode TS #39 (the standard "confusables" skeleton used
+   for domain-spoofing detection): maps visually identical/near-identical characters (Cyrillic
+   `а` vs. Latin `a`, etc.) to one canonical form.
+2. **Leetspeak folding**: `0→o`, `1→l`, `3→e`, `4→a`, `5→s`, `7→t`, `8→b`, `9→g`, `@→a`, `$→s`,
+   `!→i`, `|→l` (table lives in the validator, extensible by PR).
+3. **Normalization**: case-fold, strip spaces, hyphens, underscores, and dots.
+4. **Compare**: identical skeletons → validation **fails** (treated as the same name, so the
+   name-to-owner binding applies); Damerau-Levenshtein distance 1 between skeletons → **flag for
+   moderator attention** (not auto-reject; `Walls` vs. `Wall` may be honest).
+
+With this pipeline `F4i1` and `FAil` both skeletonize to `fail` and collide at step 4. The
+distance-1 threshold is deliberately conservative to keep false positives low at 50-200 bots;
+widening it is a one-line governance tweak if imitation attempts show up.
+
 ## Security Analysis (Honest Limits)
 
 Without central sandbox infrastructure, review cannot make untrusted code safe; it makes it
@@ -281,7 +315,7 @@ Without central sandbox infrastructure, review cannot make untrusted code safe; 
 
 **A license is required for every bot; it cannot be implicit.** Without an explicit license,
 forks cannot legally carry the bots along, which breaks principle P2 for the most valuable
-content in the system. (Assessment below is engineering-grade reasoning about common licensing
+content in the system. (the Assessment below is engineering-grade reasoning about common licensing
 practice, not legal advice.)
 
 - **Mechanism: an SPDX identifier field in the bot config JSON** (e.g. `"license": "MIT"`).
@@ -308,56 +342,9 @@ practice, not legal advice.)
   removed from the working tree and disqualified, and the uploader is a candidate for the ban
   list. Review reduces the chance of it happening; notice-and-takedown handles the rest.
 
-## Resolved in Review (2026-07-02)
-
-1. **Official Bot APIs required** (section above): custom frameworks cannot participate in
-   ranked; for TypeScript this means the official npm bot API package with a committed lockfile.
-2. **Run from source everywhere** (section above): runtimes compile behind the scenes; no
-   explicit compiler invocation on the client or in CI; CI validates by booting the bot the same
-   way the booter does.
-3. **Team bots: not in v1.** The booter and runner support them, so the door stays open; add
-   them later if the community asks.
-4. **Bot slot budget: start at 5** active bots per owner. Raising it (e.g. toward 10) is a
-   governance decision for later years, not a launch parameter.
-5. **License: required and CI-enforced** (section above).
-6. **Name squatting: first-merged-wins plus moderator judgment**, backed by the confusable-name
-   check below. Bot names are global; the first merged bot reserves the name for its owner.
-
-### Confusable-name check
-
-Goal: catch imitations like `F4i1` vs. `FAil` mechanically, so moderators see a flag instead of
-having to notice it. The check compares a **skeleton** of the new name against the skeletons of
-all existing names:
-
-1. **Unicode confusable folding** per Unicode TS #39 (the standard "confusables" skeleton used
-   for domain-spoofing detection): maps visually identical/near-identical characters (Cyrillic
-   `а` vs. Latin `a`, etc.) to one canonical form.
-2. **Leetspeak folding**: `0→o`, `1→l`, `3→e`, `4→a`, `5→s`, `7→t`, `8→b`, `9→g`, `@→a`, `$→s`,
-   `!→i`, `|→l` (table lives in the validator, extensible by PR).
-3. **Normalization**: case-fold, strip spaces, hyphens, underscores, and dots.
-4. **Compare**: identical skeletons → validation **fails** (treated as the same name, so the
-   name-to-owner binding applies); Damerau-Levenshtein distance 1 between skeletons → **flag for
-   moderator attention** (not auto-reject; `Walls` vs. `Wall` may be honest).
-
-With this pipeline `F4i1` and `FAil` both skeletonize to `fail` and collide at step 4. The
-distance-1 threshold is deliberately conservative to keep false positives low at 50-200 bots;
-widening it is a one-line governance tweak if imitation attempts show up.
-
-7. **License allowlist settled**: `MIT`, `Apache-2.0`, `BSD-3-Clause`, `GPL-3.0-or-later`
-   (GPL works because the rumble is source-only; see Licensing).
-8. **License mechanism settled**: SPDX identifier field in the bot config JSON, declared binding
-   in `CONTRIBUTING.md`, with submitter responsibility on the DCO model and notice-and-takedown
-   for bad-faith uploads (see Licensing).
-9. **Confusable-name algorithm designed** (see the check above): UTS #39 skeleton + leetspeak
-   folding + normalization; identical skeleton fails, distance 1 flags.
-10. **SPDX `license` field becomes part of the general booter bot config schema**, not a
-   rumble-only extra. It is useful beyond the rumble (any bot distribution benefits from a
-   machine-readable license), and one schema means no divergence between "a rumble bot config"
-   and "a bot config". Implementation implication for the Tank Royale repo, when this design
-   leaves the draft stage: add the optional `license` field to the bot config documentation and
-   the booter's config handling (ignored by gameplay, surfaced in listings), and mirror it in
-   the sample bots.
-
-## Open Questions
-
-None currently.
+The SPDX `license` field becomes part of the general booter bot config schema, not a rumble-only
+extra. It is useful beyond the rumble (any bot distribution benefits from a machine-readable
+license), and one schema means no divergence between "a rumble bot config" and "a bot config".
+Implementation implication for the Tank Royale preparation proposal: add the optional `license`
+field to the bot config documentation and the booter's config handling (ignored by gameplay,
+surfaced in listings), and mirror it in the sample bots.

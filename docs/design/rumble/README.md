@@ -1,8 +1,7 @@
 # Tank Royale Rumble - Umbrella Design Document
 
-> **Status: DRAFT** - exploration phase. No decisions have been made. This document and its
-> sub-documents exist to understand the details and implications before any ADR or change
-> proposal is written.
+> **Status: DRAFT** - design direction captured. The next step is to convert this design into
+> ordered OpenSpec change proposals before implementation starts.
 
 This is the coordinating umbrella document for the design of an automated, serverless,
 decentralized, community-driven tournament system for Robocode Tank Royale. It holds the overall
@@ -54,7 +53,7 @@ flowchart TB
     end
 
     author["Bot author"] -->|"pull request"| botsrc
-    botsrc -->|"CI validate + build"| botindex
+    botsrc -->|"CI validate + index"| botindex
 
     client["Rumble client<br/>(wraps Battle Runner)"] -->|"pull"| botindex
     client -->|"pull"| proj
@@ -92,6 +91,23 @@ bots repo unpleasant to fork and review.
 | [Result Aggregation and Dashboard](./aggregation-and-dashboard.md) | Ingestion of submitted results, validation and quarantine, ranking math, projection files, static dashboard, operations | Draft |
 | [User Documentation and Onboarding](./user-documentation.md) | The document set for bot authors, battle contributors, and moderators; onboarding journeys; friction budget | Draft |
 
+## Change Proposal Roadmap
+
+OpenSpec changes should be created in this order. Each proposal must stop at Proposal, Design,
+Specs, and Tasks until explicitly approved.
+
+| Order | Change | Purpose | Depends on |
+|-------|--------|---------|------------|
+| 1 | `prepare-tank-royale-for-rumble` | Prepare this repository before any rumble-specific repositories exist: `behaviorVersion`, bot config license metadata, Battle Runner result support, Rumble game presets, and a deterministic replay-regression hook. | None |
+| 2 | `create-rumble-bots-repo` | Define and scaffold the bot submission repository: source-only layout, validation, ownership, slot budget, templates, governance, and generated catalog. | Tank Royale prep |
+| 3 | `create-rumble-data-repo` | Define and scaffold the data repository: result inbox, validation, raw facts, aggregation, compaction, matchmaking projections, dashboard, and GitHub Pages publishing. | Tank Royale prep |
+| 4 | `create-rumble-client` | Build the ranked/practice client, local journal, replay evidence store, container, and issue-ops / fork-PR submission transports. | `rumble-bots` catalog and `rumble-data` engine/matchmaking files |
+| 5 | `publish-rumble-docs` | Publish the user guides, onboarding flow, moderator handbook, FAQ, dashboard participation page, ADRs, and contributor-facing architecture docs. | Interfaces from the previous proposals |
+
+The first proposal is intentionally a Tank Royale preparation change, not a Rumble implementation.
+It should make the existing engine, schema, Battle Runner, and bot metadata ready for the later
+repositories without creating those repositories.
+
 ## Building Blocks Already in This Repository
 
 The rumble does not start from scratch. These existing modules are the foundation:
@@ -103,16 +119,18 @@ The rumble does not start from scratch. These existing modules are the foundatio
 | [`recorder/`](/recorder/README.md) | Produces `.battle.gz` replays, usable as optional result evidence. |
 | [`schema/schemas/`](/schema/schemas/) | `results-for-observer` defines the per-participant score fields; the raw result record maps 1:1 onto it. |
 
-## Settled Directions
+## Design Directions
 
-Not formal decisions (no ADR yet), but directions settled during design review. The umbrella
-tracks them so sub-documents stay consistent:
+These directions keep the sub-documents consistent and should be reflected in the OpenSpec
+proposals:
 
 | Direction | Where detailed |
 |-----------|----------------|
 | **Ruleset and scoring = RoboRumble/LiteRumble, unchanged** (APS primary; Win%, Survival, Vote, NPP/ANPP, KNNPBI, Glicko-2). Battle tested for two decades; do not reinvent. | Aggregation doc |
+| **V1 battle types are 1v1, TwinDuel, and Melee.** These follow the popular LiteRumble/RoboRumble categories for the original game. TwinDuel is the 2v2 twin-team format. Mini, micro, nano, and giga categories are out of v1 because bytecode-size limits do not translate cleanly to source-code bots across multiple languages. | Client + aggregation docs |
 | **Own-bot priority: yes**, with the self-reported-only marker plus independent confirmation for trust. | Client doc |
 | **Engine pinning by `behaviorVersion`.** Release versions stay lockstep across all Tank Royale artifacts (the right model for the product); a separate integer `behaviorVersion`, owned by the server and bumped only on game-observable changes (server physics/scoring/turn processing/RNG plus Bot API behavior), is the compatibility contract. Compatibility, client rollout, and result **epochs** all key on it; releases that do not bump it (e.g. GUI-only) cause no rollout and no epoch reset. Supersedes the earlier patch-vs-minor rule. | Client + aggregation docs |
+| **`behaviorVersion` bump discipline is guarded.** The Tank Royale preparation proposal adds the behavior-version model and a deterministic replay-regression hook. The full replay corpus can land in a later proposal if it would make the preparation change too large. | Client + aggregation docs |
 | **One active version per bot** (version bump supersedes the old one, RoboRumble style), plus a per-owner **bot slot** budget. | Submission doc |
 | **Owner (forge account) is distinct from authors (display names)**; ownership drives permissions, slots, bans, and self-report detection. | Submission doc |
 | **Banning** of owners/bots via an auditable list; enforced automatically in submission CI and result validation. | Submission + aggregation docs |
@@ -124,7 +142,7 @@ tracks them so sub-documents stay consistent:
 | **Bot names are bound to their owner** at first merge; only the owner's registered accounts may submit new versions. Owners may register multiple forge accounts; account changes require a PR from an already-registered account. | Submission doc |
 | **Official Bot APIs required** for ranked bots (Java, C#, Python, TypeScript); custom frameworks are not eligible. Resolves the dependency allowlist per platform. | Submission doc |
 | **Run from source, never call a compiler**: runtimes compile behind the scenes on clients, and CI validates with a source-run smoke boot instead of a build step. | Submission doc |
-| **Bot slots: start at 5** active bots per owner; teams deferred (not in v1). | Submission doc |
+| **Bot slots are configurable**, defaulting to 5 active bot entries per owner for launch. The value must be a named validation/governance constant, not a magic number. | Submission doc |
 | **License required per bot**, validated in CI against a small permissive allowlist; missing or wrong license dismisses the PR. | Submission doc |
 | **Evidence backups are the user's responsibility**, actively encouraged by the client; replays are never held centrally. | Client doc |
 | **Submission at battle boundaries** (a battle = the game type's full round count); container gets a forge-only egress allowlist; journal staleness is bounded by the engine pin. | Client doc |
@@ -133,27 +151,33 @@ tracks them so sub-documents stay consistent:
 | **GitHub Pages confirmed** for the dashboard; compaction policy settled (monthly rollups to the archive branch after three full months). | Aggregation doc |
 | **License allowlist and mechanism settled**: MIT, Apache-2.0, BSD-3-Clause, GPL-3.0-or-later, declared via an SPDX field in the bot config, binding per `CONTRIBUTING.md`, submitter responsibility on the DCO model, notice-and-takedown for bad-faith uploads. | Submission doc |
 | **Confusable-name check designed**: UTS #39 skeleton + leetspeak folding + normalization; identical skeleton fails validation, edit distance 1 flags for moderators. | Submission doc |
-| **User documentation is a first-class design area**: docs are Markdown in the repos (fork with the system), one quickstart per audience, error messages link into the docs, onboarding friction is budgeted. | User documentation doc |
+| **Documentation is a first-class design area**: published user docs are Markdown under `/web/docs/rumble/`, internal ADRs and architecture descriptions stay under `/docs`, one quickstart exists per audience, error messages link into the published docs, and onboarding friction is budgeted. | User documentation doc |
 | **No per-client contribution cap**, matching the classic rumble (verified on the RoboWiki): saturation is handled by the priority mechanism alone; `targetSamplesPerPairing` plays the classic `BATTLESPERBOT` role. | Client + aggregation docs |
 | **SPDX `license` field joins the general booter bot config schema** (not rumble-only); implementation lands in the Tank Royale repo when the design leaves draft. | Submission doc |
 | **Docs and repos are versioned by the Tank Royale version**: both repos are tagged at every engine pin change; docs always describe the pinned engine, old tags serve old readers. Template bots per platform ship in `rumble-bots`; scoring explanations live in the Rumble FAQ, linked from dashboard column headers. | User documentation doc |
 
-## Cross-Cutting Open Questions
+## Game Type References
 
-Questions that span more than one sub-document. Per-document questions live in the documents.
+Tank Royale Rumble should use the classic community names for ranked game types:
 
-1. **Result signing: v1 or deferred?** Client keypairs and signed results add integrity but also
-   onboarding friction. Leaning: defer, ship forge-account identity plus outlier detection first
-   (the classic RoboRumble trust model, formalized). See the client and aggregation documents.
-2. **Game types.** Start with 1v1 only, or 1v1 and melee from day one? Melee multiplies the pairing
-   space and the matchmaking math.
-3. **Working name.** "Tank Royale Rumble" is used throughout as a placeholder.
-4. **Guarding `behaviorVersion` bumps.** The epoch model leans on the behavior version being
-   bumped exactly when game-observable behavior changes. The strong guard is a deterministic
-   replay regression test in the engine's CI: replay recorded battles and compare outcomes; an
-   unintended difference fails the build, an intended one requires bumping `behaviorVersion` in
-   the same change. The concrete test design (which battles, how many, where recordings live) is
-   open.
+| Tank Royale Rumble name | Classic source | Notes |
+|-------------------------|----------------|-------|
+| `1v1` | LiteRumble `roborumble`; classic Robocode `roborumble.txt` | Standard duel category: two individual bots, 35 rounds, 800 x 600 battlefield in classic Robocode. |
+| `Melee` | LiteRumble `meleerumble`; classic Robocode `meleerumble.txt` | Multi-bot category: 10 individual bots, 35 rounds, 1000 x 1000 battlefield in classic Robocode. |
+| `TwinDuel` | LiteRumble `twinduel`; classic Robocode `twinduel.txt`; RoboWiki "Twin Duel" | Team category where each participant is a two-bot twin team; 75 rounds, 800 x 800 battlefield in classic Robocode. Use `TwinDuel` / `twinduel`, not `2v2`, so it is not confused with arbitrary two-bot teams. |
+
+Classic Robocode also has `TeamRumble` (`teamrumble.txt`), but Tank Royale Rumble v1 should not
+include a general team category. Mini, micro, nano, and giga variants are also excluded from v1
+because their classic definitions depend on bytecode-size limits.
+
+References:
+
+- [LiteRumble home](https://literumble.appspot.com/) lists `roborumble`, `meleerumble`,
+  `twinduel`, `teamrumble`, and size-limited variants.
+- [RoboWiki: Contributing to RoboRumble](https://robowiki.net/wiki/RoboRumble/Contributing_to_RoboRumble)
+  names the classic runners: `roborumble`, `meleerumble`, `teamrumble`, and `twinduel`.
+- Classic Robocode local configs: `C:\Code\robocode\robocode.content\src\main\resources\roborumble\roborumble.txt`,
+  `meleerumble.txt`, `teamrumble.txt`, and `twinduel.txt`.
 
 ## Glossary
 
