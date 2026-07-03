@@ -35,4 +35,5 @@ When the user runs a slash command, read the skill file and follow it exactly.
 ## Rules
 
 - Never commit without explicit user instruction.
-- After every file modification run `./gradlew clean build`; stop and fix on non-zero exit.
+- Run `./gradlew clean build` after code, config, schema, build system, or generated-file changes; stop and fix on non-zero exit.
+- Skip `./gradlew clean build` when all changes are pure Markdown (`*.md`) documentation edits.
