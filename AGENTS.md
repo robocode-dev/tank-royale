@@ -2,7 +2,8 @@
 
 ## Instructions
 
-Load the file(s) matching your task type before starting work.
+Load `.agents/instructions/core-principles.md` plus the file(s) matching your task type before
+starting work.
 
 | Task | File(s) |
 |------|---------|
@@ -31,9 +32,3 @@ When the user runs a slash command, read the skill file and follow it exactly.
 | `/update-deps` | `.agents/skills/update-deps/SKILL.md` |
 | `/deploy-sample-bots [dir]` | `.agents/skills/deploy-sample-bots/SKILL.md` |
 | `/structurizr` | `.agents/skills/structurizr/SKILL.md` |
-
-## Rules
-
-- Never commit without explicit user instruction.
-- Run `./gradlew clean build` after code, config, schema, build system, or generated-file changes; stop and fix on non-zero exit.
-- Skip `./gradlew clean build` when all changes are pure Markdown (`*.md`) documentation edits.
