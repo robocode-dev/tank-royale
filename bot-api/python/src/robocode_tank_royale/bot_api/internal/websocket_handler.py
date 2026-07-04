@@ -268,6 +268,8 @@ class WebSocketHandler:
         server_handshake: ServerHandshake = from_json(json_msg)  # type: ignore
         self.base_bot_internals.server_handshake = server_handshake
 
+        self._verify_server_version_compatibility(server_handshake.version)
+
         # Validate bot info before sending bot handshake
         self._validate_bot_info()
 
@@ -319,6 +321,48 @@ class WebSocketHandler:
                 self.base_bot_internals.bot_intent.std_err = error
             else:
                 self.base_bot_internals.bot_intent.std_err = None
+
+    def _verify_server_version_compatibility(self, server_version: Optional[str]) -> None:
+        """Verifies that the server uses a protocol version compatible with this Bot API.
+
+        Per SemVer, versions are compatible when the major versions are equal; for the 0.x
+        range anything may change between minor versions, so there the minor versions must be
+        equal as well. Without this check, an incompatible server and Bot API silently
+        misinterpret each other's messages, and the bot appears to join the battle but stands
+        idle without ever scoring.
+        """
+        try:
+            from importlib.metadata import version as _package_version
+
+            api_version: Optional[str] = _package_version("robocode-tank-royale")
+        except Exception:
+            return  # version unavailable; cannot verify
+        api = self._parse_major_minor(api_version)
+        server = self._parse_major_minor(server_version)
+        if api is None or server is None:
+            return
+        incompatible = api[0] != server[0] or (api[0] == 0 and api[1] != server[1])
+        if incompatible:
+            message = (
+                f"Protocol version mismatch: Bot API version {api_version} is not compatible "
+                f"with server version {server_version}. The major versions must be equal "
+                f"(and the minor versions as well for major version 0)."
+            )
+            import sys
+
+            print(message, file=sys.stderr)
+            raise BotException(message)
+
+    @staticmethod
+    def _parse_major_minor(version: Optional[str]) -> Optional[tuple[int, int]]:
+        if not version:
+            return None
+        import re
+
+        match = re.match(r"\s*(\d+)(?:\.(\d+))?", version)
+        if not match:
+            return None
+        return int(match.group(1)), int(match.group(2) or 0)
 
     def _validate_bot_info(self) -> None:
         """Validate bot info before sending handshake to server."""

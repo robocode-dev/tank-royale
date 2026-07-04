@@ -90,7 +90,12 @@ sealed class EventQueue : IComparer<BotEvent>
     /// <param name="interruptible">True if the event can be interrupted, false otherwise</param>
     internal void SetCurrentEventInterruptible(bool interruptible)
     {
-        EventInterruption.SetInterruptible(_currentTopEvent.GetType(), interruptible);
+        var currentEvent = _currentTopEvent;
+        if (currentEvent == null)
+        {
+            return; // not inside an event handler; there is no current event to mark as interruptible
+        }
+        EventInterruption.SetInterruptible(currentEvent.GetType(), interruptible);
     }
 
     private bool IsCurrentEventInterruptible => EventInterruption.IsInterruptible(_currentTopEvent.GetType());

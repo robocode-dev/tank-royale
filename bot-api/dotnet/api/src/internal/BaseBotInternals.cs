@@ -1008,6 +1008,8 @@ sealed class BaseBotInternals
     {
         _serverHandshake = JsonConverter.FromJson<S.ServerHandshake>(json);
 
+        VerifyServerVersionCompatibility(_serverHandshake?.Version);
+
         // Validate bot info before sending bot handshake
         ValidateBotInfo();
 
@@ -1018,6 +1020,43 @@ sealed class BaseBotInternals
         var text = JsonConverter.ToJson(botHandshake);
 
         _socket.SendTextMessage(text);
+    }
+
+    /// <summary>
+    /// Verifies that the server uses a protocol version compatible with this Bot API.
+    /// Per SemVer, versions are compatible when the major versions are equal; for the 0.x range
+    /// anything may change between minor versions, so there the minor versions must be equal as
+    /// well. Without this check, an incompatible server and Bot API silently misinterpret each
+    /// other's messages, and the bot appears to join the battle but stands idle without ever
+    /// scoring.
+    /// </summary>
+    private void VerifyServerVersionCompatibility(string serverVersion)
+    {
+        var apiVersion = typeof(BaseBotInternals).Assembly.GetName().Version;
+        var server = ParseMajorMinorVersion(serverVersion);
+        if (apiVersion == null || server == null)
+        {
+            return; // a version is unavailable; cannot verify
+        }
+        var incompatible = apiVersion.Major != server.Value.Major ||
+                           (apiVersion.Major == 0 && apiVersion.Minor != server.Value.Minor);
+        if (incompatible)
+        {
+            var message = $"Protocol version mismatch: Bot API version {apiVersion} is not compatible with " +
+                          $"server version {serverVersion}. The major versions must be equal " +
+                          "(and the minor versions as well for major version 0).";
+            Console.Error.WriteLine(message);
+            throw new BotException(message);
+        }
+    }
+
+    private static (int Major, int Minor)? ParseMajorMinorVersion(string version)
+    {
+        if (version == null) return null;
+        var match = System.Text.RegularExpressions.Regex.Match(version, @"^\s*(\d+)(?:\.(\d+))?");
+        if (!match.Success) return null;
+        var minor = match.Groups[2].Success ? int.Parse(match.Groups[2].Value) : 0;
+        return (int.Parse(match.Groups[1].Value), minor);
     }
 
     private void ValidateBotInfo()

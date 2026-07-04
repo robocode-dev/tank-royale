@@ -1,3 +1,20 @@
+## [1.0.3] - TBD (not released yet)
+
+### 🐞 Bug Fixes
+
+- Bot API (Java, .NET, Python):
+    - Fixed a crash when a bot calls `setInterruptible()` outside an event handler. The call is
+      now simply ignored, as there is no current event to mark as interruptible.
+      (The TypeScript Bot API was not affected.)
+
+### 🚀 Improvements
+
+- Bot API (Java, .NET, Python, TypeScript):
+    - A bot now fails with a clear error message when connecting to a server with an incompatible
+      version, instead of appearing to join the battle but standing idle without scoring.
+      Per SemVer, the major versions of the Bot API and server must be equal (and the minor
+      versions as well for major version 0).
+
 ## [1.0.2] - 2026-05-18 - Minor bug fix for GUI
 
 ### 🐞 Bug Fixes

@@ -81,7 +81,11 @@ final class EventQueue {
      * @param interruptible true if the event can be interrupted, false otherwise
      */
     void setCurrentEventInterruptible(boolean interruptible) {
-        EventInterruption.setInterruptible(currentTopEvent.getClass(), interruptible);
+        var currentEvent = currentTopEvent;
+        if (currentEvent == null) {
+            return; // not inside an event handler; there is no current event to mark as interruptible
+        }
+        EventInterruption.setInterruptible(currentEvent.getClass(), interruptible);
     }
 
     private boolean isCurrentEventInterruptible() {

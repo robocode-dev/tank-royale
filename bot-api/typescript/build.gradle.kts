@@ -24,11 +24,13 @@ tasks {
 
     val syncVersion by registering {
         group = "build"
-        description = "Synchronises package.json version with gradle.properties"
+        description = "Synchronises package.json and src/version.ts version with gradle.properties"
         val pkgFile = file("package.json")
+        val versionTsFile = file("src/version.ts")
         val newVersion = project.version.toString()
         inputs.property("version", newVersion)
         outputs.file(pkgFile)
+        outputs.file(versionTsFile)
         doLast {
             val content = pkgFile.readText()
             val updated = content.replace(
@@ -37,6 +39,14 @@ tasks {
             )
             pkgFile.writeText(updated)
             logger.lifecycle("Updated package.json version to $newVersion")
+
+            val versionTsContent = versionTsFile.readText()
+            val updatedVersionTs = versionTsContent.replace(
+                Regex("""API_VERSION = "[^"]+""""),
+                """API_VERSION = "$newVersion""""
+            )
+            versionTsFile.writeText(updatedVersionTs)
+            logger.lifecycle("Updated src/version.ts version to $newVersion")
         }
     }
 

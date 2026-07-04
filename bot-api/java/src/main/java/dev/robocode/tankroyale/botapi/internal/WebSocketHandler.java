@@ -241,6 +241,8 @@ final class WebSocketHandler implements WebSocket.Listener {
         var serverHandshake = JsonConverter.fromJson(jsonMsg, ServerHandshake.class);
         baseBotInternals.setServerHandshake(serverHandshake);
 
+        verifyServerVersionCompatibility(serverHandshake.getVersion());
+
         // Validate bot info before sending bot handshake
         validateBotInfo();
 
@@ -250,6 +252,44 @@ final class WebSocketHandler implements WebSocket.Listener {
         String msg = JsonConverter.toJson(botHandshake);
 
         socket.sendText(msg, true);
+    }
+
+    /**
+     * Verifies that the server uses a protocol version compatible with this Bot API.
+     * Per SemVer, versions are compatible when the major versions are equal; for the 0.x range
+     * anything may change between minor versions, so there the minor versions must be equal as
+     * well. Without this check, an incompatible server and Bot API silently misinterpret each
+     * other's messages, and the bot appears to join the battle but stands idle without ever
+     * scoring.
+     */
+    private void verifyServerVersionCompatibility(String serverVersion) {
+        var apiVersion = WebSocketHandler.class.getPackage().getImplementationVersion();
+        var api = parseMajorMinorVersion(apiVersion);
+        var server = parseMajorMinorVersion(serverVersion);
+        if (api == null || server == null) {
+            return; // a version is unavailable (e.g. running from class files); cannot verify
+        }
+        boolean incompatible = api[0] != server[0] || (api[0] == 0 && api[1] != server[1]);
+        if (incompatible) {
+            var message = String.format(
+                    "Protocol version mismatch: Bot API version %s is not compatible with server version %s. " +
+                            "The major versions must be equal (and the minor versions as well for major version 0).",
+                    apiVersion, serverVersion);
+            System.err.println(message);
+            throw new BotException(message);
+        }
+    }
+
+    private static int[] parseMajorMinorVersion(String version) {
+        if (version == null) {
+            return null;
+        }
+        var matcher = java.util.regex.Pattern.compile("^\\s*(\\d+)(?:\\.(\\d+))?").matcher(version);
+        if (!matcher.find()) {
+            return null;
+        }
+        var minor = matcher.group(2);
+        return new int[]{Integer.parseInt(matcher.group(1)), minor == null ? 0 : Integer.parseInt(minor)};
     }
 
     private void validateBotInfo() {

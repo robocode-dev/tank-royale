@@ -59,8 +59,10 @@ class EventQueue:
         Args:
             interruptible: True if the current event can be interrupted; false otherwise.
         """
-        assert self.current_top_event is not None, "No current event to set interruptible state for."
-        EventInterruption.set_interruptible(type(self.current_top_event), interruptible)
+        current_event = self.current_top_event
+        if current_event is None:
+            return  # not inside an event handler; there is no current event to mark as interruptible
+        EventInterruption.set_interruptible(type(current_event), interruptible)
 
     def is_current_event_interruptible(self) -> bool:
         """Checks if the current event can be interrupted by new events with higher priority.

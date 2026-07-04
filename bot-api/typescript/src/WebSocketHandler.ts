@@ -1,3 +1,4 @@
+import { API_VERSION } from "./version.js";
 import { BotInfo } from "./BotInfo.js";
 import { BotHandshakeFactory } from "./BotHandshakeFactory.js";
 import { EnvVars } from "./EnvVars.js";
@@ -154,6 +155,8 @@ export class WebSocketHandler {
     this.serverHandshake = msg;
     this.callbacks.onServerHandshake?.(msg);
 
+    this.verifyServerVersionCompatibility(msg.version);
+
     // Validate required bot info before sending the bot handshake
     this.validateBotInfo();
 
@@ -204,6 +207,44 @@ export class WebSocketHandler {
   // ---------------------------------------------------------------------------
 
   /** Validates that required bot info fields are set before sending the bot handshake. */
+  /**
+   * Verifies that the server uses a protocol version compatible with this Bot API.
+   * Per SemVer, versions are compatible when the major versions are equal; for the 0.x range
+   * anything may change between minor versions, so there the minor versions must be equal as
+   * well. Without this check, an incompatible server and Bot API silently misinterpret each
+   * other's messages, and the bot appears to join the battle but stands idle without ever
+   * scoring.
+   */
+  private verifyServerVersionCompatibility(serverVersion?: string): void {
+    const api = this.parseMajorMinorVersion(API_VERSION);
+    const server = this.parseMajorMinorVersion(serverVersion);
+    if (api == null || server == null) {
+      return; // a version is unavailable; cannot verify
+    }
+    const incompatible = api[0] !== server[0] || (api[0] === 0 && api[1] !== server[1]);
+    if (incompatible) {
+      const message =
+        `Protocol version mismatch: Bot API version ${API_VERSION} is not compatible with ` +
+        `server version ${serverVersion}. The major versions must be equal ` +
+        "(and the minor versions as well for major version 0).";
+      console.error(message);
+      throw new BotException(message);
+    }
+  }
+
+  private parseMajorMinorVersion(version?: string): [number, number] | null {
+    if (version == null) {
+      return null;
+    }
+    const match = /^\s*(\d+)(?:\.(\d+))?/.exec(version);
+    const major = match?.[1];
+    if (major == null) {
+      return null;
+    }
+    const minor = match?.[2];
+    return [parseInt(major, 10), minor == null ? 0 : parseInt(minor, 10)];
+  }
+
   private validateBotInfo(): void {
     if (this.isBlank(this.botInfo.name)) {
       this.throwMissingPropertyException("name");
