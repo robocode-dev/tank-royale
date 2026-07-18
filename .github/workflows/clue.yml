@@ -1,0 +1,33 @@
+# The corpus wall: the same released clue that runs locally judges every PR
+# and push to main. Job name `validate` is the intended required status check
+# under branch protection. The binary is vendored under .github/tools/ while
+# the clue repo is private (no cross-repo credentials); its checksum is the
+# release's own SHA256SUMS, verified before every run. When clue goes public
+# (P-001/M-003), this switches to a direct release download and the vendored
+# binary is deleted.
+name: Clue
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    env:
+      CLUE_VERSION: 0.3.0
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify and install vendored clue ${{ env.CLUE_VERSION }}
+        run: |
+          cd .github/tools
+          sha256sum -c --ignore-missing SHA256SUMS
+          install -m 0755 "clue-${CLUE_VERSION}-linux-amd64" /usr/local/bin/clue
+          clue version
+
+      - name: clue validate
+        run: clue validate --forbid-changes
