@@ -4,4 +4,4 @@ Structurizr DSL source files for all C4 architecture diagrams. These are the aut
 
 Each `.dsl` file maps to one C4 view level (System Context, Container, or Component). To add or modify a diagram, edit the corresponding `.dsl` file and regenerate: run `../images/regenerate-all-svgs.ps1`.
 
-See [INDEX.md](./INDEX.md) for the full file listing.
+One `.dsl` file per C4 view; the directory listing is the file listing.

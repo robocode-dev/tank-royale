@@ -1,3 +1,12 @@
+---
+id: ARCH-025
+type: architecture
+status: draft
+links: []
+title: "Rumble Design: User Documentation and Onboarding"
+provenance: inferred
+---
+
 # Rumble Design: User Documentation and Onboarding
 
 > **Status: DRAFT** - design direction captured.
@@ -14,7 +23,7 @@ rumble's health is measured in participants.
 ## Principles Applied to Docs
 
 - **Separate internal docs from published docs.** In the Tank Royale repository, `/docs` is for
-  architecture, design, OpenSpec, and developer-facing material for maintainers, coding agents,
+  architecture, design, the corpus records, and developer-facing material for maintainers, coding agents,
   and contributors. Published documentation for bot developers and battle contributors belongs
   under `/web`, consistent with the rest of the project.
 - **Published docs fork with the system (P2).** User-facing Rumble documentation is plain
@@ -73,7 +82,7 @@ flowchart TD
 | Rumble ADRs | Maintainers, contributors, coding agents | `docs/decisions/` | One to several MADR decision records for the durable architecture choices: GitHub-backed serverless operation, repository split, event-sourced results, `behaviorVersion` epochs, supported ranked formats, and trust model. |
 | Rumble architecture overview | Maintainers, contributors, coding agents | `docs/architecture/` | Contributor-facing architecture description of how `rumble-bots`, `rumble-data`, the client, CI workflows, and static dashboard fit together. |
 | Rumble operational flows | Maintainers, contributors, coding agents | `docs/architecture/models/flows/` | Mermaid flow/sequence documents for bot submission, result submission, ingestion, aggregation, quarantine, compaction, and dashboard publication. |
-| Rumble data model notes | Maintainers, contributors, coding agents | `docs/architecture/models/message-schema/` or adjacent architecture model docs | Stable descriptions of result records, batch envelopes, projections, matchmaking advice, client registration, and engine pin files without duplicating OpenSpec requirements. |
+| Rumble data model notes | Maintainers, contributors, coding agents | `docs/architecture/models/message-schema/` or adjacent architecture model docs | Stable descriptions of result records, batch envelopes, projections, matchmaking advice, client registration, and engine pin files without duplicating the capability criteria. |
 | `README.md` (bots repo) | Everyone | `rumble-bots` | What the rumble is, links to every quickstart, link to dashboard |
 | `CONTRIBUTING.md` | Bot authors | `rumble-bots` | Submission rules in full: booter convention, validation checks, SPDX field binding statement, DCO-style responsibility, review expectations |
 | `GOVERNANCE.md` | Everyone | `rumble-bots` | Moderator team and rotation, bans and appeals, name disputes, lost-account adjudication |

@@ -1,3 +1,12 @@
+---
+id: ARCH-022
+type: architecture
+status: draft
+links: []
+title: "Rumble Design: Bot Submission and Handling"
+provenance: inferred
+---
+
 # Rumble Design: Bot Submission and Handling
 
 > **Status: DRAFT** - design direction captured.

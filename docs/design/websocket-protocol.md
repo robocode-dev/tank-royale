@@ -1,3 +1,12 @@
+---
+id: ARCH-021
+type: architecture
+status: draft
+links: [ADR-0009, CAP-006]
+title: WebSocket Protocol — Design Specification
+provenance: inferred
+---
+
 # WebSocket Protocol — Design Specification
 
 This document provides the concrete design and specification details for the WebSocket-based communication protocol used between the Tank Royale server and its clients (bots, observers, controllers). It complements ADR-0009 and is the canonical place for flows, examples, and implementation-oriented material.

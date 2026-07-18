@@ -1,3 +1,12 @@
+---
+id: ADR-0033
+type: decision
+status: verified
+links: []
+title: Server Debug Mode
+accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
+---
+
 ﻿---
 status: accepted
 date: 2026-04-07

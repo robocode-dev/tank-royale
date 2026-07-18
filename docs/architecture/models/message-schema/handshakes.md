@@ -1,3 +1,12 @@
+---
+id: ARCH-013
+type: architecture
+status: draft
+links: [CAP-006, ADR-0006]
+title: Handshake Messages
+provenance: inferred
+---
+
 # Handshake Messages
 
 Handshakes establish WebSocket connections and authenticate clients with the server.

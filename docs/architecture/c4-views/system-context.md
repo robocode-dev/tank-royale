@@ -1,3 +1,12 @@
+---
+id: ARCH-001
+type: architecture
+status: draft
+links: []
+title: System Context Diagram
+provenance: inferred
+---
+
 # System Context Diagram
 
 **Level:** C4 Model - Level 1 (System Context)

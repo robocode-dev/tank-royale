@@ -1,3 +1,12 @@
+---
+id: ARCH-012
+type: architecture
+status: draft
+links: [ADR-0022]
+title: Event Handling Flow
+provenance: inferred
+---
+
 # Event Handling Flow
 
 This document explains how events (like `WonRoundEvent`, `ScannedBotEvent`, etc.) are generated, queued, dispatched, and handled in Tank Royale Bot APIs across Java, Python, C# (.NET), and TypeScript.

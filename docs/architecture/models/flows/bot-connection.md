@@ -1,3 +1,12 @@
+---
+id: ARCH-010
+type: architecture
+status: draft
+links: [CAP-006]
+title: Bot Connection Flow
+provenance: inferred
+---
+
 # Bot Connection Flow
 
 This flow describes how a bot establishes connection and readiness for battle.

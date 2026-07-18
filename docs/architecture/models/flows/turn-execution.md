@@ -1,3 +1,12 @@
+---
+id: ARCH-011
+type: architecture
+status: draft
+links: [ADR-0011, ADR-0012]
+title: Turn Execution Flow
+provenance: inferred
+---
+
 # Turn Execution Flow
 
 This is the **core game loop** — the 15-step sequence executed 30 times per second.

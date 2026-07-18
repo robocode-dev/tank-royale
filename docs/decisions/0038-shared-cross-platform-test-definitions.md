@@ -1,3 +1,12 @@
+---
+id: ADR-0038
+type: decision
+status: verified
+links: []
+title: Cross-Platform Test Parity and Shared Test Definitions
+accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
+---
+
 ﻿---
 status: accepted
 date: 2026-04-14

@@ -1,3 +1,12 @@
+---
+id: ARCH-019
+type: architecture
+status: draft
+links: []
+title: "Architectural Health Report: [System Name]"
+provenance: inferred
+---
+
 # Architectural Health Report: [System Name]
 
 > Influenced by the [arc42 architecture documentation template](https://arc42.org/overview) by Dr. Peter Hruschka & Dr. Gernot Starke.

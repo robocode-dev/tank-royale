@@ -1,106 +1,53 @@
-# Architecture Decision Records (ADRs)
+# Decisions
 
-This directory contains Architecture Decision Records documenting significant architectural decisions for Robocode Tank Royale.
+ADR-xxxx: architecture decision records — the context, alternatives, and rationale behind architectural choices. They answer: **"Why did we design it this way?"**
 
-## What are ADRs?
+Each ADR keeps [Michael Nygard's](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions) core **Context**, **Decision**, and **Consequences** sections, extended with **Rationale**, **Alternatives Considered**, **Future Work**, and **References**. Since CH-001 the frontmatter follows the clue decision schema: `status: inferred` when a record is written by an agent and merged (merge ≠ approval), promoted to `verified` when a human explicitly stands behind it (`accepted-by:` records who, when, and in what context). ADR-0001…ADR-0041 predate Cliewen and were accepted under the MADR workflow; that acceptance is recorded in their `accepted-by` field.
 
-Architecture Decision Records capture the context, alternatives, and rationale behind architectural choices. They answer the question: **"Why did we design it this way?"**
+New decisions are born inside a change (`/changes/CH-xxx/`), numbered sequentially, product-centered (no tooling/process ADRs), and added to the index below.
 
-Each ADR includes:
-- **Context** — The problem or situation that requires a decision
-- **Decision** — What was chosen
-- **Rationale** — Why this option was selected
-- **Alternatives Considered** — Other options evaluated
-- **Consequences** — Positive and negative outcomes
+Writing guidelines: be specific (technical detail, not concepts); show your work (rejected alternatives and why); be honest (negative consequences too); use Mermaid diagrams where they clarify; link extensively to code, capabilities, and other records.
 
-## Format
-
-Each ADR extends the format introduced by [Michael Nygard](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions) — keeping his core **Context**, **Decision**, and **Consequences** sections and adding **Rationale**, **Alternatives Considered**, **Future Work**, and **References**. YAML frontmatter for `status` and `date` is borrowed from [MADR](https://adr.github.io/madr/).
-
-See [`template.md`](./template.md) for the canonical structure.
-
-## Index of ADRs
-
-| ADR                                                              | Title                                                | Status   | Date       |
-|------------------------------------------------------------------|------------------------------------------------------|----------|------------|
-| [0001](./0001-monorepo-build-strategy.md)                        | Monorepo Build Strategy                              | Accepted | 2026-02-14 |
-| [0002](./0002-standard-math-coordinate-system.md)                | Standard Mathematical Coordinate System              | Accepted | 2026-02-14 |
-| [0003](./0003-cross-platform-bot-api-strategy.md)                | Cross-Platform Bot API Strategy                      | Accepted | 2026-02-11 |
-| [0004](./0004-java-reference-implementation.md)                  | Java as Authoritative Reference Implementation       | Accepted | 2026-02-14 |
-| [0005](./0005-independent-deployable-components.md)              | Independent Deployable Components                    | Accepted | 2026-02-14 |
-| [0006](./0006-schema-driven-protocol-contracts.md)               | Schema-Driven Protocol Contracts                     | Accepted | 2026-02-14 |
-| [0007](./0007-client-role-separation.md)                         | Client Role Separation (Bot / Observer / Controller) | Accepted | 2026-02-14 |
-| [0008](./0008-server-authoritative-physics.md)                   | Server-Authoritative Deterministic Physics           | Accepted | 2026-02-14 |
-| [0009](./0009-websocket-communication-protocol.md)               | WebSocket Communication Protocol                     | Accepted | 2026-02-11 |
-| [0010](./0010-declarative-bot-intent-model.md)                   | Declarative Bot Intent Model                         | Accepted | 2026-02-14 |
-| [0011](./0011-realtime-game-loop-architecture.md)                | Real-Time Game Loop Architecture                     | Accepted | 2026-02-11 |
-| [0012](./0012-turn-timing-semantics.md)                          | Turn Timing Semantics                                | Accepted | 2026-02-13 |
-| [0013](./0013-bot-configuration-env-vars.md)                     | Bot Configuration via Environment Variables          | Accepted | 2026-02-14 |
-| [0014](./0014-two-tier-authentication.md)                        | Two-Tier Shared-Secret Authentication                | Accepted | 2026-02-14 |
-| [0015](./0015-bot-id-team-id-namespace-separation.md)            | Participant ID as Unified Team Identifier            | Accepted | 2026-02-14 |
-| [0016](./0016-session-id-bot-process-identification.md)          | Session ID for Bot Process Identification            | Accepted | 2026-02-14 |
-| [0017](./0017-recording-format.md)                               | Recording Format (ND-JSON + Gzip)                    | Accepted | 2026-02-14 |
-| [0018](./0018-custom-svg-rendering.md)                           | Custom SVG Rendering for Bot API Graphics            | Accepted | 2026-02-14 |
-| [0019](./0019-r8-code-shrinking.md)                              | R8 Code Shrinking                                    | Accepted | 2026-02-14 |
-| [0020](./0020-teams-support-observer-protocol.md)                | Teams Support in Observer Protocol                   | Accepted | 2026-02-14 |
-| [0021](./0021-java-swing-gui-reference-implementation.md)        | Java Swing as GUI Reference Implementation           | Accepted | 2026-02-15 |
-| [0022](./0022-event-system-gui-decoupling.md)                    | Event System for GUI Decoupling                      | Accepted | 2026-02-15 |
-| [0023](./0023-robocode-tank-royale-platform-scope.md)            | Robocode Tank Royale Platform Scope and Boundaries   | Accepted | 2026-02-15 |
-| [0024](./0024-battle-runner-api.md)                              | Battle Runner API                                    | Accepted | 2026-02-28 |
-| [0025](./0025-game-type-presets-and-rule-configuration.md)       | Game Type Presets and Rule Configuration             | Accepted | 2026-02-28 |
-| [0026](./0026-identity-based-bot-matching.md)                    | Identity-Based Bot Matching in Battle Runner         | Accepted | 2026-03-21 |
-| [0027](./0027-typescript-bot-api-architecture.md)                | TypeScript Bot API for Web Platform Support          | Accepted | 2026-03-24 |
-| [0028](./0028-typescript-bot-api-threading-model.md)             | TypeScript Bot API Threading Model                   | Accepted | 2026-03-24 |
-| [0029](./0029-typescript-bot-api-runtime-targets.md)             | TypeScript Bot API Runtime Targets                   | Accepted | 2026-03-24 |
-| [0030](./0030-convention-over-configuration-bot-entry-points.md) | Template-based Booting and Base Convention           | Accepted | 2026-04-05 |
-| [0031](./0031-optional-bot-config-and-runtime-validation.md)    | Optional Bot Config and Runtime Validation           | Accepted | 2026-04-05 |
-| [0032](./0032-user-defined-visual-overrides-for-tanks.md) | Tank Color Display Mode                              | Accepted | 2026-04-06 |
-| [0033](./0033-bot-debug-mode.md)                                 | Server Debug Mode                                    | Accepted | 2026-04-07 |
-| [0034](./0034-breakpoint-mode.md)                                | Breakpoint Mode                                      | Accepted | 2026-04-07 |
-| [0035](./0035-bot-debugger-detection.md)                         | Bot API Debugger Detection                           | Accepted | 2026-04-07 |
-| [0036](./0036-start-game-debug-options.md)                       | Start-Game Debug Options                             | Accepted | 2026-04-08 |
-| [0037](./0037-functional-core-bot-api-testability.md)            | Functional Core Extraction for Bot API Testability   | Accepted | 2026-04-14 |
-| [0038](./0038-shared-cross-platform-test-definitions.md)         | Cross-Platform Test Parity and Shared Test Definitions | Accepted | 2026-04-14 |
-| [0039](./0039-server-testability.md)                             | Server Testability — Physics Core and Test Framework | Accepted | 2026-04-14 |
-| [0040](./0040-ready-timeout-default.md)                          | Raise Default readyTimeout from 1s to 10s            | Accepted | 2026-04-15 |
-| [0041](./0041-bot-api-library-version-management.md)             | Bot API Library Version Management in the GUI        | Accepted | 2026-04-16 |
-
-## Status Definitions
-
-- **Proposed** — Under discussion
-- **Accepted** — Approved and implemented
-- **Superseded** — Replaced by a newer ADR
-- **Deprecated** — No longer recommended but may still exist in codebase
-
-## Creating New ADRs
-
-When making a new architectural decision:
-
-1. **Copy [`template.md`](./template.md)** and rename it with the next sequential number
-2. **Number sequentially** (e.g., 0004, 0005)
-3. **Use descriptive title** that summarizes the decision
-4. **Include all sections**:
-   - Context and problem statement
-   - Options considered with trade-offs
-   - Decision outcome
-   - Rationale
-   - Consequences (positive and negative)
-5. **Link to related docs** (domain models, flows, requirements, code)
-6. **Update the Index of ADRs table** in this file and add the filename row to `INDEX.md`
-
-## Guidelines
-
-- **Be specific** — Include technical details, not just high-level concepts
-- **Show your work** — Document alternatives considered and why they were rejected
-- **Be honest** — Include negative consequences, not just benefits
-- **Use diagrams** — Mermaid diagrams help explain complex decisions
-- **Link extensively** — Connect to code, specs, and other documentation
-
----
-
-**Related Documentation:**
-- [C4 Views](/docs/architecture/c4-views/README.md) — Visual architecture diagrams
-- [Message Schema](/docs/architecture/models/message-schema/README.md) — WebSocket message contracts
-- [Business Flows](/docs/architecture/models/flows/README.md) — Process documentation
-- [OpenSpec Specs](/openspec/project.md) — Requirements and scenarios (references ADRs for design rationale)
-- [AI Architecture Guide](/.agents/instructions/architecture.md) — AI agent routing to architecture docs
+<!-- clue:index:start -->
+- [ADR-0001 — Monorepo Build Strategy](0001-monorepo-build-strategy.md) · `verified`
+- [ADR-0002 — Standard Mathematical Coordinate System](0002-standard-math-coordinate-system.md) · `verified`
+- [ADR-0003 — Cross-Platform Bot API Strategy](0003-cross-platform-bot-api-strategy.md) · `verified`
+- [ADR-0004 — Java as Authoritative Reference Implementation](0004-java-reference-implementation.md) · `verified`
+- [ADR-0005 — Independent Deployable Components](0005-independent-deployable-components.md) · `verified`
+- [ADR-0006 — Schema-Driven Protocol Contracts](0006-schema-driven-protocol-contracts.md) · `verified`
+- [ADR-0007 — Client Role Separation (Bot / Observer / Controller)](0007-client-role-separation.md) · `verified`
+- [ADR-0008 — Server-Authoritative Deterministic Physics](0008-server-authoritative-physics.md) · `verified`
+- [ADR-0009 — WebSocket Communication Protocol](0009-websocket-communication-protocol.md) · `verified`
+- [ADR-0010 — Declarative Bot Intent Model](0010-declarative-bot-intent-model.md) · `verified`
+- [ADR-0011 — Real-Time Game Loop Architecture](0011-realtime-game-loop-architecture.md) · `verified`
+- [ADR-0012 — Turn Timing Semantics](0012-turn-timing-semantics.md) · `verified`
+- [ADR-0013 — Bot Configuration via Environment Variables](0013-bot-configuration-env-vars.md) · `verified`
+- [ADR-0014 — Two-Tier Shared-Secret Authentication](0014-two-tier-authentication.md) · `verified`
+- [ADR-0015 — Participant ID as Unified Team Identifier](0015-bot-id-team-id-namespace-separation.md) · `verified`
+- [ADR-0016 — Session ID for Bot Process Identification](0016-session-id-bot-process-identification.md) · `verified`
+- [ADR-0017 — Recording Format (ND-JSON + Gzip)](0017-recording-format.md) · `verified`
+- [ADR-0018 — Custom SVG Rendering for Bot API Graphics](0018-custom-svg-rendering.md) · `verified`
+- [ADR-0019 — R8 Code Shrinking](0019-r8-code-shrinking.md) · `verified`
+- [ADR-0020 — Teams Support in Observer Protocol](0020-teams-support-observer-protocol.md) · `verified`
+- [ADR-0021 — Java Swing as GUI Reference Implementation](0021-java-swing-gui-reference-implementation.md) · `verified`
+- [ADR-0022 — Event System for GUI Decoupling](0022-event-system-gui-decoupling.md) · `verified`
+- [ADR-0023 — Robocode Tank Royale Platform Scope and Boundaries](0023-robocode-tank-royale-platform-scope.md) · `verified`
+- [ADR-0024 — Battle Runner API](0024-battle-runner-api.md) · `verified`
+- [ADR-0025 — Game Type Presets and Rule Configuration](0025-game-type-presets-and-rule-configuration.md) · `verified`
+- [ADR-0026 — Identity-Based Bot Matching in Battle Runner](0026-identity-based-bot-matching.md) · `verified`
+- [ADR-0027 — TypeScript Bot API for Web Platform Support](0027-typescript-bot-api-architecture.md) · `verified`
+- [ADR-0028 — TypeScript Bot API Threading Model](0028-typescript-bot-api-threading-model.md) · `verified`
+- [ADR-0029 — TypeScript Bot API Runtime Targets](0029-typescript-bot-api-runtime-targets.md) · `verified`
+- [ADR-0030 — Template-based Booting and Base Convention](0030-convention-over-configuration-bot-entry-points.md) · `verified`
+- [ADR-0031 — Optional Bot Configuration Files and Runtime Property Validation](0031-optional-bot-config-and-runtime-validation.md) · `verified`
+- [ADR-0032 — Tank Color Display Mode](0032-user-defined-visual-overrides-for-tanks.md) · `verified`
+- [ADR-0033 — Server Debug Mode](0033-bot-debug-mode.md) · `verified`
+- [ADR-0034 — Breakpoint Mode](0034-breakpoint-mode.md) · `verified`
+- [ADR-0035 — Bot API Debugger Detection](0035-bot-debugger-detection.md) · `verified`
+- [ADR-0036 — Start-Game Debug Options](0036-start-game-debug-options.md) · `verified`
+- [ADR-0037 — Functional Core Extraction for Bot API Testability](0037-functional-core-bot-api-testability.md) · `verified`
+- [ADR-0038 — Cross-Platform Test Parity and Shared Test Definitions](0038-shared-cross-platform-test-definitions.md) · `verified`
+- [ADR-0039 — Server Testability — Physics Core Extraction and Test Framework](0039-server-testability.md) · `verified`
+- [ADR-0040 — Raise Default readyTimeout from 1 Second to 10 Seconds](0040-ready-timeout-default.md) · `verified`
+- [ADR-0041 — Bot API Library Version Management in the GUI](0041-bot-api-library-version-management.md) · `verified`
+<!-- clue:index:end -->

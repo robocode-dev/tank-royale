@@ -1,3 +1,12 @@
+---
+id: ADR-0022
+type: decision
+status: verified
+links: []
+title: Event System for GUI Decoupling
+accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
+---
+
 ﻿---
 status: accepted
 date: 2026-02-16

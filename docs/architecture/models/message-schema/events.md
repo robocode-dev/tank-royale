@@ -1,3 +1,12 @@
+---
+id: ARCH-015
+type: architecture
+status: draft
+links: [CAP-006, ADR-0006]
+title: Event Messages
+provenance: inferred
+---
+
 # Event Messages
 
 Events are server-generated notifications sent to clients about game state changes and occurrences.

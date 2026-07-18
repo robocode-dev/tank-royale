@@ -1,7 +1,7 @@
 # Tank Royale Rumble - Umbrella Design Document
 
-> **Status: DRAFT** - design direction captured. The next step is to convert this design into
-> ordered OpenSpec change proposals before implementation starts.
+> **Status: DRAFT** - design direction captured. The next step is to convert this design into an
+> active plan (P-xxx) with ordered changes (CH-xxx) before implementation starts.
 
 This is the coordinating umbrella document for the design of an automated, serverless,
 decentralized, community-driven tournament system for Robocode Tank Royale. It holds the overall
@@ -93,8 +93,8 @@ bots repo unpleasant to fork and review.
 
 ## Change Proposal Roadmap
 
-OpenSpec changes should be created in this order. Each proposal must stop at Proposal, Design,
-Specs, and Tasks until explicitly approved.
+Changes (CH-xxx, via the `clue-delta` loop) should be created in this order; each stops at its
+proposal until the maintainer approves.
 
 | Order | Change | Purpose | Depends on |
 |-------|--------|---------|------------|
@@ -121,7 +121,7 @@ The rumble does not start from scratch. These existing modules are the foundatio
 
 ## Design Directions
 
-These directions keep the sub-documents consistent and should be reflected in the OpenSpec
+These directions keep the sub-documents consistent and should be reflected in the change
 proposals:
 
 | Direction | Where detailed |

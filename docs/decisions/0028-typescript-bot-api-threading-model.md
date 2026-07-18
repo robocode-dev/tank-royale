@@ -1,3 +1,12 @@
+---
+id: ADR-0028
+type: decision
+status: verified
+links: []
+title: TypeScript Bot API Threading Model
+accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
+---
+
 ﻿---
 status: accepted
 date: 2026-03-24

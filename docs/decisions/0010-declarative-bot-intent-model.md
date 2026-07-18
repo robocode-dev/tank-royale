@@ -1,3 +1,12 @@
+---
+id: ADR-0010
+type: decision
+status: verified
+links: []
+title: Declarative Bot Intent Model
+accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
+---
+
 ﻿---
 status: accepted
 date: 2026-02-14

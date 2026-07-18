@@ -1,3 +1,12 @@
+---
+id: ARCH-008
+type: architecture
+status: draft
+links: [ADR-0024]
+title: Runner Components View
+provenance: inferred
+---
+
 # Runner Components View
 
 **Level:** C4 Model - Level 3 (Component Architecture)

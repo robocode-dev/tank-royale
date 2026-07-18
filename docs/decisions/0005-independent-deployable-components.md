@@ -1,3 +1,12 @@
+---
+id: ADR-0005
+type: decision
+status: verified
+links: []
+title: Independent Deployable Components
+accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
+---
+
 ﻿---
 status: accepted
 date: 2026-02-14

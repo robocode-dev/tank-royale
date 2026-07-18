@@ -5,4 +5,4 @@
 > All files in this directory are generated from the Structurizr DSL sources in `../structurizr-dsl/`.
 > To regenerate, run `regenerate-all-svgs.ps1` (see `../README.md` for instructions).
 
-See [INDEX.md](./INDEX.md) for the full file listing.
+One SVG per `.dsl` source; the directory listing is the file listing.

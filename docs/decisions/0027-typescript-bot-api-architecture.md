@@ -1,3 +1,12 @@
+---
+id: ADR-0027
+type: decision
+status: verified
+links: []
+title: TypeScript Bot API for Web Platform Support
+accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
+---
+
 ﻿---
 status: accepted
 date: 2026-03-24

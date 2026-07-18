@@ -1,3 +1,12 @@
+---
+id: ADR-0006
+type: decision
+status: verified
+links: []
+title: Schema-Driven Protocol Contracts
+accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
+---
+
 ﻿---
 status: accepted
 date: 2026-02-14

@@ -1,3 +1,12 @@
+---
+id: ARCH-005
+type: architecture
+status: draft
+links: [ADR-0003]
+title: Bot API Components View
+provenance: inferred
+---
+
 # Bot API Components View
 
 **Level:** C4 Model - Level 3 (Component Architecture)

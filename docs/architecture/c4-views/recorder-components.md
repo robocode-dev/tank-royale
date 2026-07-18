@@ -1,3 +1,12 @@
+---
+id: ARCH-007
+type: architecture
+status: draft
+links: [ADR-0017]
+title: Recorder Components View
+provenance: inferred
+---
+
 # Recorder Components View
 
 **Level:** C4 Model - Level 3 (Component Architecture)

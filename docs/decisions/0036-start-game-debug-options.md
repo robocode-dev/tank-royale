@@ -1,3 +1,12 @@
+---
+id: ADR-0036
+type: decision
+status: verified
+links: []
+title: Start-Game Debug Options
+accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
+---
+
 ﻿---
 status: accepted
 date: 2026-04-08

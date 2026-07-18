@@ -1,3 +1,12 @@
+---
+id: ARCH-009
+type: architecture
+status: draft
+links: [CAP-006]
+title: Battle Lifecycle Flow
+provenance: inferred
+---
+
 # Battle Lifecycle Flow
 
 This flow describes the complete journey of a battle from creation through completion.
