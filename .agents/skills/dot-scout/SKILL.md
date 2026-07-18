@@ -3,7 +3,7 @@ name: dot-scout
 description: Analyse a project to detect which principles apply and create or update .principles files encoding that analysis. Use when the user runs /dot-scout [path] to map principles to a codebase.
 argument-hint: "[directory-path]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-version: 0.12.0
+version: 0.3.0
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 license: MIT
 generated-by: .principles

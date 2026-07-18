@@ -2,7 +2,7 @@
 description: Release Tank Royale artifacts to Maven Central, NuGet, PyPI, and npmjs, then trigger the GitHub Actions create-release workflow. Use when the user runs /release to publish a new version.
 argument-hint: ""
 allowed-tools: Read, Bash
-version: 1.0.0
+version: 0.3.0
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 ---
 

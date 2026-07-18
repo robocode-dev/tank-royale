@@ -3,7 +3,7 @@ name: deploy-sample-bots
 description: Build and deploy all sample-bot zip files into the target folder. Use when the user runs /deploy-sample-bots [TARGET_DIR].
 argument-hint: "[TARGET_DIR]  (default: C:/Code/bots)"
 allowed-tools: Bash
-version: 1.1.0
+version: 0.3.0
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 license: MIT
 ---

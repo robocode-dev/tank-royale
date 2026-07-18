@@ -2,7 +2,7 @@
 description: Generate SVG diagrams from C4 DSL workspace blocks using bundled Structurizr CLI and PlantUML. Use when asked to generate C4 architecture diagrams.
 argument-hint: ""
 allowed-tools: Bash
-version: 1.0.0
+version: 0.3.0
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 ---
 

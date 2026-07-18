@@ -2,7 +2,7 @@
 description: Check for dependency updates, upgrade versions in TOML catalogs, upgrade the Gradle wrapper, and verify the build. Use when the user runs /update-deps to update project dependencies.
 argument-hint: ""
 allowed-tools: Read, Edit, Bash
-version: 1.0.0
+version: 0.3.0
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 ---
 

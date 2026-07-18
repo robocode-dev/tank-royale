@@ -3,7 +3,7 @@ name: dot-audit
 description: Review a file, directory, or inline code against its activated principles. Supports explicit principle override with --with / @group / on syntax. Use when the user runs /dot-audit [target] to check code or docs against quality principles.
 argument-hint: "[file|directory|inline-code] | <spec> on <target> | <target> --with <spec> | @<group> <target>"
 allowed-tools: Read, Write, Glob, Grep, Bash
-version: 0.12.0
+version: 0.3.0
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 license: MIT
 generated-by: .principles
