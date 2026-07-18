@@ -1,6 +1,6 @@
 # Core Principles
 
-<!-- KEYWORDS: clean code, principles, minimal changes, atomic commits, SRP, DRY, YAGNI, governance -->
+<!-- KEYWORDS: clean code, principles, minimal changes, SRP, DRY, YAGNI, governance -->
 
 ## Project Governance
 
@@ -18,11 +18,9 @@
 - Avoid: magic numbers, premature optimization, tight coupling, clever abstractions without clear benefit
 - Follow SOLID, DRY, YAGNI
 
-## Git Workflow (Critical)
+## Change Process
 
-- ✅ Create/edit files, stage changes, create branches when asked
-- ❌ **NEVER `git commit` or `git push` without explicit user approval**
-- ⚠️ Always ask: "Ready to commit these changes?"
+The change loop, the review boundary, and all process gates live in the corpus and `AGENTS.md` — not here. Binding rules: [C-002](/docs/constraints/C-002-review-boundary.md) (every mutation of `main` rides a branch and a human-merged PR), [C-001](/docs/constraints/C-001-no-hard-wrapped-markdown.md) (no hard-wrapped markdown prose).
 
 ## Communication Standards
 
@@ -30,10 +28,3 @@
 - **NEVER create summary/documentation files** (`*_Fix.md`, `*_Summary.md`, etc.) unless asked
 - Temporary scripts must be cleaned up after the task; ask if they should be kept permanently
 - Brief explanation format: "Changed X in file Y because Z"
-- **Start responses with "AI Guidelines loaded."** to confirm you've read the instructions
-
-## AI Agent Boundaries
-
-- Never make git commits directly — suggest messages, leave execution to the human
-- **Never start implementing tasks.md after creating an OpenSpec proposal** — wait for human to branch and assign model
-- **Never start fixing or implementing anything without asking the user first** — always confirm scope and approach before touching code, config, or docs

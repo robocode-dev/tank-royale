@@ -90,23 +90,20 @@ End users running Robocode only need Java 11 or newer, but developers building f
 
 ## Agent-assisted contributions
 
-Robocode Tank Royale uses **[OpenSpec](https://github.com/Fission-AI/OpenSpec)** as its
-spec-driven development framework. If you contribute with AI coding agents
-(tested with Claude Code, Codex, GitHub Copilot, and OpenCode), please follow
-this workflow for any non-trivial change:
-
-1. Create an OpenSpec proposal first (`proposal.md`, `tasks.md`, spec deltas).
-2. **Stop and wait for maintainer approval** before implementing.
-3. Apply the change only after the proposal is approved.
-
-This keeps proposals reviewable and prevents large unsolicited diffs.
+Robocode Tank Royale keeps its system-of-record in the [`docs/`](docs/README.md)
+corpus under **[Cliewen](https://github.com/cliewen/cliewen)** conventions. If you
+contribute with AI coding agents (tested with Claude Code, Codex, GitHub Copilot,
+and OpenCode), any non-trivial change runs the change loop: a branch with a
+`/changes/CH-xxx-slug/` proposal, implementation, and a corpus digest — reviewed
+and merged by the maintainer via pull request. `clue validate` judges the corpus
+in CI. This keeps proposals reviewable and prevents large unsolicited diffs.
 
 Agent instructions for this repo live in [`AGENTS.md`](AGENTS.md) and the
 [`.agents/`](.agents/) directory — they tell the agent which conventions,
 ADRs, and instruction files to load for each task type. See
 [DEVELOPMENT.md](DEVELOPMENT.md#agent-assisted-development) for the full
-setup, the list of slash-command skills (`/release`, `/update-deps`,
-`/dot-audit`, etc.), and how OpenSpec is wired in.
+setup and the list of slash-command skills (`/release`, `/update-deps`,
+`/dot-audit`, etc.).
 
 ## Regarding pull requests
 

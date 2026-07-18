@@ -14,7 +14,6 @@ Load only files relevant to your task.
 | `changelog.md`          | ~45   | changelog, CHANGELOG.md, release notes, version, user-visible                   |
 | `standards.md`          | ~25   | encoding, UTF-8, file format, characters, ANSI, properties                      |
 | `architecture.md`       | ~30   | architecture, ADR, design decision, C4, protocol design                         |
-| `openspec.md`           | ~70   | planning, proposal, spec, change, RFC, OpenSpec, /opsx    |
 | `commands.md`           | ~50   | /dot-prime, /dot-scout, /dot-audit, scout, prime, audit   |
 | `debugging.md`          | ~140  | debug, bug, reproduce, hanging test, Battle Runner, three-layer, intent diagnostics |
 
