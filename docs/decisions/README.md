@@ -9,6 +9,7 @@ New decisions are born inside a change (`/changes/CH-xxx/`), numbered sequential
 Writing guidelines: be specific (technical detail, not concepts); show your work (rejected alternatives and why); be honest (negative consequences too); use Mermaid diagrams where they clarify; link extensively to code, capabilities, and other records.
 
 <!-- clue:index:start -->
+- [LOG-001 — Decision log](log.md) · `active`
 - [ADR-0001 — Monorepo Build Strategy](0001-monorepo-build-strategy.md) · `verified`
 - [ADR-0002 — Standard Mathematical Coordinate System](0002-standard-math-coordinate-system.md) · `verified`
 - [ADR-0003 — Cross-Platform Bot API Strategy](0003-cross-platform-bot-api-strategy.md) · `verified`
