@@ -3,7 +3,7 @@ name: dot-prime
 description: Activate principles before working on a file or task. Supports explicit group and ID overrides. Use when the user runs /dot-prime [target] to load the relevant principles into the active frame before writing or editing.
 argument-hint: "[@group...] [ID...] | [file|directory|description]"
 allowed-tools: Read, Glob, Grep, Bash
-version: 0.3.0
+version: 0.12.0
 authors: Flemming N. Larsen (https://github.com/flemming-n-larsen)
 license: MIT
 generated-by: .principles

@@ -1,5 +1,6 @@
 ---
 version: 0.3.0
+cliewen-skill: true
 ---
 
 # clue-analysis
