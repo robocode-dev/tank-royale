@@ -4,12 +4,7 @@ type: decision
 status: verified
 links: []
 title: Robocode Tank Royale Platform Scope and Boundaries
-accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
----
-
-﻿---
-status: accepted
-date: 2026-02-15
+accepted-by: Flemming N. Larsen (2026-02-15, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0023: Robocode Tank Royale Platform Scope and Boundaries

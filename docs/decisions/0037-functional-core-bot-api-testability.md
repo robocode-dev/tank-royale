@@ -4,12 +4,7 @@ type: decision
 status: verified
 links: []
 title: Functional Core Extraction for Bot API Testability
-accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
----
-
-﻿---
-status: accepted
-date: 2026-04-14
+accepted-by: Flemming N. Larsen (2026-04-14, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0037: Functional Core Extraction for Bot API Testability

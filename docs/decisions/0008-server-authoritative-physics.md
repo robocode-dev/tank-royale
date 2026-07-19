@@ -4,12 +4,7 @@ type: decision
 status: verified
 links: []
 title: Server-Authoritative Deterministic Physics
-accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
----
-
-﻿---
-status: accepted
-date: 2026-02-14
+accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0008: Server-Authoritative Deterministic Physics

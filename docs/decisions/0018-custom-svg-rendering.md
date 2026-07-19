@@ -4,12 +4,7 @@ type: decision
 status: verified
 links: []
 title: Custom SVG Rendering for Bot API Graphics
-accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
----
-
-﻿---
-status: accepted
-date: 2026-02-14
+accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0018: Custom SVG Rendering for Bot API Graphics

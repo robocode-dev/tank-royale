@@ -4,12 +4,7 @@ type: decision
 status: verified
 links: []
 title: Real-Time Game Loop Architecture
-accepted-by: Flemming N. Larsen (pre-Cliewen MADR acceptance)
----
-
-﻿---
-status: accepted
-date: 2026-02-11
+accepted-by: Flemming N. Larsen (2026-02-11, pre-Cliewen MADR acceptance)
 ---
 
 # Real-Time Game Loop Architecture
