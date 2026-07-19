@@ -1,6 +1,10 @@
-﻿---
-status: accepted
-date: 2026-02-14
+---
+id: ADR-0007
+type: decision
+status: verified
+links: []
+title: Client Role Separation (Bot / Observer / Controller)
+accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0007: Client Role Separation (Bot / Observer / Controller)

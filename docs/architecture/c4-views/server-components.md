@@ -1,3 +1,12 @@
+---
+id: ARCH-003
+type: architecture
+status: draft
+links: [ADR-0008]
+title: Server Components View
+provenance: inferred
+---
+
 # Server Components View
 
 **Level:** C4 Model - Level 3 (Component Architecture)

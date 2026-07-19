@@ -1,3 +1,12 @@
+---
+id: ARCH-016
+type: architecture
+status: draft
+links: [CAP-006, ADR-0010]
+title: Intent Messages
+provenance: inferred
+---
+
 # Intent Messages
 
 Intents are action requests sent by bots to the server to control their behavior for the next turn.

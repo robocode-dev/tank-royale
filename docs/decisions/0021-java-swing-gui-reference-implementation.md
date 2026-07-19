@@ -1,6 +1,10 @@
-﻿---
-status: accepted
-date: 2026-02-15
+---
+id: ADR-0021
+type: decision
+status: verified
+links: []
+title: Java Swing as GUI Reference Implementation
+accepted-by: Flemming N. Larsen (2026-02-15, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0021: Java Swing as GUI Reference Implementation

@@ -1,3 +1,12 @@
+---
+id: ARCH-002
+type: architecture
+status: draft
+links: []
+title: Container View
+provenance: inferred
+---
+
 # Container View
 
 **Level:** C4 Model - Level 2 (System Decomposition)

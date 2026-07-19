@@ -1,3 +1,12 @@
+---
+id: ARCH-004
+type: architecture
+status: draft
+links: []
+title: Booter Components View
+provenance: inferred
+---
+
 # Booter Components View
 
 **Level:** C4 Model - Level 3 (Component Architecture)

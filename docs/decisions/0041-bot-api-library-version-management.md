@@ -1,6 +1,10 @@
-﻿---
-status: accepted
-date: 2026-04-16
+---
+id: ADR-0041
+type: decision
+status: verified
+links: []
+title: Bot API Library Version Management in the GUI
+accepted-by: Flemming N. Larsen (2026-04-16, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0041: Bot API Library Version Management in the GUI

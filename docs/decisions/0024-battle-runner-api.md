@@ -1,6 +1,10 @@
-﻿---
-status: accepted
-date: 2026-02-28
+---
+id: ADR-0024
+type: decision
+status: verified
+links: []
+title: Battle Runner API
+accepted-by: Flemming N. Larsen (2026-02-28, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0024: Battle Runner API

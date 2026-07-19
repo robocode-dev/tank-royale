@@ -1,6 +1,10 @@
-﻿---
-status: accepted
-date: 2026-02-14
+---
+id: ADR-0002
+type: decision
+status: verified
+links: []
+title: Standard Mathematical Coordinate System
+accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0002: Standard Mathematical Coordinate System

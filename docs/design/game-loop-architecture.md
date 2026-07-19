@@ -1,3 +1,12 @@
+---
+id: ARCH-020
+type: architecture
+status: draft
+links: [ADR-0011]
+title: Real-Time Game Loop — Design Specification
+provenance: inferred
+---
+
 # Real-Time Game Loop — Design Specification
 
 This document details the real-time, discrete tick game loop architecture for Tank Royale. It complements ADR-0011 and centralizes diagrams, pseudo-code, and operational configuration.

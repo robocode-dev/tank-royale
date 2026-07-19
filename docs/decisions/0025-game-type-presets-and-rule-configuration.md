@@ -1,6 +1,10 @@
-﻿---
-status: accepted
-date: 2026-02-28
+---
+id: ADR-0025
+type: decision
+status: verified
+links: []
+title: Game Type Presets and Rule Configuration
+accepted-by: Flemming N. Larsen (2026-02-28, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0025: Game Type Presets and Rule Configuration

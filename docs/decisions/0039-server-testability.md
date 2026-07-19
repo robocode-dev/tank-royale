@@ -1,6 +1,10 @@
-﻿---
-status: accepted
-date: 2026-04-14
+---
+id: ADR-0039
+type: decision
+status: verified
+links: []
+title: Server Testability — Physics Core Extraction and Test Framework
+accepted-by: Flemming N. Larsen (2026-04-14, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0039: Server Testability — Physics Core Extraction and Test Framework

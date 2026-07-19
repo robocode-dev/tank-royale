@@ -1,3 +1,12 @@
+---
+id: ARCH-006
+type: architecture
+status: draft
+links: [ADR-0021]
+title: GUI Components View
+provenance: inferred
+---
+
 # GUI Components View
 
 **Level:** C4 Model - Level 3 (Component Architecture)

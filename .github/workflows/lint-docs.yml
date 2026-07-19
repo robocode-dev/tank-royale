@@ -24,7 +24,6 @@ jobs:
         run: |
           find . -name "*.md" \
             -not -path "*/.agents/*" \
-            -not -path "*/openspec/*" \
             -not -path "*/web/docs/*" \
             -not -path "*/node_modules/*" \
             -not -path "*/.gradle/*" \

@@ -1,3 +1,12 @@
+---
+id: ARCH-026
+type: architecture
+status: draft
+links: []
+title: Debugging Guide
+provenance: inferred
+---
+
 # Debugging Guide
 
 How to investigate and reproduce bugs in Tank Royale. This guide covers the

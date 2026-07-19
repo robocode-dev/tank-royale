@@ -1,6 +1,10 @@
-﻿---
-status: accepted
-date: 2026-02-14
+---
+id: ADR-0004
+type: decision
+status: verified
+links: []
+title: Java as Authoritative Reference Implementation
+accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0004: Java as Authoritative Reference Implementation

@@ -113,7 +113,6 @@ before working. Files live in [`.agents/instructions/`](.agents/instructions/):
 
 | Task | Instruction file |
 |------|------------------|
-| Planning, proposals, specs | `openspec.md` |
 | Architecture, ADRs | `architecture.md` |
 | Debugging, timing, race conditions | `debugging.md` (+ `docs/DEBUGGING-GUIDE.md`) |
 | Bot API (Java / Python / .NET) | `cross-platform.md` + `core-principles.md` |
@@ -140,22 +139,14 @@ symlinks (see [Setup](#setup) for Windows symlink prerequisites):
 | `/dot-prime [target]` | Activate principles before editing |
 | `/dot-audit [target]` | Audit code/docs against principles |
 
-### OpenSpec workflow
+### Change workflow (Cliewen)
 
-The [`openspec/`](openspec/) directory holds change proposals
-(`changes/` → in-progress and `changes/archive/` → completed) and shared
-specs (`specs/`). The workflow is:
-
-1. `/opsx:propose` (or manually create `openspec/changes/<name>/proposal.md`,
-   `tasks.md`, and `specs/`)
-2. Present the proposal — **stop and wait for maintainer approval.**
-3. `/opsx:apply` to implement once approved.
-4. `/opsx:archive` when done.
-
-Full instructions: [`.agents/instructions/openspec.md`](.agents/instructions/openspec.md).
+The permanent truth about the system lives in the [`docs/`](docs/README.md) corpus ([Cliewen](https://github.com/cliewen/cliewen) conventions since CH-001). Every non-trivial change runs the change loop (`clue-delta` skill): branch → `/changes/CH-xxx-slug/` proposal + tasks → implement → digest into the corpus → PR. The `/changes/` workspace is transient — it never reaches `main`; `clue validate` (the `validate` CI job) judges the corpus on every PR. The branch + PR + human merge is the review gate.
 
 ### Repo rules for agents
 
-- **Never commit without explicit maintainer instruction.**
+- **Never commit or push to `main`; agents never merge their own PRs**
+  (constraint [C-002](docs/constraints/C-002-review-boundary.md) — the PR is
+  the approval gate).
 - After every file modification, run `./gradlew clean build`; stop and fix on
   non-zero exit.

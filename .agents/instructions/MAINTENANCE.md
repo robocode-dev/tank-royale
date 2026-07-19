@@ -13,9 +13,10 @@
   ├─ testing-and-build.md               ← Gradle, tests, validation
   ├─ documentation.md                   ← Docs, CHANGELOG.md, API docs
   ├─ standards.md                       ← UTF-8, encoding, repo boundaries
-  ├─ architecture.md                    ← ADRs, C4, design decisions
-  └─ openspec.md                        ← Routes to /openspec/AGENTS.md
+  └─ architecture.md                    ← ADRs, C4, design decisions
 ```
+
+Process (change loop, proposals, review boundary) lives in the corpus (`docs/README.md`) and the `clue-*` skills — never in `.agents/instructions/`.
 
 ## When to Add a New File
 
@@ -29,9 +30,9 @@ Create `.agents/instructions/*.md` when: new topic area, 50+ lines of reusable c
 
 ## Rules
 
-- `AGENTS.md`: routing only, stay under 20 lines
+- `AGENTS.md`: routing hub only — corpus pointer, tables, no topic content
 - Each `.agents/instructions/*.md`: 50–150 lines
-- No OpenSpec blocks in `.agents/instructions/` files (reference via `openspec.md`)
+- No change-process rules in `.agents/instructions/` files (the corpus and `clue-*` skills own process)
 - No duplicate content across files (DRY)
 - Update `README.md` metadata when adding/removing files
 

@@ -8,30 +8,23 @@ Load for: architecture decisions, design rationale, system structure, protocol d
 
 ## Architecture Location
 
-All architecture docs in [`docs/architecture/`](../docs/architecture/README.md).
+All architecture docs in [`docs/architecture/`](../../docs/architecture/README.md).
 
 | Category | Location |
 |----------|----------|
-| ADRs (41) | `docs/decisions/` |
+| ADRs | `docs/decisions/` |
 | C4 Views | `docs/architecture/c4-views/` |
-| Message Schema (53 types) | `docs/architecture/models/message-schema/` |
+| Message Schema | `docs/architecture/models/message-schema/` |
 | Flows | `docs/architecture/models/flows/` |
+| Design specs | `docs/design/` |
 
 ## Creating New ADRs
 
-See [`docs/decisions/README.md`](../docs/decisions/README.md) for format (MADR), numbering, and required sections.
+See [`docs/decisions/README.md`](../../docs/decisions/README.md) for format, numbering, and status vocabulary. New ADRs are born inside a change (`/changes/CH-xxx/`, `clue-delta` skill) with `status: inferred`; the human-merged PR is the review gate (constraint [C-002](../../docs/constraints/C-002-review-boundary.md)), and a human promotes to `verified` by adding `accepted-by`. Keep ADRs product-centered — no tooling or process ADRs.
 
-## ⛔ ADR Review Gate
-
-After drafting a new ADR, **STOP and present it to the user for review before proceeding with implementation.**
-
-- Write the ADR file and show it (or summarise it) to the user.
-- Wait for explicit approval ("looks good", "approved", etc.) before touching any code.
-- This applies even when the task says "plan and implement" — ADR first, approval, then code.
-
-## Relationship to OpenSpec
+## Relationship to Capabilities
 
 - Architecture docs = source of truth for system design (the "why" and "how")
-- OpenSpec specs = requirements and scenarios (the "what must be true")
-- OpenSpec specs reference architecture docs — never duplicate content between them
-- Update architecture docs when making structural changes
+- Capability criteria (`docs/capabilities/*/criteria.md`) = what must be true, as Gherkin acceptance criteria
+- Criteria reference architecture docs — never duplicate content between them
+- Update architecture docs when making structural changes, in the same change as the code

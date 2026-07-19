@@ -1,6 +1,10 @@
-﻿---
-status: accepted
-date: 2026-04-15
+---
+id: ADR-0040
+type: decision
+status: verified
+links: []
+title: Raise Default readyTimeout from 1 Second to 10 Seconds
+accepted-by: Flemming N. Larsen (2026-04-15, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0040: Raise Default readyTimeout from 1 Second to 10 Seconds

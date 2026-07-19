@@ -1,6 +1,10 @@
 ---
-status: accepted
-date: 2026-04-05
+id: ADR-0031
+type: decision
+status: verified
+links: []
+title: Optional Bot Configuration Files and Runtime Property Validation
+accepted-by: Flemming N. Larsen (2026-04-05, pre-Cliewen MADR acceptance)
 ---
 
 # ADR-0031: Optional Bot Configuration Files and Runtime Property Validation
@@ -62,4 +66,4 @@ The requirement for `name`, `version`, and `authors` is maintained even for conf
 ## References
 
 *   [ADR-0030: Template-based Booting and Base Convention](0030-convention-over-configuration-bot-entry-points.md)
-*   [Support Bot Discovery Without JSON](/openspec/changes/archive/2026-04-06-support-bot-discovery-without-json/proposal.md) (Feature proposal)
+*   Support Bot Discovery Without JSON (feature proposal) — originally `openspec/changes/archive/2026-04-06-support-bot-discovery-without-json/proposal.md`, retired with OpenSpec at CH-001 (see git history); the requirement now lives in [CAP-008](/docs/capabilities/CAP-008-runtime-config-validation/README.md)

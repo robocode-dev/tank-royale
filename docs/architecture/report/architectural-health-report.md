@@ -1,3 +1,12 @@
+---
+id: ARCH-018
+type: architecture
+status: draft
+links: []
+title: "Architectural Health Report: Robocode Tank Royale"
+provenance: inferred
+---
+
 # Architectural Health Report: Robocode Tank Royale
 
 > Influenced by the [arc42 architecture documentation template](https://arc42.org/overview) by Dr. Peter Hruschka & Dr. Gernot Starke.

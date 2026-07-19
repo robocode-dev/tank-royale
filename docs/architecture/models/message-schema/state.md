@@ -1,3 +1,12 @@
+---
+id: ARCH-017
+type: architecture
+status: draft
+links: [CAP-006, ADR-0006]
+title: State Objects (Data Transfer Objects)
+provenance: inferred
+---
+
 # State Objects (Data Transfer Objects)
 
 State objects are reusable data structures embedded in events, commands, and intents.

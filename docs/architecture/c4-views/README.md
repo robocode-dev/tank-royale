@@ -34,7 +34,7 @@ Think of it like Google Maps: zoom out to see the country, zoom in to see street
 - **[ADRs](/docs/decisions/README.md)** — Why architectural decisions were made
 - **[Message Schema](../models/message-schema/README.md)** — WebSocket message contracts
 - **[Business Flows](../models/flows/README.md)** — Process documentation
-- **[OpenSpec](/openspec/project.md)** — Detailed specifications
+- **[Capabilities](/docs/capabilities/README.md)** — Acceptance criteria per capability
 
 ---
 

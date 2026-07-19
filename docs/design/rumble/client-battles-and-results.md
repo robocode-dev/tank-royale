@@ -1,3 +1,12 @@
+---
+id: ARCH-023
+type: architecture
+status: draft
+links: []
+title: "Rumble Design: Client Battles and Result Upload"
+provenance: inferred
+---
+
 # Rumble Design: Client Battles and Result Upload
 
 > **Status: DRAFT** - design direction captured.

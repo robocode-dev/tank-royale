@@ -1,7 +1,10 @@
 ---
-status: accepted
-date: 2026-03-21
-updated: 2026-04-06
+id: ADR-0026
+type: decision
+status: verified
+links: []
+title: Identity-Based Bot Matching in Battle Runner
+accepted-by: Flemming N. Larsen (2026-03-21, pre-Cliewen MADR acceptance; last updated 2026-04-06)
 ---
 
 # ADR-0026: Identity-Based Bot Matching in Battle Runner

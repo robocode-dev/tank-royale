@@ -1,3 +1,12 @@
+---
+id: ARCH-014
+type: architecture
+status: draft
+links: [CAP-006, ADR-0006]
+title: Command Messages
+provenance: inferred
+---
+
 # Command Messages
 
 Commands are control messages sent by controllers to manage game state and execution.
