@@ -12,6 +12,8 @@ Decisions that are cheap and local to reverse, one row each — newest first. Th
 
 | Date | Decision | Why | Change/PR |
 |---|---|---|---|
+| 2026-07-19 | Drop the never-built `npmPublishDryRun` task from CAP-013 (retire TNP-001) instead of building it | `npmPack` already produces the `.tgz` and shows what would be published without uploading, so a dry-run task is redundant | CH-002 |
+| 2026-07-19 | TypeScript npm publishing authenticates via the `npmjs-api-key` Gradle property, not an `NPM_TOKEN` env var (retire TNP-002/003, remint TNP-005/006) | Reconciles the corpus to the shipped code and matches the Sonatype/PyPI credential pattern and the `/release` skill | CH-002 |
 | 2026-07-19 | Extracted criteria are born `status: draft`; a capability's criteria go `active` when its tests carry purpose tags | Draft criteria are exempt from the AC↔test wall, which turns the four-language tagging backlog (P-001/M-002) into per-capability increments instead of one blocking big bang | CH-001 |
 | 2026-07-19 | Pre-Cliewen ADRs keep ids ADR-0001…ADR-0041 and become `verified` with `accepted-by: … (date, pre-Cliewen MADR acceptance)` | The MADR acceptance already happened and is preserved as fact, not re-judged; renumbering 41 cross-referenced records would break links for no gain | CH-001 |
 | 2026-07-19 | `INDEX.md` files and `docs/decisions/template.md` deleted; README `clue:index` blocks are the only indexes | Two indexes drift; the validate-checked index block is the enforced one | CH-001 |
