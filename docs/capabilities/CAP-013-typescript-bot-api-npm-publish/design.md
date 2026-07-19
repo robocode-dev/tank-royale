@@ -4,7 +4,7 @@ type: design
 status: draft
 links: [CAP-013, P-002]
 title: Design notes for CAP-013 (typescript-bot-api-npm-publish)
-provenance: inferred
+provenance: verified
 ---
 
 # CAP-013 design
