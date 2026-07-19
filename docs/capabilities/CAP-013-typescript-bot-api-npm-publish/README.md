@@ -4,7 +4,7 @@ type: capability
 status: draft
 links: [G-001]
 title: TypeScript Bot API npm publishing
-provenance: inferred
+provenance: verified
 ---
 
 # CAP-013 — TypeScript Bot API npm publishing

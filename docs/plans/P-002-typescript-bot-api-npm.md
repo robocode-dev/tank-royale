@@ -4,7 +4,7 @@ type: plan
 status: completed
 links: [G-001]
 title: TypeScript Bot API reaches npm
-provenance: inferred
+provenance: verified
 ---
 
 # P-002 — TypeScript Bot API reaches npm

@@ -5,7 +5,7 @@ status: draft
 links: [CAP-013]
 title: Acceptance criteria for CAP-013 (typescript-bot-api-npm-publish)
 ac-prefix: TNP
-provenance: inferred
+provenance: verified
 ---
 
 ```gherkin
