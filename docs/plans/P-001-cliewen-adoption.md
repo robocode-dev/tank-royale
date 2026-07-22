@@ -15,6 +15,6 @@ Adopt the Cliewen corpus conventions as Tank Royale's system-of-record and retir
 |---|---|---|---|---|
 | M-001 | Corpus adopted | `clue validate` green on `main`; `openspec/` gone; CI `validate` job armed with the vendored 0.3.0 release binary | done | CH-001 PR (this merge); AN-001 |
 | M-002 | Tests declare purpose | Every test in every language carries exactly one purpose tag (AC ID or Unit/Sanity/Arch), enforced by an arch test per platform | todo | |
-| M-003 | Public clue pin | cliewen repo is public; pin upgraded to v0.4.0; vendored binary replaced by direct release download in CI | todo | |
+| M-003 | Public clue pin | cliewen repo is public; pin upgraded off v0.3.0; vendored binary replaced by direct release download in CI | done | CH-004 PR |
 
-M-002 is the large named door this extraction leaves open: the Java/C#/Python/TypeScript suites predate AC IDs, and no scenario IDs existed in OpenSpec to inherit — tags are minted capability by capability, not in one big-bang change. Mechanism: extracted `criteria.md` files sit at `status: draft` (exempt from the AC↔test wall); wiring a capability's tests promotes its criteria to `active`, which arms enforcement for that prefix. M-003 is blocked on the upstream cliewen goes-public campaign (its P-003).
+M-002 is the large named door this extraction leaves open: the Java/C#/Python/TypeScript suites predate AC IDs, and no scenario IDs existed in OpenSpec to inherit — tags are minted capability by capability, not in one big-bang change. Mechanism: extracted `criteria.md` files sit at `status: draft` (exempt from the AC↔test wall); wiring a capability's tests promotes its criteria to `active`, which arms enforcement for that prefix.
