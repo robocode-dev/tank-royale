@@ -3,12 +3,21 @@
 # under branch protection. The clue repo (cliewen/cliewen) is public
 # (P-001/M-003), so the release binary is downloaded directly and verified
 # against that release's own SHA256SUMS before every run.
+#
+# This file is a copy of the wall Cliewen ships, so upstream improvements do
+# not arrive by themselves. Only the install step diverges deliberately (direct
+# verified download instead of a binary vendored under .github/tools/, and
+# therefore no armed-or-not check); every other step is kept in step with the
+# shipped template on each clue upgrade. The `edited` trigger and fetch-depth 0
+# are load-bearing: the acceptance-brief gate must re-run when a pull-request
+# body changes, and change detection needs the base commit.
 name: Clue
 
 on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened, edited]
   workflow_dispatch:
 
 jobs:
@@ -16,11 +25,35 @@ jobs:
     name: validate
     runs-on: ubuntu-latest
     env:
-      CLUE_VERSION: 0.5.1
+      CLUE_VERSION: 0.9.0
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Product-only changes (Kotlin, Java, Python, .NET, TypeScript, Gradle)
+      # do not touch the corpus, so they skip validation. Anything that cannot
+      # be proven product-only — including a failed or empty diff — validates.
+      - name: Detect Cliewen change
+        id: scope
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -uo pipefail
+          if [ -z "${BASE_SHA}" ] || ! git diff --name-only "$BASE_SHA" "$GITHUB_SHA" > "$RUNNER_TEMP/changed-files"; then
+            echo "cliewen=true" >> "$GITHUB_OUTPUT"
+          elif [ ! -s "$RUNNER_TEMP/changed-files" ]; then
+            echo "cliewen=true" >> "$GITHUB_OUTPUT"
+          elif grep -Eqv '\.md$' "$RUNNER_TEMP/changed-files"; then
+            echo "cliewen=true" >> "$GITHUB_OUTPUT"
+          elif grep -Eq '^(docs/|changes/|\.agents/|\.claude/|\.github/|AGENTS\.md$|CHANGELOG\.md$|CONTRIBUTING\.md$|SECURITY\.md$|CODE_OF_CONDUCT\.md$)' "$RUNNER_TEMP/changed-files"; then
+            echo "cliewen=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cliewen=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Download and verify clue ${{ env.CLUE_VERSION }}
+        if: steps.scope.outputs.cliewen == 'true'
         run: |
           set -euo pipefail
           base="https://github.com/cliewen/cliewen/releases/download/v${CLUE_VERSION}"
@@ -30,5 +63,18 @@ jobs:
           install -m 0755 "clue-${CLUE_VERSION}-linux-amd64" /usr/local/bin/clue
           clue version
 
+      # --forbid-changes is the digest-before-merge gate: main (and any PR at
+      # merge time) must not contain the transient /changes tree.
       - name: clue validate
+        if: steps.scope.outputs.cliewen == 'true'
         run: clue validate --forbid-changes
+
+      # The human merge gate has content: a Cliewen pull request states what
+      # merge binds, in its own body, with no placeholder left behind.
+      - name: Require a completed acceptance brief
+        if: github.event_name == 'pull_request' && steps.scope.outputs.cliewen == 'true'
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s' "$PR_BODY" | grep -Fq '## Acceptance brief' || { echo 'FAIL: Cliewen PRs need an acceptance brief'; exit 1; }
+          ! printf '%s' "$PR_BODY" | grep -Fq '<!-- REQUIRED' || { echo 'FAIL: replace every acceptance-brief REQUIRED placeholder'; exit 1; }

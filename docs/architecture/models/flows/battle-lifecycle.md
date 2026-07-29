@@ -5,6 +5,7 @@ status: draft
 links: [CAP-006]
 title: Battle Lifecycle Flow
 provenance: inferred
+reversal-cost: low
 ---
 
 # Battle Lifecycle Flow

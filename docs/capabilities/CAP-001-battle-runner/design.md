@@ -5,6 +5,7 @@ status: draft
 links: [CAP-001]
 title: Design notes for CAP-001 (battle-runner)
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-001 design

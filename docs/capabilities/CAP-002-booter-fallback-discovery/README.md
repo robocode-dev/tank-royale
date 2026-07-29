@@ -5,6 +5,7 @@ status: active
 links: [G-001]
 title: Booter fallback bot discovery
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-002 — Booter fallback bot discovery

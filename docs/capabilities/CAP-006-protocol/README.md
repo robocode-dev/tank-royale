@@ -5,6 +5,7 @@ status: active
 links: [G-001]
 title: WebSocket protocol
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-006 — WebSocket protocol

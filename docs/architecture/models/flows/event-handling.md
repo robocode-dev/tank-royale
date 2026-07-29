@@ -5,6 +5,7 @@ status: draft
 links: [ADR-0022]
 title: Event Handling Flow
 provenance: inferred
+reversal-cost: low
 ---
 
 # Event Handling Flow

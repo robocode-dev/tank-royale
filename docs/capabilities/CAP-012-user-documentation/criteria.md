@@ -6,6 +6,7 @@ links: [CAP-012]
 title: Acceptance criteria for CAP-012 (user-documentation)
 ac-prefix: UD
 provenance: inferred
+reversal-cost: low
 ---
 
 ```gherkin

@@ -5,6 +5,7 @@ status: draft
 links: [CAP-006]
 title: Bot Connection Flow
 provenance: inferred
+reversal-cost: low
 ---
 
 # Bot Connection Flow

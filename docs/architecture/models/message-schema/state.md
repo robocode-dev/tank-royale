@@ -5,6 +5,7 @@ status: draft
 links: [CAP-006, ADR-0006]
 title: State Objects (Data Transfer Objects)
 provenance: inferred
+reversal-cost: low
 ---
 
 # State Objects (Data Transfer Objects)

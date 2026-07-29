@@ -5,6 +5,7 @@ status: draft
 links: [CAP-002]
 title: Design notes for CAP-002 (booter-fallback-discovery)
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-002 design

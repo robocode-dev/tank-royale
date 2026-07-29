@@ -5,6 +5,7 @@ status: draft
 links: [CAP-006, ADR-0006]
 title: Event Messages
 provenance: inferred
+reversal-cost: low
 ---
 
 # Event Messages

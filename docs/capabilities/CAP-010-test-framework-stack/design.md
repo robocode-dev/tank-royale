@@ -5,6 +5,7 @@ status: draft
 links: [CAP-010]
 title: Design notes for CAP-010 (test-framework-stack)
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-010 design

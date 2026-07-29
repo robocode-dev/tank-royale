@@ -1,10 +1,11 @@
 ---
 id: AN-001
 type: analysis
-status: verified
+status: active
 links: [G-001, P-001]
 title: Extraction report — OpenSpec corpus to Cliewen /docs (CH-001)
 provenance: inferred
+reversal-cost: low
 ---
 
 # AN-001 — Extraction report: OpenSpec → Cliewen

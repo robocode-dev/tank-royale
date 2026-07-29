@@ -5,6 +5,7 @@ status: active
 links: [G-001]
 title: Battle Runner
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-001 — Battle Runner

@@ -5,6 +5,7 @@ status: active
 links: [G-001]
 title: Bot API updater
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-003 — Bot API updater

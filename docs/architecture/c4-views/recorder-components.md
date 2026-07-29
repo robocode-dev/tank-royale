@@ -5,6 +5,7 @@ status: draft
 links: [ADR-0017]
 title: Recorder Components View
 provenance: inferred
+reversal-cost: low
 ---
 
 # Recorder Components View

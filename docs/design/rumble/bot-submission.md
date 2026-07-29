@@ -5,6 +5,7 @@ status: draft
 links: []
 title: "Rumble Design: Bot Submission and Handling"
 provenance: inferred
+reversal-cost: low
 ---
 
 # Rumble Design: Bot Submission and Handling

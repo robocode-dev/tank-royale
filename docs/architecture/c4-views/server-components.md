@@ -5,6 +5,7 @@ status: draft
 links: [ADR-0008]
 title: Server Components View
 provenance: inferred
+reversal-cost: low
 ---
 
 # Server Components View

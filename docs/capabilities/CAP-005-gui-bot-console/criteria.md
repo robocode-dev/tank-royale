@@ -6,6 +6,7 @@ links: [CAP-005]
 title: Acceptance criteria for CAP-005 (gui-bot-console)
 ac-prefix: GBC
 provenance: inferred
+reversal-cost: low
 ---
 
 ```gherkin

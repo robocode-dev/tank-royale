@@ -5,6 +5,7 @@ status: active
 links: [G-001]
 title: Python Bot API internal alignment
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-007 — Python Bot API internal alignment

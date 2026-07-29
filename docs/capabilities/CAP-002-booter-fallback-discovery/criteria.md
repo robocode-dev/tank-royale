@@ -6,6 +6,7 @@ links: [CAP-002]
 title: Acceptance criteria for CAP-002 (booter-fallback-discovery)
 ac-prefix: BFD
 provenance: inferred
+reversal-cost: low
 ---
 
 ```gherkin

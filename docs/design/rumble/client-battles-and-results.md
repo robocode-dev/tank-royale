@@ -5,6 +5,7 @@ status: draft
 links: []
 title: "Rumble Design: Client Battles and Result Upload"
 provenance: inferred
+reversal-cost: low
 ---
 
 # Rumble Design: Client Battles and Result Upload

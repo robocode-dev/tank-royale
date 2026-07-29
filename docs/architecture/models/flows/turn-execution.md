@@ -5,6 +5,7 @@ status: draft
 links: [ADR-0011, ADR-0012]
 title: Turn Execution Flow
 provenance: inferred
+reversal-cost: low
 ---
 
 # Turn Execution Flow

@@ -5,6 +5,7 @@ status: draft
 links: [CAP-006, ADR-0006]
 title: Command Messages
 provenance: inferred
+reversal-cost: low
 ---
 
 # Command Messages

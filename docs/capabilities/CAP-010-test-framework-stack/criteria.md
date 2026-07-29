@@ -6,6 +6,7 @@ links: [CAP-010]
 title: Acceptance criteria for CAP-010 (test-framework-stack)
 ac-prefix: TFS
 provenance: inferred
+reversal-cost: low
 ---
 
 ```gherkin
