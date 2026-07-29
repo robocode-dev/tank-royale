@@ -5,6 +5,7 @@ status: draft
 links: [CAP-006]
 title: Design notes for CAP-006 (protocol)
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-006 design

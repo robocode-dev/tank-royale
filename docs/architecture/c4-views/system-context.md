@@ -5,6 +5,7 @@ status: draft
 links: []
 title: System Context Diagram
 provenance: inferred
+reversal-cost: low
 ---
 
 # System Context Diagram

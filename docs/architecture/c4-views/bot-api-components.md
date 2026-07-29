@@ -5,6 +5,7 @@ status: draft
 links: [ADR-0003]
 title: Bot API Components View
 provenance: inferred
+reversal-cost: low
 ---
 
 # Bot API Components View

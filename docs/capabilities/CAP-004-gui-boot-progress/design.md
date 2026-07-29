@@ -5,6 +5,7 @@ status: draft
 links: [CAP-004]
 title: Design notes for CAP-004 (gui-boot-progress)
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-004 design

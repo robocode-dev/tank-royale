@@ -5,6 +5,7 @@ status: draft
 links: []
 title: Booter Components View
 provenance: inferred
+reversal-cost: low
 ---
 
 # Booter Components View

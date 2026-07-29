@@ -5,6 +5,7 @@ status: active
 links: [G-001]
 title: TypeScript Bot API
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-011 — TypeScript Bot API

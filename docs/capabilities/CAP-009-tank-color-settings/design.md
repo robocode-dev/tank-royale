@@ -5,6 +5,7 @@ status: draft
 links: [CAP-009]
 title: Design notes for CAP-009 (tank-color-settings)
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-009 design

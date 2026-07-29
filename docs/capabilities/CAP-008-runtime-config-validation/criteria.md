@@ -6,6 +6,7 @@ links: [CAP-008]
 title: Acceptance criteria for CAP-008 (runtime-config-validation)
 ac-prefix: RCV
 provenance: inferred
+reversal-cost: low
 ---
 
 ```gherkin

@@ -5,6 +5,7 @@ status: draft
 links: [ADR-0021]
 title: GUI Components View
 provenance: inferred
+reversal-cost: low
 ---
 
 # GUI Components View

@@ -5,6 +5,7 @@ status: active
 links: [G-001]
 title: Tank color settings
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-009 — Tank color settings

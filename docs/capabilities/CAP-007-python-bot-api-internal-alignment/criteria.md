@@ -6,6 +6,7 @@ links: [CAP-007]
 title: Acceptance criteria for CAP-007 (python-bot-api-internal-alignment)
 ac-prefix: PBA
 provenance: inferred
+reversal-cost: low
 ---
 
 ```gherkin

@@ -5,6 +5,7 @@ status: draft
 links: []
 title: "Architectural Health Report: [System Name]"
 provenance: inferred
+reversal-cost: low
 ---
 
 # Architectural Health Report: [System Name]

@@ -5,6 +5,7 @@ status: draft
 links: []
 title: "Architectural Health Report: Robocode Tank Royale"
 provenance: inferred
+reversal-cost: low
 ---
 
 # Architectural Health Report: Robocode Tank Royale

@@ -5,6 +5,7 @@ status: active
 links: [G-001]
 title: GUI boot progress
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-004 — GUI boot progress

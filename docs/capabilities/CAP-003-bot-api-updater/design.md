@@ -5,6 +5,7 @@ status: draft
 links: [CAP-003]
 title: Design notes for CAP-003 (bot-api-updater)
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-003 design

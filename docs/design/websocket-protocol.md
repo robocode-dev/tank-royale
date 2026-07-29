@@ -5,6 +5,7 @@ status: draft
 links: [ADR-0009, CAP-006]
 title: WebSocket Protocol — Design Specification
 provenance: inferred
+reversal-cost: low
 ---
 
 # WebSocket Protocol — Design Specification

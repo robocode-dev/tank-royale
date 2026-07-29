@@ -6,6 +6,7 @@ links: [CAP-011]
 title: Acceptance criteria for CAP-011 (typescript-bot-api)
 ac-prefix: TBA
 provenance: inferred
+reversal-cost: low
 ---
 
 ```gherkin

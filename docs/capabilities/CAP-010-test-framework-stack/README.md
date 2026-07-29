@@ -5,6 +5,7 @@ status: active
 links: [G-001]
 title: Test framework stack
 provenance: inferred
+reversal-cost: low
 ---
 
 # CAP-010 — Test framework stack

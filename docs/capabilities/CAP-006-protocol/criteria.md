@@ -6,6 +6,7 @@ links: [CAP-006]
 title: Acceptance criteria for CAP-006 (protocol)
 ac-prefix: PRO
 provenance: inferred
+reversal-cost: low
 ---
 
 ```gherkin

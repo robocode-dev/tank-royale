@@ -5,6 +5,7 @@ status: active
 links: [G-001]
 title: Tank Royale Rumble
 provenance: inferred
+reversal-cost: low
 ---
 
 # P-003 — Tank Royale Rumble

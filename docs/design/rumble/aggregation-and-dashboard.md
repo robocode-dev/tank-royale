@@ -5,6 +5,7 @@ status: draft
 links: []
 title: "Rumble Design: Result Aggregation and Dashboard"
 provenance: inferred
+reversal-cost: low
 ---
 
 # Rumble Design: Result Aggregation and Dashboard

@@ -5,6 +5,7 @@ status: draft
 links: [ADR-0024]
 title: Runner Components View
 provenance: inferred
+reversal-cost: low
 ---
 
 # Runner Components View
