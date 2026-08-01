@@ -1,6 +1,6 @@
 ---
 cliewen-skill: true
-version: 0.9.0
+version: 0.10.0
 ---
 
 <!-- Generated from Cliewen's canonical skill sources; edit those sources, not this file. -->
@@ -14,7 +14,7 @@ Run this verification and review workflow before opening or updating any Cliewen
 - [ ] Every `links` entry resolves to an existing ID.
 - [ ] The proposal names a real plan item or explicitly declares the change plan-less.
 - [ ] Plan bookkeeping reflects the merge, and no completed plan changed.
-- [ ] Every active acceptance criterion has positive and negative tests, or its capability honestly stays `draft` with the gap stated.
+- [ ] Every active acceptance criterion satisfies its evidence contract: its identity uses the canonical uppercase segmented-prefix, decimal-digit, and lowercase-suffix grammar, a declared machine proof type has supported Go, JVM, or Cucumber evidence classified by that type and positive/negative direction (or the criterion records `(single-direction)`); JVM evidence carries its AC identity, type, and direction on the same Java or Kotlin executable through literal JUnit method tags or the stable named-executable form; a genuine `Human` criterion is named in the acceptance brief as its proof; an individual not-yet-proven criterion carries `@draft`; and an unannotated legacy criterion has its one supported reference.
 - [ ] Every `/docs/**` folder has a README; index blocks list every sibling artifact and no deleted file.
 - [ ] The change was assessed against every constraint (including verifiable quality bars).
 - [ ] Repository-local conventions satisfy the contract below.
@@ -61,9 +61,11 @@ Agent-authored decisions start `status: inferred` and `author: agent`. Merging m
 
 Every decision record is timeless: state what is decided and only the enduring context and rationale needed to understand it. Keep triggering incidents, chronology, conversations, implementation details, and review history in findings, the change workspace, the PR, and Git history.
 
+A decision that changes a methodology contract inventories every live carrier that states the affected contract and updates that complete inventory in the same change. Live carriers include current corpus truth, canonical and generated skills, templates, public or contributor guidance, implementation explanations, CLI text, and distribution metadata. Historical analyses, completed plans, and changelog entries remain pinned history. Add focused guards for stable repaired claims, but do not present those anchors as proof that an arbitrary future carrier inventory is complete; that general obligation remains agent-enforced until a mechanism can derive it.
+
 ## Repository-local conventions
 
-For a Cliewen change, apply the repository-local conventions declared in AGENTS.md, including digest requirements such as a user-facing changelog entry. Plain changes follow only the repository conventions that apply to their changed surface. Local conventions extend the methodology and never override it. If AGENTS.md conflicts with a skill, record the conflict in `open-questions.md` and stop for a human decision; never choose silently.
+For a Cliewen change, apply the repository-local conventions declared in AGENTS.md, including digest requirements such as a user-facing changelog entry. When a release adds or narrows a corpus obligation, preview and apply the supported `clue migrate` migrations before validating the adopted repository; `clue init` remains a non-destructive materializer, not an updater. Plain changes follow only the repository conventions that apply to their changed surface. Local conventions extend the methodology and never override it. If AGENTS.md conflicts with a skill, record the conflict in `open-questions.md` and stop for a human decision; never choose silently.
 
 
 ## Durable work state
@@ -73,6 +75,8 @@ An agent's private memory is never where work lives. Anything needed to implemen
 ## Review boundary
 
 Every change branches from the current tip of `main`, never from unaccepted work. Each initiating author takes one Cliewen change to its PR before starting another; independent authors may work in parallel from `main`, and plain changes do not consume this slot. Reviewing or helping update an existing PR does not mint another change or create a global lock. If work must build on an unmerged change, record a blocking open question and stop unless the human explicitly authorizes it. If another change merges before first publication, rebase onto the new `main` tip and repeat verification. After a PR is published, incorporate a newer accepted `main` by merging it into the PR branch with a normal push, never by rewriting hosted history, then repeat verification and review.
+
+For a full Cliewen change, the human accepts the ready pull request with a merge commit. Configure the protected default branch to allow merge commits and disable squash and rebase-and-merge: the merge commit keeps the proposal, implementation, digest, and durable corpus commits reachable from `main`, while the other modes can discard or rewrite that reviewed chain. Rebasing an unpublished local branch before its first publication remains allowed; it is preparation, not the acceptance mode. A forge that cannot enforce the merge-commit boundary is outside the supported full-change adoption path.
 
 Open the PR ready for review only after local verification and the automatic agentic review loop pass on the current commit, never as a draft. The PR is the completed proposal's authorization and protected-integration boundary, not a demand for duplicate human code review: the agent may publish the candidate, but only a human-controlled PR merge accepts it. Unfinished work stays on the branch. An agent never merges its own PR, creates a local merge commit into `main`, or pushes to `main`.
 
