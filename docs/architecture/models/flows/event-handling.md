@@ -583,7 +583,7 @@ sequenceDiagram
 
 **Why ordering matters:** If the bot handler fired first, user code could call `go()` or inspect state while `tickEvent` still holds the stale last-tick from the previous round — bypassing `waitUntilFirstTickArrived()` and potentially sending an intent for the wrong round.
 
-### Pre-Warm Thread and First-Tick Intent (Fix for Issue #202)
+### Pre-Warm Thread and First-Tick Intent (Fix for Issue [#202](https://github.com/robocode-dev/tank-royale/issues/202))
 
 ```mermaid
 sequenceDiagram
@@ -677,7 +677,7 @@ Both calls must happen in sequence for handler output to appear in the GUI.
 5. **Round-end has special handling** — events fire after last `sendIntent()`, so output must be explicitly transferred
 6. **Platform implementations are consistent** across Java, Python, C#, and TypeScript
 7. **Internal handlers fire before bot handlers** for `onRoundStarted` — ensures `tickEvent = null` is reset before user code runs
-8. **Default intent is sent before `run()`** on round start — prevents turn-1 skip under OS scheduling pressure (fix for issue #202)
+8. **Default intent is sent before `run()`** on round start — prevents turn-1 skip under OS scheduling pressure (fix for issue [#202](https://github.com/robocode-dev/tank-royale/issues/202))
 
 ---
 

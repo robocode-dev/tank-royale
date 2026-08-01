@@ -38,9 +38,9 @@ permissions:
 jobs:
   validate:
     name: validate
-    uses: cliewen/cliewen/.github/workflows/clue-validation.yml@8c406d59f5166026c2db17261af8713e33efd0bc
+    uses: cliewen/cliewen/.github/workflows/clue-validation.yml@16dc3a5eab655a45c92a6d724721e5b07f876822
     with:
       runner: '["ubuntu-latest"]'
-      clue-version: 0.10.0
+      clue-version: 0.11.2
       clue-source: release
       clue-install-directory: ''

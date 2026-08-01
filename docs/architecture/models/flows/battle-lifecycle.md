@@ -209,7 +209,7 @@ sequenceDiagram
 4. **Bot Initialization**
    - Bot receives game-started-event
    - Fires `onGameStarted` user handler (strategy init, state setup, etc.)
-   - **`onGameStarted` runs BEFORE `bot-ready` is sent** — ensures user initialization completes first (fix for issue #202)
+   - **`onGameStarted` runs BEFORE `bot-ready` is sent** — ensures user initialization completes first (fix for issue [#202](https://github.com/robocode-dev/tank-royale/issues/202))
 
 5. **Bot Ready Notification**
    ```json
