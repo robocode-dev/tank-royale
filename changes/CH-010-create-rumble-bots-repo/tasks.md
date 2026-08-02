@@ -1,0 +1,17 @@
+---
+id: CH-010-tasks
+type: tasks
+status: open
+links: [CH-010]
+title: Task breakdown for CH-010
+---
+
+# CH-010 — Tasks
+
+- [x] Capture the M-006 proposal and the requested post-M-009 GUI `TwinDuel` follow-up
+- [ ] Pause for maintainer approval of this proposal before implementation, as required by the Rumble roadmap
+- [ ] Define the `rumble-bots` catalog contract, capability ownership, acceptance criteria, and any durable decisions in the Tank Royale corpus
+- [ ] Create and configure the community-owned `rumble-bots` repository with contribution templates, CODEOWNERS, governance, licensing, ownership, ban, and fork-drill guidance
+- [ ] Implement the locally runnable validator and thin CI workflows for submission validation and generated catalog publication
+- [ ] Add platform sample bots and focused positive and negative acceptance evidence for the pull-request validation flow
+- [ ] Record M-006 evidence and the post-M-009 GUI milestone in P-003, then run the external repository's focused checks, `clue validate`, and `clue-verify`; mark each task as it completes
