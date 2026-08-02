@@ -22,4 +22,4 @@ The catalog schema is additive within a schema version: readers ignore fields th
 
 ## External evidence
 
-The external repository will hold the implementation and focused integration tests for RBC-001 through RBC-003. During P-001/M-002, those tests will receive their RBC purpose tags and this criteria artifact can become active without changing the criterion meanings.
+The external `robocode-dev/rumble-bots` repository holds the implementation and focused integration tests for RBC-001 through RBC-003 at merged commit `c735e6ff4`. Its 4-test suite and `scripts/validate_bot.py --root . --owner flemming-n-larsen --smoke` check pass; during P-001/M-002, those tests will receive their RBC purpose tags and this criteria artifact can become active without changing the criterion meanings.

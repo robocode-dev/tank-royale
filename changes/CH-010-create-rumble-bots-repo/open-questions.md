@@ -10,6 +10,6 @@ title: Open questions for CH-010
 
 No unresolved design question is introduced.
 
-## Pending external merge
+## Resolved external merge
 
-The external `robocode-dev/rumble-bots` bootstrap pull request [#1](https://github.com/robocode-dev/rumble-bots/pull/1) is verified and awaiting a human merge. M-006 cannot be completed or digested into this repository until that merge makes the repository live.
+The external `robocode-dev/rumble-bots` bootstrap pull request [#1](https://github.com/robocode-dev/rumble-bots/pull/1) merged as commit `c735e6ff422e8795ffdfb0e65ec7910e9b3f943e`. M-006 is now unblocked and its focused external checks pass.
