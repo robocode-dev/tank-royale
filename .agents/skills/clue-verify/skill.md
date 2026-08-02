@@ -1,6 +1,6 @@
 ---
 cliewen-skill: true
-version: 0.10.0
+version: 0.11.2
 ---
 
 <!-- Generated from Cliewen's canonical skill sources; edit those sources, not this file. -->
@@ -12,6 +12,8 @@ Run this verification and review workflow before opening or updating any Cliewen
 - [ ] The change uses the correct workspace under **Change scope and tiers** below.
 - [ ] Every artifact touched has frontmatter `id`, `type`, `status`, `links`, and `title`, plus decision `author`/`accepted-by`, constraint `source`/`enforcement`, capability `goal`, and any other type-specific fields.
 - [ ] Every `links` entry resolves to an existing ID.
+- [ ] The command name and the citation scheme are written in a code span wherever prose names them, so an ordinary sentence using the word is never read as a broken citation; a real citation is prose and carries no backticks.
+- [ ] Every reference pointing outside this repository names what it points at: a full address for anything that has one, and the `clue:` identity form for an artifact in another repository's corpus. A bare forge number fails. Citations inside this repository keep their bare ID and relative path.
 - [ ] The proposal names a real plan item or explicitly declares the change plan-less.
 - [ ] Plan bookkeeping reflects the merge, and no completed plan changed.
 - [ ] Every active acceptance criterion satisfies its evidence contract: its identity uses the canonical uppercase segmented-prefix, decimal-digit, and lowercase-suffix grammar, a declared machine proof type has supported Go, JVM, or Cucumber evidence classified by that type and positive/negative direction (or the criterion records `(single-direction)`); JVM evidence carries its AC identity, type, and direction on the same Java or Kotlin executable through literal JUnit method tags or the stable named-executable form; a genuine `Human` criterion is named in the acceptance brief as its proof; an individual not-yet-proven criterion carries `@draft`; and an unannotated legacy criterion has its one supported reference.

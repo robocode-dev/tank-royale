@@ -71,7 +71,7 @@ bullet, scan).
 
 ### Option B — Bot Colors (Once)
 * **Good:** Bot identity is preserved through the battle without flickering or rapid changes.
-* **Good:** Addresses the distraction concern from Issue #201 while still honouring the bot's intended color.
+* **Good:** Addresses the distraction concern from Issue [#201](https://github.com/robocode-dev/tank-royale/issues/201) while still honouring the bot's intended color.
 * **Trade-off:** Requires the GUI to maintain a per-bot, per-component "first color" cache across rounds.
 
 ### Option C — Default Colors
@@ -90,9 +90,9 @@ bullet, scan).
 This decision balances the **observer's experience** and **accessibility** against the bot author's
 right to express a visual identity, without introducing the complexity and user-confusion risk of a
 free-form color picker. The four discrete modes cover the full range of practical use cases
-identified in Issue #201.
+identified in Issue [#201](https://github.com/robocode-dev/tank-royale/issues/201).
 
-The `BOT_COLORS_ONCE` mode directly addresses the core concern in Issue #201 (flickering bots)
+The `BOT_COLORS_ONCE` mode directly addresses the core concern in Issue [#201](https://github.com/robocode-dev/tank-royale/issues/201) (flickering bots)
 while still respecting the bot's intended color.
 
 The `BOT_COLORS_WHEN_DEBUGGING` mode is a natural extension of the existing Graphical Debugging

@@ -293,7 +293,7 @@ Goal: catch imitations like `F4i1` vs. `FAil` mechanically, so moderators see a 
 having to notice it. The check compares a **skeleton** of the new name against the skeletons of
 all existing names:
 
-1. **Unicode confusable folding** per Unicode TS #39 (the standard "confusables" skeleton used
+1. **Unicode confusable folding** per [Unicode TS #39](https://www.unicode.org/reports/tr39/) (the standard "confusables" skeleton used
    for domain-spoofing detection): maps visually identical/near-identical characters (Cyrillic
    `а` vs. Latin `a`, etc.) to one canonical form.
 2. **Leetspeak folding**: `0→o`, `1→l`, `3→e`, `4→a`, `5→s`, `7→t`, `8→b`, `9→g`, `@→a`, `$→s`,

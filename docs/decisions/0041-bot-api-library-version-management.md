@@ -186,7 +186,7 @@ prompted update is the minimum respectful interaction.
   library files after a GUI upgrade.
 - Missing library files are automatically detected and can be restored with one
   click.
-- The Java 26 reflection warning (issue #207) is resolved for users who accept
+- The Java 26 reflection warning (issue [#207](https://github.com/robocode-dev/tank-royale/issues/207)) is resolved for users who accept
   the update.
 - The feature works offline — no network dependency.
 - Consistent with the existing resource-bundling pattern in the GUI build.
