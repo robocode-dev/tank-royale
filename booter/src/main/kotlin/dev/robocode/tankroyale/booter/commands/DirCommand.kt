@@ -102,6 +102,7 @@ internal class DirCommand(private val botRootPaths: List<Path>) : Command() {
             name = name,
             version = version,
             authors = authors,
+            license = license,
             description = description,
             homepage = homepage,
             countryCodes = countryCodes,

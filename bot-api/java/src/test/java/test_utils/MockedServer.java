@@ -668,6 +668,7 @@ public final class MockedServer {
             serverHandshake.setName(NAME);
             serverHandshake.setVersion(VERSION);
             serverHandshake.setVariant(VARIANT);
+            serverHandshake.setBehaviorVersion(1);
             serverHandshake.setGameTypes(GAME_TYPES);
             serverHandshake.setGameSetup(null);
             send(conn, serverHandshake);

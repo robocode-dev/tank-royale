@@ -16,7 +16,7 @@ The milestones mirror the design's Change Proposal Roadmap in order. Each milest
 
 | ID | Milestone | Exit criterion | Status | Evidence |
 |---|---|---|---|---|
-| M-005 | Tank Royale prepared for rumble | `behaviorVersion` exists server-side and in the schema; SPDX `license` field in the booter bot config; Battle Runner exposes battle results for the client; rumble game presets defined; deterministic replay-regression hook in place | todo | |
+| M-005 | Tank Royale prepared for rumble | `behaviorVersion` exists server-side and in the schema; SPDX `license` field in the booter bot config; Battle Runner exposes battle results for the client; rumble game presets defined; deterministic replay-regression hook in place | done | CH-009; server/runner/booter contracts and focused acceptance evidence |
 | M-006 | `rumble-bots` repository live | Repository scaffolded under the community organization with validation CI, templates, and governance; a sample bot PR passes validation end to end | todo | |
 | M-007 | `rumble-data` repository live | Result inbox drained by CI into immutable raw facts; aggregation produces leaderboard, pairings, and matches-needed projections; dashboard published on Pages | todo | |
 | M-008 | Rumble client runs ranked battles | Client pulls the bot catalog and matchmaking advice, runs a ranked battle, and its submitted result lands in `rumble-data` via issue-ops with no human in the loop | todo | |

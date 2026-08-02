@@ -13,6 +13,7 @@ import java.util.function.Consumer
  * val setup = BattleSetup.classic()
  * val setup = BattleSetup.classic { numberOfRounds = 5 }
  * val setup = BattleSetup.melee { numberOfRounds = 3 }
+ * val setup = BattleSetup.twinDuel()
  * val setup = BattleSetup.custom { arenaWidth = 1200; arenaHeight = 900 }
  * ```
  *
@@ -21,6 +22,7 @@ import java.util.function.Consumer
  * var setup = BattleSetup.classic();
  * var setup = BattleSetup.classic(s -> s.setNumberOfRounds(5));
  * var setup = BattleSetup.melee(s -> s.setNumberOfRounds(3));
+ * var setup = BattleSetup.twinDuel();
  * var setup = BattleSetup.custom(s -> { s.setArenaWidth(1200); s.setArenaHeight(900); });
  * ```
  *
@@ -189,6 +191,29 @@ data class BattleSetup(
         @JvmStatic
         fun oneVsOne(configurer: Consumer<Builder>): BattleSetup =
             forPreset(GameType.ONE_VS_ONE, configurer)
+
+        /**
+         * Creates a Twin Duel game setup (800×800 arena, exactly 4 participants) with Kotlin DSL
+         * overrides.
+         *
+         * @param block DSL block to override preset values
+         */
+        @JvmSynthetic
+        fun twinDuel(block: Builder.() -> Unit): BattleSetup =
+            forPreset(GameType.TWIN_DUEL, block)
+
+        /** Creates a Twin Duel game setup (800×800 arena, exactly 4 participants) with default preset values. */
+        @JvmStatic
+        fun twinDuel(): BattleSetup = forPreset(GameType.TWIN_DUEL)
+
+        /**
+         * Creates a Twin Duel game setup (800×800 arena, exactly 4 participants) with optional Java consumer overrides.
+         *
+         * @param configurer consumer that overrides preset values
+         */
+        @JvmStatic
+        fun twinDuel(configurer: Consumer<Builder>): BattleSetup =
+            forPreset(GameType.TWIN_DUEL, configurer)
 
         /**
          * Creates a Custom game setup where all parameters are configurable, with Kotlin DSL overrides.

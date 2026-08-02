@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.runner;
 
 import dev.robocode.tankroyale.common.event.Event;
 import dev.robocode.tankroyale.common.rules.GameType;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -161,6 +162,27 @@ class JavaInteropTest {
         assertThat(setup.getNumberOfRounds()).isEqualTo(50);
         assertThat(setup.getReadyTimeoutMicros()).isEqualTo(2_000_000);
         assertThat(setup.getMaxNumberOfParticipants()).isEqualTo(2);
+    }
+
+    @Test
+    @Tag("BR-047")
+    void twinDuelPresetDefaults() {
+        var setup = BattleSetup.twinDuel();
+        assertThat(setup.getGameType()).isEqualTo(GameType.TWIN_DUEL);
+        assertThat(setup.getArenaWidth()).isEqualTo(800);
+        assertThat(setup.getArenaHeight()).isEqualTo(800);
+        assertThat(setup.getMinNumberOfParticipants()).isEqualTo(4);
+        assertThat(setup.getMaxNumberOfParticipants()).isEqualTo(4);
+        assertThat(setup.getNumberOfRounds()).isEqualTo(75);
+    }
+
+    @Test
+    @Tag("BR-047")
+    void twinDuelPresetWithConsumerOverrides() {
+        var setup = BattleSetup.twinDuel(s -> s.setNumberOfRounds(50));
+        assertThat(setup.getGameType()).isEqualTo(GameType.TWIN_DUEL);
+        assertThat(setup.getNumberOfRounds()).isEqualTo(50);
+        assertThat(setup.getMaxNumberOfParticipants()).isEqualTo(4);
     }
 
     @Test

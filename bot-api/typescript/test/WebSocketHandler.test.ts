@@ -141,6 +141,7 @@ describe("WebSocketHandler — ServerHandshake routing", () => {
       name: "Tank Royale",
       variant: "Tank Royale",
       version: "0.38.0",
+      behaviorVersion: 1,
       gameTypes: ["melee"],
     };
     simulateMessage(ws, msg);

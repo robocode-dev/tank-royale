@@ -27,7 +27,7 @@ sequenceDiagram
     participant Server
     
     Client->>Server: WebSocket connect
-    Server->>Client: server-handshake {sessionId, name, version}
+    Server->>Client: server-handshake {sessionId, name, version, behaviorVersion}
     Client->>Server: {bot|observer|controller}-handshake {sessionId, ...}
     
     alt Valid credentials
@@ -91,8 +91,10 @@ classDiagram
         +string type = "server-handshake"
         +string sessionId
         +string name
+        +string variant
         +string version
-        +string[] games
+        +int behaviorVersion
+        +string[] gameTypes
     }
     
     class BotHandshake {
@@ -158,8 +160,10 @@ classDiagram
         +string type
         +string sessionId
         +string name
+        +string variant
         +string version
-        +string[] games
+        +int behaviorVersion
+        +string[] gameTypes
     }
 ```
 
@@ -170,8 +174,10 @@ classDiagram
   "type": "server-handshake",
   "sessionId": "550e8400-e29b-41d4-a716-446655440000",
   "name": "Robocode Tank Royale Server",
+  "variant": "Tank Royale",
   "version": "0.25.0",
-  "games": ["melee", "1v1", "classic"]
+  "behaviorVersion": 1,
+  "gameTypes": ["melee", "1v1", "classic"]
 }
 ```
 
@@ -182,8 +188,17 @@ classDiagram
 | `type` | string | ✅ | Always `"server-handshake"` |
 | `sessionId` | string | ✅ | UUID identifying this connection session |
 | `name` | string | ✅ | Server name |
+| `variant` | string | ✅ | Game variant, currently `"Tank Royale"` |
 | `version` | string | ✅ | Server version (semver) |
-| `games` | string[] | ✅ | Supported game types |
+| `behaviorVersion` | integer ≥ 1 | ✅* | Server-owned compatibility epoch for outcome-changing battle behavior |
+| `gameTypes` | string[] | ✅ | Supported game types |
+| `gameSetup` | object | ❌ | Current setup when a battle is running |
+| `features` | object | ❌ | Optional server capabilities |
+
+**Compatibility:** Current servers always emit `behaviorVersion`; clients should treat an omitted value as an older server epoch and continue reading the handshake.
+
+\* The field is optional in the schema so clients can read handshakes from servers released before behavior epochs were introduced.
+
 
 ---
 
@@ -566,5 +581,4 @@ sequenceDiagram
 
 ---
 
-**Last Updated:** 2026-02-12
-
+**Last Updated:** 2026-08-02

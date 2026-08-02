@@ -50,7 +50,7 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
     Then the runner SHALL throw a descriptive error naming the missing member before starting the battle
 
   # Requirement: Battle Configuration
-  # The system SHALL support game type presets (`classic`, `melee`, `1v1`, `custom`) matching the existing server rule
+  # The system SHALL support game type presets (`classic`, `melee`, `1v1`, `twinduel`, `custom`) matching the existing server rule
   # definitions in `dev.robocode.tankroyale.server.rules.setup`. Selecting a preset provides default values for arena
   # dimensions, number of participants, and other game parameters. When using `custom`, all parameters are user-supplied.
   # Individual parameters MAY be overridden on any preset; unset parameters fall back to preset/server defaults.

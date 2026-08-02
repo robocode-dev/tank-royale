@@ -524,6 +524,7 @@ public class MockedServer
             Name = Name,
             Version = Version,
             Variant = Variant,
+            BehaviorVersion = 1,
             GameTypes = GameTypes,
             GameSetup = null
         };

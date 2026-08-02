@@ -105,7 +105,7 @@ The Runner composes existing Tank Royale components (Server, Booter) rather than
 - **Type:** Configuration data class
 - **Responsibility:**
   - Immutable battle configuration derived from game type presets
-  - Presets: `classic` (800×600), `melee` (1000×1000), `oneVsOne` (800×600, exactly 2), `custom`
+  - Presets: `classic` (800×600), `melee` (1000×1000), `oneVsOne` (800×600, exactly 2), `twinDuel` (800×800, exactly 4), `custom`
   - All parameters overridable via builder
 - **Parameters:** arena dimensions, participant limits, number of rounds, gun cooling rate, inactivity timeout, turn timeout, ready timeout
 

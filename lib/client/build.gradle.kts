@@ -19,6 +19,9 @@ dependencies {
     api(project(":lib:common"))
     implementation(libs.kotlinx.serialization.json)
 
+    testImplementation(platform(testLibs.junit.bom))
+    testImplementation(testLibs.kotest.junit6)
+    testImplementation(testLibs.bundles.junit)
 }
 
 tasks {

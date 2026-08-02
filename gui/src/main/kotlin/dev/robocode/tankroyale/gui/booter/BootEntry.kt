@@ -8,6 +8,7 @@ data class BootEntry(
     val name: String,
     val version: String,
     val authors: List<String>,
+    val license: String? = null,
     val description: String? = null,
     val homepage: String? = null,
     val countryCodes: List<String>? = null,

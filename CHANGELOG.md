@@ -9,6 +9,12 @@
 
 ### 🚀 Improvements
 
+- Server and Runner:
+    - Added the `twinduel` preset (800×800, exactly four participants, 75 rounds); the server advertises it among the built-in game types.
+- Bot API (Java, .NET, Python, TypeScript):
+    - Current server handshakes expose a positive `behaviorVersion` compatibility epoch while older handshakes remain readable.
+- Booter:
+    - Bot and team configuration files may include an optional SPDX `license` identifier, which is preserved in directory listings.
 - Bot API (Java, .NET, Python, TypeScript):
     - A bot now fails with a clear error message when connecting to a server with an incompatible
       version, instead of appearing to join the battle but standing idle without scoring.

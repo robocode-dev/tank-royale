@@ -9,6 +9,7 @@ interface IBootEntry {
     val name: String
     val version: String
     val authors: List<String>
+    val license: String? get() = null
     val description: String?
     val homepage: String?
     val countryCodes: List<String>?

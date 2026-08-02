@@ -42,7 +42,7 @@ Initial messages exchanged when clients connect to the server.
 
 | Schema | Direction | Purpose |
 |--------|-----------|---------|
-| [server-handshake](../../../../schema/schemas/server-handshake.schema.yaml) | Server → Client | Server identity + sessionId assignment |
+| [server-handshake](../../../../schema/schemas/server-handshake.schema.yaml) | Server → Client | Server identity, behavior epoch, and sessionId assignment |
 | [bot-handshake](../../../../schema/schemas/bot-handshake.schema.yaml) | Bot → Server | Bot registration with metadata |
 | [observer-handshake](../../../../schema/schemas/observer-handshake.schema.yaml) | Observer → Server | Observer registration |
 | [controller-handshake](../../../../schema/schemas/controller-handshake.schema.yaml) | Controller → Server | Controller registration |
@@ -252,7 +252,7 @@ sequenceDiagram
     participant Server
     
     Bot->>Server: WebSocket connect
-    Server->>Bot: server-handshake {sessionId: "abc-123"}
+    Server->>Bot: server-handshake {sessionId: "abc-123", behaviorVersion: 1}
     Bot->>Server: bot-handshake {sessionId: "abc-123", name: "MyBot"}
     
     Note over Server: Controller sends start-game
@@ -343,5 +343,4 @@ Use schemas to generate test fixtures and validate responses.
 
 ---
 
-**Last Updated:** 2026-04-24
-
+**Last Updated:** 2026-08-02

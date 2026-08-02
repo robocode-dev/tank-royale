@@ -216,6 +216,7 @@ class WonRoundEventTest {
             m.setName("TestServer");
             m.setVersion("1.0");
             m.setVariant("Tank Royale");
+            m.setBehaviorVersion(1);
             m.setGameTypes(Set.of("classic"));
             return m;
         }
