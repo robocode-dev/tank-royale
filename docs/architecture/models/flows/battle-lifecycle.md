@@ -147,7 +147,7 @@ sequenceDiagram
     Bot1->>Bot1: Fire onGameStarted handler
     Bot2->>Bot2: Fire onGameStarted handler
     
-    Note over Bot1,Bot2: onGameStarted fires BEFORE<br/>bot-ready is sent (fix: issue #202)<br/>Ensures user init runs first
+    Note over Bot1,Bot2: onGameStarted fires BEFORE<br/>bot-ready is sent (fix: https://github.com/robocode-dev/tank-royale/issues/202)<br/>Ensures user init runs first
     
     Bot1->>Server: bot-ready
     Bot2->>Server: bot-ready
