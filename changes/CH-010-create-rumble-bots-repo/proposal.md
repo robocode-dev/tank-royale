@@ -16,6 +16,8 @@ The generated `bots/index.json` catalog will be the stable hand-off to the later
 
 When this proposal is implemented, P-003 will also record the requested post-Rumble GUI follow-up: after M-006 through M-009 are complete, a separate milestone will let the GUI game-type dialog select and start the `TwinDuel` preset. That work is deliberately not part of this repository or this change.
 
+This change also completes the CH-009 license-metadata adoption by declaring the repository's Apache-2.0 license in every maintained sample-bot configuration and by adding the optional `license` property to every maintained bot-config JSON example and guide.
+
 ## Why
 
 Rumble participants need a reviewable, forkable source of bots before contributors can run ranked battles. Keeping submissions in their own repository separates human-paced pull-request review from the high-volume machine facts that will live in `rumble-data`, while preserving zero infrastructure cost and the single-writer rule for result data.
@@ -29,6 +31,7 @@ Rumble participants need a reviewable, forkable source of bots before contributo
 - Add contributor, moderation, ownership, licensing, DCO, ban, and fork-drill guidance, plus issue and pull-request templates and CODEOWNERS.
 - Add one or more sample bot submissions and focused automated evidence that a valid first-time submission passes and invalid submissions fail with useful diagnostics.
 - Define the catalog contract and acceptance criteria in this repository's corpus before implementing the external repository.
+- Add `"license": "Apache-2.0"` to every maintained Tank Royale sample-bot configuration and align maintained bot-config JSON examples and guides with the optional SPDX field.
 
 ## Non-goals
 
@@ -36,6 +39,7 @@ Rumble participants need a reviewable, forkable source of bots before contributo
 - Changing Tank Royale's server, Battle Runner, booter convention, Bot APIs, or game presets.
 - Implementing the later GUI `TwinDuel` selection; it remains a post-M-009 follow-up.
 - Creating a sandbox that makes untrusted bot code safe to execute; this repository makes it reviewable and reproducible, while client-side containment belongs to the Rumble client work.
+- Adding `license` to non-bot JSON protocols, requests, events, package manifests, or other data formats where it is not part of the booter configuration contract.
 
 ## Compatibility
 

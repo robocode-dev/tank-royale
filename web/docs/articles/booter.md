@@ -137,7 +137,7 @@ MyFirstBot.json for .NET:
     "Mathew Nelson",
     "Flemming N. Larsen"
   ],
-  "license": "MIT",
+  "license": "Apache-2.0",
   "description": "A sample bot that is probably the first bot you will learn about.",
   "homepage": "",
   "countryCodes": [
@@ -213,6 +213,7 @@ MyFirstTeam.json:
     "Mathew Nelson",
     "Flemming N. Larsen"
   ],
+  "license": "Apache-2.0",
   "description": "A sample team.\nMyFirstLeader scans for enemies,\nand orders the droids to fire.",
   "homepage": "",
   "countryCodes": [

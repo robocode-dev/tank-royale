@@ -53,6 +53,7 @@ This is the recommended approach for beginners. Copy the following into `MyFirst
   "name": "My First Bot",
   "version": "1.0",
   "authors": [ "«enter your name»" ],
+  "license": "Apache-2.0",
   "description": "My first bot",
   "homepage": "«insert link to a home page for your bot»",
   "countryCodes": [ "«enter your country code, e.g. us»" ],
@@ -60,7 +61,7 @@ This is the recommended approach for beginners. Copy the following into `MyFirst
   "programmingLang": "«enter programming language, e.g. Java or C#»"
 }
 ```
-The fields `name`, `version` and `authors` are required.
+The fields `name`, `version` and `authors` are required. The optional `license` field is an SPDX identifier that declares the license for the bot directory; declare it for every bot you intend to distribute.
 
 ### Setting properties in code
 

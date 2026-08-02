@@ -12,5 +12,6 @@
     "dk"
   ],
   "platform": "JVM",
-  "programmingLang": "Java 11"
+  "programmingLang": "Java 11",
+  "license": "Apache-2.0"
 }

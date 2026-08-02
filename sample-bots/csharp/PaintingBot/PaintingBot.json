@@ -12,5 +12,6 @@
     "dk"
   ],
   "platform": ".NET 6.0",
-  "programmingLang": "C# 10.0"
+  "programmingLang": "C# 10.0",
+  "license": "Apache-2.0"
 }
