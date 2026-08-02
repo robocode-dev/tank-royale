@@ -1,5 +1,6 @@
 package replay
 
+import dev.robocode.tankroyale.common.rules.CURRENT_BEHAVIOR_VERSION
 import dev.robocode.tankroyale.server.core.ModelUpdater
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.BotIntent
@@ -9,7 +10,7 @@ import dev.robocode.tankroyale.server.model.ParticipantId
 import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import java.nio.charset.StandardCharsets
+import io.kotest.matchers.shouldNotBe
 
 /**
  * Fixed-input regression hook for the battle model.
@@ -21,13 +22,15 @@ class DeterministicReplayRegressionTest : FunSpec({
 
     tags(Tag("BR-048"))
 
-    test("BR-048: Positive and negative: identical input is stable and changed input differs") {
+    test("BR-048: Positive and negative: fixed input matches baseline and changed input differs") {
         val firstRun = replaySnapshot(targetSpeed = 8.0)
         val secondRun = replaySnapshot(targetSpeed = 8.0)
         val changedRun = replaySnapshot(targetSpeed = 0.0)
 
-        firstRun.contentEquals(secondRun) shouldBe true
-        firstRun.contentEquals(changedRun) shouldBe false
+        CURRENT_BEHAVIOR_VERSION shouldBe SNAPSHOT_BEHAVIOR_VERSION
+        firstRun shouldBe expectedSnapshot
+        secondRun shouldBe expectedSnapshot
+        changedRun shouldNotBe expectedSnapshot
     }
 }) {
 
@@ -53,7 +56,7 @@ class DeterministicReplayRegressionTest : FunSpec({
             isReadyTimeoutLocked = true,
         )
 
-        private fun replaySnapshot(targetSpeed: Double): ByteArray {
+        private fun replaySnapshot(targetSpeed: Double): String {
             val updater = ModelUpdater(setup, participantIds, initialPositions, droidFlags, true)
             val snapshots = buildList {
                 updater.update(emptyMap())
@@ -69,12 +72,24 @@ class DeterministicReplayRegressionTest : FunSpec({
                     add(snapshot(updater))
                 }
             }
-            return snapshots.joinToString(separator = "\n").toByteArray(StandardCharsets.UTF_8)
+            return snapshots.joinToString(separator = "\n")
         }
+
+        // Update this baseline only with the corresponding behavior-version bump.
+        private const val SNAPSHOT_BEHAVIOR_VERSION = 1
+
+        private val expectedSnapshot = """
+            rounds=1;bots=1:x=100.0,y=100.0,speed=0.0,gunHeat=2.9|2:x=700.0,y=500.0,speed=0.0,gunHeat=2.9;scores=
+            rounds=1;bots=1:x=101.0,y=100.0,speed=1.0,gunHeat=2.8|2:x=700.0,y=500.0,speed=0.0,gunHeat=2.8;scores=
+            rounds=1;bots=1:x=103.0,y=100.0,speed=2.0,gunHeat=2.6999999999999997|2:x=700.0,y=500.0,speed=0.0,gunHeat=2.6999999999999997;scores=
+            rounds=1;bots=1:x=106.0,y=100.0,speed=3.0,gunHeat=2.5999999999999996|2:x=700.0,y=500.0,speed=0.0,gunHeat=2.5999999999999996;scores=
+        """.trimIndent()
 
         private fun snapshot(updater: ModelUpdater): String {
             val bots = listOf(bot1, bot2).joinToString(separator = "|") { botId ->
-                "${botId.value}:${updater.getBot(botId)}"
+                requireNotNull(updater.getBot(botId)).let { bot ->
+                    "${botId.value}:x=${bot.x},y=${bot.y},speed=${bot.speed},gunHeat=${bot.gunHeat}"
+                }
             }
             val scores = updater.getResults()
                 .sortedBy { it.participantId.id }

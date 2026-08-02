@@ -126,13 +126,15 @@ flowchart TD
 ```json
 {
   "type": "server-handshake",
-  "sessionId": "550e8400-e29b-41d4-a716-446655440000"
+  "sessionId": "550e8400-e29b-41d4-a716-446655440000",
+  "behaviorVersion": 1
 }
 ```
 
 **What Happens:**
 - Server generates unique sessionId
 - Sends to bot immediately upon connection
+- Advertises the positive behaviorVersion that identifies the outcome-compatibility epoch
 - Bot must validate this against next message
 
 **Timing:** <1ms (synchronous)
@@ -388,7 +390,7 @@ sequenceDiagram
 
     Note over Observer: WebSocket connection opened
     Observer->>+Server: <<event>> connection established
-    Server->>-Observer: server-handshake {sessionId}
+    Server->>-Observer: server-handshake {sessionId, behaviorVersion}
     Observer->>Server: observer-handshake {sessionId, secret}
 
     alt if sessionId or secret is invalid
@@ -414,7 +416,7 @@ sequenceDiagram
 
     Note over Controller: WebSocket connection opened
     Controller->>+Server: <<event>> connection established
-    Server->>-Controller: server-handshake {sessionId}
+    Server->>-Controller: server-handshake {sessionId, behaviorVersion}
     Controller->>Server: controller-handshake {sessionId, secret}
 
     alt if sessionId or secret is invalid
