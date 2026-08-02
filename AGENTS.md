@@ -24,6 +24,10 @@ Load the file(s) matching your task type before starting work:
 
 Principles are loaded on demand: run `/dot-prime` before working on a file to activate the relevant `.principles` for that path.
 
+## GitHub PR descriptions
+
+When creating or updating pull requests through the GitHub API or CLI, send real newline characters in the Markdown body; never send literal `\n` escape sequences. Prefer a real multiline body or `--body-file`, and inspect the stored body before considering the PR description complete.
+
 ## Skills
 
 Reusable task instructions live in `.agents/skills/`. When the user runs a slash command, read the skill file and follow it exactly.
