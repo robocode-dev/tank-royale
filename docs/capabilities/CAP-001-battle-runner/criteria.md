@@ -50,7 +50,7 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
     Then the runner SHALL throw a descriptive error naming the missing member before starting the battle
 
   # Requirement: Battle Configuration
-  # The system SHALL support game type presets (`classic`, `melee`, `1v1`, `custom`) matching the existing server rule
+  # The system SHALL support game type presets (`classic`, `melee`, `1v1`, `twinduel`, `custom`) matching the existing server rule
   # definitions in `dev.robocode.tankroyale.server.rules.setup`. Selecting a preset provides default values for arena
   # dimensions, number of participants, and other game parameters. When using `custom`, all parameters are user-supplied.
   # Individual parameters MAY be overridden on any preset; unset parameters fall back to preset/server defaults.
@@ -336,6 +336,28 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
 
   @BR-046
   Scenario: Progress includes timing
+    Test-type: Unit
     When an `onBootProgress` event fires
     Then it SHALL include `elapsedMs` (time since boot started) and `timeoutMs` (configured timeout)
+
+  # Requirement: Rumble Game Presets
+  # The Battle Runner SHALL expose the v1 TwinDuel preset described by the Rumble design.
+
+  @BR-047
+  Scenario: Run with TwinDuel preset
+    Test-type: Unit
+    When a user creates a `BattleSetup` with game type `twinduel`
+    Then the setup SHALL use an 800×800 arena
+    And it SHALL require exactly four bot participants
+    And it SHALL use 75 rounds by default
+
+  # Requirement: Deterministic Regression Hook
+  # The server test harness SHALL make a fixed sequence of inputs replayable for regression checks.
+
+  @BR-048
+  Scenario: Replay fixed inputs produces stable results
+    Test-type: Unit
+    When the deterministic regression harness runs the same setup and input sequence twice
+    Then it SHALL produce byte-for-byte equivalent result snapshots
+    And changing one input SHALL change the result snapshot
 ```

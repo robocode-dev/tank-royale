@@ -204,6 +204,8 @@ export interface ServerHandshake extends Message {
   name: string;
   variant: string;
   version: string;
+  /** Omitted by legacy servers that predate behavior epochs. */
+  behaviorVersion?: number;
   gameTypes: string[];
   gameSetup?: GameSetup | null;
 }

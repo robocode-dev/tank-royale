@@ -357,6 +357,7 @@ export class MockedServer {
       name: SERVER_NAME,
       variant: VARIANT,
       version: SERVER_VERSION,
+      behaviorVersion: 1,
       gameTypes: GAME_TYPES,
     };
     this.send(msg);

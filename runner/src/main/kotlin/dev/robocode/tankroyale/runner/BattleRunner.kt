@@ -125,16 +125,10 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
 
         try {
             // Validate inputs (8.5)
-            require(bots.size >= setup.minNumberOfParticipants) {
-                "Need at least ${setup.minNumberOfParticipants} bots, but only ${bots.size} provided"
-            }
-            setup.maxNumberOfParticipants?.let { max ->
-                require(bots.size <= max) {
-                    "At most $max bots allowed, but ${bots.size} provided"
-                }
-            }
             bots.forEach { BooterManager.validateBotDir(it.path) }
-            val expectedIdentities = bots.flatMap { BooterManager.readBotIdentities(it.path) }
+            val identitiesByEntry = bots.map { BooterManager.readBotIdentities(it.path) }
+            validateParticipantCount(setup, identitiesByEntry)
+            val expectedIdentities = identitiesByEntry.flatten()
 
             // 1. Ensure server is running
             logger.fine("Ensuring server is started...")
@@ -492,6 +486,22 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
     }
 
     companion object {
+        /**
+         * Validates participant limits after team entries have expanded to their member identities.
+         * A config-less entry still counts as one participant because its identity is unavailable.
+         */
+        internal fun validateParticipantCount(setup: BattleSetup, identitiesByEntry: List<List<BotIdentity>>) {
+            val participantCount = identitiesByEntry.sumOf { identities -> identities.size.coerceAtLeast(1) }
+            require(participantCount >= setup.minNumberOfParticipants) {
+                "Need at least ${setup.minNumberOfParticipants} bots, but only $participantCount provided"
+            }
+            setup.maxNumberOfParticipants?.let { max ->
+                require(participantCount <= max) {
+                    "At most $max bots allowed, but $participantCount provided"
+                }
+            }
+        }
+
         private const val GAME_START_TIMEOUT_MS = 10_000L
 
         /** Converts a public [BattleSetup] to the client model [GameSetup] for the server protocol. */

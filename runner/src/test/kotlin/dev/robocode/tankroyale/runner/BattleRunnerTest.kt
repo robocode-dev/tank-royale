@@ -10,6 +10,7 @@ import dev.robocode.tankroyale.runner.internal.ServerConnection
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -189,6 +190,27 @@ class BattleRunnerTest {
             .hasMessageContaining("closed")
 
         runner = null // already closed
+    }
+
+    @Test
+    @Tag("BR-047")
+    fun `TwinDuel validates expanded team members and preserves config-less fallback`() {
+        val team = listOf(
+            BotIdentity("Member A", "1.0", "Author"),
+            BotIdentity("Member B", "1.0", "Author"),
+        )
+
+        BattleRunner.validateParticipantCount(BattleSetup.twinDuel(), listOf(team, team))
+
+        assertThatThrownBy {
+            BattleRunner.validateParticipantCount(BattleSetup.twinDuel(), listOf(emptyList(), emptyList()))
+        }.isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("only 2 provided")
+
+        assertThatThrownBy {
+            BattleRunner.validateParticipantCount(BattleSetup.twinDuel(), listOf(team, team, team))
+        }.isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("At most 4 bots allowed, but 6 provided")
     }
 
     // -------------------------------------------------------------------------------------

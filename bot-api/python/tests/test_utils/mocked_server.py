@@ -729,11 +729,12 @@ class MockedServer:
         self._bot_intent_continue_event.clear()
 
     async def _send_server_handshake(self, websocket) -> None:
-        # Build ServerHandshake using required constructor args per generated schema
+        # Current servers advertise their outcome-compatibility epoch.
         msg = ServerHandshake(
             session_id=self.session_id,
             variant=self.variant,
             version=self.version,
+            behavior_version=1,
             game_types=list(self.game_types),
             type=Message.Type.SERVER_HANDSHAKE,
             name=self.name,

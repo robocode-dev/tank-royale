@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.server.connection
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
+import dev.robocode.tankroyale.common.rules.CURRENT_BEHAVIOR_VERSION
 import dev.robocode.tankroyale.common.util.Version
 import dev.robocode.tankroyale.schema.*
 import dev.robocode.tankroyale.server.core.ServerSetup
@@ -83,6 +84,7 @@ class ClientWebSocketsHandler(
             sessionId = generateAndStoreSessionId(clientSocket)
             variant = "Tank Royale"
             version = Version.version
+            behaviorVersion = CURRENT_BEHAVIOR_VERSION
             gameTypes = setup.gameTypes
             gameSetup = currentGameSetup
             features = Features().apply {

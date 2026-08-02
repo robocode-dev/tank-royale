@@ -14,6 +14,7 @@ data class DirBootEntry(
     override val name: String,
     override val version: String,
     override val authors: List<String>,
+    override val license: String? = null,
     override val description: String? = null,
     override val homepage: String? = null,
     override val countryCodes: List<String>? = null,

@@ -55,7 +55,7 @@ java -jar robocode-tankroyale-server-x.y.z.jar --game-types classic,melee
 
 Here, the server supports the `classic` and `melee` game types.
 
-If no game type is specified, the server will run with the `classic` game type per default.
+If no game type is specified, the server will advertise the built-in `classic`, `1v1`, `twinduel`, `melee`, and `custom` game types.
 
 ## Port
 

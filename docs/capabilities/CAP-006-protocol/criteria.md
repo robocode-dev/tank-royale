@@ -47,6 +47,18 @@ Feature: protocol — WebSocket protocol
 
   @PRO-004
   Scenario: Schema validation
+    Test-type: Integration
     When a message is sent or received by any client or server
     Then it MUST validate against its corresponding `.schema.yaml` definition
+
+  # Requirement: Behavior Compatibility Metadata
+  # The server SHALL expose the server-owned behavior epoch independently of the release version.
+
+  @PRO-005
+  Scenario: Server advertises the behavior compatibility version
+    Test-type: Integration
+    When a client opens a WebSocket connection to a current Tank Royale server
+    Then the `server-handshake` SHALL contain a positive integer `behaviorVersion`
+    And the value SHALL identify the game-observable compatibility epoch
+    And a handshake that omits the field SHALL remain readable by a compatibility client
 ```

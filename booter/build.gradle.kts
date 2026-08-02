@@ -33,6 +33,16 @@ dependencies {
     implementation(project(":lib:common"))
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.clikt)
+
+    testImplementation(platform(testLibs.junit.bom))
+    testImplementation(testLibs.bundles.junit)
+    testImplementation(testLibs.assertj)
+}
+
+tasks {
+    test {
+        useJUnitPlatform()
+    }
 }
 
 tasks {

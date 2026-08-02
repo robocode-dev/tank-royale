@@ -191,7 +191,9 @@ data class ServerHandshake(
     val variant: String,
     val gameTypes: Set<String>,
     val gameSetup: GameSetup? = null,
-    val features: Features? = null
+    val features: Features? = null,
+    /** Server-owned behavior compatibility version; null means an older server omitted it. */
+    val behaviorVersion: Int? = null,
 ) : Message()
 
 @Serializable

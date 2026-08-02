@@ -137,6 +137,7 @@ MyFirstBot.json for .NET:
     "Mathew Nelson",
     "Flemming N. Larsen"
   ],
+  "license": "MIT",
   "description": "A sample bot that is probably the first bot you will learn about.",
   "homepage": "",
   "countryCodes": [
@@ -162,6 +163,7 @@ Meaning of each field in the JSON file:
 - `name`: is the display name of the bot.
 - `version`: is the version of the bot, where [SEMVER] is the recommended format, but not a requirement.
 - `authors`: is a list containing the (full) name of the bot author(s). The name could be a nickname or handle.
+- `license`: is an optional [SPDX] license identifier for the bot or team.
 - `description`: is a brief description of the bot.
 - `homepage`: is a link to a web page for the bot.
 - `countryCodes`: is a list containing [Alpha-2] country codes, representing the country of each author and/or bot.
@@ -248,6 +250,8 @@ Also note that only the JSON file is needed for defining the team.
 [JSON]: https://fileinfo.com/extension/json "JSON (JavaScript Object Notation File)"
 
 [SEMVER]: https://semver.org/ "Semantic Versioning 2.0.0"
+
+[SPDX]: https://spdx.org/licenses/ "SPDX License List"
 
 [Alpha-2]: https://www.iban.com/country-codes "Alpha-2 country codes"
 

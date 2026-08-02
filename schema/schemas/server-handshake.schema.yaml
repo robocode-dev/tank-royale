@@ -16,6 +16,10 @@ properties:
   version:
     type: string
     description: Game version, e.g. '1.0.0' using Semantic Versioning (https://semver.org/)
+  behaviorVersion:
+    type: integer
+    minimum: 1
+    description: Server-owned compatibility version for outcome-changing battle behavior.
   gameTypes:
     description: Game types running at this server, e.g. "melee" and "1v1"
     type: array

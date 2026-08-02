@@ -2,6 +2,7 @@ package dev.robocode.tankroyale.runner
 
 import dev.robocode.tankroyale.common.rules.GameType
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 /**
@@ -48,6 +49,32 @@ class BattleSetupTest {
         assertThat(setup.minNumberOfParticipants).isEqualTo(2)
         assertThat(setup.maxNumberOfParticipants).isEqualTo(2)
         assertThat(setup.numberOfRounds).isEqualTo(10)
+    }
+
+    @Test
+    @Tag("BR-047")
+    fun `twinDuel preset has expected defaults`() {
+        val setup = BattleSetup.twinDuel()
+        assertThat(setup.gameType).isEqualTo(GameType.TWIN_DUEL)
+        assertThat(setup.arenaWidth).isEqualTo(800)
+        assertThat(setup.arenaHeight).isEqualTo(800)
+        assertThat(setup.minNumberOfParticipants).isEqualTo(4)
+        assertThat(setup.maxNumberOfParticipants).isEqualTo(4)
+        assertThat(setup.numberOfRounds).isEqualTo(75)
+    }
+
+    @Test
+    @Tag("BR-047")
+    fun `twinDuel preset allows overriding unlocked fields`() {
+        val setup = BattleSetup.twinDuel {
+            numberOfRounds = 3
+            gunCoolingRate = 0.2
+        }
+        assertThat(setup.gameType).isEqualTo(GameType.TWIN_DUEL)
+        assertThat(setup.numberOfRounds).isEqualTo(3)
+        assertThat(setup.gunCoolingRate).isEqualTo(0.2)
+        assertThat(setup.arenaWidth).isEqualTo(800)
+        assertThat(setup.maxNumberOfParticipants).isEqualTo(4)
     }
 
     @Test

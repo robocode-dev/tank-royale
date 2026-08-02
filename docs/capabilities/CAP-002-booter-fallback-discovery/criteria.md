@@ -48,7 +48,18 @@ Feature: booter-fallback-discovery — TBD - created by change support-bot-disco
 
   @BFD-005
   Scenario: .NET platform detection
+    Test-type: Unit
     When a bot directory contains a `.dll` or `.exe` file (not a JVM executable)
     And no `.json` file specifies the platform
     Then the `booter` SHALL use the `dotnet` boot template
+
+  # Requirement: Bot License Metadata
+  # The general booter configuration SHALL carry an optional SPDX license identifier without affecting booting.
+
+  @BFD-006
+  Scenario: Preserve optional SPDX license metadata
+    Test-type: Unit
+    When a bot configuration contains a valid SPDX `license` identifier
+    Then the booter SHALL retain it in the parsed entry and directory listing
+    And when the field is omitted, the booter SHALL still parse and boot the entry with no license value
 ```

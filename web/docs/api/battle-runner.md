@@ -76,7 +76,7 @@ try (var runner = BattleRunner.create(b -> b.embeddedServer())) {
 ## Features
 
 - **Embedded or external server** — start a managed server automatically, or connect to an existing one
-- **Game type presets** — `classic`, `melee`, `1v1`, `custom` with full parameter overrides
+- **Game type presets** — `classic`, `melee`, `1v1`, `twinduel`, `custom` with full parameter overrides
 - **Synchronous and async APIs** — block until results, or stream real-time events
 - **Battle recording** — write `.battle.gz` replay files (same format as the Recorder module)
 - **Intent diagnostics** — capture raw `bot-intent` messages per bot per turn via an opt-in WebSocket proxy
@@ -140,6 +140,7 @@ Battle configuration starts from a game type preset. Individual parameters can b
 | `classic` | 800×600 | 2 | — |
 | `melee` | 1000×1000 | 10 | — |
 | `oneVsOne` | 800×600 | 2 | 2 |
+| `twinDuel` | 800×800 | 4 | 4 |
 | `custom` | 800×600 | 2 | — |
 
 ::: code-group
@@ -149,6 +150,7 @@ val setup = BattleSetup.classic()
 val setup = BattleSetup.classic { numberOfRounds = 10 }
 val setup = BattleSetup.melee { arenaWidth = 1200; arenaHeight = 1200 }
 val setup = BattleSetup.oneVsOne()
+val setup = BattleSetup.twinDuel()
 val setup = BattleSetup.custom {
     arenaWidth = 500
     arenaHeight = 500
@@ -162,6 +164,7 @@ var setup = BattleSetup.classic();
 var setup = BattleSetup.classic(s -> s.setNumberOfRounds(10));
 var setup = BattleSetup.melee(s -> { s.setArenaWidth(1200); s.setArenaHeight(1200); });
 var setup = BattleSetup.oneVsOne();
+var setup = BattleSetup.twinDuel();
 var setup = BattleSetup.custom(s -> {
     s.setArenaWidth(500);
     s.setArenaHeight(500);

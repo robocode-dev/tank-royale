@@ -7,7 +7,7 @@ provide bot paths and a game setup.
 ## Features
 
 - **Embedded or external server** — start a managed server automatically, or connect to an existing one
-- **Game type presets** — `classic`, `melee`, `1v1`, `custom` with full parameter overrides
+- **Game type presets** — `classic`, `melee`, `1v1`, `twinduel`, `custom` with full parameter overrides
 - **Synchronous and async APIs** — block until results, or stream real-time events
 - **Battle recording** — write `.battle.gz` replay files (same format as the Recorder module)
 - **Intent diagnostics** — capture raw `bot-intent` messages per bot per turn via an opt-in WebSocket proxy
@@ -118,6 +118,7 @@ Immutable battle configuration created from game type presets with optional over
 val setup = BattleSetup.classic { numberOfRounds = 10 }
 val setup = BattleSetup.melee { arenaWidth = 1200; arenaHeight = 1200 }
 val setup = BattleSetup.oneVsOne()
+val setup = BattleSetup.twinDuel()
 val setup = BattleSetup.custom { arenaWidth = 500; arenaHeight = 500; numberOfRounds = 3 }
 ```
 
@@ -126,6 +127,7 @@ val setup = BattleSetup.custom { arenaWidth = 500; arenaHeight = 500; numberOfRo
 var setup = BattleSetup.classic(s -> s.setNumberOfRounds(10));
 var setup = BattleSetup.melee(s -> { s.setArenaWidth(1200); s.setArenaHeight(1200); });
 var setup = BattleSetup.oneVsOne();
+var setup = BattleSetup.twinDuel();
 var setup = BattleSetup.custom(s -> { s.setArenaWidth(500); s.setArenaHeight(500); });
 ```
 
@@ -141,6 +143,8 @@ val bot = BotEntry.of(Path.of("/path/to/MyBot"))
 ### BattleResults / BotResult
 
 Returned after a battle completes, containing per-bot scores ordered by rank.
+
+`runBattle()` and `BattleHandle.awaitResults()` use this same result model, so callers do not need a separate result type for synchronous and asynchronous execution.
 
 | Field | Description |
 |-------|-------------|
