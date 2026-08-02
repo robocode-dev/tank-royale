@@ -532,6 +532,7 @@ To create a team, you need a team configuration file (JSON) that specifies the t
         "Mathew Nelson",
         "Flemming N. Larsen"
     ],
+    "license": "Apache-2.0",
     "description": "A sample team. MyFirstLeader scans for enemies, and orders the droids to fire.",
     "teamMembers": [
         "MyFirstLeader",

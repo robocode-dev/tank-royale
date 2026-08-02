@@ -13,5 +13,6 @@
   ],
   "platform": "JVM",
   "programmingLang": "Java 11",
-  "initialPosition": "50,50, 90"
+  "initialPosition": "50,50, 90",
+  "license": "Apache-2.0"
 }

@@ -62,4 +62,11 @@ Feature: booter-fallback-discovery — TBD - created by change support-bot-disco
     When a bot configuration contains a valid SPDX `license` identifier
     Then the booter SHALL retain it in the parsed entry and directory listing
     And when the field is omitted, the booter SHALL still parse and boot the entry with no license value
+
+  @BFD-007 @draft
+  Scenario: Distributed sample bots declare their SPDX license
+    Test-type: Integration
+    When a maintainer inspects every maintained sample-bot configuration
+    Then each configuration SHALL declare an SPDX `license` identifier
+    And every maintained bot-configuration example and guide SHALL show the field
 ```

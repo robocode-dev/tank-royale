@@ -10,5 +10,6 @@
     "us"
   ],
   "platform": "Node.js",
-  "programmingLang": "TypeScript"
+  "programmingLang": "TypeScript",
+  "license": "Apache-2.0"
 }

@@ -12,5 +12,6 @@
     "dk"
   ],
   "platform": "Python",
-  "programmingLang": "Python 3"
+  "programmingLang": "Python 3",
+  "license": "Apache-2.0"
 }

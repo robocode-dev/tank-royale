@@ -13,5 +13,6 @@
   ],
   "platform": ".NET 6.0",
   "programmingLang": "C# 10.0",
-  "initialPosition": "50,50, 90"
+  "initialPosition": "50,50, 90",
+  "license": "Apache-2.0"
 }
