@@ -336,6 +336,28 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
 
   @BR-046
   Scenario: Progress includes timing
+    Test-type: Unit
     When an `onBootProgress` event fires
     Then it SHALL include `elapsedMs` (time since boot started) and `timeoutMs` (configured timeout)
+
+  # Requirement: Rumble Game Presets
+  # The Battle Runner SHALL expose the v1 TwinDuel preset described by the Rumble design.
+
+  @BR-047
+  Scenario: Run with TwinDuel preset
+    Test-type: Unit
+    When a user creates a `BattleSetup` with game type `twinduel`
+    Then the setup SHALL use an 800×800 arena
+    And it SHALL require exactly four bot participants
+    And it SHALL use 75 rounds by default
+
+  # Requirement: Deterministic Regression Hook
+  # The server test harness SHALL make a fixed sequence of inputs replayable for regression checks.
+
+  @BR-048
+  Scenario: Replay fixed inputs produces stable results
+    Test-type: Unit
+    When the deterministic regression harness runs the same setup and input sequence twice
+    Then it SHALL produce byte-for-byte equivalent result snapshots
+    And changing one input SHALL change the result snapshot
 ```

@@ -51,4 +51,5 @@ Writing guidelines: be specific (technical detail, not concepts); show your work
 - [ADR-0039 — Server Testability — Physics Core Extraction and Test Framework](0039-server-testability.md) · `verified`
 - [ADR-0040 — Raise Default readyTimeout from 1 Second to 10 Seconds](0040-ready-timeout-default.md) · `verified`
 - [ADR-0041 — Bot API Library Version Management in the GUI](0041-bot-api-library-version-management.md) · `verified`
+- [ADR-0042 — Behavior Version as the Battle Compatibility Contract](0042-behavior-version-epochs.md) · `inferred`
 <!-- clue:index:end -->
