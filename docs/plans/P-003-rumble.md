@@ -21,5 +21,6 @@ The milestones mirror the design's Change Proposal Roadmap in order. Each milest
 | M-007 | `rumble-data` repository live | Result inbox drained by CI into immutable raw facts; aggregation produces leaderboard, pairings, and matches-needed projections; dashboard published on Pages | todo | |
 | M-008 | Rumble client runs ranked battles | Client pulls the bot catalog and matchmaking advice, runs a ranked battle, and its submitted result lands in `rumble-data` via issue-ops with no human in the loop | todo | |
 | M-009 | Rumble documentation published | User guides live under `/web/docs/rumble/` with one quickstart per audience: bot author, battle contributor, moderator | todo | |
+| M-010 | GUI supports TwinDuel | The GUI game-type dialog can select and start the `TwinDuel` preset using the common game-type contract | todo | |
 
-M-006 and M-007 both depend only on M-005 and may proceed in parallel; M-008 depends on the `rumble-bots` catalog and the `rumble-data` engine/matchmaking files; M-009 depends on the interfaces settled by the earlier milestones.
+M-006 and M-007 both depend only on M-005 and may proceed in parallel; M-008 depends on the `rumble-bots` catalog and the `rumble-data` engine/matchmaking files; M-009 depends on the interfaces settled by the earlier milestones; M-010 is intentionally scheduled after M-006 through M-009.

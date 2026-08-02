@@ -12,6 +12,7 @@ Decisions that are cheap and local to reverse, one row each — newest first. Th
 
 | Date | Decision | Why | Change/PR |
 |---|---|---|---|
+| 2026-08-02 | Schedule GUI TwinDuel selection as M-010 after the Rumble repositories, client, and documentation | The preset exists after CH-009, but the maintainer wants the GUI follow-up after the Rumble foundation is in place | CH-010 |
 | 2026-07-23 | The Rumble design roadmap becomes active plan P-003 (M-005..M-009), one milestone per roadmap change | The umbrella design names this as its next step; future rumble proposals need a plan item to serve | CH-005 |
 | 2026-07-19 | Drop the never-built `npmPublishDryRun` task from CAP-013 (retire TNP-001) instead of building it | `npmPack` already produces the `.tgz` and shows what would be published without uploading, so a dry-run task is redundant | CH-002 |
 | 2026-07-19 | TypeScript npm publishing authenticates via the `npmjs-api-key` Gradle property, not an `NPM_TOKEN` env var (retire TNP-002/003, remint TNP-005/006) | Reconciles the corpus to the shipped code and matches the Sonatype/PyPI credential pattern and the `/release` skill | CH-002 |
