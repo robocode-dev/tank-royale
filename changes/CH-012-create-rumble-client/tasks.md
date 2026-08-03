@@ -10,8 +10,8 @@ title: Task breakdown for CH-012
 
 - [x] Confirm M-007 is accepted and its client contracts are available for M-008
 - [x] Capture the M-008 proposal for the Rumble client
-- [ ] Pause for maintainer approval of this proposal before implementation, as required by the Rumble roadmap
-- [ ] Define client capability ownership, contracts, acceptance criteria, and durable decisions in the Tank Royale corpus
+- [x] Pause for maintainer approval of this proposal before implementation, as required by the Rumble roadmap
+- [x] Define client capability ownership, contracts, acceptance criteria, and durable decisions in the Tank Royale corpus
 - [ ] Create and configure the community-owned `rumble-client` repository with contributor, security, configuration, container, and operating guidance
 - [ ] Implement validated synchronization, bot cache preparation, ranked and practice selection, and Battle Runner execution for every V1 game type
 - [ ] Implement local journal and replay-evidence handling, result transcription, registered-client issue-ops submission, and portable fallback submission transport
