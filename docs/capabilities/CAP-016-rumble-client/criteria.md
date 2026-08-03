@@ -15,9 +15,9 @@ Feature: rumble-client — Local ranked and practice battle client
   @RCL-001 @draft
   Scenario: Client configuration is validated before side effects
     Test-type: Integration
-    Given a client configuration declares its schema version, mode, repository locations, client identity, game types, session size, and local storage
+    Given a client configuration declares its schema version, mode, repository locations, game types, session size, local storage, and a client identity in ranked mode
     When the client starts
-    Then it accepts a complete supported configuration
+    Then it accepts a complete ranked configuration and a complete practice configuration without a client identity
     And it rejects an unknown schema version, unsupported value, missing ranked identity, or unsafe local path before synchronizing, running, journaling, or submitting anything
 
   @RCL-002 @draft
@@ -57,15 +57,15 @@ Feature: rumble-client — Local ranked and practice battle client
     Test-type: Integration
     Given one or more completed ranked results have been durably appended to the local journal
     When submission succeeds, fails, or is interrupted
-    Then only acknowledged records roll out of the queue
+    Then it removes only records whose accepted facts were published before their successful ingestion receipts
     And unacknowledged records remain retryable while records from an obsolete behavior-version epoch are quarantined with a clear diagnostic
 
   @RCL-007 @draft
   Scenario: A registered client submits a bounded issue-ops batch without repository write access
     Test-type: Integration
-    Given the ranked journal contains between one and sixty compatible results and the contributor supplies an Issues-only repository credential
-    When the client submits a batch
-    Then it creates the labelled result issue required by the result-data contract and correlates each ingestion receipt to its journal record
+    Given the ranked journal contains one or more compatible results and the contributor supplies an Issues-only repository credential
+    When the client submits the pending results
+    Then it creates labelled result issues containing between one and sixty results as required by the result-data contract and correlates each post-publication ingestion receipt to its journal records
     And it neither requests nor uses permission to modify repository contents, branches, releases, packages, Pages, facts, or projections
 
   @RCL-008 @draft

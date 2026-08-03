@@ -71,7 +71,7 @@ sequenceDiagram
     participant DR as rumble-data (read-only)
     participant BR as rumble-bots (read-only)
     participant Run as Battle Runner<br/>(embedded server + booter)
-    participant Inbox as Result inbox<br/>(issues / fork-PR)
+    participant Inbox as Result issue inbox
 
     C->>DR: pull latest (matches_needed.json, engine pin)
     C->>BR: pull pinned commit (bots/index.json)
@@ -82,7 +82,7 @@ sequenceDiagram
         Run-->>C: BattleResults + replay
         C->>C: append result record to local journal<br/>(auto, no human filter)<br/>store replay in evidence store
     end
-    C->>Inbox: submit journal batch<br/>(one payload, N results)
+    C->>Inbox: submit journal batch<br/>(one or more envelopes, 1..60 results each)
     Note over C,Inbox: client never holds code or Git-history write access
 ```
 
@@ -97,8 +97,8 @@ data repo's history is the audit trail; amending is reserved for nothing). The l
 
 1. Each battle appends one result record to the current journal file (plain JSON lines, local).
 2. At a batch boundary (session end, every N battles, or every M minutes, whichever comes first)
-   the client submits the whole journal as **one** payload (one issue / one fork-PR commit).
-3. On acknowledgment the journal rolls over; on failure it stays queued and retries with backoff.
+   the client divides pending records into issue envelopes of at most 60 results each.
+3. After accepted facts are published, successful per-result receipts let the journal remove only those records; on failure it stays queued and retries with backoff. Retrying an identical retained result returns the same successful outcome.
 
 Batching cuts forge API calls and inbox noise by an order of magnitude and plays well with rate
 limits. The server side is unchanged: the ingestion workflow drains payloads (each containing one
@@ -158,7 +158,7 @@ or corrupted results, which is a bigger practical risk than malicious bot code.
 
 | Layer | Mechanism | Cost |
 |-------|-----------|------|
-| Identity | The forge account that opens the result issue / fork-PR **is** the identity. Client signing is deferred from v1. | Free |
+| Identity | The forge account that opens the result issue **is** the identity. Client signing is deferred from v1. | Free |
 | Plausibility | Server-side validation: schema, `behaviorVersion` matches the pin, scores consistent with rounds and ranks, known bot versions, duplicate hash detection. | Script |
 | Consensus | With dozens of clients, most pairings get samples from several submitters. Per-client deviation from pairing consensus is computed; outliers are flagged in a report for moderators, and a client can be quarantined (its results excluded by the pure recompute, since facts are never deleted). | Script |
 | Self-report marker | Pairings sampled only by a participant's owner stay "unconfirmed" until an independent client contributes (see above). | Script |
@@ -223,13 +223,13 @@ not). Binding and handling:
 ## Submission Transports (No Repository Write Access)
 
 The client must not hold a token that can write code, branches, releases, packages, Pages
-content, or result projections in any repo (P3, P4). Two transports, both funneling into the same
-server-side validator:
+content, or result projections in any repo (P3, P4). V1 uses issue-ops; the portable fallback
+remains deferred until the receiving repository implements it:
 
 | Transport | How | Trade-offs |
 |-----------|-----|-----------|
 | **Issue-ops (primary)** | Client opens an issue on `rumble-data` with the result JSON in the body, using a fine-grained token with Issues write permission limited to that repository. GitHub does not expose a narrower create-issue-only permission. A scheduled workflow drains all open result issues in one pass and commits them in a single batch. | Lowest friction; issues exist on GitHub, GitLab, and Forgejo/Gitea; the token cannot tamper with code or leaderboard. Issue bodies are transport, not state (fine to lose on fork). |
-| **Fork-PR (fallback)** | Client pushes result files to its own fork and opens a PR; CI validates and auto-merges on green. | Pure Git, survives any forge unchanged; heavier per submission; useful as the portability escape hatch. |
+| **Fork-PR (deferred)** | A future client could push result files to its own fork and open a PR after `rumble-data` implements that contract. | Pure Git and forge-portable, but unavailable in V1. |
 
 Rejected: `repository_dispatch` (needs a repo-scoped token on every client, exactly the credential
 we forbid, and forge-proprietary); webhooks into serverless functions (infrastructure, secrets,
@@ -316,8 +316,8 @@ participation killer, so the primary distribution is a container image:
   Ownership is verified where it matters: at bot upload time, where the bot name is bound to the
   owner account. The server-side self-report marker handles trust.
 - **Journal staleness is bounded by the engine pin.** Queued results produced on a
-  `behaviorVersion` other than the currently pinned one are incompatible and are dropped with a
-  clear message. No separate staleness clock is needed.
+  `behaviorVersion` other than the currently pinned one are incompatible and are quarantined with
+  a clear message. No separate staleness clock is needed.
 - **Submission happens at battle boundaries.** A result exists only when a battle has completed
   its game type's full round count; nothing is submitted mid-battle. The
   default is to submit after each completed battle, with batching used when submissions back up or
