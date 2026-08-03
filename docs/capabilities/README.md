@@ -19,4 +19,5 @@ Each capability folder holds `README.md` (what and why), `criteria.md` (acceptan
 - [CAP-012 — User documentation](CAP-012-user-documentation/README.md) · `active`
 - [CAP-013 — TypeScript Bot API npm publishing](CAP-013-typescript-bot-api-npm-publish/README.md) · `draft`
 - [CAP-014 — Rumble bot catalog](CAP-014-rumble-bot-catalog/README.md) · `draft`
+- [CAP-015 — Rumble result data](CAP-015-rumble-result-data/README.md) · `draft`
 <!-- clue:index:end -->
