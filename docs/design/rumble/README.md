@@ -57,7 +57,7 @@ flowchart TB
 
     client["Rumble client<br/>(wraps Battle Runner)"] -->|"pull"| botindex
     client -->|"pull"| proj
-    client -->|"submit results<br/>(issue-ops / fork-PR)"| inbox["Result inbox"]
+    client -->|"submit results<br/>(issue-ops)"| inbox["Result inbox"]
 
     inbox -->|"scheduled CI drains,<br/>validates, commits"| raw
     raw -->|"aggregate.py<br/>(pure function)"| proj
@@ -101,7 +101,7 @@ proposal until the maintainer approves.
 | 1 | `prepare-tank-royale-for-rumble` | Prepare this repository before any rumble-specific repositories exist: `behaviorVersion`, bot config license metadata, Battle Runner result support, Rumble game presets, and a deterministic replay-regression hook. | None |
 | 2 | `create-rumble-bots-repo` | Define and scaffold the bot submission repository: source-only layout, validation, ownership, slot budget, templates, governance, and generated catalog. | Tank Royale prep |
 | 3 | `create-rumble-data-repo` | Define and scaffold the data repository: result inbox, validation, raw facts, aggregation, compaction, matchmaking projections, dashboard, and GitHub Pages publishing. | Tank Royale prep |
-| 4 | `create-rumble-client` | Build the ranked/practice client, local journal, replay evidence store, container, and issue-ops / fork-PR submission transports. | `rumble-bots` catalog and `rumble-data` engine/matchmaking files |
+| 4 | `create-rumble-client` | Build the ranked/practice client, local journal, replay evidence store, container, and issue-ops submission transport; defer fork-PR submission until `rumble-data` supports it. | `rumble-bots` catalog and `rumble-data` engine/matchmaking files |
 | 5 | `publish-rumble-docs` | Publish the user guides, onboarding flow, moderator handbook, FAQ, dashboard participation page, ADRs, and contributor-facing architecture docs. | Interfaces from the previous proposals |
 
 The first proposal is intentionally a Tank Royale preparation change, not a Rumble implementation.

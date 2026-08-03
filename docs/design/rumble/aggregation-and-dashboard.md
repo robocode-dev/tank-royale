@@ -46,7 +46,7 @@ commit**, which eliminates merge conflicts by construction.
 ```mermaid
 sequenceDiagram
     participant Cl as Clients
-    participant Ib as Inbox (result issues<br/>+ validated fork-PRs)
+    participant Ib as Inbox (result issues)
     participant CI as Ingestion workflow<br/>(scheduled, serialized)
     participant Raw as results/raw/
     participant Agg as aggregate.py
@@ -59,13 +59,14 @@ sequenceDiagram
         alt valid
             CI->>Raw: stage file (content-addressed name)
         else invalid
-            CI->>Ib: close with per-result rejection report
+            CI->>CI: stage per-result rejection report
         end
     end
     CI->>Raw: one commit for the batch
     CI->>Agg: recompute projections
     Agg->>P: leaderboard, pairings,<br/>matches_needed, clients
     CI->>P: commit projections
+    CI->>Ib: publish receipts and close processed items
     Note over CI: also triggered by issue events,<br/>not only cron (see Operations)
 ```
 
@@ -98,12 +99,13 @@ Nothing custom is deployed. On GitHub, a submission from the client looks like t
 - A GitHub issue body holds ~65k characters, roughly 40-60 result records per issue at our record
   size; the client splits larger journals across issues.
 - The drain workflow lists open `result-submission` issues, parses each body, validates each
-  result, commits accepted ones, and **closes every processed issue** with a comment listing
-  per-result outcomes (accepted / rejected + reason). A closed issue is the client's receipt; the
-  issue itself is transport, never storage, so losing issues (e.g. in a fork) loses nothing.
+  result, commits and pushes accepted ones, and only then **closes every processed issue** with a
+  comment listing per-result outcomes (accepted / rejected + reason). Each successful receipt is
+  therefore published after its fact. Retrying an identical retained result returns the same
+  successful outcome, so receipt-delivery failure is safe. The issue itself is transport, never
+  storage, so losing issues (e.g. in a fork) loses nothing after accepted facts are published.
 
-The same pattern works on GitLab (issues + labels) and Forgejo/Gitea (same). The fork-PR
-transport carries the identical batch envelope as a file, so `validate.py` has one input format.
+The same pattern works on GitLab (issues + labels) and Forgejo/Gitea (same). A future fork-PR transport can carry the identical batch envelope as a file, but it is unavailable until the result-data capability implements and validates that path.
 
 ### Spam prevention
 
