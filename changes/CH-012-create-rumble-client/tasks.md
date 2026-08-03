@@ -8,6 +8,7 @@ title: Task breakdown for CH-012
 
 # CH-012 — Tasks
 
+- [x] Confirm M-007 is accepted and its client contracts are available for M-008
 - [x] Capture the M-008 proposal for the Rumble client
 - [ ] Pause for maintainer approval of this proposal before implementation, as required by the Rumble roadmap
 - [ ] Define client capability ownership, contracts, acceptance criteria, and durable decisions in the Tank Royale corpus
