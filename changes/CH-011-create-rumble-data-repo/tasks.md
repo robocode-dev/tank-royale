@@ -15,4 +15,4 @@ title: Task breakdown for CH-011
 - [x] Implement locally runnable Python validation and pure aggregation for raw facts, quarantine, rankings, and matchmaking advice
 - [x] Add serialized issue-ops ingestion, projection publishing, and GitHub Pages workflows that preserve CI as the only writer
 - [x] Add the static dashboard and focused positive and negative acceptance evidence for ingestion, reproducibility, and matchmaking
-- [ ] Record M-007 evidence in P-003, then run the external repository's focused checks, `clue validate`, and `clue-verify`; mark each task as it completes
+- [x] Record M-007 evidence in P-003, then run the external repository's focused checks, `clue validate`, and `clue-verify`; mark each task as it completes
