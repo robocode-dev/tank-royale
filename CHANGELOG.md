@@ -7,8 +7,8 @@
 
 ### 🚀 Improvements
 
-- Server and Runner:
-    - Added the `twinduel` preset (800×800, exactly four participants, 75 rounds); the server advertises it among the built-in game types.
+- GUI, Server, and Runner:
+    - Added the selectable `twinduel` preset (800×800, exactly four participants, 75 rounds); the server advertises it among the built-in game types.
 - Bot API (Java, .NET, Python, TypeScript):
     - Current server handshakes expose a positive `behaviorVersion` compatibility epoch while older handshakes remain readable.
 - Booter:

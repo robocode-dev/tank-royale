@@ -6,7 +6,7 @@ import dev.robocode.tankroyale.gui.settings.GameType.*
 import dev.robocode.tankroyale.gui.ui.components.RcComboBox
 
 class GameTypeDropdown : RcComboBox<String>(
-    listOf(CLASSIC, ONE_VS_ONE, MELEE, CUSTOM).map { it.displayName }.toTypedArray()
+    listOf(CLASSIC, ONE_VS_ONE, TWIN_DUEL, MELEE, CUSTOM).map { it.displayName }.toTypedArray()
 ) { // setup in specific order
 
     init {
