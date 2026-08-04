@@ -2,7 +2,7 @@
 
 This directory is the **system-of-record**: the permanent, durable truth about the platform for developers working on it (user-facing docs live in `web/`), run under [Cliewen](https://github.com/cliewen/cliewen) conventions since CH-001 (2026-07-18, see [AN-001](analysis/AN-001-openspec-extraction.md)). Changes are transient deltas on branches, digested into this corpus at merge — `git log docs/` is the audit trail.
 
-Every artifact carries YAML frontmatter (`id`, `type`, `status`, `links`, `title`); identity is the ID, the path is only the current address. Two optional fields: `ac-prefix` on a criteria.md namespaces its AC IDs (this repo mints per-capability prefixes: BR, BFD, BAU, GBP, GBC, PRO, PBA, RCV, TCS, TFS, TBA, UD, TNP, RBC, RDA, RCL), and `provenance: inferred|verified` marks extracted artifacts awaiting human verification. `clue validate` enforces the graph. Test purpose tags (AC ↔ test) are not yet wired — that is milestone M-002, a named door.
+Every artifact carries YAML frontmatter (`id`, `type`, `status`, `links`, `title`); identity is the ID, the path is only the current address. Two optional fields: `ac-prefix` on a criteria.md namespaces its AC IDs (this repo mints per-capability prefixes: BR, BFD, BAU, GBP, GBC, PRO, PBA, RCV, TCS, TFS, TBA, UD, TNP, RBC, RDA, RCL, GTD), and `provenance: inferred|verified` marks extracted artifacts awaiting human verification. `clue validate` enforces the graph. Test purpose tags (AC ↔ test) are not yet wired — that is milestone M-002, a named door.
 
 The red thread: G-xxx → P-xxx/M-xxx → CH-xxx → CAP-xxx → AC (namespaced) → test tag.
 

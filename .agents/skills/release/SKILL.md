@@ -36,13 +36,13 @@ Then run `git fetch origin main --quiet` followed by `git rev-list HEAD..origin/
 
 ### 1.3 — Verify repository root
 
-Confirm that `build.gradle.kts` and `gradle.properties` exist in the current working directory.
+Confirm that `build.gradle.kts`, `gradle.properties`, and `VERSION` exist in the current working directory.
 
-- If either is missing: print `"❌ ERROR: Not at the repository root. Please cd to the Tank Royale repository root."` and **STOP**.
+- If any is missing: print `"❌ ERROR: Not at the repository root. Please cd to the Tank Royale repository root."` and **STOP**.
 
 ### 1.4 — Read and display version
 
-Read `gradle.properties` and extract the `version=X.Y.Z` value. Parse the major, minor, and patch components.
+Read `VERSION` and extract the `X.Y.Z` value. `VERSION` is the authoritative version source used by the Gradle build. Parse the major, minor, and patch components.
 
 Print:
 ```
@@ -62,7 +62,7 @@ Print the release type:
 
 Read `CHANGELOG.md` and find the **first** line matching the pattern `## [X.Y.Z]` (the topmost version heading).
 
-- If the version in that heading does **not** match the version from `gradle.properties`: print `"❌ ERROR: Version mismatch — gradle.properties has X.Y.Z but CHANGELOG.md top entry is A.B.C. Please update CHANGELOG.md or gradle.properties."` and **STOP**.
+- If the version in that heading does **not** match the version from `VERSION`: print `"❌ ERROR: Version mismatch — VERSION has X.Y.Z but CHANGELOG.md top entry is A.B.C. Please update CHANGELOG.md or VERSION."` and **STOP**.
 - If they match: print `"✅ Version X.Y.Z matches CHANGELOG.md"`.
 
 ### 1.6 — Detect platform
@@ -241,31 +241,25 @@ If `gh` is **not** available:
 
 ---
 
-## Phase 5 — Upload Documentation (Conditional)
+## Phase 5 — Generate Documentation (Conditional)
 
 Check the patch version from Phase 1.
 
 ### If patch is 0 (major/minor release):
 
-Print: `"📚 Step 5: Uploading documentation (major/minor release — patch is 0)..."`
+Print: `"📚 Step 5: Generating documentation for verification (major/minor release — patch is 0)..."`
 
 Run the Gradle command (use the platform-appropriate wrapper):
 ```
 ./gradlew upload-docs
 ```
 
-- If the command **fails**: print `"❌ ERROR: Step 5 failed — documentation upload failed"` and **STOP**.
+- If the command **fails**: print `"❌ ERROR: Step 5 failed — documentation generation failed"` and **STOP**.
 
-After a successful `upload-docs`, commit and push the generated documentation to GitHub Pages:
+`upload-docs` creates a local Pages artifact for verification. The generated site is intentionally not tracked; `.github/workflows/deploy-docs.yml` builds and publishes it from accepted `main`.
 
-1. Run `git add docs/` to stage all changes under the `docs/` directory.
-2. Run `git commit -m "chore(docs): upload documentation for vX.Y.Z"` (substituting the actual version).
-   - If git reports `nothing to commit`, skip the push and print `"ℹ️ Step 5: No documentation changes to commit"`.
-   - If the commit **fails**: print `"❌ ERROR: Step 5 failed — could not commit documentation changes"` and **STOP**.
-3. Run `git push origin main`.
-   - If the push **fails**: print `"❌ ERROR: Step 5 failed — could not push documentation changes to origin/main"` and **STOP**.
-
-- If all sub-steps succeed: print `"✅ Step 5: Documentation uploaded and pushed to GitHub Pages"`.
+- Do **not** stage, commit, or push generated documentation from this workflow.
+- If the command succeeds: report that documentation was generated successfully and that `deploy-docs` will build and publish it from `main`.
 
 ### If patch > 0 (patch release):
 
@@ -296,7 +290,7 @@ Publish verification:
      (NuGet, PyPI, and npmjs: ~seconds to minutes | Maven Central: up to 2 hours)
 
 Documentation:
-  ✅ Uploaded (or ℹ️ Skipped for patch release)
+  ✅ Generated locally; deploy-docs publishes from main (or ℹ️ Skipped for patch release)
 
 Next steps:
   1. Monitor the create-release workflow: https://github.com/robocode-dev/tank-royale/actions/workflows/create-release.yml
