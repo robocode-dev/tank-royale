@@ -18,5 +18,5 @@ title: Task breakdown for CH-013
 - [x] Resolve Q1: generate release documentation before merge and align the release workflow with C-002 and the authoritative `VERSION` source
 - [x] Align `/release` with `VERSION` and C-002 without committing generated Pages output
 - [x] Generate and review 1.1.0 documentation before merge without committing its intentional CI artifact
-- [ ] Re-run the complete build and assemble release artifacts without publishing
+- [x] Re-run the complete build and assemble release artifacts without publishing
 - [ ] Run `clue validate` and `clue-verify`, including the agentic review loop
