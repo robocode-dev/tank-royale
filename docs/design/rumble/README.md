@@ -137,7 +137,7 @@ proposals:
 | **Practice mode** in the client: free local battles against rumble bots, never submitted; ranked mode auto-submits everything. | Client doc |
 | **Replays stay client-side** as read-only evidence, bound to results by `battleId` (UUID) + SHA-256. | Client doc |
 | **Batched submissions** from a local journal; clients never touch Git history (no commits, no amends). | Client doc |
-| **Runtimes ship in the client container** (JVM, .NET, Python, Node.js + pinned engine), tagged by engine version; install scripts as bare-metal fallback. | Client doc |
+| **Native and Docker client distributions are supported**; Docker is recommended and ships the JVM, .NET, Python, Node.js, and pinned engine, while native preflight checks user-installed prerequisites. | Client doc |
 | **Forge ToS reviewed**: this usage is a software project, not detached storage; design keeps traffic and repo size deliberately modest. | Aggregation doc |
 | **Bot names are bound to their owner** at first merge; only the owner's registered accounts may submit new versions. Owners may register multiple forge accounts; account changes require a PR from an already-registered account. | Submission doc |
 | **Official Bot APIs required** for ranked bots (Java, C#, Python, TypeScript); custom frameworks are not eligible. Resolves the dependency allowlist per platform. | Submission doc |
@@ -145,7 +145,7 @@ proposals:
 | **Bot slots are configurable**, defaulting to 5 active bot entries per owner for launch. The value must be a named validation/governance constant, not a magic number. | Submission doc |
 | **License required per bot**, validated in CI against a small permissive allowlist; missing or wrong license dismisses the PR. | Submission doc |
 | **Evidence backups are the user's responsibility**, actively encouraged by the client; replays are never held centrally. | Client doc |
-| **Submission at battle boundaries** (a battle = the game type's full round count); container gets a forge-only egress allowlist; journal staleness is bounded by the engine pin. | Client doc |
+| **Submission at battle boundaries** (a battle = the game type's full round count); Docker separates online synchronization and submission from offline credential-free battle execution; journal staleness is bounded by the engine pin. | Client doc |
 | **Issue-ops spelled out**: submissions are labeled forge issues carrying a JSON batch envelope, drained and closed by CI; spam is handled by strict format, per-account budgets, and forge-level blocking as last resort. | Aggregation doc |
 | **Onboarding PR required from day one** for result submitters: a one-time, moderated registration under `clients/` in the data repo; unregistered submissions are closed unprocessed. | Aggregation doc |
 | **GitHub Pages confirmed** for the dashboard; compaction policy settled (monthly rollups to the archive branch after three full months). | Aggregation doc |

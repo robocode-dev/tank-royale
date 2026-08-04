@@ -68,13 +68,13 @@ Feature: rumble-client — Local ranked and practice battle client
     Then it creates labelled result issues containing between one and sixty results as required by the result-data contract and correlates each post-publication ingestion receipt to its journal records
     And it neither requests nor uses permission to modify repository contents, branches, releases, packages, Pages, facts, or projections
 
-  @RCL-008 @draft
-  Scenario: The client runtime can execute every supported bot platform within its declared boundary
+  @RCL-008 @retired
+  Scenario: Retired — the client runtime can execute every supported bot platform within its declared boundary
     Test-type: E2E
-    Given the pinned Rumble engine and catalog contain Java, .NET, Python, and TypeScript bots
-    When a contributor builds the primary container or follows a supported bare-metal setup
-    Then the client can boot each platform with the pinned runtime versions and run a battle through Battle Runner
-    And the container restricts bot networking to the local server while client egress is limited to repository synchronization and result submission
+    Given criterion RCL-008 coupled runtime portability and an ambiguous all-in-one container boundary
+    When CH-012 separates supported distribution from phase isolation
+    Then RCL-010 supersedes its runtime portability promise
+    And RCL-011 owns the Docker phase-isolation promise
 
   @RCL-009 @draft
   Scenario: A ranked result reaches the immutable Rumble facts without manual handling
@@ -83,4 +83,21 @@ Feature: rumble-client — Local ranked and practice battle client
     When the client synchronizes, selects and completes a battle, journals its result, and submits it through issue-ops
     Then the result-data ingestion workflow accepts the record as an immutable raw fact and regenerates the affected projections
     And no person copies, edits, or grants repository-content write access to deliver the result
+
+  @RCL-010 @draft
+  Scenario: Native and Docker distributions execute every supported bot platform
+    Test-type: E2E
+    Given a released Rumble engine and catalog contain Java, .NET, Python, and TypeScript bots
+    When a contributor uses the supported native distribution or the recommended Docker image
+    Then both distributions validate the pinned runtime versions and run each platform through Battle Runner
+    And native preflight reports missing prerequisites without installing or changing them
+
+  @RCL-011 @draft
+  Scenario: Docker execution keeps bot code offline and submission credentials out of battles
+    Test-type: Integration
+    Given the Docker launcher uses one bounded client work directory for synchronization, battle, and submission
+    When it runs a ranked session
+    Then synchronization runs online without a submission credential and without starting bot code
+    And battle execution runs without external network access or a submission credential
+    And submission runs online with the Issues-only credential without starting bot code
 ```

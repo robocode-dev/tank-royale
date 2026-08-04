@@ -257,8 +257,9 @@ in `rumble-data/engine.json`:
 {
   "schemaVersion": 1,
   "behaviorVersion": 7,
-  "release": "1.1.4",
-  "clientImage": "ghcr.io/<org>/rumble-client:1.1.4"
+  "tankRoyaleVersion": "1.1.4",
+  "image": "ghcr.io/<org>/tank-royale:1.1.4",
+  "clientImage": "ghcr.io/<org>/rumble-client@sha256:<digest>"
 }
 ```
 
@@ -268,7 +269,7 @@ Semantics:
   that carries the pinned behavior version is acceptable; the client and the validator both
   compare the behavior version reported by the running server against the pin. A GUI-only
   release 1.2.0 with unchanged `behaviorVersion 7` causes no rollout, no client obsolescence,
-  and no epoch reset. `release`/`clientImage` in the pin are convenience ("which build to
+  and no epoch reset. `tankRoyaleVersion`/`clientImage` in the pin are convenience ("which build to
   install"), not the compatibility contract.
 - **A `behaviorVersion` bump is the rollout event.** All clients become obsolete at that moment,
   by design: mixed behavior versions would silently corrupt result comparability. On its next
@@ -281,30 +282,20 @@ Semantics:
   an intended one requires bumping `behaviorVersion` in the same change. The Tank Royale
   preparation proposal defines the hook for this guard; the replay corpus can be expanded in a
   later proposal.
-- Upgrading must be **one step**: `docker pull` the image named in the new pin for container
-  users, or re-running the platform install script for bare-metal users.
+- Upgrading is explicit: Docker users pull the immutable client image named in the pin, while
+  native users install the matching client distribution and satisfy its checked prerequisites.
 
-## Runtimes: the Client Container and Install Scripts
+## Runtimes: Native and Docker Distributions
 
-A rumble client must be able to boot bots for **all four platforms**: Java (JVM), C# (.NET),
-Python, and TypeScript (Node.js). Requiring users to hand-assemble four runtimes is a
-participation killer, so the primary distribution is a container image:
+A Rumble client must be able to boot bots for **all four platforms**: Java (JVM), C# (.NET), Python, and TypeScript (Node.js). Contributors may use either the supported native distribution or the recommended Docker image:
 
-- **`rumble-client` image**: bundles the pinned server, booter, runner, the rumble client itself,
-  plus the exact runtime versions (JRE, .NET SDK, Python, Node.js/npm) matching the engine pin.
-  Tagged by release version (`rumble-client:1.1.4`, the image named in `engine.json`), so
-  upgrading engine and runtimes is one pull; the pinned image implies the pinned
-  `behaviorVersion`.
-- The image doubles as the **sandbox**: run with no outbound network (localhost WebSocket only)
-  except the submission endpoint, and CPU/memory/time limits via container flags. Review reduces
-  malice (submission document), the container contains it; no one pretends there is a central
-  sandbox.
+- **Native distribution**: ships the client and pinned Battle Runner as release archives. Its preflight checks the required Java, .NET SDK, Python, and Node.js versions and reports missing prerequisites without installing or changing them. Reviewed bot source then runs directly with the contributor's permissions, so this path provides no Docker isolation.
+- **`rumble-client` image**: bundles the client, pinned server, booter, runner, and exact Java, .NET SDK, Python, and Node.js/npm versions matching the engine pin. Human-friendly release tags are published, while `engine.json.clientImage` records the immutable digest. The image is not published for an unreleased Tank Royale engine.
+- **Phase isolation**: the Docker launchers run synchronization online without credentials, battle execution with no external network or submission credential, and submission online without starting bot code. The battle process runs non-root with a read-only root filesystem, a bounded work-directory mount, dropped capabilities, `no-new-privileges`, and CPU, memory, PID, and time limits.
 - The `Dockerfile` lives in the repo, so forks can rebuild the image even though registry
   packages (GHCR) do not fork with the repo (principle P2 is satisfied by rebuildability, not by
   the artifact).
-- **Bare-metal fallback**: documented install scripts per OS (Linux, macOS, Windows) that check
-  for and install the required runtime versions and the pinned engine artifacts. Bare-metal users
-  knowingly accept the residual risk of running reviewed-but-untrusted code outside a container.
+- Docker Engine or Docker Desktop is installed by the contributor. Podman compatibility is not a V1 contract.
 
 ## Client Policy Details
 
@@ -322,6 +313,4 @@ participation killer, so the primary distribution is a container image:
   its game type's full round count; nothing is submitted mid-battle. The
   default is to submit after each completed battle, with batching used when submissions back up or
   rate limits require it.
-- **Container network policy: egress allowlist.** The container may reach the forge for repo sync
-  and result submission and nothing else. Bot processes get no network beyond the localhost
-  WebSocket to the server.
+- **Docker network policy.** Synchronization and submission are distinct online client processes that never start bot code. Battle execution uses Docker's no-network mode; its loopback interface remains available for the local server WebSocket.

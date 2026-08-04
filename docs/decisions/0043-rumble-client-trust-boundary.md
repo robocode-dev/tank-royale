@@ -20,11 +20,11 @@ The client exposes mutually exclusive ranked and practice modes. Ranked mode exe
 
 The append-only local journal is the durability boundary and issue-ops is the only V1 submission transport. The client removes records only after durable ingestion acknowledgement as defined by [ADR-0044](0044-durable-rumble-result-acknowledgement.md). A client credential is limited to Issues access on the result-data repository and never grants repository-content, branch, release, package, Pages, fact, or projection write access. Fork-pull-request submission is introduced only if the result-data contract later supports it.
 
-Replay evidence remains local, bound to its result by battle ID and SHA-256 hash. The primary runtime is a rebuildable, egress-constrained container; bare-metal execution is an explicit fallback with a weaker isolation boundary.
+Replay evidence remains local, bound to its result by battle ID and SHA-256 hash. Direct host execution and a rebuildable Docker image are both supported. Docker is the recommended distribution because it supplies the complete pinned runtime and gives battle execution a narrower host boundary. Its launcher separates synchronization, battle, and submission: synchronization runs online without a submission credential, battle execution runs without external networking or a submission credential, and submission runs online without starting bot code. Direct execution uses the same phases and contracts but has a weaker isolation boundary.
 
 ## Rationale
 
-Separating private experimentation from automatic ranked journaling removes selective submission from the normal workflow. Durable acknowledgement preserves results across publication and receipt-delivery failures. Issue-only credentials limit compromise impact, while local replay evidence supports moderation without making the shared data repository a binary store. The container provides one reproducible multi-runtime execution boundary without requiring central infrastructure.
+Separating private experimentation from automatic ranked journaling removes selective submission from the normal workflow. Durable acknowledgement preserves results across publication and receipt-delivery failures. Issue-only credentials limit compromise impact, while local replay evidence supports moderation without making the shared data repository a binary store. The Docker distribution provides one reproducible multi-runtime environment without requiring central infrastructure, and phase separation keeps credentials out of bot execution.
 
 ## Consequences
 
@@ -33,7 +33,8 @@ Separating private experimentation from automatic ranked journaling removes sele
 - Temporary forge or network failures retain unsent results locally.
 - Moderators may request replay evidence, but the Rumble cannot recover evidence a contributor loses.
 - V1 depends on the forge's issue API; transport portability is deferred until the receiving capability implements it.
-- Bare-metal users accept the residual risk of running reviewed bot source outside the container boundary.
+- Direct-execution users accept the residual risk of running reviewed bot source without Docker isolation.
+- Docker is a contributor-side runtime option, not hosted Rumble infrastructure.
 
 ## References
 
