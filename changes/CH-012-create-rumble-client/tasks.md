@@ -14,6 +14,7 @@ title: Task breakdown for CH-012
 - [x] Define client capability ownership, contracts, acceptance criteria, and durable decisions in the Tank Royale corpus
 - [x] Resolve durable result acknowledgement so successful receipts follow publication of accepted facts
 - [ ] Create and configure the community-owned `rumble-client` repository with contributor, security, configuration, container, and operating guidance
+- [ ] Wait for the official Tank Royale 1.1.0 release before resuming any remaining M-008 implementation or verification
 - [ ] Implement validated synchronization, bot cache preparation, ranked and practice selection, and Battle Runner execution for every V1 game type
 - [ ] Implement local journal and replay-evidence handling, result transcription, and registered-client issue-ops submission with acknowledgement-driven retry and rollover
 - [ ] Add the rebuildable runtime container, bare-metal fallback, and focused positive and negative acceptance evidence, including a fully automated end-to-end ranked submission
