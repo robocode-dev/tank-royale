@@ -9,6 +9,7 @@ title: Task breakdown for CH-013
 # CH-013 — Tasks
 
 - [x] Confirm that CH-012 is intentionally paused and that CH-013 may proceed independently from `main`
+- [x] Keep CH-012's unfinished workspace exclusively on its draft branch until Tank Royale 1.1.0 is published
 - [x] Capture the CH-013 proposal for Tank Royale 1.1.0
 - [x] Set the authoritative version and finalize the 1.1.0 changelog entry
 - [x] Audit the release notes against user-visible changes since 1.0.2
