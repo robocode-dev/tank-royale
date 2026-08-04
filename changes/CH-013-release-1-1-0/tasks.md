@@ -20,4 +20,4 @@ title: Task breakdown for CH-013
 - [x] Align `/release` with `VERSION` and C-002 without committing generated Pages output
 - [x] Generate and review 1.1.0 documentation before merge without committing its intentional CI artifact
 - [x] Re-run the complete build and assemble release artifacts without publishing
-- [ ] Run `clue validate` and `clue-verify`, including the agentic review loop
+- [x] Run `clue validate` and the pre-digest `clue-verify` agentic review loop
