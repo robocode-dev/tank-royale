@@ -5,6 +5,7 @@ status: active
 links: [CAP-017]
 title: Acceptance criteria for CAP-017 (gui-twinduel)
 ac-prefix: GTD
+provenance: inferred
 reversal-cost: low
 ---
 

@@ -4,6 +4,7 @@ type: capability
 status: active
 links: [G-001, P-003, M-010]
 title: GUI TwinDuel
+provenance: inferred
 reversal-cost: low
 ---
 

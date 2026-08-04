@@ -2,14 +2,19 @@ package dev.robocode.tankroyale.gui.ui.newbattle
 
 import dev.robocode.tankroyale.gui.settings.GameType
 import dev.robocode.tankroyale.gui.settings.GamesSettings
-import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.collections.shouldContain
-import io.kotest.matchers.shouldBe
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
 import javax.swing.SwingUtilities
 
-class GameTypeDropdownTest : StringSpec({
-    "testGTD001_UnitPositive_twinDuelIsSelectableWithTheCommonPreset" {
+class GameTypeDropdownTest {
+    @Test
+    @Tag("GTD-001")
+    @Tag("Unit")
+    @Tag("Positive")
+    fun testGTD001_UnitPositive_twinDuelIsSelectableWithTheCommonPreset() {
         var offeredGameTypes = emptyList<String>()
         var selectedGameType: GameType? = null
 
@@ -20,22 +25,24 @@ class GameTypeDropdownTest : StringSpec({
             selectedGameType = dropdown.getSelectedGameType()
         }
 
-        offeredGameTypes shouldContain "twinduel"
-        selectedGameType shouldBe GameType.TWIN_DUEL
+        assertTrue("twinduel" in offeredGameTypes)
+        assertEquals(GameType.TWIN_DUEL, selectedGameType)
         val twinDuelSetup = GamesSettings.games["twinduel"]
             ?: error("TwinDuel must have a game setup")
-        twinDuelSetup.apply {
-            arenaWidth shouldBe 800
-            arenaHeight shouldBe 800
-            minNumberOfParticipants shouldBe 4
-            maxNumberOfParticipants shouldBe 4
-            numberOfRounds shouldBe 75
-        }
+        assertEquals(800, twinDuelSetup.arenaWidth)
+        assertEquals(800, twinDuelSetup.arenaHeight)
+        assertEquals(4, twinDuelSetup.minNumberOfParticipants)
+        assertEquals(4, twinDuelSetup.maxNumberOfParticipants)
+        assertEquals(75, twinDuelSetup.numberOfRounds)
     }
 
-    "testGTD001_UnitNegative_nonCanonicalTwinDuelNameIsRejected" {
-        shouldThrow<IllegalArgumentException> {
+    @Test
+    @Tag("GTD-001")
+    @Tag("Unit")
+    @Tag("Negative")
+    fun testGTD001_UnitNegative_nonCanonicalTwinDuelNameIsRejected() {
+        assertThrows(IllegalArgumentException::class.java) {
             GameType.from("twin-duel")
         }
     }
-})
+}

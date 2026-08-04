@@ -4,6 +4,7 @@ type: design
 status: active
 links: [CAP-017]
 title: Design notes for CAP-017 (gui-twinduel)
+provenance: inferred
 reversal-cost: low
 ---
 
