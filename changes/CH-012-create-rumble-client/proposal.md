@@ -12,7 +12,7 @@ title: Create Rumble Client
 
 Create the community-owned `robocode-dev/rumble-client` repository: a local ranked and practice battle client built on Tank Royale's Battle Runner. In ranked mode it will follow the Rumble data repository's canonical-location and engine-pin records, obtain the synchronized bot catalog and per-game-type matchmaking advice, run the selected battle against the pinned engine, record every completed result in a local journal with replay evidence, and submit batches through the registered-client issue-ops flow. Practice mode will run local battles without creating or submitting any ranked result.
 
-The client will make ranked execution reproducible and intentionally constrained: it will verify schema versions, source hashes, catalog commit, game type, and `behaviorVersion` before a battle; it will preserve unsent journal entries across failures; and it will never receive repository-content, branch, projection, or Git-history write access. A rebuildable container will be the primary distribution and sandbox boundary, with documented bare-metal operation as a fallback.
+The client will make ranked execution reproducible and intentionally constrained: it will verify schema versions, source hashes, catalog commit, game type, and `behaviorVersion` before a battle; it will preserve unsent journal entries across failures; and it will never receive repository-content, branch, projection, or Git-history write access. Contributors may run the client directly on a supported host or use the recommended rebuildable Docker image. The image supplies the pinned multi-runtime environment and separates online synchronization and submission from credential-free, offline battle execution.
 
 ## Why
 
@@ -26,7 +26,7 @@ M-006 supplies the reviewed bot sources and M-007 supplies the engine pin, catal
 - Implement ranked selection for `1v1`, `twinduel`, and `melee`, preferring configured own bots while using seeded selection from published advice without treating advice as a reservation.
 - Integrate the Battle Runner to execute a full pinned battle, transcribe `BattleResults` into the data repository's result-envelope format, hash and retain a local replay, append it to the journal, and reject incompatible engine or catalog state before execution.
 - Implement registered-client issue-ops submission with batch retry/backoff and acknowledgement-driven journal rollover. Define the fork-pull-request transport as the portable fallback where the data-repository contract supports it.
-- Provide a rebuildable, egress-constrained container carrying the pinned Tank Royale runtime and the Java, .NET, Python, and Node.js bot runtimes, with documented bare-metal fallback operation.
+- Provide a rebuildable Docker image carrying the pinned Tank Royale runtime and the Java, .NET, Python, and Node.js bot runtimes, plus a supported native distribution whose preflight checks the same runtime requirements. Docker launchers run synchronization online without credentials, battles without external networking or submission credentials, and submission online without starting bot code.
 - Record M-008 evidence in P-003 only after a registered-client ranked battle reaches `robocode-dev/rumble-data` through issue-ops and its CI ingests it without manual intervention.
 
 ## Non-goals

@@ -317,9 +317,7 @@ Without central sandbox infrastructure, review cannot make untrusted code safe; 
 - The source-tree hash in `index.json` guarantees that what clients run is exactly what was
   reviewed (clients run the sources from the pinned commit, so the hash covers precisely what
   executes).
-- Actual containment happens on the client via the recommended sandbox container, described in the
-  [client document](./client-battles-and-results.md#sandboxing). This split of responsibility
-  (review reduces malice, the container contains it) should be stated plainly in contributor docs.
+- Host containment is available through the recommended Docker distribution described in the [client document](./client-battles-and-results.md#runtimes-native-and-docker-distributions). Its battle phase runs offline without submission credentials; supported native execution knowingly runs reviewed bot code with the contributor's permissions. This split of responsibility should be stated plainly in contributor docs.
 
 ## Licensing
 

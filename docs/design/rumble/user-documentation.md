@@ -58,7 +58,7 @@ flowchart TD
     end
 
     subgraph runnerJ["Battle contributor"]
-        B1["Read client quickstart"] --> B2["Pull client container<br/>(or run install script)"]
+        B1["Read client quickstart"] --> B2["Choose Docker image<br/>or native distribution"]
         B2 --> B3["One-time onboarding PR<br/>(register forge account + client id)"]
         B3 --> B4["Configure rumble-client.json"]
         B4 --> B5["Run ranked mode;<br/>results submit automatically"]

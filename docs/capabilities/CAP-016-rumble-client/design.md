@@ -40,7 +40,9 @@ Fork-pull-request submission remains a portability option only after the result-
 
 ## Runtime boundary
 
-The primary distribution is a rebuildable container containing the pinned Tank Royale engine, Battle Runner, and the Java, .NET, Python, and Node.js runtimes required by the catalog. Client network egress is limited to repository synchronization and issue submission; bot processes receive only the local server connection. Documented bare-metal setup remains available with an explicit warning that it does not provide the container boundary.
+Direct host execution and a rebuildable Docker image both run the same client phases and contracts. Docker is the recommended installation because the image contains the pinned Tank Royale engine, Battle Runner, and the Java, .NET, Python, and Node.js runtimes required by the catalog. The native distribution checks those prerequisites but does not install them and warns that direct bot execution has no Docker isolation.
+
+The Docker launcher invokes the image as separate synchronization, battle, and submission processes over one bounded local work directory. Synchronization has network access but no submission credential and starts no bot code. Battle execution has no external network access or submission credential. Submission receives the Issues-only credential but starts no bot code. The image is published only from a release carrying a Tank Royale version with the M-005 contracts, and `engine.json.clientImage` identifies the accepted immutable image digest.
 
 ## External evidence
 
