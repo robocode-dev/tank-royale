@@ -1,6 +1,6 @@
 ---
-id: CH-013-questions
-type: questions
+id: CH-013-open-questions
+type: change
 status: open
 links: [CH-013, C-002]
 title: Open questions for CH-013
