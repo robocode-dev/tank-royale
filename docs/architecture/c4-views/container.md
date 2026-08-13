@@ -53,7 +53,7 @@ graph TD
     Booter["🚀 Booter<br/>Launches bots<br/>Process Manager"]
     Recorder["🎥 Recorder<br/>Records games<br/>ND-JSON Writer"]
     FileSystem["💾 File System<br/>Replays, configs, bot directories, recordings"]
-    
+
     BotDev -->|Uses| APIs
     APIs -->|WebSocket<br/>Bot intents & state| Server
     Server -->|WebSocket<br/>Control commands| GUI
@@ -66,7 +66,7 @@ graph TD
     Booter -->|Launch/Manage| FileSystem
     Recorder -->|Write| FileSystem
     Runner -->|Write| FileSystem
-    
+
     style BotDev fill:#08427b,color:#fff
     style APIs fill:#438dd5,color:#000
     style Server fill:#438dd5,color:#000
@@ -162,15 +162,15 @@ The GUI can embed Server, Booter, and Recorder for a seamless local experience:
 ```mermaid
 graph TB
     GUI["🖥️ GUI<br/>Desktop Interface"]
-    
+
     subgraph Embedded["Embedded Components (same JAR artifacts)"]
         Server["⚙️ Embedded Server<br/>Battle Orchestration<br/>in real-time"]
         Booter["🚀 Embedded Booter<br/>Bot Launcher<br/>Process Manager"]
         Recorder["🎥 Embedded Recorder<br/>Game Event Recorder<br/>ND-JSON Writer"]
     end
-    
+
     GUI -->|Embeds| Embedded
-    
+
     style GUI fill:#438DD5,color:#000
     style Server fill:#85BBF0,color:#000
     style Booter fill:#85BBF0,color:#000
@@ -187,14 +187,14 @@ The Runner embeds Server and Booter for headless programmatic battle execution:
 ```mermaid
 graph TB
     Runner["🏃 Runner<br/>Battle Runner API"]
-    
+
     subgraph Embedded["Embedded Components (same JAR artifacts)"]
         Server["⚙️ Embedded Server<br/>Battle Orchestration<br/>in real-time"]
         Booter["🚀 Embedded Booter<br/>Bot Launcher<br/>Process Manager"]
     end
-    
+
     Runner -->|Embeds| Embedded
-    
+
     style Runner fill:#438DD5,color:#000
     style Server fill:#85BBF0,color:#000
     style Booter fill:#85BBF0,color:#000
@@ -243,4 +243,3 @@ graph TB
 - **[Recorder Components (L3)](./recorder-components.md)** — Internal Recorder architecture
 - **[Runner Components (L3)](./runner-components.md)** — Internal Runner architecture
 - **[Bot API Components (L3)](./bot-api-components.md)** — Bot API structure
-

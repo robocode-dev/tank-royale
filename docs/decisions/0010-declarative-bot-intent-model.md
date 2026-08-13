@@ -1,18 +1,20 @@
 ---
 id: ADR-0010
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Declarative Bot Intent Model
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0010: Declarative Bot Intent Model
 
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance).
+
 ## Context
 
-Bots need to communicate their desired actions to the server each turn. The original Robocode used imperative commands
-(`ahead(100)`, `turnRight(45)`) executed in bot threads within the same JVM.
+Bots need to communicate their desired actions to the server each turn. The original Robocode used imperative commands (`ahead(100)`, `turnRight(45)`) executed in bot threads within the same JVM.
 
 **Problem:** How should bots express actions in a network-based, turn-based architecture?
 
@@ -20,8 +22,7 @@ Bots need to communicate their desired actions to the server each turn. The orig
 
 ## Decision
 
-Use a **declarative intent model**: bots set desired state (turn rates, target speed, firepower) rather than issuing
-imperative commands. One `bot-intent` message per turn.
+Use a **declarative intent model**: bots set desired state (turn rates, target speed, firepower) rather than issuing imperative commands. One `bot-intent` message per turn.
 
 **Key properties:**
 

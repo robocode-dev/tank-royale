@@ -12,10 +12,10 @@ reversal-cost: low
 
 > Influenced by the [arc42 architecture documentation template](https://arc42.org/overview) by Dr. Peter Hruschka & Dr. Gernot Starke.
 
-> **Version:** 1.0  
-> **Date:** YYYY-MM-DD  
-> **Author:** [Name, Role]  
-> **Review trigger:** [Why this review was initiated — migration, incident, modernisation, onboarding, etc.]  
+> **Version:** 1.0
+> **Date:** YYYY-MM-DD
+> **Author:** [Name, Role]
+> **Review trigger:** [Why this review was initiated — migration, incident, modernisation, onboarding, etc.]
 > **Scope:** [What is included and explicitly excluded]
 
 ---
@@ -37,8 +37,8 @@ reversal-cost: low
 | Maintainability & debt | 🟢 / 🟡 / 🔴 | [One line] |
 | Team & ownership | 🟢 / 🟡 / 🔴 | [One line] |
 
-> 🟢 Healthy — no significant concerns  
-> 🟡 Needs attention — manageable issues present  
+> 🟢 Healthy — no significant concerns
+> 🟡 Needs attention — manageable issues present
 > 🔴 Critical — immediate action required
 
 ### Top Findings
@@ -312,10 +312,10 @@ graph LR
 
 Each finding has a severity, root cause, and impact. Findings are the factual basis for recommendations.
 
-> **Severity levels**  
-> 🔴 Critical — system risk, data integrity, security exposure, or blocks evolution  
-> 🟠 High — significant operational or quality impact, needs near-term attention  
-> 🟡 Medium — technical debt or quality concern, plan to address  
+> **Severity levels**
+> 🔴 Critical — system risk, data integrity, security exposure, or blocks evolution
+> 🟠 High — significant operational or quality impact, needs near-term attention
+> 🟡 Medium — technical debt or quality concern, plan to address
 > 🔵 Low — improvement opportunity, address when convenient
 
 ---
@@ -427,10 +427,10 @@ quadrantChart
 | R-03 | [e.g. Core library approaching EOL in 6 months] | High | Medium | 🟡 | [Upgrade path scoped] |
 | R-04 | [...] | Low | High | 🟡 | [...] |
 
-> **Exposure** = Likelihood × Impact  
-> 🔴 High exposure — act now  
-> 🟠 Medium-high exposure — plan mitigation  
-> 🟡 Medium exposure — monitor  
+> **Exposure** = Likelihood × Impact
+> 🔴 High exposure — act now
+> 🟠 Medium-high exposure — plan mitigation
+> 🟡 Medium exposure — monitor
 > 🔵 Low exposure — accept or watch
 
 ---

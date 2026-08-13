@@ -1,18 +1,20 @@
 ---
 id: ADR-0005
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Independent Deployable Components
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0005: Independent Deployable Components
 
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance).
+
 ## Context
 
-Tank Royale needs a server, a GUI, a bot launcher, and a recorder. These could be monolithic or independently
-deployable.
+Tank Royale needs a server, a GUI, a bot launcher, and a recorder. These could be monolithic or independently deployable.
 
 **Problem:** Should components be bundled together or independently runnable?
 
@@ -34,9 +36,7 @@ Each major component is an **independently deployable fat JAR** with its own mai
 - **Standalone:** Each component runs as its own JVM process
 - **Embedded:** GUI bundles Server, Booter, and Recorder JARs and can load them in-process
 
-**Key choices:** Booter uses stdin/stdout (not WebSocket) — it's a process manager. Bots are separate OS processes
-spawned by Booter, each connecting independently to the Server. All components share the same build pipeline:
-Shadow JAR → R8 shrinking → native installers (jpackage).
+**Key choices:** Booter uses stdin/stdout (not WebSocket) — it's a process manager. Bots are separate OS processes spawned by Booter, each connecting independently to the Server. All components share the same build pipeline: Shadow JAR → R8 shrinking → native installers (jpackage).
 
 ---
 

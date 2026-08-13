@@ -1,6 +1,7 @@
 ---
 id: CAP-004
 type: capability
+goal: G-001
 status: active
 links: [G-001]
 title: GUI boot progress

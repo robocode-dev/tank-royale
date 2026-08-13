@@ -1,6 +1,7 @@
 ---
 id: CAP-002
 type: capability
+goal: G-001
 status: active
 links: [G-001]
 title: Booter fallback bot discovery

@@ -1,18 +1,20 @@
 ---
 id: ADR-0018
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Custom SVG Rendering for Bot API Graphics
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0018: Custom SVG Rendering for Bot API Graphics
 
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance).
+
 ## Context
 
-Bot APIs across all platforms need a graphics/drawing API for debug visualization overlays. The API must be identical
-across Java, .NET, and Python per the symmetric API requirement.
+Bot APIs across all platforms need a graphics/drawing API for debug visualization overlays. The API must be identical across Java, .NET, and Python per the symmetric API requirement.
 
 **Problem:** How to provide consistent drawing/graphics APIs across all Bot API platforms?
 
@@ -22,8 +24,7 @@ across Java, .NET, and Python per the symmetric API requirement.
 
 Implement a **custom SVG-based graphics API** in each Bot API rather than wrapping platform-specific graphics libraries.
 
-Bots build SVG strings using a cross-platform API. The SVG is transmitted to the server via the bot intent and rendered
-by the GUI. This ensures all platforms produce identical output.
+Bots build SVG strings using a cross-platform API. The SVG is transmitted to the server via the bot intent and rendered by the GUI. This ensures all platforms produce identical output.
 
 ---
 

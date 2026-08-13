@@ -1,18 +1,20 @@
 ---
 id: ADR-0019
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: R8 Code Shrinking
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0019: R8 Code Shrinking
 
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance).
+
 ## Context
 
-All distributable JVM components (Server, GUI, Booter, Recorder) produce fat JARs with all dependencies bundled.
-These JARs need shrinking to remove unused code and reduce artifact size.
+All distributable JVM components (Server, GUI, Booter, Recorder) produce fat JARs with all dependencies bundled. These JARs need shrinking to remove unused code and reduce artifact size.
 
 **Problem:** Which code shrinking tool to use?
 
@@ -22,8 +24,7 @@ These JARs need shrinking to remove unused code and reduce artifact size.
 
 Use **R8** (Google's code shrinker) in **shrink-only mode** (`-dontoptimize -dontobfuscate`) for all distributable JARs.
 
-**Configuration:** ProGuard-compatible rule files (`r8-rules.pro`) per component. R8 runs as a Gradle task after
-Shadow JAR creation. Version pinned in `gradle/libs.versions.toml`.
+**Configuration:** ProGuard-compatible rule files (`r8-rules.pro`) per component. R8 runs as a Gradle task after Shadow JAR creation. Version pinned in `gradle/libs.versions.toml`.
 
 ---
 

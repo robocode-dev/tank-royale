@@ -24,24 +24,24 @@ sequenceDiagram
     participant Network
     participant Server
     participant BotValidator
-    
+
     Bot->>Bot: Create WebSocket URI
     Note over Bot: ws://localhost:7654
-    
+
     Bot->>Network: Initiate connection
     Network->>Server: TCP handshake
     Network->>Server: WebSocket upgrade request
-    
+
     Server->>Server: Accept connection
     Server->>Bot: server-handshake
-    
+
     Bot->>Bot: Receive server-handshake
     Note over Bot: Extract sessionId
-    
+
     Bot->>Server: bot-handshake
-    
+
     Server->>BotValidator: Validate bot-handshake
-    
+
     alt Validation Success
         BotValidator-->>Server: ✓ Valid
         Server->>Server: Create bot session
@@ -51,7 +51,7 @@ sequenceDiagram
         Server->>Bot: Connection close
         Note over Bot: Handle error
     end
-    
+
     Note over Server: Bot ready for game<br/>Awaiting start-game command
 ```
 
@@ -103,8 +103,7 @@ Server → Client: HTTP/1.1 101 Switching Protocols
                  Sec-WebSocket-Accept: ...
 ```
 
-**Duration:** <10ms (locally)  
-**Timeout:** 5-10 seconds (configurable)
+**Duration:** <10ms (locally) **Timeout:** 5-10 seconds (configurable)
 
 ### Error Handling
 
@@ -183,7 +182,7 @@ flowchart TD
     C --> D{Retry successful?}
     D -->|Yes| E[Connected]
     D -->|No| F[Connection failed]
-    
+
     style A fill:#D9534F,color:#fff
     style E fill:#27AE60,color:#fff
     style F fill:#C0392B,color:#fff
@@ -205,7 +204,7 @@ flowchart TD
    ```
    if not valid_name(bot.name):
      reject "Invalid bot name"
-   
+
    if not valid_version(bot.version):
      reject "Invalid version"
    ```
@@ -214,7 +213,7 @@ flowchart TD
    ```
    if server.requires_secret and not bot.secret:
      reject "Secret required"
-   
+
    if server.requires_secret and bot.secret != expected:
      reject "Invalid secret"
    ```
@@ -314,7 +313,7 @@ flowchart TD
     D -->|No| F{Max retries exceeded?}
     F -->|No| B
     F -->|Yes| G[Bot exits with error]
-    
+
     style A fill:#D9534F,color:#fff
     style E fill:#27AE60,color:#fff
     style G fill:#C0392B,color:#fff
@@ -330,7 +329,7 @@ flowchart TD
     D --> E{Reconnect successful?}
     E -->|Yes| F[Bot rejoins]
     E -->|No| G[Bot fails]
-    
+
     style A fill:#D9534F,color:#fff
     style F fill:#27AE60,color:#fff
     style G fill:#C0392B,color:#fff
@@ -345,7 +344,7 @@ flowchart TD
     C --> D{Only 1 bot left?}
     D -->|Yes| E[Battle ends]
     D -->|No| F[Battle continues]
-    
+
     style A fill:#D9534F,color:#fff
     style E fill:#27AE60,color:#fff
     style F fill:#2980B9,color:#fff
@@ -467,23 +466,23 @@ if (!botSecret.equals(configuredSecret)) {
 
 ```java
 public class MyBot extends BaseBot {
-    
+
     public MyBot(String name, String version) {
         super(name, version);
     }
-    
+
     public static void main(String[] args) {
         MyBot bot = new MyBot("MyBot", "1.0");
-        
+
         // BaseBotInternals handles:
         // 1. WebSocket connection
         // 2. server-handshake receiving
         // 3. bot-handshake sending
         // 4. Validation and error handling
-        
+
         bot.start();  // Blocking - waits for connection
     }
-    
+
     @Override
     public void run() {
         // This is called after successful connection
@@ -512,12 +511,12 @@ if __name__ == '__main__':
         version="1.0",
         authors=["John Doe"]
     )
-    
+
     # BaseBotInternals (in BaseBot) handles:
     # 1. WebSocket connection
     # 2. Message exchange and validation
     # 3. Event/intent serialization
-    
+
     bot.start()  # Blocking
 ```
 

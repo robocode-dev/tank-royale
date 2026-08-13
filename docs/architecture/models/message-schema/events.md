@@ -22,7 +22,7 @@ graph TD
     Server --> BotEvents[Bot Events]
     Server --> ObserverEvents[Observer Events]
     Server --> SharedEvents[Shared Events]
-    
+
     BotEvents --> Bot[Bots]
     ObserverEvents --> Observer[Observers]
     ObserverEvents --> Controller[Controllers]
@@ -44,7 +44,7 @@ graph TD
 ### 1. Game Lifecycle Events
 Battle start, end, abort
 
-### 2. Round Events  
+### 2. Round Events
 Round start, end, victory
 
 ### 3. Turn Events
@@ -69,26 +69,26 @@ classDiagram
         <<abstract>>
         +string type
     }
-    
+
     class Event {
         <<abstract>>
         +int turnNumber
     }
-    
+
     class TickEventForBot {
         +int roundNumber
         +BotState botState
         +BulletState[] bulletStates
         +Event[] events
     }
-    
+
     class TickEventForObserver {
         +int roundNumber
         +BotStateWithId[] botStates
         +BulletState[] bulletStates
         +Event[] events
     }
-    
+
     class ScannedBotEvent {
         +int scannedByBotId
         +int scannedBotId
@@ -98,19 +98,19 @@ classDiagram
         +number direction
         +number speed
     }
-    
+
     class HitByBulletEvent {
         +BulletState bullet
         +number damage
         +number energy
     }
-    
+
     class GameStartedEventForBot {
         +GameSetup gameSetup
         +int myId
         +Participant[] participants
     }
-    
+
     Message <|-- Event
     Event <|-- TickEventForBot
     Event <|-- TickEventForObserver
@@ -351,7 +351,7 @@ classDiagram
         +BulletState[] bulletStates
         +Event[] events
     }
-    
+
     class BotState {
         +number energy
         +number x
@@ -363,7 +363,7 @@ classDiagram
         +number gunHeat
         +int enemyCount
     }
-    
+
     TickEventForBot *-- BotState
     TickEventForBot *-- "0..*" BulletState
     TickEventForBot *-- "0..*" Event
@@ -438,7 +438,7 @@ classDiagram
         +BulletState[] bulletStates
         +Event[] events
     }
-    
+
     TickEventForObserver *-- "1..*" BotStateWithId
     TickEventForObserver *-- "0..*" BulletState
     TickEventForObserver *-- "0..*" Event
@@ -532,7 +532,7 @@ classDiagram
         +number damage
         +number energy
     }
-    
+
     HitByBulletEvent *-- BulletState
 ```
 
@@ -572,7 +572,7 @@ classDiagram
         +int turnNumber
         +BulletState bullet
     }
-    
+
     BulletFiredEvent *-- BulletState
 ```
 
@@ -596,7 +596,7 @@ classDiagram
         +number damage
         +number energy
     }
-    
+
     BulletHitBotEvent *-- BulletState
 ```
 
@@ -618,7 +618,7 @@ classDiagram
         +BulletState bullet
         +BulletState hitBullet
     }
-    
+
     BulletHitBulletEvent *-- "2" BulletState
 ```
 
@@ -639,7 +639,7 @@ classDiagram
         +int turnNumber
         +BulletState bullet
     }
-    
+
     BulletHitWallEvent *-- BulletState
 ```
 
@@ -756,7 +756,7 @@ classDiagram
         +string type
         +BotInfo[] bots
     }
-    
+
     BotListUpdate *-- "0..*" BotInfo
 ```
 
@@ -797,18 +797,18 @@ sequenceDiagram
     participant Server
     participant Bot1
     participant Bot2
-    
+
     Note over Server: Turn 42 begins
-    
+
     Server->>Bot1: tick-event-for-bot {turn: 42, events: [scanned-bot, hit-by-bullet]}
     Server->>Bot2: tick-event-for-bot {turn: 42, events: [bullet-hit-bot]}
-    
+
     Bot1->>Bot1: Process: I scanned Bot2 AND got hit
     Bot2->>Bot2: Process: My bullet hit Bot1
-    
+
     Bot1->>Server: bot-intent {firepower: 3, turnRate: 10}
     Bot2->>Server: bot-intent {speed: 5, radarTurnRate: 20}
-    
+
     Note over Server: Calculate turn 43...
 ```
 
@@ -820,26 +820,26 @@ sequenceDiagram
     participant Server
     participant Bot
     participant Observer
-    
+
     Controller->>Server: start-game
-    
+
     Server->>Bot: game-started-event-for-bot
     Server->>Observer: game-started-event-for-observer
-    
+
     Bot->>Server: bot-ready
-    
+
     Server->>Bot: round-started-event {round: 1}
     Server->>Observer: round-started-event {round: 1}
-    
+
     loop Each turn
         Server->>Bot: tick-event-for-bot
         Server->>Observer: tick-event-for-observer
     end
-    
+
     Server->>Bot: won-round-event
     Server->>Bot: round-ended-event-for-bot
     Server->>Observer: round-ended-event-for-observer
-    
+
     Server->>Bot: game-ended-event-for-bot
     Server->>Observer: game-ended-event-for-observer
 ```
@@ -901,4 +901,3 @@ sequenceDiagram
 ---
 
 **Last Updated:** 2026-02-12
-

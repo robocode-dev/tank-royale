@@ -21,7 +21,7 @@ graph LR
     Controller --> Server
     Server --> Bots
     Server --> Observers
-    
+
     Controller -- "start-game" --> Server
     Controller -- "pause-game" --> Server
     Controller -- "resume-game" --> Server
@@ -49,48 +49,48 @@ classDiagram
         <<abstract>>
         +string type
     }
-    
+
     class StartGame {
         +string type = "start-game"
         +GameSetup gameSetup
         +BotAddress[] botAddresses
     }
-    
+
     class StopGame {
         +string type = "stop-game"
     }
-    
+
     class PauseGame {
         +string type = "pause-game"
     }
-    
+
     class ResumeGame {
         +string type = "resume-game"
     }
-    
+
     class NextTurn {
         +string type = "next-turn"
     }
-    
+
     class ChangeTps {
         +string type = "change-tps"
         +int tps
     }
-    
+
     class EnableDebugMode {
         +string type = "enable-debug-mode"
     }
-    
+
     class DisableDebugMode {
         +string type = "disable-debug-mode"
     }
-    
+
     class BotPolicyUpdate {
         +string type = "bot-policy-update"
         +int botId
         +BotPolicy policy
     }
-    
+
     Message <|-- StartGame
     Message <|-- StopGame
     Message <|-- PauseGame
@@ -121,7 +121,7 @@ classDiagram
         +GameSetup gameSetup
         +BotAddress[] botAddresses
     }
-    
+
     class GameSetup {
         +string gameType
         +int arenaWidth
@@ -134,12 +134,12 @@ classDiagram
         +int turnTimeout
         +int readyTimeout
     }
-    
+
     class BotAddress {
         +string host
         +int port
     }
-    
+
     StartGame *-- GameSetup
     StartGame *-- "1..*" BotAddress
 ```
@@ -562,24 +562,24 @@ sequenceDiagram
     participant Bot1
     participant Bot2
     participant Observer
-    
+
     Note over Server: State: WAIT_FOR_PARTICIPANTS
-    
+
     Controller->>Server: start-game {botAddresses: [Bot1, Bot2], gameSetup: {...}}
-    
+
     Note over Server: State: WAIT_FOR_READY
-    
+
     Server->>Bot1: game-started-event-for-bot
     Server->>Bot2: game-started-event-for-bot
-    
+
     Bot1->>Server: bot-ready
     Bot2->>Server: bot-ready
-    
+
     Note over Server: State: GAME_RUNNING
-    
+
     Server->>Observer: game-started-event-for-observer
     Server->>Controller: game-started-event-for-observer
-    
+
     loop Every 33ms (30 TPS)
         Server->>Bot1: tick-event-for-bot
         Server->>Bot2: tick-event-for-bot
@@ -595,30 +595,30 @@ sequenceDiagram
     participant Server
     participant Bots
     participant Observer
-    
+
     Note over Server: Battle running at 30 TPS
-    
+
     Controller->>Server: pause-game
     Server->>Observer: game-paused-event-for-observer
-    
+
     Note over Server: Turn loop stopped
     Note over Bots: Still waiting for ticks
-    
+
     Controller->>Server: next-turn
     Server->>Bots: tick-event-for-bot (turn N)
     Server->>Observer: tick-event-for-observer (turn N)
-    
+
     Note over Server: Paused again
-    
+
     Controller->>Server: next-turn
     Server->>Bots: tick-event-for-bot (turn N+1)
     Server->>Observer: tick-event-for-observer (turn N+1)
-    
+
     Controller->>Server: resume-game
     Server->>Observer: game-resumed-event-for-observer
-    
+
     Note over Server: Turn loop resumed at 30 TPS
-    
+
     loop Every 33ms
         Server->>Bots: tick-event-for-bot
         Server->>Observer: tick-event-for-observer
@@ -632,17 +632,17 @@ sequenceDiagram
     participant Controller
     participant Server
     participant Observer
-    
+
     Note over Server: Running at 30 TPS
-    
+
     Controller->>Server: change-tps {tps: 10}
     Server->>Observer: tps-changed-event {tps: 10}
-    
+
     Note over Server: Running at 10 TPS (slower)
-    
+
     Controller->>Server: change-tps {tps: 120}
     Server->>Observer: tps-changed-event {tps: 120}
-    
+
     Note over Server: Running at 120 TPS (faster)
 ```
 
@@ -739,4 +739,3 @@ Server ignores message (no response)
 ---
 
 **Last Updated:** 2026-04-24
-

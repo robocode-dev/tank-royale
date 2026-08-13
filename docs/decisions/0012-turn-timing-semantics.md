@@ -1,13 +1,16 @@
 ---
 id: ADR-0012
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Turn Timing Semantics
-accepted-by: Flemming N. Larsen (2026-02-13, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0012: Turn Timing Semantics
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-13, pre-Cliewen MADR acceptance).
 
 ## Context
 
@@ -16,8 +19,7 @@ Tank Royale's turn-based game loop has two timing parameters:
 1. **Turn Timeout** — Hard deadline for bot responses before SkippedTurnEvent
 2. **TPS (Turns Per Second)** — Visual rendering speed for spectators
 
-**Problem:** How do bot processing completion and visual rendering timing interact to ensure deterministic battles while
-respecting user TPS preferences?
+**Problem:** How do bot processing completion and visual rendering timing interact to ensure deterministic battles while respecting user TPS preferences?
 
 **Critical requirements:**
 
@@ -90,7 +92,7 @@ Start        │                         Visual frame advances
                 (bot processing duration = 8ms)
 
 
-Scenario 2: Fast bots, unlimited TPS  
+Scenario 2: Fast bots, unlimited TPS
 turnTimeout=10000µs (10ms), all bots respond in 8000µs (8ms), TPS=-1
 
 Time →
@@ -273,7 +275,7 @@ void run() {
 **Correct approach:**
 
 ```java
-// GOOD: Process events synchronously before responding  
+// GOOD: Process events synchronously before responding
 void run() {
     while (isRunning()) {
         go();  // This dispatches events FIRST, then sends intent
@@ -383,8 +385,7 @@ See `server/src/test/kotlin/core/TurnTimingTest.kt` for comprehensive tests cove
 | All instant            | 10000µs     | 100µs (0.1ms)                 | -1  | 0.1ms     | +0ms         | 0.1ms   |
 | Paused                 | 10000µs     | 8000µs (8ms)                  | 0   | 8ms       | ∞ (paused)   | ∞       |
 
-**Key Insight:** Bot processing duration and visual delay are completely independent. Battle determinism is guaranteed
-because only Phase 1 (bot processing) affects outcomes.
+**Key Insight:** Bot processing duration and visual delay are completely independent. Battle determinism is guaranteed because only Phase 1 (bot processing) affects outcomes.
 
 ---
 

@@ -5,6 +5,7 @@ status: inferred
 links: [P-003, M-005, CAP-006]
 title: Behavior Version as the Battle Compatibility Contract
 author: agent
+accepted-by: []
 ---
 
 # ADR-0042: Behavior Version as the Battle Compatibility Contract

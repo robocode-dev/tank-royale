@@ -1,13 +1,16 @@
 ---
 id: ADR-0022
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Event System for GUI Decoupling
-accepted-by: Flemming N. Larsen (2026-02-16, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0022: Event System for GUI Decoupling
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-16, pre-Cliewen MADR acceptance).
 
 ## Context
 
@@ -180,5 +183,3 @@ This automatically:
 - [EventDelegate.kt](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/EventDelegate.kt) — Property delegation
 - [EDT.kt](/gui/src/main/kotlin/dev/robocode/tankroyale/gui/util/EDT.kt) — Swing EDT integration
 - [ADR-0021: Java Swing GUI Reference Implementation](./0021-java-swing-gui-reference-implementation.md)
-
-

@@ -1,13 +1,16 @@
 ---
 id: ADR-0038
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Cross-Platform Test Parity and Shared Test Definitions
-accepted-by: Flemming N. Larsen (2026-04-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0038: Cross-Platform Test Parity and Shared Test Definitions
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-04-14, pre-Cliewen MADR acceptance).
 
 ## Context
 
@@ -94,8 +97,7 @@ The registry is reviewed when adding or modifying tests. CI may optionally valid
 
 #### JSON Schema
 
-The schema below defines the structure for all shared test definition files in `bot-api/tests/shared/`.
-Store the schema at `bot-api/tests/shared/test-definition.schema.json`.
+The schema below defines the structure for all shared test definition files in `bot-api/tests/shared/`. Store the schema at `bot-api/tests/shared/test-definition.schema.json`.
 
 ```json
 {
@@ -273,11 +275,9 @@ Each platform implements a parameterized test that:
 
 ## Rationale
 
-**Why 1-1 parity is mandatory (not aspirational):**
-The April 2026 audit found that Python had 0 EnvVar tests, TypeScript had 0 command tests, and BotInfo coverage ranged from 4 to 51 tests depending on platform. Every gap is a place where semantic drift can hide. The only way to enforce ADR-0003 is to mechanically require the same acceptance tests everywhere.
+**Why 1-1 parity is mandatory (not aspirational):** The April 2026 audit found that Python had 0 EnvVar tests, TypeScript had 0 command tests, and BotInfo coverage ranged from 4 to 51 tests depending on platform. Every gap is a place where semantic drift can hide. The only way to enforce ADR-0003 is to mechanically require the same acceptance tests everywhere.
 
-**Why two tiers (not all JSON):**
-Pure function tests (validation, clamping, physics) are trivially expressed as input/output JSON. Integration tests (MockedServer, WebSocket, constructors) require platform-specific setup that JSON cannot express. Forcing everything into JSON would make integration tests awkward and brittle.
+**Why two tiers (not all JSON):** Pure function tests (validation, clamping, physics) are trivially expressed as input/output JSON. Integration tests (MockedServer, WebSocket, constructors) require platform-specific setup that JSON cannot express. Forcing everything into JSON would make integration tests awkward and brittle.
 
 **Why JSON for Tier 1 (not YAML, TOML, or code):**
 - ✅ Every platform has built-in JSON parsing — zero new dependencies
@@ -285,11 +285,9 @@ Pure function tests (validation, clamping, physics) are trivially expressed as i
 - ✅ Schema-driven project (ADR-0006) already uses JSON schemas
 - ✅ No language-specific constructs that could bias toward one platform
 
-**Why a test registry (not just tags):**
-Tags alone don't answer "which tests are missing on which platform?" The registry provides a single view of cross-platform coverage, making gaps visible during review.
+**Why a test registry (not just tags):** Tags alone don't answer "which tests are missing on which platform?" The registry provides a single view of cross-platform coverage, making gaps visible during review.
 
-**Why LEGACY tagging:**
-Deleting old tests before new ones are verified is risky. Running both in parallel with clear tags allows safe, incremental migration. The `LEGACY` tag also makes it easy to exclude old tests once replacements are confirmed.
+**Why LEGACY tagging:** Deleting old tests before new ones are verified is risky. Running both in parallel with clear tags allows safe, incremental migration. The `LEGACY` tag also makes it easy to exclude old tests once replacements are confirmed.
 
 **Alternatives considered:**
 1. **Each platform maintains its own equivalent tests** — Status quo. Rejected because it led to drift.

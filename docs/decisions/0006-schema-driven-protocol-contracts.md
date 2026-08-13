@@ -1,27 +1,28 @@
 ---
 id: ADR-0006
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Schema-Driven Protocol Contracts
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0006: Schema-Driven Protocol Contracts
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance).
 
 ## Context
 
 Tank Royale's WebSocket protocol has 53+ message types exchanged between server and clients in multiple languages.
 
-**Problem:** How to ensure all Bot APIs (Java, .NET, Python) use exactly the same message structures and prevent
-protocol divergence?
+**Problem:** How to ensure all Bot APIs (Java, .NET, Python) use exactly the same message structures and prevent protocol divergence?
 
 ---
 
 ## Decision
 
-Define all protocol messages as **YAML/JSON Schema files** in `schema/schemas/`. These schemas are the single source of
-truth for all message contracts.
+Define all protocol messages as **YAML/JSON Schema files** in `schema/schemas/`. These schemas are the single source of truth for all message contracts.
 
 **Mechanism:**
 

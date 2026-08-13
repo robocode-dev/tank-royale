@@ -4,7 +4,7 @@ type: constraint
 status: active
 links: []
 title: Game physics and bot backward compatibility are stable
-source: openspec/project.md "Stability Rules (Non-negotiable)" (absorbed at CH-001), ADR-0008
+source: docs/goals/G-001-programming-game-for-learning-and-competition.md, docs/decisions/0008-server-authoritative-physics.md
 enforcement: human
 provenance: inferred
 reversal-cost: high
@@ -17,3 +17,5 @@ reversal-cost: high
 - The server is authoritative (ADR-0008); no alternative drop-in server replacements.
 
 **Promotion trigger:** a physics/behavior regression suite pinned against recorded battles — then `enforcement: machine` for the covered surface.
+
+**Residual:** Compatibility judgments outside the regression suite's covered behavior remain maintainer-reviewed and human-enforced.

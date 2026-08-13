@@ -122,12 +122,12 @@ stateDiagram-v2
     Running --> Stopped: stop/kill
     Stopped --> Cleanup: cleanup
     Cleanup --> [*]
-    
+
     note right of Running
         Bot process executes
         commands from input
     end note
-    
+
     note right of Cleanup
         Release resources
         Kill child processes
@@ -193,18 +193,18 @@ stateDiagram-v2
 ```mermaid
 graph TD
     User["User / GUI"]
-    
+
     BooterCli["BooterCli<br/>(Main Entry)"]
     DirCli["DirCli"]
     InfoCli["InfoCli"]
     BootCli["BootCli"]
-    
+
     ProcessManager["ProcessManager<br/>• createBotProcess()<br/>• stopBotProcess()<br/>• killAllProcesses()"]
-    
+
     Bot1["Bot 1"]
     Bot2["Bot 2"]
     BotN["Bot N"]
-    
+
     User --> BooterCli
     BooterCli --> DirCli
     BooterCli --> InfoCli
@@ -213,7 +213,7 @@ graph TD
     ProcessManager --> Bot1
     ProcessManager --> Bot2
     ProcessManager --> BotN
-    
+
     style User fill:#E0E0E0,color:#000
     style BooterCli fill:#E1F5FF,color:#000
     style ProcessManager fill:#FFF3E0,color:#000
@@ -265,5 +265,3 @@ quit
 - **[Server Components (L3)](./server-components.md)** — Server internals
 - **[GUI Components (L3)](./gui-components.md)** — GUI internals
 - **[Recorder Components (L3)](./recorder-components.md)** — Recording system internals
-
-

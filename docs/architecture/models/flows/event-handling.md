@@ -14,10 +14,7 @@ This document explains how events (like `WonRoundEvent`, `ScannedBotEvent`, etc.
 
 ## Overview
 
-**System:** Distributed multi-process event system  
-**Platforms:** Java (reference), Python, C# (.NET), TypeScript  
-**Key Concept:** Events are generated server-side, transmitted via WebSocket, queued client-side, and dispatched to bot handlers  
-**Output Handling:** Handler output (print statements, log messages) is automatically captured and transmitted to the GUI console
+**System:** Distributed multi-process event system **Platforms:** Java (reference), Python, C# (.NET), TypeScript **Key Concept:** Events are generated server-side, transmitted via WebSocket, queued client-side, and dispatched to bot handlers **Output Handling:** Handler output (print statements, log messages) is automatically captured and transmitted to the GUI console
 
 ---
 
@@ -36,26 +33,26 @@ sequenceDiagram
     Server->>Server: 1. Detect event condition<br/>(e.g., bot won round)
     Server->>Server: 2. Create event object<br/>(WonRoundEvent)
     Server->>Server: 3. Add to final tick
-    
+
     Note over Server,BotProcess: Phase 2: Transmission (WebSocket)
     Server->>WebSocket: 4. Send TickEventForBot<br/>{events: [WonRoundEvent]}
     Note over WebSocket: WebSocket thread<br/>(async)
-    
+
     Note over EventQueue: Phase 3: Queueing (Client)
     WebSocket->>EventQueue: 5. addEventsFromTick()<br/>(WonRoundEvent queued)
-    
+
     Note over BotThread: Phase 4: Dispatch at Turn Start
     BotThread->>EventQueue: 6. go() → execute() → dispatchEvents()
     EventQueue->>BotThread: 7. Fire onWonRound()<br/>(event handler invoked)
     BotThread->>BotThread: 8. System.out.println()<br/>(output captured)
-    
+
     Note over WebSocket: Phase 5: Output Transfer (Round End)
     WebSocket->>BotThread: 9. handleRoundEnded()<br/>dispatchEvents()
     BotThread->>BotThread: 10. onWonRound() fires<br/>(prints to buffer)
     BotThread->>BotThread: 11. transferStdOutToBotIntent()
     BotThread->>BotThread: 12. Update BotIntent with stdout
     WebSocket->>Server: 13. Send BotIntent<br/>{stdOut: "I won!"}
-    
+
     Note over GUI: Phase 6: Display (GUI)
     Server->>GUI: 14. Forward output to console
     GUI->>GUI: 15. Display in bot console panel
@@ -76,12 +73,12 @@ graph TD
     B -->|Bot Scanned| D["Create<br/>ScannedBotEvent"]
     B -->|Round Won| E["Create<br/>WonRoundEvent"]
     B -->|Bullet Hit| F["Create<br/>BulletHitEvent"]
-    
+
     C --> G["Add to Tick's<br/>Event List"]
     D --> G
     E --> G
     F --> G
-    
+
     G -->|Final Tick| H["TickEventForBot<br/>Message"]
     H -->|WebSocket| I["Bot Process<br/>Receives"]
 ```
@@ -400,7 +397,7 @@ private void HandleRoundEnded(string json)
 
 ## Comparison: Tank Royale vs Classic Robocode
 
-> **Note:** This section covers **output capture** semantics (how `System.out.println()` reaches the GUI).  
+> **Note:** This section covers **output capture** semantics (how `System.out.println()` reaches the GUI).
 > For **event dispatch timing** (when events fire relative to turn state), see [Event Dispatch Timing Semantics](#event-dispatch-timing-semantics) above.
 
 ### Classic Robocode (Single Process)
@@ -410,12 +407,12 @@ sequenceDiagram
     participant EventManager
     participant Robot as Robot<br/>Event Handler
     participant ConsoleGUI as GUI<br/>Console
-    
+
     EventManager->>Robot: dispatch(onWinEvent)
     Robot->>Robot: robot.out.println()
     Robot-->>ConsoleGUI: Direct stdout access
     ConsoleGUI->>ConsoleGUI: Display immediately
-    
+
     Note over EventManager,ConsoleGUI: ✅ No buffering needed<br/>✅ Output appears immediately<br/>✅ Same JVM process
 ```
 
@@ -428,7 +425,7 @@ sequenceDiagram
     participant RecordingStream as Recording<br/>Stream
     participant Server as Server
     participant GUI as GUI
-    
+
     WebSocketThread->>BotProcess: handleRoundEnded()
     BotProcess->>BotProcess: dispatchEvents()
     BotProcess->>BotProcess: onWonRound() fires
@@ -440,7 +437,7 @@ sequenceDiagram
     BotProcess->>Server: Send BotIntent<br/>(WebSocket)
     Server->>GUI: Forward stdOut
     GUI->>GUI: Display in console
-    
+
     Note over WebSocketThread,GUI: ✅ Output captured<br/>✅ Sent via WebSocket<br/>✅ Displayed in GUI<br/>✅ Cross-process compatible
 ```
 
@@ -472,7 +469,7 @@ graph TB
     A --> G["40: HitRobotEvent"]
     A --> H["30: BulletHitEvent"]
     A --> I["0: Custom Events"]
-    
+
     J["Critical Events"] -.->|Always delivered| K["Even if bot stops"]
     J -->|Examples:| L["DeathEvent,<br/>GameEndedEvent"]
 ```
@@ -486,7 +483,7 @@ sequenceDiagram
     participant EventQueue
     participant Handler99 as ScannedBot Handler
     participant Handler30 as BulletHit Handler
-    
+
     Handler99->>Handler99: Executing onScannedBot()
     EventQueue->>EventQueue: Higher priority event ready?
     alt Higher priority found

@@ -7,8 +7,8 @@ External constraints come from outside the project: you do not decide them, you 
 Each constraint names its `source` and an `enforcement` class: `machine` (a lint or CI check holds it), `agent` (an agent must hold it until a machine check exists — each such constraint states its promotion trigger), or `human` (only review can hold it). Every change is assessed against the active constraints before its PR.
 
 <!-- clue:index:start -->
-- [C-001 — Markdown prose is never hard-wrapped](C-001-no-hard-wrapped-markdown.md) · `agent`
+- [C-001 — Markdown prose is never hard-wrapped](C-001-no-hard-wrapped-markdown.md) · `machine`
 - [C-002 — Every mutation of main goes through a branch and a human-merged PR](C-002-review-boundary.md) · `human`
-- [C-003 — Bot APIs are semantically identical across platforms; Java is the reference](C-003-cross-platform-bot-api-parity.md) · `machine`
+- [C-003 — Bot APIs are semantically identical across platforms; Java is the reference](C-003-cross-platform-bot-api-parity.md) · `human`
 - [C-004 — Game physics and bot backward compatibility are stable](C-004-stable-physics-and-backward-compatibility.md) · `human`
 <!-- clue:index:end -->

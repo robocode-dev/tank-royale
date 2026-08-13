@@ -15,10 +15,7 @@ reversal-cost: low
 
 ## Scope
 
-The "server" side that is not a server: how submitted results are ingested into the `rumble-data`
-repository, validated, aggregated into rankings, and published on a static dashboard. Also covers
-operations and resilience. There is no live backend anywhere; everything here is scheduled CI plus
-static files (principles P1, P4, P5).
+The "server" side that is not a server: how submitted results are ingested into the `rumble-data` repository, validated, aggregated into rankings, and published on a static dashboard. Also covers operations and resilience. There is no live backend anywhere; everything here is scheduled CI plus static files (principles P1, P4, P5).
 
 ## Repository Layout
 
@@ -39,9 +36,7 @@ rumble-data/
 
 ## Ingestion: Single Writer, Batch Drain
 
-Only CI ever commits (P4). Ingestion is a scheduled workflow (every 15-30 minutes) with a CI
-concurrency group so runs serialize. It drains the whole inbox in one pass and produces **one
-commit**, which eliminates merge conflicts by construction.
+Only CI ever commits (P4). Ingestion is a scheduled workflow (every 15-30 minutes) with a CI concurrency group so runs serialize. It drains the whole inbox in one pass and produces **one commit**, which eliminates merge conflicts by construction.
 
 ```mermaid
 sequenceDiagram
@@ -72,14 +67,11 @@ sequenceDiagram
 
 ### What a submission concretely is (issue-ops made explicit)
 
-"Issue-ops" means: the inbox is the forge's ordinary **issue tracker**, used as a mailbox.
-Nothing custom is deployed. On GitHub, a submission from the client looks like this:
+"Issue-ops" means: the inbox is the forge's ordinary **issue tracker**, used as a mailbox. Nothing custom is deployed. On GitHub, a submission from the client looks like this:
 
-- **Issue title**: `[result] flemming-desktop-01 2026-07-02T14:03:22Z` (fixed prefix, client id,
-  timestamp).
+- **Issue title**: `[result] flemming-desktop-01 2026-07-02T14:03:22Z` (fixed prefix, client id, timestamp).
 - **Label**: `result-submission` (lets the drain workflow query exactly the issues it owns).
-- **Issue body**: one fenced JSON block containing a **batch envelope**, i.e. the client's
-  journal batch:
+- **Issue body**: one fenced JSON block containing a **batch envelope**, i.e. the client's journal batch:
 
 ````markdown
 ```json
@@ -92,18 +84,9 @@ Nothing custom is deployed. On GitHub, a submission from the client looks like t
 ```
 ````
 
-- The client creates it with one API call (`gh issue create --label result-submission
-  --title ... --body-file batch.json` or the REST equivalent), authenticated as the user's forge
-  account with a fine-grained token with Issues write permission limited to this repository.
-  GitHub does not expose a narrower create-issue-only permission.
-- A GitHub issue body holds ~65k characters, roughly 40-60 result records per issue at our record
-  size; the client splits larger journals across issues.
-- The drain workflow lists open `result-submission` issues, parses each body, validates each
-  result, commits and pushes accepted ones, and only then **closes every processed issue** with a
-  comment listing per-result outcomes (accepted / rejected + reason). Each successful receipt is
-  therefore published after its fact. Retrying an identical retained result returns the same
-  successful outcome, so receipt-delivery failure is safe. The issue itself is transport, never
-  storage, so losing issues (e.g. in a fork) loses nothing after accepted facts are published.
+- The client creates it with one API call (`gh issue create --label result-submission --title ... --body-file batch.json` or the REST equivalent), authenticated as the user's forge account with a fine-grained token with Issues write permission limited to this repository. GitHub does not expose a narrower create-issue-only permission.
+- A GitHub issue body holds ~65k characters, roughly 40-60 result records per issue at our record size; the client splits larger journals across issues.
+- The drain workflow lists open `result-submission` issues, parses each body, validates each result, commits and pushes accepted ones, and only then **closes every processed issue** with a comment listing per-result outcomes (accepted / rejected + reason). Each successful receipt is therefore published after its fact. Retrying an identical retained result returns the same successful outcome, so receipt-delivery failure is safe. The issue itself is transport, never storage, so losing issues (e.g. in a fork) loses nothing after accepted facts are published.
 
 The same pattern works on GitLab (issues + labels) and Forgejo/Gitea (same). A future fork-PR transport can carry the identical batch envelope as a file, but it is unavailable until the result-data capability implements and validates that path.
 
@@ -111,22 +94,11 @@ The same pattern works on GitLab (issues + labels) and Forgejo/Gitea (same). A f
 
 The inbox is a public issue tracker, so it will eventually receive junk. Layers:
 
-- **Scope**: the drain only ever reads issues carrying the `result-submission` label and the
-  strict title prefix; everything else on the tracker is ignored by the pipeline.
-- **Strict format**: a body that does not parse as exactly one batch envelope is closed
-  immediately with a form-letter comment; nothing is committed. Malformed spam costs one API
-  call to close.
-- **Registration required (day one)**: results are only accepted from forge accounts that have
-  completed a one-time **onboarding PR** to `rumble-data`, adding a small file under
-  `clients/<forge-account>.json` (declared client ids, optional public key if signing is ever
-  adopted). The PR is reviewed by a moderator like any other, which is exactly the human gate
-  that makes throwaway-account spam uneconomical. Submissions from unregistered accounts are
-  closed unprocessed with a pointer to the onboarding guide.
-- **Per-account limits**: the drain enforces a per-registered-account budget (issues per hour,
-  results per day); over-budget submissions are closed unprocessed with a rate-limit notice.
-- **Escalation**: a persistently abusive account is added to the ban list (submission document)
-  and, as a last resort, blocked at the forge level from the organization; forge-level blocking
-  is the one tool that actually stops the API calls themselves.
+- **Scope**: the drain only ever reads issues carrying the `result-submission` label and the strict title prefix; everything else on the tracker is ignored by the pipeline.
+- **Strict format**: a body that does not parse as exactly one batch envelope is closed immediately with a form-letter comment; nothing is committed. Malformed spam costs one API call to close.
+- **Registration required (day one)**: results are only accepted from forge accounts that have completed a one-time **onboarding PR** to `rumble-data`, adding a small file under `clients/<forge-account>.json` (declared client ids, optional public key if signing is ever adopted). The PR is reviewed by a moderator like any other, which is exactly the human gate that makes throwaway-account spam uneconomical. Submissions from unregistered accounts are closed unprocessed with a pointer to the onboarding guide.
+- **Per-account limits**: the drain enforces a per-registered-account budget (issues per hour, results per day); over-budget submissions are closed unprocessed with a rate-limit notice.
+- **Escalation**: a persistently abusive account is added to the ban list (submission document) and, as a last resort, blocked at the forge level from the organization; forge-level blocking is the one tool that actually stops the API calls themselves.
 
 ### Result lifecycle
 
@@ -148,17 +120,11 @@ stateDiagram-v2
 
 ## Aggregation: A Pure Function
 
-The core invariant (P5): **every projection is a pure function of `results/raw/` plus the
-exclusion list.** No projection may depend on ingestion order, wall-clock time (beyond a
-"computedAt" stamp), or anything outside the repo. Anyone can run `python scripts/aggregate.py`
-locally and reproduce the leaderboard bit-for-bit. This is what makes the rumble auditable and
-fork-restartable without permission from anyone.
+The core invariant (P5): **every projection is a pure function of `results/raw/` plus the exclusion list.** No projection may depend on ingestion order, wall-clock time (beyond a "computedAt" stamp), or anything outside the repo. Anyone can run `python scripts/aggregate.py` locally and reproduce the leaderboard bit-for-bit. This is what makes the rumble auditable and fork-restartable without permission from anyone.
 
 ### Ruleset and scoring: adopt LiteRumble, do not reinvent
 
-**Decision direction: the rumble uses the RoboRumble/LiteRumble ruleset and scoring system
-unchanged.** These rules have been battle tested for two decades; the design contribution here is
-the delivery mechanism, not new game math.
+**Decision direction: the rumble uses the RoboRumble/LiteRumble ruleset and scoring system unchanged.** These rules have been battle tested for two decades; the design contribution here is the delivery mechanism, not new game math.
 
 Battle parameters are frozen in `engine.json` per ranked game type:
 
@@ -168,13 +134,9 @@ Battle parameters are frozen in `engine.json` per ranked game type:
 | `twinduel` | 75 | 800 x 800 | 2 teams, 2 bots per team |
 | `melee` | 35 | 1000 x 1000 | 10 bots |
 
-These names intentionally follow the popular LiteRumble/RoboRumble categories for the original
-game: 1v1, TwinDuel, and Melee. Mini, micro, nano, and giga categories are not part of v1 because
-they depend on bytecode-size limits. Tank Royale Rumble distributes source code across multiple
-programming languages, so any size-class system needs a separate source-size design per language.
+These names intentionally follow the popular LiteRumble/RoboRumble categories for the original game: 1v1, TwinDuel, and Melee. Mini, micro, nano, and giga categories are not part of v1 because they depend on bytecode-size limits. Tank Royale Rumble distributes source code across multiple programming languages, so any size-class system needs a separate source-size design per language.
 
-Scoring metrics, matching the LiteRumble columns (all except Glicko-2 are per-pairing statistics
-and therefore order-independent):
+Scoring metrics, matching the LiteRumble columns (all except Glicko-2 are per-pairing statistics and therefore order-independent):
 
 | Metric | Meaning |
 |--------|---------|
@@ -194,27 +156,12 @@ APS(bot, pairing)    = mean of share(bot, battle) over that pairing's battles
 APS(bot)             = mean of APS(bot, pairing) over all the bot's pairings
 ```
 
-Averaging per-pairing first means extra samples of one pairing (e.g. from own-bot priority,
-see the [client document](./client-battles-and-results.md)) improve precision without skewing
-weight. LiteRumble computes the heavier batch metrics (ANPP, NPP, KNNPBI, Vote) twice a day
-rather than on every update; the same split applies here (every-drain APS/Win%/Survival, daily
-batch for the rest) if full recompute proves slow.
+Averaging per-pairing first means extra samples of one pairing (e.g. from own-bot priority, see the [client document](./client-battles-and-results.md)) improve precision without skewing weight. LiteRumble computes the heavier batch metrics (ANPP, NPP, KNNPBI, Vote) twice a day rather than on every update; the same split applies here (every-drain APS/Win%/Survival, daily batch for the rest) if full recompute proves slow.
 
 ### Ranked pool and result epochs
 
-- The leaderboard ranks only the **latest active version** of each bot (`status: active` in
-  `bots/index.json`, see the submission document). Superseded, retired, and disqualified versions
-  keep their facts and per-version detail shards but leave the ranked table, exactly like a
-  RoboRumble version bump.
-- Results are partitioned into **epochs by `behaviorVersion`** (the server-owned integer that
-  bumps only on game-observable changes; see the client document's Engine Pinning section). The
-  release version is irrelevant here: a GUI-only release, whatever its semver bump, keeps the
-  behavior version and therefore the epoch. A `behaviorVersion` bump opens a new epoch: the
-  ranked leaderboard is computed from the current epoch only, while old epochs remain browsable
-  archives. This is the honest consequence of "mixed game behavior corrupts comparability":
-  rather than pretending results across behavior versions are comparable, the rumble restarts
-  sampling and lets matchmaking (everything is suddenly under-sampled) rebuild the table
-  quickly.
+- The leaderboard ranks only the **latest active version** of each bot (`status: active` in `bots/index.json`, see the submission document). Superseded, retired, and disqualified versions keep their facts and per-version detail shards but leave the ranked table, exactly like a RoboRumble version bump.
+- Results are partitioned into **epochs by `behaviorVersion`** (the server-owned integer that bumps only on game-observable changes; see the client document's Engine Pinning section). The release version is irrelevant here: a GUI-only release, whatever its semver bump, keeps the behavior version and therefore the epoch. A `behaviorVersion` bump opens a new epoch: the ranked leaderboard is computed from the current epoch only, while old epochs remain browsable archives. This is the honest consequence of "mixed game behavior corrupts comparability": rather than pretending results across behavior versions are comparable, the rumble restarts sampling and lets matchmaking (everything is suddenly under-sampled) rebuild the table quickly.
 
 ### Matchmaking output
 
@@ -235,17 +182,9 @@ batch for the rest) if full recompute proves slow.
 }
 ```
 
-Priority rules, in order: pairings with zero samples (new bots rank fast), pairings below the
-sample target, pairings marked **unconfirmed-self-reported** (all samples came from clients owned
-by a participant; they stay listed until an independent client contributes, see the client
-document's trust section), then oldest-sampled pairings for slow refresh. The file is advice, not
-reservation (P6): stale reads and duplicate work are harmless by design.
+Priority rules, in order: pairings with zero samples (new bots rank fast), pairings below the sample target, pairings marked **unconfirmed-self-reported** (all samples came from clients owned by a participant; they stay listed until an independent client contributes, see the client document's trust section), then oldest-sampled pairings for slow refresh. The file is advice, not reservation (P6): stale reads and duplicate work are harmless by design.
 
-These rules deliberately mirror the classic RoboRumble server behavior (verified on the
-RoboWiki): pairings with fewer than 2 battles are always priority, low-battle-count pairings are
-offered with elevated probability thereafter, and the `targetSamplesPerPairing` value plays the
-role of the classic `BATTLESPERBOT` threshold. There is **no per-client contribution cap**, same
-as the classic rumble; per-pairing averaging makes extra samples harmless.
+These rules deliberately mirror the classic RoboRumble server behavior (verified on the RoboWiki): pairings with fewer than 2 battles are always priority, low-battle-count pairings are offered with elevated probability thereafter, and the `targetSamplesPerPairing` value plays the role of the classic `BATTLESPERBOT` threshold. There is **no per-client contribution cap**, same as the classic rumble; per-pairing averaging makes extra samples harmless.
 
 ### Leaderboard projection
 
@@ -265,49 +204,28 @@ as the classic rumble; per-pairing averaging makes extra samples harmless.
 }
 ```
 
-Per-bot detail shards (`leaderboard/bots/<name>-<version>.json`) hold the full per-pairing
-breakdown so the main payload stays small and a bot's detail page loads exactly one file.
+Per-bot detail shards (`leaderboard/bots/<name>-<version>.json`) hold the full per-pairing breakdown so the main payload stays small and a bot's detail page loads exactly one file.
 
 ### Client accountability projection
 
-`clients.json` carries per-client statistics: battles submitted, pairings covered, mean deviation
-from consensus on shared pairings, and flags. Moderators use it to decide quarantine; the
-dashboard can show a public "contributors" view, which doubles as recognition (another motivation
-lever alongside own-bot priority).
+`clients.json` carries per-client statistics: battles submitted, pairings covered, mean deviation from consensus on shared pairings, and flags. Moderators use it to decide quarantine; the dashboard can show a public "contributors" view, which doubles as recognition (another motivation lever alongside own-bot priority).
 
 ## Static Dashboard
 
-Plain `site/index.html` plus vanilla JS on Pages, fetching leaderboard JSON at runtime. No build
-step: the aggregator already produced the JSON, so the "site generator" is nothing. Client-side
-sort/search over a few hundred rows per game type is trivial. A bot or team row links to its
-detail shard. Pages exists on GitHub, GitLab, and Codeberg, and since the site is static files
-reading sibling JSON, it also works from any web server or locally from a checkout.
+Plain `site/index.html` plus vanilla JS on Pages, fetching leaderboard JSON at runtime. No build step: the aggregator already produced the JSON, so the "site generator" is nothing. Client-side sort/search over a few hundred rows per game type is trivial. A bot or team row links to its detail shard. Pages exists on GitHub, GitLab, and Codeberg, and since the site is static files reading sibling JSON, it also works from any web server or locally from a checkout.
 
 ## Forge Terms of Service
 
-Is storing results in a repo and running the pipeline on CI a misuse of GitHub? Assessment: **no,
-at this scale and shape**, but the design should stay deliberately inside the spirit of the terms:
+Is storing results in a repo and running the pipeline on CI a misuse of GitHub? Assessment: **no, at this scale and shape**, but the design should stay deliberately inside the spirit of the terms:
 
-- GitHub's Acceptable Use Policies restrict using the service as generic data/file storage or a
-  CDN **detached from a software project**, and disallow activity that places disproportionate
-  burden on infrastructure. GitHub Actions terms similarly expect workflows to relate to the
-  software project (their canonical negative example is crypto mining, not automation of an open
-  source project's own data).
-- This system is the opposite of detached storage: the results, scripts, and dashboard **are** the
-  open source project. Small text JSON at ~50 battles/day is negligible next to ordinary CI
-  artifacts, and "git scraping" repos with scheduled data-collecting workflows are a widespread,
-  accepted pattern.
+- GitHub's Acceptable Use Policies restrict using the service as generic data/file storage or a CDN **detached from a software project**, and disallow activity that places disproportionate burden on infrastructure. GitHub Actions terms similarly expect workflows to relate to the software project (their canonical negative example is crypto mining, not automation of an open source project's own data).
+- This system is the opposite of detached storage: the results, scripts, and dashboard **are** the open source project. Small text JSON at ~50 battles/day is negligible next to ordinary CI artifacts, and "git scraping" repos with scheduled data-collecting workflows are a widespread, accepted pattern.
 - Design choices that keep it that way, now load-bearing rather than incidental:
   - **Replays stay client-side** (client document): no binary growth, no storage-service smell.
-  - **Batched submissions and batch drains**: bounded issue/API traffic and one commit per drain
-    instead of thousands of micro-commits.
-  - **Compaction to an archive branch**: the working repo stays small (GitHub recommends staying
-    well under a few GB; this design stays under megabytes per year of text).
-  - **Modest CI cadence** (drains every 15-30 minutes, heavy batch metrics daily), far below any
-    fair-use threshold for a public repo.
-- The same reasoning holds for GitLab and Forgejo/Codeberg (Codeberg is the strictest about
-  non-project storage; a rumble is clearly a project). If a forge ever objects, principle P7 makes
-  relocation a config change plus the `wellknown/rumble.json` pointer.
+  - **Batched submissions and batch drains**: bounded issue/API traffic and one commit per drain instead of thousands of micro-commits.
+  - **Compaction to an archive branch**: the working repo stays small (GitHub recommends staying well under a few GB; this design stays under megabytes per year of text).
+  - **Modest CI cadence** (drains every 15-30 minutes, heavy batch metrics daily), far below any fair-use threshold for a public repo.
+- The same reasoning holds for GitLab and Forgejo/Codeberg (Codeberg is the strictest about non-project storage; a rumble is clearly a project). If a forge ever objects, principle P7 makes relocation a config change plus the `wellknown/rumble.json` pointer.
 
 ## Operations and Resilience
 

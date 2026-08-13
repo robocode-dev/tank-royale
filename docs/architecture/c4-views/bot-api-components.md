@@ -294,30 +294,30 @@ sequenceDiagram
     participant BB as BaseBot
     participant Dev as Your Bot Code
     participant IB as Intent<br/>Builder
-    
+
     Server->>WH: tick-event-for-bot
     WH->>EM: Deserialize
     EM->>EM: Create event objects
     SM->>SM: Update X, Y, heading, energy
-    
+
     BB->>Dev: onScannedBot(event)
     Dev->>Dev: Your event handler code
-    
+
     BB->>Dev: run()
     Dev->>Dev: Bot AI logic
     Dev->>Dev: getX(), getY(), getEnergy()
-    
+
     Dev->>Dev: setForwardSpeed(10)
     Dev->>Dev: setTurnRate(5)
     Dev->>Dev: fire(5)
-    
+
     Dev->>IB: Actions buffered
     IB->>IB: Validate actions
     IB->>IB: Serialize to bot-intent
-    
+
     IB->>WH: Send bot-intent
     WH->>Server: bot-intent message
-    
+
     rect rgba(200,200,200,0.2)
         Note over Server,Dev: Repeat 30x per second
     end
@@ -337,7 +337,7 @@ graph TD
     Dev["Your Bot Code<br/>(run, onScannedBot, etc)"]
     IB["Intent Builder<br/>(serialize)"]
     Send["WebSocket Handler<br/>(send)"]
-    
+
     Server -->|Raw message| WH
     WH -->|Parse| EM
     EM -->|ScannedBotEvent| SM
@@ -347,7 +347,7 @@ graph TD
     Dev -->|"setForwardSpeed()<br/>setTurnRate()<br/>fire()"| IB
     IB -->|Validate & serialize| Send
     Send -->|bot-intent| Server
-    
+
     style Server fill:#1168bd,color:#fff
     style WH fill:#438dd5,color:#fff
     style EM fill:#438dd5,color:#fff
@@ -392,18 +392,18 @@ public class MyBot extends BaseBot {
         double y = getY();
         double energy = getEnergy();
         double heading = getHeading();
-        
+
         // Bot AI logic
         if (energy > 50) {
             // Move forward
             setForwardSpeed(5);
-            
+
             // Rotate
             setTurnRate(2);
-            
+
             // Scan for enemies
             scan();
-            
+
             // Fire if detected anything
             if (hasScannedAnything()) {
                 fire(3);
@@ -414,18 +414,18 @@ public class MyBot extends BaseBot {
             setTurnRate(0);
         }
     }
-    
+
     @Override
     public void onScannedBot(ScannedBotEvent event) {
         // Called when radar detects opponent
         double enemyX = event.getX();
         double enemyY = event.getY();
         double distance = event.getDistance();
-        
+
         // Your response logic
         System.out.println("Enemy at distance: " + distance);
     }
-    
+
     @Override
     public void onHitByBullet(HitByBulletEvent event) {
         // Called when hit by bullet
@@ -460,5 +460,3 @@ public class MyBot extends BaseBot {
 - **[Booter Components (L3)](./booter-components.md)** — Booter internals
 - **[Recorder Components (L3)](./recorder-components.md)** — Recorder internals
 - **[System Context (L1)](./system-context.md)** — High-level system view
-
-

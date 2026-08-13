@@ -1,18 +1,20 @@
 ---
 id: ADR-0007
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Client Role Separation (Bot / Observer / Controller)
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0007: Client Role Separation (Bot / Observer / Controller)
 
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance).
+
 ## Context
 
-Multiple client types connect to the Tank Royale server with fundamentally different needs: bots competing in battles,
-spectators watching, and operators managing games.
+Multiple client types connect to the Tank Royale server with fundamentally different needs: bots competing in battles, spectators watching, and operators managing games.
 
 **Problem:** How to handle different client capabilities and permissions over a single WebSocket server?
 

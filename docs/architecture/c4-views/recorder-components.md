@@ -147,7 +147,7 @@ graph TD
     B["RecordingObserver<br/>• Connects as observer<br/>• Filters relevant events<br/>• Routes events to GameRecorder"]
     C["GameRecorder<br/>• Writes ND-JSON format<br/>• GZIP compression<br/>• Timestamped file names"]
     D["File System<br/>game-2026-02-11-14-30-00.battle.gz"]
-    
+
     A -->|WebSocket<br/>Observer Mode| B
     B --> C
     C --> D
@@ -192,7 +192,7 @@ The Recorder connects to the server as an **observer** (not a bot or controller)
 sequenceDiagram
     participant Recorder
     participant Server
-    
+
     Recorder->>Server: WebSocket Connect
     Server->>Recorder: ServerHandshake
     Recorder->>Server: ObserverHandshake
@@ -239,5 +239,3 @@ sequenceDiagram
 - **[Server Components (L3)](./server-components.md)** — Server internals
 - **[GUI Components (L3)](./gui-components.md)** — GUI internals (Replay Viewer)
 - **[Booter Components (L3)](./booter-components.md)** — Bot process management
-
-

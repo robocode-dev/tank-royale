@@ -235,14 +235,14 @@ This diagram shows the internal structure of the Server:
 
 ```mermaid
 graph TD
-    GLE["Game Loop Executor"] 
+    GLE["Game Loop Executor"]
     WH["WebSocket Handler"]
     BM["Bot Manager"]
     PE["Physics Engine"]
     ED["Event Dispatcher"]
     BAM["Battle Manager"]
     SK["Score Keeper"]
-    
+
     GLE -->|Send tick to bots| WH
     GLE -->|Send state to GUI| WH
     GLE -->|Track states| BM
@@ -269,14 +269,14 @@ graph TD
     ED["Event Dispatcher<br/>(generate events)"]
     SK["Score Keeper<br/>(update stats)"]
     Response["Broadcast Events<br/>(back to Bot)"]
-    
+
     Bot -->|Intent| WH
     WH -->|Route| GLE
     GLE -->|Apply| PE
     PE -->|Calculate| ED
     ED -->|Record| SK
     SK -->|Return| Response
-    
+
     style Bot fill:#85bbf0,color:#000
     style Response fill:#85bbf0,color:#000
     style WH fill:#438dd5,color:#fff
@@ -296,13 +296,13 @@ graph TD
     BAM["Battle Manager<br/>(check victory)"]
     SK["Score Keeper<br/>(record stats)"]
     WH["WebSocket Handler<br/>(broadcast to GUI)"]
-    
+
     PE -->|Results| ED
     ED -->|Events| BM
     BM -->|State| BAM
     BAM -->|Updates| SK
     SK -->|Full state| WH
-    
+
     style WH fill:#438dd5,color:#fff
     style PE fill:#438dd5,color:#fff
     style ED fill:#438dd5,color:#fff
@@ -364,5 +364,3 @@ graph TD
 - **[Recorder Components (L3)](./recorder-components.md)** — Recorder internals
 - **[Bot API Components (L3)](./bot-api-components.md)** — Bot API internals
 - **[System Context (L1)](./system-context.md)** — High-level system view
-
-

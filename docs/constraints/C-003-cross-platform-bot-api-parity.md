@@ -4,8 +4,8 @@ type: constraint
 status: active
 links: []
 title: Bot APIs are semantically identical across platforms; Java is the reference
-source: openspec/project.md "Bot API Rules (Non-negotiable)" (absorbed at CH-001), ADR-0003, ADR-0004
-enforcement: machine
+source: docs/decisions/0003-cross-platform-bot-api-strategy.md, docs/decisions/0004-java-reference-implementation.md
+enforcement: human
 provenance: inferred
 reversal-cost: high
 ---
@@ -20,4 +20,8 @@ All official Bot APIs (.NET, Python, TypeScript) must be 1:1 semantically equiva
 
 Rationale: maintainability, testing, documentation, and learning — a bot author switching language must not relearn behavior.
 
-**Enforcement:** the shared cross-platform test definitions (`bot-api/tests`, ADR-0038) hold the overlap they cover; API surface and semantics beyond them are held by maintainer review (so partly `human` until coverage closes the gap).
+**Machine-covered portion:** the shared cross-platform test definitions (`bot-api/tests`, ADR-0038) hold the overlap they cover.
+
+**Residual:** API surface and semantics beyond the shared tests remain maintainer-reviewed and human-enforced.
+
+**Promotion trigger:** complete automated parity coverage for every official Bot API surface, default, validation rule, error behavior, event ordering rule, and timing semantic.

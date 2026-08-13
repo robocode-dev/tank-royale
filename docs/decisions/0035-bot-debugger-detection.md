@@ -1,13 +1,16 @@
 ---
 id: ADR-0035
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Bot API Debugger Detection
-accepted-by: Flemming N. Larsen (2026-04-07, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0035: Bot API Debugger Detection
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-04-07, pre-Cliewen MADR acceptance).
 
 ## Context
 

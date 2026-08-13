@@ -1,18 +1,20 @@
 ---
 id: ADR-0004
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Java as Authoritative Reference Implementation
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0004: Java as Authoritative Reference Implementation
 
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance).
+
 ## Context
 
-Tank Royale supports Bot APIs in Java, .NET/C#, Python, and TypeScript. When implementations diverge or
-ambiguity arises, a single authoritative source is needed.
+Tank Royale supports Bot APIs in Java, .NET/C#, Python, and TypeScript. When implementations diverge or ambiguity arises, a single authoritative source is needed.
 
 **Problem:** Which platform's behavior is canonical when Bot APIs disagree?
 
@@ -20,8 +22,7 @@ ambiguity arises, a single authoritative source is needed.
 
 ## Decision
 
-The **Java Bot API is the authoritative reference implementation**. All other Bot APIs (Python, .NET, TypeScript) must
-be semantically identical to Java.
+The **Java Bot API is the authoritative reference implementation**. All other Bot APIs (Python, .NET, TypeScript) must be semantically identical to Java.
 
 **Rules:**
 

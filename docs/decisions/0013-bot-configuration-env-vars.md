@@ -1,18 +1,20 @@
 ---
 id: ADR-0013
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Bot Configuration via Environment Variables
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0013: Bot Configuration via Environment Variables
 
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance).
+
 ## Context
 
-Bots need to discover the server and provide identity information. The configuration mechanism must work across Java,
-Python, .NET, and containerized environments.
+Bots need to discover the server and provide identity information. The configuration mechanism must work across Java, Python, .NET, and containerized environments.
 
 **Problem:** How should bots receive connection and identity configuration?
 
@@ -22,9 +24,7 @@ Python, .NET, and containerized environments.
 
 Use **environment variables** as the primary configuration mechanism, with constructor parameters as override.
 
-**Variables:** `SERVER_URL`, `SERVER_SECRET`, `BOT_NAME`, `BOT_VERSION`, `BOT_AUTHORS`, `BOT_GAME_TYPES`,
-`BOT_INITIAL_POS`, `TEAM_ID`, `TEAM_NAME`, `BOT_BOOTED`, and others. System properties (`-Dserver.url`) serve as
-fallback for `SERVER_URL` and `SERVER_SECRET`.
+**Variables:** `SERVER_URL`, `SERVER_SECRET`, `BOT_NAME`, `BOT_VERSION`, `BOT_AUTHORS`, `BOT_GAME_TYPES`, `BOT_INITIAL_POS`, `TEAM_ID`, `TEAM_NAME`, `BOT_BOOTED`, and others. System properties (`-Dserver.url`) serve as fallback for `SERVER_URL` and `SERVER_SECRET`.
 
 ---
 

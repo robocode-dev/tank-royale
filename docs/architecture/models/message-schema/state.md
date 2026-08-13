@@ -21,14 +21,14 @@ graph TD
     Events[Events] --> BotState
     Events --> BulletState
     Events --> Results
-    
+
     Commands[Commands] --> GameSetup
     Commands --> BotAddress
     Commands --> InitialPosition
-    
+
     Handshakes[Handshakes] --> BotInfo
     Handshakes --> Participant
-    
+
     BotState --> Color
     GameSetup --> Color
 ```
@@ -87,7 +87,7 @@ classDiagram
         +Color tracksColor
         +Color gunColor
     }
-    
+
     class BotStateWithId {
         +int id
         +boolean isDroid
@@ -96,7 +96,7 @@ classDiagram
         +number y
         ...all BotState fields...
     }
-    
+
     class BulletState {
         +int bulletId
         +int ownerId
@@ -107,7 +107,7 @@ classDiagram
         +number speed
         +Color color
     }
-    
+
     class GameSetup {
         +string gameType
         +int arenaWidth
@@ -120,7 +120,7 @@ classDiagram
         +int turnTimeout
         +int readyTimeout
     }
-    
+
     class Participant {
         +int id
         +string sessionId
@@ -138,7 +138,7 @@ classDiagram
         +string teamName
         +string teamVersion
     }
-    
+
     BotState <|-- BotStateWithId
     BotState *-- Color
     BulletState *-- Color
@@ -886,4 +886,3 @@ classDiagram
 ---
 
 **Last Updated:** 2026-02-12
-

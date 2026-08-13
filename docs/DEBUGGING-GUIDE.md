@@ -10,16 +10,13 @@ reversal-cost: low
 
 # Debugging Guide
 
-How to investigate and reproduce bugs in Tank Royale. This guide covers the
-tools and techniques available at each layer of the system.
+How to investigate and reproduce bugs in Tank Royale. This guide covers the tools and techniques available at each layer of the system.
 
 ---
 
 ## Test layers and what they cover
 
-Tank Royale has three test layers. Most bugs can be isolated and fixed using
-only Layers 1 and 2. The Battle Runner (Layer 3) is reserved for scenarios that
-cannot be reproduced without a live game.
+Tank Royale has three test layers. Most bugs can be isolated and fixed using only Layers 1 and 2. The Battle Runner (Layer 3) is reserved for scenarios that cannot be reproduced without a live game.
 
 | Layer | What it tests | Tools | Speed |
 |-------|--------------|-------|-------|
@@ -33,11 +30,9 @@ cannot be reproduced without a live game.
 
 ## Layer 1 — Server debugging
 
-Server physics logic is pure (no I/O). To debug a collision, scoring, or
-movement bug:
+Server physics logic is pure (no I/O). To debug a collision, scoring, or movement bug:
 
-1. Write a Kotest test in `server/src/test/kotlin/` that calls the function
-   directly with the problematic inputs.
+1. Write a Kotest test in `server/src/test/kotlin/` that calls the function directly with the problematic inputs.
 2. Run it: `.\gradlew :server:test --tests "*.CollisionDetectorTest"`
 3. Use IntelliJ's debugger to step through the physics code.
 
@@ -54,9 +49,7 @@ movement bug:
 
 ## Layer 2 — Bot API debugging
 
-Bot API tests use a MockedServer to simulate the server without a real
-WebSocket connection. See [`bot-api/tests/TESTING-GUIDE.md`](../bot-api/tests/TESTING-GUIDE.md)
-for the full intent-capture protocol.
+Bot API tests use a MockedServer to simulate the server without a real WebSocket connection. See [`bot-api/tests/TESTING-GUIDE.md`](../bot-api/tests/TESTING-GUIDE.md) for the full intent-capture protocol.
 
 ### Quick commands
 
@@ -78,24 +71,17 @@ cd bot-api/typescript && npx vitest run --reporter=verbose
 
 When a Bot API test hangs, it is almost always a missed gate call. Checklist:
 
-1. **Is `continueBotIntent()` called?** Without it, the MockedServer handler
-   blocks forever.
-2. **Is `resetBotIntentLatch()` called before the capture cycle?** Stale
-   permits cause races.
-3. **Are you using `Bot` (not `BaseBot`)?** `Bot` sends automatic intents
-   after each tick — drain them before capturing.
-4. **Are you using `goAsync()` (not `go()`)?** `go()` from the test thread
-   triggers `StopRogueThread` or deadlocks.
-5. **Thread dump.** Look for threads blocked in `acquire()`/`Wait()`/`wait()`
-   inside MockedServer gate methods.
+1. **Is `continueBotIntent()` called?** Without it, the MockedServer handler blocks forever.
+2. **Is `resetBotIntentLatch()` called before the capture cycle?** Stale permits cause races.
+3. **Are you using `Bot` (not `BaseBot`)?** `Bot` sends automatic intents after each tick — drain them before capturing.
+4. **Are you using `goAsync()` (not `go()`)?** `go()` from the test thread triggers `StopRogueThread` or deadlocks.
+5. **Thread dump.** Look for threads blocked in `acquire()`/`Wait()`/`wait()` inside MockedServer gate methods.
 
 ---
 
 ## Layer 3 — Battle Runner (live game debugging)
 
-Use the Battle Runner when the bug requires real server + bot interaction —
-timing-dependent issues, multi-bot coordination, or "it only happens in a real
-game."
+Use the Battle Runner when the bug requires real server + bot interaction — timing-dependent issues, multi-bot coordination, or "it only happens in a real game."
 
 ### When to use the Battle Runner
 
@@ -123,8 +109,7 @@ BattleRunner.create { embeddedServer() }.use { runner ->
 
 ### Debug mode — step through turns
 
-Debug mode pauses the server after every turn, letting you inspect state before
-advancing.
+Debug mode pauses the server after every turn, letting you inspect state before advancing.
 
 ```kotlin
 val owner = Any()
@@ -145,15 +130,13 @@ runner.startBattleAsync(setup, bots).use { handle ->
 
 ### Breakpoint mode — wait for a specific bot
 
-Enable breakpoint mode so the server waits for a bot's intent instead of
-issuing a `SkippedTurnEvent` when the turn timeout expires:
+Enable breakpoint mode so the server waits for a bot's intent instead of issuing a `SkippedTurnEvent` when the turn timeout expires:
 
 ```kotlin
 handle.setBotPolicy(botId, breakpointEnabled = true)
 ```
 
-Tip: set `ROBOCODE_DEBUG=true` env var on the bot process to simulate a
-debugger being attached.
+Tip: set `ROBOCODE_DEBUG=true` env var on the bot process to simulate a debugger being attached.
 
 ### Intent diagnostics — capture raw bot intents
 
@@ -211,8 +194,7 @@ Bug reported
 ### Java
 
 - Use IntelliJ's debugger for server and Bot API code.
-- `.\gradlew :bot-api:java:test --debug-jvm` starts a JDWP listener on port
-  5005 for remote attach.
+- `.\gradlew :bot-api:java:test --debug-jvm` starts a JDWP listener on port 5005 for remote attach.
 
 ### C\#
 
@@ -221,17 +203,13 @@ Bug reported
 
 ### Python
 
-- `python -m pytest tests/ -k "test_name" -s --timeout=300` disables output
-  capture and extends timeout for interactive debugging.
+- `python -m pytest tests/ -k "test_name" -s --timeout=300` disables output capture and extends timeout for interactive debugging.
 - Use `import pdb; pdb.set_trace()` or `breakpoint()` in test code.
-- Beware: Python's asyncio event loop in tests runs on a daemon thread. If
-  the test hangs, the `os._exit(0)` fixture in `conftest.py` will force-kill
-  the process after all tests finish.
+- Beware: Python's asyncio event loop in tests runs on a daemon thread. If the test hangs, the `os._exit(0)` fixture in `conftest.py` will force-kill the process after all tests finish.
 
 ### Kotlin (Server)
 
-- `.\gradlew :server:test --tests "*.TestClassName" --debug-jvm` for JDWP
-  debugging.
+- `.\gradlew :server:test --tests "*.TestClassName" --debug-jvm` for JDWP debugging.
 - Kotest tests can be run directly from IntelliJ with the Kotest plugin.
 
 ---

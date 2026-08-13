@@ -15,36 +15,19 @@ reversal-cost: low
 
 ## Scope
 
-The documentation the rumble ships for its users: what documents exist, who they serve, where
-they live, and the onboarding journeys they support. The other design documents describe how the
-system works; this one describes how a person finds out what to do. Documentation is
-participation infrastructure: every workflow that lacks a guide costs participants, and the
-rumble's health is measured in participants.
+The documentation the rumble ships for its users: what documents exist, who they serve, where they live, and the onboarding journeys they support. The other design documents describe how the system works; this one describes how a person finds out what to do. Documentation is participation infrastructure: every workflow that lacks a guide costs participants, and the rumble's health is measured in participants.
 
 ## Principles Applied to Docs
 
-- **Separate internal docs from published docs.** In the Tank Royale repository, `/docs` is for
-  architecture, design, the corpus records, and developer-facing material for maintainers, coding agents,
-  and contributors. Published documentation for bot developers and battle contributors belongs
-  under `/web`, consistent with the rest of the project.
-- **Published docs fork with the system (P2).** User-facing Rumble documentation is plain
-  Markdown under `/web/docs/rumble/` and is published with the Tank Royale website. A fork gets
-  the complete manual automatically, and docs stay versioned in lockstep with the behavior they
-  describe.
-- **Repo-local policy stays near the repo it governs.** Submission rules that GitHub surfaces
-  during PRs, such as `CONTRIBUTING.md` and `GOVERNANCE.md`, live at the root of `rumble-bots`.
-  Data-repo operational material that is primarily for maintainers may live under
-  `rumble-data/docs/`.
-- **Task-oriented quickstarts first, reference second.** Each audience gets one "do this now"
-  path with copy-paste commands; background and policy are linked, not inlined.
-- **Docs follow the Tank Royale version.** Both rumble repositories are tagged at every engine
-  pin change. The docs always describe the currently pinned engine, and old tags serve old
-  readers without per-section "as of" markers.
+- **Separate internal docs from published docs.** In the Tank Royale repository, `/docs` is for architecture, design, the corpus records, and developer-facing material for maintainers, coding agents, and contributors. Published documentation for bot developers and battle contributors belongs under `/web`, consistent with the rest of the project.
+- **Published docs fork with the system (P2).** User-facing Rumble documentation is plain Markdown under `/web/docs/rumble/` and is published with the Tank Royale website. A fork gets the complete manual automatically, and docs stay versioned in lockstep with the behavior they describe.
+- **Repo-local policy stays near the repo it governs.** Submission rules that GitHub surfaces during PRs, such as `CONTRIBUTING.md` and `GOVERNANCE.md`, live at the root of `rumble-bots`. Data-repo operational material that is primarily for maintainers may live under `rumble-data/docs/`.
+- **Task-oriented quickstarts first, reference second.** Each audience gets one "do this now" path with copy-paste commands; background and policy are linked, not inlined.
+- **Docs follow the Tank Royale version.** Both rumble repositories are tagged at every engine pin change. The docs always describe the currently pinned engine, and old tags serve old readers without per-section "as of" markers.
 
 ## Audiences and Their Journeys
 
-Three audiences, three journeys. Each journey below is also the table of contents of that
-audience's quickstart.
+Three audiences, three journeys. Each journey below is also the table of contents of that audience's quickstart.
 
 ```mermaid
 flowchart TD
@@ -96,23 +79,12 @@ flowchart TD
 
 Notes:
 
-- Internal Rumble architecture and ADR material belongs under `docs/`, because it is for game
-  developers, contributors, and coding agents. User-facing docs for bot authors and battle
-  contributors belong under `web/`.
-- The moderator handbook doubles as the **bus-factor runbook** (P8): everything a successor needs
-  is a document, not tribal knowledge. The quarterly fork drill includes following the docs
-  cold, which keeps them honest.
-- The FAQ owns the explanations that would otherwise be repeated in issues: what APS means, how
-  long until a new bot is ranked, why results were rejected, what an epoch reset is, and why v1
-  supports 1v1, TwinDuel, and Melee but not bytecode-size categories.
-- Error messages link into the docs: every validation rejection and client refusal (engine-pin
-  mismatch, unregistered account, license missing) carries the URL of the section that resolves
-  it. Documentation nobody can find might as well not exist; error messages are where users
-  actually are.
-- `rumble-bots` ships a per-platform template bot directory (copy, rename, go) as the first step
-  of the author quickstart, derived from the sample bots in the main Tank Royale repository.
-- The dashboard links metric column headers to the FAQ's explanations rather than maintaining
-  its own tooltip machinery; one place to keep correct, no drift between site and docs.
+- Internal Rumble architecture and ADR material belongs under `docs/`, because it is for game developers, contributors, and coding agents. User-facing docs for bot authors and battle contributors belong under `web/`.
+- The moderator handbook doubles as the **bus-factor runbook** (P8): everything a successor needs is a document, not tribal knowledge. The quarterly fork drill includes following the docs cold, which keeps them honest.
+- The FAQ owns the explanations that would otherwise be repeated in issues: what APS means, how long until a new bot is ranked, why results were rejected, what an epoch reset is, and why v1 supports 1v1, TwinDuel, and Melee but not bytecode-size categories.
+- Error messages link into the docs: every validation rejection and client refusal (engine-pin mismatch, unregistered account, license missing) carries the URL of the section that resolves it. Documentation nobody can find might as well not exist; error messages are where users actually are.
+- `rumble-bots` ships a per-platform template bot directory (copy, rename, go) as the first step of the author quickstart, derived from the sample bots in the main Tank Royale repository.
+- The dashboard links metric column headers to the FAQ's explanations rather than maintaining its own tooltip machinery; one place to keep correct, no drift between site and docs.
 
 ## Onboarding Friction Budget
 
@@ -123,5 +95,4 @@ The two journeys that must stay short, measured in steps a newcomer performs:
 | First bot submitted | copy template, write bot, set license field, open PR | Validation failures must be self-explanatory; the guide shows the exact commands to run `validate_bot.py` locally first |
 | First battle contributed | pull container, onboarding PR, paste config, run | The onboarding PR is the one human-gated step (spam defense, aggregation document); its template must make review a 30-second approval |
 
-Anything that grows these lists needs a corresponding cut elsewhere; the friction budget is a
-review criterion for future design changes.
+Anything that grows these lists needs a corresponding cut elsewhere; the friction budget is a review criterion for future design changes.

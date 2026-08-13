@@ -1,19 +1,22 @@
 ---
 id: ADR-0030
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Template-based Booting and Base Convention
-accepted-by: Flemming N. Larsen (2026-04-05, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0030: Template-based Booting and Base Convention
 
+**Legacy source acceptance:** Flemming N. Larsen (2026-04-05, pre-Cliewen MADR acceptance).
+
 ## Context and Problem Statement
 
-The Robocode Tank Royale booter needs a flexible way to start bots on various platforms (JVM, .NET, Python, etc.) without hardcoding the launch commands in the booter's core logic. 
+The Robocode Tank Royale booter needs a flexible way to start bots on various platforms (JVM, .NET, Python, etc.) without hardcoding the launch commands in the booter's core logic.
 
-**Problem:** 
+**Problem:**
 1. How to support multiple platforms without creating OS-specific scripts (`.sh`, `.bat`) for every bot?
 2. How to minimize redundancy in the bot configuration files where the entry point often matches the directory name?
 
@@ -24,7 +27,7 @@ The Robocode Tank Royale booter needs a flexible way to start bots on various pl
     - `${botName}`: The display name of the bot.
     - `${classPath}`: Classpath for JVM bots (e.g., `../lib/*`).
 2.  **`base` Property:** Use the `base` property in the bot's JSON configuration as the primary identifier for the entry point (replacing any previous platform-specific fields).
-3.  **Convention-over-Configuration:** 
+3.  **Convention-over-Configuration:**
     - The `base` property is optional.
     - If missing, the Booter automatically uses the **name of the parent directory** as the default value for `base`.
     - Boot templates append the appropriate file extension (e.g., `.java`, `.py`) or command prefix based on the platform.

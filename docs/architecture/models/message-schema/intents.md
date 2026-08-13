@@ -43,7 +43,7 @@ classDiagram
         <<abstract>>
         +string type
     }
-    
+
     class BotIntent {
         +string type = "bot-intent"
         +number turnRate
@@ -64,13 +64,13 @@ classDiagram
         +Color tracksColor
         +Color gunColor
     }
-    
+
     class TeamMessage {
         +string type = "team-message"
         +string message
         +int receiverId
     }
-    
+
     Message <|-- BotIntent
     Message <|-- TeamMessage
 ```
@@ -259,17 +259,17 @@ gunTurnRate = -10.0
 sequenceDiagram
     participant Bot
     participant Server
-    
+
     Server->>Bot: tick-event-for-bot {turn: 42, botState: {...}, events: [...]}
-    
+
     Note over Bot: Process events<br/>Calculate strategy<br/>Decide actions
-    
+
     Bot->>Server: bot-intent {turnRate: 10, firepower: 3}
-    
+
     Note over Server: Wait for all bots<br/>(max 30ms at 30 TPS)
-    
+
     Note over Server: Apply intents<br/>Update physics<br/>Detect collisions<br/>Generate events
-    
+
     Server->>Bot: tick-event-for-bot {turn: 43, ...}
 ```
 
@@ -531,4 +531,3 @@ if (botState.gunHeat === 0 && targetLocked) {
 ---
 
 **Last Updated:** 2026-02-12
-

@@ -3,28 +3,20 @@
 > **Status: DRAFT** - design direction captured. The next step is to convert this design into an
 > active plan (P-xxx) with ordered changes (CH-xxx) before implementation starts.
 
-This is the coordinating umbrella document for the design of an automated, serverless,
-decentralized, community-driven tournament system for Robocode Tank Royale. It holds the overall
-idea, the design principles, and the map of the detailed design documents. Details live in the
-sub-documents; this document should stay short and stable.
+This is the coordinating umbrella document for the design of an automated, serverless, decentralized, community-driven tournament system for Robocode Tank Royale. It holds the overall idea, the design principles, and the map of the detailed design documents. Details live in the sub-documents; this document should stay short and stable.
 
 ## Vision
 
-A continuously running, community-driven league (in the spirit of the classic RoboRumble and
-LiteRumble) where:
+A continuously running, community-driven league (in the spirit of the classic RoboRumble and LiteRumble) where:
 
 - Bot authors submit bot **source code** via pull requests.
 - Community members run battles on **their own machines** using a small rumble client.
-- Results are collected, aggregated into rankings (APS as the primary metric), and published on a
-  static dashboard.
-- The entire system (bots, results, ranking logic, dashboard) lives **inside Git repositories**,
-  with automation provided by the forge's CI (GitHub Actions primarily, portable to GitLab CI and
-  Forgejo/Gitea Actions).
+- Results are collected, aggregated into rankings (APS as the primary metric), and published on a static dashboard.
+- The entire system (bots, results, ranking logic, dashboard) lives **inside Git repositories**, with automation provided by the forge's CI (GitHub Actions primarily, portable to GitLab CI and Forgejo/Gitea Actions).
 
 ## Design Principles
 
-These principles apply to every sub-document. A design that violates one of them needs an explicit,
-written justification.
+These principles apply to every sub-document. A design that violates one of them needs an explicit, written justification.
 
 | # | Principle | Meaning |
 |---|-----------|---------|
@@ -78,9 +70,7 @@ Two repositories under a community organization:
 | `rumble-bots` | Bot source in booter-convention folders, submission policy, validation CI | Community via PR, moderators merge |
 | `rumble-data` | Raw results, projections, aggregation scripts, matchmaking output, dashboard | CI only (single writer) |
 
-Rationale for the split: the bots repo has human-speed, review-gated history; the data repo
-accumulates thousands of machine commits and needs periodic compaction. Mixing them would make the
-bots repo unpleasant to fork and review.
+Rationale for the split: the bots repo has human-speed, review-gated history; the data repo accumulates thousands of machine commits and needs periodic compaction. Mixing them would make the bots repo unpleasant to fork and review.
 
 ## Design Documents
 
@@ -93,8 +83,7 @@ bots repo unpleasant to fork and review.
 
 ## Change Proposal Roadmap
 
-Changes (CH-xxx, via the `clue-delta` loop) should be created in this order; each stops at its
-proposal until the maintainer approves.
+Changes (CH-xxx, via the `clue-delta` loop) should be created in this order; each stops at its proposal until the maintainer approves.
 
 | Order | Change | Purpose | Depends on |
 |-------|--------|---------|------------|
@@ -104,9 +93,7 @@ proposal until the maintainer approves.
 | 4 | `create-rumble-client` | Build the ranked/practice client, local journal, replay evidence store, container, and issue-ops submission transport; defer fork-PR submission until `rumble-data` supports it. | `rumble-bots` catalog and `rumble-data` engine/matchmaking files |
 | 5 | `publish-rumble-docs` | Publish the user guides, onboarding flow, moderator handbook, FAQ, dashboard participation page, ADRs, and contributor-facing architecture docs. | Interfaces from the previous proposals |
 
-The first proposal is intentionally a Tank Royale preparation change, not a Rumble implementation.
-It should make the existing engine, schema, Battle Runner, and bot metadata ready for the later
-repositories without creating those repositories.
+The first proposal is intentionally a Tank Royale preparation change, not a Rumble implementation. It should make the existing engine, schema, Battle Runner, and bot metadata ready for the later repositories without creating those repositories.
 
 ## Building Blocks Already in This Repository
 
@@ -121,8 +108,7 @@ The rumble does not start from scratch. These existing modules are the foundatio
 
 ## Design Directions
 
-These directions keep the sub-documents consistent and should be reflected in the change
-proposals:
+These directions keep the sub-documents consistent and should be reflected in the change proposals:
 
 | Direction | Where detailed |
 |-----------|----------------|
@@ -166,18 +152,13 @@ Tank Royale Rumble should use the classic community names for ranked game types:
 | `Melee` | LiteRumble `meleerumble`; classic Robocode `meleerumble.txt` | Multi-bot category: 10 individual bots, 35 rounds, 1000 x 1000 battlefield in classic Robocode. |
 | `TwinDuel` | LiteRumble `twinduel`; classic Robocode `twinduel.txt`; RoboWiki "Twin Duel" | Team category where each participant is a two-bot twin team; 75 rounds, 800 x 800 battlefield in classic Robocode. Use `TwinDuel` / `twinduel`, not `2v2`, so it is not confused with arbitrary two-bot teams. |
 
-Classic Robocode also has `TeamRumble` (`teamrumble.txt`), but Tank Royale Rumble v1 should not
-include a general team category. Mini, micro, nano, and giga variants are also excluded from v1
-because their classic definitions depend on bytecode-size limits.
+Classic Robocode also has `TeamRumble` (`teamrumble.txt`), but Tank Royale Rumble v1 should not include a general team category. Mini, micro, nano, and giga variants are also excluded from v1 because their classic definitions depend on bytecode-size limits.
 
 References:
 
-- [LiteRumble home](https://literumble.appspot.com/) lists `roborumble`, `meleerumble`,
-  `twinduel`, `teamrumble`, and size-limited variants.
-- [RoboWiki: Contributing to RoboRumble](https://robowiki.net/wiki/RoboRumble/Contributing_to_RoboRumble)
-  names the classic runners: `roborumble`, `meleerumble`, `teamrumble`, and `twinduel`.
-- Classic Robocode local configs: `C:\Code\robocode\robocode.content\src\main\resources\roborumble\roborumble.txt`,
-  `meleerumble.txt`, `teamrumble.txt`, and `twinduel.txt`.
+- [LiteRumble home](https://literumble.appspot.com/) lists `roborumble`, `meleerumble`, `twinduel`, `teamrumble`, and size-limited variants.
+- [RoboWiki: Contributing to RoboRumble](https://robowiki.net/wiki/RoboRumble/Contributing_to_RoboRumble) names the classic runners: `roborumble`, `meleerumble`, `teamrumble`, and `twinduel`.
+- Classic Robocode local configs: `C:\Code\robocode\robocode.content\src\main\resources\roborumble\roborumble.txt`, `meleerumble.txt`, `teamrumble.txt`, and `twinduel.txt`.
 
 ## Glossary
 

@@ -27,12 +27,12 @@ stateDiagram-v2
     GAME_RUNNING --> GAME_ENDED: Victory or max turns
     GAME_PAUSED --> GAME_ENDED: stop-game
     GAME_ENDED --> [*]: Cleanup
-    
+
     note right of GAME_RUNNING
         30 TPS turn loop
         ~33ms per turn
     end note
-    
+
     note right of GAME_PAUSED
         pauseCause: PAUSED | DEBUG | BREAKPOINT
         PAUSED: manual pause-game
@@ -45,8 +45,7 @@ stateDiagram-v2
 
 ## Phase 1: WAIT_FOR_PARTICIPANTS
 
-**Duration:** Variable (seconds to minutes)  
-**Goal:** Collect all bots that will participate in battle
+**Duration:** Variable (seconds to minutes) **Goal:** Collect all bots that will participate in battle
 
 ### Sequence Diagram
 
@@ -56,23 +55,23 @@ sequenceDiagram
     participant Bot2
     participant Server
     participant GUI
-    
+
     Bot1->>Server: WebSocket connect
     Server->>Bot1: server-handshake {sessionId}
     Bot1->>Server: bot-handshake {sessionId, name, version}
-    
+
     Note over Server: Validate bot credentials
-    
+
     Server->>GUI: bot-list-update (Bot1 joined)
     GUI-->>GUI: Display Bot1 in lobby
-    
+
     Bot2->>Server: WebSocket connect
     Server->>Bot2: server-handshake {sessionId}
     Bot2->>Server: bot-handshake {sessionId, name, version}
-    
+
     Server->>GUI: bot-list-update (Bot2 joined)
     GUI-->>GUI: Display Bot2 in lobby
-    
+
     Note over Server: Waiting for more bots...<br/>or controller starts game
 ```
 
@@ -123,8 +122,7 @@ Move to **WAIT_FOR_READY** when:
 
 ## Phase 2: WAIT_FOR_READY
 
-**Duration:** Very short (seconds)  
-**Goal:** Notify selected bots that battle is starting
+**Duration:** Very short (seconds) **Goal:** Notify selected bots that battle is starting
 
 ### Sequence Diagram
 
@@ -135,23 +133,23 @@ sequenceDiagram
     participant Bot1
     participant Bot2
     participant Observer
-    
+
     Controller->>Server: start-game {selectedBotIds, arenaSettings, gameSettings}
-    
+
     Note over Server: Transition to WAIT_FOR_READY<br/>Select bots, initialize battle state
-    
+
     Server->>Bot1: game-started-event-for-bot {battleId, arena, opponents}
     Server->>Bot2: game-started-event-for-bot {battleId, arena, opponents}
     Server->>Observer: game-started-event-for-observer {battleId, arena, bots}
-    
+
     Bot1->>Bot1: Fire onGameStarted handler
     Bot2->>Bot2: Fire onGameStarted handler
-    
+
     Note over Bot1,Bot2: onGameStarted fires BEFORE<br/>bot-ready is sent (fix: https://github.com/robocode-dev/tank-royale/issues/202)<br/>Ensures user init runs first
-    
+
     Bot1->>Server: bot-ready
     Bot2->>Server: bot-ready
-    
+
     Note over Server: All bots ready<br/>Transition to GAME_RUNNING
 ```
 
@@ -232,9 +230,7 @@ Move to **GAME_RUNNING** when all selected bots send `bot-ready`
 
 ## Phase 3: GAME_RUNNING
 
-**Duration:** Variable (seconds to minutes)  
-**TPS:** 30 turns per second (~33ms per turn)  
-**Goal:** Execute battle until victory condition
+**Duration:** Variable (seconds to minutes) **TPS:** 30 turns per second (~33ms per turn) **Goal:** Execute battle until victory condition
 
 ### High-Level Sequence
 
@@ -244,21 +240,21 @@ sequenceDiagram
     participant Bot1
     participant Bot2
     participant Observer
-    
+
     loop Each Turn (30x per second)
         Server->>Bot1: tick-event-for-bot
         Server->>Bot2: tick-event-for-bot
         Server->>Observer: tick-event-for-observer
-        
+
         Bot1->>Bot1: Process events
         Bot2->>Bot2: Process events
-        
+
         Bot1->>Server: bot-intent
         Bot2->>Server: bot-intent
-        
+
         Note over Server: Update physics<br/>Check collisions<br/>Generate events
     end
-    
+
     alt Victory Condition Met
         Server->>Bot1: game-ended-event-for-bot
         Server->>Bot2: game-ended-event-for-bot
@@ -286,7 +282,7 @@ Key points:
 ```
 On each turn:
   alive_count = count(bots where status == RUNNING)
-  
+
   if alive_count == 1:
     winner = last alive bot
     transition to GAME_ENDED
@@ -311,17 +307,17 @@ sequenceDiagram
     participant Server
     participant Bots
     participant Observer
-    
+
     Controller->>Server: pause-game
-    
+
     Note over Server: Pause turn loop<br/>Stop sending tick events
-    
+
     Server->>Observer: game-paused-event {pauseCause: PAUSED}
-    
+
     Note over Bots: Waiting for next tick<br/>(unaware of pause)
-    
+
     Controller->>Server: resume-game
-    
+
     Note over Server: Resume turn loop
     Server->>Bots: tick-event (resumes as normal)
     Server->>Observer: game-resumed-event
@@ -337,25 +333,25 @@ sequenceDiagram
     participant Server
     participant Bot
     participant Observer
-    
+
     Controller->>Server: enable-debug-mode
     Note over Server: Debug mode = ON
-    
+
     Note over Server: Turn N
     Server->>Bot: tick-event-for-bot (turn N)
     Bot->>Server: bot-intent
     Note over Server: Process turn → PAUSE
     Server->>Observer: game-paused-event {pauseCause: DEBUG}
-    
+
     Note over Controller: Developer inspects state
-    
+
     Controller->>Server: next-turn
     Note over Server: Turn N+1
     Server->>Bot: tick-event-for-bot (turn N+1)
     Bot->>Server: bot-intent
     Note over Server: Process turn → PAUSE
     Server->>Observer: game-paused-event {pauseCause: DEBUG}
-    
+
     Controller->>Server: resume-game
     Note over Server: Debug mode = OFF, auto-advance resumes
     Server->>Observer: game-resumed-event
@@ -372,23 +368,23 @@ sequenceDiagram
     participant BotX as Bot X (breakpoint mode)
     participant BotY as Bot Y (normal)
     participant Observer
-    
+
     Controller->>Server: bot-policy-update {botId: X, breakpointEnabled: true}
     Note over Server: Bot X → breakpoint mode ON
-    
+
     Note over Server: Turn N
     Server->>BotX: tick-event-for-bot (turn N)
     Server->>BotY: tick-event-for-bot (turn N)
-    
+
     BotY->>Server: bot-intent
     Note over BotX: Breakpoint hit — thread frozen
-    
+
     Note over Server: Turn timeout expires<br/>Bot Y responded ✓<br/>Bot X missing → breakpoint mode → PAUSE
     Server->>Observer: game-paused-event {pauseCause: BREAKPOINT}
-    
+
     Note over Controller: Developer steps through Bot X in IDE
     BotX->>Server: bot-intent (after resume)
-    
+
     Note over Server: Bot X responded → process turn → continue
     Server->>Observer: game-resumed-event
 ```
@@ -463,8 +459,7 @@ sequenceDiagram
 
 ## Phase 4: GAME_ENDED
 
-**Duration:** Seconds (cleanup)  
-**Goal:** Distribute results and clean up battle
+**Duration:** Seconds (cleanup) **Goal:** Distribute results and clean up battle
 
 ### Sequence Diagram
 
@@ -474,16 +469,16 @@ sequenceDiagram
     participant Bot1
     participant Bot2
     participant Observer
-    
+
     Note over Server: Battle ended<br/>(victory or max turns)
-    
+
     Server->>Bot1: game-ended-event-for-bot {winner, statistics}
     Server->>Bot2: game-ended-event-for-bot {winner, statistics}
     Server->>Observer: game-ended-event-for-observer {results, statistics}
-    
+
     Bot1->>Bot1: Handle game end
     Bot2->>Bot2: Handle game end
-    
+
     Note over Server: Record battle<br/>Calculate statistics<br/>Cleanup resources
 ```
 
@@ -573,7 +568,7 @@ flowchart TD
     C --> D{Only 1 bot remains?}
     D -->|Yes| E[End battle]
     D -->|No| F[Continue battle]
-    
+
     style A fill:#D9534F,color:#fff
     style B fill:#E67E22,color:#fff
     style E fill:#27AE60,color:#fff
@@ -589,7 +584,7 @@ flowchart TD
     D --> E{Reconnect logic?}
     E -->|Yes| F[Attempt reconnection]
     E -->|No| G[Bot exits]
-    
+
     style A fill:#D9534F,color:#fff
     style C fill:#E67E22,color:#fff
 ```
@@ -603,22 +598,22 @@ gantt
     title Battle Timeline Example
     dateFormat ss
     axisFormat %S
-    
+
     section Connection Phase
     Bot 1 connects           :00, 1s
     Bot 2 connects           :05, 1s
-    
+
     section Setup Phase
     Controller sends start-game :10, 5s
     Bots ready               :15, 5s
-    
+
     section Battle Phase
     Game starts, first tick  :20, 3s
     Turn 1 executes         :23, 33ms
     Turn 2 executes         :milestone, 56
     Turn 3 executes         :milestone, 90
     Battle continues        :90, 4930s
-    
+
     section End Phase
     Turn 2500 executes      :milestone, 5453
     game-ended-event sent   :5455, 5s

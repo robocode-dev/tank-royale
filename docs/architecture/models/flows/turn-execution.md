@@ -14,9 +14,7 @@ This is the **core game loop** — the 15-step sequence executed 30 times per se
 
 ## Overview
 
-**System:** Authoritative server-based game loop  
-**Speed:** 30 TPS (turns per second) = ~33ms per turn  
-**Participants:** Server (authoritative), Bots (clients), Observers (viewers)
+**System:** Authoritative server-based game loop **Speed:** 30 TPS (turns per second) = ~33ms per turn **Participants:** Server (authoritative), Bots (clients), Observers (viewers)
 
 The server is the single source of truth for all game state.
 
@@ -30,21 +28,21 @@ sequenceDiagram
     participant Bot1
     participant Bot2
     participant Observer
-    
+
     Server->>Server: 1. Reset turn timer<br/>(start of ~33ms window)
-    
+
     Server->>Bot1: 2. Send tick-event-for-bot<br/>{turnNumber, botState, events}
     Server->>Bot2: 2. Send tick-event-for-bot<br/>{turnNumber, botState, events}
     Server->>Observer: 2. Send tick-event-for-observer<br/>{full game state}
-    
+
     Bot1->>Bot1: 3-4. Process events,<br/>execute onTick()<br/>(max 30ms)
     Bot2->>Bot2: 3-4. Process events,<br/>execute onTick()<br/>(max 30ms)
-    
+
     Bot1->>Server: 5. Send bot-intent<br/>{movement, firing, etc.}
     Bot2->>Server: 5. Send bot-intent<br/>{movement, firing, etc.}
-    
+
     Server->>Server: 6. Wait for intents<br/>(timeout at 30ms)
-    
+
     Note over Server: 7-15. Physics & Events
     Server->>Server: 7. Collect late/missing intents
     Server->>Server: 8. Apply intents to physics
@@ -55,7 +53,7 @@ sequenceDiagram
     Server->>Server: 13. Update energy/damage
     Server->>Server: 14. Generate events
     Server->>Server: 15. Maintain TPS
-    
+
     Note over Server: Turn complete<br/>Next turn begins
 ```
 
@@ -65,8 +63,7 @@ sequenceDiagram
 
 ### Step 1: Reset Turn Timer
 
-**Purpose:** Ensure consistent ~33ms turn duration  
-**Action:** Record turn start time
+**Purpose:** Ensure consistent ~33ms turn duration **Action:** Record turn start time
 
 ```java
 long turnStartMs = System.currentTimeMillis();
@@ -191,7 +188,7 @@ public void onTick() {
             onScannedBot((ScannedBotEvent)e);
         }
     }
-    
+
     // Call other event handlers
     for (Event e : events) {
         if (e instanceof HitByBulletEvent) {
@@ -199,7 +196,7 @@ public void onTick() {
         }
         // ... etc
     }
-    
+
     // Bot logic: decide actions
     setTurnRate(calculateTurn());
     setTargetSpeed(calculateSpeed());
@@ -288,8 +285,7 @@ for (Bot bot : bots) {
 - After timeout (normal mode): use default intent (move=0, turn=0, fire=0)
 - After timeout (breakpoint mode): pause and wait indefinitely for the bot's intent
 
-**Breakpoint Mode Exception (ADR-0034):**
-When a bot has breakpoint mode enabled (set by controller), a missed timeout causes the server to pause (`GAME_PAUSED, pauseCause: BREAKPOINT`) and wait for that bot's intent. Other bots that miss the timeout still receive `SkippedTurnEvent`. See [Battle Lifecycle Flow](./battle-lifecycle.md) for full breakpoint mode sequence.
+**Breakpoint Mode Exception (ADR-0034):** When a bot has breakpoint mode enabled (set by controller), a missed timeout causes the server to pause (`GAME_PAUSED, pauseCause: BREAKPOINT`) and wait for that bot's intent. Other bots that miss the timeout still receive `SkippedTurnEvent`. See [Battle Lifecycle Flow](./battle-lifecycle.md) for full breakpoint mode sequence.
 
 ### Step 7: Handle Late/Missing Intents
 
@@ -307,7 +303,7 @@ flowchart TD
     D --> E{Consecutive skips >= 10?}
     E -->|Yes| F[4. Disqualify bot]
     E -->|No| G[Continue]
-    
+
     style A fill:#D9534F,color:#fff
     style F fill:#C0392B,color:#fff
     style G fill:#27AE60,color:#fff
@@ -331,12 +327,12 @@ flowchart TD
 ```java
 for (Bot bot : bots) {
     Intent intent = intents.get(bot);
-    
+
     // Step 8a: Update rotations
     bot.direction += intent.turnRate;
     bot.gunDirection += intent.gunTurnRate;
     bot.radarDirection += intent.radarTurnRate;
-    
+
     // Normalize angles to 0-360
     bot.direction = normalize(bot.direction);
     bot.gunDirection = normalize(bot.gunDirection);
@@ -351,14 +347,14 @@ for (Bot bot : bots) {
 ```java
 for (Bot bot : bots) {
     Intent intent = intents.get(bot);
-    
+
     // Accelerate towards target speed
     bot.speed = lerpSpeed(bot.speed, intent.targetSpeed);
-    
+
     // Calculate movement vector
     float dx = bot.speed * cos(bot.direction);
     float dy = bot.speed * sin(bot.direction);
-    
+
     // Update position
     bot.x += dx;
     bot.y += dy;
@@ -382,7 +378,7 @@ Already handled in steps 8-9. Verify angles are normalized.
 for (Bot bot : bots) {
     Intent intent = intents.get(bot);
     float firepower = intent.firepower;
-    
+
     if (firepower > 0 && bot.energy >= firepower) {
         // Create bullet
         Bullet bullet = new Bullet();
@@ -391,16 +387,16 @@ for (Bot bot : bots) {
         bullet.y = bot.y;
         bullet.direction = bot.gunDirection;
         bullet.firepower = firepower;
-        
+
         // Bullet speed = 20 - (3 * firepower)
         // Low firepower = fast bullet
         // High firepower = slow bullet, high damage
         bullet.speed = 20 - (3 * firepower);
-        
+
         // Cost energy
         bot.energy -= firepower;
         bot.bulletsFired++;
-        
+
         // Fire event
         fireEvent(new BulletFiredEvent(bullet));
     }
@@ -457,7 +453,7 @@ for (int i = 0; i < bots.size(); i++) {
     for (int j = i+1; j < bots.size(); j++) {
         Bot bot1 = bots.get(i);
         Bot bot2 = bots.get(j);
-        
+
         if (distance(bot1, bot2) < 2*BOT_RADIUS) {
             // Collide: separate bots
             separate(bot1, bot2);
@@ -475,7 +471,7 @@ for (int i = 0; i < bots.size(); i++) {
 for (Bot bot : bots) {
     float movementCost = abs(bot.speed) * MOVEMENT_COST_FACTOR;
     bot.energy -= movementCost;
-    
+
     if (bot.energy < 0) {
         bot.energy = 0;
     }
@@ -499,19 +495,19 @@ for (Bot bot : bots) {
 ```java
 for (Bot bot : bots) {
     if (bot.status != RUNNING) continue;
-    
+
     // Scan in radar direction (±45° cone)
     for (Bot other : bots) {
         if (other == bot || other.status != RUNNING) continue;
-        
+
         float bearing = calculateBearing(bot, other);
         float radarAngle = bot.radarDirection;
-        
+
         if (isWithinScan(bearing, radarAngle)) {
             float distance = distance(bot, other);
             float energy = other.energy;
             float speed = other.speed;
-            
+
             fireEvent(new ScannedBotEvent(
                 bot, other, bearing, distance, energy, speed
             ));
@@ -553,7 +549,7 @@ gantt
     title Turn Execution Timing (33.33ms target)
     dateFormat SSS
     axisFormat %Lms
-    
+
     section Execution
     Steps 1-14 take      :000, 25ms
     Sleep to maintain TPS :025, 8ms
@@ -622,7 +618,7 @@ gantt
     title Bot Response Timeline (30ms window)
     dateFormat SSS
     axisFormat %Lms
-    
+
     section Bot Processing
     Receive tick-event        :000, 2ms
     Deserialize JSON          :002, 5ms
@@ -649,7 +645,7 @@ gantt
     title Complete Turn Timeline (33ms)
     dateFormat SSS
     axisFormat %Lms
-    
+
     section Turn Execution
     Send all tick-events               :000, 3ms
     Wait for intents with timeout      :003, 27ms
@@ -673,7 +669,7 @@ flowchart LR
     B --> D[Apply physics]
     C --> D
     D --> E[Same results<br/>every time]
-    
+
     style A fill:#2980B9,color:#fff
     style E fill:#27AE60,color:#fff
 ```

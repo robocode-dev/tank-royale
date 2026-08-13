@@ -1,13 +1,16 @@
 ---
 id: ADR-0003
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Cross-Platform Bot API Strategy
-accepted-by: Flemming N. Larsen (2026-02-11, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0003: Cross-Platform Bot API Strategy
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-11, pre-Cliewen MADR acceptance).
 
 ## Context
 
@@ -17,7 +20,7 @@ Tank Royale needs to support multiple programming languages while ensuring fair 
 
 **Requirements:**
 - No language-specific advantages in competition
-- Consistent bot behavior across platforms  
+- Consistent bot behavior across platforms
 - Minimize API divergence over time
 - Fair competition (same game logic regardless of language)
 
@@ -29,7 +32,7 @@ Implement **symmetric APIs** across all supported languages - identical structur
 
 **Supported languages:**
 - Java (`bot-api/java`)
-- .NET/C# (`bot-api/dotnet`) 
+- .NET/C# (`bot-api/dotnet`)
 - Python (`bot-api/python`)
 - TypeScript (`bot-api/typescript`)
 
@@ -53,7 +56,7 @@ Implement **symmetric APIs** across all supported languages - identical structur
 **Architecture pattern (identical across languages):**
 ```
 BaseBot (abstract class)
-├── BaseBotInternals (connection management)  
+├── BaseBotInternals (connection management)
 └── WebSocketHandler (language-specific WebSocket library)
 ```
 
@@ -98,7 +101,7 @@ onScannedBot(event: ScannedBotEvent): void;
 void setTurnRate(double turnRate);
 void setTargetSpeed(double targetSpeed);
 
-// Weapons  
+// Weapons
 void setGunTurnRate(double gunTurnRate);
 void setFire(double firepower);
 
@@ -112,7 +115,7 @@ void onBulletHit(BulletHitEvent e);
 **Environment variables (identical):**
 ```bash
 BOT_NAME=MyBot
-BOT_VERSION=1.0  
+BOT_VERSION=1.0
 SERVER_URL=ws://localhost:7654
 SERVER_SECRET=my-secret
 ```

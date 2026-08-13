@@ -1,13 +1,16 @@
 ---
 id: ADR-0039
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Server Testability — Physics Core Extraction and Test Framework
-accepted-by: Flemming N. Larsen (2026-04-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0039: Server Testability — Physics Core Extraction and Test Framework
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-04-14, pre-Cliewen MADR acceptance).
 
 ## Context
 
@@ -169,17 +172,13 @@ This applies to both Tier 1 (pure unit) and Tier 2 (integration) tests.
 
 ## Rationale
 
-**Why test pure physics first (not integration):**
-The physics code is the most critical and most testable. `CollisionDetector` and `GunEngine` are already pure — they take data in, return results. Writing 100+ unit tests for these components gives the highest confidence-per-effort ratio. Integration tests (WebSocket, multi-bot scenarios) are valuable but require more infrastructure.
+**Why test pure physics first (not integration):** The physics code is the most critical and most testable. `CollisionDetector` and `GunEngine` are already pure — they take data in, return results. Writing 100+ unit tests for these components gives the highest confidence-per-effort ratio. Integration tests (WebSocket, multi-bot scenarios) are valuable but require more infrastructure.
 
-**Why constructor injection (not keep using reflection):**
-Reflection-based tests are brittle, hard to read, and couple tests to implementation details. Constructor injection makes dependencies explicit and testable. This is a one-time refactor that pays for itself immediately.
+**Why constructor injection (not keep using reflection):** Reflection-based tests are brittle, hard to read, and couple tests to implementation details. Constructor injection makes dependencies explicit and testable. This is a one-time refactor that pays for itself immediately.
 
-**Why Kotest property-based testing:**
-Physics has continuous input spaces (positions, angles, speeds). Property-based testing with `forAll`/`withData` catches edge cases that handwritten tests miss. The existing `mathTest.kt` proves the pattern works well in this codebase.
+**Why Kotest property-based testing:** Physics has continuous input spaces (positions, angles, speeds). Property-based testing with `forAll`/`withData` catches edge cases that handwritten tests miss. The existing `mathTest.kt` proves the pattern works well in this codebase.
 
-**Why a separate ADR from ADR-0037:**
-ADR-0037 addresses Bot API testability (client-side, cross-platform). Server testability is a distinct concern: single platform (Kotlin), different architecture (game loop vs. intent building), different test infrastructure (Kotest vs. JUnit/NUnit/pytest). The functional-core principle is shared, but the implementation differs.
+**Why a separate ADR from ADR-0037:** ADR-0037 addresses Bot API testability (client-side, cross-platform). Server testability is a distinct concern: single platform (Kotlin), different architecture (game loop vs. intent building), different test infrastructure (Kotest vs. JUnit/NUnit/pytest). The functional-core principle is shared, but the implementation differs.
 
 **Alternatives considered:**
 1. **Only write integration tests** — Rejected. Integration tests are slow and don't isolate physics bugs. A collision detection bug would manifest as "bot didn't die" rather than "ray-segment intersection off by one."

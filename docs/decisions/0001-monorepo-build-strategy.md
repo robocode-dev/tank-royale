@@ -1,18 +1,20 @@
 ---
 id: ADR-0001
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Monorepo Build Strategy
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0001: Monorepo Build Strategy
 
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance).
+
 ## Context
 
-Tank Royale consists of multiple components (server, GUI, booter, recorder, Bot APIs, sample bots, docs). These share
-schemas, libraries, and versioning.
+Tank Royale consists of multiple components (server, GUI, booter, recorder, Bot APIs, sample bots, docs). These share schemas, libraries, and versioning.
 
 **Problem:** Use a monorepo or split into separate repositories?
 
@@ -22,16 +24,13 @@ schemas, libraries, and versioning.
 
 Use a **single Gradle multi-project monorepo** with Kotlin DSL (`build.gradle.kts`, `settings.gradle.kts`).
 
-**Structure:** Shared modules (`lib:common`, `lib:client`), component modules (server, GUI, booter, recorder),
-API modules (bot-api:java/dotnet/python), and sample bots — all in one repository with a unified version catalog
-(`gradle/libs.versions.toml`).
+**Structure:** Shared modules (`lib:common`, `lib:client`), component modules (server, GUI, booter, recorder), API modules (bot-api:java/dotnet/python), and sample bots — all in one repository with a unified version catalog (`gradle/libs.versions.toml`).
 
 ---
 
 ## Rationale
 
-Atomic cross-component changes are the primary driver: a single protocol change touches the server, all Bot APIs,
-and the GUI simultaneously. A monorepo makes that a single commit and a single CI run.
+Atomic cross-component changes are the primary driver: a single protocol change touches the server, all Bot APIs, and the GUI simultaneously. A monorepo makes that a single commit and a single CI run.
 
 **Alternatives rejected:**
 
