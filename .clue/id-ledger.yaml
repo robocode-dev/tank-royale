@@ -4,7 +4,6 @@ counters:
     ARCH: "26"
     C: "4"
     CAP: "17"
-    CH: "1"
     G: "1"
     GTD: "1"
     LOG: "1"
@@ -573,11 +572,6 @@ entries:
     - id: CAP-017-design
       kind: opaque
       state: live
-    - id: CH-001
-      kind: numeric
-      state: reserved
-      prefix: CH
-      component: "1"
     - id: G-001
       kind: numeric
       state: live
