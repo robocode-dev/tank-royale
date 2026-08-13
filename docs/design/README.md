@@ -10,7 +10,4 @@ Capability-local design (how one capability works) belongs in that capability's 
 - [ARCH-020 — Real-Time Game Loop — Design Specification](game-loop-architecture.md) · `draft`
 - [ARCH-021 — WebSocket Protocol — Design Specification](websocket-protocol.md) · `draft`
 - [ARCH-022 — Rumble Design: Bot Submission and Handling](rumble/bot-submission.md) · `draft`
-- [ARCH-023 — Rumble Design: Client Battles and Result Upload](rumble/client-battles-and-results.md) · `draft`
-- [ARCH-024 — Rumble Design: Result Aggregation and Dashboard](rumble/aggregation-and-dashboard.md) · `draft`
-- [ARCH-025 — Rumble Design: User Documentation and Onboarding](rumble/user-documentation.md) · `draft`
 <!-- clue:index:end -->

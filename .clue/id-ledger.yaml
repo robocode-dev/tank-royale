@@ -575,15 +575,15 @@ entries:
       state: live
     - id: CH-001
       kind: numeric
-      state: live
+      state: retired
       prefix: CH
       component: "1"
     - id: CH-001-open-questions
       kind: opaque
-      state: live
+      state: retired
     - id: CH-001-tasks
       kind: opaque
-      state: live
+      state: retired
     - id: G-001
       kind: numeric
       state: live
