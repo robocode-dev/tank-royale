@@ -1,4 +1,12 @@
---- id: CAP-009-criteria type: criteria status: draft links: [CAP-009] title: Acceptance criteria for CAP-009 (tank-color-settings) ac-prefix: TCS provenance: inferred reversal-cost: low ---
+---
+id: CAP-009-criteria
+type: criteria
+status: draft
+links: [CAP-009]
+title: Acceptance criteria for CAP-009 (tank-color-settings) ac-prefix: TCS
+provenance: inferred
+reversal-cost: low
+---
 
 ```gherkin
 Feature: tank-color-settings — Defines how the GUI controls and persists the **Tank Color Mode** — the setting that governs which

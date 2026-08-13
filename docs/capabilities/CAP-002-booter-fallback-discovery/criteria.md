@@ -1,4 +1,12 @@
---- id: CAP-002-criteria type: criteria status: draft links: [CAP-002] title: Acceptance criteria for CAP-002 (booter-fallback-discovery) ac-prefix: BFD provenance: inferred reversal-cost: low ---
+---
+id: CAP-002-criteria
+type: criteria
+status: draft
+links: [CAP-002]
+title: Acceptance criteria for CAP-002 (booter-fallback-discovery) ac-prefix: BFD
+provenance: inferred
+reversal-cost: low
+---
 
 ```gherkin
 Feature: booter-fallback-discovery — TBD - created by change support-bot-discovery-without-json. Update Purpose after archive.
@@ -18,7 +26,8 @@ Feature: booter-fallback-discovery — TBD - created by change support-bot-disco
   @BFD-002
   Scenario: Metadata generation for bot without .json
     When the `booter` generates a `BootEntry` for a directory without a `.json` file
-    Then it SHALL set the `name` property to the directory name
+    Then it SHALL set the 
+ame` property to the directory name
     And it SHALL set the `base` property to the directory name
     And it SHALL provide empty lists for `authors`, `gameTypes`, and other optional fields
 

@@ -1,4 +1,11 @@
---- id: ADR-0023 type: decision status: verified links: [] title: Robocode Tank Royale Platform Scope and Boundaries accepted-by: Flemming N. Larsen (2026-02-15, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0023
+type: decision
+status: verified
+links: []
+title: Robocode Tank Royale Platform Scope and Boundaries
+accepted-by: Flemming N. Larsen (2026-02-15, pre-Cliewen MADR acceptance)
+---
 
 # ADR-0023: Robocode Tank Royale Platform Scope and Boundaries
 
@@ -186,4 +193,3 @@ This ADR clarifies the maintainer's vision so that:
 - [Cross-Platform Bot API Strategy (ADR-0003)](./0003-cross-platform-bot-api-strategy.md)
 - [The Book of Robocode](https://book.robocode.dev)
 - [RoboWiki](https://robowiki.net)
-

@@ -1,4 +1,12 @@
---- id: CAP-014-criteria type: criteria status: draft links: [CAP-014] title: Acceptance criteria for CAP-014 (rumble-bot-catalog) ac-prefix: RBC provenance: inferred reversal-cost: low ---
+---
+id: CAP-014-criteria
+type: criteria
+status: draft
+links: [CAP-014]
+title: Acceptance criteria for CAP-014 (rumble-bot-catalog) ac-prefix: RBC
+provenance: inferred
+reversal-cost: low
+---
 
 ```gherkin
 Feature: rumble-bot-catalog — Rumble bot catalog

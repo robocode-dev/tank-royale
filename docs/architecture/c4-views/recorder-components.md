@@ -1,4 +1,12 @@
---- id: ARCH-007 type: architecture status: draft links: [ADR-0017] title: Recorder Components View provenance: inferred reversal-cost: low ---
+---
+id: ARCH-007
+type: architecture
+status: draft
+links: [ADR-0017]
+title: Recorder Components View
+provenance: inferred
+reversal-cost: low
+---
 
 # Recorder Components View
 
@@ -231,5 +239,4 @@ sequenceDiagram
 - **[Server Components (L3)](./server-components.md)** — Server internals
 - **[GUI Components (L3)](./gui-components.md)** — GUI internals (Replay Viewer)
 - **[Booter Components (L3)](./booter-components.md)** — Bot process management
-
 

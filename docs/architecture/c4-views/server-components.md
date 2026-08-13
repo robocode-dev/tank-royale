@@ -1,4 +1,12 @@
---- id: ARCH-003 type: architecture status: draft links: [ADR-0008] title: Server Components View provenance: inferred reversal-cost: low ---
+---
+id: ARCH-003
+type: architecture
+status: draft
+links: [ADR-0008]
+title: Server Components View
+provenance: inferred
+reversal-cost: low
+---
 
 # Server Components View
 
@@ -356,5 +364,4 @@ graph TD
 - **[Recorder Components (L3)](./recorder-components.md)** — Recorder internals
 - **[Bot API Components (L3)](./bot-api-components.md)** — Bot API internals
 - **[System Context (L1)](./system-context.md)** — High-level system view
-
 

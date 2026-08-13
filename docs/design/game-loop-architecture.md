@@ -1,4 +1,12 @@
---- id: ARCH-020 type: architecture status: draft links: [ADR-0011] title: Real-Time Game Loop — Design Specification provenance: inferred reversal-cost: low ---
+---
+id: ARCH-020
+type: architecture
+status: draft
+links: [ADR-0011]
+title: Real-Time Game Loop — Design Specification
+provenance: inferred
+reversal-cost: low
+---
 
 # Real-Time Game Loop — Design Specification
 

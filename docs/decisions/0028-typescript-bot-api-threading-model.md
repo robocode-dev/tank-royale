@@ -1,4 +1,11 @@
---- id: ADR-0028 type: decision status: verified links: [] title: TypeScript Bot API Threading Model accepted-by: Flemming N. Larsen (2026-03-24, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0028
+type: decision
+status: verified
+links: []
+title: TypeScript Bot API Threading Model
+accepted-by: Flemming N. Larsen (2026-03-24, pre-Cliewen MADR acceptance)
+---
 
 # ADR-0028: TypeScript Bot API Threading Model
 
@@ -6,12 +13,14 @@
 
 The Java Bot API uses a two-thread model:
 
-1. **WebSocket thread** — Receives tick messages from the server, parses JSON, adds events to the queue, signals the bot thread via `notifyAll()`.
+1. **WebSocket thread** — Receives tick messages from the server, parses JSON, adds events to the queue, signals the bot thread via 
+otifyAll()`.
 2. **Bot thread** — Runs `bot.run()`, calls `go()` which dispatches events and then blocks on `monitor.wait()` until the next tick arrives.
 
 Blocking movement methods like `forward(distance)` internally loop: call `go()` → `waitForNextTurn()` → check if movement complete → repeat. This provides a simple, synchronous programming model where `forward(100)` blocks until the bot has moved 100 units.
 
-**Problem:** JavaScript is single-threaded. There is no `Thread`, `monitor.wait()`, or `notifyAll()`. How should the TypeScript Bot API (ADR-0027) replicate Java's blocking movement semantics?
+**Problem:** JavaScript is single-threaded. There is no `Thread`, `monitor.wait()`, or 
+otifyAll()`. How should the TypeScript Bot API (ADR-0027) replicate Java's blocking movement semantics?
 
 **Constraints:**
 
@@ -64,7 +73,8 @@ WebSocket receives tick                         bot.run() executing
 **Key implementation details:**
 
 - `waitForNextTurn()` calls `Atomics.wait(sharedBuffer, ...)` — the bot worker thread truly blocks, just like Java's `monitor.wait()`
-- When a tick arrives, the main thread processes events and calls `Atomics.notify()` — the bot worker wakes, just like Java's `notifyAll()`
+- When a tick arrives, the main thread processes events and calls `Atomics.notify()` — the bot worker wakes, just like Java's 
+otifyAll()`
 - Event handlers (`onScannedBot`, `onTick`, etc.) are called on the bot worker thread during `dispatchEvents()`, same as Java
 - Event dispatch order is preserved — events dispatched in priority order before the worker resumes
 - `SharedArrayBuffer` is used for the synchronization signal; event data is passed via `postMessage()` or shared memory
@@ -89,7 +99,8 @@ WebSocket receives tick                         bot.run() executing
 
 - ✅ **API parity across languages**: Bot code looks identical to Java, C#, and Python — no `async`, no `await`, no language-specific keywords leaking into the API
 - ✅ **True blocking**: `forward(100)` genuinely blocks the bot thread. No Promises, no callbacks, no generator yields
-- ✅ **Same two-thread model as Java**: WebSocket on main thread, bot logic on worker thread, synchronized via Atomics (equivalent to Java's `monitor.wait()`/`notifyAll()`)
+- ✅ **Same two-thread model as Java**: WebSocket on main thread, bot logic on worker thread, synchronized via Atomics (equivalent to Java's `monitor.wait()`/
+otifyAll()`)
 - ✅ **Event dispatch on bot thread**: Same as Java — handlers run on the bot worker, in priority order, during `go()`
 
 ---

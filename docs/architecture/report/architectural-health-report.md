@@ -1,4 +1,12 @@
---- id: ARCH-018 type: architecture status: draft links: [] title: "Architectural Health Report: Robocode Tank Royale" provenance: inferred reversal-cost: low ---
+---
+id: ARCH-018
+type: architecture
+status: draft
+links: []
+title: "Architectural Health Report: Robocode Tank Royale"
+provenance: inferred
+reversal-cost: low
+---
 
 # Architectural Health Report: Robocode Tank Royale
 
@@ -447,7 +455,8 @@ Each finding has a severity, root cause, and impact. Findings are the factual ba
 
 ### F-07 — TypeScript Runtime Abstraction Layer 🔵 Low
 
-**Observed:** The TypeScript Bot API includes a runtime adapter that switches between Node.js (`ws` library) and browser (`native WebSocket`). This adds a layer of indirection not present in other platforms.
+**Observed:** The TypeScript Bot API includes a runtime adapter that switches between Node.js (`ws` library) and browser (
+ative WebSocket`). This adds a layer of indirection not present in other platforms.
 
 **Root cause:** TypeScript must support both Node.js and browser environments for bot development and testing.
 

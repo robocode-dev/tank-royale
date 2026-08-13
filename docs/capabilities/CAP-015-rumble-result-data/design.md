@@ -1,4 +1,12 @@
---- id: CAP-015-design type: design status: draft links: [CAP-015, ARCH-024, P-003] title: Design notes for CAP-015 (rumble-result-data) provenance: inferred reversal-cost: low ---
+---
+id: CAP-015-design
+type: design
+status: draft
+links: [CAP-015, ARCH-024, P-003]
+title: Design notes for CAP-015 (rumble-result-data)
+provenance: inferred
+reversal-cost: low
+---
 
 # CAP-015 design
 

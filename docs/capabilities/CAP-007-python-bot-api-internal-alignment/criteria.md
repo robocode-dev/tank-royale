@@ -1,4 +1,12 @@
---- id: CAP-007-criteria type: criteria status: draft links: [CAP-007] title: Acceptance criteria for CAP-007 (python-bot-api-internal-alignment) ac-prefix: PBA provenance: inferred reversal-cost: low ---
+---
+id: CAP-007-criteria
+type: criteria
+status: draft
+links: [CAP-007]
+title: Acceptance criteria for CAP-007 (python-bot-api-internal-alignment) ac-prefix: PBA
+provenance: inferred
+reversal-cost: low
+---
 
 ```gherkin
 Feature: python-bot-api-internal-alignment — Defines the internal structure requirements for the Python Bot API, aligning it with the Java and

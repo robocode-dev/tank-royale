@@ -1,4 +1,12 @@
---- id: ARCH-025 type: architecture status: draft links: [] title: "Rumble Design: User Documentation and Onboarding" provenance: inferred reversal-cost: low ---
+---
+id: ARCH-025
+type: architecture
+status: draft
+links: []
+title: "Rumble Design: User Documentation and Onboarding"
+provenance: inferred
+reversal-cost: low
+---
 
 # Rumble Design: User Documentation and Onboarding
 

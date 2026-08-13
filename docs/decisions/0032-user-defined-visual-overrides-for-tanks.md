@@ -1,4 +1,11 @@
---- id: ADR-0032 type: decision status: verified links: [] title: Tank Color Display Mode accepted-by: Flemming N. Larsen (2026-04-06, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0032
+type: decision
+status: verified
+links: []
+title: Tank Color Display Mode
+accepted-by: Flemming N. Larsen (2026-04-06, pre-Cliewen MADR acceptance)
+---
 
 # ADR-0032: Tank Color Display Mode
 

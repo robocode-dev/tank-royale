@@ -1,4 +1,11 @@
---- id: ADR-0017 type: decision status: verified links: [] title: Recording Format (ND-JSON + Gzip) accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0017
+type: decision
+status: verified
+links: []
+title: Recording Format (ND-JSON + Gzip)
+accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+---
 
 # ADR-0017: Recording Format (ND-JSON + Gzip)
 

@@ -1,4 +1,12 @@
---- id: ARCH-004 type: architecture status: draft links: [] title: Booter Components View provenance: inferred reversal-cost: low ---
+---
+id: ARCH-004
+type: architecture
+status: draft
+links: []
+title: Booter Components View
+provenance: inferred
+reversal-cost: low
+---
 
 # Booter Components View
 
@@ -138,7 +146,8 @@ stateDiagram-v2
   - Contains bot metadata (name, version, command)
   - Provides platform-specific boot commands
 - **Properties:**
-  - `name` — Bot display name
+  - 
+ame` — Bot display name
   - `version` — Bot version string
   - `platform` — Target platform (JVM, .NET, Python, etc.)
   - `command` — Shell command to execute bot
@@ -257,5 +266,4 @@ quit
 - **[Server Components (L3)](./server-components.md)** — Server internals
 - **[GUI Components (L3)](./gui-components.md)** — GUI internals
 - **[Recorder Components (L3)](./recorder-components.md)** — Recording system internals
-
 

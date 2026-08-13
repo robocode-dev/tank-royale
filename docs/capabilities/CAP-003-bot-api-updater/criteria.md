@@ -1,4 +1,12 @@
---- id: CAP-003-criteria type: criteria status: draft links: [CAP-003] title: Acceptance criteria for CAP-003 (bot-api-updater) ac-prefix: BAU provenance: inferred reversal-cost: low ---
+---
+id: CAP-003-criteria
+type: criteria
+status: draft
+links: [CAP-003]
+title: Acceptance criteria for CAP-003 (bot-api-updater) ac-prefix: BAU
+provenance: inferred
+reversal-cost: low
+---
 
 ```gherkin
 Feature: bot-api-updater — The Bot API Updater ensures that bot root directories always contain up-to-date

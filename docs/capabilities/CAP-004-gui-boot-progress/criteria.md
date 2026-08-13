@@ -1,4 +1,12 @@
---- id: CAP-004-criteria type: criteria status: draft links: [CAP-004] title: Acceptance criteria for CAP-004 (gui-boot-progress) ac-prefix: GBP provenance: inferred reversal-cost: low ---
+---
+id: CAP-004-criteria
+type: criteria
+status: draft
+links: [CAP-004]
+title: Acceptance criteria for CAP-004 (gui-boot-progress) ac-prefix: GBP
+provenance: inferred
+reversal-cost: low
+---
 
 ```gherkin
 Feature: gui-boot-progress — TBD - created by archiving change add-gui-boot-progress-dialog. Update Purpose after archive.

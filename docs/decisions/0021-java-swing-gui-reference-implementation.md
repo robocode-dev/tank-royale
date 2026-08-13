@@ -1,4 +1,11 @@
---- id: ADR-0021 type: decision status: verified links: [] title: Java Swing as GUI Reference Implementation accepted-by: Flemming N. Larsen (2026-02-15, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0021
+type: decision
+status: verified
+links: []
+title: Java Swing as GUI Reference Implementation
+accepted-by: Flemming N. Larsen (2026-02-15, pre-Cliewen MADR acceptance)
+---
 
 # ADR-0021: Java Swing as GUI Reference Implementation
 
@@ -108,4 +115,3 @@ The GUI is explicitly a **reference implementation**, not a mandatory component.
 ## Future Article
 
 The combination of Kotlin extension functions and AI assistance for Swing development may warrant a separate technical article demonstrating modern Swing development practices.
-

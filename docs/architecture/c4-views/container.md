@@ -1,4 +1,12 @@
---- id: ARCH-002 type: architecture status: draft links: [] title: Container View provenance: inferred reversal-cost: low ---
+---
+id: ARCH-002
+type: architecture
+status: draft
+links: []
+title: Container View
+provenance: inferred
+reversal-cost: low
+---
 
 # Container View
 
@@ -235,4 +243,3 @@ graph TB
 - **[Recorder Components (L3)](./recorder-components.md)** — Internal Recorder architecture
 - **[Runner Components (L3)](./runner-components.md)** — Internal Runner architecture
 - **[Bot API Components (L3)](./bot-api-components.md)** — Bot API structure
-

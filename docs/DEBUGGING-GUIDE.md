@@ -1,4 +1,12 @@
---- id: ARCH-026 type: architecture status: draft links: [] title: Debugging Guide provenance: inferred reversal-cost: low ---
+---
+id: ARCH-026
+type: architecture
+status: draft
+links: []
+title: Debugging Guide
+provenance: inferred
+reversal-cost: low
+---
 
 # Debugging Guide
 

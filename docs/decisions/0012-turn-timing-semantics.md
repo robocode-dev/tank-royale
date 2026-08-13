@@ -1,4 +1,11 @@
---- id: ADR-0012 type: decision status: verified links: [] title: Turn Timing Semantics accepted-by: Flemming N. Larsen (2026-02-13, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0012
+type: decision
+status: verified
+links: []
+title: Turn Timing Semantics
+accepted-by: Flemming N. Larsen (2026-02-13, pre-Cliewen MADR acceptance)
+---
 
 # ADR-0012: Turn Timing Semantics
 

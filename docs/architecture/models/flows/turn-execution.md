@@ -1,4 +1,12 @@
---- id: ARCH-011 type: architecture status: draft links: [ADR-0011, ADR-0012] title: Turn Execution Flow provenance: inferred reversal-cost: low ---
+---
+id: ARCH-011
+type: architecture
+status: draft
+links: [ADR-0011, ADR-0012]
+title: Turn Execution Flow
+provenance: inferred
+reversal-cost: low
+---
 
 # Turn Execution Flow
 
@@ -595,7 +603,8 @@ sequenceDiagram
     BotThread->>Server: 6. Normal go() / sendIntent() loop continues
 ```
 
-**Why this works:** The bot thread is already alive and blocked in `waitUntilFirstTickArrived()` when turn 1 arrives. The wakeup is a simple `notifyAll()` — no OS thread-creation latency. The bot can set commands in `run()` before calling `go()`, and those commands are sent as turn 1's intent. This matches classic Robocode behavior where commands set before the first `execute()` call are applied to turn 1.
+**Why this works:** The bot thread is already alive and blocked in `waitUntilFirstTickArrived()` when turn 1 arrives. The wakeup is a simple 
+otifyAll()` — no OS thread-creation latency. The bot can set commands in `run()` before calling `go()`, and those commands are sent as turn 1's intent. This matches classic Robocode behavior where commands set before the first `execute()` call are applied to turn 1.
 
 **`tickEvent = null` on round start:** Prevents a pre-warmed thread (carrying stale tick state from the previous round) from bypassing `waitUntilFirstTickArrived()` on rounds 2+. Internal handlers set this before any user `onRoundStarted` handler runs.
 

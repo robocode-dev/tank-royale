@@ -1,4 +1,12 @@
---- id: ARCH-022 type: architecture status: draft links: [] title: "Rumble Design: Bot Submission and Handling" provenance: inferred reversal-cost: low ---
+---
+id: ARCH-022
+type: architecture
+status: draft
+links: []
+title: "Rumble Design: Bot Submission and Handling"
+provenance: inferred
+reversal-cost: low
+---
 
 # Rumble Design: Bot Submission and Handling
 
@@ -106,7 +114,8 @@ Forbidden-API scan, per platform (grep-level, deterministic; an advisory AI revi
 | Java | `ProcessBuilder`, `Runtime.exec`, `java.net` beyond the bot API's WebSocket, `sun.misc.Unsafe`, reflection on the bot API internals |
 | C# | `System.Diagnostics.Process`, P/Invoke (`DllImport`), `Registry`, raw sockets |
 | Python | `subprocess`, `os.system`, `socket`, `ctypes`, `importlib` tricks |
-| TypeScript | `child_process`, raw `net`/`http` clients, `eval`, native addons |
+| TypeScript | `child_process`, raw 
+et`/`http` clients, `eval`, native addons |
 
 ## Ownership, Versioning, and Identity
 
@@ -152,7 +161,8 @@ People switch or lose accounts (job accounts, forge migration), so an owner is a
 
 ### Version policy: one active version per bot
 
-- A bot's identity in battle is `name` + `version` from its booter config, matching how the
+- A bot's identity in battle is 
+ame` + `version` from its booter config, matching how the
   Battle Runner matches bots.
 - **Published versions are immutable.** Changing source requires a version bump. CI enforces this
   by comparing the source-tree hash against `index.json`.

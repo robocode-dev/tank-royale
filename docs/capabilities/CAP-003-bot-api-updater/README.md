@@ -1,4 +1,12 @@
---- id: CAP-003 type: capability status: active links: [G-001] title: Bot API updater provenance: inferred reversal-cost: low ---
+---
+id: CAP-003
+type: capability
+status: active
+links: [G-001]
+title: Bot API updater
+provenance: inferred
+reversal-cost: low
+---
 
 # CAP-003 — Bot API updater
 

@@ -1,4 +1,11 @@
---- id: ADR-0010 type: decision status: verified links: [] title: Declarative Bot Intent Model accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0010
+type: decision
+status: verified
+links: []
+title: Declarative Bot Intent Model
+accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+---
 
 # ADR-0010: Declarative Bot Intent Model
 

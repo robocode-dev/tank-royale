@@ -1,4 +1,12 @@
---- id: ARCH-010 type: architecture status: draft links: [CAP-006] title: Bot Connection Flow provenance: inferred reversal-cost: low ---
+---
+id: ARCH-010
+type: architecture
+status: draft
+links: [CAP-006]
+title: Bot Connection Flow
+provenance: inferred
+reversal-cost: low
+---
 
 # Bot Connection Flow
 
@@ -155,7 +163,8 @@ flowchart TD
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `sessionId` | string | ✅ | Must match server-handshake |
-| `name` | string | ✅ | Bot name (1-50 chars) |
+| 
+ame` | string | ✅ | Bot name (1-50 chars) |
 | `version` | string | ✅ | Bot version (1-20 chars) |
 | `authors` | array | ✅ | Bot authors |
 | `secret` | string | ❌ | Optional secret for auth |

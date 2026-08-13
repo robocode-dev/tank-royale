@@ -1,4 +1,12 @@
---- id: CAP-001-criteria type: criteria status: draft links: [CAP-001] title: Acceptance criteria for CAP-001 (battle-runner) ac-prefix: BR provenance: inferred reversal-cost: low ---
+---
+id: CAP-001-criteria
+type: criteria
+status: draft
+links: [CAP-001]
+title: Acceptance criteria for CAP-001 (battle-runner) ac-prefix: BR
+provenance: inferred
+reversal-cost: low
+---
 
 ```gherkin
 Feature: battle-runner — TBD - created by archiving change add-battle-runner-api. Update Purpose after archive.
@@ -282,7 +290,8 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
 
   @BR-039
   Scenario: Bot config file missing or malformed
-    When a bot directory lacks a valid JSON config file or the file is missing `name`/`version`
+    When a bot directory lacks a valid JSON config file or the file is missing 
+ame`/`version`
     Then the runner SHALL throw a `BattleException` with a descriptive message before booting
 
   @BR-040

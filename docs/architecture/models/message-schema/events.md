@@ -1,4 +1,12 @@
---- id: ARCH-015 type: architecture status: draft links: [CAP-006, ADR-0006] title: Event Messages provenance: inferred reversal-cost: low ---
+---
+id: ARCH-015
+type: architecture
+status: draft
+links: [CAP-006, ADR-0006]
+title: Event Messages
+provenance: inferred
+reversal-cost: low
+---
 
 # Event Messages
 
@@ -893,4 +901,3 @@ sequenceDiagram
 ---
 
 **Last Updated:** 2026-02-12
-

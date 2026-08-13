@@ -1,4 +1,14 @@
---- id: C-003 type: constraint status: active links: [] title: Bot APIs are semantically identical across platforms; Java is the reference source: openspec/project.md "Bot API Rules (Non-negotiable)" (absorbed at CH-001), ADR-0003, ADR-0004 enforcement: machine provenance: inferred reversal-cost: high ---
+---
+id: C-003
+type: constraint
+status: active
+links: []
+title: Bot APIs are semantically identical across platforms; Java is the reference
+source: openspec/project.md "Bot API Rules (Non-negotiable)" (absorbed at CH-001), ADR-0003, ADR-0004
+enforcement: machine
+provenance: inferred
+reversal-cost: high
+---
 
 # C-003 — Bot APIs are semantically identical across platforms; Java is the reference
 

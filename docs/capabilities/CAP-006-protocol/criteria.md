@@ -1,4 +1,12 @@
---- id: CAP-006-criteria type: criteria status: draft links: [CAP-006] title: Acceptance criteria for CAP-006 (protocol) ac-prefix: PRO provenance: inferred reversal-cost: low ---
+---
+id: CAP-006-criteria
+type: criteria
+status: draft
+links: [CAP-006]
+title: Acceptance criteria for CAP-006 (protocol) ac-prefix: PRO
+provenance: inferred
+reversal-cost: low
+---
 
 ```gherkin
 Feature: protocol — WebSocket protocol

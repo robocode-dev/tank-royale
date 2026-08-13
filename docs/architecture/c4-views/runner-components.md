@@ -1,4 +1,12 @@
---- id: ARCH-008 type: architecture status: draft links: [ADR-0024] title: Runner Components View provenance: inferred reversal-cost: low ---
+---
+id: ARCH-008
+type: architecture
+status: draft
+links: [ADR-0024]
+title: Runner Components View
+provenance: inferred
+reversal-cost: low
+---
 
 # Runner Components View
 
@@ -123,7 +131,8 @@ The Runner composes existing Tank Royale components (Server, Booter) rather than
 - **Responsibility:**
   - Returned by `startBattleAsync()` for real-time event observation
   - Typed event properties: `onTickEvent`, `onRoundStarted`, `onRoundEnded`, `onGameStarted`, `onGameEnded`, `onGameAborted`, `onGamePaused`, `onGameResumed`
-  - Control methods: `pause()`, `resume()`, `stop()`, `nextTurn()`
+  - Control methods: `pause()`, `resume()`, `stop()`, 
+extTurn()`
   - `awaitResults()` blocks until battle completion
   - Must be closed to release bot processes and allow subsequent battles
 

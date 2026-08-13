@@ -1,4 +1,12 @@
---- id: CAP-015-criteria type: criteria status: draft links: [CAP-015] title: Acceptance criteria for CAP-015 (rumble-result-data) ac-prefix: RDA provenance: inferred reversal-cost: low ---
+---
+id: CAP-015-criteria
+type: criteria
+status: draft
+links: [CAP-015]
+title: Acceptance criteria for CAP-015 (rumble-result-data) ac-prefix: RDA
+provenance: inferred
+reversal-cost: low
+---
 
 ```gherkin
 Feature: rumble-result-data — Rumble result data

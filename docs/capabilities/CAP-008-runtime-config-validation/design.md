@@ -1,4 +1,12 @@
---- id: CAP-008-design type: design status: draft links: [CAP-008] title: Design notes for CAP-008 (runtime-config-validation) provenance: inferred reversal-cost: low ---
+---
+id: CAP-008-design
+type: design
+status: draft
+links: [CAP-008]
+title: Design notes for CAP-008 (runtime-config-validation)
+provenance: inferred
+reversal-cost: low
+---
 
 # CAP-008 design
 

@@ -1,4 +1,12 @@
---- id: ARCH-016 type: architecture status: draft links: [CAP-006, ADR-0010] title: Intent Messages provenance: inferred reversal-cost: low ---
+---
+id: ARCH-016
+type: architecture
+status: draft
+links: [CAP-006, ADR-0010]
+title: Intent Messages
+provenance: inferred
+reversal-cost: low
+---
 
 # Intent Messages
 
@@ -523,4 +531,3 @@ if (botState.gunHeat === 0 && targetLocked) {
 ---
 
 **Last Updated:** 2026-02-12
-

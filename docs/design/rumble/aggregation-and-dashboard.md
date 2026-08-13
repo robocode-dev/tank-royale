@@ -1,4 +1,12 @@
---- id: ARCH-024 type: architecture status: draft links: [] title: "Rumble Design: Result Aggregation and Dashboard" provenance: inferred reversal-cost: low ---
+---
+id: ARCH-024
+type: architecture
+status: draft
+links: []
+title: "Rumble Design: Result Aggregation and Dashboard"
+provenance: inferred
+reversal-cost: low
+---
 
 # Rumble Design: Result Aggregation and Dashboard
 

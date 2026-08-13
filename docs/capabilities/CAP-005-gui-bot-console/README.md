@@ -1,4 +1,12 @@
---- id: CAP-005 type: capability status: active links: [G-001] title: GUI bot console provenance: inferred reversal-cost: low ---
+---
+id: CAP-005
+type: capability
+status: active
+links: [G-001]
+title: GUI bot console
+provenance: inferred
+reversal-cost: low
+---
 
 # CAP-005 — GUI bot console
 

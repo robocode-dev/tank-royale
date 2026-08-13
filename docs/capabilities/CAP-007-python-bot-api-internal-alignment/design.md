@@ -1,4 +1,12 @@
---- id: CAP-007-design type: design status: draft links: [CAP-007] title: Design notes for CAP-007 (python-bot-api-internal-alignment) provenance: inferred reversal-cost: low ---
+---
+id: CAP-007-design
+type: design
+status: draft
+links: [CAP-007]
+title: Design notes for CAP-007 (python-bot-api-internal-alignment)
+provenance: inferred
+reversal-cost: low
+---
 
 # CAP-007 design
 

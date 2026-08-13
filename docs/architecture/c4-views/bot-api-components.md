@@ -1,4 +1,12 @@
---- id: ARCH-005 type: architecture status: draft links: [ADR-0003] title: Bot API Components View provenance: inferred reversal-cost: low ---
+---
+id: ARCH-005
+type: architecture
+status: draft
+links: [ADR-0003]
+title: Bot API Components View
+provenance: inferred
+reversal-cost: low
+---
 
 # Bot API Components View
 
@@ -452,5 +460,4 @@ public class MyBot extends BaseBot {
 - **[Booter Components (L3)](./booter-components.md)** — Booter internals
 - **[Recorder Components (L3)](./recorder-components.md)** — Recorder internals
 - **[System Context (L1)](./system-context.md)** — High-level system view
-
 

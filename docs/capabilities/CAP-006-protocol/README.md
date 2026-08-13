@@ -1,4 +1,12 @@
---- id: CAP-006 type: capability status: active links: [G-001] title: WebSocket protocol provenance: inferred reversal-cost: low ---
+---
+id: CAP-006
+type: capability
+status: active
+links: [G-001]
+title: WebSocket protocol
+provenance: inferred
+reversal-cost: low
+---
 
 # CAP-006 — WebSocket protocol
 

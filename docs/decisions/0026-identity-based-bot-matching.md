@@ -1,4 +1,11 @@
---- id: ADR-0026 type: decision status: verified links: [] title: Identity-Based Bot Matching in Battle Runner accepted-by: Flemming N. Larsen (2026-03-21, pre-Cliewen MADR acceptance; last updated 2026-04-06) ---
+---
+id: ADR-0026
+type: decision
+status: verified
+links: []
+title: Identity-Based Bot Matching in Battle Runner
+accepted-by: Flemming N. Larsen (2026-03-21, pre-Cliewen MADR acceptance; last updated 2026-04-06)
+---
 
 # ADR-0026: Identity-Based Bot Matching in Battle Runner
 
@@ -185,7 +192,8 @@ This addresses a real usability problem: when Python bots (or any bot with slow 
 
 ### Residual Risk: Name+Version+Authors Collision on External Servers
 
-The collision on external servers is accepted as a known limitation, not addressed by this ADR. Using the `authors` field as part of the identity serves as a fallback for uniqueness when `name` and `version` match.
+The collision on external servers is accepted as a known limitation, not addressed by this ADR. Using the `authors` field as part of the identity serves as a fallback for uniqueness when 
+ame` and `version` match.
 
 **Why not tackle it now:**
 

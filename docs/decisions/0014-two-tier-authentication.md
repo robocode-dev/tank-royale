@@ -1,4 +1,11 @@
---- id: ADR-0014 type: decision status: verified links: [] title: Two-Tier Shared-Secret Authentication accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0014
+type: decision
+status: verified
+links: []
+title: Two-Tier Shared-Secret Authentication
+accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+---
 
 # ADR-0014: Two-Tier Shared-Secret Authentication
 

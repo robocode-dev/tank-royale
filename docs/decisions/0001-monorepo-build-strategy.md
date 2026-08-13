@@ -1,4 +1,11 @@
---- id: ADR-0001 type: decision status: verified links: [] title: Monorepo Build Strategy accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0001
+type: decision
+status: verified
+links: []
+title: Monorepo Build Strategy
+accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+---
 
 # ADR-0001: Monorepo Build Strategy
 

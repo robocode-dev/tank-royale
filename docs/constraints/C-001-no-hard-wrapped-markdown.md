@@ -1,4 +1,12 @@
---- id: C-001 type: constraint status: active links: [] title: Markdown prose is never hard-wrapped source: Cliewen methodology (adopted at CH-001) enforcement: agent ---
+---
+id: C-001
+type: constraint
+status: active
+links: []
+title: Markdown prose is never hard-wrapped
+source: Cliewen methodology (adopted at CH-001)
+enforcement: agent
+---
 
 # C-001 — Markdown prose is never hard-wrapped
 

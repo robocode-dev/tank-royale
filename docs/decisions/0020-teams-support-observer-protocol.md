@@ -1,4 +1,11 @@
---- id: ADR-0020 type: decision status: verified links: [] title: Teams Support in Observer Protocol accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0020
+type: decision
+status: verified
+links: []
+title: Teams Support in Observer Protocol
+accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+---
 
 # ADR-0020: Teams Support in Observer Protocol
 

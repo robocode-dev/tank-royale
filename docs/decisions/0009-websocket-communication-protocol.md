@@ -1,4 +1,11 @@
---- id: ADR-0009 type: decision status: verified links: [] title: WebSocket Communication Protocol accepted-by: Flemming N. Larsen (2026-02-11, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0009
+type: decision
+status: verified
+links: []
+title: WebSocket Communication Protocol
+accepted-by: Flemming N. Larsen (2026-02-11, pre-Cliewen MADR acceptance)
+---
 
 # WebSocket Communication Protocol
 

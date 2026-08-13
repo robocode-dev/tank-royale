@@ -1,4 +1,11 @@
---- id: ADR-0030 type: decision status: verified links: [] title: Template-based Booting and Base Convention accepted-by: Flemming N. Larsen (2026-04-05, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0030
+type: decision
+status: verified
+links: []
+title: Template-based Booting and Base Convention
+accepted-by: Flemming N. Larsen (2026-04-05, pre-Cliewen MADR acceptance)
+---
 
 # ADR-0030: Template-based Booting and Base Convention
 

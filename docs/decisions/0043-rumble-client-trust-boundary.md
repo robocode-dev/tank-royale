@@ -1,4 +1,11 @@
---- id: ADR-0043 type: decision status: inferred links: [P-003, M-008, CAP-016, CAP-015, ADR-0044] title: Rumble Client Trust Boundary author: agent accepted-by: [] ---
+---
+id: ADR-0043
+type: decision
+status: inferred
+links: [P-003, M-008, CAP-016, CAP-015, ADR-0044]
+title: Rumble Client Trust Boundary author: agent
+accepted-by: []
+---
 
 # ADR-0043: Rumble Client Trust Boundary
 

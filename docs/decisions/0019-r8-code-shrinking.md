@@ -1,4 +1,11 @@
---- id: ADR-0019 type: decision status: verified links: [] title: R8 Code Shrinking accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance) ---
+---
+id: ADR-0019
+type: decision
+status: verified
+links: []
+title: R8 Code Shrinking
+accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+---
 
 # ADR-0019: R8 Code Shrinking
 

@@ -1,4 +1,11 @@
---- id: G-001 type: goal status: accepted links: [] title: A programming game for learning and competition provenance: verified ---
+---
+id: G-001
+type: goal
+status: accepted
+links: []
+title: A programming game for learning and competition
+provenance: verified
+---
 
 # G-001 — A programming game for learning and competition
 

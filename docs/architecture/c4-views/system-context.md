@@ -1,4 +1,12 @@
---- id: ARCH-001 type: architecture status: draft links: [] title: System Context Diagram provenance: inferred reversal-cost: low ---
+---
+id: ARCH-001
+type: architecture
+status: draft
+links: []
+title: System Context Diagram
+provenance: inferred
+reversal-cost: low
+---
 
 # System Context Diagram
 
@@ -233,4 +241,3 @@ This design choice ensures:
 - **[ADR-0011: Real-Time Game Loop](/docs/decisions/0011-realtime-game-loop-architecture.md)** — Real-time 30 TPS tick system
 - **[Battle Lifecycle Flow](../models/flows/battle-lifecycle.md)** — How battles progress
 - **[Bot Connection Flow](../models/flows/bot-connection.md)** — Bot connection sequence
-
