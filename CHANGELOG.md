@@ -4,6 +4,10 @@
 
 - Bot API (Java, .NET, Python):
     - Fixed a crash when a bot calls `setInterruptible()` outside an event handler. The call is now simply ignored, as there is no current event to mark as interruptible. (The TypeScript Bot API was not affected.)
+- GUI:
+    - Fixed replay playback freezing silently at the end of a recorded battle. The playback timer
+      was not being restarted or stopped once the last turn was processed, leaving the GUI stuck
+      on the final frame with no indication that the replay had actually finished.
 
 ### 🚀 Improvements
 

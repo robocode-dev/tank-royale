@@ -306,6 +306,12 @@ class ReplayBattlePlayer(private val replayFile: File) : BattlePlayer {
             if (currentMessageIndex < turns.size) {
                 processCurrentMessage()
                 startTickTimer()
+            } else {
+                // Reached the end of the replay. The final chunk already dispatched
+                // GameEndedEvent (if present); just stop the timer loop without firing
+                // GameAbortedEvent or resetting playback position.
+                stopPlaybackTimer()
+                isRunning.set(false)
             }
         } else {
             stop()
