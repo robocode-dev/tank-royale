@@ -1,6 +1,7 @@
 ---
 id: ADR-0013
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Bot Configuration via Environment Variables

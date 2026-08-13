@@ -1,6 +1,7 @@
 ---
 id: ADR-0001
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Monorepo Build Strategy

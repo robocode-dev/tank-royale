@@ -1,6 +1,7 @@
 ---
 id: CAP-013
 type: capability
+goal: G-001
 status: draft
 links: [G-001]
 title: TypeScript Bot API npm publishing

@@ -1,6 +1,7 @@
 ---
 id: ADR-0021
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Java Swing as GUI Reference Implementation

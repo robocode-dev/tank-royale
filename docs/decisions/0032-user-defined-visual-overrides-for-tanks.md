@@ -1,6 +1,7 @@
 ---
 id: ADR-0032
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Tank Color Display Mode

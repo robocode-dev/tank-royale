@@ -1,6 +1,7 @@
 ---
 id: ADR-0018
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Custom SVG Rendering for Bot API Graphics

@@ -1,6 +1,7 @@
 ---
 id: ADR-0029
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: TypeScript Bot API Runtime Targets

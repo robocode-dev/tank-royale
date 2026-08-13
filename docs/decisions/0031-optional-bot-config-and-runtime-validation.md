@@ -1,6 +1,7 @@
 ---
 id: ADR-0031
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Optional Bot Configuration Files and Runtime Property Validation

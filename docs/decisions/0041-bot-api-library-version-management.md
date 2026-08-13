@@ -1,6 +1,7 @@
 ---
 id: ADR-0041
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Bot API Library Version Management in the GUI

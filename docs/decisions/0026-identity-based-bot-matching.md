@@ -1,6 +1,7 @@
 ---
 id: ADR-0026
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Identity-Based Bot Matching in Battle Runner

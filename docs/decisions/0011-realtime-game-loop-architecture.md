@@ -1,6 +1,7 @@
 ---
 id: ADR-0011
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Real-Time Game Loop Architecture

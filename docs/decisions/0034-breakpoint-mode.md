@@ -1,6 +1,7 @@
 ---
 id: ADR-0034
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Breakpoint Mode

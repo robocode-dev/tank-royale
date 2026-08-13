@@ -1,6 +1,7 @@
 ---
 id: ADR-0024
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Battle Runner API

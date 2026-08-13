@@ -1,6 +1,7 @@
 ---
 id: ADR-0036
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Start-Game Debug Options

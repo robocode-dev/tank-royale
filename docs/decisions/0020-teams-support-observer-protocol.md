@@ -1,6 +1,7 @@
 ---
 id: ADR-0020
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Teams Support in Observer Protocol

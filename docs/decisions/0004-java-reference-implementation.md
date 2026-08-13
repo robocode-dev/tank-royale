@@ -1,6 +1,7 @@
 ---
 id: ADR-0004
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Java as Authoritative Reference Implementation

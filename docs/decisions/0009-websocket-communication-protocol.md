@@ -1,6 +1,7 @@
 ---
 id: ADR-0009
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: WebSocket Communication Protocol

@@ -1,6 +1,7 @@
 ---
 id: ADR-0019
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: R8 Code Shrinking

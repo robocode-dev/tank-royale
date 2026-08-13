@@ -1,6 +1,7 @@
 ---
 id: ADR-0012
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Turn Timing Semantics

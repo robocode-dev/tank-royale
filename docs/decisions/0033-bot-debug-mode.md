@@ -1,6 +1,7 @@
 ---
 id: ADR-0033
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Server Debug Mode

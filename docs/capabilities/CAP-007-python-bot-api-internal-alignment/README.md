@@ -1,6 +1,7 @@
 ---
 id: CAP-007
 type: capability
+goal: G-001
 status: active
 links: [G-001]
 title: Python Bot API internal alignment

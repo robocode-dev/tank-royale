@@ -1,6 +1,7 @@
 ---
 id: ADR-0038
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Cross-Platform Test Parity and Shared Test Definitions

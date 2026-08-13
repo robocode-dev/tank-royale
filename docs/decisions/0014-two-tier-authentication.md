@@ -1,6 +1,7 @@
 ---
 id: ADR-0014
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Two-Tier Shared-Secret Authentication

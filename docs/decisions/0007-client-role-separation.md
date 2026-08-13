@@ -1,6 +1,7 @@
 ---
 id: ADR-0007
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Client Role Separation (Bot / Observer / Controller)

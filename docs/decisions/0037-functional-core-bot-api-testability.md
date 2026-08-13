@@ -1,6 +1,7 @@
 ---
 id: ADR-0037
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Functional Core Extraction for Bot API Testability

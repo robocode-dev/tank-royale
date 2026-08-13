@@ -1,6 +1,7 @@
 ---
 id: ADR-0016
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Session ID for Bot Process Identification

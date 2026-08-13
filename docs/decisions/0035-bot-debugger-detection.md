@@ -1,6 +1,7 @@
 ---
 id: ADR-0035
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Bot API Debugger Detection

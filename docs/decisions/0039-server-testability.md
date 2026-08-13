@@ -1,6 +1,7 @@
 ---
 id: ADR-0039
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Server Testability — Physics Core Extraction and Test Framework

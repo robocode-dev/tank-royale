@@ -1,6 +1,7 @@
 ---
 id: CAP-010
 type: capability
+goal: G-001
 status: active
 links: [G-001]
 title: Test framework stack

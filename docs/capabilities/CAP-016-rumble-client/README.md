@@ -1,6 +1,7 @@
 ---
 id: CAP-016
 type: capability
+goal: G-001
 status: draft
 links: [G-001, P-003]
 title: Rumble client

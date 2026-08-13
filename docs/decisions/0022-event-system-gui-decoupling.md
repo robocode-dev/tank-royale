@@ -1,6 +1,7 @@
 ---
 id: ADR-0022
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Event System for GUI Decoupling

@@ -1,6 +1,7 @@
 ---
 id: ADR-0017
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Recording Format (ND-JSON + Gzip)

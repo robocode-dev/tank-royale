@@ -1,6 +1,7 @@
 ---
 id: ADR-0040
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Raise Default readyTimeout from 1 Second to 10 Seconds

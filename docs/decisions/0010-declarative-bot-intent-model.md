@@ -1,6 +1,7 @@
 ---
 id: ADR-0010
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Declarative Bot Intent Model

@@ -1,6 +1,7 @@
 ---
 id: ADR-0043
 type: decision
+author: Flemming N. Larsen
 status: inferred
 links: [P-003, M-008, CAP-016, CAP-015, ADR-0044]
 title: Rumble Client Trust Boundary author: agent

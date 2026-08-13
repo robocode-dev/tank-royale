@@ -1,6 +1,7 @@
 ---
 id: ADR-0025
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Game Type Presets and Rule Configuration

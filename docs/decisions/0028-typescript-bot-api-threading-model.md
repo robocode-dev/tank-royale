@@ -1,6 +1,7 @@
 ---
 id: ADR-0028
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: TypeScript Bot API Threading Model

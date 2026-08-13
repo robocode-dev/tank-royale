@@ -1,6 +1,7 @@
 ---
 id: ADR-0002
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Standard Mathematical Coordinate System

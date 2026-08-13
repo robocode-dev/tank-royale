@@ -1,6 +1,7 @@
 ---
 id: ADR-0023
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Robocode Tank Royale Platform Scope and Boundaries

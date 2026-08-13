@@ -1,6 +1,7 @@
 ---
 id: ADR-0005
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Independent Deployable Components

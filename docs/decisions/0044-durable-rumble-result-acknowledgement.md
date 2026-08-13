@@ -1,6 +1,7 @@
 ---
 id: ADR-0044
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: [P-003, M-008, CAP-015, CAP-016, ADR-0043]
 title: Durable Rumble Result Acknowledgement author: agent

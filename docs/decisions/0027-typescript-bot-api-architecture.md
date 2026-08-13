@@ -1,6 +1,7 @@
 ---
 id: ADR-0027
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: TypeScript Bot API for Web Platform Support

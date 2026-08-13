@@ -1,6 +1,7 @@
 ---
 id: ADR-0003
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Cross-Platform Bot API Strategy

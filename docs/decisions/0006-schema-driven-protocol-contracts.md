@@ -1,6 +1,7 @@
 ---
 id: ADR-0006
 type: decision
+author: Flemming N. Larsen
 status: verified
 links: []
 title: Schema-Driven Protocol Contracts
