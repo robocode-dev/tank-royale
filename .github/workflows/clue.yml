@@ -3,8 +3,8 @@
 # under branch protection.
 #
 # This file is a thin caller. The validation logic — checkout, changed-surface
-# detection, the plain-change boundary, checksum verification, binary staging,
-# `clue validate --forbid-changes`, and the acceptance-brief gate — lives in
+# detection, route-aware checksum verification, binary staging,
+# `clue validate --forbid-changes`, and the full-loop acceptance-brief gate — lives in
 # Cliewen's reusable workflow, so upstream fixes arrive by updating one
 # reference instead of by re-copying steps. Only the triggers below and the
 # four inputs are ours to choose.
@@ -15,7 +15,7 @@
 # executable under RUNNER_TEMP, so the run needs no root-writable path.
 #
 # The reference is a full commit SHA, and that SHA is the commit Cliewen's
-# v0.11.2 tag names — the release whose binary `clue-version` below asks for,
+# v0.16.0 tag names — the release whose binary `clue-version` below asks for,
 # so the reusable workflow and the binary it runs come from one revision. Keep
 # the SHA form when moving the pin: a tag is a pointer its owner can re-aim,
 # while a SHA names one tree forever. A branch reference must never be used
@@ -39,9 +39,9 @@ permissions:
 jobs:
   validate:
     name: validate
-    uses: cliewen/cliewen/.github/workflows/clue-validation.yml@16dc3a5eab655a45c92a6d724721e5b07f876822
+    uses: cliewen/cliewen/.github/workflows/clue-validation.yml@bf7cfa6d91828791e8af0080bcd8765ec7e592eb
     with:
       runner: '["ubuntu-latest"]'
-      clue-version: 0.11.2
+      clue-version: 0.16.0
       clue-source: release
       clue-install-directory: ''

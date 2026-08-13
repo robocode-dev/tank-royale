@@ -1,0 +1,10 @@
+## Change routing
+
+Before editing, inspect the smallest relevant context and tell the user `Recommended route: simple` or `Recommended route: full`, why, and what discovery would change that recommendation.
+
+- **Simple** leaves the accepted contract unchanged. It includes an observational analysis with a named consumer, a defect correction that restores an unchanged acceptance criterion, regression evidence for an unchanged criterion, an in-contract configuration adjustment, a refactor, maintenance, and editorial correction. It uses no CH identity, workspace, plan declaration, digest, acceptance brief, or mandatory agentic review; run the checks relevant to the changed surfaces.
+- **Full** changes the accepted contract: it adds, materially revises, or retires an acceptance criterion; introduces behavior outside accepted criteria; changes capability, policy, plan promise, decision, or methodology meaning; or makes or rejects a consequential decision from an analysis. Uncertainty makes full the honest recommendation. Use the whole loop with `/changes/CH-xxx-slug/`.
+
+Paths, file counts, and changed-line counts may warn but never decide meaning. Reassess when a discovery expands semantic scope and against the complete diff before integration. If simple work grows into full work, pause and recommend the full loop. If the user explicitly declines, proceed as simple without making code, tests, or durable documentation untruthful, and add all three trailers to the final authored commit: `Cliewen-Route: simple`, `Cliewen-Recommendation: full`, and `Cliewen-Override: user chose simple; <concise risk>`. This records one integration authorization in Git history, not a corpus decision.
+
+A route does not authorize a push. Push directly to an integration branch only with explicit user authorization and repository permission; otherwise follow the repository's requested workflow. A human may integrate by any mechanism the repository permits, and repository-local conventions may be stricter. A release is not a Cliewen route: each adopter defines or omits its own release process, whose work is classified by accepted-contract impact.

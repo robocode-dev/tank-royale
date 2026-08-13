@@ -1,0 +1,619 @@
+counters:
+    ADR: "44"
+    AN: "1"
+    ARCH: "26"
+    C: "4"
+    CAP: "17"
+    G: "1"
+    GTD: "1"
+    LOG: "1"
+    P: "3"
+    TNP: "3"
+entries:
+    - id: ADR-0001
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "1"
+    - id: ADR-0002
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "2"
+    - id: ADR-0003
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "3"
+    - id: ADR-0004
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "4"
+    - id: ADR-0005
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "5"
+    - id: ADR-0006
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "6"
+    - id: ADR-0007
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "7"
+    - id: ADR-0008
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "8"
+    - id: ADR-0009
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "9"
+    - id: ADR-0010
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "10"
+    - id: ADR-0011
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "11"
+    - id: ADR-0012
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "12"
+    - id: ADR-0013
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "13"
+    - id: ADR-0014
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "14"
+    - id: ADR-0015
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "15"
+    - id: ADR-0016
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "16"
+    - id: ADR-0017
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "17"
+    - id: ADR-0018
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "18"
+    - id: ADR-0019
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "19"
+    - id: ADR-0020
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "20"
+    - id: ADR-0021
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "21"
+    - id: ADR-0022
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "22"
+    - id: ADR-0023
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "23"
+    - id: ADR-0024
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "24"
+    - id: ADR-0025
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "25"
+    - id: ADR-0026
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "26"
+    - id: ADR-0027
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "27"
+    - id: ADR-0028
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "28"
+    - id: ADR-0029
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "29"
+    - id: ADR-0030
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "30"
+    - id: ADR-0031
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "31"
+    - id: ADR-0032
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "32"
+    - id: ADR-0033
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "33"
+    - id: ADR-0034
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "34"
+    - id: ADR-0035
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "35"
+    - id: ADR-0036
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "36"
+    - id: ADR-0037
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "37"
+    - id: ADR-0038
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "38"
+    - id: ADR-0039
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "39"
+    - id: ADR-0040
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "40"
+    - id: ADR-0041
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "41"
+    - id: ADR-0042
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "42"
+    - id: ADR-0043
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "43"
+    - id: ADR-0044
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "44"
+    - id: AN-001
+      kind: numeric
+      state: live
+      prefix: AN
+      component: "1"
+    - id: ARCH-001
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "1"
+    - id: ARCH-002
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "2"
+    - id: ARCH-003
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "3"
+    - id: ARCH-004
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "4"
+    - id: ARCH-005
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "5"
+    - id: ARCH-006
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "6"
+    - id: ARCH-007
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "7"
+    - id: ARCH-008
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "8"
+    - id: ARCH-009
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "9"
+    - id: ARCH-010
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "10"
+    - id: ARCH-011
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "11"
+    - id: ARCH-012
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "12"
+    - id: ARCH-013
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "13"
+    - id: ARCH-014
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "14"
+    - id: ARCH-015
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "15"
+    - id: ARCH-016
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "16"
+    - id: ARCH-017
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "17"
+    - id: ARCH-018
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "18"
+    - id: ARCH-019
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "19"
+    - id: ARCH-020
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "20"
+    - id: ARCH-021
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "21"
+    - id: ARCH-022
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "22"
+    - id: ARCH-023
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "23"
+    - id: ARCH-024
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "24"
+    - id: ARCH-025
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "25"
+    - id: ARCH-026
+      kind: numeric
+      state: live
+      prefix: ARCH
+      component: "26"
+    - id: C-001
+      kind: numeric
+      state: live
+      prefix: C
+      component: "1"
+    - id: C-002
+      kind: numeric
+      state: live
+      prefix: C
+      component: "2"
+    - id: C-003
+      kind: numeric
+      state: live
+      prefix: C
+      component: "3"
+    - id: C-004
+      kind: numeric
+      state: live
+      prefix: C
+      component: "4"
+    - id: CAP-001
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "1"
+    - id: CAP-001-criteria
+      kind: opaque
+      state: live
+    - id: CAP-001-design
+      kind: opaque
+      state: live
+    - id: CAP-002
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "2"
+    - id: CAP-002-criteria
+      kind: opaque
+      state: live
+    - id: CAP-002-design
+      kind: opaque
+      state: live
+    - id: CAP-003
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "3"
+    - id: CAP-003-criteria
+      kind: opaque
+      state: live
+    - id: CAP-003-design
+      kind: opaque
+      state: live
+    - id: CAP-004
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "4"
+    - id: CAP-004-criteria
+      kind: opaque
+      state: live
+    - id: CAP-004-design
+      kind: opaque
+      state: live
+    - id: CAP-005
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "5"
+    - id: CAP-005-criteria
+      kind: opaque
+      state: live
+    - id: CAP-005-design
+      kind: opaque
+      state: live
+    - id: CAP-006
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "6"
+    - id: CAP-006-criteria
+      kind: opaque
+      state: live
+    - id: CAP-006-design
+      kind: opaque
+      state: live
+    - id: CAP-007
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "7"
+    - id: CAP-007-criteria
+      kind: opaque
+      state: live
+    - id: CAP-007-design
+      kind: opaque
+      state: live
+    - id: CAP-008
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "8"
+    - id: CAP-008-criteria
+      kind: opaque
+      state: live
+    - id: CAP-008-design
+      kind: opaque
+      state: live
+    - id: CAP-009
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "9"
+    - id: CAP-009-criteria
+      kind: opaque
+      state: live
+    - id: CAP-009-design
+      kind: opaque
+      state: live
+    - id: CAP-010
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "10"
+    - id: CAP-010-criteria
+      kind: opaque
+      state: live
+    - id: CAP-010-design
+      kind: opaque
+      state: live
+    - id: CAP-011
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "11"
+    - id: CAP-011-criteria
+      kind: opaque
+      state: live
+    - id: CAP-011-design
+      kind: opaque
+      state: live
+    - id: CAP-012
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "12"
+    - id: CAP-012-criteria
+      kind: opaque
+      state: live
+    - id: CAP-012-design
+      kind: opaque
+      state: live
+    - id: CAP-013
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "13"
+    - id: CAP-013-criteria
+      kind: opaque
+      state: live
+    - id: CAP-013-design
+      kind: opaque
+      state: live
+    - id: CAP-014
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "14"
+    - id: CAP-014-criteria
+      kind: opaque
+      state: live
+    - id: CAP-014-design
+      kind: opaque
+      state: live
+    - id: CAP-015
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "15"
+    - id: CAP-015-criteria
+      kind: opaque
+      state: live
+    - id: CAP-015-design
+      kind: opaque
+      state: live
+    - id: CAP-016
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "16"
+    - id: CAP-016-criteria
+      kind: opaque
+      state: live
+    - id: CAP-016-design
+      kind: opaque
+      state: live
+    - id: CAP-017
+      kind: numeric
+      state: live
+      prefix: CAP
+      component: "17"
+    - id: CAP-017-criteria
+      kind: opaque
+      state: live
+    - id: CAP-017-design
+      kind: opaque
+      state: live
+    - id: G-001
+      kind: numeric
+      state: live
+      prefix: G
+      component: "1"
+    - id: GTD-001
+      kind: numeric
+      state: live
+      prefix: GTD
+      component: "1"
+    - id: LOG-001
+      kind: numeric
+      state: live
+      prefix: LOG
+      component: "1"
+    - id: P-001
+      kind: numeric
+      state: live
+      prefix: P
+      component: "1"
+    - id: P-002
+      kind: numeric
+      state: live
+      prefix: P
+      component: "2"
+    - id: P-003
+      kind: numeric
+      state: live
+      prefix: P
+      component: "3"
+    - id: TNP-001
+      kind: numeric
+      state: retired
+      prefix: TNP
+      component: "1"
+    - id: TNP-002
+      kind: numeric
+      state: retired
+      prefix: TNP
+      component: "2"
+    - id: TNP-003
+      kind: numeric
+      state: retired
+      prefix: TNP
+      component: "3"
