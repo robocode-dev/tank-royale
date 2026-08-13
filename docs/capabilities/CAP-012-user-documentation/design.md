@@ -1,12 +1,4 @@
----
-id: CAP-012-design
-type: design
-status: draft
-links: [CAP-012]
-title: Design notes for CAP-012 (user-documentation)
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-012-design type: design status: draft links: [CAP-012] title: Design notes for CAP-012 (user-documentation) provenance: inferred reversal-cost: low ---
 
 # CAP-012 design
 

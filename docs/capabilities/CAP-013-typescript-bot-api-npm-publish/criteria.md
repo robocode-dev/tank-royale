@@ -1,12 +1,4 @@
----
-id: CAP-013-criteria
-type: criteria
-status: draft
-links: [CAP-013]
-title: Acceptance criteria for CAP-013 (typescript-bot-api-npm-publish)
-ac-prefix: TNP
-provenance: verified
----
+--- id: CAP-013-criteria type: criteria status: draft links: [CAP-013] title: Acceptance criteria for CAP-013 (typescript-bot-api-npm-publish) ac-prefix: TNP provenance: verified ---
 
 ```gherkin
 Feature: typescript-bot-api-npm-publish — TypeScript Bot API npm publishing

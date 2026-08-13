@@ -1,12 +1,4 @@
----
-id: ARCH-011
-type: architecture
-status: draft
-links: [ADR-0011, ADR-0012]
-title: Turn Execution Flow
-provenance: inferred
-reversal-cost: low
----
+--- id: ARCH-011 type: architecture status: draft links: [ADR-0011, ADR-0012] title: Turn Execution Flow provenance: inferred reversal-cost: low ---
 
 # Turn Execution Flow
 
@@ -14,9 +6,7 @@ This is the **core game loop** — the 15-step sequence executed 30 times per se
 
 ## Overview
 
-**System:** Authoritative server-based game loop  
-**Speed:** 30 TPS (turns per second) = ~33ms per turn  
-**Participants:** Server (authoritative), Bots (clients), Observers (viewers)
+**System:** Authoritative server-based game loop **Speed:** 30 TPS (turns per second) = ~33ms per turn **Participants:** Server (authoritative), Bots (clients), Observers (viewers)
 
 The server is the single source of truth for all game state.
 
@@ -65,8 +55,7 @@ sequenceDiagram
 
 ### Step 1: Reset Turn Timer
 
-**Purpose:** Ensure consistent ~33ms turn duration  
-**Action:** Record turn start time
+**Purpose:** Ensure consistent ~33ms turn duration **Action:** Record turn start time
 
 ```java
 long turnStartMs = System.currentTimeMillis();
@@ -288,8 +277,7 @@ for (Bot bot : bots) {
 - After timeout (normal mode): use default intent (move=0, turn=0, fire=0)
 - After timeout (breakpoint mode): pause and wait indefinitely for the bot's intent
 
-**Breakpoint Mode Exception (ADR-0034):**
-When a bot has breakpoint mode enabled (set by controller), a missed timeout causes the server to pause (`GAME_PAUSED, pauseCause: BREAKPOINT`) and wait for that bot's intent. Other bots that miss the timeout still receive `SkippedTurnEvent`. See [Battle Lifecycle Flow](./battle-lifecycle.md) for full breakpoint mode sequence.
+**Breakpoint Mode Exception (ADR-0034):** When a bot has breakpoint mode enabled (set by controller), a missed timeout causes the server to pause (`GAME_PAUSED, pauseCause: BREAKPOINT`) and wait for that bot's intent. Other bots that miss the timeout still receive `SkippedTurnEvent`. See [Battle Lifecycle Flow](./battle-lifecycle.md) for full breakpoint mode sequence.
 
 ### Step 7: Handle Late/Missing Intents
 

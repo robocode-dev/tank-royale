@@ -1,18 +1,10 @@
----
-id: ADR-0026
-type: decision
-status: verified
-links: []
-title: Identity-Based Bot Matching in Battle Runner
-accepted-by: Flemming N. Larsen (2026-03-21, pre-Cliewen MADR acceptance; last updated 2026-04-06)
----
+--- id: ADR-0026 type: decision status: verified links: [] title: Identity-Based Bot Matching in Battle Runner accepted-by: Flemming N. Larsen (2026-03-21, pre-Cliewen MADR acceptance; last updated 2026-04-06) ---
 
 # ADR-0026: Identity-Based Bot Matching in Battle Runner
 
 ## Context
 
-The Battle Runner API ([ADR-0024](./0024-battle-runner-api.md)) waits for bot processes to connect before starting a
-battle. The current implementation in `BattleRunner.waitForBots()` uses **count-based** detection:
+The Battle Runner API ([ADR-0024](./0024-battle-runner-api.md)) waits for bot processes to connect before starting a battle. The current implementation in `BattleRunner.waitForBots()` uses **count-based** detection:
 
 ```kotlin
 if (update.bots.size - preExistingBots.size >= expectedCount) {
@@ -25,28 +17,19 @@ Where `expectedCount = bots.size` — the number of bot **directories** passed t
 This has three failure modes:
 
 1. **Teams under-count.** A single bot directory containing a `team.json` launches N member bots (e.g., 5). The runner
-   expects 1 connection per directory, but the team produces 5. With two 5-member teams, the runner expects 2 bots but
-   needs 10. `waitForBots()` returns after 2 connections and the battle starts with an incomplete roster.
+   expects 1 connection per directory, but the team produces 5. With two 5-member teams, the runner expects 2 bots but needs 10. `waitForBots()` returns after 2 connections and the battle starts with an incomplete roster.
 
 2. **Stray bots over-count.** When using an external server, bots from other clients or leftover processes can already
-   be connected. The count-based check `update.bots.size - preExistingBots.size` only filters by connection time, not
-   identity. A stray bot connecting at the right moment satisfies the count, causing the runner to start a battle with
-   the wrong participants.
+   be connected. The count-based check `update.bots.size - preExistingBots.size` only filters by connection time, not identity. A stray bot connecting at the right moment satisfies the count, causing the runner to start a battle with the wrong participants.
 
 3. **Duplicate instances miscounted.** Running the same bot directory multiple times (e.g., two instances of "MyBot"
-   for a 1v1 self-play benchmark) produces multiple bots with identical `(name, version, authors)`. Simple set-based identity
-   matching would see these as one bot and return early. The matching must be **count-aware per identity**.
+   for a 1v1 self-play benchmark) produces multiple bots with identical `(name, version, authors)`. Simple set-based identity matching would see these as one bot and return early. The matching must be **count-aware per identity**.
 
-All three issues stem from the same root cause: the runner does not know **which** bots it expects — only **how many**
-directories it was given.
+All three issues stem from the same root cause: the runner does not know **which** bots it expects — only **how many** directories it was given.
 
-Additionally, the current hard-coded timeout (`BOT_CONNECT_TIMEOUT_MS = 30_000L`) is not configurable. Bots with
-heavy first-time initialization — particularly Python bots that must install dependencies on first launch — can exceed
-this timeout on slower machines, causing spurious `BattleException` failures. The GUI has the same problem: users see
-no feedback during bot booting and may assume bots have failed when they are still initializing.
+Additionally, the current hard-coded timeout (`BOT_CONNECT_TIMEOUT_MS = 30_000L`) is not configurable. Bots with heavy first-time initialization — particularly Python bots that must install dependencies on first launch — can exceed this timeout on slower machines, causing spurious `BattleException` failures. The GUI has the same problem: users see no feedback during bot booting and may assume bots have failed when they are still initializing.
 
-**Problem:** How should the Battle Runner reliably determine that all of its intended bots have connected, and how
-should it communicate boot progress?
+**Problem:** How should the Battle Runner reliably determine that all of its intended bots have connected, and how should it communicate boot progress?
 
 See [GitHub Issue #195](https://github.com/robocode-dev/tank-royale/issues/195).
 
@@ -56,8 +39,7 @@ See [GitHub Issue #195](https://github.com/robocode-dev/tank-royale/issues/195).
 
 ### Option 1: Refactor Booter as an Embeddable Library
 
-Refactor the Booter into a library with a thin CLI wrapper. The Battle Runner would call the Booter directly, gaining
-access to process handles and exact bot identities.
+Refactor the Booter into a library with a thin CLI wrapper. The Battle Runner would call the Booter directly, gaining access to process handles and exact bot identities.
 
 **Rejected because:**
 
@@ -67,8 +49,7 @@ access to process handles and exact bot identities.
 
 ### Option 2: Richer Booter Stdout Protocol
 
-Extend the Booter's stdout protocol (currently `<pid>;<dir>`) to include bot metadata: name, version, and
-`memberCount` for teams.
+Extend the Booter's stdout protocol (currently `<pid>;<dir>`) to include bot metadata: name, version, and `memberCount` for teams.
 
 **Rejected because:**
 
@@ -78,8 +59,7 @@ Extend the Booter's stdout protocol (currently `<pid>;<dir>`) to include bot met
 
 ### Option 3: Boot Correlation Token
 
-Generate a UUID per boot request, pass it through the Booter → environment variable → bot handshake →
-`BotListUpdate`. The runner matches bots by correlation token.
+Generate a UUID per boot request, pass it through the Booter → environment variable → bot handshake → `BotListUpdate`. The runner matches bots by correlation token.
 
 **Rejected because:**
 
@@ -89,10 +69,7 @@ Generate a UUID per boot request, pass it through the Booter → environment var
 
 ### Option 4: Identity-Based Multiset Matching (Runner-Only) — Selected
 
-The runner pre-reads `bot.json` (and `team.json`) from each bot directory before launching bots. It builds an expected
-**multiset** of `(name, version, authors)` identities — preserving duplicate counts — expanding teams into their individual
-member bots. When `BotListUpdate` arrives, the runner matches entries by `(name, version, authors)` counts instead of a flat
-total.
+The runner pre-reads `bot.json` (and `team.json`) from each bot directory before launching bots. It builds an expected **multiset** of `(name, version, authors)` identities — preserving duplicate counts — expanding teams into their individual member bots. When `BotListUpdate` arrives, the runner matches entries by `(name, version, authors)` counts instead of a flat total.
 
 **Advantages:**
 
@@ -123,8 +100,7 @@ The `waitForBots()` method is changed from count-based to identity-based multise
    - Two instances of the same 3-member team → each member identity has count 2
 
 3. **Matching phase.** On each `BotListUpdate`, the runner filters out pre-existing bots (by `BotAddress`), then
-   counts remaining bots per `(name, version, authors)`. The latch counts down when every expected identity meets or exceeds
-   its required count.
+   counts remaining bots per `(name, version, authors)`. The latch counts down when every expected identity meets or exceeds its required count.
 
 This replaces the current logic:
 
@@ -140,8 +116,7 @@ if (expectedCounts.all { (id, required) -> (connectedCounts[id] ?: 0) >= require
 
 ### Configurable Boot Timeout
 
-The hard-coded `BOT_CONNECT_TIMEOUT_MS = 30_000L` is replaced with a configurable timeout on the `BattleRunner`
-builder:
+The hard-coded `BOT_CONNECT_TIMEOUT_MS = 30_000L` is replaced with a configurable timeout on the `BattleRunner` builder:
 
 ```kotlin
 BattleRunner.create {
@@ -150,15 +125,11 @@ BattleRunner.create {
 }
 ```
 
-This is important for bots with heavy first-time initialization (e.g., Python bots installing dependencies via pip
-on first launch). The default remains 30 seconds for backward compatibility, but users with slow-starting bots can
-increase it.
+This is important for bots with heavy first-time initialization (e.g., Python bots installing dependencies via pip on first launch). The default remains 30 seconds for backward compatibility, but users with slow-starting bots can increase it.
 
 ### No-JSON Bot Support (Hybrid Matching)
 
-The `support-bot-discovery-without-json` change (v0.39.0) allows bots to be discovered and booted without a `.json`
-configuration file. This breaks the pre-scan assumption: there is no file to read, so the expected identity is unknown
-until the bot connects and declares its name/version at runtime.
+The `support-bot-discovery-without-json` change (v0.39.0) allows bots to be discovered and booted without a `.json` configuration file. This breaks the pre-scan assumption: there is no file to read, so the expected identity is unknown until the bot connects and declares its name/version at runtime.
 
 Both the `BattleRunner` and the GUI therefore use a **hybrid matching strategy**:
 
@@ -167,23 +138,13 @@ Both the `BattleRunner` and the GUI therefore use a **hybrid matching strategy**
 | Has `.json` | Yes | Identity-based multiset (as described above) |
 | No `.json` | No | Count-based fallback against a pre-boot baseline |
 
-**Runner (`BotMatcher`):** `BooterManager.readBotIdentities()` returns `emptyList()` for no-JSON bots. When
-`expectedMultiset` is empty, `BotMatcher.update()` falls back to counting new `BotAddress` values not present in the
-`preExistingBots` snapshot taken before booting. `BotAddress` is unique per connection, so this works correctly even
-when multiple instances of the same bot (identical name/version) are booted simultaneously.
+**Runner (`BotMatcher`):** `BooterManager.readBotIdentities()` returns `emptyList()` for no-JSON bots. When `expectedMultiset` is empty, `BotMatcher.update()` falls back to counting new `BotAddress` values not present in the `preExistingBots` snapshot taken before booting. `BotAddress` is unique per connection, so this works correctly even when multiple instances of the same bot (identical name/version) are booted simultaneously.
 
-**GUI (`BotMatcher`):** The GUI receives `BotInfo` from `BotListUpdate` but does not have access to `BotAddress`.
-The baseline is therefore a `Map<BotIdentity, Int>` (name+version multiset) snapshot of already-connected bots taken
-immediately before `BootProcess.boot()` is called. Unknown slots (`unknownCount`) are filled by bots whose
-name+version count exceeds the baseline count and whose identity is not in the specific-identity expected set.
-The progress dialog shows these slots as "Unknown bot" entries. Because the runner filters by `BotAddress` instead,
-it is immune to same-identity collisions that could theoretically affect the GUI's count-based path on an external
-server.
+**GUI (`BotMatcher`):** The GUI receives `BotInfo` from `BotListUpdate` but does not have access to `BotAddress`. The baseline is therefore a `Map<BotIdentity, Int>` (name+version multiset) snapshot of already-connected bots taken immediately before `BootProcess.boot()` is called. Unknown slots (`unknownCount`) are filled by bots whose name+version count exceeds the baseline count and whose identity is not in the specific-identity expected set. The progress dialog shows these slots as "Unknown bot" entries. Because the runner filters by `BotAddress` instead, it is immune to same-identity collisions that could theoretically affect the GUI's count-based path on an external server.
 
 ### GUI Boot Progress Feedback
 
-The identity-based matching model naturally enables **progress reporting**: the runner (and GUI) knows exactly which
-bots it is waiting for and which have already connected. This enables:
+The identity-based matching model naturally enables **progress reporting**: the runner (and GUI) knows exactly which bots it is waiting for and which have already connected. This enables:
 
 - **Battle Runner API:** A progress callback or event that reports which bots have connected and which are still
   pending, allowing programmatic consumers to log or display boot progress.
@@ -193,9 +154,7 @@ bots it is waiting for and which have already connected. This enables:
   - Which are still pending (spinner/waiting indicator)
   - Elapsed time and timeout remaining
 
-This addresses a real usability problem: when Python bots (or any bot with slow first-time initialization) take a
-long time to start, users currently see no feedback and may assume the bots have failed. A progress dialog makes the
-wait transparent.
+This addresses a real usability problem: when Python bots (or any bot with slow first-time initialization) take a long time to start, users currently see no feedback and may assume the bots have failed. A progress dialog makes the wait transparent.
 
 ---
 
@@ -216,15 +175,11 @@ wait transparent.
 ### Negative
 
 - ⚠️ **Runner reads `bot.json`/`team.json`** — Introduces coupling between the runner and the bot configuration file
-  format. If the config format changes, the runner's parser must be updated. Mitigated: the format is stable and
-  already documented.
+  format. If the config format changes, the runner's parser must be updated. Mitigated: the format is stable and already documented.
 - ⚠️ **No-JSON bots use count-based fallback** — When a bot has no `.json` file its identity is unknown at boot time.
-  Both the runner and the GUI fall back to counting new connections against a pre-boot baseline. This is less precise
-  than identity matching but correct in practice. The runner uses `BotAddress` (unique per connection); the GUI uses
-  a name+version multiset baseline.
+  Both the runner and the GUI fall back to counting new connections against a pre-boot baseline. This is less precise than identity matching but correct in practice. The runner uses `BotAddress` (unique per connection); the GUI uses a name+version multiset baseline.
 - ⚠️ **Name+version+authors collision risk** — On an external server, two different bots could theoretically share the same
-  `(name, version, authors)` triplet, causing a false-positive match. This is unlikely in practice and **impossible** with an
-  embedded server (where the runner controls all bot launches).
+  `(name, version, authors)` triplet, causing a false-positive match. This is unlikely in practice and **impossible** with an embedded server (where the runner controls all bot launches).
 - ⚠️ **GUI changes required** — The boot progress dialog is a separate GUI enhancement, not part of the runner-only
   change. It requires wiring the identity-based progress model into the GUI's boot flow.
 
@@ -242,8 +197,7 @@ The collision on external servers is accepted as a known limitation, not address
   APIs, the WebSocket schema, and the server — disproportionate cost for an unlikely scenario.
 - Users of external servers are already expected to manage their own bot roster.
 
-**If it becomes a real problem:** Option 3 remains available as a future enhancement. It can be layered on top of
-the identity-based matching introduced here without breaking changes.
+**If it becomes a real problem:** Option 3 remains available as a future enhancement. It can be layered on top of the identity-based matching introduced here without breaking changes.
 
 ---
 

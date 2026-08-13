@@ -1,12 +1,4 @@
----
-id: CAP-005-design
-type: design
-status: draft
-links: [CAP-005]
-title: Design notes for CAP-005 (gui-bot-console)
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-005-design type: design status: draft links: [CAP-005] title: Design notes for CAP-005 (gui-bot-console) provenance: inferred reversal-cost: low ---
 
 # CAP-005 design
 

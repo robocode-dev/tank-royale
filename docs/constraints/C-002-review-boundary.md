@@ -1,12 +1,4 @@
----
-id: C-002
-type: constraint
-status: active
-links: []
-title: Every mutation of main goes through a branch and a human-merged PR
-source: core-principles agent instructions (pre-CH-001), Cliewen change loop
-enforcement: human
----
+--- id: C-002 type: constraint status: active links: [] title: Every mutation of main goes through a branch and a human-merged PR source: core-principles agent instructions (pre-CH-001), Cliewen change loop enforcement: human ---
 
 # C-002 — Every mutation of main goes through a branch and a human-merged PR
 

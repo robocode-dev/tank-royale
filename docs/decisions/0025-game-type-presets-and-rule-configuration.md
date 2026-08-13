@@ -1,37 +1,23 @@
----
-id: ADR-0025
-type: decision
-status: verified
-links: []
-title: Game Type Presets and Rule Configuration
-accepted-by: Flemming N. Larsen (2026-02-28, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0025 type: decision status: verified links: [] title: Game Type Presets and Rule Configuration accepted-by: Flemming N. Larsen (2026-02-28, pre-Cliewen MADR acceptance) ---
 
 # ADR-0025: Game Type Presets and Rule Configuration
 
 ## Context
 
-Tank Royale battles are governed by configurable rules: arena dimensions, number of rounds, gun cooling rate, inactivity
-limits, timeouts, and participant constraints. Different play styles need different defaults — a 1v1 duel has different
-arena and participant requirements than a 10-bot melee.
+Tank Royale battles are governed by configurable rules: arena dimensions, number of rounds, gun cooling rate, inactivity limits, timeouts, and participant constraints. Different play styles need different defaults — a 1v1 duel has different arena and participant requirements than a 10-bot melee.
 
 ### Origins: RoboRumble Competition Formats
 
-The game type presets originate from the classic Robocode community's standardized competition formats, established
-through **RoboRumble** (created by Albert Perez) and **LiteRumble** (created by Julian Kent / "Skilgannon"). These
-formats ensure fair, reproducible battle conditions for community rankings:
+The game type presets originate from the classic Robocode community's standardized competition formats, established through **RoboRumble** (created by Albert Perez) and **LiteRumble** (created by Julian Kent / "Skilgannon"). These formats ensure fair, reproducible battle conditions for community rankings:
 
 - **1v1** — Two bots duel on an 800×600 arena, 35 rounds. The core competitive format for measuring targeting and
   movement skill. ([RoboRumble 1v1 standard](https://book.robocode.dev/energy-and-scoring/competition-formats-rankings.html#_1v1-standard-format))
 - **Melee** — 10+ bots battle on a 1000×1000 arena, 10 rounds. The "Battle Royale" format — survival matters more
-  than raw damage. The name "Tank Royale" is inspired by this format.
-  ([RoboRumble melee standard](https://book.robocode.dev/energy-and-scoring/competition-formats-rankings.html#melee-standard-format))
+  than raw damage. The name "Tank Royale" is inspired by this format. ([RoboRumble melee standard](https://book.robocode.dev/energy-and-scoring/competition-formats-rankings.html#melee-standard-format))
 - **Teams** — Coordinated team battles (e.g., Twin Duel 2v2). Not yet supported in Tank Royale but planned for the
   future. ([Team formats](https://book.robocode.dev/energy-and-scoring/competition-formats-rankings.html#team-standard-formats))
 
-The **`classic`** preset represents how Robocode runs when it is *not* used for competitions — the default mode for
-casual play, bot development, and testing. It uses the same 800×600 arena as 1v1 but without the strict participant
-constraints of competition formats.
+The **`classic`** preset represents how Robocode runs when it is *not* used for competitions — the default mode for casual play, bot development, and testing. It uses the same 800×600 arena as 1v1 but without the strict participant constraints of competition formats.
 
 **Problem:** How should game rules be configured, and how should common configurations be made easy to select?
 
@@ -39,8 +25,7 @@ constraints of competition formats.
 
 ## Decision
 
-Define a **game type preset system** with four named presets and a `GameSetup` data class that holds all rule
-parameters with per-field "locked" flags.
+Define a **game type preset system** with four named presets and a `GameSetup` data class that holds all rule parameters with per-field "locked" flags.
 
 ### Game Type Presets
 
@@ -56,8 +41,7 @@ parameters with per-field "locked" flags.
 > allows more for casual/local play. The Battle Runner API should follow the same approach — `min=10, max=unlimited` —
 > since users may want larger melees outside competition contexts.
 
-All presets share common defaults: `gunCoolingRate=0.1`, `maxInactivityTurns=450`, `turnTimeout=5ms` (server) /
-`30ms` (GUI), `readyTimeout=10s`, `defaultTurnsPerSecond=30`.
+All presets share common defaults: `gunCoolingRate=0.1`, `maxInactivityTurns=450`, `turnTimeout=5ms` (server) / `30ms` (GUI), `readyTimeout=10s`, `defaultTurnsPerSecond=30`.
 
 ### GameSetup Data Class
 
@@ -86,8 +70,7 @@ DEFAULT_TURNS_PER_SECOND = 30
 
 ### Preset Definitions
 
-Presets are currently defined in the GUI (`GamesSettings.kt`) and applied client-side. The server itself only sees the
-final `GameSetup` values — it does not have built-in knowledge of presets. This means:
+Presets are currently defined in the GUI (`GamesSettings.kt`) and applied client-side. The server itself only sees the final `GameSetup` values — it does not have built-in knowledge of presets. This means:
 
 - The server accepts any valid `GameSetup` regardless of game type label
 - Preset enforcement (locked fields, default overrides) happens in the client

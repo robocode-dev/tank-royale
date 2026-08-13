@@ -1,10 +1,4 @@
----
-id: LOG-001
-type: log
-status: active
-links: []
-title: Decision log
----
+--- id: LOG-001 type: log status: active links: [] title: Decision log ---
 
 # Decision log
 

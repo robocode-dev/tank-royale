@@ -1,12 +1,4 @@
----
-id: CAP-004
-type: capability
-status: active
-links: [G-001]
-title: GUI boot progress
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-004 type: capability status: active links: [G-001] title: GUI boot progress provenance: inferred reversal-cost: low ---
 
 # CAP-004 — GUI boot progress
 

@@ -1,12 +1,4 @@
----
-id: CAP-011-design
-type: design
-status: draft
-links: [CAP-011]
-title: Design notes for CAP-011 (typescript-bot-api)
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-011-design type: design status: draft links: [CAP-011] title: Design notes for CAP-011 (typescript-bot-api) provenance: inferred reversal-cost: low ---
 
 # CAP-011 design
 

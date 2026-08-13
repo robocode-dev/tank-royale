@@ -1,11 +1,4 @@
----
-id: ADR-0014
-type: decision
-status: verified
-links: []
-title: Two-Tier Shared-Secret Authentication
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0014 type: decision status: verified links: [] title: Two-Tier Shared-Secret Authentication accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance) ---
 
 # ADR-0014: Two-Tier Shared-Secret Authentication
 
@@ -24,8 +17,7 @@ Use **shared-secret authentication** with two separate secret pools:
 - **Bot secrets** — for bot clients
 - **Controller secrets** — shared by controllers and observers
 
-Combined with **session ID binding**: server generates a UUID session ID on WebSocket connect, client must echo it in
-their handshake. Security is **opt-in** — if no secrets configured, authentication is disabled.
+Combined with **session ID binding**: server generates a UUID session ID on WebSocket connect, client must echo it in their handshake. Security is **opt-in** — if no secrets configured, authentication is disabled.
 
 ---
 

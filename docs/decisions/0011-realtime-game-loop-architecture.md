@@ -1,11 +1,4 @@
----
-id: ADR-0011
-type: decision
-status: verified
-links: []
-title: Real-Time Game Loop Architecture
-accepted-by: Flemming N. Larsen (2026-02-11, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0011 type: decision status: verified links: [] title: Real-Time Game Loop Architecture accepted-by: Flemming N. Larsen (2026-02-11, pre-Cliewen MADR acceptance) ---
 
 # Real-Time Game Loop Architecture
 

@@ -1,12 +1,4 @@
----
-id: P-001
-type: plan
-status: active
-links: [G-001]
-title: Cliewen adoption
-provenance: inferred
-reversal-cost: low
----
+--- id: P-001 type: plan status: active links: [G-001] title: Cliewen adoption provenance: inferred reversal-cost: low ---
 
 # P-001 — Cliewen adoption
 

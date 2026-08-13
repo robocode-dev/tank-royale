@@ -1,13 +1,4 @@
----
-id: CAP-008-criteria
-type: criteria
-status: draft
-links: [CAP-008]
-title: Acceptance criteria for CAP-008 (runtime-config-validation)
-ac-prefix: RCV
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-008-criteria type: criteria status: draft links: [CAP-008] title: Acceptance criteria for CAP-008 (runtime-config-validation) ac-prefix: RCV provenance: inferred reversal-cost: low ---
 
 ```gherkin
 Feature: runtime-config-validation — TBD - created by change support-bot-discovery-without-json. Update Purpose after archive.

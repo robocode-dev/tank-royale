@@ -1,19 +1,8 @@
----
-id: CAP-003
-type: capability
-status: active
-links: [G-001]
-title: Bot API updater
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-003 type: capability status: active links: [G-001] title: Bot API updater provenance: inferred reversal-cost: low ---
 
 # CAP-003 — Bot API updater
 
-The Bot API Updater ensures that bot root directories always contain up-to-date
-bot API library files matching the current GUI version. It bundles all four
-platform artifacts inside the GUI fat JAR and provides a startup scan with an
-interactive update dialog.
+The Bot API Updater ensures that bot root directories always contain up-to-date bot API library files matching the current GUI version. It bundles all four platform artifacts inside the GUI fat JAR and provides a startup scan with an interactive update dialog.
 
 ---
 

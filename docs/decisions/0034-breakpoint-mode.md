@@ -1,11 +1,4 @@
----
-id: ADR-0034
-type: decision
-status: verified
-links: []
-title: Breakpoint Mode
-accepted-by: Flemming N. Larsen (2026-04-07, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0034 type: decision status: verified links: [] title: Breakpoint Mode accepted-by: Flemming N. Larsen (2026-04-07, pre-Cliewen MADR acceptance) ---
 
 # ADR-0034: Breakpoint Mode
 

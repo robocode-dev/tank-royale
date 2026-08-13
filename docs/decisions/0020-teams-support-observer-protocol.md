@@ -1,18 +1,10 @@
----
-id: ADR-0020
-type: decision
-status: verified
-links: []
-title: Teams Support in Observer Protocol
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0020 type: decision status: verified links: [] title: Teams Support in Observer Protocol accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance) ---
 
 # ADR-0020: Teams Support in Observer Protocol
 
 ## Context
 
-Observers (web viewers, GUIs) cannot reliably distinguish team results from solo bot results in
-`game-ended-event-for-observer`.
+Observers (web viewers, GUIs) cannot reliably distinguish team results from solo bot results in `game-ended-event-for-observer`.
 
 **Issues reported:**
 

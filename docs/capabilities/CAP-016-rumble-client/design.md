@@ -1,12 +1,4 @@
----
-id: CAP-016-design
-type: design
-status: draft
-links: [CAP-016, CAP-001, CAP-014, CAP-015, ARCH-023, P-003]
-title: Design notes for CAP-016 (rumble-client)
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-016-design type: design status: draft links: [CAP-016, CAP-001, CAP-014, CAP-015, ARCH-023, P-003] title: Design notes for CAP-016 (rumble-client) provenance: inferred reversal-cost: low ---
 
 # CAP-016 design
 

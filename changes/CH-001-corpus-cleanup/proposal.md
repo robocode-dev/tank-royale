@@ -20,6 +20,8 @@ The 0.16.0 upgrade exposes 537 findings that already exist on `origin/main`. Lea
 
 This cleanup is intentionally based on the unmerged `upgrade-cliewen-0-16-0` branch because it uses the 0.16.0 validator, generated skills, caller, and identity ledger. The user explicitly authorized cleanup before merging the release upgrade. Accepting this change therefore binds both the upgrade and this cleanup; neither branch is an independent base.
 
+This change is plan-less: it repairs pre-existing corpus validation debt rather than advancing a product campaign.
+
 ## Scope
 
 - Reflow existing hard-wrapped Markdown without changing meaning.

@@ -1,12 +1,4 @@
----
-id: CAP-014-design
-type: design
-status: draft
-links: [CAP-014, ARCH-022, P-003]
-title: Design notes for CAP-014 (rumble-bot-catalog)
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-014-design type: design status: draft links: [CAP-014, ARCH-022, P-003] title: Design notes for CAP-014 (rumble-bot-catalog) provenance: inferred reversal-cost: low ---
 
 # CAP-014 design
 

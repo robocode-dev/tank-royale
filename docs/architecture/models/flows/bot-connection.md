@@ -1,12 +1,4 @@
----
-id: ARCH-010
-type: architecture
-status: draft
-links: [CAP-006]
-title: Bot Connection Flow
-provenance: inferred
-reversal-cost: low
----
+--- id: ARCH-010 type: architecture status: draft links: [CAP-006] title: Bot Connection Flow provenance: inferred reversal-cost: low ---
 
 # Bot Connection Flow
 
@@ -103,8 +95,7 @@ Server → Client: HTTP/1.1 101 Switching Protocols
                  Sec-WebSocket-Accept: ...
 ```
 
-**Duration:** <10ms (locally)  
-**Timeout:** 5-10 seconds (configurable)
+**Duration:** <10ms (locally) **Timeout:** 5-10 seconds (configurable)
 
 ### Error Handling
 

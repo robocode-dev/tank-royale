@@ -1,12 +1,4 @@
----
-id: ARCH-012
-type: architecture
-status: draft
-links: [ADR-0022]
-title: Event Handling Flow
-provenance: inferred
-reversal-cost: low
----
+--- id: ARCH-012 type: architecture status: draft links: [ADR-0022] title: Event Handling Flow provenance: inferred reversal-cost: low ---
 
 # Event Handling Flow
 
@@ -14,10 +6,7 @@ This document explains how events (like `WonRoundEvent`, `ScannedBotEvent`, etc.
 
 ## Overview
 
-**System:** Distributed multi-process event system  
-**Platforms:** Java (reference), Python, C# (.NET), TypeScript  
-**Key Concept:** Events are generated server-side, transmitted via WebSocket, queued client-side, and dispatched to bot handlers  
-**Output Handling:** Handler output (print statements, log messages) is automatically captured and transmitted to the GUI console
+**System:** Distributed multi-process event system **Platforms:** Java (reference), Python, C# (.NET), TypeScript **Key Concept:** Events are generated server-side, transmitted via WebSocket, queued client-side, and dispatched to bot handlers **Output Handling:** Handler output (print statements, log messages) is automatically captured and transmitted to the GUI console
 
 ---
 

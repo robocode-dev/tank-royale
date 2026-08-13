@@ -1,13 +1,4 @@
----
-id: CAP-001-criteria
-type: criteria
-status: draft
-links: [CAP-001]
-title: Acceptance criteria for CAP-001 (battle-runner)
-ac-prefix: BR
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-001-criteria type: criteria status: draft links: [CAP-001] title: Acceptance criteria for CAP-001 (battle-runner) ac-prefix: BR provenance: inferred reversal-cost: low ---
 
 ```gherkin
 Feature: battle-runner — TBD - created by archiving change add-battle-runner-api. Update Purpose after archive.

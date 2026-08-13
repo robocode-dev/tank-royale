@@ -1,11 +1,4 @@
----
-id: ADR-0017
-type: decision
-status: verified
-links: []
-title: Recording Format (ND-JSON + Gzip)
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0017 type: decision status: verified links: [] title: Recording Format (ND-JSON + Gzip) accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance) ---
 
 # ADR-0017: Recording Format (ND-JSON + Gzip)
 
@@ -21,8 +14,7 @@ Tank Royale needs a recording format for battle replay and analysis.
 
 Use **gzip-compressed Newline-Delimited JSON (ND-JSON)** with `.battle.gz` extension.
 
-**Architecture:** The Recorder connects to the server as an Observer client, streams each game event as one JSON line
-into a `GZIPOutputStream`. Recording is append-only and decoupled from the game engine.
+**Architecture:** The Recorder connects to the server as an Observer client, streams each game event as one JSON line into a `GZIPOutputStream`. Recording is append-only and decoupled from the game engine.
 
 ---
 

@@ -1,12 +1,4 @@
----
-id: CAP-014
-type: capability
-status: draft
-links: [G-001, P-003]
-title: Rumble bot catalog
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-014 type: capability status: draft links: [G-001, P-003] title: Rumble bot catalog provenance: inferred reversal-cost: low ---
 
 # CAP-014 — Rumble bot catalog
 

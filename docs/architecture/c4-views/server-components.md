@@ -1,12 +1,4 @@
----
-id: ARCH-003
-type: architecture
-status: draft
-links: [ADR-0008]
-title: Server Components View
-provenance: inferred
-reversal-cost: low
----
+--- id: ARCH-003 type: architecture status: draft links: [ADR-0008] title: Server Components View provenance: inferred reversal-cost: low ---
 
 # Server Components View
 

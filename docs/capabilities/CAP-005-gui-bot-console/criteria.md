@@ -1,13 +1,4 @@
----
-id: CAP-005-criteria
-type: criteria
-status: draft
-links: [CAP-005]
-title: Acceptance criteria for CAP-005 (gui-bot-console)
-ac-prefix: GBC
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-005-criteria type: criteria status: draft links: [CAP-005] title: Acceptance criteria for CAP-005 (gui-bot-console) ac-prefix: GBC provenance: inferred reversal-cost: low ---
 
 ```gherkin
 Feature: gui-bot-console — Define behavior and quality requirements for GUI panels that display bot-related console output (events, logs,

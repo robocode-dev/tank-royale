@@ -1,46 +1,31 @@
----
-id: ADR-0024
-type: decision
-status: verified
-links: []
-title: Battle Runner API
-accepted-by: Flemming N. Larsen (2026-02-28, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0024 type: decision status: verified links: [] title: Battle Runner API accepted-by: Flemming N. Larsen (2026-02-28, pre-Cliewen MADR acceptance) ---
 
 # ADR-0024: Battle Runner API
 
 ## Context
 
-Tank Royale provides a GUI application for running battles interactively, but lacks a programmatic API for executing
-battles from code. Classic Robocode offered a `Control` API (`RobocodeEngine`) that allowed users to start a server,
-select bots, run battles, configure rules, and receive results — all without launching a GUI.
+Tank Royale provides a GUI application for running battles interactively, but lacks a programmatic API for executing battles from code. Classic Robocode offered a `Control` API (`RobocodeEngine`) that allowed users to start a server, select bots, run battles, configure rules, and receive results — all without launching a GUI.
 
 This gap impacts several use cases:
 
 - **Integration/service testing** — No way to run end-to-end battles in automated tests and assert on results
 - **Robocode API Bridge testing** — The [classic Robocode bridge](https://github.com/robocode-dev/robocode-api-bridge)
-  supports legacy robots from classic Robocode. Currently tested manually, but needs automated, repeatable battle runs
-  across many legacy bots to verify compatibility
+  supports legacy robots from classic Robocode. Currently tested manually, but needs automated, repeatable battle runs across many legacy bots to verify compatibility
 - **Bot development** — Developers must launch the full GUI to test their bots
 - **Tournament systems** — Tank Royale itself will not ship tournament/competition management (ADR-0023), but the
-  Battle Runner is the explicit foundation for 3rd-party tournament tools to be built on top — exactly as the
-  `RobocodeEngine` / Control API served this role in classic Robocode (e.g. RoboRumble). This is a deliberate goal.
+  Battle Runner is the explicit foundation for 3rd-party tournament tools to be built on top — exactly as the `RobocodeEngine` / Control API served this role in classic Robocode (e.g. RoboRumble). This is a deliberate goal.
 - **Education** — Instructors want scriptable battle execution for courses and automated grading
 - **Benchmarking** — Comparing bot performance across versions requires repeatable, automated battle runs
 
-Currently, the only way to orchestrate battles programmatically is to manually wire up WebSocket connections to the
-Server as both Observer and Controller, manage the Booter process, and handle all protocol details — a significant
-barrier to entry.
+Currently, the only way to orchestrate battles programmatically is to manually wire up WebSocket connections to the Server as both Observer and Controller, manage the Booter process, and handle all protocol details — a significant barrier to entry.
 
-**Problem:** How should Tank Royale provide programmatic battle execution without duplicating existing component logic
-or conflicting with the established architecture?
+**Problem:** How should Tank Royale provide programmatic battle execution without duplicating existing component logic or conflicting with the established architecture?
 
 ---
 
 ## Decision
 
-Create a new top-level module **`runner`** (artifact: `robocode-tankroyale-battle-runner`) that provides a
-high-level **Battle Runner API** — a Java/Kotlin library published to Maven Central.
+Create a new top-level module **`runner`** (artifact: `robocode-tankroyale-battle-runner`) that provides a high-level **Battle Runner API** — a Java/Kotlin library published to Maven Central.
 
 ### Architecture: Orchestration Over Duplication
 
@@ -77,8 +62,7 @@ graph TB
     style Bots fill:#3498db,stroke:#2c5aa0,color:#fff
 ```
 
-When intent diagnostics are enabled, bots connect to the proxy (via `SERVER_URL` env var) instead of directly to the
-server. The proxy transparently forwards all messages while capturing `bot-intent` messages per bot per turn.
+When intent diagnostics are enabled, bots connect to the proxy (via `SERVER_URL` env var) instead of directly to the server. The proxy transparently forwards all messages while capturing `bot-intent` messages per bot per turn.
 
 | Concern | How Battle Runner Handles It |
 |---------|----------------------------|
@@ -93,9 +77,7 @@ server. The proxy transparently forwards all messages while capturing `bot-inten
 
 ### API Surface (Conceptual)
 
-The API is implemented in Kotlin but designed to be equally ergonomic from Java. All public factory methods use
-`@JvmStatic` for direct static access, and `Consumer<Builder>` overloads are provided alongside Kotlin DSL lambdas
-to avoid `Unit.INSTANCE` boilerplate in Java (see Decision 16).
+The API is implemented in Kotlin but designed to be equally ergonomic from Java. All public factory methods use `@JvmStatic` for direct static access, and `Consumer<Builder>` overloads are provided alongside Kotlin DSL lambdas to avoid `Unit.INSTANCE` boilerplate in Java (see Decision 16).
 
 **Kotlin:**
 
@@ -143,11 +125,7 @@ try (var runner = BattleRunner.create(b -> b.embeddedServer())) {
 }
 ```
 
-The `BattleRunner` manages lifecycle (create, close, embedded server, booter). `runBattle()` is the synchronous
-convenience method — start battle, block until results, return. `startBattleAsync()` returns a `BattleHandle` that
-combines event subscriptions and control commands for the async case. When `enableIntentDiagnostics()` is set, the
-Battle Runner inserts a transparent WebSocket proxy between bots and server to capture raw `bot-intent` messages —
-available after battle completion via `runner.intentDiagnostics`.
+The `BattleRunner` manages lifecycle (create, close, embedded server, booter). `runBattle()` is the synchronous convenience method — start battle, block until results, return. `startBattleAsync()` returns a `BattleHandle` that combines event subscriptions and control commands for the async case. When `enableIntentDiagnostics()` is set, the Battle Runner inserts a transparent WebSocket proxy between bots and server to capture raw `bot-intent` messages — available after battle completion via `runner.intentDiagnostics`.
 
 **Async control and intent diagnostics (Kotlin):**
 
@@ -184,8 +162,7 @@ BattleRunner.create { embeddedServer(); enableIntentDiagnostics() }.use { runner
 ### Key Design Choices
 
 1. **Module name: `runner`** — Follows the short naming convention of existing modules (`server`, `booter`, `recorder`,
-   `gui`). Not "control" (conflicts with existing Controller role in ADR-0007), not "remote" (implies network-only).
-   The API is called "Battle Runner" but the module directory is simply `runner`.
+   `gui`). Not "control" (conflicts with existing Controller role in ADR-0007), not "remote" (implies network-only). The API is called "Battle Runner" but the module directory is simply `runner`.
 
 2. **Public library from day one** — Published to Maven Central alongside the Bot API. This enables third-party
    tournament systems, educational tools, and CI/CD integrations.
@@ -194,19 +171,10 @@ BattleRunner.create { embeddedServer(); enableIntentDiagnostics() }.use { runner
    (Python, .NET) can follow the same pattern as Bot API (ADR-0003).
 
 4. **Single `BattleHandle` combining observer and controller roles** — The async API exposes a single `BattleHandle`
-   that provides both event subscriptions (observer role) and control commands (controller role). This keeps the
-   async surface cohesive: callers subscribe to events and issue control commands on the same object, then call
-   `awaitResults()` to block until the battle completes. The handle maps directly to ADR-0007's role separation
-   at the connection level — internally, `BattleHandle` delegates to the same `ServerConnection` that acts as both
-   Observer and Controller — while exposing a unified, ergonomic API to callers. The convenience `runBattle()` method
-   handles the synchronous case without exposing a handle at all.
+   that provides both event subscriptions (observer role) and control commands (controller role). This keeps the async surface cohesive: callers subscribe to events and issue control commands on the same object, then call `awaitResults()` to block until the battle completes. The handle maps directly to ADR-0007's role separation at the connection level — internally, `BattleHandle` delegates to the same `ServerConnection` that acts as both Observer and Controller — while exposing a unified, ergonomic API to callers. The convenience `runBattle()` method handles the synchronous case without exposing a handle at all.
 
 5. **Embedded server and booter artifacts** — In embedded mode, the Battle Runner bundles the Server and Booter JAR
-   artifacts inside its own JAR — the same approach used by the GUI module. At build time, the shrunken server and
-   booter JARs are copied into the classpath resources. At runtime, they are extracted to temp files and launched via
-   `java -jar`. This ensures version consistency (server, booter, and runner are always from the same release) and
-   zero-config usage — users add a single Maven dependency and everything works. In external mode, no embedded
-   artifacts are needed since the user points to an already-running server.
+   artifacts inside its own JAR — the same approach used by the GUI module. At build time, the shrunken server and booter JARs are copied into the classpath resources. At runtime, they are extracted to temp files and launched via `java -jar`. This ensures version consistency (server, booter, and runner are always from the same release) and zero-config usage — users add a single Maven dependency and everything works. In external mode, no embedded artifacts are needed since the user points to an already-running server.
 
 6. **Embedded + external server modes** — Embedded mode starts a server in-process for zero-config usage (testing,
    scripting). External mode connects to a running server for shared/remote scenarios.
@@ -215,9 +183,7 @@ BattleRunner.create { embeddedServer(); enableIntentDiagnostics() }.use { runner
    real-time event streaming. This matches the most common use case (run battle, get results).
 
 8. **Game type presets** — Battle configuration uses the existing game type preset system (see
-   [ADR-0025](./0025-game-type-presets-and-rule-configuration.md)): `classic`, `melee`, `1v1`, and `custom`. Selecting
-   a preset provides sensible defaults; individual parameters can be overridden. The simplest call is
-   `runner.runBattle(BattleSetup.classic(), bots)`.
+   [ADR-0025](./0025-game-type-presets-and-rule-configuration.md)): `classic`, `melee`, `1v1`, and `custom`. Selecting a preset provides sensible defaults; individual parameters can be overridden. The simplest call is `runner.runBattle(BattleSetup.classic(), bots)`.
 
 9. **Event delivery via Event\<T\> system** — Reuses the existing event infrastructure from ADR-0022, providing
    consistent patterns across the codebase.
@@ -337,9 +303,7 @@ Create an API that runs the physics engine directly, bypassing WebSocket entirel
 ### Positive
 
 - ✅ **True integration testing** — The Battle Runner executes battles _exactly_ as the game is intended to run: real
-  Server, real Booter, real bot processes, real WebSocket protocol. The GUI is just an observer and controller on top of
-  these same components — meaning Battle Runner tests exercise the identical code paths as a real game. This is the only
-  way to do integration tests that match actual gameplay.
+  Server, real Booter, real bot processes, real WebSocket protocol. The GUI is just an observer and controller on top of these same components — meaning Battle Runner tests exercise the identical code paths as a real game. This is the only way to do integration tests that match actual gameplay.
 - ✅ **Programmatic battle execution** — Run battles from JUnit, scripts, CI/CD pipelines
 - ✅ **Robocode API Bridge validation** — Automated testing of legacy bot compatibility across many bots consistently
 - ✅ **Third-party enablement** — Tournament systems, educational tools, and analyzers can be built on top
@@ -358,11 +322,7 @@ Create an API that runs the physics engine directly, bypassing WebSocket entirel
 ### Future Enhancements
 
 - 🔮 **GUI Bot Console — Intent Tab** — The GUI's bot console currently shows observed events (stdout, stderr) for each
-  bot. Once the Intent Diagnostics WS proxy is implemented, the GUI could add an "Intents" tab to the bot console that
-  displays the raw `bot-intent` messages as they are sent to the server. This would give developers real-time visibility
-  into what their bot is requesting (target speed, turn rates, fire power, etc.) alongside the observed outcomes — a
-  powerful debugging aid. The proxy component should be designed as a reusable library so the GUI can integrate it
-  independently of the Battle Runner API.
+  bot. Once the Intent Diagnostics WS proxy is implemented, the GUI could add an "Intents" tab to the bot console that displays the raw `bot-intent` messages as they are sent to the server. This would give developers real-time visibility into what their bot is requesting (target speed, turn rates, fire power, etc.) alongside the observed outcomes — a powerful debugging aid. The proxy component should be designed as a reusable library so the GUI can integrate it independently of the Battle Runner API.
 
 ---
 
@@ -374,8 +334,7 @@ Create an API that runs the physics engine directly, bypassing WebSocket entirel
 - [ADR-0009: WebSocket Communication Protocol](./0009-websocket-communication-protocol.md) — Underlying communication
 - [ADR-0022: Event System for GUI Decoupling](./0022-event-system-gui-decoupling.md) — Event delivery pattern reused
 - [ADR-0023: Platform Scope](./0023-robocode-tank-royale-platform-scope.md) — Tank Royale will not ship
-  tournament tooling itself, but the Battle Runner is the explicit enabler for 3rd-party tournament systems to be
-  built on top (analogous to the `RobocodeEngine` / Control API in classic Robocode)
+  tournament tooling itself, but the Battle Runner is the explicit enabler for 3rd-party tournament systems to be built on top (analogous to the `RobocodeEngine` / Control API in classic Robocode)
 - [ADR-0025: Game Type Presets](./0025-game-type-presets-and-rule-configuration.md) — Preset system used for battle
   configuration
 - [Protocol Flow Diagrams](/docs/architecture/models/flows/README.md) — Sequence diagrams covering bot/observer/controller connection, game startup, turn loop, game ending, and controller commands (pause, resume, stop, next-turn, change-tps)

@@ -1,11 +1,4 @@
----
-id: ADR-0012
-type: decision
-status: verified
-links: []
-title: Turn Timing Semantics
-accepted-by: Flemming N. Larsen (2026-02-13, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0012 type: decision status: verified links: [] title: Turn Timing Semantics accepted-by: Flemming N. Larsen (2026-02-13, pre-Cliewen MADR acceptance) ---
 
 # ADR-0012: Turn Timing Semantics
 
@@ -16,8 +9,7 @@ Tank Royale's turn-based game loop has two timing parameters:
 1. **Turn Timeout** — Hard deadline for bot responses before SkippedTurnEvent
 2. **TPS (Turns Per Second)** — Visual rendering speed for spectators
 
-**Problem:** How do bot processing completion and visual rendering timing interact to ensure deterministic battles while
-respecting user TPS preferences?
+**Problem:** How do bot processing completion and visual rendering timing interact to ensure deterministic battles while respecting user TPS preferences?
 
 **Critical requirements:**
 
@@ -383,8 +375,7 @@ See `server/src/test/kotlin/core/TurnTimingTest.kt` for comprehensive tests cove
 | All instant            | 10000µs     | 100µs (0.1ms)                 | -1  | 0.1ms     | +0ms         | 0.1ms   |
 | Paused                 | 10000µs     | 8000µs (8ms)                  | 0   | 8ms       | ∞ (paused)   | ∞       |
 
-**Key Insight:** Bot processing duration and visual delay are completely independent. Battle determinism is guaranteed
-because only Phase 1 (bot processing) affects outcomes.
+**Key Insight:** Bot processing duration and visual delay are completely independent. Battle determinism is guaranteed because only Phase 1 (bot processing) affects outcomes.
 
 ---
 

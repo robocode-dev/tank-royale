@@ -1,12 +1,4 @@
----
-id: CAP-012
-type: capability
-status: active
-links: [G-001]
-title: User documentation
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-012 type: capability status: active links: [G-001] title: User documentation provenance: inferred reversal-cost: low ---
 
 # CAP-012 — User documentation
 

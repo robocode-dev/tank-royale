@@ -1,12 +1,4 @@
----
-id: CAP-011
-type: capability
-status: active
-links: [G-001]
-title: TypeScript Bot API
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-011 type: capability status: active links: [G-001] title: TypeScript Bot API provenance: inferred reversal-cost: low ---
 
 # CAP-011 — TypeScript Bot API
 

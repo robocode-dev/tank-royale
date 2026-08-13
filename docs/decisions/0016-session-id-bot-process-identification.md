@@ -1,11 +1,4 @@
----
-id: ADR-0016
-type: decision
-status: verified
-links: []
-title: Session ID for Bot Process Identification
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0016 type: decision status: verified links: [] title: Session ID for Bot Process Identification accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance) ---
 
 # ADR-0016: Session ID for Bot Process Identification
 

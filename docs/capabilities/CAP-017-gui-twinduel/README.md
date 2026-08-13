@@ -1,12 +1,4 @@
----
-id: CAP-017
-type: capability
-status: active
-links: [G-001, P-003, M-010]
-title: GUI TwinDuel
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-017 type: capability status: active links: [G-001, P-003, M-010] title: GUI TwinDuel provenance: inferred reversal-cost: low ---
 
 # CAP-017 — GUI TwinDuel
 

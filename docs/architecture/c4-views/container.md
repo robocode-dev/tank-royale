@@ -1,12 +1,4 @@
----
-id: ARCH-002
-type: architecture
-status: draft
-links: []
-title: Container View
-provenance: inferred
-reversal-cost: low
----
+--- id: ARCH-002 type: architecture status: draft links: [] title: Container View provenance: inferred reversal-cost: low ---
 
 # Container View
 

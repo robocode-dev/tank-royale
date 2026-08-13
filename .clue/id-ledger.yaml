@@ -11,6 +11,16 @@ counters:
     P: "3"
     TNP: "3"
 entries:
+    - id: CH-001-open-questions
+      kind: named
+      state: live
+      prefix: CH-001-open-questions
+      component: "1"
+    - id: CH-001-tasks
+      kind: named
+      state: live
+      prefix: CH-001-tasks
+      component: "1"
     - id: ADR-0001
       kind: numeric
       state: live

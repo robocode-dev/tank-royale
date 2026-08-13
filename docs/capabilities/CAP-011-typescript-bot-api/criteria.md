@@ -1,13 +1,4 @@
----
-id: CAP-011-criteria
-type: criteria
-status: draft
-links: [CAP-011]
-title: Acceptance criteria for CAP-011 (typescript-bot-api)
-ac-prefix: TBA
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-011-criteria type: criteria status: draft links: [CAP-011] title: Acceptance criteria for CAP-011 (typescript-bot-api) ac-prefix: TBA provenance: inferred reversal-cost: low ---
 
 ```gherkin
 Feature: typescript-bot-api — TBD - created by archiving change add-typescript-protocol-layer-2. Update Purpose after archive.

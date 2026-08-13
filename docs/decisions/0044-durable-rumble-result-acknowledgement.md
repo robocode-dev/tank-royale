@@ -1,12 +1,4 @@
----
-id: ADR-0044
-type: decision
-status: verified
-links: [P-003, M-008, CAP-015, CAP-016, ADR-0043]
-title: Durable Rumble Result Acknowledgement
-author: agent
-accepted-by: Flemming N. Larsen (2026-08-03, Codex conversation)
----
+--- id: ADR-0044 type: decision status: verified links: [P-003, M-008, CAP-015, CAP-016, ADR-0043] title: Durable Rumble Result Acknowledgement author: agent accepted-by: Flemming N. Larsen (2026-08-03, Codex conversation) ---
 
 # ADR-0044: Durable Rumble Result Acknowledgement
 

@@ -1,12 +1,4 @@
----
-id: ARCH-004
-type: architecture
-status: draft
-links: []
-title: Booter Components View
-provenance: inferred
-reversal-cost: low
----
+--- id: ARCH-004 type: architecture status: draft links: [] title: Booter Components View provenance: inferred reversal-cost: low ---
 
 # Booter Components View
 

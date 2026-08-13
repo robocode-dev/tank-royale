@@ -1,12 +1,4 @@
----
-id: P-003
-type: plan
-status: active
-links: [G-001]
-title: Tank Royale Rumble
-provenance: inferred
-reversal-cost: low
----
+--- id: P-003 type: plan status: active links: [G-001] title: Tank Royale Rumble provenance: inferred reversal-cost: low ---
 
 # P-003 — Tank Royale Rumble
 

@@ -1,11 +1,4 @@
----
-id: ADR-0033
-type: decision
-status: verified
-links: []
-title: Server Debug Mode
-accepted-by: Flemming N. Larsen (2026-04-07, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0033 type: decision status: verified links: [] title: Server Debug Mode accepted-by: Flemming N. Larsen (2026-04-07, pre-Cliewen MADR acceptance) ---
 
 # ADR-0033: Server Debug Mode
 

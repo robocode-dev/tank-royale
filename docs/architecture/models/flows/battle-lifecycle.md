@@ -1,12 +1,4 @@
----
-id: ARCH-009
-type: architecture
-status: draft
-links: [CAP-006]
-title: Battle Lifecycle Flow
-provenance: inferred
-reversal-cost: low
----
+--- id: ARCH-009 type: architecture status: draft links: [CAP-006] title: Battle Lifecycle Flow provenance: inferred reversal-cost: low ---
 
 # Battle Lifecycle Flow
 
@@ -45,8 +37,7 @@ stateDiagram-v2
 
 ## Phase 1: WAIT_FOR_PARTICIPANTS
 
-**Duration:** Variable (seconds to minutes)  
-**Goal:** Collect all bots that will participate in battle
+**Duration:** Variable (seconds to minutes) **Goal:** Collect all bots that will participate in battle
 
 ### Sequence Diagram
 
@@ -123,8 +114,7 @@ Move to **WAIT_FOR_READY** when:
 
 ## Phase 2: WAIT_FOR_READY
 
-**Duration:** Very short (seconds)  
-**Goal:** Notify selected bots that battle is starting
+**Duration:** Very short (seconds) **Goal:** Notify selected bots that battle is starting
 
 ### Sequence Diagram
 
@@ -232,9 +222,7 @@ Move to **GAME_RUNNING** when all selected bots send `bot-ready`
 
 ## Phase 3: GAME_RUNNING
 
-**Duration:** Variable (seconds to minutes)  
-**TPS:** 30 turns per second (~33ms per turn)  
-**Goal:** Execute battle until victory condition
+**Duration:** Variable (seconds to minutes) **TPS:** 30 turns per second (~33ms per turn) **Goal:** Execute battle until victory condition
 
 ### High-Level Sequence
 
@@ -463,8 +451,7 @@ sequenceDiagram
 
 ## Phase 4: GAME_ENDED
 
-**Duration:** Seconds (cleanup)  
-**Goal:** Distribute results and clean up battle
+**Duration:** Seconds (cleanup) **Goal:** Distribute results and clean up battle
 
 ### Sequence Diagram
 

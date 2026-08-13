@@ -1,13 +1,4 @@
----
-id: CAP-016-criteria
-type: criteria
-status: draft
-links: [CAP-016]
-title: Acceptance criteria for CAP-016 (rumble-client)
-ac-prefix: RCL
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-016-criteria type: criteria status: draft links: [CAP-016] title: Acceptance criteria for CAP-016 (rumble-client) ac-prefix: RCL provenance: inferred reversal-cost: low ---
 
 ```gherkin
 Feature: rumble-client — Local ranked and practice battle client

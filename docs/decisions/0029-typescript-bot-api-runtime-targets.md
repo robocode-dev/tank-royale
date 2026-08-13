@@ -1,11 +1,4 @@
----
-id: ADR-0029
-type: decision
-status: verified
-links: []
-title: TypeScript Bot API Runtime Targets
-accepted-by: Flemming N. Larsen (2026-03-24, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0029 type: decision status: verified links: [] title: TypeScript Bot API Runtime Targets accepted-by: Flemming N. Larsen (2026-03-24, pre-Cliewen MADR acceptance) ---
 
 # ADR-0029: TypeScript Bot API Runtime Targets
 

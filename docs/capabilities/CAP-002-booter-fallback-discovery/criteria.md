@@ -1,13 +1,4 @@
----
-id: CAP-002-criteria
-type: criteria
-status: draft
-links: [CAP-002]
-title: Acceptance criteria for CAP-002 (booter-fallback-discovery)
-ac-prefix: BFD
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-002-criteria type: criteria status: draft links: [CAP-002] title: Acceptance criteria for CAP-002 (booter-fallback-discovery) ac-prefix: BFD provenance: inferred reversal-cost: low ---
 
 ```gherkin
 Feature: booter-fallback-discovery — TBD - created by change support-bot-discovery-without-json. Update Purpose after archive.

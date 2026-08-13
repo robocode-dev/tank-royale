@@ -1,14 +1,4 @@
----
-id: C-004
-type: constraint
-status: active
-links: []
-title: Game physics and bot backward compatibility are stable
-source: openspec/project.md "Stability Rules (Non-negotiable)" (absorbed at CH-001), ADR-0008
-enforcement: human
-provenance: inferred
-reversal-cost: high
----
+--- id: C-004 type: constraint status: active links: [] title: Game physics and bot backward compatibility are stable source: openspec/project.md "Stability Rules (Non-negotiable)" (absorbed at CH-001), ADR-0008 enforcement: human provenance: inferred reversal-cost: high ---
 
 # C-004 — Game physics and bot backward compatibility are stable
 

@@ -1,12 +1,4 @@
----
-id: CAP-015
-type: capability
-status: draft
-links: [G-001, P-003]
-title: Rumble result data
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-015 type: capability status: draft links: [G-001, P-003] title: Rumble result data provenance: inferred reversal-cost: low ---
 
 # CAP-015 — Rumble result data
 

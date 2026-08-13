@@ -1,19 +1,10 @@
----
-id: ADR-0023
-type: decision
-status: verified
-links: []
-title: Robocode Tank Royale Platform Scope and Boundaries
-accepted-by: Flemming N. Larsen (2026-02-15, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0023 type: decision status: verified links: [] title: Robocode Tank Royale Platform Scope and Boundaries accepted-by: Flemming N. Larsen (2026-02-15, pre-Cliewen MADR acceptance) ---
 
 # ADR-0023: Robocode Tank Royale Platform Scope and Boundaries
 
 ## Context
 
-Robocode Tank Royale is a complete platform for competitive tank battling. It consists of multiple interconnected
-components, but the project maintainers have finite capacity. Questions arise about what constitutes the "core platform"
-versus extensions, and where responsibility boundaries lie.
+Robocode Tank Royale is a complete platform for competitive tank battling. It consists of multiple interconnected components, but the project maintainers have finite capacity. Questions arise about what constitutes the "core platform" versus extensions, and where responsibility boundaries lie.
 
 **Problem:** What is the scope of the Robocode Tank Royale project, and what falls outside its boundaries?
 
@@ -30,9 +21,7 @@ versus extensions, and where responsibility boundaries lie.
 4. **Booter** — Launcher for running bots locally or in containers (required for GUI usage)
 5. **Recorder** — Battle recording utility for playback and analysis
 
-**Core principle:** All components are **replaceable**. Other implementations of any component (alternative server,
-viewer, Bot API, booter, recorder) are welcome and should be developed **outside this repository**, building upon the
-core platform.
+**Core principle:** All components are **replaceable**. Other implementations of any component (alternative server, viewer, Bot API, booter, recorder) are welcome and should be developed **outside this repository**, building upon the core platform.
 
 ---
 
@@ -96,11 +85,9 @@ Currently, we provide Bot API implementations for:
 - **.NET** (stable, part of core platform)
 - **TypeScript** (stable, Node.js and browser — see [ADR-0027](./0027-typescript-bot-api-architecture.md))
 
-**Future languages (Rust, Go, etc.):** Would follow the same standalone-native-implementation pattern as Java,
-C#, Python, and TypeScript — each written idiomatically in the target language, using the same wire protocol.
+**Future languages (Rust, Go, etc.):** Would follow the same standalone-native-implementation pattern as Java, C#, Python, and TypeScript — each written idiomatically in the target language, using the same wire protocol.
 
-**But:** If someone develops a **better** Bot API with a different philosophy (more functional, different naming,
-different abstractions), that's excellent! Those implementations should:
+**But:** If someone develops a **better** Bot API with a different philosophy (more functional, different naming, different abstractions), that's excellent! Those implementations should:
 
 1. Live in a separate repository
 2. Implement the same wire protocol (use our schema definitions)

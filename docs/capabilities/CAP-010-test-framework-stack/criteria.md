@@ -1,13 +1,4 @@
----
-id: CAP-010-criteria
-type: criteria
-status: draft
-links: [CAP-010]
-title: Acceptance criteria for CAP-010 (test-framework-stack)
-ac-prefix: TFS
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-010-criteria type: criteria status: draft links: [CAP-010] title: Acceptance criteria for CAP-010 (test-framework-stack) ac-prefix: TFS provenance: inferred reversal-cost: low ---
 
 ```gherkin
 Feature: test-framework-stack — Defines the test dependency versions and tooling constraints for all modules in the project. Ensures consistent, auditable test dependencies via a single version catalog and a coherent JUnit 6 + Kotest 6 platform.

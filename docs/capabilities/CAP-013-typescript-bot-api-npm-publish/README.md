@@ -1,11 +1,4 @@
----
-id: CAP-013
-type: capability
-status: draft
-links: [G-001]
-title: TypeScript Bot API npm publishing
-provenance: verified
----
+--- id: CAP-013 type: capability status: draft links: [G-001] title: TypeScript Bot API npm publishing provenance: verified ---
 
 # CAP-013 — TypeScript Bot API npm publishing
 

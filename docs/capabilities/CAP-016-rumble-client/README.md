@@ -1,12 +1,4 @@
----
-id: CAP-016
-type: capability
-status: draft
-links: [G-001, P-003]
-title: Rumble client
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-016 type: capability status: draft links: [G-001, P-003] title: Rumble client provenance: inferred reversal-cost: low ---
 
 # CAP-016 — Rumble client
 

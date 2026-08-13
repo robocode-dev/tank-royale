@@ -1,12 +1,4 @@
----
-id: CAP-008
-type: capability
-status: active
-links: [G-001]
-title: Runtime config validation
-provenance: inferred
-reversal-cost: low
----
+--- id: CAP-008 type: capability status: active links: [G-001] title: Runtime config validation provenance: inferred reversal-cost: low ---
 
 # CAP-008 — Runtime config validation
 

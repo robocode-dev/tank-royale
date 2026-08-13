@@ -1,21 +1,12 @@
----
-id: ADR-0002
-type: decision
-status: verified
-links: []
-title: Standard Mathematical Coordinate System
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
----
+--- id: ADR-0002 type: decision status: verified links: [] title: Standard Mathematical Coordinate System accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance) ---
 
 # ADR-0002: Standard Mathematical Coordinate System
 
 ## Context
 
-The original Robocode used a non-standard coordinate system: Y-axis inverted (0° = up/north), angles measured clockwise.
-This caused confusion for developers familiar with standard mathematics.
+The original Robocode used a non-standard coordinate system: Y-axis inverted (0° = up/north), angles measured clockwise. This caused confusion for developers familiar with standard mathematics.
 
-**Problem:** Should Tank Royale preserve the original Robocode coordinate system for backward compatibility, or adopt
-standard math conventions?
+**Problem:** Should Tank Royale preserve the original Robocode coordinate system for backward compatibility, or adopt standard math conventions?
 
 ---
 

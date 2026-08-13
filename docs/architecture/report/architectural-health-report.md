@@ -1,12 +1,4 @@
----
-id: ARCH-018
-type: architecture
-status: draft
-links: []
-title: "Architectural Health Report: Robocode Tank Royale"
-provenance: inferred
-reversal-cost: low
----
+--- id: ARCH-018 type: architecture status: draft links: [] title: "Architectural Health Report: Robocode Tank Royale" provenance: inferred reversal-cost: low ---
 
 # Architectural Health Report: Robocode Tank Royale
 
