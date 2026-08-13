@@ -114,7 +114,7 @@ Forbidden-API scan, per platform (grep-level, deterministic; an advisory AI revi
 | Java | `ProcessBuilder`, `Runtime.exec`, `java.net` beyond the bot API's WebSocket, `sun.misc.Unsafe`, reflection on the bot API internals |
 | C# | `System.Diagnostics.Process`, P/Invoke (`DllImport`), `Registry`, raw sockets |
 | Python | `subprocess`, `os.system`, `socket`, `ctypes`, `importlib` tricks |
-| TypeScript | `child_process`, raw 
+| TypeScript | `child_process`, raw
 et`/`http` clients, `eval`, native addons |
 
 ## Ownership, Versioning, and Identity

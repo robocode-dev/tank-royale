@@ -135,7 +135,7 @@ reversal-cost: low
 ## Communication Patterns
 
 | From | To | Protocol | Purpose |
-|------|----|---------|---------| 
+|------|----|---------|---------|
 | **Bot** → **Server** | WebSocket | JSON messages | Send bot intents (move, fire, etc.) |
 | **Server** → **Bot** | WebSocket | JSON messages | Send tick events and game state |
 | **GUI** → **Server** | WebSocket | JSON messages | Observe battle, send commands |
@@ -168,11 +168,11 @@ graph LR
     Bot2["Bot 2"]
     GUI["GUI"]
     Server["Server<br/>(localhost:7654)"]
-    
+
     Bot1 -->|WebSocket| Server
     Bot2 -->|WebSocket| Server
     GUI -->|WebSocket| Server
-    
+
     style Server fill:#1168bd,color:#fff
     style GUI fill:#438dd5,color:#fff
     style Bot1 fill:#85bbf0,color:#000
@@ -190,12 +190,12 @@ graph LR
     BotN["Bot N"]
     Spectator["Spectator<br/>(Observer)"]
     Server["Server<br/>(Cloud/LAN)"]
-    
+
     Bot1 -->|WebSocket| Server
     Bot2 -->|WebSocket| Server
     BotN -->|WebSocket| Server
     Spectator -->|WebSocket| Server
-    
+
     style Server fill:#1168bd,color:#fff
     style Spectator fill:#438dd5,color:#fff
     style Bot1 fill:#85bbf0,color:#000

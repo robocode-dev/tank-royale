@@ -27,7 +27,7 @@ Feature: booter-fallback-discovery — TBD - created by change support-bot-disco
   @BFD-002
   Scenario: Metadata generation for bot without .json
     When the `booter` generates a `BootEntry` for a directory without a `.json` file
-    Then it SHALL set the 
+    Then it SHALL set the
 ame` property to the directory name
     And it SHALL set the `base` property to the directory name
     And it SHALL provide empty lists for `authors`, `gameTypes`, and other optional fields

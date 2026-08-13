@@ -21,14 +21,14 @@ graph TD
     Events[Events] --> BotState
     Events --> BulletState
     Events --> Results
-    
+
     Commands[Commands] --> GameSetup
     Commands --> BotAddress
     Commands --> InitialPosition
-    
+
     Handshakes[Handshakes] --> BotInfo
     Handshakes --> Participant
-    
+
     BotState --> Color
     GameSetup --> Color
 ```
@@ -87,7 +87,7 @@ classDiagram
         +Color tracksColor
         +Color gunColor
     }
-    
+
     class BotStateWithId {
         +int id
         +boolean isDroid
@@ -96,7 +96,7 @@ classDiagram
         +number y
         ...all BotState fields...
     }
-    
+
     class BulletState {
         +int bulletId
         +int ownerId
@@ -107,7 +107,7 @@ classDiagram
         +number speed
         +Color color
     }
-    
+
     class GameSetup {
         +string gameType
         +int arenaWidth
@@ -120,7 +120,7 @@ classDiagram
         +int turnTimeout
         +int readyTimeout
     }
-    
+
     class Participant {
         +int id
         +string sessionId
@@ -138,7 +138,7 @@ classDiagram
         +string teamName
         +string teamVersion
     }
-    
+
     BotState <|-- BotStateWithId
     BotState *-- Color
     BulletState *-- Color
@@ -417,7 +417,7 @@ classDiagram
 | `arenaHeight` | integer | 600 | Arena height (units) |
 | `minNumberOfParticipants` | integer | 2 | Minimum bots required |
 | `maxNumberOfParticipants` | integer | 10 | Maximum bots allowed |
-| 
+|
 umberOfRounds` | integer | 10 | Number of rounds |
 | `gunCoolingRate` | number | 0.1 | Gun heat decrease per turn |
 | `maxInactivityTurns` | integer | 450 | Turns before inactivity timeout |
@@ -487,7 +487,7 @@ classDiagram
 |-------|------|-------------|
 | `id` | integer | Bot ID in battle (1, 2, 3...) |
 | `sessionId` | string | WebSocket session ID |
-| 
+|
 ame` | string | Bot name |
 | `version` | string | Bot version |
 | `authors` | string[] | Bot authors |

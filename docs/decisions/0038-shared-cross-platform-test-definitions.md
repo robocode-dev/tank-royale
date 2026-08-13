@@ -193,7 +193,7 @@ Platform runners must map Java exception names from `expected.throws` to local e
 | `"NaN"` | IEEE 754 Not-a-Number | `Double.NaN` / `float('nan')` / `Number.NaN` |
 | `"Infinity"` | Positive infinity | `Double.POSITIVE_INFINITY` / `float('inf')` / `Infinity` |
 | `"-Infinity"` | Negative infinity | `Double.NEGATIVE_INFINITY` / `float('-inf')` / `-Infinity` |
-| 
+|
 ull` | Absent or null value | Language-native null/None/undefined |
 
 #### Example

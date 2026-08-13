@@ -178,8 +178,8 @@ Debug mode and pause are related but distinct:
 | **When it pauses** | Immediately | After each turn completes |
 | **Turn processing** | Stops | Continues normally |
 | **Bot intents** | Not collected | Collected with normal timeout |
-| **Advance** | 
-ext-turn` runs one turn | 
+| **Advance** |
+ext-turn` runs one turn |
 ext-turn` runs one turn and re-pauses |
 | **Exit** | `resume-game` | `resume-game` (or `disable-debug-mode`) |
 

@@ -13,7 +13,7 @@ reversal-cost: low
 Feature: runtime-config-validation — TBD - created by change support-bot-discovery-without-json. Update Purpose after archive.
 
   # Requirement: Bot Configuration Runtime Validation
-  # The Bot APIs (Java, Python, .NET) SHALL strictly validate that required properties are set before allowing a bot to connect to the server. Required properties include: 
+  # The Bot APIs (Java, Python, .NET) SHALL strictly validate that required properties are set before allowing a bot to connect to the server. Required properties include:
 ame`, `version`, and `authors`.
 
   @RCV-001

@@ -291,7 +291,7 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
 
   @BR-039
   Scenario: Bot config file missing or malformed
-    When a bot directory lacks a valid JSON config file or the file is missing 
+    When a bot directory lacks a valid JSON config file or the file is missing
 ame`/`version`
     Then the runner SHALL throw a `BattleException` with a descriptive message before booting
 

@@ -52,7 +52,7 @@ Traditionally, every Robocode Tank Royale bot required a `.json` configuration f
 
 ## Rationale
 
-Allowing bots to run without a `.json` file aligns with modern "convention-over-configuration" principles. It lowers the barrier to entry for new developers. 
+Allowing bots to run without a `.json` file aligns with modern "convention-over-configuration" principles. It lowers the barrier to entry for new developers.
 
 The requirement for ame`, `version`, and `authors` is maintained even for config-less bots for the following reasons:
 1.  **Identity and Matching:** ame` and `version` are critical for the server and battle runner to uniquely identify and match bot processes (see ADR-0026).

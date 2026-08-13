@@ -25,11 +25,11 @@ The handshake process follows this pattern:
 sequenceDiagram
     participant Client
     participant Server
-    
+
     Client->>Server: WebSocket connect
     Server->>Client: server-handshake {sessionId, name, version, behaviorVersion}
     Client->>Server: {bot|observer|controller}-handshake {sessionId, ...}
-    
+
     alt Valid credentials
         Note over Server: Client registered
         Server->>Client: Subsequent messages...
@@ -54,11 +54,11 @@ stateDiagram-v2
     BattleAssigned --> BattleEnded: Battle completes
     BattleEnded --> ClientAuthenticated: Ready for next battle
     ClientAuthenticated --> [*]: WebSocket disconnect
-    
+
     note right of SessionCreated
         sessionId generated
     end note
-    
+
     note right of BattleAssigned
         battleId & botId generated
     end note
@@ -86,7 +86,7 @@ classDiagram
         <<abstract>>
         +string type
     }
-    
+
     class ServerHandshake {
         +string type = "server-handshake"
         +string sessionId
@@ -96,7 +96,7 @@ classDiagram
         +int behaviorVersion
         +string[] gameTypes
     }
-    
+
     class BotHandshake {
         +string type = "bot-handshake"
         +string sessionId
@@ -112,7 +112,7 @@ classDiagram
         +string secret
         +string bootId
     }
-    
+
     class ObserverHandshake {
         +string type = "observer-handshake"
         +string sessionId
@@ -120,7 +120,7 @@ classDiagram
         +string version
         +string secret
     }
-    
+
     class ControllerHandshake {
         +string type = "controller-handshake"
         +string sessionId
@@ -128,11 +128,11 @@ classDiagram
         +string version
         +string secret
     }
-    
+
     class BotReady {
         +string type = "bot-ready"
     }
-    
+
     Message <|-- ServerHandshake
     Message <|-- BotHandshake
     Message <|-- ObserverHandshake
@@ -187,7 +187,7 @@ classDiagram
 |-------|------|----------|-------------|
 | `type` | string | ✅ | Always `"server-handshake"` |
 | `sessionId` | string | ✅ | UUID identifying this connection session |
-| 
+|
 ame` | string | ✅ | Server name |
 | `variant` | string | ✅ | Game variant, currently `"Tank Royale"` |
 | `version` | string | ✅ | Server version (semver) |
@@ -262,7 +262,7 @@ classDiagram
 |-------|------|----------|------------|-------------|
 | `type` | string | ✅ | - | Always `"bot-handshake"` |
 | `sessionId` | string | ✅ | - | Must match sessionId from server-handshake |
-| 
+|
 ame` | string | ✅ | 30 | Bot name (displayed in UI) |
 | `version` | string | ✅ | 20 | Bot version (semver recommended) |
 | `authors` | string[] | ✅ | 20 items, 50 chars each | Author names/emails |
@@ -324,7 +324,7 @@ classDiagram
 |-------|------|----------|-------------|
 | `type` | string | ✅ | Always `"observer-handshake"` |
 | `sessionId` | string | ✅ | Must match sessionId from server-handshake |
-| 
+|
 ame` | string | ✅ | Observer name |
 | `version` | string | ✅ | Observer version |
 | `secret` | string | ❌ | Server authentication token (if required) |
@@ -372,7 +372,7 @@ classDiagram
 |-------|------|----------|-------------|
 | `type` | string | ✅ | Always `"controller-handshake"` |
 | `sessionId` | string | ✅ | Must match sessionId from server-handshake |
-| 
+|
 ame` | string | ✅ | Controller name |
 | `version` | string | ✅ | Controller version |
 | `secret` | string | ❌ | Server authentication token (if required) |
@@ -425,13 +425,13 @@ sequenceDiagram
     participant Bot
     participant Server
     participant Observer
-    
+
     Bot->>Server: WebSocket connect
     Server->>Bot: server-handshake {sessionId: "abc-123"}
     Bot->>Server: bot-handshake {sessionId: "abc-123", name: "MyBot"}
-    
+
     Note over Server: Validate credentials
-    
+
     alt Valid handshake
         Note over Server: Register bot
         Server->>Observer: bot-list-update (MyBot added)
@@ -447,13 +447,13 @@ sequenceDiagram
 sequenceDiagram
     participant Observer
     participant Server
-    
+
     Observer->>Server: WebSocket connect
     Server->>Observer: server-handshake {sessionId: "xyz-789"}
     Observer->>Server: observer-handshake {sessionId: "xyz-789"}
-    
+
     Note over Server: Validate credentials
-    
+
     alt Valid handshake
         Note over Server: Register observer
         Server->>Observer: bot-list-update (current bots)
@@ -472,17 +472,17 @@ sequenceDiagram
     participant Observer
     participant Controller
     participant Server
-    
+
     Bot1->>Server: Connect & handshake
     Note over Server: Bot1 registered
-    
+
     Bot2->>Server: Connect & handshake
     Note over Server: Bot2 registered
-    
+
     Observer->>Server: Connect & handshake
     Note over Server: Observer registered
     Server->>Observer: bot-list-update [Bot1, Bot2]
-    
+
     Controller->>Server: Connect & handshake
     Note over Server: Controller registered
     Server->>Controller: bot-list-update [Bot1, Bot2]

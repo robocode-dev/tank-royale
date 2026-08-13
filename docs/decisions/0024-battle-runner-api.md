@@ -40,26 +40,26 @@ The Battle Runner API **composes** existing components rather than reimplementin
 ```mermaid
 graph TB
     BR["🎮 Battle Runner API"]
-    
+
     subgraph Components["Composed Components"]
         Server["📡 Server<br/>(embed or ext)"]
         Booter["🚀 Booter<br/>(process manager)"]
         WSClient["🔌 WS Client<br/>(Observer + Controller)"]
     end
-    
+
     subgraph Optional["Optional: Intent Diagnostics"]
         Proxy["🔀 Intent Proxy<br/>(captures bot-intent<br/>messages per bot)"]
     end
-    
+
     BR -->|manages| Server
     BR -->|manages| Booter
     BR -->|connects as| WSClient
-    
+
     Booter -->|launches| Bots["🤖 Bot Processes"]
     Bots -->|connect to| Proxy
     Proxy -->|forwards to| Server
     WSClient -->|connects to| Server
-    
+
     style BR fill:#4a90e2,stroke:#2c5aa0,color:#fff
     style Server fill:#50c878,stroke:#2a7a4a,color:#fff
     style Booter fill:#ff9f43,stroke:#c97a2c,color:#fff

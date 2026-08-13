@@ -90,7 +90,7 @@ Start        │                         Visual frame advances
                 (bot processing duration = 8ms)
 
 
-Scenario 2: Fast bots, unlimited TPS  
+Scenario 2: Fast bots, unlimited TPS
 turnTimeout=10000µs (10ms), all bots respond in 8000µs (8ms), TPS=-1
 
 Time →
@@ -273,7 +273,7 @@ void run() {
 **Correct approach:**
 
 ```java
-// GOOD: Process events synchronously before responding  
+// GOOD: Process events synchronously before responding
 void run() {
     while (isRunning()) {
         go();  // This dispatches events FIRST, then sends intent

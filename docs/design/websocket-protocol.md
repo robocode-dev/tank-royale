@@ -37,10 +37,10 @@ Loop: Server → Bot: tick-event, Bot → Server: bot-intent
   "type": "tick-event-for-bot",
   "turnNumber": 42,
   "botState": {
-    
+
   },
   "events": [
-    
+
   ]
 }
 
