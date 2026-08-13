@@ -14,12 +14,9 @@ accepted-by: Flemming N. Larsen (2026-04-06, pre-Cliewen MADR acceptance)
 
 In Robocode Tank Royale, tank colors are currently defined by the bot itself via the `BotInfo` sent during the handshake or updated during the battle. While this allows bot authors to express their bot's "identity" through color, it can create issues for users watching a battle:
 
-1. **Accessibility:** Some color combinations chosen by bots might have low contrast or be difficult
-   to distinguish for users with color vision deficiencies.
-2. **Visibility:** In dense battles with many tanks, certain colors might blend into the arena
-   background or other tanks, making it hard to follow the action.
-3. **Developer debugging:** Bot developers using the Graphical Debugging feature in the Bot Console
-   may benefit from seeing their bot's custom colors during a debugging session, while keeping colors uniform for the rest of the field.
+1. **Accessibility:** Some color combinations chosen by bots might have low contrast or be difficult to distinguish for users with color vision deficiencies.
+2. **Visibility:** In dense battles with many tanks, certain colors might blend into the arena background or other tanks, making it hard to follow the action.
+3. **Developer debugging:** Bot developers using the Graphical Debugging feature in the Bot Console may benefit from seeing their bot's custom colors during a debugging session, while keeping colors uniform for the rest of the field.
 
 Currently, the GUI has no mechanism to control how tank colors are displayed.
 
@@ -41,19 +38,11 @@ The GUI will introduce a **Tank Color Display Mode** — a single global setting
 ### Key Rules
 
 1. **Single global setting:** One mode applies to all tanks in the arena simultaneously.
-2. **End-user display preference, client-side only:** This is a local display preference set by
-   the GUI user. The end-user decides how colors appear on *their* screen. The server, the Bot API, bots, and any other connected observer are completely unaware of this setting and always work with the real, unmodified bot colors. The wire protocol is never altered.
-   - **The recorder** captures the raw `BotState` data received from the server, which always
-     contains the bot's true colors. A recording therefore preserves the real colors regardless of
-     the display mode active at the time of recording. When the recording is replayed — by the
-     original user or shared with someone else — the recipient sees the real bot colors and applies
-     their own display mode preference independently.
-3. **Persistence:** The mode is stored in the GUI's local configuration (`ConfigSettings`) and
-   persists across sessions.
-4. **Default:** `BOT_COLORS` is the default, so existing behavior is preserved for all current
-   users without migration.
-5. **No color picker:** The end-user does not select, choose, or input any color value. The four
-   modes are the only configuration surface.
+2. **End-user display preference, client-side only:** This is a local display preference set by the GUI user. The end-user decides how colors appear on *their* screen. The server, the Bot API, bots, and any other connected observer are completely unaware of this setting and always work with the real, unmodified bot colors. The wire protocol is never altered.
+   - **The recorder** captures the raw `BotState` data received from the server, which always contains the bot's true colors. A recording therefore preserves the real colors regardless of the display mode active at the time of recording. When the recording is replayed — by the original user or shared with someone else — the recipient sees the real bot colors and applies their own display mode preference independently.
+3. **Persistence:** The mode is stored in the GUI's local configuration (`ConfigSettings`) and persists across sessions.
+4. **Default:** `BOT_COLORS` is the default, so existing behavior is preserved for all current users without migration.
+5. **No color picker:** The end-user does not select, choose, or input any color value. The four modes are the only configuration surface.
 
 ## Pros and Cons of the Options
 
@@ -73,8 +62,7 @@ The GUI will introduce a **Tank Color Display Mode** — a single global setting
 * **Trade-off:** Bot visual identity is lost entirely.
 
 ### Option D — Bot Colors (Debug Only)
-* **Good:** Developers can visually identify their bot by its color during a Graphical Debugging
-  session without affecting other observers' default display.
+* **Good:** Developers can visually identify their bot by its color during a Graphical Debugging session without affecting other observers' default display.
 * **Good:** Leverages the existing `isDebuggingEnabled` flag on `BotState` — no protocol change.
 * **Trade-off:** Requires understanding the relationship between Bot Console and arena rendering.
 
@@ -90,8 +78,7 @@ The `BOT_COLORS_WHEN_DEBUGGING` mode is a natural extension of the existing Grap
 
 * A `TankColorMode` enum is introduced in the `gui/settings` package with four values.
 * `ConfigSettings` gains a single new property `tankColorMode`.
-* `Tank.kt` introduces a per-bot first-color cache (used by `BOT_COLORS_ONCE`) and a
-  mode-aware color resolution helper replacing all raw `bot.xColor ?: DEFAULT_X_COLOR` expressions.
+* `Tank.kt` introduces a per-bot first-color cache (used by `BOT_COLORS_ONCE`) and a mode-aware color resolution helper replacing all raw `bot.xColor ?: DEFAULT_X_COLOR` expressions.
 * `ArenaPanel.kt` receives the same treatment for bullet and scan colors.
 * The first-color cache is reset when a new battle starts (not between rounds).
 * `GuiConfigDialog` gains a radio-button group for the four modes.

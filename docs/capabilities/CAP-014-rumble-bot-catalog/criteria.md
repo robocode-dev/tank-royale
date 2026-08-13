@@ -3,7 +3,8 @@ id: CAP-014-criteria
 type: criteria
 status: draft
 links: [CAP-014]
-title: Acceptance criteria for CAP-014 (rumble-bot-catalog) ac-prefix: RBC
+title: Acceptance criteria for CAP-014 (rumble-bot-catalog)
+ac-prefix: RBC
 provenance: inferred
 reversal-cost: low
 ---

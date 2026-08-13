@@ -3,7 +3,8 @@ id: CAP-009-criteria
 type: criteria
 status: draft
 links: [CAP-009]
-title: Acceptance criteria for CAP-009 (tank-color-settings) ac-prefix: TCS
+title: Acceptance criteria for CAP-009 (tank-color-settings)
+ac-prefix: TCS
 provenance: inferred
 reversal-cost: low
 ---

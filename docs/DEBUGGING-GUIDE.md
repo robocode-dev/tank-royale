@@ -32,8 +32,7 @@ Tank Royale has three test layers. Most bugs can be isolated and fixed using onl
 
 Server physics logic is pure (no I/O). To debug a collision, scoring, or movement bug:
 
-1. Write a Kotest test in `server/src/test/kotlin/` that calls the function
-   directly with the problematic inputs.
+1. Write a Kotest test in `server/src/test/kotlin/` that calls the function directly with the problematic inputs.
 2. Run it: `.\gradlew :server:test --tests "*.CollisionDetectorTest"`
 3. Use IntelliJ's debugger to step through the physics code.
 
@@ -72,16 +71,11 @@ cd bot-api/typescript && npx vitest run --reporter=verbose
 
 When a Bot API test hangs, it is almost always a missed gate call. Checklist:
 
-1. **Is `continueBotIntent()` called?** Without it, the MockedServer handler
-   blocks forever.
-2. **Is `resetBotIntentLatch()` called before the capture cycle?** Stale
-   permits cause races.
-3. **Are you using `Bot` (not `BaseBot`)?** `Bot` sends automatic intents
-   after each tick — drain them before capturing.
-4. **Are you using `goAsync()` (not `go()`)?** `go()` from the test thread
-   triggers `StopRogueThread` or deadlocks.
-5. **Thread dump.** Look for threads blocked in `acquire()`/`Wait()`/`wait()`
-   inside MockedServer gate methods.
+1. **Is `continueBotIntent()` called?** Without it, the MockedServer handler blocks forever.
+2. **Is `resetBotIntentLatch()` called before the capture cycle?** Stale permits cause races.
+3. **Are you using `Bot` (not `BaseBot`)?** `Bot` sends automatic intents after each tick — drain them before capturing.
+4. **Are you using `goAsync()` (not `go()`)?** `go()` from the test thread triggers `StopRogueThread` or deadlocks.
+5. **Thread dump.** Look for threads blocked in `acquire()`/`Wait()`/`wait()` inside MockedServer gate methods.
 
 ---
 
@@ -200,8 +194,7 @@ Bug reported
 ### Java
 
 - Use IntelliJ's debugger for server and Bot API code.
-- `.\gradlew :bot-api:java:test --debug-jvm` starts a JDWP listener on port
-  5005 for remote attach.
+- `.\gradlew :bot-api:java:test --debug-jvm` starts a JDWP listener on port 5005 for remote attach.
 
 ### C\#
 
@@ -210,16 +203,13 @@ Bug reported
 
 ### Python
 
-- `python -m pytest tests/ -k "test_name" -s --timeout=300` disables output
-  capture and extends timeout for interactive debugging.
+- `python -m pytest tests/ -k "test_name" -s --timeout=300` disables output capture and extends timeout for interactive debugging.
 - Use `import pdb; pdb.set_trace()` or `breakpoint()` in test code.
-- Beware: Python's asyncio event loop in tests runs on a daemon thread. If
-  the test hangs, the `os._exit(0)` fixture in `conftest.py` will force-kill the process after all tests finish.
+- Beware: Python's asyncio event loop in tests runs on a daemon thread. If the test hangs, the `os._exit(0)` fixture in `conftest.py` will force-kill the process after all tests finish.
 
 ### Kotlin (Server)
 
-- `.\gradlew :server:test --tests "*.TestClassName" --debug-jvm` for JDWP
-  debugging.
+- `.\gradlew :server:test --tests "*.TestClassName" --debug-jvm` for JDWP debugging.
 - Kotest tests can be run directly from IntelliJ with the Kotest plugin.
 
 ---

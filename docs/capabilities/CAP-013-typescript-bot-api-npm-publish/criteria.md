@@ -3,7 +3,8 @@ id: CAP-013-criteria
 type: criteria
 status: draft
 links: [CAP-013]
-title: Acceptance criteria for CAP-013 (typescript-bot-api-npm-publish) ac-prefix: TNP
+title: Acceptance criteria for CAP-013 (typescript-bot-api-npm-publish)
+ac-prefix: TNP
 provenance: verified
 ---
 

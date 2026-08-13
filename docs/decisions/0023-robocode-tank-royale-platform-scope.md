@@ -40,8 +40,7 @@ Robocode Tank Royale is a complete platform for competitive tank battling. It co
 The Tank Royale repository provides:
 
 - ✅ **Platform architecture** — How components interact (WebSocket protocol, schema contracts)
-- ✅ **Reference implementations** — Proof that the platform works (Java/Kotlin server, Java Swing GUI, Java/.NET/Python/TypeScript
-  Bot APIs)
+- ✅ **Reference implementations** — Proof that the platform works (Java/Kotlin server, Java Swing GUI, Java/.NET/Python/TypeScript Bot APIs)
 - ✅ **Authoritative schema** — Message contracts and protocols all implementations must follow
 - ✅ **Common libraries** — Shared utilities for building components
 - ✅ **Sample bots** — Educational examples in multiple languages
@@ -179,8 +178,7 @@ If you want to create an alternative implementation:
 
 This ADR clarifies the maintainer's vision so that:
 
-- **Feature requests for tournament systems** are redirected: "This is out of scope, but you could build it as an
-  extension!"
+- **Feature requests for tournament systems** are redirected: "This is out of scope, but you could build it as an extension!"
 - **Pull requests for new Bot APIs** are encouraged to be developed separately
 - **New component implementations** (GUIs, booters, recorders) are celebrated when they're in separate repositories
 - **Core platform issues** (server bugs, API stability, protocol contracts) are in-scope and valued

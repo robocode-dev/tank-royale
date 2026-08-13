@@ -41,10 +41,8 @@ All four game-type presets (CUSTOM, CLASSIC, MELEE, ONE_VS_ONE) inherit this val
 ## Rationale
 
 - **10 seconds** covers even slow JVM cold-start + compilation on modest hardware with headroom.
-- It does not noticeably affect game-start UX: the server starts immediately once all bots send
-  `BotReady`; the timeout only fires if a bot fails to respond at all.
-- The setting is user-configurable via the Setup Rules dialog and saved per game type, so
-  tournament operators can lower it for environments where fast startup is guaranteed.
+- It does not noticeably affect game-start UX: the server starts immediately once all bots send `BotReady`; the timeout only fires if a bot fails to respond at all.
+- The setting is user-configurable via the Setup Rules dialog and saved per game type, so tournament operators can lower it for environments where fast startup is guaranteed.
 
 ---
 
@@ -65,7 +63,5 @@ All four game-type presets (CUSTOM, CLASSIC, MELEE, ONE_VS_ONE) inherit this val
 - End-to-end Battle Runner tests are reliable without per-test timeout overrides.
 
 **Negative:**
-- If a bot crashes before sending `BotReady`, the server now waits up to 10 s before starting
-  instead of 1 s. This is acceptable: a 10-second delay is easily noticed; a 1-second delay was barely perceptible anyway.
-- Existing saved `game-setups.properties` files that stored `readyTimeout = 1000000` will
-  retain the old value until the user clicks "Reset to Default" in the Setup Rules dialog. This is the standard migration path for user-override settings.
+- If a bot crashes before sending `BotReady`, the server now waits up to 10 s before starting instead of 1 s. This is acceptable: a 10-second delay is easily noticed; a 1-second delay was barely perceptible anyway.
+- Existing saved `game-setups.properties` files that stored `readyTimeout = 1000000` will retain the old value until the user clicks "Reset to Default" in the Setup Rules dialog. This is the standard migration path for user-override settings.

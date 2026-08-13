@@ -82,8 +82,7 @@ In ranked mode, every finished battle is appended to a local **journal** automat
 Clients do not commit to any shared Git repository, and they never amend or rewrite anything (the data repo's history is the audit trail; amending is reserved for nothing). The local flow is:
 
 1. Each battle appends one result record to the current journal file (plain JSON lines, local).
-2. At a batch boundary (session end, every N battles, or every M minutes, whichever comes first)
-   the client divides pending records into issue envelopes of at most 60 results each.
+2. At a batch boundary (session end, every N battles, or every M minutes, whichever comes first) the client divides pending records into issue envelopes of at most 60 results each.
 3. After accepted facts are published, successful per-result receipts let the journal remove only those records; on failure it stays queued and retries with backoff. Retrying an identical retained result returns the same successful outcome.
 
 Batching cuts forge API calls and inbox noise by an order of magnitude and plays well with rate limits. The server side is unchanged: the ingestion workflow drains payloads (each containing one or many results), validates each result individually, and lands the whole drain as a single commit (see the aggregation document).
@@ -113,18 +112,11 @@ Why the seeded randomness: many clients read the same `matches_needed.json` (it 
 
 This needs to be split into two different effects:
 
-1. **Run-selection bias: harmless.** Choosing *which* pairings to run more often does not bias
-   APS, because APS averages the per-pairing means, and every battle of a pairing is submitted. More samples of your own pairings only makes *your* score converge faster.
-2. **Selective reporting: the real risk.** An author could run battles locally and submit only the
-   wins. Mitigations:
-   - The client auto-submits every result (no manual filter in the tool). This only raises the
-     effort bar, it cannot stop a determined cheater, so:
-   - The aggregation side marks pairings where every sample comes from clients owned by one of the
-     participants as **self-reported-only**, and keeps them in the priority list until at least
-     one independent client has contributed. Self-confirmed results count provisionally; the
-     dashboard can show the marker.
-   - Cross-client outlier detection (aggregation document) flags clients whose results deviate
-     systematically from consensus on shared pairings.
+1. **Run-selection bias: harmless.** Choosing *which* pairings to run more often does not bias APS, because APS averages the per-pairing means, and every battle of a pairing is submitted. More samples of your own pairings only makes *your* score converge faster.
+2. **Selective reporting: the real risk.** An author could run battles locally and submit only the wins. Mitigations:
+   - The client auto-submits every result (no manual filter in the tool). This only raises the effort bar, it cannot stop a determined cheater, so:
+   - The aggregation side marks pairings where every sample comes from clients owned by one of the participants as **self-reported-only**, and keeps them in the priority list until at least one independent client has contributed. Self-confirmed results count provisionally; the dashboard can show the marker.
+   - Cross-client outlier detection (aggregation document) flags clients whose results deviate systematically from consensus on shared pairings.
 
 This turns the motivation question and the trust question into one mechanism: your own battles get you on the board fast (motivation), and the crowd confirms you (trust).
 
@@ -175,16 +167,11 @@ Score shares (APS input) are always derived (`totalScore / sum(totalScore)`), ne
 
 Replays are the proof behind a result, and they stay **client-side** (uploading them to the data repo would bloat it with binaries and strain forge storage; results are small text, replays are not). Binding and handling:
 
-- The client generates a `battleId` (UUID) per battle. It appears in the result record, and the
-  replay is stored as `evidence/<battleId>.battle.gz`.
-- The record also carries `replayHash` (SHA-256 of the replay file). The UUID makes lookup
-  trivial; the hash makes the binding tamper-evident, since a replay edited after the fact no longer matches the submitted hash.
-- The client marks replay files **read-only** after writing and tells the user plainly: these
-  files are your evidence for submitted results; keep them.
-- **Backups are the user's responsibility**, and the client actively encourages them: the
-  documentation states it, the client prints a reminder with the evidence directory path at the end of each ranked session, and the evidence store is a single self-contained directory precisely so that backing it up is one copy command. The rumble never holds replays centrally (see the aggregation document's Terms of Service section), so lost evidence cannot be recovered from anywhere else.
-- Retention: keep a replay at least until its pairing is independently confirmed (see the
-  aggregation document), with a suggested minimum of 90 days. The client prunes expired replays and reports what it pruned.
+- The client generates a `battleId` (UUID) per battle. It appears in the result record, and the replay is stored as `evidence/<battleId>.battle.gz`.
+- The record also carries `replayHash` (SHA-256 of the replay file). The UUID makes lookup trivial; the hash makes the binding tamper-evident, since a replay edited after the fact no longer matches the submitted hash.
+- The client marks replay files **read-only** after writing and tells the user plainly: these files are your evidence for submitted results; keep them.
+- **Backups are the user's responsibility**, and the client actively encourages them: the documentation states it, the client prints a reminder with the evidence directory path at the end of each ranked session, and the evidence store is a single self-contained directory precisely so that backing it up is one copy command. The rumble never holds replays centrally (see the aggregation document's Terms of Service section), so lost evidence cannot be recovered from anywhere else.
+- Retention: keep a replay at least until its pairing is independently confirmed (see the aggregation document), with a suggested minimum of 90 days. The client prunes expired replays and reports what it pruned.
 
 ## Submission Transports (No Repository Write Access)
 
@@ -216,37 +203,24 @@ Tank Royale releases all artifacts in **lockstep** (one release version for serv
 
 Semantics:
 
-- **Compatibility is decided by `behaviorVersion`, never by the release version.** Any release
-  that carries the pinned behavior version is acceptable; the client and the validator both compare the behavior version reported by the running server against the pin. A GUI-only release 1.2.0 with unchanged `behaviorVersion 7` causes no rollout, no client obsolescence, and no epoch reset. `release`/`clientImage` in the pin are convenience ("which build to install"), not the compatibility contract.
-- **A `behaviorVersion` bump is the rollout event.** All clients become obsolete at that moment,
-  by design: mixed behavior versions would silently corrupt result comparability. On its next sync the client sees the new pin, refuses ranked mode, and prints exactly how to upgrade. Results produced on the old behavior version are rejected by the validator (and the client will not submit them). Each behavior version is its own result **epoch** (aggregation document).
-- **Bump discipline is guarded, not trusted.** The engine's CI replays recorded battles
-  deterministically and compares outcomes: an unintended outcome difference fails the build, and an intended one requires bumping `behaviorVersion` in the same change. The Tank Royale preparation proposal defines the hook for this guard; the replay corpus can be expanded in a later proposal.
-- Upgrading must be **one step**: `docker pull` the image named in the new pin for container
-  users, or re-running the platform install script for bare-metal users.
+- **Compatibility is decided by `behaviorVersion`, never by the release version.** Any release that carries the pinned behavior version is acceptable; the client and the validator both compare the behavior version reported by the running server against the pin. A GUI-only release 1.2.0 with unchanged `behaviorVersion 7` causes no rollout, no client obsolescence, and no epoch reset. `release`/`clientImage` in the pin are convenience ("which build to install"), not the compatibility contract.
+- **A `behaviorVersion` bump is the rollout event.** All clients become obsolete at that moment, by design: mixed behavior versions would silently corrupt result comparability. On its next sync the client sees the new pin, refuses ranked mode, and prints exactly how to upgrade. Results produced on the old behavior version are rejected by the validator (and the client will not submit them). Each behavior version is its own result **epoch** (aggregation document).
+- **Bump discipline is guarded, not trusted.** The engine's CI replays recorded battles deterministically and compares outcomes: an unintended outcome difference fails the build, and an intended one requires bumping `behaviorVersion` in the same change. The Tank Royale preparation proposal defines the hook for this guard; the replay corpus can be expanded in a later proposal.
+- Upgrading must be **one step**: `docker pull` the image named in the new pin for container users, or re-running the platform install script for bare-metal users.
 
 ## Runtimes: the Client Container and Install Scripts
 
 A rumble client must be able to boot bots for **all four platforms**: Java (JVM), C# (.NET), Python, and TypeScript (Node.js). Requiring users to hand-assemble four runtimes is a participation killer, so the primary distribution is a container image:
 
-- **`rumble-client` image**: bundles the pinned server, booter, runner, the rumble client itself,
-  plus the exact runtime versions (JRE, .NET SDK, Python, Node.js/npm) matching the engine pin. Tagged by release version (`rumble-client:1.1.4`, the image named in `engine.json`), so upgrading engine and runtimes is one pull; the pinned image implies the pinned `behaviorVersion`.
-- The image doubles as the **sandbox**: run with no outbound network (localhost WebSocket only)
-  except the submission endpoint, and CPU/memory/time limits via container flags. Review reduces malice (submission document), the container contains it; no one pretends there is a central sandbox.
-- The `Dockerfile` lives in the repo, so forks can rebuild the image even though registry
-  packages (GHCR) do not fork with the repo (principle P2 is satisfied by rebuildability, not by the artifact).
-- **Bare-metal fallback**: documented install scripts per OS (Linux, macOS, Windows) that check
-  for and install the required runtime versions and the pinned engine artifacts. Bare-metal users knowingly accept the residual risk of running reviewed-but-untrusted code outside a container.
+- **`rumble-client` image**: bundles the pinned server, booter, runner, the rumble client itself, plus the exact runtime versions (JRE, .NET SDK, Python, Node.js/npm) matching the engine pin. Tagged by release version (`rumble-client:1.1.4`, the image named in `engine.json`), so upgrading engine and runtimes is one pull; the pinned image implies the pinned `behaviorVersion`.
+- The image doubles as the **sandbox**: run with no outbound network (localhost WebSocket only) except the submission endpoint, and CPU/memory/time limits via container flags. Review reduces malice (submission document), the container contains it; no one pretends there is a central sandbox.
+- The `Dockerfile` lives in the repo, so forks can rebuild the image even though registry packages (GHCR) do not fork with the repo (principle P2 is satisfied by rebuildability, not by the artifact).
+- **Bare-metal fallback**: documented install scripts per OS (Linux, macOS, Windows) that check for and install the required runtime versions and the pinned engine artifacts. Bare-metal users knowingly accept the residual risk of running reviewed-but-untrusted code outside a container.
 
 ## Client Policy Details
 
-- **Battles per pairing per client cap: none, matching the classic rumble.** Saturation is
-  handled by the priority mechanism alone. Once everything is saturated, extra battles are harmless by design because per-pairing averaging refines the mean without changing the pairing weight.
-- **`myBots` is purely a local scheduling hint.** No verification happens in the client.
-  Ownership is verified where it matters: at bot upload time, where the bot name is bound to the owner account. The server-side self-report marker handles trust.
-- **Journal staleness is bounded by the engine pin.** Queued results produced on a
-  `behaviorVersion` other than the currently pinned one are incompatible and are quarantined with a clear message. No separate staleness clock is needed.
-- **Submission happens at battle boundaries.** A result exists only when a battle has completed
-  its game type's full round count; nothing is submitted mid-battle. The default is to submit after each completed battle, with batching used when submissions back up or rate limits require it.
-- **Container network policy: egress allowlist.** The container may reach the forge for repo sync
-  and result submission and nothing else. Bot processes get no network beyond the localhost WebSocket to the server.
+- **Battles per pairing per client cap: none, matching the classic rumble.** Saturation is handled by the priority mechanism alone. Once everything is saturated, extra battles are harmless by design because per-pairing averaging refines the mean without changing the pairing weight.
+- **`myBots` is purely a local scheduling hint.** No verification happens in the client. Ownership is verified where it matters: at bot upload time, where the bot name is bound to the owner account. The server-side self-report marker handles trust.
+- **Journal staleness is bounded by the engine pin.** Queued results produced on a `behaviorVersion` other than the currently pinned one are incompatible and are quarantined with a clear message. No separate staleness clock is needed.
+- **Submission happens at battle boundaries.** A result exists only when a battle has completed its game type's full round count; nothing is submitted mid-battle. The default is to submit after each completed battle, with batching used when submissions back up or rate limits require it.
+- **Container network policy: egress allowlist.** The container may reach the forge for repo sync and result submission and nothing else. Bot processes get no network beyond the localhost WebSocket to the server.

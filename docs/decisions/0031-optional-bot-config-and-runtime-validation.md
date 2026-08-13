@@ -29,8 +29,7 @@ Traditionally, every Robocode Tank Royale bot required a `.json` configuration f
     - Use the base convention defined in ADR-0030 to find the entry point.
 3. **Property Priority:**
     - If a `.json` file is present, its properties are used as the primary source of metadata.
-    - If no `.json` file is present, the bot **must** set all required properties (
-ame`, `version`, `authors`) programmatically at runtime before connecting to the server.
+    - If no `.json` file is present, the bot **must** set all required properties ( ame`, `version`, `authors`) programmatically at runtime before connecting to the server.
     - Property precedence: Bot (Runtime) > Environment variables > JSON file.
 4. **Runtime Validation:**
     - Bot APIs (Java, Python, .NET) must validate that all required properties are set during the connection handshake.
@@ -55,10 +54,8 @@ ame`, `version`, `authors`) programmatically at runtime before connecting to the
 
 Allowing bots to run without a `.json` file aligns with modern "convention-over-configuration" principles. It lowers the barrier to entry for new developers. 
 
-The requirement for 
-ame`, `version`, and `authors` is maintained even for config-less bots for the following reasons:
-1.  **Identity and Matching:** 
-ame` and `version` are critical for the server and battle runner to uniquely identify and match bot processes (see ADR-0026).
+The requirement for ame`, `version`, and `authors` is maintained even for config-less bots for the following reasons:
+1.  **Identity and Matching:** ame` and `version` are critical for the server and battle runner to uniquely identify and match bot processes (see ADR-0026).
 2.  **Authorship:** The `authors` field is required to ensure credit is given to the creator and provides a fallback for uniqueness if two bots share the same name and version.
 3.  **Protocol Compliance:** The Tank Royale protocol expects a complete `BotInfo` object; omitting these fields would break the handshake schema and GUI display.
 

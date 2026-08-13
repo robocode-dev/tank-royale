@@ -11,10 +11,8 @@ A continuously running, community-driven league (in the spirit of the classic Ro
 
 - Bot authors submit bot **source code** via pull requests.
 - Community members run battles on **their own machines** using a small rumble client.
-- Results are collected, aggregated into rankings (APS as the primary metric), and published on a
-  static dashboard.
-- The entire system (bots, results, ranking logic, dashboard) lives **inside Git repositories**,
-  with automation provided by the forge's CI (GitHub Actions primarily, portable to GitLab CI and Forgejo/Gitea Actions).
+- Results are collected, aggregated into rankings (APS as the primary metric), and published on a static dashboard.
+- The entire system (bots, results, ranking logic, dashboard) lives **inside Git repositories**, with automation provided by the forge's CI (GitHub Actions primarily, portable to GitLab CI and Forgejo/Gitea Actions).
 
 ## Design Principles
 
@@ -158,12 +156,9 @@ Classic Robocode also has `TeamRumble` (`teamrumble.txt`), but Tank Royale Rumbl
 
 References:
 
-- [LiteRumble home](https://literumble.appspot.com/) lists `roborumble`, `meleerumble`,
-  `twinduel`, `teamrumble`, and size-limited variants.
-- [RoboWiki: Contributing to RoboRumble](https://robowiki.net/wiki/RoboRumble/Contributing_to_RoboRumble)
-  names the classic runners: `roborumble`, `meleerumble`, `teamrumble`, and `twinduel`.
-- Classic Robocode local configs: `C:\Code\robocode\robocode.content\src\main\resources\roborumble\roborumble.txt`,
-  `meleerumble.txt`, `teamrumble.txt`, and `twinduel.txt`.
+- [LiteRumble home](https://literumble.appspot.com/) lists `roborumble`, `meleerumble`, `twinduel`, `teamrumble`, and size-limited variants.
+- [RoboWiki: Contributing to RoboRumble](https://robowiki.net/wiki/RoboRumble/Contributing_to_RoboRumble) names the classic runners: `roborumble`, `meleerumble`, `teamrumble`, and `twinduel`.
+- Classic Robocode local configs: `C:\Code\robocode\robocode.content\src\main\resources\roborumble\roborumble.txt`, `meleerumble.txt`, `teamrumble.txt`, and `twinduel.txt`.
 
 ## Glossary
 

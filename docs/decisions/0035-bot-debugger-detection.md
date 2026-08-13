@@ -87,8 +87,7 @@ function isDebuggerAttached(): boolean {
 ```
 
 - **What it detects:** Any V8 Inspector protocol debugger — VS Code, Chrome DevTools, WebStorm. All use the same V8 Inspector protocol. Detects `--inspect`, `--inspect-brk`, and programmatic `inspector.open()`.
-- **Standard:** Official Node.js API (
-ode:inspector` module). Purpose-built for inspector/debugger detection.
+- **Standard:** Official Node.js API ( ode:inspector` module). Purpose-built for inspector/debugger detection.
 - **Late-attach:** Detected. `inspector.url()` returns `undefined` when no debugger is connected and a WebSocket URL when one is. Updates dynamically.
 - **Deno:** No equivalent runtime API as of 2025. Deno supports `--inspect` but doesn't expose an `inspector.url()` equivalent. Falls back to the environment variable override (see below).
 - **Browser:** No reliable detection mechanism exists. Not applicable — browser-based bots would use the environment variable.

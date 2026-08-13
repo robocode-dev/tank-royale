@@ -3,7 +3,8 @@ id: CAP-001-criteria
 type: criteria
 status: draft
 links: [CAP-001]
-title: Acceptance criteria for CAP-001 (battle-runner) ac-prefix: BR
+title: Acceptance criteria for CAP-001 (battle-runner)
+ac-prefix: BR
 provenance: inferred
 reversal-cost: low
 ---

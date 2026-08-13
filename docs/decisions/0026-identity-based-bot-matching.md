@@ -24,14 +24,11 @@ Where `expectedCount = bots.size` — the number of bot **directories** passed t
 
 This has three failure modes:
 
-1. **Teams under-count.** A single bot directory containing a `team.json` launches N member bots (e.g., 5). The runner
-   expects 1 connection per directory, but the team produces 5. With two 5-member teams, the runner expects 2 bots but needs 10. `waitForBots()` returns after 2 connections and the battle starts with an incomplete roster.
+1. **Teams under-count.** A single bot directory containing a `team.json` launches N member bots (e.g., 5). The runner expects 1 connection per directory, but the team produces 5. With two 5-member teams, the runner expects 2 bots but needs 10. `waitForBots()` returns after 2 connections and the battle starts with an incomplete roster.
 
-2. **Stray bots over-count.** When using an external server, bots from other clients or leftover processes can already
-   be connected. The count-based check `update.bots.size - preExistingBots.size` only filters by connection time, not identity. A stray bot connecting at the right moment satisfies the count, causing the runner to start a battle with the wrong participants.
+2. **Stray bots over-count.** When using an external server, bots from other clients or leftover processes can already be connected. The count-based check `update.bots.size - preExistingBots.size` only filters by connection time, not identity. A stray bot connecting at the right moment satisfies the count, causing the runner to start a battle with the wrong participants.
 
-3. **Duplicate instances miscounted.** Running the same bot directory multiple times (e.g., two instances of "MyBot"
-   for a 1v1 self-play benchmark) produces multiple bots with identical `(name, version, authors)`. Simple set-based identity matching would see these as one bot and return early. The matching must be **count-aware per identity**.
+3. **Duplicate instances miscounted.** Running the same bot directory multiple times (e.g., two instances of "MyBot" for a 1v1 self-play benchmark) produces multiple bots with identical `(name, version, authors)`. Simple set-based identity matching would see these as one bot and return early. The matching must be **count-aware per identity**.
 
 All three issues stem from the same root cause: the runner does not know **which** bots it expects — only **how many** directories it was given.
 
@@ -83,8 +80,7 @@ The runner pre-reads `bot.json` (and `team.json`) from each bot directory before
 
 - All changes are confined to the `runner` module — no protocol, schema, server, or Bot API changes
 - Uses data already present in `BotListUpdate` (bot name, version, and authors are included in the handshake)
-- Correctly handles teams by reading `memberCount` from `team.json` and individual bot identities from member
-  `bot.json` files
+- Correctly handles teams by reading `memberCount` from `team.json` and individual bot identities from member `bot.json` files
 - Correctly handles duplicate instances (e.g., two instances of "MyBot 1.0") via count-per-identity matching
 - Immune to stray bots: only bots matching expected identities are considered
 
@@ -98,17 +94,14 @@ The runner pre-reads `bot.json` (and `team.json`) from each bot directory before
 
 The `waitForBots()` method is changed from count-based to identity-based multiset matching:
 
-1. **Pre-scan phase.** Before launching bots, the runner reads `bot.json` from each bot directory. For team directories
-   (containing `team.json`), it reads the team members' `bot.json` files to determine individual bot identities.
+1. **Pre-scan phase.** Before launching bots, the runner reads `bot.json` from each bot directory. For team directories (containing `team.json`), it reads the team members' `bot.json` files to determine individual bot identities.
 
-2. **Expected identity multiset.** The runner builds a `Map<BotIdentity, Int>` of expected `(name, version, authors)`
-   triplets with their required counts. Examples:
+2. **Expected identity multiset.** The runner builds a `Map<BotIdentity, Int>` of expected `(name, version, authors)` triplets with their required counts. Examples:
    - Two instances of "MyBot 1.0" by "Alice" → `{("MyBot", "1.0", "Alice"): 2}`
    - One "MyBot 1.0" + one team of 3 distinct bots → `{("MyBot", "1.0", "Alice"): 1, ("TeamA", "1.0", "Bob"): 1, ("TeamB", "1.0", "Bob"): 1, ("TeamC", "1.0", "Charlie"): 1}`
    - Two instances of the same 3-member team → each member identity has count 2
 
-3. **Matching phase.** On each `BotListUpdate`, the runner filters out pre-existing bots (by `BotAddress`), then
-   counts remaining bots per `(name, version, authors)`. The latch counts down when every expected identity meets or exceeds its required count.
+3. **Matching phase.** On each `BotListUpdate`, the runner filters out pre-existing bots (by `BotAddress`), then counts remaining bots per `(name, version, authors)`. The latch counts down when every expected identity meets or exceeds its required count.
 
 This replaces the current logic:
 
@@ -154,8 +147,7 @@ Both the `BattleRunner` and the GUI therefore use a **hybrid matching strategy**
 
 The identity-based matching model naturally enables **progress reporting**: the runner (and GUI) knows exactly which bots it is waiting for and which have already connected. This enables:
 
-- **Battle Runner API:** A progress callback or event that reports which bots have connected and which are still
-  pending, allowing programmatic consumers to log or display boot progress.
+- **Battle Runner API:** A progress callback or event that reports which bots have connected and which are still pending, allowing programmatic consumers to log or display boot progress.
 - **GUI:** A boot progress dialog showing:
   - Which bots are being booted (from the expected identity set)
   - Which have connected (checkmark or status change as each `BotListUpdate` arrives)
@@ -176,34 +168,25 @@ This addresses a real usability problem: when Python bots (or any bot with slow 
 - ✅ **Runner-only changes** — No modifications to the server, Bot APIs, WebSocket protocol, or schema
 - ✅ **Uses existing data** — Bot name, version, and authors are already included in `BotListUpdate` from the server handshake
 - ✅ **Backward compatible** — No API surface changes for `BattleRunner` callers (timeout is additive)
-- ✅ **Enables progress reporting** — Knowing which specific bots are expected unlocks per-bot status feedback in both
-  the runner API and the GUI
+- ✅ **Enables progress reporting** — Knowing which specific bots are expected unlocks per-bot status feedback in both the runner API and the GUI
 - ✅ **Configurable timeout** — Users with slow-starting bots can increase the boot timeout without code changes
 
 ### Negative
 
-- ⚠️ **Runner reads `bot.json`/`team.json`** — Introduces coupling between the runner and the bot configuration file
-  format. If the config format changes, the runner's parser must be updated. Mitigated: the format is stable and already documented.
-- ⚠️ **No-JSON bots use count-based fallback** — When a bot has no `.json` file its identity is unknown at boot time.
-  Both the runner and the GUI fall back to counting new connections against a pre-boot baseline. This is less precise than identity matching but correct in practice. The runner uses `BotAddress` (unique per connection); the GUI uses a name+version multiset baseline.
-- ⚠️ **Name+version+authors collision risk** — On an external server, two different bots could theoretically share the same
-  `(name, version, authors)` triplet, causing a false-positive match. This is unlikely in practice and **impossible** with an embedded server (where the runner controls all bot launches).
-- ⚠️ **GUI changes required** — The boot progress dialog is a separate GUI enhancement, not part of the runner-only
-  change. It requires wiring the identity-based progress model into the GUI's boot flow.
+- ⚠️ **Runner reads `bot.json`/`team.json`** — Introduces coupling between the runner and the bot configuration file format. If the config format changes, the runner's parser must be updated. Mitigated: the format is stable and already documented.
+- ⚠️ **No-JSON bots use count-based fallback** — When a bot has no `.json` file its identity is unknown at boot time. Both the runner and the GUI fall back to counting new connections against a pre-boot baseline. This is less precise than identity matching but correct in practice. The runner uses `BotAddress` (unique per connection); the GUI uses a name+version multiset baseline.
+- ⚠️ **Name+version+authors collision risk** — On an external server, two different bots could theoretically share the same `(name, version, authors)` triplet, causing a false-positive match. This is unlikely in practice and **impossible** with an embedded server (where the runner controls all bot launches).
+- ⚠️ **GUI changes required** — The boot progress dialog is a separate GUI enhancement, not part of the runner-only change. It requires wiring the identity-based progress model into the GUI's boot flow.
 
 ### Residual Risk: Name+Version+Authors Collision on External Servers
 
-The collision on external servers is accepted as a known limitation, not addressed by this ADR. Using the `authors` field as part of the identity serves as a fallback for uniqueness when 
-ame` and `version` match.
+The collision on external servers is accepted as a known limitation, not addressed by this ADR. Using the `authors` field as part of the identity serves as a fallback for uniqueness when ame` and `version` match.
 
 **Why not tackle it now:**
 
-- The primary use case is the **embedded server**, where the runner is the sole bot launcher — collisions are
-  impossible by construction.
-- External server usage is a niche scenario. A collision requires two independently-developed bots to share the
-  exact same `(name, version)` pair *and* be connected to the same server simultaneously.
-- The only clean fix is Option 3 (boot correlation token), which requires cross-cutting changes to all three Bot
-  APIs, the WebSocket schema, and the server — disproportionate cost for an unlikely scenario.
+- The primary use case is the **embedded server**, where the runner is the sole bot launcher — collisions are impossible by construction.
+- External server usage is a niche scenario. A collision requires two independently-developed bots to share the exact same `(name, version)` pair *and* be connected to the same server simultaneously.
+- The only clean fix is Option 3 (boot correlation token), which requires cross-cutting changes to all three Bot APIs, the WebSocket schema, and the server — disproportionate cost for an unlikely scenario.
 - Users of external servers are already expected to manage their own bot roster.
 
 **If it becomes a real problem:** Option 3 remains available as a future enhancement. It can be layered on top of the identity-based matching introduced here without breaking changes.
@@ -212,8 +195,6 @@ ame` and `version` match.
 
 ## References
 
-- [GitHub Issue #195](https://github.com/robocode-dev/tank-royale/issues/195) — Count-based waiting in Runner API is
-  not reliable
+- [GitHub Issue #195](https://github.com/robocode-dev/tank-royale/issues/195) — Count-based waiting in Runner API is not reliable
 - [ADR-0024: Battle Runner API](./0024-battle-runner-api.md) — The Battle Runner architecture this decision extends
-- [ADR-0016: Session ID for Bot Process Identification](./0016-session-id-bot-process-identification.md) — Related bot
-  identification mechanism (session-level, not directory-level)
+- [ADR-0016: Session ID for Bot Process Identification](./0016-session-id-bot-process-identification.md) — Related bot identification mechanism (session-level, not directory-level)

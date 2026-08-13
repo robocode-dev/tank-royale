@@ -146,8 +146,7 @@ stateDiagram-v2
   - Contains bot metadata (name, version, command)
   - Provides platform-specific boot commands
 - **Properties:**
-  - 
-ame` — Bot display name
+  - ame` — Bot display name
   - `version` — Bot version string
   - `platform` — Target platform (JVM, .NET, Python, etc.)
   - `command` — Shell command to execute bot

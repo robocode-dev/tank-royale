@@ -3,7 +3,8 @@ id: CAP-003-criteria
 type: criteria
 status: draft
 links: [CAP-003]
-title: Acceptance criteria for CAP-003 (bot-api-updater) ac-prefix: BAU
+title: Acceptance criteria for CAP-003 (bot-api-updater)
+ac-prefix: BAU
 provenance: inferred
 reversal-cost: low
 ---

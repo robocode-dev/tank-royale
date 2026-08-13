@@ -3,7 +3,8 @@ id: CAP-011-criteria
 type: criteria
 status: draft
 links: [CAP-011]
-title: Acceptance criteria for CAP-011 (typescript-bot-api) ac-prefix: TBA
+title: Acceptance criteria for CAP-011 (typescript-bot-api)
+ac-prefix: TBA
 provenance: inferred
 reversal-cost: low
 ---

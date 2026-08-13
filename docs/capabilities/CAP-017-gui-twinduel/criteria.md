@@ -3,7 +3,8 @@ id: CAP-017-criteria
 type: criteria
 status: active
 links: [CAP-017]
-title: Acceptance criteria for CAP-017 (gui-twinduel) ac-prefix: GTD
+title: Acceptance criteria for CAP-017 (gui-twinduel)
+ac-prefix: GTD
 provenance: inferred
 reversal-cost: low
 ---

@@ -277,8 +277,7 @@ ame` | string | ✅ | 30 | Bot name (displayed in UI) |
 | `bootId` | string | ❌ | - | Booter session ID (if launched by Booter) |
 
 **Validation Notes:**
-- 
-ame` must be unique among connected bots
+- ame` must be unique among connected bots
 - `sessionId` must exactly match the one received in `server-handshake`
 - `countryCodes` must follow ISO 3166-1 alpha-2 format
 

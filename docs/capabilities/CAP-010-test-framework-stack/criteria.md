@@ -3,7 +3,8 @@ id: CAP-010-criteria
 type: criteria
 status: draft
 links: [CAP-010]
-title: Acceptance criteria for CAP-010 (test-framework-stack) ac-prefix: TFS
+title: Acceptance criteria for CAP-010 (test-framework-stack)
+ac-prefix: TFS
 provenance: inferred
 reversal-cost: low
 ---

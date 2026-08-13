@@ -3,7 +3,8 @@ id: CAP-012-criteria
 type: criteria
 status: draft
 links: [CAP-012]
-title: Acceptance criteria for CAP-012 (user-documentation) ac-prefix: UD
+title: Acceptance criteria for CAP-012 (user-documentation)
+ac-prefix: UD
 provenance: inferred
 reversal-cost: low
 ---

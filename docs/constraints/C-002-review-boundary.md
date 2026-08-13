@@ -15,3 +15,5 @@ No direct commits or pushes to `main` — by agents or anyone else. Every change
 This replaces the pre-Cliewen prose gates ("never commit without explicit approval", the ADR Review Gate, the OpenSpec approval gate): the PR **is** the approval gate, and the corpus wall (`clue validate --forbid-changes` in CI) is the machine half of the review.
 
 **Promotion trigger:** branch protection on `main` with `validate` as a required status check — then `enforcement: machine` for the wall half; the human merge stays human by design.
+
+**Residual:** Human review and merge remain deliberately human-enforced even when branch protection machine-enforces the validation wall.

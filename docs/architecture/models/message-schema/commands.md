@@ -281,8 +281,7 @@ classDiagram
 1. Server completes current turn
 2. Stops turn execution loop
 3. Sends [`game-paused-event-for-observer`](../../../../schema/schemas/game-paused-event-for-observer.schema.yaml) to observers and controllers
-4. Waits for [`resume-game`](#4-resume-game) or [
-ext-turn`](#5-next-turn) command
+4. Waits for [`resume-game`](#4-resume-game) or [ ext-turn`](#5-next-turn) command
 
 **Note:** Bots are NOT notified of pause state. They continue waiting for next [`tick-event-for-bot`](../../../../schema/schemas/tick-event-for-bot.schema.yaml).
 
@@ -291,8 +290,7 @@ ext-turn`](#5-next-turn) command
 1. **Debugging** — Pause to examine battle state
 2. **Demonstration** — Pause to explain strategy
 3. **Recording** — Pause to adjust camera/recording
-4. **Step-Through Debugging** — Pause then use 
-ext-turn` for single-step execution
+4. **Step-Through Debugging** — Pause then use ext-turn` for single-step execution
 
 ---
 
@@ -342,8 +340,7 @@ classDiagram
 
 ## 5. Next Turn
 
-**Schema:** [
-ext-turn.schema.yaml`](../../../../schema/schemas/next-turn.schema.yaml)
+**Schema:** [ ext-turn.schema.yaml`](../../../../schema/schemas/next-turn.schema.yaml)
 
 **Direction:** Controller → Server
 

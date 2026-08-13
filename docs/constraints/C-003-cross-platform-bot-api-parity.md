@@ -4,7 +4,7 @@ type: constraint
 status: active
 links: []
 title: Bot APIs are semantically identical across platforms; Java is the reference
-source: openspec/project.md "Bot API Rules (Non-negotiable)" (absorbed at CH-001), ADR-0003, ADR-0004
+source: docs/decisions/0003-cross-platform-bot-api-strategy.md, docs/decisions/0004-java-reference-implementation.md
 enforcement: machine
 provenance: inferred
 reversal-cost: high

@@ -3,7 +3,8 @@ id: CAP-007-criteria
 type: criteria
 status: draft
 links: [CAP-007]
-title: Acceptance criteria for CAP-007 (python-bot-api-internal-alignment) ac-prefix: PBA
+title: Acceptance criteria for CAP-007 (python-bot-api-internal-alignment)
+ac-prefix: PBA
 provenance: inferred
 reversal-cost: low
 ---

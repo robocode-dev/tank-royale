@@ -30,10 +30,8 @@ The GUI already bundles the server, booter, and recorder JARs as classpath resou
 Three related problems share a common root cause — the GUI has no built-in knowledge of the correct bot API library for each platform:
 
 1. **Version mismatch** — existing library files are outdated after a GUI upgrade.
-2. **Missing or corrupt library** — a bot directory's `lib/` or `deps/` folder
-   exists but the expected library file is absent or damaged.
-3. **Future: new bot project setup** — when a bot developer creates a brand-new
-   bot project, they need the correct library placed for them. This third use case is explicitly **out of scope here** but informs the design; see the "Future work" section below.
+2. **Missing or corrupt library** — a bot directory's `lib/` or `deps/` folder exists but the expected library file is absent or damaged.
+3. **Future: new bot project setup** — when a bot developer creates a brand-new bot project, they need the correct library placed for them. This third use case is explicitly **out of scope here** but informs the design; see the "Future work" section below.
 
 **Problem (this ADR):** How should the GUI detect and remediate bot API library files that are outdated or missing across all four supported platforms, without requiring an internet connection?
 
@@ -43,17 +41,13 @@ Three related problems share a common root cause — the GUI has no built-in kno
 
 Extend the GUI to detect and update outdated bot API library files for all four platforms (Java, C#, Python, TypeScript) by:
 
-1. **Bundling the bot API artifacts** inside the GUI fat JAR as classpath
-   resources — following the established pattern for the booter, server, and recorder JARs. The Gradle build will copy and rename each artifact to a fixed, version-free resource name.
+1. **Bundling the bot API artifacts** inside the GUI fat JAR as classpath resources — following the established pattern for the booter, server, and recorder JARs. The Gradle build will copy and rename each artifact to a fixed, version-free resource name.
 
-2. **Scanning on startup**: after the main window is shown, the GUI scans all
-   configured bot root directories (both enabled and disabled) for bot API library files. A file is flagged if its version does not match `Version.version` **or if it is absent** from an otherwise-valid bot directory (`lib/` or `deps/` subdirectory exists but the expected artifact is missing).
+2. **Scanning on startup**: after the main window is shown, the GUI scans all configured bot root directories (both enabled and disabled) for bot API library files. A file is flagged if its version does not match `Version.version` **or if it is absent** from an otherwise-valid bot directory (`lib/` or `deps/` subdirectory exists but the expected artifact is missing).
 
-3. **User-controlled update/restore**: a dialog lists the affected directories
-   (directory, platform, installed version or "missing", GUI version). The user can update/restore all at once, skip for this session, or permanently disable the check via a `checkBotApiUpdates` setting in `gui.properties`.
+3. **User-controlled update/restore**: a dialog lists the affected directories (directory, platform, installed version or "missing", GUI version). The user can update/restore all at once, skip for this session, or permanently disable the check via a `checkBotApiUpdates` setting in `gui.properties`.
 
-4. **Reusable library-placement service**: the internal `BotApiLibraryService`
-   that extracts a bundled artifact and writes it to a target directory is designed as a standalone, reusable service. Future GUI features (e.g. "New Bot Creator") can call this service directly without duplicating the extraction logic.
+4. **Reusable library-placement service**: the internal `BotApiLibraryService` that extracts a bundled artifact and writes it to a target directory is designed as a standalone, reusable service. Future GUI features (e.g. "New Bot Creator") can call this service directly without duplicating the extraction logic.
 
 ---
 
@@ -74,14 +68,12 @@ The bundled approach is the clear winner for this project's context: it is a spa
 A startup check with a user prompt is preferred over a hidden menu item because:
 - Most users will not discover a menu item.
 - The check is fast (file-system scan only; no network).
-- The prompt is only shown when outdated files are actually found, so it is not
-  intrusive for users whose bot dirs are already up to date.
+- The prompt is only shown when outdated files are actually found, so it is not intrusive for users whose bot dirs are already up to date.
 
 ### Scanning enabled AND disabled bot directories
 
 Disabled directories are included in the scan because:
-- A bot directory may be temporarily disabled (e.g. while configuring a new
-  game type) but still contains bots the user intends to run.
+- A bot directory may be temporarily disabled (e.g. while configuring a new game type) but still contains bots the user intends to run.
 - Updating only enabled directories would leave a confusing partial state.
 
 ### TypeScript `package.json` patch
@@ -127,26 +119,18 @@ Silently replacing files on startup without user consent would be surprising and
 ## Consequences
 
 **Positive:**
-- Bot developers no longer need to manually hunt for and replace stale bot API
-  library files after a GUI upgrade.
-- Missing library files are automatically detected and can be restored with one
-  click.
-- The Java 26 reflection warning (issue [#207](https://github.com/robocode-dev/tank-royale/issues/207)) is resolved for users who accept
-  the update.
+- Bot developers no longer need to manually hunt for and replace stale bot API library files after a GUI upgrade.
+- Missing library files are automatically detected and can be restored with one click.
+- The Java 26 reflection warning (issue [#207](https://github.com/robocode-dev/tank-royale/issues/207)) is resolved for users who accept the update.
 - The feature works offline — no network dependency.
 - Consistent with the existing resource-bundling pattern in the GUI build.
-- `BotApiLibraryService` is reusable by future GUI features (e.g. "New Bot
-  Creator") without any duplication.
+- `BotApiLibraryService` is reusable by future GUI features (e.g. "New Bot Creator") without any duplication.
 
 **Negative:**
-- The GUI fat JAR grows by approximately 650 KB (sum of all four bot API
-  artifacts after R8 pass). This is acceptable for a desktop application.
-- The Gradle build for the GUI now depends on four additional build tasks
-  (`:bot-api:java:jar`, `:bot-api:dotnet:build`, `:bot-api:python:build-dist`, `:bot-api:typescript:npmPack`), increasing build time for GUI-only changes.
-- TypeScript `package.json` patching is the most fragile part; a hand-edited
-  `package.json` with unexpected formatting could be improperly updated. This risk is mitigated by using a simple regex replacement on the known dependency key rather than full JSON parse-and-rewrite.
-- On **macOS**, newly written files may receive a `com.apple.quarantine`
-  extended attribute set by the OS. Gatekeeper will then prompt the user before the file can be executed. After writing each artifact, `BotApiLibraryService` must clear the quarantine attribute via `xattr -d com.apple.quarantine <file>`. This is the same approach used by other tools that write executable artifacts on macOS and adds negligible overhead.
+- The GUI fat JAR grows by approximately 650 KB (sum of all four bot API artifacts after R8 pass). This is acceptable for a desktop application.
+- The Gradle build for the GUI now depends on four additional build tasks (`:bot-api:java:jar`, `:bot-api:dotnet:build`, `:bot-api:python:build-dist`, `:bot-api:typescript:npmPack`), increasing build time for GUI-only changes.
+- TypeScript `package.json` patching is the most fragile part; a hand-edited `package.json` with unexpected formatting could be improperly updated. This risk is mitigated by using a simple regex replacement on the known dependency key rather than full JSON parse-and-rewrite.
+- On **macOS**, newly written files may receive a `com.apple.quarantine` extended attribute set by the OS. Gatekeeper will then prompt the user before the file can be executed. After writing each artifact, `BotApiLibraryService` must clear the quarantine attribute via `xattr -d com.apple.quarantine <file>`. This is the same approach used by other tools that write executable artifacts on macOS and adds negligible overhead.
 
 ---
 
@@ -158,10 +142,8 @@ The same `BotApiLibraryService` will be reused when a "New Bot Creator" feature 
 
 - Let the user choose a bot name and a target language
 - Create a named directory under a chosen bot root
-- Write template files: `.cmd` / `.sh` startup scripts, a source file from a
-  language-appropriate template, a `.json` metadata file, and a `README.md` with getting-started instructions
-- Call `BotApiLibraryService` to place the correct `lib/` or `deps/` library
-  without any code duplication
+- Write template files: `.cmd` / `.sh` startup scripts, a source file from a language-appropriate template, a `.json` metadata file, and a `README.md` with getting-started instructions
+- Call `BotApiLibraryService` to place the correct `lib/` or `deps/` library without any code duplication
 
 That feature is deliberately **not** included here to keep this change focused and reviewable.
 

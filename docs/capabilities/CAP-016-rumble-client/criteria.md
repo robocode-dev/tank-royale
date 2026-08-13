@@ -3,7 +3,8 @@ id: CAP-016-criteria
 type: criteria
 status: draft
 links: [CAP-016]
-title: Acceptance criteria for CAP-016 (rumble-client) ac-prefix: RCL
+title: Acceptance criteria for CAP-016 (rumble-client)
+ac-prefix: RCL
 provenance: inferred
 reversal-cost: low
 ---
