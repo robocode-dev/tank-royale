@@ -1,0 +1,3 @@
+## Repository-local conventions
+
+For a full Cliewen change, apply the repository-local conventions declared in AGENTS.md, including digest requirements such as a user-facing changelog entry. When a release adds or narrows a corpus obligation, preview and apply the supported `clue migrate` migrations before validating the adopted repository; `clue init` remains a non-destructive materializer, not an updater. Simple work follows the repository conventions and checks that apply to its changed surfaces. Repository-local conventions may be stricter about integration. If a full-loop skill conflicts with a local rule, record the conflict in `open-questions.md` and stop for a human decision; never choose silently.
