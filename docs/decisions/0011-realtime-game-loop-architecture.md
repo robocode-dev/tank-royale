@@ -10,6 +10,8 @@ accepted-by: []
 
 # Real-Time Game Loop Architecture
 
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-11, pre-Cliewen MADR acceptance).
+
 ---
 
 ## Context and Problem Statement

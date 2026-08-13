@@ -10,6 +10,8 @@ accepted-by: []
 
 # WebSocket Communication Protocol
 
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-11, pre-Cliewen MADR acceptance).
+
 ---
 
 ## Context and Problem Statement
