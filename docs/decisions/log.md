@@ -12,6 +12,9 @@ Decisions that are cheap and local to reverse, one row each — newest first. Th
 
 | Date | Decision | Why | Change/PR |
 |---|---|---|---|
+| 2026-08-04 | Make `VERSION` the release-skill version source and verify documentation locally without a direct `main` mutation | The Gradle build already takes its version from `VERSION`; generated Pages output is intentionally untracked and `deploy-docs.yml` builds it from accepted `main`, while C-002 prohibits direct commits and pushes | CH-013 |
+| 2026-08-04 | Resume and complete M-008 only after the official Tank Royale 1.1.0 release | The Rumble Client must target a published, immutable engine distribution rather than unreleased source or a partial runtime contract | CH-013 |
+| 2026-08-04 | Move M-010 before M-009 and ship GUI TwinDuel selection in Tank Royale 1.1.0 | The GUI is the primary product experience, so TwinDuel must be complete where most users start battles instead of remaining a server-only Rumble feature | CH-013 |
 | 2026-08-02 | Schedule GUI TwinDuel selection as M-010 after the Rumble repositories, client, and documentation | The preset exists after CH-009, but the maintainer wants the GUI follow-up after the Rumble foundation is in place | CH-010 |
 | 2026-07-23 | The Rumble design roadmap becomes active plan P-003 (M-005..M-009), one milestone per roadmap change | The umbrella design names this as its next step; future rumble proposals need a plan item to serve | CH-005 |
 | 2026-07-19 | Drop the never-built `npmPublishDryRun` task from CAP-013 (retire TNP-001) instead of building it | `npmPack` already produces the `.tgz` and shows what would be published without uploading, so a dry-run task is redundant | CH-002 |
