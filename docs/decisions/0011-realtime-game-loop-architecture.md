@@ -5,7 +5,7 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Real-Time Game Loop Architecture
-accepted-by: Flemming N. Larsen (2026-02-11, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # Real-Time Game Loop Architecture

@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Battle Runner API
-accepted-by: Flemming N. Larsen (2026-02-28, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0024: Battle Runner API
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-28, pre-Cliewen MADR acceptance).
 
 ## Context
 

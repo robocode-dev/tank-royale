@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Java as Authoritative Reference Implementation
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0004: Java as Authoritative Reference Implementation
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance).
 
 ## Context
 

@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Cross-Platform Test Parity and Shared Test Definitions
-accepted-by: Flemming N. Larsen (2026-04-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0038: Cross-Platform Test Parity and Shared Test Definitions
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-04-14, pre-Cliewen MADR acceptance).
 
 ## Context
 

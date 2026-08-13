@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Bot Configuration via Environment Variables
-accepted-by: Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0013: Bot Configuration via Environment Variables
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-14, pre-Cliewen MADR acceptance).
 
 ## Context
 

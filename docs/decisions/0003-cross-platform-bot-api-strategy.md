@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Cross-Platform Bot API Strategy
-accepted-by: Flemming N. Larsen (2026-02-11, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0003: Cross-Platform Bot API Strategy
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-11, pre-Cliewen MADR acceptance).
 
 ## Context
 

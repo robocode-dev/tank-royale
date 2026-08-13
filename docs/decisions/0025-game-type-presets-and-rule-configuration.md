@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Game Type Presets and Rule Configuration
-accepted-by: Flemming N. Larsen (2026-02-28, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0025: Game Type Presets and Rule Configuration
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-28, pre-Cliewen MADR acceptance).
 
 ## Context
 

@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Java Swing as GUI Reference Implementation
-accepted-by: Flemming N. Larsen (2026-02-15, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0021: Java Swing as GUI Reference Implementation
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-15, pre-Cliewen MADR acceptance).
 
 ## Context
 

@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Template-based Booting and Base Convention
-accepted-by: Flemming N. Larsen (2026-04-05, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0030: Template-based Booting and Base Convention
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-04-05, pre-Cliewen MADR acceptance).
 
 ## Context and Problem Statement
 

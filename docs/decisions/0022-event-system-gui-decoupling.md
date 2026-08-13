@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Event System for GUI Decoupling
-accepted-by: Flemming N. Larsen (2026-02-16, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0022: Event System for GUI Decoupling
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-16, pre-Cliewen MADR acceptance).
 
 ## Context
 

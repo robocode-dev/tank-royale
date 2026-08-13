@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Identity-Based Bot Matching in Battle Runner
-accepted-by: Flemming N. Larsen (2026-03-21, pre-Cliewen MADR acceptance; last updated 2026-04-06)
+accepted-by: []
 ---
 
 # ADR-0026: Identity-Based Bot Matching in Battle Runner
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-03-21, pre-Cliewen MADR acceptance; last updated 2026-04-06).
 
 ## Context
 

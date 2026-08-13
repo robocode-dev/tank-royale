@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: TypeScript Bot API Threading Model
-accepted-by: Flemming N. Larsen (2026-03-24, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0028: TypeScript Bot API Threading Model
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-03-24, pre-Cliewen MADR acceptance).
 
 ## Context
 

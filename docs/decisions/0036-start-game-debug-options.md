@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Start-Game Debug Options
-accepted-by: Flemming N. Larsen (2026-04-08, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0036: Start-Game Debug Options
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-04-08, pre-Cliewen MADR acceptance).
 
 ## Context
 

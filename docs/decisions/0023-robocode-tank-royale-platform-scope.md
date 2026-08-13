@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Robocode Tank Royale Platform Scope and Boundaries
-accepted-by: Flemming N. Larsen (2026-02-15, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0023: Robocode Tank Royale Platform Scope and Boundaries
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-02-15, pre-Cliewen MADR acceptance).
 
 ## Context
 

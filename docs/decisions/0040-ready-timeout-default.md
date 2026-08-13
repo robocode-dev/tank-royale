@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Raise Default readyTimeout from 1 Second to 10 Seconds
-accepted-by: Flemming N. Larsen (2026-04-15, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0040: Raise Default readyTimeout from 1 Second to 10 Seconds
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-04-15, pre-Cliewen MADR acceptance).
 
 ## Context
 

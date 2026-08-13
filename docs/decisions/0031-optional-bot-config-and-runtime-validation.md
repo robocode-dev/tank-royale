@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Optional Bot Configuration Files and Runtime Property Validation
-accepted-by: Flemming N. Larsen (2026-04-05, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0031: Optional Bot Configuration Files and Runtime Property Validation
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-04-05, pre-Cliewen MADR acceptance).
 
 ## Context and Problem Statement
 

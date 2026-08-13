@@ -5,10 +5,12 @@ author: Flemming N. Larsen
 status: verified
 links: []
 title: Server Testability — Physics Core Extraction and Test Framework
-accepted-by: Flemming N. Larsen (2026-04-14, pre-Cliewen MADR acceptance)
+accepted-by: []
 ---
 
 # ADR-0039: Server Testability — Physics Core Extraction and Test Framework
+
+**Legacy source acceptance:** Flemming N. Larsen (2026-04-14, pre-Cliewen MADR acceptance).
 
 ## Context
 
