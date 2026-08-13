@@ -114,8 +114,7 @@ Forbidden-API scan, per platform (grep-level, deterministic; an advisory AI revi
 | Java | `ProcessBuilder`, `Runtime.exec`, `java.net` beyond the bot API's WebSocket, `sun.misc.Unsafe`, reflection on the bot API internals |
 | C# | `System.Diagnostics.Process`, P/Invoke (`DllImport`), `Registry`, raw sockets |
 | Python | `subprocess`, `os.system`, `socket`, `ctypes`, `importlib` tricks |
-| TypeScript | `child_process`, raw
-et`/`http` clients, `eval`, native addons |
+| TypeScript | `child_process`, raw `net`/`http` clients, `eval`, native addons |
 
 ## Ownership, Versioning, and Identity
 
@@ -156,7 +155,7 @@ People switch or lose accounts (job accounts, forge migration), so an owner is a
 
 ### Version policy: one active version per bot
 
-- A bot's identity in battle is ame` + `version` from its booter config, matching how the Battle Runner matches bots.
+- A bot's identity in battle is `name` + `version` from its booter config, matching how the Battle Runner matches bots.
 - **Published versions are immutable.** Changing source requires a version bump. CI enforces this by comparing the source-tree hash against `index.json`.
 - **Only the latest version of a bot is active.** Merging version `2.2` automatically flips `2.1` to `superseded`: it leaves matchmaking and the ranked leaderboard immediately, exactly like a RoboRumble version bump. Its results remain facts (history and per-version stats stay browsable), but the ranked pool always contains at most one version per bot. This keeps the pairing space linear in the number of bots, not versions.
 - Old versions' source stays in Git history; the working tree only carries the latest version of each bot.

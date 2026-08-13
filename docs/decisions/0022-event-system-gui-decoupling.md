@@ -181,4 +181,3 @@ This automatically:
 - [EventDelegate.kt](/lib/common/src/main/kotlin/dev/robocode/tankroyale/common/event/EventDelegate.kt) — Property delegation
 - [EDT.kt](/gui/src/main/kotlin/dev/robocode/tankroyale/gui/util/EDT.kt) — Swing EDT integration
 - [ADR-0021: Java Swing GUI Reference Implementation](./0021-java-swing-gui-reference-implementation.md)
-

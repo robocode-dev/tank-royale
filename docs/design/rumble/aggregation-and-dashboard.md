@@ -75,7 +75,12 @@ sequenceDiagram
 
 ````markdown
 ```json
-{ "schemaVersion": 1, "clientId": "flemming-desktop-01", "clientVersion": "0.3.0", "results": [ { ...result record 1... }, { ...result record 2... } ] }
+{
+  "schemaVersion": 1,
+  "clientId": "flemming-desktop-01",
+  "clientVersion": "0.3.0",
+  "results": [ { ...result record 1... }, { ...result record 2... } ]
+}
 ```
 ````
 

@@ -187,8 +187,7 @@ classDiagram
 |-------|------|----------|-------------|
 | `type` | string | ✅ | Always `"server-handshake"` |
 | `sessionId` | string | ✅ | UUID identifying this connection session |
-|
-ame` | string | ✅ | Server name |
+| `name` | string | ✅ | Server name |
 | `variant` | string | ✅ | Game variant, currently `"Tank Royale"` |
 | `version` | string | ✅ | Server version (semver) |
 | `behaviorVersion` | integer ≥ 1 | ✅* | Server-owned compatibility epoch for outcome-changing battle behavior |
@@ -262,8 +261,7 @@ classDiagram
 |-------|------|----------|------------|-------------|
 | `type` | string | ✅ | - | Always `"bot-handshake"` |
 | `sessionId` | string | ✅ | - | Must match sessionId from server-handshake |
-|
-ame` | string | ✅ | 30 | Bot name (displayed in UI) |
+| `name` | string | ✅ | 30 | Bot name (displayed in UI) |
 | `version` | string | ✅ | 20 | Bot version (semver recommended) |
 | `authors` | string[] | ✅ | 20 items, 50 chars each | Author names/emails |
 | `description` | string | ❌ | 250 | Short bot description |
@@ -277,7 +275,7 @@ ame` | string | ✅ | 30 | Bot name (displayed in UI) |
 | `bootId` | string | ❌ | - | Booter session ID (if launched by Booter) |
 
 **Validation Notes:**
-- ame` must be unique among connected bots
+- `name` must be unique among connected bots
 - `sessionId` must exactly match the one received in `server-handshake`
 - `countryCodes` must follow ISO 3166-1 alpha-2 format
 
@@ -324,8 +322,7 @@ classDiagram
 |-------|------|----------|-------------|
 | `type` | string | ✅ | Always `"observer-handshake"` |
 | `sessionId` | string | ✅ | Must match sessionId from server-handshake |
-|
-ame` | string | ✅ | Observer name |
+| `name` | string | ✅ | Observer name |
 | `version` | string | ✅ | Observer version |
 | `secret` | string | ❌ | Server authentication token (if required) |
 
@@ -372,8 +369,7 @@ classDiagram
 |-------|------|----------|-------------|
 | `type` | string | ✅ | Always `"controller-handshake"` |
 | `sessionId` | string | ✅ | Must match sessionId from server-handshake |
-|
-ame` | string | ✅ | Controller name |
+| `name` | string | ✅ | Controller name |
 | `version` | string | ✅ | Controller version |
 | `secret` | string | ❌ | Server authentication token (if required) |
 

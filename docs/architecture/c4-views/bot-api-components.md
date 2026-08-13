@@ -460,4 +460,3 @@ public class MyBot extends BaseBot {
 - **[Booter Components (L3)](./booter-components.md)** — Booter internals
 - **[Recorder Components (L3)](./recorder-components.md)** — Recorder internals
 - **[System Context (L1)](./system-context.md)** — High-level system view
-

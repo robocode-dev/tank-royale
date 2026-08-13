@@ -106,8 +106,7 @@ Breakpoint mode and debug mode are independent and composable:
 | Debug mode | Breakpoint mode | Behavior |
 |-----------|----------------|----------|
 | OFF | OFF | Normal — auto-advance, timeout enforced, missed timeout → `SkippedTurnEvent` |
-| ON | OFF | Timeout enforced, missed timeout → `SkippedTurnEvent`. Server pauses after each turn — controller must send
-ext-turn` to advance. |
+| ON | OFF | Timeout enforced, missed timeout → `SkippedTurnEvent`. Server pauses after each turn — controller must send `next-turn` to advance. |
 | OFF | ON (bot X) | Auto-advance. If bot X misses timeout → server pauses and waits for its intent (no skip for bot X). Other bots that miss timeout still get `SkippedTurnEvent`. |
 | ON | ON (bot X) | Timeout enforced for all bots. If bot X misses timeout → server waits for its intent (no skip). Server pauses after each turn regardless. |
 

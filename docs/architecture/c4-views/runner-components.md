@@ -131,7 +131,7 @@ The Runner composes existing Tank Royale components (Server, Booter) rather than
 - **Responsibility:**
   - Returned by `startBattleAsync()` for real-time event observation
   - Typed event properties: `onTickEvent`, `onRoundStarted`, `onRoundEnded`, `onGameStarted`, `onGameEnded`, `onGameAborted`, `onGamePaused`, `onGameResumed`
-  - Control methods: `pause()`, `resume()`, `stop()`, extTurn()`
+  - Control methods: `pause()`, `resume()`, `stop()`, `nextTurn()`
   - `awaitResults()` blocks until battle completion
   - Must be closed to release bot processes and allow subsequent battles
 

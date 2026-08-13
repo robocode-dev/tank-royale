@@ -26,15 +26,13 @@ Feature: typescript-bot-api — TBD - created by archiving change add-typescript
   @TBA-002
   Scenario: BotHandshake DTO has all required fields
     When a developer constructs a `BotHandshake` object
-    Then it contains fields: `type`, `sessionId`,
-ame`, `version`, `authors`, `description`, `homepage`, `countryCodes`, `gameTypes`, `platform`, `programmingLang`, `initialPosition`, `teamId`, `teamName`, `teamVersion`, `isDroid`, `secret`
+    Then it contains fields: `type`, `sessionId`, `name`, `version`, `authors`, `description`, `homepage`, `countryCodes`, `gameTypes`, `platform`, `programmingLang`, `initialPosition`, `teamId`, `teamName`, `teamVersion`, `isDroid`, `secret`
     And field names match the server JSON schema exactly
 
   @TBA-003
   Scenario: ServerHandshake DTO has all required fields
     When a `ServerHandshake` message is received
-    Then it contains fields: `type`, `sessionId`,
-ame`, `variant`, `version`, `gameTypes`, `gameSetup`
+    Then it contains fields: `type`, `sessionId`, `name`, `variant`, `version`, `gameTypes`, `gameSetup`
 
   @TBA-004
   Scenario: BotIntent DTO has all fields
@@ -204,8 +202,7 @@ ame`, `variant`, `version`, `gameTypes`, `gameSetup`
   @TBA-029
   Scenario: GameSetupMapper maps all fields
     When `GameSetupMapper.map(schemaGameSetup)` is called
-    Then a `GameSetup` is returned with `gameType`, `arenaWidth`, `arenaHeight`,
-umberOfRounds`, `gunCoolingRate`, `maxInactivityTurns`, `turnTimeout`, `readyTimeout`
+    Then a `GameSetup` is returned with `gameType`, `arenaWidth`, `arenaHeight`, `numberOfRounds`, `gunCoolingRate`, `maxInactivityTurns`, `turnTimeout`, `readyTimeout`
 
   @TBA-030
   Scenario: ResultsMapper maps all score fields
@@ -217,8 +214,7 @@ umberOfRounds`, `gunCoolingRate`, `maxInactivityTurns`, `turnTimeout`, `readyTim
     When `InitialPositionMapper.map(initialPosition)` is called with a non-null position
     Then a schema `InitialPosition` is returned with `x`, `y`, `direction`
     When `InitialPositionMapper.map(null)` is called
-    Then
-ull` is returned
+    Then `null` is returned
     # ---
 
   # Requirement: JSON Utilities
@@ -994,8 +990,7 @@ ull` is returned
   # prerequisites so that bots can be started directly from `.ts` source without any pre-compilation
   # step. The `deps/` folder SHALL contain:
   # - `install-dependencies.cmd` and `install-dependencies.sh` — platform-specific installers
-  # - `robocode.dev-tank-royale-bot-api-X.Y.Z.tgz` — the bot API npm tarball (produced by
-pm pack`)
+  # - `robocode.dev-tank-royale-bot-api-X.Y.Z.tgz` — the bot API npm tarball (produced by `npm pack`)
   # - `package.json` — specifying `@robocode.dev/tank-royale-bot-api` (file reference to local tarball)
   # and `tsx` as runtime dependencies
 
@@ -1008,19 +1003,16 @@ pm pack`)
   @TBA-126
   Scenario: install-dependencies script is idempotent
     When `install-dependencies.cmd` (or `.sh`) is run more than once from the same `deps/` folder
-    Then only the first run performs
-pm install`; subsequent runs exit immediately because `.deps_installed` marker exists
+    Then only the first run performs `npm install`; subsequent runs exit immediately because `.deps_installed` marker exists
 
   @TBA-127
   Scenario: install-dependencies handles concurrent launch
     When two bots are started simultaneously from the same archive
-    Then only one
-pm install` runs; the other waits on the `.deps_lock` mutex directory
+    Then only one `npm install` runs; the other waits on the `.deps_lock` mutex directory
 
   @TBA-128
   Scenario: install-dependencies fails clearly when Node.js is absent
-    When
-ode` is not on the PATH
+    When `node` is not on the PATH
     Then the script prints an actionable error message and exits with a non-zero code
     # ---
 

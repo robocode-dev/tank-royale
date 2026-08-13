@@ -163,8 +163,7 @@ flowchart TD
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `sessionId` | string | ✅ | Must match server-handshake |
-|
-ame` | string | ✅ | Bot name (1-50 chars) |
+| `name` | string | ✅ | Bot name (1-50 chars) |
 | `version` | string | ✅ | Bot version (1-20 chars) |
 | `authors` | array | ✅ | Bot authors |
 | `secret` | string | ❌ | Optional secret for auth |

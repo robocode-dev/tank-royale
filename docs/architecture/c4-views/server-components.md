@@ -364,4 +364,3 @@ graph TD
 - **[Recorder Components (L3)](./recorder-components.md)** — Recorder internals
 - **[Bot API Components (L3)](./bot-api-components.md)** — Bot API internals
 - **[System Context (L1)](./system-context.md)** — High-level system view
-

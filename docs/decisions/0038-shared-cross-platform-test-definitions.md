@@ -193,8 +193,7 @@ Platform runners must map Java exception names from `expected.throws` to local e
 | `"NaN"` | IEEE 754 Not-a-Number | `Double.NaN` / `float('nan')` / `Number.NaN` |
 | `"Infinity"` | Positive infinity | `Double.POSITIVE_INFINITY` / `float('inf')` / `Infinity` |
 | `"-Infinity"` | Negative infinity | `Double.NEGATIVE_INFINITY` / `float('-inf')` / `-Infinity` |
-|
-ull` | Absent or null value | Language-native null/None/undefined |
+| `null` | Absent or null value | Language-native null/None/undefined |
 
 #### Example
 
@@ -261,7 +260,7 @@ ull` | Absent or null value | Language-native null/None/undefined |
 Each platform implements a parameterized test that:
 1. Loads JSON test definition files from `bot-api/tests/shared/`
 2. For each test case: sets up declared state, calls the method, asserts expected fields
-3. Handles special values: `"NaN"` → language NaN, ull` → field not set, `"throws"` → expects exception
+3. Handles special values: `"NaN"` → language NaN, `null` → field not set, `"throws"` → expects exception
 
 ### Migration strategy
 

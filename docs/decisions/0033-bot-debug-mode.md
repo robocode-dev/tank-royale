@@ -16,7 +16,7 @@ When a bot developer wants to debug their bot turn-by-turn — inspecting state,
 
 **Existing mechanisms:**
 
-- **Pause/resume/step** — Controllers can pause the game, step one turn, and resume. However, the current ext-turn` command doesn't pause again after the step completes — it simply resumes the game loop. There's no "step and stay paused" mode.
+- **Pause/resume/step** — Controllers can pause the game, step one turn, and resume. However, the current `next-turn` command doesn't pause again after the step completes — it simply resumes the game loop. There's no "step and stay paused" mode.
 - **TPS = 0** — Pauses the game, but this pauses *before* collecting intents, not *after*. It stops the game loop entirely rather than letting turns complete one at a time.
 
 **What's needed:** A server mode where turns execute normally (bots must deliver intents within the turn timeout), but the server pauses after each turn instead of auto-advancing. The controller drives each turn step.
@@ -25,7 +25,7 @@ When a bot developer wants to debug their bot turn-by-turn — inspecting state,
 
 ## Decision
 
-Add a **debug mode** to the server that changes the turn advancement behavior: after each turn's timeout expires and the turn is processed, the server pauses and waits for a controller ext-turn` command before advancing.
+Add a **debug mode** to the server that changes the turn advancement behavior: after each turn's timeout expires and the turn is processed, the server pauses and waits for a controller `next-turn` command before advancing.
 
 ### Debug Mode Behavior
 
@@ -39,7 +39,7 @@ In debug mode:
 1. **Server sends tick events** to bots as normal.
 2. **Bots must deliver intents within the turn timeout** — no change to timing rules. Bots that miss the deadline receive `SkippedTurnEvent` as usual.
 3. **When the turn timeout expires**, the server processes the turn (physics, collisions, events) and then **pauses** instead of auto-advancing.
-4. **Controller steps to the next turn** by sending ext-turn` — the server sends the next tick events, collects intents, and pauses again after processing.
+4. **Controller steps to the next turn** by sending `next-turn` — the server sends the next tick events, collects intents, and pauses again after processing.
 5. **Controller can resume** with `resume-game` to exit debug mode and return to normal auto-advancing.
 
 ### Sequence Diagram
@@ -160,7 +160,7 @@ Both debug mode and breakpoint mode (ADR-0034) reuse `game-paused-event-for-obse
 
 ### 5. Existing messages — no other changes
 
-- ext-turn` — already exists, already means "advance one turn". In debug mode, the server pauses again after that turn.
+- `next-turn` — already exists, already means "advance one turn". In debug mode, the server pauses again after that turn.
 - `pause-game` / `resume-game` — unchanged. `resume-game` implicitly disables debug mode.
 - `game-resumed-event-for-observer` — unchanged.
 - `skipped-turn-event` — unchanged, still fires when bots miss the timeout.
@@ -178,9 +178,7 @@ Debug mode and pause are related but distinct:
 | **When it pauses** | Immediately | After each turn completes |
 | **Turn processing** | Stops | Continues normally |
 | **Bot intents** | Not collected | Collected with normal timeout |
-| **Advance** |
-ext-turn` runs one turn |
-ext-turn` runs one turn and re-pauses |
+| **Advance** | `next-turn` runs one turn | `next-turn` runs one turn and re-pauses |
 | **Exit** | `resume-game` | `resume-game` (or `disable-debug-mode`) |
 
 Pause stops everything. Debug mode lets turns execute but pauses between them. They compose: you can pause a debug-mode game, and resuming returns to debug mode (pause-after-turn), not to full auto-advance.
@@ -219,7 +217,7 @@ Pause and debug mode have different semantics (see table above). Overloading `pa
 
 - Read `features.debugMode` from server handshake → enable/disable debug controls.
 - Add a "Debug" toggle or button that sends `enable-debug-mode` / `disable-debug-mode`.
-- When debug mode is active, show "Step" button prominently (sends ext-turn`).
+- When debug mode is active, show "Step" button prominently (sends `next-turn`).
 - Show turn state after each pause so the developer can inspect what happened.
 
 ### Bot APIs

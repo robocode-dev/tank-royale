@@ -180,7 +180,7 @@ This addresses a real usability problem: when Python bots (or any bot with slow 
 
 ### Residual Risk: Name+Version+Authors Collision on External Servers
 
-The collision on external servers is accepted as a known limitation, not addressed by this ADR. Using the `authors` field as part of the identity serves as a fallback for uniqueness when ame` and `version` match.
+The collision on external servers is accepted as a known limitation, not addressed by this ADR. Using the `authors` field as part of the identity serves as a fallback for uniqueness when `name` and `version` match.
 
 **Why not tackle it now:**
 

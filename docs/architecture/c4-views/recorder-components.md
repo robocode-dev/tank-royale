@@ -239,4 +239,3 @@ sequenceDiagram
 - **[Server Components (L3)](./server-components.md)** — Server internals
 - **[GUI Components (L3)](./gui-components.md)** — GUI internals (Replay Viewer)
 - **[Booter Components (L3)](./booter-components.md)** — Bot process management
-

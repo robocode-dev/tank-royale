@@ -146,7 +146,7 @@ stateDiagram-v2
   - Contains bot metadata (name, version, command)
   - Provides platform-specific boot commands
 - **Properties:**
-  - ame` — Bot display name
+  - `name` — Bot display name
   - `version` — Bot version string
   - `platform` — Target platform (JVM, .NET, Python, etc.)
   - `command` — Shell command to execute bot
@@ -265,4 +265,3 @@ quit
 - **[Server Components (L3)](./server-components.md)** — Server internals
 - **[GUI Components (L3)](./gui-components.md)** — GUI internals
 - **[Recorder Components (L3)](./recorder-components.md)** — Recording system internals
-
