@@ -36,7 +36,7 @@ Reusable task instructions live in `.agents/skills/`. When the user runs a slash
 
 | Skill | Purpose |
 |---|---|
-| `clue-delta` | The change loop — use for every mutation of `main` |
+| `clue-delta` | The change loop — use for every full change |
 | `clue-plan` | Create or revise a plan with verifiable milestones |
 | `clue-analysis` | Spikes and findings — every analysis ends in a `docs/analysis` document |
 | `clue-verify` | Pre-merge checklist, the human-readable twin of `clue validate` |
