@@ -154,8 +154,12 @@ tasks {
         dependsOn(npmBuild)
     }
 
-    register("test") {
+    val test by registering {
         dependsOn(npmTest)
+    }
+
+    named("check") {
+        dependsOn(test)
     }
 
     // Make sure documentation tasks are not part of the build task
