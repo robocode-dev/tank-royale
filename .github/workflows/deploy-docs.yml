@@ -56,6 +56,30 @@ jobs:
       - name: Build all docs (VitePress + API references)
         run: ./gradlew upload-docs --no-daemon --stacktrace
 
+      # The API doc generators skip silently when their toolchain is missing or has
+      # nothing to read, which used to publish a site with 404s while the run stayed
+      # green. Fail here instead, before anything reaches Pages.
+      - name: Verify every API reference was generated
+        run: |
+          missing=0
+          for page in java/index.html \
+                      dotnet/index.html \
+                      dotnet/api/Robocode.TankRoyale.BotApi.html \
+                      python/index.html \
+                      typescript/index.html \
+                      runner/index.html; do
+            if [ ! -s "docs/api/$page" ]; then
+              echo "::error::Missing or empty API reference page: docs/api/$page"
+              missing=$((missing + 1))
+            else
+              echo "OK  docs/api/$page"
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "::error::$missing API reference page(s) missing - refusing to deploy an incomplete site"
+            exit 1
+          fi
+
       - name: Configure Pages
         uses: actions/configure-pages@v4
 
