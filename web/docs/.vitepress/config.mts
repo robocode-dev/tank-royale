@@ -19,6 +19,10 @@ export default withMermaid(defineConfig({
   themeConfig: {
     logo: '/Tank-logo.svg',
 
+    search: {
+      provider: 'local'
+    },
+
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Articles', link: '/articles/intro' },
