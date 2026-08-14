@@ -13,11 +13,6 @@ node {
 }
 
 tasks {
-    // Install or update to `docfx`
-    val updateDocfx by registering(Exec::class) {
-        commandLine("dotnet", "tool", "update", "-g", "docfx", "--version", "2.78.3")
-    }
-
     // Predicate: run docs-related generation only when explicitly requested
     fun isDocsRequested(): Boolean = gradle.startParameter.taskNames.any {
         it.contains("upload-docs") ||
@@ -78,6 +73,5 @@ tasks {
     register("copy-generated-docs") {
         description = "Copy all generated docs including API docs to /docs folder"
         dependsOn("copy-vitepress-docs")
-        dependsOn(updateDocfx)
     }
 }
