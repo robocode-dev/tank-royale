@@ -322,7 +322,7 @@ jobs:
         with:
           path: all-installers
 
-      - name: Download existing release assets (JARs, sample bots, etc.)
+      - name: Record existing release asset digests (JARs, sample bots, etc.)
         run: |
           set -euo pipefail
 
@@ -341,7 +341,7 @@ jobs:
           fi
 
           TAG="v${VERSION}"
-          echo "Downloading assets for release: $TAG"
+          echo "Recording asset digests for release: $TAG"
 
           # Get release info (including draft releases)
           releases=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
@@ -350,88 +350,24 @@ jobs:
           release_info=$(echo "$releases" | jq -r ".[] | select(.tag_name == \"$TAG\")")
 
           if [ -z "$release_info" ]; then
-            echo "WARNING: Release $TAG not found or has no assets yet. Skipping asset download."
-            exit 0
+            echo "ERROR: Release $TAG not found."
+            exit 1
           fi
 
-          # Show ALL assets in the release for debugging
-          echo "=== ALL Assets in Release $TAG ==="
-          echo "$release_info" | jq -r '.assets[] | "\(.name) (\(.size) bytes)"'
-          echo ""
+          echo "$release_info" | jq -r '
+            .assets[]
+            | select(.name | test("\\.(jar|zip)$"))
+            | select(.digest != null and (.digest | startswith("sha256:")))
+            | "\(.digest | sub("^sha256:"; ""))  \(.name)"
+          ' | sort -k2,2 > all-installers/release-asset-digests
 
-          # Create directory for release assets
-          mkdir -p all-installers/release-assets
-
-          # Extract asset information for debugging
-          echo "=== Release Assets Found ==="
-          echo "$release_info" | jq -r '.assets[] | select(.name | test("\\.(jar|zip)$")) | "\(.name) (\(.size) bytes, ID: \(.id))"'
-          echo "=== Starting Downloads ==="
-
-          # Download all non-installer assets (JARs, sample bots)
-          # Use the asset API URL with Accept header for draft releases
-          while IFS='|' read -r asset_id asset_name asset_size; do
-            if [ -n "$asset_id" ]; then
-              echo "Downloading: $asset_name ($asset_size bytes, ID: $asset_id)"
-
-              # Use GitHub API to download asset with proper authentication
-              # This works for both draft and published releases
-              if ! curl -fSL \
-                   -H "Authorization: token $GITHUB_TOKEN" \
-                   -H "Accept: application/octet-stream" \
-                   -o "all-installers/release-assets/$asset_name" \
-                   "https://api.github.com/repos/${{ github.repository }}/releases/assets/$asset_id" 2>&1; then
-                echo "ERROR: Failed to download $asset_name"
-                exit 1
-              fi
-
-              # Show what we got
-              downloaded_size=$(stat -c%s "all-installers/release-assets/$asset_name" 2>/dev/null || stat -f%z "all-installers/release-assets/$asset_name" 2>/dev/null || echo "unknown")
-              echo "  Downloaded: $downloaded_size bytes"
-
-              # Verify size matches
-              if [ "$downloaded_size" != "$asset_size" ] && [ "$downloaded_size" != "unknown" ]; then
-                echo "  WARNING: Downloaded size ($downloaded_size) doesn't match expected size ($asset_size)"
-              fi
-            fi
-          done < <(echo "$release_info" | jq -r '.assets[] | select(.name | test("\\.(jar|zip)$")) | "\(.id)|\(.name)|\(.size)"')
-
-          # Verify downloaded files are not HTML error pages
-          echo ""
-          echo "=== Verifying Downloaded Files ==="
-          file_count=0
-          for file in all-installers/release-assets/*; do
-            if [ -f "$file" ]; then
-              file_count=$((file_count + 1))
-              filename=$(basename "$file")
-
-              # Check file type
-              filetype=$(file -b "$file")
-
-              # Check if file is HTML (error page) instead of expected binary
-              if echo "$filetype" | grep -qi "HTML"; then
-                echo "❌ ERROR: $filename is HTML (likely an error page)"
-                echo "File type: $filetype"
-                echo "Content preview:"
-                head -n 20 "$file"
-                exit 1
-              fi
-
-              # Show size and checksum
-              size=$(ls -lh "$file" | awk '{print $5}')
-              checksum=$(sha256sum "$file" | awk '{print $1}')
-              echo "✓ $filename"
-              echo "  Size: $size"
-              echo "  Type: $filetype"
-              echo "  SHA256: $checksum"
-            fi
-          done
-
-          if [ $file_count -eq 0 ]; then
-            echo "WARNING: No files were downloaded!"
-          else
-            echo ""
-            echo "Successfully verified $file_count file(s)"
+          if [ ! -s all-installers/release-asset-digests ]; then
+            echo "ERROR: Release $TAG has no SHA-256 digests for its JAR and sample bot assets."
+            exit 1
           fi
+
+          echo "=== Existing release asset digests ==="
+          cat all-installers/release-asset-digests
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -538,7 +474,7 @@ jobs:
           # Generate checksums with only filenames (no paths)
           # Note: For .pkg files, we fix the version in the filename (1.x.y -> actual VERSION)
           > SHA256SUMS  # Clear the file
-          find . -type f ! -name 'SHA256SUMS*' ! -name 'ci-gradle.log' -print0 | sort -z | while IFS= read -r -d '' file; do
+          find . -type f ! -name 'SHA256SUMS*' ! -name 'ci-gradle.log' ! -name 'release-asset-digests' -print0 | sort -z | while IFS= read -r -d '' file; do
             # Calculate checksum and extract just the filename (no path)
             filename=$(basename "$file")
             checksum=$(sha256sum "$file" | awk '{print $1}')
@@ -569,6 +505,9 @@ jobs:
 
             printf "%s  %s\n" "$checksum" "$filename" >> SHA256SUMS
           done
+
+          cat release-asset-digests >> SHA256SUMS
+          sort -k2,2 -o SHA256SUMS SHA256SUMS
 
           # Sign the combined SHA256SUMS
           gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --armor --detach-sign SHA256SUMS
@@ -750,4 +689,3 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           shell: bash
-
