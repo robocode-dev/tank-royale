@@ -332,7 +332,13 @@ sealed class BaseBotInternals
     internal void Start()
     {
         Connect();
-        _closedEvent.WaitOne();
+        try
+        {
+            _closedEvent.WaitOne();
+        }
+        catch (ThreadInterruptedException)
+        {
+        }
     }
 
     private void Connect()

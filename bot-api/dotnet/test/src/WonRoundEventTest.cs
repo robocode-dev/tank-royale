@@ -10,30 +10,38 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 [Property("ID", "TR-API-TCK-005")]
 public class WonRoundEventTest : AbstractBotTest
 {
+    /// <summary>
+    /// BaseBot has no internal thread and no Go() loop of its own in this scenario, so the only
+    /// path that can deliver a WonRoundEvent carried by the round's final tick is the
+    /// RoundEnded-triggered dispatch in BaseBotInternals.HandleRoundEnded (regression coverage
+    /// for the "final-tick events dropped" bug fix). Mirrors the Java counterpart
+    /// (WonRoundEventTest.baseBot_whenTickContainsWonRoundEvent_thenOnWonRoundIsCalled), which
+    /// likewise never calls go() and relies solely on the server sending RoundEndedEventForBot
+    /// after the winning tick.
+    /// </summary>
     [Test]
-    [Ignore("Temporarily skip to establish baseline for Phase 5 cleanup")]
     public void BaseBot_WhenTickContainsWonRoundEvent_ThenOnWonRoundIsCalled()
     {
         var wonRoundLatch = new CountdownEvent(1);
         var bot = new TestWonRoundBot(Server.ServerUrl, wonRoundLatch);
-        
+
         StartAsync(bot);
-        
+
         AwaitBotHandshake();
-        // MockedServer automatically sends GameStarted and RoundStarted
-        
-        // Add WonRoundEvent to the next tick
+        // MockedServer automatically sends GameStarted, RoundStarted, and the first tick
+        // once the bot replies with BotReady.
+        Assert.That(Server.AwaitTick(2000), Is.True);
+
+        // Add WonRoundEvent to the next ("winning") tick.
         Server.AddEvent(new Robocode.TankRoyale.Schema.WonRoundEvent {
             Type = "WonRoundEvent",
-            TurnNumber = 1
+            TurnNumber = 2
         });
-        
-        Server.SetBotStateAndAwaitTick();
-        
-        // BaseBot needs to call Go() to dispatch events from the queue
-        bot.Go();
-        
-        // BaseBot should receive the event
+        Assert.That(Server.SetBotStateAndAwaitTick(), Is.True);
+
+        // No bot.Go() here — deliberately. Delivery must come from RoundEnded dispatch.
+        Server.SendRoundEndedForBot(1, 2);
+
         bool received = wonRoundLatch.Wait(TimeSpan.FromSeconds(5));
         Assert.That(received, Is.True, "onWonRound() should be called within 5 seconds");
     }

@@ -503,7 +503,10 @@ public class MockedServer
 
     private static void OnError(Exception ex)
     {
-        throw new InvalidOperationException("MockedServer error", ex);
+        // Fleck invokes this on its own I/O thread. Rethrowing here would surface as an
+        // unhandled exception on a background thread, which crashes the whole test host
+        // process instead of failing the individual test.
+        Console.Error.WriteLine("[Error] MockedServer connection error: " + ex);
     }
 
     private static int FindAvailablePort()
@@ -541,6 +544,37 @@ public class MockedServer
     {
         if (_conn == null) throw new InvalidOperationException("No connection");
         SendRoundStarted(_conn);
+    }
+
+    /// <summary>
+    /// Sends a RoundEndedEventForBot message, e.g. to trigger BaseBot's RoundEnded-triggered
+    /// dispatch of any events (such as WonRoundEvent) carried by the final tick of the round.
+    /// </summary>
+    public void SendRoundEndedForBot(int roundNumber, int turnNumber)
+    {
+        if (_conn == null) throw new InvalidOperationException("No connection");
+
+        var roundEnded = new RoundEndedEventForBot
+        {
+            Type = EnumUtil.GetEnumMemberAttrValue(MessageType.RoundEndedEventForBot),
+            RoundNumber = roundNumber,
+            TurnNumber = turnNumber,
+            Results = new Schema.ResultsForBot
+            {
+                Rank = 1,
+                Survival = 0,
+                LastSurvivorBonus = 0,
+                BulletDamage = 0,
+                BulletKillBonus = 0,
+                RamDamage = 0,
+                RamKillBonus = 0,
+                TotalScore = 0,
+                FirstPlaces = 0,
+                SecondPlaces = 0,
+                ThirdPlaces = 0
+            }
+        };
+        Send(_conn, roundEnded);
     }
 
     private static void SendGameStartedForBot(IWebSocketConnection conn)
