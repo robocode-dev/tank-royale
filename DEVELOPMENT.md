@@ -145,8 +145,12 @@ The permanent truth about the system lives in the [`docs/`](docs/README.md) corp
 
 ### Repo rules for agents
 
-- **Never commit or push to `main`; agents never merge their own PRs**
-  (constraint [C-002](docs/constraints/C-002-review-boundary.md) — the PR is
-  the approval gate).
+- **A full change reaches `main` only through a human-merged PR; agents never
+  merge their own PRs.** Simple work may be pushed to `main` directly only when
+  the maintainer explicitly authorizes that push for that specific change, per
+  change and never as a standing permission, and the commits carry an
+  `Authorized-Push:` trailer (constraint
+  [C-002](docs/constraints/C-002-review-boundary.md) — for a full change the PR
+  is the approval gate).
 - After every file modification, run `./gradlew clean build`; stop and fix on
   non-zero exit.
