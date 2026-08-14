@@ -133,7 +133,11 @@ public class SharedTestRunner
                 case "fromRgba": lastActionValue = Color.FromRgba(Convert.ToUInt32(args[0]), Convert.ToUInt32(args[1]), Convert.ToUInt32(args[2]), Convert.ToUInt32(args[3])); break;
                 case "colorToHex": lastActionValue = IntentValidator.ColorToHex((Color)args[0]); break;
                 case "getColorConstant": lastActionValue = GetStaticField(typeof(Color), (string)args[0]); break;
-                case "getConstant": lastActionValue = GetStaticField(typeof(Constants), (string)args[0]); break;
+                case "getConstant":
+                    lastActionValue = GetStaticField(typeof(Constants), (string)args[0])
+                        ?? GetStaticField(typeof(GameType), (string)args[0])
+                        ?? GetStaticField(typeof(DefaultEventPriority), (string)args[0]);
+                    break;
                 case "isCritical": lastActionValue = CreateEvent((string)args[0]).IsCritical; break;
                 case "getDefaultPriority": lastActionValue = GetStaticField(typeof(DefaultEventPriority), (string)args[0]); break;
                 case "calcBulletSpeed": lastActionValue = mockBot.CalcBulletSpeed(Convert.ToDouble(args[0])); break;
@@ -233,9 +237,15 @@ public class SharedTestRunner
 
     private object GetStaticField(Type type, string fieldName)
     {
-        var normalized = fieldName.Replace("_", "");
+        // Shared test JSON uses names like "WonRoundEvent" / "MAX_SPEED"; API constants are
+        // PascalCase without the "Event" suffix (e.g. WonRound, MaxSpeed). Mirrors the Java
+        // SharedTestRunner's normalization, with a fallback to the raw name.
+        var normalized = fieldName.Replace("Event", "").Replace("_", "");
         var flags = BindingFlags.Public | BindingFlags.Static | BindingFlags.IgnoreCase;
-        return type.GetField(normalized, flags)?.GetValue(null) ?? type.GetProperty(normalized, flags)?.GetValue(null);
+        return type.GetField(normalized, flags)?.GetValue(null)
+            ?? type.GetProperty(normalized, flags)?.GetValue(null)
+            ?? type.GetField(fieldName, flags)?.GetValue(null)
+            ?? type.GetProperty(fieldName, flags)?.GetValue(null);
     }
 
     private BotEvent CreateEvent(string eventName)

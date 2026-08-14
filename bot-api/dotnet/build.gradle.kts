@@ -69,12 +69,16 @@ tasks {
         isIgnoreExitValue = true
     }
 
-    register<Exec>("test") {
+    val test by registering(Exec::class) {
         dependsOn(":bot-api:dotnet:schema:build")
         dependsOn("restoreTestBeforeBuild")
 
         workingDir = File(projectDir, "test")
         commandLine("dotnet", "test")
+    }
+
+    named("check") {
+        dependsOn(test)
     }
 
     named("build") {
