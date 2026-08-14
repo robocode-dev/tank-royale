@@ -54,4 +54,4 @@
 - [ ] Every intended edit is committed, the worktree is clean, and the reported verification ran against the current commit.
 - [ ] The branch was updated without force, and this ready pull request's head branch and SHA equal the locally verified branch and `HEAD`.
 - [ ] Satisfied review conversations were resolved only after their reviewed fixes reached this hosted head.
-- [ ] The pull request is ready for human review and merge; no agent will merge it or push to `main`.
+- [ ] The pull request is ready for human review and merge; no agent will merge it, and no part of this change reached `main` outside this pull request.

@@ -2,7 +2,7 @@
 
 ## System of record
 
-**Start at [`docs/README.md`](docs/README.md)** — the corpus is the permanent truth about this system (Cliewen conventions since CH-001; see [AN-001](docs/analysis/AN-001-openspec-extraction.md)). Requirements live as Gherkin acceptance criteria under `docs/capabilities/*/criteria.md`. Before editing, recommend `simple` when the accepted contract remains unchanged or `full` when acceptance-criterion, capability, decision, policy, plan-promise, methodology, or uncovered-behavior meaning changes; paths and diff size never decide the route. Simple work uses no Cliewen workspace; chosen full work runs the change loop (`clue-delta` skill): branch → `/changes/CH-xxx-slug/` proposal → implement → digest → PR. Reassess when semantic scope grows, and if the user declines a full recommendation, record the route, recommendation, and risk in the final commit trailers. `clue validate` judges the corpus; markdown prose is never hard-wrapped (one line per paragraph). Never commit or push to `main` directly; agents never merge their own PRs.
+**Start at [`docs/README.md`](docs/README.md)** — the corpus is the permanent truth about this system (Cliewen conventions since CH-001; see [AN-001](docs/analysis/AN-001-openspec-extraction.md)). Requirements live as Gherkin acceptance criteria under `docs/capabilities/*/criteria.md`. Before editing, recommend `simple` when the accepted contract remains unchanged or `full` when acceptance-criterion, capability, decision, policy, plan-promise, methodology, or uncovered-behavior meaning changes; paths and diff size never decide the route. Simple work uses no Cliewen workspace; chosen full work runs the change loop (`clue-delta` skill): branch → `/changes/CH-xxx-slug/` proposal → implement → digest → PR. Reassess when semantic scope grows, and if the user declines a full recommendation, record the route, recommendation, and risk in the final commit trailers. `clue validate` judges the corpus; markdown prose is never hard-wrapped (one line per paragraph). A full change never reaches `main` except through a human-merged PR; simple work may be committed and pushed to `main` directly only when the maintainer explicitly authorizes that push for that specific change, and such commits carry an `Authorized-Push:` trailer naming the authorization. Agents never merge their own PRs. See [C-002](docs/constraints/C-002-review-boundary.md).
 
 Before your first tool call, run `clue latest --quiet`; if it reports that this repository is behind, ask whether to run the coordinated `clue-upgrade` workflow. Releases are repository-owned administrative work, not a Cliewen route.
 
@@ -36,7 +36,7 @@ Reusable task instructions live in `.agents/skills/`. When the user runs a slash
 
 | Skill | Purpose |
 |---|---|
-| `clue-delta` | The change loop — use for every mutation of `main` |
+| `clue-delta` | The change loop — use for every full change |
 | `clue-plan` | Create or revise a plan with verifiable milestones |
 | `clue-analysis` | Spikes and findings — every analysis ends in a `docs/analysis` document |
 | `clue-verify` | Pre-merge checklist, the human-readable twin of `clue validate` |

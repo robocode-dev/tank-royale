@@ -7,4 +7,4 @@
 3. Based on task keywords, load relevant `/.agents/instructions/*.md` files (index: `/.agents/instructions/README.md`)
 4. Start the task
 
-The corpus under `/docs/` is the system-of-record (Cliewen conventions); every mutation of `main` runs the change loop via the `clue-delta` skill and ends at a human-merged PR. Repo-local conventions (testing, style, encoding, debugging) live in `/.agents/instructions/` and are routed through `/AGENTS.md`.
+The corpus under `/docs/` is the system-of-record (Cliewen conventions); a full change runs the change loop via the `clue-delta` skill and reaches `main` only through a human-merged PR, while simple work reaches `main` directly only under the maintainer's explicit per-change push authorization, recorded in an `Authorized-Push:` trailer (constraint [C-002](/docs/constraints/C-002-review-boundary.md)). Repo-local conventions (testing, style, encoding, debugging) live in `/.agents/instructions/` and are routed through `/AGENTS.md`.

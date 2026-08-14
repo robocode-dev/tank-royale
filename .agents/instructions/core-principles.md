@@ -20,7 +20,7 @@
 
 ## Change Process
 
-The change loop, the review boundary, and all process gates live in the corpus and `AGENTS.md` — not here. Binding rules: [C-002](/docs/constraints/C-002-review-boundary.md) (every mutation of `main` rides a branch and a human-merged PR), [C-001](/docs/constraints/C-001-no-hard-wrapped-markdown.md) (no hard-wrapped markdown prose).
+The change loop, the review boundary, and all process gates live in the corpus and `AGENTS.md` — not here. Binding rules: [C-002](/docs/constraints/C-002-review-boundary.md) (a full change reaches `main` only through a human-merged PR; simple work only with the maintainer's explicit per-change push authorization), [C-001](/docs/constraints/C-001-no-hard-wrapped-markdown.md) (no hard-wrapped markdown prose).
 
 ## Communication Standards
 

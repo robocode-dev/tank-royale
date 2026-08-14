@@ -8,7 +8,7 @@ Each constraint names its `source` and an `enforcement` class: `machine` (a lint
 
 <!-- clue:index:start -->
 - [C-001 — Markdown prose is never hard-wrapped](C-001-no-hard-wrapped-markdown.md) · `machine`
-- [C-002 — Every mutation of main goes through a branch and a human-merged PR](C-002-review-boundary.md) · `human`
+- [C-002 — Mutations of main are human-gated, by a merged PR or an authorized direct push for simple work](C-002-review-boundary.md) · `human`
 - [C-003 — Bot APIs are semantically identical across platforms; Java is the reference](C-003-cross-platform-bot-api-parity.md) · `human`
 - [C-004 — Game physics and bot backward compatibility are stable](C-004-stable-physics-and-backward-compatibility.md) · `human`
 <!-- clue:index:end -->
