@@ -3,7 +3,7 @@ name: Deploy Docs
 on:
   push:
     branches: [main]
-    paths: ['web/**', 'bot-api/**', '.github/workflows/deploy-docs.yml']
+    paths: ['web/**', 'bot-api/**', 'runner/**', 'gradle/libs.versions.toml', '.github/workflows/deploy-docs.yml']
   workflow_dispatch:
 
 permissions:

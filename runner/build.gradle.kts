@@ -16,7 +16,14 @@ plugins {
     `java-library`
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.dokka)
     `maven-publish`
+}
+
+// The runner is pure Kotlin, so the `javadoc` task has no sources to read.
+// Dokka generates the API reference published at /api/runner instead.
+dokka {
+    moduleName = archiveTitle
 }
 
 dependencies {
@@ -147,8 +154,6 @@ tasks {
     }
 
     register<Copy>("copyRunnerApiDocs") {
-        dependsOn(javadoc)
-
         onlyIf {
             gradle.startParameter.taskNames.any {
                 it.contains("upload-docs") ||
@@ -157,16 +162,17 @@ tasks {
             }
         }
 
-        val javadocDir = layout.projectDirectory.dir("../docs/api/runner")
+        val apiDocsDir = layout.projectDirectory.dir("../docs/api/runner")
 
         duplicatesStrategy = DuplicatesStrategy.FAIL
 
-        from(layout.buildDirectory.dir("docs/javadoc"))
-        into(javadocDir)
+        // Copying from the task provider carries both its output directory and the task dependency
+        from(named("dokkaGeneratePublicationHtml"))
+        into(apiDocsDir)
 
         doFirst {
-            delete(javadocDir)
-            mkdir(javadocDir)
+            delete(apiDocsDir)
+            mkdir(apiDocsDir)
         }
     }
 

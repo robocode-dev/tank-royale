@@ -2,6 +2,8 @@
 
 kotlin = "2.4.10"
 
+dokka = "2.2.0"
+
 gson = "2.13.2"
 gson-extras = "3.3.0"
 java-websocket = "1.6.0"
@@ -40,6 +42,7 @@ slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
 
 [plugins]
 
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 jsonschema2pojo = { id = "org.jsonschema2pojo", version.ref = "jsonschema2pojo" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
