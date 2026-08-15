@@ -100,7 +100,7 @@ class BattleHandle internal constructor(
      * Requires the server to support breakpoint mode — check [serverFeatures]`.breakpointMode`
      * before calling.
      *
-     * @param botId             the id of the target bot (from [BotInfo.id] in [onBotListUpdate])
+     * @param botId             the id of the target bot (from `BotInfo.id` in [onBotListUpdate])
      * @param breakpointEnabled enable or disable breakpoint mode; `null` leaves unchanged
      * @param debuggingEnabled  enable or disable debug graphics; `null` leaves unchanged
      */

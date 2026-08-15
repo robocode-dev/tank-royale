@@ -142,17 +142,6 @@ tasks {
         dependsOn(jar)
     }
 
-    javadoc {
-        dependsOn("copyJars")
-        title = "$archiveTitle $version"
-        source(sourceSets.main.get().allJava)
-
-        (options as StandardJavadocDocletOptions).apply {
-            memberLevel = JavadocMemberLevel.PROTECTED
-            addStringOption("Xdoclint:none", "-quiet")
-        }
-    }
-
     register<Copy>("copyRunnerApiDocs") {
         onlyIf {
             gradle.startParameter.taskNames.any {
@@ -176,7 +165,12 @@ tasks {
         }
     }
 
-    val javadocJar = named<Jar>("javadocJar") { dependsOn("copyJars") }
+    // `withJavadocJar()` in the root build wires this jar to the `javadoc` task, which has no
+    // sources in a pure-Kotlin module and would publish an empty jar. Package Dokka's HTML instead.
+    val javadocJar = named<Jar>("javadocJar") {
+        dependsOn("copyJars")
+        from(named("dokkaGeneratePublicationHtml"))
+    }
     val sourcesJar = named<Jar>("sourcesJar") { dependsOn("copyJars") }
 
     val copyRunnerJar by registering(Copy::class) {

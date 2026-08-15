@@ -42,7 +42,7 @@ internal class BotMatcher(
     /**
      * Updates the match state based on the current set of connected bots.
      *
-     * Filters out pre-existing bots, builds a connected multiset from [BotInfo.name]/[BotInfo.version],
+     * Filters out pre-existing bots, builds a connected multiset from `BotInfo.name`/`BotInfo.version`,
      * and compares against the expected multiset. If more bots than expected connect for an identity,
      * only the needed count (first seen) is taken.
      *
