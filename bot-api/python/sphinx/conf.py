@@ -133,3 +133,7 @@ html_theme_options = {
 }
 
 html_static_path = ["_static"]
+
+# Sphinx marks every heading with a pilcrow (¶) permalink by default, which reads as a stray
+# character in the rendered titles. Use the conventional anchor sign instead.
+html_permalinks_icon = "#"
