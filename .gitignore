@@ -59,6 +59,23 @@ node_modules/
 /web/docs/.vitepress/dist
 /web/docs/.vitepress/cache
 
+# Published site output. `upload-docs` copies the VitePress dist and the generated API
+# references into /docs, which is otherwise the Cliewen corpus. Only CI publishes these.
+/docs/.nojekyll
+/docs/404.html
+/docs/index.html
+/docs/hashmap.json
+/docs/CNAME
+/docs/favicon.ico
+/docs/Tank-logo.svg
+/docs/placeholder.txt
+/docs/api/
+/docs/articles/
+/docs/assets/
+/docs/dev/
+/docs/images/
+/docs/tutorial/
+
 # Python
 __pycache__/
 *.py[cod]
