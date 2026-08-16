@@ -1,11 +1,11 @@
 ---
 id: ADR-0045
 type: decision
-status: inferred
+status: verified
 links: [ADR-0003, ADR-0038, C-003]
 title: Official Bot API Language Set Is Closed
 author: agent
-accepted-by: []
+accepted-by: Flemming N. Larsen (2026-08-16, Claude Code conversation)
 ---
 
 # ADR-0045: Official Bot API Language Set Is Closed

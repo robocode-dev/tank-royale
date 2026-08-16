@@ -1,11 +1,11 @@
 ---
 id: ADR-0042
 type: decision
-status: inferred
+status: verified
 links: [P-003, M-005, CAP-006]
 title: Behavior Version as the Battle Compatibility Contract
 author: agent
-accepted-by: []
+accepted-by: Flemming N. Larsen (2026-08-16, Claude Code conversation)
 ---
 
 # ADR-0042: Behavior Version as the Battle Compatibility Contract

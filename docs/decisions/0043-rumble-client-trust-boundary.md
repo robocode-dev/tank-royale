@@ -1,11 +1,11 @@
 ---
 id: ADR-0043
 type: decision
-status: inferred
+status: verified
 links: [P-003, M-008, CAP-016, CAP-015, ADR-0044]
 title: Rumble Client Trust Boundary
 author: agent
-accepted-by: []
+accepted-by: Flemming N. Larsen (2026-08-16, Claude Code conversation)
 ---
 
 # ADR-0043: Rumble Client Trust Boundary
