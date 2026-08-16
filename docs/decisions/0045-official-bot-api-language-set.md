@@ -29,7 +29,7 @@ That cost is borne by the project in perpetuity, while the contribution that tri
 
 The set of official Bot API languages is closed at Java, C#, Python, and TypeScript.
 
-Bot APIs for other languages are welcome as **community Bot APIs**: independent projects in their authors' own namespaces, maintained beside official Tank Royale rather than by it. The project links them, labelled as community-maintained. Adoption into the official set requires reopening this decision.
+Bot APIs for other languages are welcome as **community Bot APIs**: independent projects in their authors' own namespaces, maintained beside official Tank Royale rather than by it. The project lists them in its API documentation, in a section separate from the official APIs and labelled as community-maintained, so that a reader can tell at a glance which guarantees apply. Adoption into the official set requires reopening this decision.
 
 Reopening requires all of:
 
@@ -57,7 +57,7 @@ Publishing the criteria rather than only the outcome lets a contributor evaluate
 - Requests to add an official language have a single documented answer that does not depend on who asks or when.
 - Contributors can assess a proposal's chances before investing effort.
 - Bot APIs for other languages have a supported home rather than being turned away, and remain adoptable later if the criteria are met.
-- Users retain the guarantee that every API the project presents as official is 1:1 with the Java reference and maintained by the project.
+- Users retain the guarantee that every API the project presents as official is 1:1 with the Java reference and maintained by the project, because the documentation states which tier an entry belongs to instead of leaving readers to infer it.
 - Some good implementations stay outside the official set. This is accepted deliberately.
 - Reopening the set is a decision change requiring a new record, not a maintainer's discretionary call.
 

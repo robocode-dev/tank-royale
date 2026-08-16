@@ -17,8 +17,8 @@ title: Task breakdown for CH-028
 - [x] State the official/community split in the README Bot API listing
 - [x] Relabel [issue 198](https://github.com/robocode-dev/tank-royale/issues/198): create the `community project` label, apply it, remove `help wanted` and `huge effort` (open question 3, resolved: keep open, reframed)
 - [-] Add instance rows to `docs/decisions/log.md` — not done: open question 2 resolved against it. A decision record is timeless and a hand-maintained instance list goes stale; the dated public record lives on the issue and the discussion.
-- [ ] Comment on [issue 198](https://github.com/robocode-dev/tank-royale/issues/198) once ADR-0045 is merged, confirming the April 2026 answer stands and is now written down
+- [-] Comment on [issue 198](https://github.com/robocode-dev/tank-royale/issues/198) — cannot be done before merge, because the comment cites ADR-0045 and that record does not exist until this change is accepted. Carried to the pull request as a post-merge action so it survives the workspace deletion.
 - [x] Resolve open question 4 (CHANGELOG entry) against `.agents/instructions/changelog.md` — resolved: no entry
 - [x] Run `clue validate` — clean; the only remaining findings are pre-existing "folder has no README.md" warnings on generated `docs/api` output
-- [ ] Resolve open question 5 (agentic review loop vs the session instruction against spawning subagents) — blocking, needs the maintainer
-- [ ] Digest: delete the change workspace, once open question 5 is answered
+- [x] Resolve open question 5 (agentic review loop vs the session instruction against spawning subagents) — the maintainer waived the review loop for this change; disclosed in the acceptance brief
+- [x] Digest: delete the change workspace

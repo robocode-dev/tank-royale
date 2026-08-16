@@ -22,7 +22,7 @@ The separation carries the promise that uniformity used to carry implicitly. Bec
 
 ## 2. Are Lua and Nim named in ADR-0045, or only in `docs/decisions/log.md`?
 
-Non-blocking. Decided on the agent's recommendation during implementation; the maintainer's confirmation is still outstanding, and reversing it means adding two rows to `docs/decisions/log.md`.
+Non-blocking. Recommended by the agent during implementation and confirmed by the maintainer.
 
 Naming both somewhere is what demonstrates the policy was applied consistently rather than invented for one request. The question is only where. A `log.md` row is dated, factual, and reads as bookkeeping. An "Applied instances" section inside a permanent ADR names a contributor's project inside a rejection record and will outlive the conversation that produced it.
 
@@ -67,4 +67,4 @@ Three ways out:
 - **The maintainer waives it for this change**, accepting that a documentation-and-decision change carries no code risk, and the PR is marked ready with the waiver disclosed in the acceptance brief.
 - **The maintainer reviews the PR personally** in place of the agentic pass, which is what the review boundary ultimately requires anyway, since only a human merge accepts the change.
 
-**Recommended:** the waiver, disclosed in the acceptance brief. This change alters no code, tests, schema, or runtime behavior; the risk the review loop exists to catch is not present, and the maintainer reads every line of a policy record before merging it regardless.
+**Resolved:** the maintainer waived the agentic review loop for this change. The waiver is disclosed in the acceptance brief on the pull request. It applies to CH-028 only and sets no precedent for a change that touches code, tests, schema, or runtime behavior.
