@@ -37,7 +37,11 @@ Two ways out:
 - **Close #198**, citing ADR-0045 and pointing at the community tier. Consistent and unambiguous, but it withdraws something the requester was told was still possible, and lands as a late reversal.
 - **Keep #198 open, reframed.** Drop `help wanted`, relabel toward "community Bot API welcome", and comment that the standing position is now written down. This keeps the April commitment intact, because that comment already *was* the community-tier answer; only the label implies official adoption.
 
-**Recommended:** keep it open, reframed. The maintainer's April reply and ADR-0045 say the same thing; the label is the only part that conflicts.
+**Resolved:** keep it open, reframed. The maintainer's April reply and ADR-0045 say the same thing; the labels were the only part that conflicted.
+
+The relabelling is done: a new repository label `community project` ("Welcome as an independent project; not adopted into the official line") replaces `help wanted` and `huge effort` on #198, which remains open. The label is reusable for any later request of the same shape, which puts the policy in the issue tracker rather than only in `docs/decisions/`.
+
+The explanatory comment is deliberately not posted yet, because it cites ADR-0045 and that record does not exist until this change merges. It remains a task.
 
 ## 4. Does a contributor-facing policy change warrant a CHANGELOG entry?
 

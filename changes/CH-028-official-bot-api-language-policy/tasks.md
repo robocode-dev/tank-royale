@@ -12,7 +12,8 @@ title: Task breakdown for CH-028
 - [ ] Spec-first pause: the maintainer reviews this proposal and answers the open questions before implementation begins
 - [ ] Write `docs/decisions/0045-official-bot-api-language-set.md` with the closed set, the four reopening criteria, and the community Bot API tier
 - [ ] Add dated rows to `docs/decisions/log.md` recording that the community-tier position was applied to Lua (#198) and Nim (#239), citing ADR-0045 (pending open question 2)
-- [ ] Reconcile issue #198 with the merged policy (pending open question 3)
+- [x] Relabel issue #198: create the `community project` label, apply it, remove `help wanted` and `huge effort` (open question 3, resolved: keep open, reframed)
+- [ ] Comment on issue #198 once ADR-0045 is merged, confirming the April 2026 answer stands and is now written down
 - [ ] Expand `CONTRIBUTING.md` "Regarding Bot APIs" with a "Contributing a Bot API" section covering both tiers and the reopening criteria
 - [ ] Add community Bot APIs to the README community section alongside the Tank Royale Viewer
 - [ ] Digest: update `docs/decisions/README.md` and any affected corpus indexes, apply repository-local digest conventions, and delete the change workspace
