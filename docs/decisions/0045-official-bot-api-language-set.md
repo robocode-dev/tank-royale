@@ -36,9 +36,10 @@ Reopening requires all of:
 1. **Audience reach.** The language sits in the top tier of general-purpose adoption, judged by the TIOBE index. Java's place in the set is Robocode heritage, not rank.
 2. **Runs from source.** A bot is runnable from its source without an author-built binary artifact, as with `java Bot.java`, `dotnet run bot.cs`, a Python module, or a TypeScript entry point.
 3. **Demonstrated parity.** Every acceptance criterion in `bot-api/tests/TEST-REGISTRY.md` passes on the candidate platform in both directions, including its own Tier-2 harness, satisfying C-003.
-4. **A named second maintainer.** A committed maintainer besides the project maintainer, who accepts that the platform blocks releases when it lags.
 
-Implementation quality, 1:1 faithfulness, and author enthusiasm are necessary but never sufficient. A community Bot API may be excellent and still remain in the community tier, because what is being weighed is permanent maintenance and release coupling rather than the merit of a contribution.
+Once adopted, an official Bot API becomes the responsibility of the current and future maintainers of this repository, like every existing official Bot API. The contributing author has no continuing maintenance obligation, and adoption does not require a language-specific co-maintainer.
+
+Implementation quality and 1:1 faithfulness are necessary but never sufficient. A community Bot API may be excellent and still remain in the community tier, because what is being weighed is permanent maintenance and release coupling rather than the merit of a contribution.
 
 A community Bot API is not hosted as a branch of this repository. A long-lived unmerged branch rots against `main` and implies an adoption this decision excludes.
 
@@ -48,7 +49,7 @@ Audience reach is the criterion that decides nearly every case, and it is the ho
 
 Running from source keeps a bot distributable and reviewable as text, which is what the booter convention and source-first bot distribution already assume.
 
-Demonstrated parity and a named second maintainer address the two ways an adopted platform actually fails: silent semantic drift, and a volunteer moving on while the platform stays in the release gate.
+Demonstrated parity addresses silent semantic drift at adoption. After adoption, the repository maintainers own parity, packaging, documentation, tests, and release support for the platform in perpetuity; continued involvement from the contributing author is neither assumed nor required.
 
 Publishing the criteria rather than only the outcome lets a contributor evaluate a proposal before building it, and lets the maintainer answer with a rule rather than a judgement of their work.
 

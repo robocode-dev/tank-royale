@@ -177,8 +177,10 @@ There are two tiers, and which one applies is decided by the language, not by th
    `dotnet run bot.cs`, a Python module, or a TypeScript entry point.
 3. **Demonstrated parity.** Every acceptance criterion in [`bot-api/tests/TEST-REGISTRY.md`](bot-api/tests/TEST-REGISTRY.md)
    passing on the new platform in both directions, including its own Tier-2 test harness.
-4. **A named second maintainer.** Someone besides the project maintainer committed to it, who accepts that the platform
-   blocks releases when it lags.
+
+Once adopted, an official Bot API becomes the responsibility of the current and future maintainers of this repository,
+like every existing official Bot API. The contributing author has no continuing maintenance obligation, and adoption
+does not require a language-specific co-maintainer.
 
 Why the bar is this high: an official Bot API is not a one-time contribution. Every protocol or reference-API change
 becomes an N-way change that cannot ship until the slowest platform lands, and each platform adds a package registry to
@@ -199,9 +201,7 @@ in [`schema/schemas`](schema/schemas) are the actual contract rather than the Ja
 API does not need to; and the booter starts a bot from a `.cmd`/`.bat` script on Windows or a `.sh` script elsewhere
 plus a JSON config file, so any language that can be started from a shell script works without changes here.
 
-Being in the community tier is not a judgement on your work. Implementation quality, 1:1 faithfulness, and author
-commitment are necessary but never sufficient for adoption, because what is being weighed is permanent maintenance and
-release coupling, not the merit of a contribution.
+Being in the community tier is not a judgement on your work. Implementation quality and 1:1 faithfulness are necessary but never sufficient for adoption, because what is being weighed is permanent maintenance and release coupling, not the merit of a contribution.
 
 ## Booters, GUIs, and servers
 
