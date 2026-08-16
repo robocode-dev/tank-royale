@@ -1,5 +1,5 @@
 counters:
-    ADR: "44"
+    ADR: "45"
     AN: "1"
     ARCH: "26"
     C: "4"
@@ -231,6 +231,11 @@ entries:
       state: live
       prefix: ADR
       component: "44"
+    - id: ADR-0045
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "45"
     - id: AN-001
       kind: numeric
       state: live
@@ -597,9 +602,15 @@ entries:
       state: retired
     - id: CH-028
       kind: numeric
-      state: reserved
+      state: live
       prefix: CH
       component: "28"
+    - id: CH-028-open-questions
+      kind: opaque
+      state: live
+    - id: CH-028-tasks
+      kind: opaque
+      state: live
     - id: G-001
       kind: numeric
       state: live

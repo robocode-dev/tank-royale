@@ -9,12 +9,16 @@ title: Task breakdown for CH-028
 # CH-028 — Tasks
 
 - [x] Capture the CH-028 proposal and open questions
-- [ ] Spec-first pause: the maintainer reviews this proposal and answers the open questions before implementation begins
-- [ ] Write `docs/decisions/0045-official-bot-api-language-set.md` with the closed set, the four reopening criteria, and the community Bot API tier
-- [ ] Add dated rows to `docs/decisions/log.md` recording that the community-tier position was applied to Lua (#198) and Nim (#239), citing ADR-0045 (pending open question 2)
-- [x] Relabel issue #198: create the `community project` label, apply it, remove `help wanted` and `huge effort` (open question 3, resolved: keep open, reframed)
-- [ ] Comment on issue #198 once ADR-0045 is merged, confirming the April 2026 answer stands and is now written down
-- [ ] Expand `CONTRIBUTING.md` "Regarding Bot APIs" with a "Contributing a Bot API" section covering both tiers and the reopening criteria
-- [ ] Add community Bot APIs to the README community section alongside the Tank Royale Viewer
-- [ ] Digest: update `docs/decisions/README.md` and any affected corpus indexes, apply repository-local digest conventions, and delete the change workspace
-- [ ] Run `clue validate` and `clue-verify`, including the agentic review loop
+- [x] Spec-first pause: the maintainer reviewed the proposal and answered the open questions
+- [x] Write `docs/decisions/0045-official-bot-api-language-set.md` with the closed set, the four reopening criteria, and the community Bot API tier
+- [x] Register ADR-0045 in `.clue/id-ledger.yaml` and add it to `docs/decisions/README.md`
+- [x] Expand `CONTRIBUTING.md` "Regarding Bot APIs" into "Contributing a Bot API" covering both tiers and the reopening criteria
+- [x] Split `web/docs/api/apis.md` into official and community sections (open question 1, resolved: list community APIs, clearly separated)
+- [x] State the official/community split in the README Bot API listing
+- [x] Relabel [issue 198](https://github.com/robocode-dev/tank-royale/issues/198): create the `community project` label, apply it, remove `help wanted` and `huge effort` (open question 3, resolved: keep open, reframed)
+- [-] Add instance rows to `docs/decisions/log.md` — not done: open question 2 resolved against it. A decision record is timeless and a hand-maintained instance list goes stale; the dated public record lives on the issue and the discussion.
+- [ ] Comment on [issue 198](https://github.com/robocode-dev/tank-royale/issues/198) once ADR-0045 is merged, confirming the April 2026 answer stands and is now written down
+- [x] Resolve open question 4 (CHANGELOG entry) against `.agents/instructions/changelog.md` — resolved: no entry
+- [x] Run `clue validate` — clean; the only remaining findings are pre-existing "folder has no README.md" warnings on generated `docs/api` output
+- [ ] Resolve open question 5 (agentic review loop vs the session instruction against spawning subagents) — blocking, needs the maintainer
+- [ ] Digest: delete the change workspace, once open question 5 is answered

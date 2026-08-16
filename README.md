@@ -83,7 +83,7 @@ Bot APIs are available for:
 Bots can be written in any language that can access a WebSocket API and follows the
 [protocol](https://github.com/robocode-dev/tank-royale/tree/master/schema/schemas#readme).
 
-The following Bot APIs provide full client implementations:
+The following **official** Bot APIs provide full client implementations. They are maintained by the Tank Royale project and are semantically 1:1 with the Java reference implementation, so a bot author moving between them does not have to relearn behavior:
 
 | Language              | API                                                                                        |
 |-----------------------|--------------------------------------------------------------------------------------------|
@@ -91,6 +91,8 @@ The following Bot APIs provide full client implementations:
 | **Java (JVM)**        | [Java/JVM Bot API](https://robocode-dev.github.io/tank-royale/api/apis.html#java-jvm)      |
 | **.NET**              | [.NET Bot API](https://robocode-dev.github.io/tank-royale/api/apis.html#net)               |
 | **TypeScript / JavaScript** | [TypeScript Bot API](https://robocode-dev.github.io/tank-royale/api/apis.html#typescript--javascript) |
+
+The official set is closed at these four languages. Bot APIs for other languages are welcome as **community Bot APIs**: independent projects maintained beside official Tank Royale rather than by it, which we are happy to link from the [API documentation](https://robocode-dev.github.io/tank-royale/api/apis.html). See the [Contributing Guide](CONTRIBUTING.md#contributing-a-bot-api) for how that works and what it would take to reopen the official set.
 
 Additional languages supported by the Java/JVM API:
 

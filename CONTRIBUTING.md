@@ -164,10 +164,43 @@ authoritative source for all other platform implementations.
 If you have ideas that deviate from the Java reference, you're welcome to create your own Bot API in a separate
 repository. The official Bot APIs prioritize consistency and maintainability over innovation.
 
-### Alternative Bot APIs
+### Contributing a Bot API
 
-You're welcome to create alternative APIs in separate repositories with different paradigms (async, reactive,
-functional, etc.). We can link to them as community options. The official APIs will remain 1:1 with Java.
+There are two tiers, and which one applies is decided by the language, not by the quality of the implementation.
+
+**Official Bot APIs** are the four in this repository: Java, C#, Python, and TypeScript. **This set is closed.** See
+[ADR-0045](docs/decisions/0045-official-bot-api-language-set.md) for the full decision. Reopening it requires all of:
+
+1. **Audience reach** — the language sits in the top tier of general-purpose adoption, judged by
+   the [TIOBE index](https://www.tiobe.com/tiobe-index/). Java's place is Robocode heritage, not rank.
+2. **Runs from source** — a bot is runnable from its source without an author-built binary, as with `java Bot.java`,
+   `dotnet run bot.cs`, a Python module, or a TypeScript entry point.
+3. **Demonstrated parity** — every acceptance criterion in [`bot-api/tests/TEST-REGISTRY.md`](bot-api/tests/TEST-REGISTRY.md)
+   passing on the new platform in both directions, including its own Tier-2 test harness.
+4. **A named second maintainer** — someone besides the project maintainer committed to it, who accepts that the platform
+   blocks releases when it lags.
+
+Why the bar is this high: an official Bot API is not a one-time contribution. Every protocol or reference-API change
+becomes an N-way change that cannot ship until the slowest platform lands, and each platform adds a package registry to
+the release gate, an API reference, a tutorial, a sample-bot set, and CI jobs. That cost is permanent and falls on the
+project, while the contribution that triggers it is complete at merge.
+
+**Community Bot APIs** are the home for every other language, and they are genuinely welcome. A community Bot API:
+
+- lives in **your own repository**, under your ownership, release cadence, and documentation;
+- is **not** hosted as a branch of this repository, which would rot against `main` and imply a future adoption;
+- may be 1:1 with Java or may take a different paradigm entirely (async, reactive, functional) — that is your call;
+- gets linked from the [API documentation](https://robocode-dev.github.io/tank-royale/api/apis.html) and labelled as
+  community-maintained, stating its maintainer and the schema version it targets.
+
+To get listed, open a discussion. Useful things to track in your own repository: the JSON schemas
+in [`schema/schemas`](schema/schemas) are the actual contract rather than the Java code, so if they do not change your
+API does not need to; and the booter starts a bot from a `.cmd`/`.bat` script on Windows or a `.sh` script elsewhere
+plus a JSON config file, so any language that can be started from a shell script works without changes here.
+
+Being in the community tier is not a judgement on your work. Implementation quality, 1:1 faithfulness, and author
+commitment are necessary but never sufficient for adoption, because what is being weighed is permanent maintenance and
+release coupling, not the merit of a contribution.
 
 ## Booters, GUIs, and servers
 
