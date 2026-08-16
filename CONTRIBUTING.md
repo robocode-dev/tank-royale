@@ -171,13 +171,13 @@ There are two tiers, and which one applies is decided by the language, not by th
 **Official Bot APIs** are the four in this repository: Java, C#, Python, and TypeScript. **This set is closed.** See
 [ADR-0045](docs/decisions/0045-official-bot-api-language-set.md) for the full decision. Reopening it requires all of:
 
-1. **Audience reach** — the language sits in the top tier of general-purpose adoption, judged by
+1. **Audience reach.** The language sits in the top tier of general-purpose adoption, judged by
    the [TIOBE index](https://www.tiobe.com/tiobe-index/). Java's place is Robocode heritage, not rank.
-2. **Runs from source** — a bot is runnable from its source without an author-built binary, as with `java Bot.java`,
+2. **Runs from source.** A bot is runnable from its source without an author-built binary, as with `java Bot.java`,
    `dotnet run bot.cs`, a Python module, or a TypeScript entry point.
-3. **Demonstrated parity** — every acceptance criterion in [`bot-api/tests/TEST-REGISTRY.md`](bot-api/tests/TEST-REGISTRY.md)
+3. **Demonstrated parity.** Every acceptance criterion in [`bot-api/tests/TEST-REGISTRY.md`](bot-api/tests/TEST-REGISTRY.md)
    passing on the new platform in both directions, including its own Tier-2 test harness.
-4. **A named second maintainer** — someone besides the project maintainer committed to it, who accepts that the platform
+4. **A named second maintainer.** Someone besides the project maintainer committed to it, who accepts that the platform
    blocks releases when it lags.
 
 Why the bar is this high: an official Bot API is not a one-time contribution. Every protocol or reference-API change
@@ -189,7 +189,8 @@ project, while the contribution that triggers it is complete at merge.
 
 - lives in **your own repository**, under your ownership, release cadence, and documentation;
 - is **not** hosted as a branch of this repository, which would rot against `main` and imply a future adoption;
-- may be 1:1 with Java or may take a different paradigm entirely (async, reactive, functional) — that is your call;
+- may be 1:1 with Java or may take a different paradigm entirely, such as async, reactive, or functional. That is your
+  call;
 - gets linked from the [API documentation](https://robocode-dev.github.io/tank-royale/api/apis.html) and labelled as
   community-maintained, stating its maintainer and the schema version it targets.
 
