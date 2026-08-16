@@ -26,7 +26,20 @@ Naming both somewhere is what demonstrates the policy was applied consistently r
 
 **Assumed answer:** generic ADR, dated rows in `log.md` citing ADR-0045.
 
-## 3. Does a contributor-facing policy change warrant a CHANGELOG entry?
+## 3. How is issue #198 (Lua) reconciled with the merged policy?
+
+**Blocking for the digest, not for implementation.** The ADR can be written either way; the issue must be reconciled before this change is accepted, because leaving both as they are publishes a contradiction.
+
+Issue #198 is open, labelled `help wanted` and `huge effort`. In April 2026 the maintainer answered it with the community-tier position: an independent Lua project maintained alongside Tank Royale is welcome, the main line is not offered, and the issue was deliberately left open for someone to pick up. A merged ADR-0045 states the official set is closed. An open `help wanted` request to add an official language contradicts that.
+
+Two ways out:
+
+- **Close #198**, citing ADR-0045 and pointing at the community tier. Consistent and unambiguous, but it withdraws something the requester was told was still possible, and lands as a late reversal.
+- **Keep #198 open, reframed.** Drop `help wanted`, relabel toward "community Bot API welcome", and comment that the standing position is now written down. This keeps the April commitment intact, because that comment already *was* the community-tier answer; only the label implies official adoption.
+
+**Recommended:** keep it open, reframed. The maintainer's April reply and ADR-0045 say the same thing; the label is the only part that conflicts.
+
+## 4. Does a contributor-facing policy change warrant a CHANGELOG entry?
 
 Non-blocking; resolved during the digest against `.agents/instructions/changelog.md`.
 
