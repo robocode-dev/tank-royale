@@ -4,7 +4,7 @@ counters:
     ARCH: "26"
     C: "4"
     CAP: "17"
-    CH: "27"
+    CH: "28"
     G: "1"
     GTD: "1"
     LOG: "1"
@@ -595,6 +595,11 @@ entries:
     - id: CH-027-tasks
       kind: opaque
       state: retired
+    - id: CH-028
+      kind: numeric
+      state: reserved
+      prefix: CH
+      component: "28"
     - id: G-001
       kind: numeric
       state: live
