@@ -54,4 +54,5 @@ Writing guidelines: be specific (technical detail, not concepts); show your work
 - [ADR-0042 — Behavior Version as the Battle Compatibility Contract](0042-behavior-version-epochs.md) · `inferred`
 - [ADR-0043 — Rumble Client Trust Boundary](0043-rumble-client-trust-boundary.md) · `inferred`
 - [ADR-0044 — Durable Rumble Result Acknowledgement](0044-durable-rumble-result-acknowledgement.md) · `verified`
+- [ADR-0045 — Official Bot API Language Set Is Closed](0045-official-bot-api-language-set.md) · `inferred`
 <!-- clue:index:end -->
