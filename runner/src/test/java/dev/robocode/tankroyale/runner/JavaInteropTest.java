@@ -87,6 +87,13 @@ class JavaInteropTest {
     }
 
     @Test
+    @Tag("Unit")
+    void requireBehaviorVersionIsAvailableFromJava() {
+        var runner = BattleRunner.create(b -> b.requireBehaviorVersion(7));
+        runner.close();
+    }
+
+    @Test
     void createWithIntentDiagnosticsAndRecording() {
         Path recordingPath = tempDir.resolve("recording.battle.gz");
         var runner = BattleRunner.create(b -> b

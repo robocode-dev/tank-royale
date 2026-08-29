@@ -63,6 +63,9 @@ internal class ServerConnection(
     /** Server features advertised in the ServerHandshake (available after connect). */
     val serverFeatures = AtomicReference<Features?>(null)
 
+    private val observerBehaviorVersion = AtomicReference<Int?>(null)
+    private val controllerBehaviorVersion = AtomicReference<Int?>(null)
+
     /** True if both Observer and Controller connections are established. */
     val isConnected: Boolean get() = connected.get()
 
@@ -146,6 +149,10 @@ internal class ServerConnection(
             when (val msg = json.decodeFromString(PolymorphicSerializer(Message::class), message)) {
                 is ServerHandshake -> {
                     serverFeatures.set(msg.features)
+                    when (role) {
+                        Role.OBSERVER -> observerBehaviorVersion.set(msg.behaviorVersion)
+                        Role.CONTROLLER -> controllerBehaviorVersion.set(msg.behaviorVersion)
+                    }
                     sendHandshakeResponse(msg, role, ws)
                     // Handshake complete after we send our response — server will reply with BotListUpdate
                     readyLatch.countDown()
@@ -210,6 +217,15 @@ internal class ServerConnection(
             StartGame(gameSetup, botAddresses) as Message
         )
         controllerWs!!.sendText(msg, true)
+    }
+
+    /** Requires both role handshakes to agree with the expected behavior compatibility version. */
+    fun requireBehaviorVersion(expected: Int) {
+        validateBehaviorVersion(
+            expected = expected,
+            observer = observerBehaviorVersion.get(),
+            controller = controllerBehaviorVersion.get(),
+        )
     }
 
     // -------------------------------------------------------------------------------------
@@ -299,6 +315,25 @@ internal class ServerConnection(
 
     companion object {
         private const val CONNECT_TIMEOUT_MS = 10_000L
+
+        internal fun validateBehaviorVersion(expected: Int, observer: Int?, controller: Int?) {
+            require(expected > 0) { "Expected behavior version must be positive" }
+            if (observer == null || controller == null) {
+                throw BattleException(
+                    "Server did not advertise a behavior version for both Runner roles"
+                )
+            }
+            if (observer != controller) {
+                throw BattleException(
+                    "Server handshakes disagree on behavior version: observer=$observer, controller=$controller"
+                )
+            }
+            if (observer != expected) {
+                throw BattleException(
+                    "Server behavior version $observer does not match required version $expected"
+                )
+            }
+        }
 
         /**
          * Converts a [GameEndedEvent] results array into a [BattleResults].

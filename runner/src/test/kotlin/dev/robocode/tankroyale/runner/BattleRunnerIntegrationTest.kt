@@ -1,5 +1,6 @@
 package dev.robocode.tankroyale.runner
 
+import dev.robocode.tankroyale.common.rules.CURRENT_BEHAVIOR_VERSION
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.*
@@ -101,6 +102,47 @@ class BattleRunnerIntegrationTest {
     // -------------------------------------------------------------------------------------
     // 10.2 — Run a real battle with sample bots
     // -------------------------------------------------------------------------------------
+
+    @Test
+    @Tag("BR-049")
+    @Tag("Integration")
+    @Tag("Positive")
+    fun testBR049_IntegrationPositive_acceptsMatchingBehaviorVersionBeforeBotBoot() {
+        BattleRunner.create {
+            embeddedServer()
+            requireBehaviorVersion(CURRENT_BEHAVIOR_VERSION)
+        }.use { runner ->
+            val results = runner.runBattle(
+                setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+            )
+
+            assertThat(results.results).hasSize(2)
+        }
+    }
+
+    @Test
+    @Tag("BR-049")
+    @Tag("Integration")
+    @Tag("Negative")
+    fun testBR049_IntegrationNegative_rejectsMismatchedBehaviorVersionBeforeBotBoot() {
+        BattleRunner.create {
+            embeddedServer()
+            requireBehaviorVersion(CURRENT_BEHAVIOR_VERSION + 1)
+        }.use { runner ->
+            assertThatThrownBy {
+                runner.runBattle(
+                    setup = BattleSetup.oneVsOne { numberOfRounds = 1 },
+                    bots = listOf(BotEntry.of(botDir("Walls")), BotEntry.of(botDir("SpinBot")))
+                )
+            }.isInstanceOf(BattleException::class.java)
+                .hasMessageContaining("does not match required version")
+
+            assertThat(runner.connection!!.latestBotList.get())
+                .describedAs("No bot may connect when the behavior-version precondition fails")
+                .isEmpty()
+        }
+    }
 
     @Test
     fun `runBattle with two sample bots returns valid results`() {

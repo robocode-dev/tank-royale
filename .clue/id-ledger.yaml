@@ -634,6 +634,12 @@ entries:
       state: live
       prefix: CH
       component: "30"
+    - id: CH-030-open-questions
+      kind: opaque
+      state: live
+    - id: CH-030-tasks
+      kind: opaque
+      state: live
     - id: G-001
       kind: numeric
       state: live
