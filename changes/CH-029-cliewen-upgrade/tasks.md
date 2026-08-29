@@ -18,5 +18,5 @@ title: Task breakdown for CH-029
 - [x] Preview `clue migrate` with the required low reversal-cost classification and resolve every finding; retain only the non-writing `.claude/skills` symlink notices
 - [x] Apply the complete `clue migrate` plan to the 0.20.0 baseline
 - [x] Verify the managed skills, thin CI caller, corpus indexes, and symlink boundary
-- [x] Run the relevant corpus and repository checks; `clue migrate` is clean and `git diff --check` passes, while `clue validate` retains 75 pre-existing generated-tree README warnings and Gradle remains blocked by the unrelated TypeScript implicit-dependency validation and a Java bot-intent timeout test
+- [x] Run the relevant corpus and repository checks; `clue migrate` is clean, `git diff --check` passes, and `clean build` passes all 150 actionable tasks; `clue validate` retains 75 generated-tree README warnings and 15 inferred decisions awaiting verification
 - [x] Commit the complete candidate locally; remote publication and human review handoff remain pending explicit remote-integration authorization

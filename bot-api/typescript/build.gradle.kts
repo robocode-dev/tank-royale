@@ -65,7 +65,7 @@ tasks {
         outputs.dir("dist")
     }
 
-    register("npmPack", com.github.gradle.node.npm.task.NpmTask::class) {
+    val npmPack by registering(com.github.gradle.node.npm.task.NpmTask::class) {
         dependsOn(npmBuild, prepareNpmjsReadme)
         args = listOf("pack")
         inputs.dir("dist")
@@ -99,6 +99,7 @@ tasks {
 
     val npmTest by registering(com.github.gradle.node.npm.task.NpmTask::class) {
         dependsOn(npmInstall)
+        mustRunAfter(npmPack)
         args = listOf("run", "test")
         inputs.dir("src")
         inputs.dir("test")

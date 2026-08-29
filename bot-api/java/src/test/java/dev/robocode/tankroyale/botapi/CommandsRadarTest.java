@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import test_utils.MockedServer;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,8 +20,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CommandsRadarTest extends AbstractBotTest {
 
     private static class RadarTestBot extends Bot {
+        private final AtomicBoolean blockingRescanRequested = new AtomicBoolean();
+
         RadarTestBot() {
             super(botInfo, MockedServer.getServerUrl());
+        }
+
+        @Override
+        public void run() {
+            while (isRunning()) {
+                if (blockingRescanRequested.compareAndSet(true, false)) {
+                    rescan();
+                } else {
+                    go();
+                }
+            }
+        }
+
+        void requestBlockingRescan() {
+            blockingRescanRequested.set(true);
         }
     }
 
@@ -80,8 +98,8 @@ class CommandsRadarTest extends AbstractBotTest {
     void testBlockingRescan() {
         var bot = startRadarBot();
 
-        // Run rescan in a separate thread because it's blocking
-        goAsync(bot::rescan);
+        // rescan() must run on the bot's managed thread because it blocks until the next turn.
+        bot.requestBlockingRescan();
         awaitExpectedIntent(intent -> Boolean.TRUE.equals(intent.getRescan()));
     }
 
