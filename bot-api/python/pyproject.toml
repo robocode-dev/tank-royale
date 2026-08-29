@@ -44,7 +44,7 @@ markers = [
     "UTL: Utility tests (color util, country code, JSON)",
     "GFX: Graphics tests (color, SVG, point)",
     "Reliability: Stress and thread-safety tests",
-    "LEGACY: Legacy tests to be replaced by shared definitions (ADR-0038)",
+    "LEGACY: Legacy tests to be replaced by shared definitions (ADR-038)",
 ]
 
 [project.urls]

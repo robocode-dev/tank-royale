@@ -2,7 +2,7 @@
 id: ARCH-005
 type: architecture
 status: draft
-links: [ADR-0003]
+links: [ADR-003]
 title: Bot API Components View
 provenance: inferred
 reversal-cost: low

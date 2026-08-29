@@ -2,7 +2,7 @@
 id: ARCH-007
 type: architecture
 status: draft
-links: [ADR-0017]
+links: [ADR-017]
 title: Recorder Components View
 provenance: inferred
 reversal-cost: low

@@ -44,7 +44,7 @@ export class BotHandshakeFactory {
     handshake.isDroid = isDroid;
     if (secret != null) handshake.secret = secret;
 
-    // Set debuggerAttached field (ADR-0035)
+    // Set debuggerAttached field (ADR-035)
     const debuggerAttached = BotHandshakeFactory.isDebuggerAttached(envVars);
     handshake.debuggerAttached = debuggerAttached;
 

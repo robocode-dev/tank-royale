@@ -2,7 +2,7 @@
 id: ARCH-017
 type: architecture
 status: draft
-links: [CAP-006, ADR-0006]
+links: [CAP-006, ADR-006]
 title: State Objects (Data Transfer Objects)
 provenance: inferred
 reversal-cost: low
@@ -652,7 +652,7 @@ classDiagram
 - Observers can also infer the participant type from `id` when `isTeam` is absent:
   - `id > 0` = real team
   - `id < 0` = solo bot (negated bot ID)
-  - See [ADR-0015: Participant ID as Unified Team Identifier](/docs/decisions/0015-bot-id-team-id-namespace-separation.md) for rationale.
+  - See [ADR-015: Participant ID as Unified Team Identifier](/docs/decisions/ADR-015-bot-id-team-id-namespace-separation.md) for rationale.
 
 ### Example (Mixed teams and solo bots)
 

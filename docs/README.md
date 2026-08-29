@@ -14,7 +14,7 @@ The red thread: G-xxx → P-xxx/M-xxx → CH-xxx → CAP-xxx → AC (namespaced)
 - [capabilities/](capabilities/README.md) — CAP-xxx: one folder per capability (README / criteria / design)
 - [architecture/](architecture/README.md) — system scope: C4 views, protocol flows, message schemas
 - [design/](design/README.md) — cross-cutting design documents and drafts
-- [decisions/](decisions/README.md) — ADR-xxxx: decisions with provenance, including superseded ones
+- [decisions/](decisions/README.md) — ADR-xxx: decisions with provenance, including superseded ones
 - [constraints/](constraints/README.md) — C-xxx: laws, licenses, non-negotiable product rules
 - [quality/](quality/README.md) — QS-xxx: quality scenarios (verifiable NFRs)
 - [analysis/](analysis/README.md) — spike findings and extraction reports

@@ -2,7 +2,7 @@
 id: ARCH-020
 type: architecture
 status: draft
-links: [ADR-0011]
+links: [ADR-011]
 title: Real-Time Game Loop — Design Specification
 provenance: inferred
 reversal-cost: low
@@ -10,7 +10,7 @@ reversal-cost: low
 
 # Real-Time Game Loop — Design Specification
 
-This document details the real-time, discrete tick game loop architecture for Tank Royale. It complements ADR-0011 and centralizes diagrams, pseudo-code, and operational configuration.
+This document details the real-time, discrete tick game loop architecture for Tank Royale. It complements ADR-011 and centralizes diagrams, pseudo-code, and operational configuration.
 
 ## Overview
 
@@ -99,6 +99,6 @@ java -jar server.jar --tps=30 --turn-timeout=30 --max-inactivity=30
 
 ## References
 
-- ADR-0011: `/docs/decisions/0011-realtime-game-loop-architecture.md`
+- ADR-011: `/docs/decisions/ADR-011-realtime-game-loop-architecture.md`
 - Server Implementation: `/server/README.md`
-- Related ADRs: ADR-0008 (Server-authoritative deterministic physics), ADR-0012 (Turn timing semantics)
+- Related ADRs: ADR-008 (Server-authoritative deterministic physics), ADR-012 (Turn timing semantics)

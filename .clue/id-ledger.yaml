@@ -4,234 +4,236 @@ counters:
     ARCH: "26"
     C: "4"
     CAP: "17"
-    CH: "28"
+    CH: "29"
     G: "1"
     GTD: "1"
+    IDR: "3"
     LOG: "1"
     P: "3"
+    PDR: "12"
     TNP: "3"
 entries:
-    - id: ADR-0001
+    - id: ADR-001
       kind: numeric
       state: live
       prefix: ADR
       component: "1"
-    - id: ADR-0002
+    - id: ADR-002
       kind: numeric
       state: live
       prefix: ADR
       component: "2"
-    - id: ADR-0003
+    - id: ADR-003
       kind: numeric
       state: live
       prefix: ADR
       component: "3"
-    - id: ADR-0004
+    - id: ADR-004
       kind: numeric
       state: live
       prefix: ADR
       component: "4"
-    - id: ADR-0005
+    - id: ADR-005
       kind: numeric
       state: live
       prefix: ADR
       component: "5"
-    - id: ADR-0006
+    - id: ADR-006
       kind: numeric
       state: live
       prefix: ADR
       component: "6"
-    - id: ADR-0007
+    - id: ADR-007
       kind: numeric
       state: live
       prefix: ADR
       component: "7"
-    - id: ADR-0008
+    - id: ADR-008
       kind: numeric
       state: live
       prefix: ADR
       component: "8"
-    - id: ADR-0009
+    - id: ADR-009
       kind: numeric
       state: live
       prefix: ADR
       component: "9"
-    - id: ADR-0010
+    - id: ADR-010
       kind: numeric
       state: live
       prefix: ADR
       component: "10"
-    - id: ADR-0011
+    - id: ADR-011
       kind: numeric
       state: live
       prefix: ADR
       component: "11"
-    - id: ADR-0012
+    - id: ADR-012
       kind: numeric
       state: live
       prefix: ADR
       component: "12"
-    - id: ADR-0013
+    - id: ADR-013
       kind: numeric
       state: live
       prefix: ADR
       component: "13"
-    - id: ADR-0014
+    - id: ADR-014
       kind: numeric
       state: live
       prefix: ADR
       component: "14"
-    - id: ADR-0015
+    - id: ADR-015
       kind: numeric
       state: live
       prefix: ADR
       component: "15"
-    - id: ADR-0016
+    - id: ADR-016
       kind: numeric
       state: live
       prefix: ADR
       component: "16"
-    - id: ADR-0017
+    - id: ADR-017
       kind: numeric
       state: live
       prefix: ADR
       component: "17"
-    - id: ADR-0018
+    - id: ADR-018
       kind: numeric
       state: live
       prefix: ADR
       component: "18"
-    - id: ADR-0019
+    - id: ADR-019
       kind: numeric
       state: live
       prefix: ADR
       component: "19"
-    - id: ADR-0020
+    - id: ADR-020
       kind: numeric
       state: live
       prefix: ADR
       component: "20"
-    - id: ADR-0021
+    - id: ADR-021
       kind: numeric
       state: live
       prefix: ADR
       component: "21"
-    - id: ADR-0022
+    - id: ADR-022
       kind: numeric
       state: live
       prefix: ADR
       component: "22"
-    - id: ADR-0023
+    - id: ADR-023
       kind: numeric
       state: live
       prefix: ADR
       component: "23"
-    - id: ADR-0024
+    - id: ADR-024
       kind: numeric
       state: live
       prefix: ADR
       component: "24"
-    - id: ADR-0025
+    - id: ADR-025
       kind: numeric
       state: live
       prefix: ADR
       component: "25"
-    - id: ADR-0026
+    - id: ADR-026
       kind: numeric
       state: live
       prefix: ADR
       component: "26"
-    - id: ADR-0027
+    - id: ADR-027
       kind: numeric
       state: live
       prefix: ADR
       component: "27"
-    - id: ADR-0028
+    - id: ADR-028
       kind: numeric
       state: live
       prefix: ADR
       component: "28"
-    - id: ADR-0029
+    - id: ADR-029
       kind: numeric
       state: live
       prefix: ADR
       component: "29"
-    - id: ADR-0030
+    - id: ADR-030
       kind: numeric
       state: live
       prefix: ADR
       component: "30"
-    - id: ADR-0031
+    - id: ADR-031
       kind: numeric
       state: live
       prefix: ADR
       component: "31"
-    - id: ADR-0032
+    - id: ADR-032
       kind: numeric
       state: live
       prefix: ADR
       component: "32"
-    - id: ADR-0033
+    - id: ADR-033
       kind: numeric
       state: live
       prefix: ADR
       component: "33"
-    - id: ADR-0034
+    - id: ADR-034
       kind: numeric
       state: live
       prefix: ADR
       component: "34"
-    - id: ADR-0035
+    - id: ADR-035
       kind: numeric
       state: live
       prefix: ADR
       component: "35"
-    - id: ADR-0036
+    - id: ADR-036
       kind: numeric
       state: live
       prefix: ADR
       component: "36"
-    - id: ADR-0037
+    - id: ADR-037
       kind: numeric
       state: live
       prefix: ADR
       component: "37"
-    - id: ADR-0038
+    - id: ADR-038
       kind: numeric
       state: live
       prefix: ADR
       component: "38"
-    - id: ADR-0039
+    - id: ADR-039
       kind: numeric
       state: live
       prefix: ADR
       component: "39"
-    - id: ADR-0040
+    - id: ADR-040
       kind: numeric
       state: live
       prefix: ADR
       component: "40"
-    - id: ADR-0041
+    - id: ADR-041
       kind: numeric
       state: live
       prefix: ADR
       component: "41"
-    - id: ADR-0042
+    - id: ADR-042
       kind: numeric
       state: live
       prefix: ADR
       component: "42"
-    - id: ADR-0043
+    - id: ADR-043
       kind: numeric
       state: live
       prefix: ADR
       component: "43"
-    - id: ADR-0044
+    - id: ADR-044
       kind: numeric
       state: live
       prefix: ADR
       component: "44"
-    - id: ADR-0045
+    - id: ADR-045
       kind: numeric
       state: live
       prefix: ADR
@@ -611,6 +613,17 @@ entries:
     - id: CH-028-tasks
       kind: opaque
       state: live
+    - id: CH-029
+      kind: numeric
+      state: live
+      prefix: CH
+      component: "29"
+    - id: CH-029-open-questions
+      kind: opaque
+      state: live
+    - id: CH-029-tasks
+      kind: opaque
+      state: live
     - id: G-001
       kind: numeric
       state: live
@@ -621,9 +634,24 @@ entries:
       state: live
       prefix: GTD
       component: "1"
-    - id: LOG-001
+    - id: IDR-001
       kind: numeric
       state: live
+      prefix: IDR
+      component: "1"
+    - id: IDR-002
+      kind: numeric
+      state: live
+      prefix: IDR
+      component: "2"
+    - id: IDR-003
+      kind: numeric
+      state: live
+      prefix: IDR
+      component: "3"
+    - id: LOG-001
+      kind: numeric
+      state: retired
       prefix: LOG
       component: "1"
     - id: P-001
@@ -641,6 +669,66 @@ entries:
       state: live
       prefix: P
       component: "3"
+    - id: PDR-001
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "1"
+    - id: PDR-002
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "2"
+    - id: PDR-003
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "3"
+    - id: PDR-004
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "4"
+    - id: PDR-005
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "5"
+    - id: PDR-006
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "6"
+    - id: PDR-007
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "7"
+    - id: PDR-008
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "8"
+    - id: PDR-009
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "9"
+    - id: PDR-010
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "10"
+    - id: PDR-011
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "11"
+    - id: PDR-012
+      kind: numeric
+      state: live
+      prefix: PDR
+      component: "12"
     - id: TNP-001
       kind: numeric
       state: retired

@@ -8,8 +8,8 @@ properties:
     description: >
       The reason the game was paused.
       "pause" — a controller sent pause-game explicitly.
-      "debug_step" — the server paused after completing a turn in debug mode (ADR-0033).
-      "breakpoint" — the server paused waiting for a bot's intent in breakpoint mode (ADR-0034).
+      "debug_step" — the server paused after completing a turn in debug mode (ADR-033).
+      "breakpoint" — the server paused waiting for a bot's intent in breakpoint mode (ADR-034).
     type: string
     enum:
       - pause

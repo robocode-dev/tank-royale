@@ -323,7 +323,7 @@ sequenceDiagram
     Server->>Observer: game-resumed-event
 ```
 
-#### Debug Mode (ADR-0033) — Turn-by-Turn Stepping
+#### Debug Mode (ADR-033) — Turn-by-Turn Stepping
 
 Debug mode causes the server to **pause after each turn** instead of auto-advancing. The controller drives each step.
 
@@ -357,7 +357,7 @@ sequenceDiagram
     Server->>Observer: game-resumed-event
 ```
 
-#### Breakpoint Mode (ADR-0034) — Wait for Debugged Bot
+#### Breakpoint Mode (ADR-034) — Wait for Debugged Bot
 
 Breakpoint mode is a **per-bot** policy. When a bot with breakpoint mode enabled misses the turn timeout, the server pauses and waits for that bot's intent instead of issuing `SkippedTurnEvent`.
 
@@ -631,9 +631,9 @@ gantt
 - **[Message Schema](../message-schema/README.md)** — WebSocket message contracts
 - **[Events](../message-schema/events.md)** — Event message definitions
 - **[Commands](../message-schema/commands.md)** — Controller command definitions
-- **[ADR-0011: Real-Time Game Loop Architecture](/docs/decisions/0011-realtime-game-loop-architecture.md)** — Design rationale
-- **[ADR-0033: Server Debug Mode](/docs/decisions/0033-bot-debug-mode.md)** — Turn-by-turn stepping
-- **[ADR-0034: Breakpoint Mode](/docs/decisions/0034-breakpoint-mode.md)** — Per-bot breakpoint pause
+- **[ADR-011: Real-Time Game Loop Architecture](/docs/decisions/ADR-011-realtime-game-loop-architecture.md)** — Design rationale
+- **[ADR-033: Server Debug Mode](/docs/decisions/ADR-033-bot-debug-mode.md)** — Turn-by-turn stepping
+- **[ADR-034: Breakpoint Mode](/docs/decisions/ADR-034-breakpoint-mode.md)** — Per-bot breakpoint pause
 
 ---
 

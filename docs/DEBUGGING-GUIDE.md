@@ -221,6 +221,6 @@ Bug reported
 | [`bot-api/tests/TESTING-GUIDE.md`](../bot-api/tests/TESTING-GUIDE.md) | Intent-capture protocol, MockedServer gates, Bot vs BaseBot |
 | [`bot-api/tests/TEST-REGISTRY.md`](../bot-api/tests/TEST-REGISTRY.md) | Acceptance test IDs and cross-platform coverage |
 | [`runner/README.md`](../runner/README.md) | Full Battle Runner API reference |
-| [ADR-0037](/docs/decisions/0037-functional-core-bot-api-testability.md) | Functional core extraction for Bot API |
-| [ADR-0038](/docs/decisions/0038-shared-cross-platform-test-definitions.md) | Shared test definitions and parity policy |
-| [ADR-0039](/docs/decisions/0039-server-testability.md) | Server physics test framework |
+| [ADR-037](/docs/decisions/ADR-037-functional-core-bot-api-testability.md) | Functional core extraction for Bot API |
+| [ADR-038](/docs/decisions/ADR-038-shared-cross-platform-test-definitions.md) | Shared test definitions and parity policy |
+| [ADR-039](/docs/decisions/ADR-039-server-testability.md) | Server physics test framework |

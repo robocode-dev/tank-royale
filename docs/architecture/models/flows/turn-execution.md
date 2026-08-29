@@ -2,7 +2,7 @@
 id: ARCH-011
 type: architecture
 status: draft
-links: [ADR-0011, ADR-0012]
+links: [ADR-011, ADR-012]
 title: Turn Execution Flow
 provenance: inferred
 reversal-cost: low
@@ -267,7 +267,7 @@ for (Bot bot : bots) {
         storeIntent(bot, intent);
     } catch (TimeoutException e) {
         if (bot.isBreakpointModeEnabled()) {
-            // Breakpoint mode: pause and wait for bot's intent (ADR-0034)
+            // Breakpoint mode: pause and wait for bot's intent (ADR-034)
             pauseAndWaitForIntent(bot);
         } else {
             // Normal mode: mark skip and use default intent
@@ -285,7 +285,7 @@ for (Bot bot : bots) {
 - After timeout (normal mode): use default intent (move=0, turn=0, fire=0)
 - After timeout (breakpoint mode): pause and wait indefinitely for the bot's intent
 
-**Breakpoint Mode Exception (ADR-0034):** When a bot has breakpoint mode enabled (set by controller), a missed timeout causes the server to pause (`GAME_PAUSED, pauseCause: BREAKPOINT`) and wait for that bot's intent. Other bots that miss the timeout still receive `SkippedTurnEvent`. See [Battle Lifecycle Flow](./battle-lifecycle.md) for full breakpoint mode sequence.
+**Breakpoint Mode Exception (ADR-034):** When a bot has breakpoint mode enabled (set by controller), a missed timeout causes the server to pause (`GAME_PAUSED, pauseCause: BREAKPOINT`) and wait for that bot's intent. Other bots that miss the timeout still receive `SkippedTurnEvent`. See [Battle Lifecycle Flow](./battle-lifecycle.md) for full breakpoint mode sequence.
 
 ### Step 7: Handle Late/Missing Intents
 
@@ -752,9 +752,9 @@ for (Bot other : nearby) {
 - **[State Objects](../message-schema/state.md)** — Bot state and bullet state schemas
 - **[Events](../message-schema/events.md)** — Tick events and bot gameplay events
 - **[Intents](../message-schema/intents.md)** — Bot intent message schema
-- **[ADR-0011: Game Loop](/docs/decisions/0011-realtime-game-loop-architecture.md)** — Design rationale
-- **[ADR-0033: Server Debug Mode](/docs/decisions/0033-bot-debug-mode.md)** — Turn-by-turn stepping
-- **[ADR-0034: Breakpoint Mode](/docs/decisions/0034-breakpoint-mode.md)** — Per-bot breakpoint pause
+- **[ADR-011: Game Loop](/docs/decisions/ADR-011-realtime-game-loop-architecture.md)** — Design rationale
+- **[ADR-033: Server Debug Mode](/docs/decisions/ADR-033-bot-debug-mode.md)** — Turn-by-turn stepping
+- **[ADR-034: Breakpoint Mode](/docs/decisions/ADR-034-breakpoint-mode.md)** — Per-bot breakpoint pause
 - **[Schema YAML Definitions](/schema/schemas/README.md)** — Raw YAML message format specifications
 
 ---

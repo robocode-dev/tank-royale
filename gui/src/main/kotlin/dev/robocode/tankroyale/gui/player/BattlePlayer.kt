@@ -91,7 +91,7 @@ interface BattlePlayer {
     fun changeTps(tps: Int)
 
     /**
-     * Enables debug mode on the server (ADR-0033).
+     * Enables debug mode on the server (ADR-033).
      * In debug mode, the server pauses after each turn instead of auto-advancing.
      */
     fun enableDebugMode()

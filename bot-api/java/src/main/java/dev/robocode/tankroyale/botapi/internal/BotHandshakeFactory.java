@@ -37,7 +37,7 @@ final class BotHandshakeFactory {
         handshake.setIsDroid(isDroid);
         handshake.setSecret(secret);
         
-        // Set debuggerAttached field (ADR-0035)
+        // Set debuggerAttached field (ADR-035)
         boolean debuggerAttached = isDebuggerAttached();
         handshake.setDebuggerAttached(debuggerAttached);
         

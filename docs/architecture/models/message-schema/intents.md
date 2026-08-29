@@ -2,7 +2,7 @@
 id: ARCH-016
 type: architecture
 status: draft
-links: [CAP-006, ADR-0010]
+links: [CAP-006, ADR-010]
 title: Intent Messages
 provenance: inferred
 reversal-cost: low

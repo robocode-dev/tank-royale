@@ -15,7 +15,7 @@ class GameLifecycleManager {
 
     /**
      * Whether debug mode is active. In debug mode the server pauses after
-     * each turn instead of auto-advancing (ADR-0033).
+     * each turn instead of auto-advancing (ADR-033).
      */
     @Volatile
     var debugMode = false
