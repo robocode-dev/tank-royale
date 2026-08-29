@@ -2,7 +2,7 @@
 id: IDR-004
 type: decision
 status: verified
-links: [CH-030, CAP-016, ADR-024]
+links: [CAP-016, ADR-024, ADR-046]
 title: Rumble client uses the released Battle Runner dependency
 author: agent
 accepted-by: Flemming N. Larsen (2026-08-29, Codex conversation)

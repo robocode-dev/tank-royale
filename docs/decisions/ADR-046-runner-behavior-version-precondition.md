@@ -2,7 +2,7 @@
 id: ADR-046
 type: decision
 status: verified
-links: [CH-030, CAP-001, CAP-016, ADR-042]
+links: [CAP-001, CAP-016, ADR-042]
 title: Battle Runner enforces an expected behavior version before bot boot
 author: agent
 accepted-by: Flemming N. Larsen (2026-08-29, Codex conversation)
