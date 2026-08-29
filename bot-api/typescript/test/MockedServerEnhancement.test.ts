@@ -5,7 +5,7 @@
  * MockedServer.setBotStateAndAwaitTick() work correctly by simulating the bot
  * handshake/ready/intent protocol using a raw WebSocket client.
  *
- * Note: The TypeScript Bot API uses Worker threads (ADR-0028). In-process vitest
+ * Note: The TypeScript Bot API uses Worker threads (ADR-028). In-process vitest
  * tests cannot easily spawn workers re-using the same entry point, so we drive
  * the protocol with a minimal WS client rather than a full Bot instance — the
  * same behaviour that Java/Python/.NET tests exercise through their respective

@@ -33,7 +33,7 @@ class BotHandshakeFactory:
             secret=secret,
         )
 
-        # Set debugger_attached field (ADR-0035)
+        # Set debugger_attached field (ADR-035)
         debugger_attached = BotHandshakeFactory.is_debugger_attached()
         handshake.debugger_attached = debugger_attached
 

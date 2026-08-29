@@ -2,7 +2,7 @@
 id: ARCH-006
 type: architecture
 status: draft
-links: [ADR-0021]
+links: [ADR-021]
 title: GUI Components View
 provenance: inferred
 reversal-cost: low

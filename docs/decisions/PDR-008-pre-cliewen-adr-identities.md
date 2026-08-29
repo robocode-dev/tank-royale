@@ -3,12 +3,12 @@ id: PDR-008
 type: decision
 status: inferred
 links: [P-001]
-title: Pre-Cliewen ADR identities are retained
+title: Pre-Cliewen ADR acceptance provenance is retained
 author: agent
 accepted-by: []
 ---
 
-# PDR-008 — Pre-Cliewen ADR identities are retained
+# PDR-008 — Pre-Cliewen ADR acceptance provenance is retained
 
 ## Context
 
@@ -16,8 +16,8 @@ The pre-Cliewen ADR series is already cross-referenced throughout the repository
 
 ## Decision
 
-ADR-0001 through ADR-0041 keep their identities and become `verified` with their existing pre-Cliewen acceptance provenance.
+The pre-Cliewen ADR series retains its record order and prior acceptance provenance while its numeric identifiers are normalized to the three-digit Cliewen form (`ADR-001` through `ADR-041`).
 
 ## Consequences
 
-Existing links remain stable and prior acceptance is preserved as history rather than re-judged during corpus adoption.
+All references and carrier filenames use the normalized identifiers, while prior acceptance is preserved as history rather than re-judged during corpus adoption.

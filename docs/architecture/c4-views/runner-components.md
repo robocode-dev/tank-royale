@@ -2,7 +2,7 @@
 id: ARCH-008
 type: architecture
 status: draft
-links: [ADR-0024]
+links: [ADR-024]
 title: Runner Components View
 provenance: inferred
 reversal-cost: low

@@ -110,9 +110,9 @@ Canonical home for all sequence diagrams: `docs/architecture/models/flows/`
 | `game-ended-event-*` | `battle-lifecycle.md` — Phase 4 (GAME_ENDED) |
 | `game-aborted-event`, `stop-game` | `battle-lifecycle.md` — Aborting a Game |
 | `pause-game`, `resume-game`, `game-paused-event-*`, `game-resumed-event-*` | `battle-lifecycle.md` — Manual Pause |
-| `next-turn` | `battle-lifecycle.md` — Debug Mode (ADR-0033) |
-| `enable-debug-mode`, `disable-debug-mode` | `battle-lifecycle.md` — Debug Mode (ADR-0033) |
-| `bot-policy-update` | `battle-lifecycle.md` — Breakpoint Mode (ADR-0034) and Debug Graphics Policy |
+| `next-turn` | `battle-lifecycle.md` — Debug Mode (ADR-033) |
+| `enable-debug-mode`, `disable-debug-mode` | `battle-lifecycle.md` — Debug Mode (ADR-033) |
+| `bot-policy-update` | `battle-lifecycle.md` — Breakpoint Mode (ADR-034) and Debug Graphics Policy |
 | `change-tps`, `tps-changed-event` | `battle-lifecycle.md` — Changing TPS |
 | All bot gameplay events (`scanned-bot-event`, `hit-by-bullet-event`, etc.) | `event-handling.md` — Key event list |
 | `team-message`, `team-message-event` | `event-handling.md` — Team Events section |

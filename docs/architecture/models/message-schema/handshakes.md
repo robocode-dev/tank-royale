@@ -2,7 +2,7 @@
 id: ARCH-013
 type: architecture
 status: draft
-links: [CAP-006, ADR-0006]
+links: [CAP-006, ADR-006]
 title: Handshake Messages
 provenance: inferred
 reversal-cost: low

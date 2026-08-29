@@ -2,7 +2,7 @@
 id: ARCH-014
 type: architecture
 status: draft
-links: [CAP-006, ADR-0006]
+links: [CAP-006, ADR-006]
 title: Command Messages
 provenance: inferred
 reversal-cost: low
@@ -453,7 +453,7 @@ classDiagram
 
 **Direction:** Controller → Server
 
-**Purpose:** Enable server debug mode, allowing step-through execution and breakpoints (see [ADR-0033](/docs/decisions/ADR-0033-bot-debug-mode.md))
+**Purpose:** Enable server debug mode, allowing step-through execution and breakpoints (see [ADR-033](/docs/decisions/ADR-033-bot-debug-mode.md))
 
 ### Structure
 
@@ -491,7 +491,7 @@ classDiagram
 
 **Direction:** Controller → Server
 
-**Purpose:** Disable server debug mode and return to normal real-time execution (see [ADR-0033](/docs/decisions/ADR-0033-bot-debug-mode.md))
+**Purpose:** Disable server debug mode and return to normal real-time execution (see [ADR-033](/docs/decisions/ADR-033-bot-debug-mode.md))
 
 ### Structure
 
@@ -529,7 +529,7 @@ classDiagram
 
 **Direction:** Controller → Server
 
-**Purpose:** Update the policy for a specific bot — used for breakpoint mode and debug graphics visibility (see [ADR-0034](/docs/decisions/ADR-0034-breakpoint-mode.md))
+**Purpose:** Update the policy for a specific bot — used for breakpoint mode and debug graphics visibility (see [ADR-034](/docs/decisions/ADR-034-breakpoint-mode.md))
 
 ### Example
 
@@ -733,8 +733,8 @@ Server ignores message (no response)
 - [Handshakes](./handshakes.md)
 - [Events](./events.md)
 - [Battle Lifecycle Flow](../flows/battle-lifecycle.md)
-- [ADR-0033: Server Debug Mode](/docs/decisions/ADR-0033-bot-debug-mode.md)
-- [ADR-0034: Breakpoint Mode](/docs/decisions/ADR-0034-breakpoint-mode.md)
+- [ADR-033: Server Debug Mode](/docs/decisions/ADR-033-bot-debug-mode.md)
+- [ADR-034: Breakpoint Mode](/docs/decisions/ADR-034-breakpoint-mode.md)
 
 ---
 

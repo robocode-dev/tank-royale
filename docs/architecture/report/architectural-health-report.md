@@ -129,7 +129,7 @@ C4Context
 |---|---|
 | **Stated style** | Component-based architecture with independent deployable services communicating via WebSocket |
 | **Actual style** | Component-based modular monorepo — each module is independently buildable and deployable as a fat JAR, with clear protocol boundaries |
-| **Intentional?** | Yes — multiple ADRs explicitly design for independent deployable components (ADR-0005) and client role separation (ADR-0007) |
+| **Intentional?** | Yes — multiple ADRs explicitly design for independent deployable components (ADR-005) and client role separation (ADR-007) |
 | **Style fitness** | 🟢 — Appropriate for the domain. WebSocket decoupling enables multiplayer, cross-platform bots, and independent component evolution. The monorepo structure fits the solo-maintainer reality. |
 
 ### Container view
@@ -181,13 +181,13 @@ C4Container
 
 | Decision | Rationale | Still valid? |
 |---|---|---|
-| Server-authoritative physics (ADR-0008) | Prevents client-side cheating; ensures fair competition and reproducible replays | Yes |
-| Schema-driven protocol with additive-only evolution (ADR-0006) | 55 YAML JSON Schema files as single source of truth; breaking changes forbidden | Yes |
-| Declarative bot intent model (ADR-0010) | Bots declare desired actions; server enforces physics constraints | Yes |
-| Three client roles — Bot, Observer, Controller (ADR-0007) | Each role has distinct message sets and capabilities | Yes |
-| Independent deployable fat JARs (ADR-0005) | Every component is standalone; enables embedded mode in GUI/Runner | Yes |
-| Java Bot API as authoritative reference (ADR-0004) | Other APIs must match Java behavior 1:1; naming conventions may differ | Yes |
-| Cross-platform symmetric Bot APIs (ADR-0003) | Same class hierarchy and semantics across Java, .NET, Python, TypeScript | Yes |
+| Server-authoritative physics (ADR-008) | Prevents client-side cheating; ensures fair competition and reproducible replays | Yes |
+| Schema-driven protocol with additive-only evolution (ADR-006) | 55 YAML JSON Schema files as single source of truth; breaking changes forbidden | Yes |
+| Declarative bot intent model (ADR-010) | Bots declare desired actions; server enforces physics constraints | Yes |
+| Three client roles — Bot, Observer, Controller (ADR-007) | Each role has distinct message sets and capabilities | Yes |
+| Independent deployable fat JARs (ADR-005) | Every component is standalone; enables embedded mode in GUI/Runner | Yes |
+| Java Bot API as authoritative reference (ADR-004) | Other APIs must match Java behavior 1:1; naming conventions may differ | Yes |
+| Cross-platform symmetric Bot APIs (ADR-003) | Same class hierarchy and semantics across Java, .NET, Python, TypeScript | Yes |
 
 ---
 
@@ -377,7 +377,7 @@ Each finding has a severity, root cause, and impact. Findings are the factual ba
 
 **Root cause:** jsonschema2pojo only targets Java. No equivalent code-generator exists for C#, Python, or TypeScript in the project's build pipeline.
 
-**Impact:** Schema drift between platforms is a constant risk. The burden of keeping 4 APIs in lockstep falls entirely on the solo maintainer. ADR-0038 (Shared Test Definitions) partially mitigates this with cross-platform JSON test cases, but only covers intent validation, not full protocol behavior. A change to one message type requires manual updates in 3 other languages.
+**Impact:** Schema drift between platforms is a constant risk. The burden of keeping 4 APIs in lockstep falls entirely on the solo maintainer. ADR-038 (Shared Test Definitions) partially mitigates this with cross-platform JSON test cases, but only covers intent validation, not full protocol behavior. A change to one message type requires manual updates in 3 other languages.
 
 **Evidence:**
 - `server/src/main/kotlin/dev/robocode/tankroyale/server/` — auto-generated schema code
@@ -392,22 +392,22 @@ Each finding has a severity, root cause, and impact. Findings are the factual ba
 
 **Observed:** Six Architecture Decision Records (0034-0037, 0039, 0041) were found with "Proposed" status fields despite completed implementation work, confirmed by archived openspec change directories. The ADR status fields have been updated to "Accepted" as part of this review.
 
-- **ADR-0034-0036:** Breakpoint Mode, Debugger Detection, Start-Game Debug Options — archived as `openspec/changes/archive/2026-04-12-2026-04-08-breakpoint-mode-and-debugger-detection/`
-- **ADR-0037:** Functional Core Extraction for Bot API Testability — archived as `openspec/changes/archive/2026-04-17-testable-bot-api-architecture/`
-- **ADR-0039:** Server Testability — Physics Core and Test Framework — archived as `openspec/changes/archive/2026-04-15-testable-server-architecture/`
-- **ADR-0041:** Bot API Library Version Management in the GUI — archived as `openspec/changes/archive/2026-04-16-gui-bot-api-updater/`
+- **ADR-034 through ADR-036:** Breakpoint Mode, Debugger Detection, Start-Game Debug Options — archived as `openspec/changes/archive/2026-04-12-2026-04-08-breakpoint-mode-and-debugger-detection/`
+- **ADR-037:** Functional Core Extraction for Bot API Testability — archived as `openspec/changes/archive/2026-04-17-testable-bot-api-architecture/`
+- **ADR-039:** Server Testability — Physics Core and Test Framework — archived as `openspec/changes/archive/2026-04-15-testable-server-architecture/`
+- **ADR-041:** Bot API Library Version Management in the GUI — archived as `openspec/changes/archive/2026-04-16-gui-bot-api-updater/`
 
 **Root cause:** The ADR documents were not updated from "Proposed" to "Accepted" after the openspec change archives completed. This was a documentation hygiene issue — the implementation existed, but the ADR metadata was stale. Corrected during review.
 
 **Impact:** Minimal — the implementations are done and the ADR statuses are now accurate. The initial false finding in this report highlights the importance of cross-referencing openspec archives when assessing ADR status.
 
 **Evidence:**
-- `docs/decisions/ADR-0034-breakpoint-mode.md` — status: Proposed
-- `docs/decisions/ADR-0035-bot-debugger-detection.md` — status: Proposed
-- `docs/decisions/ADR-0036-start-game-debug-options.md` — status: Proposed
-- `docs/decisions/ADR-0037-functional-core-bot-api-testability.md` — status: Proposed
-- `docs/decisions/ADR-0039-server-testability.md` — status: Proposed
-- `docs/decisions/ADR-0041-bot-api-library-version-management.md` — status: Proposed
+- `docs/decisions/ADR-034-breakpoint-mode.md` — status: Proposed
+- `docs/decisions/ADR-035-bot-debugger-detection.md` — status: Proposed
+- `docs/decisions/ADR-036-start-game-debug-options.md` — status: Proposed
+- `docs/decisions/ADR-037-functional-core-bot-api-testability.md` — status: Proposed
+- `docs/decisions/ADR-039-server-testability.md` — status: Proposed
+- `docs/decisions/ADR-041-bot-api-library-version-management.md` — status: Proposed
 - `openspec/changes/archive/` — all six archived implementations present
 
 ---
@@ -423,7 +423,7 @@ Each finding has a severity, root cause, and impact. Findings are the factual ba
 **Evidence:**
 - `bot-api/python/tests/` — test files using `os._exit(0)` pattern
 - Comment in test infrastructure: "asyncio's ThreadPoolExecutor never shuts down and websockets' Server._close() hangs indefinitely"
-- ADR-0037 acknowledges the Python internal architecture divergence (private `_BotInternals` inner class + separate `BaseBotInternalData` dataclass vs. public `BotInternals` in other languages)
+- ADR-037 acknowledges the Python internal architecture divergence (private `_BotInternals` inner class + separate `BaseBotInternalData` dataclass vs. public `BotInternals` in other languages)
 
 ---
 
@@ -431,7 +431,7 @@ Each finding has a severity, root cause, and impact. Findings are the factual ba
 
 **Observed:** The GUI module's build process copies fat JARs from server, booter, recorder, and Bot API packages from all 4 platforms into its own build directory. Building the GUI requires building nearly the entire project first.
 
-**Root cause:** This is an intentional architectural decision (see embedded mode ADR-0005) — the GUI can run fully self-contained in a single process. The build-time coupling is a consequence of this design.
+**Root cause:** This is an intentional architectural decision (see embedded mode ADR-005) — the GUI can run fully self-contained in a single process. The build-time coupling is a consequence of this design.
 
 **Impact:** The full build cycle is extensive (Gradle multi-module build + .NET/Python/TypeScript sub-builds). Developers making changes to the GUI must wait for the entire chain. CI times are correspondingly long. However, this is primarily a developer experience issue, not a runtime concern.
 
@@ -443,13 +443,13 @@ Each finding has a severity, root cause, and impact. Findings are the factual ba
 
 ### F-06 — Double-Precision Physics Non-Determinism Risk 🔵 Low
 
-**Observed:** ADR-0008 acknowledges that double-precision floating-point physics (not fixed-point) means that "cross-platform physics edge cases are theoretically possible." The system uses a 1E-6 epsilon comparison to mitigate this.
+**Observed:** ADR-008 acknowledges that double-precision floating-point physics (not fixed-point) means that "cross-platform physics edge cases are theoretically possible." The system uses a 1E-6 epsilon comparison to mitigate this.
 
 **Root cause:** Fixed-point arithmetic would guarantee identical results across platforms but adds implementation complexity. Double-precision was chosen as a pragmatic trade-off.
 
 **Impact:** In edge cases (e.g., near-boundary collisions, extreme angles), floating-point rounding differences between JVM, .NET, Python, and browser JavaScript runtimes could produce marginally different physics outcomes. This is only relevant if physics were ever moved client-side, which the server-authoritative model prevents.
 
-**Evidence:** ADR-0008 (`docs/architecture/decisions/0008-server-side-physics.md`)
+**Evidence:** ADR-008 (`docs/architecture/decisions/0008-server-side-physics.md`)
 
 ---
 
@@ -469,11 +469,11 @@ Each finding has a severity, root cause, and impact. Findings are the factual ba
 
 **Observed:** Python's internal architecture uses a private `_BotInternals` inner class and a separate `BaseBotInternalData` dataclass, while Java, C#, and TypeScript use a single public `BotInternals` class.
 
-**Root cause:** Python's language conventions and module system made the unified approach less natural. The divergence is documented in ADR-0037 as "behaviorally identical" but structurally different.
+**Root cause:** Python's language conventions and module system made the unified approach less natural. The divergence is documented in ADR-037 as "behaviorally identical" but structurally different.
 
 **Impact:** When implementing changes to bot internals, the maintainer must translate the same logic into two different structural patterns for Python. This increases the cognitive load for cross-platform maintenance.
 
-**Evidence:** ADR-0037 (`docs/architecture/decisions/0037-functional-core-extraction-for-bot-api-testability.md`) and Python API source code.
+**Evidence:** ADR-037 (`docs/architecture/decisions/0037-functional-core-extraction-for-bot-api-testability.md`) and Python API source code.
 
 ---
 
@@ -508,7 +508,7 @@ quadrantChart
 | Area | Type | Description | Risk if unaddressed |
 |---|---|---|---|
 | Bot API schema mappings (.NET/Python/TS) | Architectural | Manual schema-to-code mapping without automation | Schema drift; behavioral divergence between platforms |
-| `BaseBotInternals` (all 4 APIs) | Architectural | Mixed I/O + pure logic; ADR-0037 proposes extraction | Cannot share test definitions across platforms; fragile validation |
+| `BaseBotInternals` (all 4 APIs) | Architectural | Mixed I/O + pure logic; ADR-037 proposes extraction | Cannot share test definitions across platforms; fragile validation |
 | Python asyncio test infrastructure | Code | `os._exit(0)` workaround for websocket teardown | Masked bugs; unreliable CI; difficult debugging |
 | Server physics engine | Code | Double-precision floating-point with epsilon comparison | Theoretically non-deterministic across platforms (mitigated by server-authoritative model) |
 | GUI build chain | Ops | GUI build depends on building entire project | Slow developer feedback loop; CI bottlenecks |
@@ -688,7 +688,7 @@ sequenceDiagram
     Server->>Booter: Terminate bot processes
 ```
 
-### Cross-Platform Bot API Parity Testing (ADR-0038 Target State)
+### Cross-Platform Bot API Parity Testing (ADR-038 Target State)
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'actorBkg': '#1e4080', 'actorTextColor': '#ffffff', 'actorLineColor': '#5588cc', 'activationBkgColor': '#1e6040', 'activationBorderColor': '#44aa77', 'noteBkgColor': '#5a2d00', 'noteTextColor': '#ffffff', 'edgeLabelBackground': 'transparent'}}}%%
@@ -728,8 +728,8 @@ sequenceDiagram
 | GUI build depends on server, booter, recorder, all bot-api modules | Observed | `gui/build.gradle.kts` |
 | ADRs 0034-0039, 0041 were Proposed but implementations exist in openspec archives | Observed | ADR status fields vs. `openspec/changes/archive/` directories |
 | ADRs 0034-0037, 0039, 0041 status fields corrected from "Proposed" to "Accepted" during review | Observed | Direct file edits performed after openspec archive confirmation |
-| Python internal architecture uses `_BotInternals` + `BaseBotInternalData` (vs. single class in other APIs) | Observed | ADR-0037 + Python API source code |
-| Server-authoritative physics prevents client-side cheating | Inferred | ADR-0008 design; no evidence of client-side physics tampering |
+| Python internal architecture uses `_BotInternals` + `BaseBotInternalData` (vs. single class in other APIs) | Observed | ADR-037 + Python API source code |
+| Server-authoritative physics prevents client-side cheating | Inferred | ADR-008 design; no evidence of client-side physics tampering |
 | Onboarding time estimated at weeks to months | Inferred | Based on project breadth (4 languages, 55 message types, 41 ADRs) |
 | Schema drift risk between Java and non-Java APIs | Inferred | No automated code-gen for .NET/Py/TS; manual maintenance observed |
 | Performance adequate for designed bot counts | Inferred | 30 TPS fixed loop; no load test data available |

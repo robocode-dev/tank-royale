@@ -59,7 +59,7 @@ const NOT_CONNECTED_TO_SERVER_MSG = "Not connected to a game server. Make sure o
  * Full internal implementation for BaseBot.
  * Manages WebSocket connection, event dispatching, bot intent, and worker thread synchronization.
  *
- * Architecture (ADR-0028):
+ * Architecture (ADR-028):
  * - Main thread: WebSocket only. Forwards all server messages to Worker via postMessage/Atomics.notify.
  * - Worker thread: Runs bot.run() synchronously. Uses Atomics.wait() in go() to block between turns.
  */

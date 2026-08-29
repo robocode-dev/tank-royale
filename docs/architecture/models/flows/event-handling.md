@@ -2,7 +2,7 @@
 id: ARCH-012
 type: architecture
 status: draft
-links: [ADR-0022]
+links: [ADR-022]
 title: Event Handling Flow
 provenance: inferred
 reversal-cost: low
@@ -660,8 +660,8 @@ Both calls must happen in sequence for handler output to appear in the GUI.
 - **[Battle Lifecycle Flow](./battle-lifecycle.md)** — When round ends and events fire
 - **[Bot Connection Flow](./bot-connection.md)** — Event handler setup during initialization
 - **[Message Schema: Events](../message-schema/events.md)** — Event message contracts
-- **[ADR-0011: Realtime Game Loop](/docs/decisions/ADR-0011-realtime-game-loop-architecture.md)** — Design decisions about event timing
-- **[ADR-0012: Turn Timing Semantics](/docs/decisions/ADR-0012-turn-timing-semantics.md)** — Exact timing semantics
+- **[ADR-011: Realtime Game Loop](/docs/decisions/ADR-011-realtime-game-loop-architecture.md)** — Design decisions about event timing
+- **[ADR-012: Turn Timing Semantics](/docs/decisions/ADR-012-turn-timing-semantics.md)** — Exact timing semantics
 
 ---
 

@@ -54,7 +54,7 @@ Feature: typescript-bot-api — TBD - created by archiving change add-typescript
 
   # Requirement: RuntimeAdapter
   # The TypeScript Bot API SHALL provide a `RuntimeAdapter` interface that abstracts runtime-specific APIs (WebSocket
-  # creation, environment variable access, process exit) per ADR-0029. Implementations SHALL be provided for Node.js and
+  # creation, environment variable access, process exit) per ADR-029. Implementations SHALL be provided for Node.js and
   # browser environments, with automatic runtime detection.
 
   @TBA-007
@@ -864,7 +864,7 @@ Feature: typescript-bot-api — TBD - created by archiving change add-typescript
 
   # Requirement: Web Worker Threading Model
   # The TypeScript Bot API SHALL use Web Workers with SharedArrayBuffer and Atomics for the two-thread model defined in
-  # ADR-0028. Bot code runs synchronously in a Worker; the WebSocket runs on the main thread.
+  # ADR-028. Bot code runs synchronously in a Worker; the WebSocket runs on the main thread.
 
   @TBA-110
   Scenario: Bot worker thread starts on first tick

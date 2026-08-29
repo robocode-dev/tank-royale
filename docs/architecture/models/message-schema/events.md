@@ -2,7 +2,7 @@
 id: ARCH-015
 type: architecture
 status: draft
-links: [CAP-006, ADR-0006]
+links: [CAP-006, ADR-006]
 title: Event Messages
 provenance: inferred
 reversal-cost: low

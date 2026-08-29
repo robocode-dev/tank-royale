@@ -4,7 +4,7 @@ type: constraint
 status: active
 links: []
 title: Game physics and bot backward compatibility are stable
-source: docs/goals/G-001-programming-game-for-learning-and-competition.md, docs/decisions/ADR-0008-server-authoritative-physics.md
+source: docs/goals/G-001-programming-game-for-learning-and-competition.md, docs/decisions/ADR-008-server-authoritative-physics.md
 enforcement: human
 provenance: inferred
 reversal-cost: high
@@ -14,7 +14,7 @@ reversal-cost: high
 
 - Core game rules and physics must remain stable: no breaking changes to how the game plays.
 - Changes must not break existing bots — bots people wrote against released Bot APIs keep working.
-- The server is authoritative (ADR-0008); no alternative drop-in server replacements.
+- The server is authoritative (ADR-008); no alternative drop-in server replacements.
 
 **Promotion trigger:** a physics/behavior regression suite pinned against recorded battles — then `enforcement: machine` for the covered surface.
 

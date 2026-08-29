@@ -7,7 +7,7 @@ Use this registry to:
 - Find the acceptance ID to tag a new test with
 - Track migration from LEGACY tests to new testable architecture
 
-Governed by [ADR-0039](../docs/decisions/ADR-0039-server-testability.md).
+Governed by [ADR-039](../docs/decisions/ADR-039-server-testability.md).
 
 ---
 

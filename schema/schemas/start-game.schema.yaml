@@ -15,7 +15,7 @@ properties:
       $ref: bot-address.schema.yaml
   debugMode:
     description: >
-      If true, the server starts the game in debug mode (ADR-0033).
+      If true, the server starts the game in debug mode (ADR-033).
       The server pauses after each turn instead of auto-advancing.
       Equivalent to sending enable-debug-mode immediately after start-game,
       but without a race condition.

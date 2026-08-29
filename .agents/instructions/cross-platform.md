@@ -10,7 +10,7 @@ All official Bot APIs MUST be 1:1 semantically equivalent to the Java Bot API. S
 - `snake_case` (Python) vs `camelCase` (Java/TypeScript)
 - Properties (C#/Python) vs getters/setters (Java)
 - `@dataclass` (Python) vs immutable classes (Java)
-- `async/await` (TypeScript) for blocking methods like `forward()` — see ADR-0028
+- `async/await` (TypeScript) for blocking methods like `forward()` — see ADR-028
 
 **Unacceptable differences:**
 - Different default values, event order, null/None handling, or validation rules

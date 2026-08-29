@@ -187,7 +187,7 @@ class GameServer(
     }
 
     /**
-     * Auto-enables breakpoint mode for bots with a debugger attached (ADR-0035).
+     * Auto-enables breakpoint mode for bots with a debugger attached (ADR-035).
      * This allows developers to debug bots immediately when they hit a breakpoint,
      * without needing to manually enable breakpoint mode in the controller.
      */
@@ -328,7 +328,7 @@ class GameServer(
 
         applyVisualDelay(botProcessingDurationNanos)
 
-        // In debug mode, pause after each turn instead of auto-advancing (ADR-0033).
+        // In debug mode, pause after each turn instead of auto-advancing (ADR-033).
         if (lifecycleManager.debugMode && lifecycleManager.serverState === ServerState.GAME_RUNNING) {
             lifecycleManager.pauseGame()
             broadcastGamePausedToObservers(GamePausedEventForObserver.PauseCause.DEBUG_STEP)
@@ -712,7 +712,7 @@ class GameServer(
     internal fun handleBotPolicyUpdate(botPolicyUpdate: BotPolicyUpdate) {
         val botId = BotId(botPolicyUpdate.botId)
 
-        // Treat null as "no change" for each field (ADR-0034: both fields are optional).
+        // Treat null as "no change" for each field (ADR-034: both fields are optional).
         botPolicyUpdate.debuggingEnabled?.let { enabled ->
             participantRegistry.setDebugGraphicsEnabled(botId, enabled)
             modelUpdater?.setDebugEnabled(botId, enabled)
@@ -765,7 +765,7 @@ class GameServer(
     }
 
     /**
-     * Called by [GameServerConnectionListener] when a controller enables debug mode (ADR-0033).
+     * Called by [GameServerConnectionListener] when a controller enables debug mode (ADR-033).
      * In debug mode, the server pauses after each turn instead of auto-advancing.
      */
     internal fun handleEnableDebugMode() {

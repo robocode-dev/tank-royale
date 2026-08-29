@@ -100,7 +100,7 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
   # Requirement: Event Observation
   # The `BattleRunner` SHALL provide an `observer` property that returns an Observer object. The Observer SHALL deliver
   # real-time battle events (turn ended, round ended, bot death, etc.) to registered listeners using the Event<T> system.
-  # This maps to the Observer WebSocket role defined in ADR-0007.
+  # This maps to the Observer WebSocket role defined in ADR-007.
 
   @BR-013
   Scenario: Observe turn events
@@ -115,7 +115,7 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
   # Requirement: Battle Control
   # The `BattleRunner` SHALL provide a `controller` property that returns a Controller object. The Controller SHALL
   # provide methods to start, pause, resume, and stop a battle, mapping to the Controller WebSocket role defined in
-  # ADR-0007. TPS control is intentionally excluded — battles run at maximum speed (TPS = -1) by default, as there is
+  # ADR-007. TPS control is intentionally excluded — battles run at maximum speed (TPS = -1) by default, as there is
   # no GUI rendering to pace.
 
   @BR-015
