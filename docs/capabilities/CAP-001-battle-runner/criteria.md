@@ -360,4 +360,16 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
     When the deterministic regression harness runs the same setup and input sequence twice
     Then it SHALL produce byte-for-byte equivalent result snapshots
     And changing one input SHALL change the result snapshot
+
+  # Requirement: Behavior-Version Precondition
+  # A caller may require a server behavior epoch before allowing any bot process to start.
+
+  @BR-049
+  Scenario: Require a compatible server behavior version
+    Test-type: Integration
+    Given a user configures `BattleRunner` with a positive expected behavior version
+    When the Runner connects its observer and controller roles to the server
+    Then both handshakes SHALL advertise the same behavior version
+    And the advertised value SHALL equal the expected version before any bot process starts
+    And a missing, inconsistent, or mismatched value SHALL fail the battle with a descriptive `BattleException`
 ```

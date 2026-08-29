@@ -1,5 +1,5 @@
 counters:
-    ADR: "45"
+    ADR: "46"
     AN: "1"
     ARCH: "26"
     C: "4"
@@ -238,6 +238,11 @@ entries:
       state: live
       prefix: ADR
       component: "45"
+    - id: ADR-046
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "46"
     - id: AN-001
       kind: numeric
       state: live

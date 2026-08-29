@@ -1,11 +1,11 @@
 ---
 id: IDR-004
 type: decision
-status: inferred
+status: verified
 links: [CH-030, CAP-016, ADR-024]
 title: Rumble client uses the released Battle Runner dependency
 author: agent
-accepted-by: []
+accepted-by: Flemming N. Larsen (2026-08-29, Codex conversation)
 ---
 
 # IDR-004 — Rumble client uses the released Battle Runner dependency
@@ -16,8 +16,8 @@ CAP-016 requires the Rumble client to execute pinned battles through the Battle 
 
 ## Decision
 
-`robocode-dev/rumble-client` depends on `dev.robocode.tankroyale:robocode-tank-royale-runner:1.1.0` for the ranked battle-execution boundary.
+`robocode-dev/rumble-client` depends on the first released `dev.robocode.tankroyale:robocode-tank-royale-runner` version that provides the BR-049 behavior-version precondition. The client pins that concrete release rather than consuming an unreleased local or snapshot build.
 
 ## Consequences
 
-The client uses the released public API for server lifecycle, bot processes, full-round execution, results, and replay recording. Runner upgrades become explicit client dependency updates and ranked compatibility remains governed by the synchronized behavior version rather than the dependency version.
+The client uses the released public API for server lifecycle, bot processes, compatibility enforcement, full-round execution, results, and replay recording. Runner upgrades become explicit client dependency updates and ranked compatibility remains governed by the synchronized behavior version rather than inferred from the dependency version.

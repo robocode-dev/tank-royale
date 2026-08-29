@@ -27,6 +27,7 @@ Serves [P-003/M-008](../../docs/plans/P-003-rumble.md). It resumes the `create-r
 ## Scope
 
 - Implement configuration validation, one mutually consistent ranked snapshot, seeded selection, and strict ranked/practice separation for RCL-001 through RCL-004.
+- Add the optional BR-049 Battle Runner behavior-version precondition, preserving the unpinned default for existing callers, and release it before the external client consumes it.
 - Execute pinned full-round battles through Battle Runner, transcribe complete results, retain replay-bound evidence, and durably journal ranked results for RCL-005 and RCL-006.
 - Submit acknowledged issue-ops batches with an Issues-only credential for RCL-007; V1 does not implement fork-pull-request submission.
 - Supply the reproducible multi-runtime container and documented bare-metal fallback for RCL-008.
@@ -35,11 +36,11 @@ Serves [P-003/M-008](../../docs/plans/P-003-rumble.md). It resumes the `create-r
 
 ## Non-goals
 
-- Changing the published `rumble-bots` catalog, `rumble-data` ingestion semantics, Tank Royale engine, Battle Runner public API, or Rumble game presets.
+- Changing the published `rumble-bots` catalog, `rumble-data` ingestion semantics, Tank Royale engine behavior, unrelated Battle Runner public API, or Rumble game presets.
 - Granting repository-content, branch, release, package, Pages, fact, or projection write access to a client credential.
 - Central services, centrally stored replay files, persistent secrets, or fork-pull-request result transport.
 - Publishing the M-009 user-documentation milestone or making P-001/M-002 purpose-tagging complete beyond RCL evidence created here.
 
 ## Compatibility
 
-The client consumes only versioned `rumble-bots` and `rumble-data` contracts. Ranked execution fails closed on unsupported schema versions, inconsistent snapshots, source-hash mismatches, unregistered identities, or a behavior-version mismatch. Practice mode remains separate from all ranked journal and submission state.
+The client consumes only versioned `rumble-bots`, `rumble-data`, and Battle Runner contracts. Existing Runner callers remain unpinned unless they opt into BR-049. Ranked client execution fails closed on unsupported schema versions, inconsistent snapshots, source-hash mismatches, unregistered identities, or a behavior-version mismatch. Practice mode remains separate from all ranked journal and submission state.
