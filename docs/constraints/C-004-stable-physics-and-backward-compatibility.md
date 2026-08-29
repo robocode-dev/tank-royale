@@ -4,7 +4,7 @@ type: constraint
 status: active
 links: []
 title: Game physics and bot backward compatibility are stable
-source: docs/goals/G-001-programming-game-for-learning-and-competition.md, docs/decisions/0008-server-authoritative-physics.md
+source: docs/goals/G-001-programming-game-for-learning-and-competition.md, docs/decisions/ADR-0008-server-authoritative-physics.md
 enforcement: human
 provenance: inferred
 reversal-cost: high

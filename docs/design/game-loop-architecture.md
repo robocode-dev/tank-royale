@@ -99,6 +99,6 @@ java -jar server.jar --tps=30 --turn-timeout=30 --max-inactivity=30
 
 ## References
 
-- ADR-0011: `/docs/decisions/0011-realtime-game-loop-architecture.md`
+- ADR-0011: `/docs/decisions/ADR-0011-realtime-game-loop-architecture.md`
 - Server Implementation: `/server/README.md`
 - Related ADRs: ADR-0008 (Server-authoritative deterministic physics), ADR-0012 (Turn timing semantics)

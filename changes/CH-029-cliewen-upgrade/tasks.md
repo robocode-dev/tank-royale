@@ -10,13 +10,13 @@ title: Task breakdown for CH-029
 
 - [x] Reserve CH-029 and branch from the current tip of `main`
 - [x] Capture the upgrade proposal and route decision
-- [ ] Commit and publish the proposal before implementation
-- [ ] Allocate typed PDR and IDR identities for future-shaping legacy rows
-- [ ] Create or amend the routed decision records and repair their live references
-- [ ] Account for the CH-027 ledger-repair narrative in the change record
-- [ ] Remove the legacy decision log and its index and ledger entries
-- [ ] Preview `clue migrate` with the required low reversal-cost classification and resolve every finding and notice
-- [ ] Apply the complete `clue migrate` plan to the 0.20.0 baseline
-- [ ] Verify the managed skills, thin CI caller, corpus indexes, and symlink boundary
-- [ ] Run the relevant corpus and repository checks
-- [ ] Commit the complete candidate and hand it to the human review boundary
+- [x] Commit the proposal before implementation; publication remains pending explicit remote-integration authorization
+- [x] Allocate typed PDR and IDR identities for future-shaping legacy rows
+- [x] Create or amend the routed decision records and repair their live references
+- [x] Account for the CH-027 ledger-repair narrative in the change record
+- [x] Remove the legacy decision log and its index and ledger entries
+- [x] Preview `clue migrate` with the required low reversal-cost classification and resolve every finding; retain only the non-writing `.claude/skills` symlink notices
+- [x] Apply the complete `clue migrate` plan to the 0.20.0 baseline
+- [x] Verify the managed skills, thin CI caller, corpus indexes, and symlink boundary
+- [x] Run the relevant corpus and repository checks; `clue migrate` is clean and `git diff --check` passes, while `clue validate` retains 75 pre-existing generated-tree README warnings and Gradle remains blocked by the unrelated TypeScript implicit-dependency validation and a Java bot-intent timeout test
+- [x] Commit the complete candidate locally; remote publication and human review handoff remain pending explicit remote-integration authorization

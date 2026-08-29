@@ -34,7 +34,7 @@ This change is plan-less. It serves no milestone in P-001, P-002, or P-003; it k
 
 ## Legacy row dispositions
 
-The seven methodology and process choices about C-002, release verification, Rumble sequencing, criteria lifecycle, ADR identity retention, index ownership, design typing, and the empty BSB extraction will become PDR records. The two TypeScript publishing choices will become IDR records. The `npmPublishDryRun` retirement will become an IDR record. The CH-027 counter repair is repair narrative whose durable carrier is `.clue/id-ledger.yaml` and whose detailed history remains in Git; it does not create a future-shaping decision record. The plan, capability, and constraint files already carry the resulting accepted meaning and will be repaired to point at typed records where needed.
+The methodology and process choices about C-002, release verification, Rumble sequencing, criteria lifecycle, ADR identity retention, index ownership, design typing, and the empty BSB extraction will become PDR records. The two TypeScript publishing choices and the `npmPublishDryRun` retirement will become IDR records. The CH-027 counter repair will become an IDR because the repaired identity-ledger state is a durable implementation choice. A final PDR will supersede `LOG-001` as the carrier transition record. The plan, capability, and constraint files already carry the resulting accepted meaning and will be repaired to point at typed records where needed.
 
 ## Non-goals
 

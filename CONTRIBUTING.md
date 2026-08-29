@@ -169,7 +169,7 @@ repository. The official Bot APIs prioritize consistency and maintainability ove
 There are two tiers, and which one applies is decided by the language, not by the quality of the implementation.
 
 **Official Bot APIs** are the four in this repository: Java, C#, Python, and TypeScript. **This set is closed.** See
-[ADR-0045](docs/decisions/0045-official-bot-api-language-set.md) for the full decision. Reopening it requires all of:
+[ADR-0045](docs/decisions/ADR-0045-official-bot-api-language-set.md) for the full decision. Reopening it requires all of:
 
 1. **Audience reach.** The language sits in the top tier of general-purpose adoption, judged by
    the [TIOBE index](https://www.tiobe.com/tiobe-index/). Java's place is Robocode heritage, not rank.

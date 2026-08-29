@@ -4,7 +4,7 @@ type: constraint
 status: active
 links: []
 title: Bot APIs are semantically identical across platforms; Java is the reference
-source: docs/decisions/0003-cross-platform-bot-api-strategy.md, docs/decisions/0004-java-reference-implementation.md
+source: docs/decisions/ADR-0003-cross-platform-bot-api-strategy.md, docs/decisions/ADR-0004-java-reference-implementation.md
 enforcement: human
 provenance: inferred
 reversal-cost: high

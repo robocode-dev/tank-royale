@@ -752,9 +752,9 @@ for (Bot other : nearby) {
 - **[State Objects](../message-schema/state.md)** — Bot state and bullet state schemas
 - **[Events](../message-schema/events.md)** — Tick events and bot gameplay events
 - **[Intents](../message-schema/intents.md)** — Bot intent message schema
-- **[ADR-0011: Game Loop](/docs/decisions/0011-realtime-game-loop-architecture.md)** — Design rationale
-- **[ADR-0033: Server Debug Mode](/docs/decisions/0033-bot-debug-mode.md)** — Turn-by-turn stepping
-- **[ADR-0034: Breakpoint Mode](/docs/decisions/0034-breakpoint-mode.md)** — Per-bot breakpoint pause
+- **[ADR-0011: Game Loop](/docs/decisions/ADR-0011-realtime-game-loop-architecture.md)** — Design rationale
+- **[ADR-0033: Server Debug Mode](/docs/decisions/ADR-0033-bot-debug-mode.md)** — Turn-by-turn stepping
+- **[ADR-0034: Breakpoint Mode](/docs/decisions/ADR-0034-breakpoint-mode.md)** — Per-bot breakpoint pause
 - **[Schema YAML Definitions](/schema/schemas/README.md)** — Raw YAML message format specifications
 
 ---
