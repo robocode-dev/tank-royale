@@ -4,7 +4,7 @@ counters:
     ARCH: "26"
     C: "4"
     CAP: "17"
-    CH: "29"
+    CH: "30"
     G: "1"
     GTD: "1"
     IDR: "3"
@@ -624,6 +624,11 @@ entries:
     - id: CH-029-tasks
       kind: opaque
       state: live
+    - id: CH-030
+      kind: numeric
+      state: live
+      prefix: CH
+      component: "30"
     - id: G-001
       kind: numeric
       state: live
