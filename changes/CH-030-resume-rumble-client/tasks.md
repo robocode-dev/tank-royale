@@ -11,7 +11,7 @@ title: Task breakdown for CH-030
 - [x] Reserve CH-030 and branch from the current tip of `main`
 - [x] Confirm the M-008 prerequisites: Tank Royale 1.1.0, `rumble-bots`, and `rumble-data`
 - [x] Capture the resumed implementation proposal and full-route decision
-- [ ] Commit and push the proposal, then open the required draft PR before implementation
+- [x] Commit and push the proposal, then open the required draft PR before implementation
 - [ ] Inspect the current `rumble-client`, `rumble-bots`, and `rumble-data` contracts and record any blocking incompatibility
 - [ ] Implement and test RCL-001 configuration validation before side effects
 - [ ] Implement and test RCL-002 synchronized ranked snapshots and immutable source-cache validation
