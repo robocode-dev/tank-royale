@@ -69,4 +69,5 @@ Writing guidelines: be specific (technical detail, not concepts); show your work
 - [PDR-010 — Design records use the architecture type](PDR-010-design-record-typing.md) · `inferred` — The corpus needs one vocabulary for documents that describe system structure, including the debugging guide and health reports.
 - [PDR-011 — Empty extracted specifications create no capability](PDR-011-empty-extraction-directory.md) · `inferred` — The `browser-sample-bots` OpenSpec directory contained no requirements to preserve.
 - [PDR-012 — Typed decision records replace the legacy decision log](PDR-012-typed-decision-record-carrier.md) · `inferred` — The legacy decision log mixed architecture, process, implementation, and routine history in one carrier that obscured the enduring subject of each choice.
+- [IDR-004 — Rumble client uses the released Battle Runner dependency](IDR-004-rumble-client-battle-runner-dependency.md) · `inferred` — CAP-016 requires the Rumble client to execute pinned battles through the Battle Runner API.
 <!-- clue:index:end -->

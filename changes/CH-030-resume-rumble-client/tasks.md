@@ -13,7 +13,7 @@ title: Task breakdown for CH-030
 - [x] Capture the resumed implementation proposal and full-route decision
 - [x] Commit and push the proposal, then open the required draft PR before implementation
 - [x] Inspect the current `rumble-client`, `rumble-bots`, and `rumble-data` contracts; the required Battle Runner dependency is recorded as a blocking approval question
-- [ ] Obtain approval to add the published Tank Royale Battle Runner dependency to `rumble-client`
+- [x] Obtain approval to add the published Tank Royale Battle Runner dependency to `rumble-client`
 - [ ] Implement and test RCL-001 configuration validation before side effects
 - [ ] Implement and test RCL-002 synchronized ranked snapshots and immutable source-cache validation
 - [ ] Implement and test RCL-003 seeded ranked selection for all V1 game types

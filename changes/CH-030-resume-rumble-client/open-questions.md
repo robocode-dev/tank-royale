@@ -8,6 +8,4 @@ title: Open questions for CH-030
 
 # CH-030 — Open questions
 
-## May the client add the published Battle Runner dependency?
-
-CAP-016 requires the external client to execute pinned battles through Battle Runner, but `robocode-dev/rumble-client` currently depends only on Gson. Its local contribution rules require explicit approval before adding a dependency. The expected coordinate is `dev.robocode.tankroyale:robocode-tank-royale-runner:1.1.0`, the released runner API documented by Tank Royale. Approving it permits the RCL-004 and RCL-005 execution implementation; rejecting it leaves no accepted mechanism for the client to satisfy those criteria.
+No blocking questions are open. The maintainer approved the released Battle Runner dependency for this change; [IDR-004](../../docs/decisions/IDR-004-rumble-client-battle-runner-dependency.md) records the implementation choice. The existing CAP-016 contract, ADR-043 trust boundary, ADR-044 acknowledgement rule, and published external repository contracts govern implementation.

@@ -7,7 +7,7 @@ counters:
     CH: "30"
     G: "1"
     GTD: "1"
-    IDR: "3"
+    IDR: "4"
     LOG: "1"
     P: "3"
     PDR: "12"
@@ -654,6 +654,11 @@ entries:
       state: live
       prefix: IDR
       component: "3"
+    - id: IDR-004
+      kind: numeric
+      state: live
+      prefix: IDR
+      component: "4"
     - id: LOG-001
       kind: numeric
       state: retired
