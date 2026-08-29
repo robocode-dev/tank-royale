@@ -482,7 +482,7 @@ class BattleRunner private constructor(
         /**
          * Requires the connected server to advertise [expected] as its behavior compatibility version.
          *
-         * The check runs after both Runner role handshakes complete and before any bot process starts.
+         * The check runs after both Runner role handshakes complete and before the Runner starts any requested bot process.
          * Existing callers remain unpinned unless they configure this precondition.
          *
          * @param expected positive server-owned behavior compatibility version

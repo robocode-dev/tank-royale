@@ -362,7 +362,7 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
     And changing one input SHALL change the result snapshot
 
   # Requirement: Behavior-Version Precondition
-  # A caller may require a server behavior epoch before allowing any bot process to start.
+  # A caller may require a server behavior epoch before allowing the Runner to start requested bot processes.
 
   @BR-049
   Scenario: Require a compatible server behavior version
@@ -370,6 +370,6 @@ Feature: battle-runner — TBD - created by archiving change add-battle-runner-a
     Given a user configures `BattleRunner` with a positive expected behavior version
     When the Runner connects its observer and controller roles to the server
     Then both handshakes SHALL advertise the same behavior version
-    And the advertised value SHALL equal the expected version before any bot process starts
+    And the advertised value SHALL equal the expected version before the Runner starts any requested bot process
     And a missing, inconsistent, or mismatched value SHALL fail the battle with a descriptive `BattleException`
 ```
