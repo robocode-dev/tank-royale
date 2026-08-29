@@ -19,6 +19,7 @@ title: Task breakdown for CH-030
 - [ ] Implement and test RCL-003 seeded ranked selection for all V1 game types
 - [x] Resolve the published Battle Runner behavior-version visibility gap with the approved BR-049 precondition contract
 - [x] Implement and test BR-049 behavior-version enforcement before bot boot
+- [x] Restore draft-aware Clue validation while preserving strict validation when the PR becomes ready
 - [ ] Publish the first released Battle Runner artifact containing BR-049 and pin the external client to it
 - [ ] Implement and test RCL-004 and RCL-005 ranked/practice separation, Battle Runner execution, result transcription, and replay evidence
 - [ ] Implement and test RCL-006 and RCL-007 durable journaling, receipt-driven retry, and bounded issue-ops submission
