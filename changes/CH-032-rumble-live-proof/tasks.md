@@ -15,10 +15,10 @@ title: Task breakdown for CH-032
 - [x] Add and validate `Vector 1.0.0` in [rumble-bots#4](https://github.com/robocode-dev/rumble-bots/pull/4) (RBC-001)
 - [x] Make the existing version-history test independent of unrelated active catalog entries
 - [x] Make Vector fire after an aimed scan so the live proof exercises non-zero score components
-- [ ] Obtain human merge of the bot-catalog pull request, then verify the generated public entry
+- [x] Obtain human merge of the bot-catalog pull request, then verify the generated public entry
 - [x] Register `flemming-rumble-01` through [rumble-data#8](https://github.com/robocode-dev/rumble-data/pull/8) (RDA-001)
-- [ ] Obtain human merge of the contributor-registration pull request
-- [ ] Synchronize the public catalog and verify 1v1 matchmaking advice (RCL-002, RCL-010)
-- [ ] Build the client against the local Tank Royale source and run one real ranked 1v1 battle with local replay evidence (RCL-005)
+- [x] Obtain human merge of the contributor-registration pull request
+- [x] Synchronize the public catalog and verify 1v1 matchmaking advice (RCL-002, RCL-010)
+- [x] Build the client against the local Tank Royale source and run one real ranked 1v1 battle with local replay evidence (RCL-005)
 - [ ] Submit the journal using a dedicated repository-scoped Issues-only token and verify durable ingestion acknowledgement (RCL-006, RCL-007, RCL-009)
 - [ ] Reconcile public evidence and P-003/M-008 bookkeeping in the permanent corpus
