@@ -11,7 +11,7 @@ title: Task breakdown for CH-031
 - [x] Reserve CH-031 and branch from the accepted tip of `main`
 - [x] Inventory merged `rumble-client` work and confirm the local Runner development path
 - [x] Capture the completion proposal and full-route scope
-- [ ] Commit and push the proposal, then open the required draft PR before implementation
+- [x] Commit and push the proposal, then open the required draft PR before implementation
 - [ ] Verify and complete RCL-001 configuration validation before side effects
 - [ ] Verify and complete RCL-002 synchronized snapshots and immutable bot-cache validation
 - [ ] Verify and complete RCL-003 seeded ranked selection for all V1 game types
@@ -22,4 +22,3 @@ title: Task breakdown for CH-031
 - [ ] Complete and test RCL-008 multi-runtime execution and the container network boundary
 - [ ] Implement and test RCL-009 automated clean-install ingestion into immutable `rumble-data` facts
 - [ ] Reconcile external evidence, CAP-016 status, stale CH-012 references, and P-003/M-008 bookkeeping
-
