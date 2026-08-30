@@ -35,4 +35,12 @@ Feature: rumble-bot-catalog — Rumble bot catalog
     When an unregistered account submits that name or an owner changes its source without increasing its version
     Then validation rejects the submission
     And an approved version increase supersedes the old active version without deleting its historical record
+
+  @RBC-004 @draft
+  Scenario: A TwinDuel team is published with immutable member identities
+    Test-type: Integration
+    Given a valid TwinDuel team entry names exactly two active member bots
+    When the generated catalog is synchronized for ranked clients
+    Then the team entry carries both member identities in `teamMembers` while individual entries carry an empty list
+    And generation rejects a missing, inactive, unknown, or nested team member
 ```

@@ -1,16 +1,18 @@
 counters:
-    ADR: "46"
+    ADR: "47"
     AN: "1"
     ARCH: "26"
     C: "4"
     CAP: "17"
-    CH: "30"
+    CH: "31"
     G: "1"
     GTD: "1"
     IDR: "4"
     LOG: "1"
     P: "3"
     PDR: "12"
+    RBC: "4"
+    RCL: "11"
     TNP: "3"
 entries:
     - id: ADR-001
@@ -243,6 +245,11 @@ entries:
       state: live
       prefix: ADR
       component: "46"
+    - id: ADR-047
+      kind: numeric
+      state: live
+      prefix: ADR
+      component: "47"
     - id: AN-001
       kind: numeric
       state: live
@@ -640,6 +647,17 @@ entries:
     - id: CH-030-tasks
       kind: opaque
       state: live
+    - id: CH-031
+      kind: numeric
+      state: live
+      prefix: CH
+      component: "31"
+    - id: CH-031-open-questions
+      kind: opaque
+      state: live
+    - id: CH-031-tasks
+      kind: opaque
+      state: live
     - id: G-001
       kind: numeric
       state: live
@@ -750,6 +768,81 @@ entries:
       state: live
       prefix: PDR
       component: "12"
+    - id: RBC-001
+      kind: numeric
+      state: live
+      prefix: RBC
+      component: "1"
+    - id: RBC-002
+      kind: numeric
+      state: live
+      prefix: RBC
+      component: "2"
+    - id: RBC-003
+      kind: numeric
+      state: live
+      prefix: RBC
+      component: "3"
+    - id: RBC-004
+      kind: numeric
+      state: live
+      prefix: RBC
+      component: "4"
+    - id: RCL-001
+      kind: numeric
+      state: live
+      prefix: RCL
+      component: "1"
+    - id: RCL-002
+      kind: numeric
+      state: live
+      prefix: RCL
+      component: "2"
+    - id: RCL-003
+      kind: numeric
+      state: retired
+      prefix: RCL
+      component: "3"
+    - id: RCL-004
+      kind: numeric
+      state: live
+      prefix: RCL
+      component: "4"
+    - id: RCL-005
+      kind: numeric
+      state: live
+      prefix: RCL
+      component: "5"
+    - id: RCL-006
+      kind: numeric
+      state: live
+      prefix: RCL
+      component: "6"
+    - id: RCL-007
+      kind: numeric
+      state: live
+      prefix: RCL
+      component: "7"
+    - id: RCL-008
+      kind: numeric
+      state: live
+      prefix: RCL
+      component: "8"
+    - id: RCL-009
+      kind: numeric
+      state: live
+      prefix: RCL
+      component: "9"
+    - id: RCL-010
+      kind: numeric
+      state: live
+      prefix: RCL
+      component: "10"
+    - id: RCL-011
+      kind: numeric
+      state: live
+      prefix: RCL
+      component: "11"
     - id: TNP-001
       kind: numeric
       state: retired

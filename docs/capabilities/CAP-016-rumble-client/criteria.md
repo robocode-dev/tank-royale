@@ -28,13 +28,29 @@ Feature: rumble-client — Local ranked and practice battle client
     Then the client follows the canonical location and accepts one mutually consistent snapshot with supported schemas, an active registered client ID, an immutable catalog commit, and advice for every selected game type
     And it refuses ranked execution when a required document is missing, unsupported, inconsistent, or fails its declared source identity
 
-  @RCL-003 @draft
+  @RCL-003 @retired
   Scenario: Ranked selection turns published advice into a valid battle
     Test-type: Unit
     Given a validated snapshot contains active bots and matchmaking advice for `1v1`, `twinduel`, or `melee`
     When the client selects a ranked battle with a recorded random seed
     Then it selects the pinned number of distinct active participants, preferring advised pairings involving configured own bots before other high-priority advice
     And it treats advice as non-exclusive and can select a valid fallback battle when no advised pairing is available
+
+  @RCL-010 @draft
+  Scenario: Ranked selection turns published advice into a valid executable battle
+    Test-type: Unit
+    Given a validated snapshot contains active individual bots, active TwinDuel teams with two member slots backed by active individuals, and matchmaking advice
+    When the client selects a ranked `1v1`, `twinduel`, or `melee` battle with a recorded random seed
+    Then it selects the pinned number of distinct individual entries or two distinct team entries whose expanded members equal the pinned participant count
+    And it prefers advised pairings involving configured own entries before selecting a valid seeded fallback
+
+  @RCL-011 @draft
+  Scenario: TwinDuel teams never face a shared member bot
+    Test-type: Unit
+    Given a validated snapshot contains active TwinDuel teams with immutable member identities
+    When the client selects a ranked TwinDuel battle
+    Then the two selected team entries have disjoint member identities
+    And it rejects selection when no two teams can satisfy that condition
 
   @RCL-004 @draft
   Scenario: Ranked and practice modes cannot mix result state

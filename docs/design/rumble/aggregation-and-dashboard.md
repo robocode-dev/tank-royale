@@ -163,6 +163,8 @@ Averaging per-pairing first means extra samples of one pairing (e.g. from own-bo
 - The leaderboard ranks only the **latest active version** of each bot (`status: active` in `bots/index.json`, see the submission document). Superseded, retired, and disqualified versions keep their facts and per-version detail shards but leave the ranked table, exactly like a RoboRumble version bump.
 - Results are partitioned into **epochs by `behaviorVersion`** (the server-owned integer that bumps only on game-observable changes; see the client document's Engine Pinning section). The release version is irrelevant here: a GUI-only release, whatever its semver bump, keeps the behavior version and therefore the epoch. A `behaviorVersion` bump opens a new epoch: the ranked leaderboard is computed from the current epoch only, while old epochs remain browsable archives. This is the honest consequence of "mixed game behavior corrupts comparability": rather than pretending results across behavior versions are comparable, the rumble restarts sampling and lets matchmaking (everything is suddenly under-sampled) rebuild the table quickly.
 
+Before accepting a fact or emitting matchmaking advice, `rumble-data` resolves every entry against the synchronized catalog. `1v1` and `melee` use only distinct active individual entries. TwinDuel uses only pairs of distinct active team entries whose immutable `teamMembers` each resolve to active individuals, expand to the pin's participant count, and are disjoint across the two teams. Any result or proposed pairing that does not meet its game type's eligibility is rejected or omitted, respectively.
+
 ### Matchmaking output
 
 `aggregate.py` also regenerates `matchmaking/matches_needed.json`, closing the loop with clients:
