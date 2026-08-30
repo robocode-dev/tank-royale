@@ -3,6 +3,7 @@
 package core
 
 import dev.robocode.tankroyale.server.core.*
+import dev.robocode.tankroyale.server.event.BotDeathEvent
 import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
 import dev.robocode.tankroyale.server.score.ScoreCalculator
@@ -154,6 +155,60 @@ class TurnProcessorTest : FunSpec({
             
             result.roundOutcome shouldNotBe null
             result.roundOutcome?.winnerBotIds shouldBe listOf(botId1)
+        }
+
+        test("Positive: A defeated bot's death is delivered to every bot in the turn") {
+            // A death event is a public bot event, and a public bot event fans out over the
+            // turn's own bots. The turn starts empty and is only filled from the bots map at
+            // the end of the pipeline, so emitting the death before that snapshot delivered it
+            // to nobody -- neither the bot that died nor the ones still alive to see it.
+            val deadBot = MutableBot(
+                botId1, position = Point(100.0, 100.0), direction = 0.0, gunDirection = 0.0,
+                radarDirection = 0.0, energy = -1.0
+            )
+            val survivor = MutableBot(
+                botId2, position = Point(500.0, 400.0), direction = 90.0, gunDirection = 90.0,
+                radarDirection = 90.0, energy = 50.0
+            )
+
+            val botsMap = mutableMapOf(botId1 to deadBot, botId2 to survivor)
+            val turn = MutableTurn(1)
+
+            turnProcessor.processTurn(
+                turn, botsMap, mutableMapOf(), mutableMapOf(), MutableRound(1), mutableSetOf(), 0
+            )
+
+            val deathsSeenBySurvivor = turn.getEvents(botId2).filterIsInstance<BotDeathEvent>()
+            deathsSeenBySurvivor shouldHaveSize 1
+            deathsSeenBySurvivor.first().victimId shouldBe botId1
+
+            val deathsSeenByVictim = turn.getEvents(botId1).filterIsInstance<BotDeathEvent>()
+            deathsSeenByVictim shouldHaveSize 1
+            deathsSeenByVictim.first().victimId shouldBe botId1
+
+            turn.observerEvents.filterIsInstance<BotDeathEvent>() shouldHaveSize 1
+        }
+
+        test("Negative: No death is reported when every bot survives the turn") {
+            val bot1 = MutableBot(
+                botId1, position = Point(100.0, 100.0), direction = 0.0, gunDirection = 0.0,
+                radarDirection = 0.0, energy = 50.0
+            )
+            val bot2 = MutableBot(
+                botId2, position = Point(500.0, 400.0), direction = 90.0, gunDirection = 90.0,
+                radarDirection = 90.0, energy = 50.0
+            )
+
+            val botsMap = mutableMapOf(botId1 to bot1, botId2 to bot2)
+            val turn = MutableTurn(1)
+
+            turnProcessor.processTurn(
+                turn, botsMap, mutableMapOf(), mutableMapOf(), MutableRound(1), mutableSetOf(), 0
+            )
+
+            turn.getEvents(botId1).filterIsInstance<BotDeathEvent>() shouldHaveSize 0
+            turn.getEvents(botId2).filterIsInstance<BotDeathEvent>() shouldHaveSize 0
+            turn.observerEvents.filterIsInstance<BotDeathEvent>() shouldHaveSize 0
         }
     }
 })

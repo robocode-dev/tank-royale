@@ -94,13 +94,19 @@ class TurnProcessor(
         applyDisabledBots(disabledBotIds, botIntentsMap)
 
         val defeatedParticipants = detectDefeatedParticipants(botsMap)
-        applyDefeatedBots(defeatedParticipants, turn)
+        registerDefeatedBotScores(defeatedParticipants)
 
         val roundOutcome = computeRoundOutcome(round, botsMap, bullets)
 
         // ── Snapshot + terminal state ──────────────────────────────────────────────
         turn.copyBots(botsMap.values)
         turn.copyBullets(bullets)
+
+        // Must follow copyBots: a public bot event fans out over the turn's bots, and each turn
+        // starts with none, so emitting before the snapshot delivers the death to nobody. The
+        // snapshot still holds the dead bots, so a bot also receives its own death.
+        emitDeathEvents(defeatedParticipants, turn)
+
         botsMap.values.removeIf(IBot::isDead)
 
         return TurnResult(currentInactivityCounter, roundOutcome)
@@ -187,14 +193,18 @@ class TurnProcessor(
             .map { bot -> participantIds.first { it.botId == bot.id } }
             .toSet()
 
-    /** Apply: emits death events and registers deaths for scoring. */
-    private fun applyDefeatedBots(deadParticipantIds: Set<ParticipantId>, turn: MutableTurn) {
+    /** Apply: registers the deaths for scoring. */
+    private fun registerDefeatedBotScores(deadParticipantIds: Set<ParticipantId>) {
+        scoreTracker.registerDeaths(deadParticipantIds)
+    }
+
+    /** Apply: emits a death event to every bot in the turn, and to the observers. */
+    private fun emitDeathEvents(deadParticipantIds: Set<ParticipantId>, turn: MutableTurn) {
         deadParticipantIds.forEach {
             val botDeathEvent = BotDeathEvent(turn.turnNumber, it.botId)
             turn.addPublicBotEvent(botDeathEvent)
             turn.addObserverEvent(botDeathEvent)
         }
-        scoreTracker.registerDeaths(deadParticipantIds)
     }
 
     /** Checks the scan field for scanned bots. */
