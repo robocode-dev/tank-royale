@@ -10,7 +10,7 @@ title: Prove live Rumble result ingestion
 
 ## What
 
-Populate the public Rumble catalog with a second reviewed 1v1 bot, register the `flemming-rumble-01` contributor identity, and prove one real ranked result reaches `rumble-data` through the client’s Issues-only transport.
+Populate the public Rumble catalog with a second reviewed 1v1 bot, register the `flemming-rumble-01` contributor identity, and prove one real ranked result reaches `rumble-data` through the client's Issues-only transport.
 
 ## Why
 
