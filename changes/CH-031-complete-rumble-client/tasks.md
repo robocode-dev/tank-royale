@@ -17,6 +17,7 @@ title: Task breakdown for CH-031
 - [ ] Verify and complete RCL-002 synchronized snapshots and immutable bot-cache validation
 - [ ] Verify and complete RCL-003 seeded ranked selection for all V1 game types
 - [ ] Implement and test local BR-049 Runner dependency substitution for development and CI
+- [ ] Resolve the blocking TwinDuel identity and live-evidence scope questions before execution implementation
 - [ ] Implement and test RCL-004 and RCL-005 mode separation, full-round execution, result transcription, and replay evidence
 - [ ] Implement and test RCL-006 append-only journaling, epoch quarantine, and receipt-driven retry
 - [ ] Implement and test RCL-007 bounded Issues-only submission without repository-content access
