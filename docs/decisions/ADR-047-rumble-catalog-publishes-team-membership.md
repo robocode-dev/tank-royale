@@ -16,7 +16,7 @@ The V1 engine pin counts the four bot processes in a TwinDuel battle, while Batt
 
 ## Decision
 
-The generated bot catalog publishes `teamMembers` as immutable catalog identities. Individual entries use an empty list. A TwinDuel team names exactly two distinct active individual entries, and catalog generation rejects missing, duplicate, inactive, unknown, or nested team members. Readers treat an absent field as an empty list for schema-version-one compatibility.
+The generated bot catalog publishes `teamMembers` as immutable catalog identities. Individual entries use an empty list. A TwinDuel team names exactly two active individual entries and preserves repeated member slots, while catalog generation rejects a missing, inactive, unknown, or nested team member. Readers treat an absent field as an empty list for schema-version-one compatibility.
 
 Ranked TwinDuel selection chooses two distinct active team entries and verifies that their expanded member count equals the engine pin. Cache preparation obtains and verifies the team entry and every member source tree before Battle Runner starts them. Individual game types select only entries without team members.
 

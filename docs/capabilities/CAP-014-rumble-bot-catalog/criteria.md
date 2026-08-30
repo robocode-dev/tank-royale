@@ -39,8 +39,8 @@ Feature: rumble-bot-catalog — Rumble bot catalog
   @RBC-004 @draft
   Scenario: A TwinDuel team is published with immutable member identities
     Test-type: Integration
-    Given a valid TwinDuel team entry names exactly two distinct active member bots
+    Given a valid TwinDuel team entry names exactly two active member bots
     When the generated catalog is synchronized for ranked clients
     Then the team entry carries both member identities in `teamMembers` while individual entries carry an empty list
-    And generation rejects missing, duplicate, inactive, or unknown team members
+    And generation rejects a missing, inactive, unknown, or nested team member
 ```

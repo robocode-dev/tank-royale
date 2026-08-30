@@ -15,7 +15,7 @@ title: Task breakdown for CH-031
 - [x] Correct IDR-004 to the actual `dev.robocode.tankroyale:robocode-tankroyale-runner` coordinate
 - [ ] Verify and complete RCL-001 configuration validation before side effects
 - [ ] Verify and complete RCL-002 synchronized snapshots and immutable bot-cache validation
-- [ ] Promote immutable TwinDuel membership into the catalog contracts and add RBC-004 evidence
+- [x] Promote immutable TwinDuel membership into the catalog contracts and add RBC-004 evidence
 - [ ] Replace retired RCL-003 with RCL-010 team-aware seeded ranked selection evidence for all V1 game types
 - [x] Implement and test local BR-049 Runner dependency substitution for development and CI
 - [x] Resolve the blocking TwinDuel identity and live-evidence scope questions before execution implementation

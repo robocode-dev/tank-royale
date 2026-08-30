@@ -39,7 +39,7 @@ Feature: rumble-client — Local ranked and practice battle client
   @RCL-010 @draft
   Scenario: Ranked selection turns published advice into a valid executable battle
     Test-type: Unit
-    Given a validated snapshot contains active individual bots, active TwinDuel teams with two active members, and matchmaking advice
+    Given a validated snapshot contains active individual bots, active TwinDuel teams with two member slots backed by active individuals, and matchmaking advice
     When the client selects a ranked `1v1`, `twinduel`, or `melee` battle with a recorded random seed
     Then it selects the pinned number of distinct individual entries or two distinct team entries whose expanded members equal the pinned participant count
     And it prefers advised pairings involving configured own entries before selecting a valid seeded fallback
