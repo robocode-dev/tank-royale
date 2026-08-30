@@ -172,7 +172,7 @@ class BattleRunnerTest {
     fun `behavior version is unpinned by default`() {
         runner = BattleRunner.create { embeddedServer() }
 
-        assertThat(runner!!.requiredBehaviorVersion).isNull()
+        assertThat(runner!!.config.requiredBehaviorVersion).isNull()
     }
 
     @Test
@@ -180,7 +180,7 @@ class BattleRunnerTest {
     fun `requireBehaviorVersion stores a positive precondition`() {
         runner = BattleRunner.create { embeddedServer(); requireBehaviorVersion(7) }
 
-        assertThat(runner!!.requiredBehaviorVersion).isEqualTo(7)
+        assertThat(runner!!.config.requiredBehaviorVersion).isEqualTo(7)
     }
 
     @Test

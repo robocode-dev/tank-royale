@@ -52,7 +52,6 @@ import java.util.logging.Logger
  */
 class BattleRunner private constructor(
     val config: Config,
-    internal val requiredBehaviorVersion: Int?,
 ) : AutoCloseable {
 
     private val logger = Logger.getLogger(BattleRunner::class.java.name)
@@ -149,7 +148,7 @@ class BattleRunner private constructor(
             logger.fine("Connecting to server at ${serverManager.serverUrl}...")
             ensureConnected()
             val conn = connection!!
-            requiredBehaviorVersion?.let(conn::requireBehaviorVersion)
+            config.requiredBehaviorVersion?.let(conn::requireBehaviorVersion)
 
             // Capture pre-existing bots (for external server mode)
             val preExistingBots = conn.latestBotList.get().map { it.botAddress }.toSet()
@@ -381,6 +380,11 @@ class BattleRunner private constructor(
          * Defaults to 30 000 ms (30 seconds).
          */
         val botConnectTimeoutMs: Long = 30_000L,
+        /**
+         * Behavior compatibility version the connected server must advertise, or `null` when the
+         * runner accepts any server. Defaults to `null` (unpinned).
+         */
+        val requiredBehaviorVersion: Int? = null,
     )
 
     /** Describes how the server is acquired for this runner instance. */
@@ -500,8 +504,8 @@ class BattleRunner private constructor(
                 recordingPath = recordingPath,
                 captureServerOutput = captureServerOutput,
                 botConnectTimeoutMs = botConnectTimeoutMs,
+                requiredBehaviorVersion = requiredBehaviorVersion,
             ),
-            requiredBehaviorVersion = requiredBehaviorVersion,
         )
     }
 
