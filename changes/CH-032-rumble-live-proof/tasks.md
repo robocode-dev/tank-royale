@@ -13,6 +13,7 @@ title: Task breakdown for CH-032
 - [x] Capture the full-route proposal and selected live-proof scope
 - [ ] Commit and push the proposal, then open the required draft PR before implementation
 - [ ] Add and validate the reviewed `Vector 1.0.0` catalog entry in `rumble-bots` (RBC-001)
+- [ ] Make the existing version-history test independent of unrelated active catalog entries
 - [ ] Obtain human merge of the bot-catalog pull request, then verify the generated public entry
 - [ ] Register `flemming-rumble-01` through a reviewed `rumble-data` pull request (RDA-001)
 - [ ] Obtain human merge of the contributor-registration pull request
