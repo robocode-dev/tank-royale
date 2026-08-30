@@ -50,7 +50,9 @@ import java.util.logging.Logger
  * }
  * ```
  */
-class BattleRunner private constructor(val config: Config) : AutoCloseable {
+class BattleRunner private constructor(
+    val config: Config,
+) : AutoCloseable {
 
     private val logger = Logger.getLogger(BattleRunner::class.java.name)
 
@@ -146,6 +148,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
             logger.fine("Connecting to server at ${serverManager.serverUrl}...")
             ensureConnected()
             val conn = connection!!
+            config.requiredBehaviorVersion?.let(conn::requireBehaviorVersion)
 
             // Capture pre-existing bots (for external server mode)
             val preExistingBots = conn.latestBotList.get().map { it.botAddress }.toSet()
@@ -377,6 +380,11 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
          * Defaults to 30 000 ms (30 seconds).
          */
         val botConnectTimeoutMs: Long = 30_000L,
+        /**
+         * Behavior compatibility version the connected server must advertise, or `null` when the
+         * runner accepts any server. Defaults to `null` (unpinned).
+         */
+        val requiredBehaviorVersion: Int? = null,
     )
 
     /** Describes how the server is acquired for this runner instance. */
@@ -410,6 +418,7 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
         private var recordingPath: Path? = null
         private var captureServerOutput: Boolean = true
         private var botConnectTimeoutMs: Long = 30_000L
+        private var requiredBehaviorVersion: Int? = null
 
         /**
          * Use an embedded server, binding it to [port] (default 0 = dynamic port assignment).
@@ -474,14 +483,29 @@ class BattleRunner private constructor(val config: Config) : AutoCloseable {
             botConnectTimeoutMs = timeout.toMillis()
         }
 
+        /**
+         * Requires the connected server to advertise [expected] as its behavior compatibility version.
+         *
+         * The check runs after both Runner role handshakes complete and before the Runner starts any requested bot process.
+         * Existing callers remain unpinned unless they configure this precondition.
+         *
+         * @param expected positive server-owned behavior compatibility version
+         * @throws IllegalArgumentException if [expected] is not positive
+         */
+        fun requireBehaviorVersion(expected: Int): Builder = apply {
+            require(expected > 0) { "Expected behavior version must be positive" }
+            requiredBehaviorVersion = expected
+        }
+
         internal fun build(): BattleRunner = BattleRunner(
-            Config(
+            config = Config(
                 serverMode = serverMode,
                 intentDiagnosticsEnabled = intentDiagnosticsEnabled,
                 recordingPath = recordingPath,
                 captureServerOutput = captureServerOutput,
                 botConnectTimeoutMs = botConnectTimeoutMs,
-            )
+                requiredBehaviorVersion = requiredBehaviorVersion,
+            ),
         )
     }
 

@@ -1,3 +1,10 @@
+## [1.2.0] - Unreleased - Runner compatibility precondition
+
+### 🚀 Improvements
+
+- Runner:
+    - Added an optional behavior-version precondition that rejects incompatible servers before starting bot processes.
+
 ## [1.1.0] - 2026-08-04 - Rumble foundations
 
 ### 🐞 Bug Fixes

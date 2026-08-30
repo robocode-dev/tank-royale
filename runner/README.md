@@ -108,6 +108,7 @@ Implements `AutoCloseable` — use with Kotlin `use {}` or Java try-with-resourc
 | `enableIntentDiagnostics()` | Capture bot intents via WebSocket proxy |
 | `enableRecording(outputPath)` | Write `.battle.gz` replay files |
 | `botConnectTimeout(Duration)` | How long to wait for bots to connect (default: 30 s) |
+| `requireBehaviorVersion(expected)` | Require both server handshakes to advertise the expected behavior compatibility version before bots start |
 
 ### BattleSetup
 
@@ -330,6 +331,28 @@ BattleRunner.create {
 try (var runner = BattleRunner.create(b -> {
     b.embeddedServer();
     b.botConnectTimeout(Duration.ofSeconds(60));
+})) {
+    runner.runBattle(BattleSetup.classic(), bots);
+}
+```
+
+### Behavior-Version Precondition
+
+Call `requireBehaviorVersion(expected)` when a battle must run only against a specific server behavior compatibility version. The Runner validates both its observer and controller handshakes before starting bots and throws `BattleException` if either value is missing, the values differ, or the advertised value does not match. The check is opt-in; existing callers remain unpinned.
+
+```kotlin
+BattleRunner.create {
+    embeddedServer()
+    requireBehaviorVersion(1)
+}.use { runner ->
+    runner.runBattle(BattleSetup.classic(), bots)
+}
+```
+
+```java
+try (var runner = BattleRunner.create(b -> {
+    b.embeddedServer();
+    b.requireBehaviorVersion(1);
 })) {
     runner.runBattle(BattleSetup.classic(), bots);
 }

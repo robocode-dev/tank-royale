@@ -5,6 +5,7 @@ import dev.robocode.tankroyale.client.model.Results
 import dev.robocode.tankroyale.runner.BattleException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 /**
@@ -88,6 +89,39 @@ class ServerConnectionTest {
     fun `serverFeatures is null before connect`() {
         val conn = ServerConnection("ws://localhost:7654", "secret")
         assertThat(conn.serverFeatures.get()).isNull()
+    }
+
+    @Test
+    @Tag("Unit")
+    fun `behavior version validation accepts matching role handshakes`() {
+        ServerConnection.validateBehaviorVersion(expected = 7, observer = 7, controller = 7)
+    }
+
+    @Test
+    @Tag("Unit")
+    fun `behavior version validation rejects a missing role value`() {
+        assertThatThrownBy {
+            ServerConnection.validateBehaviorVersion(expected = 7, observer = 7, controller = null)
+        }.isInstanceOf(BattleException::class.java)
+            .hasMessageContaining("both Runner roles")
+    }
+
+    @Test
+    @Tag("Unit")
+    fun `behavior version validation rejects inconsistent role values`() {
+        assertThatThrownBy {
+            ServerConnection.validateBehaviorVersion(expected = 7, observer = 7, controller = 8)
+        }.isInstanceOf(BattleException::class.java)
+            .hasMessageContaining("disagree")
+    }
+
+    @Test
+    @Tag("Unit")
+    fun `behavior version validation rejects a mismatched expected value`() {
+        assertThatThrownBy {
+            ServerConnection.validateBehaviorVersion(expected = 7, observer = 8, controller = 8)
+        }.isInstanceOf(BattleException::class.java)
+            .hasMessageContaining("does not match required version 7")
     }
 
     // -------------------------------------------------------------------------------------

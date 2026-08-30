@@ -167,6 +167,30 @@ class BattleRunnerTest {
         assertThat(runner!!.config.botConnectTimeoutMs).isEqualTo(30_000L)
     }
 
+    @Test
+    @Tag("Unit")
+    fun `behavior version is unpinned by default`() {
+        runner = BattleRunner.create { embeddedServer() }
+
+        assertThat(runner!!.config.requiredBehaviorVersion).isNull()
+    }
+
+    @Test
+    @Tag("Unit")
+    fun `requireBehaviorVersion stores a positive precondition`() {
+        runner = BattleRunner.create { embeddedServer(); requireBehaviorVersion(7) }
+
+        assertThat(runner!!.config.requiredBehaviorVersion).isEqualTo(7)
+    }
+
+    @Test
+    @Tag("Unit")
+    fun `requireBehaviorVersion rejects non-positive values`() {
+        assertThatThrownBy { BattleRunner.create { requireBehaviorVersion(0) } }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessageContaining("positive")
+    }
+
     // -------------------------------------------------------------------------------------
     // Lifecycle (8.4)
     // -------------------------------------------------------------------------------------

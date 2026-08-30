@@ -7,7 +7,7 @@
 # `clue validate --forbid-changes`, and the full-loop acceptance-brief gate — lives in
 # Cliewen's reusable workflow, so upstream fixes arrive by updating one
 # reference instead of by re-copying steps. Only the triggers below and the
-# four inputs are ours to choose.
+# five inputs are ours to choose.
 #
 # `clue-source: release` downloads the binary from the pinned Cliewen release
 # and verifies it against that release's own SHA256SUMS; this repository
@@ -21,16 +21,19 @@
 # while a SHA names one tree forever. A branch reference must never be used
 # here.
 #
-# The `edited` trigger and the upstream unit's fetch-depth 0 are load-bearing:
-# the acceptance-brief gate must re-run when a pull-request body changes, and
-# change detection needs the base commit.
+# The `edited` and `ready_for_review` triggers and the upstream unit's fetch-depth
+# 0 are load-bearing: the acceptance-brief gate must re-run when a pull-request
+# body changes or a draft becomes a merge candidate, and change detection needs
+# the base commit. With those triggers in place, `draft-aware` lets unfinished
+# drafts retain their transient change workspace without weakening the ready or
+# main-branch gate.
 name: Clue
 
 on:
   push:
     branches: [main]
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
   workflow_dispatch:
 
 permissions:
@@ -45,3 +48,4 @@ jobs:
       clue-version: 0.20.0
       clue-source: release
       clue-install-directory: ''
+      draft-aware: true
