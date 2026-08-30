@@ -14,6 +14,7 @@ title: Task breakdown for CH-032
 - [x] Commit and push the proposal, then open the required draft PR before implementation
 - [x] Add and validate `Vector 1.0.0` in [rumble-bots#4](https://github.com/robocode-dev/rumble-bots/pull/4) (RBC-001)
 - [x] Make the existing version-history test independent of unrelated active catalog entries
+- [x] Make Vector fire after an aimed scan so the live proof exercises non-zero score components
 - [ ] Obtain human merge of the bot-catalog pull request, then verify the generated public entry
 - [x] Register `flemming-rumble-01` through [rumble-data#8](https://github.com/robocode-dev/rumble-data/pull/8) (RDA-001)
 - [ ] Obtain human merge of the contributor-registration pull request
