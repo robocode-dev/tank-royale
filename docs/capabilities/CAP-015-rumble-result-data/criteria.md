@@ -43,4 +43,13 @@ Feature: rumble-result-data — Rumble result data
     When a visitor selects a ranked game type
     Then the dashboard requests its generated leaderboard projection and links each entry to its generated detail shard
     And it does not require a live application backend
+
+  @RDA-005 @draft
+  Scenario: Result eligibility is derived from immutable catalog team membership
+    Test-type: Integration
+    Given a supported engine pin and a synchronized catalog containing active individual entries and TwinDuel teams with immutable `teamMembers`
+    When validation processes a ranked result and aggregation prepares matchmaking advice
+    Then `1v1` and `melee` admit only the pinned number of distinct active individual entries
+    And `twinduel` admits exactly two distinct active teams whose catalog members are active individuals, expand to the pinned participant count, and have disjoint member identities
+    And validation rejects a team in an individual game type, an individual in TwinDuel, or a result whose catalog membership, eligibility, or member disjointness is invalid
 ```

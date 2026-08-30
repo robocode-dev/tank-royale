@@ -28,6 +28,7 @@ Serves [P-003/M-008](../../docs/plans/P-003-rumble.md) without completing it. It
 
 - Verify and complete RCL-001, RCL-002, and the RCL-010 configuration, synchronization, cache, and team-aware seeded-selection paths.
 - Add immutable `teamMembers` metadata to the generated and synchronized catalog contracts, with focused RBC-004 evidence.
+- Bind result-data validation and matchmaking advice to that catalog membership: individual game types admit only active individual entries, while TwinDuel admits only disjoint active teams whose immutable members expand to the engine pin.
 - Add a reproducible local Tank Royale dependency path so client development and CI can consume the merged Runner BR-049 API without publishing Tank Royale.
 - Implement strict ranked/practice separation, full-round Battle Runner execution, complete result transcription, and replay retention for RCL-004 and RCL-005.
 - Implement append-only journaling, epoch quarantine, receipt-driven retry, and bounded Issues-only submission for RCL-006 and RCL-007.
@@ -38,7 +39,7 @@ Serves [P-003/M-008](../../docs/plans/P-003-rumble.md) without completing it. It
 
 - Publishing Tank Royale 1.2.0 or any other release solely to support client development.
 - Populating the public catalog across all supported runtimes or performing a credential-bearing live result submission.
-- Changing Rumble game behavior, the Runner public API, the accepted result envelope, or `rumble-data` ingestion semantics unless a blocking incompatibility is first recorded and approved.
+- Changing Rumble game behavior, the Runner public API, or the accepted result envelope; result-data validation is strengthened through its existing catalog lookup rather than a wire-contract change.
 - Granting repository-content, branch, release, package, Pages, fact, or projection write access to a client credential.
 - Central services, centrally stored replay files, persistent secrets, or fork-pull-request result transport.
 - Completing the separate M-009 user-documentation milestone.

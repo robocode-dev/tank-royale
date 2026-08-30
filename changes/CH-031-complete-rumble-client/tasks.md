@@ -16,6 +16,7 @@ title: Task breakdown for CH-031
 - [ ] Verify and complete RCL-001 configuration validation before side effects
 - [ ] Verify and complete RCL-002 synchronized snapshots and immutable bot-cache validation
 - [x] Promote immutable TwinDuel membership into the catalog contracts and add RBC-004 evidence
+- [x] Specify result-data validation and matchmaking eligibility from immutable catalog team membership, and register the RDA-005 external-evidence gap
 - [ ] Replace retired RCL-003 with RCL-010 and RCL-011 team-aware seeded ranked selection evidence for all V1 game types and non-overlapping TwinDuel members
 - [x] Implement and test local BR-049 Runner dependency substitution for development and CI
 - [x] Resolve the blocking TwinDuel identity and live-evidence scope questions before execution implementation
