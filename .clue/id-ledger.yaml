@@ -4,7 +4,7 @@ counters:
     ARCH: "26"
     C: "4"
     CAP: "17"
-    CH: "30"
+    CH: "31"
     G: "1"
     GTD: "1"
     IDR: "4"
@@ -638,6 +638,17 @@ entries:
       kind: opaque
       state: live
     - id: CH-030-tasks
+      kind: opaque
+      state: live
+    - id: CH-031
+      kind: numeric
+      state: live
+      prefix: CH
+      component: "31"
+    - id: CH-031-open-questions
+      kind: opaque
+      state: live
+    - id: CH-031-tasks
       kind: opaque
       state: live
     - id: G-001
