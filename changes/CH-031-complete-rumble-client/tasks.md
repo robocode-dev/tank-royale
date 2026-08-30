@@ -12,6 +12,7 @@ title: Task breakdown for CH-031
 - [x] Inventory merged `rumble-client` work and confirm the local Runner development path
 - [x] Capture the completion proposal and full-route scope
 - [x] Commit and push the proposal, then open the required draft PR before implementation
+- [x] Correct IDR-004 to the actual `dev.robocode.tankroyale:robocode-tankroyale-runner` coordinate
 - [ ] Verify and complete RCL-001 configuration validation before side effects
 - [ ] Verify and complete RCL-002 synchronized snapshots and immutable bot-cache validation
 - [ ] Verify and complete RCL-003 seeded ranked selection for all V1 game types

@@ -16,7 +16,7 @@ CAP-016 requires the Rumble client to execute pinned battles through the Battle 
 
 ## Decision
 
-During development, `robocode-dev/rumble-client` may consume the merged BR-049 implementation from a local Tank Royale build. Before the client is distributed for ranked use, it pins the first released `dev.robocode.tankroyale:robocode-tank-royale-runner` version that provides the BR-049 behavior-version precondition.
+During development, `robocode-dev/rumble-client` may consume the merged BR-049 implementation from a local Tank Royale build. Before the client is distributed for ranked use, it pins the first released `dev.robocode.tankroyale:robocode-tankroyale-runner` version that provides the BR-049 behavior-version precondition.
 
 ## Consequences
 
