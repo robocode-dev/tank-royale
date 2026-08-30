@@ -11,11 +11,11 @@ title: Task breakdown for CH-032
 - [x] Reserve CH-032 and branch from the accepted tip of `main`
 - [x] Confirm the M-008 release gate, client implementation, catalog state, and contributor-registration contract
 - [x] Capture the full-route proposal and selected live-proof scope
-- [ ] Commit and push the proposal, then open the required draft PR before implementation
-- [ ] Add and validate the reviewed `Vector 1.0.0` catalog entry in `rumble-bots` (RBC-001)
-- [ ] Make the existing version-history test independent of unrelated active catalog entries
+- [x] Commit and push the proposal, then open the required draft PR before implementation
+- [x] Add and validate `Vector 1.0.0` in [rumble-bots#4](https://github.com/robocode-dev/rumble-bots/pull/4) (RBC-001)
+- [x] Make the existing version-history test independent of unrelated active catalog entries
 - [ ] Obtain human merge of the bot-catalog pull request, then verify the generated public entry
-- [ ] Register `flemming-rumble-01` through a reviewed `rumble-data` pull request (RDA-001)
+- [x] Register `flemming-rumble-01` through [rumble-data#8](https://github.com/robocode-dev/rumble-data/pull/8) (RDA-001)
 - [ ] Obtain human merge of the contributor-registration pull request
 - [ ] Synchronize the public catalog and verify 1v1 matchmaking advice (RCL-002, RCL-010)
 - [ ] Build the client against the local Tank Royale source and run one real ranked 1v1 battle with local replay evidence (RCL-005)
