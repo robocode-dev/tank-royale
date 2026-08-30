@@ -22,4 +22,4 @@ The default remains unpinned for backward compatibility. The API does not expose
 
 ## Consequences
 
-Rumble Client can delegate fail-closed compatibility enforcement to the component that owns the server connection. Existing Runner callers retain their current behavior, while callers that require an epoch must opt in explicitly. The API must ship in a released Runner artifact before the external client can depend on it.
+Rumble Client can delegate fail-closed compatibility enforcement to the component that owns the server connection. Existing Runner callers retain their current behavior, while callers that require an epoch must opt in explicitly. The merged API may be consumed from a local build during client development, but it must ship in a released Runner artifact before the external client is distributed for ranked use.

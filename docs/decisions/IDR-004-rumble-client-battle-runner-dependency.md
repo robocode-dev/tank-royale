@@ -16,8 +16,8 @@ CAP-016 requires the Rumble client to execute pinned battles through the Battle 
 
 ## Decision
 
-`robocode-dev/rumble-client` depends on the first released `dev.robocode.tankroyale:robocode-tank-royale-runner` version that provides the BR-049 behavior-version precondition. The client pins that concrete release rather than consuming an unreleased local or snapshot build.
+During development, `robocode-dev/rumble-client` may consume the merged BR-049 implementation from a local Tank Royale build. Before the client is distributed for ranked use, it pins the first released `dev.robocode.tankroyale:robocode-tank-royale-runner` version that provides the BR-049 behavior-version precondition.
 
 ## Consequences
 
-The client uses the released public API for server lifecycle, bot processes, compatibility enforcement, full-round execution, results, and replay recording. Runner upgrades become explicit client dependency updates and ranked compatibility remains governed by the synchronized behavior version rather than inferred from the dependency version.
+Local end-to-end development can continue without forcing a Tank Royale release that offers no end-user value. Distributed clients still use an immutable released public API for server lifecycle, bot processes, compatibility enforcement, full-round execution, results, and replay recording. Runner upgrades become explicit client dependency updates and ranked compatibility remains governed by the synchronized behavior version rather than inferred from the dependency version.
