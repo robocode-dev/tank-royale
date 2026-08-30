@@ -12,7 +12,7 @@ counters:
     P: "3"
     PDR: "12"
     RBC: "4"
-    RCL: "10"
+    RCL: "11"
     TNP: "3"
 entries:
     - id: ADR-001
@@ -838,6 +838,11 @@ entries:
       state: live
       prefix: RCL
       component: "10"
+    - id: RCL-011
+      kind: numeric
+      state: live
+      prefix: RCL
+      component: "11"
     - id: TNP-001
       kind: numeric
       state: retired

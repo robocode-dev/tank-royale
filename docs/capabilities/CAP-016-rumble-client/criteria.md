@@ -44,6 +44,14 @@ Feature: rumble-client — Local ranked and practice battle client
     Then it selects the pinned number of distinct individual entries or two distinct team entries whose expanded members equal the pinned participant count
     And it prefers advised pairings involving configured own entries before selecting a valid seeded fallback
 
+  @RCL-011 @draft
+  Scenario: TwinDuel teams never face a shared member bot
+    Test-type: Unit
+    Given a validated snapshot contains active TwinDuel teams with immutable member identities
+    When the client selects a ranked TwinDuel battle
+    Then the two selected team entries have disjoint member identities
+    And it rejects selection when no two teams can satisfy that condition
+
   @RCL-004 @draft
   Scenario: Ranked and practice modes cannot mix result state
     Test-type: Integration
