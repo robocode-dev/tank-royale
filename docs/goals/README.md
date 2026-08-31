@@ -6,4 +6,5 @@ A goal artifact answers three questions: who wants it, what they want, and why i
 
 <!-- clue:index:start -->
 - [G-001 — A programming game for learning and competition](G-001-programming-game-for-learning-and-competition.md) · `accepted`
+- [G-002 — Internal Rumble Issues token runbook](G-002-rumble-issues-token-runbook.md) · `proposed`
 <!-- clue:index:end -->

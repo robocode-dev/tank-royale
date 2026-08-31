@@ -5,7 +5,7 @@ counters:
     C: "4"
     CAP: "17"
     CH: "32"
-    G: "1"
+    G: "2"
     GTD: "1"
     IDR: "4"
     LOG: "1"
@@ -674,6 +674,11 @@ entries:
       state: live
       prefix: G
       component: "1"
+    - id: G-002
+      kind: numeric
+      state: live
+      prefix: G
+      component: "2"
     - id: GTD-001
       kind: numeric
       state: live
