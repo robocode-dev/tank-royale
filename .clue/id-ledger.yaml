@@ -4,8 +4,8 @@ counters:
     ARCH: "26"
     C: "4"
     CAP: "17"
-    CH: "31"
-    G: "1"
+    CH: "32"
+    G: "2"
     GTD: "1"
     IDR: "4"
     LOG: "1"
@@ -658,11 +658,27 @@ entries:
     - id: CH-031-tasks
       kind: opaque
       state: live
+    - id: CH-032
+      kind: numeric
+      state: live
+      prefix: CH
+      component: "32"
+    - id: CH-032-open-questions
+      kind: opaque
+      state: live
+    - id: CH-032-tasks
+      kind: opaque
+      state: live
     - id: G-001
       kind: numeric
       state: live
       prefix: G
       component: "1"
+    - id: G-002
+      kind: numeric
+      state: live
+      prefix: G
+      component: "2"
     - id: GTD-001
       kind: numeric
       state: live
