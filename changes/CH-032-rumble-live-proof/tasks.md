@@ -21,5 +21,6 @@ title: Task breakdown for CH-032
 - [x] Synchronize the public catalog and verify 1v1 matchmaking advice (RCL-002, RCL-010)
 - [x] Build the client against the local Tank Royale source and run one real ranked 1v1 battle with local replay evidence (RCL-005)
 - [ ] Correct the Rumble data issue-inbox account extraction and add focused regression evidence before resubmitting the retained journal (RDA-001, RCL-007, RCL-009)
+- [ ] Correct the Rumble client journal so a terminally rejected Issues-only batch is retryable, then resubmit the retained journal (RCL-006, RCL-007, RCL-009)
 - [ ] Submit the journal using a dedicated repository-scoped Issues-only token and verify durable ingestion acknowledgement (RCL-006, RCL-007, RCL-009)
 - [ ] Reconcile public evidence and P-003/M-008 bookkeeping in the permanent corpus
