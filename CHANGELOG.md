@@ -1,5 +1,10 @@
 ## [1.2.0] - Unreleased - Runner compatibility precondition
 
+### 🐞 Bug Fixes
+
+- Server:
+    - Fixed bot death events never reaching bots, so `onDeath` and `onBotDeath` handlers never fired.
+
 ### 🚀 Improvements
 
 - Runner:
