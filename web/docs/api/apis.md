@@ -33,7 +33,7 @@ These Bot APIs are maintained by the Tank Royale project and are semantically 1:
 
 ### Nim 2.0 (community-maintained)
 
-- [Nim Bot API repository](https://github.com/SirStone/RTR_nim_botApi2)
+- [Nim Bot API repository](https://github.com/SirStone/robocode_tankroyale_botapi)
 
 ### About Community Bot APIs
 
