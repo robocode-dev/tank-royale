@@ -1,3 +1,5 @@
 ## Repository-local conventions
 
+Before applying a rule that differs by repository kind, read the role in `.clue/role.yaml`. `role: adopter` is a repository that has adopted Cliewen; `role: source` is Cliewen's own repository, which generates the skills and templates adopters receive and therefore carries rules no adopter ever inherits. A repository with no marker is an adopter. Do not infer the role from a directory listing, and do not apply a source-repository rule to an adopter's work.
+
 For a full Cliewen change, apply the repository-local conventions declared in AGENTS.md, including digest requirements such as a user-facing changelog entry. When a release adds or narrows a corpus obligation, preview and apply the supported `clue migrate` migrations before validating the adopted repository; `clue init` remains a non-destructive materializer, not an updater. Simple work follows the repository conventions and checks that apply to its changed surfaces. Repository-local conventions may be stricter about integration. If a full-loop skill conflicts with a local rule, record the conflict in `open-questions.md` and stop for a human decision; never choose silently.
