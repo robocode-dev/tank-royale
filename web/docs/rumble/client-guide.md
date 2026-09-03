@@ -8,7 +8,7 @@ Before a client can submit ranked results, its forge account must be registered.
 
 ## 2. Build the client
 
-You need JDK 17 and a local Tank Royale checkout containing Runner support (BR-049) alongside your `rumble-client` checkout, then:
+You need JDK 17 and a local Tank Royale checkout (the Battle Runner support Rumble needs is on `main`, not yet in an official release) alongside your `rumble-client` checkout, then:
 
 ```shell
 ./gradlew --no-configuration-cache -PtankRoyaleSource=../tank-royale build
