@@ -27,7 +27,8 @@ export default withMermaid(defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Articles', link: '/articles/intro' },
       { text: 'Tutorial', link: '/tutorial/getting-started' },
-      { text: 'API', link: '/api/apis' }
+      { text: 'API', link: '/api/apis' },
+      { text: 'Rumble', link: '/rumble/index' }
     ],
 
     sidebar: [
@@ -102,6 +103,15 @@ export default withMermaid(defineConfig({
           { text: 'Performance Optimization', link: '/articles/performance-optimization' },
           { text: 'Custom Game Setup', link: '/articles/custom-game-setup' },
           { text: 'Team Strategies', link: '/articles/team-strategies' },
+        ]
+      },
+      {
+        text: 'Rumble',
+        items: [
+          { text: 'Overview', link: '/rumble/index' },
+          { text: 'Bot Author Quickstart', link: '/rumble/bot-author-guide' },
+          { text: 'Battle Contributor Quickstart', link: '/rumble/client-guide' },
+          { text: 'Moderator Quickstart', link: '/rumble/moderator-guide' },
         ]
       }
     ],
