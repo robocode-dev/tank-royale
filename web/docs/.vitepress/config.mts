@@ -28,7 +28,7 @@ export default withMermaid(defineConfig({
       { text: 'Articles', link: '/articles/intro' },
       { text: 'Tutorial', link: '/tutorial/getting-started' },
       { text: 'API', link: '/api/apis' },
-      { text: 'Rumble', link: '/rumble/index' }
+      { text: 'Rumble', link: '/rumble/' }
     ],
 
     sidebar: [
@@ -108,7 +108,7 @@ export default withMermaid(defineConfig({
       {
         text: 'Rumble',
         items: [
-          { text: 'Overview', link: '/rumble/index' },
+          { text: 'Overview', link: '/rumble/' },
           { text: 'Bot Author Quickstart', link: '/rumble/bot-author-guide' },
           { text: 'Battle Contributor Quickstart', link: '/rumble/client-guide' },
           { text: 'Moderator Quickstart', link: '/rumble/moderator-guide' },

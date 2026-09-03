@@ -16,4 +16,4 @@ The live leaderboard, pairings, and every ranked result are published from [`rum
 
 ## Current status
 
-Rumble supports the **1v1**, **TwinDuel** (2v2), and **Melee** ranked formats. The client is still pre-release: there is no published container image or native distribution yet, so running battles today means building the client from source. See [Run battles](client-guide.md) for the exact steps.
+Rumble supports the **1v1**, **TwinDuel** (twin-team), and **Melee** ranked formats. The client is still pre-release: there is no published container image or native distribution yet, so running battles today means building the client from source. See [Run battles](client-guide.md) for the exact steps.
