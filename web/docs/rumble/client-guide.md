@@ -1,15 +1,148 @@
-# Battle contributor quickstart
+# Run ranked Rumble battles
 
-The Rumble client runs local ranked battles against the published [Rumble](index.md) catalog and submits every completed result automatically. Full setup and usage instructions live in the [`rumble-client` README](https://github.com/robocode-dev/rumble-client#tank-royale-rumble-client) — that's the single source of truth for running the client, kept next to its own Dockerfile and launcher scripts so it never drifts from what's actually there. This page covers the one step that happens in a different repository, then hands you off.
+The Rumble has no central machine running every fight. Community members donate computer time by running the Rumble client locally. The client downloads the reviewed bot catalog, chooses a useful matchup, runs the battle, keeps replay evidence on your computer, and submits the result for validation.
 
-## 1. Register once
+You do not need to own a bot to contribute battles. If you do own one, you can ask the client to prefer under-sampled matchups involving it.
 
-Before a client can submit ranked results, its forge account must be registered. Open a pull request against [`rumble-data`](https://github.com/robocode-dev/rumble-data) adding `clients/<your-forge-account>.json`, whose `account` field matches the filename and whose `clientIds` lists the stable client identifier(s) you'll use. A moderator reviews this once; after it's merged, issues from your account and client ID are accepted.
+## What works today
 
-## 2. Build, configure, and run
+The native client can synchronize, run one ranked battle, and submit its result. You currently build it from source because there is no published production client image. The development Docker image contains all four bot runtimes, but its launcher scripts currently expose only configuration validation, runtime checks, and synchronization. Use the native path below for ranked `run` and `submit` commands.
 
-Everything else — building the Docker image, configuring `rumble-client.json`, and running `validate` / `runtimes` / `sync` / `run` / `submit` — is in the [`rumble-client` README](https://github.com/robocode-dev/rumble-client#tank-royale-rumble-client). Follow its Quickstart in order; it's the same one whether you got here from this page or found the repository directly.
+The client accepts a practice-mode configuration, but `--run` currently executes ranked battles only. Use the [Tank Royale GUI](../articles/gui-battle-setup.md) for local practice battles.
 
-## Next steps
+## What you need
 
-Back your battle contributions with your own bots — see [Submit a bot](bot-author-guide.md) — and watch results land on the [dashboard](https://robocode-dev.github.io/rumble-data/).
+- A GitHub account.
+- Git and JDK 17.
+- Java 17, .NET 8 SDK, Python 3.12, and Node.js 22 if you run natively. The client may select bots from any supported language.
+- Two sibling source checkouts: [`tank-royale`](https://github.com/robocode-dev/tank-royale) and [`rumble-client`](https://github.com/robocode-dev/rumble-client).
+
+The runtime check reports exactly what is missing and does not install or change anything.
+
+## 1. Register your client
+
+Each battle contributor registers once so result submissions can be tied to a GitHub account. Fork [`robocode-dev/rumble-data`](https://github.com/robocode-dev/rumble-data), then add `clients/<your-github-account>.json`:
+
+```json
+{
+  "schemaVersion": 1,
+  "account": "your-github-account",
+  "clientIds": ["your-github-account-desktop-01"]
+}
+```
+
+The filename and `account` must match your GitHub account exactly. Choose a stable `clientId` for each computer you plan to use. Open a PR with this file; a moderator reviews and merges it. Ranked submissions from that account and client ID are accepted after the registration reaches `main`.
+
+## 2. Build the client
+
+Clone the two repositories beside each other:
+
+```text
+work/
+├── tank-royale/
+└── rumble-client/
+```
+
+From `rumble-client`, build against the adjacent Tank Royale checkout.
+
+On Linux or macOS:
+
+```shell
+./gradlew --no-configuration-cache -PtankRoyaleSource=../tank-royale build
+```
+
+On PowerShell:
+
+```powershell
+.\gradlew.bat --no-configuration-cache "-PtankRoyaleSource=../tank-royale" build
+```
+
+## 3. Create your configuration
+
+Copy `rumble-client.example.json` to `rumble-client.json`, then edit the copy. Do not commit it.
+
+```json
+{
+  "schemaVersion": 1,
+  "botsRepo": "https://github.com/robocode-dev/rumble-bots",
+  "dataRepo": "https://github.com/robocode-dev/rumble-data",
+  "clientId": "your-github-account-desktop-01",
+  "myBots": ["MyBot"],
+  "gameTypes": ["1v1"],
+  "battlesPerSession": 50,
+  "mode": "ranked",
+  "workDirectory": ".rumble-client"
+}
+```
+
+Use the registered ID from step 1. `myBots` may be empty; otherwise, list the names of your active bots or teams without version numbers. The client prioritizes useful matchups involving them. Set `gameTypes` to the format you want to run. During the current source-build phase, use one game type per configuration; each `--run` invocation runs one battle.
+
+`workDirectory` holds the bot cache, ranked journal, and replay evidence. Keep that directory private and backed up.
+
+## 4. Check and synchronize
+
+On Linux or macOS:
+
+```shell
+./gradlew run --args="--check-runtimes"
+./gradlew run --args="--validate-config"
+./gradlew run --args="--sync"
+```
+
+On PowerShell:
+
+```powershell
+.\gradlew.bat run --args="--check-runtimes"
+.\gradlew.bat run --args="--validate-config"
+.\gradlew.bat run --args="--sync"
+```
+
+Synchronization verifies your registration, the current engine behavior version, the catalog source hashes, and the matchmaking advice. It prepares an immutable local cache of the exact bot sources used for ranked battles. If synchronization refuses to continue, follow its diagnostic instead of bypassing the check.
+
+## 5. Run a ranked battle
+
+On Linux or macOS:
+
+```shell
+./gradlew run --args="--run"
+```
+
+On PowerShell:
+
+```powershell
+.\gradlew.bat run --args="--run"
+```
+
+The command chooses one valid matchup, runs all rounds for that game type, and appends the completed result to the local journal. An aborted, incomplete, or incompatible battle is not submittable. Replay evidence stays under `.rumble-client/evidence`; it is never uploaded automatically.
+
+## 6. Submit completed results
+
+Create a fine-grained GitHub personal access token limited to the `robocode-dev/rumble-data` repository with read and write access to Issues. It must not have permission to change repository contents, branches, releases, packages, or Pages.
+
+Supply the token only to the submission process. On Linux or macOS:
+
+```shell
+export RUMBLE_CLIENT_TOKEN='<your-token>'
+./gradlew run --args="--submit"
+unset RUMBLE_CLIENT_TOKEN
+```
+
+On PowerShell:
+
+```powershell
+$env:RUMBLE_CLIENT_TOKEN = '<your-token>'
+.\gradlew.bat run --args="--submit"
+Remove-Item Env:RUMBLE_CLIENT_TOKEN
+```
+
+The client posts pending journal records through the `rumble-data` issue inbox. The ingestion workflow validates each result, publishes accepted facts, and replies with receipts. Records remain retryable until the client observes their successful receipts, so an interrupted submission does not lose them.
+
+Never put the token in `rumble-client.json`, a shell script, Git, an issue, or a log.
+
+## Keep contributing
+
+Repeat `--run` to produce more battles and `--submit` to send pending results. You can change `gameTypes` between sessions. The client uses published matchmaking advice to cover new and under-sampled matchups; that advice is guidance rather than a reservation, so two clients may safely run the same matchup.
+
+Accepted results usually reach the [dashboard](https://robocode-dev.github.io/rumble-data/) within minutes. A scheduled ingestion sweep runs twice an hour if the immediate GitHub event is delayed.
+
+For command and implementation details, see the [`rumble-client` README](https://github.com/robocode-dev/rumble-client#tank-royale-rumble-client).

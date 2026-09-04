@@ -1,47 +1,118 @@
-# Bot author quickstart
+# Submit a bot to the Rumble
 
-This is the fastest path from nothing to a ranked-eligible bot in the [Rumble](index.md) catalog.
+This guide takes a bot that already works in Tank Royale and puts it into the [Rumble](index.md) ranked catalog. You need a GitHub account, Git, Python 3, and the runtimes used by the bots in your catalog checkout. CI has all four supported runtimes.
 
-## Requirements
+If you have not written a bot yet, start with the [Tank Royale tutorial](../tutorial/getting-started.md) and the list of [official Bot APIs](../api/apis.md). Test the bot against sample bots with the normal [GUI battle setup](../articles/gui-battle-setup.md) before submitting it. Local GUI battles are private practice; they never affect the Rumble rankings.
 
-- Your bot must be built on an **official Tank Royale Bot API** (Java, C#, Python, or TypeScript). Custom frameworks or hand-rolled protocol implementations are not eligible for ranked Rumble — see [the APIs](../api/apis.md) if you haven't built a bot yet, and the [tutorial](../tutorial/getting-started.md) for a walkthrough.
-- Bots run **directly from source**, exactly like the [sample bots](../articles/installing-sample-bots.md) — nothing is precompiled or uploaded as a binary.
-- Your bot's platform-specific dependencies are limited to the official Bot API package plus the standard library (for TypeScript: the official npm package with a committed lockfile).
+## Before you submit
 
-## 1. Write your bot
+Ranked bots must meet these rules:
 
-Develop and test it locally against the sample bots first, using Robocode's normal [GUI battle setup](../articles/gui-battle-setup.md) — this is "practice mode": nothing you run locally is ever submitted anywhere.
+- Use the official Tank Royale Bot API for Java, C#, Python, or TypeScript.
+- Run directly from source through the normal Tank Royale booter scripts.
+- Depend only on the official Bot API package and the platform's standard library. TypeScript bots must also commit their lockfile.
+- Include no compiled programs, archives, generated dependency directories, custom protocol clients, process launchers, or raw socket code.
+- Declare one of the permitted licenses: `MIT`, `Apache-2.0`, `BSD-3-Clause`, or `GPL-3.0-or-later`.
 
-## 2. Lay it out for submission
+The complete rules live in the [`rumble-bots` contribution guide](https://github.com/robocode-dev/rumble-bots/blob/main/CONTRIBUTING.md).
 
-`rumble-bots` uses the same booter directory convention as any Tank Royale bot: a directory holding `<BotName>.json` (booter config), `<BotName>.sh` and `<BotName>.cmd` (boot scripts), and your source. Copy [the bot submission template](https://github.com/robocode-dev/rumble-bots/blob/main/.github/PULL_REQUEST_TEMPLATE/bot-submission.md) into `bots/<platform>/<BotName>/` in your fork of [`rumble-bots`](https://github.com/robocode-dev/rumble-bots).
+## 1. Fork and clone the catalog
 
-## 3. Declare a license
+A fork is your own GitHub copy of a repository. A pull request, usually shortened to PR, asks the Rumble moderators to merge your changes into the public catalog.
 
-Every bot needs an explicit license — add a `license` field with one of these SPDX identifiers to your bot's config JSON: `MIT`, `Apache-2.0`, `BSD-3-Clause`, or `GPL-3.0-or-later`. Submitting a PR certifies you have the right to publish the code under that license.
-
-## 4. Validate locally
-
-Run the validator before opening a PR, so you catch problems before CI does:
+Fork [`robocode-dev/rumble-bots`](https://github.com/robocode-dev/rumble-bots), then clone your fork and create a branch:
 
 ```shell
-python scripts/validate_bot.py --root . --owner <your-forge-account> --smoke
+git clone https://github.com/<your-github-account>/rumble-bots.git
+cd rumble-bots
+git switch -c add-<bot-name>
 ```
 
-It checks your directory structure, that only source files are present, dependency allowlist compliance, and that the bot boots and connects the way the booter will run it.
+Replace the angle-bracket placeholders with your GitHub account and bot name.
 
-## 5. Open the pull request
+## 2. Add your bot source
 
-Open a PR against `rumble-bots`. Validation CI re-runs the same checks; a moderator then reviews the PR (first-time authors get a stricter look). Once merged, your bot is added to the generated `bots/index.json` catalog and enters ranked matchmaking.
+Copy your working bot into the folder for its language:
 
-## Ownership and versioning, briefly
+```text
+bots/
+└── <platform>/
+    └── <BotName>/
+        ├── <BotName>.json
+        ├── <BotName>.sh
+        ├── <BotName>.cmd
+        └── source files
+```
 
-- The first merged PR for a bot name **reserves that name for you**, identified by your forge account. Only your registered accounts can submit new versions of your own bots.
-- Published versions are immutable — changing your source means bumping the version. Only the latest version of a bot stays in the ranked pool; older versions stay in history.
-- Each owner has a limited number of active bot slots (5 at launch). Version bumps are free; a new bot name consumes a slot.
+Use `java`, `csharp`, `python`, or `typescript` for `<platform>`. The directory name, config filename, and bot `name` must match exactly. Existing entries in [`bots/`](https://github.com/robocode-dev/rumble-bots/tree/main/bots) are useful working examples.
 
-Full submission, ownership, licensing, and moderation rules live in [`rumble-bots`'s `CONTRIBUTING.md`](https://github.com/robocode-dev/rumble-bots/blob/main/CONTRIBUTING.md).
+Add a `license` field to the bot's JSON configuration, for example:
 
-## Next steps
+```json
+{
+  "name": "MyBot",
+  "version": "1.0.0",
+  "authors": ["Your name"],
+  "description": "What my bot does.",
+  "platform": "JVM",
+  "programmingLang": "Java 17",
+  "gameTypes": ["1v1", "melee", "twinduel"],
+  "license": "Apache-2.0"
+}
+```
 
-Once your bot is merged, watch it climb the [dashboard](https://robocode-dev.github.io/rumble-data/) as ranked battles run. Running a [client](client-guide.md) yourself gives your own bots priority in matchmaking.
+This example uses Java; keep the correct platform and language values from your working bot configuration. The license applies to the complete bot directory. By opening the PR, you certify that you have the right to publish the source under that license.
+
+## 3. Validate the submission
+
+Run the same validator used by CI:
+
+```shell
+python scripts/validate_bot.py --root . --owner <your-github-account> --smoke
+```
+
+The validator checks the directory layout, license, dependencies, source-only rules, ownership, and boot scripts. The smoke check also starts the source entry point. Fix every reported problem before opening the PR.
+
+## 4. Open the pull request
+
+Commit and push your branch, then open a PR against `robocode-dev/rumble-bots`:
+
+```shell
+git add bots/<platform>/<BotName>
+git commit -m "Add <BotName>"
+git push --set-upstream origin add-<bot-name>
+```
+
+Use the repository's bot-submission checklist in the PR description. CI runs the validator again, and a moderator reviews the submission. A green check is required, but it does not replace review.
+
+When the PR is merged, CI adds the bot to the generated catalog. `rumble-data` synchronizes that catalog at 23 minutes past every UTC hour. The bot then appears on the [dashboard](https://robocode-dev.github.io/rumble-data/) and waits for its first ranked battles.
+
+## Submit a TwinDuel team
+
+A TwinDuel team is its own catalog entry. Its `teamMembers` field contains exactly two member slots backed by active bot versions:
+
+```json
+{
+  "name": "MyTwinTeam",
+  "version": "1.0.0",
+  "authors": ["Your name"],
+  "license": "Apache-2.0",
+  "teamMembers": ["MyFirstBot 1.0.0", "MySecondBot 1.0.0"]
+}
+```
+
+Put the team under one of the recognized platform folders. Its directory contains only `<TeamName>.json`; it has no source or boot scripts of its own. Both slots may name the same bot version for a true twin team. The slots may also name bots written with different Bot API languages, in which case the catalog publishes the team platform as `Mixed`. A team cannot contain another team, and every member must be an active individual bot.
+
+Member versions are part of the team identity. If either member gets a new version, submit a new team version that names the updated members.
+
+## Ownership, versions, and slots
+
+The first merged PR for a bot or team name reserves that name for your GitHub account. Only that account, or another account registered to the same owner, may submit later versions.
+
+Published source versions are immutable. When the source changes, increase the version in the bot configuration and submit it again. The latest version becomes active; older results remain in history but no longer determine the current rank.
+
+Each owner may have five active catalog entries by default. An individual bot or a TwinDuel team each uses one slot. Updating an existing entry to a new version does not consume another slot.
+
+## Help your bot get ranked
+
+New entries need battle samples before their ranking means much. Community clients prefer matchups with too few samples, so coverage improves automatically as contributors run battles. You can also [run a Rumble client](client-guide.md) and list your own entries in `myBots`; the client then gives useful matchups involving them priority.
