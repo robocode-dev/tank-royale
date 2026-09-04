@@ -1,0 +1,5 @@
+- [x] Confirm `tank-royale#250` and `rumble-client#9` status (both open, green, mergeable) as M-011's starting evidence
+- [x] File `robocode-dev/rumble-client#10` for the practice-mode CLI gap (M-012)
+- [x] File `robocode-dev/rumble-bots#8` for the `Vector` stale source hash (M-013)
+- [ ] Create `docs/plans/P-004-rumble-hardening.md` with milestones M-011–M-014, `status: draft`, `links: [G-001, P-003]`
+- [ ] Regenerate `docs/plans/README.md`'s index
