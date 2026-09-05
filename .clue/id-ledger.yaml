@@ -747,7 +747,7 @@ entries:
       component: "3"
     - id: P-004
       kind: numeric
-      state: reserved
+      state: live
       prefix: P
       component: "4"
     - id: PDR-001
