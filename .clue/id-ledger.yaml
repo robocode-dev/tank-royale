@@ -9,7 +9,7 @@ counters:
     GTD: "1"
     IDR: "4"
     LOG: "1"
-    P: "3"
+    P: "4"
     PDR: "12"
     RBC: "4"
     RCL: "11"
@@ -681,9 +681,15 @@ entries:
       component: "34"
     - id: CH-035
       kind: numeric
-      state: reserved
+      state: live
       prefix: CH
       component: "35"
+    - id: CH-035-open-questions
+      kind: opaque
+      state: live
+    - id: CH-035-tasks
+      kind: opaque
+      state: live
     - id: G-001
       kind: numeric
       state: live
@@ -739,6 +745,11 @@ entries:
       state: live
       prefix: P
       component: "3"
+    - id: P-004
+      kind: numeric
+      state: reserved
+      prefix: P
+      component: "4"
     - id: PDR-001
       kind: numeric
       state: live
