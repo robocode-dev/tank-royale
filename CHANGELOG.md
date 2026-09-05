@@ -1,4 +1,4 @@
-## [1.2.0] - Unreleased - Runner compatibility precondition
+## [1.2.0] - 2026-09-05 - Runner compatibility precondition
 
 ### 🐞 Bug Fixes
 

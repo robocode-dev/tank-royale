@@ -2,7 +2,7 @@
 links: [G-001, P-003]
 ---
 
-# CH-034 — Track Rumble's remaining follow-up work
+# CH-035 — Track Rumble's remaining follow-up work
 
 P-003 (Tank Royale Rumble) is `status: completed`, closing out its six milestones. Since that closure, real loose ends have surfaced that were never turned into tracked work: two PRs delivering P-003's own milestones are still open and unmerged, and two genuine bugs were found during hands-on testing but never filed anywhere.
 

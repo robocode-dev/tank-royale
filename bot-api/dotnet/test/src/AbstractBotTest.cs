@@ -34,9 +34,14 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 ///
 /// <para>See also: bot-api/tests/TESTING-GUIDE.md</para>
 /// </summary>
-[Timeout(20000)] // 20 seconds timeout for all tests
+[Timeout(40000)] // overall per-test timeout; generous enough to absorb several CiWaitMs waits in sequence on a loaded runner
 public class AbstractBotTest
 {
+    // Default wait ceiling for MockedServer Await*() calls in this base class. A loaded CI
+    // runner (see prior fixes for AwaitBotReady/BotIntentContinueTimeoutMs) can leave several
+    // seconds between a message being sent and the test thread getting scheduled to observe it.
+    protected const int CiWaitMs = 10_000;
+
     protected MockedServer Server;
     private readonly List<Task> _trackedTasks = new();
 
@@ -152,12 +157,12 @@ public class AbstractBotTest
 
     protected void AwaitBotHandshake()
     {
-        Assert.That(Server.AwaitBotHandshake(5000), Is.True);
+        Assert.That(Server.AwaitBotHandshake(CiWaitMs), Is.True);
     }
 
     protected void AwaitGameStarted(BaseBot bot)
     {
-        Assert.That(Server.AwaitGameStarted(5000), Is.True);
+        Assert.That(Server.AwaitGameStarted(CiWaitMs), Is.True);
 
         var startMillis = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         var noException = false;
@@ -174,7 +179,7 @@ public class AbstractBotTest
 
     protected void AwaitTick(BaseBot bot)
     {
-        Assert.That(Server.AwaitTick(5000), Is.True);
+        Assert.That(Server.AwaitTick(CiWaitMs), Is.True);
 
         var startMillis = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         var noException = false;
@@ -215,7 +220,7 @@ public class AbstractBotTest
 
     protected void AwaitBotIntent()
     {
-        Assert.That(Server.AwaitBotIntent(5000), Is.True);
+        Assert.That(Server.AwaitBotIntent(CiWaitMs), Is.True);
     }
 
     /// <summary>
@@ -322,7 +327,7 @@ public class AbstractBotTest
         bool tickSent = Server.SetBotStateAndAwaitTick(100.0, 0.0, null, null, null, null);
         Assert.That(tickSent, Is.True, "SetBotStateAndAwaitTick should send tick");
         // Wait for bot to update its internal state by polling until energy matches
-        bool stateUpdated = AwaitCondition(() => bot.Energy == 100.0 && bot.GunHeat == 0.0, 2000);
+        bool stateUpdated = AwaitCondition(() => bot.Energy == 100.0 && bot.GunHeat == 0.0, CiWaitMs);
         Assert.That(stateUpdated, Is.True, $"Bot state should update to energy=100, gunHeat=0 (actual: energy={bot.Energy}, gunHeat={bot.GunHeat})");
         return bot;
     }

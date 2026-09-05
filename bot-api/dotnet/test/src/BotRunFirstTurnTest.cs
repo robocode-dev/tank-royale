@@ -20,6 +20,8 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 [Description("TR-API-TCK-004 First-turn state availability (regression: issue #202)")]
 public class BotRunFirstTurnTest : AbstractBotTest
 {
+    private const int BotReadyTimeoutMs = 10_000;
+
     /// <summary>
     /// Spins its radar every turn. Mirrors <c>RadarSpinBotCSharp</c> in
     /// <c>bot-api/tests/bots/csharp/</c> but uses <see cref="MockedServer.ServerUrl"/>
@@ -58,7 +60,7 @@ public class BotRunFirstTurnTest : AbstractBotTest
         var bot = new RadarSpinBot(Server.ServerUrl);
         StartAsync(bot);
 
-        Assert.That(Server.AwaitBotReady(2000), Is.True, "Bot failed to become ready");
+        Assert.That(Server.AwaitBotReady(BotReadyTimeoutMs), Is.True, "Bot failed to become ready");
 
         // Drain the pre-warm initial intent so the bot can progress through Run()
         Server.ContinueBotIntent();
@@ -80,7 +82,7 @@ public class BotRunFirstTurnTest : AbstractBotTest
         var bot = new RadarSpinBot(Server.ServerUrl);
         StartAsync(bot);
 
-        Assert.That(Server.AwaitBotReady(2000), Is.True, "Bot failed to become ready");
+        Assert.That(Server.AwaitBotReady(BotReadyTimeoutMs), Is.True, "Bot failed to become ready");
 
         // Drain the pre-warm initial intent (empty default sent to prevent turn-1 skip)
         Server.ContinueBotIntent();

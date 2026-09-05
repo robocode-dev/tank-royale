@@ -1,7 +1,6 @@
 # Publish .NET NuGet package script
 # This script reads the version from the VERSION file and API key from gradle.properties,
-# and prepares the NuGet publish command.
-# NOTE: This script does NOT actually push to NuGet - it only displays the command that would be executed
+# and prepares the NuGet publish command without exposing credentials.
 
 param(
     [switch]$Execute = $false,
@@ -87,12 +86,12 @@ Write-Host $packageFile
 Write-Host "Path:        " -NoNewline -ForegroundColor Yellow
 Write-Host $packagePath
 Write-Host "API Key:     " -NoNewline -ForegroundColor Yellow
-Write-Host "$(if ($apiKey -eq 'dummy') { 'dummy (NOT REAL!)' } else { '***' + $apiKey.Substring([Math]::Max(0, $apiKey.Length - 4)) })"
+Write-Host "$(if ($apiKey -eq 'dummy') { 'dummy (NOT REAL!)' } else { 'configured (redacted)' })"
 Write-Host ""
-Write-Host "Command that would be executed:" -ForegroundColor Green
+Write-Host "Command that would be executed (API key redacted):" -ForegroundColor Green
 Write-Host ""
 Write-Host "  cd `"$releaseDir`"" -ForegroundColor White
-Write-Host "  dotnet nuget push $packageFile --api-key `"$apiKey`" --source https://api.nuget.org/v3/index.json" -ForegroundColor White
+Write-Host "  dotnet nuget push $packageFile --api-key `"***`" --source https://api.nuget.org/v3/index.json" -ForegroundColor White
 Write-Host ""
 
 if ($Execute) {
@@ -137,5 +136,4 @@ else {
     Write-Host "To actually execute the push, run with -Execute flag:" -ForegroundColor Cyan
     Write-Host "  .\scripts\release\publish-nuget.ps1 -Execute" -ForegroundColor White
 }
-
 
