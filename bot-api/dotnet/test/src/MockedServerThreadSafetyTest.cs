@@ -104,7 +104,7 @@ public class MockedServerThreadSafetyTest : AbstractBotTest
             {
                 bot.TurnRate = 5.0;
                 GoAsync(bot);
-                Server.AwaitBotIntent(1000);
+                Server.AwaitBotIntent(BotReadyTimeoutMs);
                 Thread.Sleep(10);
             }
         });

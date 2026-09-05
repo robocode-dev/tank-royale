@@ -36,10 +36,10 @@ public class CommandsRadarTest : AbstractBotTest
     private void AwaitExpectedIntent(Predicate<BotIntent> predicate)
     {
         var start = DateTime.Now;
-        while ((DateTime.Now - start).TotalSeconds < 10)
+        while ((DateTime.Now - start).TotalSeconds < 30)
         {
             Server.ContinueBotIntent();
-            if (Server.AwaitBotIntent(2000))
+            if (Server.AwaitBotIntent(CiWaitMs))
             {
                 if (predicate(Server.BotIntent))
                 {

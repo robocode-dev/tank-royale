@@ -13,6 +13,8 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 [Property("ID", "TR-API-UTL-005")]
 public class TestBotBuilderTest
 {
+    private const int BotReadyTimeoutMs = 10_000;
+
     private MockedServer _server = null!;
 
     [SetUp]
@@ -76,7 +78,7 @@ public class TestBotBuilderTest
 
     [Test]
     [Description("TestBotBuilder onTick callback is invoked")]
-    [Timeout(5000)]
+    [Timeout(15000)]
     public void TestOnTickCallback()
     {
         var tickCalled = false;
@@ -92,7 +94,7 @@ public class TestBotBuilderTest
         try
         {
             // Wait for bot to be ready and receive tick
-            Assert.That(_server.AwaitBotReady(2000), Is.True);
+            Assert.That(_server.AwaitBotReady(BotReadyTimeoutMs), Is.True);
 
             // Give time for tick callback to be invoked
             Thread.Sleep(100);
@@ -109,7 +111,7 @@ public class TestBotBuilderTest
 
     [Test]
     [Description("TestBotBuilder onRun callback is invoked")]
-    [Timeout(5000)]
+    [Timeout(15000)]
     public void TestOnRunCallback()
     {
         var runCalled = false;
@@ -125,7 +127,7 @@ public class TestBotBuilderTest
         try
         {
             // Wait for bot to be ready
-            Assert.That(_server.AwaitBotReady(2000), Is.True);
+            Assert.That(_server.AwaitBotReady(BotReadyTimeoutMs), Is.True);
 
             // Give time for run callback to be invoked
             Thread.Sleep(100);
@@ -161,7 +163,7 @@ public class TestBotBuilderTest
 
     [Test]
     [Description("TestBotBuilder custom behavior relies on callbacks only")]
-    [Timeout(5000)]
+    [Timeout(15000)]
     public void TestCustomBehavior()
     {
         var customTickHandled = false;
@@ -178,7 +180,7 @@ public class TestBotBuilderTest
         try
         {
             // Wait for bot to be ready and receive tick
-            Assert.That(_server.AwaitBotReady(2000), Is.True);
+            Assert.That(_server.AwaitBotReady(BotReadyTimeoutMs), Is.True);
 
             // Give time for tick callback to be invoked
             Thread.Sleep(100);

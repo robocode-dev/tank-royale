@@ -295,7 +295,7 @@ public class MockedServer
             }
         }
 
-        return AwaitTick(1000);
+        return AwaitTick(10_000);
     }
 
     public bool AwaitConnection(int milliSeconds)

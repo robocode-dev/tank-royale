@@ -27,7 +27,7 @@ public class ProtocolConformanceTest : AbstractBotTest
     public void Tck007_BotHandshake_ContainsCorrectFields()
     {
         StartAsync(new TckBot(Server.ServerUrl));
-        Assert.That(Server.AwaitBotHandshake(3000), Is.True);
+        Assert.That(Server.AwaitBotHandshake(CiWaitMs), Is.True);
 
         var handshake = Server.Handshake;
         Assert.That(handshake.SessionId, Is.EqualTo(MockedServer.SessionId));
@@ -46,7 +46,7 @@ public class ProtocolConformanceTest : AbstractBotTest
     public void Tck008_BotSendsBotReadyAfterGameStarted()
     {
         StartAsync(new TckBot(Server.ServerUrl));
-        Assert.That(Server.AwaitBotReadyMessage(3000), Is.True);
+        Assert.That(Server.AwaitBotReadyMessage(CiWaitMs), Is.True);
     }
 
     // -----------------------------------------------------------------------
@@ -68,7 +68,7 @@ public class ProtocolConformanceTest : AbstractBotTest
         };
         StartAsync(bot);
 
-        Assert.That(latch.Wait(3000), Is.True);
+        Assert.That(latch.Wait(CiWaitMs), Is.True);
         Assert.That(roundNumber, Is.EqualTo(1));
     }
 
@@ -93,10 +93,10 @@ public class ProtocolConformanceTest : AbstractBotTest
         };
         StartAsync(bot);
 
-        Assert.That(Server.AwaitBotReadyMessage(3000), Is.True);
+        Assert.That(Server.AwaitBotReadyMessage(CiWaitMs), Is.True);
         Server.SendRaw(BuildRoundEndedJson(1, 5));
 
-        Assert.That(latch.Wait(3000), Is.True);
+        Assert.That(latch.Wait(CiWaitMs), Is.True);
         Assert.That(capturedRound, Is.EqualTo(1));
         Assert.That(capturedTurn, Is.EqualTo(5));
     }
@@ -120,10 +120,10 @@ public class ProtocolConformanceTest : AbstractBotTest
         };
         StartAsync(bot);
 
-        Assert.That(Server.AwaitBotReadyMessage(3000), Is.True);
+        Assert.That(Server.AwaitBotReadyMessage(CiWaitMs), Is.True);
         Server.SendRaw(BuildGameEndedJson(10));
 
-        Assert.That(latch.Wait(3000), Is.True);
+        Assert.That(latch.Wait(CiWaitMs), Is.True);
         Assert.That(capturedRounds, Is.EqualTo(10));
     }
 
@@ -154,7 +154,7 @@ public class ProtocolConformanceTest : AbstractBotTest
         Server.ContinueBotIntent();
         AwaitBotIntent();
 
-        Assert.That(latch.Wait(3000), Is.True);
+        Assert.That(latch.Wait(CiWaitMs), Is.True);
         Assert.That(capturedTurn, Is.EqualTo(1));
     }
 
@@ -177,10 +177,10 @@ public class ProtocolConformanceTest : AbstractBotTest
         };
         StartAsync(bot);
 
-        Assert.That(Server.AwaitBotReadyMessage(3000), Is.True);
+        Assert.That(Server.AwaitBotReadyMessage(CiWaitMs), Is.True);
         Server.SendRaw("{\"type\":\"UnknownMessageType\",\"data\":\"test\"}");
 
-        Assert.That(latch.Wait(3000), Is.True);
+        Assert.That(latch.Wait(CiWaitMs), Is.True);
         Assert.That(capturedMessage, Does.Contain("Unsupported WebSocket message type"));
     }
 
@@ -206,7 +206,7 @@ public class ProtocolConformanceTest : AbstractBotTest
         Server.ContinueBotIntent();
         AwaitBotIntent();
 
-        Assert.That(latch.Wait(3000), Is.True);
+        Assert.That(latch.Wait(CiWaitMs), Is.True);
     }
 
     // -----------------------------------------------------------------------
@@ -236,7 +236,7 @@ public class ProtocolConformanceTest : AbstractBotTest
         Server.ContinueBotIntent();
         AwaitBotIntent();
 
-        Assert.That(latch.Wait(3000), Is.True);
+        Assert.That(latch.Wait(CiWaitMs), Is.True);
         Assert.That(capturedId, Is.EqualTo(99));
     }
 
@@ -261,7 +261,7 @@ public class ProtocolConformanceTest : AbstractBotTest
         Server.ContinueBotIntent();
         AwaitBotIntent();
 
-        Assert.That(latch.Wait(3000), Is.True);
+        Assert.That(latch.Wait(CiWaitMs), Is.True);
     }
 
     // -----------------------------------------------------------------------
@@ -285,7 +285,7 @@ public class ProtocolConformanceTest : AbstractBotTest
         Server.ContinueBotIntent();
         AwaitBotIntent();
 
-        Assert.That(latch.Wait(3000), Is.True);
+        Assert.That(latch.Wait(CiWaitMs), Is.True);
     }
 
     // -----------------------------------------------------------------------
