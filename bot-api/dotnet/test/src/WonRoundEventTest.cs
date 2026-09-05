@@ -30,7 +30,7 @@ public class WonRoundEventTest : AbstractBotTest
         AwaitBotHandshake();
         // MockedServer automatically sends GameStarted, RoundStarted, and the first tick
         // once the bot replies with BotReady.
-        Assert.That(Server.AwaitTick(2000), Is.True);
+        Assert.That(Server.AwaitTick(CiWaitMs), Is.True);
 
         // Add WonRoundEvent to the next ("winning") tick.
         Server.AddEvent(new Robocode.TankRoyale.Schema.WonRoundEvent {

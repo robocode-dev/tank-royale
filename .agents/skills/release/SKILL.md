@@ -58,12 +58,16 @@ Print the release type:
 - `"📋 Release type: Major/Minor release (documentation will be uploaded)"` — or —
 - `"📋 Release type: Patch release (documentation upload will be skipped)"`
 
-### 1.5 — Verify version matches CHANGELOG.md
+### 1.5 — Verify the dated CHANGELOG.md release entry
 
-Read `CHANGELOG.md` and find the **first** line matching the pattern `## [X.Y.Z]` (the topmost version heading).
+Read `CHANGELOG.md` and find the **first** version heading (the topmost line matching `## [X.Y.Z]`). It must use this exact format:
 
-- If the version in that heading does **not** match the version from `VERSION`: print `"❌ ERROR: Version mismatch — VERSION has X.Y.Z but CHANGELOG.md top entry is A.B.C. Please update CHANGELOG.md or VERSION."` and **STOP**.
-- If they match: print `"✅ Version X.Y.Z matches CHANGELOG.md"`.
+```
+## [X.Y.Z] - YYYY-MM-DD - Short release title
+```
+
+- If the version in that heading does **not** match the version from `VERSION`, its date is not a valid `YYYY-MM-DD` calendar date, its title is empty, or it contains `Unreleased`: print `"❌ ERROR: CHANGELOG.md must start with a dated release entry for X.Y.Z: ## [X.Y.Z] - YYYY-MM-DD - Short release title. Replace Unreleased before publishing."` and **STOP**.
+- If it meets these requirements: print `"✅ CHANGELOG.md has a dated release entry for X.Y.Z"`.
 
 ### 1.6 — Detect platform
 

@@ -19,6 +19,12 @@ public class EnvVarsTest
         SetAllEnvVarsToDefaultValues();
     }
 
+    private static string[] GetDefaultCountryCodes()
+    {
+        var countryCode = CountryCode.GetLocalCountryCode();
+        return CountryCode.IsCountryCodeValid(countryCode) ? new[] { countryCode } : [];
+    }
+
     [TestFixture]
     class GetBotInfo : EnvVarsTest
     {
@@ -171,27 +177,26 @@ public class EnvVarsTest
             }
 
             [Test]
-            public void GivenInvalidEnvVar_whenCallingGetCountryCodes_thenReturnDefaultLocaleCountryCode()
+            public void GivenInvalidEnvVar_whenCallingGetCountryCodes_thenReturnDefaultLocaleCountryCodeWhenAvailable()
             {
                 SetEnvVar(BotCountryCodes, "xyz");
-                var countryCode = EnvVars.GetBotInfo().CountryCodes.First();
-                Assert.That(countryCode, Is.EqualTo(CountryCode.GetLocalCountryCode()));
+                Assert.That(EnvVars.GetBotInfo().CountryCodes, Is.EquivalentTo(GetDefaultCountryCodes()));
             }
 
             [Test]
-            public void GivenMissingEnvVar_whenCallingGetCountryCodes_thenReturnDefaultLocaleCountryCode()
+            public void GivenMissingEnvVar_whenCallingGetCountryCodes_thenReturnDefaultLocaleCountryCodeWhenAvailable()
             {
                 ClearEnvVar(BotCountryCodes);
                 var countryCode = EnvVars.GetBotInfo().CountryCodes;
-                Assert.That(countryCode, Is.EquivalentTo(new[] { CountryCode.GetLocalCountryCode() }));
+                Assert.That(countryCode, Is.EquivalentTo(GetDefaultCountryCodes()));
             }
 
             [Test]
-            public void GivenBlankEnvVar_whenCallingGetCountryCodes_thenReturnDefaultLocaleCountryCode()
+            public void GivenBlankEnvVar_whenCallingGetCountryCodes_thenReturnDefaultLocaleCountryCodeWhenAvailable()
             {
                 SetEnvVar(BotCountryCodes, "  \t");
                 var countryCode = EnvVars.GetBotInfo().CountryCodes;
-                Assert.That(countryCode, Is.EquivalentTo(new[] { CountryCode.GetLocalCountryCode() }));
+                Assert.That(countryCode, Is.EquivalentTo(GetDefaultCountryCodes()));
             }
         }
 

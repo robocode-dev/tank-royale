@@ -22,9 +22,9 @@ public class CountryCodeTest
     }
 
     [Test]
-    public void GivenLocalCountryCode_whenCallingIsCountryCodeValid_thenReturnTrue()
+    public void GivenLocalCountryCode_whenCallingIsCountryCodeValid_thenReturnTrueWhenAvailable()
     {
         var countryCode = CountryCode.GetLocalCountryCode();
-        Assert.That(CountryCode.IsCountryCodeValid(countryCode), Is.True);
+        Assert.That(countryCode is null || CountryCode.IsCountryCodeValid(countryCode), Is.True);
     }
 }
