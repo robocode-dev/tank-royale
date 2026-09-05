@@ -9,5 +9,5 @@ Every change proposal names the plan item it serves, or explicitly declares itse
 <!-- clue:index:start -->
 - [P-001 — Cliewen adoption](P-001-cliewen-adoption.md) · `active`
 - [P-002 — TypeScript Bot API reaches npm](P-002-typescript-bot-api-npm.md) · `completed`
-- [P-003 — Tank Royale Rumble](P-003-rumble.md) · `active`
+- [P-003 — Tank Royale Rumble](P-003-rumble.md) · `completed`
 <!-- clue:index:end -->
