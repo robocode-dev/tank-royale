@@ -40,9 +40,9 @@ Add its `battleId` to `rumble-data/exclusions.json`. The next aggregation omits 
 
 ### Ban an account
 
-Add the GitHub account to `rumble-data/bans.json`. Future submissions are rejected, and earlier facts from that account stop contributing when projections are regenerated.
+Add the GitHub account to `bannedAccounts` in `rumble-data/bans.json`. Future submissions are rejected, and earlier facts from that account stop contributing when projections are regenerated.
 
-If the account owns catalog entries, update `rumble-bots/bots/banned.json` as well. The generated catalog excludes disqualified bots, but their existing result facts remain in history. Bans may be temporary or permanent.
+If the account owns catalog entries, add those entries to `disqualifiedBots` in the same file. The generated catalog excludes disqualified bots, but their existing result facts remain in history. Bans may be temporary or permanent.
 
 ### Resolve a suspicious name or submission
 

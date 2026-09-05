@@ -41,10 +41,11 @@ bots/
         ├── <BotName>.json
         ├── <BotName>.sh
         ├── <BotName>.cmd
-        └── source files
+        └── src/
+            └── source files
 ```
 
-Use `java`, `csharp`, `python`, or `typescript` for `<platform>`. The directory name, config filename, and bot `name` must match exactly. Existing entries in [`bots/`](https://github.com/robocode-dev/rumble-bots/tree/main/bots) are useful working examples.
+Use `java`, `csharp`, `python`, or `typescript` for `<platform>`. The directory name, config filename, and bot `name` must match exactly. Source files belong under `src/`, and the boot scripts point at the entry point there, for example `"$SCRIPT_DIR/src/MyBot.py"`. Existing entries in [`bots/`](https://github.com/robocode-dev/rumble-bots/tree/main/bots) are useful working examples.
 
 Add a `license` field to the bot's JSON configuration, for example:
 
@@ -89,7 +90,7 @@ When the PR is merged, CI adds the bot to the generated catalog. `rumble-data` s
 
 ## Submit a TwinDuel team
 
-A TwinDuel team is its own catalog entry. Its `teamMembers` field contains exactly two member slots backed by active bot versions:
+A TwinDuel team is its own catalog entry. Its `teamMembers` field contains exactly two member slots, each naming an active bot by its directory name:
 
 ```json
 {
@@ -97,13 +98,13 @@ A TwinDuel team is its own catalog entry. Its `teamMembers` field contains exact
   "version": "1.0.0",
   "authors": ["Your name"],
   "license": "Apache-2.0",
-  "teamMembers": ["MyFirstBot 1.0.0", "MySecondBot 1.0.0"]
+  "teamMembers": ["MyFirstBot", "MySecondBot"]
 }
 ```
 
-Put the team under one of the recognized platform folders. Its directory contains only `<TeamName>.json`; it has no source or boot scripts of its own. Both slots may name the same bot version for a true twin team. The slots may also name bots written with different Bot API languages, in which case the catalog publishes the team platform as `Mixed`. A team cannot contain another team, and every member must be an active individual bot.
+Put the team under one of the recognized platform folders. Its directory contains only `<TeamName>.json`; it has no source or boot scripts of its own. Both slots may name the same bot for a true twin team. The slots may also name bots written with different Bot API languages, in which case the catalog publishes the team platform as `Mixed`. A team cannot contain another team, and every member must be an active individual bot.
 
-Member versions are part of the team identity. If either member gets a new version, submit a new team version that names the updated members.
+The generated catalog entry records the exact member versions that were active when it was published, so member versions are part of the published team identity. Bump the team's own `version` whenever you change which bots it names.
 
 ## Ownership, versions, and slots
 

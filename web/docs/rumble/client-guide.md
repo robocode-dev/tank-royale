@@ -75,26 +75,30 @@ Copy `rumble-client.example.json` to `rumble-client.json`, then edit the copy. D
 }
 ```
 
-Use the registered ID from step 1. `myBots` may be empty; otherwise, list the names of your active bots or teams without version numbers. The client prioritizes useful matchups involving them. Set `gameTypes` to the format you want to run. During the current source-build phase, use one game type per configuration; each `--run` invocation runs one battle.
+Use the registered ID from step 1. `myBots` may be empty; otherwise, list the names of your active bots or teams without version numbers. The client prioritizes useful matchups involving them.
+
+Set `gameTypes` to the single format you want to run. During the current source-build phase, list exactly one game type: `--run` picks the alphabetically first entry and runs that one, so listing several formats silently runs only `1v1` and never the others. To cover another format, change `gameTypes` and run again. Each `--run` invocation runs one battle; the example file's `battlesPerSession` is not used by the current commands.
 
 `workDirectory` holds the bot cache, ranked journal, and replay evidence. Keep that directory private and backed up.
 
 ## 4. Check and synchronize
 
+Every Gradle invocation needs the same two arguments as the build in step 2. `-PtankRoyaleSource` is what makes the client compile and run against your adjacent Tank Royale checkout; without it Gradle tries to download a Battle Runner release that does not exist yet, and the command fails to resolve its dependencies. `--no-configuration-cache` is required because the project enables the configuration cache by default.
+
 On Linux or macOS:
 
 ```shell
-./gradlew run --args="--check-runtimes"
-./gradlew run --args="--validate-config"
-./gradlew run --args="--sync"
+./gradlew --no-configuration-cache -PtankRoyaleSource=../tank-royale run --args="--check-runtimes"
+./gradlew --no-configuration-cache -PtankRoyaleSource=../tank-royale run --args="--validate-config"
+./gradlew --no-configuration-cache -PtankRoyaleSource=../tank-royale run --args="--sync"
 ```
 
 On PowerShell:
 
 ```powershell
-.\gradlew.bat run --args="--check-runtimes"
-.\gradlew.bat run --args="--validate-config"
-.\gradlew.bat run --args="--sync"
+.\gradlew.bat --no-configuration-cache "-PtankRoyaleSource=../tank-royale" run --args="--check-runtimes"
+.\gradlew.bat --no-configuration-cache "-PtankRoyaleSource=../tank-royale" run --args="--validate-config"
+.\gradlew.bat --no-configuration-cache "-PtankRoyaleSource=../tank-royale" run --args="--sync"
 ```
 
 Synchronization verifies your registration, the current engine behavior version, the catalog source hashes, and the matchmaking advice. It prepares an immutable local cache of the exact bot sources used for ranked battles. If synchronization refuses to continue, follow its diagnostic instead of bypassing the check.
@@ -104,13 +108,13 @@ Synchronization verifies your registration, the current engine behavior version,
 On Linux or macOS:
 
 ```shell
-./gradlew run --args="--run"
+./gradlew --no-configuration-cache -PtankRoyaleSource=../tank-royale run --args="--run"
 ```
 
 On PowerShell:
 
 ```powershell
-.\gradlew.bat run --args="--run"
+.\gradlew.bat --no-configuration-cache "-PtankRoyaleSource=../tank-royale" run --args="--run"
 ```
 
 The command chooses one valid matchup, runs all rounds for that game type, and appends the completed result to the local journal. An aborted, incomplete, or incompatible battle is not submittable. Replay evidence stays under `.rumble-client/evidence`; it is never uploaded automatically.
@@ -123,7 +127,7 @@ Supply the token only to the submission process. On Linux or macOS:
 
 ```shell
 export RUMBLE_CLIENT_TOKEN='<your-token>'
-./gradlew run --args="--submit"
+./gradlew --no-configuration-cache -PtankRoyaleSource=../tank-royale run --args="--submit"
 unset RUMBLE_CLIENT_TOKEN
 ```
 
@@ -131,7 +135,7 @@ On PowerShell:
 
 ```powershell
 $env:RUMBLE_CLIENT_TOKEN = '<your-token>'
-.\gradlew.bat run --args="--submit"
+.\gradlew.bat --no-configuration-cache "-PtankRoyaleSource=../tank-royale" run --args="--submit"
 Remove-Item Env:RUMBLE_CLIENT_TOKEN
 ```
 
