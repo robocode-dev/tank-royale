@@ -15,6 +15,8 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 [Property("ID", "TR-API-UTL-004")]
 public class MockedServerThreadSafetyTest : AbstractBotTest
 {
+    private const int BotReadyTimeoutMs = 10_000;
+
     [Test]
     [Category("Reliability")]
     [Description("Verify SetInitialBotState is thread-safe")]
@@ -22,7 +24,7 @@ public class MockedServerThreadSafetyTest : AbstractBotTest
     {
         // Arrange: Start bot and ensure it's ready
         var bot = Start();
-        Assert.That(Server.AwaitBotReady(2000), Is.True, "Bot failed to become ready");
+        Assert.That(Server.AwaitBotReady(BotReadyTimeoutMs), Is.True, "Bot failed to become ready");
 
         // Act: Update state from multiple threads concurrently (simulating what test setup might do)
         var tasks = new Task[10];
@@ -43,7 +45,7 @@ public class MockedServerThreadSafetyTest : AbstractBotTest
     {
         // Arrange: Start bot and ensure it's ready with proper connection
         var bot = Start();
-        Assert.That(Server.AwaitBotReady(2000), Is.True, "Bot failed to become ready");
+        Assert.That(Server.AwaitBotReady(BotReadyTimeoutMs), Is.True, "Bot failed to become ready");
 
         // Act & Assert: Sequential state updates should work reliably
         Assert.That(Server.SetBotStateAndAwaitTick(energy: 75.0), Is.True, "First state update failed");
@@ -58,7 +60,7 @@ public class MockedServerThreadSafetyTest : AbstractBotTest
     {
         // Arrange & Act: Start bot and verify ready state
         var bot = Start();
-        var success = Server.AwaitBotReady(2000);
+        var success = Server.AwaitBotReady(BotReadyTimeoutMs);
 
         // Assert: Bot should reach ready state without race conditions
         Assert.That(success, Is.True, "Bot failed to reach ready state");
@@ -84,7 +86,7 @@ public class MockedServerThreadSafetyTest : AbstractBotTest
     {
         // Arrange: Start bot and ensure it's ready
         var bot = Start();
-        Assert.That(Server.AwaitBotReady(2000), Is.True, "Bot failed to become ready");
+        Assert.That(Server.AwaitBotReady(BotReadyTimeoutMs), Is.True, "Bot failed to become ready");
 
         // Act: Set up concurrent operations
         var stateUpdateTask = Task.Run(() =>

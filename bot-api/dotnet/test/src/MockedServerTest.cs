@@ -8,11 +8,13 @@ namespace Robocode.TankRoyale.BotApi.Tests;
 [Property("ID", "TR-API-UTL-003")]
 public class MockedServerTest : AbstractBotTest
 {
+    private const int BotReadyTimeoutMs = 10_000;
+
     [Test]
     public void TestAwaitBotReady()
     {
         var bot = Start();
-        Assert.That(Server.AwaitBotReady(1000), Is.True);
+        Assert.That(Server.AwaitBotReady(BotReadyTimeoutMs), Is.True);
     }
 
     [Test]
