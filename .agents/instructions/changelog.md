@@ -42,6 +42,7 @@ Optional one-paragraph summary for significant releases.
 ### ⚠️ Breaking Changes
 ```
 
+- While preparing a version for release, its heading may use `Unreleased`. Before publishing any artifact or triggering `create-release`, replace it with the actual release date in `YYYY-MM-DD` format. The release workflow rejects an undated or `Unreleased` top entry.
 - Group entries under the component where the change is visible to the developer:
   `Server:`, `GUI:`, `Bot API (Java, .NET, Python):`, `Sample bots:`, etc.
 - Reference the GitHub issue number when one exists: `#123: …`

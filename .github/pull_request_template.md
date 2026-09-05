@@ -41,7 +41,7 @@
 - [ ] The plan item or plan-less declaration is truthful, and all artifact links resolve.
 - [ ] Decisions are recorded at the right tier, and active constraints were assessed.
 - [ ] Changed active acceptance criteria have positive and negative executable evidence.
-- [ ] User-visible impact is described under `[Unreleased]` in `CHANGELOG.md`, or the change has no user-visible impact.
+- [ ] User-visible impact is described under the next version's unreleased entry in `CHANGELOG.md`, or the change has no user-visible impact.
 - [ ] Full-change tasks are complete, plan bookkeeping is current, and no transient `/changes/` workspace remains.
 - [ ] Generated artifacts were regenerated from their canonical sources where applicable.
 - [ ] The current commit received a clean agentic review pass, and every substantive fix after an earlier pass triggered a new review.
