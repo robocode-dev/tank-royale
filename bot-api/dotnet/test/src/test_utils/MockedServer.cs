@@ -43,6 +43,13 @@ public class MockedServer
     public static int TurnTimeout = 30_000;
     public static int ReadyTimeout = 1_000_000;
 
+    // How long the BotIntent handler waits for a test to call ContinueBotIntent() before
+    // giving up and dropping the intent. Matches the CI-headroom timeouts already used for
+    // AwaitBotReady (see MockedServerTest/MockedServerThreadSafetyTest/BotRunFirstTurnTest)
+    // since a loaded CI runner can leave a test thread starved for several seconds between
+    // triggering an intent and calling ContinueBotIntent().
+    public static int BotIntentContinueTimeoutMs = 15_000;
+
     public static int BotEnemyCount = 7;
     public static double BotEnergy = 99.7;
     public static double BotX = 44.5;
@@ -452,7 +459,7 @@ public class MockedServer
             case MessageType.BotIntent:
                 // Wait for test to signal it's ready (matches Java's awaitBotIntentContinueOrFail)
                 // Use a timeout to avoid hanging the entire test run if a test fails to signal
-                if (!_botIntentContinueEvent.WaitOne(5000))
+                if (!_botIntentContinueEvent.WaitOne(BotIntentContinueTimeoutMs))
                 {
                     Console.Error.WriteLine("[Error] MockedServer: Timeout waiting for bot intent continue signal");
                     return;

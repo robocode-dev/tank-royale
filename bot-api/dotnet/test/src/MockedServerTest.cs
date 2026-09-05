@@ -29,10 +29,10 @@ public class MockedServerTest : AbstractBotTest
         Assert.That(ok, Is.True);
 
         // wait until bot reflects the updated state
-        bool reflected = AwaitCondition(() => Math.Abs(bot.Energy - newEnergy) < 1e-6, 1000);
+        bool reflected = AwaitCondition(() => Math.Abs(bot.Energy - newEnergy) < 1e-6, BotReadyTimeoutMs);
         Assert.That(reflected, Is.True);
 
-        bool reflectedGunHeat = AwaitCondition(() => Math.Abs(bot.GunHeat - newGunHeat) < 1e-6, 1000);
+        bool reflectedGunHeat = AwaitCondition(() => Math.Abs(bot.GunHeat - newGunHeat) < 1e-6, BotReadyTimeoutMs);
         Assert.That(reflectedGunHeat, Is.True);
     }
 
