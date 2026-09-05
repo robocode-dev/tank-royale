@@ -90,7 +90,7 @@ When the PR is merged, CI adds the bot to the generated catalog. `rumble-data` s
 
 ## Submit a TwinDuel team
 
-A TwinDuel team is its own catalog entry. Its `teamMembers` field contains exactly two member slots, each naming an active bot by its directory name:
+A TwinDuel team is its own catalog entry. Its `teamMembers` field contains exactly two member slots, each identifying an active bot by its full `name version` identity, including an explicit version:
 
 ```json
 {
@@ -98,13 +98,13 @@ A TwinDuel team is its own catalog entry. Its `teamMembers` field contains exact
   "version": "1.0.0",
   "authors": ["Your name"],
   "license": "Apache-2.0",
-  "teamMembers": ["MyFirstBot", "MySecondBot"]
+  "teamMembers": ["MyFirstBot 1.0.0", "MySecondBot 1.0.0"]
 }
 ```
 
 Put the team under one of the recognized platform folders. Its directory contains only `<TeamName>.json`; it has no source or boot scripts of its own. Both slots may name the same bot for a true twin team. The slots may also name bots written with different Bot API languages, in which case the catalog publishes the team platform as `Mixed`. A team cannot contain another team, and every member must be an active individual bot.
 
-The generated catalog entry records the exact member versions that were active when it was published, so member versions are part of the published team identity. Bump the team's own `version` whenever you change which bots it names.
+Member versions are part of the published team identity. To use a different member version, update its `teamMembers` entry explicitly. Bump the team's own `version` whenever you change a member bot or its version.
 
 ## Ownership, versions, and slots
 
