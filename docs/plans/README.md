@@ -9,5 +9,6 @@ Every change proposal names the plan item it serves, or explicitly declares itse
 <!-- clue:index:start -->
 - [P-001 — Cliewen adoption](P-001-cliewen-adoption.md) · `active`
 - [P-002 — TypeScript Bot API reaches npm](P-002-typescript-bot-api-npm.md) · `completed`
-- [P-003 — Tank Royale Rumble](P-003-rumble.md) · `active`
+- [P-003 — Tank Royale Rumble](P-003-rumble.md) · `completed`
+- [P-004 — Rumble hardening](P-004-rumble-hardening.md) · `draft` — P-003 built the Rumble and closed as `completed` when its sixth milestone landed.
 <!-- clue:index:end -->
