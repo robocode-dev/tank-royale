@@ -10,7 +10,7 @@ reversal-cost: low
 
 # P-004 — Rumble hardening
 
-[P-003](P-003-rumble.md) built the Rumble and closed as `completed` when its sixth milestone landed. Closing a plan does not close the system: delivery work for P-003's own milestones is still unmerged upstream, and hands-on testing after the V1 launch found two real defects that were never tracked anywhere. This plan carries that follow-up work as its own campaign. P-003 stays immutable as the historical record of the launch; new scope belongs in a successor plan rather than in a reopened one.
+Follow-up hardening for the Tank Royale Rumble launched by [P-003](P-003-rumble.md), which closed as `completed` when its sixth milestone landed. Closing a plan does not close the system: delivery work for P-003's own milestones is still unmerged upstream, and hands-on testing after the V1 launch found two real defects that were never tracked anywhere. This plan carries that follow-up work as its own campaign. P-003 stays immutable as the historical record of the launch; new scope belongs in a successor plan rather than in a reopened one.
 
 Serves G-001 through the same route as P-003: the rumble is the competition half of "learning and competition", and a competition whose client cannot run in practice mode, whose catalog fails its own validator, and whose documentation describes pre-fix behavior is not yet trustworthy to the people it asks to donate compute.
 

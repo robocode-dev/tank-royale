@@ -77,7 +77,7 @@ Copy `rumble-client.example.json` to `rumble-client.json`, then edit the copy. D
 
 Use the registered ID from step 1. `myBots` may be empty; otherwise, list the names of your active bots or teams without version numbers. The client prioritizes useful matchups involving them.
 
-Set `gameTypes` to the single format you want to run. During the current source-build phase, list exactly one game type: `--run` picks the alphabetically first entry and runs that one, so listing several formats silently runs only `1v1` and never the others. To cover another format, change `gameTypes` and run again. Each `--run` invocation runs one battle; the example file's `battlesPerSession` is not used by the current commands.
+Set `gameTypes` to the single format you want to run. During the current source-build phase, list exactly one game type: `--run` picks the alphabetically first entry and runs that one, so listing several formats silently runs only that entry and never the others. To cover another format, change `gameTypes` and run again. Each `--run` invocation runs one battle; the example file's `battlesPerSession` is not used by the current commands.
 
 `workDirectory` holds the bot cache, ranked journal, and replay evidence. Keep that directory private and backed up.
 
