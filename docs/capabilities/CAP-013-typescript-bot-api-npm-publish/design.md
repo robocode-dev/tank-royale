@@ -30,4 +30,4 @@ Impact beyond the build script: `.gitignore` excludes `/bot-api/typescript/.npmr
 npmjs-api-key=npm_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-The token must have publish rights to the `@robocode.dev` scope. If it is missing, `npmPublish` fails with `npmjs-api-key is not set in gradle.properties` (criterion TNP-005). This mirrors the other publish credentials, which live in the same file: `ossrhUsername` / `ossrhPassword` (Maven Central), `nuget-api-key` (NuGet), `pypiToken` (PyPI) — see the `/release` skill for the full set.
+The token must have publish rights to the `@robocode.dev` scope. If it is missing, `npmPublish` fails with `npmjs-api-key is not set in gradle.properties` (criterion TNP-005). This mirrors the other publish credentials, which live in the same file: `ossrhUsername` / `ossrhPassword` (Maven Central), `pypiToken` (PyPI) — see the `/release` skill for the full set. (NuGet is the exception: it uses OIDC-based Trusted Publishing via a GitHub Actions workflow, not a stored credential.)

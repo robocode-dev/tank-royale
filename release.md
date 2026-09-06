@@ -40,9 +40,22 @@ gpg --keyserver keyserver.ubuntu.com --send-keys KEY_ID
 
 ### NuGet
 
-| Property | Description | Where to get it |
-|----------|-------------|-----------------|
-| `nuget-api-key` | NuGet API key | [nuget.org](https://www.nuget.org/) → API Keys → Create (scope: `robocode.tankroyale.*`) |
+NuGet publishing uses [Trusted Publishing](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing)
+(OIDC) instead of a stored API key — there is nothing to add to `gradle.properties`. Publishing runs entirely inside
+the `publish-nuget.yml` GitHub Actions workflow, which exchanges a short-lived GitHub OIDC token for a temporary
+NuGet API key at push time.
+
+One-time setup on [nuget.org](https://www.nuget.org/) → account → **Trusted Publishing** → add a policy:
+
+| Field | Value |
+|-------|-------|
+| Repository Owner | `robocode-dev` |
+| Repository | `tank-royale` |
+| Workflow File | `publish-nuget.yml` |
+| Environment | `nuget-publish` |
+
+The policy stays in a 7-day "pending activation" state until the first successful publish through it, then becomes
+permanent.
 
 ### PyPI
 
@@ -94,9 +107,6 @@ ossrhPassword=your-sonatype-password
 signingKey=-----BEGIN PGP PRIVATE KEY BLOCK-----\n\nlQWGBGBq5...\n-----END PGP PRIVATE KEY BLOCK-----
 signingPassword=your-gpg-passphrase
 
-# NuGet
-nuget-api-key=oy2abc123...
-
 # PyPI
 pypiToken=pypi-AgEIcH...
 
@@ -127,30 +137,14 @@ Or publish to staging only (for manual review before release):
 
 ### .NET (NuGet)
 
-Dry run (shows what would be executed):
+Publishing happens via the `publish-nuget.yml` GitHub Actions workflow (Trusted Publishing) — there is no local push
+path. Trigger it directly if needed outside the `/release` skill:
 
 ```shell
-.\scripts\release\publish-nuget.ps1
+gh workflow run publish-nuget.yml --ref main -R robocode-dev/tank-royale -f version=«version»
 ```
 
-Publish (prompts for confirmation):
-
-```shell
-.\scripts\release\publish-nuget.ps1 -Execute
-```
-
-Publish without confirmation (for automated workflows):
-
-```shell
-.\scripts\release\publish-nuget.ps1 -Execute -Force
-```
-
-Manual alternative:
-
-```shell
-cd bot-api\dotnet\api\bin\Release
-dotnet nuget push robocode.tankroyale.botapi.«version».nupkg --api-key «key» --source https://api.nuget.org/v3/index.json
-```
+The workflow requires manual approval via its `nuget-publish` GitHub Environment before it proceeds.
 
 ### Python (PyPI)
 
