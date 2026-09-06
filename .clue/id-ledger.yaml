@@ -4,7 +4,7 @@ counters:
     ARCH: "26"
     C: "4"
     CAP: "17"
-    CH: "35"
+    CH: "36"
     G: "2"
     GTD: "1"
     IDR: "5"
@@ -690,6 +690,20 @@ entries:
       state: live
       prefix: CH
       component: "35"
+    - id: CH-036
+      kind: numeric
+      state: live
+      prefix: CH
+      component: "36"
+    - id: CH-036-open-questions
+      kind: opaque
+      state: live
+    - id: CH-036-proposal
+      kind: opaque
+      state: live
+    - id: CH-036-tasks
+      kind: opaque
+      state: live
     - id: G-001
       kind: numeric
       state: live

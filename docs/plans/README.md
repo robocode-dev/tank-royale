@@ -10,5 +10,5 @@ Every change proposal names the plan item it serves, or explicitly declares itse
 - [P-001 — Cliewen adoption](P-001-cliewen-adoption.md) · `active`
 - [P-002 — TypeScript Bot API reaches npm](P-002-typescript-bot-api-npm.md) · `completed`
 - [P-003 — Tank Royale Rumble](P-003-rumble.md) · `active`
-- [P-005 — TypeScript bot console output reaches the GUI](P-005-typescript-bot-console-output.md) · `draft` — TypeScript bot authors see none of their console output in the GUI, unlike authors on the other three Bot APIs.
+- [P-005 — TypeScript bot console output reaches the GUI](P-005-typescript-bot-console-output.md) · `completed` — TypeScript console output reaches the GUI with cross-platform capture evidence.
 <!-- clue:index:end -->

@@ -20,4 +20,4 @@ The gap is represented by plan P-005 with milestones M-016 through M-018, rather
 
 ## Consequences
 
-C-003's parity residual continues to name console output as an open divergence until M-018 closes it. Parity work that touches the TypeScript Bot API may cite P-005 rather than restating the gap.
+P-005 tracked the TypeScript console-output gap through boundary decision, implementation, and parity evidence; M-018 closes the standing-output residual. Direct writes to `process.stdout`/`process.stderr` remain the disclosed TypeScript boundary in IDR-005, not an open console-output gap. Parity work that touches the TypeScript Bot API may cite P-005 rather than restating the former gap.
