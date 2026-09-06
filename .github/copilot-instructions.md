@@ -9,4 +9,4 @@
 
 The corpus under `/docs/` is the system-of-record (Cliewen conventions); a full change runs the change loop via the `clue-delta` skill and reaches `main` only through a human-merged PR, while simple work reaches `main` directly only under the maintainer's explicit per-change push authorization, recorded in an `Authorized-Push:` trailer (constraint [C-002](/docs/constraints/C-002-review-boundary.md)). Repo-local conventions (testing, style, encoding, debugging) live in `/.agents/instructions/` and are routed through `/AGENTS.md`.
 
-> **Principles are loaded on demand.** Run `/dot-prime` before working on a file to activate the relevant `.principles` for that path.
+> **Principles are selected through `.principles` files.** Run `/dot-scout` to refresh mappings and `/dot-audit` to review a target against the active set.

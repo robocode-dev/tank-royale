@@ -24,7 +24,7 @@ Load the file(s) matching your task type before starting work:
 | File encoding, UTF-8 | `.agents/instructions/standards.md` |
 | Product facts, clean-code baseline | `.agents/instructions/core-principles.md` |
 
-Principles are loaded on demand: run `/dot-prime` before working on a file to activate the relevant `.principles` for that path.
+Principles are selected through `.principles` files; run `/dot-scout` to refresh mappings and `/dot-audit` to review a target against the active set.
 
 ## GitHub PR descriptions
 
@@ -41,7 +41,7 @@ Reusable task instructions live in `.agents/skills/`. When the user runs a slash
 | `clue-analysis` | Spikes and findings — every analysis ends in a `docs/analysis` document |
 | `clue-verify` | Pre-merge checklist, the human-readable twin of `clue validate` |
 | `clue-extract` | Brownfield adoption (already executed here as CH-001) |
-| `/dot-scout [path]` · `/dot-prime [target]` · `/dot-audit [target]` | Principles system: discover, activate, audit |
+| `/dot-scout [path]` · `/dot-audit [target]` | Principles system: discover, review, audit |
 | `/release` · `/update-deps` · `/deploy-sample-bots [dir]` · `/structurizr` | Release, dependency, sample-bot, and diagram workflows |
 
 <!-- CODEGRAPH_START -->

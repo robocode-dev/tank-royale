@@ -1,6 +1,6 @@
 # Slash Commands
 
-<!-- KEYWORDS: dot-prime, dot-scout, dot-audit, audit, scout, prime, principles, review, quality -->
+<!-- KEYWORDS: dot-scout, dot-audit, audit, scout, principles, review, quality -->
 
 ## Command: /dot-scout [path]
 
@@ -16,20 +16,6 @@ Analyse a project to detect which principles apply and create or update `.princi
 5. **Emit Integration Files**:
    - Generate `REVIEW.md` for AI code review if Claude is detected.
    - Generate `.github/instructions/*.instructions.md` for Copilot if detected.
-
----
-
-## Command: /dot-prime [target]
-
-Activate principles before working on a file or task. Use before writing or editing code to load relevant principles into context.
-
-### Workflow
-1. **Detect Spec**: Check for explicit principle specs (e.g., `@group` or bare IDs like `CODE-CS-DRY`) in arguments.
-2. **Resolve Active Set**:
-   - **Explicit mode**: Expand `@group` from `.principles-catalog/groups/` and add bare IDs.
-   - **Normal mode**: Load scout-generated principles from `.claude/rules/` or `.github/instructions/`.
-3. **Select Top Principles**: Select 5–10 most relevant principles based on task and artifact type.
-4. **Output Active Rules**: Display rules as a compact block for the AI to follow.
 
 ---
 

@@ -1,4 +1,4 @@
-# Docs Stack — Layer 1: Universal Principles
+# Docs Stack - Layer 1: Universal Principles
 
 These principles are **always active** for any documentation file, regardless of type or content. They apply to README files, architecture docs, guides, how-tos, and any other prose artifact.
 

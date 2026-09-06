@@ -66,7 +66,7 @@ CODE-API-PAGINATION|2|Paginate every collection endpoint with a server-enforced 
 CODE-API-PROBLEM-DETAILS|2|Return RFC 7807 Problem Details for all error responses; never expose stack traces or internal details.
 CODE-API-RATE-LIMITING|2|Enforce rate limits on all APIs and return 429 with `Retry-After` when clients exceed their quota.
 CODE-API-RESOURCE-NOUNS|2|Identify resources with noun URIs and let HTTP methods express the action, never verbs in the path.
-CODE-API-STANDARD-HTTP-METHODS|2|Honor HTTP method semantics — GET must be safe, PUT and DELETE must be idempotent.
+CODE-API-STANDARD-HTTP-METHODS|2|Honor HTTP method semantics - GET must be safe, PUT and DELETE must be idempotent.
 CODE-API-VERSIONING|2|Version every API explicitly and maintain old versions through a documented deprecation period before removal.
 CODE-AR-ASYNC-MESSAGING|2|Prefer asynchronous messaging over synchronous calls whenever the sender does not need an immediate response.
 CODE-AR-COMPOSABLE-MODULES|2|Organize infrastructure into small, focused, independently manageable modules with clear inputs and outputs.
@@ -75,7 +75,7 @@ CODE-AR-INFRASTRUCTURE-AS-CODE|2|Define all infrastructure as version-controlled
 CODE-AR-MESSAGE-BROKER|2|Route all inter-service messages through a central broker to decouple producers from consumers.
 CODE-AR-PIPELINE-CHANGES|2|Apply all infrastructure changes through an automated pipeline; never run commands directly from a workstation.
 CODE-AR-PIPES-AND-FILTERS|2|Decompose complex processing into independent single-responsibility filter stages connected by message channels.
-CODE-AR-TEST-INFRASTRUCTURE|2|Test infrastructure code at every level — static analysis, unit, integration, and compliance — before applying it.
+CODE-AR-TEST-INFRASTRUCTURE|2|Test infrastructure code at every level - static analysis, unit, integration, and compliance - before applying it.
 CODE-CC-AVOID-LOCKS-IN-HOT-PATHS|2|Hold locks only for the minimum time needed; never perform I/O or long operations inside a critical section.
 CODE-CC-DOCUMENT-THREAD-SAFETY|2|Document every class's thread-safety guarantees explicitly as part of its public contract.
 CODE-CC-HIGHER-LEVEL-CONCURRENCY|2|Use high-level concurrency utilities instead of raw wait/notify to avoid subtle synchronization bugs.
@@ -232,7 +232,7 @@ DOC-EXAMPLES|2|Accompany every abstract description with a concrete, runnable ex
 DOC-MINIMAL|1|Omit speculative, derivable, or duplicated content; every sentence must earn its place by serving the reader.
 DOC-OBJECTIVE|1|Use only factual, demonstrable claims and omit marketing adjectives like "easy", "simple", or "powerful".
 DOC-PROGRESSIVE-DISCLOSURE|2|Lead with the simplest case and layer increasing complexity so readers can stop when they have enough.
-DOC-PURPOSE|1|Assign each document exactly one purpose—tutorial, how-to, reference, or explanation—and never mix them.
+DOC-PURPOSE|1|Assign each document exactly one purpose-tutorial, how-to, reference, or explanation-and never mix them.
 DOC-SCANNABLE|1|Use descriptive headings, short paragraphs, and bold anchors so readers can locate information by scanning.
 DOC-SELF-CONTAINED|2|Make every page intelligible in isolation by defining prerequisites and context without assuming prior reading.
 DOC-TASK-ORIENTED|2|Structure documentation around user goals expressed as tasks, not around internal product components.
