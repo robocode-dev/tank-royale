@@ -229,6 +229,25 @@ describe("Task 4: BaseBotInternals", () => {
     expect(internals.isEventHandlingDisabled()).toBe(false);
   });
 
+  it("4.11 stopping a worker invalidates its round generation", () => {
+    const stub = {} as import("../src/IBaseBot.js").IBaseBot;
+    const internals = new BaseBotInternals(stub, makeBotInfo(), null, undefined);
+    const privateInternals = internals as unknown as {
+      runGeneration: number;
+      sharedBuffer: SharedArrayBuffer;
+      sharedView: Int32Array;
+    };
+    privateInternals.sharedBuffer = new SharedArrayBuffer(8);
+    privateInternals.sharedView = new Int32Array(privateInternals.sharedBuffer);
+    internals.setRunning(true);
+    const generation = privateInternals.runGeneration;
+
+    internals.stopThread();
+
+    expect(privateInternals.runGeneration).toBe(generation + 1);
+    expect(internals.isRunning()).toBe(false);
+  });
+
   it("4.12 state accessors return defaults before game starts", () => {
     const stub = {} as import("../src/IBaseBot.js").IBaseBot;
     const internals = new BaseBotInternals(stub, makeBotInfo(), null, undefined);

@@ -184,7 +184,12 @@ sealed class BaseBotInternals
     private void CreateRunnable(IBot bot)
     {
         var botThread = Thread.CurrentThread;
-        IsRunning = true;
+        lock (_threadControlMonitor)
+        {
+            if (botThread != _thread)
+                return;
+            IsRunning = true;
+        }
         try
         {
             // Block until the first tick arrives so Run() can safely access bot state
@@ -259,9 +264,8 @@ sealed class BaseBotInternals
 
         if (currentThread != null && currentThread != Thread.CurrentThread)
         {
-            // Wait for the old bot thread to exit before a new round starts. Without this, a stale
-            // thread can survive a connected restart long enough to send one last turn-1 intent into
-            // the next game before the replacement thread takes over.
+            // Best-effort cleanup only. Ownership was invalidated above, so correctness does
+            // not depend on this bounded wait and an infinite legacy loop cannot block a round.
             currentThread.Join(1000);
         }
     }
@@ -491,6 +495,9 @@ sealed class BaseBotInternals
 
     internal void DispatchEvents(int turnNumber)
     {
+        if (IsRunning && _thread != null && Thread.CurrentThread != _thread)
+            throw new ThreadInterruptedException();
+
         try
         {
             _eventQueue.DispatchEvents(turnNumber);

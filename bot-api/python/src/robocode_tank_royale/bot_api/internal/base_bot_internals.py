@@ -122,6 +122,7 @@ class BaseBotInternals:
 
         # Bot thread (runs bot.run() and bot.go())
         self.thread: Optional[threading.Thread] = None
+        self._thread_control_lock = threading.Lock()
         self.stop_resume_listener: Optional[StopResumeListenerABC] = None
 
         self.max_speed: float = MAX_SPEED
@@ -348,6 +349,8 @@ class BaseBotInternals:
         self.event_queue.set_current_event_interruptible(interruptible)
 
     def dispatch_events(self, turn_number: int) -> None:
+        if self.is_running() and self.thread is not None and threading.current_thread() is not self.thread:
+            raise ThreadInterruptedException()
         try:
             self.event_queue.dispatch_events(turn_number)
         except BotException:
@@ -364,7 +367,7 @@ class BaseBotInternals:
     def is_running(self) -> bool:
         return self._is_running_atomic
 
-    def _wait_until_first_tick_arrived(self) -> None:
+    def _wait_until_first_tick_arrived(self, bot_thread: threading.Thread) -> None:
         """Block the pre-warmed bot thread until the first tick of the round arrives.
         The thread is started at round-started (before any tick), so it must wait here
         before run() can safely read bot state.
@@ -372,7 +375,7 @@ class BaseBotInternals:
         (priority 110) has already captured initial directions via _clear_remaining().
         """
         with self._next_turn_condition:
-            while self.is_running() and self.current_tick_or_null is None:
+            while self.is_running() and self.thread is bot_thread and self.current_tick_or_null is None:
                 self._next_turn_condition.wait()
         # NOTE: Do NOT dispatch events here. Events are dispatched in go() → dispatch_events()
         # which is called from the first blocking bot method (forward, turn_left, etc.) in run().
@@ -382,27 +385,38 @@ class BaseBotInternals:
     def _create_runnable(self, bot: BotABC):
         """Create runnable function for bot thread (matches Java's createRunnable)"""
         def runnable():
-            self.set_running(True)
+            bot_thread = threading.current_thread()
+            with self._thread_control_lock:
+                if self.thread is not bot_thread:
+                    return
+                self.set_running(True)
             try:
-                self._wait_until_first_tick_arrived()
+                self._wait_until_first_tick_arrived(bot_thread)
+                if self.thread is not bot_thread:
+                    return
                 bot.run()
             except ThreadInterruptedException:
                 pass
 
-            self._dispatch_final_turn_events()
+            if self.thread is not bot_thread:
+                return
+            self._dispatch_final_turn_events(bot_thread)
 
             # Skip every turn after the run method has exited
-            while self.is_running():
+            while self.is_running() and self.thread is bot_thread:
                 try:
                     bot.go()
                 except ThreadInterruptedException:
                     break
 
-            self._dispatch_final_turn_events()
+            if self.thread is bot_thread:
+                self._dispatch_final_turn_events(bot_thread)
         return runnable
 
-    def _dispatch_final_turn_events(self) -> None:
+    def _dispatch_final_turn_events(self, bot_thread: threading.Thread) -> None:
         """Dispatch any remaining events from the current tick before the thread exits."""
+        if self.thread is not bot_thread:
+            return
         tick = self.current_tick_or_null
         if tick is not None:
             self.dispatch_events(tick.turn_number)
@@ -410,27 +424,24 @@ class BaseBotInternals:
     def start_thread(self, bot: BotABC) -> None:
         """Start bot thread (matches Java's startThread)"""
         self.enable_event_handling(True)  # reset on WebSocket thread — before new bot thread starts
-        self.thread = threading.Thread(target=self._create_runnable(bot))
-        self.thread.start()
+        new_thread = threading.Thread(target=self._create_runnable(bot))
+        with self._thread_control_lock:
+            self.thread = new_thread
+        new_thread.start()
 
     def stop_thread(self) -> None:
         """Stop bot thread (matches Java's stopThread)"""
-        if not self.is_running():
-            return
-
-        self.set_running(False)
+        with self._thread_control_lock:
+            if not self.is_running() and self.thread is None:
+                return
+            self.set_running(False)
+            self.thread = None  # invalidate ownership before waking the old thread
         self.enable_event_handling(False)  # disable on WebSocket thread — prevents new ticks from queuing after bot stops
 
         # Wake up any threads waiting on the next turn condition so they can see is_running=False
         with self._next_turn_condition:
             self._next_turn_condition.notify_all()
 
-        thread = self.thread
-        self.thread = None
-        if thread is not None and thread is not threading.current_thread():
-            # Wait for the bot thread to finish so that handle_round_ended's
-            # dispatch_events call does not race with _dispatch_final_turn_events.
-            thread.join(timeout=5.0)
 
     def _sanitize_url(self, uri: str) -> None:
         parsed_url = urllib.parse.urlparse(uri)
@@ -620,10 +631,12 @@ class BaseBotInternals:
         # Check if we're being called from the designated bot thread
         # If self.thread is None (test mode with no run() loop) or current thread doesn't match,
         # exit immediately - the intent was already sent in execute() before this call
-        if self.thread is None or threading.current_thread() != self.thread:
+        if self.thread is None:
             # In test mode or when called from wrong thread, just return without waiting
             # This allows tests to call go() from test threads without hanging
             return
+        if threading.current_thread() is not self.thread:
+            raise ThreadInterruptedException()
 
         # Only wait if we're in the correct bot thread and bot is running
         with self._next_turn_condition:
@@ -640,9 +653,8 @@ class BaseBotInternals:
 
     def _stop_rogue_thread(self) -> None:
         """Stop rogue thread (matches Java's stopRogueThread)"""
-        # This method is no longer called from _wait_for_next_turn
-        # Kept for compatibility but effectively disabled
-        pass
+        if self.is_running() and self.thread is not None and threading.current_thread() is not self.thread:
+            raise ThreadInterruptedException()
 
     def set_fire(self, firepower: float) -> bool:
         """Set fire with given firepower. Matches Java's setFire() semantics exactly."""

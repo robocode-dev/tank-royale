@@ -105,6 +105,9 @@ export class BaseBotInternals {
 
   // Thread/worker state
   private running = false;
+  // Monotonic owner token. Each round gets a new token, so a stopped loop
+  // cannot become active again when the next round clears the shared stop flag.
+  private runGeneration = 0;
   private eventHandlingDisabledTurn = 0;
   private lastExecuteTurnNumber = -1;
   private movementResetPending = false;
@@ -605,7 +608,11 @@ export class BaseBotInternals {
         this.movementResetPending = false;
       }
     }
-    this.waitForNextTurnWorker(capturedTurnNumber);
+    const generation = this.runGeneration;
+    this.waitForNextTurnWorker(capturedTurnNumber, generation);
+    if (generation !== this.runGeneration) {
+      throw new BotStoppedException();
+    }
     // Dispatch events for the new turn *after* waiting, so that run() always reads state
     // that matches the events that just fired — matching Classic Robocode semantics.
     if (this.tickEvent != null) {
@@ -648,9 +655,9 @@ export class BaseBotInternals {
     this.intent.debugGraphics = null;
   }
 
-  private waitForNextTurnWorker(currentTurnNumber: number): void {
+  private waitForNextTurnWorker(currentTurnNumber: number, generation: number): void {
     this.stopRogueThread();
-    while (this.running && (this.tickEvent?.turnNumber ?? 0) === currentTurnNumber) {
+    while (this.running && generation === this.runGeneration && (this.tickEvent?.turnNumber ?? 0) === currentTurnNumber) {
       this.stopRogueThread();
       if (this.sharedView == null) break;
       const curVal = Atomics.load(this.sharedView, SAB_SLOT_TURN);
@@ -684,29 +691,35 @@ export class BaseBotInternals {
       this.sharedBuffer = new SharedArrayBuffer(SAB_LENGTH * 4);
       this.sharedView = new Int32Array(this.sharedBuffer);
     }
+    const generation = ++this.runGeneration;
     Atomics.store(this.sharedView, SAB_SLOT_STOP, 0);
-    this.runBotLoop(bot);
+    this.runBotLoop(bot, generation);
   }
 
-  private runBotLoop(bot: IBot): void {
+  private runBotLoop(bot: IBot, generation: number): void {
+    if (generation !== this.runGeneration) return;
     this.setRunning(true);
     try {
-      this.waitUntilFirstTickArrived();
+      this.waitUntilFirstTickArrived(generation);
+      if (generation !== this.runGeneration) return;
       bot.run();
     } catch (e) {
       if (!(e instanceof BotStoppedException)) {
         // ignore unexpected errors from bot.run()
       }
     }
-    this.dispatchFinalTurnEvents();
-    while (this.running) {
+    if (generation !== this.runGeneration) return;
+    this.dispatchFinalTurnEvents(generation);
+    while (this.running && generation === this.runGeneration) {
       try {
         bot.go();
       } catch (e) {
         if (e instanceof BotStoppedException) break;
       }
     }
-    this.dispatchFinalTurnEvents();
+    if (generation === this.runGeneration) {
+      this.dispatchFinalTurnEvents(generation);
+    }
   }
 
   isWorkerMode(): boolean { return this.workerMode; }
@@ -715,9 +728,9 @@ export class BaseBotInternals {
   // The thread is started at round-started (before any tick), so it must wait here
   // before run() can safely read bot state (radar direction, etc.).
   // Only applicable in worker mode — in legacy (non-worker) mode, returns immediately.
-  private waitUntilFirstTickArrived(): void {
+  private waitUntilFirstTickArrived(generation: number): void {
     if (!this.workerMode || this.sharedView == null) return;
-    while (this.tickEvent == null && this.running) {
+    while (this.tickEvent == null && this.running && generation === this.runGeneration) {
       const curVal = Atomics.load(this.sharedView, SAB_SLOT_TURN);
       Atomics.wait(this.sharedView, SAB_SLOT_TURN, curVal, 500);
       this.drainWorkerMessages();
@@ -731,6 +744,7 @@ export class BaseBotInternals {
 
   stopThread(): void {
     if (!this.running) return;
+    this.runGeneration++;
     this.setRunning(false);
     this.enableEventHandling(false);
     if (this.sharedView != null) {
@@ -773,7 +787,8 @@ export class BaseBotInternals {
     this.eventQueue.dispatchEvents(turnNumber, this.botEventHandlers);
   }
 
-  dispatchFinalTurnEvents(): void {
+  dispatchFinalTurnEvents(generation = this.runGeneration): void {
+    if (generation !== this.runGeneration) return;
     if (this.tickEvent != null) {
       this.dispatchEvents(this.tickEvent.turnNumber);
     }
