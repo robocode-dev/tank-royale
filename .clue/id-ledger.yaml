@@ -690,6 +690,12 @@ entries:
       state: live
       prefix: CH
       component: "35"
+    - id: CH-035-open-questions
+      kind: opaque
+      state: live
+    - id: CH-035-tasks
+      kind: opaque
+      state: live
     - id: CH-036
       kind: numeric
       state: live
@@ -764,6 +770,11 @@ entries:
       state: live
       prefix: P
       component: "3"
+    - id: P-004
+      kind: numeric
+      state: live
+      prefix: P
+      component: "4"
     - id: P-005
       kind: numeric
       state: live

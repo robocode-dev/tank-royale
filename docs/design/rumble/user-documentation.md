@@ -13,6 +13,8 @@ reversal-cost: low
 > **Status: DRAFT** - design direction captured.
 > Part of the [Tank Royale Rumble umbrella design](./README.md).
 
+**Implementation note (CH-034, P-003/M-009):** the plan promised one quickstart per audience under `/web/docs/rumble/`, which now exists as `bot-author-guide.md`, `client-guide.md`, `moderator-guide.md`, and an `index.md` landing page. The moderator guide lives under `/web/docs/rumble/` rather than as a separate `rumble-data/docs/moderator-handbook.md`, since no such handbook exists yet; it links to each repository's `GOVERNANCE.md` instead. `onboarding.md` and `faq.md` below remain aspirational: folded into the shipped guides for now, not yet split out as their own documents.
+
 ## Scope
 
 The documentation the rumble ships for its users: what documents exist, who they serve, where they live, and the onboarding journeys they support. The other design documents describe how the system works; this one describes how a person finds out what to do. Documentation is participation infrastructure: every workflow that lacks a guide costs participants, and the rumble's health is measured in participants.
