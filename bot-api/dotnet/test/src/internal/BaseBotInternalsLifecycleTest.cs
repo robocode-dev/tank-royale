@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -25,6 +26,28 @@ public class BaseBotInternalsLifecycleTest
         }
 
         public override void OnTick(TickEvent e) => DispatchedTicks++;
+    }
+
+    /// <summary>
+    /// Minimal IBot proxy: Run() throws, every other member is a harmless default. Mirrors the
+    /// java.lang.reflect.Proxy stub the Java lifecycle test uses.
+    /// </summary>
+    public class ExplodingBotProxy : DispatchProxy
+    {
+        protected override object Invoke(MethodInfo targetMethod, object[] args)
+        {
+            if (targetMethod!.Name == nameof(IBot.Run))
+                throw new InvalidOperationException("boom");
+
+            // End the post-run() pre-warm loop on the first Go(), the way a stopped bot does.
+            // Letting it spin allocates per call and can exhaust the test host.
+            if (targetMethod.Name == nameof(IBot.Go))
+                throw new ThreadInterruptedException();
+
+            var returnType = targetMethod.ReturnType;
+            if (returnType == typeof(void) || !returnType.IsValueType) return null;
+            return Activator.CreateInstance(returnType);
+        }
     }
 
     private static void SetTickEvent(BaseBotInternals internals, TickEvent tick)
@@ -75,6 +98,50 @@ public class BaseBotInternalsLifecycleTest
         internals.FlushFinalTurnEvents();
 
         Assert.That(bot.DispatchedTicks, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void WaitForNextTurnUnwindsWhenNoThreadOwnsTheRound()
+    {
+        var internals = new TestBot().BaseBotInternals;
+        SetTickEvent(internals, new TickEvent(1, 1, null, new List<BulletState>(), new List<BotEvent>()));
+
+        // A BaseBot with no Run() loop owns no thread, so the blocking wait unwinds right after
+        // the intent was sent by Execute(). Mirrored by the Java and Python lifecycle tests.
+        var waitForNextTurn = typeof(BaseBotInternals).GetMethod("WaitForNextTurn",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+        var ex = Assert.Throws<TargetInvocationException>(() => waitForNextTurn!.Invoke(internals, new object[] { 1 }));
+        Assert.That(ex.InnerException, Is.InstanceOf<ThreadInterruptedException>());
+    }
+
+    [Test]
+    public void UnexpectedErrorFromRunStillDrainsFinalTurnEvents()
+    {
+        var bot = new TestBot();
+        var internals = bot.BaseBotInternals;
+
+        var tick = new TickEvent(1, 1, null, new List<BulletState>(), new List<BotEvent>());
+        SetTickEvent(internals, tick);
+        internals.AddEventsFromTick(tick);
+
+        // Run() blowing up must not cost the bot its final-turn events.
+        internals.StartThread(DispatchProxy.Create<IBot, ExplodingBotProxy>());
+
+        var deadline = DateTime.UtcNow.AddSeconds(2);
+        try
+        {
+            while (bot.DispatchedTicks == 0 && DateTime.UtcNow < deadline)
+            {
+                Thread.Sleep(5);
+            }
+        }
+        finally
+        {
+            internals.StopThread();
+        }
+
+        Assert.That(bot.DispatchedTicks, Is.GreaterThanOrEqualTo(1));
     }
 
     [Test]

@@ -13,7 +13,6 @@ import { BotEventHandlers } from "../events/BotEventHandlers.js";
 import { TickEvent } from "../events/TickEvent.js";
 import { RoundStartedEvent as RoundStartedEventClass } from "../events/RoundStartedEvent.js";
 import { BulletFiredEvent } from "../events/BulletFiredEvent.js";
-import { WonRoundEvent } from "../events/WonRoundEvent.js";
 import { SkippedTurnEvent } from "../events/SkippedTurnEvent.js";
 import { ConnectedEvent } from "../events/ConnectedEvent.js";
 import { DisconnectedEvent } from "../events/DisconnectedEvent.js";
@@ -82,6 +81,7 @@ export class BaseBotInternals {
   private variant = "";
   private version = "";
   private gameSetup: GameSetup | null = null;
+  private initialPosition: InitialPosition | null = null;
   private tickEvent: TickEvent | null = null;
   private tickStartTime = 0;
   private teammateIds: Set<number> = new Set();
@@ -516,8 +516,8 @@ export class BaseBotInternals {
     this.myId = msg.myId;
     this.gameSetup = GameSetupMapper.map(msg.gameSetup);
     this.teammateIds = new Set(msg.teammateIds ?? []);
-    const initialPosition = new InitialPosition(msg.startX ?? null, msg.startY ?? null, msg.startDirection ?? null);
-    const e = new GameStartedEvent(msg.myId, initialPosition, this.gameSetup);
+    this.initialPosition = new InitialPosition(msg.startX ?? null, msg.startY ?? null, msg.startDirection ?? null);
+    const e = new GameStartedEvent(msg.myId, this.initialPosition, this.gameSetup);
     this.botEventHandlers.onGameStarted.publish(e);
   }
 
@@ -547,11 +547,6 @@ export class BaseBotInternals {
     // Flush any queued events from the last tick (e.g. WonRoundEvent) before the next
     // RoundStartedEvent clears the event queue.
     this.dispatchEvents(msg.turnNumber);
-
-    // If the bot won this round (rank == 1), ensure onWonRound is triggered.
-    if (results != null && results.rank === 1) {
-      this.botEventHandlers.onWonRound.publish(new WonRoundEvent(msg.turnNumber));
-    }
   }
 
   private processTick(msg: import("../protocol/schema.js").TickEventForBot): void {
@@ -733,8 +728,10 @@ export class BaseBotInternals {
         if (generation !== this.ownerGeneration) return;
         bot.run();
       } catch (e) {
-        if (!(e instanceof BotStoppedException)) {
-          // ignore unexpected errors from bot.run()
+        // Report unexpected errors from run(), but stay silent once this frame has been
+        // superseded - the failure is then just fallout from losing the round.
+        if (!(e instanceof BotStoppedException) && generation === this.ownerGeneration) {
+          console.error(e);
         }
       }
       if (generation !== this.ownerGeneration) return;
@@ -928,24 +925,29 @@ export class BaseBotInternals {
   }
   isDisabled(): boolean { return this.tickEvent != null && this.getEnergy() === 0; }
   getX(): number {
-    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
-    return this.tickEvent.botState.x;
+    if (this.tickEvent != null) return this.tickEvent.botState.x;
+    if (this.initialPosition?.x != null) return this.initialPosition.x;
+    throw new BotException(TICK_NOT_AVAILABLE_MSG);
   }
   getY(): number {
-    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
-    return this.tickEvent.botState.y;
+    if (this.tickEvent != null) return this.tickEvent.botState.y;
+    if (this.initialPosition?.y != null) return this.initialPosition.y;
+    throw new BotException(TICK_NOT_AVAILABLE_MSG);
   }
   getDirection(): number {
-    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
-    return this.tickEvent.botState.direction;
+    if (this.tickEvent != null) return this.tickEvent.botState.direction;
+    if (this.initialPosition?.direction != null) return this.initialPosition.direction;
+    throw new BotException(TICK_NOT_AVAILABLE_MSG);
   }
   getGunDirection(): number {
-    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
-    return this.tickEvent.botState.gunDirection;
+    if (this.tickEvent != null) return this.tickEvent.botState.gunDirection;
+    if (this.initialPosition?.direction != null) return this.initialPosition.direction;
+    throw new BotException(TICK_NOT_AVAILABLE_MSG);
   }
   getRadarDirection(): number {
-    if (this.tickEvent == null) throw new BotException(TICK_NOT_AVAILABLE_MSG);
-    return this.tickEvent.botState.radarDirection;
+    if (this.tickEvent != null) return this.tickEvent.botState.radarDirection;
+    if (this.initialPosition?.direction != null) return this.initialPosition.direction;
+    throw new BotException(TICK_NOT_AVAILABLE_MSG);
   }
   getSpeed(): number {
     return this.tickEvent?.botState.speed ?? 0;

@@ -4,6 +4,7 @@ import * as path from 'path';
 import { BaseBotInternals } from '../src/internal/BaseBotInternals.js';
 import { IntentValidator } from '../src/internal/intentValidator.js';
 import { BotInfo } from '../src/BotInfo.js';
+import { InitialPosition } from '../src/InitialPosition.js';
 import { Color } from '../src/graphics/Color.js';
 import { Constants } from '../src/Constants.js';
 import { TickEvent } from '../src/events/TickEvent.js';
@@ -235,6 +236,13 @@ function executeBotDefault(testCase: TestCase): void {
     run() {}
   }
   const bot = new BotDefaultStub();
+
+  const setup = testCase.setup;
+  if (setup?.initialPosition) {
+    const values = setup.initialPosition as { x: number | null; y: number | null; direction: number | null };
+    (bot as any)._internals.initialPosition =
+      new InitialPosition(values.x ?? null, values.y ?? null, values.direction ?? null);
+  }
 
   const methodMap: Record<string, () => any> = {
     'getMyId':                  () => bot.getMyId(),

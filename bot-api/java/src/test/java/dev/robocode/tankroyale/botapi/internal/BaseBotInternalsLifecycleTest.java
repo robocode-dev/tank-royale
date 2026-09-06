@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class BaseBotInternalsLifecycleTest {
 
@@ -89,6 +90,60 @@ class BaseBotInternalsLifecycleTest {
         internals.flushFinalTurnEvents();
 
         assertThat(dispatchedTicks).hasValue(1);
+    }
+
+    @Test
+    void wait_for_next_turn_unwinds_when_no_thread_owns_the_round() throws Exception {
+        var internals = new BaseBotInternals(proxy(IBaseBot.class), botInfo(), null, null);
+        internals.setTickEvent(new TickEvent(1, 1, null, List.of(), List.of()));
+
+        // A BaseBot with no run() loop owns no thread, so the blocking wait unwinds right after
+        // the intent was sent by execute(). Mirrored by the .NET and Python lifecycle tests.
+        var waitForNextTurn = BaseBotInternals.class.getDeclaredMethod("waitForNextTurn", int.class);
+        waitForNextTurn.setAccessible(true);
+
+        assertThatThrownBy(() -> waitForNextTurn.invoke(internals, 1))
+                .hasCauseInstanceOf(ThreadInterruptedException.class);
+    }
+
+    @Test
+    void unexpected_error_from_run_still_drains_final_turn_events() throws Exception {
+        var dispatchedTicks = new AtomicInteger();
+        var baseBot = (IBaseBot) Proxy.newProxyInstance(
+                IBaseBot.class.getClassLoader(),
+                new Class<?>[]{IBaseBot.class},
+                (proxy, method, args) -> {
+                    if (method.getName().equals("onTick")) {
+                        dispatchedTicks.incrementAndGet();
+                    }
+                    return defaultValue(method.getReturnType());
+                });
+
+        var internals = new BaseBotInternals(baseBot, botInfo(), null, null);
+        var tick = new TickEvent(1, 1, null, List.of(), List.of());
+        internals.setTickEvent(tick);
+        internals.addEventsFromTick(tick);
+
+        // run() blowing up must not cost the bot its final-turn events.
+        internals.startThread(botProxy((method, args) -> {
+            if (method.getName().equals("run")) {
+                throw new IllegalStateException("boom");
+            }
+            // End the post-run() pre-warm loop on the first go(), the way a stopped bot does.
+            // Letting it spin burns CPU and allocates for the whole wait below.
+            if (method.getName().equals("go")) {
+                throw new ThreadInterruptedException();
+            }
+            return defaultValue(method.getReturnType());
+        }));
+
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2);
+        while (dispatchedTicks.get() == 0 && System.nanoTime() < deadline) {
+            Thread.sleep(5);
+        }
+        internals.stopThread();
+
+        assertThat(dispatchedTicks.get()).isGreaterThanOrEqualTo(1);
     }
 
     private static BotInfo botInfo() {

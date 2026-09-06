@@ -14,6 +14,7 @@ import { TickEvent } from "../src/events/TickEvent.js";
 import { BotState } from "../src/BotState.js";
 import { Condition } from "../src/events/Condition.js";
 import { SkippedTurnEvent } from "../src/events/SkippedTurnEvent.js";
+import { WonRoundEvent } from "../src/events/WonRoundEvent.js";
 import { GameSetup } from "../src/GameSetup.js";
 import { BotResults } from "../src/BotResults.js";
 import { MessageType } from "../src/protocol/MessageType.js";
@@ -295,6 +296,32 @@ describe("Task 4: BaseBotInternals", () => {
     internals.flushFinalTurnEvents();
 
     expect(spy).toHaveBeenCalledWith(7);
+  });
+
+  it("4.11d an unexpected error from run() still drains final-turn events", () => {
+    // run() blowing up must not cost the bot its final-turn events.
+    // Mirrored by the Java, .NET and Python lifecycle tests.
+    const stub = {} as import("../src/IBaseBot.js").IBaseBot;
+    const internals = new BaseBotInternals(stub, makeBotInfo(), null, undefined);
+    const privateInternals = internals as unknown as {
+      workerMode: boolean;
+      tickEvent: TickEvent | null;
+    };
+    privateInternals.workerMode = true;
+    privateInternals.tickEvent = new TickEvent(1, 1, null as unknown as BotState, [], []);
+
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const spy = vi.spyOn(internals, "dispatchFinalTurnEvents" as never);
+    const explodingBot = {
+      run: () => { throw new Error("boom"); },
+      go: () => { internals.setRunning(false); },
+    } as unknown as import("../src/IBot.js").IBot;
+
+    internals.startThread(explodingBot);
+
+    expect(spy).toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalled(); // the failure is reported, not swallowed
+    errorSpy.mockRestore();
   });
 
   it("4.12 state accessors return defaults before game starts", () => {
@@ -670,6 +697,38 @@ describe("Task 8: Integration tests", () => {
     internals.setResume();
     expect(internals.getTurnRate()).toBe(5);
     expect(internals.getTargetSpeed()).toBe(4);
+  });
+
+  it("8.11b onWonRound fires once per won round, not once per delivery path", () => {
+    // The server delivers WonRoundEvent inside the final tick. Synthesising a second one at
+    // round-ended (from results.rank === 1) made TypeScript fire onWonRound twice, unlike the
+    // Java, .NET and Python Bot APIs. makeResults() has rank 1, so this covers that case.
+    const { internals, simulateGameStarted, simulateRoundStarted, simulateTick, simulateRoundEnded } =
+      buildInternals();
+    let wonRoundCount = 0;
+    internals.botEventHandlers.onWonRound.subscribe(() => { wonRoundCount++; }, 100);
+
+    simulateGameStarted();
+    simulateRoundStarted();
+    simulateTick(1);
+    internals.addEvent(new WonRoundEvent(1));
+    simulateRoundEnded();
+
+    expect(wonRoundCount).toBe(1);
+  });
+
+  it("8.11c onWonRound does not fire when the server never sent a WonRoundEvent", () => {
+    const { internals, simulateGameStarted, simulateRoundStarted, simulateTick, simulateRoundEnded } =
+      buildInternals();
+    let wonRoundCount = 0;
+    internals.botEventHandlers.onWonRound.subscribe(() => { wonRoundCount++; }, 100);
+
+    simulateGameStarted();
+    simulateRoundStarted();
+    simulateTick(1);
+    simulateRoundEnded(); // results.rank === 1, but no WonRoundEvent was delivered
+
+    expect(wonRoundCount).toBe(0);
   });
 
   it("8.11 isRunning returns false after round ended", () => {

@@ -283,9 +283,23 @@ public class SharedTestRunner
         _ => throw new ArgumentException($"Unknown event for scenario: {eventName}")
     };
 
+    private static void ApplyInitialPositionSetup(BaseBot bot, TestCase testCase)
+    {
+        if (testCase.Setup == null || !testCase.Setup.TryGetValue("initialPosition", out var raw)) return;
+
+        var values = JsonConvert.DeserializeObject<Dictionary<string, double?>>(raw.ToString() ?? "{}");
+        var initialPosition = new InitialPosition(
+            values.GetValueOrDefault("x"), values.GetValueOrDefault("y"), values.GetValueOrDefault("direction"));
+
+        var field = typeof(BaseBotInternals).GetField("_initialPosition",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+        field!.SetValue(bot.BaseBotInternals, initialPosition);
+    }
+
     private void ExecuteBotDefault(TestCase testCase)
     {
         var bot = new BotDefaultStub();
+        ApplyInitialPositionSetup(bot, testCase);
         Func<object> callMethod = testCase.Method switch
         {
             "getMyId"                  => () => bot.MyId,

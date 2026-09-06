@@ -29,7 +29,7 @@ sealed class BaseBotInternals
     private const string GameNotRunningMsg =
         "Game is not running. Make sure OnGameStarted() event handler has been called first";
 
-    private const string TickNotAvailableMsg =
+    internal const string TickNotAvailableMsg =
         "Game is not running or tick has not occurred yet. Make sure OnTick() event handler has been called first";
 
     private readonly string _serverSecret;
@@ -209,7 +209,10 @@ sealed class BaseBotInternals
         }
         catch (Exception e)
         {
-            Console.Error.WriteLine(e);
+            // Report unexpected errors from Run(), but stay silent once this thread has been
+            // superseded - the failure is then just fallout from losing the round.
+            if (botThread == _thread)
+                Console.Error.WriteLine(e);
         }
 
         if (botThread != _thread)
@@ -565,6 +568,8 @@ sealed class BaseBotInternals
     internal E.TickEvent CurrentTickOrThrow => _tickEvent ?? throw new BotException(TickNotAvailableMsg);
 
     internal E.TickEvent CurrentTickOrNull => _tickEvent;
+
+    internal InitialPosition InitialPosition => _initialPosition;
 
     internal int TimeLeft
     {

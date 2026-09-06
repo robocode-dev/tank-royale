@@ -400,6 +400,11 @@ class BaseBotInternals:
                 bot.run()
             except ThreadInterruptedException:
                 pass
+            except Exception:
+                # Report unexpected errors from run(), but stay silent once this thread has
+                # been superseded - the failure is then just fallout from losing the round.
+                if self.thread is bot_thread:
+                    traceback.print_exc()
 
             if self.thread is not bot_thread:
                 return
@@ -648,20 +653,15 @@ class BaseBotInternals:
 
     def _wait_for_next_turn(self, turn_number: int) -> None:
         """Wait for next turn (matches Java's waitForNextTurn)"""
-        # Check if we're being called from the designated bot thread.
-        # If self.thread is None (test mode with no run() loop), exit immediately - the intent
-        # was already sent in execute() before this call. This allows tests to call go() from
-        # test threads without hanging.
-        if self.thread is None:
-            return
-
         # Most bot methods call _wait_for_next_turn(), so this is the central place to stop a
         # rogue thread that cannot be killed any other way (matches Java's waitForNextTurn).
+        # A BaseBot with no run() loop owns no thread, so this unwinds go() right after the
+        # intent was sent in execute() - the same way Java and .NET behave.
         self._stop_rogue_thread()
 
-        # Only wait if we're in the correct bot thread and bot is running
+        bot_thread = threading.current_thread()
         with self._next_turn_condition:
-            while self.is_running():
+            while self.is_running() and self.thread is bot_thread:
                 current_tick = self.current_tick_or_null
                 if current_tick is None or current_tick.turn_number != turn_number:
                     break
