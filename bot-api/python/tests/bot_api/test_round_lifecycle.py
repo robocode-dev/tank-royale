@@ -18,8 +18,8 @@ class TestBot(BaseBot):
         pass
 
 
-@pytest.mark.BOT
-def test_stale_thread_is_rejected_after_round_owner_changes():
+@pytest.mark.TCK
+def test_TR_API_TCK_018_stale_thread_is_rejected_after_round_owner_changes():
     """A thread that no longer owns the round is stopped by the blocking bot methods.
 
     _wait_for_next_turn is the production path every blocking bot method funnels through,
@@ -48,8 +48,8 @@ def test_wait_for_next_turn_unwinds_when_no_bot_thread_owns_the_round():
         internals._wait_for_next_turn(1)
 
 
-@pytest.mark.BOT
-def test_unexpected_error_from_run_still_drains_final_turn_events():
+@pytest.mark.TCK
+def test_TR_API_TCK_020_unexpected_error_from_run_still_drains_final_turn_events():
     """run() blowing up must not cost the bot its final-turn events.
 
     Mirrored by the Java, .NET and TypeScript lifecycle tests.
@@ -80,6 +80,31 @@ def test_unexpected_error_from_run_still_drains_final_turn_events():
     internals.stop_thread()
 
     assert len(dispatched) >= 1
+
+
+@pytest.mark.TCK
+def test_TR_API_TCK_019_final_turn_events_flush_after_the_bot_thread_loses_ownership():
+    """Events queued for the current tick still drain once the bot thread stops owning the round.
+
+    This is what the game-ended, game-aborted and disconnected paths rely on.
+    Mirrored by the Java, .NET and TypeScript lifecycle tests.
+    """
+    dispatched = []
+
+    class CountingBot(TestBot):
+        def on_tick(self, event):
+            dispatched.append(event)
+
+    bot = CountingBot()
+    internals = bot._internals
+    tick = TickEvent(1, 1, None, [], [])
+    internals.tick_event = tick
+    internals.add_events_from_tick(tick)
+
+    internals.stop_thread()  # invalidates bot-thread ownership
+    internals.flush_final_turn_events()
+
+    assert len(dispatched) == 1
 
 
 @pytest.mark.BOT

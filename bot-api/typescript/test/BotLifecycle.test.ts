@@ -249,7 +249,7 @@ describe("Task 4: BaseBotInternals", () => {
     expect(internals.isRunning()).toBe(false);
   });
 
-  it("4.11b a superseded loop frame cannot execute into the next round", () => {
+  it("TR-API-TCK-018: a superseded loop frame cannot execute into the next round", () => {
     const stub = {} as import("../src/IBaseBot.js").IBaseBot;
     const internals = new BaseBotInternals(stub, makeBotInfo(), null, undefined);
     const privateInternals = internals as unknown as {
@@ -277,7 +277,7 @@ describe("Task 4: BaseBotInternals", () => {
     expect(() => internals.dispatchEvents(1)).not.toThrow();
   });
 
-  it("4.11c releasing ownership lets the WebSocket side drain the final tick", () => {
+  it("TR-API-TCK-019: releasing ownership lets the WebSocket side drain the final tick", () => {
     const stub = {} as import("../src/IBaseBot.js").IBaseBot;
     const internals = new BaseBotInternals(stub, makeBotInfo(), null, undefined);
     const privateInternals = internals as unknown as {
@@ -298,7 +298,7 @@ describe("Task 4: BaseBotInternals", () => {
     expect(spy).toHaveBeenCalledWith(7);
   });
 
-  it("4.11d an unexpected error from run() still drains final-turn events", () => {
+  it("TR-API-TCK-020: an unexpected error from run() still drains final-turn events", () => {
     // run() blowing up must not cost the bot its final-turn events.
     // Mirrored by the Java, .NET and Python lifecycle tests.
     const stub = {} as import("../src/IBaseBot.js").IBaseBot;
@@ -699,7 +699,7 @@ describe("Task 8: Integration tests", () => {
     expect(internals.getTargetSpeed()).toBe(4);
   });
 
-  it("8.11b onWonRound fires once per won round, not once per delivery path", () => {
+  it("TR-API-TCK-021: onWonRound fires once per won round, not once per delivery path", () => {
     // The server delivers WonRoundEvent inside the final tick. Synthesising a second one at
     // round-ended (from results.rank === 1) made TypeScript fire onWonRound twice, unlike the
     // Java, .NET and Python Bot APIs. makeResults() has rank 1, so this covers that case.
@@ -717,7 +717,7 @@ describe("Task 8: Integration tests", () => {
     expect(wonRoundCount).toBe(1);
   });
 
-  it("8.11c onWonRound does not fire when the server never sent a WonRoundEvent", () => {
+  it("TR-API-TCK-021: onWonRound does not fire when the server never sent a WonRoundEvent", () => {
     const { internals, simulateGameStarted, simulateRoundStarted, simulateTick, simulateRoundEnded } =
       buildInternals();
     let wonRoundCount = 0;

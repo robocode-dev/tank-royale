@@ -70,6 +70,8 @@ public class BaseBotInternalsLifecycleTest
     }
 
     [Test]
+    [Category("TCK")]
+    [Category("TR-API-TCK-018")]
     public void StaleThreadCannotDispatchAfterNextRoundTakesOwnership()
     {
         var internals = new TestBot().BaseBotInternals;
@@ -82,6 +84,8 @@ public class BaseBotInternalsLifecycleTest
     }
 
     [Test]
+    [Category("TCK")]
+    [Category("TR-API-TCK-019")]
     public void FinalTickEventsAreFlushedAfterTheBotThreadLosesOwnership()
     {
         var bot = new TestBot();
@@ -116,6 +120,8 @@ public class BaseBotInternalsLifecycleTest
     }
 
     [Test]
+    [Category("TCK")]
+    [Category("TR-API-TCK-020")]
     public void UnexpectedErrorFromRunStillDrainsFinalTurnEvents()
     {
         var bot = new TestBot();

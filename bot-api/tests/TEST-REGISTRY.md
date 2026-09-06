@@ -68,6 +68,10 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 | TR-API-TCK-015 | BotDeathEvent(victimId!=myId) triggers onBotDeath | 2 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-TCK-016 | BulletHitBotEvent(victimId==myId) triggers onHitByBullet | 2 | ✅ | ✅ | ✅ | ✅ |
 | TR-API-TCK-017 | BulletHitBotEvent(victimId!=myId) triggers onBulletHit | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-018 | A superseded round's bot loop cannot dispatch or send an intent into the next round | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-019 | Final-turn events still drain once the bot thread stops owning the round | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-020 | An unexpected error from run() still drains final-turn events | 2 | ✅ | ✅ | ✅ | ✅ |
+| TR-API-TCK-021 | onWonRound fires once per won round, not once per delivery path | 2 | ❌ | ❌ | ❌ | ✅ |
 
 ## EVT — Events
 
@@ -133,13 +137,13 @@ This applies to all tiers and all categories (VAL, CMD, TCK, BOT, UTL, GFX).
 |----------|-----------|------|----|--------|------------|
 | VAL | 5 | 5 | 5 | 5 | 5 |
 | CMD | 3 | 3 | 3 | 3 | 3 |
-| TCK | 14 | 14 | 14 | 14 | 14 |
+| TCK | 18 | 17 | 17 | 17 | 18 |
 | EVT | 9 | 9 | 9 | 9 | 9 |
 | MDL | 4 | 4 | 4 | 4 | 4 |
 | BOT | 11 | 11 | 11 | 11 | 11 |
 | UTL | 3 | 3 | 3 | 3 | 3 |
 | GFX | 4 | 4 | 4 | 4 | 4 |
-| **Total** | **53** | **53** | **53** | **53** | **53** |
+| **Total** | **57** | **56** | **56** | **56** | **57** |
 
 ---
 

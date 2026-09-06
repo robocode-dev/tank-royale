@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.botapi.BotInfo;
 import dev.robocode.tankroyale.botapi.IBot;
 import dev.robocode.tankroyale.botapi.IBaseBot;
 import dev.robocode.tankroyale.botapi.events.TickEvent;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Proxy;
@@ -19,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class BaseBotInternalsLifecycleTest {
 
     @Test
+    @Tag("TCK")
+    @Tag("TR-API-TCK-018")
     void stale_bot_thread_cannot_dispatch_after_next_round_takes_ownership() throws Exception {
         var internals = new BaseBotInternals(proxy(IBaseBot.class), botInfo(), null, null);
         internals.setTickEvent(new TickEvent(1, 1, null, List.of(), List.of()));
@@ -66,6 +69,8 @@ class BaseBotInternalsLifecycleTest {
     }
 
     @Test
+    @Tag("TCK")
+    @Tag("TR-API-TCK-019")
     void final_tick_events_are_flushed_after_the_bot_thread_loses_ownership() {
         var dispatchedTicks = new AtomicInteger();
         var baseBot = (IBaseBot) Proxy.newProxyInstance(
@@ -107,6 +112,8 @@ class BaseBotInternalsLifecycleTest {
     }
 
     @Test
+    @Tag("TCK")
+    @Tag("TR-API-TCK-020")
     void unexpected_error_from_run_still_drains_final_turn_events() throws Exception {
         var dispatchedTicks = new AtomicInteger();
         var baseBot = (IBaseBot) Proxy.newProxyInstance(
