@@ -54,7 +54,9 @@ jobs:
         with:
           user: ${{ vars.NUGET_USERNAME }}
 
-      - name: TEMP - verify key received, no push (OIDC handshake test)
+      - name: NuGet push
         run: |
-          KEY="${{ steps.login.outputs.NUGET_API_KEY }}"
-          echo "Got NuGet API key: ${#KEY} chars"
+          dotnet nuget push \
+            "bot-api/dotnet/api/bin/Release/robocode.tankroyale.botapi.${{ inputs.version }}.nupkg" \
+            --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
+            --source https://api.nuget.org/v3/index.json
