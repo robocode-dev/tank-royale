@@ -233,19 +233,68 @@ describe("Task 4: BaseBotInternals", () => {
     const stub = {} as import("../src/IBaseBot.js").IBaseBot;
     const internals = new BaseBotInternals(stub, makeBotInfo(), null, undefined);
     const privateInternals = internals as unknown as {
-      runGeneration: number;
+      ownerGeneration: number;
       sharedBuffer: SharedArrayBuffer;
       sharedView: Int32Array;
     };
     privateInternals.sharedBuffer = new SharedArrayBuffer(8);
     privateInternals.sharedView = new Int32Array(privateInternals.sharedBuffer);
     internals.setRunning(true);
-    const generation = privateInternals.runGeneration;
+    privateInternals.ownerGeneration = 7;
 
     internals.stopThread();
 
-    expect(privateInternals.runGeneration).toBe(generation + 1);
+    expect(privateInternals.ownerGeneration).toBe(0);
     expect(internals.isRunning()).toBe(false);
+  });
+
+  it("4.11b a superseded loop frame cannot execute into the next round", () => {
+    const stub = {} as import("../src/IBaseBot.js").IBaseBot;
+    const internals = new BaseBotInternals(stub, makeBotInfo(), null, undefined);
+    const privateInternals = internals as unknown as {
+      workerMode: boolean;
+      ownerGeneration: number;
+      activeRunGeneration: number;
+      sharedBuffer: SharedArrayBuffer;
+      sharedView: Int32Array;
+    };
+    privateInternals.sharedBuffer = new SharedArrayBuffer(8);
+    privateInternals.sharedView = new Int32Array(privateInternals.sharedBuffer);
+    privateInternals.workerMode = true;
+    internals.setRunning(true);
+
+    // Round 2 owns the bot, but we are still on round 1's stack — the shape a run() that
+    // swallowed BotStoppedException and called another blocking method ends up in.
+    privateInternals.ownerGeneration = 2;
+    privateInternals.activeRunGeneration = 1;
+
+    expect(() => internals.execute(1)).toThrow(BotStoppedException);
+    expect(() => internals.dispatchEvents(1)).toThrow(BotStoppedException);
+
+    // The owning frame is unaffected.
+    privateInternals.activeRunGeneration = 2;
+    expect(() => internals.dispatchEvents(1)).not.toThrow();
+  });
+
+  it("4.11c releasing ownership lets the WebSocket side drain the final tick", () => {
+    const stub = {} as import("../src/IBaseBot.js").IBaseBot;
+    const internals = new BaseBotInternals(stub, makeBotInfo(), null, undefined);
+    const privateInternals = internals as unknown as {
+      workerMode: boolean;
+      ownerGeneration: number;
+      activeRunGeneration: number;
+      tickEvent: TickEvent | null;
+    };
+    privateInternals.workerMode = true;
+    internals.setRunning(true);
+    privateInternals.tickEvent = new TickEvent(7, 1, null as unknown as BotState, [], []);
+    privateInternals.ownerGeneration = 0; // stopThread() has run
+    privateInternals.activeRunGeneration = 1;
+
+    const spy = vi.spyOn(internals, "dispatchEvents");
+    internals.flushFinalTurnEvents();
+
+    expect(spy).toHaveBeenCalledWith(7);
   });
 
   it("4.12 state accessors return defaults before game starts", () => {

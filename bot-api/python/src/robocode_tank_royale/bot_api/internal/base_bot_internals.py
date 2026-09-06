@@ -46,6 +46,9 @@ from robocode_tank_royale.schema import Message, BotIntent, ServerHandshake, Tea
 
 DEFAULT_SERVER_URL = "ws://localhost:7654"
 
+# Bounded, best-effort wait for a superseded bot thread to exit (matches Java/.NET: 1000 ms).
+THREAD_JOIN_TIMEOUT_SECS = 1.0
+
 GAME_NOT_RUNNING_MSG = (
     "Game is not running. Make sure onGameStarted() event handler has been called first"
 )
@@ -417,6 +420,15 @@ class BaseBotInternals:
         """Dispatch any remaining events from the current tick before the thread exits."""
         if self.thread is not bot_thread:
             return
+        self.flush_final_turn_events()
+
+    def flush_final_turn_events(self) -> None:
+        """Drain any events still queued for the current tick.
+
+        Called on the WebSocket thread after stop_thread() has invalidated bot-thread ownership,
+        so the bot thread can no longer drain them itself. Without this, final-tick events would
+        be lost on game-ended, game-aborted and disconnected.
+        """
         tick = self.current_tick_or_null
         if tick is not None:
             self.dispatch_events(tick.turn_number)
@@ -434,13 +446,21 @@ class BaseBotInternals:
         with self._thread_control_lock:
             if not self.is_running() and self.thread is None:
                 return
-            self.set_running(False)
+            old_thread = self.thread
             self.thread = None  # invalidate ownership before waking the old thread
+            self.set_running(False)
         self.enable_event_handling(False)  # disable on WebSocket thread — prevents new ticks from queuing after bot stops
 
         # Wake up any threads waiting on the next turn condition so they can see is_running=False
         with self._next_turn_condition:
             self._next_turn_condition.notify_all()
+
+        if old_thread is not None and old_thread is not threading.current_thread():
+            # Best-effort cleanup only. Ownership was invalidated above, so correctness does not
+            # depend on this bounded wait and an infinite legacy loop cannot block a round. It
+            # still keeps the old thread from dispatching concurrently with the WebSocket thread
+            # in the common case.
+            old_thread.join(timeout=THREAD_JOIN_TIMEOUT_SECS)
 
 
     def _sanitize_url(self, uri: str) -> None:
@@ -628,15 +648,16 @@ class BaseBotInternals:
 
     def _wait_for_next_turn(self, turn_number: int) -> None:
         """Wait for next turn (matches Java's waitForNextTurn)"""
-        # Check if we're being called from the designated bot thread
-        # If self.thread is None (test mode with no run() loop) or current thread doesn't match,
-        # exit immediately - the intent was already sent in execute() before this call
+        # Check if we're being called from the designated bot thread.
+        # If self.thread is None (test mode with no run() loop), exit immediately - the intent
+        # was already sent in execute() before this call. This allows tests to call go() from
+        # test threads without hanging.
         if self.thread is None:
-            # In test mode or when called from wrong thread, just return without waiting
-            # This allows tests to call go() from test threads without hanging
             return
-        if threading.current_thread() is not self.thread:
-            raise ThreadInterruptedException()
+
+        # Most bot methods call _wait_for_next_turn(), so this is the central place to stop a
+        # rogue thread that cannot be killed any other way (matches Java's waitForNextTurn).
+        self._stop_rogue_thread()
 
         # Only wait if we're in the correct bot thread and bot is running
         with self._next_turn_condition:
@@ -653,7 +674,7 @@ class BaseBotInternals:
 
     def _stop_rogue_thread(self) -> None:
         """Stop rogue thread (matches Java's stopRogueThread)"""
-        if self.is_running() and self.thread is not None and threading.current_thread() is not self.thread:
+        if threading.current_thread() is not self.thread:
             raise ThreadInterruptedException()
 
     def set_fire(self, firepower: float) -> bool:

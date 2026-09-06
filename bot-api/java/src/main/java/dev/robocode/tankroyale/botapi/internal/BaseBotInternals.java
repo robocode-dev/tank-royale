@@ -70,6 +70,8 @@ public final class BaseBotInternals {
 
     private final Object nextTurnMonitor = new Object();
 
+    private static final long THREAD_JOIN_TIMEOUT_MILLIS = 1000;
+
     private volatile Thread thread;
     private final Object threadControlMonitor = new Object();
 
@@ -199,6 +201,16 @@ public final class BaseBotInternals {
         if (botThread != thread) {
             return;
         }
+        flushFinalTurnEvents();
+    }
+
+    /**
+     * Drains any events still queued for the current tick. Called on the WebSocket thread after
+     * stopThread() has invalidated bot-thread ownership, so the bot thread can no longer drain
+     * them itself. Without this, final-tick events would be lost on game-ended, game-aborted and
+     * disconnected.
+     */
+    void flushFinalTurnEvents() {
         var tick = getCurrentTickOrNull();
         if (tick != null) {
             dispatchEvents(tick.getTurnNumber());
@@ -224,6 +236,16 @@ public final class BaseBotInternals {
         }
         synchronized (nextTurnMonitor) {
             nextTurnMonitor.notifyAll();
+        }
+
+        if (oldThread != null && oldThread != Thread.currentThread()) {
+            // Best-effort cleanup only. Ownership was invalidated above, so correctness does not
+            // depend on this bounded wait and an infinite legacy loop cannot block a round.
+            try {
+                oldThread.join(THREAD_JOIN_TIMEOUT_MILLIS);
+            } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 

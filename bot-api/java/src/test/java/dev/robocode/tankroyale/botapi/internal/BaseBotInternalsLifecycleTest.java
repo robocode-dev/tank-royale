@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,6 +62,33 @@ class BaseBotInternalsLifecycleTest {
         internals.stopThread();
 
         assertThat(staleDispatchBlocked).isTrue();
+    }
+
+    @Test
+    void final_tick_events_are_flushed_after_the_bot_thread_loses_ownership() {
+        var dispatchedTicks = new AtomicInteger();
+        var baseBot = (IBaseBot) Proxy.newProxyInstance(
+                IBaseBot.class.getClassLoader(),
+                new Class<?>[]{IBaseBot.class},
+                (proxy, method, args) -> {
+                    if (method.getName().equals("onTick")) {
+                        dispatchedTicks.incrementAndGet();
+                    }
+                    return defaultValue(method.getReturnType());
+                });
+
+        var internals = new BaseBotInternals(baseBot, botInfo(), null, null);
+        var tick = new TickEvent(1, 1, null, List.of(), List.of());
+        internals.setTickEvent(tick);
+        internals.addEventsFromTick(tick);
+
+        // stopThread() invalidates bot-thread ownership, so the bot thread can no longer drain
+        // the queue itself. The WebSocket thread must still be able to — this is what the
+        // game-ended, game-aborted and disconnected paths rely on.
+        internals.stopThread();
+        internals.flushFinalTurnEvents();
+
+        assertThat(dispatchedTicks).hasValue(1);
     }
 
     private static BotInfo botInfo() {
