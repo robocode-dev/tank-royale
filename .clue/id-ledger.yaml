@@ -692,7 +692,7 @@ entries:
       component: "35"
     - id: CH-036
       kind: numeric
-      state: reserved
+      state: live
       prefix: CH
       component: "36"
     - id: CH-036-open-questions
