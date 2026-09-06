@@ -47,6 +47,20 @@ describe("ConsoleCapture", () => {
     expect(errorSpy).toHaveBeenCalledWith("oops");
   });
 
+  it("TBA-132: preserves newlines, carriage returns, tabs, backslashes, and quotes", () => {
+    const capture = new ConsoleCapture();
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const message = `Hello\nWorld\r\tPath: C:\\temp\\file.txt \"quoted\"`;
+
+    capture.install();
+    console.log(message);
+    const { stdOut } = capture.drain();
+    capture.restore();
+
+    expect(stdOut).toBe(`${message}\n`);
+    expect(logSpy).toHaveBeenCalledWith(message);
+  });
+
   it("TBA-132/133 (negative): drain returns null for a stream with no output", () => {
     const capture = new ConsoleCapture();
     vi.spyOn(console, "log").mockImplementation(() => {});

@@ -32,4 +32,4 @@ CH-035 made TypeScript console output reach `BotIntent.stdOut` and `stdErr`, but
 
 ## Dependency
 
-This change is based on the unmerged CH-035 implementation (PR #259, base commit `913544170e3b8a3494442a07e424b64509b9a8af`). Its acceptance binds the M-018 evidence and digest on top of CH-035; it must not be integrated unless CH-035 is accepted first.
+This change is based on the unmerged CH-035 implementation ([PR 259](https://github.com/robocode-dev/tank-royale/pull/259), base commit `913544170e3b8a3494442a07e424b64509b9a8af`). Its acceptance binds the M-018 evidence and digest on top of CH-035; it must not be integrated unless CH-035 is accepted first.

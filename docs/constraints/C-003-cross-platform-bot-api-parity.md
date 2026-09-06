@@ -22,6 +22,6 @@ Rationale: maintainability, testing, documentation, and learning — a bot autho
 
 **Machine-covered portion:** the shared cross-platform test definitions (`bot-api/tests`, ADR-038) hold the overlap they cover.
 
-**Residual:** API surface and semantics beyond the shared tests remain maintainer-reviewed and human-enforced.
+**Residual:** API surface and semantics beyond the shared tests remain maintainer-reviewed and human-enforced; the TypeScript console-output gap tracked by P-005/M-018 is closed with focused capture evidence on all four Bot APIs.
 
 **Promotion trigger:** complete automated parity coverage for every official Bot API surface, default, validation rule, error behavior, event ordering rule, and timing semantic.

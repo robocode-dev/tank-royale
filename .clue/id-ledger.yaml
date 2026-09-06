@@ -695,6 +695,15 @@ entries:
       state: reserved
       prefix: CH
       component: "36"
+    - id: CH-036-open-questions
+      kind: opaque
+      state: live
+    - id: CH-036-proposal
+      kind: opaque
+      state: live
+    - id: CH-036-tasks
+      kind: opaque
+      state: live
     - id: G-001
       kind: numeric
       state: live
