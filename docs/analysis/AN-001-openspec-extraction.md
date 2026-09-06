@@ -17,7 +17,7 @@ The record of CH-001 (2026-07-19), this repository's adoption of Cliewen via the
 - **Two overlapping methodologies**: OpenSpec (`openspec/` — 12 non-empty capability spec dirs, one pending change `add-typescript-bot-api-npm-publish`, an archive of applied changes, `project.md`, `config.yaml`) and 41 MADR-frontmatter ADRs (`docs/decisions/0001`–`0041`, all `accepted`), plus a bespoke agent-instruction system (`.agents/instructions/`, 12 files) with three assistant entry points (`AGENTS.md`, `.github/copilot-instructions.md`, `.junie/guidelines.md`; `CLAUDE.md` re-exports `AGENTS.md`).
 - **OpenSpec scenarios carried no IDs** — unlike a tagged corpus, there was nothing to inherit; all AC IDs were minted at extraction.
 - Architecture documentation without frontmatter: C4 views, message-schema and flow models, two health reports, cross-cutting design specs, and the draft Rumble design set under `docs/design/rumble/`.
-- 7 project skills (`release`, `update-deps`, `deploy-sample-bots`, `structurizr`, `dot-scout`, `dot-prime`, `dot-audit`) beside the `.claude/skills → .agents/skills` symlink; the `/dot-*` principles catalog (`.principles` files).
+- 6 project skills (`release`, `update-deps`, `deploy-sample-bots`, `structurizr`, `dot-scout`, `dot-audit`) beside the `.claude/skills → .agents/skills` symlink; the `/dot-*` principles catalog (`.principles` files).
 - Test suites in four languages (Java, C#, Python, TypeScript) with **no purpose tags** — far larger than any prior adoption.
 
 ## What mapped where
