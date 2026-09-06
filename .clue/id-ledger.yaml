@@ -687,7 +687,7 @@ entries:
       state: live
     - id: CH-035
       kind: numeric
-      state: reserved
+      state: live
       prefix: CH
       component: "35"
     - id: G-001
