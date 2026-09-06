@@ -22,7 +22,7 @@ Serves G-001: cross-platform play only counts when a bot author switching langua
 
 | ID | Milestone | Exit criterion | Status | Evidence |
 |---|---|---|---|---|
-| M-016 | Capture boundary decided | An accepted IDR states where TypeScript captures console output, how it crosses the Worker boundary with the intent, and what the non-worker and browser paths do | todo | |
+| M-016 | Capture boundary decided | An accepted IDR states where TypeScript captures console output, how it crosses the Worker boundary with the intent, and what the non-worker and browser paths do | done | [IDR-005](../decisions/IDR-005-typescript-console-capture-boundary.md) |
 | M-017 | Console output populates the intent | `BotIntent.stdOut` and `stdErr` carry the bot's output on every intent send and after a round ends, in both worker and non-worker modes, matching where the Java Bot API drains its recording streams | todo | |
 | M-018 | Parity evidenced and residual closed | Tests mirror the Java, .NET and Python coverage for standard-stream capture, and C-003's residual no longer names console output as an open divergence | todo | |
 

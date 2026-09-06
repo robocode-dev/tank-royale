@@ -4,10 +4,10 @@ counters:
     ARCH: "26"
     C: "4"
     CAP: "17"
-    CH: "33"
+    CH: "34"
     G: "2"
     GTD: "1"
-    IDR: "4"
+    IDR: "5"
     LOG: "1"
     P: "5"
     PDR: "13"
@@ -674,6 +674,17 @@ entries:
       state: live
       prefix: CH
       component: "33"
+    - id: CH-034
+      kind: numeric
+      state: live
+      prefix: CH
+      component: "34"
+    - id: CH-034-open-questions
+      kind: opaque
+      state: live
+    - id: CH-034-tasks
+      kind: opaque
+      state: live
     - id: G-001
       kind: numeric
       state: live
@@ -709,6 +720,11 @@ entries:
       state: live
       prefix: IDR
       component: "4"
+    - id: IDR-005
+      kind: numeric
+      state: live
+      prefix: IDR
+      component: "5"
     - id: LOG-001
       kind: numeric
       state: retired
